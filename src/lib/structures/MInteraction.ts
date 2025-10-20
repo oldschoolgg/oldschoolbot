@@ -202,7 +202,7 @@ export class MInteraction {
 			response.components = [];
 		}
 
-		if (response.ephemeral) {
+		if (response.ephemeral || this.ephemeral) {
 			this.ephemeral = true;
 			delete response.ephemeral;
 			response.flags = MessageFlags.Ephemeral;

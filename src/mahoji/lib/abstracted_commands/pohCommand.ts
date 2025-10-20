@@ -35,7 +35,7 @@ export async function makePOHImage(user: MUser, showSpaces = false) {
 	return { files: [{ attachment: buffer, name: 'image.jpg' }] };
 }
 
-export async function pohWallkitCommand(user: MUser, input: string) {
+export async function pohWallkitCommand(user: MUser, input: string): CommandResponse {
 	const poh = await getPOH(user.id);
 	const currentWallkit = pohWallkits.find(i => i.imageID === poh.background_id)!;
 	const selectedKit = pohWallkits.find(i => stringMatches(i.name, input));
@@ -48,6 +48,29 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 
 	if (currentWallkit.imageID === selectedKit.imageID) {
 		return 'This is already your wallkit.';
+	}
+
+	if (
+		selectedKit.bitfield === BitField.HasHalloweenWallkit &&
+		!user.bitfield.includes(BitField.HasHalloweenWallkit)
+	) {
+		await user.update({
+			bitfield: {
+				push: selectedKit.bitfield
+			}
+		});
+		await prisma.playerOwnedHouse.update({
+			where: {
+				user_id: user.id
+			},
+			data: {
+				background_id: selectedKit.imageID
+			}
+		});
+		return {
+			...(await makePOHImage(user)),
+			content: `You have permanently unlocked the Halloween wallkit!`
+		};
 	}
 
 	const { bitfield } = user;
@@ -64,6 +87,13 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 			return `You haven't unlocked the ${selectedKit.name} wallkit!`;
 		}
 	}
+
+	if (
+		selectedKit.bitfield === BitField.HasHalloweenWallkit &&
+		!user.bitfield.includes(BitField.HasHalloweenWallkit)
+	) {
+	}
+
 	await prisma.playerOwnedHouse.update({
 		where: {
 			user_id: user.id

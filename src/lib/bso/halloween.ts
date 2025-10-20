@@ -1,12 +1,15 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 
 import { MathRNG } from '@oldschoolgg/rng';
 import { DateTime } from 'luxon';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import type { HalloweenEvent } from '@/prisma/main.js';
+
 const constants = {
 	MINUTES_PER_VISIT: 10,
-	CARD_TARGET_DAYS: 1.5,
+	CARD_TARGET_DAYS: 0.55,
 	PET_TARGET_DAYS: 4,
 	HALLOWEEN_PETS: Items.resolveItems([
 		'Mumpkin',
@@ -19,19 +22,9 @@ const constants = {
 	])
 };
 
-const minutesInDays = (d: number) => d * 24 * 60;
-const denomForTarget = (days: number) => Math.round(minutesInDays(days) / constants.MINUTES_PER_VISIT);
-
-const CARD_CHANCE = denomForTarget(constants.CARD_TARGET_DAYS);
-const PET_CHANCE = denomForTarget(constants.PET_TARGET_DAYS);
-
-function expectedDays(denom: number) {
-	const minutes = denom * constants.MINUTES_PER_VISIT;
-	return minutes / (24 * 60);
-}
-
-console.log(`Card odds: 1 in ${CARD_CHANCE}, expected ≈ ${expectedDays(CARD_CHANCE).toFixed(2)} days`);
-console.log(`Pet odds:  1 in ${PET_CHANCE}, expected ≈ ${expectedDays(PET_CHANCE).toFixed(2)} days`);
+const FIRST_CARD_CHANCE = 12;
+const LATER_CARD_CHANCES = 200;
+const PET_CHANCE = 650;
 
 const trickOrTreaters: {
 	id: HalloweenCardID;
@@ -74,34 +67,49 @@ const trickOrTreaters: {
 
 export type HalloweenCardID = 'witch' | 'death' | 'pumpkinman' | 'vampire' | 'ghost';
 
-const CANDY_PER_MINUTE = 1;
-const CANDY_MIN_PER_VISIT = 1;
-const CANDY_MAX_PER_VISIT = 3;
-const EXPECTED_CANDY_PER_VISIT = (CANDY_MIN_PER_VISIT + CANDY_MAX_PER_VISIT) / 2;
+export async function doHalloweenTickOnUser(user: MUser, userEvent: HalloweenEvent) {
+	const candyDesired = MathRNG.randInt(1, 3);
 
-type Totals = { visits: number; waitMin: number; candyMin: number; totalMin: number };
-const breakdown = (denom: number): Totals => {
-	const visits = denom;
-	const waitMin = visits * constants.MINUTES_PER_VISIT;
-	const candyNeeded = visits * EXPECTED_CANDY_PER_VISIT;
-	const candyMin = candyNeeded / CANDY_PER_MINUTE;
-	return { visits, waitMin, candyMin, totalMin: waitMin + candyMin };
-};
-const h = (m: number) => (m / 60).toFixed(2);
+	// Doesnt have enough candy
+	if (userEvent.candy_in_bowl < candyDesired) {
+		await prisma.halloweenEvent.update({
+			where: { user_id: userEvent.user_id },
+			data: {
+				last_trick_or_treat: new Date()
+			}
+		});
+		return;
+	}
 
-const cardTotals = breakdown(CARD_CHANCE);
-const petTotals = breakdown(PET_CHANCE);
+	const itemsWaitingForPickup = new Bank(userEvent.items_waiting_for_pickup as ItemBank);
 
-console.log(
-	`[Card] visits=${cardTotals.visits} wait=${h(cardTotals.waitMin)}h candy=${h(cardTotals.candyMin)}h total=${h(
-		cardTotals.totalMin
-	)}h`
-);
-console.log(
-	`[Pet ] visits=${petTotals.visits} wait=${h(petTotals.waitMin)}h candy=${h(petTotals.candyMin)}h total=${h(
-		petTotals.totalMin
-	)}h`
-);
+	// No duplicates
+	let validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters.filter(_t => !user.cl.has(_t.card.id));
+	if (validTrickOrTreaters.length === 0) validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters;
+
+	const trickOrTreater = MathRNG.pick(validTrickOrTreaters) ?? HalloweenEvent2025.trickOrTreaters[0];
+	const isFirstCard = HalloweenEvent2025.ALL_CARD_IDS.every(id => !user.cl.has(id));
+	const cardChance = isFirstCard ? FIRST_CARD_CHANCE : LATER_CARD_CHANCES;
+	if (MathRNG.roll(cardChance) && !user.cl.has(trickOrTreater.card.id)) {
+		itemsWaitingForPickup.add(trickOrTreater.card.id);
+	}
+
+	if (MathRNG.roll(HalloweenEvent2025.constants.PET_CHANCE)) {
+		itemsWaitingForPickup.add('Night-Mare');
+	}
+
+	await prisma.halloweenEvent.update({
+		where: { user_id: userEvent.user_id },
+		data: {
+			last_trick_or_treat: new Date(),
+			items_waiting_for_pickup: itemsWaitingForPickup.toJSON(),
+			candy_in_bowl: {
+				decrement: candyDesired
+			},
+			trick_or_treaters_seen: { increment: 1 }
+		}
+	});
+}
 
 export async function halloweenTicker() {
 	const pohsWithCandyBowls = await prisma.playerOwnedHouse.findMany({
@@ -127,55 +135,26 @@ export async function halloweenTicker() {
 	});
 	for (const userEvent of usersToUpdate) {
 		const user = await mUserFetch(userEvent.user_id);
-		const candyDesired = MathRNG.randInt(1, 3);
-
-		// Doesnt have enough candy
-		if (userEvent.candy_in_bowl < candyDesired) {
-			await prisma.halloweenEvent.update({
-				where: { user_id: userEvent.user_id },
-				data: {
-					last_trick_or_treat: new Date()
-				}
-			});
-			continue;
-		}
-
-		const itemsWaitingForPickup = new Bank(userEvent.items_waiting_for_pickup as ItemBank);
-
-		// No duplicates
-		let validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters.filter(_t => !user.cl.has(_t.card.id));
-		if (validTrickOrTreaters.length === 0) validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters;
-
-		const trickOrTreater = MathRNG.pick(validTrickOrTreaters) ?? HalloweenEvent2025.trickOrTreaters[0];
-		if (MathRNG.roll(HalloweenEvent2025.constants.CARD_CHANCE) && !user.cl.has(trickOrTreater.card.id)) {
-			itemsWaitingForPickup.add(trickOrTreater.card.id);
-		}
-
-		if (MathRNG.roll(HalloweenEvent2025.constants.PET_CHANCE)) {
-			itemsWaitingForPickup.add('Night-Mare');
-		}
-
-		await prisma.halloweenEvent.update({
-			where: { user_id: userEvent.user_id },
-			data: {
-				last_trick_or_treat: new Date(),
-				items_waiting_for_pickup: itemsWaitingForPickup.toJSON(),
-				candy_in_bowl: {
-					decrement: 1
-				}
-			}
-		});
+		await doHalloweenTickOnUser(user, userEvent);
 	}
 }
 
 export const HalloweenEvent2025 = {
+	ALL_CARD_IDS: [
+		BSOItem.HALLOWEEN_CANDY,
+		BSOItem.WITCH_CARD,
+		BSOItem.GHOST_CARD,
+		BSOItem.VAMPIRE_CARD,
+		BSOItem.DEATH_CARD,
+		BSOItem.PUMPKINMAN_CARD
+	],
 	constants: {
 		...constants,
-		CANDY_PER_MINUTE,
-		CARD_CHANCE,
 		PET_CHANCE
 	},
 	trickOrTreaters,
 	DEATH_SPEED_BOOST: 30,
-	GHOST_XP_BOOST: 5
+	GHOST_XP_BOOST: 5,
+	FIRST_CARD_CHANCE,
+	LATER_CARD_CHANCES
 };

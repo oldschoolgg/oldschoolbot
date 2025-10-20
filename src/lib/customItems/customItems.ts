@@ -14287,37 +14287,43 @@ setCustomItem(73_600, 'Halloween candy', 'Coal', {
 
 setCustomItem(73_601, 'Night-Mare', 'Herbi', {
 	customItemData: {
-		cantDropFromMysteryBoxes: true
+		cantDropFromMysteryBoxes: true,
+		isDiscontinued: true
 	}
 });
 
 setCustomItem(73_602, 'Death card', 'Coal', {
 	customItemData: {
-		cantDropFromMysteryBoxes: true
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
 	}
 });
 
 setCustomItem(73_603, 'Pumpkinman card', 'Coal', {
 	customItemData: {
-		cantDropFromMysteryBoxes: true
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
 	}
 });
 
 setCustomItem(73_604, 'Vampire card', 'Coal', {
 	customItemData: {
-		cantDropFromMysteryBoxes: true
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
 	}
 });
 
 setCustomItem(73_605, 'Ghost card', 'Coal', {
 	customItemData: {
-		cantDropFromMysteryBoxes: true
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
 	}
 });
 
 setCustomItem(73_606, 'Witch card', 'Coal', {
 	customItemData: {
-		cantDropFromMysteryBoxes: true
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
 	}
 });
 

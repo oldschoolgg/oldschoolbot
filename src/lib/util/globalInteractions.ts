@@ -263,6 +263,28 @@ async function globalButtonInteractionHandler({
 		return { content: 'You cannot use a command right now.', ephemeral: true };
 	}
 
+	if (id === InteractionID.Halloween.FillCandyBowl) {
+		interaction.ephemeral = true;
+		return runCommand({
+			commandName: 'halloween',
+			args: { fill_candy_bowl: {} },
+			user,
+			interaction,
+			continueDeltaMillis: null
+		});
+	}
+
+	if (id === InteractionID.Halloween.CollectItems) {
+		interaction.ephemeral = true;
+		return runCommand({
+			commandName: 'halloween',
+			args: { collect_items: {} },
+			user,
+			interaction,
+			continueDeltaMillis: null
+		});
+	}
+
 	const options: Pick<RunCommandArgs, 'user' | 'interaction' | 'continueDeltaMillis' | 'ignoreUserIsBusy'> = {
 		user,
 		interaction: interaction,

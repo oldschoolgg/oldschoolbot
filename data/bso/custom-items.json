@@ -11266,7 +11266,8 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
 		}
 	},
 	{
@@ -22540,7 +22541,8 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
 		}
 	},
 	{
@@ -34678,7 +34680,8 @@
 		"cost": 1,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
 		}
 	},
 	{
@@ -39918,7 +39921,8 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
 		}
 	},
 	{
@@ -51105,7 +51109,8 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
 		}
 	},
 	{
@@ -54543,7 +54548,8 @@
 		"buy_limit": 13000,
 		"price": 1,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
 		}
 	},
 	{

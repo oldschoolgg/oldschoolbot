@@ -11047,6 +11047,27 @@
 				"counts": false,
 				"all_items": ["Halloween cracker", "Heirloom pumpkin", "Jack-o-lantern", "Mumpkin"]
 			},
+			"halloween_2025": {
+				"items": [
+					"Death card",
+					"Ghost card",
+					"Halloween candy",
+					"Night-Mare",
+					"Pumpkinman card",
+					"Vampire card",
+					"Witch card"
+				],
+				"counts": false,
+				"all_items": [
+					"Death card",
+					"Ghost card",
+					"Halloween candy",
+					"Night-Mare",
+					"Pumpkinman card",
+					"Vampire card",
+					"Witch card"
+				]
+			},
 			"halloween_cracker": {
 				"items": [
 					"Bloody halloween mask",
