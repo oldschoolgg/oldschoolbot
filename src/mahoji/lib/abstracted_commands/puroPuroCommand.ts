@@ -61,16 +61,19 @@ export async function puroPuroStartCommand(
 	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
 	if (!hasReqs) return `To hunt in Puro-Puro, you need: ${reason}.`;
 	if (user.QP < 3) return 'To hunt in Puro-Puro, you need 3 QP.';
-	const impToHunt: PuroImpling =
-		puroOptions.find(i => {
-			if (!impling) {
-				return false;
-			}
-			if (stringMatches(i.name, impling)) {
-				return true;
-			}
-			return i.tier !== undefined && stringMatches(i.tier.toString(), impling);
-		}) ?? puroOptions[0];
+	let impToHunt: PuroImpling;
+	const implingInput = impling?.trim();
+
+	if (implingInput?.length === 0) return 'Error selecting impling, please try again.';
+	const matchedImp = puroOptions.find(i => {
+		if (stringMatches(i.name, implingInput)) {
+			return true;
+		}
+		return i.tier !== undefined && stringMatches(i.tier.toString(), implingInput);
+	});
+	if (!matchedImp) return 'Error selecting impling, please try again.';
+	impToHunt = matchedImp;
+
 	if (hunterLevel < impToHunt.hunterLevel)
 		return `${user.minionName} needs at least level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
 	if (!darkLure || (darkLure && !impToHunt.spell)) darkLure = false;
