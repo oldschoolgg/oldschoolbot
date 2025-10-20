@@ -1,3 +1,5 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
+
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 
 import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
@@ -77,6 +79,11 @@ export const fletchCommand = defineCommand({
 		}
 
 		timeToFletchSingleItem /= boost;
+
+		if (user.hasCard('ghost')) {
+			timeToFletchSingleItem /= 2;
+			boostMsg.push(`${BSOEmoji.GhostCard} 2x`);
+		}
 
 		const maxTripLength = user.calcMaxTripLength('Fletching');
 		let { quantity } = options;

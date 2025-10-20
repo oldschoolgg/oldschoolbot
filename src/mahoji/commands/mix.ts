@@ -1,3 +1,4 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
@@ -75,8 +76,13 @@ export const mixCommand = defineCommand({
 		} = mixableItem;
 
 		const userBank = user.bankWithGP;
+		const boosts: string[] = [];
 
 		let timeToMixSingleItem = tickRate * Time.Second * 0.6 + bankTimePerPotion * Time.Second;
+		if (user.hasCard('ghost')) {
+			timeToMixSingleItem /= 2;
+			boosts.push(`${BSOEmoji.GhostCard} 2x`);
+		}
 		let cost = 'is now';
 
 		if ((zahur && mixableZahur) || (wesley && mixableWesley)) {
@@ -87,7 +93,6 @@ export const mixCommand = defineCommand({
 			} gp for each item so they don't have to go.`;
 		}
 
-		const boosts: string[] = [];
 		const maxTripLength = user.calcMaxTripLength('Herblore');
 		let quantity = optionQuantity ?? mixableItem.defaultQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);

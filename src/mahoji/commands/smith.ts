@@ -1,3 +1,5 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
+
 import { calcPercentOfNum, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -91,10 +93,18 @@ export const smithCommand = defineCommand({
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		let timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
+		const boosts: string[] = [];
 		if (user.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
+			boosts.push('4x for Takon');
 		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
+			boosts.push('2x for Dwarven greathammer');
+		}
+
+		if (user.hasCard('ghost')) {
+			timeToSmithSingleBar /= 2;
+			boosts.push(`${BSOEmoji.GhostCard} 2x`);
 		}
 
 		let maxTripLength = user.calcMaxTripLength('Smithing');

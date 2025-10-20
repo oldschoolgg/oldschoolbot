@@ -1,3 +1,4 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import type { DisassembleTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { DisassemblyGroupMap, DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
 import {
@@ -215,6 +216,10 @@ export async function handleDisassembly({
 		messages.push(
 			`${inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent}% faster disassembly for mastery`
 		);
+	}
+	if (user.hasCard('ghost')) {
+		timePer /= 2;
+		messages.push(`${BSOEmoji.GhostCard} 2x`);
 	}
 
 	if (user.owns('Inventors tools')) {
