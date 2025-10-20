@@ -14,8 +14,14 @@ import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { channelIsSendable, makeComponents, notEmpty, Time } from '@oldschoolgg/toolkit';
-import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { bold } from 'discord.js';
+import {
+	type AttachmentBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	bold,
+	type MessageCollector,
+	type MessageCreateOptions
+} from 'discord.js';
 import { Bank, EItem, Items, itemID, toKMB } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main.js';
@@ -26,6 +32,7 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/index.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
+import { InteractionID } from '@/lib/InteractionID.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
@@ -563,6 +570,29 @@ export async function handleTripFinish(
 
 	const components: ButtonBuilder[] = [];
 	components.push(makeRepeatTripButton());
+
+	const hweenData = await prisma.halloweenEvent.findUnique({
+		where: { user_id: user.id }
+	});
+	if (hweenData?.items_waiting_for_pickup && Object.keys(hweenData.items_waiting_for_pickup).length > 0) {
+		components.push(
+			new ButtonBuilder()
+				.setCustomId(InteractionID.Halloween.CollectItems)
+				.setLabel("Collect H'ween Items")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji('1429868816191717386')
+		);
+	}
+	if (hweenData?.candy_in_bowl === 0) {
+		components.push(
+			new ButtonBuilder()
+				.setCustomId(InteractionID.Halloween.FillCandyBowl)
+				.setLabel('Fill Candy Bowl')
+				.setStyle(ButtonStyle.Secondary)
+				.setEmoji('1429868816191717386')
+		);
+	}
+
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
