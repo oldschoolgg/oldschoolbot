@@ -229,7 +229,7 @@ export const igneArmors = [
 
 export type TameKillableMonster = {
 	loot: (opts: { quantity: number; tame: MTame }) => Bank;
-	deathChance?: (opts: { tame: Tame; kc: number }) => number;
+	deathChance?: (opts: { tame: MTame; kc: number }) => number;
 	oriWorks?: boolean;
 	mustBeAdult?: boolean;
 	minArmorTier?: Item;
@@ -266,7 +266,7 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 			return loot;
 		},
 		deathChance: ({ tame }) => {
-			const armorEquipped = tame.equipped_armor;
+			const armorEquipped = tame.equippedArmor?.id;
 			if (!armorEquipped) return 95;
 			const armorObj = igneArmors.find(i => i.item.id === armorEquipped)!;
 			assert(Boolean(armorObj), `${armorEquipped} not valid armor`);
@@ -302,9 +302,9 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 			return loot;
 		},
 		deathChance: ({ tame }) => {
-			const armorEquipped = tame.equipped_armor;
+			const armorEquipped = tame.equippedArmor;
 			if (!armorEquipped) return 95;
-			const armorObj = igneArmors.find(i => i.item.id === armorEquipped)!;
+			const armorObj = igneArmors.find(i => i.item.id === armorEquipped.id)!;
 			return armorObj.coxDeathChance;
 		},
 		healAmountNeeded: 1888,
@@ -335,9 +335,9 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 			return loot;
 		},
 		deathChance: ({ tame }) => {
-			const armorEquipped = tame.equipped_armor;
+			const armorEquipped = tame.equippedArmor;
 			if (!armorEquipped) return 80;
-			const armorObj = igneArmors.find(i => i.item.id === armorEquipped)!;
+			const armorObj = igneArmors.find(i => i.item.id === armorEquipped.id)!;
 			return armorObj.nightmareDeathChance;
 		},
 		healAmountNeeded: 900,
@@ -403,7 +403,7 @@ for (const override of overrides) {
 	}
 }
 
-export async function getIgneTameKC(tame: Tame) {
+export async function getIgneTameKC(tame: Tame | MTame) {
 	const result = await prisma.$queryRaw<
 		{ mid: number; kc: number }[]
 	>`SELECT (data->>'monsterID')::int AS mid, SUM((data->>'quantity')::int)::int AS kc
@@ -633,7 +633,7 @@ export async function createTameTask({
 	type: TameTaskOptions['type'];
 	data: TameTaskOptions;
 	duration: number;
-	selectedTame: Tame;
+	selectedTame: MTame;
 	fakeDuration?: number;
 	deaths?: number;
 }) {
@@ -663,20 +663,4 @@ export async function createTameTask({
 	});
 
 	return activity;
-}
-
-export async function getAllUserTames(userID: bigint | string) {
-	const tames = await prisma.tame.findMany({
-		where: {
-			user_id: userID.toString()
-		},
-		include: {
-			tame_activity: {
-				where: {
-					completed: false
-				}
-			}
-		}
-	});
-	return tames;
 }

@@ -1,3 +1,5 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { MTame } from '@/lib/bso/structures/MTame.js';
 import {
 	createTameTask,
 	getIgneTameKC,
@@ -13,15 +15,7 @@ import {
 	tameSpecies
 } from '@/lib/bso/tames/tames.js';
 import { arbitraryTameActivities } from '@/lib/bso/tames/tameTasks.js';
-import {
-	calculateMaximumTameFeedingLevelGain,
-	getMainTameLevel,
-	getTameSpecies,
-	getTameStatus,
-	tameGrowthLevel,
-	tameHasBeenFed,
-	tameName
-} from '@/lib/bso/tames/tameUtil.js';
+import { calculateMaximumTameFeedingLevelGain, getTameStatus, sortTames } from '@/lib/bso/tames/tameUtil.js';
 
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -61,10 +55,8 @@ import { choicesOf, mentionCommand } from '@/lib/discord/index.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
-import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
-import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
@@ -75,19 +67,11 @@ import { collectables } from '@/mahoji/lib/collectables.js';
 const tameImageSize = 96;
 
 async function tameAutocomplete(value: string, user: MUser) {
-	const tames = await prisma.tame.findMany({
-		where: {
-			user_id: user.id
-		}
-	});
+	const tames = await user.fetchTames();
 	return tames
-		.sort(sortTames)
 		.map(t => {
-			const { relevantLevelCategory, name } = tameSpecies.find(i => i.id === t.species_id)!;
 			return {
-				name: `${t.nickname ?? name} (${t.growth_stage}, ${
-					t[`max_${relevantLevelCategory}_level`]
-				} ${toTitleCase(relevantLevelCategory)})`,
+				name: `${t} (${t.growthStage}, ${t.relevantLevel()} ${toTitleCase(t.species.relevantLevelCategory)})`,
 				value: t.id.toString()
 			};
 		})
@@ -345,28 +329,8 @@ function drawText(ctx: CanvasContext, text: string, x: number, y: number) {
 	fillTextXTimesInCtx(ctx, text, x, y);
 }
 
-function sortTames(tameA: Tame, tameB: Tame): number {
-	const species = tameSpecies.find(i => i.id === tameA.species_id)!;
-	if (tameA.species_variant === species.shinyVariant) return -1;
-	if (tameB.species_variant === species.shinyVariant) return 1;
-	if (tameA.last_activity_date && !tameB.last_activity_date) return -1;
-	if (!tameA.last_activity_date && tameB.last_activity_date) return 1;
-	if (tameA.last_activity_date && tameB.last_activity_date) {
-		return tameB.last_activity_date.valueOf() - tameA.last_activity_date.valueOf();
-	}
-	// Fallback to sorting by max_combat_level if no last_activity_date for both
-	return getMainTameLevel(tameB) - getMainTameLevel(tameA);
-}
 export async function tameImage(user: MUser): CommandResponse {
-	const userTames = await prisma.tame.findMany({
-		where: {
-			user_id: user.id
-		},
-		orderBy: {
-			last_activity_date: 'desc'
-		}
-	});
-
+	const userTames = await user.fetchTames();
 	userTames.sort(sortTames);
 
 	if (userTames.length === 0) {
@@ -423,7 +387,7 @@ export async function tameImage(user: MUser): CommandResponse {
 	ctx.translate(16, 16);
 	let i = 0;
 	for (const t of userTames) {
-		const species = tameSpecies.find(i => i.id === t.species_id)!;
+		const species = t.species;
 		let isTameActive = false;
 		const selectedTame = tame && t.id === tame.id;
 		if (selectedTame) isTameActive = activity !== null;
@@ -441,16 +405,16 @@ export async function tameImage(user: MUser): CommandResponse {
 		const tameX = (10 + 256) * x + (isTameActive ? tameImageSize : 256 - tameImageSize) / 2;
 		const tameY = (10 + 128) * y + 10;
 
-		const imageReplacement = tameImageReplacementEasterEggs.find(i => i.shouldActivate(t, user));
+		const imageReplacement = tameImageReplacementEasterEggs.find(i => i.shouldActivate(t.tame, user));
 
 		const tameImage = imageReplacement
 			? await loadImage(imageReplacement.image)
-			: sprites.tames!.find(t => t.id === species.id)!.sprites.find(f => f.type === t.species_variant)!
-					.growthStage[t.growth_stage];
+			: sprites.tames!.find(t => t.id === species.id)!.sprites.find(f => f.type === t.speciesVariant)!
+					.growthStage[t.growthStage];
 
 		// Draw tame
 		ctx.drawImage(tameImage, tameX, tameY, tameImageSize, tameImageSize);
-		const foreground = tameForegrounds.find(i => i.shouldActivate(t));
+		const foreground = tameForegrounds.find(i => i.shouldActivate(t.tame));
 		if (foreground) {
 			ctx.drawImage(await loadImage(foreground.image), tameX, tameY, tameImageSize, tameImageSize);
 		}
@@ -465,7 +429,7 @@ export async function tameImage(user: MUser): CommandResponse {
 			(10 + 128) * y + 16
 		);
 		// Shiny indicator
-		if (t.species_variant === species.shinyVariant) {
+		if (t.isShiny) {
 			ctx.drawImage(sprites.base!.shinyIcon, (10 + 256) * x + 5, (10 + 128) * y + 18, 16, 16);
 			drawText(
 				ctx,
@@ -478,13 +442,13 @@ export async function tameImage(user: MUser): CommandResponse {
 		ctx.textAlign = 'right';
 		drawText(
 			ctx,
-			`${toTitleCase(species.relevantLevelCategory)}: ${getMainTameLevel(t)}`,
+			`${toTitleCase(species.relevantLevelCategory)}: ${t.relevantLevel()}`,
 			(10 + 256) * x + 256 - 5,
 			(10 + 128) * y + 16
 		);
 		ctx.textAlign = 'left';
 		const grouthStage =
-			t.growth_stage === 'adult' ? t.growth_stage : `${t.growth_stage} (${t.growth_percent.toFixed(2)}%)`;
+			t.growthStage === 'adult' ? t.growthStage : `${t.growthStage} (${t.growthPercentage.toFixed(2)}%)`;
 		drawText(ctx, `${toTitleCase(grouthStage)}`, (10 + 256) * x + 5, (10 + 128) * y + 128 - 5);
 
 		// Draw tame status (idle, in activity)
@@ -503,7 +467,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		let prevWidth = 0;
 		let feedQty = 0;
 		for (const { item } of tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.id))) {
-			if (tameHasBeenFed(t, item.id)) {
+			if (t.hasBeenFed(item.id)) {
 				const itemImage = await OSRSCanvas.getItemImage({ itemID: item.id });
 				if (itemImage) {
 					const ratio = 19 / itemImage.height;
@@ -526,7 +490,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		// Tame gear
 		for (let i = 0; i < tameEquipSlots.length; i++) {
 			const slot = tameEquipSlots[i];
-			const equippedInThisSlot = t[slot];
+			const equippedInThisSlot = t.tame[slot];
 			if (!equippedInThisSlot) continue;
 			const thisX = sprites.gearIconBg.width + tameX - 20 + (i * sprites.gearIconBg.width + 5);
 			const thisY = tameY + tameImageSize;
@@ -575,7 +539,7 @@ export async function removeRawFood({
 	raw?: boolean;
 	monster: TameKillableMonster;
 	quantity: number;
-	tame: Tame;
+	tame: MTame;
 	timeToFinish: number;
 	maxTripLength: number;
 }): Promise<{ success: false; str: string } | { success: true; finalQuantity: number; str: string; removed: Bank }> {
@@ -584,14 +548,14 @@ export async function removeRawFood({
 
 	const foodBoosts: string[] = [];
 
-	if (tameHasBeenFed(tame, itemID('Abyssal cape'))) {
+	if (tame.hasBeenFed(BSOItem.ABYSSAL_CAPE)) {
 		totalHealingNeeded = Math.floor(totalHealingNeeded * 0.8);
 		healPerAction = Math.floor(healPerAction * 0.8);
 		foodBoosts.push('20% less for Ab. cape');
 	}
-	const equippedArmor = tame.equipped_armor;
+	const equippedArmor = tame.equippedArmor;
 	if (equippedArmor) {
-		const obj = igneArmors.find(i => i.item.id === equippedArmor)!;
+		const obj = igneArmors.find(i => i.item.id === equippedArmor.id)!;
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, obj.foodReduction);
 		healPerAction = reduceNumByPercent(healPerAction, obj.foodReduction);
 		foodBoosts.push(`${obj.foodReduction}% less for ${obj.item.name}`);
@@ -634,13 +598,8 @@ export async function removeRawFood({
 		return { success: false, str: `You don't have the required items, you need: ${itemCost}.` };
 	}
 	await user.removeItemsFromBank(itemCost);
-	await prisma.tame.update({
-		where: {
-			id: tame.id
-		},
-		data: {
-			total_cost: new Bank(tame.total_cost as ItemBank).add(itemCost).toJSON()
-		}
+	await tame.update({
+		total_cost: tame.totalCost.add(itemCost).toJSON()
 	});
 
 	await ClientSettings.updateBankSetting('economyStats_PVMCost', itemCost);
@@ -662,13 +621,8 @@ async function setNameCommand(user: MUser, name: string) {
 		return 'You have no selected tame to set a nickname for, select one first.';
 	}
 
-	await prisma.tame.update({
-		where: {
-			id: tame.id
-		},
-		data: {
-			nickname: name
-		}
+	await tame.update({
+		nickname: name
 	});
 
 	return `Updated the nickname of your selected tame to ${name}.`;
@@ -681,7 +635,7 @@ async function cancelCommand(user: MUser) {
 	}
 
 	if (!activity) {
-		return `${tameName(tame)} is not doing any activity, so there's nothing to cancel.`;
+		return `${tame} is not doing any activity, so there's nothing to cancel.`;
 	}
 
 	await prisma.tameActivity.delete({
@@ -719,7 +673,7 @@ async function mergeCommand(user: MUser, interaction: MInteraction, tameID: numb
 	const { tame, activity, species } = await user.getTame();
 	if (activity) return 'Your tame is busy. Wait for it to be free to do this.';
 	if (!tame || !species) return "You don't have a selected tame. Select your tame first.";
-	if (tame.id === toSelect.id) return `You can't merge ${tameName(tame)} with itself!`;
+	if (tame.id === toSelect.id) return `You can't merge ${tame} with itself!`;
 	if (species.id !== toSelect.species.id) {
 		return "You can't merge two tames from two different species!";
 	}
@@ -733,24 +687,20 @@ async function mergeCommand(user: MUser, interaction: MInteraction, tameID: numb
 	}
 
 	const mergeStuff = {
-		totalLoot: new Bank(tame!.max_total_loot as ItemBank).add(toSelect.totalLoot).toJSON(),
-		fedItems: new Bank(tame!.fed_items as ItemBank).add(toSelect.fedItems).toJSON(),
-		maxCombatLevel: Math.max(tame!.max_combat_level, toSelect.maxCombatLevel),
-		maxArtisanLevel: Math.max(tame!.max_artisan_level, toSelect.maxArtisanLevel),
-		maxGathererLevel: Math.max(tame!.max_gatherer_level, toSelect.maxGathererLevel),
-		maxSupportLevel: Math.max(tame!.max_support_level, toSelect.maxSupportLevel),
+		totalLoot: tame.totalLoot.add(toSelect.totalLoot).toJSON(),
+		fedItems: tame.fedItems.add(toSelect.fedItems).toJSON(),
+		maxCombatLevel: Math.max(tame!.maxCombatLevel, toSelect.maxCombatLevel),
+		maxArtisanLevel: Math.max(tame!.maxArtisanLevel, toSelect.maxArtisanLevel),
+		maxGathererLevel: Math.max(tame!.maxGathererLevel, toSelect.maxGathererLevel),
+		maxSupportLevel: Math.max(tame!.maxSupportLevel, toSelect.maxSupportLevel),
 		speciesVariant:
-			tame!.species_variant === shinyVariant || toSelect.speciesVariant === shinyVariant
+			tame!.speciesVariant === shinyVariant || toSelect.speciesVariant === shinyVariant
 				? shinyVariant
-				: tame!.species_variant
+				: tame!.speciesVariant
 	};
 
 	await interaction.confirmation(
-		`Are you sure you want to merge **${toSelect}** (Tame ${toSelect.id}) into **${tameName(
-			tame!
-		)}** (Tame ${tame!.id})?\n\n${tameName(
-			tame!
-		)} will receive all the items fed and all loot obtained from ${toSelect}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
+		`Are you sure you want to merge **${toSelect}** (Tame ${toSelect.id}) into **${tame!}** (Tame ${tame!.id})?\n\n${tame!} will receive all the items fed and all loot obtained from ${toSelect}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
 	);
 
 	await user.removeItemsFromBank(mergingCost);
@@ -787,7 +737,7 @@ async function mergeCommand(user: MUser, interaction: MInteraction, tameID: numb
 		}
 	});
 
-	return `${tameName(tame)} consumed ${toSelect} and all its attributes.`;
+	return `${tame} consumed ${toSelect} and all its attributes.`;
 }
 
 async function feedCommand(interaction: MInteraction, user: MUser, str: string) {
@@ -810,7 +760,7 @@ async function feedCommand(interaction: MInteraction, user: MUser, str: string) 
 
 	if (!str || bankToAdd.length === 0) {
 		const image = await makeBankImage({
-			bank: new Bank(tame.fed_items as ItemBank),
+			bank: tame.fedItems,
 			title: 'Items Fed To This Tame'
 		});
 
@@ -833,11 +783,11 @@ async function feedCommand(interaction: MInteraction, user: MUser, str: string) 
 		if (bankToAdd.length !== 1) {
 			return "Your tame can't eat anything else with the egg.";
 		}
-		if (tame.growth_stage !== tame_growth.adult) {
+		if (tame.growthStage !== tame_growth.adult) {
 			return 'Your tame is too young to eat the egg.';
 		}
-		if (typeof tame.levels_from_egg_feed === 'number') {
-			return `Your tame has already eaten an egg, it can't eat another one. It gained ${tame.levels_from_egg_feed} levels from the egg.`;
+		if (typeof tame.levelsFromEggFeed === 'number') {
+			return `Your tame has already eaten an egg, it can't eat another one. It gained ${tame.levelsFromEggFeed} levels from the egg.`;
 		}
 
 		const levelsCanGain = calculateMaximumTameFeedingLevelGain(tame);
@@ -853,32 +803,15 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 		);
 		const gained = randInt(levelRange[0], levelRange[1]);
 		await user.removeItemsFromBank(bankToAdd);
-
-		await prisma.tame.update({
-			where: {
-				id: tame.id
-			},
-			data: {
-				levels_from_egg_feed: gained,
-				[`max_${species!.relevantLevelCategory}_level`]: {
-					increment: gained
-				}
+		await tame.update({
+			fed_items: tame.fedItems.add(bankToAdd).toJSON(),
+			levels_from_egg_feed: gained,
+			[`max_${species!.relevantLevelCategory}_level`]: {
+				increment: gained
 			}
 		});
 
-		await prisma.tame.update({
-			where: {
-				id: tame.id
-			},
-			data: {
-				fed_items: new Bank()
-					.add(tame.fed_items as ItemBank)
-					.add(bankToAdd)
-					.toJSON()
-			}
-		});
-
-		return `You fed ${bankToAdd} to ${tameName(tame)}. It gained ${bold(gained.toString())} levels from the egg!`;
+		return `You fed ${bankToAdd} to ${tame}. It gained ${bold(gained.toString())} levels from the egg!`;
 	}
 
 	const specialStrArr = [];
@@ -895,23 +828,21 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 	}
 	const specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
 	await interaction.confirmation(
-		`Are you sure you want to feed \`${bankToAdd}\` to ${tameName(
-			tame
-		)}? You **cannot** get these items back after they're eaten by your tame.${specialStr}
+		`Are you sure you want to feed \`${bankToAdd}\` to ${tame}? You **cannot** get these items back after they're eaten by your tame.${specialStr}
 
 Note: Some items must be equipped to your tame, not fed. Check that you are feeding something which is meant to be fed.`
 	);
 
 	let egg = '';
 	for (const [eggBank, eggSpecies, eggGrowth, easterEgg] of feedingEasterEggs) {
-		if (species!.id === eggSpecies && bankToAdd.fits(eggBank) && eggGrowth.includes(tame.growth_stage)) {
+		if (species!.id === eggSpecies && bankToAdd.fits(eggBank) && eggGrowth.includes(tame.growthStage)) {
 			egg = ` ${easterEgg}`;
 		}
 	}
 
 	const newBoosts: string[] = [];
 	for (const { item, announcementString } of thisTameSpecialFeedableItems) {
-		if (bankToAdd.has(item.id) && !tameHasBeenFed(tame, item.id)) {
+		if (bankToAdd.has(item.id) && !tame.hasBeenFed(item.id)) {
 			newBoosts.push(`**${announcementString}**`);
 		}
 	}
@@ -919,19 +850,11 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 	if (!user.owns(bankToAdd)) return "You don't own those items.";
 	await user.removeItemsFromBank(bankToAdd);
 
-	await prisma.tame.update({
-		where: {
-			id: tame.id
-		},
-		data: {
-			fed_items: new Bank()
-				.add(tame.fed_items as ItemBank)
-				.add(bankToAdd)
-				.toJSON()
-		}
+	await tame.update({
+		fed_items: tame.fedItems.add(bankToAdd).toJSON()
 	});
 
-	return `You fed \`${bankToAdd}\` to ${tameName(tame)}.${
+	return `You fed \`${bankToAdd}\` to ${tame}.${
 		newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
 	}${specialStr}${egg}`;
 }
@@ -945,7 +868,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		return 'This tame species cannot do PvM.';
 	}
 	if (activity) {
-		return `${tameName(tame)} is busy.`;
+		return `${tame} is busy.`;
 	}
 	//
 	const monster = tameKillableMonsters.find(
@@ -955,7 +878,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		return 'Tames cannot kill this monster.';
 	}
 	if (!monster) return "That's not a valid monster.";
-	if (monster.mustBeAdult && tame.growth_stage !== tame_growth.adult) {
+	if (monster.mustBeAdult && tame.growthStage !== tame_growth.adult) {
 		return 'Only fully grown tames can kill this monster.';
 	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
@@ -964,10 +887,10 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	// Get the amount stronger than minimum, and set boost accordingly:
 	const [speciesMinCombat, speciesMaxCombat] = species.combatLevelRange;
 	// Example: If combat level is 80/100 with 70 min, give a 10% boost.
-	const combatLevelBoost = calcWhatPercent(tame.max_combat_level - speciesMinCombat, speciesMaxCombat);
+	const combatLevelBoost = calcWhatPercent(tame.maxCombatLevel - speciesMinCombat, speciesMaxCombat);
 
 	// Increase trip length based on minion growth:
-	let speed = monster.timeToFinish * tameGrowthLevel(tame);
+	let speed = monster.timeToFinish * tame.growthLevel;
 
 	const boosts = [];
 
@@ -981,29 +904,20 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	);
 	speed = combatLevelChange;
 
-	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel(tame));
-	if (tameHasBeenFed(tame, itemID('Zak'))) {
-		maxTripLength += Time.Minute * 35;
-		boosts.push('+35mins trip length (ate a Zak)');
-	}
-
-	const patronBoost = patronMaxTripBonus(user) * 2;
-	if (patronBoost > 0) {
-		maxTripLength += patronBoost;
-		boosts.push(`+${formatDuration(patronBoost, true)} trip length for T${getUsersPerkTier(user) - 1} patron`);
-	}
+	const { maxTripLength, messages } = tame.calcMaxTripLength({ user, activity: TameType.Combat });
+	boosts.push(...messages);
 
 	if (isWeekend()) {
 		speed = reduceNumByPercent(speed, 10);
 		boosts.push('10% weekend boost');
 	}
-	if (tameHasBeenFed(tame, itemID('Dwarven warhammer'))) {
+	if (tame.hasBeenFed(BSOItem.DWARVEN_WARHAMMER)) {
 		speed = reduceNumByPercent(speed, 30);
 		boosts.push('30% faster (ate a DWWH)');
 	}
 
 	for (const { item, boost } of igneClaws) {
-		if (tame.equipped_primary === item.id) {
+		if (tame.equippedPrimary?.id === item.id) {
 			boosts.push(`${boost}% faster (${item.name})`);
 			speed = reduceNumByPercent(speed, boost);
 			break;
@@ -1011,7 +925,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	}
 
 	if (monster.minArmorTier) {
-		const theirArmor = tame.equipped_armor ? igneArmors.find(i => i.item.id === tame.equipped_armor)! : null;
+		const theirArmor = tame.equippedArmor ? igneArmors.find(i => i.item.id === tame.equippedArmor!.id)! : null;
 		if (
 			!theirArmor ||
 			igneArmors.indexOf(theirArmor) < igneArmors.indexOf(igneArmors.find(i => i.item === monster.minArmorTier)!)
@@ -1086,7 +1000,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tameName(tame)} is now killing ${quantity}x ${monster.name}${
+	let reply = `${tame} is now killing ${quantity}x ${monster.name}${
 		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
 	}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
 
@@ -1108,11 +1022,11 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 		return 'You have no selected tame.';
 	}
 
-	if (getTameSpecies(tame).type !== TameType.Gatherer) {
+	if (tame.species.type !== TameType.Gatherer) {
 		return 'This tame species cannot collect items.';
 	}
 	if (activity) {
-		return `${tameName(tame)} is busy.`;
+		return `${tame} is busy.`;
 	}
 	const collectable = collectables.find(c => stringMatches(c.item.name, str));
 	if (!collectable) {
@@ -1121,14 +1035,14 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 			.join(', ')}.`;
 	}
 
-	const [min, max] = getTameSpecies(tame).gathererLevelRange;
-	const gathererLevelBoost = calcWhatPercent(tame.max_gatherer_level - min, max);
+	const [min, max] = tame.species.gathererLevelRange;
+	const gathererLevelBoost = calcWhatPercent(tame.maxGathererLevel - min, max);
 
 	// Increase trip length based on minion growth:
 	let speed = collectable.duration;
-	if (tame.growth_stage === tame_growth.baby) {
+	if (tame.growthStage === tame_growth.baby) {
 		speed /= 1.5;
-	} else if (tame.growth_stage === tame_growth.juvenile) {
+	} else if (tame.growthStage === tame_growth.juvenile) {
 		speed /= 2;
 	} else {
 		speed /= 2.5;
@@ -1136,14 +1050,14 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 
 	const boosts = [];
 
-	const equippedStaff = seaMonkeyStaves.find(s => s.item.id === tame.equipped_primary);
+	const equippedStaff = seaMonkeyStaves.find(s => s.item.id === tame.equippedPrimary?.id);
 	if (equippedStaff) {
 		speed = reduceNumByPercent(speed, 5);
 		boosts.push('5% faster (seamonkey staff)');
 	}
 
 	for (const item of resolveItems(['Voidling', 'Ring of endurance'])) {
-		if (tameHasBeenFed(tame, item)) {
+		if (tame.hasBeenFed(item)) {
 			speed = reduceNumByPercent(speed, 10);
 			boosts.push(`10% for ${Items.itemNameFromId(item)}`);
 		}
@@ -1157,12 +1071,9 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 	// Apply calculated boost:
 	speed = reduceNumByPercent(speed, gathererLevelBoost);
 
-	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel(tame));
-	if (tameHasBeenFed(tame, itemID('Zak'))) {
-		maxTripLength += Time.Minute * 35;
-		boosts.push('+35mins trip length (ate a Zak)');
-	}
-	maxTripLength += patronMaxTripBonus(user) * 2;
+	const { maxTripLength, messages } = tame.calcMaxTripLength({ user, activity: TameType.Gatherer });
+	boosts.push(...messages);
+
 	// Calculate monster quantity:
 	const quantity = Math.floor(maxTripLength / speed);
 	if (quantity < 1) {
@@ -1187,7 +1098,7 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tameName(tame)} is now collecting ${quantity * collectable.quantity}x ${
+	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${
 		collectable.item.name
 	}. The trip will take ${formatDuration(duration)}.`;
 
@@ -1221,11 +1132,11 @@ async function monkeyMagicHandler(
 		return 'You have no selected tame.';
 	}
 
-	if (getTameSpecies(tame).id !== TameSpeciesID.Monkey) {
+	if (tame.species.id !== TameSpeciesID.Monkey) {
 		return 'This tame species cannot do magic.';
 	}
 
-	const equippedStaff = seaMonkeyStaves.find(s => s.item.id === tame.equipped_primary);
+	const equippedStaff = seaMonkeyStaves.find(s => s.item.id === tame.equippedPrimary?.id);
 
 	if (!equippedStaff) {
 		return 'Your monkey does not have a seamonkey staff equipped.';
@@ -1236,7 +1147,7 @@ async function monkeyMagicHandler(
 	}
 
 	if (activity) {
-		return `${tameName(tame)} is busy.`;
+		return `${tame} is busy.`;
 	}
 
 	const maxCanDo = Math.floor(user.bankWithGP.fits(spellOptions.costPerItem));
@@ -1246,33 +1157,28 @@ async function monkeyMagicHandler(
 
 	let speed = spellOptions.timePerSpell;
 	const boosts = [];
-	const [min] = getTameSpecies(tame).gathererLevelRange;
+	const [min] = tame.species.gathererLevelRange;
 	const minBoost = exponentialPercentScale(min, 0.01);
-	const gathererLevelBoost = exponentialPercentScale(tame.max_gatherer_level, 0.01) - minBoost;
+	const gathererLevelBoost = exponentialPercentScale(tame.maxGathererLevel, 0.01) - minBoost;
 	if (gathererLevelBoost > 0) {
 		speed = reduceNumByPercent(speed, gathererLevelBoost);
-		boosts.push(`${gathererLevelBoost.toFixed(2)}% for gatherer level of ${tame.max_gatherer_level}`);
+		boosts.push(`${gathererLevelBoost.toFixed(2)}% for gatherer level of ${tame.maxGathererLevel}`);
 	}
 	if (isWeekend()) {
 		speed = reduceNumByPercent(speed, 5);
 		boosts.push('5% weekend boost');
 	}
-	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel(tame));
-	if (tameHasBeenFed(tame, itemID('Zak'))) {
-		maxTripLength += Time.Minute * 35;
-		boosts.push('+35mins trip length (ate a Zak)');
-	}
+	const { maxTripLength, messages } = tame.calcMaxTripLength({ user, activity: 'SpellCasting' });
+	boosts.push(...messages);
 
 	if (equippedStaff.tier > 2) {
 		speed = reduceNumByPercent(speed, 12);
 		boosts.push('12% faster for staff');
 	}
-	if (tameHasBeenFed(tame, itemID('Klik'))) {
+	if (tame.hasBeenFed(BSOItem.KLIK)) {
 		speed = reduceNumByPercent(speed, 22);
 		boosts.push('22% faster for Klik firebreathing');
 	}
-
-	maxTripLength += patronMaxTripBonus(user) * 2;
 
 	const quantity = Math.min(maxCanDo, Math.floor(maxTripLength / speed));
 
@@ -1297,13 +1203,8 @@ async function monkeyMagicHandler(
 			}
 		]
 	});
-	await prisma.tame.update({
-		where: {
-			id: tame.id
-		},
-		data: {
-			total_cost: new Bank(tame.total_cost as ItemBank).add(finalCost).toJSON()
-		}
+	await tame.update({
+		total_cost: tame.totalCost.add(finalCost).toJSON()
 	});
 	await ClientSettings.updateBankSetting('economyStats_PVMCost', finalCost);
 
@@ -1327,7 +1228,7 @@ async function monkeyMagicHandler(
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tameName(tame)} is now casting the ${
+	let reply = `${tame} is now casting the ${
 		spellOptions.spell.name
 	} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
 
@@ -1397,7 +1298,7 @@ async function superheatItemCommand(user: MUser, channelID: string, itemName: st
 	const { tame, activity } = await user.getTame();
 	if (!tame) return `You don't have a tame selected.`;
 	if (activity) return `${tame} is already on a trip.`;
-	const hasKlik = tameHasBeenFed(tame, itemID('Klik'));
+	const hasKlik = tame.hasBeenFed(BSOItem.KLIK);
 
 	if (!item) {
 		return "That's not a valid item to superheat.";
@@ -1473,15 +1374,15 @@ async function selectCommand(user: MUser, tameID: number) {
 
 async function viewCommand(user: MUser, tameID: number): CommandResponse {
 	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
-	const tame = tames.find(t => t.id === tameID);
-	if (!tame) {
+	const rawTame = tames.find(t => t.id === tameID);
+	if (!rawTame) {
 		return "Couldn't find that tame.";
 	}
-	const species = tameSpecies.find(i => i.id === tame.species_id)!;
-	const fedItems = new Bank(tame.fed_items as ItemBank);
-	const loot = new Bank(tame.max_total_loot as ItemBank);
+	const tame = new MTame(rawTame);
+	const species = tameSpecies.find(i => i.id === tame.species.id)!;
+	const loot = new Bank(tame.tame.max_total_loot as ItemBank);
 	const fedImage = await makeBankImage({
-		bank: fedItems,
+		bank: tame.fedItems,
 		title: 'Items Fed To This Tame',
 		user
 	});
@@ -1503,7 +1404,7 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 		files.push(
 			(
 				await makeBankImage({
-					bank: new Bank(tame.total_cost as ItemBank),
+					bank: tame.totalCost,
 					title: 'Items This Tame Used',
 					user
 				})
@@ -1513,7 +1414,7 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 		files.push(
 			(
 				await makeBankImage({
-					bank: new Bank(tame.elder_knowledge_loot_bank as ItemBank),
+					bank: tame.elderKnowledgeLootBank,
 					title: 'Total Loot From Elder Knowledge',
 					user
 				})
@@ -1523,16 +1424,16 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 
 	let content = `**Name:** ${tame.nickname ?? 'No name'}
 **Species:** ${species.name}
-**Shiny:** ${tame.species_variant === species.shinyVariant ? 'Yes' : 'No'}
-**Growth:** ${tame.growth_percent}% ${tame.growth_stage}
-**Hatch Date:** ${time(tame.date)} / ${time(tame.date, 'R')}
-**${toTitleCase(species.relevantLevelCategory)} Level:** ${tame[`max_${species.relevantLevelCategory}_level`]}
+**Shiny:** ${tame.speciesVariant === species.shinyVariant ? 'Yes' : 'No'}
+**Growth:** ${tame.growthPercentage}% ${tame.growthStage}
+**Hatch Date:** ${time(tame.hatchDate)} / ${time(tame.hatchDate, 'R')}
+**${toTitleCase(species.relevantLevelCategory)} Level:** ${tame.relevantLevel()}
 **Boosts:** ${tameFeedableItems
-		.filter(i => tameHasBeenFed(tame, i.item.id))
+		.filter(i => tame.hasBeenFed(i.item.id))
 		.map(i => `${i.item.name} (${i.description})`)
 		.join(', ')}`;
 	if (species.id === TameSpeciesID.Igne) {
-		const kcs = await getIgneTameKC(tame);
+		const kcs = await getIgneTameKC(tame.tame);
 		content += `\n**KCs:** ${kcs.sortedTuple
 			.slice(0, 10)
 			.map(i => `${i[1]}x ${i[0]}`)
@@ -1552,7 +1453,7 @@ async function statusCommand(user: MUser) {
 	if (!tame) {
 		return 'You have no tame selected.';
 	}
-	return `${tameName(tame)} is currently: ${getTameStatus(activity).join('. ')}.`;
+	return `${tame} is currently: ${getTameStatus(activity).join('. ')}.`;
 }
 
 async function tameEquipCommand(user: MUser, itemName: string) {
@@ -1565,33 +1466,31 @@ async function tameEquipCommand(user: MUser, itemName: string) {
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";
-	if (!equippable.tameSpecies.includes(tame.species_id)) {
+	if (!equippable.tameSpecies.includes(tame.species.id)) {
 		return 'This item cannot be equipped to this tame species.';
 	}
 	const cost = new Bank().add(item.id);
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
 
 	const refundBank = new Bank();
-	const existingItem = tame[equippable.slot];
+	const existingItem = tame.tame[equippable.slot];
 	if (existingItem) refundBank.add(existingItem);
-	await user.removeItemsFromBank(cost);
-	if (refundBank.length > 0) {
-		await user.addItemsToBank({ items: refundBank, collectionLog: false, dontAddToTempCL: true });
-	}
 
-	await prisma.tame.update({
-		where: {
-			id: tame.id
-		},
-		data: {
-			[equippable.slot]: item.id
-		}
+	await user.transactItems({
+		itemsToRemove: cost,
+		itemsToAdd: refundBank,
+		collectionLog: false,
+		dontAddToTempCL: true
+	});
+
+	await tame.update({
+		[equippable.slot]: item.id
 	});
 
 	const refundStr = existingItem
 		? ` A ${Items.itemNameFromId(existingItem)} was unequipped and returned to your bank.`
 		: '';
-	return `You equipped a ${equippable.item.name} to your ${tameName(tame)}.${refundStr}`;
+	return `You equipped a ${equippable.item.name} to your ${tame}.${refundStr}`;
 }
 
 async function tameUnequipCommand(user: MUser, itemName: string) {
@@ -1604,11 +1503,11 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";
-	if (!equippable.tameSpecies.includes(tame.species_id)) {
+	if (!equippable.tameSpecies.includes(tame.species.id)) {
 		return 'This item cannot be equipped to this tame species.';
 	}
 
-	const existingItem = tame[equippable.slot];
+	const existingItem = tame.tame[equippable.slot];
 	if (!existingItem || existingItem !== item.id) {
 		return "You don't have this item equipped in your tame.";
 	}
@@ -1616,44 +1515,27 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 	const loot = new Bank().add(equippable.item.id);
 	await user.addItemsToBank({ items: loot, collectionLog: false, dontAddToTempCL: true });
 
-	await prisma.tame.update({
-		where: {
-			id: tame.id
-		},
-		data: {
-			[equippable.slot]: null
-		}
+	await tame.update({
+		[equippable.slot]: null
 	});
 
-	return `You unequipped a ${equippable.item.name} from your ${tameName(tame)}.`;
+	return `You unequipped a ${equippable.item.name} from your ${tame}.`;
 }
 
 export function determineTameClueResult({
-	tameGrowthLevel,
 	clueTier,
-	extraTripLength,
 	supportLevel,
 	equippedArmor,
-	equippedPrimary
+	equippedPrimary,
+	maxTripLength
 }: {
-	extraTripLength: number;
 	clueTier: ClueTier;
-	tameGrowthLevel: number;
 	supportLevel: number;
 	equippedArmor: number | null;
 	equippedPrimary: number | null;
+	maxTripLength: ReturnType<MTame['calcMaxTripLength']>;
 }) {
-	const boosts: string[] = [];
-	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel);
-	if (
-		equippedArmor &&
-		resolveItems(['Abyssal jibwings (e)', 'Demonic jibwings (e)', '3rd age jibwings (e)']).includes(equippedArmor)
-	) {
-		maxTripLength += Time.Minute * 30;
-		boosts.push('+30mins trip length for enhanced jibwings');
-	}
-
-	maxTripLength += extraTripLength;
+	const boosts: string[] = [...maxTripLength.messages];
 
 	let timePerClue = clueTier.timeToFinish * 1.15;
 
@@ -1669,7 +1551,7 @@ export function determineTameClueResult({
 		timePerClue = reduceNumByPercent(timePerClue, 15);
 	}
 
-	const quantity = Math.floor(maxTripLength / timePerClue);
+	const quantity = Math.floor(maxTripLength.maxTripLength / timePerClue);
 	const duration = Math.floor(quantity * timePerClue);
 
 	const baseCost = (ClueTiers.indexOf(clueTier) + 1) * quantity;
@@ -1717,12 +1599,11 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 	}
 
 	const { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({
-		tameGrowthLevel: tame.growthLevel,
 		clueTier,
-		extraTripLength: patronMaxTripBonus(user) * 2,
 		supportLevel: tame.currentSupportLevel,
 		equippedArmor: tame.equippedArmor?.id ?? null,
-		equippedPrimary: tame.equippedPrimary?.id ?? null
+		equippedPrimary: tame.equippedPrimary?.id ?? null,
+		maxTripLength: tame.calcMaxTripLength({ user, activity: 'Clues' })
 	});
 
 	if (quantity === 0) {
@@ -1755,7 +1636,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 	const task = await createTameTask({
 		user,
 		channelID,
-		selectedTame: tame.tame,
+		selectedTame: tame,
 		data: {
 			type: 'Clues',
 			clueID: clueTier.scrollID,
@@ -1942,10 +1823,9 @@ export const tamesCommand = defineCommand({
 					autocomplete: async (_: string, user: MUser) => {
 						const { tame } = await user.getTame();
 						return tameEquipSlots
-							.map(i => tame?.[i])
+							.map(i => tame?.tame[i])
 							.filter(notEmpty)
-							.map(i => Items.itemNameFromId(i))
-							.filter(notEmpty)
+							.map(i => Items.getOrThrow(i).name)
 							.map(i => ({ name: i, value: i }));
 					}
 				}
@@ -2093,24 +1973,22 @@ export const tamesCommand = defineCommand({
 			}
 			const { tame, activity, species } = await user.getTame();
 			if (activity) {
-				return `${tameName(tame)} is busy.`;
+				return `${tame} is busy.`;
 			}
 			if (!tame || !species) {
 				return 'You have no selected tame.';
 			}
-			if (!tameActivity.allowedTames.includes(tame.species_id)) {
+			if (!tameActivity.allowedTames.includes(tame.species.id)) {
 				return `Your selected tame species cannot do this activity, switch to a different tame: ${mentionCommand(
 					'tames',
 					'select'
 				)}.`;
 			}
 			const boosts: string[] = [];
-			let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel(tame));
-			if (tameHasBeenFed(tame, itemID('Zak'))) {
-				maxTripLength += Time.Minute * 35;
-				boosts.push('+35mins trip length (ate a Zak)');
-			}
-			maxTripLength += patronMaxTripBonus(user) * 2;
+
+			const { maxTripLength, messages } = tame.calcMaxTripLength({ user, activity: tameActivity.id });
+			boosts.push(...messages);
+
 			const task = await createTameTask({
 				user,
 				channelID,
@@ -2124,7 +2002,7 @@ export const tamesCommand = defineCommand({
 			});
 			if (typeof task === 'string') return task;
 
-			let reply = `${tameName(tame)} is now doing ${tameActivity.name}. The trip will take ${formatDuration(
+			let reply = `${tame} is now doing ${tameActivity.name}. The trip will take ${formatDuration(
 				task.duration
 			)}.`;
 
@@ -2145,13 +2023,8 @@ export const tamesCommand = defineCommand({
 				if (tame === null) {
 					return "You don't have a tame selected, select the tame who's icon should be reset.";
 				}
-				await prisma.tame.update({
-					where: {
-						id: tame.id
-					},
-					data: {
-						custom_icon_id: null
-					}
+				await tame.update({
+					custom_icon_id: null
 				});
 				return 'Successfully removed the custom tame icon!';
 			}
@@ -2165,18 +2038,13 @@ export const tamesCommand = defineCommand({
 			if (tame === null) {
 				return "You don't have a tame selected, select the tame you want to give this icon.";
 			}
-			if (tame.species_id !== replacement.species) {
+			if (tame.species.id !== replacement.species) {
 				return `This image is for the ${tameSpecies.find(s => s.id === replacement.species)!.name} species.`;
 			}
-			await prisma.tame.update({
-				where: {
-					id: tame.id
-				},
-				data: {
-					custom_icon_id: replacement.name
-				}
+			await tame.update({
+				custom_icon_id: replacement.name
 			});
-			return `You set the '${replacement.name}' custom image for your ${tameName(tame)}.`;
+			return `You set the '${replacement.name}' custom image for your ${tame}.`;
 		}
 		return 'Invalid command.';
 	}

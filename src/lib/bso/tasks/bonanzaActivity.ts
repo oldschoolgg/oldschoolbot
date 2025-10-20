@@ -1,6 +1,4 @@
 import { spectatorClothes } from '@/lib/bso/collection-log/main.js';
-import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames/tames.js';
-import { tameName } from '@/lib/bso/tames/tameUtil.js';
 
 import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
@@ -20,7 +18,7 @@ export const bonanzaTask: MinionTask = {
 	type: 'BalthazarsBigBonanza',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
 		const { channelID, quantity, duration } = data;
-		const tames = await getAllUserTames(user.id);
+		const tames = await user.fetchTames();
 		const incrementResult = await user.incrementMinigameScore('balthazars_big_bonanza', quantity);
 		const xpStrs = await Promise.all([
 			user.addXP({
@@ -56,8 +54,7 @@ export const bonanzaTask: MinionTask = {
 		);
 		loot.add('Circus ticket', tickets);
 
-		const freeIgneTames = tames.filter(i => i.tame_activity.length === 0 && i.species_id === TameSpeciesID.Igne);
-		const freeIgneTame = rng.pick(freeIgneTames);
+		const freeIgneTame = rng.pick(tames.filter(_t => _t.isIgne()));
 		const allUserItems = user.allItemsOwned;
 		const unownedSpectatorClothes = rng
 			.shuffle(spectatorClothes)
@@ -67,7 +64,7 @@ export const bonanzaTask: MinionTask = {
 		const messages: string[] = [];
 		if (freeIgneTame && unownedSpectatorClothes.length > 0) {
 			for (const item of unownedSpectatorClothes) loot.add(item);
-			messages.push(`${tameName(freeIgneTame)} ${rng.pick(tameMessages)}, and gave you their clothes!`);
+			messages.push(`${freeIgneTame} ${rng.pick(tameMessages)}, and gave you their clothes!`);
 		}
 		if (!allUserItems.has("Giant's hand") && rng.roll(5)) {
 			loot.add("Giant's hand");
