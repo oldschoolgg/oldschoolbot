@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@/prisma/main.js';
 
 const u = Prisma.UserScalarFieldEnum;
 

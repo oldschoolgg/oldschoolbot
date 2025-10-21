@@ -7,6 +7,8 @@ import { createDb } from '@/lib/globals.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { mockChannel, TEST_CHANNEL_ID } from './util.js';
 
+await createDb();
+
 global.globalClient = {
 	isReady: () => true,
 	emit: () => true,
@@ -21,8 +23,6 @@ global.globalClient = {
 	busyCounterCache: new Map<string, number>(),
 	allCommands: allCommandsDONTIMPORT
 } as any;
-
-await createDb();
 
 vi.mock('@oldschoolgg/toolkit', async () => {
 	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit');
@@ -47,3 +47,7 @@ vi.mock('../../src/lib/util/webhook', async () => {
 		})
 	};
 });
+
+try {
+	await prisma.$queryRawUnsafe(`CREATE EXTENSION IF NOT EXISTS "intarray";`);
+} catch (_err) {}

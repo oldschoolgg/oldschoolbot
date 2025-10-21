@@ -2,7 +2,6 @@ import { type BuildOptions, build } from 'esbuild';
 
 const external = [
 	'@prisma/client',
-	'@sentry/node',
 	'skia-canvas',
 	'sonic-boom',
 	'bufferutil',
@@ -32,7 +31,7 @@ const baseBuildOptions: BuildOptions = {
 	target: 'node24.8.0',
 	external,
 	sourcemap: 'inline',
-	minify: true,
+	minify: false,
 	metafile: true
 };
 

@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
-import { Items } from '@/index.js';
 import { allUnobtainableGear, barrowsItemArr } from '@/itemGroups.js';
+import { Items } from '@/structures/Items.js';
 
 const barrows = [
 	"Ahrim's hood",

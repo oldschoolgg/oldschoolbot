@@ -1,9 +1,10 @@
+import { choicesOf } from '@/lib/discord/index.js';
 import { toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
 import { mileStoneBaseDeathChances } from '@/lib/simulation/toaUtils.js';
 import { coxBoostsCommand, coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 
-export const raidCommand: OSBMahojiCommand = {
+export const raidCommand = defineCommand({
 	name: 'raid',
 	description: 'Send your minion to do raids - CoX or ToB.',
 	attributes: {
@@ -24,7 +25,7 @@ export const raidCommand: OSBMahojiCommand = {
 							type: 'String',
 							name: 'type',
 							description: 'Choose whether you want to solo, mass, or fake mass.',
-							choices: ['solo', 'mass', 'fakemass'].map(i => ({ name: i, value: i })),
+							choices: choicesOf(['solo', 'mass', 'fakemass']),
 							required: true
 						},
 						{
@@ -171,32 +172,7 @@ export const raidCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		interaction,
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{
-		cox?: {
-			start?: {
-				type: 'solo' | 'mass' | 'fakemass';
-				challenge_mode?: boolean;
-				max_team_size?: number;
-				quantity?: number;
-			};
-			stats?: {};
-			itemboosts?: {};
-		};
-		tob?: {
-			start?: { solo?: boolean; hard_mode?: boolean; max_team_size?: number; quantity?: number };
-			stats?: {};
-			check?: { hard_mode?: boolean };
-		};
-		toa?: {
-			start?: { raid_level: number; max_team_size?: number; solo?: boolean; quantity?: number };
-			help?: {};
-		};
-	}>) => {
+	run: async ({ interaction, options, user, channelID }) => {
 		if (interaction) await interaction.defer();
 
 		const { cox, tob } = options;
@@ -245,4 +221,4 @@ export const raidCommand: OSBMahojiCommand = {
 
 		return 'Invalid command.';
 	}
-};
+});

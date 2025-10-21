@@ -13,7 +13,6 @@ import { calculateMastery } from '@/lib/mastery.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
-import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
 import { roboChimpCache } from '@/lib/perkTier.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
@@ -106,7 +105,7 @@ export async function getUserInfo(user: MUser) {
 	};
 }
 
-export const minionCommand: OSBMahojiCommand = {
+export const minionCommand = defineCommand({
 	name: 'minion',
 	description: 'Manage and control your minion.',
 	options: [
@@ -175,12 +174,11 @@ export const minionCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'name',
 					description: 'The name of the bank background you want.',
-					autocomplete: async (value, user) => {
-						const mUser = await mUserFetch(user.id);
-						const isMod = mUser.bitfield.includes(BitField.isModerator);
+					autocomplete: async (value: string, user: MUser) => {
+						const isMod = user.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
-							.filter(bg => bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField))
+							.filter(bg => bg.storeBitField && user.user.store_bitfield.includes(bg.storeBitField))
 							.map(bg => bg.id);
 						return bankImages
 							.filter(bg => isMod || bg.available || owned.includes(bg.id))
@@ -204,16 +202,14 @@ export const minionCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'item',
 					description: 'The item you want to use.',
-					autocomplete: async (value, user) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
 							.map(id => Items.get(id))
 							.filter(notEmpty)
 							.map(i => ({ id: i.id, name: i.name }));
 
-						const botUser = await mUserFetch(user.id);
-
-						return botUser.bank
+						return user.bank
 							.items()
 							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
 							.filter(i => {
@@ -409,34 +405,7 @@ export const minionCommand: OSBMahojiCommand = {
 			description: 'View your minions mastery.'
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		interaction
-	}: CommandRunOptions<{
-		stats?: { stat?: string };
-		achievementdiary?: { diary?: string; claim?: boolean };
-		bankbg?: { name?: string };
-		cracker?: { user: MahojiUserOption };
-		lamp?: { item: string; quantity?: number; skill: string };
-		cancel?: {};
-		set_icon?: { icon: string };
-		set_name?: { name: string };
-		level?: { skill: string };
-		kc?: { name: string };
-		buy?: { ironman?: boolean };
-		ironman?: { permanent?: boolean };
-		charge?: { item?: string; amount?: number };
-		daily?: {};
-		train?: { style: AttackStyles };
-		pat?: {};
-		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
-		status?: {};
-		info?: {};
-		peak?: {};
-		mastery?: {};
-	}>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ user, options, interaction }) => {
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
@@ -546,4 +515,4 @@ ${substr}`;
 
 		return 'Unknown command';
 	}
-};
+});

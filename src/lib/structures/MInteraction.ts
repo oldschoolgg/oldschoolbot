@@ -2,31 +2,32 @@ import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit'
 import { TimerManager } from '@sapphire/timer-manager';
 import {
 	ActionRowBuilder,
+	type AutocompleteInteraction,
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
 	type CommandInteraction,
 	ComponentType,
-	type InteractionResponse,
 	InteractionResponseType,
 	type Message,
 	MessageFlags,
 	PermissionsBitField,
 	Routes
 } from 'discord.js';
+import { omit } from 'remeda';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
 import { SILENT_ERROR } from '@/lib/constants.js';
 import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
+import { InteractionID } from '@/lib/InteractionID.js';
 import {
 	type CompatibleResponse,
 	PaginatedMessage,
 	type PaginatedMessageOptions
 } from '@/lib/structures/PaginatedMessage.js';
+import { compressMahojiArgs } from '@/lib/util/commandUsage.js';
 import { getUsername } from '@/lib/util.js';
-
-const wasDeferred = new Set();
 
 interface MakePartyOptions {
 	maxSize: number;
@@ -40,42 +41,72 @@ interface MakePartyOptions {
 
 export class MInteraction {
 	public interaction: CommandInteraction | ButtonInteraction;
-	public deferred: boolean;
-	public replied: boolean;
 	public id: string;
 	public ephemeral: boolean;
-	public interactionResponse: InteractionResponse | Message | null = null;
+	public interactionResponse: Message | null = null;
+	public isPaginated = false;
+	public isParty = false;
+	public isConfirmation = false;
 
 	constructor({ interaction }: { interaction: CommandInteraction | ButtonInteraction }) {
 		this.interaction = interaction;
 		this.id = interaction.id;
-		this.replied = interaction.replied;
-		this.deferred = interaction.deferred;
 		this.ephemeral = interaction.ephemeral ?? false;
 	}
 
-	public getDebugInfo() {
+	get replied() {
+		return this.interaction.replied;
+	}
+
+	get deferred() {
+		return this.interaction.deferred;
+	}
+
+	get type() {
+		return this.interaction.type;
+	}
+
+	static getChatInputCommandOptions(interaction: CommandInteraction | AutocompleteInteraction | ButtonInteraction) {
+		if (!interaction.isChatInputCommand()) return {};
+		const cmdOpts = convertAPIOptionsToCommandOptions(interaction.options.data, interaction.options.resolved);
+		return compressMahojiArgs(cmdOpts);
+	}
+
+	public getChatInputCommandOptions() {
+		return MInteraction.getChatInputCommandOptions(this.interaction);
+	}
+
+	static getInteractionDebugInfo(interaction: AutocompleteInteraction | MInteraction) {
 		const context: Record<string, string | number | null | boolean> = {
-			user_id: this.user.id,
-			channel_id: this.channelId,
-			guild_id: this.guildId,
-			interaction_id: this.id,
-			interaction_type: this.interaction.type,
-			interaction_created_at: this.createdTimestamp,
-			current_timestamp: Date.now(),
-			difference_ms: Date.now() - this.createdTimestamp,
-			was_deferred: this.isRepliable() ? this.deferred : 'N/A'
+			user_id: interaction.user.id,
+			channel_id: interaction.channelId,
+			guild_id: interaction.guildId,
+			itx_id: interaction.id,
+			itx_type: interaction.type,
+			itx_created_at: interaction.createdTimestamp,
+			itx_diff_s: ((Date.now() - interaction.createdTimestamp) / 1000).toFixed(1)
 		};
-		if (this.interaction.isChatInputCommand()) {
-			context.options = JSON.stringify(
-				convertAPIOptionsToCommandOptions(this.interaction.options.data, this.interaction.options.resolved)
-			);
-			context.command_name = this.interaction.commandName;
-		} else if (this.interaction.isButton()) {
-			context.button_id = this.interaction.customId;
+
+		if (interaction instanceof MInteraction) {
+			context.was_deferred = interaction.deferred;
+			context.cmd_name = interaction.commandName;
+			context.ephemeral = interaction.ephemeral;
+			context.replied = interaction.replied;
+			context.is_party = interaction.isParty;
+			context.is_confirm = interaction.isConfirmation;
+			context.is_paginated = interaction.isPaginated;
+			context.button_id = interaction.customId;
+
+			if (interaction.interaction.isChatInputCommand()) {
+				context.cmd_options = JSON.stringify(MInteraction.getChatInputCommandOptions(interaction.interaction));
+			}
 		}
 
 		return context;
+	}
+
+	public getDebugInfo() {
+		return MInteraction.getInteractionDebugInfo(this);
 	}
 
 	public isRepliable() {
@@ -88,6 +119,11 @@ export class MInteraction {
 
 	public get commandName() {
 		if (this.interaction.isCommand()) return this.interaction.commandName;
+		return null;
+	}
+
+	public get customId() {
+		if (this.interaction.isButton()) return this.interaction.customId;
 		return null;
 	}
 
@@ -122,39 +158,41 @@ export class MInteraction {
 		return this.interaction.guild;
 	}
 
-	private handleError(err: unknown) {
-		console.error('Interaction error:', err);
+	public get createdAt() {
+		return this.interaction.createdAt;
+	}
+
+	public get message() {
+		if (!this.interaction.isButton()) return null;
+		return this.interaction.message;
 	}
 
 	makePaginatedMessage(options: PaginatedMessageOptions) {
-		return new PaginatedMessage({ interaction: this, ...options, onError: console.error }).run([
-			this.interaction.user.id
-		]);
+		this.isPaginated = true;
+		return new PaginatedMessage({ interaction: this, ...options }).run([this.interaction.user.id]);
 	}
 
 	async defer({ ephemeral }: { ephemeral?: boolean } = {}) {
 		this.ephemeral = ephemeral ?? this.ephemeral;
-		if (wasDeferred.size > 1000) wasDeferred.clear();
-		if (!this.deferred && !wasDeferred.has(this.id)) {
-			this.deferred = true;
-			wasDeferred.add(this.id);
+		if (!this.deferred) {
 			try {
 				const options: { flags?: number } = {};
 				if (this.ephemeral) options.flags = MessageFlags.Ephemeral;
 				await this.interaction.deferReply(options);
 			} catch (err) {
-				this.handleError(err);
+				Logging.logError(err as Error, {
+					action: 'DEFER',
+					...this.getDebugInfo()
+				});
 			}
 		}
 	}
 
-	async reply(
-		_response: string | CompatibleResponse
-	): Promise<InteractionResponse<boolean> | Message<boolean> | null> {
-		if (this.replied) {
-			throw new Error('Attempted to follow up (reply to an interaction which has already been replied to)');
-		}
+	private formatResponseForLogging(response: CompatibleResponse) {
+		return JSON.stringify(omit(response, ['files'])).slice(0, 600);
+	}
 
+	async reply(_response: string | CompatibleResponse): Promise<Message<boolean> | null> {
 		const response: CompatibleResponse = typeof _response === 'string' ? { content: _response } : _response;
 
 		if (!('content' in response)) {
@@ -164,14 +202,27 @@ export class MInteraction {
 			response.components = [];
 		}
 
+		if (response.ephemeral) {
+			this.ephemeral = true;
+			delete response.ephemeral;
+			response.flags = MessageFlags.Ephemeral;
+		}
+
 		try {
-			if (this.deferred) {
-				this.interactionResponse = await this.interaction.editReply(response);
+			if (this.replied || this.deferred) {
+				this.interactionResponse = await this.interaction.editReply(
+					omit({ ...response, withResponse: true }, ['flags', 'ephemeral'])
+				);
 			} else {
-				this.interactionResponse = await this.interaction.reply(response);
+				const interactionCallbackResponse = await this.interaction.reply({ ...response, withResponse: true });
+				this.interactionResponse = interactionCallbackResponse.resource?.message ?? null;
 			}
-		} catch (e: any) {
-			console.error(`Error MInteraction`, e);
+		} catch (err) {
+			Logging.logError(err as Error, {
+				action: `REPLY (${this.deferred ? 'editReply' : 'reply'})`,
+				...this.getDebugInfo(),
+				response: this.formatResponseForLogging(response)
+			});
 		}
 		return this.interactionResponse;
 	}
@@ -187,6 +238,7 @@ export class MInteraction {
 					| { ephemeral?: boolean; users?: undefined }
 			  ))
 	) {
+		this.isConfirmation = true;
 		if (process.env.TEST) return;
 		const content = typeof message === 'string' ? message : message.content;
 		this.ephemeral = typeof message !== 'string' ? (message.ephemeral ?? this.ephemeral) : this.ephemeral;
@@ -194,8 +246,14 @@ export class MInteraction {
 		const timeout: number = typeof message !== 'string' ? (message.timeout ?? 15_000) : 15_000;
 
 		const confirmRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-			new ButtonBuilder().setCustomId('CONFIRM').setLabel('Confirm').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('CANCEL').setLabel('Cancel').setStyle(ButtonStyle.Secondary)
+			new ButtonBuilder()
+				.setCustomId(InteractionID.Confirmation.Confirm)
+				.setLabel('Confirm')
+				.setStyle(ButtonStyle.Primary),
+			new ButtonBuilder()
+				.setCustomId(InteractionID.Confirmation.Cancel)
+				.setLabel('Cancel')
+				.setStyle(ButtonStyle.Secondary)
 		);
 
 		await this.defer();
@@ -225,7 +283,7 @@ export class MInteraction {
 					return;
 				}
 
-				if (buttonInteraction.customId === 'CANCEL') {
+				if (buttonInteraction.customId === InteractionID.Confirmation.Cancel) {
 					// If they cancel, we remove the button component, which means we can't reply to the button interaction.
 					this.reply({ content: `The confirmation was cancelled.`, components: [] });
 					collector.stop();
@@ -240,7 +298,7 @@ export class MInteraction {
 
 				confirms.add(buttonInteraction.user.id);
 
-				if (buttonInteraction.customId === 'CONFIRM') {
+				if (buttonInteraction.customId === InteractionID.Confirmation.Confirm) {
 					silentAck();
 					// All users have confirmed
 					if (confirms.size === users.length) {
@@ -293,6 +351,7 @@ export class MInteraction {
 	}
 
 	public async makeParty(options: MakePartyOptions & { message: string }): Promise<MUser[]> {
+		this.isParty = true;
 		if (process.env.TEST) return [options.leader];
 		const timeout = Time.Minute * 5;
 		const usersWhoConfirmed: string[] = [options.leader.id];
@@ -300,10 +359,13 @@ export class MInteraction {
 		let partyCancelled = false;
 
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-			new ButtonBuilder().setCustomId('PARTY_JOIN').setLabel('Join').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('PARTY_LEAVE').setLabel('Leave').setStyle(ButtonStyle.Secondary),
-			new ButtonBuilder().setCustomId('PARTY_CANCEL').setLabel('Cancel').setStyle(ButtonStyle.Danger),
-			new ButtonBuilder().setCustomId('PARTY_START').setLabel('Start').setStyle(ButtonStyle.Success)
+			new ButtonBuilder().setCustomId(InteractionID.Party.Join).setLabel('Join').setStyle(ButtonStyle.Primary),
+			new ButtonBuilder()
+				.setCustomId(InteractionID.Party.Leave)
+				.setLabel('Leave')
+				.setStyle(ButtonStyle.Secondary),
+			new ButtonBuilder().setCustomId(InteractionID.Party.Cancel).setLabel('Cancel').setStyle(ButtonStyle.Danger),
+			new ButtonBuilder().setCustomId(InteractionID.Party.Start).setLabel('Start').setStyle(ButtonStyle.Success)
 		);
 
 		const getMessageContent = async () => ({
@@ -319,7 +381,6 @@ export class MInteraction {
 		await this.defer({ ephemeral: false });
 		await this.reply(await getMessageContent());
 
-		const message = this.interactionResponse!;
 		const updateUsersIn = debounce(async () => {
 			await this.reply(await getMessageContent());
 		}, 500);
@@ -359,7 +420,7 @@ export class MInteraction {
 		}
 
 		return new Promise<MUser[]>((resolve, reject) => {
-			const collector = message.createMessageComponentCollector({
+			const collector = this.interactionResponse!.createMessageComponentCollector({
 				time: timeout,
 				componentType: ComponentType.Button
 			});
@@ -390,9 +451,9 @@ export class MInteraction {
 					return;
 				}
 
-				const id = bi.customId as 'PARTY_JOIN' | 'PARTY_LEAVE' | 'PARTY_CANCEL' | 'PARTY_START';
+				const id = bi.customId as (typeof InteractionID.Party)[keyof typeof InteractionID.Party];
 
-				if (id === 'PARTY_JOIN') {
+				if (id === InteractionID.Party.Join) {
 					if (options.customDenier) {
 						const [denied, reason] = await options.customDenier(user);
 						if (denied) {
@@ -419,7 +480,7 @@ export class MInteraction {
 					return;
 				}
 
-				if (id === 'PARTY_LEAVE') {
+				if (id === InteractionID.Party.Leave) {
 					if (!usersWhoConfirmed.includes(bi.user.id) || bi.user.id === options.leader.id) {
 						await bi.reply({ content: 'You cannot leave this mass.', flags: MessageFlags.Ephemeral });
 						return;
@@ -430,7 +491,7 @@ export class MInteraction {
 					return;
 				}
 
-				if (id === 'PARTY_CANCEL') {
+				if (id === InteractionID.Party.Cancel) {
 					if (bi.user.id !== options.leader.id) {
 						await bi.reply({ content: 'You cannot cancel this mass.', flags: MessageFlags.Ephemeral });
 						return;
@@ -443,7 +504,7 @@ export class MInteraction {
 					return;
 				}
 
-				if (id === 'PARTY_START') {
+				if (id === InteractionID.Party.Start) {
 					if (bi.user.id !== options.leader.id) {
 						await bi.reply({ content: 'You cannot start this party.', flags: MessageFlags.Ephemeral });
 						return;

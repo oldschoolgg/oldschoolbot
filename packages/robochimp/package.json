@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "pnpm gen && tsx esbuild.mts",
-		"start": "pnpm build && node ./dist/index.js",
+		"start": "pnpm build && node --enable-source-maps ./dist/index.js",
 		"test": "tsc -p src && pnpm test:unit",
 		"test:unit": "vitest run --config vitest.unit.config.mts",
 		"dev": "pnpm fetch-schema && pnpm build && pnpm test",
@@ -25,7 +25,7 @@
 		"dotenv": "^16.5.0",
 		"oldschooljs": "workspace:*",
 		"remeda": "^2.23.0",
-		"zod": "^3.25.67"
+		"zod": "^4.1.12"
 	},
 	"devDependencies": {
 		"prisma": "^6.16.3"

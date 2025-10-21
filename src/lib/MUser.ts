@@ -1,9 +1,7 @@
 import { percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
-import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
-	addItemToBank,
 	Bank,
 	convertXPtoLVL,
 	EMonster,
@@ -14,12 +12,12 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
+import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
-import { userIsBusy } from '@/lib/busyCounterCache.js';
+import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { updateUserCl } from '@/lib/collection-log/databaseCl.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
@@ -40,13 +38,16 @@ import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
-import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
+import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
@@ -89,37 +90,41 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 };
 
 export class MUserClass {
-	user: Readonly<User>;
+	user!: Readonly<User>;
 	id: string;
-	bank!: Bank;
-	bankWithGP!: Bank;
-	cl!: Bank;
-	allItemsOwned!: Bank;
-	gear!: UserFullGearSetup;
+
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
 	iconPackId!: IconPackID | null;
 
+	private _bankLazy: Bank | null = null;
+	private _clLazy: Bank | null = null;
+	private _gearLazy: UserFullGearSetup | null = null;
+
 	constructor(user: User) {
-		this.user = user;
 		this.id = user.id;
-		this.updateProperties();
+		this._updateRawUser(user);
 	}
 
-	public updateProperties() {
-		this.bank = new Bank(this.user.bank as ItemBank);
-		this.bank.freeze();
+	public get bank(): Bank {
+		if (this._bankLazy) return this._bankLazy;
+		this._bankLazy = new Bank(this.user.bank as ItemBank);
+		this._bankLazy.freeze();
+		return this._bankLazy;
+	}
 
-		this.bankWithGP = new Bank(this.user.bank as ItemBank);
-		this.bankWithGP.add('Coins', this.GP);
-		this.bankWithGP.freeze();
+	public get cl(): Bank {
+		if (this._clLazy) return this._clLazy;
+		this._clLazy = new Bank(this.user.collectionLogBank as ItemBank);
+		this._clLazy.freeze();
+		return this._clLazy;
+	}
 
-		this.cl = new Bank(this.user.collectionLogBank as ItemBank);
-		this.cl.freeze();
-
-		this.gear = {
+	public get gear(): UserFullGearSetup {
+		if (this._gearLazy) return this._gearLazy;
+		this._gearLazy = {
 			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGear }),
 			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
 			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
@@ -129,10 +134,17 @@ export class MUserClass {
 			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
 			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
 		};
+		return this._gearLazy;
+	}
 
-		this.allItemsOwned = this.calculateAllItemsOwned();
-		this.allItemsOwned.freeze();
+	public get bankWithGP(): Bank {
+		return new Bank(this.user.bank as ItemBank).add('Coins', this.GP).freeze();
+	}
 
+	public updateProperties() {
+		this._bankLazy = null;
+		this._clLazy = null;
+		this._gearLazy = null;
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
 
@@ -271,9 +283,14 @@ export class MUserClass {
 		return addXP(this, params);
 	}
 
-	async getKC(monsterID: number) {
-		const stats = await this.fetchStats();
-		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
+	async getKC(monsterID: number): Promise<number> {
+		if (!Number.isInteger(monsterID)) throw new Error('Invalid monsterID');
+		const query = `
+SELECT COALESCE((monster_scores->>'${monsterID}')::int, 0) AS monster_kc
+FROM user_stats
+WHERE user_id = ${this.id};`;
+		const stats = await prisma.$queryRawUnsafe<{ monster_kc: number }[]>(query);
+		return stats[0]?.monster_kc ?? 0;
 	}
 
 	async getAllKCs() {
@@ -292,11 +309,6 @@ export class MUserClass {
 				return 0;
 			}
 		}) as Record<keyof typeof EMonster | number, number>;
-	}
-
-	async fetchMonsterScores() {
-		const stats = await this.fetchStats();
-		return stats.monster_scores as ItemBank;
 	}
 
 	attackClass(): 'range' | 'mage' | 'melee' {
@@ -355,13 +367,17 @@ GROUP BY data->>'ci';`);
 		return { actualCluesBank: actualClues, clueCounts };
 	}
 
-	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats();
-		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
-		await this.statsUpdate({
-			monster_scores: newKCs.toJSON()
-		});
-		return { newKC: newKCs.amount(monsterID) };
+	async incrementKC(monsterID: number, quantityToAdd = 1) {
+		if (!Number.isInteger(monsterID)) throw new Error('Invalid monsterID');
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		const query = `
+UPDATE user_stats
+SET monster_scores = add_item_to_bank(monster_scores, '${monsterID}', ${quantityToAdd})
+WHERE user_id = ${this.id}
+RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
+`;
+		const res = await prisma.$queryRawUnsafe<{ new_kc: number }[]>(query);
+		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
 	public async addItemsToBank({
@@ -384,8 +400,7 @@ GROUP BY data->>'ci';`);
 			dontAddToTempCL,
 			neverUpdateHistory
 		});
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
 	}
 
@@ -393,15 +408,18 @@ GROUP BY data->>'ci';`);
 		const res = await this.transactItems({
 			itemsToRemove: bankToRemove
 		});
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
+	}
+
+	public _updateRawUser(rawUser: User) {
+		this.user = rawUser;
+		this.updateProperties();
 	}
 
 	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
 		const res = await transactItemsFromBank({ userID: this.user.id, ...options });
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
 	}
 
@@ -424,7 +442,7 @@ GROUP BY data->>'ci';`);
 		return this.gearBank.hasEquippedOrInBank(...args);
 	}
 
-	private calculateAllItemsOwned(): Bank {
+	public get allItemsOwned(): Bank {
 		const bank = new Bank(this.bank);
 
 		bank.add('Coins', Number(this.user.GP));
@@ -515,11 +533,27 @@ GROUP BY data->>'ci';`);
 		return ActivityManager.minionIsBusy(this.id);
 	}
 
-	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats();
-		await this.statsUpdate({
-			creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
-		});
+	async getCreatureScore(creatureID: number): Promise<number> {
+		if (!Number.isInteger(creatureID)) throw new Error('Invalid monsterID');
+		const query = `
+SELECT COALESCE((creature_scores->>'${creatureID}')::int, 0) AS creature_kc
+FROM user_stats
+WHERE user_id = ${this.id};`;
+		const stats = await prisma.$queryRawUnsafe<{ creature_kc: number }[]>(query);
+		return stats[0]?.creature_kc ?? 0;
+	}
+
+	async incrementCreatureScore(creatureID: number, quantityToAdd = 1): Promise<{ newKC: number }> {
+		if (!Number.isInteger(creatureID)) throw new Error('Invalid creatureID');
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		const query = `
+UPDATE user_stats
+SET creature_scores = add_item_to_bank(creature_scores, '${creatureID}', ${quantityToAdd})
+WHERE user_id = ${this.id}
+RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
+`;
+		const res = await prisma.$queryRawUnsafe<{ new_kc: number }[]>(query);
+		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
 	get blowpipe() {
@@ -564,12 +598,15 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
 		const previousCL = this.cl.clone();
+
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
 		await this.update(updates);
 		const newCL = this.cl;
+
 		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
+
 		return {
 			previousCL,
 			newCL,
@@ -639,7 +676,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.isInWilderness ? 'gear_wildy' : 'gear_range';
-			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
+			updates[updateKey] = newRangeGear as any as PrismaCompatibleJsonObject;
 		}
 
 		if (dart) {
@@ -686,16 +723,10 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			await this.transactItems({ itemsToRemove: bankRemove });
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
-		this.user = newUser;
-		this.updateProperties();
+		this._updateRawUser(newUser);
 		return {
 			realCost
 		};
-	}
-
-	async getCreatureScore(creatureID: number) {
-		const stats = await this.fetchStats();
-		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
 	calculateAddItemsToCLUpdates({
@@ -740,8 +771,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	async sync() {
 		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
 		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
-		this.user = newUser;
-		this.updateProperties();
+		this._updateRawUser(newUser);
 	}
 
 	async fetchStats() {
@@ -925,7 +955,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		}
 
 		await this.update({
-			[`gear_${setup}`]: gear as any as Prisma.InputJsonObject
+			[`gear_${setup}`]: gear as any as PrismaCompatibleJsonObject
 		});
 		if (refundBank.length > 0) {
 			await this.addItemsToBank({
@@ -1100,10 +1130,60 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return `**XP Gains:** ${result}`;
 	}
 
-	async updateCL() {
-		await updateUserCl(this.id);
+	async fetchSlayerInfo() {
+		const res = await getUsersCurrentSlayerInfo(this.id);
+		return res;
+	}
+
+	hasSlayerUnlock(unlock: SlayerTaskUnlocksEnum): boolean {
+		return this.user.slayer_unlocks.includes(unlock);
+	}
+
+	checkHasSlayerUnlocks(unlocks: SlayerTaskUnlocksEnum[]) {
+		return hasSlayerUnlock(this.user.slayer_unlocks, unlocks);
+	}
+
+	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
+		modifyUserBusy({ type, reason, userID: this.id });
+	}
+
+	async _fetchOrCreateCL(itemsToAdd?: Bank): Promise<Bank> {
+		const { inserted } = await TableBankManager.getOrCreateBankId(this.id, 'CollectionLog');
+
+		// If this was the first time creating, insert all current CL items.
+		if (inserted) {
+			await TableBankManager.update({
+				userId: this.id,
+				type: 'CollectionLog',
+				itemsToAdd: this.cl
+			});
+		} else if (itemsToAdd) {
+			await TableBankManager.update({
+				userId: this.id,
+				type: 'CollectionLog',
+				itemsToAdd
+			});
+		}
+
+		const cl = await TableBankManager.fetch({ userId: this.id, type: 'CollectionLog' });
+		cl.freeze();
+		return cl;
+	}
+
+	async checkTableBankMatches() {
+		await this.sync();
+		const clFromDB = await this.fetchCL();
+		if (this.cl.toString() !== clFromDB.toString()) {
+			console.error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}`);
+		}
+	}
+
+	async fetchCL(): Promise<Bank> {
+		const cl = await this._fetchOrCreateCL();
+		return cl;
 	}
 }
+
 declare global {
 	export type MUser = MUserClass;
 	var mUserFetch: typeof srcMUserFetch;

@@ -2,7 +2,7 @@ import { ownedItemOption } from '@/lib/discord/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import Potions from '@/lib/minions/data/potions.js';
 import { quests } from '@/lib/minions/data/quests.js';
-import Agility, { type UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import Agility from '@/lib/skilling/skills/agility.js';
 import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
@@ -33,7 +33,7 @@ import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_comman
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
-export const activitiesCommand: OSBMahojiCommand = {
+export const activitiesCommand = defineCommand({
 	name: 'activities',
 	description: 'Miscellaneous activities you can do.',
 	options: [
@@ -390,7 +390,8 @@ export const activitiesCommand: OSBMahojiCommand = {
 			description: 'Alch items for GP.',
 			options: [
 				{
-					...ownedItemOption(i => Boolean(i.highalch))
+					...ownedItemOption(i => Boolean(i.highalch)),
+					required: true
 				},
 				{
 					type: 'Integer',
@@ -495,45 +496,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		channelID,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		plank_make?: { action: string; type: string; quantity?: number };
-		chompy_hunt?: { action: 'start' | 'claim' };
-		my_notes?: {};
-		warriors_guild?: { action: string; quantity?: number };
-		camdozaal?: { action: string; quantity?: number };
-		collect?: { item: string; quantity?: number; no_stams?: boolean };
-		quest?: {
-			name?: string;
-		};
-		decant?: { potion_name: string; dose?: number };
-		charge?: { item: string; quantity?: number };
-		fight_caves?: {};
-		inferno?: { action: string };
-		birdhouses?: { action?: string; birdhouse?: string };
-		aerial_fishing?: {};
-		enchant?: { name: string; quantity?: number };
-		bury?: { name: string; quantity?: number };
-		scatter?: { name: string; quantity?: number };
-		puro_puro?: { impling: string; dark_lure?: boolean; implingTier?: number };
-		alch?: { item: string; quantity?: number };
-		cast?: { spell: string; quantity?: number };
-		underwater?: {
-			agility_thieving?: {
-				training_skill: UnderwaterAgilityThievingTrainingSkill;
-				minutes?: number;
-				no_stams?: boolean;
-			};
-			drift_net_fishing?: { minutes?: number; no_stams?: boolean };
-		};
-		other?: {
-			activity: string;
-		};
-	}>) => {
+	run: async ({ options, channelID, user, interaction }) => {
 		// Minion can be busy
 		if (options.decant) {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
@@ -621,7 +584,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				channelID,
 				options.puro_puro.impling,
 				options.puro_puro.dark_lure,
-				options.puro_puro.implingTier
+				undefined
 			);
 		}
 		if (options.cast) {
@@ -649,4 +612,4 @@ export const activitiesCommand: OSBMahojiCommand = {
 
 		return 'Invalid command.';
 	}
-};
+});

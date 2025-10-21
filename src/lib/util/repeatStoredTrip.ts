@@ -1,8 +1,9 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';
-import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Items } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import type { Activity, Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
@@ -715,10 +716,10 @@ for (const type of Object.values(activity_type_enum)) {
 	}
 }
 
-export async function fetchRepeatTrips(userID: string) {
+export async function fetchRepeatTrips(user: MUser) {
 	const res: Activity[] = await prisma.activity.findMany({
 		where: {
-			user_id: BigInt(userID),
+			user_id: BigInt(user.id),
 			finish_date: {
 				gt: new Date(Date.now() - Time.Day * 7)
 			}
@@ -732,7 +733,6 @@ export async function fetchRepeatTrips(userID: string) {
 		type: activity_type_enum;
 		data: Prisma.JsonValue;
 	}[] = [];
-	const user = await mUserFetch(userID);
 	for (const trip of res) {
 		if (!taskCanBeRepeated(trip, user)) continue;
 		if (trip.type === activity_type_enum.Farming && !(trip.data as any as FarmingActivityTaskOptions).autoFarmed) {
@@ -746,7 +746,7 @@ export async function fetchRepeatTrips(userID: string) {
 }
 
 export async function makeRepeatTripButtons(user: MUser) {
-	const trips = await fetchRepeatTrips(user.id);
+	const trips = await fetchRepeatTrips(user);
 	const buttons: ButtonBuilder[] = [];
 	const limit = Math.min(user.perkTier() + 1, 5);
 	for (const trip of trips.slice(0, limit)) {
@@ -762,11 +762,11 @@ export async function makeRepeatTripButtons(user: MUser) {
 
 export async function repeatTrip(
 	user: MUser,
-	interaction: ButtonInteraction,
+	interaction: MInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
-) {
+): CommandResponse {
 	if (!data || !data.data || !data.type) {
-		return interaction.reply({ content: "Couldn't find any trip to repeat.", ephemeral: true });
+		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[data.type];
 	return runCommand({
@@ -774,10 +774,7 @@ export async function repeatTrip(
 		isContinue: true,
 		args: handler.args(data.data as any),
 		interaction,
-		guildID: interaction.guildId,
-		member: interaction.member,
-		channelID: interaction.channelId,
 		user,
-		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
+		continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
 	});
 }

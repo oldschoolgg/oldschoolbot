@@ -1,5 +1,5 @@
 import type { SpecialResponse } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions } from 'discord.js';
+import type { GuildMember, InteractionReplyOptions } from 'discord.js';
 
 import type { CommandOptions } from '@/discord/commandOptions.ts';
 
@@ -19,7 +19,7 @@ declare global {
 		options: T;
 		client: RoboChimpClient;
 		user: RUser;
-		member?: MMember;
+		member: GuildMember | null;
 		channelID: string;
 		guildID?: string;
 		userID: string;

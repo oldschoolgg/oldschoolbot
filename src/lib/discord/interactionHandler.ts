@@ -4,7 +4,7 @@ import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { autoCompleteHandler } from '@/lib/discord/autoCompleteHandler.js';
 import { commandHandler } from '@/lib/discord/commandHandler.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
-import { globalButtonInteractionHandler } from '@/lib/util/globalInteractions.js';
+import { globalButtonInteractionHandlerWrapper } from '@/lib/util/globalInteractions.js';
 
 const usernameInsertedCache = new Set<string>();
 
@@ -100,7 +100,7 @@ export async function interactionHandler(rawInteraction: Interaction) {
 		}
 
 		if (rawInteraction.isButton()) {
-			await globalButtonInteractionHandler(rawInteraction);
+			await globalButtonInteractionHandlerWrapper(rawInteraction);
 			return;
 		}
 

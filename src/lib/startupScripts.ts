@@ -1,8 +1,3 @@
-import { Items } from 'oldschooljs';
-
-import { globalConfig } from '@/lib/constants.js';
-import { adminPingLog } from '@/lib/util.js';
-
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 startupScripts.push({
@@ -125,6 +120,12 @@ const checkConstraints: CheckConstraint[] = [
 		column: 'quantity',
 		name: 'ge_bank_quantity_min',
 		body: 'quantity >= 0'
+	},
+	{
+		table: 'table_bank_item',
+		column: 'quantity',
+		name: 'table_bank_quantity_min',
+		body: 'quantity >= 0'
 	}
 ];
 
@@ -161,31 +162,6 @@ startupScripts.push({
 ON ge_transaction (sell_listing_id, created_at DESC);`
 });
 
-const itemMetaDataNames = Items.map(item => `(${item.id}, '${item.name.replace(/'/g, "''")}')`).join(', ');
-const itemMetaDataQuery = `
-INSERT INTO item_metadata (id, name)
-VALUES ${itemMetaDataNames}
-ON CONFLICT (id)
-DO
-  UPDATE SET name = EXCLUDED.name
-WHERE item_metadata.name IS DISTINCT FROM EXCLUDED.name;
-`;
-if (globalConfig.isProduction) {
-	startupScripts.push({ sql: itemMetaDataQuery });
-}
-
 export async function runStartupScripts() {
 	await prisma.$transaction(startupScripts.map(query => prisma.$executeRawUnsafe(query.sql)));
-
-	const usersWithFractionalItemQuantities: any =
-		await prisma.$queryRaw`SELECT u.id AS user_id, item.key AS item_id, item.value::numeric AS quantity
-FROM users u
-CROSS JOIN LATERAL jsonb_each_text(u.bank::jsonb) AS item
-WHERE u.bank::text LIKE '%.%'
-  AND item.value LIKE '%.%';`;
-	if (usersWithFractionalItemQuantities.length > 0) {
-		adminPingLog(
-			`Found ${usersWithFractionalItemQuantities.length} users with fractional item quantities: ${JSON.stringify(usersWithFractionalItemQuantities).slice(0, 500)}`
-		);
-	}
 }
