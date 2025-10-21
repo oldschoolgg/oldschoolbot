@@ -650,6 +650,33 @@ export const adminCommand = defineCommand({
 			return randArrItem(gifs);
 		}
 
+		const attemptDesyncCommands = async () => {
+			const guildIDString = guildID?.toString();
+			if (!guildIDString || guildIDString !== globalConfig.supportServerID) {
+				return null;
+			}
+
+			const adminCommands = globalClient.allCommands.filter(
+				command => command.name === 'admin' || command.name === 'rp'
+			);
+
+			await bulkUpdateCommands({
+				commands: adminCommands,
+				guildID: guildIDString
+			});
+
+			if (!globalConfig.isProduction) {
+				await bulkUpdateCommands({
+					commands: [],
+					guildID: null
+				});
+			}
+
+			const keptCommands = adminCommands.map(command => `/${command.name}`).join(', ') || '/admin';
+
+			return keptCommands;
+		};
+
 		/**
 		 *
 		 * Mod Only Commands
@@ -842,6 +869,13 @@ ${META_CONSTANTS.RENDERED_STR}`
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await economyLog('Flushing economy log due to shutdown', true);
+			try {
+				await attemptDesyncCommands();
+			} catch (err) {
+				Logging.logError(err instanceof Error ? err : new Error(String(err)), {
+					type: 'desync_commands_during_shutdown'
+				});
+			}
 			await Promise.all([sleep(timer), GrandExchange.queue.onIdle()]);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(
@@ -873,28 +907,10 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.desync_commands) {
-			const guildIDString = guildID?.toString();
-			if (!guildIDString || guildIDString !== globalConfig.supportServerID) {
+			const keptCommands = await attemptDesyncCommands();
+			if (!keptCommands) {
 				return 'This subcommand can only be used in the support server.';
 			}
-
-			const adminCommands = globalClient.allCommands.filter(
-				command => command.name === 'admin' || command.name === 'rp'
-			);
-
-			await bulkUpdateCommands({
-				commands: adminCommands,
-				guildID: guildIDString
-			});
-
-			if (!globalConfig.isProduction) {
-				await bulkUpdateCommands({
-					commands: [],
-					guildID: null
-				});
-			}
-
-			const keptCommands = adminCommands.map(command => `/${command.name}`).join(', ') || '/admin';
 
 			return `Desynced commands in this guild; kept ${keptCommands}.`;
 		}
