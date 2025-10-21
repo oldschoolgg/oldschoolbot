@@ -2,7 +2,6 @@ import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 
 import { MathRNG } from '@oldschoolgg/rng';
-import { DateTime } from 'luxon';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import type { HalloweenEvent } from '@/prisma/main.js';
@@ -124,9 +123,6 @@ export async function halloweenTicker() {
 		where: {
 			user_id: {
 				in: pohsWithCandyBowls.map(p => p.user_id)
-			},
-			last_trick_or_treat: {
-				lte: DateTime.now().minus({ minutes: HalloweenEvent2025.constants.MINUTES_PER_VISIT }).toJSDate()
 			},
 			candy_in_bowl: {
 				gt: 0
