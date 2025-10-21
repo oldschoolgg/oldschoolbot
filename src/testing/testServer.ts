@@ -13,11 +13,12 @@ import type { WSContext } from 'hono/ws';
 import { Bank, Items } from 'oldschooljs';
 import type { WebSocket } from 'ws';
 
-import '@/lib/safeglobals';
-import { BOT_TYPE, META_CONSTANTS, globalConfig } from '@/lib/constants';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
-import { testBotKvStore } from './TestBotStore';
-import { minionStatusRaw } from './minionStatusRaw';
+import '@/lib/safeglobals.js';
+
+import { BOT_TYPE, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { minionStatusRaw } from '@/testing/minionStatusRaw.js';
+import { testBotKvStore } from '@/testing/TestBotStore.js';
 
 type HonoServerGeneric = { Bindings: {}; Variables: {} };
 

@@ -1,37 +1,33 @@
-import { type CommandRunOptions, type OSBMahojiCommand, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { calcWhatPercent, objectEntries } from 'e';
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { buildCombatAchievementsResult } from '../../lib/combat_achievements/caUtils';
-import type { CombatAchievement } from '../../lib/combat_achievements/combatAchievements';
+import { buildCombatAchievementsResult } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import {
-	CombatAchievements,
 	allCAMonsterNames,
 	allCombatAchievementTasks,
+	CombatAchievements,
 	caToPlayerString,
 	nextCATier
-} from '../../lib/combat_achievements/combatAchievements';
-import { Requirements } from '../../lib/structures/Requirements';
-import { deferInteraction } from '../../lib/util/interactionReply';
+} from '@/lib/combat_achievements/combatAchievements.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 
 export type CAViewType = (typeof viewTypes)[number];
 
-type MonsterNames = (typeof allCAMonsterNames)[number];
-
-export const caCommand: OSBMahojiCommand = {
+export const caCommand = defineCommand({
 	name: 'ca',
 	description: 'Combat Achievements',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View your Combat Achievements progress.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'What boss do you want to view?',
 					autocomplete: async (value: string) => {
@@ -42,7 +38,7 @@ export const caCommand: OSBMahojiCommand = {
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'What do you want to view?',
 					choices: viewTypes.map(i => ({ name: i, value: i })),
@@ -51,25 +47,15 @@ export const caCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'claim',
 			description: 'Claim your completed Combat Achievements.',
 			options: []
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction
-	}: CommandRunOptions<{
-		claim?: {};
-		view?: {
-			name?: MonsterNames;
-			type?: CAViewType;
-		};
-	}>) => {
-		await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, interaction }) => {
+		await interaction.defer();
+
 		const completedTaskIDs = new Set(user.user.completed_ca_task_ids);
 
 		const currentPoints = user.caPoints();
@@ -78,11 +64,9 @@ export const caCommand: OSBMahojiCommand = {
 		} (${calcWhatPercent(completedTaskIDs.size, allCombatAchievementTasks.length).toFixed(
 			2
 		)}%) tasks for ${currentPoints} points. ${nextCATier(currentPoints)}.\r\nUse ${mentionCommand(
-			globalClient,
 			'ca',
 			'claim'
 		)} to claim tasks (for tasks that don't automatically claim), and ${mentionCommand(
-			globalClient,
 			'ca',
 			'view'
 		)} to view your specific tasks.`;
@@ -181,4 +165,4 @@ export const caCommand: OSBMahojiCommand = {
 
 		return 'Invalid command.';
 	}
-};
+});

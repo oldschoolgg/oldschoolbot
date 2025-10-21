@@ -1,16 +1,13 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters';
-
-import { PerkTier } from '../../lib/constants';
-import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
-import { slayerMasterChoices } from '../../lib/slayer/constants';
-import { slayerMasters } from '../../lib/slayer/slayerMasters';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { Workers } from '../../lib/workers';
+import { PerkTier } from '@/lib/constants.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';
+import { slayerMasterChoices } from '@/lib/slayer/constants.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { Workers } from '@/lib/workers/index.js';
 
 function determineKillLimit(user: MUser) {
 	const perkTier = user.perkTier();
@@ -48,12 +45,12 @@ const ALL_VALID_KILLABLE_MONSTERS = [
 	{ name: 'nightmare', aliases: ['nightmare'] }
 ];
 
-export const killCommand: OSBMahojiCommand = {
+export const killCommand = defineCommand({
 	name: 'kill',
 	description: 'Simulate killing monsters.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The monster you want to simulate killing.',
 			required: true,
@@ -67,33 +64,28 @@ export const killCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to simulate.',
 			required: true,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'catacombs',
 			description: 'Killing in catacombs?',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'master',
 			description: 'On slayer task from a master?',
 			required: false,
 			choices: slayerMasterChoices
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction
-	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string }>) => {
-		const user = await mUserFetch(userID);
-		await deferInteraction(interaction);
+	run: async ({ options, user, interaction }) => {
+		await interaction.defer();
 		if (!ALL_VALID_KILLABLE_MONSTERS.some(i => i.name.toLowerCase() === options.name.toLowerCase())) {
 			return `That's not a valid monster to simulate killing.`;
 		}
@@ -125,4 +117,4 @@ export const killCommand: OSBMahojiCommand = {
 			content: result.content
 		};
 	}
-};
+});

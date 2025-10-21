@@ -1,9 +1,7 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { ACCOUNT_TYPES, type AccountType } from 'oldschooljs/constants';
-import { Hiscores } from 'oldschooljs/hiscores';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { ACCOUNT_TYPES, Hiscores } from 'oldschooljs/hiscores';
 
-import { statsEmbed } from '../../lib/util/statsEmbed';
+import { statsEmbed } from '@/lib/util/statsEmbed.js';
 
 const accountTypeOptions = ACCOUNT_TYPES.map(val => {
 	let name: string = val;
@@ -16,31 +14,31 @@ const accountTypeOptions = ACCOUNT_TYPES.map(val => {
 	};
 });
 
-export const statsCommand: OSBMahojiCommand = {
+export const statsCommand = defineCommand({
 	name: 'stats',
 	description: 'Check the stats of a OSRS account.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'username',
 			description: 'The RuneScape username of the account.',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'type',
 			description: 'The type of account (normal, ironman, HCIM, DMM, leagues, etc).',
 			choices: accountTypeOptions,
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'virtual',
 			description: 'Show virtual stats? (Up to level 120)',
 			required: false
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ username: string; type?: AccountType; virtual?: boolean }>) => {
+	run: async ({ options }) => {
 		try {
 			if (!options.type) {
 				options.type = 'normal';
@@ -65,4 +63,4 @@ export const statsCommand: OSBMahojiCommand = {
 			return err.message;
 		}
 	}
-};
+});

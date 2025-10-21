@@ -1,14 +1,10 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { chunk } from 'e';
+import { chunk, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { leagueBuyables } from '../../lib/data/leaguesBuyables';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { getUsername } from '../../lib/util';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { doMenu } from './leaderboard';
+import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { getUsername } from '@/lib/util.js';
+import { doMenu } from '@/mahoji/commands/leaderboard.js';
 
 const leaguesTrophiesBuyables = [
 	{
@@ -41,32 +37,32 @@ const leaguesTrophiesBuyables = [
 	}
 ];
 
-export const botLeaguesCommand: OSBMahojiCommand = {
+export const botLeaguesCommand = defineCommand({
 	name: 'botleagues',
 	description: 'Compete in the OSB/BSO Leagues.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'help',
 			description: 'Shows help and information about leagues.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'claim_trophy',
 			description: 'Claim your leagues trophys.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leaderboard',
 			description: 'The leagues leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy_reward',
 			description: 'Buy a reward with your leagues points.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item to buy.',
 					required: true,
@@ -79,18 +75,7 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		help?: {};
-		claim_trophy?: {};
-		leaderboard?: {};
-		buy_reward?: { item: string };
-	}>) => {
-		const user = await mUserFetch(userID.toString());
+	run: async ({ options, user, interaction }) => {
 		const roboChimpUser = await roboChimpUserFetch(user.id);
 
 		if (options.claim_trophy) {
@@ -141,8 +126,7 @@ ${leaguesTrophiesBuyables
 			});
 
 			const loot = new Bank().add(item.item.id, quantity);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				itemsToAdd: loot,
 				collectionLog: true
 			});
@@ -151,6 +135,7 @@ ${leaguesTrophiesBuyables
 		}
 
 		if (options.leaderboard) {
+			await interaction.defer();
 			const result = await roboChimpClient.user.findMany({
 				where: {
 					leagues_points_total: {
@@ -162,11 +147,8 @@ ${leaguesTrophiesBuyables
 				},
 				take: 100
 			});
-			await deferInteraction(interaction);
-			doMenu(
+			return doMenu(
 				interaction,
-				user,
-				channelID,
 				await Promise.all(
 					chunk(result, 10).map(async subList =>
 						(
@@ -181,9 +163,8 @@ ${leaguesTrophiesBuyables
 				),
 				'Leagues Points Leaderboard'
 			);
-			return null;
 		}
 
 		return 'https://wiki.oldschool.gg/bso/leagues/';
 	}
-};
+});

@@ -1,20 +1,16 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import fetch from 'node-fetch';
-
-export const wikiCommand: OSBMahojiCommand = {
+export const wikiCommand = defineCommand({
 	name: 'wiki',
 	description: 'Search the official OSRS wiki.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'query',
 			description: 'Your search query.',
 			required: true,
-			autocomplete: async value => {
+			autocomplete: async (value: string) => {
 				if (!value) return [];
 				try {
-					const autocompleteResult = await fetch(
+					const autocompleteResult: any = await fetch(
 						`https://oldschool.runescape.wiki/api.php?action=opensearch&format=json&formatversion=2&search=${encodeURIComponent(
 							value
 						)}&namespace=0&limit=10`
@@ -27,7 +23,7 @@ export const wikiCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ query: string }>) => {
+	run: async ({ options }) => {
 		return `https://oldschool.runescape.wiki/${encodeURIComponent(options.query)}`;
 	}
-};
+});

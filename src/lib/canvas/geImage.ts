@@ -1,12 +1,11 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import type { GEListing, GETransaction } from '@prisma/client';
-import { calcPercentOfNum, calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
-import type { GEListingWithTransactions } from '../../mahoji/commands/ge';
-import { CanvasSpritesheet } from './CanvasSpritesheet';
-import { OSRSCanvas } from './OSRSCanvas';
+import type { GEListing, GETransaction } from '@/prisma/main.js';
+import { CanvasSpritesheet } from '@/lib/canvas/CanvasSpritesheet.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import type { GEListingWithTransactions } from '@/mahoji/commands/ge.js';
 
 class GeImageGeneratorSingleton {
 	public geInterface: Canvas | null = null;
@@ -110,17 +109,6 @@ class GeImageGeneratorSingleton {
 		} else {
 			ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
 		}
-		// if (listing.quantity_remaining > 0) {
-		// 	progressWidth = Math.floor(
-		// 		(maxWidth * (listing.total_quantity - listing.quantity_remaining)) / listing.total_quantity
-		// 	);
-		// 	if (progressWidth === maxWidth) {
-		// 		ctx.fillStyle = OSRSCanvas.COLORS.DARK_GREEN;
-		// 	}
-		// } else {
-		// 	ctx.fillStyle = OSRSCanvas.COLORS.DARK_RED;
-		// 	progressWidth = maxWidth;
-		// }
 
 		ctx.fillRect(0, 0, progressWidth, progressShadowImage.height);
 		ctx.drawImage(progressShadowImage, 0, 0, progressShadowImage.width, progressShadowImage.height);

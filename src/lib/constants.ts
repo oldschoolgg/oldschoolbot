@@ -1,14 +1,13 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
-import { PerkTier, dateFm } from '@oldschoolgg/toolkit/util';
+import { dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
 import * as dotenv from 'dotenv';
-import { resolveItems } from 'oldschooljs';
-import { z } from 'zod';
+import { convertLVLtoXP, resolveItems } from 'oldschooljs';
+import * as z from 'zod';
 
-import { SkillsEnum } from './skilling/types';
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
 
@@ -154,7 +153,8 @@ export enum BitField {
 	DisableDailyButton = 44,
 
 	HasDeadeyeScroll = 45,
-	HasMysticVigourScroll = 46
+	HasMysticVigourScroll = 46,
+	AllowPublicAPIDataRetrieval = 47
 }
 
 interface BitFieldData {
@@ -268,6 +268,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.AllowPublicAPIDataRetrieval]: {
+		name: 'Allow Public API Data Retrieval',
+		protected: false,
+		userConfigurable: true
+	},
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
@@ -313,11 +318,10 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.Hacktoberfest]: '<:hacktoberfest:1304259875634942082>'
 };
 
-export const MAX_XP = 200_000_000;
-
-export const LEVEL_99_XP = 13_034_431;
+export const MAX_XP = BOT_TYPE === 'OSB' ? 200_000_000 : 5_000_000_000;
 export const MAX_LEVEL = BOT_TYPE === 'OSB' ? 99 : 120;
-export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
+export const MAX_LEVEL_XP = convertLVLtoXP(MAX_LEVEL);
+export const MAX_TOTAL_LEVEL = SkillsArray.length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -359,19 +363,6 @@ export const projectiles = {
 } as const;
 export type ProjectileType = keyof typeof projectiles;
 
-const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
-	if (!Array.isArray(args)) return true;
-	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
-			return false;
-		}
-	}
-	return true;
-}
-
-export const DISABLED_COMMANDS = new Set<string>();
-
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
 export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
@@ -387,11 +378,11 @@ const globalConfigSchema = z.object({
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
-	sentryDSN: z.string().url().optional(),
 	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
-	supportServerID: z.string()
+	supportServerID: z.string(),
+	minimumLoggedPerfDuration: z.number().default(30)
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
@@ -408,7 +399,6 @@ export const globalConfig = globalConfigSchema.parse({
 	isCI: process.env.CI,
 	isProduction,
 	timeZone: process.env.TZ,
-	sentryDSN: process.env.SENTRY_DSN,
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
 	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID
@@ -455,3 +445,12 @@ export const MAX_CLUES_DROPPED = 100;
 
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];
+
+export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
+	activity_type_enum.BirthdayEvent,
+	activity_type_enum.Easter,
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
+	activity_type_enum.Revenants, // This is now under monsterActivity
+	activity_type_enum.KourendFavour // Kourend favor activity was removed
+];

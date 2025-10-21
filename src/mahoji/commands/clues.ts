@@ -1,9 +1,8 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Hiscores } from 'oldschooljs';
+import { Hiscores } from 'oldschooljs/hiscores';
 
-export const cluesCommand: OSBMahojiCommand = {
+export const cluesCommand = defineCommand({
 	name: 'clues',
 	description: 'See your OSRS clue scores.',
 	attributes: {
@@ -11,13 +10,13 @@ export const cluesCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'Your runescape username.',
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ rsn: string }>) => {
+	run: async ({ options }) => {
 		try {
 			const { clues } = await Hiscores.fetch(options.rsn);
 
@@ -41,4 +40,4 @@ export const cluesCommand: OSBMahojiCommand = {
 			return err.message;
 		}
 	}
-};
+});

@@ -1,14 +1,13 @@
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { Minigame } from '@prisma/client';
+import { calcWhatPercent, objectEntries, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { strikethrough } from 'discord.js';
-import { calcWhatPercent } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Items, Monsters } from 'oldschooljs';
 
-import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '../../../lib/diaries';
-import type { DiaryTier } from '../../../lib/minions/types';
-import { Minigames } from '../../../lib/settings/minigames';
-import { MUserStats } from '../../../lib/structures/MUserStats';
-import { formatSkillRequirements, itemNameFromID } from '../../../lib/util/smallUtils';
+import type { Minigame } from '@/prisma/main.js';
+import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '@/lib/diaries.js';
+import type { DiaryTier } from '@/lib/minions/types.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const lampRewards = {
 	Easy: 'Antique lamp 1',
@@ -30,7 +29,7 @@ export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 	const diary = diaries.find(
 		d => stringMatches(d.name, diaryName) || d.alias?.some(a => stringMatches(a, diaryName))
 	);
-	const stats = await MUserStats.fromID(user.id);
+	const stats = await user.fetchMStats();
 
 	if (!diary) {
 		let str = 'Your Achievement Diaries\n\n';
@@ -55,11 +54,11 @@ export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 		thisStr += `- Skill Reqs: ${formatSkillRequirements(tier.skillReqs, false)}\n`;
 
 		if (tier.ownedItems) {
-			thisStr += `- Must Own: ${tier.ownedItems.map(itemNameFromID).join(', ')}\n`;
+			thisStr += `- Must Own: ${tier.ownedItems.map(i => Items.itemNameFromId(i)).join(', ')}\n`;
 		}
 
 		if (tier.collectionLogReqs) {
-			thisStr += `- Must Have in CL: ${tier.collectionLogReqs.map(itemNameFromID).join(', ')}\n`;
+			thisStr += `- Must Have in CL: ${tier.collectionLogReqs.map(i => Items.itemNameFromId(i)).join(', ')}\n`;
 		}
 
 		if (tier.qp) {
@@ -82,9 +81,8 @@ export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 		}
 
 		if (tier.monsterScores) {
-			const entries = Object.entries(tier.monsterScores);
-			for (const [name, score] of entries) {
-				const mon = Monsters.find(mon => mon.name === name)!;
+			for (const [id, score] of objectEntries(tier.monsterScores)) {
+				const mon = Monsters.get(Number(id))!;
 				thisStr += `- Must Have **${score}** KC of ${mon.name}\n`;
 			}
 		}

@@ -1,16 +1,10 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
-export const mixCommand: OSBMahojiCommand = {
+export const mixCommand = defineCommand({
 	name: 'mix',
 	description: 'Mix potions to train Herblore.',
 	attributes: {
@@ -20,7 +14,7 @@ export const mixCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The potion you want to mix.',
 			required: true,
@@ -34,37 +28,32 @@ export const mixCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to mix (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'wesley',
 			description: 'If available, pay Wesley to crush items. (optional).',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'zahur',
 			description: 'If available, pay Zahur to clean herbs. (optional).',
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; wesley?: boolean; zahur?: boolean }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }) => {
 		const mixableItem = Herblore.Mixables.find(
 			i => stringMatches(i.item.name, options.name) || i.aliases.some(alias => stringMatches(alias, options.name))
 		);
 		if (!mixableItem) return 'That is not a valid mixable item.';
 
-		if (user.skillLevel(SkillsEnum.Herblore) < mixableItem.level) {
+		if (user.skillsAsLevels.herblore < mixableItem.level) {
 			return `${user.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.item.name}.`;
 		}
 
@@ -96,7 +85,7 @@ export const mixCommand: OSBMahojiCommand = {
 			} gp for each item so they don't have to go.`;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Herblore');
+		const maxTripLength = user.calcMaxTripLength('Herblore');
 		let quantity = optionQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
@@ -125,12 +114,12 @@ export const mixCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(finalCost);
 
-		updateBankSetting('herblore_cost_bank', finalCost);
+		await ClientSettings.updateBankSetting('herblore_cost_bank', finalCost);
 
-		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
+		await ActivityManager.startTrip<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.item.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			zahur: Boolean(zahur),
 			wesley: Boolean(wesley),
 			quantity,
@@ -142,4 +131,4 @@ export const mixCommand: OSBMahojiCommand = {
 			mixableItem.outputMultiple ? 'batches of' : ''
 		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
 	}
-};
+});

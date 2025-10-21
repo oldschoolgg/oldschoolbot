@@ -1,7 +1,7 @@
-import { Time, sumArr } from 'e';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { Skills } from '../../types';
+import type { Skills } from '@/lib/types/index.js';
 
 interface Quest {
 	id: QuestID;

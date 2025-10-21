@@ -1,10 +1,10 @@
 import { Bank } from 'oldschooljs';
 
-import { diaries, userhasDiaryTier } from '../../diaries';
-import { MAX_QP } from '../../minions/data/quests';
-import { musicCapeRequirements } from '../../musicCape';
-import { Requirements } from '../../structures/Requirements';
-import type { Buyable } from './buyables';
+import type { Buyable } from '@/lib/data/buyables/buyables.js';
+import { diaries, userhasDiaryTier } from '@/lib/diaries.js';
+import { MAX_QP } from '@/lib/minions/data/quests.js';
+import { musicCapeRequirements } from '@/lib/musicCape.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 
 export const capeBuyables: Buyable[] = [
 	{

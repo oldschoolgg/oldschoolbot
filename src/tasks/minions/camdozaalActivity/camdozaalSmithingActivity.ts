@@ -1,9 +1,7 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 // Barronite deposit loot table
 const barroniteDepositLootTable = new LootTable()
@@ -19,9 +17,8 @@ const barroniteDepositLootTable = new LootTable()
 
 export const camdozaalSmithingTask: MinionTask = {
 	type: 'CamdozaalSmithing',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID, duration } = data;
 
 		// Count loot received during trip
 		const loot = new Bank();
@@ -34,7 +31,7 @@ export const camdozaalSmithingTask: MinionTask = {
 
 		// Add xp to user
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: smithingXpReceived,
 			duration,
 			source: 'CamdozaalSmithing'
@@ -44,8 +41,7 @@ export const camdozaalSmithingTask: MinionTask = {
 		const str = `${user}, ${user.minionName} finished smithing in Camdozaal! ${xpRes}`;
 
 		// Give the user the items from the trip
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

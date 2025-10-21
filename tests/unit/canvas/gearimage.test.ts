@@ -4,13 +4,26 @@ import { EItem } from 'oldschooljs';
 import { EGear } from 'oldschooljs/EGear';
 import { describe, test } from 'vitest';
 
-import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage';
-import { COXMaxMeleeGear } from '@/lib/data/cox';
-import Farming from '@/lib/skilling/skills/farming';
-import { Gear } from '@/lib/structures/Gear';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
+const COXMaxMeleeGear = constructGearSetup({
+	head: 'Torva full helm',
+	neck: 'Amulet of torture',
+	body: 'Torva platebody',
+	cape: 'Infernal cape',
+	hands: 'Ferocious gloves',
+	legs: 'Torva platelegs',
+	feet: 'Primordial boots',
+	'2h': 'Scythe of vitur',
+	ring: 'Ultor ring'
+});
+
 describe('Gear Images', async () => {
+	await bankImageTask.ready;
 	const gear = COXMaxMeleeGear.clone();
 	gear.equip(EGear.DRAGON_ARROW, 100);
 
@@ -114,7 +127,8 @@ describe('Gear Images', async () => {
 				plant: Farming.Plants.find(p => p.name === 'Yew tree'),
 				matchingPlantedCrop: {
 					ready: true
-				} as any
+				} as any,
+				farmingInfo: {} as any
 			}
 		});
 		await writeFile(path.join(baseSnapshotPath, 'gear-farming-contract.png'), gearImage);

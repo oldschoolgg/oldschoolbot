@@ -1,21 +1,18 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
-import { SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import '../src/lib/safeglobals';
+import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
+import { isFunction, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
+import '../src/lib/safeglobals.js';
+
+import { Bank, GearStat, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 
-import { isFunction, uniqueArr } from 'e';
-import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
-import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
-import { BOT_TYPE } from '../src/lib/constants';
-import { allCLItems } from '../src/lib/data/Collections';
-import Buyables from '../src/lib/data/buyables/buyables';
-import Createables from '../src/lib/data/createables';
-
-import type { GenerateResult } from 'packages/spritesheet/dist/types.js';
-import bsoItemsJson from '../data/bso/bso_items.json';
-import bsoMonstersJson from '../data/bso/monsters.json';
+import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
+import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
+import { BOT_TYPE } from '../src/lib/constants.js';
+import Buyables from '../src/lib/data/buyables/buyables.js';
+import { allCLItems } from '../src/lib/data/Collections.js';
+import Createables from '../src/lib/data/createables.js';
 
 const SPRITESHEETS_DIR = './src/lib/resources/spritesheets';
 const stopwatch = new Stopwatch();
@@ -79,14 +76,36 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		'Adamant staff of collection',
 		'Rune staff of collection',
 		'Dragon staff of collection',
-		'Gilded staff of collection'
-	]),
-	...uniqueArr(bsoMonstersJson.data.map(m => m.all_droppable_items).flat(100)).filter(id => {
-		if ((bsoItemsJson as any as ItemBank)[id]) return false;
-		if (!Items.has(id)) return false;
-		return true;
-	})
+		'Gilded staff of collection',
+		'Bone shard',
+		'Lump of crystal',
+		'Dwarven rock cake',
+		'Jewellery',
+		'Fishing trophy',
+		'Crystal tangleroot',
+		'Dragonfruit tangleroot',
+		'Herb tangleroot',
+		'White lily tangleroot',
+		'Redwood tangleroot'
+	])
 ]);
+
+const bisGearItems = new Set<number>();
+
+for (const stat of Object.values(GearStat)) {
+	const gearSetups = findBestGearSetups({ stat, ignoreUnobtainable: true, limit: 10 });
+	for (const setup of gearSetups) {
+		for (const id of setup.allItems(false)) {
+			const item = Items.get(id);
+			if (!item) continue;
+			if ([' (75)', ' (100)', ' (50)', ' (25)', ' (0)', ' (l)'].some(t => item.wiki_name?.includes(t))) continue;
+			bisGearItems.add(item.id);
+		}
+	}
+}
+
+const bisGearMissing = Array.from(bisGearItems).filter(i => !itemsMustBeInSpritesheet.includes(i));
+itemsMustBeInSpritesheet.push(...bisGearMissing);
 
 const getPngFiles = async (dir: string): Promise<string[]> => {
 	const files = await fs.readdir(dir);

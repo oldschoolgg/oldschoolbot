@@ -1,14 +1,10 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { TimerManager } from '@sapphire/timer-manager';
-
-import { globalConfig } from './constants';
+import { globalConfig } from '@/lib/constants.js';
 
 export const BLACKLISTED_USERS = new Set<string>();
 export const BLACKLISTED_GUILDS = new Set<string>();
 
 export async function syncBlacklists() {
 	if (!globalConfig.isProduction) {
-		console.log('Skipping blacklist sync because not production');
 		return;
 	}
 	const blacklistedEntities = await roboChimpClient.blacklistedEntity.findMany();
@@ -19,5 +15,3 @@ export async function syncBlacklists() {
 		set.add(entity.id.toString());
 	}
 }
-
-export const startBlacklistSyncing = () => TimerManager.setInterval(syncBlacklists, Time.Minute * 10);

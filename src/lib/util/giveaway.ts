@@ -1,22 +1,17 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import type { Giveaway } from '@prisma/client';
+import { channelIsSendable, debounce, Events, noOp, Time } from '@oldschoolgg/toolkit';
 import { type MessageEditOptions, time, userMention } from 'discord.js';
-import { Time, debounce, noOp } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { sql } from '../postgres.js';
-import { logError } from './logError';
-import { sendToChannelID } from './webhook';
+import type { Giveaway } from '@/prisma/main.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
-	await transactItems({
-		userID: creator.id,
+	await creator.transactItems({
 		itemsToAdd: loot
 	});
-	const user = await globalClient.fetchUser(creator.id);
-	debugLog('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
-	user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
+	const user = await globalClient.users.fetch(creator.id);
+	Logging.logDebug('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
+	await user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
 }
 
 async function getGiveawayMessage(giveaway: Giveaway) {
@@ -25,6 +20,7 @@ async function getGiveawayMessage(giveaway: Giveaway) {
 		const message = await channel.messages.fetch(giveaway.message_id).catch(noOp);
 		if (message) return message;
 	}
+	return null;
 }
 
 export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[]) {
@@ -38,7 +34,7 @@ There are ${usersEntered.length} users entered in this giveaway.`;
 
 async function pickRandomGiveawayWinner(giveaway: Giveaway): Promise<MUser | null> {
 	if (giveaway.users_entered.length === 0) return null;
-	const result: { id: string }[] = await sql`WITH giveaway_users AS (
+	const result: { id: string }[] = await prisma.$queryRaw`WITH giveaway_users AS (
   SELECT unnest(users_entered) AS user_id
   FROM giveaway
   WHERE id = ${giveaway.id}
@@ -74,7 +70,7 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
 }, Time.Second);
 
 export async function handleGiveawayCompletion(_giveaway: Giveaway) {
-	debugLog('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
+	Logging.logDebug('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
 	if (_giveaway.completed) {
 		throw new Error('Tried to complete an already completed giveaway.');
 	}
@@ -102,7 +98,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 			return;
 		}
 
-		await transactItems({ userID: winner.id, itemsToAdd: loot });
+		await winner.transactItems({ itemsToAdd: loot });
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: undefined,
@@ -127,6 +123,6 @@ They received these items: ${loot}`;
 			content: str
 		});
 	} catch (err) {
-		logError(err);
+		Logging.logError(err as Error);
 	}
 }

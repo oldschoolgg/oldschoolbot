@@ -1,32 +1,29 @@
-import { TSVWriter } from '@oldschoolgg/toolkit/structures';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import type { PlayerOwnedHouse } from '@prisma/client';
-import { Time } from 'e';
-import { Bank, Items, convertBankToPerHourStats, resolveItems, toKMB } from 'oldschooljs';
+import { calcPerHour, Time, TSVWriter } from '@oldschoolgg/toolkit';
+import { Bank, convertBankToPerHourStats, Items, resolveItems, toKMB } from 'oldschooljs';
 import { omit } from 'remeda';
 
-applyStaticDefine();
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 
-import '../src/lib/safeglobals';
-import { applyStaticDefine } from '../meta';
-import { type BitField, PVM_METHODS } from '../src/lib/constants';
-import { degradeableItems } from '../src/lib/degradeableItems';
-import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants';
-import killableMonsters from '../src/lib/minions/data/killableMonsters';
-import type { AttackStyles } from '../src/lib/minions/functions';
-import { SkillsArray, SkillsEnum } from '../src/lib/skilling/types';
-import { slayerMasters } from '../src/lib/slayer/slayerMasters';
-import type { SlayerTaskUnlocksEnum } from '../src/lib/slayer/slayerUnlocks';
-import { ChargeBank } from '../src/lib/structures/Bank';
-import { Gear } from '../src/lib/structures/Gear';
-import { GearBank } from '../src/lib/structures/GearBank';
-import { KCBank } from '../src/lib/structures/KCBank';
-import { MUserStats } from '../src/lib/structures/MUserStats';
+import '../src/lib/safeglobals.js';
+
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import { type BitField, PVM_METHODS } from '../src/lib/constants.js';
+import { degradeableItems } from '../src/lib/degradeableItems.js';
+import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants.js';
+import { SkillsArray } from '../src/lib/skilling/types.js';
+import { slayerMasters } from '../src/lib/slayer/slayerMasters.js';
+import type { SlayerTaskUnlocksEnum } from '../src/lib/slayer/slayerUnlocks.js';
+import { ChargeBank } from '../src/lib/structures/Bank.js';
+import { Gear } from '../src/lib/structures/Gear.js';
+import { GearBank } from '../src/lib/structures/GearBank.js';
+import { KCBank } from '../src/lib/structures/KCBank.js';
+import { MUserStats } from '../src/lib/structures/MUserStats.js';
 import {
 	type MinionKillReturn,
 	newMinionKillCommand
-} from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill';
-import { doMonsterTrip } from '../src/tasks/minions/monsterActivity';
+} from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
+import { doMonsterTrip } from '../src/tasks/minions/monsterActivity.js';
 
 const MAX_TRIP_LENGTH = Time.Hour * 600;
 const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints', 'slayer'];
@@ -45,11 +42,11 @@ const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: Mi
 const userStats = new MUserStats({} as any);
 
 const attackStyleSets: AttackStyles[][] = [
-	[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence],
-	[SkillsEnum.Ranged],
-	[SkillsEnum.Magic],
-	[SkillsEnum.Ranged, SkillsEnum.Defence],
-	[SkillsEnum.Magic, SkillsEnum.Defence]
+	['attack', 'strength', 'defence'],
+	['ranged'],
+	['magic'],
+	['ranged', 'defence'],
+	['magic', 'defence']
 ];
 
 const skillsAsXP: any = {};
@@ -75,7 +72,6 @@ async function main() {
 				other: new Gear()
 			},
 			bank,
-			skillsAsLevels,
 			skillsAsXP,
 			minionName: 'Minion'
 		});

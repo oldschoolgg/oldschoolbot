@@ -1,17 +1,15 @@
-import { randInt } from 'e';
+import { percentChance, randInt } from '@oldschoolgg/rng';
 import { Bank, EItem } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
-import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { percentChance } from '../../lib/util/rng';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
-	async run(data: HerbloreActivityTaskOptions) {
-		const { mixableID, quantity, zahur, wesley, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
+		const { mixableID, quantity, zahur, wesley, channelID, duration } = data;
+
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const xpReceived = zahur && mixableItem.zahur ? 0 : quantity * mixableItem.xp;
 		let outputQuantity = mixableItem.outputMultiple ? quantity * mixableItem.outputMultiple : quantity;
@@ -41,7 +39,7 @@ export const herbloreTask: MinionTask = {
 		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank().add(mixableItem.item.id, outputQuantity);
 
-		await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
+		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		handleTripFinish(
 			user,

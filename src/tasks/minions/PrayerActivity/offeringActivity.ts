@@ -1,11 +1,8 @@
-import { percentChance, randInt } from 'e';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { ItemGroups } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import Prayer from '../../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { OfferingActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export function zealOutfitBoost(user: MUser) {
 	let zealOutfitAmount = 0;
@@ -22,9 +19,9 @@ export function zealOutfitBoost(user: MUser) {
 
 export const offeringTask: MinionTask = {
 	type: 'Offering',
-	async run(data: OfferingActivityTaskOptions) {
-		const { boneID, quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: OfferingActivityTaskOptions, { user, handleTripFinish }) {
+		const { boneID, quantity, channelID } = data;
+
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
 
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
@@ -67,7 +64,7 @@ export const offeringTask: MinionTask = {
 		const xpReceived = newQuantity * bone.xp * XPMod;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Prayer,
+			skillName: 'prayer',
 			amount: xpReceived,
 			duration: data.duration,
 			source: 'OfferingBones'

@@ -1,12 +1,10 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { choicesOf } from '@/lib/discord/index.js';
+import { toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
+import { mileStoneBaseDeathChances } from '@/lib/simulation/toaUtils.js';
+import { coxBoostsCommand, coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
+import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 
-import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { coxBoostsCommand, coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
-import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
-
-export const raidCommand: OSBMahojiCommand = {
+export const raidCommand = defineCommand({
 	name: 'raid',
 	description: 'Send your minion to do raids - CoX or ToB.',
 	attributes: {
@@ -14,36 +12,36 @@ export const raidCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'cox',
 			description: 'The Chambers of Xeric.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Chambers of Xeric trip',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'type',
 							description: 'Choose whether you want to solo, mass, or fake mass.',
-							choices: ['solo', 'mass', 'fakemass'].map(i => ({ name: i, value: i })),
+							choices: choicesOf(['solo', 'mass', 'fakemass']),
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'challenge_mode',
 							description: 'Choose whether you want to do Challenge Mode.',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The quantity to do.',
 							required: false,
@@ -53,47 +51,47 @@ export const raidCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'Check your CoX stats.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'itemboosts',
 					description: 'Check your CoX item boosts.'
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'tob',
 			description: 'The Theatre of Blood.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Theatre of Blood trip',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'solo',
 							description: 'Solo with a team of 3 bots.',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'hard_mode',
 							description: 'Choose whether you want to do Hard Mode.',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The quantity to do.',
 							required: false,
@@ -103,17 +101,17 @@ export const raidCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'Check your ToB stats.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'check',
 					description: "Check if you're ready for ToB.",
 					options: [
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'hard_mode',
 							description: 'Choose whether you want to check Hard Mode.',
 							required: false
@@ -123,17 +121,17 @@ export const raidCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'toa',
 			description: 'The Tombs of Amascut.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Tombs of Amascut trip',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'raid_level',
 							description: 'Choose the raid level you want to do (1-600).',
 							required: true,
@@ -143,13 +141,13 @@ export const raidCommand: OSBMahojiCommand = {
 							}))
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'solo',
 							description: 'Do you want to solo?',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
 							required: false,
@@ -157,7 +155,7 @@ export const raidCommand: OSBMahojiCommand = {
 							max_value: 8
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The quantity to do.',
 							required: false,
@@ -167,41 +165,16 @@ export const raidCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'help',
 					description: 'Shows helpful information and stats about TOA.'
 				}
 			]
 		}
 	],
-	run: async ({
-		interaction,
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{
-		cox?: {
-			start?: {
-				type: 'solo' | 'mass' | 'fakemass';
-				challenge_mode?: boolean;
-				max_team_size?: number;
-				quantity?: number;
-			};
-			stats?: {};
-			itemboosts?: {};
-		};
-		tob?: {
-			start?: { solo?: boolean; hard_mode?: boolean; max_team_size?: number; quantity?: number };
-			stats?: {};
-			check?: { hard_mode?: boolean };
-		};
-		toa?: {
-			start?: { raid_level: number; max_team_size?: number; solo?: boolean; quantity?: number };
-			help?: {};
-		};
-	}>) => {
-		if (interaction) await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+	run: async ({ interaction, options, user, channelID }) => {
+		if (interaction) await interaction.defer();
+
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
 		if (cox?.itemboosts) return coxBoostsCommand(user);
@@ -213,6 +186,7 @@ export const raidCommand: OSBMahojiCommand = {
 
 		if (cox?.start) {
 			return coxCommand(
+				interaction,
 				channelID,
 				user,
 				cox.start.type,
@@ -223,6 +197,7 @@ export const raidCommand: OSBMahojiCommand = {
 		}
 		if (tob?.start) {
 			return tobStartCommand(
+				interaction,
 				user,
 				channelID,
 				Boolean(tob.start.hard_mode),
@@ -234,6 +209,7 @@ export const raidCommand: OSBMahojiCommand = {
 
 		if (options.toa?.start) {
 			return toaStartCommand(
+				interaction,
 				user,
 				Boolean(options.toa.start.solo),
 				channelID,
@@ -245,4 +221,4 @@ export const raidCommand: OSBMahojiCommand = {
 
 		return 'Invalid command.';
 	}
-};
+});

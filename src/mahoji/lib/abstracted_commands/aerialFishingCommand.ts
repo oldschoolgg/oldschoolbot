@@ -1,9 +1,7 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export async function aerialFishingCommand(user: MUser, channelID: string) {
 	if (user.skillsAsLevels.fishing < 43 || user.skillsAsLevels.hunter < 35) {
@@ -11,12 +9,12 @@ export async function aerialFishingCommand(user: MUser, channelID: string) {
 	}
 
 	const timePerFish = randomVariation(2, 7.5) * Time.Second;
-	const quantity = Math.floor(calcMaxTripLength(user, 'AerialFishing') / timePerFish);
+	const quantity = Math.floor(user.calcMaxTripLength('AerialFishing') / timePerFish);
 	const duration = timePerFish * quantity;
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'AerialFishing'

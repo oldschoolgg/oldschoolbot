@@ -1,11 +1,18 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { randArrItem, randInt, shuffleArr } from '@oldschoolgg/rng';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import { clone } from 'remeda';
+import { beforeAll, expect, test } from 'vitest';
+
 import {
 	type Activity,
+	type activity_type_enum,
 	type Bingo,
 	type BingoParticipant,
 	type BotItemSell,
 	type BuyCommandTransaction,
 	type CommandUsage,
+	command_name_enum,
 	type EconomyTransaction,
 	type FarmedCrop,
 	type GEListing,
@@ -22,46 +29,39 @@ import {
 	type SlayerTask,
 	type StashUnit,
 	type UserStats,
-	type XPGain,
-	type activity_type_enum,
-	command_name_enum
-} from '@prisma/client';
-import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
-import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
-import { beforeAll, expect, test, vi } from 'vitest';
-
-import { BitField } from '../../src/lib/constants';
-import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
-import { trackLoot } from '../../src/lib/lootTrack';
-import type { MinigameName } from '../../src/lib/settings/minigames';
-import type { SkillsEnum } from '../../src/lib/skilling/types';
-import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
-import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
-import type { Skills } from '../../src/lib/types';
-import { isGroupActivity } from '../../src/lib/util';
-import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
-import { findPlant } from '../../src/lib/util/farmingHelpers';
-import getOSItem from '../../src/lib/util/getOSItem';
-import { migrateUser } from '../../src/lib/util/migrateUser';
-import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
-import { updateBankSetting } from '../../src/lib/util/updateBankSetting';
-import { pinTripCommand } from '../../src/mahoji/commands/config';
-import { geCommand } from '../../src/mahoji/commands/ge';
-import { createOrEditGearSetup } from '../../src/mahoji/commands/gearpresets';
-import { minionCommand } from '../../src/mahoji/commands/minion';
-import { getPOH, pohWallkitCommand } from '../../src/mahoji/lib/abstracted_commands/pohCommand';
+	type XPGain
+} from '@/prisma/main.js';
+import type { AnyCommand } from '@/lib/discord/commandOptions.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { defaultGear, Gear } from '@/lib/structures/Gear.js';
+import { BitField } from '../../src/lib/constants.js';
+import { type GearSetupType, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
+import { trackLoot } from '../../src/lib/lootTrack.js';
+import type { MinigameName } from '../../src/lib/settings/minigames.js';
+import { SkillsArray } from '../../src/lib/skilling/types.js';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters.js';
+import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil.js';
+import type { Skills } from '../../src/lib/types/index.js';
+import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti.js';
+import { migrateUser } from '../../src/lib/util/migrateUser.js';
+import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems.js';
+import { isGroupActivity } from '../../src/lib/util.js';
+import { pinTripCommand } from '../../src/mahoji/commands/config.js';
+import { geCommand } from '../../src/mahoji/commands/ge.js';
+import { createOrEditGearSetup } from '../../src/mahoji/commands/gearpresets.js';
+import { minionCommand } from '../../src/mahoji/commands/minion.js';
+import { getPOH, pohWallkitCommand } from '../../src/mahoji/lib/abstracted_commands/pohCommand.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand
-} from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
-import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
-import type { TestUser } from './util';
-import { createTestUser, mockClient, mockedId } from './util';
+} from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity.js';
+import type { TestUser } from './util.js';
+import { createTestUser, mockClient, mockedId } from './util.js';
 
 interface TestCommand {
 	name: string;
-	cmd: [OSBMahojiCommand, object] | ((user: TestUser) => Promise<any>);
+	cmd: [AnyCommand, object] | ((user: TestUser) => Promise<any>);
 	activity?: boolean;
 	priority?: boolean;
 }
@@ -121,8 +121,12 @@ class UserData {
 
 		this.bank = new Bank(this.mUser.bank);
 		this.clbank = new Bank(this.mUser.cl);
-		this.gear = { ...deepClone(this.mUser.gear) };
-		this.skillsAsLevels = deepClone(this.mUser.skillsAsLevels);
+
+		this.gear = {} as UserFullGearSetup;
+		for (const setupType of GearSetupTypes) {
+			this.gear[setupType] = new Gear(this.mUser.gear[setupType].raw() ?? { ...defaultGear }).clone();
+		}
+		this.skillsAsLevels = clone(this.mUser.skillsAsLevels);
 
 		const robochimpUser = await roboChimpClient.user.findFirst({
 			where: { id: BigInt(this.id) },
@@ -279,18 +283,16 @@ class UserData {
 		if (!this.clbank!.equals(target.clbank!)) {
 			errors.push(`CL's don't match. Difference: ${this.clbank!.remove(target.clbank!)}`);
 		}
-		for (const gearSlot of Object.keys(this.gear!)) {
-			if (
-				this.gear![gearSlot as GearSetupType].toString() !== target.gear![gearSlot as GearSetupType].toString()
-			) {
-				errors.push(`${gearSlot} gear doesn't match`);
+		for (const gearSetup of Object.keys(this.gear!) as GearSetupType[]) {
+			if (!this.gear![gearSetup].equals(target.gear![gearSetup])) {
+				errors.push(`${gearSetup} gear doesn't match`);
 			}
 		}
 
 		// Check skill levels:
-		for (const skill of Object.keys(this.skillsAsLevels!)) {
-			const src = this.skillsAsLevels![skill as SkillsEnum];
-			const dst = target.skillsAsLevels![skill as SkillsEnum];
+		for (const skill of SkillsArray) {
+			const src = this.skillsAsLevels![skill];
+			const dst = target.skillsAsLevels![skill];
 			if (src !== dst) {
 				errors.push(`${skill} level doesn't match. ${src} vs ${dst}`);
 			}
@@ -796,7 +798,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Farmed crop',
 		cmd: async user => {
-			const plant = findPlant('Potato')!;
+			const plant = Farming.findPlant('Potato')!;
 			await global.prisma!.farmedCrop.create({
 				data: {
 					user_id: user.id,
@@ -898,20 +900,14 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'User stats',
 		cmd: async user => {
-			const points = randInt(1000, 10_000);
-
-			await userStatsUpdate(
-				user.id,
-				{
-					tithe_farms_completed: {
-						increment: 1
-					},
-					tithe_farm_points: {
-						increment: points
-					}
+			await user.statsUpdate({
+				tithe_farms_completed: {
+					increment: 1
 				},
-				{}
-			);
+				tithe_farm_points: {
+					increment: 666
+				}
+			});
 		}
 	},
 	{
@@ -920,7 +916,7 @@ const allTableCommands: TestCommand[] = [
 			const randomSellItems = ['Shield left half', 'Feather', 'Cannonball', 'Elysian sigil', 'Fire rune'];
 			const itemPrice = randInt(500, 50_000_000);
 			const bankToSell = new Bank();
-			const item = getOSItem(randArrItem(randomSellItems));
+			const item = Items.getOrThrow(randArrItem(randomSellItems));
 			const qty = randInt(1, 10);
 			const totalPrice = itemPrice * qty;
 
@@ -933,20 +929,16 @@ const allTableCommands: TestCommand[] = [
 				user_id: user.id
 			});
 
-			const stats = await user.fetchStats({ items_sold_bank: true });
+			const stats = await user.fetchStats();
 			await Promise.all([
-				updateClientGPTrackSetting('gp_sell', totalPrice),
-				updateBankSetting('sold_items_bank', bankToSell),
-				userStatsUpdate(
-					user.id,
-					{
-						items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).toJSON(),
-						sell_gp: {
-							increment: totalPrice
-						}
-					},
-					{}
-				),
+				ClientSettings.updateClientGPTrackSetting('gp_sell', totalPrice),
+				ClientSettings.updateBankSetting('sold_items_bank', bankToSell),
+				user.statsUpdate({
+					items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).toJSON(),
+					sell_gp: {
+						increment: totalPrice
+					}
+				}),
 				global.prisma!.botItemSell.createMany({ data: botItemSellData })
 			]);
 		}
@@ -964,7 +956,7 @@ const allTableCommands: TestCommand[] = [
 		name: 'Stash Units',
 		cmd: async user => {
 			await stashUnitBuildAllCommand(user);
-			await stashUnitFillAllCommand(user, user.user);
+			await stashUnitFillAllCommand(user);
 		}
 	},
 	{
@@ -1186,14 +1178,6 @@ async function buildBaseUser(userId: string) {
 	return user;
 }
 
-vi.doMock('../../src/lib/util', async () => {
-	const actual: any = await vi.importActual('../../src/lib/util');
-	return {
-		...actual,
-		channelIsSendable: () => false
-	};
-});
-
 const logResult = (
 	result: { result: boolean; errors: string[] },
 	sourceData: UserData,
@@ -1217,18 +1201,28 @@ const logResult = (
 	}
 };
 
-test.concurrent('test preventing a double (clobber) robochimp migration (two bot-migration)', async () => {
+test('test preventing a double (clobber) robochimp migration (two bot-migration)', async () => {
 	const sourceUserId = mockedId();
 	const destUserId = mockedId();
 
 	// Create source user, and populate data:
 	const sourceUser = await buildBaseUser(sourceUserId);
-	const srcHistory = await runRandomTestCommandsOnUser(sourceUser, 5, true);
 
+	const srcHistory = await runRandomTestCommandsOnUser(sourceUser, 5, true);
+	expect(
+		await prisma.userStats.count({
+			where: { user_id: BigInt(sourceUser.id) }
+		})
+	).toEqual(1);
 	const sourceData = new UserData(sourceUser);
 	await sourceData.sync();
 
 	const migrateResult = await migrateUser(sourceUser.id, destUserId);
+	expect(
+		await prisma.userStats.count({
+			where: { user_id: BigInt(destUserId) }
+		})
+	).toEqual(1);
 	expect(migrateResult).toEqual(true);
 
 	const destData = new UserData(destUserId);
@@ -1237,10 +1231,18 @@ test.concurrent('test preventing a double (clobber) robochimp migration (two bot
 	const compareResult = sourceData.equals(destData);
 	logResult(compareResult, sourceData, destData, srcHistory, []);
 	expect(compareResult.result).toBe(true);
-
+	expect(
+		await prisma.userStats.count({
+			where: { user_id: BigInt(destUserId) }
+		})
+	).toEqual(1);
 	// Now the actual test, everything above has to happen first...
 	await runAllTestCommandsOnUser(sourceUser);
-
+	expect(
+		await prisma.userStats.count({
+			where: { user_id: BigInt(destUserId) }
+		})
+	).toEqual(1);
 	const newSourceData = new UserData(sourceUser);
 	await newSourceData.sync();
 
@@ -1268,7 +1270,7 @@ beforeAll(async () => {
 	await mockClient();
 });
 
-test.concurrent('test migrating existing user to target with no records', async () => {
+test('test migrating existing user to target with no records', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	await runAllTestCommandsOnUser(sourceUser);
 
@@ -1289,7 +1291,7 @@ test.concurrent('test migrating existing user to target with no records', async 
 	expect(compareResult.result).toBe(true);
 });
 
-test.concurrent('test migrating full user on top of full profile', async () => {
+test('test migrating full user on top of full profile', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	const destUser = await buildBaseUser(mockedId());
 	await runAllTestCommandsOnUser(sourceUser);
@@ -1329,7 +1331,7 @@ test.concurrent('test migrating full user on top of full profile', async () => {
 	expect(badResult.errors).toEqual(expectedBadResult);
 });
 
-test.concurrent('test migrating random user on top of empty profile', async () => {
+test('test migrating random user on top of empty profile', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	const destUserId = mockedId();
 
@@ -1353,7 +1355,7 @@ test.concurrent('test migrating random user on top of empty profile', async () =
 	expect(compareResult.result).toBe(true);
 });
 
-test.concurrent('test migrating random user on top of random profile', async () => {
+test('test migrating random user on top of random profile', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	const destUser = await buildBaseUser(mockedId());
 
@@ -1378,7 +1380,7 @@ test.concurrent('test migrating random user on top of random profile', async () 
 	expect(compareResult.result).toBe(true);
 });
 
-test.concurrent('test migrating random user on top of full profile', async () => {
+test('test migrating random user on top of full profile', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	const destUser = await buildBaseUser(mockedId());
 

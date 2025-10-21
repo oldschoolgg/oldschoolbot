@@ -1,30 +1,31 @@
-import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { awaitMessageComponentInteraction, channelIsSendable, chunk, noOp, Time } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	type BaseMessageOptions,
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
-	type CacheType,
-	type ChatInputCommandInteraction
+	type CacheType
 } from 'discord.js';
-import { Time, chunk, noOp, roll, shuffleArr } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { SILENT_ERROR } from '../../../lib/constants';
-import { handleMahojiConfirmation, silentButtonAck } from '../../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { logError } from '../../../lib/util/logError';
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
+import { SILENT_ERROR } from '@/lib/constants.js';
+import { silentButtonAck } from '@/lib/discord/utils.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
-export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: ChatInputCommandInteraction) {
+export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: MInteraction) {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
 
 	if (!amount) {
 		return 'amount must be between 1000000 and 3000000000 exclusively.';
 	}
 
-	await deferInteraction(interaction);
+	const channel = globalClient.channels.cache.get(interaction.channelId);
+	if (!channelIsSendable(channel))
+		return 'Please give the bot permission to send messages in this channel before running this command.';
+
+	await interaction.defer();
 
 	interface Button {
 		name: string;
@@ -98,8 +99,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
 	await user.sync();
@@ -140,24 +140,18 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		);
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const sentMessage = await channel.send({
 		content: `${user}, Pick *one* button!`,
 		components: getCurrentButtons({ showTrueNames: false })
 	});
 
-	const finalize = async ({
-		button
-	}: {
-		button: ButtonInstance;
-	}) => {
+	const finalize = async ({ button }: { button: ButtonInstance }) => {
 		const amountReceived = Math.floor(button.mod(amount));
 		if (amountReceived > 0) {
 			await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
 		}
-		await updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
-		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, user);
+		await ClientSettings.updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
+		await user.updateGPTrackSetting('gp_luckypick', amountReceived - amount);
 		await sentMessage.edit({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
 		return amountReceived === 0
 			? `${user} picked the wrong button and lost ${toKMB(amount)}!`
@@ -199,10 +193,10 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 				components: getCurrentButtons({ showTrueNames: true })
 			};
 		} catch (err) {
-			logError(err);
+			Logging.logError(err as Error);
 			return 'Error.';
 		}
-	} catch (err) {
+	} catch (_err) {
 		return cancel();
 	}
 }

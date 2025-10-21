@@ -1,41 +1,28 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
-import type { UserStats, activity_type_enum } from '@prisma/client';
-import { Time, sumArr } from 'e';
-import {
-	Bank,
-	type ItemBank,
-	Monsters,
-	SkillsEnum,
-	type SkillsScore,
-	TOBRooms,
-	resolveItems,
-	toKMB
-} from 'oldschooljs';
+import { Emoji, formatDuration, PerkTier, stringMatches, sumArr, Time } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, Items, Monsters, TOBRooms, toKMB } from 'oldschooljs';
+import type { SkillsScore } from 'oldschooljs/hiscores';
 
-import { SQL_sumOfAllCLItems } from '@/lib/util/smallUtils.js';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
-import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
-import { skillEmoji } from '../../../lib/data/emojis';
-import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
-import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { RandomEvents } from '../../../lib/randomEvents';
-
-import Agility from '../../../lib/skilling/skills/agility';
-import { Castables } from '../../../lib/skilling/skills/magic/castables';
-import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
-import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
-import { sorts } from '../../../lib/sorts';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import { getUsername } from '../../../lib/util';
-import { createChart } from '../../../lib/util/chart';
-import { getItem } from '../../../lib/util/getOSItem';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { Cooldowns } from '../Cooldowns';
-import { collectables } from '../collectables';
+import type { activity_type_enum, UserStats } from '@/prisma/main.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
+import { allCLItemsFiltered, calcCLDetails } from '@/lib/data/Collections.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
+import { getBankBgById } from '@/lib/minions/data/bankBackgrounds.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { RandomEvents } from '@/lib/randomEvents.js';
+import { RawSQL } from '@/lib/rawSql.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import { ForestryEvents } from '@/lib/skilling/skills/woodcutting/forestry.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
+import { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
+import { sorts } from '@/lib/sorts.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
+import { createChart } from '@/lib/util/chart.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { getUsername } from '@/lib/util.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
 
 interface DataPiece {
 	name: string;
@@ -134,7 +121,7 @@ AND completed = true
 GROUP BY data->>'objectID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -152,7 +139,7 @@ AND completed = true
 GROUP BY data->>'burnableID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -170,7 +157,7 @@ AND completed = true
 GROUP BY data->>'logID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -188,7 +175,7 @@ AND completed = true
 GROUP BY data->>'oreID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -206,7 +193,7 @@ AND completed = true
 GROUP BY data->>'mixableID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -233,7 +220,7 @@ GROUP BY ((data->>'alch')::json)->>'itemID';`);
 
 	const items = new Bank();
 	for (const res of [...result, ...(includeAgilityAlching ? agilityAlchRes : [])]) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -250,7 +237,7 @@ AND completed = true
 GROUP BY data->>'smithedBarID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -267,7 +254,7 @@ AND completed = true
 GROUP BY data->>'barID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -580,7 +567,7 @@ GROUP BY 1;`;
 		run: async () => {
 			const result = (
 				await Promise.all(
-					Object.values(SkillsEnum).map(
+					SkillsArray.map(
 						skillName =>
 							prisma.$queryRawUnsafe(`SELECT '${skillName}' as skill_name, COUNT(id)::int AS qty
 FROM users
@@ -846,7 +833,7 @@ ${result
 			const result = await prisma.$queryRawUnsafe<any>(
 				'SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true;'
 			);
-			return `There are ${Number.parseInt(result[0].count).toLocaleString()} ironman minions!`;
+			return `There are ${Number.parseInt(result[0].count, 10).toLocaleString()} ironman minions!`;
 		}
 	},
 	{
@@ -873,7 +860,7 @@ GROUP BY "bankBackground";`);
 			return result
 				.map(
 					(res: any) =>
-						`**${getBankBgById(res.bankBackground).name}:** ${Number.parseInt(res.count).toLocaleString()}`
+						`**${getBankBgById(res.bankBackground).name}:** ${Number.parseInt(res.count, 10).toLocaleString()}`
 				)
 				.join('\n');
 		}
@@ -883,7 +870,7 @@ GROUP BY "bankBackground";`);
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result = await prisma.$queryRawUnsafe<any>('SELECT SUM ("sacrificedValue") AS total FROM users;');
-			return `There has been ${Number.parseInt(result[0].total).toLocaleString()} GP worth of items sacrificed!`;
+			return `There has been ${Number.parseInt(result[0].total, 10).toLocaleString()} GP worth of items sacrificed!`;
 		}
 	},
 	{
@@ -898,18 +885,18 @@ GROUP BY "bankBackground";`);
 
 			const banks: ItemBank[] = res[0].array;
 
-			banks.map(bank => {
+			for (const bank of banks) {
 				for (const [id, qty] of Object.entries(bank)) {
 					if (!totalBank[id]) totalBank[id] = qty;
 					else totalBank[id] += qty;
 				}
-			});
+			}
 
 			let str = 'Bot Stats Monsters\n\n';
 			str += Object.entries(totalBank)
 				.sort(([, qty1], [, qty2]) => qty2 - qty1)
 				.map(([monID, qty]) => {
-					return `${Monsters.get(Number.parseInt(monID))?.name}: ${qty.toLocaleString()}`;
+					return `${Monsters.get(Number.parseInt(monID, 10))?.name}: ${qty.toLocaleString()}`;
 				})
 				.join('\n');
 
@@ -928,18 +915,18 @@ GROUP BY "bankBackground";`);
 
 			const banks: ItemBank[] = res[0].array;
 
-			banks.map(bank => {
+			for (const bank of banks) {
 				for (const [id, qty] of Object.entries(bank)) {
 					if (!ClueTiers.some(i => i.id === Number(id))) continue;
 					if (!totalBank[id]) totalBank[id] = qty;
 					else totalBank[id] += qty;
 				}
-			});
+			}
 
 			return Object.entries(totalBank)
 				.map(
 					([clueID, qty]) =>
-						`**${ClueTiers.find(t => t.id === Number.parseInt(clueID))?.name}:** ${qty.toLocaleString()}`
+						`**${ClueTiers.find(t => t.id === Number.parseInt(clueID, 10))?.name}:** ${qty.toLocaleString()}`
 				)
 				.join('\n');
 		}
@@ -970,7 +957,10 @@ GROUP BY "bankBackground";`);
 		name: 'Personal Agility Stats',
 		perkTierNeeded: null,
 		run: async (user, stats) => {
-			const entries = Object.entries(stats.laps_scores as ItemBank).map(arr => [Number.parseInt(arr[0]), arr[1]]);
+			const entries = Object.entries(stats.laps_scores as ItemBank).map(arr => [
+				Number.parseInt(arr[0], 10),
+				arr[1]
+			]);
 			const sepulchreCount = await user.fetchMinigameScore('sepulchre');
 			if (sepulchreCount === 0 && entries.length === 0) {
 				return "You haven't done any laps yet! Sad.";
@@ -1138,7 +1128,7 @@ FROM   (
 				content: `**Rarest CL Items**
 ${bank
 	.items()
-	.filter(isCLItem)
+	.filter(i => allCLItemsFiltered.has(i[0].id))
 	.sort(sorts.quantity)
 	.reverse()
 	.slice(0, 10)
@@ -1164,7 +1154,7 @@ FROM   (
 				content: `**Rarest CL Items (Ironmen)**
 ${bank
 	.items()
-	.filter(isCLItem)
+	.filter(i => allCLItemsFiltered.has(i[0].id))
 	.sort(sorts.quantity)
 	.reverse()
 	.slice(0, 10)
@@ -1203,7 +1193,7 @@ ${bank
 		name: 'Raids/CoX Luckiest and Unluckiest',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
-			const items = resolveItems([
+			const items = Items.resolveItems([
 				'Dexterous prayer scroll',
 				'Arcane prayer scroll',
 				'Twisted buckler',
@@ -1217,7 +1207,7 @@ ${bank
 				'Kodai insignia',
 				'Twisted bow'
 			]);
-			const totalCoxItemsText = SQL_sumOfAllCLItems(items);
+			const totalCoxItemsText = RawSQL.sumOfAllCLItems(items);
 			const [luckiestSQL, unluckiestSQL] = ['ASC', 'DESC'].map(
 				order => `SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc, ${totalCoxItemsText} AS total_cox_items, "user_stats".total_cox_points / ${totalCoxItemsText} AS points_per_item
 FROM user_stats

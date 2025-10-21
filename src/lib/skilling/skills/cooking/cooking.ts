@@ -1,8 +1,7 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
-import type { Cookable } from '../../types';
-import { SkillsEnum } from '../../types';
+import { type Cookable, defineSkill } from '@/lib/skilling/types.js';
 
 export const Cookables: Cookable[] = [
 	{
@@ -286,12 +285,12 @@ export const Cookables: Cookable[] = [
 	}
 ];
 
-const Cooking = {
+const Cooking = defineSkill({
 	aliases: ['cooking', 'cook'],
 	Cookables,
-	id: SkillsEnum.Cooking,
+	id: 'cooking',
 	emoji: Emoji.Cooking,
 	name: 'Cooking'
-};
+});
 
 export default Cooking;

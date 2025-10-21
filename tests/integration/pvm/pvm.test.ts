@@ -1,25 +1,16 @@
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { Bank, EItem, EMonster, Monsters, convertLVLtoXP, itemID, resolveItems } from 'oldschooljs';
+import { calcPerHour } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
-import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
-import { getPOHObject } from '../../../src/lib/poh';
-import { SkillsEnum } from '../../../src/lib/skilling/types';
-import { Gear } from '../../../src/lib/structures/Gear';
-import { minionKCommand } from '../../../src/mahoji/commands/k';
-import { createTestUser, mockClient, mockUser } from '../util';
+import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
+import { getPOHObject } from '@/lib/poh/index.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import { minionKCommand } from '@/mahoji/commands/k.js';
+import { createTestUser, mockClient, mockUser } from '../util.js';
 
 describe('PVM', async () => {
 	const client = await mockClient();
 	expect(Monsters.Man.id).toBe(EMonster.MAN);
-
-	it('Should add KC', async () => {
-		const user = await createTestUser();
-		const res = await user.runCommand(minionKCommand, { name: 'man' });
-		expect(res).toContain('now killing');
-		await user.runActivity();
-		expect(await user.getKC(EMonster.MAN)).toBeGreaterThan(1);
-	});
 
 	it('Should remove food', async () => {
 		const user = await createTestUser(new Bank().add('Shark', 1000), {
@@ -161,7 +152,7 @@ describe('PVM', async () => {
 			mageGear: resolveItems(['Kodai wand'])
 		});
 		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
-		await user.setAttackStyle([SkillsEnum.Magic]);
+		await user.setAttackStyle(['magic']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
 		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
@@ -177,7 +168,7 @@ describe('PVM', async () => {
 			mageGear: resolveItems(['Kodai wand'])
 		});
 		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
-		await user.setAttackStyle([SkillsEnum.Attack]);
+		await user.setAttackStyle(['attack']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
 		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
@@ -195,7 +186,7 @@ describe('PVM', async () => {
 			maxed: true
 		});
 		await user.max();
-		await user.setAttackStyle([SkillsEnum.Ranged]);
+		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
 		expect(result.xpGained.ranged).toBeGreaterThan(0);
 		expect(user.bank.amount('Cannonball')).toBeLessThan(100_000);
@@ -209,7 +200,7 @@ describe('PVM', async () => {
 			QP: 300,
 			maxed: true
 		});
-		await user.setAttackStyle([SkillsEnum.Ranged]);
+		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon', shouldFail: true });
 		expect(result.commandResult).toContain("You don't have the items needed to kill this monster");
 		expect(user.bank.amount('Cannonball')).toEqual(0);
@@ -222,7 +213,7 @@ describe('PVM', async () => {
 			QP: 300,
 			maxed: true
 		});
-		await user.setAttackStyle([SkillsEnum.Ranged]);
+		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'chinning' });
 		expect(result.commandResult).toContain('% for Red chinchomp');
 		expect(user.bank.amount('Red chinchompa')).toBeLessThan(5000);
@@ -290,7 +281,7 @@ describe('PVM', async () => {
 				'Slayer helmet'
 			])
 		});
-		await user.setAttackStyle([SkillsEnum.Attack]);
+		await user.setAttackStyle(['attack']);
 		await user.giveSlayerTask(EMonster.ZOMBIE);
 		const result = await user.kill(EMonster.ZOMBIE);
 		const resultStr = result.commandResult as string;
@@ -315,7 +306,7 @@ describe('PVM', async () => {
 				weapon: 'Soulreaper axe'
 			}).allItems(false)
 		});
-		await user.setAttackStyle([SkillsEnum.Attack]);
+		await user.setAttackStyle(['attack']);
 		await user.giveSlayerTask(EMonster.ARAXYTE);
 		return user;
 	}

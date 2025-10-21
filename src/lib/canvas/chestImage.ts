@@ -1,12 +1,12 @@
+import { randInt } from '@oldschoolgg/rng';
 import { AttachmentBuilder } from 'discord.js';
-import { randInt } from 'e';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 import { type Image, loadImage } from 'skia-canvas';
 
-import { TOBUniques } from '../data/tob';
-import { OSRSCanvas } from './OSRSCanvas';
-import { bankImageTask } from './bankImage';
-import type { CanvasImage } from './canvasUtil';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { TOBUniques } from '@/lib/data/tob.js';
 
 const chestLootTypes: {
 	title: string;
@@ -104,6 +104,10 @@ async function drawSingleChestCanvas(
 	entry: ChestLootEntry,
 	type: (typeof chestLootTypes)[number]
 ): Promise<{ canvas: OSRSCanvas; isPurple: boolean }> {
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
 	const { previousCL, loot, user, customTexts } = entry;
 	const { sprite } = bankImageTask.getBgAndSprite({ bankBackgroundId: user.user.bankBackground });
 

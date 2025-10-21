@@ -1,9 +1,9 @@
-import { Time, percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import type { MUserClass } from './../../MUser';
-import type { Log } from './../types';
+import type { MUserClass } from '@/lib/MUser.js';
+import type { Log } from '@/lib/skilling/types.js';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;
@@ -43,7 +43,7 @@ export function determineWoodcuttingTime({
 
 	let newQuantity = 0;
 
-	let maxTripLength = calcMaxTripLength(user, 'Woodcutting');
+	let maxTripLength = user.calcMaxTripLength('Woodcutting');
 	if (!powerchopping && user.hasEquippedOrInBank('Log basket')) {
 		maxTripLength += Time.Minute * 5;
 	}

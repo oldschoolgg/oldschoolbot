@@ -1,13 +1,9 @@
-import { Table, calcPerHour } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
+import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
 import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
-applyStaticDefine();
-
 import '../../src/lib/safeglobals.js';
 
-import { applyStaticDefine } from '../../meta.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import Mining from '../../src/lib/skilling/skills/mining.js';
 import type { Ore } from '../../src/lib/skilling/types.js';
@@ -15,6 +11,7 @@ import { FloatBank } from '../../src/lib/structures/Bank.js';
 import { determineMiningTrip } from '../../src/mahoji/commands/mine.js';
 import { determineMiningResult } from '../../src/tasks/minions/miningActivity.js';
 import { makeGearBank } from '../../tests/unit/utils.js';
+import { tearDownScript } from '../scriptUtil.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
 function bankToPerHour(bank: Bank, duration: number): FloatBank {
@@ -25,7 +22,7 @@ function bankToPerHour(bank: Bank, duration: number): FloatBank {
 	return perHourBank;
 }
 
-export function main() {
+function main() {
 	const gearBank = makeGearBank();
 
 	gearBank.gear.skilling.equip('Varrock armour 4');
@@ -127,6 +124,7 @@ export function main() {
 	}
 
 	handleMarkdownEmbed('miningxphr', 'osb/Skills/mining.mdx', table.toString());
+	tearDownScript();
 }
 
 main();

@@ -1,19 +1,16 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import type { activity_type_enum } from '@prisma/client';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { Time, percentChance, randInt, roll } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
-import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
-import type { Ore } from '../../../lib/skilling/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskData, ShootingStarsOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
-import type { MUserClass } from './../../../lib/MUser';
+import type { activity_type_enum } from '@/prisma/main/enums.js';
+import type { MUserClass } from '@/lib/MUser.js';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
+import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
+import type { Ore } from '@/lib/skilling/types.js';
+import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
+import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
 
 interface Star extends Ore {
 	size: number;
@@ -217,7 +214,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 			goldSilverBoost: false,
 			miningLvl: miningLevel,
 			passedDuration: duration,
-			maxTripLength: calcMaxTripLength(user, 'ShootingStars'),
+			maxTripLength: user.calcMaxTripLength('ShootingStars'),
 			hasKaramjaMedium: false
 		});
 		duration += timeToMine;
@@ -230,14 +227,14 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 		}
 		// Add clue scrolls , TODO: convert klasaUsers to user
 		if (star.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Mining, newQuantity, star.clueScrollChance, loot);
+			addSkillingClueToLoot(user, 'mining', newQuantity, star.clueScrollChance, loot);
 		}
 
 		// Roll for pet
 		if (star.petChance && roll((star.petChance - skills.mining * 25) / newQuantity)) {
 			loot.add('Rock golem');
 		}
-		if (duration >= calcMaxTripLength(user, 'Mining')) {
+		if (duration >= user.calcMaxTripLength('Mining')) {
 			break;
 		}
 	}
@@ -245,9 +242,9 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 	// Add all stardust
 	loot.add('Stardust', dustReceived);
 
-	await addSubTaskToActivityTask<ShootingStarsOptions>({
+	await ActivityManager.startTrip<ShootingStarsOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		lootItems: loot.toJSON(),
 		usersWith,
@@ -291,10 +288,11 @@ export const starCache = new Map<string, Star & { expiry: number }>();
 
 export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskData, components: ButtonBuilder[]) {
 	if (activitiesCantGetStars.includes(data.type)) return;
-	const miningLevel = user.skillLevel(SkillsEnum.Mining);
+	const miningLevel = user.skillsAsLevels.mining;
 	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
-	const minutes = data.duration / Time.Minute;
-	const baseChance = 540 / minutes;
+	const minutes = Math.floor(data.duration / Time.Minute);
+	if (minutes < 1) return;
+	const baseChance = Math.floor(540 / minutes);
 	if (!roll(baseChance)) return;
 	const shootingStarTable = new SimpleTable<Star>();
 	for (const star of elligibleStars) shootingStarTable.add(star, star.chance);

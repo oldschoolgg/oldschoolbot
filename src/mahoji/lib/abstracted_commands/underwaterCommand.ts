@@ -1,11 +1,9 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, randFloat, reduceNumByPercent } from 'e';
+import { randFloat } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/skilling/skills/agility';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import type { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
+import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
 
 export async function underwaterAgilityThievingCommand(
 	channelID: string,
@@ -15,7 +13,7 @@ export async function underwaterAgilityThievingCommand(
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const maxTripLength = calcMaxTripLength(user, 'UnderwaterAgilityThieving');
+	const maxTripLength = user.calcMaxTripLength('UnderwaterAgilityThieving');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);
@@ -76,9 +74,9 @@ export async function underwaterAgilityThievingCommand(
 		return `You need ${quantity}x Stamina potion(4) for the whole trip, try a lower trip length, turn of stamina usage or make/buy more Stamina potion(4).`;
 	}
 
-	await addSubTaskToActivityTask<UnderwaterAgilityThievingTaskOptions>({
+	await ActivityManager.startTrip<UnderwaterAgilityThievingTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		trainingSkill,
 		quantity,
 		duration,

@@ -1,4 +1,4 @@
-import type { SkillsEnum } from '../skilling/types';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
 export interface ItemBank {
 	[key: string]: number;
@@ -15,8 +15,15 @@ export interface MakePartyOptions {
 }
 
 export type Skills = Partial<{
-	[key in SkillsEnum]: number;
+	[key in SkillNameType]: number;
 }>;
 
 export type SkillRequirements = Skills & { combat?: number };
 export type SkillsRequired = Required<Skills>;
+
+interface JsonArray extends Array<PrismaCompatibleJsonValue> {}
+
+export type PrismaCompatibleJsonObject = {
+	[Key in string]?: PrismaCompatibleJsonValue;
+};
+export type PrismaCompatibleJsonValue = string | number | boolean | PrismaCompatibleJsonObject | JsonArray | null;

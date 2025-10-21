@@ -1,16 +1,10 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
 
-export const craftCommand: OSBMahojiCommand = {
+export const craftCommand = defineCommand({
 	name: 'craft',
 	description: 'Craft items with the Crafting skill.',
 	attributes: {
@@ -20,7 +14,7 @@ export const craftCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The item you want to craft.',
 			required: true,
@@ -34,16 +28,14 @@ export const craftCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to craft (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, user, channelID }) => {
 		let { quantity } = options;
 
 		if (options.name.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;
@@ -59,7 +51,7 @@ export const craftCommand: OSBMahojiCommand = {
 		}
 
 		const userQP = user.QP;
-		const currentWoodcutLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const currentWoodcutLevel = user.skillsAsLevels.woodcutting;
 
 		if (craftable.qpRequired && userQP < craftable.qpRequired) {
 			return `${user.minionName} needs ${craftable.qpRequired} QP to craft ${craftable.name}.`;
@@ -69,7 +61,7 @@ export const craftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${craftable.wcLvl} Woodcutting Level to craft ${craftable.name}.`;
 		}
 
-		if (user.skillLevel(SkillsEnum.Crafting) < craftable.level) {
+		if (user.skillsAsLevels.crafting < craftable.level) {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
 
@@ -78,11 +70,11 @@ export const craftCommand: OSBMahojiCommand = {
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;
 		const [hasFallyHard] = await userhasDiaryTier(user, FaladorDiary.hard);
-		if (craftable.bankChest && (hasFallyHard || user.skillLevel(SkillsEnum.Crafting) >= 99)) {
+		if (craftable.bankChest && (hasFallyHard || user.skillsAsLevels.crafting >= 99)) {
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Crafting');
+		const maxTripLength = user.calcMaxTripLength('Crafting');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
@@ -110,12 +102,12 @@ export const craftCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(itemsNeeded);
 
-		updateBankSetting('crafting_cost', itemsNeeded);
+		await ClientSettings.updateBankSetting('crafting_cost', itemsNeeded);
 
-		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
+		await ActivityManager.startTrip<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Crafting'
@@ -125,4 +117,4 @@ export const craftCommand: OSBMahojiCommand = {
 			craftable.name
 		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
-};
+});

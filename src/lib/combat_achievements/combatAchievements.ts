@@ -1,19 +1,20 @@
-import type { activity_type_enum } from '@prisma/client';
-import { deepClone, notEmpty, roll, sumArr, uniqueArr } from 'e';
-import type { Item } from 'oldschooljs';
+import { roll } from '@oldschoolgg/rng';
+import { notEmpty, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { type Item, Items } from 'oldschooljs';
+import { clone } from 'remeda';
 
-import type { Requirements } from '../structures/Requirements';
-import type { ActivityTaskData, TOAOptions } from '../types/minions';
-import getOSItem from '../util/getOSItem';
-import type { TripFinishEffect } from '../util/handleTripFinish';
-import { assert } from '../util/logError';
-import { formatList } from '../util/smallUtils';
-import { easyCombatAchievements } from './easy';
-import { eliteCombatAchievements } from './elite';
-import { grandmasterCombatAchievements } from './grandmaster';
-import { hardCombatAchievements } from './hard';
-import { masterCombatAchievements } from './master';
-import { mediumCombatAchievements } from './medium';
+import type { activity_type_enum } from '@/prisma/main/enums.js';
+import { easyCombatAchievements } from '@/lib/combat_achievements/easy.js';
+import { eliteCombatAchievements } from '@/lib/combat_achievements/elite.js';
+import { grandmasterCombatAchievements } from '@/lib/combat_achievements/grandmaster.js';
+import { hardCombatAchievements } from '@/lib/combat_achievements/hard.js';
+import { masterCombatAchievements } from '@/lib/combat_achievements/master.js';
+import { mediumCombatAchievements } from '@/lib/combat_achievements/medium.js';
+import type { Requirements } from '@/lib/structures/Requirements.js';
+import type { ActivityTaskData, TOAOptions } from '@/lib/types/minions.js';
+import type { TripFinishEffect } from '@/lib/util/handleTripFinish.js';
+import { assert } from '@/lib/util/logError.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 const collectMonsterNames = (...achievements: CombatAchievement[][]) => {
 	const allMonsterNamesSet = new Set<string>();
@@ -42,6 +43,7 @@ export type CombatAchievement = {
 	type: CAType;
 	monster: string;
 	desc: string;
+	details?: string;
 	activityType?: activity_type_enum;
 } & (
 	| { requirements: Requirements }
@@ -64,7 +66,9 @@ interface CARootItem {
 	taskPoints: number;
 	rewardThreshold: number;
 }
-export type CATier = 'easy' | 'medium' | 'hard' | 'elite' | 'master' | 'grandmaster';
+
+export const caTiers = ['easy', 'medium', 'hard', 'elite', 'master', 'grandmaster'] as const;
+export type CATier = (typeof caTiers)[number];
 type CARoot = Record<CATier, CARootItem>;
 
 const easy: CARootItem = {
@@ -72,8 +76,8 @@ const easy: CARootItem = {
 	length: easyCombatAchievements.length,
 	name: 'Easy',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 1"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (easy ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 1"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (easy ca)'), reclaimable: false }
 	],
 	taskPoints: 1,
 	rewardThreshold: easyCombatAchievements.length
@@ -83,8 +87,8 @@ const medium: CARootItem = {
 	length: mediumCombatAchievements.length,
 	name: 'Medium',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 2"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (medium ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 2"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (medium ca)'), reclaimable: false }
 	],
 	taskPoints: 2,
 	rewardThreshold: easy.rewardThreshold + mediumCombatAchievements.length * 2
@@ -94,8 +98,8 @@ const hard: CARootItem = {
 	length: hardCombatAchievements.length,
 	name: 'Hard',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 3"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (hard ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 3"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (hard ca)'), reclaimable: false }
 	],
 	taskPoints: 3,
 	rewardThreshold: medium.rewardThreshold + hardCombatAchievements.length * 3
@@ -105,8 +109,8 @@ const elite: CARootItem = {
 	length: eliteCombatAchievements.length,
 	name: 'Elite',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 4"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (elite ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 4"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (elite ca)'), reclaimable: false }
 	],
 	taskPoints: 4,
 	rewardThreshold: hard.rewardThreshold + eliteCombatAchievements.length * 4
@@ -116,9 +120,9 @@ const master: CARootItem = {
 	length: masterCombatAchievements.length,
 	name: 'Master',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 5"), reclaimable: true },
-		{ item: getOSItem("Ghommal's lucky penny"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (master ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 5"), reclaimable: true },
+		{ item: Items.getOrThrow("Ghommal's lucky penny"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (master ca)'), reclaimable: false }
 	],
 	taskPoints: 5,
 	rewardThreshold: elite.rewardThreshold + masterCombatAchievements.length * 5
@@ -128,9 +132,9 @@ const grandmaster: CARootItem = {
 	length: grandmasterCombatAchievements.length,
 	name: 'Grandmaster',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 6"), reclaimable: true },
+		{ item: Items.getOrThrow("Ghommal's hilt 6"), reclaimable: true },
 		{
-			item: getOSItem('Antique lamp (grandmaster ca)'),
+			item: Items.getOrThrow('Antique lamp (grandmaster ca)'),
 			reclaimable: false
 		}
 	],
@@ -162,13 +166,13 @@ assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATas
 const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
 export const combatAchievementTripEffect = async ({ data, messages, user }: Parameters<TripFinishEffect['fn']>[0]) => {
-	const dataCopy = deepClone(data);
+	const dataCopy = clone(data);
 
 	let quantity = 1;
 	if ('q' in dataCopy) {
-		quantity = (dataCopy as any).q;
-	} else if ('quantity' in dataCopy) {
-		quantity = (dataCopy as any).quantity;
+		quantity = dataCopy.q;
+	} else if ('quantity' in dataCopy && dataCopy.quantity) {
+		quantity = dataCopy.quantity;
 	}
 	if (Number.isNaN(quantity)) return;
 

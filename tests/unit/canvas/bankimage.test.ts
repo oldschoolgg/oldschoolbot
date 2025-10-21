@@ -3,10 +3,10 @@ import path from 'node:path';
 import { Bank, EItem, Monsters } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import { bankImageTask } from '@/lib/canvas/bankImage';
-import { IconPackID } from '@/lib/canvas/iconPacks';
-import { allCLItems } from '@/lib/data/Collections';
-import { makeBankImage } from '@/lib/util/makeBankImage';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { IconPackID } from '@/lib/canvas/iconPacks.js';
+import { allCLItems } from '@/lib/data/Collections.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('Bank Images', async () => {
@@ -119,7 +119,9 @@ describe('Bank Images', async () => {
 
 	test('Paged Bank Image', async () => {
 		const bank = new Bank();
-		for (const item of allCLItems.sort((a, b) => a - b).slice(0, 200)) {
+		for (const item of Array.from(allCLItems)
+			.sort((a, b) => a - b)
+			.slice(0, 200)) {
 			bank.add(item);
 		}
 

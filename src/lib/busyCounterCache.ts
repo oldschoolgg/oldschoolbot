@@ -1,27 +1,42 @@
-export function baseModifyBusyCounter(map: Map<string, number>, userID: string, amount: -1 | 1) {
-	const entry = map.get(userID);
-	// if (entry) {
-	// assert(entry >= 1, 'Busy counter should be no less than 1');
-	// }
-	// if (amount === -1) {
-	// assert(entry !== undefined && entry > 0, `Tried to decrement busy counter by 1, when its ${entry}`);
-	// }
-	if (!entry) {
-		map.set(userID, amount);
-		return amount;
+const busyUsers = new Set<string>();
+
+export function modifyUserBusy({
+	reason,
+	userID,
+	type
+}: {
+	type: 'lock' | 'unlock';
+	userID: string;
+	reason: string;
+}): void {
+	Logging.logDebug(`ModifyUserBusy UserID[${userID}] Type[${type}] Reason[${reason}]`, {
+		type: 'MODIFY_USER_BUSY',
+		user_id: userID
+	});
+	const isBusy = busyUsers.has(userID);
+
+	switch (type) {
+		case 'lock': {
+			if (isBusy) {
+				Logging.logDebug(`Tried to busy-lock an already busy user. UserID[${userID}] Reason[${reason}]`);
+				return;
+			} else {
+				busyUsers.add(userID);
+			}
+			break;
+		}
+		case 'unlock': {
+			if (!isBusy) {
+				Logging.logDebug(`Tried to unlock an already unlocked user. UserID[${userID}] Reason[${reason}]`);
+				return;
+			} else {
+				busyUsers.delete(userID);
+			}
+			break;
+		}
 	}
-
-	const newCounter = entry + amount;
-	map.set(userID, newCounter);
-	return newCounter;
 }
 
-function getBusyCounter(userID: string) {
-	return globalClient.busyCounterCache.get(userID) ?? 0;
-}
-export function modifyBusyCounter(userID: string, amount: -1 | 1) {
-	return baseModifyBusyCounter(globalClient.busyCounterCache, userID, amount);
-}
-export function userIsBusy(userID: string) {
-	return getBusyCounter(userID) > 0;
+export function userIsBusy(userID: string): boolean {
+	return busyUsers.has(userID);
 }

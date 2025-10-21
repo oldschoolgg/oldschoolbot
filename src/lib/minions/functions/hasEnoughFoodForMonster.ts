@@ -1,6 +1,6 @@
-import type { KillableMonster } from '../types';
-import calculateMonsterFood from './calculateMonsterFood';
-import getUserFoodFromBank from './getUserFoodFromBank';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export default function hasEnoughFoodForMonster(
 	monster: Readonly<KillableMonster>,

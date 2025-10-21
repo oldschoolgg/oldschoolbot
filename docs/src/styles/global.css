@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+table {
+	width: 100%;
+	table-layout: fixed;
+}
+
+thead th {
+	width: 25%; /* or whatever split you want */
+}

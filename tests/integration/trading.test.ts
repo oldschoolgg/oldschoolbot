@@ -1,10 +1,10 @@
-import { randArrItem, shuffleArr } from 'e';
+import { randArrItem, shuffleArr } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { tradeCommand } from '../../src/mahoji/commands/trade';
-import type { TestUser } from './util';
-import { createTestUser, mockClient, mockInteraction } from './util';
+import { tradeCommand } from '../../src/mahoji/commands/trade.js';
+import type { TestUser } from './util.js';
+import { createTestUser, mockClient, mockInteraction } from './util.js';
 
 test('Trade consistency', async () => {
 	await mockClient();
@@ -46,7 +46,7 @@ test('Trade consistency', async () => {
 						user: other
 					}
 				},
-				interaction: mockInteraction({ userId: user.id })
+				interaction: mockInteraction({ user })
 			};
 
 			switch (method) {

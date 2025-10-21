@@ -1,11 +1,10 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
-import type { PlayerOwnedHouse } from '@prisma/client';
-import { objectEntries, randInt } from 'e';
+import { randInt } from '@oldschoolgg/rng';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { loadImage } from 'skia-canvas';
 
-import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../poh';
-import { OSRSCanvas } from './OSRSCanvas';
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import {
 	type Canvas,
 	type CanvasContext,
@@ -13,7 +12,9 @@ import {
 	canvasToBuffer,
 	createCanvas,
 	loadAndCacheLocalImage
-} from './canvasUtil';
+} from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '@/lib/poh/index.js';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
@@ -39,8 +40,7 @@ const FOLDERS = [
 class PoHImage {
 	public imageCache: Map<number, CanvasImage> = new Map();
 	public bgImages: CanvasImage[] = [];
-	initPromise: Promise<void> | null = this.init();
-	initFinished = false;
+	public ready: boolean = false;
 
 	async init() {
 		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_1.jpg'));
@@ -56,7 +56,6 @@ class PoHImage {
 				this.imageCache.set(id, image);
 			}
 		}
-		this.initFinished = true;
 	}
 
 	generateCanvas(bgId: number): [Canvas, CanvasContext] {
@@ -92,7 +91,10 @@ class PoHImage {
 	}
 
 	async run(poh: PlayerOwnedHouse, showSpaces = true) {
-		if (!this.initFinished) await this.initPromise;
+		if (!this.ready) {
+			await this.init();
+			this.ready = true;
+		}
 		const [canvas, ctx] = this.generateCanvas(poh.background_id);
 		for (const [key, objects] of objectEntries(Placeholders)) {
 			if (!key || !objects) continue;

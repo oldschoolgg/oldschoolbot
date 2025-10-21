@@ -1,52 +1,21 @@
-import { Bank, LootTable } from 'oldschooljs';
+import { AncientCavernAncientPageTable, Bank, LootTable } from 'oldschooljs';
 
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import type { ActivityTaskOptionsWithQuantity } from './../../lib/types/minions';
-
-const ancientPageTable = new LootTable()
-	.add(11_341, 1, 1)
-	.add(11_342, 1, 1)
-	.add(11_343, 1, 1)
-	.add(11_344, 1, 1)
-	.add(11_345, 1, 1)
-	.add(11_346, 1, 1)
-	.add(11_347, 1, 1)
-	.add(11_348, 1, 1)
-	.add(11_349, 1, 1)
-	.add(11_350, 1, 1)
-	.add(11_351, 1, 1)
-	.add(11_352, 1, 1)
-	.add(11_353, 1, 1)
-	.add(11_354, 1, 1)
-	.add(11_355, 1, 1)
-	.add(11_356, 1, 1)
-	.add(11_357, 1, 1)
-	.add(11_358, 1, 1)
-	.add(11_359, 1, 1)
-	.add(11_360, 1, 1)
-	.add(11_361, 1, 1)
-	.add(11_362, 1, 1)
-	.add(11_363, 1, 1)
-	.add(11_364, 1, 1)
-	.add(11_365, 1, 1)
-	.add(11_366, 1, 1);
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const skeletonTable = new LootTable({ limit: 202 })
 	.add('Bones', 1, 24)
-	.add(ancientPageTable, 1, 16)
+	.add(AncientCavernAncientPageTable, 1, 16)
 	.add('Mangled bones', 1, 11);
 
 export const myNotesTask: MinionTask = {
 	type: 'MyNotes',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, userID, quantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, quantity } = data;
 
 		const loot = new Bank(skeletonTable.roll(quantity));
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

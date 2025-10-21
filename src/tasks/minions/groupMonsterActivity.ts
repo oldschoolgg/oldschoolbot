@@ -1,18 +1,16 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { noOp, randArrItem } from 'e';
+import { randArrItem } from '@oldschoolgg/rng';
+import { Emoji, noOp } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { addMonsterXP } from '../../lib/minions/functions';
-import announceLoot from '../../lib/minions/functions/announceLoot';
-import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
-import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import isImportantItemForMonster from '@/lib/minions/functions/isImportantItemForMonster.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const groupoMonsterTask: MinionTask = {
 	type: 'GroupMonsterKilling',
-	async run(data: GroupMonsterActivityTaskOptions) {
-		const { mi: monsterID, channelID, q: quantity, users, leader, duration } = data;
+	async run(data: GroupMonsterActivityTaskOptions, { handleTripFinish, user: leaderUser }) {
+		const { mi: monsterID, channelID, q: quantity, users, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: Bank } = {};
@@ -26,15 +24,13 @@ export const groupoMonsterTask: MinionTask = {
 			kcAmounts[userWhoGetsLoot] = kcAmounts[userWhoGetsLoot] ? ++kcAmounts[userWhoGetsLoot] : 1;
 		}
 
-		const leaderUser = await mUserFetch(leader);
-
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
 		const totalLoot = new Bank();
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await mUserFetch(userID).catch(noOp);
 			if (!user) continue;
-			await addMonsterXP(user, {
+			await user.addMonsterXP({
 				monsterID,
 				quantity: Math.ceil(quantity / users.length),
 				duration,
@@ -42,8 +38,7 @@ export const groupoMonsterTask: MinionTask = {
 				taskQuantity: null
 			});
 			totalLoot.add(loot);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

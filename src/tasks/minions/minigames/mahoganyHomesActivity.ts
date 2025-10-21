@@ -1,15 +1,13 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
-import { calcConBonusXP } from '../../../lib/skilling/skills/construction/calcConBonusXP';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP.js';
+import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',
-	async run(data: MahoganyHomesActivityTaskOptions) {
-		const { channelID, quantity, xp, duration, userID, points } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MahoganyHomesActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, xp, duration, points } = data;
+
 		await user.incrementMinigameScore('mahogany_homes', quantity);
 
 		let bonusXP = 0;
@@ -18,7 +16,7 @@ export const mahoganyHomesTask: MinionTask = {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Construction,
+			skillName: 'construction',
 			amount: xp + bonusXP,
 			duration,
 			source: 'MahoganyHomes'

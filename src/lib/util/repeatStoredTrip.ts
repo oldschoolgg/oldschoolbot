@@ -1,17 +1,18 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
-import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
+import { Time } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Items } from 'oldschooljs';
 
-import { ClueTiers } from '../clues/clueTiers';
-import type { PvMMethod } from '../constants';
-import { findTripBuyable } from '../data/buyables/tripBuyables';
-import { SlayerActivityConstants } from '../minions/data/combatConstants';
-import { autocompleteMonsters } from '../minions/data/killableMonsters';
-import { runCommand } from '../settings/settings';
-import { courses } from '../skilling/skills/agility';
-import { Fishing } from '../skilling/skills/fishing/fishing';
-import Hunter from '../skilling/skills/hunter/hunter';
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import type { Activity, Prisma } from '@/prisma/main.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { PvMMethod } from '@/lib/constants.js';
+import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -46,6 +47,7 @@ import type {
 	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
+	NightmareZoneActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
@@ -58,16 +60,15 @@ import type {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	TOAOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TOAOptions,
+	UnderwaterAgilityThievingTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
-} from '../types/minions';
-import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
-import { interactionReply } from './interactionReply';
+} from '@/lib/types/minions.js';
+import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
@@ -715,10 +716,10 @@ for (const type of Object.values(activity_type_enum)) {
 	}
 }
 
-export async function fetchRepeatTrips(userID: string) {
+export async function fetchRepeatTrips(user: MUser) {
 	const res: Activity[] = await prisma.activity.findMany({
 		where: {
-			user_id: BigInt(userID),
+			user_id: BigInt(user.id),
 			finish_date: {
 				gt: new Date(Date.now() - Time.Day * 7)
 			}
@@ -732,7 +733,6 @@ export async function fetchRepeatTrips(userID: string) {
 		type: activity_type_enum;
 		data: Prisma.JsonValue;
 	}[] = [];
-	const user = await mUserFetch(userID);
 	for (const trip of res) {
 		if (!taskCanBeRepeated(trip, user)) continue;
 		if (trip.type === activity_type_enum.Farming && !(trip.data as any as FarmingActivityTaskOptions).autoFarmed) {
@@ -746,7 +746,7 @@ export async function fetchRepeatTrips(userID: string) {
 }
 
 export async function makeRepeatTripButtons(user: MUser) {
-	const trips = await fetchRepeatTrips(user.id);
+	const trips = await fetchRepeatTrips(user);
 	const buttons: ButtonBuilder[] = [];
 	const limit = Math.min(user.perkTier() + 1, 5);
 	for (const trip of trips.slice(0, limit)) {
@@ -761,11 +761,12 @@ export async function makeRepeatTripButtons(user: MUser) {
 }
 
 export async function repeatTrip(
-	interaction: ButtonInteraction,
+	user: MUser,
+	interaction: MInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
-) {
+): CommandResponse {
 	if (!data || !data.data || !data.type) {
-		return interactionReply(interaction, { content: "Couldn't find any trip to repeat.", ephemeral: true });
+		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[data.type];
 	return runCommand({
@@ -773,10 +774,7 @@ export async function repeatTrip(
 		isContinue: true,
 		args: handler.args(data.data as any),
 		interaction,
-		guildID: interaction.guildId,
-		member: interaction.member,
-		channelID: interaction.channelId,
-		user: interaction.user,
-		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
+		user,
+		continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
 	});
 }

@@ -1,12 +1,14 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 
-import { SkillsEnum } from '../../types';
+import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import { rogueOutfitPercentBonus } from '@/lib/skilling/skills/thieving/thievingUtils.js';
+import { defineSkill } from '@/lib/skilling/types.js';
 
-const Thieving = {
+export const Thieving = defineSkill({
 	aliases: ['thieving', 'stealing'],
-	id: SkillsEnum.Thieving,
+	id: 'thieving',
 	emoji: Emoji.Thieving,
-	name: 'Thieving'
-};
-
-export default Thieving;
+	name: 'Thieving',
+	stealables,
+	rogueOutfitPercentBonus
+});

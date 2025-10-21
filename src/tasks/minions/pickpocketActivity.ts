@@ -1,16 +1,13 @@
-import { percentChance, randInt, roll } from 'e';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
-import { stealables } from '../../lib/skilling/skills/thieving/stealables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { rogueOutfitPercentBonus, updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
+import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
+import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -49,23 +46,26 @@ export function calcLootXPPickpocketing(
 
 export const pickpocketTask: MinionTask = {
 	type: 'Pickpocket',
-	async run(data: PickpocketActivityTaskOptions) {
-		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
-		const user = await mUserFetch(userID);
-		const obj = stealables.find(_obj => _obj.id === monsterID)!;
+	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish }) {
+		const { monsterID, quantity, successfulQuantity, channelID, xpReceived, duration } = data;
+
+		const obj = Thieving.stealables.find(_obj => _obj.id === monsterID)!;
 		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance);
+		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance);
+
+		const userTertChanges = user.buildTertiaryItemChanges();
+		const roguesChance = Thieving.rogueOutfitPercentBonus(user);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
 				const lootItems = obj.table.roll(1, {
-					tertiaryItemPercentageChanges: user.buildTertiaryItemChanges()
+					tertiaryItemPercentageChanges: userTertChanges
 				});
 
-				//add clues to loot before rogue boost
+				// add clues to loot before rogue boost
 				for (const id of ClueTiers.map(c => c.scrollID).filter(sid => lootItems.has(sid))) {
 					loot.add(id, lootItems.amount(id));
 					lootItems.remove(id);
@@ -74,7 +74,7 @@ export const pickpocketTask: MinionTask = {
 				// TODO: Remove Rocky from loot tables in oldschoolJS
 				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
-				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
+				if (randInt(1, 100) <= roguesChance) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
 					loot.add(doubledLoot);
@@ -82,7 +82,6 @@ export const pickpocketTask: MinionTask = {
 					loot.add(lootItems);
 				}
 
-				// Roll for pet
 				if (roll(petDropRate)) {
 					loot.add('Rocky');
 				}
@@ -90,10 +89,9 @@ export const pickpocketTask: MinionTask = {
 		} else if (obj.type === 'stall') {
 			for (let i = 0; i < successfulQuantity; i++) {
 				if (percentChance(obj.lootPercent!)) {
-					loot.add(obj.table.roll());
+					obj.table.roll(1, { targetBank: loot });
 				}
 
-				// Roll for pet
 				if (roll(petDropRate)) {
 					loot.add('Rocky');
 				}
@@ -101,15 +99,14 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		if (loot.has('Coins')) {
-			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
+			await ClientSettings.updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived, duration });
+		const xpRes = await user.addXP({ skillName: 'thieving', amount: xpReceived, duration });
 
 		let str = `${user}, ${user.minionName} finished ${
 			obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'

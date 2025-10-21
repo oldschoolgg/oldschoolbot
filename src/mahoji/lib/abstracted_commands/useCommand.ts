@@ -1,10 +1,9 @@
-import { notEmpty } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { notEmpty } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { assert } from '../../../lib/util/logError';
-import { flowerTable } from './hotColdCommand';
+import { BitField } from '@/lib/constants.js';
+import { assert } from '@/lib/util/logError.js';
+import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 
 interface Usable {
 	items: Item[];
@@ -17,69 +16,69 @@ interface UsableUnlock {
 	bitfield: BitField;
 	resultMessage: string;
 }
-const usableUnlocks: UsableUnlock[] = [
+export const usableUnlocks: UsableUnlock[] = [
 	{
-		item: getOSItem('Torn prayer scroll'),
+		item: Items.getOrThrow('Torn prayer scroll'),
 		bitfield: BitField.HasTornPrayerScroll,
 		resultMessage: 'You used your Torn prayer scroll, and unlocked the Preserve prayer.'
 	},
 	{
-		item: getOSItem('Dexterous prayer scroll'),
+		item: Items.getOrThrow('Dexterous prayer scroll'),
 		bitfield: BitField.HasDexScroll,
 		resultMessage: 'You used your Dexterous prayer scroll, and unlocked the Rigour prayer.'
 	},
 	{
-		item: getOSItem('Arcane prayer scroll'),
+		item: Items.getOrThrow('Arcane prayer scroll'),
 		bitfield: BitField.HasArcaneScroll,
 		resultMessage: 'You used your Arcane prayer scroll, and unlocked the Augury prayer.'
 	},
 	{
-		item: getOSItem('Slepey tablet'),
+		item: Items.getOrThrow('Slepey tablet'),
 		bitfield: BitField.HasSlepeyTablet,
 		resultMessage: 'You used your Slepey tablet, and unlocked the Slepe teleport.'
 	},
 	{
-		item: getOSItem('Runescroll of bloodbark'),
+		item: Items.getOrThrow('Runescroll of bloodbark'),
 		bitfield: BitField.HasBloodbarkScroll,
 		resultMessage: 'You used your Runescroll of bloodbark, and unlocked the ability to create Bloodbark armour.'
 	},
 	{
-		item: getOSItem('Runescroll of swampbark'),
+		item: Items.getOrThrow('Runescroll of swampbark'),
 		bitfield: BitField.HasSwampbarkScroll,
 		resultMessage: 'You used your Runescroll of Swampbark, and unlocked the ability to create Swampbark armour.'
 	},
 	{
-		item: getOSItem("Saradomin's light"),
+		item: Items.getOrThrow("Saradomin's light"),
 		bitfield: BitField.HasSaradominsLight,
 		resultMessage: "You used your Saradomin's light."
 	},
 	{
-		item: getOSItem('Frozen tablet'),
+		item: Items.getOrThrow('Frozen tablet'),
 		bitfield: BitField.UsedFrozenTablet,
 		resultMessage: 'You used your Frozen tablet.'
 	},
 	{
-		item: getOSItem('Scarred tablet'),
+		item: Items.getOrThrow('Scarred tablet'),
 		bitfield: BitField.UsedScarredTablet,
 		resultMessage: 'You used your Scarred tablet.'
 	},
 	{
-		item: getOSItem('Sirenic tablet'),
+		item: Items.getOrThrow('Sirenic tablet'),
 		bitfield: BitField.UsedSirenicTablet,
 		resultMessage: 'You used your Sirenic tablet.'
 	},
 	{
-		item: getOSItem('Strangled tablet'),
+		item: Items.getOrThrow('Strangled tablet'),
 		bitfield: BitField.UsedStrangledTablet,
 		resultMessage: 'You used your Strangled tablet.'
 	},
 	{
-		item: getOSItem('Deadeye prayer scroll'),
+		item: Items.getOrThrow('Deadeye prayer scroll'),
 		bitfield: BitField.HasDeadeyeScroll,
 		resultMessage: 'You used your Deadeye prayer scroll, and unlocked the Deadeye prayer.'
 	},
 	{
-		item: getOSItem('Mystic vigour prayer scroll'),
+		item: Items.getOrThrow('Mystic vigour prayer scroll'),
 		bitfield: BitField.HasMysticVigourScroll,
 		resultMessage: 'You used your Mystic vigour prayer scroll, and unlocked the Mystic vigour prayer.'
 	}
@@ -102,20 +101,20 @@ for (const usableUnlock of usableUnlocks) {
 	});
 }
 
-const genericUsables: {
+export const genericUsables: {
 	items: [Item, Item] | [Item];
 	cost: Bank;
 	loot: Bank | (() => Bank) | null;
 	response: (loot: Bank) => string;
 }[] = [
 	{
-		items: [getOSItem('Banana'), getOSItem('Monkey')],
+		items: [Items.getOrThrow('Banana'), Items.getOrThrow('Monkey')],
 		cost: new Bank().add('Banana').freeze(),
 		loot: null,
 		response: () => 'You fed a Banana to your Monkey!'
 	},
 	{
-		items: [getOSItem('Mithril seeds')],
+		items: [Items.getOrThrow('Mithril seeds')],
 		cost: new Bank().add('Mithril seeds').freeze(),
 		loot: () => flowerTable.roll(),
 		response: loot => `You planted a Mithril seed and got ${loot}!`
@@ -136,8 +135,8 @@ for (const genericU of genericUsables) {
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
 export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {
-	const firstItem = getItem(_firstItem);
-	const secondItem = _secondItem === undefined ? null : getItem(_secondItem);
+	const firstItem = Items.getItem(_firstItem);
+	const secondItem = _secondItem === undefined ? null : Items.getItem(_secondItem);
 	if (!firstItem || (_secondItem !== undefined && !secondItem)) return "That's not a valid item.";
 	const items = [firstItem, secondItem].filter(notEmpty);
 	assert(items.length === 1 || items.length === 2);

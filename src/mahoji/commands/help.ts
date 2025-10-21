@@ -1,8 +1,8 @@
 import { ButtonStyle, ComponentType } from 'discord.js';
 
-import { mahojiInformationalButtons } from '../../lib/sharedComponents';
+import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 
-export const helpCommand: OSBMahojiCommand = {
+export const helpCommand = defineCommand({
 	name: 'help',
 	description: 'Get information and help with the bot.',
 	options: [],
@@ -52,4 +52,4 @@ Please click the buttons below for important links.`,
 			]
 		};
 	}
-};
+});

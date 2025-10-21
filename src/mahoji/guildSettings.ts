@@ -1,7 +1,7 @@
-import type { Prisma } from '@prisma/client';
 import type { Guild as DJSGuild } from 'discord.js';
 
-import { untrustedGuildSettingsCache } from '../lib/cache.js';
+import type { Prisma } from '@/prisma/main.js';
+import { untrustedGuildSettingsCache } from '@/lib/cache.js';
 
 export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	const id = typeof guild === 'string' ? guild : guild.id;

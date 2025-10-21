@@ -1,29 +1,17 @@
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	formatDuration,
-	isWeekend,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
-import type { PlayerOwnedHouse } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, notEmpty, randInt } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { randInt } from '@oldschoolgg/rng';
+import { formatDuration, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import type { ClueTier } from '../../lib/clues/clueTiers';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { BitField, MAX_CLUES_DROPPED } from '../../lib/constants';
-import { allOpenables, getOpenableLoot } from '../../lib/openables';
-import { getPOHObject } from '../../lib/poh';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { getItem } from '../../lib/util/getOSItem';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
+import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
+import { getPOHObject } from '@/lib/poh/index.js';
+import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 export const clueTierBoosts: Record<
 	ClueTier['name'],
@@ -217,8 +205,8 @@ export const clueGlobalBoosts: {
 	}
 ];
 
-async function getStashBoost(userID: string, tierName: string): Promise<number> {
-	const parsedUnits = await getParsedStashUnits(userID);
+async function getStashBoost(user: MUser, tierName: string): Promise<number> {
+	const parsedUnits = await user.fetchStashUnits();
 
 	// Filter parsed units based on the found stash tier
 	const tierSpecificUnits = parsedUnits.filter(unit => unit.tier.tier === tierName);
@@ -233,7 +221,7 @@ async function getStashBoost(userID: string, tierName: string): Promise<number> 
 	return boost;
 }
 
-export const clueCommand: OSBMahojiCommand = {
+export const clueCommand = defineCommand({
 	name: 'clue',
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
@@ -243,51 +231,44 @@ export const clueCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
-			autocomplete: async (value, user) => {
-				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
+			autocomplete: async (value: string, user: MUser) => {
 				return ClueTiers.map(i => ({
-					name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`,
+					name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
 					value: i.name
 				})).filter(i => !value || i.value.toLowerCase().includes(value));
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity of clues you want to complete (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'implings',
 			description: 'Implings to use for multiple clues per trip.',
 			required: false,
-			autocomplete: async (value, user) => {
+			autocomplete: async (value: string, user: MUser) => {
 				const allClueImps = ClueTiers.filter(t => t.name !== 'Beginner')
 					.map(i => i.implings)
 					.filter(notEmpty)
 					.flat()
-					.map(getItem)
+					.map(id => Items.get(id))
 					.filter(notEmpty);
-				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
-				const hasClueImps = allClueImps.filter(imp => bank.has(imp.id));
+				const hasClueImps = allClueImps.filter(imp => user.bank.has(imp.id));
 				return hasClueImps
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({ name: `${i.name} (${bank.amount(i.id)}x Owned)`, value: i.name }));
+					.map(i => ({ name: `${i.name} (${user.bank.amount(i.id)}x Owned)`, value: i.name }));
 			}
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{ tier: string; quantity?: number; implings?: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }) => {
 		let { quantity } = options;
 
 		const clueTier = ClueTiers.find(
@@ -295,10 +276,10 @@ export const clueCommand: OSBMahojiCommand = {
 		);
 		if (!clueTier) return 'Invalid clue tier.';
 
-		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
+		const maxTripLength = user.calcMaxTripLength('ClueCompletion');
 
 		const clueImpling = options.implings
-			? getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
+			? Items.getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
 			: null;
 
 		if (options.implings) {
@@ -311,7 +292,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const boosts = [];
 
-		const stats = await user.fetchStats({ openable_scores: true });
+		const stats = await user.fetchStats();
 		const currentClueScore = (stats.openable_scores as ItemBank)[clueTier.id] ?? 1;
 		let timePerClue = clueTier.timeToFinish;
 		const learningReductionPercent = Math.min(
@@ -329,16 +310,14 @@ export const clueCommand: OSBMahojiCommand = {
 		const poh = await getPOH(user.id);
 
 		// Stash Unit boost
-		const stashBoost = await getStashBoost(userID, clueTier.name);
+		const stashBoost = await getStashBoost(user, clueTier.name);
 		boosts.push(`${stashBoost.toFixed(2)}% for built STASH Units`);
 		timePerClue *= 1 - stashBoost / 100;
 
 		// Combat stats boost
 		if (['Hard', 'Elite', 'Master'].includes(clueTier.name)) {
 			const totalCombatStats =
-				user.skillLevel(SkillsEnum.Attack) +
-				user.skillLevel(SkillsEnum.Strength) +
-				user.skillLevel(SkillsEnum.Ranged);
+				user.skillsAsLevels.attack + user.skillsAsLevels.strength + user.skillsAsLevels.ranged;
 			let combatBoost = (totalCombatStats / (3 * 99)) * 100;
 
 			if (combatBoost < 50) {
@@ -443,12 +422,12 @@ export const clueCommand: OSBMahojiCommand = {
 			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
 		}
 
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
+		await ActivityManager.startTrip<ClueActivityTaskOptions>({
 			ci: clueTier.id,
 			implingID: clueImpling ? clueImpling.id : undefined,
 			implingClues: clueImpling ? implingClues : undefined,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			q: quantity,
 			iQty: options.quantity,
 			duration,
@@ -462,4 +441,4 @@ export const clueCommand: OSBMahojiCommand = {
 		}${implingLootString}`;
 		return response;
 	}
-};
+});

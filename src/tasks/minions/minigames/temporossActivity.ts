@@ -1,18 +1,16 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { increaseNumByPercent, randInt } from 'e';
+import { randInt } from '@oldschoolgg/rng';
+import { calcPerHour, Emoji, Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolkit';
 
-import { getTemporossLoot } from '../../../lib/simulation/tempoross';
-import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
-import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const temporossTask: MinionTask = {
 	type: 'Tempoross',
-	async run(data: TemporossActivityTaskOptions) {
-		const { userID, channelID, quantity, rewardBoost, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TemporossActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, rewardBoost, duration } = data;
+
 		const currentLevel = user.skillsAsLevels.fishing;
 		const previousScore = await user.fetchMinigameScore('tempoross');
 		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);
@@ -66,8 +64,7 @@ export const temporossTask: MinionTask = {
 			source: 'Tempoross'
 		});
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

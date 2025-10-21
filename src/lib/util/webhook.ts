@@ -1,22 +1,24 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { splitMessage } from '@oldschoolgg/toolkit/string-util';
+import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit';
 import {
 	type AttachmentBuilder,
 	type BaseMessageOptions,
+	type DMChannel,
 	type EmbedBuilder,
-	type Message,
 	PartialGroupDMChannel,
 	PermissionsBitField,
+	type TextChannel,
 	WebhookClient
 } from 'discord.js';
 
-import { globalConfig } from '../constants';
-import { logError } from './logError';
+import { globalConfig } from '@/lib/constants.js';
 
-async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
+async function resolveChannel(channelID: string): Promise<WebhookClient | TextChannel | DMChannel | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channel || channel instanceof PartialGroupDMChannel) return undefined;
-	if (channel.isDMBased()) return channel;
+	if (channel.isDMBased()) {
+		if (channel.partial) return channel.fetch();
+		return channel;
+	}
 	if (!channelIsSendable(channel)) return undefined;
 	const db = await prisma.webhook.findFirst({ where: { channel_id: channelID } });
 	if (db) {
@@ -31,10 +33,10 @@ async function resolveChannel(channelID: string): Promise<WebhookClient | Messag
 	}
 
 	try {
-		const createdWebhook = await channel.createWebhook({
+		const createdWebhook = (await channel.createWebhook({
 			name: globalClient.user?.username,
 			avatar: globalClient.user?.displayAvatarURL({})
-		});
+		})) as { id: string; token: string };
 		await prisma.webhook.create({
 			data: {
 				channel_id: channelID,
@@ -42,7 +44,7 @@ async function resolveChannel(channelID: string): Promise<WebhookClient | Messag
 				webhook_token: createdWebhook.token!
 			}
 		});
-		const webhook = new WebhookClient({ id: createdWebhook.id, token: createdWebhook.token! });
+		const webhook: WebhookClient = new WebhookClient({ id: createdWebhook.id, token: createdWebhook.token! });
 		return webhook;
 	} catch (_) {
 		return channel;
@@ -91,7 +93,7 @@ export async function sendToChannelID(
 				await deleteWebhook(channelID);
 				await sendToChannelID(channelID, data);
 			} else {
-				logError(error, {
+				Logging.logError(error, {
 					content: data.content ?? 'None',
 					channelID
 				});
@@ -110,14 +112,17 @@ export async function sendToChannelID(
 	}
 }
 
-async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'], input: BaseMessageOptions) {
+async function sendToChannelOrWebhook(
+	channel: { send: (input: BaseMessageOptions) => Promise<unknown> },
+	input: BaseMessageOptions
+) {
 	const maxLength = 2000;
 
 	if (input.content && input.content.length > maxLength) {
 		// Moves files + components to the final message.
 		const split = splitMessage(input.content, { maxLength });
 		if (split.length > 4) {
-			logError(new Error(`Tried to send ${split.length} messages.`), undefined, {
+			Logging.logError(new Error(`Tried to send ${split.length} messages.`), {
 				content: `${split[0].substring(0, 120)}...`
 			});
 			return;
@@ -145,10 +150,6 @@ async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'
 			}
 		}
 		return;
-	}
-
-	if (!(channel instanceof WebhookClient) && !channel.isSendable()) {
-		throw new Error('Channel is not sendable');
 	}
 
 	return channel.send(input);

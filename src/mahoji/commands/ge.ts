@@ -1,30 +1,15 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import {
-	type CommandOption,
-	type CommandRunOptions,
-	type OSBMahojiCommand,
-	makeComponents,
-	returnStringOrFile
-} from '@oldschoolgg/toolkit/discord-util';
-import { evalMathExpression } from '@oldschoolgg/toolkit/math';
-import type { GEListing, GETransaction } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { sumArr, uniqueArr } from 'e';
-import { Bank, type ItemBank, getItem, toKMB } from 'oldschooljs';
+import { evalMathExpression, formatDuration, makeComponents, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { Items, toKMB } from 'oldschooljs';
 
-import { GeImageGenerator } from '@/lib/canvas/geImage';
-import { PerkTier } from '../../lib/constants';
-import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
-import { marketPricemap } from '../../lib/marketPrices';
-import { createChart } from '../../lib/util/chart';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { itemNameFromID } from '../../lib/util/smallUtils';
-import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import type { GEListing, GETransaction } from '@/prisma/main.js';
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
+import { PerkTier } from '@/lib/constants.js';
+import { defineOption, itemOption, tradeableItemArr } from '@/lib/discord/index.js';
+import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
+import { marketPricemap } from '@/lib/marketPrices.js';
+import { createChart } from '@/lib/util/chart.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -42,7 +27,7 @@ function geListingToString(
 	listing: GEListingWithTransactions,
 	buyLimit?: Awaited<ReturnType<(typeof GrandExchange)['checkBuyLimitForListing']>>
 ) {
-	const item = getOSItem(listing.item_id);
+	const item = Items.getOrThrow(listing.item_id);
 	const allTransactions = [...listing.buyTransactions, ...listing.sellTransactions];
 	const verb = listing.type === 'Buy' ? 'Buying' : 'Selling';
 	const pastVerb = listing.type === 'Buy' ? 'bought' : 'sold';
@@ -75,35 +60,35 @@ function geListingToString(
 	)} GP each. ${allTransactions.length}x transactions made.${buyLimitStr}`;
 }
 
-const quantityOption: CommandOption = {
+const quantityOption = defineOption({
 	name: 'quantity',
 	description: 'The quantity of the item to exchange (e.g. 7, 5k, 10m).',
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	required: true
-};
+});
 
-const priceOption: CommandOption = {
+const priceOption = defineOption({
 	name: 'price',
 	description: 'The price to exchange each item at. (e.g. 7, 5k, 10m).',
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	required: true
-};
+});
 
-export const geCommand: OSBMahojiCommand = {
+export const geCommand = defineCommand({
 	name: 'ge',
 	description: 'Exchange grandly with other players on the bot!',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy',
 			description: 'Purchase something from the grand exchange.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you want to pick.',
 					required: true,
-					autocomplete: async (value, user) => {
+					autocomplete: async (value: string, user: MUser) => {
 						if (!value) {
 							const tradesOfUser = (
 								await prisma.gEListing.findMany({
@@ -118,7 +103,7 @@ export const geCommand: OSBMahojiCommand = {
 								})
 							).map(i => i.item_id);
 							return uniqueArr(tradesOfUser).map(itemID => ({
-								name: itemNameFromID(itemID)!,
+								name: Items.itemNameFromId(itemID)!,
 								value: itemID.toString()
 							}));
 						}
@@ -131,20 +116,17 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'sell',
 			description: 'Sell something on the grand exchange.',
 			options: [
 				{
 					name: 'item',
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					description: 'The item you want to sell.',
 					required: true,
-					autocomplete: async (value, { id }) => {
-						const raw = await mahojiUsersSettingsFetch(id, { bank: true });
-						const bank = new Bank(raw.bank as ItemBank);
-
-						return bank
+					autocomplete: async (value: string, user: MUser) => {
+						return user.bank
 							.items()
 							.filter(i => i[0].tradeable_on_ge)
 							.filter(i => (!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())))
@@ -156,12 +138,12 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'my_listings',
 			description: 'View your listings',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'page',
 					description: 'The page you want to view.',
 					required: false,
@@ -171,21 +153,21 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cancel',
 			description: 'Cancel one of your listings.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'listing',
 					description: 'The listing to cancel.',
 					required: true,
-					autocomplete: async (_, user) => {
+					autocomplete: async (_: string, user: MUser) => {
 						const listings = await prisma.gEListing.findMany({ where: { user_id: user.id } });
 						return listings
 							.filter(i => !i.cancelled_at && !i.fulfilled_at && i.quantity_remaining > 0)
 							.map(l => ({
-								name: `${l.type} ${l.total_quantity}x ${itemNameFromID(l.item_id)!}`,
+								name: `${l.type} ${l.total_quantity}x ${Items.itemNameFromId(l.item_id)!}`,
 								value: l.userfacing_id
 							}));
 					}
@@ -193,37 +175,39 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'stats',
 			description: 'View your g.e stats',
 			options: []
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'price',
 			description: 'Lookup the market price of an item on the g.e',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item to lookup.',
 					required: true,
-					autocomplete: async input => {
+					autocomplete: async (value: string) => {
 						const listings = Array.from(marketPricemap.values());
 						return listings
 							.filter(i =>
-								!input ? true : itemNameFromID(i.itemID)?.toLowerCase().includes(input.toLowerCase())
+								!value
+									? true
+									: Items.itemNameFromId(i.itemID)?.toLowerCase().includes(value.toLowerCase())
 							)
 							.map(l => ({
-								name: `${itemNameFromID(l.itemID)!}`,
-								value: l.itemID
+								name: `${Items.itemNameFromId(l.itemID)!}`,
+								value: l.itemID.toString()
 							}));
 					}
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'Lookup information about an item on the g.e',
 			options: [
@@ -235,40 +219,15 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction
-	}: CommandRunOptions<{
-		buy?: {
-			item: string;
-			quantity: string;
-			price: string;
-		};
-		sell?: {
-			item: string;
-			quantity: string;
-			price: string;
-		};
-		cancel?: {
-			listing: string;
-		};
-		my_listings?: {
-			page: number;
-		};
-		stats?: {};
-		price?: { item: string };
-		view?: { item?: string };
-	}>) => {
-		await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, interaction }) => {
+		await interaction.defer();
 
 		if (options.price) {
 			const data = marketPricemap.get(Number(options.price.item));
 			if (!data) {
 				return "We don't have price data for that item.";
 			}
-			return `The current market price of ${itemNameFromID(data.itemID)!} is ${toKMB(
+			return `The current market price of ${Items.itemNameFromId(data.itemID)!} is ${toKMB(
 				data.guidePrice
 			)} (${data.guidePrice.toLocaleString()}) GP.
 
@@ -281,7 +240,7 @@ This price is a guide only, calculated from average sale prices, it may not be a
 			const totalGPYourSales = await prisma.gETransaction.aggregate({
 				where: {
 					sell_listing: {
-						user_id: userID
+						user_id: user.id
 					}
 				},
 				_sum: {
@@ -293,12 +252,12 @@ This price is a guide only, calculated from average sale prices, it may not be a
 					OR: [
 						{
 							sell_listing: {
-								user_id: userID
+								user_id: user.id
 							}
 						},
 						{
 							buy_listing: {
-								user_id: userID
+								user_id: user.id
 							}
 						}
 					]
@@ -324,7 +283,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 		if (options.my_listings) {
 			const activeListings = await prisma.gEListing.findMany({
 				where: {
-					user_id: userID,
+					user_id: user.id,
 					quantity_remaining: {
 						gt: 0
 					},
@@ -341,7 +300,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 			});
 			const recentInactiveListings = await prisma.gEListing.findMany({
 				where: {
-					user_id: userID,
+					user_id: user.id,
 					OR: [
 						{
 							fulfilled_at: {
@@ -395,12 +354,12 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				]
 			};
 
-			return returnStringOrFile(geResult);
+			return interaction.returnStringOrFile(geResult);
 		}
 
 		if (options.view) {
 			if (options.view.item) {
-				const item = getItem(options.view.item);
+				const item = Items.getItem(options.view.item);
 				if (!item) return 'Invalid item.';
 				if (!itemIsTradeable(item.id)) return 'That item is not tradeable on the Grand Exchange.';
 				const priceData = marketPricemap.get(item.id);
@@ -470,7 +429,7 @@ ORDER BY
 
 			if ('error' in result) return result.error;
 
-			await handleMahojiConfirmation(interaction, result.confirmationStr);
+			await interaction.confirmation(result.confirmationStr);
 		}
 
 		if (options.cancel) {
@@ -492,7 +451,7 @@ ORDER BY
 			return {
 				content: `Successfully created a listing to buy ${toKMB(
 					createdListing.total_quantity
-				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
+				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
 				components: makeComponents([createGECancelButton(createdListing)])
@@ -514,7 +473,7 @@ ORDER BY
 			return {
 				content: `Successfully created a listing to sell ${toKMB(
 					createdListing.total_quantity
-				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
+				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
 				components: makeComponents([createGECancelButton(createdListing)])
@@ -523,4 +482,4 @@ ORDER BY
 
 		return 'Invalid command.';
 	}
-};
+});

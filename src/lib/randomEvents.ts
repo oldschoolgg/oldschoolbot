@@ -1,11 +1,10 @@
-import { activity_type_enum } from '@prisma/client';
-import { Time, randArrItem, roll } from 'e';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { LRUCache } from 'lru-cache';
-import { Bank, ItemGroups } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
-import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
-import { BitField } from './constants';
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { BitField } from '@/lib/constants.js';
 
 interface RandomEvent {
 	id: number;
@@ -207,7 +206,7 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 		}
 	}
 	loot.add(event.loot.roll());
-	await userStatsBankUpdate(user, 'random_event_completions_bank', new Bank().add(event.id));
+	await user.statsBankUpdate('random_event_completions_bank', new Bank().add(event.id));
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 	return {
 		itemsToAddWithCL: loot

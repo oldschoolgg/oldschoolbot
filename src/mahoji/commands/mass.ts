@@ -1,25 +1,20 @@
-import { type CommandRunOptions, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, type TextChannel } from 'discord.js';
-import { Time, objectKeys } from 'e';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
-import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import type { KillableMonster } from '../../lib/minions/types';
-import { setupParty } from '../../lib/party';
-import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import calcDurQty from '../../lib/util/calcMassDurationQuantity';
-import findMonster from '../../lib/util/findMonster';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { hasMonsterRequirements } from '../mahojiSettings';
+import type { GearSetupType } from '@/prisma/main/enums.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import hasEnoughFoodForMonster from '@/lib/minions/functions/hasEnoughFoodForMonster.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import findMonster from '@/lib/util/findMonster.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
-		if (!user.user.minion_hasBought) {
+		if (!user.hasMinion) {
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
@@ -46,7 +41,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 	}
 }
 
-export const massCommand: OSBMahojiCommand = {
+export const massCommand = defineCommand({
 	name: 'mass',
 	description: 'Arrange to mass bosses, killing them as a group.',
 	attributes: {
@@ -56,11 +51,11 @@ export const massCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'monster',
 			description: 'The boss you want to mass.',
 			required: true,
-			autocomplete: async value => {
+			autocomplete: async (value: string) => {
 				return killableMonsters
 					.filter(i => i.groupKillable)
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -68,12 +63,10 @@ export const massCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ interaction, options, userID, channelID }: CommandRunOptions<{ monster: string }>) => {
-		await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+	run: async ({ interaction, options, user, channelID }) => {
+		await interaction.defer();
+
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
-		const channel = globalClient.channels.cache.get(channelID);
-		if (!channel || !channelIsSendable(channel)) return 'Invalid channel.';
 		const monster = findMonster(options.monster);
 		if (!monster) return "That monster doesn't exist!";
 		if (!monster.groupKillable) return "This monster can't be killed in groups!";
@@ -83,14 +76,14 @@ export const massCommand: OSBMahojiCommand = {
 
 		let users: MUser[] = [];
 		try {
-			users = await setupParty(channel as TextChannel, user, {
+			users = await interaction.makeParty({
 				leader: user,
 				minSize: 2,
 				maxSize: 10,
 				ironmanAllowed: false,
 				message: `${user.badgedUsername} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
 				customDenier: async user => {
-					if (!user.user.minion_hasBought) {
+					if (!user.hasMinion) {
 						return [true, "you don't have a minion."];
 					}
 					if (user.minionIsBusy) {
@@ -148,15 +141,15 @@ export const massCommand: OSBMahojiCommand = {
 					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
 					healPerAction: Math.ceil(healAmountNeeded / quantity),
 					activityName: monster.name,
-					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+					attackStylesUsed: Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]
 				});
 			}
 		}
 
-		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
+		await ActivityManager.startTrip<GroupMonsterActivityTaskOptions>({
 			mi: monster.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			q: quantity,
 			duration,
 			type: 'GroupMonsterKilling',
@@ -185,4 +178,4 @@ export const massCommand: OSBMahojiCommand = {
 
 		return str;
 	}
-};
+});

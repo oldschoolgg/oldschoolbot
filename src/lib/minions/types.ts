@@ -1,20 +1,28 @@
-import type { GearSetupType, XpGainSource } from '@prisma/client';
-import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
+import type {
+	ArrayItemsResolved,
+	Bank,
+	EMonster,
+	Item,
+	ItemBank,
+	MonsterKillOptions,
+	SimpleMonster
+} from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import type { QuestID } from '@/lib/minions/data/quests.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { POHBoosts } from '@/lib/poh/index.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import type { LevelRequirements, SkillNameType } from '@/lib/skilling/types.js';
+import type { GearRequirements } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { XPBank } from '@/lib/structures/XPBank.js';
+import type { Skills } from '@/lib/types/index.js';
 import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
-import type { ClueTier } from '../clues/clueTiers';
-import type { POHBoosts } from '../poh';
-import type { MinigameName } from '../settings/minigames';
-import type { LevelRequirements, SkillNameType, SkillsEnum } from '../skilling/types';
-import type { XPBank } from '../structures/Bank';
-import type { GearRequirements } from '../structures/Gear';
-import type { GearBank } from '../structures/GearBank';
-import type { MUserStats } from '../structures/MUserStats';
-import type { UpdateBank } from '../structures/UpdateBank';
-import type { Skills } from '../types';
-import type { QuestID } from './data/quests';
-import type { AttackStyles } from './functions';
 
 export type KillableMonsterEffect = (opts: {
 	gearBank: GearBank;
@@ -127,7 +135,7 @@ export interface Consumable {
 }
 
 export interface AddXpParams {
-	skillName: SkillsEnum | SkillNameType;
+	skillName: SkillNameType;
 	amount: number;
 	duration?: number;
 	multiplier?: boolean;
@@ -170,7 +178,7 @@ export interface DiaryTier {
 	minigameReqs?: Partial<Record<MinigameName, number>>;
 	lapsReqs?: Record<string, number>;
 	qp?: number;
-	monsterScores?: Record<string, number>;
+	monsterScores?: Partial<Record<EMonster, number>>;
 	customReq?: (user: MUser, summary: boolean, stats: MUserStats) => [true] | [false, string];
 }
 export enum DiaryID {
