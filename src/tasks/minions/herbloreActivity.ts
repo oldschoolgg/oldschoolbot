@@ -44,8 +44,9 @@ export const herbloreTask: MinionTask = {
 			const chemistryItem = Items.getOrThrow('Amulet of chemistry');
 			if (user.gear.skilling.hasEquipped(chemistryItem.id, false, false)) {
 				const potentialFourDoseName = mixableItem.item.name.replace(' (3)', '(4)').replace('(3)', '(4)');
-				fourDoseItem = Items.get(potentialFourDoseName) ?? null;
-				if (fourDoseItem) {
+				const potentialFourDoseItem = Items.getItem(potentialFourDoseName);
+				if (potentialFourDoseItem) {
+					fourDoseItem = potentialFourDoseItem;
 					const chemistryCharges = await checkDegradeableItemCharges({
 						item: chemistryItem,
 						user

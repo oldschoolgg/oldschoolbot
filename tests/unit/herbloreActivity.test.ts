@@ -51,7 +51,8 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 			itemsRemoved: undefined,
 			newBank: new Bank(),
 			newCL: new Bank(),
-			newUser: user.user
+			newUser: user.user,
+			clLootBank: null
 		});
 
 		const percentResults = [true, true, false];
@@ -96,7 +97,8 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 			itemsRemoved: undefined,
 			newBank: new Bank(),
 			newCL: new Bank(),
-			newUser: user.user
+			newUser: user.user,
+			clLootBank: null
 		});
 
 		const percentSpy = vi.spyOn(rngModule, 'percentChance').mockReturnValue(true);
