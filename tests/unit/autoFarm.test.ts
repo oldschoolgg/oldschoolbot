@@ -162,7 +162,8 @@ describe('auto farm helpers', () => {
 			itemsRemoved: new Bank(),
 			newBank: user.bank.clone(),
 			newCL: user.cl.clone(),
-			previousCL: new Bank()
+			previousCL: new Bank(),
+			clLootBank: null
 		} satisfies Awaited<ReturnType<typeof user.transactItems>>;
 		const transactSpy = vi.spyOn(user, 'transactItems').mockResolvedValue(transactResult);
 		const statsSpy = vi.spyOn(user, 'statsBankUpdate').mockResolvedValue(undefined);
@@ -223,7 +224,8 @@ describe('auto farm helpers', () => {
 			itemsRemoved: new Bank(),
 			newBank: user.bank.clone(),
 			newCL: user.cl.clone(),
-			previousCL: new Bank()
+			previousCL: new Bank(),
+			clLootBank: null
 		} satisfies Awaited<ReturnType<typeof user.transactItems>>;
 		const transactSpy = vi.spyOn(user, 'transactItems').mockResolvedValue(transactResult);
 		const statsSpy = vi.spyOn(user, 'statsBankUpdate').mockResolvedValue(undefined);

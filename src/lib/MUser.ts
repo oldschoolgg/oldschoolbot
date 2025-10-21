@@ -89,8 +89,6 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 	[K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
 };
 
-export type MUser = MUserClass;
-
 export class MUserClass {
 	user!: Readonly<User>;
 	id: string;
@@ -1187,6 +1185,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 }
 
 declare global {
+	export type MUser = MUserClass;
 	var mUserFetch: typeof srcMUserFetch;
 	var GlobalMUserClass: typeof MUserClass;
 }

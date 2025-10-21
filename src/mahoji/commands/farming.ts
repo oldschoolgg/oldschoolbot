@@ -4,7 +4,6 @@ import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { choicesOf } from '@/lib/discord/index.js';
-import type { MUser } from '@/lib/MUser.js';
 import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
 import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
 import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
