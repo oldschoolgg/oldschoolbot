@@ -21,12 +21,21 @@ export function makeOpenSeedPackButton() {
 		.setEmoji('977410792754413668');
 }
 
-export function makeAutoContractButton() {
-	return new ButtonBuilder()
+interface AutoContractButtonOptions {
+	blocked?: boolean;
+}
+
+export function makeAutoContractButton(options: AutoContractButtonOptions = {}) {
+	const button = new ButtonBuilder()
 		.setCustomId('AUTO_FARMING_CONTRACT')
-		.setLabel('Auto Farming Contract')
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('977410792754413668');
+
+	if (options.blocked) {
+		return button.setLabel('Auto Farming Contract (Unlock requirements pending)').setDisabled(true);
+	}
+
+	return button.setLabel('Auto Farming Contract');
 }
 
 export function makeRepeatTripButton() {

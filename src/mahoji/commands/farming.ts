@@ -181,10 +181,10 @@ export const farmingCommand = defineCommand({
 	],
 	run: async ({ user, options, interaction, channelID }) => {
 		await interaction.defer();
-		const { patchesDetailed } = Farming.getFarmingInfoFromUser(user);
+		const { patchesDetailed, patches } = Farming.getFarmingInfoFromUser(user);
 
 		if (options.auto_farm) {
-			return autoFarm(interaction, user, patchesDetailed);
+			return autoFarm(user, patchesDetailed, patches, interaction);
 		}
 		if (options.always_pay) {
 			const isEnabled = user.user.minion_defaultPay;

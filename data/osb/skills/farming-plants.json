@@ -1071,6 +1071,8 @@
 			"5316": 1
 		},
 		"output_logs": 1513,
+		"output_logs_quantity": 16,
+		"log_depletion_chance": 0.125,
 		"output_roots": 6051,
 		"tree_woodcutting_level": 75,
 		"pet_chance": 9368,
@@ -1108,6 +1110,8 @@
 			"21488": 1
 		},
 		"output_logs": 6332,
+		"output_logs_quantity": 16,
+		"log_depletion_chance": 0.125,
 		"tree_woodcutting_level": 50,
 		"name": "Mahogany tree",
 		"pet_chance": 5000,
@@ -1146,6 +1150,8 @@
 			"5314": 1
 		},
 		"output_logs": 1517,
+		"output_logs_quantity": 16,
+		"log_depletion_chance": 0.125,
 		"output_roots": 6047,
 		"tree_woodcutting_level": 45,
 		"pet_chance": 14052,
@@ -1319,6 +1325,8 @@
 			"5312": 1
 		},
 		"output_logs": 1521,
+		"output_logs_quantity": 16,
+		"log_depletion_chance": 0.125,
 		"output_roots": 6043,
 		"tree_woodcutting_level": 15,
 		"pet_chance": 22483,
@@ -1715,6 +1723,8 @@
 			"22871": 1
 		},
 		"output_logs": 19669,
+		"output_logs_quantity": 22,
+		"log_depletion_chance": 0.09090909090909091,
 		"tree_woodcutting_level": 90,
 		"name": "Redwood tree",
 		"pet_chance": 5000,
@@ -2033,6 +2043,8 @@
 			"21486": 1
 		},
 		"output_logs": 6333,
+		"output_logs_quantity": 16,
+		"log_depletion_chance": 0.125,
 		"tree_woodcutting_level": 35,
 		"name": "Teak tree",
 		"pet_chance": 5000,
@@ -2315,6 +2327,8 @@
 			"5313": 1
 		},
 		"output_logs": 1519,
+		"output_logs_quantity": 16,
+		"log_depletion_chance": 0.125,
 		"output_roots": 6045,
 		"tree_woodcutting_level": 30,
 		"pet_chance": 16059,
@@ -2422,6 +2436,8 @@
 			"5315": 1
 		},
 		"output_logs": 1515,
+		"output_logs_quantity": 16,
+		"log_depletion_chance": 0.125,
 		"output_roots": 6049,
 		"tree_woodcutting_level": 60,
 		"pet_chance": 11242,
