@@ -151,7 +151,7 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Amulet of chemistry').freeze(),
 			charges: 5
 		},
-		emoji: ''
+		emoji: '🧪'
 	},
 	{
 		item: Items.getOrThrow('Amulet of blood fury'),

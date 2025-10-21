@@ -43,7 +43,7 @@ export const herbloreTask: MinionTask = {
 		if (!zahur && !wesley && mixableItem.item.name.includes('(3)')) {
 			const chemistryItem = Items.getOrThrow('Amulet of chemistry');
 			if (user.gear.skilling.hasEquipped(chemistryItem.id, false, false)) {
-				const potentialFourDoseName = mixableItem.item.name.replace(' (3)', '(4)').replace('(3)', '(4)');
+				const potentialFourDoseName = mixableItem.item.name.replace(/\(3\)/g, '(4)');
 				const potentialFourDoseItem = Items.getItem(potentialFourDoseName);
 				if (potentialFourDoseItem) {
 					fourDoseItem = potentialFourDoseItem;
