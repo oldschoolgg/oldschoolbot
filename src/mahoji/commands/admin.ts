@@ -873,23 +873,20 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.desync_commands) {
-			// Only allow in the support server
-			if (guildID.toString() !== globalConfig.supportServerID) {
+			const guildIDString = guildID?.toString();
+			if (!guildIDString || guildIDString !== globalConfig.supportServerID) {
 				return 'This subcommand can only be used in the support server.';
 			}
 
-			// Keep only the admin toolset (adjust names if needed)
 			const adminCommands = globalClient.allCommands.filter(
 				command => command.name === 'admin' || command.name === 'rp'
 			);
 
-			// Always overwrite the current guild with just the admin commands
 			await bulkUpdateCommands({
 				commands: adminCommands,
-				guildID: guildID.toString()
+				guildID: guildIDString
 			});
 
-			// In non-prod you’ve historically kept global empty — keep that behavior
 			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
 					commands: [],
@@ -897,9 +894,9 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 				});
 			}
 
-			return `Desynced commands in this guild; kept ${
-				adminCommands.map(command => `/${command.name}`).join(', ') || '/admin'
-			}.`;
+			const keptCommands = adminCommands.map(command => `/${command.name}`).join(', ') || '/admin';
+
+			return `Desynced commands in this guild; kept ${keptCommands}.`;
 		}
 
 		if (options.view) {
