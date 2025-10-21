@@ -1,17 +1,10 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
 import { gorajanArcherOutfit, pernixOutfit } from '@/lib/bso/collection-log/main.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
 import { getNexGearStats } from '@/lib/bso/util/getNexGearStats.js';
 
-import {
-	channelIsSendable,
-	formatDuration,
-	increaseNumByPercent,
-	isWeekend,
-	reduceNumByPercent,
-	round,
-	Time
-} from '@oldschoolgg/toolkit';
+import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -111,8 +104,6 @@ export async function nexCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'No channel found.';
 	let users: MUser[] = [];
 	if (type === 'mass') {
 		const usersWhoConfirmed = await interaction.makeParty(partyOptions);
@@ -237,6 +228,11 @@ export async function nexCommand(
 		}
 
 		debugStr += `${msgs.join(', ')}. `;
+	}
+
+	if (users.some(u => u.hasCard('death'))) {
+		effectiveTime = reduceNumByPercent(effectiveTime, 30);
+		debugStr += `\n${BSOEmoji.DeathCard} 30%`;
 	}
 
 	let minDuration = 2;
