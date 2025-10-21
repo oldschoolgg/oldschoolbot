@@ -1,5 +1,5 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import { type Bank, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
+import { type Bank, EItem, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
 import type { Minigame } from '@/prisma/main.js';
 import {
@@ -1419,7 +1419,9 @@ export const allPetsCL = resolveItems([
 	'Nid',
 	'Huberte',
 	'Moxi',
-	'Bran'
+	'Bran',
+	'Yami',
+	'Dom'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1698,7 +1700,11 @@ export const slayerCL = resolveItems([
 	'Aranea boots',
 	'Glacial temotli',
 	'Pendant of ates (inert)',
-	'Frozen tear'
+	'Frozen tear',
+	EItem.EARTHBOUND_TECPATL,
+	EItem.ANTLER_GUARD,
+	EItem.ALCHEMISTS_SIGNET,
+	EItem.BROKEN_ANTLER
 ]);
 
 export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
@@ -1767,7 +1773,8 @@ export const miscellaneousCL = resolveItems([
 	'Orange egg sac',
 	'Blue egg sac',
 	'Broken zombie axe',
-	'Broken zombie helmet'
+	'Broken zombie helmet',
+	EItem.HELMET_OF_THE_MOON
 ]);
 
 export const diariesCL = [

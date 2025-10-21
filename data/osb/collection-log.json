@@ -954,6 +954,16 @@
 				],
 				"items": ["Steel ring"]
 			},
+			"doom_of_mokhaiotl": {
+				"items": [
+					"Avernic treads",
+					"Demon tear",
+					"Dom",
+					"Eye of ayak (uncharged)",
+					"Mokhaiotl cloth",
+					"Mokhaiotl waystone"
+				]
+			},
 			"dagannoth_kings": {
 				"kc_activity": {
 					"default": ["Dagannoth Supreme", "Dagannoth Rex", "Dagannoth Prime"],
@@ -2630,6 +2640,21 @@
 					"Pyromancer robe",
 					"Tome of fire",
 					"Warm gloves"
+				]
+			},
+			"yami": {
+				"items": [
+					"Barrel of demonic tallow (full)",
+					"Chasm teleport scroll",
+					"Dossier",
+					"Forgotten lockbox",
+					"Oathplate chest",
+					"Oathplate helm",
+					"Oathplate legs",
+					"Oathplate shards",
+					"Rite of vile transference",
+					"Soulflame horn",
+					"Yami"
 				]
 			},
 			"zalcano": {
@@ -4656,6 +4681,23 @@
 					"Ring of nature"
 				],
 				"is_activity": true
+			},
+			"scroll_cases": {
+				"items": [
+					"Major beginner scroll case",
+					"Major easy scroll case",
+					"Major elite scroll case",
+					"Major hard scroll case",
+					"Major master scroll case",
+					"Major medium scroll case",
+					"Mimic scroll case",
+					"Minor beginner scroll case",
+					"Minor easy scroll case",
+					"Minor elite scroll case",
+					"Minor hard scroll case",
+					"Minor master scroll case",
+					"Minor medium scroll case"
+				]
 			}
 		}
 	},
@@ -4921,6 +4963,17 @@
 				],
 				"is_activity": true
 			},
+			"mastering_mixology": {
+				"items": [
+					"Alchemist gloves",
+					"Alchemist labcoat",
+					"Alchemist pants",
+					"Alchemist's amulet",
+					"Chugging barrel (disassembled)",
+					"Prescription goggles",
+					"Reagent pouch"
+				]
+			},
 			"pest_control": {
 				"items": [
 					"Elite void robe",
@@ -5017,6 +5070,9 @@
 				],
 				"is_activity": true
 			},
+			"vale_totems": {
+				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask"]
+			},
 			"volcanic_mine": {
 				"items": [
 					"Ash covered tome",
@@ -5056,6 +5112,7 @@
 					"Butch",
 					"Callisto cub",
 					"Chompy chick",
+					"Dom",
 					"Giant squirrel",
 					"Hellpuppy",
 					"Herbi",
@@ -5106,6 +5163,7 @@
 					"Vet'ion jr.",
 					"Vorki",
 					"Wisp",
+					"Yami",
 					"Youngllef"
 				]
 			},
@@ -5482,6 +5540,16 @@
 					"Zenyte shard"
 				]
 			},
+			"hunter_guild": {
+				"items": [
+					"Guild hunter boots",
+					"Guild hunter headwear",
+					"Guild hunter legs",
+					"Guild hunter top",
+					"Huntsman's kit",
+					"Quetzin"
+				]
+			},
 			"monkey_backpacks": {
 				"kc_activity": {},
 				"items": [
@@ -5652,11 +5720,13 @@
 					"Abyssal head",
 					"Abyssal whip",
 					"Adamant boots",
+					"Alchemist's signet",
 					"Ancient ceremonial boots",
 					"Ancient ceremonial gloves",
 					"Ancient ceremonial legs",
 					"Ancient ceremonial mask",
 					"Ancient ceremonial top",
+					"Antler guard",
 					"Aranea boots",
 					"Basilisk head",
 					"Basilisk jaw",
@@ -5664,6 +5734,7 @@
 					"Black mask (10)",
 					"Blood shard",
 					"Brine sabre",
+					"Broken antler",
 					"Broken dragon hasta",
 					"Bronze boots",
 					"Cockatrice head",
@@ -5682,6 +5753,7 @@
 					"Drake's claw",
 					"Drake's tooth",
 					"Dust battlestaff",
+					"Earthbound tecpatl",
 					"Eternal gem",
 					"Flippers",
 					"Frozen tear",
@@ -5864,6 +5936,7 @@
 					"Fresh crab claw",
 					"Fresh crab shell",
 					"Giant key",
+					"Helmet of the moon",
 					"Herbi",
 					"Hespori seed",
 					"Left skull half",
