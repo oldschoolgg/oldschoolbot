@@ -479,6 +479,12 @@ export async function repeatTameTrip({
 					};
 					break;
 				}
+				case 6: {
+					args = {
+						transmute_candy: Items.getOrThrow(data.itemID).name
+					};
+					break;
+				}
 			}
 			return runCommand({
 				commandName: 'tames',
