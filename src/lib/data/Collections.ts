@@ -1,3 +1,4 @@
+import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { calcWhatPercent, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import {
 	Bank,
@@ -55,6 +56,7 @@ import {
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
+	derangedArchaeologistCL,
 	diariesCL,
 	dukeSucellusCL,
 	type FormatProgressFunction,
@@ -256,6 +258,15 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.CrazyArchaeologist.allItems,
 				items: crazyArchaeologistCL,
 				fmtProg: kcProg(Monsters.CrazyArchaeologist)
+			},
+			'Deranged Archaeologist': {
+				alias: Monsters.DerangedArchaeologist.aliases,
+				allItems: Monsters.DerangedArchaeologist.allItems,
+				items: derangedArchaeologistCL,
+				fmtProg: kcProg(Monsters.DerangedArchaeologist)
+			},
+			'Doom of Mokhaiotl': {
+				items: CollectionLog.DoomofMokhaiotl.items
 			},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
@@ -572,6 +583,9 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
+			Yami: {
+				items: CollectionLog.Yami.items
+			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
@@ -772,6 +786,9 @@ export const allCollectionLogs: ICollection = {
 				items: uniqueArr([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL]),
 				isActivity: true,
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
+			},
+			'Scroll Cases': {
+				items: CollectionLog.ScrollCases.items
 			}
 		}
 	},
@@ -873,6 +890,9 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('mahogany_homes')
 			},
+			'Mastering Mixology': {
+				items: CollectionLog.MasteringMixology.items
+			},
 			'Pest Control': {
 				items: pestControlCL,
 				isActivity: true,
@@ -922,6 +942,9 @@ export const allCollectionLogs: ICollection = {
 				items: troubleBrewingCL,
 				isActivity: true,
 				fmtProg: mgProg('trouble_brewing')
+			},
+			'Vale Totems': {
+				items: CollectionLog.ValeTotems.items
 			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,
@@ -988,6 +1011,9 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.DemonicGorilla.name,
 				items: demonicGorillaCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
+			},
+			'Hunter Guild': {
+				items: CollectionLog.HunterGuild.items
 			},
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
