@@ -23,7 +23,7 @@ export const herbloreTask: MinionTask = {
 			const [hasWildyDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
 			const currentHerbLevel = user.skillsAsLevels.herblore;
 			let scales = 0;
-			// Having 99 herblore gives a 98% chance to recieve the max amount of shards
+			// Having 99 herblore gives a 98% chance to receive the max amount of shards
 			const maxShardChance = currentHerbLevel >= 99 ? 98 : 0;
 			// Completion of hard wilderness diary gives 50% more lava scale shards per lava scale, rounded down
 			const diaryMultiplier = hasWildyDiary ? 1.5 : 1;
@@ -40,6 +40,7 @@ export const herbloreTask: MinionTask = {
 			outputQuantity = scales;
 		}
 
+		// Amulet of chemistry logic: only for hand-mixed (no Zahur/Wesley) 3-dose outputs
 		if (!zahur && !wesley && mixableItem.item.name.includes('(3)')) {
 			const chemistryItem = Items.getOrThrow('Amulet of chemistry');
 			if (user.gear.skilling.hasEquipped(chemistryItem.id, false, false)) {
@@ -47,16 +48,18 @@ export const herbloreTask: MinionTask = {
 				const potentialFourDoseItem = Items.getItem(potentialFourDoseName);
 				if (potentialFourDoseItem) {
 					fourDoseItem = potentialFourDoseItem;
+
 					const chemistryCharges = await checkDegradeableItemCharges({
 						item: chemistryItem,
 						user
 					});
-					let chargesRemaining = chemistryCharges;
-					if (chargesRemaining > 0) {
-						for (let i = 0; i < quantity && chargesRemaining > 0; i++) {
+
+					let availableCharges = chemistryCharges;
+					if (availableCharges > 0) {
+						for (let i = 0; i < quantity && availableCharges > 0; i++) {
 							if (percentChance(5)) {
 								fourDoseCount++;
-								chargesRemaining--;
+								availableCharges--;
 							}
 						}
 						if (fourDoseCount > 0) {
@@ -65,10 +68,29 @@ export const herbloreTask: MinionTask = {
 								chargesToDegrade: fourDoseCount,
 								user
 							});
+
 							chemistryMessages.push(
 								`${fourDoseCount}x ${fourDoseItem.name} were made thanks to your Amulet of chemistry.`
 							);
-							if (degradeResult.userMessage.includes('broke')) {
+
+							const chargesUsed = degradeResult.chargesToDegrade ?? 0;
+							const remainingAfterDegrade = degradeResult.chargesRemaining;
+
+							if (
+								typeof chargesUsed === 'number' &&
+								chargesUsed > 0 &&
+								typeof remainingAfterDegrade === 'number'
+							) {
+								const chargeText = chargesUsed === 1 ? 'a charge' : `${chargesUsed} charges`;
+								chemistryMessages.push(
+									`Your Amulet of chemistry glows and loses ${chargeText} (${remainingAfterDegrade} left).`
+								);
+							}
+
+							if (
+								typeof degradeResult.userMessage === 'string' &&
+								degradeResult.userMessage.includes('broke')
+							) {
 								chemistryMessages.push(degradeResult.userMessage);
 							}
 						}
@@ -79,6 +101,7 @@ export const herbloreTask: MinionTask = {
 
 		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank();
+
 		if (fourDoseCount > 0 && fourDoseItem) {
 			const threeDoseCount = Math.max(outputQuantity - fourDoseCount, 0);
 			if (threeDoseCount > 0) {
@@ -91,10 +114,18 @@ export const herbloreTask: MinionTask = {
 
 		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
-		let completionMessage = `${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}.`;
+		let completionMessage: string;
+		if (fourDoseCount > 0 && fourDoseItem) {
+			const threeDoseCount = Math.max(outputQuantity - fourDoseCount, 0);
+			completionMessage = `${user}, ${user.minionName} finished making ${threeDoseCount}x ${mixableItem.item.name} and ${fourDoseCount}x ${fourDoseItem.name}.`;
+		} else {
+			completionMessage = `${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}.`;
+		}
+
 		if (chemistryMessages.length > 0) {
 			completionMessage = `${completionMessage} ${chemistryMessages.join(' ')}`;
 		}
+
 		completionMessage = `${completionMessage} ${xpRes}`;
 
 		handleTripFinish(user, channelID, completionMessage, undefined, data, loot);

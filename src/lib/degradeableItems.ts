@@ -410,6 +410,7 @@ export async function degradeItem({
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
 		chargesToDegrade: chargesToDegrade,
+		chargesRemaining: chargesAfter,
 		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges`
 	};
 }
