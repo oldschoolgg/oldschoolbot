@@ -1,5 +1,9 @@
 import { randArrItem, randInt, shuffleArr } from '@oldschoolgg/rng';
 import { sumArr, Time } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import { clone } from 'remeda';
+import { beforeAll, expect, test } from 'vitest';
+
 import {
 	type Activity,
 	type activity_type_enum,
@@ -26,11 +30,8 @@ import {
 	type StashUnit,
 	type UserStats,
 	type XPGain
-} from '@prisma/client';
-import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
-import { clone } from 'remeda';
-import { beforeAll, expect, test } from 'vitest';
-
+} from '@/prisma/main.js';
+import type { AnyCommand } from '@/lib/discord/commandOptions.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { BitField } from '../../src/lib/constants.js';
@@ -60,7 +61,7 @@ import { createTestUser, mockClient, mockedId } from './util.js';
 
 interface TestCommand {
 	name: string;
-	cmd: [OSBMahojiCommand, object] | ((user: TestUser) => Promise<any>);
+	cmd: [AnyCommand, object] | ((user: TestUser) => Promise<any>);
 	activity?: boolean;
 	priority?: boolean;
 }

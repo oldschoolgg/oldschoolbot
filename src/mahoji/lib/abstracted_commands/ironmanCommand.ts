@@ -1,6 +1,6 @@
-import type { Prisma } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
@@ -97,7 +97,7 @@ After becoming an ironman:
 		);
 	}
 
-	const mUser = (await mUserFetch(user.id)).user;
+	await user.sync();
 
 	type KeysThatArentReset =
 		| 'bank_bg_hex'
@@ -126,12 +126,12 @@ After becoming an ironman:
 
 	const createOptions: Required<Pick<Prisma.UserCreateInput, KeysThatArentReset>> = {
 		id: user.id,
-		bank_bg_hex: mUser.bank_bg_hex,
-		bank_sort_method: mUser.bank_sort_method,
-		bank_sort_weightings: mUser.bank_sort_weightings as ItemBank,
-		minion_bought_date: mUser.minion_bought_date,
-		RSN: mUser.RSN,
-		pets: mUser.pets as ItemBank,
+		bank_bg_hex: user.user.bank_bg_hex,
+		bank_sort_method: user.user.bank_sort_method,
+		bank_sort_weightings: user.user.bank_sort_weightings as ItemBank,
+		minion_bought_date: user.user.minion_bought_date,
+		RSN: user.user.RSN,
+		pets: user.user.pets as ItemBank,
 		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
 	};
 
@@ -169,6 +169,11 @@ After becoming an ironman:
 	await prisma.userEvent.deleteMany({ where: { user_id: user.id } });
 	await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(user.id) } });
+	const allTableBanks = await prisma.tableBank.findMany({ where: { user_id: user.id } });
+	for (const tableBank of allTableBanks) {
+		await prisma.tableBankItem.deleteMany({ where: { bank_id: tableBank.id } });
+		await prisma.tableBank.delete({ where: { id: tableBank.id } });
+	}
 
 	// Refund the leagues points they spent
 	const roboChimpUser = await roboChimpUserFetch(user.id);

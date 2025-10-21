@@ -8,19 +8,18 @@ const slayerPurchaseError =
 	'An error occurred trying to make this purchase. Please try again or contact #help-and-support if the issue persists.';
 
 export async function slayerShopBuyCommand({
-	userID,
+	user,
 	buyable,
 	quantity,
 	disable,
 	interaction
 }: {
-	userID: string;
+	user: MUser;
 	buyable: string;
 	quantity?: number;
 	disable?: boolean;
 	interaction?: MInteraction;
 }) {
-	const user = await mUserFetch(userID);
 	const buyableObj = SlayerRewardsShop.find(
 		reward => stringMatches(reward.name, buyable) || reward.aliases?.some(alias => stringMatches(alias, buyable))
 	);

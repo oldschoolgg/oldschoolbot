@@ -1,7 +1,7 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
+import { Prisma } from '@/prisma/main.js';
 import { CACHED_ACTIVE_USER_IDS } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { runTimedLoggedFn } from '@/lib/util.js';

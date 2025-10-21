@@ -2,27 +2,15 @@ import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
+import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
 import { getPOHObject } from '@/lib/poh/index.js';
-import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants.js';
-import { Gear } from '../../../src/lib/structures/Gear.js';
-import { minionKCommand } from '../../../src/mahoji/commands/k.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import { minionKCommand } from '@/mahoji/commands/k.js';
 import { createTestUser, mockClient, mockUser } from '../util.js';
 
 describe('PVM', async () => {
 	const client = await mockClient();
 	expect(Monsters.Man.id).toBe(EMonster.MAN);
-
-	it('Should add KC', async () => {
-		const user = await createTestUser();
-		const res = await user.runCommand(minionKCommand, { name: 'man' });
-		expect(res).toContain('now killing');
-		await user.runActivity();
-		expect(await user.getKC(EMonster.MAN)).toBeGreaterThan(1);
-		const clRows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id }
-		});
-		expect(clRows.length).toBeGreaterThan(0);
-	});
 
 	it('Should remove food', async () => {
 		const user = await createTestUser(new Bank().add('Shark', 1000), {

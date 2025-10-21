@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @import "./custom-components.css";
 @import "./markdown.css";
 @import "./utils.css";
@@ -68,6 +69,11 @@
 	--header-color: #513f2a;
 
 	scrollbar-color: var(--cream) #14131367;
+}
+
+:root[data-theme="light"] .sidebar,
+:root[data-theme="light"] #starlight__sidebar {
+	background: var(--cream, #dcc4b1) !important;
 }
 
 :root[data-theme="dark"] {
@@ -297,4 +303,13 @@ ol + ol li blockquote {
 :root[data-theme="dark"] .ca-complete {
 	background: #223326 !important;
 	color: #b8ffcc !important;
+}
+
+.ca-table td {
+	vertical-align: top;
+}
+starlight-tabs {
+	[role="tablist"] {
+		text-transform: capitalize;
+	}
 }

@@ -1,4 +1,4 @@
-import { ownedItemOption } from '@/lib/discord/index.js';
+import { choicesOf, ownedItemOption } from '@/lib/discord/index.js';
 import { PoHObjects } from '@/lib/poh/index.js';
 import {
 	getPOH,
@@ -11,7 +11,7 @@ import {
 	pohWallkits
 } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 
-export const pohCommand: OSBMahojiCommand = {
+export const pohCommand = defineCommand({
 	name: 'poh',
 	description: 'Allows you to access and build in your POH.',
 	attributes: {
@@ -42,7 +42,7 @@ export const pohCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The wallkit you want to pick.',
 					required: true,
-					choices: pohWallkits.map(i => ({ name: i.name, value: i.name }))
+					choices: choicesOf(pohWallkits.map(i => i.name))
 				}
 			]
 		},
@@ -105,18 +105,7 @@ export const pohCommand: OSBMahojiCommand = {
 			description: 'List the buildable items in your POH.'
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		view?: { build_mode?: boolean };
-		wallkit?: { name: string };
-		build?: { name: string };
-		destroy?: { name: string };
-		mount_item?: { name: string };
-		items?: { name: string };
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		if (!user.hasMinion) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {
 			return makePOHImage(user, options.view.build_mode);
@@ -139,4 +128,4 @@ export const pohCommand: OSBMahojiCommand = {
 		}
 		return 'Invalid command.';
 	}
-};
+});
