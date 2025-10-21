@@ -55,6 +55,7 @@ import {
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
+	derangedArchaeologistCL,
 	diariesCL,
 	dukeSucellusCL,
 	type FormatProgressFunction,
@@ -256,6 +257,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.CrazyArchaeologist.allItems,
 				items: crazyArchaeologistCL,
 				fmtProg: kcProg(Monsters.CrazyArchaeologist)
+			},
+			'Deranged Archaeologist': {
+				alias: Monsters.DerangedArchaeologist.aliases,
+				allItems: Monsters.DerangedArchaeologist.allItems,
+				items: derangedArchaeologistCL,
+				fmtProg: kcProg(Monsters.DerangedArchaeologist)
 			},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
