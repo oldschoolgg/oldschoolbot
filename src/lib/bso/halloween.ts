@@ -137,7 +137,6 @@ export async function halloweenTicker() {
 
 export const HalloweenEvent2025 = {
 	ALL_CARD_IDS: [
-		BSOItem.HALLOWEEN_CANDY,
 		BSOItem.WITCH_CARD,
 		BSOItem.GHOST_CARD,
 		BSOItem.VAMPIRE_CARD,
