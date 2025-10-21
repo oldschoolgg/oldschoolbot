@@ -41,7 +41,7 @@ function notifyUniques(user: MUser, activity: string, uniques: number[], loot: B
 	}
 }
 
-export const offerCommand: OSBMahojiCommand = {
+export const offerCommand = defineCommand({
 	name: 'offer',
 	description: 'Offer bones or bird eggs.',
 	attributes: {
@@ -74,7 +74,7 @@ export const offerCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID, interaction }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, user, channelID, interaction }) => {
 		const userBank = user.bank;
 
 		await interaction.defer();
@@ -260,4 +260,4 @@ export const offerCommand: OSBMahojiCommand = {
 			bone.name
 		} at the Chaos altar, it'll take around ${formatDuration(duration)} to finish.`;
 	}
-};
+});

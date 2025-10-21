@@ -358,17 +358,22 @@ export function initTickers() {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
 		const fn = async () => {
 			try {
+				const shouldLog: boolean = !['minion_activities'].includes(ticker.name);
 				if (globalClient.isShuttingDown) return;
-				Logging.logDebug(`Starting ${ticker.name} ticker`, {
-					type: 'TICKER'
-				});
+				if (shouldLog) {
+					Logging.logDebug(`Starting ${ticker.name} ticker`, {
+						type: 'TICKER'
+					});
+				}
 				const start = performance.now();
 				await ticker.cb();
 				const end = performance.now();
-				Logging.logDebug(`Finished ${ticker.name} ticker`, {
-					duration: end - start,
-					type: 'TICKER'
-				});
+				if (shouldLog) {
+					Logging.logDebug(`Finished ${ticker.name} ticker`, {
+						duration: end - start,
+						type: 'TICKER'
+					});
+				}
 			} catch (err) {
 				Logging.logError(err as Error);
 			} finally {

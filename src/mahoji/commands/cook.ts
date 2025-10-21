@@ -9,7 +9,7 @@ import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 import { cutLeapingFishCommand } from '@/mahoji/lib/abstracted_commands/cutLeapingFishCommand.js';
 import { forestersRationCommand } from '@/mahoji/lib/abstracted_commands/forestersRationCommand.js';
 
-export const cookCommand: OSBMahojiCommand = {
+export const cookCommand = defineCommand({
 	name: 'cook',
 	description: 'Cook things using the cooking skill.',
 	attributes: {
@@ -44,7 +44,7 @@ export const cookCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, user, channelID }) => {
 		let { quantity, name } = options;
 
 		const barbarianFish = LeapingFish.find(
@@ -147,4 +147,4 @@ export const cookCommand: OSBMahojiCommand = {
 			duration
 		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}
-};
+});

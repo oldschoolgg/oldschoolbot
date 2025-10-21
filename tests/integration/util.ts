@@ -6,6 +6,7 @@ import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
+import type { AnyCommand } from '@/lib/discord/index.js';
 import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
 import { MUserClass } from '../../src/lib/MUser.js';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
@@ -157,6 +158,16 @@ export class TestUser extends MUserClass {
 		this.client = client!;
 	}
 
+	async assertTableBankMatches() {
+		await this.sync();
+		const clFromDB = await this.fetchCL();
+		if (this.cl.toString() !== clFromDB.toString()) {
+			throw new Error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}
+Expected: ${this.cl.toString()}
+Actual: ${clFromDB.toString()}`);
+		}
+	}
+
 	async runActivity() {
 		const activity = await prisma.activity.findFirst({
 			where: {
@@ -180,6 +191,7 @@ export class TestUser extends MUserClass {
 		TestClient.activitiesProcessed++;
 		await ActivityManager.completeActivity(activity);
 		await this.sync();
+		await this.assertTableBankMatches();
 		return ActivityManager.convertStoredActivityToFlatActivity(activity);
 	}
 	async setLevel(skill: SkillNameType, level: number) {
@@ -280,11 +292,12 @@ export class TestUser extends MUserClass {
 		for (const skill of Object.keys(newXP) as SkillNameType[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
+		await this.assertTableBankMatches();
 
 		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
 
-	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
+	async runCommand(command: AnyCommand, options: object = {}, syncAfter = false) {
 		await this.sync();
 		const mockedInt = mockInteraction({ user: this });
 		const result = await command.run({
@@ -300,6 +313,7 @@ export class TestUser extends MUserClass {
 		if (syncAfter) {
 			await this.sync();
 		}
+		await this.assertTableBankMatches();
 		return result ?? (mockedInt as any).__response__;
 	}
 

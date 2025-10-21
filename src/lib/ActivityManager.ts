@@ -76,8 +76,10 @@ class SActivityManager {
 			return;
 		}
 
+		const user = await mUserFetch(activity.userID);
+
 		try {
-			await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish, rng: cryptoRng });
+			await task.run(activity, { user, handleTripFinish, rng: cryptoRng });
 		} catch (err) {
 			Logging.logError(err as Error);
 		} finally {

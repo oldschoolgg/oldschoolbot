@@ -1,7 +1,7 @@
 import { randArrItem } from '@oldschoolgg/rng';
 import { inlineCode } from 'discord.js';
 
-export const chooseCommand: OSBMahojiCommand = {
+export const chooseCommand = defineCommand({
 	name: 'choose',
 	description: 'Have the bot make a choice from a list of things.',
 	attributes: {
@@ -15,7 +15,7 @@ export const chooseCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ list: string }>) => {
+	run: async ({ options }) => {
 		const list = options.list.split(',');
 		if (list.length === 0) return "You didn't supply a list.";
 		return {
@@ -28,4 +28,4 @@ I choose... **${randArrItem(list)}**.`,
 			allowedMentions: { parse: [], roles: [], users: [] }
 		};
 	}
-};
+});

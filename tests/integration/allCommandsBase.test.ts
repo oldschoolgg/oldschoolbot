@@ -5,6 +5,7 @@ import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
 import { test } from 'vitest';
 
+import type { AnyCommand } from '@/lib/discord/commandOptions.js';
 import { allCommandsDONTIMPORT } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
@@ -170,7 +171,7 @@ test(
 
 		const rngProvider = new SeedableRNG(1);
 		const stopwatch = new Stopwatch();
-		const processedCommands: { command: OSBMahojiCommand; options: any[] }[] = [];
+		const processedCommands: { command: AnyCommand; options: any[] }[] = [];
 		for (const command of commandsToTest) {
 			if (ignoredCommands.includes(command.name)) continue;
 			let options = hardcodedOptions[command.name];

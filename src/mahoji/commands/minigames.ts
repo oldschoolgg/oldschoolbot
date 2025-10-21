@@ -1,7 +1,7 @@
-import type { NMZStrategy } from '@/lib/constants.js';
 import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
+import { choicesOf } from '@/lib/discord/index.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
 	agilityArenaBuyables,
@@ -87,7 +87,7 @@ import {
 	volcanicMineStatsCommand
 } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 
-export const minigamesCommand: OSBMahojiCommand = {
+export const minigamesCommand = defineCommand({
 	name: 'minigames',
 	description: 'Send your minion to do various minigames.',
 	options: [
@@ -147,7 +147,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'tier',
 							description: 'What tier of gamble to do.',
 							required: true,
-							choices: GambleTiers.map(i => ({ name: i.name, value: i.name }))
+							choices: choicesOf(GambleTiers.map(i => i.name))
 						},
 						{
 							type: 'Integer',
@@ -277,16 +277,23 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'skill',
 							required: true,
 							description: 'The skill to put XP in.',
-							choices: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].map(
-								i => ({ name: i, value: i })
-							)
+							choices: choicesOf([
+								'attack',
+								'strength',
+								'defence',
+								'hitpoints',
+								'ranged',
+								'magic',
+								'prayer'
+							])
 						},
 						{
 							type: 'Integer',
 							name: 'amount',
 							description: 'The amount of points you want to spend.',
 							min_value: 1,
-							max_value: 1000
+							max_value: 1000,
+							required: true
 						}
 					]
 				},
@@ -300,7 +307,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'name',
 							required: true,
 							description: 'The skill you want XP in.',
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return pestControlBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -562,7 +569,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return mageTrainingArenaBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -594,10 +601,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'tier',
 							required: false,
 							description: 'The tier contract you wish to do.',
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return contractTiers
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({ name: i.name, value: i.tier }));
+									.map(i => ({ name: i.name, value: i.tier.toString() }));
 							}
 						}
 					]
@@ -612,7 +619,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return mahoganyHomesBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -718,7 +725,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return soulWarsBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -745,7 +752,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'name',
 							required: true,
 							description: 'The item to imbue.',
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return soulWarsImbueables
 									.filter(i =>
 										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())
@@ -837,7 +844,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'item',
 							description: 'The item to buy.',
 							required: true,
-							choices: agilityArenaBuyables.map(i => ({ name: `${i.name}`, value: i.name }))
+							choices: choicesOf(agilityArenaBuyables.map(i => i.name))
 						},
 						{
 							type: 'Integer',
@@ -858,7 +865,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'quantity',
 							description: 'Quantity.',
 							required: true,
-							choices: [1, 10, 25, 100, 1000].map(i => ({ name: i.toString(), value: i }))
+							choices: choicesOf([1, 10, 25, 100, 1000])
 						}
 					]
 				}
@@ -891,7 +898,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'name',
 							description: 'The alloy/metal to use.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return giantsFoundryAlloys
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
@@ -973,7 +980,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'strategy',
 							description: 'The strategy to use.',
 							required: true,
-							choices: NMZ_STRATEGY.map(i => ({ name: i, value: i }))
+							choices: choicesOf(NMZ_STRATEGY)
 						}
 					]
 				},
@@ -1017,7 +1024,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'name',
 							required: true,
 							description: 'The item to imbue.',
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return nightmareZoneImbueables
 									.filter(i =>
 										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())
@@ -1044,7 +1051,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'shade',
 							description: 'The shade you want to use.',
 							required: true,
-							choices: shades.map(i => ({ name: i.shadeName, value: i.shadeName }))
+							choices: choicesOf(shades.map(i => i.shadeName))
 						},
 						{
 							name: 'logs',
@@ -1058,91 +1065,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		interaction,
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{
-		barb_assault?: {
-			start?: { quantity?: number };
-			buy?: { name: string; quantity?: number };
-			level?: {};
-			gamble?: { tier: string; quantity: number };
-			stats?: {};
-		};
-		castle_wars?: { stats?: {}; start?: {} };
-		lms?: {
-			stats?: {};
-			start?: {};
-			buy?: { name?: string; quantity?: number };
-			simulate?: { names?: string };
-		};
-		pest_control?: {
-			stats?: {};
-			xp?: { skill: string; amount: number };
-			start?: {};
-			buy?: { name: string };
-		};
-		fishing_trawler?: { start?: {} };
-		mage_arena?: { start?: {} };
-		mage_arena_2?: { start?: {} };
-		gnome_restaurant?: { start?: {} };
-		temple_trek?: {
-			start?: { difficulty: string; quantity?: number };
-			buy?: { reward: string; difficulty: string; quantity?: number };
-		};
-		sepulchre?: { start?: { fletching?: number } };
-		gauntlet?: { start?: { corrupted?: boolean } };
-		mage_training_arena?: {
-			start?: {};
-			buy?: { name: string };
-			points?: {};
-		};
-		mahogany_homes?: {
-			start?: { tier?: number };
-			buy?: { name: string; quantity?: number };
-			points?: {};
-		};
-		tears_of_guthix?: { start?: {} };
-		pyramid_plunder?: { start?: {} };
-		rogues_den?: { start?: {} };
-		soul_wars?: { start?: {}; buy?: { name: string; quantity?: number }; imbue?: { name: string }; tokens?: {} };
-		volcanic_mine?: {
-			start?: { quantity?: number };
-			buy?: { item: string; quantity?: number };
-			stats?: {};
-		};
-		agility_arena?: {
-			start?: { quantity?: number };
-			buy?: { item: string; quantity?: number };
-			recolor?: {};
-			xp: { quantity: number };
-		};
-		trouble_brewing?: {
-			start?: {};
-		};
-		giants_foundry?: {
-			start?: { name: string; quantity?: number };
-			buy?: { item: string; quantity?: number };
-			stats?: {};
-		};
-		gotr?: {
-			start?: { combination_runes?: boolean };
-		};
-		nmz?: {
-			start?: { strategy: NMZStrategy };
-			buy?: { item: string; quantity?: number };
-			stats?: {};
-			imbue?: { name: string };
-		};
-		shades_of_morton?: {
-			start?: {
-				shade: string;
-				logs: string;
-			};
-		};
-	}>) => {
+	run: async ({ interaction, options, user, channelID }) => {
 		/**
 		 *
 		 * Barbarian Assault
@@ -1470,4 +1393,4 @@ export const minigamesCommand: OSBMahojiCommand = {
 
 		return 'Invalid command.';
 	}
-};
+});
