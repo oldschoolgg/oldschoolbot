@@ -19,7 +19,7 @@ import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
+import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
@@ -120,9 +120,8 @@ class GrandExchangeSingleton {
 	public loggingEnabled = false;
 
 	log(message: string, context?: any) {
-		if (this.loggingEnabled) {
-			Logging.logDebug(message, context);
-		}
+		if (!this.loggingEnabled) return;
+		Logging.logDebug(message, context);
 	}
 
 	public config = {
@@ -924,6 +923,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
+		this.log(`Starting G.E tick`);
 		const { buyListings, sellListings } = await this.fetchActiveListings();
 
 		const minimumSellPricePerItem = new Map<number, number>();

@@ -9,19 +9,14 @@ import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
-import {
-	type AttackStyles,
-	attackStylesArr,
-	getAttackStylesContext,
-	resolveAttackStyles
-} from '@/lib/minions/functions/index.js';
+import { type AttackStyles, getAttackStylesContext, resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
+import { wildySlayerOnlyMonsters } from '@/lib/slayer/constants.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { type CurrentSlayerInfo, determineCombatBoosts, wildySlayerOnlyMonsters } from '@/lib/slayer/slayerUtil.js';
+import { type CurrentSlayerInfo, determineCombatBoosts } from '@/lib/slayer/slayerUtil.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { Peak } from '@/lib/util/peaks.js';
-import { zodEnum } from '@/lib/util/smallUtils.js';
 import { killsRemainingOnTask } from '@/mahoji/lib/abstracted_commands/minionKill/calcTaskMonstersRemaining.js';
 import {
 	type PostBoostEffect,
@@ -37,7 +32,7 @@ const newMinionKillReturnSchema = z.object({
 	quantity: z.number().int().positive(),
 	isOnTask: z.boolean(),
 	isInWilderness: z.boolean(),
-	attackStyles: z.array(z.enum(zodEnum(attackStylesArr))),
+	attackStyles: z.array(z.enum(['attack', 'strength', 'defence', 'magic', 'ranged'])),
 	currentTaskOptions: CombatMethodOptionsSchema,
 	messages: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)

@@ -19,6 +19,7 @@ interface MarketPriceData {
 export const marketPricemap = new Map<number, MarketPriceData>();
 
 export const cacheGEPrices = async () => {
+	Logging.logDebug('Caching GE Prices');
 	const start = performance.now();
 	const transactionAge = new Date();
 	transactionAge.setDate(transactionAge.getDate() - 60);

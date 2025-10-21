@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
-export const mixCommand: OSBMahojiCommand = {
+export const mixCommand = defineCommand({
 	name: 'mix',
 	description: 'Mix potions to train Herblore.',
 	attributes: {
@@ -47,11 +47,7 @@ export const mixCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; wesley?: boolean; zahur?: boolean }>) => {
+	run: async ({ options, user, channelID }) => {
 		const mixableItem = Herblore.Mixables.find(
 			i => stringMatches(i.item.name, options.name) || i.aliases.some(alias => stringMatches(alias, options.name))
 		);
@@ -135,4 +131,4 @@ export const mixCommand: OSBMahojiCommand = {
 			mixableItem.outputMultiple ? 'batches of' : ''
 		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
 	}
-};
+});

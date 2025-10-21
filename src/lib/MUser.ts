@@ -2,7 +2,6 @@ import { percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
-	addItemToBank,
 	Bank,
 	convertXPtoLVL,
 	EMonster,
@@ -19,7 +18,6 @@ import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { updateUserCl } from '@/lib/collection-log/databaseCl.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
@@ -40,12 +38,15 @@ import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
+import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
 import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
@@ -89,7 +90,7 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 };
 
 export class MUserClass {
-	user: Readonly<User>;
+	user!: Readonly<User>;
 	id: string;
 
 	skillsAsXP!: Required<Skills>;
@@ -103,9 +104,8 @@ export class MUserClass {
 	private _gearLazy: UserFullGearSetup | null = null;
 
 	constructor(user: User) {
-		this.user = user;
 		this.id = user.id;
-		this.updateProperties();
+		this._updateRawUser(user);
 	}
 
 	public get bank(): Bank {
@@ -283,9 +283,14 @@ export class MUserClass {
 		return addXP(this, params);
 	}
 
-	async getKC(monsterID: number) {
-		const stats = await this.fetchStats();
-		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
+	async getKC(monsterID: number): Promise<number> {
+		if (!Number.isInteger(monsterID)) throw new Error('Invalid monsterID');
+		const query = `
+SELECT COALESCE((monster_scores->>'${monsterID}')::int, 0) AS monster_kc
+FROM user_stats
+WHERE user_id = ${this.id};`;
+		const stats = await prisma.$queryRawUnsafe<{ monster_kc: number }[]>(query);
+		return stats[0]?.monster_kc ?? 0;
 	}
 
 	async getAllKCs() {
@@ -304,11 +309,6 @@ export class MUserClass {
 				return 0;
 			}
 		}) as Record<keyof typeof EMonster | number, number>;
-	}
-
-	async fetchMonsterScores() {
-		const stats = await this.fetchStats();
-		return stats.monster_scores as ItemBank;
 	}
 
 	attackClass(): 'range' | 'mage' | 'melee' {
@@ -367,13 +367,17 @@ GROUP BY data->>'ci';`);
 		return { actualCluesBank: actualClues, clueCounts };
 	}
 
-	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats();
-		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
-		await this.statsUpdate({
-			monster_scores: newKCs.toJSON()
-		});
-		return { newKC: newKCs.amount(monsterID) };
+	async incrementKC(monsterID: number, quantityToAdd = 1) {
+		if (!Number.isInteger(monsterID)) throw new Error('Invalid monsterID');
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		const query = `
+UPDATE user_stats
+SET monster_scores = add_item_to_bank(monster_scores, '${monsterID}', ${quantityToAdd})
+WHERE user_id = ${this.id}
+RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
+`;
+		const res = await prisma.$queryRawUnsafe<{ new_kc: number }[]>(query);
+		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
 	public async addItemsToBank({
@@ -396,8 +400,7 @@ GROUP BY data->>'ci';`);
 			dontAddToTempCL,
 			neverUpdateHistory
 		});
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
 	}
 
@@ -405,15 +408,18 @@ GROUP BY data->>'ci';`);
 		const res = await this.transactItems({
 			itemsToRemove: bankToRemove
 		});
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
+	}
+
+	public _updateRawUser(rawUser: User) {
+		this.user = rawUser;
+		this.updateProperties();
 	}
 
 	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
 		const res = await transactItemsFromBank({ userID: this.user.id, ...options });
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
 	}
 
@@ -527,11 +533,27 @@ GROUP BY data->>'ci';`);
 		return ActivityManager.minionIsBusy(this.id);
 	}
 
-	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats();
-		await this.statsUpdate({
-			creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
-		});
+	async getCreatureScore(creatureID: number): Promise<number> {
+		if (!Number.isInteger(creatureID)) throw new Error('Invalid monsterID');
+		const query = `
+SELECT COALESCE((creature_scores->>'${creatureID}')::int, 0) AS creature_kc
+FROM user_stats
+WHERE user_id = ${this.id};`;
+		const stats = await prisma.$queryRawUnsafe<{ creature_kc: number }[]>(query);
+		return stats[0]?.creature_kc ?? 0;
+	}
+
+	async incrementCreatureScore(creatureID: number, quantityToAdd = 1): Promise<{ newKC: number }> {
+		if (!Number.isInteger(creatureID)) throw new Error('Invalid creatureID');
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		const query = `
+UPDATE user_stats
+SET creature_scores = add_item_to_bank(creature_scores, '${creatureID}', ${quantityToAdd})
+WHERE user_id = ${this.id}
+RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
+`;
+		const res = await prisma.$queryRawUnsafe<{ new_kc: number }[]>(query);
+		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
 	get blowpipe() {
@@ -576,12 +598,15 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
 		const previousCL = this.cl.clone();
+
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
 		await this.update(updates);
 		const newCL = this.cl;
+
 		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
+
 		return {
 			previousCL,
 			newCL,
@@ -698,16 +723,10 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			await this.transactItems({ itemsToRemove: bankRemove });
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
-		this.user = newUser;
-		this.updateProperties();
+		this._updateRawUser(newUser);
 		return {
 			realCost
 		};
-	}
-
-	async getCreatureScore(creatureID: number) {
-		const stats = await this.fetchStats();
-		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
 	calculateAddItemsToCLUpdates({
@@ -752,8 +771,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	async sync() {
 		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
 		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
-		this.user = newUser;
-		this.updateProperties();
+		this._updateRawUser(newUser);
 	}
 
 	async fetchStats() {
@@ -1112,14 +1130,60 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return `**XP Gains:** ${result}`;
 	}
 
-	async updateCL() {
-		await updateUserCl(this.id);
+	async fetchSlayerInfo() {
+		const res = await getUsersCurrentSlayerInfo(this.id);
+		return res;
+	}
+
+	hasSlayerUnlock(unlock: SlayerTaskUnlocksEnum): boolean {
+		return this.user.slayer_unlocks.includes(unlock);
+	}
+
+	checkHasSlayerUnlocks(unlocks: SlayerTaskUnlocksEnum[]) {
+		return hasSlayerUnlock(this.user.slayer_unlocks, unlocks);
 	}
 
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
+
+	async _fetchOrCreateCL(itemsToAdd?: Bank): Promise<Bank> {
+		const { inserted } = await TableBankManager.getOrCreateBankId(this.id, 'CollectionLog');
+
+		// If this was the first time creating, insert all current CL items.
+		if (inserted) {
+			await TableBankManager.update({
+				userId: this.id,
+				type: 'CollectionLog',
+				itemsToAdd: this.cl
+			});
+		} else if (itemsToAdd) {
+			await TableBankManager.update({
+				userId: this.id,
+				type: 'CollectionLog',
+				itemsToAdd
+			});
+		}
+
+		const cl = await TableBankManager.fetch({ userId: this.id, type: 'CollectionLog' });
+		cl.freeze();
+		return cl;
+	}
+
+	async checkTableBankMatches() {
+		await this.sync();
+		const clFromDB = await this.fetchCL();
+		if (this.cl.toString() !== clFromDB.toString()) {
+			console.error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}`);
+		}
+	}
+
+	async fetchCL(): Promise<Bank> {
+		const cl = await this._fetchOrCreateCL();
+		return cl;
+	}
 }
+
 declare global {
 	export type MUser = MUserClass;
 	var mUserFetch: typeof srcMUserFetch;

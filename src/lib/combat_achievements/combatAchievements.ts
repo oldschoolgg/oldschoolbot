@@ -66,7 +66,9 @@ interface CARootItem {
 	taskPoints: number;
 	rewardThreshold: number;
 }
-export type CATier = 'easy' | 'medium' | 'hard' | 'elite' | 'master' | 'grandmaster';
+
+export const caTiers = ['easy', 'medium', 'hard', 'elite', 'master', 'grandmaster'] as const;
+export type CATier = (typeof caTiers)[number];
 type CARoot = Record<CATier, CARootItem>;
 
 const easy: CARootItem = {
@@ -168,9 +170,9 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 
 	let quantity = 1;
 	if ('q' in dataCopy) {
-		quantity = (dataCopy as any).q;
-	} else if ('quantity' in dataCopy) {
-		quantity = (dataCopy as any).quantity;
+		quantity = dataCopy.q;
+	} else if ('quantity' in dataCopy && dataCopy.quantity) {
+		quantity = dataCopy.quantity;
 	}
 	if (Number.isNaN(quantity)) return;
 

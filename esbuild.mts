@@ -2,7 +2,6 @@ import { type BuildOptions, build } from 'esbuild';
 
 const external = [
 	'@prisma/client',
-	'@sentry/node',
 	'skia-canvas',
 	'sonic-boom',
 	'bufferutil',

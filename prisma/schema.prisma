@@ -435,8 +435,6 @@ model User {
 
   gear_template Int? @db.SmallInt
 
-  CLUserItem CLUserItem[]
-
   @@index([id, last_command_date])
   @@map("users")
 }
@@ -1117,14 +1115,6 @@ model GiftBox {
   @@map("gift_box")
 }
 
-model ItemMetadata {
-  id Int @id
-
-  name String?
-
-  @@map("item_metadata")
-}
-
 enum UserEventType {
   MaxXP
   MaxTotalXP
@@ -1171,18 +1161,6 @@ model CLCategoryItem {
   @@id([category_name, item_id])
   @@index([item_id])
   @@map("category_items")
-}
-
-model CLUserItem {
-  user_id  String
-  item_id  Int
-  quantity Int    @default(1)
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@id([user_id, item_id])
-  @@index([item_id])
-  @@map("user_items")
 }
 
 enum command_name_enum {
@@ -1453,4 +1431,31 @@ enum command_name_enum {
   xpgains
   xpto99
   zalcano
+}
+
+enum TableBankType {
+  Bank
+  CollectionLog
+}
+
+model TableBank {
+  id      Int           @id @default(autoincrement())
+  user_id String
+  type    TableBankType
+
+  items TableBankItem[]
+
+  @@unique([user_id, type])
+  @@map("table_bank")
+}
+
+model TableBankItem {
+  bank_id  Int
+  item_id  Int
+  quantity BigInt @db.BigInt
+
+  bank TableBank @relation(fields: [bank_id], references: [id], onDelete: Cascade)
+
+  @@id([bank_id, item_id])
+  @@map("table_bank_item")
 }

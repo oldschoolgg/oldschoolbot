@@ -13,7 +13,7 @@ import {
 	truncateString,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { bold, userMention } from 'discord.js';
+import { bold, type GuildMember, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';
@@ -251,7 +251,7 @@ async function getBingoFromUserInput(input: string) {
 	return bingo;
 }
 
-export const bingoCommand: OSBMahojiCommand = {
+export const bingoCommand = defineCommand({
 	name: 'bingo',
 	description: 'Bingo!',
 	options: [
@@ -265,7 +265,7 @@ export const bingoCommand: OSBMahojiCommand = {
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, _: MUser, member) => {
+					autocomplete: async (value: string, _: MUser, member?: GuildMember) => {
 						if (!member || !member.guild) return [];
 						const bingos = await prisma.bingo.findMany({
 							where: {
@@ -457,7 +457,7 @@ export const bingoCommand: OSBMahojiCommand = {
 							.filter(t => (!value ? true : t.name.toLowerCase().includes(value.toLowerCase())))
 							.map(t => ({
 								name: t.name,
-								value: t.id
+								value: t.id.toString()
 							}));
 					}
 				},
@@ -543,44 +543,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		user,
-		userID,
-		options,
-		interaction
-	}: CommandRunOptions<{
-		items?: {
-			bingo: string;
-		};
-		leaderboard?: {
-			bingo: string;
-		};
-		make_team?: MakeTeamOptions;
-		leave_team?: {
-			bingo: string;
-		};
-		create_bingo?: {
-			title: string;
-			duration_days: number;
-			start_date_unix_seconds: number;
-			ticket_price: number;
-			team_size: number;
-			notifications_channel_id: string;
-			organizers: string;
-		};
-		manage_bingo?: {
-			bingo: string;
-			csv_dump?: boolean;
-			add_tile?: string;
-			remove_tile?: string;
-			finalize?: boolean;
-			add_extra_gp?: number;
-			trophy_handout?: boolean;
-		};
-		view?: {
-			bingo: string;
-		};
-	}>) => {
+	run: async ({ user, userID, options, interaction }) => {
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
 			if (Number.isNaN(bingoID)) {
@@ -600,7 +563,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			const bingo = new BingoManager(bingoParticipant.bingo);
 			const teamProgress = (await bingo.determineProgressOfTeam(bingoParticipant.bingo_team_id))!;
 
-			const clItems = [];
+			const clItems: number[] = [];
 
 			for (const tile of teamProgress.tilesNotCompleted) {
 				const tileItems = getAllTileItems(tile);
@@ -628,7 +591,7 @@ export const bingoCommand: OSBMahojiCommand = {
 
 			const image = await clImageGenerator.makeArbitraryCLImage({
 				user,
-				clItems,
+				clItems: new Set(clItems),
 				userBank: teamProgress.cl,
 				title: 'Bingo'
 			});
@@ -1010,4 +973,4 @@ ${progressString}
 
 		return 'Invalid command.';
 	}
-};
+});

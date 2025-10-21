@@ -10,6 +10,7 @@ import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 
+import { syncBlacklists } from '@/lib/blacklists.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
@@ -340,6 +341,14 @@ export const tickers: {
 					`username_filling: Updated user[${id}] to username[${username}] withbadges[${usernameWithBadges}]`
 				);
 			}
+		}
+	},
+	{
+		name: 'Sync Blacklists',
+		timer: null,
+		interval: Time.Minute * 10,
+		cb: async () => {
+			await syncBlacklists();
 		}
 	}
 ];

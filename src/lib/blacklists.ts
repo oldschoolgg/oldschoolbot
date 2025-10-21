@@ -1,6 +1,3 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { TimerManager } from '@sapphire/timer-manager';
-
 import { globalConfig } from '@/lib/constants.js';
 
 export const BLACKLISTED_USERS = new Set<string>();
@@ -18,5 +15,3 @@ export async function syncBlacklists() {
 		set.add(entity.id.toString());
 	}
 }
-
-export const startBlacklistSyncing = () => TimerManager.setInterval(syncBlacklists, Time.Minute * 10);

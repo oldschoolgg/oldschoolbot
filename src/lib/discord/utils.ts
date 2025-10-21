@@ -10,7 +10,7 @@ import {
 } from 'discord.js';
 
 import { globalConfig } from '@/lib/constants.js';
-import { convertCommandOptionToAPIOption, type ICommand } from '@/lib/discord/commandOptions.js';
+import { type AnyCommand, convertCommandOptionToAPIOption } from '@/lib/discord/commandOptions.js';
 
 export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
 	if (process.env.TEST) return '';
@@ -36,7 +36,7 @@ export function mentionCommand(name: string, subCommand?: string, subSubCommand?
 	return `</${name}:${apiCommand.id}>`;
 }
 
-export function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
+export function normalizeMahojiResponse(one: any): BaseMessageOptions {
 	if (!one) return {};
 	if (typeof one === 'string') return { content: one };
 	const response: BaseMessageOptions = {};
@@ -74,7 +74,7 @@ export async function silentButtonAck(interaction: ButtonInteraction) {
 }
 
 function convertCommandToAPICommand(
-	cmd: ICommand
+	cmd: AnyCommand
 ): RESTPostAPIApplicationGuildCommandsJSONBody & { description: string } {
 	return {
 		type: ApplicationCommandType.ChatInput,

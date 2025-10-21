@@ -152,6 +152,7 @@ export function getPlantToGrow(
 	{ contractLevel, ignorePlant }: { contractLevel: 'easy' | 'medium' | 'hard'; ignorePlant: string | null }
 ): [string, PlantTier] {
 	const farmingLevel = user.skillsAsLevels.farming;
+
 	let contractType: PlantsList = [];
 	if (contractLevel === 'easy') contractType = [...easyPlants];
 	if (contractLevel === 'medium') contractType = [...mediumPlants];
@@ -160,8 +161,9 @@ export function getPlantToGrow(
 	for (let i = contractType.length; i > 0; i--) {
 		const [farmingLevelNeeded, plantName] = contractType[i - 1];
 		const index = contractType[i - 1];
-		if (farmingLevel < farmingLevelNeeded || stringMatches(ignorePlant ?? '', plantName))
+		if (farmingLevel < farmingLevelNeeded || stringMatches(ignorePlant ?? '', plantName)) {
 			contractType.splice(contractType.indexOf(index), 1);
+		}
 	}
 
 	const plantFromContract = randArrItem(contractType);

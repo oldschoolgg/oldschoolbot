@@ -17,9 +17,6 @@ export class XPBank {
 			this.xpList.push(...skill.xpList);
 			return this;
 		}
-		if (!amount) {
-			console.trace(`${options.debugId} Tried to add ${amount} XP to ${skill}`);
-		}
 		if (typeof amount !== 'number') {
 			throw new Error(`${options.debugId} You must provide an amount of XP to add for ${skill}`);
 		}

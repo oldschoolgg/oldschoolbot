@@ -1,4 +1,4 @@
-import { channelIsSendable, makeComponents, Time } from '@oldschoolgg/toolkit';
+import { channelIsSendable, getNextUTCReset, makeComponents, Time } from '@oldschoolgg/toolkit';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
@@ -7,11 +7,11 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
+import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
@@ -125,6 +125,7 @@ export async function handleTripFinish(
 	_messages?: string[],
 	_components?: ButtonBuilder[]
 ) {
+	Logging.logDebug(`Handling trip finish for ${user.logName} (${data.type})`);
 	const message = typeof _message === 'string' ? { content: _message } : _message;
 	if (attachment) {
 		if (!message.files) {
@@ -184,8 +185,9 @@ export async function handleTripFinish(
 
 		// Tears of Guthix start button if ready
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
-			const last = Number(last_tears_of_guthix_timestamp);
-			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
+			const lastPlayedDate = Number(last_tears_of_guthix_timestamp);
+			const nextReset = getNextUTCReset(lastPlayedDate, TEARS_OF_GUTHIX_CD);
+			const ready = nextReset < Date.now();
 			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
 			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
 
@@ -211,7 +213,7 @@ export async function handleTripFinish(
 		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
 			components.push(makeAutoContractButton());
 
-		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+		const { currentTask } = await user.fetchSlayerInfo();
 		if (
 			(currentTask === null || currentTask.quantity_remaining <= 0) &&
 			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)

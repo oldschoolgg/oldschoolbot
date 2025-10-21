@@ -97,10 +97,7 @@ describe('Payment conflicts', async () => {
 		};
 
 		const promiseAdd = async () => {
-			return new Promise<void>(async resolve => {
-				await userPayer.addItemsToBank({ items: new Bank().add('Cannonball', 100) });
-				resolve();
-			});
+			await userPayer.addItemsToBank({ items: new Bank().add('Cannonball', 100) });
 		};
 
 		const promises: Promise<void>[] = [];

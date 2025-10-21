@@ -122,7 +122,7 @@ export function averageBank(bank: Bank, kc: number) {
 
 export function generateRandomBank(size = 100, amountPerItem = 10000) {
 	const bank = new Bank();
-	for (let i = 0; i < size; i++) {
+	while (bank.length !== size) {
 		bank.add(Items.random().id, amountPerItem);
 	}
 	return bank;
