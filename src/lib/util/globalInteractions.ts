@@ -487,5 +487,6 @@ export async function globalButtonInteractionHandlerWrapper(_interaction: Button
 	if (['DYN_', 'LP_'].some(s => id.startsWith(s))) return;
 	const response: Awaited<CommandResponse> = await globalButtonInteractionHandler({ interaction, id });
 	if (response === SpecialResponse.PaginatedMessageResponse) return;
+	if (response === SpecialResponse.SilentErrorResponse) return;
 	await interaction.reply(response);
 }

@@ -39,7 +39,7 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 			client: globalClient
 		});
 		if (response === null) return;
-		if (response === SpecialResponse.PaginatedMessageResponse) {
+		if (response === SpecialResponse.PaginatedMessageResponse || response === SpecialResponse.SilentErrorResponse) {
 			return;
 		}
 
