@@ -5541,6 +5541,7 @@
 				]
 			},
 			"hunter_guild": {
+				"unobtainable": true,
 				"items": [
 					"Guild hunter boots",
 					"Guild hunter headwear",
