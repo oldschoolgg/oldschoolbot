@@ -27,7 +27,7 @@ const ds2Requirements: Skills = {
 	slayer: 18
 };
 
-export const buildCommand: OSBMahojiCommand = {
+export const buildCommand = defineCommand({
 	name: 'build',
 	description: 'Sends your minion to train Construction by building things.',
 	attributes: {
@@ -42,10 +42,8 @@ export const buildCommand: OSBMahojiCommand = {
 			description: 'The object you want to build.',
 			required: true,
 			autocomplete: async (value: string, user: MUser) => {
-				const mUser = await mUserFetch(user.id);
-				const conLevel = mUser.skillLevel('construction');
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.filter(c => c.level <= conLevel)
+					.filter(c => c.level <= user.skillsAsLevels.construction)
 					.map(i => ({
 						name: i.name,
 						value: i.name
@@ -60,7 +58,7 @@ export const buildCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, user, channelID }) => {
 		const object = Constructables.find(
 			object =>
 				stringMatches(object.id.toString(), options.name) ||
@@ -144,4 +142,4 @@ export const buildCommand: OSBMahojiCommand = {
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
 `;
 	}
-};
+});

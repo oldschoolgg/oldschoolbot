@@ -12,21 +12,16 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { type ClientStorage, economy_transaction_type } from '@prisma/client';
-import {
-	ApplicationCommandType,
-	AttachmentBuilder,
-	type InteractionReplyOptions,
-	type RESTPostAPIApplicationGuildCommandsJSONBody,
-	Routes,
-	type Snowflake
-} from 'discord.js';
+import { AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { economy_transaction_type } from '@/prisma/main/enums.js';
+import type { ClientStorage } from '@/prisma/main.js';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
+import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { DISABLED_COMMANDS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
-import { convertCommandOptionToAPIOption, type ICommand, itemOption } from '@/lib/discord/index.js';
+import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -36,7 +31,6 @@ import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 
@@ -45,30 +39,6 @@ export const gifs = [
 	'https://gfycat.com/serenegleamingfruitbat',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
-
-function convertCommandToAPICommand(
-	cmd: ICommand
-): RESTPostAPIApplicationGuildCommandsJSONBody & { description: string } {
-	return {
-		type: ApplicationCommandType.ChatInput,
-		name: cmd.name,
-		description: cmd.description,
-		options: cmd.options.map(convertCommandOptionToAPIOption)
-	};
-}
-
-async function bulkUpdateCommands({ commands, guildID }: { commands: ICommand[]; guildID: Snowflake | null }) {
-	const apiCommands = commands.map(convertCommandToAPICommand);
-
-	const route =
-		guildID === null
-			? Routes.applicationCommands(globalClient.user.id)
-			: Routes.applicationGuildCommands(globalClient.user.id, guildID);
-
-	return globalClient.rest.put(route, {
-		body: apiCommands
-	});
-}
 
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
@@ -422,7 +392,7 @@ ORDER BY slots_used DESC;
 	}
 ];
 
-export const adminCommand: OSBMahojiCommand = {
+export const adminCommand = defineCommand({
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
 	guildID: globalConfig.supportServerID,
@@ -431,6 +401,11 @@ export const adminCommand: OSBMahojiCommand = {
 			type: 'Subcommand',
 			name: 'shut_down',
 			description: 'Shut down the bot without rebooting.'
+		},
+		{
+			type: 'Subcommand',
+			name: 'check_tablebanks',
+			description: 'Check tablebanks'
 		},
 		{
 			type: 'Subcommand',
@@ -459,6 +434,19 @@ export const adminCommand: OSBMahojiCommand = {
 			type: 'Subcommand',
 			name: 'cancel_task',
 			description: 'Cancel a users task',
+			options: [
+				{
+					type: 'User',
+					name: 'user',
+					description: 'The user',
+					required: true
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'clear_busy',
+			description: 'Make a user not busy',
 			options: [
 				{
 					type: 'User',
@@ -524,7 +512,7 @@ export const adminCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async (value: string) => {
 						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allCommands
+						return globalClient.allCommands
 							.filter(i => !disabledCommands.includes(i.name))
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -537,7 +525,7 @@ export const adminCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async () => {
 						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allCommands
+						return globalClient.allCommands
 							.filter(i => disabledCommands.includes(i.name))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -575,7 +563,7 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'add',
 					description: 'The bitfield to add',
 					required: false,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));
@@ -586,7 +574,7 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'remove',
 					description: 'The bitfield to remove',
 					required: false,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));
@@ -646,27 +634,7 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction,
-		guildID
-	}: CommandRunOptions<{
-		reboot?: {};
-		shut_down?: {};
-		sync_commands?: {};
-		item_stats?: { item: string };
-		sync_blacklist?: {};
-		cancel_task?: { user: MahojiUserOption };
-		badges?: { user: MahojiUserOption; add?: string; remove?: string };
-		bypass_age?: { user: MahojiUserOption };
-		command?: { enable?: string; disable?: string };
-		set_price?: { item: string; price: number };
-		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
-		ltc?: { item?: string };
-		view?: { thing: string };
-		give_items?: { user: MahojiUserOption; items: string; reason?: string };
-	}>) => {
+	run: async ({ options, userID, interaction, guildID }) => {
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userID);
@@ -684,9 +652,14 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await ActivityManager.cancelActivity(user.id);
-			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
 			return 'Done.';
+		}
+		if (options.clear_busy) {
+			const { user } = options.clear_busy.user;
+			if (!userIsBusy(user.id)) return `${user.username} isn't busy.`;
+			modifyUserBusy({ type: 'unlock', userID: user.id, reason: `Admin ${adminUser.id}` });
+			return `Cleared busy for ${user.username}.`;
 		}
 
 		if (options.badges) {
@@ -743,7 +716,7 @@ export const adminCommand: OSBMahojiCommand = {
 				select: { disabled_commands: true }
 			}))!.disabled_commands;
 
-			const command = allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
+			const command = globalClient.allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
 			if (!command) return "That's not a valid command.";
 
 			if (disable) {
@@ -856,9 +829,9 @@ ${META_CONSTANTS.RENDERED_STR}`
 			return 'Turning off...';
 		}
 		if (options.shut_down) {
-			debugLog('SHUTTING DOWN');
+			Logging.logDebug('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
-			const timer = globalConfig.isProduction ? Time.Second * 30 : Time.Second * 5;
+			const timer = Time.Second * 30;
 			await interaction.reply({
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
@@ -889,47 +862,8 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.sync_commands) {
-			const totalCommands = allCommands;
-
-			if (!globalConfig.isProduction) {
-				await bulkUpdateCommands({
-					commands: allCommands,
-					guildID: globalConfig.supportServerID
-				});
-				return 'Done.';
-			}
-
-			const global = Boolean(globalConfig.isProduction);
-			const globalCommands = totalCommands.filter(i => !i.guildID);
-			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
-			if (global) {
-				await bulkUpdateCommands({
-					commands: globalCommands,
-					guildID: null
-				});
-				await bulkUpdateCommands({
-					commands: guildCommands,
-					guildID: guildID.toString()
-				});
-			} else {
-				await bulkUpdateCommands({
-					commands: totalCommands,
-					guildID: guildID.toString()
-				});
-			}
-
-			// If not in production, remove all global commands.
-			if (!globalConfig.isProduction) {
-				await bulkUpdateCommands({
-					commands: [],
-					guildID: null
-				});
-			}
-
-			return `Synced commands ${global ? 'globally' : 'locally'}.
-${totalCommands.length} Total commands
-${globalCommands.length} Global commands
-${guildCommands.length} Guild commands`;
+			await bulkUpdateCommands();
+			return 'Done.';
 		}
 
 		if (options.view) {
@@ -1027,6 +961,30 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			};
 		}
 
+		if (options.check_tablebanks) {
+			const userIdsSample = await prisma.activity.findMany({
+				where: {
+					completed: false
+				},
+				take: 5,
+				select: {
+					user_id: true
+				}
+			});
+			const results = [];
+			for (const { user_id } of userIdsSample) {
+				const user = await mUserFetch(user_id.toString());
+				const theirTableCL = await user.fetchCL();
+				const success = user.cl.toString() === theirTableCL.toString();
+				results.push({ userId: user.id, success, lengths: [user.cl.length, theirTableCL.length] });
+			}
+			return {
+				content: results
+					.map(i => `${i.userId}: ${i.success ? 'Success' : 'Fail'} ${i.lengths.join('/')}`)
+					.join('\n')
+			};
+		}
+
 		return 'Invalid command.';
 	}
-};
+});

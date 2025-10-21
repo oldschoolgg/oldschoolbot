@@ -1,10 +1,10 @@
 import { chunk, Emoji, noOp, Time } from '@oldschoolgg/toolkit';
-import type { Bingo, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { addBanks, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
+import type { Bingo, Prisma } from '@/prisma/main.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import {
 	generateTileName,

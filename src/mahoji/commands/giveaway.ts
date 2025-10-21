@@ -1,6 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
 import { channelIsSendable, chunk, Emoji, makeComponents, Time } from '@oldschoolgg/toolkit';
-import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import {
 	ActionRowBuilder,
@@ -16,13 +15,13 @@ import {
 } from 'discord.js';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
 import { patronFeatures } from '@/lib/constants.js';
-import { filterOption } from '@/lib/discord/index.js';
+import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isModOrAdmin } from '@/lib/util.js';
@@ -50,7 +49,7 @@ function makeGiveawayRepeatButton(giveawayID: number) {
 		.setStyle(ButtonStyle.Danger);
 }
 
-export const giveawayCommand: OSBMahojiCommand = {
+export const giveawayCommand = defineCommand({
 	name: 'giveaway',
 	description: 'Giveaway items from your ban to other players.',
 	attributes: {
@@ -75,7 +74,22 @@ export const giveawayCommand: OSBMahojiCommand = {
 					description: 'The items you want to giveaway.',
 					required: false
 				},
-				filterOption,
+				{
+					type: 'String',
+					name: 'filter',
+					description: 'The filter you want to use.',
+					required: false,
+					autocomplete: async (value: string) => {
+						const res = !value
+							? filterableTypes
+							: [...filterableTypes].filter(filter =>
+									filter.name.toLowerCase().includes(value.toLowerCase())
+								);
+						return [...res]
+							.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
+							.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
+					}
+				},
 				{
 					type: 'String',
 					name: 'search',
@@ -91,19 +105,9 @@ export const giveawayCommand: OSBMahojiCommand = {
 			options: []
 		}
 	],
-	run: async ({
-		options,
-		user,
-		guildID,
-		interaction,
-		channelID,
-		user: apiUser
-	}: CommandRunOptions<{
-		start?: { duration: string; items?: string; filter?: string; search?: string };
-		list?: {};
-	}>) => {
+	run: async ({ options, user, guildID, interaction, channelID, user: apiUser }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
-		const channel = globalClient.channels.cache.get(channelID.toString());
+		const channel = globalClient.channels.cache.get(channelID);
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
 
 		if (options.start) {
@@ -177,11 +181,8 @@ export const giveawayCommand: OSBMahojiCommand = {
 				components: makeGiveawayButtons(giveawayID)
 			});
 
-			try {
-				await user.removeItemsFromBank(bank);
-			} catch (err: any) {
-				return err instanceof Error ? err.message : err;
-			}
+			await user.removeItemsFromBank(bank);
+
 			if (bank.has('Coins')) {
 				await ClientSettings.addToGPTaxBalance(user, bank.amount('Coins'));
 			}
@@ -203,7 +204,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				});
 				giveawayCache.set(giveaway.id, giveaway);
 			} catch (err: any) {
-				logError(err, {
+				Logging.logError(err, {
 					user_id: user.id,
 					giveaway: bank.toString()
 				});
@@ -222,7 +223,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'You cannot list giveaways outside a server.';
 			}
 			const guild = globalClient.guilds.cache.get(guildID);
-			if (!guild) return;
+			if (!guild) return 'You cannot list giveaways outside a server.';
 
 			const textChannelsOfThisServer = guild.channels.cache
 				.filter(c => c.type === ChannelType.GuildText)
@@ -268,7 +269,8 @@ export const giveawayCommand: OSBMahojiCommand = {
 				embeds: [new EmbedBuilder().setDescription(chunkLines.join('\n'))]
 			}));
 
-			await interaction.makePaginatedMessage({ pages, ephemeral: true });
+			return interaction.makePaginatedMessage({ pages, ephemeral: true });
 		}
+		return 'Invalid subcommand.';
 	}
-};
+});

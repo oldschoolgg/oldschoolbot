@@ -1,6 +1,4 @@
-import { Prisma } from '@prisma/client';
-
-import { logError } from '@/lib/util/logError.js';
+import { Prisma } from '@/prisma/main.js';
 
 const u = Prisma.UserScalarFieldEnum;
 
@@ -25,7 +23,7 @@ export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> 
 		const result = await prisma.$queryRawUnsafe<T>(query);
 		return result;
 	} catch (err) {
-		logError(err, { query: query.slice(0, 100) });
+		Logging.logError(err as Error, { query: query.slice(0, 100) });
 	}
 
 	return null;

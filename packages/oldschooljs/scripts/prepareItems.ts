@@ -4,7 +4,7 @@ import deepMerge from 'deepmerge';
 import { clone } from 'remeda';
 
 import { EquipmentSlot, type Item } from '@/meta/item.js';
-import Items, { CLUE_SCROLL_NAMES, CLUE_SCROLLS, USELESS_ITEMS } from '@/structures/Items.js';
+import { CLUE_SCROLL_NAMES, CLUE_SCROLLS, Items, USELESS_ITEMS } from '@/structures/Items.js';
 import { increaseNumByPercent, reduceNumByPercent } from '@/util/smallUtils.js';
 import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
 import { itemChanges } from './manualItemChanges.js';
@@ -483,6 +483,11 @@ export default async function prepareItems(): Promise<void> {
 				...item.equipment,
 				requirements: previousItem.equipment.requirements
 			};
+		}
+
+		if (previousItem) {
+			// @ts-expect-error
+			item = previousItem;
 		}
 
 		if (itemChanges[item.id]) {

@@ -12,7 +12,6 @@ import { Bank, toKMB } from 'oldschooljs';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
 import { silentButtonAck } from '@/lib/discord/utils.js';
-import { logError } from '@/lib/util/logError.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: MInteraction) {
@@ -21,6 +20,10 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 	if (!amount) {
 		return 'amount must be between 1000000 and 3000000000 exclusively.';
 	}
+
+	const channel = globalClient.channels.cache.get(interaction.channelId);
+	if (!channelIsSendable(channel))
+		return 'Please give the bot permission to send messages in this channel before running this command.';
 
 	await interaction.defer();
 
@@ -137,8 +140,6 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		);
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const sentMessage = await channel.send({
 		content: `${user}, Pick *one* button!`,
 		components: getCurrentButtons({ showTrueNames: false })
@@ -192,7 +193,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 				components: getCurrentButtons({ showTrueNames: true })
 			};
 		} catch (err) {
-			logError(err);
+			Logging.logError(err as Error);
 			return 'Error.';
 		}
 	} catch (_err) {

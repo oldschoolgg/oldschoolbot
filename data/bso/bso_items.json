@@ -1752,6 +1752,13 @@
 	"73412": "Veteran cape (5 year)",
 	"73413": "Veteran hood (5 year)",
 	"73414": "Veteran staff (5 year)",
+	"73600": "Halloween candy",
+	"73601": "Night-Mare",
+	"73602": "Death card",
+	"73603": "Pumpkinman card",
+	"73604": "Vampire card",
+	"73605": "Ghost card",
+	"73606": "Witch card",
 	"88888": "Bucket of dung",
 	"88889": "Polterpup",
 	"121234": "Burnt celebratory cake",
@@ -1759,5 +1766,6 @@
 	"122001": "Lit celebratory cake",
 	"122002": "Olof's gold",
 	"122003": "Bingo ticket",
-	"152616": "Tormented skull"
+	"152616": "Tormented skull",
+	"323424": "Ivy"
 }

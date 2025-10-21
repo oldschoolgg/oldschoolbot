@@ -8,19 +8,19 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { clamp } from 'remeda';
 
+import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
-import { assert, logError } from '@/lib/util/logError.js';
+import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
+import { assert } from '@/lib/util/logError.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
 export const generateGrandExchangeID = () => miniID(6).toLowerCase();
@@ -120,9 +120,8 @@ class GrandExchangeSingleton {
 	public loggingEnabled = false;
 
 	log(message: string, context?: any) {
-		if (this.loggingEnabled) {
-			debugLog(message, context);
-		}
+		if (!this.loggingEnabled) return;
+		Logging.logDebug(message, context);
 	}
 
 	public config = {
@@ -571,7 +570,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		if (!geBank.has(bankGEShouldHave)) {
 			const missingItems = bankGEShouldHave.clone().remove(geBank);
 			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankGEShouldHave} missing: ${missingItems}. ${debug}`;
-			logError(str, logContext);
+			Logging.logError(str, logContext);
 			this.log(str, logContext);
 			throw new Error(str);
 		}
@@ -891,8 +890,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				try {
 					await this._tick();
 				} catch (err: any) {
-					logError(err.message);
-					debugLog(err.message);
+					Logging.logError(err.message);
 					reject(err);
 				} finally {
 					this.isTicking = false;
@@ -925,6 +923,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
+		this.log(`Starting G.E tick`);
 		const { buyListings, sellListings } = await this.fetchActiveListings();
 
 		const minimumSellPricePerItem = new Map<number, number>();
@@ -979,8 +978,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				await this.createTransaction(buyListing, matchingSellListing, remainingItemsCanBuy);
 			} catch (err: any) {
 				await this.lockGE(err.message);
-				logError(err);
-				debugLog(err);
+				Logging.logError(err);
 				break;
 			}
 

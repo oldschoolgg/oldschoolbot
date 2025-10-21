@@ -1,14 +1,16 @@
+import fs from 'node:fs';
 import deepMerge from 'deepmerge';
 
-import _items from '../assets/item_data.json' with { type: 'json' };
-
-const items = _items as any as Record<string, Item>;
+const items = JSON.parse(fs.readFileSync(new URL('../assets/item_data.json', import.meta.url), 'utf8')) as Record<
+	string,
+	Item
+>;
 
 import type { Item } from '@/meta/item.js';
 import { Collection } from './Collection.js';
 
 function cleanString(str: string): string {
-	return str.replace(/\s/g, '').toUpperCase();
+	return str.replace(/’/g, "'").replace(/\s/g, '').toUpperCase();
 }
 
 export const itemNameMap: Map<string, number> = new Map();
@@ -71,9 +73,7 @@ export const USELESS_ITEMS = [
 
 class ItemsSingleton extends Collection<number, Item> {
 	sortAlpha = sortAlpha;
-	public override get(item: ItemResolvable): Item | undefined {
-		const id = this.resolveID(item);
-		if (typeof id === 'undefined') return undefined;
+	public getById(id: number): Item | undefined {
 		return super.get(id);
 	}
 
@@ -85,7 +85,7 @@ class ItemsSingleton extends Collection<number, Item> {
 		this.set(item.id, deepMerge(item, data));
 	}
 
-	private resolveID(input: ItemResolvable): number | undefined {
+	public resolveID(input: ItemResolvable): number | undefined {
 		if (typeof input === 'number') {
 			return input;
 		}
@@ -103,7 +103,7 @@ class ItemsSingleton extends Collection<number, Item> {
 
 	getId(_itemResolvable: ItemResolvable): number {
 		const id = this.resolveID(_itemResolvable);
-		if (typeof id === 'undefined') throw new Error(`No item found for ${_itemResolvable}`);
+		if (typeof id === 'undefined') throw new Error(`Items.getId: No item found for ${_itemResolvable}`);
 		return id;
 	}
 
@@ -116,10 +116,10 @@ class ItemsSingleton extends Collection<number, Item> {
 			const parsed = Number(itemName);
 			identifier = Number.isNaN(parsed) ? itemName : parsed;
 		}
-		if (typeof identifier === 'string') {
-			identifier = identifier.replace(/’/g, "'");
-		}
-		return this.get(identifier) ?? null;
+
+		const id = this.resolveID(identifier);
+		if (typeof id === 'undefined') return null;
+		return this.get(id) ?? null;
 	}
 
 	public getOrThrow(itemName: string | number | undefined): Item {
@@ -136,9 +136,9 @@ class ItemsSingleton extends Collection<number, Item> {
 			if (typeof item === 'number') {
 				newArray.push(item);
 			} else {
-				const osItem = this.get(item);
+				const osItem = this.getItem(item);
 				if (!osItem) {
-					throw new Error(`No item found for: ${item}.`);
+					throw new Error(`Items.resolveItems: No item found for: ${item}.`);
 				}
 				newArray.push(osItem.id);
 			}
@@ -213,9 +213,9 @@ export function resolveItems(_itemArray: string | number | (string | number)[]):
 		if (typeof item === 'number') {
 			newArray.push(item);
 		} else {
-			const osItem = Items.get(item);
+			const osItem = Items.getItem(item);
 			if (!osItem) {
-				throw new Error(`No item found for: ${item}.`);
+				throw new Error(`resolveItems: No item found for: ${item}.`);
 			}
 			newArray.push(osItem.id);
 		}
@@ -234,9 +234,9 @@ export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsRes
 			const test = Items.resolveItems(item);
 			newArray.push(test);
 		} else {
-			const osItem = Items.get(item);
+			const osItem = Items.getItem(item);
 			if (!osItem) {
-				throw new Error(`No item found for: ${item}.`);
+				throw new Error(`deepResolveItems: No item found for: ${item}.`);
 			}
 			newArray.push(osItem.id);
 		}

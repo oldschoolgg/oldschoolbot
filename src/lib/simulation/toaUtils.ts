@@ -1,6 +1,6 @@
-import type { Prisma } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 
 export function normalizeTOAUsers(data: TOAOptions) {

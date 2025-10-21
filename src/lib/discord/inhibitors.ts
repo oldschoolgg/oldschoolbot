@@ -10,6 +10,8 @@ import {
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { DISABLED_COMMANDS, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
+import type { AnyCommand } from '@/lib/discord/index.js';
+import type { InhibitorResult } from '@/lib/discord/preCommand.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import type { MMember } from '@/lib/structures/MInteraction.js';
 import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';
@@ -19,16 +21,24 @@ interface Inhibitor {
 	name: string;
 	run: (options: {
 		user: MUser;
-		command: OSBMahojiCommand;
+		command: AnyCommand;
 		guild: Guild | null;
 		channel: TextBasedChannel | null;
 		member: MMember | null;
 	}) => false | InteractionReplyOptions;
-	canBeDisabled: boolean;
 	silent?: true;
 }
 
 const inhibitors: Inhibitor[] = [
+	{
+		name: 'Restarting',
+		run: () => {
+			if (globalClient.isShuttingDown) {
+				return { content: 'The bot is currently restarting, please try again later.' };
+			}
+			return false;
+		}
+	},
 	{
 		name: 'settingSyncer',
 		run: ({ guild }) => {
@@ -36,8 +46,7 @@ const inhibitors: Inhibitor[] = [
 				mahojiGuildSettingsFetch(guild);
 			}
 			return false;
-		},
-		canBeDisabled: false
+		}
 	},
 	{
 		name: 'hasMinion',
@@ -58,8 +67,7 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return false;
-		},
-		canBeDisabled: false
+		}
 	},
 	{
 		name: 'minionNotBusy',
@@ -71,8 +79,7 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return false;
-		},
-		canBeDisabled: false
+		}
 	},
 	{
 		name: 'disabled',
@@ -89,8 +96,7 @@ const inhibitors: Inhibitor[] = [
 				return { content: 'This command is disabled in this server.' };
 			}
 			return false;
-		},
-		canBeDisabled: false
+		}
 	},
 	{
 		name: 'commandRoleLimit',
@@ -104,7 +110,6 @@ const inhibitors: Inhibitor[] = [
 
 			return { content: "You cannot use commands in the general channel unless you're a patron" };
 		},
-		canBeDisabled: false,
 		silent: true
 	},
 	{
@@ -134,7 +139,6 @@ const inhibitors: Inhibitor[] = [
 
 			return false;
 		},
-		canBeDisabled: false,
 		silent: true
 	},
 	{
@@ -150,8 +154,7 @@ const inhibitors: Inhibitor[] = [
 				};
 			}
 			return false;
-		},
-		canBeDisabled: true
+		}
 	},
 	{
 		name: 'blacklisted',
@@ -164,7 +167,6 @@ const inhibitors: Inhibitor[] = [
 			}
 			return false;
 		},
-		canBeDisabled: false,
 		silent: true
 	}
 ];
@@ -174,18 +176,15 @@ export function runInhibitors({
 	channel,
 	member,
 	command,
-	guild,
-	bypassInhibitors
+	guild
 }: {
 	user: MUser;
 	channel: TextBasedChannel | null;
 	member: MMember | null;
-	command: OSBMahojiCommand;
+	command: AnyCommand;
 	guild: Guild | null;
-	bypassInhibitors: boolean;
-}): undefined | { reason: InteractionReplyOptions; silent: boolean } {
-	for (const { run, canBeDisabled, silent } of inhibitors) {
-		if (bypassInhibitors && canBeDisabled) continue;
+}): undefined | InhibitorResult {
+	for (const { run, silent } of inhibitors) {
 		const result = run({
 			user,
 			channel,
