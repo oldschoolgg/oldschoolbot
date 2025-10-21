@@ -82,14 +82,16 @@ export async function doHalloweenTickOnUser(user: MUser, userEvent: HalloweenEve
 
 	const itemsWaitingForPickup = new Bank(userEvent.items_waiting_for_pickup as ItemBank);
 
+	const hasCard = (id: number) => user.cl.has(id) || itemsWaitingForPickup.has(id);
+
 	// No duplicates
-	let validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters.filter(_t => !user.cl.has(_t.card.id));
+	let validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters.filter(_t => !hasCard(_t.card.id));
 	if (validTrickOrTreaters.length === 0) validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters;
 
 	const trickOrTreater = MathRNG.pick(validTrickOrTreaters) ?? HalloweenEvent2025.trickOrTreaters[0];
-	const isFirstCard = HalloweenEvent2025.ALL_CARD_IDS.every(id => !user.cl.has(id));
+	const isFirstCard = HalloweenEvent2025.ALL_CARD_IDS.every(id => !hasCard(id));
 	const cardChance = isFirstCard ? FIRST_CARD_CHANCE : LATER_CARD_CHANCES;
-	if (MathRNG.roll(cardChance) && !user.cl.has(trickOrTreater.card.id)) {
+	if (MathRNG.roll(cardChance) && !hasCard(trickOrTreater.card.id)) {
 		itemsWaitingForPickup.add(trickOrTreater.card.id);
 	}
 
