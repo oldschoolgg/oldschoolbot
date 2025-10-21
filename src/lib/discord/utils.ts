@@ -35,7 +35,7 @@ export function mentionCommand(name: string, subCommand?: string, subSubCommand?
 	return `</${name}:${apiCommand.id}>`;
 }
 
-export function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
+export function normalizeMahojiResponse(one: any): BaseMessageOptions {
 	if (!one) return {};
 	if (typeof one === 'string') return { content: one };
 	const response: BaseMessageOptions = {};
