@@ -121,3 +121,7 @@ export function formatList(_itemList: (string | undefined | null)[], end?: strin
 export function isValidSkill(skill: string): skill is SkillNameType {
 	return SkillsArray.includes(skill as SkillNameType);
 }
+
+export function strToEnumCase(str: string) {
+	return str.toUpperCase().replace(/ /g, '_').replace('(', '').replace(')', '').replaceAll("'", '');
+}

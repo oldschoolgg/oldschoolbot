@@ -54,7 +54,7 @@ COPY --from=build /usr/src/app /usr/src/app
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
 CMD (/wait > /dev/null 2>&1) && \
-    (pnpm prisma db push --schema='./prisma/robochimp.prisma' > /dev/null 2>&1 & \
+    (pnpm prisma db push --schema='./robochimp.prisma' > /dev/null 2>&1 & \
     pnpm prisma db push --schema='./prisma/schema.prisma' > /dev/null 2>&1 & \
     wait) && \
     NODE_NO_WARNINGS=1 pnpm vitest run --config vitest.integration.config.mts && \
