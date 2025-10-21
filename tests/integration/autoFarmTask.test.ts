@@ -14,6 +14,8 @@ import { farmingTask } from '../../src/tasks/minions/farmingActivity.js';
 import * as farmingStepModule from '../../src/tasks/minions/farmingStep.js';
 import { createTestUser, mockClient, TEST_CHANNEL_ID } from './util.js';
 
+const toPlain = <T>(x: any): T => (typeof x?.toJSON === 'function' ? x.toJSON() : x);
+
 vi.mock('../../src/lib/util/webhook', () => ({
 	sendToChannelID: vi.fn()
 }));
@@ -27,7 +29,7 @@ describe('farming task auto farm aggregation', () => {
 		vi.restoreAllMocks();
 	});
 
-	it('aggregates summaries and adds auto contract button when applicable', async () => {
+	async function runAutoFarmScenario(canRunAutoContractValue: boolean) {
 		const user = await createTestUser();
 
 		const basePatch: IPatchData = {
@@ -125,7 +127,9 @@ describe('farming task auto farm aggregation', () => {
 		});
 
 		const handleTripFinishSpy = vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockResolvedValue();
-		const canRunAutoContractSpy = vi.spyOn(farmingContractModule, 'canRunAutoContract').mockResolvedValue(false);
+		const canRunAutoContractSpy = vi
+			.spyOn(farmingContractModule, 'canRunAutoContract')
+			.mockResolvedValue(canRunAutoContractValue);
 
 		const taskData: FarmingActivityTaskOptions = {
 			type: 'Farming',
@@ -168,13 +172,31 @@ describe('farming task auto farm aggregation', () => {
 
 		await farmingTask.run(taskData, runOptions);
 
+		const [, , message, , , loot, , extraComponents] = handleTripFinishSpy.mock.calls[0];
+		const messageContent = typeof message === 'string' ? message : (message.content ?? '');
+
+		return {
+			user,
+			executeSpy,
+			handleTripFinishSpy,
+			canRunAutoContractSpy,
+			messageContent,
+			loot: loot as Bank | null,
+			extraComponents
+		};
+	}
+
+	it('aggregates summaries and adds auto contract button when available', async () => {
+		const { user, executeSpy, handleTripFinishSpy, canRunAutoContractSpy, messageContent, loot, extraComponents } =
+			await runAutoFarmScenario(true);
+
 		expect(executeSpy).toHaveBeenCalledTimes(2);
 		expect(handleTripFinishSpy).toHaveBeenCalledTimes(1);
 		expect(canRunAutoContractSpy).toHaveBeenCalledTimes(1);
 
-		const [, , message, , , loot, , extraComponents] = handleTripFinishSpy.mock.calls[0];
-		expect(typeof message).toBe('string');
-		const content = message as string;
+		expect(typeof messageContent).toBe('string');
+		const content = messageContent;
+
 		expect(content).toContain(`${user}, ${user.minionName} finished auto farming your patches.`);
 		expect(content).toContain('Your minion planted 4x Guam seed.');
 		expect(content).toContain('You harvested 8x Watermelon.');
@@ -190,12 +212,27 @@ describe('farming task auto farm aggregation', () => {
 		expect(content).toContain('Take care of your plants.');
 		expect(content).toContain('Keep chopping!');
 
-		expect((loot as Bank).has('Seed pack')).toBe(true);
-		expect((loot as Bank).has('Watermelon')).toBe(true);
+		expect(loot?.has('Seed pack')).toBe(true);
+		expect(loot?.has('Watermelon')).toBe(true);
 
 		expect(extraComponents).toBeDefined();
 		expect(extraComponents).toHaveLength(1);
-		const autoContractButton = extraComponents![0].toJSON() as APIButtonComponentWithCustomId;
+		const autoContractButton = toPlain<APIButtonComponentWithCustomId>(extraComponents![0] as any);
 		expect(autoContractButton.custom_id).toBe('AUTO_FARMING_CONTRACT');
+		expect(autoContractButton.label).toBe('Auto Farming Contract');
+		expect(autoContractButton.disabled).toBeUndefined();
+	});
+
+	it('shows reminder copy when auto contract requirements are locked', async () => {
+		const { extraComponents, canRunAutoContractSpy } = await runAutoFarmScenario(false);
+
+		expect(canRunAutoContractSpy).toHaveBeenCalledTimes(1);
+		expect(extraComponents).toBeDefined();
+		expect(extraComponents).toHaveLength(1);
+
+		const autoContractButton = toPlain<APIButtonComponentWithCustomId>(extraComponents![0] as any);
+		expect(autoContractButton.custom_id).toBe('AUTO_FARMING_CONTRACT');
+		expect(autoContractButton.label).toBe('Auto Farming Contract (Unlock requirements pending)');
+		expect(autoContractButton.disabled).toBe(true);
 	});
 });

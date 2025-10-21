@@ -1,5 +1,6 @@
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { Emoji, formatDuration, makeComponents } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
+import { type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
@@ -203,7 +204,22 @@ export async function autoFarm(
 	}
 
 	if (plannedSteps.length === 0) {
-		return firstPrepareError ?? errorString;
+		if (firstPrepareError !== null) {
+			return firstPrepareError;
+		}
+
+		const checkPatchesButton = new ButtonBuilder()
+			.setCustomId('CHECK_PATCHES')
+			.setLabel('Check Patches')
+			.setEmoji(Emoji.Stopwatch)
+			.setStyle(ButtonStyle.Secondary);
+
+		const noCropsResponse: BaseMessageOptions = {
+			content: errorString,
+			components: makeComponents([checkPatchesButton])
+		};
+
+		return noCropsResponse;
 	}
 
 	if (!user.owns(totalCost)) {

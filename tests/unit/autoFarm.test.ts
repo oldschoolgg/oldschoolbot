@@ -13,6 +13,9 @@ import * as calcMaxTripLengthModule from '../../src/lib/util/calcMaxTripLength.j
 import { mockMUser } from './userutil.js';
 import '../../src/lib/util/clientSettings.js';
 
+import { Emoji } from '@oldschoolgg/toolkit';
+import { ButtonStyle } from 'discord.js';
+
 import type { MInteraction } from '../../src/lib/structures/MInteraction.js';
 import { AutoFarmFilterEnum, CropUpgradeType } from '../../src/prisma/main/enums.js';
 import type { User } from '../../src/prisma/main.js';
@@ -23,6 +26,20 @@ vi.mock('../../src/lib/util/addSubTaskToActivityTask.js', () => ({
 
 type Mutable<T> = { -readonly [K in keyof T]: T[K] };
 type MutableUser = Mutable<User>;
+
+// Minimal JSON shapes so we don't depend on discord-api-types
+type ButtonJSON = {
+	type: number;
+	style: number;
+	label?: string;
+	custom_id?: string;
+	emoji?: { name?: string; id?: string | null };
+};
+
+type ActionRowJSON = {
+	type: number;
+	components: ButtonJSON[];
+};
 
 const herbPlant = plants.find(p => p.name === 'Guam');
 const treePlant = plants.find(p => p.name === 'Oak tree');
@@ -109,6 +126,63 @@ afterEach(() => {
 });
 
 describe('auto farm helpers', () => {
+	it('autoFarm includes check patches button when no crops are available', async () => {
+		const user = mockMUser({
+			bank: new Bank(),
+			skills_farming: convertLVLtoXP(1)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+
+		calcMaxTripLengthSpy.mockReturnValue(5 * 60 * 1000);
+
+		const response = await autoFarm(
+			user,
+			[],
+			{} as Record<FarmingPatchName, IPatchData>,
+			baseInteraction as MInteraction
+		);
+
+		expect(typeof response).toBe('object');
+		if (typeof response === 'string') {
+			throw new Error('Expected BaseMessageOptions response');
+		}
+
+		expect(response.content).toBe(
+			"There's no Farming crops that you have the requirements to plant, and nothing to harvest."
+		);
+
+		expect(response.components).toBeDefined();
+		const components = response.components ?? [];
+
+		// Normalize to JSON whether it's a builder or already API-shaped
+		const rowMaybe = components[0] as any;
+
+		let rowJSON: ActionRowJSON;
+		if (rowMaybe && typeof rowMaybe.toJSON === 'function') {
+			rowJSON = rowMaybe.toJSON() as ActionRowJSON;
+		} else if (rowMaybe && typeof rowMaybe === 'object' && 'components' in rowMaybe) {
+			rowJSON = rowMaybe as ActionRowJSON;
+		} else {
+			throw new Error('Unexpected row component type: expected builder or API row with components[]');
+		}
+
+		expect(rowJSON.components).toHaveLength(1);
+
+		// Normalize the inner button too
+		const buttonMaybe = rowJSON.components[0] as any;
+		const buttonJSON: ButtonJSON =
+			buttonMaybe && typeof buttonMaybe.toJSON === 'function'
+				? (buttonMaybe.toJSON() as ButtonJSON)
+				: (buttonMaybe as ButtonJSON);
+
+		// Assertions
+		expect(buttonJSON.style).toBe(ButtonStyle.Secondary);
+		expect(buttonJSON.custom_id).toBe('CHECK_PATCHES');
+		expect(buttonJSON.label).toBe('Check Patches');
+		expect(buttonJSON.emoji?.name).toBe(Emoji.Stopwatch);
+	});
+
 	it('prepareFarmingStep replant respects last quantity and costs', async () => {
 		const bank = new Bank().add('Acorn', 5).add('Supercompost', 5).add('Tomatoes(5)', 5).add('Coins', 10_000);
 		const user = mockMUser({
