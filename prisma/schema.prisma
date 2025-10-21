@@ -1131,6 +1131,7 @@ model UserEvent {
   type                UserEventType
   skill               xp_gains_skill_enum?
   collection_log_name String?
+  collection_log_id   CollectionLogID?
 
   @@map("user_event")
 }
@@ -1144,6 +1145,7 @@ model Badges {
 }
 
 model CLCategory {
+  id          CollectionLogID?
   name        String           @id
   total_items Int
   items       CLCategoryItem[]

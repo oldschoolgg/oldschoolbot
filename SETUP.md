@@ -40,7 +40,7 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
    - `corepack enable`
    - `pnpm i`
    - `npx prisma db push`
-   - `npx prisma db push --schema ./prisma/robochimp.prisma`
+   - `npx prisma db push --schema ./robochimp.prisma`
 
 ### Commands
 
