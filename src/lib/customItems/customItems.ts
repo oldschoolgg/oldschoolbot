@@ -14276,6 +14276,57 @@ setCustomItem(323_424, 'Ivy', 'Coal', {
 	}
 });
 
+/**
+ * Halloween
+ */
+setCustomItem(73_600, 'Halloween candy', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_601, 'Night-Mare', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isDiscontinued: true
+	}
+});
+
+setCustomItem(73_602, 'Death card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73_603, 'Pumpkinman card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73_604, 'Vampire card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73_605, 'Ghost card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73_606, 'Witch card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',

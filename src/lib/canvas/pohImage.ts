@@ -45,6 +45,7 @@ class PoHImage {
 	async init() {
 		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_1.jpg'));
 		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_2.jpg'));
+		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_3.png'));
 		for (const folder of FOLDERS) {
 			const currentPath = path.join(CONSTRUCTION_IMG_DIR, folder);
 			const filesInDir = await fs.promises.readdir(currentPath);

@@ -16,6 +16,11 @@ export const pohWallkits = [
 		bitfield: BitField.HasHosidiusWallkit,
 		name: 'Hosidius',
 		imageID: 2
+	},
+	{
+		bitfield: BitField.HasHalloweenWallkit,
+		name: 'Halloween',
+		imageID: 3
 	}
 ];
 
@@ -30,7 +35,7 @@ export async function makePOHImage(user: MUser, showSpaces = false) {
 	return { files: [{ attachment: buffer, name: 'image.jpg' }] };
 }
 
-export async function pohWallkitCommand(user: MUser, input: string) {
+export async function pohWallkitCommand(user: MUser, input: string): CommandResponse {
 	const poh = await getPOH(user.id);
 	const currentWallkit = pohWallkits.find(i => i.imageID === poh.background_id)!;
 	const selectedKit = pohWallkits.find(i => stringMatches(i.name, input));
@@ -45,9 +50,32 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 		return 'This is already your wallkit.';
 	}
 
+	if (
+		selectedKit.bitfield === BitField.HasHalloweenWallkit &&
+		!user.bitfield.includes(BitField.HasHalloweenWallkit)
+	) {
+		await user.update({
+			bitfield: {
+				push: selectedKit.bitfield
+			}
+		});
+		await prisma.playerOwnedHouse.update({
+			where: {
+				user_id: user.id
+			},
+			data: {
+				background_id: selectedKit.imageID
+			}
+		});
+		return {
+			...(await makePOHImage(user)),
+			content: `You have permanently unlocked the Halloween wallkit!`
+		};
+	}
+
 	const { bitfield } = user;
 	const userBank = user.bank;
-	if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
+	if (selectedKit.bitfield && !bitfield.includes(selectedKit.bitfield)) {
 		if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
 			await user.removeItemsFromBank(new Bank().add('Hosidius blueprints'));
 			await user.update({

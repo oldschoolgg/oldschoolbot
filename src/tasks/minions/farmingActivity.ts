@@ -1,3 +1,4 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { mutations } from '@/lib/bso/skills/farming/mutations.js';
@@ -53,6 +54,11 @@ async function farmingLootBoosts(
 		}
 	}
 	increaseBankQuantitesByPercent(loot, bonusPercentage);
+
+	if (user.hasCard('pumpkinman')) {
+		increaseBankQuantitesByPercent(loot, 50);
+		messages.push(`${BSOEmoji.PumpkinmanCard} +50% yield`);
+	}
 }
 
 export const farmingTask: MinionTask = {

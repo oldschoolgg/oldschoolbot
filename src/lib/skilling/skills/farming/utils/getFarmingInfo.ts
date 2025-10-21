@@ -25,8 +25,9 @@ export function getFarmingInfoFromUser(user: MUser) {
 		if (patch.lastPlanted !== null && !plant) throw new Error(`No plant found for ${patch.lastPlanted}`);
 		const difference = now - patch.plantTime;
 
-		const ready = plant ? difference > plant.growthTime * Time.Minute : null;
-		const readyAt = plant ? new Date(patch.plantTime + plant.growthTime * Time.Minute) : null;
+		const growthMs = plant ? plant.growthTime * user.getFarmingGrowthSpeed() * Time.Minute : null;
+		const ready = plant ? difference > (growthMs as number) : null;
+		const readyAt = plant ? new Date(patch.plantTime + (growthMs as number)) : null;
 		const readyIn = readyAt ? readyAt.getTime() - now : null;
 
 		if (ready) {

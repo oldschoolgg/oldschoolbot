@@ -192,7 +192,8 @@ export enum BitField {
 	GrewFiveSpiritTrees = 230,
 	UseSuperRestoresForDwarvenBlessing = 231,
 	DisableSizeMatters = 232,
-	DisabledTameImplingOpening = 233
+	DisabledTameImplingOpening = 233,
+	HasHalloweenWallkit = 234
 }
 
 interface BitFieldData {
@@ -215,6 +216,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier6]: { name: 'Tier 6 Patron', protected: false, userConfigurable: false },
 
+	[BitField.HasHalloweenWallkit]: { name: 'Halloween Wall Kit Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasArcaneScroll]: { name: 'Arcane Scroll Used', protected: false, userConfigurable: false },

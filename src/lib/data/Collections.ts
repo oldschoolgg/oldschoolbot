@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
 import { allChristmasEvent2024Items } from '@/lib/bso/collection-log/holiday.js';
 import {
@@ -1799,6 +1800,28 @@ export const allCollectionLogs: ICollection = {
 				items: resolveItems(['Heirloom pumpkin', 'Mumpkin', 'Jack-o-lantern', 'Halloween cracker']),
 				counts: false,
 				allItems: resolveItems(['Heirloom pumpkin', 'Mumpkin', 'Jack-o-lantern', 'Halloween cracker'])
+			},
+			'Halloween 2025': {
+				alias: ['hween2025', 'halloween 2025'],
+				items: resolveItems([
+					BSOItem.HALLOWEEN_CANDY,
+					BSOItem.WITCH_CARD,
+					BSOItem.GHOST_CARD,
+					BSOItem.VAMPIRE_CARD,
+					BSOItem.DEATH_CARD,
+					BSOItem.PUMPKINMAN_CARD,
+					BSOItem.NIGHTMARE
+				]),
+				counts: false,
+				allItems: resolveItems([
+					BSOItem.HALLOWEEN_CANDY,
+					BSOItem.WITCH_CARD,
+					BSOItem.GHOST_CARD,
+					BSOItem.VAMPIRE_CARD,
+					BSOItem.DEATH_CARD,
+					BSOItem.PUMPKINMAN_CARD,
+					BSOItem.NIGHTMARE
+				])
 			},
 			'Halloween Cracker': {
 				items: resolveItems([

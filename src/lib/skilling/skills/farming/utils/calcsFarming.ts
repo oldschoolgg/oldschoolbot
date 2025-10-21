@@ -34,7 +34,7 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 		}
 	}
 	if (user.bitfield.includes(BitField.HasScrollOfFarming)) numOfPatches += 2;
-	if (user.hasEquipped(masterFarmerOutfit, true)) numOfPatches += 3;
+	if (user.hasEquippedOrInBank(masterFarmerOutfit)) numOfPatches += 3;
 
 	// Unlock extra patches in Atlantis
 	const atlantisPatches: Partial<Record<FarmingPatchName, number>> = {

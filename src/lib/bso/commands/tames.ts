@@ -1,4 +1,5 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
 import {
 	createTameTask,
@@ -34,7 +35,7 @@ import {
 } from '@oldschoolgg/toolkit';
 import { toTitleCase } from '@sapphire/utilities';
 import { bold, time } from 'discord.js';
-import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EItem, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
 import { type Tame, tame_growth } from '@/prisma/main.js';
@@ -51,7 +52,7 @@ import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import { badges, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { mentionCommand } from '@/lib/discord/index.js';
+import { choicesOf, mentionCommand } from '@/lib/discord/index.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
@@ -523,7 +524,7 @@ export async function tameImage(user: MUser): CommandResponse {
 	};
 }
 
-export async function removeRawFood({
+async function removeRawFood({
 	user,
 	totalHealingNeeded,
 	healPerAction,
@@ -552,6 +553,12 @@ export async function removeRawFood({
 		totalHealingNeeded = Math.floor(totalHealingNeeded * 0.8);
 		healPerAction = Math.floor(healPerAction * 0.8);
 		foodBoosts.push('20% less for Ab. cape');
+	}
+
+	if (user.hasCard('vampire')) {
+		totalHealingNeeded = Math.ceil(totalHealingNeeded * 0.75);
+		healPerAction = Math.ceil(healPerAction * 0.75);
+		foodBoosts.push(`${BSOEmoji.VampireCard} 25% less`);
 	}
 	const equippedArmor = tame.equippedArmor;
 	if (equippedArmor) {
@@ -1274,6 +1281,24 @@ async function superGlassCommand(user: MUser, channelID: string) {
 	});
 }
 
+async function transmuteCandyCommand(user: MUser, channelID: string) {
+	const { tame, activity } = await user.getTame();
+	if (!tame) return `You don't have a tame selected.`;
+	if (activity) return `${tame} is already on a trip.`;
+
+	return monkeyMagicHandler(user, channelID, {
+		spell: seaMonkeySpells.find(i => i.id === 6)!,
+		itemID: EItem.CHOCOLATE_BAR,
+		costPerItem: new Bank().add(EItem.CHOCOLATE_BAR),
+		lootPerItem: new Bank().add('Halloween candy'),
+		timePerSpell: Time.Minute * 1.35,
+		runes: {
+			per: 1,
+			cost: new Bank().add('Nature rune', 1).add('Cosmic rune').add('Nature rune')
+		}
+	});
+}
+
 async function superheatItemCommand(user: MUser, channelID: string, itemName: string) {
 	const item = Bars.find(i => Items.getOrThrow(i.id).name === itemName);
 
@@ -1856,6 +1881,13 @@ export const tamesCommand = defineCommand({
 					description: 'Superheat ore into bars',
 					required: false,
 					choices: Bars.map(t => ({ name: t.name, value: t.name }))
+				},
+				{
+					type: 'String',
+					name: 'transmute_candy',
+					description: 'Transmute chocolate bars into halloween candy.',
+					required: false,
+					choices: choicesOf(['Chocolate bar'])
 				}
 			]
 		},
@@ -1937,6 +1969,7 @@ export const tamesCommand = defineCommand({
 		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
 		if (options.cast?.superglass_make) return superGlassCommand(user, channelID);
 		if (options.cast?.superheat_item) return superheatItemCommand(user, channelID, options.cast.superheat_item);
+		if (options.cast?.transmute_candy) return transmuteCandyCommand(user, channelID);
 		if (options.clue?.clue) {
 			return tameClueCommand(user, channelID, options.clue.clue);
 		}

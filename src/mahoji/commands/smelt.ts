@@ -1,3 +1,5 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
+
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
@@ -44,7 +46,7 @@ export const smeltingCommand = defineCommand({
 		let { name, quantity, blast_furnace } = options;
 
 		if (blast_furnace === undefined) blast_furnace = false;
-		const boosts = [];
+		const boosts: string[] = [];
 
 		const bar = blast_furnace
 			? Smithing.BlastableBars.find(
@@ -71,6 +73,11 @@ export const smeltingCommand = defineCommand({
 
 		// All bars take 2.4s to smith normally, add on quarter of a second to account for banking/etc.
 		let timeToSmithSingleBar = blast_furnace ? bar.timeToUse + Time.Second / 10 : bar.timeToUse + Time.Second / 4;
+
+		if (user.hasCard('ghost')) {
+			timeToSmithSingleBar /= 2;
+			boosts.push(`${BSOEmoji.GhostCard} 2x`);
+		}
 
 		if (blast_furnace) {
 			const requiredSkills = {

@@ -1,3 +1,4 @@
+import { type HalloweenCardID, HalloweenEvent2025 } from '@/lib/bso/halloween.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
@@ -805,6 +806,16 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 		}
 		return allItems.has(checkBank);
+	}
+
+	getFarmingGrowthSpeed(): number {
+		if (this.hasCard('pumpkinman')) return 0.7;
+		return 1;
+	}
+
+	hasCard(cardId: HalloweenCardID): boolean {
+		const tr = HalloweenEvent2025.trickOrTreaters.find(t => t.id === cardId)!;
+		return this.bank.has(tr.card.id);
 	}
 
 	usingPet(name: string | number) {
