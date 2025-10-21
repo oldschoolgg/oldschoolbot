@@ -1,7 +1,5 @@
 import { vi } from 'vitest';
-import '../../src/lib/data/itemAliases.js';
-
-vi.mock('../../src/lib/postgres.js', { spy: true });
+import '../../src/lib/safeglobals.js';
 
 vi.mock('../../src/lib/workers/index.js', { spy: true });
 

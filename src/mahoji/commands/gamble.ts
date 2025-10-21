@@ -2,6 +2,7 @@ import { randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
+import { choicesOf } from '@/lib/discord/index.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
 import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';
@@ -10,7 +11,7 @@ import { hotColdCommand } from '@/mahoji/lib/abstracted_commands/hotColdCommand.
 import { luckyPickCommand } from '@/mahoji/lib/abstracted_commands/luckyPickCommand.js';
 import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
 
-export const gambleCommand: OSBMahojiCommand = {
+export const gambleCommand = defineCommand({
 	name: 'gamble',
 	description: 'Partake in various gambling activities.',
 	options: [
@@ -29,11 +30,7 @@ export const gambleCommand: OSBMahojiCommand = {
 					name: 'item',
 					description: 'The item you wish to gamble.',
 					required: false,
-					choices: [
-						{ name: 'fire', value: 'fire' },
-						{ name: 'infernal', value: 'infernal' },
-						{ name: 'quiver', value: 'quiver' }
-					]
+					choices: choicesOf(['fire', 'infernal', 'quiver'])
 				},
 				{
 					type: 'Boolean',
@@ -136,7 +133,7 @@ export const gambleCommand: OSBMahojiCommand = {
 					name: 'choice',
 					description: 'The flower type you want to guess.',
 					required: false,
-					choices: ['hot', 'cold'].map(i => ({ name: i, value: i }))
+					choices: choicesOf(['hot', 'cold'])
 				},
 				{
 					type: 'String',
@@ -165,21 +162,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		interaction,
-		guildID,
-		user,
-		rng
-	}: CommandRunOptions<{
-		item?: { item?: string; autoconfirm?: boolean };
-		dice?: { amount?: string };
-		duel?: { user: MahojiUserOption; amount?: string };
-		lucky_pick?: { amount: string };
-		slots?: { amount?: string };
-		hot_cold?: { choice?: 'hot' | 'cold'; amount?: string };
-		give_random_item?: { user: MahojiUserOption };
-	}>) => {
+	run: async ({ options, interaction, guildID, user, rng }) => {
 		if (options.item) {
 			if (options.item.item) {
 				return capeGambleCommand(user, options.item.item, interaction, options.item.autoconfirm);
@@ -268,4 +251,4 @@ export const gambleCommand: OSBMahojiCommand = {
 
 		return 'Invalid command.';
 	}
-};
+});

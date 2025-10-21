@@ -1,5 +1,8 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client"
+  runtime    = "nodejs"
+  engineType = "client"
+  output     = "../src/prisma/clients/main"
 }
 
 datasource db {
@@ -8,7 +11,7 @@ datasource db {
 }
 
 model Activity {
-  id             Int                @id @unique @default(autoincrement())
+  id             Int                @id @default(autoincrement())
   user_id        BigInt
   start_date     DateTime           @db.Timestamp(6)
   finish_date    DateTime           @db.Timestamp(6)
@@ -447,7 +450,6 @@ model ReclaimableItem {
   quantity    Int
 
   @@id([user_id, key])
-  @@unique([user_id, key])
   @@map("reclaimable_item")
 }
 
@@ -976,7 +978,7 @@ enum GEListingType {
 }
 
 model GEListing {
-  id   Int           @id @unique @default(autoincrement())
+  id   Int           @id @default(autoincrement())
   type GEListingType
 
   userfacing_id String
@@ -1002,7 +1004,7 @@ model GEListing {
 }
 
 model GETransaction {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   created_at DateTime @default(now())
 
@@ -1032,7 +1034,7 @@ model GEBank {
 }
 
 model Bingo {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   creator    User   @relation(fields: [creator_id], references: [id])
   creator_id String @db.VarChar(19)
@@ -1062,7 +1064,7 @@ model Bingo {
 }
 
 model BingoTeam {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   bingo    Bingo @relation(fields: [bingo_id], references: [id])
   bingo_id Int
@@ -1113,14 +1115,6 @@ model GiftBox {
   @@map("gift_box")
 }
 
-model ItemMetadata {
-  id Int @id
-
-  name String?
-
-  @@map("item_metadata")
-}
-
 enum UserEventType {
   MaxXP
   MaxTotalXP
@@ -1149,13 +1143,24 @@ model Badges {
   @@map("badges")
 }
 
-model CollectionLogSlot {
-  group_name String
-  item_id    Int
+model CLCategory {
+  name        String           @id
+  total_items Int
+  items       CLCategoryItem[]
+  counts      Boolean
 
-  @@id([group_name, item_id])
-  @@unique([group_name, item_id])
-  @@map("collection_log_slot")
+  @@map("categories")
+}
+
+model CLCategoryItem {
+  category_name String
+  item_id       Int
+
+  category CLCategory @relation(fields: [category_name], references: [name], onDelete: Cascade)
+
+  @@id([category_name, item_id])
+  @@index([item_id])
+  @@map("category_items")
 }
 
 enum command_name_enum {
@@ -1426,4 +1431,31 @@ enum command_name_enum {
   xpgains
   xpto99
   zalcano
+}
+
+enum TableBankType {
+  Bank
+  CollectionLog
+}
+
+model TableBank {
+  id      Int           @id @default(autoincrement())
+  user_id String
+  type    TableBankType
+
+  items TableBankItem[]
+
+  @@unique([user_id, type])
+  @@map("table_bank")
+}
+
+model TableBankItem {
+  bank_id  Int
+  item_id  Int
+  quantity BigInt @db.BigInt
+
+  bank TableBank @relation(fields: [bank_id], references: [id], onDelete: Cascade)
+
+  @@id([bank_id, item_id])
+  @@map("table_bank_item")
 }

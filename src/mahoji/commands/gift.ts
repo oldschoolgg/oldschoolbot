@@ -1,7 +1,7 @@
 import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit';
-import { GiftBoxStatus } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import { GiftBoxStatus } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
@@ -10,7 +10,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 
-export const giftCommand: OSBMahojiCommand = {
+export const giftCommand = defineCommand({
 	name: 'gift',
 	description: 'Create gifts for other users, or open one you received.',
 	options: [
@@ -24,7 +24,7 @@ export const giftCommand: OSBMahojiCommand = {
 					name: 'gift',
 					description: 'The gift to open.',
 					required: true,
-					autocomplete: async (input, user) => {
+					autocomplete: async (input: string, user: MUser) => {
 						const gifts = await prisma.giftBox.findMany({
 							where: {
 								owner_id: user.id,
@@ -77,7 +77,7 @@ export const giftCommand: OSBMahojiCommand = {
 					name: 'gift',
 					description: 'The gift to send.',
 					required: true,
-					autocomplete: async (input, user) => {
+					autocomplete: async (input: string, user: MUser) => {
 						const gifts = await prisma.giftBox.findMany({
 							where: {
 								creator_id: user.id,
@@ -102,19 +102,7 @@ export const giftCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		list?: {};
-		create?: {
-			items: string;
-			name?: string;
-		};
-		send?: { gift: string; user: MahojiUserOption };
-		open?: { gift: string };
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		if (user.isIronman) {
 			return 'Ironmen cannot use this command.';
 		}
@@ -277,4 +265,4 @@ ${items}`
 
 		return 'Invalid options.';
 	}
-};
+});

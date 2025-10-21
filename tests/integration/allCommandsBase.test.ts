@@ -5,7 +5,8 @@ import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
 import { test } from 'vitest';
 
-import { allCommands } from '../../src/mahoji/commands/allCommands.js';
+import type { AnyCommand } from '@/lib/discord/commandOptions.js';
+import { allCommandsDONTIMPORT } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
 import { createTestUser, mockClient, mockDjsUser, mockedId, mockUser, mockUserOption, TestClient } from './util.js';
@@ -140,7 +141,7 @@ test(
 			'leagues',
 			'kill'
 		];
-		const commandsToTest = allCommands.filter(c => !ignoredCommands.includes(c.name));
+		const commandsToTest = allCommandsDONTIMPORT.filter(c => !ignoredCommands.includes(c.name));
 		console.log(`Running ${commandsToTest.length} commands...`);
 
 		const ignoredSubCommands = [
@@ -150,7 +151,8 @@ test(
 			['minion', 'daily'],
 			['gamble', 'luckypick'],
 			['gamble', 'duel'],
-			['config', 'toggle']
+			['config', 'toggle'],
+			['gear', 'best_in_slot']
 		];
 
 		const useCommandOptions: Record<string, any>[] = [];
@@ -169,7 +171,7 @@ test(
 
 		const rngProvider = new SeedableRNG(1);
 		const stopwatch = new Stopwatch();
-		const processedCommands: { command: OSBMahojiCommand; options: any[] }[] = [];
+		const processedCommands: { command: AnyCommand; options: any[] }[] = [];
 		for (const command of commandsToTest) {
 			if (ignoredCommands.includes(command.name)) continue;
 			let options = hardcodedOptions[command.name];

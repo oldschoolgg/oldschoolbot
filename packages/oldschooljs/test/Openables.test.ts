@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
-import { Items, Openables } from '../src/index.js';
+import { Items } from '@/index.js';
+import Openables from '@/simulation/openables/index.js';
 
 describe('Openables', () => {
 	test('allItems', () => {

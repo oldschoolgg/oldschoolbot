@@ -26,7 +26,7 @@ function getEmojiForBoss(key: MiscEmojisKeys | string) {
 	if (pet) return pet.emoji;
 }
 
-export const bossrecordCommand: OSBMahojiCommand = {
+export const bossrecordCommand = defineCommand({
 	name: 'bossrecords',
 	description: 'Shows your OSRS boss records.',
 	options: [
@@ -37,7 +37,7 @@ export const bossrecordCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options, interaction }: CommandRunOptions<{ rsn: string }>) => {
+	run: async ({ options, interaction }) => {
 		await interaction.defer();
 		const { bossRecords } = await Hiscores.fetch(options.rsn).catch(err => {
 			throw err.message;
@@ -70,4 +70,4 @@ export const bossrecordCommand: OSBMahojiCommand = {
 
 		return interaction.makePaginatedMessage({ pages });
 	}
-};
+});

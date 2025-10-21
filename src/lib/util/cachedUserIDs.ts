@@ -1,11 +1,11 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
+import { Prisma } from '@/prisma/main.js';
+import { CACHED_ACTIVE_USER_IDS } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { runTimedLoggedFn } from '@/lib/util.js';
 
-export const CACHED_ACTIVE_USER_IDS = new Set();
 CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
 
 export const syncActiveUserIDs = async () => {
@@ -24,7 +24,7 @@ WHERE perk_tier > 0;`)
 	for (const id of [...users.map(i => i.user_id), ...perkTierUsers.map(i => i.id)]) {
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
-	debugLog(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
+	Logging.logDebug(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
 };
 
 export function memoryAnalysis() {

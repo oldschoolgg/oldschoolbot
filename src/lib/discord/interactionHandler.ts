@@ -4,7 +4,7 @@ import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { autoCompleteHandler } from '@/lib/discord/autoCompleteHandler.js';
 import { commandHandler } from '@/lib/discord/commandHandler.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
-import { globalButtonInteractionHandler } from '@/lib/util/globalInteractions.js';
+import { globalButtonInteractionHandlerWrapper } from '@/lib/util/globalInteractions.js';
 
 const usernameInsertedCache = new Set<string>();
 
@@ -80,8 +80,6 @@ const interactionHandlers: InteractionHandler[] = [
 
 export async function interactionHandler(rawInteraction: Interaction) {
 	try {
-		// const member: GuildMember | undefined = rawInteraction.inCachedGuild() ? rawInteraction.member : undefined;
-
 		if (rawInteraction.isAutocomplete()) {
 			await autoCompleteHandler(rawInteraction);
 			return;
@@ -102,7 +100,7 @@ export async function interactionHandler(rawInteraction: Interaction) {
 		}
 
 		if (rawInteraction.isButton()) {
-			await globalButtonInteractionHandler(rawInteraction);
+			await globalButtonInteractionHandlerWrapper(rawInteraction);
 			return;
 		}
 
@@ -111,7 +109,6 @@ export async function interactionHandler(rawInteraction: Interaction) {
 			return;
 		}
 	} catch (err) {
-		console.error(err);
-		// await handleInteractionError(err, interaction as any);
+		Logging.logError(err as Error);
 	}
 }

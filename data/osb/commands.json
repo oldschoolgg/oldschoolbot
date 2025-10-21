@@ -1,6 +1,6 @@
 {
-	"hash": "5410f58e2adaaba0d46e13fe501eec0f",
-	"date": "2025-10-01T15:38:15.343Z",
+	"hash": "3e2ca1bb1ddbc0329ad4685d0fec3606",
+	"date": "2025-10-03T21:42:36.761Z",
 	"data": [
 		{
 			"name": "activities",
@@ -210,7 +210,7 @@
 		{
 			"name": "gear",
 			"desc": "Manage, equip, unequip your gear.",
-			"subOptions": ["equip", "pet", "stats", "swap", "unequip", "view"]
+			"subOptions": ["best_in_slot", "equip", "pet", "stats", "swap", "unequip", "view"]
 		},
 		{
 			"name": "gearpresets",

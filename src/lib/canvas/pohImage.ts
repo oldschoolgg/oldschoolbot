@@ -2,9 +2,9 @@ import * as fs from 'node:fs';
 import path from 'node:path';
 import { randInt } from '@oldschoolgg/rng';
 import { objectEntries } from '@oldschoolgg/toolkit';
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { loadImage } from 'skia-canvas';
 
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import {
 	type Canvas,
 	type CanvasContext,
@@ -40,8 +40,7 @@ const FOLDERS = [
 class PoHImage {
 	public imageCache: Map<number, CanvasImage> = new Map();
 	public bgImages: CanvasImage[] = [];
-	initPromise: Promise<void> | null = this.init();
-	initFinished = false;
+	public ready: boolean = false;
 
 	async init() {
 		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_1.jpg'));
@@ -57,7 +56,6 @@ class PoHImage {
 				this.imageCache.set(id, image);
 			}
 		}
-		this.initFinished = true;
 	}
 
 	generateCanvas(bgId: number): [Canvas, CanvasContext] {
@@ -93,7 +91,10 @@ class PoHImage {
 	}
 
 	async run(poh: PlayerOwnedHouse, showSpaces = true) {
-		if (!this.initFinished) await this.initPromise;
+		if (!this.ready) {
+			await this.init();
+			this.ready = true;
+		}
 		const [canvas, ctx] = this.generateCanvas(poh.background_id);
 		for (const [key, objects] of objectEntries(Placeholders)) {
 			if (!key || !objects) continue;

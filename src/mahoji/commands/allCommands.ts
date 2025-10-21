@@ -1,4 +1,5 @@
 import { globalConfig } from '@/lib/constants.js';
+import type { AnyCommand } from '@/lib/discord/index.js';
 import { activitiesCommand } from '@/mahoji/commands/activities.js';
 import { adminCommand } from '@/mahoji/commands/admin.js';
 import { askCommand } from '@/mahoji/commands/ask.js';
@@ -83,7 +84,7 @@ import { mahojiUseCommand } from '@/mahoji/commands/use.js';
 import { wikiCommand } from '@/mahoji/commands/wiki.js';
 import { xpCommand } from '@/mahoji/commands/xp.js';
 
-export const allCommands: OSBMahojiCommand[] = [
+export const allCommandsDONTIMPORT: AnyCommand[] = [
 	adminCommand,
 	askCommand,
 	botLeaguesCommand,
@@ -169,11 +170,11 @@ export const allCommands: OSBMahojiCommand[] = [
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {
-	allCommands.push(testPotatoCommand);
+	allCommandsDONTIMPORT.push(testPotatoCommand);
 }
 
 const names = new Set<string>();
-for (const cmd of allCommands) {
+for (const cmd of allCommandsDONTIMPORT) {
 	if (names.has(cmd.name)) {
 		throw new Error(`Duplicate command name: ${cmd.name}`);
 	}

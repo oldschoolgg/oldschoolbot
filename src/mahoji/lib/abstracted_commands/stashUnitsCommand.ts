@@ -1,7 +1,7 @@
 import { partition, stringMatches } from '@oldschoolgg/toolkit';
-import type { StashUnit } from '@prisma/client';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
+import type { StashUnit } from '@/prisma/main.js';
 import type { IStashUnit, StashUnitTier } from '@/lib/clues/stashUnits.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { assert } from '@/lib/util/logError.js';

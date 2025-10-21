@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit';
-import { CropUpgradeType } from '@prisma/client';
 import { Items, itemID } from 'oldschooljs';
 
+import { CropUpgradeType } from '@/prisma/main/enums.js';
 import { openSeedPack } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import { defineSkill, type Plant } from '@/lib/skilling/types.js';
 import allotmentPlants from './allotments.js';

@@ -14,5 +14,15 @@ export const InteractionID = {
 		SkipTask: 'SLAYER_SKIP_TASK',
 		CancelTask: 'SLAYER_CANCEL_TASK',
 		BlockTask: 'SLAYER_BLOCK_TASK'
+	},
+	Party: {
+		Join: 'PARTY_JOIN',
+		Leave: 'PARTY_LEAVE',
+		Cancel: 'PARTY_CANCEL',
+		Start: 'PARTY_START'
+	},
+	Confirmation: {
+		Confirm: 'CONFIRM',
+		Cancel: 'CANCEL'
 	}
 } as const;

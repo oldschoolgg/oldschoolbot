@@ -4,7 +4,6 @@ import { EItem } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
-import { logError } from '@/lib/util/logError.js';
 
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
@@ -24,7 +23,7 @@ export const fishingTask: MinionTask = {
 		const resultOrError = await result.updateBank.transact(user);
 		if (typeof resultOrError === 'string') {
 			const err = new Error(`Fishing trip update bank failed: ${resultOrError}`);
-			logError(err, {
+			Logging.logError(err, {
 				userID: user.id,
 				fishID,
 				quantity
@@ -33,7 +32,7 @@ export const fishingTask: MinionTask = {
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
 
-		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${rawResults.join(', ')}`;
+		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name} and received ${resultOrError.itemTransactionResult?.itemsAdded ?? 'No items'}. ${rawResults.join(', ')}`;
 
 		if (result.boosts.length > 0) {
 			str += `\n\n**Boosts:** ${result.boosts.join(', ')}`;

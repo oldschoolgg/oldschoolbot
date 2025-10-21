@@ -1,7 +1,6 @@
 import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
-	type BaseMessageOptions,
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
@@ -65,9 +64,11 @@ const controlButtons: {
 	}
 ];
 
-export type CompatibleResponse = { content?: string; ephemeral?: boolean } & Omit<InteractionReplyOptions, 'flags'>;
+export type CompatibleResponse = { content?: string; ephemeral?: boolean } & InteractionReplyOptions;
 
-export type PaginatedMessagePage = CompatibleResponse | (() => Promise<CompatibleResponse> | CompatibleResponse);
+export type PaginatedMessagePage =
+	| CompatibleResponse
+	| ((currentIndex: number) => Promise<CompatibleResponse> | CompatibleResponse);
 export type PaginatedPages =
 	| {
 			numPages: number;
@@ -79,17 +80,11 @@ class BasePaginatedMessage {
 	public index = 0;
 	public pages!: PaginatedPages;
 	public totalPages: number;
-	public onError: (error: Error, interaction?: ButtonInteraction) => void;
 
-	constructor(
-		pages: PaginatedPages,
-		startingPage: number | undefined,
-		onError: (err: Error, itx?: ButtonInteraction) => void
-	) {
+	constructor(pages: PaginatedPages, startingPage: number | undefined) {
 		this.pages = pages;
 		this.index = startingPage ?? 0;
 		this.totalPages = Array.isArray(pages) ? pages.length : pages.numPages;
-		this.onError = onError;
 	}
 
 	async render(): Promise<CompatibleResponse> {
@@ -98,7 +93,7 @@ class BasePaginatedMessage {
 				? await this.pages.generate({ currentPage: this.index })
 				: this.pages[this.index];
 
-			const _page = isFunction(rawPage) ? await rawPage() : rawPage;
+			const _page = isFunction(rawPage) ? await rawPage(this.index) : rawPage;
 			return {
 				..._page,
 				components:
@@ -138,13 +133,11 @@ export class PaginatedMessage extends BasePaginatedMessage {
 		interaction,
 		pages,
 		startingPage,
-		onError,
 		ephemeral
 	}: {
 		interaction: MInteraction;
-		onError: (err: Error, itx?: ButtonInteraction) => void;
 	} & PaginatedMessageOptions) {
-		super(pages, startingPage, onError);
+		super(pages, startingPage);
 		this.interaction = interaction;
 		this.ephemeral = ephemeral ?? false;
 	}
@@ -152,7 +145,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 	async run(targetUsers?: string[]) {
 		const flags = this.ephemeral ? MessageFlags.Ephemeral : undefined;
 		await this.interaction.defer({ ephemeral: this.ephemeral });
-		const interactionResponse = await this.interaction.reply((await this.render()) as BaseMessageOptions);
+		const interactionResponse = await this.interaction.reply({ ...(await this.render()), withResponse: true });
 		if (this.totalPages === 1) return SpecialResponse.PaginatedMessageResponse;
 
 		const collector = interactionResponse!.createMessageComponentCollector({
@@ -182,11 +175,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 					action.run({ paginatedMessage: this });
 
 					if (previousIndex !== this.index) {
-						try {
-							await this.interaction.reply(await this.render());
-						} catch (err) {
-							this.onError(err as Error, this.interaction as any);
-						}
+						await this.interaction.reply(await this.render());
 						return;
 					}
 				}

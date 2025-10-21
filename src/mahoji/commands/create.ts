@@ -3,10 +3,8 @@ import { Bank } from 'oldschooljs';
 
 import Createables from '@/lib/data/createables.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 
-export const createCommand: OSBMahojiCommand = {
+export const createCommand = defineCommand({
 	name: 'create',
 	description: 'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',
 	options: [
@@ -15,7 +13,7 @@ export const createCommand: OSBMahojiCommand = {
 			name: 'item',
 			description: 'The item you want to create/revert.',
 			required: true,
-			autocomplete: async value => {
+			autocomplete: async (value: string) => {
 				return Createables.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -39,11 +37,7 @@ export const createCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		interaction,
-		user
-	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
+	run: async ({ options, interaction, user }) => {
 		const itemName = options.item?.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
@@ -76,12 +70,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			const mySlayerUnlocks = user.user.slayer_unlocks;
-
-			const { success, errors } = hasSlayerUnlock(
-				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
-				createableItem.requiredSlayerUnlocks
-			);
+			const { success, errors } = user.checkHasSlayerUnlocks(createableItem.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to ${action} this item.\n\nRequired: ${errors}`;
 			}
@@ -187,4 +176,4 @@ export const createCommand: OSBMahojiCommand = {
 		}
 		return `You received ${outItems}.${extraMessage}`;
 	}
-};
+});

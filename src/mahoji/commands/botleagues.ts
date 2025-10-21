@@ -37,7 +37,7 @@ const leaguesTrophiesBuyables = [
 	}
 ];
 
-export const botLeaguesCommand: OSBMahojiCommand = {
+export const botLeaguesCommand = defineCommand({
 	name: 'botleagues',
 	description: 'Compete in the OSB/BSO Leagues.',
 	options: [
@@ -75,16 +75,7 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		help?: {};
-		claim_trophy?: {};
-		leaderboard?: {};
-		buy_reward?: { item: string };
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		const roboChimpUser = await roboChimpUserFetch(user.id);
 
 		if (options.claim_trophy) {
@@ -144,6 +135,7 @@ ${leaguesTrophiesBuyables
 		}
 
 		if (options.leaderboard) {
+			await interaction.defer();
 			const result = await roboChimpClient.user.findMany({
 				where: {
 					leagues_points_total: {
@@ -155,8 +147,7 @@ ${leaguesTrophiesBuyables
 				},
 				take: 100
 			});
-			await interaction.defer();
-			doMenu(
+			return doMenu(
 				interaction,
 				await Promise.all(
 					chunk(result, 10).map(async subList =>
@@ -172,9 +163,8 @@ ${leaguesTrophiesBuyables
 				),
 				'Leagues Points Leaderboard'
 			);
-			return null;
 		}
 
 		return 'https://wiki.oldschool.gg/bso/leagues/';
 	}
-};
+});
