@@ -38,15 +38,18 @@ export const WebItems = {
 		}
 
 		const bsoItem = BSOItems.get(name);
-		if (bsoItem)
+		const osbItem = OSBItems.get(name);
+
+		if (osbItem) {
+			return { item: osbItem, imageUrl: `https://cdn.oldschool.gg/icons/items/${osbItem.id}.png`, isBso: false };
+		}
+		if (bsoItem) {
 			return {
 				item: bsoItem,
 				imageUrl: `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/images/bso_icons/${bsoItem.id}.png`,
 				isBso: true
 			};
-		const osbItem = OSBItems.get(name);
-		if (osbItem)
-			return { item: osbItem, imageUrl: `https://cdn.oldschool.gg/icons/items/${osbItem.id}.png`, isBso: false };
+		}
 		if (typeof name === 'string' && !Number.isNaN(Number(name))) {
 			return WebItems.get(Number(name));
 		}
