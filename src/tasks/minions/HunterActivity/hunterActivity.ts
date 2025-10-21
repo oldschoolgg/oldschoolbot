@@ -1,6 +1,5 @@
 import { randInt, roll } from '@oldschoolgg/rng';
 import { Events, Time } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { Bank, ECreature, EquipmentSlot, itemID } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
@@ -8,6 +7,7 @@ import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearE
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -49,10 +49,7 @@ export const hunterTask: MinionTask = {
 
 		const crystalImpling = creature.name === 'Crystal impling';
 
-		let graceful = false;
-		if (user.hasGracefulEquipped()) {
-			graceful = true;
-		}
+		const graceful = user.hasGracefulEquipped();
 
 		const experienceScore = await user.getCreatureScore(creature.id);
 
@@ -97,7 +94,7 @@ export const hunterTask: MinionTask = {
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
 				await user.update({
-					gear_wildy: newGear as Prisma.InputJsonObject
+					gear_wildy: newGear as PrismaCompatibleJsonObject
 				});
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
@@ -156,7 +153,11 @@ export const hunterTask: MinionTask = {
 			}
 		}
 
-		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
+		const scoreToAdd = Math.floor(successfulQuantity);
+		if (scoreToAdd > 0) {
+			await user.incrementCreatureScore(creature.id);
+		}
+
 		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot

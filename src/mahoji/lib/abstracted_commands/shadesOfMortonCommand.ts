@@ -262,7 +262,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 		}
 	}
 
-	const logItem = Items.get(logStr);
+	const logItem = Items.getItem(logStr);
 	if (!logItem) return 'Invalid logs item';
 
 	const userBank = user.bank;

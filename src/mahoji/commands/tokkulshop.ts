@@ -1,7 +1,7 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { TokkulShopOptions } from '@/lib/types/minions.js';
@@ -11,7 +11,7 @@ const { TzTokJad } = Monsters;
 const TIME_PER_50 = Time.Second;
 const TIME_PER_1 = TIME_PER_50 / 50;
 
-export const tksCommand: OSBMahojiCommand = {
+export const tksCommand = defineCommand({
 	name: 'tokkulshop',
 	description: 'Buy or sell items from the Tzhaar shops.',
 	attributes: {
@@ -75,17 +75,7 @@ export const tksCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		channelID,
-		options,
-		interaction,
-		userID
-	}: CommandRunOptions<{
-		buy?: { name?: string; quantity?: number };
-		sell?: { name?: string; quantity?: number };
-	}>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ channelID, options, interaction, user }) => {
 		if (user.minionIsBusy) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
 
 		const [hasKaramjaDiary] = await userhasDiaryTier(user, KaramjaDiary.easy);
@@ -190,4 +180,4 @@ export const tksCommand: OSBMahojiCommand = {
 			duration
 		)}.`;
 	}
-};
+});

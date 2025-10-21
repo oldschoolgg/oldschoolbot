@@ -2,11 +2,11 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
-import { z } from 'zod';
+import * as z from 'zod';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
@@ -378,11 +378,11 @@ const globalConfigSchema = z.object({
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
-	sentryDSN: z.string().url().optional(),
 	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
-	supportServerID: z.string()
+	supportServerID: z.string(),
+	minimumLoggedPerfDuration: z.number().default(30)
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
@@ -399,7 +399,6 @@ export const globalConfig = globalConfigSchema.parse({
 	isCI: process.env.CI,
 	isProduction,
 	timeZone: process.env.TZ,
-	sentryDSN: process.env.SENTRY_DSN,
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
 	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID

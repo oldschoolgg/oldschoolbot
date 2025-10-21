@@ -3,7 +3,6 @@ import { Hiscores } from 'oldschooljs/hiscores';
 
 import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import { skillOption } from '@/lib/discord/index.js';
-import type { SkillNameType } from '@/lib/skilling/types.js';
 
 const xpLeft = (xp: number) => {
 	const level = convertXPtoLVL(xp, MAX_LEVEL);
@@ -11,7 +10,7 @@ const xpLeft = (xp: number) => {
 	return (convertLVLtoXP(level + 1) - xp).toLocaleString();
 };
 
-export const lvlCommand: OSBMahojiCommand = {
+export const lvlCommand = defineCommand({
 	name: 'lvl',
 	description: 'See a level in your OSRS stats.',
 	attributes: {
@@ -29,7 +28,7 @@ export const lvlCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ rsn: string; skill: SkillNameType }>) => {
+	run: async ({ options }) => {
 		try {
 			const res = await Hiscores.fetch(options.rsn).then(player => player.skills[options.skill]);
 
@@ -46,4 +45,4 @@ export const lvlCommand: OSBMahojiCommand = {
 			return err.message;
 		}
 	}
-};
+});

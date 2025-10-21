@@ -7,7 +7,7 @@ import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
 
-export const finishCommand: OSBMahojiCommand = {
+export const finishCommand = defineCommand({
 	name: 'finish',
 	description: 'Simulate finishing a CL.',
 	options: [
@@ -29,7 +29,7 @@ export const finishCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({ interaction, options }: CommandRunOptions<{ input: string; tertiaries?: boolean }>) => {
+	run: async ({ interaction, options }) => {
 		await interaction.defer();
 		const { input: finishable, tertiaries } = options;
 		const val = finishables.find(
@@ -74,4 +74,4 @@ ${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,
 			].filter(notEmpty)
 		};
 	}
-};
+});

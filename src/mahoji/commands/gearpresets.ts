@@ -2,7 +2,7 @@ import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
 import { globalConfig, ParsedCustomEmojiWithGroups } from '@/lib/constants.js';
-import { allEquippableItems, gearPresetOption, gearSetupOption } from '@/lib/discord/index.js';
+import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/lib/discord/index.js';
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
@@ -134,9 +134,8 @@ export async function createOrEditGearSetup(
 
 	return `Successfully ${isUpdating ? 'updated the' : 'made a new'} preset called \`${preset.name}\`.`;
 }
-
-function makeSlotOption(slot: EquipmentSlot): CommandOption {
-	return {
+const slotOptions = Object.values(EquipmentSlot).map(slot =>
+	defineOption({
 		type: 'String',
 		name: slot,
 		description: `The item you want to put in the ${slot} slot in this gear setup.`,
@@ -156,10 +155,12 @@ function makeSlotOption(slot: EquipmentSlot): CommandOption {
 			}
 			return matchingItems;
 		}
-	};
-}
+	})
+);
 
-export const gearPresetsCommand: OSBMahojiCommand = {
+const setupOption = choicesOf([...GearSetupTypes, 'reset']);
+
+export const gearPresetsCommand = defineCommand({
 	name: 'gearpresets',
 	description: 'Manage, equip, unequip your gear presets.',
 	options: [
@@ -208,7 +209,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					name: 'copy_setup',
 					description: 'Pick a setup to copy/use for this preset.'
 				},
-				...Object.values(EquipmentSlot).map(makeSlotOption),
+				...slotOptions,
 				{
 					type: 'String',
 					required: false,
@@ -220,7 +221,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					required: false,
 					name: 'pinned_setup',
 					description: 'Pick a setup to pin this setup too.',
-					choices: GearSetupTypes.map(i => ({ value: i, name: i }))
+					choices: choicesOf(GearSetupTypes)
 				}
 			]
 		},
@@ -234,7 +235,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					name: 'gear_preset',
 					description: 'The gear preset you want to select.',
 					required: true,
-					autocomplete: async (value, user) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const presets = await prisma.gearPreset.findMany({
 							where: {
 								user_id: user.id
@@ -248,7 +249,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				},
-				...Object.values(EquipmentSlot).map(makeSlotOption),
+				...slotOptions,
 				{
 					type: 'String',
 					required: false,
@@ -260,7 +261,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					required: false,
 					name: 'pinned_setup',
 					description: 'Pick a setup to pin this setup too.',
-					choices: [...GearSetupTypes, 'reset'].map(i => ({ value: i, name: i }))
+					choices: setupOption
 				}
 			]
 		},
@@ -274,7 +275,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					name: 'preset',
 					description: 'The gear preset you want to delete.',
 					required: false,
-					autocomplete: async (value, user) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const presets = await prisma.gearPreset.findMany({
 							where: {
 								user_id: user.id
@@ -291,17 +292,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		equip?: { gear_setup: GearSetupType; preset: string };
-		create?: InputGear & { copy_setup?: GearSetupType; name: string; emoji?: string; pinned_setup?: GearSetupType };
-		edit?: InputGear & { gear_preset: string; emoji?: string; pinned_setup?: GearSetupType };
-		delete?: { preset: string };
-		view?: { preset: string };
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		if (options.create) {
 			return createOrEditGearSetup(
 				user,
@@ -346,7 +337,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
-				userID: user.id,
+				user,
 				setup: options.equip.gear_setup,
 				item: undefined,
 				items: undefined,
@@ -368,4 +359,4 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 
 		return 'Invalid command.';
 	}
-};
+});

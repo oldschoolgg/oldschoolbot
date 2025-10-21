@@ -1,9 +1,9 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
-import { noOp, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
-import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
+import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, MessageFlags } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
+import { type Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitFieldData, globalConfig } from '@/lib/constants.js';
@@ -19,10 +19,15 @@ import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import { allOpenables } from '@/lib/openables.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import {
+	farmingPatchNames,
+	getFarmingKeyFromName,
+	userGrowingProgressStr
+} from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
@@ -235,9 +240,9 @@ const spawnPresets = [
 
 const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
 
-export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduction
+export const testPotatoCommand = globalConfig.isProduction
 	? null
-	: {
+	: defineCommand({
 			name: 'testpotato',
 			description: 'Commands for making testing easier and faster.',
 			options: [
@@ -305,7 +310,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							type: 'String',
 							name: 'item',
 							description: 'Spawn a specific item',
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								if (!value)
 									return [{ name: 'Type something!', value: itemID('Twisted bow').toString() }];
 								return Items.filter(item => item.name.toLowerCase().includes(value.toLowerCase())).map(
@@ -355,7 +360,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							name: 'minigame',
 							description: 'The minigame you want to set your KC for.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return Minigames.filter(i => {
 									if (!value) return true;
 									return [i.name.toLowerCase(), i.aliases].some(i => i.includes(value.toLowerCase()));
@@ -418,7 +423,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							name: 'add',
 							description: 'The bitfield to add',
 							required: false,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return Object.entries(BitFieldData)
 									.filter(bf =>
 										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
@@ -431,7 +436,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							name: 'remove',
 							description: 'The bitfield to remove',
 							required: false,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return Object.entries(BitFieldData)
 									.filter(bf =>
 										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
@@ -451,7 +456,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							name: 'monster',
 							description: 'The monster you want to set your KC for.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return effectiveMonsters
 									.filter(i => {
 										if (!value) return true;
@@ -479,6 +484,23 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					type: 'Subcommand',
 					name: 'irontoggle',
 					description: 'Toggle being an ironman on/off.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'forcegrow',
+					description: 'Force a plant to grow.',
+					options: [
+						{
+							type: 'String',
+							name: 'patch_name',
+							description: 'The patches you want to harvest.',
+							required: true,
+							choices: [
+								{ name: 'All patches', value: 'all' },
+								...farmingPatchNames.map(i => ({ name: i, value: i }))
+							]
+						}
+					]
 				},
 				{
 					type: 'Subcommand',
@@ -545,7 +567,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							name: 'monster',
 							description: 'The monster you want to set your task as.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								const filteredMonsters = [...new Set(allSlayerMonsters)].filter(monster => {
 									if (!value) return true;
 									return [monster.name.toLowerCase(), ...monster.aliases].some(aliases =>
@@ -569,32 +591,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				}
 			],
-			run: async ({
-				options,
-				user,
-				interaction
-			}: CommandRunOptions<{
-				confirmation?: {
-					ephemeral?: boolean;
-					other_person?: MahojiUserOption;
-					another_person?: MahojiUserOption;
-				};
-				party?: {};
-				max?: {};
-				bitfield?: { add?: string; remove?: string };
-				gear?: { thing: string };
-				reset?: { thing: string };
-				setminigamekc?: { minigame: string; kc: number };
-				setxp?: { skill: string; xp: number };
-				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
-				setmonsterkc?: { monster: string; kc: string };
-				irontoggle?: {};
-				wipe?: { thing: (typeof thingsToWipe)[number] };
-				set?: { qp?: number; all_ca_tasks?: boolean };
-				get_code?: {};
-				bingo_tools?: { start_bingo: string };
-				setslayertask?: { master: string; monster: string; quantity: number };
-			}>) => {
+			run: async ({ options, user, interaction }) => {
 				if (globalConfig.isProduction) {
 					Logging.logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
@@ -1015,8 +1012,37 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
 				}
 
+				if (options.forcegrow) {
+					const farmingDetails = await getFarmingInfoFromUser(user);
+					const { patch_name } = options.forcegrow;
+					const patchesToGrow =
+						patch_name === 'all'
+							? farmingDetails.patchesDetailed.filter(patch => patch.plant)
+							: farmingDetails.patchesDetailed.filter(
+									patch => patch.patchName === patch_name && patch.plant
+								);
+					if (patchesToGrow.length === 0) {
+						return patch_name === 'all'
+							? 'You have nothing planted in any patches.'
+							: 'You have nothing planted there.';
+					}
+					const now = Date.now();
+					const updates = Object.fromEntries(
+						patchesToGrow.map(patch => [
+							getFarmingKeyFromName(patch.patchName),
+							{
+								...farmingDetails.patches[patch.patchName],
+								plantTime: now - Time.Month
+							}
+						])
+					) as Prisma.UserUncheckedUpdateInput;
+
+					await user.update(updates);
+					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed);
+				}
+
 				if (options.setslayertask) {
-					const usersTask = await getUsersCurrentSlayerInfo(user.id);
+					const usersTask = await user.fetchSlayerInfo();
 
 					const { monster, master } = options.setslayertask;
 
@@ -1071,4 +1097,4 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 
 				return 'Nothin!';
 			}
-		};
+		});

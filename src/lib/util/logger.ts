@@ -2,20 +2,47 @@ import SonicBoomDefault from 'sonic-boom';
 
 const { SonicBoom } = SonicBoomDefault;
 
+import path from 'node:path';
 import { isObject, UserError } from '@oldschoolgg/toolkit';
-import { captureException } from '@sentry/node';
-import { DiscordAPIError } from 'discord.js';
+import { type AutocompleteInteraction, DiscordAPIError } from 'discord.js';
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
+import { MInteraction } from '@/lib/structures/MInteraction.js';
 
-const LOG_FILE_NAME = globalConfig.isProduction
-	? `../logs/${BOT_TYPE_LOWERCASE}.debug.log`
-	: `./logs/${BOT_TYPE_LOWERCASE}.debug.log`;
+const LOG_FOLDER = globalConfig.isProduction ? '../logs/' : './logs/';
+
+const baseSonicBoomOptions = {
+	mkdir: true,
+	sync: !globalConfig.isProduction,
+	fsync: false
+} as const;
+
+const perfSonicBoom = new SonicBoom({
+	fd: path.join(LOG_FOLDER, `${BOT_TYPE_LOWERCASE}.perf.log`),
+	...baseSonicBoomOptions
+});
+
+export type PerformanceLogContext = {
+	duration: number;
+	text: string;
+	interaction?: AutocompleteInteraction | MInteraction;
+	[key: string]: unknown;
+};
+
+function logPerf({ duration, text, interaction, ...rest }: PerformanceLogContext) {
+	if (duration < globalConfig.minimumLoggedPerfDuration) return;
+	const ctx = {
+		...rest,
+		...(interaction ? { interaction: MInteraction.getInteractionDebugInfo(interaction) } : undefined)
+	};
+	perfSonicBoom.write(
+		`${JSON.stringify({ ...ctx, duration: Math.trunc(duration), text, t: new Date().toISOString() })}\n`
+	);
+}
 
 export const sonicBoom = new SonicBoom({
-	fd: LOG_FILE_NAME,
-	mkdir: true,
-	sync: false
+	fd: path.join(LOG_FOLDER, `${BOT_TYPE_LOWERCASE}.debug.log`),
+	...baseSonicBoomOptions
 });
 
 interface LogContext {
@@ -24,11 +51,11 @@ interface LogContext {
 }
 
 function logDebug(str: string, context: LogContext = {}) {
+	if (process.env.CI) return;
 	const o = { ...context, m: str, t: new Date().toISOString() };
+	sonicBoom.write(`${JSON.stringify(o)}\n`);
 	if (!globalConfig.isProduction) {
 		console.log(str);
-	} else {
-		sonicBoom.write(`${JSON.stringify(o)}\n`);
 	}
 }
 
@@ -56,6 +83,10 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	}
 
 	if (err instanceof UserError && interaction && interaction.isRepliable()) {
+		Logging.logDebug('UserError encountered, sending message to user.', {
+			error: err.message,
+			user_id: interaction.user.id
+		});
 		interaction.reply({ content: err.message });
 		return;
 	}
@@ -70,21 +101,17 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	if (interaction) {
 		metaInfo.interaction = interaction.getDebugInfo();
 	}
+	if (!globalConfig.isProduction) {
+		console.error(err);
+	}
 	console.error(
 		JSON.stringify({
 			type: 'ERROR',
 			error: err.stack ?? err.message,
-			info: metaInfo
+			info: metaInfo,
+			time: new Date().toISOString()
 		})
 	);
-
-	if (globalConfig.isProduction) {
-		captureException(err, {
-			extra: {
-				metaInfo: JSON.stringify(metaInfo)
-			}
-		});
-	}
 
 	if (process.env.TEST) {
 		throw err;
@@ -93,7 +120,8 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 
 const LoggingGlobal = {
 	logError,
-	logDebug
+	logDebug,
+	logPerf
 };
 
 declare global {

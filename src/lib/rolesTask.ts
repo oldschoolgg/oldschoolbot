@@ -1,10 +1,10 @@
 import { noOp, notEmpty, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
 import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
-import z from 'zod';
+import * as z from 'zod';
 
+import { Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
@@ -41,7 +41,7 @@ const CLS_THAT_GET_ROLE = [
 
 for (const cl of CLS_THAT_GET_ROLE) {
 	const items = getCollectionItems(cl);
-	if (!items || items.length === 0) {
+	if (!items || items.size === 0) {
 		throw new Error(`${cl} isn't a valid CL.`);
 	}
 }
@@ -78,7 +78,7 @@ async function topSkillers() {
 		.map((u: any) => {
 			let totalLevel = 0;
 			for (const skill of SkillsArray) {
-				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}` as keyof any]) as any, MAX_LEVEL);
+				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}`]), MAX_LEVEL);
 			}
 			return {
 				id: u.id,
