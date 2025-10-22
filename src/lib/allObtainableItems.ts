@@ -1,5 +1,5 @@
 import { isFunction, notEmpty } from '@oldschoolgg/toolkit';
-import { Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
+import { AncientCavernAncientPageTable, Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import Buyables from '@/lib/data/buyables/buyables.js';
@@ -7,6 +7,7 @@ import { allCLItems } from '@/lib/data/Collections.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import { armorAndItemPacks } from '@/lib/data/creatables/armorPacks.js';
 import Createables from '@/lib/data/createables.js';
+import { baseFilters } from '@/lib/data/filterables.js';
 import { ChewedBonesLootTable } from '@/lib/data/offerData.js';
 import { growablePets } from '@/lib/growablePets.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -48,7 +49,7 @@ for (const item of Smithing.SmithableItems) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Smithing.BlastableBars) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Buyables) {
 	totalBankToAdd.add(isFunction(item.outputItems) ? undefined : item.outputItems);
-	const buyable = Items.get(item.name);
+	const buyable = Items.getItem(item.name);
 	if (buyable) totalBankToAdd.add(buyable);
 }
 for (const item of allFarmingItems) ALL_OBTAINABLE_ITEMS.add(item);
@@ -145,6 +146,7 @@ for (const item of [
 	MediumGambleTable.allItems,
 	HighGambleTable.allItems,
 	EasyEncounterLoot.allItems,
+	AncientCavernAncientPageTable.allItems,
 	MediumEncounterLoot.allItems,
 	HardEncounterLoot.allItems,
 	Woodcutting.Logs.filter(i => i.lootTable).map(i => i.lootTable?.allItems)
@@ -157,6 +159,10 @@ for (const item of [
 for (const castable of Castables) {
 	if (!castable.output) continue;
 	totalBankToAdd.add(castable.output);
+}
+
+for (const id of baseFilters.map(i => i.items(undefined)).flat(100)) {
+	ALL_OBTAINABLE_ITEMS.add(id);
 }
 
 for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);

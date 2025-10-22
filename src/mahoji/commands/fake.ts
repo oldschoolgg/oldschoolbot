@@ -165,7 +165,7 @@ const thingMap = [
 	[new Set(['arma', 'armadyl']), arma]
 ] as const;
 
-export const fakeCommand: OSBMahojiCommand = {
+export const fakeCommand = defineCommand({
 	name: 'fake',
 	description: 'Generate fake images of getting loot.',
 	options: [
@@ -183,7 +183,7 @@ export const fakeCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ type: string; username: string }>) => {
+	run: async ({ options }) => {
 		const canvas = createCanvas(399, 100);
 		const ctx = canvas.getContext('2d');
 
@@ -209,4 +209,4 @@ export const fakeCommand: OSBMahojiCommand = {
 		}
 		return 'Invalid input.';
 	}
-};
+});

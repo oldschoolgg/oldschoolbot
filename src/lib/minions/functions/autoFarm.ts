@@ -1,12 +1,11 @@
-import { AutoFarmFilterEnum } from '@prisma/client';
-
+import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import { farmingPlantCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 
-export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: string) {
+export async function autoFarm(interaction: MInteraction, user: MUser, patchesDetailed: IPatchDataDetailed[]) {
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
@@ -59,10 +58,10 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	}
 
 	return farmingPlantCommand({
-		userID: user.id,
+		user,
+		interaction,
 		plantName: toPlant.name,
 		autoFarmed: true,
-		channelID,
 		quantity: null,
 		pay: false
 	});

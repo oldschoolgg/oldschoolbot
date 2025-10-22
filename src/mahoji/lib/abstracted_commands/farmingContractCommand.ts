@@ -183,14 +183,15 @@ function bestFarmingContractUserCanDo(user: MUser) {
 		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
 }
 
-export async function autoContract(user: MUser, channelID: string): CommandResponse {
+export async function autoContract(interaction: MInteraction, user: MUser): CommandResponse {
 	const contract = user.farmingContract();
 	const plant = contract.contract ? Farming.findPlant(contract.contract.plantToGrow) : null;
 	const patch = contract.farmingInfo.patchesDetailed.find(p => p.plant === plant);
 	const bestContractTierCanDo = bestFarmingContractUserCanDo(user);
 
 	if (user.owns('Seed pack')) {
-		const openResponse = await abstractedOpenCommand(null, user.id, ['seed pack'], 'auto');
+		const openResponse = await abstractedOpenCommand(null, user, ['seed pack'], 'auto');
+		await user.sync();
 		const contractResponse = await farmingContractCommand(user, bestContractTierCanDo);
 		return roughMergeMahojiResponse(openResponse, contractResponse);
 	}
@@ -202,30 +203,30 @@ export async function autoContract(user: MUser, channelID: string): CommandRespo
 		const newContract = (user.user.minion_farmingContract ?? Farming.defaultFarmingContract) as FarmingContract;
 		if (!newContract.hasContract || !newContract.plantToGrow) return contractResult;
 		return farmingPlantCommand({
-			userID: user.id,
+			user,
+			interaction,
 			plantName: newContract.plantToGrow,
 			pay: false,
 			autoFarmed: false,
-			quantity: null,
-			channelID
+			quantity: null
 		});
 	}
 
 	// If they have a contract, but nothing planted, plant it.
 	if (!patch) {
 		return farmingPlantCommand({
-			userID: user.id,
+			user,
+			interaction,
 			plantName: plant!.name,
 			quantity: null,
 			autoFarmed: false,
-			channelID,
 			pay: false
 		});
 	}
 
 	// If they have a contract, and its planted, and it's ready, harvest it.
 	if (patch.ready) {
-		return harvestCommand({ user, channelID, seedType: patch.patchName });
+		return harvestCommand({ user, seedType: patch.patchName, interaction });
 	}
 
 	return 'Your current contract is still growing.';

@@ -128,7 +128,7 @@ async function coxCommand(user: MUser, quantity: number, cm = false, points = 25
 	};
 }
 
-export const simulateCommand: OSBMahojiCommand = {
+export const simulateCommand = defineCommand({
 	name: 'simulate',
 	description: 'Simulate various OSRS related things.',
 	attributes: {
@@ -191,22 +191,7 @@ export const simulateCommand: OSBMahojiCommand = {
 			description: 'Simulate colosseum.'
 		}
 	],
-	run: async ({
-		interaction,
-		options,
-		user
-	}: CommandRunOptions<{
-		cox?: {
-			quantity: number;
-			points?: number;
-			team_size?: number;
-			challenge_mode?: boolean;
-		};
-		petroll?: {
-			quantity: number;
-		};
-		colosseum?: {};
-	}>) => {
+	run: async ({ interaction, options, user }) => {
 		await interaction.defer();
 		if (options.colosseum) {
 			return simulateColosseumRuns();
@@ -234,4 +219,4 @@ export const simulateCommand: OSBMahojiCommand = {
 		}
 		return 'Invalid command.';
 	}
-};
+});

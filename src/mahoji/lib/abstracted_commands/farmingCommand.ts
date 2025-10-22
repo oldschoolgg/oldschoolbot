@@ -1,7 +1,7 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
+import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -20,12 +20,12 @@ function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number)
 
 export async function harvestCommand({
 	user,
-	channelID,
-	seedType
+	seedType,
+	interaction
 }: {
 	user: MUser;
-	channelID: string;
 	seedType: string;
+	interaction: MInteraction;
 }) {
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
@@ -97,7 +97,7 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 		plantsName: patch.lastPlanted,
 		patchType: patches[patch.patchName],
 		userID: user.id,
-		channelID,
+		channelID: interaction.channelId,
 		upgradeType,
 		duration,
 		quantity: patch.lastQuantity,
@@ -111,21 +111,20 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
 
 export async function farmingPlantCommand({
+	user,
+	interaction,
 	plantName,
 	quantity,
 	autoFarmed,
-	channelID,
-	pay,
-	userID
+	pay
 }: {
-	userID: string;
+	user: MUser;
+	interaction: MInteraction;
 	plantName: string;
 	quantity: number | null;
 	autoFarmed: boolean;
-	channelID: string;
 	pay: boolean;
 }): Promise<string> {
-	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
@@ -293,7 +292,7 @@ export async function farmingPlantCommand({
 		plantsName: plant.name,
 		patchType: patches[plant.seedType],
 		userID: user.id,
-		channelID,
+		channelID: interaction.channelId,
 		quantity,
 		upgradeType,
 		payment: didPay,

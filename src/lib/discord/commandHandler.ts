@@ -2,51 +2,65 @@ import { cryptoRng } from '@oldschoolgg/rng';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
 import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
-import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
-import { postCommand } from '@/lib/discord/postCommand.js';
+import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
+import { type AnyCommand, type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 
-export async function commandHandler(rawInteraction: ChatInputCommandInteraction) {
-	const interaction = new MInteraction({ interaction: rawInteraction });
-	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
-	const options = convertAPIOptionsToCommandOptions(rawInteraction.options.data, rawInteraction.options.resolved);
-
+export async function rawCommandHandlerInner({
+	interaction,
+	command,
+	options,
+	ignoreUserIsBusy
+}: {
+	interaction: MInteraction;
+	command: AnyCommand;
+	options: CommandOptions;
+	ignoreUserIsBusy?: true;
+}): CommandResponse {
 	// Permissions
 	if (command.requiredPermissions) {
-		if (!interaction.member || !interaction.member.permissions) return null;
 		for (const perm of command.requiredPermissions) {
 			if (!interaction.member.permissions.has(PermissionFlagsBits[perm])) {
-				return interaction.reply({
+				return {
 					content: "You don't have permission to use this command.",
 					ephemeral: true
-				});
+				};
 			}
 		}
 	}
+	const user = await mUserFetch(interaction.user.id, {
+		last_command_date: new Date(),
+		username: globalClient.users.cache.get(interaction.user.id)?.username
+	});
 
-	const user = await mUserFetch(interaction.user.id);
+	const shouldIgnoreBusy = ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
 
-	let inhibited = false;
-	let runPostCommand = true;
+	if (user.isBusy && !shouldIgnoreBusy) {
+		return {
+			content: 'You cannot use a command right now.',
+			ephemeral: true
+		};
+	}
+	if (!shouldIgnoreBusy) {
+		user.modifyBusy('lock', `Running command: ${command.name}`);
+	}
+
 	try {
 		const inhibitedResponse = await preCommand({
 			command,
 			interaction,
 			options,
-			bypassInhibitors: false,
 			user
 		});
 		if (inhibitedResponse) {
-			if (inhibitedResponse.dontRunPostCommand) runPostCommand = false;
-			inhibited = true;
-			return interaction.reply({
+			return {
 				ephemeral: true,
 				...inhibitedResponse.reason
-			});
+			};
 		}
 
-		const response = await command.run({
+		const response: Awaited<CommandResponse> = await command.run({
 			interaction,
 			options,
 			user,
@@ -56,28 +70,31 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 			userID: interaction.user.id,
 			rng: cryptoRng
 		});
-		if (response === null) return;
-		if (response === SpecialResponse.PaginatedMessageResponse) {
-			return;
-		}
-
-		await interaction.reply(response);
+		return response;
 	} catch (err) {
+		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
 		Logging.logError({
 			err: err as Error,
 			interaction,
 			context: { command: command.name, options: JSON.stringify(options) }
 		});
+		return {
+			content: `An error occurred while running this command.`
+		};
 	} finally {
-		if (runPostCommand) {
-			await postCommand({
-				command,
-				inhibited,
-				interaction,
-				continueDeltaMillis: null,
-				isContinue: false,
-				args: options
-			});
+		if (!shouldIgnoreBusy) {
+			user.modifyBusy('unlock', `Finished running command: ${command.name}`);
 		}
 	}
+}
+
+export async function commandHandler(rawInteraction: ChatInputCommandInteraction) {
+	const interaction = new MInteraction({ interaction: rawInteraction });
+	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
+	const options = convertAPIOptionsToCommandOptions(rawInteraction.options.data, rawInteraction.options.resolved);
+
+	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({ interaction, command, options });
+	if (response === SpecialResponse.PaginatedMessageResponse || response === SpecialResponse.SilentErrorResponse)
+		return;
+	await interaction.reply(response);
 }

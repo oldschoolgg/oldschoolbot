@@ -1,8 +1,8 @@
-import type { GearPreset } from '@prisma/client';
 import { Bank, Items, itemID } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 import { describe, expect, it, test } from 'vitest';
 
+import type { GearPreset } from '@/prisma/main.js';
 import { constructGearSetup, Gear } from '../../src/lib/structures/Gear.js';
 
 describe('Gear', () => {

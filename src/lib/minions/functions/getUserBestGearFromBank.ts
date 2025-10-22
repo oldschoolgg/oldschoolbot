@@ -3,7 +3,6 @@ import { GearStat } from 'oldschooljs/gear';
 
 import type { GearSetupType } from '@/lib/gear/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { assert } from '@/lib/util/logError.js';
 
 function getItemScore(item: Item) {
 	return Object.values(item.equipment!).reduce(
@@ -23,7 +22,6 @@ export default function getUserBestGearFromBank({
 	gearStat: GearStat;
 	extra: string | null;
 }) {
-	assert(Object.values(GearStat).includes(gearStat as any));
 	const toRemoveFromGear: Bank = new Bank();
 	const toRemoveFromBank: Bank = new Bank();
 	const userGear = gearBank.gear[gearSetup];

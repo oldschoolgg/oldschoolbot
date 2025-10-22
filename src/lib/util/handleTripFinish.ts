@@ -1,17 +1,17 @@
-import { channelIsSendable, makeComponents, Stopwatch, Time } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
+import { channelIsSendable, getNextUTCReset, makeComponents, Time } from '@oldschoolgg/toolkit';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
+import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
@@ -57,7 +57,6 @@ type TripEffectReturn = {
 
 export interface TripFinishEffect {
 	name: string;
-	// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
 	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined | void>;
 }
 
@@ -126,6 +125,7 @@ export async function handleTripFinish(
 	_messages?: string[],
 	_components?: ButtonBuilder[]
 ) {
+	Logging.logDebug(`Handling trip finish for ${user.logName} (${data.type})`);
 	const message = typeof _message === 'string' ? { content: _message } : _message;
 	if (attachment) {
 		if (!message.files) {
@@ -142,14 +142,16 @@ export async function handleTripFinish(
 	const itemsToAddWithCL = new Bank();
 	const itemsToRemove = new Bank();
 	for (const effect of tripFinishEffects) {
-		const stopwatch = new Stopwatch().start();
+		const start = performance.now();
 		const res = await effect.fn({ data, user, loot, messages });
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
-		stopwatch.stop();
-		if (stopwatch.duration > 500) {
-			Logging.logDebug(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
-		}
+		const end = performance.now();
+		const duration = end - start;
+		Logging.logPerf({
+			text: `TripEffect.${effect.name}`,
+			duration
+		});
 	}
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
@@ -160,7 +162,7 @@ export async function handleTripFinish(
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	message.content += await displayCluesAndPets(user, loot);
+	message.content += displayCluesAndPets(user, loot);
 
 	const existingCollector = collectors.get(user.id);
 
@@ -183,8 +185,9 @@ export async function handleTripFinish(
 
 		// Tears of Guthix start button if ready
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
-			const last = Number(last_tears_of_guthix_timestamp);
-			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
+			const lastPlayedDate = Number(last_tears_of_guthix_timestamp);
+			const nextReset = getNextUTCReset(lastPlayedDate, TEARS_OF_GUTHIX_CD);
+			const ready = nextReset < Date.now();
 			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
 			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
 
@@ -210,7 +213,7 @@ export async function handleTripFinish(
 		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
 			components.push(makeAutoContractButton());
 
-		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+		const { currentTask } = await user.fetchSlayerInfo();
 		if (
 			(currentTask === null || currentTask.quantity_remaining <= 0) &&
 			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
@@ -234,5 +237,5 @@ export async function handleTripFinish(
 		message.components = makeComponents(components);
 	}
 
-	sendToChannelID(channelID, message);
+	await sendToChannelID(channelID, message);
 }

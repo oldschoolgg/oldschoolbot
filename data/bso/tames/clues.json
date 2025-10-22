@@ -1,0 +1,506 @@
+[
+	{
+		"supportLevel": 100,
+		"clueTier": "Beginner",
+		"cluesPerHour": 50.929482308590615,
+		"kibblePerHour": 25.510956655482772,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 95,
+		"clueTier": "Beginner",
+		"cluesPerHour": 42.70373051953612,
+		"kibblePerHour": 21.35186525976806,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 90,
+		"clueTier": "Beginner",
+		"cluesPerHour": 37.491802515880536,
+		"kibblePerHour": 18.745901257940268,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 85,
+		"clueTier": "Beginner",
+		"cluesPerHour": 33.927753811672204,
+		"kibblePerHour": 17.010100003672168,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 80,
+		"clueTier": "Beginner",
+		"cluesPerHour": 31.361716800613543,
+		"kibblePerHour": 15.727114619776703,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 75,
+		"clueTier": "Beginner",
+		"cluesPerHour": 29.444928377295092,
+		"kibblePerHour": 14.722464188647546,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 70,
+		"clueTier": "Beginner",
+		"cluesPerHour": 27.973378001836064,
+		"kibblePerHour": 14.032849690690039,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 60,
+		"clueTier": "Beginner",
+		"cluesPerHour": 25.9003546549952,
+		"kibblePerHour": 12.9501773274976,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 50,
+		"clueTier": "Beginner",
+		"cluesPerHour": 24.55242966751918,
+		"kibblePerHour": 12.322540172754909,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 100,
+		"clueTier": "Easy",
+		"cluesPerHour": 23.149764701933275,
+		"kibblePerHour": 23.149764701933275,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 95,
+		"clueTier": "Easy",
+		"cluesPerHour": 19.410786599789148,
+		"kibblePerHour": 19.410786599789148,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 90,
+		"clueTier": "Easy",
+		"cluesPerHour": 17.041728333805473,
+		"kibblePerHour": 17.041728333805473,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 85,
+		"clueTier": "Easy",
+		"cluesPerHour": 15.421706328694277,
+		"kibblePerHour": 15.421706328694277,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 80,
+		"clueTier": "Easy",
+		"cluesPerHour": 14.255325845276024,
+		"kibblePerHour": 14.255325845276024,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 75,
+		"clueTier": "Easy",
+		"cluesPerHour": 13.384058501967568,
+		"kibblePerHour": 13.384058501967568,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 70,
+		"clueTier": "Easy",
+		"cluesPerHour": 12.715172126486468,
+		"kibblePerHour": 12.715172126486468,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 60,
+		"clueTier": "Easy",
+		"cluesPerHour": 11.772888315408348,
+		"kibblePerHour": 11.772888315408348,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 50,
+		"clueTier": "Easy",
+		"cluesPerHour": 11.160195591727907,
+		"kibblePerHour": 11.160195591727907,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 100,
+		"clueTier": "Elder",
+		"cluesPerHour": 3.0150060936099723,
+		"kibblePerHour": 12.06002437443989,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 95,
+		"clueTier": "Elder",
+		"cluesPerHour": 2.5280447158052497,
+		"kibblePerHour": 10.112178863220999,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 90,
+		"clueTier": "Elder",
+		"cluesPerHour": 2.2195004798385356,
+		"kibblePerHour": 8.878001919354142,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 85,
+		"clueTier": "Elder",
+		"cluesPerHour": 2.00851018517906,
+		"kibblePerHour": 8.03404074071624,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 80,
+		"clueTier": "Elder",
+		"cluesPerHour": 1.8566017535087838,
+		"kibblePerHour": 7.426407014035135,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 75,
+		"clueTier": "Elder",
+		"cluesPerHour": 1.7431285897890647,
+		"kibblePerHour": 6.972514359156259,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 70,
+		"clueTier": "Elder",
+		"cluesPerHour": 1.6560133864329154,
+		"kibblePerHour": 6.624053545731662,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 60,
+		"clueTier": "Elder",
+		"cluesPerHour": 1.533291185572156,
+		"kibblePerHour": 6.133164742288624,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 50,
+		"clueTier": "Elder",
+		"cluesPerHour": 1.453494553513659,
+		"kibblePerHour": 5.813978214054636,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 100,
+		"clueTier": "Elite",
+		"cluesPerHour": 9.09455037940103,
+		"kibblePerHour": 22.736375948502573,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 95,
+		"clueTier": "Elite",
+		"cluesPerHour": 7.6256661737538,
+		"kibblePerHour": 19.0641654343845,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 90,
+		"clueTier": "Elite",
+		"cluesPerHour": 6.694964601407844,
+		"kibblePerHour": 16.73741150351961,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 85,
+		"clueTier": "Elite",
+		"cluesPerHour": 6.058527550998692,
+		"kibblePerHour": 15.192922935581333,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 80,
+		"clueTier": "Elite",
+		"cluesPerHour": 5.600306585672751,
+		"kibblePerHour": 14.000766464181877,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 75,
+		"clueTier": "Elite",
+		"cluesPerHour": 5.258023003694152,
+		"kibblePerHour": 13.14505750923538,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 70,
+		"clueTier": "Elite",
+		"cluesPerHour": 4.995246165037229,
+		"kibblePerHour": 12.488115412593073,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 60,
+		"clueTier": "Elite",
+		"cluesPerHour": 4.625063331249143,
+		"kibblePerHour": 11.562658328122856,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 50,
+		"clueTier": "Elite",
+		"cluesPerHour": 4.384362554237376,
+		"kibblePerHour": 11.007548540425754,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 100,
+		"clueTier": "Grandmaster",
+		"cluesPerHour": 3.9504718475450207,
+		"kibblePerHour": 13.826651466407572,
+		"gmcPerHour": 3.9504718475450207
+	},
+	{
+		"supportLevel": 95,
+		"clueTier": "Grandmaster",
+		"cluesPerHour": 3.312421003031049,
+		"kibblePerHour": 11.640793810651973,
+		"gmcPerHour": 3.312421003031049
+	},
+	{
+		"supportLevel": 90,
+		"clueTier": "Grandmaster",
+		"cluesPerHour": 2.9081447623387744,
+		"kibblePerHour": 10.225412228868596,
+		"gmcPerHour": 2.9081447623387744
+	},
+	{
+		"supportLevel": 85,
+		"clueTier": "Grandmaster",
+		"cluesPerHour": 2.6316905248906752,
+		"kibblePerHour": 9.210916837117363,
+		"gmcPerHour": 2.6316905248906752
+	},
+	{
+		"supportLevel": 80,
+		"clueTier": "Grandmaster",
+		"cluesPerHour": 2.4326494616840426,
+		"kibblePerHour": 8.514273115894149,
+		"gmcPerHour": 2.4326494616840426
+	},
+	{
+		"supportLevel": 75,
+		"clueTier": "Grandmaster",
+		"cluesPerHour": 2.2839689829610363,
+		"kibblePerHour": 7.993891440363627,
+		"gmcPerHour": 2.2839689829610363
+	},
+	{
+		"supportLevel": 70,
+		"clueTier": "Grandmaster",
+		"cluesPerHour": 2.169824569421506,
+		"kibblePerHour": 7.641556092310521,
+		"gmcPerHour": 2.169824569421506
+	},
+	{
+		"supportLevel": 60,
+		"clueTier": "Grandmaster",
+		"cluesPerHour": 2.0090253070221173,
+		"kibblePerHour": 7.07942251045889,
+		"gmcPerHour": 2.0090253070221173
+	},
+	{
+		"supportLevel": 50,
+		"clueTier": "Grandmaster",
+		"cluesPerHour": 1.9044702386716488,
+		"kibblePerHour": 6.665645835350771,
+		"gmcPerHour": 1.9044702386716488
+	},
+	{
+		"supportLevel": 100,
+		"clueTier": "Hard",
+		"cluesPerHour": 10.185896468850641,
+		"kibblePerHour": 20.371792937701283,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 95,
+		"clueTier": "Hard",
+		"cluesPerHour": 8.540746205924354,
+		"kibblePerHour": 17.081492411848707,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 90,
+		"clueTier": "Hard",
+		"cluesPerHour": 7.49836050507578,
+		"kibblePerHour": 14.99672101015156,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 85,
+		"clueTier": "Hard",
+		"cluesPerHour": 6.785550825350715,
+		"kibblePerHour": 13.57110165070143,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 80,
+		"clueTier": "Hard",
+		"cluesPerHour": 6.272343435663635,
+		"kibblePerHour": 12.54468687132727,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 75,
+		"clueTier": "Hard",
+		"cluesPerHour": 5.888985763454814,
+		"kibblePerHour": 11.777971526909628,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 70,
+		"clueTier": "Hard",
+		"cluesPerHour": 5.59467569219089,
+		"kibblePerHour": 11.18935138438178,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 60,
+		"clueTier": "Hard",
+		"cluesPerHour": 5.18007093099904,
+		"kibblePerHour": 10.36014186199808,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 50,
+		"clueTier": "Hard",
+		"cluesPerHour": 4.910486059881576,
+		"kibblePerHour": 9.820972119763152,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 100,
+		"clueTier": "Master",
+		"cluesPerHour": 6.597083268431473,
+		"kibblePerHour": 19.79124980529442,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 95,
+		"clueTier": "Master",
+		"cluesPerHour": 5.531571378535039,
+		"kibblePerHour": 16.59471413560512,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 90,
+		"clueTier": "Master",
+		"cluesPerHour": 4.856451013001981,
+		"kibblePerHour": 14.569353039005941,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 85,
+		"clueTier": "Master",
+		"cluesPerHour": 4.394786816605779,
+		"kibblePerHour": 13.184360449817339,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 80,
+		"clueTier": "Master",
+		"cluesPerHour": 4.062398544225119,
+		"kibblePerHour": 12.187195632675358,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 75,
+		"clueTier": "Master",
+		"cluesPerHour": 3.8141098964445908,
+		"kibblePerHour": 11.442329689333771,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 70,
+		"clueTier": "Master",
+		"cluesPerHour": 3.6234946463769893,
+		"kibblePerHour": 10.870483939130967,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 60,
+		"clueTier": "Master",
+		"cluesPerHour": 3.3549682186656455,
+		"kibblePerHour": 10.064904655996937,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 50,
+		"clueTier": "Master",
+		"cluesPerHour": 3.1803665372434167,
+		"kibblePerHour": 9.541099611730251,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 100,
+		"clueTier": "Medium",
+		"cluesPerHour": 18.189101096778174,
+		"kibblePerHour": 27.329816876377357,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 95,
+		"clueTier": "Medium",
+		"cluesPerHour": 15.25133232840576,
+		"kibblePerHour": 22.923214651179563,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 90,
+		"clueTier": "Medium",
+		"cluesPerHour": 13.389929469957332,
+		"kibblePerHour": 20.13106637552206,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 85,
+		"clueTier": "Medium",
+		"cluesPerHour": 12.117055068469584,
+		"kibblePerHour": 18.221830904492425,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 80,
+		"clueTier": "Medium",
+		"cluesPerHour": 11.200613164145448,
+		"kibblePerHour": 16.847203271689846,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 75,
+		"clueTier": "Medium",
+		"cluesPerHour": 10.516046004961103,
+		"kibblePerHour": 15.820600184454754,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 70,
+		"clueTier": "Medium",
+		"cluesPerHour": 9.990492330074458,
+		"kibblePerHour": 14.985738495111688,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 60,
+		"clueTier": "Medium",
+		"cluesPerHour": 9.250126662498285,
+		"kibblePerHour": 13.875189993747428,
+		"gmcPerHour": 0
+	},
+	{
+		"supportLevel": 50,
+		"clueTier": "Medium",
+		"cluesPerHour": 8.768725108474753,
+		"kibblePerHour": 13.15308766271213,
+		"gmcPerHour": 0
+	}
+]

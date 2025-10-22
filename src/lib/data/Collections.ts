@@ -1,20 +1,11 @@
-import { SeedableRNG } from '@oldschoolgg/rng';
-import {
-	calcWhatPercent,
-	isObject,
-	notEmpty,
-	removeFromArr,
-	stringMatches,
-	sumArr,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { CollectionLog } from '@oldschoolgg/collectionlog';
+import { calcWhatPercent, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	ChambersOfXeric,
 	Clues,
 	EItem,
 	EMonster,
-	type Item,
 	type ItemBank,
 	ItemGroups,
 	type Monster,
@@ -65,6 +56,7 @@ import {
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
+	derangedArchaeologistCL,
 	diariesCL,
 	dukeSucellusCL,
 	type FormatProgressFunction,
@@ -266,6 +258,15 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.CrazyArchaeologist.allItems,
 				items: crazyArchaeologistCL,
 				fmtProg: kcProg(Monsters.CrazyArchaeologist)
+			},
+			'Deranged Archaeologist': {
+				alias: Monsters.DerangedArchaeologist.aliases,
+				allItems: Monsters.DerangedArchaeologist.allItems,
+				items: derangedArchaeologistCL,
+				fmtProg: kcProg(Monsters.DerangedArchaeologist)
+			},
+			'Doom of Mokhaiotl': {
+				items: CollectionLog.DoomofMokhaiotl.items
 			},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
@@ -582,6 +583,9 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
+			Yami: {
+				items: CollectionLog.Yami.items
+			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
@@ -782,6 +786,9 @@ export const allCollectionLogs: ICollection = {
 				items: uniqueArr([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL]),
 				isActivity: true,
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
+			},
+			'Scroll Cases': {
+				items: CollectionLog.ScrollCases.items
 			}
 		}
 	},
@@ -883,6 +890,9 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('mahogany_homes')
 			},
+			'Mastering Mixology': {
+				items: CollectionLog.MasteringMixology.items
+			},
 			'Pest Control': {
 				items: pestControlCL,
 				isActivity: true,
@@ -932,6 +942,9 @@ export const allCollectionLogs: ICollection = {
 				items: troubleBrewingCL,
 				isActivity: true,
 				fmtProg: mgProg('trouble_brewing')
+			},
+			'Vale Totems': {
+				items: CollectionLog.ValeTotems.items
 			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,
@@ -998,6 +1011,10 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.DemonicGorilla.name,
 				items: demonicGorillaCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
+			},
+			'Hunter Guild': {
+				unobtainable: true,
+				items: CollectionLog.HunterGuild.items
 			},
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
@@ -1258,44 +1275,35 @@ export const allDroppedItems = uniqueArr([
 		.flat(100)
 ]);
 
-export const allCLItems = uniqueArr(
+export const allCLItems = new Set(
 	Object.values(allCollectionLogs)
 		.map(e => Object.values(e.activities).map(a => a.items))
 		.flat(100)
 );
 
-export const allCLItemsFiltered = [
-	...new Set(
-		Object.values(allCollectionLogs)
-			.map(e =>
-				Object.values(e.activities)
-					.filter(f => f.counts === undefined)
-					.map(a => a.items)
-			)
-			.flat(100)
-	)
-];
+export const allCLItemsFiltered = new Set(
+	Object.values(allCollectionLogs)
+		.map(e =>
+			Object.values(e.activities)
+				.filter(f => f.counts === undefined)
+				.map(a => a.items)
+		)
+		.flat(100)
+);
 
-const overallPlusItems = [
-	...new Set(
-		Object.entries(allCollectionLogs)
-			.filter(i => i[0] !== 'Discontinued')
-			.map(e => Object.values(e[1].activities).map(a => a.items))
-			.flat(100)
-	)
-];
+const overallPlusItems = new Set(
+	Object.entries(allCollectionLogs)
+		.filter(i => i[0] !== 'Discontinued')
+		.map(e => Object.values(e[1].activities).map(a => a.items))
+		.flat(100)
+);
 
 export function calcCLDetails(user: MUser | Bank) {
-	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));
-	const debugBank = new Bank(clItems);
-	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
-	const seededRng = new SeedableRNG(Number(user instanceof Bank ? '1' : user.id));
-	const notOwned: number[] = seededRng.shuffle(allCLItemsFiltered.filter(i => !clItems.has(i))).slice(0, 10);
+	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.has(i.id));
+	const owned = clItems.filter(i => allCLItemsFiltered.has(i.id));
 	return {
-		percent: calcWhatPercent(owned.length, allCLItemsFiltered.length),
-		notOwned,
-		owned,
-		debugBank
+		percent: calcWhatPercent(owned.length, allCLItemsFiltered.size),
+		owned
 	};
 }
 
@@ -1307,13 +1315,11 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 			// Sort list by alphabetical order
 			const catEntries = Object.entries(entries.activities).sort((a, b) => 0 - (a > b ? -1 : 1));
 			for (const [activityName, attributes] of catEntries) {
-				let items: number[] = [];
-				if (allItems && attributes.allItems) {
-					items = [...new Set([...attributes.items, ...attributes.allItems])];
-				} else {
-					items = [...new Set(attributes.items)];
-				}
-				if (removeCoins && items.includes(EItem.COINS)) items.splice(items.indexOf(EItem.COINS), 1);
+				const items =
+					allItems && attributes.allItems
+						? new Set([...attributes.items, ...attributes.allItems])
+						: new Set<number>(attributes.items);
+				if (removeCoins) items.delete(EItem.COINS);
 				const [totalCl, userAmount] = getUserClData(userBank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
@@ -1326,9 +1332,9 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 function getBank(user: MUser, type: 'sacrifice' | 'bank' | 'collection' | 'temp', userStats: MUserStats | null) {
 	switch (type) {
 		case 'collection':
-			return new Bank(user.cl);
+			return user.cl;
 		case 'bank':
-			return new Bank(user.bankWithGP);
+			return user.bankWithGP;
 		case 'sacrifice':
 			if (!userStats) return new Bank();
 			return new Bank(userStats.sacrificedBank);
@@ -1351,15 +1357,15 @@ export function getCollectionItems(
 	allItems: boolean,
 	removeCoins: boolean,
 	returnResolvedCl: boolean
-): { resolvedCl: string; items: number[] };
-export function getCollectionItems(collection: string, allItems?: boolean, removeCoins?: boolean): number[];
+): { resolvedCl: string; items: Set<number> };
+export function getCollectionItems(collection: string, allItems?: boolean, removeCoins?: boolean): Set<number>;
 export function getCollectionItems(
 	collection: string,
 	allItems = false,
 	removeCoins = false,
 	returnResolvedCl?: boolean
-): { resolvedCl: string; items: number[] } | number[] {
-	const returnValue = (clName: string, items: number[]) => {
+): { resolvedCl: string; items: Set<number> } | Set<number> {
+	const returnValue = (clName: string, items: Set<number>) => {
 		return returnResolvedCl !== undefined ? { resolvedCl: clName.toLowerCase(), items } : items;
 	};
 	if (collection === 'overall+') {
@@ -1369,12 +1375,12 @@ export function getCollectionItems(
 		return returnValue('overall', allCLItemsFiltered);
 	}
 
-	let _items: number[] = [];
+	let _items: Set<number> = new Set();
 	let _clName = '';
 	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (stringMatches(category, collection) || entries.alias?.some(a => stringMatches(a, collection))) {
 			_clName = category;
-			_items = uniqueArr(
+			_items = new Set(
 				Object.values(entries.activities)
 					.map(e => [...new Set([...e.items, ...(allItems ? (e.allItems ?? []) : [])])])
 					.flat(2)
@@ -1385,30 +1391,31 @@ export function getCollectionItems(
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
 			if (stringMatches(activityName, collection) || attributes.alias?.find(a => stringMatches(a, collection))) {
 				_clName = activityName;
-				_items = [
-					...new Set([...attributes.items, ...(allItems && attributes.allItems ? attributes.allItems : [])])
-				];
+				_items = new Set([
+					...attributes.items,
+					...(allItems && attributes.allItems ? attributes.allItems : [])
+				]);
 				break loop;
 			}
 		}
 	}
 
-	if (_items.length === 0) {
+	if (_items.size === 0) {
 		const _monster = killableMonsters.find(m =>
 			[m.name, ...m.aliases].some(name => stringMatches(name, collection))
 		);
 		if (_monster) {
 			_clName = _monster.name;
-			_items = uniqueArr(Monsters.get(_monster?.id)!.allItems);
+			_items = new Set(Monsters.get(_monster?.id)!.allItems);
 		}
 	}
-	if (removeCoins && _items.includes(EItem.COINS)) _items = removeFromArr(_items, EItem.COINS);
+	if (removeCoins && _items.has(EItem.COINS)) _items.delete(EItem.COINS);
 	return returnValue(_clName, _items);
 }
 
-function getUserClData(userBank: Bank, clItems: number[]): [number, number] {
-	const owned = userBank.itemIDs.filter(i => clItems.includes(i));
-	return [clItems.length, owned.length];
+function getUserClData(userBank: Bank, clItems: Set<number>): [number, number] {
+	const owned = userBank.itemIDs.filter(i => clItems.has(i));
+	return [clItems.size, owned.length];
 }
 
 export const allClNames: string[] = [];
@@ -1435,12 +1442,12 @@ export async function getCollection(options: {
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
-	if (clItems.length >= 500) {
+	if (clItems.size >= 500) {
 		flags.missing = 'missing';
 	}
 
 	if (flags.missing) {
-		clItems = clItems.filter(i => !userCheckBank.has(i));
+		clItems = new Set(clItems.values().filter(i => !userCheckBank.has(i)));
 	}
 
 	const [totalCl, userAmount] = getUserClData(userCheckBank, clItems);
@@ -1453,7 +1460,8 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false
+			counts: false,
+			unobtainable: false
 		};
 	}
 	if (stringMatches(search, 'overall')) {
@@ -1464,7 +1472,8 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false
+			counts: false,
+			unobtainable: false
 		};
 	}
 
@@ -1480,7 +1489,8 @@ export async function getCollection(options: {
 				collectionTotal: totalCl,
 				leftList: getLeftList(userCheckBank, category, allItems, logType === 'sacrifice'),
 				userItems: userCheckBank,
-				counts: false
+				counts: false,
+				unobtainable: false
 			};
 		}
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
@@ -1525,7 +1535,8 @@ export async function getCollection(options: {
 						logType === 'sacrifice'
 					),
 					userItems: userCheckBank,
-					counts: attributes.counts ?? true
+					counts: attributes.counts ?? true,
+					unobtainable: attributes.unobtainable ?? false
 				};
 			}
 		}
@@ -1543,7 +1554,8 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false
+			counts: false,
+			unobtainable: false
 		};
 	}
 
@@ -1551,13 +1563,11 @@ export async function getCollection(options: {
 }
 
 export const allCollectionLogsFlat = Object.values(allCollectionLogs).flatMap(i =>
-	Object.entries(i.activities).map(entry => ({ ...entry[1], name: entry[0] }))
+	Object.entries(i.activities).map(entry => ({
+		...{ ...entry[1], items: new Set(entry[1].items), allItems: new Set(entry[1].allItems) },
+		name: entry[0]
+	}))
 );
-
-export function isCLItem(item: Item | number | [Item, number]): boolean {
-	if (Array.isArray(item)) return isCLItem(item[0]);
-	return allCLItemsFiltered.includes(isObject(item) ? item.id : item);
-}
 
 export const bossCLItems = Object.values({
 	...allCollectionLogs.Bosses.activities,
