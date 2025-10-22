@@ -18,16 +18,19 @@ test('Trade consistency', async () => {
 	}
 	users = await Promise.all(users);
 
-	function checkMatch() {
+	async function checkMatch() {
 		const expectedBank = bank.clone().multiply(NUMBER_OF_USERS);
 		const actualBank = new Bank();
-		for (const u of users) actualBank.add(u.bankWithGP);
+		for (const u of users) {
+			await u.sync();
+			actualBank.add(u.bankWithGP);
+		}
 		if (!actualBank.equals(expectedBank)) {
 			throw new Error(`Expected bank to match, difference: ${actualBank.difference(expectedBank)}`);
 		}
 	}
 
-	checkMatch();
+	await checkMatch();
 
 	const promises = [];
 
@@ -68,9 +71,9 @@ test('Trade consistency', async () => {
 			promises.push(tradeCommand.run(options));
 		}
 
-		checkMatch();
+		await checkMatch();
 		await Promise.all(promises);
-		checkMatch();
+		await checkMatch();
 		expect(
 			await global.prisma!.economyTransaction.count({
 				where: {
