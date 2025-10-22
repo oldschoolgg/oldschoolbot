@@ -23,7 +23,7 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 
 export async function abstractedOpenUntilCommand(
 	interaction: MInteraction,
-	userID: string,
+	user: MUser,
 	name: string,
 	openUntilItem: string,
 	result_quantity?: number
@@ -38,7 +38,6 @@ export async function abstractedOpenUntilCommand(
 		return 'The quantity must be a positive integer.';
 	}
 
-	const user = await mUserFetch(userID);
 	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');

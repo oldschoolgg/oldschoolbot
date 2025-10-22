@@ -55,12 +55,10 @@ export const tradeCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ interaction, userID, guildID, options, user }) => {
+	run: async ({ interaction, user: senderUser, guildID, options }) => {
 		await interaction.defer();
 
 		if (!guildID) return 'You can only run this in a server.';
-		const senderUser = await mUserFetch(userID);
-		const senderAPIUser = user;
 		const recipientUser = await mUserFetch(options.user.user.id);
 		const recipientAPIUser = options.user.user;
 
@@ -155,7 +153,7 @@ Both parties must click confirm to make the trade.`,
 			files.push({ attachment: Buffer.from(receivedFull), name: 'items_received.txt' });
 		}
 
-		const content = `${senderAPIUser.username} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
+		const content = `${senderUser.username} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
 			recipientAPIUser
 		)} in return for ${formatBankForDisplay(itemsReceived)}.
 

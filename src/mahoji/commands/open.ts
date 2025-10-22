@@ -74,7 +74,7 @@ export const openCommand = defineCommand({
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(
 				interaction,
-				user.id,
+				user,
 				options.name,
 				options.open_until,
 				options.result_quantity
