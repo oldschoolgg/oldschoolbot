@@ -615,7 +615,7 @@ export async function handleTripFinish(
 		// Minion daily button if ready
 		if (!user.bitfield.includes(BitField.DisableDailyButton)) {
 			const last = Number(last_daily_timestamp);
-			const ready = last <= 0 || Date.now() - last >= Time.Hour * 12;
+			const ready = last <= 0 || Date.now() - last >= Time.Hour * 4;
 
 			if (ready) {
 				components.push(makeClaimDailyButton());
