@@ -73,6 +73,7 @@ export const tickers: {
 	startupWait?: number;
 	interval: number;
 	timer: NodeJS.Timeout | null;
+	productionOnly?: true;
 	cb: () => Promise<unknown>;
 }[] = [
 	{
@@ -124,8 +125,8 @@ export const tickers: {
 		startupWait: Time.Minute,
 		interval: Time.Minute * 3.5,
 		timer: null,
+		productionOnly: true,
 		cb: async () => {
-			if (!globalConfig.isProduction) return;
 			const basePlantTime = 1_626_556_507_451;
 			const now = Date.now();
 			const users = await prisma.user.findMany({
@@ -236,8 +237,8 @@ export const tickers: {
 		timer: null,
 		startupWait: Time.Second * 22,
 		interval: Time.Minute * 20,
+		productionOnly: true,
 		cb: async () => {
-			if (!globalConfig.isProduction) return;
 			const guild = getSupportGuild();
 			const channel = guild?.channels.cache.get(Channel.HelpAndSupport) as TextChannel | undefined;
 			if (!channel) return;
@@ -261,8 +262,8 @@ export const tickers: {
 		startupWait: Time.Second * 19,
 		timer: null,
 		interval: Time.Minute * 20,
+		productionOnly: true,
 		cb: async () => {
-			if (!globalConfig.isProduction) return;
 			const guild = getSupportGuild();
 			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel | undefined;
 			if (!channel) return;
@@ -302,9 +303,10 @@ export const tickers: {
 		startupWait: Time.Minute * 10,
 		timer: null,
 		interval: Time.Minute * 33.33,
+
+		productionOnly: true,
 		cb: async () => {
 			const users = await fetchUsersWithoutUsernames();
-			if (process.env.TEST) return;
 			for (const { id } of users) {
 				const djsUser = await globalClient.users.fetch(id).catch(() => null);
 				if (!djsUser) {
@@ -356,6 +358,7 @@ export const tickers: {
 export function initTickers() {
 	for (const ticker of tickers) {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
+		if (ticker.productionOnly && !globalConfig.isProduction) continue;
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
