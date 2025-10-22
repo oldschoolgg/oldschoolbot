@@ -10,10 +10,12 @@ import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 
+import { analyticsTick } from '@/lib/analytics.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
 import { fetchUsersWithoutUsernames } from '@/lib/rawSql.js';
@@ -351,6 +353,47 @@ export const tickers: {
 		interval: Time.Minute * 10,
 		cb: async () => {
 			await syncBlacklists();
+		}
+	},
+	{
+		name: 'Analytics',
+		timer: null,
+		interval: Time.Hour * 4.44,
+		startupWait: Time.Minute * 30,
+		cb: async () => {
+			await analyticsTick();
+		}
+	},
+	{
+		name: 'Presence Update',
+		timer: null,
+		interval: Time.Hour * 8.44,
+		cb: async () => {
+			globalClient.user?.setActivity('/help');
+		}
+	},
+	{
+		name: 'Economy Item Snapshot',
+		timer: null,
+		startupWait: Time.Minute * 20,
+		interval: Time.Hour * 6.55,
+		cb: async () => {
+			await prisma.$queryRawUnsafe(`INSERT INTO economy_item
+SELECT item_id::integer, SUM(qty)::bigint FROM
+(
+    SELECT id, (jdata).key AS item_id, (jdata).value::text::bigint AS qty FROM (select id, json_each(bank) AS jdata FROM users) AS banks
+)
+AS DATA
+GROUP BY item_id;`);
+		}
+	},
+	{
+		name: 'Cache G.E Prices',
+		timer: null,
+		interval: Time.Hour * 12.55,
+		startupWait: Time.Minute * 25,
+		cb: async () => {
+			await cacheGEPrices();
 		}
 	}
 ];

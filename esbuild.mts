@@ -9,7 +9,6 @@ const external = [
 	'@prisma/robochimp',
 	'dotenv',
 	'micromatch',
-	'node-cron',
 	'piscina',
 	'node:*',
 	'pglite-prisma-adapter',
