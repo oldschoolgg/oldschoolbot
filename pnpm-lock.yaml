@@ -111,7 +111,7 @@ importers:
         version: 2.2.4
       '@hono/node-ws':
         specifier: ^1.2.0
-        version: 1.2.0(@hono/node-server@1.19.5(hono@4.9.10))(bufferutil@4.0.9)(hono@4.9.10)
+        version: 1.2.0(@hono/node-server@1.19.5(hono@4.10.2))(bufferutil@4.0.9)(hono@4.10.2)
       '@types/luxon':
         specifier: ^3.7.1
         version: 3.7.1
@@ -246,7 +246,7 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.5
-        version: 1.19.5(hono@4.9.10)
+        version: 1.19.5(hono@4.10.2)
       '@octokit/graphql':
         specifier: ^8.1.1
         version: 8.2.2
@@ -269,8 +269,8 @@ importers:
         specifier: 16.5.0
         version: 16.5.0
       hono:
-        specifier: ^4.9.10
-        version: 4.9.10
+        specifier: ^4.10.2
+        version: 4.10.2
       oldschooljs:
         specifier: workspace:*
         version: link:../oldschooljs
@@ -2644,8 +2644,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.9.10:
-    resolution: {integrity: sha512-AlI15ijFyKTXR7eHo7QK7OR4RoKIedZvBuRjO8iy4zrxvlY5oFCdiRG/V/lFJHCNXJ0k72ATgnyzx8Yqa5arug==}
+  hono@4.10.2:
+    resolution: {integrity: sha512-p6fyzl+mQo6uhESLxbF5WlBOAJMDh36PljwlKtP5V1v09NxlqGru3ShK+4wKhSuhuYf8qxMmrivHOa/M7q0sMg==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -3916,6 +3916,7 @@ packages:
   sitemap@8.0.0:
     resolution: {integrity: sha512-+AbdxhM9kJsHtruUF39bwS/B0Fytw6Fr1o4ZAIAEqA6cke2xcoO2GleBw9Zw7nRzILVEgz7zBM5GiTJjie1G9A==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
+    deprecated: 'SECURITY: Multiple vulnerabilities fixed in 8.0.1 (XML injection, path traversal, command injection, protocol injection). Upgrade immediately: npm install sitemap@8.0.1'
     hasBin: true
 
   skia-canvas@3.0.7:
@@ -5308,14 +5309,14 @@ snapshots:
     dependencies:
       '@expressive-code/core': 0.41.3
 
-  '@hono/node-server@1.19.5(hono@4.9.10)':
+  '@hono/node-server@1.19.5(hono@4.10.2)':
     dependencies:
-      hono: 4.9.10
+      hono: 4.10.2
 
-  '@hono/node-ws@1.2.0(@hono/node-server@1.19.5(hono@4.9.10))(bufferutil@4.0.9)(hono@4.9.10)':
+  '@hono/node-ws@1.2.0(@hono/node-server@1.19.5(hono@4.10.2))(bufferutil@4.0.9)(hono@4.10.2)':
     dependencies:
-      '@hono/node-server': 1.19.5(hono@4.9.10)
-      hono: 4.9.10
+      '@hono/node-server': 1.19.5(hono@4.10.2)
+      hono: 4.10.2
       ws: 8.18.3(bufferutil@4.0.9)
     transitivePeerDependencies:
       - bufferutil
@@ -7283,7 +7284,7 @@ snapshots:
 
   he@1.2.0: {}
 
-  hono@4.9.10: {}
+  hono@4.10.2: {}
 
   hookable@5.5.3: {}
 
