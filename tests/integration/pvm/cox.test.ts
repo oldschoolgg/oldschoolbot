@@ -36,21 +36,15 @@ test('CoX ', async () => {
 			.toJSON()
 	});
 	await user.equip('melee', resolveItems(['Scythe of vitur']));
-	const res = await user.runCommand(
-		raidCommand,
-		{
-			cox: {
-				start: {
-					type: 'fakemass',
-					max_team_size: 5
-				}
+	const res = await user.runCmdAndTrip(raidCommand, {
+		cox: {
+			start: {
+				type: 'fakemass',
+				max_team_size: 5
 			}
-		},
-		true
-	);
-	expect(res).toContain('the total trip will take');
-	await user.runActivity();
-	await user.sync();
+		}
+	});
+	expect(res.commandResult).toContain('the total trip will take');
 	expect(user.bank.amount('Scythe of vitur (uncharged)')).toBe(1);
 	expect(user.bank.amount('Scythe of vitur')).toBe(0);
 	expect(user.gear.melee.weapon?.item).toBeUndefined();

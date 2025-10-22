@@ -6,6 +6,7 @@ import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
+import type { DegradeableItem } from '@/lib/degradeableItems.js';
 import type { AnyCommand } from '@/lib/discord/index.js';
 import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
 import { MUserClass } from '../../src/lib/MUser.js';
@@ -285,6 +286,20 @@ export class TestUser extends MUserClass {
 		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
 
+	async giveCharges(type: DegradeableItem['settingsKey'], charges: number) {
+		await this.update({
+			[type]: charges
+		});
+		return this;
+	}
+
+	async runCmdAndTrip(command: AnyCommand, options: object = {}) {
+		const commandResult = await this.runCommand(command, options, true);
+		const activityResult = await this.runActivity();
+		await this.sync();
+		return { commandResult, activityResult };
+	}
+
 	async runCommand(command: AnyCommand, options: object = {}, syncAfter = false) {
 		await this.sync();
 		const mockedInt = mockInteraction({ user: this });
@@ -365,6 +380,7 @@ export async function mockUser(
 		bank: Bank;
 		QP: number;
 		maxed: boolean;
+		levels: Partial<Record<SkillNameType, number>>;
 	}> = {}
 ) {
 	const rangeGear = new Gear();
@@ -403,6 +419,9 @@ export async function mockUser(
 		venator_bow_charges: options.venatorBowCharges,
 		QP: options.QP
 	});
+	for (const [skill, level] of Object.entries(options.levels ?? {})) {
+		await user.update({ [`skills_${skill}`]: convertLVLtoXP(level) });
+	}
 	if (options.maxed) {
 		await user.max();
 	}
