@@ -373,6 +373,13 @@ export const NightmareMonster: KillableMonster = {
 
 export default killableMonsters;
 
+type EffectiveMonster = {
+	id: number;
+	name: string;
+	aliases: string[];
+	emoji?: string;
+};
+
 export const effectiveMonsters = [
 	...killableMonsters,
 	NightmareMonster,
@@ -390,8 +397,13 @@ export const effectiveMonsters = [
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
 	{ name: 'Mimic', aliases: ['mimic'], id: 23_184, emoji: '<:Tangleroot:324127378978635778>' },
 	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
+	{
+		name: "Phosani's Nightmare",
+		aliases: ['phosani', 'phosanis nightmare'],
+		id: EMonster.PHOSANI_NIGHTMARE
+	},
 	...bsoEffectiveMonsters
-];
+] satisfies EffectiveMonster[];
 
 export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));
 

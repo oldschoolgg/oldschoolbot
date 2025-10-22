@@ -173,6 +173,9 @@ describe('BSO PVM', async () => {
 
 	it(
 		'should use ori',
+		{
+			retry: 1
+		},
 		async () => {
 			const user = await client.mockUser({
 				QP: 300,
@@ -184,9 +187,6 @@ describe('BSO PVM', async () => {
 			const result = await user.kill(EMonster.MAN, { quantity: 10 });
 			expect(result.commandResult).toContain('is now killing 10x');
 			expect(user.bank.amount('Bones')).toBeGreaterThan(10);
-		},
-		{
-			retry: 1
 		}
 	);
 

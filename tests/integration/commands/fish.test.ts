@@ -80,16 +80,19 @@ describe('Fish Command', async () => {
 
 	it('should handle using flakes without flakes in bank', async () => {
 		const user = await createTestUser();
-		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true });
-		expect(res).toEqual('You need to have at least one Spirit flake!');
+		const res = await user.runCmdAndTrip(fishCommand, { name: 'shrimps', flakes: true });
+		expect(res.commandResult).toEqual('You need to have at least one Spirit flake!');
 	});
 
 	it('should fish with flakes', async () => {
 		const user = await createTestUser();
 		await user.update({ bank: new Bank({ 'Spirit flakes': 100 }) });
-		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true, quantity: 50 });
-		expect(res).toContain('is now fishing 50x Shrimps');
-		await user.runActivity();
+		const { commandResult } = await user.runCmdAndTrip(fishCommand, {
+			name: 'shrimps',
+			flakes: true,
+			quantity: 50
+		});
+		expect(commandResult).toContain('is now fishing 50x Shrimps');
 		expect(user.bank.amount('Raw shrimps')).toBeGreaterThan(50);
 		expect(user.bank.amount('Spirit flakes')).toEqual(50);
 	});
@@ -104,9 +107,8 @@ describe('Fish Command', async () => {
 	it('should use fishing bait', async () => {
 		const user = await createTestUser();
 		await user.update({ skills_fishing: 100_000, bank: new Bank({ 'Fishing bait': 100 }) });
-		const res = await user.runCommand(fishCommand, { name: 'sardine', quantity: 50 });
-		expect(res).toContain('is now fishing 50x Sardine');
-		await user.runActivity();
+		const { commandResult } = await user.runCmdAndTrip(fishCommand, { name: 'sardine', quantity: 50 });
+		expect(commandResult).toContain('is now fishing 50x Sardine');
 		expect(user.bank.amount('Fishing bait')).toEqual(50);
 		expect(user.bank.amount('Raw sardine')).toEqual(50);
 		expect(user.skillsAsXP.fishing).toEqual(100_000 + 50 * 20 * XP_MULTIPLIER);
@@ -124,9 +126,8 @@ describe('Fish Command', async () => {
 		await user.equip('skilling', ItemGroups.anglerOutfit);
 		const startingXP = convertLVLtoXP(80);
 		await user.update({ skills_fishing: startingXP });
-		const res = await user.runCommand(fishCommand, { name: 'lobster', quantity: 50 });
-		expect(res).toContain('is now fishing 50x Lobster');
-		await user.runActivity();
+		const { commandResult } = await user.runCmdAndTrip(fishCommand, { name: 'lobster', quantity: 50 });
+		expect(commandResult).toContain('is now fishing 50x Lobster');
 		expect(user.bank.amount('Raw lobster')).toEqual(50);
 		const xpToReceive = 50 * 90 * XP_MULTIPLIER;
 		const xpWithAnglerBoost = increaseNumByPercent(xpToReceive, 2.5);

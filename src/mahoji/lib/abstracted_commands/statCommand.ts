@@ -9,7 +9,7 @@ import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { Emoji, formatDuration, PerkTier, stringMatches, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { Bank, type ItemBank, Items, type Monster, Monsters, type SkillsScore, TOBRooms, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, type Monster, Monsters, type SkillsScore, toKMB } from 'oldschooljs';
 
 import type { activity_type_enum, UserStats } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -541,19 +541,11 @@ GROUP BY type;`);
 		name: 'Personal Monster KC',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { id: number; kc: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT (data->>'mi')::int as id, SUM((data->>'q')::int)::int AS kc
-FROM activity
-WHERE completed = true
-AND user_id = ${BigInt(user.id)}
-AND type = 'MonsterKilling'
-AND data IS NOT NULL
-AND data::text != '{}'
-GROUP BY data->>'mi';`);
-			const dataPoints: [string, number][] = result
-				.sort((a, b) => b.kc - a.kc)
+			const monsterScores = (await user.fetchMStats()).monsterScores;
+			const dataPoints: [string, number][] = Object.entries(monsterScores)
+				.sort((a, b) => b[1] - a[1])
 				.slice(0, 30)
-				.map(i => [killableMonsters.find(mon => mon.id === i.id)?.name ?? i.id.toString(), i.kc]);
+				.map(i => [killableMonsters.find(mon => mon.id === Number(i))?.name ?? i[0].toString(), i[1]]);
 			return makeResponseForBuffer(
 				await createChart({
 					title: "Your Monster KC's",
@@ -684,55 +676,6 @@ GROUP BY mins;`);
 				`**First Cape:** ${completedAt ? `After ${completedAt} attempts` : 'Never'}
 **Extra Capes:** ${postFirstCapeCompletions}
 **Total Time Spent in Inferno:** ${formatDuration(sumArr(activities.map(i => i.duration)))}`
-			);
-		}
-	},
-	{
-		name: 'Personal TOB Wipes',
-		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
-			const result: { wiped_room: number; count: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
-FROM activity
-WHERE type = 'TheatreOfBlood'
-AND completed = true
-AND data->>'wipedRoom' IS NOT NULL
-AND user_id = ${BigInt(user.id)}
-OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
-GROUP BY 1;`);
-			if (result.length === 0) {
-				return { content: "You haven't wiped in any Theatre of Blood raids yet." };
-			}
-
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Personal TOB Deaths',
-					format: 'kmb',
-					values: result.map(i => [TOBRooms[i.wiped_room].name, i.count]),
-					type: 'bar'
-				})
-			);
-		}
-	},
-	{
-		name: 'Global TOB Wipes',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result: { wiped_room: number; count: number }[] =
-				await prisma.$queryRaw`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
-FROM activity
-WHERE type = 'TheatreOfBlood'
-AND completed = true
-AND data->>'wipedRoom' IS NOT NULL
-GROUP BY 1;`;
-
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Global TOB Deaths',
-					format: 'kmb',
-					values: result.map(i => [TOBRooms[i.wiped_room].name, i.count]),
-					type: 'bar'
-				})
 			);
 		}
 	},

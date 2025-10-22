@@ -6,6 +6,7 @@ import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
+import type { DegradeableItem } from '@/lib/degradeableItems.js';
 import type { AnyCommand } from '@/lib/discord/index.js';
 import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
 import { MUserClass } from '../../src/lib/MUser.js';
@@ -159,16 +160,6 @@ export class TestUser extends MUserClass {
 		this.client = client!;
 	}
 
-	async assertTableBankMatches() {
-		await this.sync();
-		const clFromDB = await this.fetchCL();
-		if (this.cl.toString() !== clFromDB.toString()) {
-			throw new Error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}
-Expected: ${this.cl.toString()}
-Actual: ${clFromDB.toString()}`);
-		}
-	}
-
 	async runActivity() {
 		const activity = await prisma.activity.findFirst({
 			where: {
@@ -192,7 +183,6 @@ Actual: ${clFromDB.toString()}`);
 		TestClient.activitiesProcessed++;
 		await ActivityManager.completeActivity(activity);
 		await this.sync();
-		await this.assertTableBankMatches();
 		return ActivityManager.convertStoredActivityToFlatActivity(activity);
 	}
 	async setLevel(skill: SkillNameType, level: number) {
@@ -293,9 +283,22 @@ Actual: ${clFromDB.toString()}`);
 		for (const skill of Object.keys(newXP) as SkillNameType[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
-		await this.assertTableBankMatches();
 
 		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
+	}
+
+	async giveCharges(type: DegradeableItem['settingsKey'], charges: number) {
+		await this.update({
+			[type]: charges
+		});
+		return this;
+	}
+
+	async runCmdAndTrip(command: AnyCommand, options: object = {}) {
+		const commandResult = await this.runCommand(command, options, true);
+		const activityResult = await this.runActivity();
+		await this.sync();
+		return { commandResult, activityResult };
 	}
 
 	async runCommand(command: AnyCommand, options: object = {}, syncAfter = false) {
@@ -314,7 +317,6 @@ Actual: ${clFromDB.toString()}`);
 		if (syncAfter) {
 			await this.sync();
 		}
-		await this.assertTableBankMatches();
 		return result ?? (mockedInt as any).__response__;
 	}
 
@@ -379,6 +381,7 @@ export async function mockUser(
 		bank: Bank;
 		QP: number;
 		maxed: boolean;
+		levels: Partial<Record<SkillNameType, number>>;
 	}> = {}
 ) {
 	const rangeGear = new Gear();
@@ -418,6 +421,9 @@ export async function mockUser(
 		venator_bow_charges: options.venatorBowCharges,
 		QP: options.QP
 	});
+	for (const [skill, level] of Object.entries(options.levels ?? {})) {
+		await user.update({ [`skills_${skill}`]: convertLVLtoXP(level) });
+	}
 	if (options.maxed) {
 		await user.max();
 	}

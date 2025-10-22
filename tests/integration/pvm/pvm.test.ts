@@ -19,9 +19,8 @@ describe('PVM', async () => {
 			skills_strength: convertLVLtoXP(70),
 			QP: 100
 		});
-		const res = await user.runCommand(minionKCommand, { name: 'general graardor' });
-		expect(res).toContain('now killing');
-		await user.runActivity();
+		const { commandResult } = await user.runCmdAndTrip(minionKCommand, { name: 'general graardor' });
+		expect(commandResult).toContain('now killing');
 		const kc = await user.getKC(EMonster.GENERAL_GRAARDOR);
 		expect(kc).toEqual(9);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -35,9 +34,8 @@ describe('PVM', async () => {
 			venatorBowCharges: 1000,
 			slayerLevel: 70
 		});
-		const res = await user.runCommand(minionKCommand, { name: 'bloodveld' }, true);
-		expect(res).toContain('now killing');
-		await user.runActivity();
+		const { commandResult } = await user.runCmdAndTrip(minionKCommand, { name: 'bloodveld' });
+		expect(commandResult).toContain('now killing');
 		const kc = await user.getKC(EMonster.BLOODVELD);
 		expect(kc).toBeGreaterThan(0);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -66,9 +64,8 @@ describe('PVM', async () => {
 				skipped: false
 			}
 		});
-		const res = await user.runCommand(minionKCommand, { name: 'bloodveld' }, true);
-		expect(res).toContain('now killing');
-		await user.runActivity();
+		const { commandResult } = await user.runCmdAndTrip(minionKCommand, { name: 'bloodveld' });
+		expect(commandResult).toContain('now killing');
 		const kc = await user.getKC(EMonster.BLOODVELD);
 		expect(kc).toBeGreaterThan(0);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);

@@ -101,7 +101,10 @@ class GeImageGeneratorSingleton {
 
 		const maxWidth = progressShadowImage.width;
 		ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
-		let percentFullfilled = calcWhatPercent(listing.quantity_remaining, listing.total_quantity);
+		let percentFullfilled = calcWhatPercent(
+			listing.total_quantity - listing.quantity_remaining,
+			listing.total_quantity
+		);
 		if (listing.type === 'Sell') {
 			percentFullfilled = 100 - percentFullfilled;
 		}

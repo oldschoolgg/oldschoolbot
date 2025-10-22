@@ -616,13 +616,7 @@ export const activitiesCommand = defineCommand({
 			);
 		}
 		if (options.puro_puro) {
-			return puroPuroStartCommand(
-				user,
-				channelID,
-				options.puro_puro.impling,
-				options.puro_puro.dark_lure,
-				undefined
-			);
+			return puroPuroStartCommand(user, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
 		}
 		if (options.cast) {
 			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);

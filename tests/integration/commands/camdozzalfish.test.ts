@@ -12,14 +12,13 @@ describe('Camdozzal Fish Command', async () => {
 		await user.equip('skilling', ItemGroups.anglerOutfit);
 		const startingXP = convertLVLtoXP(80);
 		await user.update({ skills_fishing: startingXP, QP: 100 });
-		const res = await user.runCommand(activitiesCommand, {
+		const res = await user.runCmdAndTrip(activitiesCommand, {
 			camdozaal: {
 				action: 'fishing',
 				quantity: 50
 			}
 		});
-		expect(res).toContain('is now fishing in');
-		await user.runActivity();
+		expect(res.commandResult).toContain('is now fishing in');
 		expect(user.bank.amount('Raw guppy')).toBeGreaterThan(0);
 		const expectedXpGained = Fishing.camdozaalFishes.reduce((acc, fish) => {
 			return acc + fish.xp * user.bank.amount(fish.id);
