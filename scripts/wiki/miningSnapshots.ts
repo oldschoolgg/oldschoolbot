@@ -1,3 +1,4 @@
+import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
 import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
@@ -75,7 +76,8 @@ function main() {
 							gearBank,
 							duration: trip.duration,
 							isPowermining,
-							hasFinishedCOTS
+							hasFinishedCOTS,
+							rng: MathRNG
 						});
 						result.updateBank.itemLootBank.remove('Rock golem', 1000);
 						result.updateBank.itemLootBank.remove('Loop half of key (moon key)', 1000);

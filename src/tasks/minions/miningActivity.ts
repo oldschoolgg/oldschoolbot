@@ -18,7 +18,8 @@ export function determineMiningResult({
 	gearBank,
 	duration,
 	isPowermining,
-	hasFinishedCOTS
+	hasFinishedCOTS,
+	rng
 }: {
 	ore: Ore;
 	quantity: number;
@@ -26,6 +27,7 @@ export function determineMiningResult({
 	duration: number;
 	isPowermining: boolean;
 	hasFinishedCOTS: boolean;
+	rng: RNGProvider;
 }) {
 	const miningLvl = gearBank.skillsAsLevels.mining;
 	let bonusXP = 0;
@@ -127,7 +129,7 @@ export function determineMiningResult({
 	}
 
 	if (ore.name === 'Runite ore') {
-		rollForMoonKeyHalf({ user: hasFinishedCOTS, duration, loot: updateBank.itemLootBank });
+		rollForMoonKeyHalf({ user: hasFinishedCOTS, duration, loot: updateBank.itemLootBank, rng });
 	}
 
 	return {
@@ -139,7 +141,7 @@ export function determineMiningResult({
 
 export const miningTask: MinionTask = {
 	type: 'Mining',
-	async run(data: MiningActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: MiningActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { oreID, channelID, duration, powermine } = data;
 		const { quantity } = data;
 
@@ -150,7 +152,8 @@ export const miningTask: MinionTask = {
 			gearBank: user.gearBank,
 			duration,
 			isPowermining: powermine,
-			hasFinishedCOTS: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)
+			hasFinishedCOTS: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun),
+			rng
 		});
 
 		const updateResult = await updateBank.transact(user);

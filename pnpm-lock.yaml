@@ -300,6 +300,9 @@ importers:
 
   packages/toolkit:
     dependencies:
+      '@oldschoolgg/rng':
+        specifier: workspace:*
+        version: link:../rng
       decimal.js:
         specifier: ^10.6.0
         version: 10.6.0
