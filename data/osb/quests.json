@@ -123,6 +123,25 @@
 		}
 	},
 	{
+		"id": 15,
+		"qp": 2,
+		"name": "Shadows of Custodia",
+		"prerequisites_quests": [3],
+		"combat_level_req": 50,
+		"skill_reqs": {
+			"slayer": 54,
+			"fishing": 45,
+			"construction": 41,
+			"hunter": 36
+		},
+		"skills_rewards": {
+			"slayer": 10000,
+			"hunter": 4000,
+			"fishing": 3000,
+			"construction": 3000
+		}
+	},
+	{
 		"id": 14,
 		"qp": 2,
 		"name": "The Curse of Arrav",

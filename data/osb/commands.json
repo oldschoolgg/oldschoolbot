@@ -1,6 +1,6 @@
 {
-	"hash": "3e2ca1bb1ddbc0329ad4685d0fec3606",
-	"date": "2025-10-03T21:42:36.761Z",
+	"hash": "5097aa6f1f823f6e80b86d656c3e01e5",
+	"date": "2025-10-04T20:26:09.889Z",
 	"data": [
 		{
 			"name": "activities",
@@ -356,6 +356,7 @@
 				"tears_of_guthix",
 				"temple_trek",
 				"trouble_brewing",
+				"vale_totems",
 				"volcanic_mine"
 			]
 		},
