@@ -78,9 +78,9 @@ class CollectionLogTask {
 
 			_canvas.drawSquare(1, index * ITEM_HEIGHT, _canvas.width, ITEM_HEIGHT, color);
 
-			const fullCLObject = allCollectionLogsFlat.find(_cl => _cl.name === clPageName)!;
+			const fullCLObject = allCollectionLogsFlat.find(_cl => _cl.name === clPageName);
 			let textColor = colors[status];
-			if ('unobtainable' in fullCLObject && fullCLObject.unobtainable) {
+			if (fullCLObject?.unobtainable) {
 				textColor = this.COLORS.GRAY;
 			}
 			_canvas.drawText({
