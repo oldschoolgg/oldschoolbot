@@ -46,6 +46,12 @@
 		]
 	},
 	{
+		"name": "Bale of flax",
+		"id": 31045,
+		"opened_item": "Bale of flax",
+		"all_items": ["Flax"]
+	},
+	{
 		"name": "Bird nest",
 		"id": 5070,
 		"opened_item": "Bird nest",

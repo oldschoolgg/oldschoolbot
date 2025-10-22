@@ -69,6 +69,8 @@ const FrozenCacheTable = new LootTable()
 	.add('Spirit seed', 1, 2)
 	.add('Rune sword');
 
+const BaleOfFlax = new LootTable().add('Flax', 25);
+
 interface OpenArgs {
 	quantity: number;
 	user: MUser;
@@ -507,6 +509,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['frozen cache'],
 		output: FrozenCacheTable,
 		allItems: FrozenCacheTable.allItems
+	},
+	{
+		name: 'Bale of flax',
+		id: itemID('Bale of flax'),
+		openedItem: Items.getOrThrow('Bale of flax'),
+		aliases: ['bale of flax', 'flax bale', 'bale flax'],
+		output: BaleOfFlax,
+		allItems: BaleOfFlax.allItems
 	},
 	...clueOpenables,
 	...osjsOpenables,

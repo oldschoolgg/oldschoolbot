@@ -31,7 +31,8 @@ export enum QuestID {
 	MeatAndGreet = 11,
 	EthicallyAcquiredAntiquities = 12,
 	WhileGuthixSleeps = 13,
-	TheCurseOfArrav = 14
+	TheCurseOfArrav = 14,
+	ShadowsOfCustodia = 15
 }
 
 export const quests: Quest[] = [
@@ -350,6 +351,32 @@ export const quests: Quest[] = [
 			let duration = Time.Minute * 20;
 			if (user.combatLevel < 105) {
 				duration += Time.Minute * 5;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID.ShadowsOfCustodia,
+		qp: 2,
+		name: 'Shadows of Custodia',
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		combatLevelReq: 50,
+		skillReqs: {
+			slayer: 54,
+			fishing: 45,
+			construction: 41,
+			hunter: 36
+		},
+		skillsRewards: {
+			slayer: 10000,
+			hunter: 4000,
+			fishing: 3000,
+			construction: 3000
+		},
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 18;
+			if (user.combatLevel < 65) {
+				duration += Time.Minute * 3;
 			}
 			return duration;
 		}

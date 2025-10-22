@@ -135,6 +135,8 @@ model ClientStorage {
   ourania_loot                 Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  vt_cost                      Json     @default("{}") @db.Json
+  vt_loot                      Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -531,6 +533,7 @@ model Minigame {
   wintertodt              Int    @default(0)
   tempoross               Int    @default(0)
   sepulchre               Int    @default(0)
+  vale_totems             Int    @default(0)
   fishing_trawler         Int    @default(0)
   barb_assault            Int    @default(0)
   pyramid_plunder         Int    @default(0)
@@ -715,6 +718,8 @@ model UserStats {
   firecapes_sacrificed     Int @default(0)
   tithe_farms_completed    Int @default(0)
   tithe_farm_points        Int @default(0)
+  vale_offerings           Int @default(0)
+  vale_research_points     Int @default(0)
   pest_control_points      Int @default(0)
   inferno_attempts         Int @default(0)
   infernal_cape_sacrifices Int @default(0)
@@ -875,6 +880,7 @@ enum activity_type_enum {
   Butler
   Nightmare
   Sepulchre
+  ValeTotems
   Plunder
   FishingTrawler
   Zalcano
