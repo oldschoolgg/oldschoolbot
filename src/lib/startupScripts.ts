@@ -163,7 +163,7 @@ ON ge_transaction (sell_listing_id, created_at DESC);`
 });
 
 startupScripts.push({
-	sql: `CREATE INDEX CONCURRENTLY IF NOT EXISTS ge_listing_lookup_idx
+	sql: `CREATE INDEX IF NOT EXISTS ge_listing_lookup_idx
 ON ge_listing (user_id, userfacing_id)
 WHERE cancelled_at IS NULL
   AND fulfilled_at IS NULL
