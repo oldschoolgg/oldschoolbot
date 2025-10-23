@@ -171,7 +171,7 @@ WHERE cancelled_at IS NULL
 });
 
 startupScripts.push({
-	sql: `CREATE INDEX users_clarray_gin ON users USING gin (cl_array gin__int_ops);`
+	sql: `CREATE INDEX IF NOT EXISTS users_clarray_gin ON users USING gin (cl_array gin__int_ops);`
 });
 
 export async function runStartupScripts() {
