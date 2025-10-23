@@ -5,7 +5,6 @@ import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/val
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 interface TotemDecoration {
 	log: Item;
@@ -20,7 +19,7 @@ interface TotemDecoration {
 export async function valeTotemsStartCommand(
 	user: MUser,
 	channelID: string,
-	itemToFletch: string | undefined,
+	itemToFletch: string | number | undefined,
 	staminaPot?: boolean | undefined
 ) {
 	if (user.minionIsBusy) {
@@ -43,10 +42,15 @@ export async function valeTotemsStartCommand(
 		return `${user.minionName} have to select an item to fletch during Vale Totems.`;
 	}
 
-	const fletchableItem = Items.getOrThrow(itemToFletch);
+	const fletchableItem = Items.getItem(itemToFletch);
+	if (!fletchableItem) {
+		return `That is not a valid item.`;
+	}
 
 	const decoration = ValeTotemsDecorations.find(i => i.item.id === fletchableItem.id);
-	if (!decoration) return `Internal error: ${itemToFletch} not found`;
+	if (!decoration) {
+		return `That is not a valid item to use for Vale Totems minigame.`;
+	}
 
 	const userBank = user.bank;
 	const logType = decoration.log;
@@ -61,10 +65,8 @@ export async function valeTotemsStartCommand(
 		return `${user.minionName} needs ${decoration.level} Fletching to fletch ${decoration.item.name}.`;
 	}
 
-	let staminaPotItem: Item | undefined;
 	if (staminaPot) {
-		staminaPotItem = Items.getOrThrow(EItem.STAMINA_POTION4);
-		if (userBank.amount(staminaPotItem) < 1) return `${user.minionName} doesn't own: ${staminaPotItem.name}.`;
+		if (userBank.amount(EItem.STAMINA_POTION4) < 1) return `${user.minionName} doesn't own: Stamina Potion(4).`;
 	}
 
 	const AVG_TIME_PER_LAP = 258 * Time.Second;
@@ -87,12 +89,8 @@ export async function valeTotemsStartCommand(
 
 	let timePerLap = AVG_TIME_PER_LAP;
 
-	let stringItem: Item | undefined;
-
 	if (decoration.stringing) {
-		stringItem = Items.getOrThrow('Bow string');
-
-		if (userBank.amount(stringItem.id) < STRINGS_PER_LAP)
+		if (userBank.amount(EItem.BOW_STRING) < STRINGS_PER_LAP)
 			return `${user.minionName} need at least ${STRINGS_PER_LAP} Bow strings to fletch ${decoration.item.name}!`;
 		if (!user.hasEquippedOrInBank(itemID('Bow string spool'))) {
 			timePerLap += STRING_NO_SPOOL_PENALTY;
@@ -101,7 +99,7 @@ export async function valeTotemsStartCommand(
 		}
 	}
 
-	const maxTripLength = calcMaxTripLength(user);
+	const maxTripLength = Time.Hour * 8; //user.calcMaxTripLength('ValeTotems');
 
 	if (!user.hasGracefulEquipped()) {
 		timePerLap += NO_GRACEFUL_PENALTY;
@@ -109,15 +107,14 @@ export async function valeTotemsStartCommand(
 		messages.push(`-${formatDuration(NO_GRACEFUL_PENALTY)} for having Graceful equipped`);
 	}
 
-	if (!user.hasEquippedOrInBank(itemID('Fletching knife'))) {
+	if (!user.hasEquippedOrInBank(EItem.FLETCHING_KNIFE)) {
 		timePerLap += FLETCHING_KNIFE_PENALTY;
 	} else {
 		messages.push(`-${formatDuration(FLETCHING_KNIFE_PENALTY)} for Fletching knife`);
 	}
 
 	const agilityLevel = user.skillLevel('agility');
-	const hasBasket =
-		user.hasEquippedOrInBank(itemID('Log basket')) || user.hasEquippedOrInBank(itemID('Forestry basket'));
+	const hasBasket = user.hasEquippedOrInBank(EItem.LOG_BASKET) || user.hasEquippedOrInBank(EItem.FORESTRY_BASKET);
 
 	if (!hasBasket) {
 		timePerLap += NO_LOG_BASKET_PENALTY;
@@ -157,8 +154,8 @@ export async function valeTotemsStartCommand(
 
 	const limits = [Math.floor(logsOwned / logCostLap), Math.floor(maxTripLength / timePerLap)];
 
-	if (stringItem) {
-		limits.push(Math.floor(userBank.amount(stringItem.id) / STRINGS_PER_LAP));
+	if (decoration.stringing) {
+		limits.push(Math.floor(userBank.amount(EItem.BOW_STRING) / STRINGS_PER_LAP));
 	}
 
 	const laps = Math.min(...limits);
@@ -167,10 +164,10 @@ export async function valeTotemsStartCommand(
 	const fletchingXp = laps * decoration.xpPerLap;
 
 	// Offering boost for "stepping on the ent trails"
-	const boost = Math.min((await user.fetchMinigameScore('vale_totems')) / 100, 10);
+	const boost = Math.min((await user.fetchMinigameScore('vale_totems')) / 10000, 0.1);
 
 	if (boost > 0) {
-		messages.push(`+${boost}% to offerings for minion learning`);
+		messages.push(`+${(boost * 100).toFixed(2)}% to offerings for minion learning`);
 	}
 
 	const totalOfferings = Math.floor(laps * decoration.offerings * (1 + boost));
@@ -179,10 +176,10 @@ export async function valeTotemsStartCommand(
 	cost.add(logType.id, logCost);
 	if (decoration.stringing) {
 		const stringCost = STRINGS_PER_LAP * laps;
-		cost.add(stringItem!.id, stringCost);
+		cost.add(EItem.BOW_STRING, stringCost);
 	}
 	if (staminaPot) {
-		cost.add(staminaPotItem);
+		cost.add(EItem.STAMINA_POTION4);
 	}
 
 	await user.removeItemsFromBank(cost);
@@ -197,8 +194,8 @@ export async function valeTotemsStartCommand(
 		channelID: channelID.toString(),
 		minigameID: 'vale_totems',
 		quantity: laps,
-		logName: logType.name,
-		itemName: fletchableItem.name,
+		logId: logType.id,
+		itemId: fletchableItem.id,
 		staminaPot: staminaPot
 	});
 
@@ -213,7 +210,11 @@ export async function valeTotemsStartCommand(
 	return str;
 }
 
-const groups = [
+const groups: {
+	log: string;
+	items: [string, number, number, boolean, number?][];
+	offerings: number;
+}[] = [
 	{
 		log: 'Oak logs',
 		items: [
@@ -248,7 +249,7 @@ const groups = [
 			['Maple shield', 57, 11792, false, 72],
 			['Maple stock', 54, 9088, false]
 		],
-		offerings: 320
+		offerings: 840
 	},
 	{
 		log: 'Yew logs',
@@ -286,13 +287,13 @@ const groups = [
 // Per lap basis
 export const ValeTotemsDecorations: TotemDecoration[] = groups.flatMap(({ log, items, offerings }) =>
 	items.map(([itemName, level, xp, stringing, amount = 40]) => ({
-		log: Items.getOrThrow(log as string),
-		logAmount: amount as number,
-		item: Items.getOrThrow(itemName as string),
-		level: level as number,
-		xpPerLap: xp as number,
-		offerings: offerings as number,
-		stringing: stringing as boolean
+		log: Items.getOrThrow(log),
+		logAmount: amount,
+		item: Items.getOrThrow(itemName),
+		level: level,
+		xpPerLap: xp,
+		offerings: offerings,
+		stringing: stringing
 	}))
 );
 
@@ -390,7 +391,7 @@ export async function valeTotemsSellCommand(
 		}`;
 	}
 
-	if (!user.isIronman && sellable.name === 'Greenman mask') {
+	if (!user.isIronman && sellable.id === EItem.GREENMAN_MASK) {
 		return `${user.minionName} is not an ironman. Only Ironman can sell Greenman masks to Vale Research Exchange.`;
 	}
 
@@ -407,7 +408,7 @@ export async function valeTotemsSellCommand(
 	});
 
 	await user.transactItems({
-		itemsToRemove: shopItem.output.multiply(quantity)
+		itemsToRemove: shopItem.output.clone().multiply(quantity)
 	});
 
 	return `${user.minionName} successfully sold **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n\n${user.minionName} now has ${newPoints} Vale Research points.`;

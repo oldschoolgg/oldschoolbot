@@ -1,6 +1,6 @@
-import { Bank, LootTable } from 'oldschooljs';
+import { LootTable } from 'oldschooljs';
 
-import { birdsNestID, valeOfferingNests } from '@/lib/simulation/birdsNest.js';
+import { birdsNestID, eggNest, ringNests, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
 
 const clueTiers: [string, number][] = [
 	['beginner', 256],
@@ -120,6 +120,12 @@ const dirtyArrowTableLevel90Plus = new LootTable()
 	.add('Rune arrowtips', 1, 45)
 	.add('Dragon arrowtips', 1, 23);
 
+const valeOfferingNests = new LootTable()
+	.every(birdsNestID)
+	.add(treeSeedsNest, 1, 66)
+	.add(ringNests, 1, 33)
+	.add(eggNest, 1, 1);
+
 export const preRollTable = new LootTable()
 	.add('Bow string spool', 1, 5)
 	.add('Fletching knife', 1, 3)
@@ -127,17 +133,17 @@ export const preRollTable = new LootTable()
 
 const offeringsTable = (forestryKit: boolean) => {
 	const table = new LootTable()
-		.add('Dirty arrowtips', [26, 32], 16)
-		.add('Ent branch', 1, 13)
-		.add('Bale of flax', [5, 6], 10)
-		.add('Blessed bone shards', [70, 90], 7)
-		.add('Feather', [400, 500], 3)
-		.add('Yew roots', [3, 4], 2)
-		.add('Magic roots', [2, 3], 2)
-		.add('Willow roots', [3, 4], 1)
-		.add('Maple roots', [3, 4], 1);
+		.add('Dirty arrowtips', [26, 32], 161)
+		.add('Ent branch', 1, 130)
+		.add('Bale of flax', [5, 6], 100)
+		.add('Blessed bone shards', [70, 90], 70)
+		.add('Feather', [400, 500], 50)
+		.add('Yew roots', [3, 4], 14)
+		.add('Magic roots', [2, 3], 14)
+		.add('Willow roots', [3, 4], 10)
+		.add('Maple roots', [3, 4], 10);
 
-	if (forestryKit) table.add('Anima-infused bark', [70, 90], 5);
+	if (forestryKit) table.add('Anima-infused bark', [70, 90], 50);
 
 	clueTiers.forEach(([tier, rate]) => {
 		table.tertiary(rate, createClueNest(tier));
@@ -146,8 +152,7 @@ const offeringsTable = (forestryKit: boolean) => {
 	return table;
 };
 
-export function rummageOfferings(fletchLvl: number, forestryKit: boolean): Bank {
-	const loot = new Bank();
+export function createRummageOfferingsTable(fletchLvl: number, forestryKit: boolean): LootTable {
 	const lootTable = new LootTable();
 
 	lootTable.add(offeringsTable(forestryKit));
@@ -163,16 +168,12 @@ export function rummageOfferings(fletchLvl: number, forestryKit: boolean): Bank 
 	const [, [seedTable, nestQty]] = lootByLevel.find(([maxLvl]) => fletchLvl < maxLvl)!;
 
 	lootTable.add(seedTable, 1, 11);
-	lootTable.add(valeOfferingNests, nestQty, 10);
+	lootTable.add(valeOfferingNests, nestQty, 5);
 
-	loot.add(lootTable.roll());
-
-	return loot;
+	return lootTable;
 }
 
-export function cleanDirtyArrows(fletchLvl: number): Bank {
-	const loot = new Bank();
-
+export function createCleanDirtyArrowsTable(fletchLvl: number): LootTable {
 	const tableByLevel: [number, LootTable][] = [
 		[50, dirtyArrowTableLevelUnder50],
 		[65, dirtyArrowTableLevelUnder65],
@@ -183,7 +184,5 @@ export function cleanDirtyArrows(fletchLvl: number): Bank {
 
 	const selectedTable = tableByLevel.find(([maxLvl]) => fletchLvl < maxLvl)![1];
 
-	loot.add(selectedTable.roll());
-
-	return loot;
+	return selectedTable;
 }

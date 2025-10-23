@@ -419,8 +419,8 @@ export interface ValeTotemsActivityTaskOptions extends MinigameActivityTaskOptio
 	type: 'ValeTotems';
 	offerings: number;
 	fletchXp: number;
-	logName: string;
-	itemName: string;
+	logId: number;
+	itemId: number;
 	staminaPot: boolean | undefined;
 }
 

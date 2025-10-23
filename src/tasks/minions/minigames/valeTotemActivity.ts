@@ -1,8 +1,12 @@
 import { roll } from '@oldschoolgg/rng';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import { cleanDirtyArrows, preRollTable, rummageOfferings } from '@/lib/minions/data/valeTotems.js';
+import {
+	createCleanDirtyArrowsTable,
+	createRummageOfferingsTable,
+	preRollTable
+} from '@/lib/minions/data/valeTotems.js';
 import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
@@ -27,27 +31,29 @@ export const valeTotemsTask: MinionTask = {
 		});
 
 		const fletchingLvl = user.skillLevel('fletching');
-		const hasForestryKit = user.hasEquippedOrInBank('Forestry kit');
+		const hasForestryKit = user.hasEquippedOrInBank(EItem.FORESTRY_KIT);
 
 		const loot = new Bank();
+		const lootTable = createRummageOfferingsTable(fletchingLvl, hasForestryKit);
+
 		for (let i = 0; i < rewards; i++) {
 			if (roll(100)) {
 				loot.add(preRollTable.roll());
 				continue;
 			}
-			loot.add(rummageOfferings(fletchingLvl, hasForestryKit));
+			loot.add(lootTable.roll());
 		}
 
 		// Dirty arrowtips and it's logic
-		const DIRTY_ARROWTIPS_ID = 31047;
-		const hasDirtyArrowtips = loot.has(DIRTY_ARROWTIPS_ID);
+		const hasDirtyArrowtips = loot.has('Dirty arrowtips');
 		let dirtyArrowTipCount: number | undefined;
 
 		if (hasDirtyArrowtips) {
-			dirtyArrowTipCount = loot.amount(DIRTY_ARROWTIPS_ID);
-			loot.remove(DIRTY_ARROWTIPS_ID, dirtyArrowTipCount);
+			const dirtyArrowTipTable = createCleanDirtyArrowsTable(fletchingLvl);
+			dirtyArrowTipCount = loot.amount('Dirty arrowtips');
+			loot.remove('Dirty arrowtips', dirtyArrowTipCount);
 			for (let i = 0; i < dirtyArrowTipCount; i++) {
-				loot.add(cleanDirtyArrows(fletchingLvl));
+				loot.add(dirtyArrowTipTable.roll());
 			}
 		}
 

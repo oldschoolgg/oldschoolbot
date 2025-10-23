@@ -1115,11 +1115,7 @@ export const minigamesCommand = defineCommand({
 							name: 'item',
 							description: 'Item to buy using research points.',
 							required: true,
-							autocomplete: async (value: string) => {
-								return ValeTotemsBuyables.filter(i =>
-									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
-								).map(i => ({ name: i.name, value: i.name }));
-							}
+							choices: choicesOf(ValeTotemsBuyables.map(i => i.name))
 						},
 						{
 							type: 'Integer',
@@ -1140,11 +1136,7 @@ export const minigamesCommand = defineCommand({
 							name: 'item',
 							description: 'Item to sell using research points.',
 							required: true,
-							autocomplete: async (value: string) => {
-								return ValeTotemsSellables.filter(i =>
-									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
-								).map(i => ({ name: i.name, value: i.name }));
-							}
+							choices: choicesOf(ValeTotemsSellables.map(i => i.name))
 						},
 						{
 							type: 'Integer',
