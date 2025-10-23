@@ -140,3 +140,13 @@ test('CMB should not be in any boxes', () => {
 	expect(embTable.includes(itemID('Swanky boots'))).toEqual(false);
 	expect(umbTable.includes(itemID('Swanky boots'))).toEqual(false);
 });
+
+test('items should be in UMB only', () => {
+	const items = Items.resolveItems(['Giant ent pouch', 'Summoning master cape', 'Summoning cape']);
+
+	for (const id of items) {
+		expect(embTable.includes(id)).toEqual(false);
+		expect(tmbTable.includes(id)).toEqual(false);
+		expect(umbTable.includes(id)).toEqual(true);
+	}
+});

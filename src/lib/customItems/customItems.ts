@@ -13,6 +13,7 @@ import './dwarven.js';
 import './moktang.js';
 import './leagues.js';
 import './paintCans.js';
+import './summoning.js';
 
 import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs';
 

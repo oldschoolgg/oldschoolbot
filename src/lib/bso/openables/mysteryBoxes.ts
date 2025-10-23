@@ -25,6 +25,11 @@ for (const item of Items.values()) {
 		continue;
 	}
 
+	if (item.customItemData?.tags?.includes('IN_UMB')) {
+		umbTable.push(item.id);
+		continue;
+	}
+
 	if (
 		item.tradeable_on_ge ||
 		(Boolean(item.tradeable) && Boolean(item.equipable_by_player) && Boolean(item.equipment?.slot))

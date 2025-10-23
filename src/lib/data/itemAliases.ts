@@ -427,6 +427,7 @@ export interface CustomItemData {
 	isDiscontinued?: true;
 	superTradeableButTradeableOnGE?: true;
 	isSecret?: true;
+	tags?: ('SUMMONING' | 'IN_UMB')[];
 }
 declare module 'oldschooljs' {
 	interface Item {

@@ -1,6 +1,5 @@
-import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
+import { deepMerge, replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
 import type { DeepPartial } from '@sapphire/utilities';
-import deepMerge from 'deepmerge';
 import { type Item, type ItemRequirements, Items, itemNameMap } from 'oldschooljs';
 
 export const customPrices: Record<number, number> = [];

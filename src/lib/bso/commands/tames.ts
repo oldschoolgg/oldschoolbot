@@ -31,9 +31,9 @@ import {
 	notEmpty,
 	reduceNumByPercent,
 	stringMatches,
-	Time
+	Time,
+	toTitleCase
 } from '@oldschoolgg/toolkit';
-import { toTitleCase } from '@sapphire/utilities';
 import { bold, time } from 'discord.js';
 import { Bank, EItem, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
