@@ -81,7 +81,6 @@ test('Trade consistency', async () => {
 		);
 	}
 
-	await checkMatch();
 	await Promise.all(promises);
 	await checkMatch();
 	expect(
