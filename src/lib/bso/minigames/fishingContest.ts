@@ -1,4 +1,4 @@
-import { randArrItem, SeedableRNG } from '@oldschoolgg/rng';
+import { MathRNG, randArrItem, SeedableRNG } from '@oldschoolgg/rng';
 import { averageArr, calcPercentOfNum, gaussianRandom, toTitleCase } from '@oldschoolgg/toolkit';
 import { type Item, Items } from 'oldschooljs';
 
@@ -318,8 +318,8 @@ export async function catchFishAtLocation({ user, location }: { user: MUser; loc
 	const otherSkillAverage = averageArr([user.skillsAsLevels.agility, user.skillsAsLevels.strength]);
 	maxLength -= (100 - Math.min(99, otherSkillAverage + 1)) / 5;
 
-	const lengthCentimetres = gaussianRandom(minLength, maxLength, 8);
-	const weightGrams = lengthCentimetres * gaussianRandom(50, 150, 6);
+	const lengthCentimetres = gaussianRandom(MathRNG, minLength, maxLength, 8);
+	const weightGrams = lengthCentimetres * gaussianRandom(MathRNG, 50, 150, 6);
 	const name = randArrItem(location.allFishNames);
 
 	return {

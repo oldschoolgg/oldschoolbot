@@ -1,6 +1,6 @@
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames/tames.js';
 
-import { randArrItem, roll } from '@oldschoolgg/rng';
+import { MathRNG, randArrItem, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, gaussianRandom, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -50,10 +50,10 @@ export async function generateNewTame(user: MUser, species: Species) {
 				species.shinyVariant && roll(shinyChance) ? species.shinyVariant : randArrItem(species.variants),
 			max_total_loot: {},
 			fed_items: {},
-			max_support_level: gaussianRandom(minSup, maxSup, 2),
-			max_gatherer_level: gaussianRandom(minGath, maxGath, 2),
-			max_artisan_level: gaussianRandom(minArt, maxArt, 2),
-			max_combat_level: gaussianRandom(minCmbt, maxCmbt, 2),
+			max_support_level: gaussianRandom(MathRNG, minSup, maxSup, 2),
+			max_gatherer_level: gaussianRandom(MathRNG, minGath, maxGath, 2),
+			max_artisan_level: gaussianRandom(MathRNG, minArt, maxArt, 2),
+			max_combat_level: gaussianRandom(MathRNG, minCmbt, maxCmbt, 2),
 			nickname: makeTameNickname(species)
 		}
 	});

@@ -3,7 +3,6 @@ import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { getUsersFishingContestDetails } from '@/lib/bso/minigames/fishingContest.js';
 import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
-import { roll } from '@oldschoolgg/rng';
 import { Emoji, makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
@@ -63,12 +62,6 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 		getUsersFishingContestDetails(user),
 		isUsersDailyReady(user)
 	]);
-
-	if (user.user.cached_networth_value === null || roll(100)) {
-		await user.update({
-			cached_networth_value: (await user.calculateNetWorth()).value
-		});
-	}
 
 	if (!user.hasMinion) {
 		return {

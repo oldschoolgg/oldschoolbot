@@ -71,7 +71,7 @@ export const openCommand = defineCommand({
 		}
 		options.quantity = clamp(options.quantity ?? 1, { min: 1, max: 100_000_000 });
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(user.id, options.name, options.open_until, options.disable_pets);
+			return abstractedOpenUntilCommand(user, options.name, options.open_until, options.disable_pets);
 		}
 		if (options.name.toLowerCase() === 'all') {
 			return abstractedOpenCommand(interaction, user, ['all'], 'auto', false);

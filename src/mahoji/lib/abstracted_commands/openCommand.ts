@@ -26,12 +26,11 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 	});
 
 export async function abstractedOpenUntilCommand(
-	userID: string,
+	user: MUser,
 	name: string,
 	openUntilItem: string,
 	disable_pets: boolean | undefined
 ) {
-	const user = await mUserFetch(userID);
 	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');

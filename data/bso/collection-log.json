@@ -1109,6 +1109,7 @@
 				"items": ["Steel ring"]
 			},
 			"doom_of_mokhaiotl": {
+				"unobtainable": true,
 				"items": [
 					"Avernic treads",
 					"Demon tear",
@@ -2862,6 +2863,7 @@
 				]
 			},
 			"yami": {
+				"unobtainable": true,
 				"items": [
 					"Barrel of demonic tallow (full)",
 					"Chasm teleport scroll",
@@ -6742,6 +6744,7 @@
 				"is_activity": true
 			},
 			"scroll_cases": {
+				"unobtainable": true,
 				"items": [
 					"Major beginner scroll case",
 					"Major easy scroll case",
@@ -7045,6 +7048,7 @@
 				"is_activity": true
 			},
 			"mastering_mixology": {
+				"unobtainable": true,
 				"items": [
 					"Alchemist gloves",
 					"Alchemist labcoat",
@@ -7157,6 +7161,7 @@
 				"is_activity": true
 			},
 			"vale_totems": {
+				"unobtainable": true,
 				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask"]
 			},
 			"volcanic_mine": {

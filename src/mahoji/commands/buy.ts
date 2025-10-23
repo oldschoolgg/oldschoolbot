@@ -44,8 +44,7 @@ export const buyCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, userID, interaction, channelID }) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, interaction, channelID }) => {
 		const { name } = options;
 		let quantity: number | null = mahojiParseNumber({ input: options.quantity, min: 1 });
 

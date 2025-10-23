@@ -1,4 +1,4 @@
-import { randInt } from '../util/chanceTemporary.js';
+import { MathRNG } from '@oldschoolgg/rng';
 
 export interface SimpleTableItem<T> {
 	item: T;
@@ -44,7 +44,7 @@ export class SimpleTable<T> {
 
 	public roll(): SimpleTableItem<T>['item'] | null {
 		// Random number between 1 and the total weighting
-		const randomWeight = randInt(1, this.totalWeight);
+		const randomWeight = MathRNG.randInt(1, this.totalWeight);
 
 		// The index of the item that will be used.
 		let result = -1;

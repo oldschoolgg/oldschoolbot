@@ -378,6 +378,7 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: kcProg(Monsters.DerangedArchaeologist)
 			},
 			'Doom of Mokhaiotl': {
+				unobtainable: true,
 				items: CollectionLog.DoomofMokhaiotl.items
 			},
 			'Dagannoth Kings': {
@@ -703,6 +704,7 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: mgProg('wintertodt')
 			},
 			Yami: {
+				unobtainable: true,
 				items: CollectionLog.Yami.items
 			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
@@ -1132,6 +1134,7 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
 			},
 			'Scroll Cases': {
+				unobtainable: true,
 				items: CollectionLog.ScrollCases.items
 			}
 		}
@@ -1235,6 +1238,7 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: mgProg('mahogany_homes')
 			},
 			'Mastering Mixology': {
+				unobtainable: true,
 				items: CollectionLog.MasteringMixology.items
 			},
 			'Pest Control': {
@@ -1288,6 +1292,7 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: mgProg('trouble_brewing')
 			},
 			'Vale Totems': {
+				unobtainable: true,
 				items: CollectionLog.ValeTotems.items
 			},
 			'Volcanic Mine': {

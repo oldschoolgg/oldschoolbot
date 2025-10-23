@@ -1,8 +1,8 @@
 import { doHalloweenTickOnUser, HalloweenEvent2025 } from '@/lib/bso/halloween.js';
 
-import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, MessageFlags } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Bank, convertLVLtoXP, type ItemBank, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
 import { type Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
@@ -36,7 +36,6 @@ import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.j
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
-import { testBotKvStore } from '@/testing/TestBotStore.js';
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
@@ -761,68 +760,6 @@ ${halloweenEvent.trick_or_treaters_seen} trick or treaters in total.`;
 						});
 						return 'Your bingo start date has been set to this moment, so it has just started.';
 					}
-				}
-
-				if (options.get_code) {
-					const existingCode = testBotKvStore.get(`user.${user.id}.code`);
-
-					let finalCode = existingCode;
-					if (!existingCode) {
-						const words = [
-							'monkey',
-							'chicken',
-							'bandos',
-							'nex',
-							'cow',
-							'dragon',
-							'bronze',
-							'goblin',
-							'zamorak',
-							'saradomin',
-							'armadyl',
-							'kraken',
-							'swan',
-							'wildy',
-							'slayer',
-							'agility',
-							'cooking',
-							'fishing',
-							'mining',
-							'smithing',
-							'runecraft',
-							'crafting',
-							'prayer',
-							'fletching',
-							'farming',
-							'herblore',
-							'hunter',
-							'magic',
-							'attack',
-							'strength',
-							'defence',
-							'ranged',
-							'hitpoints',
-							'ahrim',
-							'guthans',
-							'torags',
-							'veracs',
-							'inferno',
-							'jad',
-							'crystal',
-							'torva',
-							'dharoks'
-						];
-						const newCode = `${randArrItem(words)}${randInt(0, 9)}`;
-						testBotKvStore.set(`user.${user.id}.code`, newCode);
-						finalCode = newCode;
-					}
-
-					return {
-						content: `Your secret code for the dashboard is: \`${finalCode}\` - do not share with anyone.
-
-Warning: Visiting a test dashboard may let developers see your IP address. Attempting to abuse a test dashboard may result in a ban.`,
-						flags: [MessageFlags.Ephemeral]
-					};
 				}
 
 				if (options.set) {
