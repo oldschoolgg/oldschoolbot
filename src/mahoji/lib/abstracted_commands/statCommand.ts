@@ -5,11 +5,12 @@ import {
 	calculateTiarasMade,
 	calculateXPSources
 } from '@/lib/bso/leagues/stats.js';
+import { getAllAlternateMonsters } from '@/lib/bso/skills/slayer/getAllAlternateMonsters.js';
 import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { Emoji, formatDuration, PerkTier, stringMatches, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { Bank, type ItemBank, Items, type Monster, Monsters, type SkillsScore, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, Monsters, type SkillsScore, toKMB } from 'oldschooljs';
 
 import type { activity_type_enum, UserStats } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -25,7 +26,6 @@ import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { ForestryEvents } from '@/lib/skilling/skills/woodcutting/forestry.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { getCommonTaskName, getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
-import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';
 import { sorts } from '@/lib/sorts.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
 import { createChart } from '@/lib/util/chart.js';
@@ -33,15 +33,6 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { getUsername } from '@/lib/util.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-
-export function getAllAlternateMonsters(options: { monster: Monster }): Monster[];
-export function getAllAlternateMonsters(options: { monsterId: number }): number[];
-export function getAllAlternateMonsters(options: { monster: Monster } | { monsterId: number }) {
-	const useMonster = 'monster' in options;
-	const monsterId = useMonster ? options.monster.id : options.monsterId;
-	const monsters = allSlayerTasks.map(task => (task.monsters.includes(monsterId) ? task.monsters : [])).flat(2);
-	return useMonster ? Monsters.filter(m => monsters.includes(m.id)).map(m => m) : monsters;
-}
 
 interface DataPiece {
 	name: string;

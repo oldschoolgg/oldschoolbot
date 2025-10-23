@@ -740,7 +740,7 @@ export async function checkDOATeam(users: MUser[], challengeMode: boolean, quant
 	return checkedUsers;
 }
 
-export async function doaCheckCommand(user: MUser) {
+async function doaCheckCommand(user: MUser) {
 	const result = await checkDOAUser({ user, challengeMode: false, duration: Time.Hour, quantity: 1 });
 	if (typeof result === 'string') {
 		return `🔴 You aren't able to join a Depths of Atlantis raid, address these issues first: ${result}`;
