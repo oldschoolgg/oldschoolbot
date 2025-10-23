@@ -14,6 +14,7 @@ interface TotemDecoration {
 	xpPerLap: number;
 	offerings: number;
 	stringing: boolean;
+	secondsPerLap: number;
 }
 
 export async function valeTotemsStartCommand(
@@ -69,7 +70,7 @@ export async function valeTotemsStartCommand(
 		if (userBank.amount(EItem.STAMINA_POTION4) < 1) return `${user.minionName} doesn't own: Stamina Potion(4).`;
 	}
 
-	const AVG_TIME_PER_LAP = 258 * Time.Second;
+	const AVG_TIME_PER_LAP = decoration.secondsPerLap * Time.Second;
 	const NO_SHORTCUT_PENALTY = 10 * Time.Second;
 	const NO_GRACEFUL_PENALTY = 30 * Time.Second;
 	const NO_LOG_BASKET_PENALTY = 10 * Time.Second;
@@ -214,6 +215,7 @@ const groups: {
 	log: string;
 	items: [string, number, number, boolean, number?][];
 	offerings: number;
+	secondsPerLap: number;
 }[] = [
 	{
 		log: 'Oak logs',
@@ -225,7 +227,8 @@ const groups: {
 			['Oak shield', 27, 3648, false, 72],
 			['Oak stock', 24, 2560, false]
 		],
-		offerings: 160
+		offerings: 160,
+		secondsPerLap: 230
 	},
 	{
 		log: 'Willow logs',
@@ -237,7 +240,8 @@ const groups: {
 			['Willow shield', 42, 7696, false, 72],
 			['Willow stock', 39, 5744, false]
 		],
-		offerings: 240
+		offerings: 240,
+		secondsPerLap: 230
 	},
 	{
 		log: 'Maple logs',
@@ -249,7 +253,8 @@ const groups: {
 			['Maple shield', 57, 11792, false, 72],
 			['Maple stock', 54, 9088, false]
 		],
-		offerings: 320
+		offerings: 320,
+		secondsPerLap: 230
 	},
 	{
 		log: 'Yew logs',
@@ -261,7 +266,8 @@ const groups: {
 			['Yew shield', 72, 17856, false, 72],
 			['Yew stock', 69, 14656, false]
 		],
-		offerings: 520
+		offerings: 520,
+		secondsPerLap: 245
 	},
 	{
 		log: 'Magic logs',
@@ -273,7 +279,8 @@ const groups: {
 			['Magic shield', 87, 30688, false, 72],
 			['Magic stock', 78, 27072, false]
 		],
-		offerings: 720
+		offerings: 720,
+		secondsPerLap: 290
 	},
 	{
 		log: 'Redwood logs',
@@ -281,19 +288,21 @@ const groups: {
 			['Redwood hiking staff', 90, 30640, false],
 			['Redwood shield', 92, 37216, false, 72]
 		],
-		offerings: 840
+		offerings: 840,
+		secondsPerLap: 330
 	}
 ];
 // Per lap basis
-export const ValeTotemsDecorations: TotemDecoration[] = groups.flatMap(({ log, items, offerings }) =>
+export const ValeTotemsDecorations: TotemDecoration[] = groups.flatMap(({ log, items, offerings, secondsPerLap }) =>
 	items.map(([itemName, level, xp, stringing, amount = 40]) => ({
 		log: Items.getOrThrow(log),
 		logAmount: amount,
 		item: Items.getOrThrow(itemName),
 		level: level,
 		xpPerLap: xp,
-		offerings: offerings,
-		stringing: stringing
+		offerings,
+		stringing,
+		secondsPerLap
 	}))
 );
 
