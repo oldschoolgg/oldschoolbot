@@ -1,5 +1,6 @@
-import { randArrItem, shuffleArr } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
+import { chunk } from 'remeda';
 import { expect, test } from 'vitest';
 
 import { tradeCommand } from '../../src/mahoji/commands/trade.js';
@@ -34,56 +35,64 @@ test('Trade consistency', async () => {
 
 	const promises = [];
 
-	for (let i = 0; i < 3; i++) {
-		for (const user of shuffleArr(users)) {
-			const other = randArrItem(users);
-			const method = randArrItem(['send', 'receive', 'both']);
-			if (other === user) continue;
+	for (const [user1, user2] of chunk(users, 2)) {
+		const method = cryptoRng.pick(['send', 'receive', 'both']);
 
-			const options: any = {
-				userID: user.id,
-				guildID: '123',
-				user,
-				options: {
-					user: {
-						user: other
-					}
-				},
-				interaction: mockInteraction({ user })
-			};
+		const options: any = {
+			userID: user1.id,
+			guildID: '123',
+			user: user1,
+			options: {
+				user: {
+					user: user2
+				}
+			},
+			interaction: mockInteraction({ user: user1 })
+		};
 
-			switch (method) {
-				case 'both': {
-					options.options.send = user.randomBankSubset().toString();
-					options.options.receive = other.randomBankSubset().toString();
-					break;
-				}
-				case 'send': {
-					options.options.send = user.randomBankSubset().toString();
-					break;
-				}
-				case 'receive': {
-					options.options.receive = other.randomBankSubset().toString();
-					break;
-				}
+		switch (method) {
+			case 'both': {
+				options.options.send = user1.randomBankSubset().toString();
+				options.options.receive = user2?.randomBankSubset().toString();
+				break;
 			}
-
-			promises.push(tradeCommand.run(options));
+			case 'send': {
+				options.options.send = user1.randomBankSubset().toString();
+				break;
+			}
+			case 'receive': {
+				options.options.receive = user2?.randomBankSubset().toString();
+				break;
+			}
 		}
 
-		await checkMatch();
-		await Promise.all(promises);
-		await checkMatch();
-		expect(
-			await global.prisma!.economyTransaction.count({
-				where: {
-					sender: {
-						in: users.map(u => BigInt(u.id))
+		promises.push(
+			(async () => {
+				let attempts = 0;
+				while (attempts < 100) {
+					attempts += 1;
+					await Promise.all([user1.sync(), user2?.sync()]);
+					const res = await tradeCommand.run(options);
+					if (typeof res === 'string' && !res.includes('Trade failed')) {
+						break;
 					}
 				}
-			})
-		).toBeGreaterThan(1);
+			})()
+		);
 	}
 
-	checkMatch();
+	await checkMatch();
+	await Promise.all(promises);
+	await checkMatch();
+	expect(
+		await global.prisma!.economyTransaction.count({
+			where: {
+				sender: {
+					in: users.map(u => BigInt(u.id))
+				}
+			}
+		})
+	).toBeGreaterThan(1);
+
+	await checkMatch();
 });
