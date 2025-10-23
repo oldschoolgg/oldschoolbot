@@ -99,7 +99,7 @@ export async function valeTotemsStartCommand(
 		}
 	}
 
-	const maxTripLength = Time.Hour * 8; //user.calcMaxTripLength('ValeTotems');
+	const maxTripLength = user.calcMaxTripLength('ValeTotems');
 
 	if (!user.hasGracefulEquipped()) {
 		timePerLap += NO_GRACEFUL_PENALTY;
@@ -249,7 +249,7 @@ const groups: {
 			['Maple shield', 57, 11792, false, 72],
 			['Maple stock', 54, 9088, false]
 		],
-		offerings: 840
+		offerings: 320
 	},
 	{
 		log: 'Yew logs',
