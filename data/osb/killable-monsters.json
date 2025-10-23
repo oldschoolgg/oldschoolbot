@@ -9701,13 +9701,11 @@
 			}
 		],
 		"level_requirements": {
-			"prayer": 77,
-			"attack": 90,
-			"strength": 90,
-			"defence": 90,
-			"magic": 90,
-			"ranged": 90,
-			"hitpoints": 95
+			"prayer": 70,
+			"attack": 80,
+			"strength": 80,
+			"defence": 70,
+			"magic": 82
 		},
 		"heal_amount_needed": 700,
 		"minimum_heal_amount": 300,

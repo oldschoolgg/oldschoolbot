@@ -1,3 +1,4 @@
+import { EItem } from '@/EItem.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
@@ -17,7 +18,7 @@ const DossierTable = new LootTable({ limit: 1740 })
 	.add('Contract of oathplate acquisition', 1, 13);
 
 export default new SimpleOpenable({
-	id: 30_803,
+	id: EItem.DOSSIER,
 	name: 'Dossier',
 	aliases: ['dossier'],
 	table: DossierTable

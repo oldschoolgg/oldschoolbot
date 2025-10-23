@@ -1,3 +1,4 @@
+import { EItem } from '@/EItem.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
@@ -14,7 +15,7 @@ const YamaSupplyDrop = new LootTable()
 
 const YamaTable = new LootTable()
 	.oneIn(120, YamaUniqueTable)
-	.oneIn(12, 'Dossier')
+	.oneIn(12, EItem.DOSSIER)
 	.oneIn(30, 'Forgotten lockbox')
 	.oneIn(15, 'Oathplate shards', 12)
 	.add(YamaSupplyDrop, 1, 15)

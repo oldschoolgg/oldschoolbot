@@ -1,4 +1,5 @@
 import Dossier from '@/simulation/openables/Dossier.js';
+import ForgottenLockbox from '@/simulation/openables/ForgottenLockbox.js';
 import { Collection } from '@/structures/Collection.js';
 import type Openable from '@/structures/Openable.js';
 import BrimstoneChest from './BrimstoneChest.js';
@@ -49,6 +50,7 @@ export {
 	Casket,
 	CrystalChest,
 	Dossier,
+	ForgottenLockbox,
 	ElvenCrystalChest,
 	GrubbyChest,
 	MuddyChest,
@@ -92,6 +94,7 @@ const openablesObject = {
 	Casket,
 	CrystalChest,
 	Dossier,
+	ForgottenLockbox,
 	ElvenCrystalChest,
 	GrubbyChest,
 	MuddyChest,
