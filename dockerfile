@@ -21,7 +21,7 @@ ENTRYPOINT ["dumb-init", "--"]
 FROM base AS dependencies
 WORKDIR /usr/src/app
 
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/oldschooljs/package.json ./packages/oldschooljs/package.json
 # COPY packages/test-dashboard/package.json ./packages/test-dashboard/package.json
 COPY packages/toolkit/package.json ./packages/toolkit/package.json

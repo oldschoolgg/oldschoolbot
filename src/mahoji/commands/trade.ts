@@ -103,6 +103,8 @@ export const tradeCommand = defineCommand({
 		}
 
 		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
+
+		await senderUser.sync();
 		if (!senderUser.owns(itemsSent)) return "You don't own those items.";
 
 		await interaction.confirmation({

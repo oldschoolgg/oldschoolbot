@@ -54,7 +54,11 @@ const extraEncountersTable = new SimpleTable<number>()
 	.add(6, 3)
 	.add(7, 1);
 
-export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typeof getUsersLMSStats>>) {
+export function calculateResultOfLMSGames(
+	rng: RNGProvider,
+	qty: number,
+	lmsStats: Awaited<ReturnType<typeof getUsersLMSStats>>
+) {
 	const gameResults: LMSGameSimulated[] = [];
 
 	// 0 at 0kc, 1 at 120kc
@@ -72,7 +76,7 @@ export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnT
 			if (wonFight) kills++;
 			else died = true;
 		}
-		const diedPosition = gaussianRandom(2, 24 - Math.ceil(12 * experienceFactor), 5);
+		const diedPosition = gaussianRandom(rng, 2, 24 - Math.ceil(12 * experienceFactor), 5);
 
 		const position = died ? diedPosition : 1;
 		let points = 0;
@@ -93,12 +97,12 @@ export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnT
 
 export const lmsTask: MinionTask = {
 	type: 'LastManStanding',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
 		const { channelID, quantity, duration } = data;
 		await user.incrementMinigameScore('lms', quantity);
 		const lmsStats = await getUsersLMSStats(user);
 
-		const result = calculateResultOfLMSGames(quantity, lmsStats);
+		const result = calculateResultOfLMSGames(rng, quantity, lmsStats);
 
 		await prisma.lastManStandingGame.createMany({
 			data: result.map(i => ({ ...i, user_id: BigInt(user.id), points: undefined }))
