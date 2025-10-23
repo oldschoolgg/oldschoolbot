@@ -579,13 +579,7 @@ export const activitiesCommand = defineCommand({
 			return alchCommand(interaction, channelID, user, options.alch.item, options.alch.quantity);
 		}
 		if (options.puro_puro) {
-			return puroPuroStartCommand(
-				user,
-				channelID,
-				options.puro_puro.impling,
-				options.puro_puro.dark_lure,
-				undefined
-			);
+			return puroPuroStartCommand(user, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
 		}
 		if (options.cast) {
 			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);

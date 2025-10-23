@@ -80,10 +80,8 @@ export const equippedItemOption = defineOption({
 	description: 'The item you want to pick.',
 	required: false,
 	autocomplete: async (value: string, user: MUser) => {
-		const mUser = await mUserFetch(user.id);
-
 		const results = [];
-		const entries: [string, Item[]][] = Object.entries(mUser.gear).map(entry => [
+		const entries: [string, Item[]][] = Object.entries(user.gear).map(entry => [
 			entry[0],
 			entry[1].allItems(false).map(id => Items.getOrThrow(id))
 		]);

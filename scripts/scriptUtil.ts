@@ -7,7 +7,6 @@ import { TimerManager } from '@sapphire/timer-manager';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType, toSnakeCase } from 'remeda';
 
-import { crons } from '@/lib/crons.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { sonicBoom } from '@/lib/util/logger.js';
 
@@ -42,7 +41,6 @@ export async function runTimedLoggedFn(name: string, fn: () => unknown) {
 export async function tearDownScript() {
 	TimerManager.destroy();
 	sonicBoom.destroy();
-	for (const cron of crons) cron.stop();
 	process.exit(0);
 }
 

@@ -420,8 +420,6 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
-  cached_networth_value BigInt?
-
   username             String? @db.VarChar(32)
   username_with_badges String? @db.VarChar()
 
@@ -1001,7 +999,7 @@ model GEListing {
   buyTransactions  GETransaction[] @relation("buy_transactions")
   sellTransactions GETransaction[] @relation("sell_transactions")
 
-  @@index([created_at])
+  @@index([type, cancelled_at, fulfilled_at, user_id, item_id, asking_price_per_item, created_at])
   @@map("ge_listing")
 }
 

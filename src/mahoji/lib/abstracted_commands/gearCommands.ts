@@ -96,7 +96,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		return `You don't have the items in this preset. You're missing: ${toRemove.remove(user.bank)}.`;
 	}
 
-	await unEquipAllCommand(user.id, gearSetup);
+	await unEquipAllCommand(user, gearSetup);
 
 	await user.removeItemsFromBank(toRemove);
 
@@ -218,7 +218,7 @@ export async function gearUnequipCommand(
 	}
 	if (!isValidGearSetup(gearSetup)) return "That's not a valid gear setup.";
 	if (unequipAll) {
-		return unEquipAllCommand(user.id, gearSetup);
+		return unEquipAllCommand(user, gearSetup);
 	}
 
 	const currentEquippedGear = user.gear[gearSetup];
