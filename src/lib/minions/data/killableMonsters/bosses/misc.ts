@@ -1472,15 +1472,7 @@ export const miscBossKillables: KillableMonster[] = [
 		respawnTime: 5000,
 		table: Monsters.Yama,
 		difficultyRating: 10,
-		notifyDrops: resolveItems([
-			'Soulflame horn',
-			'Oathplate helm',
-			'Oathplate chest',
-			'Oathplate legs',
-			'Forgotten lockbox',
-			'Dossier',
-			'Yami'
-		]),
+		notifyDrops: resolveItems(['Yami']),
 		qpRequired: 115,
 		itemInBankBoosts: [
 			{

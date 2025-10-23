@@ -392,6 +392,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: Openables.IntricatePouch.table.allItems
 	},
 	{
+		name: 'Dossier',
+		id: 30_803,
+		openedItem: Items.getOrThrow(30_803),
+		aliases: ['dossier'],
+		output: Openables.Dossier.table,
+		allItems: Openables.Dossier.table.allItems
+	},
+	{
 		name: "Zombie Pirate's Locker",
 		id: EItem.ZOMBIE_PIRATE_KEY,
 		openedItem: Items.getOrThrow('Zombie pirate key'),

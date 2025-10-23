@@ -9630,9 +9630,7 @@
 		"time_to_finish": 480000,
 		"respawn_time": 5000,
 		"difficulty_rating": 10,
-		"notify_drops": [
-			"Yami"
-		],
+		"notify_drops": ["Yami"],
 		"qp_required": 115,
 		"item_in_bank_boosts": [
 			{
