@@ -170,6 +170,10 @@ WHERE cancelled_at IS NULL
   AND quantity_remaining > 0;`
 });
 
+startupScripts.push({
+	sql: `CREATE INDEX users_clarray_gin ON users USING gin (cl_array gin__int_ops);`
+});
+
 export async function runStartupScripts() {
 	await prisma.$transaction(startupScripts.map(query => prisma.$executeRawUnsafe(query.sql)));
 }
