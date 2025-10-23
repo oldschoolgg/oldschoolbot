@@ -9625,6 +9625,137 @@
 		"attack_styles_used": ["attack_slash", "attack_magic"]
 	},
 	{
+		"id": 14176,
+		"name": "Yama",
+		"time_to_finish": 480000,
+		"respawn_time": 5000,
+		"difficulty_rating": 10,
+		"notify_drops": [
+			"Yami"
+		],
+		"qp_required": 115,
+		"item_in_bank_boosts": [
+			{
+				"6746": 6,
+				"19675": 10,
+				"29589": 15
+			},
+			{
+				"25975": 2
+			}
+		],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 8,
+						"item_id": 29589
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 19675
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 6746
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 29801
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 19553
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 4,
+						"item_id": 21295
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 6570
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 4,
+						"item_id": 22981
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 7462
+					}
+				]
+			}
+		],
+		"level_requirements": {
+			"prayer": 77,
+			"attack": 90,
+			"strength": 90,
+			"defence": 90,
+			"magic": 90,
+			"ranged": 90,
+			"hitpoints": 95
+		},
+		"heal_amount_needed": 700,
+		"minimum_heal_amount": 300,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash", "attack_magic", "attack_ranged"],
+		"default_attack_styles": ["attack", "magic", "ranged"],
+		"death_props": {
+			"hardness": 0.25,
+			"steepness": 0.995
+		},
+		"poh_boosts": {
+			"pool": {
+				"ornate_rejuvenation_pool": 10,
+				"fancy_rejuvenation_pool": 10,
+				"rejuvenation_pool": 10
+			}
+		},
+		"item_cost": [
+			{
+				"item_cost": {
+					"6685": 1
+				},
+				"qty_per_kill": 0.6
+			},
+			{
+				"item_cost": {
+					"3024": 1
+				},
+				"qty_per_kill": 0.5
+			},
+			{
+				"item_cost": {
+					"12695": 1
+				},
+				"qty_per_kill": 0.2
+			},
+			{
+				"item_cost": {
+					"12625": 1
+				},
+				"qty_per_kill": 0.2,
+				"optional": true
+			}
+		]
+	},
+	{
 		"id": 866,
 		"name": "Zogre",
 		"time_to_finish": 30000,

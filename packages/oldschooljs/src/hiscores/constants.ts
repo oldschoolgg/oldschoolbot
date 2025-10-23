@@ -63,6 +63,7 @@ export const mappedBossNames = [
 	['vetion', "Vet'ion"],
 	['vorkath', 'Vorkath'],
 	['wintertodt', 'Wintertodt'],
+	['yama', 'Yama'],
 	['zalcano', 'Zalcano'],
 	['zulrah', 'Zulrah']
 ] as const;

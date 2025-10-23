@@ -1463,5 +1463,107 @@ export const miscBossKillables: KillableMonster[] = [
 				[GearStat.AttackMagic]: 70
 			}
 		}
+	},
+	{
+		id: Monsters.Yama.id,
+		name: Monsters.Yama.name,
+		aliases: Monsters.Yama.aliases,
+		timeToFinish: Time.Minute * 8,
+		respawnTime: 5000,
+		table: Monsters.Yama,
+		difficultyRating: 10,
+		notifyDrops: resolveItems([
+			'Soulflame horn',
+			'Oathplate helm',
+			'Oathplate chest',
+			'Oathplate legs',
+			'Forgotten lockbox',
+			'Dossier',
+			'Yami'
+		]),
+		qpRequired: 115,
+		itemInBankBoosts: [
+			{
+				[itemID('Emberlight')]: 15,
+				[itemID('Arclight')]: 10,
+				[itemID('Darklight')]: 6
+			},
+			{
+				[itemID('Lightbearer')]: 2
+			}
+		],
+		equippedItemBoosts: [
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 8, itemID: itemID('Emberlight') },
+					{ boostPercent: 5, itemID: itemID('Arclight') },
+					{ boostPercent: 2, itemID: itemID('Darklight') }
+				]
+			},
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 5, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 3, itemID: itemID('Amulet of torture') }
+				]
+			},
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				]
+			},
+			{
+				gearSetup: 'melee',
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				]
+			}
+		],
+		levelRequirements: {
+			prayer: 70,
+			attack: 80,
+			strength: 80,
+			defence: 70,
+			magic: 82
+		},
+		healAmountNeeded: 20 * 35,
+		minimumHealAmount: 20 * 15,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
+		deathProps: {
+			hardness: 0.25,
+			steepness: 0.995
+		},
+		pohBoosts: {
+			pool: {
+				'Ornate rejuvenation pool': 10,
+				'Fancy rejuvenation pool': 10,
+				'Rejuvenation pool': 10
+			}
+		},
+		itemCost: [
+			{
+				itemCost: new Bank().add('Saradomin brew(4)'),
+				qtyPerKill: 0.6
+			},
+			{
+				itemCost: new Bank().add('Super restore(4)'),
+				qtyPerKill: 0.5
+			},
+			{
+				itemCost: new Bank().add('Super combat potion(4)'),
+				qtyPerKill: 0.2
+			},
+			{
+				itemCost: new Bank().add('Stamina potion(4)'),
+				qtyPerKill: 0.2,
+				optional: true
+			}
+		]
 	}
 ];

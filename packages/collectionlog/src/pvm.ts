@@ -1,7 +1,7 @@
 import { EItem } from 'oldschooljs';
 
-export const Yami = {
-	name: 'Yami',
+export const Yama = {
+	name: 'Yama',
 	items: [
 		EItem.YAMI,
 		EItem.CHASM_TELEPORT_SCROLL,
