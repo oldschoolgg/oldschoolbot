@@ -1,5 +1,5 @@
 import { percentChance, roll } from '@oldschoolgg/rng';
-import { calcPerHour, Emoji, Time } from '@oldschoolgg/toolkit';
+import { calcPerHour, deepEqual, Emoji, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 
@@ -483,6 +483,16 @@ export const monsterTask: MinionTask = {
 
 		if (data.isInWilderness) {
 			await increaseWildEvasionXp(user, duration);
+		}
+
+		const recentlyKilledMonsters = uniqueArr([data.mi, ...stats.userStats.recently_killed_monsters]).slice(0, 6);
+		if (!deepEqual(recentlyKilledMonsters, stats.userStats.recently_killed_monsters)) {
+			await prisma.userStats.update({
+				where: { user_id: BigInt(user.id) },
+				data: {
+					recently_killed_monsters: recentlyKilledMonsters
+				}
+			});
 		}
 
 		await trackLoot({

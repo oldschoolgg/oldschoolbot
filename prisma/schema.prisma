@@ -755,6 +755,8 @@ model UserStats {
 
   quivers_sacrificed Int @default(0)
 
+  recently_killed_monsters Int[] @default([])
+
   @@map("user_stats")
 }
 
