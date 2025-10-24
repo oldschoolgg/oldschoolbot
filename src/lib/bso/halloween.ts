@@ -8,7 +8,7 @@ import type { HalloweenEvent } from '@/prisma/main.js';
 
 const constants = {
 	MINUTES_PER_VISIT: 10,
-	CARD_TARGET_DAYS: 0.55,
+	CARD_TARGET_DAYS: 0.1,
 	PET_TARGET_DAYS: 4,
 	HALLOWEEN_PETS: Items.resolveItems([
 		'Mumpkin',
@@ -21,8 +21,7 @@ const constants = {
 	])
 };
 
-const FIRST_CARD_CHANCE = 12;
-const LATER_CARD_CHANCES = 200;
+const CARD_CHANCE = 15;
 const PET_CHANCE = 650;
 
 const trickOrTreaters: {
@@ -89,9 +88,7 @@ export async function doHalloweenTickOnUser(user: MUser, userEvent: HalloweenEve
 	if (validTrickOrTreaters.length === 0) validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters;
 
 	const trickOrTreater = MathRNG.pick(validTrickOrTreaters) ?? HalloweenEvent2025.trickOrTreaters[0];
-	const isFirstCard = HalloweenEvent2025.ALL_CARD_IDS.every(id => !hasCard(id));
-	const cardChance = isFirstCard ? FIRST_CARD_CHANCE : LATER_CARD_CHANCES;
-	if (MathRNG.roll(cardChance) && !hasCard(trickOrTreater.card.id)) {
+	if (MathRNG.roll(CARD_CHANCE) && !hasCard(trickOrTreater.card.id)) {
 		itemsWaitingForPickup.add(trickOrTreater.card.id);
 	}
 
@@ -152,6 +149,5 @@ export const HalloweenEvent2025 = {
 	trickOrTreaters,
 	DEATH_SPEED_BOOST: 30,
 	GHOST_XP_BOOST: 5,
-	FIRST_CARD_CHANCE,
-	LATER_CARD_CHANCES
+	CARD_CHANCE
 };
