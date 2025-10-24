@@ -782,11 +782,7 @@ LIMIT 50;`
 }
 
 export async function masteryLb(interaction: MInteraction, ironmanOnly: boolean) {
-	const select = {
-		id: true,
-		osb_mastery: true,
-		bso_mastery: true
-	};
+	const select: { id: true, minion_ironman: true }
 
 	if (!ironmanOnly) {
 		const users = (
