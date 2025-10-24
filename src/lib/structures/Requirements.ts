@@ -1,7 +1,7 @@
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import { type Bank, Items } from 'oldschooljs';
 
-import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@/prisma/main.js';
+import type { Minigame, PlayerOwnedHouse } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import type { BitField } from '@/lib/constants.js';
 import { BitFieldData, BOT_TYPE } from '@/lib/constants.js';
@@ -28,11 +28,11 @@ interface RequirementUserArgs {
 	roboChimpUser: RobochimpUser;
 	clueCounts: ClueBank;
 	poh: PlayerOwnedHouse;
-	uniqueRunesCrafted: number[];
-	uniqueActivitiesDone: activity_type_enum[];
 }
 
-type ManualHasFunction = (args: RequirementUserArgs) => RequirementFailure[] | undefined | string | boolean;
+type ManualHasFunction = (
+	args: RequirementUserArgs
+) => RequirementFailure[] | Promise<RequirementFailure[]> | undefined | string | boolean;
 
 type Requirement = {
 	name?: string;
@@ -173,12 +173,15 @@ export class Requirements {
 		return this;
 	}
 
-	checkSingleRequirement(requirement: Requirement, userArgs: RequirementUserArgs): RequirementFailure[] {
+	async checkSingleRequirement(
+		requirement: Requirement,
+		userArgs: RequirementUserArgs
+	): Promise<RequirementFailure[]> {
 		const { user, stats, minigames, clueCounts } = userArgs;
 		const results: RequirementFailure[] = [];
 
 		if ('has' in requirement) {
-			const result = requirement.has(userArgs);
+			const result = await requirement.has(userArgs);
 			if (typeof result === 'boolean') {
 				if (!result) {
 					results.push({ reason: requirement.name });
@@ -343,7 +346,7 @@ export class Requirements {
 		}
 
 		if ('OR' in requirement) {
-			const orResults = requirement.OR.map(req => this.checkSingleRequirement(req, userArgs));
+			const orResults = await Promise.all(requirement.OR.map(req => this.checkSingleRequirement(req, userArgs)));
 			if (!orResults.some(i => i.length === 0)) {
 				results.push({
 					reason: `You need to meet one of these requirements:\n${orResults.map((res, index) => {
@@ -367,19 +370,11 @@ export class Requirements {
 		const clueCounts =
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
 
-		const [_uniqueRunesCrafted, uniqueActivitiesDone, poh] = await prisma.$transaction([
-			prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
-FROM activity
-WHERE user_id = ${BigInt(user.id)}
-AND type = 'Runecraft'
-AND data->>'runeID' IS NOT NULL;`,
-			prisma.$queryRaw<{ type: activity_type_enum }[]>`SELECT DISTINCT(type)
-FROM activity
-WHERE user_id = ${BigInt(user.id)}
-GROUP BY type;`,
-			prisma.playerOwnedHouse.upsert({ where: { user_id: user.id }, update: {}, create: { user_id: user.id } })
-		]);
-		const uniqueRunesCrafted = _uniqueRunesCrafted.map(i => Number(i.rune_id));
+		const poh = await prisma.playerOwnedHouse.upsert({
+			where: { user_id: user.id },
+			update: {},
+			create: { user_id: user.id }
+		});
 		return {
 			user,
 			minigames,
@@ -387,9 +382,7 @@ GROUP BY type;`,
 			stats,
 			roboChimpUser,
 			clueCounts,
-			poh,
-			uniqueRunesCrafted,
-			uniqueActivitiesDone: uniqueActivitiesDone.map(i => i.type)
+			poh
 		};
 	}
 
@@ -398,11 +391,13 @@ GROUP BY type;`,
 		return requirements.map(i => i.check(data));
 	}
 
-	check(data: Awaited<ReturnType<typeof Requirements.fetchRequiredData>>) {
-		const results = this.requirements.map(i => ({
-			result: this.checkSingleRequirement(i, data),
-			requirement: i
-		}));
+	async check(data: Awaited<ReturnType<typeof Requirements.fetchRequiredData>>) {
+		const results = await Promise.all(
+			this.requirements.map(async i => ({
+				result: await this.checkSingleRequirement(i, data),
+				requirement: i
+			}))
+		);
 
 		const flatReasons = results.flatMap(r => r.result);
 		const totalRequirements = this.requirements.length;
