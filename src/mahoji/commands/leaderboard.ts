@@ -781,29 +781,95 @@ LIMIT 50;`
 	);
 }
 
-async function masteryLb(interaction: MInteraction) {
-	const users = (
-		await roboChimpClient.user.findMany({
+export async function masteryLb(interaction: MInteraction, ironmanOnly: boolean) {
+	const select = {
+		id: true,
+		osb_mastery: true,
+		bso_mastery: true
+	};
+
+	if (!ironmanOnly) {
+		const users = (
+			await roboChimpClient.user.findMany({
+				where: {
+					[masteryKey]: { not: null }
+				},
+				orderBy: {
+					[masteryKey]: 'desc'
+				},
+				take: 50,
+				select
+			})
+		).map(u => ({ id: u.id.toString(), score: u[masteryKey] ?? 0 }));
+
+		return doMenuWrapper({
+			interaction,
+			title: 'Mastery Leaderboard',
+			ironmanOnly: false,
+			users,
+			formatter: val => `${val.toFixed(3)}% mastery`
+		});
+	}
+
+	const qualifyingUsers: { id: string; score: number }[] = [];
+	const batchSize = 100;
+	let skip = 0;
+
+	while (qualifyingUsers.length < 50) {
+		const batch = await roboChimpClient.user.findMany({
 			where: {
 				[masteryKey]: { not: null }
 			},
 			orderBy: {
 				[masteryKey]: 'desc'
 			},
-			take: 50,
+			take: batchSize,
+			skip,
+			select
+		});
+
+		if (batch.length === 0) {
+			break;
+		}
+
+		skip += batch.length;
+		const idStrings = batch.map(u => u.id.toString());
+		if (idStrings.length === 0) {
+			continue;
+		}
+
+		const ironmen = await prisma.user.findMany({
+			where: {
+				id: { in: idStrings },
+				minion_ironman: true
+			},
 			select: {
-				id: true,
-				osb_mastery: true,
-				bso_mastery: true
+				id: true
 			}
-		})
-	).map(u => ({ id: u.id.toString(), score: u[masteryKey] ?? 0 }));
+		});
+
+		if (ironmen.length === 0) {
+			continue;
+		}
+
+		const ironmanIds = new Set(ironmen.map(user => user.id));
+		for (const user of batch) {
+			const id = user.id.toString();
+			if (!ironmanIds.has(id)) {
+				continue;
+			}
+			qualifyingUsers.push({ id, score: user[masteryKey] ?? 0 });
+			if (qualifyingUsers.length >= 50) {
+				break;
+			}
+		}
+	}
 
 	return doMenuWrapper({
 		interaction,
 		title: 'Mastery Leaderboard',
-		ironmanOnly: false,
-		users,
+		ironmanOnly: true,
+		users: qualifyingUsers,
 		formatter: val => `${val.toFixed(3)}% mastery`
 	});
 }
@@ -1058,7 +1124,7 @@ export const leaderboardCommand = defineCommand({
 			type: 'Subcommand',
 			name: 'mastery',
 			description: 'Check the mastery leaderboard.',
-			options: []
+			options: [ironmanOnlyOption]
 		}
 	],
 	run: async ({ options, interaction }) => {
@@ -1106,7 +1172,7 @@ export const leaderboardCommand = defineCommand({
 		if (movers) return gainersLB(interaction, movers.type);
 		if (global) return globalLb(interaction, global.type);
 		if (combat_achievements) return caLb(interaction);
-		if (mastery) return masteryLb(interaction);
+		if (mastery) return masteryLb(interaction, Boolean(mastery.ironmen_only));
 		return 'Invalid input.';
 	}
 });
