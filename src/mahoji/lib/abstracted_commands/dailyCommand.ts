@@ -17,8 +17,8 @@ export async function isUsersDailyReady(
 	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
 
-	if (difference < Time.Hour * 12) {
-		const duration = Date.now() - (lastVoteDate + Time.Hour * 12);
+	if (difference < Time.Hour * 4) {
+		const duration = Date.now() - (lastVoteDate + Time.Hour * 4);
 		return { isReady: false, durationUntilReady: duration };
 	}
 
