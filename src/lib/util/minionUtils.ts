@@ -1,7 +1,9 @@
-import { perTimeUnitChance, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
+
+const MOON_KEY_ONE_IN_PER_MINUTE = 60;
 
 export function rollForMoonKeyHalf({
 	rng,
@@ -16,7 +18,20 @@ export function rollForMoonKeyHalf({
 }) {
 	if (typeof user === 'boolean' && !user) return;
 	if (typeof user !== 'boolean' && !user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) return;
-	perTimeUnitChance(rng, duration, 1, Time.Minute * 60, () => {
-		loot.add('Loop half of key (moon key)');
-	});
+	const minutes = duration / Time.Minute;
+	const fullMinutes = Math.floor(minutes);
+	const remainderMinutes = minutes - fullMinutes;
+
+	for (let i = 0; i < fullMinutes; i++) {
+		if (rng.roll(MOON_KEY_ONE_IN_PER_MINUTE)) {
+			loot.add('Loop half of key (moon key)');
+		}
+	}
+
+	if (remainderMinutes > 0) {
+		const percentChance = (remainderMinutes / MOON_KEY_ONE_IN_PER_MINUTE) * 100;
+		if (percentChance > 0 && rng.percentChance(percentChance)) {
+			loot.add('Loop half of key (moon key)');
+		}
+	}
 }
