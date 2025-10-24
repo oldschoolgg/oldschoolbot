@@ -193,6 +193,12 @@ startupScripts.push({
 	sql: `CREATE INDEX IF NOT EXISTS users_bitfield_gin ON users USING gin (bitfield gin__int_ops) WHERE CARDINALITY(bitfield) > 0;`
 });
 
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS users_rsn_lower_idx
+ON users ((LOWER("RSN")))
+WHERE "RSN" IS NOT NULL;`
+});
+
 export async function runStartupScripts() {
 	await prisma.$transaction(startupScripts.map(query => prisma.$executeRawUnsafe(query.sql)));
 }
