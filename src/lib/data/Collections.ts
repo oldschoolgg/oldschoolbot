@@ -584,9 +584,9 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Yami: {
-				unobtainable: true,
-				items: CollectionLog.Yami.items
+			Yama: {
+				items: CollectionLog.Yama.items,
+				allItems: Monsters.Yama.allItems
 			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {

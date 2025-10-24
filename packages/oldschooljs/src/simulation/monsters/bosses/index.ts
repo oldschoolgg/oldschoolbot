@@ -1,3 +1,4 @@
+import { Yama } from '@/simulation/monsters/bosses/Yama.js';
 import { Amoxliatl } from './Amoxliatl.js';
 import { Araxxor } from './Araxxor.js';
 import { AwakenedDukeSucellus } from './AwakenedDukeSucellus.js';
@@ -66,6 +67,7 @@ export const allBosses = {
 	Branda,
 	Eldric,
 	RoyalTitans,
+	Yama,
 	...allWildyBosses,
 	...allSlayerBosses
 };

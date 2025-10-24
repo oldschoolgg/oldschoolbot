@@ -387,6 +387,7 @@ export enum EMonster {
 	WOLF = 106,
 	WOMAN = 1119,
 	WYRM = 8610,
+	YAMA = 14176,
 	ZALCANO = 9049,
 	ZOGRE = 866,
 	ZOMBIE = 26,
