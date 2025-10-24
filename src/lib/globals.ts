@@ -83,6 +83,9 @@ async function makeRobochimpPrismaClient(): Promise<RoboChimpDB> {
 export async function createDb() {
 	global.prisma = global.prisma || (await makePrismaClient()).prismaClient;
 	global.roboChimpClient = global.roboChimpClient || (await makeRobochimpPrismaClient()).prismaClient;
+	if (!globalConfig.isProduction) {
+		await prisma.$queryRawUnsafe(`CREATE EXTENSION IF NOT EXISTS "intarray";`);
+	}
 	return { prisma: global.prisma, roboChimpClient: global.roboChimpClient };
 }
 
