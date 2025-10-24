@@ -13,8 +13,6 @@ exitHook(exitCleanup);
 
 async function main() {
 	await createDb();
-	Logging.logDebug('Starting table bank migration...');
-	Logging.logDebug('Table bank migration complete.');
 	Logging.logDebug(`Starting up after ${process.uptime()}s`);
 	await Promise.all([preStartup(), globalClient.login(globalConfig.botToken)]);
 	Logging.logDebug(`Logged in as ${globalClient.user.username} after ${process.uptime()}s`);

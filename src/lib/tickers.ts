@@ -376,7 +376,7 @@ export const tickers: {
 		name: 'Economy Item Snapshot',
 		timer: null,
 		startupWait: Time.Minute * 20,
-		interval: Time.Hour * 6.55,
+		interval: Time.Hour * 13.55,
 		cb: async () => {
 			await prisma.$queryRawUnsafe(`INSERT INTO economy_item
 SELECT item_id::integer, SUM(qty)::bigint FROM

@@ -1,6 +1,5 @@
 import { noOp } from '@oldschoolgg/toolkit';
 
-import { cacheBadges } from '@/lib/badges.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
@@ -31,7 +30,6 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 		syncDisabledCommands(),
 		syncBlacklists(),
 		syncCustomPrices(),
-		cacheBadges(),
 		GrandExchange.init(),
 		populateRoboChimpCache(),
 		cacheGEPrices(),

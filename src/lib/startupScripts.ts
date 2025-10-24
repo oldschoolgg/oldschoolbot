@@ -149,6 +149,21 @@ startupScripts.push({
 });
 
 startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS activity_completed_finishdate_idx
+ON activity (finish_date)
+WHERE completed = false;`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS activity_user_recent_done_idx
+ON activity (user_id, finish_date DESC, id DESC)
+INCLUDE (type)
+WHERE completed = true
+  AND finish_date >= DATE '2025-06-06';
+`
+});
+
+startupScripts.push({
 	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_buy_filter_sort
 ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item DESC, created_at ASC);`
 });
@@ -172,6 +187,16 @@ WHERE cancelled_at IS NULL
 
 startupScripts.push({
 	sql: `CREATE INDEX IF NOT EXISTS users_clarray_gin ON users USING gin (cl_array gin__int_ops);`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS users_bitfield_gin ON users USING gin (bitfield gin__int_ops) WHERE CARDINALITY(bitfield) > 0;`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS users_rsn_lower_idx
+ON users ((LOWER("RSN")))
+WHERE "RSN" IS NOT NULL;`
 });
 
 export async function runStartupScripts() {
