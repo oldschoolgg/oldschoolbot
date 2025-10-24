@@ -13,7 +13,7 @@ export async function calculateCompCapeProgress(user: MUser) {
 
 	const data = await Requirements.fetchRequiredData(user);
 	for (const cat of compCapeCategories) {
-		const progress = cat.requirements.check(data);
+		const progress = await cat.requirements.check(data);
 
 		let subStr = `${cat.name} (Finished ${progress.metRequirements}/${
 			progress.totalRequirements
