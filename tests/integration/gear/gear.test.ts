@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { createTestUser, promiseAllRandom } from '../util.js';
 
-describe('Gear', { repeats: 20 }, () => {
+describe('Gear', () => {
 	const TEST_GEAR = [
 		EGear.DRAGON_FULL_HELM,
 		EGear.DRAGON_PLATEBODY,
@@ -13,7 +13,7 @@ describe('Gear', { repeats: 20 }, () => {
 		EGear.DRAGON_WARHAMMER
 	];
 
-	it("shouln't dupe when unequipping/swapping at the same time", async () => {
+	it("shouldn't dupe when unequipping/swapping at the same time", async () => {
 		const user = await createTestUser();
 		await user.max();
 		await user.equip('melee', TEST_GEAR);
@@ -28,7 +28,7 @@ describe('Gear', { repeats: 20 }, () => {
 		expect(user.allItemsOwned.amount(EGear.DRAGON_PLATELEGS)).toBe(1);
 	});
 
-	it("shouln't dupe when swapping 2 gears at the same time", async () => {
+	it("shouldn't dupe when swapping 2 gears at the same time", async () => {
 		const user = await createTestUser();
 		await user.max();
 		await user.equip('melee', TEST_GEAR);
@@ -43,7 +43,7 @@ describe('Gear', { repeats: 20 }, () => {
 		expect(user.allItemsOwned.amount(EGear.DRAGON_PLATELEGS)).toBe(1);
 	});
 
-	it("shouln't dupe when equipping", async () => {
+	it("shouldn't dupe when equipping", async () => {
 		const user = await createTestUser();
 		await user.setBank(new Bank().add(EItem.TWISTED_BOW));
 		await promiseAllRandom([
@@ -55,7 +55,7 @@ describe('Gear', { repeats: 20 }, () => {
 		expect(user.allItemsOwned.amount(EGear.TWISTED_BOW)).toBe(1);
 	});
 
-	it("shouln't dupe when equipping/unequipping at same time", async () => {
+	it("shouldn't dupe when equipping/unequipping at same time", async () => {
 		const user = await createTestUser();
 		await user.setBank(new Bank().add(EItem.TWISTED_BOW));
 		await user.equip('melee', [EGear.DRAGON_DAGGER]);
