@@ -218,7 +218,7 @@ export const farmingTask: MinionTask = {
 				if (shouldCleanHerb && plantToHarvest.herbXp) {
 					herbloreXp = cropYield * plantToHarvest.herbXp;
 					const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
-					await user.addItemsToCollectionLog(uncleanedHerbLoot);
+					await user.addItemsToCollectionLog({ itemsToAdd: uncleanedHerbLoot });
 					const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
 					await user.statsBankUpdate('herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 				}

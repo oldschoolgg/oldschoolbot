@@ -166,7 +166,9 @@ export const sellCommand = defineCommand({
 				itemsToRemove: seedsBank
 			});
 
-			await user.addItemsToCollectionLog(new Bank().add('Seed pack', quantity));
+			await user.addItemsToCollectionLog({
+				itemsToAdd: new Bank().add('Seed pack', quantity)
+			});
 
 			return `You exchanged ${seedsBank} and received: ${loot}.`;
 		}

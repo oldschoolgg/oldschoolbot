@@ -124,7 +124,7 @@ describe('MUser', () => {
 		const loot = new Bank().add('Coal', 73);
 		{
 			const previousCL = await user.fetchCL();
-			await user.addItemsToCollectionLog(loot);
+			await user.addItemsToCollectionLog({ itemsToAdd: loot });
 			const newCL = await user.fetchCL();
 			expect(newCL.equals(loot)).toEqual(true);
 			expect(previousCL.equals(new Bank())).toEqual(true);
@@ -132,7 +132,7 @@ describe('MUser', () => {
 
 		{
 			const previousCL = await user.fetchCL();
-			await user.addItemsToCollectionLog(loot);
+			await user.addItemsToCollectionLog({ itemsToAdd: loot });
 			const newCL = await user.fetchCL();
 			expect(newCL.equals(loot.clone().multiply(2))).toEqual(true);
 			expect(previousCL.equals(loot)).toEqual(true);

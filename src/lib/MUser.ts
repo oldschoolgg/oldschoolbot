@@ -635,13 +635,19 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return percentBossCLFinished;
 	}
 
-	async addItemsToCollectionLog(itemsToAdd: Bank) {
+	async addItemsToCollectionLog({
+		itemsToAdd,
+		otherUpdates
+	}: {
+		itemsToAdd: Bank;
+		otherUpdates?: SafeUserUpdateInput;
+	}) {
 		const previousCL = this.cl.clone();
 
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
-		await this.update(updates);
+		await this.update({ ...updates, ...otherUpdates });
 		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
 	}
 

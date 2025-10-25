@@ -195,19 +195,23 @@ export async function volcanicMineShopCommand(interaction: MInteraction, user: M
 		}**?`
 	);
 
-	if (shopItem.clOnly) {
-		await user.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity));
-	} else {
-		await user.transactItems({
-			collectionLog: shopItem.addToCl === true,
-			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
-		});
-	}
-	await user.update({
+	const otherUpdates = {
 		volcanic_mine_points: {
 			decrement: cost
 		}
-	});
+	};
+	if (shopItem.clOnly) {
+		await user.addItemsToCollectionLog({
+			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity),
+			otherUpdates
+		});
+	} else {
+		await user.transactItems({
+			collectionLog: shopItem.addToCl === true,
+			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity),
+			otherUpdates
+		});
+	}
 
 	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Volcanic Mine points.${
 		shopItem.clOnly
