@@ -109,7 +109,7 @@ export const lmsTask: MinionTask = {
 		});
 		const points = sumArr(result.map(i => i.points));
 
-		const { newUser } = await user.update({
+		await user.update({
 			lms_points: {
 				increment: points
 			}
@@ -122,7 +122,7 @@ export const lmsTask: MinionTask = {
 			`${user}, ${
 				user.minionName
 			} finished playing ${quantity}x Last Man Standing matches, you received ${points} points and now have ${
-				newUser.lms_points
+				user.user.lms_points
 			} points in total, and have won a total of ${newLmsStats.gamesWon}x games. ${calcPerHour(
 				points,
 				duration

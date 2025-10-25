@@ -184,7 +184,7 @@ export const fightCavesTask: MinionTask = {
 
 			const xpMessage = `${msg} ${slayXP}`;
 
-			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
+			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.user.slayer_points}; return to a Slayer master.**`;
 			// End slayer code
 		}
 

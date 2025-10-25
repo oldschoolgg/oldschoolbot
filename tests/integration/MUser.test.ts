@@ -123,17 +123,19 @@ describe('MUser', () => {
 		const user = await createTestUser();
 		const loot = new Bank().add('Coal', 73);
 		{
-			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			const previousCL = await user.fetchCL();
+			await user.addItemsToCollectionLog(loot);
+			const newCL = await user.fetchCL();
 			expect(newCL.equals(loot)).toEqual(true);
 			expect(previousCL.equals(new Bank())).toEqual(true);
-			expect(itemsAdded).toEqual(loot);
 		}
 
 		{
-			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			const previousCL = await user.fetchCL();
+			await user.addItemsToCollectionLog(loot);
+			const newCL = await user.fetchCL();
 			expect(newCL.equals(loot.clone().multiply(2))).toEqual(true);
 			expect(previousCL.equals(loot)).toEqual(true);
-			expect(itemsAdded).toEqual(loot);
 		}
 	});
 

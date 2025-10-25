@@ -59,7 +59,7 @@ export async function slayerShopBuyCommand({
 		if (user.user.slayer_points >= cost) {
 			const newUnlocks = [...user.user.slayer_unlocks, buyableObj.id];
 			try {
-				const { newUser } = await user.update({
+				await user.update({
 					slayer_points: { decrement: cost },
 					slayer_unlocks: newUnlocks
 				});
@@ -73,7 +73,7 @@ export async function slayerShopBuyCommand({
 						}
 					});
 				}
-				return `You successfully unlocked ${buyableObj.name}. Remaining slayer points: ${newUser.slayer_points}`;
+				return `You successfully unlocked ${buyableObj.name}. Remaining slayer points: ${user.user.slayer_points}`;
 			} catch (e) {
 				Logging.logError(e as Error, { user_id: user.id, slayer_unlock: buyable });
 				return slayerPurchaseError;

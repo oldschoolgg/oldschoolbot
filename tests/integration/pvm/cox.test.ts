@@ -15,7 +15,6 @@ test('CoX ', async () => {
 		slayerLevel: 70
 	});
 	await user.max();
-
 	await user.update({
 		tum_shadow_charges: 10000,
 		scythe_of_vitur_charges: 100,
@@ -27,14 +26,15 @@ test('CoX ', async () => {
 				item: itemID('Dragon arrow'),
 				quantity: 10000
 			}
-		},
-		bank: new Bank()
+		}
+	});
+	await user.setBank(
+		new Bank()
 			.add('Shark', 10000)
 			.add('Stamina potion(4)', 10000)
 			.add('Super restore(4)', 10000)
 			.add('Saradomin brew(4)', 10000)
-			.toJSON()
-	});
+	);
 	await user.equip('melee', resolveItems(['Scythe of vitur']));
 	const res = await user.runCmdAndTrip(raidCommand, {
 		cox: {

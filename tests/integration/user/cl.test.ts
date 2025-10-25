@@ -124,6 +124,7 @@ describe('updateCL()', () => {
 
 	it('handles initial creation', async () => {
 		const user = await createTestUser();
+		// @ts-expect-error
 		await user.update({ collectionLogBank: new Bank().add(EItem.TWISTED_BOW).add(EItem.COAL, 100).toJSON() });
 		expect(await user.fetchCL()).toHaveLength(2);
 		expect(user.cl).toHaveLength(2);

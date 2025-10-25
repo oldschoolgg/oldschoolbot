@@ -137,7 +137,7 @@ export const infernoTask: MinionTask = {
 				}
 			});
 
-			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
+			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.user.slayer_points}; return to a Slayer master.**`;
 		}
 
 		if (unusedItems.length > 0) {

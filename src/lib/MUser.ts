@@ -23,6 +23,7 @@ import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
+import type { CommandResponseValue } from '@/lib/discord/index.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
@@ -53,7 +54,12 @@ import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
-import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
+import {
+	type TransactItemsArgs,
+	transactItemsFromBank,
+	unqueuedTransactItems
+} from '@/lib/util/transactItemsFromBank.js';
+import { userQueueFn } from '@/lib/util/userQueues.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
@@ -88,6 +94,15 @@ function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean
 export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 	[K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
 };
+
+type QueuedUpdateFnReturnValue =
+	| { response: CommandResponseValue }
+	| ({ response: CommandResponseValue } & Omit<TransactItemsArgs, 'userID'>);
+type QueuedUpdateFnReturn = Promise<QueuedUpdateFnReturnValue> | QueuedUpdateFnReturnValue;
+type QueuedUpdateFn = (user: MUserClass) => QueuedUpdateFnReturn;
+
+// TODO: gear keys are not safe here, but not included for now
+export type SafeUserUpdateInput = Omit<Prisma.UserUncheckedUpdateInput, 'id' | 'bank' | 'collectionLogBank'>;
 
 export class MUserClass {
 	user!: Readonly<User>;
@@ -168,11 +183,32 @@ export class MUserClass {
 		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 
-	async update(data: Prisma.UserUncheckedUpdateInput) {
-		const result = await mahojiUserSettingsUpdate(this.id, data);
-		this.user = result.newUser;
-		this.updateProperties();
-		return result;
+	async update(data: SafeUserUpdateInput): Promise<MUser>;
+	async update(fn: QueuedUpdateFn): Promise<CommandResponseValue>;
+	async update(arg: SafeUserUpdateInput | QueuedUpdateFn): Promise<any> {
+		if (typeof arg === 'function') {
+			return userQueueFn(this.id, async () => {
+				const opts = await arg(await mUserFetch(this.id));
+
+				const tx: TransactItemsArgs =
+					'userID' in opts
+						? (opts as unknown as TransactItemsArgs)
+						: { ...(opts as Omit<TransactItemsArgs, 'userID'>), userID: this.id };
+
+				const { newUser } = await unqueuedTransactItems(tx);
+				this._updateRawUser(newUser);
+				return opts.response;
+			});
+		}
+
+		const newUser = await global.prisma.user.update({
+			data: arg,
+			where: {
+				id: this.id
+			}
+		});
+		this._updateRawUser(newUser);
+		return this;
 	}
 
 	get combatLevel() {
@@ -606,15 +642,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			items: itemsToAdd
 		});
 		await this.update(updates);
-		const newCL = this.cl;
-
 		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
-
-		return {
-			previousCL,
-			newCL,
-			itemsAdded: itemsToAdd
-		};
 	}
 
 	async specialRemoveItems(bankToRemove: Bank, options?: { isInWilderness?: boolean }) {
@@ -627,7 +655,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearKey];
 		const avasDevice = avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
-		const updates: Prisma.UserUpdateArgs['data'] = {};
+		const updates: SafeUserUpdateInput = {};
 
 		for (const [item, quantity] of bankToRemove.items()) {
 			if (blowpipeDarts.includes(item)) {
@@ -725,7 +753,12 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 			await this.transactItems({ itemsToRemove: bankRemove });
 		}
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
+		const newUser = await global.prisma.user.update({
+			data: updates,
+			where: {
+				id: this.id
+			}
+		});
 		this._updateRawUser(newUser);
 		return {
 			realCost

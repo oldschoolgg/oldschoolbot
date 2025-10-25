@@ -61,7 +61,7 @@ export async function lmsCommand(
 			return `You received ${loot}.`;
 		}
 
-		const { newUser } = await user.update({
+		await user.update({
 			lms_points: {
 				decrement: cost
 			}
@@ -74,7 +74,7 @@ export async function lmsCommand(
 				itemsToAdd: loot
 			});
 		}
-		return `You spent ${cost} points to buy ${loot}. You now have ${newUser.lms_points} LMS points.`;
+		return `You spent ${cost} points to buy ${loot}. You now have ${user.user.lms_points} LMS points.`;
 	}
 
 	if (user.minionIsBusy) {
