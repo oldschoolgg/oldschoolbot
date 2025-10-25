@@ -23,6 +23,7 @@ model Activity {
   data           Json?              @db.JsonB
   pinnedTrip     PinnedTrip[]
 
+  @@index([user_id, completed, finish_date])
   @@map("activity")
 }
 
