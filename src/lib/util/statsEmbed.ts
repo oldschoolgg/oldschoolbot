@@ -1,10 +1,11 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from 'discord.js';
 import type { CluesScore, Player, SkillScore, SkillsScore } from 'oldschooljs/hiscores';
 
+import { badges } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 
-export function statsEmbed({
+export async function statsEmbed({
 	username,
 	color,
 	player,
@@ -19,6 +20,11 @@ export function statsEmbed({
 	showExtra?: boolean;
 	postfix?: string;
 }) {
+	const [userWithBadgeForRSN] = await prisma.$queryRaw<{ id: string; badges: number[] }[]>`SELECT id, badges
+FROM users
+WHERE "RSN" IS NOT NULL AND LOWER("RSN") = ${username.toLowerCase()}
+AND CARDINALITY(badges) > 0;`;
+
 	const skillCell = (skill: string) =>
 		`${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${player.skills[
 			skill as keyof SkillsScore
@@ -27,7 +33,7 @@ export function statsEmbed({
 	const embed = new EmbedBuilder()
 		.setColor(color)
 		.setTitle(
-			`${globalClient._badgeCache.get(username.toLowerCase()) || ''} ${toTitleCase(username)}${postfix ?? ''}`
+			`${userWithBadgeForRSN ? `${userWithBadgeForRSN.badges.map(_b => badges[_b]).join(' ')} ` : ''}${toTitleCase(username)}${postfix ?? ''}`
 		)
 		.addFields({
 			name: '\u200b',

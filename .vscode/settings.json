@@ -2,5 +2,9 @@
 	"typescript.preferences.importModuleSpecifier": "non-relative",
 	"typescript.updateImportsOnFileMove.enabled": "always",
 	"typescript.preferences.importModuleSpecifierEnding": "js",
-	"typescript.preferences.preferTypeOnlyAutoImports": false
+	"typescript.preferences.preferTypeOnlyAutoImports": false,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit"
+	}
 }

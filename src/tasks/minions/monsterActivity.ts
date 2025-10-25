@@ -1,6 +1,5 @@
-import { percentChance, roll, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { calcPerHour, deepEqual, Emoji, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 
@@ -8,21 +7,20 @@ import type { BitField } from '@/lib/constants.js';
 import { userhasDiaryTierSync } from '@/lib/diaries.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { type AttackStyles, addMonsterXPRaw } from '@/lib/minions/functions/index.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { DiaryID, type KillableMonster } from '@/lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import { type CurrentSlayerInfo, calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { type KCBank, safelyMakeKCBank } from '@/lib/structures/KCBank.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
 import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 
@@ -443,12 +441,11 @@ export function doMonsterTrip(data: newOptions) {
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
-	async run(data: MonsterActivityTaskOptions) {
+	async run(data: MonsterActivityTaskOptions, { user, handleTripFinish }) {
 		const { duration } = data;
-		const user = await mUserFetch(data.userID);
-		const stats = await MUserStats.fromID(data.userID);
+		const stats = await user.fetchMStats();
 		const minigameScores = await user.fetchMinigames();
-		const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
+		const slayerInfo = await user.fetchSlayerInfo();
 		const monster = killableMonsters.find(mon => mon.id === data.mi)!;
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
 		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({
@@ -488,6 +485,16 @@ export const monsterTask: MinionTask = {
 			await increaseWildEvasionXp(user, duration);
 		}
 
+		const recentlyKilledMonsters = uniqueArr([data.mi, ...stats.userStats.recently_killed_monsters]).slice(0, 6);
+		if (!deepEqual(recentlyKilledMonsters, stats.userStats.recently_killed_monsters)) {
+			await prisma.userStats.update({
+				where: { user_id: BigInt(user.id) },
+				data: {
+					recently_killed_monsters: recentlyKilledMonsters
+				}
+			});
+		}
+
 		await trackLoot({
 			totalCost: updateBank.itemCostBank,
 			id: monster.name,
@@ -519,11 +526,14 @@ export const monsterTask: MinionTask = {
 
 		const resultOrError = await updateBank.transact(user, { isInWilderness: data.isInWilderness });
 		if (typeof resultOrError === 'string') {
-			logError(new Error(`${user.logName} monster activity updateBank transact error: ${resultOrError}`), {
-				user_id: user.id,
-				monster_id: monster.id.toString(),
-				quantity: quantity.toString()
-			});
+			Logging.logError(
+				new Error(`${user.logName} monster activity updateBank transact error: ${resultOrError}`),
+				{
+					user_id: user.id,
+					monster_id: monster.id.toString(),
+					quantity: quantity.toString()
+				}
+			);
 			return;
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;

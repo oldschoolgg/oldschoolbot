@@ -1,9 +1,8 @@
-import { ApplicationCommandOptionType } from 'discord.js';
-import { convertLVLtoXP, convertXPtoLVL, type SkillsEnum } from 'oldschooljs';
+import { convertLVLtoXP, convertXPtoLVL } from 'oldschooljs';
 import { Hiscores } from 'oldschooljs/hiscores';
 
 import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
-import { skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { skillOption } from '@/lib/discord/index.js';
 
 const xpLeft = (xp: number) => {
 	const level = convertXPtoLVL(xp, MAX_LEVEL);
@@ -11,7 +10,7 @@ const xpLeft = (xp: number) => {
 	return (convertLVLtoXP(level + 1) - xp).toLocaleString();
 };
 
-export const lvlCommand: OSBMahojiCommand = {
+export const lvlCommand = defineCommand({
 	name: 'lvl',
 	description: 'See a level in your OSRS stats.',
 	attributes: {
@@ -19,7 +18,7 @@ export const lvlCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'The runescape username to check',
 			required: true
@@ -29,7 +28,7 @@ export const lvlCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ rsn: string; skill: SkillsEnum }>) => {
+	run: async ({ options }) => {
 		try {
 			const res = await Hiscores.fetch(options.rsn).then(player => player.skills[options.skill]);
 
@@ -46,4 +45,4 @@ export const lvlCommand: OSBMahojiCommand = {
 			return err.message;
 		}
 	}
-};
+});

@@ -1,8 +1,8 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
-import { ClueTiers } from './clueTiers.js';
 
 export function getClueScoresFromOpenables(openableScores: Bank) {
 	return openableScores.filter(item => Boolean(ClueTiers.find(ct => ct.id === item.id)));

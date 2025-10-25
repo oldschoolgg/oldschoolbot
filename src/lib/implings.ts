@@ -1,9 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { activity_type_enum } from '@prisma/client';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
 import activityInArea, { WorldLocations } from '@/lib/util/activityInArea.js';
-import type { ActivityTaskData } from './types/minions.js';
 
 const {
 	BabyImpling,

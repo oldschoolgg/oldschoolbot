@@ -1,4 +1,5 @@
-import { ApplicationCommandOptionType } from 'discord.js';
+import { randInt } from '@oldschoolgg/rng';
+import type { Image } from 'skia-canvas';
 
 import {
 	type CanvasContext,
@@ -7,9 +8,8 @@ import {
 	loadAndCacheLocalImage,
 	measureTextWidth
 } from '@/lib/canvas/canvasUtil.js';
-import { randInt } from '@/lib/util/rng.js';
 
-const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
+let bg: Image | null = null;
 
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
@@ -165,33 +165,35 @@ const thingMap = [
 	[new Set(['arma', 'armadyl']), arma]
 ] as const;
 
-export const fakeCommand: OSBMahojiCommand = {
+export const fakeCommand = defineCommand({
 	name: 'fake',
 	description: 'Generate fake images of getting loot.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'type',
 			description: 'The type you want to generate.',
 			required: true,
 			choices: thingMap.map(i => Array.from(i[0])[0]).map(i => ({ name: i, value: i }))
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'username',
 			description: 'The username to put on the image.',
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ type: string; username: string }>) => {
+	run: async ({ options }) => {
 		const canvas = createCanvas(399, 100);
 		const ctx = canvas.getContext('2d');
 
 		ctx.font = '16px OSRSFont';
 		ctx.fillStyle = '#000000';
 
-		const image = await bg;
-		ctx.drawImage(image, 0, 0, image.width, image.height);
+		if (!bg) {
+			bg = await loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
+		}
+		ctx.drawImage(bg, 0, 0, bg.width, bg.height);
 		for (const [names, fn] of thingMap) {
 			if (names.has(options.type.toLowerCase())) {
 				fn(ctx, options.username);
@@ -207,4 +209,4 @@ export const fakeCommand: OSBMahojiCommand = {
 		}
 		return 'Invalid input.';
 	}
-};
+});

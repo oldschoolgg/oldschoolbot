@@ -1,8 +1,8 @@
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import SimpleTable from '@/structures/SimpleTable.js';
-import { JSONClone } from '@/util/index.js';
 import { percentChance, roll, sumArr } from '@/util/smallUtils.js';
+import { JSONClone } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;

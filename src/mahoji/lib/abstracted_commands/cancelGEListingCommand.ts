@@ -1,9 +1,8 @@
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { GrandExchange } from '@/lib/grandExchange.js';
-import { makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
-import { logError } from '@/lib/util/logError.js';
+import { makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 
 export async function cancelUsersListings(user: MUser) {
 	const activeListings = await prisma.gEListing.findMany({
@@ -32,7 +31,7 @@ export async function cancelUsersListings(user: MUser) {
 		const result = await cancelGEListingCommand(user, listing.userfacing_id);
 		if (!result.startsWith('Successfully cancelled your listing')) {
 			const err = `Failed to cancel ${user.usernameOrMention}'s listings: ${result}`;
-			logError(new Error(err));
+			Logging.logError(new Error(err));
 			throw new UserError(err);
 		}
 	}
@@ -76,7 +75,7 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 			const geBank = await GrandExchange.fetchOwnedBank();
 			if (!geBank.has(refundBank)) {
 				const error = new Error(`GE doesn't have ${refundBank} to refund ${user.id}, listing ${listing.id}`);
-				logError(error);
+				Logging.logError(error);
 				await GrandExchange.lockGE(error.message);
 				return 'Something went wrong, please try again later.';
 			}

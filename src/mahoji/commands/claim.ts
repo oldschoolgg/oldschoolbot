@@ -1,6 +1,5 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import { dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { dateFm, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { BitField, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
@@ -62,16 +61,16 @@ const claimables = [
 	}))
 ];
 
-export const claimCommand: OSBMahojiCommand = {
+export const claimCommand = defineCommand({
 	name: 'claim',
 	description: 'Claim prizes, rewards and other things.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to claim.',
 			required: true,
-			autocomplete: async (value, user) => {
+			autocomplete: async (value: string, user: MUser) => {
 				const claimableItems = await prisma.reclaimableItem.findMany({
 					where: {
 						user_id: user.id
@@ -86,8 +85,7 @@ export const claimCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }) => {
 		const claimable = claimables.find(i => stringMatches(i.name, options.name));
 		if (!claimable) {
 			const reclaimableData = await getReclaimableItemsOfUser(user);
@@ -115,4 +113,4 @@ ${dateFm(new Date(rawData.date))}`;
 		const result = await claimable.action(user);
 		return result;
 	}
-};
+});

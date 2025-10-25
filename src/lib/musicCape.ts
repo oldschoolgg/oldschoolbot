@@ -1,13 +1,13 @@
 import { objectEntries, partition } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
-import { Bank, EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
+import { RandomEvents } from '@/lib/randomEvents.js';
+import { type MinigameName, Minigames } from '@/lib/settings/minigames.js';
 import type { RequirementFailure } from '@/lib/structures/Requirements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
-import { RandomEvents } from './randomEvents.js';
-import type { MinigameName } from './settings/minigames.js';
-import { Minigames } from './settings/minigames.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 export const musicCapeRequirements = new Requirements()
 	.add({
@@ -99,7 +99,14 @@ export const musicCapeRequirements = new Requirements()
 	})
 	.add({
 		name: 'Runecraft all runes at least once',
-		has: ({ uniqueRunesCrafted }) => {
+		has: async ({ user }) => {
+			const uniqueRunesCrafted = (
+				await prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+AND type = 'Runecraft'
+AND data->>'runeID' IS NOT NULL;`
+			).map(i => Number(i.rune_id));
 			const runesToCheck = resolveItems([
 				'Mind rune',
 				'Air rune',
@@ -118,7 +125,7 @@ export const musicCapeRequirements = new Requirements()
 			if (notDoneRunes.length > 0) {
 				return [
 					{
-						reason: `You need to Runecraft these runes at least once: ${formatList(notDoneRunes.map(itemNameFromID))}.`
+						reason: `You need to Runecraft these runes at least once: ${formatList(notDoneRunes.map(i => Items.itemNameFromId(i)))}.`
 					}
 				];
 			}
@@ -128,18 +135,19 @@ export const musicCapeRequirements = new Requirements()
 	})
 	.add({
 		name: 'One of Every Activity',
-		has: ({ uniqueActivitiesDone }) => {
+		has: async ({ user }) => {
+			const uniqueActivitiesDone: activity_type_enum[] = (
+				await prisma.$queryRaw<{ type: activity_type_enum }[]>`SELECT DISTINCT(type)
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+GROUP BY type;`
+			).map(i => i.type);
 			const typesNotRequiredForMusicCape: activity_type_enum[] = [
-				activity_type_enum.Easter,
-				activity_type_enum.HalloweenEvent,
+				...DEPRECATED_ACTIVITY_TYPES,
 				activity_type_enum.GroupMonsterKilling,
-				activity_type_enum.BirthdayEvent,
 				activity_type_enum.Questing,
-				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 				activity_type_enum.ChampionsChallenge,
-				activity_type_enum.Nex,
-				activity_type_enum.Revenants, // This is now under monsterActivity
-				activity_type_enum.KourendFavour // Kourend favor activity was removed
+				activity_type_enum.Nex
 			];
 			const notDoneActivities = Object.values(activity_type_enum).filter(
 				type => !typesNotRequiredForMusicCape.includes(type) && !uniqueActivitiesDone.includes(type)

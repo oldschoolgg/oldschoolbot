@@ -1,15 +1,26 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { CropUpgradeType } from '@prisma/client';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Items, itemID } from 'oldschooljs';
 
-import type { Plant } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { CropUpgradeType } from '@/prisma/main/enums.js';
+import { openSeedPack } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
+import { defineSkill, type Plant } from '@/lib/skilling/types.js';
 import allotmentPlants from './allotments.js';
 import fruitTrees from './fruitTrees.js';
 import herbPlants from './herbPlants.js';
 import hopsPlants from './hops.js';
 import specialPlants from './specialPlants.js';
 import trees from './trees.js';
+import { calcNumOfPatches, calcVariableYield } from './utils/calcsFarming.js';
+import { defaultFarmingContract, defaultPatches } from './utils/farmingConstants.js';
+import {
+	farmingPatchNames,
+	findPlant,
+	getFarmingKeyFromName,
+	isPatchName,
+	userGrowingProgressStr
+} from './utils/farmingHelpers.js';
+import { getFarmingInfoFromUser } from './utils/getFarmingInfo.js';
+import * as PatchTypes from './utils/types.js';
 
 export const plants: Plant[] = [
 	...herbPlants,
@@ -61,14 +72,25 @@ for (const plant of plants) {
 }
 allFarmingItems.push(itemID('Tangleroot'));
 
-const Farming = {
+export { PatchTypes };
+
+export const Farming = defineSkill({
 	aliases: ['farming'],
 	Plants: plants,
-	id: SkillsEnum.Farming,
+	id: 'farming',
 	emoji: Emoji.Farming,
 	name: 'Farming',
 	maleFarmerItems,
-	femaleFarmerItems
-};
-
-export default Farming;
+	femaleFarmerItems,
+	defaultFarmingContract,
+	defaultPatches,
+	calcNumOfPatches,
+	calcVariableYield,
+	userGrowingProgressStr,
+	findPlant,
+	getFarmingKeyFromName,
+	openSeedPack,
+	farmingPatchNames,
+	getFarmingInfoFromUser,
+	isPatchName
+});

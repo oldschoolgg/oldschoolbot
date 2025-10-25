@@ -1,11 +1,13 @@
-import { randInt, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
-import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
-import type { User as DJSUser } from 'discord.js';
-import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters, type SkillsEnum } from 'oldschooljs';
-import { integer, nodeCrypto } from 'random-js';
+import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
+import { uniqueArr } from '@oldschoolgg/toolkit';
+import type { User as DJSUser, GuildMember } from 'discord.js';
+import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
+import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
+import type { DegradeableItem } from '@/lib/degradeableItems.js';
+import type { AnyCommand } from '@/lib/discord/index.js';
 import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
 import { MUserClass } from '../../src/lib/MUser.js';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
@@ -20,7 +22,7 @@ import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironman
 export const TEST_CHANNEL_ID = '1111111111111111';
 
 export function mockDjsUser({ userId }: { userId: string }) {
-	return {
+	const mocked = {
 		id: userId,
 		username: 'TestUser',
 		discriminator: '0001',
@@ -28,8 +30,31 @@ export function mockDjsUser({ userId }: { userId: string }) {
 		system: false,
 		mfaEnabled: false,
 		avatarURL: () => 'https://example.com/avatar.png',
-		toString: () => '<@123456789>'
+		toString: () => '<@123456789>',
+		send: vi.fn(() => Promise.resolve())
 	} as any as DJSUser;
+	globalClient.users.cache.set(userId, mocked);
+	return mocked;
+}
+export function mockDjsMember({ userId }: { userId: string }) {
+	return {
+		user: mockDjsUser({ userId }),
+		displayName: 'TestUser',
+		roles: {
+			cache: new Map()
+		},
+		permissionsIn: () => ({
+			has: () => true
+		})
+	} as any as GuildMember;
+}
+
+export function mockUserOption(userId?: string): MahojiUserOption {
+	userId ??= mockedId();
+	return {
+		user: mockDjsUser({ userId }),
+		member: mockDjsMember({ userId })
+	};
 }
 
 class MockInteraction {
@@ -48,16 +73,39 @@ class MockInteraction {
 	async reply(res: any) {
 		this.__response__ = res;
 	}
+
+	mUser: MUser;
 	user = {
 		id: '123456789'
 	};
-	constructor(userId: string) {
-		this.user.id = userId;
+	constructor({ user }: { user: MUser }) {
+		this.mUser = user;
+		this.user.id = user.id;
+	}
+
+	async confirmation() {
+		return Promise.resolve();
+	}
+
+	async makePaginatedMessage() {
+		return Promise.resolve();
+	}
+
+	async makeParty(): Promise<MUser[]> {
+		return [this.mUser];
+	}
+
+	async defer() {
+		return Promise.resolve();
+	}
+
+	async returnStringOrFile() {
+		return Promise.resolve();
 	}
 }
 
-export function mockInteraction({ userId }: { userId: string }) {
-	return new MockInteraction(userId) as any;
+export function mockInteraction({ user }: { user: MUser }): MInteraction {
+	return new MockInteraction({ user }) as any as MInteraction;
 }
 
 export function mockChannel({ userId }: { userId: string }) {
@@ -69,7 +117,6 @@ export function mockChannel({ userId }: { userId: string }) {
 			has: () => true
 		}),
 		send: vi.fn(() => {
-			// console.log('TestChannel send called with args:', args);
 			return Promise.resolve(mockMessage({ userId }));
 		})
 	} as any;
@@ -81,42 +128,28 @@ export function mockMessage({ userId }: { userId: string }) {
 		author: mockDjsUser({ userId }),
 		channel: TestChannel,
 		send: vi.fn(() => {
-			// console.log('TestMessage send called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		reply: vi.fn(() => {
-			// console.log('TestMessage reply called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		edit: vi.fn(() => {
-			// console.log('TestMessage edit called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		delete: vi.fn(() => {
-			// console.log('TestMessage delete called');
 			return Promise.resolve();
 		})
 	};
 }
-
-const commandRunOptions = (userId: string): Omit<CommandRunOptions, 'options'> => ({
-	userID: userId,
-	guildID: '342983479501389826',
-	member: {} as any,
-	user: { id: userId } as any,
-	channelID: TEST_CHANNEL_ID,
-	interaction: mockInteraction({ userId }),
-	client: {} as any
-});
 
 export class TestUser extends MUserClass {
 	public client!: TestClient;
@@ -168,7 +201,7 @@ export class TestUser extends MUserClass {
 	}
 
 	async openedBankMatch(bankToMatch: Bank) {
-		const stats = await this.fetchStats({ openable_scores: true });
+		const stats = await this.fetchStats();
 		const currentBank = new Bank(stats.openable_scores as ItemBank);
 		if (!currentBank.equals(bankToMatch)) {
 			throw new Error(`Expected opened bank to match, difference: ${currentBank.difference(bankToMatch)}`);
@@ -223,13 +256,18 @@ export class TestUser extends MUserClass {
 
 	async kill(
 		monster: EMonster,
-		{ quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean; quantity?: number } = {}
+		{
+			quantity,
+			method,
+			shouldFail = false,
+			wilderness = false
+		}: { method?: PvMMethod; shouldFail?: boolean; quantity?: number; wilderness?: boolean } = {}
 	) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
 		const commandResult = await this.runCommand(
 			minionKCommand,
-			{ name: Monsters.get(monster)!.name, method, quantity },
+			{ name: Monsters.get(monster)!.name, method, quantity, wilderness },
 			true
 		);
 		if (shouldFail) {
@@ -241,24 +279,44 @@ export class TestUser extends MUserClass {
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
 		for (const skill of SkillsArray) xpGained[skill] = 0;
-		for (const skill of Object.keys(newXP) as SkillsEnum[]) {
+		for (const skill of Object.keys(newXP) as SkillNameType[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
 
 		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
 
-	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
-		const cmdOpts = commandRunOptions(this.id);
+	async giveCharges(type: DegradeableItem['settingsKey'], charges: number) {
+		await this.update({
+			[type]: charges
+		});
+		return this;
+	}
+
+	async runCmdAndTrip(command: AnyCommand, options: object = {}) {
+		const commandResult = await this.runCommand(command, options, true);
+		const activityResult = await this.runActivity();
+		await this.sync();
+		return { commandResult, activityResult };
+	}
+
+	async runCommand(command: AnyCommand, options: object = {}, syncAfter = false) {
+		await this.sync();
+		const mockedInt = mockInteraction({ user: this });
 		const result = await command.run({
-			...cmdOpts,
-			user: { createdAt: new Date(), id: this.id } as DJSUser,
-			options
+			userID: this.user.id,
+			guildID: '342983479501389826',
+			member: mockDjsMember({ userId: this.user.id }),
+			channelID: TEST_CHANNEL_ID,
+			interaction: mockedInt,
+			user: this,
+			options,
+			rng: MathRNG
 		});
 		if (syncAfter) {
 			await this.sync();
 		}
-		return result ?? (cmdOpts.interaction as any).__response__;
+		return result ?? (mockedInt as any).__response__;
 	}
 
 	async bankAmountMatch(itemName: string, amount: number) {
@@ -277,7 +335,7 @@ export class TestUser extends MUserClass {
 
 	async statsMatch(key: keyof UserStats, value: any) {
 		await this.sync();
-		const stats = await this.fetchStats({ [key]: true });
+		const stats = await this.fetchStats();
 		if (stats[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${stats[key]}`);
 		}
@@ -290,9 +348,9 @@ export class TestUser extends MUserClass {
 
 	randomBankSubset() {
 		const bank = new Bank();
-		const items = shuffleArr(this.bankWithGP.items()).slice(0, randInt(0, this.bankWithGP.length));
+		const items = cryptoRng.shuffle(this.bankWithGP.items()).slice(0, cryptoRng.randInt(0, this.bankWithGP.length));
 		for (const [item] of items) {
-			bank.add(item, randInt(1, this.bankWithGP.amount(item.id)));
+			bank.add(item, cryptoRng.randInt(1, this.bankWithGP.amount(item.id)));
 		}
 		return bank;
 	}
@@ -300,12 +358,13 @@ export class TestUser extends MUserClass {
 
 const idsUsed = new Set<string>();
 
-export function unMockedCyptoRand(min: number, max: number) {
-	return integer(min, max)(nodeCrypto);
-}
-
 export function mockedId() {
-	return unMockedCyptoRand(1, 5_000_000_000_000).toString();
+	const id = cryptoRng.randInt(1, 5_000_000_000_000).toString();
+	if (idsUsed.has(id)) {
+		throw new Error(`ID ${id} has already been used`);
+	}
+	idsUsed.add(id);
+	return id;
 }
 
 export async function mockUser(
@@ -314,13 +373,15 @@ export async function mockUser(
 		rangeLevel: number;
 		mageGear: number[];
 		mageLevel: number;
+		wildyGear: number[];
 		meleeGear: number[];
 		slayerLevel: number;
 		venatorBowCharges: number;
 		bank: Bank;
 		QP: number;
 		maxed: boolean;
-	}>
+		levels: Partial<Record<SkillNameType, number>>;
+	}> = {}
 ) {
 	const rangeGear = new Gear();
 	if (options.rangeGear) {
@@ -341,6 +402,12 @@ export async function mockUser(
 			meleeGear.equip(Items.getOrThrow(item));
 		}
 	}
+	const wildyGear = new Gear();
+	if (options.wildyGear) {
+		for (const item of options.wildyGear) {
+			wildyGear.equip(Items.getOrThrow(item));
+		}
+	}
 
 	const user = await createTestUser(options.bank, {
 		skills_ranged: options.rangeLevel ? convertLVLtoXP(options.rangeLevel) : undefined,
@@ -352,6 +419,9 @@ export async function mockUser(
 		venator_bow_charges: options.venatorBowCharges,
 		QP: options.QP
 	});
+	for (const [skill, level] of Object.entries(options.levels ?? {})) {
+		await user.update({ [`skills_${skill}`]: convertLVLtoXP(level) });
+	}
 	if (options.maxed) {
 		await user.max();
 	}
@@ -365,10 +435,6 @@ export async function mockUser(
 
 export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
-	if (idsUsed.has(id)) {
-		throw new Error(`ID ${id} has already been used`);
-	}
-	idsUsed.add(id);
 
 	const bank = _bank ? _bank.clone() : null;
 	let GP = userData.GP ? Number(userData.GP) : undefined;
@@ -382,7 +448,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 	}
 
 	const [user] = await prisma.$transaction([
-		global.prisma!.user.upsert({
+		prisma.user.upsert({
 			create: {
 				id,
 				...userData,
@@ -398,7 +464,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 				id
 			}
 		}),
-		global.prisma!.userStats.upsert({
+		prisma.userStats.upsert({
 			create: {
 				user_id: BigInt(id)
 			},
@@ -407,7 +473,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 				user_id: BigInt(id)
 			}
 		}),
-		global.prisma!.minigame.upsert({
+		prisma.minigame.upsert({
 			create: {
 				user_id: id
 			},
@@ -418,6 +484,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		})
 	]);
 
+	mockDjsUser({ userId: user.id });
 	return new TestUser(user);
 }
 

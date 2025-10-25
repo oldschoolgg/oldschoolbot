@@ -1,12 +1,8 @@
-import { chunk } from '@oldschoolgg/toolkit';
-import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { ApplicationCommandOptionType, EmbedBuilder, type MessageEditOptions } from 'discord.js';
+import { chunk, toTitleCase } from '@oldschoolgg/toolkit';
+import { EmbedBuilder } from 'discord.js';
 import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
 
 import pets from '@/lib/data/pets.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
 
 // Emojis for bosses with no pets
 const miscEmojis = {
@@ -30,19 +26,19 @@ function getEmojiForBoss(key: MiscEmojisKeys | string) {
 	if (pet) return pet.emoji;
 }
 
-export const bossrecordCommand: OSBMahojiCommand = {
+export const bossrecordCommand = defineCommand({
 	name: 'bossrecords',
 	description: 'Shows your OSRS boss records.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'The runescape username you want to check.',
 			required: true
 		}
 	],
-	run: async ({ options, channelID, userID, interaction }: CommandRunOptions<{ rsn: string }>) => {
-		await deferInteraction(interaction);
+	run: async ({ options, interaction }) => {
+		await interaction.defer();
 		const { bossRecords } = await Hiscores.fetch(options.rsn).catch(err => {
 			throw err.message;
 		});
@@ -55,7 +51,7 @@ export const bossrecordCommand: OSBMahojiCommand = {
 			return 'You have no boss records!. Try logging into the game, and logging out.';
 		}
 
-		const pages: MessageEditOptions[] = [];
+		const pages: CompatibleResponse[] = [];
 		for (const page of chunk(sortedEntries, 12)) {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${toTitleCase(options.rsn)} - Boss Records` })
@@ -72,24 +68,6 @@ export const bossrecordCommand: OSBMahojiCommand = {
 			pages.push({ embeds: [embed] });
 		}
 
-		const channel = globalClient.channels.cache.get(channelID.toString());
-		if (!channelIsSendable(channel)) return 'Invalid channel.';
-
-		await makePaginatedMessage(
-			channel,
-			pages,
-			(err, itx) => {
-				if (itx) {
-					logErrorForInteraction(err, itx);
-				} else {
-					logError(err);
-				}
-			},
-			userID
-		);
-		return {
-			content: `Showing OSRS Boss Records for \`${options.rsn}\`.`,
-			ephemeral: true
-		};
+		return interaction.makePaginatedMessage({ pages });
 	}
-};
+});

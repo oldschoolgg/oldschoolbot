@@ -1,14 +1,11 @@
-import { sumArr, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
-import type { activity_type_enum, UserStats } from '@prisma/client';
-import { Bank, type ItemBank, Items, Monsters, SkillsEnum, TOBRooms, toKMB } from 'oldschooljs';
+import { Emoji, formatDuration, PerkTier, stringMatches, sumArr, Time } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, Items, Monsters, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
+import type { activity_type_enum, UserStats } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
-import { calcCLDetails, isCLItem } from '@/lib/data/Collections.js';
+import { allCLItemsFiltered, calcCLDetails } from '@/lib/data/Collections.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import { getBankBgById } from '@/lib/minions/data/bankBackgrounds.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -17,6 +14,7 @@ import { RawSQL } from '@/lib/rawSql.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { ForestryEvents } from '@/lib/skilling/skills/woodcutting/forestry.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 import { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
 import { sorts } from '@/lib/sorts.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
@@ -368,19 +366,11 @@ GROUP BY type;`);
 		name: 'Personal Monster KC',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { id: number; kc: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT (data->>'mi')::int as id, SUM((data->>'q')::int)::int AS kc
-FROM activity
-WHERE completed = true
-AND user_id = ${BigInt(user.id)}
-AND type = 'MonsterKilling'
-AND data IS NOT NULL
-AND data::text != '{}'
-GROUP BY data->>'mi';`);
-			const dataPoints: [string, number][] = result
-				.sort((a, b) => b.kc - a.kc)
+			const monsterScores = (await user.fetchMStats()).monsterScores;
+			const dataPoints: [string, number][] = Object.entries(monsterScores)
+				.sort((a, b) => b[1] - a[1])
 				.slice(0, 30)
-				.map(i => [killableMonsters.find(mon => mon.id === i.id)?.name ?? i.id.toString(), i.kc]);
+				.map(i => [killableMonsters.find(mon => mon.id === Number(i))?.name ?? i[0].toString(), i[1]]);
 			return makeResponseForBuffer(
 				await createChart({
 					title: "Your Monster KC's",
@@ -515,61 +505,12 @@ GROUP BY mins;`);
 		}
 	},
 	{
-		name: 'Personal TOB Wipes',
-		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
-			const result: { wiped_room: number; count: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
-FROM activity
-WHERE type = 'TheatreOfBlood'
-AND completed = true
-AND data->>'wipedRoom' IS NOT NULL
-AND user_id = ${BigInt(user.id)}
-OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
-GROUP BY 1;`);
-			if (result.length === 0) {
-				return { content: "You haven't wiped in any Theatre of Blood raids yet." };
-			}
-
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Personal TOB Deaths',
-					format: 'kmb',
-					values: result.map(i => [TOBRooms[i.wiped_room].name, i.count]),
-					type: 'bar'
-				})
-			);
-		}
-	},
-	{
-		name: 'Global TOB Wipes',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result: { wiped_room: number; count: number }[] =
-				await prisma.$queryRaw`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
-FROM activity
-WHERE type = 'TheatreOfBlood'
-AND completed = true
-AND data->>'wipedRoom' IS NOT NULL
-GROUP BY 1;`;
-
-			return makeResponseForBuffer(
-				await createChart({
-					title: 'Global TOB Deaths',
-					format: 'kmb',
-					values: result.map(i => [TOBRooms[i.wiped_room].name, i.count]),
-					type: 'bar'
-				})
-			);
-		}
-	},
-	{
 		name: 'Global 200ms',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result = (
 				await Promise.all(
-					Object.values(SkillsEnum).map(
+					SkillsArray.map(
 						skillName =>
 							prisma.$queryRawUnsafe(`SELECT '${skillName}' as skill_name, COUNT(id)::int AS qty
 FROM users
@@ -1130,7 +1071,7 @@ FROM   (
 				content: `**Rarest CL Items**
 ${bank
 	.items()
-	.filter(isCLItem)
+	.filter(i => allCLItemsFiltered.has(i[0].id))
 	.sort(sorts.quantity)
 	.reverse()
 	.slice(0, 10)
@@ -1156,7 +1097,7 @@ FROM   (
 				content: `**Rarest CL Items (Ironmen)**
 ${bank
 	.items()
-	.filter(isCLItem)
+	.filter(i => allCLItemsFiltered.has(i[0].id))
 	.sort(sorts.quantity)
 	.reverse()
 	.slice(0, 10)

@@ -1,19 +1,20 @@
-import { notEmpty, roll, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
+import { roll } from '@oldschoolgg/rng';
+import { notEmpty, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Item, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
+import type { activity_type_enum } from '@/prisma/main/enums.js';
+import { easyCombatAchievements } from '@/lib/combat_achievements/easy.js';
+import { eliteCombatAchievements } from '@/lib/combat_achievements/elite.js';
+import { grandmasterCombatAchievements } from '@/lib/combat_achievements/grandmaster.js';
+import { hardCombatAchievements } from '@/lib/combat_achievements/hard.js';
+import { masterCombatAchievements } from '@/lib/combat_achievements/master.js';
+import { mediumCombatAchievements } from '@/lib/combat_achievements/medium.js';
 import type { Requirements } from '@/lib/structures/Requirements.js';
 import type { ActivityTaskData, TOAOptions } from '@/lib/types/minions.js';
 import type { TripFinishEffect } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatList } from '@/lib/util/smallUtils.js';
-import { easyCombatAchievements } from './easy.js';
-import { eliteCombatAchievements } from './elite.js';
-import { grandmasterCombatAchievements } from './grandmaster.js';
-import { hardCombatAchievements } from './hard.js';
-import { masterCombatAchievements } from './master.js';
-import { mediumCombatAchievements } from './medium.js';
 
 const collectMonsterNames = (...achievements: CombatAchievement[][]) => {
 	const allMonsterNamesSet = new Set<string>();
@@ -42,6 +43,7 @@ export type CombatAchievement = {
 	type: CAType;
 	monster: string;
 	desc: string;
+	details?: string;
 	activityType?: activity_type_enum;
 } & (
 	| { requirements: Requirements }
@@ -64,7 +66,9 @@ interface CARootItem {
 	taskPoints: number;
 	rewardThreshold: number;
 }
-export type CATier = 'easy' | 'medium' | 'hard' | 'elite' | 'master' | 'grandmaster';
+
+export const caTiers = ['easy', 'medium', 'hard', 'elite', 'master', 'grandmaster'] as const;
+export type CATier = (typeof caTiers)[number];
 type CARoot = Record<CATier, CARootItem>;
 
 const easy: CARootItem = {
@@ -166,9 +170,9 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 
 	let quantity = 1;
 	if ('q' in dataCopy) {
-		quantity = (dataCopy as any).q;
-	} else if ('quantity' in dataCopy) {
-		quantity = (dataCopy as any).quantity;
+		quantity = dataCopy.q;
+	} else if ('quantity' in dataCopy && dataCopy.quantity) {
+		quantity = dataCopy.quantity;
 	}
 	if (Number.isNaN(quantity)) return;
 

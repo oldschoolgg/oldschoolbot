@@ -1,12 +1,17 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import { chunk, sumArr } from '@oldschoolgg/toolkit';
-import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import { cleanString } from '@oldschoolgg/toolkit/string-util';
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { chunk, cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
+import {
+	type BaseCanvasArgs,
+	type BGSpriteName,
+	CanvasImage,
+	getClippedRegion,
+	type IBgSprite
+} from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
@@ -15,8 +20,6 @@ import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBa
 import type { FlagMap, Flags } from '@/lib/minions/types.js';
 import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
 import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
-import { type BaseCanvasArgs, type BGSpriteName, CanvasImage, getClippedRegion, type IBgSprite } from './canvasUtil.js';
-import { OSRSCanvas } from './OSRSCanvas.js';
 
 interface BankImageResult {
 	image: Buffer;
@@ -222,11 +225,7 @@ class BankImageTask {
 	public _bgSpriteData: CanvasImage = new CanvasImage();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: CanvasImage;
-	public ready!: Promise<void>;
-
-	public constructor() {
-		this.ready = this.init();
-	}
+	public ready: boolean = false;
 
 	async init() {
 		const colors: Record<BGSpriteName, string> = {
@@ -342,7 +341,7 @@ class BankImageTask {
 			const [item, quantity] = items[i];
 
 			const isNewCLItem =
-				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
+				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.has(item.id);
 
 			await c.drawItemIDSprite({
 				itemID: item.id,
@@ -399,6 +398,10 @@ class BankImageTask {
 			mahojiFlags?: BankFlag[];
 		} & BaseCanvasArgs
 	): Promise<BankImageResult> {
+		if (!this.ready) {
+			await this.init();
+			this.ready = true;
+		}
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));
@@ -508,7 +511,7 @@ class BankImageTask {
 		const isPurple: boolean =
 			flags.get('showNewCL') !== undefined &&
 			currentCL !== undefined &&
-			items.some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
+			items.some(([item]) => !currentCL.has(item.id) && allCLItems.has(item.id));
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 

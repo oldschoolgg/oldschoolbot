@@ -1,8 +1,6 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 // Barronite deposit loot table
@@ -19,9 +17,8 @@ const barroniteDepositLootTable = new LootTable()
 
 export const camdozaalSmithingTask: MinionTask = {
 	type: 'CamdozaalSmithing',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID, duration } = data;
 
 		// Count loot received during trip
 		const loot = new Bank();
@@ -34,7 +31,7 @@ export const camdozaalSmithingTask: MinionTask = {
 
 		// Add xp to user
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: smithingXpReceived,
 			duration,
 			source: 'CamdozaalSmithing'

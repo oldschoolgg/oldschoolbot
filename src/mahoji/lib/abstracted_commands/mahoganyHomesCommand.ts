@@ -1,13 +1,9 @@
-import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { Plank } from '@/lib/skilling/skills/construction/constructables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 interface IContract {
 	name: string;
@@ -141,10 +137,10 @@ export async function mahoganyHomesPointsCommand(user: MUser) {
 	return `You have **${balance.toLocaleString()}** Mahogany Homes points.`;
 }
 
-export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {
+export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: string): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
-	const conLevel = user.skillLevel(SkillsEnum.Construction);
+	const conLevel = user.skillsAsLevels.construction;
 	const kc = await user.fetchMinigameScore('mahogany_homes');
 
 	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
@@ -162,7 +158,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 		tierData,
 		kc,
-		calcMaxTripLength(user, 'MahoganyHomes'),
+		user.calcMaxTripLength('MahoganyHomes'),
 		hasSack
 	);
 
@@ -171,11 +167,11 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	}
 	await user.removeItemsFromBank(itemsNeeded);
 
-	updateBankSetting('construction_cost_bank', itemsNeeded);
+	await ClientSettings.updateBankSetting('construction_cost_bank', itemsNeeded);
 
-	await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
+	await ActivityManager.startTrip<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		type: 'MahoganyHomes',
 		minigameID: 'mahogany_homes',
 		quantity,

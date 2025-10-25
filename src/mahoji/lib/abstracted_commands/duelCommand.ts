@@ -1,16 +1,17 @@
-import { noOp, sleep, Time } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import {
 	awaitMessageComponentInteraction,
 	channelIsSendable,
-	type MahojiUserOption
-} from '@oldschoolgg/toolkit/discord-util';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
+	Emoji,
+	Events,
+	noOp,
+	sleep,
+	Time
+} from '@oldschoolgg/toolkit';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -18,12 +19,12 @@ async function checkBal(user: MUser, amount: number) {
 
 export async function duelCommand(
 	user: MUser,
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	duelUser: MUser,
 	targetAPIUser: MahojiUserOption,
 	duelAmount?: string
 ) {
-	await deferInteraction(interaction);
+	await interaction.defer();
 
 	const duelSourceUser = user;
 	const duelTargetUser = duelUser;
@@ -35,6 +36,10 @@ export async function duelCommand(
 			winner.id === duelSourceUser.id ? duelTargetUser : duelSourceUser
 		} with ${Math.floor(Math.random() * 30 + 1)} HP remaining.`;
 	}
+
+	const channel = globalClient.channels.cache.get(interaction.channelId);
+	if (!channelIsSendable(channel))
+		return 'Please give the bot permission to send messages in this channel before running this command.';
 
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
@@ -50,8 +55,6 @@ export async function duelCommand(
 		return "That person doesn't have enough GP to duel that much.";
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const duelMessage = await channel.send({
 		content: `${duelTargetUser}, do you accept the duel for ${toKMB(amount)} GP?`,
 		components: [
@@ -108,26 +111,21 @@ export async function duelCommand(
 		const winningAmount = amount * 2;
 		const tax = winningAmount - Math.floor(winningAmount * taxRate);
 		const dividedAmount = tax / 1_000_000;
-		await updateClientGPTrackSetting('economyStats_duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
+		await ClientSettings.updateClientGPTrackSetting(
+			'economyStats_duelTaxBank',
+			Math.floor(Math.round(dividedAmount * 100) / 100)
+		);
 
-		await userStatsUpdate(
-			winner.id,
-			{
-				duel_wins: {
-					increment: 1
-				}
-			},
-			{}
-		);
-		await userStatsUpdate(
-			loser.id,
-			{
-				duel_losses: {
-					increment: 1
-				}
-			},
-			{}
-		);
+		await winner.statsUpdate({
+			duel_wins: {
+				increment: 1
+			}
+		});
+		await loser.statsUpdate({
+			duel_losses: {
+				increment: 1
+			}
+		});
 
 		const loot = new Bank().add('Coins', winningAmount - tax);
 		await winner.addItemsToBank({ items: loot, collectionLog: false });

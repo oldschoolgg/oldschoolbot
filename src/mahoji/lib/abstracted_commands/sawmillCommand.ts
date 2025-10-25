@@ -1,14 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { Planks } from '@/lib/minions/data/planks.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function sawmillCommand(
 	user: MUser,
@@ -30,7 +25,7 @@ export async function sawmillCommand(
 	const boosts = [];
 	let timePerPlank = (Time.Second * 37) / 27;
 
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		timePerPlank *= 0.9;
 		boosts.push('10% for Graceful');
 	}
@@ -40,7 +35,7 @@ export async function sawmillCommand(
 		boosts.push('10% for Woodcutting Guild unlocked');
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Sawmill');
+	const maxTripLength = user.calcMaxTripLength('Sawmill');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
@@ -76,9 +71,9 @@ export async function sawmillCommand(
 	const costBank = new Bank().add('Coins', plank?.gpCost * quantity).add(plank?.inputItem, quantity);
 	await user.transactItems({ itemsToRemove: costBank });
 
-	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', plank?.gpCost * quantity));
+	await ClientSettings.updateBankSetting('construction_cost_bank', new Bank().add('Coins', plank?.gpCost * quantity));
 
-	await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
+	await ActivityManager.startTrip<SawmillActivityTaskOptions>({
 		type: 'Sawmill',
 		duration,
 		plankID: plank?.outputItem,

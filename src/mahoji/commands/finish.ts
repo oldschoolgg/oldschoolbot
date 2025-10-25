@@ -1,19 +1,18 @@
-import { notEmpty, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
+import { AttachmentBuilder } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { finishables } from '@/lib/finishables.js';
 import { sorts } from '@/lib/sorts.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
 
-export const finishCommand: OSBMahojiCommand = {
+export const finishCommand = defineCommand({
 	name: 'finish',
 	description: 'Simulate finishing a CL.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'input',
 			description: 'The CL/thing you want to finish. (e.g. corp, pets, raids)',
 			required: true,
@@ -24,14 +23,14 @@ export const finishCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'tertiaries',
 			description: 'Whether or not to include Tertiaries (e.g. capes)',
 			required: false
 		}
 	],
-	run: async ({ interaction, options }: CommandRunOptions<{ input: string; tertiaries?: boolean }>) => {
-		await deferInteraction(interaction);
+	run: async ({ interaction, options }) => {
+		await interaction.defer();
 		const { input: finishable, tertiaries } = options;
 		const val = finishables.find(
 			i => stringMatches(i.name, finishable) || i.aliases?.some(alias => stringMatches(alias, finishable))
@@ -75,4 +74,4 @@ ${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,
 			].filter(notEmpty)
 		};
 	}
-};
+});

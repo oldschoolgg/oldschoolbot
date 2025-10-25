@@ -1,32 +1,35 @@
-import { ApplicationCommandOptionType } from 'discord.js';
+import type { Image } from 'skia-canvas';
 
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 
-const bg = loadAndCacheLocalImage('./src/lib/resources/images/pm-bg.png');
+let bg: Image | null = null;
 
-export const fakepmCommand: OSBMahojiCommand = {
+export const fakepmCommand = defineCommand({
 	name: 'fakepm',
 	description: 'Generate fake images of PMs.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'username',
 			description: 'The username to put on the image.',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'message',
 			description: 'The message.',
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ message: string; username: string }>) => {
+	run: async ({ options }) => {
 		const canvas = createCanvas(376, 174);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFont';
-		const img = await bg;
-		ctx.drawImage(img, 0, 0, img.width, img.height);
+
+		if (!bg) {
+			bg = await loadAndCacheLocalImage('./src/lib/resources/images/pm-bg.png');
+		}
+		ctx.drawImage(bg, 0, 0, bg.width, bg.height);
 
 		ctx.fillStyle = '#000000';
 		ctx.fillText(`From ${options.username}: ${options.message}`, 6, 98);
@@ -37,4 +40,4 @@ export const fakepmCommand: OSBMahojiCommand = {
 			files: [{ attachment: await canvasToBuffer(canvas), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
 		};
 	}
-};
+});

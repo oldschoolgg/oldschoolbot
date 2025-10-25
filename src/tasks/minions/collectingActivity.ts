@@ -1,17 +1,14 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
 export const collectingTask: MinionTask = {
 	type: 'Collecting',
-	async run(data: CollectingOptions) {
-		const { collectableID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CollectingOptions, { user, handleTripFinish }) {
+		const { collectableID, quantity, channelID, duration } = data;
 
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
@@ -35,7 +32,7 @@ export const collectingTask: MinionTask = {
 			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}
 
-		updateBankSetting('collecting_loot', loot);
+		await ClientSettings.updateBankSetting('collecting_loot', loot);
 
 		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
 	}

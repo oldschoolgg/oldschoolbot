@@ -1,7 +1,6 @@
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { UserError } from '@oldschoolgg/toolkit';
 
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
-import { logError } from './logError.js';
 
 export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
@@ -169,14 +168,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	WHERE (data->'users')::jsonb ? '${sourceUser.id}'`;
 	transactions.push(prisma.$queryRawUnsafe(updateUsers));
 
-	// Update `detailedUsers` in ToA
-	const updateToAUsers = `UPDATE activity SET data = data::jsonb || CONCAT('{"detailedUsers":', REPLACE(data->>'detailedUsers', '${sourceUser.id}', '${destUser.id}'),'}')::jsonb WHERE type = 'TombsOfAmascut' AND data->>'detailedUsers' LIKE '%${sourceUser.id}%'`;
-	transactions.push(prisma.$queryRawUnsafe(updateToAUsers));
-
 	try {
 		await prisma.$transaction(transactions);
 	} catch (err: any) {
-		logError(err);
+		Logging.logError(err);
 		throw new UserError('Error migrating user. Sorry about that!');
 	}
 
@@ -205,7 +200,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 			await roboChimpClient.$transaction(robochimpTx);
 		} catch (err: any) {
 			err.message += ' - User already migrated! Robochimp migration failed!';
-			logError(err);
+			Logging.logError(err);
 			throw new UserError('Robochimp migration failed, but minion data migrated already!');
 		}
 	}

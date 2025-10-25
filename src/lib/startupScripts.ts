@@ -1,9 +1,3 @@
-import { Items } from 'oldschooljs';
-
-import { globalConfig } from './constants.js';
-import { sql } from './postgres.js';
-import { adminPingLog } from './util.js';
-
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 startupScripts.push({
@@ -126,6 +120,12 @@ const checkConstraints: CheckConstraint[] = [
 		column: 'quantity',
 		name: 'ge_bank_quantity_min',
 		body: 'quantity >= 0'
+	},
+	{
+		table: 'table_bank_item',
+		column: 'quantity',
+		name: 'table_bank_quantity_min',
+		body: 'quantity >= 0'
 	}
 ];
 
@@ -133,9 +133,9 @@ for (const { table, name, body } of checkConstraints) {
 	startupScripts.push({
 		sql: `DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 
-                   FROM   information_schema.check_constraints 
-                   WHERE  constraint_name = '${name}' 
+    IF NOT EXISTS (SELECT 1
+                   FROM   information_schema.check_constraints
+                   WHERE  constraint_name = '${name}'
                    AND    constraint_schema = 'public')
     THEN
         ALTER TABLE "${table}" ADD CONSTRAINT "${name}" CHECK (${body});
@@ -149,44 +149,56 @@ startupScripts.push({
 });
 
 startupScripts.push({
-	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_buy_filter_sort 
+	sql: `CREATE INDEX IF NOT EXISTS activity_completed_finishdate_idx
+ON activity (finish_date)
+WHERE completed = false;`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS activity_user_recent_done_idx
+ON activity (user_id, finish_date DESC, id DESC)
+INCLUDE (type)
+WHERE completed = true
+  AND finish_date >= DATE '2025-06-06';
+`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_buy_filter_sort
 ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item DESC, created_at ASC);`
 });
 startupScripts.push({
-	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_sell_filter_sort 
+	sql: `CREATE INDEX IF NOT EXISTS idx_ge_listing_sell_filter_sort
 ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item ASC, created_at ASC);`
 });
 
 startupScripts.push({
-	sql: `CREATE INDEX IF NOT EXISTS ge_transaction_sell_listing_id_created_at_idx 
+	sql: `CREATE INDEX IF NOT EXISTS ge_transaction_sell_listing_id_created_at_idx
 ON ge_transaction (sell_listing_id, created_at DESC);`
 });
 
-const itemMetaDataNames = Items.map(item => `(${item.id}, '${item.name.replace(/'/g, "''")}')`).join(', ');
-const itemMetaDataQuery = `
-INSERT INTO item_metadata (id, name)
-VALUES ${itemMetaDataNames}
-ON CONFLICT (id) 
-DO 
-  UPDATE SET name = EXCLUDED.name
-WHERE item_metadata.name IS DISTINCT FROM EXCLUDED.name;
-`;
-if (globalConfig.isProduction) {
-	startupScripts.push({ sql: itemMetaDataQuery });
-}
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS ge_listing_lookup_idx
+ON ge_listing (user_id, userfacing_id)
+WHERE cancelled_at IS NULL
+  AND fulfilled_at IS NULL
+  AND quantity_remaining > 0;`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS users_clarray_gin ON users USING gin (cl_array gin__int_ops);`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS users_bitfield_gin ON users USING gin (bitfield gin__int_ops) WHERE CARDINALITY(bitfield) > 0;`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX IF NOT EXISTS users_rsn_lower_idx
+ON users ((LOWER("RSN")))
+WHERE "RSN" IS NOT NULL;`
+});
 
 export async function runStartupScripts() {
-	await sql.begin(sql => startupScripts.map(query => sql.unsafe(query.sql)));
-
-	const usersWithFractionalItemQuantities =
-		await sql`SELECT u.id AS user_id, item.key AS item_id, item.value::numeric AS quantity
-FROM users u
-CROSS JOIN LATERAL jsonb_each_text(u.bank::jsonb) AS item
-WHERE u.bank::text LIKE '%.%'
-  AND item.value LIKE '%.%';`;
-	if (usersWithFractionalItemQuantities.length > 0) {
-		adminPingLog(
-			`Found ${usersWithFractionalItemQuantities.length} users with fractional item quantities: ${JSON.stringify(usersWithFractionalItemQuantities).slice(0, 500)}`
-		);
-	}
+	await prisma.$transaction(startupScripts.map(query => prisma.$executeRawUnsafe(query.sql)));
 }

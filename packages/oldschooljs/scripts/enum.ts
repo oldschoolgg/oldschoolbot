@@ -1,6 +1,5 @@
 import { writeFileSync } from 'node:fs';
 
-import { SkillsEnum } from '@/constants.js';
 import type { Item } from '@/meta/item.js';
 import { Monsters } from '@/simulation/monsters/index.js';
 import Items from '@/structures/Items.js';
@@ -71,7 +70,8 @@ async function main() {
 					'slayer',
 					'collection',
 					'salve',
-					...Object.values(SkillsEnum).map(n => `${n.toLowerCase()} `)
+					// TODO
+					// ...Object.values(SkillsEnum).map(n => `${n.toLowerCase()} `)
 				].some(_str => _item.name.toLowerCase().includes(_str)))
 		) {
 			eGearStr += `\n\t${codeKey} = ${value},`;

@@ -1,10 +1,10 @@
-import { notEmpty, ProductID, products } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { notEmpty, ProductID, products } from '@oldschoolgg/toolkit';
+import { bold } from 'discord.js';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
 
-export const redeemCommand: OSBMahojiCommand = {
+export const redeemCommand = defineCommand({
 	name: 'redeem',
 	description: 'Redeem a code you received.',
 	attributes: {
@@ -12,14 +12,13 @@ export const redeemCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'code',
 			description: 'The code to redeem.',
 			required: true
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ code: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }) => {
 		const code = await roboChimpClient.storeCode.findFirst({
 			where: {
 				code: options.code
@@ -68,7 +67,7 @@ export const redeemCommand: OSBMahojiCommand = {
 				'bit' in product
 					? roboChimpClient.user.update({
 							where: {
-								id: BigInt(userID)
+								id: BigInt(user.id)
 							},
 							data: {
 								store_bitfield: {
@@ -84,4 +83,4 @@ export const redeemCommand: OSBMahojiCommand = {
 
 		return `You have redeemed: ${bold(product.name)}!`;
 	}
-};
+});

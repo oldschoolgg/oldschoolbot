@@ -1,7 +1,7 @@
-import type { Prisma } from '@prisma/client';
 import { Bank, EItem, Items } from 'oldschooljs';
 
 import type { BlowpipeData } from '@/lib/minions/types.js';
+import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 
 const defaultBlowpipe: BlowpipeData = {
 	scales: 0,
@@ -130,7 +130,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	}
 	await user.removeItemsFromBank(itemsToRemove);
 	await user.update({
-		blowpipe: currentData as any as Prisma.InputJsonObject
+		blowpipe: currentData as any as PrismaCompatibleJsonObject
 	});
 	return `You added ${itemsToRemove} to your Toxic blowpipe.`;
 }
@@ -155,7 +155,7 @@ async function removeDartsCommand(user: MUser) {
 	rawBlowpipeData.dartQuantity = 0;
 	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
 	await user.update({
-		blowpipe: rawBlowpipeData as any as Prisma.InputJsonObject
+		blowpipe: rawBlowpipeData as any as PrismaCompatibleJsonObject
 	});
 	validateBlowpipeData(rawBlowpipeData);
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;

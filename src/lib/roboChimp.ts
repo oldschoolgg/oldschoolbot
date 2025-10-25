@@ -1,14 +1,13 @@
-import { calcWhatPercent, round, sumArr } from '@oldschoolgg/toolkit';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import type { TriviaQuestion, User } from '@prisma/robochimp';
+import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
 import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
+import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
+import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
+import { calculateMastery } from '@/lib/mastery.js';
+import { cacheRoboChimpUser } from '@/lib/perkTier.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { BOT_TYPE, globalConfig, masteryKey } from './constants.js';
-import { calculateMastery } from './mastery.js';
-import { cacheRoboChimpUser } from './perkTier.js';
 
 export type RobochimpUser = User;
 
@@ -34,8 +33,8 @@ LIMIT 10;`;
 	return random;
 }
 
-const clKey: keyof User = 'osb_cl_percent';
-const levelKey: keyof User = 'osb_total_level';
+const clKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_cl_percent' : 'bso_cl_percent';
+const levelKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_level' : 'bso_total_level';
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
 
 export async function roboChimpSyncData(user: MUser, newCL?: Bank) {

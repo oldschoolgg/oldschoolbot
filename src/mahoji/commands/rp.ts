@@ -1,39 +1,31 @@
-import { randArrItem, sumArr, Time } from '@oldschoolgg/toolkit';
-import { isValidDiscordSnowflake, type MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { dateFm } from '@oldschoolgg/toolkit/util';
-import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
+import { randArrItem } from '@oldschoolgg/rng';
+import { dateFm, isValidDiscordSnowflake, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
-import { ApplicationCommandOptionType, codeBlock, SnowflakeUtil } from 'discord.js';
+import { codeBlock, SnowflakeUtil } from 'discord.js';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
+import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
+import { choicesOf, gearSetupOption } from '@/lib/discord/index.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { sql } from '@/lib/postgres.js';
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
-import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
+import { gifs } from '@/mahoji/commands/admin.js';
+import { getUserInfo } from '@/mahoji/commands/minion.js';
+import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
-import { gearSetupOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { gifs } from './admin.js';
-import { getUserInfo } from './minion.js';
-import { sellPriceOfItem } from './sell.js';
 
 const itemFilters = [
 	{
@@ -56,152 +48,40 @@ function isProtectedAccount(user: MUser) {
 	return false;
 }
 
-const actions = [
-	{
-		name: 'validate_ge',
-		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
-		run: async () => {
-			const isValid = await GrandExchange.extensiveVerification();
-			if (isValid) {
-				return 'No issues found.';
-			}
-			return 'Something was invalid. Check logs!';
-		}
-	},
-	{
-		name: 'sync_roles',
-		allowed: (user: MUser) =>
-			globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator),
-		run: async () => {
-			return runRolesTask(!globalConfig.isProduction);
-		}
-	},
-	{
-		name: 'force_garbage_collection',
-		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
-		run: async () => {
-			const timer = new Stopwatch();
-			for (let i = 0; i < 3; i++) {
-				gc!();
-			}
-			return `Garbage collection took ${timer.stop()}`;
-		}
-	},
-	{
-		name: 'prismadebug',
-		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
-		run: async () => {
-			const debugs = [
-				{
-					name: 'pgjs activity select',
-					run: async () => {
-						await sql`
-							SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;
-						`;
-					}
-				},
-				{
-					name: 'Raw Activity Select',
-					run: async () => {
-						await prisma.$queryRawUnsafe(
-							'SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;'
-						);
-					}
-				},
-				{
-					name: 'Prisma Activity Select',
-					run: async () => {
-						await prisma.activity.findMany({
-							where: {
-								completed: false,
-								finish_date: {
-									lt: new Date()
-								}
-							},
-							take: 5
-						});
-					}
-				},
-				{
-					name: 'pgjs user select',
-					run: async () => {
-						await sql`
-							SELECT * FROM users WHERE id = '157797566833098752';
-						`;
-					}
-				},
-				{
-					name: 'muserfetch',
-					run: async () => {
-						await mUserFetch('157797566833098752');
-					}
-				},
-				{
-					name: 'raw user fetch',
-					run: async () => {
-						await prisma.$queryRawUnsafe("SELECT * FROM users WHERE id = '157797566833098752';");
-					}
-				}
-			];
-
-			let res = '';
-			for (const debug of debugs) {
-				const results = [];
-				for (let i = 0; i < 500; i++) {
-					const start = performance.now();
-					await debug.run();
-					const end = performance.now();
-					results.push(end - start);
-				}
-				const avg = results.reduce((a, b) => a + b, 0) / results.length;
-				const max = Math.max(...results);
-				const min = Math.min(...results);
-				const median = results.sort((a, b) => a - b)[Math.floor(results.length / 2)];
-				const obj = { avg, max, min, median };
-				res += `${debug.name} took ${Object.entries(obj)
-					.map(t => `${t[0]}: ${t[1].toFixed(2)}ms`)
-					.join(' | ')}\n`;
-			}
-
-			return res;
-		}
-	}
-];
-
-export const rpCommand: OSBMahojiCommand = {
+export const rpCommand = defineCommand({
 	name: 'rp',
 	description: 'Admin tools second set',
 	guildID: globalConfig.supportServerID,
 	options: [
+		// {
+		// 	type: 'SubcommandGroup',
+		// 	name: 'action',
+		// 	description: 'Actions',
+		// 	options: actions.map(a => ({
+		// 		type: 'Subcommand',
+		// 		name: a.name,
+		// 		description: a.name,
+		// 		options: []
+		// 	}))
+		// },
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
-			name: 'action',
-			description: 'Actions',
-			options: actions.map(a => ({
-				type: ApplicationCommandOptionType.Subcommand,
-				name: a.name,
-				description: a.name,
-				options: []
-			}))
-		},
-		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'player',
 			description: 'Player manipulation tools',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'set_buy_date',
 					description: 'Set the minion buy date of a user.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user.',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'message_id',
 							description: 'The message id when they bought their minion.',
 							required: true
@@ -209,18 +89,18 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'viewbank',
 					description: 'View a users bank.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user.',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'json',
 							description: 'Get bank in JSON format',
 							required: false
@@ -228,25 +108,25 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'add_patron_time',
 					description: 'Give user temporary patron time.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user.',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'tier',
 							description: 'The tier to give.',
 							required: true,
-							choices: [1, 2, 3, 4, 5, 6].map(i => ({ name: i.toString(), value: i }))
+							choices: choicesOf([1, 2, 3, 4, 5, 6])
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'time',
 							description: 'The time.',
 							required: true
@@ -254,12 +134,12 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'unequip_all_items',
 					description: 'Force unequip all items from a user.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user.',
 							required: true
@@ -271,60 +151,60 @@ export const rpCommand: OSBMahojiCommand = {
 						{
 							name: 'all',
 							description: 'Unequip all gear slots',
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							required: false
 						},
 						{
 							name: 'pet',
 							description: 'Unequip pet also?',
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							required: false
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'steal_items',
 					description: 'Steal items from a user',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'items',
 							description: 'The items to take',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item_filter',
 							description: 'A preconfigured item filter.',
 							required: false,
-							choices: itemFilters.map(i => ({ name: i.name, value: i.name }))
+							choices: choicesOf(itemFilters.map(i => i.name))
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'reason',
 							description: 'The reason'
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'delete',
 							description: 'To delete the items instead'
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'view_user',
 					description: 'View a users info',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user',
 							required: true
@@ -332,48 +212,48 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'migrate_user',
 					description: "Migrate a user's minion profile across Discord accounts",
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'source',
 							description: 'Source account with data to preserve and migrate',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'dest',
 							description: 'Destination account (any existing data on this account will be deleted)',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'reason',
 							description: 'The reason'
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'list_trades',
 					description: 'Show trades between users',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'partner',
 							description: 'Optional second user, will only show trades between the users',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'guild_id',
 							description: 'Optional - Restrict search to this guild.',
 							required: false
@@ -381,12 +261,12 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'ge_cancel',
 					description: 'Cancel GE Listings',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user',
 							required: true
@@ -396,27 +276,27 @@ export const rpCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'user_event',
 			description: 'Manage user events.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'cl_completion',
 					description: 'CL Completion',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user that completed the cl.',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'cl_name',
 							description: 'The cl the user completed',
 							required: true,
-							autocomplete: async val => {
+							autocomplete: async (val: string) => {
 								return allCollectionLogsFlat
 									.map(c => c.name)
 									.filter(c => (!val ? true : c.toLowerCase().includes(val.toLowerCase())))
@@ -424,7 +304,7 @@ export const rpCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'message_id',
 							description: 'The message id of when they got it',
 							required: true
@@ -432,28 +312,25 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'max_total',
 					description: 'Set max total level or total xp',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user that reached max total xp or level',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'type',
 							description: 'Did they reach max total level or max total xp',
 							required: true,
-							choices: [
-								{ name: UserEventType.MaxTotalLevel, value: UserEventType.MaxTotalLevel },
-								{ name: UserEventType.MaxTotalXP, value: UserEventType.MaxTotalXP }
-							]
+							choices: choicesOf([UserEventType.MaxTotalLevel, UserEventType.MaxTotalXP])
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'message_id',
 							description: 'The message id of when they got it',
 							required: true
@@ -461,39 +338,36 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'max',
 					description: 'Set max level/xp, e.g. lvl 99 or 200m in one skill',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user that reached max total xp or level',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'type',
 							description: 'Did they reach max level or max xp',
 							required: true,
-							choices: [
-								{ name: UserEventType.MaxXP, value: UserEventType.MaxXP },
-								{ name: UserEventType.MaxLevel, value: UserEventType.MaxLevel }
-							]
+							choices: choicesOf([UserEventType.MaxXP, UserEventType.MaxLevel])
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'skill',
 							description: 'What skill?',
 							required: true,
-							autocomplete: async val => {
+							autocomplete: async (val: string) => {
 								return Object.values(xp_gains_skill_enum)
 									.filter(s => (!val ? true : s.includes(val.toLowerCase())))
 									.map(s => ({ name: s, value: s }));
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'message_id',
 							description: 'The message id of when they got it',
 							required: true
@@ -503,52 +377,9 @@ export const rpCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction,
-		guildID
-	}: CommandRunOptions<{
-		user_event?: {
-			cl_completion?: { user: MahojiUserOption; cl_name: string; message_id: string };
-			max_total?: { user: MahojiUserOption; type: UserEventType; message_id: string };
-			max?: { user: MahojiUserOption; type: UserEventType; skill: xp_gains_skill_enum; message_id: string };
-		};
-		action?: any;
-		player?: {
-			viewbank?: { user: MahojiUserOption; json?: boolean };
-			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
-			steal_items?: {
-				user: MahojiUserOption;
-				items?: string;
-				item_filter?: string;
-				reason?: string;
-				delete?: boolean;
-			};
-			unequip_all_items?: {
-				user: MahojiUserOption;
-				gear_setup?: string;
-				all?: boolean;
-				pet?: boolean;
-			};
-			set_buy_date?: {
-				user: MahojiUserOption;
-				message_id: string;
-			};
-			view_user?: { user: MahojiUserOption };
-			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
-			list_trades?: {
-				user: MahojiUserOption;
-				partner?: MahojiUserOption;
-				guild_id?: string;
-			};
-			ge_cancel?: { user: MahojiUserOption };
-		};
-	}>) => {
-		await deferInteraction(interaction);
-
-		const adminUser = await mUserFetch(userID);
-		const isAdmin = globalConfig.adminUserIDs.includes(userID);
+	run: async ({ options, user: adminUser, interaction, guildID }) => {
+		await interaction.defer();
+		const isAdmin = globalConfig.adminUserIDs.includes(adminUser.id);
 		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
@@ -560,7 +391,7 @@ export const rpCommand: OSBMahojiCommand = {
 				options.user_event.cl_completion?.message_id ??
 				options.user_event.max?.message_id ??
 				options.user_event.max_total?.message_id;
-			if (!messageId || !isValidDiscordSnowflake(messageId)) return null;
+			if (!messageId || !isValidDiscordSnowflake(messageId)) return 'Invalid';
 
 			const snowflake = DiscordSnowflake.timestampFrom(messageId);
 			const date = new Date(snowflake);
@@ -568,7 +399,7 @@ export const rpCommand: OSBMahojiCommand = {
 				options.user_event.cl_completion?.user.user.id ??
 				options.user_event.max?.user.user.id ??
 				options.user_event.max_total?.user.user.id;
-			if (!userId) return null;
+			if (!userId) return 'Invalid';
 			const targetUser = await mUserFetch(userId);
 			let type: UserEventType = UserEventType.CLCompletion;
 			let skill: xp_gains_skill_enum | undefined;
@@ -585,12 +416,12 @@ Date: ${dateFm(date)}`;
 			if (options.user_event.max) {
 				confirmationStr += `\nSkill: ${options.user_event.max.skill}`;
 				type = options.user_event.max.type;
-				skill = options.user_event.max.skill;
+				skill = options.user_event.max.skill as xp_gains_skill_enum;
 			}
 			if (options.user_event.max_total) {
 				type = options.user_event.max_total.type;
 			}
-			await handleMahojiConfirmation(interaction, confirmationStr);
+			await interaction.confirmation(confirmationStr);
 			await insertUserEvent({
 				userID: targetUser.id,
 				type,
@@ -608,28 +439,27 @@ Date: ${dateFm(date)}`;
 
 		if (!isMod) return randArrItem(gifs);
 
-		if (options.action) {
-			for (const action of actions) {
-				if (options.action[action.name]) {
-					if (!action.allowed(adminUser)) return randArrItem(gifs);
-					try {
-						const result = await action.run();
-						return result;
-					} catch (err) {
-						logError(err);
-						return 'An error occurred.';
-					}
-				}
-			}
-		}
+		// if (options.action) {
+		// 	for (const action of actions) {
+		// 		if (options.action[action.name]) {
+		// 			if (!action.allowed(adminUser)) return randArrItem(gifs);
+		// 			try {
+		// 				const result = await action.run();
+		// 				return result;
+		// 			} catch (err) {
+		// 				Logging.logError(err as Error);
+		// 				return 'An error occurred.';
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		if (options.player?.set_buy_date) {
 			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);
 			const res = SnowflakeUtil.deconstruct(options.player.set_buy_date.message_id);
 			const date = new Date(Number(res.timestamp));
 
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to set the buy date of ${userToCheck.usernameOrMention} to ${dateFm(date)}?`
 			);
 			await sendToChannelID(Channel.BotLogs, {
@@ -680,8 +510,7 @@ Date: ${dateFm(date)}`;
 			if (gearSlot === undefined) {
 				return 'No gear slot specified.';
 			}
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Unequip ${gearSlot} gear from ${targetUser.usernameOrMention}?${
 					warningMsgs.length > 0 ? warningMsgs.join('\n') : ''
 				}`
@@ -689,7 +518,7 @@ Date: ${dateFm(date)}`;
 			const slotsToUnequip = gearSlot === 'all' ? allGearSlots : [gearSlot];
 
 			for (const gear of slotsToUnequip) {
-				const result = await unEquipAllCommand(targetUser.id, gear as GearSetupType, true);
+				const result = await unEquipAllCommand(targetUser, gear as GearSetupType, true);
 				if (!result.endsWith('setup.')) return result;
 			}
 
@@ -729,8 +558,7 @@ Date: ${dateFm(date)}`;
 					})
 				);
 			}
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
 					userToStealFrom.usernameOrMention
 				}?`
@@ -777,13 +605,11 @@ Date: ${dateFm(date)}`;
 			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
 			const destXp = sumArr(Object.values(destUser.skillsAsXP));
 			if (destXp > sourceXp) {
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`The target user, ${destUser.logName}, has more XP than the source user; are you really sure the names aren't backwards?`
 				);
 			}
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.logName}\` is the account you want to preserve, and \`${destUser.logName}\` is the new account that will have ALL existing data destroyed?`
 			);
 			const result = await migrateUser(sourceUser, destUser);
@@ -893,4 +719,4 @@ Date: ${dateFm(date)}`;
 
 		return 'Invalid command.';
 	}
-};
+});

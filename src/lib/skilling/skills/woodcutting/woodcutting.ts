@@ -1,8 +1,7 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { itemID, LootTable } from 'oldschooljs';
 
-import type { Log } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { defineSkill, type Log } from '@/lib/skilling/types.js';
 
 const sulliuscepTable = new LootTable()
 	.add('Numulite', [4, 8], 34)
@@ -228,14 +227,14 @@ const lumberjackItems: { [key: number]: number } = {
 	[itemID('Lumberjack boots')]: 0.2
 };
 
-const Woodcutting = {
+const Woodcutting = defineSkill({
 	aliases: ['wc', 'woodcutting'],
 	Logs: logs,
-	id: SkillsEnum.Woodcutting,
+	id: 'woodcutting',
 	emoji: Emoji.Woodcutting,
 	name: 'Woodcutting',
 	lumberjackItems,
 	twitchersGloves
-};
+});
 
 export default Woodcutting;

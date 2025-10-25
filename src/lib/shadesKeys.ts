@@ -1,7 +1,7 @@
+import { roll } from '@oldschoolgg/rng';
 import { Bank, type Item, ItemGroups, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng.js';
-import type { UnifiedOpenable } from './openables.js';
+import type { UnifiedOpenable } from '@/lib/openables.js';
 
 const BronzeChest = new LootTable({ limit: 99 })
 	.every('Swamp paste', [10, 20])

@@ -1,8 +1,7 @@
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { UserError } from '@oldschoolgg/toolkit';
 
 import type { ActivityTaskData, ActivityTaskOptions } from '@/lib/types/minions.js';
 import { isGroupActivity } from '@/lib/util.js';
-import { logError } from './logError.js';
 
 export default async function addSubTaskToActivityTask<T extends ActivityTaskData>(
 	taskToAdd: Omit<T, 'finishDate' | 'id'>
@@ -17,7 +16,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 	const duration = Math.floor(taskToAdd.duration);
 	if (duration < 0) {
 		const error = new Error('Task has a negative duration');
-		logError(error, {
+		Logging.logError(error, {
 			user_id: taskToAdd.userID,
 			task: taskToAdd.type
 		});
@@ -55,7 +54,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 		ActivityManager.activitySync(createdActivity);
 		return createdActivity;
 	} catch (err: any) {
-		logError(err, {
+		Logging.logError(err, {
 			user_id: taskToAdd.userID,
 			data: JSON.stringify(data)
 		});

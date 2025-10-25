@@ -1,4 +1,4 @@
-import type { Channel, GuildTextBasedChannel, TextChannel, User } from 'discord.js';
+import { type Channel, type GuildTextBasedChannel, PermissionsBitField, type TextChannel, type User } from 'discord.js';
 
 /**
  * Checks if the bot can send a message to a channel object.
@@ -9,8 +9,11 @@ export function channelIsSendable(channel: Channel | undefined | null): channel 
 	if (!channel.isTextBased()) return false;
 	if (channel.isDMBased()) return true;
 	const permissions = channel.permissionsFor(channel.client.user!);
-	// biome-ignore lint/complexity/useOptionalChain: <explanation>
-	return permissions !== null && permissions.has('ViewChannel') && permissions.has('SendMessages');
+	if (!permissions) return false;
+	return (
+		permissions.has(PermissionsBitField.Flags.ViewChannel) &&
+		permissions.has(PermissionsBitField.Flags.SendMessages)
+	);
 }
 
 export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {

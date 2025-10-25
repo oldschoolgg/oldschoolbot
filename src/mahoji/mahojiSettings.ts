@@ -1,20 +1,14 @@
-import { isObject, objectEntries, Time } from '@oldschoolgg/toolkit';
-import { evalMathExpression } from '@oldschoolgg/toolkit/math';
-import type { Prisma, User, UserStats } from '@prisma/client';
+import { evalMathExpression, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { globalConfig } from '@/lib/constants.js';
 import { userhasDiaryTier } from '@/lib/diaries.js';
-import type { SelectedUserStats } from '@/lib/MUser.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
 import type { Rune } from '@/lib/skilling/skills/runecraft.js';
-import { hasGracefulEquipped } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
-import type { JsonKeys } from '@/lib/util.js';
-import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables.js';
+import { formatItemReqs, formatList, hasSkillReqs, readableStatName } from '@/lib/util/smallUtils.js';
+import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 
 export function mahojiParseNumber({
 	input,
@@ -34,163 +28,10 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-type SelectedUser<T extends Prisma.UserSelect> = {
-	[K in keyof T]: K extends keyof User ? User[K] : never;
-};
-
-export async function mahojiUsersSettingsFetch<T extends Prisma.UserSelect = Prisma.UserSelect>(
-	userID: string | bigint,
-	selectKeys: T
-): Promise<SelectedUser<T>> {
-	const id = BigInt(userID);
-
-	return prisma.user.upsert({
-		create: {
-			id: id.toString()
-		},
-		update: {},
-		where: {
-			id: id.toString()
-		},
-		select: selectKeys
-	}) as SelectedUser<T>;
-}
-
 export function patronMsg(tierNeeded: number) {
 	return `You need to be a Tier ${
 		tierNeeded - 1
 	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
-}
-
-export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
-	return new Bank(user.bank as ItemBank);
-}
-
-export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
-	userID: string,
-	selectKeys: T
-): Promise<SelectedUserStats<T>> {
-	const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
-	let result = await prisma.userStats.findFirst({
-		where: {
-			user_id: BigInt(userID)
-		},
-		select: keysToSelect
-	});
-
-	if (!result) {
-		result = await prisma.userStats.upsert({
-			where: {
-				user_id: BigInt(userID)
-			},
-			create: {
-				user_id: BigInt(userID)
-			},
-			update: {},
-			select: keysToSelect
-		});
-	}
-
-	return result as unknown as SelectedUserStats<T>;
-}
-
-export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
-	userID: string,
-	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>,
-	selectKeys?: T
-): Promise<SelectedUserStats<T>> {
-	const id = BigInt(userID);
-	let keys: object | undefined = selectKeys;
-	if (!selectKeys || Object.keys(selectKeys).length === 0) {
-		keys = { user_id: true };
-	}
-
-	return (await prisma.userStats.update({
-		data,
-		where: {
-			user_id: id
-		},
-		select: keys
-	})) as SelectedUserStats<T>;
-}
-
-export async function userStatsBankUpdate(user: MUser | string, key: JsonKeys<UserStats>, bank: Bank) {
-	if (!key) throw new Error('No key provided to userStatsBankUpdate');
-	const userID = typeof user === 'string' ? user : user.id;
-	const stats =
-		typeof user === 'string'
-			? await fetchUserStats(userID, { [key]: true })
-			: await user.fetchStats({ [key]: true });
-	const currentItemBank = stats[key] as ItemBank;
-	if (!isObject(currentItemBank)) {
-		throw new Error(`Key ${key} is not an object.`);
-	}
-	await userStatsUpdate(
-		userID,
-		{
-			[key]: bank.clone().add(currentItemBank).toJSON()
-		},
-		{ [key]: true }
-	);
-}
-
-export async function updateClientGPTrackSetting(
-	setting:
-		| 'gp_luckypick'
-		| 'gp_pickpocket'
-		| 'gp_alch'
-		| 'gp_slots'
-		| 'gp_dice'
-		| 'gp_open'
-		| 'gp_daily'
-		| 'gp_sell'
-		| 'gp_pvm'
-		| 'economyStats_duelTaxBank',
-	amount: number
-) {
-	await prisma.clientStorage.update({
-		where: {
-			id: globalConfig.clientID
-		},
-		data: {
-			[setting]: {
-				increment: Math.floor(amount)
-			}
-		},
-		select: {
-			id: true
-		}
-	});
-}
-export async function updateGPTrackSetting(
-	setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots',
-	amount: number,
-	user: MUser
-) {
-	await userStatsUpdate(user.id, {
-		[setting]: {
-			increment: amount
-		}
-	});
-}
-
-export function userHasGracefulEquipped(user: MUser) {
-	const rawGear = user.gear;
-	for (const i of Object.values(rawGear)) {
-		if (hasGracefulEquipped(i)) return true;
-	}
-	return false;
-}
-
-export function rogueOutfitPercentBonus(user: MUser): number {
-	const skillingSetup = user.gear.skilling;
-	let amountEquipped = 0;
-	for (const id of ItemGroups.rogueOutfit) {
-		if (skillingSetup.hasEquipped([id])) {
-			amountEquipped++;
-		}
-	}
-	return amountEquipped * 20;
 }
 
 function formatItemCosts(consumable: Consumable, timeToFinish: number) {
@@ -265,7 +106,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 						monster.name
 					}: ${set.items
 						.map(i => i.itemID)
-						.map(itemNameFromID)
+						.map(i => Items.itemNameFromId(i))
 						.join(', ')}.`
 				];
 			}
@@ -391,41 +232,10 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 	return 0;
 }
 
-export async function addToGPTaxBalance(userID: string | string, amount: number) {
-	await Promise.all([
-		prisma.clientStorage.update({
-			where: {
-				id: globalConfig.clientID
-			},
-			data: {
-				gp_tax_balance: {
-					increment: amount
-				}
-			},
-			select: {
-				id: true
-			}
-		}),
-		userStatsUpdate(
-			userID,
-			{
-				total_gp_traded: {
-					increment: amount
-				}
-			},
-			{}
-		)
-	]);
-}
-
 export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
-	const stats = await user.fetchStats({ openable_scores: true });
-	const { openable_scores: newOpenableScores } = await userStatsUpdate(
-		user.id,
-		{
-			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
-		},
-		{ openable_scores: true }
-	);
+	const stats = await user.fetchStats();
+	const { openable_scores: newOpenableScores } = await user.statsUpdate({
+		openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
+	});
 	return new Bank(newOpenableScores as ItemBank);
 }

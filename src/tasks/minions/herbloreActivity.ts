@@ -1,16 +1,15 @@
+import { percentChance, randInt } from '@oldschoolgg/rng';
 import { Bank, EItem } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { percentChance, randInt } from '@/lib/util/rng.js';
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
-	async run(data: HerbloreActivityTaskOptions) {
-		const { mixableID, quantity, zahur, wesley, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
+		const { mixableID, quantity, zahur, wesley, channelID, duration } = data;
+
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const xpReceived = zahur && mixableItem.zahur ? 0 : quantity * mixableItem.xp;
 		let outputQuantity = mixableItem.outputMultiple ? quantity * mixableItem.outputMultiple : quantity;

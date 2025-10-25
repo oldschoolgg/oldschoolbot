@@ -1,23 +1,9 @@
-import {
-	type CommandOptions,
-	channelIsSendable,
-	convertMahojiCommandToAbstractCommand
-} from '@oldschoolgg/toolkit/discord-util';
-import type { NewUser } from '@prisma/client';
-import {
-	type APIInteractionGuildMember,
-	type ButtonInteraction,
-	type ChatInputCommandInteraction,
-	type GuildMember,
-	MessageFlags,
-	type User
-} from 'discord.js';
-import { isEmpty } from 'remeda';
+import { ButtonInteraction } from 'discord.js';
 
-import { deferInteraction, handleInteractionError, interactionReply } from '@/lib/util/interactionReply.js';
-import { logError } from '@/lib/util/logError.js';
-import { postCommand } from '@/mahoji/lib/postCommand.js';
-import { preCommand } from '@/mahoji/lib/preCommand.js';
+import type { NewUser } from '@/prisma/main.js';
+import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
+import type { CommandOptions } from '@/lib/discord/commandOptions.js';
+import { MInteraction } from '@/lib/structures/MInteraction.js';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });
@@ -32,147 +18,31 @@ export async function getNewUser(id: string): Promise<NewUser> {
 	return value;
 }
 
-async function runMahojiCommand({
-	channelID,
-	userID,
-	guildID,
-	commandName,
-	options,
-	user,
-	interaction
-}: {
-	interaction: ChatInputCommandInteraction | ButtonInteraction;
-	commandName: string;
-	options: Record<string, unknown>;
-	channelID: string;
-	userID: string;
-	guildID: string | undefined | null;
-	user: User | MUser;
-	member: APIInteractionGuildMember | GuildMember | null;
-}) {
-	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
-	if (!mahojiCommand) {
-		throw new Error(`No mahoji command found for ${commandName}`);
-	}
-
-	return mahojiCommand.run({
-		userID,
-		guildID: guildID ? guildID : undefined,
-		channelID,
-		options,
-		user: globalClient.users.cache.get(user.id)!,
-		member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
-		client: globalClient.mahojiClient,
-		interaction: interaction as ChatInputCommandInteraction
-	});
-}
-
-interface RunCommandArgs {
+export interface RunCommandArgs {
 	commandName: string;
 	args: CommandOptions;
-	user: User | MUser;
-	channelID: string;
-	member: APIInteractionGuildMember | GuildMember | null;
+	user: MUser;
 	isContinue?: boolean;
-	bypassInhibitors?: true;
-	guildID: string | undefined | null;
-	interaction: ButtonInteraction | ChatInputCommandInteraction;
+	interaction: MInteraction;
 	continueDeltaMillis: number | null;
-	ephemeral?: boolean;
+	ignoreUserIsBusy?: true;
 }
+
 export async function runCommand({
 	commandName,
 	args,
-	isContinue,
-	bypassInhibitors,
-	channelID,
-	guildID,
-	user,
-	member,
-	interaction,
-	continueDeltaMillis,
-	ephemeral
-}: RunCommandArgs): Promise<null | CommandResponse> {
-	const channel = globalClient.channels.cache.get(channelID);
-	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
-	if (!mahojiCommand || !channelIsSendable(channel)) {
-		await interactionReply(interaction, {
-			content:
-				"There was an error running this command, I cannot find the channel you used the command in, or I don't have permission to send messages in it.",
-			flags: MessageFlags.Ephemeral
-		});
-		return null;
-	}
-	const abstractCommand = convertMahojiCommandToAbstractCommand(mahojiCommand);
+	interaction: _interaction,
+	ignoreUserIsBusy
+}: RunCommandArgs): CommandResponse {
+	const interaction: MInteraction =
+		_interaction instanceof ButtonInteraction ? new MInteraction({ interaction: _interaction }) : _interaction;
+	const command = globalClient.allCommands.find(c => c.name === commandName)!;
 
-	const error: Error | null = null;
-	let inhibited = false;
-	try {
-		const inhibitedReason = await preCommand({
-			abstractCommand,
-			userID: user.id,
-			channelID,
-			guildID,
-			bypassInhibitors: bypassInhibitors ?? false,
-			apiUser: null,
-			options: args
-		});
-
-		if (inhibitedReason) {
-			inhibited = true;
-			let response =
-				typeof inhibitedReason.reason! === 'string' ? inhibitedReason.reason : inhibitedReason.reason?.content!;
-			if (isEmpty(response)) {
-				response = 'You cannot use this command right now.';
-			}
-
-			await interactionReply(interaction, {
-				content: response,
-				ephemeral: inhibitedReason.silent
-			});
-			return null;
-		}
-
-		await deferInteraction(interaction, ephemeral);
-
-		const result = await runMahojiCommand({
-			options: args,
-			commandName,
-			guildID,
-			channelID,
-			userID: user.id,
-			member,
-			user,
-			interaction
-		});
-		if (result && !interaction.replied) {
-			await interactionReply(
-				interaction,
-				typeof result === 'string'
-					? { content: result, ephemeral: ephemeral }
-					: { ...result, ephemeral: ephemeral }
-			);
-		}
-		return result;
-	} catch (err: any) {
-		await handleInteractionError(err, interaction);
-	} finally {
-		try {
-			await postCommand({
-				abstractCommand,
-				userID: user.id,
-				guildID,
-				channelID,
-				args,
-				error,
-				isContinue: isContinue ?? false,
-				inhibited,
-				continueDeltaMillis
-			});
-		} catch (err) {
-			logError(err);
-		}
-	}
-
-	return null;
+	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({
+		interaction,
+		command,
+		options: args,
+		ignoreUserIsBusy
+	});
+	return response;
 }

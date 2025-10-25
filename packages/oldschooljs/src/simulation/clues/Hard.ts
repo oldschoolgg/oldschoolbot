@@ -1,5 +1,5 @@
+import { EItem } from '@/EItem.js';
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
-import { itemID } from '@/util/index.js';
 import { BlessingTable, FirelighterTable, GildedTable, PrayerPageTable, TeleportScrollTable } from './General.js';
 
 export const Hard3rdageTable = new LootTable()
@@ -205,4 +205,4 @@ export const HardStandardTable = new LootTable()
 
 export const HardClueTable = new LootTable().add(HardStandardTable, 1, 12).add(HardRareTable, 1, 1);
 export const HardCasket = new LootTable().add(HardClueTable, [4, 6]).tertiary(15, 'Clue scroll (master)');
-HardCasket.allItems.push(itemID('Clue scroll (master)'));
+HardCasket.allItems.push(EItem.CLUE_SCROLL_MASTER);

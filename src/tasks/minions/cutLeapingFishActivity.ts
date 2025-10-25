@@ -1,20 +1,18 @@
-import { percentChance } from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const cutLeapingFishTask: MinionTask = {
 	type: 'CutLeapingFish',
-	async run(data: CutLeapingFishActivityTaskOptions) {
-		const { fishID, userID, channelID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CutLeapingFishActivityTaskOptions, { user, handleTripFinish }) {
+		const { fishID, channelID, quantity, duration } = data;
+
 		const barbarianFish = LeapingFish.find(LeapingFish => LeapingFish.item.id === fishID)!;
 
-		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
+		const currentLevel = user.skillsAsLevels.cooking;
 		let caviarChance = 0;
 		let caviarCreated = 0;
 		let roeChance = 0;
@@ -71,7 +69,7 @@ export const cutLeapingFishTask: MinionTask = {
 		xpReceived += 15 * caviarCreated;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: xpReceived,
 			duration
 		});

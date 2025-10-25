@@ -1,12 +1,11 @@
-import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import type { GEListing, GETransaction } from '@prisma/client';
+import { calcPercentOfNum, calcWhatPercent, toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
+import type { GEListing, GETransaction } from '@/prisma/main.js';
+import { CanvasSpritesheet } from '@/lib/canvas/CanvasSpritesheet.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import type { GEListingWithTransactions } from '@/mahoji/commands/ge.js';
-import { CanvasSpritesheet } from './CanvasSpritesheet.js';
-import { OSRSCanvas } from './OSRSCanvas.js';
 
 class GeImageGeneratorSingleton {
 	public geInterface: Canvas | null = null;
@@ -100,7 +99,10 @@ class GeImageGeneratorSingleton {
 
 		const maxWidth = progressShadowImage.width;
 		ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
-		let percentFullfilled = calcWhatPercent(listing.quantity_remaining, listing.total_quantity);
+		let percentFullfilled = calcWhatPercent(
+			listing.total_quantity - listing.quantity_remaining,
+			listing.total_quantity
+		);
 		if (listing.type === 'Sell') {
 			percentFullfilled = 100 - percentFullfilled;
 		}
@@ -110,17 +112,6 @@ class GeImageGeneratorSingleton {
 		} else {
 			ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
 		}
-		// if (listing.quantity_remaining > 0) {
-		// 	progressWidth = Math.floor(
-		// 		(maxWidth * (listing.total_quantity - listing.quantity_remaining)) / listing.total_quantity
-		// 	);
-		// 	if (progressWidth === maxWidth) {
-		// 		ctx.fillStyle = OSRSCanvas.COLORS.DARK_GREEN;
-		// 	}
-		// } else {
-		// 	ctx.fillStyle = OSRSCanvas.COLORS.DARK_RED;
-		// 	progressWidth = maxWidth;
-		// }
 
 		ctx.fillRect(0, 0, progressWidth, progressShadowImage.height);
 		ctx.drawImage(progressShadowImage, 0, 0, progressShadowImage.width, progressShadowImage.height);

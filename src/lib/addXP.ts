@@ -1,21 +1,18 @@
-import { noOp, Time } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { type User, UserEventType } from '@prisma/client';
+import { Events, formatOrdinal, noOp, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
+import { UserEventType } from '@/prisma/main/enums.js';
+import type { User } from '@/prisma/main.js';
+import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
-import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import { globalConfig, LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP } from './constants.js';
-import type { AddXpParams } from './minions/types.js';
-import { sql } from './postgres.js';
 
 const skillsVals = Object.values(Skills);
-const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_99_XP}`).join(' AND ');
+const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${MAX_LEVEL_XP}`).join(' AND ');
 const makeQuery = (ironman: boolean) => `SELECT count(id)::int
 FROM users
 WHERE ${maxFilter}
@@ -45,8 +42,8 @@ async function onMax(user: MUser) {
 
 	globalClient.emit(Events.ServerNotification, str);
 	sendToChannelID(globalConfig.supportServerID, { content: str }).catch(noOp);
-	const kUser = await globalClient.fetchUser(user.id);
-	const clientSettings = await mahojiClientSettingsFetch({ maxing_message: true });
+	const kUser = await globalClient.users.fetch(user.id);
+	const clientSettings = await ClientSettings.fetch({ maxing_message: true });
 	kUser.send(clientSettings.maxing_message).catch(noOp);
 }
 
@@ -121,7 +118,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			{
 				count: string;
 			}[]
-		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
+		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${MAX_LEVEL_XP};`);
 
 		let str = `${skill.emoji} **${user.badgedUsername}'s** minion, ${
 			user.minionName
@@ -135,14 +132,16 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 					count: string;
 				}[]
 			>(
-				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${LEVEL_99_XP};`
+				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${MAX_LEVEL_XP};`
 			);
 			str += ` They are the ${formatOrdinal(Number.parseInt(ironmenWith.count) + 1)} Ironman to get 99.`;
 		}
 		globalClient.emit(Events.ServerNotification, str);
 	}
 
-	await sql.unsafe(`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`);
+	await prisma.$queryRawUnsafe(
+		`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`
+	);
 	(user.user as User)[`skills_${params.skillName}`] = BigInt(Math.floor(newXP));
 	user.updateProperties();
 

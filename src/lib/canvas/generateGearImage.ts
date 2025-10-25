@@ -1,13 +1,13 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EquipmentSlot } from 'oldschooljs';
 
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { type BaseCanvasArgs, calcAspectRatioFit } from '@/lib/canvas/canvasUtil.js';
+import { gearImages, transmogItems } from '@/lib/canvas/gearImageData.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { type Gear, maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear.js';
-import { bankImageTask } from './bankImage.js';
-import { type BaseCanvasArgs, calcAspectRatioFit } from './canvasUtil.js';
-import { gearImages, transmogItems } from './gearImageData.js';
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -239,6 +239,10 @@ export async function generateGearImage({
 	petID?: number | null;
 	gearTemplate?: number;
 } & BaseCanvasArgs) {
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
 	const {
 		sprite,
 		uniqueSprite,

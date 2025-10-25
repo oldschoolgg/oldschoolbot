@@ -1,0 +1,4822 @@
+[
+	{
+		"name": "Abyssal lantern",
+		"item_cost": {
+			"26792": 1500
+		},
+		"output_items": {
+			"26822": 1
+		}
+	},
+	{
+		"name": "Achievement diary cape",
+		"output_items": {
+			"13070": 1,
+			"19476": 1
+		},
+		"gp_cost": 99000
+	},
+	{
+		"name": "Achievement diary cape(t)",
+		"output_items": {
+			"13069": 1
+		},
+		"qp_required": 321,
+		"gp_cost": 99000
+	},
+	{
+		"name": "Adamant gloves",
+		"qp_required": 65,
+		"gp_cost": 600000,
+		"ironman_price": 3250,
+		"output_items": {
+			"7459": 1
+		}
+	},
+	{
+		"name": "Adamant halberd",
+		"gp_cost": 100000,
+		"ironman_price": 50000,
+		"qp_required": 150,
+		"skills_needed": {
+			"mining": 70,
+			"smithing": 70,
+			"farming": 70,
+			"woodcutting": 70,
+			"agility": 70,
+			"herblore": 70,
+			"construction": 70,
+			"hunter": 70
+		},
+		"output_items": {
+			"3200": 1
+		}
+	},
+	{
+		"name": "Adamant pickaxe",
+		"gp_cost": 10000,
+		"ironman_price": 3200,
+		"output_items": {
+			"1271": 1
+		}
+	},
+	{
+		"name": "Agility cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Air rune",
+		"gp_cost": 15,
+		"output_items": {
+			"556": 1
+		}
+	},
+	{
+		"name": "Air talisman",
+		"item_cost": {
+			"26792": 10
+		},
+		"output_items": {
+			"1438": 1
+		}
+	},
+	{
+		"name": "Amulet of accuracy",
+		"gp_cost": 50000,
+		"qp_required": 5,
+		"output_items": {
+			"1478": 1
+		}
+	},
+	{
+		"name": "Amylase pack (Colossal Wyrm Agility)",
+		"output_items": {
+			"12641": 1
+		},
+		"item_cost": {
+			"30038": 100
+		}
+	},
+	{
+		"name": "Amylase pack (Mark of grace)",
+		"output_items": {
+			"12641": 1
+		},
+		"item_cost": {
+			"11849": 10
+		}
+	},
+	{
+		"name": "Ancient signet",
+		"gp_cost": 100000,
+		"qp_required": 105,
+		"output_items": {
+			"20611": 1
+		}
+	},
+	{
+		"name": "Angler boots",
+		"item_cost": {
+			"22820": 100
+		},
+		"output_items": {
+			"13261": 1
+		}
+	},
+	{
+		"name": "Angler hat",
+		"item_cost": {
+			"22820": 100
+		},
+		"output_items": {
+			"13258": 1
+		}
+	},
+	{
+		"name": "Angler top",
+		"item_cost": {
+			"22820": 100
+		},
+		"output_items": {
+			"13259": 1
+		}
+	},
+	{
+		"name": "Angler waders",
+		"item_cost": {
+			"22820": 100
+		},
+		"output_items": {
+			"13260": 1
+		}
+	},
+	{
+		"name": "Anti-dragon shield",
+		"qp_required": 35,
+		"gp_cost": 10000,
+		"output_items": {
+			"1540": 1
+		}
+	},
+	{
+		"name": "Antipoison(4)",
+		"gp_cost": 10000,
+		"output_items": {
+			"2446": 1
+		}
+	},
+	{
+		"name": "Arceuus signet",
+		"gp_cost": 100000,
+		"output_items": {
+			"20615": 1
+		}
+	},
+	{
+		"name": "Archer helm",
+		"gp_cost": 780000,
+		"qp_required": 60,
+		"ironman_price": 78000,
+		"output_items": {
+			"3749": 1
+		}
+	},
+	{
+		"name": "Ardougne cloak 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Ardougne cloak 1"],
+		"output_items": {
+			"13121": 1
+		}
+	},
+	{
+		"name": "Ardougne cloak 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Ardougne cloak 2"],
+		"output_items": {
+			"13122": 1
+		}
+	},
+	{
+		"name": "Ardougne cloak 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Ardougne cloak 3"],
+		"output_items": {
+			"13123": 1
+		}
+	},
+	{
+		"name": "Ardougne cloak 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Ardougne cloak 4"],
+		"output_items": {
+			"13124": 1
+		}
+	},
+	{
+		"name": "Ardougne Knight Outfit",
+		"output_items": {
+			"23785": 1,
+			"23787": 1,
+			"23789": 1
+		},
+		"gp_cost": 5000000,
+		"qp_required": 200
+	},
+	{
+		"name": "Attack cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Bag full of gems",
+		"item_cost": {
+			"12012": 40
+		},
+		"output_items": {
+			"19473": 1
+		}
+	},
+	{
+		"name": "Bag full of gems (minerals)",
+		"output_items": {
+			"19473": 1
+		},
+		"item_cost": {
+			"21341": 20
+		}
+	},
+	{
+		"name": "Bag full of gems (Stardust)",
+		"item_cost": {
+			"25527": 300
+		},
+		"output_items": {
+			"19473": 1
+		}
+	},
+	{
+		"name": "Ball of wool",
+		"gp_cost": 300,
+		"output_items": {
+			"1759": 1
+		}
+	},
+	{
+		"name": "Barrelchest anchor",
+		"qp_required": 30,
+		"gp_cost": 2000000,
+		"output_items": {
+			"10887": 1
+		}
+	},
+	{
+		"name": "Barrows gloves",
+		"qp_required": 175,
+		"gp_cost": 1000000,
+		"ironman_price": 130000,
+		"output_items": {
+			"7462": 1
+		}
+	},
+	{
+		"name": "Bearhead",
+		"gp_cost": 1000000,
+		"qp_required": 105,
+		"output_items": {
+			"4502": 1
+		}
+	},
+	{
+		"name": "Beer",
+		"gp_cost": 1000000,
+		"output_items": {
+			"1917": 1
+		}
+	},
+	{
+		"name": "Berserker helm",
+		"gp_cost": 780000,
+		"qp_required": 60,
+		"ironman_price": 98000,
+		"output_items": {
+			"3751": 1
+		}
+	},
+	{
+		"name": "Black cape",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"1019": 1
+		}
+	},
+	{
+		"name": "Black gloves",
+		"qp_required": 35,
+		"gp_cost": 400000,
+		"ironman_price": 1000,
+		"output_items": {
+			"7457": 1
+		}
+	},
+	{
+		"name": "Black naval shirt",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8956": 1
+		}
+	},
+	{
+		"name": "Black navy slacks",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8995": 1
+		}
+	},
+	{
+		"name": "Black tricorn hat",
+		"item_cost": {
+			"8951": 500
+		},
+		"output_items": {
+			"8963": 1
+		}
+	},
+	{
+		"name": "Blood talisman",
+		"item_cost": {
+			"26792": 100
+		},
+		"output_items": {
+			"1450": 1
+		}
+	},
+	{
+		"name": "Blue boots",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"630": 1
+		}
+	},
+	{
+		"name": "Blue cape",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"1021": 1
+		}
+	},
+	{
+		"name": "Blue hat",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"660": 1
+		}
+	},
+	{
+		"name": "Blue naval shirt",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8952": 1
+		}
+	},
+	{
+		"name": "Blue navy slacks",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8991": 1
+		}
+	},
+	{
+		"name": "Blue robe bottoms",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"650": 1
+		}
+	},
+	{
+		"name": "Blue robe top",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"640": 1
+		}
+	},
+	{
+		"name": "Blue rum (trouble brewing)",
+		"item_cost": {
+			"8951": 20
+		},
+		"output_items": {
+			"8941": 1
+		}
+	},
+	{
+		"name": "Blue tricorn hat",
+		"item_cost": {
+			"8951": 500
+		},
+		"output_items": {
+			"8959": 1
+		}
+	},
+	{
+		"name": "Body rune",
+		"gp_cost": 20,
+		"output_items": {
+			"559": 1
+		}
+	},
+	{
+		"name": "Body talisman",
+		"item_cost": {
+			"26792": 10
+		},
+		"output_items": {
+			"1446": 1
+		}
+	},
+	{
+		"name": "Bolt of cloth",
+		"output_items": {
+			"8790": 1
+		},
+		"gp_cost": 5000
+	},
+	{
+		"name": "Bomber cap",
+		"gp_cost": 50000,
+		"qp_required": 21,
+		"output_items": {
+			"9945": 1
+		}
+	},
+	{
+		"name": "Bomber jacket",
+		"gp_cost": 50000,
+		"qp_required": 21,
+		"output_items": {
+			"9944": 1
+		}
+	},
+	{
+		"name": "Bone club",
+		"gp_cost": 5000,
+		"output_items": {
+			"5018": 1
+		}
+	},
+	{
+		"name": "Bone dagger",
+		"gp_cost": 8000,
+		"output_items": {
+			"8872": 1
+		}
+	},
+	{
+		"name": "Bone spear",
+		"gp_cost": 5000,
+		"output_items": {
+			"5016": 1
+		}
+	},
+	{
+		"name": "Bonesack",
+		"gp_cost": 1000000,
+		"qp_required": 82,
+		"output_items": {
+			"7918": 1
+		}
+	},
+	{
+		"name": "Book of the dead",
+		"gp_cost": 1000000,
+		"qp_required": 120,
+		"ironman_price": 9500,
+		"output_items": {
+			"25818": 1
+		}
+	},
+	{
+		"name": "Boots of stone",
+		"gp_cost": 100000,
+		"output_items": {
+			"23037": 1
+		}
+	},
+	{
+		"name": "Boots of the eye",
+		"item_cost": {
+			"26792": 250
+		},
+		"output_items": {
+			"26856": 1
+		}
+	},
+	{
+		"name": "Bowl of fish",
+		"item_cost": {
+			"21656": 30
+		},
+		"output_items": {
+			"21693": 1
+		}
+	},
+	{
+		"name": "Broad arrowhead pack",
+		"gp_cost": 22500,
+		"ironman_price": 5500,
+		"output_items": {
+			"11874": 100
+		}
+	},
+	{
+		"name": "Broad arrowheads",
+		"gp_cost": 225,
+		"ironman_price": 55,
+		"output_items": {
+			"11874": 1
+		}
+	},
+	{
+		"name": "Broad arrows",
+		"gp_cost": 250,
+		"ironman_price": 60,
+		"output_items": {
+			"4160": 1
+		}
+	},
+	{
+		"name": "Broken coffin",
+		"gp_cost": 2000,
+		"output_items": {
+			"25457": 1
+		}
+	},
+	{
+		"name": "Bronze axe",
+		"gp_cost": 500,
+		"ironman_price": 16,
+		"output_items": {
+			"1351": 1
+		}
+	},
+	{
+		"name": "Bronze fist flag",
+		"item_cost": {
+			"8951": 3000
+		},
+		"output_items": {
+			"8968": 1
+		}
+	},
+	{
+		"name": "Bronze gloves",
+		"qp_required": 10,
+		"gp_cost": 100000,
+		"ironman_price": 130,
+		"output_items": {
+			"7454": 1
+		}
+	},
+	{
+		"name": "Bronze pickaxe",
+		"gp_cost": 500,
+		"ironman_price": 100,
+		"output_items": {
+			"1265": 1
+		}
+	},
+	{
+		"name": "Brown apron",
+		"gp_cost": 1000,
+		"ironman_price": 250,
+		"output_items": {
+			"1757": 1
+		}
+	},
+	{
+		"name": "Brown naval shirt",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8955": 1
+		}
+	},
+	{
+		"name": "Brown navy slacks",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8994": 1
+		}
+	},
+	{
+		"name": "Brown tricorn hat",
+		"item_cost": {
+			"8951": 500
+		},
+		"output_items": {
+			"8962": 1
+		}
+	},
+	{
+		"name": "Bucket",
+		"gp_cost": 30,
+		"ironman_price": 10,
+		"output_items": {
+			"1925": 1
+		}
+	},
+	{
+		"name": "Bucket of water",
+		"gp_cost": 500,
+		"ironman_price": 12,
+		"output_items": {
+			"1929": 1
+		}
+	},
+	{
+		"name": "Bull roarer",
+		"gp_cost": 1000,
+		"ironman_price": 100,
+		"output_items": {
+			"716": 1
+		}
+	},
+	{
+		"name": "Butterfly jar",
+		"gp_cost": 500,
+		"output_items": {
+			"10012": 1
+		}
+	},
+	{
+		"name": "Calcified acorn",
+		"output_items": {
+			"30042": 1
+		},
+		"item_cost": {
+			"30038": 900
+		}
+	},
+	{
+		"name": "Cannon barrels",
+		"gp_cost": 2500000,
+		"qp_required": 5,
+		"ironman_price": 200625,
+		"output_items": {
+			"10": 1
+		}
+	},
+	{
+		"name": "Cannon base",
+		"gp_cost": 2500000,
+		"qp_required": 5,
+		"ironman_price": 200625,
+		"output_items": {
+			"6": 1
+		}
+	},
+	{
+		"name": "Cannon furnace",
+		"gp_cost": 2500000,
+		"qp_required": 5,
+		"ironman_price": 200625,
+		"output_items": {
+			"12": 1
+		}
+	},
+	{
+		"name": "Cannon stand",
+		"gp_cost": 2500000,
+		"qp_required": 5,
+		"ironman_price": 200625,
+		"output_items": {
+			"8": 1
+		}
+	},
+	{
+		"name": "Cape of legends",
+		"gp_cost": 250000,
+		"qp_required": 105,
+		"output_items": {
+			"1052": 1
+		}
+	},
+	{
+		"name": "Cape pouch",
+		"item_cost": {
+			"28134": 2500
+		},
+		"output_items": {
+			"28613": 1
+		}
+	},
+	{
+		"name": "Celestial ring (uncharged)",
+		"item_cost": {
+			"25527": 2000
+		},
+		"output_items": {
+			"25539": 1
+		}
+	},
+	{
+		"name": "Chaos talisman",
+		"item_cost": {
+			"26792": 30
+		},
+		"output_items": {
+			"1452": 1
+		}
+	},
+	{
+		"name": "Chocolate bar",
+		"gp_cost": 1000,
+		"output_items": {
+			"1973": 1
+		}
+	},
+	{
+		"name": "Chompy bird hat (bowman)",
+		"output_items": {
+			"2979": 1
+		},
+		"gp_cost": 1760,
+		"minigame_score_req": ["big_chompy_bird_hunting", 40]
+	},
+	{
+		"name": "Chompy bird hat (bowmaster)",
+		"output_items": {
+			"2989": 1
+		},
+		"gp_cost": 30800,
+		"minigame_score_req": ["big_chompy_bird_hunting", 700]
+	},
+	{
+		"name": "Chompy bird hat (dragon archer)",
+		"output_items": {
+			"2993": 1
+		},
+		"gp_cost": 99000,
+		"minigame_score_req": ["big_chompy_bird_hunting", 2250]
+	},
+	{
+		"name": "Chompy bird hat (expert dragon archer)",
+		"output_items": {
+			"2995": 1
+		},
+		"gp_cost": 176000,
+		"minigame_score_req": ["big_chompy_bird_hunting", 4000]
+	},
+	{
+		"name": "Chompy bird hat (expert ogre dragon archer)",
+		"output_items": {
+			"2994": 1
+		},
+		"gp_cost": 132000,
+		"minigame_score_req": ["big_chompy_bird_hunting", 3000]
+	},
+	{
+		"name": "Chompy bird hat (expert)",
+		"output_items": {
+			"2991": 1
+		},
+		"gp_cost": 57200,
+		"minigame_score_req": ["big_chompy_bird_hunting", 1300]
+	},
+	{
+		"name": "Chompy bird hat (forester)",
+		"output_items": {
+			"2987": 1
+		},
+		"gp_cost": 17600,
+		"minigame_score_req": ["big_chompy_bird_hunting", 400]
+	},
+	{
+		"name": "Chompy bird hat (marksman)",
+		"output_items": {
+			"2983": 1
+		},
+		"gp_cost": 5500,
+		"minigame_score_req": ["big_chompy_bird_hunting", 125]
+	},
+	{
+		"name": "Chompy bird hat (ogre bowman)",
+		"output_items": {
+			"2978": 1
+		},
+		"gp_cost": 1320,
+		"minigame_score_req": ["big_chompy_bird_hunting", 30]
+	},
+	{
+		"name": "Chompy bird hat (ogre bowmaster)",
+		"output_items": {
+			"2988": 1
+		},
+		"gp_cost": 24200,
+		"minigame_score_req": ["big_chompy_bird_hunting", 550]
+	},
+	{
+		"name": "Chompy bird hat (ogre dragon archer)",
+		"output_items": {
+			"2992": 1
+		},
+		"gp_cost": 74800,
+		"minigame_score_req": ["big_chompy_bird_hunting", 1700]
+	},
+	{
+		"name": "Chompy bird hat (ogre expert)",
+		"output_items": {
+			"2990": 1
+		},
+		"gp_cost": 44000,
+		"minigame_score_req": ["big_chompy_bird_hunting", 1000]
+	},
+	{
+		"name": "Chompy bird hat (ogre forester)",
+		"output_items": {
+			"2986": 1
+		},
+		"gp_cost": 13200,
+		"minigame_score_req": ["big_chompy_bird_hunting", 300]
+	},
+	{
+		"name": "Chompy bird hat (ogre marksman)",
+		"output_items": {
+			"2982": 1
+		},
+		"gp_cost": 4180,
+		"minigame_score_req": ["big_chompy_bird_hunting", 95]
+	},
+	{
+		"name": "Chompy bird hat (ogre woodsman)",
+		"output_items": {
+			"2984": 1
+		},
+		"gp_cost": 7480,
+		"minigame_score_req": ["big_chompy_bird_hunting", 170]
+	},
+	{
+		"name": "Chompy bird hat (ogre yeoman)",
+		"output_items": {
+			"2980": 1
+		},
+		"gp_cost": 2200,
+		"minigame_score_req": ["big_chompy_bird_hunting", 50]
+	},
+	{
+		"name": "Chompy bird hat (woodsman)",
+		"output_items": {
+			"2985": 1
+		},
+		"gp_cost": 9900,
+		"minigame_score_req": ["big_chompy_bird_hunting", 225]
+	},
+	{
+		"name": "Chompy bird hat (yeoman)",
+		"output_items": {
+			"2981": 1
+		},
+		"gp_cost": 3080,
+		"minigame_score_req": ["big_chompy_bird_hunting", 70]
+	},
+	{
+		"name": "Climbing boots",
+		"output_items": {
+			"3105": 1
+		},
+		"gp_cost": 100000,
+		"qp_required": 20
+	},
+	{
+		"name": "Clothes pouch blueprint",
+		"item_cost": {
+			"1517": 300,
+			"1519": 300,
+			"28134": 10000
+		},
+		"output_items": {
+			"28166": 1
+		}
+	},
+	{
+		"name": "Coal bag",
+		"item_cost": {
+			"12012": 100
+		},
+		"output_items": {
+			"764": 1
+		}
+	},
+	{
+		"name": "Colossal wyrm teleport scroll",
+		"output_items": {
+			"30040": 1
+		},
+		"item_cost": {
+			"30038": 40
+		}
+	},
+	{
+		"name": "Compost",
+		"gp_cost": 400,
+		"output_items": {
+			"6032": 1
+		}
+	},
+	{
+		"name": "Construction cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Cooking cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Cooking gauntlets",
+		"qp_required": 25,
+		"gp_cost": 1000000,
+		"ironman_price": 25000,
+		"output_items": {
+			"775": 1
+		}
+	},
+	{
+		"name": "Cosmic talisman",
+		"item_cost": {
+			"26792": 30
+		},
+		"output_items": {
+			"1454": 1
+		}
+	},
+	{
+		"name": "Crafting cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Cream boots",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"632": 1
+		}
+	},
+	{
+		"name": "Cream hat",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"662": 1
+		}
+	},
+	{
+		"name": "Cream robe bottoms",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"652": 1
+		}
+	},
+	{
+		"name": "Cream robe top",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"642": 1
+		}
+	},
+	{
+		"name": "Crystal bow",
+		"gp_cost": 900000,
+		"output_items": {
+			"23983": 1
+		}
+	},
+	{
+		"name": "Cup of hot water",
+		"gp_cost": 1500,
+		"output_items": {
+			"4460": 1
+		}
+	},
+	{
+		"name": "Cutthroat flag",
+		"item_cost": {
+			"8951": 2000
+		},
+		"output_items": {
+			"8966": 1
+		}
+	},
+	{
+		"name": "Dark acorn",
+		"output_items": {
+			"24733": 1
+		},
+		"item_cost": {
+			"24711": 3000
+		}
+	},
+	{
+		"name": "Dark dye",
+		"item_cost": {
+			"24711": 300
+		},
+		"output_items": {
+			"24729": 1
+		}
+	},
+	{
+		"name": "Darklight",
+		"gp_cost": 200000,
+		"qp_required": 58,
+		"output_items": {
+			"6746": 1
+		}
+	},
+	{
+		"name": "Death talisman",
+		"item_cost": {
+			"26792": 80
+		},
+		"output_items": {
+			"1456": 1
+		}
+	},
+	{
+		"name": "Decorative magic hat",
+		"output_items": {
+			"11898": 1
+		},
+		"item_cost": {
+			"4067": 20
+		}
+	},
+	{
+		"name": "Decorative magic robe",
+		"output_items": {
+			"11897": 1
+		},
+		"item_cost": {
+			"4067": 30
+		}
+	},
+	{
+		"name": "Decorative magic top",
+		"output_items": {
+			"11896": 1
+		},
+		"item_cost": {
+			"4067": 40
+		}
+	},
+	{
+		"name": "Decorative quiver",
+		"output_items": {
+			"11901": 1
+		},
+		"item_cost": {
+			"4067": 40
+		}
+	},
+	{
+		"name": "Decorative ranged legs",
+		"output_items": {
+			"11900": 1
+		},
+		"item_cost": {
+			"4067": 30
+		}
+	},
+	{
+		"name": "Decorative ranged top",
+		"output_items": {
+			"11899": 1
+		},
+		"item_cost": {
+			"4067": 40
+		}
+	},
+	{
+		"name": "Defence cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Desert amulet 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Desert amulet 1"],
+		"output_items": {
+			"13133": 1
+		}
+	},
+	{
+		"name": "Desert amulet 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Desert amulet 2"],
+		"output_items": {
+			"13134": 1
+		}
+	},
+	{
+		"name": "Desert amulet 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Desert amulet 3"],
+		"output_items": {
+			"13135": 1
+		}
+	},
+	{
+		"name": "Desert amulet 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Desert amulet 4"],
+		"output_items": {
+			"13136": 1
+		}
+	},
+	{
+		"name": "Desert Outfit",
+		"output_items": {
+			"1833": 1,
+			"1835": 1,
+			"1837": 1,
+			"6382": 1,
+			"6384": 1,
+			"6386": 1,
+			"6390": 1
+		},
+		"gp_cost": 1000000,
+		"qp_required": 20
+	},
+	{
+		"name": "Diving apparatus",
+		"gp_cost": 1000,
+		"qp_required": 30,
+		"output_items": {
+			"7535": 1
+		}
+	},
+	{
+		"name": "Doctor's hat",
+		"gp_cost": 60000,
+		"qp_required": 60,
+		"output_items": {
+			"6547": 1
+		}
+	},
+	{
+		"name": "Dorgeshuun crossbow",
+		"gp_cost": 4000,
+		"output_items": {
+			"8880": 1
+		}
+	},
+	{
+		"name": "Dragon gloves",
+		"qp_required": 107,
+		"gp_cost": 850000,
+		"ironman_price": 130000,
+		"output_items": {
+			"7461": 1
+		}
+	},
+	{
+		"name": "Dragon metal shard",
+		"qp_required": 205,
+		"gp_cost": 2500000,
+		"output_items": {
+			"22097": 1
+		}
+	},
+	{
+		"name": "Dragon scimitar",
+		"gp_cost": 500000,
+		"qp_required": 105,
+		"output_items": {
+			"4587": 1
+		}
+	},
+	{
+		"name": "Dwarf multicannon",
+		"output_items": {
+			"6": 1,
+			"8": 1,
+			"10": 1,
+			"12": 1
+		},
+		"gp_cost": 10000000,
+		"qp_required": 5,
+		"ironman_price": 750000
+	},
+	{
+		"name": "Dwarven helmet",
+		"gp_cost": 100000,
+		"qp_required": 52,
+		"output_items": {
+			"11200": 1
+		}
+	},
+	{
+		"name": "Earmuffs",
+		"gp_cost": 20000,
+		"output_items": {
+			"4166": 1
+		}
+	},
+	{
+		"name": "Earth rune",
+		"gp_cost": 15,
+		"output_items": {
+			"557": 1
+		}
+	},
+	{
+		"name": "Earth talisman",
+		"item_cost": {
+			"26792": 10
+		},
+		"output_items": {
+			"1440": 1
+		}
+	},
+	{
+		"name": "Elemental shield",
+		"gp_cost": 2500000,
+		"qp_required": 25,
+		"ironman_price": 2000,
+		"output_items": {
+			"2890": 1
+		}
+	},
+	{
+		"name": "Enchanted gem",
+		"gp_cost": 100000,
+		"output_items": {
+			"4155": 1
+		}
+	},
+	{
+		"name": "Excalibur",
+		"gp_cost": 50000,
+		"qp_required": 15,
+		"output_items": {
+			"35": 1
+		}
+	},
+	{
+		"name": "Expert mining gloves",
+		"item_cost": {
+			"21341": 60,
+			"21343": 1,
+			"21345": 1
+		},
+		"output_items": {
+			"21392": 1
+		}
+	},
+	{
+		"name": "Explorer's ring 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Explorer's ring 1"],
+		"output_items": {
+			"13125": 1
+		}
+	},
+	{
+		"name": "Explorer's ring 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Explorer's ring 2"],
+		"output_items": {
+			"13126": 1
+		}
+	},
+	{
+		"name": "Explorer's ring 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Explorer's ring 3"],
+		"output_items": {
+			"13127": 1
+		}
+	},
+	{
+		"name": "Explorer's ring 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Explorer's ring 4"],
+		"output_items": {
+			"13128": 1
+		}
+	},
+	{
+		"name": "Eye of newt",
+		"gp_cost": 300,
+		"ironman_price": 3,
+		"output_items": {
+			"221": 1
+		}
+	},
+	{
+		"name": "Facemask",
+		"gp_cost": 20000,
+		"output_items": {
+			"4164": 1
+		}
+	},
+	{
+		"name": "Fairy enchantment",
+		"gp_cost": 100000,
+		"ironman_price": 100,
+		"qp_required": 23,
+		"output_items": {
+			"20609": 1
+		}
+	},
+	{
+		"name": "Falador shield 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Falador shield 1"],
+		"output_items": {
+			"13117": 1
+		}
+	},
+	{
+		"name": "Falador shield 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Falador shield 2"],
+		"output_items": {
+			"13118": 1
+		}
+	},
+	{
+		"name": "Falador shield 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Falador shield 3"],
+		"output_items": {
+			"13119": 1
+		}
+	},
+	{
+		"name": "Falador shield 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Falador shield 4"],
+		"output_items": {
+			"13120": 1
+		}
+	},
+	{
+		"name": "Farming cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Farseer helm",
+		"gp_cost": 780000,
+		"qp_required": 60,
+		"ironman_price": 78000,
+		"output_items": {
+			"3755": 1
+		}
+	},
+	{
+		"name": "Feather",
+		"gp_cost": 50,
+		"ironman_price": 4,
+		"output_items": {
+			"314": 1
+		}
+	},
+	{
+		"name": "Felling axe handle",
+		"item_cost": {
+			"1521": 500,
+			"28134": 10000
+		},
+		"output_items": {
+			"28177": 1
+		}
+	},
+	{
+		"name": "Fire rune",
+		"gp_cost": 15,
+		"output_items": {
+			"554": 1
+		}
+	},
+	{
+		"name": "Fire talisman",
+		"item_cost": {
+			"26792": 10
+		},
+		"output_items": {
+			"1442": 1
+		}
+	},
+	{
+		"name": "Firemaking cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Fish sack",
+		"item_cost": {
+			"22820": 1000
+		},
+		"output_items": {
+			"22838": 1
+		}
+	},
+	{
+		"name": "Fishbowl helmet",
+		"gp_cost": 1000,
+		"qp_required": 30,
+		"output_items": {
+			"7534": 1
+		}
+	},
+	{
+		"name": "Fishbowl pet",
+		"output_items": {
+			"6672": 1
+		},
+		"gp_cost": 500000
+	},
+	{
+		"name": "Fishing Bait",
+		"gp_cost": 20,
+		"ironman_price": 3,
+		"output_items": {
+			"313": 1
+		}
+	},
+	{
+		"name": "Fishing cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Fletching cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Flower crown",
+		"item_cost": {
+			"995": 5000
+		},
+		"output_items": {
+			"27035": 1
+		}
+	},
+	{
+		"name": "Flower crown (asexual)",
+		"item_cost": {
+			"995": 5000
+		},
+		"output_items": {
+			"27143": 1
+		}
+	},
+	{
+		"name": "Flower crown (bisexual)",
+		"item_cost": {
+			"995": 5000
+		},
+		"output_items": {
+			"27141": 1
+		}
+	},
+	{
+		"name": "Flower crown (gay)",
+		"item_cost": {
+			"995": 5000
+		},
+		"output_items": {
+			"27155": 1
+		}
+	},
+	{
+		"name": "Flower crown (genderqueer)",
+		"item_cost": {
+			"995": 5000
+		},
+		"output_items": {
+			"27151": 1
+		}
+	},
+	{
+		"name": "Flower crown (lesbian)",
+		"item_cost": {
+			"995": 5000
+		},
+		"output_items": {
+			"27153": 1
+		}
+	},
+	{
+		"name": "Flower crown (non-binary)",
+		"item_cost": {
+			"995": 5000
+		},
+		"output_items": {
+			"27149": 1
+		}
+	},
+	{
+		"name": "Flower crown (pansexual)",
+		"item_cost": {
+			"995": 5000
+		},
+		"output_items": {
+			"27147": 1
+		}
+	},
+	{
+		"name": "Flower crown (transgender)",
+		"item_cost": {
+			"995": 5000
+		},
+		"output_items": {
+			"27145": 1
+		}
+	},
+	{
+		"name": "Forestry boots",
+		"item_cost": {
+			"1513": 60,
+			"1515": 60,
+			"1517": 60,
+			"1519": 60,
+			"1521": 60,
+			"6332": 60,
+			"6333": 60,
+			"10810": 60,
+			"10933": 1,
+			"19669": 60,
+			"28134": 1250
+		},
+		"output_items": {
+			"28175": 1
+		}
+	},
+	{
+		"name": "Forestry hat",
+		"item_cost": {
+			"1513": 60,
+			"1515": 60,
+			"1517": 60,
+			"1519": 60,
+			"1521": 60,
+			"6332": 60,
+			"6333": 60,
+			"10810": 60,
+			"10941": 1,
+			"19669": 60,
+			"28134": 1250
+		},
+		"output_items": {
+			"28173": 1
+		}
+	},
+	{
+		"name": "Forestry kit",
+		"max_quantity": 1,
+		"output_items": {
+			"28136": 1
+		}
+	},
+	{
+		"name": "Forestry legs",
+		"item_cost": {
+			"1513": 60,
+			"1515": 60,
+			"1517": 60,
+			"1519": 60,
+			"1521": 60,
+			"6332": 60,
+			"6333": 60,
+			"10810": 60,
+			"10940": 1,
+			"19669": 60,
+			"28134": 1250
+		},
+		"output_items": {
+			"28171": 1
+		}
+	},
+	{
+		"name": "Forestry top",
+		"item_cost": {
+			"1513": 60,
+			"1515": 60,
+			"1517": 60,
+			"1519": 60,
+			"1521": 60,
+			"6332": 60,
+			"6333": 60,
+			"10810": 60,
+			"10939": 1,
+			"19669": 60,
+			"28134": 1250
+		},
+		"output_items": {
+			"28169": 1
+		}
+	},
+	{
+		"name": "Fox Whistle",
+		"item_cost": {
+			"28134": 75000
+		},
+		"output_items": {
+			"28626": 1
+		}
+	},
+	{
+		"name": "Fremennik black cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3789": 1
+		}
+	},
+	{
+		"name": "Fremennik blue cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3763": 1
+		}
+	},
+	{
+		"name": "Fremennik brown cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3761": 1
+		}
+	},
+	{
+		"name": "Fremennik cyan cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3759": 1
+		}
+	},
+	{
+		"name": "Fremennik green cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3765": 1
+		}
+	},
+	{
+		"name": "Fremennik grey cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3779": 1
+		}
+	},
+	{
+		"name": "Fremennik pink cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3787": 1
+		}
+	},
+	{
+		"name": "Fremennik purple cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3785": 1
+		}
+	},
+	{
+		"name": "Fremennik red cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3777": 1
+		}
+	},
+	{
+		"name": "Fremennik sea boots 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Fremennik sea boots 1"],
+		"output_items": {
+			"13129": 1
+		}
+	},
+	{
+		"name": "Fremennik sea boots 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Fremennik sea boots 2"],
+		"output_items": {
+			"13130": 1
+		}
+	},
+	{
+		"name": "Fremennik sea boots 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Fremennik sea boots 3"],
+		"output_items": {
+			"13131": 1
+		}
+	},
+	{
+		"name": "Fremennik sea boots 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Fremennik sea boots 4"],
+		"output_items": {
+			"13132": 1
+		}
+	},
+	{
+		"name": "Fremennik teal cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3783": 1
+		}
+	},
+	{
+		"name": "Fremennik yellow cloak",
+		"gp_cost": 100000,
+		"qp_required": 55,
+		"output_items": {
+			"3781": 1
+		}
+	},
+	{
+		"name": "Frog mask",
+		"item_cost": {
+			"6183": 1
+		},
+		"output_items": {
+			"6188": 1
+		}
+	},
+	{
+		"name": "Funky shaped log",
+		"item_cost": {
+			"1513": 500,
+			"1515": 500,
+			"1517": 500,
+			"1519": 500,
+			"1521": 500,
+			"6332": 500,
+			"6333": 500,
+			"10810": 500,
+			"19669": 500,
+			"28134": 15000
+		},
+		"output_items": {
+			"28138": 1
+		}
+	},
+	{
+		"name": "Gem bag",
+		"item_cost": {
+			"12012": 100
+		},
+		"output_items": {
+			"766": 1
+		}
+	},
+	{
+		"name": "Genie lamp",
+		"item_cost": {
+			"6183": 1
+		},
+		"output_items": {
+			"2528": 1
+		}
+	},
+	{
+		"name": "Ghostly boots",
+		"gp_cost": 10000,
+		"qp_required": 10,
+		"output_items": {
+			"6106": 1
+		}
+	},
+	{
+		"name": "Ghostly cloak",
+		"gp_cost": 10000,
+		"qp_required": 10,
+		"output_items": {
+			"6111": 1
+		}
+	},
+	{
+		"name": "Ghostly gloves",
+		"gp_cost": 10000,
+		"qp_required": 10,
+		"output_items": {
+			"6110": 1
+		}
+	},
+	{
+		"name": "Ghostly hood",
+		"gp_cost": 10000,
+		"qp_required": 10,
+		"output_items": {
+			"6109": 1
+		}
+	},
+	{
+		"name": "Ghostly robe bottom",
+		"gp_cost": 10000,
+		"qp_required": 10,
+		"output_items": {
+			"6108": 1
+		}
+	},
+	{
+		"name": "Ghostly robe top",
+		"gp_cost": 10000,
+		"qp_required": 10,
+		"output_items": {
+			"6107": 1
+		}
+	},
+	{
+		"name": "Gilded smile flag",
+		"item_cost": {
+			"8951": 2000
+		},
+		"output_items": {
+			"8967": 1
+		}
+	},
+	{
+		"name": "Gin",
+		"gp_cost": 1000000,
+		"output_items": {
+			"2019": 1
+		}
+	},
+	{
+		"name": "Gold decorative body",
+		"output_items": {
+			"4509": 1
+		},
+		"item_cost": {
+			"4067": 800
+		}
+	},
+	{
+		"name": "Gold decorative boots",
+		"output_items": {
+			"25171": 1
+		},
+		"item_cost": {
+			"4067": 400
+		}
+	},
+	{
+		"name": "Gold decorative full helm",
+		"output_items": {
+			"25174": 1
+		},
+		"item_cost": {
+			"4067": 500
+		}
+	},
+	{
+		"name": "Gold decorative helm",
+		"output_items": {
+			"4511": 1
+		},
+		"item_cost": {
+			"4067": 400
+		}
+	},
+	{
+		"name": "Gold decorative legs",
+		"output_items": {
+			"4510": 1
+		},
+		"item_cost": {
+			"4067": 600
+		}
+	},
+	{
+		"name": "Gold decorative shield",
+		"output_items": {
+			"4512": 1
+		},
+		"item_cost": {
+			"4067": 600
+		}
+	},
+	{
+		"name": "Gold decorative skirt",
+		"output_items": {
+			"11895": 1
+		},
+		"item_cost": {
+			"4067": 600
+		}
+	},
+	{
+		"name": "Gold decorative sword",
+		"output_items": {
+			"4508": 1
+		},
+		"item_cost": {
+			"4067": 500
+		}
+	},
+	{
+		"name": "Gold leaf",
+		"gp_cost": 500000,
+		"ironman_price": 130000,
+		"output_items": {
+			"8784": 1
+		}
+	},
+	{
+		"name": "Golden Pheasant Egg",
+		"item_cost": {
+			"28134": 75000
+		},
+		"output_items": {
+			"28663": 1
+		}
+	},
+	{
+		"name": "Goldsmith gauntlets",
+		"output_items": {
+			"776": 1
+		},
+		"qp_required": 25,
+		"gp_cost": 1000000,
+		"ironman_price": 25000
+	},
+	{
+		"name": "Graceful crafting kit",
+		"output_items": {
+			"30044": 1
+		},
+		"item_cost": {
+			"30038": 650
+		}
+	},
+	{
+		"name": "Granite Body",
+		"gp_cost": 95000,
+		"minigame_score_req": ["barb_assault", 10],
+		"output_items": {
+			"10564": 1
+		}
+	},
+	{
+		"name": "Green boots",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"628": 1
+		}
+	},
+	{
+		"name": "Green cape",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"1027": 1
+		}
+	},
+	{
+		"name": "Green hat",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"658": 1
+		}
+	},
+	{
+		"name": "Green naval shirt",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8953": 1
+		}
+	},
+	{
+		"name": "Green navy slacks",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8992": 1
+		}
+	},
+	{
+		"name": "Green robe bottoms",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"648": 1
+		}
+	},
+	{
+		"name": "Green robe top",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"638": 1
+		}
+	},
+	{
+		"name": "Green tricorn hat",
+		"item_cost": {
+			"8951": 500
+		},
+		"output_items": {
+			"8960": 1
+		}
+	},
+	{
+		"name": "Grey boots",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2894": 1
+		}
+	},
+	{
+		"name": "Grey gloves",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2902": 1
+		}
+	},
+	{
+		"name": "Grey hat",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2900": 1
+		}
+	},
+	{
+		"name": "Grey naval shirt",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8958": 1
+		}
+	},
+	{
+		"name": "Grey navy slacks",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8997": 1
+		}
+	},
+	{
+		"name": "Grey robe bottoms",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2898": 1
+		}
+	},
+	{
+		"name": "Grey robe top",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2896": 1
+		}
+	},
+	{
+		"name": "Grey tricorn hat",
+		"item_cost": {
+			"8951": 500
+		},
+		"output_items": {
+			"8965": 1
+		}
+	},
+	{
+		"name": "Guardian's eye",
+		"item_cost": {
+			"26792": 3000
+		},
+		"output_items": {
+			"26820": 1
+		}
+	},
+	{
+		"name": "Guthix halo",
+		"output_items": {
+			"12639": 1
+		},
+		"item_cost": {
+			"4067": 75
+		}
+	},
+	{
+		"name": "Hallowed crystal shard",
+		"item_cost": {
+			"24711": 1
+		},
+		"output_items": {
+			"24709": 1
+		}
+	},
+	{
+		"name": "Hallowed focus",
+		"item_cost": {
+			"24711": 100
+		},
+		"output_items": {
+			"24723": 1
+		}
+	},
+	{
+		"name": "Hallowed grapple",
+		"item_cost": {
+			"24711": 100
+		},
+		"output_items": {
+			"24721": 1
+		}
+	},
+	{
+		"name": "Hallowed hammer",
+		"item_cost": {
+			"24711": 100
+		},
+		"output_items": {
+			"24727": 1
+		}
+	},
+	{
+		"name": "Hallowed ring",
+		"item_cost": {
+			"24711": 250
+		},
+		"output_items": {
+			"24731": 1
+		}
+	},
+	{
+		"name": "Hallowed sack",
+		"item_cost": {
+			"24711": 100
+		},
+		"output_items": {
+			"24946": 1
+		}
+	},
+	{
+		"name": "Hallowed symbol",
+		"item_cost": {
+			"24711": 100
+		},
+		"output_items": {
+			"24725": 1
+		}
+	},
+	{
+		"name": "Hallowed token",
+		"item_cost": {
+			"24711": 10
+		},
+		"output_items": {
+			"24719": 1
+		}
+	},
+	{
+		"name": "Hardleather gloves",
+		"qp_required": 5,
+		"gp_cost": 50000,
+		"ironman_price": 65,
+		"output_items": {
+			"7453": 1
+		}
+	},
+	{
+		"name": "Hat of the eye",
+		"item_cost": {
+			"26792": 400
+		},
+		"output_items": {
+			"26850": 1
+		}
+	},
+	{
+		"name": "Helm of neitiznot",
+		"qp_required": 75,
+		"gp_cost": 500000,
+		"ironman_price": 50000,
+		"output_items": {
+			"10828": 1
+		}
+	},
+	{
+		"name": "Herblore cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Hitpoints cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Holy wrench",
+		"gp_cost": 70000,
+		"qp_required": 70,
+		"output_items": {
+			"6714": 1
+		}
+	},
+	{
+		"name": "Hunter cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Iban's staff",
+		"qp_required": 30,
+		"gp_cost": 300000,
+		"output_items": {
+			"1409": 1
+		}
+	},
+	{
+		"name": "Icthlarin's hood (tier 5)",
+		"gp_cost": 20000,
+		"output_items": {
+			"27267": 1
+		}
+	},
+	{
+		"name": "Icthlarin's shroud (tier 1)",
+		"gp_cost": 1000,
+		"output_items": {
+			"27257": 1
+		}
+	},
+	{
+		"name": "Icthlarin's shroud (tier 2)",
+		"gp_cost": 5000,
+		"output_items": {
+			"27259": 1
+		}
+	},
+	{
+		"name": "Icthlarin's shroud (tier 3)",
+		"gp_cost": 10000,
+		"output_items": {
+			"27261": 1
+		}
+	},
+	{
+		"name": "Icthlarin's shroud (tier 4)",
+		"gp_cost": 15000,
+		"output_items": {
+			"27263": 1
+		}
+	},
+	{
+		"name": "Icthlarin's shroud (tier 5)",
+		"gp_cost": 20000,
+		"output_items": {
+			"27265": 1
+		}
+	},
+	{
+		"name": "Initiate outfit",
+		"output_items": {
+			"5574": 1,
+			"5575": 1,
+			"5576": 1
+		},
+		"gp_cost": 250000,
+		"qp_required": 35
+	},
+	{
+		"name": "Iron axe",
+		"gp_cost": 1000,
+		"ironman_price": 56,
+		"output_items": {
+			"1349": 1
+		}
+	},
+	{
+		"name": "Iron gloves",
+		"qp_required": 20,
+		"gp_cost": 200000,
+		"ironman_price": 325,
+		"output_items": {
+			"7455": 1
+		}
+	},
+	{
+		"name": "Iron pickaxe",
+		"gp_cost": 1000,
+		"ironman_price": 140,
+		"output_items": {
+			"1267": 1
+		}
+	},
+	{
+		"name": "Ironman helm",
+		"gp_cost": 1000,
+		"output_items": {
+			"12810": 1
+		}
+	},
+	{
+		"name": "Ironman platebody",
+		"gp_cost": 1000,
+		"output_items": {
+			"12811": 1
+		}
+	},
+	{
+		"name": "Ironman platelegs",
+		"gp_cost": 1000,
+		"output_items": {
+			"12812": 1
+		}
+	},
+	{
+		"name": "Jester Outfit",
+		"output_items": {
+			"10836": 1,
+			"10837": 1,
+			"10838": 1,
+			"10839": 1
+		},
+		"gp_cost": 5000000,
+		"qp_required": 89
+	},
+	{
+		"name": "Jug of Water",
+		"gp_cost": 100,
+		"output_items": {
+			"1937": 1
+		}
+	},
+	{
+		"name": "Kandarin headgear 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Kandarin headgear 1"],
+		"output_items": {
+			"13137": 1
+		}
+	},
+	{
+		"name": "Kandarin headgear 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Kandarin headgear 2"],
+		"output_items": {
+			"13138": 1
+		}
+	},
+	{
+		"name": "Kandarin headgear 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Kandarin headgear 3"],
+		"output_items": {
+			"13139": 1
+		}
+	},
+	{
+		"name": "Kandarin headgear 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Kandarin headgear 4"],
+		"output_items": {
+			"13140": 1
+		}
+	},
+	{
+		"name": "Karamja gloves 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Karamja gloves 1"],
+		"output_items": {
+			"11136": 1
+		}
+	},
+	{
+		"name": "Karamja gloves 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Karamja gloves 2"],
+		"output_items": {
+			"11138": 1
+		}
+	},
+	{
+		"name": "Karamja gloves 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Karamja gloves 3"],
+		"output_items": {
+			"11140": 1
+		}
+	},
+	{
+		"name": "Karamja gloves 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Karamja gloves 4"],
+		"output_items": {
+			"13103": 1
+		}
+	},
+	{
+		"name": "Keris partisan",
+		"gp_cost": 100000,
+		"ironman_price": 60000,
+		"qp_required": 172,
+		"output_items": {
+			"25979": 1
+		}
+	},
+	{
+		"name": "Law talisman",
+		"item_cost": {
+			"26792": 50
+		},
+		"output_items": {
+			"1458": 1
+		}
+	},
+	{
+		"name": "Leaf-bladed spear",
+		"gp_cost": 310000,
+		"output_items": {
+			"4158": 1
+		}
+	},
+	{
+		"name": "Limestone brick",
+		"gp_cost": 1000,
+		"ironman_price": 40,
+		"output_items": {
+			"3420": 1
+		}
+	},
+	{
+		"name": "Lockpick",
+		"gp_cost": 5000,
+		"ironman_price": 500,
+		"skills_needed": {
+			"agility": 50,
+			"thieving": 50
+		},
+		"output_items": {
+			"1523": 1
+		}
+	},
+	{
+		"name": "Log basket",
+		"item_cost": {
+			"1519": 300,
+			"1521": 300,
+			"28134": 5000
+		},
+		"output_items": {
+			"28140": 1
+		}
+	},
+	{
+		"name": "Log brace",
+		"item_cost": {
+			"1515": 300,
+			"1517": 300,
+			"28134": 3000
+		},
+		"output_items": {
+			"28146": 1
+		}
+	},
+	{
+		"name": "Lucky shot flag",
+		"item_cost": {
+			"8951": 4000
+		},
+		"output_items": {
+			"8969": 1
+		}
+	},
+	{
+		"name": "Lumberjack boots",
+		"item_cost": {
+			"1515": 200,
+			"1517": 100,
+			"28134": 1000
+		},
+		"output_items": {
+			"10933": 1
+		}
+	},
+	{
+		"name": "Lumberjack hat",
+		"item_cost": {
+			"1513": 100,
+			"1515": 200,
+			"28134": 1200
+		},
+		"output_items": {
+			"10941": 1
+		}
+	},
+	{
+		"name": "Lumberjack legs",
+		"item_cost": {
+			"1513": 140,
+			"1515": 160,
+			"28134": 1300
+		},
+		"output_items": {
+			"10940": 1
+		}
+	},
+	{
+		"name": "Lumberjack top",
+		"item_cost": {
+			"1513": 120,
+			"1515": 60,
+			"19669": 120,
+			"28134": 1500
+		},
+		"output_items": {
+			"10939": 1
+		}
+	},
+	{
+		"name": "Lunar Outfit",
+		"output_items": {
+			"9084": 1,
+			"9096": 1,
+			"9097": 1,
+			"9098": 1,
+			"9099": 1,
+			"9100": 1,
+			"9101": 1,
+			"9102": 1,
+			"9104": 1
+		},
+		"gp_cost": 5000000,
+		"qp_required": 120
+	},
+	{
+		"name": "Lunar signet",
+		"gp_cost": 100000,
+		"qp_required": 52,
+		"output_items": {
+			"20613": 1
+		}
+	},
+	{
+		"name": "Magic box",
+		"gp_cost": 1500,
+		"output_items": {
+			"10025": 1
+		}
+	},
+	{
+		"name": "Magic cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Magic secateurs",
+		"qp_required": 40,
+		"gp_cost": 2500000,
+		"ironman_price": 40000,
+		"output_items": {
+			"7409": 1
+		}
+	},
+	{
+		"name": "Magic stone",
+		"gp_cost": 4000000,
+		"ironman_price": 975000,
+		"output_items": {
+			"8788": 1
+		}
+	},
+	{
+		"name": "Marble block",
+		"gp_cost": 1000000,
+		"ironman_price": 325000,
+		"output_items": {
+			"8786": 1
+		}
+	},
+	{
+		"name": "Mask of rebirth",
+		"gp_cost": 100000,
+		"ironman_price": 10000,
+		"qp_required": 172,
+		"output_items": {
+			"27370": 1
+		}
+	},
+	{
+		"name": "Max cape",
+		"output_items": {
+			"13280": 1,
+			"13281": 1
+		},
+		"gp_cost": 2277000
+	},
+	{
+		"name": "Medical gown",
+		"gp_cost": 60000,
+		"qp_required": 60,
+		"output_items": {
+			"430": 1
+		}
+	},
+	{
+		"name": "Menaphite purple outfit",
+		"gp_cost": 25000,
+		"ironman_price": 10000,
+		"output_items": {
+			"6392": 1,
+			"6394": 1,
+			"6396": 1,
+			"6398": 1
+		}
+	},
+	{
+		"name": "Menaphite red outfit",
+		"gp_cost": 25000,
+		"ironman_price": 10000,
+		"output_items": {
+			"6400": 1,
+			"6402": 1,
+			"6404": 1,
+			"6406": 1
+		}
+	},
+	{
+		"name": "Merfolk trident",
+		"item_cost": {
+			"21656": 400
+		},
+		"output_items": {
+			"21649": 1
+		}
+	},
+	{
+		"name": "Mind rune",
+		"gp_cost": 25,
+		"output_items": {
+			"558": 1
+		}
+	},
+	{
+		"name": "Mind shield",
+		"gp_cost": 100000,
+		"qp_required": 35,
+		"output_items": {
+			"9731": 1
+		}
+	},
+	{
+		"name": "Mind talisman",
+		"item_cost": {
+			"26792": 10
+		},
+		"output_items": {
+			"1448": 1
+		}
+	},
+	{
+		"name": "Mining cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Mining gloves",
+		"item_cost": {
+			"21341": 60
+		},
+		"output_items": {
+			"21343": 1
+		}
+	},
+	{
+		"name": "Mithril gloves",
+		"qp_required": 50,
+		"gp_cost": 500000,
+		"ironman_price": 2000,
+		"output_items": {
+			"7458": 1
+		}
+	},
+	{
+		"name": "Mithril pickaxe",
+		"gp_cost": 5000,
+		"ironman_price": 1300,
+		"output_items": {
+			"1273": 1
+		}
+	},
+	{
+		"name": "Mithril seeds",
+		"gp_cost": 3000,
+		"ironman_price": 1000,
+		"output_items": {
+			"299": 1
+		}
+	},
+	{
+		"name": "Monkey",
+		"output_items": {
+			"19556": 1
+		},
+		"gp_cost": 1000000,
+		"qp_required": 182
+	},
+	{
+		"name": "Moonclan Outfit",
+		"output_items": {
+			"9068": 1,
+			"9069": 1,
+			"9070": 1,
+			"9071": 1,
+			"9072": 1,
+			"9073": 1,
+			"9074": 1
+		},
+		"gp_cost": 5000000,
+		"qp_required": 120
+	},
+	{
+		"name": "Morytania legs 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Morytania legs 1"],
+		"output_items": {
+			"13112": 1
+		}
+	},
+	{
+		"name": "Morytania legs 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Morytania legs 2"],
+		"output_items": {
+			"13113": 1
+		}
+	},
+	{
+		"name": "Morytania legs 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Morytania legs 3"],
+		"output_items": {
+			"13114": 1
+		}
+	},
+	{
+		"name": "Morytania legs 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Morytania legs 4"],
+		"output_items": {
+			"13115": 1
+		}
+	},
+	{
+		"name": "Music cape",
+		"output_items": {
+			"13221": 1,
+			"13223": 1
+		},
+		"gp_cost": 99000
+	},
+	{
+		"name": "Music cape(t)",
+		"output_items": {
+			"13222": 1
+		},
+		"gp_cost": 99000
+	},
+	{
+		"name": "Mystic boots",
+		"gp_cost": 10000,
+		"skills_needed": {
+			"magic": 66
+		},
+		"output_items": {
+			"4097": 1
+		}
+	},
+	{
+		"name": "Mystic gloves",
+		"gp_cost": 10000,
+		"skills_needed": {
+			"magic": 66
+		},
+		"output_items": {
+			"4095": 1
+		}
+	},
+	{
+		"name": "Mystic hat",
+		"gp_cost": 25000,
+		"skills_needed": {
+			"magic": 66
+		},
+		"output_items": {
+			"4089": 1
+		}
+	},
+	{
+		"name": "Mystic robe bottom",
+		"gp_cost": 80000,
+		"skills_needed": {
+			"magic": 66
+		},
+		"output_items": {
+			"4093": 1
+		}
+	},
+	{
+		"name": "Mystic robe top",
+		"gp_cost": 120000,
+		"skills_needed": {
+			"magic": 66
+		},
+		"output_items": {
+			"4091": 1
+		}
+	},
+	{
+		"name": "Mythical cape",
+		"gp_cost": 1000000,
+		"qp_required": 205,
+		"ironman_price": 10000,
+		"output_items": {
+			"22114": 1
+		}
+	},
+	{
+		"name": "Nature talisman",
+		"item_cost": {
+			"26792": 50
+		},
+		"output_items": {
+			"1462": 1
+		}
+	},
+	{
+		"name": "Nose peg",
+		"gp_cost": 20000,
+		"output_items": {
+			"4168": 1
+		}
+	},
+	{
+		"name": "Nurse hat",
+		"gp_cost": 60000,
+		"qp_required": 60,
+		"output_items": {
+			"6548": 1
+		}
+	},
+	{
+		"name": "Ogre bow",
+		"gp_cost": 10000,
+		"output_items": {
+			"2883": 1
+		}
+	},
+	{
+		"name": "Pearl barbarian rod",
+		"item_cost": {
+			"22820": 150
+		},
+		"output_items": {
+			"22842": 1
+		}
+	},
+	{
+		"name": "Pearl fishing rod",
+		"item_cost": {
+			"22820": 100
+		},
+		"output_items": {
+			"22846": 1
+		}
+	},
+	{
+		"name": "Pearl fly fishing rod",
+		"item_cost": {
+			"22820": 120
+		},
+		"output_items": {
+			"22844": 1
+		}
+	},
+	{
+		"name": "Pet rock",
+		"gp_cost": 500000,
+		"qp_required": 60,
+		"output_items": {
+			"3695": 1
+		}
+	},
+	{
+		"name": "Phasmatys flag",
+		"item_cost": {
+			"8951": 6000
+		},
+		"output_items": {
+			"8971": 1
+		}
+	},
+	{
+		"name": "Pink boots",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"626": 1
+		}
+	},
+	{
+		"name": "Pink hat",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"656": 1
+		}
+	},
+	{
+		"name": "Pink robe bottoms",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"646": 1
+		}
+	},
+	{
+		"name": "Pink robe top",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"636": 1
+		}
+	},
+	{
+		"name": "Pink skirt",
+		"gp_cost": 1000,
+		"ironman_price": 100,
+		"output_items": {
+			"1013": 1
+		}
+	},
+	{
+		"name": "Pirate bandana (blue)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7130": 1
+		}
+	},
+	{
+		"name": "Pirate bandana (brown)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7136": 1
+		}
+	},
+	{
+		"name": "Pirate bandana (red)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7124": 1
+		}
+	},
+	{
+		"name": "Pirate bandana (white)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7112": 1
+		}
+	},
+	{
+		"name": "Pirate boots",
+		"output_items": {
+			"7114": 1
+		},
+		"gp_cost": 100000,
+		"qp_required": 20
+	},
+	{
+		"name": "Pirate leggings (blue)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7132": 1
+		}
+	},
+	{
+		"name": "Pirate leggings (brown)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7138": 1
+		}
+	},
+	{
+		"name": "Pirate leggings (red)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7126": 1
+		}
+	},
+	{
+		"name": "Pirate leggings (white)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7116": 1
+		}
+	},
+	{
+		"name": "Potato with cheese",
+		"gp_cost": 650,
+		"skills_needed": {
+			"attack": 65,
+			"strength": 65
+		},
+		"output_items": {
+			"6705": 1
+		}
+	},
+	{
+		"name": "Prayer cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Prince outfit",
+		"item_cost": {
+			"6183": 1
+		},
+		"output_items": {
+			"6184": 1,
+			"6185": 1
+		}
+	},
+	{
+		"name": "Princess outfit",
+		"item_cost": {
+			"6183": 1
+		},
+		"output_items": {
+			"6186": 1,
+			"6187": 1
+		}
+	},
+	{
+		"name": "Proselyte outfit",
+		"output_items": {
+			"9672": 1,
+			"9674": 1,
+			"9676": 1,
+			"9678": 1
+		},
+		"gp_cost": 500000,
+		"qp_required": 75
+	},
+	{
+		"name": "Prospector boots",
+		"item_cost": {
+			"12012": 30
+		},
+		"output_items": {
+			"12016": 1
+		}
+	},
+	{
+		"name": "Prospector helmet",
+		"item_cost": {
+			"12012": 40
+		},
+		"output_items": {
+			"12013": 1
+		}
+	},
+	{
+		"name": "Prospector jacket",
+		"item_cost": {
+			"12012": 60
+		},
+		"output_items": {
+			"12014": 1
+		}
+	},
+	{
+		"name": "Prospector legs",
+		"item_cost": {
+			"12012": 50
+		},
+		"output_items": {
+			"12015": 1
+		}
+	},
+	{
+		"name": "Purple boots",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2934": 1
+		}
+	},
+	{
+		"name": "Purple gloves",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2942": 1
+		}
+	},
+	{
+		"name": "Purple hat",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2940": 1
+		}
+	},
+	{
+		"name": "Purple naval shirt",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8957": 1
+		}
+	},
+	{
+		"name": "Purple navy slacks",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8996": 1
+		}
+	},
+	{
+		"name": "Purple robe bottoms",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2938": 1
+		}
+	},
+	{
+		"name": "Purple robe top",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2936": 1
+		}
+	},
+	{
+		"name": "Purple tricorn hat",
+		"item_cost": {
+			"8951": 500
+		},
+		"output_items": {
+			"8964": 1
+		}
+	},
+	{
+		"name": "Quest point cape",
+		"output_items": {
+			"9813": 1,
+			"9814": 1
+		},
+		"qp_required": 321,
+		"gp_cost": 99000
+	},
+	{
+		"name": "Quest point cape(t)",
+		"output_items": {
+			"13068": 1
+		},
+		"qp_required": 321,
+		"gp_cost": 99000
+	},
+	{
+		"name": "Rada's blessing 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Rada's blessing 1"],
+		"output_items": {
+			"22941": 1
+		}
+	},
+	{
+		"name": "Rada's blessing 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Rada's blessing 2"],
+		"output_items": {
+			"22943": 1
+		}
+	},
+	{
+		"name": "Rada's blessing 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Rada's blessing 3"],
+		"output_items": {
+			"22945": 1
+		}
+	},
+	{
+		"name": "Rada's blessing 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Rada's blessing 4"],
+		"output_items": {
+			"22947": 1
+		}
+	},
+	{
+		"name": "Ram skull helm",
+		"gp_cost": 1000000,
+		"qp_required": 82,
+		"output_items": {
+			"7917": 1
+		}
+	},
+	{
+		"name": "Ranged cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Rat pole",
+		"gp_cost": 200000,
+		"qp_required": 85,
+		"output_items": {
+			"6773": 1
+		}
+	},
+	{
+		"name": "Raw shark",
+		"item_cost": {
+			"21356": 40
+		},
+		"output_items": {
+			"383": 1
+		}
+	},
+	{
+		"name": "Reclaim Book of balance",
+		"output_items": {
+			"3844": 1
+		},
+		"gp_cost": 50000,
+		"ironman_price": 12000,
+		"collection_log_reqs": ["Book of balance"]
+	},
+	{
+		"name": "Reclaim Book of darkness",
+		"output_items": {
+			"12612": 1
+		},
+		"gp_cost": 50000,
+		"ironman_price": 12000,
+		"collection_log_reqs": ["Book of darkness"]
+	},
+	{
+		"name": "Reclaim Book of law",
+		"output_items": {
+			"12610": 1
+		},
+		"gp_cost": 50000,
+		"ironman_price": 12000,
+		"collection_log_reqs": ["Book of law"]
+	},
+	{
+		"name": "Reclaim Book of war",
+		"output_items": {
+			"12608": 1
+		},
+		"gp_cost": 50000,
+		"ironman_price": 12000,
+		"collection_log_reqs": ["Book of war"]
+	},
+	{
+		"name": "Reclaim Guthix cape",
+		"output_items": {
+			"2413": 1
+		},
+		"gp_cost": 100000,
+		"ironman_price": 23000,
+		"collection_log_reqs": ["Guthix cape"]
+	},
+	{
+		"name": "Reclaim Holy book",
+		"output_items": {
+			"3840": 1
+		},
+		"gp_cost": 50000,
+		"ironman_price": 12000,
+		"collection_log_reqs": ["Holy book"]
+	},
+	{
+		"name": "Reclaim Saradomin cape",
+		"output_items": {
+			"2412": 1
+		},
+		"gp_cost": 100000,
+		"ironman_price": 23000,
+		"collection_log_reqs": ["Saradomin cape"]
+	},
+	{
+		"name": "Reclaim Unholy book",
+		"output_items": {
+			"3842": 1
+		},
+		"gp_cost": 50000,
+		"ironman_price": 12000,
+		"collection_log_reqs": ["Unholy book"]
+	},
+	{
+		"name": "Reclaim Zamorak cape",
+		"output_items": {
+			"2414": 1
+		},
+		"gp_cost": 100000,
+		"ironman_price": 23000,
+		"collection_log_reqs": ["Zamorak cape"]
+	},
+	{
+		"name": "Red boots",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2904": 1
+		}
+	},
+	{
+		"name": "Red cape",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"1007": 1
+		}
+	},
+	{
+		"name": "Red decorative body",
+		"output_items": {
+			"4069": 1
+		},
+		"item_cost": {
+			"4067": 8
+		}
+	},
+	{
+		"name": "Red decorative boots",
+		"output_items": {
+			"25163": 1
+		},
+		"item_cost": {
+			"4067": 4
+		}
+	},
+	{
+		"name": "Red decorative full helm",
+		"output_items": {
+			"25165": 1
+		},
+		"item_cost": {
+			"4067": 5
+		}
+	},
+	{
+		"name": "Red decorative helm",
+		"output_items": {
+			"4071": 1
+		},
+		"item_cost": {
+			"4067": 4
+		}
+	},
+	{
+		"name": "Red decorative legs",
+		"output_items": {
+			"4070": 1
+		},
+		"item_cost": {
+			"4067": 6
+		}
+	},
+	{
+		"name": "Red decorative shield",
+		"output_items": {
+			"4072": 1
+		},
+		"item_cost": {
+			"4067": 6
+		}
+	},
+	{
+		"name": "Red decorative skirt",
+		"output_items": {
+			"11893": 1
+		},
+		"item_cost": {
+			"4067": 6
+		}
+	},
+	{
+		"name": "Red decorative sword",
+		"output_items": {
+			"4068": 1
+		},
+		"item_cost": {
+			"4067": 5
+		}
+	},
+	{
+		"name": "Red dye",
+		"gp_cost": 100000,
+		"ironman_price": 500,
+		"output_items": {
+			"1763": 1
+		}
+	},
+	{
+		"name": "Red gloves",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2912": 1
+		}
+	},
+	{
+		"name": "Red hat",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2910": 1
+		}
+	},
+	{
+		"name": "Red naval shirt",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8954": 1
+		}
+	},
+	{
+		"name": "Red navy slacks",
+		"item_cost": {
+			"8951": 1000
+		},
+		"output_items": {
+			"8993": 1
+		}
+	},
+	{
+		"name": "Red robe bottoms",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2908": 1
+		}
+	},
+	{
+		"name": "Red robe top",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2906": 1
+		}
+	},
+	{
+		"name": "Red rum (trouble brewing)",
+		"item_cost": {
+			"8951": 20
+		},
+		"output_items": {
+			"8940": 1
+		}
+	},
+	{
+		"name": "Red tricorn hat",
+		"item_cost": {
+			"8951": 500
+		},
+		"output_items": {
+			"8961": 1
+		}
+	},
+	{
+		"name": "Ring of charos",
+		"gp_cost": 100000,
+		"qp_required": 60,
+		"output_items": {
+			"4202": 1
+		}
+	},
+	{
+		"name": "Ring of shadows",
+		"gp_cost": 75000,
+		"required_quests": [1],
+		"output_items": {
+			"28327": 1
+		}
+	},
+	{
+		"name": "Ring of the elements",
+		"item_cost": {
+			"26792": 400
+		},
+		"output_items": {
+			"26815": 1
+		}
+	},
+	{
+		"name": "Ritual mulch",
+		"item_cost": {
+			"1517": 10,
+			"28134": 150
+		},
+		"output_items": {
+			"28154": 1
+		}
+	},
+	{
+		"name": "Robe bottoms of the eye",
+		"item_cost": {
+			"26792": 350
+		},
+		"output_items": {
+			"26854": 1
+		}
+	},
+	{
+		"name": "Robe top of the eye",
+		"item_cost": {
+			"26792": 350
+		},
+		"output_items": {
+			"26852": 1
+		}
+	},
+	{
+		"name": "Rolling pin",
+		"gp_cost": 70000,
+		"ironman_price": 18720,
+		"output_items": {
+			"7445": 1
+		}
+	},
+	{
+		"name": "Rope",
+		"gp_cost": 100,
+		"ironman_price": 25,
+		"output_items": {
+			"954": 1
+		}
+	},
+	{
+		"name": "Royal seed pod",
+		"gp_cost": 2500000,
+		"qp_required": 175,
+		"ironman_price": 2000,
+		"output_items": {
+			"19564": 1
+		}
+	},
+	{
+		"name": "Rune gloves",
+		"output_items": {
+			"7460": 1
+		},
+		"qp_required": 85,
+		"gp_cost": 700000,
+		"ironman_price": 6500
+	},
+	{
+		"name": "Rune pickaxe",
+		"gp_cost": 100000,
+		"ironman_price": 32000,
+		"output_items": {
+			"1275": 1
+		}
+	},
+	{
+		"name": "Runecraft cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Salve amulet",
+		"gp_cost": 200000,
+		"ironman_price": 20000,
+		"skills_needed": {
+			"crafting": 35
+		},
+		"qp_required": 58,
+		"output_items": {
+			"4081": 1
+		}
+	},
+	{
+		"name": "Sandworms",
+		"gp_cost": 500,
+		"output_items": {
+			"13431": 1
+		}
+	},
+	{
+		"name": "Saradomin banner",
+		"output_items": {
+			"4037": 1
+		},
+		"item_cost": {
+			"4067": 100
+		}
+	},
+	{
+		"name": "Saradomin castlewars cloak",
+		"output_items": {
+			"4514": 1
+		},
+		"item_cost": {
+			"4067": 10
+		}
+	},
+	{
+		"name": "Saradomin castlewars hood",
+		"output_items": {
+			"4513": 1
+		},
+		"item_cost": {
+			"4067": 10
+		}
+	},
+	{
+		"name": "Saradomin halo",
+		"output_items": {
+			"12637": 1
+		},
+		"item_cost": {
+			"4067": 75
+		}
+	},
+	{
+		"name": "Sawmill voucher",
+		"item_cost": {
+			"28134": 150
+		},
+		"output_items": {
+			"28628": 10
+		}
+	},
+	{
+		"name": "Seaweed spore",
+		"item_cost": {
+			"21656": 20
+		},
+		"output_items": {
+			"21490": 1
+		}
+	},
+	{
+		"name": "Secateurs blade",
+		"item_cost": {
+			"1519": 5,
+			"1521": 10,
+			"28134": 20
+		},
+		"output_items": {
+			"28159": 1
+		}
+	},
+	{
+		"name": "Shadow sword",
+		"gp_cost": 10000,
+		"qp_required": 10,
+		"output_items": {
+			"10858": 1
+		}
+	},
+	{
+		"name": "Shield right half",
+		"qp_required": 111,
+		"gp_cost": 1000000,
+		"output_items": {
+			"2368": 1
+		}
+	},
+	{
+		"name": "Silverlight",
+		"gp_cost": 50000,
+		"qp_required": 3,
+		"output_items": {
+			"2402": 1
+		}
+	},
+	{
+		"name": "Sinhaza shroud tier 1",
+		"gp_cost": 100000,
+		"minigame_score_req": ["tob", 100],
+		"output_items": {
+			"22494": 1
+		}
+	},
+	{
+		"name": "Sinhaza shroud tier 2",
+		"gp_cost": 500000,
+		"minigame_score_req": ["tob", 500],
+		"output_items": {
+			"22496": 1
+		}
+	},
+	{
+		"name": "Sinhaza shroud tier 3",
+		"gp_cost": 500000,
+		"minigame_score_req": ["tob", 1000],
+		"output_items": {
+			"22498": 1
+		}
+	},
+	{
+		"name": "Sinhaza shroud tier 4",
+		"gp_cost": 500000,
+		"minigame_score_req": ["tob", 1500],
+		"output_items": {
+			"22500": 1
+		}
+	},
+	{
+		"name": "Sinhaza shroud tier 5",
+		"gp_cost": 500000,
+		"minigame_score_req": ["tob", 2000],
+		"output_items": {
+			"22502": 1
+		}
+	},
+	{
+		"name": "Skull",
+		"gp_cost": 100000,
+		"output_items": {
+			"964": 1
+		}
+	},
+	{
+		"name": "Slayer cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Slayer's staff",
+		"gp_cost": 210000,
+		"output_items": {
+			"4170": 1
+		}
+	},
+	{
+		"name": "Smithing cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Soft clay pack",
+		"item_cost": {
+			"25527": 150
+		},
+		"output_items": {
+			"12009": 1
+		}
+	},
+	{
+		"name": "Spiny helmet",
+		"gp_cost": 65000,
+		"output_items": {
+			"4551": 1
+		}
+	},
+	{
+		"name": "Star fragment",
+		"item_cost": {
+			"25527": 3000
+		},
+		"output_items": {
+			"25547": 1
+		}
+	},
+	{
+		"name": "Steel axe",
+		"gp_cost": 2000,
+		"ironman_price": 200,
+		"output_items": {
+			"1353": 1
+		}
+	},
+	{
+		"name": "Steel gloves",
+		"qp_required": 25,
+		"gp_cost": 300000,
+		"ironman_price": 650,
+		"output_items": {
+			"7456": 1
+		}
+	},
+	{
+		"name": "Steel pickaxe",
+		"gp_cost": 2000,
+		"ironman_price": 600,
+		"output_items": {
+			"1269": 1
+		}
+	},
+	{
+		"name": "Strength cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Stripy pirate shirt (blue)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7134": 1
+		}
+	},
+	{
+		"name": "Stripy pirate shirt (brown)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7128": 1
+		}
+	},
+	{
+		"name": "Stripy pirate shirt (red)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7122": 1
+		}
+	},
+	{
+		"name": "Stripy pirate shirt (white)",
+		"gp_cost": 20000,
+		"output_items": {
+			"7110": 1
+		}
+	},
+	{
+		"name": "Superior mining gloves",
+		"item_cost": {
+			"21341": 120
+		},
+		"output_items": {
+			"21345": 1
+		}
+	},
+	{
+		"name": "Teal boots",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2924": 1
+		}
+	},
+	{
+		"name": "Teal gloves",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2932": 1
+		}
+	},
+	{
+		"name": "Teal hat",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2930": 1
+		}
+	},
+	{
+		"name": "Teal robe bottoms",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2928": 1
+		}
+	},
+	{
+		"name": "Teal robe top",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2926": 1
+		}
+	},
+	{
+		"name": "Team-1 cape",
+		"output_items": {
+			"4315": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-10 cape",
+		"output_items": {
+			"4333": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-11 cape",
+		"output_items": {
+			"4335": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-12 cape",
+		"output_items": {
+			"4337": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-13 cape",
+		"output_items": {
+			"4339": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-14 cape",
+		"output_items": {
+			"4341": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-15 cape",
+		"output_items": {
+			"4343": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-16 cape",
+		"output_items": {
+			"4345": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-17 cape",
+		"output_items": {
+			"4347": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-18 cape",
+		"output_items": {
+			"4349": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-19 cape",
+		"output_items": {
+			"4351": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-2 cape",
+		"output_items": {
+			"4317": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-20 cape",
+		"output_items": {
+			"4353": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-21 cape",
+		"output_items": {
+			"4355": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-22 cape",
+		"output_items": {
+			"4357": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-23 cape",
+		"output_items": {
+			"4359": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-24 cape",
+		"output_items": {
+			"4361": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-25 cape",
+		"output_items": {
+			"4363": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-26 cape",
+		"output_items": {
+			"4365": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-27 cape",
+		"output_items": {
+			"4367": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-28 cape",
+		"output_items": {
+			"4369": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-29 cape",
+		"output_items": {
+			"4371": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-3 cape",
+		"output_items": {
+			"4319": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-30 cape",
+		"output_items": {
+			"4373": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-31 cape",
+		"output_items": {
+			"4375": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-32 cape",
+		"output_items": {
+			"4377": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-33 cape",
+		"output_items": {
+			"4379": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-34 cape",
+		"output_items": {
+			"4381": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-35 cape",
+		"output_items": {
+			"4383": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-36 cape",
+		"output_items": {
+			"4385": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-37 cape",
+		"output_items": {
+			"4387": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-38 cape",
+		"output_items": {
+			"4389": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-39 cape",
+		"output_items": {
+			"4391": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-4 cape",
+		"output_items": {
+			"4321": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-40 cape",
+		"output_items": {
+			"4393": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-41 cape",
+		"output_items": {
+			"4395": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-42 cape",
+		"output_items": {
+			"4397": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-43 cape",
+		"output_items": {
+			"4399": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-44 cape",
+		"output_items": {
+			"4401": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-45 cape",
+		"output_items": {
+			"4403": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-46 cape",
+		"output_items": {
+			"4405": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-47 cape",
+		"output_items": {
+			"4407": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-48 cape",
+		"output_items": {
+			"4409": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-49 cape",
+		"output_items": {
+			"4411": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-5 cape",
+		"output_items": {
+			"4323": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-50 cape",
+		"output_items": {
+			"4413": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-6 cape",
+		"output_items": {
+			"4325": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-7 cape",
+		"output_items": {
+			"4327": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-8 cape",
+		"output_items": {
+			"4329": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "Team-9 cape",
+		"output_items": {
+			"4331": 1
+		},
+		"gp_cost": 15000
+	},
+	{
+		"name": "The stuff",
+		"item_cost": {
+			"8951": 50
+		},
+		"output_items": {
+			"8988": 1
+		}
+	},
+	{
+		"name": "Thieving cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Torstol",
+		"item_cost": {
+			"111": 1
+		},
+		"output_items": {
+			"269": 1
+		}
+	},
+	{
+		"name": "Treasure flag",
+		"item_cost": {
+			"8951": 5000
+		},
+		"output_items": {
+			"8970": 1
+		}
+	},
+	{
+		"name": "Turquoise boots",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"634": 1
+		}
+	},
+	{
+		"name": "Turquoise hat",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"664": 1
+		}
+	},
+	{
+		"name": "Turquoise robe bottoms",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"654": 1
+		}
+	},
+	{
+		"name": "Turquoise robe top",
+		"gp_cost": 100000,
+		"ironman_price": 5000,
+		"output_items": {
+			"644": 1
+		}
+	},
+	{
+		"name": "Twitcher's gloves",
+		"item_cost": {
+			"1519": 500,
+			"28134": 5000
+		},
+		"output_items": {
+			"28630": 1
+		}
+	},
+	{
+		"name": "Unfinished broad bolt pack",
+		"gp_cost": 22500,
+		"output_items": {
+			"11876": 100
+		}
+	},
+	{
+		"name": "Unfinished broad bolts",
+		"gp_cost": 225,
+		"output_items": {
+			"11876": 1
+		}
+	},
+	{
+		"name": "Unidentified large fossil",
+		"item_cost": {
+			"21656": 300
+		},
+		"output_items": {
+			"21566": 1
+		}
+	},
+	{
+		"name": "Unidentified medium fossil",
+		"item_cost": {
+			"21656": 200
+		},
+		"output_items": {
+			"21564": 1
+		}
+	},
+	{
+		"name": "Unidentified small fossil",
+		"item_cost": {
+			"21656": 100
+		},
+		"output_items": {
+			"21562": 1
+		}
+	},
+	{
+		"name": "Varrock armour 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Varrock armour 1"],
+		"output_items": {
+			"13104": 1
+		}
+	},
+	{
+		"name": "Varrock armour 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Varrock armour 2"],
+		"output_items": {
+			"13105": 1
+		}
+	},
+	{
+		"name": "Varrock armour 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Varrock armour 3"],
+		"output_items": {
+			"13106": 1
+		}
+	},
+	{
+		"name": "Varrock armour 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Varrock armour 4"],
+		"output_items": {
+			"13107": 1
+		}
+	},
+	{
+		"name": "Vial",
+		"gp_cost": 30,
+		"ironman_price": 2,
+		"output_items": {
+			"229": 1
+		}
+	},
+	{
+		"name": "Vial of water",
+		"gp_cost": 60,
+		"ironman_price": 3,
+		"output_items": {
+			"227": 1
+		}
+	},
+	{
+		"name": "Vodka",
+		"gp_cost": 1000000,
+		"output_items": {
+			"2015": 1
+		}
+	},
+	{
+		"name": "Vyrewatch outfit",
+		"output_items": {
+			"9634": 1,
+			"9636": 1,
+			"9638": 1
+		},
+		"gp_cost": 1000000,
+		"qp_required": 92
+	},
+	{
+		"name": "Warrior helm",
+		"gp_cost": 780000,
+		"qp_required": 60,
+		"ironman_price": 78000,
+		"output_items": {
+			"3753": 1
+		}
+	},
+	{
+		"name": "Water rune",
+		"gp_cost": 15,
+		"output_items": {
+			"555": 1
+		}
+	},
+	{
+		"name": "Water talisman",
+		"item_cost": {
+			"26792": 10
+		},
+		"output_items": {
+			"1444": 1
+		}
+	},
+	{
+		"name": "Western banner 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Western banner 1"],
+		"output_items": {
+			"13141": 1
+		}
+	},
+	{
+		"name": "Western banner 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Western banner 2"],
+		"output_items": {
+			"13142": 1
+		}
+	},
+	{
+		"name": "Western banner 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Western banner 3"],
+		"output_items": {
+			"13143": 1
+		}
+	},
+	{
+		"name": "Western banner 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Western banner 4"],
+		"output_items": {
+			"13144": 1
+		}
+	},
+	{
+		"name": "White apron",
+		"gp_cost": 1000,
+		"ironman_price": 250,
+		"output_items": {
+			"1005": 1
+		}
+	},
+	{
+		"name": "White decorative body",
+		"output_items": {
+			"4504": 1
+		},
+		"item_cost": {
+			"4067": 80
+		}
+	},
+	{
+		"name": "White decorative boots",
+		"output_items": {
+			"25167": 1
+		},
+		"item_cost": {
+			"4067": 40
+		}
+	},
+	{
+		"name": "White decorative full helm",
+		"output_items": {
+			"25169": 1
+		},
+		"item_cost": {
+			"4067": 50
+		}
+	},
+	{
+		"name": "White decorative helm",
+		"output_items": {
+			"4506": 1
+		},
+		"item_cost": {
+			"4067": 40
+		}
+	},
+	{
+		"name": "White decorative legs",
+		"output_items": {
+			"4505": 1
+		},
+		"item_cost": {
+			"4067": 60
+		}
+	},
+	{
+		"name": "White decorative shield",
+		"output_items": {
+			"4507": 1
+		},
+		"item_cost": {
+			"4067": 60
+		}
+	},
+	{
+		"name": "White decorative skirt",
+		"output_items": {
+			"11894": 1
+		},
+		"item_cost": {
+			"4067": 60
+		}
+	},
+	{
+		"name": "White decorative sword",
+		"output_items": {
+			"4503": 1
+		},
+		"item_cost": {
+			"4067": 50
+		}
+	},
+	{
+		"name": "Wilderness sword 1",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Wilderness sword 1"],
+		"output_items": {
+			"13108": 1
+		}
+	},
+	{
+		"name": "Wilderness sword 2",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Wilderness sword 2"],
+		"output_items": {
+			"13109": 1
+		}
+	},
+	{
+		"name": "Wilderness sword 3",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Wilderness sword 3"],
+		"output_items": {
+			"13110": 1
+		}
+	},
+	{
+		"name": "Wilderness sword 4",
+		"gp_cost": 1000,
+		"ironman_price": 200,
+		"collection_log_reqs": ["Wilderness sword 4"],
+		"output_items": {
+			"13111": 1
+		}
+	},
+	{
+		"name": "Woodcutting cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
+		"name": "Xeric's champion",
+		"gp_cost": 2000000,
+		"minigame_score_req": ["raids_challenge_mode", 2000],
+		"output_items": {
+			"22396": 1
+		}
+	},
+	{
+		"name": "Xeric's general",
+		"gp_cost": 1500000,
+		"minigame_score_req": ["raids_challenge_mode", 1500],
+		"output_items": {
+			"22394": 1
+		}
+	},
+	{
+		"name": "Xeric's guard",
+		"gp_cost": 100000,
+		"minigame_score_req": ["raids_challenge_mode", 100],
+		"output_items": {
+			"22388": 1
+		}
+	},
+	{
+		"name": "Xeric's sentinel",
+		"gp_cost": 1000000,
+		"minigame_score_req": ["raids_challenge_mode", 1000],
+		"output_items": {
+			"22392": 1
+		}
+	},
+	{
+		"name": "Xeric's warrior",
+		"gp_cost": 500000,
+		"minigame_score_req": ["raids_challenge_mode", 500],
+		"output_items": {
+			"22390": 1
+		}
+	},
+	{
+		"name": "Yellow boots",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2914": 1
+		}
+	},
+	{
+		"name": "Yellow cape",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"1023": 1
+		}
+	},
+	{
+		"name": "Yellow gloves",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2922": 1
+		}
+	},
+	{
+		"name": "Yellow hat",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2920": 1
+		}
+	},
+	{
+		"name": "Yellow robe bottoms",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2918": 1
+		}
+	},
+	{
+		"name": "Yellow robe top",
+		"gp_cost": 100000,
+		"qp_required": 15,
+		"output_items": {
+			"2916": 1
+		}
+	},
+	{
+		"name": "Zamorak banner",
+		"output_items": {
+			"4039": 1
+		},
+		"item_cost": {
+			"4067": 100
+		}
+	},
+	{
+		"name": "Zamorak castlewars cloak",
+		"output_items": {
+			"4516": 1
+		},
+		"item_cost": {
+			"4067": 10
+		}
+	},
+	{
+		"name": "Zamorak castlewars hood",
+		"output_items": {
+			"4515": 1
+		},
+		"item_cost": {
+			"4067": 10
+		}
+	},
+	{
+		"name": "Zamorak halo",
+		"output_items": {
+			"12638": 1
+		},
+		"item_cost": {
+			"4067": 75
+		}
+	}
+]

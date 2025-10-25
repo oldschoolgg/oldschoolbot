@@ -1,14 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const plainGraceful = new Bank({
 	'Graceful hood': 1,
@@ -63,7 +58,7 @@ export async function agilityArenaCommand(
 	channelID: string,
 	quantity: number | undefined
 ): CommandResponse {
-	const userMaxTrip = calcMaxTripLength(user, 'AgilityArena');
+	const userMaxTrip = user.calcMaxTripLength('AgilityArena');
 	const maxQuantity = userMaxTrip / Time.Minute;
 
 	if (!quantity || quantity * Time.Minute > userMaxTrip) {
@@ -72,7 +67,7 @@ export async function agilityArenaCommand(
 
 	const duration = quantity * Time.Minute;
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		return mahojiChatHead({
 			content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
 			head: 'izzy'
@@ -86,9 +81,9 @@ export async function agilityArenaCommand(
 		boosts.push('10% extra tickets for Karamja Elite diary');
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'AgilityArena',
 		quantity,
@@ -177,7 +172,7 @@ export async function agilityArenaXPCommand(user: MUser, qty: number): CommandRe
 	const str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(xpToGive / qty).toFixed(2)} ea)`;
 	await user.transactItems({ itemsToRemove: new Bank().add('Agility arena ticket', qty) });
 	await user.addXP({
-		skillName: SkillsEnum.Agility,
+		skillName: 'agility',
 		amount: xpToGive,
 		artificial: true
 	});

@@ -1,5 +1,4 @@
-import { deepEqual, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GearPreset } from '@prisma/client';
+import { deepEqual, notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
 import {
@@ -10,6 +9,7 @@ import {
 	type OtherGearStat
 } from 'oldschooljs/gear';
 
+import type { GearPreset } from '@/prisma/main.js';
 import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
 import type { GearSetup, GearSetupType, GearSlotItem } from '@/lib/gear/types.js';
 import { assert } from '@/lib/util/logError.js';
@@ -18,11 +18,19 @@ export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;
 }>;
 
-export function hasGracefulEquipped(setup: Gear) {
-	return setup.hasEquipped(
-		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
-		true
-	);
+export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.values(GearStat)) {
+	const osItems = items.map(i => Items.getOrThrow(i));
+	const base: Required<GearRequirement> = {} as Required<GearRequirement>;
+	for (const item of osItems) {
+		for (const stat of Object.values(GearStat)) {
+			const thisStat = item.equipment?.[stat] ?? 0;
+			if (!base[stat]) base[stat] = 0;
+			if (statWhitelist.includes(stat)) {
+				base[stat] += thisStat;
+			}
+		}
+	}
+	return base;
 }
 
 // https://oldschool.runescape.wiki/w/Armour/Highest_bonuses
@@ -433,22 +441,41 @@ export class Gear {
 	}
 
 	allItems(similar = false): number[] {
-		const gear = this.raw();
-		const values = Object.values(gear)
-			.filter(notEmpty)
-			.map(i => i.item);
+		const values = new Set<number>();
+		for (const x of [
+			this.ammo,
+			this.body,
+			this.cape,
+			this.feet,
+			this.hands,
+			this.head,
+			this.legs,
+			this.neck,
+			this.ring,
+			this.shield,
+			this.weapon,
+			this['2h']
+		]) {
+			if (x) {
+				values.add(x.item);
+			}
+		}
 
 		if (similar) {
 			for (const item of [...values]) {
 				const inverse = inverseSimilarItems.get(item);
 				if (inverse) {
-					values.push(...inverse.values());
+					for (const invSimilarItem of inverse.values()) {
+						values.add(invSimilarItem);
+					}
 				}
-				values.push(...getSimilarItems(item));
+				for (const similarItem of getSimilarItems(item)) {
+					values.add(similarItem);
+				}
 			}
 		}
 
-		return uniqueArr(values);
+		return Array.from(values);
 	}
 
 	allItemsBank() {

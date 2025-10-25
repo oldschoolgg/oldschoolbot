@@ -1,14 +1,14 @@
-import type { Activity, activity_type_enum, Prisma } from '@prisma/client';
+import { cryptoRng } from '@oldschoolgg/rng';
 
+import type { Activity, activity_type_enum, Prisma } from '@/prisma/main.js';
+import { globalConfig } from '@/lib/constants.js';
+import { onMinionActivityFinish } from '@/lib/events.js';
+import { allTasks } from '@/lib/Task.js';
+import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { logError } from '@/lib/util/logError.js';
-import { modifyBusyCounter } from './busyCounterCache.js';
-import { globalConfig } from './constants.js';
-import { onMinionActivityFinish } from './events.js';
-import { sql } from './postgres.js';
-import { allTasks } from './Task.js';
-import type { ActivityTaskData } from './types/minions.js';
-import { isGroupActivity } from './util.js';
+import { isGroupActivity } from '@/lib/util.js';
 
 class SActivityManager {
 	private minionActivityCache: Map<string, ActivityTaskData> = new Map();
@@ -18,12 +18,16 @@ class SActivityManager {
 		this.minionActivityCacheDelete(userID);
 	}
 
+	async startTrip<T extends ActivityTaskData>(tripData: Omit<T, 'finishDate' | 'id'>) {
+		return addSubTaskToActivityTask(tripData);
+	}
+
 	convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 		if (!activity.channel_id) {
 			throw new Error(`Activity ${activity.id} has no channel_id`);
 		}
 		return {
-			...(activity.data as Prisma.JsonObject),
+			...(activity.data as PrismaCompatibleJsonObject),
 			type: activity.type as activity_type_enum,
 			userID: activity.user_id.toString(),
 			channelID: activity.channel_id.toString(),
@@ -52,39 +56,50 @@ class SActivityManager {
 	}
 
 	async completeActivity(_activity: Activity) {
+		Logging.logDebug(`Completing activity ${_activity.id} of type ${_activity.type}`, {
+			type: 'ACTIVITY',
+			activity_type: _activity.type,
+			data: _activity.data,
+			user_id: _activity.user_id
+		});
+		const start = performance.now();
 		const activity = this.convertStoredActivityToFlatActivity(_activity);
 
 		if (_activity.completed) {
-			logError(new Error('Tried to complete an already completed task.'));
+			Logging.logError(new Error('Tried to complete an already completed task.'));
 			return;
 		}
 
 		const task = allTasks.find(i => i.type === activity.type)!;
 		if (!task) {
-			logError(new Error('Missing task'));
+			Logging.logError(new Error('Missing task'));
 			return;
 		}
 
-		modifyBusyCounter(activity.userID, 1);
+		const user = await mUserFetch(activity.userID);
+
 		try {
-			if ('isNew' in task) {
-				await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish });
-			} else {
-				await task.run(activity);
-			}
+			await task.run(activity, { user, handleTripFinish, rng: cryptoRng });
 		} catch (err) {
-			logError(err);
+			Logging.logError(err as Error);
 		} finally {
-			modifyBusyCounter(activity.userID, -1);
 			this.minionActivityCacheDelete(activity.userID);
 			await onMinionActivityFinish(activity);
 		}
+		const end = performance.now();
+		Logging.logDebug(`Completed activity ${_activity.id} of type ${_activity.type} in ${end - start}ms`, {
+			type: 'ACTIVITY',
+			activity_type: _activity.type,
+			data: _activity.data,
+			user_id: _activity.user_id,
+			duration: end - start
+		});
 	}
 
 	async processPendingActivities() {
 		const activities: Activity[] = globalConfig.isProduction
-			? await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
-			: await sql`SELECT * FROM activity WHERE completed = false;`;
+			? await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
+			: await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false;`;
 
 		if (activities.length > 0) {
 			await prisma.activity.updateMany({

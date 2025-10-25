@@ -1,15 +1,19 @@
-import { chunk, noOp, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { Bingo, Prisma } from '@prisma/client';
+import { chunk, Emoji, noOp, Time } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { addBanks, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
+import type { Bingo, Prisma } from '@/prisma/main.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import type { StoredBingoTile, UniversalBingoTile } from './bingoUtil.js';
-import { generateTileName, isGlobalTile, rowsForSquare } from './bingoUtil.js';
-import { globalBingoTiles } from './globalTiles.js';
+import {
+	generateTileName,
+	isGlobalTile,
+	rowsForSquare,
+	type StoredBingoTile,
+	type UniversalBingoTile
+} from '@/mahoji/lib/bingo/bingoUtil.js';
+import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 
 export const BingoTrophies = [
 	{

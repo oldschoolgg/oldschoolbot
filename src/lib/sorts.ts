@@ -1,6 +1,6 @@
 import type { Item } from 'oldschooljs';
 
-import { marketPriceOrBotPrice } from './marketPrices.js';
+import { marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 
 export const BankSortMethods = ['value', 'alch', 'name', 'quantity', 'market'] as const;
 

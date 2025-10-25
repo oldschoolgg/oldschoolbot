@@ -112,7 +112,6 @@ export class GeneralBank<T extends string | number> {
 			throw new Error(`Value for ${key} exceeds the maximum of ${this.valueSchema.max}.`);
 		}
 		this.bank[key] = newValue;
-		this.validate();
 		return this;
 	}
 
@@ -127,7 +126,6 @@ export class GeneralBank<T extends string | number> {
 		if (newValue === 0) {
 			delete this.bank[key];
 		}
-		this.validate();
 		return this;
 	}
 

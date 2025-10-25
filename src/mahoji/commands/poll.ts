@@ -1,23 +1,20 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { channelIsSendable } from '@oldschoolgg/toolkit';
 
-import { deferInteraction } from '@/lib/util/interactionReply.js';
-
-export const pollCommand: OSBMahojiCommand = {
+export const pollCommand = defineCommand({
 	name: 'poll',
 	description: 'Create a reaction poll.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'question',
 			description: 'The poll question.',
 			required: true
 		}
 	],
-	run: async ({ interaction, options, user, channelID }: CommandRunOptions<{ question: string }>) => {
-		const channel = globalClient.channels.cache.get(channelID.toString());
+	run: async ({ interaction, options, user, channelID }) => {
+		const channel = globalClient.channels.cache.get(channelID);
 		if (!channelIsSendable(channel)) return { ephemeral: true, content: 'Invalid channel.' };
-		await deferInteraction(interaction, true);
+		await interaction.defer({ ephemeral: false });
 		try {
 			const message = await channel.send({
 				content: `**Poll from ${user.username}:** ${options.question}`,
@@ -32,4 +29,4 @@ export const pollCommand: OSBMahojiCommand = {
 			return 'There was an error making the poll.';
 		}
 	}
-};
+});

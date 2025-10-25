@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
@@ -46,7 +46,7 @@ describe('Integration Misc', () => {
 		expected.reverse();
 		const res = await fetchCLLeaderboard({
 			ironmenOnly: false,
-			items: chambersOfXericCL,
+			items: new Set(chambersOfXericCL),
 			resultLimit: 100,
 			clName: 'overall'
 		});

@@ -1,12 +1,8 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function buryCommand(user: MUser, channelID: string, boneName: string, quantity?: number) {
 	const speedMod = 1;
@@ -19,13 +15,13 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 		return "That's not a valid bone to bury.";
 	}
 
-	if (user.skillLevel(SkillsEnum.Prayer) < bone.level) {
+	if (user.skillsAsLevels.prayer < bone.level) {
 		return `${user.minionName} needs ${bone.level} Prayer to bury ${bone.name}.`;
 	}
 
 	const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
-	const maxTripLength = calcMaxTripLength(user, 'Burying');
+	const maxTripLength = user.calcMaxTripLength('Burying');
 
 	if (!quantity) {
 		const amountOfBonesOwned = user.bank.amount(bone.inputId);
@@ -51,10 +47,10 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 
 	await user.transactItems({ itemsToRemove: cost });
 
-	await addSubTaskToActivityTask<BuryingActivityTaskOptions>({
+	await ActivityManager.startTrip<BuryingActivityTaskOptions>({
 		boneID: bone.inputId,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Burying'

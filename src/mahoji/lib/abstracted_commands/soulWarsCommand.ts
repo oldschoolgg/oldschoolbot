@@ -1,11 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { User } from '@prisma/client';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
+import type { User } from '@/prisma/main.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export const soulWarsBuyables = [
 	{
@@ -140,12 +138,12 @@ export async function soulWarsTokensCommand(user: User) {
 export async function soulWarsStartCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const perDuration = randomVariation(Time.Minute * 7, 5);
-	const quantity = Math.floor(calcMaxTripLength(user, 'SoulWars') / perDuration);
+	const quantity = Math.floor(user.calcMaxTripLength('SoulWars') / perDuration);
 	const duration = quantity * perDuration;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'SoulWars',

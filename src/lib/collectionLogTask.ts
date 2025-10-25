@@ -1,12 +1,10 @@
-import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
-import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { calcWhatPercent, generateHexColorForCashStack, objectEntries, toTitleCase } from '@oldschoolgg/toolkit';
 import { type Bank, Items, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import type { IBgSprite } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import { allCollectionLogs, getCollection, getTotalCl } from '@/lib/data/Collections.js';
+import { allCollectionLogs, allCollectionLogsFlat, getCollection, getTotalCl } from '@/lib/data/Collections.js';
 import type { CollectionStatus, IToReturnCollection } from '@/lib/data/CollectionsExport.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
@@ -26,6 +24,7 @@ class CollectionLogTask {
 	COLORS = {
 		ORANGEY: '#FF981F',
 		WHITE: '#FFFFFF',
+		GRAY: '#757575',
 		TABS: {
 			SELECTED_TAB: '#FFFFFF',
 			UNSELECTED_TAB: '#FF981F'
@@ -72,19 +71,23 @@ class CollectionLogTask {
 		_canvas.setWidth(Math.min(widestNameLength, 150) + 8);
 
 		for (const [clPageName, status] of entries) {
-			const color =
-				clPageName === this.parseClPageName(collectionLog.name)
-					? colors.selected
-					: index % 2 === 0
-						? colors.odd
-						: 'transparent';
+			let color = index % 2 === 0 ? colors.odd : 'transparent';
+			if (clPageName === this.parseClPageName(collectionLog.name)) {
+				color = colors.selected;
+			}
+
 			_canvas.drawSquare(1, index * ITEM_HEIGHT, _canvas.width, ITEM_HEIGHT, color);
 
+			const fullCLObject = allCollectionLogsFlat.find(_cl => _cl.name === clPageName);
+			let textColor = colors[status];
+			if (fullCLObject?.unobtainable) {
+				textColor = this.COLORS.GRAY;
+			}
 			_canvas.drawText({
 				text: clPageName,
 				x: 4,
 				y: index * ITEM_HEIGHT + 13,
-				color: colors[status]
+				color: textColor
 			});
 			index++;
 		}
@@ -101,6 +104,10 @@ class CollectionLogTask {
 		collectionLog?: IToReturnCollection;
 		minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 	}): Promise<CommandResponse> {
+		if (!bankImageTask.ready) {
+			await bankImageTask.init();
+			bankImageTask.ready = true;
+		}
 		const { sprite } = bankImageTask.getBgAndSprite({
 			bankBackgroundId: options.user.user.bankBackground,
 			farmingContract: options.user.farmingContract()
@@ -139,14 +146,13 @@ class CollectionLogTask {
 				files: [
 					{
 						attachment: Buffer.from(
-							collectionLog.collection
+							Array.from(collectionLog.collection.values())
 								.map(i => {
 									const _i = Items.getOrThrow(i);
 									const _q = (collectionLog as IToReturnCollection).userItems.amount(_i.id);
 									if (_q === 0 && !flags.missing) return undefined;
 									return `${flags.nq || flags.missing ? '' : `${_q}x `}${_i.name}`;
 								})
-								.filter(f => f)
 								.join(flags.comma ? ', ' : '\n')
 						),
 						name: 'yourLogItems.txt'
@@ -267,6 +273,10 @@ class CollectionLogTask {
 				qtyText = userCollectionBank.amount(item);
 			}
 
+			if (collectionLog.unobtainable) {
+				ctx.filter = 'saturate(0)';
+			}
+
 			totalPrice += (Items.getOrThrow(item).price ?? 0) * qtyText;
 
 			await canvas.drawItemIDSprite({
@@ -289,11 +299,18 @@ class CollectionLogTask {
 		if (!collectionLog.counts) {
 			effectiveName = `${effectiveName} (Uncounted CL)`;
 		}
+
+		let clPageTitleTextColor = this.COLORS.ORANGEY;
+		if (collectionLog.unobtainable) {
+			effectiveName = `${effectiveName} (Currently Unobtainable)`;
+			clPageTitleTextColor = this.COLORS.GRAY;
+		}
+
 		canvas.drawText({
 			text: effectiveName,
 			x: 0,
 			y: 0,
-			color: this.COLORS.ORANGEY,
+			color: clPageTitleTextColor,
 			font: 'Bold'
 		});
 
@@ -303,7 +320,7 @@ class CollectionLogTask {
 			text: toDraw,
 			x: 0,
 			y: 13,
-			color: this.COLORS.ORANGEY
+			color: clPageTitleTextColor
 		});
 
 		let color = this.COLORS.PAGE_TITLE.NOT_STARTED;
@@ -311,6 +328,9 @@ class CollectionLogTask {
 			color = this.COLORS.PAGE_TITLE.COMPLETED;
 		} else if (collectionLog.collectionTotal !== collectionLog.collectionObtained) {
 			color = this.COLORS.PAGE_TITLE.PARTIAL_COMPLETION;
+		}
+		if (collectionLog.unobtainable) {
+			color = this.COLORS.GRAY;
 		}
 
 		const obtainableMeasure = canvas.measureText(toDraw, 'Compact');
@@ -379,13 +399,16 @@ class CollectionLogTask {
 		ctx.restore();
 
 		ctx.save();
-		const value = toKMB(totalPrice);
-		canvas.drawText({
-			text: value,
-			x: canvas.width - 15 - canvas.measureTextWidth(value),
-			y: 75 + 25,
-			color: generateHexColorForCashStack(totalPrice)
-		});
+		if (totalPrice > 0) {
+			const value = toKMB(totalPrice);
+			canvas.drawText({
+				text: value,
+				x: canvas.width - 15 - canvas.measureTextWidth(value),
+				y: 75 + 25,
+				color: generateHexColorForCashStack(totalPrice)
+			});
+		}
+
 		ctx.restore();
 
 		if (leftListCanvas && !fullSize) {
@@ -461,7 +484,7 @@ class CollectionLogTask {
 	}: {
 		user: MUser;
 		title: string;
-		clItems: number[];
+		clItems: Set<number>;
 		userBank: Bank;
 	}) {
 		return this.generateLogImage({
@@ -474,11 +497,12 @@ class CollectionLogTask {
 				name: title,
 				collection: clItems,
 				userItems: userBank,
-				collectionTotal: clItems.length,
-				collectionObtained: clItems.filter(i => userBank.has(i)).length,
+				collectionTotal: clItems.size,
+				collectionObtained: Array.from(clItems).filter(i => userBank.has(i)).length,
 				category: 'idk',
 				leftList: undefined,
-				counts: false
+				counts: false,
+				unobtainable: false
 			}
 		});
 	}

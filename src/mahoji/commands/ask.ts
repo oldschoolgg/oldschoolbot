@@ -1,19 +1,16 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-
-export const askCommand: OSBMahojiCommand = {
+export const askCommand = defineCommand({
 	name: 'ask',
 	description: 'Ask a yes/no question to the bot and receive an answer.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'question',
 			description: 'The question you want to ask.',
 			required: true
 		}
 	],
-	run: async ({ user, options }: CommandRunOptions<{ question: string }>) => {
-		const answer = randArrItem([
+	run: async ({ user, options, rng }) => {
+		const answer = rng.pick([
 			'Yes.',
 			'Definitely.',
 			'Obviously yes.',
@@ -32,4 +29,4 @@ export const askCommand: OSBMahojiCommand = {
 		]);
 		return `${user.username} asked: *${options.question}*, and my answer is **${answer}**.`;
 	}
-};
+});

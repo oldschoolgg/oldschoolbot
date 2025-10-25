@@ -1,9 +1,9 @@
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
-import { isCertainMonsterTrip } from './caUtils.js';
-import type { CombatAchievement } from './combatAchievements.js';
 
 export const hardCombatAchievements: CombatAchievement[] = [
 	{
@@ -375,6 +375,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: "K'ril Tsutsaroth",
 		desc: "Finish off K'ril Tsutsaroth with a demonbane weapon.",
+		details: 'You must have a demonbane weapon equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -584,6 +585,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Tempoross',
 		desc: 'Subdue Tempoross while wearing any variation of the angler outfit.',
+		details: 'You must have the angler outfit equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => data.type === 'Tempoross' && user.hasEquipped(ItemGroups.anglerOutfit, false)
@@ -736,6 +738,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Hueycoatl whilst wearing two pieces of Hueycoatl armour.',
 		type: 'restriction',
 		monster: 'TheHueycoatl',
+		details: 'You must have at least two pieces of Hueycoatl armour equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>

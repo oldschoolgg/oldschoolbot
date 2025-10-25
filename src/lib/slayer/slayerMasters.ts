@@ -1,14 +1,14 @@
 import { MonsterSlayerMaster } from 'oldschooljs';
 
-import { chaeldarTasks } from './tasks/chaeldarTasks.js';
-import { duradelTasks } from './tasks/duradelTasks.js';
-import { konarTasks } from './tasks/konarTasks.js';
-import { krystiliaTasks } from './tasks/krystiliaTasks.js';
-import { mazchnaTasks } from './tasks/mazchnaTasks.js';
-import { nieveTasks } from './tasks/nieveTasks.js';
-import { turaelTasks } from './tasks/turaelTasks.js';
-import { vannakaTasks } from './tasks/vannakaTasks.js';
-import type { SlayerMaster } from './types.js';
+import { chaeldarTasks } from '@/lib/slayer/tasks/chaeldarTasks.js';
+import { duradelTasks } from '@/lib/slayer/tasks/duradelTasks.js';
+import { konarTasks } from '@/lib/slayer/tasks/konarTasks.js';
+import { krystiliaTasks } from '@/lib/slayer/tasks/krystiliaTasks.js';
+import { mazchnaTasks } from '@/lib/slayer/tasks/mazchnaTasks.js';
+import { nieveTasks } from '@/lib/slayer/tasks/nieveTasks.js';
+import { turaelTasks } from '@/lib/slayer/tasks/turaelTasks.js';
+import { vannakaTasks } from '@/lib/slayer/tasks/vannakaTasks.js';
+import type { SlayerMaster } from '@/lib/slayer/types.js';
 
 export const slayerMasters: SlayerMaster[] = [
 	{

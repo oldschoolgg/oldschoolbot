@@ -1,6 +1,8 @@
 import { describe, expect, it, test } from 'vitest';
 
-import { addItemToBank, Bank, EItem, type ItemBank, Items, itemID } from '../src/index.js';
+import { EItem } from '@/EItem.js';
+import { Bank, type ItemBank } from '@/structures/Bank.js';
+import { Items } from '@/structures/Items.js';
 
 describe('Bank', () => {
 	test('convert string bank to number bank', () => {
@@ -63,28 +65,6 @@ describe('Bank', () => {
 		expect(sourceBank.equals(expectedBank)).toBeTruthy();
 	});
 
-	test('add item to bank', () => {
-		expect.assertions(2);
-		const bank = {
-			45: 9,
-			87: 1
-		};
-
-		const expected = {
-			45: 9,
-			69: 420,
-			87: 1
-		};
-
-		const expectedInc = {
-			45: 9,
-			87: 2
-		};
-
-		expect(addItemToBank(bank, 69, 420)).toEqual(expected);
-		expect(addItemToBank(bank, 87)).toEqual(expectedInc);
-	});
-
 	test('add bank to bank', () => {
 		expect.assertions(1);
 
@@ -100,7 +80,7 @@ describe('Bank', () => {
 	test('add item to bank', () => {
 		const bank = new Bank();
 
-		const item = Items.get('Twisted bow')!;
+		const item = Items.getItem('Twisted bow')!;
 		bank.add(item);
 
 		expect(bank.equals(new Bank().add('Twisted bow'))).toBeTruthy();
@@ -118,7 +98,7 @@ describe('Bank', () => {
 		const bank = new Bank().add('Coal', 100).add('Trout', 100).add('Egg', 100).add('Bones', 100);
 		bank.add(undefined);
 		const expected = new Bank().add('Coal', 200).add('Trout', 100).add('Egg', 100).add('Bones', 200);
-		expect(bank.multiply(2, ['Trout', 'Egg'].map(itemID))).toEqual(expected);
+		expect(bank.multiply(2, [EItem.TROUT, EItem.EGG])).toEqual(expected);
 		expect(bank.amount('Coal')).toEqual(200);
 		expect(bank.amount('Egg')).toEqual(100);
 	});
@@ -128,7 +108,7 @@ describe('Bank', () => {
 			Toolkit: 2
 		});
 		expect(bank.value()).toEqual(0);
-		const runePlatebody = Items.get('Rune platebody')!;
+		const runePlatebody = Items.getOrThrow('Rune platebody')!;
 		const bank2 = Bank.fromNameBank({
 			'Rune platebody': 10
 		});
@@ -143,7 +123,9 @@ describe('Bank', () => {
 		});
 		expect(runePlatebody.price).toBeGreaterThan(25_000);
 		expect(bank3.value()).toEqual(
-			runePlatebody.price! * 10 + Items.get('Rune platelegs')!.price! * 10 + Items.get('Rune boots')!.price! * 10
+			runePlatebody.price! * 10 +
+				Items.getOrThrow('Rune platelegs').price! * 10 +
+				Items.getOrThrow('Rune boots').price! * 10
 		);
 	});
 
@@ -156,11 +138,11 @@ describe('Bank', () => {
 			bank.add('Twisted bow');
 		} catch {}
 		try {
-			bank.addItem(itemID('Twisted bow'));
+			bank.addItem(EItem.TWISTED_BOW);
 		} catch {}
 		expect(() => bank.removeItem('Twisted bow')).toThrowError();
 		try {
-			bank.remove(itemID('Twisted bow'));
+			bank.remove(EItem.TWISTED_BOW);
 		} catch {}
 		try {
 			bank.multiply(5);
@@ -221,20 +203,6 @@ describe('Bank', () => {
 		expect(bank.amount('Twisted bow')).toEqual(1);
 	});
 
-	test('withSanitizedValues', () => {
-		const badBank: ItemBank = {
-			[-1]: 1,
-			1: Number.NaN,
-			2: Number.POSITIVE_INFINITY,
-			3: Number.NEGATIVE_INFINITY,
-			9: '',
-			5: 1
-		} as any as ItemBank;
-		const bank = Bank.withSanitizedValues(badBank);
-		expect(bank.length).toEqual(1);
-		expect(bank.amount(5)).toEqual(1);
-	});
-
 	function badBank() {
 		return {
 			[-1]: 1,
@@ -279,11 +247,9 @@ describe('Bank', () => {
 
 	test('itemIDs', () => {
 		expect(new Bank().itemIDs).toEqual([]);
-		expect(new Bank().add('Coal', 1).itemIDs.sort()).toEqual([itemID('Coal')].sort());
-		expect(new Bank().add('Coal', 1).add('Coal', 1).itemIDs.sort()).toEqual([itemID('Coal')].sort());
-		expect(new Bank().add('Coal', 1).add('Trout', 1).itemIDs.sort()).toEqual(
-			[itemID('Coal'), itemID('Trout')].sort()
-		);
+		expect(new Bank().add('Coal', 1).itemIDs.sort()).toEqual([EItem.COAL].sort());
+		expect(new Bank().add('Coal', 1).add('Coal', 1).itemIDs.sort()).toEqual([EItem.COAL].sort());
+		expect(new Bank().add('Coal', 1).add('Trout', 1).itemIDs.sort()).toEqual([EItem.COAL, EItem.TROUT].sort());
 	});
 
 	it('clears banks', () => {
@@ -304,15 +270,15 @@ describe('Bank', () => {
 	});
 
 	it('checks amount', () => {
-		const bank = new Bank().add(itemID('Coal'));
+		const bank = new Bank().add(EItem.COAL);
 		expect(bank.amount('Coal')).toEqual(1);
-		expect(bank.amount(itemID('Coal'))).toEqual(1);
+		expect(bank.amount(EItem.COAL)).toEqual(1);
 		expect(bank.amount(EItem.COAL)).toEqual(1);
 		expect(bank.amount(Items.getOrThrow('Coal'))).toEqual(1);
 	});
 
 	it('sets and clears items', () => {
-		const methods = ['Coal', itemID('Coal'), EItem.COAL, Items.getOrThrow('Coal')];
+		const methods = ['Coal', EItem.COAL, EItem.COAL, Items.getOrThrow('Coal')];
 		for (const setMethod of methods) {
 			for (const amountMethod of methods) {
 				const bank = new Bank().set(setMethod, 5).add('Trout', 100000);
@@ -345,15 +311,6 @@ describe('Bank', () => {
 		bank.add(bankToAdd);
 		expect(bank.amount('Coal')).toEqual(150);
 		expect(bank.amount('Trout')).toEqual(150);
-		expect(bank.length).toEqual(2);
-	});
-
-	it('adding invalid name', () => {
-		const bank = new Bank().add('Coal', 100).add('Trout', 100);
-		const bankToAdd = {
-			Casdfoal: 50
-		};
-		expect(() => bank.add(bankToAdd)).not.toThrow();
 		expect(bank.length).toEqual(2);
 	});
 

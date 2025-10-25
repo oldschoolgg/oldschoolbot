@@ -1,27 +1,12 @@
-declare const __BOT_TYPE__: 'OSB' | 'BSO';
-import type {
-	AbstractCommandAttributes,
-	CommandOptions,
-	ICommand,
-	MahojiClient
-} from '@oldschoolgg/toolkit/discord-util';
-import type { BaseInteraction, ChatInputCommandInteraction, InteractionReplyOptions, User } from 'discord.js';
-
 declare global {
-	interface CommandRunOptions<T extends CommandOptions = {}> {
-		interaction: ChatInputCommandInteraction;
-		options: T;
-		client: MahojiClient;
-		user: User;
-		member?: BaseInteraction['member'];
-		channelID: string;
-		guildID?: string;
-		userID: string;
-	}
-
-	type CommandResponse = Promise<null | string | InteractionReplyOptions>;
-
-	interface OSBMahojiCommand extends ICommand {
-		attributes?: Omit<AbstractCommandAttributes, 'description'>;
-	}
+	export type CommandOption = import('@/lib/discord/commandOptions.js').CommandOption;
+	export type MInteraction = import('@/lib/structures/MInteraction.js').MInteraction;
+	export type CompatibleResponse = import('@/lib/structures/PaginatedMessage.js').CompatibleResponse;
+	export type MahojiUserOption = import('@/lib/discord/commandOptions.js').MahojiUserOption;
+	export type RNGProvider = import('@oldschoolgg/rng').RNGProvider;
+	export type OSBMahojiCommand = import('@/lib/discord/commandOptions.js').OSBMahojiCommand;
+	export type CommandResponse = import('@/lib/discord/commandOptions.js').CommandResponse;
+	export type CommandRunOptions = import('@/lib/discord/commandOptions.js').CommandRunOptions;
 }
+
+export {};

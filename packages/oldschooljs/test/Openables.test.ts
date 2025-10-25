@@ -1,11 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { itemID, Openables } from '../src/index.js';
+import { Items } from '@/index.js';
+import Openables from '@/simulation/openables/index.js';
 
 describe('Openables', () => {
 	test('allItems', () => {
 		const allItems = Openables.map(i => i.allItems).flat(Number.POSITIVE_INFINITY);
-		for (const item of ['Mystic hat (dusk)', 'Broken dragon hasta', 'Dragonstone full helm'].map(itemID)) {
+		for (const item of ['Mystic hat (dusk)', 'Broken dragon hasta', 'Dragonstone full helm'].map(i =>
+			Items.getId(i)
+		)) {
 			expect(allItems.includes(item)).toEqual(true);
 		}
 	});

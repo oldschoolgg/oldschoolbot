@@ -1,7 +1,7 @@
-import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import type { Prisma } from '@/prisma/main.js';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems.js';
 import { mockedId } from './util.js';
 

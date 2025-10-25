@@ -1,12 +1,9 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 
-import type { CollectionLogType } from '@/lib/collectionLogTask.js';
 import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '@/lib/collectionLogTask.js';
 import { allCollectionLogs } from '@/lib/data/Collections.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
 
-export const collectionLogCommand: OSBMahojiCommand = {
+export const collectionLogCommand = defineCommand({
 	name: 'cl',
 	description: 'See your Collection Log.',
 	attributes: {
@@ -15,7 +12,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The log you want to see.',
 			required: true,
@@ -38,7 +35,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'type',
 			description: 'The type of log you want to see.',
 			required: false,
@@ -48,7 +45,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			}))
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'flag',
 			description: 'The flag you want to pass.',
 			required: false,
@@ -58,7 +55,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			}))
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'flag_extra',
 			description: 'An additional flag you want to pass.',
 			required: false,
@@ -68,23 +65,13 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			}))
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'all',
 			description: 'Show all items?',
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID
-	}: CommandRunOptions<{
-		name: string;
-		type?: CollectionLogType;
-		flag?: string;
-		flag_extra?: string;
-		all?: boolean;
-	}>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }) => {
 		const flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
 		if (options.flag_extra) flags[options.flag_extra] = options.flag_extra;
@@ -94,8 +81,8 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			type: options.type ?? 'collection',
 			flags,
 			collection: options.name,
-			stats: await MUserStats.fromID(user.id)
+			stats: await user.fetchMStats()
 		});
 		return result;
 	}
-};
+});

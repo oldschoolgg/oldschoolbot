@@ -1,20 +1,18 @@
-import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { GearPreset } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
+import type { GearStat } from 'oldschooljs/gear';
 
+import type { GearPreset } from '@/prisma/main.js';
 import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
+import { isValidGearSetup, isValidGearStat } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import getUserBestGearFromBank from '@/lib/minions/functions/getUserBestGearFromBank.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { defaultGear, Gear, globalPresets } from '@/lib/structures/Gear.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
 import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
@@ -98,7 +96,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		return `You don't have the items in this preset. You're missing: ${toRemove.remove(user.bank)}.`;
 	}
 
-	await unEquipAllCommand(user.id, gearSetup);
+	await unEquipAllCommand(user, gearSetup);
 
 	await user.removeItemsFromBank(toRemove);
 
@@ -172,8 +170,8 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 }
 
 export async function gearEquipCommand(args: {
-	interaction: ChatInputCommandInteraction;
-	userID: string;
+	interaction: MInteraction;
+	user: MUser;
 	setup: string;
 	item: string | undefined;
 	items: string | undefined;
@@ -182,9 +180,8 @@ export async function gearEquipCommand(args: {
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { userID, setup, item, items, preset, quantity, auto } = args;
+	const { user, setup, item, items, preset, quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
-	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
@@ -221,7 +218,7 @@ export async function gearUnequipCommand(
 	}
 	if (!isValidGearSetup(gearSetup)) return "That's not a valid gear setup.";
 	if (unequipAll) {
-		return unEquipAllCommand(user.id, gearSetup);
+		return unEquipAllCommand(user, gearSetup);
 	}
 
 	const currentEquippedGear = user.gear[gearSetup];
@@ -266,18 +263,16 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
-	if (!Object.values(GearStat).includes(equipmentType as any)) {
+	if (!isValidGearStat(equipmentType)) {
 		return 'Invalid gear stat.';
 	}
 
-	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
-		user.bank,
-		user.gear[gearSetup],
+	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank({
+		gearBank: user.gearBank,
+		gearStat: equipmentType as GearStat,
 		gearSetup,
-		user.skillsAsXP,
-		equipmentType as GearStat,
-		null
-	);
+		extra: null
+	});
 
 	if (Object.keys(toRemoveFromBank).length === 0) {
 		return "Couldn't find anything to equip.";
@@ -388,7 +383,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 }
 
 export async function gearSwapCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	first: GearSetupType,
 	second: GearSetupType
@@ -397,8 +392,7 @@ export async function gearSwapCommand(
 		return 'Invalid gear setups. You must provide two unique gear setups to switch gear between.';
 	}
 	if (first === 'wildy' || second === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
 		);
 	}

@@ -1,7 +1,6 @@
 import { Bank, type ItemBank } from '@/structures/Bank.js';
-import Items from '@/structures/Items.js';
+import { Items } from '@/structures/Items.js';
 import { calcWhatPercent, increaseNumByPercent, Time } from '@/util/smallUtils.js';
-import itemID from './itemID.js';
 
 /**
  * Transforms a string-based bank to an ID-based bank
@@ -11,7 +10,7 @@ export function resolveNameBank<T>(nameBank: Record<string, T>): Record<string, 
 	const newBank: Record<string, T> = {};
 
 	for (const [name, val] of Object.entries(nameBank)) {
-		newBank[itemID(name)] = val;
+		newBank[Items.getId(name)] = val;
 	}
 
 	return newBank;
@@ -26,7 +25,7 @@ export function resolveBank(bank: Record<string, number>): ItemBank {
 
 	for (const [nameOrID, val] of Object.entries(bank)) {
 		const int = Number(nameOrID);
-		const id = Number.isNaN(int) ? itemID(nameOrID) : int;
+		const id = Number.isNaN(int) ? Items.getId(nameOrID) : int;
 		newBank[id] = val;
 	}
 
@@ -123,7 +122,7 @@ export function averageBank(bank: Bank, kc: number) {
 
 export function generateRandomBank(size = 100, amountPerItem = 10000) {
 	const bank = new Bank();
-	for (let i = 0; i < size; i++) {
+	while (bank.length !== size) {
 		bank.add(Items.random().id, amountPerItem);
 	}
 	return bank;

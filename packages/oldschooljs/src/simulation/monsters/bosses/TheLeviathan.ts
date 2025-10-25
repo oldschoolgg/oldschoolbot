@@ -1,9 +1,9 @@
+import { EItem } from '@/EItem.js';
 import { VirtusTable } from '@/simulation/subtables/VirtusTable.js';
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import { Monster } from '@/structures/Monster.js';
-import itemID from '@/util/itemID.js';
 import { randInt, roll, uniqueArr } from '@/util/smallUtils.js';
 
 const TradeableUniqueTable = new LootTable({ limit: 8 })
@@ -57,9 +57,9 @@ class TheLeviathanSingleton extends Monster {
 		...SupplyTable.allItems,
 		...ResourceTable.allItems,
 		...TradeableUniqueTable.allItems,
-		itemID("Awakener's orb"),
-		itemID('Smoke quartz'),
-		itemID("Lil'viathan")
+		EItem.AWAKENERS_ORB,
+		EItem.SMOKE_QUARTZ,
+		EItem.LILVIATHAN
 	]);
 
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {

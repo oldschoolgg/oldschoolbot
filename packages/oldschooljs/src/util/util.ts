@@ -64,23 +64,4 @@ export function getSlayersEnchantmentChanceFromHP(hitpoints: number): number {
 	return Math.round(320 - (chanceHitpoints * 8) / 10);
 }
 
-export function calcCombatLevel(
-	skills: Record<'strength' | 'defence' | 'hitpoints' | 'ranged' | 'attack' | 'prayer' | 'magic', number>,
-	levelCap: number
-): number {
-	const defence = skills.defence ? convertXPtoLVL(skills.defence, levelCap) : 1;
-	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged, levelCap) : 1;
-	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints, levelCap) : 1;
-	const magic = skills.magic ? convertXPtoLVL(skills.magic, levelCap) : 1;
-	const prayer = skills.prayer ? convertXPtoLVL(skills.prayer, levelCap) : 1;
-	const attack = skills.attack ? convertXPtoLVL(skills.attack, levelCap) : 1;
-	const strength = skills.strength ? convertXPtoLVL(skills.strength, levelCap) : 1;
-
-	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
-	const melee = 0.325 * (attack + strength);
-	const range = 0.325 * (Math.floor(ranged / 2) + ranged);
-	const mage = 0.325 * (Math.floor(magic / 2) + magic);
-	return Math.floor(base + Math.max(melee, range, mage));
-}
-
 export * from './smallUtils.js';

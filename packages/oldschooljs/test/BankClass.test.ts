@@ -1,6 +1,10 @@
 import { describe, expect, test, vi } from 'vitest';
 
-import { Bank, type Item, Items, itemID, LootTable } from '../src/index.js';
+import { EItem } from '@/EItem.js';
+import { LootTable } from '@/index.js';
+import type { Item } from '@/meta/item.js';
+import { Bank } from '@/structures/Bank.js';
+import { Items } from '@/structures/Items.js';
 
 const TestLootTable = new LootTable().add('Toolkit');
 
@@ -47,9 +51,9 @@ describe('Bank Class', () => {
 	});
 
 	test('random', () => {
-		const bank = new Bank({ 69: 420 });
+		const bank = new Bank().add('Egg', 420);
 		const random = bank.random();
-		expect(random).toEqual({ id: 69, qty: 420 });
+		expect(random).toEqual({ id: EItem.EGG, qty: 420 });
 	});
 
 	test('other', () => {
@@ -92,9 +96,9 @@ describe('Bank Class', () => {
 
 		expect(bank.has('Coal')).toBe(true);
 		expect(bank.has('Ruby')).toBe(true);
-		expect(bank.has(itemID('Monkey nuts'))).toBe(true);
+		expect(bank.has(EItem.MONKEY_NUTS)).toBe(true);
 
-		expect(bank.has(itemID('Emerald'))).toBe(false);
+		expect(bank.has(EItem.EMERALD)).toBe(false);
 		expect(bank.has('Emerald')).toBe(false);
 
 		expect(bank.has(['Coal'])).toBe(true);
@@ -124,10 +128,10 @@ describe('Bank Class', () => {
 		const bank = Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 });
 		const actual = bank.items();
 		const expected = [
-			[Items.get('Coal'), 20],
-			[Items.get('Egg'), 5000],
-			[Items.get('Emerald'), 1],
-			[Items.get('Ruby'), 20_000]
+			[Items.getItem('Coal'), 20],
+			[Items.getItem('Egg'), 5000],
+			[Items.getItem('Emerald'), 1],
+			[Items.getItem('Ruby'), 20_000]
 		];
 		expect(actual).toEqual(expect.arrayContaining(expected));
 		expect(expected).toEqual(expect.arrayContaining(actual));
@@ -144,14 +148,6 @@ describe('Bank Class', () => {
 		expect(testBank.amount('Egg')).toEqual(0);
 	});
 
-	test('.forEach()', () => {
-		const bank = Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 });
-		const mockCallback = vi.fn();
-		bank.forEach(mockCallback);
-		expect(mockCallback).toHaveBeenCalledTimes(bank.length);
-		expect(mockCallback).toHaveBeenCalledWith(Items.get('Coal'), 20);
-	});
-
 	test('.filter()', () => {
 		const baseBank = Bank.fromNameBank({
 			Coal: 20,
@@ -164,7 +160,7 @@ describe('Bank Class', () => {
 		const cb = vi.fn((item: Item) => Boolean(item.tradeable));
 		const filtered = bank.filter(cb);
 		expect(cb).toHaveBeenCalledTimes(bank.length);
-		expect(cb).toHaveBeenCalledWith(Items.get('Coal'), 20);
+		expect(cb).toHaveBeenCalledWith(Items.getItem('Coal'), 20);
 		expect(filtered.length).toEqual(bank.length - 1);
 		expect(filtered.amount('Toolkit')).toEqual(0);
 		expect(bank.amount('Toolkit')).toEqual(1);

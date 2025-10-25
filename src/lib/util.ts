@@ -1,19 +1,16 @@
-import { noOp, objectEntries } from '@oldschoolgg/toolkit';
-import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import type { Prisma, User } from '@prisma/client';
+import { cleanUsername, noOp } from '@oldschoolgg/toolkit';
 import { type Guild, userMention } from 'discord.js';
-import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
+import { convertXPtoLVL } from 'oldschooljs';
 
-import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import type { Prisma, User } from '@/prisma/main.js';
+import { usernameWithBadgesCache } from '@/lib/cache.js';
+import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import type { MUserClass } from '@/lib/MUser.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import { usernameWithBadgesCache } from './cache.js';
-import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from './constants.js';
-import type { MUserClass } from './MUser.js';
-import type { Skills } from './types/index.js';
-import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
 
 // @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
@@ -31,22 +28,9 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
-	for (const [skillName, level] of objectEntries(requirements)) {
-		if ((skillName as string) === 'combat') {
-			if (calcCombatLevel(skills as any, MAX_LEVEL) < level!) return false;
-		} else {
-			const xpHas = skills[skillName];
-			const levelHas = convertXPtoLVL(xpHas ?? 1, MAX_LEVEL);
-			if (levelHas < level!) return false;
-		}
-	}
-	return true;
-}
-
 export function skillingPetDropRate(
 	user: MUserClass | GearBank | number,
-	skill: SkillsEnum | SkillNameType,
+	skill: SkillNameType,
 	baseDropRate: number
 ): { petDropRate: number } {
 	const xp = typeof user === 'number' ? user : user.skillsAsXP[skill];
@@ -115,15 +99,14 @@ export function getUsernameSync(_id: string | bigint) {
 	return usernameWithBadgesCache.get(_id.toString()) ?? 'Unknown';
 }
 
-export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
-	const logger = globalConfig.isProduction ? debugLog : console.log;
-	const stopwatch = new Stopwatch();
-	stopwatch.start();
+export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>): Promise<T> {
+	const start = performance.now();
 	const result = await fn();
-	stopwatch.stop();
-	if (!globalConfig.isProduction || stopwatch.duration > threshholdToLog) {
-		logger(`Took ${stopwatch} to do ${name}`);
-	}
+	const end = performance.now();
+	Logging.logPerf({
+		text: name,
+		duration: end - start
+	});
 	return result;
 }
 

@@ -1,15 +1,20 @@
 packages:
   - packages/*
   - docs
+  - "!**/packages/test-dashboard"
 
 ignoredBuiltDependencies:
   - wtf_wikipedia
 
-onlyBuiltDependencies:
-  - "@prisma/client"
-  - "@prisma/engines"
-  - bufferutil
-  - esbuild
-  - prisma
-  - sharp
-  - skia-canvas
+neverBuiltDependencies: []
+
+overrides:
+  "@prisma/driver-adapter-utils": "6.15.0"
+  "sharp": "0.34.4"
+  "dotenv": "16.5.0"
+  "tsdown>rolldown": "1.0.0-beta.42"
+  "discord-api-types": "0.38.12"
+  "undici-types": "7.14.0"
+  "@types/node": "24.5.2"
+  "esbuild": "0.25.11"
+  "emoji-regex": "10.6.0"

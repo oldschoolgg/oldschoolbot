@@ -1,6 +1,7 @@
-import { dateFm } from '@oldschoolgg/toolkit/util';
-import { type Prisma, type UserEvent, UserEventType, type xp_gains_skill_enum } from '@prisma/client';
+import { dateFm } from '@oldschoolgg/toolkit';
 
+import { UserEventType, type xp_gains_skill_enum } from '@/prisma/main/enums.js';
+import type { Prisma, UserEvent } from '@/prisma/main.js';
 import { MAX_LEVEL, MAX_TOTAL_LEVEL } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 

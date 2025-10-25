@@ -1,16 +1,14 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import { objHasAnyPropInCommon } from '@oldschoolgg/toolkit/util';
-import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
-import { mergeDeep } from 'remeda';
 
+import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import type { MUserClass } from '@/lib/MUser.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { KCBank } from '@/lib/structures/KCBank.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
 import type { JsonKeys } from '@/lib/util.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
-import { ChargeBank, XPBank } from './Bank.js';
-import { KCBank } from './KCBank.js';
 
 export class UpdateBank {
 	// Things removed
@@ -28,31 +26,6 @@ export class UpdateBank {
 	public userStats: Omit<Prisma.UserStatsUpdateInput, 'user_id'> = {};
 	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
 	public userUpdates: Pick<Prisma.UserUpdateInput, 'slayer_points'> = {};
-
-	public merge(other: UpdateBank) {
-		this.chargeBank.add(other.chargeBank);
-		this.itemCostBank.add(other.itemCostBank);
-		this.itemLootBank.add(other.itemLootBank);
-		this.xpBank.add(other.xpBank);
-		this.kcBank.add(other.kcBank);
-		this.itemLootBankNoCL.add(other.itemLootBankNoCL);
-		for (const [key, value] of objectEntries(other.userStatsBankUpdates)) {
-			this.userStatsBankUpdates[key] = (this.userStatsBankUpdates[key] ?? new Bank()).add(value);
-		}
-
-		if (objHasAnyPropInCommon(this.gearChanges, other.gearChanges)) {
-			throw new Error('Gear changes conflict');
-		}
-		if (objHasAnyPropInCommon(this.userStats, other.userStats)) {
-			throw new Error('User stats conflict');
-		}
-		if (objHasAnyPropInCommon(this.userUpdates, other.userUpdates)) {
-			throw new Error('User updates conflict');
-		}
-		this.gearChanges = mergeDeep(this.gearChanges, other.gearChanges);
-		this.userStats = mergeDeep(this.userStats, other.userStats);
-		this.userUpdates = mergeDeep(this.userUpdates, other.userUpdates);
-	}
 
 	async transact(user: MUser, { isInWilderness }: { isInWilderness?: boolean } = { isInWilderness: false }) {
 		// Check everything first
@@ -94,20 +67,17 @@ export class UpdateBank {
 			results.push(await user.addXPBank(this.xpBank));
 		}
 
-		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
+		const userStatsUpdates: Prisma.UserStatsUpdateInput = this.userStats ?? {};
+
 		// KC
 		if (this.kcBank.length() > 0) {
-			const currentScores = (await user.fetchStats({ monster_scores: true })).monster_scores as ItemBank;
+			const currentScores = (await user.fetchStats()).monster_scores as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}
 			userStatsUpdates.monster_scores = currentScores;
 		}
 
-		// User stats
-		if (Object.keys(this.userStats).length > 0) {
-			userStatsUpdates = mergeDeep(userStatsUpdates, this.userStats);
-		}
 		if (Object.keys(this.userStatsBankUpdates).length > 0) {
 			const currentStats = await prisma.userStats.upsert({
 				where: {
@@ -122,7 +92,7 @@ export class UpdateBank {
 			}
 		}
 
-		await userStatsUpdate(user.id, userStatsUpdates);
+		await user.statsUpdate(userStatsUpdates);
 
 		const userUpdates: Prisma.UserUpdateInput = this.userUpdates;
 

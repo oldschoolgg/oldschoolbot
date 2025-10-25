@@ -1,12 +1,11 @@
 import { round } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 
-export const dryCalcCommand: OSBMahojiCommand = {
+export const dryCalcCommand = defineCommand({
 	name: 'drycalc',
 	description: 'Calculate your drystreak chance.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'drop_rate',
 			description: 'The droprate, e.g: 1000 for 1 in 1000.',
 			required: true,
@@ -14,7 +13,7 @@ export const dryCalcCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'rolls',
 			description: 'How many rolls you had at this drop.',
 			required: true,
@@ -22,7 +21,7 @@ export const dryCalcCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ drop_rate: number; rolls: number }>) => {
+	run: async ({ options }) => {
 		const dropRate = options.drop_rate;
 		const { rolls } = options;
 		const noDropChance = Math.pow(1 - 1 / dropRate, rolls);
@@ -40,4 +39,4 @@ export const dryCalcCommand: OSBMahojiCommand = {
 
 		return output;
 	}
-};
+});

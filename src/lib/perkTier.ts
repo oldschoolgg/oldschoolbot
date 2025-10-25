@@ -1,8 +1,8 @@
 import { pick } from 'remeda';
 
-import { perkTierCache } from './cache.js';
-import { globalConfig } from './constants.js';
-import type { RobochimpUser } from './roboChimp.js';
+import { perkTierCache } from '@/lib/cache.js';
+import { globalConfig } from '@/lib/constants.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 
 const robochimpCachedKeys = [
 	'bits',
@@ -19,7 +19,6 @@ export const roboChimpCache = new Map<string, CachedRoboChimpUser>();
 
 export async function populateRoboChimpCache() {
 	if (!globalConfig.isProduction) {
-		console.log('Skipping populating robochimp cache because not production');
 		return;
 	}
 	const users = await roboChimpClient.user.findMany({

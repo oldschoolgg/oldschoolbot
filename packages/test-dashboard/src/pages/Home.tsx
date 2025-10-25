@@ -6,7 +6,7 @@ import type {
 import { useEffect, useState } from 'preact/hooks';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
-import itemDataUrl from '../../../oldschooljs/src/data/items/item_data.json?url';
+import itemDataUrl from '../../../oldschooljs/src/assets/item_data.json?url';
 
 type Item = {
 	id: string;

@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { wildernessBossTasks } from '@/lib/slayer/tasks/bossTasks.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
-import { wildernessBossTasks } from './bossTasks.js';
 
 export const krystiliaTasks: AssignableSlayerTask[] = [
 	{

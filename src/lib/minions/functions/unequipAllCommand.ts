@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { GearSetupType } from '@/lib/gear/types.js';
@@ -6,14 +6,13 @@ import { GearSetupTypes } from '@/lib/gear/types.js';
 import { defaultGear } from '@/lib/structures/Gear.js';
 
 export async function unEquipAllCommand(
-	userID: string,
+	user: MUser,
 	gearType: GearSetupType | undefined,
 	bypassBusy?: boolean
 ): Promise<string> {
 	if (!gearType || !GearSetupTypes.includes(gearType)) {
 		return `That's not a valid setup, the valid setups are: ${GearSetupTypes.join(', ')}.`;
 	}
-	const user = await mUserFetch(userID);
 	if (!bypassBusy && user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}

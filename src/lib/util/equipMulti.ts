@@ -2,8 +2,7 @@ import { Bank, EquipmentSlot } from 'oldschooljs';
 
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup } from '@/lib/gear/types.js';
-import { skillsMeetRequirements } from '@/lib/util.js';
-import { parseStringBank } from './parseStringBank.js';
+import { parseStringBank } from '@/lib/util/parseStringBank.js';
 
 export function gearEquipMultiImpl(
 	user: MUser,
@@ -19,7 +18,6 @@ export function gearEquipMultiImpl(
 } {
 	if (!isValidGearSetup(setup)) return { success: false, failMsg: 'Invalid gear setup' };
 	const oneItemPerSlot: { [key in EquipmentSlot]?: boolean } = {};
-	const userSkills = user.skillsAsXP;
 	const failedToEquipBank = new Bank();
 	const equipBank = new Bank();
 	for (const [i, _qty] of parseStringBank(items, user.bank, true)) {
@@ -27,7 +25,7 @@ export function gearEquipMultiImpl(
 		if (user.bank.amount(i.id) < qty) continue;
 		// Check skill requirements
 		if (i.equipment?.requirements) {
-			if (!skillsMeetRequirements(userSkills, i.equipment.requirements)) {
+			if (!user.hasSkillReqs(i.equipment.requirements)) {
 				// Warn only for skill requirements, and conflicting weapon/2h/shield loadouts (below).
 				failedToEquipBank.add(i.id, qty);
 				continue;

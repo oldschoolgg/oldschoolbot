@@ -1,5 +1,5 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { roll } from '@oldschoolgg/rng';
+import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BrimstoneChest,
@@ -18,25 +18,22 @@ import {
 	type OpenableOpenOptions,
 	Openables,
 	resolveItems,
-	SkillsEnum,
 	ZombiePiratesLocker
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
-import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
-import { roll } from '@/lib/util/rng.js';
-import { defaultFarmingContract } from './minions/farming/index.js';
-import type { FarmingContract } from './minions/farming/types.js';
-import { shadeChestOpenables } from './shadesKeys.js';
-import { nestTable } from './simulation/birdsNest.js';
+import { shadeChestOpenables } from '@/lib/shadesKeys.js';
+import { nestTable } from '@/lib/simulation/birdsNest.js';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
 	CasketTable,
 	CrystalChestTable,
 	SpoilsOfWarTable
-} from './simulation/misc.js';
+} from '@/lib/simulation/misc.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -123,7 +120,7 @@ for (const clueTier of ClueTiers) {
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
-			const stats = await user.fetchStats({ openable_scores: true });
+			const stats = await user.fetchStats();
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
 			let gotMilestoneReward = false;
@@ -182,7 +179,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const fishLvl = args.user.skillsAsLevels.fishing;
 			const brimstoneOptions: OpenableOpenOptions = {
 				fishLvl
 			};
@@ -266,7 +263,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const fishLvl = args.user.skillsAsLevels.fishing;
 			const larransOptions: OpenableOpenOptions = {
 				fishLvl,
 				chestSize: 'big'
@@ -353,10 +350,10 @@ const osjsOpenables: UnifiedOpenable[] = [
 			message?: string;
 		}> => {
 			const { plantTier } =
-				(args.user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
+				(args.user.user.minion_farmingContract as FarmingContract | null) ?? Farming.defaultFarmingContract;
 			const openLoot = new Bank();
 			for (let i = 0; i < args.quantity; i++) {
-				openLoot.add(openSeedPack(plantTier));
+				openLoot.add(Farming.openSeedPack(plantTier));
 			}
 			return { bank: openLoot };
 		},

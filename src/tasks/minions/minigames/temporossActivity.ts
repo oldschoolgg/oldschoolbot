@@ -1,18 +1,16 @@
-import { increaseNumByPercent, randInt } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { randInt } from '@oldschoolgg/rng';
+import { calcPerHour, Emoji, Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolkit';
 
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const temporossTask: MinionTask = {
 	type: 'Tempoross',
-	async run(data: TemporossActivityTaskOptions) {
-		const { userID, channelID, quantity, rewardBoost, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TemporossActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, rewardBoost, duration } = data;
+
 		const currentLevel = user.skillsAsLevels.fishing;
 		const previousScore = await user.fetchMinigameScore('tempoross');
 		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);

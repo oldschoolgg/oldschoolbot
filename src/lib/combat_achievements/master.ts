@@ -1,6 +1,8 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
@@ -11,8 +13,6 @@ import type {
 	TheatreOfBloodTaskOptions,
 	TOAOptions
 } from '@/lib/types/minions.js';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
-import type { CombatAchievement } from './combatAchievements.js';
 
 export const masterCombatAchievements: CombatAchievement[] = [
 	{
@@ -145,6 +145,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Great Olm in a solo raid without taking damage from any of the following: Teleport portals, Fire Walls, Healing pools, Crystal Bombs, Crystal Burst or Prayer Orbs. You also cannot let his claws regenerate or take damage from the same acid pool back to back. (Party size required)',
 		type: 'perfection',
 		monster: 'Chambers of Xeric',
+		details: 'Solo trip required.',
 		rng: {
 			chancePerKill: 44,
 			hasChance: data =>
@@ -157,6 +158,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric (Solo) in less than 21 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
+		details: 'Solo trip required.',
 		rng: {
 			chancePerKill: 25,
 			hasChance: data =>
@@ -180,6 +182,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric solo raid with more than 40,000 points. (Party size required)',
 		type: 'mechanical',
 		monster: 'Chambers of Xeric',
+		details: 'Solo trip required.',
 		rng: {
 			chancePerKill: 22,
 			hasChance: data =>
@@ -259,6 +262,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric solo raid without dying. (Party size required)',
 		type: 'perfection',
 		monster: 'Chambers of Xeric',
+		details: 'Solo trip required.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -282,6 +286,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Great Olm in a solo raid without letting him use any of the following special attacks in his second to last phase: Crystal Burst, Lightning Walls, Teleportation Portals or left-hand autohealing. (Party size required)',
 		type: 'mechanical',
 		monster: 'Chambers of Xeric',
+		details: 'Solo trip required.',
 		rng: {
 			chancePerKill: 33,
 			hasChance: data =>
@@ -305,6 +310,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric Challenge mode (Solo) raid without dying. (Party size required)',
 		type: 'perfection',
 		monster: 'Chambers of Xeric: Challenge Mode',
+		details: 'Solo trip required and challenge mode must be active.',
 		rng: {
 			chancePerKill: 10,
 			hasChance: data =>
@@ -331,6 +337,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 45 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
+		details: 'Solo trip required and challenge mode must be active.',
 		rng: {
 			chancePerKill: 15,
 			hasChance: data =>
@@ -661,6 +668,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Phantom Muspah by only dealing damage to it with a salamander.',
 		type: 'restriction',
 		monster: 'Phantom Muspah',
+		details: 'You must have a Black, Red, or Orange salamander equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -776,6 +784,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Skotizo with the final source of damage being a Chinchompa explosion.',
 		type: 'restriction',
 		monster: 'Skotizo',
+		details: 'You must have a Red or Black chinchompa equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -892,6 +901,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Theatre of Blood without any member of the team equipping a Scythe of Vitur.',
 		type: 'restriction',
 		monster: 'Theatre of Blood',
+		details: 'You must not have a Scythe of vitur equipped.',
 		rng: {
 			chancePerKill: 22,
 			hasChance: (data, user) => data.type === 'TheatreOfBlood' && !user.hasEquipped('Scythe of vitur')
@@ -1225,6 +1235,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Tombs of Amascut raid at level 350 or above without anyone dying.',
 		type: 'mechanical',
 		monster: 'Tombs of Amascut: Expert Mode',
+		details: 'Raid level must be at least 350 and no one can die.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -1519,6 +1530,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Colosseum with a total time of 28:00 or less.',
 		type: 'speed',
 		monster: 'Colosseum',
+		details: 'The duration must be under 28 minutes.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data: ActivityTaskData) =>
@@ -1564,6 +1576,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Araxxor 10 times without leaving.',
 		type: 'stamina',
 		monster: 'Araxxor',
+		details: 'You must kill at least 10 Araxxor in one trip.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data => {
@@ -1578,6 +1591,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Araxxor 5 times in 10:00.',
 		type: 'speed',
 		monster: 'Araxxor',
+		details: 'You must kill at least 5 Araxxor and average 2 minutes or less per kill.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data => {
@@ -1785,6 +1799,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Hueycoatl using only dragonbane weaponry.',
 		type: 'restriction',
 		monster: 'TheHueycoatl',
+		details: 'You must have a Dragon hunter lance equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
