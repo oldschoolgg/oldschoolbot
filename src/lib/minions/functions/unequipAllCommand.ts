@@ -27,10 +27,12 @@ export async function unEquipAllCommand(
 		return `You have no items in your ${toTitleCase(gearType)} setup.`;
 	}
 
-	await user.update({
-		[`gear_${gearType}`]: defaultGear
+	await user.transactItems({
+		itemsToAdd: refund,
+		collectionLog: false,
+		otherUpdates: {
+			[`gear_${gearType}`]: defaultGear
+		}
 	});
-
-	await user.addItemsToBank({ items: refund, collectionLog: false });
 	return `You unequipped all items (${refund}) from your ${toTitleCase(gearType)} setup.`;
 }

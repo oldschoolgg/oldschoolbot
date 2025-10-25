@@ -385,20 +385,23 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		collectionLog = false,
 		filterLoot = true,
 		dontAddToTempCL = false,
-		neverUpdateHistory = false
+		neverUpdateHistory = false,
+		otherUpdates
 	}: {
 		items: ItemBank | Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
+		otherUpdates?: Prisma.UserUpdateArgs['data'];
 	}) {
 		const res = await this.transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			neverUpdateHistory
+			neverUpdateHistory,
+			otherUpdates
 		});
 		this._updateRawUser(res.newUser);
 		return res;
