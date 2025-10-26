@@ -1,4 +1,3 @@
-import { percentChance, randInt } from '@oldschoolgg/rng';
 import { Bank, EItem } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
@@ -7,7 +6,7 @@ import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
-	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { mixableID, quantity, zahur, wesley, channelID, duration } = data;
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
@@ -30,7 +29,7 @@ export const herbloreTask: MinionTask = {
 			} else {
 				// Math for if the user is using their minion to make lava scale shards
 				for (let i = 0; i < quantity; i++) {
-					scales += Math.floor((percentChance(maxShardChance) ? 6 : randInt(3, 6)) * diaryMultiplier);
+					scales += Math.floor((rng.percentChance(maxShardChance) ? 6 : rng.randInt(3, 6)) * diaryMultiplier);
 				}
 			}
 			outputQuantity = scales;

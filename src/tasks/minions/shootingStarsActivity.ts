@@ -9,10 +9,10 @@ export const shootingStarTask: MinionTask = {
 	async run(data: ShootingStarsOptions, { handleTripFinish, user }) {
 		const star = starSizes.find(i => i.size === data.size)!;
 		const { usersWith } = data;
-		const loot = new Bank(data.lootItems);
+		const itemsToAdd = new Bank(data.lootItems);
 		const userMiningLevel = user.skillsAsLevels.mining;
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await user.transactItems({ itemsToAdd, collectionLog: true });
 		const xpStr = await user.addXP({
 			skillName: 'mining',
 			amount: data.totalXp,
@@ -21,16 +21,16 @@ export const shootingStarTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished mining a size ${star.size} Crashed Star, there was ${
 			usersWith - 1 || 'no'
-		} other players mining with you.\nYou received ${loot}.\n${xpStr}`;
-		if (loot.has('Rock golem')) {
+		} other players mining with you.\nYou received ${itemsToAdd}.\n${xpStr}`;
+		if (itemsToAdd.has('Rock golem')) {
 			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received ${
-					loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
+					itemsToAdd.amount('Rock golem') > 1 ? `${itemsToAdd.amount('Rock golem')}x ` : 'a'
 				} Rock golem while mining a fallen Shooting Star at level ${userMiningLevel} Mining!`
 			);
 		}
 
-		handleTripFinish(user, data.channelID, str, undefined, data, loot);
+		handleTripFinish(user, data.channelID, str, undefined, data, itemsToAdd);
 	}
 };

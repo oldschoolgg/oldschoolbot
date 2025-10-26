@@ -49,14 +49,15 @@ export const agilityArenaTask: MinionTask = {
 			(xpFromTrip / (duration / Time.Minute)) * 60
 		).toLocaleString()}/Hr.`;
 
+		const itemsToAdd = new Bank()
+			.add('Agility arena ticket', ticketsReceived)
+			.add('Brimhaven voucher', ticketsReceived);
+
 		// Roll for pet
 		const { petDropRate } = skillingPetDropRate(user, 'agility', 26_404);
 		for (let i = 0; i < ticketsReceived; i++) {
 			if (roll(petDropRate)) {
-				user.addItemsToBank({
-					items: new Bank().add('Giant Squirrel'),
-					collectionLog: true
-				});
+				itemsToAdd.add('Giant Squirrel');
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Agility} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
@@ -64,14 +65,13 @@ export const agilityArenaTask: MinionTask = {
 			}
 		}
 
-		// Give the user their tickets and vouchers
-		await user.addItemsToBank({
-			items: new Bank().add('Agility arena ticket', ticketsReceived).add('Brimhaven voucher', ticketsReceived),
+		await user.transactItems({
+			itemsToAdd,
 			collectionLog: true
 		});
 
 		// Loot message
-		str += `\n\n**Loot:** ${ticketsReceived}x Agility arena tickets, ${ticketsReceived}x Brimhaven vouchers.`;
+		str += `\n\n**Loot:** ${itemsToAdd}.`;
 		if (bonusTickets > 0) {
 			str += `You received ${bonusTickets} bonus tickets for the Karamja Elite Diary.`;
 		}

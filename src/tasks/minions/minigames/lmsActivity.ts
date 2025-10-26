@@ -1,4 +1,3 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { calcPerHour, Emoji, formatOrdinal, gaussianRandom, SimpleTable, sumArr } from '@oldschoolgg/toolkit';
 import { clamp } from 'remeda';
 
@@ -72,7 +71,7 @@ export function calculateResultOfLMSGames(
 		let kills = 0;
 		let died = false;
 		for (let t = 0; t < encounters; t++) {
-			const wonFight = percentChance(chanceToWinFight);
+			const wonFight = rng.percentChance(chanceToWinFight);
 			if (wonFight) kills++;
 			else died = true;
 		}

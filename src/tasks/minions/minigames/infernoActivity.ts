@@ -2,7 +2,6 @@ import { calcPercentOfNum, calcWhatPercent, Events, formatDuration, formatOrdina
 import { Bank, type ItemBank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
-import { diariesObject, userhasDiaryTier } from '@/lib/diaries.js';
 import { DiaryID } from '@/lib/minions/types.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
@@ -35,7 +34,7 @@ export const infernoTask: MinionTask = {
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
-		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
+		const [hasDiary] = await user.hasDiaryTier(DiaryID.Karamja, 'elite');
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
 		const xpBonuses = [];
@@ -116,10 +115,10 @@ export const infernoTask: MinionTask = {
 			});
 
 			const currentStreak = newUserStats.slayer_task_streak;
-			const points = await calculateSlayerPoints(
+			const points: number = await calculateSlayerPoints(
 				currentStreak,
 				usersTask.slayerMaster!,
-				(await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+				(await user.hasDiaryTier(DiaryID.KourendKebos, 'elite'))[0]
 			);
 			const secondNewUser = await user.update({
 				slayer_points: {
@@ -141,7 +140,7 @@ export const infernoTask: MinionTask = {
 		}
 
 		if (unusedItems.length > 0) {
-			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
+			await user.transactItems({ itemsToAdd: unusedItems, collectionLog: false });
 
 			const currentData = await ClientSettings.fetch({ inferno_cost: true });
 			const current = new Bank(currentData.inferno_cost as ItemBank);
@@ -190,7 +189,7 @@ export const infernoTask: MinionTask = {
 			}
 		}
 
-		await user.addItemsToBank({ items: baseBank, collectionLog: true });
+		await user.transactItems({ itemsToAdd: baseBank, collectionLog: true });
 
 		handleTripFinish(
 			user,

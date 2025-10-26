@@ -1,4 +1,3 @@
-import { randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -15,7 +14,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
-	async run(data: FarmingActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: FarmingActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { plantsName, patchType, quantity, upgradeType, payment, channelID, planting, currentDate, pid } = data;
 		const currentFarmingLevel = user.skillsAsLevels.farming;
 		const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
@@ -253,11 +252,11 @@ export const farmingTask: MinionTask = {
 							typeof plantToHarvest.woodcuttingXp === 'number'
 					);
 
-					const amountOfLogs = randInt(5, 10) * alivePlants;
+					const amountOfLogs = rng.randInt(5, 10) * alivePlants;
 					loot.add(plantToHarvest.outputLogs, amountOfLogs);
 
 					if (plantToHarvest.outputRoots) {
-						loot.add(plantToHarvest.outputRoots, randInt(1, 4) * alivePlants);
+						loot.add(plantToHarvest.outputRoots, rng.randInt(1, 4) * alivePlants);
 					}
 
 					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;
@@ -347,16 +346,16 @@ export const farmingTask: MinionTask = {
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll(petDropRate / alivePlants)
+				rng.roll(Math.ceil(petDropRate / alivePlants))
 			) {
 				loot.add('Tangleroot');
 			}
-			if (plantToHarvest.seedType === 'seaweed' && roll(3)) loot.add('Seaweed spore', randInt(1, 3));
+			if (plantToHarvest.seedType === 'seaweed' && rng.roll(3)) loot.add('Seaweed spore', rng.randInt(1, 3));
 
 			if (plantToHarvest.seedType !== 'hespori') {
 				let hesporiSeeds = 0;
 				for (let i = 0; i < alivePlants; i++) {
-					if (roll(plantToHarvest.petChance / 500)) {
+					if (rng.roll(plantToHarvest.petChance / 500)) {
 						hesporiSeeds++;
 					}
 				}

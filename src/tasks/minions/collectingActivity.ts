@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { DiaryID } from '@/lib/minions/types.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
@@ -13,7 +13,7 @@ export const collectingTask: MinionTask = {
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
 
-		const [hasMoryHard] = await userhasDiaryTier(user, MorytaniaDiary.hard);
+		const [hasMoryHard] = await user.hasDiaryTier(DiaryID.Morytania, 'hard');
 		const moryHardBoost = collectable.item.name === 'Mort myre fungus' && hasMoryHard;
 		if (moryHardBoost) {
 			colQuantity *= 2;

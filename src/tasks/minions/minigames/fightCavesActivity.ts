@@ -1,9 +1,7 @@
-import { percentChance, randInt } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent, Emoji, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
-import { userhasDiaryTier } from '@/lib/diaries.js';
 import { DiaryID } from '@/lib/minions/types.js';
 import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
@@ -13,11 +11,11 @@ const TokkulID = itemID('Tokkul');
 
 export const fightCavesTask: MinionTask = {
 	type: 'FightCaves',
-	async run(data: FightCavesActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: FightCavesActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelID, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
 
-		const tokkulReward = randInt(2000, 6000);
-		const diedToJad = percentChance(jadDeathChance);
+		const tokkulReward = rng.randInt(2000, 6000);
+		const diedToJad = rng.percentChance(jadDeathChance);
 
 		const { fight_caves_attempts: newFightCavesAttempts } = await user.statsUpdate({
 			fight_caves_attempts: {
@@ -157,7 +155,7 @@ export const fightCavesTask: MinionTask = {
 			const points = await calculateSlayerPoints(
 				currentStreak,
 				usersTask.slayerMaster!,
-				(await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+				(await user.hasDiaryTier(DiaryID.KourendKebos, 'elite'))[0]
 			);
 
 			const secondNewUser = await user.update({

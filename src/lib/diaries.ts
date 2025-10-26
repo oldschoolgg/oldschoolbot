@@ -12,7 +12,7 @@ import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList, formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
-interface Diary {
+export interface Diary {
 	name: string;
 	id: DiaryID;
 	alias?: string[];

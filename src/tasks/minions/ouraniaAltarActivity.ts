@@ -1,4 +1,3 @@
-import { percentChance, roll } from '@oldschoolgg/rng';
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -11,7 +10,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 
 const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
-	async run(data: OuraniaAltarOptions, { user, handleTripFinish }) {
+	async run(data: OuraniaAltarOptions, { user, handleTripFinish, rng }) {
 		const { quantity, channelID, duration, daeyalt } = data;
 
 		const lvl = user.skillsAsLevels.runecraft;
@@ -30,7 +29,7 @@ const ouraniaAltarTask: MinionTask = {
 				runeXp = 29.7;
 			}
 			totalXp += runeXp * 1.7;
-			if (roll(petDropRate)) {
+			if (rng.roll(petDropRate)) {
 				loot.add('Rift guardian');
 			}
 			loot.add(essenceLoot);
@@ -46,8 +45,8 @@ const ouraniaAltarTask: MinionTask = {
 			const rBonus = raimentBonus(user, qty);
 			if (hasArdyMedium) {
 				for (let i = 0; i < qty; i++) {
-					if (!rRune && percentChance(10)) dBonus++;
-					else if (rRune?.ardyDiaryChance && percentChance(rRune.ardyDiaryChance)) dBonus++;
+					if (!rRune && rng.percentChance(10)) dBonus++;
+					else if (rRune?.ardyDiaryChance && rng.percentChance(rRune.ardyDiaryChance)) dBonus++;
 				}
 				diaryQuantity += dBonus;
 			}
@@ -68,7 +67,7 @@ const ouraniaAltarTask: MinionTask = {
 			raimentQuantity > 0 ? `\n${raimentQuantity} bonus runes from the Raiments of the eye outfit.` : ''
 		} ${xpRes}`;
 
-		if (loot.amount('Rift guardian') > 0) {
+		if (loot.has('Rift guardian')) {
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${

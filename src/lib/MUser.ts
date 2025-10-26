@@ -23,6 +23,7 @@ import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
+import { userhasDiaryTier } from '@/lib/diaries.js';
 import type { CommandResponseValue } from '@/lib/discord/index.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
@@ -32,8 +33,11 @@ import backgroundImages from '@/lib/minions/data/bankBackgrounds.js';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { type AddMonsterXpParams, addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import { blowpipeDarts, validateBlowpipeData } from '@/lib/minions/functions/blowpipeCommand.js';
+import getUserFoodFromBank, { type GetUserFoodFromBankParams } from '@/lib/minions/functions/getUserFoodFromBank.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
-import type { AddXpParams, BlowpipeData, ClueBank } from '@/lib/minions/types.js';
+import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { AddXpParams, BlowpipeData, ClueBank, DiaryID, DiaryTierName } from '@/lib/minions/types.js';
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
@@ -1212,12 +1216,16 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return cl;
 	}
 
-	async checkTableBankMatches() {
-		await this.sync();
-		const clFromDB = await this.fetchCL();
-		if (this.cl.toString() !== clFromDB.toString()) {
-			console.error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}`);
-		}
+	public hasDiaryTier(diaryId: DiaryID, tier: DiaryTierName) {
+		return userhasDiaryTier(this, [diaryId, tier]);
+	}
+
+	public calculateUsableFood(params: Omit<GetUserFoodFromBankParams, 'gearBank'>) {
+		return getUserFoodFromBank({ ...params, gearBank: this.gearBank });
+	}
+
+	async removeFoodFromUser(params: Omit<RemoveFoodFromUserParams, 'user'>) {
+		return removeFoodFromUser({ ...params, user: this });
 	}
 
 	async fetchCL(): Promise<Bank> {

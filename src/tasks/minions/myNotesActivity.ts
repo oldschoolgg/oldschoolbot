@@ -1,4 +1,4 @@
-import { AncientCavernAncientPageTable, Bank, LootTable } from 'oldschooljs';
+import { AncientCavernAncientPageTable, LootTable } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -13,7 +13,7 @@ export const myNotesTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
 		const { channelID, quantity } = data;
 
-		const loot = new Bank(skeletonTable.roll(quantity));
+		const loot = skeletonTable.roll(quantity);
 
 		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,

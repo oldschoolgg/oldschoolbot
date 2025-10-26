@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -9,11 +8,9 @@ import { skillingPetDropRate } from '@/lib/util.js';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
-	async run(data: MotherlodeMiningActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: MotherlodeMiningActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelID, duration } = data;
 		const { quantity } = data;
-
-		const motherlode = Mining.MotherlodeMine;
 
 		let xpReceived = quantity * Mining.MotherlodeMine.xp;
 		let bonusXP = 0;
@@ -97,8 +94,8 @@ export const motherlodeMiningTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
 
-		const { petDropRate } = skillingPetDropRate(user, 'mining', motherlode.petChance!);
-		if (roll(petDropRate / quantity)) {
+		const { petDropRate } = skillingPetDropRate(user, 'mining', Mining.MotherlodeMine.petChance!);
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Rock golem');
 			globalClient.emit(
 				Events.ServerNotification,
