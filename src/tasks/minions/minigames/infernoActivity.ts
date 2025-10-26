@@ -25,11 +25,12 @@ export const infernoTask: MinionTask = {
 		const unusedItems = new Bank();
 		const cost = new Bank(data.cost);
 
-		const { inferno_attempts: newInfernoAttempts } = await user.statsUpdate({
+		await user.statsUpdate({
 			inferno_attempts: {
 				increment: 1
 			}
 		});
+		const newInfernoAttempts = await user.fetchUserStat('inferno_attempts');
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
@@ -108,14 +109,14 @@ export const infernoTask: MinionTask = {
 		}
 
 		if (isOnTask && !deathTime) {
-			const newUserStats = await user.statsUpdate({
+			await user.statsUpdate({
 				slayer_task_streak: {
 					increment: 1
 				}
 			});
+			const currentStreak = await user.fetchUserStat('slayer_task_streak');
 
-			const currentStreak = newUserStats.slayer_task_streak;
-			const points: number = await calculateSlayerPoints(
+			const points: number = calculateSlayerPoints(
 				currentStreak,
 				usersTask.slayerMaster!,
 				(await user.hasDiaryTier(DiaryID.KourendKebos, 'elite'))[0]

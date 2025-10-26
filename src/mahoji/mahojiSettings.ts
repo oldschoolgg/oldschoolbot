@@ -234,8 +234,9 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 
 export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
 	const stats = await user.fetchStats();
-	const { openable_scores: newOpenableScores } = await user.statsUpdate({
+	await user.statsUpdate({
 		openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
 	});
+	const newOpenableScores = await user.fetchUserStat('openable_scores');
 	return new Bank(newOpenableScores as ItemBank);
 }

@@ -83,7 +83,7 @@ export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[]
 	return boostMethods;
 }
 
-export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, hasKourendElite: boolean) {
+export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, hasKourendElite: boolean): number {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 

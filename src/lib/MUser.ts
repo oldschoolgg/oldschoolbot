@@ -1134,22 +1134,23 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return false;
 	}
 
-	async statsUpdate(data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>) {
+	async statsUpdate(data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>): Promise<void> {
 		const id = BigInt(this.id);
 
-		const result = await prisma.userStats.update({
+		await prisma.userStats.update({
 			data,
 			where: {
 				user_id: id
+			},
+			select: {
+				user_id: true
 			}
 		});
-		return result;
 	}
 
-	async statsBankUpdate(key: JsonKeys<UserStats>, bank: Bank) {
+	async statsBankUpdate(key: JsonKeys<UserStats>, bank: Bank): Promise<void> {
 		if (!key) throw new Error('No key provided to userStatsBankUpdate');
-		const stats = await this.fetchStats();
-		const currentItemBank = stats[key] as ItemBank;
+		const currentItemBank = ((await this.fetchUserStat(key)) ?? {}) as ItemBank;
 		if (!isObject(currentItemBank)) {
 			throw new Error(`Key ${key} is not an object.`);
 		}
@@ -1231,6 +1232,14 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	async fetchCL(): Promise<Bank> {
 		const cl = await this._fetchOrCreateCL();
 		return cl;
+	}
+
+	async fetchUserStat<K extends keyof UserStats>(key: K): Promise<UserStats[K]> {
+		const userStats = (await prisma.userStats.findFirstOrThrow({
+			where: { user_id: BigInt(this.id) },
+			select: { [key]: true } as any
+		})) as unknown as Pick<UserStats, K>;
+		return userStats[key];
 	}
 }
 

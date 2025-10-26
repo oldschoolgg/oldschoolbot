@@ -17,11 +17,12 @@ export const fightCavesTask: MinionTask = {
 		const tokkulReward = rng.randInt(2000, 6000);
 		const diedToJad = rng.percentChance(jadDeathChance);
 
-		const { fight_caves_attempts: newFightCavesAttempts } = await user.statsUpdate({
+		await user.statsUpdate({
 			fight_caves_attempts: {
 				increment: 1
 			}
 		});
+		const newFightCavesAttempts = await user.fetchUserStat('fight_caves_attempts');
 
 		const attemptsStr = `You have tried Fight caves ${newFightCavesAttempts}x times`;
 
@@ -144,11 +145,12 @@ export const fightCavesTask: MinionTask = {
 
 		let msg = `${rangeXP}. ${hpXP}.`;
 		if (isOnTask) {
-			const { slayer_task_streak: currentStreak } = await user.statsUpdate({
+			await user.statsUpdate({
 				slayer_task_streak: {
 					increment: 1
 				}
 			});
+			const currentStreak = await user.fetchUserStat('slayer_task_streak');
 
 			// 25,250 for Jad + 11,760 for waves.
 			const slayerXP = 37_010;
