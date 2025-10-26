@@ -22,7 +22,10 @@ export const onStartup = logWrapFn('onStartup', async () => {
 	});
 
 	// Wait 10 seconds before starting tickers to reduce lag on startup
-	TimerManager.setTimeout(() => {
-		initTickers();
-	}, Time.Second * 10);
+	TimerManager.setTimeout(
+		() => {
+			initTickers();
+		},
+		globalConfig.isProduction ? Time.Second * 10 : 0
+	);
 });
