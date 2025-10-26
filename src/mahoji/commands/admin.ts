@@ -25,6 +25,7 @@ import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
+import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
@@ -32,7 +33,6 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
-import { syncCustomPrices } from '@/mahoji/lib/events.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
