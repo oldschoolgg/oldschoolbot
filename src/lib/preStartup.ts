@@ -15,6 +15,7 @@ import { logWrapFn } from '@/lib/util.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 
 export const preStartup = logWrapFn('PreStartup', async () => {
+	await runStartupScripts();
 	await GeImageGenerator.init();
 
 	await prisma.clientStorage.upsert({
@@ -26,7 +27,6 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 	await Promise.all([
 		syncActiveUserIDs(),
 		ActivityManager.syncActivityCache(),
-		runStartupScripts(),
 		syncDisabledCommands(),
 		syncBlacklists(),
 		syncCustomPrices(),
