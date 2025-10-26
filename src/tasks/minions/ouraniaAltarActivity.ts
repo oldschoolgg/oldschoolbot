@@ -1,7 +1,6 @@
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import Runecraft, { ouraniaAltarTables } from '@/lib/skilling/skills/runecraft.js';
@@ -15,7 +14,7 @@ const ouraniaAltarTask: MinionTask = {
 
 		const lvl = user.skillsAsLevels.runecraft;
 		const loot = new Bank();
-		const [hasArdyMedium] = await userhasDiaryTier(user, ArdougneDiary.medium);
+		const hasArdyMedium = user.hasDiary('ardougne.medium');
 		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_487_213);
 		const selectedLootTable = ouraniaAltarTables[Math.min(Math.floor(lvl / 10), 10)];
 		let totalXp = 0;

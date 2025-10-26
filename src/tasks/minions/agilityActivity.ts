@@ -1,7 +1,6 @@
 import { Emoji, Events, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { addItemToBank, Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -68,7 +67,7 @@ export const agilityTask: MinionTask = {
 			if (course.id !== 5 && user.skillsAsLevels.agility >= course.level + 20) {
 				totalMarks = Math.ceil(totalMarks / 5);
 			}
-			const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
+			const hasArdyElite = user.hasDiary('ardougne.elite');
 			if (hasArdyElite && course.name === 'Ardougne Rooftop Course') {
 				totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
 				diaryBonus = true;

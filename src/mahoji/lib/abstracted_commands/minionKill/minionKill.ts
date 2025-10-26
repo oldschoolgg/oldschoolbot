@@ -56,7 +56,7 @@ export async function minionKillCommand(
 
 	if (!monster) return invalidMonsterMsg;
 
-	const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
+	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 	if (!hasReqs) {
 		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
 	}

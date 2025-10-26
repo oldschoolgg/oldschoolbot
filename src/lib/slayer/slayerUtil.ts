@@ -4,7 +4,6 @@ import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { caTiers } from '@/lib/combat_achievements/combatAchievements.js';
 import type { PvMMethod } from '@/lib/constants.js';
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { autoslayModes } from '@/lib/slayer/constants.js';
@@ -260,7 +259,7 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 export async function calcMaxBlockedTasks(user: MUser) {
 	const qps = user.QP;
 	let blocks = 0;
-	const [hasLumbyDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.elite);
+	const hasLumbyDiary = user.hasDiary('lumbridge&draynor.elite');
 	if (hasLumbyDiary) {
 		blocks += 1;
 	}

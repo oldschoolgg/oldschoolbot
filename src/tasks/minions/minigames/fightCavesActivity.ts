@@ -2,7 +2,6 @@ import { calcPercentOfNum, calcWhatPercent, Emoji, Events, formatDuration, forma
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
-import { DiaryID } from '@/lib/minions/types.js';
 import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
 import { fightCavesCost } from '@/mahoji/lib/abstracted_commands/fightCavesCommand.js';
@@ -157,7 +156,7 @@ export const fightCavesTask: MinionTask = {
 			const points = await calculateSlayerPoints(
 				currentStreak,
 				usersTask.slayerMaster!,
-				(await user.hasDiaryTier(DiaryID.KourendKebos, 'elite'))[0]
+				user.hasDiary('kourend&kebos.elite')
 			);
 
 			const secondNewUser = await user.update({

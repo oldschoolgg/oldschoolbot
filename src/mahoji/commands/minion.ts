@@ -429,7 +429,6 @@ export const minionCommand = defineCommand({
 		}
 
 		if (options.achievementdiary) {
-			user.syncCompletedAchievementDiaries().catch(console.error);
 			if (options.achievementdiary.claim) {
 				return claimAchievementDiaryCommand(user, options.achievementdiary.diary ?? '');
 			}

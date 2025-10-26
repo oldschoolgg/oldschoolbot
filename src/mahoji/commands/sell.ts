@@ -3,7 +3,6 @@ import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { Prisma } from '@/prisma/main.js';
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import { filterOption } from '@/lib/discord/index.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -227,8 +226,7 @@ export const sellCommand = defineCommand({
 		}
 
 		if (bankToSell.has('Ecumenical key')) {
-			const [hasWildyHard] = await userhasDiaryTier(user, WildernessDiary.hard);
-			if (!hasWildyHard) {
+			if (!user.hasDiary('wilderness.hard')) {
 				return 'You need to have completed the Wilderness Hard Diary to sell Ecumenical keys.';
 			}
 		}

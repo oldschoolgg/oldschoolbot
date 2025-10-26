@@ -5,9 +5,8 @@ import type { Minigame, PlayerOwnedHouse } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import type { BitField } from '@/lib/constants.js';
 import { BitFieldData, BOT_TYPE } from '@/lib/constants.js';
-import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
-import type { ClueBank, DiaryID, DiaryTierName } from '@/lib/minions/types.js';
+import type { ClueBank } from '@/lib/minions/types.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { type MinigameName, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
@@ -47,7 +46,7 @@ type Requirement = {
 	| { OR: Requirement[] }
 	| { minigames: Partial<Record<MinigameName, number>> }
 	| { bitfieldRequirement: BitField }
-	| { diaryRequirement: [DiaryID, DiaryTierName][] }
+	| { diaryRequirement: Parameters<MUser['hasDiary']>[0][] }
 	| { clueCompletions: Partial<Record<ClueTier['name'], number>> }
 );
 
@@ -134,9 +133,7 @@ export class Requirements {
 
 		if ('diaryRequirement' in req) {
 			requirementParts.push(
-				`Achievement Diary Requirement: ${formatList(
-					req.diaryRequirement.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])?.name}`)
-				)}`
+				`Achievement Diary Requirement: ${formatList(req.diaryRequirement.map(i => i.replace('.', ' ')))}`
 			);
 		}
 
@@ -315,14 +312,11 @@ export class Requirements {
 
 		if ('diaryRequirement' in requirement) {
 			const unmetDiaries = requirement.diaryRequirement
-				.map(([diary, tier]) => {
-					const { hasDiary, diaryGroup } = userhasDiaryTierSync(user, [diary, tier], {
-						stats,
-						minigameScores: minigames
-					});
+				.map(diary => {
+					const hasDiary = user.hasDiary(diary);
 					return {
 						has: hasDiary,
-						tierName: `${tier} ${diaryGroup.name}`
+						tierName: diary.replace('.', ' ')
 					};
 				})
 				.filter(i => !i.has);

@@ -1,7 +1,6 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -52,7 +51,7 @@ export const motherlodeMiningTask: MinionTask = {
 		let goldWeight = currentLevel >= 40 ? Math.round(100 * (0.2211 * currentLevel + 2.807)) : 0;
 
 		// Check for falador elite diary for increased ore rates
-		const [hasEliteDiary] = await userhasDiaryTier(user, FaladorDiary.elite);
+		const hasEliteDiary = user.hasDiary('falador.elite');
 		if (hasEliteDiary) {
 			if (currentLevel >= 85) runiteWeight += 100;
 			if (currentLevel >= 70) adamantiteWeight += 100;

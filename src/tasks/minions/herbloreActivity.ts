@@ -1,6 +1,5 @@
 import { Bank, EItem } from 'oldschooljs';
 
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -15,7 +14,7 @@ export const herbloreTask: MinionTask = {
 
 		// Special case for Lava scale shard
 		if (mixableItem.item.id === EItem.LAVA_SCALE_SHARD) {
-			const [hasWildyDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
+			const hasWildyDiary = user.hasDiary('wilderness.hard');
 			const currentHerbLevel = user.skillsAsLevels.herblore;
 			let scales = 0;
 			// Having 99 herblore gives a 98% chance to recieve the max amount of shards

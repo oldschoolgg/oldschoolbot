@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '@/lib/data/CollectionsExport.js';
-import { DiaryID } from '@/lib/minions/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { formatList } from '@/lib/util/smallUtils.js';
 
@@ -15,7 +14,7 @@ export const chompHuntTask: MinionTask = {
 
 		const loot = new Bank();
 
-		const [hasElite] = await user.hasDiaryTier(DiaryID.WesternProvinces, 'elite');
+		const hasElite = user.hasDiary('westernprovinces.elite');
 
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Bones');

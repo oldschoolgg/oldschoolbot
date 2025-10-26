@@ -1,7 +1,6 @@
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
-import { DiaryID } from '@/lib/minions/types.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
@@ -13,8 +12,8 @@ export const zalcanoTask: MinionTask = {
 		const { channelID, quantity, duration, performance, isMVP } = data;
 
 		const { newKC } = await user.incrementKC(EMonster.ZALCANO, quantity);
-		const [hasKourendHard] = await user.hasDiaryTier(DiaryID.KourendKebos, 'hard');
-		const [hasKourendElite] = await user.hasDiaryTier(DiaryID.KourendKebos, 'elite');
+		const hasKourendHard = user.hasDiary('kourend&kebos.hard');
+		const hasKourendElite = user.hasDiary('kourend&kebos.elite');
 		const loot = new Bank();
 
 		let runecraftXP = 0;

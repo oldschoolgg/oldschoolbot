@@ -1,6 +1,5 @@
 import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 
-import { DiaryID } from '@/lib/minions/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const barbAssaultTask: MinionTask = {
@@ -20,7 +19,7 @@ export const barbAssaultTask: MinionTask = {
 
 		let pts = basePoints + rng.randInt(-3, 3);
 
-		const [hasDiary] = await user.hasDiaryTier(DiaryID.Kandarin, 'hard');
+		const hasDiary = user.hasDiary('kandarin.hard');
 		if (hasDiary) {
 			pts *= 1.1;
 			resultStr += `${user.usernameOrMention} received 10% extra pts for Kandarin Hard diary. `;

@@ -2,7 +2,6 @@ import { randomVariation, roll } from '@oldschoolgg/rng';
 import { calcWhatPercent, Emoji, Events, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -12,7 +11,7 @@ export const agilityArenaTask: MinionTask = {
 		const { channelID, duration } = data;
 
 		const currentLevel = user.skillsAsLevels.agility;
-		const [hasKaramjaMed] = await userhasDiaryTier(user, KaramjaDiary.medium);
+		const hasKaramjaMed = user.hasDiary('karamja.medium');
 		const xpPerTicket = hasKaramjaMed ? 379.5 : 345;
 
 		// You get 1 ticket per minute at best without diary
@@ -25,7 +24,7 @@ export const agilityArenaTask: MinionTask = {
 
 		// 10% bonus tickets for karamja elite
 		let bonusTickets = 0;
-		const [hasKaramjaElite] = await userhasDiaryTier(user, KaramjaDiary.elite);
+		const hasKaramjaElite = user.hasDiary('karamja.elite');
 		if (hasKaramjaElite) {
 			for (let i = 0; i < ticketsReceived; i++) {
 				if (roll(10)) bonusTickets++;

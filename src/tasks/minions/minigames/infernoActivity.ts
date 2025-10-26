@@ -2,7 +2,6 @@ import { calcPercentOfNum, calcWhatPercent, Events, formatDuration, formatOrdina
 import { Bank, type ItemBank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
-import { DiaryID } from '@/lib/minions/types.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
@@ -35,7 +34,7 @@ export const infernoTask: MinionTask = {
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
-		const [hasDiary] = await user.hasDiaryTier(DiaryID.Karamja, 'elite');
+		const hasDiary = user.hasDiary('karamja.elite');
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
 		const xpBonuses = [];
@@ -119,7 +118,7 @@ export const infernoTask: MinionTask = {
 			const points: number = calculateSlayerPoints(
 				currentStreak,
 				usersTask.slayerMaster!,
-				(await user.hasDiaryTier(DiaryID.KourendKebos, 'elite'))[0]
+				user.hasDiary('kourend&kebos.elite')
 			);
 			const secondNewUser = await user.update({
 				slayer_points: {

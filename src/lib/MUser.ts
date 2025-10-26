@@ -12,7 +12,15 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@/prisma/main.js';
+import type {
+	activity_type_enum,
+	GearSetupType,
+	Minigame,
+	Prisma,
+	User,
+	UserStats,
+	xp_gains_skill_enum
+} from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
 import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
@@ -23,7 +31,7 @@ import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
-import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '@/lib/diaries.js';
+import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { CommandResponseValue } from '@/lib/discord/index.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
@@ -37,7 +45,7 @@ import getUserFoodFromBank, { type GetUserFoodFromBankParams } from '@/lib/minio
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
-import type { AddXpParams, BlowpipeData, ClueBank, DiaryID, DiaryTierName } from '@/lib/minions/types.js';
+import type { AddXpParams, BlowpipeData, ClueBank } from '@/lib/minions/types.js';
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
@@ -1238,10 +1246,6 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return cl;
 	}
 
-	public hasDiaryTier(diaryId: DiaryID, tier: DiaryTierName) {
-		return userhasDiaryTier(this, [diaryId, tier]);
-	}
-
 	public calculateUsableFood(params: Omit<GetUserFoodFromBankParams, 'gearBank'>) {
 		return getUserFoodFromBank({ ...params, gearBank: this.gearBank });
 	}
@@ -1263,8 +1267,10 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return userStats[key];
 	}
 
-	async syncCompletedAchievementDiaries() {
-		const [stats, minigameScores] = await Promise.all([this.fetchMStats(), this.fetchMinigames()]);
+	async syncCompletedAchievementDiaries(preFetchedData?: { stats: MUserStats; minigameScores: Minigame }) {
+		const [stats, minigameScores] = preFetchedData
+			? [preFetchedData.stats, preFetchedData.minigameScores]
+			: await Promise.all([this.fetchMStats(), this.fetchMinigames()]);
 		const completedKeys: string[] = [];
 		for (const diary of diaries) {
 			for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {

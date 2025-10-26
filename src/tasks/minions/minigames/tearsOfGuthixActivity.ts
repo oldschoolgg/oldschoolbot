@@ -1,6 +1,5 @@
 import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 
-import { DiaryID } from '@/lib/minions/types.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
@@ -48,7 +47,7 @@ export const togTask: MinionTask = {
 		let xpToGive = tears * scaledXPperTear;
 
 		// 10% boost for Lumbridge&Draynor Hard
-		const [hasDiary] = await user.hasDiaryTier(DiaryID.LumbridgeDraynor, 'hard');
+		const hasDiary = user.hasDiary('lumbridge&draynor.hard');
 		if (hasDiary) xpToGive = increaseNumByPercent(xpToGive, 10);
 
 		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration, source: 'TearsOfGuthix' });
