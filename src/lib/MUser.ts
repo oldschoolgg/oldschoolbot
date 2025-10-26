@@ -68,6 +68,24 @@ import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
+type HasDiaryRegion =
+	| 'ardougne'
+	| 'desert'
+	| 'falador'
+	| 'fremennik'
+	| 'kandarin'
+	| 'karamja'
+	| 'kourend&kebos'
+	| 'lumbridge&draynor'
+	| 'morytania'
+	| 'varrock'
+	| 'westernprovinces'
+	| 'wilderness';
+
+type HasDiaryTier = 'easy' | 'medium' | 'hard' | 'elite';
+
+type HasDiaryDiaryKey = `${HasDiaryRegion}.${HasDiaryTier}`;
+
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
 		const newUser = await global.prisma.user.update({
@@ -763,7 +781,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 			await this.transactItems({ itemsToRemove: bankRemove });
 		}
-		const newUser = await global.prisma.user.update({
+		const newUser = await prisma.user.update({
 			data: updates,
 			where: {
 				id: this.id
@@ -1113,7 +1131,11 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		};
 	}
 
-	hasGracefulEquipped() {
+	public hasDiary(key: HasDiaryDiaryKey): boolean {
+		return this.user.completed_achievement_diaries.includes(key);
+	}
+
+	hasGracefulEquipped(): boolean {
 		for (const gear of Object.values(this.gear)) {
 			if (
 				gear.hasEquipped(
@@ -1240,6 +1262,23 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			select: { [key]: true } as any
 		})) as unknown as Pick<UserStats, K>;
 		return userStats[key];
+	}
+
+	async syncCompletedAchievementDiaries() {
+		const [stats, minigameScores] = await Promise.all([this.fetchMStats(), this.fetchMinigames()]);
+		const completedKeys: string[] = [];
+		for (const diary of diaries) {
+			for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {
+				const key = `${diary.name}.${tier}`.replace(/\s/g, '').toLowerCase();
+				const { hasDiary } = userhasDiaryTierSync(this, diary[tier], { stats, minigameScores });
+				if (hasDiary) {
+					completedKeys.push(key);
+				}
+			}
+		}
+		await this.update({
+			completed_achievement_diaries: completedKeys
+		});
 	}
 }
 

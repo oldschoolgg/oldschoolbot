@@ -426,7 +426,8 @@ model User {
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
 
-  cl_array Int[] @default([])
+  cl_array                      Int[]    @default([])
+  completed_achievement_diaries String[] @default([])
 
   gear_template Int? @db.SmallInt
 
