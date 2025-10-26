@@ -23,7 +23,7 @@ import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
-import { userhasDiaryTier } from '@/lib/diaries.js';
+import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { CommandResponseValue } from '@/lib/discord/index.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
@@ -352,8 +352,7 @@ WHERE user_id = ${this.id};`;
 	}
 
 	async getAllKCs() {
-		const stats = await this.fetchStats();
-		const rawKCs = stats.monster_scores as ItemBank;
+		const rawKCs = (await this.fetchUserStat('monster_scores')) as ItemBank;
 		return new Proxy(rawKCs, {
 			get(target, monsterNameOrId: string) {
 				let monsterID: number;
