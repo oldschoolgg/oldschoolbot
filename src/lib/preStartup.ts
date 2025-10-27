@@ -57,7 +57,8 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 	await prisma.clientStorage.upsert({
 		where: { id: globalConfig.clientID },
 		create: { id: globalConfig.clientID },
-		update: {}
+		update: {},
+		select: { id: true }
 	});
 
 	await Promise.all([
