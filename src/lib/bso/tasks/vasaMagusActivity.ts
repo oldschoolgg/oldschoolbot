@@ -75,10 +75,12 @@ export const vasaTask: MinionTask = {
 
 		const pet = user.user.minion_equippedPet;
 		if (pet && kittens.includes(pet) && rng.roll(1)) {
-			await user.update({
-				minion_equippedPet: Items.getOrThrow('Magic kitten').id
+			await user.addItemsToCollectionLog({
+				itemsToAdd: new Bank().add('Magic kitten'),
+				otherUpdates: {
+					minion_equippedPet: Items.getOrThrow('Magic kitten').id
+				}
 			});
-			await user.addItemsToCollectionLog(new Bank().add('Magic kitten'));
 			resultStr += `\n**Vasa cast a spell on you, but your ${Items.itemNameFromId(
 				pet
 			)} jumped in the way to save you! Strangely, it didn't hurt them at all.**\n`;

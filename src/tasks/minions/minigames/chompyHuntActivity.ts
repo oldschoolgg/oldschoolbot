@@ -1,14 +1,12 @@
-import { roll } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '@/lib/data/CollectionsExport.js';
-import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { formatList } from '@/lib/util/smallUtils.js';
 
 export const chompHuntTask: MinionTask = {
 	type: 'BigChompyBirdHunting',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
 		const { channelID, quantity } = data;
 
 		const previousScore = await user.fetchMinigameScore('big_chompy_bird_hunting');
@@ -16,12 +14,12 @@ export const chompHuntTask: MinionTask = {
 
 		const loot = new Bank();
 
-		const [hasElite] = await userhasDiaryTier(user, WesternProv.elite);
+		const hasElite = user.hasDiary('westernprovinces.elite');
 
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Bones');
 			loot.add('Raw chompy');
-			if (hasElite && roll(250)) {
+			if (hasElite && rng.roll(250)) {
 				loot.add('Chompy chick');
 			}
 		}

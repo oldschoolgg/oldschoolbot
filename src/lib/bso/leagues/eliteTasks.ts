@@ -22,21 +22,6 @@ import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
 import { all3rdAgeItems, gracefulCL, troubleBrewingCL } from '@/lib/data/CollectionsExport.js';
-import {
-	ArdougneDiary,
-	DesertDiary,
-	FaladorDiary,
-	FremennikDiary,
-	KandarinDiary,
-	KaramjaDiary,
-	KourendKebosDiary,
-	LumbridgeDraynorDiary,
-	MorytaniaDiary,
-	userhasDiaryTier,
-	VarrockDiary,
-	WesternProv,
-	WildernessDiary
-} from '@/lib/diaries.js';
 import { implings } from '@/lib/implings.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
@@ -48,84 +33,84 @@ export const eliteTasks: Task[] = [
 		id: 3000,
 		name: 'Complete the Elite Wilderness diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, WildernessDiary.elite))[0];
+			return user.hasDiary('wilderness.elite');
 		}
 	},
 	{
 		id: 3001,
 		name: 'Complete the Elite Western Prov diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, WesternProv.elite))[0];
+			return user.hasDiary('westernprovinces.elite');
 		}
 	},
 	{
 		id: 3002,
 		name: 'Complete the Elite Ardougne diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, ArdougneDiary.elite))[0];
+			return user.hasDiary('ardougne.elite');
 		}
 	},
 	{
 		id: 3003,
 		name: 'Complete the Elite Desert diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, DesertDiary.elite))[0];
+			return user.hasDiary('desert.elite');
 		}
 	},
 	{
 		id: 3004,
 		name: 'Complete the Elite Falador diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, FaladorDiary.elite))[0];
+			return user.hasDiary('falador.elite');
 		}
 	},
 	{
 		id: 3005,
 		name: 'Complete the Elite Fremennik diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, FremennikDiary.elite))[0];
+			return user.hasDiary('fremennik.elite');
 		}
 	},
 	{
 		id: 3006,
 		name: 'Complete the Elite Kandarin diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KandarinDiary.elite))[0];
+			return user.hasDiary('kandarin.elite');
 		}
 	},
 	{
 		id: 3007,
 		name: 'Complete the Elite Karamja diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KaramjaDiary.elite))[0];
+			return user.hasDiary('karamja.elite');
 		}
 	},
 	{
 		id: 3008,
 		name: 'Complete the Elite Kourend Kebos diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KourendKebosDiary.elite))[0];
+			return user.hasDiary('kourend&kebos.elite');
 		}
 	},
 	{
 		id: 3009,
 		name: 'Complete the Elite Lumbridge/Draynor diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, LumbridgeDraynorDiary.elite))[0];
+			return user.hasDiary('lumbridge&draynor.elite');
 		}
 	},
 	{
 		id: 3010,
 		name: 'Complete the Elite Morytania diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, MorytaniaDiary.elite))[0];
+			return user.hasDiary('morytania.elite');
 		}
 	},
 	{
 		id: 3011,
 		name: 'Complete the Elite Varrock diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, VarrockDiary.elite))[0];
+			return user.hasDiary('varrock.elite');
 		}
 	},
 	{

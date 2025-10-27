@@ -52,20 +52,21 @@ export async function lmsCommand(
 			return `You received ${loot}.`;
 		}
 
-		const { newUser } = await user.update({
+		const otherUpdates = {
 			lms_points: {
 				decrement: cost
 			}
-		});
+		};
 		if (itemToBuy.onlyCL) {
-			await user.addItemsToCollectionLog(loot);
+			await user.addItemsToCollectionLog({ itemsToAdd: loot, otherUpdates });
 		} else {
 			await user.transactItems({
 				collectionLog: true,
-				itemsToAdd: loot
+				itemsToAdd: loot,
+				otherUpdates
 			});
 		}
-		return `You spent ${cost} points to buy ${loot}. You now have ${newUser.lms_points} LMS points.`;
+		return `You spent ${cost} points to buy ${loot}. You now have ${user.user.lms_points} LMS points.`;
 	}
 
 	if (user.minionIsBusy) {

@@ -23,6 +23,7 @@ model Activity {
   data           Json?              @db.JsonB
   pinnedTrip     PinnedTrip[]
 
+  @@index([user_id, completed, finish_date])
   @@map("activity")
 }
 
@@ -524,7 +525,8 @@ model User {
   grinchions_caught               Int       @default(0)
   last_giveaway_ticket_given_date DateTime? @db.Timestamp(6)
 
-  cl_array Int[] @default([])
+  cl_array                      Int[]    @default([])
+  completed_achievement_diaries String[] @default([])
 
   @@index([id, last_command_date])
   @@map("users")
@@ -1850,4 +1852,52 @@ model HalloweenEvent {
   items_waiting_for_pickup Json      @default("{}") @db.Json
 
   @@map("halloween_event")
+}
+
+enum JsonBankType {
+  Bank
+  CollectionLog
+  HunterCreaturesCaught
+  MonsterKCs
+  AgilityLapsCounts
+  SacrificedItems
+  OpenedItems
+
+  ToBCost
+  ToBLoot
+  ToACost
+  ToALoot
+  ToARaidLevels
+  ColoCost
+  ColoLoot
+  ColoKC
+  BuyCommandCost
+  BuyCommandLoot
+  CreateCommandCost
+  CreateCommandLoot
+  ShadesOfMortonCost
+  GiantFoundryCost
+  GiantFoundryLoot
+
+  FarmingCost
+  FarmingLoot
+  HerbsCleanedWhileFarming
+
+  RandomEventCompletions
+  ForestryEventsCompletions
+  PuroPuroImplingsCaught
+  PassiveImplingsCaught
+  BirdEggsOffered
+  ScatteredAshes
+}
+
+model JsonBank {
+  id      Int           @id @default(autoincrement())
+  user_id String
+  type    TableBankType
+
+  bank Json @db.JsonB
+
+  @@unique([user_id, type])
+  @@map("json_bank")
 }

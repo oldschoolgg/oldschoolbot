@@ -288,11 +288,12 @@ export async function giantsFoundryShopCommand(
 		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});
 
-	const { foundry_reputation: newRep } = await user.statsUpdate({
+	await user.statsUpdate({
 		foundry_reputation: {
 			decrement: cost
 		}
 	});
+	const newRep = await user.fetchUserStat('foundry_reputation');
 
 	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Foundry Reputation.\nYou now have ${newRep} Foundry Reputation left.`;
 }

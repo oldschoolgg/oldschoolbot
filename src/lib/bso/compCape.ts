@@ -152,10 +152,9 @@ import {
 	zulrahCL
 } from '@/lib/data/CollectionsExport.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { diaries, diariesObject } from '@/lib/diaries.js';
+import { diaries } from '@/lib/diaries.js';
 import { growablePetsCL } from '@/lib/growablePets.js';
 import { implingsCL } from '@/lib/implings.js';
-import { type DiaryID, type DiaryTierName, diaryTiers } from '@/lib/minions/types.js';
 import { getPOHObject, PoHObjects } from '@/lib/poh/index.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import Agility from '@/lib/skilling/skills/agility.js';
@@ -757,16 +756,16 @@ const tameRequirements = new Requirements()
 	});
 
 const diaryRequirements = new Requirements();
-for (const [, b] of objectEntries(diariesObject)) {
+for (const b of diaries) {
 	diaryRequirements.add({
 		name: `Complete the ${b.name} achievement diary`,
-		diaryRequirement: diaries.flatMap(i => {
-			const res: [DiaryID, DiaryTierName][] = [];
-			for (const a of diaryTiers) {
-				res.push([i.id, a]);
-			}
-			return res;
-		})
+		diaryRequirement: diaries
+			.flatMap(i => {
+				return ['easy', 'medium', 'hard', 'elite'].map(_tier =>
+					`${i.name}.${_tier}`.replace(/\s/g, '').toLowerCase()
+				);
+			})
+			.flat(100) as Parameters<MUser['hasDiary']>[0][]
 	});
 }
 diaryRequirements.add({ name: 'Complete Achievement Diary CL', clRequirement: diariesCL });

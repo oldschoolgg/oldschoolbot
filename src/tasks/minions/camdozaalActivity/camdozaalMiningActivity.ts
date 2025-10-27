@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
@@ -9,10 +8,8 @@ import { skillingPetDropRate } from '@/lib/util.js';
 
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { quantity, channelID, duration } = data;
-
-		const camdozaalMine = Mining.CamdozaalMine;
 
 		// amulet of glory check for mining
 		let barroniteGems = 256;
@@ -96,8 +93,8 @@ export const camdozaalMiningTask: MinionTask = {
 		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Rock golem roll
-		const { petDropRate } = skillingPetDropRate(user, 'mining', camdozaalMine.petChance!);
-		if (roll(petDropRate / quantity)) {
+		const { petDropRate } = skillingPetDropRate(user, 'mining', Mining.CamdozaalMine.petChance!);
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Rock golem');
 		}
 

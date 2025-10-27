@@ -4,6 +4,8 @@ import { uniqueBy } from 'remeda';
 
 import '../../src/lib/safeglobals.js';
 
+import { MathRNG } from '@oldschoolgg/rng';
+
 import { calculateMiningInput } from '@/mahoji/commands/mine.js';
 import { calculateMiningResult } from '@/tasks/minions/miningActivity.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
@@ -91,7 +93,8 @@ function main() {
 							hasMiningMasterCape: true,
 							portentResult: null,
 							amountOfSpiritsToUse: 0,
-							spiritOre: undefined
+							spiritOre: undefined,
+							rng: MathRNG
 						});
 						result.loot.remove('Rock golem', 1000);
 						result.loot.remove('Loop half of key (moon key)', 1000);

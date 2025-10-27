@@ -5,7 +5,6 @@ import { Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolki
 import { bold } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
@@ -72,7 +71,7 @@ export const shadesOfMortonTask: MinionTask = {
 		}
 
 		let firemakingXP = quantity * log.fmXP;
-		if ((await userhasDiaryTier(user, MorytaniaDiary.elite))[0]) {
+		if (user.hasDiary('morytania.elite')) {
 			firemakingXP = increaseNumByPercent(firemakingXP, 50);
 			messages.push('50% bonus firemaking xp for morytania elite diary');
 		}
@@ -86,7 +85,7 @@ export const shadesOfMortonTask: MinionTask = {
 		let prayerXP = log.prayerXP[shade.shadeName];
 		if (!prayerXP) throw new Error(`No prayer XP for ${shade.shadeName} in ${log.oiledLog.name}!`);
 
-		if ((await userhasDiaryTier(user, MorytaniaDiary.hard))[0]) {
+		if (user.hasDiary('morytania.hard')) {
 			prayerXP = increaseNumByPercent(prayerXP, 50);
 			messages.push('50% bonus prayer xp for morytania hard diary');
 		}

@@ -23,7 +23,6 @@ import {
 import { checkUserCanUseDegradeableItem, degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
-import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
@@ -57,8 +56,7 @@ async function calcTOBInput(u: MUser) {
 	}
 
 	items.add(
-		getUserFoodFromBank({
-			gearBank: u.gearBank,
+		u.calculateUsableFood({
 			totalHealingNeeded: healingNeeded,
 			favoriteFood: u.user.favorite_food,
 			minimumHealAmount: 20

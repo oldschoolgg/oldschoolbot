@@ -193,6 +193,7 @@ for (const monster of killableMonsters) {
 					kcBank,
 					gearBank,
 					tertiaryItemPercentageChanges: new Map(),
+					// @ts-expect-error
 					slayerInfo: currentSlayerTask,
 					slayerUnlocks,
 					hasKourendElite: true,

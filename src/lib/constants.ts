@@ -548,10 +548,6 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
 export const busyImmuneCommands = ['admin', 'rp'];
 
-export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
-
-export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
-
 const globalConfigSchema = z.object({
 	clientID: z.string().min(10).max(25),
 	botToken: z.string().min(1),
@@ -589,7 +585,7 @@ if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 }
 
 export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
-const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
+const gitRemote = 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
 

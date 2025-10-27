@@ -241,7 +241,7 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.5
-        version: 1.19.5(hono@4.10.2)
+        version: 1.19.5(hono@4.10.3)
       '@octokit/graphql':
         specifier: ^8.1.1
         version: 8.2.2
@@ -264,8 +264,8 @@ importers:
         specifier: 16.5.0
         version: 16.5.0
       hono:
-        specifier: ^4.10.2
-        version: 4.10.2
+        specifier: ^4.10.3
+        version: 4.10.3
       oldschooljs:
         specifier: workspace:*
         version: link:../oldschooljs
@@ -2628,8 +2628,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.10.2:
-    resolution: {integrity: sha512-p6fyzl+mQo6uhESLxbF5WlBOAJMDh36PljwlKtP5V1v09NxlqGru3ShK+4wKhSuhuYf8qxMmrivHOa/M7q0sMg==}
+  hono@4.10.3:
+    resolution: {integrity: sha512-2LOYWUbnhdxdL8MNbNg9XZig6k+cZXm5IjHn2Aviv7honhBMOHb+jxrKIeJRZJRmn+htUCKhaicxwXuUDlchRA==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -5339,9 +5339,9 @@ snapshots:
     dependencies:
       '@expressive-code/core': 0.41.3
 
-  '@hono/node-server@1.19.5(hono@4.10.2)':
+  '@hono/node-server@1.19.5(hono@4.10.3)':
     dependencies:
-      hono: 4.10.2
+      hono: 4.10.3
 
   '@img/colour@1.0.0': {}
 
@@ -7308,7 +7308,7 @@ snapshots:
 
   he@1.2.0: {}
 
-  hono@4.10.2: {}
+  hono@4.10.3: {}
 
   hookable@5.5.3: {}
 

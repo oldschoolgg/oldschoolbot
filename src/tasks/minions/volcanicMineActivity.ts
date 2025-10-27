@@ -1,4 +1,3 @@
-import { randFloat, randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -16,7 +15,7 @@ const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).ad
 
 export const vmTask: MinionTask = {
 	type: 'VolcanicMine',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { quantity, channelID, duration } = data;
 		const userMiningLevel = user.skillsAsLevels.mining;
 		let boost = 1;
@@ -38,7 +37,7 @@ export const vmTask: MinionTask = {
 		}
 
 		let xpReceived = Math.round(
-			userMiningLevel * ((VolcanicMineGameTime * quantity) / Time.Minute) * 10 * boost * randFloat(1.02, 1.08)
+			userMiningLevel * ((VolcanicMineGameTime * quantity) / Time.Minute) * 10 * boost * rng.randFloat(1.02, 1.08)
 		);
 
 		// Boost XP for having doug equipped
@@ -63,10 +62,6 @@ export const vmTask: MinionTask = {
 
 		const maxPoints = 2_097_151;
 
-		await user.update({
-			volcanic_mine_points: Math.min(maxPoints, currentUserPoints + pointsReceived)
-		});
-
 		if (currentUserPoints + pointsReceived > maxPoints) {
 			const lostPoints = currentUserPoints + pointsReceived - maxPoints;
 			pointsReceived -= lostPoints;
@@ -77,13 +72,13 @@ export const vmTask: MinionTask = {
 
 		await user.incrementMinigameScore('volcanic_mine', quantity);
 
-		const fragmentRolls = randInt(38, 40) * quantity;
+		const fragmentRolls = rng.randInt(38, 40) * quantity;
 		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));
 		const { petDropRate } = skillingPetDropRate(user, 'mining', 60_000);
 		// Iterate over the fragments received
 		for (let i = 0; i < fragmentRolls; i++) {
 			// Roll for pet --- Average 40 fragments per game at 60K chance per fragment
-			if (roll(petDropRate)) loot.add('Rock golem');
+			if (rng.roll(petDropRate)) loot.add('Rock golem');
 		}
 
 		// 4x Loot for having doug helping, as it helps mining more fragments
@@ -99,7 +94,10 @@ export const vmTask: MinionTask = {
 
 		const { itemsAdded } = await user.transactItems({
 			collectionLog: true,
-			itemsToAdd: loot
+			itemsToAdd: loot,
+			otherUpdates: {
+				volcanic_mine_points: Math.min(maxPoints, currentUserPoints + pointsReceived)
+			}
 		});
 
 		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);

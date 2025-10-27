@@ -13,21 +13,6 @@ import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
 import { type ItemBank, Monsters, resolveItems } from 'oldschooljs';
 
 import { barrowsChestCL } from '@/lib/data/CollectionsExport.js';
-import {
-	ArdougneDiary,
-	DesertDiary,
-	FaladorDiary,
-	FremennikDiary,
-	KandarinDiary,
-	KaramjaDiary,
-	KourendKebosDiary,
-	LumbridgeDraynorDiary,
-	MorytaniaDiary,
-	userhasDiaryTier,
-	VarrockDiary,
-	WesternProv,
-	WildernessDiary
-} from '@/lib/diaries.js';
 import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
@@ -81,84 +66,84 @@ export const easyTasks: Task[] = [
 		id: 7,
 		name: 'Complete the Easy Wilderness diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, WildernessDiary.easy))[0];
+			return user.hasDiary('wilderness.easy');
 		}
 	},
 	{
 		id: 8,
 		name: 'Complete the Easy Western Prov diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, WesternProv.easy))[0];
+			return user.hasDiary('westernprovinces.easy');
 		}
 	},
 	{
 		id: 9,
 		name: 'Complete the Easy Ardougne diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, ArdougneDiary.easy))[0];
+			return user.hasDiary('ardougne.easy');
 		}
 	},
 	{
 		id: 10,
 		name: 'Complete the Easy Desert diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, DesertDiary.easy))[0];
+			return user.hasDiary('desert.easy');
 		}
 	},
 	{
 		id: 11,
 		name: 'Complete the Easy Falador diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, FaladorDiary.easy))[0];
+			return user.hasDiary('falador.easy');
 		}
 	},
 	{
 		id: 12,
 		name: 'Complete the Easy Fremennik diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, FremennikDiary.easy))[0];
+			return user.hasDiary('fremennik.easy');
 		}
 	},
 	{
 		id: 13,
 		name: 'Complete the Easy Kandarin diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KandarinDiary.easy))[0];
+			return user.hasDiary('kandarin.easy');
 		}
 	},
 	{
 		id: 14,
 		name: 'Complete the Easy Karamja diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KaramjaDiary.easy))[0];
+			return user.hasDiary('karamja.easy');
 		}
 	},
 	{
 		id: 15,
 		name: 'Complete the Easy Kourend Kebos diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KourendKebosDiary.easy))[0];
+			return user.hasDiary('kourend&kebos.easy');
 		}
 	},
 	{
 		id: 16,
 		name: 'Complete the Easy Lumbridge/Draynor diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, LumbridgeDraynorDiary.easy))[0];
+			return user.hasDiary('lumbridge&draynor.easy');
 		}
 	},
 	{
 		id: 17,
 		name: 'Complete the Easy Morytania diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, MorytaniaDiary.easy))[0];
+			return user.hasDiary('morytania.easy');
 		}
 	},
 	{
 		id: 18,
 		name: 'Complete the Easy Varrock diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, VarrockDiary.easy))[0];
+			return user.hasDiary('varrock.easy');
 		}
 	},
 	{

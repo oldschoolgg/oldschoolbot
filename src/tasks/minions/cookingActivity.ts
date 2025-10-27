@@ -5,7 +5,6 @@ import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { roll } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import calcBurntCookables from '@/lib/skilling/functions/calcBurntCookables.js';
 import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -20,8 +19,8 @@ export const cookingTask: MinionTask = {
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;
 
-		const [hasEasyDiary] = await userhasDiaryTier(user, KourendKebosDiary.easy);
-		const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		const hasEasyDiary = user.hasDiary('kourend&kebos.easy');
+		const hasEliteDiary = user.hasDiary('kourend&kebos.elite');
 		const hasGaunts = user.hasEquipped('Cooking gauntlets');
 
 		if (hasEasyDiary && cookable.burnKourendBonus) {

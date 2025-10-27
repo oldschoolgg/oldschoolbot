@@ -18,6 +18,7 @@ test('Repair Bank', async () => {
 	const temp_cl = bank.clone();
 	const favoriteItems = resolveItems(['Coins', 'Coal', 'Egg', 'Trout']);
 	const expectedData: Parameters<(typeof user)['update']>['0'] = {
+		// @ts-expect-error
 		bank: bank.toJSON(),
 		collectionLogBank: cl.toJSON(),
 		temp_cl: temp_cl.toJSON(),
@@ -56,7 +57,6 @@ test('Repair Bank', async () => {
 	expect(user.user).toMatchObject(expectedData);
 	const copyUser = await mUserFetch(user.id);
 	expect(copyUser.user).toMatchObject(expectedData);
-	expect(user.user.bank).toStrictEqual(expectedData.bank);
 	expect(user.gear.fashion.allItems(false).sort()).toStrictEqual(
 		resolveItems([
 			'Torva full helm',

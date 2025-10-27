@@ -1,4 +1,4 @@
-import { Bank, resolveItems } from 'oldschooljs';
+import { resolveItems } from 'oldschooljs';
 
 import driftNetCreatures from '@/lib/skilling/skills/hunter/driftNet.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
@@ -58,11 +58,7 @@ export const driftNetTask: MinionTask = {
 			}
 		}
 
-		const loot = new Bank();
-
-		for (let i = 0; i < quantity * 10; i++) {
-			loot.add(fishTable.roll());
-		}
+		const loot = fishTable.roll(quantity * 10);
 
 		const huntXpReceived = Math.round(
 			quantity * (fishShoal.hunterXP + Math.min(currentHuntLevel - 44, 26) * 11.35)

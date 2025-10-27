@@ -1,7 +1,6 @@
-import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
+import { cleanString, ParsedCustomEmojiWithGroups, stringMatches } from '@oldschoolgg/toolkit';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
-import { ParsedCustomEmojiWithGroups } from '@/lib/constants.js';
 import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/lib/discord/index.js';
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';

@@ -12,7 +12,7 @@ import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList, formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
-export type Diary = {
+export interface Diary {
 	name: string;
 	id: DiaryID;
 	alias?: string[];
@@ -20,7 +20,7 @@ export type Diary = {
 	medium: DiaryTier;
 	hard: DiaryTier;
 	elite: DiaryTier;
-};
+}
 
 export function userhasDiaryTierSync(
 	user: MUser,
@@ -131,18 +131,7 @@ export function userhasDiaryTierSync(
 	};
 }
 
-export async function userhasDiaryTier(
-	user: MUser,
-	tier: [DiaryID, DiaryTierName] | DiaryTier
-): Promise<[boolean, string, Diary]> {
-	const result = userhasDiaryTierSync(user, tier, {
-		stats: await user.fetchMStats(),
-		minigameScores: await user.fetchMinigames()
-	});
-	return [result.hasDiary, result.reasons, result.diaryGroup];
-}
-
-export const WesternProv: Diary = {
+const WesternProv: Diary = {
 	name: 'Western Provinces',
 	id: DiaryID.WesternProvinces,
 	alias: ['western', 'wp', 'west', 'west prov'],
@@ -241,7 +230,7 @@ export const WesternProv: Diary = {
 		}
 	}
 };
-export const ArdougneDiary: Diary = {
+const ArdougneDiary: Diary = {
 	name: 'Ardougne',
 	id: DiaryID.Ardougne,
 	alias: ['ardy', 'ardougn'],
@@ -417,7 +406,7 @@ export const DesertDiary: Diary = {
 	}
 };
 
-export const FaladorDiary: Diary = {
+const FaladorDiary: Diary = {
 	name: 'Falador',
 	id: DiaryID.Falador,
 	alias: ['fally', 'fal'],
@@ -594,7 +583,7 @@ export const FremennikDiary: Diary = {
 	}
 };
 
-export const KandarinDiary: Diary = {
+const KandarinDiary: Diary = {
 	name: 'Kandarin',
 	id: DiaryID.Kandarin,
 	alias: ['kand'],
@@ -684,7 +673,7 @@ export const KandarinDiary: Diary = {
 	}
 };
 
-export const KaramjaDiary: Diary = {
+const KaramjaDiary: Diary = {
 	name: 'Karamja',
 	id: DiaryID.Karamja,
 	alias: ['ramja', 'ram', 'karam', 'kar'],
@@ -747,7 +736,7 @@ export const KaramjaDiary: Diary = {
 	}
 };
 
-export const KourendKebosDiary: Diary = {
+const KourendKebosDiary: Diary = {
 	name: 'Kourend & Kebos',
 	id: DiaryID.KourendKebos,
 	alias: ['kebos', 'kouren', 'kourend', 'kk', 'kek'],
@@ -823,7 +812,7 @@ export const KourendKebosDiary: Diary = {
 		}
 	}
 };
-export const LumbridgeDraynorDiary: Diary = {
+const LumbridgeDraynorDiary: Diary = {
 	name: 'Lumbridge & Draynor',
 	id: DiaryID.LumbridgeDraynor,
 	alias: ['lumb', 'draynor', 'lumbridge', 'led'],
@@ -896,7 +885,7 @@ export const LumbridgeDraynorDiary: Diary = {
 	}
 };
 
-export const MorytaniaDiary: Diary = {
+const MorytaniaDiary: Diary = {
 	name: 'Morytania',
 	id: DiaryID.Morytania,
 	alias: ['mory', 'swamp'],
@@ -1044,7 +1033,7 @@ export const VarrockDiary: Diary = {
 	}
 };
 
-export const WildernessDiary: Diary = {
+const WildernessDiary: Diary = {
 	name: 'Wilderness',
 	id: DiaryID.Wilderness,
 	alias: ['wild', 'wildy'],
@@ -1126,7 +1115,7 @@ export const WildernessDiary: Diary = {
 	}
 };
 
-export const diariesObject = {
+const diariesObject = {
 	ArdougneDiary,
 	DesertDiary,
 	FaladorDiary,

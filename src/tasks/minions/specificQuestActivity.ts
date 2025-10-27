@@ -14,7 +14,7 @@ export const specificQuestTask: MinionTask = {
 		let completionMessage = `${user}, ${user.minionName} finished ${bold(quest.name)}.`;
 
 		if (quest.rewards) {
-			await user.addItemsToBank({ items: quest.rewards, collectionLog: true });
+			await user.transactItems({ itemsToAdd: quest.rewards, collectionLog: true });
 			completionMessage += ` You received ${quest.rewards}.`;
 		}
 

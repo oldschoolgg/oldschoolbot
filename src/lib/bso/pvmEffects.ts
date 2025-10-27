@@ -8,13 +8,17 @@ import { roll } from '@oldschoolgg/rng';
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
-import type { UserStats } from '@/prisma/main.js';
 import type { BitField } from '@/lib/constants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { SlayerContext } from '@/tasks/minions/monsterActivity.js';
+
+export type UserStatsNeededForMidPvmEffects = {
+	onTaskMonsterScores: ItemBank;
+	onTaskWithMaskMonsterScores: ItemBank;
+};
 
 export type MidPVMEffectArgs = {
 	gearBank: GearBank;
@@ -27,7 +31,7 @@ export type MidPVMEffectArgs = {
 	quantity: number;
 	monster: KillableMonster;
 	cl: Bank;
-	userStats: UserStats;
+	userStats: UserStatsNeededForMidPvmEffects;
 	slayerUnlocks: SlayerTaskUnlocksEnum[];
 };
 
@@ -118,8 +122,9 @@ export function slayerMasksHelms({
 		!slayerContext.isOnTask ||
 		!slayerContext.effectiveSlayed ||
 		!slayerUnlocks.includes(SlayerTaskUnlocksEnum.Maskuerade)
-	)
+	) {
 		return;
+	}
 	const bankToAdd = new Bank().add(monster.id, slayerContext.effectiveSlayed);
 	const maskHelmForThisMonster = slayerMaskHelms.find(i => i.monsters.includes(monster.id));
 	const matchingMaskOrHelm =
@@ -127,7 +132,7 @@ export function slayerMasksHelms({
 		gearBank.hasEquippedOrInBank([maskHelmForThisMonster.mask.id, maskHelmForThisMonster.helm.id])
 			? maskHelmForThisMonster
 			: null;
-	const oldMaskScores = new Bank(userStats.on_task_with_mask_monster_scores as ItemBank);
+	const oldMaskScores = new Bank(userStats.onTaskWithMaskMonsterScores as ItemBank);
 	const newMaskScores = oldMaskScores.clone().add(bankToAdd);
 	if (maskHelmForThisMonster && !gearBank.hasEquippedOrInBank(maskHelmForThisMonster.mask.id)) {
 		for (let i = 0; i < slayerContext.effectiveSlayed; i++) {
@@ -138,7 +143,7 @@ export function slayerMasksHelms({
 			}
 		}
 	}
-	updateBank.userStats.on_task_monster_scores = new Bank(userStats.on_task_monster_scores as ItemBank)
+	updateBank.userStats.on_task_monster_scores = new Bank(userStats.onTaskMonsterScores as ItemBank)
 		.add(bankToAdd)
 		.toJSON();
 	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores.toJSON() : undefined;

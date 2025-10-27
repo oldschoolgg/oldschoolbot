@@ -11,9 +11,7 @@ export const sawmillTask: MinionTask = {
 	async run(data: SawmillActivityTaskOptions, { user, handleTripFinish }) {
 		const { channelID, plankID, plankQuantity } = data;
 		const plank = Planks.find(i => i.outputItem === plankID)!;
-		const loot = new Bank({
-			[plankID]: plankQuantity
-		});
+		const loot = new Bank().add(plankID, plankQuantity);
 		const boxChancePerPlank = Math.floor(100 - (Planks.indexOf(plank) + 1) * 8.5) * 5;
 		let boxRolls = Math.floor(plankQuantity / 10);
 		if (plank.name === 'Elder plank') boxRolls *= 2;

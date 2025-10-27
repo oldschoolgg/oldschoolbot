@@ -3,15 +3,6 @@ import { averageArr, calcPercentOfNum, gaussianRandom, toTitleCase } from '@olds
 import { type Item, Items } from 'oldschooljs';
 
 import type { FishingContestCatch } from '@/prisma/main.js';
-import {
-	ArdougneDiary,
-	DesertDiary,
-	KourendKebosDiary,
-	LumbridgeDraynorDiary,
-	MorytaniaDiary,
-	userhasDiaryTier,
-	WildernessDiary
-} from '@/lib/diaries.js';
 import { ISODateString } from '@/lib/util.js';
 
 const warmVerbs = ['freshwater', 'waterborn', 'silver'];
@@ -65,7 +56,7 @@ export const fishingLocations: FishingLocation[] = [
 			{
 				name: 'Elite Desert Diary',
 				has: async user => {
-					return (await userhasDiaryTier(user, DesertDiary.elite))[0];
+					return user.hasDiary('desert.elite');
 				},
 				percentAddedToMin: 5
 			}
@@ -101,7 +92,7 @@ export const fishingLocations: FishingLocation[] = [
 			{
 				name: 'Elite Ardougne Diary',
 				has: async user => {
-					return (await userhasDiaryTier(user, ArdougneDiary.elite))[0];
+					return user.hasDiary('ardougne.elite');
 				},
 				percentAddedToMin: 5
 			}
@@ -119,7 +110,7 @@ export const fishingLocations: FishingLocation[] = [
 			{
 				name: 'Elite Lumbridge Diary',
 				has: async user => {
-					return (await userhasDiaryTier(user, LumbridgeDraynorDiary.elite))[0];
+					return user.hasDiary('lumbridge&draynor.elite');
 				},
 				percentAddedToMin: 5
 			}
@@ -163,7 +154,7 @@ export const fishingLocations: FishingLocation[] = [
 			{
 				name: 'Elite Kourend Diary',
 				has: async user => {
-					return (await userhasDiaryTier(user, KourendKebosDiary.elite))[0];
+					return user.hasDiary('kourend&kebos.elite');
 				},
 				percentAddedToMin: 5
 			}
@@ -200,7 +191,7 @@ export const fishingLocations: FishingLocation[] = [
 			{
 				name: 'Elite Morytania Diary',
 				has: async user => {
-					return (await userhasDiaryTier(user, MorytaniaDiary.elite))[0];
+					return user.hasDiary('morytania.elite');
 				},
 				percentAddedToMin: 5
 			}
@@ -218,7 +209,7 @@ export const fishingLocations: FishingLocation[] = [
 			{
 				name: 'Elite Wilderness Diary',
 				has: async user => {
-					return (await userhasDiaryTier(user, WildernessDiary.elite))[0];
+					return user.hasDiary('westernprovinces.elite');
 				},
 				percentAddedToMin: 5
 			}

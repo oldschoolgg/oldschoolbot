@@ -78,12 +78,12 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 	await user.sync();
 	if (user.bank.amount(item.id) < 1) return `You have no ${item.name}'s to gamble!`;
 
-	const newStats = await user.statsUpdate({
+	await user.statsUpdate({
 		[key]: {
 			increment: 1
 		}
 	});
-	const newSacrificedCount = newStats[key];
+	const newSacrificedCount: number = await user.fetchUserStat(key);
 
 	const { chance } = src;
 	const pet = src.success.loot;

@@ -10,21 +10,6 @@ import { Bank, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldscho
 
 import { BitField } from '@/lib/constants.js';
 import { barrowsChestCL, chambersOfXericCL, cyclopsCL, theatreOfBLoodCL } from '@/lib/data/CollectionsExport.js';
-import {
-	ArdougneDiary,
-	DesertDiary,
-	FaladorDiary,
-	FremennikDiary,
-	KandarinDiary,
-	KaramjaDiary,
-	KourendKebosDiary,
-	LumbridgeDraynorDiary,
-	MorytaniaDiary,
-	userhasDiaryTier,
-	VarrockDiary,
-	WesternProv,
-	WildernessDiary
-} from '@/lib/diaries.js';
 import { implings } from '@/lib/implings.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
@@ -38,84 +23,84 @@ export const mediumTasks: Task[] = [
 		id: 1001,
 		name: 'Complete the Medium Wilderness diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, WildernessDiary.medium))[0];
+			return user.hasDiary('wilderness.medium');
 		}
 	},
 	{
 		id: 1002,
 		name: 'Complete the Medium Western Prov diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, WesternProv.medium))[0];
+			return user.hasDiary('westernprovinces.medium');
 		}
 	},
 	{
 		id: 1003,
 		name: 'Complete the Medium Ardougne diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, ArdougneDiary.medium))[0];
+			return user.hasDiary('ardougne.medium');
 		}
 	},
 	{
 		id: 1004,
 		name: 'Complete the Medium Desert diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, DesertDiary.medium))[0];
+			return user.hasDiary('desert.medium');
 		}
 	},
 	{
 		id: 1005,
 		name: 'Complete the Medium Falador diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, FaladorDiary.medium))[0];
+			return user.hasDiary('falador.medium');
 		}
 	},
 	{
 		id: 1006,
 		name: 'Complete the Medium Fremennik diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, FremennikDiary.medium))[0];
+			return user.hasDiary('fremennik.medium');
 		}
 	},
 	{
 		id: 1007,
 		name: 'Complete the Medium Kandarin diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KandarinDiary.medium))[0];
+			return user.hasDiary('kandarin.medium');
 		}
 	},
 	{
 		id: 1008,
 		name: 'Complete the Medium Karamja diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KaramjaDiary.medium))[0];
+			return user.hasDiary('karamja.medium');
 		}
 	},
 	{
 		id: 1009,
 		name: 'Complete the Medium Kourend Kebos diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KourendKebosDiary.medium))[0];
+			return user.hasDiary('kourend&kebos.medium');
 		}
 	},
 	{
 		id: 1010,
 		name: 'Complete the Medium Lumbridge/Draynor diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, LumbridgeDraynorDiary.medium))[0];
+			return user.hasDiary('lumbridge&draynor.medium');
 		}
 	},
 	{
 		id: 1011,
 		name: 'Complete the Medium Morytania diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, MorytaniaDiary.medium))[0];
+			return user.hasDiary('morytania.medium');
 		}
 	},
 	{
 		id: 1012,
 		name: 'Complete the Medium Varrock diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, VarrockDiary.medium))[0];
+			return user.hasDiary('varrock.medium');
 		}
 	},
 	{

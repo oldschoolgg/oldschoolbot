@@ -17,7 +17,7 @@ import { allCollectionLogs } from '@/lib/data/Collections.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { similarItems } from '@/lib/data/similarItems.js';
-import { diariesObject } from '@/lib/diaries.js';
+import { diaries } from '@/lib/diaries.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import Potions from '@/lib/minions/data/potions.js';
 import { quests } from '@/lib/minions/data/quests.js';
@@ -251,11 +251,7 @@ writeRootJson(
 
 writeRootJson(
 	'achievement-diaries.json',
-	serializeSnapshotItem(
-		Object.values(diariesObject)
-			.sort((a, b) => a.name.localeCompare(b.name))
-			.map(serializeSnapshotItem)
-	)
+	serializeSnapshotItem(diaries.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
 );
 
 writeRootJson(

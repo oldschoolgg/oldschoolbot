@@ -63,7 +63,7 @@ async function farmingLootBoosts(
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
-	async run(data: FarmingActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: FarmingActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const {
 			plantsName,
 			patchType,
@@ -290,7 +290,7 @@ export const farmingTask: MinionTask = {
 				if (shouldCleanHerb && plantToHarvest.herbXp) {
 					herbloreXp = cropYield * plantToHarvest.herbXp;
 					const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
-					await user.addItemsToCollectionLog(uncleanedHerbLoot);
+					await user.addItemsToCollectionLog({ itemsToAdd: uncleanedHerbLoot });
 					const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
 					await user.statsBankUpdate('herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 				}
@@ -325,11 +325,11 @@ export const farmingTask: MinionTask = {
 							typeof plantToHarvest.woodcuttingXp === 'number'
 					);
 
-					const amountOfLogs = randInt(5, 10) * alivePlants;
+					const amountOfLogs = rng.randInt(5, 10) * alivePlants;
 					loot.add(plantToHarvest.outputLogs, amountOfLogs);
 
 					if (plantToHarvest.outputRoots) {
-						loot.add(plantToHarvest.outputRoots, randInt(1, 4) * alivePlants);
+						loot.add(plantToHarvest.outputRoots, rng.randInt(1, 4) * alivePlants);
 					}
 
 					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;
@@ -439,7 +439,7 @@ export const farmingTask: MinionTask = {
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll(petDropRate / alivePlants)
+				rng.roll(Math.ceil(petDropRate / alivePlants))
 			) {
 				loot.add('Tangleroot');
 			} else if (patchType.patchPlanted && plantToHarvest.petChance && alivePlants > 0) {
@@ -451,12 +451,12 @@ export const farmingTask: MinionTask = {
 				);
 				if (roll(plopperDroprate)) loot.add('Plopper');
 			}
-			if (plantToHarvest.seedType === 'seaweed' && roll(3)) loot.add('Seaweed spore', randInt(1, 3));
+			if (plantToHarvest.seedType === 'seaweed' && rng.roll(3)) loot.add('Seaweed spore', rng.randInt(1, 3));
 
 			if (plantToHarvest.seedType !== 'hespori') {
 				let hesporiSeeds = 0;
 				for (let i = 0; i < alivePlants; i++) {
-					if (roll(plantToHarvest.petChance / 500)) {
+					if (rng.roll(plantToHarvest.petChance / 500)) {
 						hesporiSeeds++;
 					}
 				}

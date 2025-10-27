@@ -162,10 +162,12 @@ for (const usableUnlock of usableUnlocks) {
 			if (user.bitfield.includes(usableUnlock.bitfield)) {
 				return "You already used this item, you can't use it again.";
 			}
-			await user.removeItemsFromBank(new Bank().add(usableUnlock.item.id));
-			await user.update({
-				bitfield: {
-					push: usableUnlock.bitfield
+			await user.transactItems({
+				itemsToRemove: new Bank().add(usableUnlock.item.id),
+				otherUpdates: {
+					bitfield: {
+						push: usableUnlock.bitfield
+					}
 				}
 			});
 			return usableUnlock.resultMessage;

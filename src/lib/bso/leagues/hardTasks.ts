@@ -26,21 +26,6 @@ import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
 import { allGildedItems, masterCapesCL, monkeyBackpacksCL, skillingPetsCL } from '@/lib/data/CollectionsExport.js';
-import {
-	ArdougneDiary,
-	DesertDiary,
-	FaladorDiary,
-	FremennikDiary,
-	KandarinDiary,
-	KaramjaDiary,
-	KourendKebosDiary,
-	LumbridgeDraynorDiary,
-	MorytaniaDiary,
-	userhasDiaryTier,
-	VarrockDiary,
-	WesternProv,
-	WildernessDiary
-} from '@/lib/diaries.js';
 import { implings } from '@/lib/implings.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
@@ -52,84 +37,84 @@ export const hardTasks: Task[] = [
 		id: 2000,
 		name: 'Complete the Hard Wilderness diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, WildernessDiary.hard))[0];
+			return user.hasDiary('wilderness.hard');
 		}
 	},
 	{
 		id: 2001,
 		name: 'Complete the Hard Western Prov diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, WesternProv.hard))[0];
+			return user.hasDiary('westernprovinces.hard');
 		}
 	},
 	{
 		id: 2002,
 		name: 'Complete the Hard Ardougne diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, ArdougneDiary.hard))[0];
+			return user.hasDiary('ardougne.hard');
 		}
 	},
 	{
 		id: 2003,
 		name: 'Complete the Hard Desert diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, DesertDiary.hard))[0];
+			return user.hasDiary('desert.hard');
 		}
 	},
 	{
 		id: 2004,
 		name: 'Complete the Hard Falador diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, FaladorDiary.hard))[0];
+			return user.hasDiary('falador.hard');
 		}
 	},
 	{
 		id: 2005,
 		name: 'Complete the Hard Fremennik diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, FremennikDiary.hard))[0];
+			return user.hasDiary('fremennik.hard');
 		}
 	},
 	{
 		id: 2006,
 		name: 'Complete the Hard Kandarin diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KandarinDiary.hard))[0];
+			return user.hasDiary('kandarin.hard');
 		}
 	},
 	{
 		id: 2007,
 		name: 'Complete the Hard Karamja diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KaramjaDiary.hard))[0];
+			return user.hasDiary('karamja.hard');
 		}
 	},
 	{
 		id: 2008,
 		name: 'Complete the Hard Kourend Kebos diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, KourendKebosDiary.hard))[0];
+			return user.hasDiary('kourend&kebos.hard');
 		}
 	},
 	{
 		id: 2009,
 		name: 'Complete the Hard Lumbridge/Draynor diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, LumbridgeDraynorDiary.hard))[0];
+			return user.hasDiary('lumbridge&draynor.hard');
 		}
 	},
 	{
 		id: 2010,
 		name: 'Complete the Hard Morytania diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, MorytaniaDiary.hard))[0];
+			return user.hasDiary('morytania.hard');
 		}
 	},
 	{
 		id: 2011,
 		name: 'Complete the Hard Varrock diary',
 		has: async ({ user }) => {
-			return (await userhasDiaryTier(user, VarrockDiary.hard))[0];
+			return user.hasDiary('varrock.hard');
 		}
 	},
 	{

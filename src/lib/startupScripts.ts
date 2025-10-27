@@ -200,5 +200,13 @@ WHERE "RSN" IS NOT NULL;`
 });
 
 export async function runStartupScripts() {
-	await prisma.$transaction(startupScripts.map(query => prisma.$executeRawUnsafe(query.sql)));
+	for (const { sql } of startupScripts) {
+		const start = performance.now();
+		await prisma.$executeRawUnsafe(sql);
+		const end = performance.now();
+		Logging.logPerf({
+			duration: end - start,
+			text: `Startup Script: ${sql.slice(0, 50).replace(/\s+/g, ' ')}...`
+		});
+	}
 }

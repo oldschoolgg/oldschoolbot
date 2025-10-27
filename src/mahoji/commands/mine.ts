@@ -2,9 +2,7 @@ import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
-import { userhasDiaryTier } from '@/lib/diaries.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
-import { DiaryID } from '@/lib/minions/types.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
 import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
@@ -271,7 +269,7 @@ export const mineCommand = defineCommand({
 			craftingLevel: user.skillLevel('crafting'),
 			strengthLevel: user.skillLevel('strength'),
 			maxTripLength: user.calcMaxTripLength('Mining'),
-			hasKaramjaMedium: (await userhasDiaryTier(user, [DiaryID.Karamja, 'medium']))[0],
+			hasKaramjaMedium: user.hasDiary('karamja.medium'),
 			hasDT2Quest: user.user.finished_quest_ids.includes(QuestID.DesertTreasureII)
 		});
 

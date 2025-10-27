@@ -119,7 +119,7 @@ export interface KillableMonster {
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
-	diaryRequirement?: [DiaryID, DiaryTierName];
+	diaryRequirement?: Parameters<MUser['hasDiary']>[0];
 	wildySlayerCave?: boolean;
 	requiredBitfield?: BitField;
 	minimumWeaponShieldStats?: Partial<Record<GearSetupType, Required<GearRequirement>>>;

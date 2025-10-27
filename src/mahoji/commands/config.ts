@@ -4,6 +4,7 @@ import {
 	formatDuration,
 	hasBanMemberPerms,
 	miniID,
+	ParsedCustomEmojiWithGroups,
 	removeFromArr,
 	stringMatches,
 	Time,
@@ -16,7 +17,7 @@ import { clamp } from 'remeda';
 import type { activity_type_enum } from '@/prisma/main.js';
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { choicesOf, itemOption } from '@/lib/discord/index.js';
 import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';

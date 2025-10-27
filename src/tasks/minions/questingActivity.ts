@@ -1,6 +1,5 @@
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
-import { randInt, roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -9,13 +8,13 @@ import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const questingTask: MinionTask = {
 	type: 'Questing',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { channelID } = data;
 
 		const currentQP = user.QP;
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
-		let qpReceived = randInt(1, 30);
+		let qpReceived = rng.randInt(1, 30);
 
 		const newQP = currentQP + qpReceived;
 
@@ -40,6 +39,8 @@ export const questingTask: MinionTask = {
 				increment: qpReceived
 			}
 		});
+
+		const { roll } = rng;
 		const herbLevel = user.skillsAsLevels.herblore;
 		if (herbLevel === 1 && newQP > 5 && roll(2)) {
 			await user.addXP({ skillName: 'herblore', amount: 250 });

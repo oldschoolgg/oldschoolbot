@@ -255,12 +255,12 @@ export async function boxSpawnHandler(msg: Message) {
 	const winner = await item(msg);
 	if (!winner) return;
 	const winnerUser = await mUserFetch(winner.id);
-	const newStats = await winnerUser.statsUpdate({
+	await winnerUser.statsUpdate({
 		main_server_challenges_won: {
 			increment: 1
 		}
 	});
-	const wonStr = `This is your ${formatOrdinal(newStats.main_server_challenges_won)} challenge win!`;
+	const wonStr = `This is your ${formatOrdinal(await winnerUser.fetchUserStat('main_server_challenges_won'))} challenge win!`;
 	const loot = roll(20) ? LampTable.roll() : MysteryBoxes.roll();
 
 	await winnerUser.addItemsToBank({ items: loot, collectionLog: true });

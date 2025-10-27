@@ -1,7 +1,12 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
-import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '@/lib/bso/pvmEffects.js';
+import {
+	type MidPVMEffectArgs,
+	oriEffect,
+	rollForBSOThings,
+	type UserStatsNeededForMidPvmEffects
+} from '@/lib/bso/pvmEffects.js';
 
 import { percentChance, roll } from '@oldschoolgg/rng';
 import {
@@ -13,23 +18,21 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 
 import type { BitField } from '@/lib/constants.js';
-import { userhasDiaryTierSync } from '@/lib/diaries.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
-import { DiaryID, type KillableMonster } from '@/lib/minions/types.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { type CurrentSlayerInfo, calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { SlayerMaster } from '@/lib/slayer/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { type KCBank, safelyMakeKCBank } from '@/lib/structures/KCBank.js';
-import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
@@ -42,13 +45,11 @@ import { sendToChannelID } from '@/lib/util/webhook.js';
 function handleSlayerTaskCompletion({
 	slayerContext,
 	updateBank,
-	userStats,
 	hasKourendElite,
 	monster,
 	slayerMaster
 }: {
 	hasKourendElite: boolean;
-	userStats: MUserStats;
 	slayerContext: ReturnType<typeof getSlayerContext>;
 	updateBank: UpdateBank;
 	monster: KillableMonster;
@@ -59,7 +60,7 @@ function handleSlayerTaskCompletion({
 	}
 	const isWildyTask = slayerContext.isUsingKrystilia;
 	const key = isWildyTask ? 'slayer_wildy_task_streak' : 'slayer_task_streak';
-	const currentStreak = isWildyTask ? userStats.slayerWildyTaskStreak : userStats.slayerTaskStreak;
+	const currentStreak = slayerContext.statsWithStreaks[key];
 	const newStreak = currentStreak + 1;
 	const points = calculateSlayerPoints(newStreak, slayerContext.slayerMaster, hasKourendElite);
 
@@ -171,11 +172,11 @@ interface newOptions {
 	slayerInfo: CurrentSlayerInfo;
 	slayerUnlocks: SlayerTaskUnlocksEnum[];
 	tertiaryItemPercentageChanges: ReturnType<MUser['buildTertiaryItemChanges']>;
-	userStats: MUserStats;
 	attackStyles: AttackStyles[];
 	bitfield: readonly BitField[] | BitField[];
 	cl: Bank;
 	disabledInventions: number[];
+	stats: UserStatsNeededForMidPvmEffects;
 }
 
 export function doMonsterTrip(data: newOptions) {
@@ -197,7 +198,6 @@ export function doMonsterTrip(data: newOptions) {
 		slayerInfo,
 		slayerUnlocks,
 		hasKourendElite,
-		userStats,
 		attackStyles,
 		duration,
 		bitfield,
@@ -472,7 +472,6 @@ export function doMonsterTrip(data: newOptions) {
 					slayerContext,
 					updateBank,
 					hasKourendElite,
-					userStats,
 					monster,
 					slayerMaster: slayerContext.slayerMaster
 				})
@@ -514,7 +513,7 @@ export function doMonsterTrip(data: newOptions) {
 		quantity,
 		monster,
 		cl,
-		userStats: userStats.userStats,
+		userStats: data.stats,
 		slayerUnlocks,
 		bitfield
 	};
@@ -543,8 +542,19 @@ export const monsterTask: MinionTask = {
 			});
 			return;
 		}
-		const stats = await user.fetchMStats();
-		const minigameScores = await user.fetchMinigames();
+		const stats = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(user.id)
+			},
+			select: {
+				monster_scores: true,
+				recently_killed_monsters: true,
+				on_task_monster_scores: true,
+				on_task_with_mask_monster_scores: true
+			},
+			create: { user_id: BigInt(user.id) },
+			update: {}
+		});
 		const slayerInfo = await user.fetchSlayerInfo();
 		const monster = killableMonsters.find(mon => mon.id === data.mi)!;
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
@@ -557,19 +567,20 @@ export const monsterTask: MinionTask = {
 				slayerInfo.assignedTask?.monster?.id === data.mi
 			),
 			gearBank: user.gearBank,
-			kcBank: safelyMakeKCBank(stats.kcBank),
-			hasKourendHard: userhasDiaryTierSync(user, [DiaryID.KourendKebos, 'hard'], { stats, minigameScores })
-				.hasDiary,
-			hasKourendElite: userhasDiaryTierSync(user, [DiaryID.KourendKebos, 'elite'], { stats, minigameScores })
-				.hasDiary,
+			kcBank: safelyMakeKCBank(stats.monster_scores),
+			hasKourendHard: user.hasDiary('kourend&kebos.hard'),
+			hasKourendElite: user.hasDiary('kourend&kebos.elite'),
 			slayerInfo,
 			slayerUnlocks: user.user.slayer_unlocks,
-			userStats: stats,
 			attackStyles,
 			hasEliteCA: user.hasCompletedCATier('elite'),
 			bitfield: user.bitfield,
 			cl: user.cl,
-			disabledInventions: user.user.disabled_inventions
+			disabledInventions: user.user.disabled_inventions,
+			stats: {
+				onTaskMonsterScores: stats.on_task_monster_scores as ItemBank,
+				onTaskWithMaskMonsterScores: stats.on_task_with_mask_monster_scores as ItemBank
+			}
 		});
 		if (slayerContext.isOnTask) {
 			await prisma.slayerTask.update({
@@ -586,8 +597,8 @@ export const monsterTask: MinionTask = {
 			await increaseWildEvasionXp(user, duration);
 		}
 
-		const recentlyKilledMonsters = uniqueArr([data.mi, ...stats.userStats.recently_killed_monsters]).slice(0, 6);
-		if (!deepEqual(recentlyKilledMonsters, stats.userStats.recently_killed_monsters)) {
+		const recentlyKilledMonsters = uniqueArr([data.mi, ...stats.recently_killed_monsters]).slice(0, 6);
+		if (!deepEqual(recentlyKilledMonsters, stats.recently_killed_monsters)) {
 			await prisma.userStats.update({
 				where: { user_id: BigInt(user.id) },
 				data: {

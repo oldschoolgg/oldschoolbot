@@ -5,7 +5,7 @@ import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divinatio
 import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 import { type StoneSpirit, stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 
-import { randInt, roll } from '@oldschoolgg/rng';
+import { randInt } from '@oldschoolgg/rng';
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, toKMB } from 'oldschooljs';
 
@@ -30,7 +30,8 @@ export function calculateMiningResult({
 	portentResult,
 	spiritOre,
 	amountOfSpiritsToUse,
-	collectionLog
+	collectionLog,
+	rng
 }: {
 	ore: Ore;
 	duration: number;
@@ -44,6 +45,7 @@ export function calculateMiningResult({
 	amountOfSpiritsToUse: number;
 	spiritOre: StoneSpirit | undefined;
 	collectionLog: Bank;
+	rng: RNGProvider;
 }) {
 	const messages: string[] = [];
 	const barsFromKlikBank = new Bank();
@@ -59,7 +61,7 @@ export function calculateMiningResult({
 	let taintedQty = 0; // 6xp per chunk rolled
 	if (ore.name === 'Tainted essence chunk') {
 		for (let i = 0; i < quantity; i++) {
-			taintedQty += randInt(1, 4);
+			taintedQty += rng.randInt(1, 4);
 		}
 		totalMiningXPToAdd = taintedQty * ore.xp;
 	}
@@ -84,7 +86,7 @@ export function calculateMiningResult({
 	// Roll for pet
 	if (ore.petChance) {
 		const { petDropRate } = skillingPetDropRate(gearBank, 'mining', ore.petChance);
-		if (roll(petDropRate / quantity)) {
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Rock golem');
 		}
 	}
@@ -92,7 +94,7 @@ export function calculateMiningResult({
 	if (numberOfMinutes > 10 && ore.minerals && gearBank.skillsAsLevels.mining >= 60) {
 		let numberOfMinerals = 0;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(ore.minerals)) numberOfMinerals++;
+			if (rng.roll(ore.minerals)) numberOfMinerals++;
 		}
 
 		if (numberOfMinerals > 0) {
@@ -113,7 +115,7 @@ export function calculateMiningResult({
 			globalDroprates.doug.clIncrease
 		);
 		for (let i = 0; i < minutesInTrip; i++) {
-			if (roll(droprate)) {
+			if (rng.roll(droprate)) {
 				loot.add('Doug');
 				messages.push(
 					"<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining."
@@ -249,7 +251,7 @@ export function calculateMiningResult({
 
 export const miningTask: MinionTask = {
 	type: 'Mining',
-	async run(data: MiningActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: MiningActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { oreID, channelID, duration, powermine } = data;
 		const { quantity } = data;
 		const minutes = Math.round(duration / Time.Minute);
@@ -289,7 +291,8 @@ export const miningTask: MinionTask = {
 			amountOfSpiritsToUse,
 			spiritOre,
 			portentResult,
-			collectionLog: user.cl
+			collectionLog: user.cl,
+			rng
 		});
 
 		await user.transactItems({

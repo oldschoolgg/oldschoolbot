@@ -1,6 +1,5 @@
 import { calcBirdhouseLimit } from '@/lib/bso/bsoUtil.js';
 
-import { randFloat, roll } from '@oldschoolgg/rng';
 import { Bank, itemID } from 'oldschooljs';
 
 import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -18,7 +17,7 @@ const clues = [
 
 export const birdHouseTask: MinionTask = {
 	type: 'Birdhouse',
-	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { birdhouseName, birdhouseData, channelID, duration, placing, gotCraft, currentDate } = data;
 		const birdHouseLimit = calcBirdhouseLimit(user);
 		let hunterXP = 0;
@@ -69,11 +68,11 @@ export const birdHouseTask: MinionTask = {
 			}
 
 			for (let i = 0; i < birdHouseLimit; i++) {
-				if (!roll(200)) continue;
+				if (!rng.roll(200)) continue;
 				let nextTier = false;
 				let gotClue = false;
 				for (const clue of clues) {
-					if (nextTier || randFloat(0, 1) <= clue[1]) {
+					if (nextTier || rng.randFloat(0, 1) <= clue[1]) {
 						if (user.bank.amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
 							nextTier = true;
 							continue;
@@ -83,7 +82,7 @@ export const birdHouseTask: MinionTask = {
 						break;
 					}
 				}
-				if (!gotClue && roll(1000)) {
+				if (!gotClue && rng.roll(1000)) {
 					loot.add('Clue scroll(beginner)');
 				}
 			}

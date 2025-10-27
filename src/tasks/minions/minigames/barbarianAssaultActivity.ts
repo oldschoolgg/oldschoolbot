@@ -1,12 +1,10 @@
-import { randInt } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 
-import { KandarinDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
 		const { channelID, quantity, duration } = data;
 		const { honour_level: currentHonourLevel } = await user.fetchStats();
 
@@ -18,9 +16,9 @@ export const barbAssaultTask: MinionTask = {
 
 		basePoints += calcPercentOfNum(teamSkillPercent, 20);
 
-		let pts = basePoints + randInt(-3, 3);
+		let pts = basePoints + rng.randInt(-3, 3);
 
-		const [hasDiary] = await userhasDiaryTier(user, KandarinDiary.hard);
+		const hasDiary = user.hasDiary('kandarin.hard');
 		if (hasDiary) {
 			pts *= 1.1;
 			resultStr += `${user.usernameOrMention} received 10% extra pts for Kandarin Hard diary. `;

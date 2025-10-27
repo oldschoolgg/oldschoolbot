@@ -122,7 +122,14 @@ const thingsToReset = [
 	{
 		name: 'Bank',
 		run: async (user: MUser) => {
-			await user.update({ bank: {} });
+			await prisma.user.update({
+				where: {
+					id: user.id
+				},
+				data: {
+					bank: {}
+				}
+			});
 			return 'Reset your bank.';
 		}
 	}
@@ -626,21 +633,6 @@ Items (waiting for pickup): ${new Bank(halloweenEvent.items_waiting_for_pickup a
 
 ${halloweenEvent.trick_or_treaters_seen} trick or treaters in total.`;
 				}
-				if (options.halloween_test?.reset) {
-					await prisma.halloweenEvent.deleteMany({ where: { user_id: user.id } });
-					const newBank = user.bank.clone();
-					const newCL = user.cl.clone();
-
-					for (const item of HalloweenEvent2025.ALL_CARD_IDS) {
-						newBank.clear(item);
-						newCL.clear(item);
-					}
-					await user.update({
-						bank: newBank.toJSON(),
-						collectionLogBank: newCL.toJSON()
-					});
-					return 'Your halloween event data has been reset (including removing cards from bank/cl).';
-				}
 
 				if (options.party) {
 					const party = await interaction.makeParty({
@@ -831,9 +823,14 @@ ${halloweenEvent.trick_or_treaters_seen} trick or treaters in total.`;
 						return 'Reset your combat achievements.';
 					}
 					if (thing === 'quests') {
-						await user.update({
-							finished_quest_ids: [],
-							collectionLogBank: {}
+						await prisma.user.update({
+							where: {
+								id: user.id
+							},
+							data: {
+								finished_quest_ids: [],
+								collectionLogBank: {}
+							}
 						});
 						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${mentionCommand(
 							'testpotato',

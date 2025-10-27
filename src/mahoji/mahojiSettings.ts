@@ -7,7 +7,6 @@ import { GearStat } from 'oldschooljs/gear';
 
 import type { GearSetupType } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { userhasDiaryTier } from '@/lib/diaries.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
 import type { Rune } from '@/lib/skilling/skills/runecraft.js';
@@ -175,12 +174,9 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	}
 
 	if (monster.diaryRequirement) {
-		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
+		const hasDiary = user.hasDiary(monster.diaryRequirement);
 		if (!hasDiary) {
-			return [
-				false,
-				`${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`
-			];
+			return [false, `${user.minionName} is missing the required achievement diaries to kill ${monster.name}.`];
 		}
 	}
 
@@ -211,17 +207,16 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		}
 	}
 
-	const stats = await user.fetchMStats();
-
 	if (monster.kcRequirements) {
 		for (const [stringId, val] of Object.entries(monster.kcRequirements)) {
+			const monsterScores = await user.getAllKCs();
 			const id = Number(stringId);
 			const requiredMonster = BSOMonstersMap.get(id);
 			if (!requiredMonster) {
 				Logging.logError(`Missing monster in kcRequirements: ${id} for ${monster.name}`);
 				continue;
 			}
-			const kc = stats.monsterScores[id] ?? 0;
+			const kc = monsterScores[id] ?? 0;
 
 			if (kc < val) {
 				return `You need at least ${val} ${requiredMonster.name} KC to kill ${monster.name}, you have ${kc}.`;
@@ -248,10 +243,13 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		}
 	}
 
-	if (monster.customRequirement && stats.monsterScores[monster.id] === 0) {
-		const reasonDoesntHaveReq = await monster.customRequirement(user);
-		if (reasonDoesntHaveReq) {
-			return `You don't meet the requirements to kill this monster: ${reasonDoesntHaveReq}.`;
+	if (monster.customRequirement) {
+		const kc = await user.getKC(monster.id);
+		if (kc === 0) {
+			const reasonDoesntHaveReq = await monster.customRequirement(user);
+			if (reasonDoesntHaveReq) {
+				return `You don't meet the requirements to kill this monster: ${reasonDoesntHaveReq}.`;
+			}
 		}
 	}
 
@@ -314,9 +312,10 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 }
 
 export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
-	const stats = await user.fetchStats();
-	const { openable_scores: newOpenableScores } = await user.statsUpdate({
-		openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
+	const currentOpenableScores = await user.fetchUserStat('openable_scores');
+	await user.statsUpdate({
+		openable_scores: new Bank(currentOpenableScores as ItemBank).add(kcBank).toJSON()
 	});
+	const newOpenableScores = await user.fetchUserStat('openable_scores');
 	return new Bank(newOpenableScores as ItemBank);
 }

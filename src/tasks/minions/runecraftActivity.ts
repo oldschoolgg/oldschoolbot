@@ -13,7 +13,7 @@ import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
-	async run(data: RunecraftActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: RunecraftActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { runeID, essenceQuantity, channelID, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -78,9 +78,7 @@ export const runecraftTask: MinionTask = {
 			runeQuantity += extractBonus;
 		}
 
-		const loot = new Bank({
-			[rune.id]: runeQuantity
-		});
+		const loot = new Bank().add(rune.id, runeQuantity);
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
@@ -93,7 +91,7 @@ export const runecraftTask: MinionTask = {
 		}
 
 		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_795_758);
-		if (roll(petDropRate / essenceQuantity)) {
+		if (rng.roll(Math.ceil(petDropRate / essenceQuantity))) {
 			loot.add('Rift guardian');
 		}
 

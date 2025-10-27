@@ -1,22 +1,19 @@
-import { randInt, roll } from '@oldschoolgg/rng';
 import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import { implings, puroImpHighTierTable, puroImplings, puroImpNormalTable, puroImpSpellTable } from '@/lib/implings.js';
 import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
 
-function hunt(minutes: number, user: MUser, min: number, max: number) {
+function hunt(rng: RNGProvider, minutes: number, user: MUser, min: number, max: number) {
 	let totalQty = 0;
-	for (let i = 0; i < minutes; i++) totalQty += randInt(min, max);
+	for (let i = 0; i < minutes; i++) totalQty += rng.randFloat(min, max);
 	if (!user.hasGracefulEquipped()) totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	return totalQty;
 }
 
-const bryophytasStaffId = itemID("Bryophyta's staff");
-
 export const puroPuroTask: MinionTask = {
 	type: 'PuroPuro',
-	async run(data: PuroPuroActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: PuroPuroActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelID, quantity, darkLure, implingTier } = data;
 
 		await user.incrementMinigameScore('puro_puro', quantity);
@@ -26,9 +23,9 @@ export const puroPuroTask: MinionTask = {
 		const itemCost = new Bank();
 		let hunterXP = 0;
 		const hunterLevel = user.skillsAsLevels.hunter;
-		const allImpQty = hunt(minutes, user, 1, 3);
-		const highTierImpQty = hunt(minutes, user, 0.75, 1) * (darkLure ? 1.2 : 1);
-		const singleImpQty = hunt(minutes, user, 5, 6);
+		const allImpQty = Math.floor(hunt(rng, minutes, user, 1, 3));
+		const highTierImpQty = Math.floor(hunt(rng, minutes, user, 0.75, 1) * (darkLure ? 1.2 : 1));
+		const singleImpQty = Math.floor(hunt(rng, minutes, user, 5, 6));
 		switch (implingTier) {
 			case 2:
 				for (let j = 0; j < highTierImpQty; j++) {
@@ -105,9 +102,9 @@ export const puroPuroTask: MinionTask = {
 			}, 0);
 
 			let savedRunes = 0;
-			if (user.hasEquipped(bryophytasStaffId)) {
+			if (user.hasEquipped(EItem.BRYOPHYTAS_STAFF)) {
 				for (let i = 0; i < spellsUsed; i++) {
-					if (roll(15)) savedRunes++;
+					if (rng.roll(15)) savedRunes++;
 				}
 			}
 

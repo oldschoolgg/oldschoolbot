@@ -1,4 +1,3 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { ItemGroups } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
@@ -19,7 +18,7 @@ export function zealOutfitBoost(user: MUser) {
 
 export const offeringTask: MinionTask = {
 	type: 'Offering',
-	async run(data: OfferingActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: OfferingActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { boneID, quantity, channelID } = data;
 
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
@@ -40,20 +39,20 @@ export const offeringTask: MinionTask = {
 		let deathCounter = 0;
 		// roll a 10% chance to get pked per trip
 		for (let i = 0; i < trips; i++) {
-			if (roll(10)) {
+			if (rng.roll(10)) {
 				deathCounter++;
 			}
 		}
 		// calc how many bones are lost
 		for (let i = 0; i < deathCounter; i++) {
-			bonesLost += randInt(1, maxPK);
+			bonesLost += rng.randInt(1, maxPK);
 		}
-		const bonesSaved = Math.floor(quantity * (randInt(90, 110) / 100));
+		const bonesSaved = Math.floor(quantity * (rng.randInt(90, 110) / 100));
 		let zealBonesSaved = 0;
 
 		if (zealOutfitAmount > 0) {
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(zealOutfitChance)) {
+				if (rng.percentChance(zealOutfitChance)) {
 					zealBonesSaved++;
 				}
 			}
@@ -62,7 +61,7 @@ export const offeringTask: MinionTask = {
 		const newQuantity = quantity - bonesLost + bonesSaved + zealBonesSaved;
 
 		let xpReceived = newQuantity * bone.xp * XPMod;
-		const bonusXP = xpReceived * randInt(2, 4) - xpReceived;
+		const bonusXP = xpReceived * rng.randInt(2, 4) - xpReceived;
 		if (user.usingPet('Lil Lamb')) {
 			xpReceived += bonusXP;
 		}

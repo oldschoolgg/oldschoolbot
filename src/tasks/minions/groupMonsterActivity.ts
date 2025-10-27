@@ -1,6 +1,5 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji, noOp, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -11,7 +10,7 @@ import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const groupoMonsterTask: MinionTask = {
 	type: 'GroupMonsterKilling',
-	async run(data: GroupMonsterActivityTaskOptions, { handleTripFinish, user: leaderUser }) {
+	async run(data: GroupMonsterActivityTaskOptions, { handleTripFinish, user: leaderUser, rng }) {
 		const { mi: monsterID, channelID, q: quantity, users, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
@@ -20,11 +19,11 @@ export const groupoMonsterTask: MinionTask = {
 
 		for (let i = 0; i < quantity; i++) {
 			const loot = monster.table.kill(1, {});
-			if (roll(10) && monster.id !== 696_969) {
+			if (rng.roll(10) && monster.id !== 696_969) {
 				loot.multiply(4);
 				loot.add(MysteryBoxes.roll());
 			}
-			const userWhoGetsLoot = randArrItem(users);
+			const userWhoGetsLoot = rng.pick(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
 			kcAmounts[userWhoGetsLoot] = kcAmounts[userWhoGetsLoot] ? ++kcAmounts[userWhoGetsLoot] : 1;

@@ -26,6 +26,7 @@ import { calculateDungeoneeringResult } from '@/lib/bso/tasks/dungeoneeringActiv
 import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHarvestActivity.js';
 import { calculateTuraelsTrialsResult } from '@/lib/bso/tasks/turaelsTrialsActivity.js';
 
+import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions } from 'discord.js';
 import { bold } from 'discord.js';
@@ -530,7 +531,8 @@ ${zygomiteFarmingSource
 												? { didCharge: false }
 												: ({ didCharge: true, portent: { charges_remaining: 1000 } } as any),
 											collectionLog: new Bank(),
-											gearBank: fullSetup
+											gearBank: fullSetup,
+											rng: MathRNG
 										});
 
 									results += [

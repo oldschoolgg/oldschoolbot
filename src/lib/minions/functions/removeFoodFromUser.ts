@@ -76,6 +76,18 @@ export function removeFoodFromUserRaw({
 	}
 }
 
+export type RemoveFoodFromUserParams = {
+	user: MUser;
+	totalHealingNeeded: number;
+	healPerAction: number;
+	activityName: string;
+	attackStylesUsed: GearSetupType[];
+	learningPercentage?: number;
+	isWilderness?: boolean;
+	unavailableBank?: Bank;
+	minimumHealAmount?: number;
+};
+
 export default async function removeFoodFromUser({
 	user,
 	totalHealingNeeded,
@@ -86,17 +98,7 @@ export default async function removeFoodFromUser({
 	isWilderness,
 	unavailableBank,
 	minimumHealAmount
-}: {
-	user: MUser;
-	totalHealingNeeded: number;
-	healPerAction: number;
-	activityName: string;
-	attackStylesUsed: GearSetupType[];
-	learningPercentage?: number;
-	isWilderness?: boolean;
-	unavailableBank?: Bank;
-	minimumHealAmount?: number;
-}): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
+}: RemoveFoodFromUserParams): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
 	const result = removeFoodFromUserRaw({
 		gearBank: user.gearBank,
 		totalHealingNeeded,

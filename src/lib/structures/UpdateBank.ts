@@ -80,7 +80,7 @@ export class UpdateBank {
 		}
 		let itemTransactionResult: Awaited<ReturnType<MUserClass['addItemsToBank']>> | null = null;
 		if (this.itemLootBank.length > 0) {
-			itemTransactionResult = await user.addItemsToBank({ items: this.itemLootBank, collectionLog: true });
+			itemTransactionResult = await user.transactItems({ itemsToAdd: this.itemLootBank, collectionLog: true });
 		}
 
 		// XP
@@ -92,7 +92,7 @@ export class UpdateBank {
 
 		// KC
 		if (this.kcBank.length() > 0) {
-			const currentScores = (await user.fetchStats()).monster_scores as ItemBank;
+			const currentScores = (await user.fetchUserStat('monster_scores')) as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}

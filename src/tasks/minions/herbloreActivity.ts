@@ -1,22 +1,26 @@
 import { herbertDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { Mixable } from '@/lib/skilling/types.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
-function BSOApplyExtraQuantity(user: MUser, quantity: number, mixableItem: Mixable, messages: string[]) {
+function BSOApplyExtraQuantity(
+	rng: RNGProvider,
+	user: MUser,
+	quantity: number,
+	mixableItem: Mixable,
+	messages: string[]
+) {
 	const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
 	const hasHerbMasterCape = user.hasEquippedOrInBank('Herblore master cape');
 	const herbCapePerk = isMixingPotion && hasHerbMasterCape;
 	let bonus = 0;
 	if (herbCapePerk) {
 		for (let i = 0; i < quantity; i++) {
-			if (percentChance(10)) {
+			if (rng.percentChance(10)) {
 				bonus++;
 			}
 		}
@@ -27,13 +31,20 @@ function BSOApplyExtraQuantity(user: MUser, quantity: number, mixableItem: Mixab
 	return quantity + bonus;
 }
 
-function BSOHerbetRoll(user: MUser, duration: number, mixableItem: Mixable, loot: Bank, messages: string[]) {
+function BSOHerbetRoll(
+	rng: RNGProvider,
+	user: MUser,
+	duration: number,
+	mixableItem: Mixable,
+	loot: Bank,
+	messages: string[]
+) {
 	const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
 	const petChance = herbertDroprate(user.skillsAsXP.herblore, mixableItem.level);
 	const minutes = Math.floor(duration / Time.Minute);
 	if (isMixingPotion && minutes > 0) {
 		for (let i = 0; i < minutes; i++) {
-			if (roll(petChance)) {
+			if (rng.roll(petChance)) {
 				loot.add('Herbert');
 				messages.push('You incorrectly mixed some ingredients, and created Herbert, a weird herby creature!');
 			}
@@ -43,17 +54,17 @@ function BSOHerbetRoll(user: MUser, duration: number, mixableItem: Mixable, loot
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
-	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish, rng }) {
 		let { mixableID, quantity, zahur, wesley, channelID, duration } = data;
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const messages: string[] = [];
-		quantity = BSOApplyExtraQuantity(user, quantity, mixableItem, messages);
+		quantity = BSOApplyExtraQuantity(rng, user, quantity, mixableItem, messages);
 		const xpReceived = zahur && mixableItem.zahur ? 0 : quantity * mixableItem.xp;
 		let outputQuantity = mixableItem.outputMultiple ? quantity * mixableItem.outputMultiple : quantity;
 
 		// Special case for Lava scale shard
 		if (mixableItem.item.id === EItem.LAVA_SCALE_SHARD) {
-			const [hasWildyDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
+			const hasWildyDiary = user.hasDiary('wilderness.hard');
 			const currentHerbLevel = user.skillsAsLevels.herblore;
 			let scales = 0;
 			// Having 99 herblore gives a 98% chance to recieve the max amount of shards
@@ -67,7 +78,7 @@ export const herbloreTask: MinionTask = {
 			} else {
 				// Math for if the user is using their minion to make lava scale shards
 				for (let i = 0; i < quantity; i++) {
-					scales += Math.floor((percentChance(maxShardChance) ? 6 : randInt(3, 6)) * diaryMultiplier);
+					scales += Math.floor((rng.percentChance(maxShardChance) ? 6 : rng.randInt(3, 6)) * diaryMultiplier);
 				}
 			}
 			outputQuantity = scales;
@@ -76,7 +87,7 @@ export const herbloreTask: MinionTask = {
 		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank().add(mixableItem.item.id, outputQuantity);
 
-		BSOHerbetRoll(user, duration, mixableItem, loot, messages);
+		BSOHerbetRoll(rng, user, duration, mixableItem, loot, messages);
 
 		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 

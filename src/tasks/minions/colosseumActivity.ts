@@ -1,4 +1,3 @@
-import { randArrItem } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
@@ -13,7 +12,7 @@ const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuir
 
 export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
-	async run(data: ColoTaskOptions, { user, handleTripFinish }) {
+	async run(data: ColoTaskOptions, { user, handleTripFinish, rng }) {
 		const {
 			channelID,
 			loot: possibleLoot,
@@ -61,14 +60,14 @@ export const colosseumTask: MinionTask = {
 				const wave = colosseumWaves.find(i => i.waveNumber === waveNumber)!;
 				if (quantity > 1) {
 					deathStr.push(
-						`- Attempt #${i + 1} Wave #${diedAt?.[i]} to ${randArrItem([
+						`- Attempt #${i + 1} Wave #${diedAt?.[i]} to ${rng.pick([
 							...(wave?.reinforcements ?? []),
 							...wave.enemies
 						])}. `
 					);
 				} else {
 					deathStr.push(
-						`You died on wave ${waveNumber} to ${randArrItem([
+						`You died on wave ${waveNumber} to ${rng.pick([
 							...(wave?.reinforcements ?? []),
 							...wave.enemies
 						])}. `
@@ -127,12 +126,12 @@ export const colosseumTask: MinionTask = {
 			for (const item of sunfireItems) {
 				if (loot.has(item) && itemsTheyHave.includes(item)) {
 					loot.remove(item);
-					loot.add(randArrItem(missingItems));
+					loot.add(rng.pick(missingItems));
 				}
 			}
 		}
 
-		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL } = await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
 		await ClientSettings.updateBankSetting('colo_loot', loot);
 		await user.statsBankUpdate('colo_loot', loot);

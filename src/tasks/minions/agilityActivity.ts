@@ -9,7 +9,6 @@ import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng'
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { addItemToBank, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import type { Course } from '@/lib/skilling/types.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
@@ -151,14 +150,14 @@ export function calculateAgilityResult({
 
 export const agilityTask: MinionTask = {
 	type: 'Agility',
-	async run(data: AgilityActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: AgilityActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { courseID, quantity, channelID, duration, alch } = data;
 		const minutes = Math.round(duration / Time.Minute);
 		const currentLevel = user.skillsAsLevels.agility;
 
 		const course = Agility.Courses.find(course => course.id === courseID)!;
 
-		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
+		const hasArdyElite = user.hasDiary('ardougne.elite');
 		const hasDiaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
 
 		const messages: string[] = [];
@@ -180,9 +179,10 @@ export const agilityTask: MinionTask = {
 			hasAgilityPortent: portentResult.didCharge
 		});
 
-		const stats = await user.fetchStats();
-		const { laps_scores: newLapScores } = await user.statsUpdate({
-			laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, successfulLaps),
+		const previousLapScores = await user.fetchUserStat('laps_scores');
+		const newLapScores = addItemToBank(previousLapScores as ItemBank, course.id, successfulLaps);
+		await user.statsUpdate({
+			laps_scores: newLapScores,
 			xp_from_graceful_portent: {
 				increment: portentXP
 			}
@@ -287,7 +287,7 @@ export const agilityTask: MinionTask = {
 			'agility',
 			typeof course.petChance === 'number' ? course.petChance : course.petChance(currentLevel)
 		);
-		if (roll(petDropRate / quantity)) {
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Giant squirrel');
 		}
 

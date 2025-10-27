@@ -1,6 +1,5 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { randInt, roll } from '@oldschoolgg/rng';
 import { calcPerHour, Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -12,7 +11,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { channelID, quantity, duration } = data;
 		const hasMasterCape = user.hasEquippedOrInBank('Firemaking master cape');
 		const { newScore } = await user.incrementMinigameScore('wintertodt', quantity);
@@ -21,7 +20,7 @@ export const wintertodtTask: MinionTask = {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = randInt(1000, 5000);
+			const points = rng.randInt(1000, 5000);
 			totalPoints += points;
 
 			loot.add(
@@ -36,7 +35,7 @@ export const wintertodtTask: MinionTask = {
 
 		let gotToad = false;
 		const dropRate = clAdjustedDroprate(user, 'Wintertoad', 3000 / Math.floor(duration / Time.Minute), 1.2);
-		if (duration > Time.Minute * 20 && roll(dropRate)) {
+		if (duration > Time.Minute * 20 && rng.roll(dropRate)) {
 			gotToad = true;
 			loot.add('Wintertoad');
 		}
@@ -71,7 +70,7 @@ export const wintertodtTask: MinionTask = {
 		const constructionXPPerBrazier = conLevel * 4;
 		let numberOfBraziers = 0;
 		for (let i = 0; i < quantity; i++) {
-			numberOfBraziers += randInt(1, 7);
+			numberOfBraziers += rng.randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
 		let xpStr = await user.addXP({ skillName: 'construction', amount: conXP, duration: data.duration });

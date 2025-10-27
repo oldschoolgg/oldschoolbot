@@ -3,7 +3,6 @@ import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { calcPercentOfNum, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -84,8 +83,7 @@ export const smithCommand = defineCommand({
 				doubleCBall = true;
 				timeToUse /= 2;
 			}
-			const [has] = await userhasDiaryTier(user, KaramjaDiary.elite);
-			if (has) {
+			if (user.hasDiary('karamja.elite')) {
 				diaryCannonball = true;
 				timeToUse /= 1.23;
 			}

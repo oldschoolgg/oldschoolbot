@@ -3,13 +3,12 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';
-import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 const diaryBoosts = [
-	[WesternProv.elite, 100],
-	[WesternProv.medium, 50],
-	[WesternProv.easy, 25]
+	['westernprovinces.elite', 100],
+	['westernprovinces.medium', 50],
+	['westernprovinces.easy', 25]
 ] as const;
 
 const baseChompyPerHour = 100;
@@ -41,10 +40,10 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 
 	const tripLength = user.calcMaxTripLength('BigChompyBirdHunting');
 
-	const boosts = [];
+	const boosts: string[] = [];
 	let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
 	for (const [diary, boost] of diaryBoosts) {
-		const [hasDiary] = await userhasDiaryTier(user, diary);
+		const hasDiary = user.hasDiary(diary);
 		if (hasDiary) {
 			let bonus = 0;
 			for (let i = 0; i < quantity; i++) {
@@ -53,7 +52,7 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 				}
 			}
 			quantity += bonus;
-			boosts.push(`${boost}% for ${diary.name} ${WesternProv.name}`);
+			boosts.push(`${boost}% for ${diary.replace('.', ' ')}`);
 
 			break;
 		}

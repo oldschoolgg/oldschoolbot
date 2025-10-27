@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -7,10 +6,9 @@ import { skillingPetDropRate } from '@/lib/util.js';
 
 export const titheFarmTask: MinionTask = {
 	type: 'TitheFarm',
-	async run(data: TitheFarmActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: TitheFarmActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelID, duration } = data;
 		const baseHarvest = 85;
-		const lootStr: string[] = [];
 
 		const userStats = await user.fetchStats();
 
@@ -94,7 +92,7 @@ export const titheFarmTask: MinionTask = {
 
 		const loot = new Bank();
 		const { petDropRate } = skillingPetDropRate(user, 'farming', 7_494_389);
-		if (roll(petDropRate / determineHarvest)) {
+		if (rng.roll(Math.ceil(petDropRate / determineHarvest))) {
 			loot.add('Tangleroot');
 
 			await user.transactItems({
@@ -103,7 +101,7 @@ export const titheFarmTask: MinionTask = {
 			});
 		}
 
-		const returnStr = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}${lootStr}\n\n${flappyRes.userMsg}`;
+		const returnStr = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}\n${flappyRes.userMsg}`;
 
 		handleTripFinish(user, channelID, returnStr, undefined, data, loot.length > 0 ? loot : null);
 	}

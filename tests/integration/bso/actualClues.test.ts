@@ -31,7 +31,7 @@ describe('Actual Clues', async () => {
 
 		await expect((await user.calcActualClues()).clueCounts.Beginner).toEqual(0);
 
-		await user.addItemsToCollectionLog(new Bank().add(EItem.CLUE_SCROLL_BEGINNER, 10));
+		await user.addItemsToCollectionLog({ itemsToAdd: new Bank().add(EItem.CLUE_SCROLL_BEGINNER, 10) });
 
 		await expect((await user.calcActualClues()).clueCounts.Beginner).toEqual(0);
 

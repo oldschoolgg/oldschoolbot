@@ -518,8 +518,7 @@ Date: ${dateFm(date)}`;
 			const slotsToUnequip = gearSlot === 'all' ? allGearSlots : [gearSlot];
 
 			for (const gear of slotsToUnequip) {
-				const result = await unEquipAllCommand(targetUser, gear as GearSetupType, true);
-				if (!result.endsWith('setup.')) return result;
+				await unEquipAllCommand(targetUser, gear as GearSetupType, true);
 			}
 
 			let petResult = '';
