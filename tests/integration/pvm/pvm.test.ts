@@ -117,7 +117,7 @@ describe('PVM', async () => {
 	it('cant barrage nechs', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			bank: new Bank().add('Blood rune', 10_000).add('Death rune', 10_000).add('Water rune', 10000000),
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
@@ -128,7 +128,7 @@ describe('PVM', async () => {
 	it('barrages abby demons', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			bank: new Bank().add('Blood rune', 10_000).add('Death rune', 10_000).add('Water rune', 10000000),
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
@@ -144,7 +144,7 @@ describe('PVM', async () => {
 	it('should get kodai buff', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			bank: new Bank().add('Blood rune', 10_000).add('Death rune', 10_000).add('Water rune', 10000000),
 			mageLevel: 99,
 			mageGear: resolveItems(['Kodai wand'])
 		});
