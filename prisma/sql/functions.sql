@@ -66,3 +66,19 @@ BEGIN
     WHERE last_command_date > now() - INTERVAL '1 week';
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_economy_bank()
+RETURNS jsonb AS
+$$
+BEGIN
+  RETURN (
+    SELECT json_object_agg(item_id, qty)
+    FROM (
+      SELECT key::int AS item_id, SUM(value::bigint) AS qty
+      FROM users, json_each_text(bank)
+      GROUP BY key::int
+    ) AS sums
+  );
+END;
+$$ LANGUAGE plpgsql PARALLEL SAFE;

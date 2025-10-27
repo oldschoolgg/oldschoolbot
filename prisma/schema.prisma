@@ -616,6 +616,15 @@ model EconomyItem {
   @@map("economy_item")
 }
 
+model EconomyItemBanks {
+  id   Int      @id @default(autoincrement())
+  date DateTime @default(now())
+
+  bank Json @db.JsonB
+
+  @@map("economy_item_banks")
+}
+
 model LastManStandingGame {
   id       Int      @id @default(autoincrement())
   user_id  BigInt
