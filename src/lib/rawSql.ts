@@ -12,17 +12,6 @@ WHERE ${u.id} = '${userID}';`,
 		`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`
 };
 
-export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> {
-	try {
-		const result = await prisma.$queryRawUnsafe<T>(query);
-		return result;
-	} catch (err) {
-		Logging.logError(err as Error, { query: query.slice(0, 100) });
-	}
-
-	return null;
-}
-
 export const SQL = {
 	SELECT_FULL_NAME:
 		"TRIM(COALESCE(string_agg(b.text, ' '), '') || ' ' || COALESCE(username, 'Unknown')) AS full_name",
