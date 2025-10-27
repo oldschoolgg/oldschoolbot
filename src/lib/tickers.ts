@@ -1,11 +1,4 @@
-import {
-	awaitMessageComponentInteraction,
-	cleanUsername,
-	noOp,
-	removeFromArr,
-	stringMatches,
-	Time
-} from '@oldschoolgg/toolkit';
+import { awaitMessageComponentInteraction, noOp, removeFromArr, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
@@ -18,13 +11,11 @@ import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
-import { fetchUsersWithoutUsernames } from '@/lib/rawSql.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
-import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { getSupportGuild } from '@/lib/util.js';
 
 let lastMessageID: string | null = null;
@@ -297,54 +288,6 @@ export const tickers: {
 		interval: Time.Minute * 5,
 		cb: async () => {
 			await populateRoboChimpCache();
-		}
-	},
-	{
-		// Fetch users without usernames, and put in their usernames.
-		name: 'username_filling',
-		startupWait: Time.Minute * 10,
-		timer: null,
-		interval: Time.Minute * 33.33,
-
-		productionOnly: true,
-		cb: async () => {
-			const users = await fetchUsersWithoutUsernames();
-			for (const { id } of users) {
-				const djsUser = await globalClient.users.fetch(id).catch(() => null);
-				if (!djsUser) {
-					Logging.logDebug(`username_filling: Could not fetch user with ID ${id}, skipping...`);
-					continue;
-				}
-				const user = await prisma.user.upsert({
-					where: {
-						id
-					},
-					select: {
-						username: true,
-						badges: true,
-						minion_ironman: true
-					},
-					create: {
-						id
-					},
-					update: {}
-				});
-				const badges = makeBadgeString(user.badges, user.minion_ironman);
-				const username = cleanUsername(djsUser.username);
-				const usernameWithBadges = `${badges ? `${badges} ` : ''}${username}`;
-				await prisma.user.update({
-					where: {
-						id
-					},
-					data: {
-						username_with_badges: usernameWithBadges,
-						username
-					}
-				});
-				Logging.logDebug(
-					`username_filling: Updated user[${id}] to username[${username}] withbadges[${usernameWithBadges}]`
-				);
-			}
 		}
 	},
 	{
