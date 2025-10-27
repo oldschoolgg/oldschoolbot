@@ -1,4 +1,3 @@
-import { noOp } from '@oldschoolgg/toolkit';
 import type { ItemBank } from 'oldschooljs';
 
 import { syncBlacklists } from '@/lib/blacklists.js';
@@ -9,8 +8,6 @@ import { badges, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
-import { RawSQL } from '@/lib/rawSql.js';
-import { runStartupScripts } from '@/lib/startupScripts.js';
 import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
 import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
 import { logWrapFn } from '@/lib/util.js';
@@ -57,12 +54,11 @@ export async function syncCustomPrices() {
 }
 
 export const preStartup = logWrapFn('PreStartup', async () => {
-	await runStartupScripts();
-
 	await prisma.clientStorage.upsert({
 		where: { id: globalConfig.clientID },
 		create: { id: globalConfig.clientID },
-		update: {}
+		update: {},
+		select: { id: true }
 	});
 
 	await Promise.all([
@@ -75,7 +71,6 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 		GrandExchange.init(),
 		populateRoboChimpCache(),
 		cacheGEPrices(),
-		prisma.$queryRawUnsafe(RawSQL.updateAllUsersCLArrays()).then(noOp),
 		syncCollectionLogSlotTable(),
 		updateBadgeTable(),
 		populateUsernameCache()
