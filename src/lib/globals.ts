@@ -56,7 +56,11 @@ async function makePrismaClient(): Promise<BotDB> {
 	const { adapter, pgLiteClient } = await getAdapter(BOT_TYPE);
 	const prismaClient = new PrismaClient({
 		log: [{ emit: 'event', level: 'query' }, 'info', 'warn', 'error'],
-		adapter
+		adapter,
+		transactionOptions: {
+			maxWait: 15_000,
+			timeout: 15_000
+		}
 	});
 	prismaClient.$on('query', e => {
 		const info = {
