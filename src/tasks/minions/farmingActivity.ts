@@ -355,7 +355,7 @@ export const farmingTask: MinionTask = {
 			if (plantToHarvest.seedType !== 'hespori') {
 				let hesporiSeeds = 0;
 				for (let i = 0; i < alivePlants; i++) {
-					if (rng.roll(plantToHarvest.petChance / 500)) {
+					if (rng.roll(Math.ceil(plantToHarvest.petChance / 500))) {
 						hesporiSeeds++;
 					}
 				}
