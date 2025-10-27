@@ -433,8 +433,10 @@ GROUP BY data->>'ci';`);
 	}
 
 	async incrementKC(monsterID: number, quantityToAdd = 1) {
-		if (!Number.isInteger(monsterID)) throw new Error('Invalid monsterID');
-		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		if (!Number.isInteger(monsterID)) throw new Error(`Invalid monsterID: ${monsterID}`);
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) {
+			throw new Error(`Invalid quantityToAdd: ${quantityToAdd}`);
+		}
 		const query = `
 UPDATE user_stats
 SET monster_scores = add_item_to_bank(monster_scores, '${monsterID}', ${quantityToAdd})
