@@ -1,7 +1,6 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
@@ -35,7 +34,7 @@ export async function collectCommand(
 	}
 
 	if (collectable.item.id === 245) {
-		const [hasDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
+		const hasDiary = user.hasDiary('wilderness.hard');
 		if (hasDiary) {
 			collectable.duration = Time.Minute * 2;
 		}

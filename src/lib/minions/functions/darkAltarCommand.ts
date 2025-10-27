@@ -1,7 +1,6 @@
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
@@ -57,12 +56,12 @@ export async function darkAltarCommand({
 	let timePerRune = runeData.baseTime;
 
 	const boosts = [];
-	const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+	const hasEliteDiary = user.hasDiary('kourend&kebos.elite');
 	if (hasEliteDiary && rune === 'blood') {
 		boosts.push('10% additional runes for Kourend/Kebos elite diary');
 	}
 
-	const [hasMediumDiary] = await userhasDiaryTier(user, KourendKebosDiary.medium);
+	const hasMediumDiary = user.hasDiary('kourend&kebos.medium');
 	if (hasMediumDiary) {
 		boosts.push(`${mediumDiaryBoost}% faster essence mining for Kourend/Kebos medium diary`);
 		timePerRune = reduceNumByPercent(timePerRune, mediumDiaryBoost);

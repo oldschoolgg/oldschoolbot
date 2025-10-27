@@ -1,17 +1,16 @@
-import { percentChance, randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const mageArenaTwoTask: MinionTask = {
 	type: 'MageArena2',
-	async run(data: ActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
 		const { channelID } = data;
 
 		let str = '';
 		let loot: Bank | undefined;
-		if (percentChance(70)) {
-			const deathReason = randArrItem([
+		if (rng.percentChance(70)) {
+			const deathReason = rng.pick([
 				'Died to Porazdir',
 				'Killed by Derwen',
 				'Killed by Justiciar Zachariah',

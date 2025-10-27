@@ -866,7 +866,7 @@
 			"ranged": 65,
 			"magic": 70
 		},
-		"diary_requirement": [11, "medium"],
+		"diary_requirement": "wilderness.medium",
 		"default_attack_styles": ["ranged"],
 		"heal_amount_needed": 160,
 		"attack_style_to_use": "attack_ranged",
@@ -1731,7 +1731,7 @@
 			"defence": 70,
 			"magic": 70
 		},
-		"diary_requirement": [11, "medium"],
+		"diary_requirement": "wilderness.medium",
 		"default_attack_styles": ["attack"],
 		"custom_monster_hp": 420,
 		"heal_amount_needed": 160,
@@ -7365,7 +7365,7 @@
 			"defence": 70,
 			"magic": 70
 		},
-		"diary_requirement": [11, "medium"],
+		"diary_requirement": "wilderness.medium",
 		"default_attack_styles": ["attack"],
 		"heal_amount_needed": 160,
 		"attack_style_to_use": "attack_crush",

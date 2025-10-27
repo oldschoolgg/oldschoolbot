@@ -2,8 +2,6 @@ import { calcPercentOfNum, calcWhatPercent, Events, formatDuration, formatOrdina
 import { Bank, type ItemBank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
-import { diariesObject, userhasDiaryTier } from '@/lib/diaries.js';
-import { DiaryID } from '@/lib/minions/types.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
@@ -26,16 +24,17 @@ export const infernoTask: MinionTask = {
 		const unusedItems = new Bank();
 		const cost = new Bank(data.cost);
 
-		const { inferno_attempts: newInfernoAttempts } = await user.statsUpdate({
+		await user.statsUpdate({
 			inferno_attempts: {
 				increment: 1
 			}
 		});
+		const newInfernoAttempts = await user.fetchUserStat('inferno_attempts');
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
-		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
+		const hasDiary = user.hasDiary('karamja.elite');
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
 		const xpBonuses = [];
@@ -109,17 +108,17 @@ export const infernoTask: MinionTask = {
 		}
 
 		if (isOnTask && !deathTime) {
-			const newUserStats = await user.statsUpdate({
+			await user.statsUpdate({
 				slayer_task_streak: {
 					increment: 1
 				}
 			});
+			const currentStreak = await user.fetchUserStat('slayer_task_streak');
 
-			const currentStreak = newUserStats.slayer_task_streak;
-			const points = await calculateSlayerPoints(
+			const points: number = calculateSlayerPoints(
 				currentStreak,
 				usersTask.slayerMaster!,
-				(await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+				user.hasDiary('kourend&kebos.elite')
 			);
 			const secondNewUser = await user.update({
 				slayer_points: {
@@ -137,11 +136,11 @@ export const infernoTask: MinionTask = {
 				}
 			});
 
-			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
+			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.user.slayer_points}; return to a Slayer master.**`;
 		}
 
 		if (unusedItems.length > 0) {
-			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
+			await user.transactItems({ itemsToAdd: unusedItems, collectionLog: false });
 
 			const currentData = await ClientSettings.fetch({ inferno_cost: true });
 			const current = new Bank(currentData.inferno_cost as ItemBank);
@@ -190,7 +189,7 @@ export const infernoTask: MinionTask = {
 			}
 		}
 
-		await user.addItemsToBank({ items: baseBank, collectionLog: true });
+		await user.transactItems({ itemsToAdd: baseBank, collectionLog: true });
 
 		handleTripFinish(
 			user,

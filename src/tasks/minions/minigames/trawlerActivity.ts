@@ -1,7 +1,6 @@
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
@@ -16,7 +15,7 @@ export const trawlerTask: MinionTask = {
 		const loot = new Bank();
 
 		let totalXP = 0;
-		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
+		const hasEliteArdy = user.hasDiary('ardougne.elite');
 		for (let i = 0; i < quantity; i++) {
 			const { loot: _loot, xp } = fishingTrawlerLoot(
 				user.skillsAsLevels.fishing,

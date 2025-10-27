@@ -99,7 +99,14 @@ export const musicCapeRequirements = new Requirements()
 	})
 	.add({
 		name: 'Runecraft all runes at least once',
-		has: ({ uniqueRunesCrafted }) => {
+		has: async ({ user }) => {
+			const uniqueRunesCrafted = (
+				await prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+AND type = 'Runecraft'
+AND data->>'runeID' IS NOT NULL;`
+			).map(i => Number(i.rune_id));
 			const runesToCheck = resolveItems([
 				'Mind rune',
 				'Air rune',
@@ -128,7 +135,13 @@ export const musicCapeRequirements = new Requirements()
 	})
 	.add({
 		name: 'One of Every Activity',
-		has: ({ uniqueActivitiesDone }) => {
+		has: async ({ user }) => {
+			const uniqueActivitiesDone: activity_type_enum[] = (
+				await prisma.$queryRaw<{ type: activity_type_enum }[]>`SELECT DISTINCT(type)
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+GROUP BY type;`
+			).map(i => i.type);
 			const typesNotRequiredForMusicCape: activity_type_enum[] = [
 				...DEPRECATED_ACTIVITY_TYPES,
 				activity_type_enum.GroupMonsterKilling,

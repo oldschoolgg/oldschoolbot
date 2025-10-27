@@ -34,6 +34,10 @@ export async function rawCommandHandlerInner({
 		username: globalClient.users.cache.get(interaction.user.id)?.username
 	});
 
+	if (user.user.completed_achievement_diaries.length === 0) {
+		user.syncCompletedAchievementDiaries().catch(console.error);
+	}
+
 	const shouldIgnoreBusy = ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
 
 	if (user.isBusy && !shouldIgnoreBusy) {

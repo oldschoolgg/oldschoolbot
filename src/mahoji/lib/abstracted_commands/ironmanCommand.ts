@@ -191,10 +191,13 @@ After becoming an ironman:
 		});
 	}
 
-	const { newUser } = await user.update({
+	await user.update({
 		minion_ironman: true,
 		minion_hasBought: true
 	});
-	assert(!newUser.GP && !newUser.QP && !newUser.skills_woodcutting, `Ironman sanity check - ID: ${newUser.id}`);
+	assert(
+		!user.user.GP && !user.user.QP && !user.user.skills_woodcutting,
+		`Ironman sanity check - ID: ${user.user.id}`
+	);
 	return 'You are now an ironman.';
 }

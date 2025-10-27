@@ -1,0 +1,11 @@
+SELECT add_constraint('users', 'users_gp', 'CHECK ("GP" >= 0)');
+SELECT add_constraint('ge_listing', 'asking_price_per_item_min', 'CHECK (asking_price_per_item >= 1)');
+SELECT add_constraint('ge_listing', 'total_quantity_min', 'CHECK (total_quantity >= 1)');
+SELECT add_constraint('ge_listing', 'quantity_remaining_min', 'CHECK (quantity_remaining >= 0)');
+SELECT add_constraint('ge_transaction', 'quantity_bought_min', 'CHECK (quantity_bought >= 0)');
+SELECT add_constraint('ge_transaction', 'price_per_item_before_tax_min', 'CHECK (price_per_item_before_tax >= 1)');
+SELECT add_constraint('ge_transaction', 'price_per_item_after_tax_min', 'CHECK (price_per_item_after_tax >= 1)');
+SELECT add_constraint('ge_transaction', 'tax_rate_percent_min', 'CHECK (tax_rate_percent >= 1)');
+SELECT add_constraint('ge_transaction', 'total_tax_paid_min', 'CHECK (total_tax_paid >= 0)');
+SELECT add_constraint('ge_bank', 'ge_bank_quantity_min', 'CHECK (quantity >= 0)');
+SELECT add_constraint('table_bank_item', 'table_bank_quantity_min', 'CHECK (quantity >= 0)');

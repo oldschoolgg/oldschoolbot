@@ -128,10 +128,13 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	if (!userBank.has(itemsToRemove)) {
 		return `You don't own ${itemsToRemove}.`;
 	}
-	await user.removeItemsFromBank(itemsToRemove);
-	await user.update({
-		blowpipe: currentData as any as PrismaCompatibleJsonObject
+	await user.transactItems({
+		itemsToRemove,
+		otherUpdates: {
+			blowpipe: currentData as any as PrismaCompatibleJsonObject
+		}
 	});
+
 	return `You added ${itemsToRemove} to your Toxic blowpipe.`;
 }
 
@@ -153,9 +156,12 @@ async function removeDartsCommand(user: MUser) {
 	const returnedBank = new Bank().add(rawBlowpipeData.dartID, rawBlowpipeData.dartQuantity);
 	rawBlowpipeData.dartID = null;
 	rawBlowpipeData.dartQuantity = 0;
-	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await user.update({
-		blowpipe: rawBlowpipeData as any as PrismaCompatibleJsonObject
+	await user.transactItems({
+		itemsToAdd: returnedBank,
+		collectionLog: false,
+		otherUpdates: {
+			blowpipe: rawBlowpipeData as any as PrismaCompatibleJsonObject
+		}
 	});
 	validateBlowpipeData(rawBlowpipeData);
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;
@@ -183,9 +189,10 @@ async function unchargeCommand(user: MUser) {
 		return 'You have no darts or scales in your Blowpipe.';
 	}
 
-	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await user.update({
-		blowpipe: { scales: 0, dartID: null, dartQuantity: 0 }
+	await user.transactItems({
+		itemsToAdd: returnedBank,
+		collectionLog: false,
+		otherUpdates: { blowpipe: { scales: 0, dartID: null, dartQuantity: 0 } }
 	});
 
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;

@@ -1,7 +1,6 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const wealthInventorySize = 26;
@@ -15,7 +14,7 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		return `You don't have enough Rings of wealth to recharge. Your minion does trips of ${wealthInventorySize}x rings of wealth.`;
 	}
 
-	const [hasDiary] = await userhasDiaryTier(user, WildernessDiary.elite);
+	const hasDiary = user.hasDiary('wilderness.hard');
 
 	let invDuration = wealthInventoryTime;
 	if (hasDiary) {
