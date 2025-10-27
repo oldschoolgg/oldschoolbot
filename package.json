@@ -5,7 +5,9 @@
 	"type": "module",
 	"scripts": {
 		"============DEVELOPMENT": "============",
-		"watch": "nodemon --delay 1ms -e ts -w src --exec \"tsx esbuild.mts && node --trace-warnings --enable-source-maps dist\"",
+		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm exec-and-start\"",
+		"exec-and-start": "concurrently \"pnpm exec-sql\" \"pnpm build-and-run\"",
+		"build-and-run": "tsx esbuild.mts && node --trace-warnings --enable-source-maps dist",
 		"dev": "pnpm --filter cli build && node --env-file=.env packages/cli/dist/cli.js",
 		"watch:tsc": "tsc -w -p src",
 		"start": "pnpm watch",
@@ -17,6 +19,7 @@
 		"wiki": "tsx --tsconfig scripts/tsconfig.json ./scripts/wiki.ts && pnpm lint",
 		"generate:robochimp": "prisma generate --no-hints --schema prisma/robochimp.prisma",
 		"bso-data": "git fetch origin bso:bso && git checkout bso -- ./data/bso/ && git diff --name-only master bso | sort > data/misc/bso-diff.txt",
+		"exec-sql": "tsx --tsconfig=scripts/tsconfig.json --env-file=.env scripts/execute-sql.ts",
 		"============BUILDING": "============",
 		"build": "pnpm build:packages && pnpm gen && concurrently --raw \"tsx esbuild.mts\" \"pnpm test:types\"",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"pnpm generate:robochimp\" && echo \"Generated Prisma Client\"",

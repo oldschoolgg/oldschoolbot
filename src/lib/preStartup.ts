@@ -10,7 +10,6 @@ import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
 import { RawSQL } from '@/lib/rawSql.js';
-import { runStartupScripts } from '@/lib/startupScripts.js';
 import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
 import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
 import { logWrapFn } from '@/lib/util.js';
@@ -57,8 +56,6 @@ export async function syncCustomPrices() {
 }
 
 export const preStartup = logWrapFn('PreStartup', async () => {
-	await runStartupScripts();
-
 	await prisma.clientStorage.upsert({
 		where: { id: globalConfig.clientID },
 		create: { id: globalConfig.clientID },
