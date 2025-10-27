@@ -49,17 +49,25 @@ function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 		const multiple = itemEntries.length > 1;
 		const subStr = [];
 
-		let multiply = 1;
-		if (c.qtyPerKill) {
-			multiply = c.qtyPerKill;
-		} else if (c.qtyPerMinute) {
-			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
-		}
+		if (c.qtyPerKillRange) {
+			const [minRange, maxRange] = c.qtyPerKillRange;
+			for (const [item, quantity] of itemEntries) {
+				const minAmount = Number((quantity * minRange).toFixed(3));
+				const maxAmount = Number((quantity * maxRange).toFixed(3));
+				subStr.push(`${minAmount}-${maxAmount}x ${item.name}`);
+			}
+		} else {
+			let multiply = 1;
+			if (c.qtyPerKill) {
+				multiply = c.qtyPerKill;
+			} else if (c.qtyPerMinute) {
+				multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
+			}
 
-		for (const [item, quantity] of itemEntries) {
-			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
+			for (const [item, quantity] of itemEntries) {
+				subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
+			}
 		}
-
 		if (multiple) {
 			str.push(formatList(subStr));
 		} else {

@@ -831,6 +831,22 @@
 		]
 	},
 	{
+		"name": "Forgotten lockbox",
+		"id": 30763,
+		"opened_item": "Forgotten lockbox",
+		"all_items": [
+			"Coins",
+			"Dragon bolts (unf)",
+			"Dragon dart",
+			"Dragon platelegs",
+			"Dragon plateskirt",
+			"Oathplate chest",
+			"Oathplate helm",
+			"Oathplate legs",
+			"Oathplate shards"
+		]
+	},
+	{
 		"name": "Frozen cache",
 		"id": 27622,
 		"opened_item": "Frozen cache",

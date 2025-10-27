@@ -127,6 +127,7 @@ export interface Consumable {
 	itemCost: Bank;
 	qtyPerMinute?: number;
 	qtyPerKill?: number;
+	qtyPerKillRange?: [number, number];
 	// For staff of the dead / kodai
 	isRuneCost?: boolean;
 	alternativeConsumables?: Consumable[];

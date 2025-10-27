@@ -1,3 +1,4 @@
+import { randInt } from '@oldschoolgg/rng';
 import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { EItem, itemID } from 'oldschooljs';
 
@@ -9,7 +10,9 @@ import type { GearBank } from '@/lib/structures/GearBank.js';
 // TODO: should use a FloatBank instead of a Bank
 const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
 	const consumableCost = c.itemCost.clone();
-	if (c.qtyPerKill) {
+	if (c.qtyPerKillRange) {
+		consumableCost.multiply(Math.ceil(c.qtyPerKillRange[1] * quantity));
+	} else if (c.qtyPerKill) {
 		consumableCost.multiply(Math.ceil(c.qtyPerKill * quantity));
 	} else if (c.qtyPerMinute) {
 		consumableCost.multiply(Math.ceil((c.qtyPerMinute * duration) / Time.Minute));
@@ -36,6 +39,14 @@ export function getItemCostFromConsumables({
 	const duration = timeToFinish * quantity;
 	const floatCostsPerKill = new FloatBank();
 	const boosts: { message: string; boostPercent: number }[] = [];
+	const consumablesUsed: {
+		consumable: Consumable;
+		perKillValue: number;
+		range: [number, number] | null;
+		runeReductionMultiplier: number | null;
+	}[] = [];
+	const hasKodaiEquipped = gearBank.hasEquipped('Kodai wand');
+	const hasSOTDEquipped = !hasKodaiEquipped && gearBank.hasEquipped('Staff of the dead');
 
 	for (const cc of consumableCosts) {
 		const flatConsumables = [cc, ...(cc.alternativeConsumables ?? [])];
@@ -45,21 +56,40 @@ export function getItemCostFromConsumables({
 			continue;
 		}
 
-		let itemMultiple = consumable.qtyPerKill ?? consumable.qtyPerMinute ?? null;
-		if (itemMultiple) {
+		let itemMultiple: number | null = null;
+		const range = consumable.qtyPerKillRange ?? null;
+		if (range) {
+			itemMultiple = range[1];
+		} else if (typeof consumable.qtyPerKill === 'number') {
+			itemMultiple = consumable.qtyPerKill;
+		} else if (typeof consumable.qtyPerMinute === 'number') {
+			itemMultiple = consumable.qtyPerMinute;
+		}
+		if (itemMultiple !== null) {
+			let runeReductionMultiplier: number | null = null;
+
 			if (consumable.isRuneCost) {
 				// Free casts for kodai + sotd
-				if (gearBank.hasEquipped('Kodai wand')) {
+				if (hasKodaiEquipped) {
 					itemMultiple = Math.ceil(0.85 * itemMultiple);
-				} else if (gearBank.hasEquipped('Staff of the dead')) {
+					runeReductionMultiplier = range ? 0.85 : null;
+				} else if (hasSOTDEquipped) {
 					itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+					runeReductionMultiplier = range ? 6 / 7 : null;
 				}
 			}
 
-			const multiply = consumable.qtyPerMinute ? (timeToFinish / Time.Minute) * itemMultiple : itemMultiple;
+			const multiply =
+				consumable.qtyPerMinute && !range ? (timeToFinish / Time.Minute) * itemMultiple : itemMultiple;
 
 			for (const [item, qty] of consumable.itemCost.items()) {
 				floatCostsPerKill.add(item.id, qty * multiply);
+				consumablesUsed.push({
+					consumable,
+					perKillValue: multiply,
+					range,
+					runeReductionMultiplier
+				});
 			}
 			if (consumable.boostPercent) {
 				timeToFinish = reduceNumByPercent(timeToFinish, consumable.boostPercent);
@@ -92,7 +122,32 @@ export function getItemCostFromConsumables({
 	if (slayerKillsRemaining && finalQuantity > slayerKillsRemaining) {
 		finalQuantity = slayerKillsRemaining;
 	}
-	const itemCost = floatCostsPerKill.multiply(finalQuantity).toItemBankRoundedUp();
+	const tripCost = new FloatBank();
+	for (const used of consumablesUsed) {
+		if (used.range) {
+			let total = 0;
+			for (let i = 0; i < finalQuantity; i++) {
+				total += randInt(used.range[0], used.range[1]);
+			}
+			if (used.runeReductionMultiplier) {
+				total = Math.ceil(total * used.runeReductionMultiplier);
+			}
+			for (const [item, qty] of used.consumable.itemCost.items()) {
+				tripCost.add(item.id, qty * total);
+			}
+		} else {
+			const total = used.perKillValue * finalQuantity;
+			for (const [item, qty] of used.consumable.itemCost.items()) {
+				tripCost.add(item.id, qty * total);
+			}
+		}
+	}
+
+	if (hasInfiniteWaterRunes) {
+		tripCost.remove(EItem.WATER_RUNE, tripCost.amount(EItem.WATER_RUNE));
+	}
+
+	const itemCost = tripCost.toItemBankRoundedUp();
 
 	if (consumableCosts.length === 0) {
 		return {

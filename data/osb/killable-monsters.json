@@ -9726,6 +9726,22 @@
 		"item_cost": [
 			{
 				"item_cost": {
+					"564": 1,
+					"566": 1
+				},
+				"qty_per_minute": 0.5,
+				"is_rune_cost": true
+			},
+			{
+				"item_cost": {
+					"554": 7,
+					"566": 2
+				},
+				"qty_per_kill_range": [8, 12],
+				"is_rune_cost": true
+			},
+			{
+				"item_cost": {
 					"6685": 1
 				},
 				"qty_per_kill": 0.6

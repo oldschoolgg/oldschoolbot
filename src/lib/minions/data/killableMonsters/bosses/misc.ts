@@ -1540,6 +1540,16 @@ export const miscBossKillables: KillableMonster[] = [
 		},
 		itemCost: [
 			{
+				itemCost: new Bank().add('Cosmic rune').add('Soul rune'),
+				qtyPerMinute: 0.5,
+				isRuneCost: true
+			},
+			{
+				itemCost: new Bank().add('Fire rune', 7).add('Soul rune', 2),
+				qtyPerKillRange: [8, 12],
+				isRuneCost: true
+			},
+			{
 				itemCost: new Bank().add('Saradomin brew(4)'),
 				qtyPerKill: 0.6
 			},
