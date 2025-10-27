@@ -14,7 +14,7 @@ function log(msg: string) {
 	console.log(`	[${BOT_TYPE} - Execute SQL] ${msg}`);
 }
 
-for (const file of ['extensions', 'functions', 'check_constraints', 'indexes']) {
+for (const file of ['extensions', 'functions', 'check_constraints', 'indexes', 'exec']) {
 	const sql = readFileSync(path.join(process.cwd(), `./prisma/sql/${file}.sql`), 'utf8');
 	const start = performance.now();
 	await client.query(sql);

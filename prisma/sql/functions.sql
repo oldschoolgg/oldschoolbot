@@ -54,3 +54,15 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_recent_cl_array()
+RETURNS void AS
+$$
+BEGIN
+    UPDATE users
+    SET "cl_array" = ARRAY(
+        SELECT jsonb_object_keys("collectionLogBank")::int
+    )
+    WHERE last_command_date > now() - INTERVAL '1 week';
+END;
+$$ LANGUAGE plpgsql;
