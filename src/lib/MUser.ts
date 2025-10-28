@@ -118,7 +118,13 @@ const USER_DEFAULTS = {
 	completed_ca_task_ids: [],
 	store_bitfield: [],
 	cl_array: [],
-	completed_achievement_diaries: []
+	completed_achievement_diaries: [],
+	finished_quest_ids: [],
+	monkeys_fought: [],
+	unlocked_gear_templates: [],
+	unlocked_blueprints: [],
+	disabled_inventions: [],
+	disabled_portent_ids: []
 } satisfies Partial<User>;
 
 type HasDiaryRegion =
