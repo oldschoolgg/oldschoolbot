@@ -102,6 +102,25 @@ import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
+const USER_DEFAULTS = {
+	slayer_unlocks: [],
+	slayer_blocked_ids: [],
+	badges: [],
+	bitfield: [],
+	temp_cl: {},
+	favoriteItems: [],
+	favorite_alchables: [],
+	favorite_food: [],
+	favorite_bh_seeds: [],
+	attack_style: [],
+	combat_options: [],
+	slayer_autoslay_options: [],
+	completed_ca_task_ids: [],
+	store_bitfield: [],
+	cl_array: [],
+	completed_achievement_diaries: []
+} satisfies Partial<User>;
+
 type HasDiaryRegion =
 	| 'ardougne'
 	| 'desert'
@@ -513,7 +532,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 	}
 
 	public _updateRawUser(rawUser: User) {
-		this.user = rawUser;
+		this.user = { ...USER_DEFAULTS, ...rawUser };
 		this.updateProperties();
 	}
 
@@ -1497,7 +1516,7 @@ async function srcMUserFetch(userID: string) {
 			delete user[key];
 		}
 	}
-	return new MUserClass(user);
+	return new MUserClass({ ...USER_DEFAULTS, ...user });
 }
 
 global.mUserFetch = srcMUserFetch;
