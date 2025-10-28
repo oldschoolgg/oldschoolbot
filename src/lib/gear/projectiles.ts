@@ -35,5 +35,4 @@ export const projectiles = {
 		weapons: resolveItems(['Heavy ballista'])
 	}
 } as const;
-
 export type ProjectileType = keyof typeof projectiles;

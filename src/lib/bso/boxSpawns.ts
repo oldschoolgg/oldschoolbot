@@ -217,7 +217,6 @@ const collectionLogChallenge: Challenge = async (msg: Message): Promise<User | n
 // 			time: Time.Second * 10
 // 		});
 // 		collected.on('collect', a => {
-// 			console.log(a);
 // 			winner = a.users.cache.first();
 // 		});
 // 		await sleep(Time.Second * 10);

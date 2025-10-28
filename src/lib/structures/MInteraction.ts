@@ -16,6 +16,7 @@ import {
 } from 'discord.js';
 import { omit } from 'remeda';
 
+import { command_name_enum } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
 import { SILENT_ERROR } from '@/lib/constants.js';
@@ -72,7 +73,10 @@ export class MInteraction {
 		return compressMahojiArgs(cmdOpts);
 	}
 
-	public getChatInputCommandOptions() {
+	public getChatInputCommandOptions(command: command_name_enum) {
+		if (([command_name_enum.bank, command_name_enum.bs] as command_name_enum[]).includes(command)) {
+			return undefined;
+		}
 		return MInteraction.getChatInputCommandOptions(this.interaction);
 	}
 

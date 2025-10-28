@@ -41,6 +41,16 @@ SET ${u.cl_array} = (
 WHERE ${u.id} = '${userID}';`,
 	sumOfAllCLItems: (clItems: number[]) =>
 		`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`,
+	updateUserLastCommandDate: ({ userId }: { userId: string }) => {
+		if (Number.isNaN(Number(userId))) {
+			throw new Error(`Invalid userId passed to updateUserLastCommandDate: ${userId}`);
+		}
+		return prisma.$executeRawUnsafe(`
+SET LOCAL synchronous_commit = OFF;
+UPDATE USERS
+SET last_command_date = now()
+WHERE id = '${userId}'`);
+	},
 	...RawBSOSQL
 };
 

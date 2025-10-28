@@ -321,13 +321,8 @@ export const tickers: {
 		startupWait: Time.Minute * 20,
 		interval: Time.Hour * 13.55,
 		cb: async () => {
-			await prisma.$queryRawUnsafe(`INSERT INTO economy_item
-SELECT item_id::integer, SUM(qty)::bigint FROM
-(
-    SELECT id, (jdata).key AS item_id, (jdata).value::text::bigint AS qty FROM (select id, json_each(bank) AS jdata FROM users) AS banks
-)
-AS DATA
-GROUP BY item_id;`);
+			await prisma.$executeRaw`INSERT INTO economy_item_banks (bank)
+VALUES (get_economy_bank());`;
 		}
 	},
 	{

@@ -484,7 +484,7 @@ model User {
 
   bso_mystery_trail_current_step_id Int?
 
-  store_bitfield Int[]
+  store_bitfield Int[] @default([])
 
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
@@ -518,7 +518,7 @@ model User {
 
   skills_divination                BigInt    @default(0) @map("skills.divination")
   guthixian_cache_boosts_available Int       @default(0)
-  disabled_portent_ids             Int[]
+  disabled_portent_ids             Int[]     @default([])
   portent                          Portent[]
 
   smokey_lottery_tickets          Json?     @db.Json
@@ -823,6 +823,15 @@ model EconomyItem {
 
   @@id([item_id, date])
   @@map("economy_item")
+}
+
+model EconomyItemBanks {
+  id   Int      @id @default(autoincrement())
+  date DateTime @default(now())
+
+  bank Json @db.JsonB
+
+  @@map("economy_item_banks")
 }
 
 model LastManStandingGame {
@@ -1892,9 +1901,9 @@ enum JsonBankType {
 }
 
 model JsonBank {
-  id      Int           @id @default(autoincrement())
+  id      Int          @id @default(autoincrement())
   user_id String
-  type    TableBankType
+  type    JsonBankType
 
   bank Json @db.JsonB
 

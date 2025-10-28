@@ -2,7 +2,6 @@ import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
 
 import {
-	cleanUsername,
 	formatDuration,
 	PerkTier,
 	removeFromArr,
@@ -247,8 +246,7 @@ async function globalButtonInteractionHandler({
 		};
 	}
 
-	const userNameToInsert = cleanUsername(interaction.user.username);
-	const user = await mUserFetch(userID, { username: userNameToInsert });
+	const user = await mUserFetch(userID);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
