@@ -411,7 +411,10 @@ async function openLb(interaction: MInteraction, name: string, ironmanOnly: bool
 	}
 
 	if (entityID === -1) {
-		return `That's not a valid openable item! You can check: ${allOpenables.map(i => i.name).join(', ')}.`;
+		return `That's not a valid openable item! You can check: ${allOpenables
+			.map(i => i.name)
+			.join(', ')
+			.slice(0, 1900)}.`;
 	}
 
 	const list = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(
