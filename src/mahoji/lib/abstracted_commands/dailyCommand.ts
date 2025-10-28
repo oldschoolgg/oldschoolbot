@@ -34,6 +34,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	const bonuses = [];
 
 	let coinsToGive = loot.amount('Coins');
+	const hasSkipper = user.usingPet('Skipper') || user.bank.has('Skipper');
 
 	if (isWeekend()) {
 		coinsToGive *= 2;
@@ -69,6 +70,11 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 
 	if (user.isIronman) {
 		coinsToGive = 0;
+	}
+
+	if (hasSkipper && coinsToGive > 0) {
+		coinsToGive = Math.floor(coinsToGive * 1.5);
+		bonuses.push('<:skipper:755853421801766912>');
 	}
 
 	loot.set('Coins', Math.floor(coinsToGive));

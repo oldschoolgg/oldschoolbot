@@ -239,7 +239,7 @@ export const sellCommand = defineCommand({
 		const hasSkipper = user.usingPet('Skipper') || user.bank.has('Skipper');
 		let taxRatePercent = 25;
 		if (hasSkipper) {
-			taxRatePercent -= 5;
+			taxRatePercent = Math.max(0, taxRatePercent - 15);
 		}
 
 		const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
