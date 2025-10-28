@@ -1,11 +1,9 @@
-import { bsoDeprecatedActivities } from '@/lib/bso/bsoConstants.js';
-
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
 import * as dotenv from 'dotenv';
-import { convertLVLtoXP, resolveItems } from 'oldschooljs';
+import { convertLVLtoXP } from 'oldschooljs';
 import * as z from 'zod';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
@@ -506,43 +504,6 @@ export const SILENT_ERROR = 'SILENT_ERROR';
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export const projectiles = {
-	arrow: {
-		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
-		savedByAvas: true,
-		weapons: resolveItems(['Twisted bow'])
-	},
-	ogreArrow: {
-		items: resolveItems(['Ogre Arrow']),
-		savedByAvas: true,
-		weapons: resolveItems(['Ogre bow'])
-	},
-	bolt: {
-		items: resolveItems([
-			'Silver bolts',
-			'Runite bolts',
-			'Dragon bolts',
-			'Diamond bolts (e)',
-			'Diamond dragon bolts (e)',
-			'Ruby dragon bolts (e)'
-		]),
-		savedByAvas: true,
-		weapons: resolveItems([
-			'Armadyl crossbow',
-			'Dragon hunter crossbow',
-			'Dragon crossbow',
-			'Zaryte crossbow',
-			'Rune crossbow'
-		])
-	},
-	javelin: {
-		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin', 'Obsidian javelin']),
-		savedByAvas: false,
-		weapons: resolveItems(['Heavy ballista'])
-	}
-} as const;
-export type ProjectileType = keyof typeof projectiles;
-
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
 export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
@@ -625,5 +586,12 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 	activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 	activity_type_enum.Revenants, // This is now under monsterActivity
 	activity_type_enum.KourendFavour, // Kourend favor activity was removed
-	...bsoDeprecatedActivities
+
+	// BSO
+	activity_type_enum.BossEvent,
+	activity_type_enum.TrickOrTreat,
+	activity_type_enum.HalloweenMiniMinigame,
+	activity_type_enum.Mortimer,
+	activity_type_enum.BirthdayCollectIngredients,
+	activity_type_enum.SnoozeSpellActive
 ];

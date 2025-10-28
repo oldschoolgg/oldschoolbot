@@ -53,13 +53,14 @@ import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGe
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
+import { BitField, MAX_LEVEL } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { CommandResponseValue } from '@/lib/discord/index.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
+import { projectiles } from '@/lib/gear/projectiles.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';

@@ -6,8 +6,9 @@ import { calcPercentOfNum, Emoji, formatDuration, increaseNumByPercent, sumArr, 
 import { Bank, type ItemBank, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
-import { BitField, projectiles } from '@/lib/constants.js';
+import { BitField } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { projectiles } from '@/lib/gear/projectiles.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import type { BlowpipeData } from '@/lib/minions/types.js';
 import type { Gear } from '@/lib/structures/Gear.js';

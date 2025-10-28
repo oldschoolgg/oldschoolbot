@@ -1,6 +1,6 @@
 import { resolveItems } from 'oldschooljs';
 
-import type { ProjectileType } from '@/lib/constants.js';
+import type { ProjectileType } from '@/lib/gear/projectiles.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 
 export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
