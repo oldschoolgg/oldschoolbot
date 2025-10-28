@@ -182,7 +182,7 @@ export const sacrificeCommand = defineCommand({
 			}
 		}
 		if (hasSkipper) {
-			str += `\n\n<:skipper:755853421801766912> Skipper appreciates your generous donation, boosting its value by 30%.`;
+			str += `\n\n<:skipper:755853421801766912>  Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.`;
 		}
 
 		return `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(
