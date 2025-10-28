@@ -27,7 +27,7 @@ export const aerialFishingTask: MinionTask = {
 		let molchPearls = 0;
 
 		// Caught fish and molch pearls received formula
-		const maxRoll = (currentFishLevel * 2 + currentHuntLevel) / 3;
+		const maxRoll = Math.ceil((currentFishLevel * 2 + currentHuntLevel) / 3);
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
