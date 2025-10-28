@@ -22,12 +22,6 @@ export async function tradePlayerItems(
 		return { success: false, message: `${recipient.usernameOrMention} is busy.` };
 	}
 
-	// Sender likely already busy from using a command.
-	if (!sender.isBusy) {
-		sender.modifyBusy('lock', `Trading items with ${recipient.username}`);
-	}
-	recipient.modifyBusy('lock', `Trading items with ${sender.username}`);
-
 	const itemsToSend = _itemsToSend ? _itemsToSend.clone() : new Bank();
 	const itemsToReceive = _itemsToReceive ? _itemsToReceive.clone() : new Bank();
 
@@ -98,9 +92,6 @@ export async function tradePlayerItems(
 					items_received: itemsToReceive.toString()
 				});
 				return { success: false, message: 'Temporary error, please try again.' };
-			} finally {
-				sender.modifyBusy('unlock', `Finished trading items with ${recipient.username}`);
-				recipient.modifyBusy('unlock', `Finished trading items with ${sender.username}`);
 			}
 		});
 	});

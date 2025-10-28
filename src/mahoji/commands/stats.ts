@@ -50,7 +50,7 @@ export const statsCommand = defineCommand({
 			const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : (options.type ?? null);
 			return {
 				embeds: [
-					statsEmbed({
+					await statsEmbed({
 						username: options.username,
 						color: 7_981_338,
 						player,

@@ -1,4 +1,3 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
@@ -7,7 +6,7 @@ import { zealOutfitBoost } from '@/tasks/minions/PrayerActivity/offeringActivity
 
 export const buryingTask: MinionTask = {
 	type: 'Burying',
-	async run(data: BuryingActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: BuryingActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { boneID, quantity, channelID } = data;
 
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
@@ -20,7 +19,7 @@ export const buryingTask: MinionTask = {
 
 		if (zealOutfitAmount > 0) {
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(zealOutfitChance)) {
+				if (rng.percentChance(zealOutfitChance)) {
 					zealBonesSaved++;
 				}
 			}

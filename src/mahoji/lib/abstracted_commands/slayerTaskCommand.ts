@@ -2,6 +2,7 @@ import { randInt } from '@oldschoolgg/rng';
 import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
 import { EItem, Monsters } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { slayerActionButtons } from '@/lib/slayer/slayerButtons.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -277,7 +278,7 @@ export async function slayerSkipTaskCommand({
 	if (slayerPoints < cost) {
 		return `You need ${cost} points to ${block ? 'block' : 'cancel'}, you only have: ${slayerPoints.toLocaleString()}.`;
 	}
-	const updateData: Parameters<typeof user.update>[0] = {
+	const updateData: Prisma.UserUncheckedUpdateInput = {
 		slayer_points: {
 			decrement: cost
 		}

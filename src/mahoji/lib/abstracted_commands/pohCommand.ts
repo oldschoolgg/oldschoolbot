@@ -49,10 +49,12 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 	const userBank = user.bank;
 	if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
 		if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
-			await user.removeItemsFromBank(new Bank().add('Hosidius blueprints'));
-			await user.update({
-				bitfield: {
-					push: selectedKit.bitfield
+			await user.transactItems({
+				itemsToRemove: new Bank().add('Hosidius blueprints'),
+				otherUpdates: {
+					bitfield: {
+						push: selectedKit.bitfield
+					}
 				}
 			});
 		} else {

@@ -1,13 +1,11 @@
-import { randInt } from '@oldschoolgg/rng';
 import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import type { SkillNameType } from '@/lib/skilling/types.js';
+import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const togTask: MinionTask = {
 	type: 'TearsOfGuthix',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { channelID, duration } = data;
 
 		await user.incrementMinigameScore('tears_of_guthix', 1);
@@ -18,12 +16,14 @@ export const togTask: MinionTask = {
 		// Find lowest level skill
 		let lowestXp = Object.values(user.skillsAsXP)[0];
 		let lowestSkill = Object.keys(user.skillsAsXP)[0] as SkillNameType;
-		Object.entries(user.skillsAsXP).forEach(([skill, xp]) => {
-			if (xp < lowestXp) {
+		for (const skill of SkillsArray) {
+			const lvl = user.skillsAsLevels[skill];
+			const xp = user.skillsAsXP[skill];
+			if (lvl < user.skillsAsLevels[lowestSkill] || (lvl === user.skillsAsLevels[lowestSkill] && xp < lowestXp)) {
+				lowestSkill = skill;
 				lowestXp = xp;
-				lowestSkill = skill as SkillNameType;
 			}
-		});
+		}
 
 		// Calculate number of tears collected
 		// QP = Game length in ticks
@@ -32,7 +32,7 @@ export const togTask: MinionTask = {
 		const streams = Math.floor(qp / 15);
 		let tears = 0;
 		for (let stream = 0; stream < streams; stream++) {
-			const percentCollected = randInt(80, 100); // Collect 80 - 100% of each stream, depending on RNG of spawn and Runelite
+			const percentCollected = rng.randInt(80, 100); // Collect 80 - 100% of each stream, depending on RNG of spawn and Runelite
 			tears += Math.ceil(15 * (percentCollected / 100));
 		}
 
@@ -47,7 +47,7 @@ export const togTask: MinionTask = {
 		let xpToGive = tears * scaledXPperTear;
 
 		// 10% boost for Lumbridge&Draynor Hard
-		const [hasDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.hard);
+		const hasDiary = user.hasDiary('lumbridge&draynor.hard');
 		if (hasDiary) xpToGive = increaseNumByPercent(xpToGive, 10);
 
 		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration, source: 'TearsOfGuthix' });

@@ -1,4 +1,4 @@
-import { Bank, LootTable } from 'oldschooljs';
+import { LootTable } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -21,10 +21,7 @@ export const camdozaalSmithingTask: MinionTask = {
 		const { quantity, channelID, duration } = data;
 
 		// Count loot received during trip
-		const loot = new Bank();
-		for (let i = 0; i < quantity; i++) {
-			loot.add(barroniteDepositLootTable.roll());
-		}
+		const loot = barroniteDepositLootTable.roll(quantity);
 
 		// Add up the xp from the trip
 		const smithingXpReceived = quantity * 30;

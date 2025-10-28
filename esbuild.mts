@@ -8,7 +8,6 @@ const external = [
 	'discord.js',
 	'@prisma/robochimp',
 	'dotenv',
-	'micromatch',
 	'piscina',
 	'node:*',
 	'pglite-prisma-adapter',

@@ -2,9 +2,7 @@ import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID } from 'oldschooljs';
 
-import { userhasDiaryTier } from '@/lib/diaries.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
-import { DiaryID } from '@/lib/minions/types.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
 import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
@@ -227,8 +225,7 @@ export const mineCommand = defineCommand({
 			}
 		}
 
-		const hasKaramjaMedium =
-			ore.name === 'Gem rock' ? (await userhasDiaryTier(user, [DiaryID.Karamja, 'medium']))[0] : false;
+		const hasKaramjaMedium = user.hasDiary('karamja.medium');
 		const res = determineMiningTrip({
 			gearBank: user.gearBank,
 			ore,

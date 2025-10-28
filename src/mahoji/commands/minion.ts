@@ -1,11 +1,10 @@
-import { randArrItem } from '@oldschoolgg/rng';
-import { formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
+import { BitField, BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
 import { skillOption } from '@/lib/discord/index.js';
@@ -46,8 +45,6 @@ const patMessages = [
 	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
-
-const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
 	const roboChimpUser = await roboChimpUserFetch(user.id);
@@ -421,7 +418,7 @@ export const minionCommand = defineCommand({
 			description: 'View your minions mastery.'
 		}
 	],
-	run: async ({ user, options, interaction }) => {
+	run: async ({ user, options, interaction, rng }) => {
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
@@ -547,7 +544,7 @@ export const minionCommand = defineCommand({
 			return dailyCommand(interaction, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
-		if (options.pat) return randomPatMessage(user.minionName);
+		if (options.pat) return rng.pick(patMessages).replace('{name}', user.minionName);
 		if (options.blowpipe) {
 			return blowpipeCommand(
 				user,

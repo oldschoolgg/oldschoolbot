@@ -334,8 +334,10 @@ export async function onMessage(msg: Message) {
 export async function onMinionActivityFinish(activity: ActivityTaskData) {
 	try {
 		const lastSyncTime = lastRoboChimpSyncCache.get(activity.userID) ?? 0;
+		const hasBeen30MinsSinceLast = Date.now() - lastSyncTime > Time.Minute * 30;
+		const botJustStarted = process.uptime() < 60 * 10;
 		// Max once per 30 minutes
-		if (Date.now() - lastSyncTime > Time.Minute * 30) {
+		if (!botJustStarted && hasBeen30MinsSinceLast) {
 			lastRoboChimpSyncCache.set(activity.userID, Date.now());
 			Logging.logDebug(`Syncing RoboChimp for user ${activity.userID}`);
 			await roboChimpSyncData(await mUserFetch(activity.userID));

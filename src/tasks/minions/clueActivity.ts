@@ -16,7 +16,10 @@ export const clueTask: MinionTask = {
 		} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
 
 		// Add the number of clues found in implings to CL. Must be on completion to avoid gaming.
-		if (implingClues) await user.addItemsToCollectionLog(new Bank().add(clueTier.scrollID, implingClues));
+		if (implingClues) {
+			await user.addItemsToCollectionLog({ itemsToAdd: new Bank().add(clueTier.scrollID, implingClues) });
+		}
+
 		const loot = new Bank().add(clueTier.id, quantity);
 		await user.transactItems({
 			collectionLog: true,

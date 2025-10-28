@@ -101,20 +101,22 @@ export const offerCommand = defineCommand({
 				itemsToRemove: new Bank().add(whichOfferable.itemID, quantity)
 			});
 			if (whichOfferable.economyCounter) {
-				const newStats = await user.statsUpdate({
+				await user.statsUpdate({
 					[whichOfferable.economyCounter]: {
 						increment: quantity
 					}
-				}); // Notify uniques
+				});
+				// Notify uniques
 				if (whichOfferable.uniques) {
-					const current = newStats[whichOfferable.economyCounter];
+					const currentCounter = await user.fetchUserStat(whichOfferable.economyCounter);
+
 					notifyUniques(
 						user,
 						whichOfferable.name,
 						whichOfferable.uniques,
 						itemsAdded,
 						quantity,
-						current + randInt(1, quantity)
+						currentCounter + randInt(1, quantity)
 					);
 				}
 			}

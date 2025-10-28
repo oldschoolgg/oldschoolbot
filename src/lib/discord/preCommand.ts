@@ -22,14 +22,15 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 	Logging.logDebug(`${user.logName} ran command: ${command.name}`, {
 		...interaction.getDebugInfo()
 	});
+	const commandName: command_name_enum = command.name as command_name_enum;
 	prisma.commandUsage
 		.create({
 			data: {
 				user_id: BigInt(user.id),
 				channel_id: BigInt(interaction.channelId),
 				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
-				command_name: command.name as command_name_enum,
-				args: interaction.getChatInputCommandOptions(),
+				command_name: commandName,
+				args: interaction.getChatInputCommandOptions(commandName),
 				inhibited: false,
 				is_mention_command: false
 			}

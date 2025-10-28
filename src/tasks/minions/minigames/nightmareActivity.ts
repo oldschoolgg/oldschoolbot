@@ -69,7 +69,7 @@ export const nightmareTask: MinionTask = {
 		}
 
 		// Fix purple items on solo kills
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
+		const { previousCL, itemsAdded } = await user.transactItems({ itemsToAdd: userLoot, collectionLog: true });
 
 		announceLoot({
 			user,

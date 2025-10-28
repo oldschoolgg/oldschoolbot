@@ -2,7 +2,6 @@ import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
@@ -124,7 +123,7 @@ export const stealCommand = defineCommand({
 		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (stealable.type === 'pickpockable') {
-			const [hasArdyHard] = await userhasDiaryTier(user, ArdougneDiary.hard);
+			const hasArdyHard = user.hasDiary('ardougne.hard');
 			if (hasArdyHard) {
 				boosts.push('+10% chance of success from Ardougne Hard diary');
 			}

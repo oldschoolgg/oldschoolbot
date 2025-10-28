@@ -1,7 +1,6 @@
 import { formatDuration, reduceNumByPercent, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { hasSkillReqs, isValidSkill } from '@/lib/util/smallUtils.js';
 
@@ -156,7 +155,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	}
 
 	if (buyable.inputItem) {
-		const [hasDiary] = await userhasDiaryTier(user, WesternProv.hard);
+		const hasDiary = user.hasDiary('westernprovinces.hard');
 		if (!hasDiary) {
 			return "You can't buy this because you haven't completed the Western Provinces hard diary.";
 		}
