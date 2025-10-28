@@ -92,7 +92,8 @@ const USER_DEFAULTS = {
 	completed_ca_task_ids: [],
 	store_bitfield: [],
 	cl_array: [],
-	completed_achievement_diaries: []
+	completed_achievement_diaries: [],
+	finished_quest_ids: []
 } satisfies Partial<User>;
 
 type HasDiaryRegion =
