@@ -5,6 +5,7 @@ import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.j
 import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { type AnyCommand, type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
+import { RawSQL } from '@/lib/rawSql.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 
 export async function rawCommandHandlerInner({
@@ -29,10 +30,9 @@ export async function rawCommandHandlerInner({
 			}
 		}
 	}
-	const user = await mUserFetch(interaction.user.id, {
-		last_command_date: new Date(),
-		username: globalClient.users.cache.get(interaction.user.id)?.username
-	});
+	const user = await mUserFetch(interaction.user.id);
+
+	RawSQL.updateUserLastCommandDate({ userId: interaction.user.id }).catch(console.error);
 
 	if (user.user.completed_achievement_diaries.length === 0) {
 		user.syncCompletedAchievementDiaries().catch(console.error);

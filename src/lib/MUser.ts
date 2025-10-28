@@ -1262,16 +1262,6 @@ async function srcMUserFetch(userID: string) {
 			delete user[key];
 		}
 	}
-
-	// const user2 = await prisma.user.upsert({
-	// 	where: { id: userID },
-	// 	update: {},
-	// 	create: { id: userID }
-	// });
-
-	// console.log(deepEqual(user, user2));
-	// console.log(omit(user, ['bank', 'collectionLogBank', 'gear.range', 'gear.melee', 'gear.mage', 'gear.wildy']));
-
 	return new MUserClass(user);
 }
 
