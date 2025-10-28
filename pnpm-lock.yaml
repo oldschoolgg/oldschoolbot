@@ -28,6 +28,9 @@ importers:
       '@oldschoolgg/rng':
         specifier: workspace:*
         version: link:packages/rng
+      '@oldschoolgg/schemas':
+        specifier: workspace:*
+        version: link:packages/schemas
       '@oldschoolgg/spritesheet':
         specifier: workspace:*
         version: link:packages/spritesheet
@@ -286,6 +289,12 @@ importers:
         specifier: ^6.16.3
         version: 6.16.3(magicast@0.3.5)(typescript@5.9.2)
 
+  packages/schemas:
+    dependencies:
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
+
   packages/spritesheet:
     dependencies:
       fast-glob:
@@ -321,9 +330,6 @@ importers:
       math-expression-evaluator:
         specifier: ^1.3.14
         version: 1.4.0
-      zod:
-        specifier: ^4.1.12
-        version: 4.1.12
     devDependencies:
       '@types/math-expression-evaluator':
         specifier: ^1.2.2
