@@ -1505,9 +1505,9 @@ enum JsonBankType {
 }
 
 model JsonBank {
-  id      Int           @id @default(autoincrement())
+  id      Int          @id @default(autoincrement())
   user_id String
-  type    TableBankType
+  type    JsonBankType
 
   bank Json @db.JsonB
 
