@@ -2,7 +2,7 @@ import { Bank, EItem } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { mixCommand } from '@/mahoji/commands/mix.js';
-import { mockClient } from '../util.js';
+import { mockClient } from './util.js';
 
 describe('Amulet of Chemistry', async () => {
 	const client = await mockClient();
