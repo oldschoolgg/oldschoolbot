@@ -72,6 +72,7 @@ export const sacrificeCommand = defineCommand({
 		const sacVal = Number(user.user.sacrificedValue);
 		const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 		const sacUniqVal = sacrificedBank !== null ? Object.keys(sacrificedBank).length : 0;
+		const hasSkipper = user.usingPet('Skipper') || user.bank.has('Skipper');
 
 		// Show user sacrifice stats if no options are given for /sacrifice
 		if (!options.filter && !options.items && !options.search) {
@@ -137,6 +138,10 @@ export const sacrificeCommand = defineCommand({
 			}
 		}
 
+		if (hasSkipper) {
+			totalPrice = Math.floor(totalPrice * 1.3);
+		}
+
 		await interaction.confirmation(
 			`${user}, are you sure you want to sacrifice ${truncateString(bankToSac.toString(), 15000)}? This will add ${totalPrice.toLocaleString()} (${toKMB(
 				totalPrice
@@ -176,6 +181,10 @@ export const sacrificeCommand = defineCommand({
 				}
 			}
 		}
+		if (hasSkipper) {
+			str += `\n\n<:skipper:755853421801766912>  Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.`;
+		}
+
 		return `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(
 			totalPrice
 		)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`;
