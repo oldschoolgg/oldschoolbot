@@ -30,8 +30,7 @@ CREATE INDEX IF NOT EXISTS users_clarray_gin
 ON users USING gin (cl_array gin__int_ops);
 
 CREATE INDEX IF NOT EXISTS users_bitfield_gin
-ON users USING gin (bitfield gin__int_ops)
-WHERE CARDINALITY(bitfield) > 0;
+ON users USING gin (bitfield gin__int_ops);
 
 CREATE INDEX IF NOT EXISTS users_rsn_lower_idx
 ON users ((LOWER("RSN")))
