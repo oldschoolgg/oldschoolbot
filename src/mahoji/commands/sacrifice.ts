@@ -180,7 +180,7 @@ export const sacrificeCommand = defineCommand({
 			}
 			if (hammyLoot.length > 0) {
 				await user.transactItems({ itemsToAdd: hammyLoot, collectionLog: true });
-				str += `\n\nHammy squeaks happily as it joins you! You received ${hammyLoot}.`;
+				str += `\n\nA small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes. ${hammyLoot}.`;
 				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.badgedUsername}** just received ${hammyLoot} while sacrificing!`
