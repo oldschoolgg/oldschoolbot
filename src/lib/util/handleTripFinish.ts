@@ -9,7 +9,7 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
-import { handlePassiveImplings } from '@/lib/implings.js';
+import { handlePassiveImplings, rollPassiveImplingLoot } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
@@ -33,6 +33,7 @@ import {
 	tearsOfGuthixIronmanReqs,
 	tearsOfGuthixSkillReqs
 } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const collectors = new Map<string, MessageCollector>();
 
@@ -79,10 +80,27 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const imp = handlePassiveImplings(user, data);
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
-				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
+				const shouldAutoOpen = user.bitfield.includes(BitField.AutoOpenPassiveImplings);
+				let rewards = imp.bank;
+				let message = `Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}`;
+				if (shouldAutoOpen) {
+					const jars = imp.bank.clone();
+					const openedLoot = rollPassiveImplingLoot(jars);
+					const lootSummary = openedLoot.length > 0 ? openedLoot : 'nothing';
+					message += ` (${jars}), they were opened automatically and you received: ${lootSummary}`;
+					rewards = openedLoot;
+					await user.addItemsToCollectionLog({ itemsToAdd: jars });
+					await addToOpenablesScores(user, jars);
+				} else {
+					message += `, you received: ${imp.bank}`;
+				}
+				if (imp.missed.length > 0) {
+					message += `. Missed: ${imp.missed}`;
+				}
+				messages.push(message);
 				await user.statsBankUpdate('passive_implings_bank', imp.bank);
 				return {
-					itemsToAddWithCL: imp.bank
+					itemsToAddWithCL: rewards
 				};
 			}
 			return {};
