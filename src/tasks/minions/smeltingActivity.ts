@@ -1,12 +1,11 @@
-import { percentChance } from '@oldschoolgg/rng';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',
-	async run(data: SmeltingActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: SmeltingActivityTaskOptions, { user, handleTripFinish, rng }) {
 		let { barID, quantity, channelID, duration, blastf } = data;
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
@@ -16,7 +15,7 @@ export const smeltingTask: MinionTask = {
 		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (!percentChance(bar.chanceOfFail)) {
+				if (!rng.percentChance(bar.chanceOfFail)) {
 					newQuantity++;
 				}
 			}
@@ -25,7 +24,7 @@ export const smeltingTask: MinionTask = {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
+		if (bar.id === EItem.GOLD_BAR && user.hasEquipped('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 
@@ -41,9 +40,7 @@ export const smeltingTask: MinionTask = {
 			str += `\n\n${oldQuantity - quantity} ${bar.name}s failed to smelt.`;
 		}
 
-		const loot = new Bank({
-			[bar.id]: quantity
-		});
+		const loot = new Bank().add(bar.id, quantity);
 
 		await user.transactItems({
 			collectionLog: true,

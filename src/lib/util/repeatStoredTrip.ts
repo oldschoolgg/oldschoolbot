@@ -69,6 +69,7 @@ import type {
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
+import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
 
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
@@ -532,9 +533,16 @@ const tripHandlers = {
 	},
 	[activity_type_enum.PuroPuro]: {
 		commandName: 'activities',
-		args: (data: PuroPuroActivityTaskOptions) => ({
-			puro_puro: { implingTier: data.implingTier || '', dark_lure: data.darkLure }
-		})
+		args: (data: PuroPuroActivityTaskOptions) => {
+			const implingName =
+				(data.implingTier !== null
+					? puroOptions.find(option => option.tier === data.implingTier)?.name
+					: null) ?? puroOptions[0].name;
+
+			return {
+				puro_puro: { impling: implingName, dark_lure: data.darkLure }
+			};
+		}
 	},
 	[activity_type_enum.Questing]: {
 		commandName: 'activities',

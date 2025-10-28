@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Emoji, makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
@@ -62,12 +61,6 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		minionIsBusy ? [] : fetchPinnedTrips(user.id),
 		isUsersDailyReady(user)
 	]);
-
-	if (user.user.cached_networth_value === null || roll(100)) {
-		await user.update({
-			cached_networth_value: (await user.calculateNetWorth()).value
-		});
-	}
 
 	if (!user.hasMinion) {
 		return {

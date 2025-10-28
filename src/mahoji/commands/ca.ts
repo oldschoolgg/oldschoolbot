@@ -80,7 +80,7 @@ export const caCommand = defineCommand({
 			const reqData = await Requirements.fetchRequiredData(user);
 			for (const task of tasksToCheck) {
 				if ('requirements' in task) {
-					const { hasAll } = task.requirements.check(reqData);
+					const { hasAll } = await task.requirements.check(reqData);
 					if (hasAll) {
 						completedTasks.push(task);
 					}

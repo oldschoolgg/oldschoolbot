@@ -447,12 +447,11 @@ export async function nightmareZoneShopCommand(
 
 	await user.transactItems({
 		collectionLog: true,
-		itemsToAdd: loot
-	});
-
-	await user.update({
-		nmz_points: {
-			decrement: cost
+		itemsToAdd: loot,
+		otherUpdates: {
+			nmz_points: {
+				decrement: cost
+			}
 		}
 	});
 
@@ -480,17 +479,17 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 	if (!bank.has(item.input.id)) {
 		return `You don't have a ${item.input.name}.`;
 	}
-	await user.update({
-		nmz_points: {
-			decrement: imbueCost
-		}
-	});
 	const cost = new Bank().add(item.input.id);
 	const loot = new Bank().add(item.output.id);
 	await user.transactItems({
 		itemsToAdd: loot,
 		itemsToRemove: cost,
-		collectionLog: true
+		collectionLog: true,
+		otherUpdates: {
+			nmz_points: {
+				decrement: imbueCost
+			}
+		}
 	});
 	return `Added ${loot} to your bank, removed ${imbueCost}x Nightmare Zone points and ${cost}.${
 		user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''

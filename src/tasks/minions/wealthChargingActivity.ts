@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
@@ -6,12 +5,12 @@ import { wealthInventorySize } from '@/mahoji/lib/abstracted_commands/chargeWeal
 
 export const wealthChargeTask: MinionTask = {
 	type: 'WealthCharging',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { quantity, channelID } = data;
 		let deaths = 0;
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
-			if (roll(9)) {
+			if (rng.roll(9)) {
 				deaths++;
 			} else {
 				for (let i = 0; i < wealthInventorySize; i++) {

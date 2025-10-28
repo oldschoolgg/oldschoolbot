@@ -1,14 +1,13 @@
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import { Bank, EItem, type Item, Items } from 'oldschooljs';
 
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 import { checkDegradeableItemCharges, degradeItem } from '../../lib/degradeableItems.js';
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
-	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { mixableID, quantity, zahur, wesley, channelID, duration } = data;
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
@@ -20,7 +19,7 @@ export const herbloreTask: MinionTask = {
 
 		// Special case for Lava scale shard
 		if (mixableItem.item.id === EItem.LAVA_SCALE_SHARD) {
-			const [hasWildyDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
+			const hasWildyDiary = user.hasDiary('wilderness.hard');
 			const currentHerbLevel = user.skillsAsLevels.herblore;
 			let scales = 0;
 			// Having 99 herblore gives a 98% chance to receive the max amount of shards
@@ -34,7 +33,7 @@ export const herbloreTask: MinionTask = {
 			} else {
 				// Math for if the user is using their minion to make lava scale shards
 				for (let i = 0; i < quantity; i++) {
-					scales += Math.floor((percentChance(maxShardChance) ? 6 : randInt(3, 6)) * diaryMultiplier);
+					scales += Math.floor((rng.percentChance(maxShardChance) ? 6 : rng.randInt(3, 6)) * diaryMultiplier);
 				}
 			}
 			outputQuantity = scales;

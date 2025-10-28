@@ -380,11 +380,14 @@ export async function degradeItem({
 			// Unequip and delete the users item.
 			const gear = { ...user.gear[degItem.setup].raw() };
 			gear[item.equipment!.slot] = null;
-			await user.update({
-				[`gear_${degItem.setup}`]: gear
-			});
 			// Give the user the uncharged version of their charged item.
-			await user.addItemsToBank({ items: refundItems, collectionLog: false });
+			await user.transactItems({
+				itemsToAdd: refundItems,
+				collectionLog: false,
+				otherUpdates: {
+					[`gear_${degItem.setup}`]: gear
+				}
+			});
 		} else if (hasInBank && degItem.itemsToRefundOnBreak) {
 			// If its in bank, just remove 1 from bank.
 			await user.transactItems({

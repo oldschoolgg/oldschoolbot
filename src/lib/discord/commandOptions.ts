@@ -278,7 +278,7 @@ export function defineCommandSrc<const T extends AnyArr<unknown>>(
 	return cmd as unknown as OSBMahojiCommand<AsOptArr<T>>;
 }
 
-type CommandResponseValue = string | CompatibleResponse | SpecialResponse;
+export type CommandResponseValue = string | CompatibleResponse | SpecialResponse;
 declare global {
 	var defineCommand: typeof defineCommandSrc;
 }

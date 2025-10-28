@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.js';
-import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/templeTrekking.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
 import type { GearRequirement } from '@/lib/structures/Gear.js';
@@ -85,7 +84,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		tripTime *= 1.15;
 	}
 
-	const [hasMoryHard] = await userhasDiaryTier(user, MorytaniaDiary.hard);
+	const hasMoryHard = user.hasDiary('morytania.hard');
 
 	if (hasMoryHard) {
 		boosts.push('15% for Morytania hard diary');
