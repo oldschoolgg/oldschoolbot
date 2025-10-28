@@ -1,11 +1,10 @@
-import { randArrItem } from '@oldschoolgg/rng';
-import { formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
+import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { AttachmentBuilder, bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
+import { BitField, BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
 import { skillOption } from '@/lib/discord/index.js';
@@ -20,7 +19,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { getKCByName } from '@/lib/util/getKCByName.js';
+import { getAllKillCounts, getKCByName } from '@/lib/util/getKCByName.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
@@ -46,8 +45,6 @@ const patMessages = [
 	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
-
-const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
 	const roboChimpUser = await roboChimpUserFetch(user.id);
@@ -289,10 +286,26 @@ export const minionCommand = defineCommand({
 					description: 'The monster/thing you want to check your KC of.',
 					required: true,
 					autocomplete: async (value: string) => {
-						return [...effectiveMonsters, ...Minigames, ...creatures]
+						const results = [...effectiveMonsters, ...Minigames, ...creatures]
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
+						const allOption = {
+							name: 'All killcounts (export to text file)',
+							value: 'all'
+						};
+						return [allOption, ...results].slice(0, 25);
 					}
+				},
+				{
+					type: 'String',
+					name: 'sort',
+					description: 'How to sort the exported KC list when using the all option.',
+					required: false,
+					choices: [
+						{ name: 'Alphabetical (A → Z)', value: 'alphabetical' },
+						{ name: 'Highest KC first', value: 'highest' },
+						{ name: 'Lowest KC first', value: 'lowest' }
+					]
 				}
 			]
 		},
@@ -405,7 +418,7 @@ export const minionCommand = defineCommand({
 			description: 'View your minions mastery.'
 		}
 	],
-	run: async ({ user, options, interaction }) => {
+	run: async ({ user, options, interaction, rng }) => {
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
@@ -476,6 +489,45 @@ export const minionCommand = defineCommand({
 		}
 
 		if (options.kc) {
+			if (options.kc.name?.toLowerCase() === 'all') {
+				const sort = options.kc.sort ?? 'alphabetical';
+				const sortDescriptions = {
+					alphabetical: 'alphabetically (A → Z)',
+					highest: 'by highest KC',
+					lowest: 'by lowest KC'
+				} as const;
+				const allKillCounts = await getAllKillCounts(user);
+				const sortedKillCounts = [...allKillCounts].sort((a, b) => {
+					if (sort === 'alphabetical') {
+						return a.name.localeCompare(b.name);
+					}
+					if (sort === 'highest') {
+						return b.amount - a.amount || a.name.localeCompare(b.name);
+					}
+					return a.amount - b.amount || a.name.localeCompare(b.name);
+				});
+
+				const lines = [
+					`Killcount export for ${user.rawUsername}`,
+					`Total entries: ${sortedKillCounts.length}`,
+					`Sorted ${sortDescriptions[sort]}`,
+					''
+				];
+				for (const entry of sortedKillCounts) {
+					const label = entry.type === 'Monster' ? entry.name : `${entry.name} [${entry.type}]`;
+					lines.push(`${label}: ${entry.amount.toLocaleString()}`);
+				}
+
+				const attachment = new AttachmentBuilder(Buffer.from(lines.join('\n')), {
+					name: `minion-kc-${user.id}.txt`
+				});
+
+				return {
+					content: `Exported ${sortedKillCounts.length.toLocaleString()} killcounts sorted ${sortDescriptions[sort]}.`,
+					files: [attachment]
+				};
+			}
+
 			const [kcName, kcAmount] = await getKCByName(user, options.kc.name);
 			if (!kcName) {
 				return "That's not a valid monster, minigame or hunting creature.";
@@ -492,7 +544,7 @@ export const minionCommand = defineCommand({
 			return dailyCommand(interaction, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
-		if (options.pat) return randomPatMessage(user.minionName);
+		if (options.pat) return rng.pick(patMessages).replace('{name}', user.minionName);
 		if (options.blowpipe) {
 			return blowpipeCommand(
 				user,

@@ -51,7 +51,8 @@ export const farmingCommand = defineCommand({
 					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity you want to plant.',
-					required: false
+					required: false,
+					min_value: 1
 				},
 				{
 					type: 'Boolean',

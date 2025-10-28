@@ -50,17 +50,17 @@ export function calcFishingTripResult({
 
 	if (fish.name === 'Barbarian fishing') {
 		for (let i = 0; i < quantity; i++) {
-			if (canGetSturgeon && rng.roll(sturgeonChance)) {
+			if (canGetSturgeon && rng.percentChance(100 / sturgeonChance)) {
 				xpReceived += 80;
 				leapingSturgeon += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
 				agilityXpReceived += 7;
 				strengthXpReceived += 7;
-			} else if (canGetSalmon && rng.roll(salmonChance)) {
+			} else if (canGetSalmon && rng.percentChance(100 / salmonChance)) {
 				xpReceived += 70;
 				leapingSalmon += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
 				agilityXpReceived += 6;
 				strengthXpReceived += 6;
-			} else if (rng.roll(leapingChance)) {
+			} else if (rng.percentChance(100 / leapingChance)) {
 				xpReceived += 50;
 				leapingTrout += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
 				agilityXpReceived += 5;

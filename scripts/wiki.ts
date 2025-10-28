@@ -131,6 +131,20 @@ function renderMonstersMarkdown() {
 				}
 			}
 
+			if (monster.degradeableItemUsage) {
+				const requiredDegradeables = monster.degradeableItemUsage.filter(du => du.required);
+				if (requiredDegradeables.length > 0) {
+					requirementsMarkdown.addLine('**Required Degradeable/Chargeable Items**');
+					for (const set of requiredDegradeables) {
+						requirementsMarkdown.addLine(
+							`${toTitleCase(set.gearSetup)} gear (one of): ${set.items
+								.map(i => `[[${name(i.itemID)}]]`)
+								.join(' or ')}`
+						);
+					}
+				}
+			}
+
 			return requirementsMarkdown.toString();
 		});
 

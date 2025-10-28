@@ -166,7 +166,7 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 	await interaction.confirmation(
 		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(cost * quantity).toLocaleString()} honour points?`
 	);
-	const newStats = await user.statsUpdate({
+	await user.statsUpdate({
 		honour_points: {
 			decrement: cost * quantity
 		},
@@ -189,7 +189,7 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${
 				user.minionName
 			}, just received a Pet penance queen from their ${formatOrdinal(
-				newStats.high_gambles
+				await user.fetchUserStat('high_gambles')
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}

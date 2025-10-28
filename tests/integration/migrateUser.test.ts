@@ -1,4 +1,4 @@
-import { randArrItem, randInt, shuffleArr } from '@oldschoolgg/rng';
+import { MathRNG, randArrItem, randInt, shuffleArr } from '@oldschoolgg/rng';
 import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
@@ -844,7 +844,7 @@ const allTableCommands: TestCommand[] = [
 			const quantity = 7;
 			const lmsStats = await getUsersLMSStats(user);
 
-			const result = calculateResultOfLMSGames(quantity, lmsStats);
+			const result = calculateResultOfLMSGames(MathRNG, quantity, lmsStats);
 
 			await global.prisma!.lastManStandingGame.createMany({
 				data: result.map(i => ({ ...i, user_id: BigInt(user.id), points: undefined }))

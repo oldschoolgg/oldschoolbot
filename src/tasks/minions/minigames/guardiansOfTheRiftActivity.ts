@@ -1,4 +1,3 @@
-import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { Events, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
@@ -32,11 +31,11 @@ const combinationalRunesArray: string[] = [
 
 export const guardiansOfTheRiftTask: MinionTask = {
 	type: 'GuardiansOfTheRift',
-	async run(data: GuardiansOfTheRiftActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: GuardiansOfTheRiftActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelID, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } = data;
 		const previousScore = await user.fetchMinigameScore('guardians_of_the_rift');
 		const { newScore } = await user.incrementMinigameScore('guardians_of_the_rift', quantity);
-		const kcForPet = randInt(previousScore, newScore);
+		const kcForPet = rng.randInt(previousScore, newScore);
 
 		const miningXP = quantity * 5 * minedFragments;
 		const craftingXP = quantity * 80 * barrierAndGuardian;
@@ -98,12 +97,12 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			const isElemental = i % 2 === 0;
 			if (isElemental) {
 				if (combinationRunes) {
-					rune = randArrItem(combinationalRunesArray);
+					rune = rng.pick(combinationalRunesArray);
 				} else {
-					rune = randArrItem(elementalRunesArray);
+					rune = rng.pick(elementalRunesArray);
 				}
 			} else {
-				rune = randArrItem(catalyticRunesArray);
+				rune = rng.pick(catalyticRunesArray);
 			}
 			const runeObj = Runecraft.Runes.find(
 				_rune => stringMatches(_rune.name, rune) || stringMatches(_rune.name.split(' ')[0], rune)
@@ -118,7 +117,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		const rewardsGuardianLoot = new Bank();
 		let rewardsQty = 0;
 		for (let i = 0; i < quantity; i++) {
-			rewardsQty += randInt(rolls - 1, rolls);
+			rewardsQty += rng.randInt(rolls - 1, rolls);
 		}
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 

@@ -3,9 +3,9 @@ import { calcPercentOfNum, Emoji, formatDuration, sumArr, Time } from '@oldschoo
 import { Bank, type ItemBank, Items, itemID, Monsters } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
-import type { ProjectileType } from '@/lib/constants.js';
-import { BitField, projectiles } from '@/lib/constants.js';
+import { BitField } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { type ProjectileType, projectiles } from '@/lib/gear/projectiles.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import type { BlowpipeData } from '@/lib/minions/types.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
