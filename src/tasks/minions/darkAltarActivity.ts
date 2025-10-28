@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Events, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -9,7 +8,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',
-	async run(data: DarkAltarOptions, { user, handleTripFinish }) {
+	async run(data: DarkAltarOptions, { user, handleTripFinish, rng }) {
 		const { quantity, channelID, duration, hasElite, rune, useExtracts } = data;
 
 		const runeData = darkAltarRunes[rune];
@@ -60,7 +59,7 @@ export const darkAltarTask: MinionTask = {
 		const loot = new Bank().add(runeData.item.id, runeQuantity);
 		const { petDropRate } = skillingPetDropRate(user, 'runecraft', runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
-			if (roll(petDropRate)) {
+			if (rng.roll(petDropRate)) {
 				loot.add('Rift guardian');
 			}
 		}
@@ -79,7 +78,7 @@ export const darkAltarTask: MinionTask = {
 			str += ` **Extract bonus:** ${extractBonus.toLocaleString()}`;
 		}
 
-		if (loot.amount('Rift guardian') > 0) {
+		if (loot.has('Rift guardian')) {
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${

@@ -2,7 +2,6 @@ import { evalMathExpression, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { userhasDiaryTier } from '@/lib/diaries.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
 import type { Rune } from '@/lib/skilling/skills/runecraft.js';
@@ -75,7 +74,7 @@ function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	return str.join('');
 }
 
-export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
+export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	if (monster.qpRequired && user.QP < monster.qpRequired) {
 		return [
 			false,
@@ -156,12 +155,9 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	}
 
 	if (monster.diaryRequirement) {
-		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
+		const hasDiary = user.hasDiary(monster.diaryRequirement);
 		if (!hasDiary) {
-			return [
-				false,
-				`${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`
-			];
+			return [false, `${user.minionName} is missing the required achievement diaries to kill ${monster.name}.`];
 		}
 	}
 
@@ -233,9 +229,10 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 }
 
 export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
-	const stats = await user.fetchStats();
-	const { openable_scores: newOpenableScores } = await user.statsUpdate({
-		openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).toJSON()
+	const currentOpenableScores = await user.fetchUserStat('openable_scores');
+	await user.statsUpdate({
+		openable_scores: new Bank(currentOpenableScores as ItemBank).add(kcBank).toJSON()
 	});
+	const newOpenableScores = await user.fetchUserStat('openable_scores');
 	return new Bank(newOpenableScores as ItemBank);
 }

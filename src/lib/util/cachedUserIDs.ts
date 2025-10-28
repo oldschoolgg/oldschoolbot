@@ -1,7 +1,6 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
 import { ChannelType } from 'discord.js';
 
-import { Prisma } from '@/prisma/main.js';
 import { CACHED_ACTIVE_USER_IDS } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { runTimedLoggedFn } from '@/lib/util.js';
@@ -9,11 +8,9 @@ import { runTimedLoggedFn } from '@/lib/util.js';
 CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
 
 export const syncActiveUserIDs = async () => {
-	const users = await prisma.$queryRawUnsafe<
-		{ user_id: string }[]
-	>(`SELECT DISTINCT(${Prisma.ActivityScalarFieldEnum.user_id}::text)
-FROM activity
-WHERE finish_date > now() - INTERVAL '48 hours'`);
+	const users = await prisma.$queryRawUnsafe<{ user_id: string }[]>(`SELECT DISTINCT(id)
+FROM users
+WHERE last_command_date > now() - INTERVAL '48 hours';`);
 
 	const perkTierUsers = globalConfig.isProduction
 		? await roboChimpClient.$queryRawUnsafe<{ id: string }[]>(`SELECT id::text

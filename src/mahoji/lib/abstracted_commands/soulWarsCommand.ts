@@ -209,17 +209,17 @@ export async function soulWarsImbueCommand(user: MUser, input = '') {
 	if (!bank.has(item.input.id)) {
 		return `You don't have a ${item.input.name}.`;
 	}
-	await user.update({
-		zeal_tokens: {
-			decrement: imbueCost
-		}
-	});
 	const cost = new Bank().add(item.input.id);
 	const loot = new Bank().add(item.output.id);
 	await user.transactItems({
 		itemsToAdd: loot,
 		itemsToRemove: cost,
-		collectionLog: true
+		collectionLog: true,
+		otherUpdates: {
+			zeal_tokens: {
+				decrement: imbueCost
+			}
+		}
 	});
 	return `Added ${loot} to your bank, removed ${imbueCost}x Zeal Tokens and ${cost}.${
 		user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''

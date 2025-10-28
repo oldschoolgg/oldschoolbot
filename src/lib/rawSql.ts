@@ -3,56 +3,24 @@ import { Prisma } from '@/prisma/main.js';
 const u = Prisma.UserScalarFieldEnum;
 
 export const RawSQL = {
-	fetchUsersWithoutUsernames,
-	updateAllUsersCLArrays: () => `UPDATE users
-SET ${u.cl_array} = (
-    SELECT (ARRAY(SELECT jsonb_object_keys("${u.collectionLogBank}")::int))
-)
-WHERE last_command_date > now() - INTERVAL '1 week';`,
 	updateCLArray: (userID: string) => `UPDATE users
 SET ${u.cl_array} = (
     SELECT (ARRAY(SELECT jsonb_object_keys("${u.collectionLogBank}")::int))
 )
 WHERE ${u.id} = '${userID}';`,
 	sumOfAllCLItems: (clItems: number[]) =>
-		`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`
-};
-
-export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> {
-	try {
-		const result = await prisma.$queryRawUnsafe<T>(query);
-		return result;
-	} catch (err) {
-		Logging.logError(err as Error, { query: query.slice(0, 100) });
+		`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`,
+	updateUserLastCommandDate: ({ userId }: { userId: string }) => {
+		if (Number.isNaN(Number(userId))) {
+			throw new Error(`Invalid userId passed to updateUserLastCommandDate: ${userId}`);
+		}
+		return prisma.$executeRawUnsafe(`
+SET LOCAL synchronous_commit = OFF;
+UPDATE USERS
+SET last_command_date = now()
+WHERE id = '${userId}'`);
 	}
-
-	return null;
-}
-
-export async function fetchUsersWithoutUsernames() {
-	const res = await loggedRawPrismaQuery<{ id: string }[]>(`
-SELECT id
-FROM (
-    SELECT id,
-           username,
-           username_with_badges,
-           ("skills.agility"  + "skills.cooking"  + "skills.fishing" +
-            "skills.mining"   + "skills.smithing" + "skills.woodcutting" +
-            "skills.firemaking" + "skills.runecraft" + "skills.crafting" +
-            "skills.prayer"   + "skills.fletching" + "skills.thieving" +
-            "skills.farming"  + "skills.herblore" + "skills.hunter" +
-            "skills.construction" + "skills.magic" + "skills.ranged" +
-            "skills.attack"   + "skills.strength" + "skills.defence" +
-            "skills.slayer") AS total_xp
-    FROM users
-    WHERE username IS NULL
-) AS t
-WHERE total_xp > 100000000
-ORDER BY total_xp DESC
-LIMIT 60;
-`);
-	return res!;
-}
+};
 
 export const SQL = {
 	SELECT_FULL_NAME:

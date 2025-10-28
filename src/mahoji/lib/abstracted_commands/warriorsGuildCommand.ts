@@ -1,5 +1,5 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, resolveItems } from 'oldschooljs';
+import { Bank, EGear } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -8,25 +8,25 @@ export const Armours = [
 		name: 'Rune',
 		timeToFinish: Time.Minute * 1.2,
 		tokens: 40,
-		items: resolveItems(['Rune full helm', 'Rune platebody', 'Rune platelegs'])
+		items: [EGear.RUNE_FULL_HELM, EGear.RUNE_PLATEBODY, EGear.RUNE_PLATELEGS]
 	},
 	{
 		name: 'Adamant',
 		timeToFinish: Time.Minute * 1.15,
 		tokens: 30,
-		items: resolveItems(['Adamant full helm', 'Adamant platebody', 'Adamant platelegs'])
+		items: [EGear.ADAMANT_FULL_HELM, EGear.ADAMANT_PLATEBODY, EGear.ADAMANT_PLATELEGS]
 	},
 	{
 		name: 'Mithril',
 		timeToFinish: Time.Minute * 0.95,
 		tokens: 25,
-		items: resolveItems(['Mithril full helm', 'Mithril platebody', 'Mithril platelegs'])
+		items: [EGear.MITHRIL_FULL_HELM, EGear.MITHRIL_PLATEBODY, EGear.MITHRIL_PLATELEGS]
 	},
 	{
 		name: 'Black',
 		timeToFinish: Time.Minute * 0.65,
 		tokens: 20,
-		items: resolveItems(['Black full helm', 'Black platebody', 'Black platelegs'])
+		items: [EGear.BLACK_FULL_HELM, EGear.BLACK_PLATEBODY, EGear.BLACK_PLATELEGS]
 	}
 ];
 
@@ -108,6 +108,12 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 		)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
 	}
 
+	if (!hasAttackCape) {
+		await user.transactItems({
+			itemsToRemove: new Bank().add('Warrior guild token', tokensToSpend)
+		});
+	}
+
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID,
@@ -123,10 +129,6 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 			? 'You used no warrior guild tokens because you have an Attack cape.'
 			: `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
 	}`;
-
-	if (!hasAttackCape) {
-		await user.removeItemsFromBank(new Bank().add('Warrior guild token', tokensToSpend));
-	}
 
 	return response;
 }

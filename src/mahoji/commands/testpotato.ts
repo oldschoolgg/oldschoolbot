@@ -1,6 +1,6 @@
-import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, MessageFlags } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
 import { type Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
@@ -36,7 +36,6 @@ import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.j
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
-import { testBotKvStore } from '@/testing/TestBotStore.js';
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
@@ -129,7 +128,14 @@ const thingsToReset = [
 	{
 		name: 'Bank',
 		run: async (user: MUser) => {
-			await user.update({ bank: {} });
+			await prisma.user.update({
+				where: {
+					id: user.id
+				},
+				data: {
+					bank: {}
+				}
+			});
 			return 'Reset your bank.';
 		}
 	}
@@ -717,68 +723,6 @@ export const testPotatoCommand = globalConfig.isProduction
 					}
 				}
 
-				if (options.get_code) {
-					const existingCode = testBotKvStore.get(`user.${user.id}.code`);
-
-					let finalCode = existingCode;
-					if (!existingCode) {
-						const words = [
-							'monkey',
-							'chicken',
-							'bandos',
-							'nex',
-							'cow',
-							'dragon',
-							'bronze',
-							'goblin',
-							'zamorak',
-							'saradomin',
-							'armadyl',
-							'kraken',
-							'swan',
-							'wildy',
-							'slayer',
-							'agility',
-							'cooking',
-							'fishing',
-							'mining',
-							'smithing',
-							'runecraft',
-							'crafting',
-							'prayer',
-							'fletching',
-							'farming',
-							'herblore',
-							'hunter',
-							'magic',
-							'attack',
-							'strength',
-							'defence',
-							'ranged',
-							'hitpoints',
-							'ahrim',
-							'guthans',
-							'torags',
-							'veracs',
-							'inferno',
-							'jad',
-							'crystal',
-							'torva',
-							'dharoks'
-						];
-						const newCode = `${randArrItem(words)}${randInt(0, 9)}`;
-						testBotKvStore.set(`user.${user.id}.code`, newCode);
-						finalCode = newCode;
-					}
-
-					return {
-						content: `Your secret code for the dashboard is: \`${finalCode}\` - do not share with anyone.
-
-Warning: Visiting a test dashboard may let developers see your IP address. Attempting to abuse a test dashboard may result in a ban.`,
-						flags: [MessageFlags.Ephemeral]
-					};
-				}
-
 				if (options.set) {
 					const { qp } = options.set;
 					if (qp) {
@@ -848,9 +792,14 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 						return 'Reset your combat achievements.';
 					}
 					if (thing === 'quests') {
-						await user.update({
-							finished_quest_ids: [],
-							collectionLogBank: {}
+						await prisma.user.update({
+							where: {
+								id: user.id
+							},
+							data: {
+								finished_quest_ids: [],
+								collectionLogBank: {}
+							}
 						});
 						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${mentionCommand(
 							'testpotato',

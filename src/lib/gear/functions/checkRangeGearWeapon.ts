@@ -1,8 +1,8 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
 import { EItem, Items } from 'oldschooljs';
 
-import { projectiles } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { projectiles } from '@/lib/gear/projectiles.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import { formatList } from '@/lib/util/smallUtils.js';
 

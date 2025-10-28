@@ -370,6 +370,13 @@ export const NightmareMonster: KillableMonster = {
 
 export default killableMonsters;
 
+type EffectiveMonster = {
+	id: number;
+	name: string;
+	aliases: string[];
+	emoji?: string;
+};
+
 export const effectiveMonsters = [
 	...killableMonsters,
 	NightmareMonster,
@@ -392,7 +399,7 @@ export const effectiveMonsters = [
 		aliases: ['nex'],
 		id: EMonster.NEX
 	}
-];
+] satisfies EffectiveMonster[];
 
 export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));
 

@@ -25,6 +25,7 @@ import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
+import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
@@ -32,7 +33,6 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
-import { syncCustomPrices } from '@/mahoji/lib/events.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -401,11 +401,6 @@ export const adminCommand = defineCommand({
 			type: 'Subcommand',
 			name: 'shut_down',
 			description: 'Shut down the bot without rebooting.'
-		},
-		{
-			type: 'Subcommand',
-			name: 'check_tablebanks',
-			description: 'Check tablebanks'
 		},
 		{
 			type: 'Subcommand',
@@ -1007,30 +1002,6 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 
 			return {
 				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
-			};
-		}
-
-		if (options.check_tablebanks) {
-			const userIdsSample = await prisma.activity.findMany({
-				where: {
-					completed: false
-				},
-				take: 5,
-				select: {
-					user_id: true
-				}
-			});
-			const results = [];
-			for (const { user_id } of userIdsSample) {
-				const user = await mUserFetch(user_id.toString());
-				const theirTableCL = await user.fetchCL();
-				const success = user.cl.toString() === theirTableCL.toString();
-				results.push({ userId: user.id, success, lengths: [user.cl.length, theirTableCL.length] });
-			}
-			return {
-				content: results
-					.map(i => `${i.userId}: ${i.success ? 'Success' : 'Fail'} ${i.lengths.join('/')}`)
-					.join('\n')
 			};
 		}
 

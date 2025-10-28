@@ -7,14 +7,12 @@ export const butlerTask: MinionTask = {
 	async run(data: ButlerActivityTaskOptions, { user, handleTripFinish }) {
 		const { channelID, plankID, plankQuantity } = data;
 
-		const loot = new Bank({
-			[plankID]: plankQuantity
-		});
+		const itemsToAdd = new Bank().add(plankID, plankQuantity);
 
-		const str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
+		const str = `${user}, ${user.minionName} finished creating planks, you received ${itemsToAdd}.`;
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await user.transactItems({ itemsToAdd, collectionLog: true });
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, itemsToAdd);
 	}
 };
