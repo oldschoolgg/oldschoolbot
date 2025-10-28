@@ -1,3 +1,4 @@
+import { roll } from '@oldschoolgg/rng';
 import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
@@ -39,6 +40,10 @@ const noSacPrice = resolveItems([
 	'Red dye',
 	'Cannon furnace'
 ]);
+
+const [HAMMY_ID] = resolveItems(['Hammy']);
+const HAMMY_SACRIFICE_VALUE = 51_530_000;
+const HAMMY_ROLL_CHANCE = 140;
 
 export function sacrificePriceOfItem(item: Item, qty: number) {
 	const price = noSacPrice.includes(item.id) ? 1 : sellPriceOfItem(item, 0).basePrice;
@@ -159,11 +164,29 @@ export const sacrificeCommand = defineCommand({
 			}
 		});
 
-		const newValue = user.user.sacrificedValue;
+		const newValue = sacVal + totalPrice;
 
 		await trackSacBank(user, bankToSac);
 
 		let str = '';
+
+		const hammyRolls = Math.floor(newValue / HAMMY_SACRIFICE_VALUE) - Math.floor(sacVal / HAMMY_SACRIFICE_VALUE);
+		if (hammyRolls > 0) {
+			const hammyLoot = new Bank();
+			for (let i = 0; i < hammyRolls; i++) {
+				if (roll(HAMMY_ROLL_CHANCE)) {
+					hammyLoot.add(HAMMY_ID);
+				}
+			}
+			if (hammyLoot.length > 0) {
+				await user.transactItems({ itemsToAdd: hammyLoot, collectionLog: true });
+				str += `\n\nA small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes. ${hammyLoot}.`;
+				globalClient.emit(
+					Events.ServerNotification,
+					`**${user.badgedUsername}** just received ${hammyLoot} while sacrificing!`
+				);
+			}
+		}
 
 		// Ignores notifying the user/server if the user is using a custom icon
 		if (!currentIcon || minionIcons.find(m => m.emoji === currentIcon)) {
