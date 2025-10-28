@@ -43,6 +43,7 @@
 		"@oldschoolgg/collectionlog": "workspace:*",
 		"@oldschoolgg/rng": "workspace:*",
 		"@oldschoolgg/spritesheet": "workspace:*",
+		"@oldschoolgg/schemas": "workspace:*",
 		"@oldschoolgg/toolkit": "workspace:*",
 		"@prisma/adapter-pg": "^6.18.0",
 		"@prisma/client": "^6.18.0",
