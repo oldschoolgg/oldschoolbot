@@ -1,21 +1,92 @@
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import { Bank, EItem, type Item, Items } from 'oldschooljs';
 
+import { checkDegradeableItemCharges, degradeItem } from '@/lib/degradeableItems.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
-import { checkDegradeableItemCharges, degradeItem } from '../../lib/degradeableItems.js';
+
+interface ApplyChemistryArgs {
+	user: MUser;
+	mixableItem: { item: Item };
+	quantity: number;
+	zahur: boolean;
+	wesley: boolean;
+}
+
+async function applyAmuletOfChemistry({
+	user,
+	mixableItem,
+	quantity,
+	zahur,
+	wesley
+}: ApplyChemistryArgs): Promise<null | {
+	fourDoseItem: Item;
+	fourDoseCount: number;
+	messages: string[];
+}> {
+	if (zahur || wesley) return null;
+	if (!mixableItem.item.name.includes('(3)')) return null;
+
+	const chemistryItem = Items.getOrThrow('Amulet of chemistry');
+	if (!user.gear.skilling.hasEquipped(chemistryItem.id, false, false)) return null;
+
+	const potentialFourDoseName = mixableItem.item.name.replace(/\(3\)/g, '(4)');
+	const fourDoseItem = Items.getItem(potentialFourDoseName);
+	if (!fourDoseItem) return null;
+
+	const chemistryCharges = await checkDegradeableItemCharges({ item: chemistryItem, user });
+	let available = chemistryCharges;
+
+	if (available <= 0) return null;
+	let fourDoseCount = 0;
+
+	for (let i = 0; i < quantity && available > 0; i++) {
+		if (percentChance(5)) {
+			fourDoseCount++;
+			available--;
+		}
+	}
+
+	const messages: string[] = [];
+
+	if (fourDoseCount > 0) {
+		const degradeResult = await degradeItem({
+			item: chemistryItem,
+			chargesToDegrade: fourDoseCount,
+			user
+		});
+
+		messages.push(`${fourDoseCount}x ${fourDoseItem.name} were made thanks to your Amulet of chemistry.`);
+
+		const used = degradeResult.chargesToDegrade ?? 0;
+		const remaining = degradeResult.chargesRemaining;
+
+		if (typeof used === 'number' && used > 0 && typeof remaining === 'number') {
+			messages.push(
+				`Your Amulet of chemistry glows and loses ${used === 1 ? 'a charge' : `${used} charges`} (${remaining} left).`
+			);
+		}
+
+		if (typeof degradeResult.userMessage === 'string' && degradeResult.userMessage.includes('broke')) {
+			messages.push(degradeResult.userMessage);
+		}
+	}
+
+	return {
+		fourDoseCount,
+		fourDoseItem,
+		messages
+	};
+}
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
-	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish, rng }) {
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
 		const { mixableID, quantity, zahur, wesley, channelID, duration } = data;
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const xpReceived = zahur && mixableItem.zahur ? 0 : quantity * mixableItem.xp;
 		let outputQuantity = mixableItem.outputMultiple ? quantity * mixableItem.outputMultiple : quantity;
-		let fourDoseItem: Item | null = null;
-		let fourDoseCount = 0;
-		const chemistryMessages: string[] = [];
 
 		// Special case for Lava scale shard
 		if (mixableItem.item.id === EItem.LAVA_SCALE_SHARD) {
@@ -33,70 +104,17 @@ export const herbloreTask: MinionTask = {
 			} else {
 				// Math for if the user is using their minion to make lava scale shards
 				for (let i = 0; i < quantity; i++) {
-					scales += Math.floor((rng.percentChance(maxShardChance) ? 6 : rng.randInt(3, 6)) * diaryMultiplier);
+					scales += Math.floor((percentChance(maxShardChance) ? 6 : randInt(3, 6)) * diaryMultiplier);
 				}
 			}
 			outputQuantity = scales;
 		}
 
 		// Amulet of chemistry logic: only for hand-mixed (no Zahur/Wesley) 3-dose outputs
-		if (!zahur && !wesley && mixableItem.item.name.includes('(3)')) {
-			const chemistryItem = Items.getOrThrow('Amulet of chemistry');
-			if (user.gear.skilling.hasEquipped(chemistryItem.id, false, false)) {
-				const potentialFourDoseName = mixableItem.item.name.replace(/\(3\)/g, '(4)');
-				const potentialFourDoseItem = Items.getItem(potentialFourDoseName);
-				if (potentialFourDoseItem) {
-					fourDoseItem = potentialFourDoseItem;
-
-					const chemistryCharges = await checkDegradeableItemCharges({
-						item: chemistryItem,
-						user
-					});
-
-					let availableCharges = chemistryCharges;
-					if (availableCharges > 0) {
-						for (let i = 0; i < quantity && availableCharges > 0; i++) {
-							if (percentChance(5)) {
-								fourDoseCount++;
-								availableCharges--;
-							}
-						}
-						if (fourDoseCount > 0) {
-							const degradeResult = await degradeItem({
-								item: chemistryItem,
-								chargesToDegrade: fourDoseCount,
-								user
-							});
-
-							chemistryMessages.push(
-								`${fourDoseCount}x ${fourDoseItem.name} were made thanks to your Amulet of chemistry.`
-							);
-
-							const chargesUsed = degradeResult.chargesToDegrade ?? 0;
-							const remainingAfterDegrade = degradeResult.chargesRemaining;
-
-							if (
-								typeof chargesUsed === 'number' &&
-								chargesUsed > 0 &&
-								typeof remainingAfterDegrade === 'number'
-							) {
-								const chargeText = chargesUsed === 1 ? 'a charge' : `${chargesUsed} charges`;
-								chemistryMessages.push(
-									`Your Amulet of chemistry glows and loses ${chargeText} (${remainingAfterDegrade} left).`
-								);
-							}
-
-							if (
-								typeof degradeResult.userMessage === 'string' &&
-								degradeResult.userMessage.includes('broke')
-							) {
-								chemistryMessages.push(degradeResult.userMessage);
-							}
-						}
-					}
-				}
-			}
-		}
+		const aocResult = await applyAmuletOfChemistry({ user, mixableItem, quantity, zahur, wesley });
+		const fourDoseItem = aocResult?.fourDoseItem ?? null;
+		const fourDoseCount = aocResult?.fourDoseCount ?? 0;
+		const chemistryMessages = aocResult?.messages ?? [];
 
 		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank();
