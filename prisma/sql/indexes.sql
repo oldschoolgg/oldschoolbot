@@ -11,6 +11,12 @@ INCLUDE (type)
 WHERE completed = true
   AND finish_date >= DATE '2025-06-06';
 
+-- Grand Exchange Indexes
+
+CREATE INDEX IF NOT EXISTS ge_listing_user_active_idx
+ON ge_listing (user_id)
+WHERE cancelled_at IS NULL AND fulfilled_at IS NULL;
+
 CREATE INDEX IF NOT EXISTS idx_ge_listing_buy_filter_sort
 ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item DESC, created_at ASC);
 
@@ -26,12 +32,13 @@ WHERE cancelled_at IS NULL
   AND fulfilled_at IS NULL
   AND quantity_remaining > 0;
 
+-- User Indexes
+
 CREATE INDEX IF NOT EXISTS users_clarray_gin
 ON users USING gin (cl_array gin__int_ops);
 
 CREATE INDEX IF NOT EXISTS users_bitfield_gin
-ON users USING gin (bitfield gin__int_ops)
-WHERE CARDINALITY(bitfield) > 0;
+ON users USING gin (bitfield gin__int_ops);
 
 CREATE INDEX IF NOT EXISTS users_rsn_lower_idx
 ON users ((LOWER("RSN")))

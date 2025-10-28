@@ -27,16 +27,16 @@ import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGe
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
+import { BitField, MAX_LEVEL } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { CommandResponseValue } from '@/lib/discord/index.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
+import { projectiles } from '@/lib/gear/projectiles.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
-import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import backgroundImages from '@/lib/minions/data/bankBackgrounds.js';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { type AddMonsterXpParams, addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
@@ -433,8 +433,10 @@ GROUP BY data->>'ci';`);
 	}
 
 	async incrementKC(monsterID: number, quantityToAdd = 1) {
-		if (!Number.isInteger(monsterID)) throw new Error('Invalid monsterID');
-		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		if (!Number.isInteger(monsterID)) throw new Error(`Invalid monsterID: ${monsterID}`);
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) {
+			throw new Error(`Invalid quantityToAdd: ${quantityToAdd}`);
+		}
 		const query = `
 UPDATE user_stats
 SET monster_scores = add_item_to_bank(monster_scores, '${monsterID}', ${quantityToAdd})
@@ -1092,52 +1094,6 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		};
 	}
 
-	async calculateNetWorth() {
-		const bank = this.allItemsOwned.clone();
-		const activeListings = await prisma.gEListing.findMany({
-			where: {
-				user_id: this.id,
-				quantity_remaining: {
-					gt: 0
-				},
-				fulfilled_at: null,
-				cancelled_at: null
-			},
-			include: {
-				buyTransactions: true,
-				sellTransactions: true
-			}
-		});
-		for (const listing of activeListings) {
-			if (listing.type === 'Sell') {
-				bank.add(listing.item_id, listing.quantity_remaining);
-			} else {
-				bank.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
-			}
-		}
-		const activeGiveaways = await prisma.giveaway.findMany({
-			where: {
-				completed: false,
-				user_id: this.id
-			}
-		});
-		for (const giveaway of activeGiveaways) {
-			bank.add(giveaway.loot as ItemBank);
-		}
-		const gifts = await prisma.giftBox.findMany({
-			where: {
-				owner_id: this.id
-			}
-		});
-		for (const gift of gifts) {
-			bank.add(gift.items as ItemBank);
-		}
-		return {
-			bank,
-			value: marketPriceOfBank(bank)
-		};
-	}
-
 	public hasDiary(key: HasDiaryDiaryKey): boolean {
 		return this.user.completed_achievement_diaries.includes(key);
 	}
@@ -1293,22 +1249,18 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
-	const user =
-		updates !== undefined
-			? await prisma.user.upsert({
-					create: {
-						id: userID
-					},
-					update: updates,
-					where: {
-						id: userID
-					}
-				})
-			: await prisma.user.findUnique({ where: { id: userID } });
-
-	if (!user) {
-		return srcMUserFetch(userID, {});
+async function srcMUserFetch(userID: string) {
+	const [user] = await prisma.$queryRaw<User[]>`INSERT INTO users (id)
+		VALUES (${userID})
+		ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id
+		RETURNING *;
+`;
+	for (const [key, val] of Object.entries(user)) {
+		if (key.includes('.') || key.includes(' ')) {
+			(user as any)[key.replace(/[.\s]/g, '_')] = val;
+			// @ts-expect-error
+			delete user[key];
+		}
 	}
 	return new MUserClass(user);
 }

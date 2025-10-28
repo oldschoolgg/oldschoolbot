@@ -51,6 +51,12 @@ export async function unqueuedTransactItems({
 	let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 	let clLootBank: Bank | null = null;
 	if (itemsToAdd) {
+		const errors = itemsToAdd.validate();
+		if (errors.length > 0) {
+			throw new Error(
+				`Invalid itemsToAdd: UserID[${userID}] Items[${itemsToAdd.toString()}] Errors[${errors.join(', ')}]`
+			);
+		}
 		const { bankLoot, clLoot } = filterLoot
 			? filterLootReplace(settings.allItemsOwned, itemsToAdd)
 			: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
@@ -75,6 +81,12 @@ export async function unqueuedTransactItems({
 	if (itemsToAdd) newBank.add(itemsToAdd);
 
 	if (itemsToRemove) {
+		const errors = itemsToRemove.validate();
+		if (errors.length > 0) {
+			throw new Error(
+				`Invalid itemsToRemove: UserID[${userID}] Items[${itemsToRemove.toString()}] Errors[${errors.join(', ')}]`
+			);
+		}
 		if (itemsToRemove.has('Coins')) {
 			if (!gpUpdate) {
 				gpUpdate = {
