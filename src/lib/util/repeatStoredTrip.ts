@@ -848,13 +848,14 @@ export async function makeRepeatTripButtons(user: MUser) {
 export async function repeatTrip(
 	user: MUser,
 	interaction: MInteraction,
-	data: { data: Prisma.JsonValue; type: activity_type_enum },
+	data: { data: Prisma.JsonValue; type: activity_type_enum } | null,
 	allowFallback = true
 ): CommandResponse {
-	if (!data || !data.data || !data.type) {
+	if (!data?.type || data.data == null) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
-	if (allowFallback && isNonRepeatableTrip(data.type, data.data ?? {})) {
+	const tripData = data.data;
+	if (allowFallback && isNonRepeatableTrip(data.type, tripData)) {
 		const fallback = await getLastRepeatableTrip(user);
 		if (fallback) {
 			return repeatTrip(user, interaction, fallback, false);
@@ -868,7 +869,7 @@ export async function repeatTrip(
 	return runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
-		args: handler.args(data.data as any),
+		args: handler.args(tripData as any),
 		interaction,
 		user,
 		continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
