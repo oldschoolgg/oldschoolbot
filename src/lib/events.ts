@@ -137,6 +137,13 @@ const cooldownTimers: {
 		cd: Time.Hour * 12,
 		command: ['minion', 'daily'],
 		utcReset: false
+	},
+	{
+		name: "Bert's sand",
+		timeStamp: (_, stats) => Number(stats.last_bert_sand_timestamp ?? 0n),
+		cd: Time.Day,
+		command: ['activities', 'collect', 'item:bert_sand'],
+		utcReset: true
 	}
 ];
 

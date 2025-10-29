@@ -543,9 +543,11 @@ export function minionStatus(user: MUser) {
 		case 'Collecting': {
 			const data = currentTask as CollectingOptions;
 			const collectable = collectables.find(c => c.item.id === data.collectableID)!;
-			return `${name} is currently collecting ${data.quantity * collectable.quantity}x ${
-				collectable.item.name
-			}. ${formattedDuration}`;
+			const totalQuantity =
+				typeof data.lootQuantityOverride === 'number'
+					? data.lootQuantityOverride
+					: data.quantity * collectable.quantity;
+			return `${name} is currently collecting ${totalQuantity}x ${collectable.item.name}. ${formattedDuration}`;
 		}
 
 		case 'MageTrainingArena': {

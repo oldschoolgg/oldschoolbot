@@ -1,7 +1,15 @@
-import { awaitMessageComponentInteraction, noOp, removeFromArr, stringMatches, Time } from '@oldschoolgg/toolkit';
+import {
+	awaitMessageComponentInteraction,
+	getNextUTCReset,
+	noOp,
+	removeFromArr,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { Bank } from 'oldschooljs';
 
 import { analyticsTick } from '@/lib/analytics.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
@@ -10,6 +18,12 @@ import { GrandExchange } from '@/lib/grandExchange.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
+import {
+	BERT_SAND_BUCKETS,
+	bertResetStart,
+	hasCollectedThisReset,
+	isManualEligible
+} from '@/lib/minions/data/bertSand.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
@@ -20,6 +34,11 @@ import { getSupportGuild } from '@/lib/util.js';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
+const BERT_SAND_BATCH_SIZE = 100;
+const BERT_SAND_ACTIVE_WINDOW = Time.Day * 7;
+let bertSandQueue: string[] = [];
+let bertSandLastReset = 0;
+let bertSandQueuePrepared = false;
 const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
 	.addFields({
@@ -323,6 +342,79 @@ export const tickers: {
 		cb: async () => {
 			await prisma.$executeRaw`INSERT INTO economy_item_banks (bank)
 VALUES (get_economy_bank());`;
+		}
+	},
+	{
+		name: "Bert's sand delivery",
+		timer: null,
+		startupWait: Time.Minute * 5,
+		interval: Time.Minute * 5,
+		cb: async () => {
+			const now = Date.now();
+			const currentResetStart = bertResetStart(now);
+
+			if (bertSandLastReset < currentResetStart) {
+				bertSandQueue = [];
+				bertSandQueuePrepared = false;
+				bertSandLastReset = currentResetStart;
+			}
+
+			if (!bertSandQueuePrepared) {
+				const activeSince = new Date(now - BERT_SAND_ACTIVE_WINDOW);
+				const users = await prisma.user.findMany({
+					where: {
+						completed_achievement_diaries: {
+							has: 'ardougne.elite'
+						},
+						last_command_date: {
+							gte: activeSince
+						}
+					},
+					select: {
+						id: true
+					}
+				});
+
+				bertSandQueue = users.map(u => u.id);
+				bertSandQueuePrepared = true;
+			}
+
+			if (bertSandQueue.length === 0) {
+				return;
+			}
+
+			const loot = new Bank({ 'Bucket of sand': BERT_SAND_BUCKETS });
+			const batch = bertSandQueue.splice(0, BERT_SAND_BATCH_SIZE);
+			const resetStart = bertResetStart(now);
+
+			for (const id of batch) {
+				const user = await mUserFetch(id);
+				const lastCollected = Number(user.stats.last_bert_sand_timestamp ?? 0n);
+				if (hasCollectedThisReset(lastCollected, now)) {
+					continue;
+				}
+
+				const requirementError = isManualEligible(user);
+				if (requirementError) {
+					continue;
+				}
+
+				const updated = await prisma.userStats.updateMany({
+					where: {
+						user_id: BigInt(user.id),
+						last_bert_sand_timestamp: { lt: BigInt(resetStart) }
+					},
+					data: { last_bert_sand_timestamp: BigInt(now) }
+				});
+
+				if (updated.count === 0) {
+					continue;
+				}
+
+				// Ardougne elite diary unlocks this auto-collection perk; when it procs we still
+				// enforce the manual requirements so the reward mirrors the slash command.
+				await user.addItemsToBank({ items: loot, collectionLog: false });
+			}
 		}
 	},
 	{
