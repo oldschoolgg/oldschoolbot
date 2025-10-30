@@ -161,7 +161,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 		tierData,
 		kc,
-		user.calcMaxTripLength('MahoganyHomes'),
+		await user.calcMaxTripLength('MahoganyHomes'),
 		hasSack
 	);
 

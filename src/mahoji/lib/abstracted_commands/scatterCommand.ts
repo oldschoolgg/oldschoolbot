@@ -21,7 +21,7 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 
 	const timeToScatterAnAsh = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
-	const maxTripLength = user.calcMaxTripLength('Scattering');
+	const maxTripLength = await user.calcMaxTripLength('Scattering');
 
 	if (!quantity) {
 		const amountOfAshesOwned = user.bank.amount(ash.inputId);

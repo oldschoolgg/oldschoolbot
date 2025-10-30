@@ -276,7 +276,7 @@ export const clueCommand = defineCommand({
 		);
 		if (!clueTier) return 'Invalid clue tier.';
 
-		const maxTripLength = user.calcMaxTripLength('ClueCompletion');
+		const maxTripLength = await user.calcMaxTripLength('ClueCompletion');
 
 		const clueImpling = options.implings
 			? Items.getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)

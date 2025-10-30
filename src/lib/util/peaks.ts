@@ -1,4 +1,4 @@
-import { time } from '@oldschoolgg/discord.js';
+import { time } from '@oldschoolgg/discord';
 import { SeedableRNG } from '@oldschoolgg/rng';
 import { Emoji, Time, toTitleCase } from '@oldschoolgg/toolkit';
 

@@ -1,6 +1,15 @@
-import { escapeMarkdown, userMention } from '@oldschoolgg/discord.js';
+import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
 import { MathRNG, percentChance } from '@oldschoolgg/rng';
-import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import {
+	calcWhatPercent,
+	cleanUsername,
+	Emoji,
+	isObject,
+	type PerkTier,
+	sumArr,
+	UserError,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	convertXPtoLVL,
@@ -315,7 +324,11 @@ export class MUserClass {
 		return Number(this.user.GP);
 	}
 
-	perkTier() {
+	async calcMaxGearPresets() {
+		return (await this.fetchPerkTier()) * 2 + 4;
+	}
+
+	async fetchPerkTier(): Promise<0 | PerkTier> {
 		return getUsersPerkTier(this);
 	}
 
@@ -1018,7 +1031,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
 			return;
 		}
-		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
+		if (background.perkTierNeeded && (await this.fetchPerkTier()) >= background.perkTierNeeded) {
 			return;
 		}
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
@@ -1173,7 +1186,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		});
 	}
 
-	calcMaxTripLength(activity: activity_type_enum) {
+	async calcMaxTripLength(activity: activity_type_enum): Promise<number> {
 		return calcMaxTripLength(this, activity);
 	}
 

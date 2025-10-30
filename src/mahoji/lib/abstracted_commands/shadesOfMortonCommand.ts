@@ -249,7 +249,7 @@ const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin
 
 export async function shadesOfMortonStartCommand(user: MUser, channelID: string, logStr: string, shadeStr: string) {
 	const messages: string[] = [];
-	let totalTime = user.calcMaxTripLength('ShadesOfMorton');
+	let totalTime = await user.calcMaxTripLength('ShadesOfMorton');
 	for (let i = coffins.length - 1; i >= 0; i--) {
 		const coffin = coffins[i];
 		if (user.hasEquipped(coffin)) {

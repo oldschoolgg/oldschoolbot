@@ -1,4 +1,4 @@
-import { strikethrough } from '@oldschoolgg/discord.js';
+import { strikethrough } from '@oldschoolgg/discord';
 import { calcWhatPercent, objectEntries, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items, Monsters } from 'oldschooljs';
 

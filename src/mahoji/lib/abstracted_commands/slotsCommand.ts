@@ -1,4 +1,5 @@
-import { ActionRowBuilder, type BaseMessageOptions, ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import type { BaseMessageOptions } from '@oldschoolgg/discord.js';
 import { randInt, shuffleArr } from '@oldschoolgg/rng';
 import { channelIsSendable, chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';

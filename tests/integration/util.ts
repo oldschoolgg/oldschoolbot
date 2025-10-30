@@ -1,6 +1,6 @@
+import type { GuildMember } from '@oldschoolgg/discord.js';
 import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
 import { sleep, uniqueArr } from '@oldschoolgg/toolkit';
-import type { User as DJSUser, GuildMember } from 'discord.js';
 import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
@@ -32,7 +32,7 @@ export function mockDjsUser({ userId }: { userId: string }) {
 		avatarURL: () => 'https://example.com/avatar.png',
 		toString: () => '<@123456789>',
 		send: vi.fn(() => Promise.resolve())
-	} as any as DJSUser;
+	} as any;
 	globalClient.users.cache.set(userId, mocked);
 	return mocked;
 }

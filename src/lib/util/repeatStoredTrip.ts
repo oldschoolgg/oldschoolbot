@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord.js';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -756,7 +756,7 @@ export async function fetchRepeatTrips(user: MUser) {
 export async function makeRepeatTripButtons(user: MUser) {
 	const trips = await fetchRepeatTrips(user);
 	const buttons: ButtonBuilder[] = [];
-	const limit = Math.min(user.perkTier() + 1, 5);
+	const limit = Math.min((await user.fetchPerkTier()) + 1, 5);
 	for (const trip of trips.slice(0, limit)) {
 		buttons.push(
 			new ButtonBuilder()

@@ -39,7 +39,7 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 			plunderTime = reduceNumByPercent(plunderTime, percent);
 		}
 	}
-	const maxQuantity = Math.floor(user.calcMaxTripLength('Plunder') / plunderTime);
+	const maxQuantity = Math.floor((await user.calcMaxTripLength('Plunder')) / plunderTime);
 	const tripLength = maxQuantity * plunderTime;
 
 	await ActivityManager.startTrip<PlunderActivityTaskOptions>({

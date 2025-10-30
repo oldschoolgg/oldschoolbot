@@ -1,4 +1,4 @@
-import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from '@oldschoolgg/discord.js';
+import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from '@oldschoolgg/discord';
 import { channelIsSendable, getNextUTCReset, makeComponents, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
@@ -136,7 +136,7 @@ export async function handleTripFinish(
 			console.warn(`Unexpected attachment type in handleTripFinish: ${typeof attachment}`);
 		}
 	}
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	const messages: string[] = [];
 
 	const itemsToAddWithCL = new Bank();

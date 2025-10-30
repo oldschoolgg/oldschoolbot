@@ -1,4 +1,4 @@
-import type { ButtonBuilder } from '@oldschoolgg/discord.js';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
@@ -193,7 +193,7 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	const response: Awaited<CommandResponse> = {
@@ -238,7 +238,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);
 
-	let quantity = Math.floor(user.calcMaxTripLength('BarbarianAssault') / waveTime);
+	let quantity = Math.floor((await user.calcMaxTripLength('BarbarianAssault')) / waveTime);
 
 	// 10% speed boost for Venator bow
 	const venatorBowChargesPerWave = 50;
@@ -255,7 +255,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		waveTime = reduceNumByPercent(waveTime, 10);
 	}
 
-	quantity = Math.floor(user.calcMaxTripLength('BarbarianAssault') / waveTime);
+	quantity = Math.floor((await user.calcMaxTripLength('BarbarianAssault')) / waveTime);
 
 	const duration = quantity * waveTime;
 

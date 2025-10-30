@@ -15,7 +15,8 @@ const external = [
 	'pg',
 	'oldschooljs',
 	'@oldschoolgg/discord.js',
-	'@discordjs/*'
+	'@discordjs/*',
+	'ioredis'
 ];
 
 const baseBuildOptions: BuildOptions = {

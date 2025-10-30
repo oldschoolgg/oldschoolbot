@@ -170,7 +170,7 @@ export const runecraftCommand = defineCommand({
 			boosts.push('3% for Runecraft cape');
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Runecraft');
+		const maxTripLength = await user.calcMaxTripLength('Runecraft');
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.

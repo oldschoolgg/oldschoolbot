@@ -71,7 +71,7 @@ export const fishCommand = defineCommand({
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Fishing');
+		const maxTripLength = await user.calcMaxTripLength('Fishing');
 
 		const res = Fishing.util.calcFishingTripStart({
 			gearBank: user.gearBank,

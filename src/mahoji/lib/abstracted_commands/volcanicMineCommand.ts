@@ -101,7 +101,7 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 			.filter(f => f)
 			.join(', ')}`;
 	}
-	const maxGamesUserCanDo = Math.floor(user.calcMaxTripLength('VolcanicMine') / VolcanicMineGameTime);
+	const maxGamesUserCanDo = Math.floor((await user.calcMaxTripLength('VolcanicMine')) / VolcanicMineGameTime);
 	if (!gameQuantity || gameQuantity > maxGamesUserCanDo) gameQuantity = maxGamesUserCanDo;
 	const userMiningLevel = skills.mining;
 	const userPrayerLevel = skills.prayer;

@@ -78,7 +78,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 		}
 	}
 
-	const quantity = Math.floor(user.calcMaxTripLength('GnomeRestaurant') / deliveryLength);
+	const quantity = Math.floor((await user.calcMaxTripLength('GnomeRestaurant')) / deliveryLength);
 	const duration = randomVariation(deliveryLength * quantity, 5);
 
 	if (user.skillsAsLevels.magic >= 66) {

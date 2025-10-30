@@ -354,7 +354,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 		}
 	}
 
-	const maxTripLength = user.calcMaxTripLength('NightmareZone');
+	const maxTripLength = await user.calcMaxTripLength('NightmareZone');
 	const quantity = Math.floor(maxTripLength / timePerMonster);
 	const duration = quantity * timePerMonster;
 	// Consume GP (and prayer potion if experience setup)

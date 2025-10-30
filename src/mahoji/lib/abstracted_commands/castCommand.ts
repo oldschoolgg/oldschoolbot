@@ -65,7 +65,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Casting');
+	const maxTripLength = await user.calcMaxTripLength('Casting');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / castTimeMilliSeconds);

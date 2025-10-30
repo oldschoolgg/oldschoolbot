@@ -14,7 +14,7 @@ export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 	const boost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
 	tripLength = reduceNumByPercent(tripLength, boost);
 
-	const quantity = Math.floor(user.calcMaxTripLength('FishingTrawler') / tripLength);
+	const quantity = Math.floor((await user.calcMaxTripLength('FishingTrawler')) / tripLength);
 	const duration = quantity * tripLength;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

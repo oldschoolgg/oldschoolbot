@@ -191,7 +191,7 @@ export async function gearEquipCommand(args: {
 	if (items) {
 		return gearEquipMultiCommand(user, setup, items);
 	}
-	if (setup === 'other' && user.perkTier() < PerkTier.Four) {
+	if (setup === 'other' && (await user.fetchPerkTier()) < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 	if (preset) {
@@ -260,7 +260,7 @@ export async function gearUnequipCommand(
 }
 
 async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
-	if (gearSetup === 'other' && user.perkTier() < PerkTier.Four) {
+	if (gearSetup === 'other' && (await user.fetchPerkTier()) < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
@@ -401,7 +401,7 @@ export async function gearSwapCommand(
 		);
 	}
 
-	if ([first, second].includes('other') && user.perkTier() < PerkTier.Four) {
+	if ([first, second].includes('other') && (await user.fetchPerkTier()) < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 

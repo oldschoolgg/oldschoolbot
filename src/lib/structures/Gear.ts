@@ -92,7 +92,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -113,7 +112,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -134,7 +132,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -155,7 +152,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -177,7 +173,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -198,7 +193,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -219,7 +213,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -240,7 +233,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -261,7 +253,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -282,7 +273,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null
@@ -303,7 +293,6 @@ export const globalPresets: GlobalPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null,
-		emoji_id: null,
 		times_equipped: 0,
 		defaultSetup: 'skilling',
 		pinned_setup: null

@@ -27,7 +27,7 @@ export async function forestersRationCommand({
 	}
 
 	const rationCookTime = Time.Second * 1.9;
-	const maxTripLength = user.calcMaxTripLength('Cooking');
+	const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / rationCookTime);
 

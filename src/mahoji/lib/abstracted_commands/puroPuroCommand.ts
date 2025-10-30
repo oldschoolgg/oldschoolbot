@@ -52,7 +52,7 @@ export async function puroPuroStartCommand(
 	darkLure: boolean | undefined
 ) {
 	const timePerGame = Time.Minute * 10;
-	const maxTripLength = user.calcMaxTripLength('PuroPuro');
+	const maxTripLength = await user.calcMaxTripLength('PuroPuro');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	const skills = user.skillsAsLevels;

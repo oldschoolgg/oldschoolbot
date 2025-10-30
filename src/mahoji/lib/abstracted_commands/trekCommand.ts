@@ -104,7 +104,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		tripTime *= flailBoost;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Trekking');
+	const maxTripLength = await user.calcMaxTripLength('Trekking');
 	const maxTrips = Math.floor(maxTripLength / tripTime);
 	if (quantity === undefined || quantity === null) {
 		quantity = maxTrips;

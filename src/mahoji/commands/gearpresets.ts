@@ -9,10 +9,6 @@ import { Gear, globalPresets } from '@/lib/structures/Gear.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { gearEquipCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 
-function maxPresets(user: MUser) {
-	return user.perkTier() * 2 + 4;
-}
-
 type InputGear = Partial<Record<EquipmentSlot, string | undefined>>;
 type ParsedInputGear = Partial<Record<EquipmentSlot, number>>;
 function parseInputGear(inputGear: InputGear) {
@@ -60,7 +56,7 @@ export async function createOrEditGearSetup(
 		return 'You cant update a gearpreset you dont have.';
 	}
 
-	const max = maxPresets(user);
+	const max = await user.calcMaxGearPresets();
 	if (userPresets.length >= max && !isUpdating) {
 		return `The maximum amount of gear presets you can have is ${max}, you can unlock more slots by becoming a patron!`;
 	}

@@ -1,4 +1,4 @@
-import { EmbedBuilder } from '@oldschoolgg/discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CluesScore, Player, SkillScore, SkillsScore } from 'oldschooljs/hiscores';
 

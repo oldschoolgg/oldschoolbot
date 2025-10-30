@@ -1,4 +1,4 @@
-import { ButtonBuilder } from '@discordjs/builders';
+import { ButtonBuilder } from '@oldschoolgg/discord';
 import type { BaseMessageOptions, ButtonInteraction, Message } from '@oldschoolgg/discord.js';
 import { isFunction, makeComponents, noOp, Time } from '@oldschoolgg/toolkit';
 import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';

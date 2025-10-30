@@ -49,7 +49,7 @@ export const lightCommand = defineCommand({
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
-		const maxTripLength = user.calcMaxTripLength('Firemaking');
+		const maxTripLength = await user.calcMaxTripLength('Firemaking');
 
 		const amountOfLogsOwned = user.bank.amount(log.inputLogs);
 

@@ -185,7 +185,7 @@ export async function giantsFoundryStartCommand(
 	const boosts = [];
 	timePerSection *= (100 - setBonus) / 100;
 	boosts.push(`${setBonus}% faster for Smiths' Uniform item/items`);
-	const maxTripLength = user.calcMaxTripLength('GiantsFoundry');
+	const maxTripLength = await user.calcMaxTripLength('GiantsFoundry');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / (alloy.sections * timePerSection));
 	}

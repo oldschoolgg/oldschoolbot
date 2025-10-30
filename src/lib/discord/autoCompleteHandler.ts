@@ -1,10 +1,5 @@
-import {
-	type APIApplicationCommandOptionChoice,
-	ApplicationCommandOptionType,
-	type AutocompleteInteraction,
-	type CommandInteractionOption,
-	type GuildMember
-} from '@oldschoolgg/discord.js';
+import type { AutocompleteInteraction, CommandInteractionOption, GuildMember } from '@oldschoolgg/discord.js';
+import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
 
 import type { AnyCommand } from '@/lib/discord/index.js';
 

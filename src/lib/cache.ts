@@ -1,6 +1,5 @@
 import { type PerkTier, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
-import type { APIChannel, APIGuildMember, APIRole } from 'discord-api-types/v10';
 import { LRUCache } from 'lru-cache';
 
 import type { Giveaway, Guild } from '@/prisma/main.js';
@@ -27,10 +26,18 @@ export const DISABLED_COMMANDS: Set<string> = new Set();
 export const CACHED_ACTIVE_USER_IDS: Set<string> = new Set();
 export const CHAT_PET_COOLDOWN_CACHE = new LRUCache<string, number>({ max: 2000 });
 
-export const Cache = {
-	MAIN_SERVER: {
-		ROLES: new Map<string, APIRole>(),
-		CHANNELS: new Map<string, APIChannel>(),
-		MEMBERS: new Map<string, APIGuildMember>()
+export const GE_SLOTS_CACHE = new LRUCache<
+	string,
+	{
+		slots: number;
+		doesntHaveNames: string[];
+		possibleExtra: number;
+		maxPossible: number;
 	}
-};
+>({
+	ttl: Time.Hour,
+	max: 300
+});
+
+export const RARE_ROLES_CACHE = new LRUCache<string, number>({ max: 1000 });
+export const RANDOM_EVENTS_CACHE = new LRUCache<string, number>({ max: 500 });

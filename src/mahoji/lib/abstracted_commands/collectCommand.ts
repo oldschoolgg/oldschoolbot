@@ -20,7 +20,7 @@ export async function collectCommand(
 			.join(', ')}.`;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Collecting');
+	const maxTripLength = await user.calcMaxTripLength('Collecting');
 	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}

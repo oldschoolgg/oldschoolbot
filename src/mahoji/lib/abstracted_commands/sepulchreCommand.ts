@@ -47,7 +47,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 	}
 
-	const maxLaps = Math.floor(user.calcMaxTripLength('Sepulchre') / lapLength);
+	const maxLaps = Math.floor((await user.calcMaxTripLength('Sepulchre')) / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	let fletchable: Fletchable | undefined;

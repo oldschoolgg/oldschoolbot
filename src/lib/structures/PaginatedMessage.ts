@@ -1,13 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
-import {
-	type ButtonInteraction,
-	ButtonStyle,
-	ComponentType,
-	type InteractionReplyOptions,
-	MessageFlags
-} from '@oldschoolgg/discord.js';
+import { ActionRowBuilder, ButtonBuilder } from '@oldschoolgg/discord';
+import { type ButtonInteraction, ComponentType, type InteractionReplyOptions } from '@oldschoolgg/discord.js';
 import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
-import { InteractionResponseType, Routes } from 'discord-api-types/v10';
+import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 import { isFunction } from 'remeda';
 
 const PaginatedCustomID = {

@@ -1,4 +1,4 @@
-import { EmbedBuilder } from '@discordjs/builders';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { shuffleArr } from '@oldschoolgg/rng';
 import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, convertXPtoLVL, type ItemBank, toKMB } from 'oldschooljs';

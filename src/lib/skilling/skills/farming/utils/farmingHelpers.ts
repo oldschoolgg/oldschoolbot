@@ -1,4 +1,4 @@
-import { ButtonBuilder } from '@discordjs/builders';
+import { ButtonBuilder } from '@oldschoolgg/discord';
 import type { BaseMessageOptions } from '@oldschoolgg/discord.js';
 import { dateFm, Emoji, makeComponents, stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonStyle } from 'discord-api-types/v10';

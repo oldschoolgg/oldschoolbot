@@ -1,6 +1,6 @@
 import '../../src/lib/safeglobals.js';
 
-import { Collection } from 'discord.js';
+import { Collection } from '@oldschoolgg/discord.js';
 import { vi } from 'vitest';
 
 import { createDb } from '@/lib/globals.js';

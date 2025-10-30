@@ -23,7 +23,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	const userBank = user.bank;
 
-	const maxTripLength = user.calcMaxTripLength('Enchanting');
+	const maxTripLength = await user.calcMaxTripLength('Enchanting');
 
 	const timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
 

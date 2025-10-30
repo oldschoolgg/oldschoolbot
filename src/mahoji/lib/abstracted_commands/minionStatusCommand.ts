@@ -1,4 +1,4 @@
-import { ButtonBuilder } from '@discordjs/builders';
+import { ButtonBuilder } from '@oldschoolgg/discord';
 import type { BaseMessageOptions } from '@oldschoolgg/discord.js';
 import { makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
@@ -34,7 +34,7 @@ async function fetchFavoriteGearPresets(userID: string) {
 			.setStyle(ButtonStyle.Secondary)
 			.setCustomId(`GPE_${i.pinned_setup}_${stripNonAlphanumeric(i.name)}`)
 			.setLabel(`Equip '${toTitleCase(i.name).replace(/_/g, ' ')}' to ${i.pinned_setup}`)
-			.setEmoji({ id: i.emoji_id ?? EmojiId.Gear })
+			.setEmoji({ id: EmojiId.Gear })
 	);
 }
 

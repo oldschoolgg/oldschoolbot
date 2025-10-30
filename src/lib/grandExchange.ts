@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle, bold, userMention } from '@oldschoolgg/discord.js';
+import { ButtonBuilder, ButtonStyle, bold, userMention } from '@oldschoolgg/discord';
 import {
 	calcPercentOfNum,
 	getInterval,
@@ -9,13 +9,13 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { clamp } from 'remeda';
 
 import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { GE_SLOTS_CACHE } from '@/lib/cache.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
@@ -165,7 +165,7 @@ class GrandExchangeSingleton {
 					amount: 1
 				})),
 				{
-					has: (user: MUser) => user.perkTier() >= PerkTier.Four,
+					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Four,
 					name: 'Tier 3 Patron',
 					amount: 10
 				}
@@ -184,14 +184,10 @@ class GrandExchangeSingleton {
 		}
 	}
 
-	private slotsCache = new LRUCache<string, Awaited<ReturnType<typeof this.calculateSlotsOfUser>>>({
-		ttl: Time.Hour,
-		max: 300
-	});
 	async calculateSlotsOfUser(
 		user: MUser
 	): Promise<{ slots: number; doesntHaveNames: string[]; possibleExtra: number; maxPossible: number }> {
-		const cached = this.slotsCache.get(user.id);
+		const cached = GE_SLOTS_CACHE.get(user.id);
 		if (cached) return cached;
 		const robochimpUser = await roboChimpUserFetch(user.id);
 		let slots = 0;
@@ -200,7 +196,7 @@ class GrandExchangeSingleton {
 		let maxPossible = 0;
 		for (const boost of this.config.slots.slotBoosts) {
 			maxPossible += boost.amount;
-			if (boost.has(user, robochimpUser)) {
+			if (await boost.has(user, robochimpUser)) {
 				slots += boost.amount;
 			} else {
 				doesntHaveNames.push(boost.name);
@@ -208,7 +204,7 @@ class GrandExchangeSingleton {
 			}
 		}
 		const result = { slots, doesntHaveNames, possibleExtra, maxPossible };
-		this.slotsCache.set(user.id, result);
+		GE_SLOTS_CACHE.set(user.id, result);
 		return result;
 	}
 

@@ -21,7 +21,7 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 
 	const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
-	const maxTripLength = user.calcMaxTripLength('Burying');
+	const maxTripLength = await user.calcMaxTripLength('Burying');
 
 	if (!quantity) {
 		const amountOfBonesOwned = user.bank.amount(bone.inputId);

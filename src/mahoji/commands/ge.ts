@@ -372,7 +372,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 
 `;
 				}
-				if (user.perkTier() < PerkTier.Four) {
+				if ((await user.fetchPerkTier()) < PerkTier.Four) {
 					return baseMessage;
 				}
 				let result = await prisma.$queryRawUnsafe<

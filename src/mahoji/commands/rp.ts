@@ -1,4 +1,4 @@
-import { codeBlock, SnowflakeUtil } from '@oldschoolgg/discord.js';
+import { codeBlock } from '@oldschoolgg/discord';
 import { randArrItem } from '@oldschoolgg/rng';
 import { dateFm, isValidDiscordSnowflake, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
@@ -456,7 +456,7 @@ Date: ${dateFm(date)}`;
 
 		if (options.player?.set_buy_date) {
 			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);
-			const res = SnowflakeUtil.deconstruct(options.player.set_buy_date.message_id);
+			const res = DiscordSnowflake.deconstruct(options.player.set_buy_date.message_id);
 			const date = new Date(Number(res.timestamp));
 
 			await interaction.confirmation(

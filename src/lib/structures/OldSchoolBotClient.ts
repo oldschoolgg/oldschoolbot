@@ -30,6 +30,11 @@ export class OldSchoolBotClient extends Client<true> {
 		// await this.syncMainServerData();
 	}
 
+	async giveRole(guildId: string, userId: string, roleId: string) {
+		const route = Routes.guildMemberRole(guildId, userId, roleId);
+		await globalClient.rest.put(route);
+	}
+
 	async fetchRolesOfGuild(guildId: string) {
 		const roles: APIRole[] = (await globalClient.rest.get(Routes.guildRoles(guildId))) as APIRole[];
 		return roles;

@@ -11,7 +11,7 @@ import {
 	MessageFlags,
 	PermissionsBitField,
 	Routes
-} from '@oldschoolgg/discord.js';
+} from '@oldschoolgg/discord';
 import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import { omit } from 'remeda';

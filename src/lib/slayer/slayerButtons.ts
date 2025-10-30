@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
+import { ActionRowBuilder, ButtonBuilder } from '@oldschoolgg/discord';
 import { ButtonStyle } from 'discord-api-types/v10';
 
 import { InteractionID } from '@/lib/InteractionID.js';

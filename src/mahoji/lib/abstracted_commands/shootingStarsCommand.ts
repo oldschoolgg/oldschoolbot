@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord.js';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
@@ -9,7 +9,6 @@ import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTim
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
-import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
 
 interface Star extends Ore {
 	size: number;
@@ -213,7 +212,7 @@ export async function shootingStarsCommand(channelID: string, user: MUser, star:
 			goldSilverBoost: false,
 			miningLvl: miningLevel,
 			passedDuration: duration,
-			maxTripLength: user.calcMaxTripLength('ShootingStars'),
+			maxTripLength: await user.calcMaxTripLength('ShootingStars'),
 			hasKaramjaMedium: false
 		});
 		duration += timeToMine;
@@ -233,7 +232,7 @@ export async function shootingStarsCommand(channelID: string, user: MUser, star:
 		if (star.petChance && roll((star.petChance - skills.mining * 25) / newQuantity)) {
 			loot.add('Rock golem');
 		}
-		if (duration >= user.calcMaxTripLength('Mining')) {
+		if (duration >= (await user.calcMaxTripLength('Mining'))) {
 			break;
 		}
 	}
@@ -304,5 +303,5 @@ export function handleTriggerShootingStar(user: MUser, data: ActivityTaskData, c
 		.setEmoji({ name: '⭐' })
 		.setStyle(ButtonStyle.Secondary);
 	components.push(button);
-	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 5 + patronMaxTripBonus(user) / 2 });
+	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 5 });
 }

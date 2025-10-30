@@ -154,7 +154,7 @@ export const huntCommand = defineCommand({
 			if (usingStaminaPotion) catchTime *= 0.8;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Hunter');
+		const maxTripLength = await user.calcMaxTripLength('Hunter');
 
 		let { quantity } = options;
 		if (!quantity) {

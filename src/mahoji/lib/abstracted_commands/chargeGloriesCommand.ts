@@ -21,7 +21,7 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 		invDuration /= 3;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('GloryCharging');
+	const maxTripLength = await user.calcMaxTripLength('GloryCharging');
 
 	const max = Math.min(amountHas / gloriesInventorySize, Math.floor(maxTripLength / invDuration));
 	if (!quantity) {

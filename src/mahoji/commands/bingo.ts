@@ -1,4 +1,4 @@
-import { bold, type GuildMember, userMention } from '@oldschoolgg/discord.js';
+import { bold, type GuildMember, userMention } from '@oldschoolgg/discord';
 import {
 	channelIsSendable,
 	chunk,

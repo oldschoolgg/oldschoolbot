@@ -8,7 +8,7 @@ export async function myNotesCommand(user: MUser, channelID: string) {
 		return 'Your minion is busy.';
 	}
 	const oneSkeleton = 5 * Time.Second;
-	const maxTripLength = user.calcMaxTripLength('MyNotes');
+	const maxTripLength = await user.calcMaxTripLength('MyNotes');
 	const quantity = Math.floor(maxTripLength / oneSkeleton);
 	const duration = quantity * oneSkeleton;
 

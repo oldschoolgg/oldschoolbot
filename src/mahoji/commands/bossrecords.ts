@@ -1,4 +1,4 @@
-import { EmbedBuilder } from '@oldschoolgg/discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { chunk, toTitleCase } from '@oldschoolgg/toolkit';
 import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
 

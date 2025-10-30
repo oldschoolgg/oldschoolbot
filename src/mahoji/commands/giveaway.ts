@@ -1,18 +1,9 @@
-import {
-	ActionRowBuilder,
-	AttachmentBuilder,
-	type BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	ChannelType,
-	EmbedBuilder,
-	MessageFlags,
-	messageLink,
-	time
-} from '@oldschoolgg/discord.js';
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
+import { AttachmentBuilder, type BaseMessageOptions } from '@oldschoolgg/discord.js';
 import { randInt } from '@oldschoolgg/rng';
 import { channelIsSendable, chunk, Emoji, makeComponents, Time } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
+import { ButtonStyle, ChannelType, MessageFlags } from 'discord-api-types/v10';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
@@ -256,10 +247,12 @@ export const giveawayCommand = defineCommand({
 				return Emoji.RedX;
 			}
 
+			const perkTier = await user.fetchPerkTier();
+
 			const lines = giveaways.map(
 				(g: Giveaway) =>
 					`${
-						user.perkTier() >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
+						perkTier >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
 					}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
 						g.finish_date,
 						'R'

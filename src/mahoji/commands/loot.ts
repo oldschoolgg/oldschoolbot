@@ -53,7 +53,7 @@ export const lootCommand = defineCommand({
 	],
 	run: async ({ options, user, interaction }) => {
 		const name = options.view?.name ?? options.reset?.name ?? '';
-		if (user.perkTier() < PerkTier.Four) {
+		if ((await user.fetchPerkTier()) < PerkTier.Four) {
 			const res = await prisma.lootTrack.count({
 				where: {
 					user_id: BigInt(user.id)

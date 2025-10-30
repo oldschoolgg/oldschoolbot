@@ -1,11 +1,17 @@
-import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextChannel } from '@oldschoolgg/discord.js';
+import { bold, EmbedBuilder } from '@oldschoolgg/discord';
+import type { BaseMessageOptions, Message, TextChannel } from '@oldschoolgg/discord.js';
 import { roll } from '@oldschoolgg/rng';
 import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
-import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
-import { CHAT_PET_COOLDOWN_CACHE, lastRoboChimpSyncCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
+import { Cache } from '@/lib/cache/redis.js';
+import {
+	CHAT_PET_COOLDOWN_CACHE,
+	lastRoboChimpSyncCache,
+	RARE_ROLES_CACHE,
+	untrustedGuildSettingsCache
+} from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
@@ -38,28 +44,28 @@ const rareRolesSrc: [string, number, string][] = [
 	['670212876832735244', 1_000_000, 'Third Age']
 ];
 
-const userCache = new LRUCache<string, number>({ max: 1000 });
-function rareRoles(msg: Message) {
+async function rareRoles(msg: Message) {
 	if (!globalConfig.isProduction) return;
 
 	if (!msg.guild || msg.guild.id !== globalConfig.supportServerID) {
 		return;
 	}
 
-	const lastMessage = userCache.get(msg.author.id) ?? 1;
+	const lastMessage = RARE_ROLES_CACHE.get(msg.author.id) ?? 1;
 	if (Date.now() - lastMessage < Time.Second * 13) return;
-	userCache.set(msg.author.id, Date.now());
+	RARE_ROLES_CACHE.set(msg.author.id, Date.now());
 
-	if (!roll(10)) return;
+	if (!roll(10) || !msg.guildId) return;
 
 	for (const [roleID, chance, name] of rareRolesSrc) {
 		if (roll(chance / 10)) {
-			if (msg.member?.roles.cache.has(roleID)) continue;
+			const member = await Cache.getMainServerMember(msg.author.id);
+			if (member?.roles.includes(roleID)) continue;
 			if (!globalConfig.isProduction && msg.channel.isSendable()) {
 				return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
 			}
-			msg.member?.roles.add(roleID);
-			globalClient.reactToMsg({
+			await globalClient.giveRole(msg.guildId, msg.author.id, roleID);
+			await globalClient.reactToMsg({
 				channelId: msg.channelId,
 				messageId: msg.id,
 				emojiId: 'Gift'

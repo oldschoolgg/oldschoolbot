@@ -1,4 +1,4 @@
-import type { ButtonBuilder } from '@discordjs/builders';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { makeComponents, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -38,7 +38,7 @@ export async function abstractedOpenUntilCommand(
 		return 'The quantity must be a positive integer.';
 	}
 
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
@@ -142,7 +142,7 @@ async function finalizeOpening({
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
 
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	const response: Awaited<CommandResponse> = {
@@ -180,7 +180,7 @@ export async function abstractedOpenCommand(
 
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';
-		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+		if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
 		if (interaction) await interaction.confirmation('Are you sure you want to open ALL your items?');
 	}
 

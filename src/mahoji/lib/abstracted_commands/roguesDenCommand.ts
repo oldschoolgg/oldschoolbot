@@ -23,13 +23,13 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 
 	baseTime = reduceNumByPercent(baseTime, skillPercentage);
 
-	let quantity = Math.floor(user.calcMaxTripLength('RoguesDenMaze') / baseTime);
+	let quantity = Math.floor((await user.calcMaxTripLength('RoguesDenMaze')) / baseTime);
 
 	if (user.hasEquippedOrInBank('Stamina potion(4)')) {
 		baseTime = reduceNumByPercent(baseTime, 50);
 
 		const potionsInBank = user.bank.amount('Stamina potion(4)');
-		const maxPossibleLaps = Math.floor(user.calcMaxTripLength('RoguesDenMaze') / baseTime);
+		const maxPossibleLaps = Math.floor((await user.calcMaxTripLength('RoguesDenMaze')) / baseTime);
 
 		// do as many laps as possible with the current stamina potion supply
 		quantity = Math.min(potionsInBank * 4, maxPossibleLaps);

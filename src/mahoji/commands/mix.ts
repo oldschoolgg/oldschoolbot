@@ -86,7 +86,7 @@ export const mixCommand = defineCommand({
 			} gp for each item so they don't have to go.`;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Herblore');
+		const maxTripLength = await user.calcMaxTripLength('Herblore');
 		let quantity = optionQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);

@@ -4,7 +4,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 
 export async function troubleBrewingStartCommand(user: MUser, channelID: string) {
 	const timePerGame = Time.Minute * 20;
-	const maxTripLength = user.calcMaxTripLength('TroubleBrewing');
+	const maxTripLength = await user.calcMaxTripLength('TroubleBrewing');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 

@@ -129,7 +129,7 @@ export const lapsCommand = defineCommand({
 			}
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Agility');
+		const maxTripLength = await user.calcMaxTripLength('Agility');
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;

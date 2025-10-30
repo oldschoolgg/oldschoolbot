@@ -31,7 +31,7 @@ export const Armours = [
 ];
 
 async function tokensCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	const maxTripLength = user.calcMaxTripLength('AnimatedArmour');
+	const maxTripLength = await user.calcMaxTripLength('AnimatedArmour');
 	const userBank = user.bank;
 
 	const armorSet = Armours.find(set => userBank.has(set.items));
@@ -74,7 +74,7 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 async function cyclopsCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const userBank = user.bank;
 	const hasAttackCape = user.gear.melee.hasEquipped('Attack cape');
-	const maxTripLength = user.calcMaxTripLength('Cyclops');
+	const maxTripLength = await user.calcMaxTripLength('Cyclops');
 	// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 	const amountTokens = userBank.amount('Warrior guild token');
 	if (!hasAttackCape && amountTokens < 100) {

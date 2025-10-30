@@ -1,4 +1,4 @@
-import { EmbedBuilder } from '@oldschoolgg/discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';

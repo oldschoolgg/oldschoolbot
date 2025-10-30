@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord.js';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { EmojiId } from '@/lib/data/emojis.js';

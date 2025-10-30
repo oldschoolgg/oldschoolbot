@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder } from '@oldschoolgg/discord.js';
+import { ChannelType, EmbedBuilder } from '@oldschoolgg/discord';
 import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
@@ -965,19 +965,19 @@ export const toolsCommand = defineCommand({
 			const { patron } = options;
 
 			if (patron.clue_gains) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return clueGains(patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
 			}
 			if (patron.kc_gains) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return kcGains(patron.kc_gains.time, patron.kc_gains.monster, Boolean(patron.kc_gains.ironman));
 			}
 			if (patron.xp_gains) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
 			}
 			if (patron.drystreak) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return dryStreakCommand(
 					patron.drystreak.source,
 					patron.drystreak.item,
@@ -985,11 +985,11 @@ export const toolsCommand = defineCommand({
 				);
 			}
 			if (patron.mostdrops) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return mostDrops(user, patron.mostdrops.item, String(patron.mostdrops.filter));
 			}
 			if (patron.sacrificed_bank) {
-				if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const sacBank = await user.fetchStats();
 				const image = await makeBankImage({
 					bank: new Bank(sacBank.sacrificed_bank as ItemBank),
@@ -1000,7 +1000,7 @@ export const toolsCommand = defineCommand({
 				};
 			}
 			if (patron.cl_bank) {
-				if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const clBank = user.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
@@ -1017,11 +1017,11 @@ export const toolsCommand = defineCommand({
 				};
 			}
 			if (patron.minion_stats) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(user);
 			}
 			if (patron.activity_export) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				const promise = activityExport(user);
 				await interaction.confirmation(
 					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'

@@ -1302,7 +1302,7 @@ export async function statsCommand(user: MUser, type: string): CommandResponse {
 	const dataPoint = dataPoints.find(dp => stringMatches(dp.name, type));
 	if (!dataPoint) return 'Invalid stat name.';
 	const { perkTierNeeded } = dataPoint;
-	if (perkTierNeeded !== null && user.perkTier() < perkTierNeeded) {
+	if (perkTierNeeded !== null && (await user.fetchPerkTier()) < perkTierNeeded) {
 		return `Sorry, you need to be a Tier ${perkTierNeeded - 1} Patron to see this stat.`;
 	}
 	const userStats = await prisma.userStats.upsert({

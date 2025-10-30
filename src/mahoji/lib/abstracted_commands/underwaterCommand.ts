@@ -13,7 +13,7 @@ export async function underwaterAgilityThievingCommand(
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const maxTripLength = user.calcMaxTripLength('UnderwaterAgilityThieving');
+	const maxTripLength = await user.calcMaxTripLength('UnderwaterAgilityThieving');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);

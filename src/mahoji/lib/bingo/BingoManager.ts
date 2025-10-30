@@ -1,5 +1,6 @@
-import { ButtonBuilder, ButtonStyle, userMention } from '@oldschoolgg/discord.js';
+import { ButtonBuilder, userMention } from '@oldschoolgg/discord';
 import { chunk, Emoji, noOp, Time } from '@oldschoolgg/toolkit';
+import { ButtonStyle } from 'discord-api-types/v10';
 import { addBanks, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';

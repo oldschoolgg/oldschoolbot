@@ -72,7 +72,7 @@ export async function motherlodeMineCommand({
 		powermining: powermine,
 		goldSilverBoost,
 		miningLvl: miningLevel,
-		maxTripLength: user.calcMaxTripLength('MotherlodeMining'),
+		maxTripLength: await user.calcMaxTripLength('MotherlodeMining'),
 		hasKaramjaMedium: false
 	});
 

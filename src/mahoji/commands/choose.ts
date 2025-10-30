@@ -1,4 +1,4 @@
-import { inlineCode } from '@oldschoolgg/discord.js';
+import { inlineCode } from '@oldschoolgg/discord';
 import { randArrItem } from '@oldschoolgg/rng';
 
 export const chooseCommand = defineCommand({

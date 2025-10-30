@@ -21,7 +21,7 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		invDuration /= 3;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('WealthCharging');
+	const maxTripLength = await user.calcMaxTripLength('WealthCharging');
 
 	const max = Math.min(amountHas / wealthInventorySize, Math.floor(maxTripLength / invDuration));
 	if (quantity === undefined) {

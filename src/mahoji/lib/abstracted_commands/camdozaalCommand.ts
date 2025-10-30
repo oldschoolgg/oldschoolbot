@@ -54,7 +54,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		powermining: powermine,
 		goldSilverBoost,
 		miningLvl: miningLevel,
-		maxTripLength: user.calcMaxTripLength('CamdozaalMining'),
+		maxTripLength: await user.calcMaxTripLength('CamdozaalMining'),
 		hasKaramjaMedium: false
 	});
 
@@ -90,7 +90,7 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 		return 'You need at least level 14 Smithing to smith in the Ruins of Camdozaal.';
 	}
 
-	const maxTripLength = user.calcMaxTripLength('CamdozaalSmithing');
+	const maxTripLength = await user.calcMaxTripLength('CamdozaalSmithing');
 	const timePerSmith = 3.5 * Time.Second;
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerSmith);
@@ -135,7 +135,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 	}
 	const inputQuantity = quantity;
 
-	const maxTripLength = user.calcMaxTripLength('CamdozaalFishing');
+	const maxTripLength = await user.calcMaxTripLength('CamdozaalFishing');
 	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
 	const timePerFish = camdozaalfish.timePerFish * Time.Second;
 

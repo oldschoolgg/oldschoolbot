@@ -1,4 +1,5 @@
-import { bold, EmbedBuilder, type Guild, type HexColorString, inlineCode, resolveColor } from '@oldschoolgg/discord.js';
+import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
+import { type Guild, type HexColorString, resolveColor } from '@oldschoolgg/discord.js';
 import {
 	formatDuration,
 	hasBanMemberPerms,
@@ -233,7 +234,7 @@ async function favItemConfig(
 
 	if (!item) return currentItems;
 	if (itemToAdd) {
-		const limit = (user.perkTier() + 1) * 100;
+		const limit = ((await user.fetchPerkTier()) + 1) * 100;
 		if (currentFavorites.length >= limit) {
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
@@ -350,7 +351,7 @@ async function bankSortConfig(
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
 
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	if (perkTier < PerkTier.Two) {
 		return patronMsg(PerkTier.Two);
 	}
@@ -642,7 +643,7 @@ export async function pinTripCommand(user: MUser, tripId: string | undefined, cu
 		return 'Invalid custom name.';
 	}
 
-	const limit = pinnedTripLimit(user.perkTier());
+	const limit = pinnedTripLimit(await user.fetchPerkTier());
 	const currentPinnedTripsCount = await prisma.pinnedTrip.count({ where: { user_id: user.id } });
 	if (currentPinnedTripsCount >= limit) {
 		return `You cannot have more than ${limit}x pinned trips, unpin one first. Your limit is ${limit}, you can get up to 4 by being a patron.`;

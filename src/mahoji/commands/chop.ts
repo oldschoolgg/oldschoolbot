@@ -196,6 +196,8 @@ export const chopCommand = defineCommand({
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible
+		const maxTripLength = await user.calcMaxTripLength('Woodcutting');
+
 		const [timeToChop, newQuantity] = determineWoodcuttingTime({
 			quantity,
 			user,
@@ -203,7 +205,8 @@ export const chopCommand = defineCommand({
 			axeMultiplier,
 			powerchopping: powerchop,
 			forestry: forestry_events,
-			woodcuttingLvl: wcLvl
+			woodcuttingLvl: wcLvl,
+			maxTripLength
 		});
 
 		const duration = timeToChop;

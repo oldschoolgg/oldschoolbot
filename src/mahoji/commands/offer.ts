@@ -226,7 +226,7 @@ export const offerCommand = defineCommand({
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return `You have no ${bone.name}.`;
 
-		const maxTripLength = user.calcMaxTripLength('Offering');
+		const maxTripLength = await user.calcMaxTripLength('Offering');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {

@@ -1,4 +1,4 @@
-import { codeBlock, EmbedBuilder } from '@oldschoolgg/discord.js';
+import { codeBlock, EmbedBuilder } from '@oldschoolgg/discord';
 import { chunk, Emoji } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
@@ -187,7 +187,7 @@ export const bankCommand = defineCommand({
 		if (
 			mahojiFlags.includes('show_all') ||
 			mahojiFlags.includes('wide') ||
-			user.perkTier() < PerkTier.Two ||
+			(await user.fetchPerkTier()) < PerkTier.Two ||
 			bankSize === 1
 		) {
 			return result;

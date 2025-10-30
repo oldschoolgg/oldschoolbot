@@ -17,180 +17,117 @@ const { CachedManager } = require('./CachedManager.js');
  * @abstract
  */
 class MessageManager extends CachedManager {
-  static [MakeCacheOverrideSymbol] = MessageManager;
+	static [MakeCacheOverrideSymbol] = MessageManager;
 
-  constructor(channel, iterable) {
-    super(channel.client, Message, iterable);
+	constructor(channel, iterable) {
+		super(channel.client, Message, iterable);
 
-    /**
-     * The channel that the messages belong to
-     *
-     * @type {TextBasedChannels}
-     */
-    this.channel = channel;
-  }
+		/**
+		 * The channel that the messages belong to
+		 *
+		 * @type {TextBasedChannels}
+		 */
+		this.channel = channel;
+	}
 
-  /**
-   * The cache of Messages
-   *
-   * @type {Collection<Snowflake, Message>}
-   * @name MessageManager#cache
-   */
+	_add(data, cache) {
+		return super._add(data, cache);
+	}
 
-  _add(data, cache) {
-    return super._add(data, cache);
-  }
+	async fetch(options) {
+		if (!options) return this._fetchMany();
+		const { message, cache, force } = options;
+		const resolvedMessage = this.resolveId(message ?? options);
+		if (resolvedMessage) return this._fetchSingle({ message: resolvedMessage, cache, force });
+		return this._fetchMany(options);
+	}
 
-  /**
-   * Data that can be resolved to a Message object. This can be:
-   * - A Message
-   * - A Snowflake
-   *
-   * @typedef {Message|Snowflake} MessageResolvable
-   */
+	async _fetchSingle({ message, cache, force = false }) {
+		if (!force) {
+			const existing = this.cache.get(message);
+			if (existing && !existing.partial) return existing;
+		}
 
-  /**
-   * Options used to fetch a message.
-   *
-   * @typedef {BaseFetchOptions} FetchMessageOptions
-   * @property {MessageResolvable} message The message to fetch
-   */
+		const data = await this.client.rest.get(Routes.channelMessage(this.channel.id, message));
+		return this._add(data, cache);
+	}
 
-  /**
-   * Options used to fetch multiple messages.
-   * <info>The `before`, `after`, and `around` parameters are mutually exclusive.</info>
-   *
-   * @typedef {Object} FetchMessagesOptions
-   * @property {number} [limit] The maximum number of messages to return
-   * @property {Snowflake} [before] Consider only messages before this id
-   * @property {Snowflake} [after] Consider only messages after this id
-   * @property {Snowflake} [around] Consider only messages around this id
-   * @property {boolean} [cache] Whether to cache the fetched messages
-   */
+	async _fetchMany(options = {}) {
+		const data = await this.client.rest.get(Routes.channelMessages(this.channel.id), {
+			query: makeURLSearchParams(options),
+		});
 
-  /**
-   * Fetches message(s) from a channel.
-   * <info>The returned Collection does not contain reaction users of the messages if they were not cached.
-   * Those need to be fetched separately in such a case.</info>
-   *
-   * @param {MessageResolvable|FetchMessageOptions|FetchMessagesOptions} [options] Options for fetching message(s)
-   * @returns {Promise<Message|Collection<Snowflake, Message>>}
-   * @example
-   * // Fetch a message
-   * channel.messages.fetch('99539446449315840')
-   *   .then(message => console.log(message.content))
-   *   .catch(console.error);
-   * @example
-   * // Fetch a maximum of 10 messages without caching
-   * channel.messages.fetch({ limit: 10, cache: false })
-   *   .then(messages => console.log(`Received ${messages.size} messages`))
-   *   .catch(console.error);
-   * @example
-   * // Fetch a maximum of 10 messages without caching around a message id
-   * channel.messages.fetch({ limit: 10, cache: false, around: '99539446449315840' })
-   *   .then(messages => console.log(`Received ${messages.size} messages`))
-   *   .catch(console.error);
-   * @example
-   * // Fetch messages and filter by a user id
-   * channel.messages.fetch()
-   *   .then(messages => console.log(`${messages.filter(message =>
-   *          message.author.id === '84484653687267328').size} messages`))
-   *   .catch(console.error);
-   */
-  async fetch(options) {
-    if (!options) return this._fetchMany();
-    const { message, cache, force } = options;
-    const resolvedMessage = this.resolveId(message ?? options);
-    if (resolvedMessage) return this._fetchSingle({ message: resolvedMessage, cache, force });
-    return this._fetchMany(options);
-  }
+		return data.reduce((_data, message) => _data.set(message.id, this._add(message, options.cache)), new Collection());
+	}
 
-  async _fetchSingle({ message, cache, force = false }) {
-    if (!force) {
-      const existing = this.cache.get(message);
-      if (existing && !existing.partial) return existing;
-    }
+	async edit(message, options) {
+		const messageId = this.resolveId(message);
+		if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    const data = await this.client.rest.get(Routes.channelMessage(this.channel.id, message));
-    return this._add(data, cache);
-  }
+		const { body, files } = await (
+			options instanceof MessagePayload
+				? options
+				: MessagePayload.create(message instanceof Message ? message : this, options)
+		)
+			.resolveBody()
+			.resolveFiles();
+		const data = await this.client.rest.patch(Routes.channelMessage(this.channel.id, messageId), { body, files });
 
-  async _fetchMany(options = {}) {
-    const data = await this.client.rest.get(Routes.channelMessages(this.channel.id), {
-      query: makeURLSearchParams(options),
-    });
+		const existing = this.cache.get(messageId);
+		if (existing) {
+			const clone = existing._clone();
+			clone._patch(data);
+			return clone;
+		}
 
-    return data.reduce((_data, message) => _data.set(message.id, this._add(message, options.cache)), new Collection());
-  }
+		return this._add(data);
+	}
 
-  async edit(message, options) {
-    const messageId = this.resolveId(message);
-    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+	/**
+	 * Deletes a message, even if it's not cached.
+	 *
+	 * @param {MessageResolvable} message The message to delete
+	 * @returns {Promise<void>}
+	 */
+	async delete(message) {
+		const messageId = this.resolveId(message);
+		if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    const { body, files } = await (
-      options instanceof MessagePayload
-        ? options
-        : MessagePayload.create(message instanceof Message ? message : this, options)
-    )
-      .resolveBody()
-      .resolveFiles();
-    const data = await this.client.rest.patch(Routes.channelMessage(this.channel.id, messageId), { body, files });
+		await this.client.rest.delete(Routes.channelMessage(this.channel.id, messageId));
+	}
 
-    const existing = this.cache.get(messageId);
-    if (existing) {
-      const clone = existing._clone();
-      clone._patch(data);
-      return clone;
-    }
+	/**
+	 * Ends a poll.
+	 *
+	 * @param {Snowflake} messageId The id of the message
+	 * @returns {Promise<Message>}
+	 */
+	async endPoll(messageId) {
+		const message = await this.client.rest.post(Routes.expirePoll(this.channel.id, messageId));
+		return this._add(message, false);
+	}
 
-    return this._add(data);
-  }
+	/**
+	 * Options used for fetching voters of an answer in a poll.
+	 *
+	 * @typedef {BaseFetchPollAnswerVotersOptions} FetchPollAnswerVotersOptions
+	 * @param {Snowflake} messageId The id of the message
+	 * @param {number} answerId The id of the answer
+	 */
 
-  /**
-   * Deletes a message, even if it's not cached.
-   *
-   * @param {MessageResolvable} message The message to delete
-   * @returns {Promise<void>}
-   */
-  async delete(message) {
-    const messageId = this.resolveId(message);
-    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+	/**
+	 * Fetches the users that voted for a poll answer.
+	 *
+	 * @param {FetchPollAnswerVotersOptions} options The options for fetching the poll answer voters
+	 * @returns {Promise<Collection<Snowflake, User>>}
+	 */
+	async fetchPollAnswerVoters({ messageId, answerId, after, limit }) {
+		const voters = await this.client.rest.get(Routes.pollAnswerVoters(this.channel.id, messageId, answerId), {
+			query: makeURLSearchParams({ limit, after }),
+		});
 
-    await this.client.rest.delete(Routes.channelMessage(this.channel.id, messageId));
-  }
-
-  /**
-   * Ends a poll.
-   *
-   * @param {Snowflake} messageId The id of the message
-   * @returns {Promise<Message>}
-   */
-  async endPoll(messageId) {
-    const message = await this.client.rest.post(Routes.expirePoll(this.channel.id, messageId));
-    return this._add(message, false);
-  }
-
-  /**
-   * Options used for fetching voters of an answer in a poll.
-   *
-   * @typedef {BaseFetchPollAnswerVotersOptions} FetchPollAnswerVotersOptions
-   * @param {Snowflake} messageId The id of the message
-   * @param {number} answerId The id of the answer
-   */
-
-  /**
-   * Fetches the users that voted for a poll answer.
-   *
-   * @param {FetchPollAnswerVotersOptions} options The options for fetching the poll answer voters
-   * @returns {Promise<Collection<Snowflake, User>>}
-   */
-  async fetchPollAnswerVoters({ messageId, answerId, after, limit }) {
-    const voters = await this.client.rest.get(Routes.pollAnswerVoters(this.channel.id, messageId, answerId), {
-      query: makeURLSearchParams({ limit, after }),
-    });
-
-    return voters.users.reduce((acc, user) => acc.set(user.id, this.client.users._add(user, false)), new Collection());
-  }
+		return voters.users.reduce((acc, user) => acc.set(user.id, this.client.users._add(user, false)), new Collection());
+	}
 }
 
 exports.MessageManager = MessageManager;

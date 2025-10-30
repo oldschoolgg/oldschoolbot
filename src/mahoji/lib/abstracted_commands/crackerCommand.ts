@@ -1,5 +1,5 @@
-import type { User } from '@oldschoolgg/discord.js';
 import { shuffleArr } from '@oldschoolgg/rng';
+import type { IUser } from '@oldschoolgg/schemas';
 import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -30,7 +30,7 @@ export async function crackerCommand({
 	interaction,
 	otherPersonAPIUser
 }: {
-	otherPersonAPIUser: User;
+	otherPersonAPIUser: IUser;
 	ownerID: string;
 	otherPersonID: string;
 	interaction: MInteraction;

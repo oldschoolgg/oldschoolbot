@@ -1,4 +1,4 @@
-import { ButtonBuilder } from '@discordjs/builders';
+import { ButtonBuilder } from '@oldschoolgg/discord';
 import { type APIButtonComponent, ButtonStyle, ComponentType } from 'discord-api-types/v10';
 
 const buttonSource = [

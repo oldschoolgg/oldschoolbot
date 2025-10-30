@@ -40,7 +40,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 	healAmountNeeded -= warmGearAmount * 15;
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
-	const maxTripLength = user.calcMaxTripLength('Wintertodt');
+	const maxTripLength = await user.calcMaxTripLength('Wintertodt');
 	if (!quantity) quantity = Math.floor(maxTripLength / durationPerTodt);
 	quantity = Math.max(1, quantity);
 	const duration = durationPerTodt * quantity;

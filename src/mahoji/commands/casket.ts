@@ -5,8 +5,8 @@ import { PerkTier } from '@/lib/constants.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
 
-function determineLimit(user: MUser) {
-	const perkTier = user.perkTier();
+async function determineLimit(user: MUser) {
+	const perkTier = await user.fetchPerkTier();
 	if (perkTier >= PerkTier.Six) return 300_000;
 	if (perkTier >= PerkTier.Five) return 200_000;
 	if (perkTier >= PerkTier.Four) return 100_000;
@@ -39,7 +39,7 @@ export const casketCommand = defineCommand({
 	],
 	run: async ({ options, user, interaction }): CommandResponse => {
 		await interaction.defer();
-		const limit = determineLimit(user);
+		const limit = await determineLimit(user);
 		if (options.quantity > limit) {
 			return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
 		}

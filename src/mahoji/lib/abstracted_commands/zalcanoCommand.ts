@@ -51,7 +51,7 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 	else if (kc > 50) healAmountNeeded = 3 * 12;
 	else if (kc > 20) healAmountNeeded = 5 * 12;
 
-	const maxTripLength = user.calcMaxTripLength('Zalcano');
+	const maxTripLength = await user.calcMaxTripLength('Zalcano');
 	if (!quantity) quantity = Math.floor(maxTripLength / baseTime);
 	quantity = Math.max(1, quantity);
 	const duration = quantity * baseTime;

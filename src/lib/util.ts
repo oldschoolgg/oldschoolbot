@@ -1,4 +1,4 @@
-import { type Guild, userMention } from '@oldschoolgg/discord.js';
+import { userMention } from '@oldschoolgg/discord';
 import { cleanUsername, noOp } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
@@ -20,7 +20,7 @@ export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOpti
 	return 'users' in data;
 }
 
-export function getSupportGuild(): Guild | null {
+export function getSupportGuild() {
 	if (!globalClient || Object.keys(globalClient).length === 0) return null;
 	const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
 	if (!guild) return null;

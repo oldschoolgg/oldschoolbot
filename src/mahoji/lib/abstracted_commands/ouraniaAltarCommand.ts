@@ -59,7 +59,7 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip *= 0.98;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('OuraniaAltar');
+	const maxTripLength = await user.calcMaxTripLength('OuraniaAltar');
 	const maxCanDo = Math.floor(maxTripLength / timePerTrip) * inventorySize;
 
 	// If no quantity provided, set it to the max.

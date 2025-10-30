@@ -90,7 +90,7 @@ export const tksCommand = defineCommand({
 
 		// User bank, maxTripLength, quantity given
 		const { bank } = user;
-		const maxTripLength = user.calcMaxTripLength(activity_type_enum.TokkulShop);
+		const maxTripLength = await user.calcMaxTripLength(activity_type_enum.TokkulShop);
 		const quantity = options.buy?.quantity ?? options.sell?.quantity ?? 1;
 		const cost = new Bank();
 		const loot = new Bank();

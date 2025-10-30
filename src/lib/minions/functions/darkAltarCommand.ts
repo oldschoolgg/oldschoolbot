@@ -77,7 +77,7 @@ export async function darkAltarCommand({
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}
 
-	const maxTripLength = user.calcMaxTripLength('DarkAltar');
+	const maxTripLength = await user.calcMaxTripLength('DarkAltar');
 	let quantity = Math.floor(maxTripLength / timePerRune);
 	let duration = maxTripLength;
 	const totalCost = new Bank();

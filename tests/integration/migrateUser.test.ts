@@ -765,7 +765,6 @@ const allTableCommands: TestCommand[] = [
 					ring: 'Berserker ring',
 					weapon: 'Ghrazi rapier'
 				},
-				undefined,
 				undefined
 			);
 		}
@@ -834,7 +833,7 @@ const allTableCommands: TestCommand[] = [
 				select: { id: true }
 			});
 			if (result) {
-				await pinTripCommand(user, result.id.toString(), undefined, undefined);
+				await pinTripCommand(user, result.id.toString(), undefined);
 			}
 		}
 	},

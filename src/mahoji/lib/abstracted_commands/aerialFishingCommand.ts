@@ -9,7 +9,7 @@ export async function aerialFishingCommand(user: MUser, channelID: string) {
 	}
 
 	const timePerFish = randomVariation(2, 7.5) * Time.Second;
-	const quantity = Math.floor(user.calcMaxTripLength('AerialFishing') / timePerFish);
+	const quantity = Math.floor((await user.calcMaxTripLength('AerialFishing')) / timePerFish);
 	const duration = timePerFish * quantity;
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({

@@ -1,8 +1,9 @@
-import { AttachmentBuilder, bold } from '@oldschoolgg/discord.js';
+import { AttachmentBuilder, bold } from '@oldschoolgg/discord';
 import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { Cache } from '@/lib/cache/redis.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField, BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
@@ -13,7 +14,6 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { roboChimpCache } from '@/lib/perkTier.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
@@ -68,7 +68,7 @@ export async function getUserInfo(user: MUser) {
 	const taskText = task ? `${task.type}` : 'None';
 
 	const result = {
-		perkTier: user.perkTier(),
+		perkTier: await user.fetchPerkTier(),
 		isBlacklisted: BLACKLISTED_USERS.has(user.id),
 		badges: user.badgesString,
 		isIronman: user.isIronman,
@@ -82,7 +82,7 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
-	const roboCache = roboChimpCache.get(user.id);
+	const roboCache = await Cache.getRoboChimpUser(user.id);
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
@@ -419,7 +419,7 @@ export const minionCommand = defineCommand({
 		}
 	],
 	run: async ({ user, options, interaction, rng }) => {
-		const perkTier = user.perkTier();
+		const perkTier = await user.fetchPerkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
 		if (options.status) return minionStatusCommand(user);

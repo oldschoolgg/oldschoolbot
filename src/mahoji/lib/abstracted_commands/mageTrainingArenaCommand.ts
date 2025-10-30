@@ -114,7 +114,7 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const roomDuration = Time.Minute * 14;
-	const quantity = Math.floor(user.calcMaxTripLength('MageTrainingArena') / roomDuration);
+	const quantity = Math.floor((await user.calcMaxTripLength('MageTrainingArena')) / roomDuration);
 	const duration = quantity * roomDuration;
 
 	const cost = determineRunes(user, new Bank().add(RuneTable.roll())).multiply(quantity);

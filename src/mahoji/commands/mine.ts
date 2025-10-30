@@ -229,7 +229,7 @@ export const mineCommand = defineCommand({
 		const res = determineMiningTrip({
 			gearBank: user.gearBank,
 			ore,
-			maxTripLength: user.calcMaxTripLength('Mining'),
+			maxTripLength: await user.calcMaxTripLength('Mining'),
 			isPowermining: !!powermine,
 			quantityInput: quantity,
 			hasKaramjaMedium

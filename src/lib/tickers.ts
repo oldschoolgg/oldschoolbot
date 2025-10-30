@@ -1,6 +1,12 @@
-import type { TextChannel } from '@oldschoolgg/discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord.js';
-import { awaitMessageComponentInteraction, noOp, removeFromArr, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
+import {
+	awaitMessageComponentInteraction,
+	channelIsSendable,
+	noOp,
+	removeFromArr,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { analyticsTick } from '@/lib/analytics.js';
@@ -233,8 +239,8 @@ export const tickers: {
 		productionOnly: true,
 		cb: async () => {
 			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.HelpAndSupport) as TextChannel | undefined;
-			if (!channel) return;
+			const channel = guild?.channels.cache.get(Channel.HelpAndSupport);
+			if (!channelIsSendable(channel)) return;
 			const messages = await channel.messages.fetch({ limit: 5 });
 			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
 			if (lastMessageID) {
@@ -258,8 +264,8 @@ export const tickers: {
 		productionOnly: true,
 		cb: async () => {
 			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel | undefined;
-			if (!channel) return;
+			const channel = guild?.channels.cache.get(Channel.GrandExchange);
+			if (!channelIsSendable(channel)) return;
 			const messages = await channel.messages.fetch({ limit: 5 });
 			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
 			if (lastMessageGEID) {
@@ -285,7 +291,7 @@ export const tickers: {
 		name: 'robochimp_cache',
 		startupWait: Time.Minute * 5,
 		timer: null,
-		interval: Time.Minute * 5,
+		interval: Time.Minute * 30,
 		cb: async () => {
 			await populateRoboChimpCache();
 		}

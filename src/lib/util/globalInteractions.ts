@@ -1,4 +1,4 @@
-import { type ButtonInteraction, MessageFlags } from '@oldschoolgg/discord.js';
+import { type ButtonInteraction, MessageFlags } from '@oldschoolgg/discord';
 import { formatDuration, removeFromArr, SpecialResponse, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import { Bank, type ItemBank } from 'oldschooljs';

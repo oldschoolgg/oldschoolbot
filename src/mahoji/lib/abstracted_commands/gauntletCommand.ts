@@ -118,7 +118,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	// Add a 5% variance to account for randomness of gauntlet
 	const gauntletLength = randomVariation(baseLength, 5);
 
-	const maxTripLength = user.calcMaxTripLength('Gauntlet');
+	const maxTripLength = await user.calcMaxTripLength('Gauntlet');
 
 	const quantity = Math.floor(maxTripLength / gauntletLength);
 	const duration = quantity * gauntletLength;

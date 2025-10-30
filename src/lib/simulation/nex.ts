@@ -194,7 +194,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 }
 
 export async function calculateNexDetails({ team }: { team: MUser[] }) {
-	let maxTripLength = Math.max(...team.map(u => u.calcMaxTripLength('Nex')));
+	let maxTripLength = Math.max(...(await Promise.all(team.map(u => u.calcMaxTripLength('Nex')))));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
 

@@ -71,7 +71,7 @@ export async function harvestCommand({
 		duration *= 0.9;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Farming');
+	const maxTripLength = await user.calcMaxTripLength('Farming');
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -172,7 +172,7 @@ export async function farmingPlantCommand({
 		return 'There are no available patches to you.';
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Farming');
+	const maxTripLength = await user.calcMaxTripLength('Farming');
 
 	// If no quantity provided, set it to the max PATCHES available.
 	const maxCanDo = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));

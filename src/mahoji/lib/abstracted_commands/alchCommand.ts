@@ -1,5 +1,5 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -31,7 +31,7 @@ export async function alchCommand(
 	const userBank = user.bank;
 	let osItem = Items.getItem(item);
 
-	const [favAlchs] = user.favAlchs(user.calcMaxTripLength('Alching')) as Item[];
+	const [favAlchs] = user.favAlchs(await user.calcMaxTripLength('Alching'));
 	if (!osItem) osItem = favAlchs;
 
 	if (!osItem) return 'Invalid item.';
@@ -41,7 +41,7 @@ export async function alchCommand(
 		return 'You need level 55 Magic to cast High Alchemy';
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Alching');
+	const maxTripLength = await user.calcMaxTripLength('Alching');
 
 	const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));
 

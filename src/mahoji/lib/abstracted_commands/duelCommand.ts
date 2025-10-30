@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } from '@oldschoolgg/discord.js';
+import { ActionRowBuilder, ButtonBuilder } from '@oldschoolgg/discord';
 import {
 	awaitMessageComponentInteraction,
 	channelIsSendable,
@@ -8,6 +8,7 @@ import {
 	sleep,
 	Time
 } from '@oldschoolgg/toolkit';
+import { ButtonStyle, MessageFlags } from 'discord-api-types/v10';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';

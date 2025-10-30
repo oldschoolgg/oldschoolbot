@@ -7,8 +7,8 @@ import pets from '@/lib/data/pets.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
-function determineCoxLimit(user: MUser) {
-	const perkTier = user.perkTier();
+async function determineCoxLimit(user: MUser) {
+	const perkTier = await user.fetchPerkTier();
 
 	if (perkTier >= PerkTier.Three) {
 		return 2000;
@@ -88,7 +88,7 @@ function simulateColosseumRuns(samples = 100) {
 }
 
 async function coxCommand(user: MUser, quantity: number, cm = false, points = 25_000, teamSize = 4): CommandResponse {
-	const limit = determineCoxLimit(user);
+	const limit = await determineCoxLimit(user);
 	if (quantity > limit) {
 		return `The quantity provided is over your limit of ${limit}. You can increase your limit up to 2000 by becoming a patron: <https://patreon.com/oldschoolbot>`;
 	}

@@ -90,7 +90,7 @@ export const smithCommand = defineCommand({
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 
-		let maxTripLength = user.calcMaxTripLength('Smithing');
+		let maxTripLength = await user.calcMaxTripLength('Smithing');
 
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;

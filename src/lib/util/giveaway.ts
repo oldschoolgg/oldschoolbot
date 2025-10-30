@@ -1,4 +1,4 @@
-import { type MessageEditOptions, time, userMention } from '@oldschoolgg/discord.js';
+import { type MessageEditOptions, time, userMention } from '@oldschoolgg/discord';
 import { channelIsSendable, debounce, Events, noOp, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 

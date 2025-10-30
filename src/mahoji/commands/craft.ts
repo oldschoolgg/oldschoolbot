@@ -73,7 +73,7 @@ export const craftCommand = defineCommand({
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Crafting');
+		const maxTripLength = await user.calcMaxTripLength('Crafting');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);

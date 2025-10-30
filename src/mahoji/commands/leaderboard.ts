@@ -1,4 +1,4 @@
-import { EmbedBuilder } from '@oldschoolgg/discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import {
 	calcWhatPercent,
 	chunk,

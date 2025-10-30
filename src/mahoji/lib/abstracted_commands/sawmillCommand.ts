@@ -35,7 +35,7 @@ export async function sawmillCommand(
 		boosts.push('10% for Woodcutting Guild unlocked');
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Sawmill');
+	const maxTripLength = await user.calcMaxTripLength('Sawmill');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);

@@ -24,7 +24,7 @@ export async function buyingTripCommand(
 	const itemQuantity = buyable.quantity ?? 1;
 	const gpCost = buyable.gpCost ?? 0;
 
-	const maxTripLength = user.calcMaxTripLength('Buy');
+	const maxTripLength = await user.calcMaxTripLength('Buy');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerItem);
 	}

@@ -3,10 +3,10 @@ import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
 import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
+import { Cache } from '@/lib/cache/redis.js';
 import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
-import { cacheRoboChimpUser } from '@/lib/perkTier.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export type RobochimpUser = User;
@@ -83,7 +83,7 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 			...updateObj
 		}
 	});
-	cacheRoboChimpUser(newUser);
+	await Cache.setRoboChimpUser(newUser);
 
 	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
@@ -101,9 +101,7 @@ export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser>
 		},
 		update: {}
 	});
-
-	cacheRoboChimpUser(result);
-
+	await Cache.setRoboChimpUser(result);
 	return result;
 }
 

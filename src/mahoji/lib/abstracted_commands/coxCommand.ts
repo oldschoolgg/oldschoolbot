@@ -214,7 +214,7 @@ export async function coxCommand(
 		reductions,
 		degradeables
 	} = await calcCoxDuration(users, isChallengeMode);
-	const maxTripLength = user.calcMaxTripLength('Raids');
+	const maxTripLength = await user.calcMaxTripLength('Raids');
 	const maxCanDo = Math.max(Math.floor(maxTripLength / raidDuration), 1);
 	const quantity = _quantity && _quantity * raidDuration <= maxTripLength ? _quantity : maxCanDo;
 

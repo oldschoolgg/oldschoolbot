@@ -8,7 +8,7 @@ import {
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { DISABLED_COMMANDS, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
+import { DISABLED_COMMANDS, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
 import type { AnyCommand } from '@/lib/discord/index.js';
 import type { InhibitorResult } from '@/lib/discord/preCommand.js';
@@ -25,7 +25,7 @@ interface Inhibitor {
 		guild: Guild | null;
 		channel: TextBasedChannel | null;
 		member: MMember | null;
-	}) => false | InteractionReplyOptions;
+	}) => false | InteractionReplyOptions | Promise<InteractionReplyOptions | false>;
 	silent?: true;
 }
 
@@ -100,10 +100,10 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'commandRoleLimit',
-		run: ({ member, guild, channel, user }) => {
+		run: async ({ member, guild, channel, user }) => {
 			if (!guild || guild.id !== globalConfig.supportServerID || !channel) return false;
 			if (channel.id !== Channel.ServerGeneral) return false;
-			const perkTier = perkTierCache.get(user.id) ?? 0;
+			const perkTier = await user.fetchPerkTier();
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
 			}
@@ -145,8 +145,9 @@ const inhibitors: Inhibitor[] = [
 		name: 'cooldown',
 		run: ({ user, command }) => {
 			if (!command.attributes?.cooldown) return false;
-			if (globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator))
+			if (globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator)) {
 				return false;
+			}
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return {
@@ -171,7 +172,7 @@ const inhibitors: Inhibitor[] = [
 	}
 ];
 
-export function runInhibitors({
+export async function runInhibitors({
 	user,
 	channel,
 	member,
@@ -183,9 +184,9 @@ export function runInhibitors({
 	member: MMember | null;
 	command: AnyCommand;
 	guild: Guild | null;
-}): undefined | InhibitorResult {
+}): Promise<undefined | InhibitorResult> {
 	for (const { run, silent } of inhibitors) {
-		const result = run({
+		const result = await run({
 			user,
 			channel,
 			member,

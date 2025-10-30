@@ -1,4 +1,3 @@
-import type { InteractionReplyOptions } from '@oldschoolgg/discord.js';
 import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import { PVM_METHODS } from '@/lib/constants.js';
@@ -114,7 +113,7 @@ export const minionKCommand = defineCommand({
 	}
 });
 
-async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
+async function monsterInfo(user: MUser, name: string): Promise<string | CompatibleResponse> {
 	const otherMon = autocompleteMonsters.find(m => m.name === name || m.aliases.includes(name));
 	if (otherMon && 'link' in otherMon) {
 		return `View information, item costs, boosts and requirements for ${otherMon.name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;
@@ -152,8 +151,10 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 			hpString = `${noFoodBoost}% boost for no food`;
 		}
 	}
-	const maxCanKillSlay = Math.floor(user.calcMaxTripLength('MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
-	const maxCanKill = Math.floor(user.calcMaxTripLength('MonsterKilling') / timeToFinish);
+	const maxCanKillSlay = Math.floor(
+		(await user.calcMaxTripLength('MonsterKilling')) / reduceNumByPercent(timeToFinish, 15)
+	);
+	const maxCanKill = Math.floor((await user.calcMaxTripLength('MonsterKilling')) / timeToFinish);
 
 	const { QP } = user;
 
@@ -186,7 +187,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 
 	str.push(
 		`Maximum trip length: ${formatDuration(
-			user.calcMaxTripLength('MonsterKilling')
+			await user.calcMaxTripLength('MonsterKilling')
 		)}.\nNormal kill time: ${formatDuration(
 			monster.timeToFinish
 		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`

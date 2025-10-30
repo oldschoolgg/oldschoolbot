@@ -179,7 +179,7 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 	}
 
 	let gameLength = Time.Minute * 2.8;
-	const maxLength = user.calcMaxTripLength('PestControl');
+	const maxLength = await user.calcMaxTripLength('PestControl');
 	const gear = user.gear.melee;
 
 	const boosts = [];

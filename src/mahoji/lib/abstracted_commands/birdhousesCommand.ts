@@ -1,4 +1,4 @@
-import { time } from '@oldschoolgg/discord.js';
+import { time } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 

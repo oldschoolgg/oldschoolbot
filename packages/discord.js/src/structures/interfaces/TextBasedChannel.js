@@ -44,18 +44,6 @@ class TextBasedChannel {
 		});
 	}
 
-	/**
-	 * Creates a component interaction collector.
-	 *
-	 * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
-	 * @returns {InteractionCollector}
-	 * @example
-	 * // Create a button interaction collector
-	 * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-	 * const collector = channel.createMessageComponentCollector({ filter, time: 15_000 });
-	 * collector.on('collect', interaction => console.log(`Collected ${interaction.customId}`));
-	 * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
-	 */
 	createMessageComponentCollector(options = {}) {
 		return new InteractionCollector(this.client, {
 			...options,
@@ -64,19 +52,6 @@ class TextBasedChannel {
 		});
 	}
 
-	/**
-	 * Collects a single component interaction that passes the filter.
-	 * The Promise will reject if the time expires.
-	 *
-	 * @param {AwaitMessageComponentOptions} [options={}] Options to pass to the internal collector
-	 * @returns {Promise<MessageComponentInteraction>}
-	 * @example
-	 * // Collect a message component interaction
-	 * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-	 * channel.awaitMessageComponent({ filter, time: 15_000 })
-	 *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
-	 *   .catch(console.error);
-	 */
 	async awaitMessageComponent(options = {}) {
 		const _options = { ...options, max: 1 };
 		return new Promise((resolve, reject) => {
@@ -89,11 +64,9 @@ class TextBasedChannel {
 		});
 	}
 
-
 	async fetchWebhooks() {
 		return this.guild.channels.fetchWebhooks(this.id);
 	}
-
 
 	async createWebhook(options) {
 		return this.guild.channels.createWebhook({ channel: this.id, ...options });

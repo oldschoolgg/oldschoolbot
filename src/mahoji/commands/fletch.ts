@@ -63,7 +63,7 @@ export const fletchCommand = defineCommand({
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Fletching');
+		const maxTripLength = await user.calcMaxTripLength('Fletching');
 		let { quantity } = options;
 
 		if (!quantity) {

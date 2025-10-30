@@ -51,7 +51,7 @@ export async function tiaraRunecraftCommand({
 	const makeTiaraTime = Time.Second * 0.6;
 	const adjTripTime = tripLength + TIARAS_PER_INVENTORY * makeTiaraTime;
 	const maxCanDoOwned = numTiaraOwned < numTalismansOwned ? numTiaraOwned : numTalismansOwned;
-	const maxTripLength = user.calcMaxTripLength('Runecraft');
+	const maxTripLength = await user.calcMaxTripLength('Runecraft');
 	const maxCanDo = Math.floor(maxTripLength / adjTripTime) * TIARAS_PER_INVENTORY;
 
 	if (!quantity) {

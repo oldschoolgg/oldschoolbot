@@ -57,7 +57,7 @@ export async function agilityArenaCommand(
 	channelID: string,
 	quantity: number | undefined
 ): CommandResponse {
-	const userMaxTrip = user.calcMaxTripLength('AgilityArena');
+	const userMaxTrip = await user.calcMaxTripLength('AgilityArena');
 	const maxQuantity = userMaxTrip / Time.Minute;
 
 	if (!quantity || quantity * Time.Minute > userMaxTrip) {

@@ -82,7 +82,7 @@ export async function lmsCommand(
 		return 'Your minion must not be busy to do an LMS trip';
 	}
 	const durationPerGame = Time.Minute * 5.5;
-	const quantity = Math.floor(user.calcMaxTripLength('LastManStanding') / durationPerGame);
+	const quantity = Math.floor((await user.calcMaxTripLength('LastManStanding')) / durationPerGame);
 	const duration = randomVariation(quantity * durationPerGame, 5);
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

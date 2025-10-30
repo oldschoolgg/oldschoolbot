@@ -11,7 +11,7 @@ export async function driftNetCommand(
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const maxTripLength = user.calcMaxTripLength('DriftNet');
+	const maxTripLength = await user.calcMaxTripLength('DriftNet');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);

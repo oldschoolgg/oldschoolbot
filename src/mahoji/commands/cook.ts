@@ -107,7 +107,7 @@ export const cookCommand = defineCommand({
 		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
 
-		const maxTripLength = user.calcMaxTripLength('Cooking');
+		const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);

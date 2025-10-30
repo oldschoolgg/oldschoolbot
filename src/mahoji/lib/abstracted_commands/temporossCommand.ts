@@ -41,7 +41,7 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 		durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Tempoross');
+	const maxTripLength = await user.calcMaxTripLength('Tempoross');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / durationPerRoss);
 	}

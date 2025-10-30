@@ -97,7 +97,7 @@ export const smeltingCommand = defineCommand({
 			}
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Smithing');
+		const maxTripLength = await user.calcMaxTripLength('Smithing');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {

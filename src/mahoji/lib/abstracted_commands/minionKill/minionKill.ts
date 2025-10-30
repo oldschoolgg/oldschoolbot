@@ -1,4 +1,3 @@
-import type { InteractionReplyOptions } from '@oldschoolgg/discord.js';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
@@ -30,7 +29,7 @@ export async function minionKillCommand(
 	wilderness: boolean | undefined,
 	solo: boolean | undefined,
 	onTask: boolean | undefined
-): Promise<string | InteractionReplyOptions> {
+): CommandResponse {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -84,7 +83,7 @@ export async function minionKillCommand(
 		isTryingToUseWildy: wilderness ?? false,
 		monsterKC: kcForBonus,
 		inputPVMMethod: method,
-		maxTripLength: user.calcMaxTripLength('MonsterKilling'),
+		maxTripLength: await user.calcMaxTripLength('MonsterKilling'),
 		pkEvasionExperience,
 		poh: await getPOH(user.id),
 		inputQuantity,

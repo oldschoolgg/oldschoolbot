@@ -92,7 +92,7 @@ export const buildCommand = defineCommand({
 		const userBank = user.bank;
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = user.calcMaxTripLength('Construction');
+		const maxTripLength = await user.calcMaxTripLength('Construction');
 
 		let { quantity } = options;
 		if (!quantity) {

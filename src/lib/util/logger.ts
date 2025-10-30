@@ -3,7 +3,7 @@ import SonicBoomDefault from 'sonic-boom';
 const { SonicBoom } = SonicBoomDefault;
 
 import path from 'node:path';
-import { type AutocompleteInteraction, DiscordAPIError } from '@oldschoolgg/discord.js';
+import { type AutocompleteInteraction, DiscordAPIError } from '@oldschoolgg/discord';
 import { isObject, UserError } from '@oldschoolgg/toolkit';
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
