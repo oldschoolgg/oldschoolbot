@@ -45,11 +45,7 @@ class ThreadChannel extends BaseChannel {
 		 */
 		this.messages = new GuildMessageManager(this);
 
-		/**
-		 * A manager of the members that are part of this thread
-		 *
-		 * @type {ThreadMemberManager}
-		 */
+
 		this.members = new ThreadMemberManager(this);
 		if (data) this._patch(data);
 	}
@@ -127,17 +123,6 @@ class ThreadChannel extends BaseChannel {
 		}
 
 		this._createdTimestamp ??= this.type === ChannelType.PrivateThread ? super.createdTimestamp : null;
-
-		if ('rate_limit_per_user' in data) {
-			/**
-			 * The rate limit per user (slowmode) for this thread in seconds
-			 *
-			 * @type {?number}
-			 */
-			this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
-		} else {
-			this.rateLimitPerUser ??= null;
-		}
 
 		if ('message_count' in data) {
 			/**
@@ -313,51 +298,6 @@ class ThreadChannel extends BaseChannel {
 	 */
 
 	/**
-	 * Edits this thread.
-	 *
-	 * @param {ThreadEditOptions} options The options to provide
-	 * @returns {Promise<ThreadChannel>}
-	 * @example
-	 * // Edit a thread
-	 * thread.edit({ name: 'new-thread' })
-	 *   .then(editedThread => console.log(editedThread))
-	 *   .catch(console.error);
-	 */
-	async edit(options) {
-		const newData = await this.client.rest.patch(Routes.channel(this.id), {
-			body: {
-				name: options.name,
-				archived: options.archived,
-				auto_archive_duration: options.autoArchiveDuration,
-				rate_limit_per_user: options.rateLimitPerUser,
-				locked: options.locked,
-				invitable: this.type === ChannelType.PrivateThread ? options.invitable : undefined,
-				applied_tags: options.appliedTags,
-				flags: 'flags' in options ? ChannelFlagsBitField.resolve(options.flags) : undefined,
-			},
-			reason: options.reason,
-		});
-
-		return this.client.actions.ChannelUpdate.handle(newData).updated;
-	}
-
-	/**
-	 * Sets whether the thread is archived.
-	 *
-	 * @param {boolean} [archived=true] Whether the thread is archived
-	 * @param {string} [reason] Reason for archiving or unarchiving
-	 * @returns {Promise<ThreadChannel>}
-	 * @example
-	 * // Archive the thread
-	 * thread.setArchived(true)
-	 *   .then(newThread => console.log(`Thread is now ${newThread.archived ? 'archived' : 'active'}`))
-	 *   .catch(console.error);
-	 */
-	async setArchived(archived = true, reason = undefined) {
-		return this.edit({ archived, reason });
-	}
-
-	/**
 	 * Sets the duration after which the thread will automatically archive in case of no recent activity.
 	 *
 	 * @param {ThreadAutoArchiveDuration} autoArchiveDuration The amount of time after which the thread
@@ -376,31 +316,8 @@ class ThreadChannel extends BaseChannel {
 		return this.edit({ autoArchiveDuration, reason });
 	}
 
-	/**
-	 * Sets a new name for this thread.
-	 *
-	 * @param {string} name The new name for the thread
-	 * @param {string} [reason] Reason for changing the thread's name
-	 * @returns {Promise<ThreadChannel>}
-	 * @example
-	 * // Change the thread's name
-	 * thread.setName('not_general')
-	 *   .then(newThread => console.log(`Thread's new name is ${newThread.name}`))
-	 *   .catch(console.error);
-	 */
 	async setName(name, reason) {
 		return this.edit({ name, reason });
-	}
-
-	/**
-	 * Sets the rate limit per user (slowmode) for this thread.
-	 *
-	 * @param {number} rateLimitPerUser The new rate limit in seconds
-	 * @param {string} [reason] Reason for changing the thread's rate limit
-	 * @returns {Promise<ThreadChannel>}
-	 */
-	async setRateLimitPerUser(rateLimitPerUser, reason) {
-		return this.edit({ rateLimitPerUser, reason });
 	}
 
 	/**
@@ -443,12 +360,6 @@ class ThreadChannel extends BaseChannel {
 		);
 	}
 
-	/**
-	 * Whether the thread is manageable by the client user, for deleting or editing rateLimitPerUser or locked.
-	 *
-	 * @type {boolean}
-	 * @readonly
-	 */
 	get manageable() {
 		const permissions = this.permissionsFor(this.client.user);
 		if (!permissions) return false;
@@ -530,12 +441,8 @@ class ThreadChannel extends BaseChannel {
 	createMessageComponentCollector() { }
 
 	awaitMessageComponent() { }
-
-	bulkDelete() { }
-	// Doesn't work on Thread channels; setRateLimitPerUser() {}
-	// Doesn't work on Thread channels; setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(ThreadChannel, ['fetchWebhooks', 'setNSFW']);
+TextBasedChannel.applyToClass(ThreadChannel, ['fetchWebhooks']);
 
 exports.ThreadChannel = ThreadChannel;

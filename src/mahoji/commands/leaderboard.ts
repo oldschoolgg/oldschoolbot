@@ -1,3 +1,4 @@
+import { EmbedBuilder } from '@oldschoolgg/discord.js';
 import {
 	calcWhatPercent,
 	chunk,
@@ -7,7 +8,6 @@ import {
 	toTitleCase,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { EmbedBuilder } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

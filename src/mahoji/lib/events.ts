@@ -25,7 +25,5 @@ export const onStartup = logWrapFn('onStartup', async () => {
 		await bulkUpdateCommands();
 	}
 
-	globalClient.application.commands.fetch({
-		guildId: globalConfig.isProduction ? undefined : globalConfig.supportServerID
-	});
+	await globalClient.onReady();
 });

@@ -10,7 +10,7 @@ import {
 	type Message,
 	PermissionsBitField,
 	type SelectMenuInteraction
-} from 'discord.js';
+} from '@oldschoolgg/discord.js';
 
 import { chunk } from '../array.js';
 import { stripEmojis } from '../misc.js';

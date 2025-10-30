@@ -1,5 +1,5 @@
+import { ChannelType, userMention } from '@oldschoolgg/discord.js';
 import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
-import { ChannelType, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

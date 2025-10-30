@@ -1,5 +1,5 @@
+import { time } from '@oldschoolgg/discord.js';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';

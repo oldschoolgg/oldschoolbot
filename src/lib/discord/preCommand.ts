@@ -1,4 +1,4 @@
-import type { InteractionReplyOptions } from 'discord.js';
+import type { InteractionReplyOptions } from '@oldschoolgg/discord.js';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
 import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';

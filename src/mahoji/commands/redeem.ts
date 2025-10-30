@@ -1,5 +1,5 @@
+import { bold } from '@discordjs/formatters';
 import { notEmpty, ProductID, products } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';

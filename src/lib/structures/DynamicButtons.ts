@@ -1,15 +1,7 @@
-// DynamicButtons.ts
+import { ButtonBuilder } from '@discordjs/builders';
+import type { BaseMessageOptions, ButtonInteraction, Message } from '@oldschoolgg/discord.js';
 import { isFunction, makeComponents, noOp, Time } from '@oldschoolgg/toolkit';
-import {
-	type BaseMessageOptions,
-	ButtonBuilder,
-	type ButtonInteraction,
-	ButtonStyle,
-	InteractionResponseType,
-	type Message,
-	MessageFlags,
-	Routes
-} from 'discord.js';
+import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import type { MInteraction } from '@/lib/structures/MInteraction.js';
@@ -66,24 +58,24 @@ export class DynamicButtons {
 				b =>
 					new ButtonBuilder({
 						label: b.name,
-						customId: b.id,
+						custom_id: b.id,
 						style: (b.style ?? ButtonStyle.Secondary) as ButtonStyle.Secondary,
-						emoji: b.emoji
+						emoji: b.emoji ? { id: b.emoji } : undefined
 					})
 			)
 			.concat(extraButtons);
 
 		await this.mInteraction.defer({ ephemeral: false });
-		await this.mInteraction.reply({
-			...messageOptions,
-			components: makeComponents(buttons)
-		});
 
-		const baseMsg = this.mInteraction.interactionResponse;
-		this.message = baseMsg && 'id' in baseMsg ? (baseMsg as Message) : null;
+		this.message = await this.mInteraction.reply({
+			...messageOptions,
+			components: makeComponents(buttons),
+			withResponse: true
+		});
+		if (!this.message) return;
 
 		const collectedInteraction = await new Promise<ButtonInteraction | null>(resolve => {
-			const collector = this.mInteraction.interactionResponse!.createMessageComponentCollector({
+			const collector = this.message!.createMessageComponentCollector({
 				time: this.timer ?? Time.Second * 20
 			});
 

@@ -1,5 +1,5 @@
+import { EmbedBuilder } from '@oldschoolgg/discord.js';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { EmbedBuilder } from 'discord.js';
 import { Hiscores } from 'oldschooljs/hiscores';
 
 export const cluesCommand = defineCommand({

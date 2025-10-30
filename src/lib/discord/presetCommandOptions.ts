@@ -1,5 +1,5 @@
+import type { APIApplicationCommandOptionChoice, GuildMember } from '@oldschoolgg/discord.js';
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
-import type { APIApplicationCommandOptionChoice, GuildMember } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import type { GearPreset } from '@/prisma/main.js';

@@ -13,7 +13,9 @@ const external = [
 	'pglite-prisma-adapter',
 	'@electric-sql/pglite',
 	'pg',
-	'oldschooljs'
+	'oldschooljs',
+	'@oldschoolgg/discord.js',
+	'@discordjs/*'
 ];
 
 const baseBuildOptions: BuildOptions = {

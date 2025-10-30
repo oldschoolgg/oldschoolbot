@@ -1,6 +1,7 @@
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord.js';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 
 export function makeOpenCasketButton(tier: ClueTier) {
@@ -10,7 +11,7 @@ export function makeOpenCasketButton(tier: ClueTier) {
 		.setCustomId(id)
 		.setLabel(`Open ${tier.name} Casket`)
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('365003978678730772');
+		.setEmoji({ id: EmojiId.Casket });
 }
 
 export function makeOpenSeedPackButton() {
@@ -18,7 +19,7 @@ export function makeOpenSeedPackButton() {
 		.setCustomId('OPEN_SEED_PACK')
 		.setLabel('Open Seed Pack')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('977410792754413668');
+		.setEmoji({ id: EmojiId.Seedpack });
 }
 
 export function makeAutoContractButton() {
@@ -26,7 +27,7 @@ export function makeAutoContractButton() {
 		.setCustomId('AUTO_FARMING_CONTRACT')
 		.setLabel('Auto Farming Contract')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('977410792754413668');
+		.setEmoji({ id: EmojiId.Seedpack });
 }
 
 export function makeRepeatTripButton() {
@@ -34,7 +35,7 @@ export function makeRepeatTripButton() {
 		.setCustomId('REPEAT_TRIP')
 		.setLabel('Repeat Trip')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('🔁');
+		.setEmoji({ name: '🔁' });
 }
 
 export function makeTearsOfGuthixButton() {
@@ -42,7 +43,7 @@ export function makeTearsOfGuthixButton() {
 		.setCustomId('START_TOG')
 		.setLabel('Start Tears of Guthix')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('🐍');
+		.setEmoji({ name: '🐍' });
 }
 
 export function makeBirdHouseTripButton() {
@@ -50,14 +51,14 @@ export function makeBirdHouseTripButton() {
 		.setCustomId('DO_BIRDHOUSE_RUN')
 		.setLabel('Birdhouse Run')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('692946556399124520');
+		.setEmoji({ id: EmojiId.BirdsNest });
 }
 
 export function makeAutoSlayButton() {
 	return new ButtonBuilder()
 		.setCustomId('AUTO_SLAY')
 		.setLabel('Auto Slay')
-		.setEmoji('630911040560824330')
+		.setEmoji({ id: EmojiId.Slayer })
 		.setStyle(ButtonStyle.Secondary);
 }
 
@@ -66,7 +67,7 @@ export function makeClaimDailyButton() {
 		.setCustomId('CLAIM_DAILY')
 		.setLabel('Minion Daily')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('493286312854683654');
+		.setEmoji({ id: EmojiId.MoneyBag });
 }
 
 export function makeNewSlayerTaskButton() {
@@ -74,7 +75,7 @@ export function makeNewSlayerTaskButton() {
 		.setCustomId('NEW_SLAYER_TASK')
 		.setLabel('New Slayer Task')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('630911040560824330');
+		.setEmoji({ id: EmojiId.Slayer });
 }
 
 const globalInteractionActions = [

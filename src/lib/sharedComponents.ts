@@ -1,4 +1,5 @@
-import { type APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { ButtonBuilder } from '@discordjs/builders';
+import { type APIButtonComponent, ButtonStyle, ComponentType } from 'discord-api-types/v10';
 
 const buttonSource = [
 	{
@@ -24,7 +25,7 @@ const buttonSource = [
 ];
 
 export const informationalButtons = buttonSource.map(i =>
-	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
+	new ButtonBuilder().setLabel(i.label).setEmoji({ id: i.emoji }).setURL(i.url).setStyle(ButtonStyle.Link)
 );
 export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
 	type: ComponentType.Button,

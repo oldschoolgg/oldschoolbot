@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig.json",
-	"extends": "../../tsconfig.json",
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		// Output Formatting
 		"pretty": false,
@@ -13,10 +13,8 @@
 			"@discordjs/util",
 			"@discordjs/collection",
 			"@discordjs/rest",
-			"@discordjs/ws",
 			"discord-api-types/v10",
 			"node",
-			"tsd",
 			"undici",
 			"@sapphire/snowflake"
 		]

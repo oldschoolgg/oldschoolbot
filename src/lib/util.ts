@@ -1,5 +1,5 @@
+import { type Guild, userMention } from '@oldschoolgg/discord.js';
 import { cleanUsername, noOp } from '@oldschoolgg/toolkit';
-import { type Guild, userMention } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import type { Prisma, User } from '@/prisma/main.js';

@@ -4,7 +4,7 @@ import {
 	type AutocompleteInteraction,
 	type CommandInteractionOption,
 	type GuildMember
-} from 'discord.js';
+} from '@oldschoolgg/discord.js';
 
 import type { AnyCommand } from '@/lib/discord/index.js';
 

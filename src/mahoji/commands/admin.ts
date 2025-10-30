@@ -1,3 +1,4 @@
+import { AttachmentBuilder, type InteractionReplyOptions } from '@oldschoolgg/discord.js';
 import { randArrItem } from '@oldschoolgg/rng';
 import {
 	calcPerHour,
@@ -12,7 +13,6 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
@@ -28,7 +28,6 @@ import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
-import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
@@ -158,16 +157,6 @@ AND ("gear.melee" IS NOT NULL OR
 					.sort(sorts.quantity)
 					.slice(0, 10)
 					.map((i, index) => `${++index}. ${i[0].name} - Traded ${i[1].toLocaleString()}x times`)
-					.join('\n')
-			};
-		}
-	},
-	{
-		name: 'Memory Analysis',
-		run: async () => {
-			return {
-				content: Object.entries(memoryAnalysis())
-					.map(i => `${i[0]}: ${i[1]}`)
 					.join('\n')
 			};
 		}

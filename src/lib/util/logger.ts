@@ -3,8 +3,8 @@ import SonicBoomDefault from 'sonic-boom';
 const { SonicBoom } = SonicBoomDefault;
 
 import path from 'node:path';
+import { type AutocompleteInteraction, DiscordAPIError } from '@oldschoolgg/discord.js';
 import { isObject, UserError } from '@oldschoolgg/toolkit';
-import { type AutocompleteInteraction, DiscordAPIError } from 'discord.js';
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';

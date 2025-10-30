@@ -1,5 +1,5 @@
+import { AttachmentBuilder, bold } from '@oldschoolgg/discord.js';
 import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder, bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';

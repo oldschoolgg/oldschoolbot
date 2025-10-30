@@ -1,4 +1,3 @@
-import type { SpecialResponse } from '@oldschoolgg/toolkit';
 import {
 	type APIApplicationCommandOptionChoice,
 	type APIInteractionDataResolvedChannel,
@@ -11,7 +10,8 @@ import {
 	type PermissionFlagsBits,
 	type Role,
 	type User
-} from 'discord.js';
+} from '@oldschoolgg/discord.js';
+import type { SpecialResponse } from '@oldschoolgg/toolkit';
 
 import type { MMember } from '@/lib/structures/MInteraction.js';
 

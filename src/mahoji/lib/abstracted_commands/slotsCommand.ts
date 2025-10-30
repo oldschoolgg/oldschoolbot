@@ -1,6 +1,6 @@
+import { ActionRowBuilder, type BaseMessageOptions, ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord.js';
 import { randInt, shuffleArr } from '@oldschoolgg/rng';
 import { channelIsSendable, chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
-import { ActionRowBuilder, type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
@@ -132,7 +132,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 									? ButtonStyle.Success
 									: ButtonStyle.Secondary
 						)
-						.setEmoji(shouldShowThisButton ? b.emoji : '❓');
+						.setEmoji(shouldShowThisButton ? { id: b.emoji } : { name: '❓' });
 				})
 			)
 		);

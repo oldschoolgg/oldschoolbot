@@ -1,3 +1,4 @@
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } from '@oldschoolgg/discord.js';
 import {
 	awaitMessageComponentInteraction,
 	channelIsSendable,
@@ -7,7 +8,6 @@ import {
 	sleep,
 	Time
 } from '@oldschoolgg/toolkit';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -62,12 +62,12 @@ export async function duelCommand(
 				new ButtonBuilder({
 					label: 'Accept',
 					style: ButtonStyle.Primary,
-					customId: 'CONFIRM'
+					custom_id: 'CONFIRM'
 				}),
 				new ButtonBuilder({
 					label: 'Decline',
 					style: ButtonStyle.Secondary,
-					customId: 'CANCEL'
+					custom_id: 'CANCEL'
 				})
 			])
 		]
@@ -165,7 +165,7 @@ export async function duelCommand(
 			message: duelMessage,
 			filter: i => {
 				if (i.user.id !== (duelTargetUser.id ?? interaction.user.id).toString()) {
-					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+					i.reply({ flags: MessageFlags.Ephemeral, content: 'This is not your confirmation message.' });
 					return false;
 				}
 				return true;

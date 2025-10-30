@@ -1,5 +1,5 @@
+import { bold } from '@discordjs/formatters';
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import Buyables from '@/lib/data/buyables/buyables.js';

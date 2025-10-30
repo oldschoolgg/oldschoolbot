@@ -6,7 +6,7 @@ import {
 	InteractionResponseType,
 	type RESTPostAPIApplicationGuildCommandsJSONBody,
 	Routes
-} from 'discord.js';
+} from '@oldschoolgg/discord.js';
 
 import { globalConfig } from '@/lib/constants.js';
 import { type AnyCommand, convertCommandOptionToAPIOption } from '@/lib/discord/commandOptions.js';

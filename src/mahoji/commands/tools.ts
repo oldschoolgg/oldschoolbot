@@ -1,5 +1,5 @@
+import { ChannelType, EmbedBuilder } from '@oldschoolgg/discord.js';
 import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
-import { ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';

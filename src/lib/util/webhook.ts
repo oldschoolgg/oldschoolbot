@@ -1,4 +1,3 @@
-import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit';
 import {
 	type AttachmentBuilder,
 	type BaseMessageOptions,
@@ -8,7 +7,8 @@ import {
 	PermissionsBitField,
 	type TextChannel,
 	WebhookClient
-} from 'discord.js';
+} from '@oldschoolgg/discord.js';
+import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit';
 
 import { globalConfig } from '@/lib/constants.js';
 

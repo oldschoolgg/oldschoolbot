@@ -1,3 +1,4 @@
+import { ButtonBuilder, ButtonStyle, bold, userMention } from '@oldschoolgg/discord.js';
 import {
 	calcPercentOfNum,
 	getInterval,
@@ -8,7 +9,6 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';

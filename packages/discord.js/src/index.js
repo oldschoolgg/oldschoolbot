@@ -170,8 +170,6 @@ exports.SeparatorComponent = require('./structures/SeparatorComponent.js').Separ
 exports.StringSelectMenuComponent = require('./structures/StringSelectMenuComponent.js').StringSelectMenuComponent;
 exports.StringSelectMenuInteraction =
 	require('./structures/StringSelectMenuInteraction.js').StringSelectMenuInteraction;
-exports.Team = require('./structures/Team.js').Team;
-exports.TeamMember = require('./structures/TeamMember.js').TeamMember;
 exports.TextChannel = require('./structures/TextChannel.js').TextChannel;
 exports.TextDisplayComponent = require('./structures/TextDisplayComponent.js').TextDisplayComponent;
 exports.TextInputComponent = require('./structures/TextInputComponent.js').TextInputComponent;
@@ -193,7 +191,7 @@ __exportStar(require('@discordjs/builders'), exports);
 __exportStar(require('@discordjs/formatters'), exports);
 __exportStar(require('@discordjs/rest'), exports);
 __exportStar(require('@discordjs/util'), exports);
-__exportStar(require('@discordjs/ws'), exports);
+// __exportStar(require('@discordjs/ws'), exports);
 
 const end = performance.now();
 console.log(`Discord.js module loaded in ${(end - start).toFixed(2)} ms`);

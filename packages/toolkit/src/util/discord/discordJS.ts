@@ -1,4 +1,10 @@
-import { type Channel, type GuildTextBasedChannel, PermissionsBitField, type TextChannel, type User } from 'discord.js';
+import {
+	type Channel,
+	type GuildTextBasedChannel,
+	PermissionsBitField,
+	type TextChannel,
+	type User
+} from '@oldschoolgg/discord.js';
 
 /**
  * Checks if the bot can send a message to a channel object.

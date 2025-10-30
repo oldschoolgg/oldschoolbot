@@ -342,7 +342,8 @@ const globalConfigSchema = z.object({
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string(),
-	minimumLoggedPerfDuration: z.number().default(30)
+	minimumLoggedPerfDuration: z.number().default(30),
+	guildsIdsToCache: z.array(z.string())
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
@@ -353,6 +354,11 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
+const GuildId = {
+	OldschoolGG: '342983479501389826',
+	TestServer: '940758552425955348'
+};
+
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
 	botToken: process.env.BOT_TOKEN,
@@ -361,7 +367,8 @@ export const globalConfig = globalConfigSchema.parse({
 	timeZone: process.env.TZ,
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
-	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID
+	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID,
+	guildsIdsToCache: [GuildId.OldschoolGG, GuildId.TestServer]
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {

@@ -1,16 +1,18 @@
-import { roll, shuffleArr } from '@oldschoolgg/rng';
-import { awaitMessageComponentInteraction, channelIsSendable, chunk, noOp, Time } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	type BaseMessageOptions,
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
-	type CacheType
-} from 'discord.js';
+	type CacheType,
+	MessageFlags
+} from '@oldschoolgg/discord.js';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { awaitMessageComponentInteraction, channelIsSendable, chunk, noOp, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { silentButtonAck } from '@/lib/discord/utils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
@@ -129,7 +131,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 						button.setLabel(b.name);
 					}
 					if (!showTrueNames) {
-						button.setEmoji('680783258488799277');
+						button.setEmoji({ id: EmojiId.MysteryBox });
 					}
 					if (b.name === '10x' && !b.picked && showTrueNames) {
 						button.setStyle(ButtonStyle.Primary);
@@ -172,7 +174,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 			message: sentMessage,
 			filter: i => {
 				if (i.user.id !== (user.id ?? interaction.user.id).toString()) {
-					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+					i.reply({ flags: MessageFlags.Ephemeral, content: 'This is not your confirmation message.' });
 					return false;
 				}
 				return true;

@@ -1,3 +1,4 @@
+import { bold } from '@discordjs/formatters';
 import { percentChance, randArrItem, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -15,7 +16,6 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';

@@ -1,6 +1,6 @@
+import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextChannel } from '@oldschoolgg/discord.js';
 import { roll } from '@oldschoolgg/rng';
 import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
-import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextChannel } from 'discord.js';
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
@@ -59,7 +59,11 @@ function rareRoles(msg: Message) {
 				return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
 			}
 			msg.member?.roles.add(roleID);
-			msg.react(Emoji.Gift);
+			globalClient.reactToMsg({
+				channelId: msg.channelId,
+				messageId: msg.id,
+				emojiId: 'Gift'
+			});
 
 			const channel = globalClient.channels.cache.get(Channel.Notifications);
 

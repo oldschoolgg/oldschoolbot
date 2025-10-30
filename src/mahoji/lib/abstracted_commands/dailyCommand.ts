@@ -1,7 +1,6 @@
 import { roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
-import { globalConfig } from '@/lib/constants.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
 import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
@@ -24,8 +23,7 @@ export async function isUsersDailyReady(
 }
 
 async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
-	const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
-	const member = await guild?.members.fetch(user.id).catch(() => null);
+	const member = await globalClient.fetchMainServerMember(user.id);
 
 	const loot = dailyRoll(1, triviaCorrect);
 

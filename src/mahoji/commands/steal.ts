@@ -1,6 +1,6 @@
+import { bold } from '@discordjs/formatters';
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';

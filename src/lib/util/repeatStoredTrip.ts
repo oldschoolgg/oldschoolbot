@@ -1,5 +1,5 @@
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord.js';
 import { Time } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';

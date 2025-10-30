@@ -1,4 +1,4 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit';
+import { SpecialResponse } from '@oldschoolgg/toolkit';
 
 export const pollCommand = defineCommand({
 	name: 'poll',
@@ -11,22 +11,14 @@ export const pollCommand = defineCommand({
 			required: true
 		}
 	],
-	run: async ({ interaction, options, user, channelID }) => {
-		const channel = globalClient.channels.cache.get(channelID);
-		if (!channelIsSendable(channel)) return { ephemeral: true, content: 'Invalid channel.' };
-		await interaction.defer({ ephemeral: false });
-		try {
-			const message = await channel.send({
-				content: `**Poll from ${user.username}:** ${options.question}`,
-				allowedMentions: {
-					parse: []
-				}
-			});
-			await message.react('380915244760825857');
-			await message.react('380915244652036097');
-			return 'Poll created. Users can click on the two reactions to vote.';
-		} catch {
-			return 'There was an error making the poll.';
-		}
+	run: async ({ interaction, channelID }) => {
+		const createdMessage = await interaction.reply({
+			content: 'Poll created. Users can click on the two reactions to vote.',
+			withResponse: true
+		});
+		if (!createdMessage) return 'There was an error making the poll.';
+		await globalClient.reactToMsg({ channelId: channelID, messageId: createdMessage.id, emojiId: 'Happy' });
+		await globalClient.reactToMsg({ channelId: channelID, messageId: createdMessage.id, emojiId: 'Sad' });
+		return SpecialResponse.RespondedManually;
 	}
 });

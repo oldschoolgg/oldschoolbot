@@ -28,7 +28,6 @@
  * @property {string} GuildUpdate guildUpdate
  * @property {string} InteractionCreate interactionCreate
  * @property {string} Invalidated invalidated
- * @property {string} MessageBulkDelete messageDeleteBulk
  * @property {string} MessageCreate messageCreate
  * @property {string} MessageDelete messageDelete
  * @property {string} MessagePollVoteAdd messagePollVoteAdd
@@ -43,7 +42,6 @@
  * @property {string} ThreadCreate threadCreate
  * @property {string} ThreadDelete threadDelete
  * @property {string} ThreadListSync threadListSync
- * @property {string} ThreadMembersUpdate threadMembersUpdate
  * @property {string} ThreadMemberUpdate threadMemberUpdate
  * @property {string} ThreadUpdate threadUpdate
  * @property {string} UserUpdate userUpdate
@@ -57,45 +55,43 @@
  * @ignore
  */
 exports.Events = {
-  ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
-  CacheSweep: 'cacheSweep',
-  ChannelCreate: 'channelCreate',
-  ChannelDelete: 'channelDelete',
-  ChannelUpdate: 'channelUpdate',
-  ClientReady: 'clientReady',
-  Debug: 'debug',
-  Error: 'error',
-  GuildAvailable: 'guildAvailable',
-  GuildBanAdd: 'guildBanAdd',
-  GuildBanRemove: 'guildBanRemove',
-  GuildCreate: 'guildCreate',
-  GuildDelete: 'guildDelete',
-  GuildIntegrationsUpdate: 'guildIntegrationsUpdate',
-  GuildMemberAdd: 'guildMemberAdd',
-  GuildMemberAvailable: 'guildMemberAvailable',
-  GuildMemberRemove: 'guildMemberRemove',
-  GuildMembersChunk: 'guildMembersChunk',
-  GuildMemberUpdate: 'guildMemberUpdate',
-  GuildRoleCreate: 'roleCreate',
-  GuildRoleDelete: 'roleDelete',
-  GuildRoleUpdate: 'roleUpdate',
-  GuildUnavailable: 'guildUnavailable',
-  GuildUpdate: 'guildUpdate',
-  InteractionCreate: 'interactionCreate',
-  Invalidated: 'invalidated',
-  MessageBulkDelete: 'messageDeleteBulk',
-  MessageCreate: 'messageCreate',
-  MessageDelete: 'messageDelete',
-  MessagePollVoteAdd: 'messagePollVoteAdd',
-  MessagePollVoteRemove: 'messagePollVoteRemove',
-  MessageUpdate: 'messageUpdate',
-  ThreadCreate: 'threadCreate',
-  ThreadDelete: 'threadDelete',
-  ThreadListSync: 'threadListSync',
-  ThreadMembersUpdate: 'threadMembersUpdate',
-  ThreadMemberUpdate: 'threadMemberUpdate',
-  ThreadUpdate: 'threadUpdate',
-  UserUpdate: 'userUpdate',
-  Warn: 'warn',
-  WebhooksUpdate: 'webhooksUpdate',
+	ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
+	CacheSweep: 'cacheSweep',
+	ChannelCreate: 'channelCreate',
+	ChannelDelete: 'channelDelete',
+	ChannelUpdate: 'channelUpdate',
+	ClientReady: 'clientReady',
+	Debug: 'debug',
+	Error: 'error',
+	GuildAvailable: 'guildAvailable',
+	GuildBanAdd: 'guildBanAdd',
+	GuildBanRemove: 'guildBanRemove',
+	GuildCreate: 'guildCreate',
+	GuildDelete: 'guildDelete',
+	GuildIntegrationsUpdate: 'guildIntegrationsUpdate',
+	GuildMemberAdd: 'guildMemberAdd',
+	GuildMemberAvailable: 'guildMemberAvailable',
+	GuildMemberRemove: 'guildMemberRemove',
+	GuildMembersChunk: 'guildMembersChunk',
+	GuildMemberUpdate: 'guildMemberUpdate',
+	GuildRoleCreate: 'roleCreate',
+	GuildRoleDelete: 'roleDelete',
+	GuildRoleUpdate: 'roleUpdate',
+	GuildUnavailable: 'guildUnavailable',
+	GuildUpdate: 'guildUpdate',
+	InteractionCreate: 'interactionCreate',
+	Invalidated: 'invalidated',
+	MessageCreate: 'messageCreate',
+	MessageDelete: 'messageDelete',
+	MessagePollVoteAdd: 'messagePollVoteAdd',
+	MessagePollVoteRemove: 'messagePollVoteRemove',
+	MessageUpdate: 'messageUpdate',
+	ThreadCreate: 'threadCreate',
+	ThreadDelete: 'threadDelete',
+	ThreadListSync: 'threadListSync',
+	ThreadMemberUpdate: 'threadMemberUpdate',
+	ThreadUpdate: 'threadUpdate',
+	UserUpdate: 'userUpdate',
+	Warn: 'warn',
+	WebhooksUpdate: 'webhooksUpdate',
 };

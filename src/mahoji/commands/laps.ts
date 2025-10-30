@@ -1,5 +1,5 @@
+import { bold } from '@discordjs/formatters';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { quests } from '@/lib/minions/data/quests.js';

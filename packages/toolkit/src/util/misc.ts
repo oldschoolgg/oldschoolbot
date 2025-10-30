@@ -1,4 +1,4 @@
-import { time } from 'discord.js';
+import { time } from '@discordjs/formatters';
 import emojiRegex from 'emoji-regex';
 
 const rawEmojiRegex = emojiRegex();

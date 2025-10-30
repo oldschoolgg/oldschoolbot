@@ -1,7 +1,8 @@
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord.js';
 import { makeComponents, toTitleCase } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { roughMergeMahojiResponse } from '@/lib/discord/utils.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
@@ -19,7 +20,7 @@ function makeEasierFarmingContractButton() {
 		.setCustomId('FARMING_CONTRACT_EASIER')
 		.setLabel('Ask for easier Contract')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('977410792754413668');
+		.setEmoji({ id: EmojiId.Seedpack });
 }
 
 async function janeImage(content: string) {

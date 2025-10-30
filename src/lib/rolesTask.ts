@@ -391,7 +391,7 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 	debugMessages.push(`Finished role functions, ${results.length} results`);
 
 	const allBadgeIDs = uniqueArr(results.map(i => i.badge)).filter(notEmpty);
-	const allRoleIDs = uniqueArr(results.map(i => i.roleID)).filter(notEmpty);
+	// const allRoleIDs = uniqueArr(results.map(i => i.roleID)).filter(notEmpty);
 
 	if (!dryRun) {
 		const roleNames = new Map<string, string>();
@@ -407,28 +407,30 @@ WHERE badges && ${badgeIDs}
 `);
 
 		// Remove roles from ineligible users
-		for (const member of supportServerGuild.members.cache.values()) {
-			const rolesToRemove = member.roles.cache
-				.filter(r => allRoleIDs.includes(r.id))
-				.filter(roleToRemove => {
-					const shouldHaveThisRole = results.some(
-						r => r.userID === member.id && r.roleID === roleToRemove.id
-					);
-					return !shouldHaveThisRole;
-				});
-			if (rolesToRemove.size > 0) {
-				await member.roles.remove(rolesToRemove.map(r => r.id)).catch(console.error);
-				debugMessages.push(
-					`Removing these roles from ${member.user.tag}: ${rolesToRemove.map(r => r.name).join(', ')}`
-				);
-			}
-		}
+		// for (const member of supportServerGuild.members.cache.values()) {
+		// 	const rolesToRemove = member.roles.cache
+		// 		.filter(r => allRoleIDs.includes(r.id))
+		// 		.filter(roleToRemove => {
+		// 			const shouldHaveThisRole = results.some(
+		// 				r => r.userID === member.id && r.roleID === roleToRemove.id
+		// 			);
+		// 			return !shouldHaveThisRole;
+		// 		});
+		// 	if (rolesToRemove.size > 0) {
+		// 		await member.roles.remove(rolesToRemove.map(r => r.id)).catch(console.error);
+		// 		debugMessages.push(
+		// 			`Removing these roles from ${member.user.tag}: ${rolesToRemove.map(r => r.name).join(', ')}`
+		// 		);
+		// 	}
+		// }
 
 		// Add roles to users
+		const mainServerRoles = await globalClient.fetchRolesOfGuild(globalConfig.supportServerID);
+
 		for (const { userID, roleID, badge } of results) {
 			if (!userID) continue;
-			const role = await supportServerGuild.roles.fetch(roleID).catch(console.error);
-			const member = await supportServerGuild.members.fetch(userID).catch(noOp);
+			const role = mainServerRoles.find(_r => _r.id === roleID);
+			const member = await globalClient.fetchMainServerMember(userID).catch(noOp);
 			if (!member) {
 				debugMessages.push(`Failed to find member ${userID}`);
 				continue;
@@ -439,11 +441,11 @@ WHERE badges && ${badgeIDs}
 			}
 			roleNames.set(roleID, role.name);
 
-			if (!member.roles.cache.has(roleID)) {
-				await member.roles.add(roleID).catch(console.error);
-				debugMessages.push(`Adding the ${role.name} role to ${member.user.tag}`);
+			if (!member.roles.some(_r => _r.id === roleID)) {
+				// await member.roles.add(roleID).catch(console.error);
+				debugMessages.push(`Adding the ${role.name} role to ${member.user.username}`);
 			} else {
-				debugMessages.push(`${member.user.tag} already has the ${role.name} role`);
+				debugMessages.push(`${member.user.username} already has the ${role.name} role`);
 			}
 
 			if (badge) {
@@ -454,9 +456,9 @@ WHERE badges && ${badgeIDs}
 							push: badge
 						}
 					});
-					debugMessages.push(`Adding badge ${badge} to ${member.user.tag}`);
+					debugMessages.push(`Adding badge ${badge} to ${member.user.username}`);
 				} else {
-					debugMessages.push(`${member.user.tag} already has badge ${badge}`);
+					debugMessages.push(`${member.user.username} already has badge ${badge}`);
 				}
 			}
 		}

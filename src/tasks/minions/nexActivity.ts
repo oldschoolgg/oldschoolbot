@@ -1,5 +1,5 @@
+import { userMention } from '@discordjs/formatters';
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
 import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

@@ -1,3 +1,4 @@
+import { bold, type GuildMember, userMention } from '@oldschoolgg/discord.js';
 import {
 	channelIsSendable,
 	chunk,
@@ -6,14 +7,12 @@ import {
 	formatOrdinal,
 	isValidDiscordSnowflake,
 	md5sum,
-	noOp,
 	notEmpty,
 	stringMatches,
 	Time,
 	truncateString,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { bold, type GuildMember, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';
@@ -543,7 +542,7 @@ export const bingoCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ user, userID, options, interaction }) => {
+	run: async ({ user, userID, options, guildID, interaction }) => {
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
 			if (Number.isNaN(bingoID)) {
@@ -624,14 +623,14 @@ export const bingoCommand = defineCommand({
 				return `You need at least ${creationCost} to create a bingo.`;
 			}
 
-			const channel = globalClient.channels.cache.get(options.create_bingo.notifications_channel_id);
-			if (!channel || !channelIsSendable(channel)) {
+			const channel = await globalClient.channels.fetch(options.create_bingo.notifications_channel_id);
+			if (!channel || !channelIsSendable(channel) || !guildID) {
 				return 'Invalid notifications channel.';
 			}
 			if (!isValidNickname(options.create_bingo.title)) {
 				return 'Invalid title.';
 			}
-			const member = await channel.guild.members.fetch(userID).catch(noOp);
+			const member = await globalClient.fetchMemberWithRoles({ guildId: guildID, userId: userID }); //channel.guild.members.fetch(userID).catch(noOp);
 			if (globalConfig.isProduction && (!member || !member.permissions.has('Administrator'))) {
 				return 'You can only use a notifications channel if you are an Administrator of that server.';
 			}

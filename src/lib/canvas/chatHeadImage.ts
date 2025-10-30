@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { AttachmentBuilder } from 'discord.js';
+import { AttachmentBuilder } from '@oldschoolgg/discord.js';
 import type { Image } from 'skia-canvas';
 
 import { createCanvas, loadAndCacheLocalImage, printWrappedText } from '@/lib/canvas/canvasUtil.js';

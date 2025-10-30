@@ -1,5 +1,5 @@
+import { EmbedBuilder } from '@oldschoolgg/discord.js';
 import { chunk, toTitleCase } from '@oldschoolgg/toolkit';
-import { EmbedBuilder } from 'discord.js';
 import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
 
 import pets from '@/lib/data/pets.js';

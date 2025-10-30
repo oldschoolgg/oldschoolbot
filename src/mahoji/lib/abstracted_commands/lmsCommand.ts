@@ -32,7 +32,7 @@ export async function lmsCommand(
 	}
 
 	if (options.simulate) {
-		lmsSimCommand(globalClient.channels.cache.get(channelID.toString()), options.simulate.names);
+		lmsSimCommand(globalClient.channels.cache.get(channelID), options.simulate.names);
 		return {
 			content: 'Starting simulation...'
 		};

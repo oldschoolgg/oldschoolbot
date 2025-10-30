@@ -1,7 +1,7 @@
+import type { TextChannel } from '@oldschoolgg/discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord.js';
 import { awaitMessageComponentInteraction, noOp, removeFromArr, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
-import type { TextChannel } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 
 import { analyticsTick } from '@/lib/analytics.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
@@ -312,7 +312,7 @@ export const tickers: {
 		timer: null,
 		interval: Time.Hour * 8.44,
 		cb: async () => {
-			globalClient.user?.setActivity('/help');
+			globalClient.setPresence({ text: '/help' });
 		}
 	},
 	{

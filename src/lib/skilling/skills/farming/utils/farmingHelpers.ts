@@ -1,7 +1,10 @@
+import { ButtonBuilder } from '@discordjs/builders';
+import type { BaseMessageOptions } from '@oldschoolgg/discord.js';
 import { dateFm, Emoji, makeComponents, stringMatches } from '@oldschoolgg/toolkit';
-import { type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonStyle } from 'discord-api-types/v10';
 
 import type { User } from '@/prisma/main.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import { formatList } from '@/lib/util/smallUtils.js';
@@ -11,7 +14,7 @@ function makeAutoFarmButton() {
 		.setCustomId('AUTO_FARM')
 		.setLabel('Auto Farm')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('630911040355565599');
+		.setEmoji({ id: EmojiId.Farming });
 }
 
 export const farmingPatchNames = [

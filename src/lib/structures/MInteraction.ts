@@ -1,5 +1,3 @@
-import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit';
-import { TimerManager } from '@sapphire/timer-manager';
 import {
 	ActionRowBuilder,
 	type AutocompleteInteraction,
@@ -13,7 +11,9 @@ import {
 	MessageFlags,
 	PermissionsBitField,
 	Routes
-} from 'discord.js';
+} from '@oldschoolgg/discord.js';
+import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { TimerManager } from '@sapphire/timer-manager';
 import { omit } from 'remeda';
 
 import { command_name_enum } from '@/prisma/main.js';
@@ -424,7 +424,7 @@ export class MInteraction {
 		}
 
 		return new Promise<MUser[]>((resolve, reject) => {
-			const collector = this.interactionResponse!.createMessageComponentCollector({
+			const collector = this.interactionResponse!.createMessageComponentCollector<ComponentType.Button>({
 				time: timeout,
 				componentType: ComponentType.Button
 			});

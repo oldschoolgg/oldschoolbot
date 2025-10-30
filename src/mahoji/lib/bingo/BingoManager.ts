@@ -1,10 +1,11 @@
+import { ButtonBuilder, ButtonStyle, userMention } from '@oldschoolgg/discord.js';
 import { chunk, Emoji, noOp, Time } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { addBanks, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
 import type { Bingo, Prisma } from '@/prisma/main.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import {
 	generateTileName,
@@ -120,7 +121,7 @@ export class BingoManager {
 		return new ButtonBuilder()
 			.setCustomId(`BUY_BINGO_TICKET_${this.id}`)
 			.setLabel(`Buy Bingo Ticket (${toKMB(this.ticketPrice)})`)
-			.setEmoji('739459924693614653')
+			.setEmoji({ id: EmojiId.Bank })
 			.setStyle(ButtonStyle.Secondary);
 	}
 

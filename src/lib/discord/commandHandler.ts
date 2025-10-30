@@ -1,6 +1,6 @@
+import { type ChatInputCommandInteraction, PermissionFlagsBits } from '@oldschoolgg/discord.js';
 import { cryptoRng } from '@oldschoolgg/rng';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
-import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
 import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { type AnyCommand, type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
@@ -98,7 +98,12 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 	const options = convertAPIOptionsToCommandOptions(rawInteraction.options.data, rawInteraction.options.resolved);
 
 	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({ interaction, command, options });
-	if (response === SpecialResponse.PaginatedMessageResponse || response === SpecialResponse.SilentErrorResponse)
+	if (
+		response === SpecialResponse.PaginatedMessageResponse ||
+		response === SpecialResponse.SilentErrorResponse ||
+		response === SpecialResponse.RespondedManually
+	) {
 		return;
+	}
 	await interaction.reply(response);
 }

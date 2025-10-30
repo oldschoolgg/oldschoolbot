@@ -1,5 +1,5 @@
+import { codeBlock, EmbedBuilder } from '@oldschoolgg/discord.js';
 import { chunk, Emoji } from '@oldschoolgg/toolkit';
-import { codeBlock, EmbedBuilder } from 'discord.js';
 import type { Bank } from 'oldschooljs';
 
 import type { BankFlag } from '@/lib/canvas/bankImage.js';

@@ -1,5 +1,5 @@
+import { bold } from '@discordjs/formatters';
 import { Emoji, Events, formatOrdinal, isObject, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';

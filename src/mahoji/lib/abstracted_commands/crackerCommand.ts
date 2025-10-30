@@ -1,6 +1,6 @@
+import type { User } from '@oldschoolgg/discord.js';
 import { shuffleArr } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
-import type { User } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';

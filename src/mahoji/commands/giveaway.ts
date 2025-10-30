@@ -1,6 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
-import { channelIsSendable, chunk, Emoji, makeComponents, Time } from '@oldschoolgg/toolkit';
-import { Duration } from '@sapphire/time-utilities';
 import {
 	ActionRowBuilder,
 	AttachmentBuilder,
@@ -12,12 +9,16 @@ import {
 	MessageFlags,
 	messageLink,
 	time
-} from 'discord.js';
+} from '@oldschoolgg/discord.js';
+import { randInt } from '@oldschoolgg/rng';
+import { channelIsSendable, chunk, Emoji, makeComponents, Time } from '@oldschoolgg/toolkit';
+import { Duration } from '@sapphire/time-utilities';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
 import { patronFeatures } from '@/lib/constants.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import { generateGiveawayContent } from '@/lib/util/giveaway.js';
@@ -45,7 +46,7 @@ function makeGiveawayRepeatButton(giveawayID: number) {
 	return new ButtonBuilder()
 		.setCustomId(`GIVEAWAY_REPEAT_${giveawayID}`)
 		.setLabel('Repeat This Giveaway')
-		.setEmoji('493286312854683654')
+		.setEmoji({ id: EmojiId.MoneyBag })
 		.setStyle(ButtonStyle.Danger);
 }
 

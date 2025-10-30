@@ -1,6 +1,6 @@
+import { escapeMarkdown, userMention } from '@oldschoolgg/discord.js';
 import { MathRNG, percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
-import { escapeMarkdown, userMention } from 'discord.js';
 import {
 	Bank,
 	convertXPtoLVL,

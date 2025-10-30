@@ -1,5 +1,5 @@
+import { strikethrough } from '@oldschoolgg/discord.js';
 import { calcWhatPercent, objectEntries, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
-import { strikethrough } from 'discord.js';
 import { Bank, Items, Monsters } from 'oldschooljs';
 
 import type { Minigame } from '@/prisma/main.js';

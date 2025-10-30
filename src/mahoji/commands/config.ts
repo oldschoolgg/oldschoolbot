@@ -1,20 +1,19 @@
+import { bold, EmbedBuilder, type Guild, type HexColorString, inlineCode, resolveColor } from '@oldschoolgg/discord.js';
 import {
 	formatDuration,
 	hasBanMemberPerms,
 	miniID,
-	ParsedCustomEmojiWithGroups,
 	removeFromArr,
 	stringMatches,
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { bold, EmbedBuilder, type Guild, type HexColorString, inlineCode, resolveColor } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { itemOption } from '@/lib/discord/index.js';
 import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
@@ -23,7 +22,6 @@ import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js'
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
-import { emojiServers } from '@/lib/util/cachedUserIDs.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
@@ -633,31 +631,15 @@ async function handleRSN(user: MUser, newRSN: string) {
 function pinnedTripLimit(perkTier: number) {
 	return clamp(perkTier + 1, { min: 1, max: 4 });
 }
-export async function pinTripCommand(
-	user: MUser,
-	tripId: string | undefined,
-	emoji: string | undefined,
-	customName: string | undefined
-) {
+export async function pinTripCommand(user: MUser, tripId: string | undefined, customName: string | undefined) {
 	if (!tripId) return 'Invalid trip.';
 	const id = Number(tripId);
 	if (!id || Number.isNaN(id)) return 'Invalid trip.';
 	const trip = await prisma.activity.findFirst({ where: { id, user_id: BigInt(user.id) } });
 	if (!trip) return 'Invalid trip.';
 
-	if (emoji) {
-		const res = ParsedCustomEmojiWithGroups.exec(emoji);
-		if (!res || !res[3]) return "That's not a valid emoji.";
-		emoji = res[3];
-
-		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && globalConfig.isProduction) {
-			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
-		}
-	}
-
-	if (customName) {
-		if (!isValidNickname(customName) || customName.length >= 32) return 'Invalid custom name.';
+	if (customName && (!isValidNickname(customName) || customName.length >= 32)) {
+		return 'Invalid custom name.';
 	}
 
 	const limit = pinnedTripLimit(user.perkTier());
@@ -669,7 +651,7 @@ export async function pinTripCommand(
 	await prisma.pinnedTrip.create({
 		data: {
 			id: miniID(7),
-			emoji_id: emoji,
+			emoji_id: null,
 			custom_name: customName,
 			activity: {
 				connect: {
@@ -1090,12 +1072,6 @@ LIMIT 20;
 						{
 							type: 'String',
 							required: false,
-							name: 'emoji',
-							description: 'Pick an emoji for the button (optional).'
-						},
-						{
-							type: 'String',
-							required: false,
 							name: 'custom_name',
 							description: 'Custom name for the button (optional).'
 						},
@@ -1243,7 +1219,7 @@ LIMIT 20;
 			}
 			if (pin_trip) {
 				if (pin_trip.trip) {
-					return pinTripCommand(user, pin_trip.trip, pin_trip.emoji, pin_trip.custom_name);
+					return pinTripCommand(user, pin_trip.trip, pin_trip.custom_name);
 				}
 				if (pin_trip.unpin_trip) {
 					return unpinTripCommand(user, pin_trip.unpin_trip);

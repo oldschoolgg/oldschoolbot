@@ -1,5 +1,5 @@
+import { bold } from '@discordjs/formatters';
 import { Events, formatOrdinal, noOp, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
 import { UserEventType } from '@/prisma/main/enums.js';

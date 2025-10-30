@@ -1,6 +1,6 @@
+import { type ButtonInteraction, MessageFlags } from '@oldschoolgg/discord.js';
 import { formatDuration, removeFromArr, SpecialResponse, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { RateLimitManager } from '@sapphire/ratelimits';
-import { type ButtonInteraction, MessageFlags } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
@@ -479,5 +479,6 @@ export async function globalButtonInteractionHandlerWrapper(_interaction: Button
 	const response: Awaited<CommandResponse> = await globalButtonInteractionHandler({ interaction, id });
 	if (response === SpecialResponse.PaginatedMessageResponse) return;
 	if (response === SpecialResponse.SilentErrorResponse) return;
+	if (response === SpecialResponse.RespondedManually) return;
 	await interaction.reply(response);
 }

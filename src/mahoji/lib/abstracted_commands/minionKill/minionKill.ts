@@ -1,5 +1,5 @@
+import type { InteractionReplyOptions } from '@oldschoolgg/discord.js';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';

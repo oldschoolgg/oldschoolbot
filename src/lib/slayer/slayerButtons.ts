@@ -1,4 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
+import { ButtonStyle } from 'discord-api-types/v10';
 
 import { InteractionID } from '@/lib/InteractionID.js';
 
@@ -7,34 +8,34 @@ export const slayerActionButtons = [
 		new ButtonBuilder({
 			label: 'Autoslay (Saved)',
 			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlaySaved
+			custom_id: InteractionID.Slayer.AutoSlaySaved
 		}),
 		new ButtonBuilder({
 			label: 'Autoslay (Default)',
 			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlayDefault
+			custom_id: InteractionID.Slayer.AutoSlayDefault
 		}),
 		new ButtonBuilder({
 			label: 'Autoslay (EHP)',
 			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlayEHP
+			custom_id: InteractionID.Slayer.AutoSlayEHP
 		}),
 		new ButtonBuilder({
 			label: 'Autoslay (Boss)',
 			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlayBoss
+			custom_id: InteractionID.Slayer.AutoSlayBoss
 		})
 	]),
 	new ActionRowBuilder<ButtonBuilder>().addComponents([
 		new ButtonBuilder({
 			label: 'Cancel Task + New (30 points)',
 			style: ButtonStyle.Danger,
-			customId: InteractionID.Slayer.SkipTask
+			custom_id: InteractionID.Slayer.SkipTask
 		}),
 		new ButtonBuilder({
 			label: 'Block Task + New (100 points)',
 			style: ButtonStyle.Danger,
-			customId: InteractionID.Slayer.BlockTask
+			custom_id: InteractionID.Slayer.BlockTask
 		})
 	])
 ];

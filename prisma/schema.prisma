@@ -184,7 +184,6 @@ model GearPreset {
   ammo       Int?
   ammo_qty   Int?
 
-  emoji_id       String?        @db.VarChar(19)
   times_equipped Int            @default(0)
   pinned_setup   GearSetupType?
 

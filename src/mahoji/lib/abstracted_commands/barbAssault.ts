@@ -1,3 +1,4 @@
+import type { ButtonBuilder } from '@oldschoolgg/discord.js';
 import { randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
@@ -10,7 +11,6 @@ import {
 	stringMatches,
 	Time
 } from '@oldschoolgg/toolkit';
-import type { ButtonBuilder } from 'discord.js';
 import { Bank, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 

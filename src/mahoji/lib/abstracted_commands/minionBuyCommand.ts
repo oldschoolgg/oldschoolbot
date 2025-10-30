@@ -1,4 +1,4 @@
-import { ComponentType } from 'discord.js';
+import { ComponentType } from '@oldschoolgg/discord.js';
 
 import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 

@@ -1,6 +1,6 @@
+import { userMention } from '@discordjs/formatters';
 import { shuffleArr } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
 
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';

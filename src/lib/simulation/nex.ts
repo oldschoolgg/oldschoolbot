@@ -1,3 +1,4 @@
+import { userMention } from '@discordjs/formatters';
 import { percentChance, randFloat, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
@@ -8,7 +9,6 @@ import {
 	sumArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
 import { Bank, EMonster, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 

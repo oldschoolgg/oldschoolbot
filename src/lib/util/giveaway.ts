@@ -1,5 +1,5 @@
+import { type MessageEditOptions, time, userMention } from '@oldschoolgg/discord.js';
 import { channelIsSendable, debounce, Events, noOp, Time } from '@oldschoolgg/toolkit';
-import { type MessageEditOptions, time, userMention } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';

@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord.js';
 import { Items, toKMB } from 'oldschooljs';
 
 import { itemOption } from '@/lib/discord/index.js';

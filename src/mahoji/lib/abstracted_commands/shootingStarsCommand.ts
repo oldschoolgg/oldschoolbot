@@ -1,6 +1,6 @@
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord.js';
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
@@ -301,7 +301,7 @@ export function handleTriggerShootingStar(user: MUser, data: ActivityTaskData, c
 	const button = new ButtonBuilder()
 		.setCustomId('DO_SHOOTING_STAR')
 		.setLabel(`Mine Size ${star.size} Crashed Star`)
-		.setEmoji('⭐')
+		.setEmoji({ name: '⭐' })
 		.setStyle(ButtonStyle.Secondary);
 	components.push(button);
 	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 5 + patronMaxTripBonus(user) / 2 });

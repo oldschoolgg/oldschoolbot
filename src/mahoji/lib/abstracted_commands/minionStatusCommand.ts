@@ -1,8 +1,11 @@
-import { Emoji, makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
-import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { ButtonBuilder } from '@discordjs/builders';
+import type { BaseMessageOptions } from '@oldschoolgg/discord.js';
+import { makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
+import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
@@ -31,7 +34,7 @@ async function fetchFavoriteGearPresets(userID: string) {
 			.setStyle(ButtonStyle.Secondary)
 			.setCustomId(`GPE_${i.pinned_setup}_${stripNonAlphanumeric(i.name)}`)
 			.setLabel(`Equip '${toTitleCase(i.name).replace(/_/g, ' ')}' to ${i.pinned_setup}`)
-			.setEmoji(i.emoji_id ?? Emoji.Gear)
+			.setEmoji({ id: i.emoji_id ?? EmojiId.Gear })
 	);
 }
 
@@ -48,7 +51,7 @@ async function fetchPinnedTrips(userID: string) {
 			.setStyle(ButtonStyle.Secondary)
 			.setCustomId(`PTR_${i.id}`)
 			.setLabel(`Repeat ${i.custom_name ?? i.activity_type}`)
-			.setEmoji(i.emoji_id ?? '🔁')
+			.setEmoji(i.emoji_id ? { id: i.emoji_id } : { name: '🔁' })
 	);
 }
 
@@ -87,7 +90,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 			new ButtonBuilder()
 				.setCustomId('CANCEL_TRIP')
 				.setLabel('Cancel Trip')
-				.setEmoji('778418736180494347')
+				.setEmoji({ id: EmojiId.Minion })
 				.setStyle(ButtonStyle.Secondary)
 		);
 	}
@@ -100,7 +103,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		new ButtonBuilder()
 			.setCustomId('CHECK_PATCHES')
 			.setLabel('Check Patches')
-			.setEmoji(Emoji.Stopwatch)
+			.setEmoji({ id: EmojiId.Farming })
 			.setStyle(ButtonStyle.Secondary)
 	);
 
@@ -131,7 +134,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 				new ButtonBuilder()
 					.setCustomId(`DO_${tier.name.toUpperCase()}_CLUE`)
 					.setLabel(`Do ${tier.name} Clue`)
-					.setEmoji('365003979840552960')
+					.setEmoji({ id: EmojiId.ClueScroll })
 					.setStyle(ButtonStyle.Secondary)
 			);
 		}
@@ -141,7 +144,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		buttons.push(
 			new ButtonBuilder()
 				.setLabel('OSB/BSO Leagues')
-				.setEmoji('660333438016028723')
+				.setEmoji({ id: EmojiId.Leagues })
 				.setStyle(ButtonStyle.Link)
 				.setURL('https://wiki.oldschool.gg/bso/leagues/')
 		);

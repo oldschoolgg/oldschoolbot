@@ -1,4 +1,4 @@
-import { ButtonInteraction } from 'discord.js';
+import { ButtonInteraction } from '@oldschoolgg/discord.js';
 
 import type { NewUser } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';

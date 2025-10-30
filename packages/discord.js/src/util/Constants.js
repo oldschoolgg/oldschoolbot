@@ -2,20 +2,14 @@
 
 const { ChannelType, MessageType, ComponentType } = require('discord-api-types/v10');
 
-/**
- * Max bulk deletable message age
- *
- * @typedef {number} MaxBulkDeletableMessageAge
- */
-exports.MaxBulkDeletableMessageAge = 1_209_600_000;
 
 exports.SweeperKeys = [
-  'applicationCommands',
-  'guildMembers',
-  'messages',
-  'threadMembers',
-  'threads',
-  'users',
+	'applicationCommands',
+	'guildMembers',
+	'messages',
+	'threadMembers',
+	'threads',
+	'users',
 ];
 
 /**
@@ -28,20 +22,20 @@ exports.SweeperKeys = [
  * @typedef {MessageType[]} NonSystemMessageTypes
  */
 exports.NonSystemMessageTypes = [
-  MessageType.Default,
-  MessageType.Reply,
-  MessageType.ChatInputCommand,
-  MessageType.ContextMenuCommand,
+	MessageType.Default,
+	MessageType.Reply,
+	MessageType.ChatInputCommand,
+	MessageType.ContextMenuCommand,
 ];
 
 exports.GuildTextBasedChannelTypes = [
-  ChannelType.GuildText,
-  ChannelType.GuildAnnouncement,
-  ChannelType.AnnouncementThread,
-  ChannelType.PublicThread,
-  ChannelType.PrivateThread,
-  ChannelType.GuildVoice,
-  ChannelType.GuildStageVoice,
+	ChannelType.GuildText,
+	ChannelType.GuildAnnouncement,
+	ChannelType.AnnouncementThread,
+	ChannelType.PublicThread,
+	ChannelType.PrivateThread,
+	ChannelType.GuildVoice,
+	ChannelType.GuildStageVoice,
 ];
 
 /**
@@ -77,11 +71,11 @@ exports.ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.Public
  * @typedef {ComponentType[]} SelectMenuTypes
  */
 exports.SelectMenuTypes = [
-  ComponentType.StringSelect,
-  ComponentType.UserSelect,
-  ComponentType.RoleSelect,
-  ComponentType.MentionableSelect,
-  ComponentType.ChannelSelect,
+	ComponentType.StringSelect,
+	ComponentType.UserSelect,
+	ComponentType.RoleSelect,
+	ComponentType.MentionableSelect,
+	ComponentType.ChannelSelect,
 ];
 
 /**
@@ -96,12 +90,12 @@ exports.SelectMenuTypes = [
  * @typedef {MessageType[]} UndeletableMessageTypes
  */
 exports.UndeletableMessageTypes = [
-  MessageType.RecipientAdd,
-  MessageType.RecipientRemove,
-  MessageType.Call,
-  MessageType.ChannelNameChange,
-  MessageType.ChannelIconChange,
-  MessageType.ThreadStarterMessage,
+	MessageType.RecipientAdd,
+	MessageType.RecipientRemove,
+	MessageType.Call,
+	MessageType.ChannelNameChange,
+	MessageType.ChannelIconChange,
+	MessageType.ThreadStarterMessage,
 ];
 
 /**
@@ -114,7 +108,7 @@ exports.UndeletableMessageTypes = [
  * @property {number} Tertiary 16761760 (0xFFE0A0)
  */
 exports.HolographicStyle = {
-  Primary: 11_127_295,
-  Secondary: 16_759_788,
-  Tertiary: 16_761_760,
+	Primary: 11_127_295,
+	Secondary: 16_759_788,
+	Tertiary: 16_761_760,
 };

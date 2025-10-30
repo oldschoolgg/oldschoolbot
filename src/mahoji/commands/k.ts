@@ -1,5 +1,5 @@
+import type { InteractionReplyOptions } from '@oldschoolgg/discord.js';
 import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions } from 'discord.js';
 
 import { PVM_METHODS } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';

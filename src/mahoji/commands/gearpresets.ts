@@ -1,13 +1,11 @@
-import { cleanString, ParsedCustomEmojiWithGroups, stringMatches } from '@oldschoolgg/toolkit';
+import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
-import { globalConfig } from '@/lib/constants.js';
 import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/lib/discord/index.js';
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { Gear, globalPresets } from '@/lib/structures/Gear.js';
-import { emojiServers } from '@/lib/util/cachedUserIDs.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { gearEquipCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 
@@ -39,7 +37,6 @@ export async function createOrEditGearSetup(
 	name: string,
 	isUpdating: boolean,
 	gearInput: InputGear,
-	emoji: string | undefined,
 	pinned_setup: GearSetupType | 'reset' | undefined
 ) {
 	if (name) {
@@ -81,17 +78,6 @@ export async function createOrEditGearSetup(
 		if (gearSetup !== null) gearSetup[slot] = null;
 	}
 
-	if (emoji) {
-		const res = ParsedCustomEmojiWithGroups.exec(emoji);
-		if (!res || !res[3]) return "That's not a valid emoji.";
-		emoji = res[3];
-
-		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && globalConfig.isProduction) {
-			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
-		}
-	}
-
 	const gearData = {
 		head: parsedInputGear.head ?? gearSetup?.head?.item ?? null,
 		neck: parsedInputGear.neck ?? gearSetup?.neck?.item ?? null,
@@ -106,7 +92,6 @@ export async function createOrEditGearSetup(
 		ring: parsedInputGear.ring ?? gearSetup?.ring?.item ?? null,
 		ammo: parsedInputGear.ammo ?? gearSetup?.ammo?.item ?? null,
 		ammo_qty: gearSetup?.ammo?.quantity ?? null,
-		emoji_id: emoji ?? undefined,
 		pinned_setup: !pinned_setup || pinned_setup === 'reset' ? undefined : pinned_setup
 	};
 
@@ -213,12 +198,6 @@ export const gearPresetsCommand = defineCommand({
 				{
 					type: 'String',
 					required: false,
-					name: 'emoji',
-					description: 'Pick an emoji for the preset.'
-				},
-				{
-					type: 'String',
-					required: false,
 					name: 'pinned_setup',
 					description: 'Pick a setup to pin this setup too.',
 					choices: choicesOf(GearSetupTypes)
@@ -250,12 +229,6 @@ export const gearPresetsCommand = defineCommand({
 					}
 				},
 				...slotOptions,
-				{
-					type: 'String',
-					required: false,
-					name: 'emoji',
-					description: 'Pick an emoji for the preset.'
-				},
 				{
 					type: 'String',
 					required: false,
@@ -300,7 +273,6 @@ export const gearPresetsCommand = defineCommand({
 				options.create.name,
 				false,
 				options.create,
-				options.create.emoji,
 				options.create.pinned_setup
 			);
 		}
@@ -311,7 +283,6 @@ export const gearPresetsCommand = defineCommand({
 				options.edit.gear_preset,
 				true,
 				options.edit,
-				options.edit.emoji,
 				options.edit.pinned_setup
 			);
 		}

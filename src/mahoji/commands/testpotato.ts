@@ -1,6 +1,6 @@
+import { EmbedBuilder } from '@oldschoolgg/discord.js';
 import { randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { EmbedBuilder } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
 import { type Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
@@ -244,7 +244,7 @@ const spawnPresets = [
 	['runes', runePreset]
 ] as const;
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
+const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc', 'cooldowns'] as const;
 
 export const testPotatoCommand = globalConfig.isProduction
 	? null
@@ -292,7 +292,9 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'thing',
 							description: 'The thing you want to wipe.',
 							required: true,
-							choices: thingsToWipe.map(i => ({ name: i, value: i }))
+							autocomplete: async () => {
+								return thingsToWipe.map(i => ({ name: i, value: i }));
+							}
 						}
 					]
 				},
@@ -749,6 +751,17 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 				if (options.wipe) {
 					const { thing } = options.wipe;
+					if (thing === 'cooldowns') {
+						await prisma.userStats.update({
+							where: {
+								user_id: BigInt(user.id)
+							},
+							data: {
+								last_daily_timestamp: Date.now() - Time.Day
+							}
+						});
+						return 'Reset all your KCs.';
+					}
 					if (thing === 'kc') {
 						await user.statsUpdate({
 							monster_scores: {}

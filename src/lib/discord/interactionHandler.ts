@@ -1,4 +1,4 @@
-import type { Interaction } from 'discord.js';
+import type { Interaction } from '@oldschoolgg/discord.js';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { autoCompleteHandler } from '@/lib/discord/autoCompleteHandler.js';
@@ -85,11 +85,7 @@ export async function interactionHandler(rawInteraction: Interaction) {
 			return;
 		}
 
-		if (
-			rawInteraction.isModalSubmit() ||
-			rawInteraction.isContextMenuCommand() ||
-			rawInteraction.isAnySelectMenu()
-		) {
+		if (rawInteraction.isModalSubmit() || rawInteraction.isContextMenuCommand() || rawInteraction.isSelectMenu()) {
 			throw new Error(`Unsupported interaction type: ${rawInteraction.type}`);
 		}
 

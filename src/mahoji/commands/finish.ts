@@ -1,5 +1,5 @@
+import { AttachmentBuilder } from '@oldschoolgg/discord.js';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { finishables } from '@/lib/finishables.js';

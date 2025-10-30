@@ -43,15 +43,12 @@
  *
  * @property {'ReqResourceType'} ReqResourceType
  *
- * @property {'MessageBulkDeleteType'} MessageBulkDeleteType
  * @property {'MessageContentType'} MessageContentType
  * @property {'MessageNonceRequired'} MessageNonceRequired
  * @property {'MessageNonceType'} MessageNonceType
  *
  * @property {'BanResolveId'} BanResolveId
  * @property {'FetchBanResolveId'} FetchBanResolveId
- *
- * @property {'PruneDaysType'} PruneDaysType
  *
  * @property {'GuildChannelResolve'} GuildChannelResolve
  * @property {'GuildVoiceChannelResolve'} GuildVoiceChannelResolve
@@ -118,8 +115,6 @@
  *
  * @property {'SweepFilterReturn'} SweepFilterReturn
  *
- * @property {'BulkBanUsersOptionEmpty'} BulkBanUsersOptionEmpty
- *
  * @property {'PollAlreadyExpired'} PollAlreadyExpired
  *
  * @property {'PermissionOverwritesTypeMandatory'} PermissionOverwritesTypeMandatory
@@ -127,127 +122,121 @@
  */
 
 const keys = [
-  'ClientInvalidOption',
-  'ClientInvalidProvidedShards',
-  'ClientMissingIntents',
-  'ClientNotReady',
+	'ClientInvalidOption',
+	'ClientInvalidProvidedShards',
+	'ClientMissingIntents',
+	'ClientNotReady',
 
-  'TokenInvalid',
-  'TokenMissing',
-  'ApplicationCommandPermissionsTokenMissing',
+	'TokenInvalid',
+	'TokenMissing',
+	'ApplicationCommandPermissionsTokenMissing',
 
-  'BitFieldInvalid',
+	'BitFieldInvalid',
 
-  'ShardingNoShards',
-  'ShardingInProcess',
-  'ShardingInvalidEvalBroadcast',
-  'ShardingShardNotFound',
-  'ShardingAlreadySpawned',
-  'ShardingProcessExists',
-  'ShardingWorkerExists',
-  'ShardingReadyTimeout',
-  'ShardingReadyDisconnected',
-  'ShardingReadyDied',
-  'ShardingNoChildExists',
-  'ShardingShardMiscalculation',
+	'ShardingNoShards',
+	'ShardingInProcess',
+	'ShardingInvalidEvalBroadcast',
+	'ShardingShardNotFound',
+	'ShardingAlreadySpawned',
+	'ShardingProcessExists',
+	'ShardingWorkerExists',
+	'ShardingReadyTimeout',
+	'ShardingReadyDisconnected',
+	'ShardingReadyDied',
+	'ShardingNoChildExists',
+	'ShardingShardMiscalculation',
 
-  'ColorRange',
-  'ColorConvert',
+	'ColorRange',
+	'ColorConvert',
 
-  'InteractionCollectorError',
+	'InteractionCollectorError',
 
-  'FileNotFound',
+	'FileNotFound',
 
-  'UserNoDMChannel',
+	'UserNoDMChannel',
 
-  'VoiceNotStageChannel',
+	'VoiceNotStageChannel',
 
-  'VoiceStateNotOwn',
-  'VoiceStateInvalidType',
+	'VoiceStateNotOwn',
+	'VoiceStateInvalidType',
 
-  'ReqResourceType',
+	'ReqResourceType',
+	'MessageContentType',
+	'MessageNonceRequired',
+	'MessageNonceType',
 
-  'MessageBulkDeleteType',
-  'MessageContentType',
-  'MessageNonceRequired',
-  'MessageNonceType',
+	'BanResolveId',
+	'FetchBanResolveId',
 
-  'BanResolveId',
-  'FetchBanResolveId',
+	'GuildChannelResolve',
+	'GuildVoiceChannelResolve',
+	'GuildChannelOrphan',
+	'GuildChannelUnowned',
+	'GuildMembersTimeout',
+	'GuildUncachedMe',
+	'ChannelNotCached',
+	'StageChannelResolve',
+	'GuildScheduledEventResolve',
+	'FetchOwnerId',
 
-  'PruneDaysType',
+	'InvalidType',
+	'InvalidElement',
 
-  'GuildChannelResolve',
-  'GuildVoiceChannelResolve',
-  'GuildChannelOrphan',
-  'GuildChannelUnowned',
-  'GuildMembersTimeout',
-  'GuildUncachedMe',
-  'ChannelNotCached',
-  'StageChannelResolve',
-  'GuildScheduledEventResolve',
-  'FetchOwnerId',
+	'MessageThreadParent',
+	'MessageExistingThread',
+	'ThreadInvitableType',
+	'NotAThreadOfParent',
 
-  'InvalidType',
-  'InvalidElement',
+	'WebhookMessage',
+	'WebhookTokenUnavailable',
+	'WebhookURLInvalid',
+	'WebhookApplication',
 
-  'MessageThreadParent',
-  'MessageExistingThread',
-  'ThreadInvitableType',
-  'NotAThreadOfParent',
+	'MessageReferenceMissing',
 
-  'WebhookMessage',
-  'WebhookTokenUnavailable',
-  'WebhookURLInvalid',
-  'WebhookApplication',
+	'EmojiType',
+	'EmojiManaged',
+	'MissingManageGuildExpressionsPermission',
 
-  'MessageReferenceMissing',
+	'ReactionResolveUser',
 
-  'EmojiType',
-  'EmojiManaged',
-  'MissingManageGuildExpressionsPermission',
+	'DeleteGroupDMChannel',
+	'FetchGroupDMChannel',
 
-  'ReactionResolveUser',
+	'MemberFetchNonceLength',
 
-  'DeleteGroupDMChannel',
-  'FetchGroupDMChannel',
+	'GlobalCommandPermissions',
+	'GuildUncachedEntityResolve',
 
-  'MemberFetchNonceLength',
+	'InteractionAlreadyReplied',
+	'InteractionNotReplied',
 
-  'GlobalCommandPermissions',
-  'GuildUncachedEntityResolve',
+	'CommandInteractionOptionNotFound',
+	'CommandInteractionOptionType',
+	'CommandInteractionOptionEmpty',
+	'CommandInteractionOptionNoSubcommand',
+	'CommandInteractionOptionNoSubcommandGroup',
+	'CommandInteractionOptionInvalidChannelType',
+	'AutocompleteInteractionOptionNoFocusedOption',
 
-  'InteractionAlreadyReplied',
-  'InteractionNotReplied',
+	'ModalSubmitInteractionComponentNotFound',
+	'ModalSubmitInteractionComponentType',
+	'ModalSubmitInteractionComponentEmpty',
+	'ModalSubmitInteractionComponentInvalidChannelType',
 
-  'CommandInteractionOptionNotFound',
-  'CommandInteractionOptionType',
-  'CommandInteractionOptionEmpty',
-  'CommandInteractionOptionNoSubcommand',
-  'CommandInteractionOptionNoSubcommandGroup',
-  'CommandInteractionOptionInvalidChannelType',
-  'AutocompleteInteractionOptionNoFocusedOption',
+	'InvalidMissingScopes',
+	'InvalidScopesWithPermissions',
 
-  'ModalSubmitInteractionComponentNotFound',
-  'ModalSubmitInteractionComponentType',
-  'ModalSubmitInteractionComponentEmpty',
-  'ModalSubmitInteractionComponentInvalidChannelType',
+	'NotImplemented',
 
-  'InvalidMissingScopes',
-  'InvalidScopesWithPermissions',
+	'SweepFilterReturn',
 
-  'NotImplemented',
+	'EntitlementCreateInvalidOwner',
 
-  'SweepFilterReturn',
+	'PollAlreadyExpired',
 
-  'EntitlementCreateInvalidOwner',
-
-  'BulkBanUsersOptionEmpty',
-
-  'PollAlreadyExpired',
-
-  'PermissionOverwritesTypeMandatory',
-  'PermissionOverwritesTypeMismatch',
+	'PermissionOverwritesTypeMandatory',
+	'PermissionOverwritesTypeMismatch',
 ];
 
 // JSDoc for IntelliSense purposes

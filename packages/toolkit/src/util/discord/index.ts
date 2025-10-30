@@ -3,5 +3,6 @@ export * from './discordJS.js';
 
 export enum SpecialResponse {
 	PaginatedMessageResponse = 0,
-	SilentErrorResponse = 1
+	SilentErrorResponse = 1,
+	RespondedManually = 2
 }

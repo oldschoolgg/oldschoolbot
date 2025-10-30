@@ -1,8 +1,8 @@
+import { codeBlock, SnowflakeUtil } from '@oldschoolgg/discord.js';
 import { randArrItem } from '@oldschoolgg/rng';
 import { dateFm, isValidDiscordSnowflake, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
-import { codeBlock, SnowflakeUtil } from 'discord.js';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';

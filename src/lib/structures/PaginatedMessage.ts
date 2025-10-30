@@ -1,15 +1,13 @@
-import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
+import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
 import {
-	ActionRowBuilder,
-	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
 	ComponentType,
 	type InteractionReplyOptions,
-	InteractionResponseType,
-	MessageFlags,
-	Routes
-} from 'discord.js';
+	MessageFlags
+} from '@oldschoolgg/discord.js';
+import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
+import { InteractionResponseType, Routes } from 'discord-api-types/v10';
 import { isFunction } from 'remeda';
 
 const PaginatedCustomID = {
@@ -105,7 +103,7 @@ class BasePaginatedMessage {
 										new ButtonBuilder()
 											.setStyle(ButtonStyle.Secondary)
 											.setCustomId(i.customId)
-											.setEmoji(i.emoji)
+											.setEmoji({ id: i.emoji })
 									)
 								)
 							]
@@ -148,14 +146,14 @@ export class PaginatedMessage extends BasePaginatedMessage {
 		const interactionResponse = await this.interaction.reply({ ...(await this.render()), withResponse: true });
 		if (this.totalPages === 1) return SpecialResponse.PaginatedMessageResponse;
 
-		const collector = interactionResponse!.createMessageComponentCollector({
+		const collector = interactionResponse!.createMessageComponentCollector<ComponentType.Button>({
 			time: Time.Minute * 10,
 			componentType: ComponentType.Button
 		});
 
 		collector.on('collect', async (buttonPressInteraction: ButtonInteraction) => {
 			if (targetUsers && !targetUsers.includes(buttonPressInteraction.user.id)) {
-				await buttonPressInteraction.reply({ content: "This isn't your message!", ephemeral: true, flags });
+				await buttonPressInteraction.reply({ content: "This isn't your message!", flags });
 				return;
 			}
 

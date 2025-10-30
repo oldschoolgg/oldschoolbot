@@ -14,96 +14,88 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  * @implements {TextBasedChannel}
  */
 class DMChannel extends BaseChannel {
-  constructor(client, data) {
-    super(client, data);
+	constructor(client, data) {
+		super(client, data);
 
-    // Override the channel type so partials have a known type
-    this.type = ChannelType.DM;
+		// Override the channel type so partials have a known type
+		this.type = ChannelType.DM;
 
-    /**
-     * A manager of the messages belonging to this channel
-     *
-     * @type {DMMessageManager}
-     */
-    this.messages = new DMMessageManager(this);
-  }
+		/**
+		 * A manager of the messages belonging to this channel
+		 *
+		 * @type {DMMessageManager}
+		 */
+		this.messages = new DMMessageManager(this);
+	}
 
-  _patch(data) {
-    super._patch(data);
+	_patch(data) {
+		super._patch(data);
 
-    if (data.recipients) {
-      const recipient = data.recipients[0];
+		if (data.recipients) {
+			const recipient = data.recipients[0];
 
-      /**
-       * The recipient's id
-       *
-       * @type {Snowflake}
-       */
-      this.recipientId = recipient.id;
+			/**
+			 * The recipient's id
+			 *
+			 * @type {Snowflake}
+			 */
+			this.recipientId = recipient.id;
 
-      if ('username' in recipient || this.client.options.partials.includes(Partials.User)) {
-        this.client.users._add(recipient);
-      }
-    }
-  }
+			if ('username' in recipient || this.client.options.partials.includes(Partials.User)) {
+				this.client.users._add(recipient);
+			}
+		}
+	}
 
-  /**
-   * The recipient on the other end of the DM
-   *
-   * @type {?User}
-   * @readonly
-   */
-  get recipient() {
-    return this.client.users.resolve(this.recipientId);
-  }
+	/**
+	 * The recipient on the other end of the DM
+	 *
+	 * @type {?User}
+	 * @readonly
+	 */
+	get recipient() {
+		return this.client.users.resolve(this.recipientId);
+	}
 
-  /**
-   * Fetch this DMChannel.
-   *
-   * @param {boolean} [force=true] Whether to skip the cache check and request the API
-   * @returns {Promise<DMChannel>}
-   */
-  async fetch(force = true) {
-    return this.client.users.createDM(this.recipientId, { force });
-  }
+	/**
+	 * Fetch this DMChannel.
+	 *
+	 * @param {boolean} [force=true] Whether to skip the cache check and request the API
+	 * @returns {Promise<DMChannel>}
+	 */
+	async fetch(force = true) {
+		return this.client.users.createDM(this.recipientId, { force });
+	}
 
-  /**
-   * When concatenated with a string, this automatically returns the recipient's mention instead of the
-   * DMChannel object.
-   *
-   * @returns {string}
-   * @example
-   * // Logs: Hello from <@123456789012345678>!
-   * console.log(`Hello from ${channel}!`);
-   */
-  toString() {
-    return userMention(this.recipientId);
-  }
+	/**
+	 * When concatenated with a string, this automatically returns the recipient's mention instead of the
+	 * DMChannel object.
+	 *
+	 * @returns {string}
+	 * @example
+	 * // Logs: Hello from <@123456789012345678>!
+	 * console.log(`Hello from ${channel}!`);
+	 */
+	toString() {
+		return userMention(this.recipientId);
+	}
 
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+	// These are here only for documentation purposes - they are implemented by TextBasedChannel
 
-  send() { }
+	send() { }
 
-  createMessageCollector() { }
+	createMessageCollector() { }
 
-  awaitMessages() { }
+	awaitMessages() { }
 
-  createMessageComponentCollector() { }
+	createMessageComponentCollector() { }
 
-  awaitMessageComponent() { }
-  // Doesn't work on DM channels; bulkDelete() {}
-  // Doesn't work on DM channels; fetchWebhooks() {}
-  // Doesn't work on DM channels; createWebhook() {}
-  // Doesn't work on DM channels; setRateLimitPerUser() {}
-  // Doesn't work on DM channels; setNSFW() {}
+	awaitMessageComponent() { }
 }
 
 TextBasedChannel.applyToClass(DMChannel, [
-  'bulkDelete',
-  'fetchWebhooks',
-  'createWebhook',
-
-
+	'fetchWebhooks',
+	'createWebhook',
 ]);
 
 exports.DMChannel = DMChannel;

@@ -1,4 +1,4 @@
-import { bold } from 'discord.js';
+import { bold } from '@discordjs/formatters';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
