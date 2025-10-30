@@ -4,7 +4,8 @@
 		"rootDir": "./",
 		"outDir": "../dist",
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./*"],
+			"discord.js": ["../node_modules/@oldschoolgg/discord.js"]
 		},
 		"strictNullChecks": true
 	},

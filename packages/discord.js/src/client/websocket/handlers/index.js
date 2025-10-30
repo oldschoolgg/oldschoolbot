@@ -1,0 +1,37 @@
+'use strict';
+
+const PacketHandlers = Object.fromEntries([
+  ['APPLICATION_COMMAND_PERMISSIONS_UPDATE', require('./APPLICATION_COMMAND_PERMISSIONS_UPDATE.js')],
+  ['CHANNEL_CREATE', require('./CHANNEL_CREATE.js')],
+  ['CHANNEL_DELETE', require('./CHANNEL_DELETE.js')],
+  ['CHANNEL_UPDATE', require('./CHANNEL_UPDATE.js')],
+  ['GUILD_CREATE', require('./GUILD_CREATE.js')],
+  ['GUILD_DELETE', require('./GUILD_DELETE.js')],
+  ['GUILD_INTEGRATIONS_UPDATE', require('./GUILD_INTEGRATIONS_UPDATE.js')],
+  ['GUILD_MEMBERS_CHUNK', require('./GUILD_MEMBERS_CHUNK.js')],
+  ['GUILD_MEMBER_ADD', require('./GUILD_MEMBER_ADD.js')],
+  ['GUILD_MEMBER_REMOVE', require('./GUILD_MEMBER_REMOVE.js')],
+  ['GUILD_MEMBER_UPDATE', require('./GUILD_MEMBER_UPDATE.js')],
+  ['GUILD_ROLE_CREATE', require('./GUILD_ROLE_CREATE.js')],
+  ['GUILD_ROLE_DELETE', require('./GUILD_ROLE_DELETE.js')],
+  ['GUILD_ROLE_UPDATE', require('./GUILD_ROLE_UPDATE.js')],
+  ['GUILD_UPDATE', require('./GUILD_UPDATE.js')],
+  ['INTERACTION_CREATE', require('./INTERACTION_CREATE.js')],
+  ['MESSAGE_CREATE', require('./MESSAGE_CREATE.js')],
+  ['MESSAGE_DELETE', require('./MESSAGE_DELETE.js')],
+  ['MESSAGE_DELETE_BULK', require('./MESSAGE_DELETE_BULK.js')],
+  ['MESSAGE_POLL_VOTE_ADD', require('./MESSAGE_POLL_VOTE_ADD.js')],
+  ['MESSAGE_POLL_VOTE_REMOVE', require('./MESSAGE_POLL_VOTE_REMOVE.js')],
+  ['MESSAGE_UPDATE', require('./MESSAGE_UPDATE.js')],
+  ['READY', require('./READY.js')],
+  ['THREAD_CREATE', require('./THREAD_CREATE.js')],
+  ['THREAD_DELETE', require('./THREAD_DELETE.js')],
+  ['THREAD_LIST_SYNC', require('./THREAD_LIST_SYNC.js')],
+  ['THREAD_MEMBERS_UPDATE', require('./THREAD_MEMBERS_UPDATE.js')],
+  ['THREAD_MEMBER_UPDATE', require('./THREAD_MEMBER_UPDATE.js')],
+  ['THREAD_UPDATE', require('./THREAD_UPDATE.js')],
+  ['USER_UPDATE', require('./USER_UPDATE.js')],
+  ['WEBHOOKS_UPDATE', require('./WEBHOOKS_UPDATE.js')],
+]);
+
+exports.PacketHandlers = PacketHandlers;
