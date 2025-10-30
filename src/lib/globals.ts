@@ -47,12 +47,7 @@ async function getAdapter(
 	return { adapter, pgLiteClient };
 }
 
-interface BotDB {
-	prismaClient: PrismaClient;
-	adapter: PrismaPg;
-	pgLiteClient: PGlite | null;
-}
-async function makePrismaClient(): Promise<BotDB> {
+async function makePrismaClient() {
 	const { adapter, pgLiteClient } = await getAdapter(BOT_TYPE);
 	const prismaClient = new PrismaClient({
 		log: [{ emit: 'event', level: 'query' }, 'info', 'warn', 'error'],

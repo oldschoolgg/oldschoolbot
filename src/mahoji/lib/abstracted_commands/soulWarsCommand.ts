@@ -2,7 +2,6 @@ import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import type { User } from '@/prisma/main.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const soulWarsBuyables = [
@@ -130,10 +129,6 @@ export const soulWarsImbueables = [
 		tokens: 200
 	}
 ];
-
-export async function soulWarsTokensCommand(user: User) {
-	return `You have ${user.zeal_tokens} Zeal Tokens.`;
-}
 
 export async function soulWarsStartCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
