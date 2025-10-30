@@ -4,7 +4,6 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetup } from '@/lib/gear/types.js';
-import type { MUserClass } from '@/lib/MUser.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
@@ -57,7 +56,7 @@ export class UpdateBank {
 			const { realCost } = await user.specialRemoveItems(this.itemCostBank, { isInWilderness });
 			totalCost.add(realCost);
 		}
-		let itemTransactionResult: Awaited<ReturnType<MUserClass['addItemsToBank']>> | null = null;
+		let itemTransactionResult: Awaited<ReturnType<MUser['addItemsToBank']>> | null = null;
 		if (this.itemLootBank.length > 0) {
 			itemTransactionResult = await user.transactItems({ itemsToAdd: this.itemLootBank, collectionLog: true });
 		}
