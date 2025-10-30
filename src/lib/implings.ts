@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, LootTable, Openables } from 'oldschooljs';
+import { Bank, Implings, LootTable, Openables } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
@@ -101,6 +101,21 @@ const implingTableByWorldLocation = {
 	[WorldLocations.Priffdinas]: new LootTable({ limit: 155 }).add('Crystal impling jar', 1, 1),
 	[WorldLocations.World]: new LootTable().oneIn(85, defaultImpTable)
 };
+
+const implingLootTables = new Map<number, LootTable>();
+for (const impling of Implings) {
+	implingLootTables.set(impling.id, impling.table);
+}
+
+export function rollPassiveImplingLoot(bank: Bank) {
+	const loot = new Bank();
+	for (const [item, quantity] of bank.items()) {
+		const table = implingLootTables.get(item.id);
+		if (!table) continue;
+		loot.add(table.roll(quantity));
+	}
+	return loot;
+}
 
 export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 	if (

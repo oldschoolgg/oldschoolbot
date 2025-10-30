@@ -73,6 +73,10 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.CleanHerbsFarming
 	},
 	{
+		name: 'Auto open passive implings',
+		bit: BitField.AutoOpenPassiveImplings
+	},
+	{
 		name: 'Lock Self From Gambling',
 		bit: BitField.SelfGamblingLocked,
 		canToggle: async (user, interaction) => {

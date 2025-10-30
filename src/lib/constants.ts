@@ -154,7 +154,8 @@ export enum BitField {
 
 	HasDeadeyeScroll = 45,
 	HasMysticVigourScroll = 46,
-	AllowPublicAPIDataRetrieval = 47
+	AllowPublicAPIDataRetrieval = 47,
+	AutoOpenPassiveImplings = 48
 }
 
 interface BitFieldData {
@@ -270,6 +271,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.AllowPublicAPIDataRetrieval]: {
 		name: 'Allow Public API Data Retrieval',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.AutoOpenPassiveImplings]: {
+		name: 'Auto open passive implings',
 		protected: false,
 		userConfigurable: true
 	},
