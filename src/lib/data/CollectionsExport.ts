@@ -791,8 +791,7 @@ export const cluesHardCL = resolveItems([
 	'Guthix crozier',
 	'Zamorak stole',
 	'Zamorak crozier',
-	// Zombie head
-	19_912,
+	'Zombie head (treasure trails)',
 	'Cyclops head',
 	"Pirate's hat",
 	'Red cavalier',
