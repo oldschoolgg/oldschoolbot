@@ -2,7 +2,6 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
 import { findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -182,15 +181,9 @@ export async function prepareFarmingStep({
 		duration *= 0.9;
 	}
 
-	const prismaAvailable = Boolean((globalThis as { prisma?: unknown }).prisma);
-	if (prismaAvailable) {
-		for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
-			const [has] = await userhasDiaryTier(user, tier);
-			if (has) {
-				boostStr.push(`4% time for ${diary.name} ${tier.name}`);
-				duration *= 0.96;
-			}
-		}
+	if (user.hasDiary('ardougne.elite')) {
+		boostStr.push('4% time for Ardougne Elite diary');
+		duration *= 0.96;
 	}
 
 	if (duration > maxTripLength) {
