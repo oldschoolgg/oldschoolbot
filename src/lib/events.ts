@@ -5,6 +5,7 @@ import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
+import type { UserStats } from '@/prisma/main.js';
 import { CHAT_PET_COOLDOWN_CACHE, lastRoboChimpSyncCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
@@ -113,7 +114,10 @@ export const TEARS_OF_GUTHIX_CD = Time.Day * 7;
 
 const cooldownTimers: {
 	name: string;
-	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
+	timeStamp: (
+		user: MUser,
+		stats: Pick<UserStats, 'last_daily_timestamp' | 'last_tears_of_guthix_timestamp' | 'last_bert_sand_timestamp'>
+	) => number;
 	cd: number | ((user: MUser) => number);
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;

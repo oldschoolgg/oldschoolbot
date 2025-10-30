@@ -138,6 +138,17 @@ const thingsToReset = [
 			});
 			return 'Reset your bank.';
 		}
+	},
+	{
+		name: 'Dailies/Weeklys',
+		run: async (user: MUser) => {
+			await user.statsUpdate({
+				last_daily_timestamp: 0,
+				last_tears_of_guthix_timestamp: 0,
+				last_bert_sand_timestamp: 0
+			});
+			return 'Reset your daily and weekly timers.';
+		}
 	}
 ];
 

@@ -382,7 +382,8 @@ VALUES (get_economy_bank());`;
 
 			for (const id of batch) {
 				const user = await mUserFetch(id);
-				const lastCollected = Number(user.stats.last_bert_sand_timestamp ?? 0n);
+				const stats = await user.fetchStats();
+				const lastCollected = Number(stats.last_bert_sand_timestamp ?? 0n);
 				if (hasCollectedThisReset(lastCollected, now)) {
 					continue;
 				}

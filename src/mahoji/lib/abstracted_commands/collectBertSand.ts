@@ -1,7 +1,5 @@
 import { formatDuration, getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 
-import { ActivityManager } from '@/lib/ActivityManager.js';
-import type { MUser } from '@/lib/MUser.js';
 import {
 	BERT_SAND_BUCKETS,
 	BERT_SAND_DURATION,

@@ -1,7 +1,7 @@
 import { getNextUTCReset, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
-import type { MUser } from '@/lib/MUser.js';
+import type { MUserClass } from '@/lib/MUser.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 
 export const BERT_SAND_ID = 'bert_sand' as const;
@@ -24,7 +24,7 @@ export function hasCollectedThisReset(lastCollected: number, now = Date.now()) {
 	return lastCollected >= bertResetStart(now);
 }
 
-export function isManualEligible(user: MUser): string | null {
+export function isManualEligible(user: MUserClass): string | null {
 	if (user.QP < BERT_SAND_QP_REQUIRED) {
 		return `You need at least ${BERT_SAND_QP_REQUIRED} Quest Points to collect sand for Bert.`;
 	}
