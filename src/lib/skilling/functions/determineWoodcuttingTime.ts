@@ -2,12 +2,11 @@ import { percentChance } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
-import type { MUserClass } from '@/lib/MUser.js';
 import type { Log } from '@/lib/skilling/types.js';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;
-	user: MUserClass;
+	user: MUser;
 	log: Log;
 	axeMultiplier: number;
 	powerchopping: boolean;

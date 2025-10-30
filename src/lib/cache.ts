@@ -24,3 +24,4 @@ TimerManager.setInterval(() => partyLockCache.clear(), Time.Minute * 20);
 
 export const DISABLED_COMMANDS: Set<string> = new Set();
 export const CACHED_ACTIVE_USER_IDS: Set<string> = new Set();
+export const CHAT_PET_COOLDOWN_CACHE = new LRUCache<string, number>({ max: 2000 });
