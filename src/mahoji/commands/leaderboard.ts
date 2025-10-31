@@ -874,6 +874,10 @@ export async function masteryLb(interaction: MInteraction, ironmanOnly: boolean)
 		}
 	}
 
+	if (qualifyingUsers.length === 0) {
+		return 'There are no users on this leaderboard.';
+	}
+
 	return doMenuWrapper({
 		interaction,
 		title: 'Mastery Leaderboard',

@@ -1,24 +1,17 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { masteryKey } from '../../src/lib/constants.js';
 import { masteryLb } from '../../src/mahoji/commands/leaderboard.js';
 
-const mockGetUsername = vi.fn(async (id: string) => `User ${id}`);
-const mockGetUsernameSync = vi.fn((id: string) => `User ${id}`);
-
-vi.mock('../../src/lib/util.js', () => ({
-	getUsername: mockGetUsername,
-	getUsernameSync: mockGetUsernameSync
+// mock the TS file, not .js
+vi.mock('../../src/lib/util.ts', () => ({
+	getUsername: vi.fn(async (id: string) => `User ${id}`),
+	getUsernameSync: vi.fn((id: string) => `User ${id}`)
 }));
 
 describe('masteryLb', () => {
 	const originalPrisma = global.prisma;
 	const originalRoboChimp = global.roboChimpClient;
-
-	beforeEach(() => {
-		mockGetUsername.mockClear();
-		mockGetUsernameSync.mockClear();
-	});
 
 	afterEach(() => {
 		global.prisma = originalPrisma;
@@ -31,8 +24,8 @@ describe('masteryLb', () => {
 		const interaction = { makePaginatedMessage } as unknown as MInteraction;
 
 		const roboFindMany = vi.fn().mockResolvedValue([
-			{ id: BigInt(1), osb_mastery: 75.5, bso_mastery: 70 },
-			{ id: BigInt(2), osb_mastery: 74, bso_mastery: 70 }
+			{ id: BigInt(1), [masteryKey]: 75.5 },
+			{ id: BigInt(2), [masteryKey]: 74 }
 		]);
 
 		global.roboChimpClient = {
@@ -41,6 +34,7 @@ describe('masteryLb', () => {
 			}
 		} as any;
 
+		// prisma not used in this branch, but define to keep code happy
 		global.prisma = {
 			user: {
 				findMany: vi.fn()
@@ -56,14 +50,16 @@ describe('masteryLb', () => {
 				take: 50,
 				select: {
 					id: true,
-					osb_mastery: true,
-					bso_mastery: true
+					[masteryKey]: true
 				}
 			})
 		);
 		expect(makePaginatedMessage).toHaveBeenCalledTimes(1);
 
-		const embed = result.embeds[0];
+		// result is SpecialResponse; cast to any for embed check
+		expect(typeof result).toBe('object');
+		const embed = (result as any).embeds[0];
+
 		expect(embed.data.title).toBe('Mastery Leaderboard');
 		expect(embed.data.description).toContain('75.500% mastery');
 		expect(embed.data.description).toContain('User 1');
@@ -77,11 +73,11 @@ describe('masteryLb', () => {
 		const roboFindMany = vi
 			.fn()
 			.mockResolvedValueOnce([
-				{ id: BigInt(1), osb_mastery: 81.111, bso_mastery: 70 },
-				{ id: BigInt(2), osb_mastery: 80.5, bso_mastery: 70 },
-				{ id: BigInt(3), osb_mastery: 79.123, bso_mastery: 70 }
+				{ id: BigInt(1), [masteryKey]: 81.111 },
+				{ id: BigInt(2), [masteryKey]: 80.5 },
+				{ id: BigInt(3), [masteryKey]: 79.123 }
 			])
-			.mockResolvedValueOnce([]);
+			.mockResolvedValueOnce([]); // second page empty → stop
 
 		const prismaFindMany = vi.fn().mockResolvedValue([{ id: '2' }, { id: '3' }]);
 
@@ -99,6 +95,7 @@ describe('masteryLb', () => {
 
 		const result = await masteryLb(interaction, true);
 
+		// first batch
 		expect(roboFindMany).toHaveBeenNthCalledWith(
 			1,
 			expect.objectContaining({
@@ -106,6 +103,7 @@ describe('masteryLb', () => {
 				take: 100
 			})
 		);
+		// second batch
 		expect(roboFindMany).toHaveBeenNthCalledWith(
 			2,
 			expect.objectContaining({
@@ -113,6 +111,7 @@ describe('masteryLb', () => {
 				take: 100
 			})
 		);
+
 		expect(prismaFindMany).toHaveBeenCalledWith({
 			where: {
 				id: { in: ['1', '2', '3'] },
@@ -121,7 +120,9 @@ describe('masteryLb', () => {
 			select: { id: true }
 		});
 
-		const embed = result.embeds[0];
+		expect(typeof result).toBe('object');
+		const embed = (result as any).embeds[0];
+
 		expect(embed.data.title).toBe('Mastery Leaderboard (Ironmen Only)');
 		expect(embed.data.description).not.toContain('User 1');
 		expect(embed.data.description).toContain('User 2');
