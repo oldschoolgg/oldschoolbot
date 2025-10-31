@@ -159,6 +159,7 @@ async function main() {
 						kcBank,
 						gearBank,
 						tertiaryItemPercentageChanges: new Map(),
+						// @ts-expect-error
 						slayerInfo: currentSlayerTask,
 						slayerUnlocks,
 						hasKourendElite: true,

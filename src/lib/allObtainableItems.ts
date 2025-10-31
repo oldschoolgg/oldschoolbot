@@ -122,7 +122,28 @@ for (const impling of Implings) {
 	impling.table.allItems.map(i => ALL_OBTAINABLE_ITEMS.add(i));
 }
 
+const bsoTrophies = Items.resolveItems([
+	'BSO dragon trophy',
+	'BSO rune trophy',
+	'BSO adamant trophy',
+	'BSO mithril trophy',
+	'BSO steel trophy',
+	'BSO iron trophy',
+	'BSO bronze trophy'
+]);
+const compTrophies = Items.resolveItems([
+	'Comp. dragon trophy',
+	'Comp. rune trophy',
+	'Comp. adamant trophy',
+	'Comp. mithril trophy',
+	'Comp. steel trophy',
+	'Comp. iron trophy',
+	'Comp. bronze trophy'
+]);
+
 for (const item of [
+	...bsoTrophies,
+	...compTrophies,
 	Mining.GemRockTable.allItems,
 	Mining.GraniteRockTable.allItems,
 	Mining.SandstoneRockTable.allItems,

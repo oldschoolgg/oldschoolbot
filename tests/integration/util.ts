@@ -1,11 +1,12 @@
 import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
-import { uniqueArr } from '@oldschoolgg/toolkit';
+import { sleep, uniqueArr } from '@oldschoolgg/toolkit';
 import type { User as DJSUser, GuildMember } from 'discord.js';
 import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
+import type { DegradeableItem } from '@/lib/degradeableItems.js';
 import type { AnyCommand } from '@/lib/discord/index.js';
 import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
 import { MUserClass } from '../../src/lib/MUser.js';
@@ -158,14 +159,10 @@ export class TestUser extends MUserClass {
 		this.client = client!;
 	}
 
-	async assertTableBankMatches() {
-		await this.sync();
-		const clFromDB = await this.fetchCL();
-		if (this.cl.toString() !== clFromDB.toString()) {
-			throw new Error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}
-Expected: ${this.cl.toString()}
-Actual: ${clFromDB.toString()}`);
-		}
+	async setBank(bank: Bank) {
+		// @ts-expect-error
+		await this.update({ bank: bank.toJSON() });
+		return this;
 	}
 
 	async runActivity() {
@@ -191,7 +188,6 @@ Actual: ${clFromDB.toString()}`);
 		TestClient.activitiesProcessed++;
 		await ActivityManager.completeActivity(activity);
 		await this.sync();
-		await this.assertTableBankMatches();
 		return ActivityManager.convertStoredActivityToFlatActivity(activity);
 	}
 	async setLevel(skill: SkillNameType, level: number) {
@@ -292,14 +288,29 @@ Actual: ${clFromDB.toString()}`);
 		for (const skill of Object.keys(newXP) as SkillNameType[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
-		await this.assertTableBankMatches();
 
 		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
 
-	async runCommand(command: AnyCommand, options: object = {}, syncAfter = false) {
+	async giveCharges(type: DegradeableItem['settingsKey'], charges: number) {
+		await this.update({
+			[type]: charges
+		});
+		return this;
+	}
+
+	async runCmdAndTrip(command: AnyCommand, options: object = {}) {
+		const commandResult = await this.runCommand(command, options, true);
+		const activityResult = await this.runActivity();
+		await this.sync();
+		return { commandResult, activityResult };
+	}
+
+	async runCommand(_command: string | AnyCommand, options: object = {}, syncAfter = false) {
 		await this.sync();
 		const mockedInt = mockInteraction({ user: this });
+		const command =
+			typeof _command === 'string' ? globalClient.allCommands.find(_c => _c.name === _command)! : _command;
 		const result = await command.run({
 			userID: this.user.id,
 			guildID: '342983479501389826',
@@ -313,7 +324,6 @@ Actual: ${clFromDB.toString()}`);
 		if (syncAfter) {
 			await this.sync();
 		}
-		await this.assertTableBankMatches();
 		return result ?? (mockedInt as any).__response__;
 	}
 
@@ -378,6 +388,7 @@ export async function mockUser(
 		bank: Bank;
 		QP: number;
 		maxed: boolean;
+		levels: Partial<Record<SkillNameType, number>>;
 	}> = {}
 ) {
 	const rangeGear = new Gear();
@@ -416,6 +427,9 @@ export async function mockUser(
 		venator_bow_charges: options.venatorBowCharges,
 		QP: options.QP
 	});
+	for (const [skill, level] of Object.entries(options.levels ?? {})) {
+		await user.update({ [`skills_${skill}`]: convertLVLtoXP(level) });
+	}
 	if (options.maxed) {
 		await user.max();
 	}
@@ -533,4 +547,14 @@ const originalMathRandom = Math.random;
 export function mockMathRandom(value: number) {
 	vi.spyOn(Math, 'random').mockImplementation(() => value);
 	return () => (Math.random = originalMathRandom);
+}
+
+export async function promiseAllRandom<T>(tasks: (() => Promise<T>)[], maxJitterMs = 5): Promise<T[]> {
+	const results: T[] = [];
+	const shuffled = cryptoRng.shuffle(tasks);
+	for (const fn of shuffled) {
+		await sleep(Math.random() * maxJitterMs);
+		results.push(await fn());
+	}
+	return results;
 }

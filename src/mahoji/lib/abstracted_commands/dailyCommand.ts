@@ -1,9 +1,7 @@
 import { roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import type { ItemBank } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
 import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
@@ -81,17 +79,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
 	if (triviaCorrect && roll(13)) {
-		const pet = pets[Math.floor(Math.random() * pets.length)];
-		const userPets = {
-			...(user.user.pets as ItemBank)
-		};
-		if (!userPets[pet.id]) userPets[pet.id] = 1;
-		else userPets[pet.id]++;
-
-		await user.update({
-			pets: { ...userPets }
-		});
-
+		const { pet } = await user.giveRandomBotMessagesPet();
 		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 	}
 

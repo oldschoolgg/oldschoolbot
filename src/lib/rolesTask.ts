@@ -8,7 +8,6 @@ import { Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
-import { loggedRawPrismaQuery } from '@/lib/rawSql.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
@@ -401,7 +400,7 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 
 		// Remove all top badges from all users (and add back later)
 		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
-		await loggedRawPrismaQuery(`
+		await prisma.$queryRawUnsafe(`
 UPDATE users
 SET badges = badges - ${badgeIDs}
 WHERE badges && ${badgeIDs}

@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import { superCompostables } from '@/lib/data/filterables.js';
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -207,12 +206,13 @@ export async function farmingPlantCommand({
 		duration *= 0.9;
 	}
 
-	for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
-		const [has] = await userhasDiaryTier(user, tier);
-		if (has) {
-			boostStr.push(`4% time for ${diary.name} ${tier.name}`);
-			duration *= 0.96;
-		}
+	if (user.hasDiary('ardougne.hard')) {
+		boostStr.push(`4% time for Ardougne Hard diary`);
+		duration *= 0.96;
+	}
+	if (user.hasDiary('ardougne.elite')) {
+		boostStr.push(`4% time for Ardougne Elite diary`);
+		duration *= 0.96;
 	}
 
 	if (duration > maxTripLength) {

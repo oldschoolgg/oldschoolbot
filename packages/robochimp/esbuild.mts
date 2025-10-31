@@ -9,7 +9,6 @@ const external = [
 	'@prisma/robochimp',
 	'@prisma/osb',
 	'@prisma/bso',
-	'micromatch',
 	'fastify',
 	'fastify-raw-body',
 	'@fastify/cors',

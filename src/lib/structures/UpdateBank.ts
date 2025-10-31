@@ -4,7 +4,6 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetup } from '@/lib/gear/types.js';
-import type { MUserClass } from '@/lib/MUser.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
@@ -57,9 +56,9 @@ export class UpdateBank {
 			const { realCost } = await user.specialRemoveItems(this.itemCostBank, { isInWilderness });
 			totalCost.add(realCost);
 		}
-		let itemTransactionResult: Awaited<ReturnType<MUserClass['addItemsToBank']>> | null = null;
+		let itemTransactionResult: Awaited<ReturnType<MUser['addItemsToBank']>> | null = null;
 		if (this.itemLootBank.length > 0) {
-			itemTransactionResult = await user.addItemsToBank({ items: this.itemLootBank, collectionLog: true });
+			itemTransactionResult = await user.transactItems({ itemsToAdd: this.itemLootBank, collectionLog: true });
 		}
 
 		// XP
@@ -71,7 +70,7 @@ export class UpdateBank {
 
 		// KC
 		if (this.kcBank.length() > 0) {
-			const currentScores = (await user.fetchStats()).monster_scores as ItemBank;
+			const currentScores = (await user.fetchUserStat('monster_scores')) as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}

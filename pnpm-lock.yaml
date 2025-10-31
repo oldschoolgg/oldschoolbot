@@ -13,6 +13,7 @@ overrides:
   undici-types: 7.14.0
   '@types/node': 24.5.2
   esbuild: 0.25.11
+  emoji-regex: 10.6.0
 
 importers:
 
@@ -27,6 +28,9 @@ importers:
       '@oldschoolgg/rng':
         specifier: workspace:*
         version: link:packages/rng
+      '@oldschoolgg/schemas':
+        specifier: workspace:*
+        version: link:packages/schemas
       '@oldschoolgg/spritesheet':
         specifier: workspace:*
         version: link:packages/spritesheet
@@ -34,11 +38,11 @@ importers:
         specifier: workspace:*
         version: link:packages/toolkit
       '@prisma/adapter-pg':
-        specifier: ^6.16.3
-        version: 6.16.3
+        specifier: ^6.18.0
+        version: 6.18.0
       '@prisma/client':
-        specifier: ^6.16.3
-        version: 6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
+        specifier: ^6.18.0
+        version: 6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@sapphire/ratelimits':
         specifier: ^2.4.9
         version: 2.4.11
@@ -72,18 +76,18 @@ importers:
       luxon:
         specifier: ^3.7.2
         version: 3.7.2
-      node-cron:
-        specifier: ^3.0.3
-        version: 3.0.3
       oldschooljs:
         specifier: workspace:*
         version: link:packages/oldschooljs
       p-queue:
         specifier: 8.1.1
         version: 8.1.1
+      pg:
+        specifier: ^8.16.3
+        version: 8.16.3
       pglite-prisma-adapter:
         specifier: ^0.6.1
-        version: 0.6.1(@electric-sql/pglite@0.3.10)(@prisma/client@6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2))
+        version: 0.6.1(@electric-sql/pglite@0.3.10)(@prisma/client@6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2))
       piscina:
         specifier: ^5.1.3
         version: 5.1.3
@@ -110,20 +114,17 @@ importers:
         version: 4.1.12
     devDependencies:
       '@biomejs/biome':
-        specifier: ^2.2.4
-        version: 2.2.4
-      '@hono/node-ws':
-        specifier: ^1.2.0
-        version: 1.2.0(@hono/node-server@1.19.5(hono@4.9.10))(bufferutil@4.0.9)(hono@4.9.10)
+        specifier: ^2.2.7
+        version: 2.2.7
       '@types/luxon':
         specifier: ^3.7.1
         version: 3.7.1
       '@types/node':
         specifier: 24.5.2
         version: 24.5.2
-      '@types/node-cron':
-        specifier: ^3.0.7
-        version: 3.0.11
+      '@types/pg':
+        specifier: ^8.15.5
+        version: 8.15.5
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
@@ -140,8 +141,8 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2
       prisma:
-        specifier: ^6.16.3
-        version: 6.16.3(magicast@0.3.5)(typescript@5.9.2)
+        specifier: ^6.18.0
+        version: 6.18.0(magicast@0.3.5)(typescript@5.9.2)
       sharp:
         specifier: 0.34.4
         version: 0.34.4
@@ -154,9 +155,6 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.5.2)(@vitest/ui@3.2.4)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.20.5)(yaml@2.6.1)
-      ws:
-        specifier: ^8.18.3
-        version: 8.18.3(bufferutil@4.0.9)
 
   docs:
     dependencies:
@@ -252,7 +250,7 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.5
-        version: 1.19.5(hono@4.9.10)
+        version: 1.19.5(hono@4.10.3)
       '@octokit/graphql':
         specifier: ^8.1.1
         version: 8.2.2
@@ -275,8 +273,8 @@ importers:
         specifier: 16.5.0
         version: 16.5.0
       hono:
-        specifier: ^4.9.10
-        version: 4.9.10
+        specifier: ^4.10.3
+        version: 4.10.3
       oldschooljs:
         specifier: workspace:*
         version: link:../oldschooljs
@@ -290,6 +288,12 @@ importers:
       prisma:
         specifier: ^6.16.3
         version: 6.16.3(magicast@0.3.5)(typescript@5.9.2)
+
+  packages/schemas:
+    dependencies:
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
 
   packages/spritesheet:
     dependencies:
@@ -317,25 +321,19 @@ importers:
       deepmerge:
         specifier: 4.3.1
         version: 4.3.1
+      emoji-regex:
+        specifier: 10.6.0
+        version: 10.6.0
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
       math-expression-evaluator:
         specifier: ^1.3.14
         version: 1.4.0
-      micromatch:
-        specifier: ^4.0.8
-        version: 4.0.8
-      zod:
-        specifier: ^4.1.12
-        version: 4.1.12
     devDependencies:
       '@types/math-expression-evaluator':
         specifier: ^1.2.2
         version: 1.3.3
-      '@types/micromatch':
-        specifier: ^4.0.9
-        version: 4.0.9
       discord.js:
         specifier: ^14.20.0
         version: 14.20.0(bufferutil@4.0.9)
@@ -534,55 +532,55 @@ packages:
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
 
-  '@biomejs/biome@2.2.4':
-    resolution: {integrity: sha512-TBHU5bUy/Ok6m8c0y3pZiuO/BZoY/OcGxoLlrfQof5s8ISVwbVBdFINPQZyFfKwil8XibYWb7JMwnT8wT4WVPg==}
+  '@biomejs/biome@2.2.7':
+    resolution: {integrity: sha512-1a8j0UP1vXVUf3UzMZEJ/zS2VgAG6wU6Cuh/I764sUGI+MCnJs/9WaojHYBDCxCMLTgU60/WqnYof85emXmSBA==}
     engines: {node: '>=14.21.3'}
     hasBin: true
 
-  '@biomejs/cli-darwin-arm64@2.2.4':
-    resolution: {integrity: sha512-RJe2uiyaloN4hne4d2+qVj3d3gFJFbmrr5PYtkkjei1O9c+BjGXgpUPVbi8Pl8syumhzJjFsSIYkcLt2VlVLMA==}
+  '@biomejs/cli-darwin-arm64@2.2.7':
+    resolution: {integrity: sha512-xBUUsebnO2/Qj1v7eZmKUy2ZcFkZ4/jLUkxN02Qup1RPoRaiW9AKXHrqS3L7iX6PzofHY2xuZ+Pb9kAcpoe0qA==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
 
-  '@biomejs/cli-darwin-x64@2.2.4':
-    resolution: {integrity: sha512-cFsdB4ePanVWfTnPVaUX+yr8qV8ifxjBKMkZwN7gKb20qXPxd/PmwqUH8mY5wnM9+U0QwM76CxFyBRJhC9tQwg==}
+  '@biomejs/cli-darwin-x64@2.2.7':
+    resolution: {integrity: sha512-vsY4NhmxqgfLJufr9XUnC+yGUPJiXAc1mz6FcjaAmuIuLwfghN4uQO7hnW2AneGyoi2mNe9Jbvf6Qtq4AjzrFg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
 
-  '@biomejs/cli-linux-arm64-musl@2.2.4':
-    resolution: {integrity: sha512-7TNPkMQEWfjvJDaZRSkDCPT/2r5ESFPKx+TEev+I2BXDGIjfCZk2+b88FOhnJNHtksbOZv8ZWnxrA5gyTYhSsQ==}
+  '@biomejs/cli-linux-arm64-musl@2.2.7':
+    resolution: {integrity: sha512-FrTwvKO/7t5HbVTvhlMOTOVQLAcR7r4O4iFQhEpZXUtBfosHqrX/JJlX7daPawoe14MDcCu9CDg0zLVpTuDvuQ==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
 
-  '@biomejs/cli-linux-arm64@2.2.4':
-    resolution: {integrity: sha512-M/Iz48p4NAzMXOuH+tsn5BvG/Jb07KOMTdSVwJpicmhN309BeEyRyQX+n1XDF0JVSlu28+hiTQ2L4rZPvu7nMw==}
+  '@biomejs/cli-linux-arm64@2.2.7':
+    resolution: {integrity: sha512-nUdco104rjV9dULi1VssQ5R/kX2jE/Z2sDjyqS+siV9sTQda0DwmEUixFNRCWvZJRRiZUWhgiDFJ4n7RowO8Mg==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
 
-  '@biomejs/cli-linux-x64-musl@2.2.4':
-    resolution: {integrity: sha512-m41nFDS0ksXK2gwXL6W6yZTYPMH0LughqbsxInSKetoH6morVj43szqKx79Iudkp8WRT5SxSh7qVb8KCUiewGg==}
+  '@biomejs/cli-linux-x64-musl@2.2.7':
+    resolution: {integrity: sha512-MnsysF5s/iLC5wnYvuMseOy+m8Pd4bWG1uwlVyy2AUbfjAVUgtbYbboc5wMXljFrDY7e6rLjLTR4S2xqDpGlQg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
 
-  '@biomejs/cli-linux-x64@2.2.4':
-    resolution: {integrity: sha512-orr3nnf2Dpb2ssl6aihQtvcKtLySLta4E2UcXdp7+RTa7mfJjBgIsbS0B9GC8gVu0hjOu021aU8b3/I1tn+pVQ==}
+  '@biomejs/cli-linux-x64@2.2.7':
+    resolution: {integrity: sha512-tPTcGAIEOOZrj2tQ7fdraWlaxNKApBw6l4In8wQQV1IyxnAexqi0hykHzKEX8hKKctf5gxGBfNCzyIvqpj4CFQ==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
 
-  '@biomejs/cli-win32-arm64@2.2.4':
-    resolution: {integrity: sha512-NXnfTeKHDFUWfxAefa57DiGmu9VyKi0cDqFpdI+1hJWQjGJhJutHPX0b5m+eXvTKOaf+brU+P0JrQAZMb5yYaQ==}
+  '@biomejs/cli-win32-arm64@2.2.7':
+    resolution: {integrity: sha512-h5D1jhwA2b7cFXerYiJfXHSzzAMFFoEDL5Mc2BgiaEw0iaSgSso/3Nc6FbOR55aTQISql+IpB4PS7JoV26Gdbw==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
 
-  '@biomejs/cli-win32-x64@2.2.4':
-    resolution: {integrity: sha512-3Y4V4zVRarVh/B/eSHczR4LYoSVyv3Dfuvm3cWs5w/HScccS0+Wt/lHOcDTRYeHjQmMYVC3rIRWqyN2EI52+zg==}
+  '@biomejs/cli-win32-x64@2.2.7':
+    resolution: {integrity: sha512-URqAJi0kONyBKG4V9NVafHLDtm6IHmF4qPYi/b6x7MD6jxpWeJiTCO6R5+xDlWckX2T/OGv6Yq3nkz6s0M8Ykw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -833,13 +831,6 @@ packages:
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
-
-  '@hono/node-ws@1.2.0':
-    resolution: {integrity: sha512-OBPQ8OSHBw29mj00wT/xGYtB6HY54j0fNSdVZ7gZM3TUeq0So11GXaWtFf1xWxQNfumKIsj0wRuLKWfVsO5GgQ==}
-    engines: {node: '>=18.14.1'}
-    peerDependencies:
-      '@hono/node-server': ^1.11.1
-      hono: ^4.6.0
 
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
@@ -1228,8 +1219,23 @@ packages:
   '@prisma/adapter-pg@6.16.3':
     resolution: {integrity: sha512-7P0+NbVQYrFcwpfmCWiFUUdXTi2GU+CtSnWLrR93oupvFG+GtZXociT9eXbsOUNF9+g74yVe6hsOgsuW/uPHaQ==}
 
+  '@prisma/adapter-pg@6.18.0':
+    resolution: {integrity: sha512-eBtBOL1z2Sh0Rc2hwa4dmwoNeFs5T69tsA62AkhBvnzNfTcr/YfLeJae/wjNmvRttYDPmdiuhqZCRPNY1+8fOA==}
+
   '@prisma/client@6.16.3':
     resolution: {integrity: sha512-JfNfAtXG+/lIopsvoZlZiH2k5yNx87mcTS4t9/S5oufM1nKdXYxOvpDC1XoTCFBa5cQh7uXnbMPsmZrwZY80xw==}
+    engines: {node: '>=18.18'}
+    peerDependencies:
+      prisma: '*'
+      typescript: '>=5.1.0'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+      typescript:
+        optional: true
+
+  '@prisma/client@6.18.0':
+    resolution: {integrity: sha512-jnL2I9gDnPnw4A+4h5SuNn8Gc+1mL1Z79U/3I9eE2gbxJG1oSA+62ByPW4xkeDgwE0fqMzzpAZ7IHxYnLZ4iQA==}
     engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
@@ -1243,11 +1249,17 @@ packages:
   '@prisma/config@6.16.3':
     resolution: {integrity: sha512-VlsLnG4oOuKGGMToEeVaRhoTBZu5H3q51jTQXb/diRags3WV0+BQK5MolJTtP6G7COlzoXmWeS11rNBtvg+qFQ==}
 
+  '@prisma/config@6.18.0':
+    resolution: {integrity: sha512-rgFzspCpwsE+q3OF/xkp0fI2SJ3PfNe9LLMmuSVbAZ4nN66WfBiKqJKo/hLz3ysxiPQZf8h1SMf2ilqPMeWATQ==}
+
   '@prisma/debug@6.15.0':
     resolution: {integrity: sha512-y7cSeLuQmyt+A3hstAs6tsuAiVXSnw9T55ra77z0nbNkA8Lcq9rNcQg6PI00by/+WnE/aMRJ/W7sZWn2cgIy1g==}
 
   '@prisma/debug@6.16.3':
     resolution: {integrity: sha512-89DdqWtdKd7qoc9/qJCKLTazj3W3zPEiz0hc7HfZdpjzm21c7orOUB5oHWJsG+4KbV4cWU5pefq3CuDVYF9vgA==}
+
+  '@prisma/debug@6.18.0':
+    resolution: {integrity: sha512-PMVPMmxPj0ps1VY75DIrT430MoOyQx9hmm174k6cmLZpcI95rAPXOQ+pp8ANQkJtNyLVDxnxVJ0QLbrm/ViBcg==}
 
   '@prisma/driver-adapter-utils@6.15.0':
     resolution: {integrity: sha512-tzcMG1eEBM3IJ8TBHo4jGeoUaalctqGXbrvxIoZb8jSEtgR82IUhdVyHHLVTlT8MdrHovcQJJ3jfcQfJARRnaQ==}
@@ -1255,14 +1267,26 @@ packages:
   '@prisma/engines-version@6.16.1-1.bb420e667c1820a8c05a38023385f6cc7ef8e83a':
     resolution: {integrity: sha512-fftRmosBex48Ph1v2ll1FrPpirwtPZpNkE5CDCY1Lw2SD2ctyrLlVlHiuxDAAlALwWBOkPbAll4+EaqdGuMhJw==}
 
+  '@prisma/engines-version@6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f':
+    resolution: {integrity: sha512-T7Af4QsJQnSgWN1zBbX+Cha5t4qjHRxoeoWpK4JugJzG/ipmmDMY5S+O0N1ET6sCBNVkf6lz+Y+ZNO9+wFU8pQ==}
+
   '@prisma/engines@6.16.3':
     resolution: {integrity: sha512-b+Rl4nzQDcoqe6RIpSHv8f5lLnwdDGvXhHjGDiokObguAAv/O1KaX1Oc69mBW/GFWKQpCkOraobLjU6s1h8HGg==}
+
+  '@prisma/engines@6.18.0':
+    resolution: {integrity: sha512-i5RzjGF/ex6AFgqEe2o1IW8iIxJGYVQJVRau13kHPYEL1Ck8Zvwuzamqed/1iIljs5C7L+Opiz5TzSsUebkriA==}
 
   '@prisma/fetch-engine@6.16.3':
     resolution: {integrity: sha512-bUoRIkVaI+CCaVGrSfcKev0/Mk4ateubqWqGZvQ9uCqFv2ENwWIR3OeNuGin96nZn5+SkebcD7RGgKr/+mJelw==}
 
+  '@prisma/fetch-engine@6.18.0':
+    resolution: {integrity: sha512-TdaBvTtBwP3IoqVYoGIYpD4mWlk0pJpjTJjir/xLeNWlwog7Sl3bD2J0jJ8+5+q/6RBg+acb9drsv5W6lqae7A==}
+
   '@prisma/get-platform@6.16.3':
     resolution: {integrity: sha512-X1LxiFXinJ4iQehrodGp0f66Dv6cDL0GbRlcCoLtSu6f4Wi+hgo7eND/afIs5029GQLgNWKZ46vn8hjyXTsHLA==}
+
+  '@prisma/get-platform@6.18.0':
+    resolution: {integrity: sha512-uXNJCJGhxTCXo2B25Ta91Rk1/Nmlqg9p7G9GKh8TPhxvAyXCvMNQoogj4JLEUy+3ku8g59cpyQIKFhqY2xO2bg==}
 
   '@quansync/fs@0.1.5':
     resolution: {integrity: sha512-lNS9hL2aS2NZgNW7BBj+6EBl4rOf8l+tQ0eRY6JWCI8jI2kc53gSoqbjojU0OnAWhzoXiOjFyGsHcDGePB3lhA==}
@@ -1659,9 +1683,6 @@ packages:
   '@types/acorn@4.0.6':
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
 
-  '@types/braces@3.0.5':
-    resolution: {integrity: sha512-SQFof9H+LXeWNz8wDe7oN5zu7ket0qwMu5vZubW4GCJ8Kkeh6nBWUz87+KTz/G3Kqsrp0j/W253XJb3KMEeg3w==}
-
   '@types/chai@5.2.2':
     resolution: {integrity: sha512-8kB30R7Hwqf40JPiKhVzodJs2Qc1ZJ5zuT3uzw5Hq/dhNCl3G3l83jfpdI1e20BP348+fV7VIL/+FxaXkqBmWg==}
 
@@ -1698,9 +1719,6 @@ packages:
   '@types/mdx@2.0.13':
     resolution: {integrity: sha512-+OWZQfAYyio6YkJb3HLxDrvnx6SWWDbC0zVPfBRzUk0/nqoDyf6dNxQi3eArPe8rJ473nobTMQ/8Zk+LxJ+Yuw==}
 
-  '@types/micromatch@4.0.9':
-    resolution: {integrity: sha512-7V+8ncr22h4UoYRLnLXSpTxjQrNUXtWHGeMPRJt1nULXI57G9bIcpyrHlmrQ7QK24EyyuXvYcSSWAM8GA9nqCg==}
-
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
 
@@ -1710,14 +1728,14 @@ packages:
   '@types/nlcst@2.0.3':
     resolution: {integrity: sha512-vSYNSDe6Ix3q+6Z7ri9lyWqgGhJTmzRjZRqyq15N0Z/1/UnVsno9G/N40NBijoYx2seFDIl0+B2mgAb9mezUCA==}
 
-  '@types/node-cron@3.0.11':
-    resolution: {integrity: sha512-0ikrnug3/IyneSHqCBeslAhlK2aBfYek1fGo4bP4QnZPmiqSGRK+Oy7ZMisLWkesffJvQ1cqAcBnJC+8+nxIAg==}
-
   '@types/node@24.5.2':
     resolution: {integrity: sha512-FYxk1I7wPv3K2XBaoyH2cTnocQEu8AOZ60hPbsyukMPLv5/5qr7V1i8PLHdl6Zf87I+xZXFvPCXYjiTFq+YSDQ==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
+
+  '@types/pg@8.15.5':
+    resolution: {integrity: sha512-LF7lF6zWEKxuT3/OR8wAZGzkg4ENGXFNyiV/JeOt9z5B+0ZVwbql9McqX5c/WStFq1GaGso7H1AzP/qSzmlCKQ==}
 
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
@@ -2347,20 +2365,17 @@ packages:
   effect@3.16.12:
     resolution: {integrity: sha512-N39iBk0K71F9nb442TLbTkjl24FLUzuvx2i1I2RsEAQsdAdUTuUoW0vlfUXgkMTUOnYqKnWcFfqw4hK4Pw27hg==}
 
+  effect@3.18.4:
+    resolution: {integrity: sha512-b1LXQJLe9D11wfnOKAk3PKxuqYshQ0Heez+y5pnkd3jLj1yx9QhM72zZ9uUrOQyNvrs2GZZd/3maL0ZV18YuDA==}
+
   electron-to-chromium@1.5.207:
     resolution: {integrity: sha512-mryFrrL/GXDTmAtIVMVf+eIXM09BBPlO5IQ7lUyKmK8d+A4VpRGG+M3ofoVef6qyF8s60rJei8ymlJxjUA8Faw==}
 
   emmet@2.4.11:
     resolution: {integrity: sha512-23QPJB3moh/U9sT4rQzGgeyyGIrcM+GH5uVYg2C6wZIxAIJq7Ng3QLT79tl8FUwDXhyq9SusfknOrofAKqvgyQ==}
 
-  emoji-regex@10.5.0:
-    resolution: {integrity: sha512-lb49vf1Xzfx080OKA0o6l8DQQpV+6Vg95zyCJX9VB/BqKYlhG7N4wgROUUHRA+ZPUefLnteQOad7z1kT2bV7bg==}
-
-  emoji-regex@8.0.0:
-    resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
-
-  emoji-regex@9.2.2:
-    resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
+  emoji-regex@10.6.0:
+    resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
 
   empathic@2.0.0:
     resolution: {integrity: sha512-i6UzDscO/XfAcNYD75CfICkmfLedpyPDdozrLMmQc5ORaQcdMoc21OnlEylMIqI7U8eniKrPMxxtj8k0vhmJhA==}
@@ -2653,8 +2668,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.9.10:
-    resolution: {integrity: sha512-AlI15ijFyKTXR7eHo7QK7OR4RoKIedZvBuRjO8iy4zrxvlY5oFCdiRG/V/lFJHCNXJ0k72ATgnyzx8Yqa5arug==}
+  hono@4.10.3:
+    resolution: {integrity: sha512-2LOYWUbnhdxdL8MNbNg9XZig6k+cZXm5IjHn2Aviv7honhBMOHb+jxrKIeJRZJRmn+htUCKhaicxwXuUDlchRA==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -3335,10 +3350,6 @@ packages:
   nlcst-to-string@4.0.0:
     resolution: {integrity: sha512-YKLBCcUYKAg0FNlOBT6aI91qFmSiFKiluk655WzPF+DDMA02qIyy8uiRqI8QXtcFpEvll12LpL5MXqEmAZ+dcA==}
 
-  node-cron@3.0.3:
-    resolution: {integrity: sha512-dOal67//nohNgYWb+nWmg5dkFdIwDm8EpeGYMekPMrngV3637lqnX0lbUcCtgibHTz6SEz7DAIjKvKDFYCnO1A==}
-    engines: {node: '>=6.0.0'}
-
   node-fetch-native@1.6.7:
     resolution: {integrity: sha512-g9yhqoedzIUm0nTnTqAQvueMPVOuIY16bqgAJJC8XOOubYFNwz6IER9qs0Gq2Xd0+CecCKFjtdDTMA4u4xG06Q==}
 
@@ -3630,6 +3641,16 @@ packages:
 
   prisma@6.16.3:
     resolution: {integrity: sha512-4tJq3KB9WRshH5+QmzOLV54YMkNlKOtLKaSdvraI5kC/axF47HuOw6zDM8xrxJ6s9o2WodY654On4XKkrobQdQ==}
+    engines: {node: '>=18.18'}
+    hasBin: true
+    peerDependencies:
+      typescript: '>=5.1.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  prisma@6.18.0:
+    resolution: {integrity: sha512-bXWy3vTk8mnRmT+SLyZBQoC2vtV9Z8u7OHvEu+aULYxwiop/CPiFZ+F56KsNRNf35jw+8wcu8pmLsjxpBxAO9g==}
     engines: {node: '>=18.18'}
     hasBin: true
     peerDependencies:
@@ -4360,10 +4381,6 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    hasBin: true
-
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
@@ -5088,39 +5105,39 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@biomejs/biome@2.2.4':
+  '@biomejs/biome@2.2.7':
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.2.4
-      '@biomejs/cli-darwin-x64': 2.2.4
-      '@biomejs/cli-linux-arm64': 2.2.4
-      '@biomejs/cli-linux-arm64-musl': 2.2.4
-      '@biomejs/cli-linux-x64': 2.2.4
-      '@biomejs/cli-linux-x64-musl': 2.2.4
-      '@biomejs/cli-win32-arm64': 2.2.4
-      '@biomejs/cli-win32-x64': 2.2.4
+      '@biomejs/cli-darwin-arm64': 2.2.7
+      '@biomejs/cli-darwin-x64': 2.2.7
+      '@biomejs/cli-linux-arm64': 2.2.7
+      '@biomejs/cli-linux-arm64-musl': 2.2.7
+      '@biomejs/cli-linux-x64': 2.2.7
+      '@biomejs/cli-linux-x64-musl': 2.2.7
+      '@biomejs/cli-win32-arm64': 2.2.7
+      '@biomejs/cli-win32-x64': 2.2.7
 
-  '@biomejs/cli-darwin-arm64@2.2.4':
+  '@biomejs/cli-darwin-arm64@2.2.7':
     optional: true
 
-  '@biomejs/cli-darwin-x64@2.2.4':
+  '@biomejs/cli-darwin-x64@2.2.7':
     optional: true
 
-  '@biomejs/cli-linux-arm64-musl@2.2.4':
+  '@biomejs/cli-linux-arm64-musl@2.2.7':
     optional: true
 
-  '@biomejs/cli-linux-arm64@2.2.4':
+  '@biomejs/cli-linux-arm64@2.2.7':
     optional: true
 
-  '@biomejs/cli-linux-x64-musl@2.2.4':
+  '@biomejs/cli-linux-x64-musl@2.2.7':
     optional: true
 
-  '@biomejs/cli-linux-x64@2.2.4':
+  '@biomejs/cli-linux-x64@2.2.7':
     optional: true
 
-  '@biomejs/cli-win32-arm64@2.2.4':
+  '@biomejs/cli-win32-arm64@2.2.7':
     optional: true
 
-  '@biomejs/cli-win32-x64@2.2.4':
+  '@biomejs/cli-win32-x64@2.2.7':
     optional: true
 
   '@capsizecss/unpack@3.0.0':
@@ -5325,18 +5342,9 @@ snapshots:
     dependencies:
       '@expressive-code/core': 0.41.3
 
-  '@hono/node-server@1.19.5(hono@4.9.10)':
+  '@hono/node-server@1.19.5(hono@4.10.3)':
     dependencies:
-      hono: 4.9.10
-
-  '@hono/node-ws@1.2.0(@hono/node-server@1.19.5(hono@4.9.10))(bufferutil@4.0.9)(hono@4.9.10)':
-    dependencies:
-      '@hono/node-server': 1.19.5(hono@4.9.10)
-      hono: 4.9.10
-      ws: 8.18.3(bufferutil@4.0.9)
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
+      hono: 4.10.3
 
   '@img/colour@1.0.0': {}
 
@@ -5707,9 +5715,22 @@ snapshots:
     transitivePeerDependencies:
       - pg-native
 
+  '@prisma/adapter-pg@6.18.0':
+    dependencies:
+      '@prisma/driver-adapter-utils': 6.15.0
+      pg: 8.16.3
+      postgres-array: 3.0.4
+    transitivePeerDependencies:
+      - pg-native
+
   '@prisma/client@6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)':
     optionalDependencies:
       prisma: 6.16.3(magicast@0.3.5)(typescript@5.9.2)
+      typescript: 5.9.2
+
+  '@prisma/client@6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)':
+    optionalDependencies:
+      prisma: 6.18.0(magicast@0.3.5)(typescript@5.9.2)
       typescript: 5.9.2
 
   '@prisma/config@6.16.3(magicast@0.3.5)':
@@ -5721,15 +5742,28 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
+  '@prisma/config@6.18.0(magicast@0.3.5)':
+    dependencies:
+      c12: 3.1.0(magicast@0.3.5)
+      deepmerge-ts: 7.1.5
+      effect: 3.18.4
+      empathic: 2.0.0
+    transitivePeerDependencies:
+      - magicast
+
   '@prisma/debug@6.15.0': {}
 
   '@prisma/debug@6.16.3': {}
+
+  '@prisma/debug@6.18.0': {}
 
   '@prisma/driver-adapter-utils@6.15.0':
     dependencies:
       '@prisma/debug': 6.15.0
 
   '@prisma/engines-version@6.16.1-1.bb420e667c1820a8c05a38023385f6cc7ef8e83a': {}
+
+  '@prisma/engines-version@6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f': {}
 
   '@prisma/engines@6.16.3':
     dependencies:
@@ -5738,15 +5772,32 @@ snapshots:
       '@prisma/fetch-engine': 6.16.3
       '@prisma/get-platform': 6.16.3
 
+  '@prisma/engines@6.18.0':
+    dependencies:
+      '@prisma/debug': 6.18.0
+      '@prisma/engines-version': 6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f
+      '@prisma/fetch-engine': 6.18.0
+      '@prisma/get-platform': 6.18.0
+
   '@prisma/fetch-engine@6.16.3':
     dependencies:
       '@prisma/debug': 6.16.3
       '@prisma/engines-version': 6.16.1-1.bb420e667c1820a8c05a38023385f6cc7ef8e83a
       '@prisma/get-platform': 6.16.3
 
+  '@prisma/fetch-engine@6.18.0':
+    dependencies:
+      '@prisma/debug': 6.18.0
+      '@prisma/engines-version': 6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f
+      '@prisma/get-platform': 6.18.0
+
   '@prisma/get-platform@6.16.3':
     dependencies:
       '@prisma/debug': 6.16.3
+
+  '@prisma/get-platform@6.18.0':
+    dependencies:
+      '@prisma/debug': 6.18.0
 
   '@quansync/fs@0.1.5':
     dependencies:
@@ -6044,8 +6095,6 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.8
 
-  '@types/braces@3.0.5': {}
-
   '@types/chai@5.2.2':
     dependencies:
       '@types/deep-eql': 4.0.2
@@ -6082,10 +6131,6 @@ snapshots:
 
   '@types/mdx@2.0.13': {}
 
-  '@types/micromatch@4.0.9':
-    dependencies:
-      '@types/braces': 3.0.5
-
   '@types/minimist@1.2.5': {}
 
   '@types/ms@0.7.34': {}
@@ -6094,13 +6139,17 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
-  '@types/node-cron@3.0.11': {}
-
   '@types/node@24.5.2':
     dependencies:
       undici-types: 7.14.0
 
   '@types/normalize-package-data@2.4.4': {}
+
+  '@types/pg@8.15.5':
+    dependencies:
+      '@types/node': 24.5.2
+      pg-protocol: 1.10.3
+      pg-types: 2.2.0
 
   '@types/prop-types@15.7.15': {}
 
@@ -6824,6 +6873,11 @@ snapshots:
       '@standard-schema/spec': 1.0.0
       fast-check: 3.23.2
 
+  effect@3.18.4:
+    dependencies:
+      '@standard-schema/spec': 1.0.0
+      fast-check: 3.23.2
+
   electron-to-chromium@1.5.207: {}
 
   emmet@2.4.11:
@@ -6831,11 +6885,7 @@ snapshots:
       '@emmetio/abbreviation': 2.3.3
       '@emmetio/css-abbreviation': 2.1.8
 
-  emoji-regex@10.5.0: {}
-
-  emoji-regex@8.0.0: {}
-
-  emoji-regex@9.2.2: {}
+  emoji-regex@10.6.0: {}
 
   empathic@2.0.0: {}
 
@@ -7302,7 +7352,7 @@ snapshots:
 
   he@1.2.0: {}
 
-  hono@4.9.10: {}
+  hono@4.10.3: {}
 
   hookable@5.5.3: {}
 
@@ -8223,10 +8273,6 @@ snapshots:
     dependencies:
       '@types/nlcst': 2.0.3
 
-  node-cron@3.0.3:
-    dependencies:
-      uuid: 8.3.2
-
   node-fetch-native@1.6.7: {}
 
   node-fetch@2.7.0(encoding@0.1.13):
@@ -8431,10 +8477,10 @@ snapshots:
     optionalDependencies:
       pg-cloudflare: 1.2.7
 
-  pglite-prisma-adapter@0.6.1(@electric-sql/pglite@0.3.10)(@prisma/client@6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)):
+  pglite-prisma-adapter@0.6.1(@electric-sql/pglite@0.3.10)(@prisma/client@6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)):
     dependencies:
       '@electric-sql/pglite': 0.3.10
-      '@prisma/client': 6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
+      '@prisma/client': 6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@prisma/driver-adapter-utils': 6.15.0
       postgres-array: 3.0.4
 
@@ -8513,6 +8559,15 @@ snapshots:
     dependencies:
       '@prisma/config': 6.16.3(magicast@0.3.5)
       '@prisma/engines': 6.16.3
+    optionalDependencies:
+      typescript: 5.9.2
+    transitivePeerDependencies:
+      - magicast
+
+  prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2):
+    dependencies:
+      '@prisma/config': 6.18.0(magicast@0.3.5)
+      '@prisma/engines': 6.18.0
     optionalDependencies:
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -9024,19 +9079,19 @@ snapshots:
 
   string-width@4.2.3:
     dependencies:
-      emoji-regex: 8.0.0
+      emoji-regex: 10.6.0
       is-fullwidth-code-point: 3.0.0
       strip-ansi: 6.0.1
 
   string-width@5.1.2:
     dependencies:
       eastasianwidth: 0.2.0
-      emoji-regex: 9.2.2
+      emoji-regex: 10.6.0
       strip-ansi: 7.1.0
 
   string-width@7.2.0:
     dependencies:
-      emoji-regex: 10.5.0
+      emoji-regex: 10.6.0
       get-east-asian-width: 1.4.0
       strip-ansi: 7.1.2
 
@@ -9337,8 +9392,6 @@ snapshots:
       picocolors: 1.1.1
 
   util-deprecate@1.0.2: {}
-
-  uuid@8.3.2: {}
 
   v8-compile-cache-lib@3.0.1:
     optional: true

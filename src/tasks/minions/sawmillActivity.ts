@@ -7,9 +7,7 @@ export const sawmillTask: MinionTask = {
 	async run(data: SawmillActivityTaskOptions, { user, handleTripFinish }) {
 		const { channelID, plankID, plankQuantity } = data;
 
-		const loot = new Bank({
-			[plankID]: plankQuantity
-		});
+		const loot = new Bank().add(plankID, plankQuantity);
 
 		let str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
 

@@ -2,7 +2,6 @@ import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
-import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 const plainGraceful = new Bank({
@@ -74,9 +73,9 @@ export async function agilityArenaCommand(
 		});
 	}
 
-	const boosts = [];
+	const boosts: string[] = [];
 
-	const [hasKaramjaElite] = await userhasDiaryTier(user, KaramjaDiary.elite);
+	const hasKaramjaElite = user.hasDiary('karamja.elite');
 	if (hasKaramjaElite) {
 		boosts.push('10% extra tickets for Karamja Elite diary');
 	}
@@ -166,7 +165,7 @@ export async function agilityArenaXPCommand(user: MUser, qty: number): CommandRe
 		qty = amountTicketsHas;
 	}
 
-	const [hasKaramjaMed] = await userhasDiaryTier(user, KaramjaDiary.medium);
+	const hasKaramjaMed = user.hasDiary('karamja.medium');
 	const xpToGive = (hasKaramjaMed ? 379.5 : 345) * qty;
 
 	const str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(xpToGive / qty).toFixed(2)} ea)`;

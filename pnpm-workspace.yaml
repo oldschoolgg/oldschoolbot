@@ -17,3 +17,4 @@ overrides:
   "undici-types": "7.14.0"
   "@types/node": "24.5.2"
   "esbuild": "0.25.11"
+  "emoji-regex": "10.6.0"

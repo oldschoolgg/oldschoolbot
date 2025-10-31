@@ -11,21 +11,18 @@ describe('Pvm - KC', async () => {
 
 	it('Should add KC', async () => {
 		const user = await createTestUser();
-		const res = await user.runCommand(minionKCommand, { name: 'man', quantity: 10 });
-		expect(res).toContain('now killing 10x Man');
-		await user.runActivity();
+		const res = await user.runCmdAndTrip(minionKCommand, { name: 'man', quantity: 10 });
+		expect(res.commandResult).toContain('now killing 10x Man');
 		expect(await user.getKC(EMonster.MAN)).toEqual(10);
 		expect(await user.runCommand(minionCommand, { kc: { name: 'man' } })).toEqual('Your Man KC is: 10.');
 
-		const res2 = await user.runCommand(minionKCommand, { name: 'man', quantity: 10 });
-		expect(res2).toContain('now killing 10x Man');
-		await user.runActivity();
+		const res2 = await user.runCmdAndTrip(minionKCommand, { name: 'man', quantity: 10 });
+		expect(res2.commandResult).toContain('now killing 10x Man');
 		expect(await user.getKC(EMonster.MAN)).toEqual(20);
 		expect(await user.runCommand(minionCommand, { kc: { name: 'man' } })).toEqual('Your Man KC is: 20.');
 
-		const res3 = await user.runCommand(minionKCommand, { name: 'cow', quantity: 10 });
-		expect(res3).toContain('now killing 10x Cow');
-		await user.runActivity();
+		const res3 = await user.runCmdAndTrip(minionKCommand, { name: 'cow', quantity: 10 });
+		expect(res3.commandResult).toContain('now killing 10x Cow');
 		expect(await user.getKC(EMonster.COW)).toEqual(10);
 		expect(await user.runCommand(minionCommand, { kc: { name: 'Cow' } })).toEqual('Your Cow KC is: 10.');
 		expect(await user.getKC(EMonster.MAN)).toEqual(20);
