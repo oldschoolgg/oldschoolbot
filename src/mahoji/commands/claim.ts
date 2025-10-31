@@ -1,5 +1,6 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import { dateFm, stringMatches } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { BitField, BOT_TYPE, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';

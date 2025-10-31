@@ -1,4 +1,3 @@
-import { time } from '@discordjs/formatters';
 import emojiRegex from 'emoji-regex';
 
 const rawEmojiRegex = emojiRegex();
@@ -64,10 +63,6 @@ export enum PerkTier {
 
 export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
 
-export function dateFm(date: Date) {
-	return `${time(date, 'T')} (${time(date, 'R')})`;
-}
-
 export function getInterval(intervalHours: number) {
 	const currentTime = new Date();
 	const currentHour = currentTime.getHours();
@@ -82,8 +77,7 @@ export function getInterval(intervalHours: number) {
 
 	return {
 		start: startInterval,
-		end: endInterval,
-		nextResetStr: dateFm(endInterval)
+		end: endInterval
 	};
 }
 

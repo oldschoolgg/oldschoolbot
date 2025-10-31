@@ -1,8 +1,8 @@
-import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
-import { type Guild, type HexColorString, resolveColor } from '@oldschoolgg/discord.js';
+import { bold, EmbedBuilder, type Guild, hasBanMemberPerms, inlineCode } from '@oldschoolgg/discord';
 import {
 	formatDuration,
-	hasBanMemberPerms,
+	hexToDecimal,
+	isValidHexColor,
 	miniID,
 	removeFromArr,
 	stringMatches,
@@ -428,15 +428,14 @@ async function bgColorConfig(user: MUser, hex?: string) {
 		return {
 			embeds: [
 				embed
-					.setColor(resolveColor(currentColor as HexColorString))
+					.setColor(hexToDecimal(currentColor))
 					.setDescription(`Your current background color is \`${currentColor}\`.`)
 			]
 		};
 	}
 
 	hex = hex.toUpperCase();
-	const isValid = hex.length === 7 && /^#([0-9A-F]{3}){1,2}$/i.test(hex);
-	if (!isValid) {
+	if (!isValidHexColor(hex)) {
 		return "That's not a valid hex color. It needs to be 7 characters long, starting with '#', for example: #4e42f5 - use this to pick one: <https://www.google.com/search?q=hex+color+picker>";
 	}
 
@@ -445,11 +444,7 @@ async function bgColorConfig(user: MUser, hex?: string) {
 	});
 
 	return {
-		embeds: [
-			embed
-				.setColor(resolveColor(hex as HexColorString))
-				.setDescription(`Your background color is now \`${hex}\``)
-		]
+		embeds: [embed.setColor(hexToDecimal(hex)).setDescription(`Your background color is now \`${hex}\``)]
 	};
 }
 

@@ -1,4 +1,5 @@
-import { evalMathExpression, formatDuration, makeComponents, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { dateFm, makeComponents } from '@oldschoolgg/discord';
+import { evalMathExpression, formatDuration, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Items, toKMB } from 'oldschooljs';
 
 import type { GEListing, GETransaction } from '@/prisma/main.js';
@@ -270,7 +271,7 @@ This price is a guide only, calculated from average sale prices, it may not be a
 			const { slots } = await GrandExchange.calculateSlotsOfUser(user);
 
 			return `
-The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it resets every ${formatDuration(
+The next buy limit reset is at: ${dateFm(GrandExchange.getInterval().end)}, it resets every ${formatDuration(
 				GrandExchange.config.buyLimit.interval
 			)}.
 

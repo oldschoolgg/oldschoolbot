@@ -1,14 +1,15 @@
 import {
 	ActionRowBuilder,
+	awaitMessageComponentInteraction,
 	type BaseMessageOptions,
 	ButtonBuilder,
-	type ButtonInteraction,
 	ButtonStyle,
-	type CacheType,
+	type ComponentType,
+	channelIsSendable,
 	MessageFlags
-} from '@oldschoolgg/discord.js';
+} from '@oldschoolgg/discord';
 import { roll, shuffleArr } from '@oldschoolgg/rng';
-import { awaitMessageComponentInteraction, channelIsSendable, chunk, noOp, Time } from '@oldschoolgg/toolkit';
+import { chunk, noOp, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
@@ -170,7 +171,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 	};
 
 	try {
-		const selection = await awaitMessageComponentInteraction({
+		const selection = await awaitMessageComponentInteraction<ComponentType.Button>({
 			message: sentMessage,
 			filter: i => {
 				if (i.user.id !== (user.id ?? interaction.user.id).toString()) {
@@ -188,7 +189,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		buttonsToShow[index].picked = true;
 
 		try {
-			await silentButtonAck(selection as ButtonInteraction<CacheType>);
+			await silentButtonAck(selection);
 			const result = await finalize({ button: pickedButton });
 			return {
 				content: result,

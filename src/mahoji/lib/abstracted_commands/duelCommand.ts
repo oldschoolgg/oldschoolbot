@@ -1,13 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder } from '@oldschoolgg/discord';
 import {
+	ActionRowBuilder,
 	awaitMessageComponentInteraction,
-	channelIsSendable,
-	Emoji,
-	Events,
-	noOp,
-	sleep,
-	Time
-} from '@oldschoolgg/toolkit';
+	ButtonBuilder,
+	channelIsSendable
+} from '@oldschoolgg/discord';
+import { Emoji, Events, noOp, sleep, Time } from '@oldschoolgg/toolkit';
 import { ButtonStyle, MessageFlags } from 'discord-api-types/v10';
 import { Bank, toKMB } from 'oldschooljs';
 

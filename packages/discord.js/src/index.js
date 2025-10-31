@@ -1,7 +1,7 @@
 const start = performance.now();
 
 'use strict';
-console.log("D.JS FORK");
+console.trace("Using D.JS Fork");
 const { __exportStar } = require('tslib');
 
 // "Root" classes (starting points)
@@ -184,14 +184,6 @@ exports.UserContextMenuCommandInteraction =
 exports.UserSelectMenuComponent = require('./structures/UserSelectMenuComponent.js').UserSelectMenuComponent;
 exports.UserSelectMenuInteraction = require('./structures/UserSelectMenuInteraction.js').UserSelectMenuInteraction;
 exports.Webhook = require('./structures/Webhook.js').Webhook;
-
-// External
-__exportStar(require('discord-api-types/v10'), exports);
-__exportStar(require('@discordjs/builders'), exports);
-__exportStar(require('@discordjs/formatters'), exports);
-__exportStar(require('@discordjs/rest'), exports);
-__exportStar(require('@discordjs/util'), exports);
-// __exportStar(require('@discordjs/ws'), exports);
 
 const end = performance.now();
 console.log(`Discord.js module loaded in ${(end - start).toFixed(2)} ms`);

@@ -1,11 +1,10 @@
-import type { ButtonBuilder } from '@oldschoolgg/discord';
+import { type ButtonBuilder, makeComponents } from '@oldschoolgg/discord';
 import { randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	Events,
 	formatDuration,
 	formatOrdinal,
-	makeComponents,
 	reduceNumByPercent,
 	round,
 	stringMatches,

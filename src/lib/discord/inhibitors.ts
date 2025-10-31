@@ -4,7 +4,7 @@ import {
 	type InteractionReplyOptions,
 	PermissionsBitField,
 	type TextBasedChannel
-} from '@oldschoolgg/discord.js';
+} from '@oldschoolgg/discord';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';

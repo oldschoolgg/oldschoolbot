@@ -12,7 +12,6 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
-import { getUsernameSync } from '@/lib/util.js';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),
@@ -463,8 +462,16 @@ WHERE badges && ${badgeIDs}
 			}
 		}
 
+		const text = await Promise.all(
+			results
+				.map(
+					async r =>
+						`${await Cache.getBadgedUsername(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`
+				)
+				.join('\n')
+		);
 		return `Roles
-${results.map(r => `${getUsernameSync(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`).join('\n')}
+${text}
 
 Debug Messages:
 ${debugMessages.join('\n')}`;

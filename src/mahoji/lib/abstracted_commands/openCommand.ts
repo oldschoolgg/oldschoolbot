@@ -1,5 +1,5 @@
-import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { makeComponents, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { type ButtonBuilder, makeComponents } from '@oldschoolgg/discord';
+import { notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

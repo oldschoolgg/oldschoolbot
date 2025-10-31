@@ -1,6 +1,6 @@
-import { ButtonBuilder } from '@oldschoolgg/discord';
-import type { BaseMessageOptions, ButtonInteraction, Message } from '@oldschoolgg/discord.js';
-import { isFunction, makeComponents, noOp, Time } from '@oldschoolgg/toolkit';
+import type { BaseMessageOptions, ButtonInteraction, Message } from '@oldschoolgg/discord';
+import { ButtonBuilder, makeComponents } from '@oldschoolgg/discord';
+import { isFunction, noOp, Time } from '@oldschoolgg/toolkit';
 import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';

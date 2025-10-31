@@ -3,7 +3,6 @@ import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
 import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
-import { Cache } from '@/lib/cache/redis.js';
 import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';

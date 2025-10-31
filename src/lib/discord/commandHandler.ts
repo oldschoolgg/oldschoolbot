@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, PermissionFlagsBits } from '@oldschoolgg/discord.js';
+import { type ChatInputCommandInteraction, PermissionFlagsBits } from '@oldschoolgg/discord';
 import { cryptoRng } from '@oldschoolgg/rng';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
 

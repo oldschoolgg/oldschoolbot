@@ -1,16 +1,14 @@
 import {
 	ActivityType,
+	channelIsSendable,
 	Events as DJSEvent,
 	GatewayIntentBits,
-	Options,
 	Partials,
-	PresenceUpdateStatus,
-	type TextChannel
-} from '@oldschoolgg/discord.js';
+	PresenceUpdateStatus
+} from '@oldschoolgg/discord';
 import { Events } from '@oldschoolgg/toolkit';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { CACHED_ACTIVE_USER_IDS } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import { onRawGuildCreate } from '@/lib/discord/handlers/guildCreate.js';
 import { interactionHandler } from '@/lib/discord/interactionHandler.js';
@@ -45,31 +43,6 @@ const client = new OldSchoolBotClient({
 	partials: [Partials.User, Partials.Channel],
 	allowedMentions: {
 		parse: ['users']
-	},
-	makeCache: Options.cacheWithLimits({
-		MessageManager: {
-			maxSize: 0
-		},
-		UserManager: {
-			maxSize: 1000,
-			keepOverLimit: user => CACHED_ACTIVE_USER_IDS.has(user.id)
-		},
-		ThreadManager: { maxSize: 0 },
-		ThreadMemberManager: { maxSize: 0 },
-		GuildMessageManager: { maxSize: 0 },
-		GuildForumThreadManager: { maxSize: 0 },
-		GuildTextThreadManager: { maxSize: 0 },
-		DMMessageManager: { maxSize: 0 }
-	}),
-	sweepers: {
-		guildMembers: {
-			interval: 60 * 60,
-			filter: () => member => !CACHED_ACTIVE_USER_IDS.has(member.user.id)
-		},
-		users: {
-			interval: 60 * 60,
-			filter: () => user => !CACHED_ACTIVE_USER_IDS.has(user.id)
-		}
 	}
 });
 
@@ -92,8 +65,8 @@ client.on(DJSEvent.InteractionCreate, interactionHandler);
 
 client.on(Events.ServerNotification, (message: string) => {
 	const channel = globalClient.channels.cache.get(Channel.Notifications);
-	if (channel) {
-		(channel as TextChannel).send({ content: message, allowedMentions: { parse: [], users: [], roles: [] } });
+	if (channelIsSendable(channel)) {
+		channel.send({ content: message, allowedMentions: { parse: [], users: [], roles: [] } });
 	}
 });
 

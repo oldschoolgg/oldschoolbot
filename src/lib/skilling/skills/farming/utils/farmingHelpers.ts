@@ -1,6 +1,5 @@
-import { ButtonBuilder } from '@oldschoolgg/discord';
-import type { BaseMessageOptions } from '@oldschoolgg/discord.js';
-import { dateFm, Emoji, makeComponents, stringMatches } from '@oldschoolgg/toolkit';
+import { type BaseMessageOptions, ButtonBuilder, dateFm, makeComponents } from '@oldschoolgg/discord';
+import { Emoji, stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonStyle } from 'discord-api-types/v10';
 
 import type { User } from '@/prisma/main.js';

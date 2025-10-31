@@ -1,6 +1,5 @@
 import type { GatewayGuildCreateDispatchData } from 'discord-api-types/v10';
 
-import { Cache } from '@/lib/cache/redis.js';
 import { globalConfig } from '@/lib/constants.js';
 
 export function onRawGuildCreate(g: GatewayGuildCreateDispatchData) {

@@ -1,14 +1,5 @@
-import { ButtonBuilder, ButtonStyle, bold, userMention } from '@oldschoolgg/discord';
-import {
-	calcPercentOfNum,
-	getInterval,
-	makeComponents,
-	miniID,
-	noOp,
-	sumArr,
-	Time,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle, bold, dateFm, makeComponents, userMention } from '@oldschoolgg/discord';
+import { calcPercentOfNum, getInterval, miniID, noOp, sumArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { clamp } from 'remeda';
@@ -687,9 +678,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 			const remainingBuyLimit = remainingItemsInBuyLimit - quantityToBuy;
 			if (remainingBuyLimit <= 0) {
-				str += ` You have reached your buy limit for this item, your buy limit will reset at ${
-					this.getInterval().nextResetStr
-				}.`;
+				str += ` You have reached your buy limit for this item, your buy limit will reset at ${dateFm(
+					this.getInterval().end
+				)}.`;
 			}
 
 			const components = [disableDMsButton];

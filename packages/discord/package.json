@@ -14,7 +14,9 @@
 	},
 	"dependencies": {
 		"@discordjs/builders": "^1.13.0",
+		"@discordjs/rest": "^2.6.0",
 		"@oldschoolgg/discord.js": "workspace:*",
-		"discord-api-types": "^0.38.30"
+		"discord-api-types": "^0.38.30",
+		"remeda": "^2.23.0"
 	}
 }

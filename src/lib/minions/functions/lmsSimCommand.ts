@@ -1,5 +1,5 @@
-import { type Channel, type Message, TextChannel } from '@oldschoolgg/discord.js';
-import { channelIsSendable, chunk, sleep } from '@oldschoolgg/toolkit';
+import { type Channel, channelIsSendable, type Message, TextChannel } from '@oldschoolgg/discord';
+import { chunk, sleep } from '@oldschoolgg/toolkit';
 
 import type LastManStandingUsage from '@/lib/structures/LastManStandingUsage.js';
 import { LMS_FINAL, LMS_PREP, LMS_ROUND } from '@/lib/structures/LastManStandingUsage.js';

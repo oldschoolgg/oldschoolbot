@@ -1,4 +1,5 @@
-import { discrimName, Events } from '@oldschoolgg/toolkit';
+import { discrimName } from '@oldschoolgg/discord';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';

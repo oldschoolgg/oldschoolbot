@@ -1,12 +1,13 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
 import {
+	ActionRowBuilder,
 	awaitMessageComponentInteraction,
+	ButtonBuilder,
+	ButtonStyle,
+	type ComponentType,
 	channelIsSendable,
-	noOp,
-	removeFromArr,
-	stringMatches,
-	Time
-} from '@oldschoolgg/toolkit';
+	EmbedBuilder
+} from '@oldschoolgg/discord';
+import { noOp, removeFromArr, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { analyticsTick } from '@/lib/analytics.js';
@@ -194,7 +195,7 @@ export const tickers: {
 						.catch(noOp);
 					if (!message) return;
 					try {
-						const selection = await awaitMessageComponentInteraction({
+						const selection = await awaitMessageComponentInteraction<ComponentType.Button>({
 							message,
 							time: Time.Minute * 5,
 							filter: () => true

@@ -29,12 +29,6 @@ vi.mock('@oldschoolgg/toolkit', async () => {
 	return {
 		...actualToolkit,
 		channelIsSendable: vi.fn().mockReturnValue(true)
-		// awaitMessageComponentInteraction: vi.fn().mockImplementation(({ message }: { message: Message }) => {
-		// 	return Promise.resolve({
-		// 		customId: randArrItem(Object.values(InteractionID.Slayer)),
-		// 		...mockInteraction({ user: { id: message.author.id } as any })
-		// 	});
-		// })
 	};
 });
 

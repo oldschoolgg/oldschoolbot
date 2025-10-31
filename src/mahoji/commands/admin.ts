@@ -1,10 +1,9 @@
-import { AttachmentBuilder, type InteractionReplyOptions } from '@oldschoolgg/discord.js';
+import { AttachmentBuilder, dateFm, type InteractionReplyOptions } from '@oldschoolgg/discord';
 import { randArrItem } from '@oldschoolgg/rng';
 import {
 	calcPerHour,
 	calcWhatPercent,
 	cleanString,
-	dateFm,
 	formatDuration,
 	noOp,
 	notEmpty,
@@ -261,7 +260,7 @@ LIMIT 10;
 			return {
 				content: `**Grand Exchange Data**
 
-The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets every ${formatDuration(
+The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every ${formatDuration(
 					GrandExchange.config.buyLimit.interval
 				)}.
 **Tax Rate:** ${GrandExchange.config.tax.rate()}%

@@ -1,4 +1,4 @@
-import type { Guild as DJSGuild } from '@oldschoolgg/discord.js';
+import type { Guild as DJSGuild } from '@oldschoolgg/discord';
 
 import type { Prisma } from '@/prisma/main.js';
 import { untrustedGuildSettingsCache } from '@/lib/cache.js';

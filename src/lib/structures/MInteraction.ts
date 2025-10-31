@@ -28,7 +28,6 @@ import {
 	type PaginatedMessageOptions
 } from '@/lib/structures/PaginatedMessage.js';
 import { compressMahojiArgs } from '@/lib/util/commandUsage.js';
-import { getUsername } from '@/lib/util.js';
 
 interface MakePartyOptions {
 	maxSize: number;
@@ -374,7 +373,7 @@ export class MInteraction {
 
 		const getMessageContent = async () => ({
 			content: `${options.message}\n\n**Users Joined:** ${(
-				await Promise.all(usersWhoConfirmed.map(u => getUsername(u)))
+				await Promise.all(usersWhoConfirmed.map(u => Cache.getBadgedUsername(u)))
 			).join(
 				', '
 			)}\n\nThis party will automatically depart in ${formatDuration(timeout)}, or if the leader clicks the start (start early) or stop button.`,

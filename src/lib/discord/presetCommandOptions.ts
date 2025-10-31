@@ -1,4 +1,4 @@
-import type { APIApplicationCommandOptionChoice, GuildMember } from '@oldschoolgg/discord.js';
+import type { APIApplicationCommandOptionChoice, GuildMember } from '@oldschoolgg/discord';
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 

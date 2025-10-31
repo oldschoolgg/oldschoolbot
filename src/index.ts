@@ -1,10 +1,10 @@
 import './lib/safeglobals.js';
 import './lib/MUser.js';
 import './lib/discord/client.js';
+import './lib/cache/redis.js';
 
 import exitHook from 'exit-hook';
 
-import { Cache } from '@/lib/cache/redis.js';
 import { globalConfig } from '@/lib/constants.js';
 import { createDb } from '@/lib/globals.js';
 import { preStartup } from '@/lib/preStartup.js';

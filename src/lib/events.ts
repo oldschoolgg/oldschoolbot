@@ -1,11 +1,17 @@
-import { bold, EmbedBuilder } from '@oldschoolgg/discord';
-import type { BaseMessageOptions, Message, TextChannel } from '@oldschoolgg/discord.js';
+import {
+	type BaseMessageOptions,
+	bold,
+	channelIsSendable,
+	dateFm,
+	EmbedBuilder,
+	type Message,
+	type TextChannel
+} from '@oldschoolgg/discord';
 import { roll } from '@oldschoolgg/rng';
-import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
+import { Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
-import { Cache } from '@/lib/cache/redis.js';
 import {
 	CHAT_PET_COOLDOWN_CACHE,
 	lastRoboChimpSyncCache,

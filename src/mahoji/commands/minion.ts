@@ -3,7 +3,6 @@ import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } f
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { Cache } from '@/lib/cache/redis.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField, BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';

@@ -13,17 +13,27 @@ import {
 import { Redis } from 'ioredis';
 import type { z } from 'zod';
 
-import { globalConfig } from '@/lib/constants.js';
+import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
+import { fetchUsernameAndCache } from '@/lib/util.js';
 
 export enum CacheKeyPrefix {
 	Guild = 'guild',
 	Member = 'member',
+	User = 'user',
 	Channel = 'channel',
 	Role = 'role',
 	Emoji = 'emoji',
 	RoboChimp = 'robochimp'
 }
+
+const fmkey = (...parts: string[]) => parts.join(':');
+
+const Key = {
+	User: {
+		BadgedUsername: (userId: string) => fmkey(CacheKeyPrefix.User, BOT_TYPE, userId, 'badged_username')
+	}
+};
 
 export class CacheManager {
 	private client: Redis;
@@ -31,10 +41,14 @@ export class CacheManager {
 		this.client = new Redis();
 	}
 
-	private async set(key: string, value: object, ttlSeconds?: number) {
+	private async setString(key: string, value: string, ttlSeconds?: number) {
+		if (ttlSeconds) await this.client.set(key, value, 'EX', ttlSeconds);
+		else await this.client.set(key, value);
+	}
+
+	private async setObject(key: string, value: object, ttlSeconds?: number) {
 		const json = JSON.stringify(value);
-		if (ttlSeconds) await this.client.set(key, json, 'EX', ttlSeconds);
-		else await this.client.set(key, json);
+		return this.setString(key, json, ttlSeconds);
 	}
 
 	private async get<T>(key: string): Promise<T | null> {
@@ -71,7 +85,7 @@ export class CacheManager {
 
 	async setGuild(guild: IGuild, ttl?: number) {
 		ZGuild.parse(guild);
-		await this.set(`${CacheKeyPrefix.Guild}:${guild.id}`, guild, ttl);
+		await this.setObject(`${CacheKeyPrefix.Guild}:${guild.id}`, guild, ttl);
 	}
 
 	async getMember(guildID: string, userID: string) {
@@ -84,7 +98,7 @@ export class CacheManager {
 
 	async setMember(member: IMember, ttl?: number) {
 		ZMember.parse(member);
-		await this.set(`${CacheKeyPrefix.Member}:${member.guild_id}:${member.id}`, member, ttl);
+		await this.setObject(`${CacheKeyPrefix.Member}:${member.guild_id}:${member.id}`, member, ttl);
 	}
 
 	async bulkSetMembers(members: IMember[], ttl?: number) {
@@ -105,7 +119,7 @@ export class CacheManager {
 
 	async setRole(role: IRole, ttl?: number) {
 		ZRole.parse(role);
-		await this.set(`${CacheKeyPrefix.Role}:${role.guild_id}:${role.id}`, role, ttl);
+		await this.setObject(`${CacheKeyPrefix.Role}:${role.guild_id}:${role.id}`, role, ttl);
 	}
 
 	async bulkSetRoles(roles: IRole[], ttl?: number) {
@@ -117,7 +131,7 @@ export class CacheManager {
 	}
 
 	async setRoboChimpUser(data: RobochimpUser, ttlSeconds?: number) {
-		await this.set(`${CacheKeyPrefix.RoboChimp}:user:${data.id}`, data, ttlSeconds);
+		await this.setObject(`${CacheKeyPrefix.RoboChimp}:user:${data.id}`, data, ttlSeconds);
 	}
 
 	async getRoboChimpUser(userID: string): Promise<RobochimpUser | null> {
@@ -128,9 +142,25 @@ export class CacheManager {
 		await this.bulkSet(CacheKeyPrefix.RoboChimp, users, c => `user:${c.id}`, null, ttl);
 	}
 
+	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
+		return this.get(Key.User.BadgedUsername(userId));
+	}
+
+	async getBadgedUsername(userId: string): Promise<string> {
+		return fetchUsernameAndCache(userId);
+	}
+
+	async setBadgedUsername(userId: string, badgedUsername: string) {
+		await this.setString(Key.User.BadgedUsername(userId), badgedUsername);
+	}
+
 	async close() {
 		await this.client.quit();
 	}
 }
 
-export const Cache = new CacheManager();
+global.Cache = new CacheManager();
+
+declare global {
+	var Cache: CacheManager;
+}

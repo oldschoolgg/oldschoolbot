@@ -1,4 +1,5 @@
-import { dateFm, Emoji, formatDuration, getNextUTCReset, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
+import { Emoji, formatDuration, getNextUTCReset, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 
 import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';

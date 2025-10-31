@@ -16,7 +16,6 @@ export const giveawayCache = new LRUCache<number, Giveaway>({
 	ttlResolution: Time.Second
 });
 
-export const usernameWithBadgesCache = new Map<string, string>();
 export const lastRoboChimpSyncCache = new Map<string, number>();
 
 export const partyLockCache: Set<string> = new Set();

@@ -1,4 +1,4 @@
-import type { Interaction } from '@oldschoolgg/discord.js';
+import type { Interaction } from '@oldschoolgg/discord';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { autoCompleteHandler } from '@/lib/discord/autoCompleteHandler.js';

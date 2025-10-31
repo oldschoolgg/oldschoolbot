@@ -159,7 +159,6 @@ import {
 	VideoQualityMode,
 	WebhookType
 } from 'discord-api-types/v10';
-import { MessageComponentType } from '../typings/index.js';
 
 // #region Classes
 
@@ -1523,13 +1522,13 @@ export interface MessageCall {
 	participants: readonly Snowflake[];
 }
 
-// export type MessageComponentType =
-// 	| ComponentType.Button
-// 	| ComponentType.ChannelSelect
-// 	| ComponentType.MentionableSelect
-// 	| ComponentType.RoleSelect
-// 	| ComponentType.StringSelect
-// 	| ComponentType.UserSelect;
+export type MessageComponentType =
+	| ComponentType.Button
+	| ComponentType.ChannelSelect
+	| ComponentType.MentionableSelect
+	| ComponentType.RoleSelect
+	| ComponentType.StringSelect
+	| ComponentType.UserSelect;
 
 export interface MessageCollectorOptionsParams<
 	ComponentType extends MessageComponentType,
@@ -5197,40 +5196,3 @@ export type Serialized<Value> = Value extends bigint | symbol | (() => any)
 					: { [K in keyof Value]: Serialized<Value[K]> };
 
 // #endregion
-
-// #region Voice
-
-// /**
-//  * @remarks
-//  * Use `DiscordGatewayAdapterLibraryMethods` from `@discordjs/voice` instead.
-//  */
-// export interface InternalDiscordGatewayAdapterLibraryMethods {
-// 	destroy(): void;
-// 	onVoiceServerUpdate(data: GatewayVoiceServerUpdateDispatchData): void;
-// 	onVoiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): void;
-// }
-
-// /**
-//  * @remarks
-//  * Use `DiscordGatewayAdapterImplementerMethods` from `@discordjs/voice` instead.
-//  */
-// export interface InternalDiscordGatewayAdapterImplementerMethods {
-// 	destroy(): void;
-// 	sendPayload(payload: unknown): boolean;
-// }
-
-// /**
-//  * @remarks
-//  * Use `DiscordGatewayAdapterCreator` from `@discordjs/voice` instead.
-//  */
-// export type InternalDiscordGatewayAdapterCreator = (
-// 	methods: InternalDiscordGatewayAdapterLibraryMethods
-// ) => InternalDiscordGatewayAdapterImplementerMethods;
-
-// #endregion
-
-// External
-export * from '@discordjs/builders';
-export * from '@discordjs/formatters';
-export * from '@discordjs/rest';
-export * from 'discord-api-types/v10';

@@ -1,4 +1,3 @@
-import { Cache } from '@/lib/cache/redis.js';
 import { BitField, globalConfig, PerkTier, Roles } from '@/lib/constants.js';
 
 export const allPerkBitfields: BitField[] = [

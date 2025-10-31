@@ -247,12 +247,18 @@ importers:
       '@discordjs/builders':
         specifier: ^1.13.0
         version: 1.13.0
+      '@discordjs/rest':
+        specifier: ^2.6.0
+        version: 2.6.0
       '@oldschoolgg/discord.js':
         specifier: workspace:*
         version: link:../discord.js
       discord-api-types:
         specifier: 0.38.30
         version: 0.38.30
+      remeda:
+        specifier: ^2.23.0
+        version: 2.23.0
 
   packages/discord.js:
     dependencies:
@@ -391,12 +397,6 @@ importers:
 
   packages/toolkit:
     dependencies:
-      '@discordjs/formatters':
-        specifier: ^0.6.1
-        version: 0.6.1
-      '@oldschoolgg/discord.js':
-        specifier: workspace:*
-        version: link:../discord.js
       '@oldschoolgg/rng':
         specifier: workspace:*
         version: link:../rng
@@ -737,10 +737,6 @@ packages:
   '@discordjs/formatters@0.6.1':
     resolution: {integrity: sha512-5cnX+tASiPCqCWtFcFslxBVUaCetB0thvM/JyavhbXInP1HJIEU+Qv/zMrnuwSsX3yWH2lVXNJZeDK3EiP4HHg==}
     engines: {node: '>=16.11.0'}
-
-  '@discordjs/rest@2.5.1':
-    resolution: {integrity: sha512-Tg9840IneBcbrAjcGaQzHUJWFNq1MMWZjTdjJ0WS/89IffaNKc++iOvffucPxQTF/gviO9+9r8kEPea1X5J2Dw==}
-    engines: {node: '>=18'}
 
   '@discordjs/rest@2.6.0':
     resolution: {integrity: sha512-RDYrhmpB7mTvmCKcpj+pc5k7POKszS4E2O9TYc+U+Y4iaCP+r910QdO43qmpOja8LRr1RJ0b3U+CqVsnPqzf4w==}
@@ -5549,18 +5545,6 @@ snapshots:
     dependencies:
       discord-api-types: 0.38.30
 
-  '@discordjs/rest@2.5.1':
-    dependencies:
-      '@discordjs/collection': 2.1.1
-      '@discordjs/util': 1.1.1
-      '@sapphire/async-queue': 1.5.5
-      '@sapphire/snowflake': 3.5.5
-      '@vladfrangu/async_event_emitter': 2.4.7
-      discord-api-types: 0.38.30
-      magic-bytes.js: 1.12.1
-      tslib: 2.8.1
-      undici: 6.21.3
-
   '@discordjs/rest@2.6.0':
     dependencies:
       '@discordjs/collection': 2.1.1
@@ -5578,7 +5562,7 @@ snapshots:
   '@discordjs/ws@1.2.3(bufferutil@4.0.9)':
     dependencies:
       '@discordjs/collection': 2.1.1
-      '@discordjs/rest': 2.5.1
+      '@discordjs/rest': 2.6.0
       '@discordjs/util': 1.1.1
       '@sapphire/async-queue': 1.5.5
       '@types/ws': 8.18.1
@@ -7268,7 +7252,7 @@ snapshots:
       '@discordjs/builders': 1.13.0
       '@discordjs/collection': 1.5.3
       '@discordjs/formatters': 0.6.1
-      '@discordjs/rest': 2.5.1
+      '@discordjs/rest': 2.6.0
       '@discordjs/util': 1.1.1
       '@discordjs/ws': 1.2.3(bufferutil@4.0.9)
       '@sapphire/snowflake': 3.5.3

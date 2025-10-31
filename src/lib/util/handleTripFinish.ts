@@ -1,5 +1,12 @@
-import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from '@oldschoolgg/discord';
-import { channelIsSendable, getNextUTCReset, makeComponents, Time } from '@oldschoolgg/toolkit';
+import {
+	type AttachmentBuilder,
+	type ButtonBuilder,
+	channelIsSendable,
+	type MessageCollector,
+	type MessageCreateOptions,
+	makeComponents
+} from '@oldschoolgg/discord';
+import { getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';

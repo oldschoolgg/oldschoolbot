@@ -1,4 +1,3 @@
-import { Cache } from '@/lib/cache/redis.js';
 import { globalConfig } from '@/lib/constants.js';
 
 export async function populateRoboChimpCache() {

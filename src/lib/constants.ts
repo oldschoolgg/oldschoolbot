@@ -1,7 +1,8 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
+import { Emoji, PerkTier } from '@oldschoolgg/toolkit';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP } from 'oldschooljs';
 import * as z from 'zod';

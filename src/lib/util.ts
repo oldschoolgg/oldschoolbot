@@ -3,7 +3,6 @@ import { cleanUsername, noOp } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import type { Prisma, User } from '@/prisma/main.js';
-import { usernameWithBadgesCache } from '@/lib/cache.js';
 import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
@@ -46,9 +45,9 @@ function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'mini
 	return `${badges ? `${badges} ` : ''}${user.username}`;
 }
 
-export async function getUsername(_id: string | bigint): Promise<string> {
+export async function fetchUsernameAndCache(_id: string | bigint): Promise<string> {
 	const id = _id.toString();
-	const cached = usernameWithBadgesCache.get(id);
+	const cached = await Cache._getBadgedUsernameRaw(id);
 	if (cached) return cached;
 	let user = await prisma.user.upsert({
 		where: {
@@ -81,21 +80,19 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 		// Now the user has a username, and we can continue to create the username with badges.
 	}
 
-	const newValue = createUsernameWithBadges(user);
-	usernameWithBadgesCache.set(id, newValue);
-	await prisma.user.update({
-		where: {
-			id
-		},
-		data: {
-			username_with_badges: newValue
-		}
-	});
-	return newValue;
-}
-
-export function getUsernameSync(_id: string | bigint) {
-	return usernameWithBadgesCache.get(_id.toString()) ?? 'Unknown';
+	const badgedUsername = createUsernameWithBadges(user);
+	await Promise.all([
+		Cache.setBadgedUsername(id, badgedUsername),
+		prisma.user.update({
+			where: {
+				id
+			},
+			data: {
+				username_with_badges: badgedUsername
+			}
+		})
+	]);
+	return badgedUsername;
 }
 
 export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>): Promise<T> {

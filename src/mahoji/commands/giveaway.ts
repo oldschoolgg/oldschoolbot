@@ -1,7 +1,16 @@
-import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
-import { AttachmentBuilder, type BaseMessageOptions } from '@oldschoolgg/discord.js';
+import {
+	ActionRowBuilder,
+	AttachmentBuilder,
+	type BaseMessageOptions,
+	ButtonBuilder,
+	channelIsSendable,
+	EmbedBuilder,
+	makeComponents,
+	messageLink,
+	time
+} from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
-import { channelIsSendable, chunk, Emoji, makeComponents, Time } from '@oldschoolgg/toolkit';
+import { chunk, Emoji, Time } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
 import { ButtonStyle, ChannelType, MessageFlags } from 'discord-api-types/v10';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';

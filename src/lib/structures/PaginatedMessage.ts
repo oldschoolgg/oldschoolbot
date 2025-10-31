@@ -1,5 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder } from '@oldschoolgg/discord';
-import { type ButtonInteraction, ComponentType, type InteractionReplyOptions } from '@oldschoolgg/discord.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	type ButtonInteraction,
+	ComponentType,
+	type InteractionReplyOptions
+} from '@oldschoolgg/discord';
 import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
 import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 import { isFunction } from 'remeda';

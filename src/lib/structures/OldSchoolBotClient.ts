@@ -1,14 +1,15 @@
-import { Client, PermissionsBitField } from '@oldschoolgg/discord.js';
 import {
 	ActivityType,
 	type APIEmoji,
 	type APIGuildMember,
 	type APIRole,
+	Client,
 	GatewayOpcodes,
 	type GatewayUpdatePresence,
+	PermissionsBitField,
 	PresenceUpdateStatus,
 	Routes
-} from 'discord-api-types/v10';
+} from '@oldschoolgg/discord';
 import { omit } from 'remeda';
 
 import { globalConfig } from '@/lib/constants.js';
@@ -19,6 +20,7 @@ export class OldSchoolBotClient extends Client<true> {
 	public isShuttingDown = false;
 	public allCommands = allCommandsDONTIMPORT;
 
+	// TODO:
 	// private async syncMainServerData() {
 	// 	const mainServerRoles = await globalClient.rest.get(Routes.guildRoles(globalConfig.supportServerID)) as APIRole[];
 	// 	for (const role of mainServerRoles) {

@@ -1,7 +1,12 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
-import type { BaseMessageOptions } from '@oldschoolgg/discord.js';
+import {
+	ActionRowBuilder,
+	type BaseMessageOptions,
+	ButtonBuilder,
+	ButtonStyle,
+	channelIsSendable
+} from '@oldschoolgg/discord';
 import { randInt, shuffleArr } from '@oldschoolgg/rng';
-import { channelIsSendable, chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
+import { chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';

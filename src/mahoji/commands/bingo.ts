@@ -1,8 +1,5 @@
-import { bold, type GuildMember, userMention } from '@oldschoolgg/discord';
+import { bold, channelIsSendable, dateFm, type GuildMember, userMention } from '@oldschoolgg/discord';
 import {
-	channelIsSendable,
-	chunk,
-	dateFm,
 	Emoji,
 	formatOrdinal,
 	isValidDiscordSnowflake,
@@ -20,11 +17,10 @@ import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
-import { getUsername, getUsernameSync } from '@/lib/util.js';
-import { doMenu } from '@/mahoji/commands/leaderboard.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
 import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
@@ -73,24 +69,30 @@ export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
 	return bingos;
 }
 
-const PAGE_SIZE = 10;
 async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManager): CommandResponse {
 	const { teams } = await bingo.fetchAllParticipants();
 
-	return doMenu(
-		interaction,
-		chunk(teams, PAGE_SIZE).map((subList, i) =>
-			subList
-				.map(
-					(team, j) =>
-						`${i * PAGE_SIZE + 1 + j}. ${team.trophy?.emoji ? `${team.trophy?.emoji} ` : ''}${team.participants
-							.map(pt => getUsernameSync(pt.user_id))
-							.join(', ')}:** ${team.tilesCompletedCount.toLocaleString()}`
-				)
-				.join('\n')
-		),
-		'Bingo Team Leaderboard'
+	const users = await Promise.all(
+		[...teams]
+			.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount)
+			.map(async team => {
+				const names = await Promise.all(team.participants.map(pt => Cache.getBadgedUsername(pt.user_id)));
+				const label = `${team.trophy?.emoji ? `${team.trophy.emoji} ` : ''}${names.join(', ')}`;
+				return {
+					id: team.team_id.toString(),
+					score: team.tilesCompletedCount,
+					customName: label
+				};
+			})
 	);
+
+	return doMenuWrapper({
+		ironmanOnly: false,
+		interaction,
+		users,
+		title: 'Bingo Team Leaderboard',
+		formatter: v => v.toLocaleString()
+	});
 }
 
 async function makeTeamCommand(
@@ -753,15 +755,19 @@ The creator of the bingo (${userMention(
 					files: [
 						{
 							attachment: Buffer.from(
-								teams
-									.map(team =>
-										[
-											team.participants.map(u => getUsernameSync(u.user_id)).join(','),
-											team.tilesCompletedCount,
-											team.trophy?.item.name ?? 'No Trophy'
-										].join('\t')
+								(
+									await Promise.all(
+										teams.map(team =>
+											[
+												team.participants
+													.map(u => Cache.getBadgedUsername(u.user_id))
+													.join(','),
+												team.tilesCompletedCount,
+												team.trophy?.item.name ?? 'No Trophy'
+											].join('\t')
+										)
 									)
-									.join('\n')
+								).join('\n')
 							),
 							name: 'teams.txt'
 						},
@@ -900,7 +906,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 								item_id: trophy.item.id,
 								description: `Awarded for placing in the top ${trophy.percentile}% of ${
 									bingo.title
-								}. Your team (${(await Promise.all(team.participants.map(async t => await getUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${
+								}. Your team (${(await Promise.all(team.participants.map(async t => await Cache.getBadgedUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${
 									team.tilesCompletedCount
 								} tiles completed.`,
 								date: bingo.endDate.toISOString(),

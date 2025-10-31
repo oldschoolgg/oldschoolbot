@@ -1,4 +1,4 @@
-import { AttachmentBuilder } from '@oldschoolgg/discord.js';
+import { AttachmentBuilder } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 import { type Image, loadImage } from 'skia-canvas';

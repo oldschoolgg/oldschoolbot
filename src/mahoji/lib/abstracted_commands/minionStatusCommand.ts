@@ -1,6 +1,5 @@
-import { ButtonBuilder } from '@oldschoolgg/discord';
-import type { BaseMessageOptions } from '@oldschoolgg/discord.js';
-import { makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
+import { type BaseMessageOptions, ButtonBuilder, makeComponents } from '@oldschoolgg/discord';
+import { stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

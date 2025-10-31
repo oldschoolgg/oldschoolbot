@@ -1,7 +1,7 @@
 import type { ItemBank } from 'oldschooljs';
+import PQueue from 'p-queue';
 
 import { syncBlacklists } from '@/lib/blacklists.js';
-import { usernameWithBadgesCache } from '@/lib/cache.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
 import { badges, globalConfig } from '@/lib/constants.js';
@@ -40,9 +40,12 @@ async function populateUsernameCache() {
 			username_with_badges: true
 		}
 	});
+	console.log(`Populating username cache with ${users.length}x... (this should be removed soon`);
+
+	const queue = new PQueue({ concurrency: 10 });
 	for (const user of users) {
-		if (!user.username_with_badges) continue;
-		usernameWithBadgesCache.set(user.id, user.username_with_badges);
+		if (!user.username_with_badges) return;
+		queue.add(async () => Cache.setBadgedUsername(user.id, user.username_with_badges!));
 	}
 }
 

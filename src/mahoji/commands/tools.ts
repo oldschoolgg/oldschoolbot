@@ -18,7 +18,7 @@ import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
-import { getUsername, isGroupActivity } from '@/lib/util.js';
+import { isGroupActivity } from '@/lib/util.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
@@ -154,7 +154,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 				await Promise.all(
 					res.map(
 						async (i: any) =>
-							`${++place}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
+							`${++place}. **${await Cache.getBadgedUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
 					)
 				)
 			).join('\n')
@@ -222,7 +222,7 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 				await Promise.all(
 					xpRecords.map(
 						async record =>
-							`${++place}. **${await getUsername(record.user)}**: ${Number(record.total_xp).toLocaleString()} XP`
+							`${++place}. **${await Cache.getBadgedUsername(record.user)}**: ${Number(record.total_xp).toLocaleString()} XP`
 					)
 				)
 			).join('\n')
@@ -268,7 +268,7 @@ export async function kcGains(interval: string, monsterName: string, ironmanOnly
 				await Promise.all(
 					res.map(
 						async (i: any) =>
-							`${++place}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
+							`${++place}. **${await Cache.getBadgedUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
 					)
 				)
 			).join('\n')
@@ -576,7 +576,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 
 		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${(
 			await Promise.all(
-				result.map(async ({ id, val }) => `${await getUsername(id)}: ${entity.format(val || -1)}`)
+				result.map(async ({ id, val }) => `${await Cache.getBadgedUsername(id)}: ${entity.format(val || -1)}`)
 			)
 		).join('\n')}`;
 	}
@@ -612,7 +612,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 		await Promise.all(
 			result.map(
 				async ({ id, KC }) =>
-					`${(await getUsername(id)) as string}: ${Number.parseInt(KC, 10).toLocaleString()}`
+					`${(await Cache.getBadgedUsername(id)) as string}: ${Number.parseInt(KC, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;
@@ -647,7 +647,7 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 		await Promise.all(
 			result.map(
 				async ({ id, qty }) =>
-					`${result.length < 10 ? '(Anonymous)' : await getUsername(id)}: ${Number.parseInt(qty, 10).toLocaleString()}`
+					`${result.length < 10 ? '(Anonymous)' : await Cache.getBadgedUsername(id)}: ${Number.parseInt(qty, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;

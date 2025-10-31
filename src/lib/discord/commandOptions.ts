@@ -10,7 +10,7 @@ import {
 	type PermissionFlagsBits,
 	type Role,
 	type User
-} from '@oldschoolgg/discord.js';
+} from '@oldschoolgg/discord';
 import type { SpecialResponse } from '@oldschoolgg/toolkit';
 
 import type { MMember } from '@/lib/structures/MInteraction.js';
