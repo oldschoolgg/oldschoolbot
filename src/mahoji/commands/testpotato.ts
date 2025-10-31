@@ -140,7 +140,7 @@ const thingsToReset = [
 		}
 	},
 	{
-		name: 'Dailies/Weeklys',
+		name: 'Dailies/Weeklies',
 		run: async (user: MUser) => {
 			await user.statsUpdate({
 				last_daily_timestamp: 0,

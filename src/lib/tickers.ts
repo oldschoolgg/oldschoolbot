@@ -356,7 +356,7 @@ VALUES (get_economy_bank());`;
 				bertSandQueue = [];
 				bertSandQueuedSet = new Set();
 				bertSandLastReset = currentResetStart;
-				// from now on, only look at commands from todays reset onwards
+				// from now on, only look at commands from today's reset onwards
 				bertSandLastSeenCommandAt = currentResetStart;
 			}
 
@@ -383,7 +383,7 @@ VALUES (get_economy_bank());`;
 					bertSandLastSeenCommandAt = lastCmd;
 				}
 
-				// also enforce: must be active AFTER todays reset
+				// also enforce: must be active AFTER today's reset
 				if (lastCmd < currentResetStart) {
 					continue;
 				}
