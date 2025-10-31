@@ -20,6 +20,7 @@ describe('Sanity', () => {
 		expect(itemID('Broad arrows')).toEqual(4160);
 		expect(itemID('Frozen key')).toEqual(26_356);
 		expect(itemID('Clue box')).toEqual(12_789);
+		expect(itemID('Beige pumpkin (happy)')).toEqual(30246);
 	});
 	test('casket names', () => {
 		expect(itemID('Reward casket (beginner)')).toEqual(23_245);
