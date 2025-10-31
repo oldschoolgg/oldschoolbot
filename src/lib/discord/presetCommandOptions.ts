@@ -1,4 +1,5 @@
-import type { APIApplicationCommandOptionChoice, GuildMember } from '@oldschoolgg/discord';
+import type { APIApplicationCommandOptionChoice } from '@oldschoolgg/discord';
+import type { IMember } from '@oldschoolgg/schemas';
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
@@ -37,7 +38,7 @@ export const itemOption = (filter?: (item: Item) => boolean) =>
 		name: 'item',
 		description: 'The item you want to pick.',
 		required: false,
-		autocomplete: async (value: string, _user: MUser, _member?: GuildMember) => {
+		autocomplete: async (value: string, _user: MUser, _member?: IMember) => {
 			let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
 			if (filter) res = res.filter(filter);
 			return res

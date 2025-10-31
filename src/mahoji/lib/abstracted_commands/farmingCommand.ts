@@ -292,7 +292,7 @@ export async function farmingPlantCommand({
 		plantsName: plant.name,
 		patchType: patches[plant.seedType],
 		userID: user.id,
-		channelID: interaction.channelId,
+		channelID: interaction.channel.id,
 		quantity,
 		upgradeType,
 		payment: didPay,

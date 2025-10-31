@@ -5,7 +5,6 @@ import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { calcBirdhouseLimit } from '@/mahoji/lib/abstracted_commands/birdhousesCommand.js';
 
 const clues = [
@@ -56,7 +55,7 @@ export const birdHouseTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your birdhouses are full!`;
 
-			sendToChannelID(channelID, { content: str });
+			return handleTripFinish(user, channelID, str, undefined, data, null);
 		} else {
 			let str = '';
 			const birdhouseToCollect = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseData.lastPlaced);

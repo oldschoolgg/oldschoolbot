@@ -1,4 +1,3 @@
-import { discrimName } from '@oldschoolgg/discord';
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -156,9 +155,7 @@ Both parties must click confirm to make the trade.`,
 			files.push({ attachment: Buffer.from(receivedFull), name: 'items_received.txt' });
 		}
 
-		const content = `${senderUser.username} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
-			recipientAPIUser
-		)} in return for ${formatBankForDisplay(itemsReceived)}.
+		const content = `${senderUser.username} sold ${formatBankForDisplay(itemsSent)} to ${recipientAPIUser.username} in return for ${formatBankForDisplay(itemsReceived)}.
 
   You can now buy/sell items in the Grand Exchange: ${mentionCommand('ge')}`;
 

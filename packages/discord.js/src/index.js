@@ -40,7 +40,6 @@ exports.RoleFlagsBitField = require('./util/RoleFlagsBitField.js').RoleFlagsBitF
 exports.ShardEvents = require('./util/ShardEvents.js').ShardEvents;
 exports.SnowflakeUtil = require('@sapphire/snowflake').DiscordSnowflake;
 exports.Status = require('./util/Status.js').Status;
-exports.Sweepers = require('./util/Sweepers.js').Sweepers;
 exports.SystemChannelFlagsBitField = require('./util/SystemChannelFlagsBitField.js').SystemChannelFlagsBitField;
 exports.ThreadMemberFlagsBitField = require('./util/ThreadMemberFlagsBitField.js').ThreadMemberFlagsBitField;
 exports.UserFlagsBitField = require('./util/UserFlagsBitField.js').UserFlagsBitField;

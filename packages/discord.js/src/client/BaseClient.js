@@ -14,109 +14,105 @@ const { flatten } = require('../util/Util.js');
  * @extends {AsyncEventEmitter}
  */
 class BaseClient extends AsyncEventEmitter {
-  constructor(options = {}) {
-    super();
+	constructor(options = {}) {
+		super();
 
-    if (typeof options !== 'object' || options === null) {
-      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
-    }
+		if (typeof options !== 'object' || options === null) {
+			throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+		}
 
-    const defaultOptions = Options.createDefault();
-    /**
-     * The options the client was instantiated with
-     *
-     * @type {ClientOptions}
-     */
-    this.options = {
-      ...defaultOptions,
-      ...options,
-      sweepers: {
-        ...defaultOptions.sweepers,
-        ...options.sweepers,
-      },
-      ws: {
-        ...defaultOptions.ws,
-        ...options.ws,
-      },
-      rest: {
-        ...defaultOptions.rest,
-        ...options.rest,
-        userAgentAppendix: options.rest?.userAgentAppendix
-          ? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
-          : Options.userAgentAppendix,
-      },
-    };
+		const defaultOptions = Options.createDefault();
+		/**
+		 * The options the client was instantiated with
+		 *
+		 * @type {ClientOptions}
+		 */
+		this.options = {
+			...defaultOptions,
+			...options,
+			ws: {
+				...defaultOptions.ws,
+				...options.ws,
+			},
+			rest: {
+				...defaultOptions.rest,
+				...options.rest,
+				userAgentAppendix: options.rest?.userAgentAppendix
+					? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
+					: Options.userAgentAppendix,
+			},
+		};
 
-    /**
-     * The REST manager of the client
-     *
-     * @type {REST}
-     */
-    this.rest = new REST(this.options.rest);
+		/**
+		 * The REST manager of the client
+		 *
+		 * @type {REST}
+		 */
+		this.rest = new REST(this.options.rest);
 
-    this.rest.on(RESTEvents.Debug, message => this.emit(Events.Debug, message));
-  }
+		this.rest.on(RESTEvents.Debug, message => this.emit(Events.Debug, message));
+	}
 
-  /**
-   * Destroys all assets used by the base client.
-   *
-   * @returns {void}
-   */
-  destroy() {
-    this.rest.clearHashSweeper();
-    this.rest.clearHandlerSweeper();
-  }
+	/**
+	 * Destroys all assets used by the base client.
+	 *
+	 * @returns {void}
+	 */
+	destroy() {
+		this.rest.clearHashSweeper();
+		this.rest.clearHandlerSweeper();
+	}
 
-  /**
-   * Options used for deleting a webhook.
-   *
-   * @typedef {Object} WebhookDeleteOptions
-   * @property {string} [token] Token of the webhook
-   * @property {string} [reason] The reason for deleting the webhook
-   */
+	/**
+	 * Options used for deleting a webhook.
+	 *
+	 * @typedef {Object} WebhookDeleteOptions
+	 * @property {string} [token] Token of the webhook
+	 * @property {string} [reason] The reason for deleting the webhook
+	 */
 
-  /**
-   * Deletes a webhook.
-   *
-   * @param {Snowflake} id The webhook's id
-   * @param {WebhookDeleteOptions} [options] Options for deleting the webhook
-   * @returns {Promise<void>}
-   */
-  async deleteWebhook(id, { token, reason } = {}) {
-    await this.rest.delete(Routes.webhook(id, token), { auth: !token, reason });
-  }
+	/**
+	 * Deletes a webhook.
+	 *
+	 * @param {Snowflake} id The webhook's id
+	 * @param {WebhookDeleteOptions} [options] Options for deleting the webhook
+	 * @returns {Promise<void>}
+	 */
+	async deleteWebhook(id, { token, reason } = {}) {
+		await this.rest.delete(Routes.webhook(id, token), { auth: !token, reason });
+	}
 
-  /**
-   * Increments max listeners by one, if they are not zero.
-   *
-   * @private
-   */
-  incrementMaxListeners() {
-    const maxListeners = this.getMaxListeners();
-    if (maxListeners !== 0) {
-      this.setMaxListeners(maxListeners + 1);
-    }
-  }
+	/**
+	 * Increments max listeners by one, if they are not zero.
+	 *
+	 * @private
+	 */
+	incrementMaxListeners() {
+		const maxListeners = this.getMaxListeners();
+		if (maxListeners !== 0) {
+			this.setMaxListeners(maxListeners + 1);
+		}
+	}
 
-  /**
-   * Decrements max listeners by one, if they are not zero.
-   *
-   * @private
-   */
-  decrementMaxListeners() {
-    const maxListeners = this.getMaxListeners();
-    if (maxListeners !== 0) {
-      this.setMaxListeners(maxListeners - 1);
-    }
-  }
+	/**
+	 * Decrements max listeners by one, if they are not zero.
+	 *
+	 * @private
+	 */
+	decrementMaxListeners() {
+		const maxListeners = this.getMaxListeners();
+		if (maxListeners !== 0) {
+			this.setMaxListeners(maxListeners - 1);
+		}
+	}
 
-  toJSON(...props) {
-    return flatten(this, ...props);
-  }
+	toJSON(...props) {
+		return flatten(this, ...props);
+	}
 
-  async [Symbol.asyncDispose]() {
-    await this.destroy();
-  }
+	async [Symbol.asyncDispose]() {
+		await this.destroy();
+	}
 }
 
 exports.BaseClient = BaseClient;

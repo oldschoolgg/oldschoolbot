@@ -7,7 +7,6 @@ import * as ss from 'simple-statistics';
 
 import type { Bingo, Prisma } from '@/prisma/main.js';
 import { EmojiId } from '@/lib/data/emojis.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import {
 	generateTileName,
 	isGlobalTile,
@@ -344,9 +343,11 @@ ${teams
 			str += ` They have now finished ${afterUserProgress.tilesCompletedCount}/${this.bingoTiles.length} tiles.`;
 		}
 
-		sendToChannelID(this.notificationsChannelID, {
-			content: str
-		}).catch(noOp);
+		globalClient
+			.sendMessage(this.notificationsChannelID, {
+				content: str
+			})
+			.catch(noOp);
 	}
 }
 

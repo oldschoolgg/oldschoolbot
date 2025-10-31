@@ -9,7 +9,6 @@ import { HolidayItems } from '@/lib/data/holidayItems.js';
 import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const claimables = [
 	{
@@ -25,7 +24,7 @@ const claimables = [
 			if (user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)) {
 				return 'You already claimed this!';
 			}
-			sendToChannelID(Channel.ServerGeneral, {
+			globalClient.sendMessage(Channel.ServerGeneral, {
 				content: `${user.mention} just claimed free T1 patron perks for being maxed in both bots!`
 			});
 			await user.update({

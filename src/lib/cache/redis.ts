@@ -98,11 +98,11 @@ export class CacheManager {
 
 	async setMember(member: IMember, ttl?: number) {
 		ZMember.parse(member);
-		await this.setObject(`${CacheKeyPrefix.Member}:${member.guild_id}:${member.id}`, member, ttl);
+		await this.setObject(`${CacheKeyPrefix.Member}:${member.guild_id}:${member.user_id}`, member, ttl);
 	}
 
 	async bulkSetMembers(members: IMember[], ttl?: number) {
-		await this.bulkSet(CacheKeyPrefix.Member, members, m => `${m.guild_id}:${m.id}`, ZMember, ttl);
+		await this.bulkSet(CacheKeyPrefix.Member, members, m => `${m.guild_id}:${m.user_id}`, ZMember, ttl);
 	}
 
 	async bulkSetChannels(channels: IChannel[], ttl?: number) {

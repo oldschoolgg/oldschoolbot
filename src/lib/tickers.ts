@@ -269,20 +269,17 @@ export const tickers: {
 		interval: Time.Minute * 20,
 		productionOnly: true,
 		cb: async () => {
-			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.GrandExchange);
-			if (!channelIsSendable(channel)) return;
-			const messages = await channel.messages.fetch({ limit: 5 });
-			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
+			const messages = await globalClient.fetchChannelMessages(Channel.GrandExchange, { limit: 5 })!;
+			if (messages.some(m => m.author_id === globalClient.user?.id)) return;
 			if (lastMessageGEID) {
-				const message = await channel.messages.fetch(lastMessageGEID).catch(noOp);
+				const message = await globalClient.fetchMessage(Channel.GrandExchange, lastMessageGEID).catch(noOp);
 				if (message) {
-					await message.delete();
+					await globalClient.deleteMessage(Channel.GrandExchange, lastMessageGEID);
 				}
-				const res = await channel.send({ embeds: [geEmbed] });
+				const res = await globalClient.sendMessage(Channel.GrandExchange, { embeds: [geEmbed] });
 				lastMessageGEID = res.id;
 			}
-			const res = await channel.send({ embeds: [geEmbed] });
+			const res = await globalClient.sendMessage(Channel.GrandExchange, { embeds: [geEmbed] });
 			lastMessageGEID = res.id;
 		}
 	},

@@ -1,5 +1,6 @@
-import { type ChatInputCommandInteraction, PermissionFlagsBits } from '@oldschoolgg/discord';
+import { PermissionFlagsBits } from '@oldschoolgg/discord';
 import { cryptoRng } from '@oldschoolgg/rng';
+import type { IChatInputCommandInteraction } from '@oldschoolgg/schemas';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
 
 import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
@@ -69,7 +70,7 @@ export async function rawCommandHandlerInner({
 			options,
 			user,
 			member: interaction.member,
-			channelID: interaction.channelId,
+			channelID: interaction.channel?.id,
 			guildID: interaction.guild?.id,
 			userID: interaction.user.id,
 			rng: cryptoRng
@@ -92,7 +93,7 @@ export async function rawCommandHandlerInner({
 	}
 }
 
-export async function commandHandler(rawInteraction: ChatInputCommandInteraction) {
+export async function commandHandler(rawInteraction: IChatInputCommandInteraction) {
 	const interaction = new MInteraction({ interaction: rawInteraction });
 	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
 	const options = convertAPIOptionsToCommandOptions(rawInteraction.options.data, rawInteraction.options.resolved);

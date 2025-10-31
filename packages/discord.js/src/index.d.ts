@@ -69,7 +69,6 @@ import {
 	APISelectMenuDefaultValue,
 	APISelectMenuOption,
 	APISeparatorComponent,
-	APISKU,
 	APIStringSelectComponent,
 	APITextDisplayComponent,
 	APITextInputComponent,
@@ -146,8 +145,6 @@ import {
 	RoleFlags,
 	SelectMenuDefaultValueType,
 	SeparatorSpacingSize,
-	SKUFlags,
-	SKUType,
 	Snowflake,
 	SortOrderType,
 	TextChannelType,
@@ -801,7 +798,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
 	public get ping(): number | null;
 	public get readyAt(): If<Ready, Date>;
 	public readyTimestamp: If<Ready, number>;
-	public sweepers: Sweepers;
 	public shard: ShardClientUtil | null;
 	public status: Status;
 	public token: If<Ready, string, string | null>;
@@ -861,11 +857,6 @@ export class ClientUser extends User {
 export class Options extends null {
 	private constructor();
 	private static readonly userAgentAppendix: string;
-	public static get DefaultMakeCacheSettings(): CacheWithLimitsOptions;
-	public static get DefaultSweeperSettings(): SweeperOptions;
-	public static createDefault(): ClientOptions;
-	public static cacheWithLimits(settings?: CacheWithLimitsOptions): CacheFactory;
-	public static cacheEverything(): CacheFactory;
 }
 
 export type ComponentInContainer =
@@ -2498,70 +2489,6 @@ export interface FetchRecommendedShardCountOptions {
 	multipleOf?: number;
 }
 
-export {
-	DiscordSnowflake as SnowflakeUtil,
-	type SnowflakeGenerateOptions,
-	type DeconstructedSnowflake
-} from '@sapphire/snowflake';
-
-export class SKU extends Base {
-	private constructor(client: Client<true>, data: APISKU);
-	public id: Snowflake;
-	public type: SKUType;
-	public applicationId: Snowflake;
-	public name: string;
-	public slug: string;
-	public flags: Readonly<SKUFlagsBitField>;
-}
-
-export type SKUFlagsString = keyof typeof SKUFlags;
-
-export class SKUFlagsBitField extends BitField<SKUFlagsString> {
-	public static FLAGS: typeof SKUFlags;
-	public static resolve(bit?: BitFieldResolvable<SKUFlagsString, number>): number;
-}
-
-export class Sweepers {
-	public constructor(client: Client<true>, options: SweeperOptions);
-	public readonly client: Client;
-	public intervals: Record<SweeperKey, NodeJS.Timeout | null>;
-	public options: SweeperOptions;
-
-	public sweepApplicationCommands(
-		filter: CollectionSweepFilter<
-			SweeperDefinitions['applicationCommands'][0],
-			SweeperDefinitions['applicationCommands'][1]
-		>
-	): number;
-
-	public sweepGuildMembers(
-		filter: CollectionSweepFilter<SweeperDefinitions['guildMembers'][0], SweeperDefinitions['guildMembers'][1]>
-	): number;
-	public sweepMessages(
-		filter: CollectionSweepFilter<SweeperDefinitions['messages'][0], SweeperDefinitions['messages'][1]>
-	): number;
-	public sweepThreadMembers(
-		filter: CollectionSweepFilter<SweeperDefinitions['threadMembers'][0], SweeperDefinitions['threadMembers'][1]>
-	): number;
-	public sweepThreads(
-		filter: CollectionSweepFilter<SweeperDefinitions['threads'][0], SweeperDefinitions['threads'][1]>
-	): number;
-	public sweepUsers(
-		filter: CollectionSweepFilter<SweeperDefinitions['users'][0], SweeperDefinitions['users'][1]>
-	): number;
-
-	public static archivedThreadSweepFilter(
-		lifetime?: number
-	): GlobalSweepFilter<SweeperDefinitions['threads'][0], SweeperDefinitions['threads'][1]>;
-
-	public static filterByLifetime<Key, Value>(
-		options?: LifetimeFilterOptions<Key, Value>
-	): GlobalSweepFilter<Key, Value>;
-	public static outdatedMessageSweepFilter(
-		lifetime?: number
-	): GlobalSweepFilter<SweeperDefinitions['messages'][0], SweeperDefinitions['messages'][1]>;
-}
-
 export type SystemChannelFlagsString = keyof typeof GuildSystemChannelFlags;
 
 export class SystemChannelFlagsBitField extends BitField<SystemChannelFlagsString> {
@@ -4029,7 +3956,6 @@ export interface ClientOptions extends WebhookClientOptions {
 	failIfNotExists?: boolean;
 	intents: BitFieldResolvable<GatewayIntentsString, number>;
 	jsonTransformer?(obj: unknown): unknown;
-	makeCache?: CacheFactory;
 	partials?: readonly Partials[];
 	sweepers?: SweeperOptions;
 	waitGuildTimeout?: number;

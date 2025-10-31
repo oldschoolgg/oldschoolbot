@@ -32,7 +32,11 @@ export async function lmsCommand(
 	}
 
 	if (options.simulate) {
-		lmsSimCommand(globalClient.channels.cache.get(channelID), options.simulate.names);
+		const channel = await globalClient.fetchChannel(channelID);
+		if (!channel) {
+			return 'Unable to find channel.';
+		}
+		lmsSimCommand(channel, options.simulate.names);
 		return {
 			content: 'Starting simulation...'
 		};

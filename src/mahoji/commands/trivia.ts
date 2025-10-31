@@ -1,4 +1,4 @@
-import { userMention } from '@discordjs/formatters';
+import { userMention } from '@oldschoolgg/discord';
 import { shuffleArr } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
 

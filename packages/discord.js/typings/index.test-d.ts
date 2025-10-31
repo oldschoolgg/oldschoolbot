@@ -214,23 +214,6 @@
 // 	property: Exclude<Property, keyof Value> & Property
 // ) => void;
 
-// const client: Client = new Client({
-// 	intents: GatewayIntentBits.Guilds,
-// 	makeCache: Options.cacheWithLimits({
-// 		MessageManager: 200,
-// 		// @ts-expect-error doesn't exist
-// 		Message: 100,
-// 		GuildMemberManager: {
-// 			maxSize: 200,
-// 			keepOverLimit: member => member.id === client.user?.id
-// 		},
-// 		ThreadManager: {
-// 			maxSize: 200,
-// 			keepOverLimit: value => !value.archived
-// 		}
-// 	})
-// });
-
 // if (client.isReady()) {
 // 	expectType<Client<true>>(client);
 // } else {

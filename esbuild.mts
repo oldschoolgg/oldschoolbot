@@ -9,14 +9,13 @@ const external = [
 	'@prisma/robochimp',
 	'dotenv',
 	'piscina',
-	'node:*',
 	'pglite-prisma-adapter',
 	'@electric-sql/pglite',
 	'pg',
 	'oldschooljs',
-	'@oldschoolgg/discord.js',
-	'@discordjs/*',
-	'ioredis'
+	'ioredis',
+	'@discordjs/rest',
+	'@oldschoolgg/discord.js'
 ];
 
 const baseBuildOptions: BuildOptions = {

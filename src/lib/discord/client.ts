@@ -1,6 +1,5 @@
 import {
 	ActivityType,
-	channelIsSendable,
 	Events as DJSEvent,
 	GatewayIntentBits,
 	Partials,
@@ -12,7 +11,6 @@ import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import { onRawGuildCreate } from '@/lib/discord/handlers/guildCreate.js';
 import { interactionHandler } from '@/lib/discord/interactionHandler.js';
-import { economyLog } from '@/lib/economyLogs.js';
 import { onMessage } from '@/lib/events.js';
 import { OldSchoolBotClient } from '@/lib/structures/OldSchoolBotClient.js';
 import { onStartup } from '@/mahoji/lib/events.js';
@@ -61,17 +59,19 @@ client.on('raw', (d: any) => {
 });
 client.on(DJSEvent.Error, console.error);
 
-client.on(DJSEvent.InteractionCreate, interactionHandler);
+client.on(DJSEvent.InteractionCreate, interaction => {
+	return interactionHandler(interaction);
+});
 
 client.on(Events.ServerNotification, (message: string) => {
-	const channel = globalClient.channels.cache.get(Channel.Notifications);
-	if (channelIsSendable(channel)) {
-		channel.send({ content: message, allowedMentions: { parse: [], users: [], roles: [] } });
-	}
+	globalClient.sendMessage(Channel.Notifications, {
+		content: message,
+		allowedMentions: { parse: [], users: [], roles: [] }
+	});
 });
 
 client.on(Events.EconomyLog, async (message: string) => {
-	economyLog(message);
+	Logging.logDebug(message);
 });
 client.on(DJSEvent.GuildCreate, guild => {
 	if (!guild.available) return;

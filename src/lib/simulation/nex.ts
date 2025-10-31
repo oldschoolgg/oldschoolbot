@@ -1,4 +1,4 @@
-import { userMention } from '@discordjs/formatters';
+import { userMention } from '@oldschoolgg/discord';
 import { percentChance, randFloat, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,

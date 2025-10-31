@@ -3,7 +3,6 @@
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
-const { fetch } = require('undici');
 // eslint-disable-next-line import-x/order
 const { Colors } = require('./Colors.js');
 // eslint-disable-next-line import-x/order
@@ -19,43 +18,43 @@ const isObject = data => typeof data === 'object' && data !== null;
  * @returns {Object}
  */
 function flatten(obj, ...props) {
-  if (!isObject(obj)) return obj;
+	if (!isObject(obj)) return obj;
 
-  const objProps = Object.keys(obj)
-    .filter(key => !key.startsWith('_'))
-    .map(key => ({ [key]: true }));
+	const objProps = Object.keys(obj)
+		.filter(key => !key.startsWith('_'))
+		.map(key => ({ [key]: true }));
 
-  const mergedProps = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
+	const mergedProps = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
-  const out = {};
+	const out = {};
 
-  // eslint-disable-next-line prefer-const
-  for (let [prop, newProp] of Object.entries(mergedProps)) {
-    if (!newProp) continue;
-    newProp = newProp === true ? prop : newProp;
+	// eslint-disable-next-line prefer-const
+	for (let [prop, newProp] of Object.entries(mergedProps)) {
+		if (!newProp) continue;
+		newProp = newProp === true ? prop : newProp;
 
-    const element = obj[prop];
-    const elemIsObj = isObject(element);
-    const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
-    const hasToJSON = elemIsObj && typeof element.toJSON === 'function';
+		const element = obj[prop];
+		const elemIsObj = isObject(element);
+		const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
+		const hasToJSON = elemIsObj && typeof element.toJSON === 'function';
 
-    // If it's a Collection, make the array of keys
-    if (element instanceof Collection) out[newProp] = Array.from(element.keys());
-    // If the valueOf is a Collection, use its array of keys
-    else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
-    // If it's an array, call toJSON function on each element if present, otherwise flatten each element
-    else if (Array.isArray(element)) out[newProp] = element.map(elm => elm.toJSON?.() ?? flatten(elm));
-    // If it's an object with a primitive `valueOf`, use that value
-    else if (typeof valueOf !== 'object') out[newProp] = valueOf;
-    // If it's an object with a toJSON function, use the return value of it
-    else if (hasToJSON) out[newProp] = element.toJSON();
-    // If element is an object, use the flattened version of it
-    else if (typeof element === 'object') out[newProp] = flatten(element);
-    // If it's a primitive
-    else if (!elemIsObj) out[newProp] = element;
-  }
+		// If it's a Collection, make the array of keys
+		if (element instanceof Collection) out[newProp] = Array.from(element.keys());
+		// If the valueOf is a Collection, use its array of keys
+		else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
+		// If it's an array, call toJSON function on each element if present, otherwise flatten each element
+		else if (Array.isArray(element)) out[newProp] = element.map(elm => elm.toJSON?.() ?? flatten(elm));
+		// If it's an object with a primitive `valueOf`, use that value
+		else if (typeof valueOf !== 'object') out[newProp] = valueOf;
+		// If it's an object with a toJSON function, use the return value of it
+		else if (hasToJSON) out[newProp] = element.toJSON();
+		// If element is an object, use the flattened version of it
+		else if (typeof element === 'object') out[newProp] = flatten(element);
+		// If it's a primitive
+		else if (!elemIsObj) out[newProp] = element;
+	}
 
-  return out;
+	return out;
 }
 
 /**
@@ -72,18 +71,18 @@ function flatten(obj, ...props) {
  * @returns {Promise<number>} The recommended number of shards
  */
 async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
-  if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
-  const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
-    method: 'GET',
-    headers: { Authorization: `Bot ${token.replace(/^bot\s*/i, '')}` },
-  });
-  if (!response.ok) {
-    if (response.status === 401) throw new DiscordjsError(ErrorCodes.TokenInvalid);
-    throw response;
-  }
+	if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
+	const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
+		method: 'GET',
+		headers: { Authorization: `Bot ${token.replace(/^bot\s*/i, '')}` },
+	});
+	if (!response.ok) {
+		if (response.status === 401) throw new DiscordjsError(ErrorCodes.TokenInvalid);
+		throw response;
+	}
 
-  const { shards } = await response.json();
-  return Math.ceil((shards * (1_000 / guildsPerShard)) / multipleOf) * multipleOf;
+	const { shards } = await response.json();
+	return Math.ceil((shards * (1_000 / guildsPerShard)) / multipleOf) * multipleOf;
 }
 
 /**
@@ -105,10 +104,10 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
  * @returns {?PartialEmoji}
  */
 function parseEmoji(text) {
-  const decodedText = text.includes('%') ? decodeURIComponent(text) : text;
-  if (!decodedText.includes(':')) return { animated: false, name: decodedText, id: undefined };
-  const match = /<?(?:(?<animated>a):)?(?<name>\w{2,32}):(?<id>\d{17,19})?>?/.exec(decodedText);
-  return match && { animated: Boolean(match.groups.animated), name: match.groups.name, id: match.groups.id };
+	const decodedText = text.includes('%') ? decodeURIComponent(text) : text;
+	if (!decodedText.includes(':')) return { animated: false, name: decodedText, id: undefined };
+	const match = /<?(?:(?<animated>a):)?(?<name>\w{2,32}):(?<id>\d{17,19})?>?/.exec(decodedText);
+	return match && { animated: Boolean(match.groups.animated), name: match.groups.name, id: match.groups.id };
 }
 
 /**
@@ -125,11 +124,11 @@ function parseEmoji(text) {
  * @returns {?(PartialEmoji|PartialEmojiOnlyId)} Supplying a snowflake yields `PartialEmojiOnlyId`.
  */
 function resolvePartialEmoji(emoji) {
-  if (!emoji) return null;
-  if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : parseEmoji(emoji);
-  const { id, name, animated } = emoji;
-  if (!id && !name) return null;
-  return { id, name, animated: Boolean(animated) };
+	if (!emoji) return null;
+	if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : parseEmoji(emoji);
+	const { id, name, animated } = emoji;
+	if (!id && !name) return null;
+	return { id, name, animated: Boolean(animated) };
 }
 
 /**
@@ -141,19 +140,19 @@ function resolvePartialEmoji(emoji) {
  * @private
  */
 function resolveGuildEmoji(client, emojiId) {
-  for (const guild of client.guilds.cache.values()) {
-    if (!guild.available) {
-      continue;
-    }
+	for (const guild of client.guilds.cache.values()) {
+		if (!guild.available) {
+			continue;
+		}
 
-    const emoji = guild.emojis.cache.get(emojiId);
+		const emoji = guild.emojis.cache.get(emojiId);
 
-    if (emoji) {
-      return emoji;
-    }
-  }
+		if (emoji) {
+			return emoji;
+		}
+	}
 
-  return null;
+	return null;
 }
 
 /**
@@ -174,10 +173,10 @@ function resolveGuildEmoji(client, emojiId) {
  * @private
  */
 function makeError(obj) {
-  const err = new Error(obj.message);
-  err.name = obj.name;
-  err.stack = obj.stack;
-  return err;
+	const err = new Error(obj.message);
+	err.name = obj.name;
+	err.stack = obj.stack;
+	return err;
 }
 
 /**
@@ -188,18 +187,18 @@ function makeError(obj) {
  * @private
  */
 function makePlainError(err) {
-  return {
-    name: err.name,
-    message: err.message,
-    stack: err.stack,
-  };
+	return {
+		name: err.name,
+		message: err.message,
+		stack: err.stack,
+	};
 }
 
 const TextSortableGroupTypes = [
-  ChannelType.GuildText,
-  ChannelType.GuildAnnouncement,
-  ChannelType.GuildForum,
-  ChannelType.GuildMedia,
+	ChannelType.GuildText,
+	ChannelType.GuildAnnouncement,
+	ChannelType.GuildForum,
+	ChannelType.GuildMedia,
 ];
 
 const VoiceSortableGroupTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
@@ -216,20 +215,20 @@ const CategorySortableGroupTypes = [ChannelType.GuildCategory];
  * @private
  */
 function getSortableGroupTypes(type) {
-  switch (type) {
-    case ChannelType.GuildText:
-    case ChannelType.GuildAnnouncement:
-    case ChannelType.GuildForum:
-    case ChannelType.GuildMedia:
-      return TextSortableGroupTypes;
-    case ChannelType.GuildVoice:
-    case ChannelType.GuildStageVoice:
-      return VoiceSortableGroupTypes;
-    case ChannelType.GuildCategory:
-      return CategorySortableGroupTypes;
-    default:
-      return [type];
-  }
+	switch (type) {
+		case ChannelType.GuildText:
+		case ChannelType.GuildAnnouncement:
+		case ChannelType.GuildForum:
+		case ChannelType.GuildMedia:
+			return TextSortableGroupTypes;
+		case ChannelType.GuildVoice:
+		case ChannelType.GuildStageVoice:
+			return VoiceSortableGroupTypes;
+		case ChannelType.GuildCategory:
+			return CategorySortableGroupTypes;
+		default:
+			return [type];
+	}
 }
 
 /**
@@ -243,14 +242,14 @@ function getSortableGroupTypes(type) {
  * @private
  */
 function moveElementInArray(array, element, newIndex, offset = false) {
-  const index = array.indexOf(element);
-  const targetIndex = (offset ? index : 0) + newIndex;
-  if (targetIndex > -1 && targetIndex < array.length) {
-    const removedElement = array.splice(index, 1)[0];
-    array.splice(targetIndex, 0, removedElement);
-  }
+	const index = array.indexOf(element);
+	const targetIndex = (offset ? index : 0) + newIndex;
+	if (targetIndex > -1 && targetIndex < array.length) {
+		const removedElement = array.splice(index, 1)[0];
+		array.splice(targetIndex, 0, removedElement);
+	}
 
-  return array.indexOf(element);
+	return array.indexOf(element);
 }
 
 /**
@@ -263,14 +262,14 @@ function moveElementInArray(array, element, newIndex, offset = false) {
  * @returns {string}
  */
 function verifyString(
-  data,
-  error = Error,
-  errorMessage = `Expected a string, got ${data} instead.`,
-  allowEmpty = true,
+	data,
+	error = Error,
+	errorMessage = `Expected a string, got ${data} instead.`,
+	allowEmpty = true,
 ) {
-  if (typeof data !== 'string') throw new error(errorMessage);
-  if (!allowEmpty && data.length === 0) throw new error(errorMessage);
-  return data;
+	if (typeof data !== 'string') throw new error(errorMessage);
+	if (!allowEmpty && data.length === 0) throw new error(errorMessage);
+	return data;
 }
 
 /**
@@ -321,28 +320,28 @@ function verifyString(
  * @returns {number} A color
  */
 function resolveColor(color) {
-  let resolvedColor;
+	let resolvedColor;
 
-  if (typeof color === 'string') {
-    if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
-    if (color === 'Default') return 0;
-    if (/^#?[\da-f]{6}$/i.test(color)) return Number.parseInt(color.replace('#', ''), 16);
-    resolvedColor = Colors[color];
-  } else if (Array.isArray(color)) {
-    resolvedColor = (color[0] << 16) + (color[1] << 8) + color[2];
-  } else {
-    resolvedColor = color;
-  }
+	if (typeof color === 'string') {
+		if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
+		if (color === 'Default') return 0;
+		if (/^#?[\da-f]{6}$/i.test(color)) return Number.parseInt(color.replace('#', ''), 16);
+		resolvedColor = Colors[color];
+	} else if (Array.isArray(color)) {
+		resolvedColor = (color[0] << 16) + (color[1] << 8) + color[2];
+	} else {
+		resolvedColor = color;
+	}
 
-  if (!Number.isInteger(resolvedColor)) {
-    throw new DiscordjsTypeError(ErrorCodes.ColorConvert, color);
-  }
+	if (!Number.isInteger(resolvedColor)) {
+		throw new DiscordjsTypeError(ErrorCodes.ColorConvert, color);
+	}
 
-  if (resolvedColor < 0 || resolvedColor > 0xffffff) {
-    throw new DiscordjsRangeError(ErrorCodes.ColorRange);
-  }
+	if (resolvedColor < 0 || resolvedColor > 0xffffff) {
+		throw new DiscordjsRangeError(ErrorCodes.ColorRange);
+	}
 
-  return resolvedColor;
+	return resolvedColor;
 }
 
 /**
@@ -352,13 +351,13 @@ function resolveColor(color) {
  * @returns {Collection}
  */
 function discordSort(collection) {
-  // eslint-disable-next-line no-use-before-define
-  const isGuildChannel = collection.first() instanceof GuildChannel;
-  return collection.toSorted(
-    isGuildChannel
-      ? (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(a.id) - BigInt(b.id))
-      : (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(b.id) - BigInt(a.id)),
-  );
+	// eslint-disable-next-line no-use-before-define
+	const isGuildChannel = collection.first() instanceof GuildChannel;
+	return collection.toSorted(
+		isGuildChannel
+			? (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(a.id) - BigInt(b.id))
+			: (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(b.id) - BigInt(a.id)),
+	);
 }
 
 /**
@@ -370,8 +369,8 @@ function discordSort(collection) {
  * @private
  */
 function basename(path, ext) {
-  const res = parse(path);
-  return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
+	const res = parse(path);
+	return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
 }
 
 /**
@@ -381,15 +380,15 @@ function basename(path, ext) {
  * @returns {string} filename to use
  */
 function findName(thing) {
-  if (typeof thing === 'string') {
-    return basename(thing);
-  }
+	if (typeof thing === 'string') {
+		return basename(thing);
+	}
 
-  if (thing.path) {
-    return basename(thing.path);
-  }
+	if (thing.path) {
+		return basename(thing.path);
+	}
 
-  return 'file.jpg';
+	return 'file.jpg';
 }
 
 /**
@@ -400,42 +399,42 @@ function findName(thing) {
  * @returns {string}
  */
 function cleanContent(str, channel) {
-  return str.replaceAll(
-    /<(?:(?<type>@[!&]?|#)|(?:\/(?<commandName>[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai} ]+):)|(?:a?:(?<emojiName>[\w]+):))(?<id>\d{17,19})>/gu,
-    (match, type, commandName, emojiName, id) => {
-      if (commandName) return `/${commandName}`;
+	return str.replaceAll(
+		/<(?:(?<type>@[!&]?|#)|(?:\/(?<commandName>[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai} ]+):)|(?:a?:(?<emojiName>[\w]+):))(?<id>\d{17,19})>/gu,
+		(match, type, commandName, emojiName, id) => {
+			if (commandName) return `/${commandName}`;
 
-      if (emojiName) return `:${emojiName}:`;
+			if (emojiName) return `:${emojiName}:`;
 
-      switch (type) {
-        case '@':
-        case '@!': {
-          const member = channel.guild?.members.cache.get(id);
-          if (member) {
-            return `@${member.displayName}`;
-          }
+			switch (type) {
+				case '@':
+				case '@!': {
+					const member = channel.guild?.members.cache.get(id);
+					if (member) {
+						return `@${member.displayName}`;
+					}
 
-          const user = channel.client.users.cache.get(id);
-          return user ? `@${user.displayName}` : match;
-        }
+					const user = channel.client.users.cache.get(id);
+					return user ? `@${user.displayName}` : match;
+				}
 
-        case '@&': {
-          if (channel.type === ChannelType.DM) return match;
-          const role = channel.guild.roles.cache.get(id);
-          return role ? `@${role.name}` : match;
-        }
+				case '@&': {
+					if (channel.type === ChannelType.DM) return match;
+					const role = channel.guild.roles.cache.get(id);
+					return role ? `@${role.name}` : match;
+				}
 
-        case '#': {
-          const mentionedChannel = channel.client.channels.cache.get(id);
-          return mentionedChannel ? `#${mentionedChannel.name}` : match;
-        }
+				case '#': {
+					const mentionedChannel = channel.client.channels.cache.get(id);
+					return mentionedChannel ? `#${mentionedChannel.name}` : match;
+				}
 
-        default: {
-          return match;
-        }
-      }
-    },
-  );
+				default: {
+					return match;
+				}
+			}
+		},
+	);
 }
 
 /**
@@ -445,7 +444,7 @@ function cleanContent(str, channel) {
  * @returns {string}
  */
 function cleanCodeBlockContent(text) {
-  return text.replaceAll('```', '`\u200B``');
+	return text.replaceAll('```', '`\u200B``');
 }
 
 /**
@@ -455,12 +454,12 @@ function cleanCodeBlockContent(text) {
  * @returns {?WebhookClientDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
  */
 function parseWebhookURL(url) {
-  const matches =
-    /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(?<id>\d{17,19})\/(?<token>[\w-]{68})/i.exec(
-      url,
-    );
+	const matches =
+		/https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(?<id>\d{17,19})\/(?<token>[\w-]{68})/i.exec(
+			url,
+		);
 
-  return matches && { id: matches.groups.id, token: matches.groups.token };
+	return matches && { id: matches.groups.id, token: matches.groups.token };
 }
 
 /**
@@ -482,57 +481,57 @@ function parseWebhookURL(url) {
  * @private
  */
 function transformResolved(
-  { client, guild, channel },
-  { members, users, channels, roles, messages, attachments } = {},
+	{ client, guild, channel },
+	{ members, users, channels, roles, messages, attachments } = {},
 ) {
-  const result = {};
+	const result = {};
 
-  if (members) {
-    result.members = new Collection();
-    for (const [id, member] of Object.entries(members)) {
-      const user = users[id];
-      result.members.set(id, guild?.members._add({ user, ...member }) ?? member);
-    }
-  }
+	if (members) {
+		result.members = new Collection();
+		for (const [id, member] of Object.entries(members)) {
+			const user = users[id];
+			result.members.set(id, guild?.members._add({ user, ...member }) ?? member);
+		}
+	}
 
-  if (users) {
-    result.users = new Collection();
-    for (const user of Object.values(users)) {
-      result.users.set(user.id, client.users._add(user));
-    }
-  }
+	if (users) {
+		result.users = new Collection();
+		for (const user of Object.values(users)) {
+			result.users.set(user.id, client.users._add(user));
+		}
+	}
 
-  if (roles) {
-    result.roles = new Collection();
-    for (const role of Object.values(roles)) {
-      result.roles.set(role.id, guild?.roles._add(role) ?? role);
-    }
-  }
+	if (roles) {
+		result.roles = new Collection();
+		for (const role of Object.values(roles)) {
+			result.roles.set(role.id, guild?.roles._add(role) ?? role);
+		}
+	}
 
-  if (channels) {
-    result.channels = new Collection();
-    for (const apiChannel of Object.values(channels)) {
-      result.channels.set(apiChannel.id, client.channels._add(apiChannel, guild) ?? apiChannel);
-    }
-  }
+	if (channels) {
+		result.channels = new Collection();
+		for (const apiChannel of Object.values(channels)) {
+			result.channels.set(apiChannel.id, client.channels._add(apiChannel, guild) ?? apiChannel);
+		}
+	}
 
-  if (messages) {
-    result.messages = new Collection();
-    for (const message of Object.values(messages)) {
-      result.messages.set(message.id, channel?.messages?._add(message) ?? message);
-    }
-  }
+	if (messages) {
+		result.messages = new Collection();
+		for (const message of Object.values(messages)) {
+			result.messages.set(message.id, channel?.messages?._add(message) ?? message);
+		}
+	}
 
-  if (attachments) {
-    result.attachments = new Collection();
-    for (const attachment of Object.values(attachments)) {
-      // eslint-disable-next-line no-use-before-define
-      const patched = new Attachment(attachment);
-      result.attachments.set(attachment.id, patched);
-    }
-  }
+	if (attachments) {
+		result.attachments = new Collection();
+		for (const attachment of Object.values(attachments)) {
+			// eslint-disable-next-line no-use-before-define
+			const patched = new Attachment(attachment);
+			result.attachments.set(attachment.id, patched);
+		}
+	}
 
-  return result;
+	return result;
 }
 
 // Public

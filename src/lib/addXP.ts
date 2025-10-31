@@ -1,5 +1,5 @@
-import { bold } from '@discordjs/formatters';
-import { Events, formatOrdinal, noOp, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { bold } from '@oldschoolgg/discord';
+import { Events, formatOrdinal, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
 import { UserEventType } from '@/prisma/main/enums.js';
@@ -9,7 +9,6 @@ import { skillEmoji } from '@/lib/data/emojis.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${MAX_LEVEL_XP}`).join(' AND ');
@@ -41,10 +40,9 @@ async function onMax(user: MUser) {
 	} 🎉`;
 
 	globalClient.emit(Events.ServerNotification, str);
-	sendToChannelID(globalConfig.supportServerID, { content: str }).catch(noOp);
-	const kUser = await globalClient.users.fetch(user.id);
+	globalClient.sendMessage(globalConfig.supportServerID, { content: str });
 	const clientSettings = await ClientSettings.fetch({ maxing_message: true });
-	kUser.send(clientSettings.maxing_message).catch(noOp);
+	globalClient.sendDm(user.id, clientSettings.maxing_message);
 }
 
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {

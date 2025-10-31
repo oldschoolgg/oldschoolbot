@@ -1,10 +1,5 @@
-import {
-	ComponentType,
-	type Guild,
-	type InteractionReplyOptions,
-	PermissionsBitField,
-	type TextBasedChannel
-} from '@oldschoolgg/discord';
+import { ComponentType, type InteractionReplyOptions, PermissionsBitField } from '@oldschoolgg/discord';
+import type { IChannel, IGuild } from '@oldschoolgg/schemas';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -14,7 +9,6 @@ import type { AnyCommand } from '@/lib/discord/index.js';
 import type { InhibitorResult } from '@/lib/discord/preCommand.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import type { MMember } from '@/lib/structures/MInteraction.js';
-import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 interface Inhibitor {
@@ -22,8 +16,8 @@ interface Inhibitor {
 	run: (options: {
 		user: MUser;
 		command: AnyCommand;
-		guild: Guild | null;
-		channel: TextBasedChannel | null;
+		guild: IGuild | null;
+		channel: IChannel | null;
 		member: MMember | null;
 	}) => false | InteractionReplyOptions | Promise<InteractionReplyOptions | false>;
 	silent?: true;
@@ -39,15 +33,16 @@ const inhibitors: Inhibitor[] = [
 			return false;
 		}
 	},
-	{
-		name: 'settingSyncer',
-		run: ({ guild }) => {
-			if (guild && !untrustedGuildSettingsCache.has(guild.id)) {
-				mahojiGuildSettingsFetch(guild);
-			}
-			return false;
-		}
-	},
+	// {
+	// TODO
+	// 	name: 'settingSyncer',
+	// 	run: ({ guild }) => {
+	// 		if (guild && !untrustedGuildSettingsCache.has(guild.id)) {
+	// 			mahojiGuildSettingsFetch(guild);
+	// 		}
+	// 		return false;
+	// 	}
+	// },
 	{
 		name: 'hasMinion',
 		run: ({ user, command }) => {
@@ -180,10 +175,10 @@ export async function runInhibitors({
 	guild
 }: {
 	user: MUser;
-	channel: TextBasedChannel | null;
+	channel: IChannel | null;
 	member: MMember | null;
 	command: AnyCommand;
-	guild: Guild | null;
+	guild: IGuild | null;
 }): Promise<undefined | InhibitorResult> {
 	for (const { run, silent } of inhibitors) {
 		const result = await run({

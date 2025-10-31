@@ -1,4 +1,4 @@
-import { bold } from '@discordjs/formatters';
+import { bold } from '@oldschoolgg/discord';
 import { Emoji, Events, formatOrdinal, isObject, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 

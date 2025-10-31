@@ -1,4 +1,4 @@
-import { bold } from '@discordjs/formatters';
+import { bold } from '@oldschoolgg/discord';
 import { percentChance, randArrItem, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,

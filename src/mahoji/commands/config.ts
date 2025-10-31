@@ -1,4 +1,5 @@
-import { bold, EmbedBuilder, type Guild, hasBanMemberPerms, inlineCode } from '@oldschoolgg/discord';
+import { bold, EmbedBuilder, hasBanMemberPerms, inlineCode } from '@oldschoolgg/discord';
+import type { Guild } from '@oldschoolgg/discord.js';
 import {
 	formatDuration,
 	hexToDecimal,
@@ -26,7 +27,6 @@ import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
-import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 interface UserConfigToggle {
@@ -453,13 +453,13 @@ async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: 
 	if (!(await hasBanMemberPerms(user.id, guild)))
 		return "You need to be 'Ban Member' permissions to use this command.";
 	const cID = channelID.toString();
-	const settings = await mahojiGuildSettingsFetch(guild);
+	const settings = await GuildSettings.fetch(guild.id);
 	const isDisabled = settings.staffOnlyChannels.includes(cID);
 
 	if (choice === 'disable') {
 		if (isDisabled) return 'This channel is already disabled.';
 
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await GuildSettings.update(guild.id, {
 			staffOnlyChannels: [...settings.staffOnlyChannels, cID]
 		});
 
@@ -467,7 +467,7 @@ async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: 
 	}
 	if (!isDisabled) return 'This channel is already enabled.';
 
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await GuildSettings.update(guild.id, {
 		staffOnlyChannels: settings.staffOnlyChannels.filter(i => i !== cID)
 	});
 
@@ -481,16 +481,17 @@ async function handlePetMessagesEnable(
 	choice: 'enable' | 'disable'
 ) {
 	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
+	if (!(await hasBanMemberPerms(user.id, guild))) {
 		return "You need to be 'Ban Member' permissions to use this command.";
-	const settings = await mahojiGuildSettingsFetch(guild);
+	}
+	const settings = await GuildSettings.fetch(guild.id);
 
 	const cID = channelID.toString();
 	if (choice === 'enable') {
 		if (settings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await GuildSettings.update(guild.id, {
 			petchannel: cID
 		});
 		return 'Enabled Pet Messages in this guild.';
@@ -498,7 +499,7 @@ async function handlePetMessagesEnable(
 	if (settings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await GuildSettings.update(guild.id, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';
@@ -511,9 +512,10 @@ async function handleCommandEnable(
 	choice: 'enable' | 'disable'
 ) {
 	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
+	if (!(await hasBanMemberPerms(user.id, guild))) {
 		return "You need to be 'Ban Member' permissions to use this command.";
-	const settings = await mahojiGuildSettingsFetch(guild);
+	}
+	const settings = await GuildSettings.fetch(guild.id);
 	const command = globalClient.allCommands.find(i => i.name.toLowerCase() === commandName.toLowerCase());
 	if (!command) return "That's not a valid command.";
 
@@ -521,7 +523,7 @@ async function handleCommandEnable(
 		if (!settings.disabledCommands.includes(commandName)) {
 			return "That command isn't disabled.";
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await GuildSettings.update(guild.id, {
 			disabledCommands: settings.disabledCommands.filter(i => i !== command.name)
 		});
 
@@ -531,7 +533,7 @@ async function handleCommandEnable(
 	if (settings.disabledCommands.includes(command.name)) {
 		return 'That command is already disabled.';
 	}
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await GuildSettings.update(guild.id, {
 		disabledCommands: [...settings.disabledCommands, command.name]
 	});
 

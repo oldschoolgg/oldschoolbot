@@ -1,17 +1,13 @@
-import type { Guild as DJSGuild } from '@oldschoolgg/discord';
-
 import type { Prisma } from '@/prisma/main.js';
-import { untrustedGuildSettingsCache } from '@/lib/cache.js';
 
-export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
-	const id = typeof guild === 'string' ? guild : guild.id;
+async function mahojiGuildSettingsFetch(guildId: string) {
 	const result = await prisma.guild.upsert({
 		where: {
-			id
+			id: guildId
 		},
 		update: {},
 		create: {
-			id
+			id: guildId
 		},
 		select: {
 			disabledCommands: true,
@@ -20,19 +16,26 @@ export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 			staffOnlyChannels: true
 		}
 	});
-	untrustedGuildSettingsCache.set(id, result);
 	return result;
 }
 
-export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: Prisma.GuildUpdateArgs['data']) {
-	const guildID = typeof guild === 'string' ? guild : guild.id;
-
+async function mahojiGuildSettingsUpdate(guildId: string, data: Prisma.GuildUpdateArgs['data']) {
 	const newGuild = await prisma.guild.update({
 		data,
 		where: {
-			id: guildID
+			id: guildId
 		}
 	});
-	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
 	return { newGuild };
 }
+
+const GuildSettingsSrc = {
+	fetch: mahojiGuildSettingsFetch,
+	update: mahojiGuildSettingsUpdate
+};
+
+declare global {
+	var GuildSettings: typeof GuildSettingsSrc;
+}
+
+global.GuildSettings = GuildSettingsSrc;

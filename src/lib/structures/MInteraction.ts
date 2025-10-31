@@ -1,33 +1,42 @@
+import { makeURLSearchParams } from '@discordjs/rest';
 import {
 	ActionRowBuilder,
-	type AutocompleteInteraction,
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
-	type CommandInteraction,
 	ComponentType,
 	InteractionResponseType,
-	type Message,
 	MessageFlags,
-	PermissionsBitField,
 	Routes
 } from '@oldschoolgg/discord';
+import {
+	type InteractionReplyOptions,
+	InteractionWebhook,
+	type Message,
+	MessageFlagsBitField,
+	MessagePayload
+} from '@oldschoolgg/discord.js';
+import type {
+	IButtonInteraction,
+	IChannel,
+	IChatInputCommandInteraction,
+	IGuild,
+	IMember,
+	IUser
+} from '@oldschoolgg/schemas';
 import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import { omit } from 'remeda';
 
-import { command_name_enum } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
 import { SILENT_ERROR } from '@/lib/constants.js';
-import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import {
 	type CompatibleResponse,
 	PaginatedMessage,
 	type PaginatedMessageOptions
 } from '@/lib/structures/PaginatedMessage.js';
-import { compressMahojiArgs } from '@/lib/util/commandUsage.js';
 
 interface MakePartyOptions {
 	maxSize: number;
@@ -40,135 +49,190 @@ interface MakePartyOptions {
 }
 
 export class MInteraction {
-	public interaction: CommandInteraction | ButtonInteraction;
+	public interaction: IChatInputCommandInteraction | IButtonInteraction;
 	public id: string;
-	public ephemeral: boolean;
+	public ephemeral?: boolean;
 	public interactionResponse: Message | null = null;
 	public isPaginated = false;
 	public isParty = false;
 	public isConfirmation = false;
 
-	constructor({ interaction }: { interaction: CommandInteraction | ButtonInteraction }) {
+	public replied = false;
+	public deferred = false;
+	public token: string;
+	public guild: IGuild | null = null;
+	// public member: MMember | null = null;
+	public member: IMember | null = null;
+	public user: IUser;
+	public webhook: InteractionWebhook;
+	public channelId: string;
+	public channel: IChannel;
+	public guildId: string | null = null;
+
+	constructor({ interaction }: { interaction: MInteraction['interaction'] }) {
 		this.interaction = interaction;
 		this.id = interaction.id;
-		this.ephemeral = interaction.ephemeral ?? false;
+		// this.ephemeral = interaction.ephemeral ?? false;
+		this.token = interaction.token;
+		this.user = interaction.user;
+		this.member = interaction.member ?? null;
+		this.guild = interaction.guild ?? null;
+		this.guildId = interaction.guild ? interaction.guild.id : null;
+		this.channelId = interaction.channel.id;
+		this.webhook = new InteractionWebhook(globalClient, interaction.id, interaction.token);
+		this.channel = interaction.channel;
 	}
 
-	get replied() {
-		return this.interaction.replied;
+	private async _deferReply({ ephemeral }: { ephemeral?: boolean } = {}) {
+		if (this.deferred || this.replied) throw new Error('Interaction already replied');
+
+		const resolvedFlags = ephemeral ? null : new MessageFlagsBitField(MessageFlags.Ephemeral);
+
+		await globalClient.rest.post(Routes.interactionCallback(this.id, this.token), {
+			body: {
+				type: InteractionResponseType.DeferredChannelMessageWithSource,
+				data: {
+					flags: resolvedFlags?.bitfield
+				}
+			},
+			auth: false
+		});
+
+		this.deferred = true;
+		this.ephemeral = ephemeral;
 	}
 
-	get deferred() {
-		return this.interaction.deferred;
+	private async _rawReply(options: (MessagePayload | InteractionReplyOptions) & { withResponse?: boolean }) {
+		if (this.deferred || this.replied) throw new Error('Interaction already replied');
+
+		let messagePayload;
+		if (options instanceof MessagePayload) messagePayload = options;
+		else messagePayload = MessagePayload.create(this.webhook, options);
+
+		const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
+
+		const response = await globalClient.rest.post(Routes.interactionCallback(this.id, this.token), {
+			body: {
+				type: InteractionResponseType.ChannelMessageWithSource,
+				data
+			},
+			files,
+			auth: false,
+			query: makeURLSearchParams({ with_response: options.withResponse ?? false })
+		});
+
+		this.ephemeral = Boolean(data.flags & MessageFlags.Ephemeral);
+		this.replied = true;
+
+		return options.withResponse ? response : undefined;
 	}
 
-	get type() {
-		return this.interaction.type;
+	// async fetchReply(message = '@original') {
+	// 	return this.webhook.fetchMessage(message);
+	// }
+
+	private async _editReply(options) {
+		if (this.deferred || this.replied) throw new Error('Interaction not replied yet');
+		const msg = await this.webhook.editMessage(options.message ?? '@original', options);
+		this.replied = true;
+		return msg;
 	}
 
-	static getChatInputCommandOptions(interaction: CommandInteraction | AutocompleteInteraction | ButtonInteraction) {
-		if (!interaction.isChatInputCommand()) return {};
-		const cmdOpts = convertAPIOptionsToCommandOptions(interaction.options.data, interaction.options.resolved);
-		return compressMahojiArgs(cmdOpts);
-	}
+	// private async update(options = {}) {
+	// 	if (this.deferred || this.replied) throw new Error('Interaction already replied');
 
-	public getChatInputCommandOptions(command: command_name_enum) {
-		if (([command_name_enum.bank, command_name_enum.bs] as command_name_enum[]).includes(command)) {
-			return undefined;
-		}
-		return MInteraction.getChatInputCommandOptions(this.interaction);
-	}
+	// 	let messagePayload;
+	// 	if (options instanceof MessagePayload) messagePayload = options;
+	// 	else messagePayload = MessagePayload.create(this, options);
 
-	static getInteractionDebugInfo(interaction: AutocompleteInteraction | MInteraction) {
-		const context: Record<string, string | number | null | boolean> = {
-			user_id: interaction.user.id,
-			channel_id: interaction.channelId,
-			guild_id: interaction.guildId,
-			itx_id: interaction.id,
-			itx_type: interaction.type,
-			itx_created_at: interaction.createdTimestamp,
-			itx_diff_s: ((Date.now() - interaction.createdTimestamp) / 1000).toFixed(1)
-		};
+	// 	const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
 
-		if (interaction instanceof MInteraction) {
-			context.was_deferred = interaction.deferred;
-			context.cmd_name = interaction.commandName;
-			context.ephemeral = interaction.ephemeral;
-			context.replied = interaction.replied;
-			context.is_party = interaction.isParty;
-			context.is_confirm = interaction.isConfirmation;
-			context.is_paginated = interaction.isPaginated;
-			context.button_id = interaction.customId;
+	// 	const response = await globalClient.rest.post(Routes.interactionCallback(this.id, this.token), {
+	// 		body: {
+	// 			type: InteractionResponseType.UpdateMessage,
+	// 			data,
+	// 		},
+	// 		files,
+	// 		auth: false,
+	// 		query: makeURLSearchParams({ with_response: options.withResponse ?? false }),
+	// 	});
+	// 	this.replied = true;
 
-			if (interaction.interaction.isChatInputCommand()) {
-				context.cmd_options = JSON.stringify(MInteraction.getChatInputCommandOptions(interaction.interaction));
-			}
-		}
+	// 	return options.withResponse ? response : undefined;
+	// }
 
-		return context;
-	}
+	// static getChatInputCommandOptions(interaction: CommandInteraction | AutocompleteInteraction | ButtonInteraction) {
+	// 	if (!interaction.isChatInputCommand()) return {};
+	// 	const cmdOpts = convertAPIOptionsToCommandOptions(interaction.options.data, interaction.options.resolved);
+	// 	return compressMahojiArgs(cmdOpts);
+	// }
 
-	public getDebugInfo() {
-		return MInteraction.getInteractionDebugInfo(this);
-	}
+	// public getChatInputCommandOptions(command: command_name_enum) {
+	// 	if (([command_name_enum.bank, command_name_enum.bs] as command_name_enum[]).includes(command)) {
+	// 		return undefined;
+	// 	}
+	// 	return MInteraction.getChatInputCommandOptions(this.interaction);
+	// }
 
-	public isRepliable() {
-		return this.interaction.isRepliable();
-	}
+	// static getInteractionDebugInfo(interaction: AutocompleteInteraction | MInteraction) {
+	// 	const context: Record<string, string | number | null | boolean | undefined> = {
+	// 		user_id: interaction.user.id,
+	// 		channel_id: interaction.channel?.id,
+	// 		guild_id: interaction.guild?.id,
+	// 		itx_id: interaction.id,
+	// 	};
 
-	public get createdTimestamp() {
-		return this.interaction.createdTimestamp;
-	}
+	// 	if (interaction instanceof MInteraction) {
+	// 		context.was_deferred = interaction.deferred;
+	// 		context.cmd_name = interaction.commandName;
+	// 		context.ephemeral = interaction.ephemeral;
+	// 		context.replied = interaction.replied;
+	// 		context.is_party = interaction.isParty;
+	// 		context.is_confirm = interaction.isConfirmation;
+	// 		context.is_paginated = interaction.isPaginated;
+	// 		context.button_id = interaction.customId;
 
-	public get commandName() {
-		if (this.interaction.isCommand()) return this.interaction.commandName;
-		return null;
-	}
+	// 		if (interaction.interaction.isChatInputCommand()) {
+	// 			context.cmd_options = JSON.stringify(MInteraction.getChatInputCommandOptions(interaction.interaction));
+	// 		}
+	// 	}
 
-	public get customId() {
-		if (this.interaction.isButton()) return this.interaction.customId;
-		return null;
-	}
+	// 	return context;
+	// }
 
-	public get user() {
-		return this.interaction.user;
-	}
+	// public getDebugInfo() {
+	// 	return MInteraction.getInteractionDebugInfo(this);
+	// }
 
-	public get member() {
-		const permissions = this.interaction.memberPermissions ?? new PermissionsBitField();
-		return {
-			permissions
-		};
-	}
+	// public isRepliable() {
+	// 	return this.interaction.isRepliable();
+	// }
 
-	public get channel() {
-		return this.interaction.channel;
-	}
+	// public get createdTimestamp() {
+	// 	return this.interaction.createdTimestamp;
+	// }
 
-	public get client() {
-		return this.interaction.client;
-	}
+	// public get commandName() {
+	// 	if (this.interaction.isCommand()) return this.interaction.commandName;
+	// 	return null;
+	// }
 
-	public get channelId() {
-		return this.interaction.channelId;
-	}
+	// public get customId() {
+	// 	if (this.interaction.isButton()) return this.interaction.customId;
+	// 	return null;
+	// }
 
-	public get guildId() {
-		return this.interaction.guildId;
-	}
+	// public get member() {
+	// 	const permissions = this.interaction.memberPermissions ?? new PermissionsBitField();
+	// 	return {
+	// 		permissions
+	// 	};
+	// }
 
-	public get guild() {
-		return this.interaction.guild;
-	}
-
-	public get createdAt() {
-		return this.interaction.createdAt;
-	}
-
-	public get message() {
-		if (!this.interaction.isButton()) return null;
-		return this.interaction.message;
-	}
+	// public get message() {
+	// 	if (!this.interaction.isButton()) return null;
+	// 	return this.interaction.message;
+	// }
 
 	makePaginatedMessage(options: PaginatedMessageOptions) {
 		this.isPaginated = true;
@@ -181,11 +245,11 @@ export class MInteraction {
 			try {
 				const options: { flags?: number } = {};
 				if (this.ephemeral) options.flags = MessageFlags.Ephemeral;
-				await this.interaction.deferReply(options);
+				await this._deferReply({ ephemeral: this.ephemeral });
 			} catch (err) {
 				Logging.logError(err as Error, {
-					action: 'DEFER',
-					...this.getDebugInfo()
+					action: 'DEFER'
+					// ...this.getDebugInfo()
 				});
 			}
 		}
@@ -213,17 +277,17 @@ export class MInteraction {
 
 		try {
 			if (this.replied || this.deferred) {
-				this.interactionResponse = await this.interaction.editReply(
+				this.interactionResponse = await this._editReply(
 					omit({ ...response, withResponse: true }, ['flags', 'ephemeral'])
 				);
 			} else {
-				const interactionCallbackResponse = await this.interaction.reply({ ...response, withResponse: true });
+				const interactionCallbackResponse: any = await this._rawReply({ ...response, withResponse: true });
 				this.interactionResponse = interactionCallbackResponse.resource?.message ?? null;
 			}
 		} catch (err) {
 			Logging.logError(err as Error, {
 				action: `REPLY (${this.deferred ? 'editReply' : 'reply'})`,
-				...this.getDebugInfo(),
+				// ...this.getDebugInfo(),
 				response: this.formatResponseForLogging(response)
 			});
 		}
@@ -269,11 +333,13 @@ export class MInteraction {
 		const confirms = new Set();
 
 		return new Promise<void>((resolve, reject) => {
-			const collector = this.interactionResponse!.createMessageComponentCollector({ time: timeout });
+			const collector = this.interactionResponse!.createMessageComponentCollector<ComponentType.Button>({
+				time: timeout
+			});
 
-			collector.on('collect', buttonInteraction => {
+			collector.on('collect', async buttonInteraction => {
 				const silentAck = () =>
-					this.client.rest.post(Routes.interactionCallback(buttonInteraction.id, buttonInteraction.token), {
+					globalClient.rest.post(Routes.interactionCallback(buttonInteraction.id, buttonInteraction.token), {
 						body: {
 							type: InteractionResponseType.DeferredMessageUpdate
 						}
@@ -308,9 +374,9 @@ export class MInteraction {
 						collector.stop();
 						resolve();
 					} else {
-						const unconfirmedUsernames = users
-							.filter(i => !confirms.has(i))
-							.map(i => this.client.users.cache.get(i)?.username ?? 'Unknown User');
+						const unconfirmedUsernames = await Promise.all(
+							users.filter(i => !confirms.has(i)).map(i => Cache.getBadgedUsername(i))
+						);
 						this.reply({
 							content: `${content}\n\n${confirms.size}/${users.length} confirmed. Waiting for ${unconfirmedUsernames.join(', ')}...`,
 							components: [confirmRow]
@@ -398,7 +464,7 @@ export class MInteraction {
 		};
 
 		const silentAck = (bi: ButtonInteraction) =>
-			this.client.rest.post(Routes.interactionCallback(bi.id, bi.token), {
+			globalClient.rest.post(Routes.interactionCallback(bi.id, bi.token), {
 				body: { type: InteractionResponseType.DeferredMessageUpdate }
 			});
 
@@ -531,5 +597,3 @@ export class MInteraction {
 		});
 	}
 }
-
-export type MMember = typeof MInteraction.prototype.member;

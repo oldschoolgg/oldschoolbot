@@ -1,15 +1,21 @@
+import { makeURLSearchParams, REST } from '@discordjs/rest';
 import {
 	ActivityType,
+	type APIApplicationCommandOptionChoice,
 	type APIEmoji,
 	type APIGuildMember,
 	type APIRole,
 	Client,
 	GatewayOpcodes,
 	type GatewayUpdatePresence,
+	type MessageCreateOptions,
+	type MessageEditOptions,
 	PermissionsBitField,
 	PresenceUpdateStatus,
-	Routes
+	Routes,
+	type Snowflake
 } from '@oldschoolgg/discord';
+import type { IChannel, IInteraction, IMessage } from '@oldschoolgg/schemas';
 import { omit } from 'remeda';
 
 import { globalConfig } from '@/lib/constants.js';
@@ -17,12 +23,13 @@ import { ReactEmoji } from '@/lib/data/emojis.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 
 export class OldSchoolBotClient extends Client<true> {
+	private _rest: REST = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN!);
 	public isShuttingDown = false;
 	public allCommands = allCommandsDONTIMPORT;
 
 	// TODO:
 	// private async syncMainServerData() {
-	// 	const mainServerRoles = await globalClient.rest.get(Routes.guildRoles(globalConfig.supportServerID)) as APIRole[];
+	// 	const mainServerRoles = await this._rest.get(Routes.guildRoles(globalConfig.supportServerID)) as APIRole[];
 	// 	for (const role of mainServerRoles) {
 	// 		Cache.MAIN_SERVER.ROLES.set(role.id, role)
 	// 	}
@@ -32,19 +39,93 @@ export class OldSchoolBotClient extends Client<true> {
 		// await this.syncMainServerData();
 	}
 
+	async respondToAutocompleteInteraction(interaction: IInteraction, message: APIApplicationCommandOptionChoice[]) {
+		const route = Routes.interactionCallback(interaction.id, interaction.token);
+		await this._rest.post(route, {
+			body:
+				typeof message === 'string'
+					? {
+							type: 4,
+							data: { content: message }
+						}
+					: {
+							type: 4,
+							data: message
+						}
+		});
+	}
+
+	async sendMessage(channelId: string, message: string | MessageCreateOptions): Promise<IMessage> {
+		const route = Routes.channelMessages(channelId);
+		const res = await this._rest.post(route, {
+			body: typeof message === 'string' ? { content: message } : message
+		});
+		return res as IMessage;
+	}
+
+	async sendDm(userId: string, message: string | MessageCreateOptions) {
+		const dmChannel: any = await this.rest.post(Routes.userChannels(), {
+			body: { recipient_id: userId }
+		});
+		return this.sendMessage(dmChannel.id, message);
+	}
+
+	async deleteMessage(channelId: string, messageId: string) {
+		const route = Routes.channelMessage(channelId, messageId);
+		const res = await this._rest.delete(route);
+		return res;
+	}
+
+	async editMessage(channelId: string, messageId: string, body: MessageEditOptions) {
+		const route = Routes.channelMessage(channelId, messageId);
+		const res = await this._rest.patch(route, {
+			body
+		});
+		return res;
+	}
+
+	async fetchChannel(channelId: string): Promise<IChannel | null> {
+		const route = Routes.channel(channelId);
+		const res = await this._rest.get(route);
+		return (res ?? null) as IChannel | null;
+	}
+
+	async fetchChannelMessages(
+		channelId: string,
+		options: {
+			after?: Snowflake;
+			around?: Snowflake;
+			before?: Snowflake;
+			cache?: boolean;
+			limit?: number;
+		}
+	): Promise<IMessage[]> {
+		const route = Routes.channelMessages(channelId);
+		const res = await this._rest.get(route, {
+			query: makeURLSearchParams(options)
+		});
+		return res as IMessage[];
+	}
+
+	async fetchMessage(channelId: string, messageId: string): Promise<IMessage | null> {
+		const route = Routes.channelMessage(channelId, messageId);
+		const res = await this._rest.get(route);
+		return (res ?? null) as IMessage | null;
+	}
+
 	async giveRole(guildId: string, userId: string, roleId: string) {
 		const route = Routes.guildMemberRole(guildId, userId, roleId);
-		await globalClient.rest.put(route);
+		await this._rest.put(route);
 	}
 
 	async fetchRolesOfGuild(guildId: string) {
-		const roles: APIRole[] = (await globalClient.rest.get(Routes.guildRoles(guildId))) as APIRole[];
+		const roles: APIRole[] = (await this._rest.get(Routes.guildRoles(guildId))) as APIRole[];
 		return roles;
 	}
 
 	async fetchEmoji({ guildId, emojiId }: { guildId: string; emojiId: string }): Promise<APIEmoji | null> {
 		const route = Routes.guildEmoji(guildId, emojiId);
-		const res = await globalClient.rest.get(route);
+		const res = await this._rest.get(route);
 		return res as APIEmoji | null;
 	}
 
@@ -61,7 +142,7 @@ export class OldSchoolBotClient extends Client<true> {
 
 	async fetchMember({ guildId, userId }: { guildId: string; userId: string }): Promise<APIGuildMember | null> {
 		const route = Routes.guildMember(guildId, userId);
-		const res = await globalClient.rest.get(route);
+		const res = await this._rest.get(route);
 		return res as APIGuildMember | null;
 	}
 
@@ -115,6 +196,6 @@ export class OldSchoolBotClient extends Client<true> {
 		emojiId: keyof typeof ReactEmoji;
 	}) {
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(ReactEmoji[emojiId]));
-		await globalClient.rest.put(route);
+		await this._rest.put(route);
 	}
 }

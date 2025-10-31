@@ -21,7 +21,6 @@ import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { DISABLED_COMMANDS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
-import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
@@ -29,7 +28,6 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 export const gifs = [
@@ -798,16 +796,17 @@ export const adminCommand = defineCommand({
 		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
-			await economyLog('Flushing economy log due to reboot', true);
 			await interaction.reply({
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
 			await sleep(Time.Second * 20);
-			await sendToChannelID(Channel.GeneralChannel, {
-				content: `I am shutting down! Goodbye :(
+			await globalClient
+				.sendMessage(Channel.GeneralChannel, {
+					content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
-			}).catch(noOp);
+				})
+				.catch(noOp);
 			import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
 			return 'Turning off...';
 		}
@@ -818,13 +817,14 @@ ${META_CONSTANTS.RENDERED_STR}`
 			await interaction.reply({
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
-			await economyLog('Flushing economy log due to shutdown', true);
 			await Promise.all([sleep(timer), GrandExchange.queue.onIdle()]);
-			await sendToChannelID(Channel.GeneralChannel, {
-				content: `I am shutting down! Goodbye :(
+			await globalClient
+				.sendMessage(Channel.GeneralChannel, {
+					content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
-			}).catch(noOp);
+				})
+				.catch(noOp);
 			import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
 			return 'Turning off...';
 		}
@@ -867,7 +867,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
 			const user = await mUserFetch(options.give_items.user.user.id);
 			await interaction.confirmation(`Are you sure you want to give ${items} to ${user.usernameOrMention}?`);
-			await sendToChannelID(Channel.BotLogs, {
+			await globalClient.sendMessage(Channel.BotLogs, {
 				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
 					options.give_items.reason ?? 'No reason'
 				}`

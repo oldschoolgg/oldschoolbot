@@ -3,7 +3,6 @@
 const { Buffer } = require('node:buffer');
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const { fetch } = require('undici');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
@@ -23,7 +22,7 @@ const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/in
  * @private
  */
 function resolveCode(data, regex) {
-  return regex.exec(data)?.[1] ?? data;
+	return regex.exec(data)?.[1] ?? data;
 }
 
 /**
@@ -56,28 +55,28 @@ function resolveCode(data, regex) {
  * @private
  */
 async function resolveFile(resource) {
-  if (Buffer.isBuffer(resource)) return { data: resource };
+	if (Buffer.isBuffer(resource)) return { data: resource };
 
-  if (typeof resource[Symbol.asyncIterator] === 'function') {
-    const buffers = [];
-    for await (const data of resource) buffers.push(Buffer.from(data));
-    return { data: Buffer.concat(buffers) };
-  }
+	if (typeof resource[Symbol.asyncIterator] === 'function') {
+		const buffers = [];
+		for await (const data of resource) buffers.push(Buffer.from(data));
+		return { data: Buffer.concat(buffers) };
+	}
 
-  if (typeof resource === 'string') {
-    if (/^https?:\/\//.test(resource)) {
-      const res = await fetch(resource);
-      return { data: Buffer.from(await res.arrayBuffer()), contentType: res.headers.get('content-type') };
-    }
+	if (typeof resource === 'string') {
+		if (/^https?:\/\//.test(resource)) {
+			const res = await fetch(resource);
+			return { data: Buffer.from(await res.arrayBuffer()), contentType: res.headers.get('content-type') };
+		}
 
-    const file = path.resolve(resource);
+		const file = path.resolve(resource);
 
-    const stats = await fs.stat(file);
-    if (!stats.isFile()) throw new DiscordjsError(ErrorCodes.FileNotFound, file);
-    return { data: await fs.readFile(file) };
-  }
+		const stats = await fs.stat(file);
+		if (!stats.isFile()) throw new DiscordjsError(ErrorCodes.FileNotFound, file);
+		return { data: await fs.readFile(file) };
+	}
 
-  throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
+	throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
 }
 
 /**
@@ -97,8 +96,8 @@ async function resolveFile(resource) {
  * @private
  */
 function resolveBase64(data, contentType = 'image/jpg') {
-  if (Buffer.isBuffer(data)) return `data:${contentType};base64,${data.toString('base64')}`;
-  return data;
+	if (Buffer.isBuffer(data)) return `data:${contentType};base64,${data.toString('base64')}`;
+	return data;
 }
 
 /**
@@ -109,13 +108,13 @@ function resolveBase64(data, contentType = 'image/jpg') {
  * @private
  */
 async function resolveImage(image) {
-  if (!image) return null;
-  if (typeof image === 'string' && image.startsWith('data:')) {
-    return image;
-  }
+	if (!image) return null;
+	if (typeof image === 'string' && image.startsWith('data:')) {
+		return image;
+	}
 
-  const file = await resolveFile(image);
-  return resolveBase64(file.data);
+	const file = await resolveFile(image);
+	return resolveBase64(file.data);
 }
 
 exports.resolveCode = resolveCode;

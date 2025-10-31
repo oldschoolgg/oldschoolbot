@@ -25,6 +25,9 @@ importers:
       '@discordjs/formatters':
         specifier: ^0.6.1
         version: 0.6.1
+      '@discordjs/rest':
+        specifier: ^2.6.0
+        version: 2.6.0
       '@electric-sql/pglite':
         specifier: ^0.3.10
         version: 0.3.10
@@ -247,9 +250,6 @@ importers:
       '@discordjs/builders':
         specifier: ^1.13.0
         version: 1.13.0
-      '@discordjs/rest':
-        specifier: ^2.6.0
-        version: 2.6.0
       '@oldschoolgg/discord.js':
         specifier: workspace:*
         version: link:../discord.js
@@ -301,9 +301,6 @@ importers:
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
-      undici:
-        specifier: 7.16.0
-        version: 7.16.0
     devDependencies:
       cross-env:
         specifier: ^10.1.0
@@ -379,6 +376,9 @@ importers:
 
   packages/schemas:
     dependencies:
+      discord-api-types:
+        specifier: 0.38.30
+        version: 0.38.30
       zod:
         specifier: ^4.1.12
         version: 4.1.12
@@ -4633,10 +4633,6 @@ packages:
   undici@6.21.3:
     resolution: {integrity: sha512-gBLkYIlEnSp8pFbT64yFgGE6UIB9tAkhukC23PmMDCe5Nd+cRqKxSjw5y54MK2AZMgZfJWMaNE4nYUHgi1XEOw==}
     engines: {node: '>=18.17'}
-
-  undici@7.16.0:
-    resolution: {integrity: sha512-QEg3HPMll0o3t2ourKwOeUAZ159Kn9mx5pnzHRQO8+Wixmh88YdZRiIwat0iNzNNXn0yoEtXJqFpyW7eM8BV7g==}
-    engines: {node: '>=20.18.1'}
 
   unfetch@4.2.0:
     resolution: {integrity: sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==}
@@ -9917,8 +9913,6 @@ snapshots:
   undici-types@7.14.0: {}
 
   undici@6.21.3: {}
-
-  undici@7.16.0: {}
 
   unfetch@4.2.0: {}
 

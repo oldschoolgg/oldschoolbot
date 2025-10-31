@@ -9,7 +9,6 @@ import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmi
 import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const farmingTask: MinionTask = {
@@ -237,9 +236,14 @@ export const farmingTask: MinionTask = {
 					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					if (GP < gpToCutTree) {
-						return sendToChannelID(channelID, {
-							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`
-						});
+						return handleTripFinish(
+							user,
+							channelID,
+							`You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`,
+							undefined,
+							data,
+							null
+						);
 					}
 					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
 					await user.removeItemsFromBank(new Bank().add('Coins', gpToCutTree));

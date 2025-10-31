@@ -21,7 +21,6 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { gifs } from '@/mahoji/commands/admin.js';
 import { getUserInfo } from '@/mahoji/commands/minion.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
@@ -429,7 +428,7 @@ Date: ${dateFm(date)}`;
 				collectionLogName,
 				date
 			});
-			await sendToChannelID(Channel.BotLogs, {
+			await globalClient.sendMessage(Channel.BotLogs, {
 				content: `${adminUser.logName} created userevent for ${targetUser.logName}: ${type} ${dateFm(date)} ${
 					skill ?? ''
 				}`
@@ -462,7 +461,7 @@ Date: ${dateFm(date)}`;
 			await interaction.confirmation(
 				`Are you sure you want to set the buy date of ${userToCheck.usernameOrMention} to ${dateFm(date)}?`
 			);
-			await sendToChannelID(Channel.BotLogs, {
+			await globalClient.sendMessage(Channel.BotLogs, {
 				content: `${adminUser.logName} set minion buy date of ${userToCheck.logName} to ${dateFm(date)}`
 			});
 			await userToCheck.update({ minion_bought_date: date });
@@ -570,7 +569,7 @@ Date: ${dateFm(date)}`;
 					.slice(0, 500)}`;
 			}
 
-			await sendToChannelID(Channel.BotLogs, {
+			await globalClient.sendMessage(Channel.BotLogs, {
 				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${
 					userToStealFrom.logName
 				} for ${options.player.steal_items.reason ?? 'No reason'}`,
@@ -613,7 +612,7 @@ Date: ${dateFm(date)}`;
 			);
 			const result = await migrateUser(sourceUser, destUser);
 			if (result === true) {
-				await sendToChannelID(Channel.BotLogs, {
+				await globalClient.sendMessage(Channel.BotLogs, {
 					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
 						reason ? `, for ${reason}` : ''
 					}`

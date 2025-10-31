@@ -1,13 +1,13 @@
-import type { AutocompleteInteraction, CommandInteractionOption, GuildMember } from '@oldschoolgg/discord';
-import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from '@oldschoolgg/discord';
+import type { IAutoCompleteInteraction, IAutoCompleteInteractionOption, IMember } from '@oldschoolgg/schemas';
 
 import type { AnyCommand } from '@/lib/discord/index.js';
 
 async function handleAutocomplete(
 	user: MUser,
 	command: AnyCommand | undefined,
-	autocompleteData: CommandInteractionOption[],
-	member: GuildMember | undefined,
+	autocompleteData: IAutoCompleteInteractionOption[],
+	member: IMember | null,
 	option?: CommandOption
 ): Promise<APIApplicationCommandOptionChoice[]> {
 	if (!command || !autocompleteData) return [];
@@ -51,23 +51,9 @@ async function handleAutocomplete(
 	return [];
 }
 
-export async function autoCompleteHandler(interaction: AutocompleteInteraction) {
-	const member: GuildMember | undefined = interaction.inCachedGuild() ? interaction.member : undefined;
+export async function autoCompleteHandler(interaction: IAutoCompleteInteraction) {
 	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
 	const user = await mUserFetch(interaction.user.id);
-	const start = performance.now();
-	const choices = await handleAutocomplete(
-		user,
-		command,
-		(interaction.options as any).data as CommandInteractionOption[],
-		member
-	);
-	const end = performance.now();
-	Logging.logPerf({
-		duration: end - start,
-		text: `AutoComplete[${command.name}`,
-		interaction
-	});
-	await interaction.respond(choices);
-	return;
+	const choices = await handleAutocomplete(user, command, interaction.options, interaction.member);
+	await globalClient.respondToAutocompleteInteraction(interaction, choices);
 }

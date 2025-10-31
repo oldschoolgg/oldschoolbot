@@ -12,7 +12,6 @@ import { marketPricemap } from '@/lib/marketPrices.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
@@ -231,12 +230,14 @@ class GrandExchangeSingleton {
 			throw new Error(`G.E locked: ${reason}`);
 		}
 		const idsToNotify = globalConfig.adminUserIDs;
-		await sendToChannelID(globalConfig.moderatorLogsChannels, {
-			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
-				.map(i => userMention(i))
-				.join(', ')}`,
-			allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
-		}).catch(noOp);
+		await globalClient
+			.sendMessage(globalConfig.moderatorLogsChannels, {
+				content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
+					.map(i => userMention(i))
+					.join(', ')}`,
+				allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
+			})
+			.catch(noOp);
 		await ClientSettings.update({
 			grand_exchange_is_locked: true
 		});

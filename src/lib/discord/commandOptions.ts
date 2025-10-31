@@ -4,13 +4,10 @@ import {
 	type APIInteractionDataResolvedGuildMember,
 	type APIRole,
 	ApplicationCommandOptionType,
-	type Channel,
 	type ChatInputCommandInteraction,
-	type GuildMember,
-	type PermissionFlagsBits,
-	type Role,
-	type User
+	type PermissionFlagsBits
 } from '@oldschoolgg/discord';
+import type { IChannel, IMember, IRole, IUser } from '@oldschoolgg/schemas';
 import type { SpecialResponse } from '@oldschoolgg/toolkit';
 
 import type { MMember } from '@/lib/structures/MInteraction.js';
@@ -64,7 +61,7 @@ const stringyToApiMap: Record<StringyApplicationCommandOptionType, ApplicationCo
 };
 export function convertAPIOptionsToCommandOptions(
 	options: ChatInputCommandInteraction['options']['data'],
-	resolvedObjects: ChatInputCommandInteraction['options']['resolved'] | null
+	resolvedObjects: any | null
 ): CommandOptions {
 	if (!options) return {};
 
@@ -108,17 +105,17 @@ export function convertAPIOptionsToCommandOptions(
 }
 
 export interface MahojiUserOption {
-	user: User;
-	member?: GuildMember | APIInteractionDataResolvedGuildMember;
+	user: IUser;
+	member?: IMember | APIInteractionDataResolvedGuildMember;
 }
 
 export type MahojiCommandOption =
 	| number
 	| string
 	| MahojiUserOption
-	| Channel
+	| IChannel
 	| APIInteractionDataResolvedChannel
-	| Role
+	| IRole
 	| APIRole
 	| boolean;
 
@@ -164,7 +161,7 @@ type NumberOption<C extends AnyArr<{ name: string; value: number }> = AnyArr<{ n
 	autocomplete?: (
 		value: number,
 		user: MUser,
-		member?: GuildMember
+		member?: IMember
 	) => Promise<APIApplicationCommandOptionChoice<number>[]>;
 	min_value?: number;
 	max_value?: number;
@@ -175,7 +172,7 @@ type StringOption<C extends AnyArr<{ name: string; value: string }> = AnyArr<{ n
 	autocomplete?: (
 		value: string,
 		user: MUser,
-		member?: GuildMember
+		member?: IMember
 	) => Promise<APIApplicationCommandOptionChoice<string>[]>;
 };
 

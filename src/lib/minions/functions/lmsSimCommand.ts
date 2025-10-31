@@ -1,4 +1,4 @@
-import { type Channel, channelIsSendable, type Message, TextChannel } from '@oldschoolgg/discord';
+import type { IChannel, IMessage } from '@oldschoolgg/schemas';
 import { chunk, sleep } from '@oldschoolgg/toolkit';
 
 import type LastManStandingUsage from '@/lib/structures/LastManStandingUsage.js';
@@ -102,43 +102,49 @@ function pickcontestants(contestant: string, round: Set<string>, amount: number)
 	return array.slice(0, amount);
 }
 
-export async function lmsSimCommand(channel: Channel | undefined, names?: string) {
+export async function lmsSimCommand(channel: IChannel | undefined, names?: string) {
 	if (!channel) return;
-	if (!(channel instanceof TextChannel)) return;
 	let filtered = new Set<string>();
 	const splitContestants = names ? names.split(',') : [];
 	// Autofill using authors from the last 100 messages, if none are given to the command
 	if (names === 'auto' || !names || splitContestants.length === 0) {
-		const messages = await channel.messages.fetch({ limit: 100 });
+		const messages = await globalClient.fetchChannelMessages(channel.id, { limit: 100 });
 
-		for (const { author } of messages.values()) {
+		for (const { author } of messages) {
 			const name = author.username;
 			if (!filtered.has(name)) filtered.add(name);
 		}
 	} else {
 		filtered = new Set(splitContestants);
 		if (filtered.size !== splitContestants.length) {
-			return channel.send('I am sorry, but a user cannot play twice.');
+			return globalClient.sendMessage(channel.id, 'I am sorry, but a user cannot play twice.');
 		}
 
 		if (filtered.size < 4) {
-			return channel.send(
+			return globalClient.sendMessage(
+				channel.id,
 				'Please specify at least 4 players for Last Man Standing, like so: `+lms Alex, Kyra, Magna, Rick`, or type `+lms auto` to automatically pick people from the chat.'
 			);
 		}
 
 		if (filtered.size > 48) {
-			return channel.send('I am sorry but the amount of players can be no greater than 48.');
+			return globalClient.sendMessage(
+				channel.id,
+				'I am sorry but the amount of players can be no greater than 48.'
+			);
 		}
 	}
 
-	if (playing.has(channel.guildId)) {
-		return channel.send('There is a game in progress in this server already, try again when it finishes.');
+	if (playing.has(channel.guild_id)) {
+		return globalClient.sendMessage(
+			channel.id,
+			'There is a game in progress in this server already, try again when it finishes.'
+		);
 	}
 
-	playing.add(channel.guildId);
+	playing.add(channel.guild_id);
 
-	let gameMessage: Message | null = null;
+	let gameMessage: IMessage | null = null;
 	const game: LastManStandingGame = Object.seal({
 		prep: true,
 		final: false,
@@ -157,14 +163,11 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 
 		// Ask for the user to proceed:
 		for (const text of texts) {
-			// If the channel is not postable, break:
-			if (!channelIsSendable(channel)) return;
-
-			gameMessage = await channel.send({ content: text });
+			gameMessage = await globalClient.sendMessage(channel.id, { content: text });
 			await sleep(Math.max(gameMessage?.content.length / 20, 7) * 700);
 
 			// Delete the previous message, and if stopped, send stop.
-			gameMessage?.delete();
+			await globalClient.deleteMessage(channel.id, gameMessage.id);
 		}
 
 		if (game.prep) game.prep = false;
@@ -173,8 +176,8 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 
 	// The match finished with one remaining player
 	const winner = game.contestants.values().next().value;
-	playing.delete(channel.guildId);
-	return channel.send({
+	playing.delete(channel.guild_id);
+	return globalClient.sendMessage(channel.id, {
 		content: `And the Last Man Standing is... **${winner}**!`,
 		allowedMentions: { parse: [], users: [] }
 	});

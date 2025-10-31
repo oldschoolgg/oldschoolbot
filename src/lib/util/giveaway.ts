@@ -1,9 +1,8 @@
-import { channelIsSendable, type MessageEditOptions, time, userMention } from '@oldschoolgg/discord';
+import { type MessageEditOptions, time, userMention } from '@oldschoolgg/discord';
 import { debounce, Events, noOp, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
 	await creator.transactItems({
@@ -12,15 +11,6 @@ async function refundGiveaway(creator: MUser, loot: Bank) {
 	const user = await globalClient.users.fetch(creator.id);
 	Logging.logDebug('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
 	await user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
-}
-
-async function getGiveawayMessage(giveaway: Giveaway) {
-	const channel = globalClient.channels.cache.get(giveaway.channel_id);
-	if (channelIsSendable(channel)) {
-		const message = await channel.messages.fetch(giveaway.message_id).catch(noOp);
-		if (message) return message;
-	}
-	return null;
 }
 
 export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[]) {
@@ -56,7 +46,7 @@ LIMIT 1;
 export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
 	const giveaway = await prisma.giveaway.findFirst({ where: { id: _giveaway.id } });
 	if (!giveaway) return;
-	const message = await getGiveawayMessage(giveaway);
+	const message = await globalClient.fetchMessage(giveaway.channel_id, giveaway.message_id);
 	if (!message) return;
 	const newContent = generateGiveawayContent(giveaway.user_id, giveaway.finish_date, giveaway.users_entered);
 	const edits: MessageEditOptions = {};
@@ -65,7 +55,7 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
 		edits.content = newContent;
 	}
 	if (Object.keys(edits).length > 0) {
-		await message.edit(edits);
+		await globalClient.editMessage(giveaway.channel_id, giveaway.message_id, edits);
 	}
 }, Time.Second);
 
@@ -119,9 +109,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 
 They received these items: ${loot}`;
 
-		await sendToChannelID(giveaway.channel_id, {
-			content: str
-		});
+		await globalClient.sendMessage(giveaway.channel_id, str);
 	} catch (err) {
 		Logging.logError(err as Error);
 	}

@@ -1,4 +1,4 @@
-import { bold } from '@discordjs/formatters';
+import { bold } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 

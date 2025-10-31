@@ -1,4 +1,4 @@
-import { bold } from '@discordjs/formatters';
+import { bold } from '@oldschoolgg/discord';
 import { notEmpty, ProductID, products } from '@oldschoolgg/toolkit';
 
 import { BOT_TYPE } from '@/lib/constants.js';

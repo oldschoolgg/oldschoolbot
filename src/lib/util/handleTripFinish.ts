@@ -1,7 +1,6 @@
 import {
 	type AttachmentBuilder,
 	type ButtonBuilder,
-	channelIsSendable,
 	type MessageCollector,
 	type MessageCreateOptions,
 	makeComponents
@@ -33,7 +32,6 @@ import {
 	makeTearsOfGuthixButton
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import {
@@ -150,7 +148,7 @@ export async function handleTripFinish(
 	const itemsToRemove = new Bank();
 	for (const effect of tripFinishEffects) {
 		const start = performance.now();
-		const res = await effect.fn({ data, user, loot, messages });
+		const res = await effect.fn({ data, user, loot: loot ?? null, messages });
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
 		const end = performance.now();
@@ -177,9 +175,6 @@ export async function handleTripFinish(
 		existingCollector.stop();
 		collectors.delete(user.id);
 	}
-
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return;
 
 	const components: ButtonBuilder[] = [];
 	components.push(makeRepeatTripButton());
@@ -244,5 +239,5 @@ export async function handleTripFinish(
 		message.components = makeComponents(components);
 	}
 
-	await sendToChannelID(channelID, message);
+	await globalClient.sendMessage(channelID, message);
 }

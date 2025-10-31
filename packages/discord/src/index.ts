@@ -1,37 +1,26 @@
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, userMention } from '@discordjs/builders';
-import { DiscordAPIError } from '@discordjs/rest';
 import {
 	AttachmentBuilder,
 	AutocompleteInteraction,
 	type BaseMessageOptions,
 	ButtonInteraction,
 	type CacheType,
-	type Channel,
 	ChatInputCommandInteraction,
 	Client,
 	Collection,
 	type CollectorFilter,
 	CommandInteraction,
 	type CommandInteractionOption,
-	DMChannel,
 	Events,
-	Guild,
-	type GuildMember,
 	type Interaction,
 	type InteractionReplyOptions,
-	Message,
 	MessageCollector,
 	type MessageComponentType,
 	type MessageCreateOptions,
 	type MessageEditOptions,
-	PartialGroupDMChannel,
 	Partials,
 	PermissionsBitField,
-	type Role,
 	type SelectMenuInteraction,
-	type TextBasedChannel,
-	TextChannel,
-	type User,
 	WebhookClient
 } from '@oldschoolgg/discord.js';
 import {
@@ -55,8 +44,6 @@ export enum ButtonStyle {
 }
 
 export {
-	DiscordAPIError,
-	Message,
 	InteractionResponseType,
 	MessageFlags,
 	ButtonInteraction,
@@ -78,7 +65,7 @@ export {
 	Partials
 };
 
-export { WebhookClient, Client, Guild, type GuildMember, type Role, type User };
+export { WebhookClient, Client };
 
 export type {
 	CollectorFilter,
@@ -88,9 +75,6 @@ export type {
 	BaseMessageOptions,
 	MessageComponentType
 };
-
-// Channels
-export { type TextBasedChannel, PartialGroupDMChannel, DMChannel, TextChannel, type Channel };
 
 // Interactions
 export {
@@ -107,3 +91,8 @@ export * from '@discordjs/formatters';
 export * from 'discord-api-types/v10';
 
 export * from './util.js';
+
+export type ApplicationCommandOptionChoiceData<Value extends number | string = number | string> = {
+	name: string;
+	value: Value;
+};

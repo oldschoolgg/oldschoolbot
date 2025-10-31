@@ -15,7 +15,6 @@
 			"@discordjs/rest",
 			"discord-api-types/v10",
 			"node",
-			"undici",
 			"@sapphire/snowflake"
 		]
 	}

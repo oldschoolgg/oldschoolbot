@@ -1,4 +1,4 @@
-import { bold } from '@discordjs/formatters';
+import { bold } from '@oldschoolgg/discord';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 

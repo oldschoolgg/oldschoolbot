@@ -1,5 +1,5 @@
-import type { GuildMember } from '@oldschoolgg/discord.js';
 import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
+import type { IMember } from '@oldschoolgg/schemas';
 import { sleep, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
@@ -46,7 +46,7 @@ export function mockDjsMember({ userId }: { userId: string }) {
 		permissionsIn: () => ({
 			has: () => true
 		})
-	} as any as GuildMember;
+	} as any as IMember;
 }
 
 export function mockUserOption(userId?: string): MahojiUserOption {

@@ -1,5 +1,5 @@
 import { userMention } from '@oldschoolgg/discord';
-import { cleanUsername, noOp } from '@oldschoolgg/toolkit';
+import { cleanUsername } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import type { Prisma, User } from '@/prisma/main.js';
@@ -8,7 +8,6 @@ import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 // @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
@@ -127,8 +126,8 @@ export async function adminPingLog(message: string) {
 		return;
 	}
 
-	await sendToChannelID(globalConfig.moderatorLogsChannels, {
+	await globalClient.sendMessage(globalConfig.moderatorLogsChannels, {
 		content: `${message} ${globalConfig.adminUserIDs.map(i => userMention(i)).join(', ')}`,
 		allowedMentions: { users: globalConfig.adminUserIDs }
-	}).catch(noOp);
+	});
 }

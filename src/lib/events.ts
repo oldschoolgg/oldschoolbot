@@ -1,14 +1,8 @@
-import {
-	type BaseMessageOptions,
-	bold,
-	channelIsSendable,
-	dateFm,
-	EmbedBuilder,
-	type Message,
-	type TextChannel
-} from '@oldschoolgg/discord';
+import { type BaseMessageOptions, bold, channelIsSendable, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
+import type { Message } from '@oldschoolgg/discord.js';
 import { roll } from '@oldschoolgg/rng';
-import { Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
+import type { IMessage } from '@oldschoolgg/schemas';
+import { Emoji, Events, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
@@ -18,7 +12,7 @@ import {
 	RARE_ROLES_CACHE,
 	untrustedGuildSettingsCache
 } from '@/lib/cache.js';
-import { Channel, globalConfig } from '@/lib/constants.js';
+import { globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
@@ -50,34 +44,29 @@ const rareRolesSrc: [string, number, string][] = [
 	['670212876832735244', 1_000_000, 'Third Age']
 ];
 
-async function rareRoles(msg: Message) {
+async function rareRoles(msg: IMessage) {
 	if (!globalConfig.isProduction) return;
 
-	if (!msg.guild || msg.guild.id !== globalConfig.supportServerID) {
+	if (msg.guild_id !== globalConfig.supportServerID) {
 		return;
 	}
 
-	const lastMessage = RARE_ROLES_CACHE.get(msg.author.id) ?? 1;
+	const lastMessage = RARE_ROLES_CACHE.get(msg.author_id) ?? 1;
 	if (Date.now() - lastMessage < Time.Second * 13) return;
-	RARE_ROLES_CACHE.set(msg.author.id, Date.now());
+	RARE_ROLES_CACHE.set(msg.author_id, Date.now());
 
-	if (!roll(10) || !msg.guildId) return;
+	if (!roll(10) || !msg.guild_id) return;
 
 	for (const [roleID, chance, name] of rareRolesSrc) {
 		if (roll(chance / 10)) {
-			const member = await Cache.getMainServerMember(msg.author.id);
-			if (member?.roles.includes(roleID)) continue;
-			if (!globalConfig.isProduction && msg.channel.isSendable()) {
-				return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
-			}
-			await globalClient.giveRole(msg.guildId, msg.author.id, roleID);
+			const member = await Cache.getMainServerMember(msg.author_id);
+			if (!member || member.roles.includes(roleID)) continue;
+			await globalClient.giveRole(msg.guild_id, msg.author_id, roleID);
 			await globalClient.reactToMsg({
-				channelId: msg.channelId,
+				channelId: msg.channel_id,
 				messageId: msg.id,
 				emojiId: 'Gift'
 			});
-
-			const channel = globalClient.channels.cache.get(Channel.Notifications);
 
 			if (
 				!rareRolesSrc
@@ -85,8 +74,10 @@ async function rareRoles(msg: Message) {
 					.map(i => i[2])
 					.includes(name)
 			) {
-				(channel as TextChannel).send(
-					`${Emoji.Fireworks} **${msg.author.username}** just received the **${name}** role. `
+				const username = await Cache.getBadgedUsername(msg.author_id);
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Fireworks} **${username}** just received the **${name}** role. `
 				);
 			}
 			break;

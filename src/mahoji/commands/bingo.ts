@@ -1,4 +1,5 @@
-import { bold, channelIsSendable, dateFm, type GuildMember, userMention } from '@oldschoolgg/discord';
+import { bold, channelIsSendable, dateFm, userMention } from '@oldschoolgg/discord';
+import type { IMember } from '@oldschoolgg/schemas';
 import {
 	Emoji,
 	formatOrdinal,
@@ -266,13 +267,13 @@ export const bingoCommand = defineCommand({
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, _: MUser, member?: GuildMember) => {
-						if (!member || !member.guild) return [];
+					autocomplete: async (value: string, _: MUser, member?: IMember) => {
+						if (!member || !member.guild_id) return [];
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
 									{
-										guild_id: member.guild.id,
+										guild_id: member.guild_id,
 										was_finalized: false
 									},
 									{

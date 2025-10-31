@@ -1,10 +1,4 @@
-import {
-	ActionRowBuilder,
-	type BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	channelIsSendable
-} from '@oldschoolgg/discord';
+import { ActionRowBuilder, type BaseMessageOptions, ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { randInt, shuffleArr } from '@oldschoolgg/rng';
 import { chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
@@ -105,8 +99,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		return 'You can only gamble between 20m and 1b.';
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel)) return 'Invalid channel.';
+	const channel = await globalClient.fetchChannel(interaction.channelId);
 
 	await interaction.confirmation(
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`

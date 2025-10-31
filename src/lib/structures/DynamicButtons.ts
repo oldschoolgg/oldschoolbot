@@ -1,12 +1,14 @@
-import type { BaseMessageOptions, ButtonInteraction, Message } from '@oldschoolgg/discord';
+import type { BaseMessageOptions, ButtonInteraction } from '@oldschoolgg/discord';
 import { ButtonBuilder, makeComponents } from '@oldschoolgg/discord';
+import type { Message } from '@oldschoolgg/discord.js';
+import type { IMessage } from '@oldschoolgg/schemas';
 import { isFunction, noOp, Time } from '@oldschoolgg/toolkit';
 import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import type { MInteraction } from '@/lib/structures/MInteraction.js';
 
-type DynamicButtonFn = (opts: { message: Message | null; interaction: ButtonInteraction }) => unknown;
+type DynamicButtonFn = (opts: { message: IMessage | null; interaction: ButtonInteraction }) => unknown;
 
 function simpleHash(str: string): number {
 	let h = 0;

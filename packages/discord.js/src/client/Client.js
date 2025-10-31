@@ -15,7 +15,6 @@ const { Events } = require('../util/Events.js');
 const { IntentsBitField } = require('../util/IntentsBitField.js');
 const { Options } = require('../util/Options.js');
 const { Status } = require('../util/Status.js');
-const { Sweepers } = require('../util/Sweepers.js');
 const { BaseClient } = require('./BaseClient.js');
 const { ActionsManager } = require('./actions/ActionsManager.js');
 const { PacketHandlers } = require('./websocket/handlers/index.js');
@@ -115,13 +114,6 @@ class Client extends BaseClient {
 		 * @type {ChannelManager}
 		 */
 		this.channels = new ChannelManager(this);
-
-		/**
-		 * The sweeping functions and their intervals used to periodically sweep caches
-		 *
-		 * @type {Sweepers}
-		 */
-		this.sweepers = new Sweepers(this, this.options.sweepers);
 
 		Object.defineProperty(this, 'token', { writable: true });
 		if (!this.token && 'DISCORD_TOKEN' in process.env) {
@@ -416,7 +408,6 @@ class Client extends BaseClient {
 	async destroy() {
 		super.destroy();
 
-		this.sweepers.destroy();
 		await this.ws.destroy();
 		this.token = null;
 		this.rest.setToken(null);
@@ -484,10 +475,6 @@ class Client extends BaseClient {
 			throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
 		} else {
 			options.intents = new IntentsBitField(options.intents ?? options.ws.intents).freeze();
-		}
-
-		if (typeof options.sweepers !== 'object' || options.sweepers === null) {
-			throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'sweepers', 'an object');
 		}
 
 		if (!Array.isArray(options.partials)) {

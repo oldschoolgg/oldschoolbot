@@ -1,4 +1,5 @@
-import { type ButtonInteraction, MessageFlags } from '@oldschoolgg/discord';
+import { MessageFlags } from '@oldschoolgg/discord';
+import type { IButtonInteraction } from '@oldschoolgg/schemas';
 import { formatDuration, removeFromArr, SpecialResponse, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import { Bank, type ItemBank } from 'oldschooljs';
@@ -470,7 +471,7 @@ const ignoredInteractionIDs = [
 	...Object.values(InteractionID.Party)
 ];
 
-export async function globalButtonInteractionHandlerWrapper(_interaction: ButtonInteraction) {
+export async function globalButtonInteractionHandlerWrapper(_interaction: IButtonInteraction) {
 	const interaction = new MInteraction({ interaction: _interaction });
 	const id = interaction.customId;
 	if (!id) return;

@@ -36,8 +36,9 @@ export async function duelCommand(
 	}
 
 	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel))
+	if (!channelIsSendable(channel)) {
 		return 'Please give the bot permission to send messages in this channel before running this command.';
+	}
 
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";

@@ -1,4 +1,4 @@
-import { bold } from '@discordjs/formatters';
+import { bold } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 

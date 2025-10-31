@@ -1,4 +1,4 @@
-import { userMention } from '@discordjs/formatters';
+import { userMention } from '@oldschoolgg/discord';
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 
