@@ -67,8 +67,9 @@ export const collectingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		let str = `${user}, ${user.minionName} finished collecting ${totalQuantity}x ${collectable.item.name
-			}. (${Math.round((totalQuantity / (duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
+		let str = `${user}, ${user.minionName} finished collecting ${totalQuantity}x ${
+			collectable.item.name
+		}. (${Math.round((totalQuantity / (duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 		if (moryHardBoost) {
 			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}

@@ -31,6 +31,7 @@ let lastMessageGEID: string | null = null;
 
 // Bert's Sand Delivery Ticker Globals
 const BERT_SAND_BATCH_SIZE = 100;
+const BERT_SAND_MIDNIGHT_GRACE = Time.Minute * 10;
 let bertSandQueue: string[] = [];
 let bertSandLastReset = 0;
 let bertSandQueuedSet = new Set<string>();
@@ -351,21 +352,23 @@ VALUES (get_economy_bank());`;
 			const now = Date.now();
 			const currentResetStart = bertResetStart(now);
 
-			// 1) new day → wipe everything for this feature
+			// new day → wipe
 			if (bertSandLastReset < currentResetStart) {
 				bertSandQueue = [];
 				bertSandQueuedSet = new Set();
 				bertSandLastReset = currentResetStart;
-				// from now on, only look at commands from today's reset onwards
+				// from now on, only look at commands from (roughly) this reset
 				bertSandLastSeenCommandAt = currentResetStart;
 			}
 
-			// 2) fetch ONLY users whose last_command_date is AFTER the last time we looked
-			// this makes it incremental, not "scan everyone active today" every 5 minutes
+			// look for users who have used the bot since we last checked
+			// but don't miss commands sent a few minutes before midnight
+			const lowerBound = Math.max(bertSandLastSeenCommandAt, currentResetStart - BERT_SAND_MIDNIGHT_GRACE);
+
 			const users = await prisma.user.findMany({
 				where: {
 					last_command_date: {
-						gte: new Date(bertSandLastSeenCommandAt)
+						gte: new Date(lowerBound)
 					}
 				},
 				select: {
@@ -374,35 +377,33 @@ VALUES (get_economy_bank());`;
 				}
 			});
 
-			// 3) update our "high water mark" so next run only looks after this point
 			for (const u of users) {
 				const lastCmd = u.last_command_date ? u.last_command_date.getTime() : 0;
 
-				// move the pointer forward
+				// advance the high-water mark
 				if (lastCmd > bertSandLastSeenCommandAt) {
 					bertSandLastSeenCommandAt = lastCmd;
 				}
 
-				// also enforce: must be active AFTER today's reset
+				// must be active *today* (after reset)
 				if (lastCmd < currentResetStart) {
 					continue;
 				}
 
-				// if we already queued them this reset, skip
+				// already queued today?
 				if (bertSandQueuedSet.has(u.id)) continue;
 
 				bertSandQueuedSet.add(u.id);
 				bertSandQueue.push(u.id);
 			}
 
-			// 4) nothing to process
+			// nothing to process
 			if (bertSandQueue.length === 0) {
 				return;
 			}
 
 			const loot = new Bank({ 'Bucket of sand': BERT_SAND_BUCKETS });
 			const batch = bertSandQueue.splice(0, BERT_SAND_BATCH_SIZE);
-			const resetStart = bertResetStart(now);
 
 			for (const id of batch) {
 				const user = await mUserFetch(id);
@@ -420,7 +421,7 @@ VALUES (get_economy_bank());`;
 					continue;
 				}
 
-				// still enforce the manual eligibility (your existing check)
+				// enforce manual requirements too
 				const requirementError = isManualEligible(user);
 				if (requirementError) {
 					continue;
@@ -429,7 +430,7 @@ VALUES (get_economy_bank());`;
 				const updated = await prisma.userStats.updateMany({
 					where: {
 						user_id: BigInt(user.id),
-						last_bert_sand_timestamp: { lt: BigInt(resetStart) }
+						last_bert_sand_timestamp: { lt: BigInt(currentResetStart) }
 					},
 					data: { last_bert_sand_timestamp: BigInt(now) }
 				});
@@ -438,7 +439,7 @@ VALUES (get_economy_bank());`;
 					continue;
 				}
 
-				// Ardougne elite auto-collection: mirror manual reward but no CL
+				// auto-collection: mirror manual reward, incl. CL
 				await user.addItemsToBank({ items: loot, collectionLog: true });
 			}
 		}
