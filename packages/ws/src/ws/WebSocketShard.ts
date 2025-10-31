@@ -157,7 +157,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	public async connect() {
 		const controller = new AbortController();
-		let promise;
+		let promise: Promise<unknown> | null = null;
 
 		if (!this.initialConnectResolved) {
 			// Sleep for the remaining time, but if the connection closes in the meantime, we shouldn't wait the remainder to avoid blocking the new conn

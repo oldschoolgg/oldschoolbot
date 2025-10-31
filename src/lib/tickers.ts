@@ -248,6 +248,11 @@ export const tickers: {
 				if (message) {
 					await message.delete();
 				}
+				const res = await channel.send({
+					embeds: [supportEmbed],
+					components: [new ActionRowBuilder<ButtonBuilder>().addComponents(informationalButtons)]
+				});
+				lastMessageID = res.id;
 			}
 			const res = await channel.send({
 				embeds: [supportEmbed],
@@ -273,6 +278,8 @@ export const tickers: {
 				if (message) {
 					await message.delete();
 				}
+				const res = await channel.send({ embeds: [geEmbed] });
+				lastMessageGEID = res.id;
 			}
 			const res = await channel.send({ embeds: [geEmbed] });
 			lastMessageGEID = res.id;

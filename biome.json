@@ -64,7 +64,8 @@
 				"noAsyncPromiseExecutor": "off",
 				"noConfusingVoidType": "off",
 				"noFocusedTests": "off",
-				"noArrayIndexKey": "warn"
+				"noArrayIndexKey": "warn",
+				"noUnsafeDeclarationMerging": "warn"
 			},
 			"style": {
 				"noNonNullAssertion": "off",
