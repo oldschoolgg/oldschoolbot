@@ -174,7 +174,8 @@ export const slayerCommand = defineCommand({
 							type: 'Integer',
 							name: 'quantity',
 							description: 'The quantity to purchase, if applicable.',
-							required: false
+							required: false,
+							min_value: 1
 						}
 					]
 				},

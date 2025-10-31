@@ -19,6 +19,7 @@ describe('Sanity', () => {
 		expect(itemID('Broad arrows')).toEqual(4160);
 		expect(itemID('Frozen key')).toEqual(26_356);
 		expect(itemID('Clue box')).toEqual(12_789);
+		expect(itemID('Beige pumpkin (happy)')).toEqual(30246);
 		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);

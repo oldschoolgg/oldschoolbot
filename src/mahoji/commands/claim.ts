@@ -2,10 +2,12 @@ import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { dateFm, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { BitField, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
+import { BitField, BOT_TYPE, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
 import { calcCLDetails } from '@/lib/data/Collections.js';
+import { HolidayItems } from '@/lib/data/holidayItems.js';
 import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const claimables = [
@@ -31,6 +33,52 @@ const claimables = [
 				}
 			});
 			return 'You claimed free T1 patron perks in OSB for being maxed in both bots. You can claim this on BSO too for free patron perks on BSO.';
+		}
+	},
+	{
+		name: `Halloween Items`,
+		action: async (user: MUser) => {
+			if (BOT_TYPE === 'BSO') {
+				return 'This command is only for OSB.';
+			}
+			const messages: string[] = [];
+			const allItemsCanGet = [...HolidayItems.Halloween.halloweenItems];
+			const isPermIron = user.isIronman && user.bitfield.includes(BitField.PermanentIronman);
+			if (isPermIron) {
+				allItemsCanGet.push(...HolidayItems.Halloween.halloweenOnlyForPermIrons);
+				messages.push('As a permanent ironman, you are eligible for extra Halloween items!');
+			}
+			const ownedItems = user.allItemsOwned;
+			const itemsToAdd = new Bank();
+			for (const item of allItemsCanGet) {
+				if (!ownedItems.has(item)) {
+					itemsToAdd.add(item);
+				}
+			}
+
+			if (itemsToAdd.length === 0) {
+				return `You already have all Halloween items.`;
+			}
+			await user.transactItems({ itemsToAdd, collectionLog: true });
+			messages.push(
+				`You have claimed the following Halloween items: ${itemsToAdd.itemIDs
+					.sort((a, b) => b - a)
+					.map(id => Items.itemNameFromId(id))
+					.join(', ')}.`
+			);
+			return {
+				content: messages.join(' '),
+				files: [
+					(
+						await makeBankImage({
+							bank: itemsToAdd,
+							title: `Halloween Items Claimed`,
+							user,
+							flags: { forceAllPurple: 1 }
+						})
+					).file
+				]
+			};
 		}
 	},
 	...CollectionLog.ranks.map(rank => ({
@@ -105,9 +153,11 @@ ${rawData.name}: ${rawData.description}.
 ${dateFm(new Date(rawData.date))}`;
 		}
 
-		const requirementCheck = await claimable.hasRequirement(user);
-		if (typeof requirementCheck === 'string') {
-			return `You are not eligible to claim this: ${requirementCheck}`;
+		if ('hasRequirement' in claimable && claimable.hasRequirement) {
+			const requirementCheck = await claimable.hasRequirement(user);
+			if (typeof requirementCheck === 'string') {
+				return `You are not eligible to claim this: ${requirementCheck}`;
+			}
 		}
 
 		const result = await claimable.action(user);

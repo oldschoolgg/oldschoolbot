@@ -1,14 +1,13 @@
 import { EItem, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { gearPresetsCommand } from '../../../src/mahoji/commands/gearpresets.js';
 import { createTestUser } from '../util.js';
 
 describe('Gear Presets Command', async () => {
 	const user = await createTestUser();
 
 	test('Create preset with 2h', async () => {
-		await user.runCommand(gearPresetsCommand, {
+		await user.runCommand('gearpresets', {
 			create: {
 				name: 'Test2h',
 				'2h': 'Bronze 2h sword',
@@ -34,7 +33,7 @@ describe('Gear Presets Command', async () => {
 
 	test('Test edit gearpreset', async () => {
 		// Generate gearPreset to edit:
-		await user.runCommand(gearPresetsCommand, {
+		await user.runCommand('gearpresets', {
 			create: {
 				name: 'TestEdit',
 				weapon: 'Bronze dagger',
@@ -49,11 +48,11 @@ describe('Gear Presets Command', async () => {
 		expect(gpResult).toBeTruthy();
 		if (!gpResult) return false;
 
-		await user.runCommand(gearPresetsCommand, {
+		await user.runCommand('gearpresets', {
 			edit: { gear_preset: 'TestEdit', weapon: 'Ghrazi rapier', feet: 'None' }
 		});
 
-		await user.runCommand(gearPresetsCommand, {
+		await user.runCommand('gearpresets', {
 			edit: { gear_preset: 'TestEdit', ammo: "Rada's blessing 4" }
 		});
 
@@ -72,7 +71,7 @@ describe('Gear Presets Command', async () => {
 		expect(gpEditResult.hands).toBeNull();
 		expect(gpEditResult.ammo).toEqual(EItem.RADAS_BLESSING_4);
 
-		await user.runCommand(gearPresetsCommand, {
+		await user.runCommand('gearpresets', {
 			edit: { gear_preset: 'TestEdit', head: 'Bronze med helm' }
 		});
 
@@ -82,7 +81,7 @@ describe('Gear Presets Command', async () => {
 		expect(gpEditResult2.ammo).toEqual(EItem.RADAS_BLESSING_4);
 		expect(gpEditResult2.head).toEqual(EItem.BRONZE_MED_HELM);
 
-		await user.runCommand(gearPresetsCommand, {
+		await user.runCommand('gearpresets', {
 			edit: { gear_preset: 'TestEdit', ammo: 'None' }
 		});
 		const gpEditResult3 = await global.prisma!.gearPreset.findFirstOrThrow({

@@ -1,6 +1,6 @@
 import { createTsdownConfig } from '../../scripts/createTsdownConfig.ts';
 
-const entry = ['src/index.ts', 'src/testBotWebsocket.ts'];
+const entry = ['src/index.ts'];
 export default createTsdownConfig({
 	entry,
 	unbundle: false

@@ -9,6 +9,7 @@ describe('specialRemoveItems', () => {
 		const user = await createTestUser();
 		const gear = new Gear();
 		gear.equip('Rune arrow', 1000);
+		// @ts-expect-error
 		await user.update({
 			gear_range: gear.raw() as any,
 			bank: new Bank().add('Egg', 1000).toJSON()
@@ -23,6 +24,7 @@ describe('specialRemoveItems', () => {
 		const gear = new Gear();
 		gear.equip('Rune arrow', 1000);
 		gear.equip("Ava's assembler");
+		// @ts-expect-error
 		await user.update({
 			gear_range: gear.raw() as any,
 			bank: new Bank().add('Egg', 1000).toJSON()
@@ -38,6 +40,7 @@ describe('specialRemoveItems', () => {
 		const gear = new Gear();
 		gear.equip('Rune javelin', 1000);
 		gear.equip("Ava's assembler");
+		// @ts-expect-error
 		await user.update({
 			gear_range: gear.raw() as any,
 			bank: new Bank().add('Egg', 1000).toJSON()

@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
@@ -34,7 +33,7 @@ function generateFishTable(currentFishLevel: number): LootTable {
 
 export const camdozaalFishingTask: MinionTask = {
 	type: 'CamdozaalFishing',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { channelID, quantity, duration } = data;
 
 		const currentFishLevel = user.skillsAsLevels.fishing;
@@ -77,7 +76,7 @@ export const camdozaalFishingTask: MinionTask = {
 
 		// Heron Pet roll
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', guppy.petChance!);
-		if (roll(petDropRate / quantity)) {
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Heron');
 			globalClient.emit(
 				Events.ServerNotification,

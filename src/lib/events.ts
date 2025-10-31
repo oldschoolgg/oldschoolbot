@@ -5,7 +5,7 @@ import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
-import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
+import { CHAT_PET_COOLDOWN_CACHE, lastRoboChimpSyncCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
@@ -78,7 +78,6 @@ function rareRoles(msg: Message) {
 	}
 }
 
-const petCache = new LRUCache<string, number>({ max: 2000 });
 async function petMessages(msg: Message) {
 	if (!msg.guild) return;
 	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild.id);
@@ -86,22 +85,17 @@ async function petMessages(msg: Message) {
 
 	const key = `${msg.author.id}.${msg.guild.id}`;
 	// If they sent a message in this server in the past 1.5 mins, return.
-	const lastMessage = petCache.get(key) ?? 1;
+	const lastMessage = CHAT_PET_COOLDOWN_CACHE.get(key) ?? 1;
 	if (Date.now() - lastMessage < 80_000) return;
-	petCache.set(key, Date.now());
+	CHAT_PET_COOLDOWN_CACHE.set(key, Date.now());
 
 	const pet = pets[Math.floor(Math.random() * pets.length)];
 	if (roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
+		Logging.logDebug(`${msg.author.id} triggered a pet message in guild ${msg.guild.id}`);
 		const user = await mUserFetch(msg.author.id);
-		const userPets = user.user.pets as ItemBank;
-		const newUserPets = { ...userPets };
-		if (!newUserPets[pet.id]) newUserPets[pet.id] = 1;
-		else newUserPets[pet.id]++;
-		await user.update({
-			pets: { ...newUserPets }
-		});
+		const { isNewPet } = await user.giveRandomBotMessagesPet();
 		if (!channelIsSendable(msg.channel)) return;
-		if (userPets[pet.id] > 1) {
+		if (!isNewPet) {
 			await msg.channel.send(
 				`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`
 			);
@@ -334,8 +328,10 @@ export async function onMessage(msg: Message) {
 export async function onMinionActivityFinish(activity: ActivityTaskData) {
 	try {
 		const lastSyncTime = lastRoboChimpSyncCache.get(activity.userID) ?? 0;
+		const hasBeen30MinsSinceLast = Date.now() - lastSyncTime > Time.Minute * 30;
+		const botJustStarted = process.uptime() < 60 * 10;
 		// Max once per 30 minutes
-		if (Date.now() - lastSyncTime > Time.Minute * 30) {
+		if (!botJustStarted && hasBeen30MinsSinceLast) {
 			lastRoboChimpSyncCache.set(activity.userID, Date.now());
 			Logging.logDebug(`Syncing RoboChimp for user ${activity.userID}`);
 			await roboChimpSyncData(await mUserFetch(activity.userID));

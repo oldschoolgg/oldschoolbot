@@ -128,7 +128,14 @@ const thingsToReset = [
 	{
 		name: 'Bank',
 		run: async (user: MUser) => {
-			await user.update({ bank: {} });
+			await prisma.user.update({
+				where: {
+					id: user.id
+				},
+				data: {
+					bank: {}
+				}
+			});
 			return 'Reset your bank.';
 		}
 	}
@@ -785,9 +792,14 @@ export const testPotatoCommand = globalConfig.isProduction
 						return 'Reset your combat achievements.';
 					}
 					if (thing === 'quests') {
-						await user.update({
-							finished_quest_ids: [],
-							collectionLogBank: {}
+						await prisma.user.update({
+							where: {
+								id: user.id
+							},
+							data: {
+								finished_quest_ids: [],
+								collectionLogBank: {}
+							}
 						});
 						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${mentionCommand(
 							'testpotato',

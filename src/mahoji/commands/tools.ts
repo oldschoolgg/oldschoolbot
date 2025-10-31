@@ -2,7 +2,7 @@ import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldscho
 import { ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
-import type { Activity, User } from '@/prisma/main.js';
+import type { Activity } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
@@ -48,7 +48,7 @@ function dateDiff(first: number, second: number) {
 const whereInMassClause = (id: string) =>
 	`OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${id}%')`;
 
-async function activityExport(user: User): CommandResponse {
+async function activityExport(user: MUser): CommandResponse {
 	const allActivities = await prisma.$queryRawUnsafe<
 		Activity[]
 	>(`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
@@ -67,7 +67,7 @@ OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIK
 	};
 }
 
-async function minionStats(user: User) {
+async function minionStats(user: MUser) {
 	const { id } = user;
 	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = (await Promise.all([
 		prisma.$queryRawUnsafe(`SELECT count(id)
@@ -1018,11 +1018,11 @@ export const toolsCommand = defineCommand({
 			}
 			if (patron.minion_stats) {
 				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return minionStats(user.user);
+				return minionStats(user);
 			}
 			if (patron.activity_export) {
 				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				const promise = activityExport(user.user);
+				const promise = activityExport(user);
 				await interaction.confirmation(
 					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'
 				);
@@ -1032,8 +1032,12 @@ export const toolsCommand = defineCommand({
 		}
 		if (options.user) {
 			if (options.user.mypets) {
+				const { pets: usersRawPets } = await prisma.user.findFirstOrThrow({
+					where: { id: user.id },
+					select: { pets: true }
+				});
 				const b = new Bank();
-				for (const [pet, qty] of Object.entries(user.user.pets as ItemBank)) {
+				for (const [pet, qty] of Object.entries(usersRawPets as ItemBank)) {
 					const petObj = pets.find(i => i.id === Number(pet));
 					if (!petObj) continue;
 					b.add(petObj.name, qty);

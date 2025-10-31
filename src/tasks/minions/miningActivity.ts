@@ -1,4 +1,3 @@
-import { randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { toKMB } from 'oldschooljs';
 
@@ -36,7 +35,7 @@ export function determineMiningResult({
 	let taintedQty = 0; // 6xp per chunk rolled
 	if (ore.name === 'Tainted essence chunk') {
 		for (let i = 0; i < quantity; i++) {
-			taintedQty += randInt(1, 4);
+			taintedQty += rng.randInt(1, 4);
 		}
 		xpToReceive = taintedQty * ore.xp;
 	}
@@ -65,7 +64,7 @@ export function determineMiningResult({
 	// Roll for pet
 	if (ore.petChance) {
 		const { petDropRate } = skillingPetDropRate(gearBank, 'mining', ore.petChance);
-		if (roll(petDropRate / quantity)) {
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			updateBank.itemLootBank.add('Rock golem');
 		}
 	}
@@ -75,7 +74,7 @@ export function determineMiningResult({
 	if (numberOfMinutes > 10 && ore.minerals && miningLvl >= 60) {
 		let numberOfMinerals = 0;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(ore.minerals)) numberOfMinerals++;
+			if (rng.roll(ore.minerals)) numberOfMinerals++;
 		}
 
 		if (numberOfMinerals > 0) {
@@ -86,7 +85,7 @@ export function determineMiningResult({
 	if (ore.name === 'Daeyalt essence rock') {
 		let daeyaltQty = 0;
 		for (let i = 0; i < quantity; i++) {
-			daeyaltQty += randInt(2, 3);
+			daeyaltQty += rng.randInt(2, 3);
 		}
 		updateBank.itemLootBank.add(ore.id, daeyaltQty);
 	} else if (!isPowermining) {

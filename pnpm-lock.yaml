@@ -28,6 +28,9 @@ importers:
       '@oldschoolgg/rng':
         specifier: workspace:*
         version: link:packages/rng
+      '@oldschoolgg/schemas':
+        specifier: workspace:*
+        version: link:packages/schemas
       '@oldschoolgg/spritesheet':
         specifier: workspace:*
         version: link:packages/spritesheet
@@ -35,11 +38,11 @@ importers:
         specifier: workspace:*
         version: link:packages/toolkit
       '@prisma/adapter-pg':
-        specifier: ^6.16.3
-        version: 6.16.3
+        specifier: ^6.18.0
+        version: 6.18.0
       '@prisma/client':
-        specifier: ^6.16.3
-        version: 6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
+        specifier: ^6.18.0
+        version: 6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@sapphire/ratelimits':
         specifier: ^2.4.9
         version: 2.4.11
@@ -79,9 +82,12 @@ importers:
       p-queue:
         specifier: 8.1.1
         version: 8.1.1
+      pg:
+        specifier: ^8.16.3
+        version: 8.16.3
       pglite-prisma-adapter:
         specifier: ^0.6.1
-        version: 0.6.1(@electric-sql/pglite@0.3.10)(@prisma/client@6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2))
+        version: 0.6.1(@electric-sql/pglite@0.3.10)(@prisma/client@6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2))
       piscina:
         specifier: ^5.1.3
         version: 5.1.3
@@ -116,6 +122,9 @@ importers:
       '@types/node':
         specifier: 24.5.2
         version: 24.5.2
+      '@types/pg':
+        specifier: ^8.15.5
+        version: 8.15.5
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
@@ -132,8 +141,8 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2
       prisma:
-        specifier: ^6.16.3
-        version: 6.16.3(magicast@0.3.5)(typescript@5.9.2)
+        specifier: ^6.18.0
+        version: 6.18.0(magicast@0.3.5)(typescript@5.9.2)
       sharp:
         specifier: 0.34.4
         version: 0.34.4
@@ -241,7 +250,7 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.5
-        version: 1.19.5(hono@4.10.2)
+        version: 1.19.5(hono@4.10.3)
       '@octokit/graphql':
         specifier: ^8.1.1
         version: 8.2.2
@@ -264,8 +273,8 @@ importers:
         specifier: 16.5.0
         version: 16.5.0
       hono:
-        specifier: ^4.10.2
-        version: 4.10.2
+        specifier: ^4.10.3
+        version: 4.10.3
       oldschooljs:
         specifier: workspace:*
         version: link:../oldschooljs
@@ -279,6 +288,12 @@ importers:
       prisma:
         specifier: ^6.16.3
         version: 6.16.3(magicast@0.3.5)(typescript@5.9.2)
+
+  packages/schemas:
+    dependencies:
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
 
   packages/spritesheet:
     dependencies:
@@ -315,9 +330,6 @@ importers:
       math-expression-evaluator:
         specifier: ^1.3.14
         version: 1.4.0
-      zod:
-        specifier: ^4.1.12
-        version: 4.1.12
     devDependencies:
       '@types/math-expression-evaluator':
         specifier: ^1.2.2
@@ -1207,8 +1219,23 @@ packages:
   '@prisma/adapter-pg@6.16.3':
     resolution: {integrity: sha512-7P0+NbVQYrFcwpfmCWiFUUdXTi2GU+CtSnWLrR93oupvFG+GtZXociT9eXbsOUNF9+g74yVe6hsOgsuW/uPHaQ==}
 
+  '@prisma/adapter-pg@6.18.0':
+    resolution: {integrity: sha512-eBtBOL1z2Sh0Rc2hwa4dmwoNeFs5T69tsA62AkhBvnzNfTcr/YfLeJae/wjNmvRttYDPmdiuhqZCRPNY1+8fOA==}
+
   '@prisma/client@6.16.3':
     resolution: {integrity: sha512-JfNfAtXG+/lIopsvoZlZiH2k5yNx87mcTS4t9/S5oufM1nKdXYxOvpDC1XoTCFBa5cQh7uXnbMPsmZrwZY80xw==}
+    engines: {node: '>=18.18'}
+    peerDependencies:
+      prisma: '*'
+      typescript: '>=5.1.0'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+      typescript:
+        optional: true
+
+  '@prisma/client@6.18.0':
+    resolution: {integrity: sha512-jnL2I9gDnPnw4A+4h5SuNn8Gc+1mL1Z79U/3I9eE2gbxJG1oSA+62ByPW4xkeDgwE0fqMzzpAZ7IHxYnLZ4iQA==}
     engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
@@ -1222,11 +1249,17 @@ packages:
   '@prisma/config@6.16.3':
     resolution: {integrity: sha512-VlsLnG4oOuKGGMToEeVaRhoTBZu5H3q51jTQXb/diRags3WV0+BQK5MolJTtP6G7COlzoXmWeS11rNBtvg+qFQ==}
 
+  '@prisma/config@6.18.0':
+    resolution: {integrity: sha512-rgFzspCpwsE+q3OF/xkp0fI2SJ3PfNe9LLMmuSVbAZ4nN66WfBiKqJKo/hLz3ysxiPQZf8h1SMf2ilqPMeWATQ==}
+
   '@prisma/debug@6.15.0':
     resolution: {integrity: sha512-y7cSeLuQmyt+A3hstAs6tsuAiVXSnw9T55ra77z0nbNkA8Lcq9rNcQg6PI00by/+WnE/aMRJ/W7sZWn2cgIy1g==}
 
   '@prisma/debug@6.16.3':
     resolution: {integrity: sha512-89DdqWtdKd7qoc9/qJCKLTazj3W3zPEiz0hc7HfZdpjzm21c7orOUB5oHWJsG+4KbV4cWU5pefq3CuDVYF9vgA==}
+
+  '@prisma/debug@6.18.0':
+    resolution: {integrity: sha512-PMVPMmxPj0ps1VY75DIrT430MoOyQx9hmm174k6cmLZpcI95rAPXOQ+pp8ANQkJtNyLVDxnxVJ0QLbrm/ViBcg==}
 
   '@prisma/driver-adapter-utils@6.15.0':
     resolution: {integrity: sha512-tzcMG1eEBM3IJ8TBHo4jGeoUaalctqGXbrvxIoZb8jSEtgR82IUhdVyHHLVTlT8MdrHovcQJJ3jfcQfJARRnaQ==}
@@ -1234,14 +1267,26 @@ packages:
   '@prisma/engines-version@6.16.1-1.bb420e667c1820a8c05a38023385f6cc7ef8e83a':
     resolution: {integrity: sha512-fftRmosBex48Ph1v2ll1FrPpirwtPZpNkE5CDCY1Lw2SD2ctyrLlVlHiuxDAAlALwWBOkPbAll4+EaqdGuMhJw==}
 
+  '@prisma/engines-version@6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f':
+    resolution: {integrity: sha512-T7Af4QsJQnSgWN1zBbX+Cha5t4qjHRxoeoWpK4JugJzG/ipmmDMY5S+O0N1ET6sCBNVkf6lz+Y+ZNO9+wFU8pQ==}
+
   '@prisma/engines@6.16.3':
     resolution: {integrity: sha512-b+Rl4nzQDcoqe6RIpSHv8f5lLnwdDGvXhHjGDiokObguAAv/O1KaX1Oc69mBW/GFWKQpCkOraobLjU6s1h8HGg==}
+
+  '@prisma/engines@6.18.0':
+    resolution: {integrity: sha512-i5RzjGF/ex6AFgqEe2o1IW8iIxJGYVQJVRau13kHPYEL1Ck8Zvwuzamqed/1iIljs5C7L+Opiz5TzSsUebkriA==}
 
   '@prisma/fetch-engine@6.16.3':
     resolution: {integrity: sha512-bUoRIkVaI+CCaVGrSfcKev0/Mk4ateubqWqGZvQ9uCqFv2ENwWIR3OeNuGin96nZn5+SkebcD7RGgKr/+mJelw==}
 
+  '@prisma/fetch-engine@6.18.0':
+    resolution: {integrity: sha512-TdaBvTtBwP3IoqVYoGIYpD4mWlk0pJpjTJjir/xLeNWlwog7Sl3bD2J0jJ8+5+q/6RBg+acb9drsv5W6lqae7A==}
+
   '@prisma/get-platform@6.16.3':
     resolution: {integrity: sha512-X1LxiFXinJ4iQehrodGp0f66Dv6cDL0GbRlcCoLtSu6f4Wi+hgo7eND/afIs5029GQLgNWKZ46vn8hjyXTsHLA==}
+
+  '@prisma/get-platform@6.18.0':
+    resolution: {integrity: sha512-uXNJCJGhxTCXo2B25Ta91Rk1/Nmlqg9p7G9GKh8TPhxvAyXCvMNQoogj4JLEUy+3ku8g59cpyQIKFhqY2xO2bg==}
 
   '@quansync/fs@0.1.5':
     resolution: {integrity: sha512-lNS9hL2aS2NZgNW7BBj+6EBl4rOf8l+tQ0eRY6JWCI8jI2kc53gSoqbjojU0OnAWhzoXiOjFyGsHcDGePB3lhA==}
@@ -1688,6 +1733,9 @@ packages:
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
+
+  '@types/pg@8.15.5':
+    resolution: {integrity: sha512-LF7lF6zWEKxuT3/OR8wAZGzkg4ENGXFNyiV/JeOt9z5B+0ZVwbql9McqX5c/WStFq1GaGso7H1AzP/qSzmlCKQ==}
 
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
@@ -2317,6 +2365,9 @@ packages:
   effect@3.16.12:
     resolution: {integrity: sha512-N39iBk0K71F9nb442TLbTkjl24FLUzuvx2i1I2RsEAQsdAdUTuUoW0vlfUXgkMTUOnYqKnWcFfqw4hK4Pw27hg==}
 
+  effect@3.18.4:
+    resolution: {integrity: sha512-b1LXQJLe9D11wfnOKAk3PKxuqYshQ0Heez+y5pnkd3jLj1yx9QhM72zZ9uUrOQyNvrs2GZZd/3maL0ZV18YuDA==}
+
   electron-to-chromium@1.5.207:
     resolution: {integrity: sha512-mryFrrL/GXDTmAtIVMVf+eIXM09BBPlO5IQ7lUyKmK8d+A4VpRGG+M3ofoVef6qyF8s60rJei8ymlJxjUA8Faw==}
 
@@ -2617,8 +2668,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.10.2:
-    resolution: {integrity: sha512-p6fyzl+mQo6uhESLxbF5WlBOAJMDh36PljwlKtP5V1v09NxlqGru3ShK+4wKhSuhuYf8qxMmrivHOa/M7q0sMg==}
+  hono@4.10.3:
+    resolution: {integrity: sha512-2LOYWUbnhdxdL8MNbNg9XZig6k+cZXm5IjHn2Aviv7honhBMOHb+jxrKIeJRZJRmn+htUCKhaicxwXuUDlchRA==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -3590,6 +3641,16 @@ packages:
 
   prisma@6.16.3:
     resolution: {integrity: sha512-4tJq3KB9WRshH5+QmzOLV54YMkNlKOtLKaSdvraI5kC/axF47HuOw6zDM8xrxJ6s9o2WodY654On4XKkrobQdQ==}
+    engines: {node: '>=18.18'}
+    hasBin: true
+    peerDependencies:
+      typescript: '>=5.1.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  prisma@6.18.0:
+    resolution: {integrity: sha512-bXWy3vTk8mnRmT+SLyZBQoC2vtV9Z8u7OHvEu+aULYxwiop/CPiFZ+F56KsNRNf35jw+8wcu8pmLsjxpBxAO9g==}
     engines: {node: '>=18.18'}
     hasBin: true
     peerDependencies:
@@ -5281,9 +5342,9 @@ snapshots:
     dependencies:
       '@expressive-code/core': 0.41.3
 
-  '@hono/node-server@1.19.5(hono@4.10.2)':
+  '@hono/node-server@1.19.5(hono@4.10.3)':
     dependencies:
-      hono: 4.10.2
+      hono: 4.10.3
 
   '@img/colour@1.0.0': {}
 
@@ -5654,9 +5715,22 @@ snapshots:
     transitivePeerDependencies:
       - pg-native
 
+  '@prisma/adapter-pg@6.18.0':
+    dependencies:
+      '@prisma/driver-adapter-utils': 6.15.0
+      pg: 8.16.3
+      postgres-array: 3.0.4
+    transitivePeerDependencies:
+      - pg-native
+
   '@prisma/client@6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)':
     optionalDependencies:
       prisma: 6.16.3(magicast@0.3.5)(typescript@5.9.2)
+      typescript: 5.9.2
+
+  '@prisma/client@6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)':
+    optionalDependencies:
+      prisma: 6.18.0(magicast@0.3.5)(typescript@5.9.2)
       typescript: 5.9.2
 
   '@prisma/config@6.16.3(magicast@0.3.5)':
@@ -5668,15 +5742,28 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
+  '@prisma/config@6.18.0(magicast@0.3.5)':
+    dependencies:
+      c12: 3.1.0(magicast@0.3.5)
+      deepmerge-ts: 7.1.5
+      effect: 3.18.4
+      empathic: 2.0.0
+    transitivePeerDependencies:
+      - magicast
+
   '@prisma/debug@6.15.0': {}
 
   '@prisma/debug@6.16.3': {}
+
+  '@prisma/debug@6.18.0': {}
 
   '@prisma/driver-adapter-utils@6.15.0':
     dependencies:
       '@prisma/debug': 6.15.0
 
   '@prisma/engines-version@6.16.1-1.bb420e667c1820a8c05a38023385f6cc7ef8e83a': {}
+
+  '@prisma/engines-version@6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f': {}
 
   '@prisma/engines@6.16.3':
     dependencies:
@@ -5685,15 +5772,32 @@ snapshots:
       '@prisma/fetch-engine': 6.16.3
       '@prisma/get-platform': 6.16.3
 
+  '@prisma/engines@6.18.0':
+    dependencies:
+      '@prisma/debug': 6.18.0
+      '@prisma/engines-version': 6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f
+      '@prisma/fetch-engine': 6.18.0
+      '@prisma/get-platform': 6.18.0
+
   '@prisma/fetch-engine@6.16.3':
     dependencies:
       '@prisma/debug': 6.16.3
       '@prisma/engines-version': 6.16.1-1.bb420e667c1820a8c05a38023385f6cc7ef8e83a
       '@prisma/get-platform': 6.16.3
 
+  '@prisma/fetch-engine@6.18.0':
+    dependencies:
+      '@prisma/debug': 6.18.0
+      '@prisma/engines-version': 6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f
+      '@prisma/get-platform': 6.18.0
+
   '@prisma/get-platform@6.16.3':
     dependencies:
       '@prisma/debug': 6.16.3
+
+  '@prisma/get-platform@6.18.0':
+    dependencies:
+      '@prisma/debug': 6.18.0
 
   '@quansync/fs@0.1.5':
     dependencies:
@@ -6040,6 +6144,12 @@ snapshots:
       undici-types: 7.14.0
 
   '@types/normalize-package-data@2.4.4': {}
+
+  '@types/pg@8.15.5':
+    dependencies:
+      '@types/node': 24.5.2
+      pg-protocol: 1.10.3
+      pg-types: 2.2.0
 
   '@types/prop-types@15.7.15': {}
 
@@ -6763,6 +6873,11 @@ snapshots:
       '@standard-schema/spec': 1.0.0
       fast-check: 3.23.2
 
+  effect@3.18.4:
+    dependencies:
+      '@standard-schema/spec': 1.0.0
+      fast-check: 3.23.2
+
   electron-to-chromium@1.5.207: {}
 
   emmet@2.4.11:
@@ -7237,7 +7352,7 @@ snapshots:
 
   he@1.2.0: {}
 
-  hono@4.10.2: {}
+  hono@4.10.3: {}
 
   hookable@5.5.3: {}
 
@@ -8362,10 +8477,10 @@ snapshots:
     optionalDependencies:
       pg-cloudflare: 1.2.7
 
-  pglite-prisma-adapter@0.6.1(@electric-sql/pglite@0.3.10)(@prisma/client@6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)):
+  pglite-prisma-adapter@0.6.1(@electric-sql/pglite@0.3.10)(@prisma/client@6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)):
     dependencies:
       '@electric-sql/pglite': 0.3.10
-      '@prisma/client': 6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
+      '@prisma/client': 6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@prisma/driver-adapter-utils': 6.15.0
       postgres-array: 3.0.4
 
@@ -8444,6 +8559,15 @@ snapshots:
     dependencies:
       '@prisma/config': 6.16.3(magicast@0.3.5)
       '@prisma/engines': 6.16.3
+    optionalDependencies:
+      typescript: 5.9.2
+    transitivePeerDependencies:
+      - magicast
+
+  prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2):
+    dependencies:
+      '@prisma/config': 6.18.0(magicast@0.3.5)
+      '@prisma/engines': 6.18.0
     optionalDependencies:
       typescript: 5.9.2
     transitivePeerDependencies:

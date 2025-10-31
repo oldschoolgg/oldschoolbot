@@ -1,4 +1,3 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -7,7 +6,7 @@ import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const cutLeapingFishTask: MinionTask = {
 	type: 'CutLeapingFish',
-	async run(data: CutLeapingFishActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: CutLeapingFishActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { fishID, channelID, quantity, duration } = data;
 
 		const barbarianFish = LeapingFish.find(LeapingFish => LeapingFish.item.id === fishID)!;
@@ -24,9 +23,9 @@ export const cutLeapingFishTask: MinionTask = {
 			caviarChance = clamp(1.25 * currentLevel, { min: 0, max: 100 });
 			fishOffcutsChance = (5 / 6) * 100;
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(caviarChance)) {
+				if (rng.percentChance(caviarChance)) {
 					caviarCreated += 1;
-					if (percentChance(fishOffcutsChance)) {
+					if (rng.percentChance(fishOffcutsChance)) {
 						fishOffcutsCreated += 1;
 					}
 				}
@@ -36,9 +35,9 @@ export const cutLeapingFishTask: MinionTask = {
 			roeChance = clamp(1.25 * currentLevel, { min: 0, max: 100 });
 			fishOffcutsChance = (3 / 4) * 100;
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(roeChance)) {
+				if (rng.percentChance(roeChance)) {
 					roeCreated += 1;
-					if (percentChance(fishOffcutsChance)) {
+					if (rng.percentChance(fishOffcutsChance)) {
 						fishOffcutsCreated += 1;
 					}
 				}
@@ -49,9 +48,9 @@ export const cutLeapingFishTask: MinionTask = {
 			roeChance = clamp(0.67 * currentLevel, { min: 0, max: 100 });
 			fishOffcutsChance = (1 / 2) * 100;
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(roeChance)) {
+				if (rng.percentChance(roeChance)) {
 					roeCreated += 1;
-					if (percentChance(fishOffcutsChance)) {
+					if (rng.percentChance(fishOffcutsChance)) {
 						fishOffcutsCreated += 1;
 					}
 				}
