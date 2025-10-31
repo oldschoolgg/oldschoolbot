@@ -1007,7 +1007,18 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					if (!selectedMaster) return 'Invalid slayer master.';
 					if (!selectedMonster) return 'Invalid monster.';
-					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
+					if (!assignedTask) {
+						const possibleMasters = slayerMasters
+							.filter(m => m.tasks.some(t => t.monster.id === selectedMonster?.id))
+							.map(m => m.name);
+
+						const suggestion =
+							possibleMasters.length > 0
+								? ` (${possibleMasters.join(', ')} can${possibleMasters.length > 1 ? '' : ' also'} assign this monster.)`
+								: '';
+
+						return `${selectedMaster.name} cannot assign ${selectedMonster.name}.${suggestion}`;
+					}
 
 					// Update an existing slayer task for the user
 					if (usersTask.currentTask?.id) {
