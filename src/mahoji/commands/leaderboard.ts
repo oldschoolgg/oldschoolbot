@@ -784,10 +784,12 @@ LIMIT 50;`
 	);
 }
 
-function getMasteryValue(u: any, masteryKey: string): number {
-	const val = u[masteryKey];
+type MasteryLike = Record<string, unknown>;
+
+function getMasteryValue(user: MasteryLike, masteryKey: string): number {
+	const val = user[masteryKey];
 	if (typeof val === 'number') return val;
-	if (Array.isArray(val)) return val.length; // fallback – count entries
+	if (Array.isArray(val)) return val.length;
 	return 0;
 }
 
