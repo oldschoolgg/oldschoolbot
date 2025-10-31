@@ -1,3 +1,4 @@
+import { roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
 
 import { MAX_QP } from '@/lib/minions/data/quests.js';
@@ -42,7 +43,6 @@ export const questingTask: MinionTask = {
 			}
 		});
 
-		const { roll } = rng;
 		const herbLevel = user.skillsAsLevels.herblore;
 		if (herbLevel === 1 && newQP > 5 && roll(2)) {
 			await user.addXP({ skillName: 'herblore', amount: 250 });
