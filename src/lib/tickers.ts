@@ -14,6 +14,7 @@ import { collectMetrics } from '@/lib/metrics.js';
 import {
 	BERT_SAND_BUCKETS,
 	bertResetStart,
+	hasBertSandAutoDelivery,
 	hasCollectedThisReset,
 	isManualEligible
 } from '@/lib/minions/data/bertSand.js';
@@ -27,11 +28,14 @@ import { getSupportGuild } from '@/lib/util.js';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
+
+// Bert's Sand Delivery Ticker Globals
 const BERT_SAND_BATCH_SIZE = 100;
-const BERT_SAND_ACTIVE_WINDOW = Time.Day * 7;
 let bertSandQueue: string[] = [];
 let bertSandLastReset = 0;
-let bertSandQueuePrepared = false;
+let bertSandQueuedSet = new Set<string>();
+let bertSandLastSeenCommandAt = 0;
+
 const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
 	.addFields({
@@ -338,6 +342,7 @@ VALUES (get_economy_bank());`;
 		}
 	},
 	{
+		// Ardougne elite diary unlocks this auto-collection perk
 		name: "Bert's sand delivery",
 		timer: null,
 		startupWait: Time.Minute * 5,
@@ -346,32 +351,51 @@ VALUES (get_economy_bank());`;
 			const now = Date.now();
 			const currentResetStart = bertResetStart(now);
 
+			// 1) new day → wipe everything for this feature
 			if (bertSandLastReset < currentResetStart) {
 				bertSandQueue = [];
-				bertSandQueuePrepared = false;
+				bertSandQueuedSet = new Set();
 				bertSandLastReset = currentResetStart;
+				// from now on, only look at commands from todays reset onwards
+				bertSandLastSeenCommandAt = currentResetStart;
 			}
 
-			if (!bertSandQueuePrepared) {
-				const activeSince = new Date(now - BERT_SAND_ACTIVE_WINDOW);
-				const users = await prisma.user.findMany({
-					where: {
-						completed_achievement_diaries: {
-							has: 'ardougne.elite'
-						},
-						last_command_date: {
-							gte: activeSince
-						}
-					},
-					select: {
-						id: true
+			// 2) fetch ONLY users whose last_command_date is AFTER the last time we looked
+			// this makes it incremental, not "scan everyone active today" every 5 minutes
+			const users = await prisma.user.findMany({
+				where: {
+					last_command_date: {
+						gte: new Date(bertSandLastSeenCommandAt)
 					}
-				});
+				},
+				select: {
+					id: true,
+					last_command_date: true
+				}
+			});
 
-				bertSandQueue = users.map(u => u.id);
-				bertSandQueuePrepared = true;
+			// 3) update our "high water mark" so next run only looks after this point
+			for (const u of users) {
+				const lastCmd = u.last_command_date ? u.last_command_date.getTime() : 0;
+
+				// move the pointer forward
+				if (lastCmd > bertSandLastSeenCommandAt) {
+					bertSandLastSeenCommandAt = lastCmd;
+				}
+
+				// also enforce: must be active AFTER todays reset
+				if (lastCmd < currentResetStart) {
+					continue;
+				}
+
+				// if we already queued them this reset, skip
+				if (bertSandQueuedSet.has(u.id)) continue;
+
+				bertSandQueuedSet.add(u.id);
+				bertSandQueue.push(u.id);
 			}
 
+			// 4) nothing to process
 			if (bertSandQueue.length === 0) {
 				return;
 			}
@@ -382,12 +406,21 @@ VALUES (get_economy_bank());`;
 
 			for (const id of batch) {
 				const user = await mUserFetch(id);
+
+				// must actually have the perk (Ardy elite)
+				if (!hasBertSandAutoDelivery(user)) {
+					continue;
+				}
+
 				const stats = await user.fetchStats();
 				const lastCollected = Number(stats.last_bert_sand_timestamp ?? 0n);
+
+				// already got sand today?
 				if (hasCollectedThisReset(lastCollected, now)) {
 					continue;
 				}
 
+				// still enforce the manual eligibility (your existing check)
 				const requirementError = isManualEligible(user);
 				if (requirementError) {
 					continue;
@@ -405,9 +438,8 @@ VALUES (get_economy_bank());`;
 					continue;
 				}
 
-				// Ardougne elite diary unlocks this auto-collection perk; when it procs we still
-				// enforce the manual requirements so the reward mirrors the slash command.
-				await user.addItemsToBank({ items: loot, collectionLog: false });
+				// Ardougne elite auto-collection: mirror manual reward but no CL
+				await user.addItemsToBank({ items: loot, collectionLog: true });
 			}
 		}
 	},

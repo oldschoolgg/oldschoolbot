@@ -42,5 +42,5 @@ export async function collectBertSand(user: MUser, channelID: string) {
 		metadata: NON_REPEATABLE_METADATA
 	});
 
-	return `Bert is sorting your buckets of sand… (${formatDuration(BERT_SAND_DURATION)})`;
+	return `Bert is collecting your buckets of sand… (This will take ${formatDuration(BERT_SAND_DURATION)})`;
 }
