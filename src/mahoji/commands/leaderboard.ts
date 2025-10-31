@@ -784,8 +784,21 @@ LIMIT 50;`
 	);
 }
 
+function getMasteryValue(u: any, masteryKey: string): number {
+	const val = u[masteryKey];
+	if (typeof val === 'number') return val;
+	if (Array.isArray(val)) return val.length; // fallback – count entries
+	return 0;
+}
+
 export async function masteryLb(interaction: MInteraction, ironmanOnly: boolean) {
-	const select: { id: true, minion_ironman: true }
+	const limit = 50;
+	const batchSize = 100;
+
+	const select = {
+		id: true,
+		[masteryKey]: true
+	} as const;
 
 	if (!ironmanOnly) {
 		const users = (
@@ -796,10 +809,13 @@ export async function masteryLb(interaction: MInteraction, ironmanOnly: boolean)
 				orderBy: {
 					[masteryKey]: 'desc'
 				},
-				take: 50,
+				take: limit,
 				select
 			})
-		).map(u => ({ id: u.id.toString(), score: u[masteryKey] ?? 0 }));
+		).map(u => ({
+			id: u.id.toString(),
+			score: getMasteryValue(u, masteryKey)
+		}));
 
 		return doMenuWrapper({
 			interaction,
@@ -811,10 +827,9 @@ export async function masteryLb(interaction: MInteraction, ironmanOnly: boolean)
 	}
 
 	const qualifyingUsers: { id: string; score: number }[] = [];
-	const batchSize = 100;
 	let skip = 0;
 
-	while (qualifyingUsers.length < 50) {
+	while (qualifyingUsers.length < limit) {
 		const batch = await roboChimpClient.user.findMany({
 			where: {
 				[masteryKey]: { not: null }
@@ -827,40 +842,35 @@ export async function masteryLb(interaction: MInteraction, ironmanOnly: boolean)
 			select
 		});
 
-		if (batch.length === 0) {
-			break;
-		}
+		if (batch.length === 0) break;
 
 		skip += batch.length;
+
 		const idStrings = batch.map(u => u.id.toString());
-		if (idStrings.length === 0) {
-			continue;
-		}
+		if (idStrings.length === 0) continue;
 
 		const ironmen = await prisma.user.findMany({
 			where: {
 				id: { in: idStrings },
 				minion_ironman: true
 			},
-			select: {
-				id: true
-			}
+			select: { id: true }
 		});
 
-		if (ironmen.length === 0) {
-			continue;
-		}
+		if (ironmen.length === 0) continue;
 
 		const ironmanIds = new Set(ironmen.map(user => user.id));
+
 		for (const user of batch) {
 			const id = user.id.toString();
-			if (!ironmanIds.has(id)) {
-				continue;
-			}
-			qualifyingUsers.push({ id, score: user[masteryKey] ?? 0 });
-			if (qualifyingUsers.length >= 50) {
-				break;
-			}
+			if (!ironmanIds.has(id)) continue;
+
+			qualifyingUsers.push({
+				id,
+				score: getMasteryValue(user, masteryKey)
+			});
+
+			if (qualifyingUsers.length >= limit) break;
 		}
 	}
 
