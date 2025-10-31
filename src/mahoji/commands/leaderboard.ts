@@ -811,6 +811,121 @@ async function masteryLb(interaction: MInteraction) {
 	});
 }
 
+async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, sortByTotal = false) {
+	// 1) get the JSON GF data from user_stats
+	const stats = await prisma.userStats.findMany({
+		select: {
+			user_id: true,
+			gf_weapons_made: true
+		}
+	});
+
+	// 2) get the minigames counts (this is what your stats command uses)
+	const minigames = await prisma.minigame.findMany({
+		select: {
+			user_id: true,
+			giants_foundry: true
+		}
+	});
+
+	// normalise to string keys
+	const minigameMap = new Map(minigames.map(m => [m.user_id.toString(), m.giants_foundry ?? 0]));
+
+	type RowData = {
+		user_id: bigint;
+		uniques: number;
+		total: number;
+	};
+
+	const rows: RowData[] = [];
+
+	for (const row of stats) {
+		const gfJson = (row.gf_weapons_made ?? {}) as Record<string, unknown>;
+		const uniques = Object.keys(gfJson).length;
+
+		// total from JSON
+		let totalFromJson = 0;
+		for (const [, v] of Object.entries(gfJson)) {
+			const n = typeof v === 'number' ? v : Number(v) || 0;
+			totalFromJson += n;
+		}
+
+		// use string to read from the map
+		const userIdStr = row.user_id.toString();
+		const totalFromMinigame = minigameMap.get(userIdStr) ?? 0;
+
+		const total = Math.max(totalFromJson, totalFromMinigame);
+
+		if (uniques === 0 && total === 0) continue;
+
+		rows.push({
+			user_id: row.user_id,
+			uniques,
+			total
+		});
+	}
+
+	if (rows.length === 0) {
+		return 'There are no users on this leaderboard.';
+	}
+
+	// 3) ironman filter
+	let users: { id: string; uniques: number; total: number }[];
+	if (ironmanOnly) {
+		const irons = await prisma.user.findMany({
+			where: { minion_ironman: true },
+			select: { id: true }
+		});
+		const ironSet = new Set(irons.map(i => i.id));
+		users = rows
+			.filter(r => ironSet.has(r.user_id.toString()))
+			.map(r => ({ id: r.user_id.toString(), uniques: r.uniques, total: r.total }));
+	} else {
+		users = rows.map(r => ({ id: r.user_id.toString(), uniques: r.uniques, total: r.total }));
+	}
+
+	if (users.length === 0) {
+		return ironmanOnly
+			? "No ironmen have made any Giant's Foundry weapons yet."
+			: 'There are no users on this leaderboard.';
+	}
+
+	// 4) sorting + display text
+	if (sortByTotal) {
+		users.sort((a, b) => {
+			if (b.total !== a.total) return b.total - a.total;
+			return b.uniques - a.uniques;
+		});
+	} else {
+		users.sort((a, b) => {
+			if (b.uniques !== a.uniques) return b.uniques - a.uniques;
+			return b.total - a.total;
+		});
+	}
+
+	const top = users.slice(0, 200);
+
+	const pages = chunk(top, 10).map((subList, pageIndex) =>
+		subList
+			.map(({ id, uniques, total }, rowIndex) => {
+				const name = getUsernameSync(id);
+				const metric = sortByTotal
+					? // total LB
+						`${total.toLocaleString()} total (${uniques.toLocaleString()} unique${uniques !== 1 ? 's' : ''})`
+					: // uniques LB
+						`${uniques.toLocaleString()} unique${uniques !== 1 ? 's' : ''} (${total.toLocaleString()} total)`;
+				return `${getPos(pageIndex, rowIndex)}**${name}:** ${metric}`;
+			})
+			.join('\n')
+	);
+
+	const title = sortByTotal
+		? `Giant's Foundry – Total Weapons${ironmanOnly ? ' (Ironmen Only)' : ''}`
+		: `Giant's Foundry – Unique Weapons${ironmanOnly ? ' (Ironmen Only)' : ''}`;
+
+	return doMenu(interaction, pages, title);
+}
+
 const ironmanOnlyOption = defineOption({
 	type: 'Boolean',
 	name: 'ironmen_only',
@@ -1062,6 +1177,20 @@ export const leaderboardCommand = defineCommand({
 			name: 'mastery',
 			description: 'Check the mastery leaderboard.',
 			options: []
+		},
+		{
+			type: 'Subcommand',
+			name: 'giants_foundry',
+			description: "Check the Giant's Foundry unique weapons leaderboard.",
+			options: [
+				{
+					type: 'Boolean',
+					name: 'total_weapons',
+					description: 'Sort by total weapons made instead.',
+					required: false
+				},
+				ironmanOnlyOption
+			]
 		}
 	],
 	run: async ({ options, interaction }) => {
@@ -1082,7 +1211,8 @@ export const leaderboardCommand = defineCommand({
 			movers,
 			global,
 			combat_achievements,
-			mastery
+			mastery,
+			giants_foundry
 		} = options;
 		if (kc) return kcLb(interaction, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) {
@@ -1110,6 +1240,12 @@ export const leaderboardCommand = defineCommand({
 		if (global) return globalLb(interaction, global.type);
 		if (combat_achievements) return caLb(interaction);
 		if (mastery) return masteryLb(interaction);
+		if (giants_foundry) {
+			const iron = Boolean(giants_foundry.ironmen_only);
+			const total = Boolean(giants_foundry.total_weapons);
+			return giantsFoundryLb(interaction, iron, total);
+		}
+
 		return 'Invalid input.';
 	}
 });
