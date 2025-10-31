@@ -83,7 +83,22 @@ function convertCommandToAPICommand(
 	};
 }
 
-export async function bulkUpdateCommands() {
+type BulkUpdateCommandsOptions = {
+	commands: readonly AnyCommand[];
+	guildID: string | null;
+};
+
+export async function bulkUpdateCommands(options?: BulkUpdateCommandsOptions) {
+	if (options) {
+		const body = options.commands.map(convertCommandToAPICommand);
+		if (options.guildID) {
+			return globalClient.rest.put(Routes.applicationGuildCommands(globalClient.user.id, options.guildID), {
+				body
+			});
+		}
+		return globalClient.rest.put(Routes.applicationCommands(globalClient.user.id), { body });
+	}
+
 	// Sync commands just to the testing server
 	if (!globalConfig.isProduction) {
 		const body = globalClient.allCommands.map(convertCommandToAPICommand);
