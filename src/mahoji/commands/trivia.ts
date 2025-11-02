@@ -3,7 +3,7 @@ import { shuffleArr } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
 
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
-import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
+import { DynamicButtons } from '@/lib/discord/DynamicButtons.js';
 
 export const triviaCommand = defineCommand({
 	name: 'trivia',

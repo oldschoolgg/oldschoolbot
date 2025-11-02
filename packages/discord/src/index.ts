@@ -95,8 +95,6 @@ export type { CommandInteractionOption };
 
 export * from '@discordjs/formatters';
 
-// export * from 'discord-api-types/v10';
-
 export * from './util.js';
 
 export type ApplicationCommandOptionChoiceData<Value extends number | string = number | string> = {

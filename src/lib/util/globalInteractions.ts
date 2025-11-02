@@ -1,6 +1,6 @@
 import { formatDuration, removeFromArr, SpecialResponse, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { RateLimitManager } from '@sapphire/ratelimits';
-import type { APIMessageComponentGuildInteraction } from 'discord-api-types/v10';
+import type { APIMessageComponentInteraction } from 'discord-api-types/v10';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
@@ -11,7 +11,7 @@ import { mentionCommand } from '@/lib/discord/utils.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { MInteraction } from '@/lib/structures/MInteraction.js';
+import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
@@ -214,7 +214,7 @@ async function globalButtonInteractionHandler({
 	id: string;
 	interaction: MInteraction;
 }): CommandResponse {
-	Logging.logDebug(`${interaction.user.username} clicked button: ${id}`, {
+	Logging.logDebug(`${interaction.userId} clicked button: ${id}`, {
 		// TODO
 		// ...interaction.getDebugInfo()
 	});
@@ -226,7 +226,7 @@ async function globalButtonInteractionHandler({
 		};
 	}
 
-	const userID = interaction.user.id;
+	const userID = interaction.userId;
 
 	const ratelimit = buttonRatelimiter.acquire(userID);
 	if (ratelimit.limited) {
@@ -461,11 +461,10 @@ async function globalButtonInteractionHandler({
 				return str;
 			}
 			return {
-				content: `${
-					star && star.expiry < Date.now()
-						? 'The Crashed Star has expired!'
-						: `That Crashed Star was not discovered by ${user.minionName}.`
-				}`,
+				content: `${star && star.expiry < Date.now()
+					? 'The Crashed Star has expired!'
+					: `That Crashed Star was not discovered by ${user.minionName}.`
+					}`,
 				ephemeral: true
 			};
 		}
@@ -490,7 +489,7 @@ const ignoredInteractionIDs = [
 ];
 
 export async function globalButtonInteractionHandlerWrapper(
-	rawInteraction: APIMessageComponentGuildInteraction,
+	rawInteraction: APIMessageComponentInteraction,
 	interaction: MInteraction
 ) {
 	const id = rawInteraction.data.custom_id;

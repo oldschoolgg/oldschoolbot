@@ -1,5 +1,5 @@
 import { makeURLSearchParams, REST } from '@discordjs/rest';
-import { WebSocketManager, WorkerShardingStrategy } from '@discordjs/ws';
+import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
 import {
 	ActivityType,
 	type MessageEditOptions,
@@ -18,9 +18,12 @@ import {
 	type APIEmoji,
 	type APIGuild,
 	type APIGuildMember,
+	type APIInteraction,
 	type APIRole,
+	GatewayDispatchEvents,
 	GatewayIntentBits,
 	GatewayOpcodes,
+	type GatewayReadyDispatchData,
 	type GatewaySendPayload,
 	type GatewayUpdatePresence,
 	MessageReferenceType,
@@ -32,8 +35,14 @@ import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
 import { sendableMsgToApiCreate } from '@/lib/discord/SendableMessage.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
+import { createInteractionCollector, type CollectorOptions } from '@/lib/discord/collector/collectSingle.js';
 
-export class OldSchoolBotClient extends AsyncEventEmitter {
+
+export interface OldSchoolBotClientEventsMap {
+	'interactionCreate': [interaction: APIInteraction];
+}
+
+export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEventsMap> implements AsyncDisposable {
 	public rest: REST = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN!);
 	public ws: WebSocketManager;
 	public isShuttingDown = false;
@@ -68,9 +77,41 @@ export class OldSchoolBotClient extends AsyncEventEmitter {
 				],
 				status: PresenceUpdateStatus.DoNotDisturb,
 				afk: false
-			}
+			},
+			compression: CompressionMethod.ZlibNative
 			// buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' }),
 		});
+
+		this.ws.on(WebSocketShardEvents.Dispatch, (packet, shardId) => {
+			switch (packet.t) {
+				case 'READY': {
+					if (shardId === 0) {
+						this.emit('ready');
+						this.onReady(packet.d)
+					}
+					break;
+				}
+				case GatewayDispatchEvents.InteractionCreate: {
+					this.emit('interactionCreate', packet.d);
+					break;
+				}
+			}
+		});
+
+	}
+
+	addEventListener<K extends keyof OldSchoolBotClientEventsMap>(
+		event: K,
+		listener: (...args: OldSchoolBotClientEventsMap[K]) => Promise<void> | void
+	): void {
+		this.on(event, listener as any);
+	}
+
+	removeEventListener<K extends keyof OldSchoolBotClientEventsMap>(
+		event: K,
+		listener: (...args: OldSchoolBotClientEventsMap[K]) => Promise<void> | void
+	): void {
+		this.off(event, listener as any);
 	}
 
 	async login() {
@@ -84,10 +125,13 @@ export class OldSchoolBotClient extends AsyncEventEmitter {
 	// 	}
 	// }
 
-	async onReady() {
+	async onReady(data: GatewayReadyDispatchData) {
+		this.applicationUser = { ...data.user, bot: true };
+
 		await this.fetchCommands();
 		// await this.syncMainServerData();
 	}
+
 
 	private async fetchCommands() {
 		const commands = (await this.rest.get(
@@ -102,13 +146,13 @@ export class OldSchoolBotClient extends AsyncEventEmitter {
 			body:
 				typeof message === 'string'
 					? {
-							type: 4,
-							data: { content: message }
-						}
+						type: 4,
+						data: { content: message }
+					}
 					: {
-							type: 4,
-							data: message
-						}
+						type: 4,
+						data: message
+					}
 		});
 	}
 	// async respondToButtonInteraction(interaction: IInteraction, message: APIApplicationCommandOptionChoice[]) {
@@ -317,5 +361,13 @@ export class OldSchoolBotClient extends AsyncEventEmitter {
 	}) {
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(ReactEmoji[emojiId]));
 		await this.rest.put(route);
+	}
+
+	public async [Symbol.asyncDispose]() {
+		await this.ws.destroy();
+	}
+
+	createInteractionCollector(options: CollectorOptions) {
+		return createInteractionCollector(this, options);
 	}
 }

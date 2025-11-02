@@ -1,12 +1,12 @@
 import { cryptoRng } from '@oldschoolgg/rng';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
-import type { APIChatInputApplicationCommandGuildInteraction } from 'discord-api-types/v10';
+import type { APIChatInputApplicationCommandInteraction } from 'discord-api-types/v10';
 
 import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { type AnyCommand, type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
 import { RawSQL } from '@/lib/rawSql.js';
-import type { MInteraction } from '@/lib/structures/MInteraction.js';
+import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 
 export async function rawCommandHandlerInner({
 	interaction,
@@ -31,9 +31,9 @@ export async function rawCommandHandlerInner({
 			};
 		}
 	}
-	const user = await mUserFetch(interaction.user.id);
+	const user = await mUserFetch(interaction.userId);
 
-	RawSQL.updateUserLastCommandDate({ userId: interaction.user.id }).catch(console.error);
+	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(console.error);
 
 	if (user.user.completed_achievement_diaries.length === 0) {
 		user.syncCompletedAchievementDiaries().catch(console.error);
@@ -72,8 +72,8 @@ export async function rawCommandHandlerInner({
 			member: interaction.member,
 			channelId: interaction.channelId,
 			guildId: interaction.guildId,
-			userID: interaction.user.id,
-			userId: interaction.user.id,
+			userID: interaction.userId,
+			userId: interaction.userId,
 			rng: cryptoRng
 		});
 		return response;
@@ -95,7 +95,7 @@ export async function rawCommandHandlerInner({
 }
 
 export async function commandHandler(
-	rawInteraction: APIChatInputApplicationCommandGuildInteraction,
+	rawInteraction: APIChatInputApplicationCommandInteraction,
 	interaction: MInteraction
 ) {
 	const command = globalClient.allCommands.find(c => c.name === rawInteraction.data.name)!;

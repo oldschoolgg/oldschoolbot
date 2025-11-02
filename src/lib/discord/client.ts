@@ -40,7 +40,7 @@ client.on('raw', (d: any) => {
 });
 client.on(DJSEvent.Error, console.error);
 
-client.on(DJSEvent.InteractionCreate, interaction => {
+client.on('interactionCreate', interaction => {
 	return interactionHandler(interaction);
 });
 

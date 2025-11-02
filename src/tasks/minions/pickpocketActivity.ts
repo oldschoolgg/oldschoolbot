@@ -6,7 +6,6 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export function calcLootXPPickpocketing(
@@ -108,19 +107,15 @@ export const pickpocketTask: MinionTask = {
 		});
 		const xpRes = await user.addXP({ skillName: 'thieving', amount: xpReceived, duration });
 
-		let str = `${user}, ${user.minionName} finished ${
-			obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
-		} from ${obj.name} ${successfulQuantity}x times, due to failures you missed out on ${
-			quantity - successfulQuantity
-		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
+			} from ${obj.name} ${successfulQuantity}x times, due to failures you missed out on ${quantity - successfulQuantity
+			}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
 
-		str += `\n${
-			obj.type === 'pickpockable'
+		str += `\n${obj.type === 'pickpockable'
 				? ''
-				: `${
-						100 - obj.lootPercent!
-					}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
-		}`;
+				: `${100 - obj.lootPercent!
+				}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
+			}`;
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
@@ -129,31 +124,27 @@ export const pickpocketTask: MinionTask = {
 		if (loot.amount('Rocky') > 0) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
-					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
+				`**${user.badgedUsername}'s** minion, ${user.minionName
+				}, just received a **Rocky** <:Rocky:324127378647285771> while ${obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
 				} from ${obj.name}, their Thieving level is ${currentLevel}!`
 			);
 		}
 
-		const image: SendableFile | undefined =
-			itemsAdded.length === 0
-				? undefined
-				: await makeBankImage({
-						bank: itemsAdded,
-						title: `Loot From ${successfulQuantity} ${obj.name}:`,
-						user,
-						previousCL
-					});
+
+		const message = new MessageBuilder().setContent(str);
+		if (itemsAdded.length > 0) {
+			message.addBankImage({
+				bank: itemsAdded,
+				title: `Loot From ${successfulQuantity} ${obj.name}:`,
+				user,
+				previousCL
+			})
+		}
 
 		handleTripFinish({
 			user,
 			channelId,
-			message: {
-				content: str,
-				files: image ? [image] : undefined
-			},
+			message,
 			data,
 			loot: itemsAdded
 		});

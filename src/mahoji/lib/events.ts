@@ -25,6 +25,4 @@ export const onStartup = logWrapFn('onStartup', async () => {
 		// In development, always sync commands on startup.
 		await bulkUpdateCommands();
 	}
-
-	await globalClient.onReady();
 });

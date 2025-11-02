@@ -4,7 +4,7 @@ import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/
 import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
-import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
+import { DynamicButtons } from '@/lib/discord/DynamicButtons.js';
 
 export async function isUsersDailyReady(
 	user: MUser

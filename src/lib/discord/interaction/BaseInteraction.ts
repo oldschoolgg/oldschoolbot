@@ -38,6 +38,10 @@ export class BaseInteraction {
 		this._data = data;
 	}
 
+	get raw() {
+		return this._data;
+	}
+
 	get deferred() {
 		return this._deferred;
 	}
@@ -55,6 +59,15 @@ export class BaseInteraction {
 	}
 	get userId() {
 		return this._data.user.id;
+	}
+
+	get createdTimestamp() {
+		return this._data.created_timestamp;
+	}
+
+	get messageId() {
+		if (this._data.kind !== 'Button') throw new Error('InteractionHasNoMessage');
+		return this._data.message.id;
 	}
 
 	private async toBody(options: SendableMessage): Promise<APISendableMessage> {
@@ -114,7 +127,7 @@ export class BaseInteraction {
 		return options.withResponse ? res : undefined;
 	}
 
-	async baseReply(options: SendableMessage) {
+	async baseReply(options: SendableMessage): Promise<APIMessage | null> {
 		if (this._deferred || this._replied) {
 			// TODO: might need to return interaction respnose here
 			return this.baseEditReply(options);
@@ -122,7 +135,7 @@ export class BaseInteraction {
 		const res = await this.sendCallback(InteractionResponseType.ChannelMessageWithSource, options);
 		this._ephemeral = Boolean((options as any)?.ephemeral);
 		this._replied = true;
-		return (options as any)?.withResponse ? res : undefined;
+		return (options as any)?.withResponse ? (res as APIMessage) : null;
 	}
 
 	async baseDeferUpdate(options: { withResponse?: boolean } = {}) {

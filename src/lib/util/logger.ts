@@ -8,7 +8,7 @@ import type { AutocompleteInteraction } from '@oldschoolgg/discord';
 import { isObject, UserError } from '@oldschoolgg/toolkit';
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
-import type { MInteraction } from '@/lib/structures/MInteraction.js';
+import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 
 const LOG_FOLDER = globalConfig.isProduction ? '../logs/' : './logs/';
 
