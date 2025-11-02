@@ -1,6 +1,6 @@
+import type { APIChatInputApplicationCommandInteraction } from '@oldschoolgg/discord';
 import { cryptoRng } from '@oldschoolgg/rng';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
-import type { APIChatInputApplicationCommandInteraction } from 'discord-api-types/v10';
 
 import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { type AnyCommand, type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';

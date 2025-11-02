@@ -1,5 +1,8 @@
 import type { PermissionKey } from '@oldschoolgg/discord';
 import {
+	type APIApplicationCommandOptionChoice,
+	type APIChatInputApplicationCommandGuildInteraction,
+	ApplicationCommandOptionType,
 	convertApiChannelToZChannel,
 	convertApiMemberToZMember,
 	convertApiRoleToZRole,
@@ -7,11 +10,6 @@ import {
 } from '@oldschoolgg/discord';
 import type { IChannel, IMember, IRole, IUser } from '@oldschoolgg/schemas';
 import type { SpecialResponse } from '@oldschoolgg/toolkit';
-import {
-	type APIApplicationCommandOptionChoice,
-	type APIChatInputApplicationCommandGuildInteraction,
-	ApplicationCommandOptionType
-} from 'discord-api-types/v10';
 
 export function convertCommandOptionToAPIOption(option: CommandOption): any {
 	switch (option.type) {
@@ -282,7 +280,7 @@ export function defineCommandSrc<const T extends AnyArr<unknown>>(
 	return cmd as unknown as OSBMahojiCommand<AsOptArr<T>>;
 }
 
-export type CommandResponseValue = string | CompatibleResponse | SpecialResponse;
+export type CommandResponseValue = SendableMessage | SpecialResponse;
 declare global {
 	var defineCommand: typeof defineCommandSrc;
 }

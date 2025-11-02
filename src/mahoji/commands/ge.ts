@@ -410,7 +410,7 @@ ORDER BY
 
 				return {
 					content: baseMessage,
-					files: [buffer]
+					files: [{ name: 'chart.png', buffer }]
 				};
 			}
 		}

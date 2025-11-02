@@ -1,5 +1,4 @@
-import { ButtonBuilder } from '@oldschoolgg/discord';
-import { ButtonStyle, InteractionResponseType, Routes } from 'discord-api-types/v10';
+import { ButtonBuilder, ButtonStyle, InteractionResponseType, Routes } from '@oldschoolgg/discord';
 
 import { InteractionID } from '@/lib/InteractionID.js';
 

@@ -1,4 +1,4 @@
-import type { GatewayGuildCreateDispatchData } from 'discord-api-types/v10';
+import type { GatewayGuildCreateDispatchData } from '@oldschoolgg/discord';
 
 import { globalConfig } from '@/lib/constants.js';
 

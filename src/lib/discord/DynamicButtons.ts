@@ -1,7 +1,6 @@
-import { ButtonBuilder } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, InteractionResponseType, MessageFlags, Routes } from '@oldschoolgg/discord';
 import type { IButtonInteraction, IMessage } from '@oldschoolgg/schemas';
 import { isFunction, noOp, Time } from '@oldschoolgg/toolkit';
-import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';

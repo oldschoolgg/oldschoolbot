@@ -17,7 +17,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
+import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import { isGroupActivity } from '@/lib/util.js';
 import {
 	stashUnitBuildAllCommand,
@@ -25,7 +25,6 @@ import {
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;

@@ -1,6 +1,5 @@
-import { ButtonBuilder } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, InteractionResponseType, Routes } from '@oldschoolgg/discord';
 import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
-import { ButtonStyle, InteractionResponseType, Routes } from 'discord-api-types/v10';
 import { isFunction } from 'remeda';
 
 import { InteractionID } from '@/lib/InteractionID.js';
@@ -48,13 +47,14 @@ const controlButtons: {
 	}
 ];
 
-export type PaginatedMessagePage =
-	| BaseSendableMessage
-	| ((currentIndex: number) => Promise<BaseSendableMessage> | BaseSendableMessage);
+type GeneratedPaginatedPage = Promise<BaseSendableMessage> | BaseSendableMessage;
+
+export type PaginatedMessagePage = BaseSendableMessage | ((currentIndex: number) => GeneratedPaginatedPage);
+
 export type PaginatedPages =
 	| {
 			numPages: number;
-			generate: (opts: { currentPage: number }) => Promise<BaseSendableMessage> | BaseSendableMessage;
+			generate: (opts: { currentPage: number }) => GeneratedPaginatedPage;
 	  }
 	| PaginatedMessagePage[];
 

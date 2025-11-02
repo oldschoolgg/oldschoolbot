@@ -1,6 +1,5 @@
-import { ButtonBuilder, dateFm } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, dateFm } from '@oldschoolgg/discord';
 import { Emoji, stringMatches } from '@oldschoolgg/toolkit';
-import { ButtonStyle } from 'discord-api-types/v10';
 
 import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';

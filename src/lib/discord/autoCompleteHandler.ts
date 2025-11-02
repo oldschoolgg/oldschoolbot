@@ -1,5 +1,5 @@
+import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from '@oldschoolgg/discord';
 import type { IAutoCompleteInteraction, IAutoCompleteInteractionOption, IMember } from '@oldschoolgg/schemas';
-import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
 
 import type { AnyCommand } from '@/lib/discord/index.js';
 

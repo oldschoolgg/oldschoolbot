@@ -113,7 +113,7 @@ export const minionKCommand = defineCommand({
 	}
 });
 
-async function monsterInfo(user: MUser, name: string): Promise<string | CompatibleResponse> {
+async function monsterInfo(user: MUser, name: string): Promise<string> {
 	const otherMon = autocompleteMonsters.find(m => m.name === name || m.aliases.includes(name));
 	if (otherMon && 'link' in otherMon) {
 		return `View information, item costs, boosts and requirements for ${otherMon.name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;

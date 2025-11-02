@@ -1,8 +1,7 @@
-import { ButtonBuilder, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { chunk, Emoji, Time } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
-import { ButtonStyle } from 'discord-api-types/v10';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';

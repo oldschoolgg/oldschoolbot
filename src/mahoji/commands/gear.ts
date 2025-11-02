@@ -215,7 +215,7 @@ ${res
 			}`
 	)
 	.join('\n')}`,
-				files: [await canvasToBuffer(totalCanvas)]
+				files: [{ buffer: await canvasToBuffer(totalCanvas), name: 'best_in_slot.png' }]
 			};
 		}
 		if ((options.equip || options.unequip) && !gearValidationChecks.has(user.id)) {

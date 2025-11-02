@@ -5,7 +5,7 @@
 // 	channelIsSendable
 // } from '@oldschoolgg/discord';
 // import { Emoji, Events, noOp, sleep, Time } from '@oldschoolgg/toolkit';
-// import { ButtonStyle, MessageFlags } from 'discord-api-types/v10';
+// import { ButtonStyle, MessageFlags } from '@oldschoolgg/discord';
 // import { Bank, toKMB } from 'oldschooljs';
 
 // import { BLACKLISTED_USERS } from '@/lib/blacklists.js';

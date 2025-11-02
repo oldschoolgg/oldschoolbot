@@ -1,6 +1,8 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { chunk } from 'remeda';
 
+import type { PaginatedPages } from '@/lib/discord/PaginatedMessage.js';
+
 const LB_PAGE_SIZE = 10;
 
 function getPos(page: number, record: number) {
@@ -25,7 +27,7 @@ export async function doMenuWrapper<M extends object = {}>({
 	render?: (user: LeaderboardUser<M>, username: string) => string;
 }) {
 	const chunked = chunk(users, LB_PAGE_SIZE);
-	const pages: (() => Promise<CompatibleResponse>)[] = [];
+	const pages: PaginatedPages = [];
 	for (let c = 0; c < chunked.length; c++) {
 		const makePage = async () => {
 			const chnk = chunked[c];

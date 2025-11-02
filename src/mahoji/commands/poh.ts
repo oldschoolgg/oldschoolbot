@@ -108,7 +108,7 @@ export const pohCommand = defineCommand({
 	run: async ({ options, user, interaction }) => {
 		if (!user.hasMinion) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {
-			return makePOHImage(user, options.view.build_mode);
+			return { files: [await makePOHImage(user, options.view.build_mode)] };
 		}
 		if (options.wallkit) {
 			return pohWallkitCommand(user, options.wallkit.name);

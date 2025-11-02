@@ -57,3 +57,13 @@ export const ReactEmoji = globalConfig.isProduction
 			Sad: '😞',
 			Gift: '🎁'
 		};
+
+export const miscEmojis = {
+	barrowsChests: '<:Dharoks_helm:403038864199122947>',
+	hespori: '<:Bottomless_compost_bucket:545978484078411777>',
+	bryophyta: '<:Bryophytas_essence:455835859799769108>',
+	crazyArchaeologist: '<:Fedora:456179157303427092>',
+	derangedArchaeologist: '<:Fedora:456179157303427092>',
+	mimic: '<:Casket:365003978678730772>',
+	obor: '<:Hill_giant_club:421045456194240523>'
+} as const;

@@ -1,8 +1,4 @@
-import {
-	ApplicationCommandType,
-	type RESTPostAPIApplicationGuildCommandsJSONBody,
-	Routes
-} from 'discord-api-types/v10';
+import { ApplicationCommandType, type RESTPostAPIApplicationGuildCommandsJSONBody, Routes } from '@oldschoolgg/discord';
 
 import { globalConfig } from '@/lib/constants.js';
 import { type AnyCommand, convertCommandOptionToAPIOption } from '@/lib/discord/commandOptions.js';

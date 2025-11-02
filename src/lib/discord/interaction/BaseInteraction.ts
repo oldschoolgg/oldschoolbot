@@ -1,12 +1,12 @@
 import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
-import type { IButtonInteraction, IChatInputCommandInteraction } from '@oldschoolgg/schemas';
 import {
 	type APIAttachment,
 	type APIMessage,
 	InteractionResponseType,
 	MessageFlags,
 	Routes
-} from 'discord-api-types/v10';
+} from '@oldschoolgg/discord';
+import type { IButtonInteraction, IChatInputCommandInteraction } from '@oldschoolgg/schemas';
 
 import {
 	type APISendableMessage,

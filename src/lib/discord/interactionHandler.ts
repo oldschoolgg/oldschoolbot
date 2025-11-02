@@ -1,12 +1,12 @@
-import type { IButtonInteraction, IChatInputCommandInteraction, IMember } from '@oldschoolgg/schemas';
-import { DiscordSnowflake } from '@sapphire/snowflake';
 import {
 	type APIChatInputApplicationCommandInteraction,
 	type APIInteraction,
 	ApplicationCommandType,
 	ComponentType,
 	InteractionType
-} from 'discord-api-types/v10';
+} from '@oldschoolgg/discord';
+import type { IButtonInteraction, IChatInputCommandInteraction, IMember } from '@oldschoolgg/schemas';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { commandHandler } from '@/lib/discord/commandHandler.js';

@@ -55,7 +55,7 @@ import getUserFoodFromBank, { type GetUserFoodFromBankParams } from '@/lib/minio
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
-import type { AddXpParams, BlowpipeData, ClueBank } from '@/lib/minions/types.js';
+import type { AddXpParams, BlowpipeData, ClueBank, KillableMonster } from '@/lib/minions/types.js';
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
@@ -74,6 +74,7 @@ import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/li
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
+import { hasMonsterRequirements } from '@/lib/util/hasMonsterRequirements.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import {
@@ -361,6 +362,10 @@ export class MUserClass {
 
 	get badgedUsername() {
 		return `${this.badgesString} ${this.usernameOrMention}`.trim();
+	}
+
+	hasMonsterRequirements(monster: KillableMonster) {
+		return hasMonsterRequirements(this, monster);
 	}
 
 	toString() {

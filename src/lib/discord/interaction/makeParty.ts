@@ -1,7 +1,13 @@
-import { ButtonBuilder } from '@oldschoolgg/discord';
+import {
+	ButtonBuilder,
+	ButtonStyle,
+	ComponentType,
+	InteractionResponseType,
+	MessageFlags,
+	Routes
+} from '@oldschoolgg/discord';
 import { debounce, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
-import { ButtonStyle, ComponentType, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';

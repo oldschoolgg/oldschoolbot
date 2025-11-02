@@ -1,7 +1,7 @@
+import type { APIInteraction } from '@oldschoolgg/discord';
 import type { IButtonInteraction, IInteraction } from '@oldschoolgg/schemas';
 import { TimerManager } from '@sapphire/timer-manager';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import type { APIInteraction } from 'discord-api-types/v10';
 
 import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 import { apiInteractionParse } from '@/lib/discord/interactionHandler.js';

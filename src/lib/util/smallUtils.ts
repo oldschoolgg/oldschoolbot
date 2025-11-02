@@ -121,3 +121,9 @@ export function formatList(_itemList: (string | undefined | null)[], end?: strin
 export function isValidSkill(skill: string): skill is SkillNameType {
 	return SkillsArray.includes(skill as SkillNameType);
 }
+
+export function patronMsg(tierNeeded: number) {
+	return `You need to be a Tier ${
+		tierNeeded - 1
+	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
+}

@@ -2,7 +2,21 @@ import { makeURLSearchParams, REST } from '@discordjs/rest';
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
 import {
 	ActivityType,
+	type APIApplicationCommand,
+	type APIApplicationCommandOptionChoice,
+	type APIEmoji,
+	type APIGuild,
+	type APIGuildMember,
+	type APIInteraction,
+	type APIRole,
 	BitField,
+	GatewayDispatchEvents,
+	GatewayIntentBits,
+	GatewayOpcodes,
+	type GatewayReadyDispatchData,
+	type GatewaySendPayload,
+	type GatewayUpdatePresence,
+	MessageReferenceType,
 	type PermissionKey,
 	Permissions,
 	PresenceUpdateStatus,
@@ -11,24 +25,6 @@ import {
 import type { IChannel, IGuild, IInteraction, IMember, IMessage, IRole, IUser } from '@oldschoolgg/schemas';
 import { uniqueArr } from '@oldschoolgg/toolkit';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import {
-	type APIApplicationCommand,
-	type APIApplicationCommandOptionChoice,
-	type APIEmoji,
-	type APIGuild,
-	type APIGuildMember,
-	type APIInteraction,
-	type APIRole,
-	GatewayDispatchEvents,
-	GatewayIntentBits,
-	GatewayOpcodes,
-	type GatewayReadyDispatchData,
-	type GatewaySendPayload,
-	type GatewayUpdatePresence,
-	MessageReferenceType,
-	type RESTGetAPIGatewayBotResult,
-	type Snowflake
-} from 'discord-api-types/v10';
 
 import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
@@ -57,6 +53,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 	constructor() {
 		super();
 		this.ws = new WebSocketManager({
+			rest: this.rest,
 			token: process.env.DISCORD_TOKEN,
 			intents: new BitField([
 				GatewayIntentBits.Guilds,
@@ -67,9 +64,9 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 				GatewayIntentBits.GuildWebhooks
 			]).bitfield,
 			// shardCount: 6,
-			fetchGatewayInformation() {
-				return this.rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-			},
+			// fetchGatewayInformation() {
+			// 	return this.rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+			// },
 			buildStrategy: manager => new WorkerShardingStrategy(manager, { shardsPerWorker: 4 }),
 			initialPresence: {
 				since: Date.now() - process.uptime() * 1000,
@@ -266,9 +263,9 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 	async fetchChannelMessages(
 		channelId: string,
 		options: {
-			after?: Snowflake;
-			around?: Snowflake;
-			before?: Snowflake;
+			after?: string;
+			around?: string;
+			before?: string;
 			cache?: boolean;
 			limit?: number;
 		}

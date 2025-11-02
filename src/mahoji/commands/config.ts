@@ -25,8 +25,7 @@ import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js'
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidNickname } from '@/lib/util/smallUtils.js';
-import { patronMsg } from '@/mahoji/mahojiSettings.js';
+import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
 
 interface UserConfigToggle {
 	name: string;

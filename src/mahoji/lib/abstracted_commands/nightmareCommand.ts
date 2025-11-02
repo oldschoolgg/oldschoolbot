@@ -13,7 +13,6 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
-import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
@@ -61,7 +60,7 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 		return `${user.usernameOrMention} is busy right now and can't fight the nightmare!`;
 	}
 
-	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+	const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 	if (!hasReqs) {
 		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 	}

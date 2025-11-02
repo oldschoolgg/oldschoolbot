@@ -15,7 +15,6 @@ import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { temporossCommand } from '@/mahoji/lib/abstracted_commands/temporossCommand.js';
 import { wintertodtCommand } from '@/mahoji/lib/abstracted_commands/wintertodtCommand.js';
 import { zalcanoCommand } from '@/mahoji/lib/abstracted_commands/zalcanoCommand.js';
-import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -55,7 +54,7 @@ export async function minionKillCommand(
 
 	if (!monster) return invalidMonsterMsg;
 
-	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+	const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 	if (!hasReqs) {
 		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
 	}

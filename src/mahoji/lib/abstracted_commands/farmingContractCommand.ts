@@ -1,6 +1,5 @@
-import { ButtonBuilder } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ButtonStyle } from 'discord-api-types/v10';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { EmojiId } from '@/lib/data/emojis.js';

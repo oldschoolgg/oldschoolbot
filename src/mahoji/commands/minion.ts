@@ -21,7 +21,7 @@ import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { getAllKillCounts, getKCByName } from '@/lib/util/getKCByName.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
-import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -34,7 +34,6 @@ import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.
 import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -57,7 +56,7 @@ export async function getUserInfo(user: MUser) {
 	const clRankRaw = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
 	const clRank = clRankRaw[0].count;
 
-	const bitfields = `${(user.bitfield as BitField[])
+	const bitfields = `${user.bitfield
 		.map(i => BitFieldData[i])
 		.filter(notEmpty)
 		.map(i => i.name)

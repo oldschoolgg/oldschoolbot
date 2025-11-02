@@ -1,15 +1,15 @@
-import type { IButtonInteraction, IChatInputCommandInteraction, IGuild, IMember } from '@oldschoolgg/schemas';
-import { deepMerge } from '@oldschoolgg/toolkit';
 import type {
 	APIChatInputApplicationCommandInteraction,
 	APIMessage,
 	APIMessageComponentInteraction
-} from 'discord-api-types/v10';
+} from '@oldschoolgg/discord';
+import type { IButtonInteraction, IChatInputCommandInteraction, IGuild, IMember } from '@oldschoolgg/schemas';
+import { deepMerge } from '@oldschoolgg/toolkit';
 
 import { BaseInteraction } from '@/lib/discord/interaction/BaseInteraction.js';
 import { interactionConfirmation } from '@/lib/discord/interaction/confirmation.js';
 import { makeParty } from '@/lib/discord/interaction/makeParty.js';
-import { PaginatedMessage, type PaginatedMessageOptions } from '@/lib/structures/PaginatedMessage.js';
+import { PaginatedMessage, type PaginatedMessageOptions } from '@/lib/discord/PaginatedMessage.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 
 type AnyInteraction = IChatInputCommandInteraction | IButtonInteraction;
@@ -75,7 +75,7 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 		return interactionConfirmation(this, message);
 	}
 
-	returnStringOrFile(string: string | CompatibleResponse): Awaited<CommandResponse> {
+	returnStringOrFile(string: string | BaseSendableMessage): BaseSendableMessage {
 		const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
 
 		if (typeof string === 'string') {
@@ -85,7 +85,7 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 					files: [{ buffer: Buffer.from(string), name: 'result.txt' }]
 				};
 			}
-			return string;
+			return { content: string };
 		}
 		if (string.content && string.content.length > 2000) {
 			return deepMerge(

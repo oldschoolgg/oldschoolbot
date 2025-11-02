@@ -2,16 +2,39 @@ import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, userMention } from '@dis
 import type { IChannel, IMember, IRole, IUser } from '@oldschoolgg/schemas';
 import {
 	ActivityType,
+	type APIApplicationCommand,
+	type APIApplicationCommandOptionChoice,
+	type APIAttachment,
+	type APIChatInputApplicationCommandGuildInteraction,
+	type APIChatInputApplicationCommandInteraction,
+	type APIEmoji,
+	type APIGuild,
+	type APIGuildMember,
+	type APIInteraction,
 	type APIInteractionDataResolvedChannel,
 	type APIInteractionDataResolvedGuildMember,
+	type APIMessage,
+	type APIMessageComponentInteraction,
 	type APIRole,
 	type APIUser,
+	ApplicationCommandOptionType,
+	ApplicationCommandType,
 	ChannelType,
 	ComponentType,
+	GatewayDispatchEvents,
+	type GatewayGuildCreateDispatchData,
 	GatewayIntentBits,
+	GatewayOpcodes,
+	type GatewayReadyDispatchData,
+	type GatewaySendPayload,
+	type GatewayUpdatePresence,
 	InteractionResponseType,
+	InteractionType,
 	MessageFlags,
+	MessageReferenceType,
 	PresenceUpdateStatus,
+	type RESTPostAPIApplicationGuildCommandsJSONBody,
+	type RESTPostAPIChannelMessageJSONBody,
 	Routes
 } from 'discord-api-types/v10';
 
@@ -27,10 +50,34 @@ export enum ButtonStyle {
 }
 
 export {
+	type APIMessageComponentInteraction,
+	type RESTPostAPIApplicationGuildCommandsJSONBody,
+	type RESTPostAPIChannelMessageJSONBody,
+	type APIApplicationCommandOptionChoice,
+	type GatewayReadyDispatchData,
+	type GatewaySendPayload,
+	type GatewayUpdatePresence,
+	type APIApplicationCommand,
+	type APIEmoji,
+	type APIChatInputApplicationCommandInteraction,
+	type APIGuild,
+	type APIAttachment,
+	type APIMessage,
+	type GatewayGuildCreateDispatchData,
+	type APIGuildMember,
+	type APIInteraction,
+	type APIRole,
+	type APIChatInputApplicationCommandGuildInteraction,
+	ApplicationCommandOptionType,
+	ApplicationCommandType,
+	GatewayDispatchEvents,
 	InteractionResponseType,
 	MessageFlags,
+	MessageReferenceType,
+	GatewayOpcodes,
 	Routes,
 	ButtonBuilder,
+	InteractionType,
 	ActionRowBuilder,
 	ComponentType,
 	userMention,
@@ -43,14 +90,8 @@ export {
 
 export * from '@discordjs/formatters';
 
-export * from './util.js';
-
-export type ApplicationCommandOptionChoiceData<Value extends number | string = number | string> = {
-	name: string;
-	value: Value;
-};
-
 export * from './Permissions.js';
+export * from './util.js';
 
 export function convertApiUserToZUser(apiUser: APIUser): IUser {
 	return {

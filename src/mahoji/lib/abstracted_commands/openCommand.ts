@@ -8,7 +8,8 @@ import { BitField, MAX_CLUES_DROPPED, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
-import { addToOpenablesScores, patronMsg } from '@/mahoji/mahojiSettings.js';
+import { patronMsg } from '@/lib/util/smallUtils.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 

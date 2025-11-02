@@ -1,6 +1,6 @@
+import type { APIMessageComponentInteraction } from '@oldschoolgg/discord';
 import { formatDuration, removeFromArr, SpecialResponse, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { RateLimitManager } from '@sapphire/ratelimits';
-import type { APIMessageComponentInteraction } from 'discord-api-types/v10';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';

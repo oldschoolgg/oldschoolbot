@@ -1,6 +1,6 @@
 import type { RawFile } from '@discordjs/rest';
 import type { ButtonBuilder, EmbedBuilder } from '@oldschoolgg/discord';
-import { MessageFlags, type RESTPostAPIChannelMessageJSONBody } from 'discord-api-types/v10';
+import { MessageFlags, type RESTPostAPIChannelMessageJSONBody } from '@oldschoolgg/discord';
 import { chunk } from 'remeda';
 
 import chatHeadImage, { type HeadKey } from '@/lib/canvas/chatHeadImage.js';
@@ -26,6 +26,7 @@ export type BaseSendableMessage = {
 export type SendableMessage = string | BaseSendableMessage | _MessageBuilder;
 
 export type APISendableMessage = { message: RESTPostAPIChannelMessageJSONBody; files: RawFile[] | null };
+
 export async function sendableMsgToApiCreate(msg: SendableMessage): Promise<APISendableMessage> {
 	if (typeof msg === 'string') {
 		return sendableMsgToApiCreate({ content: msg });
@@ -70,7 +71,7 @@ export async function sendableMsgToApiCreate(msg: SendableMessage): Promise<APIS
 	return { message, files: null };
 }
 
-class _MessageBuilder {
+export class _MessageBuilder {
 	private message: BaseSendableMessage;
 	public chatHeadImagePromise?: Promise<SendableFile>;
 	public bankImagePromise?: Promise<SendableFile>;

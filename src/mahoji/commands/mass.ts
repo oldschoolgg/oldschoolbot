@@ -9,7 +9,6 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
-import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
@@ -26,7 +25,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} is an ironman, so they can't join!`;
 		}
 
-		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -89,7 +88,7 @@ export const massCommand = defineCommand({
 					if (user.minionIsBusy) {
 						return [true, 'your minion is busy.'];
 					}
-					const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+					const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 					if (!hasReqs) {
 						return [true, `you don't have the requirements for this monster; ${reason}`];
 					}

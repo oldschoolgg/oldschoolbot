@@ -1,6 +1,6 @@
+import type { APIApplicationCommandOptionChoice } from '@oldschoolgg/discord';
 import type { IMember } from '@oldschoolgg/schemas';
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
-import type { APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import type { GearPreset } from '@/prisma/main.js';
