@@ -41,7 +41,7 @@ export const fishCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const fish = Fishing.Fishes.find(fish => stringSearch(fish.name, options.name));
 		if (!fish) return 'Thats not a valid fish to catch.';
 
@@ -96,7 +96,7 @@ export const fishCommand = defineCommand({
 		await ActivityManager.startTrip<FishingActivityTaskOptions>({
 			fishID: fish.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity: res.quantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			duration: res.duration,

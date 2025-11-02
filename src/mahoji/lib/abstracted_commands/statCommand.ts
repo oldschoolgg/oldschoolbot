@@ -26,7 +26,7 @@ import { collectables } from '@/mahoji/lib/collectables.js';
 interface DataPiece {
 	name: string;
 	perkTierNeeded: PerkTier | null;
-	run: (user: MUser, stats: UserStats) => CommandResponse;
+	run: (user: MUser, stats: UserStats) => SendableMessage | Promise<SendableMessage>;
 }
 
 function wrap(str: string) {
@@ -288,7 +288,7 @@ GROUP BY data->>'collectableID';`);
 	return bank;
 }
 
-async function makeResponseForBank(bank: Bank, title: string, content?: string) {
+async function makeResponseForBank(bank: Bank, title: string, content?: string): Promise<SendableMessage> {
 	bank.removeInvalidValues();
 	if (bank.length === 0) {
 		return { content: 'No results.' };
@@ -298,15 +298,15 @@ async function makeResponseForBank(bank: Bank, title: string, content?: string) 
 		bank
 	});
 	return {
-		files: [image.file],
+		files: [image],
 		content
 	};
 }
-function makeResponseForBuffer(attachment: Buffer): Awaited<CommandResponse> {
+function makeResponseForBuffer(buffer: Buffer): SendableMessage {
 	return {
 		files: [
 			{
-				attachment,
+				buffer,
 				name: 'image.jpg'
 			}
 		]
@@ -406,7 +406,7 @@ GROUP BY type;`);
 	{
 		name: 'Personal Collection Log Progress',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser): CommandResponse => {
+		run: async (user: MUser) => {
 			const { percent } = calcCLDetails(user);
 			return makeResponseForBuffer(
 				await createChart({
@@ -752,13 +752,6 @@ ${result
 		}
 	},
 	{
-		name: 'Global Servers',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			return `Old School Bot is in ${globalClient.guilds.cache.size} servers.`;
-		}
-	},
-	{
 		name: 'Global Minions',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
@@ -842,7 +835,7 @@ GROUP BY "bankBackground";`);
 				})
 				.join('\n');
 
-			return { files: [{ attachment: Buffer.from(str), name: 'Bot Stats Monsters.txt' }] };
+			return { files: [{ buffer: Buffer.from(str), name: 'Bot Stats Monsters.txt' }] };
 		}
 	},
 	{
@@ -1293,7 +1286,7 @@ ${(
 	}
 ] as const;
 
-export async function statsCommand(user: MUser, type: string): CommandResponse {
+export async function statsCommand(user: MUser, type: string): Promise<SendableMessage> {
 	const cooldown = Cooldowns.get(user.id, 'stats_command', Time.Second * 5);
 	if (cooldown !== null) {
 		return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}`;

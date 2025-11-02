@@ -3,7 +3,7 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
-export async function myNotesCommand(user: MUser, channelID: string) {
+export async function myNotesCommand(user: MUser, channelId: string) {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -22,7 +22,7 @@ export async function myNotesCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'MyNotes',
 		quantity

@@ -11,14 +11,14 @@ export const pollCommand = defineCommand({
 			required: true
 		}
 	],
-	run: async ({ interaction, channelID }) => {
+	run: async ({ interaction, channelId }) => {
 		const createdMessage = await interaction.reply({
 			content: 'Poll created. Users can click on the two reactions to vote.',
 			withResponse: true
 		});
 		if (!createdMessage) return 'There was an error making the poll.';
-		await globalClient.reactToMsg({ channelId: channelID, messageId: createdMessage.id, emojiId: 'Happy' });
-		await globalClient.reactToMsg({ channelId: channelID, messageId: createdMessage.id, emojiId: 'Sad' });
+		await globalClient.reactToMsg({ channelId: channelId, messageId: createdMessage.id, emojiId: 'Happy' });
+		await globalClient.reactToMsg({ channelId: channelId, messageId: createdMessage.id, emojiId: 'Sad' });
 		return SpecialResponse.RespondedManually;
 	}
 });

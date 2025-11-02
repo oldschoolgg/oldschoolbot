@@ -123,7 +123,7 @@ Check \`/raid cox itemboosts\` for more information on Item boosts.`;
 
 export async function coxCommand(
 	interaction: MInteraction,
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	type: 'solo' | 'mass' | 'fakemass',
 	maxSizeInput: number | undefined,
@@ -280,7 +280,7 @@ export async function coxCommand(
 
 	await ActivityManager.startTrip<RaidsOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'Raids',
 		leader: user.id,

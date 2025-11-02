@@ -2,7 +2,6 @@ import { type BaseMessageOptions, ButtonBuilder, dateFm, makeComponents } from '
 import { Emoji, stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonStyle } from 'discord-api-types/v10';
 
-import type { User } from '@/prisma/main.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -44,7 +43,9 @@ export function isPatchName(name: string): name is FarmingPatchName {
 	return farmingPatchNames.includes(name as FarmingPatchName);
 }
 
-export function getFarmingKeyFromName(name: FarmingPatchName): keyof User {
+export type FarmingPatchSettingsKey = `farmingPatches_${FarmingPatchName}`;
+
+export function getFarmingKeyFromName(name: FarmingPatchName): FarmingPatchSettingsKey {
 	return `farmingPatches_${name}`;
 }
 

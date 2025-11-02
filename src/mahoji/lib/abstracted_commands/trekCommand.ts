@@ -10,7 +10,7 @@ import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
 
-export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
+export async function trekCommand(user: MUser, channelId: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 	if (!tier) return 'that is not a valid difficulty';
 	const minLevel = tier.minCombat;
@@ -120,7 +120,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		userID: user.id,
 		duration,
 		type: 'Trekking',
-		channelID,
+		channelId,
 		minigameID: 'temple_trekking'
 	});
 

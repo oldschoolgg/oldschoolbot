@@ -27,12 +27,12 @@ const mediumDiaryBoost = 20;
 
 export async function darkAltarCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	extracts
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	extracts?: boolean;
 }) {
@@ -99,7 +99,7 @@ export async function darkAltarCommand({
 
 	await ActivityManager.startTrip<DarkAltarOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'DarkAltar',

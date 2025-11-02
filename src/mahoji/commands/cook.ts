@@ -43,7 +43,7 @@ export const cookCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		let { quantity, name } = options;
 
 		const barbarianFish = LeapingFish.find(
@@ -54,7 +54,7 @@ export const cookCommand = defineCommand({
 		);
 
 		if (barbarianFish) {
-			return cutLeapingFishCommand({ user, channelID, name, quantity });
+			return cutLeapingFishCommand({ user, channelId, name, quantity });
 		}
 
 		const forestryFood = ForestryRations.find(
@@ -63,7 +63,7 @@ export const cookCommand = defineCommand({
 		);
 
 		if (forestryFood) {
-			return forestersRationCommand({ user, channelID, name, quantity });
+			return forestersRationCommand({ user, channelId, name, quantity });
 		}
 
 		const cookable = Cooking.Cookables.find(
@@ -136,7 +136,7 @@ export const cookCommand = defineCommand({
 		await ActivityManager.startTrip<CookingActivityTaskOptions>({
 			cookableID: cookable.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Cooking'

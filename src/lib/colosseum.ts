@@ -457,7 +457,7 @@ export const startColosseumRun = (options: {
 	throw new Error('Colosseum run did not end correctly.');
 };
 
-export async function colosseumCommand(user: MUser, channelID: string) {
+export async function colosseumCommand(user: MUser, channelId: string) {
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} is busy`;
 	}
@@ -665,7 +665,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<ColoTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: res.realDuration,
 		type: 'Colosseum',
 		fakeDuration: res.fakeDuration,

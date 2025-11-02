@@ -1,4 +1,4 @@
-import { AttachmentBuilder, bold } from '@oldschoolgg/discord';
+import { bold } from '@oldschoolgg/discord';
 import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
@@ -507,7 +507,7 @@ export const minionCommand = defineCommand({
 				});
 
 				const lines = [
-					`Killcount export for ${user.rawUsername}`,
+					`Killcount export for ${user.username}`,
 					`Total entries: ${sortedKillCounts.length}`,
 					`Sorted ${sortDescriptions[sort]}`,
 					''
@@ -517,13 +517,14 @@ export const minionCommand = defineCommand({
 					lines.push(`${label}: ${entry.amount.toLocaleString()}`);
 				}
 
-				const attachment = new AttachmentBuilder(Buffer.from(lines.join('\n')), {
-					name: `minion-kc-${user.id}.txt`
-				});
-
 				return {
 					content: `Exported ${sortedKillCounts.length.toLocaleString()} killcounts sorted ${sortDescriptions[sort]}.`,
-					files: [attachment]
+					files: [
+						{
+							buffer: Buffer.from(lines.join('\n')),
+							name: `minion-kc-${user.id}.txt`
+						}
+					]
 				};
 			}
 

@@ -3,7 +3,7 @@ import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
-import { lmsSimCommand } from '@/lib/minions/functions/lmsSimCommand.js';
+// import { lmsSimCommand } from '@/lib/minions/functions/lmsSimCommand.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
@@ -15,7 +15,7 @@ export async function lmsCommand(
 		simulate?: { names?: string };
 	},
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	interaction: MInteraction
 ) {
 	const stats = await getUsersLMSStats(user);
@@ -32,11 +32,10 @@ export async function lmsCommand(
 	}
 
 	if (options.simulate) {
-		const channel = await globalClient.fetchChannel(channelID);
-		if (!channel) {
-			return 'Unable to find channel.';
-		}
-		lmsSimCommand(channel, options.simulate.names);
+		const channel = await globalClient.fetchChannel(channelId);
+		if (!channel) return 'Unable to find channel.';
+		// TODO:
+		// lmsSimCommand(channel, options.simulate.names);
 		return {
 			content: 'Starting simulation...'
 		};
@@ -92,7 +91,7 @@ export async function lmsCommand(
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'lms',
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'LastManStanding',
 		quantity

@@ -47,7 +47,7 @@ function getTearsOfGuthixMissingSkillMessage(user: MUser): string | null {
 	return missing.length > 0 ? `You need the following requirements: ${missing}.` : null;
 }
 
-export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
+export async function tearsOfGuthixCommand(user: MUser, channelId: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const currentStats = await user.fetchStats();
 	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
@@ -78,7 +78,7 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'tears_of_guthix',
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: 1,
 		duration,
 		type: 'TearsOfGuthix'

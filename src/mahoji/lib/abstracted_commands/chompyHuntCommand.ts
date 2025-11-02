@@ -28,7 +28,7 @@ export async function chompyHuntClaimCommand(user: MUser) {
 	return `Added the following hats to your bank: ${missingHatsBank}`;
 }
 
-export async function chompyHuntCommand(user: MUser, channelID: string) {
+export async function chompyHuntCommand(user: MUser, channelId: string) {
 	if (user.QP < 10) {
 		return 'You need at least 10 QP to hunt Chompy birds.';
 	}
@@ -73,7 +73,7 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: tripLength,
 		type: 'BigChompyBirdHunting',
 		quantity,

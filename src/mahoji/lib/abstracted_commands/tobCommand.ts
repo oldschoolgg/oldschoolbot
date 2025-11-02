@@ -278,7 +278,7 @@ export async function tobStatsCommand(user: MUser) {
 export async function tobStartCommand(
 	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	isHardMode: boolean,
 	maxSizeInput: number | undefined,
 	solo: boolean,
@@ -459,7 +459,7 @@ export async function tobStartCommand(
 
 	await ActivityManager.startTrip<TheatreOfBloodTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: totalDuration,
 		type: 'TheatreOfBlood',
 		leader: user.id,

@@ -14,11 +14,11 @@ function hunt(rng: RNGProvider, minutes: number, user: MUser, min: number, max: 
 export const puroPuroTask: MinionTask = {
 	type: 'PuroPuro',
 	async run(data: PuroPuroActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, darkLure, implingTier } = data;
+		const { channelId, quantity, darkLure, implingTier } = data;
 
 		await user.incrementMinigameScore('puro_puro', quantity);
 		const minutes = Math.floor(data.duration / Time.Minute);
-		const bank = new Bank();
+		const loot = new Bank();
 		const missed = new Bank();
 		const itemCost = new Bank();
 		let hunterXP = 0;
@@ -34,34 +34,34 @@ export const puroPuroTask: MinionTask = {
 					const implingReceived = implings[loot.items()[0][0].id]!;
 					if (hunterLevel < implingReceived.level) missed.add(loot);
 					else {
-						bank.add(loot);
+						loot.add(loot);
 						const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
 						hunterXP += Number(implingReceivedXP.catchXP);
 					}
 				}
 				break;
 			case 3:
-				bank.add('Eclectic impling jar', singleImpQty);
+				loot.add('Eclectic impling jar', singleImpQty);
 				hunterXP += 30 * singleImpQty;
 				break;
 			case 4:
-				bank.add('Essence impling jar', singleImpQty);
+				loot.add('Essence impling jar', singleImpQty);
 				hunterXP += 22 * singleImpQty;
 				break;
 			case 5:
-				bank.add('Earth impling jar', singleImpQty);
+				loot.add('Earth impling jar', singleImpQty);
 				hunterXP += 25 * singleImpQty;
 				break;
 			case 6:
-				bank.add('Gourmet impling jar', singleImpQty);
+				loot.add('Gourmet impling jar', singleImpQty);
 				hunterXP += 22 * singleImpQty;
 				break;
 			case 7:
-				bank.add('Young impling jar', singleImpQty);
+				loot.add('Young impling jar', singleImpQty);
 				hunterXP += 20 * singleImpQty;
 				break;
 			case 8:
-				bank.add('Baby impling jar', singleImpQty);
+				loot.add('Baby impling jar', singleImpQty);
 				hunterXP += 18 * singleImpQty;
 				break;
 			default:
@@ -71,7 +71,7 @@ export const puroPuroTask: MinionTask = {
 					const implingReceived = implings[loot.items()[0][0].id]!;
 					if (hunterLevel < implingReceived.level) missed.add(loot);
 					else {
-						bank.add(loot);
+						loot.add(loot);
 						const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
 						hunterXP += Number(implingReceivedXP.catchXP);
 					}
@@ -80,7 +80,7 @@ export const puroPuroTask: MinionTask = {
 				break;
 		}
 
-		let str = `<@${user.id}>, ${user.minionName} finished hunting in Puro-Puro. `;
+		let message = `<@${user.id}>, ${user.minionName} finished hunting in Puro-Puro. `;
 
 		const xpStr = await user.addXP({
 			skillName: 'hunter',
@@ -90,11 +90,11 @@ export const puroPuroTask: MinionTask = {
 		});
 
 		if (hunterXP > 0) {
-			str += `\n${xpStr}.`;
+			message += `\n${xpStr}.`;
 		}
 
 		if (darkLure) {
-			const spellsUsed = bank.items().reduce((prev, curr) => {
+			const spellsUsed = loot.items().reduce((prev, curr) => {
 				let previousVal = prev;
 				const huntLevel = implings[curr[0].id].level;
 				if (huntLevel >= 58) previousVal += curr[1];
@@ -122,15 +122,15 @@ export const puroPuroTask: MinionTask = {
 				source: 'PuroPuro'
 			});
 
-			if (magicXP > 0) str += `\n${magicXpStr}.`;
+			if (magicXP > 0) message += `\n${magicXpStr}.`;
 			if (implingTier === 2) {
-				str += `\n**Boosts:** Due to using Dark Lure, you are catching 20% more implings. You used: ${itemCost}. ${saved}`;
+				message += `\n**Boosts:** Due to using Dark Lure, you are catching 20% more implings. You used: ${itemCost}. ${saved}`;
 			} else {
-				str += `\n**Boosts:** Due to using Dark Lure, you have an increased chance at getting Nature Implings and above. You used: ${itemCost}. ${saved}`;
+				message += `\n**Boosts:** Due to using Dark Lure, you have an increased chance at getting Nature Implings and above. You used: ${itemCost}. ${saved}`;
 			}
 		}
 
-		str += `\nYou received: **${bank
+		message += `\nYou received: **${loot
 			.items()
 			.sort((curr, next) => {
 				const currHunterLevel = implings[curr[0].id].level;
@@ -142,16 +142,16 @@ export const puroPuroTask: MinionTask = {
 			})
 			.join(', ')}**.`;
 
-		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
+		if (missed.length > 0) message += `\nYou missed out on ${missed} due to your hunter level being too low.`;
 
 		await user.transactItems({
-			itemsToAdd: bank,
+			itemsToAdd: loot,
 			collectionLog: true,
 			itemsToRemove: itemCost
 		});
 
-		await user.statsBankUpdate('puropuro_implings_bank', bank);
+		await user.statsBankUpdate('puropuro_implings_bank', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, bank);
+		return handleTripFinish({ user, channelId, message, data, loot });
 	}
 };

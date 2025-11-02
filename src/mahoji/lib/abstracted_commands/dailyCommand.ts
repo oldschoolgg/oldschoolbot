@@ -1,10 +1,10 @@
-import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { MathRNG, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
+import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
 import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export async function isUsersDailyReady(
 	user: MUser
@@ -77,7 +77,8 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
 	if (triviaCorrect && roll(13)) {
-		const { pet } = await user.giveRandomBotMessagesPet();
+		const pet = MathRNG.pick(pets);
+		await user.giveBotMessagePet(pet);
 		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 	}
 
@@ -89,13 +90,13 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		collectionLog: true,
 		itemsToAdd: loot
 	});
-	const image = await makeBankImage({
+
+	return new MessageBuilder().setContent(`${dmStr}\nYou received ${loot}`).addBankImage({
 		bank: itemsAdded,
-		title: `${user.rawUsername}'s Daily`,
+		title: `Daily Loot`,
 		previousCL,
 		showNewCL: true
 	});
-	return { content: `${dmStr}\nYou received ${loot}`, files: [image.file] };
 }
 
 export async function dailyCommand(interaction: MInteraction, user: MUser): CommandResponse {

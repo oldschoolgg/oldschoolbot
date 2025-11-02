@@ -1,4 +1,4 @@
-import { AttachmentBuilder, dateFm, type InteractionReplyOptions } from '@oldschoolgg/discord';
+import { dateFm } from '@oldschoolgg/discord';
 import { randArrItem } from '@oldschoolgg/rng';
 import {
 	calcPerHour,
@@ -87,7 +87,7 @@ async function getAllTradedItems(giveUniques = false) {
 
 const viewableThings: {
 	name: string;
-	run: (clientSettings: ClientStorage) => Promise<Bank | InteractionReplyOptions>;
+	run: (clientSettings: ClientStorage) => Promise<Bank | SendableMessage>;
 }[] = [
 	{
 		name: 'ToB Cost',
@@ -190,10 +190,11 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 			}
 			return {
 				files: [
-					(await makeBankImage({ bank: economyBank })).file,
-					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4)), {
-						name: 'bank.json'
-					})
+					await makeBankImage({ bank: economyBank }),
+					{
+						name: 'bank.json',
+						buffer: Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4))
+					}
 				]
 			};
 		}
@@ -267,18 +268,18 @@ The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every
 **Total Tax GP G.E Has To Spend on Item Sinks:** ${settings.taxBank.toLocaleString()} GP
 `,
 				files: [
-					(
-						await makeBankImage({
-							bank: await GrandExchange.fetchOwnedBank(),
-							title: 'Items in the G.E'
-						})
-					).file,
-					new AttachmentBuilder(Buffer.from(allTx.map(i => i.join('\t')).join('\n')), {
-						name: 'transactions.txt'
+					await makeBankImage({
+						bank: await GrandExchange.fetchOwnedBank(),
+						title: 'Items in the G.E'
 					}),
-					new AttachmentBuilder(Buffer.from(allLi.map(i => i.join('\t')).join('\n')), {
-						name: 'listings.txt'
-					})
+					{
+						name: 'transactions.txt',
+						buffer: Buffer.from(allTx.map(i => i.join('\t')).join('\n'))
+					},
+					{
+						name: 'listings.txt',
+						buffer: Buffer.from(allLi.map(i => i.join('\t')).join('\n'))
+					}
 				]
 			};
 		}
@@ -334,8 +335,9 @@ from bot_item_sell;`);
 
 			return {
 				files: [
-					new AttachmentBuilder(
-						Buffer.from(
+					{
+						name: 'output.txt',
+						buffer: Buffer.from(
 							result
 								.map(
 									(row, index) =>
@@ -347,9 +349,8 @@ from bot_item_sell;`);
 										).toFixed(1)}%)`
 								)
 								.join('\n')
-						),
-						{ name: 'output.txt' }
-					)
+						)
+					}
 				]
 			};
 		}
@@ -381,7 +382,7 @@ ORDER BY slots_used DESC;
 export const adminCommand = defineCommand({
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
-	guildID: globalConfig.supportServerID,
+	guildId: globalConfig.supportServerID,
 	options: [
 		{
 			type: 'Subcommand',
@@ -615,13 +616,13 @@ export const adminCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, userID, interaction, guildID }) => {
+	run: async ({ options, userID, interaction, guildId }) => {
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userID);
 		const isAdmin = globalConfig.adminUserIDs.includes(userID);
 		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
+		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
 		}
 
@@ -860,7 +861,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 				title: thing.name,
 				flags: { sort: thing.name === 'All Equipped Items' ? 'name' : (undefined as any) }
 			});
-			return { files: [image.file] };
+			return { files: [image] };
 		}
 
 		if (options.give_items) {
@@ -911,7 +912,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 				}
 
 				return {
-					files: [{ attachment: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
+					files: [{ buffer: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
 				};
 			}
 
@@ -940,7 +941,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			}
 
 			return {
-				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
+				files: [{ buffer: Buffer.from(str), name: 'output.txt' }]
 			};
 		}
 

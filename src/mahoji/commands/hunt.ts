@@ -53,7 +53,7 @@ export const huntCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const userBank = user.bank;
 		const userQP = user.QP;
 		const boosts = [];
@@ -260,7 +260,7 @@ export const huntCommand = defineCommand({
 		await ActivityManager.startTrip<HunterActivityTaskOptions>({
 			creatureID: creature.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			usingHuntPotion: usingHuntPotion ? true : undefined,

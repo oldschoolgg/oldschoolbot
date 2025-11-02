@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { PerkTier } from '@/lib/constants.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
 
 async function determineLimit(user: MUser) {
@@ -56,14 +55,10 @@ export const casketCommand = defineCommand({
 		const loot = new Bank(_loot);
 		if (loot.length === 0) return `${title} and got nothing :(`;
 
-		const image = await makeBankImage({
+		return new MessageBuilder().addBankImage({
 			bank: loot,
 			title,
 			user
 		});
-
-		return {
-			files: [image.file]
-		};
 	}
 });

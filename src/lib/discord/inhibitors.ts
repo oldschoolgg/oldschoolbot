@@ -1,5 +1,5 @@
-import { ComponentType, type InteractionReplyOptions, PermissionsBitField } from '@oldschoolgg/discord';
-import type { IChannel, IGuild } from '@oldschoolgg/schemas';
+import { ComponentType, type InteractionReplyOptions } from '@oldschoolgg/discord';
+import type { IMember } from '@oldschoolgg/schemas';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -8,18 +8,18 @@ import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js'
 import type { AnyCommand } from '@/lib/discord/index.js';
 import type { InhibitorResult } from '@/lib/discord/preCommand.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
-import type { MMember } from '@/lib/structures/MInteraction.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
+type InhibitorRunOptions = {
+	user: MUser;
+	command: AnyCommand;
+	guildId: string | null;
+	channelId: string;
+	member: IMember | null;
+};
 interface Inhibitor {
 	name: string;
-	run: (options: {
-		user: MUser;
-		command: AnyCommand;
-		guild: IGuild | null;
-		channel: IChannel | null;
-		member: MMember | null;
-	}) => false | InteractionReplyOptions | Promise<InteractionReplyOptions | false>;
+	run: (options: InhibitorRunOptions) => false | InteractionReplyOptions | Promise<InteractionReplyOptions | false>;
 	silent?: true;
 }
 
@@ -78,15 +78,15 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: ({ command, guild, user }) => {
+		run: ({ command, guildId, user }) => {
 			if (
 				!globalConfig.adminUserIDs.includes(user.id) &&
 				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
 			) {
 				return { content: 'This command is globally disabled.' };
 			}
-			if (!guild) return false;
-			const cachedSettings = untrustedGuildSettingsCache.get(guild.id);
+			if (!guildId) return false;
+			const cachedSettings = untrustedGuildSettingsCache.get(guildId);
 			if (cachedSettings?.disabledCommands.includes(command.name)) {
 				return { content: 'This command is disabled in this server.' };
 			}
@@ -95,9 +95,9 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'commandRoleLimit',
-		run: async ({ member, guild, channel, user }) => {
-			if (!guild || guild.id !== globalConfig.supportServerID || !channel) return false;
-			if (channel.id !== Channel.ServerGeneral) return false;
+		run: async ({ member, guildId, channelId, user }) => {
+			if (!guildId || guildId !== globalConfig.supportServerID || !channelId) return false;
+			if (channelId !== Channel.ServerGeneral) return false;
 			const perkTier = await user.fetchPerkTier();
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
@@ -109,29 +109,27 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'onlyStaffCanUseCommands',
-		run: ({ channel, guild, user, member }) => {
-			if (!guild || !member || !channel) return false;
+		run: async ({ channelId, guildId, user, member }) => {
+			if (!guildId || !member || !channelId) return false;
 			// Allow green gem badge holders to run commands in support channel:
-			if (channel.id === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
+			if (channelId === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
 				return false;
 			}
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
 			const userBitfield = user.bitfield;
 			const isStaff = userBitfield.includes(BitField.isModerator);
-			if (guild.id === globalConfig.supportServerID && isStaff) {
+			if (guildId === globalConfig.supportServerID && isStaff) {
 				return false;
 			}
 
 			// Allow guild-moderators to use commands in disabled channels
-			const settings = untrustedGuildSettingsCache.get(guild.id);
-			if (settings?.staffOnlyChannels.includes(channel.id)) {
-				const hasPerm = member.permissions.has(PermissionsBitField.Flags.BanMembers);
-				if (!hasPerm) {
-					return { content: "You need the 'Ban Members' permission to use commands in disabled channels." };
-				}
+			const settings = untrustedGuildSettingsCache.get(guildId);
+			if (!settings?.staffOnlyChannels.includes(channelId)) return false;
+			const hasPerms = await globalClient.memberHasPermissions(member, ['BAN_MEMBERS']);
+			if (!hasPerms) {
+				return { content: "You need the 'Ban Members' permission to use commands in disabled channels." };
 			}
-
 			return false;
 		},
 		silent: true
@@ -154,11 +152,11 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'blacklisted',
-		run: ({ user, guild }) => {
+		run: ({ user, guildId }) => {
 			if (BLACKLISTED_USERS.has(user.id)) {
 				return { content: 'This user is blacklisted.' };
 			}
-			if (guild && BLACKLISTED_GUILDS.has(guild.id)) {
+			if (guildId && BLACKLISTED_GUILDS.has(guildId)) {
 				return { content: 'This guild is blacklisted.' };
 			}
 			return false;
@@ -167,27 +165,9 @@ const inhibitors: Inhibitor[] = [
 	}
 ];
 
-export async function runInhibitors({
-	user,
-	channel,
-	member,
-	command,
-	guild
-}: {
-	user: MUser;
-	channel: IChannel | null;
-	member: MMember | null;
-	command: AnyCommand;
-	guild: IGuild | null;
-}): Promise<undefined | InhibitorResult> {
+export async function runInhibitors(opts: InhibitorRunOptions): Promise<undefined | InhibitorResult> {
 	for (const { run, silent } of inhibitors) {
-		const result = await run({
-			user,
-			channel,
-			member,
-			command,
-			guild
-		});
+		const result = await run(opts);
 		if (result !== false) {
 			return { reason: result, silent: Boolean(silent) };
 		}

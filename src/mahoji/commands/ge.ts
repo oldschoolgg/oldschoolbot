@@ -350,7 +350,7 @@ The next buy limit reset is at: ${dateFm(GrandExchange.getInterval().end)}, it r
 				files: [
 					{
 						name: 'ge.png',
-						attachment: image!
+						buffer: image!
 					}
 				]
 			};

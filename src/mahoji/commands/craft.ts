@@ -34,7 +34,7 @@ export const craftCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		let { quantity } = options;
 
 		if (options.name.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;
@@ -106,7 +106,7 @@ export const craftCommand = defineCommand({
 		await ActivityManager.startTrip<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Crafting'

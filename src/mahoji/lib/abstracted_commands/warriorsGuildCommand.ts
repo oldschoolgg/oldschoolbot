@@ -30,7 +30,7 @@ export const Armours = [
 	}
 ];
 
-async function tokensCommand(user: MUser, channelID: string, quantity: number | undefined) {
+async function tokensCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const maxTripLength = await user.calcMaxTripLength('AnimatedArmour');
 	const userBank = user.bank;
 
@@ -58,7 +58,7 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 	await ActivityManager.startTrip<AnimatedArmourActivityTaskOptions>({
 		armourID: armorSet.name,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'AnimatedArmour'
@@ -71,7 +71,7 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 	return response;
 }
 
-async function cyclopsCommand(user: MUser, channelID: string, quantity: number | undefined) {
+async function cyclopsCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const userBank = user.bank;
 	const hasAttackCape = user.gear.melee.hasEquipped('Attack cape');
 	const maxTripLength = await user.calcMaxTripLength('Cyclops');
@@ -116,7 +116,7 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Cyclops'
@@ -135,7 +135,7 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 
 export async function warriorsGuildCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	choice: string,
 	quantity: number | undefined
 ) {
@@ -146,7 +146,7 @@ export async function warriorsGuildCommand(
 	}
 
 	if (choice === 'cyclops') {
-		return cyclopsCommand(user, channelID, quantity);
+		return cyclopsCommand(user, channelId, quantity);
 	}
-	return tokensCommand(user, channelID, quantity);
+	return tokensCommand(user, channelId, quantity);
 }

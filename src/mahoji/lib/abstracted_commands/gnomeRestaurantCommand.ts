@@ -6,7 +6,7 @@ import { getPOHObject } from '@/lib/poh/index.js';
 import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 
-export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
+export async function gnomeRestaurantCommand(user: MUser, channelId: string) {
 	let deliveryLength = Time.Minute * 7;
 
 	const itemsToRemove = new Bank();
@@ -94,7 +94,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	await ClientSettings.updateBankSetting('gnome_res_cost', itemsToRemove);
 	await ActivityManager.startTrip<GnomeRestaurantActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'GnomeRestaurant',
 		quantity,

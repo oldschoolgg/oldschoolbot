@@ -100,7 +100,7 @@ export const lapsCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const course = courses.find(
 			course =>
 				stringMatches(course.id.toString(), options.name) ||
@@ -165,7 +165,7 @@ export const lapsCommand = defineCommand({
 		await ActivityManager.startTrip<AgilityActivityTaskOptions>({
 			courseID: course.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Agility',

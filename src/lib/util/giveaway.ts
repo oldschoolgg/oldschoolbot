@@ -1,5 +1,5 @@
 import { type MessageEditOptions, time, userMention } from '@oldschoolgg/discord';
-import { debounce, Events, noOp, Time } from '@oldschoolgg/toolkit';
+import { debounce, Events, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
@@ -8,9 +8,8 @@ async function refundGiveaway(creator: MUser, loot: Bank) {
 	await creator.transactItems({
 		itemsToAdd: loot
 	});
-	const user = await globalClient.users.fetch(creator.id);
 	Logging.logDebug('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
-	await user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
+	await globalClient.sendDm(creator.id, `Your giveaway failed to finish, you were refunded the items: ${loot}.`);
 }
 
 export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[]) {

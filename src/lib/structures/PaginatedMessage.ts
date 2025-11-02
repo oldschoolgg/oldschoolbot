@@ -1,22 +1,9 @@
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	type ButtonInteraction,
-	ComponentType,
-	type InteractionReplyOptions
-} from '@oldschoolgg/discord';
+import { ButtonBuilder, type ButtonInteraction, ComponentType } from '@oldschoolgg/discord';
 import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
 import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 import { isFunction } from 'remeda';
 
-const PaginatedCustomID = {
-	PaginatedMessage: {
-		FirstPage: 'PM_FIRST_PAGE',
-		PreviousPage: 'PM_PREVIOUS_PAGE',
-		NextPage: 'PM_NEXT_PAGE',
-		LastPage: 'PM_LAST_PAGE'
-	}
-} as const;
+import { InteractionID } from '@/lib/InteractionID.js';
 
 const controlButtons: {
 	customId: string;
@@ -24,14 +11,14 @@ const controlButtons: {
 	run: (opts: { paginatedMessage: BasePaginatedMessage }) => unknown;
 }[] = [
 	{
-		customId: PaginatedCustomID.PaginatedMessage.FirstPage,
+		customId: InteractionID.PaginatedMessage.FirstPage,
 		emoji: '⏪',
 		run: ({ paginatedMessage }) => {
 			paginatedMessage.index = 0;
 		}
 	},
 	{
-		customId: PaginatedCustomID.PaginatedMessage.PreviousPage,
+		customId: InteractionID.PaginatedMessage.PreviousPage,
 		emoji: '◀️',
 		run: ({ paginatedMessage }) => {
 			if (paginatedMessage.index === 0) {
@@ -42,7 +29,7 @@ const controlButtons: {
 		}
 	},
 	{
-		customId: PaginatedCustomID.PaginatedMessage.NextPage,
+		customId: InteractionID.PaginatedMessage.NextPage,
 		emoji: '▶️',
 		run: ({ paginatedMessage }) => {
 			if (paginatedMessage.index === paginatedMessage.totalPages - 1) {
@@ -53,7 +40,7 @@ const controlButtons: {
 		}
 	},
 	{
-		customId: PaginatedCustomID.PaginatedMessage.LastPage,
+		customId: InteractionID.PaginatedMessage.LastPage,
 		emoji: '⏩',
 		run: ({ paginatedMessage }) => {
 			paginatedMessage.index = paginatedMessage.totalPages - 1;
@@ -61,15 +48,13 @@ const controlButtons: {
 	}
 ];
 
-export type CompatibleResponse = { content?: string; ephemeral?: boolean } & InteractionReplyOptions;
-
 export type PaginatedMessagePage =
-	| CompatibleResponse
-	| ((currentIndex: number) => Promise<CompatibleResponse> | CompatibleResponse);
+	| BaseSendableMessage
+	| ((currentIndex: number) => Promise<BaseSendableMessage> | BaseSendableMessage);
 export type PaginatedPages =
 	| {
 			numPages: number;
-			generate: (opts: { currentPage: number }) => Promise<CompatibleResponse> | CompatibleResponse;
+			generate: (opts: { currentPage: number }) => Promise<BaseSendableMessage> | BaseSendableMessage;
 	  }
 	| PaginatedMessagePage[];
 
@@ -84,7 +69,7 @@ class BasePaginatedMessage {
 		this.totalPages = Array.isArray(pages) ? pages.length : pages.numPages;
 	}
 
-	async render(): Promise<CompatibleResponse> {
+	async render(): Promise<BaseSendableMessage> {
 		try {
 			const rawPage = !Array.isArray(this.pages)
 				? await this.pages.generate({ currentPage: this.index })
@@ -96,16 +81,12 @@ class BasePaginatedMessage {
 				components:
 					this.totalPages === 1
 						? []
-						: [
-								new ActionRowBuilder<ButtonBuilder>().addComponents(
-									controlButtons.map(i =>
-										new ButtonBuilder()
-											.setStyle(ButtonStyle.Secondary)
-											.setCustomId(i.customId)
-											.setEmoji({ id: i.emoji })
-									)
-								)
-							]
+						: controlButtons.map(i =>
+								new ButtonBuilder()
+									.setStyle(ButtonStyle.Secondary)
+									.setCustomId(i.customId)
+									.setEmoji({ id: i.emoji })
+							)
 			};
 		} catch (err) {
 			let msg = 'Sorry, something went wrong.';
@@ -153,11 +134,12 @@ export class PaginatedMessage extends BasePaginatedMessage {
 		collector.on('collect', async (buttonPressInteraction: ButtonInteraction) => {
 			if (targetUsers && !targetUsers.includes(buttonPressInteraction.user.id)) {
 				await buttonPressInteraction.reply({ content: "This isn't your message!", flags });
+				await globalClient.respondToAutocompleteInteraction;
 				return;
 			}
 
 			// Acknowledge the button press to avoid "This interaction failed" message.
-			await this.interaction.client.rest.post(
+			await globalClient.rest.post(
 				Routes.interactionCallback(buttonPressInteraction.id, buttonPressInteraction.token),
 				{
 					body: {

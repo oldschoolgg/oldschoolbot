@@ -174,7 +174,7 @@ export const raidCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ interaction, options, user, channelID }) => {
+	run: async ({ interaction, options, user, channelId }) => {
 		if (interaction) await interaction.defer();
 
 		const { cox, tob } = options;
@@ -182,14 +182,14 @@ export const raidCommand = defineCommand({
 		if (cox?.itemboosts) return coxBoostsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
-		if (options.toa?.help) return toaHelpCommand(user, channelID);
+		if (options.toa?.help) return toaHelpCommand(user, channelId);
 
 		if (user.minionIsBusy) return "Your minion is busy, you can't do this.";
 
 		if (cox?.start) {
 			return coxCommand(
 				interaction,
-				channelID,
+				channelId,
 				user,
 				cox.start.type,
 				cox.start.max_team_size,
@@ -201,7 +201,7 @@ export const raidCommand = defineCommand({
 			return tobStartCommand(
 				interaction,
 				user,
-				channelID,
+				channelId,
 				Boolean(tob.start.hard_mode),
 				tob.start.max_team_size,
 				Boolean(tob.start.solo),
@@ -214,7 +214,7 @@ export const raidCommand = defineCommand({
 				interaction,
 				user,
 				Boolean(options.toa.start.solo),
-				channelID,
+				channelId,
 				options.toa.start.raid_level,
 				options.toa.start.max_team_size,
 				options.toa.start.quantity

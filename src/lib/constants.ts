@@ -355,7 +355,7 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
-const GuildId = {
+const guildId = {
 	OldschoolGG: '342983479501389826',
 	TestServer: '940758552425955348'
 };
@@ -369,7 +369,7 @@ export const globalConfig = globalConfigSchema.parse({
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
 	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID,
-	guildsIdsToCache: [GuildId.OldschoolGG, GuildId.TestServer]
+	guildsIdsToCache: [guildId.OldschoolGG, guildId.TestServer]
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {

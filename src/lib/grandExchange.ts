@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle, bold, dateFm, makeComponents, userMention } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, bold, dateFm, userMention } from '@oldschoolgg/discord';
 import { calcPercentOfNum, getInterval, miniID, noOp, sumArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
@@ -655,8 +655,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			.setLabel('Disable These DMs')
 			.setStyle(ButtonStyle.Secondary);
 
-		const buyerDJSUser = await globalClient.users.fetch(buyerListing.user_id).catch(noOp);
-		if (buyerDJSUser && !buyerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
+		if (!buyerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You bought ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
 			)} GP each, for a total of ${toKMB(totalPriceAfterTax)} GP${totalTaxPaid > 0 ? ', after tax' : ''}.`;
@@ -689,11 +688,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				components.push(createGECancelButton(buyerListing));
 			}
 
-			await buyerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
+			await globalClient.sendDm(buyerUser.id, { content: str, components: components }).catch(noOp);
 		}
 
-		const sellerDJSUser = await globalClient.users.fetch(sellerListing.user_id).catch(noOp);
-		if (sellerDJSUser && !sellerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
+		if (!sellerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You sold ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
 			)} GP each and received ${sellerLoot}.`;
@@ -711,7 +709,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				str += '\n\nThis listing has now been fully fulfilled.';
 			}
 
-			await sellerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
+			await globalClient.sendDm(sellerUser.id, { content: str, components: components }).catch(noOp);
 		}
 	}
 

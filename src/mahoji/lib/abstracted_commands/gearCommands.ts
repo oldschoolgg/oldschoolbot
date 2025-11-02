@@ -124,7 +124,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 
 	return {
 		content: `You equipped the ${preset.name} preset in your ${gearSetup} setup.`,
-		files: [{ name: 'gear.png', attachment: image }]
+		files: [{ name: 'gear.png', buffer: image }]
 	};
 }
 
@@ -167,7 +167,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 
 	return {
 		content,
-		files: [{ name: 'gear.png', attachment: image }]
+		files: [{ name: 'gear.png', buffer: image }]
 	};
 }
 
@@ -255,7 +255,7 @@ export async function gearUnequipCommand(
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,
-		files: [{ name: 'gear.png', attachment: image }]
+		files: [{ name: 'gear.png', buffer: image }]
 	};
 }
 
@@ -294,7 +294,7 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 	const image = await user.generateGearImage({ setupType: gearSetup });
 	return {
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
-		files: [{ name: 'gear.png', attachment: image }]
+		files: [{ name: 'gear.png', buffer: image }]
 	};
 }
 
@@ -307,21 +307,21 @@ export async function gearStatsCommand(user: MUser, input: string): CommandRespo
 		}
 	}
 	const image = await user.generateGearImage({ gearSetup: new Gear(gear) });
-	return { files: [{ name: 'image.png', attachment: image }] };
+	return { files: [{ name: 'image.png', buffer: image }] };
 }
 
 export async function gearViewCommand(user: MUser, input: string, text: boolean): CommandResponse {
 	if (stringMatches(input, 'all')) {
 		const file = text
 			? {
-					attachment: Buffer.from(
+					buffer: Buffer.from(
 						Object.entries(user.gear)
 							.map(i => `${i[0]}: ${i[1].toString()}`)
 							.join('\n')
 					),
 					name: 'gear.txt'
 				}
-			: { attachment: await user.generateGearImage({ setupType: 'all' }), name: 'osbot.png' };
+			: { buffer: await user.generateGearImage({ setupType: 'all' }), name: 'osbot.png' };
 		return {
 			content: 'Here are all your gear setups',
 			files: [file]
@@ -383,7 +383,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 		return gear.toString();
 	}
 	const image = await generateGearImage({ gearSetup: gear, gearType: input, petID: user.user.minion_equippedPet });
-	return { files: [{ attachment: image, name: 'gear.png' }] };
+	return { files: [{ buffer: image, name: 'gear.png' }] };
 }
 
 export async function gearSwapCommand(

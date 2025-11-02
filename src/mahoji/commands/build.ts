@@ -58,7 +58,7 @@ export const buildCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const object = Constructables.find(
 			object =>
 				stringMatches(object.id.toString(), options.name) ||
@@ -127,7 +127,7 @@ export const buildCommand = defineCommand({
 		await ActivityManager.startTrip<ConstructionActivityTaskOptions>({
 			objectID: object.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Construction'

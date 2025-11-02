@@ -1,5 +1,4 @@
 // import {
-// 	type AttachmentBuilder,
 // 	type BaseMessageOptions,
 // 	channelIsSendable,
 // 	type DMChannel,
@@ -13,15 +12,15 @@
 
 // import { globalConfig } from '@/lib/constants.js';
 
-// async function resolveChannel(channelID: string): Promise<WebhookClient | TextChannel | DMChannel | undefined> {
-// 	const channel = globalClient.channels.cache.get(channelID);
+// async function resolveChannel(channelId: string): Promise<WebhookClient | TextChannel | DMChannel | undefined> {
+// 	const channel = globalClient.channels.cache.get(channelId);
 // 	if (!channel || channel instanceof PartialGroupDMChannel) return undefined;
 // 	if (channel.isDMBased()) {
 // 		if (channel.partial) return channel.fetch();
 // 		return channel;
 // 	}
 // 	if (!channelIsSendable(channel)) return undefined;
-// 	const db = await prisma.webhook.findFirst({ where: { channel_id: channelID } });
+// 	const db = await prisma.webhook.findFirst({ where: { channel_id: channelId } });
 // 	if (db) {
 // 		return new WebhookClient({ id: db.webhook_id, token: db.webhook_token });
 // 	}
@@ -40,7 +39,7 @@
 // 		})) as { id: string; token: string };
 // 		await prisma.webhook.create({
 // 			data: {
-// 				channel_id: channelID,
+// 				channel_id: channelId,
 // 				webhook_id: createdWebhook.id,
 // 				webhook_token: createdWebhook.token!
 // 			}
@@ -52,17 +51,16 @@
 // 	}
 // }
 
-// async function deleteWebhook(channelID: string) {
-// 	await prisma.webhook.delete({ where: { channel_id: channelID } });
+// async function deleteWebhook(channelId: string) {
+// 	await prisma.webhook.delete({ where: { channel_id: channelId } });
 // }
 
 // async function sendToChannelOrWebhook(
-// 	channelID: string,
+// 	channelId: string,
 // 	_data:
 // 		| string
 // 		| {
 // 			content?: string;
-// 			image?: Buffer | AttachmentBuilder;
 // 			embed?: EmbedBuilder;
 // 			files?: BaseMessageOptions['files'];
 // 			components?: BaseMessageOptions['components'];
@@ -73,7 +71,7 @@
 // 	const allowedMentions = data.allowedMentions ?? {
 // 		parse: ['users']
 // 	};
-// 	const channel = await resolveChannel(channelID);
+// 	const channel = await resolveChannel(channelId);
 // 	if (!channel) return;
 
 // 	const files = data.image ? [data.image] : data.files;
@@ -91,12 +89,12 @@
 // 		} catch (err: any) {
 // 			const error = err as Error;
 // 			if (error.message === 'Unknown Webhook') {
-// 				await deleteWebhook(channelID);
-// 				await globalClient.sendMessage(channelID, data);
+// 				await deleteWebhook(channelId);
+// 				await globalClient.sendMessage(channelId, data);
 // 			} else {
 // 				Logging.logError(error, {
 // 					content: data.content ?? 'None',
-// 					channelID
+// 					channelId
 // 				});
 // 			}
 // 		} finally {

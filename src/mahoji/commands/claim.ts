@@ -8,7 +8,6 @@ import { calcCLDetails } from '@/lib/data/Collections.js';
 import { HolidayItems } from '@/lib/data/holidayItems.js';
 import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const claimables = [
 	{
@@ -66,19 +65,12 @@ const claimables = [
 					.map(id => Items.itemNameFromId(id))
 					.join(', ')}.`
 			);
-			return {
-				content: messages.join(' '),
-				files: [
-					(
-						await makeBankImage({
-							bank: itemsToAdd,
-							title: `Halloween Items Claimed`,
-							user,
-							flags: { forceAllPurple: 1 }
-						})
-					).file
-				]
-			};
+			return new MessageBuilder().setContent(messages.join('')).addBankImage({
+				bank: itemsToAdd,
+				title: `Halloween Items Claimed`,
+				user,
+				flags: { forceAllPurple: 1 }
+			});
 		}
 	},
 	...CollectionLog.ranks.map(rank => ({

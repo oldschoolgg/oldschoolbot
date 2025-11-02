@@ -6,7 +6,7 @@ import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 export const questingTask: MinionTask = {
 	type: 'Questing',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { channelID } = data;
+		const { channelId } = data;
 
 		const currentQP = user.QP;
 
@@ -61,6 +61,6 @@ export const questingTask: MinionTask = {
 			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

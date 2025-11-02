@@ -74,7 +74,7 @@ export const offerCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction }) => {
 		const userBank = user.bank;
 
 		await interaction.defer();
@@ -121,7 +121,7 @@ export const offerCommand = defineCommand({
 				}
 			}
 
-			const { file } = await makeBankImage({
+			const file = await makeBankImage({
 				bank: itemsAdded,
 				title: `Loot from offering ${quantity} ${whichOfferable.name}`,
 				flags: { showNewCL: 1 },
@@ -167,7 +167,7 @@ export const offerCommand = defineCommand({
 
 			notifyUniques(user, egg.name, ItemGroups.evilChickenOutfit, loot, quantity);
 
-			const { file } = await makeBankImage({
+			const file = await makeBankImage({
 				bank: itemsAdded,
 				title: `${quantity}x ${egg.name}`,
 				user,
@@ -253,7 +253,7 @@ export const offerCommand = defineCommand({
 		await ActivityManager.startTrip<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Offering'

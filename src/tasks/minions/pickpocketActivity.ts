@@ -47,7 +47,7 @@ export function calcLootXPPickpocketing(
 export const pickpocketTask: MinionTask = {
 	type: 'Pickpocket',
 	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish }) {
-		const { monsterID, quantity, successfulQuantity, channelID, xpReceived, duration } = data;
+		const { monsterID, quantity, successfulQuantity, channelId, xpReceived, duration } = data;
 
 		const obj = Thieving.stealables.find(_obj => _obj.id === monsterID)!;
 		const currentLevel = user.skillLevel('thieving');
@@ -137,7 +137,7 @@ export const pickpocketTask: MinionTask = {
 			);
 		}
 
-		const image =
+		const image: SendableFile | undefined =
 			itemsAdded.length === 0
 				? undefined
 				: await makeBankImage({
@@ -147,6 +147,15 @@ export const pickpocketTask: MinionTask = {
 						previousCL
 					});
 
-		handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded);
+		handleTripFinish({
+			user,
+			channelId,
+			message: {
+				content: str,
+				files: image ? [image] : undefined
+			},
+			data,
+			loot: itemsAdded
+		});
 	}
 };

@@ -319,7 +319,10 @@ export class TestUser extends MUserClass {
 			interaction: mockedInt,
 			user: this,
 			options,
-			rng: MathRNG
+			rng: MathRNG,
+			guildId: '342983479501389826',
+			channelId: TEST_CHANNEL_ID,
+			userId: this.user.id
 		});
 		if (syncAfter) {
 			await this.sync();

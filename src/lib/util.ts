@@ -18,13 +18,6 @@ export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOpti
 	return 'users' in data;
 }
 
-export function getSupportGuild() {
-	if (!globalClient || Object.keys(globalClient).length === 0) return null;
-	const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
-	if (!guild) return null;
-	return guild;
-}
-
 export function skillingPetDropRate(
 	user: MUser | GearBank | number,
 	skill: SkillNameType,
@@ -65,7 +58,7 @@ export async function fetchUsernameAndCache(_id: string | bigint): Promise<strin
 
 	// If no username available, fetch it
 	if (!user?.username && !process.env.TEST) {
-		const djsUser = await globalClient.users.fetch(id).catch(() => null);
+		const djsUser = await globalClient.fetchUser(id).catch(() => null);
 		if (djsUser) {
 			user = await prisma.user.update({
 				where: {

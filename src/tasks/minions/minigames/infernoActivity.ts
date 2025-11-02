@@ -9,7 +9,7 @@ import type { InfernoOptions } from '@/lib/types/minions.js';
 export const infernoTask: MinionTask = {
 	type: 'Inferno',
 	async run(data: InfernoOptions, { user, handleTripFinish }) {
-		const { channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
+		const { channelId, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
 
 		const score = await user.fetchMinigameScore('inferno');
 
@@ -36,7 +36,7 @@ export const infernoTask: MinionTask = {
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
 		const hasDiary = user.hasDiary('karamja.elite');
 		if (hasDiary) tokkul *= 2;
-		const baseBank = new Bank().add('Tokkul', tokkul);
+		const loot = new Bank().add('Tokkul', tokkul);
 		const xpBonuses = [];
 
 		xpBonuses.push(
@@ -152,20 +152,18 @@ export const infernoTask: MinionTask = {
 
 		if (diedPreZuk) {
 			text += `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
-			chatText = `You die before you even reach TzKal-Zuk... At least you tried, I give you ${baseBank.amount(
+			chatText = `You die before you even reach TzKal-Zuk... At least you tried, I give you ${loot.amount(
 				'Tokkul'
 			)}x Tokkul.`;
 		} else if (diedZuk) {
 			text += `You died ${formatDuration(deathTime!)} into your attempt, during the Zuk fight.`;
-			chatText = `You died to Zuk. Nice try JalYt, for your effort I give you ${baseBank.amount(
-				'Tokkul'
-			)}x Tokkul.`;
+			chatText = `You died to Zuk. Nice try JalYt, for your effort I give you ${loot.amount('Tokkul')}x Tokkul.`;
 		} else {
 			const zukLoot = Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask });
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
-			baseBank.add(zukLoot);
+			loot.add(zukLoot);
 
-			if (baseBank.has('Jal-nib-rek')) {
+			if (loot.has('Jal-nib-rek')) {
 				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.badgedUsername}** just received their ${formatOrdinal(
@@ -176,7 +174,7 @@ export const infernoTask: MinionTask = {
 				);
 			}
 
-			if (baseBank.has('Infernal cape') && user.cl.amount('Infernal cape') === 0) {
+			if (loot.has('Infernal cape') && user.cl.amount('Infernal cape') === 0) {
 				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
 				globalClient.emit(
 					Events.ServerNotification,
@@ -189,14 +187,12 @@ export const infernoTask: MinionTask = {
 			}
 		}
 
-		await user.transactItems({ itemsToAdd: baseBank, collectionLog: true });
+		await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user} ${text}
+		const message = {
+			content: `${user} ${text}
 
-**Loot:** ${baseBank}
+**Loot:** ${loot}
 **XP:** ${xpStr}
 You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 				unusedItems.length
@@ -206,12 +202,19 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 					: '.'
 			}
 `,
-			await chatHeadImage({
-				content: chatText,
-				head: 'ketKeh'
-			}),
+			files: [
+				await chatHeadImage({
+					content: chatText,
+					head: 'ketKeh'
+				})
+			]
+		};
+		return handleTripFinish({
+			user,
+			channelId,
+			message,
 			data,
-			baseBank
-		);
+			loot
+		});
 	}
 };

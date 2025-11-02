@@ -29,7 +29,7 @@ const riskDeathNumbers = [
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { creatureID, quantity, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } = data;
+		const { creatureID, quantity, channelId, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } = data;
 		const userBank = user.bank;
 		const currentLevel = user.skillsAsLevels.hunter;
 		const currentHerbLevel = user.skillsAsLevels.herblore;
@@ -214,6 +214,6 @@ export const hunterTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

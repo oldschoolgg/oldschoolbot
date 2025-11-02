@@ -2,7 +2,7 @@ import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@olds
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function fishingTrawlerCommand(user: MUser, channelID: string) {
+export async function fishingTrawlerCommand(user: MUser, channelId: string) {
 	if (user.skillLevel('fishing') < 15) {
 		return 'You need at least level 15 Fishing to do the Fishing Trawler.';
 	}
@@ -19,7 +19,7 @@ export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		type: 'FishingTrawler',
 		minigameID: 'fishing_trawler',
 		quantity,

@@ -40,7 +40,7 @@ export const smeltingCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ user, options, channelID }) => {
+	run: async ({ user, options, channelId }) => {
 		let { name, quantity, blast_furnace } = options;
 
 		if (blast_furnace === undefined) blast_furnace = false;
@@ -144,7 +144,7 @@ export const smeltingCommand = defineCommand({
 		await ActivityManager.startTrip<SmeltingActivityTaskOptions>({
 			barID: bar.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			blastf: blast_furnace,
 			duration,

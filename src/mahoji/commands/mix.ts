@@ -47,7 +47,7 @@ export const mixCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const mixableItem = Herblore.Mixables.find(
 			i => stringMatches(i.item.name, options.name) || i.aliases.some(alias => stringMatches(alias, options.name))
 		);
@@ -123,7 +123,7 @@ export const mixCommand = defineCommand({
 		await ActivityManager.startTrip<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.item.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			zahur: Boolean(zahur),
 			wesley: Boolean(wesley),
 			quantity,

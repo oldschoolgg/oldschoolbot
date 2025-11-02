@@ -1,3 +1,4 @@
+import type { IUser, IMember, IChannel, IRole } from '@oldschoolgg/schemas';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, userMention } from '@discordjs/builders';
 import {
 	AttachmentBuilder,
@@ -31,8 +32,13 @@ import {
 	InteractionResponseType,
 	MessageFlags,
 	PresenceUpdateStatus,
-	Routes
+	Routes,
+	type APIInteractionDataResolvedChannel,
+	type APIInteractionDataResolvedGuildMember,
+	type APIRole,
+	type APIUser
 } from 'discord-api-types/v10';
+import { Permissions } from './Permissions.js';
 
 export enum ButtonStyle {
 	Primary = 1,
@@ -88,7 +94,8 @@ export {
 export type { CommandInteractionOption };
 
 export * from '@discordjs/formatters';
-export * from 'discord-api-types/v10';
+
+// export * from 'discord-api-types/v10';
 
 export * from './util.js';
 
@@ -96,3 +103,49 @@ export type ApplicationCommandOptionChoiceData<Value extends number | string = n
 	name: string;
 	value: Value;
 };
+
+export * from './Permissions.js';
+
+export function convertApiUserToZUser(apiUser: APIUser): IUser {
+	return {
+		id: apiUser.id,
+		username: apiUser.username,
+		bot: Boolean(apiUser.bot)
+	};
+}
+
+export function convertApiMemberToZMember(options: {
+	userId: string; apiMember: APIInteractionDataResolvedGuildMember;
+	guildId: string;
+}): IMember {
+	return {
+		user_id: options.userId,
+		guild_id: options.guildId,
+		permissions: Permissions.toKeys(options.apiMember.permissions),
+		roles: options.apiMember.roles
+	}
+}
+
+export function convertApiChannelToZChannel({ apiChannel, guildId }: {
+	apiChannel: APIInteractionDataResolvedChannel;
+	guildId?: string;
+}): IChannel {
+	return {
+		id: apiChannel.id,
+		guild_id: guildId ?? null,
+		type: apiChannel.type
+	};
+}
+
+export function convertApiRoleToZRole({ apiRole, guildId }: {
+	apiRole: APIRole;
+	guildId: string;
+}): IRole {
+	return {
+		id: apiRole.id,
+		permissions: Permissions.toKeys(apiRole.permissions),
+		guild_id: guildId,
+		name: apiRole.name,
+		color: apiRole.color
+	};
+}

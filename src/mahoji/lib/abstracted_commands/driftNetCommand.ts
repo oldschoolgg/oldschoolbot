@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export async function driftNetCommand(
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	minutes: number | undefined,
 	noStams: boolean | undefined
@@ -75,7 +75,7 @@ export async function driftNetCommand(
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'DriftNet'

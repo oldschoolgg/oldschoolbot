@@ -10,7 +10,7 @@ import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
 	async run(data: RunecraftActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { runeID, essenceQuantity, channelID, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
+		const { runeID, essenceQuantity, channelId, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 
@@ -93,6 +93,6 @@ export const runecraftTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

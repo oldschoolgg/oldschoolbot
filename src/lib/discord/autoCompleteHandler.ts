@@ -1,5 +1,5 @@
-import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from '@oldschoolgg/discord';
 import type { IAutoCompleteInteraction, IAutoCompleteInteractionOption, IMember } from '@oldschoolgg/schemas';
+import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
 
 import type { AnyCommand } from '@/lib/discord/index.js';
 
@@ -52,7 +52,7 @@ async function handleAutocomplete(
 }
 
 export async function autoCompleteHandler(interaction: IAutoCompleteInteraction) {
-	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
+	const command = globalClient.allCommands.find(c => c.name === interaction.command_name)!;
 	const user = await mUserFetch(interaction.user.id);
 	const choices = await handleAutocomplete(user, command, interaction.options, interaction.member);
 	await globalClient.respondToAutocompleteInteraction(interaction, choices);

@@ -6,12 +6,12 @@ import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function cutLeapingFishCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	quantity?: number;
 }) {
@@ -63,7 +63,7 @@ export async function cutLeapingFishCommand({
 	await ActivityManager.startTrip<CutLeapingFishActivityTaskOptions>({
 		fishID: barbarianFish.item.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'CutLeapingFish'

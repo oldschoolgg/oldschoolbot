@@ -1,18 +1,8 @@
-import {
-	ActionRowBuilder,
-	AttachmentBuilder,
-	type BaseMessageOptions,
-	ButtonBuilder,
-	channelIsSendable,
-	EmbedBuilder,
-	makeComponents,
-	messageLink,
-	time
-} from '@oldschoolgg/discord';
+import { ButtonBuilder, EmbedBuilder, makeComponents, messageLink, time } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { chunk, Emoji, Time } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
-import { ButtonStyle, ChannelType, MessageFlags } from 'discord-api-types/v10';
+import { ButtonStyle } from 'discord-api-types/v10';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
@@ -27,18 +17,16 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isModOrAdmin } from '@/lib/util.js';
 
-function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
+function makeGiveawayButtons(giveawayID: number) {
 	return [
-		new ActionRowBuilder<ButtonBuilder>().addComponents([
-			new ButtonBuilder()
-				.setCustomId(`GIVEAWAY_ENTER_${giveawayID}`)
-				.setLabel('Join Giveaway')
-				.setStyle(ButtonStyle.Primary),
-			new ButtonBuilder()
-				.setCustomId(`GIVEAWAY_LEAVE_${giveawayID}`)
-				.setLabel('Leave Giveaway')
-				.setStyle(ButtonStyle.Secondary)
-		])
+		new ButtonBuilder()
+			.setCustomId(`GIVEAWAY_ENTER_${giveawayID}`)
+			.setLabel('Join Giveaway')
+			.setStyle(ButtonStyle.Primary),
+		new ButtonBuilder()
+			.setCustomId(`GIVEAWAY_LEAVE_${giveawayID}`)
+			.setLabel('Leave Giveaway')
+			.setStyle(ButtonStyle.Secondary)
 	];
 }
 
@@ -106,10 +94,8 @@ export const giveawayCommand = defineCommand({
 			options: []
 		}
 	],
-	run: async ({ options, user, guildID, interaction, channelID, user: apiUser }): CommandResponse => {
+	run: async ({ options, user, guildId, interaction, channelId, user: apiUser }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
-		const channel = globalClient.channels.cache.get(channelID);
-		if (!channelIsSendable(channel)) return 'Invalid channel.';
 
 		if (options.start) {
 			const existingGiveaways = await prisma.giveaway.findMany({
@@ -122,7 +108,7 @@ export const giveawayCommand = defineCommand({
 				return 'You cannot have more than 10 giveaways active at a time.';
 			}
 
-			if (!guildID) {
+			if (!guildId) {
 				return 'You cannot make a giveaway outside a server.';
 			}
 
@@ -167,17 +153,13 @@ export const giveawayCommand = defineCommand({
 
 			const giveawayID = randInt(1, 500_000_000);
 
-			const message = await channel.send({
+			const message = await globalClient.sendMessage(channelId, {
 				content: generateGiveawayContent(user.id, duration.fromNow, []),
 				files: [
-					new AttachmentBuilder(
-						(
-							await makeBankImage({
-								bank,
-								title: `${apiUser?.username ?? user.rawUsername}'s Giveaway`
-							})
-						).file.attachment
-					)
+					await makeBankImage({
+						bank,
+						title: `${apiUser?.username ?? user.username}'s Giveaway`
+					})
 				],
 				components: makeGiveawayButtons(giveawayID)
 			});
@@ -192,7 +174,7 @@ export const giveawayCommand = defineCommand({
 				const giveaway = await prisma.giveaway.create({
 					data: {
 						id: giveawayID,
-						channel_id: channelID.toString(),
+						channel_id: channelId.toString(),
 						start_date: new Date(),
 						finish_date: duration.fromNow,
 						completed: false,
@@ -220,20 +202,15 @@ export const giveawayCommand = defineCommand({
 		}
 
 		if (options.list) {
-			if (!guildID) {
+			if (!guildId) {
 				return 'You cannot list giveaways outside a server.';
 			}
-			const guild = globalClient.guilds.cache.get(guildID);
-			if (!guild) return 'You cannot list giveaways outside a server.';
-
-			const textChannelsOfThisServer = guild.channels.cache
-				.filter(c => c.type === ChannelType.GuildText)
-				.map(i => i.id);
+			const textChannelsOfThisServer = await globalClient.fetchChannelsOfGuild(guildId);
 
 			const giveaways = await prisma.giveaway.findMany({
 				where: {
 					channel_id: {
-						in: textChannelsOfThisServer
+						in: textChannelsOfThisServer.map(i => i.id)
 					},
 					completed: false
 				},
@@ -245,7 +222,7 @@ export const giveawayCommand = defineCommand({
 			if (giveaways.length === 0) {
 				return {
 					content: 'There are no active giveaways in this server.',
-					flags: MessageFlags.Ephemeral
+					ephemeral: true
 				};
 			}
 

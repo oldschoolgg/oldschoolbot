@@ -160,7 +160,7 @@ ${truncateString(giftsOwnedButNotOpened.map(g => `${g.name ? `${g.name} (${g.id}
 			});
 			return {
 				content: 'You opened the gift box!',
-				files: [image.file]
+				files: [image]
 			};
 		}
 

@@ -294,7 +294,7 @@ export async function nightmareZoneStatsCommand(user: MUser) {
 **Nightmare Zone points:** ${user.user.nmz_points} Points.`;
 }
 
-export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrategy, channelID: string) {
+export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrategy, channelId: string) {
 	const skillReqs: Skills = {
 		defence: 70,
 		strength: 70,
@@ -392,7 +392,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 		userID: user.id,
 		duration,
 		type: 'NightmareZone',
-		channelID,
+		channelId,
 		minigameID: 'nmz',
 		strategy
 	});

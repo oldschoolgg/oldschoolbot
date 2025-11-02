@@ -37,7 +37,7 @@ export const smithCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const smithedItem = Smithing.SmithableItems.find(_smithedItem =>
 			stringMatches(_smithedItem.name, options.name)
 		);
@@ -128,7 +128,7 @@ export const smithCommand = defineCommand({
 		await ActivityManager.startTrip<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Smithing'

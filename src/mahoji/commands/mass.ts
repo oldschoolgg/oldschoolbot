@@ -63,7 +63,7 @@ export const massCommand = defineCommand({
 			}
 		}
 	],
-	run: async ({ interaction, options, user, channelID }) => {
+	run: async ({ interaction, options, user, channelId }) => {
 		await interaction.defer();
 
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
@@ -149,7 +149,7 @@ export const massCommand = defineCommand({
 		await ActivityManager.startTrip<GroupMonsterActivityTaskOptions>({
 			mi: monster.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			q: quantity,
 			duration,
 			type: 'GroupMonsterKilling',

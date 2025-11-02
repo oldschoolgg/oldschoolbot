@@ -1,4 +1,4 @@
-import { type ButtonBuilder, makeComponents } from '@oldschoolgg/discord';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -8,7 +8,6 @@ import { BitField, MAX_CLUES_DROPPED, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { addToOpenablesScores, patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
@@ -123,17 +122,6 @@ async function finalizeOpening({
 		filterLoot: false
 	});
 
-	const image = await makeBankImage({
-		bank: loot,
-		title:
-			openables.length === 1
-				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
-				: 'Loot From Opening',
-		user,
-		previousCL,
-		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
-	});
-
 	if (loot.has('Coins')) {
 		await ClientSettings.updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
@@ -145,20 +133,24 @@ async function finalizeOpening({
 	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	const response: Awaited<CommandResponse> = {
-		files: [image.file],
-		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`.trim(),
-		components: components.length > 0 ? makeComponents(components) : undefined
-	};
-	if (response.content!.length > 1900) {
-		response.files = [{ name: 'response.txt', attachment: Buffer.from(response.content!) }];
+	const response = new MessageBuilder()
+		.setContent(
+			`You have now opened a total of ${openedStr}
+${messages.join(', ')}`.trim()
+		)
+		.addBankImage({
+			bank: loot,
+			title:
+				openables.length === 1
+					? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
+					: 'Loot From Opening',
+			user,
+			previousCL,
+			mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
+		})
+		.addComponents(components);
 
-		response.content =
-			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
-	}
-
-	response.content += displayCluesAndPets(user, loot);
+	response.addContent(displayCluesAndPets(user, loot));
 
 	return response;
 }

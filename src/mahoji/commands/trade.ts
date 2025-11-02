@@ -55,10 +55,10 @@ export const tradeCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ interaction, user: senderUser, guildID, options }) => {
+	run: async ({ interaction, user: senderUser, guildId, options }) => {
 		await interaction.defer();
 
-		if (!guildID) return 'You can only run this in a server.';
+		if (!guildId) return 'You can only run this in a server.';
 		const recipientUser = await mUserFetch(options.user.user.id);
 		const recipientAPIUser = options.user.user;
 
@@ -126,7 +126,7 @@ Both parties must click confirm to make the trade.`,
 		}
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: BigInt(guildID),
+				guild_id: BigInt(guildId),
 				sender: BigInt(senderUser.id),
 				recipient: BigInt(recipientUser.id),
 				items_sent: itemsSent.toJSON(),
@@ -147,12 +147,12 @@ Both parties must click confirm to make the trade.`,
 
 		const sentFull = itemsSent.toStringFull();
 		const receivedFull = itemsReceived.toStringFull();
-		const files: { attachment: Buffer; name: string }[] = [];
+		const files: { buffer: Buffer; name: string }[] = [];
 		if (sentFull.length > MAX_CHARACTER_LENGTH) {
-			files.push({ attachment: Buffer.from(sentFull), name: 'items_sent.txt' });
+			files.push({ buffer: Buffer.from(sentFull), name: 'items_sent.txt' });
 		}
 		if (receivedFull.length > MAX_CHARACTER_LENGTH) {
-			files.push({ attachment: Buffer.from(receivedFull), name: 'items_received.txt' });
+			files.push({ buffer: Buffer.from(receivedFull), name: 'items_received.txt' });
 		}
 
 		const content = `${senderUser.username} sold ${formatBankForDisplay(itemsSent)} to ${recipientAPIUser.username} in return for ${formatBankForDisplay(itemsReceived)}.

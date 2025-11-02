@@ -94,14 +94,14 @@ export const minionKCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction }) => {
 		if (options.show_info) {
 			return interaction.returnStringOrFile(await monsterInfo(user, options.name));
 		}
 		return minionKillCommand(
 			user,
 			interaction,
-			channelID,
+			channelId,
 			options.name,
 			options.quantity,
 			options.method,

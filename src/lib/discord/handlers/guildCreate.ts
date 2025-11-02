@@ -7,14 +7,15 @@ export function onRawGuildCreate(g: GatewayGuildCreateDispatchData) {
 	// for (const role of g.roles) {
 	// 	Cache.MAIN_SERVER.ROLES.set(role.id, role);
 	// }
-	Cache.bulkSetChannels(
-		g.channels.map(c => ({
-			id: c.id,
-			guild_id: g.id,
-			name: c.name,
-			type: c.type
-		}))
-	);
+	// TODO
+	// Cache.bulkSetChannels(
+	// 	g.channels.map(c => ({
+	// 		id: c.id,
+	// 		guild_id: g.id,
+	// 		name: c.name,
+	// 		type: c.type
+	// 	}))
+	// );
 	Cache.bulkSetEmojis(
 		g.emojis
 			.filter(e => e.id !== null)

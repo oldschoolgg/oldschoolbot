@@ -113,7 +113,7 @@ export const killCommand = defineCommand({
 			user
 		});
 		return {
-			files: [image.file],
+			files: [image],
 			content: result.content
 		};
 	}

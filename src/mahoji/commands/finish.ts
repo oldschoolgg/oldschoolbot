@@ -1,4 +1,3 @@
-import { AttachmentBuilder } from '@oldschoolgg/discord';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -59,18 +58,19 @@ export const finishCommand = defineCommand({
 			return {
 				content: `${result}
 ${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,
-				files: [image.file, costImage?.file].filter(notEmpty)
+				files: [image, costImage].filter(notEmpty)
 			};
 		}
 
 		return {
 			content: `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.`,
 			files: [
-				image.file,
-				new AttachmentBuilder(Buffer.from(finishStr.map(i => `${i[0].name}: ${i[1]} KC`).join('\n')), {
-					name: 'finish.txt'
-				}),
-				costImage?.file
+				image,
+				{
+					name: 'finish.txt',
+					buffer: Buffer.from(finishStr.map(i => `${i[0].name}: ${i[1]} KC`).join('\n'))
+				},
+				costImage
 			].filter(notEmpty)
 		};
 	}

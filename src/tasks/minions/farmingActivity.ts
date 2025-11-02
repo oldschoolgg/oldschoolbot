@@ -1,7 +1,6 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
-import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField } from '@/lib/constants.js';
 import { Farming, type PatchTypes } from '@/lib/skilling/skills/farming/index.js';
@@ -14,7 +13,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 export const farmingTask: MinionTask = {
 	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { plantsName, patchType, quantity, upgradeType, payment, channelID, planting, currentDate, pid } = data;
+		const { plantsName, patchType, quantity, upgradeType, payment, channelId, planting, currentDate, pid } = data;
 		const currentFarmingLevel = user.skillsAsLevels.farming;
 		const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
 		let baseBonus = 1;
@@ -137,7 +136,7 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			handleTripFinish(user, channelID, str, undefined, data, null);
+			handleTripFinish({ user, channelId, message: str, data });
 		} else if (patchType.patchPlanted) {
 			// If they do have something planted here, harvest it and possibly replant.
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
@@ -236,14 +235,12 @@ export const farmingTask: MinionTask = {
 					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					if (GP < gpToCutTree) {
-						return handleTripFinish(
+						return handleTripFinish({
 							user,
-							channelID,
-							`You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`,
-							undefined,
-							data,
-							null
-						);
+							channelId,
+							message: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`,
+							data
+						});
 					}
 					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
 					await user.removeItemsFromBank(new Bank().add('Coins', gpToCutTree));
@@ -341,7 +338,7 @@ export const farmingTask: MinionTask = {
 					userID: user.id,
 					duration: data.duration,
 					finishDate: data.finishDate,
-					channelID: data.channelID,
+					channelId: data.channelId,
 					id: 1
 				};
 				await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
@@ -446,21 +443,23 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			handleTripFinish(
+			const message = new MessageBuilder().setContent(infoStr.join('\n'));
+			if (janeMessage) {
+				message.addChatHeadImage(
+					'jane',
+					`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+						contractsCompleted + 1
+					} farming contracts.`
+				);
+			}
+
+			return handleTripFinish({
 				user,
-				channelID,
-				infoStr.join('\n'),
-				janeMessage
-					? await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-								contractsCompleted + 1
-							} farming contracts.`,
-							head: 'jane'
-						})
-					: undefined,
+				channelId,
+				message,
 				data,
 				loot
-			);
+			});
 		}
 	}
 };

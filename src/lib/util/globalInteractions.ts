@@ -1,7 +1,6 @@
-import { MessageFlags } from '@oldschoolgg/discord';
-import type { IButtonInteraction } from '@oldschoolgg/schemas';
 import { formatDuration, removeFromArr, SpecialResponse, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { RateLimitManager } from '@sapphire/ratelimits';
+import type { APIMessageComponentGuildInteraction } from 'discord-api-types/v10';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
@@ -11,7 +10,8 @@ import { BitField } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
-import { MInteraction } from '@/lib/structures/MInteraction.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { MInteraction } from '@/lib/structures/MInteraction.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
@@ -117,7 +117,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return { content: 'You left the giveaway.', ephemeral: true };
 }
 
-async function repeatTripHandler(user: MUser, interaction: MInteraction): CommandResponse {
+async function repeatTripHandler(user: MUser, id: string, interaction: MInteraction): CommandResponse {
 	if (user.minionIsBusy) {
 		return { content: 'Your minion is busy.', ephemeral: true };
 	}
@@ -125,7 +125,6 @@ async function repeatTripHandler(user: MUser, interaction: MInteraction): Comman
 	if (trips.length === 0) {
 		return { content: "Couldn't find a trip to repeat.", ephemeral: true };
 	}
-	const id = interaction.customId!;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
 	if (!matchingActivity) {
@@ -216,7 +215,8 @@ async function globalButtonInteractionHandler({
 	interaction: MInteraction;
 }): CommandResponse {
 	Logging.logDebug(`${interaction.user.username} clicked button: ${id}`, {
-		...interaction.getDebugInfo()
+		// TODO
+		// ...interaction.getDebugInfo()
 	});
 
 	if (globalClient.isShuttingDown) {
@@ -237,7 +237,7 @@ async function globalButtonInteractionHandler({
 	}
 
 	const user = await mUserFetch(userID);
-	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, id, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
@@ -257,13 +257,9 @@ async function globalButtonInteractionHandler({
 		ignoreUserIsBusy: true
 	};
 
-	const timeSinceMessage = Date.now() - new Date(interaction.message!.createdTimestamp).getTime();
+	const timeSinceMessage = Date.now() - interaction.createdTimestamp;
 	if (timeSinceMessage > Time.Day) {
-		Logging.logDebug(
-			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
-				interaction.message?.id
-			}]`
-		);
+		Logging.logDebug(`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}]`);
 	}
 
 	async function doClue(tier: ClueTier['name']) {
@@ -350,7 +346,29 @@ async function globalButtonInteractionHandler({
 	}
 
 	if (user.minionIsBusy) {
-		return { content: `${user.minionName} is busy.`, flags: MessageFlags.Ephemeral };
+		return { content: `${user.minionName} is busy.`, ephemeral: true };
+	}
+
+	if (id.startsWith('FARMING_PATRON_HARVEST_')) {
+		const patchType = id.split('_')[3];
+		if (!Farming.isPatchName(patchType)) {
+			return { content: 'Invalid patch type.', ephemeral: true };
+		}
+		const perkTier = await user.fetchPerkTier();
+		if (perkTier < 4) {
+			return { content: 'You cannot use this button.', ephemeral: true };
+		}
+		return runCommand({
+			commandName: 'farming',
+			args: {
+				patron: {
+					harvest: {
+						patch: patchType
+					}
+				}
+			},
+			...options
+		});
 	}
 
 	switch (id) {
@@ -471,9 +489,11 @@ const ignoredInteractionIDs = [
 	...Object.values(InteractionID.Party)
 ];
 
-export async function globalButtonInteractionHandlerWrapper(_interaction: IButtonInteraction) {
-	const interaction = new MInteraction({ interaction: _interaction });
-	const id = interaction.customId;
+export async function globalButtonInteractionHandlerWrapper(
+	rawInteraction: APIMessageComponentGuildInteraction,
+	interaction: MInteraction
+) {
+	const id = rawInteraction.data.custom_id;
 	if (!id) return;
 	if ((ignoredInteractionIDs as string[]).includes(id)) return;
 	if (['DYN_', 'LP_'].some(s => id.startsWith(s))) return;

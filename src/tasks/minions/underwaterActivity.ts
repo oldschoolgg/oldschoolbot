@@ -14,7 +14,7 @@ const clamChestTable = new LootTable()
 export const underwaterAgilityThievingTask: MinionTask = {
 	type: 'UnderwaterAgilityThieving',
 	async run(data: UnderwaterAgilityThievingTaskOptions, { user, handleTripFinish }) {
-		const { quantity, channelID, duration, trainingSkill } = data;
+		const { quantity, channelId, duration, trainingSkill } = data;
 
 		const currentThievingLevel = user.skillsAsLevels.thieving;
 		const currentAgilityLevel = user.skillsAsLevels.agility;
@@ -74,6 +74,6 @@ export const underwaterAgilityThievingTask: MinionTask = {
 		});
 		str += `\n\nYou received: ${loot}.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

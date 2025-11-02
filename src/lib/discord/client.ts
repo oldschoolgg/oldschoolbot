@@ -1,55 +1,36 @@
-import {
-	ActivityType,
-	Events as DJSEvent,
-	GatewayIntentBits,
-	Partials,
-	PresenceUpdateStatus
-} from '@oldschoolgg/discord';
+import { Events as DJSEvent } from '@oldschoolgg/discord';
+import type { IMessage } from '@oldschoolgg/schemas';
 import { Events } from '@oldschoolgg/toolkit';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import { onRawGuildCreate } from '@/lib/discord/handlers/guildCreate.js';
 import { interactionHandler } from '@/lib/discord/interactionHandler.js';
+import { OldSchoolBotClient } from '@/lib/discord/OldSchoolBotClient.js';
 import { onMessage } from '@/lib/events.js';
-import { OldSchoolBotClient } from '@/lib/structures/OldSchoolBotClient.js';
 import { onStartup } from '@/mahoji/lib/events.js';
 
-const client = new OldSchoolBotClient({
-	// shards: 'auto',
-	ws: {
-		initialPresence: {
-			since: Date.now() - process.uptime() * 1000,
-			activities: [
-				{
-					name: 'Starting Up...',
-					type: ActivityType.Listening
-				}
-			],
-			status: PresenceUpdateStatus.DoNotDisturb,
-			afk: false
-		}
-	},
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.DirectMessageReactions,
-		GatewayIntentBits.GuildWebhooks
-	],
-	partials: [Partials.User, Partials.Channel],
-	allowedMentions: {
-		parse: ['users']
-	}
-});
+const client = new OldSchoolBotClient();
 
 declare global {
 	var globalClient: OldSchoolBotClient;
 }
 
 global.globalClient = client;
-client.on(DJSEvent.MessageCreate, msg => {
+client.on(DJSEvent.MessageCreate, _msg => {
+	const msg: IMessage = {
+		id: _msg.id,
+		content: _msg.content,
+		author_id: _msg.author.id,
+		channel_id: _msg.channel.id,
+		guild_id: _msg.guild?.id ?? null,
+		author: {
+			id: _msg.author.id,
+			username: _msg.author.username,
+			bot: _msg.author.bot
+		},
+		member: {} as any
+	};
 	onMessage(msg);
 });
 client.on('raw', (d: any) => {

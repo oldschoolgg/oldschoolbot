@@ -783,6 +783,8 @@ export async function repeatTrip(
 		args: handler.args(data.data as any),
 		interaction,
 		user,
-		continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
+		continueDeltaMillis: 0
+		// TODO:
+		// continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
 	});
 }

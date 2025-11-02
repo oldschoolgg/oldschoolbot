@@ -16,7 +16,7 @@ export interface ActivityTaskOptions {
 	duration: number;
 	id: number;
 	finishDate: number;
-	channelID: string;
+	channelId: string;
 }
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {

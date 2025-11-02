@@ -1,29 +1,19 @@
-import {
-	ActionRowBuilder,
-	awaitMessageComponentInteraction,
-	ButtonBuilder,
-	ButtonStyle,
-	type ComponentType,
-	channelIsSendable,
-	EmbedBuilder
-} from '@oldschoolgg/discord';
-import { noOp, removeFromArr, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
+import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { analyticsTick } from '@/lib/analytics.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
-import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
-import { runCommand } from '@/lib/settings/settings.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import { MInteraction } from '@/lib/structures/MInteraction.js';
+import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
-import { getSupportGuild } from '@/lib/util.js';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
@@ -146,6 +136,8 @@ export const tickers: {
 				if (partialUser.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
 				const user = await mUserFetch(partialUser.id);
 				const { patches } = await Farming.getFarmingInfoFromUser(user);
+
+				const patchesReadyToHarvest: FarmingPatchName[] = [];
 				for (const patchType of Farming.farmingPatchNames) {
 					const patch = patches[patchType];
 					if (!patch) continue;
@@ -164,70 +156,32 @@ export const tickers: {
 					if (!planted) continue;
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
-					await user.update({
-						[Farming.getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
-					});
+					patchesReadyToHarvest.push(patchType);
+				}
 
-					// Build buttons (only show Harvest/replant if not busy):
-					const farmingReminderButtons = new ActionRowBuilder<ButtonBuilder>();
-					if (!ActivityManager.minionIsBusy(user.id)) {
-						farmingReminderButtons.addComponents(
+				if (patchesReadyToHarvest.length > 0) {
+					const userUpdates: Partial<Record<FarmingPatchSettingsKey, IPatchData>> = {};
+					for (const patchType of patchesReadyToHarvest) {
+						userUpdates[Farming.getFarmingKeyFromName(patchType)] = {
+							...patches[patchType],
+							wasReminded: true
+						};
+					}
+					await globalClient.sendDm(user.id, {
+						content: `The following farming patches are ready to be harvested: ${patchesReadyToHarvest.join(', ')}.`,
+						components: [
 							new ButtonBuilder()
-								.setLabel('Harvest & Replant')
-								.setStyle(ButtonStyle.Primary)
-								.setCustomId('HARVEST')
-						);
-					}
-					// Always show disable reminders:
-					farmingReminderButtons.addComponents(
-						new ButtonBuilder()
-							.setLabel('Disable Reminders')
-							.setStyle(ButtonStyle.Secondary)
-							.setCustomId('DISABLE')
-					);
-					const djsUser = await globalClient.users.cache.get(user.id);
-					if (!djsUser) continue;
-					const message = await djsUser
-						.send({
-							content: `The ${planted.name} planted in your ${patchType} patches are ready to be harvested!`,
-							components: [farmingReminderButtons]
-						})
-						.catch(noOp);
-					if (!message) return;
-					try {
-						const selection = await awaitMessageComponentInteraction<ComponentType.Button>({
-							message,
-							time: Time.Minute * 5,
-							filter: () => true
-						});
-						if (!selection.isButton()) return;
-						message.edit({ components: [] });
-
-						// Check disable first so minion doesn't have to be free to disable reminders.
-						if (selection.customId === 'DISABLE') {
-							await mahojiUserSettingsUpdate(user.id, {
-								bitfield: removeFromArr(user.bitfield, BitField.DisabledFarmingReminders)
-							});
-							await djsUser.send('Farming patch reminders have been disabled.');
-							return;
-						}
-						if (ActivityManager.minionIsBusy(user.id)) {
-							selection.reply({ content: 'Your minion is busy.' });
-							return;
-						}
-						if (selection.customId === 'HARVEST') {
-							message.author = djsUser;
-							runCommand({
-								commandName: 'farming',
-								args: { harvest: { patch_name: patchType } },
-								user: await mUserFetch(user.id),
-								interaction: new MInteraction({ interaction: selection }),
-								continueDeltaMillis: selection.createdAt.getTime() - message.createdAt.getTime()
-							});
-						}
-					} catch {
-						message.edit({ components: [] });
-					}
+								.setLabel('Disable Reminders')
+								.setStyle(ButtonStyle.Secondary)
+								.setCustomId('DISABLE'),
+							...patchesReadyToHarvest.map(_p =>
+								new ButtonBuilder()
+									.setLabel(`Harvest ${_p}`)
+									.setStyle(ButtonStyle.Primary)
+									.setCustomId(`FARMING_PATRON_HARVEST_${_p}`)
+							)
+						]
+					});
 				}
 			}
 		}
@@ -239,26 +193,17 @@ export const tickers: {
 		interval: Time.Minute * 20,
 		productionOnly: true,
 		cb: async () => {
-			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.HelpAndSupport);
-			if (!channelIsSendable(channel)) return;
-			const messages = await channel.messages.fetch({ limit: 5 });
-			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
+			const messages = await globalClient.fetchChannelMessages(Channel.HelpAndSupport, { limit: 10 })!;
+			if (messages.some(m => m.author.id === globalClient.applicationUser!.id)) return;
 			if (lastMessageID) {
-				const message = await channel.messages.fetch(lastMessageID).catch(noOp);
-				if (message) {
-					await message.delete();
-				}
-				const res = await channel.send({
-					embeds: [supportEmbed],
-					components: [new ActionRowBuilder<ButtonBuilder>().addComponents(informationalButtons)]
-				});
-				lastMessageID = res.id;
+				await globalClient.deleteMessage(Channel.HelpAndSupport, lastMessageID).catch(noOp);
 			}
-			const res = await channel.send({
+
+			const res = await globalClient.sendMessage(Channel.HelpAndSupport, {
 				embeds: [supportEmbed],
-				components: [new ActionRowBuilder<ButtonBuilder>().addComponents(informationalButtons)]
+				components: informationalButtons
 			});
+
 			lastMessageID = res.id;
 		}
 	},
@@ -269,17 +214,16 @@ export const tickers: {
 		interval: Time.Minute * 20,
 		productionOnly: true,
 		cb: async () => {
-			const messages = await globalClient.fetchChannelMessages(Channel.GrandExchange, { limit: 5 })!;
-			if (messages.some(m => m.author_id === globalClient.user?.id)) return;
+			const messages = await globalClient.fetchChannelMessages(Channel.GrandExchange, { limit: 10 })!;
+			if (messages.some(m => m.author.id === globalClient.applicationUser!.id)) return;
 			if (lastMessageGEID) {
-				const message = await globalClient.fetchMessage(Channel.GrandExchange, lastMessageGEID).catch(noOp);
-				if (message) {
-					await globalClient.deleteMessage(Channel.GrandExchange, lastMessageGEID);
-				}
-				const res = await globalClient.sendMessage(Channel.GrandExchange, { embeds: [geEmbed] });
-				lastMessageGEID = res.id;
+				await globalClient.deleteMessage(Channel.GrandExchange, lastMessageGEID).catch(noOp);
 			}
-			const res = await globalClient.sendMessage(Channel.GrandExchange, { embeds: [geEmbed] });
+
+			const res = await globalClient.sendMessage(Channel.GrandExchange, {
+				embeds: [geEmbed]
+			});
+
 			lastMessageGEID = res.id;
 		}
 	},

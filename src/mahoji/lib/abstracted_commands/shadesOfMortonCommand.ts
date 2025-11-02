@@ -247,7 +247,7 @@ export const shadesLogs: ShadesLog[] = [
 
 const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin'];
 
-export async function shadesOfMortonStartCommand(user: MUser, channelID: string, logStr: string, shadeStr: string) {
+export async function shadesOfMortonStartCommand(user: MUser, channelId: string, logStr: string, shadeStr: string) {
 	const messages: string[] = [];
 	let totalTime = await user.calcMaxTripLength('ShadesOfMorton');
 	for (let i = coffins.length - 1; i >= 0; i--) {
@@ -295,7 +295,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 
 	await ActivityManager.startTrip<ShadesOfMortonOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'ShadesOfMorton',

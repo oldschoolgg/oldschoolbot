@@ -394,8 +394,7 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 
 	if (!dryRun) {
 		const roleNames = new Map<string, string>();
-		const supportServerGuild = globalClient.guilds.cache.get(globalConfig.supportServerID)!;
-		if (!supportServerGuild) throw new Error('No support guild');
+		// const supportServerGuild = globalClient.guilds.cache.get(globalConfig.supportServerID)!;
 
 		// Remove all top badges from all users (and add back later)
 		const badgeIDs = `ARRAY[${allBadgeIDs.join(',')}]`;
@@ -428,6 +427,8 @@ WHERE badges && ${badgeIDs}
 
 		for (const { userID, roleID, badge } of results) {
 			if (!userID) continue;
+			const user = await mUserFetch(userID);
+
 			const role = mainServerRoles.find(_r => _r.id === roleID);
 			const member = await globalClient.fetchMainServerMember(userID).catch(noOp);
 			if (!member) {
@@ -440,24 +441,23 @@ WHERE badges && ${badgeIDs}
 			}
 			roleNames.set(roleID, role.name);
 
-			if (!member.roles.some(_r => _r.id === roleID)) {
+			if (!member.roles.some(_r => _r === roleID)) {
 				// await member.roles.add(roleID).catch(console.error);
-				debugMessages.push(`Adding the ${role.name} role to ${member.user.username}`);
+				debugMessages.push(`Adding the ${role.name} role to ${user.username}`);
 			} else {
-				debugMessages.push(`${member.user.username} already has the ${role.name} role`);
+				debugMessages.push(`${user.username} already has the ${role.name} role`);
 			}
 
 			if (badge) {
-				const user = await mUserFetch(userID);
 				if (!user.user.badges.includes(badge)) {
 					await user.update({
 						badges: {
 							push: badge
 						}
 					});
-					debugMessages.push(`Adding badge ${badge} to ${member.user.username}`);
+					debugMessages.push(`Adding badge ${badge} to .user.username}`);
 				} else {
-					debugMessages.push(`${member.user.username} already has badge ${badge}`);
+					debugMessages.push(`${user.username} already has badge ${badge}`);
 				}
 			}
 		}

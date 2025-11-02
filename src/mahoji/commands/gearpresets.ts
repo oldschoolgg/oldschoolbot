@@ -321,7 +321,7 @@ export const gearPresetsCommand = defineCommand({
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
 			const image = await user.generateGearImage({ gearSetup: new Gear(preset) });
-			return { files: [{ attachment: image, name: 'preset.jpg' }] };
+			return { files: [{ buffer: image, name: 'preset.jpg' }] };
 		}
 
 		return 'Invalid command.';

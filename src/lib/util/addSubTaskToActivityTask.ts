@@ -29,10 +29,10 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 	__newData.type = undefined;
 	__newData.userID = undefined;
 	__newData.id = undefined;
-	__newData.channelID = undefined;
+	__newData.channelId = undefined;
 	__newData.duration = undefined;
 
-	const newData: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'> = {
+	const newData: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelId' | 'userID' | 'duration'> = {
 		...__newData
 	};
 
@@ -44,7 +44,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 		type: taskToAdd.type,
 		data: newData,
 		group_activity: isGroupActivity(taskToAdd),
-		channel_id: BigInt(taskToAdd.channelID),
+		channel_id: BigInt(taskToAdd.channelId),
 		duration
 	} as const;
 	try {

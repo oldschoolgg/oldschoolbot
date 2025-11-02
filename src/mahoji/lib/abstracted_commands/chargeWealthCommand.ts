@@ -6,7 +6,7 @@ import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 export const wealthInventorySize = 26;
 const wealthInventoryTime = Time.Minute * 2.2;
 
-export async function chargeWealthCommand(user: MUser, channelID: string, quantity: number | undefined) {
+export async function chargeWealthCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const userBank = user.bank;
 
 	const amountHas = userBank.amount('Ring of wealth');
@@ -45,7 +45,7 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'WealthCharging'

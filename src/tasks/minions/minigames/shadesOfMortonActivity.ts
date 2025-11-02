@@ -7,7 +7,7 @@ import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMor
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',
 	async run(data: ShadesOfMortonOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, logID, shadeID, duration } = data;
+		const { channelId, quantity, logID, shadeID, duration } = data;
 
 		await user.incrementMinigameScore('shades_of_morton', quantity);
 
@@ -71,6 +71,6 @@ export const shadesOfMortonTask: MinionTask = {
 			str += `\n**Messages:** ${messages.join(', ')}`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };

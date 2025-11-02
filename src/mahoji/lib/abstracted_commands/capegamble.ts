@@ -106,7 +106,7 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 			files: [
 				{
 					name: 'image.jpg',
-					attachment: await newChatHeadImage({
+					buffer: await newChatHeadImage({
 						content: src.success.message,
 						head: src.chatHead
 					})
@@ -119,7 +119,7 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: src.failMessage(newSacrificedCount),
 					head: src.chatHead
 				})

@@ -1,13 +1,12 @@
-import { PermissionFlagsBits } from '@oldschoolgg/discord';
 import { cryptoRng } from '@oldschoolgg/rng';
-import type { IChatInputCommandInteraction } from '@oldschoolgg/schemas';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
+import type { APIChatInputApplicationCommandGuildInteraction } from 'discord-api-types/v10';
 
 import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { type AnyCommand, type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
 import { RawSQL } from '@/lib/rawSql.js';
-import { MInteraction } from '@/lib/structures/MInteraction.js';
+import type { MInteraction } from '@/lib/structures/MInteraction.js';
 
 export async function rawCommandHandlerInner({
 	interaction,
@@ -22,13 +21,14 @@ export async function rawCommandHandlerInner({
 }): CommandResponse {
 	// Permissions
 	if (command.requiredPermissions) {
-		for (const perm of command.requiredPermissions) {
-			if (!interaction.member.permissions.has(PermissionFlagsBits[perm])) {
-				return {
-					content: "You don't have permission to use this command.",
-					ephemeral: true
-				};
-			}
+		const hasPerms =
+			interaction.member !== null &&
+			(await globalClient.memberHasPermissions(interaction.member, command.requiredPermissions));
+		if (!hasPerms) {
+			return {
+				content: "You don't have permission to use this command.",
+				ephemeral: true
+			};
 		}
 	}
 	const user = await mUserFetch(interaction.user.id);
@@ -70,9 +70,10 @@ export async function rawCommandHandlerInner({
 			options,
 			user,
 			member: interaction.member,
-			channelID: interaction.channel?.id,
-			guildID: interaction.guild?.id,
+			channelId: interaction.channelId,
+			guildId: interaction.guildId,
 			userID: interaction.user.id,
+			userId: interaction.user.id,
 			rng: cryptoRng
 		});
 		return response;
@@ -93,10 +94,16 @@ export async function rawCommandHandlerInner({
 	}
 }
 
-export async function commandHandler(rawInteraction: IChatInputCommandInteraction) {
-	const interaction = new MInteraction({ interaction: rawInteraction });
-	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
-	const options = convertAPIOptionsToCommandOptions(rawInteraction.options.data, rawInteraction.options.resolved);
+export async function commandHandler(
+	rawInteraction: APIChatInputApplicationCommandGuildInteraction,
+	interaction: MInteraction
+) {
+	const command = globalClient.allCommands.find(c => c.name === rawInteraction.data.name)!;
+	const options = convertAPIOptionsToCommandOptions({
+		guildId: rawInteraction.guild_id,
+		options: rawInteraction.data.options ?? [],
+		resolvedObjects: rawInteraction.data.resolved
+	});
 
 	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({ interaction, command, options });
 	if (

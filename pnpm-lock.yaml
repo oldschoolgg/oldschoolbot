@@ -28,6 +28,9 @@ importers:
       '@discordjs/rest':
         specifier: ^2.6.0
         version: 2.6.0
+      '@discordjs/ws':
+        specifier: ^2.0.3
+        version: 2.0.3(bufferutil@4.0.9)
       '@electric-sql/pglite':
         specifier: ^0.3.10
         version: 0.3.10
@@ -70,6 +73,9 @@ importers:
       '@sapphire/timer-manager':
         specifier: ^1.0.2
         version: 1.0.4
+      '@vladfrangu/async_event_emitter':
+        specifier: ^2.4.7
+        version: 2.4.7
       bufferutil:
         specifier: ^4.0.9
         version: 4.0.9
@@ -253,6 +259,9 @@ importers:
       '@oldschoolgg/discord.js':
         specifier: workspace:*
         version: link:../discord.js
+      '@oldschoolgg/schemas':
+        specifier: workspace:*
+        version: link:../schemas
       discord-api-types:
         specifier: 0.38.30
         version: 0.38.30
@@ -749,6 +758,10 @@ packages:
   '@discordjs/ws@1.2.3':
     resolution: {integrity: sha512-wPlQDxEmlDg5IxhJPuxXr3Vy9AjYq5xCvFWGJyD7w7Np8ZGu+Mc+97LCoEc/+AYCo2IDpKioiH0/c/mj5ZR9Uw==}
     engines: {node: '>=16.11.0'}
+
+  '@discordjs/ws@2.0.3':
+    resolution: {integrity: sha512-c/Yd0eK2kFAvGn5/xECdUziSXLQh7tFO7kw2nfsj46B6txhPpJweR8yYjtYQ+kbUsaFcoQOrZ69wYqfetdqSHw==}
+    engines: {node: '>=20'}
 
   '@electric-sql/pglite@0.3.10':
     resolution: {integrity: sha512-1XtXXprd848aR4hvjNqBc3Gc86zNGmd60x+MgOUShbHYxt+J76N8A81DqTEl275T8xBD0vdTgqR/dJ4yJyz0NQ==}
@@ -5556,6 +5569,21 @@ snapshots:
   '@discordjs/util@1.1.1': {}
 
   '@discordjs/ws@1.2.3(bufferutil@4.0.9)':
+    dependencies:
+      '@discordjs/collection': 2.1.1
+      '@discordjs/rest': 2.6.0
+      '@discordjs/util': 1.1.1
+      '@sapphire/async-queue': 1.5.5
+      '@types/ws': 8.18.1
+      '@vladfrangu/async_event_emitter': 2.4.7
+      discord-api-types: 0.38.30
+      tslib: 2.8.1
+      ws: 8.18.3(bufferutil@4.0.9)
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@discordjs/ws@2.0.3(bufferutil@4.0.9)':
     dependencies:
       '@discordjs/collection': 2.1.1
       '@discordjs/rest': 2.6.0

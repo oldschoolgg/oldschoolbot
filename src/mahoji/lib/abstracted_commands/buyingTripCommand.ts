@@ -7,7 +7,7 @@ import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
 
 export async function buyingTripCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	buyable: TripBuyable,
 	quantity: number | null,
 	interaction: MInteraction
@@ -59,7 +59,7 @@ export async function buyingTripCommand(
 		itemID: osItem.id,
 		quantity: quantity * itemQuantity, // total item count
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		totalCost
 	});

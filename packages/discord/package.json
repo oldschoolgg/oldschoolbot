@@ -15,6 +15,7 @@
 	"dependencies": {
 		"@discordjs/builders": "^1.13.0",
 		"@oldschoolgg/discord.js": "workspace:*",
+		"@oldschoolgg/schemas": "workspace:*",
 		"discord-api-types": "^0.38.30",
 		"remeda": "^2.23.0"
 	}

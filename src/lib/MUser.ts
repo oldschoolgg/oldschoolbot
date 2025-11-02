@@ -1,5 +1,5 @@
 import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
-import { MathRNG, percentChance } from '@oldschoolgg/rng';
+import { percentChance } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	cleanUsername,
@@ -39,7 +39,7 @@ import { type CATier, CombatAchievements } from '@/lib/combat_achievements/comba
 import { BitField, MAX_LEVEL } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
-import pets from '@/lib/data/pets.js';
+import type { Pet } from '@/lib/data/pets.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { CommandResponseValue } from '@/lib/discord/index.js';
@@ -352,15 +352,11 @@ export class MUserClass {
 	}
 
 	get username() {
-		return this.rawUsername;
-	}
-
-	get rawUsername() {
-		return cleanUsername(this.user.username ?? globalClient.users.cache.get(this.id)?.username ?? 'Unknown');
+		return cleanUsername(this.user.username ?? 'Unknown');
 	}
 
 	get usernameOrMention() {
-		return this.rawUsername;
+		return this.username;
 	}
 
 	get badgedUsername() {
@@ -908,7 +904,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	get logName() {
-		return `${this.rawUsername}[${this.id}]`;
+		return `${this.username}[${this.id}]`;
 	}
 
 	async getKCByName(name: string) {
@@ -1276,7 +1272,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		});
 	}
 
-	async giveRandomBotMessagesPet(rng: RNGProvider = MathRNG) {
+	async giveBotMessagePet(petToGive: Pet) {
 		const user = await prisma.user.findUniqueOrThrow({
 			where: { id: this.id },
 			select: {
@@ -1284,7 +1280,6 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				pets: true
 			}
 		});
-		const petToGive = rng.pick(pets);
 
 		const userPets = user.pets as ItemBank;
 		const newUserPets = { ...userPets };
@@ -1297,8 +1292,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 		});
 		return {
-			isNewPet: !userPets[petToGive.id],
-			pet: petToGive
+			isNewPet: !userPets[petToGive.id]
 		};
 	}
 }

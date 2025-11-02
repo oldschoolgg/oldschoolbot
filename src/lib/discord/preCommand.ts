@@ -20,7 +20,8 @@ type PrecommandReturn = Promise<undefined | InhibitorResult>;
 
 export async function preCommand({ command, interaction, user }: PreCommandOptions): PrecommandReturn {
 	Logging.logDebug(`${user.logName} ran command: ${command.name}`, {
-		...interaction.getDebugInfo()
+		// TODO:
+		// ...interaction.getDebugInfo()
 	});
 	const commandName: command_name_enum = command.name as command_name_enum;
 	prisma.commandUsage
@@ -30,7 +31,8 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 				channel_id: BigInt(interaction.channelId),
 				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
 				command_name: commandName,
-				args: interaction.getChatInputCommandOptions(commandName),
+				// TODO
+				// args: interaction.getChatInputCommandOptions(commandName),
 				inhibited: false,
 				is_mention_command: false
 			}
@@ -40,10 +42,10 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 	const start = performance.now();
 	const inhibitResult = runInhibitors({
 		user,
-		guild: interaction.guild ?? null,
 		member: interaction.member ?? null,
 		command,
-		channel: interaction.channel ?? null
+		channelId: interaction.channelId,
+		guildId: interaction.guildId
 	});
 	const end = performance.now();
 	Logging.logPerf({

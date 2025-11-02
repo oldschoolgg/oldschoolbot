@@ -18,7 +18,7 @@ function calcPerformance(kcLearned: number, skillPercentage: number) {
 	return Math.min(100, basePerformance);
 }
 
-export async function zalcanoCommand(user: MUser, channelID: string, quantity?: number) {
+export async function zalcanoCommand(user: MUser, channelId: string, quantity?: number) {
 	const hasReqs = user.hasSkillReqs(soteSkillRequirements);
 	if (!hasReqs) {
 		return `To fight Zalcano, you need: ${formatSkillRequirements(soteSkillRequirements)}.`;
@@ -73,7 +73,7 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 
 	await ActivityManager.startTrip<ZalcanoActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Zalcano',

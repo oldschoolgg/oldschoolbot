@@ -74,7 +74,7 @@ export const tksCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ channelID, options, interaction, user }) => {
+	run: async ({ channelId, options, interaction, user }) => {
 		if (user.minionIsBusy) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
 
 		const hasKaramjaDiary = user.hasDiary('karamja.easy');
@@ -165,7 +165,7 @@ export const tksCommand = defineCommand({
 		// Tokkul shop activity
 		await ActivityManager.startTrip<TokkulShopOptions>({
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity: loot.items()[0][1],
 			type: 'TokkulShop',
 			duration,

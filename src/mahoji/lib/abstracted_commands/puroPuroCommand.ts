@@ -47,7 +47,7 @@ export default puroOptions;
 
 export async function puroPuroStartCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	impling: string | undefined,
 	darkLure: boolean | undefined
 ) {
@@ -98,7 +98,7 @@ export async function puroPuroStartCommand(
 		duration,
 		darkLure,
 		type: 'PuroPuro',
-		channelID,
+		channelId,
 		minigameID: 'puro_puro'
 	});
 

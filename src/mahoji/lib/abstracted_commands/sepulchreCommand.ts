@@ -13,7 +13,7 @@ import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippe
 import type { Fletchable } from '@/lib/skilling/types.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 
-export async function sepulchreCommand(user: MUser, channelID: string, fletching?: number) {
+export async function sepulchreCommand(user: MUser, channelId: string, fletching?: number) {
 	const skills = user.skillsAsLevels;
 	const agilityLevel = skills.agility;
 	const thievingLevel = skills.thieving;
@@ -110,7 +110,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		userID: user.id,
 		duration: tripLength,
 		type: 'Sepulchre',
-		channelID,
+		channelId,
 		minigameID: 'sepulchre',
 		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});

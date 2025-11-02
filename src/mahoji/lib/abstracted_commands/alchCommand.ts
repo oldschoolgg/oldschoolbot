@@ -23,7 +23,7 @@ export const timePerAlchAgility = Time.Second * (3 + 10);
 
 export async function alchCommand(
 	interaction: MInteraction | null,
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	item: string,
 	quantity: number | undefined
@@ -90,7 +90,7 @@ export async function alchCommand(
 	await ActivityManager.startTrip<AlchingActivityTaskOptions>({
 		itemID: osItem.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		alchValue,

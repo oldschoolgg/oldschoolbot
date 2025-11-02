@@ -2,7 +2,7 @@ import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@olds
 
 import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
 
-export async function temporossCommand(user: MUser, channelID: string, quantity: number | undefined) {
+export async function temporossCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const fLevel = user.skillLevel('fishing');
 	if (fLevel < 35) {
 		return 'You need 35 Fishing to have a chance at defeating Tempoross.';
@@ -59,7 +59,7 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 	await ActivityManager.startTrip<TemporossActivityTaskOptions>({
 		minigameID: 'tempoross',
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Tempoross',

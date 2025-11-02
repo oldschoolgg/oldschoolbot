@@ -30,7 +30,7 @@ class SActivityManager {
 			...(activity.data as PrismaCompatibleJsonObject),
 			type: activity.type as activity_type_enum,
 			userID: activity.user_id.toString(),
-			channelID: activity.channel_id.toString(),
+			channelId: activity.channel_id.toString(),
 			duration: activity.duration,
 			finishDate: activity.finish_date.getTime(),
 			id: activity.id
@@ -79,7 +79,7 @@ class SActivityManager {
 		const user = await mUserFetch(activity.userID);
 
 		try {
-			await task.run(activity, { user, handleTripFinish, rng: cryptoRng });
+			await task.run({ ...activity, channelId: activity.channelId }, { user, handleTripFinish, rng: cryptoRng });
 		} catch (err) {
 			Logging.logError(err as Error);
 		} finally {

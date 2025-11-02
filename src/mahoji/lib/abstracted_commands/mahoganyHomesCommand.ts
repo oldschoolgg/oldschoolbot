@@ -140,7 +140,7 @@ export async function mahoganyHomesPointsCommand(user: MUser) {
 	return `You have **${balance.toLocaleString()}** Mahogany Homes points.`;
 }
 
-export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: string): CommandResponse {
+export async function mahoganyHomesBuildCommand(user: MUser, channelId: string, tier?: string): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const conLevel = user.skillsAsLevels.construction;
@@ -174,7 +174,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 
 	await ActivityManager.startTrip<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		type: 'MahoganyHomes',
 		minigameID: 'mahogany_homes',
 		quantity,

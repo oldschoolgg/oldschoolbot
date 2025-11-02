@@ -496,7 +496,7 @@ export const activitiesCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, channelID, user, interaction }) => {
+	run: async ({ options, channelId, user, interaction }) => {
 		// Minion can be busy
 		if (options.decant) {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
@@ -510,84 +510,84 @@ export const activitiesCommand = defineCommand({
 		if (isBusy) return busyStr;
 
 		if (options.other) {
-			return otherActivitiesCommand(options.other.activity, user, channelID);
+			return otherActivitiesCommand(options.other.activity, user, channelId);
 		}
 		if (options.birdhouses?.action === 'harvest') {
-			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
+			return birdhouseHarvestCommand(user, channelId, options.birdhouses.birdhouse);
 		}
-		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
+		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelId);
 		if (options.plank_make?.action === 'sawmill') {
-			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
+			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelId);
 		}
 		if (options.plank_make?.action === 'butler') {
-			return butlerCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
+			return butlerCommand(user, options.plank_make.type, options.plank_make.quantity, channelId);
 		}
 		if (options.chompy_hunt?.action === 'start') {
-			return chompyHuntCommand(user, channelID);
+			return chompyHuntCommand(user, channelId);
 		}
 		if (options.chompy_hunt?.action === 'claim') {
 			return chompyHuntClaimCommand(user);
 		}
 		if (options.my_notes) {
-			return myNotesCommand(user, channelID);
+			return myNotesCommand(user, channelId);
 		}
 		if (options.warriors_guild) {
 			return warriorsGuildCommand(
 				user,
-				channelID,
+				channelId,
 				options.warriors_guild.action,
 				options.warriors_guild.quantity
 			);
 		}
 		if (options.camdozaal) {
-			return camdozaalCommand(user, channelID, options.camdozaal.action, options.camdozaal.quantity);
+			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.collect) {
 			return collectCommand(
 				user,
-				channelID,
+				channelId,
 				options.collect.item,
 				options.collect.quantity,
 				options.collect.no_stams
 			);
 		}
 		if (options.quest) {
-			return questCommand(user, channelID, options.quest.name);
+			return questCommand(user, channelId, options.quest.name);
 		}
 		if (options.charge?.item === 'glory') {
-			return chargeGloriesCommand(user, channelID, options.charge.quantity);
+			return chargeGloriesCommand(user, channelId, options.charge.quantity);
 		}
 		if (options.charge?.item === 'wealth') {
-			return chargeWealthCommand(user, channelID, options.charge.quantity);
+			return chargeWealthCommand(user, channelId, options.charge.quantity);
 		}
 		if (options.fight_caves) {
-			return fightCavesCommand(user, channelID);
+			return fightCavesCommand(user, channelId);
 		}
 		if (options.aerial_fishing) {
-			return aerialFishingCommand(user, channelID);
+			return aerialFishingCommand(user, channelId);
 		}
 		if (options.enchant) {
-			return enchantCommand(user, channelID, options.enchant.name, options.enchant.quantity);
+			return enchantCommand(user, channelId, options.enchant.name, options.enchant.quantity);
 		}
 		if (options.bury) {
-			return buryCommand(user, channelID, options.bury.name, options.bury.quantity);
+			return buryCommand(user, channelId, options.bury.name, options.bury.quantity);
 		}
 		if (options.scatter) {
-			return scatterCommand(user, channelID, options.scatter.name, options.scatter.quantity);
+			return scatterCommand(user, channelId, options.scatter.name, options.scatter.quantity);
 		}
 		if (options.alch) {
-			return alchCommand(interaction, channelID, user, options.alch.item, options.alch.quantity);
+			return alchCommand(interaction, channelId, user, options.alch.item, options.alch.quantity);
 		}
 		if (options.puro_puro) {
-			return puroPuroStartCommand(user, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
+			return puroPuroStartCommand(user, channelId, options.puro_puro.impling, options.puro_puro.dark_lure);
 		}
 		if (options.cast) {
-			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);
+			return castCommand(channelId, user, options.cast.spell, options.cast.quantity);
 		}
 		if (options.underwater) {
 			if (options.underwater.agility_thieving) {
 				return underwaterAgilityThievingCommand(
-					channelID,
+					channelId,
 					user,
 					options.underwater.agility_thieving.training_skill,
 					options.underwater.agility_thieving.minutes,
@@ -596,7 +596,7 @@ export const activitiesCommand = defineCommand({
 			}
 			if (options.underwater.drift_net_fishing) {
 				return driftNetCommand(
-					channelID,
+					channelId,
 					user,
 					options.underwater.drift_net_fishing.minutes,
 					options.underwater.drift_net_fishing.no_stams

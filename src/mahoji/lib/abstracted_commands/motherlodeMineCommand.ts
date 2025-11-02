@@ -9,11 +9,11 @@ import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js
 
 export async function motherlodeMineCommand({
 	user,
-	channelID,
+	channelId,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 }) {
 	let miningLevel = user.skillsAsLevels.mining;
@@ -81,7 +81,7 @@ export async function motherlodeMineCommand({
 
 	await ActivityManager.startTrip<MotherlodeMiningActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: newQuantity,
 		iQty: quantity ? quantity : undefined,
 		duration,

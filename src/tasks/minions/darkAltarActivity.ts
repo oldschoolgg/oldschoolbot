@@ -9,7 +9,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',
 	async run(data: DarkAltarOptions, { user, handleTripFinish, rng }) {
-		const { quantity, channelID, duration, hasElite, rune, useExtracts } = data;
+		const { quantity, channelId, duration, hasElite, rune, useExtracts } = data;
 
 		const runeData = darkAltarRunes[rune];
 
@@ -94,6 +94,6 @@ export const darkAltarTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

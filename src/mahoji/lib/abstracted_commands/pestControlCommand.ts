@@ -172,7 +172,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }
 
-export async function pestControlStartCommand(user: MUser, channelID: string) {
+export async function pestControlStartCommand(user: MUser, channelId: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.combatLevel < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
@@ -199,7 +199,7 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'PestControl',
 		quantity,

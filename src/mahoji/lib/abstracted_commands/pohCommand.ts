@@ -27,7 +27,7 @@ export async function getPOH(userID: string) {
 export async function makePOHImage(user: MUser, showSpaces = false) {
 	const poh = await getPOH(user.id);
 	const buffer = await pohImageGenerator.run(poh, showSpaces);
-	return { files: [{ attachment: buffer, name: 'image.jpg' }] };
+	return { files: [{ buffer: buffer, name: 'image.jpg' }] };
 }
 
 export async function pohWallkitCommand(user: MUser, input: string) {

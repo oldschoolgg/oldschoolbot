@@ -557,14 +557,16 @@ export const monsterTask: MinionTask = {
 			});
 		}
 
-		return handleTripFinish(
+		return handleTripFinish({
 			user,
-			data.channelID,
-			str,
-			image?.file.attachment,
+			channelId: data.channelId,
+			message: {
+				content: str,
+				files: [image]
+			},
 			data,
-			itemTransactionResult?.itemsAdded ?? null,
+			loot: itemTransactionResult?.itemsAdded ?? null,
 			messages
-		);
+		});
 	}
 };

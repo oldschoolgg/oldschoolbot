@@ -22,7 +22,7 @@ const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:
 export async function minionKillCommand(
 	user: MUser,
 	interaction: MInteraction,
-	channelID: string,
+	channelId: string,
 	name: string,
 	inputQuantity: number | undefined,
 	method: PvMMethod | undefined,
@@ -37,12 +37,12 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
-	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID);
-	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID, solo);
-	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID, inputQuantity);
-	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, inputQuantity);
-	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, inputQuantity);
-	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID, inputQuantity);
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelId);
+	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelId, solo);
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelId, inputQuantity);
+	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
+	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelId, name, inputQuantity);
+	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelId, inputQuantity);
 
 	let monster = findMonster(name);
 
@@ -133,7 +133,7 @@ export async function minionKillCommand(
 	await ActivityManager.startTrip<MonsterActivityTaskOptions>({
 		mi: monster.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		q: result.quantity,
 		iQty: inputQuantity,
 		duration: result.duration,

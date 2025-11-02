@@ -7,7 +7,7 @@ import type { SpecificQuestOptions } from '@/lib/types/minions.js';
 export const specificQuestTask: MinionTask = {
 	type: 'SpecificQuest',
 	async run(data: SpecificQuestOptions, { user, handleTripFinish }) {
-		const { channelID, questID } = data;
+		const { channelId, questID } = data;
 
 		const quest = quests.find(quest => quest.id === questID)!;
 
@@ -36,6 +36,6 @@ export const specificQuestTask: MinionTask = {
 			}
 		});
 
-		handleTripFinish(user, channelID, completionMessage, undefined, data, null);
+		handleTripFinish({ user, channelId, message: completionMessage, data });
 	}
 };

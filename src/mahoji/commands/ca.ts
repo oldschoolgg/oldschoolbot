@@ -159,7 +159,7 @@ export const caCommand = defineCommand({
 
 			return {
 				content: generalProgressString,
-				files: [{ attachment: Buffer.from(result), name: 'ca.txt' }]
+				files: [{ buffer: Buffer.from(result), name: 'ca.txt' }]
 			};
 		}
 

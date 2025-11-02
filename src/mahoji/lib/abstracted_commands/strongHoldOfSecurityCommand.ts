@@ -4,7 +4,7 @@ import { Bank, resolveItems } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function strongHoldOfSecurityCommand(user: MUser, channelID: string) {
+export async function strongHoldOfSecurityCommand(user: MUser, channelId: string) {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -34,7 +34,7 @@ export async function strongHoldOfSecurityCommand(user: MUser, channelID: string
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: randomVariation(Time.Minute * 10, 5),
 		type: 'StrongholdOfSecurity'
 	});

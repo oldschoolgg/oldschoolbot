@@ -1,5 +1,4 @@
-import { bold, EmbedBuilder, hasBanMemberPerms, inlineCode } from '@oldschoolgg/discord';
-import type { Guild } from '@oldschoolgg/discord.js';
+import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
 import {
 	formatDuration,
 	hexToDecimal,
@@ -14,6 +13,7 @@ import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
+import type { Guild } from '@/prisma/main.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
@@ -24,7 +24,6 @@ import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js'
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
@@ -361,21 +360,15 @@ async function bankSortConfig(
 			? `Your current bank sort method is ${inlineCode(currentMethod)}.`
 			: 'You have not set a bank sort method.';
 		const weightingBankStr = currentWeightingBank.toString();
-		const response: Awaited<CommandResponse> = {
-			content: sortStr
-		};
+		const response = new MessageBuilder().setContent(sortStr);
 		if (weightingBankStr.length < 500) {
-			response.content += `\n**Weightings:**${weightingBankStr}`;
+			response.addContent(`\n**Weightings:**${weightingBankStr}`);
 		} else {
-			response.files = [
-				(
-					await makeBankImage({
-						bank: currentWeightingBank,
-						title: 'Bank Sort Weightings',
-						user
-					})
-				).file
-			];
+			response.addBankImage({
+				bank: currentWeightingBank,
+				title: 'Bank Sort Weightings',
+				user
+			});
 		}
 		return response;
 	}
@@ -448,93 +441,81 @@ async function bgColorConfig(user: MUser, hex?: string) {
 	};
 }
 
-async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: string, choice: 'enable' | 'disable') {
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
-		return "You need to be 'Ban Member' permissions to use this command.";
-	const cID = channelID.toString();
-	const settings = await GuildSettings.fetch(guild.id);
-	const isDisabled = settings.staffOnlyChannels.includes(cID);
+async function handleChannelEnable(
+	guildSettings: Guild,
+	guildId: string,
+	channelId: string,
+	choice: 'enable' | 'disable'
+) {
+	const isDisabled = guildSettings.staffOnlyChannels.includes(channelId);
 
 	if (choice === 'disable') {
 		if (isDisabled) return 'This channel is already disabled.';
 
-		await GuildSettings.update(guild.id, {
-			staffOnlyChannels: [...settings.staffOnlyChannels, cID]
+		await GuildSettings.update(guildId, {
+			staffOnlyChannels: [...guildSettings.staffOnlyChannels, channelId]
 		});
 
 		return 'Channel disabled. Staff of this server can still use commands in this channel.';
 	}
 	if (!isDisabled) return 'This channel is already enabled.';
 
-	await GuildSettings.update(guild.id, {
-		staffOnlyChannels: settings.staffOnlyChannels.filter(i => i !== cID)
+	await GuildSettings.update(guildId, {
+		staffOnlyChannels: guildSettings.staffOnlyChannels.filter(i => i !== channelId)
 	});
 
 	return 'Channel enabled. Anyone can use commands in this channel now.';
 }
 
 async function handlePetMessagesEnable(
-	user: MUser,
-	guild: Guild | null,
-	channelID: string,
+	guildSettings: Guild,
+	guildId: string,
+	channelId: string,
 	choice: 'enable' | 'disable'
 ) {
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild))) {
-		return "You need to be 'Ban Member' permissions to use this command.";
-	}
-	const settings = await GuildSettings.fetch(guild.id);
-
-	const cID = channelID.toString();
 	if (choice === 'enable') {
-		if (settings.petchannel) {
+		if (guildSettings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await GuildSettings.update(guild.id, {
-			petchannel: cID
+		await GuildSettings.update(guildId, {
+			petchannel: channelId
 		});
 		return 'Enabled Pet Messages in this guild.';
 	}
-	if (settings.petchannel === null) {
+	if (guildSettings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await GuildSettings.update(guild.id, {
+	await GuildSettings.update(guildId, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';
 }
 
 async function handleCommandEnable(
-	user: MUser,
-	guild: Guild | null,
+	guildSettings: Guild,
+	guildId: string,
 	commandName: string,
 	choice: 'enable' | 'disable'
 ) {
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild))) {
-		return "You need to be 'Ban Member' permissions to use this command.";
-	}
-	const settings = await GuildSettings.fetch(guild.id);
 	const command = globalClient.allCommands.find(i => i.name.toLowerCase() === commandName.toLowerCase());
 	if (!command) return "That's not a valid command.";
 
 	if (choice === 'enable') {
-		if (!settings.disabledCommands.includes(commandName)) {
+		if (!guildSettings.disabledCommands.includes(commandName)) {
 			return "That command isn't disabled.";
 		}
-		await GuildSettings.update(guild.id, {
-			disabledCommands: settings.disabledCommands.filter(i => i !== command.name)
+		await GuildSettings.update(guildId, {
+			disabledCommands: guildSettings.disabledCommands.filter(i => i !== command.name)
 		});
 
 		return `Successfully enabled the \`${commandName}\` command.`;
 	}
 
-	if (settings.disabledCommands.includes(command.name)) {
+	if (guildSettings.disabledCommands.includes(command.name)) {
 		return 'That command is already disabled.';
 	}
-	await GuildSettings.update(guild.id, {
-		disabledCommands: [...settings.disabledCommands, command.name]
+	await GuildSettings.update(guildId, {
+		disabledCommands: [...guildSettings.disabledCommands, command.name]
 	});
 
 	return `Successfully disabled the \`${command.name}\` command.`;
@@ -1108,17 +1089,29 @@ LIMIT 20;
 			]
 		}
 	],
-	run: async ({ options, user, guildID, channelID, interaction }) => {
-		const guild = guildID ? (globalClient.guilds.cache.get(guildID.toString()) ?? null) : null;
+	run: async ({ options, user, userId, guildId, channelId, interaction }) => {
 		if (options.server) {
+			if (!guildId) return 'This command can only be run in servers.';
+			const member = await globalClient.fetchMember({ guildId, userId });
+			const hasPerms = await globalClient.memberHasPermissions(member, ['BAN_MEMBERS']);
+			if (!hasPerms) {
+				return "You need to be 'Ban Member' permissions to change settings for this server.";
+			}
+			const guildSettings = await GuildSettings.fetch(guildId);
+
 			if (options.server.channel) {
-				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);
+				return handleChannelEnable(guildSettings, guildId, channelId, options.server.channel.choice);
 			}
 			if (options.server.pet_messages) {
-				return handlePetMessagesEnable(user, guild, channelID, options.server.pet_messages.choice);
+				return handlePetMessagesEnable(guildSettings, guildId, channelId, options.server.pet_messages.choice);
 			}
 			if (options.server.command) {
-				return handleCommandEnable(user, guild, options.server.command.command, options.server.command.choice);
+				return handleCommandEnable(
+					guildSettings,
+					guildId,
+					options.server.command.command,
+					options.server.command.choice
+				);
 			}
 		}
 		if (options.user) {

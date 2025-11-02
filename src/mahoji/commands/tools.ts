@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder } from '@oldschoolgg/discord';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
@@ -63,7 +63,7 @@ OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIK
 	const zipped = await asyncGzip(buffer);
 
 	return {
-		files: [{ name: 'activity-export.txt.gz', attachment: zipped }]
+		files: [{ name: 'activity-export.txt.gz', buffer: zipped }]
 	};
 }
 
@@ -653,18 +653,16 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 	).join('\n')}`;
 }
 
-async function checkMassesCommand(guildID: string | undefined) {
-	if (!guildID) return 'This can only be used in a server.';
-	const guild = globalClient.guilds.cache.get(guildID.toString());
-	if (!guild) return 'Guild not found.';
-	const channelIDs = guild.channels.cache.filter(c => c.type === ChannelType.GuildText).map(c => BigInt(c.id));
+async function checkMassesCommand(guildId: string | undefined) {
+	if (!guildId) return 'This can only be used in a server.';
+	const channelIds = await globalClient.fetchChannelsOfGuild(guildId);
 
 	const masses = (
 		await prisma.activity.findMany({
 			where: {
 				completed: false,
 				group_activity: true,
-				channel_id: { in: channelIDs }
+				channel_id: { in: channelIds.map(c => BigInt(c.id)) }
 			},
 			orderBy: {
 				finish_date: 'asc'
@@ -688,7 +686,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 				return [
 					remainingTime,
 					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
-						m.channelID
+						m.channelId
 					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
@@ -958,7 +956,7 @@ export const toolsCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, interaction, guildID }): CommandResponse => {
+	run: async ({ options, user, interaction, guildId }): CommandResponse => {
 		await interaction.defer();
 
 		if (options.patron) {
@@ -996,7 +994,7 @@ export const toolsCommand = defineCommand({
 					title: 'Your Sacrificed Items'
 				});
 				return {
-					files: [image.file]
+					files: [image]
 				};
 			}
 			if (patron.cl_bank) {
@@ -1005,7 +1003,7 @@ export const toolsCommand = defineCommand({
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
 					return {
-						files: [{ attachment: Buffer.from(json), name: 'clbank.json' }]
+						files: [{ buffer: Buffer.from(json), name: 'clbank.json' }]
 					};
 				}
 				const image = await makeBankImage({
@@ -1013,7 +1011,7 @@ export const toolsCommand = defineCommand({
 					title: 'Your Entire Collection Log'
 				});
 				return {
-					files: [image.file]
+					files: [image]
 				};
 			}
 			if (patron.minion_stats) {
@@ -1043,9 +1041,7 @@ export const toolsCommand = defineCommand({
 					b.add(petObj.name, qty);
 				}
 				return {
-					files: [
-						(await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })).file
-					]
+					files: [await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })]
 				};
 			}
 		}
@@ -1085,7 +1081,7 @@ You last reset your temporary CL: ${
 			}`;
 		}
 		if (options.user?.checkmasses) {
-			return checkMassesCommand(guildID);
+			return checkMassesCommand(guildId);
 		}
 		return 'Invalid command!';
 	}

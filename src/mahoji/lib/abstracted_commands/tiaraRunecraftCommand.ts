@@ -6,12 +6,12 @@ import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function tiaraRunecraftCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 	name: string;
 }) {
@@ -93,7 +93,7 @@ export async function tiaraRunecraftCommand({
 	await ActivityManager.startTrip<TiaraRunecraftActivityTaskOptions>({
 		tiaraID: tiaraObj.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		tiaraQuantity: quantity,
 		duration,
 		type: 'TiaraRunecraft'

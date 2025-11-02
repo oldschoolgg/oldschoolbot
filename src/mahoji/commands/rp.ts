@@ -50,7 +50,7 @@ function isProtectedAccount(user: MUser) {
 export const rpCommand = defineCommand({
 	name: 'rp',
 	description: 'Admin tools second set',
-	guildID: globalConfig.supportServerID,
+	guildId: globalConfig.supportServerID,
 	options: [
 		// {
 		// 	type: 'SubcommandGroup',
@@ -376,11 +376,11 @@ export const rpCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user: adminUser, interaction, guildID }) => {
+	run: async ({ options, user: adminUser, interaction, guildId }) => {
 		await interaction.defer();
 		const isAdmin = globalConfig.adminUserIDs.includes(adminUser.id);
 		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
+		if (!guildId || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
 		}
 		if (!isAdmin && !isMod) return randArrItem(gifs);
@@ -403,9 +403,10 @@ export const rpCommand = defineCommand({
 			let type: UserEventType = UserEventType.CLCompletion;
 			let skill: xp_gains_skill_enum | undefined;
 			let collectionLogName: string | undefined;
+			const targetUserUsername = await Cache.getBadgedUsername(targetUser.id);
 
 			let confirmationStr = `Please confirm:
-User: ${targetUser.rawUsername}
+User: ${targetUserUsername}
 Date: ${dateFm(date)}`;
 			if (options.user_event.cl_completion) {
 				confirmationStr += `\nCollection log: ${options.user_event.cl_completion.cl_name}`;
@@ -474,11 +475,11 @@ Date: ${dateFm(date)}`;
 			if (options.player?.viewbank.json) {
 				const json = JSON.stringify(bank.toJSON());
 				if (json.length > 1900) {
-					return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
+					return { files: [{ buffer: Buffer.from(json), name: 'bank.json' }] };
 				}
 				return `${codeBlock('json', json)}`;
 			}
-			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
+			return { files: [await makeBankImage({ bank, title: userToCheck.usernameOrMention })] };
 		}
 
 		if (options.player?.add_patron_time) {
@@ -573,7 +574,7 @@ Date: ${dateFm(date)}`;
 				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${
 					userToStealFrom.logName
 				} for ${options.player.steal_items.reason ?? 'No reason'}`,
-				files: [{ attachment: Buffer.from(items.toString()), name: 'items.txt' }]
+				files: [{ buffer: Buffer.from(items.toString()), name: 'items.txt' }]
 			});
 
 			await userToStealFrom.removeItemsFromBank(items);
@@ -706,7 +707,7 @@ Date: ${dateFm(date)}`;
 				report += `${userId}\t${bank}\t${totalsRcvd.get(userId)}\n`;
 			}
 
-			return { files: [{ attachment: Buffer.from(report), name: 'trade_report.txt' }] };
+			return { files: [{ buffer: Buffer.from(report), name: 'trade_report.txt' }] };
 		}
 
 		if (options.player?.ge_cancel) {

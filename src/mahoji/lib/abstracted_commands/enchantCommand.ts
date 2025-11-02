@@ -5,7 +5,7 @@ import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 
-export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
+export async function enchantCommand(user: MUser, channelId: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
 		item =>
 			stringMatches(item.name, name) ||
@@ -58,7 +58,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 	await ActivityManager.startTrip<EnchantingActivityTaskOptions>({
 		itemID: enchantable.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Enchanting'

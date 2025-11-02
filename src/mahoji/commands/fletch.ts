@@ -35,7 +35,7 @@ export const fletchCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, options.name));
 
 		if (!fletchable) return 'That is not a valid fletchable item.';
@@ -93,7 +93,7 @@ export const fletchCommand = defineCommand({
 		await ActivityManager.startTrip<FletchingActivityTaskOptions>({
 			fletchableName: fletchable.name,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Fletching'

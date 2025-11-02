@@ -1,4 +1,4 @@
-import { ChannelType, userMention } from '@oldschoolgg/discord';
+import { userMention } from '@oldschoolgg/discord';
 import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -6,7 +6,7 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { calculateNexDetails, checkNexUser } from '@/lib/simulation/nex.js';
 import type { NexTaskOptions } from '@/lib/types/minions.js';
 
-export async function nexCommand(interaction: MInteraction, user: MUser, channelID: string, solo: boolean | undefined) {
+export async function nexCommand(interaction: MInteraction, user: MUser, channelId: string, solo: boolean | undefined) {
 	const ownerCheck = checkNexUser(user);
 	if (ownerCheck[1]) {
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
@@ -19,9 +19,6 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 	if (solo) {
 		mahojiUsers = [user];
 	} else {
-		const channel = globalClient.channels.cache.get(channelID.toString());
-		if (!channel || channel.type !== ChannelType.GuildText) return 'You need to run this in a text channel.';
-
 		let usersWhoConfirmed: MUser[] = [];
 		try {
 			usersWhoConfirmed = await interaction.makeParty({
@@ -95,7 +92,7 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 
 	await ActivityManager.startTrip<NexTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: details.duration,
 		type: 'Nex',
 		leader: user.id,

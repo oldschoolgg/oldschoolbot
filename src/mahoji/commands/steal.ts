@@ -42,7 +42,7 @@ export const stealCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
 				stringMatches(obj.name, options.name) ||
@@ -166,7 +166,7 @@ export const stealCommand = defineCommand({
 		await ActivityManager.startTrip<PickpocketActivityTaskOptions>({
 			monsterID: stealable.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Pickpocket',

@@ -1079,7 +1079,7 @@ export async function toaStartCommand(
 	interaction: MInteraction,
 	user: MUser,
 	solo: boolean,
-	channelID: string,
+	channelId: string,
 	_raidLevel: number,
 	teamSize: number | undefined,
 	quantityInput: number | undefined
@@ -1260,7 +1260,7 @@ export async function toaStartCommand(
 
 	await ActivityManager.startTrip<TOAOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: realDuration,
 		type: 'TombsOfAmascut',
 		leader: user.id,
@@ -1566,7 +1566,7 @@ function calculateBoostString(user: MUser) {
 	return str;
 }
 
-export async function toaHelpCommand(user: MUser, channelID: string) {
+export async function toaHelpCommand(user: MUser, channelId: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
 	const stats = await user.fetchStats();
 	const { entryKC, normalKC, expertKC, totalKC } = getToaKCs(stats.toa_raid_levels_bank);
@@ -1611,5 +1611,5 @@ ${toaRequirements
 ${calculateBoostString(user)}
 `.slice(0, 1900);
 
-	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
+	return channelId === '1069176960523190292' ? { content: str, ephemeral: true } : str;
 }

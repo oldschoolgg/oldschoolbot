@@ -8,13 +8,13 @@ const gracefulPenalty = 20;
 
 export async function ouraniaAltarStartCommand({
 	user,
-	channelID,
+	channelId,
 	quantity,
 	usestams,
 	daeyalt_essence
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 	usestams?: boolean;
 	daeyalt_essence?: boolean;
@@ -120,7 +120,7 @@ export async function ouraniaAltarStartCommand({
 		userID: user.id,
 		duration,
 		type: 'OuraniaAltar',
-		channelID,
+		channelId,
 		stamina,
 		daeyalt
 	});

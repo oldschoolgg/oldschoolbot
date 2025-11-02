@@ -6,7 +6,7 @@ import { warmGear } from '@/lib/data/filterables.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function wintertodtCommand(user: MUser, channelID: string, quantity?: number) {
+export async function wintertodtCommand(user: MUser, channelId: string, quantity?: number) {
 	const fmLevel = user.skillsAsLevels.firemaking;
 	const wcLevel = user.skillsAsLevels.woodcutting;
 	if (fmLevel < 50) {
@@ -107,7 +107,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'wintertodt',
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Wintertodt'

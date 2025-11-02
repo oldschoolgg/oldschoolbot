@@ -69,7 +69,7 @@ export class BingoManager {
 	public durationInDays: number;
 	public teamSize: number;
 	public title: string;
-	public notificationsChannelID: string;
+	public notificationschannelId: string;
 	public ticketPrice: number;
 	public rawBingoTiles: StoredBingoTile[];
 	public bingoTiles: UniversalBingoTile[];
@@ -87,7 +87,7 @@ export class BingoManager {
 		this.teamSize = options.team_size;
 		this.organizers = options.organizers;
 		this.title = options.title;
-		this.notificationsChannelID = options.notifications_channel_id;
+		this.notificationschannelId = options.notifications_channel_id;
 		this.durationInDays = options.duration_days;
 		this.rawBingoTiles = options.bingo_tiles as unknown as StoredBingoTile[];
 		this.creatorID = options.creator_id;
@@ -344,7 +344,7 @@ ${teams
 		}
 
 		globalClient
-			.sendMessage(this.notificationsChannelID, {
+			.sendMessage(this.notificationschannelId, {
 				content: str
 			})
 			.catch(noOp);

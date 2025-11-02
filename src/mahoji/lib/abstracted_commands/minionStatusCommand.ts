@@ -1,6 +1,6 @@
-import { type BaseMessageOptions, ButtonBuilder, makeComponents } from '@oldschoolgg/discord';
+import { ButtonBuilder } from '@oldschoolgg/discord';
 import { stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
-import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
+import { ButtonStyle } from 'discord-api-types/v10';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
@@ -54,7 +54,9 @@ async function fetchPinnedTrips(userID: string) {
 	);
 }
 
-export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
+export async function minionStatusCommand(
+	user: MUser
+): Promise<Required<Pick<BaseSendableMessage, 'content' | 'components'>>> {
 	const { minionIsBusy } = user;
 	const birdhouseDetails = minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user);
 	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
@@ -68,12 +70,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		return {
 			content:
 				"You haven't bought a minion yet! Click the button below to buy a minion and start playing the bot.",
-			components: [
-				{
-					components: [minionBuyButton],
-					type: ComponentType.ActionRow
-				}
-			]
+			components: [minionBuyButton]
 		};
 	}
 
@@ -158,6 +155,6 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	return {
 		content: status,
-		components: makeComponents(buttons)
+		components: buttons
 	};
 }

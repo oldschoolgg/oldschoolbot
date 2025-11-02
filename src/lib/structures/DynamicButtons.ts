@@ -1,5 +1,5 @@
-import type { BaseMessageOptions, ButtonInteraction } from '@oldschoolgg/discord';
-import { ButtonBuilder, makeComponents } from '@oldschoolgg/discord';
+import type { ButtonInteraction } from '@oldschoolgg/discord';
+import { ButtonBuilder } from '@oldschoolgg/discord';
 import type { Message } from '@oldschoolgg/discord.js';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { isFunction, noOp, Time } from '@oldschoolgg/toolkit';
@@ -51,7 +51,7 @@ export class DynamicButtons {
 		extraButtons = []
 	}: {
 		isBusy: boolean;
-		messageOptions: BaseMessageOptions;
+		messageOptions: BaseSendableMessage;
 		extraButtons?: ButtonBuilder[];
 	}) {
 		const buttons = this.buttons
@@ -71,7 +71,7 @@ export class DynamicButtons {
 
 		this.message = await this.mInteraction.reply({
 			...messageOptions,
-			components: makeComponents(buttons),
+			components: buttons,
 			withResponse: true
 		});
 		if (!this.message) return;
@@ -82,7 +82,7 @@ export class DynamicButtons {
 			});
 
 			const silentAck = (bi: ButtonInteraction) =>
-				this.mInteraction.client.rest.post(Routes.interactionCallback(bi.id, bi.token), {
+				globalClient.rest.post(Routes.interactionCallback(bi.id, bi.token), {
 					body: { type: InteractionResponseType.DeferredMessageUpdate }
 				});
 

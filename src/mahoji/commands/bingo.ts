@@ -1,4 +1,4 @@
-import { bold, channelIsSendable, dateFm, userMention } from '@oldschoolgg/discord';
+import { bold, dateFm, userMention } from '@oldschoolgg/discord';
 import type { IMember } from '@oldschoolgg/schemas';
 import {
 	Emoji,
@@ -545,7 +545,7 @@ export const bingoCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ user, userID, options, guildID, interaction }) => {
+	run: async ({ user, userId, options, interaction }) => {
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
 			if (Number.isNaN(bingoID)) {
@@ -626,18 +626,19 @@ export const bingoCommand = defineCommand({
 				return `You need at least ${creationCost} to create a bingo.`;
 			}
 
-			const channel = await globalClient.channels.fetch(options.create_bingo.notifications_channel_id);
-			if (!channel || !channelIsSendable(channel) || !guildID) {
+			const channel = await globalClient.fetchChannel(options.create_bingo.notifications_channel_id);
+			// TODO: channelIsSendable check
+			if (!channel || !channel.guild_id) {
 				return 'Invalid notifications channel.';
 			}
 			if (!isValidNickname(options.create_bingo.title)) {
 				return 'Invalid title.';
 			}
-			const member = await globalClient.fetchMemberWithRoles({ guildId: guildID, userId: userID }); //channel.guild.members.fetch(userID).catch(noOp);
-			if (globalConfig.isProduction && (!member || !member.permissions.has('Administrator'))) {
+			const member = await globalClient.fetchMember({ guildId: channel.guild_id, userId });
+			if (globalConfig.isProduction && (!member || !member.permissions.includes('ADMINISTRATOR'))) {
 				return 'You can only use a notifications channel if you are an Administrator of that server.';
 			}
-			if (channel.guild.id !== interaction.guildId) {
+			if (channel.guild_id !== interaction.guildId) {
 				return 'The notifications channel must be in the same server as the command.';
 			}
 
@@ -654,7 +655,7 @@ export const bingoCommand = defineCommand({
 					.filter(id => isValidDiscordSnowflake(id)),
 				bingo_tiles: [],
 				creator_id: user.id,
-				guild_id: channel.guildId
+				guild_id: channel.guild_id
 			};
 
 			if (createOptions.team_size < 1 || createOptions.team_size > 5) {
@@ -755,7 +756,7 @@ The creator of the bingo (${userMention(
 				return {
 					files: [
 						{
-							attachment: Buffer.from(
+							buffer: Buffer.from(
 								(
 									await Promise.all(
 										teams.map(team =>
@@ -773,9 +774,7 @@ The creator of the bingo (${userMention(
 							name: 'teams.txt'
 						},
 						{
-							attachment: Buffer.from(
-								users.map(u => [u.id, u.tilesCompletedCount].join('\t')).join('\n')
-							),
+							buffer: Buffer.from(users.map(u => [u.id, u.tilesCompletedCount].join('\t')).join('\n')),
 							name: 'users.txt'
 						}
 					]
@@ -970,7 +969,7 @@ ${progressString}
 				},
 				files: [
 					{
-						attachment: Buffer.from(bingo.bingoTiles.map((t, i) => `${++i}. ${t.name}`).join('\n')),
+						buffer: Buffer.from(bingo.bingoTiles.map((t, i) => `${++i}. ${t.name}`).join('\n')),
 						name: 'tiles_board.txt'
 					}
 				]

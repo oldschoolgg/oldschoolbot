@@ -164,7 +164,7 @@ export const starSizes: Star[] = [
 	}
 ];
 
-export async function shootingStarsCommand(channelID: string, user: MUser, star: Star): Promise<string> {
+export async function shootingStarsCommand(channelId: string, user: MUser, star: Star): Promise<string> {
 	const skills = user.skillsAsLevels;
 	const boosts = [];
 
@@ -242,7 +242,7 @@ export async function shootingStarsCommand(channelID: string, user: MUser, star:
 
 	await ActivityManager.startTrip<ShootingStarsOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		lootItems: loot.toJSON(),
 		usersWith,

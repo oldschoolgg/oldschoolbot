@@ -150,7 +150,7 @@ export async function giantsFoundryStartCommand(
 	user: MUser,
 	name: string,
 	quantity: number | undefined,
-	channelID: string
+	channelId: string
 ) {
 	let timePerSection = Time.Minute * 0.84;
 	const userSmithingLevel = user.skillsAsLevels.smithing;
@@ -225,7 +225,7 @@ export async function giantsFoundryStartCommand(
 		userID: user.id,
 		duration,
 		type: 'GiantsFoundry',
-		channelID,
+		channelId,
 		minigameID: 'giants_foundry',
 		alloyID: alloy.id,
 		metalScore: alloy.metalScore

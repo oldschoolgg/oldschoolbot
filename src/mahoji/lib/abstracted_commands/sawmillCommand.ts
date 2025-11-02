@@ -9,7 +9,7 @@ export async function sawmillCommand(
 	user: MUser,
 	plankName: string | number,
 	quantity: number | undefined,
-	channelID: string
+	channelId: string
 ) {
 	const plank = Planks.find(
 		plank =>
@@ -79,7 +79,7 @@ export async function sawmillCommand(
 		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
-		channelID: channelID.toString()
+		channelId: channelId.toString()
 	});
 
 	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${

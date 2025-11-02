@@ -1,12 +1,10 @@
+import type { BaseMessageOptions, ButtonInteraction, InteractionReplyOptions } from '@oldschoolgg/discord.js';
 import {
 	ApplicationCommandType,
-	type BaseMessageOptions,
-	type ButtonInteraction,
-	type InteractionReplyOptions,
 	InteractionResponseType,
 	type RESTPostAPIApplicationGuildCommandsJSONBody,
 	Routes
-} from '@oldschoolgg/discord';
+} from 'discord-api-types/v10';
 
 import { globalConfig } from '@/lib/constants.js';
 import { type AnyCommand, convertCommandOptionToAPIOption } from '@/lib/discord/commandOptions.js';
@@ -21,9 +19,7 @@ export function mentionCommand(name: string, subCommand?: string, subSubCommand?
 		throw new Error(`Command ${name} does not have subcommand ${subCommand}`);
 	}
 
-	const apiCommand = globalClient.application
-		? Array.from(globalClient.application.commands.cache.values()).find(i => i.name === name)
-		: null;
+	const apiCommand = globalClient.applicationCommands!.find(i => i.name === name);
 	if (!apiCommand) {
 		throw new Error(`Command ${name} not found`);
 	}
@@ -84,22 +80,23 @@ function convertCommandToAPICommand(
 }
 
 export async function bulkUpdateCommands() {
+	const appUser = globalClient.applicationUser!;
 	// Sync commands just to the testing server
 	if (!globalConfig.isProduction) {
 		const body = globalClient.allCommands.map(convertCommandToAPICommand);
-		const route = Routes.applicationGuildCommands(globalClient.user.id, globalConfig.supportServerID);
+		const route = Routes.applicationGuildCommands(appUser.id, globalConfig.supportServerID);
 		return globalClient.rest.put(route, {
 			body
 		});
 	}
 
 	// Sync commands globally
-	const globalCommands = globalClient.allCommands.filter(i => !i.guildID).map(convertCommandToAPICommand);
-	const guildCommands = globalClient.allCommands.filter(i => Boolean(i.guildID)).map(convertCommandToAPICommand);
+	const globalCommands = globalClient.allCommands.filter(i => !i.guildId).map(convertCommandToAPICommand);
+	const guildCommands = globalClient.allCommands.filter(i => Boolean(i.guildId)).map(convertCommandToAPICommand);
 
 	return Promise.all([
-		globalClient.rest.put(Routes.applicationCommands(globalClient.user.id), { body: globalCommands }),
-		globalClient.rest.put(Routes.applicationGuildCommands(globalClient.user.id, globalConfig.supportServerID), {
+		globalClient.rest.put(Routes.applicationCommands(appUser.id), { body: globalCommands }),
+		globalClient.rest.put(Routes.applicationGuildCommands(appUser.id, globalConfig.supportServerID), {
 			body: guildCommands
 		})
 	]);

@@ -31,7 +31,7 @@ import { farmingCommand } from '@/mahoji/commands/farming.js';
 import { finishCommand } from '@/mahoji/commands/finish.js';
 import { fishCommand } from '@/mahoji/commands/fish.js';
 import { fletchCommand } from '@/mahoji/commands/fletch.js';
-import { gambleCommand } from '@/mahoji/commands/gamble.js';
+// import { gambleCommand } from '@/mahoji/commands/gamble.js';
 import { geCommand } from '@/mahoji/commands/ge.js';
 import { gearCommand } from '@/mahoji/commands/gear.js';
 import { gearPresetsCommand } from '@/mahoji/commands/gearpresets.js';
@@ -113,7 +113,7 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	fakeCommand,
 	fakepmCommand,
 	fletchCommand,
-	gambleCommand,
+	// gambleCommand,
 	gearCommand,
 	giveawayCommand,
 	helpCommand,

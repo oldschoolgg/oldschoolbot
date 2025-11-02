@@ -180,7 +180,7 @@ export const farmingCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ user, options, interaction, channelID }) => {
+	run: async ({ user, options, interaction, channelId }) => {
 		await interaction.defer();
 		const { patchesDetailed } = Farming.getFarmingInfoFromUser(user);
 
@@ -236,7 +236,7 @@ export const farmingCommand = defineCommand({
 			if (options.tithe_farm.buy_reward) {
 				return titheFarmShopCommand(interaction, user, options.tithe_farm.buy_reward);
 			}
-			return titheFarmCommand(user, channelID);
+			return titheFarmCommand(user, channelId);
 		}
 		if (options.compost_bin) {
 			return compostBinCommand(interaction, user, options.compost_bin.plant_name, options.compost_bin.quantity);

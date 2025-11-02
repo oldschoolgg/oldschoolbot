@@ -26,21 +26,19 @@ async function getBankPage({
 	page: number;
 	mahojiFlags: BankFlag[];
 	flags?: Record<string, number | string>;
-}) {
+}): Promise<BaseSendableMessage> {
 	return {
 		files: [
-			(
-				await makeBankImage({
-					bank,
-					title: `${user.rawUsername ? `${user.rawUsername}'s` : 'Your'} Bank`,
-					flags: {
-						...flags,
-						page
-					},
-					user,
-					mahojiFlags
-				})
-			).file
+			await makeBankImage({
+				bank,
+				title: `${user.username ? `${user.username}'s` : 'Your'} Bank`,
+				flags: {
+					...flags,
+					page
+				},
+				user,
+				mahojiFlags
+			})
 		]
 	};
 }
@@ -140,12 +138,9 @@ export const bankCommand = defineCommand({
 				}
 			}
 			if (options.format === 'text_full') {
-				const attachment = Buffer.from(textBank.join('\n'));
-
-				return {
-					content: 'Here is your selected bank in text file format.',
-					files: [{ attachment, name: 'Bank.txt' }]
-				};
+				return new MessageBuilder()
+					.setContent('Here is your selected bank in text file format.')
+					.addFile({ name: 'Bank.txt', buffer: Buffer.from(textBank.join('\n')) });
 			}
 
 			const pages = [];
@@ -162,7 +157,7 @@ export const bankCommand = defineCommand({
 		if (options.format === 'json') {
 			const json = JSON.stringify(baseBank.toJSON());
 			if (json.length > 1900) {
-				return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
+				return { files: [{ buffer: Buffer.from(json), name: 'bank.json' }] };
 			}
 			return `${codeBlock('json', json)}`;
 		}

@@ -1,4 +1,4 @@
-import { ButtonBuilder, makeComponents } from '@oldschoolgg/discord';
+import { ButtonBuilder } from '@oldschoolgg/discord';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ButtonStyle } from 'discord-api-types/v10';
 
@@ -26,7 +26,7 @@ function makeEasierFarmingContractButton() {
 
 async function janeImage(content: string) {
 	const image = await newChatHeadImage({ content, head: 'jane' });
-	return { files: [{ attachment: image, name: 'jane.jpg' }] };
+	return { files: [{ buffer: image, name: 'jane.jpg' }] };
 }
 
 const contractToFarmingLevel = {
@@ -96,34 +96,31 @@ export async function farmingContractCommand(user: MUser, input?: ContractOption
 				minion_farmingContract: farmingContractUpdate as any
 			});
 
-			return {
-				content: formatNewContractContent(plantToGrow, newContractLevel),
-				files: (
-					await janeImage(
-						`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
-					)
-				).files,
-				components:
-					newContractLevel !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
-			};
+			const response = new MessageBuilder()
+				.setContent(formatNewContractContent(plantToGrow, newContractLevel))
+				.addChatHeadImage(
+					'jane',
+					`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
+				)
+				.addComponents(newContractLevel !== 'easy' ? [makeEasierFarmingContractButton()] : undefined);
+
+			return response;
 		}
 
 		let easierStr = '';
 		if (currentContract.difficultyLevel !== 'easy') {
 			easierStr = "\nYou can request an easier contract if you'd like.";
 		}
+		const response = new MessageBuilder()
+			.addChatHeadImage(
+				'jane',
+				`Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`
+			)
+			.addComponents(
+				currentContract.difficultyLevel !== 'easy' ? [makeEasierFarmingContractButton()] : undefined
+			);
 
-		return {
-			files: (
-				await janeImage(
-					`Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`
-				)
-			).files,
-			components:
-				currentContract.difficultyLevel !== 'easy'
-					? makeComponents([makeEasierFarmingContractButton()])
-					: undefined
-		};
+		return response;
 	}
 
 	if (user.minionIsBusy) {
@@ -151,15 +148,14 @@ export async function farmingContractCommand(user: MUser, input?: ContractOption
 		minion_farmingContract: farmingContractUpdate as any
 	});
 
-	return {
-		content: formatNewContractContent(plantToGrow, input as FarmingContractDifficultyLevel),
-		files: (
-			await janeImage(
-				`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
-			)
-		).files,
-		components: input !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
-	};
+	const response = new MessageBuilder()
+		.setContent(formatNewContractContent(plantToGrow, input as FarmingContractDifficultyLevel))
+		.addChatHeadImage(
+			'jane',
+			`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
+		)
+		.addComponents(input !== 'easy' ? [makeEasierFarmingContractButton()] : undefined);
+	return response;
 }
 
 export function canRunAutoContract(user: MUser) {

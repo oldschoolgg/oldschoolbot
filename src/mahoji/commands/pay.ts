@@ -22,7 +22,7 @@ export const payCommand = defineCommand({
 			required: true
 		}
 	],
-	run: async ({ options, user, interaction, guildID }) => {
+	run: async ({ options, user, interaction, guildId }) => {
 		await interaction.defer();
 		const recipient = await mUserFetch(options.user.user.id);
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
@@ -53,7 +53,7 @@ export const payCommand = defineCommand({
 
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: guildID ? BigInt(guildID) : undefined,
+				guild_id: guildId ? BigInt(guildId) : undefined,
 				sender: BigInt(user.id),
 				recipient: BigInt(recipient.id),
 				items_sent: bank.toJSON(),

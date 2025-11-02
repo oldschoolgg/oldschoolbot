@@ -35,7 +35,7 @@ export const lightCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const log = Firemaking.Burnables.find(
 			log => stringMatches(log.name, options.name) || stringMatches(log.name.split(' ')[0], options.name)
 		);
@@ -77,7 +77,7 @@ export const lightCommand = defineCommand({
 		await ActivityManager.startTrip<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Firemaking'

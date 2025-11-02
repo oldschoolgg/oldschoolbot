@@ -1,16 +1,17 @@
+import type { PermissionKey } from '@oldschoolgg/discord';
 import {
-	type APIApplicationCommandOptionChoice,
-	type APIInteractionDataResolvedChannel,
-	type APIInteractionDataResolvedGuildMember,
-	type APIRole,
-	ApplicationCommandOptionType,
-	type ChatInputCommandInteraction,
-	type PermissionFlagsBits
+	convertApiChannelToZChannel,
+	convertApiMemberToZMember,
+	convertApiRoleToZRole,
+	convertApiUserToZUser
 } from '@oldschoolgg/discord';
 import type { IChannel, IMember, IRole, IUser } from '@oldschoolgg/schemas';
 import type { SpecialResponse } from '@oldschoolgg/toolkit';
-
-import type { MMember } from '@/lib/structures/MInteraction.js';
+import {
+	type APIApplicationCommandOptionChoice,
+	type APIChatInputApplicationCommandGuildInteraction,
+	ApplicationCommandOptionType
+} from 'discord-api-types/v10';
 
 export function convertCommandOptionToAPIOption(option: CommandOption): any {
 	switch (option.type) {
@@ -59,10 +60,18 @@ const stringyToApiMap: Record<StringyApplicationCommandOptionType, ApplicationCo
 	Mentionable: ApplicationCommandOptionType.Mentionable,
 	Number: ApplicationCommandOptionType.Number
 };
-export function convertAPIOptionsToCommandOptions(
-	options: ChatInputCommandInteraction['options']['data'],
-	resolvedObjects: any | null
-): CommandOptions {
+
+type ConversionParams = {
+	guildId?: string;
+	options: APIChatInputApplicationCommandGuildInteraction['data']['options'] | undefined;
+	resolvedObjects: APIChatInputApplicationCommandGuildInteraction['data']['resolved'] | undefined;
+};
+
+export function convertAPIOptionsToCommandOptions({
+	options,
+	resolvedObjects = {},
+	guildId
+}: ConversionParams): CommandOptions {
 	if (!options) return {};
 
 	const parsedOptions: CommandOptions = {};
@@ -74,28 +83,32 @@ export function convertAPIOptionsToCommandOptions(
 		) {
 			const opts: CommandOptions = {};
 			for (const [key, value] of Object.entries(
-				convertAPIOptionsToCommandOptions(opt.options ?? [], resolvedObjects)
+				convertAPIOptionsToCommandOptions({ options: opt.options ?? [], resolvedObjects, guildId })
 			)) {
 				opts[key] = value;
 			}
 			parsedOptions[opt.name] = opts;
 		} else if (opt.type === ApplicationCommandOptionType.Channel) {
-			if (resolvedObjects?.channels) {
-				parsedOptions[opt.name] = resolvedObjects.channels.get(opt.value as string)!;
-			}
+			parsedOptions[opt.name] = convertApiChannelToZChannel({
+				apiChannel: resolvedObjects.channels?.[opt.value]!,
+				guildId: guildId!
+			});
 		} else if (opt.type === ApplicationCommandOptionType.Role) {
-			if (resolvedObjects?.roles) {
-				parsedOptions[opt.name] = resolvedObjects.roles.get(opt.value as string)!;
-			}
+			parsedOptions[opt.name] = convertApiRoleToZRole({
+				apiRole: resolvedObjects.roles?.[opt.value]!,
+				guildId: guildId!
+			});
 		} else if (opt.type === ApplicationCommandOptionType.User) {
-			if (resolvedObjects?.users) {
-				parsedOptions[opt.name] = {
-					user: resolvedObjects.users.get(opt.value as string)!,
-					member: resolvedObjects.members?.has(opt.value as string)
-						? resolvedObjects.members.get(opt.value as string)!
-						: undefined
-				};
-			}
+			parsedOptions[opt.name] = {
+				user: convertApiUserToZUser(resolvedObjects.users?.[opt.value]!),
+				member: guildId
+					? convertApiMemberToZMember({
+							userId: opt.value,
+							guildId: guildId,
+							apiMember: resolvedObjects.members?.[opt.value]!
+						})
+					: undefined
+			};
 		} else {
 			parsedOptions[opt.name as string] = opt.value as any;
 		}
@@ -106,18 +119,10 @@ export function convertAPIOptionsToCommandOptions(
 
 export interface MahojiUserOption {
 	user: IUser;
-	member?: IMember | APIInteractionDataResolvedGuildMember;
+	member?: IMember;
 }
 
-export type MahojiCommandOption =
-	| number
-	| string
-	| MahojiUserOption
-	| IChannel
-	| APIInteractionDataResolvedChannel
-	| IRole
-	| APIRole
-	| boolean;
+export type MahojiCommandOption = number | string | MahojiUserOption | IChannel | IRole | boolean;
 
 export interface CommandOptions {
 	[key: string]: MahojiCommandOption | CommandOptions;
@@ -217,20 +222,22 @@ export type CommandRunOptions<TOpts = {}> = {
 	interaction: MInteraction;
 	options: TOpts;
 	user: MUser;
-	member?: MMember;
-	channelID: string;
-	guildID?: string;
+	member: IMember | null;
+	channelId: string;
+	guildId: string | null;
+	// TODO
 	userID: string;
+	userId: string;
 	rng: RNGProvider;
 };
 
-export type OSBMahojiCommand<T extends readonly CommandOption[] = CommandOption[]> = Readonly<{
+type OSBMahojiCommand<T extends readonly CommandOption[] = CommandOption[]> = Readonly<{
 	name: string;
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 	description: string;
 	options: T;
-	requiredPermissions?: (keyof typeof PermissionFlagsBits)[];
-	guildID?: string;
+	requiredPermissions?: PermissionKey[];
+	guildId?: string;
 	run(options: CommandRunOptions<ExtractOptions<T>>): CommandResponse;
 }>;
 type AnyArr<T> = readonly T[] | T[];
@@ -253,8 +260,8 @@ export type AnyCommand = Readonly<{
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 	description: string;
 	options: readonly CommandOption[];
-	requiredPermissions?: (keyof typeof PermissionFlagsBits)[];
-	guildID?: string;
+	requiredPermissions?: PermissionKey[];
+	guildId?: string;
 	run(options: CommandRunOptions<any>): CommandResponse;
 }>;
 export function defineOption<const O extends CommandOption>(o: O): O {
@@ -266,8 +273,8 @@ export function defineCommandSrc<const T extends AnyArr<unknown>>(
 		attributes?: Omit<AbstractCommandAttributes, 'description'>;
 		description: string;
 		options: T;
-		requiredPermissions?: (keyof typeof PermissionFlagsBits)[];
-		guildID?: string;
+		requiredPermissions?: PermissionKey[];
+		guildId?: string;
 		run(options: CommandRunOptions<ExtractOptions<T>>): CommandResponse;
 	}> &
 		(T[number] extends CommandOption ? unknown : { __error__: 'options must be CommandOption[]' })

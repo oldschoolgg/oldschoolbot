@@ -125,7 +125,7 @@ function perUserCost(
 	return cost;
 }
 
-export async function nightmareCommand(user: MUser, channelID: string, name: string, qty: number | undefined) {
+export async function nightmareCommand(user: MUser, channelId: string, name: string, qty: number | undefined) {
 	const hasMace = !!user.gear.melee.hasEquipped("Inquisitor's mace");
 	const hasShadow = !!user.gear.mage.hasEquipped("Tumeken's shadow");
 	const hasSang = !!user.gear.mage.hasEquipped('Sanguinesti staff');
@@ -306,7 +306,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 
 	await ActivityManager.startTrip<NightmareActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Nightmare',

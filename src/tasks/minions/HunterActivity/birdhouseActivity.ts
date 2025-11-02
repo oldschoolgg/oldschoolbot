@@ -17,7 +17,7 @@ const clues = [
 export const birdHouseTask: MinionTask = {
 	type: 'Birdhouse',
 	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { birdhouseName, birdhouseData, channelID, duration, placing, gotCraft, currentDate } = data;
+		const { birdhouseName, birdhouseData, channelId, duration, placing, gotCraft, currentDate } = data;
 		const birdHouseLimit = calcBirdhouseLimit();
 		let hunterXP = 0;
 		let craftingXP = 0;
@@ -55,7 +55,7 @@ export const birdHouseTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your birdhouses are full!`;
 
-			return handleTripFinish(user, channelID, str, undefined, data, null);
+			return handleTripFinish({ user, channelId, message: str, data });
 		} else {
 			let str = '';
 			const birdhouseToCollect = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseData.lastPlaced);
@@ -150,7 +150,7 @@ export const birdHouseTask: MinionTask = {
 				str += `\n${user.minionName} tells you to come back after your birdhouses are full!`;
 			}
 
-			handleTripFinish(user, channelID, str, undefined, data, loot);
+			handleTripFinish({ user, channelId, message: str, data, loot });
 		}
 	}
 };

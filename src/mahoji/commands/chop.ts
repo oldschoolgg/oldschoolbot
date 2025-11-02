@@ -109,7 +109,7 @@ export const chopCommand = defineCommand({
 			choices: Woodcutting.twitchersGloves.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -217,7 +217,7 @@ export const chopCommand = defineCommand({
 		await ActivityManager.startTrip<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop === true ? true : undefined,

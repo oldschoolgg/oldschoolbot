@@ -401,7 +401,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: str,
 					head: 'ketKeh'
 				})
@@ -410,7 +410,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	};
 }
 
-export async function infernoStartCommand(user: MUser, channelID: string): CommandResponse {
+export async function infernoStartCommand(user: MUser, channelId: string): CommandResponse {
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
 		await user.fetchMinigameScore('inferno'),
@@ -428,7 +428,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 			files: [
 				{
 					name: 'image.jpg',
-					attachment: await newChatHeadImage({
+					buffer: await newChatHeadImage({
 						content: res,
 						head: 'ketKeh'
 					})
@@ -456,7 +456,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 			files: [
 				{
 					name: 'image.jpg',
-					attachment: await newChatHeadImage({
+					buffer: await newChatHeadImage({
 						content: `${err.message}`,
 						head: 'ketKeh'
 					})
@@ -467,7 +467,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 
 	await ActivityManager.startTrip<InfernoOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: realDuration,
 		type: 'Inferno',
 		zukDeathChance: zukDeathChance.value,
@@ -506,7 +506,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: "You're on your own now JalYt, you face certain death... Prepare to fight for your life.",
 					head: 'ketKeh'
 				})

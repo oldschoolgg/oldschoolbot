@@ -1,5 +1,3 @@
-import { ComponentType } from '@oldschoolgg/discord';
-
 import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
@@ -36,11 +34,6 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 <:BSO:863823820435619890> **BSO:** I run a 2nd bot called BSO (Bot School Old), which you can also play, it has lots of fun and unique changes, like 5x XP and infinitely stacking clues. Type \`/help\` for more information.
 
 Please click the buttons below for important links.`,
-		components: [
-			{
-				type: ComponentType.ActionRow,
-				components: mahojiInformationalButtons
-			}
-		]
+		components: mahojiInformationalButtons
 	};
 }

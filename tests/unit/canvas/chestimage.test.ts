@@ -13,7 +13,7 @@ describe('Chest Images', async () => {
 		const previousCL = new Bank().add('Coins', 1000000);
 
 		const mockUser = {
-			rawUsername: 'TestUser',
+			username: 'TestUser',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;
@@ -39,7 +39,7 @@ describe('Chest Images', async () => {
 		const previousCL = new Bank();
 
 		const mockUser = {
-			rawUsername: 'TestUser',
+			username: 'TestUser',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;
@@ -65,7 +65,7 @@ describe('Chest Images', async () => {
 		const previousCL = new Bank();
 
 		const mockUser = {
-			rawUsername: 'TestUser',
+			username: 'TestUser',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;
@@ -92,13 +92,13 @@ describe('Chest Images', async () => {
 		const previousCL = new Bank();
 
 		const mockUser1 = {
-			rawUsername: 'User1',
+			username: 'User1',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;
 
 		const mockUser2 = {
-			rawUsername: 'User2',
+			username: 'User2',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;

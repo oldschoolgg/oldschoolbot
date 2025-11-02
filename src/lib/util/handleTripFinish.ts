@@ -1,10 +1,4 @@
-import {
-	type AttachmentBuilder,
-	type ButtonBuilder,
-	type MessageCollector,
-	type MessageCreateOptions,
-	makeComponents
-} from '@oldschoolgg/discord';
+import type { ButtonBuilder, MessageCollector } from '@oldschoolgg/discord';
 import { getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
@@ -16,6 +10,7 @@ import { BitField, PerkTier } from '@/lib/constants.js';
 import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
+import { MUserClass } from '@/lib/MUser.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
@@ -115,34 +110,67 @@ const tripFinishEffects: TripFinishEffect[] = [
 
 export async function handleTripFinish(
 	user: MUser,
-	channelID: string,
-	_message: string | ({ content: string } & MessageCreateOptions),
-	attachment:
-		| AttachmentBuilder
-		| Buffer
-		| undefined
+	_channelId: string,
+	_message: SendableMessage,
+	_data: ActivityTaskData,
+	_loot?: Bank | null,
+	_messages?: string[]
+): Promise<void>;
+
+export async function handleTripFinish(params: {
+	user: MUser;
+	channelId: string;
+	message: SendableMessage;
+	data: ActivityTaskData;
+	loot?: Bank | null;
+	messages?: string[];
+}): Promise<void>;
+
+export async function handleTripFinish(
+	userOrParams:
+		| MUser
 		| {
-				name: string;
-				attachment: Buffer;
+				user: MUser;
+				channelId: string;
+				message: SendableMessage;
+				data: ActivityTaskData;
+				loot?: Bank | null;
+				messages?: string[];
 		  },
-	data: ActivityTaskData,
-	loot: Bank | null,
-	_messages?: string[],
-	_components?: ButtonBuilder[]
+	_channelId?: string,
+	_message?: SendableMessage,
+	_data?: ActivityTaskData,
+	_loot?: Bank | null,
+	_messages?: string[]
 ) {
+	const {
+		data,
+		user,
+		loot,
+		channelId,
+		messages: inputMessages,
+		message: inputMessage
+	} = userOrParams instanceof MUserClass
+		? {
+				user: userOrParams as MUser,
+				channelId: _channelId!,
+				message: _message!,
+				data: _data!,
+				loot: _loot!,
+				messages: _messages
+			}
+		: userOrParams;
+
 	Logging.logDebug(`Handling trip finish for ${user.logName} (${data.type})`);
-	const message = typeof _message === 'string' ? { content: _message } : _message;
-	if (attachment) {
-		if (!message.files) {
-			message.files = [attachment];
-		} else if (Array.isArray(message.files)) {
-			message.files.push(attachment);
-		} else {
-			console.warn(`Unexpected attachment type in handleTripFinish: ${typeof attachment}`);
-		}
-	}
+	const message =
+		inputMessage instanceof MessageBuilder
+			? inputMessage
+			: typeof inputMessage === 'string'
+				? new MessageBuilder().setContent(inputMessage)
+				: new MessageBuilder(inputMessage);
+
 	const perkTier = await user.fetchPerkTier();
-	const messages: string[] = [];
+	const messages: string[] = inputMessages ?? [];
 
 	const itemsToAddWithCL = new Bank();
 	const itemsToRemove = new Bank();
@@ -164,10 +192,10 @@ export async function handleTripFinish(
 
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
-		message.content += `\n**Messages:** ${messages.join(', ')}`;
+		message.addContent(`\n**Messages:** ${messages.join(', ')}`);
 	}
 
-	message.content += displayCluesAndPets(user, loot);
+	message.addContent(displayCluesAndPets(user, loot));
 
 	const existingCollector = collectors.get(user.id);
 
@@ -181,7 +209,7 @@ export async function handleTripFinish(
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		components.push(...buildClueButtons(loot, perkTier, user));
+		components.push(...buildClueButtons(loot ?? null, perkTier, user));
 
 		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats();
 
@@ -229,15 +257,11 @@ export async function handleTripFinish(
 		}
 	}
 
-	if (_components) {
-		components.push(..._components);
-	}
-
 	handleTriggerShootingStar(user, data, components);
 
 	if (components.length > 0) {
-		message.components = makeComponents(components);
+		message.addComponents(components);
 	}
 
-	await globalClient.sendMessage(channelID, message);
+	await globalClient.sendMessage(channelId, message);
 }

@@ -10,7 +10,7 @@ import { determineRunes } from '@/lib/util/determineRunes.js';
 
 export async function guardiansOfTheRiftStartCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	combinationRunes: boolean | undefined
 ) {
 	const rcLevel = user.skillLevel('runecraft');
@@ -175,7 +175,7 @@ export async function guardiansOfTheRiftStartCommand(
 		userID: user.id,
 		duration,
 		type: 'GuardiansOfTheRift',
-		channelID,
+		channelId,
 		minigameID: 'guardians_of_the_rift',
 		minedFragments,
 		barrierAndGuardian,

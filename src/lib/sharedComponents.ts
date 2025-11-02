@@ -1,5 +1,5 @@
 import { ButtonBuilder } from '@oldschoolgg/discord';
-import { type APIButtonComponent, ButtonStyle, ComponentType } from 'discord-api-types/v10';
+import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 
 const buttonSource = [
 	{
@@ -24,16 +24,19 @@ const buttonSource = [
 	}
 ];
 
-export const informationalButtons = buttonSource.map(i =>
+export const informationalButtons: ButtonBuilder[] = buttonSource.map(i =>
 	new ButtonBuilder().setLabel(i.label).setEmoji({ id: i.emoji }).setURL(i.url).setStyle(ButtonStyle.Link)
 );
-export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
-	type: ComponentType.Button,
-	label: i.label,
-	emoji: { id: i.emoji },
-	style: ButtonStyle.Link,
-	url: i.url
-}));
+export const mahojiInformationalButtons = buttonSource.map(
+	i =>
+		new ButtonBuilder({
+			type: ComponentType.Button,
+			label: i.label,
+			emoji: { id: i.emoji },
+			style: ButtonStyle.Link,
+			url: i.url
+		})
+);
 
 export const minionBuyButton = new ButtonBuilder()
 	.setCustomId('BUY_MINION')
