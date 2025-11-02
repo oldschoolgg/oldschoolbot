@@ -1,4 +1,3 @@
-
 import type { IButtonInteraction, IChatInputCommandInteraction, IGuild, IMember } from '@oldschoolgg/schemas';
 import { deepMerge } from '@oldschoolgg/toolkit';
 import type {
@@ -7,19 +6,18 @@ import type {
 	APIMessageComponentInteraction
 } from 'discord-api-types/v10';
 
-
 import { BaseInteraction } from '@/lib/discord/interaction/BaseInteraction.js';
-import { PaginatedMessage, type PaginatedMessageOptions } from '@/lib/structures/PaginatedMessage.js';
-import { makeParty } from '@/lib/discord/interaction/makeParty.js';
 import { interactionConfirmation } from '@/lib/discord/interaction/confirmation.js';
+import { makeParty } from '@/lib/discord/interaction/makeParty.js';
+import { PaginatedMessage, type PaginatedMessageOptions } from '@/lib/structures/PaginatedMessage.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 
 type AnyInteraction = IChatInputCommandInteraction | IButtonInteraction;
 type RawFor<T> = T extends IButtonInteraction
 	? APIMessageComponentInteraction
 	: T extends IChatInputCommandInteraction
-	? APIChatInputApplicationCommandInteraction
-	: never;
+		? APIChatInputApplicationCommandInteraction
+		: never;
 
 type InputItx<T extends AnyInteraction> = {
 	interaction: T;
@@ -27,7 +25,7 @@ type InputItx<T extends AnyInteraction> = {
 };
 
 export class MInteraction<T extends AnyInteraction = AnyInteraction> extends BaseInteraction {
-	public interaction: IChatInputCommandInteraction | IButtonInteraction;
+	public interaction: T;
 	public interactionResponse: APIMessage | null = null;
 	public isPaginated = false;
 	public isParty = false;
@@ -50,7 +48,6 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 		return (this.interaction as any)?.type === 2 && !!(this.interaction as any)?.data;
 	}
 
-
 	makePaginatedMessage(options: PaginatedMessageOptions) {
 		this.isPaginated = true;
 		return new PaginatedMessage({ interaction: this, ...options }).run([this.interaction.user.id]);
@@ -71,9 +68,9 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 		message:
 			| string
 			| ({ content: string; timeout?: number } & (
-				| { ephemeral?: false; users?: string[] }
-				| { ephemeral?: boolean; users?: undefined }
-			))
+					| { ephemeral?: false; users?: string[] }
+					| { ephemeral?: boolean; users?: undefined }
+			  ))
 	) {
 		return interactionConfirmation(this, message);
 	}
@@ -106,9 +103,10 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 	public async makeParty(options: MakePartyOptions & { message: string }): Promise<MUser[]> {
 		return makeParty(this, options);
 	}
-
+	get customId(): T extends IButtonInteraction ? string : never {
+		return (this.interaction as any).customId;
+	}
 }
-
 export const MButtonInteraction = (args: InputItx<IButtonInteraction>) => new MInteraction<IButtonInteraction>(args);
 export const MChatInputInteraction = (args: InputItx<IChatInputCommandInteraction>) =>
 	new MInteraction<IChatInputCommandInteraction>(args);

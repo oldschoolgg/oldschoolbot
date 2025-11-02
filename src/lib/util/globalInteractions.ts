@@ -7,11 +7,11 @@ import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
+import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
@@ -461,10 +461,11 @@ async function globalButtonInteractionHandler({
 				return str;
 			}
 			return {
-				content: `${star && star.expiry < Date.now()
-					? 'The Crashed Star has expired!'
-					: `That Crashed Star was not discovered by ${user.minionName}.`
-					}`,
+				content: `${
+					star && star.expiry < Date.now()
+						? 'The Crashed Star has expired!'
+						: `That Crashed Star was not discovered by ${user.minionName}.`
+				}`,
 				ephemeral: true
 			};
 		}

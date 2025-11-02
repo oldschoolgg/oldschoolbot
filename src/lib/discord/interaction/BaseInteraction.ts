@@ -181,6 +181,14 @@ export class BaseInteraction {
 		return out;
 	}
 
+	public async silentButtonAck() {
+		return this.rest.post(Routes.interactionCallback(this.id, this.token), {
+			body: {
+				type: InteractionResponseType.DeferredMessageUpdate
+			}
+		});
+	}
+
 	// async showModal(modal: APIInteractionResponseCallbackData & { custom_id: string; title: string; components: APIActionRowComponent<ComponentType>[] }, options: { withResponse?: boolean } = {}) {
 	// 	if (this._deferred || this._replied) throw new Error('InteractionAlreadyReplied');
 	// 	const res = await this.rest.post(Routes.interactionCallback(this.id, this.token), {

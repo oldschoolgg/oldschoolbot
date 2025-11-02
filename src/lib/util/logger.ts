@@ -4,7 +4,6 @@ import SonicBoomDefault from 'sonic-boom';
 const { SonicBoom } = SonicBoomDefault;
 
 import path from 'node:path';
-import type { AutocompleteInteraction } from '@oldschoolgg/discord';
 import { isObject, UserError } from '@oldschoolgg/toolkit';
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
@@ -26,7 +25,7 @@ const perfSonicBoom = new SonicBoom({
 export type PerformanceLogContext = {
 	duration: number;
 	text: string;
-	interaction?: AutocompleteInteraction | MInteraction;
+	interaction?: MInteraction;
 	[key: string]: unknown;
 };
 
@@ -87,7 +86,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	if (err instanceof UserError && interaction && !interaction.replied) {
 		Logging.logDebug('UserError encountered, sending message to user.', {
 			error: err.message,
-			user_id: interaction.user.id
+			user_id: interaction.userId
 		});
 		interaction.reply({ content: err.message });
 		return;

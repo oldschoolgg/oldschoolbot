@@ -1,5 +1,5 @@
-import type { ButtonBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { RawFile } from '@discordjs/rest';
+import type { ButtonBuilder, EmbedBuilder } from '@oldschoolgg/discord';
 import { MessageFlags, type RESTPostAPIChannelMessageJSONBody } from 'discord-api-types/v10';
 import { chunk } from 'remeda';
 

@@ -175,7 +175,7 @@ async function leaveTeamCommand(interaction: MInteraction, bingo: BingoManager) 
 		return "You can't leave a bingo team after bingo has ended.";
 	}
 
-	const team = await bingo.findTeamWithUser(interaction.user.id);
+	const team = await bingo.findTeamWithUser(interaction.userId);
 	if (!team) return "You're not in a team for this bingo.";
 
 	await interaction.confirmation(

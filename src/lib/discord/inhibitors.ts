@@ -1,4 +1,3 @@
-import { ComponentType, type InteractionReplyOptions } from '@oldschoolgg/discord';
 import type { IMember } from '@oldschoolgg/schemas';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 
@@ -19,7 +18,7 @@ type InhibitorRunOptions = {
 };
 interface Inhibitor {
 	name: string;
-	run: (options: InhibitorRunOptions) => false | InteractionReplyOptions | Promise<InteractionReplyOptions | false>;
+	run: (options: InhibitorRunOptions) => false | BaseSendableMessage | Promise<BaseSendableMessage | false>;
 	silent?: true;
 }
 
@@ -51,12 +50,7 @@ const inhibitors: Inhibitor[] = [
 			if (!user.hasMinion) {
 				return {
 					content: 'You need a minion to use this command.',
-					components: [
-						{
-							components: [minionBuyButton],
-							type: ComponentType.ActionRow
-						}
-					],
+					components: [minionBuyButton],
 					flags: undefined
 				};
 			}

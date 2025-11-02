@@ -1,6 +1,6 @@
-import { ButtonBuilder, type ButtonInteraction, ComponentType } from '@oldschoolgg/discord';
+import { ButtonBuilder } from '@oldschoolgg/discord';
 import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
-import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
+import { ButtonStyle, InteractionResponseType, Routes } from 'discord-api-types/v10';
 import { isFunction } from 'remeda';
 
 import { InteractionID } from '@/lib/InteractionID.js';
@@ -121,19 +121,22 @@ export class PaginatedMessage extends BasePaginatedMessage {
 	}
 
 	async run(targetUsers?: string[]) {
-		const flags = this.ephemeral ? MessageFlags.Ephemeral : undefined;
 		await this.interaction.defer({ ephemeral: this.ephemeral });
 		const interactionResponse = await this.interaction.reply({ ...(await this.render()), withResponse: true });
 		if (this.totalPages === 1) return SpecialResponse.PaginatedMessageResponse;
 
-		const collector = interactionResponse!.createMessageComponentCollector<ComponentType.Button>({
-			time: Time.Minute * 10,
-			componentType: ComponentType.Button
+		if (!interactionResponse) {
+			throw new Error('TODO? Failed to fetch interaction response for paginated message.');
+		}
+		const collector = globalClient.createInteractionCollector({
+			timeoutMs: Time.Minute * 10,
+			messageId: interactionResponse.id,
+			channelId: interactionResponse.channel_id
 		});
 
-		collector.on('collect', async (buttonPressInteraction: ButtonInteraction) => {
-			if (targetUsers && !targetUsers.includes(buttonPressInteraction.user.id)) {
-				await buttonPressInteraction.reply({ content: "This isn't your message!", flags });
+		collector.on('collect', async buttonPressInteraction => {
+			if (targetUsers && !targetUsers.includes(buttonPressInteraction.userId)) {
+				await buttonPressInteraction.reply({ content: "This isn't your message!", ephemeral: true });
 				await globalClient.respondToAutocompleteInteraction;
 				return;
 			}

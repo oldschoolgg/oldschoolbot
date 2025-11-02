@@ -1,16 +1,18 @@
-import { BLACKLISTED_USERS } from "@/lib/blacklists.js";
-import { CACHED_ACTIVE_USER_IDS, partyLockCache } from "@/lib/cache.js";
-import { SILENT_ERROR } from "@/lib/constants.js";
-import { InteractionID } from "@/lib/InteractionID.js";
-import type { MakePartyOptions } from "@/lib/types/index.js";
-import { ButtonBuilder } from "@discordjs/builders";
-import type { ButtonInteraction } from "@oldschoolgg/discord.js";
-import { Time, debounce, formatDuration } from "@oldschoolgg/toolkit";
-import { TimerManager } from "@sapphire/timer-manager";
-import { ButtonStyle, Routes, InteractionResponseType, ComponentType, MessageFlags } from "discord-api-types/v10";
+import { ButtonBuilder } from '@oldschoolgg/discord';
+import { debounce, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { TimerManager } from '@sapphire/timer-manager';
+import { ButtonStyle, ComponentType, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
+import { SILENT_ERROR } from '@/lib/constants.js';
+import { InteractionID } from '@/lib/InteractionID.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
 
-export async function makeParty(interaction: MInteraction, options: MakePartyOptions & { message: string }): Promise<MUser[]> {
+export async function makeParty(
+	interaction: MInteraction,
+	options: MakePartyOptions & { message: string }
+): Promise<MUser[]> {
 	interaction.isParty = true;
 	if (process.env.TEST) return [options.leader];
 	const timeout = Time.Minute * 5;
@@ -20,12 +22,9 @@ export async function makeParty(interaction: MInteraction, options: MakePartyOpt
 
 	const row: ButtonBuilder[] = [
 		(new ButtonBuilder().setCustomId(InteractionID.Party.Join).setLabel('Join').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder()
-				.setCustomId(InteractionID.Party.Leave)
-				.setLabel('Leave')
-				.setStyle(ButtonStyle.Secondary),
-			new ButtonBuilder().setCustomId(InteractionID.Party.Cancel).setLabel('Cancel').setStyle(ButtonStyle.Danger),
-			new ButtonBuilder().setCustomId(InteractionID.Party.Start).setLabel('Start').setStyle(ButtonStyle.Success))
+		new ButtonBuilder().setCustomId(InteractionID.Party.Leave).setLabel('Leave').setStyle(ButtonStyle.Secondary),
+		new ButtonBuilder().setCustomId(InteractionID.Party.Cancel).setLabel('Cancel').setStyle(ButtonStyle.Danger),
+		new ButtonBuilder().setCustomId(InteractionID.Party.Start).setLabel('Start').setStyle(ButtonStyle.Success))
 	];
 
 	const getMessageContent = async () => ({
@@ -54,7 +53,7 @@ export async function makeParty(interaction: MInteraction, options: MakePartyOpt
 		}
 	};
 
-	const silentAck = (bi: ButtonInteraction) =>
+	const silentAck = (bi: any) =>
 		globalClient.rest.post(Routes.interactionCallback(bi.id, bi.token), {
 			body: { type: InteractionResponseType.DeferredMessageUpdate }
 		});
@@ -74,28 +73,23 @@ export async function makeParty(interaction: MInteraction, options: MakePartyOpt
 
 	function checkParty(): string | null {
 		if (usersWhoConfirmed.length < options.minSize) return `You need atleast ${options.minSize} players.`;
-		if (usersWhoConfirmed.length > options.maxSize)
-			return `You cannot have more than ${options.minSize} players.`;
+		if (usersWhoConfirmed.length > options.maxSize) return `You cannot have more than ${options.minSize} players.`;
 		return null;
 	}
 
 	return new Promise<MUser[]>((resolve, reject) => {
+		// @ts-expect-error
 		const collector = interaction.interactionResponse!.createMessageComponentCollector<ComponentType.Button>({
 			time: timeout,
 			componentType: ComponentType.Button
 		});
 
-		collector.on('collect', async bi => {
+		collector.on('collect', async (bi: any) => {
 			if (BLACKLISTED_USERS.has(bi.user.id)) return;
 			CACHED_ACTIVE_USER_IDS.add(bi.user.id);
 
 			const user = await mUserFetch(bi.user.id);
-			if (
-				(!options.ironmanAllowed && user.isIronman) ||
-				bi.user.bot ||
-				user.minionIsBusy ||
-				!user.hasMinion
-			) {
+			if ((!options.ironmanAllowed && user.isIronman) || bi.user.bot || user.minionIsBusy || !user.hasMinion) {
 				await bi.reply({
 					content: `You cannot mass if you are busy${!options.ironmanAllowed ? ', an ironman' : ''}, or have no minion.`,
 					flags: MessageFlags.Ephemeral

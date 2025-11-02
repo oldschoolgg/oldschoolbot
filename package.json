@@ -39,14 +39,11 @@
 		"monorepo:test": "pnpm --stream --workspace-concurrency=2 -r test"
 	},
 	"dependencies": {
-		"@discordjs/builders": "^1.13.0",
-		"@discordjs/formatters": "^0.6.1",
 		"@discordjs/rest": "^2.6.0",
 		"@discordjs/ws": "^2.0.3",
 		"@electric-sql/pglite": "^0.3.10",
 		"@oldschoolgg/collectionlog": "workspace:*",
 		"@oldschoolgg/discord": "workspace:*",
-		"@oldschoolgg/discord.js": "workspace:*",
 		"@oldschoolgg/rng": "workspace:*",
 		"@oldschoolgg/schemas": "workspace:*",
 		"@oldschoolgg/spritesheet": "workspace:*",

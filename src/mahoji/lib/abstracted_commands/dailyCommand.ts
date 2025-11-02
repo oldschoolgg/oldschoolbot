@@ -2,9 +2,9 @@ import { MathRNG, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
 import pets from '@/lib/data/pets.js';
+import { DynamicButtons } from '@/lib/discord/DynamicButtons.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
-import { DynamicButtons } from '@/lib/discord/DynamicButtons.js';
 
 export async function isUsersDailyReady(
 	user: MUser
@@ -125,7 +125,7 @@ export async function dailyCommand(interaction: MInteraction, user: MUser): Comm
 			name: answer,
 			fn: ({ interaction }) => {
 				if (question.answers.includes(answer)) {
-					correctUser = interaction.user.id;
+					correctUser = interaction.userId;
 				}
 			},
 			cantBeBusy: false

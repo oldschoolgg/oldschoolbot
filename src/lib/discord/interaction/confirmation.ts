@@ -1,18 +1,23 @@
-import { InteractionID } from "@/lib/InteractionID.js";
-import { ButtonBuilder } from "@discordjs/builders";
-import { ButtonStyle, Routes, InteractionResponseType } from "discord-api-types/v10";
+import { ButtonBuilder } from '@oldschoolgg/discord';
+import { ButtonStyle, InteractionResponseType, Routes } from 'discord-api-types/v10';
 
-export async function interactionConfirmation(interaction: MInteraction, message:
-	| string
-	| ({ content: string; timeout?: number } & (
-		| { ephemeral?: false; users?: string[] }
-		| { ephemeral?: boolean; users?: undefined }
-	))) {
+import { InteractionID } from '@/lib/InteractionID.js';
+
+export async function interactionConfirmation(
+	interaction: MInteraction,
+	message:
+		| string
+		| ({ content: string; timeout?: number } & (
+				| { ephemeral?: false; users?: string[] }
+				| { ephemeral?: boolean; users?: undefined }
+		  ))
+) {
 	interaction.isConfirmation = true;
 	if (process.env.TEST) return;
 	const content = typeof message === 'string' ? message : message.content;
 	// interaction.ephemeral = typeof message !== 'string' ? (message.ephemeral ?? interaction.ephemeral) : interaction.ephemeral;
-	const users: string[] = typeof message !== 'string' ? (message.users ?? [interaction.userId]) : [interaction.userId];
+	const users: string[] =
+		typeof message !== 'string' ? (message.users ?? [interaction.userId]) : [interaction.userId];
 	const timeout: number = typeof message !== 'string' ? (message.timeout ?? 15_000) : 15_000;
 
 	const confirmRow = [
@@ -20,10 +25,10 @@ export async function interactionConfirmation(interaction: MInteraction, message
 			.setCustomId(InteractionID.Confirmation.Confirm)
 			.setLabel('Confirm')
 			.setStyle(ButtonStyle.Primary),
-			new ButtonBuilder()
-				.setCustomId(InteractionID.Confirmation.Cancel)
-				.setLabel('Cancel')
-				.setStyle(ButtonStyle.Secondary))
+		new ButtonBuilder()
+			.setCustomId(InteractionID.Confirmation.Cancel)
+			.setLabel('Cancel')
+			.setStyle(ButtonStyle.Secondary))
 	];
 
 	await interaction.defer();
@@ -56,7 +61,6 @@ export async function interactionConfirmation(interaction: MInteraction, message
 				return;
 			}
 
-			// @ts-expect-error TODO
 			if (buttonInteraction.customId === InteractionID.Confirmation.Cancel) {
 				// If they cancel, we remove the button component, which means we can't reply to the button interaction.
 				interaction.reply({ content: `The confirmation was cancelled.`, components: [] });

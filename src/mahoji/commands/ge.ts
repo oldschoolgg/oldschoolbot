@@ -1,4 +1,4 @@
-import { dateFm, makeComponents } from '@oldschoolgg/discord';
+import { dateFm } from '@oldschoolgg/discord';
 import { evalMathExpression, formatDuration, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Items, toKMB } from 'oldschooljs';
 
@@ -455,7 +455,7 @@ ORDER BY
 				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
-				components: makeComponents([createGECancelButton(createdListing)])
+				components: [createGECancelButton(createdListing)]
 			};
 		}
 
@@ -477,7 +477,7 @@ ORDER BY
 				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
-				components: makeComponents([createGECancelButton(createdListing)])
+				components: [createGECancelButton(createdListing)]
 			};
 		}
 

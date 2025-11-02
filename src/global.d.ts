@@ -11,4 +11,4 @@ declare global {
 	export type SendableFile = import('@/lib/discord/SendableMessage.js').SendableFile;
 }
 
-export { };
+export {};

@@ -2,13 +2,12 @@ import { makeURLSearchParams, REST } from '@discordjs/rest';
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
 import {
 	ActivityType,
-	type MessageEditOptions,
+	BitField,
 	type PermissionKey,
 	Permissions,
 	PresenceUpdateStatus,
 	Routes
 } from '@oldschoolgg/discord';
-import { IntentsBitField } from '@oldschoolgg/discord.js';
 import type { IChannel, IGuild, IInteraction, IMember, IMessage, IRole, IUser } from '@oldschoolgg/schemas';
 import { uniqueArr } from '@oldschoolgg/toolkit';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -33,13 +32,18 @@ import {
 
 import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
+import { type CollectorOptions, createInteractionCollector } from '@/lib/discord/collector/collectSingle.js';
 import { sendableMsgToApiCreate } from '@/lib/discord/SendableMessage.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
-import { createInteractionCollector, type CollectorOptions } from '@/lib/discord/collector/collectSingle.js';
-
 
 export interface OldSchoolBotClientEventsMap {
-	'interactionCreate': [interaction: APIInteraction];
+	interactionCreate: [interaction: APIInteraction];
+	guildCreate: [guild: APIGuild];
+	ready: [data: GatewayReadyDispatchData];
+	economyLog: [message: string];
+	serverNotification: [message: string];
+	error: [error: Error];
+	messageCreate: [message: IMessage];
 }
 
 export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEventsMap> implements AsyncDisposable {
@@ -54,7 +58,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		super();
 		this.ws = new WebSocketManager({
 			token: process.env.DISCORD_TOKEN,
-			intents: new IntentsBitField([
+			intents: new BitField([
 				GatewayIntentBits.Guilds,
 				GatewayIntentBits.GuildMessages,
 				GatewayIntentBits.GuildMessageReactions,
@@ -62,7 +66,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 				GatewayIntentBits.DirectMessageReactions,
 				GatewayIntentBits.GuildWebhooks
 			]).bitfield,
-			shardCount: 6,
+			// shardCount: 6,
 			fetchGatewayInformation() {
 				return this.rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
 			},
@@ -82,12 +86,12 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 			// buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' }),
 		});
 
-		this.ws.on(WebSocketShardEvents.Dispatch, (packet, shardId) => {
+		this.ws.on(WebSocketShardEvents.Dispatch, async (packet, shardId) => {
 			switch (packet.t) {
 				case 'READY': {
 					if (shardId === 0) {
-						this.emit('ready');
-						this.onReady(packet.d)
+						this.emit('ready', packet.d);
+						this.onReady(packet.d);
 					}
 					break;
 				}
@@ -95,9 +99,27 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 					this.emit('interactionCreate', packet.d);
 					break;
 				}
+				case GatewayDispatchEvents.MessageCreate: {
+					const _msg = packet.d;
+					const member = _msg.guild_id ? await Cache.getMember(_msg.guild_id, _msg.author.id) : null;
+					const msg: IMessage = {
+						id: _msg.id,
+						content: _msg.content,
+						author_id: _msg.author.id,
+						channel_id: _msg.channel_id,
+						guild_id: _msg.guild_id ?? null,
+						author: {
+							id: _msg.author.id,
+							username: _msg.author.username,
+							bot: Boolean(_msg.author.bot)
+						},
+						member
+					};
+					this.emit('messageCreate', msg);
+					break;
+				}
 			}
 		});
-
 	}
 
 	addEventListener<K extends keyof OldSchoolBotClientEventsMap>(
@@ -132,7 +154,6 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		// await this.syncMainServerData();
 	}
 
-
 	private async fetchCommands() {
 		const commands = (await this.rest.get(
 			Routes.applicationCommands(this.applicationUser!.id)
@@ -146,13 +167,13 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 			body:
 				typeof message === 'string'
 					? {
-						type: 4,
-						data: { content: message }
-					}
+							type: 4,
+							data: { content: message }
+						}
 					: {
-						type: 4,
-						data: message
-					}
+							type: 4,
+							data: message
+						}
 		});
 	}
 	// async respondToButtonInteraction(interaction: IInteraction, message: APIApplicationCommandOptionChoice[]) {
@@ -219,7 +240,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		return res;
 	}
 
-	async editMessage(channelId: string, messageId: string, body: MessageEditOptions) {
+	async editMessage(channelId: string, messageId: string, body: SendableMessage) {
 		const route = Routes.channelMessage(channelId, messageId);
 		const res = await this.rest.patch(route, {
 			body

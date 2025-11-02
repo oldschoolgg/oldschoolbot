@@ -1,4 +1,4 @@
-import { type MessageEditOptions, time, userMention } from '@oldschoolgg/discord';
+import { time, userMention } from '@oldschoolgg/discord';
 import { debounce, Events, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
@@ -48,7 +48,7 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
 	const message = await globalClient.fetchMessage(giveaway.channel_id, giveaway.message_id);
 	if (!message) return;
 	const newContent = generateGiveawayContent(giveaway.user_id, giveaway.finish_date, giveaway.users_entered);
-	const edits: MessageEditOptions = {};
+	const edits: BaseSendableMessage = {};
 	if (giveaway.completed) edits.components = [];
 	if (message.content !== newContent) {
 		edits.content = newContent;

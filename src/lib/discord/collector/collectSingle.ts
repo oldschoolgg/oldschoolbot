@@ -1,24 +1,24 @@
-import { TimerManager } from "@sapphire/timer-manager";
-import type { OldSchoolBotClient } from "@/lib/discord/OldSchoolBotClient.js";
-import { AsyncEventEmitter } from "@vladfrangu/async_event_emitter";
-import type { APIInteraction } from "discord-api-types/v10";
-import { MInteraction } from "@/lib/discord/interaction/MInteraction.js";
-import { apiInteractionParse } from "@/lib/discord/interactionHandler.js";
-import type { IButtonInteraction, IInteraction } from "@oldschoolgg/schemas";
+import type { IButtonInteraction, IInteraction } from '@oldschoolgg/schemas';
+import { TimerManager } from '@sapphire/timer-manager';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import type { APIInteraction } from 'discord-api-types/v10';
+
+import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
+import { apiInteractionParse } from '@/lib/discord/interactionHandler.js';
+import type { OldSchoolBotClient } from '@/lib/discord/OldSchoolBotClient.js';
+
+type InteractionTypeCollected = MInteraction<IButtonInteraction>;
 
 export type CollectorOptions = {
 	filter?: (i: InteractionTypeCollected) => boolean | Promise<boolean>;
 	maxCollected?: number;
 	timeoutMs?: number;
-	interactionType?: IInteraction['kind'];
 	channelId?: string;
 	messageId?: string;
 };
 
-type InteractionTypeCollected = MInteraction<IButtonInteraction>;
-
 type CollectorEvents = {
-	collect: [interaction: InteractionTypeCollected];
+	collect: [interaction: MInteraction<IButtonInteraction>];
 	end: [collected: Map<string, InteractionTypeCollected>, reason: string];
 	error: [err: unknown];
 };
@@ -36,7 +36,10 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 	private messageId?: string;
 	private interactionType: IInteraction['kind'] = 'Button';
 
-	constructor(client: OldSchoolBotClient, { filter, maxCollected = 1, timeoutMs, channelId, messageId, interactionType = 'Button' }: CollectorOptions = {}) {
+	constructor(
+		client: OldSchoolBotClient,
+		{ filter, maxCollected = 1, timeoutMs, channelId, messageId }: CollectorOptions = {}
+	) {
 		super();
 		this.client = client;
 		this.filter = filter;
@@ -44,14 +47,14 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 		this.messageId = messageId;
 		this.maxCollected = Math.max(1, maxCollected);
 		this.timeoutMs = timeoutMs;
-		this.interactionType = interactionType;
+		this.interactionType = 'Button';
 		this.boundListener = async (i: APIInteraction) => {
 			const mitx = await apiInteractionParse(i);
 			void this.onInteraction(mitx);
 		};
-		this.client.addEventListener("interactionCreate", this.boundListener);
+		this.client.addEventListener('interactionCreate', this.boundListener);
 		if (this.timeoutMs && this.timeoutMs > 0) {
-			this.timer = TimerManager.setTimeout(() => this.stop("timeout"), this.timeoutMs);
+			this.timer = TimerManager.setTimeout(() => this.stop('timeout'), this.timeoutMs);
 			this.timer.unref?.();
 		}
 	}
@@ -81,25 +84,25 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 			if (!filterResult) return;
 			if (!interaction.id || this.collected.has(interaction.id)) return;
 			this.collected.set(interaction.id, interaction);
-			this.emit("collect", interaction);
-			if (this.collected.size >= this.maxCollected) this.stop("maxCollected");
+			this.emit('collect', interaction);
+			if (this.collected.size >= this.maxCollected) this.stop('maxCollected');
 		} catch (err) {
-			this.emit("error", err);
-			this.stop("error");
+			this.emit('error', err);
+			this.stop('error');
 		}
 	}
 
-	stop(reason = "user") {
+	stop(reason = 'user') {
 		if (this.endedFlag) return;
 		this.endedFlag = true;
 		try {
-			this.client.removeEventListener("interactionCreate", this.boundListener);
+			this.client.removeEventListener('interactionCreate', this.boundListener);
 		} finally {
 			if (this.timer) {
 				TimerManager.clearTimeout(this.timer);
 				this.timer = undefined;
 			}
-			this.emit("end", this.collected, reason);
+			this.emit('end', this.collected, reason);
 		}
 	}
 

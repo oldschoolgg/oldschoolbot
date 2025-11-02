@@ -1,8 +1,4 @@
-import type {
-	IButtonInteraction,
-	IChatInputCommandInteraction,
-	IMember,
-} from '@oldschoolgg/schemas';
+import type { IButtonInteraction, IChatInputCommandInteraction, IMember } from '@oldschoolgg/schemas';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import {
 	type APIChatInputApplicationCommandInteraction,
@@ -59,7 +55,7 @@ const interactionHandlers: InteractionHandler[] = [
 			}
 			return HandlerResponseType.DidNotRespond;
 		}
-	},
+	}
 	// TODO:
 	// {
 	// 	name: 'Username Insertion',
@@ -90,9 +86,7 @@ const interactionHandlers: InteractionHandler[] = [
 	// }
 ];
 
-export async function apiInteractionParse(
-	itx: APIInteraction
-) {
+export async function apiInteractionParse(itx: APIInteraction) {
 	const guildId = itx.guild_id ?? null;
 	const userId = itx.member?.user.id ?? itx.user?.id!;
 	const member: IMember | null = guildId ? await Cache.getMember(guildId, userId) : null;
@@ -143,10 +137,7 @@ export async function apiInteractionParse(
 	throw new Error('Unsupported interaction type');
 }
 
-
-export async function interactionHandler(
-	itx: APIInteraction
-) {
+export async function interactionHandler(itx: APIInteraction) {
 	const guildId = itx.guild_id ?? null;
 	const userId = itx.member?.user.id ?? itx.user?.id!;
 	const member: IMember | null = guildId ? await Cache.getMember(guildId, userId) : null;
@@ -223,5 +214,4 @@ export async function interactionHandler(
 		await commandHandler(chatInputItx, interaction);
 		return;
 	}
-
 }

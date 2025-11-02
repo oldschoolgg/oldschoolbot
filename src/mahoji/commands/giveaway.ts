@@ -1,4 +1,4 @@
-import { ButtonBuilder, EmbedBuilder, makeComponents, messageLink, time } from '@oldschoolgg/discord';
+import { ButtonBuilder, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { chunk, Emoji, Time } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
@@ -197,7 +197,7 @@ export const giveawayCommand = defineCommand({
 			return {
 				content: 'Giveaway started.',
 				ephemeral: true,
-				components: makeComponents([makeGiveawayRepeatButton(giveawayID)])
+				components: [makeGiveawayRepeatButton(giveawayID)]
 			};
 		}
 

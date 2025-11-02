@@ -1,13 +1,12 @@
-import type { ButtonInteraction } from '@oldschoolgg/discord';
 import { ButtonBuilder } from '@oldschoolgg/discord';
-import type { Message } from '@oldschoolgg/discord.js';
-import type { IMessage } from '@oldschoolgg/schemas';
+import type { IButtonInteraction, IMessage } from '@oldschoolgg/schemas';
 import { isFunction, noOp, Time } from '@oldschoolgg/toolkit';
 import { ButtonStyle, InteractionResponseType, MessageFlags, Routes } from 'discord-api-types/v10';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 
-type DynamicButtonFn = (opts: { message: IMessage | null; interaction: ButtonInteraction }) => unknown;
+type DynamicButtonFn = (opts: { message: IMessage | null; interaction: MInteraction<IButtonInteraction> }) => unknown;
 
 function simpleHash(str: string): number {
 	let h = 0;
@@ -27,7 +26,7 @@ export class DynamicButtons {
 
 	timer: number | undefined;
 	usersWhoCanInteract: string[];
-	message: Message | null = null;
+	message: any | null = null;
 	mInteraction: MInteraction;
 
 	constructor({
@@ -75,17 +74,18 @@ export class DynamicButtons {
 		});
 		if (!this.message) return;
 
-		const collectedInteraction = await new Promise<ButtonInteraction | null>(resolve => {
+		//TODO
+		const collectedInteraction = await new Promise<any | null>(resolve => {
 			const collector = this.message!.createMessageComponentCollector({
 				time: this.timer ?? Time.Second * 20
 			});
 
-			const silentAck = (bi: ButtonInteraction) =>
+			const silentAck = (bi: any) =>
 				globalClient.rest.post(Routes.interactionCallback(bi.id, bi.token), {
 					body: { type: InteractionResponseType.DeferredMessageUpdate }
 				});
 
-			collector.once('collect', async i => {
+			collector.once('collect', async (i: any) => {
 				if (!i.isButton()) {
 					return;
 				}

@@ -5,7 +5,6 @@ const external = [
 	'skia-canvas',
 	'sonic-boom',
 	'bufferutil',
-	'discord.js',
 	'@prisma/robochimp',
 	'dotenv',
 	'piscina',
@@ -14,8 +13,7 @@ const external = [
 	'pg',
 	'oldschooljs',
 	'ioredis',
-	'@discordjs/rest',
-	'@oldschoolgg/discord.js'
+	'@discordjs/rest'
 ];
 
 const baseBuildOptions: BuildOptions = {

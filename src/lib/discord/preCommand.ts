@@ -1,5 +1,3 @@
-import type { InteractionReplyOptions } from '@oldschoolgg/discord';
-
 import type { command_name_enum } from '@/prisma/main/enums.js';
 import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';
 import { runInhibitors } from '@/lib/discord/inhibitors.js';
@@ -12,7 +10,7 @@ interface PreCommandOptions {
 }
 
 export type InhibitorResult = {
-	reason: InteractionReplyOptions;
+	reason: BaseSendableMessage;
 	silent?: boolean;
 };
 

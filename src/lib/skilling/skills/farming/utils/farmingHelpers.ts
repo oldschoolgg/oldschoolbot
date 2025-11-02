@@ -1,4 +1,4 @@
-import { type BaseMessageOptions, ButtonBuilder, dateFm, makeComponents } from '@oldschoolgg/discord';
+import { ButtonBuilder, dateFm } from '@oldschoolgg/discord';
 import { Emoji, stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonStyle } from 'discord-api-types/v10';
 
@@ -58,7 +58,7 @@ export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
 	return plant;
 }
 
-export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): BaseMessageOptions {
+export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): SendableMessage {
 	let str = '';
 	for (const patch of patchesDetailed.filter(i => i.ready === true)) {
 		str += `${Emoji.Tick} **${patch.friendlyName}**: ${patch.lastQuantity} ${patch.lastPlanted} are ready to be harvested!\n`;
@@ -79,6 +79,6 @@ export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): B
 
 	return {
 		content: str,
-		components: makeComponents(buttons)
+		components: buttons
 	};
 }

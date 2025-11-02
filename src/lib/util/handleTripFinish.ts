@@ -1,8 +1,9 @@
-import type { ButtonBuilder, MessageCollector } from '@oldschoolgg/discord';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
+import { MESSAGE_COLLECTORS_CACHE } from '@/lib/cache.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
@@ -33,8 +34,6 @@ import {
 	tearsOfGuthixIronmanReqs,
 	tearsOfGuthixSkillReqs
 } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
-
-const collectors = new Map<string, MessageCollector>();
 
 const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'GroupMonsterKilling',
@@ -197,11 +196,11 @@ export async function handleTripFinish(
 
 	message.addContent(displayCluesAndPets(user, loot));
 
-	const existingCollector = collectors.get(user.id);
+	const existingCollector = MESSAGE_COLLECTORS_CACHE.get(user.id);
 
 	if (existingCollector) {
 		existingCollector.stop();
-		collectors.delete(user.id);
+		MESSAGE_COLLECTORS_CACHE.delete(user.id);
 	}
 
 	const components: ButtonBuilder[] = [];

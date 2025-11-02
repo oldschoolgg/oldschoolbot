@@ -2,8 +2,8 @@ import { userMention } from '@oldschoolgg/discord';
 import { shuffleArr } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
 
-import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import { DynamicButtons } from '@/lib/discord/DynamicButtons.js';
+import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 
 export const triviaCommand = defineCommand({
 	name: 'trivia',
@@ -35,7 +35,7 @@ export const triviaCommand = defineCommand({
 				name: q,
 				fn: ({ interaction }) => {
 					if (question.answers.includes(q)) {
-						correctUser = interaction.user.id;
+						correctUser = interaction.userId;
 					}
 				},
 				cantBeBusy: false

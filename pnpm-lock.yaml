@@ -40,9 +40,6 @@ importers:
       '@oldschoolgg/discord':
         specifier: workspace:*
         version: link:packages/discord
-      '@oldschoolgg/discord.js':
-        specifier: workspace:*
-        version: link:packages/discord.js
       '@oldschoolgg/rng':
         specifier: workspace:*
         version: link:packages/rng
@@ -256,9 +253,6 @@ importers:
       '@discordjs/builders':
         specifier: ^1.13.0
         version: 1.13.0
-      '@oldschoolgg/discord.js':
-        specifier: workspace:*
-        version: link:../discord.js
       '@oldschoolgg/schemas':
         specifier: workspace:*
         version: link:../schemas

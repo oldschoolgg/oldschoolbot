@@ -4,9 +4,9 @@ import type { APIChatInputApplicationCommandInteraction } from 'discord-api-type
 
 import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
 import { type AnyCommand, type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
+import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
 import { RawSQL } from '@/lib/rawSql.js';
-import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 
 export async function rawCommandHandlerInner({
 	interaction,

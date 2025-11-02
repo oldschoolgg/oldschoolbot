@@ -1,43 +1,20 @@
-import type { IUser, IMember, IChannel, IRole } from '@oldschoolgg/schemas';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, userMention } from '@discordjs/builders';
-import {
-	AttachmentBuilder,
-	AutocompleteInteraction,
-	type BaseMessageOptions,
-	ButtonInteraction,
-	type CacheType,
-	ChatInputCommandInteraction,
-	Client,
-	Collection,
-	type CollectorFilter,
-	CommandInteraction,
-	type CommandInteractionOption,
-	Events,
-	type Interaction,
-	type InteractionReplyOptions,
-	MessageCollector,
-	type MessageComponentType,
-	type MessageCreateOptions,
-	type MessageEditOptions,
-	Partials,
-	PermissionsBitField,
-	type SelectMenuInteraction,
-	WebhookClient
-} from '@oldschoolgg/discord.js';
+import type { IChannel, IMember, IRole, IUser } from '@oldschoolgg/schemas';
 import {
 	ActivityType,
+	type APIInteractionDataResolvedChannel,
+	type APIInteractionDataResolvedGuildMember,
+	type APIRole,
+	type APIUser,
 	ChannelType,
 	ComponentType,
 	GatewayIntentBits,
 	InteractionResponseType,
 	MessageFlags,
 	PresenceUpdateStatus,
-	Routes,
-	type APIInteractionDataResolvedChannel,
-	type APIInteractionDataResolvedGuildMember,
-	type APIRole,
-	type APIUser
+	Routes
 } from 'discord-api-types/v10';
+
 import { Permissions } from './Permissions.js';
 
 export enum ButtonStyle {
@@ -52,46 +29,17 @@ export enum ButtonStyle {
 export {
 	InteractionResponseType,
 	MessageFlags,
-	ButtonInteraction,
-	MessageCollector,
-	AttachmentBuilder,
 	Routes,
-	PermissionsBitField,
 	ButtonBuilder,
 	ActionRowBuilder,
 	ComponentType,
 	userMention,
 	ChannelType,
 	EmbedBuilder,
-	Collection,
 	PresenceUpdateStatus,
 	GatewayIntentBits,
-	ActivityType,
-	Events,
-	Partials
+	ActivityType
 };
-
-export { WebhookClient, Client };
-
-export type {
-	CollectorFilter,
-	CacheType,
-	MessageCreateOptions,
-	MessageEditOptions,
-	BaseMessageOptions,
-	MessageComponentType
-};
-
-// Interactions
-export {
-	type Interaction,
-	ChatInputCommandInteraction,
-	type InteractionReplyOptions,
-	type SelectMenuInteraction,
-	CommandInteraction,
-	AutocompleteInteraction
-};
-export type { CommandInteractionOption };
 
 export * from '@discordjs/formatters';
 
@@ -113,7 +61,8 @@ export function convertApiUserToZUser(apiUser: APIUser): IUser {
 }
 
 export function convertApiMemberToZMember(options: {
-	userId: string; apiMember: APIInteractionDataResolvedGuildMember;
+	userId: string;
+	apiMember: APIInteractionDataResolvedGuildMember;
 	guildId: string;
 }): IMember {
 	return {
@@ -121,10 +70,13 @@ export function convertApiMemberToZMember(options: {
 		guild_id: options.guildId,
 		permissions: Permissions.toKeys(options.apiMember.permissions),
 		roles: options.apiMember.roles
-	}
+	};
 }
 
-export function convertApiChannelToZChannel({ apiChannel, guildId }: {
+export function convertApiChannelToZChannel({
+	apiChannel,
+	guildId
+}: {
 	apiChannel: APIInteractionDataResolvedChannel;
 	guildId?: string;
 }): IChannel {
@@ -135,10 +87,7 @@ export function convertApiChannelToZChannel({ apiChannel, guildId }: {
 	};
 }
 
-export function convertApiRoleToZRole({ apiRole, guildId }: {
-	apiRole: APIRole;
-	guildId: string;
-}): IRole {
+export function convertApiRoleToZRole({ apiRole, guildId }: { apiRole: APIRole; guildId: string }): IRole {
 	return {
 		id: apiRole.id,
 		permissions: Permissions.toKeys(apiRole.permissions),
@@ -147,3 +96,5 @@ export function convertApiRoleToZRole({ apiRole, guildId }: {
 		color: apiRole.color
 	};
 }
+
+export * from './BitField.js';

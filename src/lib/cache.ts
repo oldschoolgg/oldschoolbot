@@ -40,3 +40,4 @@ export const GE_SLOTS_CACHE = new LRUCache<
 
 export const RARE_ROLES_CACHE = new LRUCache<string, number>({ max: 1000 });
 export const RANDOM_EVENTS_CACHE = new LRUCache<string, number>({ max: 500 });
+export const MESSAGE_COLLECTORS_CACHE = new LRUCache<string, any>({ max: 1000, ttl: Time.Minute * 10 });
