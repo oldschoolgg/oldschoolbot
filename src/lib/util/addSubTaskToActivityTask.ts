@@ -1,7 +1,12 @@
 import { UserError } from '@oldschoolgg/toolkit';
 
 import type { ActivityTaskData, ActivityTaskOptions } from '@/lib/types/minions.js';
-import { isGroupActivity } from '@/lib/util.js';
+import { isGroupActivity } from '@/lib/util/activityTypeCheck.js';
+
+export type DatabaseStoredActivityData = Omit<
+	ActivityTaskOptions,
+	'finishDate' | 'id' | 'type' | 'channelId' | 'userID' | 'duration'
+>;
 
 export default async function addSubTaskToActivityTask<T extends ActivityTaskData>(
 	taskToAdd: Omit<T, 'finishDate' | 'id'>
@@ -32,7 +37,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 	__newData.channelId = undefined;
 	__newData.duration = undefined;
 
-	const newData: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelId' | 'userID' | 'duration'> = {
+	const newData: DatabaseStoredActivityData = {
 		...__newData
 	};
 

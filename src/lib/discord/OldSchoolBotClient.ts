@@ -4,6 +4,7 @@ import {
 	ActivityType,
 	type APIApplicationCommand,
 	type APIApplicationCommandOptionChoice,
+	type APIChannel,
 	type APIEmoji,
 	type APIGuild,
 	type APIGuildMember,
@@ -190,7 +191,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 	// }
 
 	async fetchChannelsOfGuild(guildId: string): Promise<IChannel[]> {
-		const apiChannels: any[] = (await this.rest.get(Routes.guildChannels(guildId))) as any[];
+		const apiChannels: APIChannel[] = (await this.rest.get(Routes.guildChannels(guildId))) as APIChannel[];
 		const channels: IChannel[] = apiChannels.map(c => ({
 			id: c.id,
 			guild_id: guildId,
@@ -225,9 +226,9 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 	}
 
 	async sendDm(userId: string, message: SendableMessage) {
-		const dmChannel: any = await this.rest.post(Routes.userChannels(), {
+		const dmChannel: APIChannel = (await this.rest.post(Routes.userChannels(), {
 			body: { recipient_id: userId }
-		});
+		})) as APIChannel;
 		return this.sendMessage(dmChannel.id, message);
 	}
 

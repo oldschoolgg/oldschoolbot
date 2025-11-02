@@ -15,28 +15,15 @@ import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
-import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
+import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
-import { isGroupActivity } from '@/lib/util.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-
-function isRaidsActivity(data: any): data is RaidsOptions {
-	return 'challengeMode' in data;
-}
-
-function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
-	return 'wipedRoom' in data;
-}
-
-function isNexActivity(data: any): data is NexTaskOptions {
-	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
-}
 
 const skillsVals = Object.values(Skills);
 
@@ -266,7 +253,7 @@ export async function kcGains(interval: string, monsterName: string, ironmanOnly
 			(
 				await Promise.all(
 					res.map(
-						async (i: any) =>
+						async i =>
 							`${++place}. **${await Cache.getBadgedUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
 					)
 				)

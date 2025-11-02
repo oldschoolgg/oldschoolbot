@@ -3,7 +3,7 @@ import { isObject } from '@oldschoolgg/toolkit';
 import type { CommandOptions, MahojiUserOption } from '@/lib/discord/index.js';
 
 function isMahojiUserOption(data: any): data is MahojiUserOption {
-	return 'user' in data && 'id' in data.user;
+	return 'user' in data && data.user && 'id' in data.user;
 }
 
 export interface CompressedArg {

@@ -6,9 +6,9 @@ import { onMinionActivityFinish } from '@/lib/events.js';
 import { allTasks } from '@/lib/Task.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { isGroupActivity } from '@/lib/util/activityTypeCheck.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { isGroupActivity } from '@/lib/util.js';
 
 class SActivityManager {
 	private minionActivityCache: Map<string, ActivityTaskData> = new Map();

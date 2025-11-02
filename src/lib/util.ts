@@ -6,17 +6,12 @@ import type { Prisma, User } from '@/prisma/main.js';
 import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 
 // @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
-
-export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
-	return 'users' in data;
-}
 
 export function skillingPetDropRate(
 	user: MUser | GearBank | number,

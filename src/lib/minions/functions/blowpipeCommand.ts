@@ -51,12 +51,12 @@ export async function blowpipeCommand(
 
 	try {
 		validateBlowpipeData(rawBlowpipeData);
-	} catch (err: any) {
+	} catch (_err: unknown) {
 		await user.update({
 			blowpipe: { ...defaultBlowpipe }
 		});
 
-		return `Your blowpipe got corrupted somehow (${err.message}), this shouldn't happen! It's a bug. Your blowpipe was reset.`;
+		return `Your blowpipe got corrupted somehow, this shouldn't happen! It's a bug. Your blowpipe was reset.`;
 	}
 	let str = `**Toxic Blowpipe** <:Toxic_blowpipe:887011870068838450>
 
