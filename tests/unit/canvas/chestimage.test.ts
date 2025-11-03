@@ -30,7 +30,7 @@ describe('Chest Images', async () => {
 			type: 'Tombs of Amascut'
 		});
 
-		await writeFile(path.join(baseSnapshotPath, 'chest-toa.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-toa.png'), result.buffer);
 	});
 
 	test('TOB Chest Loot Image', async () => {
@@ -56,7 +56,7 @@ describe('Chest Images', async () => {
 			type: 'Theatre of Blood'
 		});
 
-		await writeFile(path.join(baseSnapshotPath, 'chest-tob.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-tob.png'), result.buffer);
 	});
 
 	test('COX Chest Loot Image', async () => {
@@ -82,7 +82,7 @@ describe('Chest Images', async () => {
 			type: 'Chambers of Xerician'
 		});
 
-		await writeFile(path.join(baseSnapshotPath, 'chest-cox.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-cox.png'), result.buffer);
 	});
 
 	test('Multiple Users Chest Loot', async () => {
@@ -110,6 +110,6 @@ describe('Chest Images', async () => {
 			],
 			type: 'Tombs of Amascut'
 		});
-		await writeFile(path.join(baseSnapshotPath, 'chest-multiple-users.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-multiple-users.png'), result.buffer);
 	});
 });

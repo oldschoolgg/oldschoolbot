@@ -25,7 +25,7 @@ describe('Payment conflicts', async () => {
 			// Payee is currently the primary target of the test.
 			const userPayee = await createTestUser(new Bank(bigBank), { GP: 1_000_000_000 });
 
-			const payeeTarget = await globalClient.users.fetch(userPayee.id);
+			const payeeTarget = await createTestUser();
 
 			const startingBallCount = userPayee.bank.amount('Cannonball');
 
@@ -85,11 +85,10 @@ describe('Payment conflicts', async () => {
 
 		const promisePay = async () => {
 			const payee = randArrItem(payees);
-			const payeeTarget = await globalClient.users.fetch(payee.id);
 			return new Promise<void>(async resolve => {
 				const amount = randInt(100_000, 1_000_000);
 				await userPayer.runCommand(payCommand, {
-					user: mockUserOption(payeeTarget.id),
+					user: mockUserOption(payee.id),
 					amount: amount.toString()
 				});
 				resolve();

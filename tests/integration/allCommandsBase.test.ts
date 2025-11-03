@@ -9,7 +9,7 @@ import type { AnyCommand } from '@/lib/discord/commandOptions.js';
 import { allCommandsDONTIMPORT } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
-import { createTestUser, mockClient, mockDjsUser, mockedId, mockUser, mockUserOption, TestClient } from './util.js';
+import { createTestUser, mockClient, mockedId, mockIUser, mockUser, mockUserOption, TestClient } from './util.js';
 
 type CommandInput = Record<string, any>;
 
@@ -69,7 +69,7 @@ export async function generateCommandInputs(
 			case 'User': {
 				const opt: MahojiUserOption = mockUserOption();
 				const optWithoutMember: MahojiUserOption = {
-					user: mockDjsUser({ userId: mockedId() })
+					user: mockIUser({ userId: mockedId() })
 				};
 				allPossibleOptions[option.name] = [opt, optWithoutMember];
 				break;

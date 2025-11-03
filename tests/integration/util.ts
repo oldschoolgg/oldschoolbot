@@ -1,5 +1,5 @@
 import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
-import type { IMember } from '@oldschoolgg/schemas';
+import type { IMember, IMessage, IUser } from '@oldschoolgg/schemas';
 import { sleep, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
@@ -21,39 +21,28 @@ import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironman
 
 export const TEST_CHANNEL_ID = '1111111111111111';
 
-export function mockDjsUser({ userId }: { userId: string }) {
+export function mockIUser({ userId }: { userId: string }): IUser {
 	const mocked = {
 		id: userId,
 		username: 'TestUser',
-		discriminator: '0001',
-		bot: false,
-		system: false,
-		mfaEnabled: false,
-		avatarURL: () => 'https://example.com/avatar.png',
-		toString: () => '<@123456789>',
-		send: vi.fn(() => Promise.resolve())
-	} as any;
-	globalClient.users.cache.set(userId, mocked);
+		bot: false
+	};
 	return mocked;
 }
-export function mockDjsMember({ userId }: { userId: string }) {
+export function mockIMember({ userId }: { userId: string }): IMember {
 	return {
-		user: mockDjsUser({ userId }),
-		displayName: 'TestUser',
-		roles: {
-			cache: new Map()
-		},
-		permissionsIn: () => ({
-			has: () => true
-		})
-	} as any as IMember;
+		guild_id: mockedId(),
+		user_id: userId,
+		roles: [],
+		permissions: []
+	};
 }
 
 export function mockUserOption(userId?: string): MahojiUserOption {
 	userId ??= mockedId();
 	return {
-		user: mockDjsUser({ userId }),
-		member: mockDjsMember({ userId })
+		user: mockIUser({ userId }),
+		member: mockIMember({ userId })
 	};
 }
 
@@ -122,32 +111,15 @@ export function mockChannel({ userId }: { userId: string }) {
 	} as any;
 }
 
-export function mockMessage({ userId }: { userId: string }) {
-	const TestChannel = mockChannel({ userId });
+export function mockMessage({ userId }: { userId: string }): IMessage {
 	return {
-		author: mockDjsUser({ userId }),
-		channel: TestChannel,
-		send: vi.fn(() => {
-			return Promise.resolve({
-				id: '123456789',
-				channel: TestChannel
-			});
-		}),
-		reply: vi.fn(() => {
-			return Promise.resolve({
-				id: '123456789',
-				channel: TestChannel
-			});
-		}),
-		edit: vi.fn(() => {
-			return Promise.resolve({
-				id: '123456789',
-				channel: TestChannel
-			});
-		}),
-		delete: vi.fn(() => {
-			return Promise.resolve();
-		})
+		id: mockedId(),
+		content: 'Test message',
+		guild_id: '342983479501389826',
+		author: mockIUser({ userId }),
+		channel_id: TEST_CHANNEL_ID,
+		author_id: userId,
+		member: mockIMember({ userId })
 	};
 }
 
@@ -313,15 +285,13 @@ export class TestUser extends MUserClass {
 			typeof _command === 'string' ? globalClient.allCommands.find(_c => _c.name === _command)! : _command;
 		const result = await command.run({
 			userID: this.user.id,
-			guildID: '342983479501389826',
-			member: mockDjsMember({ userId: this.user.id }),
-			channelID: TEST_CHANNEL_ID,
+			guildId: '342983479501389826',
+			member: mockIMember({ userId: this.user.id }),
+			channelId: TEST_CHANNEL_ID,
 			interaction: mockedInt,
 			user: this,
 			options,
 			rng: MathRNG,
-			guildId: '342983479501389826',
-			channelId: TEST_CHANNEL_ID,
 			userId: this.user.id
 		});
 		if (syncAfter) {
@@ -495,7 +465,6 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		})
 	]);
 
-	mockDjsUser({ userId: user.id });
 	return new TestUser(user);
 }
 

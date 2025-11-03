@@ -34,6 +34,7 @@ import {
 import type { AnyCommand } from '@/lib/discord/commandOptions.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
+import { isGroupActivity } from '@/lib/util/activityTypeCheck.js';
 import { BitField } from '../../src/lib/constants.js';
 import { type GearSetupType, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { trackLoot } from '../../src/lib/lootTrack.js';
@@ -45,7 +46,6 @@ import type { Skills } from '../../src/lib/types/index.js';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti.js';
 import { migrateUser } from '../../src/lib/util/migrateUser.js';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems.js';
-import { isGroupActivity } from '../../src/lib/util.js';
 import { pinTripCommand } from '../../src/mahoji/commands/config.js';
 import { geCommand } from '../../src/mahoji/commands/ge.js';
 import { createOrEditGearSetup } from '../../src/mahoji/commands/gearpresets.js';

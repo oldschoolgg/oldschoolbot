@@ -44,7 +44,7 @@ export interface OldSchoolBotClientEventsMap {
 }
 
 export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEventsMap> implements AsyncDisposable {
-	public rest: REST = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN!);
+	public rest: REST = new REST({ version: '10' }).setToken(globalConfig.botToken);
 	public ws: WebSocketManager;
 	public isShuttingDown = false;
 	public allCommands = allCommandsDONTIMPORT;
@@ -55,7 +55,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		super();
 		this.ws = new WebSocketManager({
 			rest: this.rest,
-			token: process.env.DISCORD_TOKEN,
+			token: globalConfig.botToken,
 			intents: new BitField([
 				GatewayIntentBits.Guilds,
 				GatewayIntentBits.GuildMessages,
@@ -88,8 +88,8 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 			switch (packet.t) {
 				case 'READY': {
 					if (shardId === 0) {
+						await this.onReady(packet.d);
 						this.emit('ready', packet.d);
-						this.onReady(packet.d);
 					}
 					break;
 				}
@@ -137,6 +137,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 	async login() {
 		await this.ws.connect();
 	}
+
 	// TODO:
 	// private async syncMainServerData() {
 	// 	const mainServerRoles = await this.rest.get(Routes.guildRoles(globalConfig.supportServerID)) as APIRole[];
@@ -147,6 +148,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 
 	async onReady(data: GatewayReadyDispatchData) {
 		this.applicationUser = { ...data.user, bot: true };
+		Logging.logDebug(`Logged in as ${globalClient.applicationUser!.username} after ${process.uptime()}s`);
 
 		await this.fetchCommands();
 		// await this.syncMainServerData();
