@@ -110,7 +110,7 @@ export const fletchCommand = defineCommand({
 				.remove(userBank)}**.`;
 		}
 
-		await user.removeItemsFromBank(itemsNeeded);
+		await user.transactItems({ itemsToRemove: itemsNeeded });
 
 		await ActivityManager.startTrip<FletchingActivityTaskOptions>({
 			fletchableName: fletchable.name,

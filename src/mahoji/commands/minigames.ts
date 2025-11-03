@@ -76,8 +76,7 @@ import {
 	soulWarsBuyCommand,
 	soulWarsImbueables,
 	soulWarsImbueCommand,
-	soulWarsStartCommand,
-	soulWarsTokensCommand
+	soulWarsStartCommand
 } from '@/mahoji/lib/abstracted_commands/soulWarsCommand.js';
 import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
 import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
@@ -1269,7 +1268,7 @@ export const minigamesCommand = defineCommand({
 				return soulWarsBuyCommand(user, options.soul_wars.buy.name, options.soul_wars.buy.quantity);
 			}
 			if (options.soul_wars.tokens) {
-				return soulWarsTokensCommand(user.user);
+				return `You have ${user.user.zeal_tokens} Zeal Tokens.`;
 			}
 		}
 

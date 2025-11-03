@@ -4,7 +4,6 @@ import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
-import type { MUserClass } from '@/lib/MUser.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
@@ -166,7 +165,7 @@ export const starSizes: Star[] = [
 	}
 ];
 
-export async function shootingStarsCommand(channelID: string, user: MUserClass, star: Star): Promise<string> {
+export async function shootingStarsCommand(channelID: string, user: MUser, star: Star): Promise<string> {
 	const skills = user.skillsAsLevels;
 	const boosts = [];
 
@@ -286,7 +285,7 @@ const activitiesCantGetStars: activity_type_enum[] = [
 
 export const starCache = new Map<string, Star & { expiry: number }>();
 
-export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskData, components: ButtonBuilder[]) {
+export function handleTriggerShootingStar(user: MUser, data: ActivityTaskData, components: ButtonBuilder[]) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillsAsLevels.mining;
 	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);

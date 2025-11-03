@@ -5,7 +5,6 @@ import { convertXPtoLVL } from 'oldschooljs';
 import type { Prisma, User } from '@/prisma/main.js';
 import { usernameWithBadgesCache } from '@/lib/cache.js';
 import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
-import type { MUserClass } from '@/lib/MUser.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
@@ -29,7 +28,7 @@ export function getSupportGuild(): Guild | null {
 }
 
 export function skillingPetDropRate(
-	user: MUserClass | GearBank | number,
+	user: MUser | GearBank | number,
 	skill: SkillNameType,
 	baseDropRate: number
 ): { petDropRate: number } {
