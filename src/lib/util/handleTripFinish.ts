@@ -1,7 +1,4 @@
-import { BSOItem } from '@/lib/bso/BSOItem.js';
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
-import { HalloweenEvent2025 } from '@/lib/bso/halloween.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
@@ -12,17 +9,16 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
-import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { channelIsSendable, getNextUTCReset, makeComponents, notEmpty, Time } from '@oldschoolgg/toolkit';
 import {
 	type AttachmentBuilder,
-	ButtonBuilder,
-	ButtonStyle,
+	type ButtonBuilder,
 	bold,
 	type MessageCollector,
 	type MessageCreateOptions
 } from 'discord.js';
-import { Bank, EItem, Items, itemID, toKMB } from 'oldschooljs';
+import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main.js';
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
@@ -33,7 +29,6 @@ import { BitField, PerkTier } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/index.js';
 import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
-import { InteractionID } from '@/lib/InteractionID.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
@@ -131,17 +126,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 
 			const chanceOfDoubling = user.hasEquipped('Mr. E') ? 12 : 15;
 			const initialRollSuccess = roll(chanceOfDoubling);
-			const witchRollSuccess: boolean = user.hasCard('witch') ? percentChance(20) : false;
-			if (initialRollSuccess || witchRollSuccess) {
+			if (initialRollSuccess) {
 				const otherLoot = new Bank().add(MysteryBoxes.roll());
 				const bonusLoot = new Bank().add(loot).add(otherLoot);
-				if (witchRollSuccess) {
-					messages.push(
-						`${BSOEmoji.WitchCard} **Thanks to your Witch Card, you received 2x loot and ${otherLoot}.**`
-					);
-				} else {
-					messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
-				}
+
+				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
 
 				await Promise.all([
 					await user.statsBankUpdate('doubled_loot_bank', bonusLoot),
@@ -157,19 +146,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Custom Pet Perk',
 		fn: async ({ data, messages, user }) => {
 			const pet = user.user.minion_equippedPet;
-			let minutes = Math.floor(data.duration / Time.Minute);
+			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
 
-			if (user.hasCard('witch')) {
-				minutes *= 2;
-			}
-
 			const bonusLoot = new Bank();
-
-			if (pet && HalloweenEvent2025.constants.HALLOWEEN_PETS.includes(pet)) {
-				bonusLoot.add(BSOItem.HALLOWEEN_CANDY, Math.floor(minutes * 0.8));
-				messages.push(`${Items.itemNameFromId(pet)} found some candy for you: ${bonusLoot}.`);
-			}
 
 			switch (pet) {
 				case itemID('Peky'): {
@@ -249,12 +229,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 				default: {
 				}
-			}
-
-			if (user.hasCard('witch') && bonusLoot.length > 0) {
-				messages.push(
-					`${BSOEmoji.WitchCard} **Thanks to your Witch Card, your pet gathered 2x the normal loot!**`
-				);
 			}
 
 			return {
@@ -571,28 +545,6 @@ export async function handleTripFinish(
 
 	const components: ButtonBuilder[] = [];
 	components.push(makeRepeatTripButton());
-
-	const hweenData = await prisma.halloweenEvent.findUnique({
-		where: { user_id: user.id }
-	});
-	if (hweenData?.items_waiting_for_pickup && Object.keys(hweenData.items_waiting_for_pickup).length > 0) {
-		components.push(
-			new ButtonBuilder()
-				.setCustomId(InteractionID.Halloween.CollectItems)
-				.setLabel("Collect H'ween Items")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji('1429868816191717386')
-		);
-	}
-	if (hweenData?.candy_in_bowl === 0) {
-		components.push(
-			new ButtonBuilder()
-				.setCustomId(InteractionID.Halloween.FillCandyBowl)
-				.setLabel('Fill Candy Bowl')
-				.setStyle(ButtonStyle.Secondary)
-				.setEmoji('1429868816191717386')
-		);
-	}
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));

@@ -1,4 +1,3 @@
-import { halloweenTicker } from '@/lib/bso/halloween.js';
 import { syncSlayerMaskLeaderboardCache } from '@/lib/bso/skills/slayer/slayerMaskLeaderboard.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
 import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
@@ -332,14 +331,6 @@ VALUES (get_economy_bank());`;
 		startupWait: Time.Minute * 25,
 		cb: async () => {
 			await cacheGEPrices();
-		}
-	},
-	{
-		name: 'Halloween',
-		timer: null,
-		interval: Time.Minute * 10,
-		cb: async () => {
-			await halloweenTicker();
 		}
 	},
 	{

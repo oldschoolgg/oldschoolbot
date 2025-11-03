@@ -50,29 +50,6 @@ export async function pohWallkitCommand(user: MUser, input: string): CommandResp
 		return 'This is already your wallkit.';
 	}
 
-	if (
-		selectedKit.bitfield === BitField.HasHalloweenWallkit &&
-		!user.bitfield.includes(BitField.HasHalloweenWallkit)
-	) {
-		await user.update({
-			bitfield: {
-				push: selectedKit.bitfield
-			}
-		});
-		await prisma.playerOwnedHouse.update({
-			where: {
-				user_id: user.id
-			},
-			data: {
-				background_id: selectedKit.imageID
-			}
-		});
-		return {
-			...(await makePOHImage(user)),
-			content: `You have permanently unlocked the Halloween wallkit!`
-		};
-	}
-
 	const { bitfield } = user;
 	const userBank = user.bank;
 	if (selectedKit.bitfield && !bitfield.includes(selectedKit.bitfield)) {

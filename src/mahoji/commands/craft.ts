@@ -1,4 +1,3 @@
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
@@ -84,10 +83,6 @@ export const craftCommand = defineCommand({
 		if (user.usingPet('Klik') && isTannable) {
 			timeToCraftSingleItem /= 3;
 			boosts.push('3x faster for Klik helping Tan');
-		}
-		if (user.hasCard('ghost')) {
-			timeToCraftSingleItem /= 2;
-			boosts.push(`${BSOEmoji.GhostCard} 2x`);
 		}
 
 		if (!isTannable) {

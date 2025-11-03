@@ -1,5 +1,3 @@
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
-
 import { calcPercentOfNum, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -98,11 +96,6 @@ export const smithCommand = defineCommand({
 		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
 			boosts.push('2x for Dwarven greathammer');
-		}
-
-		if (user.hasCard('ghost')) {
-			timeToSmithSingleBar /= 2;
-			boosts.push(`${BSOEmoji.GhostCard} 2x`);
 		}
 
 		let maxTripLength = user.calcMaxTripLength('Smithing');

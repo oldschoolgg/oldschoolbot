@@ -1,6 +1,4 @@
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
-import { HalloweenEvent2025 } from '@/lib/bso/halloween.js';
 
 import { randFloat } from '@oldschoolgg/rng';
 import {
@@ -66,15 +64,11 @@ function teamSizeBoostPercent(size: number) {
 	}
 }
 
-function calcFood({ solo, kc, user }: { solo: boolean; kc: number; user: MUser }) {
+function calcFood({ solo, kc }: { solo: boolean; kc: number; user: MUser }) {
 	const items = new Bank();
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
 	if (solo) brewsNeeded += 2;
-	if (user.hasCard('vampire')) {
-		brewsNeeded = Math.ceil(brewsNeeded * 0.75);
-	}
-
 	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 
 	items.add('Saradomin brew(4)', brewsNeeded + 1);
@@ -445,11 +439,6 @@ export class BossInstance {
 		if (isWeekend()) {
 			this.boosts.push('5% Weekend boost');
 			duration = reduceNumByPercent(duration, 5);
-		}
-
-		if (this.users!.some(u => u.hasCard('death'))) {
-			this.boosts.push(`${BSOEmoji.DeathCard} ${HalloweenEvent2025.DEATH_SPEED_BOOST}% boost`);
-			duration = reduceNumByPercent(duration, HalloweenEvent2025.DEATH_SPEED_BOOST);
 		}
 
 		return {

@@ -1,5 +1,4 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import {
 	type Species,
 	TameSpeciesID,
@@ -235,11 +234,6 @@ export class MTame {
 		if (patronBonus > 0) {
 			maxTripLength += patronBonus;
 			messages.push(`+${formatDuration(patronBonus, true)} trip length (Patron bonus)`);
-		}
-
-		if (user.hasCard('vampire')) {
-			maxTripLength += Time.Minute * 10;
-			messages.push(`${BSOEmoji.VampireCard} +10mins trip length`);
 		}
 
 		if (activity === 'Clues') {

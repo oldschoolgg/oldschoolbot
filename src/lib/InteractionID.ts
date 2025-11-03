@@ -24,9 +24,5 @@ export const InteractionID = {
 	Confirmation: {
 		Confirm: 'CONFIRM',
 		Cancel: 'CANCEL'
-	},
-	Halloween: {
-		FillCandyBowl: 'HALLOWEEN_FILL_CANDY_BOWL',
-		CollectItems: 'HALLOWEEN_COLLECT_ITEMS'
 	}
 } as const;

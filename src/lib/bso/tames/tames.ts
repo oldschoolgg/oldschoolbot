@@ -7,7 +7,6 @@ import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	ChambersOfXeric,
-	EItem,
 	EMonster,
 	type Item,
 	type ItemBank,
@@ -172,13 +171,6 @@ export const seaMonkeySpells: SeaMonkeySpell[] = [
 		name: 'Superheat Item',
 		description: 'Turns ore into bars',
 		itemIDs: Bars.map(i => i.id)
-	},
-	{
-		id: 6,
-		tierRequired: 2,
-		name: 'Transmute candy',
-		description: 'Turns chocolate bars into halloween candy!',
-		itemIDs: [EItem.CHOCOLATE_BAR]
 	}
 ];
 

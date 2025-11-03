@@ -453,14 +453,5 @@ export const Castables: Castable[] = [
 		qpRequired: 50,
 		craftXp: 154,
 		craftLevel: 90
-	},
-	{
-		id: itemID('Halloween candy'),
-		name: 'Transmute candy',
-		input: new Bank().add('Nature rune', 1).add('Cosmic rune').add('Nature rune').add('Chocolate bar'),
-		output: new Bank().add('Halloween candy'),
-		xp: 12,
-		level: 70,
-		ticks: 100
 	}
 ];

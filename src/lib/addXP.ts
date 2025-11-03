@@ -6,7 +6,6 @@ import {
 	gorajanWarriorOutfit
 } from '@/lib/bso/collection-log/main.js';
 import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
-import { HalloweenEvent2025 } from '@/lib/bso/halloween.js';
 
 import { Events, formatOrdinal, increaseNumByPercent, noOp, notEmpty, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
@@ -163,14 +162,6 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost || gorajanHpBoost) {
 		params.amount *= 2;
 		gorajanBoost = true;
-	}
-
-	if (
-		!params.artificial &&
-		user.hasCard('ghost') &&
-		params.skillName === Object.entries(user.skillsAsXP).sort((a, b) => a[1] - b[1])[0][0]
-	) {
-		params.amount = increaseNumByPercent(params.amount, HalloweenEvent2025.GHOST_XP_BOOST);
 	}
 
 	let totalFirstAgeBonus = 0;

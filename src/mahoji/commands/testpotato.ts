@@ -1,9 +1,7 @@
-import { doHalloweenTickOnUser, HalloweenEvent2025 } from '@/lib/bso/halloween.js';
-
 import { randInt } from '@oldschoolgg/rng';
-import { formatDuration, noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from 'discord.js';
-import { Bank, convertLVLtoXP, type ItemBank, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
+import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
 import { type Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
@@ -242,26 +240,6 @@ export const testPotatoCommand = globalConfig.isProduction
 			name: 'testpotato',
 			description: 'Commands for making testing easier and faster.',
 			options: [
-				{
-					type: 'Subcommand',
-					name: 'halloween_test',
-					description: 'Run a halloween tick for testing purposes.',
-					options: [
-						{
-							type: 'Integer',
-							name: 'spawn_trickortreaters',
-							description: 'How many spawn_trickortreaters.',
-							required: true,
-							min_value: 1,
-							max_value: 100
-						},
-						{
-							type: 'Boolean',
-							name: 'reset',
-							description: 'Completely reset your halloween event data.'
-						}
-					]
-				},
 				{
 					type: 'Subcommand',
 					name: 'party',
@@ -610,28 +588,6 @@ export const testPotatoCommand = globalConfig.isProduction
 				if (globalConfig.isProduction) {
 					Logging.logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
-				}
-
-				if (options.halloween_test?.spawn_trickortreaters) {
-					await interaction.defer();
-					const times = options.halloween_test.spawn_trickortreaters;
-					for (let i = 0; i < times; i++) {
-						await doHalloweenTickOnUser(
-							user,
-							await prisma.halloweenEvent.upsert({
-								where: { user_id: user.id },
-								create: { user_id: user.id },
-								update: { user_id: user.id }
-							})
-						);
-					}
-					const halloweenEvent = await prisma.halloweenEvent.findUniqueOrThrow({
-						where: { user_id: user.id }
-					});
-					return `You simulated ${times}x trickortreaters, this would have taken ${formatDuration(HalloweenEvent2025.constants.MINUTES_PER_VISIT * 1000)} in the real bot.
-Items (waiting for pickup): ${new Bank(halloweenEvent.items_waiting_for_pickup as ItemBank)}
-
-${halloweenEvent.trick_or_treaters_seen} trick or treaters in total.`;
 				}
 
 				if (options.party) {

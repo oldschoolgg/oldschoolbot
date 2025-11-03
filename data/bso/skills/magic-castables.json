@@ -1431,21 +1431,6 @@
 		"level": 49
 	},
 	{
-		"id": 73600,
-		"name": "Transmute candy",
-		"input": {
-			"561": 2,
-			"564": 1,
-			"1973": 1
-		},
-		"output": {
-			"73600": 1
-		},
-		"xp": 12,
-		"level": 70,
-		"ticks": 100
-	},
-	{
 		"id": 8007,
 		"name": "Varrock Teleport",
 		"input": {

@@ -1,4 +1,3 @@
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
 import { gorajanArcherOutfit, pernixOutfit } from '@/lib/bso/collection-log/main.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
@@ -228,11 +227,6 @@ export async function nexCommand(
 		}
 
 		debugStr += `${msgs.join(', ')}. `;
-	}
-
-	if (users.some(u => u.hasCard('death'))) {
-		effectiveTime = reduceNumByPercent(effectiveTime, 30);
-		debugStr += `\n${BSOEmoji.DeathCard} 30%`;
 	}
 
 	let minDuration = 2;

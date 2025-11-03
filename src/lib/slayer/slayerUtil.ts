@@ -1,4 +1,3 @@
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 
@@ -252,12 +251,6 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 	const messages: string[] = [];
 
 	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
-	if (user.hasCard('death')) {
-		messages.push(
-			`${BSOEmoji.DeathCard} Assigned quantity boosted from ${quantity} to ${Math.ceil(quantity * 1.5)}`
-		);
-		quantity = Math.ceil(quantity * 1.5);
-	}
 
 	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(assignedTask!.monster.id));
 	if (extendReward && user.hasSlayerUnlock(extendReward.id)) {

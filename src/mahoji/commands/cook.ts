@@ -1,5 +1,3 @@
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
-
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
@@ -121,10 +119,6 @@ export const cookCommand = defineCommand({
 		timeToCookSingleCookable /= cookingBoost;
 		if (cookingBoost !== 1) {
 			boosts.push(`+${(cookingBoost - 1) * 100}% for ${cookingBoostItems.join(', ')}.`);
-		}
-		if (user.hasCard('ghost')) {
-			timeToCookSingleCookable /= 2;
-			boosts.push(`${BSOEmoji.GhostCard} 2x`);
 		}
 
 		const userBank = user.bank;

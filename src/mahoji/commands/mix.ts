@@ -1,4 +1,3 @@
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
@@ -79,10 +78,7 @@ export const mixCommand = defineCommand({
 		const boosts: string[] = [];
 
 		let timeToMixSingleItem = tickRate * Time.Second * 0.6 + bankTimePerPotion * Time.Second;
-		if (user.hasCard('ghost')) {
-			timeToMixSingleItem /= 2;
-			boosts.push(`${BSOEmoji.GhostCard} 2x`);
-		}
+
 		let cost = 'is now';
 
 		const isInstantTrip = (zahur && mixableZahur) || (wesley && mixableWesley);
