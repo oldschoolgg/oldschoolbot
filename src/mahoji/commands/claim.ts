@@ -2,14 +2,14 @@ import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { dateFm, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { BitField, BOT_TYPE, MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
+import { BitField, BOT_TYPE, Channel, MAX_TOTAL_LEVEL } from '@/lib/constants.js';
 import { calcCLDetails } from '@/lib/data/Collections.js';
 import { HolidayItems } from '@/lib/data/holidayItems.js';
 import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-console.log({ MAX_TOTAL_LEVEL });
+
 const claimables = [
 	{
 		name: 'Free T1 Perks',

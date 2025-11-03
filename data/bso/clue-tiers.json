@@ -1174,7 +1174,7 @@
 			"Zamorak platelegs",
 			"Zamorak plateskirt",
 			"Zamorak stole",
-			"Zombie head"
+			"Zombie head (treasure trails)"
 		],
 		"implings": []
 	},
@@ -1419,7 +1419,7 @@
 			"Zamorak platelegs",
 			"Zamorak plateskirt",
 			"Zamorak stole",
-			"Zombie head"
+			"Zombie head (treasure trails)"
 		],
 		"implings": ["Magpie impling jar", "Nature impling jar", "Ninja impling jar"]
 	},
