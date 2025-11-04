@@ -37,13 +37,3 @@ export function isManualEligible(user: MUserClass): string | null {
 
 	return null;
 }
-
-export function hasBertSandAutoDelivery(user: MUser) {
-	// prefer method if present
-	if (typeof (user as any).hasDiary === 'function') {
-		return (user as any).hasDiary('ardougne.elite');
-	}
-	// fallback to raw array
-	const diaries = (user as any).completed_achievement_diaries;
-	return Array.isArray(diaries) && diaries.includes('ardougne.elite');
-}
