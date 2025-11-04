@@ -16,9 +16,9 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
+import { syncBlacklists } from '@/lib/blacklists.js';
 import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
-import { DISABLED_COMMANDS } from '@/lib/cache.js';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
 import type { GearSetup } from '@/lib/gear/types.js';
@@ -493,7 +493,7 @@ export const adminCommand = defineCommand({
 					description: 'The command to disable',
 					required: false,
 					autocomplete: async (value: string) => {
-						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
+						const disabledCommands = await Cache.getDisabledCommands();
 						return globalClient.allCommands
 							.filter(i => !disabledCommands.includes(i.name))
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -506,7 +506,7 @@ export const adminCommand = defineCommand({
 					description: 'The command to enable',
 					required: false,
 					autocomplete: async () => {
-						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
+						const disabledCommands = await Cache.getDisabledCommands();
 						return globalClient.allCommands
 							.filter(i => disabledCommands.includes(i.name))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -693,10 +693,7 @@ export const adminCommand = defineCommand({
 			const { disable } = options.command;
 			const { enable } = options.command;
 
-			const currentDisabledCommands = (await prisma.clientStorage.findFirst({
-				where: { id: globalConfig.clientID },
-				select: { disabled_commands: true }
-			}))!.disabled_commands;
+			const currentDisabledCommands = await Cache.getDisabledCommands();
 
 			const command = globalClient.allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
 			if (!command) return "That's not a valid command.";
@@ -705,31 +702,15 @@ export const adminCommand = defineCommand({
 				if (currentDisabledCommands.includes(command.name)) {
 					return 'That command is already disabled.';
 				}
-				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
-				await prisma.clientStorage.update({
-					where: {
-						id: globalConfig.clientID
-					},
-					data: {
-						disabled_commands: newDisabled
-					}
-				});
-				DISABLED_COMMANDS.add(command.name);
+				const newDisabled = uniqueArr([...currentDisabledCommands, command.name.toLowerCase()]);
+				await Cache.setDisabledCommands(newDisabled);
 				return `Disabled \`${command.name}\`.`;
 			}
 			if (enable) {
 				if (!currentDisabledCommands.includes(command.name)) {
 					return 'That command is not disabled.';
 				}
-				await prisma.clientStorage.update({
-					where: {
-						id: globalConfig.clientID
-					},
-					data: {
-						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
-					}
-				});
-				DISABLED_COMMANDS.delete(command.name);
+				await Cache.setDisabledCommands(currentDisabledCommands.filter(i => i !== command.name.toLowerCase()));
 				return `Enabled \`${command.name}\`.`;
 			}
 			return 'Invalid.';
@@ -856,12 +837,11 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const clientSettings = await ClientSettings.fetch();
 			const res = await thing.run(clientSettings);
 			if (!(res instanceof Bank)) return res;
-			const image = await makeBankImage({
+			return new MessageBuilder().addBankImage({
 				bank: res,
 				title: thing.name,
-				flags: { sort: thing.name === 'All Equipped Items' ? 'name' : (undefined as any) }
+				flags: thing.name === 'All Equipped Items' ? { sort: 'name' } : undefined
 			});
-			return { files: [image] };
 		}
 
 		if (options.give_items) {

@@ -1,3 +1,4 @@
+import type { IBirdhouseData } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
@@ -7,7 +8,6 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
-import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
 
@@ -348,7 +348,7 @@ export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	birdhouseName: string | null;
 	placing: boolean;
 	gotCraft: boolean;
-	birdhouseData: BirdhouseData;
+	birdhouseData: IBirdhouseData;
 	currentDate: number;
 }
 

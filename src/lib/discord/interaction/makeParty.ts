@@ -1,17 +1,10 @@
-import {
-	ButtonBuilder,
-	ButtonStyle,
-	ComponentType,
-	InteractionResponseType,
-	MessageFlags,
-	Routes
-} from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { debounce, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
+import { BLACKLISTED_USERS, partyLockCache } from '@/lib/cache.js';
 import { SILENT_ERROR } from '@/lib/constants.js';
+import type { ButtonMInteraction } from '@/lib/discord/interaction/MInteraction.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 
@@ -59,11 +52,6 @@ export async function makeParty(
 		}
 	};
 
-	const silentAck = (bi: any) =>
-		globalClient.rest.post(Routes.interactionCallback(bi.id, bi.token), {
-			body: { type: InteractionResponseType.DeferredMessageUpdate }
-		});
-
 	const startTrip = async (resolve: (v: MUser[]) => void, reject: (e: Error) => void) => {
 		if (massStarted) return;
 		massStarted = true;
@@ -84,34 +72,42 @@ export async function makeParty(
 	}
 
 	return new Promise<MUser[]>((resolve, reject) => {
-		// @ts-expect-error
-		const collector = interaction.interactionResponse!.createMessageComponentCollector<ComponentType.Button>({
-			time: timeout,
-			componentType: ComponentType.Button
+		const collector = globalClient.createInteractionCollector({
+			timeoutMs: timeout,
+			interaction
 		});
 
-		collector.on('collect', async (bi: any) => {
-			if (BLACKLISTED_USERS.has(bi.user.id)) return;
-			CACHED_ACTIVE_USER_IDS.add(bi.user.id);
+		collector.on('collect', async (bi: ButtonMInteraction) => {
+			if (BLACKLISTED_USERS.has(bi.userId)) return;
 
-			const user = await mUserFetch(bi.user.id);
-			if ((!options.ironmanAllowed && user.isIronman) || bi.user.bot || user.minionIsBusy || !user.hasMinion) {
-				await bi.reply({
-					content: `You cannot mass if you are busy${!options.ironmanAllowed ? ', an ironman' : ''}, or have no minion.`,
-					flags: MessageFlags.Ephemeral
-				});
-				return;
-			}
-
-			if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
+			if (options.usersAllowed && !options.usersAllowed.includes(bi.userId)) {
 				await bi.reply({
 					content: 'You are not allowed to join this mass.',
-					flags: MessageFlags.Ephemeral
+					ephemeral: true
+				});
+				return;
+			}
+			const user = await mUserFetch(bi.userId);
+			if ((!options.ironmanAllowed && user.isIronman) || user.minionIsBusy || !user.hasMinion) {
+				await bi.reply({
+					content: `You cannot mass if you are busy${!options.ironmanAllowed ? ', an ironman' : ''}, or have no minion.`,
+					ephemeral: true
 				});
 				return;
 			}
 
-			const id = bi.customId as (typeof InteractionID.Party)[keyof typeof InteractionID.Party];
+			const id = bi.customId;
+
+			if (
+				![
+					InteractionID.Party.Join,
+					InteractionID.Party.Leave,
+					InteractionID.Party.Cancel,
+					InteractionID.Party.Start
+				].includes(id as 'PARTY_START')
+			) {
+				throw new Error('Invalid button ID');
+			}
 
 			if (id === InteractionID.Party.Join) {
 				if (options.customDenier) {
@@ -119,45 +115,45 @@ export async function makeParty(
 					if (denied) {
 						await bi.reply({
 							content: `You couldn't join this mass, for this reason: ${reason}`,
-							flags: MessageFlags.Ephemeral
+							ephemeral: true
 						});
 						return;
 					}
 				}
-				if (usersWhoConfirmed.includes(bi.user.id)) {
-					await bi.reply({ content: 'You are already in this mass.', flags: MessageFlags.Ephemeral });
+				if (usersWhoConfirmed.includes(bi.userId)) {
+					await bi.reply({ content: 'You are already in this mass.', ephemeral: true });
 					return;
 				}
-				if (partyLockCache.has(bi.user.id)) {
-					await bi.reply({ content: 'You cannot join this mass.', flags: MessageFlags.Ephemeral });
+				if (partyLockCache.has(bi.userId)) {
+					await bi.reply({ content: 'You cannot join this mass.', ephemeral: true });
 					return;
 				}
-				usersWhoConfirmed.push(bi.user.id);
-				partyLockCache.add(bi.user.id);
-				await silentAck(bi);
+				usersWhoConfirmed.push(bi.userId);
+				partyLockCache.add(bi.userId);
+				await bi.silentButtonAck();
 				updateUsersIn();
 				if (usersWhoConfirmed.length >= options.maxSize) collector.stop('everyoneJoin');
 				return;
 			}
 
 			if (id === InteractionID.Party.Leave) {
-				if (!usersWhoConfirmed.includes(bi.user.id) || bi.user.id === options.leader.id) {
-					await bi.reply({ content: 'You cannot leave this mass.', flags: MessageFlags.Ephemeral });
+				if (!usersWhoConfirmed.includes(bi.userId) || bi.userId === options.leader.id) {
+					await bi.reply({ content: 'You cannot leave this mass.', ephemeral: true });
 					return;
 				}
-				partyLockCache.delete(bi.user.id);
-				removeUser(bi.user.id);
-				await silentAck(bi);
+				partyLockCache.delete(bi.userId);
+				removeUser(bi.userId);
+				bi.silentButtonAck();
 				return;
 			}
 
 			if (id === InteractionID.Party.Cancel) {
-				if (bi.user.id !== options.leader.id) {
-					await bi.reply({ content: 'You cannot cancel this mass.', flags: MessageFlags.Ephemeral });
+				if (bi.userId !== options.leader.id) {
+					await bi.reply({ content: 'You cannot cancel this mass.', ephemeral: true });
 					return;
 				}
 				partyCancelled = true;
-				await silentAck(bi);
+				bi.silentButtonAck();
 				collector.stop('partyCreatorEnd');
 				interaction.reply({ content: 'The party was cancelled.', components: [] });
 				reject(new Error(SILENT_ERROR));
@@ -165,16 +161,16 @@ export async function makeParty(
 			}
 
 			if (id === InteractionID.Party.Start) {
-				if (bi.user.id !== options.leader.id) {
-					await bi.reply({ content: 'You cannot start this party.', flags: MessageFlags.Ephemeral });
+				if (bi.userId !== options.leader.id) {
+					await bi.reply({ content: 'You cannot start this party.', ephemeral: true });
 					return;
 				}
 				const error = checkParty();
 				if (error) {
-					await bi.reply({ content: error, flags: MessageFlags.Ephemeral });
+					await bi.reply({ content: error, ephemeral: true });
 					return;
 				}
-				await silentAck(bi);
+				bi.silentButtonAck();
 				collector.stop('partyCreatorEnd');
 				await startTrip(resolve, reject);
 			}

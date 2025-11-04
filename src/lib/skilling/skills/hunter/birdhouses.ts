@@ -1,8 +1,9 @@
+import type { IBirdhouseData } from '@oldschoolgg/schemas';
+
 import birdhouses, { type Birdhouse } from './birdHouseTrapping.js';
-import defaultBirdhouseTrap, { type BirdhouseData } from './defaultBirdHouseTrap.js';
 
 interface BirdhouseDetails {
-	raw: BirdhouseData;
+	raw: IBirdhouseData;
 	isReady: boolean;
 	readyIn: null | number;
 	birdHouse: Birdhouse | null;
@@ -10,28 +11,19 @@ interface BirdhouseDetails {
 }
 
 export function calculateBirdhouseDetails(user: MUser): BirdhouseDetails {
-	const birdHouseTraps = user.user.minion_birdhouseTraps;
-	if (!birdHouseTraps) {
-		return {
-			raw: defaultBirdhouseTrap,
-			isReady: false,
-			readyIn: null,
-			birdHouse: null,
-			readyAt: null
-		};
-	}
+	const birdHouseTraps = user.fetchBirdhouseData();
 
-	const details = birdHouseTraps as unknown as BirdhouseData;
+	const birdHouse = birdHouseTraps.lastPlaced
+		? birdhouses.find(_birdhouse => _birdhouse.name === birdHouseTraps.lastPlaced)
+		: null;
+	if (!birdHouse) throw new Error(`Missing ${birdHouseTraps.lastPlaced} birdhouse`);
 
-	const birdHouse = details.lastPlaced ? birdhouses.find(_birdhouse => _birdhouse.name === details.lastPlaced) : null;
-	if (!birdHouse) throw new Error(`Missing ${details.lastPlaced} birdhouse`);
-
-	const lastPlacedTime: number = details.birdhouseTime;
+	const lastPlacedTime: number = birdHouseTraps.birdhouseTime;
 	const difference = Date.now() - lastPlacedTime;
 	const isReady = difference > birdHouse.waitTime;
 	const readyIn = lastPlacedTime + birdHouse.waitTime - Date.now();
 	return {
-		raw: details,
+		raw: birdHouseTraps,
 		isReady,
 		readyIn,
 		birdHouse,

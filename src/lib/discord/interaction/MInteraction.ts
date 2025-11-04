@@ -41,16 +41,16 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 	}
 
 	isButton(): this is MInteraction<IButtonInteraction> {
-		return (this.interaction as any)?.type === 3 || typeof (this.interaction as any)?.customId === 'string';
+		return this.kind === 'Button';
 	}
 
 	isChatInput(): this is MInteraction<IChatInputCommandInteraction> {
-		return (this.interaction as any)?.type === 2 && !!(this.interaction as any)?.data;
+		return this.kind === 'ChatInputCommand';
 	}
 
 	makePaginatedMessage(options: PaginatedMessageOptions) {
 		this.isPaginated = true;
-		return new PaginatedMessage({ interaction: this, ...options }).run([this.interaction.user.id]);
+		return new PaginatedMessage({ interaction: this, ...options }).run([this.userId]);
 	}
 
 	async defer({ ephemeral }: { ephemeral?: boolean } = {}) {
@@ -103,10 +103,10 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 	public async makeParty(options: MakePartyOptions & { message: string }): Promise<MUser[]> {
 		return makeParty(this, options);
 	}
-	get customId(): T extends IButtonInteraction ? string : never {
-		return (this.interaction as any).customId;
-	}
 }
 export const MButtonInteraction = (args: InputItx<IButtonInteraction>) => new MInteraction<IButtonInteraction>(args);
 export const MChatInputInteraction = (args: InputItx<IChatInputCommandInteraction>) =>
 	new MInteraction<IChatInputCommandInteraction>(args);
+
+export type ButtonMInteraction = MInteraction<IButtonInteraction>;
+export type ChatInputMInteraction = MInteraction<IChatInputCommandInteraction>;

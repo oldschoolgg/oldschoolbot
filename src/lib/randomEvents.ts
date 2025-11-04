@@ -1,9 +1,8 @@
-import { randArrItem, roll } from '@oldschoolgg/rng';
+import { MathRNG } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
-import { RANDOM_EVENTS_CACHE } from '@/lib/cache.js';
 import { BitField } from '@/lib/constants.js';
 
 interface RandomEvent {
@@ -180,20 +179,17 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 	if (doesntGetRandomEvent.includes(type)) return {};
 	const minutes = Math.min(30, duration / Time.Minute);
 	const randomEventChance = 60 - minutes;
-	if (!roll(randomEventChance)) return {};
+	if (!MathRNG.roll(randomEventChance)) return {};
 	if (user.bitfield.includes(BitField.DisabledRandomEvents)) {
-		return {};
+		return;
 	}
 
-	const prev = RANDOM_EVENTS_CACHE.get(user.id);
+	const ratelimitResult = await Cache.tryRatelimit(user.id, 'random_events');
 
 	// Max 1 event per 3h mins per user
-	if (prev && Date.now() - prev < Time.Hour * 3) {
-		return {};
-	}
-	RANDOM_EVENTS_CACHE.set(user.id, Date.now());
+	if (!ratelimitResult.success) return;
 
-	const event = randArrItem(RandomEvents);
+	const event = MathRNG.pick(RandomEvents);
 	const loot = new Bank();
 	if (event.outfit) {
 		for (const piece of event.outfit) {

@@ -1,119 +1,6 @@
-import type { PermissionKey } from '@oldschoolgg/discord';
-import {
-	type APIApplicationCommandOptionChoice,
-	type APIChatInputApplicationCommandGuildInteraction,
-	ApplicationCommandOptionType,
-	convertApiChannelToZChannel,
-	convertApiMemberToZMember,
-	convertApiRoleToZRole,
-	convertApiUserToZUser
-} from '@oldschoolgg/discord';
+import type { APIApplicationCommandOptionChoice, PermissionKey } from '@oldschoolgg/discord';
 import type { IChannel, IMember, IRole, IUser } from '@oldschoolgg/schemas';
 import type { SpecialResponse } from '@oldschoolgg/toolkit';
-
-export function convertCommandOptionToAPIOption(option: CommandOption): any {
-	switch (option.type) {
-		case 'Number':
-		case 'Integer':
-		case 'String': {
-			return {
-				...option,
-				type: stringyToApiMap[option.type],
-				autocomplete: 'autocomplete' in option
-			};
-		}
-
-		default: {
-			return {
-				...option,
-				type: stringyToApiMap[option.type],
-				options:
-					'options' in option && option.options ? option.options.map(convertCommandOptionToAPIOption) : []
-			};
-		}
-	}
-}
-
-type StringyApplicationCommandOptionType =
-	| 'Subcommand'
-	| 'SubcommandGroup'
-	| 'String'
-	| 'Integer'
-	| 'Boolean'
-	| 'User'
-	| 'Channel'
-	| 'Role'
-	| 'Mentionable'
-	| 'Number';
-
-const stringyToApiMap: Record<StringyApplicationCommandOptionType, ApplicationCommandOptionType> = {
-	Subcommand: ApplicationCommandOptionType.Subcommand,
-	SubcommandGroup: ApplicationCommandOptionType.SubcommandGroup,
-	String: ApplicationCommandOptionType.String,
-	Integer: ApplicationCommandOptionType.Integer,
-	Boolean: ApplicationCommandOptionType.Boolean,
-	User: ApplicationCommandOptionType.User,
-	Channel: ApplicationCommandOptionType.Channel,
-	Role: ApplicationCommandOptionType.Role,
-	Mentionable: ApplicationCommandOptionType.Mentionable,
-	Number: ApplicationCommandOptionType.Number
-};
-
-type ConversionParams = {
-	guildId?: string;
-	options: APIChatInputApplicationCommandGuildInteraction['data']['options'] | undefined;
-	resolvedObjects: APIChatInputApplicationCommandGuildInteraction['data']['resolved'] | undefined;
-};
-
-export function convertAPIOptionsToCommandOptions({
-	options,
-	resolvedObjects = {},
-	guildId
-}: ConversionParams): CommandOptions {
-	if (!options) return {};
-
-	const parsedOptions: CommandOptions = {};
-
-	for (const opt of options) {
-		if (
-			opt.type === ApplicationCommandOptionType.SubcommandGroup ||
-			opt.type === ApplicationCommandOptionType.Subcommand
-		) {
-			const opts: CommandOptions = {};
-			for (const [key, value] of Object.entries(
-				convertAPIOptionsToCommandOptions({ options: opt.options ?? [], resolvedObjects, guildId })
-			)) {
-				opts[key] = value;
-			}
-			parsedOptions[opt.name] = opts;
-		} else if (opt.type === ApplicationCommandOptionType.Channel) {
-			parsedOptions[opt.name] = convertApiChannelToZChannel({
-				apiChannel: resolvedObjects.channels?.[opt.value]!,
-				guildId: guildId!
-			});
-		} else if (opt.type === ApplicationCommandOptionType.Role) {
-			parsedOptions[opt.name] = convertApiRoleToZRole({
-				apiRole: resolvedObjects.roles?.[opt.value]!,
-				guildId: guildId!
-			});
-		} else if (opt.type === ApplicationCommandOptionType.User) {
-			parsedOptions[opt.name] = {
-				user: convertApiUserToZUser(resolvedObjects.users?.[opt.value]!),
-				member: guildId
-					? convertApiMemberToZMember({
-							userId: opt.value,
-							guildId: guildId,
-							apiMember: resolvedObjects.members?.[opt.value]!
-						})
-					: undefined
-			};
-		} else {
-			parsedOptions[opt.name as string] = opt.value as any;
-		}
-	}
-
-	return parsedOptions;
-}
 
 export interface MahojiUserOption {
 	user: IUser;
@@ -155,7 +42,7 @@ export type CommandOption = {
 	| { type: 'Subcommand' | 'SubcommandGroup'; options?: AnyArr<CommandOption> }
 	| StringOption
 	| NumberOption
-	| { type: 'Boolean' | 'User' | 'Channel' | 'Role' | 'Mentionable' }
+	| { type: 'Boolean' | 'User' | 'Channel' | 'Role' | 'Mentionable' | 'Attachment' }
 );
 export type CommandResponse = Promise<CommandResponseValue>;
 type NumberOption<C extends AnyArr<{ name: string; value: number }> = AnyArr<{ name: string; value: number }>> = {

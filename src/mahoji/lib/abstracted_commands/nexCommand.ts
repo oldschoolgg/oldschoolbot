@@ -19,22 +19,15 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 	if (solo) {
 		mahojiUsers = [user];
 	} else {
-		let usersWhoConfirmed: MUser[] = [];
-		try {
-			usersWhoConfirmed = await interaction.makeParty({
-				minSize: 1,
-				maxSize: 10,
-				leader: user,
-				ironmanAllowed: true,
-				message: `${user} is hosting a Nex mass! Use the buttons below to join/leave.`,
-				customDenier: async user => checkNexUser(await mUserFetch(user.id))
-			});
-		} catch (err: any) {
-			return {
-				content: typeof err === 'string' ? err : 'Your mass failed to start.',
-				ephemeral: true
-			};
-		}
+		let usersWhoConfirmed: MUser[] = await interaction.makeParty({
+			minSize: 1,
+			maxSize: 10,
+			leader: user,
+			ironmanAllowed: true,
+			message: `${user} is hosting a Nex mass! Use the buttons below to join/leave.`,
+			customDenier: async user => checkNexUser(await mUserFetch(user.id))
+		});
+
 		usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);
 
 		if (usersWhoConfirmed.length < 1 || usersWhoConfirmed.length > 10) {

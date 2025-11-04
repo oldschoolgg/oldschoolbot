@@ -1,30 +1,23 @@
-import { type PerkTier, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import { LRUCache } from 'lru-cache';
 
-import type { Giveaway, Guild } from '@/prisma/main.js';
-
-export const perkTierCache = new Map<string, 0 | PerkTier>();
-
-type CachedGuild = Pick<Guild, 'disabledCommands' | 'id' | 'petchannel' | 'staffOnlyChannels'>;
-export const untrustedGuildSettingsCache = new LRUCache<string, CachedGuild>({ max: 1000 });
-
-export const giveawayCache = new LRUCache<number, Giveaway>({
-	max: 10,
-	ttl: Time.Second * 10,
-	ttlAutopurge: true,
-	ttlResolution: Time.Second
-});
+import type { Giveaway } from '@/prisma/main.js';
 
 export const lastRoboChimpSyncCache = new Map<string, number>();
 
 export const partyLockCache: Set<string> = new Set();
 TimerManager.setInterval(() => partyLockCache.clear(), Time.Minute * 20);
 
-export const DISABLED_COMMANDS: Set<string> = new Set();
-export const CACHED_ACTIVE_USER_IDS: Set<string> = new Set();
-export const CHAT_PET_COOLDOWN_CACHE = new LRUCache<string, number>({ max: 2000 });
+export const MESSAGE_COLLECTORS_CACHE = new LRUCache<string, any>({ max: 1000, ttl: Time.Minute * 10 });
 
+export const CHAT_PET_COOLDOWN_CACHE = new LRUCache<string, number>({ max: 2000 });
+export const giveawayCache = new LRUCache<number, Giveaway>({
+	max: 10,
+	ttl: Time.Second * 10,
+	ttlAutopurge: true,
+	ttlResolution: Time.Second
+});
 export const GE_SLOTS_CACHE = new LRUCache<
 	string,
 	{
@@ -37,7 +30,7 @@ export const GE_SLOTS_CACHE = new LRUCache<
 	ttl: Time.Hour,
 	max: 300
 });
-
 export const RARE_ROLES_CACHE = new LRUCache<string, number>({ max: 1000 });
-export const RANDOM_EVENTS_CACHE = new LRUCache<string, number>({ max: 500 });
-export const MESSAGE_COLLECTORS_CACHE = new LRUCache<string, any>({ max: 1000, ttl: Time.Minute * 10 });
+
+export const BLACKLISTED_USERS = new Set<string>();
+export const BLACKLISTED_GUILDS = new Set<string>();

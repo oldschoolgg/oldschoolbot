@@ -1,7 +1,7 @@
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { filterOption } from '@/lib/discord/index.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';

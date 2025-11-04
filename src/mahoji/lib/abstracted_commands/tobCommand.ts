@@ -321,19 +321,8 @@ export async function tobStartCommand(
 		}
 	};
 
-	let usersWhoConfirmed = [];
-	try {
-		if (solo) {
-			usersWhoConfirmed = [user, user, user];
-		} else {
-			usersWhoConfirmed = await interaction.makeParty(partyOptions);
-		}
-	} catch (err: any) {
-		return {
-			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			ephemeral: true
-		};
-	}
+	const usersWhoConfirmed = solo ? [user, user, user] : await interaction.makeParty(partyOptions);
+
 	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const team = await Promise.all(

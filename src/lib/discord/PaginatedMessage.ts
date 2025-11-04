@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle, InteractionResponseType, Routes } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
 import { isFunction } from 'remeda';
 
@@ -85,7 +85,7 @@ class BasePaginatedMessage {
 								new ButtonBuilder()
 									.setStyle(ButtonStyle.Secondary)
 									.setCustomId(i.customId)
-									.setEmoji({ id: i.emoji })
+									.setEmoji({ name: i.emoji })
 							)
 			};
 		} catch (err) {
@@ -131,7 +131,8 @@ export class PaginatedMessage extends BasePaginatedMessage {
 		const collector = globalClient.createInteractionCollector({
 			timeoutMs: Time.Minute * 10,
 			messageId: interactionResponse.id,
-			channelId: interactionResponse.channel_id
+			channelId: interactionResponse.channel_id,
+			maxCollected: Infinity
 		});
 
 		collector.on('collect', async buttonPressInteraction => {
@@ -142,14 +143,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 			}
 
 			// Acknowledge the button press to avoid "This interaction failed" message.
-			await globalClient.rest.post(
-				Routes.interactionCallback(buttonPressInteraction.id, buttonPressInteraction.token),
-				{
-					body: {
-						type: InteractionResponseType.DeferredMessageUpdate
-					}
-				}
-			);
+			await buttonPressInteraction.deferredMessageUpdate();
 
 			for (const action of controlButtons) {
 				if (buttonPressInteraction.customId === action.customId) {
@@ -157,6 +151,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 					action.run({ paginatedMessage: this });
 
 					if (previousIndex !== this.index) {
+						Logging.logDebug('Paginated message button clicked, updating message.');
 						await this.interaction.reply(await this.render());
 						return;
 					}
@@ -165,6 +160,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 		});
 
 		collector.on('end', async () => {
+			Logging.logDebug('Paginated message collector ended, removing buttons.');
 			await this.interaction.reply({ components: [] });
 		});
 

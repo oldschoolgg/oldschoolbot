@@ -5,13 +5,8 @@ import { Emoji, Events, getNextUTCReset, isFunction, Time, UserError } from '@ol
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
-import {
-	CHAT_PET_COOLDOWN_CACHE,
-	lastRoboChimpSyncCache,
-	RARE_ROLES_CACHE,
-	untrustedGuildSettingsCache
-} from '@/lib/cache.js';
-import { globalConfig } from '@/lib/constants.js';
+import { CHAT_PET_COOLDOWN_CACHE, lastRoboChimpSyncCache, RARE_ROLES_CACHE } from '@/lib/cache.js';
+import { CONSTANTS, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
@@ -86,10 +81,10 @@ async function rareRoles(msg: IMessage) {
 
 async function petMessages(msg: IMessage) {
 	if (!msg.guild_id) return;
-	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild_id);
-	if (!cachedSettings?.petchannel) return;
+	const guildSettings = await Cache.getGuild(msg.guild_id);
+	if (!guildSettings.petchannel) return;
 
-	const key = `${msg.author.id}.${msg.guild_id}`;
+	const key = `${msg.author_id}.${msg.guild_id}`;
 	// If they sent a message in this server in the past 1.5 mins, return.
 	const lastMessage = CHAT_PET_COOLDOWN_CACHE.get(key) ?? 1;
 	if (Date.now() - lastMessage < 80_000) return;
@@ -97,23 +92,21 @@ async function petMessages(msg: IMessage) {
 
 	const pet = MathRNG.pick(pets);
 	if (MathRNG.roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
-		Logging.logDebug(`${msg.author.id} triggered a pet message`);
-		const user = await mUserFetch(msg.author.id);
+		Logging.logDebug(`${msg.author_id} triggered a pet message`);
+		const user = await mUserFetch(msg.author_id);
 		const { isNewPet } = await user.giveBotMessagePet(pet);
-		await globalClient.sendMessage(
-			msg.channel_id,
+		await globalClient.replyToMessage(
+			msg,
 			isNewPet
-				? `You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
+				? `You have a funny feeling like you’re being followed. ${pet.emoji}
 Type \`/tools user mypets\` to see your pets.`
-				: `${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`
+				: `You have a funny feeling like they would have been followed. ${pet.emoji}`
 		);
 	}
 }
 
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
-
-export const TEARS_OF_GUTHIX_CD = Time.Day * 7;
 
 const cooldownTimers: {
 	name: string;
@@ -125,14 +118,14 @@ const cooldownTimers: {
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: TEARS_OF_GUTHIX_CD,
+		cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
 		command: ['minigames', 'tears_of_guthix', 'start'],
 		utcReset: true
 	},
 	{
 		name: 'Daily',
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
-		cd: Time.Hour * 12,
+		cd: CONSTANTS.DAILY_COOLDOWN,
 		command: ['minion', 'daily'],
 		utcReset: false
 	}
@@ -281,18 +274,21 @@ const mentionCommands: MentionCommand[] = [
 export async function onMessage(msg: IMessage) {
 	rareRoles(msg);
 	petMessages(msg);
-	// TODO: channelIsSendable(msg.channel
-	if (!msg.content || msg.author.bot) return;
+	if (!msg.content) return;
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
-	const user = await mUserFetch(msg.author.id);
+
+	const sendable = await globalClient.channelIsSendable(msg.channel_id);
+	if (!sendable) return;
+
+	const user = await mUserFetch(msg.author_id);
 	const result = await minionStatusCommand(user);
 
 	const command = mentionCommands.find(i =>
 		i.aliases.some(alias => msg.content.startsWith(`${mentionText} ${alias}`))
 	);
 	if (command) {
-		Logging.logDebug(`${msg.author.id} used the ${command.name} mention command`);
+		Logging.logDebug(`${msg.author_id} used the ${command.name} mention command`);
 		const msgContentWithoutCommand = msg.content.split(' ').slice(2).join(' ');
 		await prisma.commandUsage.create({
 			data: {

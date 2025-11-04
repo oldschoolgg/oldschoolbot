@@ -1,7 +1,7 @@
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 

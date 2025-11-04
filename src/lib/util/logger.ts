@@ -56,12 +56,13 @@ function logDebug(str: string, context: LogContext = {}) {
 	const o = { ...context, m: str, t: new Date().toISOString() };
 	sonicBoom.write(`${JSON.stringify(o)}\n`);
 	if (!globalConfig.isProduction) {
-		console.log(str);
+		console.log(`${process.uptime()}s: ${str}`);
 	}
 }
 
 type RichErrorLogArgs = {
 	err: any;
+	message?: string;
 	interaction?: MInteraction;
 	context?: Record<
 		string,
@@ -76,6 +77,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	const err = typeof args === 'string' ? new Error(args) : args instanceof Error ? args : args.err;
 	const interaction = isObject(args) && !(args instanceof Error) ? args.interaction : undefined;
 	const context = isObject(args) && !(args instanceof Error) ? args.context : ctx;
+
 	if (err instanceof Error && err.message === 'SILENT_ERROR') return;
 
 	// If DiscordAPIError #10008, that means someone deleted the message, we don't need to log this.
@@ -99,6 +101,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	if (err?.requestBody?.json) {
 		err.requestBody.json = String(err.requestBody.json).slice(0, 500);
 	}
+
 	if (interaction) {
 		// TODO
 		// metaInfo.interaction = interaction.getDebugInfo();
@@ -111,7 +114,8 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 			type: 'ERROR',
 			error: err.stack ?? err.message,
 			info: metaInfo,
-			time: new Date().toISOString()
+			time: new Date().toISOString(),
+			message: isObject(args) && !(args instanceof Error) ? args.message : undefined
 		})
 	);
 

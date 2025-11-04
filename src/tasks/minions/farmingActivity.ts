@@ -5,7 +5,6 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField } from '@/lib/constants.js';
 import { Farming, type PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
-import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -401,16 +400,12 @@ export const farmingTask: MinionTask = {
 
 			let janeMessage = false;
 			if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
-				const farmingContractUpdate: FarmingContract = {
+				await user.updateFarmingContract({
 					hasContract: false,
 					difficultyLevel: null,
 					plantToGrow: currentContract.plantToGrow,
 					plantTier: currentContract.plantTier,
 					contractsCompleted: contractsCompleted + 1
-				};
-
-				await user.update({
-					minion_farmingContract: farmingContractUpdate as any
 				});
 
 				loot.add('Seed pack');

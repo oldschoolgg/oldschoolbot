@@ -271,7 +271,7 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 		res = await prisma.$queryRawUnsafe<Record<string, any>[]>(query);
 		overallUsers = res.map(user => {
 			let totalLevel = 0;
-			for (const s of skillsVals) totalLevel += convertXPtoLVL(Number(user[`skills.${s.id}`]) as any, MAX_LEVEL);
+			for (const s of skillsVals) totalLevel += convertXPtoLVL(Number(user[`skills.${s.id}`]), MAX_LEVEL);
 			return { id: user.id, totalLevel, totalXP: Number(user.totalxp!) };
 		});
 		if (type === 'level') {
@@ -850,7 +850,7 @@ export const leaderboardCommand = defineCommand({
 		];
 
 		for (const lb of LEADERBOARDS) {
-			const sub = (options as any)[lb.key];
+			const sub = options[lb.key];
 			if (sub !== undefined) return lb.run(sub);
 		}
 		return 'Invalid input.';

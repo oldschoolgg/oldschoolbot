@@ -5,7 +5,6 @@ import {
 	type IMember,
 	type IRole,
 	ZEmoji,
-	ZGuild,
 	ZMember,
 	ZRole
 } from '@oldschoolgg/schemas';
@@ -18,7 +17,6 @@ import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { fetchUsernameAndCache } from '@/lib/util.js';
 
 export enum CacheKeyPrefix {
-	Guild = 'guild',
 	Member = 'member',
 	Role = 'role',
 	Emoji = 'emoji',
@@ -28,26 +26,40 @@ export enum CacheKeyPrefix {
 const fmkey = (...parts: string[]) => parts.join(':');
 
 const Key = {
-	User: {
-		BadgedUsername: (userId: string) => fmkey('user', BOT_TYPE, userId, 'badged_username')
+	Client: {
+		DisabledCommands: (clientId: string) => fmkey('client', BOT_TYPE, clientId, 'disabled_commands')
 	},
-	Guild: (id: string) => fmkey(CacheKeyPrefix.Guild, id),
+	User: {
+		BadgedUsername: (userId: string) => fmkey('user', BOT_TYPE, userId, 'badged_username'),
+		Ratelimit: (type: RatelimitType, userId: string) => fmkey('user', BOT_TYPE, 'ratelimit', type, userId)
+	},
+	Guild: (id: string) => fmkey('guild', id),
 	Member: (guildId: string, userId: string) => fmkey(CacheKeyPrefix.Member, guildId, userId),
 	Emoji: (guildId: string, id: string) => fmkey(CacheKeyPrefix.Emoji, guildId, id),
 	Role: (guildId: string, id: string) => fmkey(CacheKeyPrefix.Role, guildId, id),
 	RoboChimpUser: (userId: string | bigint) => fmkey(CacheKeyPrefix.RoboChimp, 'user', userId.toString()),
-	Channel: {
-		GuildChannel: (guildId: string, channelId: string) => fmkey('channel', guildId, channelId),
-		DMChannel: (userId: string, channelId: string) => fmkey('channel', userId, channelId)
-	}
+	Channel: (channelId: string) => fmkey('channel', channelId)
+};
+
+const TTL = {
+	Minute: Time.Minute / Time.Second,
+	Hour: Time.Hour / Time.Second,
+	Day: Time.Day / Time.Second
 };
 
 const TTLS = {
-	Guild: Time.Hour * 24,
-	Member: Time.Hour * 23,
-	Role: Time.Hour * 100,
-	RoboChimpUser: Time.Hour * 4,
-	Channel: Time.Hour * 100
+	Guild: TTL.Hour * 24,
+	Member: TTL.Hour * 23,
+	Role: TTL.Hour * 100,
+	RoboChimpUser: TTL.Hour * 4,
+	Channel: TTL.Hour * 100
+} as const;
+
+type RatelimitType = 'random_events' | 'global_buttons';
+
+const RATELIMITS: Record<RatelimitType, { windowSeconds: number; max: number }> = {
+	global_buttons: { windowSeconds: 2, max: 1 },
+	random_events: { windowSeconds: TTL.Hour * 3, max: 5 }
 } as const;
 
 export class CacheManager {
@@ -64,9 +76,12 @@ export class CacheManager {
 		await this.setString(key, JSON.stringify(value), ttlSeconds);
 	}
 
-	private async get<T>(key: string): Promise<T | null> {
+	private async getJson<T>(key: string): Promise<T | null> {
 		const raw = await this.client.get(key);
 		return raw ? JSON.parse(raw) : null;
+	}
+	private async getString(key: string): Promise<string | null> {
+		return this.client.get(key);
 	}
 
 	private async del(key: string) {
@@ -83,47 +98,85 @@ export class CacheManager {
 		await pipeline.exec();
 	}
 
-	async getGuild(id: string): Promise<IGuild> {
-		const key = Key.Guild(id);
-		const cached = await this.get<IGuild>(key);
+	private async getRawDatabaseGuild(id: string) {
+		const guildSettings = await prisma.guild.findUnique({
+			where: { id },
+			select: {
+				id: true,
+				disabledCommands: true,
+				petchannel: true,
+				staffOnlyChannels: true
+			}
+		});
+		return guildSettings;
+	}
+
+	async getGuild(guildId: string): Promise<IGuild> {
+		const key = Key.Guild(guildId);
+		const cached = await this.getJson<IGuild>(key);
 		if (cached) return cached;
-		const guild = await globalClient.fetchGuild(id);
-		if (!guild) throw new Error(`Tried to fetch non existent guild ${id}`);
-		await this.setGuild(guild);
+		const guildSettings = await this.getRawDatabaseGuild(guildId);
+		const guild: IGuild = guildSettings
+			? {
+					id: guildSettings.id,
+					disabled_commands: guildSettings.disabledCommands,
+					petchannel: guildSettings.petchannel,
+					staff_only_channels: guildSettings.staffOnlyChannels
+				}
+			: {
+					id: guildId,
+					disabled_commands: [],
+					petchannel: null,
+					staff_only_channels: []
+				};
+		this.setObject(Key.Guild(guildId), guild, TTLS.Guild);
 		return guild;
 	}
 
-	private async setGuild(guild: IGuild) {
-		ZGuild.parse(guild);
-		await this.setObject(Key.Guild(guild.id), guild, TTLS.Guild);
+	public async updateGuild(guildId: string, updates: Partial<IGuild>) {
+		const guildSettings = await prisma.guild.upsert({
+			where: { id: guildId },
+			create: {
+				id: guildId,
+				disabledCommands: updates.disabled_commands ?? undefined,
+				petchannel: updates.petchannel ?? undefined,
+				staffOnlyChannels: updates.staff_only_channels ?? undefined
+			},
+			update: {
+				disabledCommands: updates.disabled_commands ?? undefined,
+				petchannel: updates.petchannel ?? undefined,
+				staffOnlyChannels: updates.staff_only_channels ?? undefined
+			}
+		});
+		const newGuild: IGuild = {
+			id: guildSettings.id,
+			disabled_commands: guildSettings.disabledCommands,
+			petchannel: guildSettings.petchannel,
+			staff_only_channels: guildSettings.staffOnlyChannels
+		};
+		return this.setObject(Key.Guild(guildId), newGuild, TTLS.Guild);
 	}
 
 	async getMember(guildId: string, userId: string) {
-		return this.get<IMember>(Key.Member(guildId, userId));
+		return this.getJson<IMember>(Key.Member(guildId, userId));
 	}
 
-	async getGuildChannel(guildId: string, channelId: string): Promise<IChannel> {
-		const key = Key.Channel.GuildChannel(guildId, channelId);
-		const cached = await this.get<IChannel>(key);
+	async getChannel(channelId: string): Promise<IChannel> {
+		const key = Key.Channel(channelId);
+		const cached = await this.getJson<IChannel>(key);
 		if (cached) return cached;
-		const channel = await globalClient.fetchChannel(channelId);
-		if (!channel) throw new Error(`Tried to fetch non existent channel ${channelId} from guild ${guildId}`);
+		const rawChannel = await globalClient.fetchChannel(channelId);
+		if (!rawChannel) throw new Error(`Tried to fetch non existent channel ${channelId}`);
+		const channel: IChannel = {
+			id: rawChannel.id,
+			type: rawChannel.type,
+			guild_id: 'guild_id' in rawChannel && rawChannel.guild_id ? rawChannel.guild_id : null
+		};
 		await this.setObject(key, channel, TTLS.Channel);
 		return channel;
 	}
-
-	async getDMChannel(userId: string, channelId: string): Promise<IChannel> {
-		const key = Key.Channel.DMChannel(userId, channelId);
-		const cached = await this.get<IChannel>(key);
-		if (cached) return cached;
-		const channel = await globalClient.fetchChannel(channelId);
-		if (!channel) throw new Error(`Tried to fetch non existent dm channel ${channelId} for user ${userId}`);
-		await this.setObject(key, channel, TTLS.Channel);
-		return channel;
-	}
-
 	async getMainServerMember(userId: string) {
-		return this.get<IMember>(Key.Member(globalConfig.supportServerID, userId));
+		return this.getJson<IMember>(Key.Member(globalConfig.supportServerID, userId));
 	}
 
 	async setMember(member: IMember) {
@@ -140,7 +193,7 @@ export class CacheManager {
 	}
 
 	async getRole(guildId: string, roleId: string) {
-		return this.get(Key.Role(guildId, roleId));
+		return this.getJson(Key.Role(guildId, roleId));
 	}
 
 	async setRole(role: IRole) {
@@ -161,23 +214,74 @@ export class CacheManager {
 	}
 
 	async getRoboChimpUser(userId: string) {
-		return this.get<RobochimpUser>(Key.RoboChimpUser(userId));
+		return this.getJson<RobochimpUser>(Key.RoboChimpUser(userId));
 	}
 
 	async bulkSetRoboChimpUser(users: RobochimpUser[]) {
 		await this.bulkSet(users, u => Key.RoboChimpUser(u.id), null, TTLS.RoboChimpUser);
 	}
 
+	// Users
 	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
-		return this.get<string>(Key.User.BadgedUsername(userId));
+		return this.getString(Key.User.BadgedUsername(userId));
 	}
 
 	async getBadgedUsername(userId: string) {
 		return fetchUsernameAndCache(userId);
 	}
 
+	async getBadgedUsernames(userIds: string[]): Promise<string[]> {
+		const result = await Promise.all(userIds.map(id => this.getBadgedUsername(id)));
+		return result;
+	}
+
 	async setBadgedUsername(userId: string, badgedUsername: string) {
 		await this.setString(Key.User.BadgedUsername(userId), badgedUsername, Time.Hour * 12);
+	}
+
+	public async tryRatelimit(
+		userId: string,
+		type: RatelimitType
+	): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
+		const cfg = RATELIMITS[type];
+		const key = Key.User.Ratelimit(type, userId);
+
+		const count = await this.client.incr(key);
+		if (count === 1) await this.client.expire(key, cfg.windowSeconds);
+
+		if (count <= cfg.max) return { success: true };
+
+		let ttl = await this.client.pttl(key); // ms
+		if (ttl < 0) {
+			// no expiry for some reason; enforce one
+			await this.client.pexpire(key, cfg.windowSeconds * 1000);
+			ttl = cfg.windowSeconds * 1000;
+		}
+		return { success: false, timeRemainingMs: ttl };
+	}
+
+	public async getRatelimitTTL(userId: string, type: RatelimitType): Promise<number> {
+		const ttl = await this.client.ttl(Key.User.Ratelimit(type, userId));
+		return ttl < 0 ? 0 : ttl;
+	}
+
+	public async resetRatelimit(userId: string, type: RatelimitType): Promise<void> {
+		await this.client.del(Key.User.Ratelimit(type, userId));
+	}
+
+	// Client
+	async getDisabledCommands(): Promise<string[]> {
+		const res = (await this.getJson<string[]>(Key.Client.DisabledCommands(globalClient.applicationId))) ?? [];
+		return res;
+	}
+
+	async setDisabledCommands(newDisabledCommands: string[]): Promise<void> {
+		const res = await this.setObject(
+			Key.Client.DisabledCommands(globalClient.applicationId),
+			newDisabledCommands,
+			TTL.Hour * 4
+		);
+		return res;
 	}
 
 	async close() {

@@ -7,8 +7,7 @@ import { MESSAGE_COLLECTORS_CACHE } from '@/lib/cache.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField, PerkTier } from '@/lib/constants.js';
-import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
+import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { MUserClass } from '@/lib/MUser.js';
@@ -215,7 +214,7 @@ export async function handleTripFinish(
 		// Tears of Guthix start button if ready
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
 			const lastPlayedDate = Number(last_tears_of_guthix_timestamp);
-			const nextReset = getNextUTCReset(lastPlayedDate, TEARS_OF_GUTHIX_CD);
+			const nextReset = getNextUTCReset(lastPlayedDate, CONSTANTS.TEARS_OF_GUTHIX_CD);
 			const ready = nextReset < Date.now();
 			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
 			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
@@ -239,8 +238,9 @@ export async function handleTripFinish(
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 
-		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
+		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton)) {
 			components.push(makeAutoContractButton());
+		}
 
 		const { currentTask } = await user.fetchSlayerInfo();
 		if (
@@ -256,7 +256,7 @@ export async function handleTripFinish(
 		}
 	}
 
-	handleTriggerShootingStar(user, data, components);
+	await handleTriggerShootingStar(user, data, components);
 
 	if (components.length > 0) {
 		message.addComponents(components);

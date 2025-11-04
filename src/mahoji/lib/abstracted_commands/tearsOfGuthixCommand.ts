@@ -1,7 +1,7 @@
 import { dateFm } from '@oldschoolgg/discord';
 import { Emoji, formatDuration, getNextUTCReset, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 
-import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
+import { CONSTANTS } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
@@ -51,7 +51,7 @@ export async function tearsOfGuthixCommand(user: MUser, channelId: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const currentStats = await user.fetchStats();
 	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
-	const nextReset = getNextUTCReset(lastPlayedDate, TEARS_OF_GUTHIX_CD);
+	const nextReset = getNextUTCReset(lastPlayedDate, CONSTANTS.TEARS_OF_GUTHIX_CD);
 
 	// If they have already claimed a ToG in the past 7days
 	if (Date.now() < nextReset) {

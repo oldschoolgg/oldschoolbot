@@ -15,11 +15,6 @@ async function main() {
 	await createDb();
 	Logging.logDebug(`Starting up after ${process.uptime()}s`);
 	await Promise.all([preStartup(), globalClient.login()]);
-
-	await Cache.getMember('940758552425955348', '157797566833098752');
-	const start = performance.now();
-	await Cache.getMember('940758552425955348', '157797566833098752');
-	console.log(`took ${performance.now() - start}ms`);
 }
 
 process.on('uncaughtException', err => {

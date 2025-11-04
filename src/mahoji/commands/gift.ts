@@ -2,7 +2,7 @@ import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/to
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { GiftBoxStatus } from '@/prisma/main.js';
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';

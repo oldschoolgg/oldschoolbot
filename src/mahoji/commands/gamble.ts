@@ -6,10 +6,10 @@ import { choicesOf } from '@/lib/discord/index.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
 import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';
-// import { duelCommand } from '@/mahoji/lib/abstracted_commands/duelCommand.js';
+import { duelCommand } from '@/mahoji/lib/abstracted_commands/duelCommand.js';
 import { hotColdCommand } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
-// import { luckyPickCommand } from '@/mahoji/lib/abstracted_commands/luckyPickCommand.js';
-// import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
+import { luckyPickCommand } from '@/mahoji/lib/abstracted_commands/luckyPickCommand.js';
+import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
 
 export const gambleCommand = defineCommand({
 	name: 'gamble',
@@ -176,7 +176,7 @@ export const gambleCommand = defineCommand({
 			if (options.duel.amount && [user, targetUser].some(u => u.bitfield.includes(BitField.SelfGamblingLocked))) {
 				return 'One of you has gambling disabled and cannot participate in this duel!';
 			}
-			return 'HI'; //duelCommand(user, interaction, targetUser, options.duel.user, options.duel.amount);
+			return duelCommand(user, interaction, targetUser, options.duel.user, options.duel.amount);
 		}
 
 		if (options.dice) {
@@ -192,11 +192,11 @@ export const gambleCommand = defineCommand({
 		}
 
 		if (options.lucky_pick) {
-			return 'hi'; // luckyPickCommand(user, options.lucky_pick.amount, interaction);
+			return luckyPickCommand(user, options.lucky_pick.amount, interaction);
 		}
 
 		if (options.slots) {
-			return 'hi'; //slotsCommand(interaction, user, options.slots.amount);
+			return slotsCommand(interaction, user, options.slots.amount);
 		}
 
 		if (options.hot_cold) {

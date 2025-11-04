@@ -4,19 +4,13 @@ import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
+import type { ShootingStars } from '@/prisma/main.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import type { Star } from '@/lib/minions/types.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
-import type { Ore } from '@/lib/skilling/types.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
 
-interface Star extends Ore {
-	size: number;
-	level: number;
-	chance: number;
-	dustAvailable: number;
-	additionalDustPercent: number;
-}
 export const starSizes: Star[] = [
 	{
 		size: 9,
@@ -164,9 +158,14 @@ export const starSizes: Star[] = [
 	}
 ];
 
-export async function shootingStarsCommand(channelId: string, user: MUser, star: Star): Promise<string> {
+export async function shootingStarsCommand(
+	channelId: string,
+	user: MUser,
+	_star: ShootingStars | Star
+): Promise<string> {
 	const skills = user.skillsAsLevels;
 	const boosts = [];
+	const star: Star = ('dustAvailable' in _star ? _star : starSizes.find(s => s.size === _star.size))!;
 
 	let miningLevel = skills.mining;
 
@@ -282,9 +281,7 @@ const activitiesCantGetStars: activity_type_enum[] = [
 	'CamdozaalFishing'
 ];
 
-export const starCache = new Map<string, Star & { expiry: number }>();
-
-export function handleTriggerShootingStar(user: MUser, data: ActivityTaskData, components: ButtonBuilder[]) {
+export async function handleTriggerShootingStar(user: MUser, data: ActivityTaskData, components: ButtonBuilder[]) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillsAsLevels.mining;
 	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
@@ -303,5 +300,12 @@ export function handleTriggerShootingStar(user: MUser, data: ActivityTaskData, c
 		.setEmoji({ name: '⭐' })
 		.setStyle(ButtonStyle.Secondary);
 	components.push(button);
-	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 5 });
+	await prisma.shootingStars.create({
+		data: {
+			user_id: user.id,
+			size: star.size,
+			expires_at: new Date(Date.now() + Time.Minute * 5),
+			has_been_mined: false
+		}
+	});
 }

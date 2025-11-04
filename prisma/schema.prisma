@@ -1513,3 +1513,15 @@ model JsonBank {
   @@unique([user_id, type])
   @@map("json_bank")
 }
+
+model ShootingStars {
+  id Int @id @default(autoincrement())
+
+  user_id        String
+  size           Int
+  expires_at     DateTime
+  has_been_mined Boolean  @default(false)
+
+  @@index([user_id, expires_at])
+  @@map("shooting_stars")
+}

@@ -7,6 +7,7 @@ import {
 	Routes
 } from '@oldschoolgg/discord';
 import type { IButtonInteraction, IChatInputCommandInteraction } from '@oldschoolgg/schemas';
+import { isObject } from '@oldschoolgg/toolkit';
 
 import {
 	type APISendableMessage,
@@ -17,14 +18,15 @@ import {
 type EditMessageOptions = SendableMessage;
 
 export class BaseInteraction {
-	readonly id: string;
-	readonly token: string;
-	readonly applicationId: string;
+	public readonly id: string;
+	private readonly token: string;
+	private readonly applicationId: string;
 	private _deferred = false;
 	private _replied = false;
 	private _ephemeral = false;
 	private readonly rest: REST;
-	public _data: IChatInputCommandInteraction | IButtonInteraction;
+	private _data: IChatInputCommandInteraction | IButtonInteraction;
+	public userId: string;
 
 	constructor({
 		data,
@@ -36,6 +38,12 @@ export class BaseInteraction {
 		this.applicationId = applicationId;
 		this.rest = rest;
 		this._data = data;
+		this.userId = data.user_id;
+	}
+
+	get customId() {
+		if (this._data.kind !== 'Button') throw new Error('Interaction is not a button interaction.');
+		return this._data.custom_id;
 	}
 
 	get raw() {
@@ -57,12 +65,13 @@ export class BaseInteraction {
 	get guildId() {
 		return this._data.guild_id;
 	}
-	get userId() {
-		return this._data.user.id;
-	}
 
 	get createdTimestamp() {
 		return this._data.created_timestamp;
+	}
+
+	get kind() {
+		return this._data.kind;
 	}
 
 	get messageId() {
@@ -71,28 +80,28 @@ export class BaseInteraction {
 	}
 
 	private async toBody(options: SendableMessage): Promise<APISendableMessage> {
-		return sendableMsgToApiCreate(options);
+		const result = await sendableMsgToApiCreate(options);
+		if (result.message.flags === MessageFlags.Ephemeral) {
+			this._ephemeral = true;
+		}
+		return result;
 	}
 
-	private async sendCallback(type: InteractionResponseType, options?: SendableMessage & { withResponse?: boolean }) {
+	private async sendCallback(
+		type: InteractionResponseType,
+		options?: SendableMessage & { withResponse?: boolean }
+	): Promise<APIMessage | null> {
 		const query = makeURLSearchParams({
 			with_response: options?.withResponse ?? false,
-			thread_id: (options as any)?.threadId
+			thread_id: isObject(options) && 'threadId' in options ? options.threadId : undefined
 		});
-		if (options) {
-			const { files, message } = await this.toBody(options);
-			return this.rest.post(Routes.interactionCallback(this.id, this.token), {
-				auth: false,
-				body: { type, data: message },
-				files: files ?? undefined,
-				query
-			});
-		}
+		const { files, message } = options ? await this.toBody(options) : { files: undefined, message: undefined };
 		return this.rest.post(Routes.interactionCallback(this.id, this.token), {
 			auth: false,
-			body: { type },
+			body: { type, data: message },
+			files: files ?? undefined,
 			query
-		});
+		}) as Promise<APIMessage | null>;
 	}
 
 	private async sendWebhookCreate(options: SendableMessage): Promise<APIMessage> {
@@ -115,7 +124,8 @@ export class BaseInteraction {
 	}
 
 	async baseDeferReply(options: { ephemeral?: boolean; withResponse?: boolean; threadId?: string } = {}) {
-		if (this._deferred || this._replied) throw new Error('InteractionAlreadyReplied');
+		if (this._deferred) return;
+		if (this.replied) throw new Error('baseDeferReply: Tried to defer an interaction that was already replied');
 		const flags = options.ephemeral ? MessageFlags.Ephemeral : 0;
 		const res = await this.rest.post(Routes.interactionCallback(this.id, this.token), {
 			auth: false,
@@ -129,31 +139,29 @@ export class BaseInteraction {
 
 	async baseReply(options: SendableMessage): Promise<APIMessage | null> {
 		if (this._deferred || this._replied) {
-			// TODO: might need to return interaction respnose here
 			return this.baseEditReply(options);
 		}
-		const res = await this.sendCallback(InteractionResponseType.ChannelMessageWithSource, options);
-		this._ephemeral = Boolean((options as any)?.ephemeral);
 		this._replied = true;
-		return (options as any)?.withResponse ? (res as APIMessage) : null;
+		const res = await this.sendCallback(InteractionResponseType.ChannelMessageWithSource, options);
+		return res;
 	}
 
 	async baseDeferUpdate(options: { withResponse?: boolean } = {}) {
-		if (this._deferred || this._replied) throw new Error('InteractionAlreadyReplied');
+		if (this._deferred || this._replied) throw new Error('baseDeferUpdate: InteractionAlreadyReplied');
 		const res = await this.sendCallback(InteractionResponseType.DeferredMessageUpdate);
 		this._deferred = true;
 		return options.withResponse ? res : undefined;
 	}
 
 	async update(options: SendableMessage & { withResponse?: boolean }) {
-		if (this._deferred || this._replied) throw new Error('InteractionAlreadyReplied');
+		if (this._deferred || this._replied) throw new Error('update: InteractionAlreadyReplied');
 		const res = await this.sendCallback(InteractionResponseType.UpdateMessage, options);
 		this._replied = true;
 		return options.withResponse ? res : undefined;
 	}
 
 	async followUp(options: SendableMessage): Promise<APIMessage> {
-		if (!this._deferred && !this._replied) throw new Error('InteractionNotReplied');
+		if (!this._deferred && !this._replied) throw new Error('followUp: InteractionNotReplied');
 		return this.sendWebhookCreate(options);
 	}
 
@@ -182,21 +190,18 @@ export class BaseInteraction {
 	}
 
 	public async silentButtonAck() {
-		return this.rest.post(Routes.interactionCallback(this.id, this.token), {
+		await this.rest.post(Routes.interactionCallback(this.id, this.token), {
 			body: {
 				type: InteractionResponseType.DeferredMessageUpdate
 			}
 		});
 	}
 
-	// async showModal(modal: APIInteractionResponseCallbackData & { custom_id: string; title: string; components: APIActionRowComponent<ComponentType>[] }, options: { withResponse?: boolean } = {}) {
-	// 	if (this._deferred || this._replied) throw new Error('InteractionAlreadyReplied');
-	// 	const res = await this.rest.post(Routes.interactionCallback(this.id, this.token), {
-	// 		auth: false,
-	// 		body: { type: InteractionResponseType.Modal, data: modal },
-	// 		query: makeURLSearchParams({ with_response: options.withResponse ?? false })
-	// 	});
-	// 	this._replied = true;
-	// 	return options.withResponse ? res : undefined;
-	// }
+	public async deferredMessageUpdate() {
+		return this.rest.post(Routes.interactionCallback(this.id, this.token), {
+			body: {
+				type: InteractionResponseType.DeferredMessageUpdate
+			}
+		});
+	}
 }

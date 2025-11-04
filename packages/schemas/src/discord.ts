@@ -1,10 +1,13 @@
+import { ChannelType } from 'discord-api-types/v10';
 import z from 'zod';
 
 import { ZPermission } from './shared.js';
 
 export const ZGuild = z.object({
 	id: z.string(),
-	name: z.string()
+	staff_only_channels: z.array(z.string()),
+	disabled_commands: z.array(z.string()),
+	petchannel: z.string().nullable()
 });
 export type IGuild = z.infer<typeof ZGuild>;
 
@@ -36,7 +39,7 @@ export type IRole = z.infer<typeof ZRole>;
 export const ZChannel = z.object({
 	id: z.string(),
 	guild_id: z.string().nullable(),
-	type: z.number().int().nonnegative()
+	type: z.enum(ChannelType)
 });
 export type IChannel = z.infer<typeof ZChannel>;
 
@@ -52,9 +55,7 @@ export const ZMessage = z.object({
 	content: z.string(),
 	channel_id: z.string(),
 	guild_id: z.string().nullable(),
-	author_id: z.string(),
-	author: ZUser,
-	member: ZMember.nullable()
+	author_id: z.string()
 });
 export type IMessage = z.infer<typeof ZMessage>;
 

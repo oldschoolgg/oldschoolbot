@@ -2,40 +2,49 @@ import { makeURLSearchParams, REST } from '@discordjs/rest';
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
 import {
 	ActivityType,
+	type APIApplication,
 	type APIApplicationCommand,
 	type APIApplicationCommandOptionChoice,
 	type APIChannel,
 	type APIEmoji,
-	type APIGuild,
 	type APIGuildMember,
 	type APIInteraction,
 	type APIRole,
 	BitField,
+	ButtonBuilder,
+	ButtonStyle,
+	ChannelType,
 	GatewayDispatchEvents,
+	type GatewayGuildCreateDispatchData,
 	GatewayIntentBits,
 	GatewayOpcodes,
 	type GatewayReadyDispatchData,
 	type GatewaySendPayload,
 	type GatewayUpdatePresence,
+	InteractionResponseType,
 	MessageReferenceType,
 	type PermissionKey,
 	Permissions,
 	PresenceUpdateStatus,
 	Routes
 } from '@oldschoolgg/discord';
-import type { IChannel, IGuild, IInteraction, IMember, IMessage, IRole, IUser } from '@oldschoolgg/schemas';
-import { uniqueArr } from '@oldschoolgg/toolkit';
+import type { IChannel, IInteraction, IMember, IMessage, IRole, IUser } from '@oldschoolgg/schemas';
+import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 
 import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
-import { type CollectorOptions, createInteractionCollector } from '@/lib/discord/collector/collectSingle.js';
+import {
+	type CollectorOptions,
+	collectSingleInteraction,
+	createInteractionCollector
+} from '@/lib/discord/collector/collectSingle.js';
 import { sendableMsgToApiCreate } from '@/lib/discord/SendableMessage.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 
 export interface OldSchoolBotClientEventsMap {
 	interactionCreate: [interaction: APIInteraction];
-	guildCreate: [guild: APIGuild];
+	guildCreate: [guild: GatewayGuildCreateDispatchData];
 	ready: [data: GatewayReadyDispatchData];
 	economyLog: [message: string];
 	serverNotification: [message: string];
@@ -49,7 +58,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 	public isShuttingDown = false;
 	public allCommands = allCommandsDONTIMPORT;
 	public applicationCommands: APIApplicationCommand[] | null = null;
-	public applicationUser: IUser | null = null;
+	public application: APIApplication | null = null;
 
 	constructor() {
 		super();
@@ -88,7 +97,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 			switch (packet.t) {
 				case 'READY': {
 					if (shardId === 0) {
-						await this.onReady(packet.d);
+						await this.onReady();
 						this.emit('ready', packet.d);
 					}
 					break;
@@ -99,25 +108,29 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 				}
 				case GatewayDispatchEvents.MessageCreate: {
 					const _msg = packet.d;
-					const member = _msg.guild_id ? await Cache.getMember(_msg.guild_id, _msg.author.id) : null;
+					if (_msg.author.bot) return;
 					const msg: IMessage = {
 						id: _msg.id,
 						content: _msg.content,
 						author_id: _msg.author.id,
 						channel_id: _msg.channel_id,
-						guild_id: _msg.guild_id ?? null,
-						author: {
-							id: _msg.author.id,
-							username: _msg.author.username,
-							bot: Boolean(_msg.author.bot)
-						},
-						member
+						guild_id: _msg.guild_id ?? null
 					};
 					this.emit('messageCreate', msg);
 					break;
 				}
+				case GatewayDispatchEvents.GuildCreate: {
+					this.emit('guildCreate', packet.d);
+					break;
+				}
 			}
 		});
+	}
+
+	get applicationId() {
+		const id = this.application?.id;
+		if (!id) throw new Error('Application ID is not set yet.');
+		return id;
 	}
 
 	addEventListener<K extends keyof OldSchoolBotClientEventsMap>(
@@ -138,42 +151,46 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		await this.ws.connect();
 	}
 
-	// TODO:
-	// private async syncMainServerData() {
-	// 	const mainServerRoles = await this.rest.get(Routes.guildRoles(globalConfig.supportServerID)) as APIRole[];
-	// 	for (const role of mainServerRoles) {
-	// 		Cache.MAIN_SERVER.ROLES.set(role.id, role)
-	// 	}
-	// }
+	async onReady() {
+		const application: APIApplication = (await this.rest.get(Routes.currentApplication())) as APIApplication;
+		this.application = application;
 
-	async onReady(data: GatewayReadyDispatchData) {
-		this.applicationUser = { ...data.user, bot: true };
-		Logging.logDebug(`Logged in as ${globalClient.applicationUser!.username} after ${process.uptime()}s`);
+		// Add owner to admin user IDs
+		const ownerId = application.owner?.id;
+		if (ownerId && !globalConfig.adminUserIDs.includes(ownerId)) {
+			globalConfig.adminUserIDs.push(ownerId);
+		}
 
+		Logging.logDebug(`Logged in as ${application.bot?.username} after ${process.uptime()}s`);
 		await this.fetchCommands();
-		// await this.syncMainServerData();
+	}
+
+	async leaveGuild(guildId: string) {
+		Logging.logDebug(`Leaving guild ${guildId}`);
+		await this.rest.delete(Routes.userGuild(guildId));
+	}
+
+	public apiCommandsRoute() {
+		const route = globalConfig.isProduction
+			? Routes.applicationCommands(this.applicationId)
+			: Routes.applicationGuildCommands(this.applicationId, globalConfig.supportServerID);
+		return route;
 	}
 
 	private async fetchCommands() {
-		const commands = (await this.rest.get(
-			Routes.applicationCommands(this.applicationUser!.id)
-		)) as APIApplicationCommand[];
+		const commands = (await this.rest.get(this.apiCommandsRoute())) as APIApplicationCommand[];
 		this.applicationCommands = commands;
 	}
 
-	async respondToAutocompleteInteraction(interaction: IInteraction, message: APIApplicationCommandOptionChoice[]) {
+	async respondToAutocompleteInteraction(interaction: IInteraction, choices: APIApplicationCommandOptionChoice[]) {
 		const route = Routes.interactionCallback(interaction.id, interaction.token);
 		await this.rest.post(route, {
-			body:
-				typeof message === 'string'
-					? {
-							type: 4,
-							data: { content: message }
-						}
-					: {
-							type: 4,
-							data: message
-						}
+			body: {
+				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
+				data: {
+					choices
+				}
+			}
 		});
 	}
 	// async respondToButtonInteraction(interaction: IInteraction, message: APIApplicationCommandOptionChoice[]) {
@@ -206,18 +223,38 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		return perms.every(perm => member.permissions.includes(perm));
 	}
 
-	async replyToMessage(message: IMessage, response: SendableMessage): Promise<IMessage> {
-		const data = await sendableMsgToApiCreate(response);
-		data.message.message_reference = {
-			message_id: message.id,
-			type: MessageReferenceType.Default,
-			channel_id: message.channel_id,
-			guild_id: message.guild_id ?? undefined
-		};
-		const res = await this.rest.post(Routes.channelMessages(message.channel_id), {
-			body: sendableMsgToApiCreate(message)
-		});
-		return res as IMessage;
+	async replyToMessage(repliedMsg: IMessage, response: SendableMessage): Promise<IMessage> {
+		try {
+			const { files, message } = await sendableMsgToApiCreate(response);
+			message.message_reference = {
+				message_id: repliedMsg.id,
+				type: MessageReferenceType.Default,
+				channel_id: repliedMsg.channel_id,
+				guild_id: repliedMsg.guild_id ?? undefined
+			};
+			const res = await this.rest.post(Routes.channelMessages(repliedMsg.channel_id), {
+				body: message,
+				files: files ?? undefined
+			});
+			return res as IMessage;
+		} catch (err) {
+			console.error(`${(err as any).message} when trying to send ${JSON.stringify(response)}`);
+			// TODO
+			throw err;
+		}
+	}
+
+	async channelIsSendable(channelId: IChannel | string): Promise<boolean> {
+		const channel = typeof channelId === 'string' ? await Cache.getChannel(channelId) : channelId;
+		if (!channel) return false;
+		if (
+			![ChannelType.DM, ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread].includes(
+				channel.type
+			)
+		) {
+			return false;
+		}
+		return true;
 	}
 
 	async sendMessage(channelId: string, message: SendableMessage): Promise<IMessage> {
@@ -248,19 +285,18 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		return res;
 	}
 
-	async fetchGuild(guildId: string): Promise<IGuild | null> {
-		const res = (await this.rest.get(Routes.guild(guildId))) as APIGuild;
-		if (!res) return null;
-		return {
-			id: res.id,
-			name: res.name
-		};
-	}
+	// async fetchGuild(guildId: string): Promise<IGuild | null> {
+	// 	const res = (await this.rest.get(Routes.guild(guildId))) as APIGuild;
+	// 	if (!res) return null;
+	// 	return {
+	// 		id: res.id,
+	// 	};
+	// }
 
-	async fetchChannel(channelId: string): Promise<IChannel | null> {
-		const route = Routes.channel(channelId);
-		const res = await this.rest.get(route);
-		return (res ?? null) as IChannel | null;
+	async fetchChannel(channelId: string): Promise<APIChannel | null> {
+		const res = (await this.rest.get(Routes.channel(channelId))) as APIChannel | null;
+		if (!res) return null;
+		return res;
 	}
 
 	async fetchChannelMessages(
@@ -321,8 +357,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 	// 	return m;
 
 	async fetchUser(userId: string): Promise<IUser> {
-		const route = Routes.user(userId);
-		const res = await this.rest.get(route);
+		const res = await this.rest.get(Routes.user(userId));
 		return res as IUser;
 	}
 
@@ -390,5 +425,53 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 
 	createInteractionCollector(options: CollectorOptions) {
 		return createInteractionCollector(this, options);
+	}
+
+	async pickStringWithButtons({
+		options,
+		content,
+		interaction,
+		allowedUsers
+	}: {
+		allowedUsers?: string[];
+		interaction: MInteraction;
+		options: { label?: string; id: string; emoji?: string }[];
+		content: string;
+	}): Promise<{ choice: { label?: string; id: string; emoji?: string }; userId: string } | null> {
+		const CUSTOM_ID_PREFIX = `DYN_PICK_STRING_BUTTON_`;
+		try {
+			const buttons = options.map(opt => {
+				const button = new ButtonBuilder()
+					.setCustomId(`${CUSTOM_ID_PREFIX}${opt.id}`)
+					.setStyle(ButtonStyle.Secondary);
+				if (opt.emoji) {
+					button.setEmoji({ id: opt.emoji });
+				}
+				if (opt.label) {
+					button.setLabel(opt.label);
+				}
+				return button;
+			});
+			allowedUsers ??= [interaction.userId];
+			const msg = await interaction.reply({
+				content,
+				components: buttons,
+				withResponse: true
+			});
+			const res = await collectSingleInteraction(this, {
+				messageId: msg!.id,
+				channelId: msg!.channel_id,
+				users: allowedUsers,
+				timeoutMs: Time.Second * 30
+			});
+			if (!res) return null;
+			res.silentButtonAck();
+			const resId = res.customId!.replace(CUSTOM_ID_PREFIX, '');
+			const choice = options.find(o => o.id === resId)!;
+			return { choice, userId: res.userId };
+		} catch (err) {
+			Logging.logError(err as Error);
+			return null;
+		}
 	}
 }

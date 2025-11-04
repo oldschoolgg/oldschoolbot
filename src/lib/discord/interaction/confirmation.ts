@@ -1,6 +1,12 @@
-import { ButtonBuilder, ButtonStyle, InteractionResponseType, Routes } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 
 import { InteractionID } from '@/lib/InteractionID.js';
+
+enum StopReason {
+	AllConfirmed = 'all_confirmed',
+	UserCancelled = 'user_cancelled',
+	Timeout = 'timeout'
+}
 
 export async function interactionConfirmation(
 	interaction: MInteraction,
@@ -11,47 +17,44 @@ export async function interactionConfirmation(
 				| { ephemeral?: boolean; users?: undefined }
 		  ))
 ) {
+	const ephemeral = typeof message !== 'string' ? (message.ephemeral ?? false) : false;
 	interaction.isConfirmation = true;
 	if (process.env.TEST) return;
 	const content = typeof message === 'string' ? message : message.content;
-	// interaction.ephemeral = typeof message !== 'string' ? (message.ephemeral ?? interaction.ephemeral) : interaction.ephemeral;
 	const users: string[] =
 		typeof message !== 'string' ? (message.users ?? [interaction.userId]) : [interaction.userId];
 	const timeout: number = typeof message !== 'string' ? (message.timeout ?? 15_000) : 15_000;
 
-	const confirmRow = [
-		(new ButtonBuilder()
+	const confirmRow: ButtonBuilder[] = [
+		new ButtonBuilder()
 			.setCustomId(InteractionID.Confirmation.Confirm)
 			.setLabel('Confirm')
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
 			.setCustomId(InteractionID.Confirmation.Cancel)
 			.setLabel('Cancel')
-			.setStyle(ButtonStyle.Secondary))
+			.setStyle(ButtonStyle.Secondary)
 	];
 
-	await interaction.defer();
+	await interaction.defer({ ephemeral });
 
 	await interaction.reply({
 		content: `${content}\n\nYou have ${Math.floor(timeout / 1000)} seconds to confirm.`,
-		components: confirmRow
+		components: confirmRow,
+		ephemeral,
+		allowedMentions: { users }
 	});
 
 	const confirms = new Set();
 
 	return new Promise<void>((resolve, reject) => {
-		// interaction.interactionResponse!.
 		const collector = globalClient.createInteractionCollector({
-			timeoutMs: timeout
+			timeoutMs: timeout,
+			users,
+			maxCollected: Infinity
 		});
 
 		collector.on('collect', async buttonInteraction => {
-			const silentAck = () =>
-				globalClient.rest.post(Routes.interactionCallback(buttonInteraction.id, buttonInteraction.token), {
-					body: {
-						type: InteractionResponseType.DeferredMessageUpdate
-					}
-				});
 			if (!users.includes(buttonInteraction.userId)) {
 				buttonInteraction.reply({
 					ephemeral: true,
@@ -61,10 +64,7 @@ export async function interactionConfirmation(
 			}
 
 			if (buttonInteraction.customId === InteractionID.Confirmation.Cancel) {
-				// If they cancel, we remove the button component, which means we can't reply to the button interaction.
-				interaction.reply({ content: `The confirmation was cancelled.`, components: [] });
-				collector.stop();
-				reject(new Error('SILENT_ERROR'));
+				collector.stop(StopReason.UserCancelled);
 				return;
 			}
 
@@ -76,10 +76,10 @@ export async function interactionConfirmation(
 			confirms.add(buttonInteraction.userId);
 
 			if (buttonInteraction.customId === InteractionID.Confirmation.Confirm) {
-				silentAck();
+				buttonInteraction.silentButtonAck();
 				// All users have confirmed
 				if (confirms.size === users.length) {
-					collector.stop();
+					collector.stop(StopReason.AllConfirmed);
 					resolve();
 				} else {
 					const unconfirmedUsernames = await Promise.all(
@@ -87,15 +87,24 @@ export async function interactionConfirmation(
 					);
 					interaction.reply({
 						content: `${content}\n\n${confirms.size}/${users.length} confirmed. Waiting for ${unconfirmedUsernames.join(', ')}...`,
-						components: confirmRow
+						components: confirmRow,
+						allowedMentions: { users }
 					});
 				}
 			}
 		});
 
-		collector.on('end', collected => {
-			if (collected.size !== users.length) {
-				interaction.reply({ content: `You ran out of time to confirm.`, components: [] });
+		collector.on('end', async (collected, reason) => {
+			console.log(
+				`${await Cache.getBadgedUsername(interaction.userId)} Confirmation collector ended, ${collected.size} ${users.length}`
+			);
+			if (reason === StopReason.AllConfirmed) return resolve();
+			if (reason === StopReason.UserCancelled) {
+				await interaction.reply({ content: `The confirmation was cancelled.`, components: [] });
+				return reject(new Error('SILENT_ERROR'));
+			}
+			if (reason === StopReason.Timeout || collected.size !== users.length) {
+				await interaction.reply({ content: `You ran out of time to confirm.`, components: [] });
 				reject(new Error('SILENT_ERROR'));
 			}
 		});

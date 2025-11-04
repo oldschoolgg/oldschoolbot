@@ -2,8 +2,6 @@ import { roll } from '@oldschoolgg/rng';
 import { Bank, itemID } from 'oldschooljs';
 
 import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
-import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
-import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 import { calcBirdhouseLimit } from '@/mahoji/lib/abstracted_commands/birdhousesCommand.js';
 
@@ -44,13 +42,10 @@ export const birdHouseTask: MinionTask = {
 				});
 			}
 
-			const updateBirdhouseData: BirdhouseData = {
+			await user.updateBirdhouseData({
 				lastPlaced: birdhouse.name,
 				birdhousePlaced: true,
 				birdhouseTime: currentDate + duration
-			};
-			await user.update({
-				minion_birdhouseTraps: updateBirdhouseData as any as PrismaCompatibleJsonObject
 			});
 
 			str += `\n\n${user.minionName} tells you to come back after your birdhouses are full!`;
@@ -126,23 +121,19 @@ export const birdHouseTask: MinionTask = {
 				str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
 			}
 
-			let updateBirdhouseData: BirdhouseData = {
-				lastPlaced: null,
-				birdhousePlaced: false,
-				birdhouseTime: 0
-			};
-
-			if (placing) {
-				updateBirdhouseData = {
-					lastPlaced: birdhouse.name,
-					birdhousePlaced: true,
-					birdhouseTime: currentDate + duration
-				};
-			}
-
-			await user.update({
-				minion_birdhouseTraps: updateBirdhouseData as any as PrismaCompatibleJsonObject
-			});
+			await user.updateBirdhouseData(
+				placing
+					? {
+							lastPlaced: birdhouse.name,
+							birdhousePlaced: true,
+							birdhouseTime: currentDate + duration
+						}
+					: {
+							lastPlaced: null,
+							birdhousePlaced: false,
+							birdhouseTime: 0
+						}
+			);
 
 			if (!placing) {
 				str += '\nThe birdhouses have been cleared. The birdhouse spots are ready to have new birdhouses.';

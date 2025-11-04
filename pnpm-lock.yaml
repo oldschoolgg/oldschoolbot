@@ -52,9 +52,6 @@ importers:
       '@prisma/client':
         specifier: ^6.18.0
         version: 6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
-      '@sapphire/ratelimits':
-        specifier: ^2.4.9
-        version: 2.4.11
       '@sapphire/snowflake':
         specifier: ^3.5.3
         version: 3.5.5
@@ -1551,10 +1548,6 @@ packages:
 
   '@sapphire/duration@1.1.4':
     resolution: {integrity: sha512-hxtuE8HvmWcRok2A10lJ+ic8qY0oYGTTn44XmESUYJYYSVJWmqlCH1LnNYi6Ul+LRjxNUfFQEL/TJS0GJ+8kew==}
-    engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
-
-  '@sapphire/ratelimits@2.4.11':
-    resolution: {integrity: sha512-O6FNA/P0wxU4Ve9gxL948CoZw7+sSpujyUR2CLyLLCNuNvuFGFxPCJVl5crFVLXMIyBIrc2qk+/H9bsqsyQK1Q==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
   '@sapphire/shapeshift@4.0.0':
@@ -6027,8 +6020,6 @@ snapshots:
       discord-api-types: 0.38.31
 
   '@sapphire/duration@1.1.4': {}
-
-  '@sapphire/ratelimits@2.4.11': {}
 
   '@sapphire/shapeshift@4.0.0':
     dependencies:

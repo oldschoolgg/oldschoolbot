@@ -1,4 +1,5 @@
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
+import type { IGuild } from '@oldschoolgg/schemas';
 import {
 	formatDuration,
 	hexToDecimal,
@@ -13,11 +14,9 @@ import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
-import type { Guild } from '@/prisma/main.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
-import { DynamicButtons } from '@/lib/discord/DynamicButtons.js';
 import { itemOption } from '@/lib/discord/index.js';
 import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -93,23 +92,14 @@ const toggles: UserConfigToggle[] = [
 					{ display: '1 year', duration: Time.Year }
 				];
 				await interaction.defer();
-				const buttons = new DynamicButtons({
+
+				const choice = await globalClient.pickStringWithButtons({
 					interaction,
-					usersWhoCanInteract: [user.id]
-				});
-				for (const dur of durations) {
-					buttons.add({
-						name: dur.display
-					});
-				}
-				const pickedButton = await buttons.render({
-					messageOptions: {
-						content: `${user}, This will lockout your ability to gamble for the specified time. Choose carefully!`
-					},
-					isBusy: false
+					options: durations.map(d => ({ label: d.display, id: d.display })),
+					content: `${user}, This will lockout your ability to gamble for the specified time. Choose carefully!`
 				});
 
-				const pickedDuration = durations.find(d => stringMatches(d.display, pickedButton?.name ?? ''));
+				const pickedDuration = durations.find(d => stringMatches(d.display, choice?.choice.label ?? ''));
 
 				if (pickedDuration) {
 					await user.update({ gambling_lockout_expiry: new Date(Date.now() + pickedDuration.duration) });
@@ -158,7 +148,7 @@ const toggles: UserConfigToggle[] = [
 	}
 ];
 
-async function handleToggle(user: MUser, name: string, interaction?: MInteraction) {
+async function handleToggle(user: MUser, name: string, interaction?: MInteraction): Promise<string> {
 	const toggle = toggles.find(i => stringMatches(i.name, name));
 	if (!toggle) return 'Invalid toggle name.';
 	let messageExtra = '';
@@ -183,7 +173,7 @@ async function favFoodConfig(
 	itemToAdd: string | undefined,
 	itemToRemove: string | undefined,
 	reset: boolean
-) {
+): Promise<string> {
 	if (reset) {
 		await user.update({ favorite_food: [] });
 		return 'Cleared all favorite food.';
@@ -441,33 +431,33 @@ async function bgColorConfig(user: MUser, hex?: string) {
 }
 
 async function handleChannelEnable(
-	guildSettings: Guild,
+	guildSettings: IGuild,
 	guildId: string,
 	channelId: string,
 	choice: 'enable' | 'disable'
 ) {
-	const isDisabled = guildSettings.staffOnlyChannels.includes(channelId);
+	const isDisabled = guildSettings.staff_only_channels.includes(channelId);
 
 	if (choice === 'disable') {
 		if (isDisabled) return 'This channel is already disabled.';
 
-		await GuildSettings.update(guildId, {
-			staffOnlyChannels: [...guildSettings.staffOnlyChannels, channelId]
+		await Cache.updateGuild(guildId, {
+			staff_only_channels: [...guildSettings.staff_only_channels, channelId]
 		});
 
 		return 'Channel disabled. Staff of this server can still use commands in this channel.';
 	}
 	if (!isDisabled) return 'This channel is already enabled.';
 
-	await GuildSettings.update(guildId, {
-		staffOnlyChannels: guildSettings.staffOnlyChannels.filter(i => i !== channelId)
+	await Cache.updateGuild(guildId, {
+		staff_only_channels: guildSettings.staff_only_channels.filter(i => i !== channelId)
 	});
 
 	return 'Channel enabled. Anyone can use commands in this channel now.';
 }
 
 async function handlePetMessagesEnable(
-	guildSettings: Guild,
+	guildSettings: IGuild,
 	guildId: string,
 	channelId: string,
 	choice: 'enable' | 'disable'
@@ -476,7 +466,7 @@ async function handlePetMessagesEnable(
 		if (guildSettings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await GuildSettings.update(guildId, {
+		await Cache.updateGuild(guildId, {
 			petchannel: channelId
 		});
 		return 'Enabled Pet Messages in this guild.';
@@ -484,14 +474,14 @@ async function handlePetMessagesEnable(
 	if (guildSettings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await GuildSettings.update(guildId, {
+	await Cache.updateGuild(guildId, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';
 }
 
 async function handleCommandEnable(
-	guildSettings: Guild,
+	guildSettings: IGuild,
 	guildId: string,
 	commandName: string,
 	choice: 'enable' | 'disable'
@@ -500,21 +490,21 @@ async function handleCommandEnable(
 	if (!command) return "That's not a valid command.";
 
 	if (choice === 'enable') {
-		if (!guildSettings.disabledCommands.includes(commandName)) {
+		if (!guildSettings.disabled_commands.includes(commandName)) {
 			return "That command isn't disabled.";
 		}
-		await GuildSettings.update(guildId, {
-			disabledCommands: guildSettings.disabledCommands.filter(i => i !== command.name)
+		await Cache.updateGuild(guildId, {
+			disabled_commands: guildSettings.disabled_commands.filter(i => i !== command.name)
 		});
 
 		return `Successfully enabled the \`${commandName}\` command.`;
 	}
 
-	if (guildSettings.disabledCommands.includes(command.name)) {
+	if (guildSettings.disabled_commands.includes(command.name)) {
 		return 'That command is already disabled.';
 	}
-	await GuildSettings.update(guildId, {
-		disabledCommands: [...guildSettings.disabledCommands, command.name]
+	await Cache.updateGuild(guildId, {
+		disabled_commands: [...guildSettings.disabled_commands, command.name]
 	});
 
 	return `Successfully disabled the \`${command.name}\` command.`;
@@ -1096,7 +1086,7 @@ LIMIT 20;
 			if (!hasPerms) {
 				return "You need to be 'Ban Member' permissions to change settings for this server.";
 			}
-			const guildSettings = await GuildSettings.fetch(guildId);
+			const guildSettings = await Cache.getGuild(guildId);
 
 			if (options.server.channel) {
 				return handleChannelEnable(guildSettings, guildId, channelId, options.server.channel.choice);

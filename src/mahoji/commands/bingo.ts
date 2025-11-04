@@ -14,7 +14,7 @@ import {
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
@@ -626,8 +626,11 @@ export const bingoCommand = defineCommand({
 				return `You need at least ${creationCost} to create a bingo.`;
 			}
 
-			const channel = await globalClient.fetchChannel(options.create_bingo.notifications_channel_id);
-			// TODO: channelIsSendable check
+			const channel = await Cache.getChannel(options.create_bingo.notifications_channel_id);
+			const sendable = await globalClient.channelIsSendable(channel);
+			if (!sendable) {
+				return 'I cannot send messages to the notifications channel.';
+			}
 			if (!channel || !channel.guild_id) {
 				return 'Invalid notifications channel.';
 			}

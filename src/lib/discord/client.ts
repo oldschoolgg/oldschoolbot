@@ -1,3 +1,7 @@
+import { writeFileSync } from 'node:fs';
+import { omit } from 'remeda';
+
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { Channel } from '@/lib/constants.js';
 import { interactionHandler } from '@/lib/discord/interactionHandler.js';
 import { OldSchoolBotClient } from '@/lib/discord/OldSchoolBotClient.js';
@@ -18,6 +22,11 @@ client.on('messageCreate', msg => {
 client.on('error', console.error);
 
 client.on('interactionCreate', interaction => {
+	writeFileSync(
+		`./itx/itx-${Date.now()}.json`,
+		JSON.stringify(omit(interaction, ['user', 'member', 'guild', 'channel']), null, 4)
+	);
+
 	return interactionHandler(interaction);
 });
 
@@ -32,22 +41,13 @@ client.on('economyLog', async (message: string) => {
 	Logging.logDebug(message);
 });
 
-// TODO
-// client.on('guildCreate', guild => {
-// 	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.ownerId)) {
-// 		guild.leave();
-// 	}
-// });
+client.on('guildCreate', async guild => {
+	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.owner_id)) {
+		await globalClient.leaveGuild(guild.id);
+	}
+});
 client.on('shardDisconnect', (event, shardID) => Logging.logDebug(`Shard ${shardID} disconnected: ${event.code}}`));
 
 client.on('ready', async _d => {
-	// TODO
-	// const ownerId = e.application.owner?.id;
-	// if (ownerId && !globalConfig.adminUserIDs.includes(ownerId)) {
-	// 	globalConfig.adminUserIDs.push(ownerId);
-	// }
-	// e.application.commands.fetch({
-	// 	guildId: globalConfig.isProduction ? undefined : globalConfig.supportServerID
-	// });
 	await onStartup();
 });

@@ -50,7 +50,6 @@
 		"@oldschoolgg/toolkit": "workspace:*",
 		"@prisma/adapter-pg": "^6.18.0",
 		"@prisma/client": "^6.18.0",
-		"@sapphire/ratelimits": "^2.4.9",
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sapphire/timer-manager": "^1.0.2",

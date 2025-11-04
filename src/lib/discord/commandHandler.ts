@@ -3,7 +3,8 @@ import { cryptoRng } from '@oldschoolgg/rng';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
 
 import { busyImmuneCommands, SILENT_ERROR } from '@/lib/constants.js';
-import { type AnyCommand, type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
+import { convertAPIOptionsToCommandOptions } from '@/lib/discord/commandOptionConversions.js';
+import type { AnyCommand, CommandOptions } from '@/lib/discord/index.js';
 import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
 import { RawSQL } from '@/lib/rawSql.js';

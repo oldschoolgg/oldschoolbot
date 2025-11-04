@@ -2,7 +2,7 @@ import { bold } from '@oldschoolgg/discord';
 import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField, BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';

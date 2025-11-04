@@ -8,8 +8,6 @@ import { badges, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
-import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
-import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
 import { logWrapFn } from '@/lib/util.js';
 import { CUSTOM_PRICE_CACHE } from '@/mahoji/commands/sell.js';
 
@@ -66,9 +64,7 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 
 	await Promise.all([
 		GeImageGenerator.init(),
-		syncActiveUserIDs(),
 		ActivityManager.syncActivityCache(),
-		syncDisabledCommands(),
 		syncBlacklists(),
 		syncCustomPrices(),
 		GrandExchange.init(),

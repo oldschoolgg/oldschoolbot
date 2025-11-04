@@ -1,8 +1,7 @@
 import type { IMember } from '@oldschoolgg/schemas';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { DISABLED_COMMANDS, untrustedGuildSettingsCache } from '@/lib/cache.js';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
 import type { AnyCommand } from '@/lib/discord/index.js';
 import type { InhibitorResult } from '@/lib/discord/preCommand.js';
@@ -32,16 +31,6 @@ const inhibitors: Inhibitor[] = [
 			return false;
 		}
 	},
-	// {
-	// TODO
-	// 	name: 'settingSyncer',
-	// 	run: ({ guild }) => {
-	// 		if (guild && !untrustedGuildSettingsCache.has(guild.id)) {
-	// 			mahojiGuildSettingsFetch(guild);
-	// 		}
-	// 		return false;
-	// 	}
-	// },
 	{
 		name: 'hasMinion',
 		run: ({ user, command }) => {
@@ -72,16 +61,17 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: ({ command, guildId, user }) => {
+		run: async ({ command, guildId, user }) => {
+			const disabledCommands = await Cache.getDisabledCommands();
 			if (
 				!globalConfig.adminUserIDs.includes(user.id) &&
-				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
+				(command.attributes?.enabled === false || disabledCommands.includes(command.name))
 			) {
 				return { content: 'This command is globally disabled.' };
 			}
 			if (!guildId) return false;
-			const cachedSettings = untrustedGuildSettingsCache.get(guildId);
-			if (cachedSettings?.disabledCommands.includes(command.name)) {
+			const cachedSettings = await Cache.getGuild(guildId);
+			if (cachedSettings.disabled_commands.includes(command.name)) {
 				return { content: 'This command is disabled in this server.' };
 			}
 			return false;
@@ -118,8 +108,8 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			// Allow guild-moderators to use commands in disabled channels
-			const settings = untrustedGuildSettingsCache.get(guildId);
-			if (!settings?.staffOnlyChannels.includes(channelId)) return false;
+			const guildSettings = await Cache.getGuild(guildId);
+			if (!guildSettings.staff_only_channels.includes(channelId)) return false;
 			const hasPerms = await globalClient.memberHasPermissions(member, ['BAN_MEMBERS']);
 			if (!hasPerms) {
 				return { content: "You need the 'Ban Members' permission to use commands in disabled channels." };

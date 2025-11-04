@@ -19,7 +19,7 @@ async function handleAutocomplete(
 		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
 			return [];
 		}
-		const option = data.options[0].options?.find(t => (t as any).focused);
+		const option = data.options[0].options?.find(t => t.focused);
 		if (!option) return [];
 		const subSubCommand = subCommand.options?.find(o => o.name === option.name);
 		return handleAutocomplete(user, command, [option], member, subSubCommand);
@@ -53,7 +53,7 @@ async function handleAutocomplete(
 
 export async function autoCompleteHandler(interaction: IAutoCompleteInteraction) {
 	const command = globalClient.allCommands.find(c => c.name === interaction.command_name)!;
-	const user = await mUserFetch(interaction.user.id);
+	const user = await mUserFetch(interaction.user_id);
 	const choices = await handleAutocomplete(user, command, interaction.options, interaction.member);
 	await globalClient.respondToAutocompleteInteraction(interaction, choices);
 }

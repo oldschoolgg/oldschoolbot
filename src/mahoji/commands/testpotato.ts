@@ -1,4 +1,4 @@
-import { EmbedBuilder } from '@oldschoolgg/discord';
+import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
@@ -256,6 +256,19 @@ export const testPotatoCommand = globalConfig.isProduction
 					type: 'Subcommand',
 					name: 'party',
 					description: 'Test party'
+				},
+				{
+					type: 'Subcommand',
+					name: 'ping',
+					description: 'Test pinging',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'should_ping',
+							description: 'should it ping or not',
+							required: true
+						}
+					]
 				},
 				{
 					type: 'Subcommand',
@@ -615,6 +628,12 @@ export const testPotatoCommand = globalConfig.isProduction
 					});
 					return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
 				}
+				if (options.ping) {
+					return {
+						content: `${userMention(user.id)} hi`,
+						allowedMentions: { users: options.ping.should_ping ? [user.id] : [] }
+					};
+				}
 				if (options.confirmation) {
 					const ephemeral = options.confirmation.ephemeral ?? false;
 					const users = [user.id];
@@ -752,6 +771,9 @@ export const testPotatoCommand = globalConfig.isProduction
 				if (options.wipe) {
 					const { thing } = options.wipe;
 					if (thing === 'cooldowns') {
+						await user.update({
+							gambling_lockout_expiry: null
+						});
 						await prisma.userStats.update({
 							where: {
 								user_id: BigInt(user.id)

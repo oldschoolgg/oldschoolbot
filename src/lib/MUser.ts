@@ -1,5 +1,6 @@
 import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
 import { percentChance } from '@oldschoolgg/rng';
+import { type IBirdhouseData, type IFarmingContract, ZBirdhouseData, ZFarmingContract } from '@oldschoolgg/schemas';
 import {
 	calcWhatPercent,
 	cleanUsername,
@@ -60,7 +61,7 @@ import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
@@ -925,13 +926,13 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	farmingContract(): DetailedFarmingContract {
-		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
+		const currentFarmingContract: IFarmingContract = this.fetchFarmingContract();
 		const plant = !currentFarmingContract
 			? undefined
 			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
 		const farmingInfo = Farming.getFarmingInfoFromUser(this);
 		return {
-			contract: currentFarmingContract ?? Farming.defaultFarmingContract,
+			contract: currentFarmingContract,
 			plant,
 			matchingPlantedCrop: plant
 				? farmingInfo.patchesDetailed.find(i => i.plant && i.plant === plant)
@@ -940,7 +941,13 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		};
 	}
 
-	generateGearImage({ setupType, gearSetup }: { setupType?: GearSetupType | 'all'; gearSetup?: Gear }) {
+	generateGearImage({
+		setupType,
+		gearSetup
+	}: {
+		setupType?: GearSetupType | 'all';
+		gearSetup?: Gear;
+	}): Promise<Buffer> {
 		if (setupType === 'all') {
 			return generateAllGearImage({
 				equippedPet: this.user.minion_equippedPet,
@@ -1299,6 +1306,32 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return {
 			isNewPet: !userPets[petToGive.id]
 		};
+	}
+
+	async updateFarmingContract(newContract: IFarmingContract): Promise<void> {
+		await this.update({
+			minion_farmingContract: ZFarmingContract.parse(newContract)
+		});
+	}
+
+	fetchFarmingContract(): IFarmingContract {
+		return ZFarmingContract.parse(this.user.minion_farmingContract ?? Farming.defaultFarmingContract);
+	}
+
+	async updateBirdhouseData(newData: IBirdhouseData): Promise<void> {
+		await this.update({
+			minion_birdhouseTraps: ZBirdhouseData.parse(newData)
+		});
+	}
+
+	fetchBirdhouseData(): IBirdhouseData {
+		return ZBirdhouseData.parse(
+			this.user.minion_birdhouseTraps ?? {
+				lastPlaced: null,
+				birdhousePlaced: false,
+				birdhouseTime: 0
+			}
+		);
 	}
 }
 

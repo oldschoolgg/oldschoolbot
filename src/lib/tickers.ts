@@ -194,7 +194,7 @@ export const tickers: {
 		productionOnly: true,
 		cb: async () => {
 			const messages = await globalClient.fetchChannelMessages(Channel.HelpAndSupport, { limit: 10 })!;
-			if (messages.some(m => m.author.id === globalClient.applicationUser!.id)) return;
+			if (messages.some(m => m.author_id === globalClient.applicationId)) return;
 			if (lastMessageID) {
 				await globalClient.deleteMessage(Channel.HelpAndSupport, lastMessageID).catch(noOp);
 			}
@@ -215,7 +215,7 @@ export const tickers: {
 		productionOnly: true,
 		cb: async () => {
 			const messages = await globalClient.fetchChannelMessages(Channel.GrandExchange, { limit: 10 })!;
-			if (messages.some(m => m.author.id === globalClient.applicationUser!.id)) return;
+			if (messages.some(m => m.author_id === globalClient.applicationId)) return;
 			if (lastMessageGEID) {
 				await globalClient.deleteMessage(Channel.GrandExchange, lastMessageGEID).catch(noOp);
 			}

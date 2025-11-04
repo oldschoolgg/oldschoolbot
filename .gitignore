@@ -50,3 +50,5 @@ test-bot-store-*.json
 src/prisma/clients
 
 .DS_Store
+
+itx

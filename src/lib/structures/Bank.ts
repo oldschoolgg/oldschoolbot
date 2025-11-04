@@ -2,6 +2,7 @@ import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { type DegradeableItem, degradeableItems } from '@/lib/degradeableItems.js';
+import { assert } from '@/lib/util/logError.js';
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>) {
@@ -26,7 +27,8 @@ export class FloatBank extends GeneralBank<number> {
 	toItemBankRoundedUp() {
 		const itemBank = new Bank();
 		for (const [item, qty] of this.entries().sort((a, b) => a[0] - b[0])) {
-			itemBank.add(Number.parseInt(item as any), Math.ceil(qty));
+			assert(typeof item === 'number' && !Number.isNaN(item) && item > 0);
+			itemBank.add(item, Math.ceil(qty));
 		}
 		return itemBank;
 	}

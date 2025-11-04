@@ -1,13 +1,13 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
 import z from 'zod';
 
-import { ZMember, ZMessage, ZUser } from './discord.js';
+import { ZMember, ZMessage } from './discord.js';
 import { ZSnowflake } from './shared.js';
 
 export const ZBaseInteraction = z.object({
 	id: z.string(),
 	token: z.string(),
-	user: ZUser,
+	user_id: ZSnowflake,
 	channel_id: ZSnowflake,
 	created_timestamp: z.number(),
 	member: ZMember.nullable(),
@@ -52,9 +52,56 @@ const ZAutoCompleteInteractionOption = z.union([
 			})
 		)
 	}),
-	// normal arg
 	z.object({
 		type: z.literal(ApplicationCommandOptionType.String),
+		name: z.string(),
+		value: z.unknown().optional(),
+		focused: z.boolean().optional()
+	}),
+	z.object({
+		type: z.literal(ApplicationCommandOptionType.Attachment),
+		name: z.string(),
+		value: z.unknown().optional(),
+		focused: z.boolean().optional()
+	}),
+	z.object({
+		type: z.literal(ApplicationCommandOptionType.Boolean),
+		name: z.string(),
+		value: z.unknown().optional(),
+		focused: z.boolean().optional()
+	}),
+	z.object({
+		type: z.literal(ApplicationCommandOptionType.Integer),
+		name: z.string(),
+		value: z.unknown().optional(),
+		focused: z.boolean().optional()
+	}),
+	z.object({
+		type: z.literal(ApplicationCommandOptionType.User),
+		name: z.string(),
+		value: z.unknown().optional(),
+		focused: z.boolean().optional()
+	}),
+	z.object({
+		type: z.literal(ApplicationCommandOptionType.Channel),
+		name: z.string(),
+		value: z.unknown().optional(),
+		focused: z.boolean().optional()
+	}),
+	z.object({
+		type: z.literal(ApplicationCommandOptionType.Role),
+		name: z.string(),
+		value: z.unknown().optional(),
+		focused: z.boolean().optional()
+	}),
+	z.object({
+		type: z.literal(ApplicationCommandOptionType.Mentionable),
+		name: z.string(),
+		value: z.unknown().optional(),
+		focused: z.boolean().optional()
+	}),
+	z.object({
+		type: z.literal(ApplicationCommandOptionType.Number),
 		name: z.string(),
 		value: z.unknown().optional(),
 		focused: z.boolean().optional()
@@ -62,9 +109,10 @@ const ZAutoCompleteInteractionOption = z.union([
 ]);
 export type IAutoCompleteInteractionOption = z.infer<typeof ZAutoCompleteInteractionOption>;
 
-export const ZAutoCompleteInteraction = ZBaseInteraction.extend({
+export const ZAutoCompleteInteraction = ZBaseInteraction.omit({ channel_id: true }).extend({
 	kind: z.literal('AutoComplete'),
 	command_name: z.string(),
+	channel_id: ZSnowflake.nullable(),
 	options: z.array(ZAutoCompleteInteractionOption).default([])
 });
 export type IAutoCompleteInteraction = z.infer<typeof ZAutoCompleteInteraction>;
