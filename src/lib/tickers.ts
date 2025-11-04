@@ -2,7 +2,6 @@ import { awaitMessageComponentInteraction, noOp, removeFromArr, stringMatches, T
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { Bank } from 'oldschooljs';
 
 import { analyticsTick } from '@/lib/analytics.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
@@ -11,13 +10,6 @@ import { GrandExchange } from '@/lib/grandExchange.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
-import {
-	BERT_SAND_BUCKETS,
-	bertResetStart,
-	hasBertSandAutoDelivery,
-	hasCollectedThisReset,
-	isManualEligible
-} from '@/lib/minions/data/bertSand.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
@@ -28,14 +20,6 @@ import { getSupportGuild } from '@/lib/util.js';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
-
-// Bert's Sand Delivery Ticker Globals
-const BERT_SAND_BATCH_SIZE = 100;
-const BERT_SAND_MIDNIGHT_GRACE = Time.Minute * 10;
-let bertSandQueue: string[] = [];
-let bertSandLastReset = 0;
-let bertSandQueuedSet = new Set<string>();
-let bertSandLastSeenCommandAt = 0;
 
 const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
@@ -340,108 +324,6 @@ export const tickers: {
 		cb: async () => {
 			await prisma.$executeRaw`INSERT INTO economy_item_banks (bank)
 VALUES (get_economy_bank());`;
-		}
-	},
-	{
-		// Ardougne elite diary unlocks this auto-collection perk
-		name: "Bert's sand delivery",
-		timer: null,
-		startupWait: Time.Minute * 5,
-		interval: Time.Minute * 5,
-		cb: async () => {
-			const now = Date.now();
-			const currentResetStart = bertResetStart(now);
-
-			// new day → wipe
-			if (bertSandLastReset < currentResetStart) {
-				bertSandQueue = [];
-				bertSandQueuedSet = new Set();
-				bertSandLastReset = currentResetStart;
-				// from now on, only look at commands from (roughly) this reset
-				bertSandLastSeenCommandAt = currentResetStart;
-			}
-
-			// look for users who have used the bot since we last checked
-			// but don't miss commands sent a few minutes before midnight
-			const lowerBound = Math.max(bertSandLastSeenCommandAt, currentResetStart - BERT_SAND_MIDNIGHT_GRACE);
-
-			const users = await prisma.user.findMany({
-				where: {
-					last_command_date: {
-						gte: new Date(lowerBound)
-					}
-				},
-				select: {
-					id: true,
-					last_command_date: true
-				}
-			});
-
-			for (const u of users) {
-				const lastCmd = u.last_command_date ? u.last_command_date.getTime() : 0;
-
-				// advance the high-water mark
-				if (lastCmd > bertSandLastSeenCommandAt) {
-					bertSandLastSeenCommandAt = lastCmd;
-				}
-
-				// must be active *today* (after reset)
-				if (lastCmd < currentResetStart) {
-					continue;
-				}
-
-				// already queued today?
-				if (bertSandQueuedSet.has(u.id)) continue;
-
-				bertSandQueuedSet.add(u.id);
-				bertSandQueue.push(u.id);
-			}
-
-			// nothing to process
-			if (bertSandQueue.length === 0) {
-				return;
-			}
-
-			const loot = new Bank({ 'Bucket of sand': BERT_SAND_BUCKETS });
-			const batch = bertSandQueue.splice(0, BERT_SAND_BATCH_SIZE);
-
-			for (const id of batch) {
-				const user = await mUserFetch(id);
-
-				// must actually have the perk (Ardy elite)
-				if (!hasBertSandAutoDelivery(user)) {
-					continue;
-				}
-
-				const stats = await user.fetchStats();
-				const lastCollected = Number(stats.last_bert_sand_timestamp ?? 0n);
-
-				// already got sand today?
-				if (hasCollectedThisReset(lastCollected, now)) {
-					continue;
-				}
-
-				// enforce manual requirements too
-				const requirementError = isManualEligible(user);
-				if (requirementError) {
-					continue;
-				}
-
-				const updated = await prisma.userStats.updateMany({
-					where: {
-						user_id: BigInt(user.id),
-						last_bert_sand_timestamp: { lt: BigInt(currentResetStart) }
-					},
-					data: { last_bert_sand_timestamp: BigInt(now) }
-				});
-
-				if (updated.count === 0) {
-					continue;
-				}
-
-				// auto-collection: mirror manual reward, incl. CL
-				await user.addItemsToBank({ items: loot, collectionLog: true });
-			}
 		}
 	},
 	{
