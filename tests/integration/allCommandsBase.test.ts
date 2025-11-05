@@ -1,4 +1,4 @@
-import { type RNGProvider, SeedableRNG } from '@oldschoolgg/rng';
+import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
 import { Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
@@ -9,7 +9,7 @@ import type { AnyCommand } from '@/lib/discord/commandOptions.js';
 import { allCommandsDONTIMPORT } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
-import { createTestUser, mockClient, mockedId, mockIUser, mockUser, mockUserOption, TestClient } from './util.js';
+import { createTestUser, mockClient, mockIMember, mockUser, TestClient } from './util.js';
 
 type CommandInput = Record<string, any>;
 
@@ -37,9 +37,9 @@ export async function generateCommandInputs(
 			case 'String':
 				if ('autocomplete' in option && option.autocomplete) {
 					const autoCompleteResults = await option.autocomplete('', mockedUser, {} as any);
-					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value)).slice(0, 10);
+					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value)).slice(0, 20);
 				} else if (option.choices) {
-					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 10);
+					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 20);
 				} else if (['guild_id', 'message_id'].includes(option.name)) {
 					allPossibleOptions[option.name] = ['157797566833098752'];
 				} else {
@@ -49,7 +49,7 @@ export async function generateCommandInputs(
 			case 'Integer':
 			case 'Number':
 				if (option.choices) {
-					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 10);
+					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 20);
 				} else {
 					let value = rng.randInt(1, 10);
 					if (option.min_value && option.max_value) {
@@ -67,9 +67,13 @@ export async function generateCommandInputs(
 				break;
 			}
 			case 'User': {
-				const opt: MahojiUserOption = mockUserOption();
+				const userForOption = await createTestUser();
+				const opt: MahojiUserOption = {
+					user: userForOption.getIUser(),
+					member: mockIMember({ userId: userForOption.id })
+				};
 				const optWithoutMember: MahojiUserOption = {
-					user: mockIUser({ userId: mockedId() })
+					user: userForOption.getIUser()
 				};
 				allPossibleOptions[option.name] = [opt, optWithoutMember];
 				break;
@@ -169,7 +173,7 @@ test(
 			use: useCommandOptions
 		};
 
-		const rngProvider = new SeedableRNG(1);
+		const rngProvider = cryptoRng; //new SeedableRNG(1);
 		const stopwatch = new Stopwatch();
 		const processedCommands: { command: AnyCommand; options: any[] }[] = [];
 		for (const command of commandsToTest) {

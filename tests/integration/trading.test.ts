@@ -77,6 +77,9 @@ test('Trade consistency', async () => {
 						break;
 					}
 				}
+				if (attempts === 100) {
+					throw new Error('Trade failed 100 times in a row, something is wrong');
+				}
 			})()
 		);
 	}

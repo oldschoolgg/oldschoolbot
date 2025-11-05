@@ -16,7 +16,7 @@ export function calculateBirdhouseDetails(user: MUser): BirdhouseDetails {
 	const birdHouse = birdHouseTraps.lastPlaced
 		? birdhouses.find(_birdhouse => _birdhouse.name === birdHouseTraps.lastPlaced)
 		: null;
-	if (!birdHouse) throw new Error(`Missing ${birdHouseTraps.lastPlaced} birdhouse`);
+	if (!birdHouse) throw new Error(`Missing ${birdHouseTraps.lastPlaced} birdhouse ${JSON.stringify(birdHouseTraps)}`);
 
 	const lastPlacedTime: number = birdHouseTraps.birdhouseTime;
 	const difference = Date.now() - lastPlacedTime;

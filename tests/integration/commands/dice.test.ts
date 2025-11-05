@@ -1,20 +1,16 @@
 import { Bank } from 'oldschooljs';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import { gambleCommand } from '../../../src/mahoji/commands/gamble.js';
-import { createTestUser, mockClient, mockMathRandom } from '../util.js';
+import { mockClient, mockMathRandom } from '../util.js';
 
 describe('Dice Command', async () => {
-	const client = await mockClient();
-	const user = await createTestUser();
-
-	beforeEach(async () => {
-		await user.reset();
-		await client.reset();
-		await user.addItemsToBank({ items: new Bank().add('Coins', 100_000_000) });
-	});
 
 	test('Lose dice', async () => {
+		const client = await mockClient();
+		const user = await client.mockUser();
+		await user.addItemsToBank({ items: new Bank().add('Coins', 100_000_000) });
+
 		await user.gpMatch(100_000_000);
 		const unmock = mockMathRandom(0.1);
 
@@ -28,6 +24,11 @@ describe('Dice Command', async () => {
 	});
 
 	test('Won dice', async () => {
+
+		const client = await mockClient();
+		const user = await client.mockUser();
+		await user.addItemsToBank({ items: new Bank().add('Coins', 100_000_000) });
+
 		const unmock = mockMathRandom(0.9);
 		await user.gpMatch(100_000_000);
 		const result = await user.runCommand(gambleCommand, { dice: { amount: '100m' } });

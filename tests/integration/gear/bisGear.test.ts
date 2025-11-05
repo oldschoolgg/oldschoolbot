@@ -11,6 +11,6 @@ describe('Gear Command', async () => {
 			}
 		});
 		expect(res.content).toContain('These are the best in slot items for ');
-		expect(res.files[0]).toBeInstanceOf(Buffer);
+		expect(res.files[0].buffer).toBeInstanceOf(Buffer);
 	});
 });

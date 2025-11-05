@@ -354,7 +354,7 @@ export class MUserClass {
 	}
 
 	get username() {
-		return cleanUsername(this.user.username ?? 'Unknown');
+		return cleanUsername(this.user.username ?? 'UnknownTODOyyyy');
 	}
 
 	get usernameOrMention() {
@@ -773,8 +773,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 			if (!ammo || ammo < ammoRemove[1])
 				throw new UserError(
-					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
-						ammoRemove?.[1]
+					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${ammoRemove?.[1]
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];

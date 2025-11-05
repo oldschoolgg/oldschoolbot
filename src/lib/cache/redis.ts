@@ -65,7 +65,7 @@ const RATELIMITS: Record<RatelimitType, { windowSeconds: number; max: number }> 
 export class CacheManager {
 	private client: Redis;
 	constructor() {
-		this.client = new Redis();
+		this.client = process.env.TEST ? new Redis(6379, 'redis') : new Redis();
 	}
 
 	private async setString(key: string, value: string, ttlSeconds: number) {
