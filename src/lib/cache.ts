@@ -1,6 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import { LRUCache } from 'lru-cache';
+import type PromiseQueue from 'p-queue';
 
 import type { Giveaway } from '@/prisma/main.js';
 
@@ -34,3 +35,4 @@ export const RARE_ROLES_CACHE = new LRUCache<string, number>({ max: 1000 });
 
 export const BLACKLISTED_USERS = new Set<string>();
 export const BLACKLISTED_GUILDS = new Set<string>();
+export const userQueues: Map<string, PromiseQueue> = new Map();

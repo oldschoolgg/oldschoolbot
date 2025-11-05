@@ -5,7 +5,6 @@ import { gambleCommand } from '../../../src/mahoji/commands/gamble.js';
 import { mockClient, mockMathRandom } from '../util.js';
 
 describe('Dice Command', async () => {
-
 	test('Lose dice', async () => {
 		const client = await mockClient();
 		const user = await client.mockUser();
@@ -24,7 +23,6 @@ describe('Dice Command', async () => {
 	});
 
 	test('Won dice', async () => {
-
 		const client = await mockClient();
 		const user = await client.mockUser();
 		await user.addItemsToBank({ items: new Bank().add('Coins', 100_000_000) });

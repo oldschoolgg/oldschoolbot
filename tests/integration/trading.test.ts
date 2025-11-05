@@ -4,6 +4,7 @@ import { chunk } from 'remeda';
 import { expect, test } from 'vitest';
 
 import { tradeCommand } from '../../src/mahoji/commands/trade.js';
+import { mockSnowflake } from '../test-utils/misc.js';
 import type { TestUser } from './util.js';
 import { createTestUser, mockClient, mockInteraction } from './util.js';
 
@@ -72,7 +73,7 @@ test('Trade consistency', async () => {
 				while (attempts < 100) {
 					attempts += 1;
 					await Promise.all([user1.sync(), user2?.sync()]);
-					const res = await tradeCommand.run(options);
+					const res = await tradeCommand.run({ ...options, guildId: mockSnowflake(cryptoRng) });
 					if (typeof res === 'string' && !res.includes('Trade failed')) {
 						break;
 					}

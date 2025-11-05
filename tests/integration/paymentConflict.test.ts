@@ -3,6 +3,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { userQueues } from '@/lib/cache.js';
 import { payCommand } from '../../src/mahoji/commands/pay.js';
 import type { TestUser } from './util.js';
 import { createTestUser, mockClient, mockUserOption } from './util.js';
@@ -14,6 +15,14 @@ describe('Payment conflicts', async () => {
 
 	const bigBank = new Bank().add('Cannonball', 4).add('Bones', 10_000);
 
+	async function setupUsers() {
+		const payees: TestUser[] = [];
+		for (let i = 0; i < payerCount; i++) {
+			payees.push(await createTestUser(new Bank(), { GP: 1_000_000_000 }));
+		}
+		return payees;
+	}
+
 	test(
 		'GE Simulation (Payee)',
 		{
@@ -24,23 +33,22 @@ describe('Payment conflicts', async () => {
 
 			// Payee is currently the primary target of the test.
 			const userPayee = await createTestUser(new Bank(bigBank), { GP: 1_000_000_000 });
-
 			const payeeTarget = await createTestUser();
 
 			const startingBallCount = userPayee.bank.amount('Cannonball');
 
-			const payers: TestUser[] = [];
-			for (let i = 0; i < payerCount; i++) {
-				payers.push(await createTestUser(new Bank(), { GP: 1_000_000_000 }));
-			}
+			const payers: TestUser[] = await setupUsers();
 
 			const promisePay = async () => {
 				const payer = randArrItem(payers);
 				const amount = randInt(100_000, 1_000_000);
-				await payer.runCommand(payCommand, {
+				const res = await payer.runCommand(payCommand, {
 					user: mockUserOption(payeeTarget.id),
 					amount: amount.toString()
 				});
+				if (!(res as string).startsWith('You sent')) {
+					throw new Error(`Payment failed: ${res}`);
+				}
 			};
 
 			const promiseAdd = async () => {
@@ -60,13 +68,19 @@ describe('Payment conflicts', async () => {
 
 			await Promise.all(promises);
 
-			let totalGp = 0;
-			await userPayee.sync();
-			await Promise.all(payers.map(u => u.sync()));
-			totalGp += userPayee.GP;
-			for (const payer of payers) totalGp += payer.GP;
+			for (const user of [payeeTarget, ...payers]) {
+				await user.sync();
+				await userQueues.get(user.id)?.onEmpty();
+			}
 
-			expect(totalGp).toEqual(1_000_000_000 * (payerCount + 1));
+			let totalGP = 0;
+			for (const user of [userPayee, payeeTarget, ...payers]) {
+				await userQueues.get(user.id)?.onEmpty();
+				await user.sync();
+				totalGP += user.GP;
+			}
+
+			expect(totalGP).toEqual(1_000_000_000 * (payerCount + 1));
 			expect(userPayee.bank.amount('Cannonball') - startingBallCount).toEqual(newBalls);
 		}
 	);
@@ -77,29 +91,24 @@ describe('Payment conflicts', async () => {
 		const userPayer = await createTestUser(new Bank(bigBank), { GP: 1_000_000_000 });
 
 		const startingBallCount = userPayer.bank.amount('Cannonball');
-
-		const payees: TestUser[] = [];
-		for (let i = 0; i < payerCount; i++) {
-			payees.push(await createTestUser(new Bank(), { GP: 1_000_000_000 }));
-		}
-
+		const payees = await setupUsers();
 		const promisePay = async () => {
 			const payee = randArrItem(payees);
-			return new Promise<void>(async resolve => {
+			return new Promise(async () => {
 				const amount = randInt(100_000, 1_000_000);
-				await userPayer.runCommand(payCommand, {
+				const res = await userPayer.runCommand(payCommand, {
 					user: mockUserOption(payee.id),
 					amount: amount.toString()
 				});
-				resolve();
+				if (!(res as string).startsWith('You sent')) {
+					throw new Error(`Payment failed: ${res}`);
+				}
 			});
 		};
 
-		const promiseAdd = async () => {
-			await userPayer.addItemsToBank({ items: new Bank().add('Cannonball', 100) });
-		};
+		const promiseAdd = () => userPayer.addItemsToBank({ items: new Bank().add('Cannonball', 100) });
 
-		const promises: Promise<void>[] = [];
+		const promises: Promise<unknown>[] = [];
 		let newBalls = 0;
 		for (let j = 0; j < iterations; j++) {
 			if (roll(addChance)) {
@@ -110,15 +119,14 @@ describe('Payment conflicts', async () => {
 			}
 		}
 
-		await Promise.all(promises);
+		let totalGP = 0;
+		for (const user of [userPayer, ...payees]) {
+			await userQueues.get(user.id)?.onEmpty();
+			await user.sync();
+			totalGP += user.GP;
+		}
 
-		let totalGp = 0;
-		await userPayer.sync();
-		await Promise.all(payees.map(u => u.sync()));
-		totalGp += userPayer.GP;
-		for (const payee of payees) totalGp += payee.GP;
-
-		expect(totalGp).toEqual(1_000_000_000 * (payerCount + 1));
+		expect(totalGP).toEqual(1_000_000_000 * (payerCount + 1));
 		expect(userPayer.bank.amount('Cannonball') - startingBallCount).toEqual(newBalls);
 	});
 });
