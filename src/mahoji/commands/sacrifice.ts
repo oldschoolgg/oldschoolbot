@@ -1,3 +1,4 @@
+import { roll } from '@oldschoolgg/rng';
 import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
@@ -40,6 +41,10 @@ const noSacPrice = resolveItems([
 	'Cannon furnace'
 ]);
 
+const [HAMMY_ID] = resolveItems(['Hammy']);
+const HAMMY_SACRIFICE_VALUE = 51_530_000;
+const HAMMY_ROLL_CHANCE = 140;
+
 export function sacrificePriceOfItem(item: Item, qty: number) {
 	const price = noSacPrice.includes(item.id) ? 1 : sellPriceOfItem(item, 0).basePrice;
 	return Math.floor(price * qty);
@@ -72,6 +77,7 @@ export const sacrificeCommand = defineCommand({
 		const sacVal = Number(user.user.sacrificedValue);
 		const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 		const sacUniqVal = sacrificedBank !== null ? Object.keys(sacrificedBank).length : 0;
+		const hasSkipper = user.usingPet('Skipper') || user.bank.has('Skipper');
 
 		// Show user sacrifice stats if no options are given for /sacrifice
 		if (!options.filter && !options.items && !options.search) {
@@ -137,6 +143,10 @@ export const sacrificeCommand = defineCommand({
 			}
 		}
 
+		if (hasSkipper) {
+			totalPrice = Math.floor(totalPrice * 1.3);
+		}
+
 		await interaction.confirmation(
 			`${user}, are you sure you want to sacrifice ${truncateString(bankToSac.toString(), 15000)}? This will add ${totalPrice.toLocaleString()} (${toKMB(
 				totalPrice
@@ -154,11 +164,29 @@ export const sacrificeCommand = defineCommand({
 			}
 		});
 
-		const newValue = user.user.sacrificedValue;
+		const newValue = sacVal + totalPrice;
 
 		await trackSacBank(user, bankToSac);
 
 		let str = '';
+
+		const hammyRolls = Math.floor(newValue / HAMMY_SACRIFICE_VALUE) - Math.floor(sacVal / HAMMY_SACRIFICE_VALUE);
+		if (hammyRolls > 0) {
+			const hammyLoot = new Bank();
+			for (let i = 0; i < hammyRolls; i++) {
+				if (roll(HAMMY_ROLL_CHANCE)) {
+					hammyLoot.add(HAMMY_ID);
+				}
+			}
+			if (hammyLoot.length > 0) {
+				await user.transactItems({ itemsToAdd: hammyLoot, collectionLog: true });
+				str += `\n\nA small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes. ${hammyLoot}.`;
+				globalClient.emit(
+					Events.ServerNotification,
+					`**${user.badgedUsername}** just received ${hammyLoot} while sacrificing!`
+				);
+			}
+		}
 
 		// Ignores notifying the user/server if the user is using a custom icon
 		if (!currentIcon || minionIcons.find(m => m.emoji === currentIcon)) {
@@ -176,6 +204,10 @@ export const sacrificeCommand = defineCommand({
 				}
 			}
 		}
+		if (hasSkipper) {
+			str += `\n\n<:skipper:755853421801766912>  Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.`;
+		}
+
 		return `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(
 			totalPrice
 		)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`;
