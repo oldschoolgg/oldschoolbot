@@ -3,7 +3,6 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 
 export function calcBirdhouseLimit() {
@@ -12,22 +11,21 @@ export function calcBirdhouseLimit() {
 }
 
 export async function birdhouseCheckCommand(user: MUser) {
-	const details = calculateBirdhouseDetails(user);
-	if (!details.birdHouse) {
+	const details = user.fetchBirdhouseData();
+	if (!details.birdhouse) {
 		return 'You have no birdhouses planted.';
 	}
-	if (details.isReady) return `Your ${details.birdHouse.name}'s are **ready**!`;
-	return `Your ${details.birdHouse.name}'s are ready ${time(details.readyAt!, 'R')} (${time(details.readyAt!)})`;
+	if (details.isReady) return `Your ${details.birdhouse.name}'s are **ready**!`;
+	return `Your ${details.birdhouse.name}'s are ready ${time(details.readyAt!, 'R')} (${time(details.readyAt!)})`;
 }
 
 export async function birdhouseHarvestCommand(user: MUser, channelId: string, inputBirdhouseName: string | undefined) {
 	const userBank = user.bank;
-	const currentDate = Date.now();
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 
-	const existingBirdhouse = calculateBirdhouseDetails(user);
-	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user);
+	const existingBirdhouse = user.fetchBirdhouseData();
+	if (!existingBirdhouse.isReady && existingBirdhouse.lastPlaced) return birdhouseCheckCommand(user);
 
 	let birdhouseToPlant = inputBirdhouseName
 		? birdhouses.find(_birdhouse =>
@@ -38,7 +36,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 				)
 			)
 		: undefined;
-	if (!birdhouseToPlant && existingBirdhouse.birdHouse) birdhouseToPlant = existingBirdhouse.birdHouse;
+	if (!birdhouseToPlant && existingBirdhouse.birdhouse) birdhouseToPlant = existingBirdhouse.birdhouse;
 
 	if (!birdhouseToPlant) {
 		return `That's not a valid birdhouse. Valid bird houses are ${birdhouses
@@ -65,7 +63,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 	let gotCraft = false;
 	const removeBank = new Bank();
 	const birdhouseLimit = calcBirdhouseLimit();
-	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(birdhouseLimit);
+	const premadeBankCost = new Bank().add(birdhouseToPlant.birdhouseItem, birdhouseLimit);
 	if (user.owns(premadeBankCost)) {
 		removeBank.add(premadeBankCost);
 	} else {
@@ -113,23 +111,20 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 	await user.transactItems({ itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.
-	if (!existingBirdhouse.raw.birdhousePlaced) {
+	if (!existingBirdhouse.birdhousePlaced) {
 		infoStr.unshift(`${user.minionName} is now placing ${birdhouseLimit}x ${birdhouseToPlant.name}.`);
 	} else {
 		infoStr.unshift(
-			`${user.minionName} is now collecting ${birdhouseLimit}x ${existingBirdhouse.raw.lastPlaced}, and then placing ${birdhouseLimit}x ${birdhouseToPlant.name}.`
+			`${user.minionName} is now collecting ${birdhouseLimit}x ${existingBirdhouse.lastPlaced}, and then placing ${birdhouseLimit}x ${birdhouseToPlant.name}.`
 		);
 	}
 
 	await ActivityManager.startTrip<BirdhouseActivityTaskOptions>({
-		birdhouseName: birdhouseToPlant.name,
-		birdhouseData: existingBirdhouse.raw,
 		userID: user.id,
 		channelId,
 		duration,
 		placing: true,
 		gotCraft,
-		currentDate,
 		type: 'Birdhouse'
 	});
 

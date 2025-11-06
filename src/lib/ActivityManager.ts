@@ -79,7 +79,14 @@ class SActivityManager {
 		const user = await mUserFetch(activity.userID);
 
 		try {
-			await task.run({ ...activity, channelId: activity.channelId }, { user, handleTripFinish, rng: cryptoRng });
+			await task.run(
+				{ ...activity, channelId: activity.channelId },
+				{
+					user,
+					handleTripFinish,
+					rng: cryptoRng
+				}
+			);
 		} catch (err) {
 			Logging.logError(err as Error);
 		} finally {

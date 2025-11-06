@@ -21,8 +21,8 @@ export type IFarmingContract = z.infer<typeof ZFarmingContract>;
 /**
  * Birdhouses
  */
-export const ZBirdhouseData = z.strictObject({
-	lastPlaced: z.string().nullable(),
+export const ZBirdhouseData = z.object({
+	lastPlaced: z.union([z.string(), z.number().int()]).nullable(),
 	birdhousePlaced: z.boolean(),
 	birdhouseTime: z.number().int().min(0)
 });

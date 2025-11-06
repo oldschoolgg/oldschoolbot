@@ -6,7 +6,6 @@ import { BitField } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -57,7 +56,7 @@ export async function minionStatusCommand(
 	user: MUser
 ): Promise<Required<Pick<BaseSendableMessage, 'content' | 'components'>>> {
 	const { minionIsBusy } = user;
-	const birdhouseDetails = minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user);
+	const birdhouseDetails = minionIsBusy ? { isReady: false } : user.fetchBirdhouseData();
 	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
 		roboChimpUserFetch(user.id),
 		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),

@@ -62,6 +62,7 @@ import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import birdhouses, { type Birdhouse } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
@@ -1324,14 +1325,47 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		});
 	}
 
-	fetchBirdhouseData(): IBirdhouseData {
-		return ZBirdhouseData.parse(
+	fetchBirdhouseData(): IBirdhouseData & {
+		isReady: boolean;
+		readyIn: number;
+		birdhouse: Birdhouse | null;
+		readyAt: Date | null;
+	} {
+		const rawBirdhouse = ZBirdhouseData.parse(
 			this.user.minion_birdhouseTraps ?? {
 				lastPlaced: null,
 				birdhousePlaced: false,
 				birdhouseTime: 0
 			}
 		);
+		if (!rawBirdhouse.birdhousePlaced) {
+			return {
+				...rawBirdhouse,
+				isReady: false,
+				readyIn: -1,
+				birdhouse: null,
+				readyAt: null
+			};
+		}
+		const birdhouse = birdhouses.find(b => {
+			if (typeof rawBirdhouse.lastPlaced === 'string') {
+				return b.name === rawBirdhouse.lastPlaced;
+			}
+			return b.birdhouseItem === rawBirdhouse.lastPlaced;
+		})!;
+		const lastPlacedTime: number = rawBirdhouse.birdhouseTime;
+		const difference = Date.now() - lastPlacedTime;
+		const isReady = difference > birdhouse.waitTime;
+		const readyAtTimestamp = lastPlacedTime + birdhouse.waitTime;
+		const readyIn = readyAtTimestamp - Date.now();
+		const readyAt = new Date(readyAtTimestamp);
+		return {
+			...rawBirdhouse,
+			isReady,
+			readyIn,
+			birdhouse,
+			readyAt
+		};
 	}
 }
 
