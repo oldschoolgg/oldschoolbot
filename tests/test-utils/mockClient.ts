@@ -44,6 +44,15 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		}
 	}
 
+	async pickStringWithButtons(data: { options: string[]; interaction: MInteraction }) {
+		const picked = this.rng.pick(data.options);
+		return { choice: { id: picked }, userId: data.interaction.userId };
+	}
+
+	async fetchMessage(_messageId: string) {
+		return mockMessage();
+	}
+
 	async sendMessage(channelId: string, message: SendableMessage) {
 		// TODO simulate failures
 		TestLogs.Debug(`Client ${this.data.id} sending message to channel ${channelId}: ${JSON.stringify(message)}`);
