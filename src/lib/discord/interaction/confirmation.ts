@@ -95,9 +95,6 @@ export async function interactionConfirmation(
 		});
 
 		collector.on('end', async (collected, reason) => {
-			console.log(
-				`${await Cache.getBadgedUsername(interaction.userId)} Confirmation collector ended, ${collected.size} ${users.length}`
-			);
 			if (reason === StopReason.AllConfirmed) return resolve();
 			if (reason === StopReason.UserCancelled) {
 				await interaction.reply({ content: `The confirmation was cancelled.`, components: [] });
