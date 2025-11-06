@@ -1,16 +1,17 @@
 import { formatDuration, getNextUTCReset, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BERT_SAND_BUCKETS, bertResetStart, isManualEligible } from '@/lib/minions/data/bertSand.js';
+import { BERT_SAND_BUCKETS, BERT_SAND_ID, bertResetStart, isManualEligible } from '@/lib/minions/data/bertSand.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
 export const collectingTask: MinionTask = {
 	type: 'Collecting',
 	async run(data: CollectingOptions, { user, handleTripFinish }) {
-		const { collectableID, quantity, channelID, duration, lootQuantityOverride, bertSand } = data;
+		const { collectableID, quantity, channelID, duration, lootQuantityOverride, metadata } = data;
+		const isBertSandTrip = metadata?.activityID === BERT_SAND_ID;
 
-		if (bertSand) {
+		if (isBertSandTrip) {
 			const sendResult = (message: string, loot: Bank | null = null) =>
 				handleTripFinish(user, channelID, `${user}, ${message}`, undefined, data, loot);
 

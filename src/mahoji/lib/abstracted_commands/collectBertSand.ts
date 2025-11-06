@@ -38,7 +38,6 @@ export async function collectBertSand(user: MUser, channelID: string) {
 		duration: BERT_SAND_DURATION,
 		type: 'Collecting',
 		lootQuantityOverride: BERT_SAND_BUCKETS,
-		bertSand: { lastCollectedAtStart: lastCollected },
 		metadata: NON_REPEATABLE_METADATA
 	});
 

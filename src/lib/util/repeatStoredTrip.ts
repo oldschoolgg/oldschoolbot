@@ -92,20 +92,15 @@ function getTripMetadata(data: Prisma.JsonValue): ActivityTaskMetadata | null {
 	return metadata as ActivityTaskMetadata;
 }
 
-function isBertSandTrip(type: activity_type_enum, data: Prisma.JsonValue) {
-	if (type !== activity_type_enum.Collecting) {
-		return false;
-	}
-	const json = getJsonObject(data);
-	if (!json) {
-		return false;
-	}
-	return Boolean(json.bertSand);
-}
-
-function isNonRepeatableTrip(type: activity_type_enum, data: Prisma.JsonValue) {
+function isNonRepeatableTrip(_type: activity_type_enum, data: Prisma.JsonValue) {
 	const metadata = getTripMetadata(data);
-	return Boolean(metadata?.nonRepeatable) || isBertSandTrip(type, data);
+	if (!metadata?.nonRepeatable) {
+		return false;
+	}
+	if (metadata.activityID === BERT_SAND_ID) {
+		// Bert trips mark their metadata with the Bert activity ID for clarity.
+	}
+	return true;
 }
 
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
@@ -316,13 +311,16 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
-		args: (data: CollectingOptions) => ({
-			collect: {
-				item: data.bertSand ? BERT_SAND_ID : Items.itemNameFromId(data.collectableID),
-				no_stams: data.bertSand ? undefined : data.noStaminas,
-				quantity: data.bertSand ? undefined : data.quantity
-			}
-		})
+		args: (data: CollectingOptions) => {
+			const isBertSandTrip = data.metadata?.activityID === BERT_SAND_ID;
+			return {
+				collect: {
+					item: isBertSandTrip ? BERT_SAND_ID : Items.itemNameFromId(data.collectableID),
+					no_stams: isBertSandTrip ? undefined : data.noStaminas,
+					quantity: isBertSandTrip ? undefined : data.quantity
+				}
+			};
+		}
 	},
 	[activity_type_enum.Construction]: {
 		commandName: 'build',

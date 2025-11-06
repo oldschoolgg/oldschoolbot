@@ -14,10 +14,6 @@ export const BERT_SAND_SKILL_REQS: readonly [SkillNameType, number][] = [
 export const BERT_SAND_QP_REQUIRED = 5;
 export const BERT_SAND_ITEM_ID = Items.getOrThrow('Bucket of sand').id;
 
-export interface BertSandTripMetadata {
-	lastCollectedAtStart: number;
-}
-
 export const bertResetStart = (now = Date.now()) => getNextUTCReset(now, Time.Day) - Time.Day;
 
 export function hasCollectedThisReset(lastCollected: number, now = Date.now()) {
