@@ -1,6 +1,6 @@
 import { time } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
@@ -16,7 +16,7 @@ export async function birdhouseCheckCommand(user: MUser) {
 		return 'You have no birdhouses planted.';
 	}
 	if (details.isReady) return `Your ${details.birdhouse.name}'s are **ready**!`;
-	return `Your ${details.birdhouse.name}'s are ready ${time(details.readyAt!, 'R')} (${time(details.readyAt!)})`;
+	return `Your ${details.birdhouse.name}'s will be ready ${time(details.readyAt!, 'R')} (${time(details.readyAt!)})`;
 }
 
 export async function birdhouseHarvestCommand(user: MUser, channelId: string, inputBirdhouseName: string | undefined) {
@@ -115,7 +115,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 		infoStr.unshift(`${user.minionName} is now placing ${birdhouseLimit}x ${birdhouseToPlant.name}.`);
 	} else {
 		infoStr.unshift(
-			`${user.minionName} is now collecting ${birdhouseLimit}x ${existingBirdhouse.lastPlaced}, and then placing ${birdhouseLimit}x ${birdhouseToPlant.name}.`
+			`${user.minionName} is now collecting ${birdhouseLimit}x ${typeof existingBirdhouse.lastPlaced === 'string' ? existingBirdhouse.lastPlaced : Items.itemNameFromId(existingBirdhouse.lastPlaced!)}, and then placing ${birdhouseLimit}x ${birdhouseToPlant.name}.`
 		);
 	}
 
@@ -125,7 +125,8 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 		duration,
 		placing: true,
 		gotCraft,
-		type: 'Birdhouse'
+		type: 'Birdhouse',
+		birdhouseId: birdhouseToPlant.birdhouseItem
 	});
 
 	return `${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${

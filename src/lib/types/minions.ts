@@ -346,6 +346,8 @@ export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Birdhouse';
 	placing: boolean;
 	gotCraft: boolean;
+	birdhouseId?: number;
+	birdhouseName?: string | null;
 }
 
 interface MinigameActivityTaskOptions extends ActivityTaskOptions {

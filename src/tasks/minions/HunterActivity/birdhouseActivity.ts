@@ -15,12 +15,19 @@ const clues = [
 export const birdHouseTask: MinionTask = {
 	type: 'Birdhouse',
 	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelId, placing, gotCraft } = data;
+		const { channelId, placing, gotCraft, birdhouseId, birdhouseName } = data;
 
+		const birdHouseToPlant = birdhouses.find(bh => {
+			if (birdhouseId) return bh.birdhouseItem === birdhouseId;
+			if (birdhouseName) return bh.name === birdhouseName;
+			return false;
+		})!;
 		const birdhouseData = user.fetchBirdhouseData();
-		if (!birdhouseData.birdhouse || !birdhouseData.lastPlaced) {
-			throw new Error(`${user.id} has no birdhouses planted?`);
-		}
+
+		const birdhouseToCollect = birdhouses.find(bh => {
+			if (typeof birdhouseData.lastPlaced === 'number') return bh.birdhouseItem === birdhouseData.lastPlaced;
+			return bh.name === birdhouseData.lastPlaced;
+		})!;
 
 		const birdHouseLimit = calcBirdhouseLimit();
 		let hunterXP = 0;
@@ -33,10 +40,10 @@ export const birdHouseTask: MinionTask = {
 		}
 
 		if (!birdhouseData.birdhousePlaced) {
-			let str = `${user}, ${user.minionName} finished placing ${birdHouseLimit}x ${birdhouseData.birdhouse.name}.`;
+			let str = `${user}, ${user.minionName} finished placing ${birdHouseLimit}x ${birdHouseToPlant.name}. `;
 
 			if (placing && gotCraft) {
-				craftingXP = birdhouseData.birdhouse.craftXP * birdHouseLimit;
+				craftingXP = birdHouseToPlant.craftXP * birdHouseLimit;
 				str += await user.addXP({
 					skillName: 'crafting',
 					amount: craftingXP,
@@ -46,7 +53,7 @@ export const birdHouseTask: MinionTask = {
 			}
 
 			await user.updateBirdhouseData({
-				lastPlaced: birdhouseData.birdhouse.name,
+				lastPlaced: birdHouseToPlant.birdhouseItem,
 				birdhousePlaced: true,
 				birdhouseTime: Date.now()
 			});
@@ -57,10 +64,8 @@ export const birdHouseTask: MinionTask = {
 		}
 
 		let str = '';
-		const birdhouseToCollect = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseData.lastPlaced);
-		if (!birdhouseToCollect) return;
 		if (placing) {
-			str = `${user}, ${user.minionName} finished placing ${birdHouseLimit}x ${birdhouseData.birdhouse.name} and collecting ${birdHouseLimit}x full ${birdhouseToCollect.name}.`;
+			str = `${user}, ${user.minionName} finished placing ${birdHouseLimit}x ${birdHouseToPlant.name} and collecting ${birdHouseLimit}x full ${birdhouseToCollect.name}.`;
 		} else {
 			str = `${user}, ${user.minionName} finished collecting ${birdHouseLimit}x full ${birdhouseToCollect.name}.`;
 		}
@@ -109,7 +114,7 @@ export const birdHouseTask: MinionTask = {
 		str += `\n\n${xpRes} from collecting the birdhouses.`;
 
 		if (placing && gotCraft) {
-			craftingXP = birdhouseData.birdhouse.craftXP * birdHouseLimit;
+			craftingXP = birdHouseToPlant.craftXP * birdHouseLimit;
 			const xpRes = await user.addXP({
 				skillName: 'crafting',
 				amount: craftingXP,
@@ -128,7 +133,7 @@ export const birdHouseTask: MinionTask = {
 		await user.updateBirdhouseData(
 			placing
 				? {
-						lastPlaced: birdhouseData.birdhouse.name,
+						lastPlaced: birdHouseToPlant.birdhouseItem,
 						birdhousePlaced: true,
 						birdhouseTime: Date.now()
 					}
