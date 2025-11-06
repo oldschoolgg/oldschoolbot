@@ -20,6 +20,7 @@ import { getSupportGuild } from '@/lib/util.js';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
+
 const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
 	.addFields({

@@ -1,5 +1,6 @@
 import { UserError } from '@oldschoolgg/toolkit';
 
+import type { Prisma } from '@/prisma/main.js';
 import type { ActivityTaskData, ActivityTaskOptions } from '@/lib/types/minions.js';
 import { isGroupActivity } from '@/lib/util.js';
 
@@ -36,17 +37,17 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 		...__newData
 	};
 
-	const data = {
+	const data: Prisma.ActivityUncheckedCreateInput = {
 		user_id: BigInt(taskToAdd.userID),
 		start_date: new Date(),
 		finish_date: finishDate,
 		completed: false,
 		type: taskToAdd.type,
-		data: newData,
+		data: newData as Prisma.InputJsonValue,
 		group_activity: isGroupActivity(taskToAdd),
 		channel_id: BigInt(taskToAdd.channelID),
 		duration
-	} as const;
+	};
 	try {
 		const createdActivity = await prisma.activity.create({
 			data
