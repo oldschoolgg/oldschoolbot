@@ -1,4 +1,3 @@
-import type { IBirdhouseData } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
@@ -345,11 +344,8 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Birdhouse';
-	birdhouseName: string | null;
 	placing: boolean;
 	gotCraft: boolean;
-	birdhouseData: IBirdhouseData;
-	currentDate: number;
 }
 
 interface MinigameActivityTaskOptions extends ActivityTaskOptions {

@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
@@ -10,6 +10,7 @@ import type { Star } from '@/lib/minions/types.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
+import { makeShootingStarButton } from '@/lib/util/interactions.js';
 
 export const starSizes: Star[] = [
 	{
@@ -291,15 +292,10 @@ export async function handleTriggerShootingStar(user: MUser, data: ActivityTaskD
 	if (!roll(baseChance)) return;
 	const shootingStarTable = new SimpleTable<Star>();
 	for (const star of elligibleStars) shootingStarTable.add(star, star.chance);
-	const starRoll = shootingStarTable.roll();
-	if (!starRoll) return;
-	const star = starRoll;
-	const button = new ButtonBuilder()
-		.setCustomId('DO_SHOOTING_STAR')
-		.setLabel(`Mine Size ${star.size} Crashed Star`)
-		.setEmoji({ name: '⭐' })
-		.setStyle(ButtonStyle.Secondary);
-	components.push(button);
+	const star = shootingStarTable.roll();
+	if (!star) return;
+
+	// Got a star
 	await prisma.shootingStars.create({
 		data: {
 			user_id: user.id,
@@ -308,4 +304,5 @@ export async function handleTriggerShootingStar(user: MUser, data: ActivityTaskD
 			has_been_mined: false
 		}
 	});
+	components.push(makeShootingStarButton(star.size));
 }

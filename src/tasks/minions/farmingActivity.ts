@@ -340,7 +340,7 @@ export const farmingTask: MinionTask = {
 					channelId: data.channelId,
 					id: 1
 				};
-				await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
+				await combatAchievementTripEffect({ user, messages: infoStr, data: fakeMonsterTaskOptions });
 				loot = hesporiLoot;
 			} else if (
 				patchType.patchPlanted &&

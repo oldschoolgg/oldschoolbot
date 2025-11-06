@@ -86,12 +86,12 @@ export function mockInteraction({ user }: { user: MUser }): MInteraction {
 	return new MockInteraction({ user }) as any as MInteraction;
 }
 
-export function mockMessage({ userId }: { userId: string }): IMessage {
+export function mockMessage({ userId }: { userId?: string } = {}): IMessage {
 	return {
 		id: mockedId(),
 		content: 'Test message',
 		guild_id: '342983479501389826',
-		author_id: userId,
+		author_id: userId ?? mockedId(),
 		channel_id: TEST_CHANNEL_ID
 	};
 }

@@ -1,5 +1,5 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { getNextUTCReset, Time } from '@oldschoolgg/toolkit';
+import { getNextUTCReset } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
@@ -12,7 +12,6 @@ import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { MUserClass } from '@/lib/MUser.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
@@ -46,6 +45,10 @@ interface TripFinishEffectOptions {
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
+	components: ButtonBuilder[];
+	lastDailyTimestamp: bigint | null;
+	lastTearsOfGuthixTimestamp: bigint | null;
+	perkTier: PerkTier | 0;
 }
 
 type TripEffectReturn = {
@@ -55,6 +58,7 @@ type TripEffectReturn = {
 
 export interface TripFinishEffect {
 	name: string;
+	requiredPerkTier?: PerkTier;
 	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined | void>;
 }
 
@@ -102,6 +106,99 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Combat Achievements',
 		fn: async options => {
 			return combatAchievementTripEffect(options);
+		}
+	},
+	{
+		name: 'Shooting Stars',
+		fn: async ({ user, data, components }) => {
+			await handleTriggerShootingStar(user, data, components);
+		}
+	},
+	{
+		name: 'Open Casket Button',
+		fn: async ({ loot, components }) => {
+			const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
+			if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
+		}
+	},
+	{
+		name: 'Birdhouse Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components }) => {
+			const birdHousedetails = user.fetchBirdhouseData();
+			if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
+				components.push(makeBirdHouseTripButton());
+			}
+		}
+	},
+	{
+		name: 'Autocontract Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components }) => {
+			if (user.bitfield.includes(BitField.DisableAutoFarmContractButton)) return;
+			const canRun = Boolean(await canRunAutoContract(user));
+			if (!canRun) return;
+			components.push(makeAutoContractButton());
+		}
+	},
+	{
+		name: 'Claim Daily Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components, lastDailyTimestamp }) => {
+			if (user.bitfield.includes(BitField.DisableDailyButton)) return;
+			const last = Number(lastDailyTimestamp);
+			const ready = last <= 0 || Date.now() - last >= CONSTANTS.DAILY_COOLDOWN;
+
+			if (ready) {
+				components.push(makeClaimDailyButton());
+			}
+		}
+	},
+	{
+		name: 'Tears of Guthix Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components, lastTearsOfGuthixTimestamp }) => {
+			if (user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) return;
+			const lastPlayedDate = Number(lastTearsOfGuthixTimestamp);
+			const nextReset = getNextUTCReset(lastPlayedDate, CONSTANTS.TEARS_OF_GUTHIX_CD);
+			const ready = nextReset < Date.now();
+			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
+			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
+
+			if (user.QP >= 43 && ready && meetsSkillReqs && meetsIronmanReqs) {
+				components.push(makeTearsOfGuthixButton());
+			}
+		}
+	},
+	{
+		name: 'Clue Buttons',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components, loot, perkTier }) => {
+			components.push(...buildClueButtons(loot ?? null, perkTier, user));
+		}
+	},
+	{
+		name: 'Slayer Task Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components, data }) => {
+			const { currentTask } = await user.fetchSlayerInfo();
+			if (
+				(currentTask === null || currentTask.quantity_remaining <= 0) &&
+				['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
+			) {
+				components.push(makeNewSlayerTaskButton());
+			} else if (!user.bitfield.includes(BitField.DisableAutoSlayButton)) {
+				components.push(makeAutoSlayButton());
+			}
+		}
+	},
+	{
+		name: 'Open Seed Pack Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ components, loot }) => {
+			if (loot?.has('Seed pack')) {
+				components.push(makeOpenSeedPackButton());
+			}
 		}
 	}
 ];
@@ -168,13 +265,32 @@ export async function handleTripFinish(
 				: new MessageBuilder(inputMessage);
 
 	const perkTier = await user.fetchPerkTier();
+
+	const { last_tears_of_guthix_timestamp, last_daily_timestamp } =
+		perkTier > PerkTier.One
+			? await user.fetchStats()
+			: { last_tears_of_guthix_timestamp: null, last_daily_timestamp: null };
+
 	const messages: string[] = inputMessages ?? [];
+
+	const components: ButtonBuilder[] = [];
+	components.push(makeRepeatTripButton());
 
 	const itemsToAddWithCL = new Bank();
 	const itemsToRemove = new Bank();
 	for (const effect of tripFinishEffects) {
+		if (effect.requiredPerkTier && perkTier < effect.requiredPerkTier) continue;
 		const start = performance.now();
-		const res = await effect.fn({ data, user, loot: loot ?? null, messages });
+		const res = await effect.fn({
+			data,
+			user,
+			loot: loot ?? null,
+			components,
+			messages,
+			lastDailyTimestamp: last_daily_timestamp,
+			lastTearsOfGuthixTimestamp: last_tears_of_guthix_timestamp,
+			perkTier
+		});
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
 		const end = performance.now();
@@ -201,62 +317,6 @@ export async function handleTripFinish(
 		existingCollector.stop();
 		MESSAGE_COLLECTORS_CACHE.delete(user.id);
 	}
-
-	const components: ButtonBuilder[] = [];
-	components.push(makeRepeatTripButton());
-	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
-	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
-	if (perkTier > PerkTier.One) {
-		components.push(...buildClueButtons(loot ?? null, perkTier, user));
-
-		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats();
-
-		// Tears of Guthix start button if ready
-		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
-			const lastPlayedDate = Number(last_tears_of_guthix_timestamp);
-			const nextReset = getNextUTCReset(lastPlayedDate, CONSTANTS.TEARS_OF_GUTHIX_CD);
-			const ready = nextReset < Date.now();
-			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
-			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
-
-			if (user.QP >= 43 && ready && meetsSkillReqs && meetsIronmanReqs) {
-				components.push(makeTearsOfGuthixButton());
-			}
-		}
-
-		// Minion daily button if ready
-		if (!user.bitfield.includes(BitField.DisableDailyButton)) {
-			const last = Number(last_daily_timestamp);
-			const ready = last <= 0 || Date.now() - last >= Time.Hour * 12;
-
-			if (ready) {
-				components.push(makeClaimDailyButton());
-			}
-		}
-
-		const birdHousedetails = calculateBirdhouseDetails(user);
-		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
-			components.push(makeBirdHouseTripButton());
-
-		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton)) {
-			components.push(makeAutoContractButton());
-		}
-
-		const { currentTask } = await user.fetchSlayerInfo();
-		if (
-			(currentTask === null || currentTask.quantity_remaining <= 0) &&
-			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
-		) {
-			components.push(makeNewSlayerTaskButton());
-		} else if (!user.bitfield.includes(BitField.DisableAutoSlayButton)) {
-			components.push(makeAutoSlayButton());
-		}
-		if (loot?.has('Seed pack')) {
-			components.push(makeOpenSeedPackButton());
-		}
-	}
-
-	await handleTriggerShootingStar(user, data, components);
 
 	if (components.length > 0) {
 		message.addComponents(components);
