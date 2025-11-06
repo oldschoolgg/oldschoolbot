@@ -20,7 +20,7 @@ import { minionKCommand } from '@/mahoji/commands/k.js';
 import { giveMaxStats } from '@/mahoji/commands/testpotato.js';
 import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.js';
 import { mockIMember, mockInteraction, TEST_CHANNEL_ID } from '../integration/util.js';
-import { mockedId } from './misc.js';
+import { handleTripFinishResults, mockedId } from './misc.js';
 import { TestClient } from './mockClient.js';
 
 export class TestUser extends MUserClass {
@@ -38,15 +38,19 @@ export class TestUser extends MUserClass {
 	}
 
 	async runActivity() {
-		const activity = await prisma.activity.findFirst({
+		const activities = await prisma.activity.findMany({
 			where: {
 				user_id: BigInt(this.id),
 				completed: false
 			}
 		});
-		if (!activity) {
+		if (activities.length === 0) {
 			return;
 		}
+		if (activities.length > 1) {
+			throw new Error(`User has multiple uncompleted activities!`);
+		}
+		const activity = activities[0];
 
 		await prisma.activity.update({
 			where: {
@@ -62,6 +66,12 @@ export class TestUser extends MUserClass {
 		await this.sync();
 		return ActivityManager.convertStoredActivityToFlatActivity(activity);
 	}
+
+	async setQP(qp: number) {
+		await this.update({ QP: qp });
+		return this;
+	}
+
 	async setLevel(skill: SkillNameType, level: number) {
 		await this.update({ [`skills_${skill}`]: convertLVLtoXP(level) });
 		return this;
@@ -179,11 +189,17 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
-	async runCmdAndTrip(command: AnyCommand, options: object = {}) {
+	async runCmdAndTrip(_command: string | AnyCommand, options: object = {}) {
+		const command =
+			typeof _command === 'string' ? globalClient.allCommands.find(_c => _c.name === _command)! : _command;
 		const commandResult = await this.runCommand(command, options, true);
 		const activityResult = await this.runActivity();
 		await this.sync();
-		return { commandResult, activityResult };
+		return {
+			commandResult,
+			activityResult,
+			data: !activityResult ? null : handleTripFinishResults.get(`${this.id}-${activityResult.type}`)
+		};
 	}
 
 	async runCommand(_command: string | AnyCommand, options: object = {}, syncAfter = false) {

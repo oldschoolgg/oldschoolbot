@@ -1,6 +1,7 @@
 import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
 
 const idsUsed = new Set<string>();
+export const handleTripFinishResults = new Map<string, any>();
 
 export function mockedId() {
 	const id = cryptoRng.randInt(1, 5_000_000_000_000).toString();
