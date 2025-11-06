@@ -257,11 +257,19 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		return true;
 	}
 
-	async sendMessage(channelId: string, message: SendableMessage): Promise<IMessage> {
-		const res = await this.rest.post(Routes.channelMessages(channelId), {
-			body: sendableMsgToApiCreate(message)
-		});
-		return res as IMessage;
+	async sendMessage(channelId: string, rawMessage: SendableMessage): Promise<IMessage> {
+		try {
+			const { files, message } = await sendableMsgToApiCreate(rawMessage);
+			const res = await this.rest.post(Routes.channelMessages(channelId), {
+				body: message,
+				files: files ?? undefined
+			});
+			return res as IMessage;
+		} catch (err) {
+			console.error(`${(err as any).message} when trying to send ${JSON.stringify(rawMessage)}`);
+			// TODO
+			throw err;
+		}
 	}
 
 	async sendDm(userId: string, message: SendableMessage) {
