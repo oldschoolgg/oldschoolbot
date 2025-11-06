@@ -2,7 +2,6 @@ import type { ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 
 import { syncBlacklists } from '@/lib/blacklists.js';
-import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
 import { badges, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -63,7 +62,6 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 	});
 
 	await Promise.all([
-		GeImageGenerator.init(),
 		ActivityManager.syncActivityCache(),
 		syncBlacklists(),
 		syncCustomPrices(),

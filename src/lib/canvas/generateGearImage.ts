@@ -349,6 +349,10 @@ export async function generateAllGearImage({
 	gear: { [key in GearSetupType]: GearSetup };
 	equippedPet?: number | null;
 }) {
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
 	const {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,

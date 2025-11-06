@@ -37,6 +37,14 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		this.data = (await global.prisma!.clientStorage.findFirst({ where: { id: this.data.id } }))!;
 	}
 
+	async fetchChannel() {
+		return mockChannel(this.rng);
+	}
+
+	async channelIsSendable() {
+		return this.rng.pick([true, false]);
+	}
+
 	async expectValueMatch(key: keyof ClientStorage, value: any) {
 		await this.sync();
 		if (this.data[key] !== value) {

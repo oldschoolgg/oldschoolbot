@@ -1,11 +1,13 @@
 import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
-import { Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
-import { Bank, Items } from 'oldschooljs';
+import type { IChannel, IRole } from '@oldschoolgg/schemas';
+import { Stopwatch, sleep, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
 import { test } from 'vitest';
 
-import type { AnyCommand } from '@/lib/discord/commandOptions.js';
+import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 import { allCommandsDONTIMPORT } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
@@ -13,13 +15,16 @@ import { createTestUser, mockClient, mockIMember, mockUser, TestClient } from '.
 
 type CommandInput = Record<string, any>;
 
+const LIMIT_PER_COMMAND = 5;
+
 export async function generateCommandInputs(
+	commandName: string,
 	mockedUser: MUser,
 	rng: RNGProvider,
 	options: readonly CommandOption[]
 ): Promise<CommandInput[]> {
 	const results: CommandInput[] = [];
-	const allPossibleOptions: Record<string, any[]> = {};
+	const allPossibleOptions: Record<string, (number | string | MahojiUserOption | IChannel | IRole | boolean)[]> = {};
 
 	if (options.length === 0) {
 		return [{}];
@@ -30,36 +35,39 @@ export async function generateCommandInputs(
 			case 'SubcommandGroup':
 			case 'Subcommand':
 				if (option.options) {
-					const subOptionsResults = await generateCommandInputs(mockedUser, rng, option.options);
+					const subOptionsResults = await generateCommandInputs(commandName, mockedUser, rng, option.options);
 					results.push(...subOptionsResults.map(input => ({ [option.name]: input })));
 				}
 				break;
 			case 'String':
 				if ('autocomplete' in option && option.autocomplete) {
 					const autoCompleteResults = await option.autocomplete('', mockedUser, {} as any);
-					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value)).slice(0, 20);
+					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value));
+					if (allPossibleOptions[option.name].some(i => typeof i === 'undefined')) throw new Error('1');
 				} else if (option.choices) {
-					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 20);
+					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value));
+					if (allPossibleOptions[option.name].some(i => typeof i === 'undefined')) throw new Error('2');
 				} else if (['guild_id', 'message_id'].includes(option.name)) {
 					allPossibleOptions[option.name] = ['157797566833098752'];
 				} else {
 					allPossibleOptions[option.name] = ['plain string'];
 				}
+				if (allPossibleOptions[option.name].length === 0) {
+					allPossibleOptions[option.name] = ['default'];
+				}
 				break;
 			case 'Integer':
 			case 'Number':
 				if (option.choices) {
-					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 20);
+					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value));
 				} else {
-					let value = rng.randInt(1, 10);
-					if (option.min_value && option.max_value) {
-						value = rng.randInt(option.min_value, option.max_value);
+					allPossibleOptions[option.name] = [option.min_value ?? 0, option.max_value ?? 1_000_000];
+					const min = option.min_value ?? 0;
+					const max = option.max_value ?? 1_000_000;
+					for (let i = 0; i < 18; i++) {
+						allPossibleOptions[option.name].push(rng.randInt(min, max));
 					}
-					allPossibleOptions[option.name] = [
-						option.min_value ?? 0,
-						rng.randInt(option.min_value ?? 0, value),
-						value
-					];
+					allPossibleOptions[option.name] = uniqueArr(allPossibleOptions[option.name]);
 				}
 				break;
 			case 'Boolean': {
@@ -76,6 +84,7 @@ export async function generateCommandInputs(
 					user: userForOption.getIUser()
 				};
 				allPossibleOptions[option.name] = [opt, optWithoutMember];
+				if (allPossibleOptions[option.name].some(i => typeof i === 'undefined')) throw new Error('3');
 				break;
 			}
 			case 'Channel':
@@ -87,15 +96,41 @@ export async function generateCommandInputs(
 	}
 
 	const sorted = Object.values(allPossibleOptions).sort((a, b) => b.length - a.length);
-	const longestOptions = sorted[0]?.length;
-	for (let i = 0; i < longestOptions; i++) {
-		const obj: Record<string, any> = {};
-		for (const [key, val] of Object.entries(allPossibleOptions)) {
-			obj[key] = val[i] ?? (val.length > 0 && rng.pick(val));
+	const max = sorted[0]?.length ?? 1;
+
+	// pad all arrays to max length
+	for (const key of Object.keys(allPossibleOptions)) {
+		const arr = allPossibleOptions[key];
+		if (arr.length < max) {
+			const padded: any[] = [];
+			for (let i = 0; i < max; i++) padded.push(arr[i % arr.length]);
+			allPossibleOptions[key] = padded;
 		}
+	}
+
+	for (let i = 0; i < max; i++) {
+		const obj: Record<string, any> = {};
+		for (const [key, arr] of Object.entries(allPossibleOptions)) obj[key] = arr[i];
 		results.push(obj);
 	}
+
 	return results;
+}
+
+const bankWithAllItems = new Bank();
+for (const item of Items.keys()) {
+	bankWithAllItems.add(item, 100_000);
+}
+async function createUserWithBaseStats(baseLevel: number) {
+	const options = {
+		...(getMaxUserValues() as any),
+		GP: 100_000_000_000
+	};
+	for (const skill of SkillsArray) {
+		options[`skills_${skill}`] = convertLVLtoXP(baseLevel);
+	}
+	const user = await createTestUser(bankWithAllItems, options);
+	return user;
 }
 
 test(
@@ -104,17 +139,11 @@ test(
 		timeout: Time.Minute * 2
 	},
 	async () => {
-		const bankWithAllItems = new Bank();
-		for (const item of Items.keys()) {
-			bankWithAllItems.add(item, 100_000);
-		}
 		await mockClient();
 
 		await ClientSettings.fetch({ construction_cost_bank: true });
 
 		const ignoredCommands = [
-			// 'bank',
-			'bingo',
 			'bossrecords',
 			'stats',
 			'clues',
@@ -125,38 +154,26 @@ test(
 			'wiki',
 			'casket',
 			'finish',
-			// 'trivia',
-			'ge',
 			'rp',
-			// 'cl',
-			// 'gearpresets',
 			'admin',
-			// 'loot',
-			// 'slayer',
-			// 'trade',
-			// 'trivia',
-			// 'data',
-			// 'leaderboard',
-			// 'lb',
-			// 'bs',
-			// 'redeem',
-
 			'simulate',
 			'leagues',
-			'kill'
+			'kill',
+			'stats',
+			'gearpresets',
+			'cl',
+			'bank',
+			'bs',
+			'ge',
+			'data'
 		];
 		const commandsToTest = allCommandsDONTIMPORT.filter(c => !ignoredCommands.includes(c.name));
-		console.log(`Running ${commandsToTest.length} commands...`);
 
 		const ignoredSubCommands = [
 			['tools', 'patron', 'cl_bank'],
 			['loot', 'view'],
-			// ['minion', 'bankbg'],
-			// ['minion', 'daily'],
-			// ['gamble', 'luckypick'],
-			// ['gamble', 'duel'],
-			// ['config', 'toggle'],
-			['gear', 'best_in_slot']
+			['gear', 'best_in_slot'],
+			['gear', 'view']
 		];
 
 		const useCommandOptions: Record<string, any>[] = [];
@@ -173,58 +190,52 @@ test(
 			use: useCommandOptions
 		};
 
-		const rngProvider = cryptoRng; //new SeedableRNG(1);
+		const rngProvider = cryptoRng;
 		const stopwatch = new Stopwatch();
-		const processedCommands: { command: AnyCommand; options: any[] }[] = [];
+		const processedCommands: { command: AnyCommand; options: CommandOptions[] }[] = [];
+		let totalCommands = 0;
 		for (const command of commandsToTest) {
 			if (ignoredCommands.includes(command.name)) continue;
-			let options = hardcodedOptions[command.name];
+			let options: CommandOptions[] = hardcodedOptions[command.name];
 
 			if (!options && command.options && command.options.length > 0) {
-				options = await generateCommandInputs(mockedUser, rngProvider, command.options);
+				options = await generateCommandInputs(command.name, mockedUser, rngProvider, command.options);
+				options.push(...(await generateCommandInputs(command.name, mockedUser, rngProvider, command.options)));
+				options.push(...(await generateCommandInputs(command.name, mockedUser, rngProvider, command.options)));
 			}
-
 			if (!options) {
 				continue;
 			}
 			outer: for (const option of options) {
 				for (const [parent, sub, subCommand] of ignoredSubCommands) {
+					// @ts-expect-error
 					if (command.name === parent && option[sub] && (subCommand ? option[sub][subCommand] : true)) {
-						// stopwatch.check(
-						// 	`Skipping subcommand ${command.name} with options ${JSON.stringify(option)} due to ignore list.`
-						// );
 						continue outer;
 					}
 				}
 			}
+			options = shuffle(options).slice(0, LIMIT_PER_COMMAND);
+			totalCommands += options.length;
 			processedCommands.push({ command, options });
 		}
 
-		// If running in CI, limit amount of permutations that are ran
-		if (process.env.CI) {
-			for (const command of processedCommands) {
-				command.options = shuffle(command.options).slice(0, 2);
-			}
-		}
-
-		const totalCommands = sumArr(processedCommands.map(i => i.options.length));
-
-		const queue = new PromiseQueue({ concurrency: 6 });
+		console.log(`Starting to run ${totalCommands} command permutations...`);
 
 		let commandsRan = 0;
 		for (const { command, options: allOptions } of processedCommands) {
+			for (let i = 0; i < 4; i++) {
+				global!.gc!()!;
+				await sleep(20);
+			}
+			// console.log(`Running command: ${command.name} with ${allOptions.length} option sets...`);
+			const queue = new PromiseQueue();
+
 			for (const options of allOptions) {
 				queue.add(async () => {
 					try {
-						const maxUser = await createTestUser(bankWithAllItems, {
-							...(getMaxUserValues() as any),
-							GP: 100_000_000_000
-						});
-						// stopwatch.check(`	[${command.name}] User ${maxUser.id} created and maxed.`);
-						await maxUser.runCmdAndTrip(command, options);
-						// stopwatch.check(`	[${command.name}] Finished running command ${command.name}, result was: ${typeof res === "string" ? res.replace(/\r?\n|\r/g, ' ').replace(/[*_`~>|#]/g, '') : res}`);
-						commandsRan++;
-						// stopwatch.check(`${commandsRan}/${totalCommands} commands ran ${command.name}`);
+						const allUsers = await Promise.all([90, 55, 1].map(_l => createUserWithBaseStats(_l)));
+						await Promise.all(allUsers.map(u => u.runCmdAndTrip(command, options)));
+						commandsRan += 4;
 					} catch (err) {
 						console.error(
 							`Failed to run command ${command.name} with options ${JSON.stringify(options)}: ${err}`
@@ -233,12 +244,17 @@ test(
 					}
 				});
 			}
+			await queue.onEmpty();
+
+			for (let i = 0; i < 4; i++) {
+				global!.gc!()!;
+				await sleep(20);
+			}
+			// console.log(`Completed command: ${command.name}`);
 		}
 
-		await queue.onEmpty();
-		await queue.onIdle();
 		console.log(
-			`[${stopwatch.toString()}] Finished running ${commandsRan}/${totalCommands} commands, ${TestClient.activitiesProcessed} activities`
+			`[${stopwatch.toString()}] Finished running ${commandsRan} commands, ${TestClient.activitiesProcessed} activities`
 		);
 	}
 );

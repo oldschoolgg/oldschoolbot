@@ -15,7 +15,12 @@ export default defineConfig({
 		testTimeout: 60_000,
 		maxConcurrency: 5,
 		maxWorkers: 5,
-		minWorkers: 5
+		minWorkers: 5,
+		poolOptions: {
+			forks: {
+				execArgv: ['--expose-gc']
+			}
+		}
 	},
 	resolve: {
 		alias: {

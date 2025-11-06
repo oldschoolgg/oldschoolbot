@@ -1,26 +1,28 @@
 import '../../src/lib/safeglobals.js';
 import '../../src/lib/cache/redis.js';
 
-import { globalConfig } from '@/lib/constants.js';
-import type { OldSchoolBotClient } from '@/lib/discord/OldSchoolBotClient.js';
-import { createDb } from '@/lib/globals.js';
-import { TestClient } from './util.js';
-
-await createDb();
-await prisma.clientStorage.upsert({
-	where: { id: globalConfig.clientID },
-	create: { id: globalConfig.clientID },
-	update: {}
-});
-
-global.globalClient = new TestClient({} as any) as any as OldSchoolBotClient;
-
+import { noOp } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 import { vi } from 'vitest';
 
+import { globalConfig } from '@/lib/constants.js';
+import type { OldSchoolBotClient } from '@/lib/discord/OldSchoolBotClient.js';
+import { createDb } from '@/lib/globals.js';
 import { MUserClass } from '@/lib/MUser.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { handleTripFinishResults } from '../test-utils/misc.js';
+import { TestClient } from './util.js';
+
+await createDb();
+await prisma.clientStorage
+	.upsert({
+		where: { id: globalConfig.clientID },
+		create: { id: globalConfig.clientID },
+		update: {}
+	})
+	.catch(noOp);
+
+global.globalClient = new TestClient({} as any) as any as OldSchoolBotClient;
 
 vi.mock('../../src/lib/util/handleTripFinish.js', async importOriginal => {
 	const originalModule: any = await importOriginal();

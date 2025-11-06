@@ -52,7 +52,7 @@ interface LogContext {
 }
 
 function logDebug(str: string, context: LogContext = {}) {
-	if (process.env.CI) return;
+	if (process.env.TEST) return;
 	const o = { ...context, m: str, t: new Date().toISOString() };
 	sonicBoom.write(`${JSON.stringify(o)}\n`);
 	if (!globalConfig.isProduction) {
