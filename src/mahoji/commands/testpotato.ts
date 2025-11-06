@@ -244,7 +244,16 @@ const spawnPresets = [
 	['runes', runePreset]
 ] as const;
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc', 'cooldowns'] as const;
+const thingsToWipe = [
+	'bank',
+	'combat_achievements',
+	'cl',
+	'quests',
+	'buypayout',
+	'kc',
+	'cooldowns',
+	'birdhouses'
+] as const;
 
 export const testPotatoCommand = globalConfig.isProduction
 	? null
@@ -517,6 +526,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							description: 'The patches you want to harvest.',
 							required: true,
 							choices: [
+								{ name: 'Birdhouses', value: 'birdhouses' },
 								{ name: 'All patches', value: 'all' },
 								...farmingPatchNames.map(i => ({ name: i, value: i }))
 							]
@@ -770,6 +780,14 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 				if (options.wipe) {
 					const { thing } = options.wipe;
+					if (thing === 'birdhouses') {
+						await user.updateBirdhouseData({
+							lastPlaced: null,
+							birdhousePlaced: false,
+							birdhouseTime: 0
+						});
+						return 'Reset your birdhouses.';
+					}
 					if (thing === 'cooldowns') {
 						await user.update({
 							gambling_lockout_expiry: null
@@ -997,6 +1015,14 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 
 				if (options.forcegrow) {
+					if (options.forcegrow.patch_name === 'birdhouses') {
+						const birdhouseData = user.fetchBirdhouseData();
+						await user.updateBirdhouseData({
+							...birdhouseData,
+							birdhouseTime: Date.now() - Time.Month
+						});
+						return 'Your birdhouses have been forced to be fully grown.';
+					}
 					const farmingDetails = await getFarmingInfoFromUser(user);
 					const { patch_name } = options.forcegrow;
 					const patchesToGrow =
