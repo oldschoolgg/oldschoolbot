@@ -35,6 +35,10 @@ export const gifs = [
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
 
+function isValidBitField(bit: number): bit is BitField {
+	return Boolean(BitFieldData[bit as keyof typeof BitFieldData]);
+}
+
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
 		{ pet: number; qty: number }[]
@@ -744,12 +748,7 @@ export const adminCommand = defineCommand({
 			}
 			const bit = Number.parseInt(bitEntry[0]);
 
-			if (
-				!bit ||
-				!(BitFieldData as any)[bit] ||
-				[7, 8].includes(bit) ||
-				(action !== 'add' && action !== 'remove')
-			) {
+			if (!bit || !isValidBitField(bit) || [7, 8].includes(bit) || (action !== 'add' && action !== 'remove')) {
 				return 'Invalid bitfield.';
 			}
 
@@ -771,7 +770,7 @@ export const adminCommand = defineCommand({
 				bitfield: uniqueArr(newBits)
 			});
 
-			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData as any)[bit].name}' bit to ${
+			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit to ${
 				options.bitfield.user.user.username
 			}.`;
 		}
@@ -861,7 +860,9 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const item = Items.getItem(options.item_stats.item);
 			if (!item) return 'Invalid item.';
 			const isIron = false;
-			const ownedResult: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
+			const ownedResult = await prisma.$queryRawUnsafe<
+				{ qty: bigint }[]
+			>(`SELECT SUM((bank->>'${item.id}')::int) as qty
 FROM users
 WHERE bank->>'${item.id}' IS NOT NULL;`);
 			return `There are ${ownedResult[0].qty.toLocaleString()} ${item.name} owned by everyone.

@@ -18,10 +18,10 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 	return str.join(', ');
 }
 
-export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
+export function formatSkillRequirements(reqs: SkillRequirements, emojis = true) {
 	const arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
-		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }

@@ -188,8 +188,8 @@ export const giveawayCommand = defineCommand({
 					}
 				});
 				giveawayCache.set(giveaway.id, giveaway);
-			} catch (err: any) {
-				Logging.logError(err, {
+			} catch (err: unknown) {
+				Logging.logError(err as Error, {
 					user_id: user.id,
 					giveaway: bank.toString()
 				});

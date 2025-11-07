@@ -21,16 +21,10 @@ export interface ActivityTaskOptions {
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 	type:
 		| 'Questing'
-		| 'Wintertodt'
-		| 'Cyclops'
-		| 'GloryCharging'
-		| 'WealthCharging'
 		| 'BarbarianAssault'
-		| 'AgilityArena'
 		| 'ChampionsChallenge'
 		| 'MyNotes'
 		| 'AerialFishing'
-		| 'DriftNet'
 		| 'SoulWars'
 		| 'RoguesDenMaze'
 		| 'CastleWars'
@@ -40,7 +34,6 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'MageArena2'
 		| 'BigChompyBirdHunting'
 		| 'PestControl'
-		| 'VolcanicMine'
 		| 'TearsOfGuthix'
 		| 'LastManStanding'
 		| 'BirthdayEvent'
@@ -49,7 +42,8 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'ShootingStars'
 		| 'HalloweenEvent'
 		| 'StrongholdOfSecurity'
-		| 'CombatRing';
+		| 'CombatRing'
+		| 'Revenants';
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
@@ -370,8 +364,7 @@ export interface MinigameActivityTaskOptionsWithNoChanges extends MinigameActivi
 		| 'BarbarianAssault'
 		| 'ChampionsChallenge'
 		| 'CastleWars'
-		| 'AgilityArena'
-		| 'GiantsFoundry';
+		| 'AgilityArena';
 }
 
 export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -457,7 +450,6 @@ export interface GroupMonsterActivityTaskOptions extends Omit<MonsterActivityTas
 export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	type: 'Raids';
 	leader: string;
-	users: string[];
 	challengeMode: boolean;
 	isFakeMass: boolean;
 	maxSizeInput?: number;
@@ -467,7 +459,6 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TheatreOfBlood';
 	leader: string;
-	users: string[];
 	hardMode: boolean;
 	fakeDuration: number;
 	wipedRooms: (null | number)[];

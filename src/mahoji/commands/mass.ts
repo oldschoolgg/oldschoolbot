@@ -92,26 +92,6 @@ export const massCommand = defineCommand({
 					if (!hasReqs) {
 						return [true, `you don't have the requirements for this monster; ${reason}`];
 					}
-
-					if (1 > 2 && monster.healAmountNeeded) {
-						try {
-							calculateMonsterFood(monster, user);
-						} catch (err: any) {
-							return [true, err];
-						}
-
-						// Ensure people have enough food for at least 2 full KC
-						// This makes it so the users will always have enough food for any amount of KC
-						if (1 > 2 && !hasEnoughFoodForMonster(monster, user, 2)) {
-							return [
-								true,
-								`You don't have enough food. You need at least ${
-									monster.healAmountNeeded * 2
-								} HP in food to enter the mass.`
-							];
-						}
-					}
-
 					return [false];
 				}
 			});

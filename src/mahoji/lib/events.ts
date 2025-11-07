@@ -4,9 +4,8 @@ import { TimerManager } from '@sapphire/timer-manager';
 import { Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { bulkUpdateCommands } from '@/lib/discord/utils.js';
 import { initTickers } from '@/lib/tickers.js';
-import { logWrapFn } from '@/lib/util.js';
 
-export const onStartup = logWrapFn('onStartup', async () => {
+export const onStartup = async () => {
 	// Wait 10 seconds before starting tickers to reduce lag on startup
 	TimerManager.setTimeout(
 		() => {
@@ -25,4 +24,4 @@ export const onStartup = logWrapFn('onStartup', async () => {
 		// In development, always sync commands on startup.
 		await bulkUpdateCommands();
 	}
-});
+};

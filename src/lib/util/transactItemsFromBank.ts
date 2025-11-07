@@ -3,7 +3,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import type { Prisma } from '@/prisma/main.js';
 import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
-import type { SafeUserUpdateInput } from '@/lib/MUser.js';
+import { rawUserUpdate, type SafeUserUpdateInput } from '@/lib/MUser.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
 import { userQueueFn } from '@/lib/util/userQueues.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
@@ -18,6 +18,7 @@ export interface TransactItemsArgs {
 	neverUpdateHistory?: boolean;
 	otherUpdates?: SafeUserUpdateInput;
 }
+
 export async function unqueuedTransactItems({
 	userID,
 	collectionLog,
@@ -117,18 +118,13 @@ export async function unqueuedTransactItems({
 
 	deduplicateClueScrolls(newBank);
 
-	const updateData = {
+	const updateData: Prisma.UserUpdateInput = {
 		bank: newBank.toJSON(),
 		GP: gpUpdate,
 		...clUpdates,
 		...otherUpdates
-	};
-	const newUser = await global.prisma.user.update({
-		data: updateData,
-		where: {
-			id: userID
-		}
-	});
+	} as Prisma.UserUpdateInput;
+	const newUser = await rawUserUpdate(userID, updateData);
 
 	const itemsAdded = new Bank(itemsToAdd);
 	if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {

@@ -150,14 +150,17 @@ async function handleGearPresetEquip(user: MUser, id: string, interaction: MInte
 async function handlePinnedTripRepeat(user: MUser, id: string, interaction: MInteraction): CommandResponse {
 	const [, pinnedTripID] = id.split('_');
 	if (!pinnedTripID) return { content: 'Invalid pinned trip.', ephemeral: true };
-	const trip = await prisma.pinnedTrip.findFirst({ where: { user_id: user.id, id: pinnedTripID } });
-	if (!trip) {
+	const trip = await prisma.pinnedTrip.findFirst({
+		where: { user_id: user.id, id: pinnedTripID },
+		include: { activity: true }
+	});
+	if (!trip || !trip.activity) {
 		return {
 			content: "You don't have a pinned trip with this ID, and you cannot repeat trips of other users.",
 			ephemeral: true
 		};
 	}
-	return repeatTrip(user, interaction, { data: trip.data, type: trip.activity_type });
+	return repeatTrip(user, interaction, trip.activity);
 }
 
 async function handleGEButton(user: MUser, id: string): CommandResponse {

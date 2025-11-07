@@ -57,8 +57,9 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 	}
 
 	getChatInputCommandOptions(): CommandOptions {
-		if (this.rawInteraction.type !== InteractionType.ApplicationCommand)
+		if (this.rawInteraction.type !== InteractionType.ApplicationCommand) {
 			throw new Error('Not a chat input interaction');
+		}
 		const options = convertAPIOptionsToCommandOptions({
 			guildId: this.rawInteraction.guild_id,
 			options: this.rawInteraction.data.options ?? [],

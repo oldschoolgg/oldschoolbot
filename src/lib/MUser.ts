@@ -72,7 +72,7 @@ import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
 import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
-import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
+import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
@@ -88,6 +88,27 @@ import { userQueueFn } from '@/lib/util/userQueues.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+
+export async function rawUserUpdate(userId: string, data: Prisma.UserUpdateInput | SafeUserUpdateInput): Promise<User> {
+	const newUser = await prisma.user.update({
+		data: {
+			...data,
+			blowpipe: data.blowpipe as unknown as Prisma.InputJsonObject,
+			gear_fashion: data.gear_fashion as unknown as Prisma.InputJsonObject,
+			gear_melee: data.gear_melee as unknown as Prisma.InputJsonObject,
+			gear_mage: data.gear_mage as unknown as Prisma.InputJsonObject,
+			gear_range: data.gear_range as unknown as Prisma.InputJsonObject,
+			gear_misc: data.gear_misc as unknown as Prisma.InputJsonObject,
+			gear_skilling: data.gear_skilling as unknown as Prisma.InputJsonObject,
+			gear_wildy: data.gear_wildy as unknown as Prisma.InputJsonObject,
+			gear_other: data.gear_other as unknown as Prisma.InputJsonObject
+		},
+		where: {
+			id: userId
+		}
+	});
+	return newUser;
+}
 
 const USER_DEFAULTS = {
 	slayer_unlocks: [],
@@ -127,25 +148,6 @@ type HasDiaryTier = 'easy' | 'medium' | 'hard' | 'elite';
 
 type HasDiaryDiaryKey = `${HasDiaryRegion}.${HasDiaryTier}`;
 
-export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
-	try {
-		const newUser = await global.prisma.user.update({
-			data,
-			where: {
-				id: user.toString()
-			}
-		});
-
-		return { newUser };
-	} catch (err) {
-		Logging.logError(err as Error, {
-			user_id: user.toString(),
-			updated_data: JSON.stringify(data)
-		});
-		throw err;
-	}
-}
-
 function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean) {
 	const maxCasts = Math.min(
 		Math.floor(tripLength / (agility ? timePerAlchAgility : timePerAlch)),
@@ -164,9 +166,9 @@ type QueuedUpdateFnReturnValue =
 type QueuedUpdateFnReturn = Promise<QueuedUpdateFnReturnValue> | QueuedUpdateFnReturnValue;
 type QueuedUpdateFn = (user: MUserClass) => QueuedUpdateFnReturn;
 
-// TODO: gear keys are not safe here, but not included for now
-export type SafeUserUpdateInput = Omit<Prisma.UserUncheckedUpdateInput, 'id' | 'bank' | 'collectionLogBank'>;
-
+export type GearColumns = `gear_${GearSetupType}`;
+export type SafeUserUpdateInput = Partial<{ blowpipe: BlowpipeData } & Record<GearColumns, GearSetup>> &
+	Omit<Prisma.UserUncheckedUpdateInput, 'id' | 'bank' | 'collectionLogBank' | 'blowpipe' | GearColumns>;
 export class MUserClass {
 	user!: Readonly<User>;
 	id: string;
@@ -248,7 +250,7 @@ export class MUserClass {
 
 	async update(data: SafeUserUpdateInput): Promise<MUser>;
 	async update(fn: QueuedUpdateFn): Promise<CommandResponseValue>;
-	async update(arg: SafeUserUpdateInput | QueuedUpdateFn): Promise<any> {
+	async update(arg: SafeUserUpdateInput | QueuedUpdateFn): Promise<MUser | CommandResponseValue> {
 		if (typeof arg === 'function') {
 			return userQueueFn(this.id, async () => {
 				const opts = await arg(await mUserFetch(this.id));
@@ -264,12 +266,7 @@ export class MUserClass {
 			});
 		}
 
-		const newUser = await global.prisma.user.update({
-			data: arg,
-			where: {
-				id: this.id
-			}
-		});
+		const newUser = await rawUserUpdate(this.id, arg);
 		this._updateRawUser(newUser);
 		return this;
 	}
@@ -298,7 +295,7 @@ export class MUserClass {
 	}
 
 	async setAttackStyle(newStyles: AttackStyles[]) {
-		await mahojiUserSettingsUpdate(this.id, {
+		await this.update({
 			attack_style: uniqueArr(newStyles)
 		});
 	}
@@ -497,7 +494,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
-		otherUpdates?: Prisma.UserUpdateArgs['data'];
+		otherUpdates?: SafeUserUpdateInput;
 	}) {
 		const res = await this.transactItems({
 			collectionLog,
@@ -709,7 +706,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		otherUpdates
 	}: {
 		itemsToAdd: Bank;
-		otherUpdates?: SafeUserUpdateInput;
+		otherUpdates?: Omit<SafeUserUpdateInput, 'blowpipe'>;
 	}) {
 		const previousCL = this.cl.clone();
 
@@ -760,7 +757,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 					`You have ${Items.itemNameFromId(equippedAmmo)} equipped as your range ammo, but you need: ${ammoRemove[0].name}.`
 				);
 			}
-			const newRangeGear = { ...this.gear[gearKey] };
+			const newRangeGear: GearSetup = this.gear[gearKey].raw();
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
@@ -782,7 +779,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.isInWilderness ? 'gear_wildy' : 'gear_range';
-			updates[updateKey] = newRangeGear as any as PrismaCompatibleJsonObject;
+			updates[updateKey] = newRangeGear;
 		}
 
 		if (dart) {
@@ -828,13 +825,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 			await this.transactItems({ itemsToRemove: bankRemove });
 		}
-		const newUser = await prisma.user.update({
-			data: updates,
-			where: {
-				id: this.id
-			}
-		});
-		this._updateRawUser(newUser);
+		await this.update(updates);
 		return {
 			realCost
 		};
@@ -846,8 +837,8 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}: {
 		items: Bank;
 		dontAddToTempCL?: boolean;
-	}): Prisma.UserUpdateArgs['data'] {
-		const updates: Prisma.UserUpdateArgs['data'] = {
+	}): Pick<Prisma.UserUpdateInput, 'collectionLogBank' | 'temp_cl'> {
+		const updates: Pick<Prisma.UserUpdateInput, 'collectionLogBank' | 'temp_cl'> = {
 			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).toJSON()
 		};
 
@@ -1072,7 +1063,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		}
 
 		await this.update({
-			[`gear_${setup}`]: gear as any as PrismaCompatibleJsonObject
+			[`gear_${setup}`]: gear
 		});
 		if (refundBank.length > 0) {
 			await this.addItemsToBank({
@@ -1262,7 +1253,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	async fetchUserStat<K extends keyof UserStats>(key: K): Promise<UserStats[K]> {
 		const userStats = (await prisma.userStats.findFirstOrThrow({
 			where: { user_id: BigInt(this.id) },
-			select: { [key]: true } as any
+			select: { [key]: true }
 		})) as unknown as Pick<UserStats, K>;
 		return userStats[key];
 	}
@@ -1384,7 +1375,8 @@ async function srcMUserFetch(userID: string) {
 `;
 	for (const [key, val] of Object.entries(user)) {
 		if (key.includes('.') || key.includes(' ')) {
-			(user as any)[key.replace(/[.\s]/g, '_')] = val;
+			// @ts-expect-error
+			user[key.replace(/[.\s]/g, '_')] = val;
 			delete user[key as keyof User];
 		}
 	}

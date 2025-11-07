@@ -89,7 +89,7 @@ export async function fetchMinionStatus(user: MUser): Promise<string> {
 	return minionStatus(user, currentTask);
 }
 
-export function minionStatus(user: MUser, currentTask: ActivityTaskData | null): string {
+export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) {
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;
@@ -659,9 +659,8 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null):
 			)}.`;
 		}
 		case 'GiantsFoundry': {
-			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently creating ${
-				data.quantity
+				currentTask.quantity
 			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
@@ -723,8 +722,9 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null):
 			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Easter':
-		case 'BlastFurnace': {
-			throw new Error('Removed');
+		case 'BlastFurnace':
+		case 'Revenants': {
+			throw new Error(`Removed`);
 		}
 	}
 }

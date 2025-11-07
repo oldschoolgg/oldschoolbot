@@ -321,9 +321,10 @@ export async function tobStartCommand(
 		}
 	};
 
-	const usersWhoConfirmed = solo ? [user, user, user] : await interaction.makeParty(partyOptions);
-
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
+	const users = solo ? [user, user, user] : await interaction.makeParty(partyOptions);
+	if (await ActivityManager.anyMinionIsBusy(users)) {
+		return `All team members must have their minions free.`;
+	}
 
 	const team = await Promise.all(
 		users.map(async u => {

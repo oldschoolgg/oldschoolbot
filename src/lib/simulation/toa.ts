@@ -1127,16 +1127,10 @@ export async function toaStartCommand(
 		}
 	};
 
-	let usersWhoConfirmed = [];
-	try {
-		usersWhoConfirmed = solo ? [user] : await interaction.makeParty(partyOptions);
-	} catch (err: any) {
-		return {
-			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			ephemeral: true
-		};
+	const users: MUser[] = solo ? [user] : await interaction.makeParty(partyOptions);
+	if (await ActivityManager.anyMinionIsBusy(users)) {
+		return `All team members must have their minions free.`;
 	}
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const teamCheckFailure = await checkTOATeam(users, raidLevel, 1);
 	if (teamCheckFailure) {

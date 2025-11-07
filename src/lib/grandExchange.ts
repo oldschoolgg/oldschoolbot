@@ -107,7 +107,7 @@ class GrandExchangeSingleton {
 	public ready = false;
 	public loggingEnabled = false;
 
-	log(message: string, context?: any) {
+	log(message: string, context?: Record<string, string | number>) {
 		if (!this.loggingEnabled) return;
 		Logging.logDebug(message, context);
 	}
@@ -165,8 +165,8 @@ class GrandExchangeSingleton {
 		try {
 			await this.fetchOwnedBank();
 			await this.extensiveVerification();
-		} catch (err: any) {
-			await this.lockGE(err.message);
+		} catch (err: unknown) {
+			await this.lockGE(err);
 		} finally {
 			this.ready = true;
 		}
@@ -222,7 +222,8 @@ class GrandExchangeSingleton {
 		};
 	}
 
-	async lockGE(reason: string) {
+	async lockGE(err: Error | unknown) {
+		const reason = err instanceof Error ? err.message : String(err);
 		if (this.locked) return;
 		if (process.env.TEST) {
 			throw new Error(`G.E locked: ${reason}`);
@@ -873,7 +874,8 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				if (this.isTicking) return reject('Already ticking.');
 				try {
 					await this._tick();
-				} catch (err: any) {
+				} catch (_err: unknown) {
+					const err = _err as Error;
 					Logging.logError(err.message);
 					reject(err);
 				} finally {
@@ -960,8 +962,9 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				const { remainingItemsCanBuy } = await this.checkBuyLimitForListing(buyListing);
 				if (remainingItemsCanBuy === 0) continue;
 				await this.createTransaction(buyListing, matchingSellListing, remainingItemsCanBuy);
-			} catch (err: any) {
-				await this.lockGE(err.message);
+			} catch (_err: unknown) {
+				const err = _err as Error;
+				await this.lockGE(err);
 				Logging.logError(err);
 				break;
 			}

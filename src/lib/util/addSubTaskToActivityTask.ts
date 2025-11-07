@@ -1,5 +1,7 @@
 import { UserError } from '@oldschoolgg/toolkit';
+import { omit } from 'remeda';
 
+import type { Prisma } from '@/prisma/main.js';
 import type { ActivityTaskData, ActivityTaskOptions } from '@/lib/types/minions.js';
 import { isGroupActivity } from '@/lib/util/activityTypeCheck.js';
 
@@ -8,18 +10,22 @@ export type DatabaseStoredActivityData = Omit<
 	'finishDate' | 'id' | 'type' | 'channelId' | 'userID' | 'duration'
 >;
 
-export default async function addSubTaskToActivityTask<T extends ActivityTaskData>(
-	taskToAdd: Omit<T, 'finishDate' | 'id'>
-) {
+export default async function addSubTaskToActivityTask(taskToAdd: Omit<ActivityTaskData, 'finishDate' | 'id'>) {
+	const userIds: string[] =
+		'users' in taskToAdd && taskToAdd.users ? (taskToAdd.users as string[]) : [taskToAdd.userID];
 	const existingActivities = await prisma.activity.count({
 		where: {
-			user_id: BigInt(taskToAdd.userID),
+			all_user_ids: {
+				hasSome: userIds.map(i => BigInt(i))
+			},
 			completed: false
 		}
 	});
 	if (existingActivities > 0) {
 		throw new UserError(
-			`That user is busy, so they can't do this minion activity. They have an activity still ongoing`
+			userIds.length > 1
+				? 'One or more users have an existing activity already in progress.'
+				: 'You have an existing activity already in progress.'
 		);
 	}
 
@@ -35,18 +41,9 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 
 	const finishDate = new Date(Date.now() + duration);
 
-	const __newData: Partial<ActivityTaskData> = { ...taskToAdd } as Partial<ActivityTaskData>;
-	__newData.type = undefined;
-	__newData.userID = undefined;
-	__newData.id = undefined;
-	__newData.channelId = undefined;
-	__newData.duration = undefined;
+	const newData: DatabaseStoredActivityData = omit(taskToAdd, ['type', 'userID', 'channelId', 'duration']);
 
-	const newData: DatabaseStoredActivityData = {
-		...__newData
-	};
-
-	const data = {
+	const data: Prisma.ActivityCreateInput = {
 		user_id: BigInt(taskToAdd.userID),
 		start_date: new Date(),
 		finish_date: finishDate,
@@ -55,8 +52,9 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 		data: newData,
 		group_activity: isGroupActivity(taskToAdd),
 		channel_id: BigInt(taskToAdd.channelId),
-		duration
-	} as const;
+		duration,
+		all_user_ids: userIds.map(i => BigInt(i))
+	};
 	try {
 		const createdActivity = await prisma.activity.create({
 			data

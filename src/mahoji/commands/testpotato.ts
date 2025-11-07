@@ -3,7 +3,7 @@ import { randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
-import { type Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
+import { xp_gains_skill_enum } from '@/prisma/main.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitFieldData, globalConfig } from '@/lib/constants.js';
@@ -12,7 +12,7 @@ import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
-import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
 import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
@@ -38,7 +38,7 @@ import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 
 export function getMaxUserValues() {
-	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
+	const updates: SafeUserUpdateInput = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
@@ -817,13 +817,15 @@ export const testPotatoCommand = globalConfig.isProduction
 						return 'Deleted all your buy payout records, so you have no tax rate accumulated.';
 					}
 					if (thing === 'bank') {
-						await mahojiUserSettingsUpdate(user.id, {
+						await user.update({
+							// @ts-expect-error
 							bank: {}
 						});
 						return 'Reset your bank.';
 					}
 					if (thing === 'cl') {
-						await mahojiUserSettingsUpdate(user.id, {
+						await user.update({
+							// @ts-expect-error
 							collectionLogBank: {},
 							temp_cl: {}
 						});
@@ -1037,7 +1039,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							: 'You have nothing planted there.';
 					}
 					const now = Date.now();
-					const updates = Object.fromEntries(
+					const updates: SafeUserUpdateInput = Object.fromEntries(
 						patchesToGrow.map(patch => [
 							getFarmingKeyFromName(patch.patchName),
 							{
@@ -1045,7 +1047,7 @@ export const testPotatoCommand = globalConfig.isProduction
 								plantTime: now - Time.Month
 							}
 						])
-					) as Prisma.UserUncheckedUpdateInput;
+					);
 
 					await user.update(updates);
 					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed);

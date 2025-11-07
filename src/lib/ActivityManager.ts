@@ -103,7 +103,16 @@ class SActivityManager {
 	async minionIsBusy(userID: string | string): Promise<boolean> {
 		const count = await prisma.activity.count({
 			where: {
-				user_id: BigInt(userID),
+				OR: [
+					{
+						user_id: BigInt(userID)
+					},
+					{
+						all_user_ids: {
+							has: BigInt(userID)
+						}
+					}
+				],
 				completed: false
 			}
 		});
@@ -113,9 +122,18 @@ class SActivityManager {
 	async anyMinionIsBusy(userIDs: (string | MUser)[]): Promise<boolean> {
 		const count = await prisma.activity.count({
 			where: {
-				user_id: {
-					in: userIDs.map(id => (typeof id === 'string' ? BigInt(id) : BigInt(id.id)))
-				},
+				OR: [
+					{
+						user_id: {
+							in: userIDs.map(id => (typeof id === 'string' ? BigInt(id) : BigInt(id.id)))
+						}
+					},
+					{
+						all_user_ids: {
+							hasSome: userIDs.map(id => BigInt(typeof id === 'string' ? id : id.id))
+						}
+					}
+				],
 				completed: false
 			}
 		});
@@ -125,8 +143,17 @@ class SActivityManager {
 	async getActivityOfUser(userID: string): Promise<ActivityTaskData | null> {
 		const task = await prisma.activity.findFirst({
 			where: {
-				user_id: BigInt(userID),
-				completed: false
+				completed: false,
+				OR: [
+					{
+						user_id: BigInt(userID)
+					},
+					{
+						all_user_ids: {
+							has: BigInt(userID)
+						}
+					}
+				]
 			}
 		});
 		return task ? this.convertStoredActivityToFlatActivity(task) : null;

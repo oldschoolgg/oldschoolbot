@@ -2,7 +2,8 @@ import { isObject } from '@oldschoolgg/toolkit';
 
 import type { CommandOptions, MahojiUserOption } from '@/lib/discord/index.js';
 
-function isMahojiUserOption(data: any): data is MahojiUserOption {
+function isMahojiUserOption(data: MahojiUserOption | CommandOptions): data is MahojiUserOption {
+	// @ts-expect-error
 	return 'user' in data && data.user && 'id' in data.user;
 }
 

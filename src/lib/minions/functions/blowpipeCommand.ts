@@ -1,7 +1,6 @@
 import { Bank, EItem, Items } from 'oldschooljs';
 
 import type { BlowpipeData } from '@/lib/minions/types.js';
-import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 
 const defaultBlowpipe: BlowpipeData = {
 	scales: 0,
@@ -131,7 +130,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	await user.transactItems({
 		itemsToRemove,
 		otherUpdates: {
-			blowpipe: currentData as any as PrismaCompatibleJsonObject
+			blowpipe: currentData
 		}
 	});
 

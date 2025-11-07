@@ -4,6 +4,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetup } from '@/lib/gear/types.js';
+import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
@@ -93,11 +94,11 @@ export class UpdateBank {
 
 		await user.statsUpdate(userStatsUpdates);
 
-		const userUpdates: Prisma.UserUpdateInput = this.userUpdates;
+		const userUpdates: SafeUserUpdateInput = this.userUpdates;
 
 		// Gear
 		for (const [key, v] of objectEntries(this.gearChanges)) {
-			userUpdates[`gear_${key}`] = v! as Prisma.InputJsonValue;
+			userUpdates[`gear_${key}`] = v;
 		}
 
 		if (Object.keys(userUpdates).length > 0) {

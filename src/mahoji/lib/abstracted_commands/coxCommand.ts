@@ -203,7 +203,10 @@ export async function coxCommand(
 		users = new Array(fakeUsers).fill(user);
 		isFakeMass = true;
 	} else if (type === 'mass') {
-		users = (await interaction.makeParty(partyOptions)).filter(u => !u.minionIsBusy);
+		users = await interaction.makeParty(partyOptions);
+		if (await ActivityManager.anyMinionIsBusy(users)) {
+			return `All team members must have their minions free.`;
+		}
 	} else {
 		users = [user];
 	}

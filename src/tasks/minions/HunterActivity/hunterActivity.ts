@@ -6,7 +6,6 @@ import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearE
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
-import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -89,11 +88,11 @@ export const hunterTask: MinionTask = {
 				if (userBank.has(cost)) {
 					await user.transactItems({ itemsToRemove: cost });
 				}
-				const newGear = { ...user.gear.wildy.raw() };
+				const newGear = user.gear.wildy.raw();
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
 				await user.update({
-					gear_wildy: newGear as PrismaCompatibleJsonObject
+					gear_wildy: newGear
 				});
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;

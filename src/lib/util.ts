@@ -93,13 +93,6 @@ export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>): P
 	return result;
 }
 
-export function logWrapFn<T extends (...args: any[]) => Promise<unknown>>(
-	name: string,
-	fn: T
-): (...args: Parameters<T>) => ReturnType<T> {
-	return (...args: Parameters<T>): ReturnType<T> => runTimedLoggedFn(name, () => fn(...args)) as ReturnType<T>;
-}
-
 export function isModOrAdmin(user: MUser) {
 	return globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }

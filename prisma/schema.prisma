@@ -22,6 +22,7 @@ model Activity {
   channel_id     BigInt?
   data           Json?              @db.JsonB
   pinnedTrip     PinnedTrip[]
+  all_user_ids   BigInt[]           @default([])
 
   @@index([user_id, completed, finish_date])
   @@map("activity")

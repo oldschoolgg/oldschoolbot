@@ -8,6 +8,7 @@ import {
 	type OffenceGearStat,
 	type OtherGearStat
 } from 'oldschooljs/gear';
+import { clone } from 'remeda';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
@@ -413,7 +414,7 @@ export class Gear {
 	}
 
 	raw(): GearSetup {
-		return {
+		return clone({
 			ammo: this.ammo,
 			body: this.body,
 			cape: this.cape,
@@ -426,7 +427,7 @@ export class Gear {
 			shield: this.shield,
 			weapon: this.weapon,
 			'2h': this['2h']
-		};
+		});
 	}
 
 	allItems(similar = false): number[] {
