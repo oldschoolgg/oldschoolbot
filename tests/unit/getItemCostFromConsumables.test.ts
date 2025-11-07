@@ -50,7 +50,7 @@ describe('getItemCostFromConsumables', () => {
 		const monster = killableMonsters.find(m => m.id === Monsters.AlchemicalHydra.id)!;
 
 		const consumablesCost2 = getItemCostFromConsumables({
-			consumableCosts: monster.itemCost!,
+			consumableCosts: [monster.itemCost as any],
 			gearBank: gearBank,
 			inputQuantity: 5,
 			timeToFinish: monster.timeToFinish,

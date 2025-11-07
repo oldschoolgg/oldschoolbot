@@ -736,7 +736,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 
-			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
+			await user.update({ [`gear_${setup}`]: equippedGear });
 		}
 	},
 	{
@@ -747,7 +747,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 			if (!equippedGear) throw new Error('Equipped gear is undefined');
-			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
+			await user.update({ [`gear_${setup}`]: equippedGear });
 		}
 	},
 	{
