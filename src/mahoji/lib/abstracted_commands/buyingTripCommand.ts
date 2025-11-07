@@ -4,6 +4,7 @@ import { Bank, EItem, Items } from 'oldschooljs';
 import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
 import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export async function buyingTripCommand(
 	user: MUser,
@@ -23,6 +24,12 @@ export async function buyingTripCommand(
 	const itemDisplayName = buyable.displayName ?? osItem.name;
 	const itemQuantity = buyable.quantity ?? 1;
 	const gpCost = buyable.gpCost ?? 0;
+
+	if (buyable.skillsNeeded && !user.hasSkillReqs(buyable.skillsNeeded)) {
+		return `You don't have the required stats to buy this item. You need ${formatSkillRequirements(
+			buyable.skillsNeeded
+		)}.`;
+	}
 
 	const maxTripLength = user.calcMaxTripLength('Buy');
 	if (!quantity) {
