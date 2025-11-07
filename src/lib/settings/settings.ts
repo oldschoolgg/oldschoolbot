@@ -32,17 +32,20 @@ export async function runCommand({
 	commandName,
 	args,
 	interaction: _interaction,
-	ignoreUserIsBusy
+	ignoreUserIsBusy,
+	isContinue
 }: RunCommandArgs): CommandResponse {
 	const interaction: MInteraction =
 		_interaction instanceof ButtonInteraction ? new MInteraction({ interaction: _interaction }) : _interaction;
 	const command = globalClient.allCommands.find(c => c.name === commandName)!;
 
+	const shouldIgnoreBusy = ignoreUserIsBusy ?? (isContinue ? true : undefined);
+
 	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({
 		interaction,
 		command,
 		options: args,
-		ignoreUserIsBusy
+		ignoreUserIsBusy: shouldIgnoreBusy
 	});
 	return response;
 }
