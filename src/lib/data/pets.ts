@@ -5,7 +5,7 @@ const xpEmoji = Emoji.XP;
 const gpEmoji = Emoji.GP;
 const fm = (num: number) => num.toLocaleString();
 
-interface Pet {
+export interface Pet {
 	id: number;
 	emoji: string;
 	chance: number;

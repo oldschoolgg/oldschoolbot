@@ -1,4 +1,4 @@
-import { percentChance } from '@oldschoolgg/rng';
+import { MathRNG, percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
@@ -30,6 +30,7 @@ import { type CATier, CombatAchievements } from '@/lib/combat_achievements/comba
 import { BitField, MAX_LEVEL } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
+import pets from '@/lib/data/pets.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { CommandResponseValue } from '@/lib/discord/index.js';
@@ -1260,6 +1261,32 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		await this.update({
 			completed_achievement_diaries: completedKeys
 		});
+	}
+
+	async giveRandomBotMessagesPet(rng: RNGProvider = MathRNG) {
+		const user = await prisma.user.findUniqueOrThrow({
+			where: { id: this.id },
+			select: {
+				id: true,
+				pets: true
+			}
+		});
+		const petToGive = rng.pick(pets);
+
+		const userPets = user.pets as ItemBank;
+		const newUserPets = { ...userPets };
+		if (!newUserPets[petToGive.id]) newUserPets[petToGive.id] = 1;
+		else newUserPets[petToGive.id]++;
+		await prisma.user.update({
+			where: { id: this.id },
+			data: {
+				pets: newUserPets
+			}
+		});
+		return {
+			isNewPet: !userPets[petToGive.id],
+			pet: petToGive
+		};
 	}
 }
 
