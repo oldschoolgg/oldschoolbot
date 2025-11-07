@@ -1,5 +1,5 @@
 import { dateFm, Emoji, makeComponents, stringMatches } from '@oldschoolgg/toolkit';
-import { type BaseMessageOptions, ButtonBuilder } from 'discord.js';
+import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
 import type { User } from '@/prisma/main.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
