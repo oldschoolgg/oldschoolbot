@@ -360,7 +360,7 @@ async function calculateHarvestLoot(options: {
 	if (shouldCleanHerb && plantToHarvest.herbXp) {
 		herbloreXp = cropYield * plantToHarvest.herbXp;
 		const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
-		await user.addItemsToCollectionLog(uncleanedHerbLoot);
+		await user.addItemsToCollectionLog({ itemsToAdd: uncleanedHerbLoot });
 		const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
 		await user.statsBankUpdate('herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 	}
@@ -658,10 +658,20 @@ export async function executeFarmingStep({
 
 	const { petDropRate } = skillingPetDropRate(user, 'farming', plantToHarvest.petChance);
 	if (plantToHarvest.seedType === 'hespori') {
-		await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
+		// PGLite/local env can lack the PG helper used inside incrementKC, so don't let it kill the trip
+		try {
+			await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
+		} catch (err) {
+			console.warn(
+				`Failed to increment Hespori KC for user ${user.id} (likely missing PG function in local DB):`,
+				err
+			);
+		}
+
 		const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
 			farmingLevel: currentFarmingLevel
 		});
+
 		const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
 			mi: Monsters.Hespori.id,
 			q: patchType.lastQuantity,
@@ -672,7 +682,10 @@ export async function executeFarmingStep({
 			channelID: data.channelID,
 			id: data.id
 		};
+
 		await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
+
+		// hespori farming replaces loot with monster loot
 		loot = hesporiLoot;
 	} else if (
 		patchType.patchPlanted &&
@@ -682,10 +695,12 @@ export async function executeFarmingStep({
 	) {
 		loot.add('Tangleroot');
 	}
+
 	if (plantToHarvest.seedType === 'seaweed' && roll(3)) {
 		loot.add('Seaweed spore', randInt(1, 3));
 	}
 
+	// only non-hespori runs can roll hespori seeds
 	if (plantToHarvest.seedType !== 'hespori') {
 		let hesporiSeeds = 0;
 		for (let i = 0; i < alivePlants; i++) {

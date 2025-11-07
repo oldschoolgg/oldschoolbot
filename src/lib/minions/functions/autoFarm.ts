@@ -1,9 +1,10 @@
-import { Emoji, formatDuration, makeComponents } from '@oldschoolgg/toolkit';
+import { Emoji, formatDuration, makeComponents, SpecialResponse } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
+import { AutoFarmFilterEnum, activity_type_enum } from '@/prisma/main/enums.js';
+import type { CommandResponseValue } from '@/lib/discord/index.js';
 import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
@@ -12,6 +13,7 @@ import type { Plant } from '@/lib/skilling/types.js';
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { prepareFarmingStep } from './farmingTripHelpers.js';
 
 interface PlannedAutoFarmStep {
@@ -58,6 +60,10 @@ function buildSummaryForStep(index: number, step: PlannedAutoFarmStep): BuildSum
 	if (step.upgradeType) {
 		detailParts.push(formatCompostLabel(step.upgradeType, step.quantity));
 	}
+	if (step.plant.inputItems.length > 0) {
+		const seedCost = step.plant.inputItems.clone().multiply(step.quantity);
+		detailParts.push(seedCost.toString());
+	}
 	if (step.didPay && step.plant.protectionPayment) {
 		const paymentCost = step.plant.protectionPayment.clone().multiply(step.quantity);
 		detailParts.push(`${paymentCost}`);
@@ -76,6 +82,38 @@ function buildSummaryForStep(index: number, step: PlannedAutoFarmStep): BuildSum
 		.map(infoLine => `${step.friendlyName}: ${infoLine}`);
 
 	return { summaryLine, extraInfoLines };
+}
+
+async function tryRepeatPreviousTrip({
+	user,
+	interaction,
+	errorString
+}: {
+	user: MUser;
+	interaction: MInteraction;
+	errorString: string;
+}): Promise<CommandResponseValue | null> {
+	try {
+		const repeatableTrips = await fetchRepeatTrips(user);
+		const fallbackTrip = repeatableTrips.find(trip => trip.type !== activity_type_enum.Farming);
+		if (!fallbackTrip) {
+			return null;
+		}
+		const response = await repeatTrip(user, interaction, fallbackTrip);
+		if (response === SpecialResponse.SilentErrorResponse || response === SpecialResponse.PaginatedMessageResponse) {
+			return response;
+		}
+		if (typeof response === 'string') {
+			return `${errorString}\n\n${response}`;
+		}
+		if (response && typeof response === 'object' && 'content' in response && typeof response.content === 'string') {
+			return { ...response, content: `${errorString}\n\n${response.content}` };
+		}
+		return response;
+	} catch (err) {
+		Logging.logError(err as Error);
+		return null;
+	}
 }
 
 export async function autoFarm(
@@ -218,6 +256,11 @@ export async function autoFarm(
 			content: errorString,
 			components: makeComponents([checkPatchesButton])
 		};
+
+		const repeated = await tryRepeatPreviousTrip({ user, interaction, errorString });
+		if (repeated !== null) {
+			return repeated;
+		}
 
 		return noCropsResponse;
 	}

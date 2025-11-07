@@ -57,8 +57,7 @@ function buildAggregateMessage({ summaries, totalLoot, user }: BuildAggregateMes
 	let contractsCompleted = 0;
 	const payNotes: string[] = [];
 	const payNotesSeen = new Set<string>();
-	const xpNotices: string[] = [];
-	const xpNoticesSeen = new Set<string>();
+	const xpNoticesBySkill = new Map<string, string>();
 
 	for (const summary of summaries) {
 		if (summary.planted) {
@@ -95,18 +94,19 @@ function buildAggregateMessage({ summaries, totalLoot, user }: BuildAggregateMes
 			payNotes.push(summary.payNote);
 		}
 
-		for (const message of Object.values(summary.xpMessages)) {
+		for (const [skill, message] of Object.entries(summary.xpMessages)) {
 			if (!message) continue;
+			let latestLine: string | null = null;
 			for (const rawLine of message.split('\n')) {
 				const line = rawLine.trim();
 				if (!line) continue;
 				if (line.startsWith('You received') || line.startsWith('+')) {
 					continue;
 				}
-				if (xpNoticesSeen.has(line)) continue;
-				xpNoticesSeen.add(line);
-				xpNotices.push(line);
+				latestLine = line;
 			}
+			if (!latestLine) continue;
+			xpNoticesBySkill.set(skill, latestLine);
 		}
 
 		if (summary.boosts) {
@@ -170,6 +170,13 @@ function buildAggregateMessage({ summaries, totalLoot, user }: BuildAggregateMes
 
 	if (payNotes.length > 0) {
 		lines.push(payNotes.join('\n'));
+	}
+	const xpNotices: string[] = [];
+	const xpNoticesSeen = new Set<string>();
+	for (const line of xpNoticesBySkill.values()) {
+		if (xpNoticesSeen.has(line)) continue;
+		xpNoticesSeen.add(line);
+		xpNotices.push(line);
 	}
 
 	if (xpNotices.length > 0) {

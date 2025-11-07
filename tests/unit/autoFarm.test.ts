@@ -16,12 +16,18 @@ import '../../src/lib/util/clientSettings.js';
 import { Emoji } from '@oldschoolgg/toolkit';
 import { ButtonStyle } from 'discord.js';
 
+import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import type { MInteraction } from '../../src/lib/structures/MInteraction.js';
-import { AutoFarmFilterEnum, CropUpgradeType } from '../../src/prisma/main/enums.js';
+import { AutoFarmFilterEnum, activity_type_enum, CropUpgradeType } from '../../src/prisma/main/enums.js';
 import type { User } from '../../src/prisma/main.js';
 
 vi.mock('../../src/lib/util/addSubTaskToActivityTask.js', () => ({
 	default: vi.fn()
+}));
+
+vi.mock('../../src/lib/util/repeatStoredTrip.js', () => ({
+	fetchRepeatTrips: vi.fn().mockResolvedValue([]),
+	repeatTrip: vi.fn()
 }));
 
 type Mutable<T> = { -readonly [K in keyof T]: T[K] };
@@ -40,6 +46,14 @@ type ActionRowJSON = {
 	type: number;
 	components: ButtonJSON[];
 };
+
+// helper: narrow the autoFarm union
+function isBaseMessage(value: unknown): value is {
+	content?: string;
+	components?: any[];
+} {
+	return typeof value === 'object' && value !== null && !('type' in (value as any));
+}
 
 const herbPlant = plants.find(p => p.name === 'Guam');
 const treePlant = plants.find(p => p.name === 'Oak tree');
@@ -143,10 +157,13 @@ describe('auto farm helpers', () => {
 			baseInteraction as MInteraction
 		);
 
-		expect(typeof response).toBe('object');
-		if (typeof response === 'string') {
-			throw new Error('Expected BaseMessageOptions response');
+		// narrow the union properly
+		if (!isBaseMessage(response)) {
+			throw new Error('Expected BaseMessageOptions-like response');
 		}
+
+		expect(fetchRepeatTrips).toHaveBeenCalledTimes(1);
+		expect(repeatTrip).not.toHaveBeenCalled();
 
 		expect(response.content).toBe(
 			"There's no Farming crops that you have the requirements to plant, and nothing to harvest."
@@ -181,6 +198,35 @@ describe('auto farm helpers', () => {
 		expect(buttonJSON.custom_id).toBe('CHECK_PATCHES');
 		expect(buttonJSON.label).toBe('Check Patches');
 		expect(buttonJSON.emoji?.name).toBe(Emoji.Stopwatch);
+	});
+
+	it('autoFarm attempts to repeat previous trip when available', async () => {
+		const user = mockMUser({
+			bank: new Bank(),
+			skills_farming: convertLVLtoXP(1)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.Replant;
+
+		const repeatTripsMock = fetchRepeatTrips as unknown as MockInstance;
+		const repeatTripMock = repeatTrip as unknown as MockInstance;
+		repeatTripsMock.mockResolvedValueOnce([{ type: activity_type_enum.ClueCompletion, data: {} }]);
+		repeatTripMock.mockResolvedValueOnce('Resuming previous trip');
+
+		calcMaxTripLengthSpy.mockReturnValue(5 * 60 * 1000);
+
+		const response = await autoFarm(
+			user,
+			[],
+			{} as Record<FarmingPatchName, IPatchData>,
+			baseInteraction as MInteraction
+		);
+
+		expect(fetchRepeatTrips).toHaveBeenCalledTimes(1);
+		expect(repeatTrip).toHaveBeenCalledTimes(1);
+		expect(response).toBe(
+			"There's no Farming crops that you have planted that are ready to be replanted or no seeds remaining.\n\nResuming previous trip"
+		);
 	});
 
 	it('prepareFarmingStep replant respects last quantity and costs', async () => {
@@ -258,6 +304,7 @@ describe('auto farm helpers', () => {
 		expect(typeof response).toBe('string');
 		expect(response).toContain('auto farm the following patches');
 		expect(response).toContain('4x Guam');
+		expect(response).toContain('4x Compost + 4x Guam seed');
 
 		expect(transactSpy).toHaveBeenCalledTimes(1);
 		const [transactArg] = transactSpy.mock.calls[0];
@@ -321,6 +368,7 @@ describe('auto farm helpers', () => {
 		expect(response).toContain('3x Oak tree');
 		expect(response).toContain('Up to 600 GP to remove previous trees');
 		expect(response).toContain('3x Supercompost');
+		expect(response).toContain('3x Supercompost + 3x Acorn');
 
 		expect(transactSpy).toHaveBeenCalledTimes(1);
 		const [transactArg] = transactSpy.mock.calls[0];
