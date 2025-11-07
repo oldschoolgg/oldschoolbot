@@ -23,7 +23,7 @@ export function deduplicateClueScrolls(bank: Bank) {
 		if (
 			theirClues
 				.items()
-				.map(i => i[1])
+				.map(_i => _i[1])
 				.reduce((a, b) => a + b, 0) > MAX_CLUES_DROPPED
 		) {
 			break;

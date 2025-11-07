@@ -129,7 +129,7 @@ export class CacheManager {
 					petchannel: null,
 					staff_only_channels: []
 				};
-		this.setObject(Key.Guild(guildId), guild, TTLS.Guild);
+		await this.setObject(Key.Guild(guildId), guild, TTLS.Guild);
 		return guild;
 	}
 

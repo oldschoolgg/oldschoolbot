@@ -412,7 +412,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 				afk: false
 			}
 		};
-		this.sendPacket(d);
+		await this.sendPacket(d);
 	}
 
 	async sendPacket(packet: GatewaySendPayload) {

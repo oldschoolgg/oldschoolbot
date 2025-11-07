@@ -56,8 +56,8 @@ const data: Record<string, [number[], number]> = {
 const nonUniqueItemRanges = resolveNameBank(data);
 
 const NonUniqueTable = new SimpleTable<number>();
-for (const [id, data] of Object.entries(nonUniqueItemRanges)) {
-	NonUniqueTable.add(Number.parseInt(id), data[1]);
+for (const [id, d] of Object.entries(nonUniqueItemRanges)) {
+	NonUniqueTable.add(Number.parseInt(id), d[1]);
 }
 
 // Phosani
@@ -99,8 +99,8 @@ const phosaniData: Record<string, [number[], number]> = {
 const phosaniNonUniqueItemRanges = resolveNameBank(phosaniData);
 
 const PhosaniNonUniqueTable = new SimpleTable<number>();
-for (const [id, data] of Object.entries(phosaniNonUniqueItemRanges)) {
-	PhosaniNonUniqueTable.add(Number.parseInt(id), data[1]);
+for (const [id, d] of Object.entries(phosaniNonUniqueItemRanges)) {
+	PhosaniNonUniqueTable.add(Number.parseInt(id), d[1]);
 }
 
 const GearTable = new SimpleTable<string>()

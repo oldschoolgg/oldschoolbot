@@ -787,7 +787,7 @@ export const adminCommand = defineCommand({
 ${META_CONSTANTS.RENDERED_STR}`
 				})
 				.catch(noOp);
-			import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
+			await import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
 			return 'Turning off...';
 		}
 		if (options.shut_down) {

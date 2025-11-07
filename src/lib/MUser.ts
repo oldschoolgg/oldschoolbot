@@ -1185,7 +1185,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	async updateGPTrackSetting(setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots', amount: number) {
-		this.statsUpdate({
+		await this.statsUpdate({
 			[setting]: {
 				increment: amount
 			}

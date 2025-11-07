@@ -89,6 +89,12 @@
 			},
 			"performance": {
 				"noAccumulatingSpread": "warn"
+			},
+			"nursery": {
+				"noFloatingPromises": "warn",
+				"noImportCycles": "warn",
+				"noShadow": "warn",
+				"noMisusedPromises": "warn"
 			}
 		}
 	},

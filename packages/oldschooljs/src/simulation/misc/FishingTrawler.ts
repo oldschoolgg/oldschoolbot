@@ -104,7 +104,7 @@ export function FishingTrawler(fishingLevel: number, hasEliteArd: boolean, bank?
 		loot.add(fishToGive.id, qty);
 
 		// Cant get same fish twice in 1 trawler
-		possibleFish = possibleFish.filter(i => i !== fishToGive);
+		possibleFish = possibleFish.filter(_f => _f !== fishToGive);
 		if (roll(3)) break;
 	}
 
