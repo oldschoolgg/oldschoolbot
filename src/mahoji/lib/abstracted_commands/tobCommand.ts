@@ -159,7 +159,7 @@ async function checkTOBUser(
 	}
 
 	// Range
-	const blowpipeData = user.blowpipe;
+	const blowpipeData = user.getBlowpipe();
 	if (!user.owns('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
 		return [
 			true,
@@ -395,7 +395,7 @@ export async function tobStartCommand(
 		users.map(async u => {
 			const supplies = await calcTOBInput(u);
 			const { total } = calculateTOBUserGearPercents(u);
-			const blowpipeData = u.blowpipe;
+			const blowpipeData = u.getBlowpipe();
 			const { realCost } = await u.specialRemoveItems(
 				supplies
 					.clone()

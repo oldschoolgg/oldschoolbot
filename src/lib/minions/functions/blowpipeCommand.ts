@@ -44,7 +44,7 @@ export async function blowpipeCommand(
 		return addCommand(user, add, quantity);
 	}
 
-	const rawBlowpipeData = { ...user.blowpipe };
+	const rawBlowpipeData = { ...user.getBlowpipe() };
 	const hasBlowpipe = user.owns('Toxic blowpipe') || user.owns('Toxic blowpipe (empty)');
 	if (!hasBlowpipe) return "You don't own a Toxic blowpipe.";
 
@@ -100,7 +100,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 
 	const dart = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
 
-	const rawBlowpipeData = { ...user.blowpipe };
+	const rawBlowpipeData = { ...user.getBlowpipe() };
 	validateBlowpipeData(rawBlowpipeData);
 	if (dart && !itemsToRemove.amount(dart[0].id)) {
 		throw new Error('wtf! not meant to happen');
@@ -146,7 +146,7 @@ async function removeDartsCommand(user: MUser) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...user.blowpipe };
+	const rawBlowpipeData = { ...user.getBlowpipe() };
 	validateBlowpipeData(rawBlowpipeData);
 	if (!rawBlowpipeData.dartID || rawBlowpipeData.dartQuantity === 0) {
 		return 'Your Toxic blowpipe has no darts in it.';
@@ -175,7 +175,7 @@ async function unchargeCommand(user: MUser) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...user.blowpipe };
+	const rawBlowpipeData = { ...user.getBlowpipe() };
 	const returnedBank = new Bank();
 	if (rawBlowpipeData.scales) {
 		returnedBank.add("Zulrah's scales", rawBlowpipeData.scales);

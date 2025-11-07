@@ -1,6 +1,13 @@
 import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
 import { percentChance } from '@oldschoolgg/rng';
-import { type IBirdhouseData, type IFarmingContract, ZBirdhouseData, ZFarmingContract } from '@oldschoolgg/schemas';
+import {
+	type IBirdhouseData,
+	type IBlowpipeData,
+	type IFarmingContract,
+	ZBirdhouseData,
+	ZBlowpipeData,
+	ZFarmingContract
+} from '@oldschoolgg/schemas';
 import {
 	calcWhatPercent,
 	cleanUsername,
@@ -661,10 +668,8 @@ RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
 		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
-	get blowpipe() {
-		const blowpipe = this.user.blowpipe as any as BlowpipeData;
-		validateBlowpipeData(blowpipe);
-		return blowpipe;
+	getBlowpipe(): IBlowpipeData {
+		return ZBlowpipeData.parse(this.user.blowpipe);
 	}
 
 	hasCharges(chargeBank: ChargeBank) {
@@ -793,7 +798,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				}
 			}
 			const scales = Math.ceil((10 / 3) * dart[1]);
-			const rawBlowpipeData = this.blowpipe;
+			const rawBlowpipeData = this.getBlowpipe();
 			if (!this.allItemsOwned.has('Toxic blowpipe') || !rawBlowpipeData) {
 				throw new UserError("You don't have a Toxic blowpipe.");
 			}
@@ -812,7 +817,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
 				);
 			}
-			const bpData = { ...this.blowpipe };
+			const bpData = { ...this.getBlowpipe() };
 			bpData.dartQuantity -= dart?.[1];
 			bpData.scales -= scales;
 			validateBlowpipeData(bpData);

@@ -12,7 +12,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
-import { SkillsArray } from '@/lib/skilling/types.js';
+import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
 import { userEventsToMap } from '@/lib/util/userEvents.js';
 
@@ -251,7 +251,7 @@ async function gpLb(interaction: MInteraction, ironmanOnly: boolean) {
 }
 
 async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp' | 'level', ironmanOnly: boolean) {
-	let res: Record<string, any>[] = [];
+	let res: ({ id: string; totalxp: bigint } & Record<`skills.${SkillNameType}`, bigint>)[] = [];
 	let overallUsers: { id: string; totalLevel: number; totalXP: number }[] = [];
 	const skillsVals = Object.values(Skills);
 	const skill = skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, inputSkill)));
@@ -268,7 +268,10 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 		${ironmanOnly ? ' WHERE "minion.ironman" = true ' : ''}
 		ORDER BY totalxp DESC
 		LIMIT 2000;`;
-		res = await prisma.$queryRawUnsafe<Record<string, any>[]>(query);
+		res =
+			await prisma.$queryRawUnsafe<
+				({ id: string; totalxp: bigint } & Record<`skills.${SkillNameType}`, bigint>)[]
+			>(query);
 		overallUsers = res.map(user => {
 			let totalLevel = 0;
 			for (const s of skillsVals) totalLevel += convertXPtoLVL(Number(user[`skills.${s.id}`]), MAX_LEVEL);

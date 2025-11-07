@@ -212,7 +212,7 @@ const toaRequirements: {
 	{
 		name: 'Blowpipe',
 		doesMeet: ({ user, quantity }) => {
-			const blowpipeData = user.blowpipe;
+			const blowpipeData = user.getBlowpipe();
 			const cmdMention = mentionCommand('minion', 'blowpipe');
 			if (!user.owns('Toxic blowpipe')) {
 				return 'Needs Toxic blowpipe (with darts and scales equipped) in bank';
@@ -977,7 +977,7 @@ async function calcTOAInput({
 		cost.remove('Saradomin brew(4)', quantity);
 	}
 
-	const { blowpipe } = user;
+	const blowpipe = user.getBlowpipe();
 	const dartID = blowpipe.dartID ?? itemID('Rune dart');
 	const dartQuantity = blowpipe.dartQuantity ?? BP_DARTS_NEEDED;
 	const blowpipeCost = new Bank();

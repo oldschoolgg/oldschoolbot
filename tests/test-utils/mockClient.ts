@@ -41,6 +41,10 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		return mockChannel(this.rng);
 	}
 
+	async editMessage() {
+		return Promise.resolve();
+	}
+
 	async channelIsSendable() {
 		return this.rng.pick([true, false]);
 	}
@@ -91,7 +95,7 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		TestLogs.Debug(`Client ${this.data.id} setting presence: ${JSON.stringify(args)}`);
 	}
 
-	public async [Symbol.asyncDispose]() {}
+	public async [Symbol.asyncDispose]() { }
 }
 
 export async function mockClient() {

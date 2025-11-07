@@ -1,5 +1,13 @@
 import z from 'zod';
 
+export const ZBlowpipeData = z.object({
+	scales: z.number().int().min(0),
+	dartQuantity: z.number().int().min(0),
+	dartID: z.number().int().nullable()
+});
+
+export type IBlowpipeData = z.infer<typeof ZBlowpipeData>;
+
 /**
  * Farming Contracts
  */
