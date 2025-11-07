@@ -1,7 +1,9 @@
 import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	type APIAttachment,
+	type APIChatInputApplicationCommandInteraction,
 	type APIMessage,
+	type APIMessageComponentInteraction,
 	InteractionResponseType,
 	MessageFlags,
 	Routes
@@ -21,6 +23,7 @@ export class BaseInteraction {
 	public readonly id: string;
 	private readonly token: string;
 	private readonly applicationId: string;
+	public readonly rawInteraction: APIMessageComponentInteraction | APIChatInputApplicationCommandInteraction;
 	private _deferred = false;
 	private _replied = false;
 	private _ephemeral = false;
@@ -31,14 +34,21 @@ export class BaseInteraction {
 	constructor({
 		data,
 		rest,
-		applicationId
-	}: { data: IChatInputCommandInteraction | IButtonInteraction; rest: REST; applicationId: string }) {
+		applicationId,
+		rawInteraction
+	}: {
+		data: IChatInputCommandInteraction | IButtonInteraction;
+		rest: REST;
+		applicationId: string;
+		rawInteraction: APIMessageComponentInteraction | APIChatInputApplicationCommandInteraction;
+	}) {
 		this.id = data.id;
 		this.token = data.token;
 		this.applicationId = applicationId;
 		this.rest = rest;
 		this._data = data;
 		this.userId = data.user_id;
+		this.rawInteraction = rawInteraction;
 	}
 
 	get customId() {
@@ -110,7 +120,7 @@ export class BaseInteraction {
 			auth: false,
 			body: message,
 			files: files ?? undefined,
-			query: makeURLSearchParams({ thread_id: (options as any)?.threadId })
+			query: makeURLSearchParams()
 		}) as Promise<APIMessage>;
 	}
 

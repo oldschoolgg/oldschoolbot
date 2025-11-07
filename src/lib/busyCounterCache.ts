@@ -1,4 +1,4 @@
-const busyUsers = new Set<string>();
+import { busyUsers } from '@/lib/cache.js';
 
 export function modifyUserBusy({
 	reason,

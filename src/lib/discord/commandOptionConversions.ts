@@ -178,22 +178,22 @@ export function convertAPIOptionsToCommandOptions({
 			parsedOptions[opt.name] = opts;
 		} else if (opt.type === ApplicationCommandOptionType.Channel) {
 			parsedOptions[opt.name] = convertApiChannelToZChannel({
-				apiChannel: resolvedObjects.channels?.[opt.value]!,
+				apiChannel: resolvedObjects.channels![opt.value]!,
 				guildId: guildId!
 			});
 		} else if (opt.type === ApplicationCommandOptionType.Role) {
 			parsedOptions[opt.name] = convertApiRoleToZRole({
-				apiRole: resolvedObjects.roles?.[opt.value]!,
+				apiRole: resolvedObjects.roles![opt.value]!,
 				guildId: guildId!
 			});
 		} else if (opt.type === ApplicationCommandOptionType.User) {
 			parsedOptions[opt.name] = {
-				user: convertApiUserToZUser(resolvedObjects.users?.[opt.value]!),
+				user: convertApiUserToZUser(resolvedObjects.users![opt.value]!),
 				member: guildId
 					? convertApiMemberToZMember({
 							userId: opt.value,
 							guildId: guildId,
-							apiMember: resolvedObjects.members?.[opt.value]!
+							apiMember: resolvedObjects.members![opt.value]!
 						})
 					: undefined
 			};

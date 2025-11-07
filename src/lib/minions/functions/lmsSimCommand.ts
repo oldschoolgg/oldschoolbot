@@ -163,6 +163,7 @@ export async function lmsSimCommand(channel: IChannel | undefined, names?: strin
 		// Ask for the user to proceed:
 		for (const text of texts) {
 			gameMessage = await globalClient.sendMessage(channel.id, { content: text });
+			if (!gameMessage) break;
 			await sleep(Math.max(gameMessage?.content.length / 20, 7) * 700);
 
 			// Delete the previous message, and if stopped, send stop.

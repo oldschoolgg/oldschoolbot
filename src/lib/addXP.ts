@@ -18,11 +18,14 @@ WHERE ${maxFilter}
 ${ironman ? 'AND "minion.ironman" = true' : ''};`;
 
 async function howManyMaxed() {
-	const [normies, irons] = (
-		(await Promise.all([prisma.$queryRawUnsafe(makeQuery(false)), prisma.$queryRawUnsafe(makeQuery(true))])) as any
+	const [normies, irons]: number[] = (
+		await prisma.$transaction([
+			prisma.$queryRawUnsafe<{ count: bigint }[]>(makeQuery(false)),
+			prisma.$queryRawUnsafe<{ count: bigint }[]>(makeQuery(true))
+		])
 	)
-		.map((i: any) => i[0].count)
-		.map((i: any) => Number.parseInt(i));
+		.map(i => i[0].count)
+		.map(i => Number(i));
 
 	return {
 		normies,

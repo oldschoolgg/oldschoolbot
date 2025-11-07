@@ -18,7 +18,7 @@ import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
 import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, Cooldowns } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
 import type { GearSetup } from '@/lib/gear/types.js';
@@ -28,7 +28,6 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -616,11 +615,11 @@ export const adminCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, userID, interaction, guildId }) => {
+	run: async ({ options, userId, interaction, guildId }) => {
 		await interaction.defer();
 
-		const adminUser = await mUserFetch(userID);
-		const isAdmin = globalConfig.adminUserIDs.includes(userID);
+		const adminUser = await mUserFetch(userId);
+		const isAdmin = globalConfig.adminUserIDs.includes(userId);
 		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);

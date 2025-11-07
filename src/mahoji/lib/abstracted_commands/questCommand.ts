@@ -8,7 +8,7 @@ export async function questCommand(user: MUser, channelId: string, name?: string
 	if (!user.hasMinion) {
 		return 'You need a minion to do a questing trip';
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to do a questing trip';
 	}
 

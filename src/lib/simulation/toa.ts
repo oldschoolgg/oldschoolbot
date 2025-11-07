@@ -1056,9 +1056,9 @@ async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number)
 	if (users.length < 1 || users.length > 8) {
 		return 'TOA team must be 1-8 users';
 	}
-
+	const anyIsBusy = await ActivityManager.anyMinionIsBusy(users);
+	if (anyIsBusy) return `All team members must have their minions free.`;
 	for (const user of users) {
-		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOAUser(
 			user,
 			await user.fetchMinigameScore('tombs_of_amascut'),
@@ -1084,7 +1084,7 @@ export async function toaStartCommand(
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
 
@@ -1106,7 +1106,7 @@ export async function toaStartCommand(
 		return initialCheck[1];
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
@@ -1119,7 +1119,7 @@ export async function toaStartCommand(
 		ironmanAllowed: true,
 		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! **Raid Level: ${raidLevel}**. Use the buttons below to join/leave.`,
 		customDenier: async user => {
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, `${user.usernameOrMention} minion is busy`];
 			}
 

@@ -7,7 +7,7 @@ import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
 
 export async function ironmanCommand(user: MUser, interaction: MInteraction | null, permanent?: boolean) {
-	if (user.minionIsBusy) return 'Your minion is busy.';
+	if (await user.minionIsBusy()) return 'Your minion is busy.';
 	if (user.isIronman) {
 		const isPerm = user.bitfield.includes(BitField.PermanentIronman);
 		if (isPerm) return "You're a **permanent** ironman and you cannot de-iron.";

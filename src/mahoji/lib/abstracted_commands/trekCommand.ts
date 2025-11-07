@@ -2,6 +2,7 @@ import { percentChance, randInt } from '@oldschoolgg/rng';
 import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
+import { pick } from 'remeda';
 
 import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.js';
 import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/templeTrekking.js';
@@ -22,17 +23,9 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 			const gear = allGear[setup];
 			if (setup && requirements) {
 				let newRequirements: GearRequirement = requirements;
-				let maxMeleeStat: [string, number] = [GearStat.AttackCrush, -500];
-				objectEntries(gear.getStats()).map(
-					stat =>
-						(maxMeleeStat =
-							!stat[0].startsWith('defence') &&
-							stat[0] !== 'attack_magic' &&
-							stat[0] !== 'attack_ranged' &&
-							stat[1] > maxMeleeStat[1]
-								? stat
-								: maxMeleeStat)
-				);
+				const meleeStats = pick(gear.getStats(), ['attack_crush', 'attack_slash', 'attack_stab']);
+				const sorted = Array.from(objectEntries(meleeStats)).sort((a, b) => b[1] - a[1]);
+				const maxMeleeStat = sorted[0];
 
 				if (setup === 'melee') {
 					if (maxMeleeStat[0] !== GearStat.AttackCrush) newRequirements.attack_crush = undefined;

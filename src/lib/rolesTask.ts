@@ -10,7 +10,7 @@ import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { SkillsArray } from '@/lib/skilling/types.js';
+import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
 
 const RoleResultSchema = z.object({
@@ -48,7 +48,7 @@ async function topSkillers() {
 	const results: RoleResult[] = [];
 
 	const [top200TotalXPUsers, ...top200ms] = await prisma.$transaction([
-		prisma.$queryRawUnsafe<any>(
+		prisma.$queryRawUnsafe<({ id: string; totalxp: bigint } & Record<`skills.${SkillNameType}`, bigint>)[]>(
 			`SELECT id, ${SkillsArray.map(s => `"skills.${s}"`)}, ${SkillsArray.map(s => `"skills.${s}"::bigint`).join(
 				' + '
 			)} as totalxp FROM users ORDER BY totalxp DESC LIMIT 200;`
@@ -73,7 +73,7 @@ async function topSkillers() {
 	}
 
 	const rankOneTotal = top200TotalXPUsers
-		.map((u: any) => {
+		.map(u => {
 			let totalLevel = 0;
 			for (const skill of SkillsArray) {
 				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}`]), MAX_LEVEL);
@@ -83,7 +83,7 @@ async function topSkillers() {
 				totalLevel
 			};
 		})
-		.sort((a: any, b: any) => b.totalLevel - a.totalLevel)[0];
+		.sort((a, b) => b.totalLevel - a.totalLevel)[0];
 
 	results.push({
 		userID: rankOneTotal.id,

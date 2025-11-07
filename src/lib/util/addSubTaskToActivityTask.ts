@@ -11,10 +11,15 @@ export type DatabaseStoredActivityData = Omit<
 export default async function addSubTaskToActivityTask<T extends ActivityTaskData>(
 	taskToAdd: Omit<T, 'finishDate' | 'id'>
 ) {
-	const usersTask = ActivityManager.getActivityOfUser(taskToAdd.userID);
-	if (usersTask) {
+	const existingActivities = await prisma.activity.count({
+		where: {
+			user_id: BigInt(taskToAdd.userID),
+			completed: false
+		}
+	});
+	if (existingActivities > 0) {
 		throw new UserError(
-			`That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`
+			`That user is busy, so they can't do this minion activity. They have an activity still ongoing`
 		);
 	}
 
@@ -56,10 +61,9 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 		const createdActivity = await prisma.activity.create({
 			data
 		});
-		ActivityManager.activitySync(createdActivity);
 		return createdActivity;
-	} catch (err: any) {
-		Logging.logError(err, {
+	} catch (err: unknown) {
+		Logging.logError(err as Error, {
 			user_id: taskToAdd.userID,
 			data: JSON.stringify(data)
 		});

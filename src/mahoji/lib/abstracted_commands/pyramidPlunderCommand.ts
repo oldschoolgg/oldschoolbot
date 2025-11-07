@@ -4,7 +4,7 @@ import { plunderBoosts, plunderRooms } from '@/lib/minions/data/plunder.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function pyramidPlunderCommand(user: MUser, channelId: string) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	const skills = user.skillsAsLevels;
 	const thievingLevel = skills.thieving;
 	const minLevel = plunderRooms[0].thievingLevel;

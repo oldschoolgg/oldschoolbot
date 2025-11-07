@@ -1,4 +1,5 @@
 import _buyables from '@data/osb/buyables.json';
+import type { ItemBank } from 'oldschooljs';
 import { useState } from 'preact/compat';
 import { groupBy } from 'remeda';
 
@@ -9,7 +10,7 @@ import { Accordion, AccordionItem } from './Accordion.js';
 type JSONBuyable = {
 	name: string;
 	item_cost?: Record<string, number>;
-	output_items: any;
+	output_items: ItemBank;
 	gp_cost?: number;
 	qp_required?: number;
 	ironman_price?: number;

@@ -64,7 +64,7 @@ const interactionHandlers: InteractionHandler[] = [
 
 export async function apiInteractionParse(itx: APIInteraction) {
 	const guildId = itx.guild_id ?? null;
-	const userId = itx.member?.user.id ?? itx.user?.id!;
+	const userId = (itx.member?.user.id ?? itx.user?.id)!;
 	const member: IMember | null = guildId ? await Cache.getMember(guildId, userId) : null;
 
 	if (itx.type === InteractionType.MessageComponent && itx.data.component_type === ComponentType.Button) {
@@ -112,7 +112,7 @@ export async function apiInteractionParse(itx: APIInteraction) {
 
 export async function interactionHandler(itx: APIInteraction) {
 	const guildId = itx.guild_id ?? null;
-	const userId = itx.member?.user.id ?? itx.user?.id!;
+	const userId = (itx.member?.user.id ?? itx.user?.id)!;
 	const member: IMember | null = guildId ? await Cache.getMember(guildId, userId) : null;
 
 	if (itx.type === InteractionType.ApplicationCommandAutocomplete) {

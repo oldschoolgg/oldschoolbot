@@ -3,6 +3,7 @@ import { Bank, type ItemBank, Items, Monsters, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
 import type { activity_type_enum, UserStats } from '@/prisma/main.js';
+import { Cooldowns } from '@/lib/cache.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
 import { allCLItemsFiltered, calcCLDetails } from '@/lib/data/Collections.js';
@@ -20,7 +21,6 @@ import { sorts } from '@/lib/sorts.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
 import { createChart } from '@/lib/util/chart.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
 interface DataPiece {

@@ -3,11 +3,11 @@ import { evalMathExpression, formatDuration, sumArr, uniqueArr } from '@oldschoo
 import { Items, toKMB } from 'oldschooljs';
 
 import type { GEListing, GETransaction } from '@/prisma/main.js';
+import { marketPricemap } from '@/lib/cache.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
 import { defineOption, itemOption, tradeableItemArr } from '@/lib/discord/index.js';
 import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
-import { marketPricemap } from '@/lib/marketPrices.js';
 import { createChart } from '@/lib/util/chart.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';

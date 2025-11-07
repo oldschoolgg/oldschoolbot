@@ -1,6 +1,7 @@
 import type { command_name_enum } from '@/prisma/main/enums.js';
 import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';
 import { runInhibitors } from '@/lib/discord/inhibitors.js';
+import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 
 interface PreCommandOptions {
 	command: AnyCommand;
@@ -17,10 +18,7 @@ export type InhibitorResult = {
 type PrecommandReturn = Promise<undefined | InhibitorResult>;
 
 export async function preCommand({ command, interaction, user }: PreCommandOptions): PrecommandReturn {
-	Logging.logDebug(`${user.logName} ran command: ${command.name}`, {
-		// TODO:
-		// ...interaction.getDebugInfo()
-	});
+	Logging.logDebug(`${user.logName} ran command: ${command.name}`);
 	const commandName: command_name_enum = command.name as command_name_enum;
 	prisma.commandUsage
 		.create({
@@ -29,8 +27,7 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 				channel_id: BigInt(interaction.channelId),
 				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
 				command_name: commandName,
-				// TODO
-				// args: interaction.getChatInputCommandOptions(commandName),
+				args: interaction.getChatInputCommandOptions() as PrismaCompatibleJsonObject,
 				inhibited: false,
 				is_mention_command: false
 			}

@@ -3,7 +3,6 @@ import { getNextUTCReset } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
-import { MESSAGE_COLLECTORS_CACHE } from '@/lib/cache.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
@@ -310,13 +309,6 @@ export async function handleTripFinish(
 	}
 
 	message.addContent(displayCluesAndPets(user, loot));
-
-	const existingCollector = MESSAGE_COLLECTORS_CACHE.get(user.id);
-
-	if (existingCollector) {
-		existingCollector.stop();
-		MESSAGE_COLLECTORS_CACHE.delete(user.id);
-	}
 
 	if (components.length > 0) {
 		message.addComponents(components);

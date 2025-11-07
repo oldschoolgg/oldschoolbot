@@ -70,7 +70,7 @@ export class BitField {
 
 	*[Symbol.iterator](...hasParams: unknown[]): Generator<string> {
 		for (const name of Object.keys(BitField.Flags)) {
-			if (Number.isNaN(name as any) && this.has(name, ...hasParams)) yield name;
+			if (Number.isNaN(name) && this.has(name, ...hasParams)) yield name;
 		}
 	}
 
@@ -79,7 +79,7 @@ export class BitField {
 		if (bit instanceof BitField) return bit.bitfield;
 		if (Array.isArray(bit)) return bit.map(b => BitField.resolve(b)).reduce((p, c) => p | c, BitField.DefaultBit);
 		if (typeof bit === 'string') {
-			if (!Number.isNaN(bit as any)) return Number(bit);
+			if (!Number.isNaN(bit)) return Number(bit);
 			if (BitField.Flags[bit] !== undefined) return BitField.Flags[bit] as number;
 		}
 		throw new Error(`BitFieldInvalid: ${String(bit)}`);

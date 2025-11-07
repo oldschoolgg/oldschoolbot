@@ -75,7 +75,7 @@ export const tksCommand = defineCommand({
 		}
 	],
 	run: async ({ channelId, options, interaction, user }) => {
-		if (user.minionIsBusy) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
+		if (await user.minionIsBusy()) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
 
 		const hasKaramjaDiary = user.hasDiary('karamja.easy');
 		const item = TokkulShopItems.find(i => stringMatches(i.name, options.buy?.name ?? options.sell?.name ?? ''));

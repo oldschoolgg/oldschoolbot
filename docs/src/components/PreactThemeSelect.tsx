@@ -24,12 +24,12 @@ const getPreferredColorScheme = (): Exclude<Theme, 'auto'> => {
 };
 
 const addMQChangeListener = (mql: MediaQueryList, cb: (e: MediaQueryListEvent) => void) => {
-	if ((mql as any).addEventListener) {
-		(mql as any).addEventListener('change', cb as unknown as EventListener);
+	if (mql.addEventListener) {
+		mql.addEventListener('change', cb as unknown as EventListener);
 		return () => (mql as any).removeEventListener('change', cb as unknown as EventListener);
 	}
 	(mql as any).addListener?.(cb);
-	return () => (mql as any).removeListener?.(cb);
+	return () => mql.removeListener?.(cb);
 };
 
 export const PreactThemeSelect = () => {

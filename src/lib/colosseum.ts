@@ -458,7 +458,7 @@ export const startColosseumRun = (options: {
 };
 
 export async function colosseumCommand(user: MUser, channelId: string) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} is busy`;
 	}
 
@@ -630,7 +630,7 @@ export async function colosseumCommand(user: MUser, channelId: string) {
 	try {
 		const result = await user.specialRemoveItems(cost);
 		realCost.add(result.realCost);
-	} catch (err: any) {
+	} catch (err: unknown) {
 		if (err instanceof UserError) {
 			return err.message;
 		}

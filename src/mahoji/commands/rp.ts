@@ -6,12 +6,12 @@ import { Duration } from '@sapphire/time-utilities';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
+import { marketPricemap } from '@/lib/cache.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import { choicesOf, gearSetupOption } from '@/lib/discord/index.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
-import { marketPricemap } from '@/lib/marketPrices.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
@@ -501,7 +501,7 @@ Date: ${dateFm(date)}`;
 			const opts = options.player.unequip_all_items;
 			const targetUser = await mUserFetch(opts.user.user.id);
 			const warningMsgs: string[] = [];
-			if (targetUser.minionIsBusy) warningMsgs.push("User's minion is busy.");
+			if (await targetUser.minionIsBusy()) warningMsgs.push("User's minion is busy.");
 			const gearSlot = opts.all
 				? 'all'
 				: opts.gear_setup && allGearSlots.includes(opts.gear_setup)

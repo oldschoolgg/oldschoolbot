@@ -1,11 +1,14 @@
-import type {
-	APIChatInputApplicationCommandInteraction,
-	APIMessage,
-	APIMessageComponentInteraction
+import {
+	type APIChatInputApplicationCommandInteraction,
+	type APIMessage,
+	type APIMessageComponentInteraction,
+	InteractionType
 } from '@oldschoolgg/discord';
 import type { IButtonInteraction, IChatInputCommandInteraction, IGuild, IMember } from '@oldschoolgg/schemas';
 import { deepMerge } from '@oldschoolgg/toolkit';
 
+import { convertAPIOptionsToCommandOptions } from '@/lib/discord/commandOptionConversions.js';
+import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { BaseInteraction } from '@/lib/discord/interaction/BaseInteraction.js';
 import { interactionConfirmation } from '@/lib/discord/interaction/confirmation.js';
 import { makeParty } from '@/lib/discord/interaction/makeParty.js';
@@ -35,7 +38,12 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 	public member: IMember | null = null;
 
 	constructor({ interaction, rawInteraction }: InputItx<T>) {
-		super({ data: interaction, rest: globalClient.rest, applicationId: rawInteraction.application_id });
+		super({
+			data: interaction,
+			rest: globalClient.rest,
+			applicationId: rawInteraction.application_id,
+			rawInteraction
+		});
 		this.interaction = interaction;
 		this.member = interaction.member ?? null;
 	}
@@ -46,6 +54,17 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 
 	isChatInput(): this is MInteraction<IChatInputCommandInteraction> {
 		return this.kind === 'ChatInputCommand';
+	}
+
+	getChatInputCommandOptions(): CommandOptions {
+		if (this.rawInteraction.type !== InteractionType.ApplicationCommand)
+			throw new Error('Not a chat input interaction');
+		const options = convertAPIOptionsToCommandOptions({
+			guildId: this.rawInteraction.guild_id,
+			options: this.rawInteraction.data.options ?? [],
+			resolvedObjects: this.rawInteraction.data.resolved
+		});
+		return options;
 	}
 
 	makePaginatedMessage(options: PaginatedMessageOptions) {

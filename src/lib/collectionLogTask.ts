@@ -377,7 +377,6 @@ class CollectionLogTask {
 				});
 				drawnSoFar += valueStr;
 			}
-			// TODO: Make looting count generic in future
 			if (collectionLog.name === 'Guardians of the Rift') {
 				canvas.drawText({
 					text: ' Rifts searches: ',

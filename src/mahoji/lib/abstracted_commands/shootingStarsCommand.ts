@@ -223,7 +223,6 @@ export async function shootingStarsCommand(
 				dustReceived++;
 			}
 		}
-		// Add clue scrolls , TODO: convert klasaUsers to user
 		if (star.clueScrollChance) {
 			addSkillingClueToLoot(user, 'mining', newQuantity, star.clueScrollChance, loot);
 		}

@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function roguesDenCommand(user: MUser, channelId: string) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	if (user.skillsAsLevels.agility < 50 || user.skillsAsLevels.thieving < 50) {
 		return "To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.";
 	}

@@ -636,8 +636,9 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		return skills;
 	}
 
-	get minionIsBusy() {
-		return ActivityManager.minionIsBusy(this.id);
+	async minionIsBusy(): Promise<boolean> {
+		const isBusy = await ActivityManager.minionIsBusy(this.id);
+		return isBusy;
 	}
 
 	async getCreatureScore(creatureID: number): Promise<number> {
@@ -1384,8 +1385,7 @@ async function srcMUserFetch(userID: string) {
 	for (const [key, val] of Object.entries(user)) {
 		if (key.includes('.') || key.includes(' ')) {
 			(user as any)[key.replace(/[.\s]/g, '_')] = val;
-			// @ts-expect-error
-			delete user[key];
+			delete user[key as keyof User];
 		}
 	}
 	return new MUserClass({ ...USER_DEFAULTS, ...user });

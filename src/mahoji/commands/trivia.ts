@@ -18,9 +18,9 @@ export const triviaCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ interaction, userID, options }) => {
+	run: async ({ interaction, userId, options }) => {
 		await interaction.defer();
-		const users: string[] = [userID];
+		const users: string[] = [userId];
 		if (options.duel) users.push(options.duel.user.id);
 
 		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();

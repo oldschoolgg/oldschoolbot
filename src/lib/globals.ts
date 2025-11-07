@@ -11,7 +11,7 @@ import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 
 async function getAdapter(
 	type: typeof BOT_TYPE | 'robochimp'
-): Promise<{ adapter: PrismaPg; pgLiteClient: PGlite | null }> {
+): Promise<{ adapter: PrismaPg | PrismaPGlite; pgLiteClient: PGlite | null }> {
 	const shouldUseRealPostgres = globalConfig.isProduction || process.env.USE_REAL_PG === '1';
 	if (shouldUseRealPostgres) {
 		const connectionString = type === 'robochimp' ? process.env.ROBOCHIMP_DATABASE_URL : process.env.DATABASE_URL;
@@ -43,7 +43,7 @@ async function getAdapter(
 		}
 	);
 	await pgLiteClient.exec(rewriteSqlToIdempotent(createDbSQL));
-	const adapter = new PrismaPGlite(pgLiteClient) as any as PrismaPg;
+	const adapter = new PrismaPGlite(pgLiteClient);
 	return { adapter, pgLiteClient };
 }
 
@@ -78,7 +78,7 @@ async function makePrismaClient() {
 
 interface RoboChimpDB {
 	prismaClient: RobochimpPrismaClient;
-	adapter: PrismaPg;
+	adapter: PrismaPg | PrismaPGlite;
 	pgLiteClient: PGlite | null;
 }
 async function makeRobochimpPrismaClient(): Promise<RoboChimpDB> {

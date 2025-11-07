@@ -113,7 +113,7 @@ export const pohCommand = defineCommand({
 		if (options.wallkit) {
 			return pohWallkitCommand(user, options.wallkit.name);
 		}
-		if (user.minionIsBusy) return 'You cannot interact with your PoH, because your minion is busy.';
+		if (await user.minionIsBusy()) return 'You cannot interact with your PoH, because your minion is busy.';
 		if (options.build) {
 			return pohBuildCommand(interaction, user, options.build.name);
 		}

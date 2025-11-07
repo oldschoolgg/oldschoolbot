@@ -33,8 +33,6 @@ function logPerf({ duration, text, interaction, ...rest }: PerformanceLogContext
 	if (duration < globalConfig.minimumLoggedPerfDuration) return;
 	const ctx = {
 		...rest
-		// TODO
-		// ...(interaction ? { interaction: MInteraction.getInteractionDebugInfo(interaction) } : undefined)
 	};
 	perfSonicBoom.write(
 		`${JSON.stringify({ ...ctx, duration: Math.trunc(duration), text, t: new Date().toISOString() })}\n`
@@ -102,10 +100,6 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 		err.requestBody.json = String(err.requestBody.json).slice(0, 500);
 	}
 
-	if (interaction) {
-		// TODO
-		// metaInfo.interaction = interaction.getDebugInfo();
-	}
 	if (!globalConfig.isProduction) {
 		console.error(err);
 	}

@@ -115,7 +115,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 }
 
 async function repeatTripHandler(user: MUser, id: string, interaction: MInteraction): CommandResponse {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return { content: 'Your minion is busy.', ephemeral: true };
 	}
 	const trips = await fetchRepeatTrips(user);
@@ -211,10 +211,7 @@ async function globalButtonInteractionHandler({
 	id: string;
 	interaction: MInteraction;
 }): Promise<CommandResponse | null> {
-	Logging.logDebug(`${interaction.userId} clicked button: ${id}`, {
-		// TODO
-		// ...interaction.getDebugInfo()
-	});
+	Logging.logDebug(`${interaction.userId} clicked button: ${id}`);
 
 	if (globalClient.isShuttingDown) {
 		return {
@@ -324,7 +321,7 @@ async function globalButtonInteractionHandler({
 	if (id === InteractionID.Open.EliteCasket) return openCasket('Elite');
 	if (id === InteractionID.Open.MasterCasket) return openCasket('Master');
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return { content: `${user.minionName} is busy.`, ephemeral: true };
 	}
 

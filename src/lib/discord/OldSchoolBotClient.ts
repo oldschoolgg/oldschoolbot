@@ -223,7 +223,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		return perms.every(perm => member.permissions.includes(perm));
 	}
 
-	async replyToMessage(repliedMsg: IMessage, response: SendableMessage): Promise<IMessage> {
+	async replyToMessage(repliedMsg: IMessage, response: SendableMessage): Promise<IMessage | null> {
 		try {
 			const { files, message } = await sendableMsgToApiCreate(response);
 			message.message_reference = {
@@ -238,9 +238,12 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 			});
 			return res as IMessage;
 		} catch (err) {
-			console.error(`${(err as any).message} when trying to send ${JSON.stringify(response)}`);
-			// TODO
-			throw err;
+			Logging.logError(err as Error, {
+				action: 'replyToMessage',
+				messageId: repliedMsg.id,
+				channelId: repliedMsg.channel_id
+			});
+			return null;
 		}
 	}
 
@@ -257,7 +260,7 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 		return true;
 	}
 
-	async sendMessage(channelId: string, rawMessage: SendableMessage): Promise<IMessage> {
+	async sendMessage(channelId: string, rawMessage: SendableMessage): Promise<IMessage | null> {
 		try {
 			const { files, message } = await sendableMsgToApiCreate(rawMessage);
 			const res = await this.rest.post(Routes.channelMessages(channelId), {
@@ -266,9 +269,12 @@ export class OldSchoolBotClient extends AsyncEventEmitter<OldSchoolBotClientEven
 			});
 			return res as IMessage;
 		} catch (err) {
-			console.error(`${(err as any).message} when trying to send ${JSON.stringify(rawMessage)}`);
-			// TODO
-			throw err;
+			Logging.logError(err as Error, {
+				action: 'sendMessage',
+				channelId,
+				message: JSON.stringify(rawMessage).slice(0, 300)
+			});
+			return null;
 		}
 	}
 

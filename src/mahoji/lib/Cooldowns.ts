@@ -2,7 +2,7 @@ import { LRUCache } from 'lru-cache';
 
 import { assert } from '@/lib/util/logError.js';
 
-class CooldownsSingleton {
+export class CooldownsSingleton {
 	cooldownMap = new LRUCache<string, Map<string, number>>({ max: 1000 });
 
 	get(userID: string, key: string, cooldown: number): number | null {
@@ -32,5 +32,3 @@ class CooldownsSingleton {
 		map.delete(key);
 	}
 }
-
-export const Cooldowns = new CooldownsSingleton();

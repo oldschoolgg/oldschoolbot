@@ -11,10 +11,10 @@ import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/m
 
 const wikiPrefix = 'https://wiki.oldschool.gg/osb';
 
-async function fetchUsersRecentlyKilledMonsters(userID: string): Promise<number[]> {
+async function fetchUsersRecentlyKilledMonsters(userId: string): Promise<number[]> {
 	const res = await prisma.userStats.findUnique({
 		where: {
-			user_id: BigInt(userID)
+			user_id: BigInt(userId)
 		},
 		select: {
 			recently_killed_monsters: true

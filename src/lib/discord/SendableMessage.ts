@@ -128,7 +128,7 @@ export class _MessageBuilder {
 	addComponents(components?: ButtonBuilder[]): this {
 		if (!components) return this;
 		if (!this._message.components) this._message.components = [];
-		// @ts-expect-error TODO
+		// @ts-expect-error
 		this._message.components.push(...components);
 		return this;
 	}

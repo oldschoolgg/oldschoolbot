@@ -203,6 +203,7 @@ export const tickers: {
 				embeds: [supportEmbed],
 				components: informationalButtons
 			});
+			if (!res) return;
 
 			lastMessageID = res.id;
 		}
@@ -223,6 +224,7 @@ export const tickers: {
 			const res = await globalClient.sendMessage(Channel.GrandExchange, {
 				embeds: [geEmbed]
 			});
+			if (!res) return;
 
 			lastMessageGEID = res.id;
 		}

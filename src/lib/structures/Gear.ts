@@ -511,7 +511,7 @@ export class Gear {
 		return Items.getOrThrow(normalWeapon === null ? twoHandedWeapon!.item : normalWeapon.item);
 	}
 
-	getStats() {
+	getStats(): GearStats {
 		const sum = { ...baseStats };
 		for (const id of this.allItems(false)) {
 			const item = Items.getOrThrow(id);

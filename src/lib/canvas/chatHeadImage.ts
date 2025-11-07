@@ -75,7 +75,7 @@ const names: Record<HeadKey, string> = {
 
 const imagePromiseCache = new Map<string, Promise<Image>>();
 
-const loadOnce = (absPath: string): Promise<any> => {
+const loadOnce = (absPath: string): Promise<Image> => {
 	let p = imagePromiseCache.get(absPath);
 	if (!p) {
 		p = loadAndCacheLocalImage(absPath);

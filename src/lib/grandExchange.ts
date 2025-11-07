@@ -5,9 +5,8 @@ import PQueue from 'p-queue';
 import { clamp } from 'remeda';
 
 import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main.js';
-import { BLACKLISTED_USERS, GE_SLOTS_CACHE } from '@/lib/cache.js';
+import { BLACKLISTED_USERS, GE_SLOTS_CACHE, marketPricemap } from '@/lib/cache.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
-import { marketPricemap } from '@/lib/marketPrices.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';

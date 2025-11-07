@@ -143,8 +143,18 @@ export function increaseNumByPercent(value: number, percent: number): number {
 	return value + value * (percent / 100);
 }
 
-export function objectEntries<T extends Record<PropertyKey, unknown>>(obj: T) {
-	return Object.entries(obj) as [keyof T, T[keyof T]][];
+export function objectValues<T extends object>(obj: T): { [K in keyof T]-?: T[K] }[keyof T][] {
+	const keys = Object.keys(obj) as (keyof T)[];
+	const out = [] as { [K in keyof T]-?: T[K] }[keyof T][];
+	for (const k of keys) out.push(obj[k]);
+	return out;
+}
+
+export function objectEntries<T extends object>(obj: T): { [K in keyof T]-?: [K, T[K]] }[keyof T][] {
+	const keys = Object.keys(obj) as (keyof T)[];
+	const out = [] as { [K in keyof T]-?: [K, T[K]] }[keyof T][];
+	for (const k of keys) out.push([k, obj[k]]);
+	return out;
 }
 
 /**

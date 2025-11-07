@@ -44,23 +44,23 @@ type MakeTeamOptions = {
 	bingo: string;
 };
 
-export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
+export async function fetchBingosThatUserIsInvolvedIn(userId: string) {
 	const bingos = await prisma.bingo.findMany({
 		where: {
 			OR: [
 				{
 					bingo_participant: {
 						some: {
-							user_id: userID
+							user_id: userId
 						}
 					}
 				},
 				{
-					creator_id: userID
+					creator_id: userId
 				},
 				{
 					organizers: {
-						has: userID
+						has: userId
 					}
 				}
 			]
@@ -828,11 +828,11 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					tileName = generateTileName(globalTile);
 				} else {
 					const tileToRemove = newTiles.find(
-						t => md5sum(generateTileName(t)) === options.manage_bingo?.remove_tile
+						t => md5sum(generateTileName(t)) === options.manage_bingo!.remove_tile
 					);
 					if (tileToRemove) {
 						newTiles = newTiles.filter(
-							t => md5sum(generateTileName(t)) !== options.manage_bingo?.remove_tile!
+							t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!
 						);
 						tileName = generateTileName(tileToRemove);
 					}
@@ -900,7 +900,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 						trophy => trophy.percentile >= team.trophy!.percentile
 					);
 
-					for (const userID of team.participants.map(t => t.user_id)) {
+					for (const userId of team.participants.map(t => t.user_id)) {
 						const reclaimableItems: Prisma.ReclaimableItemCreateManyInput[] = await Promise.all(
 							trophiesToReceive.map(async trophy => ({
 								name: `Bingo Trophy (${trophy.item.name})`,
@@ -913,7 +913,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 									team.tilesCompletedCount
 								} tiles completed.`,
 								date: bingo.endDate.toISOString(),
-								user_id: userID
+								user_id: userId
 							}))
 						);
 						toInsert.push(...reclaimableItems);

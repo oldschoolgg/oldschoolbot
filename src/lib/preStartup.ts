@@ -2,13 +2,13 @@ import type { ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 
 import { syncBlacklists } from '@/lib/blacklists.js';
+import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
 import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
 import { badges, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
 import { logWrapFn } from '@/lib/util.js';
-import { CUSTOM_PRICE_CACHE } from '@/mahoji/commands/sell.js';
 
 async function updateBadgeTable() {
 	const badgesInDb = await prisma.badges.findMany();
@@ -62,7 +62,6 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 	});
 
 	await Promise.all([
-		ActivityManager.syncActivityCache(),
 		syncBlacklists(),
 		syncCustomPrices(),
 		GrandExchange.init(),

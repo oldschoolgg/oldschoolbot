@@ -20,10 +20,10 @@ export async function makeParty(
 	let partyCancelled = false;
 
 	const row: ButtonBuilder[] = [
-		(new ButtonBuilder().setCustomId(InteractionID.Party.Join).setLabel('Join').setStyle(ButtonStyle.Primary),
+		new ButtonBuilder().setCustomId(InteractionID.Party.Join).setLabel('Join').setStyle(ButtonStyle.Primary),
 		new ButtonBuilder().setCustomId(InteractionID.Party.Leave).setLabel('Leave').setStyle(ButtonStyle.Secondary),
 		new ButtonBuilder().setCustomId(InteractionID.Party.Cancel).setLabel('Cancel').setStyle(ButtonStyle.Danger),
-		new ButtonBuilder().setCustomId(InteractionID.Party.Start).setLabel('Start').setStyle(ButtonStyle.Success))
+		new ButtonBuilder().setCustomId(InteractionID.Party.Start).setLabel('Start').setStyle(ButtonStyle.Success)
 	];
 
 	const getMessageContent = async () => ({
@@ -88,7 +88,7 @@ export async function makeParty(
 				return;
 			}
 			const user = await mUserFetch(bi.userId);
-			if ((!options.ironmanAllowed && user.isIronman) || user.minionIsBusy || !user.hasMinion) {
+			if ((!options.ironmanAllowed && user.isIronman) || (await user.minionIsBusy()) || !user.hasMinion) {
 				await bi.reply({
 					content: `You cannot mass if you are busy${!options.ironmanAllowed ? ', an ironman' : ''}, or have no minion.`,
 					ephemeral: true

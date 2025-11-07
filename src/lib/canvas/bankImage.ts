@@ -237,7 +237,7 @@ class BankImageTask {
 		const basePath = './src/lib/resources/images/bank_backgrounds/spritesheet/';
 		const files = await fs.readdir(basePath);
 		for (const file of files) {
-			const bgName: BGSpriteName = file.split('\\').pop()?.split('/').pop()?.split('.').shift()! as BGSpriteName;
+			const bgName: BGSpriteName = file.split('\\').pop()!.split('/').pop()!.split('.').shift()! as BGSpriteName;
 			const d = await loadImage(await fs.readFile(basePath + file));
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {

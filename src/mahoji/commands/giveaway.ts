@@ -162,6 +162,9 @@ export const giveawayCommand = defineCommand({
 				],
 				components: makeGiveawayButtons(giveawayID)
 			});
+			if (!message) {
+				return `There was an error sending the giveaway message. Please ensure I have permission to send messages and attach files in <#${channelId}>.`;
+			}
 
 			await user.removeItemsFromBank(bank);
 

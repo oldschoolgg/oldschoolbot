@@ -17,7 +17,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
@@ -85,7 +85,7 @@ export const massCommand = defineCommand({
 					if (!user.hasMinion) {
 						return [true, "you don't have a minion."];
 					}
-					if (user.minionIsBusy) {
+					if (await user.minionIsBusy()) {
 						return [true, 'your minion is busy.'];
 					}
 					const [hasReqs, reason] = user.hasMonsterRequirements(monster);

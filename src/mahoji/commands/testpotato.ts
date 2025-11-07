@@ -655,7 +655,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					await interaction.confirmation({
 						content: `This is a normal confirmation. Users who must confirm: ${users.map(i => `<@${i}>`).join(', ')}`,
 						users,
-						// @ts-expect-error ddd
+						// @ts-expect-error
 						ephemeral
 					});
 					return interaction.makePaginatedMessage({
@@ -1060,11 +1060,12 @@ export const testPotatoCommand = globalConfig.isProduction
 					const selectedMaster = slayerMasters.find(
 						sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
 					);
+					if (!selectedMaster || !selectedMonster) return 'Invalid slayer master or monster.';
 
 					// Set quantity to 50 if user doesn't assign a quantity
 					const quantity = options.setslayertask?.quantity ?? 50;
 
-					const assignedTask = selectedMaster?.tasks.find(m => m.monster.id === selectedMonster?.id)!;
+					const assignedTask = selectedMaster.tasks.find(m => m.monster.id === selectedMonster.id)!;
 
 					if (!selectedMaster) return 'Invalid slayer master.';
 					if (!selectedMonster) return 'Invalid monster.';

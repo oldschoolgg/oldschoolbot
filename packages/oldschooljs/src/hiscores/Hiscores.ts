@@ -17,12 +17,12 @@ function resolvePlayerFromHiscores(csvData: string, accountType: AccountType): P
 		.split('\n')
 		.map((str): string[] => str.split(','));
 
-	const resolvedPlayer: any = {
+	const resolvedPlayer: Player = {
 		skills: {},
 		minigames: {},
 		clues: {},
 		bossRecords: {}
-	};
+	} as Player;
 
 	let accumulativeIndex = 0;
 

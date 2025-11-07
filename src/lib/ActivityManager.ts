@@ -1,21 +1,17 @@
 import { cryptoRng } from '@oldschoolgg/rng';
 
-import type { Activity, activity_type_enum, Prisma } from '@/prisma/main.js';
+import type { Activity, activity_type_enum } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
 import { allTasks } from '@/lib/Task.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
-import { isGroupActivity } from '@/lib/util/activityTypeCheck.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 class SActivityManager {
-	private minionActivityCache: Map<string, ActivityTaskData> = new Map();
-
-	async cancelActivity(userID: string) {
+	async cancelActivity(userID: string): Promise<void> {
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
-		this.minionActivityCacheDelete(userID);
 	}
 
 	async startTrip<T extends ActivityTaskData>(tripData: Omit<T, 'finishDate' | 'id'>) {
@@ -37,25 +33,7 @@ class SActivityManager {
 		} as ActivityTaskData;
 	}
 
-	syncActivityCache = async () => {
-		const tasks = await prisma.activity.findMany({ where: { completed: false } });
-		this.minionActivityCache.clear();
-		for (const task of tasks) {
-			this.activitySync(task);
-		}
-	};
-
-	activitySync(activity: Activity) {
-		const users: bigint[] | string[] = isGroupActivity(activity.data)
-			? ((activity.data as Prisma.JsonObject).users! as string[])
-			: [activity.user_id];
-		const convertedActivity = this.convertStoredActivityToFlatActivity(activity);
-		for (const user of users) {
-			this.minionActivityCache.set(user.toString(), convertedActivity);
-		}
-	}
-
-	async completeActivity(_activity: Activity) {
+	async completeActivity(_activity: Activity): Promise<void> {
 		Logging.logDebug(`Completing activity ${_activity.id} of type ${_activity.type}`, {
 			type: 'ACTIVITY',
 			activity_type: _activity.type,
@@ -90,7 +68,6 @@ class SActivityManager {
 		} catch (err) {
 			Logging.logError(err as Error);
 		} finally {
-			this.minionActivityCacheDelete(activity.userID);
 			await onMinionActivityFinish(activity);
 		}
 		const end = performance.now();
@@ -103,7 +80,7 @@ class SActivityManager {
 		});
 	}
 
-	async processPendingActivities() {
+	async processPendingActivities(): Promise<void> {
 		const activities: Activity[] = globalConfig.isProduction
 			? await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
 			: await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false;`;
@@ -123,24 +100,36 @@ class SActivityManager {
 		}
 	}
 
-	minionActivityCacheDelete(userID: string) {
-		const entry = this.minionActivityCache.get(userID);
-		if (!entry) return;
-
-		const users: string[] = isGroupActivity(entry) ? entry.users : [entry.userID];
-		for (const u of users) {
-			this.minionActivityCache.delete(u);
-		}
+	async minionIsBusy(userID: string | string): Promise<boolean> {
+		const count = await prisma.activity.count({
+			where: {
+				user_id: BigInt(userID),
+				completed: false
+			}
+		});
+		return count > 0;
 	}
 
-	minionIsBusy(userID: string | string): boolean {
-		const usersTask = this.getActivityOfUser(userID.toString());
-		return Boolean(usersTask);
+	async anyMinionIsBusy(userIDs: (string | MUser)[]): Promise<boolean> {
+		const count = await prisma.activity.count({
+			where: {
+				user_id: {
+					in: userIDs.map(id => (typeof id === 'string' ? BigInt(id) : BigInt(id.id)))
+				},
+				completed: false
+			}
+		});
+		return count > 0;
 	}
 
-	getActivityOfUser(userID: string) {
-		const task = this.minionActivityCache.get(userID);
-		return task ?? null;
+	async getActivityOfUser(userID: string): Promise<ActivityTaskData | null> {
+		const task = await prisma.activity.findFirst({
+			where: {
+				user_id: BigInt(userID),
+				completed: false
+			}
+		});
+		return task ? this.convertStoredActivityToFlatActivity(task) : null;
 	}
 }
 

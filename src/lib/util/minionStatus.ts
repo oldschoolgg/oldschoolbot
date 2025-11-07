@@ -28,6 +28,7 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type {
+	ActivityTaskData,
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
@@ -83,8 +84,12 @@ import type {
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
-export function minionStatus(user: MUser) {
-	const currentTask = ActivityManager.getActivityOfUser(user.id);
+export async function fetchMinionStatus(user: MUser): Promise<string> {
+	const currentTask: ActivityTaskData | null = await ActivityManager.getActivityOfUser(user.id);
+	return minionStatus(user, currentTask);
+}
+
+export function minionStatus(user: MUser, currentTask: ActivityTaskData | null): string {
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;

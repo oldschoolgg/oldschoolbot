@@ -1,12 +1,11 @@
 import type { IMember } from '@oldschoolgg/schemas';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, Cooldowns } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
 import type { AnyCommand } from '@/lib/discord/index.js';
 import type { InhibitorResult } from '@/lib/discord/preCommand.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
-import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 type InhibitorRunOptions = {
 	user: MUser;
@@ -49,10 +48,10 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'minionNotBusy',
-		run: ({ user, command }) => {
+		run: async ({ user, command }) => {
 			if (!command.attributes?.requiresMinionNotBusy) return false;
 
-			if (ActivityManager.minionIsBusy(user.id)) {
+			if (await user.minionIsBusy()) {
 				return { content: 'Your minion must not be busy to use this command.' };
 			}
 

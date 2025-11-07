@@ -55,7 +55,8 @@ async function fetchPinnedTrips(userID: string) {
 export async function minionStatusCommand(
 	user: MUser
 ): Promise<Required<Pick<BaseSendableMessage, 'content' | 'components'>>> {
-	const { minionIsBusy } = user;
+	const currentActivity = await ActivityManager.getActivityOfUser(user.id);
+	const minionIsBusy = Boolean(currentActivity);
 	const birdhouseDetails = minionIsBusy ? { isReady: false } : user.fetchBirdhouseData();
 	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
 		roboChimpUserFetch(user.id),
@@ -72,7 +73,7 @@ export async function minionStatusCommand(
 		};
 	}
 
-	const status = minionStatus(user);
+	const status = minionStatus(user, currentActivity);
 	const buttons: ButtonBuilder[] = [];
 
 	if (dailyIsReady.isReady && !user.bitfield.includes(BitField.DisableDailyButton)) {

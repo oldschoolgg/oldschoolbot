@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
 	"assist": {
 		"actions": {
 			"source": {
@@ -64,7 +64,7 @@
 				"noAsyncPromiseExecutor": "off",
 				"noConfusingVoidType": "off",
 				"noFocusedTests": "off",
-				"noArrayIndexKey": "warn",
+				"noArrayIndexKey": "off",
 				"noUnsafeDeclarationMerging": "warn"
 			},
 			"style": {
@@ -76,13 +76,13 @@
 				"noInferrableTypes": "off"
 			},
 			"correctness": {
-				"useExhaustiveDependencies": "warn",
+				"useExhaustiveDependencies": "off",
 				"noConstructorReturn": "off",
 				"useParseIntRadix": "off"
 			},
 			"complexity": {
 				"noExtraBooleanCast": "warn",
-				"noBannedTypes": "warn",
+				"noBannedTypes": "off",
 				"noForEach": "warn",
 				"noStaticOnlyClass": "off",
 				"noUselessContinue": "warn"

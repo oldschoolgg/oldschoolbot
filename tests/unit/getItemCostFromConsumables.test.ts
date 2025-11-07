@@ -22,9 +22,9 @@ describe('getItemCostFromConsumables', () => {
 				maxTripLength: Time.Hour,
 				slayerKillsRemaining: null
 			});
-			expect(consumablesCost?.itemCost!.amount('Stamina potion(4)')).toEqual(1 * 5);
-			expect(consumablesCost?.itemCost!.amount('Ruby dragon bolts (e)')).toEqual(1 * 100);
-			expect(consumablesCost?.finalQuantity).toEqual(1);
+			expect(consumablesCost.itemCost!.amount('Stamina potion(4)')).toEqual(1 * 5);
+			expect(consumablesCost.itemCost!.amount('Ruby dragon bolts (e)')).toEqual(1 * 100);
+			expect(consumablesCost.finalQuantity).toEqual(1);
 		}
 
 		const skotizo = killableMonsters.find(m => m.name === 'Skotizo')!;
@@ -38,8 +38,8 @@ describe('getItemCostFromConsumables', () => {
 			maxTripLength: Time.Hour,
 			slayerKillsRemaining: null
 		});
-		expect(consumablesCost2?.itemCost!.amount('Dark totem')).toEqual(5);
-		expect(consumablesCost2?.finalQuantity).toEqual(5);
+		expect(consumablesCost2.itemCost!.amount('Dark totem')).toEqual(5);
+		expect(consumablesCost2.finalQuantity).toEqual(5);
 	});
 
 	test('Hydra costs should always have a anti-venom', () => {
@@ -50,7 +50,7 @@ describe('getItemCostFromConsumables', () => {
 		const monster = killableMonsters.find(m => m.id === Monsters.AlchemicalHydra.id)!;
 
 		const consumablesCost2 = getItemCostFromConsumables({
-			consumableCosts: [monster.itemCost as any],
+			consumableCosts: monster.itemCost!,
 			gearBank: gearBank,
 			inputQuantity: 5,
 			timeToFinish: monster.timeToFinish,
