@@ -1,7 +1,7 @@
 import type { IMember } from '@oldschoolgg/schemas';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, Cooldowns } from '@/lib/cache.js';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
 import type { AnyCommand } from '@/lib/discord/index.js';
 import type { InhibitorResult } from '@/lib/discord/preCommand.js';
@@ -119,15 +119,20 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'cooldown',
-		run: ({ user, command }) => {
+		run: async ({ user, command }) => {
 			if (!command.attributes?.cooldown) return false;
 			if (globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator)) {
 				return false;
 			}
-			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
-			if (cooldownForThis) {
+			const cooldownForThis = await Cache.doRatelimitCheck({
+				userId: user.id,
+				key: command.name,
+				windowSeconds: command.attributes.cooldown,
+				max: 1
+			});
+			if (!cooldownForThis.success) {
 				return {
-					content: `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis)}`
+					content: `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis.timeRemainingMs)}`
 				};
 			}
 			return false;

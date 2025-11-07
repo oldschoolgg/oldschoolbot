@@ -3,7 +3,6 @@ import { Bank, type ItemBank, Items, Monsters, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
 import type { activity_type_enum, UserStats } from '@/prisma/main.js';
-import { Cooldowns } from '@/lib/cache.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
 import { allCLItemsFiltered, calcCLDetails } from '@/lib/data/Collections.js';
@@ -1287,9 +1286,9 @@ ${(
 ] as const;
 
 export async function statsCommand(user: MUser, type: string): Promise<SendableMessage> {
-	const cooldown = Cooldowns.get(user.id, 'stats_command', Time.Second * 5);
-	if (cooldown !== null) {
-		return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}`;
+	const ratelimit = await Cache.tryRatelimit(user.id, 'stats_command');
+	if (!ratelimit.success) {
+		return `This command is on cooldown, you can use it again in ${formatDuration(ratelimit.timeRemainingMs)}.`;
 	}
 	const dataPoint = dataPoints.find(dp => stringMatches(dp.name, type));
 	if (!dataPoint) return 'Invalid stat name.';

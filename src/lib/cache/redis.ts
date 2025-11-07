@@ -31,7 +31,7 @@ const Key = {
 	},
 	User: {
 		BadgedUsername: (userId: string) => fmkey('user', BOT_TYPE, userId, 'badged_username'),
-		Ratelimit: (type: RatelimitType, userId: string) => fmkey('user', BOT_TYPE, 'ratelimit', type, userId)
+		Ratelimit: (type: string, userId: string) => fmkey('user', BOT_TYPE, 'ratelimit', type, userId)
 	},
 	Guild: (id: string) => fmkey('guild', id),
 	Member: (guildId: string, userId: string) => fmkey(CacheKeyPrefix.Member, guildId, userId),
@@ -55,11 +55,12 @@ const TTLS = {
 	Channel: TTL.Hour * 100
 } as const;
 
-type RatelimitType = 'random_events' | 'global_buttons';
+type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command';
 
 const RATELIMITS: Record<RatelimitType, { windowSeconds: number; max: number }> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
-	random_events: { windowSeconds: TTL.Hour * 3, max: 5 }
+	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
+	stats_command: { windowSeconds: 5, max: 1 }
 } as const;
 
 export class CacheManager {
@@ -239,25 +240,39 @@ export class CacheManager {
 		await this.setString(Key.User.BadgedUsername(userId), badgedUsername, Time.Hour * 12);
 	}
 
+	async doRatelimitCheck({
+		userId,
+		key: inputKey,
+		windowSeconds,
+		max
+	}: {
+		userId: string;
+		key: string;
+		windowSeconds: number;
+		max: number;
+	}): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
+		const fullKey = Key.User.Ratelimit(inputKey, userId);
+
+		const count = await this.client.incr(fullKey);
+		if (count === 1) await this.client.expire(fullKey, windowSeconds);
+
+		if (count <= max) return { success: true };
+
+		let ttl = await this.client.pttl(fullKey);
+		if (ttl < 0) {
+			// no expiry for some reason; enforce one
+			await this.client.pexpire(fullKey, windowSeconds * 1000);
+			ttl = windowSeconds * 1000;
+		}
+		return { success: false, timeRemainingMs: ttl };
+	}
+
 	public async tryRatelimit(
 		userId: string,
 		type: RatelimitType
 	): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
 		const cfg = RATELIMITS[type];
-		const key = Key.User.Ratelimit(type, userId);
-
-		const count = await this.client.incr(key);
-		if (count === 1) await this.client.expire(key, cfg.windowSeconds);
-
-		if (count <= cfg.max) return { success: true };
-
-		let ttl = await this.client.pttl(key); // ms
-		if (ttl < 0) {
-			// no expiry for some reason; enforce one
-			await this.client.pexpire(key, cfg.windowSeconds * 1000);
-			ttl = cfg.windowSeconds * 1000;
-		}
-		return { success: false, timeRemainingMs: ttl };
+		return this.doRatelimitCheck({ userId, key: type, windowSeconds: cfg.windowSeconds, max: cfg.max });
 	}
 
 	public async getRatelimitTTL(userId: string, type: RatelimitType): Promise<number> {

@@ -5,7 +5,6 @@ import type PromiseQueue from 'p-queue';
 
 import type { Giveaway } from '@/prisma/main.js';
 import type { MarketPriceData } from '@/lib/marketPrices.js';
-import { CooldownsSingleton } from '@/mahoji/lib/Cooldowns.js';
 
 export const lastRoboChimpSyncCache = new Map<string, number>();
 
@@ -38,9 +37,6 @@ export const BLACKLISTED_GUILDS = new Set<string>();
 export const userQueues: Map<string, PromiseQueue> = new Map();
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 export const marketPricemap = new Map<number, MarketPriceData>();
-
-// TODO needs to go to redis
-export const Cooldowns = new CooldownsSingleton();
 
 export const busyUsers = new Set<string>();
 

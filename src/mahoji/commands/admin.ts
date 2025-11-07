@@ -18,7 +18,7 @@ import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
 import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, Cooldowns } from '@/lib/cache.js';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
 import type { GearSetup } from '@/lib/gear/types.js';
@@ -637,7 +637,7 @@ export const adminCommand = defineCommand({
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await ActivityManager.cancelActivity(user.id);
-			Cooldowns.delete(user.id);
+			await Cache.resetRatelimit(user.id, 'global_buttons');
 			return 'Done.';
 		}
 		if (options.clear_busy) {
@@ -805,7 +805,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 ${META_CONSTANTS.RENDERED_STR}`
 				})
 				.catch(noOp);
-			import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
+			await import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
 			return 'Turning off...';
 		}
 
