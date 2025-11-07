@@ -11,11 +11,13 @@ import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
+	makeAutoFarmButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeClaimDailyButton,
@@ -209,6 +211,13 @@ export async function handleTripFinish(
 		const birdHousedetails = calculateBirdhouseDetails(user);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
+
+		if (!user.bitfield.includes(BitField.DisableAutoFarmButton)) {
+			const { patchesDetailed } = Farming.getFarmingInfoFromUser(user);
+			if (patchesDetailed.some(patch => patch.ready === true)) {
+				components.push(makeAutoFarmButton());
+			}
+		}
 
 		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
 			components.push(makeAutoContractButton());

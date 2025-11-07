@@ -1,18 +1,11 @@
 import { dateFm, Emoji, makeComponents, stringMatches } from '@oldschoolgg/toolkit';
-import { type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { type BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
 import type { User } from '@/prisma/main.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
+import { makeAutoFarmButton } from '@/lib/util/interactions.js';
 import { formatList } from '@/lib/util/smallUtils.js';
-
-function makeAutoFarmButton() {
-	return new ButtonBuilder()
-		.setCustomId('AUTO_FARM')
-		.setLabel('Auto Farm')
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('630911040355565599');
-}
 
 export const farmingPatchNames = [
 	'herb',
