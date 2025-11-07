@@ -19,23 +19,30 @@ export type InhibitorResult = {
 type PrecommandReturn = Promise<undefined | InhibitorResult>;
 
 export async function preCommand({ command, interaction, user }: PreCommandOptions): PrecommandReturn {
-	Logging.logDebug(`${user.logName} ran command: ${command.name}`, {
-		...interaction.getDebugInfo()
-	});
+	const debugInfo = typeof interaction.getDebugInfo === 'function' ? interaction.getDebugInfo() : undefined;
+	Logging.logDebug(`${user.logName} ran command: ${command.name}`, debugInfo ?? {});
 	const commandName: command_name_enum = command.name as command_name_enum;
-	prisma.commandUsage
-		.create({
-			data: {
-				user_id: BigInt(user.id),
-				channel_id: BigInt(interaction.channelId),
-				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
-				command_name: commandName,
-				args: interaction.getChatInputCommandOptions(commandName),
-				inhibited: false,
-				is_mention_command: false
-			}
-		})
-		.catch(err => Logging.logError({ err, interaction }));
+	const args =
+		typeof interaction.getChatInputCommandOptions === 'function'
+			? interaction.getChatInputCommandOptions(commandName)
+			: undefined;
+	const shouldPersistUsage =
+		typeof interaction.channelId === 'string' && typeof user.id === 'string' && user.id.length > 0;
+	if (shouldPersistUsage) {
+		prisma.commandUsage
+			.create({
+				data: {
+					user_id: BigInt(user.id),
+					channel_id: BigInt(interaction.channelId),
+					guild_id: typeof interaction.guildId === 'string' ? BigInt(interaction.guildId) : undefined,
+					command_name: commandName,
+					args,
+					inhibited: false,
+					is_mention_command: false
+				}
+			})
+			.catch(err => Logging.logError({ err, interaction: debugInfo ? interaction : undefined }));
+	}
 
 	const start = performance.now();
 	const inhibitResult = runInhibitors({
@@ -49,7 +56,7 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 	Logging.logPerf({
 		duration: end - start,
 		text: 'Inhibitors',
-		interaction
+		interaction: debugInfo ? interaction : undefined
 	});
 
 	if (inhibitResult !== undefined) {

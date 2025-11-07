@@ -1,9 +1,19 @@
 import { ButtonInteraction } from 'discord.js';
 
 import type { NewUser } from '@/prisma/main.js';
-import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
 import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
+
+type RawCommandHandlerInner = typeof import('@/lib/discord/commandHandler.js')['rawCommandHandlerInner'];
+
+let cachedRawCommandHandlerInner: RawCommandHandlerInner | null = null;
+
+async function getRawCommandHandlerInner(): Promise<RawCommandHandlerInner> {
+	if (!cachedRawCommandHandlerInner) {
+		({ rawCommandHandlerInner: cachedRawCommandHandlerInner } = await import('@/lib/discord/commandHandler.js'));
+	}
+	return cachedRawCommandHandlerInner;
+}
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });
@@ -41,6 +51,7 @@ export async function runCommand({
 
 	const shouldIgnoreBusy = ignoreUserIsBusy ?? (isContinue ? true : undefined);
 
+	const rawCommandHandlerInner = await getRawCommandHandlerInner();
 	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({
 		interaction,
 		command,

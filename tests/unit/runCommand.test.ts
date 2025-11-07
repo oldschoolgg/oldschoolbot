@@ -16,7 +16,7 @@ vi.mock('src/lib/discord/commandHandler.ts', () => ({
 }));
 
 const fakeUpdateUserLastCommandDate = vi.fn(() => ({
-	catch: () => { }
+	catch: () => {}
 }));
 
 vi.mock('src/lib/rawSql.js', () => ({
