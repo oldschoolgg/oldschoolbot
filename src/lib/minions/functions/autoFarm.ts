@@ -17,6 +17,8 @@ import type { Plant } from '@/lib/skilling/types.js';
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { ClientSettings } from '@/lib/util/clientSettings.js';
+import { Logging } from '@/lib/util/logger.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { getPlantsForPatch, parsePreferredSeeds, resolveSeedForPatch } from './autoFarmPreferences.js';
 import { prepareFarmingStep } from './farmingTripHelpers.js';
