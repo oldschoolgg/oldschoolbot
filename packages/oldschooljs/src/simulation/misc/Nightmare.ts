@@ -1,8 +1,10 @@
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { calcPercentOfNum, calcWhatPercent, percentChance, randInt, roll } from '@/util/smallUtils.js';
+import { calcPercentOfNum, calcWhatPercent } from '@/util/smallUtils.js';
 
 export interface TeamMember {
 	id: string;

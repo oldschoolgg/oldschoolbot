@@ -1,6 +1,6 @@
+import { fromKMB, toKMB } from '@oldschoolgg/rng';
 import { describe, expect, test } from 'vitest';
 
-import { fromKMB, toKMB } from '@/util/smallUtils.js';
 import { getBrimKeyChanceFromCBLevel } from '@/util/util.js';
 
 describe('Utils', () => {

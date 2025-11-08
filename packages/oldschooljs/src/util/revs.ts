@@ -1,7 +1,8 @@
+import { randInt, roll } from '@oldschoolgg/rng';
+
 import type { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { CustomKillLogic, MonsterKillOptions } from '@/structures/Monster.js';
-import { randInt, roll } from './smallUtils.js';
 
 type RevTableKey =
 	| 'uniqueTable'

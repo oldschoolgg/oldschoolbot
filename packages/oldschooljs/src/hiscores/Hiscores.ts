@@ -4,7 +4,6 @@ import {
 	type AccountType,
 	BASE_API_URL,
 	CLUES,
-	Errors,
 	MINIGAMES,
 	mappedBossNames,
 	SKILLS
@@ -119,27 +118,33 @@ function isValidUsername(username: string): boolean {
 }
 
 export const Hiscores = {
-	async fetch(username: string, options: GetOptions = { type: 'normal', virtualLevels: false }): Promise<Player> {
+	async fetch(
+		username: string,
+		options: GetOptions = { type: 'normal', virtualLevels: false }
+	): Promise<{ player: Player; error: null } | { player: null; error: string }> {
 		const mergedOptions = { ...defaultGetOptions, ...options };
 		const accountType = mergedOptions.type ?? 'normal';
-		if (!isValidUsername(username)) throw new Error(Errors.INVALID_USERNAME);
+		if (!isValidUsername(username)) {
+			return { player: null, error: `That is not a valid account username.` };
+		}
 		if (!ACCOUNT_TYPES.includes(accountType)) {
-			throw new Error(Errors.INVALID_ACCOUNT_TYPE);
+			return { player: null, error: `That is not a valid account type.` };
 		}
 
-		const data: Player = await fetch(hiscoreURLs[accountType] + username)
-			.then(async (res): Promise<string> => {
-				if (res.status === 404) throw new Error(Errors.ACCOUNT_NOT_FOUND);
-				if (!res.ok) throw new Error(Errors.FAILED_REQUEST);
-				const text = await res.text();
-				// If the text response is HTML, it means the hiscores are down.
-				if (text.trim().startsWith('<')) throw new Error(Errors.FAILED_REQUEST);
-				return text;
-			})
-			.then(p => resolvePlayerFromHiscores(p, accountType))
-			.catch((err): never => {
-				throw err;
-			});
+		const rawResponse = await fetch(hiscoreURLs[accountType] + username);
+		if (rawResponse.status === 404) {
+			return { player: null, error: `That username does not exist on the ${accountType} hiscores.` };
+		}
+		if (!rawResponse.ok) {
+			return { player: null, error: `Failed to fetch hiscores. The hiscores may be down.` };
+		}
+		const text = await rawResponse.text();
+		// If the text response is HTML, it means the hiscores are down.
+		if (text.trim().startsWith('<')) {
+			return { player: null, error: `Failed to fetch hiscores. The hiscores may be down.` };
+		}
+
+		const data: Player = resolvePlayerFromHiscores(text, accountType);
 
 		if (mergedOptions.virtualLevels) {
 			let overall = 0;
@@ -152,7 +157,7 @@ export const Hiscores = {
 			data.skills.overall.level = overall;
 		}
 
-		return new Player({
+		const player = new Player({
 			username,
 			type: options.type ?? 'normal',
 			skills: data.skills,
@@ -161,5 +166,6 @@ export const Hiscores = {
 			bossRecords: data.bossRecords,
 			leaguePoints: data.leaguePoints
 		});
+		return { player, error: null };
 	}
 };

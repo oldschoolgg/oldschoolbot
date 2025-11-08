@@ -1,8 +1,9 @@
+import { randomVariation, roll } from '@oldschoolgg/rng';
+
 import { EItem } from '@/EItem.js';
 import { anglerOutfit } from '@/itemGroups.js';
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import { randomVariation, roll } from '@/util/smallUtils.js';
 
 const trawlerFish = [
 	{
