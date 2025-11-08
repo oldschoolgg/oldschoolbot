@@ -1,3 +1,4 @@
+import { Prisma } from '@/prisma/main.js';
 import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
@@ -12,15 +13,22 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 	});
 
 	// Ensure user has a userStats row
-	await prisma.userStats.upsert({
-		where: {
-			user_id: BigInt(user.id)
-		},
-		create: {
-			user_id: BigInt(user.id)
-		},
-		update: {}
-	});
+	try {
+		await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(user.id)
+			},
+			create: {
+				user_id: BigInt(user.id)
+			},
+			update: {}
+		});
+	} catch (err) {
+		// Ignore unique constraint errors, they already have a row
+		if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
+			throw err;
+		}
+	}
 
 	return {
 		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
