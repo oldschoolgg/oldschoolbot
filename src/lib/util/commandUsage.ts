@@ -7,7 +7,7 @@ function isMahojiUserOption(data: MahojiUserOption | CommandOptions): data is Ma
 	return 'user' in data && data.user && 'id' in data.user;
 }
 
-export interface CompressedArg {
+interface CompressedArg {
 	[key: string]: string | number | boolean | null | undefined | CompressedArg;
 }
 

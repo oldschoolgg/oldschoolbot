@@ -126,7 +126,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 		if (this.totalPages === 1) return SpecialResponse.PaginatedMessageResponse;
 
 		if (!interactionResponse) {
-			throw new Error('TODO? Failed to fetch interaction response for paginated message.');
+			throw new Error('Failed to fetch interaction response for paginated message.');
 		}
 		const collector = globalClient.createInteractionCollector({
 			timeoutMs: Time.Minute * 10,

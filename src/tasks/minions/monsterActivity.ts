@@ -341,7 +341,8 @@ export function doMonsterTrip(data: newOptions) {
 			messages.push('While killing a Unicorn, you discover some strange clothing - you pick them up');
 		}
 		if (newSuperiorCount) {
-			loot.add(superiorTable?.kill(newSuperiorCount).set('Brimstone key', 0)); //remove the rng keys, todo: remove drop from superiors in osjs?
+			// TODO: remove drop from superiors in osjs? remove the rng keys
+			loot.add(superiorTable?.kill(newSuperiorCount).set('Brimstone key', 0));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 			if (killOptions.slayerMaster === MonsterSlayerMaster.Konar) loot.add('Brimstone key', newSuperiorCount);

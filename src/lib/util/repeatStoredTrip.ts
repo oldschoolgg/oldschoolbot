@@ -770,8 +770,9 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 
 export async function makeRepeatTripButtons(user: MUser) {
 	const trips = await fetchRepeatTrips(user);
-	const buttons: ButtonBuilder[] = [];
 	const limit = Math.min((await user.fetchPerkTier()) + 1, 5);
+
+	const buttons: ButtonBuilder[] = [];
 	for (const trip of trips.slice(0, limit)) {
 		buttons.push(
 			new ButtonBuilder()
@@ -796,7 +797,6 @@ export async function repeatTrip(user: MUser, interaction: MInteraction, activit
 		interaction,
 		user,
 		continueDeltaMillis: 0
-		// TODO:
-		// continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
+		// TODO: continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
 	});
 }

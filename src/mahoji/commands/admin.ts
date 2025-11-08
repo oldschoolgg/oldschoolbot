@@ -17,7 +17,6 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
-import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
@@ -28,16 +27,13 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
+import { isValidBitField } from '@/lib/util/smallUtils.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
 	'https://gfycat.com/serenegleamingfruitbat',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
-
-function isValidBitField(bit: number): bit is BitField {
-	return Boolean(BitFieldData[bit as keyof typeof BitFieldData]);
-}
 
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
@@ -637,13 +633,13 @@ export const adminCommand = defineCommand({
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await ActivityManager.cancelActivity(user.id);
-			await Cache.resetRatelimit(user.id, 'global_buttons');
 			return 'Done.';
 		}
 		if (options.clear_busy) {
 			const { user } = options.clear_busy.user;
-			if (!userIsBusy(user.id)) return `${user.username} isn't busy.`;
-			modifyUserBusy({ type: 'unlock', userID: user.id, reason: `Admin ${adminUser.id}` });
+			const isBusy = await Cache.getUserLockStatus(user.id);
+			if (!isBusy) return `${user.username} isn't busy.`;
+			await Cache.setUserLockStatus(user.id, 'unlocked');
 			return `Cleared busy for ${user.username}.`;
 		}
 

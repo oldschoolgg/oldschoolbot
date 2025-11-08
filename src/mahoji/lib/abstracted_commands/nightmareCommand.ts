@@ -1,4 +1,4 @@
-import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, reduceNumByPercent, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Items, resolveItems, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -268,8 +268,11 @@ export async function nightmareCommand(user: MUser, channelId: string, name: str
 		soloFoodUsage = realCost.clone().add(foodRemoved);
 
 		totalCost.add(foodRemoved).add(realCost);
-	} catch (_err: any) {
-		return typeof _err === 'string' ? _err : _err.message;
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return err.message;
+		}
+		throw err;
 	}
 
 	// Only remove charges for phosani since these items only boost phosani

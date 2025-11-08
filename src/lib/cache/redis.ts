@@ -31,6 +31,7 @@ const Key = {
 	},
 	User: {
 		BadgedUsername: (userId: string) => fmkey('user', BOT_TYPE, userId, 'badged_username'),
+		LockStatus: (userId: string) => fmkey('user', BOT_TYPE, userId, 'lock_status'),
 		Ratelimit: (type: string, userId: string) => fmkey('user', BOT_TYPE, 'ratelimit', type, userId)
 	},
 	Guild: (id: string) => fmkey('guild', id),
@@ -40,6 +41,8 @@ const Key = {
 	RoboChimpUser: (userId: string | bigint) => fmkey(CacheKeyPrefix.RoboChimp, 'user', userId.toString()),
 	Channel: (channelId: string) => fmkey('channel', channelId)
 };
+
+type LockStatus = 'locked' | 'unlocked';
 
 const TTL = {
 	Minute: Time.Minute / Time.Second,
@@ -63,7 +66,7 @@ const RATELIMITS: Record<RatelimitType, { windowSeconds: number; max: number }> 
 	stats_command: { windowSeconds: 5, max: 1 }
 } as const;
 
-export class CacheManager {
+class CacheManager {
 	private client: Redis;
 	constructor() {
 		this.client = process.env.TEST ? new Redis(6379, 'redis') : new Redis();
@@ -223,6 +226,19 @@ export class CacheManager {
 	}
 
 	// Users
+	async getUserLockStatus(userId: string): Promise<LockStatus> {
+		const status = await this.getString(Key.User.LockStatus(userId));
+		return (status as LockStatus | null) ?? 'unlocked';
+	}
+
+	async setUserLockStatus(userId: string, newStatus: LockStatus): Promise<void> {
+		const current = await this.getUserLockStatus(userId);
+		if (current === newStatus) {
+			throw new Error(`User is already ${newStatus}`);
+		}
+		await this.setString(Key.User.LockStatus(userId), newStatus, 25);
+	}
+
 	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
 		return this.getString(Key.User.BadgedUsername(userId));
 	}

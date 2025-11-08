@@ -27,23 +27,21 @@ export const kcCommand = defineCommand({
 		}
 	],
 	run: async ({ options }) => {
-		try {
-			const { bossRecords } = await Hiscores.fetch(options.rsn);
-
-			for (const [boss, { rank, score }] of Object.entries(bossRecords)) {
-				if (stringMatches(boss, options.boss)) {
-					if (score === -1 || rank === -1) {
-						return `${toTitleCase(options.rsn)}'s has no recorded KC for that boss.`;
-					}
-					return `${toTitleCase(options.rsn)}'s ${bossNameMap.get(
-						boss as keyof BossRecords
-					)} KC is **${score.toLocaleString()}** (Rank ${rank.toLocaleString()})`;
-				}
-			}
-
-			return `${toTitleCase(options.rsn)} doesn't have any recorded kills for that boss.`;
-		} catch (err: any) {
-			return err.message;
+		const { player, error } = await Hiscores.fetch(options.rsn);
+		if (error !== null) {
+			return error;
 		}
+		for (const [boss, { rank, score }] of Object.entries(player.bossRecords)) {
+			if (stringMatches(boss, options.boss)) {
+				if (score === -1 || rank === -1) {
+					return `${toTitleCase(options.rsn)}'s has no recorded KC for that boss.`;
+				}
+				return `${toTitleCase(options.rsn)}'s ${bossNameMap.get(
+					boss as keyof BossRecords
+				)} KC is **${score.toLocaleString()}** (Rank ${rank.toLocaleString()})`;
+			}
+		}
+
+		return `${toTitleCase(options.rsn)} doesn't have any recorded kills for that boss.`;
 	}
 });

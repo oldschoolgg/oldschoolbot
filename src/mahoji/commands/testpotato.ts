@@ -31,6 +31,7 @@ import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
+import { isValidBitField } from '@/lib/util/smallUtils.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
@@ -707,7 +708,7 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					if (
 						!bit ||
-						!(BitFieldData as any)[bit] ||
+						!isValidBitField(bit) ||
 						[7, 8].includes(bit) ||
 						(action !== 'add' && action !== 'remove')
 					) {
@@ -732,7 +733,7 @@ export const testPotatoCommand = globalConfig.isProduction
 						bitfield: uniqueArr(newBits)
 					});
 
-					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData as any)[bit].name}' bit.`;
+					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit.`;
 				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
@@ -928,9 +929,9 @@ export const testPotatoCommand = globalConfig.isProduction
 						celestial_ring_charges: 10_000,
 						scythe_of_vitur_charges: 10_000,
 						venator_bow_charges: 10_000,
-						gear_mage: TOBMaxMageGear.raw() as any,
-						gear_melee: TOBMaxMeleeGear.raw() as any,
-						gear_range: TOBMaxRangeGear.raw() as any,
+						gear_mage: TOBMaxMageGear.raw(),
+						gear_melee: TOBMaxMeleeGear.raw(),
+						gear_range: TOBMaxRangeGear.raw(),
 						blowpipe: {
 							scales: 100_000,
 							dartQuantity: 100_000,
@@ -952,9 +953,9 @@ export const testPotatoCommand = globalConfig.isProduction
 					}
 
 					await user.update({
-						gear_melee: gear.melee.raw() as any,
-						gear_range: gear.range.raw() as any,
-						gear_mage: gear.mage.raw() as any
+						gear_melee: gear.melee.raw(),
+						gear_range: gear.range.raw(),
+						gear_mage: gear.mage.raw()
 					});
 
 					return gearViewCommand(user, 'all', false);

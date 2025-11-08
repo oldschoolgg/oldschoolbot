@@ -242,7 +242,7 @@ async function globalButtonInteractionHandler({
 
 	if (id.startsWith('ge_')) return handleGEButton(user, id);
 
-	if (user.isBusy) {
+	if (await user.getIsLocked()) {
 		return { content: 'You cannot use a command right now.', ephemeral: true };
 	}
 

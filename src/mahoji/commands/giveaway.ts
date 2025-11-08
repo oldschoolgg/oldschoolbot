@@ -14,7 +14,6 @@ import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isModOrAdmin } from '@/lib/util.js';
 
 function makeGiveawayButtons(giveawayID: number) {
 	return [
@@ -103,7 +102,7 @@ export const giveawayCommand = defineCommand({
 					completed: false
 				}
 			});
-			if (existingGiveaways.length >= 10 && !isModOrAdmin(user)) {
+			if (existingGiveaways.length >= 10 && !user.isModOrAdmin()) {
 				return 'You cannot have more than 10 giveaways active at a time.';
 			}
 

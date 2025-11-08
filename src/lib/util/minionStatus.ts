@@ -84,11 +84,6 @@ import type {
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
-export async function fetchMinionStatus(user: MUser): Promise<string> {
-	const currentTask: ActivityTaskData | null = await ActivityManager.getActivityOfUser(user.id);
-	return minionStatus(user, currentTask);
-}
-
 export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) {
 	const name = user.minionName;
 	if (!currentTask) {

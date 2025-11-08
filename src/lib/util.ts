@@ -1,9 +1,8 @@
-import { userMention } from '@oldschoolgg/discord';
 import { cleanUsername } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import type { Prisma, User } from '@/prisma/main.js';
-import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
@@ -93,22 +92,6 @@ export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>): P
 	return result;
 }
 
-export function isModOrAdmin(user: MUser) {
-	return globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator);
-}
-
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
-
-export async function adminPingLog(message: string) {
-	if (!globalConfig.isProduction) {
-		console.log(message);
-		return;
-	}
-
-	await globalClient.sendMessage(globalConfig.moderatorLogsChannels, {
-		content: `${message} ${globalConfig.adminUserIDs.map(i => userMention(i)).join(', ')}`,
-		allowedMentions: { users: globalConfig.adminUserIDs }
-	});
-}

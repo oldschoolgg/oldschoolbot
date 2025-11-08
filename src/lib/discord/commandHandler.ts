@@ -44,7 +44,7 @@ export async function rawCommandHandlerInner({
 
 	const shouldIgnoreBusy = ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
 
-	if (user.isBusy && !shouldIgnoreBusy) {
+	if (!shouldIgnoreBusy && (await user.getIsLocked())) {
 		return {
 			content: 'You cannot use a command right now.',
 			ephemeral: true
@@ -75,7 +75,6 @@ export async function rawCommandHandlerInner({
 			member: interaction.member,
 			channelId: interaction.channelId,
 			guildId: interaction.guildId,
-			userID: interaction.userId,
 			userId: interaction.userId,
 			rng
 		});

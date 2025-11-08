@@ -1,5 +1,5 @@
 import { percentChance } from '@oldschoolgg/rng';
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';
@@ -67,8 +67,11 @@ export async function chompyHuntCommand(user: MUser, channelId: string) {
 	const realCost = new Bank();
 	try {
 		realCost.add((await user.specialRemoveItems(cost)).realCost);
-	} catch (err: any) {
-		return `You cannot hunt chompy birds. ${err.message}`;
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return err.message;
+		}
+		throw err;
 	}
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

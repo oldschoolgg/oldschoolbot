@@ -124,9 +124,6 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 		return makeParty(this, options);
 	}
 }
-export const MButtonInteraction = (args: InputItx<IButtonInteraction>) => new MInteraction<IButtonInteraction>(args);
-export const MChatInputInteraction = (args: InputItx<IChatInputCommandInteraction>) =>
-	new MInteraction<IChatInputCommandInteraction>(args);
 
 export type ButtonMInteraction = MInteraction<IButtonInteraction>;
 export type ChatInputMInteraction = MInteraction<IChatInputCommandInteraction>;

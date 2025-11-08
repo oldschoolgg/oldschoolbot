@@ -73,34 +73,27 @@ export const massCommand = defineCommand({
 		const check = await checkReqs([user], monster, 2);
 		if (check) return check;
 
-		let users: MUser[] = [];
-		try {
-			users = await interaction.makeParty({
-				leader: user,
-				minSize: 2,
-				maxSize: 10,
-				ironmanAllowed: false,
-				message: `${user.badgedUsername} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
-				customDenier: async user => {
-					if (!user.hasMinion) {
-						return [true, "you don't have a minion."];
-					}
-					if (await user.minionIsBusy()) {
-						return [true, 'your minion is busy.'];
-					}
-					const [hasReqs, reason] = user.hasMonsterRequirements(monster);
-					if (!hasReqs) {
-						return [true, `you don't have the requirements for this monster; ${reason}`];
-					}
-					return [false];
+		const users: MUser[] = await interaction.makeParty({
+			leader: user,
+			minSize: 2,
+			maxSize: 10,
+			ironmanAllowed: false,
+			message: `${user.badgedUsername} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
+			customDenier: async user => {
+				if (!user.hasMinion) {
+					return [true, "you don't have a minion."];
 				}
-			});
-		} catch (err: any) {
-			return {
-				content: typeof err === 'string' ? err : 'Your mass failed to start.',
-				ephemeral: true
-			};
-		}
+				if (await user.minionIsBusy()) {
+					return [true, 'your minion is busy.'];
+				}
+				const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+				if (!hasReqs) {
+					return [true, `you don't have the requirements for this monster; ${reason}`];
+				}
+				return [false];
+			}
+		});
+
 		const unchangedUsers = [...users];
 		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 

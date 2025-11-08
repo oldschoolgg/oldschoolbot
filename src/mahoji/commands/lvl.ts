@@ -29,20 +29,20 @@ export const lvlCommand = defineCommand({
 		}
 	],
 	run: async ({ options }) => {
-		try {
-			const res = await Hiscores.fetch(options.rsn).then(player => player.skills[options.skill]);
-
-			let str = `**${options.rsn}**'s ${options.skill} level is **${res.level}** and is`;
-
-			if (res.level < 99) {
-				str += ` **${xpLeft(res.xp)}** XP away from level **${res.level + 1}**.`;
-			} else {
-				str += ` **${(MAX_XP - res.xp).toLocaleString()}** XP away from **200m**.`;
-			}
-
-			return str;
-		} catch (err: any) {
-			return err.message;
+		const { player, error } = await Hiscores.fetch(options.rsn);
+		if (error !== null) {
+			return error;
 		}
+
+		const res = player.skills[options.skill];
+		let str = `**${options.rsn}**'s ${options.skill} level is **${res.level}** and is`;
+
+		if (res.level < 99) {
+			str += ` **${xpLeft(res.xp)}** XP away from level **${res.level + 1}**.`;
+		} else {
+			str += ` **${(MAX_XP - res.xp).toLocaleString()}** XP away from **200m**.`;
+		}
+
+		return str;
 	}
 });

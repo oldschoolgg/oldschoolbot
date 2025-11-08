@@ -39,12 +39,12 @@ import type {
 	xp_gains_skill_enum
 } from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
-import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
+import { modifyUserBusy } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField, MAX_LEVEL } from '@/lib/constants.js';
+import { BitField, globalConfig, MAX_LEVEL } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import type { Pet } from '@/lib/data/pets.js';
@@ -307,8 +307,9 @@ export class MUserClass {
 		});
 	}
 
-	get isBusy() {
-		return userIsBusy(this.id);
+	async getIsLocked(): Promise<boolean> {
+		const lockStatus = await Cache.getUserLockStatus(this.id);
+		return lockStatus === 'locked';
 	}
 
 	get totalLevel() {
@@ -1363,6 +1364,10 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			birdhouse,
 			readyAt
 		};
+	}
+
+	isModOrAdmin(): boolean {
+		return globalConfig.adminUserIDs.includes(this.id) || this.bitfield.includes(BitField.isModerator);
 	}
 }
 

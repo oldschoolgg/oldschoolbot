@@ -30,6 +30,7 @@ import {
 	type GatewayGuildCreateDispatchData,
 	GatewayIntentBits,
 	GatewayOpcodes,
+	type GatewayPresenceUpdateData,
 	type GatewayReadyDispatchData,
 	type GatewaySendPayload,
 	type GatewayUpdatePresence,
@@ -95,7 +96,8 @@ export {
 	EmbedBuilder,
 	PresenceUpdateStatus,
 	GatewayIntentBits,
-	ActivityType
+	ActivityType,
+	type GatewayPresenceUpdateData
 };
 
 export * from '@discordjs/formatters';

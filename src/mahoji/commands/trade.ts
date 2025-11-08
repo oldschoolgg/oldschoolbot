@@ -69,7 +69,7 @@ export const tradeCommand = defineCommand({
 		}
 		if (recipientUser.id === senderUser.id) return "You can't trade yourself.";
 		if (recipientAPIUser.bot) return "You can't trade a bot.";
-		if (recipientUser.isBusy) return 'That user is busy right now.';
+		if (await recipientUser.getIsLocked()) return 'That user is busy right now.';
 
 		const itemsSent =
 			!options.search && !options.filter && !options.send

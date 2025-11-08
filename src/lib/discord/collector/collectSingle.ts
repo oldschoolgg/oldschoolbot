@@ -58,7 +58,7 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 			if (!mitx.isButton()) return;
 			void this.onInteraction(mitx);
 		};
-		this.client.addEventListener('interactionCreate', this.boundListener);
+		this.client.addListener('interactionCreate', this.boundListener);
 		if (this.timeoutMs && this.timeoutMs > 0) {
 			this.timer = TimerManager.setTimeout(() => this.stop('timeout'), this.timeoutMs);
 			this.timer.unref?.();
@@ -125,7 +125,7 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 		if (this.endedFlag) return;
 		this.endedFlag = true;
 		try {
-			this.client.removeEventListener('interactionCreate', this.boundListener);
+			this.client.removeListener('interactionCreate', this.boundListener);
 		} finally {
 			if (this.timer) {
 				TimerManager.clearTimeout(this.timer);

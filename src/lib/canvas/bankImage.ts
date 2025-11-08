@@ -4,6 +4,7 @@ import { chunk, cleanString, generateHexColorForCashStack, sumArr, UserError } f
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import {
 	type BaseCanvasArgs,
 	type BGSpriteName,
@@ -228,6 +229,7 @@ class BankImageTask {
 	public ready: boolean = false;
 
 	async init() {
+		await CanvasModule.ensureInit();
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',

@@ -28,11 +28,12 @@ export const bossrecordCommand = defineCommand({
 	],
 	run: async ({ options, interaction }) => {
 		await interaction.defer();
-		const { bossRecords } = await Hiscores.fetch(options.rsn).catch(err => {
-			throw err.message;
-		});
+		const { player, error } = await Hiscores.fetch(options.rsn);
+		if (error !== null) {
+			return error;
+		}
 
-		const sortedEntries = Object.entries(bossRecords)
+		const sortedEntries = Object.entries(player.bossRecords)
 			.filter(([, { rank, score }]) => rank !== -1 && score !== -1)
 			.sort(([, a], [, b]) => a.rank - b.rank);
 

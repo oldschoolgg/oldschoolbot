@@ -109,8 +109,6 @@ export type CommandRunOptions<TOpts = {}> = {
 	member: IMember | null;
 	channelId: string;
 	guildId: string | null;
-	// TODO
-	userID: string;
 	userId: string;
 	rng: RNGProvider;
 };

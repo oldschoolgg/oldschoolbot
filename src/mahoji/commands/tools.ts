@@ -55,17 +55,17 @@ OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIK
 
 async function minionStats(user: MUser) {
 	const { id } = user;
-	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = (await Promise.all([
-		prisma.$queryRawUnsafe(`SELECT count(id)
+	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = await Promise.all([
+		prisma.$queryRawUnsafe<{ count: bigint }[]>(`SELECT count(id)
 FROM activity
 WHERE user_id = ${id}
 ${whereInMassClause(id)};`),
-		prisma.$queryRawUnsafe(`SELECT id, start_date, type
+		prisma.$queryRawUnsafe<{ id: string; start_date: Date; type: string }[]>(`SELECT id, start_date, type
 FROM activity
 WHERE user_id = ${id}
 ORDER BY id ASC
 LIMIT 1;`),
-		prisma.$queryRawUnsafe(`
+		prisma.$queryRawUnsafe<{ type: string; qty: bigint }[]>(`
 SELECT type, count(type) as qty
 FROM activity
 WHERE user_id = ${id}
@@ -73,12 +73,12 @@ ${whereInMassClause(id)}
 GROUP BY type
 ORDER BY qty DESC
 LIMIT 15;`),
-		prisma.$queryRawUnsafe(`
+		prisma.$queryRawUnsafe<{ sum: bigint }[]>(`
 SELECT sum(duration)
 FROM activity
 WHERE user_id = ${id}
 ${whereInMassClause(id)};`)
-	])) as any[];
+	]);
 
 	const totalDuration = Number(_totalDuration.sum);
 	const firstActivityDate = new Date(firstActivity.start_date);
@@ -89,7 +89,7 @@ ${whereInMassClause(id)};`)
 	return `**Total Activities:** ${totalActivities.count}
 **Common Activities:** ${countsPerActivity
 		.slice(0, 3)
-		.map((i: any) => `${i.qty}x ${i.type}`)
+		.map(i => `${i.qty}x ${i.type}`)
 		.join(', ')}
 **Total Minion Activity:** ${formatDuration(totalDuration)}
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
@@ -139,7 +139,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 			(
 				await Promise.all(
 					res.map(
-						async (i: any) =>
+						async i =>
 							`${++place}. **${await Cache.getBadgedUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
 					)
 				)

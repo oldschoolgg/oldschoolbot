@@ -36,7 +36,7 @@ export const payCommand = defineCommand({
 		if (recipient.isIronman) return "Iron players can't receive money.";
 		if (GP < amount) return "You don't have enough GP.";
 		if (options.user.user.bot) return "You can't send money to a bot.";
-		if (recipient.isBusy) return 'That user is busy right now.';
+		if (await recipient.getIsLocked()) return 'That user is busy right now.';
 
 		if (amount > 500_000_000) {
 			await interaction.confirmation(
