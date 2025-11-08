@@ -1071,8 +1071,6 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					const assignedTask = selectedMaster.tasks.find(m => m.monster.id === selectedMonster.id)!;
 
-					if (!selectedMaster) return 'Invalid slayer master.';
-					if (!selectedMonster) return 'Invalid monster.';
 					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
 
 					// Update an existing slayer task for the user

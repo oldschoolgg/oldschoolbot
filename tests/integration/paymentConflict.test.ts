@@ -130,6 +130,7 @@ describe('Payment conflicts', async () => {
 				promises.push(promisePay());
 			}
 		}
+		await Promise.all(promises);
 
 		let totalGP = 0;
 		for (const user of [userPayer, ...payees]) {

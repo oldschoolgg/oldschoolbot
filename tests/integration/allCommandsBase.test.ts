@@ -1,6 +1,6 @@
 import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
 import type { IChannel, IRole } from '@oldschoolgg/schemas';
-import { Stopwatch, sleep, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { Stopwatch, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
@@ -225,7 +225,6 @@ test(
 		const queue = new PromiseQueue({ concurrency: 4 });
 
 		for (const { command, options: allOptions } of processedCommands) {
-
 			for (const options of allOptions) {
 				queue.add(async () => {
 					try {

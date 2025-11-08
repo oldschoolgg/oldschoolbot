@@ -462,14 +462,14 @@ WHERE badges && ${badgeIDs}
 			}
 		}
 
-		const text = await Promise.all(
-			results
-				.map(
+		const text = (
+			await Promise.all(
+				results.map(
 					async r =>
 						`${await Cache.getBadgedUsername(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`
 				)
-				.join('\n')
-		);
+			)
+		).join('\n');
 		return `Roles
 ${text}
 

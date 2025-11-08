@@ -335,7 +335,7 @@ export async function mockUser(
 }
 
 export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
-	const id = userData?.id ?? mockedId();
+	const id = userData.id ?? mockedId();
 	userData.username ??= `TestUser`;
 
 	const bank = _bank ? _bank.clone() : null;

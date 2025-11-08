@@ -41,7 +41,7 @@ function resolveComponents(
 	if (isButtonMatrix(components)) {
 		return components.map(row => ({ type: 1, components: row.map(button => button.toJSON()) }));
 	}
-	return chunk(components ?? [], 5).map(buttons => ({
+	return chunk(components, 5).map(buttons => ({
 		type: 1,
 		components: buttons.map(button => button.toJSON())
 	}));
