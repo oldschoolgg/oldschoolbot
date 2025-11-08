@@ -15,7 +15,9 @@ const external = [
 	'ioredis',
 	'@discordjs/rest',
 	'@discordjs/ws',
-	'ws'
+	'ws',
+	'@discordjs/builders',
+	'@oldschoolgg/discord'
 ];
 
 const baseBuildOptions: BuildOptions = {

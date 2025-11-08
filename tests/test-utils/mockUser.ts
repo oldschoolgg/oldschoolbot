@@ -20,9 +20,9 @@ import { fetchUsernameAndCache } from '@/lib/util.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
 import { giveMaxStats } from '@/mahoji/commands/testpotato.js';
 import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.js';
-import { mockInteraction } from '../integration/util.js';
 import { handleTripFinishResults, mockedId } from './misc.js';
 import { TestClient } from './mockClient.js';
+import { mockInteraction } from './mockInteraction.js';
 
 export class TestUser extends MUserClass {
 	public client!: TestClient;

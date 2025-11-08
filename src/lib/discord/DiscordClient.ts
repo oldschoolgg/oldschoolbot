@@ -83,7 +83,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 			switch (packet.t) {
 				case 'READY': {
 					if (shardId === 0) {
-						this.onReady(packet.d);
+						await this.onReady(packet.d);
 					}
 					break;
 				}
@@ -113,9 +113,9 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 	}
 
 	private async onReady(_d: GatewayReadyDispatchData) {
-		await this.fetchCommands();
 		const application: APIApplication = (await this.rest.get(Routes.currentApplication())) as APIApplication;
 		this.application = application;
+		await this.fetchCommands();
 	}
 
 	async login() {

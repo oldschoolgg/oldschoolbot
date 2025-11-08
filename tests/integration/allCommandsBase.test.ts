@@ -15,7 +15,7 @@ import { createTestUser, mockClient, mockIMember, mockUser, TestClient } from '.
 
 type CommandInput = Record<string, any>;
 type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean;
-const LIMIT_PER_COMMAND = 5;
+const LIMIT_PER_COMMAND = 3;
 
 export async function generateCommandInputs(
 	commandName: string,
@@ -222,13 +222,9 @@ test(
 		console.log(`Starting to run ${totalCommands} command permutations...`);
 
 		let commandsRan = 0;
+		const queue = new PromiseQueue({ concurrency: 4 });
+
 		for (const { command, options: allOptions } of processedCommands) {
-			for (let i = 0; i < 4; i++) {
-				global!.gc!()!;
-				await sleep(20);
-			}
-			// console.log(`Running command: ${command.name} with ${allOptions.length} option sets...`);
-			const queue = new PromiseQueue();
 
 			for (const options of allOptions) {
 				queue.add(async () => {
@@ -244,14 +240,8 @@ test(
 					}
 				});
 			}
-			await queue.onEmpty();
-
-			for (let i = 0; i < 4; i++) {
-				global!.gc!()!;
-				await sleep(20);
-			}
-			// console.log(`Completed command: ${command.name}`);
 		}
+		await queue.onEmpty();
 
 		console.log(
 			`[${stopwatch.toString()}] Finished running ${commandsRan} commands, ${TestClient.activitiesProcessed} activities`

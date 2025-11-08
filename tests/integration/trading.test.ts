@@ -5,8 +5,9 @@ import { expect, test } from 'vitest';
 
 import { tradeCommand } from '../../src/mahoji/commands/trade.js';
 import { mockSnowflake } from '../test-utils/misc.js';
+import { mockInteraction } from '../test-utils/mockInteraction.js';
 import type { TestUser } from './util.js';
-import { createTestUser, mockClient, mockInteraction } from './util.js';
+import { createTestUser, mockClient } from './util.js';
 
 test('Trade consistency', async () => {
 	await mockClient();

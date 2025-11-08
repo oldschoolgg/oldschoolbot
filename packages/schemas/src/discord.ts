@@ -63,5 +63,3 @@ export const ZMemberWithRoles = ZMember.extend({
 	roles: z.array(ZRole)
 });
 export type IMemberWithRoles = z.infer<typeof ZMemberWithRoles>;
-
-export * from './interactions.js';

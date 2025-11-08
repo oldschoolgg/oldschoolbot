@@ -35,59 +35,6 @@ export function mockUserOption(userId?: string): MahojiUserOption {
 	};
 }
 
-class MockInteraction {
-	id = '111155555';
-	__response__: any = {};
-	channelId = TEST_CHANNEL_ID;
-	async deferReply() {
-		return Promise.resolve();
-	}
-	async editReply(res: any) {
-		this.__response__ = res;
-	}
-	async followUp(res: any) {
-		this.__response__ = res;
-	}
-	async reply(res: any) {
-		this.__response__ = res;
-	}
-
-	mUser: MUser;
-	public userId: string;
-	constructor({ user }: { user: MUser }) {
-		this.mUser = user;
-		this.userId = user.id;
-	}
-
-	async confirmation() {
-		return Promise.resolve();
-	}
-
-	async getChatInputCommandOptions() {
-		return Promise.resolve();
-	}
-
-	async makePaginatedMessage() {
-		return Promise.resolve();
-	}
-
-	async makeParty(): Promise<MUser[]> {
-		return [this.mUser];
-	}
-
-	async defer() {
-		return Promise.resolve();
-	}
-
-	async returnStringOrFile() {
-		return Promise.resolve();
-	}
-}
-
-export function mockInteraction({ user }: { user: MUser }): MInteraction {
-	return new MockInteraction({ user }) as any as MInteraction;
-}
-
 export function mockMessage({ userId }: { userId?: string } = {}): IMessage {
 	return {
 		id: mockedId(),

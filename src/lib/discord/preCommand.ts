@@ -20,6 +20,9 @@ type PrecommandReturn = Promise<undefined | InhibitorResult>;
 export async function preCommand({ command, interaction, user }: PreCommandOptions): PrecommandReturn {
 	Logging.logDebug(`${user.logName} ran command: ${command.name}`);
 	const commandName: command_name_enum = command.name as command_name_enum;
+	if (!interaction.channelId) {
+		throw new Error(`${interaction}\n${JSON.stringify(interaction)}`.slice(0, 1000));
+	}
 	prisma.commandUsage
 		.create({
 			data: {

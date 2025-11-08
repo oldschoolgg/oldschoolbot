@@ -1,4 +1,4 @@
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/GeneralBank';
 import { Bank } from 'oldschooljs';
 
 import { type DegradeableItem, degradeableItems } from '@/lib/degradeableItems.js';
