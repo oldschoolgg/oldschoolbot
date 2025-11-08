@@ -72,6 +72,14 @@ export async function prepareFarmingStep({
 		};
 	}
 
+	const currentFarmingLevel = user.skillLevel('farming');
+	if (currentFarmingLevel < plant.level) {
+		return {
+			success: false,
+			error: `You need level ${plant.level} Farming to plant ${plant.name}.`
+		};
+	}
+
 	const currentWoodcuttingLevel = user.skillLevel('woodcutting');
 
 	let treeChopCost = 0;
