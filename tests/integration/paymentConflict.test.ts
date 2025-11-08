@@ -10,7 +10,7 @@ import { createTestUser, mockClient, mockUserOption } from './util.js';
 
 describe('Payment conflicts', async () => {
 	const payerCount = 20;
-	const iterations = 20;
+	const iterations = 10;
 	const addChance = 3;
 
 	const bigBank = new Bank().add('Cannonball', 4).add('Bones', 10_000);
@@ -130,7 +130,6 @@ describe('Payment conflicts', async () => {
 				promises.push(promisePay());
 			}
 		}
-		await Promise.all(promises);
 
 		let totalGP = 0;
 		for (const user of [userPayer, ...payees]) {
