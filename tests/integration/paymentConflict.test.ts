@@ -42,10 +42,16 @@ describe('Payment conflicts', async () => {
 			const promisePay = async () => {
 				const payer = randArrItem(payers);
 				const amount = randInt(100_000, 1_000_000);
-				const res = await payer.runCommand(payCommand, {
-					user: mockUserOption(payeeTarget.id),
-					amount: amount.toString()
-				});
+				const res = await payer.runCommand(
+					payCommand,
+					{
+						user: mockUserOption(payeeTarget.id),
+						amount: amount.toString()
+					},
+					{
+						bypassBusy: true
+					}
+				);
 				if (!(res as string).startsWith('You sent')) {
 					throw new Error(`Payment failed: ${res}`);
 				}
@@ -96,10 +102,16 @@ describe('Payment conflicts', async () => {
 			const payee = randArrItem(payees);
 			return new Promise(async () => {
 				const amount = randInt(100_000, 1_000_000);
-				const res = await userPayer.runCommand(payCommand, {
-					user: mockUserOption(payee.id),
-					amount: amount.toString()
-				});
+				const res = await userPayer.runCommand(
+					payCommand,
+					{
+						user: mockUserOption(payee.id),
+						amount: amount.toString()
+					},
+					{
+						bypassBusy: true
+					}
+				);
 				if (!(res as string).startsWith('You sent')) {
 					throw new Error(`Payment failed: ${res}`);
 				}

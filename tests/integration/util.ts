@@ -53,15 +53,17 @@ class MockInteraction {
 	}
 
 	mUser: MUser;
-	user = {
-		id: '123456789'
-	};
+	public userId: string;
 	constructor({ user }: { user: MUser }) {
 		this.mUser = user;
-		this.user.id = user.id;
+		this.userId = user.id;
 	}
 
 	async confirmation() {
+		return Promise.resolve();
+	}
+
+	async getChatInputCommandOptions() {
 		return Promise.resolve();
 	}
 

@@ -7,7 +7,8 @@ import { expect } from 'vitest';
 import type { GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import type { DegradeableItem } from '@/lib/degradeableItems.js';
-import type { AnyCommand } from '@/lib/discord/commandOptions.js';
+import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
+import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';
 import { _MessageBuilder } from '@/lib/discord/SendableMessage.js';
 import { MUserClass } from '@/lib/MUser.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
@@ -19,7 +20,7 @@ import { fetchUsernameAndCache } from '@/lib/util.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
 import { giveMaxStats } from '@/mahoji/commands/testpotato.js';
 import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.js';
-import { mockIMember, mockInteraction, TEST_CHANNEL_ID } from '../integration/util.js';
+import { mockInteraction } from '../integration/util.js';
 import { handleTripFinishResults, mockedId } from './misc.js';
 import { TestClient } from './mockClient.js';
 
@@ -153,11 +154,12 @@ export class TestUser extends MUserClass {
 	) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
-		const commandResult = await this.runCommand(
-			minionKCommand,
-			{ name: Monsters.get(monster)!.name, method, quantity, wilderness },
-			true
-		);
+		const commandResult = await this.runCommand(minionKCommand, {
+			name: Monsters.get(monster)!.name,
+			method,
+			quantity,
+			wilderness
+		});
 		if (shouldFail) {
 			expect(commandResult).not.toContain('is now killing');
 		}
@@ -189,10 +191,13 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
+	private resolveCommand(_command: string | AnyCommand): AnyCommand {
+		return typeof _command === 'string' ? globalClient.allCommands.find(_c => _c.name === _command)! : _command;
+	}
+
 	async runCmdAndTrip(_command: string | AnyCommand, options: object = {}) {
-		const command =
-			typeof _command === 'string' ? globalClient.allCommands.find(_c => _c.name === _command)! : _command;
-		const commandResult = await this.runCommand(command, options, true);
+		const command = this.resolveCommand(_command);
+		const commandResult = await this.runCommand(command, options);
 		const activityResult = await this.runActivity();
 		await this.sync();
 		return {
@@ -202,30 +207,27 @@ export class TestUser extends MUserClass {
 		};
 	}
 
-	async runCommand(_command: string | AnyCommand, options: object = {}, syncAfter = false) {
+	async runCommand(
+		_command: string | AnyCommand,
+		options: Partial<CommandOptions> = {},
+		otherOptions: { bypassBusy?: boolean } = {}
+	) {
 		await this.sync();
-		const mockedInt = mockInteraction({ user: this });
-		const command =
-			typeof _command === 'string' ? globalClient.allCommands.find(_c => _c.name === _command)! : _command;
-		let result = await command.run({
-			userID: this.user.id,
-			guildId: '342983479501389826',
-			member: mockIMember({ userId: this.user.id }),
-			channelId: TEST_CHANNEL_ID,
-			interaction: mockedInt,
-			user: this,
-			options,
-			rng: MathRNG,
-			userId: this.user.id
-		});
+		const interaction = mockInteraction({ user: this });
+		const command = this.resolveCommand(_command);
 
+		let result = await rawCommandHandlerInner({
+			interaction,
+			command,
+			options: options as CommandOptions,
+			rng: MathRNG,
+			ignoreUserIsBusy: otherOptions.bypassBusy ? true : undefined
+		});
 		if (result instanceof _MessageBuilder) {
 			result = await result.build();
 		}
-		if (syncAfter) {
-			await this.sync();
-		}
-		return result ?? (mockedInt as any).__response__;
+		await this.sync();
+		return result;
 	}
 
 	async bankAmountMatch(itemName: string, amount: number) {
@@ -315,7 +317,8 @@ export async function mockUser(
 		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
 		venator_bow_charges: options.venatorBowCharges,
-		QP: options.QP
+		QP: options.QP,
+		minion_hasBought: true
 	});
 	for (const [skill, level] of Object.entries(options.levels ?? {})) {
 		await user.update({ [`skills_${skill}`]: convertLVLtoXP(level) });
@@ -352,7 +355,8 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 				id,
 				...userData,
 				bank: bank?.toJSON(),
-				GP: GP ?? undefined
+				GP: GP ?? undefined,
+				minion_hasBought: true
 			},
 			update: {
 				...userData,

@@ -14,7 +14,7 @@ import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useComm
 import { createTestUser, mockClient, mockIMember, mockUser, TestClient } from './util.js';
 
 type CommandInput = Record<string, any>;
-
+type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean;
 const LIMIT_PER_COMMAND = 5;
 
 export async function generateCommandInputs(
@@ -24,7 +24,7 @@ export async function generateCommandInputs(
 	options: readonly CommandOption[]
 ): Promise<CommandInput[]> {
 	const results: CommandInput[] = [];
-	const allPossibleOptions: Record<string, (number | string | MahojiUserOption | IChannel | IRole | boolean)[]> = {};
+	const allPossibleOptions: Record<string, TestCommandOptionsValue[]> = {};
 
 	if (options.length === 0) {
 		return [{}];
