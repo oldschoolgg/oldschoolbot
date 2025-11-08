@@ -19,7 +19,7 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 	if (solo) {
 		mahojiUsers = [user];
 	} else {
-		let usersWhoConfirmed: MUser[] = await interaction.makeParty({
+		const usersWhoConfirmed: MUser[] = await interaction.makeParty({
 			minSize: 1,
 			maxSize: 10,
 			leader: user,
@@ -27,8 +27,6 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 			message: `${user} is hosting a Nex mass! Use the buttons below to join/leave.`,
 			customDenier: async user => checkNexUser(await mUserFetch(user.id))
 		});
-
-		usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);
 
 		if (usersWhoConfirmed.length < 1 || usersWhoConfirmed.length > 10) {
 			return `${user}, your mass didn't start because it needs between 1-10 users.`;

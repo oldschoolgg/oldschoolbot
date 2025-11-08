@@ -13,12 +13,14 @@ export async function rawCommandHandlerInner({
 	interaction,
 	command,
 	options,
-	ignoreUserIsBusy
+	ignoreUserIsBusy,
+	rng
 }: {
 	interaction: MInteraction;
 	command: AnyCommand;
 	options: CommandOptions;
 	ignoreUserIsBusy?: true;
+	rng: RNGProvider;
 }): CommandResponse {
 	// Permissions
 	if (command.requiredPermissions) {
@@ -75,7 +77,7 @@ export async function rawCommandHandlerInner({
 			guildId: interaction.guildId,
 			userID: interaction.userId,
 			userId: interaction.userId,
-			rng: cryptoRng
+			rng
 		});
 		return response;
 	} catch (err) {
@@ -106,7 +108,12 @@ export async function commandHandler(
 		resolvedObjects: rawInteraction.data.resolved
 	});
 
-	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({ interaction, command, options });
+	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({
+		interaction,
+		command,
+		options,
+		rng: cryptoRng
+	});
 	if (
 		response === SpecialResponse.PaginatedMessageResponse ||
 		response === SpecialResponse.SilentErrorResponse ||

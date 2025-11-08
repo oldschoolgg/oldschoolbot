@@ -1,3 +1,5 @@
+import { cryptoRng } from '@oldschoolgg/rng';
+
 import type { NewUser } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
 import type { CommandOptions } from '@/lib/discord/commandOptions.js';
@@ -38,7 +40,8 @@ export async function runCommand({
 		interaction,
 		command,
 		options: args,
-		ignoreUserIsBusy
+		ignoreUserIsBusy,
+		rng: cryptoRng
 	});
 	return response;
 }

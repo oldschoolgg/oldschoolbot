@@ -39,7 +39,7 @@ export async function startServer() {
 		const isVerified = verifyPatreonSecret(raw, signature);
 		if (!isVerified) return httpErr.BAD_REQUEST({ message: 'Unverified' });
 
-		// Fire-and-forget
+		// biome-ignore lint/nursery/noFloatingPromises:-
 		patreonTask.run().then(res => {
 			if (res) {
 				patronLogWebhook.send(res.join('\n').slice(0, 1950));

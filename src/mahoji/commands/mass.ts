@@ -102,7 +102,6 @@ export const massCommand = defineCommand({
 			};
 		}
 		const unchangedUsers = [...users];
-		users = users.filter(i => !i.minionIsBusy);
 		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 
 		const durQtyRes = await calcDurQty(users, monster, undefined);

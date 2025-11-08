@@ -7,9 +7,6 @@ import { roboChimpSyncData } from '@/lib/roboChimp.js';
 export const redeemCommand = defineCommand({
 	name: 'redeem',
 	description: 'Redeem a code you received.',
-	attributes: {
-		cooldown: 10
-	},
 	options: [
 		{
 			type: 'String',

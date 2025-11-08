@@ -1,5 +1,5 @@
 import type { IMember } from '@oldschoolgg/schemas';
-import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
+import { PerkTier } from '@oldschoolgg/toolkit';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
@@ -118,31 +118,10 @@ const inhibitors: Inhibitor[] = [
 		silent: true
 	},
 	{
-		name: 'cooldown',
-		run: async ({ user, command }) => {
-			if (!command.attributes?.cooldown) return false;
-			if (globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator)) {
-				return false;
-			}
-			const cooldownForThis = await Cache.doRatelimitCheck({
-				userId: user.id,
-				key: command.name,
-				windowSeconds: command.attributes.cooldown,
-				max: 1
-			});
-			if (!cooldownForThis.success) {
-				return {
-					content: `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis.timeRemainingMs)}`
-				};
-			}
-			return false;
-		}
-	},
-	{
 		name: 'blacklisted',
 		run: ({ user, guildId }) => {
 			if (BLACKLISTED_USERS.has(user.id)) {
-				return { content: 'This user is blacklisted.' };
+				return { content: 'You are blacklisted.' };
 			}
 			if (guildId && BLACKLISTED_GUILDS.has(guildId)) {
 				return { content: 'This guild is blacklisted.' };

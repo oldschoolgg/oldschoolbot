@@ -37,12 +37,13 @@ import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 
-export function getMaxUserValues() {
+export function getMaxUserValues(): SafeUserUpdateInput {
 	const updates: SafeUserUpdateInput = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
 	return {
+		minion_hasBought: true,
 		QP: MAX_QP,
 		slayer_points: 50_000,
 		nmz_points: 50_000,

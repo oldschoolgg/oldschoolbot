@@ -240,7 +240,7 @@ export class CacheManager {
 		await this.setString(Key.User.BadgedUsername(userId), badgedUsername, Time.Hour * 12);
 	}
 
-	async doRatelimitCheck({
+	private async doRatelimitCheck({
 		userId,
 		key: inputKey,
 		windowSeconds,

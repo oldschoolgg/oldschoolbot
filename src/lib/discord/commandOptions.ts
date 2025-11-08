@@ -28,7 +28,6 @@ export interface AbstractCommandAttributes {
 	examples?: string[];
 	categoryFlags?: CategoryFlag[];
 	enabled?: boolean;
-	cooldown?: number;
 	requiresMinionNotBusy?: boolean;
 	requiresMinion?: boolean;
 	description: string;
