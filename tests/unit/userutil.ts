@@ -82,7 +82,10 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		monsterScores: {},
-		badges: []
+		badges: [],
+		minion_farmingContract: null,
+		minion_farmingPreferContract: false,
+		minion_farmingPreferredSeeds: {}
 	} as unknown as User;
 
 	return r;
