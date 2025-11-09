@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import {
 	type IChannel,
 	type IEmoji,
@@ -12,6 +13,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Redis } from 'ioredis';
 import type { z } from 'zod';
 
+import { MockedRedis } from '@/lib/cache/redis-mock.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { fetchUsernameAndCache } from '@/lib/util.js';
@@ -58,18 +60,37 @@ const TTLS = {
 	Channel: TTL.Hour * 100
 } as const;
 
+type RatelimitConfig = {
+	windowSeconds: number;
+	max: number;
+};
+
 type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command';
 
-const RATELIMITS: Record<RatelimitType, { windowSeconds: number; max: number }> = {
+const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 }
 } as const;
 
 class CacheManager {
-	private client: Redis;
+	private client: Redis | MockedRedis;
+
 	constructor() {
-		this.client = process.env.TEST ? new Redis(6379, 'redis') : new Redis();
+		if (globalConfig.isProduction) {
+			this.client = new Redis();
+		} else {
+			try {
+				const redis = new Redis({ reconnectOnError: () => false });
+				redis.on('error', () => {
+					redis.disconnect();
+					this.client = new MockedRedis();
+				});
+				this.client = redis;
+			} catch {
+				this.client = new MockedRedis();
+			}
+		}
 	}
 
 	private async setString(key: string, value: string, ttlSeconds: number) {
@@ -80,10 +101,11 @@ class CacheManager {
 		await this.setString(key, JSON.stringify(value), ttlSeconds);
 	}
 
-	private async getJson<T>(key: string): Promise<T | null> {
+	private async getJson<T = unknown>(key: string): Promise<T | null> {
 		const raw = await this.client.get(key);
 		return raw ? JSON.parse(raw) : null;
 	}
+
 	private async getString(key: string): Promise<string | null> {
 		return this.client.get(key);
 	}
@@ -119,6 +141,7 @@ class CacheManager {
 		const key = Key.Guild(guildId);
 		const cached = await this.getJson<IGuild>(key);
 		if (cached) return cached;
+
 		const guildSettings = await this.getRawDatabaseGuild(guildId);
 		const guild: IGuild = guildSettings
 			? {
@@ -133,6 +156,7 @@ class CacheManager {
 					petchannel: null,
 					staff_only_channels: []
 				};
+
 		await this.setObject(Key.Guild(guildId), guild, TTLS.Guild);
 		return guild;
 	}
@@ -152,6 +176,7 @@ class CacheManager {
 				staffOnlyChannels: updates.staff_only_channels ?? undefined
 			}
 		});
+
 		const newGuild: IGuild = {
 			id: guildSettings.id,
 			disabled_commands: guildSettings.disabledCommands,
@@ -169,16 +194,20 @@ class CacheManager {
 		const key = Key.Channel(channelId);
 		const cached = await this.getJson<IChannel>(key);
 		if (cached) return cached;
+
 		const rawChannel = await globalClient.fetchChannel(channelId);
 		if (!rawChannel) throw new Error(`Tried to fetch non existent channel ${channelId}`);
+
 		const channel: IChannel = {
 			id: rawChannel.id,
 			type: rawChannel.type,
 			guild_id: 'guild_id' in rawChannel && rawChannel.guild_id ? rawChannel.guild_id : null
 		};
+
 		await this.setObject(key, channel, TTLS.Channel);
 		return channel;
 	}
+
 	async getMainServerMember(userId: string) {
 		return this.getJson<IMember>(Key.Member(globalConfig.supportServerID, userId));
 	}
@@ -197,7 +226,7 @@ class CacheManager {
 	}
 
 	async getRole(guildId: string, roleId: string) {
-		return this.getJson(Key.Role(guildId, roleId));
+		return this.getJson<IRole>(Key.Role(guildId, roleId));
 	}
 
 	async setRole(role: IRole) {
@@ -268,8 +297,8 @@ class CacheManager {
 		max: number;
 	}): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
 		const fullKey = Key.User.Ratelimit(inputKey, userId);
-
 		const count = await this.client.incr(fullKey);
+
 		if (count === 1) await this.client.expire(fullKey, windowSeconds);
 
 		if (count <= max) return { success: true };
@@ -280,6 +309,7 @@ class CacheManager {
 			await this.client.pexpire(fullKey, windowSeconds * 1000);
 			ttl = windowSeconds * 1000;
 		}
+
 		return { success: false, timeRemainingMs: ttl };
 	}
 
@@ -288,7 +318,12 @@ class CacheManager {
 		type: RatelimitType
 	): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
 		const cfg = RATELIMITS[type];
-		return this.doRatelimitCheck({ userId, key: type, windowSeconds: cfg.windowSeconds, max: cfg.max });
+		return this.doRatelimitCheck({
+			userId,
+			key: type,
+			windowSeconds: cfg.windowSeconds,
+			max: cfg.max
+		});
 	}
 
 	public async getRatelimitTTL(userId: string, type: RatelimitType): Promise<number> {
@@ -321,6 +356,7 @@ class CacheManager {
 }
 
 global.Cache = new CacheManager();
+
 declare global {
 	var Cache: CacheManager;
 }
