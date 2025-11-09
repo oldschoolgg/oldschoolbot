@@ -29,7 +29,6 @@ const addMQChangeListener = (mql: MediaQueryList, cb: (e: MediaQueryListEvent) =
 		return () => (mql as any).removeEventListener('change', cb as unknown as EventListener);
 	}
 	(mql as any).addListener?.(cb);
-	return () => mql.removeListener?.(cb);
 };
 
 export const PreactThemeSelect = () => {

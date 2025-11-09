@@ -3,7 +3,7 @@ import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
-import { remarkItems } from './src/plugins/items';
+import remarkItems from './src/plugins/items';
 import rehypeFixInlineSpacing from './src/plugins/rehypeFixInlineSpacing';
 
 // https://astro.build/config
