@@ -1,6 +1,6 @@
-import _buyables from '@data/osb/buyables.json';
+import _buyablesUrl from '@data/osb/buyables.json?url';
 import type { ItemBank } from 'oldschooljs';
-import { useState } from 'preact/compat';
+import { useEffect, useState } from 'preact/compat';
 import { groupBy } from 'remeda';
 
 import { toTitleCase } from '../docs-util.js';
@@ -20,10 +20,6 @@ type JSONBuyable = {
 	max_quantity?: number;
 	required_quests?: Array<number>;
 };
-const buyables = (_buyables as JSONBuyable[]).map(item => {
-	if (!item.gp_cost) return item;
-	return { ...item, item_cost: { [EItem.COINS]: item.gp_cost, ...(item.item_cost ?? {}) } };
-});
 
 const categories = {
 	Capes: ['cape', ' shroud', "Xeric's", "Icthlarin's"],
@@ -99,26 +95,6 @@ const categoriesItemCost = {
 	'Aerial Fishing': [EItem.MOLCH_PEARL]
 };
 
-const grouped = groupBy(buyables, b => {
-	const n = b.name.toLowerCase();
-
-	if (b.item_cost) {
-		for (const [category, keywords] of Object.entries(categoriesItemCost)) {
-			if (keywords.some(i => b.item_cost![i])) {
-				return category;
-			}
-		}
-	}
-
-	for (const [category, keywords] of Object.entries(categories)) {
-		if (keywords.some(i => n.includes(i.toLowerCase()))) {
-			return category;
-		}
-	}
-
-	return 'Miscellaneous';
-});
-
 function BuyablesGroup({ items }: { items: JSONBuyable[] }) {
 	return (
 		<div className={'w-full'}>
@@ -162,6 +138,42 @@ function BuyablesGroup({ items }: { items: JSONBuyable[] }) {
 }
 
 export function Buyables() {
+	const [buyables, setBuyables] = useState<JSONBuyable[] | null>(null);
+	const [grouped, setGrouped] = useState<Record<string, JSONBuyable[]>>({});
+	useEffect(() => {
+		if (buyables) return;
+		fetch(_buyablesUrl)
+			.then(res => res.json())
+			.then((data: JSONBuyable[]) => {
+				const mapped = data.map(item => {
+					if (!item.gp_cost) return item;
+					return { ...item, item_cost: { [EItem.COINS]: item.gp_cost, ...(item.item_cost ?? {}) } };
+				});
+				setBuyables(mapped);
+
+				const grouped = groupBy(mapped, b => {
+					const n = b.name.toLowerCase();
+
+					if (b.item_cost) {
+						for (const [category, keywords] of Object.entries(categoriesItemCost)) {
+							if (keywords.some(i => b.item_cost![i])) {
+								return category;
+							}
+						}
+					}
+
+					for (const [category, keywords] of Object.entries(categories)) {
+						if (keywords.some(i => n.includes(i.toLowerCase()))) {
+							return category;
+						}
+					}
+
+					return 'Miscellaneous';
+				});
+				setGrouped(grouped);
+			});
+	}, []);
+
 	const [searchString, setSearchString] = useState('');
 	return (
 		<div>
@@ -177,7 +189,9 @@ export function Buyables() {
 					className="w-52 input"
 				/>
 			</div>
-			{searchString ? (
+			{!buyables ? (
+				'Loading...'
+			) : searchString ? (
 				<BuyablesGroup
 					items={buyables.filter(_c => _c.name.toLowerCase().includes(searchString.toLowerCase()))}
 				/>
