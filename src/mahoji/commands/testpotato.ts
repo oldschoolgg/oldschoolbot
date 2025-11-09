@@ -1,7 +1,7 @@
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
+import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
 import { xp_gains_skill_enum } from '@/prisma/main.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
@@ -172,6 +172,7 @@ for (const i of allOpenables.values()) {
 
 const equippablesBank = new Bank();
 for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).values()) {
+	if (ItemGroups.allUnobtainableGear.includes(i.id)) continue;
 	equippablesBank.add(i.id);
 }
 
@@ -254,7 +255,8 @@ const thingsToWipe = [
 	'buypayout',
 	'kc',
 	'cooldowns',
-	'birdhouses'
+	'birdhouses',
+	'giveaways'
 ] as const;
 
 export const testPotatoCommand = globalConfig.isProduction
@@ -790,19 +792,31 @@ export const testPotatoCommand = globalConfig.isProduction
 						});
 						return 'Reset your birdhouses.';
 					}
+					if (thing === 'giveaways') {
+						await prisma.giveaway.deleteMany({
+							where: {
+								user_id: user.id
+							}
+						});
+						return 'Wiped all your giveaways (no refunds given).';
+					}
 					if (thing === 'cooldowns') {
 						await user.update({
 							gambling_lockout_expiry: null
 						});
-						await prisma.userStats.update({
+						await prisma.userStats.upsert({
 							where: {
 								user_id: BigInt(user.id)
 							},
-							data: {
-								last_daily_timestamp: Date.now() - Time.Day
+							update: {
+								last_daily_timestamp: Date.now() - Time.Day,
+								last_tears_of_guthix_timestamp: Date.now() - Time.Day * 2
+							},
+							create: {
+								user_id: BigInt(user.id)
 							}
 						});
-						return 'Reset all your KCs.';
+						return 'Reset all your daily/TOG cooldowns, gambling lockout.';
 					}
 					if (thing === 'kc') {
 						await user.statsUpdate({

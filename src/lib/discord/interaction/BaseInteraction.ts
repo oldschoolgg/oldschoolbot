@@ -89,6 +89,28 @@ export class BaseInteraction {
 		return this._data.message.id;
 	}
 
+	public logError(err: unknown) {
+		Logging.logError(err as Error, {
+			userId: this.userId,
+			guildId: this.guildId,
+			interactionId: this.id,
+			interactionKind: this.kind,
+			isEphemeral: this.ephemeral,
+			isReplied: this.replied,
+			isDeferred: this.deferred
+		});
+	}
+
+	private async doErrorHandledRequest<T>(request: () => Promise<T>): Promise<T | null> {
+		try {
+			const response = await request();
+			return response;
+		} catch (err) {
+			this.logError(err);
+			return null;
+		}
+	}
+
 	private async toBody(options: SendableMessage): Promise<APISendableMessage> {
 		const result = await sendableMsgToApiCreate(options);
 		if (result.message.flags === MessageFlags.Ephemeral) {
@@ -200,10 +222,12 @@ export class BaseInteraction {
 	}
 
 	public async silentButtonAck() {
-		await this.rest.post(Routes.interactionCallback(this.id, this.token), {
-			body: {
-				type: InteractionResponseType.DeferredMessageUpdate
-			}
+		return this.doErrorHandledRequest(async () => {
+			await this.rest.post(Routes.interactionCallback(this.id, this.token), {
+				body: {
+					type: InteractionResponseType.DeferredMessageUpdate
+				}
+			});
 		});
 	}
 

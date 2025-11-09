@@ -59,6 +59,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 	public application: APIApplication | null = null;
 	public isProduction: boolean;
 	private mainServerId: string;
+	public isReady = false;
 
 	constructor({ token, intents, initialPresence, isProduction, mainServerId }: DiscordClientOptions) {
 		super();
@@ -116,6 +117,8 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		const application: APIApplication = (await this.rest.get(Routes.currentApplication())) as APIApplication;
 		this.application = application;
 		await this.fetchCommands();
+		this.isReady = true;
+		this.emit('ready', { application });
 	}
 
 	async login() {

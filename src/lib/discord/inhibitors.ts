@@ -24,7 +24,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'Restarting',
 		run: () => {
-			if (globalClient.isShuttingDown) {
+			if (globalClient.isShuttingDown || !globalClient.isReady) {
 				return { content: 'The bot is currently restarting, please try again later.' };
 			}
 			return false;

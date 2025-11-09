@@ -626,6 +626,10 @@ export const bingoCommand = defineCommand({
 				return `You need at least ${creationCost} to create a bingo.`;
 			}
 
+			const channelId = options.create_bingo.notifications_channel_id;
+			if (!isValidDiscordSnowflake(channelId)) {
+				return "That's not a valid channel ID, if you need help on how to get a channel id, you can ask us for help.";
+			}
 			const channel = await Cache.getChannel(options.create_bingo.notifications_channel_id);
 			const sendable = await globalClient.channelIsSendable(channel);
 			if (!sendable) {

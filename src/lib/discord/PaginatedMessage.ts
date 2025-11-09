@@ -129,6 +129,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 			throw new Error('Failed to fetch interaction response for paginated message.');
 		}
 		const collector = globalClient.createInteractionCollector({
+			interaction: this.interaction,
 			timeoutMs: Time.Minute * 10,
 			messageId: interactionResponse.id,
 			channelId: interactionResponse.channel_id,
@@ -138,7 +139,6 @@ export class PaginatedMessage extends BasePaginatedMessage {
 		collector.on('collect', async buttonPressInteraction => {
 			if (targetUsers && !targetUsers.includes(buttonPressInteraction.userId)) {
 				await buttonPressInteraction.reply({ content: "This isn't your message!", ephemeral: true });
-				await globalClient.respondToAutocompleteInteraction;
 				return;
 			}
 

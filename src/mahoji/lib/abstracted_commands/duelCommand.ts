@@ -46,7 +46,6 @@ async function handleFinishUpdates({
 	const loot = new Bank().add('Coins', amountGPWinnerReceives);
 	await winner.addItemsToBank({ items: loot, collectionLog: false });
 
-	const taxPaid = Math.floor(amount * taxRate);
 	await prisma.economyTransaction.create({
 		data: {
 			guild_id: guildId ? BigInt(guildId) : null,
@@ -58,7 +57,7 @@ async function handleFinishUpdates({
 	});
 	return {
 		amountGPWinnerReceives,
-		taxPaid: taxPaid
+		taxPaid: tax
 	};
 }
 

@@ -106,8 +106,6 @@ export async function apiInteractionParse(itx: APIInteraction) {
 		};
 		return new MInteraction({ interaction: d, rawInteraction: chatInputItx });
 	}
-
-	throw new Error('Unsupported interaction type');
 }
 
 export async function interactionHandler(itx: APIInteraction) {

@@ -7,8 +7,7 @@ import {
 } from '@oldschoolgg/discord';
 import { chunk, merge } from 'remeda';
 
-import chatHeadImage, { type HeadKey } from '@/lib/canvas/chatHeadImage.js';
-import { type MakeBankImageOptions, makeBankImage } from '@/lib/util/makeBankImage.js';
+import type { MessageBuilderClass } from '@/lib/discord/MessageBuilder.js';
 
 export type SendableFile = {
 	name: string;
@@ -27,7 +26,7 @@ export type BaseSendableMessage = {
 	withResponse?: boolean;
 };
 
-export type SendableMessage = string | BaseSendableMessage | _MessageBuilder;
+export type SendableMessage = string | BaseSendableMessage | MessageBuilderClass;
 
 export type APISendableMessage = { message: RESTPostAPIChannelMessageJSONBody; files: RawFile[] | null };
 function isButtonMatrix(arr: ButtonBuilder[] | ButtonBuilder[][]): arr is ButtonBuilder[][] {
@@ -77,99 +76,3 @@ export async function sendableMsgToApiCreate(msg: SendableMessage): Promise<APIS
 	}
 	return { message, files: null };
 }
-
-export class _MessageBuilder {
-	private _message: BaseSendableMessage;
-	public chatHeadImagePromise?: Promise<SendableFile>;
-	public bankImagePromise?: Promise<SendableFile>;
-
-	constructor(startingMessage: BaseSendableMessage = {}) {
-		this._message = startingMessage;
-		if (!this._message.components) this._message.components = [];
-		if (!this._message.content) this._message.content = '';
-	}
-
-	get message() {
-		return this._message;
-	}
-
-	setContent(content: string): this {
-		this._message.content = content;
-		return this;
-	}
-
-	addContent(content: string): this {
-		this._message.content += content;
-		return this;
-	}
-
-	addEmbed(embed: EmbedBuilder): this {
-		if (!this._message.embeds) this._message.embeds = [];
-		this._message.embeds.push(embed);
-		return this;
-	}
-
-	addFile(file: SendableFile): this {
-		if (!this._message.files) this._message.files = [];
-		this._message.files.push(file);
-		return this;
-	}
-
-	addChatHeadImage(head: HeadKey, content: string): this {
-		this.chatHeadImagePromise = chatHeadImage({ head, content });
-		return this;
-	}
-
-	addBankImage(opts: MakeBankImageOptions): this {
-		this.bankImagePromise = makeBankImage(opts);
-		return this;
-	}
-
-	addComponents(components?: ButtonBuilder[]): this {
-		if (!components) return this;
-		if (!this._message.components) this._message.components = [];
-		// @ts-expect-error
-		this._message.components.push(...components);
-		return this;
-	}
-
-	removeComponents(): this {
-		this._message.components = [];
-		return this;
-	}
-
-	async merge(message: _MessageBuilder | string) {
-		if (typeof message === 'string') {
-			this.addContent(message);
-			return this;
-		}
-		if (message.chatHeadImagePromise) {
-			this.addFile(await message.chatHeadImagePromise);
-		}
-		if (message.bankImagePromise) {
-			this.addFile(await message.bankImagePromise);
-		}
-		if (message.message.components) {
-			this.addComponents(message.message.components as ButtonBuilder[]);
-		}
-		return this;
-	}
-
-	async build(): Promise<SendableMessage> {
-		if (this.chatHeadImagePromise) {
-			const chatHeadImage = await this.chatHeadImagePromise;
-			this.addFile(chatHeadImage);
-		}
-		if (this.bankImagePromise) {
-			const bankImage = await this.bankImagePromise;
-			this.addFile(bankImage);
-		}
-		return this._message;
-	}
-}
-
-declare global {
-	var MessageBuilder: typeof _MessageBuilder;
-}
-
-global.MessageBuilder = _MessageBuilder;

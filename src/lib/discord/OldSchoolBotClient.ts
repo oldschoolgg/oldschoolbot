@@ -2,12 +2,12 @@ import { type APIApplication, ButtonBuilder, ButtonStyle } from '@oldschoolgg/di
 import { Time } from '@oldschoolgg/toolkit';
 
 import { globalConfig } from '@/lib/constants.js';
+import { DiscordClient, type DiscordClientOptions } from '@/lib/discord/DiscordClient.js';
 import {
 	type CollectorOptions,
 	collectSingleInteraction,
 	createInteractionCollector
-} from '@/lib/discord/collector/collectSingle.js';
-import { DiscordClient, type DiscordClientOptions } from '@/lib/discord/DiscordClient.js';
+} from '@/lib/discord/interactionCollector.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 
 export class OldSchoolBotClient extends DiscordClient {
@@ -61,12 +61,14 @@ export class OldSchoolBotClient extends DiscordClient {
 				return button;
 			});
 			allowedUsers ??= [interaction.userId];
+			await interaction.defer();
 			const msg = await interaction.reply({
 				content,
 				components: buttons,
 				withResponse: true
 			});
 			const res = await collectSingleInteraction(this, {
+				interaction,
 				messageId: msg!.id,
 				channelId: msg!.channel_id,
 				users: allowedUsers,

@@ -3,7 +3,7 @@ import type { GatewayGuildCreateDispatchData } from '@oldschoolgg/discord';
 import { globalConfig } from '@/lib/constants.js';
 
 export function onRawGuildCreate(g: GatewayGuildCreateDispatchData) {
-	if (!globalConfig.guildsIdsToCache.includes(g.id)) return;
+	if (!globalConfig.guildIdsToCache.includes(g.id)) return;
 
 	Cache.bulkSetEmojis(
 		g.emojis

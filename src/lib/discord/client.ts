@@ -1,6 +1,4 @@
-import { writeFileSync } from 'node:fs';
 import { ActivityType, GatewayIntentBits, PresenceUpdateStatus } from '@oldschoolgg/discord';
-import { omit } from 'remeda';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
@@ -41,14 +39,8 @@ client.on('messageCreate', msg => {
 });
 client.on('error', console.error);
 
-client.on('interactionCreate', interaction => {
-	// TODO: remove this
-	writeFileSync(
-		`./itx/itx-${Date.now()}.json`,
-		JSON.stringify(omit(interaction, ['user', 'member', 'guild', 'channel']), null, 4)
-	);
-
-	return interactionHandler(interaction);
+client.on('interactionCreate', itx => {
+	return interactionHandler(itx);
 });
 
 client.on('serverNotification', async (message: string) => {

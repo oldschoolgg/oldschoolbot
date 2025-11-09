@@ -314,5 +314,10 @@ export async function handleTripFinish(
 		message.addComponents(components);
 	}
 
+	message.addAllowedUserMentions([user.id]);
+	if ('users' in data) {
+		message.addAllowedUserMentions(data.users);
+	}
+
 	await globalClient.sendMessage(channelId, message);
 }

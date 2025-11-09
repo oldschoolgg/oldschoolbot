@@ -17,7 +17,7 @@ export function getInteractionOptionsForLog({
 		return undefined;
 	}
 	if (interaction.rawInteraction.type !== InteractionType.ApplicationCommand) {
-		throw new Error('Not a chat input interaction');
+		return undefined;
 	}
 	const options = convertAPIOptionsToCommandOptions({
 		guildId: interaction.rawInteraction.guild_id,

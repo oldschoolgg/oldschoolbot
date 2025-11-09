@@ -1084,7 +1084,7 @@ LIMIT 20;
 			const member = await globalClient.fetchMember({ guildId, userId });
 			const hasPerms = await globalClient.memberHasPermissions(member, ['BAN_MEMBERS']);
 			if (!hasPerms) {
-				return "You need to be 'Ban Member' permissions to change settings for this server.";
+				return "You need to have 'Ban Member' permissions to change settings for this server.";
 			}
 			const guildSettings = await Cache.getGuild(guildId);
 

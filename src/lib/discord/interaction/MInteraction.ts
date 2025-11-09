@@ -78,7 +78,18 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 	}
 
 	async reply(message: SendableMessage): Promise<APIMessage | null> {
-		return this.baseReply(message);
+		try {
+			const response = await this.baseReply(message);
+			return response;
+		} catch (err) {
+			Logging.logError(err as Error, {
+				userId: this.userId,
+				guildId: this.guildId,
+				interactionId: this.id,
+				response: JSON.stringify(message).slice(0, 1000)
+			});
+			return null;
+		}
 	}
 
 	/**

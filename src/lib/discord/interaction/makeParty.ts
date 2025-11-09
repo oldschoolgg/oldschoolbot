@@ -1,5 +1,5 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
-import { debounce, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle, dateFm } from '@oldschoolgg/discord';
+import { debounce, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { BLACKLISTED_USERS, partyLockCache } from '@/lib/cache.js';
@@ -25,13 +25,14 @@ export async function makeParty(
 		new ButtonBuilder().setCustomId(InteractionID.Party.Cancel).setLabel('Cancel').setStyle(ButtonStyle.Danger),
 		new ButtonBuilder().setCustomId(InteractionID.Party.Start).setLabel('Start').setStyle(ButtonStyle.Success)
 	];
+	const startTime = Date.now();
 
 	const getMessageContent = async () => ({
 		content: `${options.message}\n\n**Users Joined:** ${(
 			await Promise.all(usersWhoConfirmed.map(u => Cache.getBadgedUsername(u)))
 		).join(
 			', '
-		)}\n\nThis party will automatically depart in ${formatDuration(timeout)}, or if the leader clicks the start (start early) or stop button.`,
+		)}\n\nThis party will automatically depart in ${dateFm(startTime + timeout)}, or if the leader clicks the start (start early) or stop button.`,
 		components: row,
 		allowedMentions: { users: [] as string[] }
 	});
@@ -67,14 +68,15 @@ export async function makeParty(
 
 	function checkParty(): string | null {
 		if (usersWhoConfirmed.length < options.minSize) return `You need atleast ${options.minSize} players.`;
-		if (usersWhoConfirmed.length > options.maxSize) return `You cannot have more than ${options.minSize} players.`;
+		if (usersWhoConfirmed.length > options.maxSize) return `You cannot have more than ${options.maxSize} players.`;
 		return null;
 	}
 
 	return new Promise<MUser[]>((resolve, reject) => {
 		const collector = globalClient.createInteractionCollector({
 			timeoutMs: timeout,
-			interaction
+			interaction,
+			maxCollected: Infinity
 		});
 
 		collector.on('collect', async (bi: ButtonMInteraction) => {
@@ -106,7 +108,9 @@ export async function makeParty(
 					InteractionID.Party.Start
 				].includes(id as 'PARTY_START')
 			) {
-				throw new Error('Invalid button ID');
+				throw new Error(
+					`When making a party for ${JSON.stringify({ ...options, userId: interaction.userId })}, received invalid button ID: ${id}`
+				);
 			}
 
 			if (id === InteractionID.Party.Join) {

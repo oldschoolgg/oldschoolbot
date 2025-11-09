@@ -49,6 +49,7 @@ export async function interactionConfirmation(
 
 	return new Promise<void>((resolve, reject) => {
 		const collector = globalClient.createInteractionCollector({
+			interaction,
 			timeoutMs: timeout,
 			users,
 			maxCollected: Infinity
@@ -85,6 +86,7 @@ export async function interactionConfirmation(
 					const unconfirmedUsernames = await Promise.all(
 						users.filter(i => !confirms.has(i)).map(i => Cache.getBadgedUsername(i))
 					);
+
 					interaction.reply({
 						content: `${content}\n\n${confirms.size}/${users.length} confirmed. Waiting for ${unconfirmedUsernames.join(', ')}...`,
 						components: confirmRow,

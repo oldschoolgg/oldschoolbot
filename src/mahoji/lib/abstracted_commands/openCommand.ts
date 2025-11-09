@@ -5,7 +5,7 @@ import { Bank, Items } from 'oldschooljs';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, MAX_CLUES_DROPPED, PerkTier } from '@/lib/constants.js';
-import type { _MessageBuilder } from '@/lib/discord/SendableMessage.js';
+import type { MessageBuilderClass } from '@/lib/discord/MessageBuilder.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
@@ -112,7 +112,7 @@ async function finalizeOpening({
 	loot: Bank;
 	messages: string[];
 	openables: UnifiedOpenable[];
-}): Promise<_MessageBuilder> {
+}): Promise<MessageBuilderClass> {
 	const { bank } = user;
 	if (!bank.has(cost)) return new MessageBuilder().setContent(`You don't have ${cost}.`);
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
@@ -162,7 +162,7 @@ export async function abstractedOpenCommand(
 	user: MUser,
 	_names: string[],
 	_quantity: number | 'auto' = 1
-): Promise<string | _MessageBuilder> {
+): Promise<string | MessageBuilderClass> {
 	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));

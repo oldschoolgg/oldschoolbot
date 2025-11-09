@@ -455,7 +455,7 @@ WHERE badges && ${badgeIDs}
 							push: badge
 						}
 					});
-					debugMessages.push(`Adding badge ${badge} to .user.username}`);
+					debugMessages.push(`Adding badge ${badge} to ${user.username}`);
 				} else {
 					debugMessages.push(`${user.username} already has badge ${badge}`);
 				}

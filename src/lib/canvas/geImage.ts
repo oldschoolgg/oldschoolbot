@@ -3,6 +3,7 @@ import { Items } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
 import type { GEListing, GETransaction } from '@/prisma/main.js';
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { CanvasSpritesheet } from '@/lib/canvas/CanvasSpritesheet.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import type { GEListingWithTransactions } from '@/mahoji/commands/ge.js';
@@ -129,6 +130,7 @@ class GeImageGeneratorSingleton {
 			sellTransactions: GETransaction[];
 		})[];
 	}): Promise<Buffer> {
+		await CanvasModule.ensureInit();
 		if (!this.ready) {
 			await this.init();
 		}

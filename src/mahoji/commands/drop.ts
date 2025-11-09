@@ -1,4 +1,4 @@
-import { ellipsize } from '@oldschoolgg/toolkit';
+import { Emoji, ellipsize } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -67,7 +67,7 @@ export const dropCommand = defineCommand({
 		);
 		if (doubleCheckItems.length > 0) {
 			await interaction.confirmation(
-				`${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them?\n**${doubleCheckItems
+				`${Emoji.Warning} ${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them? ${Emoji.Warning}\n**${doubleCheckItems
 					.map(i => Items.itemNameFromId(i))
 					.join(', ')}**\n\nDropping: ${ellipsize(bank.toString(), 1000)}`
 			);

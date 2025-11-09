@@ -3,7 +3,7 @@ import type { IFarmingContract, IFarmingContractDifficultyLevel } from '@oldscho
 import { toTitleCase } from '@oldschoolgg/toolkit';
 
 import { EmojiId } from '@/lib/data/emojis.js';
-import type { _MessageBuilder } from '@/lib/discord/SendableMessage.js';
+import type { MessageBuilderClass } from '@/lib/discord/MessageBuilder.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -32,7 +32,10 @@ function formatNewContractContent(plantName: string, difficulty: IFarmingContrac
 	return `Your new farming contract is: ${plantName} (${toTitleCase(difficulty)} contract)`;
 }
 
-export async function farmingContractCommand(user: MUser, input?: ContractOption): Promise<string | _MessageBuilder> {
+export async function farmingContractCommand(
+	user: MUser,
+	input?: ContractOption
+): Promise<string | MessageBuilderClass> {
 	const farmingLevel = user.skillsAsLevels.farming;
 	const currentContract: IFarmingContract = user.fetchFarmingContract();
 	const plant = currentContract.hasContract ? Farming.findPlant(currentContract.plantToGrow) : null;
@@ -183,7 +186,7 @@ function bestFarmingContractUserCanDo(user: MUser) {
 		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
 }
 
-export async function autoContract(interaction: MInteraction, user: MUser): Promise<string | _MessageBuilder> {
+export async function autoContract(interaction: MInteraction, user: MUser): Promise<string | MessageBuilderClass> {
 	const contract = user.farmingContract();
 	const plant = contract.contract ? Farming.findPlant(contract.contract.plantToGrow) : null;
 	const patch = contract.farmingInfo.patchesDetailed.find(p => p.plant === plant);

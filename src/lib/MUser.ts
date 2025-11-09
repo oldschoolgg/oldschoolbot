@@ -1162,6 +1162,23 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	async statsUpdate(data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>): Promise<void> {
 		const id = BigInt(this.id);
+		// TODO: Extra-safe check for now
+		const count = await prisma.userStats.count({
+			where: {
+				user_id: id
+			}
+		});
+		if (count === 0) {
+			await prisma.userStats.upsert({
+				where: {
+					user_id: id
+				},
+				create: {
+					user_id: id
+				},
+				update: {}
+			});
+		}
 
 		await prisma.userStats.update({
 			data,

@@ -15,7 +15,7 @@ export type CollectorOptions = {
 	timeoutMs?: number;
 	channelId?: string;
 	messageId?: string;
-	interaction?: MInteraction;
+	interaction: MInteraction;
 	users?: string[];
 };
 
@@ -38,12 +38,14 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 	private messageId?: string;
 	private interactionType: IInteraction['kind'] = 'Button';
 	public users?: string[];
+	private interaction: MInteraction;
 
 	constructor(
 		client: OldSchoolBotClient,
-		{ filter, maxCollected = 1, timeoutMs, channelId, messageId, users }: CollectorOptions = {}
+		{ filter, maxCollected = 1, timeoutMs, channelId, messageId, users, interaction }: CollectorOptions
 	) {
 		super();
+		this.interaction = interaction;
 		this.client = client;
 		this.filter = filter;
 		this.channelId = channelId;
@@ -53,10 +55,16 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 		this.interactionType = 'Button';
 		this.users = users;
 		this.boundListener = async (i: APIInteraction) => {
-			Logging.logDebug('Interaction received in boundListener of InteractionCollector');
+			// Logging.logDebug('Interaction received in boundListener of InteractionCollector');
 			const mitx = await apiInteractionParse(i);
-			if (!mitx.isButton()) return;
-			void this.onInteraction(mitx);
+			if (!mitx?.isButton()) return;
+			try {
+				await this.onInteraction(mitx);
+			} catch (err) {
+				mitx.logError(`Error in InteractionCollector boundListener: ${err}`);
+				this.emit('error', err);
+				this.stop('error');
+			}
 		};
 		this.client.addListener('interactionCreate', this.boundListener);
 		if (this.timeoutMs && this.timeoutMs > 0) {
@@ -65,24 +73,31 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 		}
 	}
 
-	private async doFilter(interaction: InteractionTypeCollected): Promise<boolean | string> {
-		if (interaction.raw.kind !== this.interactionType) {
-			Logging.logDebug('Interaction kind mismatch');
+	private async doFilter(itx: InteractionTypeCollected): Promise<boolean | string> {
+		if (itx.rawInteraction.message!.interaction_metadata!.id !== this.interaction.id) {
+			Logging.logDebug(
+				`ITX MID MISMATCH: ${itx.userId} clicking button from message ${itx.rawInteraction.message!.interaction_metadata!.id} but collector is for message ${this.interaction.id}`
+			);
 			return false;
 		}
-		if (this.channelId && interaction.channelId !== this.channelId) {
-			Logging.logDebug('Channel ID mismatch');
+		if (itx.raw.kind !== this.interactionType) {
+			Logging.logDebug(`${itx.userId} Interaction kind mismatch`);
 			return false;
 		}
-		if (this.messageId && interaction.messageId !== this.messageId) {
-			Logging.logDebug('Message ID mismatch');
+		if (this.channelId && itx.channelId !== this.channelId) {
+			Logging.logDebug(`${itx.userId} Channel ID mismatch`);
 			return false;
 		}
-		if (this.users && !this.users.includes(interaction.userId)) {
-			return `This message is not for you.`;
+		if (this.messageId && itx.messageId !== this.messageId) {
+			Logging.logDebug(`${itx.userId} Message ID mismatch`);
+			return false;
+		}
+		if (this.users && !this.users.includes(itx.userId)) {
+			Logging.logDebug(`${itx.userId} not a valid user (not in ${this.users.join(', ')})`);
+			return `This button is not for you.`;
 		}
 		if (this.filter) {
-			const theirFilterResult = await this.filter(interaction);
+			const theirFilterResult = await this.filter(itx);
 			Logging.logDebug('Filter result');
 			return theirFilterResult;
 		}
@@ -90,7 +105,7 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 	}
 
 	private async onInteraction(interaction: MInteraction) {
-		Logging.logDebug(`Interaction received in collector onInteraction, kind: ${interaction.kind}`);
+		// Logging.logDebug(`Interaction received in collector onInteraction, kind: ${interaction.kind}`);
 		if (this.endedFlag) {
 			Logging.logDebug('Collector already ended');
 			return;
@@ -108,7 +123,7 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 				});
 			}
 			if (!filterResult) {
-				Logging.logDebug('Filter returned false');
+				Logging.logDebug(`${interaction.userId} returned false`);
 				return;
 			}
 			if (!interaction.id || this.collected.has(interaction.id)) return;
@@ -146,14 +161,14 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 
 export function createInteractionCollector(
 	client: OldSchoolBotClient,
-	options?: CollectorOptions
+	options: CollectorOptions
 ): InteractionCollector {
 	return new InteractionCollector(client, options);
 }
 
 export function collectSingleInteraction(
 	client: OldSchoolBotClient,
-	options?: Omit<CollectorOptions, 'maxCollected'>
+	options: Omit<CollectorOptions, 'maxCollected'>
 ): Promise<ButtonMInteraction | null> {
 	return new Promise((resolve, reject) => {
 		const collector = new InteractionCollector(client, { ...options, maxCollected: 1 });

@@ -2,7 +2,7 @@ import { MathRNG, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
 import pets from '@/lib/data/pets.js';
-import type { _MessageBuilder } from '@/lib/discord/SendableMessage.js';
+import type { MessageBuilderClass } from '@/lib/discord/MessageBuilder.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
 
@@ -22,7 +22,7 @@ export async function isUsersDailyReady(
 	return { isReady: true };
 }
 
-async function reward(user: MUser, triviaCorrect: boolean): Promise<_MessageBuilder> {
+async function reward(user: MUser, triviaCorrect: boolean): Promise<MessageBuilderClass> {
 	const member = await globalClient.fetchMainServerMember(user.id);
 
 	const loot = dailyRoll(1, triviaCorrect);
