@@ -38,10 +38,10 @@ export default defineConfig({
 							return 'eitem';
 						}
 						if (id.includes('data/bso')) {
-							return id.split('data/bso/')[1].split('/')[0].split('.')[0] + '-data';
+							return `${id.split('data/bso/')[1].split('/')[0].split('.')[0]}-data`;
 						}
 						if (id.includes('data/osb')) {
-							return id.split('data/osb/')[1].split('/')[0].split('.')[0] + '-data';
+							return `${id.split('data/osb/')[1].split('/')[0].split('.')[0]}-data`;
 						}
 						return null;
 					}
