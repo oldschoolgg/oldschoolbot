@@ -15,6 +15,7 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 	public allCommands = allCommandsDONTIMPORT;
 	public static activitiesProcessed = 0;
 	public rng: RNGProvider = cryptoRng;
+	public isReady = true;
 
 	data: ClientStorage;
 	constructor(data: ClientStorage) {

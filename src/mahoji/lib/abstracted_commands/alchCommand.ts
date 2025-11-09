@@ -30,8 +30,8 @@ export async function alchCommand(
 ) {
 	const userBank = user.bank;
 	let osItem = Items.getItem(item);
-
-	const [favAlchs] = user.favAlchs(await user.calcMaxTripLength('Alching'));
+	const maxTripLength = await user.calcMaxTripLength('Alching');
+	const [favAlchs] = user.favAlchs(maxTripLength);
 	if (!osItem) osItem = favAlchs;
 
 	if (!osItem) return 'Invalid item.';
@@ -41,8 +41,6 @@ export async function alchCommand(
 		return 'You need level 55 Magic to cast High Alchemy';
 	}
 
-	const maxTripLength = await user.calcMaxTripLength('Alching');
-
 	const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));
 
 	if (!quantity) {
@@ -50,7 +48,7 @@ export async function alchCommand(
 	}
 	quantity = clamp(quantity, { min: 1, max: maxCasts });
 
-	if (quantity * timePerAlch > maxTripLength) {
+	if (quantity * timePerAlch > maxTripLength || quantity < 1 || maxCasts < 1) {
 		return `The max number of alchs you can do is ${maxCasts}!`;
 	}
 
@@ -65,11 +63,10 @@ export async function alchCommand(
 	}
 
 	const alchValue = quantity * osItem.highalch;
-	const consumedItems = new Bank({
-		...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
-		'Nature rune': quantity
-	});
-	consumedItems.add(osItem.id, quantity);
+	const consumedItems = new Bank().add(osItem.id, quantity).add('Nature rune', quantity);
+	if (fireRuneCost > 0) {
+		consumedItems.add('Fire rune', fireRuneCost);
+	}
 
 	if (!user.owns(consumedItems)) {
 		return `You don't have the required items, you need ${consumedItems}`;
@@ -78,13 +75,11 @@ export async function alchCommand(
 		await interaction.confirmation(
 			`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
 				alchValue
-			)}). This will take approximately ${formatDuration(duration)}, and consume ${
-				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
-			} ${quantity}x Nature runes.`
+			)}). This will take approximately ${formatDuration(duration)}, and consume ${consumedItems.clone().remove(osItem.id, quantity)}.`
 		);
 	}
 
-	await user.removeItemsFromBank(consumedItems);
+	await user.transactItems({ itemsToRemove: consumedItems });
 	await ClientSettings.updateBankSetting('magic_cost_bank', consumedItems);
 
 	await ActivityManager.startTrip<AlchingActivityTaskOptions>({

@@ -9,7 +9,7 @@ import type { PvMMethod } from '@/lib/constants.js';
 import type { DegradeableItem } from '@/lib/degradeableItems.js';
 import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
 import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';
-import { _MessageBuilder } from '@/lib/discord/SendableMessage.js';
+import { MessageBuilderClass } from '@/lib/discord/MessageBuilder.js';
 import { MUserClass } from '@/lib/MUser.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -223,7 +223,7 @@ export class TestUser extends MUserClass {
 			rng: MathRNG,
 			ignoreUserIsBusy: otherOptions.bypassBusy ? true : undefined
 		});
-		if (result instanceof _MessageBuilder) {
+		if (result instanceof MessageBuilderClass) {
 			result = await result.build();
 		}
 		await this.sync();
