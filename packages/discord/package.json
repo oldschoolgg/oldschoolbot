@@ -13,10 +13,10 @@
 		"test": "pnpm tsc -p src --noEmit"
 	},
 	"dependencies": {
-		"@discordjs/builders": "^1.13.0",
-		"@discordjs/formatters": "^0.6.1",
+		"@discordjs/builders": "1.13.0",
+		"@discordjs/formatters": "0.6.1",
 		"@oldschoolgg/schemas": "workspace:*",
-		"discord-api-types": "^0.38.31",
+		"discord-api-types": "0.38.32",
 		"remeda": "^2.23.0"
 	}
 }
