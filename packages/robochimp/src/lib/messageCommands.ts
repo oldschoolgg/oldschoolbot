@@ -1,5 +1,5 @@
 import { userMention } from '@oldschoolgg/discord';
-import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 
 import { type Bits, bitsDescriptions } from '../util.js';
 

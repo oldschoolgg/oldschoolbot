@@ -1,6 +1,5 @@
-import type { PermissionKey, SendableMessage } from '@oldschoolgg/discord';
+import type { PermissionKey, SendableMessage, SpecialResponse } from '@oldschoolgg/discord';
 import type { IMember } from '@oldschoolgg/schemas';
-import type { SpecialResponse } from '@oldschoolgg/toolkit';
 
 import type { AnyArr, AsOptArr, ExtractOptions } from '@/discord/index.js';
 
