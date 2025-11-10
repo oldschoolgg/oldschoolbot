@@ -13,7 +13,12 @@ const external = [
 	'fastify-raw-body',
 	'@fastify/cors',
 	'@prisma/adapter-pg',
-	'oldschooljs'
+	'oldschooljs',
+	'@discordjs/rest',
+	'@discordjs/ws',
+	'ws',
+	'@discordjs/builders',
+	'@oldschoolgg/discord'
 ];
 
 const baseBuildOptions: BuildOptions = {
