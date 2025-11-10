@@ -17,3 +17,5 @@ declare global {
 	type RoboChimpCommand = import('@/discord/commandOptions.js').RoboChimpCommand;
 	type RNGProvider = import('@oldschoolgg/rng').RNGProvider;
 }
+
+export {};
