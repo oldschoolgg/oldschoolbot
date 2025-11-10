@@ -110,7 +110,7 @@ export async function startServer() {
 		// 	else return httpErr.NOT_FOUND({ message: 'Could not find this users id' });
 		// }
 
-		if (isValidDiscordSnowflake(userID)) {
+		if (!isValidDiscordSnowflake(userID)) {
 			return httpErr.BAD_REQUEST({ message: 'Invalid user ID 3' });
 		}
 
