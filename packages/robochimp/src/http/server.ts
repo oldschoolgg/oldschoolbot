@@ -1,5 +1,5 @@
 import { serve } from '@hono/node-server';
-import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 

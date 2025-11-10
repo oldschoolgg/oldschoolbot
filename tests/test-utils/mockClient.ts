@@ -29,6 +29,10 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		return user;
 	}
 
+	mentionCommand() {
+		return '';
+	}
+
 	async reset() {
 		await global.prisma!.clientStorage.delete({ where: { id: this.data.id } });
 		this.data = (await global.prisma!.clientStorage.create({ data: { id: this.data.id } }))!;
