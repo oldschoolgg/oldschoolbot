@@ -110,10 +110,10 @@ export const claimCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to claim.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ userId, value }: StringAutoComplete) => {
 				const claimableItems = await prisma.reclaimableItem.findMany({
 					where: {
-						user_id: user.id
+						user_id: userId
 					}
 				});
 				return [...claimables, ...claimableItems]

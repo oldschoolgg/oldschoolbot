@@ -17,7 +17,7 @@ export const craftCommand = defineCommand({
 			name: 'name',
 			description: 'The item you want to craft.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Craftables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase()))).map(
 					i => ({
 						name: i.name,

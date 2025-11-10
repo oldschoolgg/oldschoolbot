@@ -1,5 +1,4 @@
 import { bold, dateFm, userMention } from '@oldschoolgg/discord';
-import type { IMember } from '@oldschoolgg/schemas';
 import {
 	Emoji,
 	formatOrdinal,
@@ -17,7 +16,6 @@ import type { Prisma } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -27,7 +25,7 @@ import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 
-const bingoAutocomplete = async (value: string, user: MUser) => {
+const bingoAutocomplete = async ({ value, user }: StringAutoComplete) => {
 	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
 	return bingos
 		.map(i => new BingoManager(i))
@@ -120,9 +118,8 @@ async function makeTeamCommand(
 	if (allUsers.some(u => BLACKLISTED_USERS.has(u.id))) return 'You cannot have blacklisted users on your team.';
 
 	await interaction.confirmation({
-		content: `${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${
-			bingo.teamSize
-		} users need to confirm. ${bold(`You will be charged ${toKMB(bingo.ticketPrice)}`)}`,
+		content: `${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${bingo.teamSize
+			} users need to confirm. ${bold(`You will be charged ${toKMB(bingo.ticketPrice)}`)}`,
 		users: allUsers.map(i => i.id)
 	});
 
@@ -242,11 +239,11 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 async function getBingoFromUserInput(input: string) {
 	const where = Number.isNaN(Number(input))
 		? {
-				title: input
-			}
+			title: input
+		}
 		: {
-				id: Number(input)
-			};
+			id: Number(input)
+		};
 	const bingo = await prisma.bingo.findFirst({
 		where
 	});
@@ -267,7 +264,9 @@ export const bingoCommand = defineCommand({
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, _: MUser, member?: IMember) => {
+					autocomplete: async ({ value, guildId, userId }: StringAutoComplete) => {
+						if (!guildId) return [];
+						const member = await globalClient.fetchMember({ guildId, userId });
 						if (!member || !member.guild_id) return [];
 						const bingos = await prisma.bingo.findMany({
 							where: {
@@ -326,14 +325,14 @@ export const bingoCommand = defineCommand({
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
 									{
 										bingo_participant: {
 											some: {
-												user_id: user.id
+												user_id: userId
 											}
 										}
 									}
@@ -440,11 +439,11 @@ export const bingoCommand = defineCommand({
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
-						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
+						const bingos = await fetchBingosThatUserIsInvolvedIn(userId);
 						return bingos
 							.map(i => new BingoManager(i))
-							.filter(b => b.creatorID === user.id || b.organizers.includes(user.id))
+							.filter(b => b.creatorID === userId || b.organizers.includes(userId))
 							.filter(bingo => (!value ? true : bingo.id.toString() === value))
 							.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
 					}
@@ -454,7 +453,7 @@ export const bingoCommand = defineCommand({
 					name: 'add_tile',
 					description: 'Add a tile to your bingo.',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return globalBingoTiles
 							.filter(t => (!value ? true : t.name.toLowerCase().includes(value.toLowerCase())))
 							.map(t => ({
@@ -474,16 +473,16 @@ export const bingoCommand = defineCommand({
 					name: 'remove_tile',
 					description: 'Remove a tile from your bingo.',
 					required: false,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
 									{
-										creator_id: user.id
+										creator_id: userId
 									},
 									{
 										organizers: {
-											has: user.id
+											has: userId
 										}
 									}
 								],
@@ -533,8 +532,8 @@ export const bingoCommand = defineCommand({
 					name: 'bingo',
 					description: 'The bingo to check your items of.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
-						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
+						const bingos = await fetchBingosThatUserIsInvolvedIn(userId);
 						return bingos
 							.map(i => new BingoManager(i))
 							.filter(b => b.isActive())
@@ -687,7 +686,7 @@ export const bingoCommand = defineCommand({
 - Once your Bingo starts, you cannot stop it, or change any settings. Ensure everything is accurate before then.
 - You can only have 1 Bingo active at a time.
 - Ironmen will be able to enter, for free. However, they cannot win rewards.
-- Note: You need to add tiles yourself, using our predefined tiles AND/OR your own custom tiles. You can add tiles using ${mentionCommand(
+- Note: You need to add tiles yourself, using our predefined tiles AND/OR your own custom tiles. You can add tiles using ${globalClient.mentionCommand(
 				'bingo',
 				'manage_bingo',
 				'add_tile'
@@ -703,9 +702,8 @@ export const bingoCommand = defineCommand({
 **Notifications Channel:** ${createOptions.notifications_channel_id}
 **Organizers:** ${createOptions.organizers.map(userMention).join(', ')}
 
-${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you will be charged after confirming.** ${
-				Emoji.Warning
-			}
+${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you will be charged after confirming.** ${Emoji.Warning
+				}
 `;
 
 			await interaction.confirmation(disclaimer);
@@ -911,11 +909,9 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 								quantity: 1,
 								key: `bso-bingo-2-${trophy.item.id}`,
 								item_id: trophy.item.id,
-								description: `Awarded for placing in the top ${trophy.percentile}% of ${
-									bingo.title
-								}. Your team (${(await Promise.all(team.participants.map(async t => await Cache.getBadgedUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${
-									team.tilesCompletedCount
-								} tiles completed.`,
+								description: `Awarded for placing in the top ${trophy.percentile}% of ${bingo.title
+									}. Your team (${(await Promise.all(team.participants.map(async t => await Cache.getBadgedUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${team.tilesCompletedCount
+									} tiles completed.`,
 								date: bingo.endDate.toISOString(),
 								user_id: userId
 							}))
@@ -954,11 +950,10 @@ ${yourTeam.bingoTableStr}`
 					: '';
 
 				if (bingo.isGlobal) {
-					progressString += `\n${
-						yourTeam.trophy
-							? `**Trophy:** ${yourTeam.trophy.emoji} ${yourTeam.trophy.item.name}\n`
-							: 'Your team has not qualified for a trophy.'
-					}`;
+					progressString += `\n${yourTeam.trophy
+						? `**Trophy:** ${yourTeam.trophy.emoji} ${yourTeam.trophy.item.name}\n`
+						: 'Your team has not qualified for a trophy.'
+						}`;
 				}
 			}
 

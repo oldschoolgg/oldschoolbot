@@ -1,4 +1,3 @@
-import { execSync } from 'node:child_process';
 import {
 	type IChannel,
 	type IEmoji,

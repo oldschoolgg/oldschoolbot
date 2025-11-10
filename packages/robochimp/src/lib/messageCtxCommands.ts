@@ -1,15 +1,13 @@
-import { codeBlock, type Message, type MessageContextMenuCommandInteraction, MessageFlags } from 'discord.js';
 
-import { globalConfig, TEST_SERVER_ID } from '@/constants.js';
-import { getInfoStrOfUser } from '@/lib/messageCommands.js';
-import { Bits, CHANNELS } from '@/util.js';
+import { TEST_SERVER_ID } from '@/constants.js';
+import type { IMessage } from '@oldschoolgg/schemas';
 
 interface MessageCtxCommand {
 	name: string;
 	guildID: string;
 	run: (options: {
-		interaction: MessageContextMenuCommandInteraction;
-		message: Message | undefined;
+		interaction: MInteraction;
+		message: IMessage | undefined;
 		user: RUser;
 	}) => void;
 }
@@ -31,57 +29,61 @@ const awards: Award[] = [
 ];
 
 export const messageCtxCommands: MessageCtxCommand[] = [
-	{
-		name: 'Check User Info',
-		guildID: globalConfig.supportServerID,
-		run: async ({ interaction, user }) => {
-			const userToCheck = interaction.targetMessage.author.id;
+	// {
+	// 	name: 'Check User Info',
+	// 	guildID: globalConfig.supportServerID,
+	// 	run: async ({ interaction, user }) => {
+	// 		const userToCheck = interaction.targetMessage.author.id;
 
-			if (!user.isMod() && user.id.toString() !== userToCheck) {
-				return interaction.reply({
-					content: "You can't do that.",
-					flags: MessageFlags.Ephemeral
-				});
-			}
+	// 		if (!user.isMod() && user.id.toString() !== userToCheck) {
+	// 			return interaction.reply({
+	// 				content: "You can't do that.",
+	// 				ephemeral: true,
+	// 			});
+	// 		}
 
-			const result = await getInfoStrOfUser(userToCheck);
-			return interaction.reply({
-				content: result,
-				flags: MessageFlags.Ephemeral
-			});
-		}
-	},
+	// 		const result = await getInfoStrOfUser(userToCheck);
+	// 		return interaction.reply({
+	// 			content: result,
+	// 			ephemeral: true
+	// 		});
+	// 	}
+	// },
 	...awards.map(
 		(award): MessageCtxCommand => ({
 			name: `Award ${award.name} pts`,
 			guildID: TEST_SERVER_ID,
-			run: async ({ interaction, message, user }) => {
+			run: async ({ interaction }) => {
 				// Must be trusted
-				if (!user.bits.includes(Bits.Trusted)) {
-					return interaction.reply({
-						content: "You can't do that.",
-						flags: MessageFlags.Ephemeral
-					});
-				}
+				// if (!user.bits.includes(Bits.Trusted)) {
+				// 	return interaction.reply({
+				// 		content: "You can't do that.",
+				// 		ephemeral: true
+				// 	});
+				// }
 
-				const tester = await globalClient.fetchUser(interaction.targetMessage.author.id);
-				await tester.update({
-					testing_points: {
-						increment: award.points
-					},
-					testing_points_balance: {
-						increment: award.points
-					}
-				});
+				// const tester = await globalClient.fetchRUser(interaction.targetMessage.author.id);
+				// await tester.update({
+				// 	testing_points: {
+				// 		increment: award.points
+				// 	},
+				// 	testing_points_balance: {
+				// 		increment: award.points
+				// 	}
+				// });
 
-				globalClient.sendToChannelID(
-					CHANNELS.TESTING_AWARDS,
-					`${interaction.targetMessage.author} was awarded points by ${user.mention} for this message\n${codeBlock(message?.content ?? 'No message content')}`
-				);
+				// globalClient.sendDm(
+				// 	CHANNELS.TESTING_AWARDS,
+				// 	`${interaction.targetMessage.author} was awarded points by ${user.mention} for this message\n${codeBlock(message?.content ?? 'No message content')}`
+				// );
 
+				// return interaction.reply({
+				// 	content: 'Done.',
+				// 	ephemeral: true
+				// });
 				return interaction.reply({
-					content: 'Done.',
-					flags: MessageFlags.Ephemeral
+					content: 'Temporarily disabled.',
+					ephemeral: true
 				});
 			}
 		})

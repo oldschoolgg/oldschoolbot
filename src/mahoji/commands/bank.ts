@@ -2,10 +2,10 @@ import { codeBlock, EmbedBuilder } from '@oldschoolgg/discord';
 import { chunk, Emoji } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
+import { choicesOf, filterOption, itemOption } from '@/discord/index.js';
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
 import { bankFlags } from '@/lib/canvas/bankImage.js';
 import { PerkTier } from '@/lib/constants.js';
-import { choicesOf, filterOption, itemOption } from '@/lib/discord/index.js';
 import type { Flags } from '@/lib/minions/types.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';

@@ -23,7 +23,6 @@ import { clamp } from 'remeda';
 import { type Minigame, XpGainSource } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
@@ -209,182 +208,182 @@ const toaRequirements: {
 	}) => string | true;
 	desc: () => string;
 }[] = [
-	{
-		name: 'Blowpipe',
-		doesMeet: ({ user, quantity }) => {
-			const blowpipeData = user.getBlowpipe();
-			const cmdMention = mentionCommand('minion', 'blowpipe');
-			if (!user.owns('Toxic blowpipe')) {
-				return 'Needs Toxic blowpipe (with darts and scales equipped) in bank';
-			}
-
-			const dartsNeeded = BP_DARTS_NEEDED * quantity;
-			if (!blowpipeData.dartID || !blowpipeData.dartQuantity || blowpipeData.dartQuantity < dartsNeeded) {
-				return `Needs ${dartsNeeded}x darts equipped in your blowpipe: ${cmdMention}`;
-			}
-			if (!blowpipeData.scales || blowpipeData.scales < dartsNeeded) {
-				return `Needs ${dartsNeeded}x scales loaded in your blowpipe: ${cmdMention}`;
-			}
-			if (ALLOWED_DARTS.every(item => item.id !== blowpipeData.dartID)) {
-				return `Darts are too weak: ${cmdMention}`;
-			}
-			return true;
-		},
-		desc: () =>
-			`at least ${BP_DARTS_NEEDED}x darts per raid, and using one of: ${formatList(
-				ALLOWED_DARTS.map(i => i.name),
-				'or'
-			)}, loaded in Blowpipe`
-	},
-	{
-		name: 'Range gear',
-		doesMeet: ({ user, gearStats, quantity }) => {
-			if (gearStats.range < 25) {
-				return 'Terrible range gear';
-			}
-
-			if (!user.gear.range.hasEquipped(REQUIRED_RANGE_WEAPONS, false)) {
-				return `Must have one of these equipped: ${formatList(
-					REQUIRED_RANGE_WEAPONS.map(i => Items.itemNameFromId(i)),
-					'or'
-				)}`;
-			}
-
-			const rangeAmmo = user.gear.range.ammo;
-			const rangeWeapon = user.gear.range.equippedWeapon();
-			const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
-			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
-				if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded) {
-					return `Need ${arrowsNeeded} arrows equipped`;
+		{
+			name: 'Blowpipe',
+			doesMeet: ({ user, quantity }) => {
+				const blowpipeData = user.getBlowpipe();
+				const cmdMention = globalClient.mentionCommand('minion', 'blowpipe');
+				if (!user.owns('Toxic blowpipe')) {
+					return 'Needs Toxic blowpipe (with darts and scales equipped) in bank';
 				}
 
-				if (!REQUIRED_ARROWS.includes(rangeAmmo.item)) {
-					return `Need one of these arrows equipped: ${formatList(
-						REQUIRED_ARROWS.map(i => Items.itemNameFromId(i)),
+				const dartsNeeded = BP_DARTS_NEEDED * quantity;
+				if (!blowpipeData.dartID || !blowpipeData.dartQuantity || blowpipeData.dartQuantity < dartsNeeded) {
+					return `Needs ${dartsNeeded}x darts equipped in your blowpipe: ${cmdMention}`;
+				}
+				if (!blowpipeData.scales || blowpipeData.scales < dartsNeeded) {
+					return `Needs ${dartsNeeded}x scales loaded in your blowpipe: ${cmdMention}`;
+				}
+				if (ALLOWED_DARTS.every(item => item.id !== blowpipeData.dartID)) {
+					return `Darts are too weak: ${cmdMention}`;
+				}
+				return true;
+			},
+			desc: () =>
+				`at least ${BP_DARTS_NEEDED}x darts per raid, and using one of: ${formatList(
+					ALLOWED_DARTS.map(i => i.name),
+					'or'
+				)}, loaded in Blowpipe`
+		},
+		{
+			name: 'Range gear',
+			doesMeet: ({ user, gearStats, quantity }) => {
+				if (gearStats.range < 25) {
+					return 'Terrible range gear';
+				}
+
+				if (!user.gear.range.hasEquipped(REQUIRED_RANGE_WEAPONS, false)) {
+					return `Must have one of these equipped: ${formatList(
+						REQUIRED_RANGE_WEAPONS.map(i => Items.itemNameFromId(i)),
 						'or'
 					)}`;
 				}
-			}
 
-			return true;
+				const rangeAmmo = user.gear.range.ammo;
+				const rangeWeapon = user.gear.range.equippedWeapon();
+				const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
+				if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
+					if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded) {
+						return `Need ${arrowsNeeded} arrows equipped`;
+					}
+
+					if (!REQUIRED_ARROWS.includes(rangeAmmo.item)) {
+						return `Need one of these arrows equipped: ${formatList(
+							REQUIRED_ARROWS.map(i => Items.itemNameFromId(i)),
+							'or'
+						)}`;
+					}
+				}
+
+				return true;
+			},
+			desc: () =>
+				`decent range gear (BiS is ${maxRangeGear.toString()}), at least ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${formatList(
+					REQUIRED_RANGE_WEAPONS.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}`
 		},
-		desc: () =>
-			`decent range gear (BiS is ${maxRangeGear.toString()}), at least ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${formatList(
-				REQUIRED_RANGE_WEAPONS.map(i => Items.itemNameFromId(i)),
-				'or'
-			)}`
-	},
-	{
-		name: 'Melee gear',
-		doesMeet: ({ user, gearStats }) => {
-			if (gearStats.melee < 25) {
-				return 'Terrible melee gear';
-			}
+		{
+			name: 'Melee gear',
+			doesMeet: ({ user, gearStats }) => {
+				if (gearStats.melee < 25) {
+					return 'Terrible melee gear';
+				}
 
-			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_WEAPONS, false)) {
-				return `Need one of these weapons in your melee setup: ${formatList(
+				if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_WEAPONS, false)) {
+					return `Need one of these weapons in your melee setup: ${formatList(
+						MELEE_REQUIRED_WEAPONS.map(i => Items.itemNameFromId(i)),
+						'or'
+					)}`;
+				}
+				if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_ARMOR, false)) {
+					return `Need one of these in your melee setup: ${formatList(
+						MELEE_REQUIRED_ARMOR.map(i => Items.itemNameFromId(i)),
+						'or'
+					)}`;
+				}
+
+				return true;
+			},
+			desc: () =>
+				`decent melee gear (BiS is ${maxMeleeLessThan300Gear.toString()}, switched to a Osmumten fang if the raid level is over 300), and one of these weapons: ${formatList(
 					MELEE_REQUIRED_WEAPONS.map(i => Items.itemNameFromId(i)),
 					'or'
-				)}`;
-			}
-			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_ARMOR, false)) {
-				return `Need one of these in your melee setup: ${formatList(
+				)}, and one of these armor pieces: ${formatList(
 					MELEE_REQUIRED_ARMOR.map(i => Items.itemNameFromId(i)),
 					'or'
-				)}`;
-			}
+				)}`
+		},
+		{
+			name: 'Mage gear',
+			doesMeet: ({ gearStats }) => {
+				if (gearStats.mage < 25) {
+					return 'Terrible mage gear';
+				}
 
-			return true;
+				return true;
+			},
+			desc: () => `decent mage gear (BiS is ${maxMageGear.toString()})`
 		},
-		desc: () =>
-			`decent melee gear (BiS is ${maxMeleeLessThan300Gear.toString()}, switched to a Osmumten fang if the raid level is over 300), and one of these weapons: ${formatList(
-				MELEE_REQUIRED_WEAPONS.map(i => Items.itemNameFromId(i)),
-				'or'
-			)}, and one of these armor pieces: ${formatList(
-				MELEE_REQUIRED_ARMOR.map(i => Items.itemNameFromId(i)),
-				'or'
-			)}`
-	},
-	{
-		name: 'Mage gear',
-		doesMeet: ({ gearStats }) => {
-			if (gearStats.mage < 25) {
-				return 'Terrible mage gear';
-			}
+		{
+			name: 'Stats',
+			doesMeet: ({ user }) => {
+				if (!user.hasSkillReqs(minTOAStats)) {
+					return `You need: ${formatSkillRequirements(minTOAStats)}.`;
+				}
+				return true;
+			},
+			desc: () => `${formatSkillRequirements(minTOAStats)}`
+		},
+		{
+			name: 'Supplies',
+			doesMeet: ({ user, quantity }) => {
+				if (user.owns('Super combat potion(4)')) {
+					minimumSuppliesNeeded = minSuppliesWithScmb;
+				} else {
+					minimumSuppliesNeeded = minSuppliesWithAtkStr;
+				}
+				if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
+					return `You need at least this much supplies: ${minimumSuppliesNeeded}.`;
+				}
+				const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
+				if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
+					return `You need at least ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
+						'minion',
+						'charge'
+					)}`;
+				}
 
-			return true;
-		},
-		desc: () => `decent mage gear (BiS is ${maxMageGear.toString()})`
-	},
-	{
-		name: 'Stats',
-		doesMeet: ({ user }) => {
-			if (!user.hasSkillReqs(minTOAStats)) {
-				return `You need: ${formatSkillRequirements(minTOAStats)}.`;
-			}
-			return true;
-		},
-		desc: () => `${formatSkillRequirements(minTOAStats)}`
-	},
-	{
-		name: 'Supplies',
-		doesMeet: ({ user, quantity }) => {
-			if (user.owns('Super combat potion(4)')) {
-				minimumSuppliesNeeded = minSuppliesWithScmb;
-			} else {
-				minimumSuppliesNeeded = minSuppliesWithAtkStr;
-			}
-			if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
-				return `You need at least this much supplies: ${minimumSuppliesNeeded}.`;
-			}
-			const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
-			if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
-				return `You need at least ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					'minion',
-					'charge'
-				)}`;
-			}
+				const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
+				if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
+					return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
+						'minion',
+						'charge'
+					)}`;
+				}
 
-			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
-			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
-				return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					'minion',
-					'charge'
-				)}`;
-			}
+				return true;
+			},
+			desc: () => `Need at least ${minimumSuppliesNeeded}`
+		},
+		{
+			name: 'Rune Pouch',
+			doesMeet: ({ allItemsOwned }) => {
+				const similarItems = getSimilarItems(itemID('Rune pouch'));
+				if (similarItems.every(item => !allItemsOwned.has(item))) {
+					return 'You need to own a Rune pouch.';
+				}
+				return true;
+			},
+			desc: () => `Need at least ${minimumSuppliesNeeded}`
+		},
+		{
+			name: 'Poison Protection',
+			doesMeet: ({ user, quantity }) => {
+				const ownsSanfew = user.owns(new Bank().add('Sanfew serum(4)', quantity));
+				const hasSerpHelm = user.gear.melee.hasEquipped('Serpentine helm', false);
+				const serpChargesNeeded = calcSerpHelmCharges(quantity, Time.Hour);
+				const hasSerpHelmCharges = user.user.serp_helm_charges >= serpChargesNeeded;
+				const canUseSerp = hasSerpHelm && hasSerpHelmCharges;
 
-			return true;
-		},
-		desc: () => `Need at least ${minimumSuppliesNeeded}`
-	},
-	{
-		name: 'Rune Pouch',
-		doesMeet: ({ allItemsOwned }) => {
-			const similarItems = getSimilarItems(itemID('Rune pouch'));
-			if (similarItems.every(item => !allItemsOwned.has(item))) {
-				return 'You need to own a Rune pouch.';
-			}
-			return true;
-		},
-		desc: () => `Need at least ${minimumSuppliesNeeded}`
-	},
-	{
-		name: 'Poison Protection',
-		doesMeet: ({ user, quantity }) => {
-			const ownsSanfew = user.owns(new Bank().add('Sanfew serum(4)', quantity));
-			const hasSerpHelm = user.gear.melee.hasEquipped('Serpentine helm', false);
-			const serpChargesNeeded = calcSerpHelmCharges(quantity, Time.Hour);
-			const hasSerpHelmCharges = user.user.serp_helm_charges >= serpChargesNeeded;
-			const canUseSerp = hasSerpHelm && hasSerpHelmCharges;
-
-			if (!ownsSanfew && !canUseSerp) {
-				return `You need a charged Serpentine helmet equipped in melee with ${serpChargesNeeded} charges, or ${quantity}x Sanfew serum(4) in your bank.`;
-			}
-			return true;
-		},
-		desc: () => 'Need a charged Serpentine helmet equipped in melee, or a Sanfew serum(4) in your bank'
-	}
-];
+				if (!ownsSanfew && !canUseSerp) {
+					return `You need a charged Serpentine helmet equipped in melee with ${serpChargesNeeded} charges, or ${quantity}x Sanfew serum(4) in your bank.`;
+				}
+				return true;
+			},
+			desc: () => 'Need a charged Serpentine helmet equipped in melee, or a Sanfew serum(4) in your bank'
+		}
+	];
 
 export function calculateXPFromRaid({
 	realDuration,
@@ -1023,8 +1022,7 @@ async function checkTOAUser(
 	if (user.user.serp_helm_charges < serpHelmCharges) {
 		return [
 			true,
-			`${
-				user.usernameOrMention
+			`${user.usernameOrMention
 			} doesn't have enough Serpentine helm charges. You need at least ${serpHelmCharges} charges to do a ${formatDuration(
 				duration
 			)} TOA raid.`
@@ -1038,8 +1036,7 @@ async function checkTOAUser(
 		if (kc < dividedRaidLevel) {
 			return [
 				true,
-				`${user.usernameOrMention}, you need at least ${dividedRaidLevel} TOA KC to ${
-					teamSize === 2 ? 'duo' : 'solo'
+				`${user.usernameOrMention}, you need at least ${dividedRaidLevel} TOA KC to ${teamSize === 2 ? 'duo' : 'solo'
 				} a level ${raidLevel} TOA raid.`
 			];
 		}
@@ -1113,6 +1110,7 @@ export async function toaStartCommand(
 	const maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 1,
 		maxSize,
@@ -1127,7 +1125,7 @@ export async function toaStartCommand(
 		}
 	};
 
-	const users: MUser[] = solo ? [user] : await interaction.makeParty(partyOptions);
+	const users: MUser[] = solo ? [user] : await globalClient.makeParty(partyOptions);
 	if (await ActivityManager.anyMinionIsBusy(users)) {
 		return `All team members must have their minions free.`;
 	}
@@ -1268,9 +1266,8 @@ export async function toaStartCommand(
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${formatList(
 		users.map(u => u.usernameOrMention)
-	)}) are now off to do ${
-		quantity === 1 ? 'a' : `${quantity}x`
-	} level ${raidLevel} Tombs of Amascut raid - the total trip will take ${formatDuration(fakeDuration)}.`;
+	)}) are now off to do ${quantity === 1 ? 'a' : `${quantity}x`
+		} level ${raidLevel} Tombs of Amascut raid - the total trip will take ${formatDuration(fakeDuration)}.`;
 
 	str += ` \n\n${debugStr}`;
 
@@ -1448,8 +1445,7 @@ function createTOATeam({
 		totalReduction -= worstTeamMember.reduction;
 		totalReduction = round(totalReduction / (teamSize - 1), 2);
 		messages.push(
-			`${
-				arr.find(i => i.id === worstTeamMember.id)?.user.badgedUsername
+			`${arr.find(i => i.id === worstTeamMember.id)?.user.badgedUsername
 			} is being carried by the rest of the team so they don't affect the raid time!`
 		);
 	} else {
@@ -1521,7 +1517,7 @@ async function toaCheckCommand(user: MUser) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
 
-	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand('raid', 'toa', 'start')}`;
+	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${globalClient.mentionCommand('raid', 'toa', 'start')}`;
 }
 
 function calculateBoostString(user: MUser) {
@@ -1576,29 +1572,28 @@ export async function toaHelpCommand(user: MUser, channelId: string) {
 **Entry Mode:** ${entryKC} KC
 **Normal Mode:** ${normalKC} KC
 **Expert Mode:** ${expertKC} KC
-**Total Uniques:** ${totalUniques} ${
-		totalUniques > 0
+**Total Uniques:** ${totalUniques} ${totalUniques > 0
 			? `(1 unique per ${Math.floor(
-					stats.total_toa_points / totalUniques
-				).toLocaleString()} pts, one unique every ${Math.floor(
-					totalKC / totalUniques
-				)} raids, one unique every ${formatDuration(
-					(stats.total_toa_duration_minutes * Time.Minute) / totalUniques
-				)})`
+				stats.total_toa_points / totalUniques
+			).toLocaleString()} pts, one unique every ${Math.floor(
+				totalKC / totalUniques
+			)} raids, one unique every ${formatDuration(
+				(stats.total_toa_duration_minutes * Time.Minute) / totalUniques
+			)})`
 			: ''
-	}
+		}
 
 **Requirements**
 ${toaRequirements
-	.map(i => {
-		const res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned });
-		if (typeof res === 'string') {
-			return `- ❌ ${bold(i.name)} ${res}`;
-		}
+			.map(i => {
+				const res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned });
+				if (typeof res === 'string') {
+					return `- ❌ ${bold(i.name)} ${res}`;
+				}
 
-		return `- ✅ ${bold(i.name)}`;
-	})
-	.join('\n')}
+				return `- ✅ ${bold(i.name)}`;
+			})
+			.join('\n')}
 
 **Ready:** ${await toaCheckCommand(user)}
 

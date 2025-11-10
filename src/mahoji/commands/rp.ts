@@ -6,10 +6,10 @@ import { Duration } from '@sapphire/time-utilities';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
+import { choicesOf, gearSetupOption } from '@/discord/index.js';
 import { marketPricemap } from '@/lib/cache.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
-import { choicesOf, gearSetupOption } from '@/lib/discord/index.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
@@ -295,11 +295,11 @@ export const rpCommand = defineCommand({
 							name: 'cl_name',
 							description: 'The cl the user completed',
 							required: true,
-							autocomplete: async (val: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return allCollectionLogsFlat
 									.map(c => c.name)
-									.filter(c => (!val ? true : c.toLowerCase().includes(val.toLowerCase())))
-									.map(val => ({ name: val, value: val }));
+									.filter(c => (!value ? true : c.toLowerCase().includes(value.toLowerCase())))
+									.map(val => ({ name: val, value }));
 							}
 						},
 						{
@@ -359,9 +359,9 @@ export const rpCommand = defineCommand({
 							name: 'skill',
 							description: 'What skill?',
 							required: true,
-							autocomplete: async (val: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return Object.values(xp_gains_skill_enum)
-									.filter(s => (!val ? true : s.includes(val.toLowerCase())))
+									.filter(s => (!value ? true : s.includes(value.toLowerCase())))
 									.map(s => ({ name: s, value: s }));
 							}
 						},

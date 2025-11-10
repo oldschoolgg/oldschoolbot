@@ -234,7 +234,7 @@ export const clueCommand = defineCommand({
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return ClueTiers.map(i => ({
 					name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
 					value: i.name
@@ -253,7 +253,7 @@ export const clueCommand = defineCommand({
 			name: 'implings',
 			description: 'Implings to use for multiple clues per trip.',
 			required: false,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				const allClueImps = ClueTiers.filter(t => t.name !== 'Beginner')
 					.map(i => i.implings)
 					.filter(notEmpty)

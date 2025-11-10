@@ -31,7 +31,6 @@ import {
 	type UserStats,
 	type XPGain
 } from '@/prisma/main.js';
-import type { AnyCommand } from '@/lib/discord/commandOptions.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { isGroupActivity } from '@/lib/util/activityTypeCheck.js';

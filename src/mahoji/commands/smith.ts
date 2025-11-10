@@ -20,7 +20,7 @@ export const smithCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to smith.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return smithables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({

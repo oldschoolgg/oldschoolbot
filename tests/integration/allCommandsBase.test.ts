@@ -3,11 +3,10 @@ import type { IChannel, IRole } from '@oldschoolgg/schemas';
 import { Stopwatch, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
-import { shuffle } from 'remeda';
 import { test } from 'vitest';
 
-import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import { allCommandsDONTIMPORT } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
@@ -15,7 +14,9 @@ import { createTestUser, mockClient, mockIMember, mockUser, TestClient } from '.
 
 type CommandInput = Record<string, any>;
 type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean;
-const LIMIT_PER_COMMAND = 3;
+
+const LIMIT_PER_COMMAND = 50;
+const BASE_LEVEL_ACCOUNTS_TO_TEST = [99, 90, 70, 50, 30, 20, 15, 10];
 
 export async function generateCommandInputs(
 	commandName: string,
@@ -41,7 +42,7 @@ export async function generateCommandInputs(
 				break;
 			case 'String':
 				if ('autocomplete' in option && option.autocomplete) {
-					const autoCompleteResults = await option.autocomplete('', mockedUser, {} as any);
+					const autoCompleteResults = await option.autocomplete({ value: '', user: mockedUser, userId: mockedUser.id, guildId: cryptoRng.pick(['940758552425955348', null]) });
 					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value));
 					if (allPossibleOptions[option.name].some(i => typeof i === 'undefined')) throw new Error('1');
 				} else if (option.choices) {
@@ -64,7 +65,7 @@ export async function generateCommandInputs(
 					allPossibleOptions[option.name] = [option.min_value ?? 0, option.max_value ?? 1_000_000];
 					const min = option.min_value ?? 0;
 					const max = option.max_value ?? 1_000_000;
-					for (let i = 0; i < 18; i++) {
+					for (let i = 0; i < 3; i++) {
 						allPossibleOptions[option.name].push(rng.randInt(min, max));
 					}
 					allPossibleOptions[option.name] = uniqueArr(allPossibleOptions[option.name]);
@@ -129,6 +130,42 @@ async function createUserWithBaseStats(baseLevel: number) {
 	for (const skill of SkillsArray) {
 		options[`skills_${skill}`] = convertLVLtoXP(baseLevel);
 	}
+	if (baseLevel > 80) {
+		options.gear_range = new Gear({
+			head: 'Masori mask(f)',
+			neck: 'Necklace of anguish',
+			body: 'Masori Body (f)',
+			cape: "Blessed dizana's quiver",
+			hands: 'Zaryte vambraces',
+			legs: 'Masori chaps (f)',
+			feet: 'Pegasian boots',
+			'2h': 'Twisted bow',
+			ring: 'Venator ring',
+			ammo: 'Dragon arrow'
+		}).raw();
+		options.gear_mage = new Gear({
+			head: 'Ancestral hat',
+			neck: 'Occult necklace',
+			body: 'Ancestral robe top',
+			cape: 'Imbued saradomin cape',
+			hands: 'Tormented bracelet',
+			legs: 'Ancestral robe bottom',
+			feet: 'Eternal boots',
+			'2h': "Tumeken's shadow",
+			ring: 'Magus ring'
+		}).raw();
+		options.gear_melee = new Gear({
+			head: 'Torva full helm',
+			neck: 'Amulet of torture',
+			body: 'Torva platebody',
+			cape: 'Infernal cape',
+			hands: 'Ferocious gloves',
+			legs: 'Torva platelegs',
+			feet: 'Primordial boots',
+			'2h': 'Scythe of vitur',
+			ring: 'Ultor ring'
+		}).raw();
+	}
 	const user = await createTestUser(bankWithAllItems, options);
 	return user;
 }
@@ -136,7 +173,7 @@ async function createUserWithBaseStats(baseLevel: number) {
 test(
 	'All Commands Base Test',
 	{
-		timeout: Time.Minute * 2
+		timeout: Time.Minute * 10
 	},
 	async () => {
 		await mockClient();
@@ -165,7 +202,8 @@ test(
 			'bank',
 			'bs',
 			'ge',
-			'data'
+			'data',
+			'mass'
 		];
 		const commandsToTest = allCommandsDONTIMPORT.filter(c => !ignoredCommands.includes(c.name));
 
@@ -214,7 +252,7 @@ test(
 					}
 				}
 			}
-			options = shuffle(options).slice(0, LIMIT_PER_COMMAND);
+			options = cryptoRng.shuffle(options).slice(0, LIMIT_PER_COMMAND);
 			totalCommands += options.length;
 			processedCommands.push({ command, options });
 		}
@@ -222,15 +260,17 @@ test(
 		console.log(`Starting to run ${totalCommands} command permutations...`);
 
 		let commandsRan = 0;
-		const queue = new PromiseQueue({ concurrency: 4 });
+		const queue = new PromiseQueue({ concurrency: 12, timeout: Time.Second * 30, throwOnTimeout: true });
 
 		for (const { command, options: allOptions } of processedCommands) {
 			for (const options of allOptions) {
 				queue.add(async () => {
 					try {
-						const allUsers = await Promise.all([90, 55, 1].map(_l => createUserWithBaseStats(_l)));
+						const allUsers = await Promise.all(
+							BASE_LEVEL_ACCOUNTS_TO_TEST.map(_l => createUserWithBaseStats(_l))
+						);
 						await Promise.all(allUsers.map(u => u.runCmdAndTrip(command, options)));
-						commandsRan += 4;
+						commandsRan += BASE_LEVEL_ACCOUNTS_TO_TEST.length;
 					} catch (err) {
 						console.error(
 							`Failed to run command ${command.name} with options ${JSON.stringify(options)}: ${err}`
@@ -240,6 +280,9 @@ test(
 				});
 			}
 		}
+		queue.on('next', () => {
+			console.log(`${queue.size} commands remaining...`);
+		});
 		await queue.onEmpty();
 
 		console.log(

@@ -1,8 +1,8 @@
 import { Emoji, ellipsize } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
+import { filterOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { filterOption } from '@/lib/discord/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
 export const dropCommand = defineCommand({

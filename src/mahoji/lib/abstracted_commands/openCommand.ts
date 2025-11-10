@@ -2,10 +2,10 @@ import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, MAX_CLUES_DROPPED, PerkTier } from '@/lib/constants.js';
-import type { MessageBuilderClass } from '@/lib/discord/MessageBuilder.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';

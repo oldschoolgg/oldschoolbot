@@ -16,10 +16,10 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
+import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
 import { syncBlacklists } from '@/lib/blacklists.js';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
-import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
@@ -491,7 +491,7 @@ export const adminCommand = defineCommand({
 					name: 'disable',
 					description: 'The command to disable',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						const disabledCommands = await Cache.getDisabledCommands();
 						return globalClient.allCommands
 							.filter(i => !disabledCommands.includes(i.name))
@@ -544,7 +544,7 @@ export const adminCommand = defineCommand({
 					name: 'add',
 					description: 'The bitfield to add',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));
@@ -555,7 +555,7 @@ export const adminCommand = defineCommand({
 					name: 'remove',
 					description: 'The bitfield to remove',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));

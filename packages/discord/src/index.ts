@@ -29,6 +29,7 @@ import {
 	GatewayDispatchEvents,
 	type GatewayGuildCreateDispatchData,
 	GatewayIntentBits,
+	type GatewayMessageCreateDispatchData,
 	GatewayOpcodes,
 	type GatewayPresenceUpdateData,
 	type GatewayReadyDispatchData,
@@ -56,6 +57,7 @@ export enum ButtonStyle {
 }
 
 export {
+	type GatewayMessageCreateDispatchData,
 	type APIMessageComponentInteraction,
 	type RESTPostAPIApplicationGuildCommandsJSONBody,
 	type RESTPostAPIChannelMessageJSONBody,
@@ -151,3 +153,6 @@ export function convertApiRoleToZRole({ apiRole, guildId }: { apiRole: APIRole; 
 }
 
 export * from './BitField.js';
+export * from './client/DiscordClient.js';
+export * from './client/types.js';
+export * from './interactions/index.js';

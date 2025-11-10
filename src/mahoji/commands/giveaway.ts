@@ -66,7 +66,7 @@ export const giveawayCommand = defineCommand({
 					name: 'filter',
 					description: 'The filter you want to use.',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						const res = !value
 							? filterableTypes
 							: [...filterableTypes].filter(filter =>

@@ -29,7 +29,7 @@ export const tksCommand = defineCommand({
 					description: 'The item you want to purchase.',
 					type: 'String',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return TokkulShopItems.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						)
@@ -56,7 +56,7 @@ export const tksCommand = defineCommand({
 					description: 'The item you want to sell.',
 					type: 'String',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return TokkulShopItems.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						)

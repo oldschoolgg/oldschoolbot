@@ -1,10 +1,10 @@
 import { calcWhatPercent, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
+import { defineOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';
 import { allClNames, getCollectionItems } from '@/lib/data/Collections.js';
-import { defineOption } from '@/lib/discord/index.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables } from '@/lib/openables.js';
@@ -574,7 +574,7 @@ export const leaderboardCommand = defineCommand({
 					name: 'monster',
 					description: 'The monster you want to check the leaderboard of.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return effectiveMonsters
 							.filter(m => (!value ? true : m.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -622,7 +622,7 @@ export const leaderboardCommand = defineCommand({
 					name: 'minigame',
 					description: 'The particular minigame leaderboard you want to check.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Minigames.filter(i =>
 							!value
 								? true
@@ -642,7 +642,7 @@ export const leaderboardCommand = defineCommand({
 					name: 'creature',
 					description: 'The particular creature you want to check.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Hunter.Creatures.filter(i =>
 							!value
 								? true
@@ -662,7 +662,7 @@ export const leaderboardCommand = defineCommand({
 					name: 'course',
 					description: 'The particular creature you want to check.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Agility.Courses.filter(i =>
 							!value
 								? true
@@ -712,7 +712,7 @@ export const leaderboardCommand = defineCommand({
 					name: 'openable',
 					description: 'The openable you want to select.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return allOpenables
 							.filter(i =>
 								!value
@@ -737,7 +737,7 @@ export const leaderboardCommand = defineCommand({
 					name: 'cl',
 					description: 'The cl you want to select.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return [
 							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
 							...['overall+', ...allClNames.map(i => i)].map(i => ({

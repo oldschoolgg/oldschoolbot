@@ -8,7 +8,6 @@ import { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
 import { type GithubSponsorsWebhookData, verifyGithubSecret } from '../lib/githubSponsor.js';
 import { parseStrToTier, patreonTask, verifyPatreonSecret } from '../lib/patreon.js';
-import { patronLogWebhook } from '../util.js';
 
 export async function startServer() {
 	const app = new Hono();
@@ -42,7 +41,7 @@ export async function startServer() {
 		// biome-ignore lint/nursery/noFloatingPromises:-
 		patreonTask.run().then(res => {
 			if (res) {
-				patronLogWebhook.send(res.join('\n').slice(0, 1950));
+				console.log(res.join('\n').slice(0, 1950));
 			}
 		});
 
@@ -104,11 +103,12 @@ export async function startServer() {
 			return httpErr.BAD_REQUEST({ message: 'Invalid user ID 1' });
 		}
 
-		if (!isValidDiscordSnowflake(userID)) {
-			const djsUser = globalClient.users.cache.find((u: any) => u.username === userID);
-			if (djsUser) userID = djsUser.id;
-			else return httpErr.NOT_FOUND({ message: 'Could not find this users id' });
-		}
+		// TODO: support for tags/username
+		// if (!isValidDiscordSnowflake(userID)) {
+		// 	const djsUser = globalClient.users.cache.find((u: any) => u.username === userID);
+		// 	if (djsUser) userID = djsUser.id;
+		// 	else return httpErr.NOT_FOUND({ message: 'Could not find this users id' });
+		// }
 
 		if (!userID || !isValidDiscordSnowflake(userID)) {
 			return httpErr.BAD_REQUEST({ message: 'Invalid user ID 3' });

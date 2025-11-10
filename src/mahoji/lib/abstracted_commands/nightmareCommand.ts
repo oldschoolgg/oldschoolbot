@@ -3,7 +3,6 @@ import { Bank, EMonster, Items, resolveItems, ZAM_HASTA_CRUSH } from 'oldschoolj
 
 import { BitField } from '@/lib/constants.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
@@ -96,12 +95,12 @@ function perUserCost(
 	const sangCharges = sangChargesPerKc * quantity;
 	if (isPhosani) {
 		if (hasShadow && user.user.tum_shadow_charges < tumCharges) {
-			return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+			return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 				'minion',
 				'charge'
 			)}`;
 		} else if (hasSang && user.user.sang_charges < sangCharges) {
-			return `You need at least ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+			return `You need at least ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 				'minion',
 				'charge'
 			)}`;
@@ -320,23 +319,21 @@ export async function nightmareCommand(user: MUser, channelId: string, name: str
 		type === 'solo'
 			? `${await soloMessage(user, duration, quantity, isPhosani)}
 ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
-			: `${user.usernameOrMention}'s party of ${
-					users.length
-				} is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
-					perKillTime
-				)} instead of ${formatDuration(
-					NightmareMonster.timeToFinish
-				)} - the total trip will take ${formatDuration(duration)}.`;
+			: `${user.usernameOrMention}'s party of ${users.length
+			} is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
+				perKillTime
+			)} instead of ${formatDuration(
+				NightmareMonster.timeToFinish
+			)} - the total trip will take ${formatDuration(duration)}.`;
 
-	str += `\nRemoved ${soloFoodUsage} from your bank.${
-		isPhosani
-			? hasShadow
-				? ` Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. `
-				: hasSang
-					? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
-					: ''
-			: ''
-	}`;
+	str += `\nRemoved ${soloFoodUsage} from your bank.${isPhosani
+		? hasShadow
+			? ` Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. `
+			: hasSang
+				? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
+				: ''
+		: ''
+		}`;
 
 	return str;
 }

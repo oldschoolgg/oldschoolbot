@@ -65,7 +65,7 @@ export const botLeaguesCommand = defineCommand({
 					name: 'item',
 					description: 'The item to buy.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return leagueBuyables
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));

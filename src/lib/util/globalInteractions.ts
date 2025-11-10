@@ -6,8 +6,6 @@ import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
-import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -165,7 +163,7 @@ async function handlePinnedTripRepeat(user: MUser, id: string, interaction: MInt
 
 async function handleGEButton(user: MUser, id: string): CommandResponse {
 	if (id === 'ge_cancel_dms') {
-		const mention = mentionCommand('config', 'user', 'toggle');
+		const mention = globalClient.mentionCommand('config', 'user', 'toggle');
 		if (user.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			return {
 				content: `You already disabled Grand Exchange DM's, you can re-enable them using ${mention}.`,

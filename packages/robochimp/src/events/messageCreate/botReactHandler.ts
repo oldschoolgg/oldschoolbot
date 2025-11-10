@@ -1,4 +1,4 @@
-import type { Message } from 'discord.js';
+import type { IMessage } from "@oldschoolgg/schemas";
 
 function generateRankMessage(rank: number) {
 	if (rank === 1) return 'Rank 1 👑🥇';
@@ -9,9 +9,9 @@ function generateRankMessage(rank: number) {
 	return 'Not in Top 500';
 }
 
-export async function botReactHandler(msg: Message) {
+export async function botReactHandler(msg: IMessage) {
 	if (msg.content === `<@${globalClient.applicationId}>`) {
-		const u = await globalClient.fetchUser(msg.author.id);
+		const u = await globalClient.fetchRUser(msg.author_id);
 		if (!u) return;
 		const combinedCLPercent = ((u.osbClPercent ?? 0) + (u.bsoClPercent ?? 0)) / 2;
 		const clPercentRank = (
@@ -20,7 +20,7 @@ FROM public.user
 WHERE ((osb_cl_percent + bso_cl_percent) / 2) >= ${combinedCLPercent};`
 		)[0].count;
 
-		msg.reply(`${msg.author.username}
+		await globalClient.replyToMessage(msg, `${await globalClient.fetchUserUsername(msg.author_id)}
 **OSB Total Level:** ${u.osbTotalLevel ?? 'Unknown'}
 **BSO Total Level:** ${u.bsoTotalLevel ?? 'Unknown'}
 

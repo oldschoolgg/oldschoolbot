@@ -1,4 +1,4 @@
-import { choicesOf, ownedItemOption } from '@/lib/discord/index.js';
+import { choicesOf, ownedItemOption } from '@/discord/index.js';
 import { PoHObjects } from '@/lib/poh/index.js';
 import {
 	getPOH,
@@ -56,7 +56,7 @@ export const pohCommand = defineCommand({
 					name: 'name',
 					description: 'The object you want to build.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return PoHObjects.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({
@@ -77,8 +77,8 @@ export const pohCommand = defineCommand({
 					name: 'name',
 					description: 'The object you want to destroy.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
-						const poh = await getPOH(user.id);
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
+						const poh = await getPOH(userId);
 						return PoHObjects.filter(obj => poh[obj.slot] === obj.id)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));

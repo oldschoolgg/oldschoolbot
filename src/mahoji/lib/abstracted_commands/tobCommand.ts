@@ -305,6 +305,7 @@ export async function tobStartCommand(
 	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 5 }) ?? 5;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize,
@@ -321,7 +322,7 @@ export async function tobStartCommand(
 		}
 	};
 
-	const users = solo ? [user, user, user] : await interaction.makeParty(partyOptions);
+	const users = solo ? [user, user, user] : await globalClient.makeParty(partyOptions);
 	if (await ActivityManager.anyMinionIsBusy(users)) {
 		return `All team members must have their minions free.`;
 	}

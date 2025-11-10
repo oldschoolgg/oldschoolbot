@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
 import z from 'zod';
 
-import { ZMember, ZMessage } from './discord.js';
+import { ZMessage } from './discord.js';
 import { ZSnowflake } from './shared.js';
 
 export const ZBaseInteraction = z.object({
@@ -10,7 +10,7 @@ export const ZBaseInteraction = z.object({
 	user_id: ZSnowflake,
 	channel_id: ZSnowflake,
 	created_timestamp: z.number(),
-	member: ZMember.nullable(),
+	// member: ZMember.nullable(),
 	guild_id: ZSnowflake.nullable()
 });
 export type IBaseInteraction = z.infer<typeof ZBaseInteraction>;

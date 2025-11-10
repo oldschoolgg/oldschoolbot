@@ -1,25 +1,32 @@
-import type { Message } from 'discord.js';
 
-import { tagHandler } from '@/events/messageCreate/tagHandler.js';
-import { handleCommands } from '../lib/messageCommands.js';
 import { botReactHandler } from './messageCreate/botReactHandler.js';
 import { grandExchangeHandler } from './messageCreate/grandExchangeHandler.js';
-import { pointsHandler } from './messageCreate/pointsHandler.js';
-import { userReactsHandler } from './messageCreate/userReactsHandler.js';
 import { voteReactionHandler } from './messageCreate/voteReactionHandler.js';
+import type { IMessage } from '@oldschoolgg/schemas';
 
-const messageHandlers: ((msg: Message) => Promise<unknown>)[] = [
-	pointsHandler,
-	handleCommands,
+async function tagHandler(msg: IMessage) {
+	if (
+		msg.content.startsWith('.') &&
+		msg.content.length > 1 &&
+		msg.content.length <= 33 &&
+		!msg.content.includes(' ')
+	) {
+		const tag = await roboChimpClient.tag.findFirst({ where: { name: msg.content.replace('.', '') } });
+		if (tag) {
+			await globalClient.replyToMessage(msg, { content: tag.content, allowedMentions: { parse: [], users: [], roles: [] } });
+		}
+	}
+}
+
+const messageHandlers: ((msg: IMessage) => Promise<unknown>)[] = [
 	botReactHandler,
 	grandExchangeHandler,
 	voteReactionHandler,
-	userReactsHandler,
 	tagHandler
 ];
 
-export async function handleMessageCreate(msg: Message) {
-	if (!msg.guild) return;
+export async function handleMessageCreate(msg: IMessage) {
+	if (!msg.guild_id) return;
 
 	for (const handler of messageHandlers) {
 		try {

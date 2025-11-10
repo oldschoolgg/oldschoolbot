@@ -1,9 +1,8 @@
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { filterOption } from '@/discord/index.js';
 import { BLACKLISTED_USERS } from '@/lib/cache.js';
-import { filterOption } from '@/lib/discord/index.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
@@ -75,14 +74,14 @@ export const tradeCommand = defineCommand({
 			!options.search && !options.filter && !options.send
 				? new Bank()
 				: parseBank({
-						inputBank: senderUser.bankWithGP,
-						inputStr: options.send,
-						maxSize: 70,
-						flags: { tradeables: 'tradeables' },
-						filters: [options.filter],
-						search: options.search,
-						noDuplicateItems: true
-					}).filter(i => itemIsTradeable(i.id, true));
+					inputBank: senderUser.bankWithGP,
+					inputStr: options.send,
+					maxSize: 70,
+					flags: { tradeables: 'tradeables' },
+					filters: [options.filter],
+					search: options.search,
+					noDuplicateItems: true
+				}).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
@@ -157,7 +156,7 @@ Both parties must click confirm to make the trade.`,
 
 		const content = `${senderUser.username} sold ${formatBankForDisplay(itemsSent)} to ${recipientAPIUser.username} in return for ${formatBankForDisplay(itemsReceived)}.
 
-  You can now buy/sell items in the Grand Exchange: ${mentionCommand('ge')}`;
+  You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
 
 		return files.length > 0 ? { content, files } : content;
 	}

@@ -42,10 +42,6 @@ class MockInteraction {
 		return Promise.resolve();
 	}
 
-	async getChatInputCommandOptions() {
-		return Promise.resolve();
-	}
-
 	async makePaginatedMessage() {
 		return Promise.resolve();
 	}

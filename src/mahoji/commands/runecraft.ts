@@ -36,7 +36,7 @@ export const runecraftCommand = defineCommand({
 			name: 'rune',
 			description: 'The Rune/Tiara you want to craft.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					...Runecraft.Runes.map(i => i.name),
 					'ourania altar',

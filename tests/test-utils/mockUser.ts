@@ -7,9 +7,6 @@ import { expect } from 'vitest';
 import type { GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import type { DegradeableItem } from '@/lib/degradeableItems.js';
-import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
-import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';
-import { MessageBuilderClass } from '@/lib/discord/MessageBuilder.js';
 import { MUserClass } from '@/lib/MUser.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -23,6 +20,8 @@ import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.
 import { handleTripFinishResults, mockedId } from './misc.js';
 import { TestClient } from './mockClient.js';
 import { mockInteraction } from './mockInteraction.js';
+import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
+import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 
 export class TestUser extends MUserClass {
 	public client!: TestClient;

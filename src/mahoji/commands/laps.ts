@@ -77,7 +77,7 @@ export const lapsCommand = defineCommand({
 			name: 'name',
 			description: 'The course you want to do laps on.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return courses
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({

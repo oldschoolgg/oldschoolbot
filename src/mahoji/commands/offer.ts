@@ -55,7 +55,7 @@ export const offerCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to offer.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return user.bank
 					.items()
 					.filter(i => offerables.has(i[0].id))

@@ -2,8 +2,8 @@ import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import type { IFarmingContract, IFarmingContractDifficultyLevel } from '@oldschoolgg/schemas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { EmojiId } from '@/lib/data/emojis.js';
-import type { MessageBuilderClass } from '@/lib/discord/MessageBuilder.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';

@@ -1,8 +1,6 @@
-import { MessageFlags } from 'discord.js';
-
 import { CHANNELS } from '@/util.js';
 
-export const blacklistCommand: RoboChimpCommand = {
+export const blacklistCommand = defineCommand({
 	name: 'blacklist',
 	description: 'Oook ook ook!.',
 	options: [
@@ -42,16 +40,13 @@ export const blacklistCommand: RoboChimpCommand = {
 	run: async ({
 		options,
 		user
-	}: CommandRunOptions<{
-		add?: { user: MahojiUserOption; reason: string };
-		remove?: { user: MahojiUserOption };
-	}>) => {
-		if (!user.isMod()) return { content: 'Ook OOK OOK', flags: MessageFlags.Ephemeral };
+	}) => {
+		if (!user.isMod()) return { content: 'Ook OOK OOK', epfhemeral: true };
 		const inputUser = options.add?.user ?? options.remove?.user;
 		if (!inputUser) return 'Invalid command.';
-		const userToBlacklist = await globalClient.fetchUser(inputUser.user.id);
+		const userToBlacklist = await globalClient.fetchRUser(inputUser.user.id);
 		if (userToBlacklist.isMod()) {
-			return { content: 'I will destroy you.', flags: MessageFlags.Ephemeral };
+			return { content: 'I will destroy you.', epfhemeral: true };
 		}
 
 		const id = BigInt(inputUser.user.id);
@@ -69,9 +64,9 @@ export const blacklistCommand: RoboChimpCommand = {
 					reason: options.add.reason
 				}
 			});
-			globalClient.sendToChannelID(
+			globalClient.sendMessage(
 				CHANNELS.BLACKLIST_LOGS,
-				`${inputUser.user.username}[${inputUser.user.id}] was blacklisted by ${user.username}, reason: \`${options.add.reason}\`.`
+				`${inputUser.user.username}[${inputUser.user.id}] was blacklisted by ${user.mention}, reason: \`${options.add.reason}\`.`
 			);
 			return `Blacklisted ${inputUser.user.username}[${inputUser.user.id}], for \`${options.add.reason}\``;
 		}
@@ -82,12 +77,12 @@ export const blacklistCommand: RoboChimpCommand = {
 					id
 				}
 			});
-			globalClient.sendToChannelID(
+			globalClient.sendMessage(
 				CHANNELS.BLACKLIST_LOGS,
-				`${inputUser.user.username}[${inputUser.user.id}] was unblacklisted by ${user.username}.`
+				`${inputUser.user.username}[${inputUser.user.id}] was unblacklisted by ${user.mention}.`
 			);
 			return `Unblacklisted ${inputUser.user.username}[${inputUser.user.id}].`;
 		}
 		return 'Invalid command.';
 	}
-};
+});

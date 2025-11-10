@@ -2,7 +2,6 @@ import type { ItemBank } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
 
@@ -76,7 +75,7 @@ export async function ironmanCommand(user: MUser, interaction: MInteraction | nu
 	});
 	// Return early if no active listings.
 	if (activeListings.length !== 0) {
-		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${mentionCommand(
+		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${globalClient.mentionCommand(
 			'ge',
 			'cancel'
 		)}`;

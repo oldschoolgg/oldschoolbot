@@ -54,7 +54,7 @@ export const massCommand = defineCommand({
 			name: 'monster',
 			description: 'The boss you want to mass.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return killableMonsters
 					.filter(i => i.groupKillable)
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -73,7 +73,8 @@ export const massCommand = defineCommand({
 		const check = await checkReqs([user], monster, 2);
 		if (check) return check;
 
-		const users: MUser[] = await interaction.makeParty({
+		const users: MUser[] = await globalClient.makeParty({
+			interaction,
 			leader: user,
 			minSize: 2,
 			maxSize: 10,

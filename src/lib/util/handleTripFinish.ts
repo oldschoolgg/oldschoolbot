@@ -3,6 +3,7 @@ import { getNextUTCReset } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
@@ -202,10 +203,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 	}
 ];
 
+type OSBSendableMessage = string | MessageBuilderClass | BaseSendableMessage;
+
 export async function handleTripFinish(
 	user: MUser,
 	_channelId: string,
-	_message: SendableMessage,
+	_message: OSBSendableMessage,
 	_data: ActivityTaskData,
 	_loot?: Bank | null,
 	_messages?: string[]
@@ -214,7 +217,7 @@ export async function handleTripFinish(
 export async function handleTripFinish(params: {
 	user: MUser;
 	channelId: string;
-	message: SendableMessage;
+	message: OSBSendableMessage;
 	data: ActivityTaskData;
 	loot?: Bank | null;
 	messages?: string[];
@@ -226,13 +229,13 @@ export async function handleTripFinish(
 		| {
 				user: MUser;
 				channelId: string;
-				message: SendableMessage;
+				message: OSBSendableMessage;
 				data: ActivityTaskData;
 				loot?: Bank | null;
 				messages?: string[];
 		  },
 	_channelId?: string,
-	_message?: SendableMessage,
+	_message?: OSBSendableMessage,
 	_data?: ActivityTaskData,
 	_loot?: Bank | null,
 	_messages?: string[]

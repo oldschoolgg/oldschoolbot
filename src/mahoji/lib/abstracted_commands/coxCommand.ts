@@ -149,6 +149,7 @@ export async function coxCommand(
 	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 15 }) ?? 15;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize,
@@ -203,7 +204,7 @@ export async function coxCommand(
 		users = new Array(fakeUsers).fill(user);
 		isFakeMass = true;
 	} else if (type === 'mass') {
-		users = await interaction.makeParty(partyOptions);
+		users = await globalClient.makeParty(partyOptions);
 		if (await ActivityManager.anyMinionIsBusy(users)) {
 			return `All team members must have their minions free.`;
 		}

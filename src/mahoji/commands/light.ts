@@ -18,7 +18,7 @@ export const lightCommand = defineCommand({
 			name: 'name',
 			description: 'The logs you want to burn.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Firemaking.Burnables.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({

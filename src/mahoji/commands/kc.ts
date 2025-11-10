@@ -19,7 +19,7 @@ export const kcCommand = defineCommand({
 			name: 'boss',
 			description: 'The boss you want to check',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return mappedBossNames
 					.filter(i => (!value ? true : (i[0] + i[1]).toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i[1], value: i[1] }));

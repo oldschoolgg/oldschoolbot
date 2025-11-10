@@ -73,7 +73,7 @@ export const chopCommand = defineCommand({
 			name: 'name',
 			description: 'The tree you want to chop.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Woodcutting.Logs.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({

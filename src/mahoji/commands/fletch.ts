@@ -18,7 +18,7 @@ export const fletchCommand = defineCommand({
 			name: 'name',
 			description: 'The item you want to Fletch.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Fletchables.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({

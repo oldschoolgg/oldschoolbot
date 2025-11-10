@@ -22,7 +22,7 @@ export const cookCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to cook.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					...Cookables.map(i => i.name),
 					...LeapingFish.map(i => i.item.name),

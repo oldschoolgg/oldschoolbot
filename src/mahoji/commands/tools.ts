@@ -3,13 +3,13 @@ import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldscho
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
+import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
-import { choicesOf, itemOption, monsterOption, skillOption } from '@/lib/discord/index.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
@@ -712,7 +712,7 @@ export const toolsCommand = defineCommand({
 							name: 'tier',
 							description: 'The tier of clue scroll.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return [...ClueTiers.map(i => ({ name: i.name, value: i }))]
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
@@ -778,7 +778,7 @@ export const toolsCommand = defineCommand({
 							name: 'source',
 							description: 'The source of the item – a monster, minigame, clue, etc.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return [
 									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
 									...killableMonsters
@@ -894,7 +894,7 @@ export const toolsCommand = defineCommand({
 							name: 'unit',
 							description: 'The specific unit you want to view (optional).',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return allStashUnitsFlat
 									.filter(i => stringSearch(value, i.desc))
 									.map(i => ({ name: i.desc, value: i.id.toString() }));
@@ -928,7 +928,7 @@ export const toolsCommand = defineCommand({
 							name: 'unit',
 							description: 'The specific unit you want to unfill.',
 							required: true,
-							autocomplete: async (value: string, user: MUser) => {
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								return (await user.fetchStashUnits())
 									.filter(i => i.builtUnit !== undefined && i.builtUnit.items_contained.length > 0)
 									.filter(i =>

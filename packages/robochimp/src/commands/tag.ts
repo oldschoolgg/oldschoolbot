@@ -1,4 +1,4 @@
-export const tagCommand: RoboChimpCommand = {
+export const tagCommand = defineCommand({
 	name: 'tag',
 	description: 'Tag command.',
 	options: [
@@ -31,7 +31,7 @@ export const tagCommand: RoboChimpCommand = {
 					name: 'id',
 					description: 'The tag to remove.',
 					required: true,
-					autocomplete: async value => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						const tags = await roboChimpClient.tag.findMany();
 						return tags
 							.filter(i =>
@@ -46,10 +46,7 @@ export const tagCommand: RoboChimpCommand = {
 	run: async ({
 		options,
 		user
-	}: CommandRunOptions<{
-		add?: { name: string; content: string };
-		remove?: { id: string };
-	}>) => {
+	}) => {
 		if (!user.isMod()) return 'Ook.';
 		if (options.add) {
 			await roboChimpClient.tag.create({
@@ -78,4 +75,4 @@ export const tagCommand: RoboChimpCommand = {
 
 		return 'HUH?';
 	}
-};
+});

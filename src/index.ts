@@ -1,6 +1,6 @@
 import './lib/safeglobals.js';
 import './lib/MUser.js';
-import './lib/discord/client.js';
+import './discord/client.js';
 import './lib/cache/redis.js';
 
 import exitHook from 'exit-hook';

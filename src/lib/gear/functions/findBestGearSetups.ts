@@ -1,8 +1,8 @@
 import { EquipmentSlot, ItemGroups, Items } from 'oldschooljs';
 import type { GearStat } from 'oldschooljs/gear';
 
+import { allEquippableItems } from '@/discord/presetCommandOptions.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { allEquippableItems } from '@/lib/discord/presetCommandOptions.js';
 import { Gear } from '@/lib/structures/Gear.js';
 
 export function findBestGearSetups({

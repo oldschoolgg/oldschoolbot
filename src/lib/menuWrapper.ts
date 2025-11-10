@@ -1,7 +1,5 @@
-import { EmbedBuilder } from '@oldschoolgg/discord';
+import { EmbedBuilder, type PaginatedPages } from '@oldschoolgg/discord';
 import { chunk } from 'remeda';
-
-import type { PaginatedPages } from '@/lib/discord/PaginatedMessage.js';
 
 const LB_PAGE_SIZE = 10;
 

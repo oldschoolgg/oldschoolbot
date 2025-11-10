@@ -1,9 +1,7 @@
 import { cryptoRng } from '@oldschoolgg/rng';
 
 import type { NewUser } from '@/prisma/main.js';
-import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
-import type { CommandOptions } from '@/lib/discord/commandOptions.js';
-import type { MInteraction } from '@/lib/discord/interaction/MInteraction.js';
+import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });

@@ -1,8 +1,8 @@
 import { randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
+import { choicesOf } from '@/discord/index.js';
 import { BitField } from '@/lib/constants.js';
-import { choicesOf } from '@/lib/discord/index.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
 import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';

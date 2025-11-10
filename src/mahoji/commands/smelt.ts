@@ -19,7 +19,7 @@ export const smeltingCommand = defineCommand({
 			name: 'name',
 			description: 'The name of the thing you want to smelt.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Smithing.Bars.filter(bar => bar.name.toLowerCase().includes(value.toLowerCase()))
 					.slice(0, 10)
 					.map(i => ({ name: i.name, value: i.name }));

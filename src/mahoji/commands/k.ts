@@ -1,8 +1,8 @@
 import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
+import { choicesOf } from '@/discord/index.js';
 import { PVM_METHODS } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
-import { choicesOf } from '@/lib/discord/index.js';
 import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
@@ -37,8 +37,8 @@ export const minionKCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to kill.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
-				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(user.id);
+			autocomplete: async ({ value, userId }: StringAutoComplete) => {
+				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(userId);
 				return autocompleteMonsters
 					.filter(m =>
 						!value

@@ -1,7 +1,7 @@
+import { choicesOf } from '@/discord/index.js';
 import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
-import { choicesOf } from '@/lib/discord/index.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
 	agilityArenaBuyables,
@@ -115,7 +115,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							description: 'The item to buy.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return BarbBuyables.filter(i =>
 									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.item.name, value: i.item.name }));
@@ -216,7 +216,7 @@ export const minigamesCommand = defineCommand({
 							description: 'The item to purchase.',
 							type: 'String',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return LMSBuyables.filter(i =>
 									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.item.name, value: i.item.name }));
@@ -306,7 +306,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The skill you want XP in.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return pestControlBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -440,7 +440,7 @@ export const minigamesCommand = defineCommand({
 							description: 'The reward to purchase.',
 							type: 'String',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return TrekShopItems.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
@@ -499,7 +499,7 @@ export const minigamesCommand = defineCommand({
 							name: 'fletching',
 							description: 'The item you wish to fletch',
 							required: false,
-							autocomplete: async (value: number) => {
+							autocomplete: async ({ value }: NumberAutoComplete) => {
 								const search = value?.toString() ?? '';
 								return zeroTimeFletchables
 									.filter(i => i.name.toLowerCase().includes(search.toLowerCase()))
@@ -568,7 +568,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return mageTrainingArenaBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -600,7 +600,7 @@ export const minigamesCommand = defineCommand({
 							name: 'tier',
 							required: false,
 							description: 'The tier contract you wish to do.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return contractTiers
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.tier.toString() }));
@@ -618,7 +618,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return mahoganyHomesBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -724,7 +724,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return soulWarsBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -751,7 +751,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to imbue.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return soulWarsImbueables
 									.filter(i =>
 										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())
@@ -792,7 +792,7 @@ export const minigamesCommand = defineCommand({
 							name: 'item',
 							description: 'The item to buy.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return VolcanicMineShop.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: `${i.name}`, value: i.name }));
@@ -897,7 +897,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							description: 'The alloy/metal to use.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return giantsFoundryAlloys
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
@@ -922,7 +922,7 @@ export const minigamesCommand = defineCommand({
 							name: 'item',
 							description: 'The item to buy.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return giantsFoundryBuyables
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: `${i.name}`, value: i.name }));
@@ -993,7 +993,7 @@ export const minigamesCommand = defineCommand({
 							name: 'item',
 							description: 'The item to buy.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return nightmareZoneBuyables
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: `${i.name}`, value: i.name }));
@@ -1023,7 +1023,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to imbue.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return nightmareZoneImbueables
 									.filter(i =>
 										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())

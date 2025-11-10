@@ -18,7 +18,7 @@ export const fishCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to fish.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Fishing.Fishes.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({

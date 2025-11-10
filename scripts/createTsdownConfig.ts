@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { relative, resolve as resolveDir } from 'node:path';
-import { defineConfig, type Options } from 'tsdown';
+import { defineConfig, type UserConfig } from 'tsdown';
 
 const tsconfigPath = relative(import.meta.dirname, resolveDir(process.cwd(), 'src', 'tsconfig.json'));
 
-const baseOptions: Options = {
+const baseOptions: UserConfig = {
 	clean: true,
 	dts: true,
 	minify: false,
@@ -21,12 +21,12 @@ const baseOptions: Options = {
 };
 
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
-const external = ['oldschooljs', 'lodash', '@discordjs/builders', '@sapphire/shapeshift', 'discord-api-types'];
+const external = ['undici', 'oldschooljs', 'lodash', '@discordjs/builders', '@sapphire/shapeshift', 'discord-api-types'];
 const dependencies: string[] = Object.keys(packageJson.dependencies)
 	.filter(dep => !dep.startsWith('@oldschoolgg/') && !dep.startsWith('oldschooljs'))
 	.filter(dep => !external.includes(dep));
 
-export function createTsdownConfig(options: Options = {}) {
+export function createTsdownConfig(options: UserConfig = {}) {
 	return [
 		defineConfig({
 			...baseOptions,

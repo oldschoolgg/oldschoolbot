@@ -18,7 +18,7 @@ export const mixCommand = defineCommand({
 			name: 'name',
 			description: 'The potion you want to mix.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Herblore.Mixables.map(i => i.item.name)
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({

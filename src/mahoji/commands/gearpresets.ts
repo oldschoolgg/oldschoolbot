@@ -1,7 +1,7 @@
 import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
-import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/lib/discord/index.js';
+import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/discord/index.js';
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
@@ -121,7 +121,7 @@ const slotOptions = Object.values(EquipmentSlot).map(slot =>
 		name: slot,
 		description: `The item you want to put in the ${slot} slot in this gear setup.`,
 		required: false,
-		autocomplete: async (value: string) => {
+		autocomplete: async ({ value }: StringAutoComplete) => {
 			const matchingItems = (
 				value
 					? allEquippableItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase()))
@@ -210,10 +210,10 @@ export const gearPresetsCommand = defineCommand({
 					name: 'gear_preset',
 					description: 'The gear preset you want to select.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const presets = await prisma.gearPreset.findMany({
 							where: {
-								user_id: user.id
+								user_id: userId
 							},
 							select: {
 								name: true
@@ -244,10 +244,10 @@ export const gearPresetsCommand = defineCommand({
 					name: 'preset',
 					description: 'The gear preset you want to delete.',
 					required: false,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const presets = await prisma.gearPreset.findMany({
 							where: {
-								user_id: user.id
+								user_id: userId
 							},
 							select: {
 								name: true

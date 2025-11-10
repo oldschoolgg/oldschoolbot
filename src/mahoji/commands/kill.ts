@@ -54,7 +54,7 @@ export const killCommand = defineCommand({
 			name: 'name',
 			description: 'The monster you want to simulate killing.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return ALL_VALID_KILLABLE_MONSTERS.filter(i =>
 					!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
 				).map(i => ({

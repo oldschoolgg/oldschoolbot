@@ -19,7 +19,8 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 	if (solo) {
 		mahojiUsers = [user];
 	} else {
-		const usersWhoConfirmed: MUser[] = await interaction.makeParty({
+		const usersWhoConfirmed: MUser[] = await globalClient.makeParty({
+			interaction,
 			minSize: 1,
 			maxSize: 10,
 			leader: user,

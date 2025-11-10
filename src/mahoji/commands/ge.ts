@@ -3,10 +3,10 @@ import { evalMathExpression, formatDuration, sumArr, uniqueArr } from '@oldschoo
 import { Items, toKMB } from 'oldschooljs';
 
 import type { GEListing, GETransaction } from '@/prisma/main.js';
+import { defineOption, itemOption, tradeableItemArr } from '@/discord/index.js';
 import { marketPricemap } from '@/lib/cache.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
-import { defineOption, itemOption, tradeableItemArr } from '@/lib/discord/index.js';
 import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
 import { createChart } from '@/lib/util/chart.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
@@ -89,12 +89,12 @@ export const geCommand = defineCommand({
 					name: 'item',
 					description: 'The item you want to pick.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						if (!value) {
 							const tradesOfUser = (
 								await prisma.gEListing.findMany({
 									where: {
-										user_id: user.id,
+										user_id: userId,
 										type: 'Buy'
 									},
 									select: {
@@ -126,7 +126,7 @@ export const geCommand = defineCommand({
 					type: 'String',
 					description: 'The item you want to sell.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return user.bank
 							.items()
 							.filter(i => i[0].tradeable_on_ge)
@@ -163,8 +163,8 @@ export const geCommand = defineCommand({
 					name: 'listing',
 					description: 'The listing to cancel.',
 					required: true,
-					autocomplete: async (_: string, user: MUser) => {
-						const listings = await prisma.gEListing.findMany({ where: { user_id: user.id } });
+					autocomplete: async ({ userId }: StringAutoComplete) => {
+						const listings = await prisma.gEListing.findMany({ where: { user_id: userId } });
 						return listings
 							.filter(i => !i.cancelled_at && !i.fulfilled_at && i.quantity_remaining > 0)
 							.map(l => ({
@@ -191,7 +191,7 @@ export const geCommand = defineCommand({
 					name: 'item',
 					description: 'The item to lookup.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						const listings = Array.from(marketPricemap.values());
 						return listings
 							.filter(i =>

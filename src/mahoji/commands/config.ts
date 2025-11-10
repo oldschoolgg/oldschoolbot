@@ -14,10 +14,10 @@ import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
+import { itemOption } from '@/discord/index.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
-import { itemOption } from '@/lib/discord/index.js';
 import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
@@ -699,7 +699,7 @@ export const configCommand = defineCommand({
 							name: 'command',
 							description: 'The command you want to enable/disable.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return globalClient.allCommands
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
@@ -734,16 +734,8 @@ export const configCommand = defineCommand({
 							name: 'name',
 							description: 'The setting you want to toggle on/off.',
 							required: true,
-							autocomplete: async (value: string, user: MUser) => {
-								const mUser = await prisma.user.findFirst({
-									where: {
-										id: user.id
-									},
-									select: {
-										bitfield: true
-									}
-								});
-								const bitfield = mUser?.bitfield ?? [];
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
+								const bitfield = user.bitfield;
 								return toggles
 									.filter(i => {
 										if (!value) return true;
@@ -779,7 +771,7 @@ export const configCommand = defineCommand({
 							name: 'input',
 							description: 'The option you want to add/remove.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return CombatOptionsArray.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
@@ -886,7 +878,7 @@ export const configCommand = defineCommand({
 							name: 'add',
 							description: 'Add an item to your favorite birdhouse seeds.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return birdhouseSeeds
 									.filter(i => (!value ? true : stringMatches(i.item.name, value)))
 									.map(i => ({
@@ -900,7 +892,7 @@ export const configCommand = defineCommand({
 							name: 'remove',
 							description: 'Remove an item from your favorite birdhouse seeds.',
 							required: false,
-							autocomplete: async (value: string, user: MUser) => {
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								return birdhouseSeeds
 									.filter(i => {
 										if (!user.user.favorite_bh_seeds.includes(i.item.id)) return false;
@@ -930,7 +922,7 @@ export const configCommand = defineCommand({
 							name: 'add',
 							description: 'Add an item to your favorite food.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return Eatables.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({
@@ -944,7 +936,7 @@ export const configCommand = defineCommand({
 							name: 'remove',
 							description: 'Remove an item from your favorite food.',
 							required: false,
-							autocomplete: async (value: string, user: MUser) => {
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								return Eatables.filter(i => {
 									if (!user.user.favorite_food.includes(i.id)) return false;
 									return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
@@ -1018,7 +1010,7 @@ export const configCommand = defineCommand({
 							name: 'trip',
 							description: 'The trip you want to pin.',
 							required: false,
-							autocomplete: async (_: string, user: MUser) => {
+							autocomplete: async ({ user }: StringAutoComplete) => {
 								const res = await prisma.$queryRawUnsafe<
 									{ type: activity_type_enum; data: object; id: number; finish_date: string }[]
 								>(`
@@ -1048,7 +1040,7 @@ LIMIT 20;
 							name: 'unpin_trip',
 							description: 'The trip you want to unpin.',
 							required: false,
-							autocomplete: async (_: string, user: MUser) => {
+							autocomplete: async ({ user }: StringAutoComplete) => {
 								const res = await prisma.pinnedTrip.findMany({ where: { user_id: user.id } });
 								return res.map(i => ({
 									name: `${i.activity_type}${i.custom_name ? `- ${i.custom_name}` : ''}`,

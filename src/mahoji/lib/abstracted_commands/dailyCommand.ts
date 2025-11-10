@@ -1,8 +1,8 @@
 import { MathRNG, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import pets from '@/lib/data/pets.js';
-import type { MessageBuilderClass } from '@/lib/discord/MessageBuilder.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
 

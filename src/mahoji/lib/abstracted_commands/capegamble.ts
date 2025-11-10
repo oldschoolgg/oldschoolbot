@@ -3,13 +3,12 @@ import { Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { petMessage } from '@/lib/util/displayCluesAndPets.js';
 
 export async function capeGambleStatsCommand(user: MUser) {
 	const stats = await user.fetchStats();
 
-	return `You can gamble Fire capes, Infernal capes and Quivers like this: ${mentionCommand('gamble', 'item')}.
+	return `You can gamble Fire capes, Infernal capes and Quivers like this: ${globalClient.mentionCommand('gamble', 'item')}.
 
 **Fire Capes Gambled:** ${stats.firecapes_sacrificed}
 **Infernal Capes Gambled:** ${stats.infernal_cape_sacrifices}

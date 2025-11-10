@@ -50,8 +50,6 @@ import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import type { Pet } from '@/lib/data/pets.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
-import type { CommandResponseValue } from '@/lib/discord/index.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { projectiles } from '@/lib/gear/projectiles.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
@@ -168,8 +166,8 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 };
 
 type QueuedUpdateFnReturnValue =
-	| { response: CommandResponseValue }
-	| ({ response: CommandResponseValue } & Omit<TransactItemsArgs, 'userID'>);
+	| { response: SendableMessage }
+	| ({ response: SendableMessage } & Omit<TransactItemsArgs, 'userID'>);
 type QueuedUpdateFnReturn = Promise<QueuedUpdateFnReturnValue> | QueuedUpdateFnReturnValue;
 type QueuedUpdateFn = (user: MUserClass) => QueuedUpdateFnReturn;
 
@@ -256,8 +254,8 @@ export class MUserClass {
 	}
 
 	async update(data: SafeUserUpdateInput): Promise<MUser>;
-	async update(fn: QueuedUpdateFn): Promise<CommandResponseValue>;
-	async update(arg: SafeUserUpdateInput | QueuedUpdateFn): Promise<MUser | CommandResponseValue> {
+	async update(fn: QueuedUpdateFn): Promise<SendableMessage>;
+	async update(arg: SafeUserUpdateInput | QueuedUpdateFn): Promise<MUser | SendableMessage> {
 		if (typeof arg === 'function') {
 			return userQueueFn(this.id, async () => {
 				const opts = await arg(await mUserFetch(this.id));
@@ -693,7 +691,7 @@ RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
 				hasCharges: false,
 				fullUserString: `${failureReasons.join(', ')}
 
-Charge your items using ${mentionCommand('minion', 'charge')}.`
+Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			};
 		}
 		return { hasCharges: true };
@@ -778,8 +776,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 			if (!ammo || ammo < ammoRemove[1])
 				throw new UserError(
-					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
-						ammoRemove?.[1]
+					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${ammoRemove?.[1]
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];

@@ -1,4 +1,4 @@
-import { ownedItemOption } from '@/lib/discord/index.js';
+import { ownedItemOption } from '@/discord/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import Potions from '@/lib/minions/data/potions.js';
 import { quests } from '@/lib/minions/data/quests.js';
@@ -138,7 +138,7 @@ export const activitiesCommand = defineCommand({
 					type: 'String',
 					name: 'item',
 					description: 'The item to collect.',
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return collectables
 							.filter(p => (!value ? true : p.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(p => ({ name: p.item.name, value: p.item.name }));
@@ -169,7 +169,8 @@ export const activitiesCommand = defineCommand({
 					type: 'String',
 					name: 'name',
 					description: 'The name of the quest (optional).',
-					autocomplete: async (_value: string, user: MUser) => {
+					autocomplete: async ({ userId }: StringAutoComplete) => {
+						const user = await mUserFetch(userId);
 						let list = quests
 							.filter(i => !user.user.finished_quest_ids.includes(i.id))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -191,7 +192,7 @@ export const activitiesCommand = defineCommand({
 					type: 'String',
 					name: 'potion_name',
 					description: 'The name of the potion.',
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Potions.filter(p =>
 							!value ? true : p.name.toLowerCase().includes(value.toLowerCase())
 						).map(p => ({ name: p.name, value: p.name }));
@@ -299,7 +300,7 @@ export const activitiesCommand = defineCommand({
 					name: 'name',
 					description: 'The item to enchant.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Enchantables.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
@@ -324,7 +325,7 @@ export const activitiesCommand = defineCommand({
 					name: 'name',
 					description: 'The bone to bury.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Prayer.Bones.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
@@ -349,7 +350,7 @@ export const activitiesCommand = defineCommand({
 					name: 'name',
 					description: 'The ash to scatter.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Prayer.Ashes.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
@@ -412,7 +413,7 @@ export const activitiesCommand = defineCommand({
 					name: 'spell',
 					description: 'The spell to cast.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Castables.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));

@@ -23,7 +23,7 @@ export const stealCommand = defineCommand({
 			name: 'name',
 			description: 'The object you try to steal from.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				const conLevel = user.skillLevel('thieving');
 				return Thieving.stealables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
