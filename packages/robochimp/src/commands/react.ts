@@ -24,10 +24,7 @@ export const reactCommand = defineCommand({
 			options: []
 		}
 	],
-	run: async ({
-		options,
-		user
-	}) => {
+	run: async ({ options, user }) => {
 		if (user.leaguesPointsTotal < 30_000) {
 			return 'You are not worthy. You need atleast 30,000 League Points to be able to have a reaction.';
 		}

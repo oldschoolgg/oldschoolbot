@@ -1,9 +1,9 @@
-import { BlacklistedEntityType } from '@prisma/robochimp';
+import type { BaseSendableMessage } from '@oldschoolgg/discord';
 import type { IMember } from '@oldschoolgg/schemas';
+import { BlacklistedEntityType } from '@prisma/robochimp';
 
 import type { InhibitorResult } from '@/discord/preCommand.js';
 import { globalConfig } from '@/constants.js';
-import type { BaseSendableMessage } from '@oldschoolgg/discord';
 
 type InhibitorRunOptions = {
 	user: RUser;
@@ -23,10 +23,10 @@ const inhibitors: Inhibitor[] = [
 		name: 'Only Usable in Support Server',
 		run: async ({ guildId }) => {
 			if (!guildId || guildId !== globalConfig.supportServerID) {
-				return ({
+				return {
 					content: "You can't use this bot outside the support server.",
 					ephemeral: true
-				});
+				};
 			}
 			return false;
 		}
@@ -53,9 +53,9 @@ const inhibitors: Inhibitor[] = [
 						},
 						guildId
 							? {
-								type: BlacklistedEntityType.guild,
-								id: BigInt(guildId)
-							}
+									type: BlacklistedEntityType.guild,
+									id: BigInt(guildId)
+								}
 							: null
 					].filter(i => i !== null)
 				}

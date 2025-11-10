@@ -1,7 +1,7 @@
+import { type GatewayMessageCreateDispatchData, InteractionType } from '@oldschoolgg/discord';
 import { cryptoRng } from '@oldschoolgg/rng';
 
 import { TEST_SERVER_ID } from '@/constants.js';
-import { InteractionType, type GatewayMessageCreateDispatchData } from '@oldschoolgg/discord';
 
 const testerRoles = [
 	{
@@ -84,7 +84,10 @@ export async function pointsHandler(msg: GatewayMessageCreateDispatchData) {
 				}
 			});
 			if (cryptoRng.roll(5)) {
-				const userMember = await globalClient.fetchMember({ guildId: TEST_SERVER_ID, userId: msg.interaction_metadata.user.id });
+				const userMember = await globalClient.fetchMember({
+					guildId: TEST_SERVER_ID,
+					userId: msg.interaction_metadata.user.id
+				});
 				const u = await globalClient.fetchRUser(msg.interaction_metadata.user.id);
 				for (const role of testerRoles) {
 					if (!userMember.roles.includes(role.id) && u.testingPoints >= role.points) {

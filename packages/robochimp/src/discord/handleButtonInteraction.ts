@@ -1,11 +1,15 @@
-import { globalConfig } from "@/constants.js";
-import type { ButtonMInteraction } from "@oldschoolgg/discord";
+import type { ButtonMInteraction } from '@oldschoolgg/discord';
+
+import { globalConfig } from '@/constants.js';
 
 export async function handleButtonInteraction(interaction: ButtonMInteraction) {
 	const id = interaction.customId;
 	if (!id) return;
 
-	const member = await globalClient.fetchMember({ guildId: globalConfig.supportServerID, userId: interaction.userId });
+	const member = await globalClient.fetchMember({
+		guildId: globalConfig.supportServerID,
+		userId: interaction.userId
+	});
 	if (!member) return;
 
 	if (id.includes('roles.')) {

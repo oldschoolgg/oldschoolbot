@@ -46,7 +46,7 @@ async function handleAutocomplete(
 			value: data.value as never,
 			user,
 			userId: user.id,
-			guildId,
+			guildId
 		});
 		return autocompleteResult.slice(0, 25).map(i => ({
 			name: i.name,

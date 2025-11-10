@@ -3,13 +3,13 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"types": "./dist/esm/index.d.mts",
-			"import": "./dist/esm/index.mjs"
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
 		}
 	},
 	"scripts": {
-		"build": "tsdown",
-		"test": "pnpm tsc -p src --noEmit && vitest run --coverage"
+		"build": "tsc -p src --noEmit false",
+		"test": "pnpm tsc -p src --noEmit"
 	},
 	"dependencies": {
 		"pure-rand": "7.0.1"

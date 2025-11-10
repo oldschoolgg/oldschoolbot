@@ -5,13 +5,13 @@ import { noOp } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 import { vi } from 'vitest';
 
+import type { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
 import { globalConfig } from '@/lib/constants.js';
 import { createDb } from '@/lib/globals.js';
 import { MUserClass } from '@/lib/MUser.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { handleTripFinishResults } from '../test-utils/misc.js';
 import { TestClient } from './util.js';
-import type { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
 
 await createDb();
 await prisma.clientStorage
@@ -31,13 +31,13 @@ vi.mock('../../src/lib/util/handleTripFinish.js', async importOriginal => {
 			userOrParams:
 				| MUser
 				| {
-					user: MUser;
-					channelId: string;
-					message: SendableMessage;
-					data: ActivityTaskData;
-					loot?: Bank | null;
-					messages?: string[];
-				},
+						user: MUser;
+						channelId: string;
+						message: SendableMessage;
+						data: ActivityTaskData;
+						loot?: Bank | null;
+						messages?: string[];
+				  },
 			_channelId?: string,
 			_message?: SendableMessage,
 			_data?: ActivityTaskData,
@@ -51,14 +51,14 @@ vi.mock('../../src/lib/util/handleTripFinish.js', async importOriginal => {
 				messages: inputMessages,
 				message: inputMessage
 			} = userOrParams instanceof MUserClass
-					? {
+				? {
 						user: userOrParams as MUser,
 						message: _message!,
 						data: _data!,
 						loot: _loot!,
 						messages: _messages
 					}
-					: userOrParams;
+				: userOrParams;
 
 			handleTripFinishResults.set(`${user.id}-${data.type}`, {
 				message: inputMessage,

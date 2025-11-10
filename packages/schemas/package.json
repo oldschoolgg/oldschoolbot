@@ -3,13 +3,12 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"types": "./dist/esm/index.d.mts",
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.mjs"
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
 		}
 	},
 	"scripts": {
-		"build": "tsdown",
+		"build": "tsc -p src --noEmit false",
 		"test": "pnpm tsc -p src --noEmit"
 	},
 	"dependencies": {

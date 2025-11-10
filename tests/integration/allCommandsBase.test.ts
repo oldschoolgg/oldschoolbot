@@ -42,7 +42,12 @@ export async function generateCommandInputs(
 				break;
 			case 'String':
 				if ('autocomplete' in option && option.autocomplete) {
-					const autoCompleteResults = await option.autocomplete({ value: '', user: mockedUser, userId: mockedUser.id, guildId: cryptoRng.pick(['940758552425955348', null]) });
+					const autoCompleteResults = await option.autocomplete({
+						value: '',
+						user: mockedUser,
+						userId: mockedUser.id,
+						guildId: cryptoRng.pick(['940758552425955348', null])
+					});
 					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value));
 					if (allPossibleOptions[option.name].some(i => typeof i === 'undefined')) throw new Error('1');
 				} else if (option.choices) {

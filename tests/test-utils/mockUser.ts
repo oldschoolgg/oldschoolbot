@@ -5,6 +5,8 @@ import { clone } from 'remeda';
 import { expect } from 'vitest';
 
 import type { GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
+import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
+import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import type { DegradeableItem } from '@/lib/degradeableItems.js';
 import { MUserClass } from '@/lib/MUser.js';
@@ -20,8 +22,6 @@ import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.
 import { handleTripFinishResults, mockedId } from './misc.js';
 import { TestClient } from './mockClient.js';
 import { mockInteraction } from './mockInteraction.js';
-import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
-import { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 
 export class TestUser extends MUserClass {
 	public client!: TestClient;

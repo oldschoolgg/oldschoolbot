@@ -114,21 +114,21 @@ const cooldownTimers: {
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
 }[] = [
-		{
-			name: 'Tears of Guthix',
-			timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-			cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
-			command: ['minigames', 'tears_of_guthix', 'start'],
-			utcReset: true
-		},
-		{
-			name: 'Daily',
-			timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
-			cd: CONSTANTS.DAILY_COOLDOWN,
-			command: ['minion', 'daily'],
-			utcReset: false
-		}
-	];
+	{
+		name: 'Tears of Guthix',
+		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
+		cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
+		command: ['minigames', 'tears_of_guthix', 'start'],
+		utcReset: true
+	},
+	{
+		name: 'Daily',
+		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
+		cd: CONSTANTS.DAILY_COOLDOWN,
+		command: ['minion', 'daily'],
+		utcReset: false
+	}
+];
 
 interface MentionCommandOptions {
 	user: MUser;
@@ -195,8 +195,9 @@ const mentionCommands: MentionCommand[] = [
 
 					const price = toKMB(Math.floor(item.price ?? 0));
 
-					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${item.tradeable ? 'Tradeable' : 'Untradeable'
-						} ${icons.join(' ')}`;
+					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
+						item.tradeable ? 'Tradeable' : 'Untradeable'
+					} ${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
 					}
@@ -249,7 +250,9 @@ const mentionCommands: MentionCommand[] = [
 							const durationRemaining = dateFm(new Date(nextReset));
 							return `${cd.name}: ${durationRemaining}`;
 						}
-						return bold(`${cd.name}: Ready ${globalClient.mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
+						return bold(
+							`${cd.name}: Ready ${globalClient.mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`
+						);
 					})
 					.join('\n'),
 				components

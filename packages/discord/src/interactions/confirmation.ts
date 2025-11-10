@@ -1,5 +1,6 @@
 import { ButtonBuilder } from '@discordjs/builders';
 import { ButtonStyle } from 'discord-api-types/v10';
+
 import { createInteractionCollector } from './interactionCollector.js';
 import type { MInteraction } from './MInteraction.js';
 
@@ -19,9 +20,9 @@ export async function interactionConfirmation(
 	message:
 		| string
 		| ({ content: string; timeout?: number } & (
-			| { ephemeral?: false; users?: string[] }
-			| { ephemeral?: boolean; users?: undefined }
-		))
+				| { ephemeral?: false; users?: string[] }
+				| { ephemeral?: boolean; users?: undefined }
+		  ))
 ) {
 	const ephemeral = typeof message !== 'string' ? (message.ephemeral ?? false) : false;
 	interaction.isConfirmation = true;
@@ -86,7 +87,7 @@ export async function interactionConfirmation(
 						users.filter(i => !confirms.has(i)).map(i => interaction.client.fetchUserUsername(i))
 					);
 
-					interaction.reply({
+					await interaction.reply({
 						content: `${content}\n\n${confirms.size}/${users.length} confirmed. Waiting for ${unconfirmedUsernames.join(', ')}...`,
 						components: confirmRow,
 						allowedMentions: { users }

@@ -50,7 +50,9 @@ export class MockedRedis {
 				return this;
 			},
 			async exec() {
-				operations.forEach(op => op());
+				for (const op of operations) {
+					op();
+				}
 				return [];
 			}
 		};

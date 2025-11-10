@@ -97,7 +97,7 @@ export async function startServer() {
 	app.get('/minion/:userID', async c => {
 		const params = c.req.param();
 		const queryBot = c.req.query('bot');
-		let userID = params.userID;
+		const userID = params.userID;
 
 		if (!userID || typeof userID !== 'string') {
 			return httpErr.BAD_REQUEST({ message: 'Invalid user ID 1' });

@@ -1,4 +1,10 @@
-import type { BaseSendableMessage, ButtonBuilder, EmbedBuilder, SendableFile, SendableMessage } from '@oldschoolgg/discord';
+import type {
+	BaseSendableMessage,
+	ButtonBuilder,
+	EmbedBuilder,
+	SendableFile,
+	SendableMessage
+} from '@oldschoolgg/discord';
 
 export class MessageBuilderClass {
 	private _message: BaseSendableMessage;

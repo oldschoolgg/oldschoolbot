@@ -1,5 +1,4 @@
-import type { APIChatInputApplicationCommandInteraction } from '@oldschoolgg/discord';
-import { SpecialResponse } from '@oldschoolgg/toolkit';
+import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
 import { preCommand } from '@/discord/preCommand.js';
@@ -7,7 +6,7 @@ import { preCommand } from '@/discord/preCommand.js';
 export async function rawCommandHandlerInner({
 	interaction,
 	command,
-	options,
+	options
 }: {
 	interaction: MInteraction;
 	command: AnyCommand;
@@ -26,7 +25,6 @@ export async function rawCommandHandlerInner({
 		}
 	}
 	const user = await globalClient.fetchRUser(interaction.userId);
-
 
 	try {
 		const inhibitedResponse = await preCommand({
@@ -49,7 +47,7 @@ export async function rawCommandHandlerInner({
 			member: interaction.member,
 			channelId: interaction.channelId,
 			guildId: interaction.guildId,
-			userId: interaction.userId,
+			userId: interaction.userId
 		});
 		return response;
 	} catch (err) {
@@ -63,7 +61,6 @@ export async function rawCommandHandlerInner({
 			content: `An error occurred while running this command.`
 		};
 	} finally {
-
 	}
 }
 
@@ -81,7 +78,7 @@ export async function commandHandler(
 	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({
 		interaction,
 		command,
-		options,
+		options
 	});
 	if (
 		response === SpecialResponse.PaginatedMessageResponse ||

@@ -1,6 +1,5 @@
-import type { APIChatInputApplicationCommandInteraction } from '@oldschoolgg/discord';
+import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
 import { cryptoRng } from '@oldschoolgg/rng';
-import { SpecialResponse } from '@oldschoolgg/toolkit';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
 import { preCommand } from '@/discord/preCommand.js';

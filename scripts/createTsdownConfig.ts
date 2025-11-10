@@ -21,7 +21,14 @@ const baseOptions: UserConfig = {
 };
 
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
-const external = ['undici', 'oldschooljs', 'lodash', '@discordjs/builders', '@sapphire/shapeshift', 'discord-api-types'];
+const external = [
+	'undici',
+	'oldschooljs',
+	'lodash',
+	'@discordjs/builders',
+	'@sapphire/shapeshift',
+	'discord-api-types'
+];
 const dependencies: string[] = Object.keys(packageJson.dependencies)
 	.filter(dep => !dep.startsWith('@oldschoolgg/') && !dep.startsWith('oldschooljs'))
 	.filter(dep => !external.includes(dep));

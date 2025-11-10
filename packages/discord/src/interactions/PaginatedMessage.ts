@@ -1,11 +1,12 @@
-import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
+import { ButtonBuilder } from '@discordjs/builders';
+import { Time, UserError } from '@oldschoolgg/toolkit';
+import { ButtonStyle } from 'discord-api-types/v10';
 import { isFunction } from 'remeda';
 
+import type { BaseSendableMessage } from '../client/types.js';
+import { SpecialResponse } from '../util.js';
 import { createInteractionCollector } from './interactionCollector.js';
 import type { MInteraction } from './MInteraction.js';
-import { ButtonBuilder } from '@discordjs/builders';
-import { ButtonStyle } from 'discord-api-types/v10';
-import type { BaseSendableMessage } from '../client/types.js';
 
 const InteractionID = {
 	FirstPage: 'PM_FIRST_PAGE',
@@ -19,43 +20,43 @@ const controlButtons: {
 	emoji: string;
 	run: (opts: { paginatedMessage: BasePaginatedMessage }) => unknown;
 }[] = [
-		{
-			customId: InteractionID.FirstPage,
-			emoji: '⏪',
-			run: ({ paginatedMessage }) => {
-				paginatedMessage.index = 0;
-			}
-		},
-		{
-			customId: InteractionID.PreviousPage,
-			emoji: '◀️',
-			run: ({ paginatedMessage }) => {
-				if (paginatedMessage.index === 0) {
-					paginatedMessage.index = paginatedMessage.totalPages - 1;
-				} else {
-					--paginatedMessage.index;
-				}
-			}
-		},
-		{
-			customId: InteractionID.NextPage,
-			emoji: '▶️',
-			run: ({ paginatedMessage }) => {
-				if (paginatedMessage.index === paginatedMessage.totalPages - 1) {
-					paginatedMessage.index = 0;
-				} else {
-					++paginatedMessage.index;
-				}
-			}
-		},
-		{
-			customId: InteractionID.LastPage,
-			emoji: '⏩',
-			run: ({ paginatedMessage }) => {
+	{
+		customId: InteractionID.FirstPage,
+		emoji: '⏪',
+		run: ({ paginatedMessage }) => {
+			paginatedMessage.index = 0;
+		}
+	},
+	{
+		customId: InteractionID.PreviousPage,
+		emoji: '◀️',
+		run: ({ paginatedMessage }) => {
+			if (paginatedMessage.index === 0) {
 				paginatedMessage.index = paginatedMessage.totalPages - 1;
+			} else {
+				--paginatedMessage.index;
 			}
 		}
-	];
+	},
+	{
+		customId: InteractionID.NextPage,
+		emoji: '▶️',
+		run: ({ paginatedMessage }) => {
+			if (paginatedMessage.index === paginatedMessage.totalPages - 1) {
+				paginatedMessage.index = 0;
+			} else {
+				++paginatedMessage.index;
+			}
+		}
+	},
+	{
+		customId: InteractionID.LastPage,
+		emoji: '⏩',
+		run: ({ paginatedMessage }) => {
+			paginatedMessage.index = paginatedMessage.totalPages - 1;
+		}
+	}
+];
 
 type GeneratedPaginatedPage = Promise<BaseSendableMessage> | BaseSendableMessage;
 
@@ -63,9 +64,9 @@ export type PaginatedMessagePage = BaseSendableMessage | ((currentIndex: number)
 
 export type PaginatedPages =
 	| {
-		numPages: number;
-		generate: (opts: { currentPage: number }) => GeneratedPaginatedPage;
-	}
+			numPages: number;
+			generate: (opts: { currentPage: number }) => GeneratedPaginatedPage;
+	  }
 	| PaginatedMessagePage[];
 
 class BasePaginatedMessage {
@@ -92,11 +93,11 @@ class BasePaginatedMessage {
 					this.totalPages === 1
 						? []
 						: controlButtons.map(i =>
-							new ButtonBuilder()
-								.setStyle(ButtonStyle.Secondary)
-								.setCustomId(i.customId)
-								.setEmoji({ name: i.emoji })
-						)
+								new ButtonBuilder()
+									.setStyle(ButtonStyle.Secondary)
+									.setCustomId(i.customId)
+									.setEmoji({ name: i.emoji })
+							)
 			};
 		} catch (err) {
 			let msg = 'Sorry, something went wrong.';

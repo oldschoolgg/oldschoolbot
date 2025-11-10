@@ -1,5 +1,6 @@
-import { globalConfig } from "@/constants.js";
-import type { GatewayMessageCreateDispatchData } from "@oldschoolgg/discord";
+import type { GatewayMessageCreateDispatchData } from '@oldschoolgg/discord';
+
+import { globalConfig } from '@/constants.js';
 
 export async function userReactsHandler(msg: GatewayMessageCreateDispatchData) {
 	if (msg.guild_id !== globalConfig.supportServerID) return;
@@ -19,7 +20,11 @@ export async function userReactsHandler(msg: GatewayMessageCreateDispatchData) {
 		});
 		if (roboUser && roboUser.react_emoji_id !== null) {
 			try {
-				await globalClient.addReaction({ channelId: msg.channel_id, messageId: msg.id, emojiId: roboUser.react_emoji_id });
+				await globalClient.addReaction({
+					channelId: msg.channel_id,
+					messageId: msg.id,
+					emojiId: roboUser.react_emoji_id
+				});
 			} catch (err) {
 				console.log(`Failed to react with emoji ID: ${roboUser.react_emoji_id} ${err}`);
 			}

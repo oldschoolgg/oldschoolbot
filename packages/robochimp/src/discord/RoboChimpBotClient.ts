@@ -4,7 +4,7 @@ import {
 	ButtonStyle,
 	collectSingleInteraction,
 	DiscordClient,
-	type DiscordClientOptions,
+	type DiscordClientOptions
 } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
 

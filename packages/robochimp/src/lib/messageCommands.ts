@@ -1,7 +1,7 @@
+import { userMention } from '@oldschoolgg/discord';
 import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit';
 
 import { type Bits, bitsDescriptions } from '../util.js';
-import { userMention } from '@oldschoolgg/discord';
 
 export async function getInfoStrOfUser(target: string) {
 	if (!isValidDiscordSnowflake(target)) {

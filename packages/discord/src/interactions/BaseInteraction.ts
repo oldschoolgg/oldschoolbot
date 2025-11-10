@@ -1,6 +1,6 @@
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import type { IButtonInteraction, IChatInputCommandInteraction } from '@oldschoolgg/schemas';
-import { isObject } from '@oldschoolgg/toolkit';
+import { isObject } from '@oldschoolgg/util';
 import {
 	type APIAllowedMentions,
 	type APIChatInputApplicationCommandInteraction,

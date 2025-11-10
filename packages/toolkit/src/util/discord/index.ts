@@ -1,7 +1,1 @@
 export * from './discord.js';
-
-export enum SpecialResponse {
-	PaginatedMessageResponse = 0,
-	SilentErrorResponse = 1,
-	RespondedManually = 2
-}

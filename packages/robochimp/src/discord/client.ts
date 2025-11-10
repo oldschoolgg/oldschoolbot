@@ -2,11 +2,11 @@ import { ActivityType, GatewayIntentBits, PresenceUpdateStatus } from '@oldschoo
 
 import { interactionHandler } from '@/discord/interactionHandler.js';
 import { RoboChimpBotClient } from '@/discord/RoboChimpBotClient.js';
-import { globalConfig } from '@/constants.js';
 import { bulkUpdateCommands } from '@/discord/utils.js';
-import { handleMessageCreate } from '@/events/messageCreate.js';
+import { globalConfig } from '@/constants.js';
 import { pointsHandler } from '@/events/messageCreate/pointsHandler.js';
 import { userReactsHandler } from '@/events/messageCreate/userReactsHandler.js';
+import { handleMessageCreate } from '@/events/messageCreate.js';
 
 const client = new RoboChimpBotClient({
 	intents: [
@@ -37,8 +37,8 @@ global.globalClient = client;
 globalClient.on('error', console.error);
 
 globalClient.on('messageCreate', handleMessageCreate);
-globalClient.on('rawMessageCreate', (m) => {
-	pointsHandler(m)
+globalClient.on('rawMessageCreate', m => {
+	pointsHandler(m);
 	userReactsHandler(m);
 });
 

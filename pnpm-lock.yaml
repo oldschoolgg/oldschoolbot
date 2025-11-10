@@ -48,6 +48,9 @@ importers:
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:packages/toolkit
+      '@oldschoolgg/util':
+        specifier: workspace:*
+        version: link:packages/util
       '@prisma/adapter-pg':
         specifier: ^6.18.0
         version: 6.18.0
@@ -246,15 +249,15 @@ importers:
       '@oldschoolgg/schemas':
         specifier: workspace:*
         version: link:../schemas
+      '@oldschoolgg/toolkit':
+        specifier: workspace:*
+        version: link:../toolkit
       '@oldschoolgg/util':
         specifier: workspace:*
         version: link:../util
       discord-api-types:
         specifier: 0.38.32
         version: 0.38.32
-      neverthrow:
-        specifier: ^8.2.0
-        version: 8.2.0
       remeda:
         specifier: ^2.23.0
         version: 2.23.0
@@ -3101,10 +3104,6 @@ packages:
   neotraverse@0.6.18:
     resolution: {integrity: sha512-Z4SmBUweYa09+o6pG+eASabEpP6QkQ70yHj351pQoEXIs8uHbaU2DWVmzBANKgflPa47A50PtB2+NgRpQvr7vA==}
     engines: {node: '>= 10'}
-
-  neverthrow@8.2.0:
-    resolution: {integrity: sha512-kOCT/1MCPAxY5iUV3wytNFUMUolzuwd/VF/1KCx7kf6CutrOsTie+84zTGTpgQycjvfLdBBdvBvFLqFD2c0wkQ==}
-    engines: {node: '>=18'}
 
   nlcst-to-string@4.0.0:
     resolution: {integrity: sha512-YKLBCcUYKAg0FNlOBT6aI91qFmSiFKiluk655WzPF+DDMA02qIyy8uiRqI8QXtcFpEvll12LpL5MXqEmAZ+dcA==}
@@ -7523,10 +7522,6 @@ snapshots:
   nanoid@3.3.11: {}
 
   neotraverse@0.6.18: {}
-
-  neverthrow@8.2.0:
-    optionalDependencies:
-      '@rollup/rollup-linux-x64-gnu': 4.52.4
 
   nlcst-to-string@4.0.0:
     dependencies:

@@ -1,4 +1,4 @@
-import { userMention } from "@oldschoolgg/discord";
+import { userMention } from '@oldschoolgg/discord';
 
 async function rawLinkAccount(firstUserID: string, secondUserID: string) {
 	const firstUser = await globalClient.fetchRUser(firstUserID);
@@ -60,10 +60,7 @@ export const linkCommand = defineCommand({
 			required: true
 		}
 	],
-	run: async ({
-		options,
-		user
-	}) => {
+	run: async ({ options, user }) => {
 		if (!user.isMod()) return { content: 'Ook OOK OOK', ephemeral: true };
 		return rawLinkAccount(options.first_user.user.id, options.second_user.user.id);
 	}

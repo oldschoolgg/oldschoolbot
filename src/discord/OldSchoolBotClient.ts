@@ -12,11 +12,11 @@ import type { IChannel } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
+import { mentionCommand } from '@/discord/utils.js';
 import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
-import { mentionCommand } from '@/discord/utils.js';
 
 export class OldSchoolBotClient extends DiscordClient {
 	public isShuttingDown = false;

@@ -1,4 +1,4 @@
-import type { IMessage } from "@oldschoolgg/schemas";
+import type { IMessage } from '@oldschoolgg/schemas';
 
 function generateRankMessage(rank: number) {
 	if (rank === 1) return 'Rank 1 👑🥇';
@@ -20,14 +20,17 @@ FROM public.user
 WHERE ((osb_cl_percent + bso_cl_percent) / 2) >= ${combinedCLPercent};`
 		)[0].count;
 
-		await globalClient.replyToMessage(msg, `${await globalClient.fetchUserUsername(msg.author_id)}
+		await globalClient.replyToMessage(
+			msg,
+			`${await globalClient.fetchUserUsername(msg.author_id)}
 **OSB Total Level:** ${u.osbTotalLevel ?? 'Unknown'}
 **BSO Total Level:** ${u.bsoTotalLevel ?? 'Unknown'}
 
 **OSB CL %:** ${u.osbClPercent ?? 'Unknown'}
 **BSO CL %:** ${u.bsoClPercent ?? 'Unknown'}
 
-**Combined CL%:** ${combinedCLPercent.toFixed(2)} (${generateRankMessage(clPercentRank)})`);
+**Combined CL%:** ${combinedCLPercent.toFixed(2)} (${generateRankMessage(clPercentRank)})`
+		);
 		return;
 	}
 }

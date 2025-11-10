@@ -81,10 +81,7 @@ export const triviaCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({
-		options,
-		user
-	}) => {
+	run: async ({ options, user }) => {
 		if (!user.isTrusted()) return 'Ook.';
 		if (options.add) {
 			const { question, answers } = options.add;

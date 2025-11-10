@@ -43,10 +43,7 @@ export const tagCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({
-		options,
-		user
-	}) => {
+	run: async ({ options, user }) => {
 		if (!user.isMod()) return 'Ook.';
 		if (options.add) {
 			await roboChimpClient.tag.create({

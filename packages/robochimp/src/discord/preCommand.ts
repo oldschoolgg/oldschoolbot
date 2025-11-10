@@ -1,5 +1,6 @@
-import { runInhibitors } from '@/discord/inhibitors.js';
 import type { BaseSendableMessage } from '@oldschoolgg/discord';
+
+import { runInhibitors } from '@/discord/inhibitors.js';
 
 interface PreCommandOptions {
 	command: AnyCommand;

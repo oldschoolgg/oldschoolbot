@@ -42,11 +42,7 @@ export const toolsCommand = defineCommand({
 			description: 'debug_patreon'
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction,
-	}) => {
+	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
 		if (!user.isMod()) return 'Ook';
 

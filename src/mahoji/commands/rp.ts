@@ -1,6 +1,7 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
 import { randArrItem } from '@oldschoolgg/rng';
-import { isValidDiscordSnowflake, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';

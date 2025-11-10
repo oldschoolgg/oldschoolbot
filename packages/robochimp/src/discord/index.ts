@@ -1,10 +1,10 @@
-import { defineCommand } from './commands/commandTypes.js';
-
 export * from './commands/index.js';
 export { bulkUpdateCommands } from './utils.js';
 
+import { defineCommand as defineCommandSrc } from './commands/commandTypes.js';
+
 declare global {
-	var defineCommand: typeof import('./commands/commandTypes.js').defineCommand;
+	var defineCommand: typeof defineCommandSrc;
 }
 
-global.defineCommand = defineCommand;
+global.defineCommand = defineCommandSrc;

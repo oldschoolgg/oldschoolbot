@@ -37,10 +37,7 @@ export const blacklistCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({
-		options,
-		user
-	}) => {
+	run: async ({ options, user }) => {
 		if (!user.isMod()) return { content: 'Ook OOK OOK', epfhemeral: true };
 		const inputUser = options.add?.user ?? options.remove?.user;
 		if (!inputUser) return 'Invalid command.';

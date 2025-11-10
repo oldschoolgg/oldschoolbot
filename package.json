@@ -44,6 +44,7 @@
 		"@electric-sql/pglite": "^0.3.10",
 		"@oldschoolgg/collectionlog": "workspace:*",
 		"@oldschoolgg/discord": "workspace:*",
+		"@oldschoolgg/util": "workspace:*",
 		"@oldschoolgg/rng": "workspace:*",
 		"@oldschoolgg/schemas": "workspace:*",
 		"@oldschoolgg/spritesheet": "workspace:*",

@@ -1,4 +1,5 @@
-import { ButtonStyle, ChannelType, ButtonBuilder } from '@oldschoolgg/discord';
+import { ButtonBuilder, ButtonStyle, ChannelType } from '@oldschoolgg/discord';
+
 import { globalConfig, MASS_HOSTER_ROLE_ID } from '../constants.js';
 
 export const pingableRolesCommand = defineCommand({
@@ -51,13 +52,7 @@ export const pingableRolesCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		guildId,
-		channelId,
-		member
-	}) => {
+	run: async ({ options, user, guildId, channelId, member }) => {
 		if (!guildId) return 'This command can only be used in a server.';
 		if (options.ping) {
 			if (!member) return 'No member found.';
@@ -80,7 +75,6 @@ export const pingableRolesCommand = defineCommand({
 					.setLabel('Remove This Role From Me')
 					.setCustomId(`roles.remove_${role.role_id}`)
 					.setStyle(ButtonStyle.Secondary)
-
 			];
 			const channel = await globalClient.fetchChannel(channelId);
 			if (!channel || channel.type !== ChannelType.GuildText) return 'Invalid channel.';
@@ -103,7 +97,8 @@ export const pingableRolesCommand = defineCommand({
 		const inputRole = options.add?.role ?? options.remove?.role;
 		if (!inputRole) return 'Invalid role.';
 		const role = await globalClient.fetchRole(guildId, inputRole);
-		if (!role || role.permissions.includes('ADMINISTRATOR') || role.permissions.includes('KICK_MEMBERS')) return 'Invalid role.';
+		if (!role || role.permissions.includes('ADMINISTRATOR') || role.permissions.includes('KICK_MEMBERS'))
+			return 'Invalid role.';
 		if (guildId !== globalConfig.supportServerID) return 'Invalid server.';
 
 		const existingRole = await roboChimpClient.pingableRole.findFirst({

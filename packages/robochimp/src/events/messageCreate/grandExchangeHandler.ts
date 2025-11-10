@@ -29,7 +29,10 @@ export async function grandExchangeHandler(msg: IMessage) {
 	for (const [reason, bool] of conditions) {
 		if (bool) {
 			await globalClient.deleteMessage(msg.channel_id, msg.id);
-			await globalClient.sendDm(msg.author_id, `Your message was deleted from the grand-exchange channel, because it: ${reason}.`);
+			await globalClient.sendDm(
+				msg.author_id,
+				`Your message was deleted from the grand-exchange channel, because it: ${reason}.`
+			);
 			break;
 		}
 	}

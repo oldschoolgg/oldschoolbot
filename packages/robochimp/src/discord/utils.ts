@@ -1,8 +1,8 @@
 import { ApplicationCommandType, type RESTPostAPIApplicationGuildCommandsJSONBody, Routes } from '@oldschoolgg/discord';
 
 import { convertCommandOptionToAPIOption } from '@/discord/index.js';
-import { messageCtxCommands } from '@/lib/messageCtxCommands.js';
 import { globalConfig } from '@/constants.js';
+import { messageCtxCommands } from '@/lib/messageCtxCommands.js';
 
 export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
 	if (process.env.TEST) return '';
@@ -49,4 +49,3 @@ export async function bulkUpdateCommands() {
 		]
 	});
 }
-

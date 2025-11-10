@@ -1,15 +1,11 @@
+import type { IMessage } from '@oldschoolgg/schemas';
 
 import { TEST_SERVER_ID } from '@/constants.js';
-import type { IMessage } from '@oldschoolgg/schemas';
 
 interface MessageCtxCommand {
 	name: string;
 	guildID: string;
-	run: (options: {
-		interaction: MInteraction;
-		message: IMessage | undefined;
-		user: RUser;
-	}) => void;
+	run: (options: { interaction: MInteraction; message: IMessage | undefined; user: RUser }) => void;
 }
 
 interface Award {

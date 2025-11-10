@@ -1,4 +1,4 @@
-import { SpecialResponse } from '@oldschoolgg/toolkit';
+import { SpecialResponse } from '@oldschoolgg/discord';
 
 export const pollCommand = defineCommand({
 	name: 'poll',

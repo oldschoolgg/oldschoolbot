@@ -48,31 +48,31 @@ type ChoiceValueUnion<C> = C extends AnyArr<infer E> ? (E extends { value: infer
 
 type OptionValue<O> = O extends { type: 'String'; choices?: infer C }
 	? ChoiceValueUnion<C> extends never
-	? string
-	: Extract<ChoiceValueUnion<C>, string>
+		? string
+		: Extract<ChoiceValueUnion<C>, string>
 	: O extends { type: 'Integer' | 'Number'; choices?: infer C2 }
-	? ChoiceValueUnion<C2> extends never
-	? number
-	: Extract<ChoiceValueUnion<C2>, number>
-	: O extends { type: 'Boolean' }
-	? boolean
-	: O extends { type: 'User' }
-	? MahojiUserOption
-	: O extends { type: 'Channel' | 'Role' | 'Mentionable' }
-	? string
-	: never;
+		? ChoiceValueUnion<C2> extends never
+			? number
+			: Extract<ChoiceValueUnion<C2>, number>
+		: O extends { type: 'Boolean' }
+			? boolean
+			: O extends { type: 'User' }
+				? MahojiUserOption
+				: O extends { type: 'Channel' | 'Role' | 'Mentionable' }
+					? string
+					: never;
 
 type ExtractArgs<T extends AnyArr<unknown> | undefined> = T extends AnyArr<unknown>
 	? [ParamEntry<Extract<T[number], CommandOption>>] extends [never]
-	? {}
-	: Simplify<UnionToIntersection<ParamEntry<Extract<T[number], CommandOption>>>>
+		? {}
+		: Simplify<UnionToIntersection<ParamEntry<Extract<T[number], CommandOption>>>>
 	: {};
 
 type CommandEntry<C> = C extends { type: 'Subcommand'; name: infer N extends string; options?: infer Sub }
 	? { [K in N]?: ExtractArgs<AsOptArr<Sub>> }
 	: C extends { type: 'SubcommandGroup'; name: infer G extends string; options?: infer SubG }
-	? { [K in G]?: ExtractCommands<AsOptArr<SubG>> }
-	: never;
+		? { [K in G]?: ExtractCommands<AsOptArr<SubG>> }
+		: never;
 
 type ExtractCommands<T extends AnyArr<unknown> | undefined> = T extends AnyArr<unknown>
 	? Simplify<UnionToIntersection<CommandEntry<Extract<T[number], CommandOption>>>>
@@ -82,10 +82,10 @@ export type AsOptArr<T> = T extends AnyArr<infer E> ? readonly (E & CommandOptio
 
 type ParamEntry<P> = P extends { name: infer N extends string }
 	? P extends { type: 'Subcommand' | 'SubcommandGroup' }
-	? never
-	: P extends { required: true }
-	? { [K in Lit<N>]-?: OptionValue<P> }
-	: { [K in Lit<N>]?: OptionValue<P> }
+		? never
+		: P extends { required: true }
+			? { [K in Lit<N>]-?: OptionValue<P> }
+			: { [K in Lit<N>]?: OptionValue<P> }
 	: never;
 
 export const choicesOf = <const A extends readonly (string | number)[]>(arr: A) =>
@@ -111,26 +111,26 @@ type SubKeyMapGroup<C> = C extends { type: 'SubcommandGroup'; name: infer G exte
 type OptionsToShape<T extends AnyArr<unknown> | undefined> = [T] extends [never]
 	? {}
 	: T extends AnyArr<unknown>
-	? Simplify<
-		ToObj<ArgsFromOptions<T>> &
-		ToObj<UnionToIntersection<SubKeyMapSub<Extract<T[number], CommandOption>>>> &
-		ToObj<UnionToIntersection<SubKeyMapGroup<Extract<T[number], CommandOption>>>>
-	>
-	: {};
+		? Simplify<
+				ToObj<ArgsFromOptions<T>> &
+					ToObj<UnionToIntersection<SubKeyMapSub<Extract<T[number], CommandOption>>>> &
+					ToObj<UnionToIntersection<SubKeyMapGroup<Extract<T[number], CommandOption>>>>
+			>
+		: {};
 
 type LeafEntry<P> = P extends { name: infer N extends string }
 	? P extends { type: 'Subcommand' | 'SubcommandGroup' }
-	? {}
-	: P extends { required: true }
-	? { [K in Lit<N>]-?: OptionValue<P> }
-	: { [K in Lit<N>]?: OptionValue<P> }
+		? {}
+		: P extends { required: true }
+			? { [K in Lit<N>]-?: OptionValue<P> }
+			: { [K in Lit<N>]?: OptionValue<P> }
 	: {};
 
 type OptionNodeToShape<O> = O extends { type: 'SubcommandGroup'; name: infer G extends string; options?: infer GO }
 	? { [K in Lit<G>]?: OptionsArrayToShape<GO> }
 	: O extends { type: 'Subcommand'; name: infer N extends string; options?: infer SO }
-	? { [K in Lit<N>]?: OptionsArrayToShape<SO> }
-	: LeafEntry<O>;
+		? { [K in Lit<N>]?: OptionsArrayToShape<SO> }
+		: LeafEntry<O>;
 
 type OptionsArrayToShape<T> = T extends AnyArr<infer O> ? Simplify<UnionToIntersection<OptionNodeToShape<O>>> : {};
 
@@ -141,8 +141,8 @@ export type CommandOption = {
 	description: string;
 	required?: boolean;
 } & (
-		| { type: 'Subcommand' | 'SubcommandGroup'; options?: AnyArr<CommandOption> }
-		| StringOption
-		| NumberOption
-		| { type: 'Boolean' | 'User' | 'Channel' | 'Role' | 'Mentionable' | 'Attachment' }
-	);
+	| { type: 'Subcommand' | 'SubcommandGroup'; options?: AnyArr<CommandOption> }
+	| StringOption
+	| NumberOption
+	| { type: 'Boolean' | 'User' | 'Channel' | 'Role' | 'Mentionable' | 'Attachment' }
+);

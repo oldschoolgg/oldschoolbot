@@ -1,9 +1,9 @@
 import type { IButtonInteraction, IChatInputCommandInteraction, IGuild, IMember } from '@oldschoolgg/schemas';
 import { deepMerge } from '@oldschoolgg/toolkit';
-import {
-	type APIChatInputApplicationCommandInteraction,
-	type APIMessage,
-	type APIMessageComponentInteraction,
+import type {
+	APIChatInputApplicationCommandInteraction,
+	APIMessage,
+	APIMessageComponentInteraction
 } from 'discord-api-types/v10';
 
 import type { DiscordClient } from '../client/DiscordClient.js';
@@ -16,8 +16,8 @@ type AnyInteraction = IChatInputCommandInteraction | IButtonInteraction;
 type RawFor<T> = T extends IButtonInteraction
 	? APIMessageComponentInteraction
 	: T extends IChatInputCommandInteraction
-	? APIChatInputApplicationCommandInteraction
-	: never;
+		? APIChatInputApplicationCommandInteraction
+		: never;
 
 type InputItx<T extends AnyInteraction> = {
 	interaction: T;
@@ -65,7 +65,7 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 		try {
 			const response = await this.baseReply(message);
 			return response;
-		} catch (err) {
+		} catch (_err) {
 			// Logging.logError(err as Error, {
 			// 	userId: this.userId,
 			// 	guildId: this.guildId,
@@ -83,9 +83,9 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 		message:
 			| string
 			| ({ content: string; timeout?: number } & (
-				| { ephemeral?: false; users?: string[] }
-				| { ephemeral?: boolean; users?: undefined }
-			))
+					| { ephemeral?: false; users?: string[] }
+					| { ephemeral?: boolean; users?: undefined }
+			  ))
 	) {
 		return interactionConfirmation(this, message);
 	}

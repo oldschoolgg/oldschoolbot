@@ -1,8 +1,8 @@
+import type { IMessage } from '@oldschoolgg/schemas';
 
 import { botReactHandler } from './messageCreate/botReactHandler.js';
 import { grandExchangeHandler } from './messageCreate/grandExchangeHandler.js';
 import { voteReactionHandler } from './messageCreate/voteReactionHandler.js';
-import type { IMessage } from '@oldschoolgg/schemas';
 
 async function tagHandler(msg: IMessage) {
 	if (
@@ -13,7 +13,10 @@ async function tagHandler(msg: IMessage) {
 	) {
 		const tag = await roboChimpClient.tag.findFirst({ where: { name: msg.content.replace('.', '') } });
 		if (tag) {
-			await globalClient.replyToMessage(msg, { content: tag.content, allowedMentions: { parse: [], users: [], roles: [] } });
+			await globalClient.replyToMessage(msg, {
+				content: tag.content,
+				allowedMentions: { parse: [], users: [], roles: [] }
+			});
 		}
 	}
 }

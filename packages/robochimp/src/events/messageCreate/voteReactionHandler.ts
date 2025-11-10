@@ -1,6 +1,6 @@
+import type { IMessage } from '@oldschoolgg/schemas';
 
 import { globalConfig } from '@/constants.js';
-import type { IMessage } from '@oldschoolgg/schemas';
 
 export async function voteReactionHandler(msg: IMessage) {
 	if (msg.guild_id !== globalConfig.supportServerID) return;
