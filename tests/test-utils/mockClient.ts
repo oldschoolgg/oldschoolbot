@@ -4,6 +4,7 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 
 import type { ClientStorage } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { mockMessage, mockUser } from '../integration/util.js';
 import { TestLogs } from './logs.js';
@@ -27,6 +28,10 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		const user = await mockUser(...args);
 		user.client = this;
 		return user;
+	}
+
+	async makeParty(options: MakePartyOptions): Promise<MUser[]> {
+		return [options.leader];
 	}
 
 	mentionCommand() {

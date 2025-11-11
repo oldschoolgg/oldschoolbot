@@ -14,7 +14,7 @@ import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { SkillsRequired } from '@/lib/types/index.js';
-import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import type { ActivityTaskData, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { fetchUsernameAndCache } from '@/lib/util.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
 import { giveMaxStats } from '@/mahoji/commands/testpotato.js';
@@ -37,7 +37,7 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
-	async runActivity() {
+	async runActivity(): Promise<ActivityTaskData | null> {
 		const activities = await prisma.activity.findMany({
 			where: {
 				user_id: BigInt(this.id),
@@ -45,12 +45,14 @@ export class TestUser extends MUserClass {
 			}
 		});
 		if (activities.length === 0) {
-			return;
+			return null;
 		}
 		if (activities.length > 1) {
 			throw new Error(`User has multiple uncompleted activities!`);
 		}
 		const activity = activities[0];
+
+		TestClient.activitiesProcessed++;
 
 		await prisma.activity.update({
 			where: {
@@ -60,10 +62,7 @@ export class TestUser extends MUserClass {
 				completed: true
 			}
 		});
-
-		TestClient.activitiesProcessed++;
 		await ActivityManager.completeActivity(activity);
-		await this.sync();
 		return ActivityManager.convertStoredActivityToFlatActivity(activity);
 	}
 
@@ -163,7 +162,8 @@ export class TestUser extends MUserClass {
 			expect(commandResult).not.toContain('is now killing');
 		}
 		const tripStartBank = this.bank.clone();
-		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
+		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | null;
+		await this.sync();
 		const newKC = await this.getKC(monster);
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
@@ -194,7 +194,7 @@ export class TestUser extends MUserClass {
 		return typeof _command === 'string' ? globalClient.allCommands.find(_c => _c.name === _command)! : _command;
 	}
 
-	async runCmdAndTrip(_command: string | AnyCommand, options: object = {}) {
+	async runCmdAndTrip(_command: string | AnyCommand, options: Partial<CommandOptions> = {}) {
 		const command = this.resolveCommand(_command);
 		const commandResult = await this.runCommand(command, options);
 		const activityResult = await this.runActivity();

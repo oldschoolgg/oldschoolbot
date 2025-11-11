@@ -372,9 +372,9 @@ importers:
 
   packages/util:
     dependencies:
-      pure-rand:
-        specifier: 7.0.1
-        version: 7.0.1
+      '@oldschoolgg/rng':
+        specifier: workspace:*
+        version: link:../rng
 
 packages:
 
