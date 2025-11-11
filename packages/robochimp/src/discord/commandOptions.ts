@@ -6,6 +6,7 @@ import {
 	ApplicationCommandOptionType,
 	type Channel,
 	type ChatInputCommandInteraction,
+	type CommandInteractionOption,
 	type GuildMember,
 	type PermissionFlagsBits,
 	type Role,
@@ -104,6 +105,11 @@ export function convertAPIOptionsToCommandOptions(
 	return parsedOptions;
 }
 
+export interface AutocompleteOptionContext {
+	options: readonly CommandInteractionOption[];
+	focusedOption: CommandInteractionOption;
+}
+
 export type CommandOption = {
 	name: string;
 	description: string;
@@ -119,7 +125,8 @@ export type CommandOption = {
 			autocomplete?: (
 				value: string,
 				user: RUser,
-				member?: GuildMember
+				member?: GuildMember,
+				context?: AutocompleteOptionContext
 			) => Promise<APIApplicationCommandOptionChoice[]>;
 	  }
 	| {
@@ -128,7 +135,8 @@ export type CommandOption = {
 			autocomplete?: (
 				value: number,
 				user: RUser,
-				member?: GuildMember
+				member?: GuildMember,
+				context?: AutocompleteOptionContext
 			) => Promise<APIApplicationCommandOptionChoice[]>;
 			min_value?: number;
 			max_value?: number;

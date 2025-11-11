@@ -14,7 +14,7 @@ import {
 	serializePreferredSeeds
 } from '@/lib/minions/functions/autoFarmPreferences.js';
 import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import { type FarmingPatchName, isPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { FarmingSeedPreference } from '@/lib/skilling/skills/farming/utils/types.js';
 import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
 import {
@@ -58,7 +58,10 @@ function buildPreferencesEmbed(
 	return new EmbedBuilder().setTitle('Auto-farm preferences').setDescription(descriptionLines.join('\n'));
 }
 
-function resolveSeedPreferenceInput(patchName: FarmingPatchName, seedInput: string): FarmingSeedPreference | string {
+function resolveSeedPreferenceInput(
+	patchName: FarmingPatchName,
+	seedInput: string
+): FarmingSeedPreference | 'clear' | string {
 	const trimmed = seedInput.trim();
 	if (trimmed.length === 0) {
 		return 'Please specify a seed preference.';
@@ -69,6 +72,9 @@ function resolveSeedPreferenceInput(patchName: FarmingPatchName, seedInput: stri
 	}
 	if (normalized === 'empty') {
 		return { type: 'empty' };
+	}
+	if (normalized === 'clear') {
+		return 'clear';
 	}
 
 	const plantsForPatch = getPlantsForPatch(patchName);
@@ -178,8 +184,70 @@ export const farmingCommand = defineCommand({
 				{
 					type: 'String',
 					name: 'seed',
-					description: "Preferred seed (item name, 'highest_available', or 'empty').",
-					required: false
+					description: "Preferred seed (item name, 'highest_available', 'clear', or 'empty').",
+					required: false,
+					autocomplete: async (value: string, _user: MUser, _member, context) => {
+						const query = value.trim().toLowerCase();
+						const staticChoices = [
+							{
+								name: 'Highest available seed',
+								value: 'highest_available'
+							},
+							{
+								name: 'Do not plant (leave patch empty)',
+								value: 'empty'
+							},
+							{
+								name: 'Clear preference (use auto farm filter)',
+								value: 'clear'
+							}
+						];
+
+						const patchOption = context?.options?.find(opt => opt.name === 'patch');
+						const patchValue =
+							patchOption && 'value' in patchOption && typeof patchOption.value === 'string'
+								? patchOption.value
+								: undefined;
+						const patchName = patchValue && isPatchName(patchValue) ? patchValue : undefined;
+
+						if (!patchName) {
+							return staticChoices.slice(0, 25);
+						}
+
+						const plantsForPatch = getPlantsForPatch(patchName);
+						const dynamicChoices: { name: string; value: string }[] = [];
+						const seenValues = new Set<string>();
+
+						for (const plant of plantsForPatch) {
+							const seedID = getPrimarySeedForPlant(plant);
+							if (!seedID) {
+								continue;
+							}
+							const seedItem = Items.getItem(seedID);
+							if (!seedItem) {
+								continue;
+							}
+							const valueText = seedItem.name;
+							if (seenValues.has(valueText)) {
+								continue;
+							}
+							seenValues.add(valueText);
+							const nameText = `${plant.name} (${seedItem.name})`;
+							if (
+								query &&
+								!nameText.toLowerCase().includes(query) &&
+								!valueText.toLowerCase().includes(query)
+							) {
+								continue;
+							}
+							dynamicChoices.push({
+								name: `${nameText} — lvl ${plant.level}`,
+								value: valueText
+							});
+						}
+
+						return [...staticChoices, ...dynamicChoices].slice(0, 25);
+					}
 				},
 				{
 					type: 'Boolean',
@@ -374,6 +442,18 @@ export const farmingCommand = defineCommand({
 				}
 
 				const resolvedPreference = resolveSeedPreferenceInput(patchData.patchName, seedInput);
+				if (resolvedPreference === 'clear') {
+					preferenceMap.delete(patchData.patchName);
+					await user.update({
+						minion_farmingPreferredSeeds: serializePreferredSeeds(preferenceMap)
+					} as any);
+
+					const summary = `${patchData.friendlyName} → ${formatPreference(
+						preferenceMap.get(patchData.patchName)
+					)}`;
+					responses.push(summary);
+					return responses.join('\n');
+				}
 				if (typeof resolvedPreference === 'string') {
 					return resolvedPreference;
 				}

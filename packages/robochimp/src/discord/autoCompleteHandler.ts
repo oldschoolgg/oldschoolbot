@@ -6,46 +6,64 @@ import {
 	type GuildMember
 } from 'discord.js';
 
+import type { AutocompleteOptionContext } from '@/discord/commandOptions.js';
+
 async function handleAutocomplete(
 	user: RUser,
 	command: RoboChimpCommand | undefined,
-	autocompleteData: CommandInteractionOption[],
+	autocompleteData: readonly CommandInteractionOption[],
 	member: GuildMember | undefined,
 	option?: CommandOption
 ): Promise<APIApplicationCommandOptionChoice[]> {
 	if (!command || !autocompleteData) return [];
 	const data = autocompleteData.find(i => 'focused' in i && i.focused === true) ?? autocompleteData[0];
+	if (!data) {
+		return [];
+	}
 	if (data.type === ApplicationCommandOptionType.SubcommandGroup) {
 		const group = command.options.find(c => c.name === data.name);
 		if (group?.type !== 'SubcommandGroup') return [];
-		const subCommand = group.options?.find(c => c.name === data.options?.[0].name && c.type === 'Subcommand');
-		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
+		const subCommandData =
+			(data.options ?? []).find(o => 'focused' in o && o.focused === true) ??
+			(data.options ?? []).find(o => o.type === ApplicationCommandOptionType.Subcommand);
+		if (!subCommandData || subCommandData.type !== ApplicationCommandOptionType.Subcommand) {
 			return [];
 		}
-		const option = data.options[0].options?.find(t => (t as any).focused);
-		if (!option) return [];
-		const subSubCommand = subCommand.options?.find(o => o.name === option.name);
-		return handleAutocomplete(user, command, [option], member, subSubCommand);
+		const subCommand = group.options?.find(c => c.name === subCommandData.name);
+		if (!subCommand || subCommand.type !== 'Subcommand') {
+			return [];
+		}
+		return handleAutocomplete(user, command, subCommandData.options ?? [], member, subCommand);
 	}
 	if (data.type === ApplicationCommandOptionType.Subcommand) {
-		if (!data.options || !data.options[0]) return [];
 		const subCommand = command.options.find(c => c.name === data.name);
 		if (subCommand?.type !== 'Subcommand') return [];
-		const option = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
-		const subOption = subCommand.options?.find(c => c.name === option.name);
-		if (!subOption) return [];
-
-		return handleAutocomplete(user, command, [option], member, subOption);
+		return handleAutocomplete(user, command, data.options ?? [], member, subCommand);
 	}
 
-	const optionBeingAutocompleted = option ?? command.options.find(o => o.name === data.name);
+	let optionBeingAutocompleted: CommandOption | undefined;
+	if (option?.type === 'Subcommand' || option?.type === 'SubcommandGroup') {
+		optionBeingAutocompleted = option.options?.find(o => o.name === data.name);
+	}
+	if (!optionBeingAutocompleted) {
+		optionBeingAutocompleted = command.options.find(o => o.name === data.name);
+	}
 
 	if (
 		optionBeingAutocompleted &&
 		'autocomplete' in optionBeingAutocompleted &&
 		optionBeingAutocompleted.autocomplete !== undefined
 	) {
-		const autocompleteResult = await optionBeingAutocompleted.autocomplete(data.value as never, user);
+		const context: AutocompleteOptionContext = {
+			options: autocompleteData,
+			focusedOption: data
+		};
+		const autocompleteResult = await optionBeingAutocompleted.autocomplete(
+			data.value as never,
+			user,
+			member,
+			context
+		);
 		return autocompleteResult.slice(0, 25).map(i => ({
 			name: i.name,
 			value: i.value.toString()
@@ -61,7 +79,7 @@ export async function autoCompleteHandler(interaction: AutocompleteInteraction) 
 	const choices = await handleAutocomplete(
 		user,
 		command,
-		(interaction.options as any).data as CommandInteractionOption[],
+		(interaction.options as any).data as readonly CommandInteractionOption[],
 		member
 	);
 	await interaction.respond(choices);

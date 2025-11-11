@@ -7,6 +7,7 @@ import {
 	ApplicationCommandOptionType,
 	type Channel,
 	type ChatInputCommandInteraction,
+	type CommandInteractionOption,
 	type GuildMember,
 	type PermissionFlagsBits,
 	type Role,
@@ -107,6 +108,11 @@ export function convertAPIOptionsToCommandOptions(
 	return parsedOptions;
 }
 
+export interface AutocompleteOptionContext {
+	options: readonly CommandInteractionOption[];
+	focusedOption: CommandInteractionOption;
+}
+
 export interface MahojiUserOption {
 	user: User;
 	member?: GuildMember | APIInteractionDataResolvedGuildMember;
@@ -164,7 +170,8 @@ type NumberOption<C extends AnyArr<{ name: string; value: number }> = AnyArr<{ n
 	autocomplete?: (
 		value: number,
 		user: MUser,
-		member?: GuildMember
+		member?: GuildMember,
+		context?: AutocompleteOptionContext
 	) => Promise<APIApplicationCommandOptionChoice<number>[]>;
 	min_value?: number;
 	max_value?: number;
@@ -175,7 +182,8 @@ type StringOption<C extends AnyArr<{ name: string; value: string }> = AnyArr<{ n
 	autocomplete?: (
 		value: string,
 		user: MUser,
-		member?: GuildMember
+		member?: GuildMember,
+		context?: AutocompleteOptionContext
 	) => Promise<APIApplicationCommandOptionChoice<string>[]>;
 };
 
