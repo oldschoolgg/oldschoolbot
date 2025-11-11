@@ -12,6 +12,6 @@
 		"test": "pnpm tsc -p src --noEmit"
 	},
 	"dependencies": {
-		"pure-rand": "7.0.1"
+		"@oldschoolgg/rng": "workspace:*"
 	}
 }
