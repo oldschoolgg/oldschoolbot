@@ -18,6 +18,7 @@ import { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
 import { sorts } from '@/lib/sorts.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
 import { createChart } from '@/lib/util/chart.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
@@ -1266,14 +1267,6 @@ export async function statsCommand(user: MUser, type: string): Promise<SendableM
 	if (perkTierNeeded !== null && (await user.fetchPerkTier()) < perkTierNeeded) {
 		return `Sorry, you need to be a Tier ${perkTierNeeded - 1} Patron to see this stat.`;
 	}
-	const userStats = await prisma.userStats.upsert({
-		where: {
-			user_id: BigInt(user.id)
-		},
-		update: {},
-		create: {
-			user_id: BigInt(user.id)
-		}
-	});
+	const userStats = await fetchUserStats(user.id);
 	return dataPoint.run(user, userStats);
 }

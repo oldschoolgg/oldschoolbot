@@ -8,6 +8,7 @@ import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 import type { JsonKeys } from '@/lib/util.js';
 
 export class UpdateBank {
@@ -79,13 +80,7 @@ export class UpdateBank {
 		}
 
 		if (Object.keys(this.userStatsBankUpdates).length > 0) {
-			const currentStats = await prisma.userStats.upsert({
-				where: {
-					user_id: BigInt(user.id)
-				},
-				create: { user_id: BigInt(user.id) },
-				update: {}
-			});
+			const currentStats = await fetchUserStats(user.id);
 			for (const [key, value] of objectEntries(this.userStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
 				userStatsUpdates[key] = newValue.toJSON();

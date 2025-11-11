@@ -80,6 +80,7 @@ import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
 import { hasMonsterRequirements } from '@/lib/util/hasMonsterRequirements.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
@@ -880,26 +881,8 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		this._updateRawUser(newUser);
 	}
 
-	async fetchStats() {
-		let result = await prisma.userStats.findFirst({
-			where: {
-				user_id: BigInt(this.id)
-			}
-		});
-
-		if (!result) {
-			result = await prisma.userStats.upsert({
-				where: {
-					user_id: BigInt(this.id)
-				},
-				create: {
-					user_id: BigInt(this.id)
-				},
-				update: {}
-			});
-		}
-
-		return result;
+	async fetchStats(): Promise<UserStats> {
+		return fetchUserStats(this.id);
 	}
 
 	async fetchMStats() {
