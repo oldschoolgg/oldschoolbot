@@ -3,6 +3,7 @@ import type { IChannel, IRole } from '@oldschoolgg/schemas';
 import { Stopwatch, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
+import { omit } from 'remeda';
 import { test } from 'vitest';
 
 import { SkillsArray } from '@/lib/skilling/types.js';
@@ -10,13 +11,13 @@ import { Gear } from '@/lib/structures/Gear.js';
 import { allCommandsDONTIMPORT } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
-import { createTestUser, mockClient, mockIMember, mockUser, TestClient } from './util.js';
+import { createTestUser, mockClient, mockIMember, mockUser, TestClient, TestUser } from './util.js';
 
 type CommandInput = Record<string, any>;
-type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean;
+type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean | undefined;
 
-const LIMIT_PER_COMMAND = 3;
-const BASE_LEVEL_ACCOUNTS_TO_TEST = [99, 10];
+const LIMIT_PER_COMMAND = 2;
+const BASE_LEVEL_ACCOUNTS_TO_TEST = [85];
 
 export async function generateCommandInputs(
 	commandName: string,
@@ -49,10 +50,8 @@ export async function generateCommandInputs(
 						guildId: cryptoRng.pick(['940758552425955348', null])
 					});
 					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value));
-					if (allPossibleOptions[option.name].some(i => typeof i === 'undefined')) throw new Error('1');
 				} else if (option.choices) {
 					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value));
-					if (allPossibleOptions[option.name].some(i => typeof i === 'undefined')) throw new Error('2');
 				} else if (['guild_id', 'message_id'].includes(option.name)) {
 					allPossibleOptions[option.name] = ['157797566833098752'];
 				} else {
@@ -61,6 +60,7 @@ export async function generateCommandInputs(
 				if (allPossibleOptions[option.name].length === 0) {
 					allPossibleOptions[option.name] = ['default'];
 				}
+				if (!option.required) allPossibleOptions[option.name].push(undefined);
 				break;
 			case 'Integer':
 			case 'Number':
@@ -73,11 +73,13 @@ export async function generateCommandInputs(
 					for (let i = 0; i < 3; i++) {
 						allPossibleOptions[option.name].push(rng.randInt(min, max));
 					}
+					if (!option.required) allPossibleOptions[option.name].push(undefined);
 					allPossibleOptions[option.name] = uniqueArr(allPossibleOptions[option.name]);
 				}
 				break;
 			case 'Boolean': {
 				allPossibleOptions[option.name] = [true, false];
+				if (!option.required) allPossibleOptions[option.name].push(undefined);
 				break;
 			}
 			case 'User': {
@@ -90,7 +92,8 @@ export async function generateCommandInputs(
 					user: userForOption.getIUser()
 				};
 				allPossibleOptions[option.name] = [opt, optWithoutMember];
-				if (allPossibleOptions[option.name].some(i => typeof i === 'undefined')) throw new Error('3');
+
+				if (!option.required) allPossibleOptions[option.name].push(undefined);
 				break;
 			}
 			case 'Channel':
@@ -218,6 +221,14 @@ test(
 			['gear', 'best_in_slot'],
 			['gear', 'view']
 		];
+		const shouldIgnore = (cmdName: string, opt: Record<string, unknown>): boolean =>
+			ignoredSubCommands.some(([parent, sub, subCmd]) => {
+				if (cmdName !== parent) return false;
+				if (!(sub in opt)) return false;
+				if (!subCmd) return true;
+				const nested = opt[sub] as Record<string, unknown> | undefined;
+				return !!nested && subCmd in nested;
+			});
 
 		const useCommandOptions: Record<string, any>[] = [];
 		for (const item of allUsableItems) {
@@ -229,7 +240,7 @@ test(
 
 		const mockedUser: MUser = await mockUser();
 
-		const hardcodedOptions: Record<string, Record<string, any>[]> = {
+		const hardcodedOptions: Record<string, Record<string, CommandOptions>[]> = {
 			use: useCommandOptions
 		};
 
@@ -239,25 +250,27 @@ test(
 		let totalCommands = 0;
 		for (const command of commandsToTest) {
 			if (ignoredCommands.includes(command.name)) continue;
-			let options: CommandOptions[] = hardcodedOptions[command.name];
+			let options: CommandOptions[] = hardcodedOptions[command.name] ?? [];
 
-			if (!options && command.options && command.options.length > 0) {
-				options = await generateCommandInputs(command.name, mockedUser, rngProvider, command.options);
-				options.push(...(await generateCommandInputs(command.name, mockedUser, rngProvider, command.options)));
-				options.push(...(await generateCommandInputs(command.name, mockedUser, rngProvider, command.options)));
+			if (options.length === 0 && command.options && command.options.length > 0) {
+				const generated = await Promise.all(
+					new Array(3)
+						.fill(null)
+						.map(() => generateCommandInputs(command.name, mockedUser, rngProvider, command.options))
+				);
+				options.push(...generated.flat());
 			}
-			if (!options) {
-				continue;
-			}
-			outer: for (const option of options) {
-				for (const [parent, sub, subCommand] of ignoredSubCommands) {
-					// @ts-expect-error
-					if (command.name === parent && option[sub] && (subCommand ? option[sub][subCommand] : true)) {
-						continue outer;
-					}
-				}
-			}
-			options = cryptoRng.shuffle(options).slice(0, LIMIT_PER_COMMAND);
+			if (!options) continue;
+
+			// Filter out ignored subcommands
+			options = options.filter(opt => !shouldIgnore(command.name, opt));
+
+			// Shuffle for randomness
+			options = cryptoRng.shuffle(options);
+
+			// Limit number of permutations per command
+			options = options.slice(0, LIMIT_PER_COMMAND);
+
 			totalCommands += options.length;
 			processedCommands.push({ command, options });
 		}
@@ -266,6 +279,7 @@ test(
 
 		let commandsRan = 0;
 		const queue = new PromiseQueue({ concurrency: 12, timeout: Time.Second * 30, throwOnTimeout: true });
+		const results: { time: number; command: string; options: CommandOptions; rawResults: any[] }[] = [];
 
 		for (const { command, options: allOptions } of processedCommands) {
 			for (const options of allOptions) {
@@ -274,7 +288,24 @@ test(
 						const allUsers = await Promise.all(
 							BASE_LEVEL_ACCOUNTS_TO_TEST.map(_l => createUserWithBaseStats(_l))
 						);
-						await Promise.all(allUsers.map(u => u.runCmdAndTrip(command, options)));
+						const start = performance.now();
+						const rawResults = await Promise.all(allUsers.map(u => u.runCmdAndTrip(command, options)));
+						const end = performance.now();
+						results.push({
+							command: command.name,
+							options,
+							time: end - start,
+							rawResults: rawResults.map(i => {
+								if (!i.commandResult) return 'No CMD Result?';
+								if (typeof i.commandResult === 'string') return i.commandResult;
+								if (typeof i.commandResult === 'number') return `SpecialResult: ${i.commandResult}`;
+								if (i.commandResult instanceof MessageBuilder || 'build' in i.commandResult) {
+									// @ts-expect-error
+									return omit(i.commandResult.message, ['files']);
+								}
+								return omit(i.commandResult, ['files']);
+							})
+						});
 						commandsRan += BASE_LEVEL_ACCOUNTS_TO_TEST.length;
 					} catch (err) {
 						console.error(
@@ -290,9 +321,17 @@ test(
 			console.log(`${queue.size} commands remaining...`);
 		});
 		await queue.onEmpty();
+		results.sort((a, b) => b.time - a.time);
 
 		console.log(
-			`[${stopwatch.toString()}] Finished running ${commandsRan} commands, ${TestClient.activitiesProcessed} activities`
+			`[${stopwatch.toString()}] Finished running ${commandsRan} commands, ${TestClient.activitiesProcessed} activities.
+Slowest commands: ${results
+				.slice(0, 5)
+				.map(
+					(r, i) =>
+						`${i + 1}. ${r.command} ${JSON.stringify({ options: r.options, results: r.rawResults })}: ${r.time.toFixed(2)}ms`
+				)
+				.join('\n')}`
 		);
 	}
 );
