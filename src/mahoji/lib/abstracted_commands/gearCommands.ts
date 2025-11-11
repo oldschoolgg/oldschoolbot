@@ -142,6 +142,9 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 		unequipBank
 	} = gearEquipMultiImpl(user, setup, items);
 	if (!resultSuccess) return failMsg!;
+	if ((!equipBank || equipBank.length === 0) && (!unequipBank || unequipBank.length === 0)) {
+		return `No items were equipped.`;
+	}
 
 	const dbKey = `gear_${setup}` as const;
 
