@@ -57,6 +57,10 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableAutoSlayButton
 	},
 	{
+		name: 'Disable Auto Farm Button',
+		bit: BitField.DisableAutoFarmButton
+	},
+	{
 		name: 'Disable Ash Sanctifier',
 		bit: BitField.DisableAshSanctifier
 	},

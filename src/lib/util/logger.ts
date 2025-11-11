@@ -98,8 +98,8 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	if (err?.requestBody?.json) {
 		err.requestBody.json = String(err.requestBody.json).slice(0, 500);
 	}
-	if (interaction) {
-		metaInfo.interaction = interaction.getDebugInfo();
+	if (interaction && typeof (interaction as MInteraction | { getDebugInfo?: unknown }).getDebugInfo === 'function') {
+		metaInfo.interaction = (interaction as MInteraction).getDebugInfo();
 	}
 	if (!globalConfig.isProduction) {
 		console.error(err);

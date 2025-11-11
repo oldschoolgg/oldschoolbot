@@ -154,7 +154,8 @@ export enum BitField {
 
 	HasDeadeyeScroll = 45,
 	HasMysticVigourScroll = 46,
-	AllowPublicAPIDataRetrieval = 47
+	AllowPublicAPIDataRetrieval = 47,
+	DisableAutoFarmButton = 48
 }
 
 interface BitFieldData {
@@ -240,6 +241,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableAutoSlayButton]: {
 		name: 'Disable Auto Slay Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableAutoFarmButton]: {
+		name: 'Disable Auto Farm Button',
 		protected: false,
 		userConfigurable: true
 	},

@@ -44,3 +44,10 @@ export type DetailedFarmingContract = {
 	matchingPlantedCrop: IPatchDataDetailed | undefined;
 	farmingInfo: ReturnType<typeof getFarmingInfoFromUser>;
 };
+
+export type FarmingSeedPreference =
+	| { type: 'seed'; seedID: number }
+	| { type: 'highest_available' }
+	| { type: 'empty' };
+
+export type FarmingPreferredSeeds = Record<string, FarmingSeedPreference>;

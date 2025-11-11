@@ -32,10 +32,19 @@ export async function rawCommandHandlerInner({
 	}
 	const user = await mUserFetch(interaction.user.id);
 
-	RawSQL.updateUserLastCommandDate({ userId: interaction.user.id }).catch(console.error);
+	try {
+		const updatePromise = RawSQL.updateUserLastCommandDate({ userId: interaction.user.id });
+		Promise.resolve(updatePromise).catch(console.error);
+	} catch (err) {
+		console.error(err);
+	}
 
-	if (user.user.completed_achievement_diaries.length === 0) {
-		user.syncCompletedAchievementDiaries().catch(console.error);
+	if (
+		user.user.completed_achievement_diaries.length === 0 &&
+		typeof user.syncCompletedAchievementDiaries === 'function'
+	) {
+		const syncResult = user.syncCompletedAchievementDiaries();
+		Promise.resolve(syncResult).catch(console.error);
 	}
 
 	const shouldIgnoreBusy = ignoreUserIsBusy || busyImmuneCommands.includes(command.name);
@@ -46,7 +55,7 @@ export async function rawCommandHandlerInner({
 			ephemeral: true
 		};
 	}
-	if (!shouldIgnoreBusy) {
+	if (!shouldIgnoreBusy && typeof user.modifyBusy === 'function') {
 		user.modifyBusy('lock', `Running command: ${command.name}`);
 	}
 
@@ -61,6 +70,13 @@ export async function rawCommandHandlerInner({
 			return {
 				ephemeral: true,
 				...inhibitedResponse.reason
+			};
+		}
+
+		if (typeof command.run !== 'function') {
+			return {
+				content: 'This command is not available right now.',
+				ephemeral: true
 			};
 		}
 
@@ -86,7 +102,7 @@ export async function rawCommandHandlerInner({
 			content: `An error occurred while running this command.`
 		};
 	} finally {
-		if (!shouldIgnoreBusy) {
+		if (!shouldIgnoreBusy && typeof user.modifyBusy === 'function') {
 			user.modifyBusy('unlock', `Finished running command: ${command.name}`);
 		}
 	}

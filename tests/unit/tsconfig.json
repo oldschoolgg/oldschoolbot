@@ -1,6 +1,6 @@
 {
 	"extends": "../../tsconfig.base.json",
-	"include": [".", "../../src/**/*"],
+	"include": [".", "../prisma.d.ts", "../../src/**/*"],
 	"compilerOptions": {
 		"noEmit": true,
 		"composite": false,
