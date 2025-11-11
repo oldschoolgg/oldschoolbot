@@ -9,7 +9,7 @@
 	},
 	"scripts": {
 		"build": "tsc -p src --noEmit false",
-		"test": "pnpm tsc -p src --noEmit"
+		"test": "pnpm tsc -p src --noEmit && vitest run --config vitest.unit.config.mts"
 	},
 	"dependencies": {
 		"@discordjs/builders": "1.13.0",

@@ -1,8 +1,7 @@
 export type BitFieldValue = number;
-export type BitFieldResolvable = BitFieldValue | string | BitField | BitFieldResolvable[];
+export type BitFieldResolvable = BitFieldValue | BitField | BitFieldResolvable[];
 
 export class BitField {
-	static Flags: Record<string | number, BitFieldValue> = {};
 	static DefaultBit: BitFieldValue = 0;
 
 	bitfield: BitFieldValue;
@@ -19,13 +18,9 @@ export class BitField {
 		return this.bitfield === BitField.resolve(bit);
 	}
 
-	has(bit: BitFieldResolvable, ..._hasParams: unknown[]): boolean {
+	has(bit: BitFieldResolvable): boolean {
 		const b = BitField.resolve(bit);
 		return (this.bitfield & b) === b;
-	}
-
-	missing(bits: BitFieldResolvable, ...hasParams: unknown[]): string[] {
-		return new BitField(bits).remove(this).toArray(...hasParams);
 	}
 
 	freeze(): Readonly<this> {
@@ -48,18 +43,6 @@ export class BitField {
 		return this;
 	}
 
-	serialize(...hasParams: unknown[]): Record<string, boolean> {
-		const out: Record<string, boolean> = {};
-		for (const [flag, bit] of Object.entries(BitField.Flags)) {
-			if (Number.isNaN(flag as any)) out[flag] = this.has(bit, ...hasParams);
-		}
-		return out;
-	}
-
-	toArray(...hasParams: unknown[]): string[] {
-		return [...this[Symbol.iterator](...hasParams)];
-	}
-
 	toJSON(): number {
 		return this.bitfield;
 	}
@@ -68,20 +51,9 @@ export class BitField {
 		return this.bitfield;
 	}
 
-	*[Symbol.iterator](...hasParams: unknown[]): Generator<string> {
-		for (const name of Object.keys(BitField.Flags)) {
-			if (Number.isNaN(name) && this.has(name, ...hasParams)) yield name;
-		}
-	}
-
-	static resolve(bit?: BitFieldResolvable): BitFieldValue {
+	static resolve(bit: BitFieldResolvable): BitFieldValue {
 		if (typeof bit === 'number') return bit;
 		if (bit instanceof BitField) return bit.bitfield;
-		if (Array.isArray(bit)) return bit.map(b => BitField.resolve(b)).reduce((p, c) => p | c, BitField.DefaultBit);
-		if (typeof bit === 'string') {
-			if (!Number.isNaN(bit)) return Number(bit);
-			if (BitField.Flags[bit] !== undefined) return BitField.Flags[bit] as number;
-		}
-		throw new Error(`BitFieldInvalid: ${String(bit)}`);
+		return bit.map(b => BitField.resolve(b)).reduce((p, c) => p | c, BitField.DefaultBit);
 	}
 }
