@@ -224,8 +224,15 @@ describe('PVM', async () => {
 			maxed: true,
 			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
 		});
-		await prisma.playerOwnedHouse.create({
-			data: {
+		await prisma.playerOwnedHouse.upsert({
+			where: {
+				user_id: user.id
+			},
+			create: {
+				user_id: user.id,
+				pool: getPOHObject('Rejuvenation pool').id
+			},
+			update: {
 				user_id: user.id,
 				pool: getPOHObject('Rejuvenation pool').id
 			}

@@ -1,6 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
+import { type PlayerOwnedHouse, Prisma } from '@/prisma/main.js';
 import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
 import { BitField } from '@/lib/constants.js';
 import { GroupedPohObjects, getPOHObject, itemsNotRefundable, PoHObjects } from '@/lib/poh/index.js';
@@ -19,10 +20,33 @@ export const pohWallkits = [
 	}
 ];
 
-export async function getPOH(userID: string) {
-	let poh = await prisma.playerOwnedHouse.findFirst({ where: { user_id: userID } });
-	if (poh === null) poh = await prisma.playerOwnedHouse.create({ data: { user_id: userID } });
-	return poh;
+export async function getPOH(userId: string): Promise<PlayerOwnedHouse> {
+	try {
+		const result = await prisma.playerOwnedHouse.upsert({
+			where: {
+				user_id: userId
+			},
+			create: {
+				user_id: userId
+			},
+			update: {}
+		});
+		return result;
+	} catch (err) {
+		// Ignore unique constraint errors, they already have a row
+		if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
+			throw err;
+		}
+	}
+
+	// They definitely should have a row now
+	const result = await prisma.playerOwnedHouse.findFirstOrThrow({
+		where: {
+			user_id: userId
+		}
+	});
+
+	return result;
 }
 export async function makePOHImage(user: MUser, showSpaces = false): Promise<SendableFile> {
 	const poh = await getPOH(user.id);
