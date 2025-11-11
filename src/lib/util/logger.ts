@@ -119,12 +119,10 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 }
 
 const LoggingGlobal = {
-        logError,
-        logDebug,
-        logPerf
+	logError,
+	logDebug,
+	logPerf
 };
-
-export const Logging = LoggingGlobal;
 
 declare global {
 	var Logging: typeof LoggingGlobal;

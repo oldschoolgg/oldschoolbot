@@ -153,17 +153,15 @@ async function addToGPTaxBalance(user: MUser, amount: number) {
 }
 
 const ClientSettingsSrc = {
-        fetch: mahojiClientSettingsFetch,
-        update: mahojiClientSettingsUpdate,
-        updateClientGPTrackSetting,
-        updateBankSetting,
-        addToGPTaxBalance
+	fetch: mahojiClientSettingsFetch,
+	update: mahojiClientSettingsUpdate,
+	updateClientGPTrackSetting,
+	updateBankSetting,
+	addToGPTaxBalance
 };
 
-export const ClientSettings = ClientSettingsSrc;
-
 declare global {
-        var ClientSettings: typeof ClientSettingsSrc;
+	var ClientSettings: typeof ClientSettingsSrc;
 }
 
 global.ClientSettings = ClientSettingsSrc;

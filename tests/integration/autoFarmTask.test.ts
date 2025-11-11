@@ -1,10 +1,11 @@
 import type { RNGProvider } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import type { APIButtonComponentWithCustomId } from 'discord-api-types/v10';
 import { Bank } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import './setup.js';
+
+import type { APIButtonComponentWithCustomId } from 'discord.js';
 
 import type { IPatchData } from '../../src/lib/skilling/skills/farming/utils/types.js';
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';

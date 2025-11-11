@@ -1,7 +1,7 @@
-import { Bank, convertLVLtoXP, itemID } from 'oldschooljs';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
-
 import './setup.js';
+
+import { Bank, convertLVLtoXP, itemID } from 'oldschooljs';
 
 import { autoFarm } from '../../src/lib/minions/functions/autoFarm.js';
 import { resolveSeedForPatch } from '../../src/lib/minions/functions/autoFarmPreferences.js';
@@ -38,7 +38,6 @@ vi.mock('../../src/lib/util/repeatStoredTrip.js', () => ({
 type Mutable<T> = { -readonly [K in keyof T]: T[K] };
 type MutableUser = Mutable<User>;
 
-// Minimal JSON shapes so we don't depend on discord-api-types
 type ButtonJSON = {
 	type: number;
 	style: number;
@@ -52,7 +51,6 @@ type ActionRowJSON = {
 	components: ButtonJSON[];
 };
 
-// helper: narrow the autoFarm union
 function isBaseMessage(value: unknown): value is {
 	content?: string;
 	components?: any[];
@@ -60,6 +58,7 @@ function isBaseMessage(value: unknown): value is {
 	return typeof value === 'object' && value !== null && !('type' in (value as any));
 }
 
+// plants we need
 const herbPlant = plants.find(p => p.name === 'Guam');
 const treePlant = plants.find(p => p.name === 'Oak tree');
 const ranarrPlant = plants.find(p => p.name === 'Ranarr');
@@ -137,18 +136,15 @@ const treePatches: Partial<Record<FarmingPatchName, IPatchData>> = {
 };
 
 let calcMaxTripLengthSpy: MockInstance;
-const originalPrisma = (globalThis as { prisma?: unknown }).prisma;
 const originalMinionIsBusy = (global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy;
 
 beforeAll(() => {
 	(global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy = () => false;
 	calcMaxTripLengthSpy = vi.spyOn(calcMaxTripLengthModule, 'calcMaxTripLength');
-	(globalThis as { prisma?: unknown }).prisma = undefined;
 });
 
 afterAll(() => {
 	calcMaxTripLengthSpy.mockRestore();
-	(globalThis as { prisma?: unknown }).prisma = originalPrisma;
 	(global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy = originalMinionIsBusy;
 });
 
@@ -179,7 +175,6 @@ describe('auto farm helpers', () => {
 			baseInteraction as MInteraction
 		);
 
-		// narrow the union properly
 		if (!isBaseMessage(response)) {
 			throw new Error('Expected BaseMessageOptions-like response');
 		}
@@ -194,7 +189,6 @@ describe('auto farm helpers', () => {
 		expect(response.components).toBeDefined();
 		const components = response.components ?? [];
 
-		// Normalize to JSON whether it's a builder or already API-shaped
 		const rowMaybe = components[0] as any;
 
 		let rowJSON: ActionRowJSON;
@@ -208,14 +202,12 @@ describe('auto farm helpers', () => {
 
 		expect(rowJSON.components).toHaveLength(1);
 
-		// Normalize the inner button too
 		const buttonMaybe = rowJSON.components[0] as any;
 		const buttonJSON: ButtonJSON =
 			buttonMaybe && typeof buttonMaybe.toJSON === 'function'
 				? (buttonMaybe.toJSON() as ButtonJSON)
 				: (buttonMaybe as ButtonJSON);
 
-		// Assertions
 		expect(buttonJSON.style).toBe(ButtonStyle.Secondary);
 		expect(buttonJSON.custom_id).toBe('CHECK_PATCHES');
 		expect(buttonJSON.label).toBe('Check Patches');
@@ -274,9 +266,8 @@ describe('auto farm helpers', () => {
 		});
 
 		expect(result.success).toBe(true);
-		if (!result.success) {
-			return;
-		}
+		if (!result.success) return;
+
 		const { cost, quantity, duration, didPay, upgradeType, treeChopFee } = result.data;
 		expect(quantity).toBe(treePatchDetailed.lastQuantity);
 		expect(duration).toBe(treePatchDetailed.lastQuantity * (20 + 5 + 10) * 1000);

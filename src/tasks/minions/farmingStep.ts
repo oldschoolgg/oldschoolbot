@@ -12,7 +12,6 @@ import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { ClientSettings } from '@/lib/util/clientSettings.js';
 
 export type FarmingStepAttachment = Awaited<ReturnType<typeof chatHeadImage>>;
 
