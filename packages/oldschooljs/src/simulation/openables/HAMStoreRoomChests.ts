@@ -1,7 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
-// TODO: check back for wiki drop table update from another one in the repo
 const GemTable = new LootTable()
 	.add('Sapphire necklace', 1, 4)
 	.add('Sapphire amulet', 1, 4)

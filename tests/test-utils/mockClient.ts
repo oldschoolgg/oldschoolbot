@@ -76,7 +76,6 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 	}
 
 	async sendMessage(channelId: string, message: SendableMessage) {
-		// TODO simulate failures
 		TestLogs.Debug(`Client ${this.data.id} sending message to channel ${channelId}: ${JSON.stringify(message)}`);
 		return mockMessage({ userId: mockSnowflake(this.rng) });
 	}

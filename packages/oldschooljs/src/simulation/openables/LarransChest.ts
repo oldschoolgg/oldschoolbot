@@ -6,7 +6,6 @@ import type { OpenableOpenOptions } from '@/structures/Openable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 import { chanceOfFish, LarransBigChestFish, LarransSmallChestFish } from './BonusOpenables.js';
 
-// TODO: check wiki for more accurate results in future
 const LarransSmallChestTable = new LootTable()
 	.add('Uncut diamond', 21, 5)
 	.add('Uncut ruby', [24, 29], 5)
