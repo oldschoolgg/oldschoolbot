@@ -275,7 +275,7 @@ test(
 		console.log(`Starting to run ${totalCommands} command permutations...`);
 
 		let commandsRan = 0;
-		const queue = new PromiseQueue({ concurrency: 6, timeout: Time.Second * 30, throwOnTimeout: true });
+		const queue = new PromiseQueue({ concurrency: 5, timeout: Time.Second * 30, throwOnTimeout: true });
 		const results: { time: number; command: string; options: CommandOptions; rawResults: any[] }[] = [];
 
 		for (const { command, options: allOptions } of processedCommands) {

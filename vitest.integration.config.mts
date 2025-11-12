@@ -13,7 +13,7 @@ export default defineConfig({
 			include: ['src/mahoji/lib/abstracted_commands/minionKill/*.ts', 'src/lib/structures/*.ts']
 		},
 		testTimeout: 60_000,
-		maxConcurrency: 4
+		maxConcurrency: 3
 	},
 	resolve: {
 		alias: {
