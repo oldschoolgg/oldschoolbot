@@ -1,5 +1,6 @@
 import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
+import { roll } from '@oldschoolgg/rng';
 
 import { filterOption } from '@/lib/discord/index.js';
 import { cats } from '@/lib/growablePets.js';
@@ -144,8 +145,24 @@ export const sacrificeCommand = defineCommand({
 		);
 		await user.removeItemsFromBank(bankToSac);
 
-		if (totalPrice > 200_000_000) {
+		if (totalPrice > 5_000_000_000) {
 			globalClient.emit(Events.ServerNotification, `${user.badgedUsername} just sacrificed ${bankToSac}!`);
+		}
+
+		const hasSkipper = user.usingPet('Skipper') || user.owns('Skipper');
+		if (hasSkipper) {
+			totalPrice = Math.floor(totalPrice * 1.3);
+		}
+
+		let hammyCount = 0;
+		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
+			if (roll(140)) {
+				hammyCount++;
+				break;
+			}
+		}
+		if (hammyCount) {
+			await user.addItemsToBank({ items: new Bank().add('Hammy', hammyCount), collectionLog: true });
 		}
 
 		await user.update({
@@ -176,6 +193,19 @@ export const sacrificeCommand = defineCommand({
 				}
 			}
 		}
+
+		if (hammyCount) {
+			str +=
+				'\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.';
+			if (hammyCount > 1) {
+				str += ` **(x${hammyCount})**`;
+			}
+		}
+		if (hasSkipper) {
+			str +=
+				'\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.';
+		}
+
 		return `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(
 			totalPrice
 		)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`;
