@@ -73,8 +73,8 @@ export const payCommand = defineCommand({
 				break;
 			} catch (error) {
 				if ((error as Prisma.PrismaClientKnownRequestError).code === 'P2034') {
+					retries++;
 					if (retries < MAX_RETRIES) {
-						retries++;
 						await sleep(100 + retries * 333);
 						continue;
 					} else {
