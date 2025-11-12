@@ -27,6 +27,7 @@ import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getF
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
@@ -51,6 +52,7 @@ export function getMaxUserValues(): SafeUserUpdateInput {
 		carpenter_points: 5_000_000,
 		zeal_tokens: 500_000,
 		lms_points: 500_000,
+		slayer_unlocks: SlayerRewardsShop.map(i => i.id),
 		...updates
 	};
 }

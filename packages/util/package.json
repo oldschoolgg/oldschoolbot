@@ -8,7 +8,7 @@
 		}
 	},
 	"scripts": {
-		"build": "tsc -p src --noEmit false",
+		"build": "rimraf ./dist && tsc -p src --noEmit false",
 		"test": "pnpm tsc -p src --noEmit"
 	},
 	"dependencies": {

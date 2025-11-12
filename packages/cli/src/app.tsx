@@ -58,7 +58,6 @@ const stages: Stage[] = [
 				cmd: `pnpm tsx --tsconfig scripts/tsconfig.json scripts/${script[1]}`,
 				desc: script[0]
 			})),
-			ALL_PACKAGE_NAMES.map(pkg => ({ cmd: `pnpm --filter ${pkg} build`, desc: `Building ${pkg}...` })),
 			{ cmd: 'tsx esbuild.mts', desc: 'Building bot...' }
 		]
 	},
@@ -78,7 +77,9 @@ const stages: Stage[] = [
 					cmd: `pnpm --filter ${pkg} test`,
 					desc: `Running tests in ${pkg}...`
 				})),
-				{ cmd: 'pnpm test', desc: 'Running bot tests...' }
+				{ cmd: 'pnpm test:lint', desc: 'Running lint bot test...' },
+				{ cmd: 'pnpm test:types', desc: 'Running types bot test...' },
+				{ cmd: 'pnpm test:unit', desc: 'Running bot unit tests...' }
 			]
 		]
 	}
