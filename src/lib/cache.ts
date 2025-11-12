@@ -4,12 +4,15 @@ import { LRUCache } from 'lru-cache';
 import type PromiseQueue from 'p-queue';
 
 import type { Giveaway } from '@/prisma/main.js';
+import { globalConfig } from '@/lib/constants.js';
 import type { MarketPriceData } from '@/lib/marketPrices.js';
 
 export const lastRoboChimpSyncCache = new Map<string, number>();
 
 export const partyLockCache: Set<string> = new Set();
-TimerManager.setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+if (globalConfig.isProduction) {
+	TimerManager.setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+}
 
 export const CHAT_PET_COOLDOWN_CACHE = new LRUCache<string, number>({ max: 2000 });
 export const giveawayCache = new LRUCache<number, Giveaway>({

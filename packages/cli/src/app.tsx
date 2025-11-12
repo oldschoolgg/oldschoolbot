@@ -22,6 +22,8 @@ const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
 
 const isUsingRealPostgres = process.env.USE_REAL_PG === '1';
 
+const isWikiBuild = process.argv.includes('--wiki');
+
 const stages: Stage[] = [
 	{
 		name: 'Stage 1',
@@ -39,7 +41,19 @@ const stages: Stage[] = [
 				['Rendering commands file', 'renderCommandsFile.ts'],
 				['Rendering monsters file', 'monstersJson.ts'],
 				['Rendering creatables file', 'creatables.ts'],
-				['Rendering skilling data files', 'dataFiles.ts']
+				['Rendering skilling data files', 'dataFiles.ts'],
+				['Wiki: Rendering clue boosts', 'wiki/clueBoosts.ts'],
+				['Wiki: Rendering monsters markdown', 'wiki/renderMonsters.ts'],
+				['Wiki: Rendering cox markdown', 'wiki/renderCox.ts'],
+				['Wiki: Rendering trip buyables', 'wiki/tripBuyables.ts'],
+				['Wiki: Rendering quests markdown', 'wiki/renderQuests.ts'],
+				...(isWikiBuild
+					? [
+							['Wiki: Rendering fishing snapshots', 'wiki/fishingSnapshots.ts'],
+							['Wiki: Rendering mining snapshots', 'wiki/miningSnapshots.ts'],
+							['Wiki: Rendering authors', 'wiki/updateAuthors.ts']
+						]
+					: [])
 			].map(script => ({
 				cmd: `pnpm tsx --tsconfig scripts/tsconfig.json scripts/${script[1]}`,
 				desc: script[0]
