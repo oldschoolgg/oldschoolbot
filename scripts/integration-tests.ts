@@ -11,9 +11,24 @@ function log(message: string) {
 function run(cmd: string[], opts = {}): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const child = spawn(cmd[0], cmd.slice(1), { shell: true, stdio: 'inherit', ...opts });
+
+		let stderr = '';
+		let stdout = '';
+
+		child.stdout?.on('data', d => {
+			stdout += d.toString();
+		});
+		child.stderr?.on('data', d => {
+			stderr += d.toString();
+		});
 		child.on('exit', code => {
 			if (code === 0) resolve();
-			else reject(new Error(`Command "${cmd.join(' ')}" failed with exit code ${code}`));
+			else
+				reject(
+					new Error(
+						`Command "${cmd.join(' ')}" failed with exit code ${code}. \n\nSTDOUT:\n${stdout}\n\nSTDERR:\n${stderr}`
+					)
+				);
 		});
 	});
 }
@@ -31,6 +46,13 @@ await Promise.all([
 ]);
 log(`Database schemas pushed.`);
 
-await run(['pnpm', 'vitest', 'run', '--config', 'vitest.integration.config.mts'], {
+const mainCommand = ['pnpm', 'vitest', 'run', '--config', 'vitest.integration.config.mts'];
+
+const otherArgs: string = process.argv.slice(2).join(' ').trim();
+if (otherArgs) {
+	mainCommand.push(otherArgs);
+}
+
+await run(mainCommand, {
 	env: { ...process.env, NODE_NO_WARNINGS: '1' }
 });

@@ -1,17 +1,11 @@
 import { Bank } from 'oldschooljs';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import { agilityArenaBuyCommand } from '../../../src/mahoji/lib/abstracted_commands/agilityArenaCommand.js';
-import { createTestUser, mockClient } from '../util.js';
+import { createTestUser } from '../util.js';
 
 describe('Agility Arena Command', async () => {
-	const client = await mockClient();
 	const user = await createTestUser();
-
-	beforeEach(async () => {
-		await user.reset();
-		await client.reset();
-	});
 
 	test('Buy brimhaven graceful recolour', async () => {
 		await user.addItemsToBank({
