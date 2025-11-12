@@ -1,8 +1,7 @@
 import type { ItemBank } from 'oldschooljs';
-import PQueue from 'p-queue';
 
 import { syncBlacklists } from '@/lib/blacklists.js';
-import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
+import { CUSTOM_PRICE_CACHE, populateUsernameCache } from '@/lib/cache.js';
 import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
 import { badges, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -21,27 +20,6 @@ async function updateBadgeTable() {
 				}
 			});
 		}
-	}
-}
-
-async function populateUsernameCache() {
-	const users = await prisma.user.findMany({
-		where: {
-			username_with_badges: {
-				not: null
-			}
-		},
-		select: {
-			id: true,
-			username_with_badges: true
-		}
-	});
-	console.log(`Populating username cache with ${users.length}x... (this should be removed soon`);
-
-	const queue = new PQueue({ concurrency: 10 });
-	for (const user of users) {
-		if (!user.username_with_badges) return;
-		queue.add(async () => Cache.setBadgedUsername(user.id, user.username_with_badges!));
 	}
 }
 
