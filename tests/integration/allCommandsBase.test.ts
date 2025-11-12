@@ -1,18 +1,19 @@
 import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
 import type { IChannel, IRole } from '@oldschoolgg/schemas';
-import { Stopwatch, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { omit } from 'remeda';
 import { test } from 'vitest';
 
+import { BitField } from '@/lib/constants.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { allCommandsDONTIMPORT } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
 import { bankWithAllItems } from '../test-utils/misc.js';
-import { createTestUser, mockClient, mockIMember, mockUser, TestClient } from './util.js';
+import { createTestUser, mockClient, mockIMember, mockUser } from './util.js';
 
 type CommandInput = Record<string, any>;
 type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean | undefined;
@@ -70,7 +71,7 @@ export async function generateCommandInputs(
 				} else {
 					allPossibleOptions[option.name] = [option.min_value ?? 0, option.max_value ?? 1_000_000];
 					const min = option.min_value ?? 0;
-					const max = option.max_value ?? 1_000_000;
+					const max = option.max_value ?? min + 50;
 					for (let i = 0; i < 3; i++) {
 						allPossibleOptions[option.name].push(rng.randInt(min, max));
 					}
@@ -127,10 +128,22 @@ export async function generateCommandInputs(
 	return results;
 }
 
+const bitfields = [
+	BitField.IsPatronTier3,
+	BitField.IsPatronTier1,
+	BitField.HasDexScroll,
+	BitField.CleanHerbsFarming,
+	BitField.ShowDetailedInfo,
+	BitField.AlwaysSmallBank,
+	BitField.PermanentIronman,
+	BitField.DisabledRandomEvents
+];
+
 async function createUserWithBaseStats(baseLevel: number) {
 	const options = {
 		...(getMaxUserValues() as any),
-		GP: 100_000_000_000
+		GP: 100_000_000_000,
+		bitfield: cryptoRng.shuffle(bitfields).slice(0, cryptoRng.randInt(0, 3))
 	};
 	for (const skill of SkillsArray) {
 		options[`skills_${skill}`] = convertLVLtoXP(baseLevel);
@@ -242,9 +255,7 @@ test(
 		};
 
 		const rngProvider = cryptoRng;
-		const stopwatch = new Stopwatch();
 		const processedCommands: { command: AnyCommand; options: CommandOptions[] }[] = [];
-		let totalCommands = 0;
 		for (const command of commandsToTest) {
 			if (ignoredCommands.includes(command.name)) continue;
 			let options: CommandOptions[] = hardcodedOptions[command.name] ?? [];
@@ -268,11 +279,8 @@ test(
 			// Limit number of permutations per command
 			options = options.slice(0, LIMIT_PER_COMMAND);
 
-			totalCommands += options.length;
 			processedCommands.push({ command, options });
 		}
-
-		console.log(`Starting to run ${totalCommands} command permutations...`);
 
 		let commandsRan = 0;
 		const queue = new PromiseQueue({ concurrency: 5, timeout: Time.Second * 30, throwOnTimeout: true });
@@ -313,22 +321,13 @@ test(
 				});
 			}
 		}
-		queue.on('next', () => {
-			if (queue.size % 10 !== 0) return;
-			console.log(`${queue.size} commands remaining...`);
-		});
+		// queue.on('next', () => {
+		// 	if (queue.size % 10 !== 0) return;
+		// 	console.log(`${queue.size} commands remaining...`);
+		// });
 		await queue.onEmpty();
 		results.sort((a, b) => b.time - a.time);
-
-		console.log(
-			`[${stopwatch.toString()}] Finished running ${commandsRan} commands, ${TestClient.activitiesProcessed} activities.
-Slowest commands: ${results
-				.slice(0, 5)
-				.map(
-					(r, i) =>
-						`${i + 1}. ${r.command} ${JSON.stringify({ options: r.options, results: r.rawResults })}: ${r.time.toFixed(2)}ms`
-				)
-				.join('\n')}`
-		);
+		// writeFileSync('./command-performance-integration-test.json', JSON.stringify(results, null, 4), 'utf-8');
+		console.log(`Ran ${commandsRan.toLocaleString()} commands`);
 	}
 );
