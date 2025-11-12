@@ -1,12 +1,33 @@
 import type { ItemBank } from 'oldschooljs';
 
-import type { Prisma } from '@/prisma/main.js';
+import { Prisma } from '@/prisma/main.js';
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
 
+async function ensureDeletedUserExists() {
+	try {
+		const result = await prisma.user.upsert({
+			where: {
+				id: DELETED_USER_ID
+			},
+			create: {
+				id: DELETED_USER_ID
+			},
+			update: {}
+		});
+		return result;
+	} catch (err) {
+		// Ignore unique constraint errors, they already have a row
+		if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
+			throw err;
+		}
+	}
+}
+
 export async function ironmanCommand(user: MUser, interaction: MInteraction | null, permanent?: boolean) {
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
+
 	if (user.isIronman) {
 		const isPerm = user.bitfield.includes(BitField.PermanentIronman);
 		if (isPerm) return "You're a **permanent** ironman and you cannot de-iron.";
@@ -134,14 +155,8 @@ After becoming an ironman:
 		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
 	};
 
-	// Bingo
-	await prisma.user.upsert({
-		where: {
-			id: DELETED_USER_ID
-		},
-		create: { id: DELETED_USER_ID },
-		update: {}
-	});
+	// Ensure deleted user exists
+	await ensureDeletedUserExists();
 	await prisma.bingoParticipant.updateMany({ where: { user_id: user.id }, data: { user_id: DELETED_USER_ID } });
 	await prisma.bingo.updateMany({ where: { creator_id: user.id }, data: { creator_id: DELETED_USER_ID } });
 
