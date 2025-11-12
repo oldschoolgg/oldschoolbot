@@ -173,7 +173,12 @@ describe('farming task auto farm aggregation', () => {
 
 		await farmingTask.run(taskData, runOptions);
 
-		const [, , message, , , loot, , extraComponents] = handleTripFinishSpy.mock.calls[0];
+		const tripFinishCall = handleTripFinishSpy.mock.calls.at(-1);
+		if (!tripFinishCall) {
+			throw new Error('Expected handleTripFinish to be called during auto farm scenario');
+		}
+
+		const [, , message, , , loot, , extraComponents] = tripFinishCall;
 		const messageContent = typeof message === 'string' ? message : (message.content ?? '');
 
 		return {

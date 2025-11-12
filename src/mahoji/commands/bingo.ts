@@ -811,7 +811,8 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					return "You can't remove tiles to a bingo after it has started.";
 				}
 				let newTiles = [...bingo.rawBingoTiles];
-				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo?.remove_tile));
+				const removeTileOption = options.manage_bingo.remove_tile;
+				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, removeTileOption));
 				let tileName = '';
 				if (globalTile) {
 					newTiles = newTiles.filter(
@@ -819,13 +820,9 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					);
 					tileName = generateTileName(globalTile);
 				} else {
-					const tileToRemove = newTiles.find(
-						t => md5sum(generateTileName(t)) === options.manage_bingo?.remove_tile
-					);
+					const tileToRemove = newTiles.find(t => md5sum(generateTileName(t)) === removeTileOption);
 					if (tileToRemove) {
-						newTiles = newTiles.filter(
-							t => md5sum(generateTileName(t)) !== options.manage_bingo?.remove_tile!
-						);
+						newTiles = newTiles.filter(t => md5sum(generateTileName(t)) !== removeTileOption);
 						tileName = generateTileName(tileToRemove);
 					}
 				}

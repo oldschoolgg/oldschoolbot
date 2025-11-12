@@ -1003,10 +1003,10 @@ export const testPotatoCommand = globalConfig.isProduction
 					// Set quantity to 50 if user doesn't assign a quantity
 					const quantity = options.setslayertask?.quantity ?? 50;
 
-					const assignedTask = selectedMaster?.tasks.find(m => m.monster.id === selectedMonster?.id)!;
-
 					if (!selectedMaster) return 'Invalid slayer master.';
 					if (!selectedMonster) return 'Invalid monster.';
+
+					const assignedTask = selectedMaster.tasks.find(m => m.monster.id === selectedMonster.id);
 					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
 
 					// Update an existing slayer task for the user
