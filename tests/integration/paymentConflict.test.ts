@@ -100,7 +100,7 @@ describe('Payment conflicts', async () => {
 		const payees = await setupUsers();
 		const promisePay = async () => {
 			const payee = randArrItem(payees);
-			return new Promise(async () => {
+			return async () => {
 				const amount = randInt(100_000, 1_000_000);
 				const res = await userPayer.runCommand(
 					payCommand,
@@ -115,7 +115,7 @@ describe('Payment conflicts', async () => {
 				if (!(res as string).startsWith('You sent')) {
 					throw new Error(`Payment failed: ${res}`);
 				}
-			});
+			};
 		};
 
 		const promiseAdd = () => userPayer.addItemsToBank({ items: new Bank().add('Cannonball', 100) });
@@ -137,6 +137,8 @@ describe('Payment conflicts', async () => {
 			await user.sync();
 			totalGP += user.GP;
 		}
+
+		await Promise.all(promises);
 
 		expect(totalGP).toEqual(1_000_000_000 * (payerCount + 1));
 		expect(userPayer.bank.amount('Cannonball') - startingBallCount).toEqual(newBalls);
