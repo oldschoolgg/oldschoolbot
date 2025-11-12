@@ -6,8 +6,6 @@ ENV PATH="$PNPM_HOME:$PATH"
 
 RUN apt-get update && apt-get install -y \
     dumb-init \
-    make \
-    fontconfig \
     git \
     libfontconfig1 \
     curl
