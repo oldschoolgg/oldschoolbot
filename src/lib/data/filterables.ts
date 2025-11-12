@@ -359,7 +359,7 @@ export const seeds = resolveItems([
 ]);
 
 export const allPotions = Potions.flatMap(potion => potion.items);
-export const potions = [...new Set(allPotions)];
+export const potions = resolveItems(['Lumina', ...new Set(allPotions)]);
 
 export const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
 export const cleanHerbs = [...Grimy.flatMap(clean => clean.item.id), ...BSOItemGroups.bsoHerbs];
