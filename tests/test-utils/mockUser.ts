@@ -1,6 +1,6 @@
 import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
 import type { IUser } from '@oldschoolgg/schemas';
-import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
+import { Bank, convertLVLtoXP, EItem, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect } from 'vitest';
 
@@ -102,9 +102,10 @@ export class TestUser extends MUserClass {
 		}
 	}
 
-	async bankMatch(bankToMatch: Bank) {
+	async bankMatch(bankToMatch: Bank, ignoreRandomEventItems = true) {
 		await this.sync();
-		if (!this.bank.equals(bankToMatch)) {
+		const bankToCheck = ignoreRandomEventItems ? this.bank.clone().remove(EItem.MYSTERY_BOX, 999) : this.bank;
+		if (!bankToCheck.equals(bankToMatch)) {
 			throw new Error(
 				`Expected bank to match, CURRENT[${this.bank.toString()}] EXPECTED[${bankToMatch.toString()}]`
 			);
