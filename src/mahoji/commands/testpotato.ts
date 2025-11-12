@@ -171,7 +171,7 @@ for (const i of allOpenables.values()) {
 
 const equippablesBank = new Bank();
 for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).values()) {
-	if (ItemGroups.allUnobtainableGear.includes(i.id)) continue;
+	if (ItemGroups.allUnobtainableItems.includes(i.id)) continue;
 	equippablesBank.add(i.id);
 }
 

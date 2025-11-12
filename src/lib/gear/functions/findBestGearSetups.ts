@@ -25,7 +25,7 @@ export function findBestGearSetups({
 			.find(i => {
 				if (!slots.includes(i.equipment!.slot)) return false;
 				if (usedItems.has(i.name)) return false;
-				if (ignoreUnobtainable && ItemGroups.allUnobtainableGear.includes(i.id)) {
+				if (ignoreUnobtainable && ItemGroups.allUnobtainableItems.includes(i.id)) {
 					return false;
 				}
 				return true;

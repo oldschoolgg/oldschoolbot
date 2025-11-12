@@ -1,7 +1,7 @@
 import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
 import type { IChannel, IRole } from '@oldschoolgg/schemas';
 import { Stopwatch, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
+import { convertLVLtoXP } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { omit } from 'remeda';
 import { test } from 'vitest';
@@ -11,7 +11,8 @@ import { Gear } from '@/lib/structures/Gear.js';
 import { allCommandsDONTIMPORT } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
-import { createTestUser, mockClient, mockIMember, mockUser, TestClient, TestUser } from './util.js';
+import { bankWithAllItems } from '../test-utils/misc.js';
+import { createTestUser, mockClient, mockIMember, mockUser, TestClient } from './util.js';
 
 type CommandInput = Record<string, any>;
 type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean | undefined;
@@ -126,10 +127,6 @@ export async function generateCommandInputs(
 	return results;
 }
 
-const bankWithAllItems = new Bank();
-for (const item of Items.keys()) {
-	bankWithAllItems.add(item, 100_000);
-}
 async function createUserWithBaseStats(baseLevel: number) {
 	const options = {
 		...(getMaxUserValues() as any),
@@ -260,7 +257,7 @@ test(
 				);
 				options.push(...generated.flat());
 			}
-			if (!options) continue;
+			if (options.length === 0) continue;
 
 			// Filter out ignored subcommands
 			options = options.filter(opt => !shouldIgnore(command.name, opt));
