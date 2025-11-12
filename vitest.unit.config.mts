@@ -14,6 +14,11 @@ export default defineConfig({
 			threads: {
 				singleThread: true
 			}
+		},
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'json', 'html'],
+			include: ['src/lib/skilling/skills/farming/**/*.ts']
 		}
 	},
 	resolve: {
