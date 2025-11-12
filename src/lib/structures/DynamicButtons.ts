@@ -117,7 +117,7 @@ export class DynamicButtons {
 			if (collectedInteraction.customId !== button.id) {
 				continue;
 			}
-			if (ActivityManager.minionIsBusy(collectedInteraction.user.id) && button.cantBeBusy) {
+			if ((await ActivityManager.minionIsBusy(collectedInteraction.user.id)) && button.cantBeBusy) {
 				await collectedInteraction
 					.reply({
 						content: "Your action couldn't be performed, because your minion is busy.",

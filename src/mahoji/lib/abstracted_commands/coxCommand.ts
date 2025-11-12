@@ -142,7 +142,7 @@ export async function coxCommand(
 			return 'You need at least 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.';
 		}
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
@@ -160,7 +160,7 @@ export async function coxCommand(
 			if (!user.hasMinion) {
 				return [true, "you don't have a minion."];
 			}
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, 'your minion is busy.'];
 			}
 			if (!hasMinRaidsRequirements(user)) {
@@ -203,7 +203,9 @@ export async function coxCommand(
 		users = new Array(fakeUsers).fill(user);
 		isFakeMass = true;
 	} else if (type === 'mass') {
-		users = (await interaction.makeParty(partyOptions)).filter(u => !u.minionIsBusy);
+		const confirmedUsers = await interaction.makeParty(partyOptions);
+		const availability = await Promise.all(confirmedUsers.map(u => u.minionIsBusy()));
+		users = confirmedUsers.filter((_, index) => !availability[index]);
 	} else {
 		users = [user];
 	}

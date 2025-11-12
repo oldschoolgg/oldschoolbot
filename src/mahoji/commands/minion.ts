@@ -64,7 +64,7 @@ export async function getUserInfo(user: MUser) {
 		.map(i => i.name)
 		.join(', ')}`;
 
-	const task = ActivityManager.getActivityOfUser(user.id);
+	const task = await ActivityManager.getActivityOfUser(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
 	const result = {

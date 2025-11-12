@@ -136,16 +136,19 @@ const treePatches: Partial<Record<FarmingPatchName, IPatchData>> = {
 };
 
 let calcMaxTripLengthSpy: MockInstance;
-const originalMinionIsBusy = (global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy;
+const originalMinionIsBusy = (global.ActivityManager as { minionIsBusy?: (userID: string) => Promise<boolean> })
+	.minionIsBusy;
 
 beforeAll(() => {
-	(global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy = () => false;
+	(global.ActivityManager as { minionIsBusy?: (userID: string) => Promise<boolean> }).minionIsBusy = async () =>
+		false;
 	calcMaxTripLengthSpy = vi.spyOn(calcMaxTripLengthModule, 'calcMaxTripLength');
 });
 
 afterAll(() => {
 	calcMaxTripLengthSpy.mockRestore();
-	(global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy = originalMinionIsBusy;
+	(global.ActivityManager as { minionIsBusy?: (userID: string) => Promise<boolean> }).minionIsBusy =
+		originalMinionIsBusy;
 });
 
 beforeEach(() => {

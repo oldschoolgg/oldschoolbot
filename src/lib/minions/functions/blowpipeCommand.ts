@@ -72,7 +72,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 }
 
 async function addCommand(user: MUser, itemName: string, quantity = 1) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "You can't add to your blowpipe, because your minion is out on a trip.";
 	}
 	if (!user.owns('Toxic blowpipe') && user.owns('Toxic blowpipe (empty)')) {
@@ -139,7 +139,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 }
 
 async function removeDartsCommand(user: MUser) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "You can't remove darts from your blowpipe, because your minion is out on a trip.";
 	}
 	const hasBlowpipe = user.owns('Toxic blowpipe');
@@ -168,7 +168,7 @@ async function removeDartsCommand(user: MUser) {
 }
 
 async function unchargeCommand(user: MUser) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "You can't uncharge your blowpipe, because your minion is out on a trip.";
 	}
 	const hasBlowpipe = user.owns('Toxic blowpipe');

@@ -134,7 +134,7 @@ export async function autoFarm(
 	patches: Record<FarmingPatchName, IPatchData>,
 	interaction: MInteraction
 ) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
 	}
 

@@ -83,8 +83,8 @@ import type {
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
-export function minionStatus(user: MUser) {
-	const currentTask = ActivityManager.getActivityOfUser(user.id);
+export async function minionStatus(user: MUser) {
+	const currentTask = await ActivityManager.getActivityOfUser(user.id);
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;

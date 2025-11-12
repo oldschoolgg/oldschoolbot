@@ -5,7 +5,7 @@ import { Bank, resolveItems } from 'oldschooljs';
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function strongHoldOfSecurityCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 	const count = await prisma.activity.count({

@@ -124,7 +124,7 @@ export async function farmingContractCommand(user: MUser, input?: ContractOption
 		};
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return janeImage(
 			"You are busy at the moment! I can't give you a new farming contract like that. Please, come back when you have some free time for us to talk."
 		);

@@ -620,7 +620,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		return skills;
 	}
 
-	get minionIsBusy() {
+	minionIsBusy() {
 		return ActivityManager.minionIsBusy(this.id);
 	}
 

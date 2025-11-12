@@ -5,7 +5,7 @@ import { Bank, ItemGroups } from 'oldschooljs';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function championsChallengeCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 

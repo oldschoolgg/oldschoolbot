@@ -111,7 +111,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 }
 
 export async function mageTrainingArenaStartCommand(user: MUser, channelID: string): CommandResponse {
-	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
+	if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
 
 	const roomDuration = Time.Minute * 14;
 	const quantity = Math.floor(user.calcMaxTripLength('MageTrainingArena') / roomDuration);

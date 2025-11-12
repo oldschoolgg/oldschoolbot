@@ -437,7 +437,7 @@ export class MInteraction {
 				if (
 					(!options.ironmanAllowed && user.isIronman) ||
 					bi.user.bot ||
-					user.minionIsBusy ||
+					(await user.minionIsBusy()) ||
 					!user.hasMinion
 				) {
 					await bi.reply({

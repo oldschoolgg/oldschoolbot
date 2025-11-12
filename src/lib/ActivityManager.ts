@@ -11,11 +11,35 @@ import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { isGroupActivity } from '@/lib/util.js';
 
 class SActivityManager {
-	private minionActivityCache: Map<string, ActivityTaskData> = new Map();
+	private getAllUserIDsFromStoredActivity(activity: Activity): string[] {
+		const convertedActivity = this.convertStoredActivityToFlatActivity(activity);
+		const userIDs = new Set<string>([convertedActivity.userID]);
+		const data = convertedActivity as PrismaCompatibleJsonObject & { all_user_ids?: string[] };
+		if (Array.isArray(data.all_user_ids)) {
+			for (const id of data.all_user_ids) {
+				userIDs.add(id);
+			}
+		}
+		if (isGroupActivity(convertedActivity)) {
+			for (const id of convertedActivity.users) {
+				userIDs.add(id);
+			}
+		}
+		return [...userIDs];
+	}
 
 	async cancelActivity(userID: string) {
-		await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
-		this.minionActivityCacheDelete(userID);
+		const activities = await prisma.activity.findMany({
+			where: {
+				completed: false,
+				OR: [{ user_id: BigInt(userID) }, { group_activity: true }]
+			}
+		});
+		const idsToDelete = activities
+			.filter(activity => this.getAllUserIDsFromStoredActivity(activity).includes(userID))
+			.map(activity => activity.id);
+		if (idsToDelete.length === 0) return;
+		await prisma.activity.deleteMany({ where: { id: { in: idsToDelete } } });
 	}
 
 	async startTrip<T extends ActivityTaskData>(tripData: Omit<T, 'finishDate' | 'id'>) {
@@ -35,24 +59,6 @@ class SActivityManager {
 			finishDate: activity.finish_date.getTime(),
 			id: activity.id
 		} as ActivityTaskData;
-	}
-
-	syncActivityCache = async () => {
-		const tasks = await prisma.activity.findMany({ where: { completed: false } });
-		this.minionActivityCache.clear();
-		for (const task of tasks) {
-			this.activitySync(task);
-		}
-	};
-
-	activitySync(activity: Activity) {
-		const users: bigint[] | string[] = isGroupActivity(activity.data)
-			? ((activity.data as Prisma.JsonObject).users! as string[])
-			: [activity.user_id];
-		const convertedActivity = this.convertStoredActivityToFlatActivity(activity);
-		for (const user of users) {
-			this.minionActivityCache.set(user.toString(), convertedActivity);
-		}
 	}
 
 	async completeActivity(_activity: Activity) {
@@ -83,7 +89,6 @@ class SActivityManager {
 		} catch (err) {
 			Logging.logError(err as Error);
 		} finally {
-			this.minionActivityCacheDelete(activity.userID);
 			await onMinionActivityFinish(activity);
 		}
 		const end = performance.now();
@@ -116,24 +121,26 @@ class SActivityManager {
 		}
 	}
 
-	minionActivityCacheDelete(userID: string) {
-		const entry = this.minionActivityCache.get(userID);
-		if (!entry) return;
-
-		const users: string[] = isGroupActivity(entry) ? entry.users : [entry.userID];
-		for (const u of users) {
-			this.minionActivityCache.delete(u);
-		}
-	}
-
-	minionIsBusy(userID: string | string): boolean {
-		const usersTask = this.getActivityOfUser(userID.toString());
+	async minionIsBusy(userID: string | string): Promise<boolean> {
+		const usersTask = await this.getActivityOfUser(userID.toString());
 		return Boolean(usersTask);
 	}
 
-	getActivityOfUser(userID: string) {
-		const task = this.minionActivityCache.get(userID);
-		return task ?? null;
+	async getActivityOfUser(userID: string) {
+		const activities = await prisma.activity.findMany({
+			where: {
+				completed: false,
+				OR: [{ user_id: BigInt(userID) }, { group_activity: true }]
+			},
+			orderBy: { finish_date: 'asc' }
+		});
+		for (const activity of activities) {
+			const userIDs = this.getAllUserIDsFromStoredActivity(activity);
+			if (userIDs.includes(userID)) {
+				return this.convertStoredActivityToFlatActivity(activity);
+			}
+		}
+		return null;
 	}
 }
 
