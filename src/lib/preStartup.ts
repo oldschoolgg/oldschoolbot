@@ -1,17 +1,13 @@
 import type { ItemBank } from 'oldschooljs';
+import PQueue from 'p-queue';
 
 import { syncBlacklists } from '@/lib/blacklists.js';
-import { usernameWithBadgesCache } from '@/lib/cache.js';
-import { GeImageGenerator } from '@/lib/canvas/geImage.js';
+import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
 import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
 import { badges, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { populateRoboChimpCache } from '@/lib/perkTier.js';
-import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
-import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
-import { logWrapFn } from '@/lib/util.js';
-import { CUSTOM_PRICE_CACHE } from '@/mahoji/commands/sell.js';
 
 async function updateBadgeTable() {
 	const badgesInDb = await prisma.badges.findMany();
@@ -40,9 +36,12 @@ async function populateUsernameCache() {
 			username_with_badges: true
 		}
 	});
+	console.log(`Populating username cache with ${users.length}x... (this should be removed soon`);
+
+	const queue = new PQueue({ concurrency: 10 });
 	for (const user of users) {
-		if (!user.username_with_badges) continue;
-		usernameWithBadgesCache.set(user.id, user.username_with_badges);
+		if (!user.username_with_badges) return;
+		queue.add(async () => Cache.setBadgedUsername(user.id, user.username_with_badges!));
 	}
 }
 
@@ -53,7 +52,7 @@ export async function syncCustomPrices() {
 	}
 }
 
-export const preStartup = logWrapFn('PreStartup', async () => {
+export const preStartup = async () => {
 	await prisma.clientStorage.upsert({
 		where: { id: globalConfig.clientID },
 		create: { id: globalConfig.clientID },
@@ -62,10 +61,6 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 	});
 
 	await Promise.all([
-		GeImageGenerator.init(),
-		syncActiveUserIDs(),
-		ActivityManager.syncActivityCache(),
-		syncDisabledCommands(),
 		syncBlacklists(),
 		syncCustomPrices(),
 		GrandExchange.init(),
@@ -75,4 +70,4 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 		updateBadgeTable(),
 		populateUsernameCache()
 	]);
-});
+};

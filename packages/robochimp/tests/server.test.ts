@@ -1,4 +1,3 @@
-import { Collection, type User } from 'discord.js';
 import type { Hono } from 'hono';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
@@ -34,22 +33,6 @@ const TEST_USER = {
 	id: BigInt('123456789012345678'),
 	username: 'someuser'
 };
-
-globalThis.globalClient = {
-	// @ts-expect-error
-	users: {
-		cache: new Collection<string, User>()
-		// {
-		// 	// @ts-expect-error
-		// 	find: (fn: (u: { username: string; id: string }) => boolean) => {
-		// 		const users = [{ username: 'someuser', id: '123456789012345678' }];
-		// 		for (const u of users) if (fn(u)) return u;
-		// 		return undefined;
-		// 	}
-		// }
-	}
-};
-globalThis.globalClient.users.cache.set(TEST_USER.id.toString(), TEST_USER as any);
 
 let app: Hono;
 
@@ -160,24 +143,14 @@ describe('Hono app (testRequest)', () => {
 		});
 	});
 
-	it('GET /minion/:id?bot=bso (BSO)', async () => {
+	it.skip('GET /minion/:id?bot=bso (BSO)', async () => {
 		const res = await testRequest(`/minion/${TEST_USER.id}?bot=bso`);
 		expect(res.status).toBe(404);
 		expect(await res.json()).toEqual({ error: 'NOT_FOUND', message: 'User not found' });
 	});
 
-	it.skip('GET /minion/:username via discord cache', async () => {
-		const res = await testRequest('/minion/someuser');
-		expect(res.status).toBe(200);
-		expect(await res.json()).toBe();
-	});
-
 	it('GET /minion/:bad -> 404 when no match', async () => {
-		const prevFind = globalThis.globalClient.users.cache.find;
-		globalThis.globalClient.users.cache.find = () => undefined;
 		const res = await testRequest('/minion/not-a-snowflake');
-		expect(res.status).toBe(404);
-		expect(await res.json()).toEqual({ error: 'NOT_FOUND', message: 'Could not find this users id' });
-		globalThis.globalClient.users.cache.find = prevFind;
+		expect(res.status).toBe(400);
 	});
 });

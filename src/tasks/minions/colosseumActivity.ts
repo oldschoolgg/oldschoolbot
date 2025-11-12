@@ -13,7 +13,7 @@ export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
 	async run(data: ColoTaskOptions, { user, handleTripFinish, rng }) {
 		const {
-			channelID,
+			channelId,
 			loot: possibleLoot,
 			diedAt,
 			maxGlory,
@@ -69,7 +69,7 @@ export const colosseumTask: MinionTask = {
 				str += `\n${refundMessages}`;
 			}
 
-			return handleTripFinish(user, channelID, str, undefined, data, null);
+			return handleTripFinish({ user, channelId, message: str, data });
 		}
 
 		await user.incrementMinigameScore('colosseum');
@@ -116,6 +116,6 @@ export const colosseumTask: MinionTask = {
 
 		const image = await makeBankImage({ bank: loot, title: 'Colosseum Loot', user, previousCL });
 
-		return handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

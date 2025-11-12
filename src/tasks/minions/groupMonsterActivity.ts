@@ -9,7 +9,7 @@ import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 export const groupoMonsterTask: MinionTask = {
 	type: 'GroupMonsterKilling',
 	async run(data: GroupMonsterActivityTaskOptions, { handleTripFinish, user: leaderUser, rng }) {
-		const { mi: monsterID, channelID, q: quantity, users, duration } = data;
+		const { mi: monsterID, channelId, q: quantity, users, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: Bank } = {};
@@ -67,6 +67,6 @@ export const groupoMonsterTask: MinionTask = {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		handleTripFinish(leaderUser, channelID, resultStr, undefined, data, totalLoot);
+		return handleTripFinish({ user: leaderUser, channelId, message: resultStr, data, loot: totalLoot });
 	}
 };

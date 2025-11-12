@@ -6,7 +6,7 @@ import type { Plant } from '@/lib/skilling/types.js';
 import { farmingPlantCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 
 export async function autoFarm(interaction: MInteraction, user: MUser, patchesDetailed: IPatchDataDetailed[]) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const userBank = user.bank;

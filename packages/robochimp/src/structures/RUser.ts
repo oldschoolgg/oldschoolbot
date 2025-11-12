@@ -1,5 +1,5 @@
+import { userMention } from '@oldschoolgg/discord';
 import type { Prisma, User } from '@prisma/robochimp';
-import { userMention } from 'discord.js';
 
 import { Bits, type PatronTier, tiers } from '@/util.js';
 
@@ -13,10 +13,6 @@ export class RUser {
 	}
 	get bits(): Bits[] {
 		return this._user.bits;
-	}
-
-	get username() {
-		return globalClient.users.cache.get(this._user.id.toString())?.username ?? this._user.id.toString();
 	}
 
 	get leaguesPointsTotal() {

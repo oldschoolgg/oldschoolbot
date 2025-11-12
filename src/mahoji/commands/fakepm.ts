@@ -37,7 +37,7 @@ export const fakepmCommand = defineCommand({
 		ctx.fillText(`From ${options.username}: ${options.message}`, 5, 97);
 
 		return {
-			files: [{ attachment: await canvasToBuffer(canvas), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
+			files: [{ buffer: await canvasToBuffer(canvas), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
 		};
 	}
 });

@@ -8,7 +8,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 export const agilityArenaTask: MinionTask = {
 	type: 'AgilityArena',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
-		const { channelID, duration } = data;
+		const { channelId, duration } = data;
 
 		const currentLevel = user.skillsAsLevels.agility;
 		const hasKaramjaMed = user.hasDiary('karamja.medium');
@@ -75,6 +75,6 @@ export const agilityArenaTask: MinionTask = {
 			str += `You received ${bonusTickets} bonus tickets for the Karamja Elite Diary.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

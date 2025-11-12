@@ -1,21 +1,18 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
-import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField } from '@/lib/constants.js';
 import { Farming, type PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
-import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { plantsName, patchType, quantity, upgradeType, payment, channelID, planting, currentDate, pid } = data;
+		const { plantsName, patchType, quantity, upgradeType, payment, channelId, planting, currentDate, pid } = data;
 		const currentFarmingLevel = user.skillsAsLevels.farming;
 		const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
 		let baseBonus = 1;
@@ -138,7 +135,7 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			handleTripFinish(user, channelID, str, undefined, data, null);
+			handleTripFinish({ user, channelId, message: str, data });
 		} else if (patchType.patchPlanted) {
 			// If they do have something planted here, harvest it and possibly replant.
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
@@ -237,8 +234,11 @@ export const farmingTask: MinionTask = {
 					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					if (GP < gpToCutTree) {
-						return sendToChannelID(channelID, {
-							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`
+						return handleTripFinish({
+							user,
+							channelId,
+							message: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`,
+							data
 						});
 					}
 					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
@@ -337,10 +337,10 @@ export const farmingTask: MinionTask = {
 					userID: user.id,
 					duration: data.duration,
 					finishDate: data.finishDate,
-					channelID: data.channelID,
+					channelId: data.channelId,
 					id: 1
 				};
-				await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
+				await combatAchievementTripEffect({ user, messages: infoStr, data: fakeMonsterTaskOptions });
 				loot = hesporiLoot;
 			} else if (
 				patchType.patchPlanted &&
@@ -400,16 +400,12 @@ export const farmingTask: MinionTask = {
 
 			let janeMessage = false;
 			if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
-				const farmingContractUpdate: FarmingContract = {
+				await user.updateFarmingContract({
 					hasContract: false,
 					difficultyLevel: null,
 					plantToGrow: currentContract.plantToGrow,
 					plantTier: currentContract.plantTier,
 					contractsCompleted: contractsCompleted + 1
-				};
-
-				await user.update({
-					minion_farmingContract: farmingContractUpdate as any
 				});
 
 				loot.add('Seed pack');
@@ -442,21 +438,23 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			handleTripFinish(
+			const message = new MessageBuilder().setContent(infoStr.join('\n'));
+			if (janeMessage) {
+				message.addChatHeadImage(
+					'jane',
+					`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+						contractsCompleted + 1
+					} farming contracts.`
+				);
+			}
+
+			return handleTripFinish({
 				user,
-				channelID,
-				infoStr.join('\n'),
-				janeMessage
-					? await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-								contractsCompleted + 1
-							} farming contracts.`,
-							head: 'jane'
-						})
-					: undefined,
+				channelId,
+				message,
 				data,
 				loot
-			);
+			});
 		}
 	}
 };

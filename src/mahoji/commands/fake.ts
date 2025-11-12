@@ -200,7 +200,7 @@ export const fakeCommand = defineCommand({
 				return {
 					files: [
 						{
-							attachment: await canvasToBuffer(canvas),
+							buffer: await canvasToBuffer(canvas),
 							name: `${Math.round(Math.random() * 10_000)}.jpg`
 						}
 					]

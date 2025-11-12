@@ -1,7 +1,8 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
+import { Emoji, PerkTier, Time } from '@oldschoolgg/toolkit';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP } from 'oldschooljs';
 import * as z from 'zod';
@@ -342,7 +343,8 @@ const globalConfigSchema = z.object({
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string(),
-	minimumLoggedPerfDuration: z.number().default(30)
+	minimumLoggedPerfDuration: z.number().default(30),
+	guildIdsToCache: z.array(z.string())
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
@@ -353,6 +355,20 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
+const guildId = {
+	OldschoolGG: '342983479501389826',
+	TestServer: '940758552425955348'
+};
+
+const emojiServers = new Set([
+	'869497440947015730',
+	'324127314361319427',
+	'363252822369894400',
+	'395236850119213067',
+	'325950337271857152',
+	'395236894096621568'
+]);
+
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
 	botToken: process.env.BOT_TOKEN,
@@ -361,7 +377,8 @@ export const globalConfig = globalConfigSchema.parse({
 	timeZone: process.env.TZ,
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
-	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID
+	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID,
+	guildIdsToCache: [guildId.OldschoolGG, guildId.TestServer, ...emojiServers]
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
@@ -414,3 +431,8 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 	activity_type_enum.Revenants, // This is now under monsterActivity
 	activity_type_enum.KourendFavour // Kourend favor activity was removed
 ];
+
+export const CONSTANTS = {
+	DAILY_COOLDOWN: Time.Hour * 12,
+	TEARS_OF_GUTHIX_CD: Time.Day * 7
+};

@@ -7,7 +7,7 @@ import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
 	async run(data: FishingActivityTaskOptions, { handleTripFinish, user, rng }) {
-		const { fishID, quantity, channelID } = data;
+		const { fishID, quantity, channelId } = data;
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
 		const result = Fishing.util.calcFishingTripResult({
@@ -44,6 +44,12 @@ export const fishingTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, itemTransactionResult?.itemsAdded ?? null);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: str,
+			data,
+			loot: itemTransactionResult?.itemsAdded ?? null
+		});
 	}
 };

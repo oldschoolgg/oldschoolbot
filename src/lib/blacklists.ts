@@ -1,7 +1,5 @@
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
-
-export const BLACKLISTED_USERS = new Set<string>();
-export const BLACKLISTED_GUILDS = new Set<string>();
 
 export async function syncBlacklists() {
 	if (!globalConfig.isProduction) {

@@ -5,7 +5,7 @@ import type { TokkulShopOptions } from '@/lib/types/minions.js';
 export const tokkulShopTask: MinionTask = {
 	type: 'TokkulShop',
 	async run(data: TokkulShopOptions, { user, handleTripFinish }) {
-		const { channelID, itemID, quantity } = data;
+		const { channelId, itemID, quantity } = data;
 
 		const loot = new Bank().add(itemID, quantity);
 		await user.transactItems({
@@ -16,9 +16,8 @@ export const tokkulShopTask: MinionTask = {
 		await ClientSettings.updateBankSetting('tks_loot', loot);
 		handleTripFinish(
 			user,
-			channelID,
+			channelId,
 			`${user}, ${user.minionName} finished shopping in Tzhaar City and received ${loot}.`,
-			undefined,
 			data,
 			null
 		);

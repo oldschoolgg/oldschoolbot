@@ -1,17 +1,18 @@
+import { codeBlock, dateFm } from '@oldschoolgg/discord';
 import { randArrItem } from '@oldschoolgg/rng';
-import { dateFm, isValidDiscordSnowflake, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
-import { codeBlock, SnowflakeUtil } from 'discord.js';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
+import { choicesOf, gearSetupOption } from '@/discord/index.js';
+import { marketPricemap } from '@/lib/cache.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
-import { choicesOf, gearSetupOption } from '@/lib/discord/index.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
-import { marketPricemap } from '@/lib/marketPrices.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
@@ -21,7 +22,6 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { gifs } from '@/mahoji/commands/admin.js';
 import { getUserInfo } from '@/mahoji/commands/minion.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
@@ -51,7 +51,7 @@ function isProtectedAccount(user: MUser) {
 export const rpCommand = defineCommand({
 	name: 'rp',
 	description: 'Admin tools second set',
-	guildID: globalConfig.supportServerID,
+	guildId: globalConfig.supportServerID,
 	options: [
 		// {
 		// 	type: 'SubcommandGroup',
@@ -296,11 +296,11 @@ export const rpCommand = defineCommand({
 							name: 'cl_name',
 							description: 'The cl the user completed',
 							required: true,
-							autocomplete: async (val: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return allCollectionLogsFlat
 									.map(c => c.name)
-									.filter(c => (!val ? true : c.toLowerCase().includes(val.toLowerCase())))
-									.map(val => ({ name: val, value: val }));
+									.filter(c => (!value ? true : c.toLowerCase().includes(value.toLowerCase())))
+									.map(val => ({ name: val, value }));
 							}
 						},
 						{
@@ -360,9 +360,9 @@ export const rpCommand = defineCommand({
 							name: 'skill',
 							description: 'What skill?',
 							required: true,
-							autocomplete: async (val: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return Object.values(xp_gains_skill_enum)
-									.filter(s => (!val ? true : s.includes(val.toLowerCase())))
+									.filter(s => (!value ? true : s.includes(value.toLowerCase())))
 									.map(s => ({ name: s, value: s }));
 							}
 						},
@@ -377,11 +377,11 @@ export const rpCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user: adminUser, interaction, guildID }) => {
+	run: async ({ options, user: adminUser, interaction, guildId }) => {
 		await interaction.defer();
 		const isAdmin = globalConfig.adminUserIDs.includes(adminUser.id);
 		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
+		if (!guildId || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
 		}
 		if (!isAdmin && !isMod) return randArrItem(gifs);
@@ -404,9 +404,10 @@ export const rpCommand = defineCommand({
 			let type: UserEventType = UserEventType.CLCompletion;
 			let skill: xp_gains_skill_enum | undefined;
 			let collectionLogName: string | undefined;
+			const targetUserUsername = await Cache.getBadgedUsername(targetUser.id);
 
 			let confirmationStr = `Please confirm:
-User: ${targetUser.rawUsername}
+User: ${targetUserUsername}
 Date: ${dateFm(date)}`;
 			if (options.user_event.cl_completion) {
 				confirmationStr += `\nCollection log: ${options.user_event.cl_completion.cl_name}`;
@@ -429,7 +430,7 @@ Date: ${dateFm(date)}`;
 				collectionLogName,
 				date
 			});
-			await sendToChannelID(Channel.BotLogs, {
+			await globalClient.sendMessage(Channel.BotLogs, {
 				content: `${adminUser.logName} created userevent for ${targetUser.logName}: ${type} ${dateFm(date)} ${
 					skill ?? ''
 				}`
@@ -456,13 +457,13 @@ Date: ${dateFm(date)}`;
 
 		if (options.player?.set_buy_date) {
 			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);
-			const res = SnowflakeUtil.deconstruct(options.player.set_buy_date.message_id);
+			const res = DiscordSnowflake.deconstruct(options.player.set_buy_date.message_id);
 			const date = new Date(Number(res.timestamp));
 
 			await interaction.confirmation(
 				`Are you sure you want to set the buy date of ${userToCheck.usernameOrMention} to ${dateFm(date)}?`
 			);
-			await sendToChannelID(Channel.BotLogs, {
+			await globalClient.sendMessage(Channel.BotLogs, {
 				content: `${adminUser.logName} set minion buy date of ${userToCheck.logName} to ${dateFm(date)}`
 			});
 			await userToCheck.update({ minion_bought_date: date });
@@ -475,11 +476,11 @@ Date: ${dateFm(date)}`;
 			if (options.player?.viewbank.json) {
 				const json = JSON.stringify(bank.toJSON());
 				if (json.length > 1900) {
-					return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
+					return { files: [{ buffer: Buffer.from(json), name: 'bank.json' }] };
 				}
 				return `${codeBlock('json', json)}`;
 			}
-			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
+			return { files: [await makeBankImage({ bank, title: userToCheck.usernameOrMention })] };
 		}
 
 		if (options.player?.add_patron_time) {
@@ -501,7 +502,7 @@ Date: ${dateFm(date)}`;
 			const opts = options.player.unequip_all_items;
 			const targetUser = await mUserFetch(opts.user.user.id);
 			const warningMsgs: string[] = [];
-			if (targetUser.minionIsBusy) warningMsgs.push("User's minion is busy.");
+			if (await targetUser.minionIsBusy()) warningMsgs.push("User's minion is busy.");
 			const gearSlot = opts.all
 				? 'all'
 				: opts.gear_setup && allGearSlots.includes(opts.gear_setup)
@@ -570,11 +571,11 @@ Date: ${dateFm(date)}`;
 					.slice(0, 500)}`;
 			}
 
-			await sendToChannelID(Channel.BotLogs, {
+			await globalClient.sendMessage(Channel.BotLogs, {
 				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${
 					userToStealFrom.logName
 				} for ${options.player.steal_items.reason ?? 'No reason'}`,
-				files: [{ attachment: Buffer.from(items.toString()), name: 'items.txt' }]
+				files: [{ buffer: Buffer.from(items.toString()), name: 'items.txt' }]
 			});
 
 			await userToStealFrom.removeItemsFromBank(items);
@@ -613,7 +614,7 @@ Date: ${dateFm(date)}`;
 			);
 			const result = await migrateUser(sourceUser, destUser);
 			if (result === true) {
-				await sendToChannelID(Channel.BotLogs, {
+				await globalClient.sendMessage(Channel.BotLogs, {
 					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
 						reason ? `, for ${reason}` : ''
 					}`
@@ -707,7 +708,7 @@ Date: ${dateFm(date)}`;
 				report += `${userId}\t${bank}\t${totalsRcvd.get(userId)}\n`;
 			}
 
-			return { files: [{ attachment: Buffer.from(report), name: 'trade_report.txt' }] };
+			return { files: [{ buffer: Buffer.from(report), name: 'trade_report.txt' }] };
 		}
 
 		if (options.player?.ge_cancel) {

@@ -1,8 +1,9 @@
+import { randomVariation, roll } from '@oldschoolgg/rng';
+
 import { EItem } from '@/EItem.js';
 import { anglerOutfit } from '@/itemGroups.js';
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import { randomVariation, roll } from '@/util/smallUtils.js';
 
 const trawlerFish = [
 	{
@@ -104,7 +105,7 @@ export function FishingTrawler(fishingLevel: number, hasEliteArd: boolean, bank?
 		loot.add(fishToGive.id, qty);
 
 		// Cant get same fish twice in 1 trawler
-		possibleFish = possibleFish.filter(i => i !== fishToGive);
+		possibleFish = possibleFish.filter(_f => _f !== fishToGive);
 		if (roll(3)) break;
 	}
 

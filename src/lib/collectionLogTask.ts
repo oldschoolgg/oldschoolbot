@@ -145,7 +145,7 @@ class CollectionLogTask {
 				content: 'These are the items on your log:',
 				files: [
 					{
-						attachment: Buffer.from(
+						buffer: Buffer.from(
 							Array.from(collectionLog.collection.values())
 								.map(i => {
 									const _i = Items.getOrThrow(i);
@@ -226,7 +226,7 @@ class CollectionLogTask {
 		}
 
 		// Draw Title
-		const title = `${user.rawUsername}'s ${toTitleCase(type)} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
+		const title = `${user.username}'s ${toTitleCase(type)} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
 			userTotalCl[1],
 			userTotalCl[0]
 		).toFixed(2)}%`;
@@ -377,7 +377,6 @@ class CollectionLogTask {
 				});
 				drawnSoFar += valueStr;
 			}
-			// TODO: Make looting count generic in future
 			if (collectionLog.name === 'Guardians of the Rift') {
 				canvas.drawText({
 					text: ' Rifts searches: ',
@@ -472,7 +471,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			files: [{ attachment: await canvas.toScaledOutput(2), name: `${type}_log_${Date.now()}.png` }]
+			files: [{ buffer: await canvas.toScaledOutput(2), name: `${type}_log_${Date.now()}.png` }]
 		};
 	}
 

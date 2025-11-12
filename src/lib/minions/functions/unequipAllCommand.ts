@@ -9,7 +9,7 @@ export async function unEquipAllCommand(user: MUser, gearType: GearSetupType, by
 	if (!isValidGearSetup(gearType)) {
 		return `That's not a valid setup, the valid setups are: ${GearSetupTypes.join(', ')}.`;
 	}
-	if (!bypassBusy && user.minionIsBusy) {
+	if (!bypassBusy && (await user.minionIsBusy())) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 

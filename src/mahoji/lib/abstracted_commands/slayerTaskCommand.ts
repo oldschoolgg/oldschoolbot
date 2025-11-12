@@ -2,7 +2,7 @@ import { randInt } from '@oldschoolgg/rng';
 import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
 import { EItem, Monsters } from 'oldschooljs';
 
-import type { Prisma } from '@/prisma/main.js';
+import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { slayerActionButtons } from '@/lib/slayer/slayerButtons.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -87,7 +87,7 @@ export async function slayerNewTaskCommand({
 	const { currentTask } = await user.fetchSlayerInfo();
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${await slayerStatusCommand(
 			user
 		)}`;
@@ -256,7 +256,7 @@ export async function slayerSkipTaskCommand({
 	const { currentTask } = await user.fetchSlayerInfo();
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = await calcMaxBlockedTasks(user);
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'You cannot change your task while your minion is busy.';
 	}
 	if (!currentTask) {
@@ -278,7 +278,7 @@ export async function slayerSkipTaskCommand({
 	if (slayerPoints < cost) {
 		return `You need ${cost} points to ${block ? 'block' : 'cancel'}, you only have: ${slayerPoints.toLocaleString()}.`;
 	}
-	const updateData: Prisma.UserUncheckedUpdateInput = {
+	const updateData: SafeUserUpdateInput = {
 		slayer_points: {
 			decrement: cost
 		}

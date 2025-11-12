@@ -1,3 +1,4 @@
+import { userMention } from '@oldschoolgg/discord';
 import { percentChance, randFloat, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
@@ -8,7 +9,6 @@ import {
 	sumArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
 import { Bank, EMonster, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -194,7 +194,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 }
 
 export async function calculateNexDetails({ team }: { team: MUser[] }) {
-	let maxTripLength = Math.max(...team.map(u => u.calcMaxTripLength('Nex')));
+	let maxTripLength = Math.max(...(await Promise.all(team.map(u => u.calcMaxTripLength('Nex')))));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
 

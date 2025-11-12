@@ -3,7 +3,7 @@ import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
-import { remarkItems } from './src/plugins/items';
+import remarkItems from './src/plugins/items';
 import rehypeFixInlineSpacing from './src/plugins/rehypeFixInlineSpacing';
 
 // https://astro.build/config
@@ -17,7 +17,41 @@ export default defineConfig({
 		plugins: [tailwindcss()],
 		ssr: {
 			noExternal: ['zod']
+		},
+		esbuild: {
+			minify: false
+		},
+		build: {
+			minify: true,
+			cssCodeSplit: true,
+			cssMinify: true,
+			rollupOptions: {
+				output: {
+					manualChunks: id => {
+						if (id.includes('item_data.json')) {
+							return 'osb-item-data';
+						}
+						if (id.includes('bso/custom-items.json')) {
+							return 'bso-item-data';
+						}
+						if (id.includes('EItem')) {
+							return 'eitem';
+						}
+						if (id.includes('data/bso')) {
+							return `${id.split('data/bso/')[1].split('/')[0].split('.')[0]}-data`;
+						}
+						if (id.includes('data/osb')) {
+							return `${id.split('data/osb/')[1].split('/')[0].split('.')[0]}-data`;
+						}
+						return null;
+					}
+				}
+			}
 		}
+	},
+	i18n: {
+		locales: ['en'],
+		defaultLocale: 'en'
 	},
 	devToolbar: {
 		enabled: false

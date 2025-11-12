@@ -15,7 +15,6 @@ const TorturedGorillaTable = new LootTable()
 	.every('Big bones')
 	.oneIn(1000, UniqueTable)
 
-	// Todo: Check in future for updated loot chances.
 	/* Weapons and armor */
 	.add('Rune med helm', 1, 8)
 	.add('Rune scimitar', 1, 8)

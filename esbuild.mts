@@ -5,15 +5,19 @@ const external = [
 	'skia-canvas',
 	'sonic-boom',
 	'bufferutil',
-	'discord.js',
 	'@prisma/robochimp',
 	'dotenv',
 	'piscina',
-	'node:*',
 	'pglite-prisma-adapter',
 	'@electric-sql/pglite',
 	'pg',
-	'oldschooljs'
+	'oldschooljs',
+	'ioredis',
+	'@discordjs/rest',
+	'@discordjs/ws',
+	'ws',
+	'@discordjs/builders',
+	'@oldschoolgg/discord'
 ];
 
 const baseBuildOptions: BuildOptions = {

@@ -1,5 +1,6 @@
+import { MathRNG } from '@oldschoolgg/rng';
+
 import type { Item } from '@/meta/item.js';
-import { randArrItem } from '@/util/smallUtils.js';
 import { toKMB } from '../util/smallUtils.js';
 import { Items } from './Items.js';
 
@@ -202,10 +203,10 @@ export class Bank {
 		return this;
 	}
 
-	public random(): BankItem | null {
+	public random(rng = MathRNG): BankItem | null {
 		const entries = Array.from(this.map.entries());
 		if (entries.length === 0) return null;
-		const randomEntry = randArrItem(entries);
+		const randomEntry = rng.pick(entries);
 		return { id: randomEntry[0], qty: randomEntry[1] };
 	}
 

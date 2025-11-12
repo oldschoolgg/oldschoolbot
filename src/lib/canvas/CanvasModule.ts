@@ -14,11 +14,12 @@ class CanvasModuleSingleton {
 		BSOItems: CanvasSpritesheet;
 	};
 
-	constructor() {
-		this.init();
+	public async ensureInit() {
+		if (this.didInit) return;
+		await this.init();
 	}
 
-	async init() {
+	private async init() {
 		if (this.didInit) return;
 
 		this.Spritesheet = {

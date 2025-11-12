@@ -1,6 +1,23 @@
-import { MathRNG, percentChance } from '@oldschoolgg/rng';
-import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
-import { escapeMarkdown, userMention } from 'discord.js';
+import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
+import { percentChance } from '@oldschoolgg/rng';
+import {
+	type IBirdhouseData,
+	type IBlowpipeData,
+	type IFarmingContract,
+	ZBirdhouseData,
+	ZBlowpipeData,
+	ZFarmingContract
+} from '@oldschoolgg/schemas';
+import {
+	calcWhatPercent,
+	cleanUsername,
+	Emoji,
+	isObject,
+	type PerkTier,
+	sumArr,
+	UserError,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	convertXPtoLVL,
@@ -22,19 +39,17 @@ import type {
 	xp_gains_skill_enum
 } from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
-import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
+import { modifyUserBusy } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField, MAX_LEVEL } from '@/lib/constants.js';
+import { BitField, globalConfig, MAX_LEVEL } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
-import pets from '@/lib/data/pets.js';
+import type { Pet } from '@/lib/data/pets.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
-import type { CommandResponseValue } from '@/lib/discord/index.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { projectiles } from '@/lib/gear/projectiles.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
@@ -46,12 +61,13 @@ import getUserFoodFromBank, { type GetUserFoodFromBankParams } from '@/lib/minio
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
-import type { AddXpParams, BlowpipeData, ClueBank } from '@/lib/minions/types.js';
+import type { AddXpParams, BlowpipeData, ClueBank, KillableMonster } from '@/lib/minions/types.js';
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import birdhouses, { type Birdhouse } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
@@ -61,10 +77,12 @@ import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
 import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
-import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
+import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
+import { hasMonsterRequirements } from '@/lib/util/hasMonsterRequirements.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import {
@@ -76,6 +94,27 @@ import { userQueueFn } from '@/lib/util/userQueues.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+
+export async function rawUserUpdate(userId: string, data: Prisma.UserUpdateInput | SafeUserUpdateInput): Promise<User> {
+	const newUser = await prisma.user.update({
+		data: {
+			...data,
+			blowpipe: data.blowpipe as unknown as Prisma.InputJsonObject,
+			gear_fashion: data.gear_fashion as unknown as Prisma.InputJsonObject,
+			gear_melee: data.gear_melee as unknown as Prisma.InputJsonObject,
+			gear_mage: data.gear_mage as unknown as Prisma.InputJsonObject,
+			gear_range: data.gear_range as unknown as Prisma.InputJsonObject,
+			gear_misc: data.gear_misc as unknown as Prisma.InputJsonObject,
+			gear_skilling: data.gear_skilling as unknown as Prisma.InputJsonObject,
+			gear_wildy: data.gear_wildy as unknown as Prisma.InputJsonObject,
+			gear_other: data.gear_other as unknown as Prisma.InputJsonObject
+		},
+		where: {
+			id: userId
+		}
+	});
+	return newUser;
+}
 
 const USER_DEFAULTS = {
 	slayer_unlocks: [],
@@ -115,25 +154,6 @@ type HasDiaryTier = 'easy' | 'medium' | 'hard' | 'elite';
 
 type HasDiaryDiaryKey = `${HasDiaryRegion}.${HasDiaryTier}`;
 
-export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
-	try {
-		const newUser = await global.prisma.user.update({
-			data,
-			where: {
-				id: user.toString()
-			}
-		});
-
-		return { newUser };
-	} catch (err) {
-		Logging.logError(err as Error, {
-			user_id: user.toString(),
-			updated_data: JSON.stringify(data)
-		});
-		throw err;
-	}
-}
-
 function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean) {
 	const maxCasts = Math.min(
 		Math.floor(tripLength / (agility ? timePerAlchAgility : timePerAlch)),
@@ -147,14 +167,14 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 };
 
 type QueuedUpdateFnReturnValue =
-	| { response: CommandResponseValue }
-	| ({ response: CommandResponseValue } & Omit<TransactItemsArgs, 'userID'>);
+	| { response: SendableMessage }
+	| ({ response: SendableMessage } & Omit<TransactItemsArgs, 'userID'>);
 type QueuedUpdateFnReturn = Promise<QueuedUpdateFnReturnValue> | QueuedUpdateFnReturnValue;
 type QueuedUpdateFn = (user: MUserClass) => QueuedUpdateFnReturn;
 
-// TODO: gear keys are not safe here, but not included for now
-export type SafeUserUpdateInput = Omit<Prisma.UserUncheckedUpdateInput, 'id' | 'bank' | 'collectionLogBank'>;
-
+export type GearColumns = `gear_${GearSetupType}`;
+export type SafeUserUpdateInput = Partial<{ blowpipe: BlowpipeData } & Record<GearColumns, GearSetup>> &
+	Omit<Prisma.UserUncheckedUpdateInput, 'id' | 'bank' | 'collectionLogBank' | 'blowpipe' | GearColumns>;
 export class MUserClass {
 	user!: Readonly<User>;
 	id: string;
@@ -235,8 +255,8 @@ export class MUserClass {
 	}
 
 	async update(data: SafeUserUpdateInput): Promise<MUser>;
-	async update(fn: QueuedUpdateFn): Promise<CommandResponseValue>;
-	async update(arg: SafeUserUpdateInput | QueuedUpdateFn): Promise<any> {
+	async update(fn: QueuedUpdateFn): Promise<SendableMessage>;
+	async update(arg: SafeUserUpdateInput | QueuedUpdateFn): Promise<MUser | SendableMessage> {
 		if (typeof arg === 'function') {
 			return userQueueFn(this.id, async () => {
 				const opts = await arg(await mUserFetch(this.id));
@@ -252,12 +272,7 @@ export class MUserClass {
 			});
 		}
 
-		const newUser = await global.prisma.user.update({
-			data: arg,
-			where: {
-				id: this.id
-			}
-		});
+		const newUser = await rawUserUpdate(this.id, arg);
 		this._updateRawUser(newUser);
 		return this;
 	}
@@ -286,13 +301,14 @@ export class MUserClass {
 	}
 
 	async setAttackStyle(newStyles: AttackStyles[]) {
-		await mahojiUserSettingsUpdate(this.id, {
+		await this.update({
 			attack_style: uniqueArr(newStyles)
 		});
 	}
 
-	get isBusy() {
-		return userIsBusy(this.id);
+	async getIsLocked(): Promise<boolean> {
+		const lockStatus = await Cache.getUserLockStatus(this.id);
+		return lockStatus === 'locked';
 	}
 
 	get totalLevel() {
@@ -315,7 +331,11 @@ export class MUserClass {
 		return Number(this.user.GP);
 	}
 
-	perkTier() {
+	async calcMaxGearPresets() {
+		return (await this.fetchPerkTier()) * 2 + 4;
+	}
+
+	async fetchPerkTier(): Promise<0 | PerkTier> {
 		return getUsersPerkTier(this);
 	}
 
@@ -339,19 +359,19 @@ export class MUserClass {
 	}
 
 	get username() {
-		return this.rawUsername;
-	}
-
-	get rawUsername() {
-		return cleanUsername(this.user.username ?? globalClient.users.cache.get(this.id)?.username ?? 'Unknown');
+		return cleanUsername(this.user.username ?? 'Unknown');
 	}
 
 	get usernameOrMention() {
-		return this.rawUsername;
+		return this.username;
 	}
 
 	get badgedUsername() {
 		return `${this.badgesString} ${this.usernameOrMention}`.trim();
+	}
+
+	hasMonsterRequirements(monster: KillableMonster) {
+		return hasMonsterRequirements(this, monster);
 	}
 
 	toString() {
@@ -481,7 +501,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
-		otherUpdates?: Prisma.UserUpdateArgs['data'];
+		otherUpdates?: SafeUserUpdateInput;
 	}) {
 		const res = await this.transactItems({
 			collectionLog,
@@ -620,8 +640,9 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		return skills;
 	}
 
-	get minionIsBusy() {
-		return ActivityManager.minionIsBusy(this.id);
+	async minionIsBusy(): Promise<boolean> {
+		const isBusy = await ActivityManager.minionIsBusy(this.id);
+		return isBusy;
 	}
 
 	async getCreatureScore(creatureID: number): Promise<number> {
@@ -647,10 +668,8 @@ RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
 		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
-	get blowpipe() {
-		const blowpipe = this.user.blowpipe as any as BlowpipeData;
-		validateBlowpipeData(blowpipe);
-		return blowpipe;
+	getBlowpipe(): IBlowpipeData {
+		return ZBlowpipeData.parse(this.user.blowpipe);
 	}
 
 	hasCharges(chargeBank: ChargeBank) {
@@ -673,7 +692,7 @@ RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
 				hasCharges: false,
 				fullUserString: `${failureReasons.join(', ')}
 
-Charge your items using ${mentionCommand('minion', 'charge')}.`
+Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			};
 		}
 		return { hasCharges: true };
@@ -692,7 +711,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		otherUpdates
 	}: {
 		itemsToAdd: Bank;
-		otherUpdates?: SafeUserUpdateInput;
+		otherUpdates?: Omit<SafeUserUpdateInput, 'blowpipe'>;
 	}) {
 		const previousCL = this.cl.clone();
 
@@ -743,7 +762,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 					`You have ${Items.itemNameFromId(equippedAmmo)} equipped as your range ammo, but you need: ${ammoRemove[0].name}.`
 				);
 			}
-			const newRangeGear = { ...this.gear[gearKey] };
+			const newRangeGear: GearSetup = this.gear[gearKey].raw();
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
@@ -765,7 +784,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.isInWilderness ? 'gear_wildy' : 'gear_range';
-			updates[updateKey] = newRangeGear as any as PrismaCompatibleJsonObject;
+			updates[updateKey] = newRangeGear;
 		}
 
 		if (dart) {
@@ -779,7 +798,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				}
 			}
 			const scales = Math.ceil((10 / 3) * dart[1]);
-			const rawBlowpipeData = this.blowpipe;
+			const rawBlowpipeData = this.getBlowpipe();
 			if (!this.allItemsOwned.has('Toxic blowpipe') || !rawBlowpipeData) {
 				throw new UserError("You don't have a Toxic blowpipe.");
 			}
@@ -798,7 +817,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
 				);
 			}
-			const bpData = { ...this.blowpipe };
+			const bpData = { ...this.getBlowpipe() };
 			bpData.dartQuantity -= dart?.[1];
 			bpData.scales -= scales;
 			validateBlowpipeData(bpData);
@@ -811,13 +830,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 			await this.transactItems({ itemsToRemove: bankRemove });
 		}
-		const newUser = await prisma.user.update({
-			data: updates,
-			where: {
-				id: this.id
-			}
-		});
-		this._updateRawUser(newUser);
+		await this.update(updates);
 		return {
 			realCost
 		};
@@ -829,8 +842,8 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}: {
 		items: Bank;
 		dontAddToTempCL?: boolean;
-	}): Prisma.UserUpdateArgs['data'] {
-		const updates: Prisma.UserUpdateArgs['data'] = {
+	}): Pick<Prisma.UserUpdateInput, 'collectionLogBank' | 'temp_cl'> {
+		const updates: Pick<Prisma.UserUpdateInput, 'collectionLogBank' | 'temp_cl'> = {
 			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).toJSON()
 		};
 
@@ -868,26 +881,8 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		this._updateRawUser(newUser);
 	}
 
-	async fetchStats() {
-		let result = await prisma.userStats.findFirst({
-			where: {
-				user_id: BigInt(this.id)
-			}
-		});
-
-		if (!result) {
-			result = await prisma.userStats.upsert({
-				where: {
-					user_id: BigInt(this.id)
-				},
-				create: {
-					user_id: BigInt(this.id)
-				},
-				update: {}
-			});
-		}
-
-		return result;
+	async fetchStats(): Promise<UserStats> {
+		return fetchUserStats(this.id);
 	}
 
 	async fetchMStats() {
@@ -895,7 +890,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	get logName() {
-		return `${this.rawUsername}[${this.id}]`;
+		return `${this.username}[${this.id}]`;
 	}
 
 	async getKCByName(name: string) {
@@ -911,13 +906,13 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	farmingContract(): DetailedFarmingContract {
-		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
+		const currentFarmingContract: IFarmingContract = this.fetchFarmingContract();
 		const plant = !currentFarmingContract
 			? undefined
 			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
 		const farmingInfo = Farming.getFarmingInfoFromUser(this);
 		return {
-			contract: currentFarmingContract ?? Farming.defaultFarmingContract,
+			contract: currentFarmingContract,
 			plant,
 			matchingPlantedCrop: plant
 				? farmingInfo.patchesDetailed.find(i => i.plant && i.plant === plant)
@@ -926,7 +921,13 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		};
 	}
 
-	generateGearImage({ setupType, gearSetup }: { setupType?: GearSetupType | 'all'; gearSetup?: Gear }) {
+	generateGearImage({
+		setupType,
+		gearSetup
+	}: {
+		setupType?: GearSetupType | 'all';
+		gearSetup?: Gear;
+	}): Promise<Buffer> {
 		if (setupType === 'all') {
 			return generateAllGearImage({
 				equippedPet: this.user.minion_equippedPet,
@@ -1018,7 +1019,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
 			return;
 		}
-		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
+		if (background.perkTierNeeded && (await this.fetchPerkTier()) >= background.perkTierNeeded) {
 			return;
 		}
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
@@ -1049,7 +1050,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		}
 
 		await this.update({
-			[`gear_${setup}`]: gear as any as PrismaCompatibleJsonObject
+			[`gear_${setup}`]: gear
 		});
 		if (refundBank.length > 0) {
 			await this.addItemsToBank({
@@ -1142,6 +1143,23 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	async statsUpdate(data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>): Promise<void> {
 		const id = BigInt(this.id);
+		// TODO: Extra-safe check for now
+		const count = await prisma.userStats.count({
+			where: {
+				user_id: id
+			}
+		});
+		if (count === 0) {
+			await prisma.userStats.upsert({
+				where: {
+					user_id: id
+				},
+				create: {
+					user_id: id
+				},
+				update: {}
+			});
+		}
 
 		await prisma.userStats.update({
 			data,
@@ -1166,14 +1184,14 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	async updateGPTrackSetting(setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots', amount: number) {
-		this.statsUpdate({
+		await this.statsUpdate({
 			[setting]: {
 				increment: amount
 			}
 		});
 	}
 
-	calcMaxTripLength(activity: activity_type_enum) {
+	async calcMaxTripLength(activity: activity_type_enum): Promise<number> {
 		return calcMaxTripLength(this, activity);
 	}
 
@@ -1239,7 +1257,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	async fetchUserStat<K extends keyof UserStats>(key: K): Promise<UserStats[K]> {
 		const userStats = (await prisma.userStats.findFirstOrThrow({
 			where: { user_id: BigInt(this.id) },
-			select: { [key]: true } as any
+			select: { [key]: true }
 		})) as unknown as Pick<UserStats, K>;
 		return userStats[key];
 	}
@@ -1263,7 +1281,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		});
 	}
 
-	async giveRandomBotMessagesPet(rng: RNGProvider = MathRNG) {
+	async giveBotMessagePet(petToGive: Pet) {
 		const user = await prisma.user.findUniqueOrThrow({
 			where: { id: this.id },
 			select: {
@@ -1271,7 +1289,6 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				pets: true
 			}
 		});
-		const petToGive = rng.pick(pets);
 
 		const userPets = user.pets as ItemBank;
 		const newUserPets = { ...userPets };
@@ -1284,9 +1301,71 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 		});
 		return {
-			isNewPet: !userPets[petToGive.id],
-			pet: petToGive
+			isNewPet: !userPets[petToGive.id]
 		};
+	}
+
+	async updateFarmingContract(newContract: IFarmingContract): Promise<void> {
+		await this.update({
+			minion_farmingContract: ZFarmingContract.parse(newContract)
+		});
+	}
+
+	fetchFarmingContract(): IFarmingContract {
+		return ZFarmingContract.parse(this.user.minion_farmingContract ?? Farming.defaultFarmingContract);
+	}
+
+	async updateBirdhouseData(newData: IBirdhouseData): Promise<void> {
+		await this.update({
+			minion_birdhouseTraps: ZBirdhouseData.parse(newData)
+		});
+	}
+
+	fetchBirdhouseData(): IBirdhouseData & {
+		isReady: boolean;
+		readyIn: number;
+		birdhouse: Birdhouse | null;
+		readyAt: Date | null;
+	} {
+		const rawBirdhouse = ZBirdhouseData.parse(
+			this.user.minion_birdhouseTraps ?? {
+				lastPlaced: null,
+				birdhousePlaced: false,
+				birdhouseTime: 0
+			}
+		);
+		if (!rawBirdhouse.birdhousePlaced) {
+			return {
+				...rawBirdhouse,
+				isReady: false,
+				readyIn: -1,
+				birdhouse: null,
+				readyAt: null
+			};
+		}
+		const birdhouse = birdhouses.find(b => {
+			if (typeof rawBirdhouse.lastPlaced === 'string') {
+				return b.name === rawBirdhouse.lastPlaced;
+			}
+			return b.birdhouseItem === rawBirdhouse.lastPlaced;
+		})!;
+		const lastPlacedTime: number = rawBirdhouse.birdhouseTime;
+		const difference = Date.now() - lastPlacedTime;
+		const isReady = difference > birdhouse.waitTime;
+		const readyAtTimestamp = lastPlacedTime + birdhouse.waitTime;
+		const readyIn = readyAtTimestamp - Date.now();
+		const readyAt = new Date(readyAtTimestamp);
+		return {
+			...rawBirdhouse,
+			isReady,
+			readyIn,
+			birdhouse,
+			readyAt
+		};
+	}
+
+	isModOrAdmin(): boolean {
+		return globalConfig.adminUserIDs.includes(this.id) || this.bitfield.includes(BitField.isModerator);
 	}
 }
 
@@ -1304,9 +1383,9 @@ async function srcMUserFetch(userID: string) {
 `;
 	for (const [key, val] of Object.entries(user)) {
 		if (key.includes('.') || key.includes(' ')) {
-			(user as any)[key.replace(/[.\s]/g, '_')] = val;
 			// @ts-expect-error
-			delete user[key];
+			user[key.replace(/[.\s]/g, '_')] = val;
+			delete user[key as keyof User];
 		}
 	}
 	return new MUserClass({ ...USER_DEFAULTS, ...user });

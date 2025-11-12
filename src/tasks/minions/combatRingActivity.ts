@@ -33,7 +33,7 @@ loot.freeze();
 export const combatRingTask: MinionTask = {
 	type: 'CombatRing',
 	async run(data: ActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
-		const { channelID } = data;
+		const { channelId } = data;
 
 		await user.transactItems({
 			collectionLog: true,
@@ -42,9 +42,8 @@ export const combatRingTask: MinionTask = {
 
 		handleTripFinish(
 			user,
-			channelID,
+			channelId,
 			`${user}, ${user.minionName} finished the Combat Ring, and received ${loot}.`,
-			undefined,
 			data,
 			loot
 		);

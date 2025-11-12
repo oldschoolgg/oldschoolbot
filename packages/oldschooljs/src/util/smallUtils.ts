@@ -1,10 +1,12 @@
+import { randFloat } from '@oldschoolgg/rng';
+
 /**
  * Rounds a number to a given precision.
  *
  * @param value The number to be rounded.
  * @param precision The precision of the rounding.
  */
-export function round(value: number, precision = 1): number {
+function round(value: number, precision = 1): number {
 	const multiplier = Math.pow(10, precision || 0);
 	return Math.round(value * multiplier) / multiplier;
 }
@@ -75,28 +77,6 @@ export function increaseNumByPercent(value: number, percent: number): number {
 }
 
 /**
- * Picks a random item from an array.
- * @param array The array to pick from.
- */
-export function randArrItem<T>(array: readonly T[]): T {
-	return array[Math.floor(Math.random() * array.length)];
-}
-
-/**
- * Splits up an array into chunks
- * @param array The array to chunk up
- * @param chunkSize The size of each individual chunk
- */
-export function chunk<T>(array: readonly T[], chunkSize: number): T[][] {
-	if (chunkSize < 1) throw new RangeError('chunkSize must be 1 or greater.');
-	if (!Number.isInteger(chunkSize)) throw new TypeError('chunkSize must be an integer.');
-	const clone: T[] = array.slice();
-	const chunks: T[][] = [];
-	while (clone.length) chunks.push(clone.splice(0, chunkSize));
-	return chunks;
-}
-
-/**
  * Returns a copy of an array with duplicates removed.
  *
  * @param arr The array to copy and remove duplicates from.
@@ -112,77 +92,6 @@ export function uniqueArr<T>(arr: readonly T[]): T[] {
  */
 export function sumArr(arr: readonly number[]) {
 	return arr.reduce((a, b) => a + b, 0);
-}
-
-/**
- * Returns a shuffled copy of an array.
- *
- * @param array The array to shuffle.
- */
-export function shuffleArr<T>(array: readonly T[]): T[] {
-	const copy = [...array];
-	for (let i = copy.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[copy[i], copy[j]] = [copy[j], copy[i]];
-	}
-	return copy;
-}
-
-/**
- *
- * @param arr The array to partition
- * @param filter The filter by which to partition the array
- */
-export function partition<T>(arr: T[], filter: (item: T) => boolean): [T[], T[]] {
-	const firstArray: T[] = [];
-	const secondArray: T[] = [];
-	for (const item of arr) {
-		(filter(item) ? firstArray : secondArray).push(item);
-	}
-	return [firstArray, secondArray];
-}
-
-export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
-	return arr.filter(i => i !== item);
-}
-
-/**
- * Rolls a random number inclusively between a min and max.
- *
- * @param min The lower limit of the roll
- * @param max The upper limit of the roll
- */
-export function randInt(min: number, max: number): number {
-	return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-/**
- * Rolls a random floating point number inclusively between min and max.
- *
- * @param {number} min - min number
- * @param {number} max - max number
- * @return {number} A random float
- */
-export function randFloat(min: number, max: number): number {
-	return Math.random() * (max - min) + min;
-}
-
-/**
- * Rolls a 1 in X chance, returning true on successfull rolls.
- *
- * @param upperLimit The upper limit of the roll
- */
-export function roll(upperLimit: number): boolean {
-	return randInt(1, upperLimit) === 1;
-}
-
-/**
- * Returns true based on a percent chance.
- *
- * @param percent The percent to have a chance of.
- */
-export function percentChance(percent: number): boolean {
-	return randFloat(0, 100) < percent;
 }
 
 /**

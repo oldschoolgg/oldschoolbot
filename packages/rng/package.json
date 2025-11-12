@@ -4,7 +4,6 @@
 	"exports": {
 		".": {
 			"types": "./dist/esm/index.d.mts",
-			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		}
 	},
@@ -13,6 +12,6 @@
 		"test": "pnpm tsc -p src --noEmit && vitest run --coverage"
 	},
 	"dependencies": {
-		"pure-rand": "^6.1.0"
+		"pure-rand": "7.0.1"
 	}
 }

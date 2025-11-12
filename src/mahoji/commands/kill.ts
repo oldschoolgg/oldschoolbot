@@ -9,8 +9,8 @@ import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
 
-function determineKillLimit(user: MUser) {
-	const perkTier = user.perkTier();
+async function determineKillLimit(user: MUser) {
+	const perkTier = await user.fetchPerkTier();
 
 	if (perkTier >= PerkTier.Six) {
 		return 1_000_000;
@@ -54,7 +54,7 @@ export const killCommand = defineCommand({
 			name: 'name',
 			description: 'The monster you want to simulate killing.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return ALL_VALID_KILLABLE_MONSTERS.filter(i =>
 					!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
 				).map(i => ({
@@ -92,7 +92,7 @@ export const killCommand = defineCommand({
 		const result = await Workers.kill({
 			quantity: options.quantity,
 			bossName: options.name,
-			limit: determineKillLimit(user),
+			limit: await determineKillLimit(user),
 			catacombs: options.catacombs,
 			onTask: options.master !== undefined,
 			slayerMaster: slayerMasters.find(sMaster => sMaster.name === options.master)?.osjsEnum,
@@ -113,7 +113,7 @@ export const killCommand = defineCommand({
 			user
 		});
 		return {
-			files: [image.file],
+			files: [image],
 			content: result.content
 		};
 	}

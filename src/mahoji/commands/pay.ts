@@ -1,8 +1,8 @@
-import { Events } from '@oldschoolgg/toolkit';
+import { Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
+import type { Prisma } from '@/prisma/main.js';
+import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const payCommand = defineCommand({
@@ -22,11 +22,10 @@ export const payCommand = defineCommand({
 			required: true
 		}
 	],
-	run: async ({ options, user, interaction, guildID }) => {
+	run: async ({ options, user, interaction, guildId }) => {
 		await interaction.defer();
 		const recipient = await mUserFetch(options.user.user.id);
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
-		// Ensure the recipient's users row exists:
 		if (!amount) return "That's not a valid amount.";
 		const { GP } = user;
 		const isBlacklisted = BLACKLISTED_USERS.has(recipient.id);
@@ -36,7 +35,7 @@ export const payCommand = defineCommand({
 		if (recipient.isIronman) return "Iron players can't receive money.";
 		if (GP < amount) return "You don't have enough GP.";
 		if (options.user.user.bot) return "You can't send money to a bot.";
-		if (recipient.isBusy) return 'That user is busy right now.';
+		if (await recipient.getIsLocked()) return 'That user is busy right now.';
 
 		if (amount > 500_000_000) {
 			await interaction.confirmation(
@@ -44,19 +43,54 @@ export const payCommand = defineCommand({
 			);
 		}
 
-		const bank = new Bank().add('Coins', amount);
+		const MAX_RETRIES = 5;
+		let retries = 0;
 
-		const { success, message } = await tradePlayerItems(user, recipient, bank);
-		if (!success) {
-			return message;
+		while (retries < MAX_RETRIES) {
+			try {
+				await prisma.$transaction(
+					[
+						prisma.user.update({
+							where: { id: user.id },
+							data: {
+								GP: { decrement: BigInt(amount) }
+							},
+							select: { id: true }
+						}),
+						prisma.user.update({
+							where: { id: recipient.id },
+							data: {
+								GP: { increment: BigInt(amount) }
+							},
+							select: { id: true }
+						})
+					],
+					{
+						isolationLevel: 'RepeatableRead'
+					}
+				);
+				await Promise.all([user.sync(), recipient.sync()]);
+				break;
+			} catch (error) {
+				if ((error as Prisma.PrismaClientKnownRequestError).code === 'P2034') {
+					retries++;
+					if (retries < MAX_RETRIES) {
+						await sleep(100 + retries * 333);
+						continue;
+					} else {
+						throw error;
+					}
+				}
+				throw error;
+			}
 		}
 
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: guildID ? BigInt(guildID) : undefined,
+				guild_id: guildId ? BigInt(guildId) : undefined,
 				sender: BigInt(user.id),
 				recipient: BigInt(recipient.id),
-				items_sent: bank.toJSON(),
+				items_sent: new Bank().add('Coins', amount),
 				items_received: undefined,
 				type: 'trade'
 			}
