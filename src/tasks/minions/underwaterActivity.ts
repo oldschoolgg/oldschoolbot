@@ -3,7 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
 
-// Bonus loot from clams and chests, TODO: check wiki in future for more accurate rates
+// TODO: Bonus loot from clams and chests, check wiki in future for more accurate rates
 const clamChestTable = new LootTable()
 	.add('Numulite', [5, 24], 380)
 	.add('Unidentified small fossil', 10)
