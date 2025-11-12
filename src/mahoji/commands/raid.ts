@@ -184,7 +184,7 @@ export const raidCommand = defineCommand({
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
 		if (options.toa?.help) return toaHelpCommand(user, channelID);
 
-		if (await user.minionIsBusy()) return "Your minion is busy, you can't do this.";
+		if (user.minionIsBusy) return "Your minion is busy, you can't do this.";
 
 		if (cox?.start) {
 			return coxCommand(

@@ -4,7 +4,7 @@ import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export async function myNotesCommand(user: MUser, channelID: string) {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
 	const oneSkeleton = 5 * Time.Second;

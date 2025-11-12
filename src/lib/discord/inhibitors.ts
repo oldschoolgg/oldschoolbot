@@ -17,18 +17,16 @@ import type { MMember } from '@/lib/structures/MInteraction.js';
 import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
-type MaybePromise<T> = T | Promise<T>;
-
 interface Inhibitor {
-        name: string;
-        run: (options: {
-                user: MUser;
-                command: AnyCommand;
-                guild: Guild | null;
-                channel: TextBasedChannel | null;
-                member: MMember | null;
-        }) => MaybePromise<false | InteractionReplyOptions>;
-        silent?: true;
+	name: string;
+	run: (options: {
+		user: MUser;
+		command: AnyCommand;
+		guild: Guild | null;
+		channel: TextBasedChannel | null;
+		member: MMember | null;
+	}) => false | InteractionReplyOptions;
+	silent?: true;
 }
 
 const inhibitors: Inhibitor[] = [
@@ -71,17 +69,17 @@ const inhibitors: Inhibitor[] = [
 			return false;
 		}
 	},
-        {
-                name: 'minionNotBusy',
-                run: async ({ user, command }) => {
-                        if (!command.attributes?.requiresMinionNotBusy) return false;
+	{
+		name: 'minionNotBusy',
+		run: ({ user, command }) => {
+			if (!command.attributes?.requiresMinionNotBusy) return false;
 
-                        if (await ActivityManager.minionIsBusy(user.id)) {
-                                return { content: 'Your minion must not be busy to use this command.' };
-                        }
+			if (ActivityManager.minionIsBusy(user.id)) {
+				return { content: 'Your minion must not be busy to use this command.' };
+			}
 
-                        return false;
-                }
+			return false;
+		}
 	},
 	{
 		name: 'disabled',
@@ -173,26 +171,26 @@ const inhibitors: Inhibitor[] = [
 	}
 ];
 
-export async function runInhibitors({
-        user,
-        channel,
-        member,
-        command,
-        guild
+export function runInhibitors({
+	user,
+	channel,
+	member,
+	command,
+	guild
 }: {
 	user: MUser;
 	channel: TextBasedChannel | null;
 	member: MMember | null;
 	command: AnyCommand;
 	guild: Guild | null;
-}): Promise<undefined | InhibitorResult> {
-        for (const { run, silent } of inhibitors) {
-                const result = await run({
-                        user,
-                        channel,
-                        member,
-                        command,
-                        guild
+}): undefined | InhibitorResult {
+	for (const { run, silent } of inhibitors) {
+		const result = run({
+			user,
+			channel,
+			member,
+			command,
+			guild
 		});
 		if (result !== false) {
 			return { reason: result, silent: Boolean(silent) };

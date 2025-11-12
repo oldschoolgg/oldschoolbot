@@ -3,7 +3,7 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function castleWarsStartCommand(user: MUser, channelID: string) {
-	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const gameLength = Time.Minute * 18;
 	const quantity = Math.floor(user.calcMaxTripLength('CastleWars') / gameLength);
 	const duration = quantity * gameLength;

@@ -38,8 +38,7 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 				ephemeral: true
 			};
 		}
-		const availability = await Promise.all(usersWhoConfirmed.map(i => i.minionIsBusy()));
-		usersWhoConfirmed = usersWhoConfirmed.filter((_, index) => !availability[index]);
+		usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);
 
 		if (usersWhoConfirmed.length < 1 || usersWhoConfirmed.length > 10) {
 			return `${user}, your mass didn't start because it needs between 1-10 users.`;

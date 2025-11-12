@@ -1,13 +1,12 @@
 import { UserError } from '@oldschoolgg/toolkit';
 
-import type { Prisma } from '@/prisma/main.js';
 import type { ActivityTaskData, ActivityTaskOptions } from '@/lib/types/minions.js';
 import { isGroupActivity } from '@/lib/util.js';
 
 export default async function addSubTaskToActivityTask<T extends ActivityTaskData>(
 	taskToAdd: Omit<T, 'finishDate' | 'id'>
 ) {
-	const usersTask = await ActivityManager.getActivityOfUser(taskToAdd.userID);
+	const usersTask = ActivityManager.getActivityOfUser(taskToAdd.userID);
 	if (usersTask) {
 		throw new UserError(
 			`That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`
@@ -26,20 +25,12 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 
 	const finishDate = new Date(Date.now() + duration);
 
-	const allUserIDs = new Set<string>([taskToAdd.userID]);
-	if (isGroupActivity(taskToAdd)) {
-		for (const id of taskToAdd.users) {
-			allUserIDs.add(id);
-		}
-	}
-
 	const __newData: Partial<ActivityTaskData> = { ...taskToAdd } as Partial<ActivityTaskData>;
 	__newData.type = undefined;
 	__newData.userID = undefined;
 	__newData.id = undefined;
 	__newData.channelID = undefined;
 	__newData.duration = undefined;
-	(__newData as Prisma.JsonObject).all_user_ids = [...allUserIDs];
 
 	const newData: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'> = {
 		...__newData
@@ -57,9 +48,11 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskDat
 		duration
 	} as const;
 	try {
-		return await prisma.activity.create({
+		const createdActivity = await prisma.activity.create({
 			data
 		});
+		ActivityManager.activitySync(createdActivity);
+		return createdActivity;
 	} catch (err: any) {
 		Logging.logError(err, {
 			user_id: taskToAdd.userID,

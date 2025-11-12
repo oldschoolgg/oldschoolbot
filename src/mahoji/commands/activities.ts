@@ -505,7 +505,7 @@ export const activitiesCommand = defineCommand({
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
 
 		// Minion must be free
-		const isBusy = await user.minionIsBusy();
+		const isBusy = user.minionIsBusy;
 		const busyStr = `${user.minionName} is currently busy.`;
 		if (isBusy) return busyStr;
 

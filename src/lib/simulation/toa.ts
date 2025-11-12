@@ -1058,7 +1058,7 @@ async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number)
 	}
 
 	for (const user of users) {
-		if (await user.minionIsBusy()) return `${user.usernameOrMention}'s minion is busy.`;
+		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOAUser(
 			user,
 			await user.fetchMinigameScore('tombs_of_amascut'),
@@ -1084,7 +1084,7 @@ export async function toaStartCommand(
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
 
@@ -1106,7 +1106,7 @@ export async function toaStartCommand(
 		return initialCheck[1];
 	}
 
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
@@ -1119,7 +1119,7 @@ export async function toaStartCommand(
 		ironmanAllowed: true,
 		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! **Raid Level: ${raidLevel}**. Use the buttons below to join/leave.`,
 		customDenier: async user => {
-			if (await user.minionIsBusy()) {
+			if (user.minionIsBusy) {
 				return [true, `${user.usernameOrMention} minion is busy`];
 			}
 
@@ -1136,8 +1136,7 @@ export async function toaStartCommand(
 			ephemeral: true
 		};
 	}
-	const availability = await Promise.all(usersWhoConfirmed.map(u => u.minionIsBusy()));
-	const users = usersWhoConfirmed.filter((_, index) => !availability[index]).slice(0, maxSize);
+	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const teamCheckFailure = await checkTOATeam(users, raidLevel, 1);
 	if (teamCheckFailure) {

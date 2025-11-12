@@ -17,7 +17,7 @@ export async function harvestCommand({
 	seedType: string;
 	interaction: MInteraction;
 }) {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const { GP } = user;
@@ -117,7 +117,7 @@ export async function farmingPlantCommand({
 	autoFarmed: boolean;
 	pay: boolean;
 }): Promise<string> {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const alwaysPay = user.user.minion_defaultPay;

@@ -458,7 +458,7 @@ export const startColosseumRun = (options: {
 };
 
 export async function colosseumCommand(user: MUser, channelID: string) {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} is busy`;
 	}
 

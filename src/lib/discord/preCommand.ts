@@ -45,13 +45,13 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 	}
 
 	const start = performance.now();
-        const inhibitResult = await runInhibitors({
-                user,
-                guild: interaction.guild ?? null,
-                member: interaction.member ?? null,
-                command,
-                channel: interaction.channel ?? null
-        });
+	const inhibitResult = runInhibitors({
+		user,
+		guild: interaction.guild ?? null,
+		member: interaction.member ?? null,
+		command,
+		channel: interaction.channel ?? null
+	});
 	const end = performance.now();
 	Logging.logPerf({
 		duration: end - start,

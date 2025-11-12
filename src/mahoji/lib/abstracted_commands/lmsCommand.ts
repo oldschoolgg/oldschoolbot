@@ -78,7 +78,7 @@ export async function lmsCommand(
 		return `You spent ${cost} points to buy ${loot}. You now have ${user.user.lms_points} LMS points.`;
 	}
 
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to do an LMS trip';
 	}
 	const durationPerGame = Time.Minute * 5.5;

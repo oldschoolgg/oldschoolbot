@@ -18,7 +18,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
-		if (await user.minionIsBusy()) {
+		if (user.minionIsBusy) {
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
@@ -86,7 +86,7 @@ export const massCommand = defineCommand({
 					if (!user.hasMinion) {
 						return [true, "you don't have a minion."];
 					}
-					if (await user.minionIsBusy()) {
+					if (user.minionIsBusy) {
 						return [true, 'your minion is busy.'];
 					}
 					const [hasReqs, reason] = hasMonsterRequirements(user, monster);
@@ -122,17 +122,9 @@ export const massCommand = defineCommand({
 				ephemeral: true
 			};
 		}
-		const busyStatuses = await Promise.all(users.map(u => u.minionIsBusy()));
-		const availableUsers: MUser[] = [];
-		const usersKickedForBusy: MUser[] = [];
-		for (let i = 0; i < users.length; i++) {
-			if (busyStatuses[i]) {
-				usersKickedForBusy.push(users[i]);
-			} else {
-				availableUsers.push(users[i]);
-			}
-		}
-		users = availableUsers;
+		const unchangedUsers = [...users];
+		users = users.filter(i => !i.minionIsBusy);
+		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 
 		const durQtyRes = await calcDurQty(users, monster, undefined);
 		if (typeof durQtyRes === 'string') return durQtyRes;

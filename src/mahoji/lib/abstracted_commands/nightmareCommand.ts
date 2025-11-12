@@ -57,7 +57,7 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 		return `${user.usernameOrMention} doesn't have a minion, so they can't fight the nightmare!`;
 	}
 
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} is busy right now and can't fight the nightmare!`;
 	}
 

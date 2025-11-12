@@ -5,8 +5,8 @@ vi.mock('../../src/lib/workers/index.js', { spy: true });
 
 // @ts-expect-error
 global.ActivityManager = {
-	getActivityOfUser: async () => null,
-	minionIsBusy: async () => false
+	getActivityOfUser: () => null,
+	minionIsBusy: () => false
 };
 
 const transactMock = {

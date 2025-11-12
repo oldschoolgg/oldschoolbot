@@ -64,6 +64,7 @@ export const preStartup = logWrapFn('PreStartup', async () => {
 	await Promise.all([
 		GeImageGenerator.init(),
 		syncActiveUserIDs(),
+		ActivityManager.syncActivityCache(),
 		syncDisabledCommands(),
 		syncBlacklists(),
 		syncCustomPrices(),

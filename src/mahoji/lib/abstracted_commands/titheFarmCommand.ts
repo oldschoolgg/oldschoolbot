@@ -30,7 +30,7 @@ async function determineDuration(user: MUser): Promise<[number, string[]]> {
 }
 
 export async function titheFarmCommand(user: MUser, channelID: string) {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const skills = user.skillsAsLevels;

@@ -17,7 +17,7 @@ import { assert } from '@/lib/util/logError.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
@@ -184,7 +184,7 @@ export async function gearEquipCommand(args: {
 }): CommandResponse {
 	const { user, setup, item, items, preset, quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
@@ -215,7 +215,7 @@ export async function gearUnequipCommand(
 	itemToUnequip: string | undefined,
 	unequipAll: boolean | undefined
 ): CommandResponse {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 	if (!isValidGearSetup(gearSetup)) return "That's not a valid gear setup.";

@@ -232,7 +232,7 @@ async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, 
 	}
 
 	for (const user of users) {
-		if (await user.minionIsBusy()) return `${user.usernameOrMention}'s minion is busy.`;
+		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOBUser(user, isHardMode, users.length, quantity);
 		if (checkResult[1]) {
 			return checkResult[1];
@@ -284,7 +284,7 @@ export async function tobStartCommand(
 	solo: boolean,
 	quantity: number | undefined
 ) {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
 	const initialCheck = await checkTOBUser(user, isHardMode);
@@ -298,7 +298,7 @@ export async function tobStartCommand(
 			return 'You need at least 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
 		}
 	}
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
@@ -313,7 +313,7 @@ export async function tobStartCommand(
 			isHardMode ? '**Hard mode** ' : ''
 		}Theatre of Blood mass! Use the buttons below to join/leave.`,
 		customDenier: async _user => {
-			if (await _user.minionIsBusy()) {
+			if (_user.minionIsBusy) {
 				return [true, `${_user.usernameOrMention} minion is busy`];
 			}
 
@@ -334,8 +334,7 @@ export async function tobStartCommand(
 			ephemeral: true
 		};
 	}
-	const availability = await Promise.all(usersWhoConfirmed.map(u => u.minionIsBusy()));
-	const users = usersWhoConfirmed.filter((u, index) => !availability[index]).slice(0, maxSize);
+	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const team = await Promise.all(
 		users.map(async u => {

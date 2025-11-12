@@ -501,7 +501,7 @@ Date: ${dateFm(date)}`;
 			const opts = options.player.unequip_all_items;
 			const targetUser = await mUserFetch(opts.user.user.id);
 			const warningMsgs: string[] = [];
-			if (await targetUser.minionIsBusy()) warningMsgs.push("User's minion is busy.");
+			if (targetUser.minionIsBusy) warningMsgs.push("User's minion is busy.");
 			const gearSlot = opts.all
 				? 'all'
 				: opts.gear_setup && allGearSlots.includes(opts.gear_setup)

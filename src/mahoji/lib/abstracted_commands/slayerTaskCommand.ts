@@ -87,7 +87,7 @@ export async function slayerNewTaskCommand({
 	const { currentTask } = await user.fetchSlayerInfo();
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return `Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${await slayerStatusCommand(
 			user
 		)}`;
@@ -256,7 +256,7 @@ export async function slayerSkipTaskCommand({
 	const { currentTask } = await user.fetchSlayerInfo();
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = await calcMaxBlockedTasks(user);
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return 'You cannot change your task while your minion is busy.';
 	}
 	if (!currentTask) {

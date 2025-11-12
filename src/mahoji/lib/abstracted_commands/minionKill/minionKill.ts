@@ -31,7 +31,7 @@ export async function minionKillCommand(
 	solo: boolean | undefined,
 	onTask: boolean | undefined
 ): Promise<string | InteractionReplyOptions> {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
 	const { minionName } = user;

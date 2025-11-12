@@ -173,7 +173,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 }
 
 export async function pestControlStartCommand(user: MUser, channelID: string) {
-	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.combatLevel < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
 	}

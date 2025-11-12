@@ -1,7 +1,7 @@
 import type { NexTaskOptions, RaidsOptions } from '@/lib/types/minions.js';
 
 export async function cancelTaskCommand(user: MUser, interaction?: MInteraction): Promise<string> {
-	const currentTask = await ActivityManager.getActivityOfUser(user.id);
+	const currentTask = ActivityManager.getActivityOfUser(user.id);
 
 	const mName = user.minionName;
 

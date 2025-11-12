@@ -4,7 +4,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function combatRingCommand(user: MUser, channelID: string) {
-	if (await user.minionIsBusy()) {
+	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
 

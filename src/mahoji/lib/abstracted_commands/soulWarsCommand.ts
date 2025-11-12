@@ -131,7 +131,7 @@ export const soulWarsImbueables = [
 ];
 
 export async function soulWarsStartCommand(user: MUser, channelID: string) {
-	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const perDuration = randomVariation(Time.Minute * 7, 5);
 	const quantity = Math.floor(user.calcMaxTripLength('SoulWars') / perDuration);
 	const duration = quantity * perDuration;
