@@ -87,7 +87,8 @@ export const chopCommand = defineCommand({
 			name: 'quantity',
 			description: 'The quantity of logs you want to chop (optional).',
 			required: false,
-			min_value: 1
+			min_value: 1,
+			max_value: 100_000
 		},
 		{
 			type: 'Boolean',
