@@ -1,5 +1,5 @@
 import { randInt, randomVariation } from '@oldschoolgg/rng';
-import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { getPOHObject } from '@/lib/poh/index.js';
@@ -33,6 +33,11 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	if (user.skillsAsLevels.magic >= 66) {
 		deliveryLength = reduceNumByPercent(deliveryLength, 25);
 		boosts.push('25% for 66 Magic (teleports)');
+	}
+
+	if (user.hasEquipped('Kuro')) {
+		deliveryLength = reduceNumByPercent(deliveryLength, 50);
+		boosts.push(`${Emoji.Kuro} 2x faster with Kuro's help`);
 	}
 
 	const poh = await getPOH(user.id);
