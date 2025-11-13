@@ -1,4 +1,3 @@
-import type { IMember } from '@oldschoolgg/schemas';
 import { PerkTier } from '@oldschoolgg/toolkit';
 
 import type { InhibitorResult } from '@/discord/preCommand.js';
@@ -8,9 +7,7 @@ import { minionBuyButton } from '@/lib/sharedComponents.js';
 type InhibitorRunOptions = {
 	user: MUser;
 	command: AnyCommand;
-	guildId: string | null;
-	channelId: string;
-	member: IMember | null;
+	interaction: MInteraction;
 };
 interface Inhibitor {
 	name: string;
@@ -58,7 +55,7 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: async ({ command, guildId, user }) => {
+		run: async ({ command, interaction, user }) => {
 			const disabledCommands = await Cache.getDisabledCommands();
 			if (
 				!globalConfig.adminUserIDs.includes(user.id) &&
@@ -66,8 +63,8 @@ const inhibitors: Inhibitor[] = [
 			) {
 				return { content: 'This command is globally disabled.' };
 			}
-			if (!guildId) return false;
-			const cachedSettings = await Cache.getGuild(guildId);
+			if (!interaction.guildId) return false;
+			const cachedSettings = await Cache.getGuild(interaction.guildId);
 			if (cachedSettings.disabled_commands.includes(command.name)) {
 				return { content: 'This command is disabled in this server.' };
 			}
@@ -76,11 +73,12 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'commandRoleLimit',
-		run: async ({ member, guildId, channelId, user }) => {
-			if (!guildId || guildId !== globalConfig.supportServerID || !channelId) return false;
-			if (channelId !== Channel.ServerGeneral) return false;
+		run: async ({ interaction, user }) => {
+			if (!interaction.guildId || interaction.guildId !== globalConfig.supportServerID || !interaction.channelId)
+				return false;
+			if (interaction.channelId !== Channel.ServerGeneral) return false;
 			const perkTier = await user.fetchPerkTier();
-			if (member && perkTier >= PerkTier.Two) {
+			if (interaction.member && perkTier >= PerkTier.Two) {
 				return false;
 			}
 
@@ -90,24 +88,24 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'onlyStaffCanUseCommands',
-		run: async ({ channelId, guildId, user, member }) => {
-			if (!guildId || !member || !channelId) return false;
+		run: async ({ user, interaction }) => {
+			if (!interaction.guildId || !interaction.member || !interaction.channelId) return false;
 			// Allow green gem badge holders to run commands in support channel:
-			if (channelId === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
+			if (interaction.channelId === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
 				return false;
 			}
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
 			const userBitfield = user.bitfield;
 			const isStaff = userBitfield.includes(BitField.isModerator);
-			if (guildId === globalConfig.supportServerID && isStaff) {
+			if (interaction.guildId === globalConfig.supportServerID && isStaff) {
 				return false;
 			}
 
 			// Allow guild-moderators to use commands in disabled channels
-			const guildSettings = await Cache.getGuild(guildId);
-			if (!guildSettings.staff_only_channels.includes(channelId)) return false;
-			const hasPerms = await globalClient.memberHasPermissions(member, ['BAN_MEMBERS']);
+			const guildSettings = await Cache.getGuild(interaction.guildId);
+			if (!guildSettings.staff_only_channels.includes(interaction.channelId)) return false;
+			const hasPerms = await globalClient.memberHasPermissions(interaction.member, ['BAN_MEMBERS']);
 			if (!hasPerms) {
 				return { content: "You need the 'Ban Members' permission to use commands in disabled channels." };
 			}
