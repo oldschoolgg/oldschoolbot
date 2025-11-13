@@ -5,7 +5,6 @@ import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
 import { badges, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
-import { populateRoboChimpCache } from '@/lib/perkTier.js';
 
 async function updateBadgeTable() {
 	const badgesInDb = await prisma.badges.findMany();
@@ -40,7 +39,6 @@ export const preStartup = async () => {
 	await Promise.all([
 		syncCustomPrices(),
 		GrandExchange.init(),
-		populateRoboChimpCache(),
 		cacheGEPrices(),
 		syncCollectionLogSlotTable(),
 		updateBadgeTable(),

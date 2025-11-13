@@ -13,6 +13,7 @@ import { RedisKeys } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
 import type { z } from 'zod';
 
+import type { Guild } from '@/prisma/main.js';
 import { MockedRedis } from '@/lib/cache/redis-mock.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
@@ -40,7 +41,6 @@ const Key = {
 	Member: (guildId: string, userId: string) => fmkey(CacheKeyPrefix.Member, guildId, userId),
 	Emoji: (guildId: string, id: string) => fmkey(CacheKeyPrefix.Emoji, guildId, id),
 	Role: (guildId: string, id: string) => fmkey(CacheKeyPrefix.Role, guildId, id),
-	RoboChimpUser: (userId: string | bigint) => fmkey(CacheKeyPrefix.RoboChimp, 'user', userId.toString()),
 	Channel: (channelId: string) => fmkey('channel', channelId)
 };
 
@@ -56,7 +56,6 @@ const TTLS = {
 	Guild: TTL.Hour * 24,
 	Member: TTL.Hour * 23,
 	Role: TTL.Hour * 100,
-	RoboChimpUser: TTL.Hour * 4,
 	Channel: TTL.Hour * 100
 } as const;
 
@@ -110,11 +109,16 @@ class CacheManager {
 		return this.client.get(key);
 	}
 
-	private async del(key: string) {
+	private async del(key: string): Promise<void> {
 		await this.client.del(key);
 	}
 
-	private async bulkSet<T>(items: T[], getKey: (x: T) => string, schema: z.ZodType<T> | null, ttlSeconds: number) {
+	private async bulkSet<T>(
+		items: T[],
+		getKey: (x: T) => string,
+		schema: z.ZodType<T> | null,
+		ttlSeconds: number
+	): Promise<void> {
 		const pipeline = this.client.pipeline();
 		for (const item of items) {
 			if (schema) schema.parse(item);
@@ -124,7 +128,7 @@ class CacheManager {
 		await pipeline.exec();
 	}
 
-	private async getRawDatabaseGuild(id: string) {
+	private async getRawDatabaseGuild(id: string): Promise<Guild | null> {
 		const guildSettings = await prisma.guild.findUnique({
 			where: { id },
 			select: {
@@ -212,16 +216,16 @@ class CacheManager {
 		return this.getJson<IMember>(Key.Member(globalConfig.supportServerID, userId));
 	}
 
-	async setMember(member: IMember) {
+	async setMember(member: IMember): Promise<void> {
 		ZMember.parse(member);
 		await this.setObject(Key.Member(member.guild_id, member.user_id), member, TTLS.Member);
 	}
 
-	async bulkSetMembers(members: IMember[]) {
+	async bulkSetMembers(members: IMember[]): Promise<void> {
 		await this.bulkSet(members, m => Key.Member(m.guild_id, m.user_id), ZMember, TTLS.Member);
 	}
 
-	async bulkSetEmojis(emojis: IEmoji[]) {
+	async bulkSetEmojis(emojis: IEmoji[]): Promise<void> {
 		await this.bulkSet(emojis, e => Key.Emoji(e.guild_id, e.id), ZEmoji, TTLS.Guild);
 	}
 
@@ -242,16 +246,8 @@ class CacheManager {
 		await this.del(Key.Guild(id));
 	}
 
-	async setRoboChimpUser(data: RobochimpUser) {
-		await this.setObject(Key.RoboChimpUser(data.id), data, TTLS.RoboChimpUser);
-	}
-
-	async getRoboChimpUser(userId: string) {
-		return this.getJson<RobochimpUser>(Key.RoboChimpUser(userId));
-	}
-
-	async bulkSetRoboChimpUser(users: RobochimpUser[]) {
-		await this.bulkSet(users, u => Key.RoboChimpUser(u.id), null, TTLS.RoboChimpUser);
+	async getRoboChimpUser(userId: string): Promise<RobochimpUser | null> {
+		return this.getJson<RobochimpUser>(RedisKeys.RoboChimpUser(BigInt(userId)));
 	}
 
 	// Users

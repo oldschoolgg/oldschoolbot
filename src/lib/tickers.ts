@@ -7,7 +7,6 @@ import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
-import { populateRoboChimpCache } from '@/lib/perkTier.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
@@ -235,15 +234,6 @@ export const tickers: {
 		interval: Time.Second * 10,
 		cb: async () => {
 			await GrandExchange.tick();
-		}
-	},
-	{
-		name: 'robochimp_cache',
-		startupWait: Time.Minute * 5,
-		timer: null,
-		interval: Time.Minute * 30,
-		cb: async () => {
-			await populateRoboChimpCache();
 		}
 	},
 	{

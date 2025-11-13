@@ -81,7 +81,6 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 			...updateObj
 		}
 	});
-	await Cache.setRoboChimpUser(newUser);
 
 	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
@@ -99,7 +98,6 @@ export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser>
 		},
 		update: {}
 	});
-	await Cache.setRoboChimpUser(result);
 	return result;
 }
 
