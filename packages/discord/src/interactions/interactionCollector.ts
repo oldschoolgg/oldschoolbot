@@ -70,7 +70,10 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 	}
 
 	private async doFilter(itx: InteractionTypeCollected): Promise<boolean | string> {
-		if (itx.rawInteraction.message!.interaction_metadata!.id !== this.interaction.id) {
+		if (
+			!itx.rawInteraction.message?.interaction_metadata?.id ||
+			itx.rawInteraction.message.interaction_metadata.id !== this.interaction.id
+		) {
 			return false;
 		}
 		if (itx.raw.kind !== this.interactionType) {
