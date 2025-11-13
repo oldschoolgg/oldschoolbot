@@ -343,7 +343,7 @@ const globalConfigSchema = z.object({
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string(),
-	minimumLoggedPerfDuration: z.number().default(30),
+	minimumLoggedPerfDuration: z.number().default(100),
 	guildIdsToCache: z.array(z.string())
 });
 
