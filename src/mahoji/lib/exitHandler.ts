@@ -8,7 +8,7 @@ export async function exitCleanup() {
 			globalClient.isShuttingDown = true;
 		}
 		TimerManager.destroy();
-
+		globalClient.ws.destroy();
 		sonicBoom.flushSync();
 		sonicBoom.destroy();
 		if (prisma) {
