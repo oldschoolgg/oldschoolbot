@@ -86,5 +86,10 @@ client.on('guildCreate', async guild => {
 });
 
 client.on('ready', async _d => {
+	globalClient.setPresence({
+		text: '/help',
+		type: ActivityType.Listening,
+		status: PresenceUpdateStatus.Online
+	});
 	await onStartup();
 });

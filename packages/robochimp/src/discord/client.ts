@@ -47,5 +47,10 @@ globalClient.on('interactionCreate', itx => {
 });
 
 globalClient.on('ready', async () => {
+	globalClient.setPresence({
+		text: 'Ook Ook',
+		type: ActivityType.Listening,
+		status: PresenceUpdateStatus.Online
+	});
 	await bulkUpdateCommands();
 });
