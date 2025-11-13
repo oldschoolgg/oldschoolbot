@@ -7,10 +7,17 @@ import {
 	type DiscordClientOptions
 } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
+import { RedisKeys } from '@oldschoolgg/util';
 
 import { mentionCommand } from '@/discord/utils.js';
 import { allCommands } from '@/commands/allCommands.js';
+import { redis } from '@/lib/redis.js';
 import { RUser } from '@/structures/RUser.js';
+
+// @ts-expect-error ignore
+BigInt.prototype.toJSON = function () {
+	return this.toString();
+};
 
 export class RoboChimpBotClient extends DiscordClient {
 	public isShuttingDown = false;
@@ -34,6 +41,7 @@ export class RoboChimpBotClient extends DiscordClient {
 			},
 			update: {}
 		});
+		redis.set(RedisKeys.RoboChimpUser(user.id), JSON.stringify(user));
 		return new RUser(user);
 	}
 

@@ -295,6 +295,9 @@ importers:
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:../toolkit
+      '@oldschoolgg/util':
+        specifier: workspace:*
+        version: link:../util
       '@prisma/adapter-pg':
         specifier: ^6.18.0
         version: 6.18.0
@@ -310,6 +313,9 @@ importers:
       hono:
         specifier: ^4.10.3
         version: 4.10.3
+      ioredis:
+        specifier: ^5.8.2
+        version: 5.8.2
       oldschooljs:
         specifier: workspace:*
         version: link:../oldschooljs

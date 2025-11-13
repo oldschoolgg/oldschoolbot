@@ -17,11 +17,13 @@
 		"@hono/node-server": "^1.19.5",
 		"@octokit/graphql": "^8.1.1",
 		"@oldschoolgg/toolkit": "workspace:*",
+		"@oldschoolgg/util": "workspace:*",
 		"@prisma/adapter-pg": "^6.18.0",
 		"@prisma/client": "^6.18.0",
 		"@sapphire/discord-utilities": "^2.12.0",
 		"hono": "^4.10.3",
 		"dotenv": "^16.5.0",
+		"ioredis": "^5.8.2",
 		"oldschooljs": "workspace:*",
 		"remeda": "^2.23.0",
 		"zod": "^4.1.12"

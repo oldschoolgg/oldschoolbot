@@ -1,4 +1,27 @@
+import { RedisKeys } from '@oldschoolgg/util';
+import { groupBy } from 'remeda';
+
+import { redis } from '@/lib/redis.js';
 import { CHANNELS } from '@/util.js';
+
+async function syncBlacklists() {
+	const allBlacklist = await roboChimpClient.blacklistedEntity.findMany();
+	const a = groupBy(allBlacklist, b => b.type);
+	await redis.del(RedisKeys.BlacklistedUsers);
+	if (a.user) {
+		await redis.sadd(RedisKeys.BlacklistedUsers, ...a.user.map(b => b.id.toString()));
+	}
+	await redis.del(RedisKeys.BlacklistedGuilds);
+	if (a.guild) {
+		await redis.sadd(RedisKeys.BlacklistedGuilds, ...a.guild.map(b => b.id.toString()));
+	}
+}
+
+async function emitBlacklistLog(message: string) {
+	if (globalClient.isProduction) {
+		globalClient.sendMessage(CHANNELS.BLACKLIST_LOGS, message);
+	}
+}
 
 export const blacklistCommand = defineCommand({
 	name: 'blacklist',
@@ -61,8 +84,8 @@ export const blacklistCommand = defineCommand({
 					reason: options.add.reason
 				}
 			});
-			globalClient.sendMessage(
-				CHANNELS.BLACKLIST_LOGS,
+			await syncBlacklists();
+			emitBlacklistLog(
 				`${inputUser.user.username}[${inputUser.user.id}] was blacklisted by ${user.mention}, reason: \`${options.add.reason}\`.`
 			);
 			return `Blacklisted ${inputUser.user.username}[${inputUser.user.id}], for \`${options.add.reason}\``;
@@ -74,10 +97,8 @@ export const blacklistCommand = defineCommand({
 					id
 				}
 			});
-			globalClient.sendMessage(
-				CHANNELS.BLACKLIST_LOGS,
-				`${inputUser.user.username}[${inputUser.user.id}] was unblacklisted by ${user.mention}.`
-			);
+			await syncBlacklists();
+			emitBlacklistLog(`${inputUser.user.username}[${inputUser.user.id}] was unblacklisted by ${user.mention}.`);
 			return `Unblacklisted ${inputUser.user.username}[${inputUser.user.id}].`;
 		}
 		return 'Invalid command.';

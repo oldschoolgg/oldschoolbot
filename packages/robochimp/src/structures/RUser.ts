@@ -1,6 +1,8 @@
 import { userMention } from '@oldschoolgg/discord';
+import { RedisKeys } from '@oldschoolgg/util';
 import type { Prisma, User } from '@prisma/robochimp';
 
+import { redis } from '@/lib/redis.js';
 import { Bits, type PatronTier, tiers } from '@/util.js';
 
 export class RUser {
@@ -74,6 +76,7 @@ export class RUser {
 			},
 			data
 		});
+		redis.set(RedisKeys.RoboChimpUser(this.id), JSON.stringify(newUser));
 		this._user = newUser;
 		return this;
 	}

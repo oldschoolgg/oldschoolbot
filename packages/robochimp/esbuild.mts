@@ -17,6 +17,7 @@ const external = [
 	'@discordjs/rest',
 	'@discordjs/ws',
 	'ws',
+	'ioredis',
 	'@discordjs/builders',
 	'@oldschoolgg/discord'
 ];
