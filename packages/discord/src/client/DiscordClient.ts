@@ -1,6 +1,6 @@
 import { makeURLSearchParams, REST } from '@discordjs/rest';
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
-import type { IChannel, IInteraction, IMember, IMessage, IRole, IUser } from '@oldschoolgg/schemas';
+import type { IChannel, IInteraction, IMember, IMessage, IRole, IUser, IWebhook } from '@oldschoolgg/schemas';
 import { uniqueArr } from '@oldschoolgg/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -13,6 +13,7 @@ import {
 	type APIEmoji,
 	type APIGuildMember,
 	type APIRole,
+	type APIWebhook,
 	GatewayDispatchEvents,
 	GatewayOpcodes,
 	type GatewayReadyDispatchData,
@@ -185,6 +186,33 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 			files: files ?? undefined
 		});
 		return res as IMessage;
+	}
+
+	async createWebhook(channelId: string): Promise<APIWebhook> {
+		const data = await this.rest.post(Routes.channelWebhooks(channelId), {
+			body: {
+				name: this.application!.name
+			}
+		});
+		return data as APIWebhook;
+	}
+
+	async fetchWebhooks(channelId: string): Promise<APIWebhook[]> {
+		const data = await this.rest.get(Routes.channelWebhooks(channelId));
+		return data as APIWebhook[];
+	}
+
+	async sendWebhook(webhook: IWebhook, rawMessage: SendableMessage): Promise<void> {
+		const { files, message } = await this.sendableMsgToApiCreate(rawMessage);
+		const query = makeURLSearchParams({
+			wait: true
+		});
+		await this.rest.post(Routes.webhook(webhook.id, webhook.token), {
+			body: message,
+			query,
+			files: files ?? undefined,
+			auth: false
+		});
 	}
 
 	async sendMessage(channelId: string, rawMessage: SendableMessage): Promise<IMessage> {
