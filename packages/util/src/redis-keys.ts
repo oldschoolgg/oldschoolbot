@@ -9,7 +9,8 @@ export const RedisKeys = {
 			Ratelimit: (id: string, type: string) => `osb:user:${id.toString()}:ratelimit:${type}`
 		},
 		GuildSettings: (id: string) => `osb:guild:${id.toString()}:settings`,
-		DisabledCommands: 'osb:disabled_commands'
+		DisabledCommands: 'osb:disabled_commands',
+		Webhook: (channelId: string) => `osb:webhook:${channelId}`
 	},
 	BSO: {
 		User: {
@@ -18,7 +19,8 @@ export const RedisKeys = {
 			Ratelimit: (id: string, type: string) => `bso:user:${id.toString()}:ratelimit:${type}`
 		},
 		GuildSettings: (id: string) => `bso:guild:${id.toString()}:settings`,
-		DisabledCommands: 'bso:disabled_commands'
+		DisabledCommands: 'bso:disabled_commands',
+		Webhook: (channelId: string) => `bso:webhook:${channelId}`
 	},
 	Discord: {
 		Channel: (id: string) => `discord:channel:${id.toString()}`,

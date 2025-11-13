@@ -63,3 +63,10 @@ export const ZMemberWithRoles = ZMember.extend({
 	roles: z.array(ZRole)
 });
 export type IMemberWithRoles = z.infer<typeof ZMemberWithRoles>;
+
+export const ZWebhook = z.object({
+	id: z.string(),
+	channel_id: z.string(),
+	token: z.string()
+});
+export type IWebhook = z.infer<typeof ZWebhook>;

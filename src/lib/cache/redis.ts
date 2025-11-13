@@ -4,6 +4,7 @@ import {
 	type IGuild,
 	type IMember,
 	type IRole,
+	type IWebhook,
 	ZMember,
 	ZRole
 } from '@oldschoolgg/schemas';
@@ -13,7 +14,7 @@ import { Redis } from 'ioredis';
 
 import type { Guild } from '@/prisma/main.js';
 import { MockedRedis } from '@/lib/cache/redis-mock.js';
-import { globalConfig } from '@/lib/constants.js';
+import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { fetchUsernameAndCache } from '@/lib/util.js';
 
@@ -37,6 +38,8 @@ const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 }
 } as const;
+
+const BotKeys = RedisKeys[BOT_TYPE];
 
 class CacheManager {
 	private client: Redis;
@@ -98,7 +101,7 @@ class CacheManager {
 	}
 
 	async getGuild(guildId: string): Promise<IGuild> {
-		const key = RedisKeys.OSB.GuildSettings(guildId);
+		const key = BotKeys.GuildSettings(guildId);
 		const cached = await this.getJson<IGuild>(key);
 		if (cached) return cached;
 
@@ -117,7 +120,7 @@ class CacheManager {
 					staff_only_channels: []
 				};
 
-		await this.setJson(RedisKeys.OSB.GuildSettings(guild.id), guild);
+		await this.setJson(BotKeys.GuildSettings(guild.id), guild);
 		return guild;
 	}
 
@@ -143,7 +146,7 @@ class CacheManager {
 			petchannel: guildSettings.petchannel,
 			staff_only_channels: guildSettings.staffOnlyChannels
 		};
-		return this.setJson(RedisKeys.OSB.GuildSettings(guildId), newGuild);
+		return this.setJson(BotKeys.GuildSettings(guildId), newGuild);
 	}
 
 	async getMember(guildId: string, userId: string) {
@@ -204,7 +207,7 @@ class CacheManager {
 
 	// Users
 	async getUserLockStatus(userId: string): Promise<LockStatus> {
-		const status = await this.getString(RedisKeys.OSB.User.LockStatus(userId));
+		const status = await this.getString(BotKeys.User.LockStatus(userId));
 		return (status as LockStatus | null) ?? 'unlocked';
 	}
 
@@ -213,11 +216,11 @@ class CacheManager {
 		if (current === newStatus) {
 			throw new Error(`User is already ${newStatus}`);
 		}
-		await this.setString(RedisKeys.OSB.User.LockStatus(userId), newStatus, 25);
+		await this.setString(BotKeys.User.LockStatus(userId), newStatus, 25);
 	}
 
 	async _getBadgedUsernameRaw(userId: string): Promise<string | null> {
-		return this.client.get(RedisKeys.OSB.User.BadgedUsername(userId));
+		return this.client.get(BotKeys.User.BadgedUsername(userId));
 	}
 
 	async getBadgedUsername(userId: string) {
@@ -230,7 +233,7 @@ class CacheManager {
 	}
 
 	async setBadgedUsername(userId: string, badgedUsername: string): Promise<void> {
-		await this.client.set(RedisKeys.OSB.User.BadgedUsername(userId), badgedUsername);
+		await this.client.set(BotKeys.User.BadgedUsername(userId), badgedUsername);
 	}
 
 	private async doRatelimitCheck({
@@ -244,7 +247,7 @@ class CacheManager {
 		windowSeconds: number;
 		max: number;
 	}): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
-		const fullKey = RedisKeys.OSB.User.Ratelimit(inputKey, userId);
+		const fullKey = BotKeys.User.Ratelimit(inputKey, userId);
 		const count = await this.client.incr(fullKey);
 
 		if (count === 1) await this.client.expire(fullKey, windowSeconds);
@@ -275,22 +278,22 @@ class CacheManager {
 	}
 
 	public async getRatelimitTTL(userId: string, type: RatelimitType): Promise<number> {
-		const ttl = await this.client.ttl(RedisKeys.OSB.User.Ratelimit(type, userId));
+		const ttl = await this.client.ttl(BotKeys.User.Ratelimit(type, userId));
 		return ttl < 0 ? 0 : ttl;
 	}
 
 	public async resetRatelimit(userId: string, type: RatelimitType): Promise<void> {
-		await this.client.del(RedisKeys.OSB.User.Ratelimit(type, userId));
+		await this.client.del(BotKeys.User.Ratelimit(type, userId));
 	}
 
 	// Client
 	async getDisabledCommands(): Promise<string[]> {
-		const res = (await this.getJson<string[]>(RedisKeys.OSB.DisabledCommands)) ?? [];
+		const res = (await this.getJson<string[]>(BotKeys.DisabledCommands)) ?? [];
 		return res;
 	}
 
 	async setDisabledCommands(newDisabledCommands: string[]): Promise<void> {
-		await this.setJson(RedisKeys.OSB.DisabledCommands, newDisabledCommands);
+		await this.setJson(BotKeys.DisabledCommands, newDisabledCommands);
 	}
 
 	async isUserBlacklisted(id: string): Promise<boolean> {
@@ -303,6 +306,14 @@ class CacheManager {
 
 	async getAllBlacklistedUsers(): Promise<Set<string>> {
 		return new Set(await this.client.smembers(RedisKeys.BlacklistedUsers));
+	}
+
+	async setWebhook(webhook: IWebhook): Promise<void> {
+		await this.setJson(BotKeys.Webhook(webhook.channel_id), webhook);
+	}
+
+	async getWebhook(channelId: string): Promise<IWebhook | null> {
+		return this.getJson(BotKeys.Webhook(channelId));
 	}
 
 	async close() {
