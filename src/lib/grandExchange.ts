@@ -5,7 +5,7 @@ import PQueue from 'p-queue';
 import { clamp } from 'remeda';
 
 import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main.js';
-import { BLACKLISTED_USERS, GE_SLOTS_CACHE, marketPricemap } from '@/lib/cache.js';
+import { GE_SLOTS_CACHE, marketPricemap } from '@/lib/cache.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
@@ -909,6 +909,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
+		const blacklistedUsers = await Cache.getAllBlacklistedUsers();
 		this.log(`Starting G.E tick`);
 		const { buyListings, sellListings } = await this.fetchActiveListings();
 
@@ -926,7 +927,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				continue;
 			}
 
-			if (BLACKLISTED_USERS.has(buyListing.user_id)) {
+			if (blacklistedUsers.has(buyListing.user_id)) {
 				continue;
 			}
 
@@ -938,7 +939,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 					buyListing.asking_price_per_item >= sellListing.asking_price_per_item &&
 					buyListing.user_id !== sellListing.user_id &&
 					sellListing.user_id !== null &&
-					!BLACKLISTED_USERS.has(sellListing.user_id)
+					!blacklistedUsers.has(sellListing.user_id)
 			);
 
 			/**

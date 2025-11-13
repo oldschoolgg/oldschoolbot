@@ -17,8 +17,6 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
 import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
-import { syncBlacklists } from '@/lib/blacklists.js';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -404,11 +402,6 @@ export const adminCommand = defineCommand({
 			name: 'item_stats',
 			description: 'item stats',
 			options: [{ ...itemOption(), required: true }]
-		},
-		{
-			type: 'Subcommand',
-			name: 'sync_blacklist',
-			description: 'Sync blacklist'
 		},
 		//
 		{
@@ -803,12 +796,6 @@ ${META_CONSTANTS.RENDERED_STR}`
 				.catch(noOp);
 			await import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
 			return 'Turning off...';
-		}
-
-		if (options.sync_blacklist) {
-			await syncBlacklists();
-			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
-Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		/**

@@ -41,19 +41,76 @@ export class MockedRedis {
 		return -1;
 	}
 
+	async sadd(key: string, ...members: string[]): Promise<number> {
+		const cur = this.store.get(key);
+		const s = new Set(cur ? cur.split(',') : []);
+		for (const m of members) s.add(m);
+		this.store.set(key, [...s].join(','));
+		return s.size;
+	}
+
+	async srem(key: string, ...members: string[]): Promise<number> {
+		const cur = this.store.get(key);
+		if (!cur) return 0;
+		const s = new Set(cur.split(','));
+		let removed = 0;
+		for (const m of members) {
+			if (s.delete(m)) removed++;
+		}
+		this.store.set(key, [...s].join(','));
+		return removed;
+	}
+
+	async sismember(key: string, member: string): Promise<number> {
+		const cur = this.store.get(key);
+		if (!cur) return 0;
+		return cur.split(',').includes(member) ? 1 : 0;
+	}
+
+	async smembers(key: string): Promise<string[]> {
+		const cur = this.store.get(key);
+		if (!cur || cur === '') return [];
+		return cur.split(',');
+	}
+
 	pipeline() {
-		const operations: Array<() => void> = [];
+		const ops: Array<() => void> = [];
 		const self = this;
+
 		return {
-			set(key: string, value: string, _exFlag?: 'EX', _ttl?: number) {
-				operations.push(() => self.store.set(key, value));
+			set(key: string, value: string) {
+				ops.push(() => self.store.set(key, value));
 				return this;
 			},
-			async exec() {
-				for (const op of operations) {
-					op();
-				}
-				return [];
+			del(key: string) {
+				ops.push(() => {
+					self.store.delete(key);
+					self.counters.delete(key);
+				});
+				return this;
+			},
+			sadd(key: string, ...members: string[]) {
+				ops.push(() => {
+					const cur = self.store.get(key);
+					const s = new Set(cur ? cur.split(',') : []);
+					for (const m of members) s.add(m);
+					self.store.set(key, [...s].join(','));
+				});
+				return this;
+			},
+			srem(key: string, ...members: string[]) {
+				ops.push(() => {
+					const cur = self.store.get(key);
+					if (!cur) return;
+					const s = new Set(cur.split(','));
+					for (const m of members) s.delete(m);
+					self.store.set(key, [...s].join(','));
+				});
+				return this;
+			},
+			exec() {
+				for (const op of ops) op();
+				return Promise.resolve([]);
 			}
 		};
 	}

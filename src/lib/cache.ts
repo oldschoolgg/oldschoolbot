@@ -36,13 +36,11 @@ export const GE_SLOTS_CACHE = new LRUCache<
 });
 export const RARE_ROLES_CACHE = new LRUCache<string, number>({ max: 1000 });
 
-export const BLACKLISTED_USERS = new Set<string>();
-export const BLACKLISTED_GUILDS = new Set<string>();
 export const userQueues: Map<string, PromiseQueue> = new Map();
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 export const marketPricemap = new Map<number, MarketPriceData>();
 
-export const busyUsers = new Set<string>();
+const busyUsers = new Set<string>();
 
 export function modifyUserBusy({
 	reason,

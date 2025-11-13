@@ -2,7 +2,6 @@ import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { filterOption } from '@/discord/index.js';
-import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
@@ -61,8 +60,7 @@ export const tradeCommand = defineCommand({
 		const recipientUser = await mUserFetch(options.user.user.id);
 		const recipientAPIUser = options.user.user;
 
-		const isBlacklisted = BLACKLISTED_USERS.has(recipientUser.id);
-		if (isBlacklisted) return "Blacklisted players can't buy items.";
+		if (await recipientUser.isBlacklisted()) return "Blacklisted players can't buy items.";
 		if (senderUser.user.minion_ironman || recipientUser.user.minion_ironman) {
 			return "Iron players can't trade items.";
 		}

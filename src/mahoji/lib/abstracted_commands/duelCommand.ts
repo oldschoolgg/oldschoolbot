@@ -2,7 +2,6 @@ import { cryptoRng } from '@oldschoolgg/rng';
 import { Emoji, Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
@@ -84,7 +83,7 @@ export async function duelCommand(
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
-	if (BLACKLISTED_USERS.has(duelTargetUser.id)) return 'Target user is blacklisted.';
+	if (await duelTargetUser.isBlacklisted()) return 'Target user is blacklisted.';
 	if (targetAPIUser.user.bot) return 'You cant duel a bot.';
 
 	if (!(await checkBal(duelSourceUser, amount))) {

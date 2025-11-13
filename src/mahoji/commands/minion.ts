@@ -3,7 +3,6 @@ import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } f
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { skillOption } from '@/discord/index.js';
-import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField, BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
@@ -67,7 +66,7 @@ export async function getUserInfo(user: MUser) {
 
 	const result = {
 		perkTier: await user.fetchPerkTier(),
-		isBlacklisted: BLACKLISTED_USERS.has(user.id),
+		isBlacklisted: await user.isBlacklisted(),
 		badges: user.badgesString,
 		isIronman: user.isIronman,
 		bitfields,

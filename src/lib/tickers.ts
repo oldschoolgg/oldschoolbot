@@ -3,7 +3,6 @@ import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { analyticsTick } from '@/lib/analytics.js';
-import { syncBlacklists } from '@/lib/blacklists.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
@@ -245,14 +244,6 @@ export const tickers: {
 		interval: Time.Minute * 30,
 		cb: async () => {
 			await populateRoboChimpCache();
-		}
-	},
-	{
-		name: 'Sync Blacklists',
-		timer: null,
-		interval: Time.Minute * 10,
-		cb: async () => {
-			await syncBlacklists();
 		}
 	},
 	{

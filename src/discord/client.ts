@@ -3,7 +3,6 @@ import { ActivityType, GatewayIntentBits, PresenceUpdateStatus } from '@oldschoo
 import { onRawGuildCreate } from '@/discord/handlers/guildCreate.js';
 import { interactionHandler } from '@/discord/interactionHandler.js';
 import { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import { onMessage } from '@/lib/events.js';
 import { onStartup } from '@/mahoji/lib/events.js';
@@ -35,12 +34,32 @@ declare global {
 }
 
 global.globalClient = client;
-client.on('messageCreate', msg => {
+client.on('messageCreate', async msg => {
+	try {
+		const [isUserBlacklisted, isGuildBlacklisted] = await Promise.all([
+			Cache.isUserBlacklisted(msg.author_id),
+			msg.guild_id ? Cache.isGuildBlacklisted(msg.guild_id) : false
+		]);
+		if (isUserBlacklisted || isGuildBlacklisted) return;
+	} catch (err) {
+		Logging.logError(err as Error);
+	}
 	onMessage(msg);
 });
 client.on('error', console.error);
 
-client.on('interactionCreate', itx => {
+client.on('interactionCreate', async itx => {
+	const guildId = itx.guild_id ?? null;
+	const userId = (itx.member?.user.id ?? itx.user?.id)!;
+	try {
+		const [isUserBlacklisted, isGuildBlacklisted] = await Promise.all([
+			Cache.isUserBlacklisted(userId),
+			guildId ? Cache.isGuildBlacklisted(guildId) : false
+		]);
+		if (isUserBlacklisted || isGuildBlacklisted) return;
+	} catch (err) {
+		Logging.logError(err as Error);
+	}
 	return interactionHandler(client, itx);
 });
 
@@ -57,7 +76,11 @@ client.on('economyLog', async (message: string) => {
 
 client.on('guildCreate', onRawGuildCreate);
 client.on('guildCreate', async guild => {
-	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.owner_id)) {
+	const [isUserBlacklisted, isGuildBlacklisted] = await Promise.all([
+		Cache.isUserBlacklisted(guild.owner_id),
+		Cache.isGuildBlacklisted(guild.id)
+	]);
+	if (isUserBlacklisted || isGuildBlacklisted) {
 		await globalClient.leaveGuild(guild.id);
 	}
 });

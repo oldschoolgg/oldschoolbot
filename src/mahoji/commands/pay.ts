@@ -2,7 +2,6 @@ import { Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';
-import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const payCommand = defineCommand({
@@ -28,8 +27,7 @@ export const payCommand = defineCommand({
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
 		if (!amount) return "That's not a valid amount.";
 		const { GP } = user;
-		const isBlacklisted = BLACKLISTED_USERS.has(recipient.id);
-		if (isBlacklisted) return "Blacklisted players can't receive money.";
+		if (await recipient.isBlacklisted()) return "Blacklisted players can't receive money.";
 		if (recipient.id === user.id) return "You can't send money to yourself.";
 		if (user.isIronman) return "Iron players can't send money.";
 		if (recipient.isIronman) return "Iron players can't receive money.";

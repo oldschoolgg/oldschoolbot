@@ -13,7 +13,6 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';
-import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
@@ -115,7 +114,6 @@ async function makeTeamCommand(
 		).map(id => mUserFetch(id))
 	);
 	if (allUsers.length !== bingo.teamSize) return `Your team must have only ${bingo.teamSize} users, no more or less.`;
-	if (allUsers.some(u => BLACKLISTED_USERS.has(u.id))) return 'You cannot have blacklisted users on your team.';
 
 	await interaction.confirmation({
 		content: `${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${
@@ -133,6 +131,10 @@ async function makeTeamCommand(
 			return `${user} doesn't have enough GP to buy a ticket! They need ${toKMB(
 				bingo.ticketPrice
 			)} GP, but only have ${toKMB(user.GP)} GP.`;
+		}
+		const isBlacklisted = await Cache.isUserBlacklisted(user.id);
+		if (isBlacklisted) {
+			return `${user} is blacklisted and cannot join bingo teams.`;
 		}
 	}
 	await prisma.$transaction([

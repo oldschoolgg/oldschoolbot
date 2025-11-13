@@ -9,6 +9,7 @@ import {
 	ZRole
 } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
+import { RedisKeys } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
 import type { z } from 'zod';
 
@@ -17,7 +18,7 @@ import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { fetchUsernameAndCache } from '@/lib/util.js';
 
-export enum CacheKeyPrefix {
+enum CacheKeyPrefix {
 	Member = 'member',
 	Role = 'role',
 	Emoji = 'emoji',
@@ -73,7 +74,7 @@ const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 } as const;
 
 class CacheManager {
-	private client: Redis | MockedRedis;
+	private client: Redis;
 
 	constructor() {
 		if (globalConfig.isProduction) {
@@ -83,11 +84,11 @@ class CacheManager {
 				const redis = new Redis({ reconnectOnError: () => false });
 				redis.on('error', () => {
 					redis.disconnect();
-					this.client = new MockedRedis();
+					this.client = new MockedRedis() as any as Redis;
 				});
 				this.client = redis;
 			} catch {
-				this.client = new MockedRedis();
+				this.client = new MockedRedis() as any as Redis;
 			}
 		}
 	}
@@ -341,12 +342,23 @@ class CacheManager {
 	}
 
 	async setDisabledCommands(newDisabledCommands: string[]): Promise<void> {
-		const res = await this.setObject(
+		await this.setObject(
 			Key.Client.DisabledCommands(globalClient.applicationId),
 			newDisabledCommands,
 			TTL.Hour * 4
 		);
-		return res;
+	}
+
+	async isUserBlacklisted(id: string): Promise<boolean> {
+		return (await this.client.sismember(RedisKeys.BlacklistedUsers, id)) === 1;
+	}
+
+	async isGuildBlacklisted(id: string): Promise<boolean> {
+		return (await this.client.sismember(RedisKeys.BlacklistedGuilds, id)) === 1;
+	}
+
+	async getAllBlacklistedUsers(): Promise<Set<string>> {
+		return new Set(await this.client.smembers(RedisKeys.BlacklistedUsers));
 	}
 
 	async close() {

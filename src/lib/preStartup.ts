@@ -1,6 +1,5 @@
 import type { ItemBank } from 'oldschooljs';
 
-import { syncBlacklists } from '@/lib/blacklists.js';
 import { CUSTOM_PRICE_CACHE, populateUsernameCache } from '@/lib/cache.js';
 import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
 import { badges, globalConfig } from '@/lib/constants.js';
@@ -39,7 +38,6 @@ export const preStartup = async () => {
 	});
 
 	await Promise.all([
-		syncBlacklists(),
 		syncCustomPrices(),
 		GrandExchange.init(),
 		populateRoboChimpCache(),

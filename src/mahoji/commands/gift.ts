@@ -2,7 +2,6 @@ import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/to
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { GiftBoxStatus } from '@/prisma/main.js';
-import { BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -223,7 +222,7 @@ ${items}`
 				return 'You must provide a valid user to send the gift box to.';
 			}
 			const recipient = await mUserFetch(options.send.user.user.id);
-			if (recipient.isIronman || BLACKLISTED_USERS.has(recipient.id)) {
+			if (recipient.isIronman || (await recipient.isBlacklisted())) {
 				return 'This person cannot receive gift boxes.';
 			}
 			const giftBox = await prisma.giftBox.findFirst({

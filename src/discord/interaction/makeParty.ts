@@ -2,7 +2,7 @@ import { ButtonBuilder, type ButtonMInteraction, ButtonStyle, dateFm } from '@ol
 import { debounce, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
-import { BLACKLISTED_USERS, partyLockCache } from '@/lib/cache.js';
+import { partyLockCache } from '@/lib/cache.js';
 import { SILENT_ERROR } from '@/lib/constants.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
@@ -76,8 +76,6 @@ export async function makeParty(options: MakePartyOptions): Promise<MUser[]> {
 		});
 
 		collector.on('collect', async (bi: ButtonMInteraction) => {
-			if (BLACKLISTED_USERS.has(bi.userId)) return;
-
 			if (options.usersAllowed && !options.usersAllowed.includes(bi.userId)) {
 				await bi.reply({
 					content: 'You are not allowed to join this mass.',

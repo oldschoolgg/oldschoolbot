@@ -2,7 +2,6 @@ import type { IMember } from '@oldschoolgg/schemas';
 import { PerkTier } from '@oldschoolgg/toolkit';
 
 import type { InhibitorResult } from '@/discord/preCommand.js';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 
@@ -111,19 +110,6 @@ const inhibitors: Inhibitor[] = [
 			const hasPerms = await globalClient.memberHasPermissions(member, ['BAN_MEMBERS']);
 			if (!hasPerms) {
 				return { content: "You need the 'Ban Members' permission to use commands in disabled channels." };
-			}
-			return false;
-		},
-		silent: true
-	},
-	{
-		name: 'blacklisted',
-		run: ({ user, guildId }) => {
-			if (BLACKLISTED_USERS.has(user.id)) {
-				return { content: 'You are blacklisted.' };
-			}
-			if (guildId && BLACKLISTED_GUILDS.has(guildId)) {
-				return { content: 'This guild is blacklisted.' };
 			}
 			return false;
 		},
