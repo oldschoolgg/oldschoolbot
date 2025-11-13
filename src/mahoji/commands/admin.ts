@@ -12,6 +12,7 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { economy_transaction_type } from '@/prisma/main/enums.js';
@@ -388,11 +389,6 @@ export const adminCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
-			name: 'reboot',
-			description: 'Reboot the bot.'
-		},
-		{
-			type: 'Subcommand',
 			name: 'sync_commands',
 			description: 'Sync commands',
 			options: []
@@ -763,22 +759,7 @@ export const adminCommand = defineCommand({
 				options.bitfield.user.user.username
 			}.`;
 		}
-		if (options.reboot) {
-			globalClient.isShuttingDown = true;
-			await interaction.reply({
-				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
-			});
-			await sleep(Time.Second * 20);
-			await globalClient
-				.sendMessage(Channel.GeneralChannel, {
-					content: `I am shutting down! Goodbye :(
 
-${META_CONSTANTS.RENDERED_STR}`
-				})
-				.catch(noOp);
-			await import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
-			return 'Turning off...';
-		}
 		if (options.shut_down) {
 			Logging.logDebug('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
@@ -794,7 +775,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 ${META_CONSTANTS.RENDERED_STR}`
 				})
 				.catch(noOp);
-			await import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
+			await gracefulExit(0);
 			return 'Turning off...';
 		}
 
