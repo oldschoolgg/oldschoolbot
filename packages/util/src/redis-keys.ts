@@ -3,16 +3,20 @@ export const RedisKeys = {
 	BlacklistedGuilds: 'blacklist:guilds',
 	RoboChimpUser: (id: bigint) => `robochimp:user:${id.toString()}`,
 	OSB: {
-		BadgedUsername: (id: string) => `osb:user:${id.toString()}:badged_username`,
-		LockStatus: (id: string) => `osb:user:${id.toString()}:lock_status`,
-		Ratelimit: (id: string, type: string) => `osb:user:${id.toString()}:ratelimit:${type}`,
+		User: {
+			BadgedUsername: (id: string) => `osb:user:${id.toString()}:badged_username`,
+			LockStatus: (id: string) => `osb:user:${id.toString()}:lock_status`,
+			Ratelimit: (id: string, type: string) => `osb:user:${id.toString()}:ratelimit:${type}`
+		},
 		GuildSettings: (id: string) => `osb:guild:${id.toString()}:settings`,
 		DisabledCommands: 'osb:disabled_commands'
 	},
 	BSO: {
-		BadgedUsername: (id: string) => `bso:user:${id.toString()}:badged_username`,
-		LockStatus: (id: string) => `bso:user:${id.toString()}:lock_status`,
-		Ratelimit: (id: string, type: string) => `bso:user:${id.toString()}:ratelimit:${type}`,
+		User: {
+			BadgedUsername: (id: string) => `bso:user:${id.toString()}:badged_username`,
+			LockStatus: (id: string) => `bso:user:${id.toString()}:lock_status`,
+			Ratelimit: (id: string, type: string) => `bso:user:${id.toString()}:ratelimit:${type}`
+		},
 		GuildSettings: (id: string) => `bso:guild:${id.toString()}:settings`,
 		DisabledCommands: 'bso:disabled_commands'
 	},

@@ -85,7 +85,7 @@ export const blacklistCommand = defineCommand({
 				}
 			});
 			await syncBlacklists();
-			emitBlacklistLog(
+			await emitBlacklistLog(
 				`${inputUser.user.username}[${inputUser.user.id}] was blacklisted by ${user.mention}, reason: \`${options.add.reason}\`.`
 			);
 			return `Blacklisted ${inputUser.user.username}[${inputUser.user.id}], for \`${options.add.reason}\``;
@@ -98,7 +98,9 @@ export const blacklistCommand = defineCommand({
 				}
 			});
 			await syncBlacklists();
-			emitBlacklistLog(`${inputUser.user.username}[${inputUser.user.id}] was unblacklisted by ${user.mention}.`);
+			await emitBlacklistLog(
+				`${inputUser.user.username}[${inputUser.user.id}] was unblacklisted by ${user.mention}.`
+			);
 			return `Unblacklisted ${inputUser.user.username}[${inputUser.user.id}].`;
 		}
 		return 'Invalid command.';
