@@ -1379,20 +1379,24 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-async function srcMUserFetch(userID: string) {
-	const [user] = await prisma.$queryRaw<User[]>`INSERT INTO users (id)
-		VALUES (${userID})
-		ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id
-		RETURNING *;
-`;
-	for (const [key, val] of Object.entries(user)) {
-		if (key.includes('.') || key.includes(' ')) {
-			// @ts-expect-error
-			user[key.replace(/[.\s]/g, '_')] = val;
-			delete user[key as keyof User];
-		}
+async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+	const user =
+		updates !== undefined
+			? await prisma.user.upsert({
+					create: {
+						id: userID
+					},
+					update: updates,
+					where: {
+						id: userID
+					}
+				})
+			: await prisma.user.findUnique({ where: { id: userID } });
+
+	if (!user) {
+		return srcMUserFetch(userID, {});
 	}
-	return new MUserClass({ ...USER_DEFAULTS, ...user });
+	return new MUserClass(user);
 }
 
 global.mUserFetch = srcMUserFetch;
