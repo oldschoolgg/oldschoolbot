@@ -309,8 +309,12 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 	}
 
 	async fetchMainServerMember(userId: string): Promise<null | IMember> {
-		const m = await this.fetchMember({ guildId: this.mainServerId, userId });
-		return m;
+		try {
+			const m = await this.fetchMember({ guildId: this.mainServerId, userId });
+			return m;
+		} catch {
+			return null;
+		}
 	}
 
 	async fetchUser(userId: string): Promise<IUser> {
