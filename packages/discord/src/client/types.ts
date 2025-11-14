@@ -103,6 +103,7 @@ export interface DiscordClientEventsMap {
 	interactionCreate: [interaction: APIInteraction];
 	guildCreate: [guild: GatewayGuildCreateDispatchData];
 	ready: [data: { application: APIApplication }];
+	debug: [data: { message: string }];
 	economyLog: [message: string];
 	serverNotification: [message: string];
 	error: [error: Error];

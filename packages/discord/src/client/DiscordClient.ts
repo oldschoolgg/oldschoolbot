@@ -82,6 +82,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		this.ws.on(WebSocketShardEvents.Dispatch, async (packet, shardId) => {
 			switch (packet.t) {
 				case 'READY': {
+					this.emit('debug', { message: `Shard ${shardId} is ready.` });
 					if (shardId === 0) {
 						await this.onReady(packet.d);
 					}
