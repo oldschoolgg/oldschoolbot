@@ -5,7 +5,7 @@ import type PromiseQueue from 'p-queue';
 import PQueue from 'p-queue';
 
 import type { Giveaway } from '@/prisma/main.js';
-import { globalConfig } from '@/lib/constants.js';
+import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { MarketPriceData } from '@/lib/marketPrices.js';
 
 export const lastRoboChimpSyncCache = new Map<string, number>();
@@ -84,6 +84,7 @@ export function userIsBusy(userID: string): boolean {
 }
 
 export async function populateUsernameCache() {
+	if (BOT_TYPE === 'OSB') return;
 	const users = await prisma.user.findMany({
 		where: {
 			username_with_badges: {
