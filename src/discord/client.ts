@@ -74,6 +74,10 @@ client.on('economyLog', async (message: string) => {
 	Logging.logDebug(message);
 });
 
+client.on('debug', async ({ message }) => {
+	Logging.logDebug(message);
+});
+
 client.on('guildCreate', onRawGuildCreate);
 client.on('guildCreate', async guild => {
 	const [isUserBlacklisted, isGuildBlacklisted] = await Promise.all([
