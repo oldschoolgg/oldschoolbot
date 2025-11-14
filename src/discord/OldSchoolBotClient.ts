@@ -8,7 +8,7 @@ import {
 	type DiscordClientOptions,
 	Routes
 } from '@oldschoolgg/discord';
-import type { IChannel } from '@oldschoolgg/schemas';
+import type { IChannel, IWebhook } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
@@ -33,7 +33,7 @@ export class OldSchoolBotClient extends DiscordClient {
 		return mentionCommand(name, subCommand, subSubCommand);
 	}
 
-	async handleReadyEvent({ application }: { application: APIApplication }) {
+	private async handleReadyEvent({ application }: { application: APIApplication }) {
 		// Add owner to admin user IDs
 		const ownerId = application.owner?.id;
 		if (ownerId && !globalConfig.adminUserIDs.includes(ownerId)) {
@@ -41,6 +41,47 @@ export class OldSchoolBotClient extends DiscordClient {
 		}
 
 		Logging.logDebug(`Logged in as ${application.bot?.username} after ${process.uptime()}s`);
+	}
+
+	private async deleteWebhook(channelId: string): Promise<void> {
+		await Promise.all([Cache.clearWebhook(channelId), prisma.webhook.delete({ where: { channel_id: channelId } })]);
+	}
+
+	private async getChannelWebhook(channelId: string): Promise<IWebhook> {
+		const cachedWebhook = await Cache.getWebhook(channelId);
+		if (cachedWebhook) return cachedWebhook;
+		const [existingWebhook] = await globalClient.fetchWebhooks(channelId);
+		const existingWebhookFmt: IWebhook = {
+			id: existingWebhook.id,
+			token: existingWebhook.token!,
+			channel_id: channelId
+		};
+		await Cache.setWebhook(existingWebhookFmt);
+		return existingWebhookFmt;
+	}
+
+	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<{ success: boolean }> {
+		try {
+			const webhook = await this.getChannelWebhook(channelId);
+			await globalClient.sendWebhook(webhook, data);
+			return { success: true };
+		} catch (_err: unknown) {
+			const err = _err as Error;
+			if (err.message?.includes('Unknown Webhook')) {
+				Logging.logDebug(`Deleting unknown webhook in ${channelId}`);
+				await this.deleteWebhook(channelId);
+			} else {
+				Logging.logError(err);
+			}
+			return { success: false };
+		}
+	}
+
+	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<void> {
+		const webhookResult = await this.sendToWebhook(channelId, rawMessage);
+		if (!webhookResult.success) {
+			await this.sendMessage(channelId, rawMessage);
+		}
 	}
 
 	async channelIsSendable(channelId: IChannel | string): Promise<boolean> {

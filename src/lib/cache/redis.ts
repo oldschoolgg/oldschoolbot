@@ -308,6 +308,11 @@ class CacheManager {
 		return new Set(await this.client.smembers(RedisKeys.BlacklistedUsers));
 	}
 
+	// Webhooks
+	async clearWebhook(channelId: string): Promise<void> {
+		await this.client.del(BotKeys.Webhook(channelId));
+	}
+
 	async setWebhook(webhook: IWebhook): Promise<void> {
 		await this.setJson(BotKeys.Webhook(webhook.channel_id), webhook);
 	}
