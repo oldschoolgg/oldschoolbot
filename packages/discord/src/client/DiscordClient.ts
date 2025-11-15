@@ -33,7 +33,8 @@ import {
 	type DiscordClientOptions,
 	type SendableMessage,
 	sendableMsgToApiCreate,
-	type UserUsernameFetcher
+	type UserUsernameFetcher,
+	type ValidAPIChannel
 } from './types.js';
 
 export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> implements AsyncDisposable {
@@ -254,8 +255,8 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return res;
 	}
 
-	async fetchChannel(channelId: string): Promise<APIChannel | null> {
-		const res = (await this.rest.get(Routes.channel(channelId))) as APIChannel | null;
+	async fetchChannel(channelId: string): Promise<ValidAPIChannel | null> {
+		const res = (await this.rest.get(Routes.channel(channelId))) as ValidAPIChannel | null;
 		if (!res) return null;
 		return res;
 	}

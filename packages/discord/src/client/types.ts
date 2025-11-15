@@ -5,7 +5,12 @@ import { chunkArr } from '@oldschoolgg/util';
 import {
 	type APIAllowedMentions,
 	type APIApplication,
+	type APIDMChannel,
+	type APIGuildForumChannel,
 	type APIInteraction,
+	type APIPrivateThreadChannel,
+	type APIPublicThreadChannel,
+	type APITextChannel,
 	type GatewayGuildCreateDispatchData,
 	type GatewayIntentBits,
 	type GatewayMessageCreateDispatchData,
@@ -122,3 +127,10 @@ export interface DiscordClientOptions {
 	defaultAllowedMentions?: APIAllowedMentions;
 	userUsernameFetcher: UserUsernameFetcher;
 }
+
+export type ValidAPIChannel =
+	| APIDMChannel
+	| APITextChannel
+	| APIPublicThreadChannel
+	| APIGuildForumChannel
+	| APIPrivateThreadChannel;
