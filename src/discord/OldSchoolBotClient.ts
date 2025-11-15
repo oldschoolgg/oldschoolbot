@@ -47,10 +47,12 @@ export class OldSchoolBotClient extends DiscordClient {
 		await Promise.all([Cache.clearWebhook(channelId), prisma.webhook.delete({ where: { channel_id: channelId } })]);
 	}
 
-	private async getChannelWebhook(channelId: string): Promise<IWebhook> {
+	private async getChannelWebhook(channelId: string): Promise<IWebhook | null> {
 		const cachedWebhook = await Cache.getWebhook(channelId);
 		if (cachedWebhook) return cachedWebhook;
-		const [existingWebhook] = await globalClient.fetchWebhooks(channelId);
+		const existingWebhooks = await globalClient.fetchWebhooks(channelId);
+		if (existingWebhooks.length === 0) return null;
+		const existingWebhook = existingWebhooks[0];
 		const existingWebhookFmt: IWebhook = {
 			id: existingWebhook.id,
 			token: existingWebhook.token!,
@@ -63,6 +65,7 @@ export class OldSchoolBotClient extends DiscordClient {
 	private async sendToWebhook(channelId: string, data: SendableMessage): Promise<{ success: boolean }> {
 		try {
 			const webhook = await this.getChannelWebhook(channelId);
+			if (!webhook) return { success: false };
 			await globalClient.sendWebhook(webhook, data);
 			return { success: true };
 		} catch (_err: unknown) {
