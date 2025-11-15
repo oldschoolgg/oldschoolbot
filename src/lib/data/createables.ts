@@ -2601,10 +2601,10 @@ const Createables: Createable[] = [
 		name: 'Warped extract',
 		inputItems: new Bank({
 			'Tainted essence chunk': 1,
-			Coins: 1_250
+			Coins: 6_250
 		}),
 		outputItems: new Bank({
-			'Warped extract': 1
+			'Warped extract': 5
 		})
 	},
 	{
@@ -2621,20 +2621,20 @@ const Createables: Createable[] = [
 		name: 'Mangled extract',
 		inputItems: new Bank({
 			'Tainted essence chunk': 1,
-			Coins: 12_000
+			Coins: 60_000
 		}),
 		outputItems: new Bank({
-			'Mangled extract': 1
+			'Mangled extract': 5
 		})
 	},
 	{
 		name: 'Scarred extract',
 		inputItems: new Bank({
 			'Tainted essence chunk': 1,
-			Coins: 24_000
+			Coins: 120_000
 		}),
 		outputItems: new Bank({
-			'Scarred extract': 1
+			'Scarred extract': 5
 		})
 	},
 	{
