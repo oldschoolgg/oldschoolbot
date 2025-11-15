@@ -2,9 +2,11 @@ import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
 import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
+import type { User } from '@/prisma/main.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import { BitField, Channel, globalConfig } from '@/lib/constants.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
+import { MUserClass } from '@/lib/MUser.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
@@ -113,27 +115,57 @@ export const tickers: {
 		startupWait: Time.Minute,
 		interval: Time.Minute * 3.5,
 		timer: null,
-		productionOnly: true,
 		cb: async () => {
 			const basePlantTime = 1_626_556_507_451;
 			const now = Date.now();
-			const users = await prisma.user.findMany({
-				where: {
-					bitfield: {
-						hasSome: [
-							BitField.IsPatronTier3,
-							BitField.IsPatronTier4,
-							BitField.IsPatronTier5,
-							BitField.IsPatronTier6,
-							BitField.isModerator
-						]
-					}
-				}
-			});
-			for (const partialUser of users) {
-				if (partialUser.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
-				const user = await mUserFetch(partialUser.id);
-				const { patches } = await Farming.getFarmingInfoFromUser(user);
+			const keys = [
+				'farmingPatches.herb',
+				'farmingPatches.fruit tree',
+				'farmingPatches.tree',
+				'farmingPatches.allotment',
+				'farmingPatches.hops',
+				'farmingPatches.cactus',
+				'farmingPatches.bush',
+				'farmingPatches.spirit',
+				'farmingPatches.hardwood',
+				'farmingPatches.seaweed',
+				'farmingPatches.vine',
+				'farmingPatches.calquat',
+				'farmingPatches.redwood',
+				'farmingPatches.crystal',
+				'farmingPatches.celastrus',
+				'farmingPatches.hespori',
+				'farmingPatches.flower',
+				'farmingPatches.mushroom',
+				'farmingPatches.belladonna'
+			];
+			const users = await prisma.$queryRawUnsafe<User[]>(`SELECT *
+FROM users u
+WHERE
+  bitfield && ARRAY[
+    4,  -- IsPatronTier3
+    5,  -- IsPatronTier4
+    6,  -- IsPatronTier5
+    21, -- IsPatronTier6
+    7   -- isModerator
+  ]::int[]
+AND last_command_date > now() - INTERVAL '5 days'
+AND EXISTS (
+  SELECT 1
+  FROM farmed_crop fc
+  WHERE fc.user_id = u.id
+    AND fc.date_planted > now() - INTERVAL '2 days'
+)
+AND NOT (bitfield @> ARRAY[
+    37  -- DisabledFarmingReminders
+]::int[])
+AND (
+  ${keys.map(_key => `("${_key}" IS NOT NULL AND NOT "${_key}"::jsonb ? 'wasReminded')`).join(' OR ')}
+)
+ORDER BY random()
+LIMIT 10;`);
+			for (const user of users.map(_u => new MUserClass(_u))) {
+				const { patches } = Farming.getFarmingInfoFromUser(user);
 
 				const patchesReadyToHarvest: FarmingPatchName[] = [];
 				for (const patchType of Farming.farmingPatchNames) {
@@ -157,14 +189,16 @@ export const tickers: {
 					patchesReadyToHarvest.push(patchType);
 				}
 
-				if (patchesReadyToHarvest.length > 0) {
-					const userUpdates: Partial<Record<FarmingPatchSettingsKey, IPatchData>> = {};
-					for (const patchType of patchesReadyToHarvest) {
-						userUpdates[Farming.getFarmingKeyFromName(patchType)] = {
-							...patches[patchType],
-							wasReminded: true
-						};
-					}
+				if (patchesReadyToHarvest.length === 0) continue;
+				const userUpdates: Partial<Record<FarmingPatchSettingsKey, IPatchData>> = {};
+				for (const patchType of patchesReadyToHarvest) {
+					userUpdates[Farming.getFarmingKeyFromName(patchType)] = {
+						...patches[patchType],
+						wasReminded: true
+					};
+				}
+
+				if (globalConfig.isProduction) {
 					await globalClient.sendDm(user.id, {
 						content: `The following farming patches are ready to be harvested: ${patchesReadyToHarvest.join(', ')}.`,
 						components: [
