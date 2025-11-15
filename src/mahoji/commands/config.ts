@@ -15,6 +15,7 @@ import { clamp } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { itemOption } from '@/discord/index.js';
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
@@ -354,7 +355,7 @@ async function bankSortConfig(
 			response.addContent(`\n**Weightings:**${weightingBankStr}`);
 		} else {
 			response.addBankImage({
-				bank: currentWeightingBank,
+				bank: currentWeightingBank.filter(_it => CanvasModule.allItemIdsWithSprite.has(_it.id)),
 				title: 'Bank Sort Weightings',
 				user
 			});
