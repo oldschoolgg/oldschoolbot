@@ -795,6 +795,7 @@ model FarmedCrop {
   was_autofarmed      Boolean
   paid_for_protection Boolean
 
+  @@index([user_id, date_planted])
   @@map("farmed_crop")
 }
 
