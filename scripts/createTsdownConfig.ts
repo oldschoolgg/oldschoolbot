@@ -7,7 +7,7 @@ const tsconfigPath = relative(import.meta.dirname, resolveDir(process.cwd(), 'sr
 const baseOptions: UserConfig = {
 	clean: true,
 	dts: true,
-	minify: false,
+	minify: true,
 	skipNodeModulesBundle: false,
 	sourcemap: 'inline',
 	target: 'node24',
