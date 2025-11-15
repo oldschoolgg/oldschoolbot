@@ -63,7 +63,8 @@ export const wikiCommand = defineCommand({
 
 		const result: WikiResponse = (await fetch(url, {
 			headers: {
-				'User-Agent': `application=OldSchoolBot,discord_user_id=${globalClient.application?.owner?.id || 'unknown'}`
+				'User-Agent': `application=OldSchoolBot,discord_user_id=${globalClient.application?.owner?.id || 'unknown'}`,
+				Accept: 'application/json'
 			}
 		}).then(res => res.json())) as WikiResponse;
 		const pageInfo = result.query?.pages ? Object.values(result.query.pages)[0] : null;
