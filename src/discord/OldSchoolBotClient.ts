@@ -80,7 +80,7 @@ export class OldSchoolBotClient extends DiscordClient {
 	async sendMessageOrWebhook(channelId: string, rawMessage: SendableMessage): Promise<void> {
 		try {
 			await this.sendMessage(channelId, rawMessage);
-		} catch (err) {
+		} catch {
 			await this.sendToWebhook(channelId, rawMessage);
 		}
 	}
