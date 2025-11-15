@@ -34,6 +34,10 @@ export class TestClient extends AsyncEventEmitter<any> implements AsyncDisposabl
 		return [options.leader];
 	}
 
+	async reactToMsg() {
+		return;
+	}
+
 	mentionCommand() {
 		return '';
 	}
