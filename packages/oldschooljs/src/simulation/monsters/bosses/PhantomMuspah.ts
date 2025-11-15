@@ -79,8 +79,8 @@ const TotalPhantomMuspahTable = new LootTable()
 	.every(new LootTable().add(NormalPhantomMuspahTable, 1, 7).add(FoodAndPotions, 1, 2), 1)
 	.every(NormalPhantomMuspahTable)
 	// Charged ice once if under 3 min, skipped here
-	.tertiary(40, 'Clue scroll (hard)')
-	.tertiary(50, 'Clue scroll (elite)')
+	.tertiary(30, 'Clue scroll (hard)')
+	.tertiary(45, 'Clue scroll (elite)')
 	.tertiary(2500, 'Muphin');
 
 export default new SimpleMonster({
