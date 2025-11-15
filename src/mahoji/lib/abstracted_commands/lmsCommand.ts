@@ -3,8 +3,6 @@ import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
-import { lmsSimCommand } from '@/lib/minions/functions/lmsSimCommand.js';
-// import { lmsSimCommand } from '@/lib/minions/functions/lmsSimCommand.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
@@ -33,12 +31,13 @@ export async function lmsCommand(
 	}
 
 	if (options.simulate) {
-		const channel = await Cache.getChannel(channelId);
-		if (!channel) return 'Unable to find channel.';
-		lmsSimCommand(channel, options.simulate.names);
-		return {
-			content: 'Starting simulation...'
-		};
+		// const channel = await Cache.getChannel(channelId);
+		// if (!channel) return 'Unable to find channel.';
+		// lmsSimCommand(channel, options.simulate.names);
+		// return {
+		// 	content: 'Starting simulation...'
+		// };
+		return `LMS simulation is temporarily disabled.`;
 	}
 
 	if (options.buy) {
