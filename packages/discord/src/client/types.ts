@@ -68,20 +68,14 @@ function resolveComponents(
 
 const DEFAULT_ALLOWED_MENTIONS: APIAllowedMentions = { users: [], roles: [], parse: [] };
 
-export async function sendableMsgToApiCreate({
-	msg,
-	defaultAllowedMentions
-}: {
-	msg: SendableMessage;
-	defaultAllowedMentions?: APIAllowedMentions;
-}): Promise<APISendableMessage> {
+export async function sendableMsgToApiCreate({ msg }: { msg: SendableMessage }): Promise<APISendableMessage> {
 	if (typeof msg === 'string') {
-		return sendableMsgToApiCreate({ msg: { content: msg }, defaultAllowedMentions });
+		return sendableMsgToApiCreate({ msg: { content: msg } });
 	}
 
 	if ('build' in msg) {
 		// TODO: if content >2k, send as txt file
-		return sendableMsgToApiCreate({ msg: await msg.build(), defaultAllowedMentions });
+		return sendableMsgToApiCreate({ msg: await msg.build() });
 	}
 
 	const message: RESTPostAPIChannelMessageJSONBody = {
@@ -89,7 +83,7 @@ export async function sendableMsgToApiCreate({
 		components: resolveComponents(msg.components),
 		embeds: msg.embeds?.map(embed => embed.toJSON()),
 		flags: msg.ephemeral ? MessageFlags.Ephemeral : undefined,
-		allowed_mentions: merge(merge(DEFAULT_ALLOWED_MENTIONS, defaultAllowedMentions), msg.allowedMentions),
+		allowed_mentions: merge(DEFAULT_ALLOWED_MENTIONS, msg.allowedMentions),
 		message_reference: msg.messageReference
 	};
 

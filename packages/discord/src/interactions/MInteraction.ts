@@ -14,7 +14,7 @@ import {
 
 import type { DiscordClient } from '../client/DiscordClient.js';
 import type { BaseSendableMessage, SendableMessage } from '../client/types.js';
-import { Permissions } from '../Permissions.js';
+import { convertApiMemberToZMember } from '../index.js';
 import { BaseInteraction } from './BaseInteraction.js';
 import { interactionConfirmation } from './confirmation.js';
 import { PaginatedMessage, type PaginatedMessageOptions } from './PaginatedMessage.js';
@@ -54,13 +54,11 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 
 	get member(): IMember | null {
 		if (!this.rawInteraction.member) return null;
-		const member: IMember = {
-			user_id: this.interaction.user_id,
-			guild_id: this.rawInteraction.guild_id!,
-			roles: this.rawInteraction.member.roles,
-			permissions: Permissions.toKeys(this.rawInteraction.member.permissions)
-		};
-		return member;
+		return convertApiMemberToZMember({
+			userId: this.interaction.user_id,
+			guildId: this.rawInteraction.guild_id!,
+			apiMember: this.rawInteraction.member
+		});
 	}
 
 	get message(): APIMessage | null {

@@ -5,7 +5,6 @@ import { uniqueArr } from '@oldschoolgg/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	ActivityType,
-	type APIAllowedMentions,
 	type APIApplication,
 	type APIApplicationCommand,
 	type APIApplicationCommandOptionChoice,
@@ -41,7 +40,6 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 	// Config
 	public isProduction: boolean;
 	private mainServerId: string;
-	private defaultAllowedMentions?: APIAllowedMentions;
 
 	public isReady = false;
 	public applicationCommands: APIApplicationCommand[] | null = null;
@@ -57,13 +55,11 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		initialPresence,
 		isProduction,
 		mainServerId,
-		defaultAllowedMentions,
 		userUsernameFetcher
 	}: DiscordClientOptions) {
 		super();
 		this.isProduction = isProduction;
 		this.mainServerId = mainServerId;
-		this.defaultAllowedMentions = defaultAllowedMentions;
 		this.userUsernameFetcher = userUsernameFetcher;
 		this.rest = new REST({ version: '10' }).setToken(token);
 		this.ws = new WebSocketManager({
@@ -120,7 +116,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 	}
 
 	private sendableMsgToApiCreate(msg: SendableMessage) {
-		return sendableMsgToApiCreate({ msg, defaultAllowedMentions: this.defaultAllowedMentions });
+		return sendableMsgToApiCreate({ msg });
 	}
 
 	private async onReady(_d: GatewayReadyDispatchData) {
@@ -222,12 +218,12 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 
 	async sendMessage(channelId: string, rawMessage: SendableMessage): Promise<IMessage> {
 		try {
-		const { files, message } = await this.sendableMsgToApiCreate(rawMessage);
-		const res = await this.rest.post(Routes.channelMessages(channelId), {
-			body: message,
-			files: files ?? undefined
-		});
-		return res as IMessage;
+			const { files, message } = await this.sendableMsgToApiCreate(rawMessage);
+			const res = await this.rest.post(Routes.channelMessages(channelId), {
+				body: message,
+				files: files ?? undefined
+			});
+			return res as IMessage;
 		} catch (err) {
 			this.emit('error', err as Error);
 			throw err;
