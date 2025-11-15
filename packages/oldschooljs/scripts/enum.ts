@@ -69,7 +69,8 @@ async function main() {
 				[
 					'black mask',
 					'slayer',
-					'collection'
+					'collection',
+					'salve'
 					// TODO
 					// ...Object.values(SkillsEnum).map(n => `${n.toLowerCase()} `)
 				].some(_str => _item.name.toLowerCase().includes(_str)))
