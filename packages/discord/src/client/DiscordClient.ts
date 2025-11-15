@@ -136,6 +136,9 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 
 	async login() {
 		await this.ws.connect();
+		return new Promise<void>(resolve => {
+			this.once('ready', () => resolve());
+		});
 	}
 
 	get applicationId() {
