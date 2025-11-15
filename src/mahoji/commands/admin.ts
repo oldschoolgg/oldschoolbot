@@ -761,7 +761,6 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.shut_down) {
-			Logging.logDebug('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({

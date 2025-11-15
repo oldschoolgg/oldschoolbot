@@ -51,10 +51,6 @@ export function modifyUserBusy({
 	userID: string;
 	reason: string;
 }): void {
-	Logging.logDebug(`ModifyUserBusy UserID[${userID}] Type[${type}] Reason[${reason}]`, {
-		type: 'MODIFY_USER_BUSY',
-		user_id: userID
-	});
 	const isBusy = busyUsers.has(userID);
 
 	switch (type) {
