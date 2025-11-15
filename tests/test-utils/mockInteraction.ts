@@ -1,4 +1,5 @@
 import { InteractionType } from '@oldschoolgg/discord';
+import type { IInteractionResponse } from '@oldschoolgg/schemas';
 
 import { TEST_CHANNEL_ID } from '../integration/util.js';
 
@@ -17,6 +18,10 @@ class MockInteraction {
 	}
 	async reply(res: any) {
 		this.__response__ = res;
+	}
+	async replyWithResponse(res: any): Promise<IInteractionResponse> {
+		this.__response__ = res;
+		return { message_id: '2222555555' };
 	}
 
 	public rawInteraction: any;

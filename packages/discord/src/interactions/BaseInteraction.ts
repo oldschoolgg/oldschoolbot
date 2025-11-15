@@ -2,12 +2,13 @@ import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import type { IButtonInteraction, IChatInputCommandInteraction } from '@oldschoolgg/schemas';
 import { isObject } from '@oldschoolgg/util';
 import {
-	type APIAllowedMentions,
+	type APIBaseMessageNoChannel,
 	type APIChatInputApplicationCommandInteraction,
 	type APIMessage,
 	type APIMessageComponentInteraction,
 	InteractionResponseType,
 	MessageFlags,
+	type RESTPostAPIInteractionCallbackWithResponseResult,
 	Routes
 } from 'discord-api-types/v10';
 
@@ -28,7 +29,6 @@ export class BaseInteraction {
 	private readonly rest: REST;
 	private _data: IChatInputCommandInteraction | IButtonInteraction;
 	public userId: string;
-	private defaultAllowedMentions: APIAllowedMentions = { users: [], roles: [], parse: [] };
 
 	constructor({
 		client,
@@ -90,7 +90,7 @@ export class BaseInteraction {
 	}
 
 	private async toBody(msg: SendableMessage): Promise<APISendableMessage> {
-		const result = await sendableMsgToApiCreate({ msg, defaultAllowedMentions: this.defaultAllowedMentions });
+		const result = await sendableMsgToApiCreate({ msg });
 		if (result.message.flags === MessageFlags.Ephemeral) {
 			this._ephemeral = true;
 		}
@@ -100,7 +100,7 @@ export class BaseInteraction {
 	private async sendCallback(
 		type: InteractionResponseType,
 		options?: SendableMessage & { withResponse?: boolean }
-	): Promise<APIMessage | null> {
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | null> {
 		const query = makeURLSearchParams({
 			with_response: options?.withResponse ?? false,
 			thread_id: isObject(options) && 'threadId' in options ? options.threadId : undefined
@@ -111,7 +111,7 @@ export class BaseInteraction {
 			body: { type, data: message },
 			files: files ?? undefined,
 			query
-		}) as Promise<APIMessage | null>;
+		}) as Promise<RESTPostAPIInteractionCallbackWithResponseResult | null>;
 	}
 
 	private async sendWebhookCreate(options: SendableMessage): Promise<APIMessage> {
@@ -124,13 +124,16 @@ export class BaseInteraction {
 		}) as Promise<APIMessage>;
 	}
 
-	private async sendWebhookEdit(messageId: string, options: SendableMessage): Promise<APIMessage> {
+	private async sendWebhookEdit(
+		messageId: string,
+		options: SendableMessage
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult> {
 		const { files, message } = await this.toBody(options);
 		return this.rest.patch(Routes.webhookMessage(this.applicationId, this.token, messageId), {
 			auth: false,
 			body: message,
 			files: files ?? undefined
-		}) as Promise<APIMessage>;
+		}) as Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 	}
 
 	async baseDeferReply(options: { ephemeral?: boolean; withResponse?: boolean; threadId?: string } = {}) {
@@ -147,7 +150,9 @@ export class BaseInteraction {
 		return options.withResponse ? res : undefined;
 	}
 
-	async baseReply(options: SendableMessage): Promise<APIMessage | null> {
+	async baseReply(
+		options: SendableMessage
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | APIBaseMessageNoChannel | null> {
 		if (this._deferred || this._replied) {
 			return this.baseEditReply(options);
 		}
@@ -181,7 +186,7 @@ export class BaseInteraction {
 		}) as Promise<APIMessage>;
 	}
 
-	async baseEditReply(options: EditMessageOptions): Promise<APIMessage> {
+	async baseEditReply(options: EditMessageOptions): Promise<RESTPostAPIInteractionCallbackWithResponseResult> {
 		if (!this._deferred && !this._replied) throw new Error('InteractionNotReplied');
 		return this.sendWebhookEdit('@original', options);
 	}

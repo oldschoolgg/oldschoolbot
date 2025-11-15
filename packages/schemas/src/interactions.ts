@@ -133,3 +133,8 @@ export type IChatInputCommandInteraction = z.infer<typeof ZChatInputCommandInter
 
 export const ZInteraction = z.union([ZAutoCompleteInteraction, ZButtonInteraction, ZChatInputCommandInteraction]);
 export type IInteraction = z.infer<typeof ZInteraction>;
+
+export const ZInteractionResponse = z.object({
+	message_id: ZSnowflake
+});
+export type IInteractionResponse = z.infer<typeof ZInteractionResponse>;

@@ -133,7 +133,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 
 	async run(targetUsers?: string[]) {
 		await this.interaction.defer({ ephemeral: this.ephemeral });
-		const interactionResponse = await this.interaction.reply({ ...(await this.render()), withResponse: true });
+		const interactionResponse: any = await this.interaction.replyWithResponse({ ...(await this.render()) });
 		if (this.totalPages === 1) return SpecialResponse.PaginatedMessageResponse;
 
 		if (!interactionResponse) {

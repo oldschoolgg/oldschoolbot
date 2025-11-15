@@ -1,4 +1,9 @@
-import type { IButtonInteraction, IChatInputCommandInteraction, IMember } from '@oldschoolgg/schemas';
+import type {
+	IButtonInteraction,
+	IChatInputCommandInteraction,
+	IInteractionResponse,
+	IMember
+} from '@oldschoolgg/schemas';
 import { deepMerge } from '@oldschoolgg/toolkit';
 import {
 	type APIChatInputApplicationCommandInteraction,
@@ -76,14 +81,35 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 		return this.baseDeferReply({ ephemeral });
 	}
 
-	async reply(message: SendableMessage): Promise<APIMessage | null> {
+	async reply(message: SendableMessage): Promise<null> {
 		try {
-			const response = await this.baseReply(message);
-			return response;
+			await this.baseReply(message);
 		} catch (_err) {
 			this.client.emit('error', _err as Error);
 			return null;
 		}
+		return null;
+	}
+
+	async replyWithResponse(message: BaseSendableMessage): Promise<IInteractionResponse | null> {
+		try {
+			const response = await this.baseReply({ ...message, withResponse: true })!;
+			if (!response) throw new Error('No response from baseReply');
+			if ('id' in response) {
+				return {
+					message_id: response.id
+				};
+			}
+			if (!response.interaction.response_message_id) {
+				throw new Error('No response message ID found');
+			}
+			return {
+				message_id: response.interaction.response_message_id
+			};
+		} catch (_err) {
+			this.client.emit('error', _err as Error);
+		}
+		return null;
 	}
 
 	/**

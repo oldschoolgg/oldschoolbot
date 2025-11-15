@@ -125,15 +125,15 @@ export class OldSchoolBotClient extends DiscordClient {
 			});
 			allowedUsers ??= [interaction.userId];
 			await interaction.defer();
-			const msg = await interaction.reply({
+			const msg = await interaction.replyWithResponse({
 				content,
 				components: buttons,
 				withResponse: true
 			});
 			const res = await collectSingleInteraction({
 				interaction,
-				messageId: msg!.id,
-				channelId: msg!.channel_id,
+				messageId: msg!.message_id,
+				channelId: interaction.channelId,
 				users: allowedUsers,
 				timeoutMs: Time.Second * 30
 			});
