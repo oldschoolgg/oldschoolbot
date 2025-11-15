@@ -85,7 +85,7 @@ export const tickers: {
 	{
 		name: 'metrics',
 		timer: null,
-		interval: Time.Minute,
+		interval: Time.Second * 10,
 		cb: async () => {
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
