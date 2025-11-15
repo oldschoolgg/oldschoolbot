@@ -14,7 +14,7 @@ import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
-import { itemOption } from '@/discord/index.js';
+import { choicesOf, itemOption } from '@/discord/index.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
@@ -23,7 +23,7 @@ import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combat
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
-import { BankSortMethods } from '@/lib/sorts.js';
+import { BankSortMethods, isValidBankSortMethod } from '@/lib/sorts.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
 
@@ -364,7 +364,7 @@ async function bankSortConfig(
 	}
 
 	if (sortMethod) {
-		if (!(BankSortMethods as readonly string[]).includes(sortMethod)) {
+		if (!isValidBankSortMethod(sortMethod)) {
 			return `That's not a valid bank sort method. Valid methods are: ${BankSortMethods.join(', ')}.`;
 		}
 		await user.update({
@@ -816,7 +816,7 @@ export const configCommand = defineCommand({
 							name: 'sort_method',
 							description: 'The way items in your bank should be sorted.',
 							required: false,
-							choices: BankSortMethods.map(i => ({ name: i, value: i }))
+							choices: choicesOf(BankSortMethods)
 						},
 						{
 							type: 'String',
