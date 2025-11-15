@@ -1,7 +1,7 @@
 import { bold, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
 import { MathRNG, roll } from '@oldschoolgg/rng';
 import type { IMessage } from '@oldschoolgg/schemas';
-import { Emoji, Events, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
+import { Emoji, Events, getNextUTCReset, isFunction, Time } from '@oldschoolgg/toolkit';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
@@ -311,20 +311,23 @@ export async function onMessage(msg: IMessage) {
 				components: result.components,
 				content: msgContentWithoutCommand
 			});
-			return globalClient.replyToMessage(msg, response);
+			await globalClient.replyToMessage(msg, response);
 		} catch (err) {
-			if (typeof err === 'string') return globalClient.replyToMessage(msg, err);
-			if (err instanceof UserError) return globalClient.replyToMessage(msg, err.message);
+			let errMsg = 'There was an error running that command.';
+			if (typeof err === 'string') errMsg = err;
+			else if (err instanceof Error) errMsg = err.message;
+			await globalClient.replyToMessage(msg, { content: errMsg });
 			Logging.logError(err as Error);
 		}
 		return;
 	}
 
 	if (content.match(mentionRegex)) {
-		return globalClient.replyToMessage(msg, {
+		await globalClient.replyToMessage(msg, {
 			content: result.content,
 			components: result.components
 		});
+		return;
 	}
 }
 
