@@ -8,6 +8,7 @@ import { BOT_TYPE } from '@/lib/constants.js';
 
 class CanvasModuleSingleton {
 	private didInit = false;
+	public allItemIdsWithSprite = new Set<number>();
 
 	public Spritesheet!: {
 		OSRSItems: CanvasSpritesheet;
@@ -32,6 +33,10 @@ class CanvasModuleSingleton {
 				'./src/lib/resources/spritesheets/bso-items-spritesheet.png'
 			)
 		};
+		this.allItemIdsWithSprite = new Set([
+			...this.Spritesheet.OSRSItems.allItemIds,
+			...this.Spritesheet.BSOItems.allItemIds
+		]);
 
 		// Init/load icon pack icons
 		for (const pack of Object.values(ItemIconPacks)) {
