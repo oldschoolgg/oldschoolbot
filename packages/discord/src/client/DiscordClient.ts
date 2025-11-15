@@ -220,12 +220,17 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 	}
 
 	async sendMessage(channelId: string, rawMessage: SendableMessage): Promise<IMessage> {
+		try {
 		const { files, message } = await this.sendableMsgToApiCreate(rawMessage);
 		const res = await this.rest.post(Routes.channelMessages(channelId), {
 			body: message,
 			files: files ?? undefined
 		});
 		return res as IMessage;
+		} catch (err) {
+			this.emit('error', err as Error);
+			throw err;
+		}
 	}
 
 	async sendDm(userId: string, message: SendableMessage) {
