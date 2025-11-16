@@ -1,7 +1,7 @@
 import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
-import { filterOption } from '@/lib/discord/index.js';
+import { filterOption } from '@/discord/index.js';
 import { cats } from '@/lib/growablePets.js';
 import minionIcons from '@/lib/minions/data/minionIcons.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';

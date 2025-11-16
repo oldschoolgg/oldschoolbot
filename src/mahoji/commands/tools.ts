@@ -1,43 +1,29 @@
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
-import { ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
-import type { Activity, User } from '@/prisma/main.js';
+import type { Activity } from '@/prisma/main.js';
+import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
-import { choicesOf, itemOption, monsterOption, skillOption } from '@/lib/discord/index.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
-import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
+import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
-import { getUsername, isGroupActivity } from '@/lib/util.js';
+import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { patronMsg } from '@/mahoji/mahojiSettings.js';
-
-function isRaidsActivity(data: any): data is RaidsOptions {
-	return 'challengeMode' in data;
-}
-
-function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
-	return 'wipedRoom' in data;
-}
-
-function isNexActivity(data: any): data is NexTaskOptions {
-	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
-}
 
 const skillsVals = Object.values(Skills);
 
@@ -48,7 +34,7 @@ function dateDiff(first: number, second: number) {
 const whereInMassClause = (id: string) =>
 	`OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${id}%')`;
 
-async function activityExport(user: User): CommandResponse {
+async function activityExport(user: MUser): CommandResponse {
 	const allActivities = await prisma.$queryRawUnsafe<
 		Activity[]
 	>(`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
@@ -63,23 +49,23 @@ OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIK
 	const zipped = await asyncGzip(buffer);
 
 	return {
-		files: [{ name: 'activity-export.txt.gz', attachment: zipped }]
+		files: [{ name: 'activity-export.txt.gz', buffer: zipped }]
 	};
 }
 
-async function minionStats(user: User) {
+async function minionStats(user: MUser) {
 	const { id } = user;
-	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = (await Promise.all([
-		prisma.$queryRawUnsafe(`SELECT count(id)
+	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = await Promise.all([
+		prisma.$queryRawUnsafe<{ count: bigint }[]>(`SELECT count(id)
 FROM activity
 WHERE user_id = ${id}
 ${whereInMassClause(id)};`),
-		prisma.$queryRawUnsafe(`SELECT id, start_date, type
+		prisma.$queryRawUnsafe<{ id: string; start_date: Date; type: string }[]>(`SELECT id, start_date, type
 FROM activity
 WHERE user_id = ${id}
 ORDER BY id ASC
 LIMIT 1;`),
-		prisma.$queryRawUnsafe(`
+		prisma.$queryRawUnsafe<{ type: string; qty: bigint }[]>(`
 SELECT type, count(type) as qty
 FROM activity
 WHERE user_id = ${id}
@@ -87,12 +73,12 @@ ${whereInMassClause(id)}
 GROUP BY type
 ORDER BY qty DESC
 LIMIT 15;`),
-		prisma.$queryRawUnsafe(`
+		prisma.$queryRawUnsafe<{ sum: bigint }[]>(`
 SELECT sum(duration)
 FROM activity
 WHERE user_id = ${id}
 ${whereInMassClause(id)};`)
-	])) as any[];
+	]);
 
 	const totalDuration = Number(_totalDuration.sum);
 	const firstActivityDate = new Date(firstActivity.start_date);
@@ -103,7 +89,7 @@ ${whereInMassClause(id)};`)
 	return `**Total Activities:** ${totalActivities.count}
 **Common Activities:** ${countsPerActivity
 		.slice(0, 3)
-		.map((i: any) => `${i.qty}x ${i.type}`)
+		.map(i => `${i.qty}x ${i.type}`)
 		.join(', ')}
 **Total Minion Activity:** ${formatDuration(totalDuration)}
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
@@ -153,8 +139,8 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 			(
 				await Promise.all(
 					res.map(
-						async (i: any) =>
-							`${++place}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
+						async i =>
+							`${++place}. **${await Cache.getBadgedUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
 					)
 				)
 			).join('\n')
@@ -222,7 +208,7 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 				await Promise.all(
 					xpRecords.map(
 						async record =>
-							`${++place}. **${await getUsername(record.user)}**: ${Number(record.total_xp).toLocaleString()} XP`
+							`${++place}. **${await Cache.getBadgedUsername(record.user)}**: ${Number(record.total_xp).toLocaleString()} XP`
 					)
 				)
 			).join('\n')
@@ -267,8 +253,8 @@ export async function kcGains(interval: string, monsterName: string, ironmanOnly
 			(
 				await Promise.all(
 					res.map(
-						async (i: any) =>
-							`${++place}. **${await getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
+						async i =>
+							`${++place}. **${await Cache.getBadgedUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`
 					)
 				)
 			).join('\n')
@@ -576,7 +562,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 
 		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${(
 			await Promise.all(
-				result.map(async ({ id, val }) => `${await getUsername(id)}: ${entity.format(val || -1)}`)
+				result.map(async ({ id, val }) => `${await Cache.getBadgedUsername(id)}: ${entity.format(val || -1)}`)
 			)
 		).join('\n')}`;
 	}
@@ -612,7 +598,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 		await Promise.all(
 			result.map(
 				async ({ id, KC }) =>
-					`${(await getUsername(id)) as string}: ${Number.parseInt(KC, 10).toLocaleString()}`
+					`${(await Cache.getBadgedUsername(id)) as string}: ${Number.parseInt(KC, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;
@@ -647,24 +633,22 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 		await Promise.all(
 			result.map(
 				async ({ id, qty }) =>
-					`${result.length < 10 ? '(Anonymous)' : await getUsername(id)}: ${Number.parseInt(qty, 10).toLocaleString()}`
+					`${result.length < 10 ? '(Anonymous)' : await Cache.getBadgedUsername(id)}: ${Number.parseInt(qty, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;
 }
 
-async function checkMassesCommand(guildID: string | undefined) {
-	if (!guildID) return 'This can only be used in a server.';
-	const guild = globalClient.guilds.cache.get(guildID.toString());
-	if (!guild) return 'Guild not found.';
-	const channelIDs = guild.channels.cache.filter(c => c.type === ChannelType.GuildText).map(c => BigInt(c.id));
+async function checkMassesCommand(guildId: string | null) {
+	if (!guildId) return 'This can only be used in a server.';
+	const channelIds = await globalClient.fetchChannelsOfGuild(guildId);
 
 	const masses = (
 		await prisma.activity.findMany({
 			where: {
 				completed: false,
 				group_activity: true,
-				channel_id: { in: channelIDs }
+				channel_id: { in: channelIds.map(c => BigInt(c.id)) }
 			},
 			orderBy: {
 				finish_date: 'asc'
@@ -688,7 +672,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 				return [
 					remainingTime,
 					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
-						m.channelID
+						m.channelId
 					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
@@ -728,7 +712,7 @@ export const toolsCommand = defineCommand({
 							name: 'tier',
 							description: 'The tier of clue scroll.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return [...ClueTiers.map(i => ({ name: i.name, value: i }))]
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
@@ -794,7 +778,7 @@ export const toolsCommand = defineCommand({
 							name: 'source',
 							description: 'The source of the item – a monster, minigame, clue, etc.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return [
 									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
 									...killableMonsters
@@ -910,7 +894,7 @@ export const toolsCommand = defineCommand({
 							name: 'unit',
 							description: 'The specific unit you want to view (optional).',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return allStashUnitsFlat
 									.filter(i => stringSearch(value, i.desc))
 									.map(i => ({ name: i.desc, value: i.id.toString() }));
@@ -944,7 +928,7 @@ export const toolsCommand = defineCommand({
 							name: 'unit',
 							description: 'The specific unit you want to unfill.',
 							required: true,
-							autocomplete: async (value: string, user: MUser) => {
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								return (await user.fetchStashUnits())
 									.filter(i => i.builtUnit !== undefined && i.builtUnit.items_contained.length > 0)
 									.filter(i =>
@@ -958,26 +942,26 @@ export const toolsCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, interaction, guildID }): CommandResponse => {
+	run: async ({ options, user, interaction, guildId }): CommandResponse => {
 		await interaction.defer();
 
 		if (options.patron) {
 			const { patron } = options;
 
 			if (patron.clue_gains) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return clueGains(patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
 			}
 			if (patron.kc_gains) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return kcGains(patron.kc_gains.time, patron.kc_gains.monster, Boolean(patron.kc_gains.ironman));
 			}
 			if (patron.xp_gains) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
 			}
 			if (patron.drystreak) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return dryStreakCommand(
 					patron.drystreak.source,
 					patron.drystreak.item,
@@ -985,27 +969,27 @@ export const toolsCommand = defineCommand({
 				);
 			}
 			if (patron.mostdrops) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return mostDrops(user, patron.mostdrops.item, String(patron.mostdrops.filter));
 			}
 			if (patron.sacrificed_bank) {
-				if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const sacBank = await user.fetchStats();
 				const image = await makeBankImage({
 					bank: new Bank(sacBank.sacrificed_bank as ItemBank),
 					title: 'Your Sacrificed Items'
 				});
 				return {
-					files: [image.file]
+					files: [image]
 				};
 			}
 			if (patron.cl_bank) {
-				if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const clBank = user.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
 					return {
-						files: [{ attachment: Buffer.from(json), name: 'clbank.json' }]
+						files: [{ buffer: Buffer.from(json), name: 'clbank.json' }]
 					};
 				}
 				const image = await makeBankImage({
@@ -1013,16 +997,16 @@ export const toolsCommand = defineCommand({
 					title: 'Your Entire Collection Log'
 				});
 				return {
-					files: [image.file]
+					files: [image]
 				};
 			}
 			if (patron.minion_stats) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return minionStats(user.user);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				return minionStats(user);
 			}
 			if (patron.activity_export) {
-				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				const promise = activityExport(user.user);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				const promise = activityExport(user);
 				await interaction.confirmation(
 					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'
 				);
@@ -1032,16 +1016,18 @@ export const toolsCommand = defineCommand({
 		}
 		if (options.user) {
 			if (options.user.mypets) {
+				const { pets: usersRawPets } = await prisma.user.findFirstOrThrow({
+					where: { id: user.id },
+					select: { pets: true }
+				});
 				const b = new Bank();
-				for (const [pet, qty] of Object.entries(user.user.pets as ItemBank)) {
+				for (const [pet, qty] of Object.entries(usersRawPets as ItemBank)) {
 					const petObj = pets.find(i => i.id === Number(pet));
 					if (!petObj) continue;
 					b.add(petObj.name, qty);
 				}
 				return {
-					files: [
-						(await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })).file
-					]
+					files: [await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })]
 				};
 			}
 		}
@@ -1081,7 +1067,7 @@ You last reset your temporary CL: ${
 			}`;
 		}
 		if (options.user?.checkmasses) {
-			return checkMassesCommand(guildID);
+			return checkMassesCommand(guildId);
 		}
 		return 'Invalid command!';
 	}

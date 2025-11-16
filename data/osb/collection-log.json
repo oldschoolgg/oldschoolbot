@@ -955,6 +955,7 @@
 				"items": ["Steel ring"]
 			},
 			"doom_of_mokhaiotl": {
+				"unobtainable": true,
 				"items": [
 					"Avernic treads",
 					"Demon tear",
@@ -2643,6 +2644,7 @@
 				]
 			},
 			"yami": {
+				"unobtainable": true,
 				"items": [
 					"Barrel of demonic tallow (full)",
 					"Chasm teleport scroll",
@@ -3831,7 +3833,7 @@
 					"Zamorak platelegs",
 					"Zamorak plateskirt",
 					"Zamorak stole",
-					"Zombie head"
+					"Zombie head (treasure trails)"
 				],
 				"kc_activity": {},
 				"items": [
@@ -3968,7 +3970,7 @@
 					"Zamorak platelegs",
 					"Zamorak plateskirt",
 					"Zamorak stole",
-					"Zombie head"
+					"Zombie head (treasure trails)"
 				],
 				"is_activity": true
 			},
@@ -4683,6 +4685,7 @@
 				"is_activity": true
 			},
 			"scroll_cases": {
+				"unobtainable": true,
 				"items": [
 					"Major beginner scroll case",
 					"Major easy scroll case",
@@ -4964,6 +4967,7 @@
 				"is_activity": true
 			},
 			"mastering_mixology": {
+				"unobtainable": true,
 				"items": [
 					"Alchemist gloves",
 					"Alchemist labcoat",

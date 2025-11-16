@@ -18,9 +18,8 @@ describe('PVM', async () => {
 			skills_strength: convertLVLtoXP(70),
 			QP: 100
 		});
-		const res = await user.runCommand(minionKCommand, { name: 'general graardor' });
-		expect(res).toContain('now killing');
-		await user.runActivity();
+		const { commandResult } = await user.runCmdAndTrip(minionKCommand, { name: 'general graardor' });
+		expect(commandResult).toContain('now killing');
 		const kc = await user.getKC(EMonster.GENERAL_GRAARDOR);
 		expect(kc).toEqual(4);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -34,9 +33,8 @@ describe('PVM', async () => {
 			venatorBowCharges: 1000,
 			slayerLevel: 70
 		});
-		const res = await user.runCommand(minionKCommand, { name: 'bloodveld' }, true);
-		expect(res).toContain('now killing');
-		await user.runActivity();
+		const { commandResult } = await user.runCmdAndTrip(minionKCommand, { name: 'bloodveld' });
+		expect(commandResult).toContain('now killing');
 		const kc = await user.getKC(EMonster.BLOODVELD);
 		expect(kc).toBeGreaterThan(0);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -65,9 +63,8 @@ describe('PVM', async () => {
 				skipped: false
 			}
 		});
-		const res = await user.runCommand(minionKCommand, { name: 'bloodveld' }, true);
-		expect(res).toContain('now killing');
-		await user.runActivity();
+		const { commandResult } = await user.runCmdAndTrip(minionKCommand, { name: 'bloodveld' });
+		expect(commandResult).toContain('now killing');
 		const kc = await user.getKC(EMonster.BLOODVELD);
 		expect(kc).toBeGreaterThan(0);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -81,13 +78,13 @@ describe('PVM', async () => {
 			slayerLevel: 70,
 			bank: new Bank().add('Shark', 10000)
 		});
-		expect(await user.runCommand(minionKCommand, { name: 'hydra' }, true)).to.contain('You need Boots of stone');
+		expect(await user.runCommand(minionKCommand, { name: 'hydra' })).to.contain('You need Boots of stone');
 		await user.equip('melee', resolveItems(['Boots of stone']));
-		expect(await user.runCommand(minionKCommand, { name: 'hydra' }, true)).to.contain(
+		expect(await user.runCommand(minionKCommand, { name: 'hydra' })).to.contain(
 			"You don't meet the skill requirement"
 		);
 		await user.setLevel('slayer', 95);
-		const x = await user.runCommand(minionKCommand, { name: 'hydra' }, true);
+		const x = await user.runCommand(minionKCommand, { name: 'hydra' });
 		expect(x).to.contain("You don't have the items");
 		await user.addItemsToBank({ items: new Bank().add('Anti-venom+(4)', 1) });
 		const result = await user.kill(EMonster.HYDRA);
@@ -227,8 +224,15 @@ describe('PVM', async () => {
 			maxed: true,
 			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
 		});
-		await prisma.playerOwnedHouse.create({
-			data: {
+		await prisma.playerOwnedHouse.upsert({
+			where: {
+				user_id: user.id
+			},
+			create: {
+				user_id: user.id,
+				pool: getPOHObject('Rejuvenation pool').id
+			},
+			update: {
 				user_id: user.id,
 				pool: getPOHObject('Rejuvenation pool').id
 			}

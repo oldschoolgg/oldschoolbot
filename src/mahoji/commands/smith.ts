@@ -1,7 +1,6 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -21,7 +20,7 @@ export const smithCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to smith.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return smithables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -38,7 +37,7 @@ export const smithCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const smithedItem = Smithing.SmithableItems.find(_smithedItem =>
 			stringMatches(_smithedItem.name, options.name)
 		);
@@ -82,8 +81,7 @@ export const smithCommand = defineCommand({
 				doubleCBall = true;
 				timeToUse /= 2;
 			}
-			const [has] = await userhasDiaryTier(user, KaramjaDiary.elite);
-			if (has) {
+			if (user.hasDiary('karamja.elite')) {
 				diaryCannonball = true;
 				timeToUse /= 1.23;
 			}
@@ -92,7 +90,7 @@ export const smithCommand = defineCommand({
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 
-		let maxTripLength = user.calcMaxTripLength('Smithing');
+		let maxTripLength = await user.calcMaxTripLength('Smithing');
 
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;
@@ -130,7 +128,7 @@ export const smithCommand = defineCommand({
 		await ActivityManager.startTrip<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Smithing'

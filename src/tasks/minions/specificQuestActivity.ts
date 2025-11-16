@@ -1,4 +1,4 @@
-import { bold } from 'discord.js';
+import { bold } from '@oldschoolgg/discord';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
@@ -7,14 +7,14 @@ import type { SpecificQuestOptions } from '@/lib/types/minions.js';
 export const specificQuestTask: MinionTask = {
 	type: 'SpecificQuest',
 	async run(data: SpecificQuestOptions, { user, handleTripFinish }) {
-		const { channelID, questID } = data;
+		const { channelId, questID } = data;
 
 		const quest = quests.find(quest => quest.id === questID)!;
 
 		let completionMessage = `${user}, ${user.minionName} finished ${bold(quest.name)}.`;
 
 		if (quest.rewards) {
-			await user.addItemsToBank({ items: quest.rewards, collectionLog: true });
+			await user.transactItems({ itemsToAdd: quest.rewards, collectionLog: true });
 			completionMessage += ` You received ${quest.rewards}.`;
 		}
 
@@ -36,6 +36,6 @@ export const specificQuestTask: MinionTask = {
 			}
 		});
 
-		handleTripFinish(user, channelID, completionMessage, undefined, data, null);
+		handleTripFinish({ user, channelId, message: completionMessage, data });
 	}
 };

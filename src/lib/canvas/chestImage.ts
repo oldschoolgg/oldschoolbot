@@ -1,5 +1,4 @@
 import { randInt } from '@oldschoolgg/rng';
-import { AttachmentBuilder } from 'discord.js';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 import { type Image, loadImage } from 'skia-canvas';
 
@@ -128,7 +127,7 @@ async function drawSingleChestCanvas(
 	canvas.ctx.drawImage(chestImage, x, y);
 
 	canvas.drawTitleText({
-		text: `${user.rawUsername} (${toKMB(loot.value())})`,
+		text: `${user.username} (${toKMB(loot.value())})`,
 		x: canvas.width / 2,
 		y: 21,
 		center: true
@@ -204,7 +203,7 @@ function combineCanvases(canvases: OSRSCanvas[]): OSRSCanvas {
 export async function drawChestLootImage(options: {
 	entries: ChestLootEntry[];
 	type: (typeof chestLootTypes)[number]['title'];
-}): Promise<AttachmentBuilder> {
+}): Promise<SendableFile> {
 	const type = chestLootTypes.find(t => t.title === options.type);
 	if (!type) {
 		throw new Error(`Invalid chest type: ${options.type}`);
@@ -222,12 +221,12 @@ export async function drawChestLootImage(options: {
 
 	if (canvasResults.length === 1) {
 		const imageBuffer = await canvasResults[0].canvas.toScaledOutput(2);
-		return new AttachmentBuilder(imageBuffer, { name: fileName });
+		return { name: fileName, buffer: imageBuffer };
 	}
 
 	const canvases = canvasResults.map(result => result.canvas);
 	const combinedCanvas = combineCanvases(canvases);
 	const combinedBuffer = await combinedCanvas.toScaledOutput(2);
 
-	return new AttachmentBuilder(combinedBuffer, { name: fileName });
+	return { name: fileName, buffer: combinedBuffer };
 }

@@ -1,4 +1,3 @@
-import { randArrItem } from '@oldschoolgg/rng';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
 import { ColosseumWaveBank, colosseumWaves } from '@/lib/colosseum.js';
@@ -12,9 +11,9 @@ const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuir
 
 export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
-	async run(data: ColoTaskOptions, { user, handleTripFinish }) {
+	async run(data: ColoTaskOptions, { user, handleTripFinish, rng }) {
 		const {
-			channelID,
+			channelId,
 			loot: possibleLoot,
 			diedAt,
 			maxGlory,
@@ -44,7 +43,7 @@ export const colosseumTask: MinionTask = {
 		if (diedAt) {
 			const wave = colosseumWaves.find(i => i.waveNumber === diedAt)!;
 
-			let str = `${user}, you died on wave ${diedAt} to ${randArrItem([
+			let str = `${user}, you died on wave ${diedAt} to ${rng.pick([
 				...(wave?.reinforcements ?? []),
 				...wave.enemies
 			])}, and received no loot. ${newWaveKcStr}`;
@@ -70,7 +69,7 @@ export const colosseumTask: MinionTask = {
 				str += `\n${refundMessages}`;
 			}
 
-			return handleTripFinish(user, channelID, str, undefined, data, null);
+			return handleTripFinish({ user, channelId, message: str, data });
 		}
 
 		await user.incrementMinigameScore('colosseum');
@@ -83,12 +82,12 @@ export const colosseumTask: MinionTask = {
 			for (const item of sunfireItems) {
 				if (loot.has(item) && itemsTheyHave.includes(item)) {
 					loot.remove(item);
-					loot.add(randArrItem(missingItems));
+					loot.add(rng.pick(missingItems));
 				}
 			}
 		}
 
-		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL } = await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
 		await ClientSettings.updateBankSetting('colo_loot', loot);
 		await user.statsBankUpdate('colo_loot', loot);
@@ -117,6 +116,6 @@ export const colosseumTask: MinionTask = {
 
 		const image = await makeBankImage({ bank: loot, title: 'Colosseum Loot', user, previousCL });
 
-		return handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

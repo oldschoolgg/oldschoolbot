@@ -1,4 +1,3 @@
-import { randArrItem } from '@oldschoolgg/rng';
 import { Emoji, noOp } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -9,8 +8,8 @@ import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const groupoMonsterTask: MinionTask = {
 	type: 'GroupMonsterKilling',
-	async run(data: GroupMonsterActivityTaskOptions, { handleTripFinish, user: leaderUser }) {
-		const { mi: monsterID, channelID, q: quantity, users, duration } = data;
+	async run(data: GroupMonsterActivityTaskOptions, { handleTripFinish, user: leaderUser, rng }) {
+		const { mi: monsterID, channelId, q: quantity, users, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: Bank } = {};
@@ -18,7 +17,7 @@ export const groupoMonsterTask: MinionTask = {
 
 		for (let i = 0; i < quantity; i++) {
 			const loot = monster.table.kill(1, {});
-			const userWhoGetsLoot = randArrItem(users);
+			const userWhoGetsLoot = rng.pick(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
 			kcAmounts[userWhoGetsLoot] = kcAmounts[userWhoGetsLoot] ? ++kcAmounts[userWhoGetsLoot] : 1;
@@ -68,6 +67,6 @@ export const groupoMonsterTask: MinionTask = {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		handleTripFinish(leaderUser, channelID, resultStr, undefined, data, totalLoot);
+		return handleTripFinish({ user: leaderUser, channelId, message: resultStr, data, loot: totalLoot });
 	}
 };

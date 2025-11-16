@@ -1,16 +1,13 @@
-import {
-	type APIApplicationCommandOptionChoice,
-	ApplicationCommandOptionType,
-	type AutocompleteInteraction,
-	type CommandInteractionOption,
-	type GuildMember
-} from 'discord.js';
+import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from '@oldschoolgg/discord';
+import type { IAutoCompleteInteraction, IAutoCompleteInteractionOption } from '@oldschoolgg/schemas';
+
+import type { AnyCommand } from '@/discord/index.js';
 
 async function handleAutocomplete(
 	user: RUser,
-	command: RoboChimpCommand | undefined,
-	autocompleteData: CommandInteractionOption[],
-	member: GuildMember | undefined,
+	guildId: string | null,
+	command: AnyCommand | undefined,
+	autocompleteData: IAutoCompleteInteractionOption[],
 	option?: CommandOption
 ): Promise<APIApplicationCommandOptionChoice[]> {
 	if (!command || !autocompleteData) return [];
@@ -22,10 +19,10 @@ async function handleAutocomplete(
 		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
 			return [];
 		}
-		const option = data.options[0].options?.find(t => (t as any).focused);
+		const option = data.options[0].options?.find(t => t.focused);
 		if (!option) return [];
 		const subSubCommand = subCommand.options?.find(o => o.name === option.name);
-		return handleAutocomplete(user, command, [option], member, subSubCommand);
+		return handleAutocomplete(user, guildId, command, [option], subSubCommand);
 	}
 	if (data.type === ApplicationCommandOptionType.Subcommand) {
 		if (!data.options || !data.options[0]) return [];
@@ -35,7 +32,7 @@ async function handleAutocomplete(
 		const subOption = subCommand.options?.find(c => c.name === option.name);
 		if (!subOption) return [];
 
-		return handleAutocomplete(user, command, [option], member, subOption);
+		return handleAutocomplete(user, guildId, command, [option], subOption);
 	}
 
 	const optionBeingAutocompleted = option ?? command.options.find(o => o.name === data.name);
@@ -45,7 +42,12 @@ async function handleAutocomplete(
 		'autocomplete' in optionBeingAutocompleted &&
 		optionBeingAutocompleted.autocomplete !== undefined
 	) {
-		const autocompleteResult = await optionBeingAutocompleted.autocomplete(data.value as never, user);
+		const autocompleteResult = await optionBeingAutocompleted.autocomplete({
+			value: data.value as never,
+			user,
+			userId: user.id,
+			guildId
+		});
 		return autocompleteResult.slice(0, 25).map(i => ({
 			name: i.name,
 			value: i.value.toString()
@@ -54,16 +56,9 @@ async function handleAutocomplete(
 	return [];
 }
 
-export async function autoCompleteHandler(interaction: AutocompleteInteraction) {
-	const member: GuildMember | undefined = interaction.inCachedGuild() ? interaction.member : undefined;
-	const command = globalClient.allCommands.find(c => c.name === interaction.commandName);
-	const user = await globalClient.fetchUser(interaction.user.id);
-	const choices = await handleAutocomplete(
-		user,
-		command,
-		(interaction.options as any).data as CommandInteractionOption[],
-		member
-	);
-	await interaction.respond(choices);
-	return;
+export async function autoCompleteHandler(interaction: IAutoCompleteInteraction) {
+	const command = globalClient.allCommands.find(c => c.name === interaction.command_name)!;
+	const user = await globalClient.fetchRUser(interaction.user_id);
+	const choices = await handleAutocomplete(user, interaction.guild_id, command, interaction.options);
+	await globalClient.respondToAutocompleteInteraction(interaction, choices);
 }

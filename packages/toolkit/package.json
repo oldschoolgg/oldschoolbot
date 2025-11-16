@@ -9,10 +9,10 @@
 			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		},
-		"./test-bot-websocket": {
-			"types": "./dist/esm/testBotWebsocket.d.mts",
-			"require": "./dist/cjs/testBotWebsocket.cjs",
-			"import": "./dist/esm/testBotWebsocket.mjs"
+		"./GeneralBank": {
+			"types": "./dist/esm/lib/GeneralBank.d.mts",
+			"require": "./dist/cjs/lib/GeneralBank.cjs",
+			"import": "./dist/esm/lib/GeneralBank.mjs"
 		}
 	},
 	"scripts": {
@@ -26,15 +26,9 @@
 		"@oldschoolgg/rng": "workspace:*",
 		"fast-deep-equal": "3.1.3",
 		"math-expression-evaluator": "^1.3.14",
-		"micromatch": "^4.0.8",
-		"zod": "^4.1.12"
-	},
-	"peerDependencies": {
-		"discord.js": "^14.20.0"
+		"emoji-regex": "^10.6.0"
 	},
 	"devDependencies": {
-		"@types/math-expression-evaluator": "^1.2.2",
-		"discord.js": "^14.20.0",
-		"@types/micromatch": "^4.0.9"
+		"@types/math-expression-evaluator": "^1.2.2"
 	}
 }

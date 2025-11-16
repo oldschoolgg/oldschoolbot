@@ -4,6 +4,7 @@ import { chunk, cleanString, generateHexColorForCashStack, sumArr, UserError } f
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import {
 	type BaseCanvasArgs,
 	type BGSpriteName,
@@ -228,6 +229,7 @@ class BankImageTask {
 	public ready: boolean = false;
 
 	async init() {
+		await CanvasModule.ensureInit();
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
@@ -237,7 +239,7 @@ class BankImageTask {
 		const basePath = './src/lib/resources/images/bank_backgrounds/spritesheet/';
 		const files = await fs.readdir(basePath);
 		for (const file of files) {
-			const bgName: BGSpriteName = file.split('\\').pop()?.split('/').pop()?.split('.').shift()! as BGSpriteName;
+			const bgName: BGSpriteName = file.split('\\').pop()!.split('/').pop()!.split('.').shift()! as BGSpriteName;
 			const d = await loadImage(await fs.readFile(basePath + file));
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {
@@ -341,7 +343,8 @@ class BankImageTask {
 			const [item, quantity] = items[i];
 
 			const isNewCLItem =
-				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.has(item.id);
+				flags.has('forceAllPurple') ||
+				(flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.has(item.id));
 
 			await c.drawItemIDSprite({
 				itemID: item.id,
@@ -434,7 +437,7 @@ class BankImageTask {
 		// Sorting
 		const favorites = user?.user.favoriteItems;
 		const weightings = user?.user.bank_sort_weightings as ItemBank;
-		const perkTier = user ? user.perkTier() : 0;
+		const perkTier = user ? await user.fetchPerkTier() : 0;
 		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : (user?.bankSortMethod ?? 'value');
 		const sortInput = flags.get('sort');
 		const sort = sortInput ? (BankSortMethods.find(s => s === sortInput) ?? defaultSort) : defaultSort;
@@ -509,9 +512,10 @@ class BankImageTask {
 		const isTransparent = Boolean(bgImage.transparent);
 
 		const isPurple: boolean =
-			flags.get('showNewCL') !== undefined &&
-			currentCL !== undefined &&
-			items.some(([item]) => !currentCL.has(item.id) && allCLItems.has(item.id));
+			flags.has('forceAllPurple') ||
+			(flags.has('showNewCL') &&
+				currentCL !== undefined &&
+				items.some(([item]) => !currentCL.has(item.id) && allCLItems.has(item.id)));
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 

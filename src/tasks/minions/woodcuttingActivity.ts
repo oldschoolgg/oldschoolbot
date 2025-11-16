@@ -33,7 +33,7 @@ async function handleForestry({
 	let strForestry = '';
 	const userWcLevel = user.skillsAsLevels.woodcutting;
 
-	perTimeUnitChance(duration, 8, Time.Minute, async () => {
+	perTimeUnitChance(rng, duration, 8, Time.Minute, async () => {
 		const eventIndex = rng.randInt(0, ForestryEvents.length - 1);
 		const event = ForestryEvents[eventIndex];
 		let eventRounds = 0;
@@ -178,7 +178,7 @@ async function handleForestry({
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
 	async run(data: WoodcuttingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { logID, quantity, channelID, duration, powerchopping, forestry, twitchers } = data;
+		const { logID, quantity, channelId, duration, powerchopping, forestry, twitchers } = data;
 
 		const userWcLevel = user.skillsAsLevels.woodcutting;
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
@@ -322,7 +322,7 @@ export const woodcuttingTask: MinionTask = {
 		// Roll for pet
 		if (log.petChance) {
 			const { petDropRate } = skillingPetDropRate(user, 'woodcutting', log.petChance);
-			if (rng.roll(Math.floor(petDropRate / quantity))) {
+			if (rng.roll(Math.ceil(petDropRate / quantity))) {
 				loot.add('Beaver');
 				globalClient.emit(
 					Events.ServerNotification,
@@ -336,7 +336,7 @@ export const woodcuttingTask: MinionTask = {
 		}
 
 		if ([EItem.MAGIC_LOGS, EItem.YEW_LOGS, EItem.TEAK_LOGS, EItem.MAPLE_LOGS].includes(log.id)) {
-			rollForMoonKeyHalf({ user, duration, loot });
+			rollForMoonKeyHalf({ rng, user, duration, loot });
 		}
 
 		// Loot received, items used, and logs/loot rolls lost message
@@ -357,6 +357,6 @@ export const woodcuttingTask: MinionTask = {
 			itemsToRemove
 		});
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

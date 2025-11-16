@@ -11,7 +11,6 @@ const OgreCoffinTable = new LootTable()
 	.every(BoneTable)
 
 	/* Loot roll */
-	// TODO: check back for wiki drop table update from another one in the repo
 	.add('Coins', [6, 20], 32)
 	.add('Bronze axe', 1, 16)
 	.add('Iron axe', 1, 16)

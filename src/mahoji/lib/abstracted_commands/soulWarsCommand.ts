@@ -2,7 +2,6 @@ import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import type { User } from '@/prisma/main.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const soulWarsBuyables = [
@@ -131,19 +130,15 @@ export const soulWarsImbueables = [
 	}
 ];
 
-export async function soulWarsTokensCommand(user: User) {
-	return `You have ${user.zeal_tokens} Zeal Tokens.`;
-}
-
-export async function soulWarsStartCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+export async function soulWarsStartCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	const perDuration = randomVariation(Time.Minute * 7, 5);
-	const quantity = Math.floor(user.calcMaxTripLength('SoulWars') / perDuration);
+	const quantity = Math.floor((await user.calcMaxTripLength('SoulWars')) / perDuration);
 	const duration = quantity * perDuration;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'SoulWars',
@@ -209,17 +204,17 @@ export async function soulWarsImbueCommand(user: MUser, input = '') {
 	if (!bank.has(item.input.id)) {
 		return `You don't have a ${item.input.name}.`;
 	}
-	await user.update({
-		zeal_tokens: {
-			decrement: imbueCost
-		}
-	});
 	const cost = new Bank().add(item.input.id);
 	const loot = new Bank().add(item.output.id);
 	await user.transactItems({
 		itemsToAdd: loot,
 		itemsToRemove: cost,
-		collectionLog: true
+		collectionLog: true,
+		otherUpdates: {
+			zeal_tokens: {
+				decrement: imbueCost
+			}
+		}
 	});
 	return `Added ${loot} to your bank, removed ${imbueCost}x Zeal Tokens and ${cost}.${
 		user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''

@@ -1,53 +1,78 @@
 import '../../src/lib/safeglobals.js';
+import '../../src/lib/cache/redis.js';
 
-import { Collection } from 'discord.js';
+import { noOp } from '@oldschoolgg/toolkit';
+import type { Bank } from 'oldschooljs';
 import { vi } from 'vitest';
 
+import type { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
+import { globalConfig } from '@/lib/constants.js';
 import { createDb } from '@/lib/globals.js';
-import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
-import { mockChannel, TEST_CHANNEL_ID } from './util.js';
+import { MUserClass } from '@/lib/MUser.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { handleTripFinishResults } from '../test-utils/misc.js';
+import { TestClient } from './util.js';
 
 await createDb();
+await prisma.clientStorage
+	.upsert({
+		where: { id: globalConfig.clientID },
+		create: { id: globalConfig.clientID },
+		update: {}
+	})
+	.catch(noOp);
 
-global.globalClient = {
-	isReady: () => true,
-	emit: () => true,
-	guilds: { cache: new Collection() },
-	users: {
-		cache: new Collection(),
-		fetch: async (id: string) => Promise.resolve(globalClient.users.cache.get(id))
-	},
-	channels: {
-		cache: new Collection().set(TEST_CHANNEL_ID, mockChannel({ userId: '123' }))
-	},
-	busyCounterCache: new Map<string, number>(),
-	allCommands: allCommandsDONTIMPORT
-} as any;
+global.globalClient = new TestClient({} as any) as any as OldSchoolBotClient;
 
-vi.mock('@oldschoolgg/toolkit', async () => {
-	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit');
+vi.mock('../../src/lib/util/handleTripFinish.js', async importOriginal => {
+	const originalModule: any = await importOriginal();
 	return {
-		...actualToolkit,
-		channelIsSendable: vi.fn().mockReturnValue(true)
-		// awaitMessageComponentInteraction: vi.fn().mockImplementation(({ message }: { message: Message }) => {
-		// 	return Promise.resolve({
-		// 		customId: randArrItem(Object.values(InteractionID.Slayer)),
-		// 		...mockInteraction({ user: { id: message.author.id } as any })
-		// 	});
-		// })
+		handleTripFinish: async (
+			userOrParams:
+				| MUser
+				| {
+						user: MUser;
+						channelId: string;
+						message: SendableMessage;
+						data: ActivityTaskData;
+						loot?: Bank | null;
+						messages?: string[];
+				  },
+			_channelId?: string,
+			_message?: SendableMessage,
+			_data?: ActivityTaskData,
+			_loot?: Bank | null,
+			_messages?: string[]
+		) => {
+			const {
+				data,
+				user,
+				loot,
+				messages: inputMessages,
+				message: inputMessage
+			} = userOrParams instanceof MUserClass
+				? {
+						user: userOrParams as MUser,
+						message: _message!,
+						data: _data!,
+						loot: _loot!,
+						messages: _messages
+					}
+				: userOrParams;
+
+			handleTripFinishResults.set(`${user.id}-${data.type}`, {
+				message: inputMessage,
+				messages: inputMessages,
+				loot
+			});
+			return (originalModule as any).handleTripFinish(
+				userOrParams as any,
+				_channelId,
+				_message,
+				_data,
+				_loot,
+				_messages
+			);
+		}
 	};
 });
-
-vi.mock('../../src/lib/util/webhook', async () => {
-	const actual: any = await vi.importActual('../../src/lib/util/webhook');
-	return {
-		...actual,
-		sendToChannelID: vi.fn(() => {
-			return Promise.resolve();
-		})
-	};
-});
-
-try {
-	await prisma.$queryRawUnsafe(`CREATE EXTENSION IF NOT EXISTS "intarray";`);
-} catch (_err) {}

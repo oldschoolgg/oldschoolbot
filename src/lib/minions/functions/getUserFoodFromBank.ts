@@ -9,7 +9,14 @@ function getRealHealAmount(gearBank: GearBank, healAmount: ((user: GearBank) => 
 	}
 	return healAmount(gearBank);
 }
-
+export type GetUserFoodFromBankParams = {
+	gearBank: GearBank;
+	totalHealingNeeded: number;
+	favoriteFood: readonly number[];
+	minimumHealAmount?: number;
+	isWilderness?: boolean;
+	unavailableBank?: Bank;
+};
 export default function getUserFoodFromBank({
 	gearBank,
 	totalHealingNeeded,
@@ -17,14 +24,7 @@ export default function getUserFoodFromBank({
 	minimumHealAmount,
 	isWilderness,
 	unavailableBank
-}: {
-	gearBank: GearBank;
-	totalHealingNeeded: number;
-	favoriteFood: readonly number[];
-	minimumHealAmount?: number;
-	isWilderness?: boolean;
-	unavailableBank?: Bank;
-}): false | Bank {
+}: GetUserFoodFromBankParams): false | Bank {
 	let userBank = gearBank.bank;
 	if (unavailableBank) userBank = userBank.clone().remove(unavailableBank);
 	let totalHealingCalc = totalHealingNeeded;

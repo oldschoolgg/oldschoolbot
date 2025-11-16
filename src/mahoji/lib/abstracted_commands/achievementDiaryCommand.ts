@@ -1,9 +1,9 @@
+import { strikethrough } from '@oldschoolgg/discord';
 import { calcWhatPercent, objectEntries, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
-import { strikethrough } from 'discord.js';
 import { Bank, Items, Monsters } from 'oldschooljs';
 
 import type { Minigame } from '@/prisma/main.js';
-import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '@/lib/diaries.js';
+import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { DiaryTier } from '@/lib/minions/types.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
@@ -16,10 +16,20 @@ const lampRewards = {
 	Elite: 'Antique lamp 4'
 } as const;
 
-async function howManyOfTierCompleted(user: MUser, tiers: DiaryTier[]) {
+function howManyOfTierCompleted({
+	stats,
+	tiers,
+	user,
+	minigameScores
+}: {
+	stats: MUserStats;
+	minigameScores: Minigame;
+	user: MUser;
+	tiers: DiaryTier[];
+}) {
 	let completed = 0;
 	for (const tier of tiers) {
-		const [has] = await userhasDiaryTier(user, tier);
+		const has = userhasDiaryTierSync(user, tier, { stats, minigameScores }).hasDiary;
 		if (has) completed++;
 	}
 	return completed;
@@ -29,19 +39,17 @@ export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 	const diary = diaries.find(
 		d => stringMatches(d.name, diaryName) || d.alias?.some(a => stringMatches(a, diaryName))
 	);
-	const stats = await user.fetchMStats();
-
+	const [stats, minigameScores] = await Promise.all([user.fetchMStats(), user.fetchMinigames()]);
+	await user.syncCompletedAchievementDiaries({ stats, minigameScores });
 	if (!diary) {
 		let str = 'Your Achievement Diaries\n\n';
 		for (const dir of diaries) {
-			const res = await Promise.all(
-				[dir.easy, dir.medium, dir.hard, dir.elite].map(async tier => {
-					return {
-						name: tier.name,
-						has: (await userhasDiaryTier(user, tier))[0]
-					};
-				})
-			);
+			const res = [dir.easy, dir.medium, dir.hard, dir.elite].map(tier => {
+				return {
+					name: tier.name,
+					has: userhasDiaryTierSync(user, tier, { stats, minigameScores }).hasDiary
+				};
+			});
 			str += `**${dir.name}:** ${res.map(t => (t.has ? strikethrough(t.name) : t.name)).join(' - ')}\n`;
 		}
 		return str;
@@ -88,7 +96,7 @@ export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 		}
 
 		if (tier.customReq) {
-			const [hasCustomReq, reason] = await tier.customReq(user, true, stats);
+			const [hasCustomReq, reason] = tier.customReq(user, true, stats);
 			if (!hasCustomReq) {
 				thisStr += `- Extra Requirements: ${reason}\n`;
 			}
@@ -110,15 +118,16 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 
 	const allItems = user.allItemsOwned;
 	const { cl } = user;
+	const [stats, minigameScores] = await Promise.all([user.fetchMStats(), user.fetchMinigames()]);
 
 	for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {
 		const diaryTier = diary[tier];
-		const [canDo, reason] = await userhasDiaryTier(user, diaryTier);
+		const { hasDiary, reasons } = userhasDiaryTierSync(user, diaryTier, { stats, minigameScores });
 		const name = `${toTitleCase(diaryTier.name)} ${diary.name} Diary`;
 		let hasItems = true;
 		const loot = new Bank();
 
-		if (canDo) {
+		if (hasDiary) {
 			for (const item of diaryTier.items) {
 				if (!allItems.has(item.id)) {
 					hasItems = false;
@@ -128,10 +137,12 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 
 			if (hasItems) continue;
 
-			const hasCompleted = await howManyOfTierCompleted(
+			const hasCompleted = howManyOfTierCompleted({
 				user,
-				diaries.map(d => d[tier])
-			);
+				minigameScores,
+				stats,
+				tiers: diaries.map(d => d[tier])
+			});
 
 			if (cl.amount(lampRewards[diaryTier.name]) < hasCompleted) {
 				loot.add(lampRewards[diaryTier.name]);
@@ -145,7 +156,7 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 			return `You successfully completed the ${name} and received ${loot}.`;
 		}
 
-		return `You can't claim the ${name} because: \n- ${reason}.`;
+		return `You can't claim the ${name} because: \n- ${reasons}.`;
 	}
 
 	return `You have already completed the entire ${diary.name} diary!`;

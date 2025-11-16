@@ -3,8 +3,8 @@ import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { Prisma } from '@/prisma/main.js';
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
-import { filterOption } from '@/lib/discord/index.js';
+import { filterOption } from '@/discord/index.js';
+import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -33,8 +33,6 @@ const specialSoldItems = new Map([
 	// Ecumenical Key - requires wildy hard diary
 	[itemID('Ecumenical key'), 61_500]
 ]);
-
-export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 
 export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
 	const cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
@@ -166,7 +164,9 @@ export const sellCommand = defineCommand({
 				itemsToRemove: seedsBank
 			});
 
-			await user.addItemsToCollectionLog(new Bank().add('Seed pack', quantity));
+			await user.addItemsToCollectionLog({
+				itemsToAdd: new Bank().add('Seed pack', quantity)
+			});
 
 			return `You exchanged ${seedsBank} and received: ${loot}.`;
 		}
@@ -225,8 +225,7 @@ export const sellCommand = defineCommand({
 		}
 
 		if (bankToSell.has('Ecumenical key')) {
-			const [hasWildyHard] = await userhasDiaryTier(user, WildernessDiary.hard);
-			if (!hasWildyHard) {
+			if (!user.hasDiary('wilderness.hard')) {
 				return 'You need to have completed the Wilderness Hard Diary to sell Ecumenical keys.';
 			}
 		}

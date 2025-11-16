@@ -1,6 +1,23 @@
+import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
 import { percentChance } from '@oldschoolgg/rng';
-import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
-import { escapeMarkdown, userMention } from 'discord.js';
+import {
+	type IBirdhouseData,
+	type IBlowpipeData,
+	type IFarmingContract,
+	ZBirdhouseData,
+	ZBlowpipeData,
+	ZFarmingContract
+} from '@oldschoolgg/schemas';
+import {
+	calcWhatPercent,
+	cleanUsername,
+	Emoji,
+	isObject,
+	type PerkTier,
+	sumArr,
+	UserError,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	convertXPtoLVL,
@@ -12,32 +29,45 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@/prisma/main.js';
+import type {
+	activity_type_enum,
+	GearSetupType,
+	Minigame,
+	Prisma,
+	User,
+	UserStats,
+	xp_gains_skill_enum
+} from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
-import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
+import { modifyUserBusy } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
+import { BitField, globalConfig, MAX_LEVEL } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
+import type { Pet } from '@/lib/data/pets.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
+import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
+import { projectiles } from '@/lib/gear/projectiles.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
-import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import backgroundImages from '@/lib/minions/data/bankBackgrounds.js';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { type AddMonsterXpParams, addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import { blowpipeDarts, validateBlowpipeData } from '@/lib/minions/functions/blowpipeCommand.js';
+import getUserFoodFromBank, { type GetUserFoodFromBankParams } from '@/lib/minions/functions/getUserFoodFromBank.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
-import type { AddXpParams, BlowpipeData, ClueBank } from '@/lib/minions/types.js';
+import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { AddXpParams, BlowpipeData, ClueBank, KillableMonster } from '@/lib/minions/types.js';
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import birdhouses, { type Birdhouse } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
@@ -47,35 +77,82 @@ import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
 import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
-import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
+import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
+import { hasMonsterRequirements } from '@/lib/util/hasMonsterRequirements.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
-import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
+import {
+	type TransactItemsArgs,
+	transactItemsFromBank,
+	unqueuedTransactItems
+} from '@/lib/util/transactItemsFromBank.js';
+import { userQueueFn } from '@/lib/util/userQueues.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
-export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
-	try {
-		const newUser = await global.prisma.user.update({
-			data,
-			where: {
-				id: user.toString()
-			}
-		});
-
-		return { newUser };
-	} catch (err) {
-		Logging.logError(err as Error, {
-			user_id: user.toString(),
-			updated_data: JSON.stringify(data)
-		});
-		throw err;
-	}
+export async function rawUserUpdate(userId: string, data: Prisma.UserUpdateInput | SafeUserUpdateInput): Promise<User> {
+	const newUser = await prisma.user.update({
+		data: {
+			...data,
+			blowpipe: data.blowpipe as unknown as Prisma.InputJsonObject,
+			gear_fashion: data.gear_fashion as unknown as Prisma.InputJsonObject,
+			gear_melee: data.gear_melee as unknown as Prisma.InputJsonObject,
+			gear_mage: data.gear_mage as unknown as Prisma.InputJsonObject,
+			gear_range: data.gear_range as unknown as Prisma.InputJsonObject,
+			gear_misc: data.gear_misc as unknown as Prisma.InputJsonObject,
+			gear_skilling: data.gear_skilling as unknown as Prisma.InputJsonObject,
+			gear_wildy: data.gear_wildy as unknown as Prisma.InputJsonObject,
+			gear_other: data.gear_other as unknown as Prisma.InputJsonObject
+		},
+		where: {
+			id: userId
+		}
+	});
+	return newUser;
 }
+
+const USER_DEFAULTS = {
+	slayer_unlocks: [],
+	slayer_blocked_ids: [],
+	badges: [],
+	bitfield: [],
+	temp_cl: {},
+	favoriteItems: [],
+	favorite_alchables: [],
+	favorite_food: [],
+	favorite_bh_seeds: [],
+	attack_style: [],
+	combat_options: [],
+	slayer_autoslay_options: [],
+	completed_ca_task_ids: [],
+	store_bitfield: [],
+	cl_array: [],
+	completed_achievement_diaries: [],
+	finished_quest_ids: []
+} satisfies Partial<User>;
+
+type HasDiaryRegion =
+	| 'ardougne'
+	| 'desert'
+	| 'falador'
+	| 'fremennik'
+	| 'kandarin'
+	| 'karamja'
+	| 'kourend&kebos'
+	| 'lumbridge&draynor'
+	| 'morytania'
+	| 'varrock'
+	| 'westernprovinces'
+	| 'wilderness';
+
+type HasDiaryTier = 'easy' | 'medium' | 'hard' | 'elite';
+
+type HasDiaryDiaryKey = `${HasDiaryRegion}.${HasDiaryTier}`;
 
 function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean) {
 	const maxCasts = Math.min(
@@ -89,6 +166,15 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 	[K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
 };
 
+type QueuedUpdateFnReturnValue =
+	| { response: SendableMessage }
+	| ({ response: SendableMessage } & Omit<TransactItemsArgs, 'userID'>);
+type QueuedUpdateFnReturn = Promise<QueuedUpdateFnReturnValue> | QueuedUpdateFnReturnValue;
+type QueuedUpdateFn = (user: MUserClass) => QueuedUpdateFnReturn;
+
+export type GearColumns = `gear_${GearSetupType}`;
+export type SafeUserUpdateInput = Partial<{ blowpipe: BlowpipeData } & Record<GearColumns, GearSetup>> &
+	Omit<Prisma.UserUncheckedUpdateInput, 'id' | 'bank' | 'collectionLogBank' | 'blowpipe' | GearColumns>;
 export class MUserClass {
 	user!: Readonly<User>;
 	id: string;
@@ -168,11 +254,27 @@ export class MUserClass {
 		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 
-	async update(data: Prisma.UserUncheckedUpdateInput) {
-		const result = await mahojiUserSettingsUpdate(this.id, data);
-		this.user = result.newUser;
-		this.updateProperties();
-		return result;
+	async update(data: SafeUserUpdateInput): Promise<MUser>;
+	async update(fn: QueuedUpdateFn): Promise<SendableMessage>;
+	async update(arg: SafeUserUpdateInput | QueuedUpdateFn): Promise<MUser | SendableMessage> {
+		if (typeof arg === 'function') {
+			return userQueueFn(this.id, async () => {
+				const opts = await arg(await mUserFetch(this.id));
+
+				const tx: TransactItemsArgs =
+					'userID' in opts
+						? (opts as unknown as TransactItemsArgs)
+						: { ...(opts as Omit<TransactItemsArgs, 'userID'>), userID: this.id };
+
+				const { newUser } = await unqueuedTransactItems(tx);
+				this._updateRawUser(newUser);
+				return opts.response;
+			});
+		}
+
+		const newUser = await rawUserUpdate(this.id, arg);
+		this._updateRawUser(newUser);
+		return this;
 	}
 
 	get combatLevel() {
@@ -199,13 +301,14 @@ export class MUserClass {
 	}
 
 	async setAttackStyle(newStyles: AttackStyles[]) {
-		await mahojiUserSettingsUpdate(this.id, {
+		await this.update({
 			attack_style: uniqueArr(newStyles)
 		});
 	}
 
-	get isBusy() {
-		return userIsBusy(this.id);
+	async getIsLocked(): Promise<boolean> {
+		const lockStatus = await Cache.getUserLockStatus(this.id);
+		return lockStatus === 'locked';
 	}
 
 	get totalLevel() {
@@ -228,7 +331,11 @@ export class MUserClass {
 		return Number(this.user.GP);
 	}
 
-	perkTier() {
+	async calcMaxGearPresets() {
+		return (await this.fetchPerkTier()) * 2 + 4;
+	}
+
+	async fetchPerkTier(): Promise<0 | PerkTier> {
 		return getUsersPerkTier(this);
 	}
 
@@ -252,19 +359,19 @@ export class MUserClass {
 	}
 
 	get username() {
-		return this.rawUsername;
-	}
-
-	get rawUsername() {
-		return cleanUsername(this.user.username ?? globalClient.users.cache.get(this.id)?.username ?? 'Unknown');
+		return cleanUsername(this.user.username ?? 'Unknown');
 	}
 
 	get usernameOrMention() {
-		return this.rawUsername;
+		return this.username;
 	}
 
 	get badgedUsername() {
 		return `${this.badgesString} ${this.usernameOrMention}`.trim();
+	}
+
+	hasMonsterRequirements(monster: KillableMonster) {
+		return hasMonsterRequirements(this, monster);
 	}
 
 	toString() {
@@ -294,8 +401,7 @@ WHERE user_id = ${this.id};`;
 	}
 
 	async getAllKCs() {
-		const stats = await this.fetchStats();
-		const rawKCs = stats.monster_scores as ItemBank;
+		const rawKCs = (await this.fetchUserStat('monster_scores')) as ItemBank;
 		return new Proxy(rawKCs, {
 			get(target, monsterNameOrId: string) {
 				let monsterID: number;
@@ -368,8 +474,10 @@ GROUP BY data->>'ci';`);
 	}
 
 	async incrementKC(monsterID: number, quantityToAdd = 1) {
-		if (!Number.isInteger(monsterID)) throw new Error('Invalid monsterID');
-		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		if (!Number.isInteger(monsterID)) throw new Error(`Invalid monsterID: ${monsterID}`);
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) {
+			throw new Error(`Invalid quantityToAdd: ${quantityToAdd}`);
+		}
 		const query = `
 UPDATE user_stats
 SET monster_scores = add_item_to_bank(monster_scores, '${monsterID}', ${quantityToAdd})
@@ -385,20 +493,23 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		collectionLog = false,
 		filterLoot = true,
 		dontAddToTempCL = false,
-		neverUpdateHistory = false
+		neverUpdateHistory = false,
+		otherUpdates
 	}: {
 		items: ItemBank | Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
+		otherUpdates?: SafeUserUpdateInput;
 	}) {
 		const res = await this.transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			neverUpdateHistory
+			neverUpdateHistory,
+			otherUpdates
 		});
 		this._updateRawUser(res.newUser);
 		return res;
@@ -413,7 +524,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 	}
 
 	public _updateRawUser(rawUser: User) {
-		this.user = rawUser;
+		this.user = { ...USER_DEFAULTS, ...rawUser };
 		this.updateProperties();
 	}
 
@@ -529,8 +640,9 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		return skills;
 	}
 
-	get minionIsBusy() {
-		return ActivityManager.minionIsBusy(this.id);
+	async minionIsBusy(): Promise<boolean> {
+		const isBusy = await ActivityManager.minionIsBusy(this.id);
+		return isBusy;
 	}
 
 	async getCreatureScore(creatureID: number): Promise<number> {
@@ -556,10 +668,8 @@ RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
 		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
-	get blowpipe() {
-		const blowpipe = this.user.blowpipe as any as BlowpipeData;
-		validateBlowpipeData(blowpipe);
-		return blowpipe;
+	getBlowpipe(): IBlowpipeData {
+		return ZBlowpipeData.parse(this.user.blowpipe);
 	}
 
 	hasCharges(chargeBank: ChargeBank) {
@@ -582,7 +692,7 @@ RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
 				hasCharges: false,
 				fullUserString: `${failureReasons.join(', ')}
 
-Charge your items using ${mentionCommand('minion', 'charge')}.`
+Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			};
 		}
 		return { hasCharges: true };
@@ -596,22 +706,20 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return percentBossCLFinished;
 	}
 
-	async addItemsToCollectionLog(itemsToAdd: Bank) {
+	async addItemsToCollectionLog({
+		itemsToAdd,
+		otherUpdates
+	}: {
+		itemsToAdd: Bank;
+		otherUpdates?: Omit<SafeUserUpdateInput, 'blowpipe'>;
+	}) {
 		const previousCL = this.cl.clone();
 
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
-		await this.update(updates);
-		const newCL = this.cl;
-
+		await this.update({ ...updates, ...otherUpdates });
 		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
-
-		return {
-			previousCL,
-			newCL,
-			itemsAdded: itemsToAdd
-		};
 	}
 
 	async specialRemoveItems(bankToRemove: Bank, options?: { isInWilderness?: boolean }) {
@@ -624,7 +732,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearKey];
 		const avasDevice = avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
-		const updates: Prisma.UserUpdateArgs['data'] = {};
+		const updates: SafeUserUpdateInput = {};
 
 		for (const [item, quantity] of bankToRemove.items()) {
 			if (blowpipeDarts.includes(item)) {
@@ -654,7 +762,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 					`You have ${Items.itemNameFromId(equippedAmmo)} equipped as your range ammo, but you need: ${ammoRemove[0].name}.`
 				);
 			}
-			const newRangeGear = { ...this.gear[gearKey] };
+			const newRangeGear: GearSetup = this.gear[gearKey].raw();
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
@@ -676,7 +784,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.isInWilderness ? 'gear_wildy' : 'gear_range';
-			updates[updateKey] = newRangeGear as any as PrismaCompatibleJsonObject;
+			updates[updateKey] = newRangeGear;
 		}
 
 		if (dart) {
@@ -690,7 +798,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				}
 			}
 			const scales = Math.ceil((10 / 3) * dart[1]);
-			const rawBlowpipeData = this.blowpipe;
+			const rawBlowpipeData = this.getBlowpipe();
 			if (!this.allItemsOwned.has('Toxic blowpipe') || !rawBlowpipeData) {
 				throw new UserError("You don't have a Toxic blowpipe.");
 			}
@@ -709,7 +817,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
 				);
 			}
-			const bpData = { ...this.blowpipe };
+			const bpData = { ...this.getBlowpipe() };
 			bpData.dartQuantity -= dart?.[1];
 			bpData.scales -= scales;
 			validateBlowpipeData(bpData);
@@ -722,8 +830,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 			await this.transactItems({ itemsToRemove: bankRemove });
 		}
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
-		this._updateRawUser(newUser);
+		await this.update(updates);
 		return {
 			realCost
 		};
@@ -735,8 +842,8 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}: {
 		items: Bank;
 		dontAddToTempCL?: boolean;
-	}): Prisma.UserUpdateArgs['data'] {
-		const updates: Prisma.UserUpdateArgs['data'] = {
+	}): Pick<Prisma.UserUpdateInput, 'collectionLogBank' | 'temp_cl'> {
+		const updates: Pick<Prisma.UserUpdateInput, 'collectionLogBank' | 'temp_cl'> = {
 			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).toJSON()
 		};
 
@@ -774,26 +881,8 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		this._updateRawUser(newUser);
 	}
 
-	async fetchStats() {
-		let result = await prisma.userStats.findFirst({
-			where: {
-				user_id: BigInt(this.id)
-			}
-		});
-
-		if (!result) {
-			result = await prisma.userStats.upsert({
-				where: {
-					user_id: BigInt(this.id)
-				},
-				create: {
-					user_id: BigInt(this.id)
-				},
-				update: {}
-			});
-		}
-
-		return result;
+	async fetchStats(): Promise<UserStats> {
+		return fetchUserStats(this.id);
 	}
 
 	async fetchMStats() {
@@ -801,7 +890,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	get logName() {
-		return `${this.rawUsername}[${this.id}]`;
+		return `${this.username}[${this.id}]`;
 	}
 
 	async getKCByName(name: string) {
@@ -817,13 +906,13 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	farmingContract(): DetailedFarmingContract {
-		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
+		const currentFarmingContract: IFarmingContract = this.fetchFarmingContract();
 		const plant = !currentFarmingContract
 			? undefined
 			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
 		const farmingInfo = Farming.getFarmingInfoFromUser(this);
 		return {
-			contract: currentFarmingContract ?? Farming.defaultFarmingContract,
+			contract: currentFarmingContract,
 			plant,
 			matchingPlantedCrop: plant
 				? farmingInfo.patchesDetailed.find(i => i.plant && i.plant === plant)
@@ -832,7 +921,13 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		};
 	}
 
-	generateGearImage({ setupType, gearSetup }: { setupType?: GearSetupType | 'all'; gearSetup?: Gear }) {
+	generateGearImage({
+		setupType,
+		gearSetup
+	}: {
+		setupType?: GearSetupType | 'all';
+		gearSetup?: Gear;
+	}): Promise<Buffer> {
 		if (setupType === 'all') {
 			return generateAllGearImage({
 				equippedPet: this.user.minion_equippedPet,
@@ -924,7 +1019,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
 			return;
 		}
-		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
+		if (background.perkTierNeeded && (await this.fetchPerkTier()) >= background.perkTierNeeded) {
 			return;
 		}
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
@@ -955,7 +1050,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		}
 
 		await this.update({
-			[`gear_${setup}`]: gear as any as PrismaCompatibleJsonObject
+			[`gear_${setup}`]: gear
 		});
 		if (refundBank.length > 0) {
 			await this.addItemsToBank({
@@ -1021,53 +1116,11 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		};
 	}
 
-	async calculateNetWorth() {
-		const bank = this.allItemsOwned.clone();
-		const activeListings = await prisma.gEListing.findMany({
-			where: {
-				user_id: this.id,
-				quantity_remaining: {
-					gt: 0
-				},
-				fulfilled_at: null,
-				cancelled_at: null
-			},
-			include: {
-				buyTransactions: true,
-				sellTransactions: true
-			}
-		});
-		for (const listing of activeListings) {
-			if (listing.type === 'Sell') {
-				bank.add(listing.item_id, listing.quantity_remaining);
-			} else {
-				bank.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
-			}
-		}
-		const activeGiveaways = await prisma.giveaway.findMany({
-			where: {
-				completed: false,
-				user_id: this.id
-			}
-		});
-		for (const giveaway of activeGiveaways) {
-			bank.add(giveaway.loot as ItemBank);
-		}
-		const gifts = await prisma.giftBox.findMany({
-			where: {
-				owner_id: this.id
-			}
-		});
-		for (const gift of gifts) {
-			bank.add(gift.items as ItemBank);
-		}
-		return {
-			bank,
-			value: marketPriceOfBank(bank)
-		};
+	public hasDiary(key: HasDiaryDiaryKey): boolean {
+		return this.user.completed_achievement_diaries.includes(key);
 	}
 
-	hasGracefulEquipped() {
+	hasGracefulEquipped(): boolean {
 		for (const gear of Object.values(this.gear)) {
 			if (
 				gear.hasEquipped(
@@ -1088,22 +1141,40 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return false;
 	}
 
-	async statsUpdate(data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>) {
+	async statsUpdate(data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>): Promise<void> {
 		const id = BigInt(this.id);
-
-		const result = await prisma.userStats.update({
-			data,
+		// TODO: Extra-safe check for now
+		const count = await prisma.userStats.count({
 			where: {
 				user_id: id
 			}
 		});
-		return result;
+		if (count === 0) {
+			await prisma.userStats.upsert({
+				where: {
+					user_id: id
+				},
+				create: {
+					user_id: id
+				},
+				update: {}
+			});
+		}
+
+		await prisma.userStats.update({
+			data,
+			where: {
+				user_id: id
+			},
+			select: {
+				user_id: true
+			}
+		});
 	}
 
-	async statsBankUpdate(key: JsonKeys<UserStats>, bank: Bank) {
+	async statsBankUpdate(key: JsonKeys<UserStats>, bank: Bank): Promise<void> {
 		if (!key) throw new Error('No key provided to userStatsBankUpdate');
-		const stats = await this.fetchStats();
-		const currentItemBank = stats[key] as ItemBank;
+		const currentItemBank = ((await this.fetchUserStat(key)) ?? {}) as ItemBank;
 		if (!isObject(currentItemBank)) {
 			throw new Error(`Key ${key} is not an object.`);
 		}
@@ -1113,14 +1184,14 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	async updateGPTrackSetting(setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots', amount: number) {
-		this.statsUpdate({
+		await this.statsUpdate({
 			[setting]: {
 				increment: amount
 			}
 		});
 	}
 
-	calcMaxTripLength(activity: activity_type_enum) {
+	async calcMaxTripLength(activity: activity_type_enum): Promise<number> {
 		return calcMaxTripLength(this, activity);
 	}
 
@@ -1170,17 +1241,135 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return cl;
 	}
 
-	async checkTableBankMatches() {
-		await this.sync();
-		const clFromDB = await this.fetchCL();
-		if (this.cl.toString() !== clFromDB.toString()) {
-			console.error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}`);
-		}
+	public calculateUsableFood(params: Omit<GetUserFoodFromBankParams, 'gearBank'>) {
+		return getUserFoodFromBank({ ...params, gearBank: this.gearBank });
+	}
+
+	async removeFoodFromUser(params: Omit<RemoveFoodFromUserParams, 'user'>) {
+		return removeFoodFromUser({ ...params, user: this });
 	}
 
 	async fetchCL(): Promise<Bank> {
 		const cl = await this._fetchOrCreateCL();
 		return cl;
+	}
+
+	async fetchUserStat<K extends keyof UserStats>(key: K): Promise<UserStats[K]> {
+		const userStats = (await prisma.userStats.findFirstOrThrow({
+			where: { user_id: BigInt(this.id) },
+			select: { [key]: true }
+		})) as unknown as Pick<UserStats, K>;
+		return userStats[key];
+	}
+
+	async syncCompletedAchievementDiaries(preFetchedData?: { stats: MUserStats; minigameScores: Minigame }) {
+		const [stats, minigameScores] = preFetchedData
+			? [preFetchedData.stats, preFetchedData.minigameScores]
+			: await Promise.all([this.fetchMStats(), this.fetchMinigames()]);
+		const completedKeys: string[] = [];
+		for (const diary of diaries) {
+			for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {
+				const key = `${diary.name}.${tier}`.replace(/\s/g, '').toLowerCase();
+				const { hasDiary } = userhasDiaryTierSync(this, diary[tier], { stats, minigameScores });
+				if (hasDiary) {
+					completedKeys.push(key);
+				}
+			}
+		}
+		await this.update({
+			completed_achievement_diaries: completedKeys
+		});
+	}
+
+	async giveBotMessagePet(petToGive: Pet) {
+		const user = await prisma.user.findUniqueOrThrow({
+			where: { id: this.id },
+			select: {
+				id: true,
+				pets: true
+			}
+		});
+
+		const userPets = user.pets as ItemBank;
+		const newUserPets = { ...userPets };
+		if (!newUserPets[petToGive.id]) newUserPets[petToGive.id] = 1;
+		else newUserPets[petToGive.id]++;
+		await prisma.user.update({
+			where: { id: this.id },
+			data: {
+				pets: newUserPets
+			}
+		});
+		return {
+			isNewPet: !userPets[petToGive.id]
+		};
+	}
+
+	async updateFarmingContract(newContract: IFarmingContract): Promise<void> {
+		await this.update({
+			minion_farmingContract: ZFarmingContract.parse(newContract)
+		});
+	}
+
+	fetchFarmingContract(): IFarmingContract {
+		return ZFarmingContract.parse(this.user.minion_farmingContract ?? Farming.defaultFarmingContract);
+	}
+
+	async updateBirdhouseData(newData: IBirdhouseData): Promise<void> {
+		await this.update({
+			minion_birdhouseTraps: ZBirdhouseData.parse(newData)
+		});
+	}
+
+	fetchBirdhouseData(): IBirdhouseData & {
+		isReady: boolean;
+		readyIn: number;
+		birdhouse: Birdhouse | null;
+		readyAt: Date | null;
+	} {
+		const rawBirdhouse = ZBirdhouseData.parse(
+			this.user.minion_birdhouseTraps ?? {
+				lastPlaced: null,
+				birdhousePlaced: false,
+				birdhouseTime: 0
+			}
+		);
+		if (!rawBirdhouse.birdhousePlaced) {
+			return {
+				...rawBirdhouse,
+				isReady: false,
+				readyIn: -1,
+				birdhouse: null,
+				readyAt: null
+			};
+		}
+		const birdhouse = birdhouses.find(b => {
+			if (typeof rawBirdhouse.lastPlaced === 'string') {
+				return b.name === rawBirdhouse.lastPlaced;
+			}
+			return b.birdhouseItem === rawBirdhouse.lastPlaced;
+		})!;
+		const lastPlacedTime: number = rawBirdhouse.birdhouseTime;
+		const difference = Date.now() - lastPlacedTime;
+		const isReady = difference > birdhouse.waitTime;
+		const readyAtTimestamp = lastPlacedTime + birdhouse.waitTime;
+		const readyIn = readyAtTimestamp - Date.now();
+		const readyAt = new Date(readyAtTimestamp);
+		return {
+			...rawBirdhouse,
+			isReady,
+			readyIn,
+			birdhouse,
+			readyAt
+		};
+	}
+
+	isModOrAdmin(): boolean {
+		return globalConfig.adminUserIDs.includes(this.id) || this.bitfield.includes(BitField.isModerator);
+	}
+
+	async isBlacklisted(): Promise<boolean> {
+		return Cache.isUserBlacklisted(this.id);
 	}
 }
 

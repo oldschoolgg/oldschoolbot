@@ -1,14 +1,13 @@
 import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',
 	async run(data: ShadesOfMortonOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, logID, shadeID, duration } = data;
+		const { channelId, quantity, logID, shadeID, duration } = data;
 
 		await user.incrementMinigameScore('shades_of_morton', quantity);
 
@@ -39,7 +38,7 @@ export const shadesOfMortonTask: MinionTask = {
 		const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		let firemakingXP = quantity * log.fmXP;
-		if ((await userhasDiaryTier(user, MorytaniaDiary.elite))[0]) {
+		if (user.hasDiary('morytania.elite')) {
 			firemakingXP = increaseNumByPercent(firemakingXP, 50);
 			messages.push('50% bonus firemaking xp for morytania elite diary');
 		}
@@ -53,7 +52,7 @@ export const shadesOfMortonTask: MinionTask = {
 		let prayerXP = log.prayerXP[shade.shadeName];
 		if (!prayerXP) throw new Error(`No prayer XP for ${shade.shadeName} in ${log.oiledLog.name}!`);
 
-		if ((await userhasDiaryTier(user, MorytaniaDiary.hard))[0]) {
+		if (user.hasDiary('morytania.hard')) {
 			prayerXP = increaseNumByPercent(prayerXP, 50);
 			messages.push('50% bonus prayer xp for morytania hard diary');
 		}
@@ -72,6 +71,6 @@ export const shadesOfMortonTask: MinionTask = {
 			str += `\n**Messages:** ${messages.join(', ')}`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };

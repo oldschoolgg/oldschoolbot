@@ -121,13 +121,16 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 			cost * quantity
 		}, but you have only ${balance}.`;
 	}
-	await user.update({
-		carpenter_points: {
-			decrement: cost * quantity
+	const loot = new Bank().add(item.id, quantity);
+	await user.transactItems({
+		itemsToAdd: loot,
+		collectionLog: true,
+		otherUpdates: {
+			carpenter_points: {
+				decrement: cost * quantity
+			}
 		}
 	});
-	const loot = new Bank().add(item.id, quantity);
-	await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
@@ -137,8 +140,8 @@ export async function mahoganyHomesPointsCommand(user: MUser) {
 	return `You have **${balance.toLocaleString()}** Mahogany Homes points.`;
 }
 
-export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: string): CommandResponse {
-	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
+export async function mahoganyHomesBuildCommand(user: MUser, channelId: string, tier?: string): CommandResponse {
+	if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
 
 	const conLevel = user.skillsAsLevels.construction;
 	const kc = await user.fetchMinigameScore('mahogany_homes');
@@ -158,7 +161,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 		tierData,
 		kc,
-		user.calcMaxTripLength('MahoganyHomes'),
+		await user.calcMaxTripLength('MahoganyHomes'),
 		hasSack
 	);
 
@@ -171,7 +174,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 
 	await ActivityManager.startTrip<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		type: 'MahoganyHomes',
 		minigameID: 'mahogany_homes',
 		quantity,

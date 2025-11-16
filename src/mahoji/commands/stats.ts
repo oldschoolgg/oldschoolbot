@@ -39,28 +39,27 @@ export const statsCommand = defineCommand({
 		}
 	],
 	run: async ({ options }) => {
-		try {
-			if (!options.type) {
-				options.type = 'normal';
-			}
-			const player = await Hiscores.fetch(options.username, {
-				type: options.type,
-				virtualLevels: Boolean(options.virtual)
-			});
-			const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : (options.type ?? null);
-			return {
-				embeds: [
-					statsEmbed({
-						username: options.username,
-						color: 7_981_338,
-						player,
-						postfix: postfix ? ` (${postfix})` : undefined,
-						key: 'level'
-					})
-				]
-			};
-		} catch (err: any) {
-			return err.message;
+		if (!options.type) {
+			options.type = 'normal';
 		}
+		const { player, error } = await Hiscores.fetch(options.username, {
+			type: options.type,
+			virtualLevels: Boolean(options.virtual)
+		});
+		if (error !== null) {
+			return error;
+		}
+		const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : (options.type ?? null);
+		return {
+			embeds: [
+				await statsEmbed({
+					username: options.username,
+					color: 7_981_338,
+					player,
+					postfix: postfix ? ` (${postfix})` : undefined,
+					key: 'level'
+				})
+			]
+		};
 	}
 });

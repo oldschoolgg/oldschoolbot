@@ -1,4 +1,3 @@
-import { MathRNG } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 
@@ -7,8 +6,8 @@ import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
-	async run(data: FishingActivityTaskOptions, { handleTripFinish, user }) {
-		const { fishID, quantity, channelID } = data;
+	async run(data: FishingActivityTaskOptions, { handleTripFinish, user, rng }) {
+		const { fishID, quantity, channelId } = data;
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
 		const result = Fishing.util.calcFishingTripResult({
@@ -17,7 +16,7 @@ export const fishingTask: MinionTask = {
 			quantity,
 			flakesQuantity: data.flakesQuantity,
 			gearBank: user.gearBank,
-			rng: MathRNG
+			rng
 		});
 
 		const resultOrError = await result.updateBank.transact(user);
@@ -45,6 +44,12 @@ export const fishingTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, itemTransactionResult?.itemsAdded ?? null);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: str,
+			data,
+			loot: itemTransactionResult?.itemsAdded ?? null
+		});
 	}
 };

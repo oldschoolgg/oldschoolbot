@@ -4,7 +4,6 @@ import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { caTiers } from '@/lib/combat_achievements/combatAchievements.js';
 import type { PvMMethod } from '@/lib/constants.js';
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { autoslayModes } from '@/lib/slayer/constants.js';
@@ -83,7 +82,7 @@ export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[]
 	return boostMethods;
 }
 
-export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, hasKourendElite: boolean) {
+export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, hasKourendElite: boolean): number {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 
@@ -260,7 +259,7 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 export async function calcMaxBlockedTasks(user: MUser) {
 	const qps = user.QP;
 	let blocks = 0;
-	const [hasLumbyDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.elite);
+	const hasLumbyDiary = user.hasDiary('lumbridge&draynor.elite');
 	if (hasLumbyDiary) {
 		blocks += 1;
 	}
@@ -317,7 +316,7 @@ export function getCommonTaskName(task: Monster) {
 
 export type CurrentSlayerInfo = Awaited<ReturnType<typeof getUsersCurrentSlayerInfo>>;
 export async function getUsersCurrentSlayerInfo(id: string) {
-	const [currentTask, partialUser] = await prisma.$transaction([
+	let [currentTask, partialUser, statsWithStreaks] = await prisma.$transaction([
 		prisma.slayerTask.findFirst({
 			where: {
 				user_id: id,
@@ -334,8 +333,24 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 			select: {
 				slayer_points: true
 			}
+		}),
+		prisma.userStats.findFirst({
+			where: {
+				user_id: BigInt(id)
+			},
+			select: {
+				slayer_task_streak: true,
+				slayer_wildy_task_streak: true
+			}
 		})
 	]);
+
+	if (statsWithStreaks === null) {
+		statsWithStreaks = {
+			slayer_task_streak: 0,
+			slayer_wildy_task_streak: 0
+		};
+	}
 
 	const slayerPoints = partialUser?.slayer_points ?? 0;
 
@@ -344,7 +359,8 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 			currentTask: null,
 			assignedTask: null,
 			slayerMaster: null,
-			slayerPoints
+			slayerPoints,
+			statsWithStreaks
 		};
 	}
 
@@ -365,7 +381,8 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 			currentTask: null,
 			assignedTask: null,
 			slayerMaster: null,
-			slayerPoints
+			slayerPoints,
+			statsWithStreaks
 		};
 	}
 
@@ -373,7 +390,8 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		currentTask,
 		assignedTask,
 		slayerMaster,
-		slayerPoints
+		slayerPoints,
+		statsWithStreaks
 	};
 }
 

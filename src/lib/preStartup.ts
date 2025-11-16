@@ -1,41 +1,47 @@
-import { noOp } from '@oldschoolgg/toolkit';
+import type { ItemBank } from 'oldschooljs';
 
-import { cacheBadges } from '@/lib/badges.js';
-import { syncBlacklists } from '@/lib/blacklists.js';
-import { GeImageGenerator } from '@/lib/canvas/geImage.js';
+import { CUSTOM_PRICE_CACHE, populateUsernameCache } from '@/lib/cache.js';
 import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
-import { globalConfig } from '@/lib/constants.js';
+import { badges, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
-import { populateRoboChimpCache } from '@/lib/perkTier.js';
-import { RawSQL } from '@/lib/rawSql.js';
-import { runStartupScripts } from '@/lib/startupScripts.js';
-import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
-import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
-import { logWrapFn } from '@/lib/util.js';
-import { syncCustomPrices } from '@/mahoji/lib/events.js';
 
-export const preStartup = logWrapFn('PreStartup', async () => {
-	await GeImageGenerator.init();
+async function updateBadgeTable() {
+	const badgesInDb = await prisma.badges.findMany();
+	for (const [_id, emojiString] of Object.entries(badges)) {
+		const id = Number(_id);
+		if (!badgesInDb.find(b => b.id === id)) {
+			await prisma.badges.create({
+				data: {
+					id,
+					text: emojiString
+				}
+			});
+		}
+	}
+}
 
+export async function syncCustomPrices() {
+	const clientData = await ClientSettings.fetch({ custom_prices: true });
+	for (const [key, value] of Object.entries(clientData.custom_prices as ItemBank)) {
+		CUSTOM_PRICE_CACHE.set(Number(key), Number(value));
+	}
+}
+
+export const preStartup = async () => {
 	await prisma.clientStorage.upsert({
 		where: { id: globalConfig.clientID },
 		create: { id: globalConfig.clientID },
-		update: {}
+		update: {},
+		select: { id: true }
 	});
 
 	await Promise.all([
-		syncActiveUserIDs(),
-		ActivityManager.syncActivityCache(),
-		runStartupScripts(),
-		syncDisabledCommands(),
-		syncBlacklists(),
 		syncCustomPrices(),
-		cacheBadges(),
 		GrandExchange.init(),
-		populateRoboChimpCache(),
 		cacheGEPrices(),
-		prisma.$queryRawUnsafe(RawSQL.updateAllUsersCLArrays()).then(noOp),
-		syncCollectionLogSlotTable()
+		syncCollectionLogSlotTable(),
+		updateBadgeTable(),
+		populateUsernameCache()
 	]);
-});
+};

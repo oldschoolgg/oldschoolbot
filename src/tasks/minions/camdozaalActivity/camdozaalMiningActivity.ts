@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -10,10 +9,9 @@ import { skillingPetDropRate } from '@/lib/util.js';
 
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
-		const { quantity, channelID, duration } = data;
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { quantity, channelId, duration } = data;
 
-		const camdozaalMine = Mining.CamdozaalMine;
 		const currentLevel = user.skillsAsLevels.mining;
 
 		// amulet of glory check for mining
@@ -98,8 +96,8 @@ export const camdozaalMiningTask: MinionTask = {
 		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Rock golem roll
-		const { petDropRate } = skillingPetDropRate(user, 'mining', camdozaalMine.petChance!);
-		if (roll(petDropRate / quantity)) {
+		const { petDropRate } = skillingPetDropRate(user, 'mining', Mining.CamdozaalMine.petChance!);
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Rock golem');
 			globalClient.emit(
 				Events.ServerNotification,
@@ -121,6 +119,6 @@ export const camdozaalMiningTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

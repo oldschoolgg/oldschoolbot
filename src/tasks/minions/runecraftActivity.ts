@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
@@ -10,8 +9,8 @@ import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
-	async run(data: RunecraftActivityTaskOptions, { user, handleTripFinish }) {
-		const { runeID, essenceQuantity, channelID, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
+	async run(data: RunecraftActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { runeID, essenceQuantity, channelId, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 
@@ -57,11 +56,9 @@ export const runecraftTask: MinionTask = {
 			runeQuantity += extractBonus;
 		}
 
-		const loot = new Bank({
-			[rune.id]: runeQuantity
-		});
+		const loot = new Bank().add(rune.id, runeQuantity);
 		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_795_758);
-		if (roll(petDropRate / essenceQuantity)) {
+		if (rng.roll(Math.ceil(petDropRate / essenceQuantity))) {
 			loot.add('Rift guardian');
 			globalClient.emit(
 				Events.ServerNotification,
@@ -96,6 +93,6 @@ export const runecraftTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

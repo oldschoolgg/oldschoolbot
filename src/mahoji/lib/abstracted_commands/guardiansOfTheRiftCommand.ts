@@ -10,7 +10,7 @@ import { determineRunes } from '@/lib/util/determineRunes.js';
 
 export async function guardiansOfTheRiftStartCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	combinationRunes: boolean | undefined
 ) {
 	const rcLevel = user.skillLevel('runecraft');
@@ -19,7 +19,7 @@ export async function guardiansOfTheRiftStartCommand(
 	}
 
 	const timePerGame = Time.Minute * 10;
-	const maxTripLength = user.calcMaxTripLength('GuardiansOfTheRift');
+	const maxTripLength = await user.calcMaxTripLength('GuardiansOfTheRift');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	// Being reduced with ticks
@@ -175,7 +175,7 @@ export async function guardiansOfTheRiftStartCommand(
 		userID: user.id,
 		duration,
 		type: 'GuardiansOfTheRift',
-		channelID,
+		channelId,
 		minigameID: 'guardians_of_the_rift',
 		minedFragments,
 		barrierAndGuardian,

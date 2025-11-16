@@ -19,7 +19,7 @@ export const fletchCommand = defineCommand({
 			name: 'name',
 			description: 'The item you want to Fletch.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Fletchables.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -36,7 +36,7 @@ export const fletchCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, options.name));
 
 		if (!fletchable) return 'That is not a valid fletchable item.';
@@ -74,7 +74,7 @@ export const fletchCommand = defineCommand({
 			timeToFletchSingleItem = (fletchable.tickRate - 1) * Time.Second * 0.6 + Time.Second / 4;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Fletching');
+		const maxTripLength = await user.calcMaxTripLength('Fletching');
 		let { quantity } = options;
 
 		if (!quantity) {
@@ -99,12 +99,12 @@ export const fletchCommand = defineCommand({
 				.remove(userBank)}**.`;
 		}
 
-		await user.removeItemsFromBank(itemsNeeded);
+		await user.transactItems({ itemsToRemove: itemsNeeded });
 
 		await ActivityManager.startTrip<FletchingActivityTaskOptions>({
 			fletchableName: fletchable.name,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Fletching'

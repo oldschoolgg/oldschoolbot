@@ -1,8 +1,9 @@
+import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
 import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
-import '../../src/lib/safeglobals.js';
+import '../base.js';
 
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import Mining from '../../src/lib/skilling/skills/mining.js';
@@ -11,7 +12,6 @@ import { FloatBank } from '../../src/lib/structures/Bank.js';
 import { determineMiningTrip } from '../../src/mahoji/commands/mine.js';
 import { determineMiningResult } from '../../src/tasks/minions/miningActivity.js';
 import { makeGearBank } from '../../tests/unit/utils.js';
-import { tearDownScript } from '../scriptUtil.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
 function bankToPerHour(bank: Bank, duration: number): FloatBank {
@@ -75,7 +75,8 @@ function main() {
 							gearBank,
 							duration: trip.duration,
 							isPowermining,
-							hasFinishedCOTS
+							hasFinishedCOTS,
+							rng: MathRNG
 						});
 						result.updateBank.itemLootBank.remove('Rock golem', 1000);
 						result.updateBank.itemLootBank.remove('Loop half of key (moon key)', 1000);
@@ -124,7 +125,6 @@ function main() {
 	}
 
 	handleMarkdownEmbed('miningxphr', 'osb/Skills/mining.mdx', table.toString());
-	tearDownScript();
 }
 
 main();

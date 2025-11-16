@@ -9,12 +9,17 @@ const external = [
 	'@prisma/robochimp',
 	'@prisma/osb',
 	'@prisma/bso',
-	'micromatch',
 	'fastify',
 	'fastify-raw-body',
 	'@fastify/cors',
 	'@prisma/adapter-pg',
-	'oldschooljs'
+	'oldschooljs',
+	'@discordjs/rest',
+	'@discordjs/ws',
+	'ws',
+	'ioredis',
+	'@discordjs/builders',
+	'@oldschoolgg/discord'
 ];
 
 const baseBuildOptions: BuildOptions = {

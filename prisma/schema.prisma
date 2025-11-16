@@ -22,11 +22,9 @@ model Activity {
   channel_id     BigInt?
   data           Json?              @db.JsonB
   pinnedTrip     PinnedTrip[]
+  all_user_ids   BigInt[]           @default([])
 
-  @@index([user_id, finish_date])
-  @@index([completed])
-  @@index([user_id, type])
-  @@index([finish_date])
+  @@index([user_id, completed, finish_date])
   @@map("activity")
 }
 
@@ -189,7 +187,6 @@ model GearPreset {
   ammo       Int?
   ammo_qty   Int?
 
-  emoji_id       String?        @db.VarChar(19)
   times_equipped Int            @default(0)
   pinned_setup   GearSetupType?
 
@@ -328,7 +325,7 @@ model User {
   favorite_bh_seeds          Int[]              @default([])
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
-  minion_name                String?            @map("minion.name")
+  minion_name                String?            @map("minion.name") @db.Text()
   bank_bg_hex                String?
   bankBackground             Int                @default(1)
   attack_style               String[]           @default([])
@@ -421,10 +418,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
-  cached_networth_value BigInt?
-
-  username             String? @db.VarChar(32)
-  username_with_badges String? @db.VarChar()
+  username             String? @db.Text()
+  username_with_badges String? @db.Text()
 
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
@@ -433,7 +428,8 @@ model User {
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
 
-  cl_array Int[] @default([])
+  cl_array                      Int[]    @default([])
+  completed_achievement_diaries String[] @default([])
 
   gear_template Int? @db.SmallInt
 
@@ -623,6 +619,15 @@ model EconomyItem {
   @@map("economy_item")
 }
 
+model EconomyItemBanks {
+  id   Int      @id @default(autoincrement())
+  date DateTime @default(now())
+
+  bank Json @db.JsonB
+
+  @@map("economy_item_banks")
+}
+
 model LastManStandingGame {
   id       Int      @id @default(autoincrement())
   user_id  BigInt
@@ -766,6 +771,8 @@ model UserStats {
 
   quivers_sacrificed Int @default(0)
 
+  recently_killed_monsters Int[] @default([])
+
   @@map("user_stats")
 }
 
@@ -793,6 +800,7 @@ model FarmedCrop {
   was_autofarmed      Boolean
   paid_for_protection Boolean
 
+  @@index([user_id, date_planted])
   @@map("farmed_crop")
 }
 
@@ -1005,7 +1013,7 @@ model GEListing {
   buyTransactions  GETransaction[] @relation("buy_transactions")
   sellTransactions GETransaction[] @relation("sell_transactions")
 
-  @@index([created_at])
+  @@index([type, cancelled_at, fulfilled_at, user_id, item_id, asking_price_per_item, created_at])
   @@map("ge_listing")
 }
 
@@ -1108,7 +1116,7 @@ model GiftBox {
   id         String        @id
   created_at DateTime      @default(now()) @db.Timestamp(6)
   status     GiftBoxStatus
-  name       String?
+  name       String?       @db.Text()
 
   creator_id String? @db.VarChar(19)
   creator    User?   @relation("gift_boxes_created", fields: [creator_id], references: [id])
@@ -1464,4 +1472,64 @@ model TableBankItem {
 
   @@id([bank_id, item_id])
   @@map("table_bank_item")
+}
+
+enum JsonBankType {
+  Bank
+  CollectionLog
+  HunterCreaturesCaught
+  MonsterKCs
+  AgilityLapsCounts
+  SacrificedItems
+  OpenedItems
+
+  ToBCost
+  ToBLoot
+  ToACost
+  ToALoot
+  ToARaidLevels
+  ColoCost
+  ColoLoot
+  ColoKC
+  BuyCommandCost
+  BuyCommandLoot
+  CreateCommandCost
+  CreateCommandLoot
+  ShadesOfMortonCost
+  GiantFoundryCost
+  GiantFoundryLoot
+
+  FarmingCost
+  FarmingLoot
+  HerbsCleanedWhileFarming
+
+  RandomEventCompletions
+  ForestryEventsCompletions
+  PuroPuroImplingsCaught
+  PassiveImplingsCaught
+  BirdEggsOffered
+  ScatteredAshes
+}
+
+model JsonBank {
+  id      Int          @id @default(autoincrement())
+  user_id String
+  type    JsonBankType
+
+  bank Json @db.JsonB
+
+  @@unique([user_id, type])
+  @@map("json_bank")
+}
+
+model ShootingStars {
+  id Int @id @default(autoincrement())
+
+  user_id        String
+  size           Int
+  expires_at     DateTime
+  has_been_mined Boolean  @default(false)
+
+  @@index([user_id, expires_at])
+  @@map("shooting_stars")
 }

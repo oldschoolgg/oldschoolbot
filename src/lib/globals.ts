@@ -11,12 +11,23 @@ import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 
 async function getAdapter(
 	type: typeof BOT_TYPE | 'robochimp'
-): Promise<{ adapter: PrismaPg; pgLiteClient: PGlite | null }> {
+): Promise<{ adapter: PrismaPg | PrismaPGlite; pgLiteClient: PGlite | null }> {
 	const shouldUseRealPostgres = globalConfig.isProduction || process.env.USE_REAL_PG === '1';
 	if (shouldUseRealPostgres) {
 		const connectionString = type === 'robochimp' ? process.env.ROBOCHIMP_DATABASE_URL : process.env.DATABASE_URL;
 		Logging.logDebug(`Using Real Postgres for ${type} database`);
-		return { adapter: new PrismaPg({ connectionString }), pgLiteClient: null };
+		return {
+			adapter: new PrismaPg(
+				{
+					connectionString,
+					idleTimeoutMillis: 60_000,
+					max: 100,
+					min: 20
+				},
+				{ onPoolError: console.error, onConnectionError: console.error }
+			),
+			pgLiteClient: null
+		};
 	}
 
 	Logging.logDebug(`Using PGLite for ${type} database`);
@@ -32,20 +43,19 @@ async function getAdapter(
 		}
 	);
 	await pgLiteClient.exec(rewriteSqlToIdempotent(createDbSQL));
-	const adapter = new PrismaPGlite(pgLiteClient) as any as PrismaPg;
+	const adapter = new PrismaPGlite(pgLiteClient);
 	return { adapter, pgLiteClient };
 }
 
-interface BotDB {
-	prismaClient: PrismaClient;
-	adapter: PrismaPg;
-	pgLiteClient: PGlite | null;
-}
-async function makePrismaClient(): Promise<BotDB> {
+async function makePrismaClient() {
 	const { adapter, pgLiteClient } = await getAdapter(BOT_TYPE);
 	const prismaClient = new PrismaClient({
-		log: [{ emit: 'event', level: 'query' }, 'info', 'warn', 'error'],
-		adapter
+		log: [{ emit: 'event', level: 'query' }, 'info', 'warn'],
+		adapter,
+		transactionOptions: {
+			maxWait: 15_000,
+			timeout: 15_000
+		}
 	});
 	prismaClient.$on('query', e => {
 		const info = {
@@ -68,13 +78,13 @@ async function makePrismaClient(): Promise<BotDB> {
 
 interface RoboChimpDB {
 	prismaClient: RobochimpPrismaClient;
-	adapter: PrismaPg;
+	adapter: PrismaPg | PrismaPGlite;
 	pgLiteClient: PGlite | null;
 }
 async function makeRobochimpPrismaClient(): Promise<RoboChimpDB> {
 	const { adapter, pgLiteClient } = await getAdapter('robochimp');
 	const prismaClient = new RobochimpPrismaClient({
-		log: ['warn', 'error'],
+		log: ['warn'],
 		adapter
 	});
 	return { prismaClient, adapter, pgLiteClient };

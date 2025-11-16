@@ -1,13 +1,12 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const wealthInventorySize = 26;
 const wealthInventoryTime = Time.Minute * 2.2;
 
-export async function chargeWealthCommand(user: MUser, channelID: string, quantity: number | undefined) {
+export async function chargeWealthCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const userBank = user.bank;
 
 	const amountHas = userBank.amount('Ring of wealth');
@@ -15,14 +14,14 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		return `You don't have enough Rings of wealth to recharge. Your minion does trips of ${wealthInventorySize}x rings of wealth.`;
 	}
 
-	const [hasDiary] = await userhasDiaryTier(user, WildernessDiary.elite);
+	const hasDiary = user.hasDiary('wilderness.hard');
 
 	let invDuration = wealthInventoryTime;
 	if (hasDiary) {
 		invDuration /= 3;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('WealthCharging');
+	const maxTripLength = await user.calcMaxTripLength('WealthCharging');
 
 	const max = Math.min(amountHas / wealthInventorySize, Math.floor(maxTripLength / invDuration));
 	if (quantity === undefined) {
@@ -46,7 +45,7 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'WealthCharging'

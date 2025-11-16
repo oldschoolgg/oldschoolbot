@@ -1,5 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit';
-import { Items, itemID } from 'oldschooljs';
+import { type ItemBank, Items, itemID } from 'oldschooljs';
 
 import { CropUpgradeType } from '@/prisma/main/enums.js';
 import { openSeedPack } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
@@ -31,14 +31,14 @@ export const plants: Plant[] = [
 	...specialPlants
 ];
 
-const maleFarmerItems: { [key: number]: number } = {
+const maleFarmerItems: ItemBank = {
 	[itemID("Farmer's strawhat")]: 0.4,
 	[itemID("Farmer's jacket")]: 0.8,
 	[itemID("Farmer's boro trousers")]: 0.6,
 	[itemID("Farmer's boots")]: 0.2
 };
 
-const femaleFarmerItems: { [key: number]: number } = {
+const femaleFarmerItems: ItemBank = {
 	[itemID("Farmer's strawhat")]: 0.4,
 	[itemID("Farmer's shirt")]: 0.8,
 	[itemID("Farmer's boro trousers")]: 0.6,

@@ -2,16 +2,16 @@ import { percentChance, randInt } from '@oldschoolgg/rng';
 import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
+import { pick } from 'remeda';
 
 import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.js';
-import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/templeTrekking.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
 import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
 
-export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
+export async function trekCommand(user: MUser, channelId: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 	if (!tier) return 'that is not a valid difficulty';
 	const minLevel = tier.minCombat;
@@ -23,17 +23,9 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 			const gear = allGear[setup];
 			if (setup && requirements) {
 				let newRequirements: GearRequirement = requirements;
-				let maxMeleeStat: [string, number] = [GearStat.AttackCrush, -500];
-				objectEntries(gear.getStats()).map(
-					stat =>
-						(maxMeleeStat =
-							!stat[0].startsWith('defence') &&
-							stat[0] !== 'attack_magic' &&
-							stat[0] !== 'attack_ranged' &&
-							stat[1] > maxMeleeStat[1]
-								? stat
-								: maxMeleeStat)
-				);
+				const meleeStats = pick(gear.getStats(), ['attack_crush', 'attack_slash', 'attack_stab']);
+				const sorted = Array.from(objectEntries(meleeStats)).sort((a, b) => b[1] - a[1]);
+				const maxMeleeStat = sorted[0];
 
 				if (setup === 'melee') {
 					if (maxMeleeStat[0] !== GearStat.AttackCrush) newRequirements.attack_crush = undefined;
@@ -85,7 +77,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		tripTime *= 1.15;
 	}
 
-	const [hasMoryHard] = await userhasDiaryTier(user, MorytaniaDiary.hard);
+	const hasMoryHard = user.hasDiary('morytania.hard');
 
 	if (hasMoryHard) {
 		boosts.push('15% for Morytania hard diary');
@@ -105,7 +97,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		tripTime *= flailBoost;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Trekking');
+	const maxTripLength = await user.calcMaxTripLength('Trekking');
 	const maxTrips = Math.floor(maxTripLength / tripTime);
 	if (quantity === undefined || quantity === null) {
 		quantity = maxTrips;
@@ -121,7 +113,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		userID: user.id,
 		duration,
 		type: 'Trekking',
-		channelID,
+		channelId,
 		minigameID: 'temple_trekking'
 	});
 

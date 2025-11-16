@@ -50,8 +50,8 @@ const data: Record<string, [number[], number]> = {
 const nonUniqueItemRanges = resolveNameBank(data);
 
 const NonUniqueTable = new SimpleTable<number>();
-for (const [id, data] of Object.entries(nonUniqueItemRanges)) {
-	NonUniqueTable.add(Number.parseInt(id), data[1]);
+for (const [id, _d] of Object.entries(nonUniqueItemRanges)) {
+	NonUniqueTable.add(Number.parseInt(id), _d[1]);
 }
 
 const toolSeedTable = new LootTable().tertiary(40, 'Uncut onyx').every('Crystal tool seed');

@@ -23,7 +23,10 @@ export const xpCommand = defineCommand({
 		}
 	],
 	run: async ({ options }) => {
-		const player = await Hiscores.fetch(options.rsn);
+		const { player, error } = await Hiscores.fetch(options.rsn);
+		if (error !== null) {
+			return error;
+		}
 
 		if (options.to_99) {
 			let totalXP = 0;
@@ -39,7 +42,7 @@ export const xpCommand = defineCommand({
 			}
 
 			player.skills.overall.xp = 299_791_913 - totalXP;
-			const embed = statsEmbed({
+			const embed = await statsEmbed({
 				username: options.rsn,
 				color: 7_981_338,
 				player,
@@ -49,7 +52,7 @@ export const xpCommand = defineCommand({
 			return { embeds: [embed] };
 		}
 		return {
-			embeds: [statsEmbed({ username: options.rsn, color: 7_981_338, player, key: 'xp', showExtra: false })]
+			embeds: [await statsEmbed({ username: options.rsn, color: 7_981_338, player, key: 'xp', showExtra: false })]
 		};
 	}
 });

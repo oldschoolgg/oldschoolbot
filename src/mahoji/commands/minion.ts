@@ -1,29 +1,26 @@
-import { randArrItem } from '@oldschoolgg/rng';
-import { formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
+import { bold } from '@oldschoolgg/discord';
+import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { skillOption } from '@/discord/index.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
+import { BitField, BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
-import { skillOption } from '@/lib/discord/index.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { roboChimpCache } from '@/lib/perkTier.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { getKCByName } from '@/lib/util/getKCByName.js';
+import { getAllKillCounts, getKCByName } from '@/lib/util/getKCByName.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
-import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -36,7 +33,6 @@ import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.
 import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -46,8 +42,6 @@ const patMessages = [
 	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
-
-const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
 	const roboChimpUser = await roboChimpUserFetch(user.id);
@@ -61,18 +55,18 @@ export async function getUserInfo(user: MUser) {
 	const clRankRaw = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
 	const clRank = clRankRaw[0].count;
 
-	const bitfields = `${(user.bitfield as BitField[])
+	const bitfields = `${user.bitfield
 		.map(i => BitFieldData[i])
 		.filter(notEmpty)
 		.map(i => i.name)
 		.join(', ')}`;
 
-	const task = ActivityManager.getActivityOfUser(user.id);
+	const task = await ActivityManager.getActivityOfUser(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
 	const result = {
-		perkTier: user.perkTier(),
-		isBlacklisted: BLACKLISTED_USERS.has(user.id),
+		perkTier: await user.fetchPerkTier(),
+		isBlacklisted: await user.isBlacklisted(),
 		badges: user.badgesString,
 		isIronman: user.isIronman,
 		bitfields,
@@ -85,7 +79,7 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
-	const roboCache = roboChimpCache.get(user.id);
+	const roboCache = await Cache.getRoboChimpUser(user.id);
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
@@ -174,7 +168,7 @@ export const minionCommand = defineCommand({
 					type: 'String',
 					name: 'name',
 					description: 'The name of the bank background you want.',
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						const isMod = user.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
@@ -202,7 +196,7 @@ export const minionCommand = defineCommand({
 					type: 'String',
 					name: 'item',
 					description: 'The item you want to use.',
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
 							.map(id => Items.get(id))
@@ -288,11 +282,27 @@ export const minionCommand = defineCommand({
 					name: 'name',
 					description: 'The monster/thing you want to check your KC of.',
 					required: true,
-					autocomplete: async (value: string) => {
-						return [...effectiveMonsters, ...Minigames, ...creatures]
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						const results = [...effectiveMonsters, ...Minigames, ...creatures]
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
+						const allOption = {
+							name: 'All killcounts (export to text file)',
+							value: 'all'
+						};
+						return [allOption, ...results].slice(0, 25);
 					}
+				},
+				{
+					type: 'String',
+					name: 'sort',
+					description: 'How to sort the exported KC list when using the all option.',
+					required: false,
+					choices: [
+						{ name: 'Alphabetical (A → Z)', value: 'alphabetical' },
+						{ name: 'Highest KC first', value: 'highest' },
+						{ name: 'Lowest KC first', value: 'lowest' }
+					]
 				}
 			]
 		},
@@ -405,8 +415,8 @@ export const minionCommand = defineCommand({
 			description: 'View your minions mastery.'
 		}
 	],
-	run: async ({ user, options, interaction }) => {
-		const perkTier = user.perkTier();
+	run: async ({ user, options, interaction, rng }) => {
+		const perkTier = await user.fetchPerkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
 		if (options.status) return minionStatusCommand(user);
@@ -476,6 +486,46 @@ export const minionCommand = defineCommand({
 		}
 
 		if (options.kc) {
+			if (options.kc.name?.toLowerCase() === 'all') {
+				const sort = options.kc.sort ?? 'alphabetical';
+				const sortDescriptions = {
+					alphabetical: 'alphabetically (A → Z)',
+					highest: 'by highest KC',
+					lowest: 'by lowest KC'
+				} as const;
+				const allKillCounts = await getAllKillCounts(user);
+				const sortedKillCounts = [...allKillCounts].sort((a, b) => {
+					if (sort === 'alphabetical') {
+						return a.name.localeCompare(b.name);
+					}
+					if (sort === 'highest') {
+						return b.amount - a.amount || a.name.localeCompare(b.name);
+					}
+					return a.amount - b.amount || a.name.localeCompare(b.name);
+				});
+
+				const lines = [
+					`Killcount export for ${user.username}`,
+					`Total entries: ${sortedKillCounts.length}`,
+					`Sorted ${sortDescriptions[sort]}`,
+					''
+				];
+				for (const entry of sortedKillCounts) {
+					const label = entry.type === 'Monster' ? entry.name : `${entry.name} [${entry.type}]`;
+					lines.push(`${label}: ${entry.amount.toLocaleString()}`);
+				}
+
+				return {
+					content: `Exported ${sortedKillCounts.length.toLocaleString()} killcounts sorted ${sortDescriptions[sort]}.`,
+					files: [
+						{
+							buffer: Buffer.from(lines.join('\n')),
+							name: `minion-kc-${user.id}.txt`
+						}
+					]
+				};
+			}
+
 			const [kcName, kcAmount] = await getKCByName(user, options.kc.name);
 			if (!kcName) {
 				return "That's not a valid monster, minigame or hunting creature.";
@@ -492,7 +542,7 @@ export const minionCommand = defineCommand({
 			return dailyCommand(interaction, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
-		if (options.pat) return randomPatMessage(user.minionName);
+		if (options.pat) return rng.pick(patMessages).replace('{name}', user.minionName);
 		if (options.blowpipe) {
 			return blowpipeCommand(
 				user,

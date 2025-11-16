@@ -3,7 +3,6 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
-import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { TokkulShopOptions } from '@/lib/types/minions.js';
 
 const { TzTokJad } = Monsters;
@@ -30,7 +29,7 @@ export const tksCommand = defineCommand({
 					description: 'The item you want to purchase.',
 					type: 'String',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return TokkulShopItems.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						)
@@ -57,7 +56,7 @@ export const tksCommand = defineCommand({
 					description: 'The item you want to sell.',
 					type: 'String',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return TokkulShopItems.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						)
@@ -75,10 +74,10 @@ export const tksCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ channelID, options, interaction, user }) => {
-		if (user.minionIsBusy) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
+	run: async ({ channelId, options, interaction, user }) => {
+		if (await user.minionIsBusy()) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
 
-		const [hasKaramjaDiary] = await userhasDiaryTier(user, KaramjaDiary.easy);
+		const hasKaramjaDiary = user.hasDiary('karamja.easy');
 		const item = TokkulShopItems.find(i => stringMatches(i.name, options.buy?.name ?? options.sell?.name ?? ''));
 		const hasKilledJad: boolean = (await user.getKC(TzTokJad.id)) >= 1;
 		const isIronman = !!user.user.minion_ironman;
@@ -91,7 +90,7 @@ export const tksCommand = defineCommand({
 
 		// User bank, maxTripLength, quantity given
 		const { bank } = user;
-		const maxTripLength = user.calcMaxTripLength(activity_type_enum.TokkulShop);
+		const maxTripLength = await user.calcMaxTripLength(activity_type_enum.TokkulShop);
 		const quantity = options.buy?.quantity ?? options.sell?.quantity ?? 1;
 		const cost = new Bank();
 		const loot = new Bank();
@@ -166,7 +165,7 @@ export const tksCommand = defineCommand({
 		// Tokkul shop activity
 		await ActivityManager.startTrip<TokkulShopOptions>({
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity: loot.items()[0][1],
 			type: 'TokkulShop',
 			duration,

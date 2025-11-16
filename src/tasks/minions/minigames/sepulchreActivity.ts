@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -9,8 +8,8 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
-	async run(data: SepulchreActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, floors, duration, fletch } = data;
+	async run(data: SepulchreActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, floors, duration, fletch } = data;
 
 		await user.incrementMinigameScore('sepulchre', quantity);
 
@@ -35,7 +34,7 @@ export const sepulchreTask: MinionTask = {
 				agilityXP += floor.xp;
 				thievingXP = 200 * numCoffinsOpened;
 			}
-			if (roll(highestCompletedFloor.petChance)) {
+			if (rng.roll(highestCompletedFloor.petChance)) {
 				loot.add('Giant squirrel');
 			}
 		}
@@ -128,6 +127,6 @@ export const sepulchreTask: MinionTask = {
 			}
 		}
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

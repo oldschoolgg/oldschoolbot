@@ -18,7 +18,7 @@ export const mixCommand = defineCommand({
 			name: 'name',
 			description: 'The potion you want to mix.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Herblore.Mixables.map(i => i.item.name)
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -47,7 +47,7 @@ export const mixCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const mixableItem = Herblore.Mixables.find(
 			i => stringMatches(i.item.name, options.name) || i.aliases.some(alias => stringMatches(alias, options.name))
 		);
@@ -77,7 +77,8 @@ export const mixCommand = defineCommand({
 		let timeToMixSingleItem = tickRate * Time.Second * 0.6 + bankTimePerPotion * Time.Second;
 		let cost = 'is now';
 
-		if ((zahur && mixableZahur) || (wesley && mixableWesley)) {
+		const isInstantTrip = (zahur && mixableZahur) || (wesley && mixableWesley);
+		if (isInstantTrip) {
 			timeToMixSingleItem = 0.000_001;
 			requiredItems.add('Coins', mixableWesley ? 50 : 200);
 			cost = `decided to pay ${
@@ -85,7 +86,7 @@ export const mixCommand = defineCommand({
 			} gp for each item so they don't have to go.`;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Herblore');
+		const maxTripLength = await user.calcMaxTripLength('Herblore');
 		let quantity = optionQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
@@ -107,28 +108,31 @@ export const mixCommand = defineCommand({
 			)}, try a lower quantity. The highest amount of ${itemName} you can mix is ${maxCanMix}.`;
 
 		const finalCost = requiredItems.clone().multiply(quantity);
-		if (!user.owns(finalCost))
+		if (!user.owns(finalCost)) {
 			return `You don't have enough items. For ${quantity}x ${itemName}, you're missing **${finalCost
 				.clone()
 				.remove(userBank)}**.`;
+		}
 
-		await user.removeItemsFromBank(finalCost);
+		await user.transactItems({ itemsToRemove: finalCost });
 
 		await ClientSettings.updateBankSetting('herblore_cost_bank', finalCost);
+
+		const duration = isInstantTrip ? Time.Second * 2 : quantity * timeToMixSingleItem;
 
 		await ActivityManager.startTrip<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.item.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			zahur: Boolean(zahur),
 			wesley: Boolean(wesley),
 			quantity,
-			duration: quantity * timeToMixSingleItem,
+			duration,
 			type: 'Herblore'
 		});
 
 		return `${user.minionName} ${cost} making ${quantity}x ${
 			mixableItem.outputMultiple ? 'batches of' : ''
-		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
+		}${itemName}, it'll take around ${formatDuration(duration)} to finish.`;
 	}
 });

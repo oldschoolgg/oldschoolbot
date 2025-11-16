@@ -2,7 +2,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { DiaryID, type KillableMonster } from '@/lib/minions/types.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const wildyKillableMonsters: KillableMonster[] = [
 	{
@@ -249,7 +249,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			ranged: 65,
 			magic: 70
 		},
-		diaryRequirement: [DiaryID.Wilderness, 'medium'],
+		diaryRequirement: 'wilderness.medium',
 		defaultAttackStyles: ['ranged'],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -480,7 +480,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			defence: 70,
 			magic: 70
 		},
-		diaryRequirement: [DiaryID.Wilderness, 'medium'],
+		diaryRequirement: 'wilderness.medium',
 		defaultAttackStyles: ['attack'],
 		customMonsterHP: 420,
 		healAmountNeeded: 8 * 20,
@@ -762,7 +762,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			defence: 70,
 			magic: 70
 		},
-		diaryRequirement: [DiaryID.Wilderness, 'medium'],
+		diaryRequirement: 'wilderness.medium',
 		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackCrush,

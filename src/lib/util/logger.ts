@@ -1,13 +1,12 @@
+import { DiscordAPIError } from '@discordjs/rest';
 import SonicBoomDefault from 'sonic-boom';
 
 const { SonicBoom } = SonicBoomDefault;
 
 import path from 'node:path';
 import { isObject, UserError } from '@oldschoolgg/toolkit';
-import { type AutocompleteInteraction, DiscordAPIError } from 'discord.js';
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
-import { MInteraction } from '@/lib/structures/MInteraction.js';
 
 const LOG_FOLDER = globalConfig.isProduction ? '../logs/' : './logs/';
 
@@ -25,15 +24,14 @@ const perfSonicBoom = new SonicBoom({
 export type PerformanceLogContext = {
 	duration: number;
 	text: string;
-	interaction?: AutocompleteInteraction | MInteraction;
+	interaction?: MInteraction;
 	[key: string]: unknown;
 };
 
 function logPerf({ duration, text, interaction, ...rest }: PerformanceLogContext) {
 	if (duration < globalConfig.minimumLoggedPerfDuration) return;
 	const ctx = {
-		...rest,
-		...(interaction ? { interaction: MInteraction.getInteractionDebugInfo(interaction) } : undefined)
+		...rest
 	};
 	perfSonicBoom.write(
 		`${JSON.stringify({ ...ctx, duration: Math.trunc(duration), text, t: new Date().toISOString() })}\n`
@@ -51,16 +49,17 @@ interface LogContext {
 }
 
 function logDebug(str: string, context: LogContext = {}) {
-	if (process.env.CI) return;
+	if (process.env.TEST) return;
 	const o = { ...context, m: str, t: new Date().toISOString() };
 	sonicBoom.write(`${JSON.stringify(o)}\n`);
 	if (!globalConfig.isProduction) {
-		console.log(str);
+		console.log(`${process.uptime()}s: ${str}`);
 	}
 }
 
 type RichErrorLogArgs = {
 	err: any;
+	message?: string;
 	interaction?: MInteraction;
 	context?: Record<
 		string,
@@ -75,6 +74,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	const err = typeof args === 'string' ? new Error(args) : args instanceof Error ? args : args.err;
 	const interaction = isObject(args) && !(args instanceof Error) ? args.interaction : undefined;
 	const context = isObject(args) && !(args instanceof Error) ? args.context : ctx;
+
 	if (err instanceof Error && err.message === 'SILENT_ERROR') return;
 
 	// If DiscordAPIError #10008, that means someone deleted the message, we don't need to log this.
@@ -82,10 +82,10 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 		return;
 	}
 
-	if (err instanceof UserError && interaction && interaction.isRepliable()) {
+	if (err instanceof UserError && interaction && !interaction.replied) {
 		Logging.logDebug('UserError encountered, sending message to user.', {
 			error: err.message,
-			user_id: interaction.user.id
+			user_id: interaction.userId
 		});
 		interaction.reply({ content: err.message });
 		return;
@@ -98,9 +98,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	if (err?.requestBody?.json) {
 		err.requestBody.json = String(err.requestBody.json).slice(0, 500);
 	}
-	if (interaction) {
-		metaInfo.interaction = interaction.getDebugInfo();
-	}
+
 	if (!globalConfig.isProduction) {
 		console.error(err);
 	}
@@ -109,7 +107,8 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 			type: 'ERROR',
 			error: err.stack ?? err.message,
 			info: metaInfo,
-			time: new Date().toISOString()
+			time: new Date().toISOString(),
+			message: isObject(args) && !(args instanceof Error) ? args.message : undefined
 		})
 	);
 

@@ -1,7 +1,6 @@
 import { formatDuration, reduceNumByPercent, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { hasSkillReqs, isValidSkill } from '@/lib/util/smallUtils.js';
 
@@ -156,7 +155,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	}
 
 	if (buyable.inputItem) {
-		const [hasDiary] = await userhasDiaryTier(user, WesternProv.hard);
+		const hasDiary = user.hasDiary('westernprovinces.hard');
 		if (!hasDiary) {
 			return "You can't buy this because you haven't completed the Western Provinces hard diary.";
 		}
@@ -173,14 +172,14 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }
 
-export async function pestControlStartCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+export async function pestControlStartCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	if (user.combatLevel < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
 	}
 
 	let gameLength = Time.Minute * 2.8;
-	const maxLength = user.calcMaxTripLength('PestControl');
+	const maxLength = await user.calcMaxTripLength('PestControl');
 	const gear = user.gear.melee;
 
 	const boosts = [];
@@ -200,7 +199,7 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'PestControl',
 		quantity,
