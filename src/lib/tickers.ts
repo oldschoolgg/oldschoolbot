@@ -86,11 +86,11 @@ export const tickers: {
 	{
 		name: 'metrics',
 		timer: null,
-		interval: Time.Second * 10,
+		interval: Time.Second * 5,
 		cb: async () => {
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
-				...(await collectMetrics())
+				...collectMetrics()
 			};
 			if (Number.isNaN(data.eventLoopDelayMean)) {
 				data.eventLoopDelayMean = 0;
