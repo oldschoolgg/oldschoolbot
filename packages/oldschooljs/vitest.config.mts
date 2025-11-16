@@ -5,7 +5,7 @@ export default defineConfig({
 	test: {
 		name: 'OldschoolJS',
 		benchmark: {
-			include: ['test/**/*.bench.ts']
+			include: ['bench/**/*.bench.ts'],
 		},
 		include: ['test/**/*.test.ts'],
 		coverage: {
