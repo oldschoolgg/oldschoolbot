@@ -312,7 +312,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 	cannonBoost,
 	{
 		description: 'Barrage/Bursting',
-		run: ({ monster, attackStyles, combatMethods, isOnTask, isInWilderness, gearBank }) => {
+		run: ({ monster, attackStyles, combatMethods, isOnTask, isInWilderness, gearBank, osjsMon }) => {
 			const isBarraging = combatMethods.includes('barrage');
 			const isBursting = combatMethods.includes('burst');
 			const canBarrageMonster = monster.canBarrage || (monster.id === Monsters.Jelly.id && isInWilderness);
@@ -327,12 +327,12 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				}
 			}
 
-			const { virtusBoost } = calculateVirtusBoost({ isInWilderness, gearBank, isOnTask });
+			const { virtusBoost } = calculateVirtusBoost({ isInWilderness, gearBank, isOnTask, osjsMon });
 			if (isBarraging && attackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBarrage + virtusBoost,
 					consumables: [iceBarrageConsumables],
-					message: `${boostIceBarrage + virtusBoost}% for Ice Barrage`,
+					message: `${boostIceBarrage + virtusBoost}% for Ice Barrage${virtusBoost > 0 ? ` with ${virtusBoost / 2} Virtus pieces` : ''}`,
 					changes: {
 						bob: SlayerActivityConstants.IceBarrage,
 						attackStyles: newAttackStyles
