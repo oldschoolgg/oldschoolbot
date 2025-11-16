@@ -13,7 +13,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 export const valeTotemsTask: MinionTask = {
 	type: 'ValeTotems',
 	async run(data: ValeTotemsActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, duration, offerings, fletchXp } = data;
+		const { channelId, quantity, duration, offerings, fletchXp } = data;
 		const TOTEMS_PER_LAP = 8;
 
 		await user.incrementMinigameScore('vale_totems', quantity * TOTEMS_PER_LAP);
@@ -114,6 +114,12 @@ export const valeTotemsTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: str, files: [image] },
+			data,
+			loot: itemsAdded
+		});
 	}
 };

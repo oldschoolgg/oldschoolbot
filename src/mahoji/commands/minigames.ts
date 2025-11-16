@@ -1090,7 +1090,7 @@ export const minigamesCommand = defineCommand({
 							name: 'item_to_fletch',
 							description: 'Item to fletch during minigame.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return ValeTotemsDecorations.filter(i =>
 									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.item.name, value: i.item.name }));
@@ -1483,7 +1483,7 @@ export const minigamesCommand = defineCommand({
 		if (options.vale_totems?.start) {
 			return valeTotemsStartCommand(
 				user,
-				channelID,
+				channelId,
 				options.vale_totems?.start.item_to_fletch,
 				options.vale_totems?.start.stamina_pot
 			);

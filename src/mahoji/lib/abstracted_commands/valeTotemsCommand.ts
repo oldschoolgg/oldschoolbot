@@ -2,7 +2,6 @@ import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem, type Item, Items, itemID } from 'oldschooljs';
 
 import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -23,15 +22,12 @@ export async function valeTotemsStartCommand(
 	itemToFletch: string | number | undefined,
 	staminaPot?: boolean | undefined
 ) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} is busy`;
 	}
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can start Vale Totems minigame. Send ${user.minionName} to do the quest using: ${mentionCommand(
-			'activities',
-			'quest'
-		)}.`;
+		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can start Vale Totems minigame.`;
 	}
 
 	const fletchingLvl = user.skillLevel('fletching');
@@ -100,7 +96,7 @@ export async function valeTotemsStartCommand(
 		}
 	}
 
-	const maxTripLength = user.calcMaxTripLength('ValeTotems');
+	const maxTripLength = await user.calcMaxTripLength('ValeTotems');
 
 	if (!user.hasGracefulEquipped()) {
 		timePerLap += NO_GRACEFUL_PENALTY;
@@ -192,7 +188,7 @@ export async function valeTotemsStartCommand(
 		fletchXp: fletchingXp,
 		userID: user.id,
 		duration: duration,
-		channelID: channelID.toString(),
+		channelId: channelID,
 		minigameID: 'vale_totems',
 		quantity: laps,
 		logId: logType.id,
@@ -313,10 +309,7 @@ export async function valeTotemsBuyCommand(
 	quantity = 1
 ) {
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange. Send ${user.minionName} to do the quest using: ${mentionCommand(
-			'activities',
-			'quest'
-		)}.`;
+		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange.`;
 	}
 
 	const { vale_research_points: currentResearchPoints } = await user.fetchStats();
@@ -350,7 +343,7 @@ export async function valeTotemsBuyCommand(
 		}**?`
 	);
 
-	const { vale_research_points: newPoints } = await user.statsUpdate({
+	await user.statsUpdate({
 		vale_research_points: {
 			decrement: cost
 		}
@@ -361,7 +354,7 @@ export async function valeTotemsBuyCommand(
 		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});
 
-	return `${user.minionName} successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n${user.minionName} now has ${newPoints} Vale Research points left.`;
+	return `${user.minionName} successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n${user.minionName} now has ${currentResearchPoints - cost} Vale Research points left.`;
 }
 
 export async function valeTotemsSellCommand(
@@ -371,10 +364,7 @@ export async function valeTotemsSellCommand(
 	quantity = 1
 ) {
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange. Send ${user.minionName} to do the quest using: ${mentionCommand(
-			'activities',
-			'quest'
-		)}.`;
+		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange.`;
 	}
 
 	const shopItem = ValeTotemsSellables.find(
@@ -410,7 +400,7 @@ export async function valeTotemsSellCommand(
 		`Are you sure you want to sell **${quantity.toLocaleString()}x ${shopItem.name}** for **${gain.toLocaleString()}** Vale Research points?`
 	);
 
-	const { vale_research_points: newPoints } = await user.statsUpdate({
+	await user.statsUpdate({
 		vale_research_points: {
 			increment: gain
 		}
@@ -420,5 +410,5 @@ export async function valeTotemsSellCommand(
 		itemsToRemove: shopItem.output.clone().multiply(quantity)
 	});
 
-	return `${user.minionName} successfully sold **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n\n${user.minionName} now has ${newPoints} Vale Research points.`;
+	return `${user.minionName} successfully sold **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.`;
 }
