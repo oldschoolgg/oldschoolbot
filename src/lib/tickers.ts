@@ -86,11 +86,11 @@ export const tickers: {
 	{
 		name: 'metrics',
 		timer: null,
-		interval: Time.Second * 10,
+		interval: Time.Second * 5,
 		cb: async () => {
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
-				...(await collectMetrics())
+				...collectMetrics()
 			};
 			if (Number.isNaN(data.eventLoopDelayMean)) {
 				data.eventLoopDelayMean = 0;
@@ -315,6 +315,9 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				if (ticker.interval > Time.Minute * 30) {
+					Logging.logDebug(`Running ${ticker.name} ticker`);
+				}
 				await ticker.cb();
 			} catch (err) {
 				Logging.logError(err as Error);
