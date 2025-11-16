@@ -315,6 +315,9 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				if (ticker.interval > Time.Minute * 30) {
+					Logging.logDebug(`Running ${ticker.name} ticker`);
+				}
 				await ticker.cb();
 			} catch (err) {
 				Logging.logError(err as Error);
