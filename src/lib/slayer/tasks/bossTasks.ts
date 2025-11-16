@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { DagannothKingsTribridID } from '@/lib/minions/data/killableMonsters/index.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const bossTasks: AssignableSlayerTask[] = [
@@ -90,7 +91,12 @@ export const bossTasks: AssignableSlayerTask[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		monsters: [Monsters.DagannothPrime.id, Monsters.DagannothSupreme.id, Monsters.DagannothRex.id],
+		monsters: [
+			Monsters.DagannothPrime.id,
+			Monsters.DagannothSupreme.id,
+			Monsters.DagannothRex.id,
+			DagannothKingsTribridID
+		],
 		isBoss: true
 	},
 	{
