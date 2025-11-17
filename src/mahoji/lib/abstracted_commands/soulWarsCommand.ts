@@ -179,7 +179,7 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 			decrement: item.tokens * quantity
 		}
 	});
-	await user.addItemsToBank({ items: { [item.item.id]: quantity }, collectionLog: true });
+	await user.addItemsToBank({ items: new Bank().add(item.item.id, quantity), collectionLog: true });
 	return `Added ${quantity}x ${item.item.name} to your bank, removed ${item.tokens * quantity}x Zeal Tokens.`;
 }
 

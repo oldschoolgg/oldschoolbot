@@ -496,7 +496,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		neverUpdateHistory = false,
 		otherUpdates
 	}: {
-		items: ItemBank | Bank;
+		items: Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
@@ -505,7 +505,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 	}) {
 		const res = await this.transactItems({
 			collectionLog,
-			itemsToAdd: new Bank(items),
+			itemsToAdd: items,
 			filterLoot,
 			dontAddToTempCL,
 			neverUpdateHistory,

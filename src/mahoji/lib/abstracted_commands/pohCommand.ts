@@ -236,7 +236,7 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 				[obj.slot]: null
 			}
 		});
-		await user.addItemsToBank({ items: { [inPlace!]: 1 }, collectionLog: false });
+		await user.addItemsToBank({ items: new Bank().add(inPlace!, 1), collectionLog: false });
 		return {
 			files: [await makePOHImage(user)],
 			content: `You removed a ${obj.name} from your house, and were refunded 1x ${Items.itemNameFromId(inPlace!)}.`
