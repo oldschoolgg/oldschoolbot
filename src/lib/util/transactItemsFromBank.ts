@@ -59,7 +59,7 @@ export async function unqueuedTransactItems({
 			);
 		}
 		const { bankLoot, clLoot } = filterLoot
-			? filterLootReplace(settings.allItemsOwned, itemsToAdd)
+			? filterLootReplace({ currentBank, itemsToAdd })
 			: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 		clLootBank = clLoot;
 		itemsToAdd = bankLoot;
