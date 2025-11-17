@@ -554,7 +554,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 	}
 
 	public get allItemsOwned(): Bank {
-		const bank = new Bank(this.bank);
+		const bank = this.bank.clone();
 
 		bank.add('Coins', Number(this.user.GP));
 		if (this.user.minion_equippedPet) {
