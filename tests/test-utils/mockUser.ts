@@ -1,3 +1,4 @@
+import assert from 'node:assert';
 import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
 import type { IUser } from '@oldschoolgg/schemas';
 import { Bank, convertLVLtoXP, EItem, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
@@ -35,6 +36,14 @@ export class TestUser extends MUserClass {
 		// @ts-expect-error
 		await this.update({ bank: bank.toJSON() });
 		return this;
+	}
+
+	private async assertJsonBankCLMatch() {
+		if (this.cl.length === 0) return;
+		const jsonBank = await prisma.jsonBank.findFirstOrThrow({
+			where: { user_id: this.id, type: 'CollectionLog' }
+		});
+		assert(new Bank(jsonBank.bank as ItemBank).equals(this.cl), `Expected JSON bank CL to match user CL`);
 	}
 
 	async runActivity(): Promise<ActivityTaskData | null> {
@@ -97,6 +106,7 @@ export class TestUser extends MUserClass {
 
 	async clMatch(bankToMatch: Bank) {
 		await this.sync();
+		await this.assertJsonBankCLMatch();
 		if (!this.cl.equals(bankToMatch)) {
 			throw new Error(`Expected CL to match, difference: ${this.cl.difference(bankToMatch)}`);
 		}
@@ -165,6 +175,7 @@ export class TestUser extends MUserClass {
 		const tripStartBank = this.bank.clone();
 		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | null;
 		await this.sync();
+		await this.assertJsonBankCLMatch();
 		const newKC = await this.getKC(monster);
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
@@ -200,6 +211,7 @@ export class TestUser extends MUserClass {
 		const commandResult = await this.runCommand(command, options);
 		const activityResult = await this.runActivity();
 		await this.sync();
+		await this.assertJsonBankCLMatch();
 		return {
 			commandResult,
 			activityResult,
@@ -227,11 +239,13 @@ export class TestUser extends MUserClass {
 			result = await result.build();
 		}
 		await this.sync();
+		await this.assertJsonBankCLMatch();
 		return result;
 	}
 
 	async bankAmountMatch(itemName: string, amount: number) {
 		await this.sync();
+		await this.assertJsonBankCLMatch();
 		if (this.bank.amount(itemName) !== amount) {
 			throw new Error(`Expected ${amount}x ${itemName} but got ${this.bank.amount(itemName)}`);
 		}
@@ -239,6 +253,7 @@ export class TestUser extends MUserClass {
 
 	async gpMatch(amount: number) {
 		await this.sync();
+		await this.assertJsonBankCLMatch();
 		if (this.GP !== amount) {
 			throw new Error(`Expected ${amount} GP but got ${this.GP}`);
 		}
@@ -246,6 +261,7 @@ export class TestUser extends MUserClass {
 
 	async statsMatch(key: keyof UserStats, value: any) {
 		await this.sync();
+		await this.assertJsonBankCLMatch();
 		const stats = await this.fetchStats();
 		if (stats[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${stats[key]}`);

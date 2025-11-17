@@ -76,7 +76,6 @@ import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
-import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
@@ -96,24 +95,54 @@ import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_command
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export async function rawUserUpdate(userId: string, data: Prisma.UserUpdateInput | SafeUserUpdateInput): Promise<User> {
-	const newUser = await prisma.user.update({
-		data: {
-			...data,
-			blowpipe: data.blowpipe as unknown as Prisma.InputJsonObject,
-			gear_fashion: data.gear_fashion as unknown as Prisma.InputJsonObject,
-			gear_melee: data.gear_melee as unknown as Prisma.InputJsonObject,
-			gear_mage: data.gear_mage as unknown as Prisma.InputJsonObject,
-			gear_range: data.gear_range as unknown as Prisma.InputJsonObject,
-			gear_misc: data.gear_misc as unknown as Prisma.InputJsonObject,
-			gear_skilling: data.gear_skilling as unknown as Prisma.InputJsonObject,
-			gear_wildy: data.gear_wildy as unknown as Prisma.InputJsonObject,
-			gear_other: data.gear_other as unknown as Prisma.InputJsonObject
-		},
+	const updateData: Prisma.UserUpdateInput = {
+		...data,
+		blowpipe: data.blowpipe as unknown as Prisma.InputJsonObject,
+		gear_fashion: data.gear_fashion as unknown as Prisma.InputJsonObject,
+		gear_melee: data.gear_melee as unknown as Prisma.InputJsonObject,
+		gear_mage: data.gear_mage as unknown as Prisma.InputJsonObject,
+		gear_range: data.gear_range as unknown as Prisma.InputJsonObject,
+		gear_misc: data.gear_misc as unknown as Prisma.InputJsonObject,
+		gear_skilling: data.gear_skilling as unknown as Prisma.InputJsonObject,
+		gear_wildy: data.gear_wildy as unknown as Prisma.InputJsonObject,
+		gear_other: data.gear_other as unknown as Prisma.InputJsonObject
+	};
+
+	const newUserPromise = prisma.user.update({
+		data: updateData,
 		where: {
 			id: userId
 		}
 	});
-	return newUser;
+	if (!('collectionLogBank' in data)) {
+		return await newUserPromise;
+	}
+
+	if (!isObject(data.collectionLogBank)) {
+		throw new Error('collectionLogBank must be an object');
+	}
+
+	const [user] = await prisma.$transaction([
+		newUserPromise,
+		prisma.jsonBank.upsert({
+			where: {
+				user_id_type: {
+					user_id: userId,
+					type: 'CollectionLog'
+				}
+			},
+			create: {
+				user_id: userId,
+				type: 'CollectionLog',
+				bank: data.collectionLogBank
+			},
+			update: {
+				bank: data.collectionLogBank
+			},
+			select: { user_id: true }
+		})
+	]);
+	return user;
 }
 
 const USER_DEFAULTS = {
@@ -1218,29 +1247,6 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
 
-	async _fetchOrCreateCL(itemsToAdd?: Bank): Promise<Bank> {
-		const { inserted } = await TableBankManager.getOrCreateBankId(this.id, 'CollectionLog');
-
-		// If this was the first time creating, insert all current CL items.
-		if (inserted) {
-			await TableBankManager.update({
-				userId: this.id,
-				type: 'CollectionLog',
-				itemsToAdd: this.cl
-			});
-		} else if (itemsToAdd) {
-			await TableBankManager.update({
-				userId: this.id,
-				type: 'CollectionLog',
-				itemsToAdd
-			});
-		}
-
-		const cl = await TableBankManager.fetch({ userId: this.id, type: 'CollectionLog' });
-		cl.freeze();
-		return cl;
-	}
-
 	public calculateUsableFood(params: Omit<GetUserFoodFromBankParams, 'gearBank'>) {
 		return getUserFoodFromBank({ ...params, gearBank: this.gearBank });
 	}
@@ -1250,8 +1256,17 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async fetchCL(): Promise<Bank> {
-		const cl = await this._fetchOrCreateCL();
-		return cl;
+		const cl = await prisma.jsonBank.findUnique({
+			where: {
+				user_id_type: {
+					user_id: this.id,
+					type: 'CollectionLog'
+				}
+			}
+		});
+
+		if (!cl) return new Bank();
+		return new Bank(cl.bank as ItemBank);
 	}
 
 	async fetchUserStat<K extends keyof UserStats>(key: K): Promise<UserStats[K]> {
