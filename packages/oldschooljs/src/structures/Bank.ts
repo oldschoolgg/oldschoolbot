@@ -37,7 +37,7 @@ export class Bank {
 		return bank;
 	}
 
-	constructor(initialBank?: ItemBank | Bank | Map<number, number>) {
+	constructor(initialBank?: number[] | ItemBank | Bank | Map<number, number>) {
 		this.map = this.makeFromInitialBank(initialBank);
 	}
 
@@ -66,10 +66,20 @@ export class Bank {
 		return this;
 	}
 
-	private makeFromInitialBank(initialBank?: Record<string, number> | Bank | Map<number, number>) {
+	private makeFromInitialBank(initialBank?: number[] | Record<string, number> | Bank | Map<number, number>) {
 		if (!initialBank) return new Map<number, number>();
 		if (initialBank instanceof Bank) return new Map(initialBank.map);
 		if (initialBank instanceof Map) return new Map(initialBank);
+		if (Array.isArray(initialBank)) {
+			const map = new Map<number, number>();
+			for (let i = 0; i < initialBank.length; i += 2) {
+				const itemID = initialBank[i];
+				const qty = initialBank[i + 1];
+				if (!qty) continue;
+				map.set(itemID, qty);
+			}
+			return map;
+		}
 
 		const out = new Map<number, number>();
 		const has = Items.has.bind(Items);
