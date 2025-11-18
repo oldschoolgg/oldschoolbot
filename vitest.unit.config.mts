@@ -18,7 +18,8 @@ export default defineConfig({
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json', 'html'],
-			include: ['src/lib/skilling/skills/farming/**/*.ts']
+			include: ['src/lib/skilling/skills/**/*.{ts,tsx}'],
+			skipFull: true
 		}
 	},
 	resolve: {
