@@ -1,6 +1,7 @@
 import type { SendableFile } from '@oldschoolgg/discord';
 import { toKMB } from 'oldschooljs';
 
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 
 export type HighRollerImageEntry = {
@@ -16,6 +17,7 @@ export async function drawHighRollerImage({ rolls }: { rolls: HighRollerImageEnt
 		return null;
 	}
 
+	await CanvasModule.ensureInit();
 	const MAX_VISIBLE_ROLLS = 20;
 	const padding = 20;
 	const headerHeight = 40;
