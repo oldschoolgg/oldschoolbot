@@ -200,10 +200,11 @@ function combineCanvases(canvases: OSRSCanvas[]): OSRSCanvas {
 	return combinedCanvas;
 }
 
-export async function drawChestLootImage(options: {
+export interface DrawChestLootImageOptions {
 	entries: ChestLootEntry[];
 	type: (typeof chestLootTypes)[number]['title'];
-}): Promise<SendableFile> {
+}
+export async function drawChestLootImage(options: DrawChestLootImageOptions): Promise<SendableFile> {
 	const type = chestLootTypes.find(t => t.title === options.type);
 	if (!type) {
 		throw new Error(`Invalid chest type: ${options.type}`);
