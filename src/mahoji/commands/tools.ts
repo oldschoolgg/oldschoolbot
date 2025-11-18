@@ -158,12 +158,13 @@ interface XPRecord {
 async function executeXPGainsQuery(
 	intervalValue: string,
 	skillId: string | undefined,
-	ironmanOnly: boolean
+	ironmanOnly: boolean,
+	userId?: string
 ): Promise<XPRecord[]> {
 	const query = `
-        SELECT
-            x.user_id::text AS user,
-            sum(x.xp) AS total_xp,
+SELECT
+    x.user_id::text AS user,
+    sum(x.xp) AS total_xp,
             max(x.date) AS lastDate
         FROM
             xp_gains AS x
@@ -172,20 +173,21 @@ async function executeXPGainsQuery(
         WHERE
             x.date > now() - INTERVAL '1 ${intervalValue}'
             ${skillId ? `AND x.skill = '${skillId}'` : ''}
-            ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
-        GROUP BY
-            x.user_id
-        ORDER BY
-            total_xp DESC,
-            lastDate ASC
-        LIMIT 10;
-    `;
+    ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+    ${userId ? ` AND x.user_id::text = '${userId}'` : ''}
+GROUP BY
+    x.user_id
+ORDER BY
+    total_xp DESC,
+    lastDate ASC
+LIMIT ${userId ? '1' : '10'};
+`;
 
 	const result = await prisma.$queryRawUnsafe<XPRecord[]>(query);
 	return result;
 }
 
-async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
+async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, personalUserId?: string) {
 	if (!parseStaticTimeInterval(interval)) {
 		return 'Invalid time interval.';
 	}
@@ -194,10 +196,17 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 		: undefined;
 
-	const xpRecords = await executeXPGainsQuery(interval, skillObj?.id, Boolean(ironmanOnly));
+	const xpRecords = await executeXPGainsQuery(interval, skillObj?.id, Boolean(ironmanOnly), personalUserId);
 
 	if (xpRecords.length === 0) {
 		return 'No results found.';
+	}
+
+	if (personalUserId) {
+		const personalRecord = xpRecords[0];
+		return `You gained ${Number(personalRecord.total_xp).toLocaleString()} ${
+			skillObj ? `${skillObj.name} ` : ''
+		}XP in the past ${interval}.`;
 	}
 
 	let place = 0;
@@ -765,6 +774,12 @@ export const toolsCommand = defineCommand({
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
+						},
+						{
+							type: 'Boolean',
+							name: 'personal',
+							description: 'Show only your own XP gains.',
+							required: false
 						}
 					]
 				},
@@ -958,7 +973,12 @@ export const toolsCommand = defineCommand({
 			}
 			if (patron.xp_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
+				return xpGains(
+					patron.xp_gains.time,
+					patron.xp_gains.skill,
+					patron.xp_gains.ironman,
+					patron.xp_gains.personal ? user.id : undefined
+				);
 			}
 			if (patron.drystreak) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
