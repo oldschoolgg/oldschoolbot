@@ -9,7 +9,7 @@ The High Roller Pot lets you gamble large stakes with friends or anyone who is q
 Use [[/gamble high_roller]] to open a lobby. Set the **stake** to the amount each participant must pay and optionally pick a **payout mode**:
 
 - **Winner takes all** *(default)* – the highest roll pockets the entire pot.
-- **Top 3 (60/30/10)** – the top three rolls split the pot in a 60% / 30% / 10% ratio. This option needs at least four participants; otherwise the pot won't start. If the requirement is met but fewer than three players finish, the payouts are normalised across the winners.
+- **Top 3 (60/30/10)** – the top three rolls split the pot in a 60% / 30% / 10% ratio. This option needs at least three participants; otherwise the pot won't start.
 
 You can optionally mention (or paste the IDs of) up to 50 users in the **invites** option to challenge them directly. Everyone you invite must confirm within 30 seconds or the gamble is cancelled. When no invites are supplied the command creates an open lobby for 30 seconds, allowing anyone with enough GP to click **Join gamble**.
 
