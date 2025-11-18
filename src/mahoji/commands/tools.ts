@@ -26,6 +26,7 @@ import {
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 const skillsVals = Object.values(Skills);
+const discordIDRegex = /^\d{17,20}$/;
 
 function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
@@ -187,24 +188,36 @@ LIMIT ${userId ? '1' : '10'};
 	return result;
 }
 
-async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, personalUserId?: string) {
+async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, targetUserId?: string) {
 	if (!parseStaticTimeInterval(interval)) {
 		return 'Invalid time interval.';
+	}
+
+	let resolvedUserId: string | undefined;
+	if (targetUserId) {
+		const cleanedUserId = targetUserId.replace(/[^0-9]/g, '');
+		if (!discordIDRegex.test(cleanedUserId)) {
+			return 'Please provide a valid Discord user ID.';
+		}
+		resolvedUserId = cleanedUserId;
 	}
 
 	const skillObj = skill
 		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 		: undefined;
 
-	const xpRecords = await executeXPGainsQuery(interval, skillObj?.id, Boolean(ironmanOnly), personalUserId);
+	const xpRecords = await executeXPGainsQuery(interval, skillObj?.id, Boolean(ironmanOnly), resolvedUserId);
 
 	if (xpRecords.length === 0) {
-		return 'No results found.';
+		return resolvedUserId
+			? `No XP gains found for <@${resolvedUserId}> in the past ${interval}.`
+			: 'No results found.';
 	}
 
-	if (personalUserId) {
+	if (resolvedUserId) {
 		const personalRecord = xpRecords[0];
-		return `You gained ${Number(personalRecord.total_xp).toLocaleString()} ${
+		const username = (await Cache.getBadgedUsername(resolvedUserId)) ?? `<@${resolvedUserId}>`;
+		return `${username} gained ${Number(personalRecord.total_xp).toLocaleString()} ${
 			skillObj ? `${skillObj.name} ` : ''
 		}XP in the past ${interval}.`;
 	}
@@ -776,9 +789,10 @@ export const toolsCommand = defineCommand({
 							required: false
 						},
 						{
-							type: 'Boolean',
-							name: 'personal',
-							description: 'Show only your own XP gains.',
+							type: 'String',
+							name: 'user_id',
+							description:
+								'Provide a user ID to view XP gains for a specific account. Leave blank to use your own.',
 							required: false
 						}
 					]
@@ -973,12 +987,10 @@ export const toolsCommand = defineCommand({
 			}
 			if (patron.xp_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return xpGains(
-					patron.xp_gains.time,
-					patron.xp_gains.skill,
-					patron.xp_gains.ironman,
-					patron.xp_gains.personal ? user.id : undefined
-				);
+				const requestedUserId = patron.xp_gains.user_id;
+				const resolvedUserId =
+					requestedUserId === undefined ? undefined : requestedUserId === '' ? user.id : requestedUserId;
+				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman, resolvedUserId);
 			}
 			if (patron.drystreak) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
