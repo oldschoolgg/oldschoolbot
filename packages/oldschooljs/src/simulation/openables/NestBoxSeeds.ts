@@ -1,10 +1,10 @@
-import { EMPTY_BIRD_NEST_ID } from '@/constants.js';
+import { EItem } from '@/EItem.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const NestBoxSeedsTable = new LootTable()
 	// source: https://oldschool.runescape.wiki/w/Bird_nest
-	.every(EMPTY_BIRD_NEST_ID)
+	.every(EItem.EMPTY_BIRD_NEST)
 	.add('Acorn', 1, 248)
 	.add('Sweetcorn seed', 6, 346)
 	.add('Strawberry seed', 6, 325)

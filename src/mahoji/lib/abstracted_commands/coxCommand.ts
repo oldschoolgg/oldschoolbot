@@ -57,19 +57,16 @@ export async function coxStatsCommand(user: MUser) {
 		1
 	)}% ${Emoji.CombatSword} ${calcWhatPercent(normalSolo.reductions[user.id], normalSolo.maxUserReduction).toFixed(
 		1
-	)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), false))[0].deathChance.toFixed(1)}% ${
-		Emoji.CombatSword
-	} ${calcWhatPercent(normalTeam.reductions[user.id], normalTeam.maxUserReduction).toFixed(1)}%)
+	)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), false))[0].deathChance.toFixed(1)}% ${Emoji.CombatSword
+		} ${calcWhatPercent(normalTeam.reductions[user.id], normalTeam.maxUserReduction).toFixed(1)}%)
 **Challenge Mode:** ${minigameScores.raids_challenge_mode} KC (Solo: ${Emoji.Skull} ${(await createTeam([user], true))[0].deathChance.toFixed(1)}%  ${Emoji.CombatSword} ${calcWhatPercent(
-		cmSolo.reductions[user.id],
-		cmSolo.maxUserReduction
-	).toFixed(1)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), true))[0].deathChance.toFixed(1)}% ${
-		Emoji.CombatSword
-	} ${calcWhatPercent(cmTeam.reductions[user.id], cmTeam.maxUserReduction).toFixed(1)}%)
+			cmSolo.reductions[user.id],
+			cmSolo.maxUserReduction
+		).toFixed(1)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), true))[0].deathChance.toFixed(1)}% ${Emoji.CombatSword
+		} ${calcWhatPercent(cmTeam.reductions[user.id], cmTeam.maxUserReduction).toFixed(1)}%)
 **Total Points:** ${totalPoints}
-**Total Uniques:** ${totalUniques} ${
-		totalUniques > 0 ? `(1 unique per ${Math.floor(totalPoints / totalUniques).toLocaleString()} pts)` : ''
-	}\n
+**Total Uniques:** ${totalUniques} ${totalUniques > 0 ? `(1 unique per ${Math.floor(totalPoints / totalUniques).toLocaleString()} pts)` : ''
+		}\n
 **Melee:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
 **Range:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
 **Mage:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
@@ -78,7 +75,7 @@ export async function coxStatsCommand(user: MUser) {
 
 export async function coxCommand(
 	interaction: MInteraction,
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	type: 'solo' | 'mass',
 	maxSizeInput: number | undefined,
@@ -97,25 +94,25 @@ export async function coxCommand(
 			return 'You need at least 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.';
 		}
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
 	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 15 }) ?? 15;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is hosting a ${
-			isChallengeMode ? '**Challenge mode** ' : ''
-		}Chambers of Xeric mass! Use the buttons below to join/leave.`,
+		message: `${user.usernameOrMention} is hosting a ${isChallengeMode ? '**Challenge mode** ' : ''
+			}Chambers of Xeric mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (!user.hasMinion) {
 				return [true, "you don't have a minion."];
 			}
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, 'your minion is busy.'];
 			}
 			if (!hasMinRaidsRequirements(user)) {
@@ -152,8 +149,12 @@ export async function coxCommand(
 	};
 
 	let users: MUser[] = [];
+
 	if (type === 'mass') {
-		users = (await interaction.makeParty(partyOptions)).filter(u => !u.minionIsBusy);
+		users = await globalClient.makeParty(partyOptions);
+		if (await ActivityManager.anyMinionIsBusy(users)) {
+			return `All team members must have their minions free.`;
+		}
 	} else {
 		users = [user];
 	}
@@ -165,7 +166,7 @@ export async function coxCommand(
 		degradeables,
 		chinCannonUser
 	} = await calcCoxDuration(users, isChallengeMode);
-	const maxTripLength = user.calcMaxTripLength('Raids');
+	const maxTripLength = await user.calcMaxTripLength('Raids');
 	const maxCanDo = Math.max(Math.floor(maxTripLength / raidDuration), 1);
 	const quantity = _quantity && _quantity * raidDuration <= maxTripLength ? _quantity : maxCanDo;
 
@@ -204,9 +205,8 @@ export async function coxCommand(
 			totalCost.add(supplies);
 			const { total } = calculateUserGearPercents(u);
 
-			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
-				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}`;
+			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword
+				} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}`;
 
 			if (chinCannonUser === u) {
 				const res = await inventionItemBoost({
@@ -243,7 +243,7 @@ export async function coxCommand(
 
 	await ActivityManager.startTrip<RaidsOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'Raids',
 		leader: user.id,
@@ -254,14 +254,12 @@ export async function coxCommand(
 	});
 
 	let str = isSolo
-		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
-				quantity > 1 ? 's' : ''
-			}. The total trip will take ${formatDuration(duration)}.`
+		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${quantity > 1 ? 's' : ''
+		}. The total trip will take ${formatDuration(duration)}.`
 		: `${partyOptions.leader.usernameOrMention}'s party (${users
-				.map(u => u.usernameOrMention)
-				.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
-				quantity > 1 ? 's' : ''
-			} - the total trip will take ${formatDuration(duration)}.`;
+			.map(u => u.usernameOrMention)
+			.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${quantity > 1 ? 's' : ''
+		} - the total trip will take ${formatDuration(duration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

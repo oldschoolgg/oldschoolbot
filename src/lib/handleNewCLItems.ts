@@ -42,11 +42,6 @@ export async function handleNewCLItems({
 	const anyNewCLItems = itemsAdded.filter(i => !previousCL.has(i.id) && newCL.has(i.id));
 	const newCLItems = anyNewCLItems.filter(i => allCLItems.has(i.id));
 
-	const rawDifference = newCL.difference(previousCL);
-	if (rawDifference.length > 0) {
-		await user._fetchOrCreateCL(rawDifference);
-	}
-
 	const didGetNewCLItem: boolean = newCLItems?.length > 0;
 	if (didGetNewCLItem) {
 		await prisma.historicalData.create({ data: await createHistoricalData(user) });

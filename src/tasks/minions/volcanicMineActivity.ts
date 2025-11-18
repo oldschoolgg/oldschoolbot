@@ -16,7 +16,7 @@ const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).ad
 export const vmTask: MinionTask = {
 	type: 'VolcanicMine',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { quantity, channelID, duration } = data;
+		const { quantity, channelId, duration } = data;
 		const userMiningLevel = user.skillsAsLevels.mining;
 		let boost = 1;
 		// Activity boosts
@@ -84,9 +84,8 @@ export const vmTask: MinionTask = {
 		// 4x Loot for having doug helping, as it helps mining more fragments
 		if (flappyRes.shouldGiveBoost) loot.multiply(2);
 
-		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
-			loot.length > 0 ? `\nYou received ${loot}` : ''
-		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
+		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${loot.length > 0 ? `\nYou received ${loot}` : ''
+			}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
 
 		if (flappyRes.userMsg) {
 			str += `\n${flappyRes.userMsg}`;
@@ -100,6 +99,6 @@ export const vmTask: MinionTask = {
 			}
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };

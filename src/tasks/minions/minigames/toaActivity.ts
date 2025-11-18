@@ -1,5 +1,5 @@
+import { bold } from '@oldschoolgg/discord';
 import { Emoji, Events, formatOrdinal, isObject, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
@@ -29,7 +29,7 @@ interface RaidResultUser {
 export const toaTask: MinionTask = {
 	type: 'TombsOfAmascut',
 	async run(data: TOAOptions, { handleTripFinish }) {
-		const { channelID, raidLevel, duration, leader, quantity, wipedRoom: _wipedRoom, cc: chincannonUser } = data;
+		const { channelId, raidLevel, duration, leader, quantity, wipedRoom: _wipedRoom, cc: chincannonUser } = data;
 		const detailedUsers = normalizeTOAUsers(data);
 		const wipedRooms = Array.isArray(_wipedRoom) ? _wipedRoom : [_wipedRoom];
 		assert(Array.isArray(detailedUsers[0]) && isObject(detailedUsers[0][0]), `${detailedUsers}`);
@@ -50,15 +50,12 @@ export const toaTask: MinionTask = {
 			)
 		);
 		if (wipedRooms.every(i => i !== null)) {
-			return handleTripFinish(
-				allUsers[0],
-				channelID,
-				`${allUsers.map(i => i.toString()).join(' ')} Your team wiped in the Tombs of Amascut!`,
-				undefined,
-				data,
-				null,
-				undefined
-			);
+			return handleTripFinish({
+				user: allUsers[0],
+				channelId,
+				message: `${allUsers.map(i => i.toString()).join(' ')} Your team wiped in the Tombs of Amascut!`,
+				data
+			});
 		}
 
 		const totalLoot = new TeamLoot(ItemGroups.toaCL);
@@ -110,9 +107,8 @@ export const toaTask: MinionTask = {
 		);
 
 		let resultMessage = isSolo
-			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`} Tombs of Amascut raid${
-					quantity > 1 ? 's' : ''
-				}! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
+			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`} Tombs of Amascut raid${quantity > 1 ? 's' : ''
+			}! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
 			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
@@ -155,8 +151,7 @@ export const toaTask: MinionTask = {
 					const itemsToAnnounce = itemsAdded.filter(item => ItemGroups.toaPurpleItems.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
-						`${Emoji.Purple} ${
-							user.badgedUsername
+						`${Emoji.Purple} ${user.badgedUsername
 						} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 							minigameIncrementResult[0].newScore
 						)} raid.`
@@ -240,45 +235,45 @@ export const toaTask: MinionTask = {
 		}
 
 		if (isSolo) {
-			return handleTripFinish(
-				allUsers[0],
-				channelID,
-				resultMessage,
-				shouldShowImage
-					? await drawChestLootImage({
-							entries: [
-								{
-									loot: itemsAddedTeamLoot.totalLoot(),
-									user: allUsers[0],
-									previousCL: previousCLs[0],
-									customTexts: makeCustomTexts(leaderSoloUser.id)
-								}
-							],
-							type: 'Tombs of Amascut'
-						})
-					: undefined,
+			const image = shouldShowImage
+				? await drawChestLootImage({
+					entries: [
+						{
+							loot: itemsAddedTeamLoot.totalLoot(),
+							user: allUsers[0],
+							previousCL: previousCLs[0],
+							customTexts: makeCustomTexts(leaderSoloUser.id)
+						}
+					],
+					type: 'Tombs of Amascut'
+				})
+				: undefined;
+			return handleTripFinish({
+				user: allUsers[0],
+				channelId,
+				message: { content: resultMessage, files: [image] },
 				data,
-				itemsAddedTeamLoot.totalLoot()
-			);
+				loot: itemsAddedTeamLoot.totalLoot()
+			});
 		}
 
-		handleTripFinish(
-			allUsers[0],
-			channelID,
-			resultMessage,
-			shouldShowImage
-				? await drawChestLootImage({
-						entries: allUsers.map((u, index) => ({
-							loot: itemsAddedTeamLoot.get(u.id),
-							user: u,
-							previousCL: previousCLs[index],
-							customTexts: makeCustomTexts(u.id)
-						})),
-						type: 'Tombs of Amascut'
-					})
-				: undefined,
-			data,
-			null
-		);
+		const img = shouldShowImage
+			? await drawChestLootImage({
+				entries: allUsers.map((u, index) => ({
+					loot: itemsAddedTeamLoot.get(u.id),
+					user: u,
+					previousCL: previousCLs[index],
+					customTexts: makeCustomTexts(u.id)
+				})),
+				type: 'Tombs of Amascut'
+			})
+			: undefined;
+
+		return handleTripFinish({
+			user: allUsers[0],
+			channelId,
+			message: { content: resultMessage, files: [img] },
+			data
+		});
 	}
 };

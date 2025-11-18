@@ -9,17 +9,17 @@ import {
 	reduceNumByPercent,
 	Time
 } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { calcSetupPercent } from '@/lib/data/cox.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { mentionCommand } from '@/lib/discord/index.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { Gear } from '../structures/Gear.js';
 import { formatSkillRequirements } from '../util/smallUtils.js';
+import { bold } from '@oldschoolgg/discord';
+import { mentionCommand } from '@/discord/utils.js';
 
 const { floor } = Math;
 
@@ -112,141 +112,141 @@ const requirements: {
 	}) => string | true;
 	desc: () => string;
 }[] = [
-	{
-		name: 'Range gear',
-		doesMeet: ({ user, gearStats, quantity }) => {
-			if (gearStats.range < 25) {
-				return 'Terrible range gear';
-			}
+		{
+			name: 'Range gear',
+			doesMeet: ({ user, gearStats, quantity }) => {
+				if (gearStats.range < 25) {
+					return 'Terrible range gear';
+				}
 
-			if (!user.gear.range.hasEquipped(REQUIRED_RANGE_WEAPONS, false)) {
-				return `Must have one of these equipped: ${REQUIRED_RANGE_WEAPONS.map(i =>
+				if (!user.gear.range.hasEquipped(REQUIRED_RANGE_WEAPONS, false)) {
+					return `Must have one of these equipped: ${REQUIRED_RANGE_WEAPONS.map(i =>
+						Items.itemNameFromId(i)
+					).join(', ')}`;
+				}
+
+				const rangeAmmo = user.gear.range.ammo;
+				const arrowsNeeded = JAVELLINS_PER_RAID(user.skillsAsLevels.ranged) * quantity;
+
+				if (!rangeAmmo || !rangeAmmo.item || !JAVELLINS.includes(rangeAmmo.item)) {
+					return `You need to have javellins equipped in your range setup, one of: ${JAVELLINS.map(i =>
+						Items.itemNameFromId(i)
+					).join(', ')}`;
+				}
+
+				if (rangeAmmo.quantity < arrowsNeeded) {
+					return `You need atleast ${arrowsNeeded}x ${Items.itemNameFromId(rangeAmmo.item)} in your range setup.`;
+				}
+
+				return true;
+			},
+			desc: () =>
+				`decent range gear (BiS is ${maxRange.toString()}), atleast ${JAVELLINS_PER_RAID}x javelins equipped (must be one of ${JAVELLINS.map(
+					i => Items.itemNameFromId(i)
+				).join(', ')}), and one of these ballista's: ${REQUIRED_RANGE_WEAPONS.map(i =>
 					Items.itemNameFromId(i)
-				).join(', ')}`;
-			}
-
-			const rangeAmmo = user.gear.range.ammo;
-			const arrowsNeeded = JAVELLINS_PER_RAID(user.skillsAsLevels.ranged) * quantity;
-
-			if (!rangeAmmo || !rangeAmmo.item || !JAVELLINS.includes(rangeAmmo.item)) {
-				return `You need to have javellins equipped in your range setup, one of: ${JAVELLINS.map(i =>
-					Items.itemNameFromId(i)
-				).join(', ')}`;
-			}
-
-			if (rangeAmmo.quantity < arrowsNeeded) {
-				return `You need atleast ${arrowsNeeded}x ${Items.itemNameFromId(rangeAmmo.item)} in your range setup.`;
-			}
-
-			return true;
+				).join(', ')}`
 		},
-		desc: () =>
-			`decent range gear (BiS is ${maxRange.toString()}), atleast ${JAVELLINS_PER_RAID}x javelins equipped (must be one of ${JAVELLINS.map(
-				i => Items.itemNameFromId(i)
-			).join(', ')}), and one of these ballista's: ${REQUIRED_RANGE_WEAPONS.map(i =>
-				Items.itemNameFromId(i)
-			).join(', ')}`
-	},
-	{
-		name: 'Melee gear',
-		doesMeet: ({ user, gearStats }) => {
-			if (gearStats.melee < 25) {
-				return 'Terrible melee gear';
-			}
+		{
+			name: 'Melee gear',
+			doesMeet: ({ user, gearStats }) => {
+				if (gearStats.melee < 25) {
+					return 'Terrible melee gear';
+				}
 
-			if (!user.gear.melee.hasEquipped(REQUIRED_MELEE_WEAPONS, false)) {
-				return `Need one of these weapons in your melee setup: ${REQUIRED_MELEE_WEAPONS.map(i =>
-					Items.itemNameFromId(i)
-				).join(', ')}`;
-			}
+				if (!user.gear.melee.hasEquipped(REQUIRED_MELEE_WEAPONS, false)) {
+					return `Need one of these weapons in your melee setup: ${REQUIRED_MELEE_WEAPONS.map(i =>
+						Items.itemNameFromId(i)
+					).join(', ')}`;
+				}
 
-			return true;
+				return true;
+			},
+			desc: () =>
+				`decent melee gear (BiS is ${maxMelee.toString()}, and one of these weapons: ${REQUIRED_MELEE_WEAPONS.map(
+					i => Items.itemNameFromId(i)
+				).join(', ')}`
 		},
-		desc: () =>
-			`decent melee gear (BiS is ${maxMelee.toString()}, and one of these weapons: ${REQUIRED_MELEE_WEAPONS.map(
-				i => Items.itemNameFromId(i)
-			).join(', ')}`
-	},
-	{
-		name: 'Mage gear',
-		doesMeet: ({ gearStats, user }) => {
-			if (gearStats.mage < 25) {
-				return 'Terrible mage gear';
-			}
+		{
+			name: 'Mage gear',
+			doesMeet: ({ gearStats, user }) => {
+				if (gearStats.mage < 25) {
+					return 'Terrible mage gear';
+				}
 
-			if (!user.gear.mage.hasEquipped(REQUIRED_MAGE_WEAPONS, false)) {
-				return `Need one of these weapons in your mage setup: ${REQUIRED_MAGE_WEAPONS.map(i =>
-					Items.itemNameFromId(i)
-				).join(', ')}`;
-			}
+				if (!user.gear.mage.hasEquipped(REQUIRED_MAGE_WEAPONS, false)) {
+					return `Need one of these weapons in your mage setup: ${REQUIRED_MAGE_WEAPONS.map(i =>
+						Items.itemNameFromId(i)
+					).join(', ')}`;
+				}
 
-			return true;
+				return true;
+			},
+			desc: () => `decent mage gear (BiS is ${maxMage.toString()})`
 		},
-		desc: () => `decent mage gear (BiS is ${maxMage.toString()})`
-	},
-	{
-		name: 'Sanguinesti staff',
-		doesMeet: ({ user, quantity }) => {
-			if (!user.bank.has('Sanguinesti staff')) {
-				return 'You need a Sanguinesti staff in your bank';
-			}
+		{
+			name: 'Sanguinesti staff',
+			doesMeet: ({ user, quantity }) => {
+				if (!user.bank.has('Sanguinesti staff')) {
+					return 'You need a Sanguinesti staff in your bank';
+				}
 
-			if (user.user.sang_charges < SANG_CHARGES_PER_RAID * quantity) {
-				return `You need atleast ${SANG_CHARGES_PER_RAID} charges in your Sanguinesti staff per raid`;
-			}
+				if (user.user.sang_charges < SANG_CHARGES_PER_RAID * quantity) {
+					return `You need atleast ${SANG_CHARGES_PER_RAID} charges in your Sanguinesti staff per raid`;
+				}
 
-			return true;
+				return true;
+			},
+			desc: () => `decent mage gear (BiS is ${maxMage.toString()})`
 		},
-		desc: () => `decent mage gear (BiS is ${maxMage.toString()})`
-	},
-	{
-		name: 'Stats',
-		doesMeet: ({ user }) => {
-			if (!user.hasSkillReqs(minDOAStats)) {
-				return `You need: ${formatSkillRequirements(minDOAStats)}.`;
-			}
-			return true;
+		{
+			name: 'Stats',
+			doesMeet: ({ user }) => {
+				if (!user.hasSkillReqs(minDOAStats)) {
+					return `You need: ${formatSkillRequirements(minDOAStats)}.`;
+				}
+				return true;
+			},
+			desc: () => `${formatSkillRequirements(minDOAStats)}`
 		},
-		desc: () => `${formatSkillRequirements(minDOAStats)}`
-	},
-	{
-		name: 'Supplies',
-		doesMeet: ({ user, quantity }) => {
-			if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
-				return `You need atleast this much supplies: ${minimumSuppliesNeeded}`;
-			}
+		{
+			name: 'Supplies',
+			doesMeet: ({ user, quantity }) => {
+				if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
+					return `You need atleast this much supplies: ${minimumSuppliesNeeded}`;
+				}
 
-			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
-			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
-				return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					'minion',
-					'charge'
-				)}`;
-			}
-			const voidStaffCharges = VOID_STAFF_CHARGES_PER_RAID * quantity;
-			if (user.gear.mage.hasEquipped('Void staff') && user.user.void_staff_charges < voidStaffCharges) {
-				return `You need atleast ${voidStaffCharges} Void staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					'minion',
-					'charge'
-				)}`;
-			}
+				const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
+				if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
+					return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
+						'minion',
+						'charge'
+					)}`;
+				}
+				const voidStaffCharges = VOID_STAFF_CHARGES_PER_RAID * quantity;
+				if (user.gear.mage.hasEquipped('Void staff') && user.user.void_staff_charges < voidStaffCharges) {
+					return `You need atleast ${voidStaffCharges} Void staff charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
+						'minion',
+						'charge'
+					)}`;
+				}
 
-			return true;
+				return true;
+			},
+			desc: () => `Need atleast ${minimumSuppliesNeeded}`
 		},
-		desc: () => `Need atleast ${minimumSuppliesNeeded}`
-	},
-	{
-		name: 'Rune Pouch',
-		doesMeet: ({ allItemsOwned }) => {
-			const similarItems = getSimilarItems(itemID('Rune pouch'));
-			if (similarItems.every(item => !allItemsOwned.has(item))) {
-				return 'You need to own a Rune pouch.';
-			}
-			return true;
-		},
-		desc: () => `Need atleast ${minimumSuppliesNeeded}`
-	}
-];
+		{
+			name: 'Rune Pouch',
+			doesMeet: ({ allItemsOwned }) => {
+				const similarItems = getSimilarItems(itemID('Rune pouch'));
+				if (similarItems.every(item => !allItemsOwned.has(item))) {
+					return 'You need to own a Rune pouch.';
+				}
+				return true;
+			},
+			desc: () => `Need atleast ${minimumSuppliesNeeded}`
+		}
+	];
 
 interface RoomBoost {
 	name: string;
@@ -528,7 +528,7 @@ export async function checkDOAUser({
 	if (!user.hasMinion) {
 		return `${user.usernameOrMention} doesn't have a minion`;
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention}'s minion is busy`;
 	}
 
@@ -651,8 +651,7 @@ export function createDOATeam({
 						);
 					} else {
 						messages.push(
-							`    ${user.usernameOrMention} missed the ${
-								boost.name
+							`    ${user.usernameOrMention} missed the ${boost.name
 							} boost, it would've saved ${formatDuration(actualDecrease)}`
 						);
 					}
@@ -729,7 +728,7 @@ export async function checkDOATeam(users: MUser[], challengeMode: boolean, quant
 	const checkedUsers: CheckedDOAUser[] = [];
 
 	for (const user of users) {
-		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
+		if (await user.minionIsBusy()) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkDOAUser({ user, challengeMode, duration: Time.Hour, quantity });
 		if (typeof checkResult === 'string') {
 			return checkResult;
@@ -768,27 +767,26 @@ ${DOARooms.map(i => `- ${i.name}: ${(stats.doa_room_attempts_bank as ItemBank)[i
 
 **KC**: ${minigameStats.depths_of_atlantis} KC
 **Challenge Mode KC:** ${minigameStats.depths_of_atlantis_cm} KC
-**Total Uniques:** ${totalUniques} ${
-		totalUniques > 0
+**Total Uniques:** ${totalUniques} ${totalUniques > 0
 			? `(one unique every ${Math.floor(
-					(minigameStats.depths_of_atlantis + minigameStats.depths_of_atlantis_cm) / totalUniques
-				)} raids, one unique every ${formatDuration(
-					(stats.doa_total_minutes_raided * Time.Minute) / totalUniques
-				)})`
+				(minigameStats.depths_of_atlantis + minigameStats.depths_of_atlantis_cm) / totalUniques
+			)} raids, one unique every ${formatDuration(
+				(stats.doa_total_minutes_raided * Time.Minute) / totalUniques
+			)})`
 			: ''
-	}
+		}
 
 **Requirements**
 ${requirements
-	.map(i => {
-		const res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned });
-		if (typeof res === 'string') {
-			return `- ❌ ${bold(i.name)} ${res}`;
-		}
+			.map(i => {
+				const res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned });
+				if (typeof res === 'string') {
+					return `- ❌ ${bold(i.name)} ${res}`;
+				}
 
-		return `- ✅ ${bold(i.name)}`;
-	})
-	.join('\n')}
+				return `- ✅ ${bold(i.name)}`;
+			})
+			.join('\n')}
 
 **Ready:** ${await doaCheckCommand(user)}
 `;

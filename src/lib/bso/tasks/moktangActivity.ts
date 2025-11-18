@@ -12,12 +12,11 @@ import {
 
 import { randInt } from '@oldschoolgg/rng';
 import { calcPerHour, Events, formatOrdinal } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
+import { userMention } from '@oldschoolgg/discord';
 import { Bank, Items, increaseBankQuantitesByPercent, resolveItems } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const moktangTask: MinionTask = {
 	type: 'Moktang',
@@ -74,13 +73,6 @@ export const moktangTask: MinionTask = {
 			masterCapeBoost: true
 		});
 
-		const image = await makeBankImage({
-			bank: res.itemsAdded,
-			title: `Loot From ${qty} Moktang`,
-			user,
-			previousCL: res.previousCL
-		});
-
 		const newKC = await user.getKC(EBSOMonster.MOKTANG);
 		for (const item of resolveItems(['Igne gear frame', 'Mini moktang'])) {
 			if (loot.has(item)) {
@@ -93,12 +85,17 @@ export const moktangTask: MinionTask = {
 			}
 		}
 
-		const str = `${userMention(data.userID)}, ${
-			user.minionName
-		} finished killing ${qty}x Moktang (${calcPerHour(data.qty, data.duration).toFixed(1)}/hr). ${bonusPercent}% bonus loot because of your Mining level.
+		const message = new MessageBuilder().setContent(`${userMention(data.userID)}, ${user.minionName
+			} finished killing ${qty}x Moktang (${calcPerHour(data.qty, data.duration).toFixed(1)}/hr). ${bonusPercent}% bonus loot because of your Mining level.
 
-${xpStr}`;
+${xpStr}`)
+			.addBankImage({
+				bank: res.itemsAdded,
+				title: `Loot From ${qty} Moktang`,
+				user,
+				previousCL: res.previousCL
+			});
 
-		handleTripFinish(user, data.channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId: data.channelId, message, data, loot });
 	}
 };

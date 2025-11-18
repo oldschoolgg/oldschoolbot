@@ -10,14 +10,13 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
 
 export const ignecarusTask: MinionTask = {
 	type: 'Ignecarus',
 	async run(data: NewBossOptions, { handleTripFinish, rng }) {
-		const { channelID, users: idArr, duration, bossUsers: _bossUsers, quantity, userID } = data;
+		const { channelId, users: idArr, duration, bossUsers: _bossUsers, quantity, userID } = data;
 		const wrongFoodDeaths: MUser[] = [];
 		const deaths: Record<string, { user: MUser; qty: number }> = {};
 		const bossUsers: BossUser[] = await Promise.all(
@@ -47,14 +46,11 @@ export const ignecarusTask: MinionTask = {
 
 		const tagAll = bossUsers.map(u => u.user.toString()).join(', ');
 		if (wrongFoodDeaths.length === bossUsers.length * quantity) {
-			return sendToChannelID(channelID, {
-				content: `${tagAll}\n\nYour team began the fight, but the intense heat of the dragons lair melted your potions, and spoiled them - with no food left to eat, your entire team died.`
-			});
+			return handleTripFinish({ user: bossUsers[0].user, channelId, message: `${tagAll}\n\nYour team began the fight, but the intense heat of the dragons lair melted your potions, and spoiled them - with no food left to eat, your entire team died.`, data });
 		}
 
 		if (sumArr(Object.values(deaths).map(d => d.qty)) === idArr.length * quantity) {
-			handleTripFinish(bossUsers[0].user, channelID, `${tagAll}\n\nYour team all died.`, undefined, data, null);
-			return;
+			return handleTripFinish({ user: bossUsers[0].user, channelId, message: `${tagAll}\n\nYour team all died.`, data });
 		}
 
 		await Promise.all(bossUsers.map(u => u.user.incrementKC(Ignecarus.id, quantity)));
@@ -121,13 +117,12 @@ export const ignecarusTask: MinionTask = {
 		if (Object.values(deaths).length > 0) {
 			resultStr += `\n\n**Died in battle**: ${Object.values(deaths).map(
 				u =>
-					`${u.user.toString()}${u.qty > 1 ? ` x${u.qty}` : ''} (${
-						wrongFoodDeaths.includes(u.user)
-							? 'Had no food'
-							: rng
-									.shuffle([...methodsOfDeath])
-									.slice(0, u.qty)
-									.join(', ')
+					`${u.user.toString()}${u.qty > 1 ? ` x${u.qty}` : ''} (${wrongFoodDeaths.includes(u.user)
+						? 'Had no food'
+						: rng
+							.shuffle([...methodsOfDeath])
+							.slice(0, u.qty)
+							.join(', ')
 					})`
 			)}.`;
 		}
@@ -146,6 +141,6 @@ export const ignecarusTask: MinionTask = {
 			}))
 		});
 
-		handleTripFinish(bossUsers[0].user, channelID, resultStr, undefined, data, null);
+		return handleTripFinish({ user: bossUsers[0].user, channelId, message: resultStr, data });
 	}
 };

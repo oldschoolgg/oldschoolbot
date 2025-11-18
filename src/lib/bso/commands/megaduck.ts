@@ -1,13 +1,10 @@
 import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/bso/megaDuck.js';
 
-import { Events, Time } from '@oldschoolgg/toolkit';
+import { Events, } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 import { globalConfig } from '@/lib/constants.js';
-import { getUsernameSync } from '@/lib/util.js';
-import { mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
-import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 const apeAtoll = [1059, 1226];
 const portSarim = [1418, 422];
@@ -28,12 +25,15 @@ function locationIsFinished(location: MegaDuckLocation) {
 	return location.x < 770 && location.y > 1011;
 }
 
-function topFeeders(entries: any[]) {
-	return `Top 10 Feeders: ${[...entries]
+async function topFeeders(entries: any[]) {
+	const users = await Promise.all([...entries]
 		.sort((a, b) => b[1] - a[1])
-		.slice(0, 10)
-		.map(ent => `${getUsernameSync(ent[0])}. ${ent[1]}`)
-		.join(', ')}`;
+		.slice(0, 10).map(async u => {
+			const username = await Cache.getBadgedUsername(u[0]);
+			return { username, count: u[1] };
+		}));
+	return `Top 10 Feeders: ${users.map(ent => `${ent.username}. ${ent.count}`)
+			.join(', ')}`;
 }
 
 const directions = ['up', 'down', 'left', 'right'] as const;
@@ -117,7 +117,6 @@ export const megaDuckCommand = defineCommand({
 	description: 'Mega duck!.',
 	attributes: {
 		requiresMinion: true,
-		cooldown: 20 * Time.Second
 	},
 	options: [
 		{
@@ -134,23 +133,16 @@ export const megaDuckCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, userID, guildID, interaction }) => {
-		const user = await mUserFetch(userID);
-		const withoutCooldown = (message: string) => {
-			Cooldowns.delete(user.id, 'megaduck');
-			return message;
-		};
-
-		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
-		if (!guild) return withoutCooldown('You can only run this in a guild.');
+	run: async ({ options, user, guildId, interaction, userId }) => {
+		if (!guildId) return ('You can only run this in a guild.');
 
 		const settings = await prisma.guild.upsert({
 			where: {
-				id: guild.id
+				id: guildId
 			},
 			update: {},
 			create: {
-				id: guild.id
+				id: guildId
 			},
 			select: {
 				mega_duck_location: true,
@@ -163,15 +155,15 @@ export const megaDuckCommand = defineCommand({
 
 		const direction = options.move;
 
-		const member = guild.members.cache.get(userID.toString());
+		const member = await globalClient.fetchMember({ guildId, userId });
 		if (
-			(globalConfig.adminUserIDs.includes(userID.toString()) && guild.id.toString() === '342983479501389826') ||
-			(options.reset && member && member.permissions.has('Administrator'))
+			(globalConfig.adminUserIDs.includes(userId) && guildId === '342983479501389826') ||
+			(options.reset && member && member.permissions.includes('ADMINISTRATOR'))
 		) {
 			await interaction.confirmation(
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
 			);
-			await mahojiGuildSettingsUpdate(guild, {
+			await Cache.updateGuild(guildId, {
 				mega_duck_location: {
 					...defaultMegaDuckLocation,
 					steps: location.steps
@@ -181,24 +173,22 @@ export const megaDuckCommand = defineCommand({
 
 		const { image } = await makeImage(location);
 		if (!direction) {
-			Cooldowns.delete(user.id, 'megaduck');
 			return {
-				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
-					location.usersParticipated[user.id] ?? 0
-				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
-				files: [{ attachment: image, name: 'megaduck.png' }]
+				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${location.usersParticipated[user.id] ?? 0
+					} times. ${await topFeeders(Object.entries(location.usersParticipated))}`,
+				files: [{ buffer: image, name: 'megaduck.png' }]
 			};
 		}
 
 		const cost = new Bank().add('Breadcrumbs');
 		if (!user.owns(cost)) {
-			return withoutCooldown(`${user} The Mega Duck won't move for you, it wants some food.`);
+			return (`${user} The Mega Duck won't move for you, it wants some food.`);
 		}
 
 		let newLocation = applyDirection(location, direction);
 		const newLocationResult = await makeImage(newLocation);
 		if (newLocationResult.currentColor[3] !== 0) {
-			return withoutCooldown("You can't move here.");
+			return ("You can't move here.");
 		}
 
 		if (newLocation.usersParticipated[user.id]) {
@@ -223,7 +213,7 @@ export const megaDuckCommand = defineCommand({
 			}
 		}
 		newLocation.steps.push([newLocation.x, newLocation.y]);
-		await mahojiGuildSettingsUpdate(guild, {
+		await Cache.updateGuild(guildId, {
 			mega_duck_location: newLocation as any
 		});
 		if (
@@ -237,31 +227,30 @@ export const megaDuckCommand = defineCommand({
 				try {
 					const user = await mUserFetch(id);
 					await user.addItemsToBank({ items: loot, collectionLog: true });
-				} catch {}
+				} catch { }
 			}
 			const newT: MegaDuckLocation = {
 				...newLocation,
 				usersParticipated: {},
 				placesVisited: [...newLocation.placesVisited, 'ocean']
 			};
-			await mahojiGuildSettingsUpdate(guild, {
+			await Cache.updateGuild(guildId, {
 				mega_duck_location: newT as any
 			});
+
+			const guild = await globalClient.fetchGuild(guildId).catch(() => null);
 			globalClient.emit(
 				Events.ServerNotification,
-				`The ${guild.name} server just returned Mega Duck into the ocean with Mrs Duck, ${
-					Object.keys(newLocation.usersParticipated).length
+				`The ${guild?.name ?? 'Unknown'} server just returned Mega Duck into the ocean with Mrs Duck, ${Object.keys(newLocation.usersParticipated).length
 				} users received a Baby duckling pet. ${topFeeders(entries)}`
 			);
-			return `Mega duck has arrived at his destination! ${
-				Object.keys(newLocation.usersParticipated).length
-			} users received a Baby duckling pet. ${topFeeders(entries)}`;
+			return `Mega duck has arrived at his destination! ${Object.keys(newLocation.usersParticipated).length
+				} users received a Baby duckling pet. ${topFeeders(entries)}`;
 		}
 		return {
-			content: `${user} You moved Mega Duck ${direction}! You've moved him ${
-				newLocation.usersParticipated[user.id]
-			} times. Removed ${cost} from your bank.${str}`,
-			files: location.steps?.length % 2 === 0 ? [{ attachment: image, name: 'megaduck.png' }] : []
+			content: `${user} You moved Mega Duck ${direction}! You've moved him ${newLocation.usersParticipated[user.id]
+				} times. Removed ${cost} from your bank.${str}`,
+			files: location.steps?.length % 2 === 0 ? [{ buffer: image, name: 'megaduck.png' }] : []
 		};
 	}
 });

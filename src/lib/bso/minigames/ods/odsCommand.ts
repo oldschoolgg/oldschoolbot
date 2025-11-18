@@ -44,9 +44,8 @@ export async function odsBuyCommand(user: MUser, name: string, qty: number): Com
 	cost *= qty;
 	const balance = user.user.ourania_tokens;
 	if (balance < cost) {
-		return `You don't have enough Ourania Tokens to buy the ${qty.toLocaleString()}x ${
-			item.name
-		}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
+		return `You don't have enough Ourania Tokens to buy the ${qty.toLocaleString()}x ${item.name
+			}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
 
 	await user.update({
@@ -55,13 +54,13 @@ export async function odsBuyCommand(user: MUser, name: string, qty: number): Com
 		}
 	});
 
-	await user.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
+	await user.addItemsToBank({ items: new Bank().add(item.id, qty), collectionLog: true });
 
 	return `Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${cost.toLocaleString()} Ourania Tokens.`;
 }
 
-export async function odsStartCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function odsStartCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 	const boosts = [];
@@ -78,7 +77,7 @@ export async function odsStartCommand(user: MUser, channelID: string) {
 		boosts.push(`${Emoji.Kuro} 5% faster with Kuro's help`);
 	}
 
-	const quantity = Math.floor(user.calcMaxTripLength('OuraniaDeliveryService') / waveTime);
+	const quantity = Math.floor(await user.calcMaxTripLength('OuraniaDeliveryService') / waveTime);
 	const duration = quantity * waveTime;
 	const essenceRequired = quantity * randInt(235, 265);
 	const cost = new Bank().add('Pure essence', essenceRequired);
@@ -112,7 +111,7 @@ export async function odsStartCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'OuraniaDeliveryService',

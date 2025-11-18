@@ -1,4 +1,4 @@
-import deepEqual from 'fast-deep-equal';
+import { deepEqual } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 import { assert, describe, test } from 'vitest';
 

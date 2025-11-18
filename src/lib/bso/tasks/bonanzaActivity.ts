@@ -17,7 +17,7 @@ const tameMessages = ["ate a member of the audience who wasn't watching", 'ate a
 export const bonanzaTask: MinionTask = {
 	type: 'BalthazarsBigBonanza',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 		const tames = await user.fetchTames();
 		const incrementResult = await user.incrementMinigameScore('balthazars_big_bonanza', quantity);
 		const xpStrs = await Promise.all([
@@ -71,19 +71,21 @@ export const bonanzaTask: MinionTask = {
 			messages.push("You found a Giant's hand!");
 		}
 
-		let str = `${user}, ${
-			user.minionName
-		} finished participating in Balthazar's Big Bonanza, you received ${loot} and ${xpStrs.join(
-			', '
-		)}. You have participated ${incrementResult.newScore} times, come back in a week!`;
+		let str = `${user}, ${user.minionName
+			} finished participating in Balthazar's Big Bonanza, you received ${loot} and ${xpStrs.join(
+				', '
+			)}. You have participated ${incrementResult.newScore} times, come back in a week!`;
 
 		if (messages.length > 0) {
 			str += `\n\n**Messages:** ${messages.join(', ')}`;
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
-		await user.update({ last_bonanza_date: new Date() });
+		await user.transactItems({
+			itemsToAdd: loot, collectionLog: true, otherUpdates: {
+				last_bonanza_date: new Date()
+			}
+		});
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		return handleTripFinish({ user, channelId, message: str, data });
 	}
 };

@@ -14,7 +14,6 @@ import { kittens } from '@/lib/growablePets.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const vasaBosses = [
 	Monsters.AbyssalSire,
@@ -36,7 +35,7 @@ const vasaBosses = [
 export const vasaTask: MinionTask = {
 	type: 'VasaMagus',
 	async run(data: NewBossOptions, { user, handleTripFinish, rng }) {
-		const { channelID, duration, quantity } = data;
+		const { channelId, duration, quantity } = data;
 
 		await user.incrementKC(VasaMagus.id, quantity);
 
@@ -63,11 +62,10 @@ export const vasaTask: MinionTask = {
 			}
 		}
 
-		let resultStr = `${user}, ${
-			user.minionName
-		} finished killing ${quantity}x Vasa Magus.\nVasa dropped the loot of ${objectEntries(lootOf)
-			.map(l => `${l[1]}x ${l[0]}`)
-			.join(', ')}`;
+		let message = new MessageBuilder().setContent(`${user}, ${user.minionName
+			} finished killing ${quantity}x Vasa Magus.\nVasa dropped the loot of ${objectEntries(lootOf)
+				.map(l => `${l[1]}x ${l[0]}`)
+				.join(', ')}`);
 
 		if (isDoubleLootActive(duration)) {
 			loot.multiply(2);
@@ -81,9 +79,9 @@ export const vasaTask: MinionTask = {
 					minion_equippedPet: Items.getOrThrow('Magic kitten').id
 				}
 			});
-			resultStr += `\n**Vasa cast a spell on you, but your ${Items.itemNameFromId(
+			message.addContent(`\n**Vasa cast a spell on you, but your ${Items.itemNameFromId(
 				pet
-			)} jumped in the way to save you! Strangely, it didn't hurt them at all.**\n`;
+			)} jumped in the way to save you! Strangely, it didn't hurt them at all.**\n`);
 		}
 
 		const xpRes = await user.addMonsterXP({
@@ -109,14 +107,14 @@ export const vasaTask: MinionTask = {
 				}
 			]
 		});
-		const image = await makeBankImage({
+
+		message.addContent(`\n${xpRes}\n`);
+		message.addBankImage({
 			bank: itemsAdded,
 			title: `Loot From ${quantity} ${VasaMagus.name}`,
 			user,
 			previousCL
-		});
-
-		resultStr += `\n${xpRes}\n`;
+		})
 
 		announceLoot({
 			user,
@@ -127,6 +125,6 @@ export const vasaTask: MinionTask = {
 
 		await ClientSettings.updateBankSetting('vasa_loot', loot);
 
-		handleTripFinish(user, channelID, resultStr, image.file.attachment, data, itemsAdded);
+		return handleTripFinish({ user, channelId, message, data, loot: itemsAdded });
 	}
 };

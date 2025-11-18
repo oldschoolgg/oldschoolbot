@@ -7,7 +7,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 export const titheFarmTask: MinionTask = {
 	type: 'TitheFarm',
 	async run(data: TitheFarmActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelID, duration } = data;
+		const { channelId, duration } = data;
 		const baseHarvest = 85;
 
 		const userStats = await user.fetchStats();
@@ -52,9 +52,8 @@ export const titheFarmTask: MinionTask = {
 		const farmingXp = harvestXp + depositXp + bonusFruitXp;
 
 		const harvestStr = `${user} ${user.minionName} successfully harvested ${determineHarvest}x ${fruit} fruit.`;
-		const completedStr = `You have completed the ${Emoji.MinigameIcon} Tithe Farm ${
-			titheFarmsCompleted + 1
-		}x times. You now have ${titheFarmPoints + determinePoints} points to spend.`;
+		const completedStr = `You have completed the ${Emoji.MinigameIcon} Tithe Farm ${titheFarmsCompleted + 1
+			}x times. You now have ${titheFarmPoints + determinePoints} points to spend.`;
 
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
@@ -101,8 +100,8 @@ export const titheFarmTask: MinionTask = {
 			});
 		}
 
-		const returnStr = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}\n${flappyRes.userMsg}`;
+		const message = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}\n${flappyRes.userMsg}`;
 
-		handleTripFinish(user, channelID, returnStr, undefined, data, loot.length > 0 ? loot : null);
+		handleTripFinish({ user, channelId, message, data, loot });
 	}
 };

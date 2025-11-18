@@ -9,7 +9,6 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
-import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
 
@@ -18,62 +17,56 @@ export interface ActivityTaskOptions {
 	duration: number;
 	id: number;
 	finishDate: number;
-	channelID: string;
+	channelId: string;
 	cantBeDoubled?: boolean;
 }
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 	type:
-		| 'Questing'
-		| 'Wintertodt'
-		| 'Cyclops'
-		| 'GloryCharging'
-		| 'WealthCharging'
-		| 'BarbarianAssault'
-		| 'AgilityArena'
-		| 'ChampionsChallenge'
-		| 'MyNotes'
-		| 'AerialFishing'
-		| 'DriftNet'
-		| 'SoulWars'
-		| 'RoguesDenMaze'
-		| 'CastleWars'
-		| 'MageArena'
-		| 'MageTrainingArena'
-		| 'BlastFurnace'
-		| 'MageArena2'
-		| 'BigChompyBirdHunting'
-		| 'PestControl'
-		| 'VolcanicMine'
-		| 'TearsOfGuthix'
-		| 'LastManStanding'
-		| 'BirthdayEvent'
-		| 'TroubleBrewing'
-		| 'Easter'
-		| 'ShootingStars'
-		| 'HalloweenEvent'
-		| 'StrongholdOfSecurity'
-		| 'TrickOrTreat'
-		| 'HalloweenMiniMinigame'
-		| 'BirthdayCollectIngredients'
-		| 'CombatRing';
+	| 'Questing'
+	| 'BarbarianAssault'
+	| 'ChampionsChallenge'
+	| 'MyNotes'
+	| 'AerialFishing'
+	| 'SoulWars'
+	| 'RoguesDenMaze'
+	| 'CastleWars'
+	| 'MageArena'
+	| 'MageTrainingArena'
+	| 'BlastFurnace'
+	| 'MageArena2'
+	| 'BigChompyBirdHunting'
+	| 'PestControl'
+	| 'TearsOfGuthix'
+	| 'LastManStanding'
+	| 'BirthdayEvent'
+	| 'TroubleBrewing'
+	| 'Easter'
+	| 'ShootingStars'
+	| 'HalloweenEvent'
+	| 'StrongholdOfSecurity'
+	| 'TrickOrTreat'
+	| 'HalloweenMiniMinigame'
+	| 'BirthdayCollectIngredients'
+	| 'CombatRing'
+	| 'Revenants';
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	type:
-		| 'VolcanicMine'
-		| 'Cyclops'
-		| 'ShootingStars'
-		| 'DriftNet'
-		| 'WealthCharging'
-		| 'GloryCharging'
-		| 'AerialFishing'
-		| 'FishingTrawler'
-		| 'CamdozaalFishing'
-		| 'CamdozaalMining'
-		| 'CamdozaalSmithing'
-		| 'Naxxus'
-		| 'MyNotes';
+	| 'VolcanicMine'
+	| 'Cyclops'
+	| 'ShootingStars'
+	| 'DriftNet'
+	| 'WealthCharging'
+	| 'GloryCharging'
+	| 'AerialFishing'
+	| 'FishingTrawler'
+	| 'CamdozaalFishing'
+	| 'CamdozaalMining'
+	| 'CamdozaalSmithing'
+	| 'Naxxus'
+	| 'MyNotes';
 	quantity: number;
 	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
 	iQty?: number;
@@ -160,11 +153,6 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	attackStyles?: AttackStyles[];
 	onTask?: boolean;
 }
-
-export type UndoneChangesMonsterOptions = Omit<MonsterActivityTaskOptions, 'q' | 'mi'> & {
-	quantity: number;
-	monsterID: number;
-};
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	type: 'ClueCompletion';
@@ -361,11 +349,10 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Birdhouse';
-	birdhouseName: string | null;
 	placing: boolean;
 	gotCraft: boolean;
-	birdhouseData: BirdhouseData;
-	currentDate: number;
+	birdhouseId?: number;
+	birdhouseName?: string | null;
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
@@ -375,27 +362,26 @@ export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 
 export interface MinigameActivityTaskOptionsWithNoChanges extends MinigameActivityTaskOptions {
 	type:
-		| 'Wintertodt'
-		| 'TroubleBrewing'
-		| 'TearsOfGuthix'
-		| 'SoulWars'
-		| 'RoguesDenMaze'
-		| 'MageTrainingArena'
-		| 'LastManStanding'
-		| 'BigChompyBirdHunting'
-		| 'FishingTrawler'
-		| 'PestControl'
-		| 'BarbarianAssault'
-		| 'ChampionsChallenge'
-		| 'CastleWars'
-		| 'AgilityArena'
-		| 'GiantsFoundry'
-		| 'StealingCreation'
-		| 'OuraniaDeliveryService'
-		| 'FistOfGuthix'
-		| 'BalthazarsBigBonanza'
-		| 'GuthixianCache'
-		| 'TuraelsTrials';
+	| 'Wintertodt'
+	| 'TroubleBrewing'
+	| 'TearsOfGuthix'
+	| 'SoulWars'
+	| 'RoguesDenMaze'
+	| 'MageTrainingArena'
+	| 'LastManStanding'
+	| 'BigChompyBirdHunting'
+	| 'FishingTrawler'
+	| 'PestControl'
+	| 'BarbarianAssault'
+	| 'ChampionsChallenge'
+	| 'CastleWars'
+	| 'AgilityArena'
+	| 'StealingCreation'
+	| 'OuraniaDeliveryService'
+	| 'FistOfGuthix'
+	| 'BalthazarsBigBonanza'
+	| 'GuthixianCache'
+	| 'AgilityArena';
 }
 
 export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -455,15 +441,15 @@ export interface TempleTrekkingActivityTaskOptions extends MinigameActivityTaskO
 	difficulty: string;
 }
 
-export interface RaidsActivityTaskOptions extends ActivityTaskOptions {
-	type: 'Raids';
-	channelID: string;
-	quantity: number;
-	partyLeaderID: string;
-	users: string[];
-	team: unknown[];
-	challengeMode: boolean;
-}
+// export interface RaidsActivityTaskOptions extends ActivityTaskOptions {
+// 	type: 'Raids';
+// 	channelID: string;
+// 	quantity: number;
+// 	partyLeaderID: string;
+// 	users: string[];
+// 	team: unknown[];
+// 	challengeMode: boolean;
+// }
 
 export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Sawmill';
@@ -497,7 +483,6 @@ export interface GroupMonsterActivityTaskOptions extends Omit<MonsterActivityTas
 export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	type: 'Raids';
 	leader: string;
-	users: string[];
 	challengeMode: boolean;
 	maxSizeInput?: number;
 	quantity?: number;
@@ -508,7 +493,6 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TheatreOfBlood';
 	leader: string;
-	users: string[];
 	hardMode: boolean;
 	fakeDuration: number;
 	wipedRooms: (null | number)[];
@@ -574,7 +558,7 @@ export interface RaidsOptions extends ActivityTaskOptions {
 export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
-export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOptions {}
+export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOptions { }
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	type: 'KourendFavour';
@@ -644,7 +628,6 @@ export type ActivityTaskData =
 	| MonsterActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
 	| CollectingOptions
-	| RaidsActivityTaskOptions
 	| RaidsOptions
 	| GauntletOptions
 	| CastingActivityTaskOptions

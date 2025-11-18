@@ -51,7 +51,7 @@ function getCPUMetrics() {
 	};
 }
 
-export async function collectMetrics() {
+export function collectMetrics() {
 	const metrics: Omit<Prisma.MetricCreateInput, 'timestamp'> = {
 		eventLoopDelayMin: h.min * 1e-6,
 		eventLoopDelayMax: h.max * 1e-6,

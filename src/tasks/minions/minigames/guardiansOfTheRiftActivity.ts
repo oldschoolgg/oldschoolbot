@@ -32,7 +32,7 @@ const combinationalRunesArray: string[] = [
 export const guardiansOfTheRiftTask: MinionTask = {
 	type: 'GuardiansOfTheRift',
 	async run(data: GuardiansOfTheRiftActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } = data;
+		const { channelId, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } = data;
 		await user.incrementMinigameScore('guardians_of_the_rift', quantity);
 
 		const miningXP = quantity * 5 * minedFragments;
@@ -145,13 +145,11 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			previousCL
 		});
 
-		let str = `<@${user.id}>, ${
-			user.minionName
-		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also received: ${runesLoot}${
-			setBonus - 1 > 0
+		let str = `<@${user.id}>, ${user.minionName
+			} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also received: ${runesLoot}${setBonus - 1 > 0
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''
-		}. ${xpResRunecraft} ${xpResCrafting} ${xpResMining}`;
+			}. ${xpResRunecraft} ${xpResCrafting} ${xpResMining}`;
 		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
 
 		if (bonusBloods > 0) {
@@ -175,6 +173,6 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, null);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data });
 	}
 };

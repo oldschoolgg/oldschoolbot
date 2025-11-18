@@ -2,7 +2,7 @@ import { bushes } from '@/lib/bso/skills/farming/bushes.js';
 import { zygomitePlants } from '@/lib/bso/skills/farming/zygomites.js';
 
 import { Emoji } from '@oldschoolgg/toolkit';
-import { Items, itemID, resolveItems } from 'oldschooljs';
+import { Items, itemID, resolveItems, type ItemBank } from 'oldschooljs';
 
 import { CropUpgradeType } from '@/prisma/main/enums.js';
 import { openSeedPack } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
@@ -36,14 +36,14 @@ export const plants: Plant[] = [
 	...zygomitePlants
 ];
 
-const maleFarmerItems: { [key: number]: number } = {
+const maleFarmerItems: ItemBank = {
 	[itemID("Farmer's strawhat")]: 0.4,
 	[itemID("Farmer's jacket")]: 0.8,
 	[itemID("Farmer's boro trousers")]: 0.6,
 	[itemID("Farmer's boots")]: 0.2
 };
 
-const femaleFarmerItems: { [key: number]: number } = {
+const femaleFarmerItems: ItemBank = {
 	[itemID("Farmer's strawhat")]: 0.4,
 	[itemID("Farmer's shirt")]: 0.8,
 	[itemID("Farmer's boro trousers")]: 0.6,

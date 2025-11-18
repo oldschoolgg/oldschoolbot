@@ -66,14 +66,18 @@ export const SQL = {
  * ⚠️ Uses queryRawUnsafe
  */
 export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolean) {
+	if (!Number.isInteger(itemID) || Number.isNaN(itemID)) {
+		throw new Error(`Invalid itemID passed to countUsersWithItemInCl: ${itemID}`);
+	}
 	const query = `SELECT COUNT(id)::int
 				   FROM users
 				   WHERE ("collectionLogBank"->>'${itemID}') IS NOT NULL
 				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
 				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
-	const result = Number.parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
-	if (Number.isNaN(result)) {
-		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
+	const res = await prisma.$queryRawUnsafe<{ count: bigint }[]>(query);
+	const count = Number(res[0].count);
+	if (Number.isNaN(count)) {
+		throw new Error(`countUsersWithItemInCl produced invalid number '${count}' for ${itemID}`);
 	}
-	return result;
+	return count;
 }

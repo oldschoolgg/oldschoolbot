@@ -40,7 +40,7 @@ export function calculateTuraelsTrialsResult({
 export const turaelsTrialsTask: MinionTask = {
 	type: 'TuraelsTrials',
 	async run(data: TuraelsTrialsOptions, { user, handleTripFinish }) {
-		const { q: quantity, channelID, duration, m: method } = data;
+		const { q: quantity, channelId, duration, m: method } = data;
 
 		const result = calculateTuraelsTrialsResult({ quantity, method, duration });
 
@@ -53,12 +53,13 @@ export const turaelsTrialsTask: MinionTask = {
 		const xpResults = await user.addXPBank(result.xpBank);
 
 		return handleTripFinish(
-			user,
-			channelID,
-			`${user}, your minion finished slaying ${quantity}x superiors in Turaels Trials.\n**Your Turaels Trials KC is now ${newScore}**.\n\n${xpResults}`,
-			undefined,
-			data,
-			result.loot
+			{
+				user,
+				channelId,
+				message: `${user}, your minion finished slaying ${quantity}x superiors in Turaels Trials.\n**Your Turaels Trials KC is now ${newScore}**.\n\n${xpResults}`,
+				data,
+				loot: result.loot
+			}
 		);
 	}
 };

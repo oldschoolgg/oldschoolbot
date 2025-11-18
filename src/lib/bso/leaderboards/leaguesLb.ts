@@ -1,9 +1,5 @@
 import { allLeagueTasks } from '@/lib/bso/leagues/leagues.js';
-
-import { chunk } from 'remeda';
-
-import { getUsernameSync } from '@/lib/util.js';
-import { doMenu } from '@/mahoji/commands/leaderboard.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
 
 async function leaguesPointsLeaderboard(interaction: MInteraction) {
 	const result = await roboChimpClient.user.findMany({
@@ -15,20 +11,20 @@ async function leaguesPointsLeaderboard(interaction: MInteraction) {
 		orderBy: {
 			leagues_points_total: 'desc'
 		},
-		take: 100
+		take: 100,
+		select: {
+			id: true,
+			leagues_points_total: true
+		}
 	});
-	return doMenu(
+
+	return doMenuWrapper({
 		interaction,
-		chunk(result, 10).map(subList =>
-			subList
-				.map(
-					({ id, leagues_points_total }) =>
-						`**${getUsernameSync(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-				)
-				.join('\n')
-		),
-		'Leagues Points Leaderboard'
-	);
+		users: result.map(_u => ({ id: _u.id.toString(), score: _u.leagues_points_total })),
+		formatter: v => `${v.toLocaleString()} Pts`,
+		title: 'Leagues Points Leaderboard',
+		ironmanOnly: false
+	})
 }
 
 async function leastCompletedLeagueTasksLb() {
@@ -51,23 +47,23 @@ ORDER BY 2 ASC;`;
 
 	return `**Least Commonly Completed Tasks:**
 ${Object.entries(taskObj)
-	.sort((a, b) => a[1] - b[1])
-	.slice(0, 10)
-	.map(task => {
-		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-		return `${taskObj.name}: ${task[1]} users completed`;
-	})
-	.join('\n')}
+			.sort((a, b) => a[1] - b[1])
+			.slice(0, 10)
+			.map(task => {
+				const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
+				return `${taskObj.name}: ${task[1]} users completed`;
+			})
+			.join('\n')}
 
 **Most Commonly Completed Tasks:**
 ${Object.entries(taskObj)
-	.sort((a, b) => b[1] - a[1])
-	.slice(0, 10)
-	.map((task, index) => {
-		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-		return `${index + 1}. ${taskObj.name}`;
-	})
-	.join('\n')}`;
+			.sort((a, b) => b[1] - a[1])
+			.slice(0, 10)
+			.map((task, index) => {
+				const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
+				return `${index + 1}. ${taskObj.name}`;
+			})
+			.join('\n')}`;
 }
 
 export async function bsoLeaguesLeaderboard(interaction: MInteraction, type: 'points' | 'tasks' | 'hardest_tasks') {
@@ -78,16 +74,12 @@ export async function bsoLeaguesLeaderboard(interaction: MInteraction, type: 'po
 										  FROM public.user
 										  ORDER BY tasks_completed DESC
 										  LIMIT 100;`;
-	return doMenu(
+
+	return doMenuWrapper({
 		interaction,
-		chunk(result, 10).map(subList =>
-			subList
-				.map(
-					({ id, tasks_completed }) =>
-						`**${getUsernameSync(id.toString())}:** ${tasks_completed.toLocaleString()} Tasks`
-				)
-				.join('\n')
-		),
-		'Leagues Tasks Leaderboard'
-	);
+		users: result.map(_u => ({ id: _u.id.toString(), score: _u.tasks_completed })),
+		formatter: v => `${v.toLocaleString()} Tasks`,
+		title: 'Leagues Tasks Leaderboard',
+		ironmanOnly: false
+	})
 }

@@ -1,4 +1,3 @@
-import { itemEffectImageCache } from '@/lib/bso/canvas/customItemEffects.js';
 import { renderPaintGrid } from '@/lib/bso/canvas/renderPaintGrid.js';
 import { getPaintedItemImage } from '@/lib/bso/paintColors.js';
 
@@ -6,7 +5,8 @@ import { Bank, Items } from 'oldschooljs';
 
 import { canvasToBuffer } from '@/lib/canvas/canvasUtil.js';
 import { paintColors } from '@/lib/customItems/paintCans.js';
-import { ownedItemOption } from '@/lib/discord/presetCommandOptions.js';
+import { ownedItemOption } from '@/discord/presetCommandOptions.js';
+import { itemEffectImageCache } from '@/lib/cache.js';
 
 export const paintCommand = defineCommand({
 	name: 'paint',
@@ -21,7 +21,7 @@ export const paintCommand = defineCommand({
 			name: 'paint',
 			description: 'The paint you want to use. Leave blank to preview all paints.',
 			required: false,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return paintColors
 					.filter(i => {
 						if (!value) return true;
@@ -45,7 +45,7 @@ export const paintCommand = defineCommand({
 
 			return {
 				content: `Paint previews for ${item.name}:`,
-				files: [{ attachment: buffer, name: 'paint-previews.png' }]
+				files: [{ buffer, name: 'paint-previews.png' }]
 			};
 		}
 
@@ -60,7 +60,7 @@ export const paintCommand = defineCommand({
 		if (!user.owns(cost)) {
 			return {
 				content: "You don't own that paint can, but here's what it would look like if you did.",
-				files: [{ attachment: imageBuffer, name: 'paint-preview.png' }]
+				files: [{ buffer: imageBuffer, name: 'paint-preview.png' }]
 			};
 		}
 
@@ -84,7 +84,7 @@ export const paintCommand = defineCommand({
 
 		return {
 			content: `You painted your ${item.name} with ${paint.paintCanItem.name}!`,
-			files: [{ attachment: imageBuffer, name: 'painted-item.png' }]
+			files: [{ buffer: imageBuffer, name: 'painted-item.png' }]
 		};
 	}
 });

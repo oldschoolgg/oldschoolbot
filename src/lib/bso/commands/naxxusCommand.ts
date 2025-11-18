@@ -8,7 +8,6 @@ import {
 	isWeekend,
 	reduceNumByPercent
 } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, type Item, Items } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
@@ -16,7 +15,7 @@ import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem }
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 
 const bisMageGear = new Gear({
 	head: 'Gorajan occult helmet', // 20
@@ -49,42 +48,42 @@ const itemBoosts: {
 	boost: number;
 	setup: 'mage' | 'melee';
 }[] = [
-	{
-		item: Items.getOrThrow('Void staff'),
-		boost: 10,
-		setup: 'mage'
-	},
-	{
-		item: Items.getOrThrow('Abyssal tome'),
-		boost: 7.5,
-		setup: 'mage'
-	},
-	{
-		item: Items.getOrThrow('Tzkal cape'),
-		boost: 5,
-		setup: 'melee'
-	},
-	{
-		item: Items.getOrThrow('Vasa cloak'),
-		boost: 5,
-		setup: 'mage'
-	},
-	{
-		item: Items.getOrThrow('Ignis ring(i)'),
-		boost: 2.5,
-		setup: 'melee'
-	},
-	{
-		item: Items.getOrThrow('Spellbound ring(i)'),
-		boost: 2.5,
-		setup: 'mage'
-	},
-	{
-		item: Items.getOrThrow('Spellbound ring'),
-		boost: 2,
-		setup: 'mage'
-	}
-];
+		{
+			item: Items.getOrThrow('Void staff'),
+			boost: 10,
+			setup: 'mage'
+		},
+		{
+			item: Items.getOrThrow('Abyssal tome'),
+			boost: 7.5,
+			setup: 'mage'
+		},
+		{
+			item: Items.getOrThrow('Tzkal cape'),
+			boost: 5,
+			setup: 'melee'
+		},
+		{
+			item: Items.getOrThrow('Vasa cloak'),
+			boost: 5,
+			setup: 'mage'
+		},
+		{
+			item: Items.getOrThrow('Ignis ring(i)'),
+			boost: 2.5,
+			setup: 'melee'
+		},
+		{
+			item: Items.getOrThrow('Spellbound ring(i)'),
+			boost: 2.5,
+			setup: 'mage'
+		},
+		{
+			item: Items.getOrThrow('Spellbound ring'),
+			boost: 2,
+			setup: 'mage'
+		}
+	];
 
 const naxxusKcBoosts: [number, number, string | null][] = [
 	[500, 20, null],
@@ -119,10 +118,10 @@ function calcSetupPercent(
 
 export async function naxxusCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	quantity: number | undefined
-): Promise<string | InteractionReplyOptions> {
-	const [hasReqs, rejectReason] = await hasMonsterRequirements(user, Naxxus);
+) {
+	const [hasReqs, rejectReason] = await user.hasMonsterRequirements(Naxxus);
 	if (!hasReqs) {
 		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${rejectReason}`;
 	}
@@ -185,7 +184,7 @@ export async function naxxusCommand(
 		}
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Naxxus');
+	const maxTripLength = await user.calcMaxTripLength('Naxxus');
 	// If no quantity provided, set it to the max.
 	if (quantity === undefined) {
 		quantity = Math.max(1, Math.floor(maxTripLength / effectiveTime));
@@ -254,7 +253,7 @@ export async function naxxusCommand(
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Naxxus'
@@ -273,6 +272,6 @@ ${boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : ''}`
 
 	return {
 		content: `Your minion is now attempting to kill ${quantity}x Naxxus, the trip will take ${formatDuration(duration)}.`,
-		embeds: [embed.data]
+		embeds: [embed]
 	};
 }

@@ -55,7 +55,7 @@ export const tipTable = new LootTable()
 export const gnomeResTask: MinionTask = {
 	type: 'GnomeRestaurant',
 	async run(data: GnomeRestaurantActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, duration, gloriesRemoved } = data;
+		const { channelId, quantity, duration, gloriesRemoved } = data;
 
 		await user.incrementMinigameScore('gnome_restaurant', quantity);
 
@@ -91,6 +91,6 @@ export const gnomeResTask: MinionTask = {
 
 		await ClientSettings.updateBankSetting('gnome_res_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

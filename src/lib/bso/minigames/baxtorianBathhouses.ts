@@ -250,8 +250,8 @@ export const baxBathHelpStr = `**Baxtorian Bathhouses**
 - You get Herblore and Firemaking experience for your work, as well as occasional tips from the customers.
 
 Species you can serve, and what mixtures they prefer: ${species
-	.map(i => `${i.name} (Prefers ${i.preferredMixture})`)
-	.join(', ')}
+		.map(i => `${i.name} (Prefers ${i.preferredMixture})`)
+		.join(', ')}
 `;
 
 function calcHerbsNeeded(qty: number) {
@@ -265,19 +265,19 @@ export async function baxtorianBathhousesStartCommand({
 	tier,
 	ore,
 	mixture,
-	channelID
+	channelId
 }: {
 	user: MUser;
 	tier: string;
-	channelID: string;
+	channelId: string;
 	ore?: string | number;
 	mixture?: string;
 }) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 	const userBank = user.bank;
-	const maxTripLength = user.calcMaxTripLength('BaxtorianBathhouses');
+	const maxTripLength = await user.calcMaxTripLength('BaxtorianBathhouses');
 	const quantity = Math.floor(maxTripLength / durationPerBaxBath);
 	const duration = quantity * durationPerBaxBath;
 	const bathHouseTier = bathHouseTiers.find(i => stringMatches(i.name, tier)) ?? bathHouseTiers[0];
@@ -304,17 +304,15 @@ export async function baxtorianBathhousesStartCommand({
 	}
 
 	if (!oreToUse.tiers.includes(bathHouseTier.name)) {
-		return `Your heating isn't good enough to run a ${
-			bathHouseTier.name
-		} bath, you need to use one of these: ${BathhouseOres.filter(i => i.tiers.includes(bathHouseTier.name))
-			.map(i => i.item.name)
-			.join(', ')}`;
+		return `Your heating isn't good enough to run a ${bathHouseTier.name
+			} bath, you need to use one of these: ${BathhouseOres.filter(i => i.tiers.includes(bathHouseTier.name))
+				.map(i => i.item.name)
+				.join(', ')}`;
 	}
 	const hasReq = user.hasSkillReqs(bathHouseTier.skillRequirements);
 	if (!hasReq) {
-		return `You don't have the required skills to run ${
-			bathHouseTier.name
-		} baths, you need: ${formatSkillRequirements(bathHouseTier.skillRequirements)}.`;
+		return `You don't have the required skills to run ${bathHouseTier.name
+			} baths, you need: ${formatSkillRequirements(bathHouseTier.skillRequirements)}.`;
 	}
 
 	const boosts: string[] = [];
@@ -355,7 +353,7 @@ export async function baxtorianBathhousesStartCommand({
 
 	await ActivityManager.startTrip<BathhouseTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'BaxtorianBathhouses',

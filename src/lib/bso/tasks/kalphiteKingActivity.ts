@@ -11,7 +11,6 @@ import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 interface KalphiteKingUser {
 	id: string;
@@ -23,7 +22,7 @@ interface KalphiteKingUser {
 export const kalphiteKingTask: MinionTask = {
 	type: 'KalphiteKing',
 	async run(data: BossActivityTaskOptions, { handleTripFinish, rng }) {
-		const { channelID, userID, users, quantity, duration } = data;
+		const { channelId, userID, users, quantity, duration } = data;
 		const teamsLoot = new TeamLoot([]);
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -143,9 +142,8 @@ export const kalphiteKingTask: MinionTask = {
 				soloItemsAdded = itemsAdded;
 			}
 
-			resultStr += `${purple ? Emoji.Purple : ''} ${
-				isOnTask ? Emoji.Slayer : ''
-			} **${user} received:** ||${new Bank(loot)}||\n`;
+			resultStr += `${purple ? Emoji.Purple : ''} ${isOnTask ? Emoji.Slayer : ''
+				} **${user} received:** ||${new Bank(loot)}||\n`;
 
 			announceLoot({
 				user: leaderUser,
@@ -193,32 +191,33 @@ export const kalphiteKingTask: MinionTask = {
 					.map(id => `<@${id}>`)
 					.join(' ')} Your team all died, and failed to defeat the Kalphite King.`;
 			}
-			handleTripFinish(leaderUser, channelID, resultStr, undefined, data, null);
-		} else {
-			const image = !kcAmounts[userID]
-				? undefined
-				: (
-						await makeBankImage({
-							bank: soloItemsAdded ?? new Bank(),
-							title: `Loot From ${quantity} Kalphite King`,
-							user: leaderUser,
-							previousCL: soloPrevCl ?? undefined
-						})
-					).file.attachment;
-			handleTripFinish(
-				leaderUser,
-				channelID,
-				!kcAmounts[userID]
-					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
-					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
-							KalphiteKingMonster.name
-						}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${await leaderUser.getKC(
-							KalphiteKingMonster.id
-						)}.\n\n${soloXP}`,
-				image!,
-				data,
-				soloItemsAdded
-			);
+			return handleTripFinish({ user: leaderUser, channelId, message: resultStr, data });
 		}
+		const message = new MessageBuilder();
+
+		if (!kcAmounts[userID]) {
+			message.setContent(`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`)
+		} else {
+			message.setContent(`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${KalphiteKingMonster.name
+				}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${await leaderUser.getKC(
+					KalphiteKingMonster.id
+				)}.\n\n${soloXP}`)
+		}
+		message.addBankImage({
+			bank: soloItemsAdded ?? new Bank(),
+			title: `Loot From ${quantity} Kalphite King`,
+			user: leaderUser,
+			previousCL: soloPrevCl ?? undefined
+		})
+
+		return handleTripFinish(
+			{
+				user: leaderUser,
+				channelId,
+				message,
+				data,
+				loot: soloItemsAdded
+			}
+		);
 	}
 };

@@ -12,7 +12,7 @@ import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 
-export async function fishingContestStartCommand(user: MUser, channelID: string, loc: string | undefined) {
+export async function fishingContestStartCommand(user: MUser, channelId: string, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();
 	const validLocs = getValidLocationsForFishType(currentFishType);
 	let quantity = 1;
@@ -57,7 +57,7 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 	if (!['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))) {
 		return "You need to </buy:982663098949304331> a Contest rod and a Beginner's tackle box to compete in the Fishing contest.";
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 
@@ -77,7 +77,7 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 
 	await ActivityManager.startTrip<FishingContestOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'FishingContest',
@@ -99,14 +99,12 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 	});
 
 	return {
-		content: `${user.minionName} is now off to catch ${quantity === 1 ? 'a' : quantity} fish at ${
-			fishingLocation.name
-		}, they will return in ${formatDuration(duration)}. Removed ${cost} from your bank.${
-			quantity > 1
+		content: `${user.minionName} is now off to catch ${quantity === 1 ? 'a' : quantity} fish at ${fishingLocation.name
+			}, they will return in ${formatDuration(duration)}. Removed ${cost} from your bank.${quantity > 1
 				? `
 You're fishing ${quantity - 1} extra fish: ${quantityBoosts.join(', ')}`
 				: ''
-		}`
+			}`
 	};
 }
 
@@ -123,12 +121,12 @@ export async function fishingContestStatsCommand(user: MUser) {
 You can participate using \`/bsominigames fishing_contest fish [location]\`
 
 **Todays Catch:** A fish from a ${currentFishType.temperature} ${currentFishType.water} (${validLocs
-		.map(i => i.name)
-		.join(', ')})
+			.map(i => i.name)
+			.join(', ')})
 **Todays Catches:** ${userDetails.catchesFromToday
-		.sort((a, b) => b.length_cm - a.length_cm)
-		.map(i => `${i.name}(${i.length_cm / 100}m)`)
-		.join(', ')}
+			.sort((a, b) => b.length_cm - a.length_cm)
+			.map(i => `${i.name}(${i.length_cm / 100}m)`)
+			.join(', ')}
 **Total Daily Contests:** ${minigameScore}
 **All-time catches:** ${userDetails.catchesAllTime}
 **Total Unique Catches:** ${userDetails.totalUniqueCatches}

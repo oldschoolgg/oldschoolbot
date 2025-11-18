@@ -19,7 +19,7 @@ export const smeltingCommand = defineCommand({
 			name: 'name',
 			description: 'The name of the thing you want to smelt.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Smithing.Bars.filter(bar => bar.name.toLowerCase().includes(value.toLowerCase()))
 					.slice(0, 10)
 					.map(i => ({ name: i.name, value: i.name }));
@@ -40,7 +40,7 @@ export const smeltingCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ user, options, channelID }) => {
+	run: async ({ user, options, channelId }) => {
 		let { name, quantity, blast_furnace } = options;
 
 		if (blast_furnace === undefined) blast_furnace = false;
@@ -116,7 +116,7 @@ export const smeltingCommand = defineCommand({
 			}
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Smithing');
+		const maxTripLength = await user.calcMaxTripLength('Smithing');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
@@ -163,7 +163,7 @@ export const smeltingCommand = defineCommand({
 		await ActivityManager.startTrip<SmeltingActivityTaskOptions>({
 			barID: bar.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			blastf: blast_furnace,
 			duration,

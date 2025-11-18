@@ -3,28 +3,24 @@ import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
 import {
 	calcPercentOfNum,
 	getInterval,
-	makeComponents,
 	miniID,
 	noOp,
 	sumArr,
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
-import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { clamp } from 'remeda';
 
 import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main.js';
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { GE_SLOTS_CACHE, marketPricemap } from '@/lib/cache.js';
 import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { isCustomItem } from '@/lib/customItems/util.js';
-import { marketPricemap } from '@/lib/marketPrices.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
+import { bold, ButtonBuilder, ButtonStyle, dateFm, userMention } from '@oldschoolgg/discord';
 
 export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
@@ -94,7 +90,7 @@ function sanityCheckTransaction({
 
 	assert(
 		Number(total_tax_paid) ===
-			(Number(price_per_item_before_tax) - Number(price_per_item_after_tax)) * quantity_bought,
+		(Number(price_per_item_before_tax) - Number(price_per_item_after_tax)) * quantity_bought,
 		`Transaction ${id} total_tax_paid should equal price_per_item_before_tax - price_per_item_after_tax. Transaction ${id} has ${total_tax_paid} total_tax_paid, ${price_per_item_before_tax} price_per_item_before_tax, and ${price_per_item_after_tax} price_per_item_after_tax.`
 	);
 
@@ -122,7 +118,7 @@ class GrandExchangeSingleton {
 	public ready = false;
 	public loggingEnabled = false;
 
-	log(message: string, context?: any) {
+	log(message: string, context?: Record<string, string | number>) {
 		if (!this.loggingEnabled) return;
 		Logging.logDebug(message, context);
 	}
@@ -168,7 +164,7 @@ class GrandExchangeSingleton {
 					amount: 1
 				})),
 				{
-					has: (user: MUser) => user.perkTier() >= PerkTier.Four,
+					has: async (user: MUser) => (await user.fetchPerkTier()) >= PerkTier.Four,
 					name: 'Tier 3 Patron',
 					amount: 10
 				}
@@ -180,21 +176,17 @@ class GrandExchangeSingleton {
 		try {
 			await this.fetchOwnedBank();
 			await this.extensiveVerification();
-		} catch (err: any) {
-			await this.lockGE(err.message);
+		} catch (err: unknown) {
+			await this.lockGE(err);
 		} finally {
 			this.ready = true;
 		}
 	}
 
-	private slotsCache = new LRUCache<string, Awaited<ReturnType<typeof this.calculateSlotsOfUser>>>({
-		ttl: Time.Hour,
-		max: 300
-	});
 	async calculateSlotsOfUser(
 		user: MUser
 	): Promise<{ slots: number; doesntHaveNames: string[]; possibleExtra: number; maxPossible: number }> {
-		const cached = this.slotsCache.get(user.id);
+		const cached = GE_SLOTS_CACHE.get(user.id);
 		if (cached) return cached;
 		const robochimpUser = await roboChimpUserFetch(user.id);
 		let slots = 0;
@@ -203,7 +195,7 @@ class GrandExchangeSingleton {
 		let maxPossible = 0;
 		for (const boost of this.config.slots.slotBoosts) {
 			maxPossible += boost.amount;
-			if (boost.has(user, robochimpUser)) {
+			if (await boost.has(user, robochimpUser)) {
 				slots += boost.amount;
 			} else {
 				doesntHaveNames.push(boost.name);
@@ -211,7 +203,7 @@ class GrandExchangeSingleton {
 			}
 		}
 		const result = { slots, doesntHaveNames, possibleExtra, maxPossible };
-		this.slotsCache.set(user.id, result);
+		GE_SLOTS_CACHE.set(user.id, result);
 		return result;
 	}
 
@@ -241,18 +233,21 @@ class GrandExchangeSingleton {
 		};
 	}
 
-	async lockGE(reason: string) {
+	async lockGE(err: Error | unknown) {
+		const reason = err instanceof Error ? err.message : String(err);
 		if (this.locked) return;
 		if (process.env.TEST) {
 			throw new Error(`G.E locked: ${reason}`);
 		}
 		const idsToNotify = globalConfig.adminUserIDs;
-		await sendToChannelID(globalConfig.moderatorLogsChannels, {
-			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
-				.map(i => userMention(i))
-				.join(', ')}`,
-			allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
-		}).catch(noOp);
+		await globalClient
+			.sendMessage(globalConfig.moderatorLogsChannels, {
+				content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
+					.map(i => userMention(i))
+					.join(', ')}`,
+				allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
+			})
+			.catch(noOp);
 		await ClientSettings.update({
 			grand_exchange_is_locked: true
 		});
@@ -387,13 +382,12 @@ class GrandExchangeSingleton {
 
 		let confirmationStr = `Are you sure you want to create this listing?
 
-${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of ${toKMB(total)}.${
-			type === 'Buy'
+${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of ${toKMB(total)}.${type === 'Buy'
 				? ''
 				: applicableTax.taxedAmount > 0
 					? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
 					: ' No tax will be charged on these items.'
-		}`;
+			}`;
 
 		const guidePrice = marketPricemap.get(item.id);
 		if (guidePrice) {
@@ -562,19 +556,16 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		const geBank = await this.fetchOwnedBank();
 		const bankGEShouldHave = bankToRemoveFromGeBank.clone();
 
-		const debug = `PriceWinner[${priceWinner}] PricePerItemBeforeTax[${pricePerItemBeforeTax}] PricePerItemAfterTax[${pricePerItemAfterTax}] BuyerPrice[${
-			buyerListing.asking_price_per_item
-		}] SellerPrice[${
-			sellerListing.asking_price_per_item
-		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${JSON.stringify(buyerLoot)}] SellerLoot[${sellerLoot}] CurrentGEBank[${JSON.stringify(geBank)}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.toJSON())}] ExpectedAfterBank[${geBank
-			.clone()
-			.remove(bankToRemoveFromGeBank)
-			.toJSON()}]`;
+		const debug = `PriceWinner[${priceWinner}] PricePerItemBeforeTax[${pricePerItemBeforeTax}] PricePerItemAfterTax[${pricePerItemAfterTax}] BuyerPrice[${buyerListing.asking_price_per_item
+			}] SellerPrice[${sellerListing.asking_price_per_item
+			}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${JSON.stringify(buyerLoot)}] SellerLoot[${sellerLoot}] CurrentGEBank[${JSON.stringify(geBank)}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.toJSON())}] ExpectedAfterBank[${geBank
+				.clone()
+				.remove(bankToRemoveFromGeBank)
+				.toJSON()}]`;
 
 		assert(
 			bankToRemoveFromGeBank.amount('Coins') === Number(buyerListing.asking_price_per_item) * quantityToBuy,
-			`The G.E Must be removing the full amount the buyer put in, otherwise there's extra/notenough GP leftover in their buyerListing. Expected to be removing ${
-				Number(buyerListing.asking_price_per_item) * quantityToBuy
+			`The G.E Must be removing the full amount the buyer put in, otherwise there's extra/notenough GP leftover in their buyerListing. Expected to be removing ${Number(buyerListing.asking_price_per_item) * quantityToBuy
 			}, but we're removing ${bankToRemoveFromGeBank.amount('Coins')} ${debug}`
 		);
 
@@ -678,8 +669,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			.setLabel('Disable These DMs')
 			.setStyle(ButtonStyle.Secondary);
 
-		const buyerDJSUser = await globalClient.users.fetch(buyerListing.user_id).catch(noOp);
-		if (buyerDJSUser && !buyerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
+		if (!buyerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You bought ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
 			)} GP each, for a total of ${toKMB(totalPriceAfterTax)} GP${totalTaxPaid > 0 ? ', after tax' : ''}.`;
@@ -702,9 +692,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 			const remainingBuyLimit = remainingItemsInBuyLimit - quantityToBuy;
 			if (remainingBuyLimit <= 0) {
-				str += ` You have reached your buy limit for this item, your buy limit will reset at ${
-					this.getInterval().nextResetStr
-				}.`;
+				str += ` You have reached your buy limit for this item, your buy limit will reset at ${dateFm(
+					this.getInterval().end
+				)}.`;
 			}
 
 			const components = [disableDMsButton];
@@ -712,11 +702,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				components.push(createGECancelButton(buyerListing));
 			}
 
-			await buyerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
+			await globalClient.sendDm(buyerUser.id, { content: str, components: components }).catch(noOp);
 		}
 
-		const sellerDJSUser = await globalClient.users.fetch(sellerListing.user_id).catch(noOp);
-		if (sellerDJSUser && !sellerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
+		if (!sellerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You sold ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
 			)} GP each and received ${sellerLoot}.`;
@@ -734,7 +723,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				str += '\n\nThis listing has now been fully fulfilled.';
 			}
 
-			await sellerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
+			await globalClient.sendDm(sellerUser.id, { content: str, components: components }).catch(noOp);
 		}
 	}
 
@@ -900,7 +889,8 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				if (this.isTicking) return reject('Already ticking.');
 				try {
 					await this._tick();
-				} catch (err: any) {
+				} catch (_err: unknown) {
+					const err = _err as Error;
 					Logging.logError(err.message);
 					reject(err);
 				} finally {
@@ -934,6 +924,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
+		const blacklistedUsers = await Cache.getAllBlacklistedUsers();
 		this.log(`Starting G.E tick`);
 		const { buyListings, sellListings } = await this.fetchActiveListings();
 
@@ -951,7 +942,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				continue;
 			}
 
-			if (BLACKLISTED_USERS.has(buyListing.user_id)) {
+			if (blacklistedUsers.has(buyListing.user_id)) {
 				continue;
 			}
 
@@ -963,7 +954,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 					buyListing.asking_price_per_item >= sellListing.asking_price_per_item &&
 					buyListing.user_id !== sellListing.user_id &&
 					sellListing.user_id !== null &&
-					!BLACKLISTED_USERS.has(sellListing.user_id)
+					!blacklistedUsers.has(sellListing.user_id)
 			);
 
 			/**
@@ -987,8 +978,9 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				const { remainingItemsCanBuy } = await this.checkBuyLimitForListing(buyListing);
 				if (remainingItemsCanBuy === 0) continue;
 				await this.createTransaction(buyListing, matchingSellListing, remainingItemsCanBuy);
-			} catch (err: any) {
-				await this.lockGE(err.message);
+			} catch (_err: unknown) {
+				const err = _err as Error;
+				await this.lockGE(err);
 				Logging.logError(err);
 				break;
 			}

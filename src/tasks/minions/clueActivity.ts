@@ -26,16 +26,14 @@ const possibleFound = new LootTable()
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',
 	async run(data: ClueActivityTaskOptions, { user, handleTripFinish }) {
-		const { ci: clueID, userID, channelID, q: quantity, duration } = data;
+		const { ci: clueID, userID, channelId, q: quantity, duration } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID)!;
 
 		await incrementUserCounter(userID, `cluecompletions.${clueTier.name}`, quantity);
 
-		let str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
-			user.minionName
-		} carefully places the reward casket${
-			quantity > 1 ? 's' : ''
-		} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
+		let str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${user.minionName
+			} carefully places the reward casket${quantity > 1 ? 's' : ''
+			} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
 
 		const loot = new Bank().add(clueTier.id, quantity);
 
@@ -68,7 +66,6 @@ export const clueTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

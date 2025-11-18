@@ -6,6 +6,7 @@ import { clone } from 'remeda';
 
 import type { GearSetupType, Prisma } from '@/prisma/main.js';
 import { type GearSetup, GearSetupTypes } from '@/lib/gear/types.js';
+import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 
 type GearX = Required<Record<`gear_${GearSetupType}`, GearSetup | null>>;
 type Changes = {
@@ -138,7 +139,7 @@ Changes: ${JSON.stringify(changes, null, '	')}
 Previous User: ${JSON.stringify(previousUser)}
 `);
 
-			await mUser.update(changes);
+			await mUser.update(changes as SafeUserUpdateInput);
 			await mUser.sync();
 
 			Logging.logDebug(`${mUser.logName} repair bank:
@@ -167,12 +168,11 @@ New User: ${JSON.stringify(mUser.user)}
 			});
 		}
 
-		return `You had ${
-			brokenBank.length
-		} broken items in your bank/collection log/favorites/gear/tame, they were removed. ${moidLink(brokenBank).slice(
-			0,
-			500
-		)}`;
+		return `You had ${brokenBank.length
+			} broken items in your bank/collection log/favorites/gear/tame, they were removed. ${moidLink(brokenBank).slice(
+				0,
+				500
+			)}`;
 	}
 
 	return 'You have no broken items on your account!';

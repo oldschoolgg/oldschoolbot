@@ -1,17 +1,15 @@
 import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { calculateBathouseResult } from '@/lib/bso/minigames/baxtorianBathhouses.js';
+import { userMention } from '@oldschoolgg/discord';
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
 import { resolveItems } from 'oldschooljs';
-
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const bathhouseTask: MinionTask = {
 	type: 'BaxtorianBathhouses',
 	async run(data: BathhouseTaskOptions, { user, handleTripFinish }) {
-		const { userID, channelID, quantity, duration } = data;
+		const { userID, channelId, quantity, duration } = data;
 		const { cl } = user;
 		const { loot, herbXP, firemakingXP, tier, speciesServed, gaveExtraTips } = calculateBathouseResult(data);
 		await user.incrementMinigameScore('bax_baths', quantity);
@@ -47,27 +45,27 @@ export const bathhouseTask: MinionTask = {
 		const uniqSpecies = uniqueArr(speciesServed);
 		await ClientSettings.updateBankSetting('bb_loot', loot);
 
-		const bankImage = await makeBankImage({
-			bank: itemsAdded,
-			title: 'Baxtorian Bathhouses Loot',
-			user,
-			previousCL
-		});
 
-		return handleTripFinish(
-			user,
-			channelID,
-			`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${
-				uniqSpecies.length
-			} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.${
-				gaveExtraTips
-					? `\nYou got extra tips from ${gaveExtraTips.name} for using their preferred water mixture.`
-					: ''
+		const message = new MessageBuilder().setContent(`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${uniqSpecies.length
+			} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.${gaveExtraTips
+				? `\nYou got extra tips from ${gaveExtraTips.name} for using their preferred water mixture.`
+				: ''
 			}
-${xpStr}`,
-			bankImage.file.attachment,
-			data,
-			loot
+${xpStr}`)
+			.addBankImage({
+				bank: itemsAdded,
+				title: 'Baxtorian Bathhouses Loot',
+				user,
+				previousCL
+			});
+		return handleTripFinish(
+			{
+				user,
+				channelId,
+				data,
+				loot,
+				message
+			}
 		);
 	}
 };

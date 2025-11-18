@@ -1,40 +1,21 @@
-import { giveBoxResetTime } from '@/lib/bso/bsoConstants.js';
-import { buttonUserPicker } from '@/lib/bso/buttonUserPicker.js';
+import { giveBoxResetTime, SPAWN_BOX_COOLDOWN, spawnLampResetTime } from '@/lib/bso/bsoConstants.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { LampTable } from '@/lib/bso/xpLamps.js';
 
 import { randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, PerkTier, Time } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
 import { Bank, convertLVLtoXP, itemID } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
-import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
+import { userMention } from '@oldschoolgg/discord';
 
-export const spawnLampResetTime = (user: MUser) => {
-	const bf = user.bitfield;
-	const perkTier = user.perkTier();
-
-	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
-	const hasTier5 = perkTier >= PerkTier.Five;
-	const hasTier4 = !hasTier5 && perkTier === PerkTier.Four;
-
-	let cooldown = ([PerkTier.Six, PerkTier.Five] as number[]).includes(perkTier) ? Time.Hour * 12 : Time.Hour * 24;
-
-	if (!hasTier5 && !hasTier4 && hasPerm) {
-		cooldown = Time.Hour * 48;
-	}
-
-	return cooldown - Time.Minute * 15;
-};
-
-export function spawnLampIsReady(user: MUser, channelID: string): [true] | [false, string] {
-	if (![Channel.GeneralChannel, Channel.ServerGeneral].includes(channelID)) {
+export async function spawnLampIsReady(user: MUser, channelId: string): Promise<[true] | [false, string]> {
+	if (![Channel.GeneralChannel, Channel.ServerGeneral].includes(channelId)) {
 		return [false, "You can't use spawnlamp in this channel."];
 	}
 
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	const isPatron = perkTier >= PerkTier.Four || user.bitfield.includes(BitField.HasPermanentSpawnLamp);
 	if (!isPatron) {
 		return [false, 'You need to be a T3 patron or higher to use this command.'];
@@ -43,7 +24,7 @@ export function spawnLampIsReady(user: MUser, channelID: string): [true] | [fals
 	const lastDate = Number(user.user.lastSpawnLamp);
 	const difference = currentDate - lastDate;
 
-	const cooldown = spawnLampResetTime(user);
+	const cooldown = spawnLampResetTime(user, perkTier);
 
 	if (difference < cooldown) {
 		const duration = formatDuration(Date.now() - (lastDate + cooldown));
@@ -79,12 +60,12 @@ function generateXPLevelQuestion() {
 	};
 }
 
-export async function spawnLampCommand(user: MUser, channelID: string, guildId: string | null): CommandResponse {
-	if (guildId !== globalConfig.supportServerID) {
+export async function spawnLampCommand(user: MUser, interaction: MInteraction): CommandResponse {
+	if (interaction.guildId !== globalConfig.supportServerID) {
 		return 'You can only use this command in the support server.';
 	}
 	const isAdmin = globalConfig.adminUserIDs.includes(user.id);
-	const [lampIsReady, reason] = isAdmin ? [true, ''] : spawnLampIsReady(user, channelID);
+	const [lampIsReady, reason] = isAdmin ? [true, ''] : await spawnLampIsReady(user, interaction.channelId);
 	if (!lampIsReady && reason) return reason;
 
 	const group = await findGroupOfUser(user.id);
@@ -101,44 +82,50 @@ export async function spawnLampCommand(user: MUser, channelID: string, guildId: 
 
 	const { answers, question, explainAnswer } = generateXPLevelQuestion();
 
-	const winnerID = await buttonUserPicker({
-		channelID,
-		str: `<:Huge_lamp:988325171498721290> ${userMention(user.id)} spawned a Lamp: ${question}`,
-		ironmenAllowed: false,
-		answers,
-		creator: user.id,
-		creatorGetsTwoGuesses: true
+	await interaction.replyWithResponse({
+		content: `<:Huge_lamp:988325171498721290> ${userMention(user.id)} spawned a Lamp: ${question}`,
+		withResponse: true
 	});
-	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
-	const winner = await mUserFetch(winnerID);
+	const messages = await globalClient.awaitMessages({
+		channelId: interaction.channelId,
+		time: Time.Minute,
+		filter: (m) => answers.includes(m.content),
+	});
+
+	if (!messages[0]) return `Nobody got it. ${explainAnswer}`;
+	const winner = await mUserFetch(messages[0].author.id);
 	const loot = LampTable.roll();
 	await winner.addItemsToBank({ items: loot, collectionLog: false });
 	return `${winner} got it, and won **${loot}**! ${explainAnswer}`;
 }
 
-export async function spawnBoxCommand(user: MUser, channelID: string): CommandResponse {
-	const perkTier = user.perkTier();
+export async function spawnBoxCommand(user: MUser, interaction: MInteraction): CommandResponse {
+	const perkTier = await user.fetchPerkTier();
 	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
 		return 'You need to be a T3 patron or higher to use this command.';
 	}
-	if (![Channel.GeneralChannel, Channel.ServerGeneral].includes(channelID)) {
+	if (![Channel.GeneralChannel, Channel.ServerGeneral].includes(interaction.channelId)) {
 		return "You can't use spawnbox in this channel.";
 	}
-	const isOnCooldown = Cooldowns.get(user.id, 'SPAWN_BOX', Time.Minute * 45);
+	const lastUse = Number(user.user.last_spawn_box_date ?? 0);
+	const difference = Date.now() - lastUse;
+	const isOnCooldown = difference < SPAWN_BOX_COOLDOWN ? SPAWN_BOX_COOLDOWN - difference : null;
 	if (isOnCooldown !== null) {
 		return `This command is on cooldown for you for ${formatDuration(isOnCooldown)}.`;
 	}
 	const { answers, question, explainAnswer } = generateXPLevelQuestion();
 
-	const winnerID = await buttonUserPicker({
-		channelID,
-		str: `${Emoji.MysteryBox} ${userMention(user.id)} spawned a Mystery Box: ${question}`,
-		ironmenAllowed: false,
-		answers,
-		creator: user.id
+	await interaction.replyWithResponse({
+		content: `${Emoji.MysteryBox} ${userMention(user.id)} spawned a Mystery Box: ${question}`,
+		withResponse: true
 	});
-	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
-	const winner = await mUserFetch(winnerID);
+	const messages = await globalClient.awaitMessages({
+		channelId: interaction.channelId,
+		time: Time.Minute,
+		filter: (m) => answers.includes(m.content),
+	});
+	if (!messages[0]) return `Nobody got it. ${explainAnswer}`;
+	const winner = await mUserFetch(messages[0].author.id);
 
 	const loot = new Bank().add(MysteryBoxes.roll());
 	await winner.addItemsToBank({ items: loot, collectionLog: false });

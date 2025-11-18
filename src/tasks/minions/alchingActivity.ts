@@ -4,11 +4,12 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 
 export const alchingTask: MinionTask = {
 	type: 'Alching',
 	async run(data: AlchingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { itemID, quantity, channelID, alchValue, duration } = data;
+		const { itemID, quantity, channelId, alchValue, duration } = data;
 		const loot = new Bank().add('Coins', alchValue);
 
 		const item = Items.getOrThrow(itemID);
@@ -50,9 +51,8 @@ export const alchingTask: MinionTask = {
 
 		if (loot.has('Lil Lamb')) {
 			responses +=
-				'<:lil_lamb:749240864345423903> While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.';
+				`${BSOEmoji.LilLamb} While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.`;
 		}
-
-		handleTripFinish(user, channelID, responses, undefined, data, loot);
+		return handleTripFinish({ user, channelId, message: responses, data, loot });
 	}
 };

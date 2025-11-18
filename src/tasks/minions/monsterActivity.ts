@@ -40,7 +40,6 @@ import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDe
 import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 function handleSlayerTaskCompletion({
 	slayerContext,
@@ -283,12 +282,10 @@ export function doMonsterTrip(data: newOptions) {
 			}
 
 			messages.push(
-				`${
-					hasPrayerLevel && !protectItem
-						? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item. "
-						: ''
-				}You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..${
-					reEquipedItems ? ' Your minion equips similar lost items from bank.' : ''
+				`${hasPrayerLevel && !protectItem
+					? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item. "
+					: ''
+				}You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..${reEquipedItems ? ' Your minion equips similar lost items from bank.' : ''
 				}`
 			);
 		}
@@ -404,7 +401,8 @@ export function doMonsterTrip(data: newOptions) {
 			messages.push('While killing a Unicorn, you discover some strange clothing - you pick them up');
 		}
 		if (newSuperiorCount) {
-			loot.add(superiorTable?.kill(newSuperiorCount).set('Brimstone key', 0)); //remove the rng keys, todo: remove drop from superiors in osjs?
+			// TODO: remove drop from superiors in osjs? remove the rng keys
+			loot.add(superiorTable?.kill(newSuperiorCount).set('Brimstone key', 0));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 			if (killOptions.slayerMaster === MonsterSlayerMaster.Konar) loot.add('Brimstone key', newSuperiorCount);
@@ -478,8 +476,7 @@ export function doMonsterTrip(data: newOptions) {
 			);
 		} else {
 			messages.push(
-				`You killed ${slayerContext.effectiveSlayed}x of your ${
-					slayerContext.currentTask?.quantity_remaining
+				`You killed ${slayerContext.effectiveSlayed}x of your ${slayerContext.currentTask?.quantity_remaining
 				} remaining kills, you now have ${slayerContext.quantityLeft} kills remaining.`
 			);
 		}
@@ -537,7 +534,7 @@ export const monsterTask: MinionTask = {
 	async run(data: MonsterActivityTaskOptions, { user, handleTripFinish }) {
 		const { duration } = data;
 		if (data.mi === EBSOMonster.KOSCHEI) {
-			sendToChannelID(data.channelID, {
+			await globalClient.sendMessageOrWebhook(data.channelId, {
 				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
 			});
 			return;
@@ -669,14 +666,16 @@ export const monsterTask: MinionTask = {
 			});
 		}
 
-		return handleTripFinish(
+		return handleTripFinish({
 			user,
-			data.channelID,
-			str,
-			image?.file.attachment,
+			channelId: data.channelId,
+			message: {
+				content: str,
+				files: [image]
+			},
 			data,
-			itemTransactionResult?.itemsAdded ?? null,
+			loot: itemTransactionResult?.itemsAdded ?? null,
 			messages
-		);
+		});
 	}
 };

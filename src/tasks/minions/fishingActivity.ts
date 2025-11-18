@@ -30,7 +30,7 @@ function radasBlessing(user: MUser) {
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
 	async run(data: FishingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { fishID, quantity, channelID, duration } = data;
+		const { fishID, quantity, channelId, duration } = data;
 		let { flakesQuantity } = data;
 		const { blessingEquipped, blessingChance } = radasBlessing(user);
 
@@ -89,18 +89,18 @@ export const fishingTask: MinionTask = {
 		xpRes +=
 			agilityXpReceived > 0
 				? await user.addXP({
-						skillName: 'agility',
-						amount: agilityXpReceived,
-						duration
-					})
+					skillName: 'agility',
+					amount: agilityXpReceived,
+					duration
+				})
 				: '';
 		xpRes +=
 			strengthXpReceived > 0
 				? await user.addXP({
-						skillName: 'strength',
-						amount: strengthXpReceived,
-						duration
-					})
+					skillName: 'strength',
+					amount: strengthXpReceived,
+					duration
+				})
 				: '';
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
@@ -218,6 +218,12 @@ export const fishingTask: MinionTask = {
 			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: str,
+			data,
+			loot
+		});
 	}
 };

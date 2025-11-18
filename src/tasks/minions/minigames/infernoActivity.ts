@@ -22,7 +22,7 @@ export function calculateInfernoItemRefund(percentMadeItThrough: number, cost: B
 export const infernoTask: MinionTask = {
 	type: 'Inferno',
 	async run(data: InfernoOptions, { handleTripFinish, user }) {
-		const { channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration, diedEmergedZuk, isEmergedZuk } =
+		const { channelId, diedZuk, diedPreZuk, duration, deathTime, fakeDuration, diedEmergedZuk, isEmergedZuk } =
 			data;
 		const score = await user.fetchMinigameScore('inferno');
 
@@ -240,27 +240,31 @@ export const infernoTask: MinionTask = {
 
 		await user.transactItems({ itemsToAdd: baseBank, collectionLog: true });
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user} ${text}
+		const message = {
+			content: `${user} ${text}
 
 **Loot:** ${baseBank}
 **XP:** ${xpStr}
-You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
-				unusedItems.length
+You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${unusedItems.length
 					? `, you didn't use ${percSuppliesRefunded.toFixed(
-							2
-						)}% of your supplies, ${unusedItems} was returned to your bank`
+						2
+					)}% of your supplies, ${unusedItems} was returned to your bank`
 					: '.'
-			}
+				}
 `,
-			await chatHeadImage({
-				content: chatText,
-				head: 'ketKeh'
-			}),
+			files: [
+				await chatHeadImage({
+					content: chatText,
+					head: 'ketKeh'
+				})
+			]
+		};
+		return handleTripFinish({
+			user,
+			channelId,
+			message,
 			data,
-			baseBank
-		);
+			loot: baseBank
+		});
 	}
 };

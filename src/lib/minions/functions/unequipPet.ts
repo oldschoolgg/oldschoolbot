@@ -3,7 +3,7 @@ import { Bank, Items } from 'oldschooljs';
 export async function unequipPet(user: MUser) {
 	const equippedPet = user.user.minion_equippedPet;
 	if (!equippedPet) return "You don't have a pet equipped.";
-	if (user.minionIsBusy) return 'You cant unequip your pet while your minion is busy.';
+	if (await user.minionIsBusy()) return 'You cant unequip your pet while your minion is busy.';
 
 	const loot = new Bank().add(equippedPet);
 

@@ -1,7 +1,7 @@
+import { choicesOf } from '@/discord/index.js';
 import { doaHelpCommand } from '@/lib/bso/depthsOfAtlantis.js';
 import { doaStartCommand } from '@/lib/bso/doa/doaStartCommand.js';
 
-import { choicesOf } from '@/lib/discord/index.js';
 import { toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
 import { mileStoneBaseDeathChances } from '@/lib/simulation/toaUtils.js';
 import { coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
@@ -219,24 +219,24 @@ export const raidCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ interaction, options, user, channelID }) => {
+	run: async ({ interaction, options, user, channelId }) => {
 		if (interaction) await interaction.defer();
 
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
-		if (options.toa?.help) return toaHelpCommand(user, channelID);
+		if (options.toa?.help) return toaHelpCommand(user, channelId)
 		if (options.doa?.help) {
 			return doaHelpCommand(user);
 		}
 
-		if (user.minionIsBusy) return "Your minion is busy, you can't do this.";
+		if (await user.minionIsBusy()) return "Your minion is busy, you can't do this.";
 
 		if (cox?.start) {
 			return coxCommand(
 				interaction,
-				channelID,
+				channelId,
 				user,
 				cox.start.type,
 				cox.start.max_team_size,
@@ -248,7 +248,7 @@ export const raidCommand = defineCommand({
 			return tobStartCommand(
 				interaction,
 				user,
-				channelID,
+				channelId,
 				Boolean(tob.start.hard_mode),
 				tob.start.max_team_size,
 				tob.start.solo,
@@ -261,7 +261,7 @@ export const raidCommand = defineCommand({
 				interaction,
 				user,
 				Boolean(options.toa.start.solo),
-				channelID,
+				channelId,
 				options.toa.start.raid_level,
 				options.toa.start.max_team_size,
 				options.toa.start.quantity
@@ -274,7 +274,7 @@ export const raidCommand = defineCommand({
 				user,
 				Boolean(options.doa.start.challenge_mode),
 				Boolean(options.doa.start.solo),
-				channelID,
+				channelId,
 				options.doa.start.max_team_size,
 				options.doa.start.quantity
 			);

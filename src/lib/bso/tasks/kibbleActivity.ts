@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 export const kibbleTask: MinionTask = {
 	type: 'KibbleMaking',
 	async run(data: KibbleOptions, { user, handleTripFinish }) {
-		const { quantity, channelID, kibbleType, duration } = data;
+		const { quantity, channelId, kibbleType, duration } = data;
 
 		const kibble = kibbles.find(k => k.type === kibbleType)!;
 		const loot = new Bank().add(kibble.item.id, quantity);
@@ -24,13 +24,14 @@ export const kibbleTask: MinionTask = {
 			minimal: true
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, your minion finished cooking ${quantity}x ${kibble.item.name}. ${xpRes}`,
-			undefined,
-			data,
-			loot
+		return handleTripFinish(
+			{
+				user,
+				channelId,
+				message: `${user}, your minion finished cooking ${quantity}x ${kibble.item.name}. ${xpRes}`,
+				data,
+				loot
+			}
 		);
 	}
 };

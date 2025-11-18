@@ -1,9 +1,9 @@
+import { dateFm } from '@oldschoolgg/discord';
 import { randArrItem } from '@oldschoolgg/rng';
 import {
 	calcPerHour,
 	calcWhatPercent,
 	cleanString,
-	dateFm,
 	formatDuration,
 	noOp,
 	notEmpty,
@@ -12,26 +12,21 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
+import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { type ClientStorage, economy_transaction_type } from '@/prisma/main.js';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
-import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
-import { DISABLED_COMMANDS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
-import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
-import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
-import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
-import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
+import { itemOption } from '@/discord/presetCommandOptions.js';
+import { bulkUpdateCommands } from '@/discord/utils.js';
+import { isValidBitField } from '@/lib/util/smallUtils.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -90,18 +85,18 @@ async function getAllTradedItems(giveUniques = false) {
 
 const viewableThings: {
 	name: string;
-	run: (clientSettings: ClientStorage) => Promise<Bank | InteractionReplyOptions>;
+	run: (clientSettings: ClientStorage) => Promise<Bank | SendableMessage>;
 }[] = [
-	{
-		name: 'ToB Cost',
-		run: async clientSettings => {
-			return new Bank(clientSettings.tob_cost as ItemBank);
-		}
-	},
-	{
-		name: 'All Equipped Items',
-		run: async () => {
-			const res = await prisma.$queryRaw<Record<string, GearSetup | null>[]>`SELECT "gear.melee",
+		{
+			name: 'ToB Cost',
+			run: async clientSettings => {
+				return new Bank(clientSettings.tob_cost as ItemBank);
+			}
+		},
+		{
+			name: 'All Equipped Items',
+			run: async () => {
+				const res = await prisma.$queryRaw<Record<string, GearSetup | null>[]>`SELECT "gear.melee",
 "gear.mage",
 "gear.range",
 "gear.misc",
@@ -119,69 +114,59 @@ AND ("gear.melee" IS NOT NULL OR
 "gear.wildy" IS NOT NULL OR
 "gear.fashion" IS NOT NULL OR
 "gear.other" IS NOT NULL);`;
-			const bank = new Bank();
-			for (const user of res) {
-				for (const gear of Object.values(user)
-					.flatMap(i => (i === null ? [] : Object.values(i)))
-					.filter(notEmpty)) {
-					const item = Items.getItem(gear.item);
-					if (item) {
-						bank.add(gear.item, gear.quantity);
+				const bank = new Bank();
+				for (const user of res) {
+					for (const gear of Object.values(user)
+						.flatMap(i => (i === null ? [] : Object.values(i)))
+						.filter(notEmpty)) {
+						const item = Items.getItem(gear.item);
+						if (item) {
+							bank.add(gear.item, gear.quantity);
+						}
 					}
 				}
+				return bank;
 			}
-			return bank;
-		}
-	},
-	{
-		name: 'Most Traded Items (30d, Total Volume)',
-		run: async () => {
-			const items = await getAllTradedItems();
-			return {
-				content: items
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 10)
-					.map((i, index) => `${++index}. ${i[0].name} - ${i[1].toLocaleString()}x traded`)
-					.join('\n')
-			};
-		}
-	},
-	{
-		name: 'Most Traded Items (30d, Unique trades)',
-		run: async () => {
-			const items = await getAllTradedItems(true);
-			return {
-				content: items
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 10)
-					.map((i, index) => `${++index}. ${i[0].name} - Traded ${i[1].toLocaleString()}x times`)
-					.join('\n')
-			};
-		}
-	},
-	{
-		name: 'Memory Analysis',
-		run: async () => {
-			return {
-				content: Object.entries(memoryAnalysis())
-					.map(i => `${i[0]}: ${i[1]}`)
-					.join('\n')
-			};
-		}
-	},
-	{
-		name: 'Economy Bank',
-		run: async () => {
-			const [blowpipeRes, totalGP, result] = await prisma.$transaction([
-				prisma.$queryRawUnsafe<
-					{ scales: number; dart: number; qty: number }[]
-				>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
+		},
+		{
+			name: 'Most Traded Items (30d, Total Volume)',
+			run: async () => {
+				const items = await getAllTradedItems();
+				return {
+					content: items
+						.items()
+						.sort(sorts.quantity)
+						.slice(0, 10)
+						.map((i, index) => `${++index}. ${i[0].name} - ${i[1].toLocaleString()}x traded`)
+						.join('\n')
+				};
+			}
+		},
+		{
+			name: 'Most Traded Items (30d, Unique trades)',
+			run: async () => {
+				const items = await getAllTradedItems(true);
+				return {
+					content: items
+						.items()
+						.sort(sorts.quantity)
+						.slice(0, 10)
+						.map((i, index) => `${++index}. ${i[0].name} - Traded ${i[1].toLocaleString()}x times`)
+						.join('\n')
+				};
+			}
+		},
+		{
+			name: 'Economy Bank',
+			run: async () => {
+				const [blowpipeRes, totalGP, result] = await prisma.$transaction([
+					prisma.$queryRawUnsafe<
+						{ scales: number; dart: number; qty: number }[]
+					>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
 FROM users
 WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
-				prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
-				prisma.$queryRawUnsafe<{ banks: ItemBank }[]>(`SELECT
+					prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
+					prisma.$queryRawUnsafe<{ banks: ItemBank }[]>(`SELECT
 				json_object_agg(itemID, itemQTY)::jsonb as banks
 			 from (
 				select key as itemID, sum(value::bigint) as itemQTY
@@ -189,38 +174,39 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 				cross join json_each_text(bank)
 				group by key
 			 ) s;`)
-			]);
-			const totalBank: ItemBank = result[0].banks;
-			const economyBank = new Bank(totalBank);
-			economyBank.add('Coins', totalGP[0].sum);
+				]);
+				const totalBank: ItemBank = result[0].banks;
+				const economyBank = new Bank(totalBank);
+				economyBank.add('Coins', totalGP[0].sum);
 
-			const allPets = await allEquippedPets();
-			economyBank.add(allPets);
+				const allPets = await allEquippedPets();
+				economyBank.add(allPets);
 
-			for (const { dart, scales, qty } of blowpipeRes) {
-				economyBank.add("Zulrah's scales", scales);
-				economyBank.add(dart, qty);
+				for (const { dart, scales, qty } of blowpipeRes) {
+					economyBank.add("Zulrah's scales", scales);
+					economyBank.add(dart, qty);
+				}
+				return {
+					files: [
+						await makeBankImage({ bank: economyBank }),
+						{
+							name: 'bank.json',
+							buffer: Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4))
+						}
+					]
+				};
 			}
-			return {
-				files: [
-					(await makeBankImage({ bank: economyBank })).file,
-					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4)), {
-						name: 'bank.json'
-					})
-				]
-			};
-		}
-	},
-	{
-		name: 'Equipped Pets',
-		run: async () => {
-			return allEquippedPets();
-		}
-	},
-	{
-		name: 'Most Active',
-		run: async () => {
-			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
+		},
+		{
+			name: 'Equipped Pets',
+			run: async () => {
+				return allEquippedPets();
+			}
+		},
+		{
+			name: 'Most Active',
+			run: async () => {
+				const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
 SELECT sum(duration)::int as num, "new_user"."username", user_id
 FROM activity
 INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
@@ -229,77 +215,77 @@ GROUP BY user_id, "new_user"."username"
 ORDER BY num DESC
 LIMIT 10;
 `);
-			return {
-				content: `Most Active Users in past 48h\n${res
-					.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
-					.join('\n')}`
-			};
-		}
-	},
-	{
-		name: 'Grand Exchange',
-		run: async () => {
-			const settings = await GrandExchange.fetchData();
-
-			const allTx: string[][] = [];
-			const allTransactions = await prisma.gETransaction.findMany({
-				orderBy: {
-					created_at: 'desc'
-				}
-			});
-			if (allTransactions.length > 0) {
-				allTx.push(Object.keys(allTransactions[0]));
-				for (const tx of allTransactions) {
-					allTx.push(Object.values(tx).map(i => i.toString()));
-				}
+				return {
+					content: `Most Active Users in past 48h\n${res
+						.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
+						.join('\n')}`
+				};
 			}
+		},
+		{
+			name: 'Grand Exchange',
+			run: async () => {
+				const settings = await GrandExchange.fetchData();
 
-			const allLi: string[][] = [];
-			const allListings = await prisma.gEListing.findMany({
-				orderBy: {
-					created_at: 'desc'
+				const allTx: string[][] = [];
+				const allTransactions = await prisma.gETransaction.findMany({
+					orderBy: {
+						created_at: 'desc'
+					}
+				});
+				if (allTransactions.length > 0) {
+					allTx.push(Object.keys(allTransactions[0]));
+					for (const tx of allTransactions) {
+						allTx.push(Object.values(tx).map(i => i.toString()));
+					}
 				}
-			});
-			if (allListings.length > 0) {
-				allLi.push(Object.keys(allListings[0]));
-				for (const tx of allListings) {
-					allLi.push(Object.values(tx).map(i => (i === null ? '' : i.toString())));
+
+				const allLi: string[][] = [];
+				const allListings = await prisma.gEListing.findMany({
+					orderBy: {
+						created_at: 'desc'
+					}
+				});
+				if (allListings.length > 0) {
+					allLi.push(Object.keys(allListings[0]));
+					for (const tx of allListings) {
+						allLi.push(Object.values(tx).map(i => (i === null ? '' : i.toString())));
+					}
 				}
-			}
 
-			const buyLimitInterval = GrandExchange.getInterval();
-			return {
-				content: `**Grand Exchange Data**
+				const buyLimitInterval = GrandExchange.getInterval();
+				return {
+					content: `**Grand Exchange Data**
 
-The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets every ${formatDuration(
-					GrandExchange.config.buyLimit.interval
-				)}.
+The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every ${formatDuration(
+						GrandExchange.config.buyLimit.interval
+					)}.
 **Tax Rate:** ${GrandExchange.config.tax.rate()}%
 **Tax Cap (per item):** ${toKMB(GrandExchange.config.tax.cap())}
 **Total GP Removed From Taxation:** ${settings.totalTax.toLocaleString()} GP
 **Total Tax GP G.E Has To Spend on Item Sinks:** ${settings.taxBank.toLocaleString()} GP
 `,
-				files: [
-					(
+					files: [
 						await makeBankImage({
 							bank: await GrandExchange.fetchOwnedBank(),
 							title: 'Items in the G.E'
-						})
-					).file,
-					new AttachmentBuilder(Buffer.from(allTx.map(i => i.join('\t')).join('\n')), {
-						name: 'transactions.txt'
-					}),
-					new AttachmentBuilder(Buffer.from(allLi.map(i => i.join('\t')).join('\n')), {
-						name: 'listings.txt'
-					})
-				]
-			};
-		}
-	},
-	{
-		name: 'Buy GP Sinks',
-		run: async () => {
-			const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: bigint }[]>(`SELECT
+						}),
+						{
+							name: 'transactions.txt',
+							buffer: Buffer.from(allTx.map(i => i.join('\t')).join('\n'))
+						},
+						{
+							name: 'listings.txt',
+							buffer: Buffer.from(allLi.map(i => i.join('\t')).join('\n'))
+						}
+					]
+				};
+			}
+		},
+		{
+			name: 'Buy GP Sinks',
+			run: async () => {
+				const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: bigint }[]>(`SELECT
   key AS item_id,
   sum((cost_gp / total_items) * value::integer) AS total_gp_spent
 FROM
@@ -316,61 +302,59 @@ LIMIT
   20;
 `);
 
-			return {
-				content: result
-					.map(
-						(row, index) =>
-							`${index + 1}. ${
-								Items.getOrThrow(Number(row.item_id)).name
-							} - ${row.total_gp_spent.toLocaleString()} GP`
-					)
-					.join('\n')
-			};
-		}
-	},
-	{
-		name: 'Sell GP Sources',
-		run: async () => {
-			const result = await prisma.$queryRawUnsafe<
-				{ item_id: number; gp: number }[]
-			>(`select item_id, sum(gp_received) as gp
+				return {
+					content: result
+						.map(
+							(row, index) =>
+								`${index + 1}. ${Items.getOrThrow(Number(row.item_id)).name
+								} - ${row.total_gp_spent.toLocaleString()} GP`
+						)
+						.join('\n')
+				};
+			}
+		},
+		{
+			name: 'Sell GP Sources',
+			run: async () => {
+				const result = await prisma.$queryRawUnsafe<
+					{ item_id: number; gp: number }[]
+				>(`select item_id, sum(gp_received) as gp
 from bot_item_sell
 group by item_id
 order by gp desc
 limit 80;
 `);
 
-			const totalGPGivenOut = await prisma.$queryRawUnsafe<
-				{ total_gp_given_out: number }[]
-			>(`select sum(gp_received) as total_gp_given_out
+				const totalGPGivenOut = await prisma.$queryRawUnsafe<
+					{ total_gp_given_out: number }[]
+				>(`select sum(gp_received) as total_gp_given_out
 from bot_item_sell;`);
 
-			return {
-				files: [
-					new AttachmentBuilder(
-						Buffer.from(
-							result
-								.map(
-									(row, index) =>
-										`${index + 1}. ${
-											Items.getOrThrow(Number(row.item_id)).name
-										} - ${row.gp.toLocaleString()} GP (${calcWhatPercent(
-											row.gp,
-											totalGPGivenOut[0].total_gp_given_out
-										).toFixed(1)}%)`
-								)
-								.join('\n')
-						),
-						{ name: 'output.txt' }
-					)
-				]
-			};
-		}
-	},
-	{
-		name: 'Max G.E Slot users',
-		run: async () => {
-			const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
+				return {
+					files: [
+						{
+							name: 'output.txt',
+							buffer: Buffer.from(
+								result
+									.map(
+										(row, index) =>
+											`${index + 1}. ${Items.getOrThrow(Number(row.item_id)).name
+											} - ${row.gp.toLocaleString()} GP (${calcWhatPercent(
+												row.gp,
+												totalGPGivenOut[0].total_gp_given_out
+											).toFixed(1)}%)`
+									)
+									.join('\n')
+							)
+						}
+					]
+				};
+			}
+		},
+		{
+			name: 'Max G.E Slot users',
+			run: async () => {
+				const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
 SELECT user_id, COUNT(*)::int AS slots_used
 FROM ge_listing
 WHERE cancelled_at IS NULL AND fulfilled_at IS NULL
@@ -378,33 +362,28 @@ GROUP BY user_id
 HAVING COUNT(*) >= 3
 ORDER BY slots_used DESC;
 `);
-			let usersUsingAllSlots = 0;
-			for (const row of res) {
-				const user = await mUserFetch(row.user_id);
-				const { slots } = await GrandExchange.calculateSlotsOfUser(user);
-				if (row.slots_used >= slots) usersUsingAllSlots++;
+				let usersUsingAllSlots = 0;
+				for (const row of res) {
+					const user = await mUserFetch(row.user_id);
+					const { slots } = await GrandExchange.calculateSlotsOfUser(user);
+					if (row.slots_used >= slots) usersUsingAllSlots++;
+				}
+				return {
+					content: `There are ${usersUsingAllSlots}x users using all their G.E slots.`
+				};
 			}
-			return {
-				content: `There are ${usersUsingAllSlots}x users using all their G.E slots.`
-			};
 		}
-	}
-];
+	];
 
 export const adminCommand = defineCommand({
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
-	guildID: globalConfig.supportServerID,
+	guildId: globalConfig.supportServerID,
 	options: [
 		{
 			type: 'Subcommand',
 			name: 'shut_down',
 			description: 'Shut down the bot without rebooting.'
-		},
-		{
-			type: 'Subcommand',
-			name: 'reboot',
-			description: 'Reboot the bot.'
 		},
 		{
 			type: 'Subcommand',
@@ -417,11 +396,6 @@ export const adminCommand = defineCommand({
 			name: 'item_stats',
 			description: 'item stats',
 			options: [{ ...itemOption(), required: true }]
-		},
-		{
-			type: 'Subcommand',
-			name: 'sync_blacklist',
-			description: 'Sync blacklist'
 		},
 		//
 		{
@@ -504,8 +478,8 @@ export const adminCommand = defineCommand({
 					name: 'disable',
 					description: 'The command to disable',
 					required: false,
-					autocomplete: async (value: string) => {
-						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						const disabledCommands = await Cache.getDisabledCommands();
 						return globalClient.allCommands
 							.filter(i => !disabledCommands.includes(i.name))
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -518,7 +492,7 @@ export const adminCommand = defineCommand({
 					description: 'The command to enable',
 					required: false,
 					autocomplete: async () => {
-						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
+						const disabledCommands = await Cache.getDisabledCommands();
 						return globalClient.allCommands
 							.filter(i => disabledCommands.includes(i.name))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -557,7 +531,7 @@ export const adminCommand = defineCommand({
 					name: 'add',
 					description: 'The bitfield to add',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));
@@ -568,7 +542,7 @@ export const adminCommand = defineCommand({
 					name: 'remove',
 					description: 'The bitfield to remove',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));
@@ -628,13 +602,13 @@ export const adminCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, userID, interaction, guildID }) => {
+	run: async ({ options, userId, interaction, guildId }) => {
 		await interaction.defer();
 
-		const adminUser = await mUserFetch(userID);
-		const isAdmin = globalConfig.adminUserIDs.includes(userID);
+		const adminUser = await mUserFetch(userId);
+		const isAdmin = globalConfig.adminUserIDs.includes(userId);
 		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
+		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
 		}
 
@@ -646,13 +620,13 @@ export const adminCommand = defineCommand({
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await ActivityManager.cancelActivity(user.id);
-			Cooldowns.delete(user.id);
 			return 'Done.';
 		}
 		if (options.clear_busy) {
 			const { user } = options.clear_busy.user;
-			if (!userIsBusy(user.id)) return `${user.username} isn't busy.`;
-			modifyUserBusy({ type: 'unlock', userID: user.id, reason: `Admin ${adminUser.id}` });
+			const isBusy = await Cache.getUserLockStatus(user.id);
+			if (!isBusy) return `${user.username} isn't busy.`;
+			await Cache.setUserLockStatus(user.id, 'unlocked');
 			return `Cleared busy for ${user.username}.`;
 		}
 
@@ -683,9 +657,8 @@ export const adminCommand = defineCommand({
 				badges: uniqueArr(newBadges)
 			});
 
-			return `${action === 'add' ? 'Added' : 'Removed'} ${badgeName} ${badges[badgeID]} badge to ${
-				options.badges.user.user.username
-			}.`;
+			return `${action === 'add' ? 'Added' : 'Removed'} ${badgeName} ${badges[badgeID]} badge to ${options.badges.user.user.username
+				}.`;
 		}
 
 		if (options.bypass_age) {
@@ -705,10 +678,7 @@ export const adminCommand = defineCommand({
 			const { disable } = options.command;
 			const { enable } = options.command;
 
-			const currentDisabledCommands = (await prisma.clientStorage.findFirst({
-				where: { id: globalConfig.clientID },
-				select: { disabled_commands: true }
-			}))!.disabled_commands;
+			const currentDisabledCommands = await Cache.getDisabledCommands();
 
 			const command = globalClient.allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
 			if (!command) return "That's not a valid command.";
@@ -717,31 +687,15 @@ export const adminCommand = defineCommand({
 				if (currentDisabledCommands.includes(command.name)) {
 					return 'That command is already disabled.';
 				}
-				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
-				await prisma.clientStorage.update({
-					where: {
-						id: globalConfig.clientID
-					},
-					data: {
-						disabled_commands: newDisabled
-					}
-				});
-				DISABLED_COMMANDS.add(command.name);
+				const newDisabled = uniqueArr([...currentDisabledCommands, command.name.toLowerCase()]);
+				await Cache.setDisabledCommands(newDisabled);
 				return `Disabled \`${command.name}\`.`;
 			}
 			if (enable) {
 				if (!currentDisabledCommands.includes(command.name)) {
 					return 'That command is not disabled.';
 				}
-				await prisma.clientStorage.update({
-					where: {
-						id: globalConfig.clientID
-					},
-					data: {
-						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
-					}
-				});
-				DISABLED_COMMANDS.delete(command.name);
+				await Cache.setDisabledCommands(currentDisabledCommands.filter(i => i !== command.name.toLowerCase()));
 				return `Enabled \`${command.name}\`.`;
 			}
 			return 'Invalid.';
@@ -776,12 +730,7 @@ export const adminCommand = defineCommand({
 			}
 			const bit = Number.parseInt(bitEntry[0]);
 
-			if (
-				!bit ||
-				!(BitFieldData as any)[bit] ||
-				[7, 8].includes(bit) ||
-				(action !== 'add' && action !== 'remove')
-			) {
+			if (!bit || !isValidBitField(bit) || [7, 8].includes(bit) || (action !== 'add' && action !== 'remove')) {
 				return 'Invalid bitfield.';
 			}
 
@@ -803,47 +752,26 @@ export const adminCommand = defineCommand({
 				bitfield: uniqueArr(newBits)
 			});
 
-			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData as any)[bit].name}' bit to ${
-				options.bitfield.user.user.username
-			}.`;
+			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit to ${options.bitfield.user.user.username
+				}.`;
 		}
-		if (options.reboot) {
-			globalClient.isShuttingDown = true;
-			await economyLog('Flushing economy log due to reboot', true);
-			await interaction.reply({
-				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
-			});
-			await sleep(Time.Second * 20);
-			await sendToChannelID(Channel.GeneralChannel, {
-				content: `I am shutting down! Goodbye :(
 
-${META_CONSTANTS.RENDERED_STR}`
-			}).catch(noOp);
-			import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
-			return 'Turning off...';
-		}
 		if (options.shut_down) {
-			Logging.logDebug('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
-			await economyLog('Flushing economy log due to shutdown', true);
 			await Promise.all([sleep(timer), GrandExchange.queue.onIdle()]);
-			await sendToChannelID(Channel.GeneralChannel, {
-				content: `I am shutting down! Goodbye :(
+			await globalClient
+				.sendMessage(Channel.GeneralChannel, {
+					content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
-			}).catch(noOp);
-			import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
+				})
+				.catch(noOp);
+			await gracefulExit(0);
 			return 'Turning off...';
-		}
-
-		if (options.sync_blacklist) {
-			await syncBlacklists();
-			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
-Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		/**
@@ -866,22 +794,20 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const clientSettings = await ClientSettings.fetch();
 			const res = await thing.run(clientSettings);
 			if (!(res instanceof Bank)) return res;
-			const image = await makeBankImage({
+			return new MessageBuilder().addBankImage({
 				bank: res,
 				title: thing.name,
-				flags: { sort: thing.name === 'All Equipped Items' ? 'name' : (undefined as any) }
+				flags: thing.name === 'All Equipped Items' ? { sort: 'name' } : undefined
 			});
-			return { files: [image.file] };
 		}
 
 		if (options.give_items) {
 			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
 			const user = await mUserFetch(options.give_items.user.user.id);
 			await interaction.confirmation(`Are you sure you want to give ${items} to ${user.usernameOrMention}?`);
-			await sendToChannelID(Channel.BotLogs, {
-				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
-					options.give_items.reason ?? 'No reason'
-				}`
+			await globalClient.sendMessage(Channel.BotLogs, {
+				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${options.give_items.reason ?? 'No reason'
+					}`
 			});
 
 			await user.addItemsToBank({ items, collectionLog: false });
@@ -892,13 +818,14 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const item = Items.getItem(options.item_stats.item);
 			if (!item) return 'Invalid item.';
 			const isIron = false;
-			const ownedResult: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
+			const ownedResult = await prisma.$queryRawUnsafe<
+				{ qty: bigint }[]
+			>(`SELECT SUM((bank->>'${item.id}')::int) as qty
 FROM users
 WHERE bank->>'${item.id}' IS NOT NULL;`);
 			return `There are ${ownedResult[0].qty.toLocaleString()} ${item.name} owned by everyone.
-There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with at least 1 ${
-				item.name
-			} in their collection log.`;
+There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with at least 1 ${item.name
+				} in their collection log.`;
 		}
 
 		if (options.ltc) {
@@ -922,7 +849,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 				}
 
 				return {
-					files: [{ attachment: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
+					files: [{ buffer: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
 				};
 			}
 
@@ -951,7 +878,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			}
 
 			return {
-				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
+				files: [{ buffer: Buffer.from(str), name: 'output.txt' }]
 			};
 		}
 

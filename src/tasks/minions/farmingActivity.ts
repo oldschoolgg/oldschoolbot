@@ -7,16 +7,13 @@ import { randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, increaseBankQuantitesByPercent, Monsters } from 'oldschooljs';
 
-import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField } from '@/lib/constants.js';
 import { Farming, type PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
-import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 const plopperBoostPercent = 100;
@@ -64,7 +61,7 @@ export const farmingTask: MinionTask = {
 			quantity,
 			upgradeType,
 			payment,
-			channelID,
+			channelId,
 			planting,
 			currentDate,
 			pid,
@@ -155,9 +152,8 @@ export const farmingTask: MinionTask = {
 
 			loot.add('Weeds', quantity * 3);
 
-			let str = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${
-				plant.name
-			}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
+			let str = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${plant.name
+				}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
 
 			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 			if (bonusXP > 0) {
@@ -202,7 +198,7 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			handleTripFinish(user, channelID, str, undefined, data, null);
+			handleTripFinish({ user, channelId, message: str, data });
 		} else if (patchType.patchPlanted) {
 			// If they do have something planted here, harvest it and possibly replant.
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
@@ -252,8 +248,8 @@ export const farmingTask: MinionTask = {
 						Math.floor(
 							Math.floor(
 								plantToHarvest.chance1 +
-									(plantToHarvest.chance99 - plantToHarvest.chance1) *
-										((currentFarmingLevel - 1) / 98)
+								(plantToHarvest.chance99 - plantToHarvest.chance1) *
+								((currentFarmingLevel - 1) / 98)
 							) * baseBonus
 						) + 1;
 					const chanceToSaveLife = Math.min(0.95, (plantChanceFactor + 1) / 256);
@@ -304,8 +300,11 @@ export const farmingTask: MinionTask = {
 					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					if (GP < gpToCutTree) {
-						return sendToChannelID(channelID, {
-							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`
+						return handleTripFinish({
+							user,
+							channelId,
+							message: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`,
+							data
 						});
 					}
 					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
@@ -316,7 +315,7 @@ export const farmingTask: MinionTask = {
 				if (plantToHarvest.givesLogs && chopped) {
 					assert(
 						typeof plantToHarvest.outputLogs === 'number' &&
-							typeof plantToHarvest.woodcuttingXp === 'number'
+						typeof plantToHarvest.woodcuttingXp === 'number'
 					);
 
 					const amountOfLogs = rng.randInt(5, 10) * alivePlants;
@@ -380,10 +379,8 @@ export const farmingTask: MinionTask = {
 			});
 
 			infoStr.push(
-				`${plantingStr}harvesting ${patchType.lastQuantity}x ${
-					plantToHarvest.name
-				}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health. In total: ${xpRes}. ${
-					wcBool ? wcXP : ''
+				`${plantingStr}harvesting ${patchType.lastQuantity}x ${plantToHarvest.name
+				}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health. In total: ${xpRes}. ${wcBool ? wcXP : ''
 				}`
 			);
 
@@ -417,10 +414,10 @@ export const farmingTask: MinionTask = {
 					userID: user.id,
 					duration: data.duration,
 					finishDate: data.finishDate,
-					channelID: data.channelID,
+					channelId: data.channelId,
 					id: 1
 				};
-				await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
+				await combatAchievementTripEffect({ user, messages: infoStr, data: fakeMonsterTaskOptions });
 				loot = hesporiLoot;
 				const plopperDroprate = clAdjustedDroprate(
 					user,
@@ -488,16 +485,12 @@ export const farmingTask: MinionTask = {
 
 			let janeMessage = false;
 			if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
-				const farmingContractUpdate: FarmingContract = {
+				await user.updateFarmingContract({
 					hasContract: false,
 					difficultyLevel: null,
 					plantToGrow: currentContract.plantToGrow,
 					plantTier: currentContract.plantTier,
 					contractsCompleted: contractsCompleted + 1
-				};
-
-				await user.update({
-					minion_farmingContract: farmingContractUpdate as any
 				});
 
 				loot.add('Seed pack');
@@ -584,8 +577,6 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			const seedPackCount = loot.amount('Seed pack');
-
 			const hasFive = Farming.getFarmingInfoFromUser(user).patches.spirit.lastQuantity >= 5;
 			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
 				await user.update({
@@ -595,25 +586,22 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			return handleTripFinish(
+			const message = new MessageBuilder().setContent(infoStr.join('\n'));
+			if (janeMessage) {
+				message.addChatHeadImage(
+					'jane',
+					`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${contractsCompleted + 1
+					} farming contracts.`
+				);
+			}
+
+			return handleTripFinish({
 				user,
-				channelID,
-				infoStr.join('\n'),
-				janeMessage
-					? await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with ${seedPackCount} Seed pack${
-								seedPackCount > 1 ? 's' : ''
-							}. Please open ${
-								seedPackCount > 1 ? 'these Seed packs' : 'this Seed pack'
-							} before asking for a new contract!\nYou have completed ${
-								contractsCompleted + 1
-							} farming contracts.`,
-							head: 'jane'
-						})
-					: undefined,
+				channelId,
+				message,
 				data,
 				loot
-			);
+			});
 		}
 	}
 };

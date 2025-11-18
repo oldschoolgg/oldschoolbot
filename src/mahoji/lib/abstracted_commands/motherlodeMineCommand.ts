@@ -9,11 +9,11 @@ import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js
 
 export async function motherlodeMineCommand({
 	user,
-	channelID,
+	channelId,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 }) {
 	let miningLevel = user.skillsAsLevels.mining;
@@ -72,7 +72,7 @@ export async function motherlodeMineCommand({
 		goldSilverBoost,
 		miningLvl: miningLevel,
 		hasGlory: user.hasEquippedOrInBank('Amulet of glory'),
-		maxTripLength: user.calcMaxTripLength('MotherlodeMining'),
+		maxTripLength: await user.calcMaxTripLength('MotherlodeMining'),
 		hasKaramjaMedium: false
 	});
 
@@ -81,7 +81,7 @@ export async function motherlodeMineCommand({
 
 	await ActivityManager.startTrip<MotherlodeMiningActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: newQuantity,
 		iQty: quantity ? quantity : undefined,
 		duration,
@@ -89,13 +89,11 @@ export async function motherlodeMineCommand({
 		fakeDurationMin: Math.floor(fakeDurationMin),
 		type: 'MotherlodeMining'
 	});
-	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${
-		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
-	}, it'll take ${
-		quantity
+	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
+		}, it'll take ${quantity
 			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
 			: formatDuration(duration)
-	} to finish.`;
+		} to finish.`;
 
 	if (user.usingPet('Doug')) {
 		response += '\n<:doug:748892864813203591> Doug joins you on your mining trip!';

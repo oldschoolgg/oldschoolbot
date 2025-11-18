@@ -1,6 +1,6 @@
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, reduceNumByPercent, stringSearch, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, Monsters } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
@@ -20,7 +20,7 @@ export const fishCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to fish.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Fishing.Fishes.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -43,13 +43,8 @@ export const fishCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
-		const fish = Fishing.Fishes.find(
-			fish =>
-				stringMatches(fish.id, options.name) ||
-				stringMatches(fish.name, options.name) ||
-				fish.alias?.some(alias => stringMatches(alias, options.name))
-		);
+	run: async ({ options, user, channelId }) => {
+		const fish = Fishing.Fishes.find(fish => stringSearch(fish.name, options.name));
 		if (!fish) return 'Thats not a valid fish to catch.';
 
 		if (user.skillsAsLevels.fishing < fish.level) {
@@ -81,6 +76,7 @@ export const fishCommand = defineCommand({
 		}
 
 		// If no quantity provided, set it to the max.
+		let maxTripLength = await user.calcMaxTripLength('Fishing');
 		let scaledTimePerFish = Time.Second * fish.timePerFish * (1 + (100 - user.skillsAsLevels.fishing) / 100);
 
 		const boosts = [];
@@ -89,7 +85,6 @@ export const fishCommand = defineCommand({
 			scaledTimePerFish /= 2;
 			boosts.push('2x faster for Shelldon');
 		}
-		let maxTripLength = user.calcMaxTripLength('Fishing');
 
 		const boostedTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
 		const res = await inventionItemBoost({
@@ -159,8 +154,7 @@ export const fishCommand = defineCommand({
 		}
 		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
 			boosts.push(
-				`+9 trip minutes for having a ${
-					user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
+				`+9 trip minutes for having a ${user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
 				}`
 			);
 		}
@@ -213,7 +207,7 @@ export const fishCommand = defineCommand({
 		await ActivityManager.startTrip<FishingActivityTaskOptions>({
 			fishID: fish.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			duration,

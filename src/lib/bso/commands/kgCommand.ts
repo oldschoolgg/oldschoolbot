@@ -2,7 +2,7 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance, gpCostPerKill } from '@/lib/bso/structures/Boss.js';
 
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
@@ -10,10 +10,10 @@ import { Gear } from '@/lib/structures/Gear.js';
 export async function kgCommand(
 	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	inputName: string,
 	quantity: number | undefined
-): Promise<string | InteractionReplyOptions> {
+) {
 	if (interaction) await interaction.defer();
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
 	const instance = new BossInstance({
@@ -60,7 +60,7 @@ export async function kgCommand(
 		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
 		settingsKeys: ['kg_cost', 'kg_loot'],
-		channelId: channelID,
+		channelId: channelId,
 		activity: 'KingGoldemar',
 		massText: `${user.usernameOrMention} is assembling a team to fight King Goldemar! Use the buttons below to join/leave.`,
 		minSize: 1,
@@ -73,8 +73,7 @@ export async function kgCommand(
 		const { bossUsers } = await instance.start();
 		const embed = new EmbedBuilder()
 			.setDescription(
-				`${type === 'solo' ? 'You approach' : 'Your group approaches'} the Kings' chambers, and ${
-					type === 'solo' ? 'you bribe' : 'each of you bribes'
+				`${type === 'solo' ? 'You approach' : 'Your group approaches'} the Kings' chambers, and ${type === 'solo' ? 'you bribe' : 'each of you bribes'
 				} the Kings Guards with a big bag of gold (${toKMB(
 					10_000_000
 				)} each) to let you into his chambers. The guards accept the offer and let you in, as they run away. The total trip will take ${formatDuration(
@@ -87,7 +86,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 			.setImage('https://cdn.discordapp.com/attachments/357422607982919680/841789326648016896/Untitled-2.png');
 
 		return {
-			embeds: [embed.data],
+			embeds: [embed],
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
 		};
 	} catch (err: any) {

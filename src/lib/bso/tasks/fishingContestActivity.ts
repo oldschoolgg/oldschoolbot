@@ -19,7 +19,7 @@ export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSi
 export const fishingContestTask: MinionTask = {
 	type: 'FishingContest',
 	async run(data: FishingContestOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, location, duration } = data;
+		const { channelId, quantity, location, duration } = data;
 
 		const { newScore } = await user.incrementMinigameScore('fishing_contest', 1);
 		const fishLocation = fishingLocations.find(i => i.id === location)!;
@@ -110,17 +110,19 @@ export const fishingContestTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${user.minionName} finished fishing at ${fishLocation.name}, you caught: ${caughtFish
-				.map(i => `${i.name}(${i.lengthMetres}m, ${i.weightKG.toFixed(1)}KG)`)
-				.join(', ')}. You received: ${loot}.
+		const message = `${user}, ${user.minionName} finished fishing at ${fishLocation.name}, you caught: ${caughtFish
+			.map(i => `${i.name}(${i.lengthMetres}m, ${i.weightKG.toFixed(1)}KG)`)
+			.join(', ')}. You received: ${loot}.
 ${caughtFish[0].boosts.length > 0 ? `**Boosts:** ${caughtFish[0].boosts.join(', ')}` : ''}
-${xpStr}`,
-			undefined,
-			data,
-			loot
+${xpStr}`;
+		return handleTripFinish(
+			{
+				user,
+				channelId,
+				message,
+				data,
+				loot
+			}
 		);
 	}
 };

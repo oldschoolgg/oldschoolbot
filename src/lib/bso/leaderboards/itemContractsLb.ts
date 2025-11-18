@@ -1,7 +1,4 @@
-import { chunk } from 'remeda';
-
-import { getUsernameSync } from '@/lib/util.js';
-import { doMenu } from '@/mahoji/commands/leaderboard.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
 
 export async function bsoItemContractLb(interaction: MInteraction, ironmanOnly?: boolean) {
 	const results = await prisma.user.findMany({
@@ -21,14 +18,13 @@ export async function bsoItemContractLb(interaction: MInteraction, ironmanOnly?:
 		take: 10
 	});
 
-	return doMenu(
-		interaction,
-		chunk(results, 10).map(subList =>
-			subList
-				.map(({ id, item_contract_streak }) => `**${getUsernameSync(id)}:** ${item_contract_streak}`)
-				.join('\n')
-		),
-		'Item Contract Streak Leaderboard'
+	return doMenuWrapper(
+		{
+			interaction,
+			users: results.map(({ id, item_contract_streak }) => ({ id, score: item_contract_streak })),
+			title: ironmanOnly ? 'Ironman Item Contract Streak Leaderboard' : 'Item Contract Streak Leaderboard',
+			ironmanOnly: Boolean(ironmanOnly)
+		}
 	);
 }
 
@@ -49,22 +45,19 @@ export async function bsoItemContractDonationGivenLb(interaction: MInteraction, 
 				: Object.keys(donation_bank).length;
 
 			return {
-				id: s.user_id,
+				id: s.user_id.toString(),
 				total_donations
 			};
 		})
 		.filter(d => d.total_donations > 0);
 
-	return doMenu(
+	return doMenuWrapper({
 		interaction,
-		chunk(donations.sort((a, b) => b.total_donations - a.total_donations).slice(0, 10), 10).map(subList =>
-			subList
-				.map(
-					({ id, total_donations }) =>
-						`**${getUsernameSync(id)}:** ${total_donations.toLocaleString()} donations`
-				)
-				.join('\n')
-		),
-		`${total === true ? 'Total' : 'Unique'} IC Donations Leaderboard`
-	);
+		users: donations
+			.sort((a, b) => b.total_donations - a.total_donations)
+			.slice(0, 10)
+			.map(({ id, total_donations }) => ({ id, score: total_donations })),
+		title: `${total === true ? 'Total' : 'Unique'} IC Donations Leaderboard`,
+		ironmanOnly: false
+	});
 }

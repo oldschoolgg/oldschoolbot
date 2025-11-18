@@ -16,7 +16,7 @@ const gotUniqueMessages = [
 export const mrTask: MinionTask = {
 	type: 'MonkeyRumble',
 	async run(data: MonkeyRumbleOptions, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, monkeys, duration } = data;
+		const { channelId, quantity, monkeys, duration } = data;
 
 		await user.incrementMinigameScore('monkey_rumble', quantity);
 
@@ -52,7 +52,7 @@ export const mrTask: MinionTask = {
 		const tokens = Math.ceil(quantity * (monkeyTier / 1.2));
 		const loot = new Bank().add('Rumble token', tokens);
 
-		const files = [];
+		const files: SendableFile[] = [];
 		const specialMonkeys = monkeys.filter(m => m.special);
 		for (const monkey of specialMonkeys) {
 			const unique = rewardTable.roll();
@@ -78,16 +78,21 @@ export const mrTask: MinionTask = {
 
 		const rumbleTokensPerHour = `${Math.round((tokens / (duration / Time.Minute)) * 60).toLocaleString()}`;
 		const fightsPerHour = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()}`;
-
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${user.minionName} finished fighting ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
+		const message = new MessageBuilder().setContent(`${user}, ${user.minionName} finished fighting ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
 ${xpStr}
-You received **${loot}.**`,
-			files[0],
-			data,
-			loot
+You received **${loot}.**`);
+		for (const file of files) {
+			message.addFile(file);
+		}
+
+		return handleTripFinish(
+			{
+				user,
+				channelId,
+				data,
+				loot,
+				message
+			}
 		);
 	}
 };

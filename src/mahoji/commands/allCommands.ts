@@ -16,7 +16,6 @@ import { tamesCommand } from '@/lib/bso/commands/tames.js';
 import { testerShopCommand } from '@/lib/bso/commands/testershop.js';
 
 import { globalConfig } from '@/lib/constants.js';
-import type { AnyCommand } from '@/lib/discord/index.js';
 import { activitiesCommand } from '@/mahoji/commands/activities.js';
 import { adminCommand } from '@/mahoji/commands/admin.js';
 import { askCommand } from '@/mahoji/commands/ask.js';

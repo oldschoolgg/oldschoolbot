@@ -253,8 +253,7 @@ export function calculateHunterInput({
 			}
 		}
 		messages.push(
-			`You are hunting ${creature.name} in the Wilderness during ${
-				wildyPeak!.peakTier
+			`You are hunting ${creature.name} in the Wilderness during ${wildyPeak!.peakTier
 			} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions.`
 		);
 	}
@@ -286,7 +285,7 @@ export const huntCommand = defineCommand({
 			name: 'name',
 			description: 'The creature you want to hunt.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Hunter.Creatures.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -315,7 +314,7 @@ export const huntCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		if (options.stamina_potions === undefined) {
 			options.stamina_potions = true;
 		}
@@ -330,7 +329,7 @@ export const huntCommand = defineCommand({
 
 		const crystalImpling = creature.name === 'Crystal impling';
 
-		const maxTripLength = user.calcMaxTripLength('Hunter');
+		const maxTripLength = await user.calcMaxTripLength('Hunter');
 		const elligibleForQuickTrap =
 			creature.huntTechnique === HunterTechniqueEnum.BoxTrapping && user.owns('Quick trap');
 		const elligibleForWebshooter = user.owns('Webshooter') && !crystalImpling;
@@ -365,18 +364,18 @@ export const huntCommand = defineCommand({
 
 		const quickTrapResult = elligibleForQuickTrap
 			? await inventionItemBoost({
-					user,
-					inventionID: InventionID.QuickTrap,
-					duration: preResult.duration
-				})
+				user,
+				inventionID: InventionID.QuickTrap,
+				duration: preResult.duration
+			})
 			: null;
 
 		const webshooterResult = elligibleForWebshooter
 			? await inventionItemBoost({
-					user,
-					inventionID: InventionID.Webshooter,
-					duration: preResult.duration
-				})
+				user,
+				inventionID: InventionID.Webshooter,
+				duration: preResult.duration
+			})
 			: null;
 
 		const result = calculateHunterInput({
@@ -412,7 +411,7 @@ export const huntCommand = defineCommand({
 		await ActivityManager.startTrip<HunterActivityTaskOptions>({
 			creatureID: creature.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			usingHuntPotion: isUsingHunterPotion ? true : undefined,
@@ -421,9 +420,8 @@ export const huntCommand = defineCommand({
 			type: 'Hunter'
 		});
 
-		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
-			crystalImpling ? ' ' : ` ${quantity}x `
-		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${crystalImpling ? ' ' : ` ${quantity}x `
+			}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (messages.length > 0) {
 			response += `\n\n${messages.join(', ')}.`;

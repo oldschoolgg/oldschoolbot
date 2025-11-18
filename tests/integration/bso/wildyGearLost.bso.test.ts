@@ -39,9 +39,9 @@ test('calculateGearLostOnDeathWilderness', async () => {
 			duration: Time.Hour,
 			id: 123,
 			finishDate: Date.now(),
-			channelID: ''
+			channelId: ''
 		} as MonsterActivityTaskOptions,
-		{ user, handleTripFinish: async () => {}, rng: MathRNG }
+		{ user, handleTripFinish: async () => { }, rng: MathRNG }
 	);
 
 	await user.sync();

@@ -6,12 +6,12 @@ import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function tiaraRunecraftCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 	name: string;
 }) {
@@ -51,7 +51,7 @@ export async function tiaraRunecraftCommand({
 	const makeTiaraTime = Time.Second * 0.6;
 	const adjTripTime = tripLength + TIARAS_PER_INVENTORY * makeTiaraTime;
 	const maxCanDoOwned = numTiaraOwned < numTalismansOwned ? numTiaraOwned : numTalismansOwned;
-	const maxTripLength = user.calcMaxTripLength('Runecraft');
+	const maxTripLength = await user.calcMaxTripLength('Runecraft');
 	const maxCanDo = Math.floor(maxTripLength / adjTripTime) * TIARAS_PER_INVENTORY;
 
 	if (!quantity) {
@@ -93,7 +93,7 @@ export async function tiaraRunecraftCommand({
 	await ActivityManager.startTrip<TiaraRunecraftActivityTaskOptions>({
 		tiaraID: tiaraObj.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		tiaraQuantity: quantity,
 		duration,
 		type: 'TiaraRunecraft'

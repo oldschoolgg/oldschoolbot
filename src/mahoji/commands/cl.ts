@@ -16,7 +16,7 @@ export const collectionLogCommand = defineCommand({
 			name: 'name',
 			description: 'The log you want to see.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					{ name: 'Overall (Main Collection Log)', value: 'overall' },
 					{ name: 'Overall+', value: 'overall+' },

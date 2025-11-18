@@ -6,10 +6,7 @@ import {
 	leagueTasks
 } from '@/lib/bso/leagues/leagues.js';
 
-import { calcWhatPercent, formatDuration, Time } from '@oldschoolgg/toolkit';
-
-import { PerkTier } from '@/lib/constants.js';
-import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
+import { calcWhatPercent } from '@oldschoolgg/toolkit';
 
 export const bsoLeaguesCommand = defineCommand({
 	name: 'leagues',
@@ -30,7 +27,7 @@ export const bsoLeaguesCommand = defineCommand({
 					name: 'task',
 					description: 'Search for the task name.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return allLeagueTasks
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.id.toString() }));
@@ -58,14 +55,6 @@ export const bsoLeaguesCommand = defineCommand({
 	],
 	run: async ({ options, interaction, user }) => {
 		await interaction.defer();
-		const cooldown = Cooldowns.get(
-			user.id,
-			'leagues',
-			user.perkTier() >= PerkTier.Two ? Time.Second * 5 : Time.Second * 30
-		);
-		if (cooldown) {
-			return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}.`;
-		}
 		const { content, finished } = await leaguesCheckUser(user.id);
 		if (options.check) {
 			return content;
@@ -86,9 +75,8 @@ export const bsoLeaguesCommand = defineCommand({
 			const percentCompleted = calcWhatPercent(count, totalUsers);
 			return `**Description:** ${task.name}
 **Tier:** ${group.name}
-${percentCompleted.toFixed(2)}% of users have finished this task, ${
-				finished.includes(task.id) ? 'including you.' : "you haven't."
-			}`;
+${percentCompleted.toFixed(2)}% of users have finished this task, ${finished.includes(task.id) ? 'including you.' : "you haven't."
+				}`;
 		}
 		if (options.claim) {
 			return leaguesClaimCommand(user, finished);

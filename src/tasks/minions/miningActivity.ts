@@ -214,8 +214,7 @@ export function calculateMiningResult({
 		messages.push(
 			`You received ${toKMB(
 				spiritualMiningPortentXP * GLOBAL_BSO_XP_MULTIPLIER
-			)} bonus XP from your Spiritual mining portent (${
-				portentResult.portent.charges_remaining
+			)} bonus XP from your Spiritual mining portent (${portentResult.portent.charges_remaining
 			} charges remaining).`
 		);
 	}
@@ -252,7 +251,7 @@ export function calculateMiningResult({
 export const miningTask: MinionTask = {
 	type: 'Mining',
 	async run(data: MiningActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { oreID, channelID, duration, powermine } = data;
+		const { oreID, channelId, duration, powermine } = data;
 		const { quantity } = data;
 		const minutes = Math.round(duration / Time.Minute);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
@@ -264,10 +263,10 @@ export const miningTask: MinionTask = {
 		const portentResult =
 			amountOfSpiritsToUse > 0
 				? await chargePortentIfHasCharges({
-						user,
-						portentID: PortentID.MiningPortent,
-						charges: minutes
-					})
+					user,
+					portentID: PortentID.MiningPortent,
+					charges: minutes
+				})
 				: null;
 		const {
 			totalMiningXPToAdd,
@@ -340,6 +339,12 @@ export const miningTask: MinionTask = {
 			str += `\n\n${messages.join('\n')}`;
 		}
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: str },
+			data,
+			loot
+		});
 	}
 };

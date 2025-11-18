@@ -9,7 +9,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 export const guthixianCacheTask: MinionTask = {
 	type: 'GuthixianCache',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID, duration } = data;
+		const { channelId, duration } = data;
 
 		const xp = user.skillLevel('divination') * user.skillLevel('divination') * 2.5;
 		const xpRes = await user.addXP({
@@ -51,11 +51,10 @@ export const guthixianCacheTask: MinionTask = {
 					increment: amountOfBoostsReceived
 				}
 			});
-			str += `\nYou received ${
-				amountOfBoostsReceived === 1
-					? 'a Guthixian cache boost'
-					: `${amountOfBoostsReceived}x Guthixian cache boosts`
-			}, your next memory harvesting trip will be enhanced.`;
+			str += `\nYou received ${amountOfBoostsReceived === 1
+				? 'a Guthixian cache boost'
+				: `${amountOfBoostsReceived}x Guthixian cache boosts`
+				}, your next memory harvesting trip will be enhanced.`;
 		}
 		if (loot.length > 0) {
 			await user.addItemsToBank({
@@ -68,6 +67,6 @@ export const guthixianCacheTask: MinionTask = {
 		await user.incrementMinigameScore('guthixian_cache');
 		await user.addToGodFavour(['Guthix'], data.duration);
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

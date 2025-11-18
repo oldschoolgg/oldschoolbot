@@ -33,7 +33,6 @@ import {
 	Time,
 	toTitleCase
 } from '@oldschoolgg/toolkit';
-import { bold, time } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
@@ -51,7 +50,6 @@ import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import { badges, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { mentionCommand } from '@/lib/discord/index.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
@@ -63,10 +61,12 @@ import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
+import { mentionCommand } from '@/discord/utils.js';
+import { bold, time } from '@oldschoolgg/discord';
 
 const tameImageSize = 96;
 
-async function tameAutocomplete(value: string, user: MUser) {
+async function tameAutocomplete({ value, user }: StringAutoComplete) {
 	const tames = await user.fetchTames();
 	return tames
 		.map(t => {
@@ -219,28 +219,35 @@ const tameImageReplacementChoices = [
 	}
 ];
 
-const tameImageReplacementEasterEggs = [
+interface TameImageReplacementEasterEgg {
+	image: Buffer;
+	shouldActivate: (args: { tame: Tame; user: MUser; perkTier: PerkTier | 0; }) => boolean;
+}
+
+const tameImageReplacementEasterEggs: TameImageReplacementEasterEgg[] = [
 	{
-		shouldActivate: (t: Tame) => t.nickname?.toLowerCase() === 'robochimp' && t.species_id === TameSpeciesID.Monkey,
+		shouldActivate: ({ tame }) => tame.nickname?.toLowerCase() === 'robochimp' && tame.species_id === TameSpeciesID.Monkey,
 		image: readFileSync('./src/lib/resources/images/tames/2_replace_1.png')
 	},
 	{
-		shouldActivate: (t: Tame) => t.nickname?.toLowerCase() === 'magnaboy' && t.species_id === TameSpeciesID.Monkey,
+		shouldActivate: ({ tame }) => tame.nickname?.toLowerCase() === 'magnaboy' && tame.species_id === TameSpeciesID.Monkey,
 		image: readFileSync('./src/lib/resources/images/tames/2_replace_2.png')
 	},
 	{
-		shouldActivate: (t: Tame) =>
-			t.nickname !== null &&
-			['meneldor', 'gwaihir', 'landroval'].includes(t.nickname.toLowerCase()) &&
-			t.species_id === TameSpeciesID.Eagle,
+		shouldActivate: ({ tame }) =>
+			tame.nickname !== null &&
+			['meneldor', 'gwaihir', 'landroval'].includes(tame.nickname.toLowerCase()) &&
+			tame.species_id === TameSpeciesID.Eagle,
 		image: readFileSync('./src/lib/resources/images/tames/3_replace_1.png')
-	},
-	...tameImageReplacementChoices.map(tameImage => ({
-		shouldActivate: (t: Tame, user: MUser) =>
-			t.custom_icon_id === tameImage.name && user.perkTier() >= PerkTier.Four,
-		image: tameImage.image
-	}))
+	}
 ];
+for (const dd of tameImageReplacementChoices) {
+	tameImageReplacementEasterEggs.push({
+		shouldActivate: ({ tame, perkTier }) =>
+			tame.custom_icon_id === dd.name && perkTier >= PerkTier.Four,
+		image: dd.image
+	});
+}
 
 let sprites: {
 	base: {
@@ -331,6 +338,7 @@ function drawText(ctx: CanvasContext, text: string, x: number, y: number) {
 
 export async function tameImage(user: MUser): CommandResponse {
 	const userTames = await user.fetchTames();
+	const perkTier = await user.fetchPerkTier();
 	userTames.sort(sortTames);
 
 	if (userTames.length === 0) {
@@ -405,12 +413,16 @@ export async function tameImage(user: MUser): CommandResponse {
 		const tameX = (10 + 256) * x + (isTameActive ? tameImageSize : 256 - tameImageSize) / 2;
 		const tameY = (10 + 128) * y + 10;
 
-		const imageReplacement = tameImageReplacementEasterEggs.find(i => i.shouldActivate(t.tame, user));
+		const imageReplacement = tameImageReplacementEasterEggs.find(i => i.shouldActivate({
+			tame: t.tame,
+			user,
+			perkTier
+		}));
 
 		const tameImage = imageReplacement
 			? await loadImage(imageReplacement.image)
 			: sprites.tames!.find(t => t.id === species.id)!.sprites.find(f => f.type === t.speciesVariant)!
-					.growthStage[t.growthStage];
+				.growthStage[t.growthStage];
 
 		// Draw tame
 		ctx.drawImage(tameImage, tameX, tameY, tameImageSize, tameImageSize);
@@ -516,10 +528,9 @@ export async function tameImage(user: MUser): CommandResponse {
 	const buffer = await canvasToBuffer(canvas);
 
 	return {
-		content: `${badgesStr}${user.usernameOrMention}, ${
-			userTames.length > 1 ? 'here are your tames' : 'this is your tame'
-		}!`,
-		files: [{ attachment: buffer, name: `${user.usernameOrMention}_tames.png` }]
+		content: `${badgesStr}${user.usernameOrMention}, ${userTames.length > 1 ? 'here are your tames' : 'this is your tame'
+			}!`,
+		files: [{ buffer, name: `${user.usernameOrMention}_tames.png` }]
 	};
 }
 
@@ -608,7 +619,7 @@ async function removeRawFood({
 	return {
 		success: true,
 		finalQuantity: quantity,
-		str: `${itemCost} from ${user.rawUsername}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
+		str: `${itemCost} from ${user.username}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
 		removed: itemCost
 	};
 }
@@ -855,12 +866,11 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 		fed_items: tame.fedItems.add(bankToAdd).toJSON()
 	});
 
-	return `You fed \`${bankToAdd}\` to ${tame}.${
-		newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
-	}${specialStr}${egg}`;
+	return `You fed \`${bankToAdd}\` to ${tame}.${newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
+		}${specialStr}${egg}`;
 }
 
-async function killCommand(user: MUser, channelID: string, str: string) {
+async function killCommand(user: MUser, channelId: string, str: string) {
 	const { tame, activity, species } = await user.getTame();
 	if (!tame || !species) {
 		return 'You have no selected tame.';
@@ -905,7 +915,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	);
 	speed = combatLevelChange;
 
-	const { maxTripLength, messages } = tame.calcMaxTripLength({ user, activity: TameType.Combat });
+	const { maxTripLength, messages } = await tame.calcMaxTripLength({ user, activity: TameType.Combat });
 	boosts.push(...messages);
 
 	if (isWeekend()) {
@@ -986,7 +996,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 
 	const task = await createTameTask({
 		user,
-		channelID,
+		channelId,
 		selectedTame: tame,
 		data: {
 			type: TameType.Combat,
@@ -1001,9 +1011,8 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now killing ${quantity}x ${monster.name}${
-		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
-	}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
+	let reply = `${tame} is now killing ${quantity}x ${monster.name}${deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
+		}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1017,7 +1026,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	return reply;
 }
 
-async function collectCommand(user: MUser, channelID: string, str: string) {
+async function collectCommand(user: MUser, channelId: string, str: string) {
 	const { tame, activity } = await user.getTame();
 	if (!tame) {
 		return 'You have no selected tame.';
@@ -1072,7 +1081,7 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 	// Apply calculated boost:
 	speed = reduceNumByPercent(speed, gathererLevelBoost);
 
-	const { maxTripLength, messages } = tame.calcMaxTripLength({ user, activity: TameType.Gatherer });
+	const { maxTripLength, messages } = await tame.calcMaxTripLength({ user, activity: TameType.Gatherer });
 	boosts.push(...messages);
 
 	// Calculate monster quantity:
@@ -1085,7 +1094,7 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 
 	const task = await createTameTask({
 		user,
-		channelID,
+		channelId,
 		selectedTame: tame,
 		data: {
 			type: TameType.Gatherer,
@@ -1099,9 +1108,8 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${
-		collectable.item.name
-	}. The trip will take ${formatDuration(duration)}.`;
+	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${collectable.item.name
+		}. The trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1112,7 +1120,7 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 
 async function monkeyMagicHandler(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	spellOptions: {
 		spell: SeaMonkeySpell;
 		itemID: number;
@@ -1169,7 +1177,7 @@ async function monkeyMagicHandler(
 		speed = reduceNumByPercent(speed, 5);
 		boosts.push('5% weekend boost');
 	}
-	const { maxTripLength, messages } = tame.calcMaxTripLength({ user, activity: 'SpellCasting' });
+	const { maxTripLength, messages } = await tame.calcMaxTripLength({ user, activity: 'SpellCasting' });
 	boosts.push(...messages);
 
 	if (equippedStaff.tier > 2) {
@@ -1213,7 +1221,7 @@ async function monkeyMagicHandler(
 
 	const task = await createTameTask({
 		user,
-		channelID,
+		channelId,
 		selectedTame: tame,
 		data: {
 			type: 'SpellCasting',
@@ -1229,9 +1237,8 @@ async function monkeyMagicHandler(
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now casting the ${
-		spellOptions.spell.name
-	} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
+	let reply = `${tame} is now casting the ${spellOptions.spell.name
+		} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1240,13 +1247,13 @@ async function monkeyMagicHandler(
 	return reply;
 }
 
-async function tanLeatherCommand(user: MUser, channelID: string, itemName: string) {
+async function tanLeatherCommand(user: MUser, channelId: string, itemName: string) {
 	const item = Tanning.find(i => Items.getOrThrow(i.id).name === itemName);
 	if (!item) {
 		return "That's not a valid item to tan.";
 	}
 
-	return monkeyMagicHandler(user, channelID, {
+	return monkeyMagicHandler(user, channelId, {
 		spell: seaMonkeySpells.find(i => i.id === 1)!,
 		itemID: item.id,
 		costPerItem: item.inputItems.clone().remove('Coins', item.inputItems.amount('Coins')),
@@ -1259,10 +1266,10 @@ async function tanLeatherCommand(user: MUser, channelID: string, itemName: strin
 	});
 }
 
-async function superGlassCommand(user: MUser, channelID: string) {
+async function superGlassCommand(user: MUser, channelId: string) {
 	const moltenGlass = Items.getOrThrow('Molten glass');
 
-	return monkeyMagicHandler(user, channelID, {
+	return monkeyMagicHandler(user, channelId, {
 		spell: seaMonkeySpells.find(i => i.id === 4)!,
 		itemID: moltenGlass.id,
 		costPerItem: new Bank().add('Giant seaweed').add('Bucket of sand', 6),
@@ -1275,7 +1282,7 @@ async function superGlassCommand(user: MUser, channelID: string) {
 	});
 }
 
-async function superheatItemCommand(user: MUser, channelID: string, itemName: string) {
+async function superheatItemCommand(user: MUser, channelId: string, itemName: string) {
 	const item = Bars.find(i => Items.getOrThrow(i.id).name === itemName);
 
 	const { tame, activity } = await user.getTame();
@@ -1291,7 +1298,7 @@ async function superheatItemCommand(user: MUser, channelID: string, itemName: st
 		return `You need to feed your tame a Klik to super heat ${itemName}.`;
 	}
 
-	return monkeyMagicHandler(user, channelID, {
+	return monkeyMagicHandler(user, channelId, {
 		spell: seaMonkeySpells.find(i => i.id === 5)!,
 		itemID: item.id,
 		costPerItem: new Bank().add(item.inputOres),
@@ -1304,13 +1311,13 @@ async function superheatItemCommand(user: MUser, channelID: string, itemName: st
 	});
 }
 
-async function plankMakeCommand(user: MUser, channelID: string, plankName: string) {
+async function plankMakeCommand(user: MUser, channelId: string, plankName: string) {
 	const item = Planks.find(p => p.name === plankName);
 	if (!item) {
 		return "That's not a valid plank to make.";
 	}
 
-	return monkeyMagicHandler(user, channelID, {
+	return monkeyMagicHandler(user, channelId, {
 		spell: seaMonkeySpells.find(i => i.id === 2)!,
 		itemID: item.outputItem,
 		costPerItem: new Bank().add(item.inputItem).add('Coins', Math.ceil(calcPercentOfNum(70, item.gpCost))),
@@ -1323,11 +1330,11 @@ async function plankMakeCommand(user: MUser, channelID: string, plankName: strin
 	});
 }
 
-async function spinFlaxCommand(user: MUser, channelID: string) {
+async function spinFlaxCommand(user: MUser, channelId: string) {
 	const flax = Items.getOrThrow('Flax');
 	const bowstring = Items.getOrThrow('Bow string');
 
-	return monkeyMagicHandler(user, channelID, {
+	return monkeyMagicHandler(user, channelId, {
 		spell: seaMonkeySpells.find(i => i.id === 3)!,
 		itemID: bowstring.id,
 		costPerItem: new Bank().add(flax),
@@ -1356,6 +1363,7 @@ async function selectCommand(user: MUser, tameID: number) {
 }
 
 async function viewCommand(user: MUser, tameID: number): CommandResponse {
+	const perkTier = await user.fetchPerkTier();
 	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
 	const rawTame = tames.find(t => t.id === tameID);
 	if (!rawTame) {
@@ -1370,9 +1378,9 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 		user
 	});
 
-	const files = [fedImage.file.attachment];
+	const files: SendableFile[] = [fedImage];
 
-	const isTierThree = user.perkTier() >= PerkTier.Four;
+	const isTierThree = perkTier >= PerkTier.Four;
 	if (isTierThree) {
 		files.push(
 			(
@@ -1381,7 +1389,7 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 					title: 'Total Loot From This Tame',
 					user
 				})
-			).file.attachment
+			)
 		);
 
 		files.push(
@@ -1391,7 +1399,7 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 					title: 'Items This Tame Used',
 					user
 				})
-			).file.attachment
+			)
 		);
 
 		files.push(
@@ -1401,7 +1409,7 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 					title: 'Total Loot From Elder Knowledge',
 					user
 				})
-			).file.attachment
+			)
 		);
 	}
 
@@ -1412,9 +1420,9 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 **Hatch Date:** ${time(tame.hatchDate)} / ${time(tame.hatchDate, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame.relevantLevel()}
 **Boosts:** ${tameFeedableItems
-		.filter(i => tame.hasBeenFed(i.item.id))
-		.map(i => `${i.item.name} (${i.description})`)
-		.join(', ')}`;
+			.filter(i => tame.hasBeenFed(i.item.id))
+			.map(i => `${i.item.name} (${i.description})`)
+			.join(', ')}`;
 	if (species.id === TameSpeciesID.Igne) {
 		const kcs = await getIgneTameKC(tame.tame);
 		content += `\n**KCs:** ${kcs.sortedTuple
@@ -1516,7 +1524,7 @@ export function determineTameClueResult({
 	supportLevel: number;
 	equippedArmor: number | null;
 	equippedPrimary: number | null;
-	maxTripLength: ReturnType<MTame['calcMaxTripLength']>;
+	maxTripLength: Awaited<ReturnType<MTame['calcMaxTripLength']>>;
 }) {
 	const boosts: string[] = [...maxTripLength.messages];
 
@@ -1557,7 +1565,7 @@ export function determineTameClueResult({
 	};
 }
 
-async function tameClueCommand(user: MUser, channelID: string, inputName: string) {
+async function tameClueCommand(user: MUser, channelId: string, inputName: string) {
 	const { tame, activity } = await user.fetchActiveTame();
 	if (activity) {
 		return `${tame} is busy.`;
@@ -1566,7 +1574,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		return 'You have no selected tame.';
 	}
 	if (tame.species.id !== TameSpeciesID.Eagle) {
-		return `Only Eagle tames can do clue scrolls, switch to a different tame: ${mentionCommand(
+		return `Only Eagle tames can do clue scrolls, switch to a different tame: ${globalClient.mentionCommand(
 			'tames',
 			'select'
 		)}.`;
@@ -1586,7 +1594,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		supportLevel: tame.currentSupportLevel,
 		equippedArmor: tame.equippedArmor?.id ?? null,
 		equippedPrimary: tame.equippedPrimary?.id ?? null,
-		maxTripLength: tame.calcMaxTripLength({ user, activity: 'Clues' })
+		maxTripLength: await tame.calcMaxTripLength({ user, activity: 'Clues' })
 	});
 
 	if (quantity === 0) {
@@ -1618,7 +1626,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 
 	const task = await createTameTask({
 		user,
-		channelID,
+		channelId,
 		selectedTame: tame,
 		data: {
 			type: 'Clues',
@@ -1716,13 +1724,13 @@ export const tamesCommand = defineCommand({
 					name: 'name',
 					description: 'The thing you want to kill.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return tameKillableMonsters
 							.filter(i =>
 								!value
 									? true
 									: i.name.toLowerCase().includes(value.toLowerCase()) ||
-										i.aliases.some(alias => stringMatches(alias, value))
+									i.aliases.some(alias => stringMatches(alias, value))
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -1739,7 +1747,7 @@ export const tamesCommand = defineCommand({
 					name: 'name',
 					description: 'The thing you want to collect.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return collectables
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
@@ -1785,7 +1793,7 @@ export const tamesCommand = defineCommand({
 					name: 'item',
 					description: 'The item you want to equip.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return tameEquippables
 							.filter(t => (!value ? true : t.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
@@ -1803,7 +1811,7 @@ export const tamesCommand = defineCommand({
 					name: 'item',
 					description: 'The item you want to unequip.',
 					required: true,
-					autocomplete: async (_: string, user: MUser) => {
+					autocomplete: async ({ user }: StringAutoComplete) => {
 						const { tame } = await user.getTame();
 						return tameEquipSlots
 							.map(i => tame?.tame[i])
@@ -1824,9 +1832,9 @@ export const tamesCommand = defineCommand({
 					name: 'tan',
 					description: 'The leather you want your monkey to tan.',
 					required: false,
-					autocomplete: async (input: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Tanning.filter(t =>
-							!input ? true : t.name.toLowerCase().includes(input.toLowerCase())
+							!value ? true : t.name.toLowerCase().includes(value.toLowerCase())
 						).map(t => ({ name: t.name, value: t.name }));
 					}
 				},
@@ -1870,9 +1878,9 @@ export const tamesCommand = defineCommand({
 					name: 'name',
 					description: 'The activity to do.',
 					required: true,
-					autocomplete: async (input: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return arbitraryTameActivities
-							.filter(t => (!input ? true : t.name.toLowerCase().includes(input.toLowerCase())))
+							.filter(t => (!value ? true : t.name.toLowerCase().includes(value.toLowerCase())))
 							.map(t => ({ name: t.name, value: t.name }));
 					}
 				}
@@ -1888,9 +1896,9 @@ export const tamesCommand = defineCommand({
 					name: 'clue',
 					description: 'The clue tier to do.',
 					required: true,
-					autocomplete: async (input: string, user: MUser) => {
+					autocomplete: async ({ user, value }: StringAutoComplete) => {
 						return ClueTiers.filter(t =>
-							!input ? true : t.name.toLowerCase().includes(input.toLowerCase())
+							!value ? true : t.name.toLowerCase().includes(value.toLowerCase())
 						)
 							.filter(t => user.bank.has(t.scrollID))
 							.map(t => ({ name: `${t.name} (${user.bank.amount(t.scrollID)}x owned)`, value: t.name }));
@@ -1920,26 +1928,26 @@ export const tamesCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction }) => {
 		if (options.set_name) return setNameCommand(user, options.set_name.name);
 		if (options.cancel) return cancelCommand(user);
 		if (options.list) return tameImage(user);
 		if (options.merge) return mergeCommand(user, interaction, Number(options.merge.tame));
 		if (options.feed) return feedCommand(interaction, user, options.feed.items);
-		if (options.kill) return killCommand(user, channelID, options.kill.name);
-		if (options.collect) return collectCommand(user, channelID, options.collect.name);
+		if (options.kill) return killCommand(user, channelId, options.kill.name);
+		if (options.collect) return collectCommand(user, channelId, options.collect.name);
 		if (options.select) return selectCommand(user, Number(options.select.tame));
 		if (options.view) return viewCommand(user, Number(options.view.tame));
 		if (options.status) return statusCommand(user);
 		if (options.equip) return tameEquipCommand(user, options.equip.item);
 		if (options.unequip) return tameUnequipCommand(user, options.unequip.item);
-		if (options.cast?.plank_make) return plankMakeCommand(user, channelID, options.cast.plank_make);
-		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelID);
-		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
-		if (options.cast?.superglass_make) return superGlassCommand(user, channelID);
-		if (options.cast?.superheat_item) return superheatItemCommand(user, channelID, options.cast.superheat_item);
+		if (options.cast?.plank_make) return plankMakeCommand(user, channelId, options.cast.plank_make);
+		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelId);
+		if (options.cast?.tan) return tanLeatherCommand(user, channelId, options.cast.tan);
+		if (options.cast?.superglass_make) return superGlassCommand(user, channelId);
+		if (options.cast?.superheat_item) return superheatItemCommand(user, channelId, options.cast.superheat_item);
 		if (options.clue?.clue) {
-			return tameClueCommand(user, channelID, options.clue.clue);
+			return tameClueCommand(user, channelId, options.clue.clue);
 		}
 		if (options.activity) {
 			const tameActivity = arbitraryTameActivities.find(i => stringMatches(i.name, options.activity!.name));
@@ -1961,12 +1969,12 @@ export const tamesCommand = defineCommand({
 			}
 			const boosts: string[] = [];
 
-			const { maxTripLength, messages } = tame.calcMaxTripLength({ user, activity: tameActivity.id });
+			const { maxTripLength, messages } = await tame.calcMaxTripLength({ user, activity: tameActivity.id });
 			boosts.push(...messages);
 
 			const task = await createTameTask({
 				user,
-				channelID,
+				channelId,
 				selectedTame: tame,
 				data: {
 					type: tameActivity.id
@@ -1988,7 +1996,7 @@ export const tamesCommand = defineCommand({
 			return reply;
 		}
 		if (options.set_custom_image) {
-			if (user.perkTier() < PerkTier.Four) {
+			if (await user.fetchPerkTier() < PerkTier.Four) {
 				return 'You need to be a Tier 3 patron to set a custom image for your tame.';
 			}
 

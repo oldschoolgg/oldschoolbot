@@ -11,7 +11,7 @@ import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',
 	async run(data: SmeltingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		let { barID, quantity, channelID, duration, blastf } = data;
+		let { barID, quantity, channelId, duration, blastf } = data;
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
@@ -83,6 +83,6 @@ export const smeltingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

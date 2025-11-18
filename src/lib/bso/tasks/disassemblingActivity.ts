@@ -3,7 +3,7 @@ import { inventionBoosts, transactMaterialsFromUser } from '@/lib/bso/skills/inv
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { Emoji, Time } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
+import { userMention } from '@oldschoolgg/discord';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 export const disassemblingTask: MinionTask = {
@@ -41,9 +41,8 @@ export const disassemblingTask: MinionTask = {
 			masterCapeBoost: true
 		});
 
-		let str = `${userMention(data.userID)}, ${
-			user.minionName
-		} finished disassembling ${cost}. You received these materials: ${materialLoot}.
+		let str = `${userMention(data.userID)}, ${user.minionName
+			} finished disassembling ${cost}. You received these materials: ${materialLoot}.
 ${xpStr}`;
 
 		const loot = new Bank();
@@ -73,6 +72,6 @@ ${xpStr}`;
 			str += `\n**Messages:** ${messages.join(', ')}`;
 		}
 
-		handleTripFinish(user, data.channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId: data.channelId, message: str, data });
 	}
 };

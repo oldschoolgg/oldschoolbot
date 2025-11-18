@@ -1,7 +1,7 @@
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
+import { bold } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -91,7 +91,7 @@ export const lapsCommand = defineCommand({
 			name: 'name',
 			description: 'The course you want to do laps on.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return courses
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -114,7 +114,7 @@ export const lapsCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const course = courses.find(
 			course =>
 				stringMatches(course.id.toString(), options.name) ||
@@ -147,7 +147,7 @@ export const lapsCommand = defineCommand({
 			}
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Agility');
+		const maxTripLength = await user.calcMaxTripLength('Agility');
 
 		let timePerLap = course.lapTime * Time.Second;
 
@@ -184,9 +184,8 @@ export const lapsCommand = defineCommand({
 			)}.`;
 		}
 
-		let response = `${user.minionName} is now doing ${quantity}x ${
-			course.name
-		} laps, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now doing ${quantity}x ${course.name
+			} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
 		const alchResult =
 			course.name === 'Ape Atoll Agility Course'
@@ -194,10 +193,10 @@ export const lapsCommand = defineCommand({
 				: !options.alch
 					? null
 					: alching({
-							user,
-							tripLength: duration,
-							isUsingVoidling: user.usingPet('Voidling')
-						});
+						user,
+						tripLength: duration,
+						isUsingVoidling: user.usingPet('Voidling')
+					});
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {
 				return `You don't own ${alchResult.bankToRemove}.`;
@@ -214,7 +213,7 @@ export const lapsCommand = defineCommand({
 		await ActivityManager.startTrip<AgilityActivityTaskOptions>({
 			courseID: course.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Agility',
@@ -222,9 +221,9 @@ export const lapsCommand = defineCommand({
 				alchResult === null
 					? undefined
 					: {
-							itemID: alchResult.itemToAlch.id,
-							quantity: alchResult.maxCasts
-						}
+						itemID: alchResult.itemToAlch.id,
+						quantity: alchResult.maxCasts
+					}
 		});
 
 		return response;

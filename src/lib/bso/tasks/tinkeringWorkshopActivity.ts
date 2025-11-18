@@ -8,7 +8,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 export const twTask: MinionTask = {
 	type: 'TinkeringWorkshop',
 	async run(data: TinkeringWorkshopOptions, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		await user.incrementMinigameScore('tinkering_workshop', quantity);
 
@@ -48,13 +48,13 @@ export const twTask: MinionTask = {
 			}
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${user.minionName} finished tinkering with ${quantity}x projects, you received ${loot} and ${xpStr}.`,
-			undefined,
-			data,
-			null
+		return handleTripFinish(
+			{
+				user,
+				channelId,
+				message: `${user}, ${user.minionName} finished tinkering with ${quantity}x projects, you received ${loot} and ${xpStr}.`,
+				data,
+			}
 		);
 	}
 };

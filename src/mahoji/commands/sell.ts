@@ -4,10 +4,11 @@ import { clamp } from 'remeda';
 
 import type { Prisma } from '@/prisma/main.js';
 import { customPrices } from '@/lib/customItems/util.js';
-import { filterOption } from '@/lib/discord/index.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
+import { filterOption } from '@/discord/presetCommandOptions.js';
+import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
 
 /**
  * - Hardcoded prices
@@ -33,8 +34,6 @@ const specialSoldItems = new Map([
 	// Ecumenical Key - requires wildy hard diary
 	[itemID('Ecumenical key'), 61_500]
 ]);
-
-export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 
 export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; basePrice: number } {
 	const cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
@@ -298,10 +297,9 @@ export const sellCommand = defineCommand({
 		return interaction.returnStringOrFile(
 			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
 				totalPrice
-			)})** (${taxRatePercent}% below market price). ${
-				hasSkipper
-					? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
-					: ''
+			)})** (${taxRatePercent}% below market price). ${hasSkipper
+				? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
+				: ''
 			}`
 		);
 	}

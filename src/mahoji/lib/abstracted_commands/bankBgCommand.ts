@@ -65,7 +65,7 @@ export async function bankBgCommand(interaction: MInteraction, user: MUser, name
 	}
 
 	// Check they have the required perk tier.
-	if (selectedImage.perkTierNeeded && user.perkTier() < selectedImage.perkTierNeeded) {
+	if (selectedImage.perkTierNeeded && (await user.fetchPerkTier()) < selectedImage.perkTierNeeded) {
 		return `This background is only available for Tier ${Number(selectedImage.perkTierNeeded) - 1} patrons.`;
 	}
 

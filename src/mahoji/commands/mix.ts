@@ -20,7 +20,7 @@ export const mixCommand = defineCommand({
 			name: 'name',
 			description: 'The potion you want to mix.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Herblore.Mixables.map(i => i.item.name)
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -49,7 +49,7 @@ export const mixCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const mixableItem = Herblore.Mixables.find(
 			i => stringMatches(i.item.name, options.name) || i.aliases.some(alias => stringMatches(alias, options.name))
 		);
@@ -85,12 +85,11 @@ export const mixCommand = defineCommand({
 		if (isInstantTrip) {
 			timeToMixSingleItem = 0.000_001;
 			requiredItems.add('Coins', mixableWesley ? 50 : 200);
-			cost = `decided to pay ${
-				mixableWesley ? 'Wesley 50' : 'Zahur 200'
-			} gp for each item so they don't have to go.`;
+			cost = `decided to pay ${mixableWesley ? 'Wesley 50' : 'Zahur 200'
+				} gp for each item so they don't have to go.`;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Herblore');
+		const maxTripLength = await user.calcMaxTripLength('Herblore');
 		let quantity = optionQuantity ?? mixableItem.defaultQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
@@ -115,7 +114,7 @@ export const mixCommand = defineCommand({
 				duration: Math.min(
 					maxTripLength,
 					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToMixSingleItem)) *
-						boostedTimeToMixSingleItem
+					boostedTimeToMixSingleItem
 				)
 			});
 			if (boostResult.success) {
@@ -150,7 +149,7 @@ export const mixCommand = defineCommand({
 		await ActivityManager.startTrip<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.item.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			zahur: Boolean(zahur),
 			wesley: Boolean(wesley),
 			quantity,
@@ -158,9 +157,8 @@ export const mixCommand = defineCommand({
 			type: 'Herblore'
 		});
 
-		let str = `${user.minionName} ${cost} making ${quantity}x ${
-			mixableItem.outputMultiple ? 'batches of' : ''
-		}${itemName}, it'll take around ${formatDuration(duration)} to finish.`;
+		let str = `${user.minionName} ${cost} making ${quantity}x ${mixableItem.outputMultiple ? 'batches of' : ''
+			}${itemName}, it'll take around ${formatDuration(duration)} to finish.`;
 		if (boosts.length > 0) {
 			str += `\n**Boosts:** ${boosts.join(', ')}`;
 		}

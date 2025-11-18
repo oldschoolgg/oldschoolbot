@@ -13,9 +13,9 @@ import { researchCommand } from '@/lib/bso/skills/invention/research.js';
 import { calcPerHour, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { ownedMaterialOption } from '@/lib/discord/index.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
+import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
 
 export const inventionCommand = defineCommand({
 	name: 'invention',
@@ -31,7 +31,7 @@ export const inventionCommand = defineCommand({
 					type: 'String',
 					description: 'The item you want to disassemble.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						const inventionLevel = user.skillLevel('invention');
 
 						return user.bank
@@ -87,7 +87,7 @@ export const inventionCommand = defineCommand({
 					type: 'String',
 					description: 'The item you want to invent.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Inventions.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({
@@ -143,7 +143,7 @@ export const inventionCommand = defineCommand({
 					name: 'invention',
 					description: 'The invention you want to check.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Inventions.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						)
@@ -168,7 +168,7 @@ export const inventionCommand = defineCommand({
 					name: 'group',
 					description: 'The group you want to check.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return DisassemblySourceGroups.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
@@ -177,17 +177,16 @@ export const inventionCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ userID, options, channelID, interaction }) => {
-		const user = await mUserFetch(userID);
+	run: async ({ user, options, channelId, interaction }) => {
 		if (options.details) {
 			const invention = Inventions.find(i => stringMatches(i.name, options.details!.invention!));
 			if (!invention) return 'No invention found.';
 			let str = `**${invention.name}** - *${invention.description}*
 - Requires level ${invention.inventionLevelNeeded} Invention
 - The materials used for this invention: ${invention.materialTypeBank
-				.values()
-				.map(i => `${i.type} (${i.quantity})`)
-				.join(', ')}
+					.values()
+					.map(i => `${i.type} (${i.quantity})`)
+					.join(', ')}
 - Required cost to make: ${inventingCost(invention)} and ${invention.itemCost ? `${invention.itemCost}` : 'No items'}
 - ${invention.flags.includes('equipped') ? 'Must be equipped' : 'Works in bank'}`;
 			if (invention.extraDescription) str += `\n${invention.extraDescription()}`;
@@ -219,7 +218,7 @@ export const inventionCommand = defineCommand({
 					.values()
 					.map(i => `${i.type}[${i.quantity}]`)
 					.join(' ')}`,
-				files: [{ attachment: Buffer.from(str), name: `${group.name}.txt` }]
+				files: [{ buffer: Buffer.from(str), name: `${group.name}.txt` }]
 			};
 		}
 
@@ -236,7 +235,7 @@ export const inventionCommand = defineCommand({
 									user,
 									title: 'Items Disassembled'
 								})
-							).file
+							)
 						]
 					};
 				}
@@ -250,14 +249,13 @@ export const inventionCommand = defineCommand({
 				case 'unlocked_blueprints': {
 					const unlocked = Inventions.filter(i => user.user.unlocked_blueprints.includes(i.id));
 					const locked = Inventions.filter(i => !user.user.unlocked_blueprints.includes(i.id));
-					return `You have the following blueprints unlocked: ${
-						unlocked.length === 0
-							? 'None! Do some research to unlock some.'
-							: unlocked.map(i => i.name).join(', ')
-					}.
+					return `You have the following blueprints unlocked: ${unlocked.length === 0
+						? 'None! Do some research to unlock some.'
+						: unlocked.map(i => i.name).join(', ')
+						}.
 These Inventions are still not unlocked: ${locked
-						.map(i => `${i.name} (${Object.keys(i.materialTypeBank.bank).join(', ')})`)
-						.join(', ')}`;
+							.map(i => `${i.name} (${Object.keys(i.materialTypeBank.bank).join(', ')})`)
+							.join(', ')}`;
 				}
 				case 'xp': {
 					const table = new Table();
@@ -301,7 +299,7 @@ These Inventions are still not unlocked: ${locked
 					return {
 						files: [
 							{
-								attachment: Buffer.from(table.toString()),
+								buffer: Buffer.from(table.toString()),
 								name: 'invention-xp.txt'
 							}
 						]
@@ -315,15 +313,15 @@ These Inventions are still not unlocked: ${locked
 							.map(i => `${i.quantity}% ${i.type}`)
 							.join(', ')})
        ${group.items
-			.map(i => {
-				return `${Array.isArray(i.item) ? i.item.map(i => i.name).join(', ') : i.item.name} - ${Math.floor(
-					calcJunkChance(i.lvl, false)
-				)}% Junk Chance - Level/Weighting ${i.lvl}`;
-			})
-			.join('\n       ')}`;
+								.map(i => {
+									return `${Array.isArray(i.item) ? i.item.map(i => i.name).join(', ') : i.item.name} - ${Math.floor(
+										calcJunkChance(i.lvl, false)
+									)}% Junk Chance - Level/Weighting ${i.lvl}`;
+								})
+								.join('\n       ')}`;
 						str += '\n';
 					}
-					return { files: [{ attachment: Buffer.from(str), name: 'groups.txt' }] };
+					return { files: [{ buffer: Buffer.from(str), name: 'groups.txt' }] };
 				}
 			}
 		}
@@ -337,7 +335,7 @@ These Inventions are still not unlocked: ${locked
 				user,
 				itemToDisassembleName: options.disassemble.name,
 				quantityToDisassemble: mahojiParseNumber({ input: options.disassemble.quantity, min: 1 }) ?? undefined,
-				channelID
+				channelId
 			});
 		}
 		if (options.research) {
@@ -345,7 +343,7 @@ These Inventions are still not unlocked: ${locked
 				user,
 				inputQuantity: options.research.quantity,
 				material: options.research.material,
-				channelID,
+				channelId,
 				interaction
 			});
 		}

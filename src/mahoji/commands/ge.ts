@@ -1,18 +1,19 @@
 import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
 
-import { evalMathExpression, formatDuration, makeComponents, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
 import { Items, toKMB } from 'oldschooljs';
 
 import type { GEListing, GETransaction } from '@/prisma/main.js';
+import { marketPricemap } from '@/lib/cache.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
-import { defineOption } from '@/lib/discord/index.js';
-import { itemArr, itemOption } from '@/lib/discord/presetCommandOptions.js';
 import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
-import { marketPricemap } from '@/lib/marketPrices.js';
 import { createChart } from '@/lib/util/chart.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { defineOption } from '@/discord/index.js';
+import { itemArr, itemOption } from '@/discord/presetCommandOptions.js';
+import { evalMathExpression, sumArr, uniqueArr, formatDuration } from '@oldschoolgg/toolkit';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -91,12 +92,12 @@ export const geCommand = defineCommand({
 					name: 'item',
 					description: 'The item you want to pick.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						if (!value) {
 							const tradesOfUser = (
 								await prisma.gEListing.findMany({
 									where: {
-										user_id: user.id,
+										user_id: userId,
 										type: 'Buy'
 									},
 									select: {
@@ -128,7 +129,7 @@ export const geCommand = defineCommand({
 					type: 'String',
 					description: 'The item you want to sell.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						return user.bank
 							.items()
 							.filter(i => !isGEUntradeable(i[0].id))
@@ -165,8 +166,8 @@ export const geCommand = defineCommand({
 					name: 'listing',
 					description: 'The listing to cancel.',
 					required: true,
-					autocomplete: async (_: string, user: MUser) => {
-						const listings = await prisma.gEListing.findMany({ where: { user_id: user.id } });
+					autocomplete: async ({ userId }: StringAutoComplete) => {
+						const listings = await prisma.gEListing.findMany({ where: { user_id: userId } });
 						return listings
 							.filter(i => !i.cancelled_at && !i.fulfilled_at && i.quantity_remaining > 0)
 							.map(l => ({
@@ -193,7 +194,7 @@ export const geCommand = defineCommand({
 					name: 'item',
 					description: 'The item to lookup.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						const listings = Array.from(marketPricemap.values());
 						return listings
 							.filter(i =>
@@ -273,7 +274,7 @@ This price is a guide only, calculated from average sale prices, it may not be a
 			const { slots } = await GrandExchange.calculateSlotsOfUser(user);
 
 			return `
-The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it resets every ${formatDuration(
+The next buy limit reset is at: ${dateFm(GrandExchange.getInterval().end)}, it resets every ${formatDuration(
 				GrandExchange.config.buyLimit.interval
 			)}.
 
@@ -353,7 +354,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				files: [
 					{
 						name: 'ge.png',
-						attachment: image!
+						buffer: image!
 					}
 				]
 			};
@@ -376,7 +377,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 
 `;
 				}
-				if (user.perkTier() < PerkTier.Four) {
+				if ((await user.fetchPerkTier()) < PerkTier.Four) {
 					return baseMessage;
 				}
 				let result = await prisma.$queryRawUnsafe<
@@ -413,7 +414,7 @@ ORDER BY
 
 				return {
 					content: baseMessage,
-					files: [buffer]
+					files: [{ name: 'chart.png', buffer }]
 				};
 			}
 		}
@@ -458,7 +459,7 @@ ORDER BY
 				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
-				components: makeComponents([createGECancelButton(createdListing)])
+				components: [createGECancelButton(createdListing)]
 			};
 		}
 
@@ -480,7 +481,7 @@ ORDER BY
 				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
-				components: makeComponents([createGECancelButton(createdListing)])
+				components: [createGECancelButton(createdListing)]
 			};
 		}
 

@@ -3,10 +3,10 @@ import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 
 export const vasaBISGear = new Gear({
 	head: 'Gorajan occult helmet',
@@ -24,9 +24,9 @@ export const vasaBISGear = new Gear({
 export async function vasaCommand(
 	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	quantity?: number
-): Promise<string | InteractionReplyOptions> {
+) {
 	const instance = new BossInstance({
 		interaction,
 		leader: user,
@@ -64,7 +64,7 @@ export async function vasaCommand(
 		ignoreStats: ['attack_ranged', 'attack_crush', 'attack_slash', 'attack_stab'],
 		food: () => new Bank(),
 		settingsKeys: ['vasa_cost', 'vasa_loot'],
-		channelId: channelID,
+		channelId: channelId,
 		activity: 'VasaMagus',
 		massText: `${user.usernameOrMention} is assembling a team to fight Vasa Magus! Use the buttons below to join/leave.`,
 		minSize: 1,
@@ -85,7 +85,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 		);
 
 		return {
-			embeds: [embed.data],
+			embeds: [embed],
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
 		};
 	} catch (err: any) {

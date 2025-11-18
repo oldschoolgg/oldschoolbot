@@ -22,11 +22,11 @@ export async function doaStartCommand(
 	user: MUser,
 	challengeMode: boolean,
 	solo: boolean,
-	channelID: string,
+	channelId: string,
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
 
@@ -40,13 +40,14 @@ export async function doaStartCommand(
 		return initialCheck;
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
 	const maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 1,
 		maxSize,
@@ -67,16 +68,11 @@ export async function doaStartCommand(
 		}
 	};
 
-	let usersWhoConfirmed = [];
-	try {
-		usersWhoConfirmed = solo ? [user] : await interaction.makeParty(partyOptions);
-	} catch (err: any) {
-		return {
-			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			ephemeral: true
-		};
+	let users = solo ? [user] : (await globalClient.makeParty(partyOptions)).slice(0, maxSize);
+
+	if (await ActivityManager.anyMinionIsBusy(users.map(u => u.id))) {
+		return 'One of the users in your mass has a busy minion.';
 	}
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const teamCheck = await checkDOATeam(users, challengeMode, 1);
 	if (typeof teamCheck === 'string') {
@@ -93,7 +89,7 @@ export async function doaStartCommand(
 		quantity: 1,
 		challengeMode
 	}).fakeDuration;
-	const maxTripLength = Math.max(...users.map(i => i.calcMaxTripLength('DepthsOfAtlantis')));
+	const maxTripLength = Math.max(...await Promise.all(users.map(i => i.calcMaxTripLength('DepthsOfAtlantis'))));
 	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
 	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
@@ -170,7 +166,7 @@ export async function doaStartCommand(
 	});
 	await ActivityManager.startTrip<DOAOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration: createdDOATeam.realDuration,
 		type: 'DepthsOfAtlantis',
 		leader: user.id,
@@ -183,9 +179,8 @@ export async function doaStartCommand(
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to do ${quantity === 1 ? 'a' : `${quantity}x`} ${
-		challengeMode ? 'Challenge Mode' : ''
-	} Depths of Atlantis raid - the total trip will take ${formatDuration(createdDOATeam.fakeDuration)}.`;
+		.join(', ')}) is now off to do ${quantity === 1 ? 'a' : `${quantity}x`} ${challengeMode ? 'Challenge Mode' : ''
+		} Depths of Atlantis raid - the total trip will take ${formatDuration(createdDOATeam.fakeDuration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

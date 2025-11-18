@@ -2,7 +2,7 @@ import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '
 import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
 
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
-import { calcPercentOfNum, Emoji, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, Emoji, formatDuration, increaseNumByPercent, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
@@ -10,7 +10,6 @@ import { BitField } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { projectiles } from '@/lib/gear/projectiles.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
-import type { BlowpipeData } from '@/lib/minions/types.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
@@ -136,7 +135,7 @@ function baseDuration(_attempts: number, isEmergedZuk: boolean) {
 async function timesMadeToZuk(userID: string) {
 	const timesMadeToZuk = Number(
 		(
-			await prisma.$queryRawUnsafe<any>(`SELECT COUNT(*)::int
+			await prisma.$queryRawUnsafe<{ count: bigint }[]>(`SELECT COUNT(*)::int
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${userID}
@@ -179,19 +178,19 @@ async function infernoRun({
 
 	const skillReqs: Skills = isEmergedZuk
 		? {
-				defence: 102,
-				magic: 102,
-				hitpoints: 100,
-				ranged: 107,
-				prayer: 105
-			}
+			defence: 102,
+			magic: 102,
+			hitpoints: 100,
+			ranged: 107,
+			prayer: 105
+		}
 		: {
-				defence: 92,
-				magic: 94,
-				hitpoints: 92,
-				ranged: 92,
-				prayer: 77
-			};
+			defence: 92,
+			magic: 94,
+			hitpoints: 92,
+			ranged: 92,
+			prayer: 77
+		};
 	const hasSkillReqs = user.hasSkillReqs(skillReqs);
 	if (!hasSkillReqs) {
 		return `You not meet skill requirements, you need ${Object.entries(skillReqs)
@@ -249,13 +248,13 @@ async function infernoRun({
 	if (!isEmergedZuk) {
 		duration.add(
 			(rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt')) ||
-				(rangeGear.hasEquipped('Pernix body') && rangeGear.hasEquipped('Pernix chaps')),
+			(rangeGear.hasEquipped('Pernix body') && rangeGear.hasEquipped('Pernix chaps')),
 			-3,
 			'Armadyl/Pernix'
 		);
 		duration.add(
 			(mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom')) ||
-				(mageGear.hasEquipped('Virtus robe top') && mageGear.hasEquipped('Virtus robe legs')),
+			(mageGear.hasEquipped('Virtus robe top') && mageGear.hasEquipped('Virtus robe legs')),
 			-4,
 			'Ancestral/Virtus'
 		);
@@ -312,7 +311,7 @@ async function infernoRun({
 	preZukDeathChance.add(hasSuffering, -4, 'Ring of Suffering (i)');
 	zukDeathChance.add(hasSuffering, -4, 'Ring of Suffering (i)');
 
-	const blowpipeData = user.user.blowpipe as any as BlowpipeData;
+	const blowpipeData = user.getBlowpipe();
 	if (!userBank.has('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
 		return 'You need a Toxic blowpipe (with darts and scales equipped) to do the Inferno. You also need Darts and Scales equipped in it.';
 	}
@@ -487,11 +486,10 @@ async function infernoRun({
 	}
 	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
-		return `You're using incorrect projectiles, you're using a ${
-			rangeGear.equippedWeapon()?.name
-		}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
-			.map(i => Items.itemNameFromId(i))
-			.join(', ')}.`;
+		return `You're using incorrect projectiles, you're using a ${rangeGear.equippedWeapon()?.name
+			}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
+				.map(i => Items.itemNameFromId(i))
+				.join(', ')}.`;
 	}
 
 	duration.value = randomVariation(duration.value, (randInt(1, 10) + randInt(1, 10) + randInt(1, 10)) / 3);
@@ -592,7 +590,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: str,
 					head: 'ketKeh'
 				})
@@ -601,7 +599,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	};
 }
 
-export async function infernoStartCommand(user: MUser, channelID: string, emerged: boolean): CommandResponse {
+export async function infernoStartCommand(user: MUser, channelId: string, emerged: boolean): CommandResponse {
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
 		await user.fetchMinigameScore('inferno'),
@@ -621,7 +619,7 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 			files: [
 				{
 					name: 'image.jpg',
-					attachment: await newChatHeadImage({
+					buffer: await newChatHeadImage({
 						content: res,
 						head: 'ketKeh'
 					})
@@ -646,23 +644,16 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 	const realCost = new Bank();
 	try {
 		realCost.add((await user.specialRemoveItems(cost)).realCost);
-	} catch (err: any) {
-		return {
-			files: [
-				{
-					name: 'image.jpg',
-					attachment: await newChatHeadImage({
-						content: `${err.message}`,
-						head: 'ketKeh'
-					})
-				}
-			]
-		};
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return new MessageBuilder().addChatHeadImage('ketKeh', `${err.message}`);
+		}
+		throw err;
 	}
 
 	await ActivityManager.startTrip<InfernoOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: realDuration,
 		type: 'Inferno',
 		zukDeathChance: zukDeathChance.value,
@@ -680,12 +671,11 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 	await ClientSettings.updateBankSetting('inferno_cost', realCost);
 	const emergedZukDeathMsg = emerged
 		? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
-				1
-			)}% ${emergedZukDeathChance.messages.join(', ')} ${
-				emergedZukDeathChance.missed.length === 0
-					? ''
-					: `*(You didn't get these: ||${emergedZukDeathChance.missed.join(', ')}||)*`
-			}`
+			1
+		)}% ${emergedZukDeathChance.messages.join(', ')} ${emergedZukDeathChance.missed.length === 0
+			? ''
+			: `*(You didn't get these: ||${emergedZukDeathChance.missed.join(', ')}||)*`
+		}`
 		: '';
 	return {
 		content: `
@@ -693,26 +683,23 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 **Attempts:** ${attempts}
 
 **Duration:** ${formatDuration(duration.value)}
-**Boosts:** ${duration.messages.join(', ')} ${
-			duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
-		}
+**Boosts:** ${duration.messages.join(', ')} ${duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
+			}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${
-			preZukDeathChance.missed.length === 0
+**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${preZukDeathChance.missed.length === 0
 				? ''
 				: `*(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*`
-		}
-**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${
-			zukDeathChance.missed.length === 0
+			}
+**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${zukDeathChance.missed.length === 0
 				? ''
 				: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
-		}
+			}
 ${emergedZukDeathMsg}
 **Items To Be Used:** ${realCost}`,
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: "You're on your own now JalYt, you face certain death... Prepare to fight for your life.",
 					head: 'ketKeh'
 				})

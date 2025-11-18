@@ -21,21 +21,21 @@ export async function researchCommand({
 	user,
 	material,
 	inputQuantity,
-	channelID,
+	channelId,
 	interaction
 }: {
 	user: MUser;
 	material: string;
 	inputQuantity: number | undefined;
-	channelID: string;
+	channelId: string;
 	interaction?: MInteraction;
 }): CommandResponse {
-	if (user.minionIsBusy) return 'Your minion is busy.';
+	if (await user.minionIsBusy()) return 'Your minion is busy.';
 	material = material.toLowerCase() as MaterialType;
 	if (!isValidMaterialType(material)) {
 		return "That's not a valid material.";
 	}
-	const maxTripLength = user.calcMaxTripLength('Research');
+	const maxTripLength = await user.calcMaxTripLength('Research');
 	const timePerResearchPerMaterial = Time.Second * 3.59;
 	const maxQuantity = Math.floor(maxTripLength / timePerResearchPerMaterial);
 	let quantity = inputQuantity ?? maxQuantity;
@@ -68,7 +68,7 @@ export async function researchCommand({
 
 	await ActivityManager.startTrip<ResearchTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'Research',
 		material,

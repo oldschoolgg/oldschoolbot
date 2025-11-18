@@ -14,7 +14,7 @@ export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
 	async run(data: ColoTaskOptions, { user, handleTripFinish, rng }) {
 		const {
-			channelID,
+			channelId,
 			loot: possibleLoot,
 			quantity,
 			diedAt,
@@ -45,8 +45,8 @@ export const colosseumTask: MinionTask = {
 		const coloWaveKCs = stats.colo_kc_bank;
 		const newKCsStr = coloWaveKCs
 			? Object.entries(coloWaveKCs)
-					.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
-					.join(', ')
+				.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
+				.join(', ')
 			: 'No KCs recorded';
 		const newWaveKcStr = `**Colosseum Wave KCs:** ${newKCsStr}`;
 
@@ -167,6 +167,6 @@ export const colosseumTask: MinionTask = {
 
 		const image = await makeBankImage({ bank: loot, title: 'Colosseum Loot', user, previousCL });
 
-		return handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

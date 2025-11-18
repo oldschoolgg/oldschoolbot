@@ -211,8 +211,8 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 
 	try {
 		await prisma.$transaction(transactions);
-	} catch (err: any) {
-		Logging.logError(err);
+	} catch (err: unknown) {
+		Logging.logError(err as Error);
 		throw new UserError('Error migrating user. Sorry about that!');
 	}
 
@@ -239,7 +239,8 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		);
 		try {
 			await roboChimpClient.$transaction(robochimpTx);
-		} catch (err: any) {
+		} catch (_err: unknown) {
+			const err = _err as Error;
 			err.message += ' - User already migrated! Robochimp migration failed!';
 			Logging.logError(err);
 			throw new UserError('Robochimp migration failed, but minion data migrated already!');

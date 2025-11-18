@@ -1,13 +1,33 @@
 import type { ItemBank } from 'oldschooljs';
 
-import type { Prisma } from '@/prisma/main.js';
+import { Prisma } from '@/prisma/main.js';
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
 
+async function ensureDeletedUserExists() {
+	try {
+		const result = await prisma.user.upsert({
+			where: {
+				id: DELETED_USER_ID
+			},
+			create: {
+				id: DELETED_USER_ID
+			},
+			update: {}
+		});
+		return result;
+	} catch (err) {
+		// Ignore unique constraint errors, they already have a row
+		if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
+			throw err;
+		}
+	}
+}
+
 export async function ironmanCommand(user: MUser, interaction: MInteraction | null) {
-	if (user.minionIsBusy) return 'Your minion is busy.';
+	if (await user.minionIsBusy()) return 'Your minion is busy.';
+
 	if (user.isIronman) {
 		return 'You are already an ironman.';
 	}
@@ -53,7 +73,7 @@ export async function ironmanCommand(user: MUser, interaction: MInteraction | nu
 	});
 	// Return early if no active listings.
 	if (activeListings.length !== 0) {
-		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${mentionCommand(
+		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${globalClient.mentionCommand(
 			'ge',
 			'cancel'
 		)}`;
@@ -111,14 +131,8 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
 	};
 
-	// Bingo
-	await prisma.user.upsert({
-		where: {
-			id: DELETED_USER_ID
-		},
-		create: { id: DELETED_USER_ID },
-		update: {}
-	});
+	// Ensure deleted user exists
+	await ensureDeletedUserExists();
 	await prisma.bingoParticipant.updateMany({ where: { user_id: user.id }, data: { user_id: DELETED_USER_ID } });
 	await prisma.bingo.updateMany({ where: { creator_id: user.id }, data: { creator_id: DELETED_USER_ID } });
 
@@ -150,11 +164,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 	await prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.userCounter.deleteMany({ where: { user_id: BigInt(user.id) } });
-	const allTableBanks = await prisma.tableBank.findMany({ where: { user_id: user.id } });
-	for (const tableBank of allTableBanks) {
-		await prisma.tableBankItem.deleteMany({ where: { bank_id: tableBank.id } });
-		await prisma.tableBank.delete({ where: { id: tableBank.id } });
-	}
+	await prisma.jsonBank.deleteMany({ where: { user_id: user.id } });
 
 	// Refund the leagues points they spent
 	const roboChimpUser = await roboChimpUserFetch(user.id);

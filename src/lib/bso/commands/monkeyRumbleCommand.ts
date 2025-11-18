@@ -15,8 +15,6 @@ import { randArrItem } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
-
 export async function monkeyRumbleStatsCommand(user: MUser) {
 	const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(user))!;
 	const score = await user.fetchMinigameScore('monkey_rumble');
@@ -28,14 +26,9 @@ export async function monkeyRumbleStatsCommand(user: MUser) {
 **Rumble tokens:** ${user.bank.amount('Rumble token')}`;
 }
 
-export async function monkeyRumbleCommand(user: MUser, channelID: string): CommandResponse {
+export async function monkeyRumbleCommand(user: MUser, channelId: string): CommandResponse {
 	if (!user.hasEquipped("M'speak amulet")) {
-		return {
-			...(await mahojiChatHead({
-				head: 'wurMuTheMonkey',
-				content: getMonkeyPhrase()
-			}))
-		};
+		return new MessageBuilder().addChatHeadImage('wurMuTheMonkey', getMonkeyPhrase());
 	}
 
 	if (
@@ -44,17 +37,10 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 			.flat(2)
 			.some(t => user.hasEquipped(t.id))
 	) {
-		return {
-			content:
-				"You need to have a rumble greegree equipped. If you don't have a rumble greegree yet, just buy the Beginner Rumble Greegree with the buy command.",
-			...(await mahojiChatHead({
-				head: 'wurMuTheMonkey',
-				content: "Humans aren't allowed! Leave, leave!"
-			}))
-		};
+		return new MessageBuilder().setContent("You need to have a rumble greegree equipped. If you don't have a rumble greegree yet, just buy the Beginner Rumble Greegree with the buy command.",).addChatHeadImage('wurMuTheMonkey', "Humans aren't allowed! Leave, leave!");
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 
@@ -69,7 +55,7 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 		fightDuration = reduceNumByPercent(fightDuration, 17);
 		boosts.push('17% faster fights for gorilla rumble greegree');
 	}
-	const quantity = Math.floor(user.calcMaxTripLength('MonkeyRumble') / fightDuration);
+	const quantity = Math.floor(await user.calcMaxTripLength('MonkeyRumble') / fightDuration);
 	let duration = quantity * fightDuration;
 
 	let chanceOfSpecial = Math.floor(125 * (6 - monkeyTierOfUser(user) / 2));
@@ -111,7 +97,7 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 
 	await ActivityManager.startTrip<MonkeyRumbleOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'MonkeyRumble',
@@ -122,8 +108,8 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 	let str = `You are fighting ${quantity}x different monkeys (${monkeysToFight
 		.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)
 		.join(', ')}). The trip will take ${formatDuration(
-		duration
-	)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${(chanceOfSpecial / quantity).toFixed(2)} chance that one of them would be special.**`;
+			duration
+		)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${(chanceOfSpecial / quantity).toFixed(2)} chance that one of them would be special.**`;
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}
@@ -131,10 +117,7 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 	return {
 		content: str,
 		files: [
-			{
-				name: 'monkey.png',
-				attachment: await monkeyHeadImage({ monkey: monkeysToFight[0], content: randArrItem(fightingMessages) })
-			}
+			await monkeyHeadImage({ monkey: monkeysToFight[0], content: randArrItem(fightingMessages) })
 		]
 	};
 }

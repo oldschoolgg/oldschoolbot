@@ -12,7 +12,7 @@ import { tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
 import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, isFunction, Time } from '@oldschoolgg/toolkit';
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
+import { userMention } from '@oldschoolgg/discord';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
@@ -27,9 +27,8 @@ import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
+import { makeTameRepeatTripButton } from '@/lib/util/interactions.js';
 
 export async function handleFinish({
 	lootToAdd,
@@ -67,32 +66,17 @@ export async function handleFinish({
 		throw new Error('No channel ID found for tame activity');
 	}
 
-	return sendToChannelID(activity.channel_id, {
-		content: results.join(', '),
-		components: [
-			new ActionRowBuilder<ButtonBuilder>().addComponents(
-				new ButtonBuilder()
-					.setCustomId('REPEAT_TAME_TRIP')
-					.setLabel('Repeat Trip')
-					.setStyle(ButtonStyle.Secondary)
-			)
-		],
-		files:
-			itemsAdded.length > 0
-				? [
-						new AttachmentBuilder(
-							(
-								await makeBankImage({
-									bank: lootToAdd,
-									title: `${tame}'s Loot`,
-									user: user,
-									previousCL: previousTameCl
-								})
-							).file.attachment
-						)
-					]
-				: undefined
-	});
+	const res = new MessageBuilder()
+		.setContent(results.join(', '))
+		.addComponents([makeTameRepeatTripButton()])
+		.addBankImage({
+			bank: itemsAdded,
+			title: `${tame}'s Loot`,
+			user: user,
+			previousCL: previousTameCl
+		})
+
+	return globalClient.sendMessageOrWebhook(activity.channel_id, res);
 }
 
 export const arbitraryTameActivities: ArbitraryTameActivity[] = [
@@ -163,13 +147,13 @@ async function handleImplingLocator(user: MUser, tame: MTame, duration: number, 
 					actualImplingLoot.add(
 						isFunction(openable.output)
 							? (
-									await openable.output({
-										user,
-										quantity: qty,
-										self: openable,
-										totalLeaguesPoints: 0
-									})
-								).bank
+								await openable.output({
+									user,
+									quantity: qty,
+									self: openable,
+									totalLeaguesPoints: 0
+								})
+							).bank
 							: openable.output.roll(qty)
 					);
 				}
@@ -194,9 +178,8 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			if (killQty < 1) {
 				handleFinish({
 					lootToAdd: new Bank(),
-					message: `${userMention(user.id)}, Your tame died in all their attempts to kill ${
-						mon.name
-					}. Get them some better armor!`,
+					message: `${userMention(user.id)}, Your tame died in all their attempts to kill ${mon.name
+						}. Get them some better armor!`,
 					user,
 					activity,
 					tame
@@ -219,9 +202,8 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			const loot = mon.loot({ quantity: killQty, tame });
 			const messages: string[] = [];
 
-			let str = `${user}, ${tame} finished killing ${quantity}x ${mon.name}.${
-				activity.deaths > 0 ? ` ${tame} died ${activity.deaths}x times.` : ''
-			}`;
+			let str = `${user}, ${tame} finished killing ${quantity}x ${mon.name}.${activity.deaths > 0 ? ` ${tame} died ${activity.deaths}x times.` : ''
+				}`;
 			if (oriIsApplying) {
 				messages.push('25% extra loot (ate an Ori)');
 			}
@@ -264,9 +246,8 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			const collectable = collectables.find(c => c.item.id === itemID)!;
 			const totalQuantity = quantity * collectable.quantity;
 			const loot = new Bank().add(collectable.item.id, totalQuantity);
-			let str = `${user}, ${tame} finished collecting ${totalQuantity}x ${
-				collectable.item.name
-			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
+			let str = `${user}, ${tame} finished collecting ${totalQuantity}x ${collectable.item.name
+				}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 			const { doubleLootMsg } = tame.doubleLootCheck(loot);
 			str += doubleLootMsg;
 			handleFinish({

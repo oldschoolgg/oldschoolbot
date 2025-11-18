@@ -88,7 +88,7 @@ export function calculateDungeoneeringResult({
 export const dungeoneeringTask: MinionTask = {
 	type: 'Dungeoneering',
 	async run(data: DungeoneeringOptions, { user, handleTripFinish }) {
-		const { channelID, duration, floor, quantity, users } = data;
+		const { channelId, duration, floor, quantity, users } = data;
 
 		let str = `<:dungeoneering:828683755198873623> ${user}, your party finished ${quantity}x Floor ${floor} dungeons.\n\n`;
 
@@ -138,18 +138,16 @@ export const dungeoneeringTask: MinionTask = {
 			}
 
 			if (portentResult.didCharge) {
-				str += `${u} received: ${xpStr}, ${toKMB(portentXP)} of which is from from their portent (${
-					portentResult.portent.charges_remaining
-				} charges remaining)`;
+				str += `${u} received: ${xpStr}, ${toKMB(portentXP)} of which is from from their portent (${portentResult.portent.charges_remaining
+					} charges remaining)`;
 			} else {
-				str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens${
-					loot.length > 0 ? ` and **${loot}**.` : '.'
-				}`;
+				str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens${loot.length > 0 ? ` and **${loot}**.` : '.'
+					}`;
 			}
 
 			str += '\n';
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

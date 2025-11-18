@@ -329,7 +329,6 @@ describe('Gear', () => {
 			ring: itemID('Berserker ring'),
 			ammo: itemID('Dragon arrow'),
 			ammo_qty: 153,
-			emoji_id: null,
 			times_equipped: 0,
 			pinned_setup: null
 		};
@@ -366,7 +365,6 @@ describe('Gear', () => {
 			ring: null,
 			ammo: null,
 			ammo_qty: null,
-			emoji_id: null,
 			times_equipped: 0,
 			pinned_setup: null
 		};

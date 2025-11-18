@@ -1,8 +1,5 @@
-import { chunk } from 'remeda';
-
 import type { UserStats } from '@/prisma/main.js';
-import { getUsernameSync } from '@/lib/util.js';
-import { doMenu } from '@/mahoji/commands/leaderboard.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
 
 export async function bsoCompletionistLb(interaction: MInteraction, untrimmed: boolean, ironmanOnly: boolean) {
 	const key: keyof UserStats = untrimmed ? 'untrimmed_comp_cape_percent' : 'comp_cape_percent';
@@ -16,16 +13,13 @@ export async function bsoCompletionistLb(interaction: MInteraction, untrimmed: b
 		 LIMIT 100;`
 	);
 
-	return doMenu(
+	return doMenuWrapper({
 		interaction,
-		chunk(list, 10).map(subList =>
-			subList
-				.map(
-					({ id, percent }) =>
-						`**${getUsernameSync(id)}:** ${percent.toFixed(2)}% ${untrimmed ? 'Untrimmed' : 'Trimmed'}`
-				)
-				.join('\n')
-		),
-		'Completionist Leaderboard'
-	);
+		users: list.map(({ id, percent }) => ({ id, score: percent })),
+		title: ironmanOnly
+			? `${untrimmed ? 'Untrimmed' : 'Trimmed'} Completionist Ironman Leaderboard`
+			: `${untrimmed ? 'Untrimmed' : 'Trimmed'} Completionist Leaderboard`,
+		ironmanOnly: Boolean(ironmanOnly),
+		formatter: score => `${score.toFixed(2)}%`
+	})
 }

@@ -22,6 +22,8 @@ const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
 
 const isUsingRealPostgres = process.env.USE_REAL_PG === '1';
 
+const isWikiBuild = process.argv.includes('--wiki');
+
 const stages: Stage[] = [
 	{
 		name: 'Stage 1',
@@ -39,12 +41,20 @@ const stages: Stage[] = [
 				['Rendering commands file', 'renderCommandsFile.ts'],
 				['Rendering monsters file', 'monstersJson.ts'],
 				['Rendering creatables file', 'creatables.ts'],
-				['Rendering skilling data files', 'dataFiles.ts']
+				['Rendering skilling data files', 'dataFiles.ts'],
+				['Wiki: Rendering monsters markdown', 'wiki/renderMonsters.ts'],
+				['Wiki: Rendering trip buyables', 'wiki/tripBuyables.ts'],
+				['Wiki: Rendering quests markdown', 'wiki/renderQuests.ts'],
+				...(isWikiBuild
+					? [
+							['Wiki: Rendering mining snapshots', 'wiki/miningSnapshots.ts'],
+							['Wiki: Rendering authors', 'wiki/updateAuthors.ts']
+						]
+					: [])
 			].map(script => ({
 				cmd: `pnpm tsx --tsconfig scripts/tsconfig.json scripts/${script[1]}`,
 				desc: script[0]
 			})),
-			ALL_PACKAGE_NAMES.map(pkg => ({ cmd: `pnpm --filter ${pkg} build`, desc: `Building ${pkg}...` })),
 			{ cmd: 'tsx esbuild.mts', desc: 'Building bot...' }
 		]
 	},
@@ -64,7 +74,9 @@ const stages: Stage[] = [
 					cmd: `pnpm --filter ${pkg} test`,
 					desc: `Running tests in ${pkg}...`
 				})),
-				{ cmd: 'pnpm test', desc: 'Running bot tests...' }
+				{ cmd: 'pnpm test:lint', desc: 'Running lint bot test...' },
+				{ cmd: 'pnpm test:types', desc: 'Running types bot test...' },
+				{ cmd: 'pnpm test:unit', desc: 'Running bot unit tests...' }
 			]
 		]
 	}

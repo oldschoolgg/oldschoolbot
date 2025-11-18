@@ -2,15 +2,15 @@ import type { MoktangTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
 
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { spoiler } from 'discord.js';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
+import { spoiler } from '@oldschoolgg/discord';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 
-export async function moktangCommand(user: MUser, channelID: string, inputQuantity: number | undefined) {
+export async function moktangCommand(user: MUser, channelId: string, inputQuantity: number | undefined) {
 	const timeToKill = new PercentCounter(Time.Minute * 15, 'time');
 	const miningLevel = user.skillLevel('mining');
 	if (miningLevel < 105) return 'You need 105 Mining to fight Moktang.';
@@ -32,7 +32,7 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 	);
 	timeToKill.add(user.hasEquipped('Mining master cape'), -5, 'Mining mastery');
 
-	const maxCanDo = Math.floor(user.calcMaxTripLength('Moktang') / timeToKill.value);
+	const maxCanDo = Math.floor(await user.calcMaxTripLength('Moktang') / timeToKill.value);
 	const quantity = Math.max(1, Math.min(totemsOwned, maxCanDo, inputQuantity ?? maxCanDo));
 	const duration = timeToKill.value * quantity;
 
@@ -45,9 +45,8 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 	cost.add('Moktang totem', quantity);
 
 	if (!user.owns(cost)) {
-		return `You don't have the required items to fight Moktang: ${cost}.${
-			!hasDwarven ? ' Tip: Dwarven armor reduces the amount of brews needed.' : ''
-		}`;
+		return `You don't have the required items to fight Moktang: ${cost}.${!hasDwarven ? ' Tip: Dwarven armor reduces the amount of brews needed.' : ''
+			}`;
 	}
 
 	await user.removeItemsFromBank(cost);
@@ -67,7 +66,7 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 
 	await ActivityManager.startTrip<MoktangTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		qty: quantity,
 		duration,
 		type: 'Moktang'
@@ -76,7 +75,6 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 	return `${user.minionName} is now off to kill Moktang ${quantity}x times, their trip will take ${formatDuration(
 		duration
 	)}. Removed ${cost}.
-**Boosts:** ${timeToKill.messages.join(', ')} ${
-		timeToKill.missed.length > 0 ? spoiler(timeToKill.missed.join(', ')) : ''
-	}`;
+**Boosts:** ${timeToKill.messages.join(', ')} ${timeToKill.missed.length > 0 ? spoiler(timeToKill.missed.join(', ')) : ''
+		}`;
 }

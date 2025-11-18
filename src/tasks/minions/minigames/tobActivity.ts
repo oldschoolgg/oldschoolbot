@@ -56,7 +56,7 @@ export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',
 	async run(data: TheatreOfBloodTaskOptions, { handleTripFinish }) {
 		const {
-			channelID,
+			channelId,
 			users,
 			hardMode,
 			leader,
@@ -102,9 +102,8 @@ export const tobTask: MinionTask = {
 			// 100k tax if they wipe
 			if (wipedRoom !== null) {
 				wipeCount++;
-				resultMessage += `\n Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${
-					diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
-				}`;
+				resultMessage += `\n Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
+					}`;
 				// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
 				globalTobCost.add('Coins', users.length * 100_000);
 				continue;
@@ -165,9 +164,8 @@ export const tobTask: MinionTask = {
 				const lootStr = userLoot.remove('Coins', 100_000).toString();
 				const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `${lootStr}`;
 
-				resultMessage += `\n ${deathStr}**${user}** ${
-					chincannonUser ? 'had this loot blown up' : 'received'
-				}: ${str} ${xpResult}`;
+				resultMessage += `\n ${deathStr}**${user}** ${chincannonUser ? 'had this loot blown up' : 'received'
+					}: ${str} ${xpResult}`;
 
 				if (raidId < quantity) {
 					resultMessage += '\n';
@@ -230,45 +228,46 @@ export const tobTask: MinionTask = {
 			allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6 && i[1].length > 0);
 
 		if (users.length === 1) {
-			return handleTripFinish(
-				allUsers[0],
-				channelID,
-				resultMessage,
-				shouldShowImage
-					? await await drawChestLootImage({
-							entries: [
-								{
-									loot: totalLoot.remove('Coins', raidId * 100_000),
-									user: allUsers[0],
-									previousCL: previousCLs[0],
-									customTexts: []
-								}
-							],
-							type: 'Theatre of Blood'
-						})
-					: undefined,
+			const image = shouldShowImage
+				? await drawChestLootImage({
+					entries: [
+						{
+							loot: totalLoot.remove('Coins', raidId * 100_000),
+							user: allUsers[0],
+							previousCL: previousCLs[0],
+							customTexts: []
+						}
+					],
+					type: 'Theatre of Blood'
+				})
+				: undefined;
+			return handleTripFinish({
+				user: allUsers[0],
+				channelId,
+				message: { content: resultMessage, files: [image] },
 				data,
-				totalLoot
-			);
+				loot: totalLoot
+			});
 		}
 
-		handleTripFinish(
-			allUsers[0],
-			channelID,
-			resultMessage,
-			shouldShowImage
-				? await drawChestLootImage({
-						entries: allUsers.map((u, index) => ({
-							loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
-							user: u,
-							previousCL: previousCLs[index],
-							customTexts: []
-						})),
-						type: 'Theatre of Blood'
-					})
-				: undefined,
+		const image = shouldShowImage
+			? await drawChestLootImage({
+				entries: allUsers.map((u, index) => ({
+					loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
+					user: u,
+					previousCL: previousCLs[index],
+					customTexts: []
+				})),
+				type: 'Theatre of Blood'
+			})
+			: undefined;
+
+		return handleTripFinish({
+			user: allUsers[0],
+			channelId,
+			message: { content: resultMessage, files: [image] },
 			data,
-			null
-		);
+			loot: totalLoot
+		});
 	}
 };

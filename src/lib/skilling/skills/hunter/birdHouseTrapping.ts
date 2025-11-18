@@ -1,7 +1,8 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, Items, LootTable } from 'oldschooljs';
+import { Bank, EItem, Items, LootTable } from 'oldschooljs';
 
 import { nestTable, strungRabbitFootNestTable } from '@/lib/simulation/birdsNest.js';
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 
 export interface Birdhouse {
 	name: string;
@@ -10,7 +11,7 @@ export interface Birdhouse {
 	huntXP: number;
 	craftLvl: number;
 	craftXP: number;
-	houseItemReq: Bank;
+	birdhouseItem: EItem | BSOItem;
 	craftItemReq: Bank;
 	table: LootTable;
 	normalNestTable: LootTable;
@@ -29,7 +30,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 280,
 		craftLvl: 5,
 		craftXP: 15,
-		houseItemReq: new Bank().add('Bird house', 1),
+		birdhouseItem: EItem.BIRD_HOUSE,
 		craftItemReq: new Bank().add('Logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable),
@@ -46,7 +47,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 420,
 		craftLvl: 15,
 		craftXP: 20,
-		houseItemReq: new Bank().add('Oak bird house', 1),
+		birdhouseItem: EItem.OAK_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Oak logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 2]),
@@ -63,7 +64,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 560,
 		craftLvl: 25,
 		craftXP: 25,
-		houseItemReq: new Bank().add('Willow bird house', 1),
+		birdhouseItem: EItem.WILLOW_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Willow logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 3]),
@@ -80,7 +81,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 700,
 		craftLvl: 35,
 		craftXP: 30,
-		houseItemReq: new Bank().add('Teak bird house', 1),
+		birdhouseItem: EItem.TEAK_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Teak logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 4]),
@@ -97,7 +98,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 820,
 		craftLvl: 45,
 		craftXP: 35,
-		houseItemReq: new Bank().add('Maple bird house', 1),
+		birdhouseItem: EItem.MAPLE_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Maple logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 5]),
@@ -114,7 +115,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 960,
 		craftLvl: 50,
 		craftXP: 40,
-		houseItemReq: new Bank().add('Mahogany bird house', 1),
+		birdhouseItem: EItem.MAHOGANY_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Mahogany logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 4]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 6]),
@@ -131,7 +132,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1020,
 		craftLvl: 60,
 		craftXP: 45,
-		houseItemReq: new Bank().add('Yew bird house', 1),
+		birdhouseItem: EItem.YEW_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Yew logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 4]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 7]),
@@ -148,7 +149,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1140,
 		craftLvl: 75,
 		craftXP: 50,
-		houseItemReq: new Bank().add('Magic bird house', 1),
+		birdhouseItem: EItem.MAGIC_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Magic logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 3]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 8]),
@@ -165,7 +166,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1200,
 		craftLvl: 90,
 		craftXP: 55,
-		houseItemReq: new Bank().add('Redwood bird house', 1),
+		birdhouseItem: EItem.REDWOOD_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Redwood logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 3]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 9]),
@@ -182,7 +183,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1600,
 		craftLvl: 99,
 		craftXP: 95,
-		houseItemReq: new Bank().add('Elder bird house', 1),
+		birdhouseItem: BSOItem.ELDER_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Elder logs', 1),
 		table: new LootTable()
 			.every('Raw bird meat', [1, 3])

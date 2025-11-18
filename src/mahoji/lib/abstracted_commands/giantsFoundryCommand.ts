@@ -150,7 +150,7 @@ export async function giantsFoundryStartCommand(
 	user: MUser,
 	name: string,
 	quantity: number | undefined,
-	channelID: string
+	channelId: string
 ) {
 	let timePerSection = Time.Minute * 0.84;
 	const userSmithingLevel = user.skillsAsLevels.smithing;
@@ -195,7 +195,7 @@ export async function giantsFoundryStartCommand(
 		boosts.push('15% for Smithing mastery');
 	}
 
-	const maxTripLength = user.calcMaxTripLength('GiantsFoundry');
+	const maxTripLength = await user.calcMaxTripLength('GiantsFoundry');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / (alloy.sections * timePerSection));
 	}
@@ -235,7 +235,7 @@ export async function giantsFoundryStartCommand(
 		userID: user.id,
 		duration,
 		type: 'GiantsFoundry',
-		channelID,
+		channelId,
 		minigameID: 'giants_foundry',
 		alloyID: alloy.id,
 		metalScore: alloy.metalScore
@@ -268,18 +268,15 @@ export async function giantsFoundryShopCommand(
 
 	const cost = quantity * shopItem.cost;
 	if (cost > currentUserReputation) {
-		return `You don't have enough Foundry Reputation to buy ${quantity.toLocaleString()}x ${shopItem.name} (${
-			shopItem.cost
-		} Foundry Reputation each).\nYou have ${currentUserReputation} Foundry Reputation.\n${
-			currentUserReputation < shopItem.cost
+		return `You don't have enough Foundry Reputation to buy ${quantity.toLocaleString()}x ${shopItem.name} (${shopItem.cost
+			} Foundry Reputation each).\nYou have ${currentUserReputation} Foundry Reputation.\n${currentUserReputation < shopItem.cost
 				? "You don't have enough Foundry Reputation for any of this item."
 				: `You only have enough for ${Math.floor(currentUserReputation / shopItem.cost).toLocaleString()}`
-		}`;
+			}`;
 	}
 
 	await interaction.confirmation(
-		`Are you sure you want to spend **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${
-			shopItem.name
+		`Are you sure you want to spend **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${shopItem.name
 		}**?`
 	);
 

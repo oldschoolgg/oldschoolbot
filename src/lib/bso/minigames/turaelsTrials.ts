@@ -70,8 +70,8 @@ export function calculateTuraelsTrialsInput({
 	};
 }
 
-export async function turaelsTrialsStartCommand(user: MUser, channelID: string, method: TuraelsTrialsMethod) {
-	if (user.minionIsBusy) {
+export async function turaelsTrialsStartCommand(user: MUser, channelId: string, method: TuraelsTrialsMethod) {
+	if (await user.minionIsBusy()) {
 		return `${user.minionName} is busy.`;
 	}
 
@@ -82,7 +82,7 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 	const messages: string[] = [];
 
 	const isUsingBloodFury = user.hasEquipped('Amulet of blood fury');
-	let maxTripLength = user.calcMaxTripLength('TuraelsTrials');
+	let maxTripLength = await user.calcMaxTripLength('TuraelsTrials');
 	if (isUsingBloodFury) {
 		maxTripLength = increaseNumByPercent(maxTripLength, 20);
 		messages.push('+20% Trip length for Blood fury');
@@ -112,7 +112,7 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 
 	const task = await ActivityManager.startTrip<TuraelsTrialsOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		q: quantity,
 		duration,
 		type: 'TuraelsTrials',

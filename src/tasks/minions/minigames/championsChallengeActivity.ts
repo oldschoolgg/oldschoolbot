@@ -16,9 +16,8 @@ export const championsChallengeTask: MinionTask = {
 
 		handleTripFinish(
 			user,
-			data.channelID,
+			data.channelId,
 			`${user}, ${user.minionName} completed the Champion's Challenge! You have received the **Champion's cape**.`,
-			undefined,
 			data,
 			loot
 		);

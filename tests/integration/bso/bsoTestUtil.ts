@@ -76,7 +76,6 @@ export const BSOTestUtil = {
 		const commandResult = await user.runCommand(
 			stealCommand,
 			{ name: Monsters.get(monster)!.name, quantity },
-			true
 		);
 		if (shouldFail) {
 			expect(commandResult).not.toContain('is now going to');

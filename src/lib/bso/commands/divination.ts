@@ -13,7 +13,6 @@ import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHa
 import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { mentionCommand } from '@/lib/discord/index.js';
 import { assert } from '@/lib/util/logError.js';
 
 export const divinationCommand = defineCommand({
@@ -112,7 +111,7 @@ export const divinationCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction }) => {
 		if (options.toggle_portent) {
 			const portent = portents.find(p => p.item.name === options.toggle_portent!.portent);
 			if (!portent) {
@@ -184,12 +183,11 @@ export const divinationCommand = defineCommand({
 			if (!portent) {
 				let str = 'All Your Portents:\n\n';
 				for (const p of portents) {
-					str += `**${p.item.name}:** ${portentCharges[p.id]} charges remaining (Toggled ${
-						user.user.disabled_portent_ids.includes(p.id) ? 'Off' : 'On'
-					})\n`;
+					str += `**${p.item.name}:** ${portentCharges[p.id]} charges remaining (Toggled ${user.user.disabled_portent_ids.includes(p.id) ? 'Off' : 'On'
+						})\n`;
 				}
 
-				str += `\n\nYou can get more charges by buying/creating a portent item, then using it with ${mentionCommand(
+				str += `\n\nYou can get more charges by buying/creating a portent item, then using it with ${globalClient.mentionCommand(
 					'divination',
 					'charge_portent'
 				)}.`;
@@ -201,9 +199,8 @@ Description: ${portent.description}
 Cost: ${portent.cost} and base cost of ${basePortentCost}
 You have this portent toggled ${user.user.disabled_portent_ids.includes(portent.id) ? 'off' : 'on'}.
 
-You have ${portentCharges[portent.id]} charges left, and you receive ${
-				portent.chargesPerPortent
-			} charges per portent used.`;
+You have ${portentCharges[portent.id]} charges left, and you receive ${portent.chargesPerPortent
+				} charges per portent used.`;
 		}
 
 		if (options.harvest_memories) {
@@ -238,7 +235,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 			}
 			const boosts: string[] = [];
 
-			let maxTripLength = user.calcMaxTripLength('MemoryHarvest');
+			let maxTripLength = await user.calcMaxTripLength('MemoryHarvest');
 
 			if (user.hasEquipped('Jar of memories')) {
 				maxTripLength += Time.Minute * 7;
@@ -315,7 +312,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 
 			await ActivityManager.startTrip<MemoryHarvestOptions>({
 				userID: user.id,
-				channelID,
+				channelId,
 				duration,
 				type: 'MemoryHarvest',
 				e: energy.item.id,
@@ -326,9 +323,8 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				r: rounds
 			});
 
-			let str = `${user.minionName} is now harvesting ${energy.type} memories (${
-				memoryHarvestTypes[memoryHarvestMethodIndex].name
-			}), it'll take around ${formatDuration(duration)} to finish.`;
+			let str = `${user.minionName} is now harvesting ${energy.type} memories (${memoryHarvestTypes[memoryHarvestMethodIndex].name
+				}), it'll take around ${formatDuration(duration)} to finish.`;
 			if (boosts.length > 0) {
 				str += `\n**Boosts:** ${boosts.join(', ')}`;
 			}

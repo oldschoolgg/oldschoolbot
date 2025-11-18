@@ -8,7 +8,6 @@ import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji, Events, formatOrdinal, reduceNumByPercent, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
-import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
@@ -52,7 +51,7 @@ interface RaidResultUser {
 export const doaTask: MinionTask = {
 	type: 'DepthsOfAtlantis',
 	async run(data: DOAOptions, { handleTripFinish }) {
-		const { channelID, cm, duration, leader, quantity, users, raids } = data;
+		const { channelId, cm, duration, leader, quantity, users, raids } = data;
 		const isSolo = users.length === 1;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const leaderSoloUser = allUsers[0];
@@ -82,15 +81,12 @@ export const doaTask: MinionTask = {
 		);
 
 		if (raids.every(i => i.wipedRoom !== null)) {
-			return handleTripFinish(
-				allUsers[0],
-				channelID,
-				`${allUsers.map(i => i.toString()).join(' ')} Your team wiped in the Depths of Atlantis!`,
-				undefined,
+			return handleTripFinish({
+				user: allUsers[0],
+				channelId,
 				data,
-				null,
-				undefined
-			);
+				message: `${allUsers.map(i => i.toString()).join(' ')} Your team wiped in all of your Depths of Atlantis raids!`,
+			});
 		}
 
 		const totalLoot = new TeamLoot(doaCL);
@@ -121,7 +117,7 @@ export const doaTask: MinionTask = {
 
 				if (raid.users[i].deaths.length >= 2) {
 					messages.push(
-						`  ${user.rawUsername} died more than twice, and will not receive any loot in this raid.`
+						`  ${user.username} died more than twice, and will not receive any loot in this raid.`
 					);
 					continue;
 				}
@@ -152,15 +148,12 @@ export const doaTask: MinionTask = {
 			)
 		);
 
-		let resultMessage = isSolo
-			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`}${
-					cm ? ' Challenge Mode' : ''
-				} Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${
-					minigameIncrementResult[0].newScore
-				}.\n`
-			: `<@${leader}> Your${cm ? ' Challenge Mode' : ''} Depths of Atlantis Raid${
-					quantity > 1 ? 's have' : ' has'
-				} finished.\n`;
+		const resultMessage = new MessageBuilder().setContent(isSolo
+			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`}${cm ? ' Challenge Mode' : ''
+			} Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${minigameIncrementResult[0].newScore
+			}.\n`
+			: `<@${leader}> Your${cm ? ' Challenge Mode' : ''} Depths of Atlantis Raid${quantity > 1 ? 's have' : ' has'
+			} finished.\n`);
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
@@ -189,8 +182,7 @@ export const doaTask: MinionTask = {
 					const itemsToAnnounce = itemsAdded.filter(item => doaCL.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
-						`${Emoji.Purple} ${
-							user.badgedUsername
+						`${Emoji.Purple} ${user.badgedUsername
 						} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 							minigameIncrementResult[0].newScore
 						)} raid.`
@@ -208,12 +200,12 @@ export const doaTask: MinionTask = {
 
 				const xpStrings = await handleDOAXP(user, quantity, cm);
 				usersResult += ` ${xpStrings.join(', ')}`;
-				resultMessage += usersResult;
+				resultMessage.addContent(usersResult);
 			})
 		);
 
 		if (messages.length > 0) {
-			resultMessage += `\n\n${messages.join('\n')}`;
+			resultMessage.addContent(`\n\n${messages.join('\n')}`);
 		}
 
 		await ClientSettings.updateBankSetting('doa_loot', totalLoot.totalLoot());
@@ -232,45 +224,46 @@ export const doaTask: MinionTask = {
 		});
 
 		if (isSolo) {
-			return handleTripFinish(
-				allUsers[0],
-				channelID,
-				resultMessage,
-				shouldShowImage
-					? await drawChestLootImage({
-							entries: [
-								{
-									loot: totalLoot.totalLoot(),
-									user: allUsers[0],
-									previousCL: previousCLs[0],
-									customTexts: []
-								}
-							],
-							type: 'Depths of Atlantis'
-						})
-					: undefined,
+
+			if (shouldShowImage) {
+				resultMessage.addChestLootImage({
+					entries: [
+						{
+							loot: totalLoot.totalLoot(),
+							user: allUsers[0],
+							previousCL: previousCLs[0],
+							customTexts: []
+						}
+					],
+					type: 'Depths of Atlantis'
+				})
+			}
+
+			return handleTripFinish({
+				user: allUsers[0],
+				channelId,
 				data,
-				null
-			);
+				message: resultMessage,
+			});
 		}
 
-		return handleTripFinish(
-			allUsers[0],
-			channelID,
-			resultMessage,
-			shouldShowImage
-				? await drawChestLootImage({
-						entries: allUsers.map((u, index) => ({
-							loot: totalLoot.get(u.id),
-							user: u,
-							previousCL: previousCLs[index],
-							customTexts: []
-						})),
-						type: 'Depths of Atlantis'
-					})
-				: undefined,
+		if (shouldShowImage) {
+			resultMessage.addChestLootImage({
+				entries: allUsers.map((u, index) => ({
+					loot: totalLoot.get(u.id),
+					user: u,
+					previousCL: previousCLs[index],
+					customTexts: []
+				})),
+				type: 'Depths of Atlantis'
+			})
+		}
+
+		return handleTripFinish({
+			user: allUsers[0],
+			channelId,
 			data,
-			null
-		);
+			message: resultMessage,
+		});
 	}
 };

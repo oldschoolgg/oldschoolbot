@@ -3,7 +3,7 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
@@ -11,10 +11,10 @@ import { Gear } from '@/lib/structures/Gear.js';
 export async function igneCommand(
 	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	inputName: string,
 	quantity: number | undefined
-): Promise<string | InteractionReplyOptions> {
+) {
 	if (interaction) await interaction.defer();
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
 
@@ -73,7 +73,7 @@ export async function igneCommand(
 		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
 		settingsKeys: ['ignecarus_cost', 'ignecarus_loot'],
-		channelId: channelID,
+		channelId: channelId,
 		activity: 'Ignecarus',
 		massText: `${user.usernameOrMention} is assembling a team to fight Ignecarus! Use the buttons below to join/leave.`,
 		minSize: 1,
@@ -118,7 +118,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 			);
 
 		return {
-			embeds: [embed.data],
+			embeds: [embed],
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
 		};
 	} catch (err: any) {

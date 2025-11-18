@@ -3,6 +3,7 @@ import { objectEntries, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit';
 import { type ArrayItemsResolved, type Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { type BitField, BitFieldData } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
@@ -19,10 +20,10 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 	return str.join(', ');
 }
 
-export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
+export function formatSkillRequirements(reqs: SkillRequirements, emojis = true) {
 	const arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
-		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
@@ -104,11 +105,11 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 export function isValidNickname(str?: string) {
 	return Boolean(
 		str &&
-			typeof str === 'string' &&
-			str.length >= 2 &&
-			str.length <= 30 &&
-			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
-			stripEmojis(str).length === str.length
+		typeof str === 'string' &&
+		str.length >= 2 &&
+		str.length <= 30 &&
+		['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
+		stripEmojis(str).length === str.length
 	);
 }
 
@@ -136,4 +137,12 @@ export function perHourChance(
 			successFunction();
 		}
 	}
+}
+export function patronMsg(tierNeeded: number) {
+	return `You need to be a Tier ${tierNeeded - 1
+		} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
+}
+
+export function isValidBitField(bit: number): bit is BitField {
+	return Boolean(BitFieldData[bit as keyof typeof BitFieldData]);
 }

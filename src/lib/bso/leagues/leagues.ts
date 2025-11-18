@@ -62,7 +62,7 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 		str += '\n\n';
 	}
 	str = `There are a total of ${totalTasks} tasks (${totalPoints.toLocaleString()} Points).\n\n${str}`;
-	return { files: [{ attachment: Buffer.from(str), name: 'all-tasks.txt' }] };
+	return { files: [{ buffer: Buffer.from(str), name: 'all-tasks.txt' }] };
 }
 
 async function getActivityCounts(user: User) {
@@ -233,9 +233,8 @@ export async function leaguesCheckUser(userID: string) {
 	return {
 		content: `**Your Leagues Progress**
 
-**Total Tasks Completed:** ${totalFinished} (${calcWhatPercent(totalFinished, totalTasks).toFixed(1)}%) (Rank ${
-			ranking.tasksRanking
-		})
+**Total Tasks Completed:** ${totalFinished} (${calcWhatPercent(totalFinished, totalTasks).toFixed(1)}%) (Rank ${ranking.tasksRanking
+			})
 **Total Points:** ${roboChimpUser.leagues_points_total.toLocaleString()} (Rank ${ranking.pointsRanking})
 **Points Balance:** ${roboChimpUser.leagues_points_balance_osb.toLocaleString()} OSB / ${roboChimpUser.leagues_points_balance_bso.toLocaleString()} BSO
 ${resStr}`,
@@ -249,33 +248,33 @@ const unlockables: {
 	onUnlock: (user: MUser) => Promise<string>;
 	hasUnlockedAlready: (user: MUser) => boolean;
 }[] = [
-	{
-		name: 'Brain lee pet',
-		points: 40_000,
-		onUnlock: async (user: MUser) => {
-			await user.addItemsToBank({ items: new Bank().add('Brain lee'), collectionLog: true });
-			return 'You received a very brainly Brain lee!';
+		{
+			name: 'Brain lee pet',
+			points: 40_000,
+			onUnlock: async (user: MUser) => {
+				await user.addItemsToBank({ items: new Bank().add('Brain lee'), collectionLog: true });
+				return 'You received a very brainly Brain lee!';
+			},
+			hasUnlockedAlready: (user: MUser) => {
+				return user.cl.has('Brain lee');
+			}
 		},
-		hasUnlockedAlready: (user: MUser) => {
-			return user.cl.has('Brain lee');
+		{
+			name: '+1m max trip length',
+			points: 50_000,
+			onUnlock: async (user: MUser) => {
+				await user.update({
+					bitfield: {
+						push: BitField.HasLeaguesOneMinuteLengthBoost
+					}
+				});
+				return "You've unlocked a global +1minute trip length boost!";
+			},
+			hasUnlockedAlready: (user: MUser) => {
+				return user.bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost);
+			}
 		}
-	},
-	{
-		name: '+1m max trip length',
-		points: 50_000,
-		onUnlock: async (user: MUser) => {
-			await user.update({
-				bitfield: {
-					push: BitField.HasLeaguesOneMinuteLengthBoost
-				}
-			});
-			return "You've unlocked a global +1minute trip length boost!";
-		},
-		hasUnlockedAlready: (user: MUser) => {
-			return user.bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost);
-		}
-	}
-];
+	];
 
 export async function leaguesClaimCommand(user: MUser, finishedTaskIDs: number[]) {
 	const roboChimpUser = await user.fetchRobochimpUser();
@@ -333,7 +332,7 @@ export async function leaguesClaimCommand(user: MUser, finishedTaskIDs: number[]
 	if (newlyFinishedTasks.length > 10) {
 		response.content += '\nAttached is a text file showing all the tasks you just claimed.';
 		response.files = [
-			{ attachment: Buffer.from(fullNewlyFinishedTasks.map(i => i.name).join('\n')), name: 'new-tasks.txt' }
+			{ buffer: Buffer.from(fullNewlyFinishedTasks.map(i => i.name).join('\n')), name: 'new-tasks.txt' }
 		];
 	} else {
 		response.content += `\n**Finished Tasks:** ${fullNewlyFinishedTasks.map(i => i.name).join(', ')}.`;

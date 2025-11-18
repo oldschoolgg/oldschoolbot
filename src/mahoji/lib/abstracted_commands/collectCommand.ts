@@ -8,7 +8,7 @@ import { collectables } from '@/mahoji/lib/collectables.js';
 
 export async function collectCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	objectName: string,
 	quantity?: number,
 	no_stams?: boolean
@@ -24,7 +24,7 @@ export async function collectCommand(
 		return 'Only Tames can collect this.';
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Collecting');
+	const maxTripLength = await user.calcMaxTripLength('Collecting');
 	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}
@@ -85,19 +85,17 @@ export async function collectCommand(
 	await ActivityManager.startTrip<CollectingOptions>({
 		collectableID: collectable.item.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		noStaminas: no_stams,
 		type: 'Collecting'
 	});
 
-	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
-		collectable.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.${
-		cost.toString().length > 0
+	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${collectable.item.name
+		}, it'll take around ${formatDuration(duration)} to finish.${cost.toString().length > 0
 			? `
 Removed ${cost} from your bank.`
 			: ''
-	}${no_stams ? '\n50% longer trip due to not using Stamina potions.' : ''}`;
+		}${no_stams ? '\n50% longer trip due to not using Stamina potions.' : ''}`;
 }

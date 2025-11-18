@@ -3,8 +3,8 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function bonanzaCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) return 'Your minion is busy.';
+export async function bonanzaCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return 'Your minion is busy.';
 	const lastPlayedDate = Number(user.user.last_bonanza_date);
 	const difference = Date.now() - lastPlayedDate;
 	if (difference < Time.Day * 7) {
@@ -14,13 +14,12 @@ export async function bonanzaCommand(user: MUser, channelID: string) {
 
 	const duration = randomVariation(Time.Minute * 15, 5);
 
-	const str = `${
-		user.minionName
-	} is now off to participate in Balthazar's Big Bonanza! The total trip will take ${formatDuration(duration)}.`;
+	const str = `${user.minionName
+		} is now off to participate in Balthazar's Big Bonanza! The total trip will take ${formatDuration(duration)}.`;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: 1,
 		duration,
 		type: 'BalthazarsBigBonanza',
