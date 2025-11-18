@@ -10,6 +10,7 @@ import {
 	type APIApplicationCommandOptionChoice,
 	type APIChannel,
 	type APIEmoji,
+	type APIGuild,
 	type APIGuildMember,
 	type APIRole,
 	type APIWebhook,
@@ -142,6 +143,10 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		const id = this.application?.id;
 		if (!id) throw new Error('Application ID is not set yet.');
 		return id;
+	}
+
+	async fetchGuild(guildId: string): Promise<APIGuild> {
+		return (await this.rest.get(Routes.guild(guildId))) as APIGuild;
 	}
 
 	async fetchChannelsOfGuild(guildId: string): Promise<IChannel[]> {
