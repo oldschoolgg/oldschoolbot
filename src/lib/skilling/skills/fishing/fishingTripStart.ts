@@ -336,6 +336,10 @@ export function calcFishingTripStart({
 		isPowerfishing = false;
 	}
 
+	if (isPowerfishing) {
+		isUsingSpiritFlakes = false;
+	}
+
 	const boosts: string[] = [];
 	if (isPowerfishing) {
 		boosts.push('**Powerfishing**');
@@ -381,7 +385,7 @@ export function calcFishingTripStart({
 	}
 
 	const { blessingEquipped, blessingChance } = calcRadasBlessingBoost(gearBank);
-	if (blessingEquipped) {
+	if (blessingEquipped && !isPowerfishing) {
 		boosts.push(`Your Rada's Blessing gives ${blessingChance}% chance of extra fish`);
 	}
 
