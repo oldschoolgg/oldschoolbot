@@ -119,6 +119,7 @@ function determineFishingTime({
 	const fishCount = fish.subfishes!.length;
 	const catches = new Array<number>(fishCount).fill(0);
 	const loot = new Array<number>(fishCount).fill(0);
+	const extraCatchRolls = new Array<number>(fishCount).fill(0);
 
 	const fishingLevel = gearBank.skillsAsLevels.fishing;
 	let effectiveFishingLevel = fishingLevel;
@@ -182,6 +183,36 @@ function determineFishingTime({
 
 	const totalRequired = quantity;
 
+	const processExtraLoot = (index: number) => {
+		const shouldRollExtraLoot = !isPowerfishing || blessingChance > 0 || isUsingSpiritFlakes;
+		if (!shouldRollExtraLoot) {
+			if (!isPowerfishing) {
+				loot[index] += 1;
+				currentInv += 1;
+			}
+			return;
+		}
+
+		const result = rollExtraLoot({
+			lootAmount: loot[index],
+			flakesUsed,
+			currentInv,
+			blessingChance,
+			spiritFlakes: isUsingSpiritFlakes,
+			flakesAvailable,
+			rng
+		});
+
+		if (!isPowerfishing) {
+			loot[index] = result.loot;
+			currentInv = result.inv;
+		}
+		flakesUsed = result.flakesUsed;
+		blessingExtra += result.blessingExtra;
+		flakeExtra += result.flakeExtra;
+		extraCatchRolls[index] += result.blessingExtra + result.flakeExtra;
+	};
+
 	if (isPowerfishing) {
 		while (ticksElapsed < tripTicks) {
 			for (let i = fishCount - 1; i >= 0; i--) {
@@ -190,6 +221,7 @@ function determineFishingTime({
 				if (fishingLevel < subfish.level) continue;
 				if (rng.rand() < probabilities[i]) {
 					catches[i]++;
+					processExtraLoot(i);
 					break;
 				}
 			}
@@ -208,20 +240,7 @@ function determineFishingTime({
 				if (fishingLevel < subfish.level) continue;
 				if (rng.rand() < probabilities[i]) {
 					catches[i]++;
-					const result = rollExtraLoot({
-						lootAmount: loot[i],
-						flakesUsed,
-						currentInv,
-						blessingChance,
-						spiritFlakes: isUsingSpiritFlakes,
-						flakesAvailable,
-						rng
-					});
-					loot[i] = result.loot;
-					flakesUsed = result.flakesUsed;
-					currentInv = result.inv;
-					blessingExtra += result.blessingExtra;
-					flakeExtra += result.flakeExtra;
+					processExtraLoot(i);
 					break;
 				}
 			}
@@ -261,7 +280,8 @@ function determineFishingTime({
 		flakesUsed,
 		baitUsed,
 		blessingExtra,
-		flakeExtra
+		flakeExtra,
+		extraCatchRolls
 	};
 }
 
@@ -315,9 +335,6 @@ export function calcFishingTripStart({
 	if (['Minnow', 'Karambwanji'].includes(fish.name)) {
 		isPowerfishing = false;
 	}
-	if (isPowerfishing) {
-		isUsingSpiritFlakes = false;
-	}
 
 	const boosts: string[] = [];
 	if (isPowerfishing) {
@@ -364,7 +381,7 @@ export function calcFishingTripStart({
 	}
 
 	const { blessingEquipped, blessingChance } = calcRadasBlessingBoost(gearBank);
-	if (blessingEquipped && !isPowerfishing) {
+	if (blessingEquipped) {
 		boosts.push(`Your Rada's Blessing gives ${blessingChance}% chance of extra fish`);
 	}
 
@@ -412,23 +429,24 @@ export function calcFishingTripStart({
 	}
 
 	let sharkLuresToConsume = 0;
-	const { catches, loot, ticksElapsed, flakesUsed, baitUsed, blessingExtra, flakeExtra } = determineFishingTime({
-		quantity,
-		tripTicks,
-		isPowerfishing,
-		isUsingSpiritFlakes,
-		fish,
-		gearBank,
-		invSlots,
-		blessingChance,
-		flakesAvailable,
-		harpoonBoost,
-		hasWildyEliteDiary,
-		initialBait,
-		useBarbarianCutEat,
-		rng: rngProvider,
-		sharkLureMultiplier
-	});
+	const { catches, loot, ticksElapsed, flakesUsed, baitUsed, blessingExtra, flakeExtra, extraCatchRolls } =
+		determineFishingTime({
+			quantity,
+			tripTicks,
+			isPowerfishing,
+			isUsingSpiritFlakes,
+			fish,
+			gearBank,
+			invSlots,
+			blessingChance,
+			flakesAvailable,
+			harpoonBoost,
+			hasWildyEliteDiary,
+			initialBait,
+			useBarbarianCutEat,
+			rng: rngProvider,
+			sharkLureMultiplier
+		});
 
 	const totalCaught = catches.reduce((total, val) => total + val, 0);
 	if (appliedSharkLureQuantity > 0) {
@@ -459,7 +477,7 @@ export function calcFishingTripStart({
 	if (fish.bait && baitUsed > 0) {
 		suppliesToRemove.add(fish.bait, baitUsed);
 	}
-	if (!isPowerfishing && flakesUsed > 0) {
+	if (flakesUsed > 0) {
 		suppliesToRemove.add('Spirit flakes', flakesUsed);
 	}
 	if (sharkLuresToConsume > 0) {
@@ -469,13 +487,13 @@ export function calcFishingTripStart({
 	return {
 		duration,
 		quantity: totalCaught,
-		flakesBeingUsed: !isPowerfishing ? flakesUsed : undefined,
+		flakesBeingUsed: flakesUsed > 0 ? flakesUsed : undefined,
 		boosts,
 		fish,
 		catches,
 		loot,
 		isPowerfishing,
-		isUsingSpiritFlakes: !isPowerfishing && flakesUsed > 0,
+		isUsingSpiritFlakes: flakesUsed > 0,
 		spiritFlakePreference,
 		sharkLureQuantity: appliedSharkLureQuantity,
 		sharkLuresToConsume: sharkLuresToConsume > 0 ? sharkLuresToConsume : undefined,
@@ -484,6 +502,7 @@ export function calcFishingTripStart({
 		blessingExtra,
 		flakeExtra,
 		usedBarbarianCutEat: useBarbarianCutEat,
-		featherPacksToOpen: featherPacksToOpen > 0 ? featherPacksToOpen : undefined
+		featherPacksToOpen: featherPacksToOpen > 0 ? featherPacksToOpen : undefined,
+		extraCatchRolls
 	};
 }

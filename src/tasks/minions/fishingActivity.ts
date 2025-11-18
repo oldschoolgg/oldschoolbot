@@ -20,7 +20,8 @@ export const fishingTask: MinionTask = {
 			flakesQuantity,
 			usedBarbarianCutEat = false,
 			powerfish = false,
-			sharkLureQuantity = 0
+			sharkLureQuantity = 0,
+			extraCatchRolls
 		} = data;
 
 		const coerceNumber = (value: unknown): number | undefined => {
@@ -66,6 +67,7 @@ export const fishingTask: MinionTask = {
 
 		const catches = normalizeNumericArray(qty, subfishCount);
 		const lootArray = normalizeNumericArray(loot, subfishCount);
+		const extraCatchRollsArray = normalizeNumericArray(extraCatchRolls, subfishCount);
 
 		for (let i = catches.length; i < subfishCount; i++) {
 			catches[i] = 0;
@@ -85,7 +87,8 @@ export const fishingTask: MinionTask = {
 			rng,
 			usedBarbarianCutEat,
 			isPowerfishing: powerfish,
-			sharkLureQuantity
+			sharkLureQuantity,
+			extraCatchRolls: extraCatchRollsArray
 		});
 
 		if (fish.moonKeyHalfEligible !== false) {
@@ -95,7 +98,7 @@ export const fishingTask: MinionTask = {
 				user: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun),
 				duration: data.duration,
 				loot: result.updateBank.itemLootBank,
-				quantity: perCatchRate ? result.totalCatches : undefined,
+				quantity: perCatchRate ? result.totalCatchRolls : undefined,
 				perCatchRate
 			});
 		}

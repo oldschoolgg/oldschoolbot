@@ -162,6 +162,7 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	qty: number[];
 	loot?: number[];
+	extraCatchRolls?: number[];
 	flakesToRemove?: number;
 	flakesQuantity?: number;
 	powerfish?: boolean;

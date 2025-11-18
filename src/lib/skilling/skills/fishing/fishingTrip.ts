@@ -26,7 +26,8 @@ export function calcFishingTripResult({
 	flakeExtra = 0,
 	usedBarbarianCutEat = false,
 	isPowerfishing = false,
-	sharkLureQuantity
+	sharkLureQuantity,
+	extraCatchRolls = []
 }: {
 	fish: Fish;
 	duration: number;
@@ -39,6 +40,7 @@ export function calcFishingTripResult({
 	usedBarbarianCutEat?: boolean;
 	isPowerfishing?: boolean;
 	sharkLureQuantity?: SharkLureQuantity;
+	extraCatchRolls?: number[];
 }) {
 	const rngProvider = rng ?? MathRNG;
 
@@ -69,22 +71,26 @@ export function calcFishingTripResult({
 	const subfishCount = fish.subfishes?.length ?? 0;
 	const catchesArray = catches.length > 0 ? catches : new Array(subfishCount).fill(0);
 	const lootArray = loot.length > 0 ? loot : new Array(subfishCount).fill(0);
+	const extraCatchRollsArray = extraCatchRolls.length > 0 ? extraCatchRolls : new Array(subfishCount).fill(0);
 
 	let fishingXP = 0;
 	const bonusXP: Partial<Record<SkillNameType, number>> = {};
 	const totalCatches = catchesArray.reduce((total, val) => total + val, 0);
+	const totalExtraCatchRolls = extraCatchRollsArray.reduce((total, val) => total + val, 0);
 
 	for (let i = 0; i < fish.subfishes!.length; i++) {
 		const subfish = fish.subfishes![i];
 		const quantity = catchesArray[i] ?? 0;
 		const rawLootQty = lootArray[i] ?? 0;
+		const extraRolls = extraCatchRollsArray[i] ?? 0;
+		const totalRollsForSubfish = quantity + extraRolls;
 
-		if (quantity === 0 && rawLootQty === 0) continue;
+		if (quantity === 0 && rawLootQty === 0 && extraRolls === 0) continue;
 		if (!canHandleSubfish(subfish.id)) continue;
 
 		const xpPerCatch = sharkLureSettings ? sharkLureSettings.xpPerCatch : subfish.xp;
 		fishingXP += quantity * xpPerCatch;
-		const totalLoot = isPowerfishing ? 0 : Math.max(quantity, rawLootQty);
+		const totalLoot = isPowerfishing ? 0 : Math.max(quantity + extraRolls, rawLootQty);
 		if (totalLoot > 0) {
 			updateBank.itemLootBank.add(subfish.id, totalLoot);
 		}
@@ -119,7 +125,7 @@ export function calcFishingTripResult({
 		}
 
 		if (subfish.tertiary) {
-			for (let j = 0; j < quantity; j++) {
+			for (let j = 0; j < totalRollsForSubfish; j++) {
 				if (rngProvider.roll(subfish.tertiary.chance)) {
 					updateBank.itemLootBank.add(subfish.tertiary.id);
 				}
@@ -173,8 +179,10 @@ export function calcFishingTripResult({
 		}
 	}
 
+	const totalCatchRolls = totalCatches + totalExtraCatchRolls;
+
 	if (fish.clueScrollChance) {
-		addSkillingClueToLoot(gearBank, 'fishing', totalCatches, fish.clueScrollChance, updateBank.itemLootBank);
+		addSkillingClueToLoot(gearBank, 'fishing', totalCatchRolls, fish.clueScrollChance, updateBank.itemLootBank);
 	}
 
 	if (fish.petChance) {
@@ -183,7 +191,7 @@ export function calcFishingTripResult({
 
 		if (petChanceToUse) {
 			const { petDropRate } = skillingPetDropRate(gearBank, 'fishing', petChanceToUse);
-			for (let i = 0; i < totalCatches; i++) {
+			for (let i = 0; i < totalCatchRolls; i++) {
 				if (rngProvider.roll(petDropRate)) {
 					updateBank.itemLootBank.add('Heron');
 				}
@@ -205,6 +213,7 @@ export function calcFishingTripResult({
 	return {
 		updateBank,
 		totalCatches,
+		totalCatchRolls,
 		messages,
 		xpPerHour: toKMB(xpPerHour),
 		bonusXpPerHour,
