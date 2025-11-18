@@ -28,6 +28,14 @@ import {
 const skillsVals = Object.values(Skills);
 const discordIDRegex = /^\d{17,20}$/;
 
+function sanitizeDiscordID(raw: string): string | null {
+	const cleaned = raw.replace(/[^0-9]/g, '');
+	if (!discordIDRegex.test(cleaned)) {
+		return null;
+	}
+	return cleaned;
+}
+
 function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
 }
@@ -203,8 +211,8 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, 
 
 	let resolvedUserId: string | undefined;
 	if (targetUserId) {
-		const cleanedUserId = targetUserId.replace(/[^0-9]/g, '');
-		if (!discordIDRegex.test(cleanedUserId)) {
+		const cleanedUserId = sanitizeDiscordID(targetUserId);
+		if (!cleanedUserId) {
 			return 'Please provide a valid Discord user ID.';
 		}
 		resolvedUserId = cleanedUserId;
@@ -656,14 +664,14 @@ for (const openable of allOpenables) {
 	}
 }
 
-async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean, user_id?: string) {
+async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean, targetUserId?: string) {
 	const item = Items.getItem(itemName);
 	if (!item) return 'Invalid item.';
 
 	let resolvedUserId: string | undefined;
-	if (user_id) {
-		const cleanedUserId = user_id.replace(/[^0-9]/g, '');
-		if (!discordIDRegex.test(cleanedUserId)) {
+	if (targetUserId) {
+		const cleanedUserId = sanitizeDiscordID(targetUserId);
+		if (!cleanedUserId) {
 			return 'Please provide a valid Discord user ID.';
 		}
 		resolvedUserId = cleanedUserId;
