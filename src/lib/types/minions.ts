@@ -159,7 +159,7 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: string;
 	quantity: number;
-	Qty: number[];
+	qty: number[];
 	loot?: number[];
 	flakesToRemove?: number;
 	flakesQuantity?: number;

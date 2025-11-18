@@ -60,7 +60,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 528_000,
 		lostTicks: 0.1,
 		bankingTime: 30,
-		ticksPerRoll: 5
+		ticksPerRoll: 5,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Karambwanji',
@@ -78,7 +79,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 443_697,
 		lostTicks: 0.01,
 		bankingTime: 0,
-		ticksPerRoll: 6
+		ticksPerRoll: 6,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Mackerel/Cod/Bass',
@@ -110,7 +112,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 382_609,
 		lostTicks: 0.1,
 		bankingTime: 25,
-		ticksPerRoll: 6
+		ticksPerRoll: 6,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Trout/Salmon',
@@ -154,7 +157,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 305_792,
 		lostTicks: 0.1,
 		bankingTime: 30,
-		ticksPerRoll: 5
+		ticksPerRoll: 5,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Tuna/Swordfish',
@@ -198,7 +202,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 257_770,
 		lostTicks: 0.1,
 		bankingTime: 40,
-		ticksPerRoll: 5
+		ticksPerRoll: 5,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Lobster',
@@ -236,7 +241,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 138_583,
 		lostTicks: 0.13,
 		bankingTime: 20,
-		ticksPerRoll: 6
+		ticksPerRoll: 6,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Karambwan',
@@ -255,7 +261,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 170_874,
 		lostTicks: 0.01,
 		bankingTime: 25,
-		ticksPerRoll: 4
+		ticksPerRoll: 4,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Shark',
@@ -293,7 +300,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 165_000,
 		lostTicks: 0.13,
 		bankingTime: 0,
-		ticksPerRoll: 5
+		ticksPerRoll: 5,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Anglerfish',
@@ -313,7 +321,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 78_649,
 		lostTicks: 0.1,
 		bankingTime: 30,
-		ticksPerRoll: 5
+		ticksPerRoll: 5,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Minnow',
@@ -332,7 +341,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 977_778,
 		lostTicks: 0.33,
 		bankingTime: 0,
-		ticksPerRoll: 2
+		ticksPerRoll: 2,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Dark crab',
@@ -351,7 +361,8 @@ const fishes: Fish[] = [
 		clueScrollChance: 149_434,
 		lostTicks: 0.1,
 		bankingTime: 0,
-		ticksPerRoll: 6
+		ticksPerRoll: 6,
+		moonKeyHalfEligible: false
 	},
 	{
 		name: 'Barbarian fishing',
@@ -388,7 +399,8 @@ const fishes: Fish[] = [
 		lostTicks: 0.09,
 		bankingTime: 40,
 		ticksPerRoll: 5,
-		skillReqs: { agility: 15, strength: 15 }
+		skillReqs: { agility: 15, strength: 15 },
+		moonKeyHalfEligible: false
 	}
 ];
 
@@ -401,7 +413,8 @@ const camdozaalFishes: Fish[] = [
 		name: 'Raw guppy',
 		petChance: 257_770,
 		timePerFish: 5.5,
-		clueScrollChance: 257_770
+		clueScrollChance: 257_770,
+		moonKeyHalfEligible: false
 	},
 	{
 		level: 20,
@@ -410,7 +423,8 @@ const camdozaalFishes: Fish[] = [
 		name: 'Raw cavefish',
 		petChance: 257_770,
 		timePerFish: 5.5,
-		clueScrollChance: 257_770
+		clueScrollChance: 257_770,
+		moonKeyHalfEligible: false
 	},
 	{
 		level: 33,
@@ -419,7 +433,8 @@ const camdozaalFishes: Fish[] = [
 		name: 'Raw tetra',
 		petChance: 257_770,
 		timePerFish: 5.5,
-		clueScrollChance: 257_770
+		clueScrollChance: 257_770,
+		moonKeyHalfEligible: false
 	},
 	{
 		level: 46,
@@ -428,7 +443,8 @@ const camdozaalFishes: Fish[] = [
 		name: 'Raw catfish',
 		petChance: 257_770,
 		timePerFish: 5.5,
-		clueScrollChance: 257_770
+		clueScrollChance: 257_770,
+		moonKeyHalfEligible: false
 	}
 ];
 

@@ -12,7 +12,7 @@ export const fishingTask: MinionTask = {
 	async run(data: FishingActivityTaskOptions, { handleTripFinish, user, rng }) {
 		const {
 			channelId,
-			Qty,
+			qty,
 			loot,
 			blessingExtra: storedBlessingExtra,
 			flakeExtra: storedFlakeExtra,
@@ -38,7 +38,7 @@ export const fishingTask: MinionTask = {
 			return handleTripFinish(user, channelId, FISHING_REWORK_MESSAGE, data);
 		}
 
-		if (!Array.isArray(Qty) || Qty.length !== fish.subfishes.length) {
+		if (!Array.isArray(qty) || qty.length !== fish.subfishes.length) {
 			return handleTripFinish(user, channelId, FISHING_REWORK_MESSAGE, data);
 		}
 
@@ -63,7 +63,7 @@ export const fishingTask: MinionTask = {
 			return normalized;
 		};
 
-		const catches = normalizeNumericArray(Qty, subfishCount);
+		const catches = normalizeNumericArray(qty, subfishCount);
 		const lootArray = normalizeNumericArray(loot, subfishCount);
 
 		for (let i = catches.length; i < subfishCount; i++) {
