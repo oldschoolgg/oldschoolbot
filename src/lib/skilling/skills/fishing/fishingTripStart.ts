@@ -8,7 +8,8 @@ import {
 	calcLeapingExpectedBait,
 	calcRadasBlessingBoost,
 	type SharkLureQuantity,
-	sharkLureConfig
+	sharkLureConfig,
+	sharkLureQuantities
 } from './fishingUtil.js';
 
 const harpoonBoosts = [
@@ -295,14 +296,12 @@ export function calcFishingTripStart({
 	const spiritFlakePreference = wantsToUseFlakes;
 	let isUsingSpiritFlakes = wantsToUseFlakes;
 	let isPowerfishing = powerfish;
-	const allowedSharkLureQuantities: SharkLureQuantity[] = [0, 1, 3, 5];
-	let normalizedSharkLureQuantity: SharkLureQuantity = 0;
 	if (sharkLureQuantity !== undefined) {
-		if (!allowedSharkLureQuantities.includes(sharkLureQuantity)) {
+		if (!sharkLureQuantities.includes(sharkLureQuantity)) {
 			return 'Invalid Shark lure quantity specified.';
 		}
-		normalizedSharkLureQuantity = sharkLureQuantity;
 	}
+	const normalizedSharkLureQuantity: SharkLureQuantity = sharkLureQuantity ?? 0;
 	const isSharkTrip = fish.name === 'Shark';
 	const appliedSharkLureQuantity: SharkLureQuantity = isSharkTrip ? normalizedSharkLureQuantity : 0;
 	const sharkLurePreference = appliedSharkLureQuantity;

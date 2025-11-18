@@ -177,12 +177,16 @@ export function calcFishingTripResult({
 		addSkillingClueToLoot(gearBank, 'fishing', totalCatches, fish.clueScrollChance, updateBank.itemLootBank);
 	}
 
-	const petChanceToUse = fish.name === 'Shark' ? sharkLureConfig[sharkLureQuantityToUse].petChance : fish.petChance;
-	if (petChanceToUse) {
-		const { petDropRate } = skillingPetDropRate(gearBank, 'fishing', petChanceToUse);
-		for (let i = 0; i < totalCatches; i++) {
-			if (rngProvider.roll(petDropRate)) {
-				updateBank.itemLootBank.add('Heron');
+	if (fish.petChance) {
+		const petChanceToUse =
+			fish.name === 'Shark' ? sharkLureConfig[sharkLureQuantityToUse].petChance : fish.petChance;
+
+		if (petChanceToUse) {
+			const { petDropRate } = skillingPetDropRate(gearBank, 'fishing', petChanceToUse);
+			for (let i = 0; i < totalCatches; i++) {
+				if (rngProvider.roll(petDropRate)) {
+					updateBank.itemLootBank.add('Heron');
+				}
 			}
 		}
 	}
