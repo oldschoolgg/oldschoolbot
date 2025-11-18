@@ -133,7 +133,7 @@ export const fishCommand = defineCommand({
 			userID: user.id,
 			channelId,
 			quantity: result.quantity,
-			Qty: result.catches,
+			qty: result.catches,
 			loot: result.loot,
 			flakesToRemove: result.flakesBeingUsed,
 			blessingExtra: result.blessingExtra,

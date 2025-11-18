@@ -16,7 +16,8 @@
 		"clue_scroll_chance": 78649,
 		"lost_ticks": 0.1,
 		"banking_time": 30,
-		"ticks_per_roll": 5
+		"ticks_per_roll": 5,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Barbarian fishing",
@@ -67,7 +68,8 @@
 		"skill_reqs": {
 			"agility": 15,
 			"strength": 15
-		}
+		},
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Cave eel",
@@ -84,7 +86,8 @@
 		"clue_scroll_chance": 257770,
 		"lost_ticks": 0.1,
 		"banking_time": 40,
-		"ticks_per_roll": 5
+		"ticks_per_roll": 5,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Dark crab",
@@ -102,7 +105,8 @@
 		"clue_scroll_chance": 149434,
 		"lost_ticks": 0.1,
 		"banking_time": 0,
-		"ticks_per_roll": 6
+		"ticks_per_roll": 6,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Infernal eel",
@@ -120,7 +124,8 @@
 		"clue_scroll_chance": 165000,
 		"lost_ticks": 0.13,
 		"banking_time": 0,
-		"ticks_per_roll": 5
+		"ticks_per_roll": 5,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Karambwan",
@@ -138,7 +143,8 @@
 		"clue_scroll_chance": 170874,
 		"lost_ticks": 0.01,
 		"banking_time": 25,
-		"ticks_per_roll": 4
+		"ticks_per_roll": 4,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Karambwanji",
@@ -156,7 +162,8 @@
 		"clue_scroll_chance": 443697,
 		"lost_ticks": 0.01,
 		"banking_time": 0,
-		"ticks_per_roll": 6
+		"ticks_per_roll": 6,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Lobster",
@@ -212,7 +219,8 @@
 		"clue_scroll_chance": 382609,
 		"lost_ticks": 0.1,
 		"banking_time": 25,
-		"ticks_per_roll": 6
+		"ticks_per_roll": 6,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Minnow",
@@ -230,7 +238,8 @@
 		"clue_scroll_chance": 977778,
 		"lost_ticks": 0.33,
 		"banking_time": 0,
-		"ticks_per_roll": 2
+		"ticks_per_roll": 2,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Monkfish",
@@ -248,7 +257,8 @@
 		"clue_scroll_chance": 138583,
 		"lost_ticks": 0.13,
 		"banking_time": 20,
-		"ticks_per_roll": 6
+		"ticks_per_roll": 6,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Pike",
@@ -266,7 +276,8 @@
 		"clue_scroll_chance": 305792,
 		"lost_ticks": 0.1,
 		"banking_time": 30,
-		"ticks_per_roll": 5
+		"ticks_per_roll": 5,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Sardine/Herring",
@@ -291,7 +302,8 @@
 		"clue_scroll_chance": 528000,
 		"lost_ticks": 0.1,
 		"banking_time": 30,
-		"ticks_per_roll": 5
+		"ticks_per_roll": 5,
+		"moon_key_half_eligible": false
 	},
 	{
 		"name": "Shark",
