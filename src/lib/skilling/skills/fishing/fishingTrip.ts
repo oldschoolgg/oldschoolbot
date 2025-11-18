@@ -7,7 +7,13 @@ import type { Fish, SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { calcAnglerBonusXP, calcLeapingExpectedCookingXP, calcMinnowQuantityRange } from './fishingUtil.js';
+import {
+	calcAnglerBonusXP,
+	calcLeapingExpectedCookingXP,
+	calcMinnowQuantityRange,
+	type SharkLureQuantity,
+	sharkLureConfig
+} from './fishingUtil.js';
 
 export function calcFishingTripResult({
 	fish,
@@ -19,7 +25,8 @@ export function calcFishingTripResult({
 	blessingExtra = 0,
 	flakeExtra = 0,
 	usedBarbarianCutEat = false,
-	isPowerfishing = false
+	isPowerfishing = false,
+	sharkLureQuantity
 }: {
 	fish: Fish;
 	duration: number;
@@ -31,6 +38,7 @@ export function calcFishingTripResult({
 	flakeExtra?: number;
 	usedBarbarianCutEat?: boolean;
 	isPowerfishing?: boolean;
+	sharkLureQuantity?: SharkLureQuantity;
 }) {
 	const rngProvider = rng ?? MathRNG;
 
@@ -39,6 +47,8 @@ export function calcFishingTripResult({
 	const fishingLevel = gearBank.skillsAsLevels.fishing;
 	const useBarbarianCutEat = Boolean(usedBarbarianCutEat);
 	const isBarbarianFishing = fish.name === 'Barbarian fishing';
+	const sharkLureQuantityToUse: SharkLureQuantity = fish.name === 'Shark' ? (sharkLureQuantity ?? 0) : 0;
+	const sharkLureSettings = fish.name === 'Shark' ? sharkLureConfig[sharkLureQuantityToUse] : undefined;
 	const canCatchSalmon =
 		isBarbarianFishing && gearBank.skillsAsLevels.agility >= 30 && gearBank.skillsAsLevels.strength >= 30;
 	const canCatchSturgeon =
@@ -72,7 +82,8 @@ export function calcFishingTripResult({
 		if (quantity === 0 && rawLootQty === 0) continue;
 		if (!canHandleSubfish(subfish.id)) continue;
 
-		fishingXP += quantity * subfish.xp;
+		const xpPerCatch = sharkLureSettings ? sharkLureSettings.xpPerCatch : subfish.xp;
+		fishingXP += quantity * xpPerCatch;
 		const totalLoot = isPowerfishing ? 0 : Math.max(quantity, rawLootQty);
 		if (totalLoot > 0) {
 			updateBank.itemLootBank.add(subfish.id, totalLoot);
@@ -166,8 +177,9 @@ export function calcFishingTripResult({
 		addSkillingClueToLoot(gearBank, 'fishing', totalCatches, fish.clueScrollChance, updateBank.itemLootBank);
 	}
 
-	if (fish.petChance) {
-		const { petDropRate } = skillingPetDropRate(gearBank, 'fishing', fish.petChance);
+	const petChanceToUse = fish.name === 'Shark' ? sharkLureConfig[sharkLureQuantityToUse].petChance : fish.petChance;
+	if (petChanceToUse) {
+		const { petDropRate } = skillingPetDropRate(gearBank, 'fishing', petChanceToUse);
 		for (let i = 0; i < totalCatches; i++) {
 			if (rngProvider.roll(petDropRate)) {
 				updateBank.itemLootBank.add('Heron');

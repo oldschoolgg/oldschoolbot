@@ -4,6 +4,39 @@ import { EItem } from 'oldschooljs';
 
 import type { GearBank } from '@/lib/structures/GearBank.js';
 
+const sharkLureQuantities = [0, 1, 3, 5] as const;
+export type SharkLureQuantity = (typeof sharkLureQuantities)[number];
+
+const sharkLureConfig: Record<
+	SharkLureQuantity,
+	{
+		successRateMultiplier: number;
+		xpPerCatch: number;
+		petChance: number;
+	}
+> = {
+	0: {
+		successRateMultiplier: 1,
+		xpPerCatch: 110,
+		petChance: 82_243
+	},
+	1: {
+		successRateMultiplier: 3,
+		xpPerCatch: 27.5,
+		petChance: 328_972
+	},
+	3: {
+		successRateMultiplier: 4.5,
+		xpPerCatch: 22,
+		petChance: 411_215
+	},
+	5: {
+		successRateMultiplier: 6,
+		xpPerCatch: 17.6,
+		petChance: 493_458
+	}
+};
+
 const anglerItemsArr = [
 	{
 		id: EItem.ANGLER_HAT,
@@ -178,5 +211,7 @@ export {
 	anglerItems,
 	anglerItemsArr,
 	calcLeapingExpectedCookingXP,
-	calcLeapingExpectedBait
+	calcLeapingExpectedBait,
+	sharkLureConfig,
+	sharkLureQuantities
 };

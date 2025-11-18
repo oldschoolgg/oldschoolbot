@@ -14,6 +14,7 @@ import {
 	calcMinnowQuantityRange,
 	calcRadasBlessingBoost
 } from '../../src/lib/skilling/skills/fishing/fishingUtil.js';
+import * as utilModule from '../../src/lib/util.js';
 import { makeGearBank } from './utils.js';
 
 interface SimpleRNG {
@@ -286,6 +287,32 @@ describe('calcFishingTripStart', () => {
 		expect(out.spiritFlakePreference).toBe(true);
 		expect(out.suppliesToRemove.amount('Spirit flakes')).toBe(out.flakesBeingUsed);
 		expect(out.suppliesToRemove.amount('Fishing bait')).toBe(out.quantity);
+	});
+
+	test('shark lures adjust trip start and consume supplies', () => {
+		const fish = Fishing.Fishes.find(f => f.name === 'Shark')!;
+		vi.spyOn(Math, 'random').mockReturnValue(0);
+		const bank = new Bank().add('Shark lure', 50);
+		const gearBank = makeGearBank({ bank });
+		const res = calcFishingTripStart({
+			gearBank,
+			fish,
+			maxTripLength: 1_000_000,
+			quantityInput: 25,
+			wantsToUseFlakes: false,
+			powerfish: false,
+			hasWildyEliteDiary: false,
+			sharkLureQuantity: 3
+		});
+		expect(typeof res).toBe('object');
+		if (typeof res === 'string') {
+			throw new Error('Expected shark lure trip result');
+		}
+		expect(res.sharkLureQuantity).toBe(3);
+		expect(res.sharkLuresToConsume).toBeGreaterThan(0);
+		expect(res.suppliesToRemove.amount('Shark lure')).toBe(res.sharkLuresToConsume);
+		expect(res.sharkLuresToConsume).toBeLessThanOrEqual(bank.amount('Shark lure'));
+		expect(res.boosts.some(boost => boost.includes('Shark lure'))).toBe(true);
 	});
 
 	test('powerfishing disables spirit flakes usage', () => {
@@ -669,6 +696,45 @@ describe('calcFishingTripStart', () => {
 describe('calcFishingTripResult', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
+	});
+
+	test('shark lure quantity reduces XP per catch', () => {
+		const fish = Fishing.Fishes.find(f => f.name === 'Shark')!;
+		const gearBank = makeGearBank();
+		const catches = [10];
+		const result = Fishing.util.calcFishingTripResult({
+			fish,
+			duration: 1_000,
+			catches,
+			loot: catches,
+			gearBank,
+			sharkLureQuantity: 1
+		});
+		expect(result.updateBank.xpBank.amount('fishing')).toBeCloseTo(275, 5);
+	});
+
+	test('shark lure quantity scales pet chance', () => {
+		const fish = Fishing.Fishes.find(f => f.name === 'Shark')!;
+		const gearBank = makeGearBank();
+		const spy = vi.spyOn(utilModule, 'skillingPetDropRate');
+		Fishing.util.calcFishingTripResult({
+			fish,
+			duration: 1_000,
+			catches: [1],
+			loot: [1],
+			gearBank,
+			sharkLureQuantity: 0
+		});
+		expect(spy).toHaveBeenLastCalledWith(gearBank, 'fishing', 82_243);
+		Fishing.util.calcFishingTripResult({
+			fish,
+			duration: 1_000,
+			catches: [1],
+			loot: [1],
+			gearBank,
+			sharkLureQuantity: 5
+		});
+		expect(spy).toHaveBeenLastCalledWith(gearBank, 'fishing', 493_458);
 	});
 
 	test('seeded RNG produces deterministic trip results', () => {

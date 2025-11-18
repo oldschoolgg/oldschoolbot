@@ -4,7 +4,12 @@ import { Bank, EItem, Items } from 'oldschooljs';
 
 import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { calcLeapingExpectedBait, calcRadasBlessingBoost } from './fishingUtil.js';
+import {
+	calcLeapingExpectedBait,
+	calcRadasBlessingBoost,
+	type SharkLureQuantity,
+	sharkLureConfig
+} from './fishingUtil.js';
 
 const harpoonBoosts = [
 	{ id: EItem.CRYSTAL_HARPOON, boostPercent: 35 },
@@ -16,6 +21,7 @@ const harpoonFishSpots = new Set(['Tuna/Swordfish', 'Shark']);
 
 const FEATHER_ID = Items.getId('Feather');
 const FEATHER_PACK_ID = Items.getId('Feather pack');
+const SHARK_LURE_ID = Items.getId('Shark lure');
 const FEATHER_PACK_SIZE = 100;
 
 function isHarpoonFishSpot(fish: Fish) {
@@ -84,7 +90,8 @@ function determineFishingTime({
 	hasWildyEliteDiary,
 	initialBait,
 	useBarbarianCutEat,
-	rng
+	rng,
+	sharkLureMultiplier
 }: {
 	quantity: number;
 	tripTicks: number;
@@ -100,6 +107,7 @@ function determineFishingTime({
 	initialBait: number;
 	useBarbarianCutEat: boolean;
 	rng: RNGProvider;
+	sharkLureMultiplier: number;
 }) {
 	let ticksElapsed = 0;
 	let flakesUsed = 0;
@@ -141,7 +149,8 @@ function determineFishingTime({
 	}
 
 	const probabilities = fish.subfishes!.map(
-		subfish => harpoonBoost * (subfish.intercept + (effectiveFishingLevel - 1) * subfish.slope)
+		subfish =>
+			sharkLureMultiplier * harpoonBoost * (subfish.intercept + (effectiveFishingLevel - 1) * subfish.slope)
 	);
 
 	if (fish.name === 'Dark crab' && hasWildyEliteDiary) {
@@ -263,7 +272,8 @@ export function calcFishingTripStart({
 	wantsToUseFlakes,
 	powerfish,
 	hasWildyEliteDiary,
-	rng
+	rng,
+	sharkLureQuantity
 }: {
 	gearBank: GearBank;
 	fish: Fish;
@@ -273,6 +283,7 @@ export function calcFishingTripStart({
 	powerfish: boolean;
 	hasWildyEliteDiary: boolean;
 	rng?: RNGProvider;
+	sharkLureQuantity?: SharkLureQuantity;
 }) {
 	const rngProvider = rng ?? MathRNG;
 
@@ -284,6 +295,18 @@ export function calcFishingTripStart({
 	const spiritFlakePreference = wantsToUseFlakes;
 	let isUsingSpiritFlakes = wantsToUseFlakes;
 	let isPowerfishing = powerfish;
+	const allowedSharkLureQuantities: SharkLureQuantity[] = [0, 1, 3, 5];
+	let normalizedSharkLureQuantity: SharkLureQuantity = 0;
+	if (sharkLureQuantity !== undefined) {
+		if (!allowedSharkLureQuantities.includes(sharkLureQuantity)) {
+			return 'Invalid Shark lure quantity specified.';
+		}
+		normalizedSharkLureQuantity = sharkLureQuantity;
+	}
+	const isSharkTrip = fish.name === 'Shark';
+	const appliedSharkLureQuantity: SharkLureQuantity = isSharkTrip ? normalizedSharkLureQuantity : 0;
+	const sharkLurePreference = appliedSharkLureQuantity;
+	let sharkLureMultiplier = 1;
 
 	const baitIsFeather = fish.bait === FEATHER_ID;
 	const availableFeathers = baitIsFeather ? gearBank.bank.amount(FEATHER_ID) : 0;
@@ -322,6 +345,23 @@ export function calcFishingTripStart({
 			return 'You need to have at least one Spirit flake!';
 		}
 		boosts.push('50% more fish from using spirit flakes');
+	}
+
+	if (appliedSharkLureQuantity > 0) {
+		const availableSharkLures = gearBank.bank.amount(SHARK_LURE_ID);
+		if (availableSharkLures <= 0) {
+			return 'You need Shark lure to use that option.';
+		}
+		const maxCatchFromLures = Math.floor(availableSharkLures / appliedSharkLureQuantity);
+		if (maxCatchFromLures <= 0) {
+			return `You need at least ${appliedSharkLureQuantity.toLocaleString()} Shark lures to use that setting.`;
+		}
+		quantity = Math.min(quantity, maxCatchFromLures);
+		const lureConfig = sharkLureConfig[appliedSharkLureQuantity];
+		sharkLureMultiplier = lureConfig.successRateMultiplier;
+		boosts.push(
+			`Using Shark lure (${appliedSharkLureQuantity} per catch): ${lureConfig.successRateMultiplier.toFixed(1)}x catch rate, ${lureConfig.xpPerCatch} XP each`
+		);
 	}
 
 	const { blessingEquipped, blessingChance } = calcRadasBlessingBoost(gearBank);
@@ -372,6 +412,7 @@ export function calcFishingTripStart({
 		}
 	}
 
+	let sharkLuresToConsume = 0;
 	const { catches, loot, ticksElapsed, flakesUsed, baitUsed, blessingExtra, flakeExtra } = determineFishingTime({
 		quantity,
 		tripTicks,
@@ -386,10 +427,14 @@ export function calcFishingTripStart({
 		hasWildyEliteDiary,
 		initialBait,
 		useBarbarianCutEat,
-		rng: rngProvider
+		rng: rngProvider,
+		sharkLureMultiplier
 	});
 
 	const totalCaught = catches.reduce((total, val) => total + val, 0);
+	if (appliedSharkLureQuantity > 0) {
+		sharkLuresToConsume = totalCaught * appliedSharkLureQuantity;
+	}
 	if (totalCaught === 0) {
 		return `You can't fish any ${fish.name}. Try a higher quantity or ensure you have the required supplies.`;
 	}
@@ -418,6 +463,9 @@ export function calcFishingTripStart({
 	if (!isPowerfishing && flakesUsed > 0) {
 		suppliesToRemove.add('Spirit flakes', flakesUsed);
 	}
+	if (sharkLuresToConsume > 0) {
+		suppliesToRemove.add(SHARK_LURE_ID, sharkLuresToConsume);
+	}
 
 	return {
 		duration,
@@ -430,6 +478,9 @@ export function calcFishingTripStart({
 		isPowerfishing,
 		isUsingSpiritFlakes: !isPowerfishing && flakesUsed > 0,
 		spiritFlakePreference,
+		sharkLureQuantity: appliedSharkLureQuantity,
+		sharkLuresToConsume: sharkLuresToConsume > 0 ? sharkLuresToConsume : undefined,
+		sharkLurePreference,
 		suppliesToRemove,
 		blessingExtra,
 		flakeExtra,

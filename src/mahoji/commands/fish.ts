@@ -2,7 +2,11 @@ import { formatDuration, stringSearch } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
-import { anglerItemsArr } from '@/lib/skilling/skills/fishing/fishingUtil.js';
+import {
+	anglerItemsArr,
+	type SharkLureQuantity,
+	sharkLureQuantities
+} from '@/lib/skilling/skills/fishing/fishingUtil.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
 import { bankToStrShortNames, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
@@ -49,6 +53,13 @@ export const fishCommand = defineCommand({
 			name: 'spirit_flakes',
 			description: 'Use Spirit flakes for a 50% chance at extra fish.',
 			required: false
+		},
+		{
+			type: 'Integer',
+			name: 'shark_lure',
+			description: 'Use Shark lures (Sharks only).',
+			required: false,
+			choices: sharkLureQuantities.map(value => ({ name: value.toString(), value }))
 		}
 	],
 	run: async ({ options, user, channelId }) => {
@@ -87,6 +98,10 @@ export const fishCommand = defineCommand({
 
 		const maxTripLength = await user.calcMaxTripLength('Fishing');
 		const hasWildyEliteDiary = user.hasDiary('wilderness.elite');
+		const sharkLureQuantity = (options.shark_lure ?? 0) as SharkLureQuantity;
+		if (sharkLureQuantity > 0 && spot.name !== 'Shark') {
+			return 'Shark lures can only be used while fishing Sharks.';
+		}
 
 		const result = Fishing.util.calcFishingTripStart({
 			gearBank: user.gearBank,
@@ -95,7 +110,8 @@ export const fishCommand = defineCommand({
 			quantityInput: options.quantity,
 			wantsToUseFlakes: Boolean(options.spirit_flakes),
 			powerfish: Boolean(options.powerfish),
-			hasWildyEliteDiary
+			hasWildyEliteDiary,
+			sharkLureQuantity
 		});
 
 		if (typeof result === 'string') {
@@ -141,6 +157,9 @@ export const fishCommand = defineCommand({
 			powerfish: result.isPowerfishing,
 			spiritFlakes: result.isUsingSpiritFlakes,
 			spiritFlakePreference: result.spiritFlakePreference,
+			sharkLureQuantity: result.sharkLureQuantity,
+			sharkLuresToConsume: result.sharkLuresToConsume,
+			sharkLurePreference: result.sharkLurePreference,
 			usedBarbarianCutEat: result.usedBarbarianCutEat,
 			iQty: options.quantity ? options.quantity : undefined,
 			duration: result.duration,
@@ -151,6 +170,10 @@ export const fishCommand = defineCommand({
 
 		if (result.suppliesToRemove.length > 0) {
 			response += `\n\n**Used Supplies:** ${bankToStrShortNames(result.suppliesToRemove)}.`;
+		}
+
+		if ((result.sharkLureQuantity ?? 0) > 0 && result.sharkLuresToConsume) {
+			response += `\n\nUsing ${result.sharkLureQuantity}x Shark lures per catch (${result.sharkLuresToConsume.toLocaleString()} total).`;
 		}
 
 		if (result.boosts.length > 0) {

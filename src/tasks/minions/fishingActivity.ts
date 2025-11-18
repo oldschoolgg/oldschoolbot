@@ -19,7 +19,8 @@ export const fishingTask: MinionTask = {
 			blessingQuantity,
 			flakesQuantity,
 			usedBarbarianCutEat = false,
-			powerfish = false
+			powerfish = false,
+			sharkLureQuantity = 0
 		} = data;
 
 		const coerceNumber = (value: unknown): number | undefined => {
@@ -83,7 +84,8 @@ export const fishingTask: MinionTask = {
 			flakeExtra,
 			rng,
 			usedBarbarianCutEat,
-			isPowerfishing: powerfish
+			isPowerfishing: powerfish,
+			sharkLureQuantity
 		});
 
 		if (fish.moonKeyHalfEligible !== false) {
