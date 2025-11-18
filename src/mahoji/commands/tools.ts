@@ -1114,13 +1114,11 @@ export const toolsCommand = defineCommand({
 			}
 			if (patron.drystreak) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				const requestedUserId = patron.drystreak.user_id;
-
 				return dryStreakCommand(
 					patron.drystreak.source,
 					patron.drystreak.item,
 					Boolean(patron.drystreak.ironman),
-					requestedUserId
+					patron.drystreak.user_id
 				);
 			}
 			if (patron.mostdrops) {
