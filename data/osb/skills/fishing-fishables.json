@@ -324,7 +324,7 @@
 		"clue_scroll_chance": 82243,
 		"lost_ticks": 0.1,
 		"banking_time": 25,
-		"ticks_per_roll": 6,
+		"ticks_per_roll": 5,
 		"moon_key_half_catch_rate": {
 			"numerator": 1,
 			"denominator": 580

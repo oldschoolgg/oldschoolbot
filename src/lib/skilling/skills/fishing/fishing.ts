@@ -281,7 +281,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 82_243,
 		lostTicks: 0.1,
 		bankingTime: 25,
-		ticksPerRoll: 6,
+		ticksPerRoll: 5,
 		moonKeyHalfCatchRate: { numerator: 1, denominator: 580 }
 	},
 	{
