@@ -380,7 +380,8 @@ const tripHandlers: {
 				name: fish.name,
 				quantity: data.iQty,
 				powerfish: data.powerfish ?? false,
-				spirit_flakes: data.spiritFlakePreference ?? data.spiritFlakes ?? false
+				spirit_flakes: data.spiritFlakePreference ?? data.spiritFlakes ?? false,
+				shark_lure: data.sharkLurePreference ?? data.sharkLureQuantity ?? 0
 			};
 		}
 	},

@@ -184,4 +184,24 @@ describe('Fish Command', async () => {
 		const xpAfter = user.skillsAsXP.fishing;
 		expect(xpAfter).toBeGreaterThan(startingXP);
 	});
+
+	it('should reject shark lures on non-shark spots', async () => {
+		const user = await createTestUser();
+		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', shark_lure: 1 });
+		expect(res).toEqual('Shark lures can only be used while fishing Sharks.');
+	});
+
+	it('should consume shark lures when fishing sharks', async () => {
+		const user = await createTestUser();
+		await (user as any).update({
+			bank: new Bank({ 'Shark lure': 30 }),
+			skills_fishing: convertLVLtoXP(80)
+		});
+		const startingLures = user.bank.amount('Shark lure');
+		const res = await user.runCommand(fishCommand, { name: 'Shark', shark_lure: 3 });
+		expect(res).toContain('Shark lure');
+		expect(user.bank.amount('Shark lure')).toBeLessThan(startingLures);
+		await user.runActivity();
+		await user.sync();
+	});
 });
