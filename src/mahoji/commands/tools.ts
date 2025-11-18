@@ -279,7 +279,7 @@ async function dryStreakForUserMonster(
 	const kc = row.kc ?? 0;
 
 	if (clQty > 0) {
-		return `${username} already has ${item.name}, so they are not dry for it from ${mon.name}.`;
+		return `${username} already has ${item.name} on their collection log.`;
 	}
 
 	if (kc === 0) {
@@ -315,7 +315,7 @@ async function dryStreakForUserEntity(entity: DrystreakEntity, item: Item, userI
 		const opens = row.opens ?? 0;
 
 		if (clQty > 0) {
-			return `${username} already has ${item.name}, so they are not dry for it from ${entity.name}.`;
+			return `${username} already has ${item.name} on their collection log.`;
 		}
 
 		if (opens === 0) {
