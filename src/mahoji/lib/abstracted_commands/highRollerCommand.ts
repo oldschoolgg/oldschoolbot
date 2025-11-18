@@ -26,7 +26,7 @@ type JoinMode = { type: 'invites'; inviteIDs: string[] } | { type: 'open' };
 
 const MAX_PARTICIPANTS = 50;
 const MIN_PARTICIPANTS = 2;
-const MIN_TOP_THREE_PARTICIPANTS = 4;
+const MIN_TOP_THREE_PARTICIPANTS = 3;
 
 const randomGambleItems: Item[] = [
 	...Items.filter(item => item.tradeable === true && marketPriceOrBotPrice(item.id) >= 1).values()
@@ -102,14 +102,6 @@ export function generateUniqueRolls({
 		}
 	}
 	return rolls.map(roll => roll!) as { item: Item; value: number }[];
-}
-
-function formatRollResults(rolls: RollResult[]): string {
-	const lines: string[] = [];
-	for (const [position, roll] of rolls.entries()) {
-		lines.push(`${position + 1}. ${roll.user.badgedUsername} rolled ${roll.item.name} worth ${toKMB(roll.value)}`);
-	}
-	return lines.join('\n');
 }
 
 async function safeEdit(interaction: MInteraction, options: SendableMessage) {
@@ -189,7 +181,11 @@ async function collectDirectInvites({
 		});
 		collector.on('end', async (_collected, reason) => {
 			if (reason === 'confirmed') {
-				await interaction.reply({ components: [] });
+				await interaction.reply({
+					content: `${host.badgedUsername}'s High Roller Pot is starting with ${uniqueInviteIDs.length + 1} participants.`,
+					components: [],
+					allowedMentions: { users: [] }
+				});
 				resolve([host.id, ...uniqueInviteIDs]);
 				return;
 			}
@@ -332,7 +328,11 @@ async function collectOpenLobby({
 					components: []
 				});
 			} else {
-				await interaction.reply({ components: [] });
+				await interaction.reply({
+					content: `${host.badgedUsername}'s High Roller Pot is starting with ${participants.length} participants.`,
+					components: [],
+					allowedMentions: { users: [] }
+				});
 			}
 
 			resolve(participants);
@@ -548,11 +548,10 @@ export async function highRollerCommand({
 		mode
 	});
 
-	const summary = `**High Roller Pot** (${
-		mode === 'winner_takes_all' ? 'Winner takes all' : 'Top 3 (60/30/10)'
-	})\nStake: ${toKMB(stake)} GP (Total pot ${toKMB(pot)} GP)\nParticipants (${rollResults.length}): ${rollResults
-		.map(result => result.user.badgedUsername)
-		.join(', ')}\n\n${payoutsMessages.join('\n')}`;
+	const summary = `**High Roller Pot** (${mode === 'winner_takes_all' ? 'Winner takes all' : 'Top 3 (60/30/10)'
+		})\nStake: ${toKMB(stake)} GP (Total pot ${toKMB(pot)} GP)\nParticipants (${rollResults.length}): ${rollResults
+			.map(result => result.user.badgedUsername)
+			.join(', ')}\n\n${payoutsMessages.join('\n')}`;
 
 	const response = highRollerImage
 		? { content: summary, components: [], files: [highRollerImage] }
