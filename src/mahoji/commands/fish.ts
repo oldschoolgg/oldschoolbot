@@ -161,6 +161,7 @@ export const fishCommand = defineCommand({
 			sharkLuresToConsume: result.sharkLuresToConsume,
 			sharkLurePreference: result.sharkLurePreference,
 			usedBarbarianCutEat: result.usedBarbarianCutEat,
+			extraCatchRolls: result.extraCatchRolls,
 			iQty: options.quantity ? options.quantity : undefined,
 			duration: result.duration,
 			type: 'Fishing'
