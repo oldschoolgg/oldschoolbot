@@ -88,8 +88,9 @@ export async function sawmillCommand(
 		channelId
 	});
 
-	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${quantity > 1 ? 's' : ''
-		}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatDuration(duration)}.`;
+	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${
+		quantity > 1 ? 's' : ''
+	}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

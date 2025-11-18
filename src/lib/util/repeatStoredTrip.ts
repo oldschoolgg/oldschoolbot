@@ -14,6 +14,7 @@ import type {
 import { kibbles } from '@/lib/bso/kibble.js';
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { objectValues, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -88,7 +89,6 @@ import type {
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 
 export const taskCanBeRepeated = (activity: Activity) => {
 	return !(
@@ -389,8 +389,8 @@ const tripHandlers: {
 		args: (data: FarmingActivityTaskOptions) =>
 			data.autoFarmed
 				? {
-					auto_farm: {}
-				}
+						auto_farm: {}
+					}
 				: {}
 	},
 	[activity_type_enum.FightCaves]: {
@@ -610,7 +610,7 @@ const tripHandlers: {
 					start: {
 						challenge_mode: data.challengeMode,
 						type: data.users.length === 1 ? 'solo' : 'mass',
-						quantity: data.quantity,
+						quantity: data.quantity
 					}
 				}
 			};

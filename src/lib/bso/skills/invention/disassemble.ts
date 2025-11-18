@@ -80,9 +80,9 @@ function doesHaveMasterCapeBoost(
 		const has = user.hasEquippedOrInBank([skillCape.masterCape.name]);
 		return has
 			? {
-				has: true,
-				cape: skillCape.masterCape.name
-			}
+					has: true,
+					cape: skillCape.masterCape.name
+				}
 			: { has: false };
 	}
 	return { has: false };
@@ -111,19 +111,19 @@ export function calculateDisXP(group: DisassemblySourceGroup, inventionLevel: nu
 
 type DisassemblyResult =
 	| {
-		xp: number;
-		materials: MaterialBank;
-		junkChance: number;
-		xpHr: string;
-		quantity: number;
-		duration: number;
-		cost: Bank;
-		messages: string[];
-		error: null;
-	}
+			xp: number;
+			materials: MaterialBank;
+			junkChance: number;
+			xpHr: string;
+			quantity: number;
+			duration: number;
+			cost: Bank;
+			messages: string[];
+			error: null;
+	  }
 	| {
-		error: string;
-	};
+			error: string;
+	  };
 
 export function findDisassemblyGroup(item: Item) {
 	for (const group of DisassemblySourceGroups) {
@@ -200,7 +200,7 @@ export async function handleDisassembly({
 			duration: Math.min(
 				maxTripLength,
 				Math.min(bank.amount(item.id), inputQuantity ?? Math.floor(maxTripLength / boostedActionTime)) *
-				boostedActionTime
+					boostedActionTime
 			)
 		});
 		if (boostRes.success) {
@@ -348,9 +348,9 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 		content: `
 **Total XP:** ${totalXP}
 **Items in your bank that can't be disassembled:** ${cantBeDisassembled
-				.map(i => i.name)
-				.join(', ')
-				.slice(0, 1500)}`,
+			.map(i => i.name)
+			.join(', ')
+			.slice(0, 1500)}`,
 		files: [
 			{ name: 'disassemble-analysis.txt', buffer: Buffer.from(table.toString()) },
 			{ name: 'material-analysis.txt', buffer: Buffer.from(await materialAnalysis(user, bank)) }
@@ -397,8 +397,9 @@ export async function disassembleCommand({
 		xp: result.xp
 	});
 
-	return `${user.minionName} is now disassembling ${result.quantity}x ${item.name
-		}, the trip will take approximately ${formatDuration(result.duration)}
+	return `${user.minionName} is now disassembling ${result.quantity}x ${
+		item.name
+	}, the trip will take approximately ${formatDuration(result.duration)}
 **Junk Chance:** ${result.junkChance.toFixed(2)}%
 ${result.messages.length > 0 ? `**Messages:** ${result.messages.join(', ')}` : ''}`;
 }

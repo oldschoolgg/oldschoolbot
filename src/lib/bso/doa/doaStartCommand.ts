@@ -68,7 +68,7 @@ export async function doaStartCommand(
 		}
 	};
 
-	let users = solo ? [user] : (await globalClient.makeParty(partyOptions)).slice(0, maxSize);
+	const users = solo ? [user] : (await globalClient.makeParty(partyOptions)).slice(0, maxSize);
 
 	if (await ActivityManager.anyMinionIsBusy(users.map(u => u.id))) {
 		return 'One of the users in your mass has a busy minion.';
@@ -89,7 +89,7 @@ export async function doaStartCommand(
 		quantity: 1,
 		challengeMode
 	}).fakeDuration;
-	const maxTripLength = Math.max(...await Promise.all(users.map(i => i.calcMaxTripLength('DepthsOfAtlantis'))));
+	const maxTripLength = Math.max(...(await Promise.all(users.map(i => i.calcMaxTripLength('DepthsOfAtlantis')))));
 	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
 	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
@@ -179,8 +179,9 @@ export async function doaStartCommand(
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to do ${quantity === 1 ? 'a' : `${quantity}x`} ${challengeMode ? 'Challenge Mode' : ''
-		} Depths of Atlantis raid - the total trip will take ${formatDuration(createdDOATeam.fakeDuration)}.`;
+		.join(', ')}) is now off to do ${quantity === 1 ? 'a' : `${quantity}x`} ${
+		challengeMode ? 'Challenge Mode' : ''
+	} Depths of Atlantis raid - the total trip will take ${formatDuration(createdDOATeam.fakeDuration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

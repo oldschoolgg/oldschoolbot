@@ -13,9 +13,9 @@ import { researchCommand } from '@/lib/bso/skills/invention/research.js';
 import { calcPerHour, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
-import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
 
 export const inventionCommand = defineCommand({
 	name: 'invention',
@@ -184,9 +184,9 @@ export const inventionCommand = defineCommand({
 			let str = `**${invention.name}** - *${invention.description}*
 - Requires level ${invention.inventionLevelNeeded} Invention
 - The materials used for this invention: ${invention.materialTypeBank
-					.values()
-					.map(i => `${i.type} (${i.quantity})`)
-					.join(', ')}
+				.values()
+				.map(i => `${i.type} (${i.quantity})`)
+				.join(', ')}
 - Required cost to make: ${inventingCost(invention)} and ${invention.itemCost ? `${invention.itemCost}` : 'No items'}
 - ${invention.flags.includes('equipped') ? 'Must be equipped' : 'Works in bank'}`;
 			if (invention.extraDescription) str += `\n${invention.extraDescription()}`;
@@ -229,13 +229,11 @@ export const inventionCommand = defineCommand({
 					return {
 						content: "These are all the items you've ever disassembled.",
 						files: [
-							(
-								await makeBankImage({
-									bank: new Bank(user.user.disassembled_items_bank as ItemBank),
-									user,
-									title: 'Items Disassembled'
-								})
-							)
+							await makeBankImage({
+								bank: new Bank(user.user.disassembled_items_bank as ItemBank),
+								user,
+								title: 'Items Disassembled'
+							})
 						]
 					};
 				}
@@ -249,13 +247,14 @@ export const inventionCommand = defineCommand({
 				case 'unlocked_blueprints': {
 					const unlocked = Inventions.filter(i => user.user.unlocked_blueprints.includes(i.id));
 					const locked = Inventions.filter(i => !user.user.unlocked_blueprints.includes(i.id));
-					return `You have the following blueprints unlocked: ${unlocked.length === 0
-						? 'None! Do some research to unlock some.'
-						: unlocked.map(i => i.name).join(', ')
-						}.
+					return `You have the following blueprints unlocked: ${
+						unlocked.length === 0
+							? 'None! Do some research to unlock some.'
+							: unlocked.map(i => i.name).join(', ')
+					}.
 These Inventions are still not unlocked: ${locked
-							.map(i => `${i.name} (${Object.keys(i.materialTypeBank.bank).join(', ')})`)
-							.join(', ')}`;
+						.map(i => `${i.name} (${Object.keys(i.materialTypeBank.bank).join(', ')})`)
+						.join(', ')}`;
 				}
 				case 'xp': {
 					const table = new Table();
@@ -313,12 +312,12 @@ These Inventions are still not unlocked: ${locked
 							.map(i => `${i.quantity}% ${i.type}`)
 							.join(', ')})
        ${group.items
-								.map(i => {
-									return `${Array.isArray(i.item) ? i.item.map(i => i.name).join(', ') : i.item.name} - ${Math.floor(
-										calcJunkChance(i.lvl, false)
-									)}% Junk Chance - Level/Weighting ${i.lvl}`;
-								})
-								.join('\n       ')}`;
+			.map(i => {
+				return `${Array.isArray(i.item) ? i.item.map(i => i.name).join(', ') : i.item.name} - ${Math.floor(
+					calcJunkChance(i.lvl, false)
+				)}% Junk Chance - Level/Weighting ${i.lvl}`;
+			})
+			.join('\n       ')}`;
 						str += '\n';
 					}
 					return { files: [{ buffer: Buffer.from(str), name: 'groups.txt' }] };

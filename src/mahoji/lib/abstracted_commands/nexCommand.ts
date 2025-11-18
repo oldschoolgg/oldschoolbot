@@ -35,9 +35,11 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 
 		const potionsRequired = await calcBossFood(user, NexMonster, users.length, quantity);
 		if (!user.bank.has(potionsRequired)) {
-			return `${users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
-				} have enough brews/restores. You need at least ${potionsRequired} to ${users.length === 1 ? 'start the mass' : 'enter the mass'
-				}.`;
+			return `${
+				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
+			} have enough brews/restores. You need at least ${potionsRequired} to ${
+				users.length === 1 ? 'start the mass' : 'enter the mass'
+			}.`;
 		}
 	}
 }
@@ -101,7 +103,7 @@ export async function nexCommand(
 		}
 	};
 
-	let users: MUser[] = type === 'mass' ? await globalClient.makeParty(partyOptions) : [user];
+	const users: MUser[] = type === 'mass' ? await globalClient.makeParty(partyOptions) : [user];
 	if (await ActivityManager.anyMinionIsBusy(users)) {
 		return `One of the minions in the party is already busy.`;
 	}
@@ -294,8 +296,8 @@ export async function nexCommand(
 		type === 'solo'
 			? `Your minion is now attempting to kill ${quantity}x Nex. ${foodString} The trip will take ${formatDuration(duration)}.`
 			: `${partyOptions.leader.usernameOrMention}'s party (${users
-				.map(u => u.usernameOrMention)
-				.join(', ')}) is now off to kill ${quantity}x ${NexMonster.name}. Each kill takes ${formatDuration(
+					.map(u => u.usernameOrMention)
+					.join(', ')}) is now off to kill ${quantity}x ${NexMonster.name}. Each kill takes ${formatDuration(
 					perKillTime
 				)} instead of ${formatDuration(NexMonster.timeToFinish)} - the total trip will take ${formatDuration(
 					duration

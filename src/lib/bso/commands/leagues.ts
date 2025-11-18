@@ -75,8 +75,9 @@ export const bsoLeaguesCommand = defineCommand({
 			const percentCompleted = calcWhatPercent(count, totalUsers);
 			return `**Description:** ${task.name}
 **Tier:** ${group.name}
-${percentCompleted.toFixed(2)}% of users have finished this task, ${finished.includes(task.id) ? 'including you.' : "you haven't."
-				}`;
+${percentCompleted.toFixed(2)}% of users have finished this task, ${
+				finished.includes(task.id) ? 'including you.' : "you haven't."
+			}`;
 		}
 		if (options.claim) {
 			return leaguesClaimCommand(user, finished);

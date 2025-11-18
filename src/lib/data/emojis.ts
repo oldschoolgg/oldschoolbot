@@ -49,20 +49,20 @@ export const EmojiId = {
 	Bank: '739459924693614653',
 	ItemContract: '988422348434718812',
 	HugeXPLamp: '988325171498721290',
-	Fishing: '630911040091193356',
+	Fishing: '630911040091193356'
 };
 
 export const ReactEmoji = globalConfig.isProduction
 	? {
-		Happy: 'RSHappy:380915244760825857',
-		Sad: 'RSSad:380915244652036097',
-		Gift: '🎁'
-	}
+			Happy: 'RSHappy:380915244760825857',
+			Sad: 'RSSad:380915244652036097',
+			Gift: '🎁'
+		}
 	: {
-		Happy: '😃',
-		Sad: '😞',
-		Gift: '🎁'
-	};
+			Happy: '😃',
+			Sad: '😞',
+			Gift: '🎁'
+		};
 
 export const miscEmojis = {
 	barrowsChests: '<:Dharoks_helm:403038864199122947>',

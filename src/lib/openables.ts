@@ -1,6 +1,7 @@
 import { bsoOpenables } from '@/lib/bso/openables/bsoOpenables.js';
 
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
 	Bank,
@@ -35,7 +36,6 @@ import {
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { IFarmingContract } from '@oldschoolgg/schemas';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -83,11 +83,11 @@ export interface UnifiedOpenable {
 	id: number;
 	openedItem: Item;
 	output:
-	| LootTable
-	| ((args: OpenArgs) => Promise<{
-		bank: Bank;
-		message?: string;
-	}>);
+		| LootTable
+		| ((args: OpenArgs) => Promise<{
+				bank: Bank;
+				message?: string;
+		  }>);
 	emoji?: string;
 	aliases: string[];
 	allItems: number[];
@@ -181,8 +181,9 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 
-			let message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
-				}`;
+			let message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
+			}`;
 			if (extraClueRolls > 0) {
 				message += `${mimicNumber ? ' ' : ''}${extraClueRolls} extra rolls`;
 			}

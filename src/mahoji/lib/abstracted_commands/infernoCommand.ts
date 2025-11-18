@@ -2,7 +2,15 @@ import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '
 import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
 
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
-import { calcPercentOfNum, Emoji, formatDuration, increaseNumByPercent, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
+import {
+	calcPercentOfNum,
+	Emoji,
+	formatDuration,
+	increaseNumByPercent,
+	sumArr,
+	Time,
+	UserError
+} from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
@@ -178,19 +186,19 @@ async function infernoRun({
 
 	const skillReqs: Skills = isEmergedZuk
 		? {
-			defence: 102,
-			magic: 102,
-			hitpoints: 100,
-			ranged: 107,
-			prayer: 105
-		}
+				defence: 102,
+				magic: 102,
+				hitpoints: 100,
+				ranged: 107,
+				prayer: 105
+			}
 		: {
-			defence: 92,
-			magic: 94,
-			hitpoints: 92,
-			ranged: 92,
-			prayer: 77
-		};
+				defence: 92,
+				magic: 94,
+				hitpoints: 92,
+				ranged: 92,
+				prayer: 77
+			};
 	const hasSkillReqs = user.hasSkillReqs(skillReqs);
 	if (!hasSkillReqs) {
 		return `You not meet skill requirements, you need ${Object.entries(skillReqs)
@@ -248,13 +256,13 @@ async function infernoRun({
 	if (!isEmergedZuk) {
 		duration.add(
 			(rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt')) ||
-			(rangeGear.hasEquipped('Pernix body') && rangeGear.hasEquipped('Pernix chaps')),
+				(rangeGear.hasEquipped('Pernix body') && rangeGear.hasEquipped('Pernix chaps')),
 			-3,
 			'Armadyl/Pernix'
 		);
 		duration.add(
 			(mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom')) ||
-			(mageGear.hasEquipped('Virtus robe top') && mageGear.hasEquipped('Virtus robe legs')),
+				(mageGear.hasEquipped('Virtus robe top') && mageGear.hasEquipped('Virtus robe legs')),
 			-4,
 			'Ancestral/Virtus'
 		);
@@ -486,10 +494,11 @@ async function infernoRun({
 	}
 	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
-		return `You're using incorrect projectiles, you're using a ${rangeGear.equippedWeapon()?.name
-			}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
-				.map(i => Items.itemNameFromId(i))
-				.join(', ')}.`;
+		return `You're using incorrect projectiles, you're using a ${
+			rangeGear.equippedWeapon()?.name
+		}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
+			.map(i => Items.itemNameFromId(i))
+			.join(', ')}.`;
 	}
 
 	duration.value = randomVariation(duration.value, (randInt(1, 10) + randInt(1, 10) + randInt(1, 10)) / 3);
@@ -671,11 +680,12 @@ export async function infernoStartCommand(user: MUser, channelId: string, emerge
 	await ClientSettings.updateBankSetting('inferno_cost', realCost);
 	const emergedZukDeathMsg = emerged
 		? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
-			1
-		)}% ${emergedZukDeathChance.messages.join(', ')} ${emergedZukDeathChance.missed.length === 0
-			? ''
-			: `*(You didn't get these: ||${emergedZukDeathChance.missed.join(', ')}||)*`
-		}`
+				1
+			)}% ${emergedZukDeathChance.messages.join(', ')} ${
+				emergedZukDeathChance.missed.length === 0
+					? ''
+					: `*(You didn't get these: ||${emergedZukDeathChance.missed.join(', ')}||)*`
+			}`
 		: '';
 	return {
 		content: `
@@ -683,17 +693,20 @@ export async function infernoStartCommand(user: MUser, channelId: string, emerge
 **Attempts:** ${attempts}
 
 **Duration:** ${formatDuration(duration.value)}
-**Boosts:** ${duration.messages.join(', ')} ${duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
-			}
+**Boosts:** ${duration.messages.join(', ')} ${
+			duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
+		}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${preZukDeathChance.missed.length === 0
+**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${
+			preZukDeathChance.missed.length === 0
 				? ''
 				: `*(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*`
-			}
-**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${zukDeathChance.missed.length === 0
+		}
+**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${
+			zukDeathChance.missed.length === 0
 				? ''
 				: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
-			}
+		}
 ${emergedZukDeathMsg}
 **Items To Be Used:** ${realCost}`,
 		files: [

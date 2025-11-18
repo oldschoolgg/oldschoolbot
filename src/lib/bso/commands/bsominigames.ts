@@ -1,5 +1,3 @@
-import { choicesOf } from '@/discord/index.js';
-import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
 import { bonanzaCommand } from '@/lib/bso/commands/bonanzaCommand.js';
 import { fishingContestStartCommand, fishingContestStatsCommand } from '@/lib/bso/commands/fishingContestCommand.js';
 import { fistOfGuthixCommand } from '@/lib/bso/commands/fistOfGuthix.js';
@@ -31,6 +29,9 @@ import { TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/minig
 
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
+
+import { choicesOf } from '@/discord/index.js';
+import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
 
 export const bsoMinigamesCommand = defineCommand({
 	name: 'bsominigames',

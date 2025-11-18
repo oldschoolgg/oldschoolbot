@@ -24,14 +24,12 @@ export const kibbleTask: MinionTask = {
 			minimal: true
 		});
 
-		return handleTripFinish(
-			{
-				user,
-				channelId,
-				message: `${user}, your minion finished cooking ${quantity}x ${kibble.item.name}. ${xpRes}`,
-				data,
-				loot
-			}
-		);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: `${user}, your minion finished cooking ${quantity}x ${kibble.item.name}. ${xpRes}`,
+			data,
+			loot
+		});
 	}
 };

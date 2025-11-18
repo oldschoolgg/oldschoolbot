@@ -323,23 +323,25 @@ export async function nightmareCommand(user: MUser, channelId: string, name: str
 		type === 'solo'
 			? `${await soloMessage(user, duration, quantity, isPhosani)}
 ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
-			: `${user.usernameOrMention}'s party of ${users.length
-			} is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
-				perKillTime
-			)} instead of ${formatDuration(
-				NightmareMonster.timeToFinish
-			)} - the total trip will take ${formatDuration(duration)}.`;
+			: `${user.usernameOrMention}'s party of ${
+					users.length
+				} is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
+					perKillTime
+				)} instead of ${formatDuration(
+					NightmareMonster.timeToFinish
+				)} - the total trip will take ${formatDuration(duration)}.`;
 	if (hasCob && type === 'solo') {
 		str += '\n2x Boost from Cob\n';
 	}
-	str += `\nRemoved ${soloFoodUsage} from your bank.${isPhosani
-		? hasShadow
-			? ` Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. `
-			: hasSang
-				? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
-				: ''
-		: ''
-		}`;
+	str += `\nRemoved ${soloFoodUsage} from your bank.${
+		isPhosani
+			? hasShadow
+				? ` Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. `
+				: hasSang
+					? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
+					: ''
+			: ''
+	}`;
 
 	return str;
 }

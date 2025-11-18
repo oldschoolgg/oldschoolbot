@@ -1,7 +1,6 @@
-
 import { choicesOf } from '@/discord/index.js';
 import { PVM_METHODS } from '@/lib/constants.js';
-import { autocompleteMonsters, } from '@/lib/minions/data/killableMonsters/index.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
 async function fetchUsersRecentlyKilledMonsters(userId: string): Promise<number[]> {

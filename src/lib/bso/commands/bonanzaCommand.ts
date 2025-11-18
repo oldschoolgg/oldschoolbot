@@ -14,8 +14,9 @@ export async function bonanzaCommand(user: MUser, channelId: string) {
 
 	const duration = randomVariation(Time.Minute * 15, 5);
 
-	const str = `${user.minionName
-		} is now off to participate in Balthazar's Big Bonanza! The total trip will take ${formatDuration(duration)}.`;
+	const str = `${
+		user.minionName
+	} is now off to participate in Balthazar's Big Bonanza! The total trip will take ${formatDuration(duration)}.`;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,

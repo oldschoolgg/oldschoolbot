@@ -1,17 +1,17 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 import { Herb } from '@/lib/bso/skills/invention/groups/Herb.js';
 
-import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { userMention } from '@oldschoolgg/discord';
+import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import { filterOption } from '@/discord/presetCommandOptions.js';
 import { ores, secondaries, seeds } from '@/lib/data/filterables.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { filterOption } from '@/discord/presetCommandOptions.js';
 
 async function addToLotteryBank(user: MUser, bankToAdd: Bank) {
 	const current = user.user.lottery_input as ItemBank;
@@ -304,7 +304,7 @@ export const lotteryCommand = defineCommand({
 		if (user.isIronman) return 'Ironmen cannot partake in the Lottery.';
 
 		if (options.prices) {
-			return { files: [(await makeBankImage({ bank: parsedPriceBank, title: 'Prices' }))] };
+			return { files: [await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })] };
 		}
 		if (options.buy_tickets) {
 			const amountOfTickets = options.buy_tickets.quantity;
@@ -374,13 +374,15 @@ export const lotteryCommand = defineCommand({
 				.sort((a, b) => getPriceOfItem(b[0]) * b[1] - getPriceOfItem(a[0]) * a[1])
 				.slice(0, 10)) {
 				perItemTickets.push(
-					`${((quantity * getPriceOfItem(item)) / VALUE_PER_TICKET).toFixed(1)} tickets for ${quantity} ${item.name
+					`${((quantity * getPriceOfItem(item)) / VALUE_PER_TICKET).toFixed(1)} tickets for ${quantity} ${
+						item.name
 					}`
 				);
 			}
 
 			await interaction.confirmation(
-				`${user.mention
+				`${
+					user.mention
 				}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${amountOfTickets} bank lottery tickets**. ${perItemTickets.join(
 					', '
 				)}
@@ -401,15 +403,16 @@ export const lotteryCommand = defineCommand({
 		const { totalLoot, totalTickets, users } = await getLotteryBank();
 
 		const message = new MessageBuilder()
-			.setContent(`There have been ${totalTickets.toLocaleString()} purchased, you have ${amountOfTickets.toLocaleString()}x tickets, and a ${amountOfTickets === 0 ? 0 : calcWhatPercent(amountOfTickets, totalTickets).toFixed(4)
-				}% chance of winning (will fluctuate based on you/others buying tickets.)
+			.setContent(`There have been ${totalTickets.toLocaleString()} purchased, you have ${amountOfTickets.toLocaleString()}x tickets, and a ${
+				amountOfTickets === 0 ? 0 : calcWhatPercent(amountOfTickets, totalTickets).toFixed(4)
+			}% chance of winning (will fluctuate based on you/others buying tickets.)
 
 ${infoStr}
 
 Top ticket holders: ${users
-					.slice(0, 10)
-					.map(i => `${userMention(i.id)} has ${i.tickets.toLocaleString()} tickets`)
-					.join(',')}`)
+				.slice(0, 10)
+				.map(i => `${userMention(i.id)} has ${i.tickets.toLocaleString()} tickets`)
+				.join(',')}`)
 			.addFile(await makeBankImage({ bank: totalLoot, title: 'Lottery' }))
 			.addFile(await makeBankImage({ bank: input, title: 'Your Lottery Input' }));
 

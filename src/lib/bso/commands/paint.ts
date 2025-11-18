@@ -3,10 +3,10 @@ import { getPaintedItemImage } from '@/lib/bso/paintColors.js';
 
 import { Bank, Items } from 'oldschooljs';
 
-import { canvasToBuffer } from '@/lib/canvas/canvasUtil.js';
-import { paintColors } from '@/lib/customItems/paintCans.js';
 import { ownedItemOption } from '@/discord/presetCommandOptions.js';
 import { itemEffectImageCache } from '@/lib/cache.js';
+import { canvasToBuffer } from '@/lib/canvas/canvasUtil.js';
+import { paintColors } from '@/lib/customItems/paintCans.js';
 
 export const paintCommand = defineCommand({
 	name: 'paint',

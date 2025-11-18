@@ -3,6 +3,8 @@ import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { getUsersFishingContestDetails } from '@/lib/bso/minigames/fishingContest.js';
 import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
@@ -10,13 +12,20 @@ import { EmojiId } from '@/lib/data/emojis.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
-import { makeAutoContractButton, makeAutoSlayButton, makeBirdHouseTripButton, makeClaimDailyButton, makeFishingContestButton, makeosbBsoLeaguesButton, makeSendICButton, makeSpawnLampButton } from '@/lib/util/interactions.js';
+import {
+	makeAutoContractButton,
+	makeAutoSlayButton,
+	makeBirdHouseTripButton,
+	makeClaimDailyButton,
+	makeFishingContestButton,
+	makeosbBsoLeaguesButton,
+	makeSendICButton,
+	makeSpawnLampButton
+} from '@/lib/util/interactions.js';
 import { minionStatus } from '@/lib/util/minionStatus.js';
 import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
-import { stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 
 async function fetchFavoriteGearPresets(userID: string) {
 	const pinnedPresets = await prisma.gearPreset.findMany({
@@ -87,9 +96,7 @@ export async function minionStatusCommand(
 		!user.minionIsBusy &&
 		['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))
 	) {
-		buttons.push(
-			makeFishingContestButton()
-		);
+		buttons.push(makeFishingContestButton());
 	}
 
 	if (dailyIsReady.isReady && !user.bitfield.includes(BitField.DisableDailyButton)) {
@@ -178,9 +185,7 @@ export async function minionStatusCommand(
 	}
 
 	if (roboChimpUser.leagues_points_total === 0) {
-		buttons.push(
-			makeosbBsoLeaguesButton()
-		);
+		buttons.push(makeosbBsoLeaguesButton());
 	}
 
 	if (gearPresetButtons.length > 0) {

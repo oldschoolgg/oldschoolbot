@@ -16,6 +16,8 @@ import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { type ClientStorage, economy_transaction_type } from '@/prisma/main.js';
+import { itemOption } from '@/discord/presetCommandOptions.js';
+import { bulkUpdateCommands } from '@/discord/utils.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -24,8 +26,6 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { itemOption } from '@/discord/presetCommandOptions.js';
-import { bulkUpdateCommands } from '@/discord/utils.js';
 import { isValidBitField } from '@/lib/util/smallUtils.js';
 
 export const gifs = [
@@ -87,16 +87,16 @@ const viewableThings: {
 	name: string;
 	run: (clientSettings: ClientStorage) => Promise<Bank | SendableMessage>;
 }[] = [
-		{
-			name: 'ToB Cost',
-			run: async clientSettings => {
-				return new Bank(clientSettings.tob_cost as ItemBank);
-			}
-		},
-		{
-			name: 'All Equipped Items',
-			run: async () => {
-				const res = await prisma.$queryRaw<Record<string, GearSetup | null>[]>`SELECT "gear.melee",
+	{
+		name: 'ToB Cost',
+		run: async clientSettings => {
+			return new Bank(clientSettings.tob_cost as ItemBank);
+		}
+	},
+	{
+		name: 'All Equipped Items',
+		run: async () => {
+			const res = await prisma.$queryRaw<Record<string, GearSetup | null>[]>`SELECT "gear.melee",
 "gear.mage",
 "gear.range",
 "gear.misc",
@@ -114,59 +114,59 @@ AND ("gear.melee" IS NOT NULL OR
 "gear.wildy" IS NOT NULL OR
 "gear.fashion" IS NOT NULL OR
 "gear.other" IS NOT NULL);`;
-				const bank = new Bank();
-				for (const user of res) {
-					for (const gear of Object.values(user)
-						.flatMap(i => (i === null ? [] : Object.values(i)))
-						.filter(notEmpty)) {
-						const item = Items.getItem(gear.item);
-						if (item) {
-							bank.add(gear.item, gear.quantity);
-						}
+			const bank = new Bank();
+			for (const user of res) {
+				for (const gear of Object.values(user)
+					.flatMap(i => (i === null ? [] : Object.values(i)))
+					.filter(notEmpty)) {
+					const item = Items.getItem(gear.item);
+					if (item) {
+						bank.add(gear.item, gear.quantity);
 					}
 				}
-				return bank;
 			}
-		},
-		{
-			name: 'Most Traded Items (30d, Total Volume)',
-			run: async () => {
-				const items = await getAllTradedItems();
-				return {
-					content: items
-						.items()
-						.sort(sorts.quantity)
-						.slice(0, 10)
-						.map((i, index) => `${++index}. ${i[0].name} - ${i[1].toLocaleString()}x traded`)
-						.join('\n')
-				};
-			}
-		},
-		{
-			name: 'Most Traded Items (30d, Unique trades)',
-			run: async () => {
-				const items = await getAllTradedItems(true);
-				return {
-					content: items
-						.items()
-						.sort(sorts.quantity)
-						.slice(0, 10)
-						.map((i, index) => `${++index}. ${i[0].name} - Traded ${i[1].toLocaleString()}x times`)
-						.join('\n')
-				};
-			}
-		},
-		{
-			name: 'Economy Bank',
-			run: async () => {
-				const [blowpipeRes, totalGP, result] = await prisma.$transaction([
-					prisma.$queryRawUnsafe<
-						{ scales: number; dart: number; qty: number }[]
-					>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
+			return bank;
+		}
+	},
+	{
+		name: 'Most Traded Items (30d, Total Volume)',
+		run: async () => {
+			const items = await getAllTradedItems();
+			return {
+				content: items
+					.items()
+					.sort(sorts.quantity)
+					.slice(0, 10)
+					.map((i, index) => `${++index}. ${i[0].name} - ${i[1].toLocaleString()}x traded`)
+					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Most Traded Items (30d, Unique trades)',
+		run: async () => {
+			const items = await getAllTradedItems(true);
+			return {
+				content: items
+					.items()
+					.sort(sorts.quantity)
+					.slice(0, 10)
+					.map((i, index) => `${++index}. ${i[0].name} - Traded ${i[1].toLocaleString()}x times`)
+					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Economy Bank',
+		run: async () => {
+			const [blowpipeRes, totalGP, result] = await prisma.$transaction([
+				prisma.$queryRawUnsafe<
+					{ scales: number; dart: number; qty: number }[]
+				>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
 FROM users
 WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
-					prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
-					prisma.$queryRawUnsafe<{ banks: ItemBank }[]>(`SELECT
+				prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
+				prisma.$queryRawUnsafe<{ banks: ItemBank }[]>(`SELECT
 				json_object_agg(itemID, itemQTY)::jsonb as banks
 			 from (
 				select key as itemID, sum(value::bigint) as itemQTY
@@ -174,39 +174,39 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 				cross join json_each_text(bank)
 				group by key
 			 ) s;`)
-				]);
-				const totalBank: ItemBank = result[0].banks;
-				const economyBank = new Bank(totalBank);
-				economyBank.add('Coins', totalGP[0].sum);
+			]);
+			const totalBank: ItemBank = result[0].banks;
+			const economyBank = new Bank(totalBank);
+			economyBank.add('Coins', totalGP[0].sum);
 
-				const allPets = await allEquippedPets();
-				economyBank.add(allPets);
+			const allPets = await allEquippedPets();
+			economyBank.add(allPets);
 
-				for (const { dart, scales, qty } of blowpipeRes) {
-					economyBank.add("Zulrah's scales", scales);
-					economyBank.add(dart, qty);
-				}
-				return {
-					files: [
-						await makeBankImage({ bank: economyBank }),
-						{
-							name: 'bank.json',
-							buffer: Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4))
-						}
-					]
-				};
+			for (const { dart, scales, qty } of blowpipeRes) {
+				economyBank.add("Zulrah's scales", scales);
+				economyBank.add(dart, qty);
 			}
-		},
-		{
-			name: 'Equipped Pets',
-			run: async () => {
-				return allEquippedPets();
-			}
-		},
-		{
-			name: 'Most Active',
-			run: async () => {
-				const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
+			return {
+				files: [
+					await makeBankImage({ bank: economyBank }),
+					{
+						name: 'bank.json',
+						buffer: Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4))
+					}
+				]
+			};
+		}
+	},
+	{
+		name: 'Equipped Pets',
+		run: async () => {
+			return allEquippedPets();
+		}
+	},
+	{
+		name: 'Most Active',
+		run: async () => {
+			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
 SELECT sum(duration)::int as num, "new_user"."username", user_id
 FROM activity
 INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
@@ -215,77 +215,77 @@ GROUP BY user_id, "new_user"."username"
 ORDER BY num DESC
 LIMIT 10;
 `);
-				return {
-					content: `Most Active Users in past 48h\n${res
-						.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
-						.join('\n')}`
-				};
+			return {
+				content: `Most Active Users in past 48h\n${res
+					.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
+					.join('\n')}`
+			};
+		}
+	},
+	{
+		name: 'Grand Exchange',
+		run: async () => {
+			const settings = await GrandExchange.fetchData();
+
+			const allTx: string[][] = [];
+			const allTransactions = await prisma.gETransaction.findMany({
+				orderBy: {
+					created_at: 'desc'
+				}
+			});
+			if (allTransactions.length > 0) {
+				allTx.push(Object.keys(allTransactions[0]));
+				for (const tx of allTransactions) {
+					allTx.push(Object.values(tx).map(i => i.toString()));
+				}
 			}
-		},
-		{
-			name: 'Grand Exchange',
-			run: async () => {
-				const settings = await GrandExchange.fetchData();
 
-				const allTx: string[][] = [];
-				const allTransactions = await prisma.gETransaction.findMany({
-					orderBy: {
-						created_at: 'desc'
-					}
-				});
-				if (allTransactions.length > 0) {
-					allTx.push(Object.keys(allTransactions[0]));
-					for (const tx of allTransactions) {
-						allTx.push(Object.values(tx).map(i => i.toString()));
-					}
+			const allLi: string[][] = [];
+			const allListings = await prisma.gEListing.findMany({
+				orderBy: {
+					created_at: 'desc'
 				}
-
-				const allLi: string[][] = [];
-				const allListings = await prisma.gEListing.findMany({
-					orderBy: {
-						created_at: 'desc'
-					}
-				});
-				if (allListings.length > 0) {
-					allLi.push(Object.keys(allListings[0]));
-					for (const tx of allListings) {
-						allLi.push(Object.values(tx).map(i => (i === null ? '' : i.toString())));
-					}
+			});
+			if (allListings.length > 0) {
+				allLi.push(Object.keys(allListings[0]));
+				for (const tx of allListings) {
+					allLi.push(Object.values(tx).map(i => (i === null ? '' : i.toString())));
 				}
+			}
 
-				const buyLimitInterval = GrandExchange.getInterval();
-				return {
-					content: `**Grand Exchange Data**
+			const buyLimitInterval = GrandExchange.getInterval();
+			return {
+				content: `**Grand Exchange Data**
 
 The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every ${formatDuration(
-						GrandExchange.config.buyLimit.interval
-					)}.
+					GrandExchange.config.buyLimit.interval
+				)}.
 **Tax Rate:** ${GrandExchange.config.tax.rate()}%
 **Tax Cap (per item):** ${toKMB(GrandExchange.config.tax.cap())}
 **Total GP Removed From Taxation:** ${settings.totalTax.toLocaleString()} GP
 **Total Tax GP G.E Has To Spend on Item Sinks:** ${settings.taxBank.toLocaleString()} GP
 `,
-					files: [
-						await makeBankImage({
-							bank: await GrandExchange.fetchOwnedBank(),
-							title: 'Items in the G.E'
-						}),
-						{
-							name: 'transactions.txt',
-							buffer: Buffer.from(allTx.map(i => i.join('\t')).join('\n'))
-						},
-						{
-							name: 'listings.txt',
-							buffer: Buffer.from(allLi.map(i => i.join('\t')).join('\n'))
-						}
-					]
-				};
-			}
-		},
-		{
-			name: 'Buy GP Sinks',
-			run: async () => {
-				const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: bigint }[]>(`SELECT
+				files: [
+					await makeBankImage({
+						bank: await GrandExchange.fetchOwnedBank(),
+						title: 'Items in the G.E'
+					}),
+					{
+						name: 'transactions.txt',
+						buffer: Buffer.from(allTx.map(i => i.join('\t')).join('\n'))
+					},
+					{
+						name: 'listings.txt',
+						buffer: Buffer.from(allLi.map(i => i.join('\t')).join('\n'))
+					}
+				]
+			};
+		}
+	},
+	{
+		name: 'Buy GP Sinks',
+		run: async () => {
+			const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: bigint }[]>(`SELECT
   key AS item_id,
   sum((cost_gp / total_items) * value::integer) AS total_gp_spent
 FROM
@@ -302,59 +302,61 @@ LIMIT
   20;
 `);
 
-				return {
-					content: result
-						.map(
-							(row, index) =>
-								`${index + 1}. ${Items.getOrThrow(Number(row.item_id)).name
-								} - ${row.total_gp_spent.toLocaleString()} GP`
-						)
-						.join('\n')
-				};
-			}
-		},
-		{
-			name: 'Sell GP Sources',
-			run: async () => {
-				const result = await prisma.$queryRawUnsafe<
-					{ item_id: number; gp: number }[]
-				>(`select item_id, sum(gp_received) as gp
+			return {
+				content: result
+					.map(
+						(row, index) =>
+							`${index + 1}. ${
+								Items.getOrThrow(Number(row.item_id)).name
+							} - ${row.total_gp_spent.toLocaleString()} GP`
+					)
+					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Sell GP Sources',
+		run: async () => {
+			const result = await prisma.$queryRawUnsafe<
+				{ item_id: number; gp: number }[]
+			>(`select item_id, sum(gp_received) as gp
 from bot_item_sell
 group by item_id
 order by gp desc
 limit 80;
 `);
 
-				const totalGPGivenOut = await prisma.$queryRawUnsafe<
-					{ total_gp_given_out: number }[]
-				>(`select sum(gp_received) as total_gp_given_out
+			const totalGPGivenOut = await prisma.$queryRawUnsafe<
+				{ total_gp_given_out: number }[]
+			>(`select sum(gp_received) as total_gp_given_out
 from bot_item_sell;`);
 
-				return {
-					files: [
-						{
-							name: 'output.txt',
-							buffer: Buffer.from(
-								result
-									.map(
-										(row, index) =>
-											`${index + 1}. ${Items.getOrThrow(Number(row.item_id)).name
-											} - ${row.gp.toLocaleString()} GP (${calcWhatPercent(
-												row.gp,
-												totalGPGivenOut[0].total_gp_given_out
-											).toFixed(1)}%)`
-									)
-									.join('\n')
-							)
-						}
-					]
-				};
-			}
-		},
-		{
-			name: 'Max G.E Slot users',
-			run: async () => {
-				const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
+			return {
+				files: [
+					{
+						name: 'output.txt',
+						buffer: Buffer.from(
+							result
+								.map(
+									(row, index) =>
+										`${index + 1}. ${
+											Items.getOrThrow(Number(row.item_id)).name
+										} - ${row.gp.toLocaleString()} GP (${calcWhatPercent(
+											row.gp,
+											totalGPGivenOut[0].total_gp_given_out
+										).toFixed(1)}%)`
+								)
+								.join('\n')
+						)
+					}
+				]
+			};
+		}
+	},
+	{
+		name: 'Max G.E Slot users',
+		run: async () => {
+			const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
 SELECT user_id, COUNT(*)::int AS slots_used
 FROM ge_listing
 WHERE cancelled_at IS NULL AND fulfilled_at IS NULL
@@ -362,18 +364,18 @@ GROUP BY user_id
 HAVING COUNT(*) >= 3
 ORDER BY slots_used DESC;
 `);
-				let usersUsingAllSlots = 0;
-				for (const row of res) {
-					const user = await mUserFetch(row.user_id);
-					const { slots } = await GrandExchange.calculateSlotsOfUser(user);
-					if (row.slots_used >= slots) usersUsingAllSlots++;
-				}
-				return {
-					content: `There are ${usersUsingAllSlots}x users using all their G.E slots.`
-				};
+			let usersUsingAllSlots = 0;
+			for (const row of res) {
+				const user = await mUserFetch(row.user_id);
+				const { slots } = await GrandExchange.calculateSlotsOfUser(user);
+				if (row.slots_used >= slots) usersUsingAllSlots++;
 			}
+			return {
+				content: `There are ${usersUsingAllSlots}x users using all their G.E slots.`
+			};
 		}
-	];
+	}
+];
 
 export const adminCommand = defineCommand({
 	name: 'admin',
@@ -657,8 +659,9 @@ export const adminCommand = defineCommand({
 				badges: uniqueArr(newBadges)
 			});
 
-			return `${action === 'add' ? 'Added' : 'Removed'} ${badgeName} ${badges[badgeID]} badge to ${options.badges.user.user.username
-				}.`;
+			return `${action === 'add' ? 'Added' : 'Removed'} ${badgeName} ${badges[badgeID]} badge to ${
+				options.badges.user.user.username
+			}.`;
 		}
 
 		if (options.bypass_age) {
@@ -752,8 +755,9 @@ export const adminCommand = defineCommand({
 				bitfield: uniqueArr(newBits)
 			});
 
-			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit to ${options.bitfield.user.user.username
-				}.`;
+			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit to ${
+				options.bitfield.user.user.username
+			}.`;
 		}
 
 		if (options.shut_down) {
@@ -806,8 +810,9 @@ ${META_CONSTANTS.RENDERED_STR}`
 			const user = await mUserFetch(options.give_items.user.user.id);
 			await interaction.confirmation(`Are you sure you want to give ${items} to ${user.usernameOrMention}?`);
 			await globalClient.sendMessage(Channel.BotLogs, {
-				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${options.give_items.reason ?? 'No reason'
-					}`
+				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
+					options.give_items.reason ?? 'No reason'
+				}`
 			});
 
 			await user.addItemsToBank({ items, collectionLog: false });
@@ -824,8 +829,9 @@ ${META_CONSTANTS.RENDERED_STR}`
 FROM users
 WHERE bank->>'${item.id}' IS NOT NULL;`);
 			return `There are ${ownedResult[0].qty.toLocaleString()} ${item.name} owned by everyone.
-There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with at least 1 ${item.name
-				} in their collection log.`;
+There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with at least 1 ${
+				item.name
+			} in their collection log.`;
 		}
 
 		if (options.ltc) {

@@ -1,13 +1,6 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { randomVariation, roll } from '@oldschoolgg/rng';
-import {
-	calcWhatPercent,
-	formatDuration,
-	reduceNumByPercent,
-	round,
-	stringMatches,
-	Time
-} from '@oldschoolgg/toolkit';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, round, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -167,14 +160,14 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 		high_gambles:
 			name === 'High'
 				? {
-					increment: quantity
-				}
+						increment: quantity
+					}
 				: undefined
 	});
 	const loot = new Bank().add(table.roll(quantity));
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
+	const str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
 
 	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
@@ -240,10 +233,11 @@ export async function barbAssaultStartCommand(channelId: string, user: MUser) {
 
 	boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
 
-	let str = `${user.minionName
-		} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
-			waveTime
-		)} - the total trip will take ${formatDuration(duration)}.`;
+	let str = `${
+		user.minionName
+	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
+		waveTime
+	)} - the total trip will take ${formatDuration(duration)}.`;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

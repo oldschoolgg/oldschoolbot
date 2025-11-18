@@ -47,8 +47,10 @@ export const wintertodtTask: MinionTask = {
 		if (loot.has('Phoenix')) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${user.minionName
-				}, just received a Phoenix! Their Wintertodt KC is ${newScore
+				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${
+					user.minionName
+				}, just received a Phoenix! Their Wintertodt KC is ${
+					newScore
 				}, and their Firemaking level is ${user.skillsAsLevels.firemaking}.`
 			);
 		}

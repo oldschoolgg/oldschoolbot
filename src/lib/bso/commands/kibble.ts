@@ -111,8 +111,9 @@ export const kibbleCommand = defineCommand({
 			kibbleType: kibble.type
 		});
 
-		let message = `${user.minionName} is now creating ${options.quantity}x ${kibble.item.name
-			}, it will take ${formatDuration(duration)}. Removed ${cost} from your bank.`;
+		let message = `${user.minionName} is now creating ${options.quantity}x ${
+			kibble.item.name
+		}, it will take ${formatDuration(duration)}. Removed ${cost} from your bank.`;
 		if (user.usingPet('Remy')) {
 			message += '\n**Boosts:** 2x boost for Remy';
 		}

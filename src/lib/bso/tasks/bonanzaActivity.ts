@@ -71,17 +71,20 @@ export const bonanzaTask: MinionTask = {
 			messages.push("You found a Giant's hand!");
 		}
 
-		let str = `${user}, ${user.minionName
-			} finished participating in Balthazar's Big Bonanza, you received ${loot} and ${xpStrs.join(
-				', '
-			)}. You have participated ${incrementResult.newScore} times, come back in a week!`;
+		let str = `${user}, ${
+			user.minionName
+		} finished participating in Balthazar's Big Bonanza, you received ${loot} and ${xpStrs.join(
+			', '
+		)}. You have participated ${incrementResult.newScore} times, come back in a week!`;
 
 		if (messages.length > 0) {
 			str += `\n\n**Messages:** ${messages.join(', ')}`;
 		}
 
 		await user.transactItems({
-			itemsToAdd: loot, collectionLog: true, otherUpdates: {
+			itemsToAdd: loot,
+			collectionLog: true,
+			otherUpdates: {
 				last_bonanza_date: new Date()
 			}
 		});

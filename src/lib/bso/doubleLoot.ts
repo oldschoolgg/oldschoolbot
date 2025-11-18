@@ -1,7 +1,7 @@
+import { roleMention } from '@oldschoolgg/discord';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import { Channel, Roles } from '@/lib/constants.js';
-import { roleMention } from '@oldschoolgg/discord';
 
 export let DOUBLE_LOOT_FINISH_TIME_CACHE = 0;
 
@@ -28,9 +28,9 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 			amount
 		)} added to the Double Loot timer because: ${reason}. 🎉`,
 		allowedMentions: { roles: [Roles.BSODoubleLoot] }
-	})
+	});
 
-	syncPrescence();
+	await syncPrescence();
 }
 
 export async function addPatronLootTime(_tier: number, user: MUser | null) {
@@ -45,7 +45,7 @@ export async function addPatronLootTime(_tier: number, user: MUser | null) {
 	if (!map[tier]) return;
 	const minutes = map[tier];
 	const timeAdded = Math.floor(Time.Minute * minutes);
-	addToDoubleLootTimer(timeAdded, `${user ?? 'Someone'} became a Tier ${tier} sponsor`);
+	await addToDoubleLootTimer(timeAdded, `${user ?? 'Someone'} became a Tier ${tier} sponsor`);
 }
 
 export async function syncDoubleLoot() {

@@ -30,7 +30,10 @@ const {
 	LuckyImpling
 } = Openables;
 
-export const implings: Record<number, { level: number; catchXP: number; customRequirements?: (user: MUser) => Promise<boolean> }> = {
+export const implings: Record<
+	number,
+	{ level: number; catchXP: number; customRequirements?: (user: MUser) => Promise<boolean> }
+> = {
 	[BabyImpling.id]: { level: 17, catchXP: 18 },
 	[YoungImpling.id]: { level: 22, catchXP: 20 },
 	[GourmetImpling.id]: { level: 28, catchXP: 22 },
@@ -56,7 +59,11 @@ export const implings: Record<number, { level: number; catchXP: number; customRe
 	},
 	[InfernalImpling.id]: { level: 94, catchXP: 80 },
 	[ShrimplingImpling.id]: { level: 97, catchXP: 80 },
-	[EternalImpling.id]: { level: 99, catchXP: 80, customRequirements: async user => user.hasEquippedOrInBank('Vasa cloak') },
+	[EternalImpling.id]: {
+		level: 99,
+		catchXP: 80,
+		customRequirements: async user => user.hasEquippedOrInBank('Vasa cloak')
+	},
 	[MysteryImpling.id]: { level: 105, catchXP: 80 }
 };
 export const implingsCL = objectEntries(implings).map(m => Number(m[0]));

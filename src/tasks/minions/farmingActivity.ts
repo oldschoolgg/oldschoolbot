@@ -152,8 +152,9 @@ export const farmingTask: MinionTask = {
 
 			loot.add('Weeds', quantity * 3);
 
-			let str = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${plant.name
-				}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
+			let str = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${
+				plant.name
+			}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
 
 			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 			if (bonusXP > 0) {
@@ -248,8 +249,8 @@ export const farmingTask: MinionTask = {
 						Math.floor(
 							Math.floor(
 								plantToHarvest.chance1 +
-								(plantToHarvest.chance99 - plantToHarvest.chance1) *
-								((currentFarmingLevel - 1) / 98)
+									(plantToHarvest.chance99 - plantToHarvest.chance1) *
+										((currentFarmingLevel - 1) / 98)
 							) * baseBonus
 						) + 1;
 					const chanceToSaveLife = Math.min(0.95, (plantChanceFactor + 1) / 256);
@@ -315,7 +316,7 @@ export const farmingTask: MinionTask = {
 				if (plantToHarvest.givesLogs && chopped) {
 					assert(
 						typeof plantToHarvest.outputLogs === 'number' &&
-						typeof plantToHarvest.woodcuttingXp === 'number'
+							typeof plantToHarvest.woodcuttingXp === 'number'
 					);
 
 					const amountOfLogs = rng.randInt(5, 10) * alivePlants;
@@ -379,8 +380,10 @@ export const farmingTask: MinionTask = {
 			});
 
 			infoStr.push(
-				`${plantingStr}harvesting ${patchType.lastQuantity}x ${plantToHarvest.name
-				}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health. In total: ${xpRes}. ${wcBool ? wcXP : ''
+				`${plantingStr}harvesting ${patchType.lastQuantity}x ${
+					plantToHarvest.name
+				}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health. In total: ${xpRes}. ${
+					wcBool ? wcXP : ''
 				}`
 			);
 
@@ -590,7 +593,8 @@ export const farmingTask: MinionTask = {
 			if (janeMessage) {
 				message.addChatHeadImage(
 					'jane',
-					`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${contractsCompleted + 1
+					`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+						contractsCompleted + 1
 					} farming contracts.`
 				);
 			}

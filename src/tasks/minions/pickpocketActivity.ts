@@ -153,20 +153,24 @@ export const pickpocketTask: MinionTask = {
 		const txResult = await updateBank.transactWithItemsOrThrow(user);
 		const xpRes = await user.addXP({ skillName: 'thieving', amount: xpReceived, duration });
 
-		let str = `${user}, ${user.minionName} finished ${obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
-			} from ${obj.name} ${successfulQuantity}x times, due to failures you missed out on ${quantity - successfulQuantity
-			}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${
+			obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
+		} from ${obj.name} ${successfulQuantity}x times, due to failures you missed out on ${
+			quantity - successfulQuantity
+		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
 
 		if (gotWil) {
 			str +=
 				'<:wilvus:787320791011164201> A raccoon saw you thieving and partners with you to help you steal more stuff!';
 		}
 
-		str += `\n${obj.type === 'pickpockable'
+		str += `\n${
+			obj.type === 'pickpockable'
 				? ''
-				: `${100 - obj.lootPercent!
-				}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
-			}`;
+				: `${
+						100 - obj.lootPercent!
+					}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
+		}`;
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';

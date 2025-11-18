@@ -1,7 +1,7 @@
 import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { calculateBathouseResult } from '@/lib/bso/minigames/baxtorianBathhouses.js';
-import { userMention } from '@oldschoolgg/discord';
 
+import { userMention } from '@oldschoolgg/discord';
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
 import { resolveItems } from 'oldschooljs';
@@ -45,11 +45,13 @@ export const bathhouseTask: MinionTask = {
 		const uniqSpecies = uniqueArr(speciesServed);
 		await ClientSettings.updateBankSetting('bb_loot', loot);
 
-
-		const message = new MessageBuilder().setContent(`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${uniqSpecies.length
-			} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.${gaveExtraTips
-				? `\nYou got extra tips from ${gaveExtraTips.name} for using their preferred water mixture.`
-				: ''
+		const message = new MessageBuilder()
+			.setContent(`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${
+				uniqSpecies.length
+			} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.${
+				gaveExtraTips
+					? `\nYou got extra tips from ${gaveExtraTips.name} for using their preferred water mixture.`
+					: ''
 			}
 ${xpStr}`)
 			.addBankImage({
@@ -58,14 +60,12 @@ ${xpStr}`)
 				user,
 				previousCL
 			});
-		return handleTripFinish(
-			{
-				user,
-				channelId,
-				data,
-				loot,
-				message
-			}
-		);
+		return handleTripFinish({
+			user,
+			channelId,
+			data,
+			loot,
+			message
+		});
 	}
 };

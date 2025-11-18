@@ -1,3 +1,6 @@
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+
 import type { GatewayMessageCreateDispatchData } from '@oldschoolgg/discord';
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { randArrItem, roll, shuffleArr } from '@oldschoolgg/rng';
@@ -9,12 +12,10 @@ import { globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import Createables from '@/lib/data/createables.js';
 import killableMonsters from '../minions/data/killableMonsters/index.js';
-
-import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
-import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { LampTable } from './xpLamps.js';
 
-const MYSTERY_BOX_THUMBNAIL = 'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png';
+const MYSTERY_BOX_THUMBNAIL =
+	'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png';
 
 async function runChallenge({
 	msg,
@@ -96,12 +97,13 @@ const createdChallenge: Challenge = async (msg: IMessage): Promise<MUser | null>
 
 	return runChallenge({
 		msg,
-		description: `What item is created using these? ${isFunction(randomCreatable.inputItems)
-			? "This shouldn't be possible..."
-			: randomCreatable.inputItems instanceof Bank
-				? randomCreatable.inputItems
-				: new Bank(randomCreatable.inputItems)
-			}`,
+		description: `What item is created using these? ${
+			isFunction(randomCreatable.inputItems)
+				? "This shouldn't be possible..."
+				: randomCreatable.inputItems instanceof Bank
+					? randomCreatable.inputItems
+					: new Bank(randomCreatable.inputItems)
+		}`,
 		filter: _msg => stringMatches(_msg.content, randomCreatable.name),
 		timeoutMessage: `Nobody answered in time, sorry! The correct answer was: ${randomCreatable.name}`
 	});

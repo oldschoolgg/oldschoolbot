@@ -1,3 +1,4 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
 import { Emoji } from '@oldschoolgg/toolkit';
@@ -5,7 +6,6 @@ import { Bank } from 'oldschooljs';
 
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 
 export const questingTask: MinionTask = {
 	type: 'Questing',
@@ -24,9 +24,11 @@ export const questingTask: MinionTask = {
 			qpReceived -= newQP - MAX_QP;
 		}
 
-		let str = `${user}, ${user.minionName
-			} finished questing, you received ${qpReceived.toLocaleString()} QP. Your current QP is ${currentQP + qpReceived
-			}.`;
+		let str = `${user}, ${
+			user.minionName
+		} finished questing, you received ${qpReceived.toLocaleString()} QP. Your current QP is ${
+			currentQP + qpReceived
+		}.`;
 
 		const hasMaxQP = newQP >= MAX_QP;
 		if (hasMaxQP) {
@@ -46,8 +48,7 @@ export const questingTask: MinionTask = {
 		}
 
 		if (rng.roll(globalDroprates.zippyQuesting.baseRate)) {
-			str +=
-				`\n${BSOEmoji.Zippy} While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!`;
+			str += `\n${BSOEmoji.Zippy} While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!`;
 			await user.addItemsToBank({ items: new Bank().add('Zippy'), collectionLog: true });
 		}
 

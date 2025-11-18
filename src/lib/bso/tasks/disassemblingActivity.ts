@@ -2,8 +2,8 @@ import type { DisassembleTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { inventionBoosts, transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { userMention } from '@oldschoolgg/discord';
+import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 export const disassemblingTask: MinionTask = {
@@ -41,8 +41,9 @@ export const disassemblingTask: MinionTask = {
 			masterCapeBoost: true
 		});
 
-		let str = `${userMention(data.userID)}, ${user.minionName
-			} finished disassembling ${cost}. You received these materials: ${materialLoot}.
+		let str = `${userMention(data.userID)}, ${
+			user.minionName
+		} finished disassembling ${cost}. You received these materials: ${materialLoot}.
 ${xpStr}`;
 
 		const loot = new Bank();

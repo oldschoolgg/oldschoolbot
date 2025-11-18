@@ -84,8 +84,9 @@ export const vmTask: MinionTask = {
 		// 4x Loot for having doug helping, as it helps mining more fragments
 		if (flappyRes.shouldGiveBoost) loot.multiply(2);
 
-		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${loot.length > 0 ? `\nYou received ${loot}` : ''
-			}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
+		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
+			loot.length > 0 ? `\nYou received ${loot}` : ''
+		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
 
 		if (flappyRes.userMsg) {
 			str += `\n${flappyRes.userMsg}`;

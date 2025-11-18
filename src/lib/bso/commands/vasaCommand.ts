@@ -1,12 +1,12 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
-import { EmbedBuilder } from '@oldschoolgg/discord';
 
 export const vasaBISGear = new Gear({
 	head: 'Gorajan occult helmet',
@@ -21,12 +21,7 @@ export const vasaBISGear = new Gear({
 	neck: 'Arcane blast necklace'
 });
 
-export async function vasaCommand(
-	interaction: MInteraction,
-	user: MUser,
-	channelId: string,
-	quantity?: number
-) {
+export async function vasaCommand(interaction: MInteraction, user: MUser, channelId: string, quantity?: number) {
 	const instance = new BossInstance({
 		interaction,
 		leader: user,

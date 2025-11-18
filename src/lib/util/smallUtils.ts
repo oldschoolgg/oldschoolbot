@@ -105,11 +105,11 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 export function isValidNickname(str?: string) {
 	return Boolean(
 		str &&
-		typeof str === 'string' &&
-		str.length >= 2 &&
-		str.length <= 30 &&
-		['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
-		stripEmojis(str).length === str.length
+			typeof str === 'string' &&
+			str.length >= 2 &&
+			str.length <= 30 &&
+			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
+			stripEmojis(str).length === str.length
 	);
 }
 
@@ -139,8 +139,9 @@ export function perHourChance(
 	}
 }
 export function patronMsg(tierNeeded: number) {
-	return `You need to be a Tier ${tierNeeded - 1
-		} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
+	return `You need to be a Tier ${
+		tierNeeded - 1
+	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
 }
 
 export function isValidBitField(bit: number): bit is BitField {

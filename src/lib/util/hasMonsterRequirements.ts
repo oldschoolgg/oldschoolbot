@@ -1,15 +1,16 @@
+import { BSOMonstersMap } from '@/lib/bso/monsters/customMonsters.js';
+
 import { bold } from '@oldschoolgg/discord';
 import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { GearStat, Items } from 'oldschooljs';
 
+import type { GearSetupType } from '@/prisma/main.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
+import { addStatsOfItemsTogether } from '@/lib/structures/Gear.js';
 import { formatItemReqs, formatList, hasSkillReqs, readableStatName } from '@/lib/util/smallUtils.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
-import { BSOMonstersMap } from '@/lib/bso/monsters/customMonsters.js';
-import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { addStatsOfItemsTogether } from '@/lib/structures/Gear.js';
-import type { GearSetupType } from '@/prisma/main.js';
 
 function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	const str = [];
@@ -79,7 +80,8 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			if (set.required && !equippedInThisSet) {
 				return [
 					false,
-					`You need one of these items equipped in your ${set.gearSetup} setup to kill ${monster.name
+					`You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+						monster.name
 					}: ${set.items
 						.map(i => i.itemID)
 						.map(i => Items.itemNameFromId(i))
@@ -135,7 +137,8 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 						false,
 						`You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
 							unmetKey!
-						)} stat in your ${setup} setup is ${has}, but you need at least ${monster.minimumGearRequirements[setup]?.[unmetKey!]
+						)} stat in your ${setup} setup is ${has}, but you need at least ${
+							monster.minimumGearRequirements[setup]?.[unmetKey!]
 						}.`
 					];
 				}
@@ -232,8 +235,9 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		monster.projectileUsage?.requiredAmmo &&
 		(!rangeAmmo || !monster.projectileUsage?.requiredAmmo.includes(rangeAmmo))
 	) {
-		return `You need to be using one of these projectiles to fight ${monster.name
-			}: ${monster.projectileUsage.requiredAmmo.map(i => Items.itemNameFromId(i)).join(', ')}.`;
+		return `You need to be using one of these projectiles to fight ${
+			monster.name
+		}: ${monster.projectileUsage.requiredAmmo.map(i => Items.itemNameFromId(i)).join(', ')}.`;
 	}
 
 	return [true];

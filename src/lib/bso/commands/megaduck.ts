@@ -1,6 +1,6 @@
 import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/bso/megaDuck.js';
 
-import { Events, } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
@@ -26,14 +26,16 @@ function locationIsFinished(location: MegaDuckLocation) {
 }
 
 async function topFeeders(entries: any[]) {
-	const users = await Promise.all([...entries]
-		.sort((a, b) => b[1] - a[1])
-		.slice(0, 10).map(async u => {
-			const username = await Cache.getBadgedUsername(u[0]);
-			return { username, count: u[1] };
-		}));
-	return `Top 10 Feeders: ${users.map(ent => `${ent.username}. ${ent.count}`)
-			.join(', ')}`;
+	const users = await Promise.all(
+		[...entries]
+			.sort((a, b) => b[1] - a[1])
+			.slice(0, 10)
+			.map(async u => {
+				const username = await Cache.getBadgedUsername(u[0]);
+				return { username, count: u[1] };
+			})
+	);
+	return `Top 10 Feeders: ${users.map(ent => `${ent.username}. ${ent.count}`).join(', ')}`;
 }
 
 const directions = ['up', 'down', 'left', 'right'] as const;
@@ -116,7 +118,7 @@ export const megaDuckCommand = defineCommand({
 	name: 'megaduck',
 	description: 'Mega duck!.',
 	attributes: {
-		requiresMinion: true,
+		requiresMinion: true
 	},
 	options: [
 		{
@@ -134,7 +136,7 @@ export const megaDuckCommand = defineCommand({
 		}
 	],
 	run: async ({ options, user, guildId, interaction, userId }) => {
-		if (!guildId) return ('You can only run this in a guild.');
+		if (!guildId) return 'You can only run this in a guild.';
 
 		const settings = await prisma.guild.upsert({
 			where: {
@@ -174,21 +176,22 @@ export const megaDuckCommand = defineCommand({
 		const { image } = await makeImage(location);
 		if (!direction) {
 			return {
-				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${location.usersParticipated[user.id] ?? 0
-					} times. ${await topFeeders(Object.entries(location.usersParticipated))}`,
+				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
+					location.usersParticipated[user.id] ?? 0
+				} times. ${await topFeeders(Object.entries(location.usersParticipated))}`,
 				files: [{ buffer: image, name: 'megaduck.png' }]
 			};
 		}
 
 		const cost = new Bank().add('Breadcrumbs');
 		if (!user.owns(cost)) {
-			return (`${user} The Mega Duck won't move for you, it wants some food.`);
+			return `${user} The Mega Duck won't move for you, it wants some food.`;
 		}
 
 		let newLocation = applyDirection(location, direction);
 		const newLocationResult = await makeImage(newLocation);
 		if (newLocationResult.currentColor[3] !== 0) {
-			return ("You can't move here.");
+			return "You can't move here.";
 		}
 
 		if (newLocation.usersParticipated[user.id]) {
@@ -227,7 +230,7 @@ export const megaDuckCommand = defineCommand({
 				try {
 					const user = await mUserFetch(id);
 					await user.addItemsToBank({ items: loot, collectionLog: true });
-				} catch { }
+				} catch {}
 			}
 			const newT: MegaDuckLocation = {
 				...newLocation,
@@ -241,15 +244,18 @@ export const megaDuckCommand = defineCommand({
 			const guild = await globalClient.fetchGuild(guildId).catch(() => null);
 			globalClient.emit(
 				Events.ServerNotification,
-				`The ${guild?.name ?? 'Unknown'} server just returned Mega Duck into the ocean with Mrs Duck, ${Object.keys(newLocation.usersParticipated).length
+				`The ${guild?.name ?? 'Unknown'} server just returned Mega Duck into the ocean with Mrs Duck, ${
+					Object.keys(newLocation.usersParticipated).length
 				} users received a Baby duckling pet. ${topFeeders(entries)}`
 			);
-			return `Mega duck has arrived at his destination! ${Object.keys(newLocation.usersParticipated).length
-				} users received a Baby duckling pet. ${topFeeders(entries)}`;
+			return `Mega duck has arrived at his destination! ${
+				Object.keys(newLocation.usersParticipated).length
+			} users received a Baby duckling pet. ${topFeeders(entries)}`;
 		}
 		return {
-			content: `${user} You moved Mega Duck ${direction}! You've moved him ${newLocation.usersParticipated[user.id]
-				} times. Removed ${cost} from your bank.${str}`,
+			content: `${user} You moved Mega Duck ${direction}! You've moved him ${
+				newLocation.usersParticipated[user.id]
+			} times. Removed ${cost} from your bank.${str}`,
 			files: location.steps?.length % 2 === 0 ? [{ buffer: image, name: 'megaduck.png' }] : []
 		};
 	}

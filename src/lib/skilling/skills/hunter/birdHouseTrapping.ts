@@ -1,8 +1,9 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem, Items, LootTable } from 'oldschooljs';
 
 import { nestTable, strungRabbitFootNestTable } from '@/lib/simulation/birdsNest.js';
-import { BSOItem } from '@/lib/bso/BSOItem.js';
 
 export interface Birdhouse {
 	name: string;

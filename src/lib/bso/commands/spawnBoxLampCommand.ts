@@ -3,12 +3,12 @@ import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { LampTable } from '@/lib/bso/xpLamps.js';
 
+import { userMention } from '@oldschoolgg/discord';
 import { randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, PerkTier, Time } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, itemID } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
-import { userMention } from '@oldschoolgg/discord';
 
 export async function spawnLampIsReady(user: MUser, channelId: string): Promise<[true] | [false, string]> {
 	if (![Channel.GeneralChannel, Channel.ServerGeneral].includes(channelId)) {
@@ -89,7 +89,7 @@ export async function spawnLampCommand(user: MUser, interaction: MInteraction): 
 	const messages = await globalClient.awaitMessages({
 		channelId: interaction.channelId,
 		time: Time.Minute,
-		filter: (m) => answers.includes(m.content),
+		filter: m => answers.includes(m.content)
 	});
 
 	if (!messages[0]) return `Nobody got it. ${explainAnswer}`;
@@ -122,7 +122,7 @@ export async function spawnBoxCommand(user: MUser, interaction: MInteraction): C
 	const messages = await globalClient.awaitMessages({
 		channelId: interaction.channelId,
 		time: Time.Minute,
-		filter: (m) => answers.includes(m.content),
+		filter: m => answers.includes(m.content)
 	});
 	if (!messages[0]) return `Nobody got it. ${explainAnswer}`;
 	const winner = await mUserFetch(messages[0].author.id);

@@ -216,15 +216,13 @@ export const memoryHarvestTask: MinionTask = {
 
 		if (cost.length > 0) {
 			if (!user.owns(cost)) {
-				return handleTripFinish(
-					{
-						user,
-						channelId,
-						message: `${user}, ${user.minionName} couldn't complete the trip because they didn't have the required items: ${cost}.`,
-						data,
-						loot
-					}
-				);
+				return handleTripFinish({
+					user,
+					channelId,
+					message: `${user}, ${user.minionName} couldn't complete the trip because they didn't have the required items: ${cost}.`,
+					data,
+					loot
+				});
 			}
 			await user.removeItemsFromBank(cost);
 		}
@@ -236,9 +234,11 @@ export const memoryHarvestTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished harvesting ${totalMemoriesHarvested.toLocaleString()}x ${energy.type
-			} memories, and turning them into ${harvestMethodIndex === MemoryHarvestType.ConvertToEnergy ? 'energies' : 'XP'
-			}. ${xpRes}.`;
+		let str = `${user}, ${user.minionName} finished harvesting ${totalMemoriesHarvested.toLocaleString()}x ${
+			energy.type
+		} memories, and turning them into ${
+			harvestMethodIndex === MemoryHarvestType.ConvertToEnergy ? 'energies' : 'XP'
+		}. ${xpRes}.`;
 
 		if (loot.length > 0) {
 			await user.statsBankUpdate('divination_loot', loot);

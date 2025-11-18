@@ -5,9 +5,9 @@ import type PromiseQueue from 'p-queue';
 import PQueue from 'p-queue';
 
 import type { Giveaway } from '@/prisma/main.js';
+import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { MarketPriceData } from '@/lib/marketPrices.js';
-import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
 
 export const lastRoboChimpSyncCache = new Map<string, number>();
 

@@ -102,8 +102,9 @@ export const tobTask: MinionTask = {
 			// 100k tax if they wipe
 			if (wipedRoom !== null) {
 				wipeCount++;
-				resultMessage += `\n Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
-					}`;
+				resultMessage += `\n Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${
+					diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
+				}`;
 				// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
 				globalTobCost.add('Coins', users.length * 100_000);
 				continue;
@@ -164,8 +165,9 @@ export const tobTask: MinionTask = {
 				const lootStr = userLoot.remove('Coins', 100_000).toString();
 				const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `${lootStr}`;
 
-				resultMessage += `\n ${deathStr}**${user}** ${chincannonUser ? 'had this loot blown up' : 'received'
-					}: ${str} ${xpResult}`;
+				resultMessage += `\n ${deathStr}**${user}** ${
+					chincannonUser ? 'had this loot blown up' : 'received'
+				}: ${str} ${xpResult}`;
 
 				if (raidId < quantity) {
 					resultMessage += '\n';
@@ -230,16 +232,16 @@ export const tobTask: MinionTask = {
 		if (users.length === 1) {
 			const image = shouldShowImage
 				? await drawChestLootImage({
-					entries: [
-						{
-							loot: totalLoot.remove('Coins', raidId * 100_000),
-							user: allUsers[0],
-							previousCL: previousCLs[0],
-							customTexts: []
-						}
-					],
-					type: 'Theatre of Blood'
-				})
+						entries: [
+							{
+								loot: totalLoot.remove('Coins', raidId * 100_000),
+								user: allUsers[0],
+								previousCL: previousCLs[0],
+								customTexts: []
+							}
+						],
+						type: 'Theatre of Blood'
+					})
 				: undefined;
 			return handleTripFinish({
 				user: allUsers[0],
@@ -252,14 +254,14 @@ export const tobTask: MinionTask = {
 
 		const image = shouldShowImage
 			? await drawChestLootImage({
-				entries: allUsers.map((u, index) => ({
-					loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
-					user: u,
-					previousCL: previousCLs[index],
-					customTexts: []
-				})),
-				type: 'Theatre of Blood'
-			})
+					entries: allUsers.map((u, index) => ({
+						loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
+						user: u,
+						previousCL: previousCLs[index],
+						customTexts: []
+					})),
+					type: 'Theatre of Blood'
+				})
 			: undefined;
 
 		return handleTripFinish({

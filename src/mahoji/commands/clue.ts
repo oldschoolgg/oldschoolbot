@@ -406,8 +406,10 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			duration,
 			type: 'ClueCompletion'
 		});
-		return `${user.minionName} is now completing ${quantity}x ${clueTier.name
-			} clues, it'll take around ${formatDuration(duration)} to finish.${boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
-			}`;
+		return `${user.minionName} is now completing ${quantity}x ${
+			clueTier.name
+		} clues, it'll take around ${formatDuration(duration)} to finish.${
+			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
+		}`;
 	}
 });

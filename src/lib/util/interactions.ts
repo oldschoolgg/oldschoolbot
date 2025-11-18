@@ -78,7 +78,6 @@ export function makeNewSlayerTaskButton() {
 		.setEmoji({ id: EmojiId.Slayer });
 }
 
-
 export function makeShootingStarButton(size: number) {
 	return new ButtonBuilder()
 		.setCustomId(InteractionID.Commands.DoShootingStar)
@@ -91,7 +90,7 @@ export function makeTameRepeatTripButton() {
 	return new ButtonBuilder()
 		.setCustomId(InteractionID.Commands.RepeatTameTrip)
 		.setLabel('Repeat Tame Trip')
-		.setStyle(ButtonStyle.Secondary)
+		.setStyle(ButtonStyle.Secondary);
 }
 
 export function makeDonateIcButton(userId: string) {
@@ -99,7 +98,7 @@ export function makeDonateIcButton(userId: string) {
 		.setStyle(ButtonStyle.Primary)
 		.setLabel('Donate IC')
 		.setEmoji({ id: EmojiId.ItemContract })
-		.setCustomId(`DONATE_IC_${userId}`)
+		.setCustomId(`DONATE_IC_${userId}`);
 }
 
 export function makeSendICButton(itemName: string) {
@@ -107,7 +106,7 @@ export function makeSendICButton(itemName: string) {
 		.setCustomId(InteractionID.Commands.SendItemContract)
 		.setLabel(`IC: ${itemName.slice(0, 20)}`)
 		.setEmoji({ id: EmojiId.ItemContract })
-		.setStyle(ButtonStyle.Secondary)
+		.setStyle(ButtonStyle.Secondary);
 }
 
 export function makeSpawnLampButton() {
@@ -115,7 +114,7 @@ export function makeSpawnLampButton() {
 		.setCustomId(InteractionID.Commands.SpawnLamp)
 		.setLabel('Spawn Lamp')
 		.setEmoji({ id: EmojiId.HugeXPLamp })
-		.setStyle(ButtonStyle.Secondary)
+		.setStyle(ButtonStyle.Secondary);
 }
 
 export function makeosbBsoLeaguesButton() {
@@ -131,5 +130,5 @@ export function makeFishingContestButton() {
 		.setCustomId(InteractionID.Commands.DoFishingContest)
 		.setLabel('Fishing Contest')
 		.setEmoji({ id: EmojiId.Fishing })
-		.setStyle(ButtonStyle.Secondary)
+		.setStyle(ButtonStyle.Secondary);
 }

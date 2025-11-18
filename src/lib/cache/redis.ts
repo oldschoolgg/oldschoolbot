@@ -1,3 +1,5 @@
+import type { MegaDuckLocation } from '@/lib/bso/megaDuck.js';
+
 import {
 	type IChannel,
 	type IEmoji,
@@ -16,9 +18,8 @@ import type { Guild } from '@/prisma/main.js';
 import { MockedRedis } from '@/lib/cache/redis-mock.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
-import { fetchUsernameAndCache } from '@/lib/util.js';
-import type { MegaDuckLocation } from '@/lib/bso/megaDuck.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
+import { fetchUsernameAndCache } from '@/lib/util.js';
 
 type LockStatus = 'locked' | 'unlocked';
 
@@ -110,17 +111,17 @@ class CacheManager {
 		const guildSettings = await this.getGuildSettings(guildId);
 		const guild: IGuild = guildSettings
 			? {
-				id: guildSettings.id,
-				disabled_commands: guildSettings.disabledCommands,
-				petchannel: guildSettings.petchannel,
-				staff_only_channels: guildSettings.staffOnlyChannels
-			}
+					id: guildSettings.id,
+					disabled_commands: guildSettings.disabledCommands,
+					petchannel: guildSettings.petchannel,
+					staff_only_channels: guildSettings.staffOnlyChannels
+				}
 			: {
-				id: guildId,
-				disabled_commands: [],
-				petchannel: null,
-				staff_only_channels: []
-			};
+					id: guildId,
+					disabled_commands: [],
+					petchannel: null,
+					staff_only_channels: []
+				};
 
 		await this.setJson(BotKeys.GuildSettings(guild.id), guild);
 		return guild;
@@ -134,13 +135,17 @@ class CacheManager {
 				disabledCommands: updates.disabled_commands ?? undefined,
 				petchannel: updates.petchannel ?? undefined,
 				staffOnlyChannels: updates.staff_only_channels ?? undefined,
-				mega_duck_location: (updates.mega_duck_location) ? updates.mega_duck_location as any as PrismaCompatibleJsonObject : undefined
+				mega_duck_location: updates.mega_duck_location
+					? (updates.mega_duck_location as any as PrismaCompatibleJsonObject)
+					: undefined
 			},
 			update: {
 				disabledCommands: updates.disabled_commands ?? undefined,
 				petchannel: updates.petchannel ?? undefined,
 				staffOnlyChannels: updates.staff_only_channels ?? undefined,
-				mega_duck_location: (updates.mega_duck_location) ? updates.mega_duck_location as any as PrismaCompatibleJsonObject : undefined
+				mega_duck_location: updates.mega_duck_location
+					? (updates.mega_duck_location as any as PrismaCompatibleJsonObject)
+					: undefined
 			}
 		});
 

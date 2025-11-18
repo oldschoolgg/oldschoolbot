@@ -89,18 +89,18 @@ export const fishingTask: MinionTask = {
 		xpRes +=
 			agilityXpReceived > 0
 				? await user.addXP({
-					skillName: 'agility',
-					amount: agilityXpReceived,
-					duration
-				})
+						skillName: 'agility',
+						amount: agilityXpReceived,
+						duration
+					})
 				: '';
 		xpRes +=
 			strengthXpReceived > 0
 				? await user.addXP({
-					skillName: 'strength',
-					amount: strengthXpReceived,
-					duration
-				})
+						skillName: 'strength',
+						amount: strengthXpReceived,
+						duration
+					})
 				: '';
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;

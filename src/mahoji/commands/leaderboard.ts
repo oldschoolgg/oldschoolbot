@@ -21,7 +21,7 @@ async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolea
 	if (!monster) return "That's not a valid monster!";
 	const list = tame
 		? await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
-			`SELECT ta.user_id::text AS id, SUM((ta.data->>'quantity')::int) AS score
+				`SELECT ta.user_id::text AS id, SUM((ta.data->>'quantity')::int) AS score
                   FROM tame_activity ta
                   ${ironmanOnly ? 'INNER JOIN users u ON u.id = ta.user_id' : ''}
                  WHERE ta.completed = true
@@ -31,16 +31,16 @@ async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolea
                  GROUP BY ta.user_id
                  ORDER BY score DESC
                  LIMIT 2000;`
-		)
+			)
 		: await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
-			`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as score
+				`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as score
 		 FROM user_stats
 		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
 		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
 		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
 		 ORDER BY score DESC
 		 LIMIT 2000;`
-		);
+			);
 	const prefixParts: string[] = [];
 	if (tame) prefixParts.push('Tame');
 	if (ironmanOnly) prefixParts.push('Ironman');
@@ -171,15 +171,13 @@ async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: b
 
 	if (tames) {
 		const tameLb = await fetchTameCLLeaderboard({ items, resultLimit: 200 });
-		return doMenuWrapper(
-			{
-				interaction,
-				ironmanOnly: false,
-				users: tameLb.map(u => ({ id: u.user_id, score: u.qty })),
-				title: `${inputType} Tame Collection Log Leaderboard (${items.size} slots)`,
-				formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.size).toFixed(1)}%)`
-			});
-
+		return doMenuWrapper({
+			interaction,
+			ironmanOnly: false,
+			users: tameLb.map(u => ({ id: u.user_id, score: u.qty })),
+			title: `${inputType} Tame Collection Log Leaderboard (${items.size} slots)`,
+			formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.size).toFixed(1)}%)`
+		});
 	}
 
 	const { users } = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, clName: resolvedCl });
@@ -236,8 +234,8 @@ async function openLb(interaction: MInteraction, name: string, ironmanOnly: bool
 	const openable = !name
 		? undefined
 		: allOpenables.find(
-			item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
-		);
+				item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
+			);
 	if (openable) {
 		entityID = openable.id;
 		openableName = openable.name;
@@ -543,7 +541,8 @@ LIMIT 10;`
 		})),
 		title: 'Weekly Movers Leaderboard',
 		render: (u, username) =>
-			`**${username}:** Gained ${u.count_increase} CL slots, from ${u.cl_completion_count} to ${u.cl_completion_count + u.count_increase
+			`**${username}:** Gained ${u.count_increase} CL slots, from ${u.cl_completion_count} to ${
+				u.cl_completion_count + u.count_increase
 			}, and their global rank went from ${u.cl_global_rank - u.rank_difference} to ${u.cl_global_rank}`
 	});
 }
@@ -763,8 +762,8 @@ export const leaderboardCommand = defineCommand({
 								!value
 									? true
 									: [i.name, ...i.aliases].some(str =>
-										str.toLowerCase().includes(value.toLowerCase())
-									)
+											str.toLowerCase().includes(value.toLowerCase())
+										)
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}

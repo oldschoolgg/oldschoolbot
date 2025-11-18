@@ -13,10 +13,10 @@ import {
 } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 
 import { formatDuration, formatOrdinal, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { Bank } from 'oldschooljs';
 
 // Max people in a party:
 const maxTeamSize = 20;
@@ -44,7 +44,7 @@ async function startCommand(
 	}
 
 	const dungeonLength = Time.Minute * 5 * (floorToDo / 2);
-	let quantity = Math.floor(await user.calcMaxTripLength('Dungeoneering') / dungeonLength);
+	let quantity = Math.floor((await user.calcMaxTripLength('Dungeoneering')) / dungeonLength);
 	let duration = quantity * dungeonLength;
 
 	const message = `${user.usernameOrMention} has created a Dungeoneering party! Use the buttons below to join/leave.
@@ -86,7 +86,7 @@ async function startCommand(
 		return `You can't start a Dungeoneering party for Floor ${floorToDo} because ${leaderCheck[1]}`;
 	}
 
-	let users: MUser[] = isSolo ? [user] : await globalClient.makeParty(partyOptions);
+	const users: MUser[] = isSolo ? [user] : await globalClient.makeParty(partyOptions);
 	if (await ActivityManager.anyMinionIsBusy(users)) {
 		return 'One or more party members have their minion busy.';
 	}
@@ -127,21 +127,22 @@ async function startCommand(
 		const boostMultiplier = Math.min(users.length, maxBoostSize);
 		duration = reduceNumByPercent(duration, boostMultiplier * boostPerPlayer);
 		boosts.push(
-			`${boostMultiplier * boostPerPlayer}% for having a team of ${users.length < maxBoostSize ? users.length : `${maxBoostSize}+`
+			`${boostMultiplier * boostPerPlayer}% for having a team of ${
+				users.length < maxBoostSize ? users.length : `${maxBoostSize}+`
 			}`
 		);
 	}
 
 	// Calculate new number of floors will be done now that it is about to start
 	const perFloor = duration / quantity;
-	quantity = Math.floor(await user.calcMaxTripLength('Dungeoneering') / perFloor);
+	quantity = Math.floor((await user.calcMaxTripLength('Dungeoneering')) / perFloor);
 	duration = quantity * perFloor;
 
 	let str = `${partyOptions.leader.usernameOrMention}'s dungeoneering party (${users
 		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to do ${quantity}x dungeons of the ${formatOrdinal(
-			floorToDo
-		)} floor. Each dungeon takes ${formatDuration(perFloor)} - the total trip will take ${formatDuration(duration)}.`;
+		floorToDo
+	)} floor. Each dungeon takes ${formatDuration(perFloor)} - the total trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -177,8 +178,9 @@ async function buyCommand(user: MUser, name?: string, quantity?: number) {
 	const overallCost = cost * quantity;
 	const balance = user.user.dungeoneering_tokens;
 	if (balance < overallCost) {
-		return `You don't have enough Dungeoneering tokens to buy the ${quantity}x ${item.name
-			}. You need ${overallCost}, but you have only ${balance.toLocaleString()}.`;
+		return `You don't have enough Dungeoneering tokens to buy the ${quantity}x ${
+			item.name
+		}. You need ${overallCost}, but you have only ${balance.toLocaleString()}.`;
 	}
 
 	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });

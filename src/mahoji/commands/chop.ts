@@ -180,7 +180,8 @@ export const chopCommand = defineCommand({
 			}
 		} else {
 			boosts.push(
-				`Participating in Forestry events${pekyBoost ? " (uniques are 5x as common thanks to Peky's help)" : ''
+				`Participating in Forestry events${
+					pekyBoost ? " (uniques are 5x as common thanks to Peky's help)" : ''
 				}`
 			);
 		}
@@ -240,12 +241,14 @@ export const chopCommand = defineCommand({
 			if (user.hasEquippedOrInBank('Forestry basket') || user.hasEquippedOrInBank('Log basket')) {
 				if (log.name === 'Redwood Logs') {
 					boosts.push(
-						`+10 trip minutes for having a ${user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						`+10 trip minutes for having a ${
+							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
 						}`
 					);
 				} else {
 					boosts.push(
-						`+5 trip minutes for having a ${user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						`+5 trip minutes for having a ${
+							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
 						}`
 					);
 				}
@@ -287,11 +290,13 @@ export const chopCommand = defineCommand({
 			type: 'Woodcutting'
 		});
 
-		let response = `${user.minionName} is now chopping ${log.name} until your minion ${quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
-			}, it'll take ${quantity
+		let response = `${user.minionName} is now chopping ${log.name} until your minion ${
+			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
+		}, it'll take ${
+			quantity
 				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
 				: formatDuration(duration)
-			} to finish.`;
+		} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

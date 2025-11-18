@@ -9,11 +9,11 @@ import { veteranCapeBuyables } from '@/lib/bso/buyables/veteranCapeBuyables.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
 
 import { isAtleastThisOld, Time } from '@oldschoolgg/toolkit';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Bank } from 'oldschooljs';
 
 import type { Buyable } from '@/lib/data/buyables/buyables.js';
 import { capeBuyables } from '@/lib/data/buyables/capes.js';
-import { DiscordSnowflake } from '@sapphire/snowflake';
 
 const bsoCastleWarsBuyables: Buyable[] = (
 	[

@@ -41,14 +41,14 @@ export const kingGoldemarTask: MinionTask = {
 
 		const tagAll = users.map(u => u.toString()).join(', ');
 		if (deaths.length === idArr.length) {
-			return handleTripFinish(
-				{
-					user: users[0],
-					channelId,
-					message: solo ? `${tagAll}\n\nYou were crushed by King Goldemar, you never stood a chance.` : `${tagAll}\n\n${'Your team was'} crushed by King Goldemar, you never stood a chance.`,
-					data,
-				}
-			);
+			return handleTripFinish({
+				user: users[0],
+				channelId,
+				message: solo
+					? `${tagAll}\n\nYou were crushed by King Goldemar, you never stood a chance.`
+					: `${tagAll}\n\n${'Your team was'} crushed by King Goldemar, you never stood a chance.`,
+				data
+			});
 		}
 
 		await Promise.all(users.map(u => u.incrementKC(KingGoldemar.id, 1)));
@@ -63,10 +63,12 @@ export const kingGoldemarTask: MinionTask = {
 
 		const killStr =
 			gotDWWH && dwwhRecipient
-				? `${dwwhRecipient?.usernameOrMention
-				} delivers a crushing blow to King Goldemars warhammer, breaking it. The king has no choice but to flee the chambers, **leaving behind his broken hammer.**`
-				: `${solo ? 'You' : 'Your team'
-				} brought King Goldemar to a very weak state, he fled the chambers before he could be killed and escaped through a secret exit, promising to get revenge on you.`;
+				? `${
+						dwwhRecipient?.usernameOrMention
+					} delivers a crushing blow to King Goldemars warhammer, breaking it. The king has no choice but to flee the chambers, **leaving behind his broken hammer.**`
+				: `${
+						solo ? 'You' : 'Your team'
+					} brought King Goldemar to a very weak state, he fled the chambers before he could be killed and escaped through a secret exit, promising to get revenge on you.`;
 
 		let resultStr = `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`;
 

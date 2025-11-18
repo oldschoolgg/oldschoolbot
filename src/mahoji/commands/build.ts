@@ -110,7 +110,7 @@ export const buildCommand = defineCommand({
 				duration: Math.min(
 					maxTripLength,
 					Math.min(maxForMaterials, options.quantity ?? Math.floor(maxTripLength / boostedActionTime)) *
-					boostedActionTime
+						boostedActionTime
 				)
 			});
 			if (boostRes.success) {
@@ -166,8 +166,9 @@ export const buildCommand = defineCommand({
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		let str = `${user.minionName} is now constructing ${quantity}x ${object.name
-			}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost} from your bank. **${xpHr}**
+		let str = `${user.minionName} is now constructing ${quantity}x ${
+			object.name
+		}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost} from your bank. **${xpHr}**
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.`;
 		if (boosts.length > 0) {

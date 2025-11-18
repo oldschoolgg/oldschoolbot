@@ -51,10 +51,11 @@ export const guthixianCacheTask: MinionTask = {
 					increment: amountOfBoostsReceived
 				}
 			});
-			str += `\nYou received ${amountOfBoostsReceived === 1
-				? 'a Guthixian cache boost'
-				: `${amountOfBoostsReceived}x Guthixian cache boosts`
-				}, your next memory harvesting trip will be enhanced.`;
+			str += `\nYou received ${
+				amountOfBoostsReceived === 1
+					? 'a Guthixian cache boost'
+					: `${amountOfBoostsReceived}x Guthixian cache boosts`
+			}, your next memory harvesting trip will be enhanced.`;
 		}
 		if (loot.length > 0) {
 			await user.addItemsToBank({

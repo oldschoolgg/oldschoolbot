@@ -44,8 +44,9 @@ export async function odsBuyCommand(user: MUser, name: string, qty: number): Com
 	cost *= qty;
 	const balance = user.user.ourania_tokens;
 	if (balance < cost) {
-		return `You don't have enough Ourania Tokens to buy the ${qty.toLocaleString()}x ${item.name
-			}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
+		return `You don't have enough Ourania Tokens to buy the ${qty.toLocaleString()}x ${
+			item.name
+		}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
 
 	await user.update({
@@ -77,7 +78,7 @@ export async function odsStartCommand(user: MUser, channelId: string) {
 		boosts.push(`${Emoji.Kuro} 5% faster with Kuro's help`);
 	}
 
-	const quantity = Math.floor(await user.calcMaxTripLength('OuraniaDeliveryService') / waveTime);
+	const quantity = Math.floor((await user.calcMaxTripLength('OuraniaDeliveryService')) / waveTime);
 	const duration = quantity * waveTime;
 	const essenceRequired = quantity * randInt(235, 265);
 	const cost = new Bank().add('Pure essence', essenceRequired);

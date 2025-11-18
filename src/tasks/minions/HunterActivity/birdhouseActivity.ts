@@ -1,10 +1,10 @@
 import { calcBirdhouseLimit } from '@/lib/bso/bsoUtil.js';
 
+import { roll } from '@oldschoolgg/rng';
 import { Bank, itemID } from 'oldschooljs';
 
-import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
-import { roll } from '@oldschoolgg/rng';
+import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 
 const clues = [
 	[itemID('Clue scroll(elite)'), 1 / 10],
@@ -74,7 +74,7 @@ export const birdHouseTask: MinionTask = {
 		for (let i = 0; i < birdHouseLimit; i++) {
 			if (!rng.roll(200)) continue;
 			let nextTier = false;
-			let gotClue = false;
+			const gotClue = false;
 			for (const clue of clues) {
 				if (nextTier || rng.randFloat(0, 1) <= clue[1]) {
 					if (user.bank.amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
@@ -134,15 +134,15 @@ export const birdHouseTask: MinionTask = {
 		await user.updateBirdhouseData(
 			placing
 				? {
-					lastPlaced: birdHouseToPlant.birdhouseItem,
-					birdhousePlaced: true,
-					birdhouseTime: Date.now()
-				}
+						lastPlaced: birdHouseToPlant.birdhouseItem,
+						birdhousePlaced: true,
+						birdhouseTime: Date.now()
+					}
 				: {
-					lastPlaced: null,
-					birdhousePlaced: false,
-					birdhouseTime: 0
-				}
+						lastPlaced: null,
+						birdhousePlaced: false,
+						birdhouseTime: 0
+					}
 		);
 
 		if (!placing) {

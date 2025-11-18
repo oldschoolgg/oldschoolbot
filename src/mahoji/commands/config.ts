@@ -18,6 +18,7 @@ import { clamp } from 'remeda';
 import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { choicesOf, itemOption } from '@/discord/index.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
+import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
@@ -28,7 +29,6 @@ import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerU
 import { BankSortMethods, isValidBankSortMethod } from '@/lib/sorts.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
-import { gearImages } from '@/lib/canvas/gearImageData.js';
 
 interface UserConfigToggle {
 	name: string;
@@ -208,8 +208,9 @@ async function favFoodConfig(
 	}
 	const currentFavorites = user.user.favorite_food;
 	const item = Items.getItem(itemToAdd ?? itemToRemove);
-	const currentItems = `Your current favorite food is: ${currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
-		}.`;
+	const currentItems = `Your current favorite food is: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
+	}.`;
 	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
@@ -238,13 +239,14 @@ async function favItemConfig(
 	}
 	const currentFavorites = user.user.favoriteItems;
 	const item = Items.getItem(itemToAdd ?? itemToRemove);
-	const currentItems = `Your current favorite items are: ${currentFavorites.length === 0
+	const currentItems = `Your current favorite items are: ${
+		currentFavorites.length === 0
 			? 'None'
 			: currentFavorites
-				.map(i => Items.itemNameFromId(i))
-				.join(', ')
-				.slice(0, 1500)
-		}.`;
+					.map(i => Items.itemNameFromId(i))
+					.join(', ')
+					.slice(0, 1500)
+	}.`;
 	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (itemToAdd) {
 		const limit = ((await user.fetchPerkTier()) + 1) * 100;
@@ -348,8 +350,9 @@ async function favBhSeedsConfig(
 		}
 	}
 
-	const currentItems = `Your current favorite items are: ${currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
-		}.`;
+	const currentItems = `Your current favorite items are: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
+	}.`;
 	return currentItems;
 }
 
@@ -1016,8 +1019,9 @@ export const configCommand = defineCommand({
 								return Inventions.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({
-									name: `${i.name} (Currently ${user.user.disabled_inventions.includes(i.id) ? 'DISABLED' : 'Enabled'
-										})`,
+									name: `${i.name} (Currently ${
+										user.user.disabled_inventions.includes(i.id) ? 'DISABLED' : 'Enabled'
+									})`,
 									value: i.name
 								}));
 							}

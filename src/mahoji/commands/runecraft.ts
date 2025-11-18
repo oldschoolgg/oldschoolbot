@@ -182,7 +182,6 @@ export const runecraftCommand = defineCommand({
 
 		const maxTripLength = await user.calcMaxTripLength('Runecraft');
 
-
 		if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
 			const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
 				b.runes.some(r => stringMatches(r, runeObj.name))
@@ -398,10 +397,11 @@ export const runecraftCommand = defineCommand({
 		}
 
 		if (runeObj.inputRune) {
-			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}${teleportReduction > 1 && !hasRingOfTheElements
+			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}${
+				teleportReduction > 1 && !hasRingOfTheElements
 					? ', 50% less ring of dueling charges due to Crafting cape'
 					: ''
-				}.`;
+			}.`;
 		}
 
 		return response;

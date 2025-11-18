@@ -1,7 +1,7 @@
-import { choicesOf } from '@/discord/index.js';
 import { doaHelpCommand } from '@/lib/bso/depthsOfAtlantis.js';
 import { doaStartCommand } from '@/lib/bso/doa/doaStartCommand.js';
 
+import { choicesOf } from '@/discord/index.js';
 import { toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
 import { mileStoneBaseDeathChances } from '@/lib/simulation/toaUtils.js';
 import { coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
@@ -226,7 +226,7 @@ export const raidCommand = defineCommand({
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
-		if (options.toa?.help) return toaHelpCommand(user, channelId)
+		if (options.toa?.help) return toaHelpCommand(user, channelId);
 		if (options.doa?.help) {
 			return doaHelpCommand(user);
 		}

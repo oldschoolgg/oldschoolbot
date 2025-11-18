@@ -52,14 +52,12 @@ export const turaelsTrialsTask: MinionTask = {
 
 		const xpResults = await user.addXPBank(result.xpBank);
 
-		return handleTripFinish(
-			{
-				user,
-				channelId,
-				message: `${user}, your minion finished slaying ${quantity}x superiors in Turaels Trials.\n**Your Turaels Trials KC is now ${newScore}**.\n\n${xpResults}`,
-				data,
-				loot: result.loot
-			}
-		);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: `${user}, your minion finished slaying ${quantity}x superiors in Turaels Trials.\n**Your Turaels Trials KC is now ${newScore}**.\n\n${xpResults}`,
+			data,
+			loot: result.loot
+		});
 	}
 };

@@ -2,8 +2,8 @@ import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from '@oldschoolgg/discord';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';

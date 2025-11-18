@@ -44,8 +44,9 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 		if (gearItemId !== null) {
 			const itemToEquip = Items.getItem(gearItemId);
 			if (itemToEquip?.equipment?.requirements && !user.hasSkillReqs(itemToEquip.equipment.requirements)) {
-				return `You can't equip this preset because ${itemToEquip.name
-					} requires these stats: ${formatSkillRequirements(itemToEquip.equipment.requirements)}.`;
+				return `You can't equip this preset because ${
+					itemToEquip.name
+				} requires these stats: ${formatSkillRequirements(itemToEquip.equipment.requirements)}.`;
 			}
 		}
 	}
@@ -316,13 +317,13 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 	if (stringMatches(input, 'all')) {
 		const file = text
 			? {
-				buffer: Buffer.from(
-					Object.entries(user.gear)
-						.map(i => `${i[0]}: ${i[1].toString()}`)
-						.join('\n')
-				),
-				name: 'gear.txt'
-			}
+					buffer: Buffer.from(
+						Object.entries(user.gear)
+							.map(i => `${i[0]}: ${i[1].toString()}`)
+							.join('\n')
+					),
+					name: 'gear.txt'
+				}
 			: { buffer: await user.generateGearImage({ setupType: 'all' }), name: 'osbot.png' };
 		return {
 			content: 'Here are all your gear setups',

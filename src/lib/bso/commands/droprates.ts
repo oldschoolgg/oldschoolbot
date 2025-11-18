@@ -92,13 +92,14 @@ for (const droprate of Object.values(globalDroprates)) {
 
 			if ('clIncrease' in droprate && 'item' in droprate) {
 				const inCL = user.cl.amount(droprate.item.id);
-				str += `\n\nYou have ${inCL}x ${droprate.item.name
-					} in your CL, so your current droprate is: **1 in ${clAdjustedDroprate(
-						user,
-						droprate.item.id,
-						droprate.baseRate,
-						droprate.clIncrease
-					)}**.`;
+				str += `\n\nYou have ${inCL}x ${
+					droprate.item.name
+				} in your CL, so your current droprate is: **1 in ${clAdjustedDroprate(
+					user,
+					droprate.item.id,
+					droprate.baseRate,
+					droprate.clIncrease
+				)}**.`;
 			}
 			return str;
 		}

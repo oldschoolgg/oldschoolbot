@@ -19,6 +19,7 @@ import { calculateMaximumTameFeedingLevelGain, getTameStatus, sortTames } from '
 
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
+import { bold, time } from '@oldschoolgg/discord';
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -37,6 +38,7 @@ import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'old
 import { type Canvas, loadImage } from 'skia-canvas';
 
 import { type Tame, tame_growth } from '@/prisma/main.js';
+import { mentionCommand } from '@/discord/utils.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import {
 	type CanvasContext,
@@ -61,8 +63,6 @@ import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-import { mentionCommand } from '@/discord/utils.js';
-import { bold, time } from '@oldschoolgg/discord';
 
 const tameImageSize = 96;
 
@@ -221,16 +221,18 @@ const tameImageReplacementChoices = [
 
 interface TameImageReplacementEasterEgg {
 	image: Buffer;
-	shouldActivate: (args: { tame: Tame; user: MUser; perkTier: PerkTier | 0; }) => boolean;
+	shouldActivate: (args: { tame: Tame; user: MUser; perkTier: PerkTier | 0 }) => boolean;
 }
 
 const tameImageReplacementEasterEggs: TameImageReplacementEasterEgg[] = [
 	{
-		shouldActivate: ({ tame }) => tame.nickname?.toLowerCase() === 'robochimp' && tame.species_id === TameSpeciesID.Monkey,
+		shouldActivate: ({ tame }) =>
+			tame.nickname?.toLowerCase() === 'robochimp' && tame.species_id === TameSpeciesID.Monkey,
 		image: readFileSync('./src/lib/resources/images/tames/2_replace_1.png')
 	},
 	{
-		shouldActivate: ({ tame }) => tame.nickname?.toLowerCase() === 'magnaboy' && tame.species_id === TameSpeciesID.Monkey,
+		shouldActivate: ({ tame }) =>
+			tame.nickname?.toLowerCase() === 'magnaboy' && tame.species_id === TameSpeciesID.Monkey,
 		image: readFileSync('./src/lib/resources/images/tames/2_replace_2.png')
 	},
 	{
@@ -243,8 +245,7 @@ const tameImageReplacementEasterEggs: TameImageReplacementEasterEgg[] = [
 ];
 for (const dd of tameImageReplacementChoices) {
 	tameImageReplacementEasterEggs.push({
-		shouldActivate: ({ tame, perkTier }) =>
-			tame.custom_icon_id === dd.name && perkTier >= PerkTier.Four,
+		shouldActivate: ({ tame, perkTier }) => tame.custom_icon_id === dd.name && perkTier >= PerkTier.Four,
 		image: dd.image
 	});
 }
@@ -413,16 +414,18 @@ export async function tameImage(user: MUser): CommandResponse {
 		const tameX = (10 + 256) * x + (isTameActive ? tameImageSize : 256 - tameImageSize) / 2;
 		const tameY = (10 + 128) * y + 10;
 
-		const imageReplacement = tameImageReplacementEasterEggs.find(i => i.shouldActivate({
-			tame: t.tame,
-			user,
-			perkTier
-		}));
+		const imageReplacement = tameImageReplacementEasterEggs.find(i =>
+			i.shouldActivate({
+				tame: t.tame,
+				user,
+				perkTier
+			})
+		);
 
 		const tameImage = imageReplacement
 			? await loadImage(imageReplacement.image)
 			: sprites.tames!.find(t => t.id === species.id)!.sprites.find(f => f.type === t.speciesVariant)!
-				.growthStage[t.growthStage];
+					.growthStage[t.growthStage];
 
 		// Draw tame
 		ctx.drawImage(tameImage, tameX, tameY, tameImageSize, tameImageSize);
@@ -528,8 +531,9 @@ export async function tameImage(user: MUser): CommandResponse {
 	const buffer = await canvasToBuffer(canvas);
 
 	return {
-		content: `${badgesStr}${user.usernameOrMention}, ${userTames.length > 1 ? 'here are your tames' : 'this is your tame'
-			}!`,
+		content: `${badgesStr}${user.usernameOrMention}, ${
+			userTames.length > 1 ? 'here are your tames' : 'this is your tame'
+		}!`,
 		files: [{ buffer, name: `${user.usernameOrMention}_tames.png` }]
 	};
 }
@@ -866,8 +870,9 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 		fed_items: tame.fedItems.add(bankToAdd).toJSON()
 	});
 
-	return `You fed \`${bankToAdd}\` to ${tame}.${newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
-		}${specialStr}${egg}`;
+	return `You fed \`${bankToAdd}\` to ${tame}.${
+		newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
+	}${specialStr}${egg}`;
 }
 
 async function killCommand(user: MUser, channelId: string, str: string) {
@@ -1011,8 +1016,9 @@ async function killCommand(user: MUser, channelId: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now killing ${quantity}x ${monster.name}${deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
-		}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
+	let reply = `${tame} is now killing ${quantity}x ${monster.name}${
+		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
+	}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1108,8 +1114,9 @@ async function collectCommand(user: MUser, channelId: string, str: string) {
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${collectable.item.name
-		}. The trip will take ${formatDuration(duration)}.`;
+	let reply = `${tame} is now collecting ${quantity * collectable.quantity}x ${
+		collectable.item.name
+	}. The trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1237,8 +1244,9 @@ async function monkeyMagicHandler(
 
 	if (typeof task === 'string') return task;
 
-	let reply = `${tame} is now casting the ${spellOptions.spell.name
-		} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
+	let reply = `${tame} is now casting the ${
+		spellOptions.spell.name
+	} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1383,33 +1391,27 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 	const isTierThree = perkTier >= PerkTier.Four;
 	if (isTierThree) {
 		files.push(
-			(
-				await makeBankImage({
-					bank: loot,
-					title: 'Total Loot From This Tame',
-					user
-				})
-			)
+			await makeBankImage({
+				bank: loot,
+				title: 'Total Loot From This Tame',
+				user
+			})
 		);
 
 		files.push(
-			(
-				await makeBankImage({
-					bank: tame.totalCost,
-					title: 'Items This Tame Used',
-					user
-				})
-			)
+			await makeBankImage({
+				bank: tame.totalCost,
+				title: 'Items This Tame Used',
+				user
+			})
 		);
 
 		files.push(
-			(
-				await makeBankImage({
-					bank: tame.elderKnowledgeLootBank,
-					title: 'Total Loot From Elder Knowledge',
-					user
-				})
-			)
+			await makeBankImage({
+				bank: tame.elderKnowledgeLootBank,
+				title: 'Total Loot From Elder Knowledge',
+				user
+			})
 		);
 	}
 
@@ -1420,9 +1422,9 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 **Hatch Date:** ${time(tame.hatchDate)} / ${time(tame.hatchDate, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame.relevantLevel()}
 **Boosts:** ${tameFeedableItems
-			.filter(i => tame.hasBeenFed(i.item.id))
-			.map(i => `${i.item.name} (${i.description})`)
-			.join(', ')}`;
+		.filter(i => tame.hasBeenFed(i.item.id))
+		.map(i => `${i.item.name} (${i.description})`)
+		.join(', ')}`;
 	if (species.id === TameSpeciesID.Igne) {
 		const kcs = await getIgneTameKC(tame.tame);
 		content += `\n**KCs:** ${kcs.sortedTuple
@@ -1730,7 +1732,7 @@ export const tamesCommand = defineCommand({
 								!value
 									? true
 									: i.name.toLowerCase().includes(value.toLowerCase()) ||
-									i.aliases.some(alias => stringMatches(alias, value))
+										i.aliases.some(alias => stringMatches(alias, value))
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -1996,7 +1998,7 @@ export const tamesCommand = defineCommand({
 			return reply;
 		}
 		if (options.set_custom_image) {
-			if (await user.fetchPerkTier() < PerkTier.Four) {
+			if ((await user.fetchPerkTier()) < PerkTier.Four) {
 				return 'You need to be a Tier 3 patron to set a custom image for your tame.';
 			}
 

@@ -1,14 +1,7 @@
 import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
 
-import {
-	calcPercentOfNum,
-	getInterval,
-	miniID,
-	noOp,
-	sumArr,
-	Time,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle, bold, dateFm, userMention } from '@oldschoolgg/discord';
+import { calcPercentOfNum, getInterval, miniID, noOp, sumArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { clamp } from 'remeda';
@@ -20,7 +13,6 @@ import { isCustomItem } from '@/lib/customItems/util.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
-import { bold, ButtonBuilder, ButtonStyle, dateFm, userMention } from '@oldschoolgg/discord';
 
 export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
@@ -90,7 +82,7 @@ function sanityCheckTransaction({
 
 	assert(
 		Number(total_tax_paid) ===
-		(Number(price_per_item_before_tax) - Number(price_per_item_after_tax)) * quantity_bought,
+			(Number(price_per_item_before_tax) - Number(price_per_item_after_tax)) * quantity_bought,
 		`Transaction ${id} total_tax_paid should equal price_per_item_before_tax - price_per_item_after_tax. Transaction ${id} has ${total_tax_paid} total_tax_paid, ${price_per_item_before_tax} price_per_item_before_tax, and ${price_per_item_after_tax} price_per_item_after_tax.`
 	);
 
@@ -382,12 +374,13 @@ class GrandExchangeSingleton {
 
 		let confirmationStr = `Are you sure you want to create this listing?
 
-${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of ${toKMB(total)}.${type === 'Buy'
+${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of ${toKMB(total)}.${
+			type === 'Buy'
 				? ''
 				: applicableTax.taxedAmount > 0
 					? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
 					: ' No tax will be charged on these items.'
-			}`;
+		}`;
 
 		const guidePrice = marketPricemap.get(item.id);
 		if (guidePrice) {
@@ -556,16 +549,19 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		const geBank = await this.fetchOwnedBank();
 		const bankGEShouldHave = bankToRemoveFromGeBank.clone();
 
-		const debug = `PriceWinner[${priceWinner}] PricePerItemBeforeTax[${pricePerItemBeforeTax}] PricePerItemAfterTax[${pricePerItemAfterTax}] BuyerPrice[${buyerListing.asking_price_per_item
-			}] SellerPrice[${sellerListing.asking_price_per_item
-			}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${JSON.stringify(buyerLoot)}] SellerLoot[${sellerLoot}] CurrentGEBank[${JSON.stringify(geBank)}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.toJSON())}] ExpectedAfterBank[${geBank
-				.clone()
-				.remove(bankToRemoveFromGeBank)
-				.toJSON()}]`;
+		const debug = `PriceWinner[${priceWinner}] PricePerItemBeforeTax[${pricePerItemBeforeTax}] PricePerItemAfterTax[${pricePerItemAfterTax}] BuyerPrice[${
+			buyerListing.asking_price_per_item
+		}] SellerPrice[${
+			sellerListing.asking_price_per_item
+		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${JSON.stringify(buyerLoot)}] SellerLoot[${sellerLoot}] CurrentGEBank[${JSON.stringify(geBank)}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.toJSON())}] ExpectedAfterBank[${geBank
+			.clone()
+			.remove(bankToRemoveFromGeBank)
+			.toJSON()}]`;
 
 		assert(
 			bankToRemoveFromGeBank.amount('Coins') === Number(buyerListing.asking_price_per_item) * quantityToBuy,
-			`The G.E Must be removing the full amount the buyer put in, otherwise there's extra/notenough GP leftover in their buyerListing. Expected to be removing ${Number(buyerListing.asking_price_per_item) * quantityToBuy
+			`The G.E Must be removing the full amount the buyer put in, otherwise there's extra/notenough GP leftover in their buyerListing. Expected to be removing ${
+				Number(buyerListing.asking_price_per_item) * quantityToBuy
 			}, but we're removing ${bankToRemoveFromGeBank.amount('Coins')} ${debug}`
 		);
 

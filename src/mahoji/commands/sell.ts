@@ -3,12 +3,12 @@ import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { Prisma } from '@/prisma/main.js';
+import { filterOption } from '@/discord/presetCommandOptions.js';
+import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
 import { customPrices } from '@/lib/customItems/util.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { filterOption } from '@/discord/presetCommandOptions.js';
-import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
 
 /**
  * - Hardcoded prices
@@ -297,9 +297,10 @@ export const sellCommand = defineCommand({
 		return interaction.returnStringOrFile(
 			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
 				totalPrice
-			)})** (${taxRatePercent}% below market price). ${hasSkipper
-				? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
-				: ''
+			)})** (${taxRatePercent}% below market price). ${
+				hasSkipper
+					? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
+					: ''
 			}`
 		);
 	}

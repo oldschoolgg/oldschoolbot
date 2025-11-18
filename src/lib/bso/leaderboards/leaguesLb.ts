@@ -1,4 +1,5 @@
 import { allLeagueTasks } from '@/lib/bso/leagues/leagues.js';
+
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
 
 async function leaguesPointsLeaderboard(interaction: MInteraction) {
@@ -24,7 +25,7 @@ async function leaguesPointsLeaderboard(interaction: MInteraction) {
 		formatter: v => `${v.toLocaleString()} Pts`,
 		title: 'Leagues Points Leaderboard',
 		ironmanOnly: false
-	})
+	});
 }
 
 async function leastCompletedLeagueTasksLb() {
@@ -47,23 +48,23 @@ ORDER BY 2 ASC;`;
 
 	return `**Least Commonly Completed Tasks:**
 ${Object.entries(taskObj)
-			.sort((a, b) => a[1] - b[1])
-			.slice(0, 10)
-			.map(task => {
-				const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-				return `${taskObj.name}: ${task[1]} users completed`;
-			})
-			.join('\n')}
+	.sort((a, b) => a[1] - b[1])
+	.slice(0, 10)
+	.map(task => {
+		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
+		return `${taskObj.name}: ${task[1]} users completed`;
+	})
+	.join('\n')}
 
 **Most Commonly Completed Tasks:**
 ${Object.entries(taskObj)
-			.sort((a, b) => b[1] - a[1])
-			.slice(0, 10)
-			.map((task, index) => {
-				const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-				return `${index + 1}. ${taskObj.name}`;
-			})
-			.join('\n')}`;
+	.sort((a, b) => b[1] - a[1])
+	.slice(0, 10)
+	.map((task, index) => {
+		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
+		return `${index + 1}. ${taskObj.name}`;
+	})
+	.join('\n')}`;
 }
 
 export async function bsoLeaguesLeaderboard(interaction: MInteraction, type: 'points' | 'tasks' | 'hardest_tasks') {
@@ -81,5 +82,5 @@ export async function bsoLeaguesLeaderboard(interaction: MInteraction, type: 'po
 		formatter: v => `${v.toLocaleString()} Tasks`,
 		title: 'Leagues Tasks Leaderboard',
 		ironmanOnly: false
-	})
+	});
 }

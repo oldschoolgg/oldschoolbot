@@ -99,12 +99,14 @@ export async function fishingContestStartCommand(user: MUser, channelId: string,
 	});
 
 	return {
-		content: `${user.minionName} is now off to catch ${quantity === 1 ? 'a' : quantity} fish at ${fishingLocation.name
-			}, they will return in ${formatDuration(duration)}. Removed ${cost} from your bank.${quantity > 1
+		content: `${user.minionName} is now off to catch ${quantity === 1 ? 'a' : quantity} fish at ${
+			fishingLocation.name
+		}, they will return in ${formatDuration(duration)}. Removed ${cost} from your bank.${
+			quantity > 1
 				? `
 You're fishing ${quantity - 1} extra fish: ${quantityBoosts.join(', ')}`
 				: ''
-			}`
+		}`
 	};
 }
 
@@ -121,12 +123,12 @@ export async function fishingContestStatsCommand(user: MUser) {
 You can participate using \`/bsominigames fishing_contest fish [location]\`
 
 **Todays Catch:** A fish from a ${currentFishType.temperature} ${currentFishType.water} (${validLocs
-			.map(i => i.name)
-			.join(', ')})
+		.map(i => i.name)
+		.join(', ')})
 **Todays Catches:** ${userDetails.catchesFromToday
-			.sort((a, b) => b.length_cm - a.length_cm)
-			.map(i => `${i.name}(${i.length_cm / 100}m)`)
-			.join(', ')}
+		.sort((a, b) => b.length_cm - a.length_cm)
+		.map(i => `${i.name}(${i.length_cm / 100}m)`)
+		.join(', ')}
 **Total Daily Contests:** ${minigameScore}
 **All-time catches:** ${userDetails.catchesAllTime}
 **Total Unique Catches:** ${userDetails.totalUniqueCatches}

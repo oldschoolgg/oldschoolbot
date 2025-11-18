@@ -168,11 +168,12 @@ New User: ${JSON.stringify(mUser.user)}
 			});
 		}
 
-		return `You had ${brokenBank.length
-			} broken items in your bank/collection log/favorites/gear/tame, they were removed. ${moidLink(brokenBank).slice(
-				0,
-				500
-			)}`;
+		return `You had ${
+			brokenBank.length
+		} broken items in your bank/collection log/favorites/gear/tame, they were removed. ${moidLink(brokenBank).slice(
+			0,
+			500
+		)}`;
 	}
 
 	return 'You have no broken items on your account!';

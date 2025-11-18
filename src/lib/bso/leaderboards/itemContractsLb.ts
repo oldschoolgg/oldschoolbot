@@ -18,14 +18,12 @@ export async function bsoItemContractLb(interaction: MInteraction, ironmanOnly?:
 		take: 10
 	});
 
-	return doMenuWrapper(
-		{
-			interaction,
-			users: results.map(({ id, item_contract_streak }) => ({ id, score: item_contract_streak })),
-			title: ironmanOnly ? 'Ironman Item Contract Streak Leaderboard' : 'Item Contract Streak Leaderboard',
-			ironmanOnly: Boolean(ironmanOnly)
-		}
-	);
+	return doMenuWrapper({
+		interaction,
+		users: results.map(({ id, item_contract_streak }) => ({ id, score: item_contract_streak })),
+		title: ironmanOnly ? 'Ironman Item Contract Streak Leaderboard' : 'Item Contract Streak Leaderboard',
+		ironmanOnly: Boolean(ironmanOnly)
+	});
 }
 
 export async function bsoItemContractDonationGivenLb(interaction: MInteraction, total: boolean) {

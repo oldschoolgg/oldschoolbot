@@ -31,9 +31,11 @@ export const clueTask: MinionTask = {
 
 		await incrementUserCounter(userID, `cluecompletions.${clueTier.name}`, quantity);
 
-		let str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${user.minionName
-			} carefully places the reward casket${quantity > 1 ? 's' : ''
-			} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
+		let str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
+			user.minionName
+		} carefully places the reward casket${
+			quantity > 1 ? 's' : ''
+		} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
 
 		const loot = new Bank().add(clueTier.id, quantity);
 

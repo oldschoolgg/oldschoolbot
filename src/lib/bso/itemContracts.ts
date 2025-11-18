@@ -12,13 +12,13 @@ import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divinatio
 import { allThirdAgeItems, runeAlchablesTable } from '@/lib/bso/tables/sharedTables.js';
 import { LampTable } from '@/lib/bso/xpLamps.js';
 
+import { dateFm } from '@oldschoolgg/discord';
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
-import { dateFm } from '@oldschoolgg/discord';
 
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])
@@ -107,8 +107,9 @@ function getItemContractDetails(mUser: MUser) {
 		owns,
 		canSkip: difference < itemContractResetTime,
 		lastDate,
-		infoStr: `**Current Contract:** ${currentItem ? `${currentItem.name} (ID: ${currentItem.id}) (You${owns ? '' : " don't"} own it)` : '*None*'
-			}
+		infoStr: `**Current Contract:** ${
+			currentItem ? `${currentItem.name} (ID: ${currentItem.id}) (You${owns ? '' : " don't"} own it)` : '*None*'
+		}
 **Current Streak:** ${streak}
 **Total Contracts Completed:** ${totalContracts}
 ${!currentItem ? `**Next Contract:** ${nextContractIsReady ? 'Ready now.' : formatDuration(durationRemaining)}` : ''}`
@@ -119,10 +120,11 @@ async function skip(interaction: MInteraction, user: MUser) {
 	const { currentItem, differenceFromLastContract, streak, canSkip } = getItemContractDetails(user);
 	if (!currentItem) return "You don't have a contract to skip.";
 	if (canSkip) {
-		return `Your current contract is a ${currentItem.name} (ID:${currentItem.id
-			}), you can't skip it yet, you need to wait ${formatDuration(
-				itemContractResetTime - differenceFromLastContract
-			)}.`;
+		return `Your current contract is a ${currentItem.name} (ID:${
+			currentItem.id
+		}), you can't skip it yet, you need to wait ${formatDuration(
+			itemContractResetTime - differenceFromLastContract
+		)}.`;
 	}
 
 	await interaction.confirmation(
@@ -192,8 +194,9 @@ async function donateICHandler(interaction: MInteraction): CommandResponse {
 	if (typeof errorStr === 'string') return { content: errorStr, ephemeral: true };
 
 	await interaction.confirmation({
-		content: `${donator}, are you sure you want to give ${errorStr.cost} to ${user.badgedUsername
-			}? You own ${donator.bank.amount(errorStr.details.currentItem!.id)} of this item.`,
+		content: `${donator}, are you sure you want to give ${errorStr.cost} to ${
+			user.badgedUsername
+		}? You own ${donator.bank.amount(errorStr.details.currentItem!.id)} of this item.`,
 		users: [donator.id]
 	});
 
@@ -306,8 +309,9 @@ async function handInContract(interaction: MInteraction, user: MUser): Promise<s
 		user.statsBankUpdate('ic_loot_bank', loot)
 	]);
 
-	let res = `You handed in a ${currentItem.name} and received ${loot}. You've completed ${totalContracts + 1
-		} Item Contracts, and your streak is now at ${newStreak}.`;
+	let res = `You handed in a ${currentItem.name} and received ${loot}. You've completed ${
+		totalContracts + 1
+	} Item Contracts, and your streak is now at ${newStreak}.`;
 	if (gotBonus.length > 0) {
 		res += `\n\n${gotBonus}`;
 	}

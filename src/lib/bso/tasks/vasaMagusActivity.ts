@@ -62,10 +62,13 @@ export const vasaTask: MinionTask = {
 			}
 		}
 
-		let message = new MessageBuilder().setContent(`${user}, ${user.minionName
+		const message = new MessageBuilder().setContent(
+			`${user}, ${
+				user.minionName
 			} finished killing ${quantity}x Vasa Magus.\nVasa dropped the loot of ${objectEntries(lootOf)
 				.map(l => `${l[1]}x ${l[0]}`)
-				.join(', ')}`);
+				.join(', ')}`
+		);
 
 		if (isDoubleLootActive(duration)) {
 			loot.multiply(2);
@@ -79,9 +82,11 @@ export const vasaTask: MinionTask = {
 					minion_equippedPet: Items.getOrThrow('Magic kitten').id
 				}
 			});
-			message.addContent(`\n**Vasa cast a spell on you, but your ${Items.itemNameFromId(
-				pet
-			)} jumped in the way to save you! Strangely, it didn't hurt them at all.**\n`);
+			message.addContent(
+				`\n**Vasa cast a spell on you, but your ${Items.itemNameFromId(
+					pet
+				)} jumped in the way to save you! Strangely, it didn't hurt them at all.**\n`
+			);
 		}
 
 		const xpRes = await user.addMonsterXP({
@@ -114,7 +119,7 @@ export const vasaTask: MinionTask = {
 			title: `Loot From ${quantity} ${VasaMagus.name}`,
 			user,
 			previousCL
-		})
+		});
 
 		announceLoot({
 			user,

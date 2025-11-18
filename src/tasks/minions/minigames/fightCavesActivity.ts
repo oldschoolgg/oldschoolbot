@@ -122,7 +122,8 @@ export const fightCavesTask: MinionTask = {
 		if (loot.has('Tzrek-jad')) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.badgedUsername}** just received their ${formatOrdinal(user.cl.amount('Tzrek-jad') + 1)} ${Emoji.TzRekJad
+				`**${user.badgedUsername}** just received their ${formatOrdinal(user.cl.amount('Tzrek-jad') + 1)} ${
+					Emoji.TzRekJad
 				} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(newKC)} kill!`
 			);
 		}

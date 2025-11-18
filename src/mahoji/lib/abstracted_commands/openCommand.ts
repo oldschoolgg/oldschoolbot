@@ -1,8 +1,11 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
+import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { percentChance } from '@oldschoolgg/rng';
+import { Emoji, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
@@ -10,11 +13,8 @@ import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
-import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
-import { Emoji, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
-import type { ButtonBuilder } from '@oldschoolgg/discord';
-import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { patronMsg } from '@/lib/util/smallUtils.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -32,7 +32,7 @@ export async function abstractedOpenUntilCommand(
 	openUntilItem: string,
 	disable_pets: boolean | undefined
 ) {
-	let quantity = 1;
+	const quantity = 1;
 	if (quantity < 1 || !Number.isInteger(quantity)) {
 		return 'The quantity must be a positive integer.';
 	}
@@ -90,9 +90,10 @@ export async function abstractedOpenUntilCommand(
 		cost,
 		loot,
 		messages: [
-			`You opened ${amountOpened}x ${openable.openedItem.name}, ${loot.has(openUntil.id)
-				? `until you got a ${openUntil.name}!`
-				: `but you didn't get a ${openUntil.name}!`
+			`You opened ${amountOpened}x ${openable.openedItem.name}, ${
+				loot.has(openUntil.id)
+					? `until you got a ${openUntil.name}!`
+					: `but you didn't get a ${openUntil.name}!`
 			}`
 		],
 		openables: [openable],
@@ -233,12 +234,12 @@ export async function abstractedOpenCommand(
 	const names = _names.map(i => i.replace(regex, '$1'));
 	const openables = names.includes('all')
 		? allOpenables.filter(
-			({ openedItem, excludeFromOpenAll }) =>
-				user.bank.has(openedItem.id) && !favorites.includes(openedItem.id) && excludeFromOpenAll !== true
-		)
+				({ openedItem, excludeFromOpenAll }) =>
+					user.bank.has(openedItem.id) && !favorites.includes(openedItem.id) && excludeFromOpenAll !== true
+			)
 		: names
-			.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
-			.filter(notEmpty);
+				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
+				.filter(notEmpty);
 
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';

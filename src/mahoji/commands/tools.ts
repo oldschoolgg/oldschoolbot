@@ -4,10 +4,12 @@ import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
+import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
 import { asyncGzip, formatDuration, PerkTier, stringMatches, stringSearch, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
+import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField } from '@/lib/constants.js';
@@ -19,7 +21,9 @@ import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
+import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
@@ -27,10 +31,6 @@ import {
 	stashUnitViewCommand
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { dataPoints, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
-import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
-import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
-import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 
 const skillsVals = Object.values(Skills);
 
@@ -95,9 +95,9 @@ ${whereInMassClause(id)};`)
 
 	return `**Total Activities:** ${totalActivities.count}
 **Common Activities:** ${countsPerActivity
-			.slice(0, 3)
-			.map(i => `${i.qty}x ${i.type}`)
-			.join(', ')}
+		.slice(0, 3)
+		.map(i => `${i.qty}x ${i.type}`)
+		.join(', ')}
 **Total Minion Activity:** ${formatDuration(totalDuration)}
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
 **Average Per Day:** ${formatDuration(perDay)}
@@ -571,8 +571,9 @@ for (const minigame of dryStreakMinigames) {
 		items: minigame.items,
 		run: async ({ item, ironmanOnly }) => {
 			const minigameObj = Minigames.find(i => i.column === minigame.key)!;
-			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, "minigame"."${minigameObj.column
-				}" AS val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, "minigame"."${
+				minigameObj.column
+			}" AS val
 FROM users
 INNER JOIN "minigames" "minigame" on "minigame"."user_id" = "users"."id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
@@ -745,7 +746,8 @@ async function checkMassesCommand(guildId: string | null) {
 			if ('users' in m) {
 				return [
 					remainingTime,
-					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${m.channelId
+					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
+						m.channelId
 					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
@@ -1177,11 +1179,11 @@ export const toolsCommand = defineCommand({
 			}
 			if (patron.minion_stats) {
 				await interaction.defer();
-				if (await user.fetchPerkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(user);
 			}
 			if (patron.give_box) {
-				if (await user.fetchPerkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				return giveBox(user, patron.give_box.user);
 			}
 			if (patron.activity_export) {
@@ -1251,10 +1253,11 @@ export const toolsCommand = defineCommand({
 			});
 
 			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
-You last reset your temporary CL: ${lastReset?.last_temp_cl_reset
+You last reset your temporary CL: ${
+				lastReset?.last_temp_cl_reset
 					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
 					: 'Never'
-				}`;
+			}`;
 		}
 		if (options.user?.checkmasses) {
 			return checkMassesCommand(guildId);

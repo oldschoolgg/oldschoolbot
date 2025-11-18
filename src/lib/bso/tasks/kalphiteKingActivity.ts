@@ -142,8 +142,9 @@ export const kalphiteKingTask: MinionTask = {
 				soloItemsAdded = itemsAdded;
 			}
 
-			resultStr += `${purple ? Emoji.Purple : ''} ${isOnTask ? Emoji.Slayer : ''
-				} **${user} received:** ||${new Bank(loot)}||\n`;
+			resultStr += `${purple ? Emoji.Purple : ''} ${
+				isOnTask ? Emoji.Slayer : ''
+			} **${user} received:** ||${new Bank(loot)}||\n`;
 
 			announceLoot({
 				user: leaderUser,
@@ -196,28 +197,31 @@ export const kalphiteKingTask: MinionTask = {
 		const message = new MessageBuilder();
 
 		if (!kcAmounts[userID]) {
-			message.setContent(`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`)
+			message.setContent(
+				`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
+			);
 		} else {
-			message.setContent(`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${KalphiteKingMonster.name
+			message.setContent(
+				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+					KalphiteKingMonster.name
 				}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${await leaderUser.getKC(
 					KalphiteKingMonster.id
-				)}.\n\n${soloXP}`)
+				)}.\n\n${soloXP}`
+			);
 		}
 		message.addBankImage({
 			bank: soloItemsAdded ?? new Bank(),
 			title: `Loot From ${quantity} Kalphite King`,
 			user: leaderUser,
 			previousCL: soloPrevCl ?? undefined
-		})
+		});
 
-		return handleTripFinish(
-			{
-				user: leaderUser,
-				channelId,
-				message,
-				data,
-				loot: soloItemsAdded
-			}
-		);
+		return handleTripFinish({
+			user: leaderUser,
+			channelId,
+			message,
+			data,
+			loot: soloItemsAdded
+		});
 	}
 };

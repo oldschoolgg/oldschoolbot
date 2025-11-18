@@ -10,14 +10,23 @@ import { calculateCompCapeProgress } from '@/lib/bso/util/calculateCompCapeProgr
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
+import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
 import { percentChance, randArrItem, SeedableRNG } from '@oldschoolgg/rng';
+import {
+	type IBirdhouseData,
+	type IBlowpipeData,
+	type IFarmingContract,
+	ZBirdhouseData,
+	ZBlowpipeData,
+	ZFarmingContract
+} from '@oldschoolgg/schemas';
 import {
 	calcWhatPercent,
 	cleanUsername,
 	Emoji,
 	isObject,
 	notEmpty,
-	PerkTier,
+	type PerkTier,
 	sumArr,
 	Time,
 	UserError,
@@ -99,8 +108,6 @@ import { userQueueFn } from '@/lib/util/userQueues.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
-import { type IBlowpipeData, ZBlowpipeData, type IFarmingContract, ZFarmingContract, type IBirdhouseData, ZBirdhouseData } from '@oldschoolgg/schemas';
 
 export async function rawUserUpdate(userId: string, data: Prisma.UserUpdateInput | SafeUserUpdateInput): Promise<User> {
 	const updateData: Prisma.UserUpdateInput = {
@@ -826,7 +833,8 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			}
 			if (!ammo || ammo < ammoRemove[1])
 				throw new UserError(
-					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${ammoRemove?.[1]
+					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
+						ammoRemove?.[1]
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
@@ -1478,15 +1486,15 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 
 	async getTame(): Promise<
 		| {
-			tame: null;
-			activity: null;
-			species: null;
-		}
+				tame: null;
+				activity: null;
+				species: null;
+		  }
 		| {
-			tame: MTame;
-			activity: TameActivity | null;
-			species: Species;
-		}
+				tame: MTame;
+				activity: TameActivity | null;
+				species: Species;
+		  }
 	> {
 		const selectedTame = this.user.selected_tame;
 		if (!selectedTame) {
@@ -1589,14 +1597,14 @@ async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
 	const user =
 		updates !== undefined
 			? await prisma.user.upsert({
-				create: {
-					id: userID
-				},
-				update: updates,
-				where: {
-					id: userID
-				}
-			})
+					create: {
+						id: userID
+					},
+					update: updates,
+					where: {
+						id: userID
+					}
+				})
 			: await prisma.user.findUnique({ where: { id: userID } });
 
 	if (!user) {

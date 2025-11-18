@@ -1,8 +1,8 @@
 import { PerkTier, Time } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 
-import Skillcapes from '@/lib/skilling/skillcapes.js';
 import { BitField } from '@/lib/constants.js';
+import Skillcapes from '@/lib/skilling/skillcapes.js';
 
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
 

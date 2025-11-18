@@ -10,9 +10,9 @@ import {
 	StoneSpiritTable
 } from '@/lib/bso/tables/sharedTables.js';
 
+import { userMention } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { calcPerHour, Events, formatOrdinal } from '@oldschoolgg/toolkit';
-import { userMention } from '@oldschoolgg/discord';
 import { Bank, Items, increaseBankQuantitesByPercent, resolveItems } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -85,7 +85,9 @@ export const moktangTask: MinionTask = {
 			}
 		}
 
-		const message = new MessageBuilder().setContent(`${userMention(data.userID)}, ${user.minionName
+		const message = new MessageBuilder()
+			.setContent(`${userMention(data.userID)}, ${
+				user.minionName
 			} finished killing ${qty}x Moktang (${calcPerHour(data.qty, data.duration).toFixed(1)}/hr). ${bonusPercent}% bonus loot because of your Mining level.
 
 ${xpStr}`)

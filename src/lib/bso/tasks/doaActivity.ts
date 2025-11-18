@@ -85,7 +85,7 @@ export const doaTask: MinionTask = {
 				user: allUsers[0],
 				channelId,
 				data,
-				message: `${allUsers.map(i => i.toString()).join(' ')} Your team wiped in all of your Depths of Atlantis raids!`,
+				message: `${allUsers.map(i => i.toString()).join(' ')} Your team wiped in all of your Depths of Atlantis raids!`
 			});
 		}
 
@@ -148,12 +148,17 @@ export const doaTask: MinionTask = {
 			)
 		);
 
-		const resultMessage = new MessageBuilder().setContent(isSolo
-			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`}${cm ? ' Challenge Mode' : ''
-			} Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${minigameIncrementResult[0].newScore
-			}.\n`
-			: `<@${leader}> Your${cm ? ' Challenge Mode' : ''} Depths of Atlantis Raid${quantity > 1 ? 's have' : ' has'
-			} finished.\n`);
+		const resultMessage = new MessageBuilder().setContent(
+			isSolo
+				? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`}${
+						cm ? ' Challenge Mode' : ''
+					} Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${
+						minigameIncrementResult[0].newScore
+					}.\n`
+				: `<@${leader}> Your${cm ? ' Challenge Mode' : ''} Depths of Atlantis Raid${
+						quantity > 1 ? 's have' : ' has'
+					} finished.\n`
+		);
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
@@ -182,7 +187,8 @@ export const doaTask: MinionTask = {
 					const itemsToAnnounce = itemsAdded.filter(item => doaCL.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
-						`${Emoji.Purple} ${user.badgedUsername
+						`${Emoji.Purple} ${
+							user.badgedUsername
 						} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 							minigameIncrementResult[0].newScore
 						)} raid.`
@@ -224,7 +230,6 @@ export const doaTask: MinionTask = {
 		});
 
 		if (isSolo) {
-
 			if (shouldShowImage) {
 				resultMessage.addChestLootImage({
 					entries: [
@@ -236,14 +241,14 @@ export const doaTask: MinionTask = {
 						}
 					],
 					type: 'Depths of Atlantis'
-				})
+				});
 			}
 
 			return handleTripFinish({
 				user: allUsers[0],
 				channelId,
 				data,
-				message: resultMessage,
+				message: resultMessage
 			});
 		}
 
@@ -256,14 +261,14 @@ export const doaTask: MinionTask = {
 					customTexts: []
 				})),
 				type: 'Depths of Atlantis'
-			})
+			});
 		}
 
 		return handleTripFinish({
 			user: allUsers[0],
 			channelId,
 			data,
-			message: resultMessage,
+			message: resultMessage
 		});
 	}
 };

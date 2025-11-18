@@ -11,7 +11,7 @@ import { getCollectionItems, overallPlusItems } from '@/lib/data/Collections.js'
 import { RawSQL } from '@/lib/rawSql.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { SkillsArray, type SkillNameType } from '@/lib/skilling/types.js';
+import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { fetchMultipleCLLeaderboards, fetchTameCLLeaderboard } from '@/lib/util/clLeaderboard.js';
 
 const RoleResultSchema = z.object({

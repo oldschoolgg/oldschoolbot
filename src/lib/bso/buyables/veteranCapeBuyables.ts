@@ -1,5 +1,5 @@
-import { Time } from '@oldschoolgg/toolkit';
 import { time } from '@oldschoolgg/discord';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 
 import type { Buyable } from '@/lib/data/buyables/buyables.js';
@@ -47,7 +47,8 @@ for (const a of veteranCapeSrc) {
 				const dateIsElligible = new Date(user.user.minion_bought_date.getTime() + daysNeeded * Time.Day);
 				return [
 					false,
-					`You need to have an account age of ${a.years
+					`You need to have an account age of ${
+						a.years
 					} years (${daysNeeded} days) to buy this item. Your minion was created at ${time(
 						user.user.minion_bought_date
 					)} (${accountAge.toFixed(2)} days ago), and so you will be elligible in ${time(

@@ -1,9 +1,9 @@
+import { evalMathExpression } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
 import type { Rune } from '@/lib/skilling/skills/runecraft.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { evalMathExpression } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank } from 'oldschooljs';
 
 export function mahojiParseNumber({
 	input,

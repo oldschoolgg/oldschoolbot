@@ -89,11 +89,13 @@ export async function motherlodeMineCommand({
 		fakeDurationMin: Math.floor(fakeDurationMin),
 		type: 'MotherlodeMining'
 	});
-	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
-		}, it'll take ${quantity
+	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${
+		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
+	}, it'll take ${
+		quantity
 			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
 			: formatDuration(duration)
-		} to finish.`;
+	} to finish.`;
 
 	if (user.usingPet('Doug')) {
 		response += '\n<:doug:748892864813203591> Doug joins you on your mining trip!';

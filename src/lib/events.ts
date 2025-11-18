@@ -4,9 +4,13 @@ import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from '@/lib/bso/dou
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 
+import { bold, dateFm, EmbedBuilder, time } from '@oldschoolgg/discord';
+import type { IMessage } from '@oldschoolgg/schemas';
+import { Emoji, getNextUTCReset, isFunction, type PerkTier, Time } from '@oldschoolgg/toolkit';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main.js';
+import { mentionCommand } from '@/discord/utils.js';
 import { lastRoboChimpSyncCache } from '@/lib/cache.js';
 import { CONSTANTS, globalConfig } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
@@ -16,10 +20,6 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import { mentionCommand } from '@/discord/utils.js';
-import { bold, EmbedBuilder, dateFm, time } from '@oldschoolgg/discord';
-import { Time, Emoji, getNextUTCReset, isFunction, PerkTier } from '@oldschoolgg/toolkit';
-import type { IMessage } from '@oldschoolgg/schemas';
 
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
@@ -36,63 +36,63 @@ const cooldownTimers: {
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
 }[] = [
-		{
-			name: 'Tears of Guthix',
-			timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-			cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
-			command: ['minigames', 'tears_of_guthix', 'start'],
-			utcReset: true
-		},
-		{
-			name: 'Daily',
-			timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
-			cd: CONSTANTS.DAILY_COOLDOWN,
-			command: ['minion', 'daily'],
-			utcReset: false
-		},
-		{
-			name: 'Spawn Lamp',
-			timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
-			cd: ({ user, perkTier }) => spawnLampResetTime(user, perkTier),
-			command: ['tools', 'patron', 'spawnlamp'],
-			utcReset: false
-		},
-		{
-			name: 'Spawn Box',
-			timeStamp: (user: MUser) => Number(user.user.last_spawn_box_date ?? 0),
-			cd: Time.Minute * 45,
-			command: ['tools', 'patron', 'spawnbox'],
-			utcReset: false
-		},
-		{
-			name: 'Give Box',
-			timeStamp: (user: MUser) => Number(user.user.lastGivenBoxx),
-			cd: giveBoxResetTime,
-			command: ['tools', 'patron', 'give_box'],
-			utcReset: false
-		},
-		{
-			name: 'Item Contract',
-			timeStamp: (user: MUser) => Number(user.user.last_item_contract_date),
-			cd: itemContractResetTime,
-			command: ['ic', 'info'],
-			utcReset: false
-		},
-		{
-			name: 'Monthly Double Loot',
-			timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
-			cd: PATRON_DOUBLE_LOOT_COOLDOWN,
-			command: ['tools', 'patron', 'doubleloot'],
-			utcReset: false
-		},
-		{
-			name: 'Balthazars Big Bonanza',
-			timeStamp: (user: MUser) => Number(user.user.last_bonanza_date),
-			cd: Time.Day * 7,
-			command: ['bsominigames', 'balthazars_big_bonanza', 'start'],
-			utcReset: false
-		}
-	];
+	{
+		name: 'Tears of Guthix',
+		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
+		cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
+		command: ['minigames', 'tears_of_guthix', 'start'],
+		utcReset: true
+	},
+	{
+		name: 'Daily',
+		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
+		cd: CONSTANTS.DAILY_COOLDOWN,
+		command: ['minion', 'daily'],
+		utcReset: false
+	},
+	{
+		name: 'Spawn Lamp',
+		timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
+		cd: ({ user, perkTier }) => spawnLampResetTime(user, perkTier),
+		command: ['tools', 'patron', 'spawnlamp'],
+		utcReset: false
+	},
+	{
+		name: 'Spawn Box',
+		timeStamp: (user: MUser) => Number(user.user.last_spawn_box_date ?? 0),
+		cd: Time.Minute * 45,
+		command: ['tools', 'patron', 'spawnbox'],
+		utcReset: false
+	},
+	{
+		name: 'Give Box',
+		timeStamp: (user: MUser) => Number(user.user.lastGivenBoxx),
+		cd: giveBoxResetTime,
+		command: ['tools', 'patron', 'give_box'],
+		utcReset: false
+	},
+	{
+		name: 'Item Contract',
+		timeStamp: (user: MUser) => Number(user.user.last_item_contract_date),
+		cd: itemContractResetTime,
+		command: ['ic', 'info'],
+		utcReset: false
+	},
+	{
+		name: 'Monthly Double Loot',
+		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
+		cd: PATRON_DOUBLE_LOOT_COOLDOWN,
+		command: ['tools', 'patron', 'doubleloot'],
+		utcReset: false
+	},
+	{
+		name: 'Balthazars Big Bonanza',
+		timeStamp: (user: MUser) => Number(user.user.last_bonanza_date),
+		cd: Time.Day * 7,
+		command: ['bsominigames', 'balthazars_big_bonanza', 'start'],
+		utcReset: false
+	}
+];
 
 interface MentionCommandOptions {
 	user: MUser;
@@ -163,8 +163,9 @@ const mentionCommands: MentionCommand[] = [
 
 					const price = toKMB(Math.floor(item.price ?? 0));
 					const searchMbTable = user.isIronman ? allIronmanMbTables : allMbTables;
-					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${searchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
-						} ${icons.join(' ')}`;
+					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
+						searchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
+					} ${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
 					}
@@ -235,10 +236,10 @@ const mentionCommands: MentionCommand[] = [
 				content += `\n\n2️⃣🇽 **Double Loot is Active until ${time(date)} (${time(date, 'R')})**`;
 			}
 
-			return ({
+			return {
 				content,
 				components
-			});
+			};
 		}
 	},
 	{

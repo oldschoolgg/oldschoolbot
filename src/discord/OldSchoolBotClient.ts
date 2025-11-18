@@ -194,7 +194,7 @@ export class OldSchoolBotClient extends DiscordClient {
 
 				if (collected.length >= max) {
 					cleanup();
-					resolve((collected));
+					resolve(collected);
 				}
 			};
 
@@ -208,7 +208,7 @@ export class OldSchoolBotClient extends DiscordClient {
 				if (errors.includes('time')) {
 					reject(new Error('Time limit exceeded'));
 				} else {
-					resolve((collected));
+					resolve(collected);
 				}
 			}, time);
 

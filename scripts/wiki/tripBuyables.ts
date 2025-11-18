@@ -1,7 +1,7 @@
+import '../base.js';
+
 import { Table } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
-
-import '../base.js';
 
 import { tripBuyables } from '../../src/lib/data/buyables/tripBuyables.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';

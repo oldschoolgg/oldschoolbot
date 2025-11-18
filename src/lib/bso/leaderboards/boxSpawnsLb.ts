@@ -1,4 +1,4 @@
-import { doMenuWrapper } from "@/lib/menuWrapper.js";
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
 
 export async function bsoChallengeLeaderboard(interaction: MInteraction) {
 	const challengeCount: { id: string; challengescore: number }[] = await prisma.$queryRawUnsafe(

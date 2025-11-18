@@ -107,8 +107,9 @@ export const toaTask: MinionTask = {
 		);
 
 		let resultMessage = isSolo
-			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`} Tombs of Amascut raid${quantity > 1 ? 's' : ''
-			}! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
+			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`} Tombs of Amascut raid${
+					quantity > 1 ? 's' : ''
+				}! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
 			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
@@ -151,7 +152,8 @@ export const toaTask: MinionTask = {
 					const itemsToAnnounce = itemsAdded.filter(item => ItemGroups.toaPurpleItems.includes(item.id));
 					globalClient.emit(
 						Events.ServerNotification,
-						`${Emoji.Purple} ${user.badgedUsername
+						`${Emoji.Purple} ${
+							user.badgedUsername
 						} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 							minigameIncrementResult[0].newScore
 						)} raid.`
@@ -237,16 +239,16 @@ export const toaTask: MinionTask = {
 		if (isSolo) {
 			const image = shouldShowImage
 				? await drawChestLootImage({
-					entries: [
-						{
-							loot: itemsAddedTeamLoot.totalLoot(),
-							user: allUsers[0],
-							previousCL: previousCLs[0],
-							customTexts: makeCustomTexts(leaderSoloUser.id)
-						}
-					],
-					type: 'Tombs of Amascut'
-				})
+						entries: [
+							{
+								loot: itemsAddedTeamLoot.totalLoot(),
+								user: allUsers[0],
+								previousCL: previousCLs[0],
+								customTexts: makeCustomTexts(leaderSoloUser.id)
+							}
+						],
+						type: 'Tombs of Amascut'
+					})
 				: undefined;
 			return handleTripFinish({
 				user: allUsers[0],
@@ -259,14 +261,14 @@ export const toaTask: MinionTask = {
 
 		const img = shouldShowImage
 			? await drawChestLootImage({
-				entries: allUsers.map((u, index) => ({
-					loot: itemsAddedTeamLoot.get(u.id),
-					user: u,
-					previousCL: previousCLs[index],
-					customTexts: makeCustomTexts(u.id)
-				})),
-				type: 'Tombs of Amascut'
-			})
+					entries: allUsers.map((u, index) => ({
+						loot: itemsAddedTeamLoot.get(u.id),
+						user: u,
+						previousCL: previousCLs[index],
+						customTexts: makeCustomTexts(u.id)
+					})),
+					type: 'Tombs of Amascut'
+				})
 			: undefined;
 
 		return handleTripFinish({

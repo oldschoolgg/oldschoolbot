@@ -78,21 +78,20 @@ export const mrTask: MinionTask = {
 
 		const rumbleTokensPerHour = `${Math.round((tokens / (duration / Time.Minute)) * 60).toLocaleString()}`;
 		const fightsPerHour = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()}`;
-		const message = new MessageBuilder().setContent(`${user}, ${user.minionName} finished fighting ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
+		const message =
+			new MessageBuilder().setContent(`${user}, ${user.minionName} finished fighting ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
 ${xpStr}
 You received **${loot}.**`);
 		for (const file of files) {
 			message.addFile(file);
 		}
 
-		return handleTripFinish(
-			{
-				user,
-				channelId,
-				data,
-				loot,
-				message
-			}
-		);
+		return handleTripFinish({
+			user,
+			channelId,
+			data,
+			loot,
+			message
+		});
 	}
 };

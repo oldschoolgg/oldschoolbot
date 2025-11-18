@@ -1,14 +1,14 @@
 import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
+import { userMention } from '@oldschoolgg/discord';
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
-import type { GearBank } from '@/lib/structures/GearBank.js';
-import { userMention } from '@oldschoolgg/discord';
 import type { SafeUserUpdateInput } from '@/lib/MUser.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 const InventionFlags = ['equipped', 'bank'] as const;
 type InventionFlag = (typeof InventionFlags)[number];
@@ -200,10 +200,11 @@ export const Inventions: readonly Invention[] = [
 	{
 		id: InventionID.SilverHawkBoots,
 		name: 'Silverhawk boots',
-		description: `Makes agility ${inventionBoosts.silverHawks.agilityBoostMultiplier
-			}x faster, and gives up to ${toKMB(
-				inventionBoosts.silverHawks.passiveXPCalc(Time.Hour, 120)
-			)}/hr passive agility XP.`,
+		description: `Makes agility ${
+			inventionBoosts.silverHawks.agilityBoostMultiplier
+		}x faster, and gives up to ${toKMB(
+			inventionBoosts.silverHawks.passiveXPCalc(Time.Hour, 120)
+		)}/hr passive agility XP.`,
 		item: Items.getOrThrow('Silverhawk boots'),
 		materialTypeBank: new MaterialBank({
 			swift: 5,
@@ -305,8 +306,9 @@ export const Inventions: readonly Invention[] = [
 			for (const clue of ClueTiers.slice(0, 5)) {
 				const index = ClueTiers.indexOf(clue);
 				const next = ClueTiers[index + 1];
-				str += `**${clue.name}:** ${inventionBoosts.clueUpgrader.chance(clue)}% chance to upgrade into ${next.name
-					}, costs ${formatDuration(inventionBoosts.clueUpgrader.durationCalc(clue))}\n`;
+				str += `**${clue.name}:** ${inventionBoosts.clueUpgrader.chance(clue)}% chance to upgrade into ${
+					next.name
+				}, costs ${formatDuration(inventionBoosts.clueUpgrader.durationCalc(clue))}\n`;
 			}
 			return str;
 		}
@@ -605,19 +607,20 @@ export async function inventCommand(user: MUser, inventionName: string): Command
 	}
 	const loot = new Bank().add(invention.item.id);
 	await user.transactItems({ itemsToRemove, itemsToAdd: loot, collectionLog: true });
-	return `${userMention(user.id)}, your minion created a ${invention.name}! (${invention.description
-		}) Items removed: ${invention.itemCost ?? 'None'}. Materials used: ${cost}.`;
+	return `${userMention(user.id)}, your minion created a ${invention.name}! (${
+		invention.description
+	}) Items removed: ${invention.itemCost ?? 'None'}. Materials used: ${cost}.`;
 }
 
 type InventionItemBoostResult =
 	| {
-		success: true;
-		materialCost: MaterialBank;
-		messages: string;
-	}
+			success: true;
+			materialCost: MaterialBank;
+			messages: string;
+	  }
 	| {
-		success: false;
-	};
+			success: false;
+	  };
 
 export function canAffordInventionBoostRaw(materialsOwned: MaterialBank, inventionID: InventionID, duration: number) {
 	const invention = Inventions.find(i => i.id === inventionID)!;

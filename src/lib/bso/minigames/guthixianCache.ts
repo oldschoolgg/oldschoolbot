@@ -1,7 +1,7 @@
+import { time } from '@oldschoolgg/discord';
 import { formatDuration, getInterval, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { time } from '@oldschoolgg/discord';
 
 export const getGuthixianCacheInterval = () => getInterval(24);
 
@@ -45,10 +45,11 @@ export async function joinGuthixianCache(user: MUser, channelId: string) {
 		minigameID: 'guthixian_cache'
 	});
 
-	const response = `${user.minionName
-		} is now participating in the current Guthixian Cache, it'll take around ${formatDuration(
-			task.duration
-		)} to finish.`;
+	const response = `${
+		user.minionName
+	} is now participating in the current Guthixian Cache, it'll take around ${formatDuration(
+		task.duration
+	)} to finish.`;
 
 	return response;
 }

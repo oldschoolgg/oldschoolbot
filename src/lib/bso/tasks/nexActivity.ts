@@ -158,12 +158,15 @@ export const nexTask: MinionTask = {
 			}
 			return handleTripFinish({ user: leaderUser, channelId, message: resultStr, data });
 		}
-		const message = new MessageBuilder().setContent(!kcAmounts[userID]
-			? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
-			: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${NexMonster.name
-			}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${await leaderUser.getKC(
-				NexMonster.id
-			)}.\n\n${soloXP}`);
+		const message = new MessageBuilder().setContent(
+			!kcAmounts[userID]
+				? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
+				: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+						NexMonster.name
+					}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${await leaderUser.getKC(
+						NexMonster.id
+					)}.\n\n${soloXP}`
+		);
 
 		if (!kcAmounts[userID]) {
 			message.addBankImage({
@@ -171,16 +174,14 @@ export const nexTask: MinionTask = {
 				title: `Loot From ${quantity} ${NexMonster.name}:`,
 				user: leaderUser,
 				previousCL: soloPrevCl
-			})
+			});
 		}
-		return handleTripFinish(
-			{
-				user: leaderUser,
-				channelId,
-				message,
-				data,
-				loot: soloItemsAdded
-			}
-		);
+		return handleTripFinish({
+			user: leaderUser,
+			channelId,
+			message,
+			data,
+			loot: soloItemsAdded
+		});
 	}
 };

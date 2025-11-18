@@ -138,11 +138,13 @@ export const dungeoneeringTask: MinionTask = {
 			}
 
 			if (portentResult.didCharge) {
-				str += `${u} received: ${xpStr}, ${toKMB(portentXP)} of which is from from their portent (${portentResult.portent.charges_remaining
-					} charges remaining)`;
+				str += `${u} received: ${xpStr}, ${toKMB(portentXP)} of which is from from their portent (${
+					portentResult.portent.charges_remaining
+				} charges remaining)`;
 			} else {
-				str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens${loot.length > 0 ? ` and **${loot}**.` : '.'
-					}`;
+				str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens${
+					loot.length > 0 ? ` and **${loot}**.` : '.'
+				}`;
 			}
 
 			str += '\n';

@@ -418,9 +418,9 @@ export class Gear {
 		newGear.ring = gearItem(preset.ring);
 		newGear.ammo = preset.ammo
 			? {
-				item: preset.ammo,
-				quantity: 1
-			}
+					item: preset.ammo,
+					quantity: 1
+				}
 			: null;
 		return new Gear(newGear);
 	}

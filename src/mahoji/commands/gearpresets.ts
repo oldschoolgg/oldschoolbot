@@ -1,14 +1,14 @@
 import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
+import { choicesOf, defineOption } from '@/discord/index.js';
+import { allEquippableItems, gearPresetOption, gearSetupOption } from '@/discord/presetCommandOptions.js';
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { Gear, globalPresets } from '@/lib/structures/Gear.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { gearEquipCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
-import { defineOption, choicesOf } from '@/discord/index.js';
-import { allEquippableItems, gearPresetOption, gearSetupOption } from '@/discord/presetCommandOptions.js';
 
 type InputGear = Partial<Record<EquipmentSlot, string | undefined>>;
 type ParsedInputGear = Partial<Record<EquipmentSlot, number>>;

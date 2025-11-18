@@ -39,19 +39,19 @@ type ManualHasFunction = (
 type Requirement = {
 	name?: string;
 } & (
-		| { name: string; has: ManualHasFunction }
-		| { skillRequirements: Partial<Skills> }
-		| { clRequirement: Bank | number[] }
-		| { kcRequirement: Record<string, number | number[]> }
-		| { qpRequirement: number }
-		| { lapsRequirement: Record<number, number> }
-		| { sacrificedItemsRequirement: Bank }
-		| { OR: Requirement[] }
-		| { minigames: Partial<Record<MinigameName, number>> }
-		| { bitfieldRequirement: BitField }
-		| { diaryRequirement: Parameters<MUser['hasDiary']>[0][] }
-		| { clueCompletions: Partial<Record<ClueTier['name'], number>> }
-	);
+	| { name: string; has: ManualHasFunction }
+	| { skillRequirements: Partial<Skills> }
+	| { clRequirement: Bank | number[] }
+	| { kcRequirement: Record<string, number | number[]> }
+	| { qpRequirement: number }
+	| { lapsRequirement: Record<number, number> }
+	| { sacrificedItemsRequirement: Bank }
+	| { OR: Requirement[] }
+	| { minigames: Partial<Record<MinigameName, number>> }
+	| { bitfieldRequirement: BitField }
+	| { diaryRequirement: Parameters<MUser['hasDiary']>[0][] }
+	| { clueCompletions: Partial<Record<ClueTier['name'], number>> }
+);
 
 export class Requirements {
 	requirements: Requirement[] = [];
@@ -76,9 +76,10 @@ export class Requirements {
 
 		if ('clRequirement' in req) {
 			requirementParts.push(
-				`Items Must Be in CL: ${Array.isArray(req.clRequirement)
-					? formatList(req.clRequirement.map(i => Items.itemNameFromId(i)))
-					: req.clRequirement.toString()
+				`Items Must Be in CL: ${
+					Array.isArray(req.clRequirement)
+						? formatList(req.clRequirement.map(i => Items.itemNameFromId(i)))
+						: req.clRequirement.toString()
 				}`
 			);
 		}
@@ -212,8 +213,8 @@ export class Requirements {
 			if (!user.cl.has(requirement.clRequirement)) {
 				const missingItems = Array.isArray(requirement.clRequirement)
 					? formatList(
-						requirement.clRequirement.filter(i => !user.cl.has(i)).map(i => Items.itemNameFromId(i))
-					)
+							requirement.clRequirement.filter(i => !user.cl.has(i)).map(i => Items.itemNameFromId(i))
+						)
 					: requirement.clRequirement.clone().remove(user.cl);
 				results.push({
 					reason: `You need ${missingItems} in your CL.`
@@ -272,8 +273,9 @@ export class Requirements {
 			for (const [id, amount] of Object.entries(requirement.lapsRequirement)) {
 				if (!laps[id] || laps[id] < amount) {
 					results.push({
-						reason: `You need ${amount}x laps in the ${Agility.Courses.find(i => i.id.toString() === id)?.name
-							} agility course.`
+						reason: `You need ${amount}x laps in the ${
+							Agility.Courses.find(i => i.id.toString() === id)?.name
+						} agility course.`
 					});
 				}
 			}

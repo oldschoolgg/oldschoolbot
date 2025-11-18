@@ -214,7 +214,8 @@ export function calculateMiningResult({
 		messages.push(
 			`You received ${toKMB(
 				spiritualMiningPortentXP * GLOBAL_BSO_XP_MULTIPLIER
-			)} bonus XP from your Spiritual mining portent (${portentResult.portent.charges_remaining
+			)} bonus XP from your Spiritual mining portent (${
+				portentResult.portent.charges_remaining
 			} charges remaining).`
 		);
 	}
@@ -263,10 +264,10 @@ export const miningTask: MinionTask = {
 		const portentResult =
 			amountOfSpiritsToUse > 0
 				? await chargePortentIfHasCharges({
-					user,
-					portentID: PortentID.MiningPortent,
-					charges: minutes
-				})
+						user,
+						portentID: PortentID.MiningPortent,
+						charges: minutes
+					})
 				: null;
 		const {
 			totalMiningXPToAdd,

@@ -37,7 +37,11 @@ export async function monkeyRumbleCommand(user: MUser, channelId: string): Comma
 			.flat(2)
 			.some(t => user.hasEquipped(t.id))
 	) {
-		return new MessageBuilder().setContent("You need to have a rumble greegree equipped. If you don't have a rumble greegree yet, just buy the Beginner Rumble Greegree with the buy command.",).addChatHeadImage('wurMuTheMonkey', "Humans aren't allowed! Leave, leave!");
+		return new MessageBuilder()
+			.setContent(
+				"You need to have a rumble greegree equipped. If you don't have a rumble greegree yet, just buy the Beginner Rumble Greegree with the buy command."
+			)
+			.addChatHeadImage('wurMuTheMonkey', "Humans aren't allowed! Leave, leave!");
 	}
 
 	if (await user.minionIsBusy()) {
@@ -55,7 +59,7 @@ export async function monkeyRumbleCommand(user: MUser, channelId: string): Comma
 		fightDuration = reduceNumByPercent(fightDuration, 17);
 		boosts.push('17% faster fights for gorilla rumble greegree');
 	}
-	const quantity = Math.floor(await user.calcMaxTripLength('MonkeyRumble') / fightDuration);
+	const quantity = Math.floor((await user.calcMaxTripLength('MonkeyRumble')) / fightDuration);
 	let duration = quantity * fightDuration;
 
 	let chanceOfSpecial = Math.floor(125 * (6 - monkeyTierOfUser(user) / 2));
@@ -108,16 +112,14 @@ export async function monkeyRumbleCommand(user: MUser, channelId: string): Comma
 	let str = `You are fighting ${quantity}x different monkeys (${monkeysToFight
 		.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)
 		.join(', ')}). The trip will take ${formatDuration(
-			duration
-		)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${(chanceOfSpecial / quantity).toFixed(2)} chance that one of them would be special.**`;
+		duration
+	)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${(chanceOfSpecial / quantity).toFixed(2)} chance that one of them would be special.**`;
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}
 
 	return {
 		content: str,
-		files: [
-			await monkeyHeadImage({ monkey: monkeysToFight[0], content: randArrItem(fightingMessages) })
-		]
+		files: [await monkeyHeadImage({ monkey: monkeysToFight[0], content: randArrItem(fightingMessages) })]
 	};
 }

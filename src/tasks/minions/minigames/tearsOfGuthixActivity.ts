@@ -68,9 +68,11 @@ export const togTask: MinionTask = {
 
 		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration, source: 'TearsOfGuthix' });
 
-		let message = `${user}, ${user.minionName
-			} finished telling Juna a story and drinking from the Tears of Guthix and collected ${tears} tears.\nLowest XP skill is ${lowestSkill}.\n${xpStr.toLocaleString()}.${hasDiary ? '\n10% XP bonus for Lumbridge & Draynor Hard diary.' : ''
-			}`;
+		let message = `${user}, ${
+			user.minionName
+		} finished telling Juna a story and drinking from the Tears of Guthix and collected ${tears} tears.\nLowest XP skill is ${lowestSkill}.\n${xpStr.toLocaleString()}.${
+			hasDiary ? '\n10% XP bonus for Lumbridge & Draynor Hard diary.' : ''
+		}`;
 		if (hasEngram) {
 			message += ' 10% Bonus XP for Guthix engram';
 		}

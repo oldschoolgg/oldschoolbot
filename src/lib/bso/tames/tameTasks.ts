@@ -10,9 +10,9 @@ import {
 } from '@/lib/bso/tames/tames.js';
 import { tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
+import { userMention } from '@oldschoolgg/discord';
 import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, isFunction, Time } from '@oldschoolgg/toolkit';
-import { userMention } from '@oldschoolgg/discord';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
@@ -26,9 +26,9 @@ import { runCommand } from '@/lib/settings/settings.js';
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { makeTameRepeatTripButton } from '@/lib/util/interactions.js';
 import { assert } from '@/lib/util/logError.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-import { makeTameRepeatTripButton } from '@/lib/util/interactions.js';
 
 export async function handleFinish({
 	lootToAdd,
@@ -74,7 +74,7 @@ export async function handleFinish({
 			title: `${tame}'s Loot`,
 			user: user,
 			previousCL: previousTameCl
-		})
+		});
 
 	return globalClient.sendMessageOrWebhook(activity.channel_id, res);
 }
@@ -147,13 +147,13 @@ async function handleImplingLocator(user: MUser, tame: MTame, duration: number, 
 					actualImplingLoot.add(
 						isFunction(openable.output)
 							? (
-								await openable.output({
-									user,
-									quantity: qty,
-									self: openable,
-									totalLeaguesPoints: 0
-								})
-							).bank
+									await openable.output({
+										user,
+										quantity: qty,
+										self: openable,
+										totalLeaguesPoints: 0
+									})
+								).bank
 							: openable.output.roll(qty)
 					);
 				}
@@ -176,10 +176,11 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 
 			let killQty = quantity - activity.deaths;
 			if (killQty < 1) {
-				handleFinish({
+				await handleFinish({
 					lootToAdd: new Bank(),
-					message: `${userMention(user.id)}, Your tame died in all their attempts to kill ${mon.name
-						}. Get them some better armor!`,
+					message: `${userMention(user.id)}, Your tame died in all their attempts to kill ${
+						mon.name
+					}. Get them some better armor!`,
 					user,
 					activity,
 					tame
@@ -202,8 +203,9 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			const loot = mon.loot({ quantity: killQty, tame });
 			const messages: string[] = [];
 
-			let str = `${user}, ${tame} finished killing ${quantity}x ${mon.name}.${activity.deaths > 0 ? ` ${tame} died ${activity.deaths}x times.` : ''
-				}`;
+			let str = `${user}, ${tame} finished killing ${quantity}x ${mon.name}.${
+				activity.deaths > 0 ? ` ${tame} died ${activity.deaths}x times.` : ''
+			}`;
 			if (oriIsApplying) {
 				messages.push('25% extra loot (ate an Ori)');
 			}
@@ -232,7 +234,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 					}
 				]
 			});
-			handleFinish({
+			await handleFinish({
 				lootToAdd: loot,
 				message: str,
 				user,
@@ -246,11 +248,12 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			const collectable = collectables.find(c => c.item.id === itemID)!;
 			const totalQuantity = quantity * collectable.quantity;
 			const loot = new Bank().add(collectable.item.id, totalQuantity);
-			let str = `${user}, ${tame} finished collecting ${totalQuantity}x ${collectable.item.name
-				}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
+			let str = `${user}, ${tame} finished collecting ${totalQuantity}x ${
+				collectable.item.name
+			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 			const { doubleLootMsg } = tame.doubleLootCheck(loot);
 			str += doubleLootMsg;
-			handleFinish({
+			await handleFinish({
 				lootToAdd: loot,
 				message: str,
 				user,

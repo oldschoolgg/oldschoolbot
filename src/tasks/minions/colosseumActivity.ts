@@ -31,7 +31,7 @@ export const colosseumTask: MinionTask = {
 		// Increment wave KCs
 		for (let i = 0; i < quantity; i++) {
 			const newKCs = new ColosseumWaveBank();
-			const waves = diedAt?.[i] ? diedAt?.[i]! - 1 : 12;
+			const waves = diedAt?.[i] ? diedAt[i]! - 1 : 12;
 			for (let j = 0; j < waves; j++) {
 				newKCs.add(j + 1);
 			}
@@ -45,8 +45,8 @@ export const colosseumTask: MinionTask = {
 		const coloWaveKCs = stats.colo_kc_bank;
 		const newKCsStr = coloWaveKCs
 			? Object.entries(coloWaveKCs)
-				.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
-				.join(', ')
+					.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
+					.join(', ')
 			: 'No KCs recorded';
 		const newWaveKcStr = `**Colosseum Wave KCs:** ${newKCsStr}`;
 
@@ -80,7 +80,7 @@ export const colosseumTask: MinionTask = {
 				let voidStaffRefund = 0;
 
 				// Calculate refund for unused charges
-				const completionPercentage = (diedAt?.[i]! - 1) / 12;
+				const completionPercentage = (diedAt![i]! - 1) / 12;
 				if (scytheCharges > 0) {
 					scytheRefund = Math.floor((scytheCharges / quantity) * (1 - completionPercentage));
 					scytheRefund = Math.min(scytheRefund, scytheCharges / quantity);

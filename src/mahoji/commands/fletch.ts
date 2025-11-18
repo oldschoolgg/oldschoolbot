@@ -114,9 +114,10 @@ export const fletchCommand = defineCommand({
 			type: 'Fletching'
 		});
 
-		return `${user.minionName} is now Fletching ${quantity}${sets} ${fletchable.name
-			}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${itemsNeeded} from your bank.\n${boostMsg.join(', ')}`;
+		return `${user.minionName} is now Fletching ${quantity}${sets} ${
+			fletchable.name
+		}, it'll take around ${formatDuration(
+			duration
+		)} to finish. Removed ${itemsNeeded} from your bank.\n${boostMsg.join(', ')}`;
 	}
 });

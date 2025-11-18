@@ -100,7 +100,7 @@ export const craftCommand = defineCommand({
 				duration: Math.min(
 					maxTripLength,
 					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToCraftSingleItem)) *
-					boostedTimeToCraftSingleItem
+						boostedTimeToCraftSingleItem
 				)
 			});
 			if (res.success) {
@@ -147,8 +147,9 @@ export const craftCommand = defineCommand({
 			type: 'Crafting',
 			cantBeDoubled: craftable.cantBeDoubled
 		});
-		let str = `${user.minionName} is now crafting ${quantity}${sets} ${craftable.name
-			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		let str = `${user.minionName} is now crafting ${quantity}${sets} ${
+			craftable.name
+		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
 		if (boosts.length > 0) {
 			str += `**Boosts:** ${boosts.join(', ')}`;
 		}

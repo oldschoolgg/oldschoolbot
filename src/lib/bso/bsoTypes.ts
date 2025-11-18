@@ -139,4 +139,4 @@ export type BSOActivityTaskData =
 	| FishingContestOptions
 	| TinkeringWorkshopOptions
 	| NewBossOptions
-	| NexTaskOptions
+	| NexTaskOptions;

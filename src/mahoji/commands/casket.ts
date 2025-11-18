@@ -67,11 +67,12 @@ export const casketCommand = defineCommand({
 
 		if (loot.length === 0) return `${title} and got nothing :(`;
 
-		return new MessageBuilder().addBankImage({
-			bank: loot,
-			title,
-			user,
-		})
+		return new MessageBuilder()
+			.addBankImage({
+				bank: loot,
+				title,
+				user
+			})
 			.setContent(`You opened ${options.quantity} ${clueTier.name} caskets.
 **Bot Value:** ${toKMB(loot.value())} (Average of ${toKMB(loot.value() / options.quantity)} per casket)
 **Market Value:** ${toKMB(marketPriceOfBank(loot))} (Average of ${toKMB(marketPriceOfBank(loot) / options.quantity)} per casket)

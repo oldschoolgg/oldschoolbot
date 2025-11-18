@@ -1,6 +1,8 @@
+import { isElligibleForPresent } from '@/lib/bso/bsoUtil.js';
+
 import { bold } from '@oldschoolgg/discord';
 import { Events, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, itemID, Items } from 'oldschooljs';
+import { Bank, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import Buyables from '@/lib/data/buyables/buyables.js';
 import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
@@ -12,7 +14,6 @@ import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossil
 import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
 import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
-import { isElligibleForPresent } from '@/lib/bso/bsoUtil.js';
 
 const allBuyablesAutocomplete = [
 	...Buyables.map(b => ({ name: b.name })),
@@ -121,8 +122,9 @@ export const buyCommand = defineCommand({
 				kc += await user.fetchMinigameScore('tob_hard');
 			}
 			if (kc < req) {
-				return `You need ${req} KC in ${Minigames.find(i => i.column === key)?.name
-					} to buy this, you only have ${kc} KC.`;
+				return `You need ${req} KC in ${
+					Minigames.find(i => i.column === key)?.name
+				} to buy this, you only have ${kc} KC.`;
 			}
 		}
 
@@ -181,8 +183,9 @@ export const buyCommand = defineCommand({
 				countUsersWithItemInCl(itemID(buyable.name), true)
 			]);
 
-			let announcement = `**${user.badgedUsername}'s** minion, ${user.minionName}, just purchased their first ${buyable.name
-				}! They are the ${formatOrdinal(count + 1)} player to buy one.`;
+			let announcement = `**${user.badgedUsername}'s** minion, ${user.minionName}, just purchased their first ${
+				buyable.name
+			}! They are the ${formatOrdinal(count + 1)} player to buy one.`;
 
 			if (user.isIronman) {
 				announcement += `\n\nThey are the ${formatOrdinal(ironCount + 1)} Ironman to buy one.`;

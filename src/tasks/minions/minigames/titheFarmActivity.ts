@@ -52,8 +52,9 @@ export const titheFarmTask: MinionTask = {
 		const farmingXp = harvestXp + depositXp + bonusFruitXp;
 
 		const harvestStr = `${user} ${user.minionName} successfully harvested ${determineHarvest}x ${fruit} fruit.`;
-		const completedStr = `You have completed the ${Emoji.MinigameIcon} Tithe Farm ${titheFarmsCompleted + 1
-			}x times. You now have ${titheFarmPoints + determinePoints} points to spend.`;
+		const completedStr = `You have completed the ${Emoji.MinigameIcon} Tithe Farm ${
+			titheFarmsCompleted + 1
+		}x times. You now have ${titheFarmPoints + determinePoints} points to spend.`;
 
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;

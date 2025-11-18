@@ -41,7 +41,7 @@ test('calculateGearLostOnDeathWilderness', async () => {
 			finishDate: Date.now(),
 			channelId: ''
 		} as MonsterActivityTaskOptions,
-		{ user, handleTripFinish: async () => { }, rng: MathRNG }
+		{ user, handleTripFinish: async () => {}, rng: MathRNG }
 	);
 
 	await user.sync();

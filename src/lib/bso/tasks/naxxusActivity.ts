@@ -47,7 +47,10 @@ export const naxxusTask: MinionTask = {
 			]
 		});
 
-		const message = new MessageBuilder().setContent(`${user}, ${user.minionName} finished killing ${quantity} ${Naxxus.name}. Your Naxxus KC is now ${newKC}.\n\n${xpStr}`)
+		const message = new MessageBuilder()
+			.setContent(
+				`${user}, ${user.minionName} finished killing ${quantity} ${Naxxus.name}. Your Naxxus KC is now ${newKC}.\n\n${xpStr}`
+			)
 			.addBankImage({
 				bank: itemsAdded,
 				title: `Loot From ${quantity} ${Naxxus.name}:`,
@@ -55,14 +58,12 @@ export const naxxusTask: MinionTask = {
 				previousCL
 			});
 
-		return handleTripFinish(
-			{
-				user,
-				channelId,
-				message,
-				data,
-				loot: itemsAdded
-			}
-		);
+		return handleTripFinish({
+			user,
+			channelId,
+			message,
+			data,
+			loot: itemsAdded
+		});
 	}
 };

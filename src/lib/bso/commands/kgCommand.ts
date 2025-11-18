@@ -1,8 +1,8 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance, gpCostPerKill } from '@/lib/bso/structures/Boss.js';
 
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from '@oldschoolgg/discord';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
@@ -73,7 +73,8 @@ export async function kgCommand(
 		const { bossUsers } = await instance.start();
 		const embed = new EmbedBuilder()
 			.setDescription(
-				`${type === 'solo' ? 'You approach' : 'Your group approaches'} the Kings' chambers, and ${type === 'solo' ? 'you bribe' : 'each of you bribes'
+				`${type === 'solo' ? 'You approach' : 'Your group approaches'} the Kings' chambers, and ${
+					type === 'solo' ? 'you bribe' : 'each of you bribes'
 				} the Kings Guards with a big bag of gold (${toKMB(
 					10_000_000
 				)} each) to let you into his chambers. The guards accept the offer and let you in, as they run away. The total trip will take ${formatDuration(

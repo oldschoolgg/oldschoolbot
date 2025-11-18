@@ -49,8 +49,9 @@ export function calculateMiningInput({
 	);
 
 	if (!ore) {
-		return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${Mining.MotherlodeMine.name
-			}.`;
+		return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
+			Mining.MotherlodeMine.name
+		}.`;
 	}
 
 	if (miningLevel < ore.level) {
@@ -291,11 +292,13 @@ export const mineCommand = defineCommand({
 			type: 'Mining'
 		});
 
-		let response = `${user.minionName} is now mining ${ore.name} until your minion ${quantity ? `mined ${newQuantity}x or gets tired` : 'is satisfied'
-			}, it'll take ${quantity
+		let response = `${user.minionName} is now mining ${ore.name} until your minion ${
+			quantity ? `mined ${newQuantity}x or gets tired` : 'is satisfied'
+		}, it'll take ${
+			quantity
 				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
 				: formatDuration(duration)
-			} to finish.`;
+		} to finish.`;
 
 		if (user.usingPet('Doug')) {
 			response += '\n<:doug:748892864813203591> Doug joins you on your mining trip!';

@@ -1,5 +1,6 @@
 import { NAXXUS_HP, Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
 
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -15,7 +16,6 @@ import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem }
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { EmbedBuilder } from '@oldschoolgg/discord';
 
 const bisMageGear = new Gear({
 	head: 'Gorajan occult helmet', // 20
@@ -48,42 +48,42 @@ const itemBoosts: {
 	boost: number;
 	setup: 'mage' | 'melee';
 }[] = [
-		{
-			item: Items.getOrThrow('Void staff'),
-			boost: 10,
-			setup: 'mage'
-		},
-		{
-			item: Items.getOrThrow('Abyssal tome'),
-			boost: 7.5,
-			setup: 'mage'
-		},
-		{
-			item: Items.getOrThrow('Tzkal cape'),
-			boost: 5,
-			setup: 'melee'
-		},
-		{
-			item: Items.getOrThrow('Vasa cloak'),
-			boost: 5,
-			setup: 'mage'
-		},
-		{
-			item: Items.getOrThrow('Ignis ring(i)'),
-			boost: 2.5,
-			setup: 'melee'
-		},
-		{
-			item: Items.getOrThrow('Spellbound ring(i)'),
-			boost: 2.5,
-			setup: 'mage'
-		},
-		{
-			item: Items.getOrThrow('Spellbound ring'),
-			boost: 2,
-			setup: 'mage'
-		}
-	];
+	{
+		item: Items.getOrThrow('Void staff'),
+		boost: 10,
+		setup: 'mage'
+	},
+	{
+		item: Items.getOrThrow('Abyssal tome'),
+		boost: 7.5,
+		setup: 'mage'
+	},
+	{
+		item: Items.getOrThrow('Tzkal cape'),
+		boost: 5,
+		setup: 'melee'
+	},
+	{
+		item: Items.getOrThrow('Vasa cloak'),
+		boost: 5,
+		setup: 'mage'
+	},
+	{
+		item: Items.getOrThrow('Ignis ring(i)'),
+		boost: 2.5,
+		setup: 'melee'
+	},
+	{
+		item: Items.getOrThrow('Spellbound ring(i)'),
+		boost: 2.5,
+		setup: 'mage'
+	},
+	{
+		item: Items.getOrThrow('Spellbound ring'),
+		boost: 2,
+		setup: 'mage'
+	}
+];
 
 const naxxusKcBoosts: [number, number, string | null][] = [
 	[500, 20, null],
@@ -116,11 +116,7 @@ function calcSetupPercent(
 	return totalPercent;
 }
 
-export async function naxxusCommand(
-	user: MUser,
-	channelId: string,
-	quantity: number | undefined
-) {
+export async function naxxusCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const [hasReqs, rejectReason] = await user.hasMonsterRequirements(Naxxus);
 	if (!hasReqs) {
 		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${rejectReason}`;

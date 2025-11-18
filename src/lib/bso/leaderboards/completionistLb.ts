@@ -21,5 +21,5 @@ export async function bsoCompletionistLb(interaction: MInteraction, untrimmed: b
 			: `${untrimmed ? 'Untrimmed' : 'Trimmed'} Completionist Leaderboard`,
 		ironmanOnly: Boolean(ironmanOnly),
 		formatter: score => `${score.toFixed(2)}%`
-	})
+	});
 }

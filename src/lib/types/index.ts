@@ -17,7 +17,7 @@ export type Skills = Partial<{
 export type SkillRequirements = Skills & { combat?: number };
 export type SkillsRequired = Required<Skills>;
 
-interface JsonArray extends Array<PrismaCompatibleJsonValue> { }
+interface JsonArray extends Array<PrismaCompatibleJsonValue> {}
 
 export type PrismaCompatibleJsonObject = {
 	[Key in string]?: PrismaCompatibleJsonValue;

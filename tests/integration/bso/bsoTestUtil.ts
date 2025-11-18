@@ -73,10 +73,7 @@ export const BSOTestUtil = {
 	) {
 		const previousBank = user.bank.clone();
 		const currentXP = clone(user.skillsAsXP);
-		const commandResult = await user.runCommand(
-			stealCommand,
-			{ name: Monsters.get(monster)!.name, quantity },
-		);
+		const commandResult = await user.runCommand(stealCommand, { name: Monsters.get(monster)!.name, quantity });
 		if (shouldFail) {
 			expect(commandResult).not.toContain('is now going to');
 		}

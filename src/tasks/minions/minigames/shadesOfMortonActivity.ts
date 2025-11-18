@@ -1,5 +1,6 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
+import { bold } from '@oldschoolgg/discord';
 import { randInt, roll } from '@oldschoolgg/rng';
 import { Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
@@ -7,7 +8,6 @@ import { Bank, LootTable } from 'oldschooljs';
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
-import { bold } from '@oldschoolgg/discord';
 
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',

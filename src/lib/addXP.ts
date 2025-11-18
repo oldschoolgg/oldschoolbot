@@ -7,6 +7,7 @@ import {
 } from '@/lib/bso/collection-log/main.js';
 import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
 
+import { bold } from '@oldschoolgg/discord';
 import { Events, formatOrdinal, increaseNumByPercent, notEmpty, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, convertXPtoLVL, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
 
@@ -19,7 +20,6 @@ import Skillcapes from '@/lib/skilling/skillcapes.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
-import { bold } from '@oldschoolgg/discord';
 
 const maxFilter = SkillsArray.map(s => `"skills.${s}" >= ${MAX_LEVEL_XP}`).join(' AND ');
 const makeQuery = (ironman: boolean) => `SELECT count(id)::int
@@ -46,9 +46,11 @@ async function howManyMaxed() {
 async function onMax(user: MUser) {
 	const { normies, irons } = await howManyMaxed();
 
-	const str = `🎉 ${user.usernameOrMention
-		}'s minion just achieved level 120 in every skill, they are the **${formatOrdinal(normies)}** minion to be maxed${user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
-		} 🎉`;
+	const str = `🎉 ${
+		user.usernameOrMention
+	}'s minion just achieved level 120 in every skill, they are the **${formatOrdinal(normies)}** minion to be maxed${
+		user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
+	} 🎉`;
 
 	globalClient.emit(Events.ServerNotification, str);
 	globalClient.sendMessage(globalConfig.supportServerID, { content: str });
@@ -257,7 +259,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			if (currentXP < XPMilestone && newXP >= XPMilestone) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`${skill.emoji} **${user.badgedUsername}'s** minion, ${user.minionName
+					`${skill.emoji} **${user.badgedUsername}'s** minion, ${
+						user.minionName
 					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
 				);
 				break;
@@ -314,16 +317,20 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		if (type === 'lvl') {
 			await insertUserEvent({ userID: user.id, type: UserEventType.MaxLevel, skill: skill.id });
 			queryValue = convertLVLtoXP(value);
-			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${user.minionName
-				}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${!user.isIronman ? '' : ` They are the {nthIron} Ironman to get level ${value} in ${skillNameCased}`
-				}`;
+			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
+				user.minionName
+			}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${
+				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get level ${value} in ${skillNameCased}`
+			}`;
 		} else {
 			queryValue = value;
-			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${user.minionName
-				}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
-					value
-				)} in ${skillNameCased}.${!user.isIronman ? '' : ` They are the {nthIron} Ironman to get ${toKMB(value)} XP in ${skillNameCased}`
-				}`;
+			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
+				user.minionName
+			}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
+				value
+			)} in ${skillNameCased}.${
+				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get ${toKMB(value)} XP in ${skillNameCased}`
+			}`;
 		}
 		// Query nthUser and nthIronman
 		const [nthUser] = await prisma.$queryRawUnsafe<

@@ -155,8 +155,9 @@ export const raidsTask: MinionTask = {
 
 		const totalLoot = new Bank();
 
-		let resultMessage = `<@${leader}> Your ${challengeMode ? 'Challenge Mode Raid' : 'Raid'}${quantity > 1 ? 's have' : ' has'
-			} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
+		let resultMessage = `<@${leader}> Your ${challengeMode ? 'Challenge Mode Raid' : 'Raid'}${
+			quantity > 1 ? 's have' : ' has'
+		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, quantity)));
 
 		for (const [_userID, userData] of raidResults) {
@@ -168,12 +169,12 @@ export const raidsTask: MinionTask = {
 				handleCoxXP(user, quantity, challengeMode),
 				cc
 					? user.statsBankUpdate('chincannon_destroyed_loot_bank', loot).then(() => ({
-						itemsAdded: new Bank()
-					}))
+							itemsAdded: new Bank()
+						}))
 					: user.transactItems({
-						itemsToAdd: loot,
-						collectionLog: true
-					}),
+							itemsToAdd: loot,
+							collectionLog: true
+						}),
 				user.statsUpdate({
 					total_cox_points: {
 						increment: personalPoints
@@ -195,8 +196,9 @@ export const raidsTask: MinionTask = {
 			const str = specialLoot ? `${emote} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
-			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${Emoji.Skull
-				}${deathChance.toFixed(0)}%) ${xpResult}`;
+			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
+				Emoji.Skull
+			}${deathChance.toFixed(0)}%) ${xpResult}`;
 			if (flappyMsg) resultMessage += users.length === 1 ? `\n${flappyMsg}` : Emoji.Flappy;
 		}
 
@@ -227,16 +229,16 @@ export const raidsTask: MinionTask = {
 		if (users.length === 1) {
 			const img = shouldShowImage
 				? await drawChestLootImage({
-					entries: [
-						{
-							loot: totalLoot,
-							user: allUsers[0],
-							previousCL: previousCLs[0],
-							customTexts: []
-						}
-					],
-					type: 'Chambers of Xerician'
-				})
+						entries: [
+							{
+								loot: totalLoot,
+								user: allUsers[0],
+								previousCL: previousCLs[0],
+								customTexts: []
+							}
+						],
+						type: 'Chambers of Xerician'
+					})
 				: undefined;
 			return handleTripFinish({
 				user: allUsers[0],
@@ -249,14 +251,14 @@ export const raidsTask: MinionTask = {
 
 		const img = shouldShowImage
 			? await drawChestLootImage({
-				entries: allUsers.map((u, index) => ({
-					loot: raidResults.get(u.id)!.loot,
-					user: u,
-					previousCL: previousCLs[index],
-					customTexts: []
-				})),
-				type: 'Chambers of Xerician'
-			})
+					entries: allUsers.map((u, index) => ({
+						loot: raidResults.get(u.id)!.loot,
+						user: u,
+						previousCL: previousCLs[index],
+						customTexts: []
+					})),
+					type: 'Chambers of Xerician'
+				})
 			: undefined;
 
 		return handleTripFinish({

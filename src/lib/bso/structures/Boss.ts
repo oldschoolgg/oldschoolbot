@@ -286,18 +286,18 @@ export class BossInstance {
 			this.solo && this.leader
 				? [this.leader]
 				: await globalClient.makeParty({
-					interaction: this.interaction,
-					ironmanAllowed: true,
-					minSize: this.minSize,
-					maxSize: this.maxSize,
-					leader: this.leader,
-					customDenier: async (user: MUser) => {
-						return this.checkUser(user);
-					},
-					message: this.massText
-					// massTimeout: this.automaticStartTime,
-					// allowedMentions: this.allowedMentions
-				});
+						interaction: this.interaction,
+						ironmanAllowed: true,
+						minSize: this.minSize,
+						maxSize: this.maxSize,
+						leader: this.leader,
+						customDenier: async (user: MUser) => {
+							return this.checkUser(user);
+						},
+						message: this.massText
+						// massTimeout: this.automaticStartTime,
+						// allowedMentions: this.allowedMentions
+					});
 
 		this.tempQty = this.quantity;
 		// Force qty to 1 for init calculations

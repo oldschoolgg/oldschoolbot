@@ -32,21 +32,20 @@ export const icCommand = defineCommand({
 		const details = ItemContracts.getItemContractDetails(user);
 		const components =
 			details.nextContractIsReady &&
-				details.currentItem !== null &&
-				!user.isIronman &&
-				!user.bitfield.includes(BitField.NoItemContractDonations)
-				? ([
-					makeDonateIcButton(user.id)
-				])
+			details.currentItem !== null &&
+			!user.isIronman &&
+			!user.bitfield.includes(BitField.NoItemContractDonations)
+				? [makeDonateIcButton(user.id)]
 				: undefined;
 
 		if (options.info) {
 			if (!details.nextContractIsReady) {
 				return {
-					content: `${Emoji.ItemContract
-						} You have no item contract available at the moment. Come back in ${formatDuration(
-							details.durationRemaining
-						)}.
+					content: `${
+						Emoji.ItemContract
+					} You have no item contract available at the moment. Come back in ${formatDuration(
+						details.durationRemaining
+					)}.
 
 ${details.infoStr}`
 				};

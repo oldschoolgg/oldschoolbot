@@ -9,10 +9,13 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
+import { type ButtonBuilder, bold } from '@oldschoolgg/discord';
 import { MathRNG, randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main.js';
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
@@ -37,9 +40,6 @@ import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
 import { alching } from '@/mahoji/commands/laps.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import { bold, type ButtonBuilder } from '@oldschoolgg/discord';
-import { getNextUTCReset, notEmpty, Time } from '@oldschoolgg/toolkit';
-import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 
 const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'GroupMonsterKilling',
@@ -256,10 +256,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 					ClientSettings.updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'))
 				]);
 				messages.push(
-					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${alchResult.itemToAlch.name
-					} <:alch:739456571347566623> ${toKMB(alchResult.bankToAdd.amount('Coins'))} GP ${!voidlingEquipped && !user.hasEquipped('Magic master cape')
-						? '<:bank:739459924693614653>⏬'
-						: ''
+					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${
+						alchResult.itemToAlch.name
+					} <:alch:739456571347566623> ${toKMB(alchResult.bankToAdd.amount('Coins'))} GP ${
+						!voidlingEquipped && !user.hasEquipped('Magic master cape')
+							? '<:bank:739459924693614653>⏬'
+							: ''
 					}${user.hasEquipped('Magic master cape') ? '<:Magicmastercape:1115026341314703492>⏫' : ''}`
 				);
 				return {
@@ -390,9 +392,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 						}
 					}
 				}
-				const message = `${user.minionName
-					} arrives at the snowy area north of rellekka, finding a giant, monstrous Yeti. At his feet, lay a slain animal. The Yeti looks at ${user.minionName
-					}, and prepares to attack. Use ${globalClient.mentionCommand('k')} to fight the yeti!.`;
+				const message = `${
+					user.minionName
+				} arrives at the snowy area north of rellekka, finding a giant, monstrous Yeti. At his feet, lay a slain animal. The Yeti looks at ${
+					user.minionName
+				}, and prepares to attack. Use ${globalClient.mentionCommand('k')} to fight the yeti!.`;
 				messages.push(bold(message));
 			}
 		}
@@ -579,10 +583,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 					bso_mystery_trail_current_step_id: 1
 				});
 			}
-			messages.push(`${bold('A mysterious figure approaches you...')} ${mysteriousMessage} (You received ${mysteriousLoot})`);
+			messages.push(
+				`${bold('A mysterious figure approaches you...')} ${mysteriousMessage} (You received ${mysteriousLoot})`
+			);
 			return {
 				itemsToAddWithCL: mysteriousLoot
-			}
+			};
 		}
 	}
 ];
@@ -611,13 +617,13 @@ export async function handleTripFinish(
 	userOrParams:
 		| MUser
 		| {
-			user: MUser;
-			channelId: string;
-			message: OSBSendableMessage;
-			data: ActivityTaskData;
-			loot?: Bank | null;
-			messages?: string[];
-		},
+				user: MUser;
+				channelId: string;
+				message: OSBSendableMessage;
+				data: ActivityTaskData;
+				loot?: Bank | null;
+				messages?: string[];
+		  },
 	_channelId?: string,
 	_message?: OSBSendableMessage,
 	_data?: ActivityTaskData,
@@ -632,7 +638,7 @@ export async function handleTripFinish(
 		messages: inputMessages,
 		message: inputMessage
 	} = userOrParams instanceof MUserClass
-			? {
+		? {
 				user: userOrParams as MUser,
 				channelId: _channelId!,
 				message: _message!,
@@ -640,7 +646,7 @@ export async function handleTripFinish(
 				loot: _loot!,
 				messages: _messages
 			}
-			: userOrParams;
+		: userOrParams;
 
 	Logging.logDebug(`Handling trip finish for ${user.logName} (${data.type})`);
 	const message =
@@ -701,8 +707,6 @@ export async function handleTripFinish(
 	if (components.length > 0) {
 		message.addComponents(components);
 	}
-
-
 
 	handleTriggerShootingStar(user, data, components);
 

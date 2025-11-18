@@ -32,9 +32,11 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 
 		const potionReq = await calcBossFood(user, KalphiteKingMonster, users.length, quantity);
 		if (!user.bank.has(potionReq)) {
-			return `${users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
-				} have enough brews/restores. You need at least ${potionReq} to ${users.length === 1 ? 'start the mass' : 'enter the mass'
-				}.`;
+			return `${
+				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
+			} have enough brews/restores. You need at least ${potionReq} to ${
+				users.length === 1 ? 'start the mass' : 'enter the mass'
+			}.`;
 		}
 	}
 }
@@ -97,7 +99,7 @@ export async function kkCommand(
 		}
 	};
 
-	let users: MUser[] = type === 'mass' ? await globalClient.makeParty(partyOptions) : [user];
+	const users: MUser[] = type === 'mass' ? await globalClient.makeParty(partyOptions) : [user];
 	if (await ActivityManager.anyMinionIsBusy(users.map(u => u.id))) {
 		return 'One or more party members have their minion busy.';
 	}
@@ -312,10 +314,10 @@ export async function kkCommand(
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to kill ${quantity}x ${KalphiteKingMonster.name}. Each kill takes ${formatDuration(
-			perKillTime
-		)} instead of ${formatDuration(KalphiteKingMonster.timeToFinish)} - the total trip will take ${formatDuration(
-			duration
-		)}. ${foodString}`;
+		perKillTime
+	)} instead of ${formatDuration(KalphiteKingMonster.timeToFinish)} - the total trip will take ${formatDuration(
+		duration
+	)}. ${foodString}`;
 
 	str += ` \n\n${debugStr}`;
 

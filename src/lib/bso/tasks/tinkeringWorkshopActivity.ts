@@ -48,13 +48,11 @@ export const twTask: MinionTask = {
 			}
 		});
 
-		return handleTripFinish(
-			{
-				user,
-				channelId,
-				message: `${user}, ${user.minionName} finished tinkering with ${quantity}x projects, you received ${loot} and ${xpStr}.`,
-				data,
-			}
-		);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: `${user}, ${user.minionName} finished tinkering with ${quantity}x projects, you received ${loot} and ${xpStr}.`,
+			data
+		});
 	}
 };

@@ -115,14 +115,12 @@ export const fishingContestTask: MinionTask = {
 			.join(', ')}. You received: ${loot}.
 ${caughtFish[0].boosts.length > 0 ? `**Boosts:** ${caughtFish[0].boosts.join(', ')}` : ''}
 ${xpStr}`;
-		return handleTripFinish(
-			{
-				user,
-				channelId,
-				message,
-				data,
-				loot
-			}
-		);
+		return handleTripFinish({
+			user,
+			channelId,
+			message,
+			data,
+			loot
+		});
 	}
 };

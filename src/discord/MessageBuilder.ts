@@ -1,8 +1,8 @@
 import type { ButtonBuilder, EmbedBuilder } from '@oldschoolgg/discord';
 
 import chatHeadImage, { type HeadKey } from '@/lib/canvas/chatHeadImage.js';
+import { type DrawChestLootImageOptions, drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { type MakeBankImageOptions, makeBankImage } from '@/lib/util/makeBankImage.js';
-import { drawChestLootImage, type DrawChestLootImageOptions } from '@/lib/canvas/chestImage.js';
 
 export class MessageBuilderClass {
 	private _message: BaseSendableMessage;

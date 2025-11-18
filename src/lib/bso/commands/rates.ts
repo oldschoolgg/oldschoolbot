@@ -26,6 +26,7 @@ import { calculateDungeoneeringResult } from '@/lib/bso/tasks/dungeoneeringActiv
 import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHarvestActivity.js';
 import { calculateTuraelsTrialsResult } from '@/lib/bso/tasks/turaelsTrialsActivity.js';
 
+import { bold } from '@oldschoolgg/discord';
 import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, convertBankToPerHourStats, Items, itemID, toKMB } from 'oldschooljs';
@@ -45,7 +46,6 @@ import { calculateMiningInput } from '@/mahoji/commands/mine.js';
 import { calculateAgilityResult } from '@/tasks/minions/agilityActivity.js';
 import { calculateHunterResult } from '@/tasks/minions/HunterActivity/hunterActivity.js';
 import { calculateMiningResult } from '@/tasks/minions/miningActivity.js';
-import { bold } from '@oldschoolgg/discord';
 
 export const ratesCommand = defineCommand({
 	name: 'rates',
@@ -174,7 +174,7 @@ export const ratesCommand = defineCommand({
 				);
 			}
 			return {
-				...(interaction.returnStringOrFile(tableArr.join('\n')))
+				...interaction.returnStringOrFile(tableArr.join('\n'))
 			};
 		}
 		if (options.misc?.zygomite_seeds) {
@@ -207,17 +207,18 @@ export const ratesCommand = defineCommand({
 			)} (weighted average) chance of surviving. ${averageHoursToGetBoth.toFixed(1)} hours on average to get a zygomite seed.
 
 ${zygomiteFarmingSource
-					.map(
-						z =>
-							`${bold(z.seedItem.name)} evolves from: ${!z.mutatedFromItems
-								? 'No items'
-								: mutatedSourceItems
-									.filter(msi => msi.zygomite === z.name)
-									.map(i => i.item.name)
-									.join(', ')
-							}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(i => Items.itemNameFromId(i)).join(', ')}.`
-					)
-					.join('\n\n')}`;
+	.map(
+		z =>
+			`${bold(z.seedItem.name)} evolves from: ${
+				!z.mutatedFromItems
+					? 'No items'
+					: mutatedSourceItems
+							.filter(msi => msi.zygomite === z.name)
+							.map(i => i.item.name)
+							.join(', ')
+			}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(i => Items.itemNameFromId(i)).join(', ')}.`
+	)
+	.join('\n\n')}`;
 		}
 		if (options.tames?.eagle) {
 			let results = `${['Support Level', 'Clue Tier', 'Clues/hr', 'Kibble/hr', 'GMC/Hr'].join('\t')}\n`;
@@ -244,7 +245,7 @@ ${zygomiteFarmingSource
 
 			return {
 				content: 'Assumes abyssal jibwings (e) and divine ring',
-				...(interaction.returnStringOrFile(results))
+				...interaction.returnStringOrFile(results)
 			};
 		}
 
@@ -376,7 +377,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(interaction.returnStringOrFile(results)),
+				...interaction.returnStringOrFile(results),
 				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
 			};
 		}
@@ -432,7 +433,7 @@ ${zygomiteFarmingSource
 			}
 
 			return {
-				...(interaction.returnStringOrFile(results)),
+				...interaction.returnStringOrFile(results),
 				content: 'Assumes: Slayer master cape (8% boost to slayer xp)'
 			};
 		}
@@ -554,7 +555,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(interaction.returnStringOrFile(results)),
+				...interaction.returnStringOrFile(results),
 				content:
 					'Assumes: Mining master cape, full Prospector, Glory, Varrock armour 4, 120 mining, Volcanic pickaxe.'
 			};
@@ -620,8 +621,8 @@ ${zygomiteFarmingSource
 										energyReceived === 0
 											? '0'
 											: calcPerHour(energyReceived * calcAtomicEnergy(energy), duration).toFixed(
-												1
-											);
+													1
+												);
 
 									results += [
 										energy.type,
@@ -708,7 +709,7 @@ ${zygomiteFarmingSource
 			for (const floor of [1, 2, 3, 4, 5, 6, 7]) {
 				for (const hasPortent of [true, false]) {
 					const dungeonLength = Time.Minute * 5 * (floor / 2);
-					const quantity = Math.floor(await user.calcMaxTripLength('Dungeoneering') / dungeonLength);
+					const quantity = Math.floor((await user.calcMaxTripLength('Dungeoneering')) / dungeonLength);
 					const duration = quantity * dungeonLength;
 					const dungeoneeringLevel = 120;
 					const goraShardChance = calcGorajanShardChance({
@@ -740,7 +741,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(interaction.returnStringOrFile(results)),
+				...interaction.returnStringOrFile(results),
 				content: 'Assumes: 120 Dungeoneering, Ring of luck, master cape (For gora shard chance)'
 			};
 		}
