@@ -1,8 +1,8 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, resolveItems, toKMB } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { getBankBackgroundEligibility } from '@/mahoji/lib/abstracted_commands/bankBgHelpers.js';
 
 export async function bankBgCommand(interaction: MInteraction, user: MUser, name: string) {
 	const bankImages = bankImageTask.backgroundImages;
@@ -30,52 +30,9 @@ export async function bankBgCommand(interaction: MInteraction, user: MUser, name
 		return `Your bank background is now **${selectedImage.name}**!`;
 	}
 
-	if (selectedImage.sacValueRequired) {
-		const sac = Number(user.user.sacrificedValue);
-		if (sac < selectedImage.sacValueRequired) {
-			return `You have to have sacrificed at least ${toKMB(
-				selectedImage.sacValueRequired
-			)} GP worth of items to use this background.`;
-		}
-	}
-
-	if (selectedImage.skillsNeeded) {
-		const meets = user.hasSkillReqs(selectedImage.skillsNeeded);
-		if (!meets) {
-			return `You don't meet the skill requirements to use this background, you need: ${formatSkillRequirements(
-				selectedImage.skillsNeeded
-			)}.`;
-		}
-	}
-
-	if (!selectedImage.available) {
-		return 'This image is not currently available.';
-	}
-
-	if (selectedImage.bitfield && !user.bitfield.includes(selectedImage.bitfield)) {
-		return "You're not elligible to use this bank background.";
-	}
-
-	// Check they have required collection log items.
-	if (selectedImage.collectionLogItemsNeeded && !user.cl.has(selectedImage.collectionLogItemsNeeded)) {
-		return `You're not worthy to use this background. You need these items in your Collection Log: ${new Bank(
-			selectedImage.collectionLogItemsNeeded
-		)}`;
-	}
-
-	// Check they have the required perk tier.
-	if (selectedImage.perkTierNeeded && (await user.fetchPerkTier()) < selectedImage.perkTierNeeded) {
-		return `This background is only available for Tier ${Number(selectedImage.perkTierNeeded) - 1} patrons.`;
-	}
-
-	if (selectedImage.name === 'Pets') {
-		const { cl } = user;
-		const hasPet = resolveItems(['Rocky', 'Bloodhound', 'Giant squirrel', 'Baby chinchompa']).some(id =>
-			cl.has(id)
-		);
-		if (!hasPet) {
-			return 'You need to have one of these pets to purchase the Pets background: Rocky, Bloodhound, Giant squirrel, Baby chinchompa.';
-		}
+	const eligibility = await getBankBackgroundEligibility({ user, background: selectedImage });
+	if (!eligibility.canUse && eligibility.failure) {
+		return eligibility.failure.response;
 	}
 
 	/**
