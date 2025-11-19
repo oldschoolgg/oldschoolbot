@@ -3839,10 +3839,10 @@
 		{
 			"name": "Mangled extract",
 			"items_created": {
-				"Mangled extract": 1
+				"Mangled extract": 5
 			},
 			"items_required": {
-				"Coins": 12000,
+				"Coins": 60000,
 				"Tainted essence chunk": 1
 			}
 		},
@@ -8535,10 +8535,10 @@
 		{
 			"name": "Scarred extract",
 			"items_created": {
-				"Scarred extract": 1
+				"Scarred extract": 5
 			},
 			"items_required": {
-				"Coins": 24000,
+				"Coins": 120000,
 				"Tainted essence chunk": 1
 			}
 		},
@@ -11263,10 +11263,10 @@
 		{
 			"name": "Warped extract",
 			"items_created": {
-				"Warped extract": 1
+				"Warped extract": 5
 			},
 			"items_required": {
-				"Coins": 1250,
+				"Coins": 6250,
 				"Tainted essence chunk": 1
 			}
 		},
