@@ -72,7 +72,7 @@ export const colosseumTask: MinionTask = {
 			return handleTripFinish({ user, channelId, message: str, data });
 		}
 
-		await user.incrementMinigameScore('colosseum');
+		await user.incrementMinigameScore('colosseum', 1);
 
 		const loot = new Bank().add(possibleLoot);
 
