@@ -273,7 +273,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 				.join(', ')}`;
 			const { doubleLootMsg } = tame.doubleLootCheck(loot);
 			str += doubleLootMsg;
-			handleFinish({
+			await handleFinish({
 				lootToAdd: loot,
 				message: str,
 				user,

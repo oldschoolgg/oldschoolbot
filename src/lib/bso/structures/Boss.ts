@@ -9,7 +9,8 @@ import {
 	reduceNumByPercent,
 	sumArr,
 	Table,
-	Time
+	Time,
+	UserError
 } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
@@ -255,7 +256,7 @@ export class BossInstance {
 			const [denied, reason] = await this.checkUser(bossUser.user);
 			if (denied) {
 				if (!this.skipInvalidUsers) {
-					throw new Error(`${bossUser.user} ${reason}`);
+					throw new UserError(`${bossUser.user} ${reason}`);
 				} else {
 					bossUser.invalid = true;
 				}

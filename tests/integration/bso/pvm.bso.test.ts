@@ -199,7 +199,7 @@ describe('BSO PVM', async () => {
 		});
 		await user.setAttackStyle(['attack']);
 		const result = await user.kill(VasaMagus.id);
-		const resultStr = (result.commandResult as any).embeds[0].description as string;
+		const resultStr = (result.commandResult as any).embeds[0].data.description as string;
 		expect(resultStr).toContain('Your team is off to fight');
 	});
 

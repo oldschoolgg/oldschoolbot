@@ -21,13 +21,7 @@ export default defineConfig({
 		maxConcurrency: 5,
 		isolate: false,
 		pool: 'threads',
-		poolOptions: {
-			threads: {
-				singleThread: false,
-				maxThreads: 4,
-				useAtomics: true
-			}
-		}
+		maxWorkers: 10
 	},
 	resolve: {
 		alias: {

@@ -68,23 +68,18 @@ export async function vasaCommand(interaction: MInteraction, user: MUser, channe
 		allowMoreThan1Solo: true,
 		quantity
 	});
-	try {
-		const { bossUsers } = await instance.start();
-		const embed = new EmbedBuilder().setDescription(
-			`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
-				instance.duration
-			)}.
+	const { bossUsers } = await instance.start();
+	const embed = new EmbedBuilder().setDescription(
+		`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
+			instance.duration
+		)}.
 
 ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\n')}
 `
-		);
+	);
 
-		return {
-			embeds: [embed],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
-		};
-	} catch (err: any) {
-		console.error(err);
-		return `The mass failed to start for this reason: ${err}.`;
-	}
+	return {
+		embeds: [embed],
+		content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
+	};
 }

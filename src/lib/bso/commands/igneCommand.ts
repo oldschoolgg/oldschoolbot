@@ -101,27 +101,23 @@ export async function igneCommand(
 		allowMoreThan1Group: true
 	});
 
-	try {
-		const { bossUsers } = await instance.start();
+	const { bossUsers } = await instance.start();
 
-		const embed = new EmbedBuilder()
-			.setDescription(
-				`Your team is off to fight ${instance.quantity}x Ignecarus. The total trip will take ${formatDuration(
-					instance.duration
-				)}.
+	const embed = new EmbedBuilder()
+		.setDescription(
+			`Your team is off to fight ${instance.quantity}x Ignecarus. The total trip will take ${formatDuration(
+				instance.duration
+			)}.
 
 ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\n')}
 `
-			)
-			.setImage(
-				'https://cdn.discordapp.com/attachments/357422607982919680/857358542456487996/grzegorz-rutkowski-dragons-breath-1920-2.jpg'
-			);
+		)
+		.setImage(
+			'https://cdn.discordapp.com/attachments/357422607982919680/857358542456487996/grzegorz-rutkowski-dragons-breath-1920-2.jpg'
+		);
 
-		return {
-			embeds: [embed],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
-		};
-	} catch (err: any) {
-		return `The mass failed to start for this reason: ${err}.`;
-	}
+	return {
+		embeds: [embed],
+		content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
+	};
 }

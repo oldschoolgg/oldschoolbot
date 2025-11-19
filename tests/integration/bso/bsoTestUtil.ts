@@ -78,6 +78,7 @@ export const BSOTestUtil = {
 			expect(commandResult).not.toContain('is now going to');
 		}
 		const activityResult = (await user.runActivity()) as MonsterActivityTaskOptions | undefined;
+		await user.sync();
 		const newXP = clone(user.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
 		for (const skill of SkillsArray) xpGained[skill] = 0;

@@ -69,28 +69,24 @@ export async function kgCommand(
 		kcLearningCap: 50,
 		quantity
 	});
-	try {
-		const { bossUsers } = await instance.start();
-		const embed = new EmbedBuilder()
-			.setDescription(
-				`${type === 'solo' ? 'You approach' : 'Your group approaches'} the Kings' chambers, and ${
-					type === 'solo' ? 'you bribe' : 'each of you bribes'
-				} the Kings Guards with a big bag of gold (${toKMB(
-					10_000_000
-				)} each) to let you into his chambers. The guards accept the offer and let you in, as they run away. The total trip will take ${formatDuration(
-					instance.duration
-				)}.
+	const { bossUsers } = await instance.start();
+	const embed = new EmbedBuilder()
+		.setDescription(
+			`${type === 'solo' ? 'You approach' : 'Your group approaches'} the Kings' chambers, and ${
+				type === 'solo' ? 'you bribe' : 'each of you bribes'
+			} the Kings Guards with a big bag of gold (${toKMB(
+				10_000_000
+			)} each) to let you into his chambers. The guards accept the offer and let you in, as they run away. The total trip will take ${formatDuration(
+				instance.duration
+			)}.
 
 ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\n')}
 `
-			)
-			.setImage('https://cdn.discordapp.com/attachments/357422607982919680/841789326648016896/Untitled-2.png');
+		)
+		.setImage('https://cdn.discordapp.com/attachments/357422607982919680/841789326648016896/Untitled-2.png');
 
-		return {
-			embeds: [embed],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
-		};
-	} catch (err: any) {
-		return `The mass failed to start for this reason: ${err}.`;
-	}
+	return {
+		embeds: [embed],
+		content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
+	};
 }
