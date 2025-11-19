@@ -2,7 +2,7 @@ import { EmbedBuilder } from '@oldschoolgg/discord';
 import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
-import type { Activity } from '@/prisma/main.js';
+import type { Activity, xp_gains_skill_enum } from '@/prisma/main.js';
 import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
@@ -26,6 +26,7 @@ import {
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 const skillsVals = Object.values(Skills);
+const skillMap = new Map(skillsVals.map(skill => [skill.id, skill] as const));
 const discordIDRegex = /^\d{17,20}$/;
 
 function sanitizeDiscordID(raw: string): string | null {
@@ -172,6 +173,11 @@ interface XPRecord {
 	lastDate: string;
 }
 
+interface PersonalXPRecord {
+	skill: xp_gains_skill_enum;
+	total_xp: number;
+}
+
 async function executeXPGainsQuery(
 	intervalValue: string,
 	skillId: string | undefined,
@@ -204,6 +210,26 @@ LIMIT ${userId ? '1' : '10'};
 	return result;
 }
 
+async function executePersonalSkillXPGainsQuery(intervalValue: string, userId: string): Promise<PersonalXPRecord[]> {
+	const query = `
+SELECT
+    x.skill,
+    SUM(x.xp) AS total_xp
+FROM
+    xp_gains AS x
+WHERE
+    x.date > now() - INTERVAL '1 ${intervalValue}'
+    AND x.user_id::text = '${userId}'
+GROUP BY
+    x.skill
+HAVING
+    SUM(x.xp) > 0
+ORDER BY
+    total_xp DESC;`;
+
+	return prisma.$queryRawUnsafe<PersonalXPRecord[]>(query);
+}
+
 async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, targetUserId?: string) {
 	if (!parseStaticTimeInterval(interval)) {
 		return 'Invalid time interval.';
@@ -231,11 +257,27 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, 
 	}
 
 	if (resolvedUserId) {
-		const personalRecord = xpRecords[0];
 		const username = (await Cache.getBadgedUsername(resolvedUserId)) ?? `<@${resolvedUserId}>`;
-		return `${username} gained ${Number(personalRecord.total_xp).toLocaleString()} ${
-			skillObj ? `${skillObj.name} ` : ''
-		}XP in the past ${interval}.`;
+		if (!skillObj) {
+			const personalSkillRecords = await executePersonalSkillXPGainsQuery(interval, resolvedUserId);
+			if (personalSkillRecords.length === 0) {
+				return `No XP gains found for <@${resolvedUserId}> in the past ${interval}.`;
+			}
+			const totalXP = personalSkillRecords.reduce((acc, record) => acc + Number(record.total_xp), 0);
+			const lines = personalSkillRecords.map(record => {
+				const skillInfo = skillMap.get(record.skill);
+				const skillName = skillInfo?.name ?? record.skill;
+				const skillEmoji = skillInfo?.emoji ?? '';
+				const prefix = skillEmoji ? `${skillEmoji} ` : '';
+				return `${prefix}${skillName}: ${Number(record.total_xp).toLocaleString()} XP`;
+			});
+			lines.push(`Total XP: ${totalXP.toLocaleString()} XP`);
+			return `${username}'s XP gains in the past ${interval}:\n${lines.join('\n')}`;
+		}
+		const personalRecord = xpRecords[0];
+		return `${username} gained ${Number(personalRecord.total_xp).toLocaleString()} ${skillObj.name} XP in the past ${
+			interval
+		}.`;
 	}
 
 	let place = 0;
