@@ -33,7 +33,9 @@ function run(cmd: string[], opts = {}): Promise<void> {
 	});
 }
 
-await run(['docker', 'compose', 'up', '-d', 'db', 'redis'], { stdio: 'ignore' });
+try {
+	await run(['docker', 'compose', 'up', '-d', 'db', 'redis'], { stdio: 'ignore' });
+} catch {}
 log(`Docker containers started.`);
 
 await Promise.all([
