@@ -12,7 +12,7 @@ export const allPerkBitfields: BitField[] = [
 ];
 
 export async function getUsersPerkTier(user: MUser): Promise<PerkTier | 0> {
-	if ([BitField.isModerator].some(bit => user.bitfield.includes(bit))) {
+	if (user.isMod()) {
 		return PerkTier.Four;
 	}
 

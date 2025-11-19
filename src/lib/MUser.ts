@@ -1034,7 +1034,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async checkBankBackground() {
-		if (this.bitfield.includes(BitField.isModerator)) {
+		if (this.isModOrAdmin()) {
 			return;
 		}
 		const resetBackground = async () => {
@@ -1379,8 +1379,16 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		};
 	}
 
+	isMod(): boolean {
+		return this.bitfield.includes(BitField.isModerator);
+	}
+
+	isAdmin(): boolean {
+		return globalConfig.adminUserIDs.includes(this.id);
+	}
+
 	isModOrAdmin(): boolean {
-		return globalConfig.adminUserIDs.includes(this.id) || this.bitfield.includes(BitField.isModerator);
+		return this.isAdmin() || this.isMod();
 	}
 
 	async isBlacklisted(): Promise<boolean> {

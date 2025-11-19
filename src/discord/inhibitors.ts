@@ -1,7 +1,7 @@
 import { PerkTier } from '@oldschoolgg/toolkit';
 
 import type { InhibitorResult } from '@/discord/preCommand.js';
-import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
+import { BadgesEnum, Channel, globalConfig } from '@/lib/constants.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 
 type InhibitorRunOptions = {
@@ -96,9 +96,7 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
-			const userBitfield = user.bitfield;
-			const isStaff = userBitfield.includes(BitField.isModerator);
-			if (interaction.guildId === globalConfig.supportServerID && isStaff) {
+			if (interaction.guildId === globalConfig.supportServerID && user.isModOrAdmin()) {
 				return false;
 			}
 
