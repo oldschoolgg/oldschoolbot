@@ -145,6 +145,10 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return id;
 	}
 
+	async fetchGuild(guildId: string): Promise<APIGuild> {
+		return (await this.rest.get(Routes.guild(guildId))) as APIGuild;
+	}
+
 	async fetchChannelsOfGuild(guildId: string): Promise<IChannel[]> {
 		const apiChannels: APIChannel[] = (await this.rest.get(Routes.guildChannels(guildId))) as APIChannel[];
 		const channels: IChannel[] = apiChannels.map(c => ({
@@ -301,10 +305,6 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 			permissions: Permissions.toKeys(r.permissions)
 		}));
 		return roles;
-	}
-
-	async fetchGuild(guildId: string): Promise<APIGuild> {
-		return (await this.rest.get(Routes.guild(guildId))) as APIGuild;
 	}
 
 	async fetchRole(guildId: string, roleId: string): Promise<IRole | null> {

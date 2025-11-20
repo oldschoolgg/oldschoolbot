@@ -7,7 +7,7 @@ import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { ownedItemOption, skillOption } from '@/discord/index.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import { BitField, BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
+import { BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
 import { calculateMastery } from '@/lib/mastery.js';
@@ -172,7 +172,6 @@ export const minionCommand = defineCommand({
 					name: 'name',
 					description: 'The name of the bank background you want.',
 					autocomplete: async ({ value, user }: StringAutoComplete) => {
-						const isMod = user.bitfield.includes(BitField.isModerator);
 						const allAccounts = await findGroupOfUser(user.id);
 						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
@@ -183,7 +182,7 @@ export const minionCommand = defineCommand({
 							)
 							.map(bg => bg.id);
 						return bankImages
-							.filter(bg => isMod || bg.available || owned.includes(bg.id))
+							.filter(bg => user.isModOrAdmin() || bg.available || owned.includes(bg.id))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded

@@ -608,8 +608,8 @@ export const adminCommand = defineCommand({
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userId);
-		const isAdmin = globalConfig.adminUserIDs.includes(userId);
-		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
+		const isAdmin = adminUser.isAdmin();
+		const isMod = isAdmin || adminUser.isMod();
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
 		}

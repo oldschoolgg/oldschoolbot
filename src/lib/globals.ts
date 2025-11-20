@@ -84,7 +84,7 @@ interface RoboChimpDB {
 async function makeRobochimpPrismaClient(): Promise<RoboChimpDB> {
 	const { adapter, pgLiteClient } = await getAdapter('robochimp');
 	const prismaClient = new RobochimpPrismaClient({
-		log: ['warn'],
+		log: ['warn', 'query', 'info'],
 		adapter
 	});
 	return { prismaClient, adapter, pgLiteClient };

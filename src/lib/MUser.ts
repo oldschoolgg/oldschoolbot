@@ -526,7 +526,7 @@ WHERE user_id = ${this.id};`;
 		return { actualCluesBank: actualClues, clueCounts };
 	}
 
-	async incrementKC(monsterID: number, quantityToAdd = 1) {
+	async incrementKC(monsterID: number, quantityToAdd: number) {
 		if (!Number.isInteger(monsterID)) throw new Error(`Invalid monsterID: ${monsterID}`);
 		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) {
 			throw new Error(`Invalid quantityToAdd: ${quantityToAdd}`);
@@ -646,7 +646,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 		return userMinigames[minigame];
 	}
 
-	async incrementMinigameScore(minigame: MinigameName, amountToAdd = 1) {
+	async incrementMinigameScore(minigame: MinigameName, amountToAdd: number) {
 		const result = await prisma.minigame.upsert({
 			where: { user_id: this.id },
 			update: { [minigame]: { increment: amountToAdd } },
@@ -711,7 +711,7 @@ WHERE user_id = ${this.id};`;
 		return stats[0]?.creature_kc ?? 0;
 	}
 
-	async incrementCreatureScore(creatureID: number, quantityToAdd = 1): Promise<{ newKC: number }> {
+	async incrementCreatureScore(creatureID: number, quantityToAdd: number): Promise<{ newKC: number }> {
 		if (!Number.isInteger(creatureID)) throw new Error('Invalid creatureID');
 		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
 		const query = `
@@ -1159,7 +1159,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async checkBankBackground() {
-		if (this.bitfield.includes(BitField.isModerator)) {
+		if (this.isModOrAdmin()) {
 			return;
 		}
 		const resetBackground = async () => {
@@ -1578,12 +1578,16 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		};
 	}
 
+	isMod(): boolean {
+		return this.bitfield.includes(BitField.isModerator);
+	}
+
 	isAdmin(): boolean {
 		return globalConfig.adminUserIDs.includes(this.id);
 	}
 
 	isModOrAdmin(): boolean {
-		return this.isAdmin() || this.bitfield.includes(BitField.isModerator);
+		return this.isAdmin() || this.isMod();
 	}
 
 	async isBlacklisted(): Promise<boolean> {

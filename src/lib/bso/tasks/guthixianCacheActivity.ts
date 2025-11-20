@@ -65,7 +65,7 @@ export const guthixianCacheTask: MinionTask = {
 			str += `\n${loot.has('Doopy') ? `${Emoji.Purple} ` : ''}You received: ${loot}.`;
 		}
 
-		await user.incrementMinigameScore('guthixian_cache');
+		await user.incrementMinigameScore('guthixian_cache', 1);
 		await user.addToGodFavour(['Guthix'], data.duration);
 
 		return handleTripFinish({ user, channelId, message: str, data, loot });
