@@ -364,13 +364,11 @@ async function ensureParticipantsReady({
 
 async function payoutWinners({
 	interaction,
-	host,
 	sortedResults,
 	stake,
 	mode
 }: {
 	interaction: MInteraction;
-	host: MUser;
 	sortedResults: RollResult[];
 	stake: number;
 	mode: HighRollerPayoutMode;
@@ -379,6 +377,20 @@ async function payoutWinners({
 	const pot = stake * participantCount;
 	const payouts = calculatePayouts({ pot, participantCount, mode });
 	const payoutsMessages: string[] = [];
+
+	const potAccount = BigInt(0);
+
+	await prisma.economyTransaction.createMany({
+		data: sortedResults.map(result => ({
+			guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
+			sender: BigInt(result.user.id),
+			recipient: potAccount,
+			type: 'duel',
+			items_sent: new Bank().add('Coins', stake).toJSON(),
+			items_received: undefined
+		}))
+	});
+
 	for (const [index, amount] of payouts.entries()) {
 		const winner = sortedResults[index];
 		if (!winner || amount <= 0) continue;
@@ -386,11 +398,11 @@ async function payoutWinners({
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
-				sender: BigInt(host.id),
+				sender: potAccount,
 				recipient: BigInt(winner.user.id),
 				type: 'duel',
-				items_sent: undefined,
-				items_received: new Bank().add('Coins', amount).toJSON()
+				items_sent: new Bank().add('Coins', amount).toJSON(),
+				items_received: undefined
 			}
 		});
 		payoutsMessages.push(`🏆 ${winner.user.badgedUsername} receives ${toKMB(amount)} GP.`);
@@ -540,18 +552,13 @@ export async function highRollerCommand({
 		console.error('Error generating High Roller image:', err);
 	}
 
-	const { pot, payoutsMessages } = await payoutWinners({
-		interaction,
-		host: user,
-		sortedResults: rollResults,
-		stake,
-		mode
-	});
+	const { pot, payoutsMessages } = await payoutWinners({ interaction, sortedResults: rollResults, stake, mode });
 
-	const summary = `**High Roller Pot** (${mode === 'winner_takes_all' ? 'Winner takes all' : 'Top 3 (60/30/10)'
-		})\nStake: ${toKMB(stake)} GP (Total pot ${toKMB(pot)} GP)\nParticipants (${rollResults.length}): ${rollResults
-			.map(result => result.user.badgedUsername)
-			.join(', ')}\n\n${payoutsMessages.join('\n')}`;
+	const summary = `**High Roller Pot** (${
+		mode === 'winner_takes_all' ? 'Winner takes all' : 'Top 3 (60/30/10)'
+	})\nStake: ${toKMB(stake)} GP (Total pot ${toKMB(pot)} GP)\nParticipants (${rollResults.length}): ${rollResults
+		.map(result => result.user.badgedUsername)
+		.join(', ')}\n\n${payoutsMessages.join('\n')}`;
 
 	const response = highRollerImage
 		? { content: summary, components: [], files: [highRollerImage] }
