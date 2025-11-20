@@ -76,7 +76,7 @@ export async function getBankBackgroundEligibility({
 		return {
 			canUse: false,
 			failure: {
-				response: "You're not elligible to use this bank background.",
+				response: "You're not eligible to use this bank background.",
 				ui: `Requires ${bitfieldName}.`
 			}
 		};
