@@ -791,7 +791,9 @@ export const testPotatoCommand = globalConfig.isProduction
 					}
 					if (thing === 'cooldowns') {
 						await user.update({
-							gambling_lockout_expiry: null
+							gambling_lockout_expiry: null,
+							last_spawn_box_date: 0,
+							lastSpawnLamp: 0
 						});
 						await prisma.userStats.upsert({
 							where: {

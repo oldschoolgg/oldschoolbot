@@ -29,7 +29,7 @@ import { calculateTuraelsTrialsResult } from '@/lib/bso/tasks/turaelsTrialsActiv
 import { bold } from '@oldschoolgg/discord';
 import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
-import { Bank, convertBankToPerHourStats, Items, itemID, toKMB } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, convertLVLtoXP, Items, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -490,7 +490,11 @@ ${zygomiteFarmingSource
 										bank: new Bank(),
 										hasEquipped: () => true,
 										hasEquippedOrInBank: () => true,
-										skillAsLevels: { mining: miningLevel, smithing: 120 }
+										skillsAsLevels: { mining: miningLevel, smithing: 120 },
+										skillsAsXP: {
+											mining: convertLVLtoXP(miningLevel),
+											smithing: convertLVLtoXP(120)
+										}
 									} as any as GearBank;
 
 									const result = calculateMiningInput({

@@ -54,7 +54,7 @@ export const bonanzaTask: MinionTask = {
 		);
 		loot.add('Circus ticket', tickets);
 
-		const freeIgneTame = rng.pick(tames.filter(_t => _t.isIgne()));
+		const freeIgneTame = tames.find(_t => _t.isIgne());
 		const allUserItems = user.allItemsOwned;
 		const unownedSpectatorClothes = rng
 			.shuffle(spectatorClothes)

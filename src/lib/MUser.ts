@@ -1578,8 +1578,12 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		};
 	}
 
+	isAdmin(): boolean {
+		return globalConfig.adminUserIDs.includes(this.id);
+	}
+
 	isModOrAdmin(): boolean {
-		return globalConfig.adminUserIDs.includes(this.id) || this.bitfield.includes(BitField.isModerator);
+		return this.isAdmin() || this.bitfield.includes(BitField.isModerator);
 	}
 
 	async isBlacklisted(): Promise<boolean> {

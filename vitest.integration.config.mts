@@ -21,8 +21,9 @@ export default defineConfig({
 		maxConcurrency: 5,
 		isolate: false,
 		pool: 'threads',
-		maxWorkers: 10
+		maxWorkers: 4
 	},
+
 	resolve: {
 		alias: {
 			'@': path.resolve(import.meta.dirname, './src')

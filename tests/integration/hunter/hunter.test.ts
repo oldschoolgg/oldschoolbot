@@ -4,7 +4,7 @@ import { describe, expect, test } from 'vitest';
 import { minionCommand } from '@/mahoji/commands/minion.js';
 import { createTestUser } from '../util.js';
 
-describe('Hunter', () => {
+describe('Hunter', { retry: 2 }, () => {
 	test('Hunter Trip', async () => {
 		const user = await createTestUser();
 

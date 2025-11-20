@@ -351,7 +351,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 				str += `\n\n${messages.join('\n')}`;
 			}
 
-			handleFinish({
+			await handleFinish({
 				lootToAdd: loot,
 				message: str,
 				user,

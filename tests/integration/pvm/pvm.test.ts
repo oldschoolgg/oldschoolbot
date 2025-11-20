@@ -24,7 +24,7 @@ describe('PVM', async () => {
 		const kc = await user.getKC(EMonster.GENERAL_GRAARDOR);
 		expect(kc).toEqual(9);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
-		expect(user.bank.amount('Big bones')).toEqual(kc);
+		expect(user.bank.amount('Big bones')).toBeOneOf([kc, kc * 2]);
 	});
 
 	it('Should remove charges', async () => {

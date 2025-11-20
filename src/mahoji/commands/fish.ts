@@ -1,7 +1,7 @@
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { formatDuration, reduceNumByPercent, stringSearch, Time } from '@oldschoolgg/toolkit';
-import { Bank, Items, itemID, Monsters } from 'oldschooljs';
+import { Bank, ItemGroups, Items, itemID, Monsters } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -70,8 +70,8 @@ export const fishCommand = defineCommand({
 				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 			}
 		}
-		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => Items.itemNameFromId(Number.parseInt(i)));
-		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasEquippedOrInBank(test!))) {
+
+		if (fish.name === 'Minnow' && ItemGroups.anglerOutfit.some(_piece => !user.hasEquippedOrInBank(_piece))) {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 

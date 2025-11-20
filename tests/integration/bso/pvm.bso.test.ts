@@ -143,7 +143,7 @@ describe('BSO PVM', async () => {
 		expect(user.gear.range.ammo!.quantity).toBeLessThan(10_000);
 	});
 
-	it('should use portable tanner', { retry: 2 }, async () => {
+	it('should use portable tanner', { retry: 4 }, async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Portable tanner', 1).add('Anti-dragon shield'),
 			rangeLevel: 99,

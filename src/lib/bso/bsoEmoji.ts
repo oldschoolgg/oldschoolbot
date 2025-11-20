@@ -12,5 +12,6 @@ export const BSOEmoji = {
 	Zippy: '<:zippy:749240799090180196>',
 	HalloweenCandy: '<:halloweenCandy:1429868816191717386>',
 	LilLamb: '<:lil_lamb:749240864345423903>',
-	ItemContract: '<:Item_contract:988422348434718812>'
+	ItemContract: '<:Item_contract:988422348434718812>',
+	HugeLamp: '<:Huge_lamp:988325171498721290>'
 };

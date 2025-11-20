@@ -18,8 +18,8 @@ import { createTestUser, mockClient, mockIMember, mockUser } from './util.js';
 type CommandInput = Record<string, any>;
 type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean | undefined;
 
-const LIMIT_PER_COMMAND = 2;
-const BASE_LEVEL_ACCOUNTS_TO_TEST = [85];
+const LIMIT_PER_COMMAND = 1;
+const BASE_LEVEL_ACCOUNTS_TO_TEST = [10, 120];
 
 export async function generateCommandInputs(
 	commandName: string,
@@ -283,7 +283,7 @@ test(
 		}
 
 		let commandsRan = 0;
-		const queue = new PromiseQueue({ concurrency: 10, timeout: Time.Second * 30, throwOnTimeout: true });
+		const queue = new PromiseQueue({ concurrency: 12, timeout: Time.Second * 30, throwOnTimeout: true });
 		const results: { time: number; command: string; options: CommandOptions; rawResults: any[] }[] = [];
 
 		for (const { command, options: allOptions } of processedCommands) {
