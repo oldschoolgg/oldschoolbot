@@ -112,7 +112,9 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 		d => stringMatches(d.name, diaryName) || d.alias?.some(a => stringMatches(a, diaryName))
 	);
 
-	await user.syncCompletedAchievementDiaries().catch(console.error);
+	const [stats, minigameScores] = await Promise.all([user.fetchMStats(), user.fetchMinigames()]);
+
+	await user.syncCompletedAchievementDiaries({ stats, minigameScores }).catch(console.error);
 
 	if (!diary) {
 		return `These are the achievement diaries you can claim: ${diaries.map(d => d.name).join(', ')}.`;
@@ -120,7 +122,6 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 
 	const allItems = user.allItemsOwned;
 	const { cl } = user;
-	const [stats, minigameScores] = await Promise.all([user.fetchMStats(), user.fetchMinigames()]);
 
 	for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {
 		const diaryTier = diary[tier];
