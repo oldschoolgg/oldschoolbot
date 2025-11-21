@@ -8,7 +8,7 @@ import { fetchCLLeaderboard } from '../../src/lib/util/clLeaderboard.js';
 import { createTestUser } from './util.js';
 
 describe('CL Leaderboard', () => {
-	test.concurrent('fetchCLLeaderboard', async () => {
+	test('fetchCLLeaderboard', async () => {
 		const cl = randArrItem(allCollectionLogsFlat);
 		for (const ironManOnly of [true, false]) {
 			await fetchCLLeaderboard({
@@ -21,7 +21,7 @@ describe('CL Leaderboard', () => {
 		await Promise.all([fetchCLLeaderboard]);
 	});
 
-	test.concurrent('CL Leaderboard', async () => {
+	test('CL Leaderboard', async () => {
 		const expected = [];
 		const users: MUser[] = [];
 		for (let i = 1; i < chambersOfXericCL.length; i++) {
