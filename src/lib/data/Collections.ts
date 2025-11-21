@@ -948,8 +948,10 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: mgProg('trouble_brewing')
 			},
 			'Vale Totems': {
-				unobtainable: true,
-				items: CollectionLog.ValeTotems.items
+				alias: ['vt', 'vale', 'totems', 'vale totems'],
+				items: CollectionLog.ValeTotems.items,
+				isActivity: true,
+				fmtProg: mgProg('vale_totems')
 			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,

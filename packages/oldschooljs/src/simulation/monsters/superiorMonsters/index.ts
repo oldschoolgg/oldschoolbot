@@ -2,6 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { AraxyteTable } from '../low/a-f/Araxyte.js';
 import AbhorrentSpectre from './AbhorrentSpectre.js';
+import AncientCustodian from './AncientCustodian.js';
 import BasiliskSentinel from './BasiliskSentinel.js';
 import CaveAbomination from './CaveAbomination.js';
 import ChasmCrawler from './ChasmCrawler.js';
@@ -45,6 +46,7 @@ const DreadbornAraxyte = new SimpleMonster({
 
 export const allSuperiorMonsters = {
 	AbhorrentSpectre,
+	AncientCustodian,
 	BasiliskSentinel,
 	CaveAbomination,
 	ChasmCrawler,

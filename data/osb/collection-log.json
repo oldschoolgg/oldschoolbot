@@ -5075,8 +5075,8 @@
 				"is_activity": true
 			},
 			"vale_totems": {
-				"unobtainable": true,
-				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask"]
+				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask"],
+				"is_activity": true
 			},
 			"volcanic_mine": {
 				"items": [
