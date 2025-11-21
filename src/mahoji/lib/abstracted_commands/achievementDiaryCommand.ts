@@ -112,6 +112,8 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 		d => stringMatches(d.name, diaryName) || d.alias?.some(a => stringMatches(a, diaryName))
 	);
 
+	await user.syncCompletedAchievementDiaries().catch(console.error);
+
 	if (!diary) {
 		return `These are the achievement diaries you can claim: ${diaries.map(d => d.name).join(', ')}.`;
 	}
