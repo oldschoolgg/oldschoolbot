@@ -18,8 +18,8 @@
 		"@octokit/graphql": "^8.1.1",
 		"@oldschoolgg/toolkit": "workspace:*",
 		"@oldschoolgg/util": "workspace:*",
-		"@prisma/adapter-pg": "^6.18.0",
-		"@prisma/client": "^6.18.0",
+		"@prisma/adapter-pg": "^6.19.0",
+		"@prisma/client": "^6.19.0",
 		"@sapphire/discord-utilities": "^2.12.0",
 		"hono": "^4.10.3",
 		"dotenv": "^16.5.0",
@@ -29,6 +29,6 @@
 		"zod": "^4.1.12"
 	},
 	"devDependencies": {
-		"prisma": "^6.18.0"
+		"prisma": "^6.19.0"
 	}
 }
