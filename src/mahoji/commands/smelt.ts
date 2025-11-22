@@ -1,3 +1,5 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
@@ -65,7 +67,7 @@ export const smeltingCommand = defineCommand({
 			return `${user.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
 		}
 
-		if (bar.id === itemID('Dwarven bar') && !user.usingPet('Klik')) {
+		if (bar.id === BSOItem.DWARVEN_BAR && !user.usingPet('Klik')) {
 			return 'You try to smelt the bars, but nothing is happening. Perhaps the furnace is not hot enough to melt dwarven ore.';
 		}
 

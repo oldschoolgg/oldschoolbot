@@ -102,3 +102,5 @@ export async function populateUsernameCache() {
 	}
 }
 export const itemEffectImageCache = new LRUCache<string, CanvasImage>({ max: 1000 });
+
+export const slayerMaskLeaderboardCache = new Map<number, string>();
