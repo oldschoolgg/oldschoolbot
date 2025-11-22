@@ -97,9 +97,9 @@ ${whereInMassClause(id)};`
 
 	return `**Total Activities:** ${totalActivities.count}
 **Common Activities:** ${countsPerActivity
-			.slice(0, 3)
-			.map(i => `${i.qty}x ${i.type}`)
-			.join(', ')}
+		.slice(0, 3)
+		.map(i => `${i.qty}x ${i.type}`)
+		.join(', ')}
 **Total Minion Activity:** ${formatDuration(totalDuration)}
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
 **Average Per Day:** ${formatDuration(perDay)}
@@ -144,8 +144,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean,
 
 	if (res.length === 0) {
 		if (userToCheck) {
-			const username =
-				(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+			const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
 			const tierLabel = clueTierName ? `${clueTierName} ` : '';
 			return `No ${tierLabel}clue scroll completions found for ${username} in the past ${interval}.`;
 		}
@@ -155,8 +154,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean,
 	// Per-user view
 	if (userToCheck) {
 		const row = res[0];
-		const username =
-			(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+		const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
 		const tierLabel = clueTierName ? `${clueTierName} ` : '';
 		return `${username} completed ${Number(row.qty).toLocaleString()} ${tierLabel}clue scrolls in the past ${interval}.`;
 	}
@@ -255,32 +253,24 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, 
 
 	if (xpRecords.length === 0) {
 		if (userToCheck) {
-			const username =
-				(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+			const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
 			return `No XP gains found for ${username} in the past ${interval}.`;
 		}
 		return 'No results found.';
 	}
 
 	if (userToCheck) {
-		const username =
-			(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+		const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
 
 		// No specific skill: show per-skill breakdown for this user
 		if (!skillObj) {
-			const personalSkillRecords = await executePersonalSkillXPGainsQuery(
-				interval,
-				userToCheck.id
-			);
+			const personalSkillRecords = await executePersonalSkillXPGainsQuery(interval, userToCheck.id);
 
 			if (personalSkillRecords.length === 0) {
 				return `No XP gains found for ${username} in the past ${interval}.`;
 			}
 
-			const totalXP = personalSkillRecords.reduce(
-				(acc, record) => acc + Number(record.total_xp),
-				0
-			);
+			const totalXP = personalSkillRecords.reduce((acc, record) => acc + Number(record.total_xp), 0);
 
 			const lines = personalSkillRecords.map(record => {
 				const skillInfo = skillMap.get(record.skill);
@@ -435,8 +425,7 @@ export async function kcGains(
 
 	if (res.length === 0) {
 		if (userToCheck) {
-			const username =
-				(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+			const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
 			return `No KC gains found for ${username} at ${monster.name} in the past ${interval}.`;
 		}
 		return 'No results found.';
@@ -445,8 +434,7 @@ export async function kcGains(
 	// Per-user view
 	if (userToCheck) {
 		const row = res[0];
-		const username =
-			(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+		const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
 		return `${username} gained ${Number(row.qty).toLocaleString()} KC at ${monster.name} in the past ${interval}.`;
 	}
 
@@ -893,7 +881,8 @@ async function checkMassesCommand(guildId: string | null) {
 			if ('users' in m) {
 				return [
 					remainingTime,
-					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${m.channelId
+					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
+						m.channelId
 					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
@@ -1229,12 +1218,7 @@ export const toolsCommand = defineCommand({
 					userToCheck = await mUserFetch(patron.xp_gains.user.user.id);
 				}
 
-				return xpGains(
-					patron.xp_gains.time,
-					patron.xp_gains.skill,
-					patron.xp_gains.ironman,
-					userToCheck
-				);
+				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman, userToCheck);
 			}
 			if (patron.drystreak) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
@@ -1343,10 +1327,11 @@ export const toolsCommand = defineCommand({
 				}
 			});
 			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
-You last reset your temporary CL: ${lastReset?.last_temp_cl_reset
+You last reset your temporary CL: ${
+				lastReset?.last_temp_cl_reset
 					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
 					: 'Never'
-				}`;
+			}`;
 		}
 		if (options.user?.checkmasses) {
 			return checkMassesCommand(guildId);
