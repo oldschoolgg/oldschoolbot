@@ -156,7 +156,7 @@ export const hunterTask: MinionTask = {
 
 		const scoreToAdd = Math.floor(successfulQuantity);
 		if (scoreToAdd > 0) {
-			await user.incrementCreatureScore(creature.id);
+			await user.incrementCreatureScore(creature.id, scoreToAdd);
 		}
 
 		await user.transactItems({
