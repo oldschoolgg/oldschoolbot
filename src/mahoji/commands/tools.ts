@@ -27,15 +27,6 @@ import {
 
 const skillsVals = Object.values(Skills);
 const skillMap = new Map(skillsVals.map(skill => [skill.id, skill] as const));
-const discordIDRegex = /^\d{17,20}$/;
-
-function sanitizeDiscordID(raw: string): string | null {
-	const cleaned = raw.replace(/[^0-9]/g, '');
-	if (!discordIDRegex.test(cleaned)) {
-		return null;
-	}
-	return cleaned;
-}
 
 function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
@@ -106,32 +97,36 @@ ${whereInMassClause(id)};`
 
 	return `**Total Activities:** ${totalActivities.count}
 **Common Activities:** ${countsPerActivity
-		.slice(0, 3)
-		.map(i => `${i.qty}x ${i.type}`)
-		.join(', ')}
+			.slice(0, 3)
+			.map(i => `${i.qty}x ${i.type}`)
+			.join(', ')}
 **Total Minion Activity:** ${formatDuration(totalDuration)}
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
 **Average Per Day:** ${formatDuration(perDay)}
 `;
 }
 
-async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean) {
+async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean, userToCheck?: MUser) {
 	if (!parseStaticTimeInterval(interval)) {
 		return 'Invalid time interval.';
 	}
 
 	let tierFilter = '';
 	let title = '';
+	let clueTierName: string | null = null;
 
 	if (tier) {
 		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
 		if (!clueTier) return 'Invalid clue scroll tier.';
 		const tierId = clueTier.id;
 		tierFilter = `AND (a."data"->>'ci')::int = ${tierId}`;
+		clueTierName = clueTier.name;
 		title = `Highest ${clueTier.name} clue scroll completions in the past ${interval}`;
 	} else {
 		title = `Highest All clue scroll completions in the past ${interval}`;
 	}
+
+	const userFilter = userToCheck ? ` AND a.user_id::text = '${userToCheck.id}'` : '';
 
 	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate
 	  FROM activity a
@@ -140,16 +135,33 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 	  AND a.finish_date >= now() - interval '1 ${interval}' AND a.completed = true
 	  ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
 	  ${tierFilter}
+	  ${userFilter}
 	  GROUP BY a.user_id
 	  ORDER BY qty DESC, lastDate ASC
-	  LIMIT 10`;
+	  LIMIT ${userToCheck ? '1' : '10'}`;
 
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
+		if (userToCheck) {
+			const username =
+				(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+			const tierLabel = clueTierName ? `${clueTierName} ` : '';
+			return `No ${tierLabel}clue scroll completions found for ${username} in the past ${interval}.`;
+		}
 		return 'No results found.';
 	}
 
+	// Per-user view
+	if (userToCheck) {
+		const row = res[0];
+		const username =
+			(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+		const tierLabel = clueTierName ? `${clueTierName} ` : '';
+		return `${username} completed ${Number(row.qty).toLocaleString()} ${tierLabel}clue scrolls in the past ${interval}.`;
+	}
+
+	// Leaderboard view
 	let place = 0;
 	const embed = new EmbedBuilder()
 		.setTitle(title)
@@ -230,40 +242,46 @@ ORDER BY
 	return prisma.$queryRawUnsafe<PersonalXPRecord[]>(query);
 }
 
-async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, targetUserId?: string) {
+async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, userToCheck?: MUser) {
 	if (!parseStaticTimeInterval(interval)) {
 		return 'Invalid time interval.';
-	}
-
-	let resolvedUserId: string | undefined;
-	if (targetUserId) {
-		const cleanedUserId = sanitizeDiscordID(targetUserId);
-		if (!cleanedUserId) {
-			return 'Please provide a valid Discord user ID.';
-		}
-		resolvedUserId = cleanedUserId;
 	}
 
 	const skillObj = skill
 		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 		: undefined;
 
-	const xpRecords = await executeXPGainsQuery(interval, skillObj?.id, Boolean(ironmanOnly), resolvedUserId);
+	const xpRecords = await executeXPGainsQuery(interval, skillObj?.id, Boolean(ironmanOnly), userToCheck?.id);
 
 	if (xpRecords.length === 0) {
-		return resolvedUserId
-			? `No XP gains found for <@${resolvedUserId}> in the past ${interval}.`
-			: 'No results found.';
+		if (userToCheck) {
+			const username =
+				(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+			return `No XP gains found for ${username} in the past ${interval}.`;
+		}
+		return 'No results found.';
 	}
 
-	if (resolvedUserId) {
-		const username = (await Cache.getBadgedUsername(resolvedUserId)) ?? `<@${resolvedUserId}>`;
+	if (userToCheck) {
+		const username =
+			(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+
+		// No specific skill: show per-skill breakdown for this user
 		if (!skillObj) {
-			const personalSkillRecords = await executePersonalSkillXPGainsQuery(interval, resolvedUserId);
+			const personalSkillRecords = await executePersonalSkillXPGainsQuery(
+				interval,
+				userToCheck.id
+			);
+
 			if (personalSkillRecords.length === 0) {
-				return `No XP gains found for <@${resolvedUserId}> in the past ${interval}.`;
+				return `No XP gains found for ${username} in the past ${interval}.`;
 			}
-			const totalXP = personalSkillRecords.reduce((acc, record) => acc + Number(record.total_xp), 0);
+
+			const totalXP = personalSkillRecords.reduce(
+				(acc, record) => acc + Number(record.total_xp),
+				0
+			);
+
 			const lines = personalSkillRecords.map(record => {
 				const skillInfo = skillMap.get(record.skill);
 				const skillName = skillInfo?.name ?? record.skill;
@@ -271,13 +289,17 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, 
 				const prefix = skillEmoji ? `${skillEmoji} ` : '';
 				return `${prefix}${skillName}: ${Number(record.total_xp).toLocaleString()} XP`;
 			});
+
 			lines.push(`Total XP: ${totalXP.toLocaleString()} XP`);
+
 			return `${username}'s XP gains in the past ${interval}:\n${lines.join('\n')}`;
 		}
+
+		// Specific skill: show a single line summary
 		const personalRecord = xpRecords[0];
-		return `${username} gained ${Number(personalRecord.total_xp).toLocaleString()} ${skillObj.name} XP in the past ${
-			interval
-		}.`;
+		return `${username} gained ${Number(
+			personalRecord.total_xp
+		).toLocaleString()} ${skillObj.name} XP in the past ${interval}.`;
 	}
 
 	let place = 0;
@@ -378,7 +400,12 @@ async function dryStreakForUserEntity(entity: DrystreakEntity, item: Item, userI
 	return 'Per-user dry streak checks are only supported for monsters and openables right now. Leave the user ID blank to see the top 10 driest players instead.';
 }
 
-export async function kcGains(interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
+export async function kcGains(
+	interval: string,
+	monsterName: string,
+	ironmanOnly?: boolean,
+	userToCheck?: MUser
+): CommandResponse {
 	if (!parseStaticTimeInterval(interval)) {
 		return 'Invalid time interval.';
 	}
@@ -390,6 +417,8 @@ export async function kcGains(interval: string, monsterName: string, ironmanOnly
 		return 'Invalid monster.';
 	}
 
+	const userFilter = userToCheck ? ` AND a.user_id::text = '${userToCheck.id}'` : '';
+
 	const query = `
     SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate
     FROM activity a
@@ -398,15 +427,30 @@ export async function kcGains(interval: string, monsterName: string, ironmanOnly
     AND a.finish_date >= now() - interval '1 ${interval}'
     AND a.completed = true
     ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+    ${userFilter}
     GROUP BY a.user_id
     ORDER BY qty DESC, lastDate ASC
-    LIMIT 10`;
+    LIMIT ${userToCheck ? '1' : '10'}`;
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
+		if (userToCheck) {
+			const username =
+				(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+			return `No KC gains found for ${username} at ${monster.name} in the past ${interval}.`;
+		}
 		return 'No results found.';
 	}
 
+	// Per-user view
+	if (userToCheck) {
+		const row = res[0];
+		const username =
+			(await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+		return `${username} gained ${Number(row.qty).toLocaleString()} KC at ${monster.name} in the past ${interval}.`;
+	}
+
+	// Leaderboard view
 	let place = 0;
 	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
@@ -706,18 +750,9 @@ for (const openable of allOpenables) {
 	}
 }
 
-async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean, targetUserId?: string) {
+async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean, userToCheck?: MUser) {
 	const item = Items.getItem(itemName);
 	if (!item) return 'Invalid item.';
-
-	let resolvedUserId: string | undefined;
-	if (targetUserId) {
-		const cleanedUserId = sanitizeDiscordID(targetUserId);
-		if (!cleanedUserId) {
-			return 'Please provide a valid Discord user ID.';
-		}
-		resolvedUserId = cleanedUserId;
-	}
 
 	const entity = dryStreakEntities.find(
 		e =>
@@ -732,8 +767,8 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 				.join(', ')}.`;
 		}
 
-		if (resolvedUserId) {
-			return dryStreakForUserEntity(entity, item, resolvedUserId, ironmanOnly);
+		if (userToCheck) {
+			return dryStreakForUserEntity(entity, item, userToCheck.id, ironmanOnly);
 		}
 
 		const result = await entity.run({ item, ironmanOnly });
@@ -752,8 +787,8 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 		return "That's not a valid monster or minigame.";
 	}
 
-	if (resolvedUserId) {
-		return dryStreakForUserMonster(mon, item, resolvedUserId, ironmanOnly);
+	if (userToCheck) {
+		return dryStreakForUserMonster(mon, item, userToCheck.id, ironmanOnly);
 	}
 
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
@@ -858,8 +893,7 @@ async function checkMassesCommand(guildId: string | null) {
 			if ('users' in m) {
 				return [
 					remainingTime,
-					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
-						m.channelId
+					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${m.channelId
 					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
@@ -910,6 +944,12 @@ export const toolsCommand = defineCommand({
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
+						},
+						{
+							type: 'User',
+							name: 'user',
+							description: 'Provide the user to view clue completions for a specific account.',
+							required: false
 						}
 					]
 				},
@@ -930,6 +970,12 @@ export const toolsCommand = defineCommand({
 							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
+							required: false
+						},
+						{
+							type: 'User',
+							name: 'user',
+							description: 'Provide the user to view KC gains for a specific account.',
 							required: false
 						}
 					]
@@ -954,9 +1000,9 @@ export const toolsCommand = defineCommand({
 							required: false
 						},
 						{
-							type: 'String',
-							name: 'user_id',
-							description: 'Provide a user ID to view XP gains for a specific account.',
+							type: 'User',
+							name: 'user',
+							description: 'Provide the user to view XP gains for a specific account.',
 							required: false
 						}
 					]
@@ -988,10 +1034,10 @@ export const toolsCommand = defineCommand({
 							required: false
 						},
 						{
-							type: 'String',
-							name: 'user_id',
+							type: 'User',
+							name: 'user',
 							description:
-								'Provide a user ID to view drystreaks for a specific account. Leave blank to show the top 10 driest.',
+								'Provide the user to view drystreaks for a specific account. Leave blank to show the top 10 driest.',
 							required: false
 						}
 					]
@@ -1147,28 +1193,62 @@ export const toolsCommand = defineCommand({
 
 			if (patron.clue_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return clueGains(patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
+
+				let userToCheck: MUser | undefined;
+				if (patron.clue_gains.user) {
+					userToCheck = await mUserFetch(patron.clue_gains.user.user.id);
+				}
+
+				return clueGains(
+					patron.clue_gains.time,
+					patron.clue_gains.tier,
+					Boolean(patron.clue_gains.ironman),
+					userToCheck
+				);
 			}
 			if (patron.kc_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return kcGains(patron.kc_gains.time, patron.kc_gains.monster, Boolean(patron.kc_gains.ironman));
+
+				let userToCheck: MUser | undefined;
+				if (patron.kc_gains.user) {
+					userToCheck = await mUserFetch(patron.kc_gains.user.user.id);
+				}
+
+				return kcGains(
+					patron.kc_gains.time,
+					patron.kc_gains.monster,
+					Boolean(patron.kc_gains.ironman),
+					userToCheck
+				);
 			}
 			if (patron.xp_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
+
+				let userToCheck: MUser | undefined;
+				if (patron.xp_gains.user) {
+					userToCheck = await mUserFetch(patron.xp_gains.user.user.id);
+				}
+
 				return xpGains(
 					patron.xp_gains.time,
 					patron.xp_gains.skill,
 					patron.xp_gains.ironman,
-					patron.xp_gains.user_id
+					userToCheck
 				);
 			}
 			if (patron.drystreak) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
+
+				let userToCheck: MUser | undefined;
+				if (patron.drystreak.user) {
+					userToCheck = await mUserFetch(patron.drystreak.user.user.id);
+				}
+
 				return dryStreakCommand(
 					patron.drystreak.source,
 					patron.drystreak.item,
 					Boolean(patron.drystreak.ironman),
-					patron.drystreak.user_id
+					userToCheck
 				);
 			}
 			if (patron.mostdrops) {
@@ -1263,11 +1343,10 @@ export const toolsCommand = defineCommand({
 				}
 			});
 			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
-You last reset your temporary CL: ${
-				lastReset?.last_temp_cl_reset
+You last reset your temporary CL: ${lastReset?.last_temp_cl_reset
 					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
 					: 'Never'
-			}`;
+				}`;
 		}
 		if (options.user?.checkmasses) {
 			return checkMassesCommand(guildId);
