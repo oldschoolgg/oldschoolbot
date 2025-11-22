@@ -26,6 +26,7 @@ import {
 	claimAchievementDiaryCommand
 } from '@/mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
 import { bankBgCommand } from '@/mahoji/lib/abstracted_commands/bankBgCommand.js';
+import { bankBgGalleryCommand } from '@/mahoji/lib/abstracted_commands/bankBgGalleryCommand.js';
 import { cancelTaskCommand } from '@/mahoji/lib/abstracted_commands/cancelTaskCommand.js';
 import { crackerCommand } from '@/mahoji/lib/abstracted_commands/crackerCommand.js';
 import { dailyCommand } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
@@ -185,6 +186,11 @@ export const minionCommand = defineCommand({
 					}
 				}
 			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'bankbg_gallery',
+			description: 'Browse all bank backgrounds with live previews.'
 		},
 		{
 			type: 'Subcommand',
@@ -429,6 +435,10 @@ export const minionCommand = defineCommand({
 				return claimAchievementDiaryCommand(user, options.achievementdiary.diary ?? '');
 			}
 			return achievementDiaryCommand(user, options.achievementdiary.diary ?? '');
+		}
+
+		if (options.bankbg_gallery) {
+			return bankBgGalleryCommand(user, interaction);
 		}
 
 		if (options.bankbg) {
