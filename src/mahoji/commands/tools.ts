@@ -121,9 +121,9 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean,
 		const tierId = clueTier.id;
 		tierFilter = `AND (a."data"->>'ci')::int = ${tierId}`;
 		clueTierName = clueTier.name;
-		title = `Highest ${clueTier.name} clue scroll completions in the past ${interval}`;
+		title = `Highest ${clueTier.name} clue scroll completions in the last ${interval}`;
 	} else {
-		title = `Highest All clue scroll completions in the past ${interval}`;
+		title = `Highest All clue scroll completions in the last ${interval}`;
 	}
 
 	const userFilter = userToCheck ? ` AND a.user_id::text = '${userToCheck.id}'` : '';
@@ -146,7 +146,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean,
 		if (userToCheck) {
 			const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
 			const tierLabel = clueTierName ? `${clueTierName} ` : '';
-			return `No ${tierLabel}clue scroll completions found for ${username} in the past ${interval}.`;
+			return `No ${tierLabel}clue scroll completions found for ${username} in the last ${interval}.`;
 		}
 		return 'No results found.';
 	}
@@ -156,7 +156,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean,
 		const row = res[0];
 		const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
 		const tierLabel = clueTierName ? `${clueTierName} ` : '';
-		return `${username} completed ${Number(row.qty).toLocaleString()} ${tierLabel}clue scrolls in the past ${interval}.`;
+		return `${username} has completed ${Number(row.qty).toLocaleString()} ${tierLabel}clue scrolls in the last ${interval}.`;
 	}
 
 	// Leaderboard view
@@ -254,7 +254,7 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, 
 	if (xpRecords.length === 0) {
 		if (userToCheck) {
 			const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
-			return `No XP gains found for ${username} in the past ${interval}.`;
+			return `No XP gains found for ${username} in the last ${interval}.`;
 		}
 		return 'No results found.';
 	}
@@ -267,7 +267,7 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, 
 			const personalSkillRecords = await executePersonalSkillXPGainsQuery(interval, userToCheck.id);
 
 			if (personalSkillRecords.length === 0) {
-				return `No XP gains found for ${username} in the past ${interval}.`;
+				return `No XP gains found for ${username} in the last ${interval}.`;
 			}
 
 			const totalXP = personalSkillRecords.reduce((acc, record) => acc + Number(record.total_xp), 0);
@@ -282,19 +282,19 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, 
 
 			lines.push(`Total XP: ${totalXP.toLocaleString()} XP`);
 
-			return `${username}'s XP gains in the past ${interval}:\n${lines.join('\n')}`;
+			return `${username}'s XP gains in the last ${interval}:\n${lines.join('\n')}`;
 		}
 
 		// Specific skill: show a single line summary
 		const personalRecord = xpRecords[0];
 		return `${username} gained ${Number(
 			personalRecord.total_xp
-		).toLocaleString()} ${skillObj.name} XP in the past ${interval}.`;
+		).toLocaleString()} ${skillObj.name} XP in the last ${interval}.`;
 	}
 
 	let place = 0;
 	const embed = new EmbedBuilder()
-		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
+		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the last ${interval}`)
 		.setDescription(
 			(
 				await Promise.all(
@@ -426,7 +426,7 @@ export async function kcGains(
 	if (res.length === 0) {
 		if (userToCheck) {
 			const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
-			return `No KC gains found for ${username} at ${monster.name} in the past ${interval}.`;
+			return `No ${monster.name} KC recorded for ${username} in the last ${interval}.`;
 		}
 		return 'No results found.';
 	}
@@ -435,13 +435,13 @@ export async function kcGains(
 	if (userToCheck) {
 		const row = res[0];
 		const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
-		return `${username} gained ${Number(row.qty).toLocaleString()} KC at ${monster.name} in the past ${interval}.`;
+		return `${username} has gained ${Number(row.qty).toLocaleString()} ${monster.name} KC in the last ${interval}.`;
 	}
 
 	// Leaderboard view
 	let place = 0;
 	const embed = new EmbedBuilder()
-		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
+		.setTitle(`Highest ${monster.name} KC gains in the last ${interval}`)
 		.setDescription(
 			(
 				await Promise.all(
