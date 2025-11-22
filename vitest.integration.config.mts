@@ -20,8 +20,8 @@ export default defineConfig({
 		testTimeout: 60_000,
 		maxConcurrency: 4,
 		isolate: true,
-		pool: 'threads',
-		maxWorkers: 5
+		pool: 'forks',
+		maxWorkers: 10
 	},
 
 	resolve: {

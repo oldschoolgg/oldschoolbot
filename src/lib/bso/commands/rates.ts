@@ -329,7 +329,6 @@ ${zygomiteFarmingSource
 								});
 
 								if (typeof inputResult === 'string') {
-									console.log(inputResult);
 									continue;
 								}
 								const result = calculateHunterResult({
@@ -494,7 +493,8 @@ ${zygomiteFarmingSource
 										skillsAsXP: {
 											mining: convertLVLtoXP(miningLevel),
 											smithing: convertLVLtoXP(120)
-										}
+										},
+										usingPet: () => true
 									} as any as GearBank;
 
 									const result = calculateMiningInput({
