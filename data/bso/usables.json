@@ -2260,11 +2260,6 @@
 			}
 		},
 		{
-			"items": ["Note from pets"],
-			"cost": {},
-			"loot": null
-		},
-		{
 			"items": ["Offhand drygore longsword (3a)", "Blood dye"],
 			"cost": {
 				"41075": 1,

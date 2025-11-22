@@ -1,4 +1,4 @@
-import { makeScriptImage } from '@/lib/bso/canvas/scriptImages.js';
+import { scriptImageGenerator } from '@/lib/bso/canvas/scriptImages.js';
 import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
@@ -253,7 +253,7 @@ export const genericUsables: {
 			content: 'You open the bottle, reading the scroll inside, and then return it to the ocean...',
 			files: [
 				{
-					buffer: await makeScriptImage(randArrItem(messageInABottleMessages)),
+					buffer: await scriptImageGenerator.generateScriptImage(randArrItem(messageInABottleMessages)),
 					name: 'image.png'
 				}
 			]
@@ -470,25 +470,6 @@ export const genericUsables: {
 		addToCL: true
 	},
 	{
-		items: [Items.getOrThrow('Note from pets')],
-		cost: new Bank(),
-		loot: null,
-		response: async () => {
-			if (Date.now() < 1_703_373_960 * 1000) {
-				return "You can't open the note until Christmas.";
-			}
-
-			return {
-				files: [
-					{
-						buffer: await makeScriptImage(''),
-						name: 'image.png'
-					}
-				]
-			};
-		}
-	},
-	{
 		items: [Items.getOrThrow('Pumpkin carving knife'), Items.getOrThrow('Heirloom pumpkin')],
 		cost: new Bank().add('Heirloom pumpkin'),
 		loot: new Bank().add('Jack-o-lantern'),
@@ -592,29 +573,6 @@ usables.push({
 			}
 		});
 		return `You used a Guthixian cache boost, you now have ${user.user.guthixian_cache_boosts_available} boosts available.`;
-	}
-});
-
-usables.push({
-	items: [Items.getOrThrow('Christmas cake recipe')],
-	run: async () => {
-		return {
-			files: [
-				{
-					buffer: await makeScriptImage(`Christmas Cake Recipe:
-- The Christmas Spirit; loving help of friends.
-- 1x Fresh rodent milk
-- 1x Pristine chocolate bar
-- 1x A special egg
-- 1x Gingerbread
-- 1x Grimy salt
-- 1x Snail oil
-- 1x Banana-butter
-- 1x Ashy flour`),
-					name: 'image.png'
-				}
-			]
-		};
 	}
 });
 

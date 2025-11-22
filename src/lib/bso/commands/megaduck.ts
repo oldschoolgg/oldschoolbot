@@ -3,8 +3,8 @@ import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/bso/megaDu
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 import { globalConfig } from '@/lib/constants.js';
+import { MegaDuckImageGenerator } from '../canvas/MegaDuckImageGenerator.js';
 
 const apeAtoll = [1059, 1226];
 const portSarim = [1418, 422];
@@ -60,59 +60,9 @@ function applyDirection(location: MegaDuckLocation, direction: MegaduckDirection
 	return newLocation;
 }
 
-function getPixel(x: number, y: number, data: any, width: number) {
-	const i = (width * Math.round(y) + Math.round(x)) * 4;
-	return [data[i], data[i + 1], data[i + 2], data[i + 3]];
-}
-
-async function makeImage(location: MegaDuckLocation) {
-	const { x, y, steps = [] } = location;
-	const mapImage = await loadAndCacheLocalImage('./src/lib/resources/images/megaduckmap.png');
-	const noMoveImage = await loadAndCacheLocalImage('./src/lib/resources/images/megaducknomovemap.png');
-
-	const scale = 3;
-	const canvasSize = 250;
-
-	const centerPosition = Math.floor(canvasSize / 2 / scale);
-
-	const canvas = createCanvas(canvasSize, canvasSize);
-	const ctx = canvas.getContext('2d');
-	ctx.imageSmoothingEnabled = false;
-
-	ctx.scale(scale, scale);
-	ctx.drawImage(mapImage, 0 - x + centerPosition, 0 - y + centerPosition);
-
-	// image.addImage(noMoveImage as any, 0 - x + centerPosition, 0 - y + centerPosition);
-
-	ctx.font = '14px Arial';
-	ctx.fillStyle = '#ffff00';
-	ctx.fillRect(centerPosition, centerPosition, 1, 1);
-
-	const noMoveCanvas = createCanvas(noMoveImage.width, noMoveImage.height);
-	const noMoveCanvasCtx = noMoveCanvas.getContext('2d');
-	noMoveCanvasCtx.drawImage(noMoveImage, 0, 0);
-
-	const currentColor = getPixel(
-		x,
-		y,
-		noMoveCanvasCtx.getImageData(0, 0, noMoveCanvasCtx.canvas.width, noMoveCanvasCtx.canvas.height).data,
-		noMoveCanvas.width
-	);
-
-	ctx.fillStyle = 'rgba(0,0,255,0.05)';
-	for (const [_xS, _yS] of steps) {
-		const xS = _xS - x + centerPosition;
-		const yS = _yS - y + centerPosition;
-		ctx.fillRect(xS, yS, 1, 1);
-	}
-
-	const buffer = await canvasToBuffer(canvas);
-
-	return {
-		image: buffer,
-		currentColor
-	};
-}
+// Create and initialize the image generator
+const imageGenerator = new MegaDuckImageGenerator();
+await imageGenerator.init();
 
 export const megaDuckCommand = defineCommand({
 	name: 'megaduck',
@@ -173,8 +123,9 @@ export const megaDuckCommand = defineCommand({
 			});
 		}
 
-		const { image } = await makeImage(location);
 		if (!direction) {
+			const image = await imageGenerator.generateImage(location);
+
 			return {
 				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[user.id] ?? 0
@@ -189,10 +140,11 @@ export const megaDuckCommand = defineCommand({
 		}
 
 		let newLocation = applyDirection(location, direction);
-		const newLocationResult = await makeImage(newLocation);
-		if (newLocationResult.currentColor[3] !== 0) {
-			return "You can't move here.";
+		const tileIsMovable = imageGenerator.checkTileIsMoveable(newLocation.x, newLocation.y);
+		if (!tileIsMovable) {
+			return "You can't move Mega Duck there.";
 		}
+		// const newLocationResult = await imageGenerator.generateImage(newLocation);
 
 		if (newLocation.usersParticipated[user.id]) {
 			newLocation.usersParticipated[user.id]++;
@@ -230,7 +182,9 @@ export const megaDuckCommand = defineCommand({
 				try {
 					const user = await mUserFetch(id);
 					await user.addItemsToBank({ items: loot, collectionLog: true });
-				} catch {}
+				} catch (err) {
+					console.error(`Failed to give megaduck reward to user ${id}: ${err}`);
+				}
 			}
 			const newT: MegaDuckLocation = {
 				...newLocation,
@@ -242,21 +196,22 @@ export const megaDuckCommand = defineCommand({
 			});
 
 			const guild = await globalClient.fetchGuild(guildId).catch(() => null);
+			const amountUsers = entries.length;
 			globalClient.emit(
 				Events.ServerNotification,
 				`The ${guild?.name ?? 'Unknown'} server just returned Mega Duck into the ocean with Mrs Duck, ${
-					Object.keys(newLocation.usersParticipated).length
-				} users received a Baby duckling pet. ${topFeeders(entries)}`
+					amountUsers
+				} users received a Baby duckling pet. ${await topFeeders(entries)}`
 			);
-			return `Mega duck has arrived at his destination! ${
-				Object.keys(newLocation.usersParticipated).length
-			} users received a Baby duckling pet. ${topFeeders(entries)}`;
+			return `Mega duck has arrived at his destination! ${amountUsers} users received a Baby duckling pet. ${await topFeeders(entries)}`;
 		}
+
+		const image = await imageGenerator.generateImage(newLocation);
 		return {
 			content: `${user} You moved Mega Duck ${direction}! You've moved him ${
 				newLocation.usersParticipated[user.id]
 			} times. Removed ${cost} from your bank.${str}`,
-			files: location.steps?.length % 2 === 0 ? [{ buffer: image, name: 'megaduck.png' }] : []
+			files: [{ buffer: image, name: 'megaduck.png' }]
 		};
 	}
 });
