@@ -21,7 +21,7 @@ export default defineConfig({
 		maxConcurrency: 4,
 		isolate: true,
 		pool: 'forks',
-		maxWorkers: 10
+		maxWorkers: 5
 	},
 
 	resolve: {
