@@ -2,7 +2,8 @@ import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { Bank, type ItemBank } from 'oldschooljs';
 
-export const slayerMaskLeaderboardCache = new Map<number, string>();
+import { slayerMaskLeaderboardCache } from '@/lib/cache.js';
+
 export const allSlayerMaskHelmsAndMasks = new Set(slayerMaskHelms.flatMap(i => [i.mask.id, i.helm.id]));
 
 export async function syncSlayerMaskLeaderboardCache() {

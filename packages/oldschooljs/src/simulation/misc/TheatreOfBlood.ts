@@ -1,8 +1,9 @@
+import { percentChance, roll } from '@oldschoolgg/rng';
+
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import SimpleTable from '@/structures/SimpleTable.js';
-import { percentChance, roll, sumArr } from '@/util/smallUtils.js';
-import { JSONClone } from '@/util/util.js';
+import { JSONClone, sumArr } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;

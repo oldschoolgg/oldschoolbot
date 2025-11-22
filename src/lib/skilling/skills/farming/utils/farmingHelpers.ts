@@ -1,7 +1,7 @@
-import { dateFm, Emoji, makeComponents, stringMatches } from '@oldschoolgg/toolkit';
-import { type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, dateFm } from '@oldschoolgg/discord';
+import { Emoji, stringMatches } from '@oldschoolgg/toolkit';
 
-import type { User } from '@/prisma/main.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import { formatList } from '@/lib/util/smallUtils.js';
@@ -11,7 +11,7 @@ function makeAutoFarmButton() {
 		.setCustomId('AUTO_FARM')
 		.setLabel('Auto Farm')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('630911040355565599');
+		.setEmoji({ id: EmojiId.Farming });
 }
 
 export const farmingPatchNames = [
@@ -42,7 +42,9 @@ export function isPatchName(name: string): name is FarmingPatchName {
 	return farmingPatchNames.includes(name as FarmingPatchName);
 }
 
-export function getFarmingKeyFromName(name: FarmingPatchName): keyof User {
+export type FarmingPatchSettingsKey = `farmingPatches_${FarmingPatchName}`;
+
+export function getFarmingKeyFromName(name: FarmingPatchName): FarmingPatchSettingsKey {
 	return `farmingPatches_${name}`;
 }
 
@@ -55,7 +57,7 @@ export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
 	return plant;
 }
 
-export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): BaseMessageOptions {
+export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): SendableMessage {
 	let str = '';
 	for (const patch of patchesDetailed.filter(i => i.ready === true)) {
 		str += `${Emoji.Tick} **${patch.friendlyName}**: ${patch.lastQuantity} ${patch.lastPlanted} are ready to be harvested!\n`;
@@ -76,6 +78,6 @@ export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): B
 
 	return {
 		content: str,
-		components: makeComponents(buttons)
+		components: buttons
 	};
 }

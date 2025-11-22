@@ -7,7 +7,7 @@ import { Armours } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.j
 export const animatedArmorTask: MinionTask = {
 	type: 'AnimatedArmour',
 	async run(data: AnimatedArmourActivityTaskOptions, { user, handleTripFinish }) {
-		const { armourID, channelID, quantity } = data;
+		const { armourID, channelId, quantity } = data;
 
 		const armour = Armours.find(armour => armour.name === armourID)!;
 
@@ -31,6 +31,6 @@ export const animatedArmorTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${armour.name} armour and received ${loot}.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot, messages);
+		return handleTripFinish({ user, channelId, message: { content: str }, data, loot, messages });
 	}
 };

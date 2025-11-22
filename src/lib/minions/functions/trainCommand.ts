@@ -34,7 +34,7 @@ export const allPossibleStyles: string[] = uniqueArr([
 ]);
 
 export async function trainCommand(user: MUser, _styles: string | undefined) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "You can't change your attack style in the middle of a trip.";
 	}
 	if (!_styles || typeof _styles !== 'string') {

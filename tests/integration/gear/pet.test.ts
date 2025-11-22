@@ -8,7 +8,9 @@ test('Gear - Pet', async () => {
 	await user.update({
 		minion_equippedPet: EItem.HERBI
 	});
-	await user.runCommand('gear', { pet: { unequip: true } });
+	expect(await user.runCommand('gear', { pet: { unequip: true } })).toContain(
+		'picks up their Herbi pet and places it back in their bank'
+	);
 	expect(user.user.minion_equippedPet).toBeNull();
 	expect(user.bank.amount(EItem.HERBI)).toBe(1);
 });

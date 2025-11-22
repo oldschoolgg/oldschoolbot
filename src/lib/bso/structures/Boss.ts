@@ -9,9 +9,9 @@ import {
 	reduceNumByPercent,
 	sumArr,
 	Table,
-	Time
+	Time,
+	UserError
 } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder, type BaseMessageOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
@@ -140,7 +140,7 @@ export interface BossOptions {
 	allowMoreThan1Solo?: boolean;
 	allowMoreThan1Group?: boolean;
 	quantity?: number;
-	allowedMentions?: BaseMessageOptions['allowedMentions'];
+	// allowedMentions?: BaseMessageOptions['allowedMentions'];
 	// Override for Max Boost if you have multiple conflicting boost items
 	boostMax?: number;
 	// Duration before mass is automatically send
@@ -203,7 +203,7 @@ export class BossInstance {
 	speedGearWeight = 25;
 	speedKcWeight = 35;
 	skipInvalidUsers?: boolean = false;
-	allowedMentions?: BaseMessageOptions['allowedMentions'];
+	// allowedMentions?: BaseMessageOptions['allowedMentions'];
 
 	constructor(options: BossOptions) {
 		this.interaction = options.interaction;
@@ -248,7 +248,7 @@ export class BossInstance {
 		this.massText = massText.join('\n');
 		this.automaticStartTime = options.automaticStartTime ?? Time.Minute * 2;
 		if (options.skipInvalidUsers) this.skipInvalidUsers = options.skipInvalidUsers;
-		this.allowedMentions = options.allowedMentions;
+		// this.allowedMentions = options.allowedMentions;
 	}
 
 	async validateTeam() {
@@ -256,7 +256,7 @@ export class BossInstance {
 			const [denied, reason] = await this.checkUser(bossUser.user);
 			if (denied) {
 				if (!this.skipInvalidUsers) {
-					throw new Error(`${bossUser.user} ${reason}`);
+					throw new UserError(`${bossUser.user} ${reason}`);
 				} else {
 					bossUser.invalid = true;
 				}
@@ -264,11 +264,11 @@ export class BossInstance {
 		}
 	}
 
-	calculateQty(duration: number) {
+	async calculateQty(duration: number) {
 		const baseQty = this.tempQty;
 		// Calculate max kill qty
 		let tempQty = 1;
-		const maxTripLength = this.leader ? this.leader.calcMaxTripLength(this.activity) : Time.Hour;
+		const maxTripLength = this.leader ? await this.leader.calcMaxTripLength(this.activity) : Time.Hour;
 		tempQty = Math.max(tempQty, Math.floor(maxTripLength / duration));
 		// If this boss doesn't allow more than 1KC at time, limit to 1
 		if (
@@ -286,7 +286,8 @@ export class BossInstance {
 		this.users =
 			this.solo && this.leader
 				? [this.leader]
-				: await this.interaction.makeParty({
+				: await globalClient.makeParty({
+						interaction: this.interaction,
 						ironmanAllowed: true,
 						minSize: this.minSize,
 						maxSize: this.maxSize,
@@ -301,9 +302,9 @@ export class BossInstance {
 
 		this.tempQty = this.quantity;
 		// Force qty to 1 for init calculations
-		this.quantity = this.calculateQty(this.baseDuration);
+		this.quantity = await this.calculateQty(this.baseDuration);
 		const { bossUsers, duration, totalPercent } = await this.calculateBossUsers();
-		this.quantity = this.calculateQty(duration);
+		this.quantity = await this.calculateQty(duration);
 		this.duration = duration * this.quantity;
 		// Calculate item usage
 		for (const user of bossUsers) {
@@ -324,7 +325,7 @@ export class BossInstance {
 		if (!user.user.minion_hasBought) {
 			return [true, "doesn't have a minion"];
 		}
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return [true, 'minion is busy'];
 		}
 		if (!user.hasSkillReqs(this.skillRequirements)) {
@@ -454,7 +455,7 @@ export class BossInstance {
 
 		for (const bossUser of this.bossUsers) {
 			if (!bossUser.user.owns(bossUser.itemsToRemove)) {
-				throw `${bossUser.user.rawUsername} doesn't have enough supplies, they need: ${bossUser.itemsToRemove}.`;
+				throw `${bossUser.user.username} doesn't have enough supplies, they need: ${bossUser.itemsToRemove}.`;
 			}
 		}
 
@@ -496,7 +497,7 @@ export class BossInstance {
 
 		await ActivityManager.startTrip<NewBossOptions>({
 			userID: this.users![0].id,
-			channelID: this.channelId,
+			channelId: this.channelId,
 			quantity: this.quantity!,
 			duration: this.duration,
 			type: this.activity,
@@ -540,6 +541,6 @@ export class BossInstance {
 			);
 		}
 
-		return new AttachmentBuilder(Buffer.from(table.toString()), { name: 'boss-sim.txt' });
+		return { buffer: Buffer.from(table.toString()), name: 'boss-sim.txt' };
 	}
 }

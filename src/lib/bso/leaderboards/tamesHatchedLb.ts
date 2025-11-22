@@ -1,5 +1,5 @@
 import { Prisma } from '@/prisma/main.js';
-import { doMenuWrapper } from '@/mahoji/commands/leaderboard.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
 
 export async function bsoTamesHatchedLb(interaction: MInteraction, ironmanOnly: boolean) {
 	const query = Prisma.sql`

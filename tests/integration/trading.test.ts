@@ -4,8 +4,10 @@ import { chunk } from 'remeda';
 import { expect, test } from 'vitest';
 
 import { tradeCommand } from '../../src/mahoji/commands/trade.js';
+import { mockSnowflake } from '../test-utils/misc.js';
+import { mockInteraction } from '../test-utils/mockInteraction.js';
 import type { TestUser } from './util.js';
-import { createTestUser, mockClient, mockInteraction } from './util.js';
+import { createTestUser, mockClient } from './util.js';
 
 test('Trade consistency', async () => {
 	await mockClient();
@@ -72,10 +74,13 @@ test('Trade consistency', async () => {
 				while (attempts < 100) {
 					attempts += 1;
 					await Promise.all([user1.sync(), user2?.sync()]);
-					const res = await tradeCommand.run(options);
+					const res = await tradeCommand.run({ ...options, guildId: mockSnowflake(cryptoRng) });
 					if (typeof res === 'string' && !res.includes('Trade failed')) {
 						break;
 					}
+				}
+				if (attempts === 100) {
+					throw new Error('Trade failed 100 times in a row, something is wrong');
 				}
 			})()
 		);

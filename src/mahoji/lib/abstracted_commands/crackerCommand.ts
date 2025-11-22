@@ -1,6 +1,6 @@
 import { shuffleArr } from '@oldschoolgg/rng';
+import type { IUser } from '@oldschoolgg/schemas';
 import { Emoji } from '@oldschoolgg/toolkit';
-import type { User } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
@@ -30,7 +30,7 @@ export async function crackerCommand({
 	interaction,
 	otherPersonAPIUser
 }: {
-	otherPersonAPIUser: User;
+	otherPersonAPIUser: IUser;
 	ownerID: string;
 	otherPersonID: string;
 	interaction: MInteraction;

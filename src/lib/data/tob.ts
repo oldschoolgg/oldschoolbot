@@ -320,7 +320,7 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 		// Reduce time for gear
 		const gearPercents = calculateTOBUserGearPercents(u.user);
 		// Blowpipe
-		const darts = u.user.blowpipe.dartID!;
+		const darts = u.user.getBlowpipe().dartID!;
 		const dartItem = Items.getOrThrow(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
 		let blowPipePercent = 0;

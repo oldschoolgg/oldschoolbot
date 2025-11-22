@@ -42,6 +42,7 @@ async function main() {
 		enumItems.push([key, item.id]);
 	}
 
+	enumItems.push(['EMPTY_BIRD_NEST', 5075]);
 	const forcedChanges = [
 		['Ultor ring', 25485],
 		['Bellator ring', 25488],

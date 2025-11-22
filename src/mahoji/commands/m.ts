@@ -4,7 +4,7 @@ export const mCommand = defineCommand({
 	name: 'm',
 	description: 'See your current minion status and helpful buttons.',
 	options: [],
-	run: async ({ user, channelID }) => {
-		return minionStatusCommand(user, channelID);
+	run: async ({ user, channelId }) => {
+		return minionStatusCommand(user, channelId);
 	}
 });

@@ -88,7 +88,7 @@ export function calculateDungeoneeringResult({
 export const dungeoneeringTask: MinionTask = {
 	type: 'Dungeoneering',
 	async run(data: DungeoneeringOptions, { user, handleTripFinish }) {
-		const { channelID, duration, floor, quantity, users } = data;
+		const { channelId, duration, floor, quantity, users } = data;
 
 		let str = `<:dungeoneering:828683755198873623> ${user}, your party finished ${quantity}x Floor ${floor} dungeons.\n\n`;
 
@@ -150,6 +150,6 @@ export const dungeoneeringTask: MinionTask = {
 			str += '\n';
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

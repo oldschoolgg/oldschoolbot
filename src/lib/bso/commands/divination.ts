@@ -13,7 +13,6 @@ import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHa
 import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { mentionCommand } from '@/lib/discord/index.js';
 import { assert } from '@/lib/util/logError.js';
 
 export const divinationCommand = defineCommand({
@@ -112,7 +111,7 @@ export const divinationCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction }) => {
 		if (options.toggle_portent) {
 			const portent = portents.find(p => p.item.name === options.toggle_portent!.portent);
 			if (!portent) {
@@ -189,7 +188,7 @@ export const divinationCommand = defineCommand({
 					})\n`;
 				}
 
-				str += `\n\nYou can get more charges by buying/creating a portent item, then using it with ${mentionCommand(
+				str += `\n\nYou can get more charges by buying/creating a portent item, then using it with ${globalClient.mentionCommand(
 					'divination',
 					'charge_portent'
 				)}.`;
@@ -238,7 +237,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 			}
 			const boosts: string[] = [];
 
-			let maxTripLength = user.calcMaxTripLength('MemoryHarvest');
+			let maxTripLength = await user.calcMaxTripLength('MemoryHarvest');
 
 			if (user.hasEquipped('Jar of memories')) {
 				maxTripLength += Time.Minute * 7;
@@ -315,7 +314,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 
 			await ActivityManager.startTrip<MemoryHarvestOptions>({
 				userID: user.id,
-				channelID,
+				channelId,
 				duration,
 				type: 'MemoryHarvest',
 				e: energy.item.id,

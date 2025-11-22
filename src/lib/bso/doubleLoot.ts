@@ -1,7 +1,7 @@
+import { roleMention } from '@oldschoolgg/discord';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import type { TextChannel } from 'discord.js';
 
-import { Channel } from '@/lib/constants.js';
+import { Channel, Roles } from '@/lib/constants.js';
 
 export let DOUBLE_LOOT_FINISH_TIME_CACHE = 0;
 
@@ -22,14 +22,15 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 		double_loot_finish_time: newDoubleLootTimer
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = newDoubleLootTimer;
-	(globalClient.channels.cache.get(Channel.GeneralChannel)! as TextChannel).send({
-		content: `<@&923768318442229792> 🎉 ${formatDuration(
+
+	await globalClient.sendMessage(Channel.GeneralChannel, {
+		content: `${roleMention(Roles.BSODoubleLoot)} 🎉 ${formatDuration(
 			amount
 		)} added to the Double Loot timer because: ${reason}. 🎉`,
-		allowedMentions: { roles: ['923768318442229792'] }
+		allowedMentions: { roles: [Roles.BSODoubleLoot] }
 	});
 
-	syncPrescence();
+	await syncPrescence();
 }
 
 export async function addPatronLootTime(_tier: number, user: MUser | null) {
@@ -44,7 +45,7 @@ export async function addPatronLootTime(_tier: number, user: MUser | null) {
 	if (!map[tier]) return;
 	const minutes = map[tier];
 	const timeAdded = Math.floor(Time.Minute * minutes);
-	addToDoubleLootTimer(timeAdded, `${user ?? 'Someone'} became a Tier ${tier} sponsor`);
+	await addToDoubleLootTimer(timeAdded, `${user ?? 'Someone'} became a Tier ${tier} sponsor`);
 }
 
 export async function syncDoubleLoot() {
@@ -60,7 +61,7 @@ export async function syncPrescence() {
 	const str = isDoubleLootActive()
 		? `${formatDuration(DOUBLE_LOOT_FINISH_TIME_CACHE - Date.now(), true)} Double Loot!`
 		: '/help';
-	if (globalClient.user!.presence.activities[0]?.name !== str) {
-		globalClient.user?.setActivity(str);
-	}
+	await globalClient.setPresence({
+		text: str
+	});
 }

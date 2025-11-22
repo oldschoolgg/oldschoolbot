@@ -1,8 +1,8 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
+import { bold } from '@oldschoolgg/discord';
 import { randInt, roll } from '@oldschoolgg/rng';
 import { Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
@@ -12,7 +12,7 @@ import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMor
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',
 	async run(data: ShadesOfMortonOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, logID, shadeID, duration } = data;
+		const { channelId, quantity, logID, shadeID, duration } = data;
 
 		const scoreUpdate = await user.incrementMinigameScore('shades_of_morton', quantity);
 
@@ -98,8 +98,12 @@ export const shadesOfMortonTask: MinionTask = {
 			source: 'ShadesOfMorton'
 		});
 
-		const str = `${user}, You received ${loot}. ${xpStr}.`;
+		let str = `${user}, You received ${loot}. ${xpStr}.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded, messages);
+		if (messages.length > 0) {
+			str += `\n**Messages:** ${messages.join(', ')}`;
+		}
+
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };

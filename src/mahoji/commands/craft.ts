@@ -20,7 +20,7 @@ export const craftCommand = defineCommand({
 			name: 'name',
 			description: 'The item you want to craft.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Craftables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase()))).map(
 					i => ({
 						name: i.name,
@@ -37,7 +37,7 @@ export const craftCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		let { quantity } = options;
 
 		if (options.name.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;
@@ -67,7 +67,7 @@ export const craftCommand = defineCommand({
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Crafting');
+		const maxTripLength = await user.calcMaxTripLength('Crafting');
 		const boosts: string[] = [];
 		const userBank = user.bankWithGP;
 
@@ -141,7 +141,7 @@ export const craftCommand = defineCommand({
 		await ActivityManager.startTrip<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Crafting',

@@ -10,9 +10,9 @@ import {
 } from '@/lib/bso/tames/tames.js';
 import { tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
+import { userMention } from '@oldschoolgg/discord';
 import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, isFunction, Time } from '@oldschoolgg/toolkit';
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
@@ -26,9 +26,8 @@ import { runCommand } from '@/lib/settings/settings.js';
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { makeTameRepeatTripButton } from '@/lib/util/interactions.js';
 import { assert } from '@/lib/util/logError.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
 export async function handleFinish({
@@ -67,32 +66,17 @@ export async function handleFinish({
 		throw new Error('No channel ID found for tame activity');
 	}
 
-	return sendToChannelID(activity.channel_id, {
-		content: results.join(', '),
-		components: [
-			new ActionRowBuilder<ButtonBuilder>().addComponents(
-				new ButtonBuilder()
-					.setCustomId('REPEAT_TAME_TRIP')
-					.setLabel('Repeat Trip')
-					.setStyle(ButtonStyle.Secondary)
-			)
-		],
-		files:
-			itemsAdded.length > 0
-				? [
-						new AttachmentBuilder(
-							(
-								await makeBankImage({
-									bank: lootToAdd,
-									title: `${tame}'s Loot`,
-									user: user,
-									previousCL: previousTameCl
-								})
-							).file.attachment
-						)
-					]
-				: undefined
-	});
+	const res = new MessageBuilder()
+		.setContent(results.join(', '))
+		.addComponents([makeTameRepeatTripButton()])
+		.addBankImage({
+			bank: itemsAdded,
+			title: `${tame}'s Loot`,
+			user: user,
+			previousCL: previousTameCl
+		});
+
+	return globalClient.sendMessageOrWebhook(activity.channel_id, res);
 }
 
 export const arbitraryTameActivities: ArbitraryTameActivity[] = [
@@ -192,7 +176,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 
 			let killQty = quantity - activity.deaths;
 			if (killQty < 1) {
-				handleFinish({
+				await handleFinish({
 					lootToAdd: new Bank(),
 					message: `${userMention(user.id)}, Your tame died in all their attempts to kill ${
 						mon.name
@@ -250,7 +234,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 					}
 				]
 			});
-			handleFinish({
+			await handleFinish({
 				lootToAdd: loot,
 				message: str,
 				user,
@@ -269,7 +253,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 			const { doubleLootMsg } = tame.doubleLootCheck(loot);
 			str += doubleLootMsg;
-			handleFinish({
+			await handleFinish({
 				lootToAdd: loot,
 				message: str,
 				user,
@@ -289,7 +273,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 				.join(', ')}`;
 			const { doubleLootMsg } = tame.doubleLootCheck(loot);
 			str += doubleLootMsg;
-			handleFinish({
+			await handleFinish({
 				lootToAdd: loot,
 				message: str,
 				user,
@@ -367,7 +351,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 				str += `\n\n${messages.join('\n')}`;
 			}
 
-			handleFinish({
+			await handleFinish({
 				lootToAdd: loot,
 				message: str,
 				user,

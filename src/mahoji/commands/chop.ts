@@ -81,7 +81,7 @@ export const chopCommand = defineCommand({
 			name: 'name',
 			description: 'The tree you want to chop.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Woodcutting.Logs.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -95,7 +95,8 @@ export const chopCommand = defineCommand({
 			name: 'quantity',
 			description: 'The quantity of logs you want to chop (optional).',
 			required: false,
-			min_value: 1
+			min_value: 1,
+			max_value: 100_000
 		},
 		{
 			type: 'Boolean',
@@ -117,7 +118,7 @@ export const chopCommand = defineCommand({
 			choices: Woodcutting.twitchersGloves.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -188,6 +189,7 @@ export const chopCommand = defineCommand({
 		// Default bronze axe, last in the array
 		let axeMultiplier = 1;
 		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
+		const maxTripLength = await user.calcMaxTripLength('Woodcutting');
 
 		if (user.hasEquippedOrInBank(['Drygore axe'])) {
 			const [predeterminedTotalTime] = determineWoodcuttingTime({
@@ -197,7 +199,8 @@ export const chopCommand = defineCommand({
 				axeMultiplier: 10,
 				powerchopping: Boolean(powerchop),
 				forestry: forestry_events,
-				woodcuttingLvl: wcLvl
+				woodcuttingLvl: wcLvl,
+				maxTripLength
 			});
 			const boostRes = await inventionItemBoost({
 				user,
@@ -255,6 +258,7 @@ export const chopCommand = defineCommand({
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible
+
 		const [timeToChop, newQuantity] = determineWoodcuttingTime({
 			quantity,
 			user,
@@ -262,7 +266,8 @@ export const chopCommand = defineCommand({
 			axeMultiplier,
 			powerchopping: powerchop,
 			forestry: forestry_events,
-			woodcuttingLvl: wcLvl
+			woodcuttingLvl: wcLvl,
+			maxTripLength
 		});
 
 		const duration = timeToChop;
@@ -273,7 +278,7 @@ export const chopCommand = defineCommand({
 		await ActivityManager.startTrip<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop === true ? true : undefined,

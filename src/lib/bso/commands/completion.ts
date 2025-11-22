@@ -1,7 +1,5 @@
 import { generateAllCompCapeTasksList } from '@/lib/bso/compCape.js';
 
-import { AttachmentBuilder } from 'discord.js';
-
 export const completionCommand = defineCommand({
 	name: 'completion',
 	description: 'Completionist tasks.',
@@ -27,13 +25,13 @@ export const completionCommand = defineCommand({
 			const { resultStr } = await user.calculateCompCapeProgress();
 
 			return {
-				files: [new AttachmentBuilder(Buffer.from(resultStr), { name: 'compcape.txt' })]
+				files: [{ buffer: Buffer.from(resultStr), name: 'compcape.txt' }]
 			};
 		}
 		if (options.view_all_tasks) {
 			const result = await generateAllCompCapeTasksList();
 			return {
-				files: [new AttachmentBuilder(Buffer.from(result), { name: 'compcape.txt' })]
+				files: [{ buffer: Buffer.from(result), name: 'compcape.txt' }]
 			};
 		}
 		return 'Invalid command.';

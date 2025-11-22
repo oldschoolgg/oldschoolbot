@@ -10,7 +10,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
 	async run(data: OuraniaAltarOptions, { user, handleTripFinish, rng }) {
-		const { quantity, channelID, duration, daeyalt } = data;
+		const { quantity, channelId, duration, daeyalt } = data;
 
 		const lvl = user.skillsAsLevels.runecraft;
 		const loot = new Bank();
@@ -99,7 +99,7 @@ const ouraniaAltarTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };
 

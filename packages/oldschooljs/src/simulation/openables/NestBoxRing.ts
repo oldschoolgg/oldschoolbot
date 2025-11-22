@@ -1,10 +1,10 @@
-import { EMPTY_BIRD_NEST_ID } from '@/constants.js';
+import { EItem } from '@/EItem.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const NestBoxRingTable = new LootTable()
 	// source: https://oldschool.runescape.wiki/w/Bird_nest
-	.every(EMPTY_BIRD_NEST_ID)
+	.every(EItem.EMPTY_BIRD_NEST)
 	.add('Sapphire ring', 1, 40)
 	.add('Gold ring', 1, 35)
 	.add('Emerald ring', 1, 15)

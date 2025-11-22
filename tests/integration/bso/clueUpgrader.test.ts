@@ -10,6 +10,9 @@ describe('Clue Upgrader', async () => {
 
 	it(
 		'should use clue upgrader in pickpocketing',
+		{
+			retry: 1
+		},
 		async () => {
 			const user = await client.mockUser({
 				bank: new Bank().add('Clue upgrader', 1),
@@ -50,9 +53,6 @@ describe('Clue Upgrader', async () => {
 
 			expect(mediumCluesReceived).toEqual(clueUpgraderStats.amount('Clue scroll (medium)'));
 			expect(mediumCluesReceived).toEqual(user.bank.amount('Clue scroll (medium)'));
-		},
-		{
-			retry: 1
 		}
 	);
 });

@@ -4,7 +4,7 @@ import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
 export const nightmareZoneTask: MinionTask = {
 	type: 'NightmareZone',
 	async run(data: NightmareZoneActivityTaskOptions, { user, handleTripFinish }) {
-		const { quantity, channelID, duration, strategy } = data;
+		const { quantity, channelId, duration, strategy } = data;
 
 		const attackStyles = resolveAttackStyles({
 			attackStyles: user.getAttackStyles()
@@ -51,6 +51,6 @@ export const nightmareZoneTask: MinionTask = {
 		} finished killing ${quantity}x Nightmare Zone monsters. Your Nightmare Zone KC is now ${score.newScore}.
  \n**XP Gains:** ${res.join(' ')}\nYou gained **${pointsReceived.toLocaleString()}** Nightmare Zone points.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

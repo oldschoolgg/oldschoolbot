@@ -290,9 +290,9 @@ const blackMaskBoost: Boost = {
 export const mainBoostEffects: (Boost | Boost[])[] = [
 	{
 		description: 'Item Boosts',
-		run: ({ monster, gearBank, isInWilderness }) => {
+		run: ({ monster, gearBank }) => {
 			const results: BoostResult[] = [];
-			for (const [item, boostAmount] of resolveAvailableItemBoosts(gearBank, monster, isInWilderness).items()) {
+			for (const [item, boostAmount] of resolveAvailableItemBoosts(gearBank, monster).items()) {
 				results.push({
 					percentageReduction: boostAmount,
 					message: `${boostAmount}% for ${item.name}`

@@ -1,6 +1,6 @@
+import { time } from '@oldschoolgg/discord';
 import { SeedableRNG } from '@oldschoolgg/rng';
 import { Emoji, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { time } from 'discord.js';
 
 export interface Peak {
 	startTime: number;

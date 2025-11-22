@@ -1,9 +1,9 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
@@ -21,12 +21,7 @@ export const vasaBISGear = new Gear({
 	neck: 'Arcane blast necklace'
 });
 
-export async function vasaCommand(
-	interaction: MInteraction,
-	user: MUser,
-	channelID: string,
-	quantity?: number
-): Promise<string | InteractionReplyOptions> {
+export async function vasaCommand(interaction: MInteraction, user: MUser, channelId: string, quantity?: number) {
 	const instance = new BossInstance({
 		interaction,
 		leader: user,
@@ -64,7 +59,7 @@ export async function vasaCommand(
 		ignoreStats: ['attack_ranged', 'attack_crush', 'attack_slash', 'attack_stab'],
 		food: () => new Bank(),
 		settingsKeys: ['vasa_cost', 'vasa_loot'],
-		channelId: channelID,
+		channelId: channelId,
 		activity: 'VasaMagus',
 		massText: `${user.usernameOrMention} is assembling a team to fight Vasa Magus! Use the buttons below to join/leave.`,
 		minSize: 1,
@@ -73,23 +68,18 @@ export async function vasaCommand(
 		allowMoreThan1Solo: true,
 		quantity
 	});
-	try {
-		const { bossUsers } = await instance.start();
-		const embed = new EmbedBuilder().setDescription(
-			`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
-				instance.duration
-			)}.
+	const { bossUsers } = await instance.start();
+	const embed = new EmbedBuilder().setDescription(
+		`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
+			instance.duration
+		)}.
 
 ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\n')}
 `
-		);
+	);
 
-		return {
-			embeds: [embed.data],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
-		};
-	} catch (err: any) {
-		console.error(err);
-		return `The mass failed to start for this reason: ${err}.`;
-	}
+	return {
+		embeds: [embed],
+		content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
+	};
 }

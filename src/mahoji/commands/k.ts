@@ -1,12 +1,12 @@
+import { choicesOf } from '@/discord/index.js';
 import { PVM_METHODS } from '@/lib/constants.js';
-import { choicesOf } from '@/lib/discord/index.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
-async function fetchUsersRecentlyKilledMonsters(userID: string): Promise<number[]> {
+async function fetchUsersRecentlyKilledMonsters(userId: string): Promise<number[]> {
 	const res = await prisma.userStats.findUnique({
 		where: {
-			user_id: BigInt(userID)
+			user_id: BigInt(userId)
 		},
 		select: {
 			recently_killed_monsters: true
@@ -29,8 +29,8 @@ export const minionKCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to kill.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
-				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(user.id);
+			autocomplete: async ({ value, userId }: StringAutoComplete) => {
+				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(userId);
 				return autocompleteMonsters
 					.filter(m =>
 						!value
@@ -80,11 +80,11 @@ export const minionKCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction }) => {
 		return minionKillCommand(
 			user,
 			interaction,
-			channelID,
+			channelId,
 			options.name,
 			options.quantity,
 			options.method,

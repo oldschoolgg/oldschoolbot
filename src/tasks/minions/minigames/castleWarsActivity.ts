@@ -8,7 +8,7 @@ const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
 export const castleWarsTask: MinionTask = {
 	type: 'CastleWars',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
-		const { channelID, quantity, userID, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		await user.incrementMinigameScore('castle_wars', quantity);
 
@@ -33,9 +33,8 @@ export const castleWarsTask: MinionTask = {
 
 		handleTripFinish(
 			user,
-			channelID,
-			`<@${userID}>, ${user.minionName} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
-			undefined,
+			channelId,
+			`${user.mention}, ${user.minionName} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
 			data,
 			loot
 		);

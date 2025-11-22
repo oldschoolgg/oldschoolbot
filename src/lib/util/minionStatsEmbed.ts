@@ -1,8 +1,8 @@
 import { MALEDICT_MORTIMER_ID } from '@/lib/bso/maledictMortimer.js';
 
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { shuffleArr } from '@oldschoolgg/rng';
 import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
-import { EmbedBuilder } from 'discord.js';
 import { Bank, convertXPtoLVL, type ItemBank, type SkillsScore, toKMB } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -89,7 +89,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	);
 
 	if (user.isIronman) {
-		embed.setColor('#535353');
+		embed.setColor([83, 83, 83]);
 	}
 
 	const { percent } = calcCLDetails(user);

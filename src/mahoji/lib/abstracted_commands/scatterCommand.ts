@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { ScatteringActivityTaskOptions } from '@/lib/types/minions.js';
 
-export async function scatterCommand(user: MUser, channelID: string, ashName: string, quantity?: number) {
+export async function scatterCommand(user: MUser, channelId: string, ashName: string, quantity?: number) {
 	const speedMod = 1;
 
 	const ash = Prayer.Ashes.find(
@@ -21,7 +21,7 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 
 	const timeToScatterAnAsh = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
-	const maxTripLength = user.calcMaxTripLength('Scattering');
+	const maxTripLength = await user.calcMaxTripLength('Scattering');
 
 	if (!quantity) {
 		const amountOfAshesOwned = user.bank.amount(ash.inputId);
@@ -50,7 +50,7 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 	await ActivityManager.startTrip<ScatteringActivityTaskOptions>({
 		ashID: ash.inputId,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Scattering'

@@ -31,6 +31,6 @@ export const shootingStarTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(user, data.channelID, str, undefined, data, itemsToAdd);
+		handleTripFinish({ user, channelId: data.channelId, message: str, data, loot: itemsToAdd });
 	}
 };

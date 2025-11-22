@@ -29,8 +29,8 @@ async function determineDuration(user: MUser): Promise<[number, string[]]> {
 	return [totalTime, boostStr];
 }
 
-export async function titheFarmCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function titheFarmCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const skills = user.skillsAsLevels;
@@ -43,7 +43,7 @@ export async function titheFarmCommand(user: MUser, channelID: string) {
 	await ActivityManager.startTrip<TitheFarmActivityTaskOptions>({
 		minigameID: 'tithe_farm',
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: 1,
 		duration,
 		type: 'TitheFarm'

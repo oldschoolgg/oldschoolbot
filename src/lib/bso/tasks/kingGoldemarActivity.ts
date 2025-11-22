@@ -23,7 +23,7 @@ const methodsOfDeath = [
 export const kingGoldemarTask: MinionTask = {
 	type: 'KingGoldemar',
 	async run(data: NewBossOptions, { handleTripFinish, rng }) {
-		const { channelID, users: idArr, duration, bossUsers } = data;
+		const { channelId, users: idArr, duration, bossUsers } = data;
 		const deaths: MUser[] = [];
 		const users: MUser[] = await Promise.all(idArr.map(i => mUserFetch(i)));
 		const solo = users.length < 2;
@@ -41,24 +41,14 @@ export const kingGoldemarTask: MinionTask = {
 
 		const tagAll = users.map(u => u.toString()).join(', ');
 		if (deaths.length === idArr.length) {
-			if (solo) {
-				return handleTripFinish(
-					users[0],
-					channelID,
-					`${tagAll}\n\nYou were crushed by King Goldemar, you never stood a chance.`,
-					undefined,
-					data,
-					null
-				);
-			}
-			return handleTripFinish(
-				users[0],
-				channelID,
-				`${tagAll}\n\n${'Your team was'} crushed by King Goldemar, you never stood a chance.`,
-				undefined,
-				data,
-				null
-			);
+			return handleTripFinish({
+				user: users[0],
+				channelId,
+				message: solo
+					? `${tagAll}\n\nYou were crushed by King Goldemar, you never stood a chance.`
+					: `${tagAll}\n\n${'Your team was'} crushed by King Goldemar, you never stood a chance.`,
+				data
+			});
 		}
 
 		await Promise.all(users.map(u => u.incrementKC(KingGoldemar.id, 1)));
@@ -133,10 +123,6 @@ export const kingGoldemarTask: MinionTask = {
 			resultStr += `\n\n**Died in battle**: ${deaths.map(u => `${u.toString()}(${rng.pick(methodsOfDeath)})`)}.`;
 		}
 
-		if (!solo) {
-			handleTripFinish(users[0], channelID, resultStr, undefined, data, null);
-		} else {
-			handleTripFinish(users[0], channelID, resultStr, undefined, data, totalLoot);
-		}
+		return handleTripFinish({ user: users[0], channelId, message: resultStr, data, loot: solo ? totalLoot : null });
 	}
 };

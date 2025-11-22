@@ -47,15 +47,6 @@ export function addItemToBank(bank: ItemBank, itemID: number, amountToAdd = 1): 
 	return newBank;
 }
 
-export function fasterResolveBank(bank: ItemBank) {
-	const firstKey = Object.keys(bank)[0];
-	if (!Number.isNaN(Number(firstKey))) {
-		return bank;
-	}
-
-	return resolveBank(bank);
-}
-
 export function increaseBankQuantitesByPercent(bank: Bank, percent: number, whitelist: number[] | null = null) {
 	for (const [item, qty] of bank.items()) {
 		if (whitelist !== null && !whitelist.includes(item.id)) continue;

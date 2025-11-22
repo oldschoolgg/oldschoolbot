@@ -6,7 +6,7 @@ import { tagCommand } from '@/commands/tag.js';
 import { toolsCommand } from '@/commands/tools.js';
 import { triviaCommand } from '@/commands/trivia.js';
 
-export const allCommands: RoboChimpCommand[] = [
+export const allCommands: AnyCommand[] = [
 	blacklistCommand,
 	pingableRolesCommand,
 	reactCommand,

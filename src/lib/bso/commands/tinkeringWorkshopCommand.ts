@@ -7,14 +7,14 @@ import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ItemBank } from 'oldschooljs';
 
-export async function tinkeringWorkshopCommand(user: MUser, material: string, channelID: string) {
+export async function tinkeringWorkshopCommand(user: MUser, material: string, channelId: string) {
 	if (!isValidMaterialType(material)) {
 		return "That's not a valid material.";
 	}
-	if (user.minionIsBusy) return 'Your minion is busy.';
+	if (await user.minionIsBusy()) return 'Your minion is busy.';
 
 	const gameTime = Time.Minute * 12.5;
-	const quantity = Math.floor(user.calcMaxTripLength('TinkeringWorkshop') / gameTime);
+	const quantity = Math.floor((await user.calcMaxTripLength('TinkeringWorkshop')) / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
 	const MATERIAL_QTY_PER_PROJECT = 100;
@@ -39,7 +39,7 @@ export async function tinkeringWorkshopCommand(user: MUser, material: string, ch
 
 	await ActivityManager.startTrip<TinkeringWorkshopOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'TinkeringWorkshop',

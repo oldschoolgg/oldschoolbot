@@ -1,9 +1,9 @@
 import { globalConfig } from '../constants.js';
 import { patreonTask } from '../lib/patreon.js';
 import { detectMischief } from '../mischiefDetection.js';
-import { CHANNELS, patronLogWebhook } from '../util.js';
+import { CHANNELS } from '../util.js';
 
-export const toolsCommand: RoboChimpCommand = {
+export const toolsCommand = defineCommand({
 	name: 'tools',
 	description: 'RoboChimp tools.',
 	options: [
@@ -41,18 +41,8 @@ export const toolsCommand: RoboChimpCommand = {
 			name: 'debug_patreon',
 			description: 'debug_patreon'
 		}
-	] as const,
-	run: async ({
-		options,
-		user,
-		interaction,
-		client
-	}: CommandRunOptions<{
-		setgithubid?: { user: MahojiUserOption; github_username?: string };
-		detect_mischief?: {};
-		patreon_sync?: {};
-		debug_patreon?: {};
-	}>) => {
+	],
+	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
 		if (!user.isMod()) return 'Ook';
 
@@ -60,7 +50,7 @@ export const toolsCommand: RoboChimpCommand = {
 			const res = await patreonTask.fetchPatrons();
 			return {
 				content: 'Debug',
-				files: [{ attachment: Buffer.from(JSON.stringify(res)), name: 'data.json' }]
+				files: [{ buffer: Buffer.from(JSON.stringify(res)), name: 'data.json' }]
 			};
 		}
 
@@ -75,14 +65,14 @@ export const toolsCommand: RoboChimpCommand = {
 			return {
 				content: "Here's the mischief reports!",
 				files: [
-					{ attachment: Buffer.from(osbResult), name: 'osb.txt' },
-					{ attachment: Buffer.from(bsoResult), name: 'bso.txt' }
+					{ buffer: Buffer.from(osbResult), name: 'osb.txt' },
+					{ buffer: Buffer.from(bsoResult), name: 'bso.txt' }
 				]
 			};
 		}
 
 		if (options.setgithubid) {
-			const githubSetUser = await client.fetchUser(options.setgithubid.user.user.id);
+			const githubSetUser = await globalClient.fetchRUser(options.setgithubid.user.user.id);
 			const { github_username } = options.setgithubid;
 
 			if (!github_username) {
@@ -118,11 +108,11 @@ export const toolsCommand: RoboChimpCommand = {
 		if (options.patreon_sync) {
 			const res = await patreonTask.run();
 			if (res) {
-				patronLogWebhook.send(res.join('\n').slice(0, 1950));
+				console.log(res.join('\n').slice(0, 1950));
 			}
 			return 'Done.';
 		}
 
 		return 'Invalid command.';
 	}
-} as const;
+});

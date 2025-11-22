@@ -1,59 +1,56 @@
-import { Client, type MessageCreateOptions } from 'discord.js';
+import { ActivityType, GatewayIntentBits, PresenceUpdateStatus } from '@oldschoolgg/discord';
 
-import { allCommands } from '@/commands/allCommands.js';
-import { globalConfig } from '@/constants.js';
 import { interactionHandler } from '@/discord/interactionHandler.js';
-import { bulkUpdateCommands } from '@/discord/util.js';
+import { RoboChimpBotClient } from '@/discord/RoboChimpBotClient.js';
+import { bulkUpdateCommands } from '@/discord/utils.js';
+import { globalConfig } from '@/constants.js';
+import { pointsHandler } from '@/events/messageCreate/pointsHandler.js';
+import { userReactsHandler } from '@/events/messageCreate/userReactsHandler.js';
 import { handleMessageCreate } from '@/events/messageCreate.js';
-import { RUser } from '@/structures/RUser.js';
 
-export class RoboChimpClientClass extends Client<boolean> {
-	public applicationId: string = globalConfig.appID;
-	public allCommands: RoboChimpCommand[] = allCommands;
-	async fetchUser(_id: bigint | string): Promise<RUser> {
-		const id: bigint = typeof _id === 'string' ? BigInt(_id) : _id;
-		const user = await roboChimpClient.user.upsert({
-			where: {
-				id: id
-			},
-			create: {
-				id
-			},
-			update: {}
-		});
-		return new RUser(user);
-	}
-
-	async sendToChannelID(channelID: string, content: string | MessageCreateOptions) {
-		if (!globalConfig.isProduction) return;
-		const channel = globalClient.channels.cache.get(channelID);
-		if (!channel || !channel.isTextBased() || channel.partial || !('send' in channel)) {
-			console.error('Invalid channel');
-			return;
-		}
-		await channel.send(content);
-	}
-
-	async fetchSupportServer() {
-		const guild = await globalClient.guilds.fetch(globalConfig.supportServerID);
-		if (!guild) {
-			throw new Error(`fetchSupportServer did not return support server`);
-		}
-		return guild;
-	}
-}
-
-global.globalClient = new RoboChimpClientClass({
-	intents: ['GuildMessages', 'Guilds', 'GuildMembers', 'MessageContent'],
-	allowedMentions: {}
+const client = new RoboChimpBotClient({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.GuildWebhooks,
+		GatewayIntentBits.MessageContent
+	],
+	initialPresence: {
+		activity: {
+			name: 'Starting Up...',
+			type: ActivityType.Listening
+		},
+		status: PresenceUpdateStatus.DoNotDisturb
+	},
+	token: globalConfig.botToken,
+	isProduction: globalConfig.isProduction,
+	mainServerId: globalConfig.supportServerID,
+	userUsernameFetcher: async () => 'TODO'
 });
 
+declare global {
+	var globalClient: RoboChimpBotClient;
+}
+
+global.globalClient = client;
 globalClient.on('error', console.error);
 
 globalClient.on('messageCreate', handleMessageCreate);
+globalClient.on('rawMessageCreate', m => {
+	pointsHandler(m);
+	userReactsHandler(m);
+});
 
-globalClient.on('interactionCreate', interactionHandler);
+globalClient.on('interactionCreate', itx => {
+	return interactionHandler(client, itx);
+});
 
 globalClient.on('ready', async () => {
+	globalClient.setPresence({
+		text: 'Ook Ook',
+		type: ActivityType.Listening,
+		status: PresenceUpdateStatus.Online
+	});
 	await bulkUpdateCommands();
 });

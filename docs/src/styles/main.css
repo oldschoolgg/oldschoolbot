@@ -10,8 +10,26 @@
 	color: light-dark(var(--dark-brown), #f4ddcb);
 }
 
+/* Inter Font */
 :root {
-	font-family: "InterVariable", sans-serif;
+	font-family: Inter, sans-serif;
+	font-feature-settings:
+		"liga" 1,
+		"calt" 1;
+	--sl-font: "Inter", sans-serif;
+	--font-display: "Inter", sans-serif;
+	--font-sans: "Inter", sans-serif;
+}
+@supports (font-variation-settings: normal) {
+	:root {
+		font-family: "InterVariable", sans-serif;
+		--sl-font: "InterVariable", sans-serif;
+		--font-display: "InterVariable", sans-serif;
+		--font-sans: "Inter", sans-serif;
+	}
+}
+
+:root {
 	font-optical-sizing: auto;
 	color-scheme: light dark;
 
@@ -258,10 +276,6 @@ ol + ol li blockquote {
 
 .edit_this_page {
 	color: var(--sl-color-text-accent);
-}
-
-.sl-badge {
-	font-family: "Inter", sans-serif;
 }
 
 .danger:where(.astro-ixkmpc6r) {

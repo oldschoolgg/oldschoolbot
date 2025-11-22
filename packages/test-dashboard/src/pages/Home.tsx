@@ -123,8 +123,8 @@ export function Home() {
 	useEffect(() => {
 		fetch(itemDataUrl)
 			.then(response => response.json())
-			.then(data => {
-				setItemData(data as Record<string, Item>);
+			.then(_data => {
+				setItemData(_data as Record<string, Item>);
 			})
 			.catch(error => console.error('Error fetching item data:', error));
 	}, []);

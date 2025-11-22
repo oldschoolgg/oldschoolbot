@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from 'vitest';
 
-import { Items } from '@/index.js';
+import { EItem, Items } from '@/index.js';
 import { Bank, type ItemBank } from '@/structures/Bank.js';
 
 describe('Bank', () => {
@@ -158,5 +158,18 @@ describe('Bank', () => {
 		const b = new Bank(src as any);
 		expect(b.length).toBe(ids.length);
 		for (const id of ids) expect(b.amount(id)).toBe(10);
+	});
+
+	it('array constructor', () => {
+		const b = new Bank([EItem.TWISTED_BOW, 10, EItem.ABYSSAL_WHIP, 5, EItem.TROUT, 20]);
+		expect(b.length).toBe(3);
+		expect(b.amount('Twisted bow')).toBe(10);
+		expect(b.amount('Abyssal whip')).toBe(5);
+		expect(b.amount('Trout')).toBe(20);
+	});
+
+	it('empty array constructor', () => {
+		const b = new Bank([]);
+		expect(b.length).toBe(0);
 	});
 });

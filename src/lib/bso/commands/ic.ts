@@ -1,9 +1,9 @@
 import { ItemContracts } from '@/lib/bso/itemContracts.js';
 
-import { Emoji, formatDuration, makeComponents } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Emoji, formatDuration } from '@oldschoolgg/toolkit';
 
 import { BitField } from '@/lib/constants.js';
+import { makeDonateIcButton } from '@/lib/util/interactions.js';
 
 export const icCommand = defineCommand({
 	name: 'ic',
@@ -35,13 +35,7 @@ export const icCommand = defineCommand({
 			details.currentItem !== null &&
 			!user.isIronman &&
 			!user.bitfield.includes(BitField.NoItemContractDonations)
-				? makeComponents([
-						new ButtonBuilder()
-							.setStyle(ButtonStyle.Primary)
-							.setLabel('Donate IC')
-							.setEmoji('988422348434718812')
-							.setCustomId(`DONATE_IC_${user.id}`)
-					])
+				? [makeDonateIcButton(user.id)]
 				: undefined;
 
 		if (options.info) {

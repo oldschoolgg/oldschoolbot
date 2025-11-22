@@ -4,7 +4,7 @@ import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 
-export async function castCommand(channelID: string, user: MUser, name: string, quantity: number | undefined) {
+export async function castCommand(channelId: string, user: MUser, name: string, quantity: number | undefined) {
 	const spell = Castables.find(spell => stringMatches(spell.id.toString(), name) || stringMatches(spell.name, name));
 	const boosts = [];
 	const missedBoosts = [];
@@ -65,7 +65,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Casting');
+	const maxTripLength = await user.calcMaxTripLength('Casting');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / castTimeMilliSeconds);
@@ -107,7 +107,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 	await ActivityManager.startTrip<CastingActivityTaskOptions>({
 		spellID: spell.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Casting'

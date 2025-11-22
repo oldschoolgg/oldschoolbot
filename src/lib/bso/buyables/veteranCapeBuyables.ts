@@ -1,5 +1,5 @@
+import { time } from '@oldschoolgg/discord';
 import { Time } from '@oldschoolgg/toolkit';
-import { time } from 'discord.js';
 import { Bank, resolveItems } from 'oldschooljs';
 
 import type { Buyable } from '@/lib/data/buyables/buyables.js';

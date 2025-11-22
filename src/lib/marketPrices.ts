@@ -3,7 +3,9 @@ import { type Bank, Items } from 'oldschooljs';
 import { groupBy, mapValues, pickBy, sumBy, uniqueBy } from 'remeda';
 import { max, mean, medianSorted, min, quantileSorted } from 'simple-statistics';
 
-interface MarketPriceData {
+import { marketPricemap } from '@/lib/cache.js';
+
+export interface MarketPriceData {
 	totalSold: number;
 	transactionCount: number;
 	avgSalePrice: number;
@@ -15,8 +17,6 @@ interface MarketPriceData {
 	guidePrice: number;
 	averagePriceLast100: number;
 }
-
-export const marketPricemap = new Map<number, MarketPriceData>();
 
 export const cacheGEPrices = async () => {
 	Logging.logDebug('Caching GE Prices');

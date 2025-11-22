@@ -17,7 +17,7 @@ const tameMessages = ["ate a member of the audience who wasn't watching", 'ate a
 export const bonanzaTask: MinionTask = {
 	type: 'BalthazarsBigBonanza',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 		const tames = await user.fetchTames();
 		const incrementResult = await user.incrementMinigameScore('balthazars_big_bonanza', quantity);
 		const xpStrs = await Promise.all([
@@ -54,7 +54,7 @@ export const bonanzaTask: MinionTask = {
 		);
 		loot.add('Circus ticket', tickets);
 
-		const freeIgneTame = rng.pick(tames.filter(_t => _t.isIgne()));
+		const freeIgneTame = tames.find(_t => _t.isIgne());
 		const allUserItems = user.allItemsOwned;
 		const unownedSpectatorClothes = rng
 			.shuffle(spectatorClothes)
@@ -81,9 +81,14 @@ export const bonanzaTask: MinionTask = {
 			str += `\n\n**Messages:** ${messages.join(', ')}`;
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
-		await user.update({ last_bonanza_date: new Date() });
+		await user.transactItems({
+			itemsToAdd: loot,
+			collectionLog: true,
+			otherUpdates: {
+				last_bonanza_date: new Date()
+			}
+		});
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		return handleTripFinish({ user, channelId, message: str, data });
 	}
 };

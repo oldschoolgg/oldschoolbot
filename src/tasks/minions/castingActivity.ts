@@ -4,7 +4,7 @@ import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
 export const castingTask: MinionTask = {
 	type: 'Casting',
 	async run(data: CastingActivityTaskOptions, { user, handleTripFinish }) {
-		const { spellID, quantity, channelID, duration } = data;
+		const { spellID, quantity, channelId, duration } = data;
 
 		const spell = Castables.find(i => i.id === spellID)!;
 
@@ -51,6 +51,6 @@ export const castingTask: MinionTask = {
 			loot ?? 'no items'
 		}. ${xpRes} ${craftXpRes}${prayerXpRes}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
+		handleTripFinish({ user, channelId, message: str, data, loot: loot ?? null });
 	}
 };

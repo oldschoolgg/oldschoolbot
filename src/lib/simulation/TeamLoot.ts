@@ -1,5 +1,5 @@
+import { spoiler, userMention } from '@oldschoolgg/discord';
 import { Emoji } from '@oldschoolgg/toolkit';
-import { spoiler, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 export class TeamLoot {

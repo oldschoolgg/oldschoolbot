@@ -56,7 +56,7 @@ export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',
 	async run(data: TheatreOfBloodTaskOptions, { handleTripFinish }) {
 		const {
-			channelID,
+			channelId,
 			users,
 			hardMode,
 			leader,
@@ -230,45 +230,46 @@ export const tobTask: MinionTask = {
 			allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6 && i[1].length > 0);
 
 		if (users.length === 1) {
-			return handleTripFinish(
-				allUsers[0],
-				channelID,
-				resultMessage,
-				shouldShowImage
-					? await await drawChestLootImage({
-							entries: [
-								{
-									loot: totalLoot.remove('Coins', raidId * 100_000),
-									user: allUsers[0],
-									previousCL: previousCLs[0],
-									customTexts: []
-								}
-							],
-							type: 'Theatre of Blood'
-						})
-					: undefined,
-				data,
-				totalLoot
-			);
-		}
-
-		handleTripFinish(
-			allUsers[0],
-			channelID,
-			resultMessage,
-			shouldShowImage
+			const image = shouldShowImage
 				? await drawChestLootImage({
-						entries: allUsers.map((u, index) => ({
-							loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
-							user: u,
-							previousCL: previousCLs[index],
-							customTexts: []
-						})),
+						entries: [
+							{
+								loot: totalLoot.remove('Coins', raidId * 100_000),
+								user: allUsers[0],
+								previousCL: previousCLs[0],
+								customTexts: []
+							}
+						],
 						type: 'Theatre of Blood'
 					})
-				: undefined,
+				: undefined;
+			return handleTripFinish({
+				user: allUsers[0],
+				channelId,
+				message: { content: resultMessage, files: [image] },
+				data,
+				loot: totalLoot
+			});
+		}
+
+		const image = shouldShowImage
+			? await drawChestLootImage({
+					entries: allUsers.map((u, index) => ({
+						loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
+						user: u,
+						previousCL: previousCLs[index],
+						customTexts: []
+					})),
+					type: 'Theatre of Blood'
+				})
+			: undefined;
+
+		return handleTripFinish({
+			user: allUsers[0],
+			channelId,
+			message: { content: resultMessage, files: [image] },
 			data,
-			null
-		);
+			loot: totalLoot
+		});
 	}
 };

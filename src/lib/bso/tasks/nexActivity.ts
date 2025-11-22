@@ -10,7 +10,6 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 interface NexUser {
 	id: string;
@@ -22,7 +21,7 @@ interface NexUser {
 export const nexTask: MinionTask = {
 	type: 'Nex',
 	async run(data: BossActivityTaskOptions, { handleTripFinish, rng }) {
-		const { channelID, userID, users, quantity, duration } = data;
+		const { channelId, userID, users, quantity, duration } = data;
 		const teamsLoot = new TeamLoot([]);
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -157,32 +156,32 @@ export const nexTask: MinionTask = {
 			if (Object.values(kcAmounts).length === 0) {
 				resultStr = `${users.map(id => `<@${id}>`).join(' ')} Your team all died, and failed to defeat Nex.`;
 			}
-			handleTripFinish(leaderUser, channelID, resultStr, undefined, data, null);
-		} else {
-			const image = !kcAmounts[userID]
-				? undefined
-				: (
-						await makeBankImage({
-							bank: soloItemsAdded,
-							title: `Loot From ${quantity} ${NexMonster.name}:`,
-							user: leaderUser,
-							previousCL: soloPrevCl
-						})
-					).file.attachment;
-			handleTripFinish(
-				leaderUser,
-				channelID,
-				!kcAmounts[userID]
-					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
-					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
-							NexMonster.name
-						}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${await leaderUser.getKC(
-							NexMonster.id
-						)}.\n\n${soloXP}`,
-				image!,
-				data,
-				soloItemsAdded
-			);
+			return handleTripFinish({ user: leaderUser, channelId, message: resultStr, data });
 		}
+		const message = new MessageBuilder().setContent(
+			!kcAmounts[userID]
+				? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
+				: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+						NexMonster.name
+					}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${await leaderUser.getKC(
+						NexMonster.id
+					)}.\n\n${soloXP}`
+		);
+
+		if (!kcAmounts[userID]) {
+			message.addBankImage({
+				bank: soloItemsAdded,
+				title: `Loot From ${quantity} ${NexMonster.name}:`,
+				user: leaderUser,
+				previousCL: soloPrevCl
+			});
+		}
+		return handleTripFinish({
+			user: leaderUser,
+			channelId,
+			message,
+			data,
+			loot: soloItemsAdded
+		});
 	}
 };

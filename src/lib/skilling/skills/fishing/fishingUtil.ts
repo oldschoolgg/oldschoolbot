@@ -26,7 +26,7 @@ function calcRadasBlessingBoost(gearBank: GearBank) {
 	return { blessingEquipped: false, blessingChance: 0 };
 }
 
-const minnowQuantity: { [key: number]: [number, number] } = {
+const minnowQuantity: Record<number, [number, number]> = {
 	99: [10, 14],
 	95: [11, 13],
 	90: [10, 13],

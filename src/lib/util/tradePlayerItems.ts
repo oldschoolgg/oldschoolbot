@@ -18,7 +18,7 @@ export async function tradePlayerItems(
 	_itemsToSend?: Bank,
 	_itemsToReceive?: Bank
 ): Promise<TradePlayerResult> {
-	if (recipient.isBusy) {
+	if (await recipient.getIsLocked()) {
 		return { success: false, message: `${recipient.usernameOrMention} is busy.` };
 	}
 

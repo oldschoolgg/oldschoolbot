@@ -8,7 +8,7 @@ import type { BossUser } from '@/lib/bso/structures/Boss.js';
 import type { ItemBank } from 'oldschooljs';
 
 import type { MinigameName } from '@/lib/settings/minigames.js';
-import type { ActivityTaskOptions, MinigameActivityTaskOptions } from '@/lib/types/minions.js';
+import type { ActivityTaskOptions, MinigameActivityTaskOptions, NexTaskOptions } from '@/lib/types/minions.js';
 
 export interface MoktangTaskOptions extends ActivityTaskOptions {
 	type: 'Moktang';
@@ -138,4 +138,5 @@ export type BSOActivityTaskData =
 	| MonkeyRumbleOptions
 	| FishingContestOptions
 	| TinkeringWorkshopOptions
-	| NewBossOptions;
+	| NewBossOptions
+	| NexTaskOptions;

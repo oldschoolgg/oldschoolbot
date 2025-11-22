@@ -67,18 +67,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION get_economy_bank()
 RETURNS jsonb AS
 $$
 BEGIN
-  RETURN (
-    SELECT json_object_agg(item_id, qty)
-    FROM (
-      SELECT key::int AS item_id, SUM(value::bigint) AS qty
-      FROM users, json_each_text(bank)
-      GROUP BY key::int
-    ) AS sums
+  RETURN COALESCE(
+    (
+      SELECT json_object_agg(item_id, qty)::jsonb
+      FROM (
+        SELECT key::int AS item_id, SUM(value::bigint) AS qty
+        FROM users, json_each_text(bank)
+        GROUP BY key::int
+      ) AS sums
+    ),
+    '{}'::jsonb
   );
 END;
 $$ LANGUAGE plpgsql PARALLEL SAFE;

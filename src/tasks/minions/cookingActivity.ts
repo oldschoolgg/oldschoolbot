@@ -12,7 +12,7 @@ import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 export const cookingTask: MinionTask = {
 	type: 'Cooking',
 	async run(data: CookingActivityTaskOptions, { user, handleTripFinish }) {
-		const { cookableID, quantity, channelID, duration } = data;
+		const { cookableID, quantity, channelId, duration } = data;
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
 
@@ -76,6 +76,6 @@ export const cookingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

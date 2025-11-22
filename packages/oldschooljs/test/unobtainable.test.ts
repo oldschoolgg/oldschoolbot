@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { allUnobtainableGear, barrowsItemArr } from '@/itemGroups.js';
+import { allUnobtainableItems, barrowsItemArr } from '@/itemGroups.js';
 import { Items } from '@/structures/Items.js';
 
 const barrows = [
@@ -37,11 +37,11 @@ const barrows = [
 describe('unobtainable item group', () => {
 	test('real barrows gear shouldnt be unobtainable', () => {
 		for (const item of barrowsItemArr.flat()) {
-			expect(allUnobtainableGear).not.toContain(item);
+			expect(allUnobtainableItems).not.toContain(item);
 		}
 		for (const item of barrows) {
-			expect(allUnobtainableGear).not.toContain(Items.getId(item));
+			expect(allUnobtainableItems).not.toContain(Items.getId(item));
 		}
-		expect(allUnobtainableGear).toContain(4977);
+		expect(allUnobtainableItems).toContain(4977);
 	});
 });

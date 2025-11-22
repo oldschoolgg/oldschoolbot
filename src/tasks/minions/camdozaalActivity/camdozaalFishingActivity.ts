@@ -34,7 +34,7 @@ function generateFishTable(currentFishLevel: number): LootTable {
 export const camdozaalFishingTask: MinionTask = {
 	type: 'CamdozaalFishing',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		const currentFishLevel = user.skillsAsLevels.fishing;
 
@@ -98,6 +98,6 @@ export const camdozaalFishingTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

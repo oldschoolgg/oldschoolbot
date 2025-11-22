@@ -21,7 +21,7 @@ describe('Bank Images', async () => {
 			bank,
 			title: 'Test Image'
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-basic.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-basic.png'), result.buffer);
 	});
 
 	test('Bank Flags - Show Price', async () => {
@@ -31,7 +31,7 @@ describe('Bank Images', async () => {
 			title: 'Show Price',
 			mahojiFlags: ['show_price']
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-show-price.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-show-price.png'), result.buffer);
 	});
 
 	test('Bank Flags - Show Market Price', async () => {
@@ -41,7 +41,7 @@ describe('Bank Images', async () => {
 			title: 'Show Market Price',
 			mahojiFlags: ['show_market_price']
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-show-market-price.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-show-market-price.png'), result.buffer);
 	});
 
 	test('Bank Flags - Show Item IDs', async () => {
@@ -51,7 +51,7 @@ describe('Bank Images', async () => {
 			title: 'Show Item IDs',
 			mahojiFlags: ['show_id']
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-show-ids.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-show-ids.png'), result.buffer);
 	});
 
 	test('Bank Flags - Show Names', async () => {
@@ -61,7 +61,7 @@ describe('Bank Images', async () => {
 			title: 'Show Names',
 			mahojiFlags: ['show_names']
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-show-names.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-show-names.png'), result.buffer);
 	});
 
 	test('Bank Flags - Wide Mode', async () => {
@@ -74,7 +74,7 @@ describe('Bank Images', async () => {
 			title: 'Wide Mode',
 			mahojiFlags: ['wide']
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-wide-mode.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-wide-mode.png'), result.buffer);
 	});
 
 	test('Compact Mode (Large Bank)', async () => {
@@ -87,7 +87,7 @@ describe('Bank Images', async () => {
 			bank,
 			title: 'Compact Mode'
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-compact.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-compact.png'), result.buffer);
 	});
 
 	test('Different Background', async () => {
@@ -130,7 +130,7 @@ describe('Bank Images', async () => {
 			title: 'Page 2',
 			flags: { page: 2 }
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-page-2.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-page-2.png'), result.buffer);
 	});
 
 	test('Forced Short Names', async () => {
@@ -145,7 +145,7 @@ describe('Bank Images', async () => {
 			bank,
 			title: 'Forced Short Names'
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-short-names.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-short-names.png'), result.buffer);
 	});
 
 	test('Icon Pack Bank Image', async () => {
@@ -158,7 +158,7 @@ describe('Bank Images', async () => {
 			title: 'Icon Pack Bank Image',
 			iconPackId: IconPackID.Halloween
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-iconpack.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-iconpack.png'), result.buffer);
 	});
 
 	test('New CL Item Purple Outline', async () => {
@@ -169,7 +169,7 @@ describe('Bank Images', async () => {
 			previousCL: new Bank().add('Trout'),
 			showNewCL: true
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-new-cl.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-new-cl.png'), result.buffer);
 	});
 
 	test('Empty Bank', async () => {
@@ -178,7 +178,7 @@ describe('Bank Images', async () => {
 			bank,
 			title: 'Empty Bank'
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-empty.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-empty.png'), result.buffer);
 	});
 
 	test('Single Item Bank', async () => {
@@ -187,6 +187,6 @@ describe('Bank Images', async () => {
 			bank,
 			title: 'Single Item'
 		});
-		await writeFile(path.join(baseSnapshotPath, 'bank-single-item.png'), result.file.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'bank-single-item.png'), result.buffer);
 	});
 });

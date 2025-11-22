@@ -3,12 +3,11 @@ import { Naxxus, rollNaxxusLoot } from '@/lib/bso/monsters/bosses/Naxxus.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const naxxusTask: MinionTask = {
 	type: 'Naxxus',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		const loot = rollNaxxusLoot(quantity, user.cl);
 
@@ -48,20 +47,23 @@ export const naxxusTask: MinionTask = {
 			]
 		});
 
-		const image = await makeBankImage({
-			bank: itemsAdded,
-			title: `Loot From ${quantity} ${Naxxus.name}:`,
-			user,
-			previousCL
-		});
+		const message = new MessageBuilder()
+			.setContent(
+				`${user}, ${user.minionName} finished killing ${quantity} ${Naxxus.name}. Your Naxxus KC is now ${newKC}.\n\n${xpStr}`
+			)
+			.addBankImage({
+				bank: itemsAdded,
+				title: `Loot From ${quantity} ${Naxxus.name}:`,
+				user,
+				previousCL
+			});
 
-		handleTripFinish(
+		return handleTripFinish({
 			user,
-			channelID,
-			`${user}, ${user.minionName} finished killing ${quantity} ${Naxxus.name}. Your Naxxus KC is now ${newKC}.\n\n${xpStr}`,
-			image.file.attachment,
+			channelId,
+			message,
 			data,
-			itemsAdded
-		);
+			loot: itemsAdded
+		});
 	}
 };

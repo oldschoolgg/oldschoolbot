@@ -55,7 +55,8 @@ function BSOHerbetRoll(
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
 	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish, rng }) {
-		let { mixableID, quantity, zahur, wesley, channelID, duration } = data;
+		let { mixableID, quantity, zahur, wesley, channelId, duration } = data;
+
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const messages: string[] = [];
 		quantity = BSOApplyExtraQuantity(rng, user, quantity, mixableItem, messages);
@@ -93,9 +94,8 @@ export const herbloreTask: MinionTask = {
 
 		handleTripFinish(
 			user,
-			channelID,
+			channelId,
 			`${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}. ${xpRes}`,
-			undefined,
 			data,
 			loot,
 			messages

@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function mageArenaCommand(user: MUser, channelID: string) {
+export async function mageArenaCommand(user: MUser, channelId: string) {
 	if (user.skillsAsLevels.magic < 60) {
 		return 'You need level 60 Magic to do the Mage Arena.';
 	}
@@ -38,7 +38,7 @@ export async function mageArenaCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'MageArena'
 	});

@@ -10,16 +10,13 @@ const client = new Client({ connectionString: dbConnectionString });
 await client.connect();
 
 console.log(`Starting SQL execution for ${BOT_TYPE}...`);
-function log(msg: string) {
-	console.log(`	[${BOT_TYPE} - Execute SQL] ${msg}`);
-}
-
+const results: string[] = [];
 for (const file of ['extensions', 'functions', 'check_constraints', 'indexes', 'exec']) {
 	const sql = readFileSync(path.join(process.cwd(), `./prisma/sql/${file}.sql`), 'utf8');
 	const start = performance.now();
 	await client.query(sql);
-	log(`Executed ${file}.sql in ${(performance.now() - start).toFixed(2)} ms`);
+	results.push(`${file}.sql (${(performance.now() - start).toFixed(2)}ms)`);
 }
 
 await client.end();
-log('Executed all SQL scripts.');
+console.log(`Finished ${results.join(', ')}`);

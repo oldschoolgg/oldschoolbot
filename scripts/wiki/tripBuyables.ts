@@ -1,13 +1,12 @@
-// Trip buyables markdown generation script
+import '../base.js';
+
 import { Table } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
-
-import '../../src/lib/safeglobals.js';
 
 import { tripBuyables } from '../../src/lib/data/buyables/tripBuyables.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
-export function renderTripBuyables() {
+function renderTripBuyables() {
 	const table = new Table();
 	table.addHeader('Item', 'Command', 'GP Cost', 'Qty/Hr', 'Shop Qty', 'Price Change');
 	for (const tb of tripBuyables) {
@@ -28,3 +27,5 @@ export function renderTripBuyables() {
 	}
 	handleMarkdownEmbed('tripbuyables', 'osb/Buyables/trip-buyables.mdx', table.toString());
 }
+
+renderTripBuyables();

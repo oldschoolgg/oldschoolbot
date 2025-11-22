@@ -38,7 +38,7 @@ export const runecraftCommand = defineCommand({
 			name: 'rune',
 			description: 'The Rune/Tiara you want to craft.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					...Runecraft.Runes.map(i => i.name),
 					'ourania altar',
@@ -80,7 +80,7 @@ export const runecraftCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ user, options, channelID }) => {
+	run: async ({ user, options, channelId }) => {
 		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
@@ -92,15 +92,15 @@ export const runecraftCommand = defineCommand({
 		const tiaraObj = Runecraft.Tiaras.find(_tiara => stringMatches(_tiara.name, rune));
 
 		if (tiaraObj) {
-			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
+			return tiaraRunecraftCommand({ user, channelId, name: rune, quantity });
 		}
 
 		if (rune.includes('ourania')) {
-			return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence });
+			return ouraniaAltarStartCommand({ user, channelId, quantity, usestams, daeyalt_essence });
 		}
 
 		if (rune.includes('(zeah)')) {
-			return darkAltarCommand({ user, channelID, name: rune, extracts });
+			return darkAltarCommand({ user, channelId, name: rune, extracts });
 		}
 
 		const runeObj = Runecraft.Runes.find(
@@ -180,7 +180,7 @@ export const runecraftCommand = defineCommand({
 			boosts.push('3% for Runecraft cape');
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Runecraft');
+		const maxTripLength = await user.calcMaxTripLength('Runecraft');
 
 		if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
 			const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
@@ -367,7 +367,7 @@ export const runecraftCommand = defineCommand({
 		await ActivityManager.startTrip<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			essenceQuantity: quantity,
 			useStaminas: usestams,
 			daeyaltEssence: daeyalt_essence,

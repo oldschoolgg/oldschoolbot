@@ -2,8 +2,8 @@ import type { DisassembleTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { inventionBoosts, transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
+import { userMention } from '@oldschoolgg/discord';
 import { Emoji, Time } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 export const disassemblingTask: MinionTask = {
@@ -73,6 +73,6 @@ ${xpStr}`;
 			str += `\n**Messages:** ${messages.join(', ')}`;
 		}
 
-		handleTripFinish(user, data.channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId: data.channelId, message: str, data });
 	}
 };

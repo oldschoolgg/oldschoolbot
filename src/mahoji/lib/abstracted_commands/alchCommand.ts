@@ -1,5 +1,5 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -23,7 +23,7 @@ export const timePerAlchAgility = Time.Second * (3 + 10);
 
 export async function alchCommand(
 	interaction: MInteraction | null,
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	item: string,
 	quantity: number | undefined,
@@ -31,8 +31,8 @@ export async function alchCommand(
 ) {
 	const userBank = user.bank;
 	let osItem = Items.getItem(item);
-
-	const [favAlchs] = user.favAlchs(user.calcMaxTripLength('Alching')) as Item[];
+	const maxTripLength = await user.calcMaxTripLength('Alching');
+	const [favAlchs] = user.favAlchs(maxTripLength);
 	if (!osItem) osItem = favAlchs;
 
 	if (!osItem) return 'Invalid item.';
@@ -42,8 +42,6 @@ export async function alchCommand(
 		return 'You need level 55 Magic to cast High Alchemy';
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Alching');
-
 	const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));
 
 	if (!quantity) {
@@ -51,7 +49,7 @@ export async function alchCommand(
 	}
 	quantity = clamp(quantity, { min: 1, max: maxCasts });
 
-	if (quantity * timePerAlch > maxTripLength) {
+	if (quantity * timePerAlch > maxTripLength || quantity < 1 || maxCasts < 1) {
 		return `The max number of alchs you can do is ${maxCasts}!`;
 	}
 
@@ -66,17 +64,18 @@ export async function alchCommand(
 	}
 
 	const alchValue = quantity * osItem.highalch;
-	const consumedItems = new Bank({
-		...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
-		'Nature rune': quantity
-	});
+
+	const consumedItems = new Bank().add(osItem.id, quantity).add('Nature rune', quantity);
+	if (fireRuneCost > 0) {
+		consumedItems.add('Fire rune', fireRuneCost);
+	}
+
 	const speed = speedInput ? clamp(speedInput, { min: 1, max: 5 }) : null;
 	if (speed && speed > 1 && speed < 6) {
 		consumedItems.multiply(speed);
 		consumedItems.add('Nature rune', Math.floor(consumedItems.amount('Nature rune') * 0.5));
 		duration /= speed;
 	}
-	consumedItems.add(osItem.id, quantity);
 
 	if (!user.owns(consumedItems)) {
 		return `You don't have the required items, you need ${consumedItems}`;
@@ -94,7 +93,7 @@ export async function alchCommand(
 	await ActivityManager.startTrip<AlchingActivityTaskOptions>({
 		itemID: osItem.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		alchValue,

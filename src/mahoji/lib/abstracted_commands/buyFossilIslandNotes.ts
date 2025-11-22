@@ -5,7 +5,7 @@ import { fossilIslandNotesCL } from '@/lib/data/CollectionsExport.js';
 
 export async function buyFossilIslandNotes(user: MUser, interaction: MInteraction, quantity: number) {
 	const cost = new Bank().add('Numulite', 300).multiply(quantity);
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 	if (user.QP < 3) {

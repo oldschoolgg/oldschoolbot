@@ -62,7 +62,7 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 		str += '\n\n';
 	}
 	str = `There are a total of ${totalTasks} tasks (${totalPoints.toLocaleString()} Points).\n\n${str}`;
-	return { files: [{ attachment: Buffer.from(str), name: 'all-tasks.txt' }] };
+	return { files: [{ buffer: Buffer.from(str), name: 'all-tasks.txt' }] };
 }
 
 async function getActivityCounts(user: User) {
@@ -333,7 +333,7 @@ export async function leaguesClaimCommand(user: MUser, finishedTaskIDs: number[]
 	if (newlyFinishedTasks.length > 10) {
 		response.content += '\nAttached is a text file showing all the tasks you just claimed.';
 		response.files = [
-			{ attachment: Buffer.from(fullNewlyFinishedTasks.map(i => i.name).join('\n')), name: 'new-tasks.txt' }
+			{ buffer: Buffer.from(fullNewlyFinishedTasks.map(i => i.name).join('\n')), name: 'new-tasks.txt' }
 		];
 	} else {
 		response.content += `\n**Finished Tasks:** ${fullNewlyFinishedTasks.map(i => i.name).join(', ')}.`;

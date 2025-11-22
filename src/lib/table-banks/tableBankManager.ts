@@ -84,7 +84,7 @@ export class TableBankManager {
 		type: TableBankType | 'Bank' | 'CollectionLog';
 	}): Promise<Bank> {
 		const { id: bankId } = await TableBankManager.getOrCreateBankId(userId, type as TableBankType);
-		const rows = await prisma.$queryRaw<any[]>(
+		const rows = await prisma.$queryRaw<{ pairs: [number, number][] }[]>(
 			Prisma.sql`SELECT COALESCE(
   json_agg(json_build_array(item_id::int, quantity::bigint) ORDER BY item_id),
   '[]'::json

@@ -5,7 +5,7 @@ import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 export const mageArenaTwoTask: MinionTask = {
 	type: 'MageArena2',
 	async run(data: ActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID } = data;
+		const { channelId } = data;
 
 		let str = '';
 		let loot: Bank | undefined;
@@ -29,6 +29,6 @@ export const mageArenaTwoTask: MinionTask = {
 			str = `${user}, ${user.minionName} finished the Mage Arena II, you received: ${loot}.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
+		handleTripFinish({ user, channelId, message: str, data, loot: loot ?? null });
 	}
 };

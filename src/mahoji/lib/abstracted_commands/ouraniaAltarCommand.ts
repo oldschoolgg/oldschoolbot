@@ -8,13 +8,13 @@ const gracefulPenalty = 20;
 
 export async function ouraniaAltarStartCommand({
 	user,
-	channelID,
+	channelId,
 	quantity,
 	usestams,
 	daeyalt_essence
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 	usestams?: boolean;
 	daeyalt_essence?: boolean;
@@ -59,7 +59,7 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip *= 0.98;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('OuraniaAltar');
+	const maxTripLength = await user.calcMaxTripLength('OuraniaAltar');
 	const maxCanDo = Math.floor(maxTripLength / timePerTrip) * inventorySize;
 
 	// If no quantity provided, set it to the max.
@@ -120,7 +120,7 @@ export async function ouraniaAltarStartCommand({
 		userID: user.id,
 		duration,
 		type: 'OuraniaAltar',
-		channelID,
+		channelId,
 		stamina,
 		daeyalt
 	});

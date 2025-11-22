@@ -30,8 +30,8 @@ export const Armours = [
 	}
 ];
 
-async function tokensCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	const maxTripLength = user.calcMaxTripLength('AnimatedArmour');
+async function tokensCommand(user: MUser, channelId: string, quantity: number | undefined) {
+	const maxTripLength = await user.calcMaxTripLength('AnimatedArmour');
 	const userBank = user.bank;
 
 	const armorSet = Armours.find(set => userBank.has(set.items));
@@ -58,7 +58,7 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 	await ActivityManager.startTrip<AnimatedArmourActivityTaskOptions>({
 		armourID: armorSet.name,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'AnimatedArmour'
@@ -71,10 +71,10 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 	return response;
 }
 
-async function cyclopsCommand(user: MUser, channelID: string, quantity: number | undefined) {
+async function cyclopsCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const userBank = user.bank;
 	const hasAttackCape = user.gear.melee.hasEquipped('Attack cape');
-	const maxTripLength = user.calcMaxTripLength('Cyclops');
+	const maxTripLength = await user.calcMaxTripLength('Cyclops');
 	// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 	const amountTokens = userBank.amount('Warrior guild token');
 	if (!hasAttackCape && amountTokens < 100) {
@@ -116,7 +116,7 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Cyclops'
@@ -135,7 +135,7 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 
 export async function warriorsGuildCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	choice: string,
 	quantity: number | undefined
 ) {
@@ -146,7 +146,7 @@ export async function warriorsGuildCommand(
 	}
 
 	if (choice === 'cyclops') {
-		return cyclopsCommand(user, channelID, quantity);
+		return cyclopsCommand(user, channelId, quantity);
 	}
-	return tokensCommand(user, channelID, quantity);
+	return tokensCommand(user, channelId, quantity);
 }

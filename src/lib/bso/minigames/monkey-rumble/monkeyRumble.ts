@@ -179,7 +179,7 @@ export const specialHeads: [Promise<Buffer>, number][] = [1234, 1467, 3542].map(
 	id
 ]);
 
-export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; content: string }) {
+export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; content: string }): Promise<SendableFile> {
 	const canvas = createCanvas(519, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
@@ -194,7 +194,7 @@ export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; con
 	ctx.fillStyle = '#000';
 	printWrappedText(ctx, content, 316, 58, 361);
 
-	return canvasToBuffer(canvas);
+	return { buffer: await canvasToBuffer(canvas), name: `${monkey.name}-${randInt(1, 100)}.png` };
 }
 
 export interface Monkey {

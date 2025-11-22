@@ -1,6 +1,5 @@
 import { calcBabyYagaHouseDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -9,8 +8,8 @@ import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',
-	async run(data: ConstructionActivityTaskOptions, { user, handleTripFinish }) {
-		const { objectID, quantity, channelID, duration } = data;
+	async run(data: ConstructionActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { objectID, quantity, channelId, duration } = data;
 
 		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
@@ -28,7 +27,7 @@ export const constructionTask: MinionTask = {
 		const loot = new Bank();
 		const petDropRate = calcBabyYagaHouseDroprate(object.xp, user.cl);
 		for (let i = 0; i < quantity; i++) {
-			if (roll(petDropRate)) {
+			if (rng.roll(petDropRate)) {
 				loot.add('Baby yaga house');
 				break;
 			}
@@ -45,6 +44,6 @@ export const constructionTask: MinionTask = {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

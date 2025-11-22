@@ -7,7 +7,7 @@ import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
 
 export async function buyingTripCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	buyable: TripBuyable,
 	quantity: number | null,
 	interaction: MInteraction
@@ -24,7 +24,7 @@ export async function buyingTripCommand(
 	const itemQuantity = buyable.quantity ?? 1;
 	const gpCost = buyable.gpCost ?? 0;
 
-	const maxTripLength = user.calcMaxTripLength('Buy');
+	const maxTripLength = await user.calcMaxTripLength('Buy');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerItem);
 	}
@@ -59,7 +59,7 @@ export async function buyingTripCommand(
 		itemID: osItem.id,
 		quantity: quantity * itemQuantity, // total item count
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		totalCost
 	});

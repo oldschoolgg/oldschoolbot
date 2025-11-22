@@ -2,8 +2,8 @@ import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
@@ -11,10 +11,10 @@ import { Gear } from '@/lib/structures/Gear.js';
 export async function igneCommand(
 	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	inputName: string,
 	quantity: number | undefined
-): Promise<string | InteractionReplyOptions> {
+) {
 	if (interaction) await interaction.defer();
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
 
@@ -73,7 +73,7 @@ export async function igneCommand(
 		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
 		settingsKeys: ['ignecarus_cost', 'ignecarus_loot'],
-		channelId: channelID,
+		channelId: channelId,
 		activity: 'Ignecarus',
 		massText: `${user.usernameOrMention} is assembling a team to fight Ignecarus! Use the buttons below to join/leave.`,
 		minSize: 1,
@@ -101,27 +101,23 @@ export async function igneCommand(
 		allowMoreThan1Group: true
 	});
 
-	try {
-		const { bossUsers } = await instance.start();
+	const { bossUsers } = await instance.start();
 
-		const embed = new EmbedBuilder()
-			.setDescription(
-				`Your team is off to fight ${instance.quantity}x Ignecarus. The total trip will take ${formatDuration(
-					instance.duration
-				)}.
+	const embed = new EmbedBuilder()
+		.setDescription(
+			`Your team is off to fight ${instance.quantity}x Ignecarus. The total trip will take ${formatDuration(
+				instance.duration
+			)}.
 
 ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\n')}
 `
-			)
-			.setImage(
-				'https://cdn.discordapp.com/attachments/357422607982919680/857358542456487996/grzegorz-rutkowski-dragons-breath-1920-2.jpg'
-			);
+		)
+		.setImage(
+			'https://cdn.discordapp.com/attachments/357422607982919680/857358542456487996/grzegorz-rutkowski-dragons-breath-1920-2.jpg'
+		);
 
-		return {
-			embeds: [embed.data],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
-		};
-	} catch (err: any) {
-		return `The mass failed to start for this reason: ${err}.`;
-	}
+	return {
+		embeds: [embed],
+		content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
+	};
 }

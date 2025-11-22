@@ -272,7 +272,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 				return `${user.usernameOrMention} doesn't have the 200 KC required for Challenge Mode.`;
 			}
 		}
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return `${user.usernameOrMention}'s minion is already doing an activity and cannot join.`;
 		}
 		if (user.gear.melee.hasEquipped('Abyssal tentacle')) {

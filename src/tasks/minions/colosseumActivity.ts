@@ -14,7 +14,7 @@ export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
 	async run(data: ColoTaskOptions, { user, handleTripFinish, rng }) {
 		const {
-			channelID,
+			channelId,
 			loot: possibleLoot,
 			quantity,
 			diedAt,
@@ -31,7 +31,7 @@ export const colosseumTask: MinionTask = {
 		// Increment wave KCs
 		for (let i = 0; i < quantity; i++) {
 			const newKCs = new ColosseumWaveBank();
-			const waves = diedAt?.[i] ? diedAt?.[i]! - 1 : 12;
+			const waves = diedAt?.[i] ? diedAt[i]! - 1 : 12;
 			for (let j = 0; j < waves; j++) {
 				newKCs.add(j + 1);
 			}
@@ -80,7 +80,7 @@ export const colosseumTask: MinionTask = {
 				let voidStaffRefund = 0;
 
 				// Calculate refund for unused charges
-				const completionPercentage = (diedAt?.[i]! - 1) / 12;
+				const completionPercentage = (diedAt![i]! - 1) / 12;
 				if (scytheCharges > 0) {
 					scytheRefund = Math.floor((scytheCharges / quantity) * (1 - completionPercentage));
 					scytheRefund = Math.min(scytheRefund, scytheCharges / quantity);
@@ -167,6 +167,6 @@ export const colosseumTask: MinionTask = {
 
 		const image = await makeBankImage({ bank: loot, title: 'Colosseum Loot', user, previousCL });
 
-		return handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

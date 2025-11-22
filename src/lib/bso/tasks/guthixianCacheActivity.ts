@@ -9,7 +9,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 export const guthixianCacheTask: MinionTask = {
 	type: 'GuthixianCache',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID, duration } = data;
+		const { channelId, duration } = data;
 
 		const xp = user.skillLevel('divination') * user.skillLevel('divination') * 2.5;
 		const xpRes = await user.addXP({
@@ -65,9 +65,9 @@ export const guthixianCacheTask: MinionTask = {
 			str += `\n${loot.has('Doopy') ? `${Emoji.Purple} ` : ''}You received: ${loot}.`;
 		}
 
-		await user.incrementMinigameScore('guthixian_cache');
+		await user.incrementMinigameScore('guthixian_cache', 1);
 		await user.addToGodFavour(['Guthix'], data.duration);
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

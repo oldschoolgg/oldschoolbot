@@ -1,13 +1,13 @@
 import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
+import { userMention } from '@oldschoolgg/discord';
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import type { Prisma } from '@/prisma/main.js';
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 
 const InventionFlags = ['equipped', 'bank'] as const;
@@ -547,7 +547,7 @@ export async function transactMaterialsFromUser({
 	if (add) materialsOwnedBank.add(add);
 	if (remove) materialsOwnedBank.remove(remove);
 
-	const updateObject: Prisma.UserUpdateArgs['data'] = {
+	const updateObject: SafeUserUpdateInput = {
 		materials_owned: materialsOwnedBank.bank
 	};
 	if (addToDisassembledItemsBank) {
@@ -574,7 +574,7 @@ export async function transactMaterialsFromUser({
 }
 
 export async function inventCommand(user: MUser, inventionName: string): CommandResponse {
-	if (user.minionIsBusy) return 'Your minion is busy.';
+	if (await user.minionIsBusy()) return 'Your minion is busy.';
 	const invention = Inventions.find(i => stringMatches(i.name, inventionName));
 	if (!invention) return "That's not a valid invention.";
 	if (!user.user.unlocked_blueprints.includes(invention.id)) {

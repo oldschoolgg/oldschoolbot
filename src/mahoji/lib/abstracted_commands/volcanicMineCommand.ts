@@ -89,7 +89,7 @@ export const VolcanicMineShop: { name: string; output: Bank; cost: number; clOnl
 	}
 ];
 
-export async function volcanicMineCommand(user: MUser, channelID: string, gameQuantity: number | undefined) {
+export async function volcanicMineCommand(user: MUser, channelId: string, gameQuantity: number | undefined) {
 	const skills = user.skillsAsLevels;
 	if (!hasSkillReqs(user, skillReqs)[0]) {
 		return `You are not skilled enough to participate in the Volcanic Mine. You need the following requirements: ${objectEntries(
@@ -101,7 +101,7 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 			.filter(f => f)
 			.join(', ')}`;
 	}
-	const maxGamesUserCanDo = Math.floor(user.calcMaxTripLength('VolcanicMine') / VolcanicMineGameTime);
+	const maxGamesUserCanDo = Math.floor((await user.calcMaxTripLength('VolcanicMine')) / VolcanicMineGameTime);
 	if (!gameQuantity || gameQuantity > maxGamesUserCanDo) gameQuantity = maxGamesUserCanDo;
 	const userMiningLevel = skills.mining;
 	const userPrayerLevel = skills.prayer;
@@ -169,7 +169,7 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: gameQuantity,
 		duration,
 		type: 'VolcanicMine'

@@ -7,7 +7,7 @@ import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
 export const craftingTask: MinionTask = {
 	type: 'Crafting',
 	async run(data: CraftingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { craftableID, quantity, channelID, duration } = data;
+		const { craftableID, quantity, channelId, duration } = data;
 
 		const currentLevel = user.skillsAsLevels.crafting;
 		const item = Craftables.find(craft => craft.id === craftableID)!;
@@ -58,6 +58,6 @@ export const craftingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

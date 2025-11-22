@@ -5,7 +5,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 export const brewingTask: MinionTask = {
 	type: 'TroubleBrewing',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 		await user.incrementMinigameScore('trouble_brewing', quantity);
 		const loot = new Bank().add('Pieces of eight', quantity * 100);
 
@@ -20,6 +20,6 @@ export const brewingTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Trouble Brewing, you received: ${loot}.`;
 		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

@@ -8,7 +8,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 export const temporossTask: MinionTask = {
 	type: 'Tempoross',
 	async run(data: TemporossActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, rewardBoost, duration } = data;
+		const { channelId, quantity, rewardBoost, duration } = data;
 
 		const currentLevel = user.skillsAsLevels.fishing;
 		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);
@@ -70,6 +70,12 @@ export const temporossTask: MinionTask = {
 			output += `\n\n**Fishing Bonus XP:** ${fBonusXP.toLocaleString()}`;
 		}
 
-		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: output, files: [image] },
+			data,
+			loot: itemsAdded
+		});
 	}
 };

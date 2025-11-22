@@ -1,4 +1,3 @@
-import { time } from 'discord.js';
 import emojiRegex from 'emoji-regex';
 
 const rawEmojiRegex = emojiRegex();
@@ -64,10 +63,6 @@ export enum PerkTier {
 
 export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
 
-export function dateFm(date: Date) {
-	return `${time(date, 'T')} (${time(date, 'R')})`;
-}
-
 export function getInterval(intervalHours: number) {
 	const currentTime = new Date();
 	const currentHour = currentTime.getHours();
@@ -82,8 +77,7 @@ export function getInterval(intervalHours: number) {
 
 	return {
 		start: startInterval,
-		end: endInterval,
-		nextResetStr: dateFm(endInterval)
+		end: endInterval
 	};
 }
 
@@ -149,8 +143,18 @@ export function increaseNumByPercent(value: number, percent: number): number {
 	return value + value * (percent / 100);
 }
 
-export function objectEntries<T extends Record<PropertyKey, unknown>>(obj: T) {
-	return Object.entries(obj) as [keyof T, T[keyof T]][];
+export function objectValues<T extends object>(obj: T): { [K in keyof T]-?: T[K] }[keyof T][] {
+	const keys = Object.keys(obj) as (keyof T)[];
+	const out = [] as { [K in keyof T]-?: T[K] }[keyof T][];
+	for (const k of keys) out.push(obj[k]);
+	return out;
+}
+
+export function objectEntries<T extends object>(obj: T): { [K in keyof T]-?: [K, T[K]] }[keyof T][] {
+	const keys = Object.keys(obj) as (keyof T)[];
+	const out = [] as { [K in keyof T]-?: [K, T[K]] }[keyof T][];
+	for (const k of keys) out.push([k, obj[k]]);
+	return out;
 }
 
 /**

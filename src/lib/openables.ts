@@ -1,6 +1,7 @@
 import { bsoOpenables } from '@/lib/bso/openables/bsoOpenables.js';
 
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
 	Bank,
@@ -35,7 +36,6 @@ import {
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -414,7 +414,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 			message?: string;
 		}> => {
 			const { plantTier } =
-				(args.user.user.minion_farmingContract as FarmingContract | null) ?? Farming.defaultFarmingContract;
+				(args.user.user.minion_farmingContract as IFarmingContract | null) ?? Farming.defaultFarmingContract;
 			const openLoot = new Bank();
 			for (let i = 0; i < args.quantity; i++) {
 				openLoot.add(Farming.openSeedPack(plantTier));

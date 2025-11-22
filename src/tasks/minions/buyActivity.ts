@@ -7,7 +7,7 @@ import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
 export const buyTask: MinionTask = {
 	type: 'Buy',
 	async run(data: BuyActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, itemID, quantity, totalCost, duration } = data;
+		const { channelId, itemID, quantity, totalCost, duration } = data;
 
 		const tripBuyable = findTripBuyable(itemID, quantity);
 		if (!tripBuyable) {
@@ -31,9 +31,8 @@ export const buyTask: MinionTask = {
 
 		handleTripFinish(
 			user,
-			channelID,
+			channelId,
 			`${user}, ${user.minionName} finished buying ${toKMB(displayQuantity)} ${itemNameWithRate}. This cost ${toKMB(totalCost)} GP (avg ${average.toLocaleString()} GP ea).`,
-			undefined,
 			data,
 			loot
 		);

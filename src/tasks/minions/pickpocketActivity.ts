@@ -12,7 +12,6 @@ import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { perHourChance } from '@/lib/util/smallUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -66,7 +65,7 @@ export function calcLootXPPickpocketing(
 export const pickpocketTask: MinionTask = {
 	type: 'Pickpocket',
 	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish }) {
-		const { monsterID, quantity, successfulQuantity, channelID, xpReceived, duration } = data;
+		const { monsterID, quantity, successfulQuantity, channelId, xpReceived, duration } = data;
 		const obj = stealables.find(_obj => _obj.id === monsterID)!;
 		let rogueOutfitBoostActivated = false;
 
@@ -180,17 +179,24 @@ export const pickpocketTask: MinionTask = {
 		if (boosts.length > 0) {
 			str += `\n\n**Messages:** ${boosts.join(', ')}`;
 		}
+		const { itemsAdded, previousCL } = txResult.itemTransactionResult;
 
-		const image =
-			txResult.itemTransactionResult.itemsAdded.length === 0
-				? undefined
-				: await makeBankImage({
-						bank: txResult.itemTransactionResult.itemsAdded,
-						title: `Loot From ${successfulQuantity} ${obj.name}:`,
-						user,
-						previousCL: txResult.itemTransactionResult.previousCL
-					});
+		const message = new MessageBuilder().setContent(str);
+		if (itemsAdded.length > 0) {
+			message.addBankImage({
+				bank: itemsAdded,
+				title: `Loot From ${successfulQuantity} ${obj.name}:`,
+				user,
+				previousCL
+			});
+		}
 
-		handleTripFinish(user, channelID, str, image?.file.attachment, data, updateBank.itemLootBank);
+		handleTripFinish({
+			user,
+			channelId,
+			message,
+			data,
+			loot: itemsAdded
+		});
 	}
 };

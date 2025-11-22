@@ -1,7 +1,7 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Items, toKMB } from 'oldschooljs';
 
-import { itemOption } from '@/lib/discord/index.js';
+import { itemOption } from '@/discord/index.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 
 export const priceCommand = defineCommand({
@@ -32,6 +32,6 @@ export const priceCommand = defineCommand({
 **Alch value:** ${toKMB(item.highalch ?? 0)}`
 			);
 
-		return { embeds: [embed.data] };
+		return { embeds: [embed] };
 	}
 });

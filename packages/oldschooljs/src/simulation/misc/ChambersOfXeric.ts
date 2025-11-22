@@ -1,11 +1,12 @@
+import { randFloat, roll, shuffleArr } from '@oldschoolgg/rng';
+
 import { EItem } from '@/EItem.js';
 import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import Minigame from '@/structures/Minigame.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { randFloat, roll, shuffleArr, sumArr, Time } from '@/util/smallUtils.js';
-import { JSONClone } from '@/util/util.js';
+import { JSONClone, sumArr, Time } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;

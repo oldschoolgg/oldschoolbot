@@ -1,12 +1,12 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 import { Herb } from '@/lib/bso/skills/invention/groups/Herb.js';
 
+import { userMention } from '@oldschoolgg/discord';
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import { filterOption } from '@/discord/presetCommandOptions.js';
 import { ores, secondaries, seeds } from '@/lib/data/filterables.js';
-import { filterOption } from '@/lib/discord/index.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import { assert } from '@/lib/util/logError.js';
@@ -290,7 +290,7 @@ export const lotteryCommand = defineCommand({
 			description: 'View the custom prices.'
 		}
 	],
-	run: async ({ userID, options, interaction }) => {
+	run: async ({ user, options, interaction }) => {
 		const infoStr = `
 1. This is a regular Lottery (no special event or DC items)
 2. There'll be 4 spins, each winner winning 1/4th of the loot.
@@ -301,11 +301,10 @@ export const lotteryCommand = defineCommand({
 7. It's possible that we change the custom prices of items (make them worth more/less), if you already put those items in, your ticket count will automatically update to reflect the new price.`;
 		const active = await isLotteryActive();
 		if (!active) return 'There is no lottery currently going on.';
-		const user = await mUserFetch(userID);
 		if (user.isIronman) return 'Ironmen cannot partake in the Lottery.';
 
 		if (options.prices) {
-			return { files: [(await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })).file] };
+			return { files: [await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })] };
 		}
 		if (options.buy_tickets) {
 			const amountOfTickets = options.buy_tickets.quantity;
@@ -403,8 +402,8 @@ export const lotteryCommand = defineCommand({
 		const { amountOfTickets, input } = calcTicketsOfUser(user);
 		const { totalLoot, totalTickets, users } = await getLotteryBank();
 
-		return {
-			content: `There have been ${totalTickets.toLocaleString()} purchased, you have ${amountOfTickets.toLocaleString()}x tickets, and a ${
+		const message = new MessageBuilder()
+			.setContent(`There have been ${totalTickets.toLocaleString()} purchased, you have ${amountOfTickets.toLocaleString()}x tickets, and a ${
 				amountOfTickets === 0 ? 0 : calcWhatPercent(amountOfTickets, totalTickets).toFixed(4)
 			}% chance of winning (will fluctuate based on you/others buying tickets.)
 
@@ -413,14 +412,10 @@ ${infoStr}
 Top ticket holders: ${users
 				.slice(0, 10)
 				.map(i => `${userMention(i.id)} has ${i.tickets.toLocaleString()} tickets`)
-				.join(',')}`,
-			files: [
-				(await makeBankImage({ bank: totalLoot, title: 'Lottery' })).file,
-				(await makeBankImage({ bank: input, title: 'Your Lottery Input' })).file
-			],
-			allowedMentions: {
-				users: []
-			}
-		};
+				.join(',')}`)
+			.addFile(await makeBankImage({ bank: totalLoot, title: 'Lottery' }))
+			.addFile(await makeBankImage({ bank: input, title: 'Your Lottery Input' }));
+
+		return message;
 	}
 });

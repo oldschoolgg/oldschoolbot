@@ -13,7 +13,7 @@ import { researchCommand } from '@/lib/bso/skills/invention/research.js';
 import { calcPerHour, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { ownedMaterialOption } from '@/lib/discord/index.js';
+import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
@@ -31,7 +31,7 @@ export const inventionCommand = defineCommand({
 					type: 'String',
 					description: 'The item you want to disassemble.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						const inventionLevel = user.skillLevel('invention');
 
 						return user.bank
@@ -87,7 +87,7 @@ export const inventionCommand = defineCommand({
 					type: 'String',
 					description: 'The item you want to invent.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Inventions.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({
@@ -143,7 +143,7 @@ export const inventionCommand = defineCommand({
 					name: 'invention',
 					description: 'The invention you want to check.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Inventions.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						)
@@ -168,7 +168,7 @@ export const inventionCommand = defineCommand({
 					name: 'group',
 					description: 'The group you want to check.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return DisassemblySourceGroups.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
@@ -177,8 +177,7 @@ export const inventionCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ userID, options, channelID, interaction }) => {
-		const user = await mUserFetch(userID);
+	run: async ({ user, options, channelId, interaction }) => {
 		if (options.details) {
 			const invention = Inventions.find(i => stringMatches(i.name, options.details!.invention!));
 			if (!invention) return 'No invention found.';
@@ -219,7 +218,7 @@ export const inventionCommand = defineCommand({
 					.values()
 					.map(i => `${i.type}[${i.quantity}]`)
 					.join(' ')}`,
-				files: [{ attachment: Buffer.from(str), name: `${group.name}.txt` }]
+				files: [{ buffer: Buffer.from(str), name: `${group.name}.txt` }]
 			};
 		}
 
@@ -230,13 +229,11 @@ export const inventionCommand = defineCommand({
 					return {
 						content: "These are all the items you've ever disassembled.",
 						files: [
-							(
-								await makeBankImage({
-									bank: new Bank(user.user.disassembled_items_bank as ItemBank),
-									user,
-									title: 'Items Disassembled'
-								})
-							).file
+							await makeBankImage({
+								bank: new Bank(user.user.disassembled_items_bank as ItemBank),
+								user,
+								title: 'Items Disassembled'
+							})
 						]
 					};
 				}
@@ -301,7 +298,7 @@ These Inventions are still not unlocked: ${locked
 					return {
 						files: [
 							{
-								attachment: Buffer.from(table.toString()),
+								buffer: Buffer.from(table.toString()),
 								name: 'invention-xp.txt'
 							}
 						]
@@ -323,7 +320,7 @@ These Inventions are still not unlocked: ${locked
 			.join('\n       ')}`;
 						str += '\n';
 					}
-					return { files: [{ attachment: Buffer.from(str), name: 'groups.txt' }] };
+					return { files: [{ buffer: Buffer.from(str), name: 'groups.txt' }] };
 				}
 			}
 		}
@@ -337,7 +334,7 @@ These Inventions are still not unlocked: ${locked
 				user,
 				itemToDisassembleName: options.disassemble.name,
 				quantityToDisassemble: mahojiParseNumber({ input: options.disassemble.quantity, min: 1 }) ?? undefined,
-				channelID
+				channelId
 			});
 		}
 		if (options.research) {
@@ -345,7 +342,7 @@ These Inventions are still not unlocked: ${locked
 				user,
 				inputQuantity: options.research.quantity,
 				material: options.research.material,
-				channelID,
+				channelId,
 				interaction
 			});
 		}

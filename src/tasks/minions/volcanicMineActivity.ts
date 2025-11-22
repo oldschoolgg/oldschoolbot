@@ -16,7 +16,7 @@ const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).ad
 export const vmTask: MinionTask = {
 	type: 'VolcanicMine',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { quantity, channelID, duration } = data;
+		const { quantity, channelId, duration } = data;
 		const userMiningLevel = user.skillsAsLevels.mining;
 		let boost = 1;
 		// Activity boosts
@@ -100,6 +100,6 @@ export const vmTask: MinionTask = {
 			}
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };

@@ -1,22 +1,20 @@
 import { feedHammyCommand } from '@/lib/bso/commands/hammyCommand.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 
+import { bold } from '@oldschoolgg/discord';
 import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder, bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { ownedItemOption, skillOption } from '@/discord/index.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import { BitField, BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
+import { BitFieldData, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
-import { ownedItemOption, skillOption } from '@/lib/discord/index.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
-import { roboChimpCache } from '@/lib/perkTier.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
@@ -25,7 +23,7 @@ import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { getAllKillCounts, getKCByName } from '@/lib/util/getKCByName.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
-import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -38,7 +36,6 @@ import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.
 import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -61,18 +58,18 @@ export async function getUserInfo(user: MUser) {
 	const clRankRaw = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
 	const clRank = clRankRaw[0].count;
 
-	const bitfields = `${(user.bitfield as BitField[])
+	const bitfields = `${user.bitfield
 		.map(i => BitFieldData[i])
 		.filter(notEmpty)
 		.map(i => i.name)
 		.join(', ')}`;
 
-	const task = ActivityManager.getActivityOfUser(user.id);
+	const task = await ActivityManager.getActivityOfUser(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
 	const result = {
-		perkTier: user.perkTier(),
-		isBlacklisted: BLACKLISTED_USERS.has(user.id),
+		perkTier: await user.fetchPerkTier(),
+		isBlacklisted: await user.isBlacklisted(),
 		badges: user.badgesString,
 		isIronman: user.isIronman,
 		bitfields,
@@ -85,7 +82,7 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
-	const roboCache = roboChimpCache.get(user.id);
+	const roboCache = await Cache.getRoboChimpUser(user.id);
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
@@ -174,8 +171,7 @@ export const minionCommand = defineCommand({
 					type: 'String',
 					name: 'name',
 					description: 'The name of the bank background you want.',
-					autocomplete: async (value: string, user: MUser) => {
-						const isMod = user.bitfield.includes(BitField.isModerator);
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						const allAccounts = await findGroupOfUser(user.id);
 						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
@@ -186,7 +182,7 @@ export const minionCommand = defineCommand({
 							)
 							.map(bg => bg.id);
 						return bankImages
-							.filter(bg => isMod || bg.available || owned.includes(bg.id))
+							.filter(bg => user.isModOrAdmin() || bg.available || owned.includes(bg.id))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded
@@ -207,7 +203,7 @@ export const minionCommand = defineCommand({
 					type: 'String',
 					name: 'item',
 					description: 'The item you want to use.',
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
 							.map(id => Items.get(id))
@@ -293,7 +289,7 @@ export const minionCommand = defineCommand({
 					name: 'name',
 					description: 'The monster/thing you want to check your KC of.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						const results = [...effectiveMonsters, ...Minigames, ...creatures]
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -437,11 +433,11 @@ export const minionCommand = defineCommand({
 			description: 'View your minions mastery.'
 		}
 	],
-	run: async ({ user, options, interaction, channelID, rng }) => {
-		const perkTier = user.perkTier();
+	run: async ({ user, options, interaction, rng, channelId }) => {
+		const perkTier = await user.fetchPerkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
-		if (options.status) return minionStatusCommand(user, channelID);
+		if (options.status) return minionStatusCommand(user, channelId);
 
 		if (options.stats) {
 			return { embeds: [await minionStatsEmbed(user)] };
@@ -527,7 +523,7 @@ export const minionCommand = defineCommand({
 				});
 
 				const lines = [
-					`Killcount export for ${user.rawUsername}`,
+					`Killcount export for ${user.username}`,
 					`Total entries: ${sortedKillCounts.length}`,
 					`Sorted ${sortDescriptions[sort]}`,
 					''
@@ -537,13 +533,14 @@ export const minionCommand = defineCommand({
 					lines.push(`${label}: ${entry.amount.toLocaleString()}`);
 				}
 
-				const attachment = new AttachmentBuilder(Buffer.from(lines.join('\n')), {
-					name: `minion-kc-${user.id}.txt`
-				});
-
 				return {
 					content: `Exported ${sortedKillCounts.length.toLocaleString()} killcounts sorted ${sortDescriptions[sort]}.`,
-					files: [attachment]
+					files: [
+						{
+							buffer: Buffer.from(lines.join('\n')),
+							name: `minion-kc-${user.id}.txt`
+						}
+					]
 				};
 			}
 

@@ -24,10 +24,12 @@ export interface DrawSpriteOptions {
 export class CanvasSpritesheet {
 	private readonly spriteData: Map<string, [number, number, number, number]>;
 	private readonly image: Image;
+	public readonly allItemIds: number[];
 
 	private constructor(spriteData: Map<string, [number, number, number, number]>, image: Image) {
 		this.spriteData = spriteData;
 		this.image = image;
+		this.allItemIds = Array.from(this.spriteData.keys()).map(id => Number(id));
 	}
 
 	static async create(jsonPath: string, imagePath: string): Promise<CanvasSpritesheet> {

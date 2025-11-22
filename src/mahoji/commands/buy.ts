@@ -1,7 +1,7 @@
 import { isElligibleForPresent } from '@/lib/bso/bsoUtil.js';
 
+import { bold } from '@oldschoolgg/discord';
 import { Events, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import Buyables from '@/lib/data/buyables/buyables.js';
@@ -31,7 +31,7 @@ export const buyCommand = defineCommand({
 			name: 'name',
 			description: 'The item you want to buy.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return allBuyablesAutocomplete
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
@@ -44,7 +44,7 @@ export const buyCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, interaction, channelID }) => {
+	run: async ({ options, user, interaction, channelId }) => {
 		const { name } = options;
 		let quantity: number | null = mahojiParseNumber({ input: options.quantity, min: 1 });
 
@@ -60,7 +60,7 @@ export const buyCommand = defineCommand({
 		);
 
 		if (tripBuyable) {
-			return buyingTripCommand(user, channelID.toString(), tripBuyable, quantity, interaction);
+			return buyingTripCommand(user, channelId.toString(), tripBuyable, quantity, interaction);
 		}
 		const buyable = Buyables.find(
 			item => stringMatches(name, item.name) || item.aliases?.some(alias => stringMatches(alias, name))

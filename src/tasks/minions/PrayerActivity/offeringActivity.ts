@@ -19,7 +19,7 @@ export function zealOutfitBoost(user: MUser) {
 export const offeringTask: MinionTask = {
 	type: 'Offering',
 	async run(data: OfferingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { boneID, quantity, channelID } = data;
+		const { boneID, quantity, channelId } = data;
 
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
 
@@ -85,6 +85,6 @@ export const offeringTask: MinionTask = {
 			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes helped you offer an extra ${zealBonesSaved} bones.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

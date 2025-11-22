@@ -265,19 +265,19 @@ export async function baxtorianBathhousesStartCommand({
 	tier,
 	ore,
 	mixture,
-	channelID
+	channelId
 }: {
 	user: MUser;
 	tier: string;
-	channelID: string;
+	channelId: string;
 	ore?: string | number;
 	mixture?: string;
 }) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 	const userBank = user.bank;
-	const maxTripLength = user.calcMaxTripLength('BaxtorianBathhouses');
+	const maxTripLength = await user.calcMaxTripLength('BaxtorianBathhouses');
 	const quantity = Math.floor(maxTripLength / durationPerBaxBath);
 	const duration = quantity * durationPerBaxBath;
 	const bathHouseTier = bathHouseTiers.find(i => stringMatches(i.name, tier)) ?? bathHouseTiers[0];
@@ -355,7 +355,7 @@ export async function baxtorianBathhousesStartCommand({
 
 	await ActivityManager.startTrip<BathhouseTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'BaxtorianBathhouses',

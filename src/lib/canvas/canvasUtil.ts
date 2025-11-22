@@ -185,3 +185,25 @@ export interface IBgSprite {
 	tabBorderActive: Canvas;
 	oddListColor: string;
 }
+
+export function drawGrid({ canvas, scale, opacity }: { canvas: Canvas; scale: number; opacity: number }): void {
+	const ctx = canvas.getContext('2d');
+	ctx.strokeStyle = `rgba(0,0,0,${opacity})`;
+	ctx.lineWidth = 1;
+	ctx.beginPath();
+
+	const w = canvas.width;
+	const h = canvas.height;
+
+	for (let x = 0; x <= w; x += scale) {
+		ctx.moveTo(x, 0);
+		ctx.lineTo(x, h);
+	}
+
+	for (let y = 0; y <= h; y += scale) {
+		ctx.moveTo(0, y);
+		ctx.lineTo(w, y);
+	}
+
+	ctx.stroke();
+}

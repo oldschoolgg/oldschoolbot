@@ -21,7 +21,7 @@ function calcPoints(rng: RNGProvider) {
 export const soulWarsTask: MinionTask = {
 	type: 'SoulWars',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		let points = 0;
 		for (let i = 0; i < quantity; i++) {
@@ -41,9 +41,9 @@ export const soulWarsTask: MinionTask = {
 
 		await user.incrementMinigameScore('soul_wars', quantity);
 
-		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
-		if (flappyRes.shouldGiveBoost) str += `\n${flappyRes.userMsg}`;
+		let message = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
+		if (flappyRes.shouldGiveBoost) message += `\n${flappyRes.userMsg}`;
 
-		handleTripFinish(user, channelID, str, undefined!, data, null);
+		return handleTripFinish({ user, channelId, message, data });
 	}
 };

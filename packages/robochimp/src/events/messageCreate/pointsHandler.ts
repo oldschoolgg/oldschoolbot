@@ -1,5 +1,5 @@
+import { type GatewayMessageCreateDispatchData, InteractionType } from '@oldschoolgg/discord';
 import { cryptoRng } from '@oldschoolgg/rng';
-import { InteractionType, type Message } from 'discord.js';
 
 import { TEST_SERVER_ID } from '@/constants.js';
 
@@ -36,14 +36,15 @@ const testerRoles = [
 	}
 ];
 
-export async function pointsHandler(msg: Message) {
-	if (!msg.guild) return;
+export async function pointsHandler(msg: GatewayMessageCreateDispatchData) {
+	if (!msg.guild_id) return;
+	const authorId = msg.author.id;
 
 	// Give testing points for messages
-	if (msg.guild.id === '940758552425955348' && !msg.author.bot && msg.content && msg.content.length > 30) {
+	if (msg.guild_id === '940758552425955348' && msg.content && msg.content.length > 30) {
 		await roboChimpClient.user.upsert({
 			where: {
-				id: BigInt(msg.author.id)
+				id: BigInt(authorId)
 			},
 			update: {
 				testing_points: {
@@ -54,7 +55,7 @@ export async function pointsHandler(msg: Message) {
 				}
 			},
 			create: {
-				id: BigInt(msg.author.id),
+				id: BigInt(authorId),
 				testing_points: 0.05,
 				testing_points_balance: 0.05
 			}
@@ -63,15 +64,15 @@ export async function pointsHandler(msg: Message) {
 
 	// Give testing points for commands
 	if (
-		msg.guild.id === TEST_SERVER_ID &&
-		msg.interactionMetadata &&
-		msg.interactionMetadata.type === InteractionType.ApplicationCommand
+		msg.guild_id === TEST_SERVER_ID &&
+		msg.interaction_metadata &&
+		msg.interaction_metadata.type === InteractionType.ApplicationCommand
 	) {
-		const botMember = await msg.guild.members.fetch(msg.author.id);
-		if (botMember.roles.cache.has('940764684498382858')) {
+		const botMember = await globalClient.fetchMember({ guildId: msg.guild_id, userId: authorId });
+		if (botMember.roles.includes('940764684498382858')) {
 			await roboChimpClient.user.updateMany({
 				where: {
-					id: BigInt(msg.interactionMetadata.user.id)
+					id: BigInt(msg.interaction_metadata.user.id)
 				},
 				data: {
 					testing_points: {
@@ -83,13 +84,16 @@ export async function pointsHandler(msg: Message) {
 				}
 			});
 			if (cryptoRng.roll(5)) {
-				const userMember = await msg.guild.members.fetch(msg.interactionMetadata.user.id);
-				const u = await globalClient.fetchUser(msg.interactionMetadata.user.id);
+				const userMember = await globalClient.fetchMember({
+					guildId: TEST_SERVER_ID,
+					userId: msg.interaction_metadata.user.id
+				});
+				const u = await globalClient.fetchRUser(msg.interaction_metadata.user.id);
 				for (const role of testerRoles) {
-					if (!userMember.roles.cache.has(role.id) && u.testingPoints >= role.points) {
-						await userMember.roles.add(role.id);
-						await globalClient.sendToChannelID(
-							msg.channel.id,
+					if (!userMember.roles.includes(role.id) && u.testingPoints >= role.points) {
+						await globalClient.giveRole(TEST_SERVER_ID, msg.interaction_metadata.user.id, role.id);
+						await globalClient.sendMessage(
+							msg.channel_id,
 							`${userMember}, you have been awarded the ${role.name} role! Thank you for testing.`
 						);
 						break;

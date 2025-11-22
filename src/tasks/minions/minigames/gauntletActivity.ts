@@ -9,7 +9,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',
 	async run(data: GauntletOptions, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, corrupted } = data;
+		const { channelId, quantity, corrupted } = data;
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
 		const kc = await user.fetchMinigameScore(key);
@@ -68,6 +68,6 @@ export const gauntletTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

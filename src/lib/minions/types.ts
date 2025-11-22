@@ -18,7 +18,7 @@ import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { POHBoosts } from '@/lib/poh/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
-import type { LevelRequirements, SkillNameType } from '@/lib/skilling/types.js';
+import type { LevelRequirements, Ore, SkillNameType } from '@/lib/skilling/types.js';
 import type { GearRequirement, GearRequirements } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
@@ -192,4 +192,12 @@ export enum DiaryID {
 	Morytania = 9,
 	Varrock = 10,
 	Wilderness = 11
+}
+
+export interface Star extends Ore {
+	size: number;
+	level: number;
+	chance: number;
+	dustAvailable: number;
+	additionalDustPercent: number;
 }

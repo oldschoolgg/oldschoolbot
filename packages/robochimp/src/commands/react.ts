@@ -1,6 +1,6 @@
 import { FormattedCustomEmojiWithGroups, TwemojiRegex } from '@sapphire/discord-utilities';
 
-export const reactCommand: RoboChimpCommand = {
+export const reactCommand = defineCommand({
 	name: 'react',
 	description: 'Manage your mention reaction.',
 	options: [
@@ -24,13 +24,7 @@ export const reactCommand: RoboChimpCommand = {
 			options: []
 		}
 	],
-	run: async ({
-		options,
-		user
-	}: CommandRunOptions<{
-		add?: { emoji: string };
-		remove?: {};
-	}>) => {
+	run: async ({ options, user }) => {
 		if (user.leaguesPointsTotal < 30_000) {
 			return 'You are not worthy. You need atleast 30,000 League Points to be able to have a reaction.';
 		}
@@ -66,4 +60,4 @@ export const reactCommand: RoboChimpCommand = {
 
 		return 'HUH?';
 	}
-};
+});

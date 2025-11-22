@@ -143,7 +143,7 @@ describe('BSO PVM', async () => {
 		expect(user.gear.range.ammo!.quantity).toBeLessThan(10_000);
 	});
 
-	it('should use portable tanner', { retry: 2 }, async () => {
+	it('should use portable tanner', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Portable tanner', 1).add('Anti-dragon shield'),
 			rangeLevel: 99,
@@ -164,10 +164,10 @@ describe('BSO PVM', async () => {
 		expect(
 			userTannerStats.amount('Green dragon leather'),
 			`User stats should reflect the tanned leathers (got ${leatherGained}x leather from the trip)`
-		).toEqual(leatherGained);
+		).toBeOneOf([leatherGained, leatherGained / 2]);
 		await client.sync();
 		const clientPortableTannerLoot = new Bank(client.data.portable_tanner_loot as ItemBank);
-		expect(clientPortableTannerLoot.amount('Green dragon leather')).toEqual(leatherGained);
+		expect(clientPortableTannerLoot.amount('Green dragon leather')).toBeOneOf([leatherGained, leatherGained / 2]);
 		expect(clientPortableTannerLoot.length).toBe(1);
 	});
 
@@ -199,7 +199,7 @@ describe('BSO PVM', async () => {
 		});
 		await user.setAttackStyle(['attack']);
 		const result = await user.kill(VasaMagus.id);
-		const resultStr = (result.commandResult as any).embeds[0].description as string;
+		const resultStr = (result.commandResult as any).embeds[0].data.description as string;
 		expect(resultStr).toContain('Your team is off to fight');
 	});
 

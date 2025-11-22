@@ -10,7 +10,7 @@ import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager
 export const smithingTask: MinionTask = {
 	type: 'Smithing',
 	async run(data: SmithingActivityTaskOptions, { user, handleTripFinish }) {
-		const { smithedBarID, quantity, channelID, duration } = data;
+		const { smithedBarID, quantity, channelId, duration } = data;
 
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
 
@@ -45,6 +45,6 @@ export const smithingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

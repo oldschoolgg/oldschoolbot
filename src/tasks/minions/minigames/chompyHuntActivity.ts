@@ -7,7 +7,7 @@ import { formatList } from '@/lib/util/smallUtils.js';
 export const chompHuntTask: MinionTask = {
 	type: 'BigChompyBirdHunting',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID, quantity } = data;
+		const { channelId, quantity } = data;
 
 		const previousScore = await user.fetchMinigameScore('big_chompy_bird_hunting');
 		const { newScore } = await user.incrementMinigameScore('big_chompy_bird_hunting', quantity);
@@ -35,6 +35,6 @@ export const chompHuntTask: MinionTask = {
 			str += `\nYou can now claim the following chompy bird hats: **${formatList(newHats.map(hat => hat[0].name))}**!`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

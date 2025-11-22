@@ -9,7 +9,7 @@ export const pizazzPointsPerHour = 100;
 export const mageTrainingTask: MinionTask = {
 	type: 'MageTrainingArena',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		await user.incrementMinigameScore('magic_training_arena', quantity);
 
@@ -42,6 +42,6 @@ export const mageTrainingTask: MinionTask = {
 			user.minionName
 		} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. You now have **${totalPizazzPoints?.pizazz_points.toLocaleString()} Pizazz points**. ${xpRes}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

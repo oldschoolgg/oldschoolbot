@@ -1,4 +1,4 @@
-import { randInt } from '@/util/smallUtils.js';
+import { randInt } from '@oldschoolgg/rng';
 
 export interface SimpleTableItem<T> {
 	item: T;

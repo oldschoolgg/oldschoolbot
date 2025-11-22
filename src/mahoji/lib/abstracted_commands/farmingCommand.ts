@@ -28,7 +28,7 @@ export async function harvestCommand({
 	seedType: string;
 	interaction: MInteraction;
 }) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const { GP } = user;
@@ -78,7 +78,7 @@ export async function harvestCommand({
 		duration = reduceNumByPercent(duration, 25);
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Farming');
+	const maxTripLength = await user.calcMaxTripLength('Farming');
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -103,7 +103,7 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 		plantsName: patch.lastPlanted,
 		patchType: patches[patch.patchName],
 		userID: user.id,
-		channelID: interaction.channelId,
+		channelId: interaction.channelId,
 		upgradeType,
 		duration,
 		quantity: patch.lastQuantity,
@@ -131,7 +131,7 @@ export async function farmingPlantCommand({
 	autoFarmed: boolean;
 	pay: boolean;
 }): Promise<string> {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const userBank = user.bank;
@@ -179,7 +179,7 @@ export async function farmingPlantCommand({
 		return 'There are no available patches to you.';
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Farming');
+	const maxTripLength = await user.calcMaxTripLength('Farming');
 
 	// If no quantity provided, set it to the max PATCHES available.
 	const maxCanDo = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));
@@ -315,7 +315,7 @@ export async function farmingPlantCommand({
 		plantsName: plant.name,
 		patchType: patches[plant.seedType],
 		userID: user.id,
-		channelID: interaction.channelId,
+		channelId: interaction.channelId,
 		quantity,
 		upgradeType,
 		payment: didPay,

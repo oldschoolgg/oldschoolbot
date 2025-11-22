@@ -1,9 +1,11 @@
+import type { Root } from 'hast';
+import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const PUNCTUATION = '.,;:!?';
 
-export default function rehypeFixInlineSpacing() {
-	return (tree: any) => {
+const rehypeFixInlineSpacing: Plugin<[{}], Root> = () => {
+	return (tree: Root) => {
 		visit(tree, 'element', (_node, _index, parent) => {
 			if (!parent || !Array.isArray(parent.children)) return;
 			const children = parent.children;
@@ -35,7 +37,13 @@ export default function rehypeFixInlineSpacing() {
 					const lastChild = prev.children?.[prev.children.length - 1];
 					if (lastChild && lastChild.type === 'text') {
 						prevText = lastChild.value;
-					} else if (prev.type === 'element' && prev.children?.length === 0 && prev.value) {
+					} else if (
+						prev.type === 'element' &&
+						prev.children?.length === 0 &&
+						'value' in prev &&
+						prev.value &&
+						typeof prev.value === 'string'
+					) {
 						prevText = prev.value;
 					}
 
@@ -47,4 +55,6 @@ export default function rehypeFixInlineSpacing() {
 			}
 		});
 	};
-}
+};
+
+export default rehypeFixInlineSpacing;

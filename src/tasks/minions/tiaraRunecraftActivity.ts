@@ -6,7 +6,7 @@ import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 export const tiaraRunecraftTask: MinionTask = {
 	type: 'TiaraRunecraft',
 	async run(data: TiaraRunecraftActivityTaskOptions, { user, handleTripFinish }) {
-		const { tiaraID, tiaraQuantity, channelID, duration } = data;
+		const { tiaraID, tiaraQuantity, channelId, duration } = data;
 
 		const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === tiaraID)!;
 
@@ -29,6 +29,6 @@ export const tiaraRunecraftTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

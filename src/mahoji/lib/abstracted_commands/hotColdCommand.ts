@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
@@ -57,7 +57,7 @@ ${explanation}`
 			text: `You received ${flowerLoot}`
 		});
 	const response: Awaited<CommandResponse> = {
-		embeds: [embed.data]
+		embeds: [embed]
 	};
 
 	// You get 5x if you roll a black/white flower

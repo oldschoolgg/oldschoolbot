@@ -5,7 +5,6 @@ import { SimpleMonster } from '@/structures/Monster.js';
 export const BlackGuardTable = new LootTable()
 	.every('Bones')
 	.tertiary(128, 'Clue scroll (medium)')
-	// TODO: Check over the drop rates in future.
 	/* Weapons and Armour*/
 	.add('Bronze med helm', 1, 11)
 	.add('Bronze battleaxe', 1, 4)

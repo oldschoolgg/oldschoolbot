@@ -1,4 +1,6 @@
 import { collapseWhiteSpace } from 'collapse-white-space';
+import type { Root } from 'hast';
+import type { Plugin } from 'unified';
 import { visitParents } from 'unist-util-visit-parents';
 
 import commandsJson from '../../../data/osb/commands.json' with { type: 'json' };
@@ -9,8 +11,8 @@ import { WebItems } from '../lib/WebItems.js';
 
 const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
 
-export function remarkItems(_options: any) {
-	return (tree: any) => {
+const remarkItems: Plugin<[{}], Root> = () => {
+	return (tree: Root) => {
 		visitParents(tree, 'text', (node, parents) => {
 			const parent = parents[parents.length - 1];
 			if (!parent || !Array.isArray(parent.children)) return;
@@ -113,7 +115,10 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 			}
 
 			const index = parent.children.indexOf(node);
+			// @ts-expect-error
 			parent.children.splice(index, 1, ...newChildren);
 		});
 	};
-}
+};
+
+export default remarkItems;

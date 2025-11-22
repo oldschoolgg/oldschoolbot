@@ -217,10 +217,10 @@ export class MTame {
 		this.tame = newTame;
 	}
 
-	calcMaxTripLength({ user, activity }: { user: MUser; activity: TameTaskOptions['type'] }): {
+	async calcMaxTripLength({ user, activity }: { user: MUser; activity: TameTaskOptions['type'] }): Promise<{
 		maxTripLength: number;
 		messages: string[];
-	} {
+	}> {
 		const messages: string[] = [];
 
 		let maxTripLength = Time.Minute * 20 * (4 - this.growthLevel);
@@ -230,7 +230,7 @@ export class MTame {
 			messages.push('+35mins trip length (ate a Zak)');
 		}
 
-		const patronBonus = patronMaxTripBonus(user) * 2;
+		const patronBonus = patronMaxTripBonus(await user.fetchPerkTier()) * 2;
 		if (patronBonus > 0) {
 			maxTripLength += patronBonus;
 			messages.push(`+${formatDuration(patronBonus, true)} trip length (Patron bonus)`);

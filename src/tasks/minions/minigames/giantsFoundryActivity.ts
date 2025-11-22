@@ -10,7 +10,7 @@ import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
 	async run(data: GiantsFoundryActivityTaskOptions, { user, handleTripFinish }) {
-		const { quantity, channelID, duration, metalScore } = data;
+		const { quantity, channelId, duration, metalScore } = data;
 
 		const userSmithingLevel = user.skillsAsLevels.smithing;
 		const boosts = [];
@@ -92,6 +92,6 @@ export const giantsFoundryTask: MinionTask = {
 		});
 		await user.statsBankUpdate('gf_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };

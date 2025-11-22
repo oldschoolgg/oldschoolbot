@@ -7,7 +7,7 @@ import { gloriesInventorySize } from '@/mahoji/lib/abstracted_commands/chargeGlo
 export const gloryChargingTask: MinionTask = {
 	type: 'GloryCharging',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { quantity, channelID } = data;
+		const { quantity, channelId } = data;
 
 		let deaths = 0;
 		const loot = new Bank();
@@ -50,6 +50,6 @@ export const gloryChargingTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

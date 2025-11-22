@@ -1,6 +1,6 @@
-import { randInt, shuffleArr } from '@oldschoolgg/rng';
-import { channelIsSendable, chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
-import { ActionRowBuilder, type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { cryptoRng } from '@oldschoolgg/rng';
+import { chunk, SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
@@ -49,9 +49,9 @@ function generateColumn() {
 	while (column.length < 3) {
 		const button = buttonTable.rollOrThrow();
 		if (column.some(i => i.name === button.name)) continue;
-		column.push({ ...button, id: randInt(1, 999_999_999).toString() });
+		column.push({ ...button, id: cryptoRng.randInt(1, 999_999_999).toString() });
 	}
-	return shuffleArr(column);
+	return cryptoRng.shuffle(column);
 }
 
 function getButtons(): ButtonInstance[] {
@@ -99,9 +99,6 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		return 'You can only gamble between 20m and 1b.';
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel)) return 'Invalid channel.';
-
 	await interaction.confirmation(
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
@@ -111,48 +108,44 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		return "You don't have enough GP to make this bet.";
 	}
 
-	await user.removeItemsFromBank(new Bank().add('Coins', amount));
+	await user.transactItems({ itemsToRemove: new Bank().add('Coins', amount) });
 	const buttonsToShow = getButtons();
 	const chunkedButtons = chunk(buttonsToShow, 3);
 
 	const { winningRow, amountReceived } = determineWinnings(amount, buttonsToShow);
 
-	function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }): BaseMessageOptions['components'] {
+	function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }) {
 		return chunkedButtons.map(c =>
-			new ActionRowBuilder<ButtonBuilder>().addComponents(
-				c.map((b, index) => {
-					const shouldShowThisButton = !columnsToHide.includes(index);
-					const isWinning = columnsToHide.length === 0 && winningRow?.includes(b);
-					return new ButtonBuilder()
-						.setCustomId(b.id)
-						.setStyle(
-							!shouldShowThisButton
-								? ButtonStyle.Secondary
-								: isWinning
-									? ButtonStyle.Success
-									: ButtonStyle.Secondary
-						)
-						.setEmoji(shouldShowThisButton ? b.emoji : '❓');
-				})
-			)
+			c.map((b, index) => {
+				const shouldShowThisButton = !columnsToHide.includes(index);
+				const isWinning = columnsToHide.length === 0 && winningRow?.includes(b);
+				return new ButtonBuilder()
+					.setCustomId(b.id)
+					.setStyle(
+						!shouldShowThisButton
+							? ButtonStyle.Secondary
+							: isWinning
+								? ButtonStyle.Success
+								: ButtonStyle.Secondary
+					)
+					.setEmoji(shouldShowThisButton ? { id: b.emoji } : { name: '❓' });
+			})
 		);
 	}
 
-	const sentMessage = await channel
-		.send({
-			content: 'Slots',
-			components: getCurrentButtons({ columnsToHide: [0, 1, 2] })
-		})
-		.catch(noOp);
+	await interaction.reply({
+		content: 'Slots',
+		components: getCurrentButtons({ columnsToHide: [0, 1, 2] })
+	});
+
 	await sleep(2000);
 
 	const finishContent =
 		amountReceived === 0
 			? "Unlucky, you didn't win anything, and lost your bet!"
 			: `You won ${toKMB(amountReceived)}!`;
-	sentMessage?.delete().catch(noOp);
 
-	await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived), collectionLog: false });
+	await user.transactItems({ itemsToAdd: new Bank().add('Coins', amountReceived), collectionLog: false });
 	await ClientSettings.updateClientGPTrackSetting('gp_slots', amountReceived - amount);
 	await user.updateGPTrackSetting('gp_slots', amountReceived - amount);
 

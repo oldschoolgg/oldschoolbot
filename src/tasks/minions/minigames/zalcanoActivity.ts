@@ -9,7 +9,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',
 	async run(data: ZalcanoActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration, performance, isMVP } = data;
+		const { channelId, quantity, duration, performance, isMVP } = data;
 
 		const { newKC } = await user.incrementKC(EMonster.ZALCANO, quantity);
 		const hasKourendHard = user.hasDiary('kourend&kebos.hard');
@@ -86,6 +86,6 @@ export const zalcanoTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

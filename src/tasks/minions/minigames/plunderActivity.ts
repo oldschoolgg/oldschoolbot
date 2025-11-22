@@ -7,7 +7,8 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 export const plunderTask: MinionTask = {
 	type: 'Plunder',
 	async run(data: PlunderActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, rooms, duration } = data;
+		const { channelId, quantity, rooms, duration } = data;
+
 		await user.incrementMinigameScore('pyramid_plunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [
@@ -47,6 +48,6 @@ export const plunderTask: MinionTask = {
 			title: `Loot From ${quantity}x Pyramid Plunder:`
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

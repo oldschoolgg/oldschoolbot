@@ -107,7 +107,7 @@ export function slayerShopListMyUnlocks(mahojiUser: MUser) {
 	if (content.length > 2000) {
 		return {
 			content: 'Your currently unlocked Slayer rewards',
-			files: [{ attachment: Buffer.from(content.replace(/`/g, '')), name: 'myUnlocks.txt' }]
+			files: [{ buffer: Buffer.from(content.replace(/`/g, '')), name: 'myUnlocks.txt' }]
 		};
 	}
 	return content;
@@ -132,6 +132,6 @@ export function slayerShopListRewards(type: 'all' | 'unlocks' | 'buyables') {
 	const content = type === 'all' ? 'List of all slayer rewards' : `List sof slayer ${type}`;
 	return {
 		content,
-		files: [{ attachment: Buffer.from(table.toString()), name: 'slayerRewardsUnlocks.txt' }]
+		files: [{ buffer: Buffer.from(table.toString()), name: 'slayerRewardsUnlocks.txt' }]
 	};
 }
