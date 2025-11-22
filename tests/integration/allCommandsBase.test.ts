@@ -2,7 +2,7 @@ import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
 import type { IChannel, IRole } from '@oldschoolgg/schemas';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP } from 'oldschooljs';
-import PromiseQueue from 'p-queue';
+import PromiseQueue, { TimeoutError } from 'p-queue';
 import { omit } from 'remeda';
 import { test } from 'vitest';
 
@@ -283,42 +283,52 @@ test(
 		}
 
 		let commandsRan = 0;
-		const queue = new PromiseQueue({ concurrency: 10, timeout: Time.Second * 30, throwOnTimeout: true });
+		const queue = new PromiseQueue({ concurrency: 10, timeout: Time.Second * 30 });
 		const results: { time: number; command: string; options: CommandOptions; rawResults: any[] }[] = [];
 
 		for (const { command, options: allOptions } of processedCommands) {
 			for (const options of allOptions) {
-				queue.add(async () => {
-					try {
-						const allUsers = await Promise.all(
-							BASE_LEVEL_ACCOUNTS_TO_TEST.map(_l => createUserWithBaseStats(_l))
-						);
-						const start = performance.now();
-						const rawResults = await Promise.all(allUsers.map(u => u.runCmdAndTrip(command, options)));
-						const end = performance.now();
-						results.push({
-							command: command.name,
-							options,
-							time: end - start,
-							rawResults: rawResults.map(i => {
-								if (!i.commandResult) return 'No CMD Result?';
-								if (typeof i.commandResult === 'string') return i.commandResult;
-								if (typeof i.commandResult === 'number') return `SpecialResult: ${i.commandResult}`;
-								if (i.commandResult instanceof MessageBuilder || 'build' in i.commandResult) {
-									// @ts-expect-error
-									return omit(i.commandResult.message, ['files']);
-								}
-								return omit(i.commandResult, ['files']);
-							})
-						});
-						commandsRan += BASE_LEVEL_ACCOUNTS_TO_TEST.length;
-					} catch (err) {
-						console.error(
-							`Failed to run command ${command.name} with options ${JSON.stringify(options)}: ${err}`
-						);
-						throw err;
-					}
-				});
+				queue
+					.add(async () => {
+						try {
+							const allUsers = await Promise.all(
+								BASE_LEVEL_ACCOUNTS_TO_TEST.map(_l => createUserWithBaseStats(_l))
+							);
+							const start = performance.now();
+							const rawResults = await Promise.all(allUsers.map(u => u.runCmdAndTrip(command, options)));
+							const end = performance.now();
+							results.push({
+								command: command.name,
+								options,
+								time: end - start,
+								rawResults: rawResults.map(i => {
+									if (!i.commandResult) return 'No CMD Result?';
+									if (typeof i.commandResult === 'string') return i.commandResult;
+									if (typeof i.commandResult === 'number') return `SpecialResult: ${i.commandResult}`;
+									if (i.commandResult instanceof MessageBuilder || 'build' in i.commandResult) {
+										// @ts-expect-error
+										return omit(i.commandResult.message, ['files']);
+									}
+									return omit(i.commandResult, ['files']);
+								})
+							});
+							commandsRan += BASE_LEVEL_ACCOUNTS_TO_TEST.length;
+						} catch (err) {
+							console.error(
+								`Failed to run command ${command.name} with options ${JSON.stringify(options)}: ${err}`
+							);
+							throw err;
+						}
+					})
+					.catch(err => {
+						if (err instanceof TimeoutError) {
+							throw new Error(
+								`Command ${command.name} with options ${JSON.stringify(options)} timed out.`
+							);
+						} else {
+							throw err;
+						}
+					});
 			}
 		}
 		// queue.on('next', () => {
