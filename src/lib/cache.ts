@@ -82,6 +82,7 @@ export function userIsBusy(userID: string): boolean {
 
 export async function populateUsernameCache() {
 	if (BOT_TYPE === 'OSB') return;
+	if (!globalConfig.isProduction) return;
 	const users = await prisma.user.findMany({
 		where: {
 			username_with_badges: {
