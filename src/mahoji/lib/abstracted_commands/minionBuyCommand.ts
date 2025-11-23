@@ -2,9 +2,7 @@ import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
-	if (user.hasMinion) {
-		return 'You already have a minion!';
-	}
+	if (user.hasMinion) return 'You already have a minion!';
 
 	await user.update({
 		minion_hasBought: true,
