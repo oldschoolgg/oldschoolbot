@@ -15,6 +15,13 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 
+const awakenedMonsters = [
+	Monsters.AwakenedDukeSucellus.id,
+	Monsters.AwakenedTheLeviathan.id,
+	Monsters.AwakenedTheWhisperer.id,
+	Monsters.AwakenedVardorvis.id
+];
+
 const vasaBosses = [
 	Monsters.AbyssalSire,
 	Monsters.AlchemicalHydra,
@@ -29,7 +36,10 @@ const vasaBosses = [
 	Malygos,
 	Treebeard,
 	SeaKraken,
-	...bossKillables.map(b => b.id).map(id => Monsters.get(id)!)
+	...bossKillables
+		.map(b => b.id)
+		.map(id => Monsters.get(id)!)
+		.filter(mon => !awakenedMonsters.includes(mon.id))
 ];
 
 export const vasaTask: MinionTask = {
