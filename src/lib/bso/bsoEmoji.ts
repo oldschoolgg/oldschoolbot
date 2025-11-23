@@ -13,5 +13,7 @@ export const BSOEmoji = {
 	HalloweenCandy: '<:halloweenCandy:1429868816191717386>',
 	LilLamb: '<:lil_lamb:749240864345423903>',
 	ItemContract: '<:Item_contract:988422348434718812>',
-	HugeLamp: '<:Huge_lamp:988325171498721290>'
+	HugeLamp: '<:Huge_lamp:988325171498721290>',
+	Hammy: '<:Hamstare:685036648089780234>',
+	Skipper: '<:skipper:755853421801766912>'
 };
