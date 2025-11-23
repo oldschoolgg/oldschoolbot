@@ -44,7 +44,7 @@ export const smeltingCommand = defineCommand({
 		let { name, quantity, blast_furnace } = options;
 
 		if (blast_furnace === undefined) blast_furnace = false;
-		const boosts = [];
+		const boosts: string[] = [];
 
 		const bar = blast_furnace
 			? Smithing.BlastableBars.find(
