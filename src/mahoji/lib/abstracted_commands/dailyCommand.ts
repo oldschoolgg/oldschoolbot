@@ -1,3 +1,5 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
+
 import { roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
@@ -60,6 +62,12 @@ async function reward(user: MUser, triviaCorrect: boolean): Promise<MessageBuild
 
 	if (!triviaCorrect) {
 		coinsToGive = Math.floor(coinsToGive * 0.4);
+	}
+
+	const hasSkipper = user.usingPet('Skipper') || user.bank.has('Skipper');
+	if (hasSkipper && coinsToGive > 0) {
+		coinsToGive = Math.floor(coinsToGive * 1.5);
+		bonuses.push(`${BSOEmoji.Skipper} Skipper negotiated you 50% more coins!`);
 	}
 
 	if (user.isIronman) {
