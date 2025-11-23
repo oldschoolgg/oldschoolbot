@@ -111,7 +111,7 @@ export async function fetchCLLeaderboard({
 
 export async function fetchTameCLLeaderboard({ items, resultLimit }: { items: Set<number>; resultLimit: number }) {
 	const itemIdsStr = Array.from(items)
-		.map(i => `${i}`)
+		.map(i => `'${i}'`)
 		.join(', ');
 	const users = (
 		await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(`

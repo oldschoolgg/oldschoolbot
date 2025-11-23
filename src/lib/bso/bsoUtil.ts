@@ -98,7 +98,7 @@ export function calcTotalLevel(skills: Skills) {
 
 export async function isElligibleForPresent(user: MUser) {
 	if (user.isIronman) return true;
-	if (user.perkTier() >= PerkTier.Four) return true;
+	if ((await user.fetchPerkTier()) >= PerkTier.Four) return true;
 	if (user.totalLevel >= 2000) return true;
 	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(duration)
 FROM activity

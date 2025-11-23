@@ -1,6 +1,6 @@
+import { bold } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
@@ -23,7 +23,7 @@ export const stealCommand = defineCommand({
 			name: 'name',
 			description: 'The object you try to steal from.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				const conLevel = user.skillLevel('thieving');
 				return Thieving.stealables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -42,7 +42,7 @@ export const stealCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
 				stringMatches(obj.name, options.name) ||
@@ -109,7 +109,8 @@ export const stealCommand = defineCommand({
 			boosts.push('50% boost for Wilvus');
 		}
 
-		const maxTripLength = (stealable.name === 'Wealthy Citizen' ? 2 : 1) * user.calcMaxTripLength('Pickpocket');
+		const maxTripLength =
+			(stealable.name === 'Wealthy Citizen' ? 2 : 1) * (await user.calcMaxTripLength('Pickpocket'));
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToTheft);
@@ -186,7 +187,7 @@ export const stealCommand = defineCommand({
 		await ActivityManager.startTrip<PickpocketActivityTaskOptions>({
 			monsterID: stealable.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Pickpocket',

@@ -612,7 +612,7 @@ export interface Species {
 
 export async function createTameTask({
 	user,
-	channelID,
+	channelId,
 	type,
 	data,
 	duration,
@@ -621,7 +621,7 @@ export async function createTameTask({
 	deaths
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	type: TameTaskOptions['type'];
 	data: TameTaskOptions;
 	duration: number;
@@ -646,7 +646,7 @@ export async function createTameTask({
 			completed: false,
 			type,
 			data: data as any,
-			channel_id: channelID,
+			channel_id: channelId,
 			duration: Math.floor(duration),
 			tame_id: selectedTame.id,
 			fake_duration: fakeDuration,

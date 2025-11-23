@@ -1,10 +1,11 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
-import { percentChance, randArrItem, shuffleArr } from '@oldschoolgg/rng';
-import { Emoji, makeComponents, noOp, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
-import type { ButtonBuilder } from 'discord.js';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
+import { percentChance } from '@oldschoolgg/rng';
+import { Emoji, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
@@ -12,8 +13,8 @@ import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { addToOpenablesScores, patronMsg } from '@/mahoji/mahojiSettings.js';
+import { patronMsg } from '@/lib/util/smallUtils.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -31,7 +32,12 @@ export async function abstractedOpenUntilCommand(
 	openUntilItem: string,
 	disable_pets: boolean | undefined
 ) {
-	const perkTier = user.perkTier();
+	const quantity = 1;
+	if (quantity < 1 || !Number.isInteger(quantity)) {
+		return 'The quantity must be a positive integer.';
+	}
+
+	const perkTier = await user.fetchPerkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
@@ -185,54 +191,6 @@ async function finalizeOpening({
 		dontAddToTempCL: openables.some(i => itemsThatDontAddToTempCL.includes(i.id))
 	});
 
-	const fakeTrickedLoot = loot.clone();
-
-	const openableWithTricking = openables.find(i => 'trickableItems' in i);
-	if (
-		openableWithTricking &&
-		'trickableItems' in openableWithTricking &&
-		openableWithTricking.trickableItems !== undefined
-	) {
-		const activeTrick = await prisma.mortimerTricks.findFirst({
-			where: {
-				target_id: user.id,
-				completed: false
-			}
-		});
-		if (activeTrick) {
-			// Pick a random item not in CL, or just a random one if all are in CL
-			const trickedItem =
-				shuffleArr(openableWithTricking.trickableItems).find(i => !user.cl.has(i)) ??
-				randArrItem(openableWithTricking.trickableItems);
-			fakeTrickedLoot.add(trickedItem);
-			const trickster = await globalClient.users.fetch(activeTrick.trickster_id).catch(noOp);
-			trickster
-				?.send(
-					`You just tricked ${user.rawUsername} into thinking they got a ${Items.itemNameFromId(trickedItem)}!`
-				)
-				.catch(noOp);
-			await prisma.mortimerTricks.update({
-				where: {
-					id: activeTrick.id
-				},
-				data: {
-					completed: true
-				}
-			});
-		}
-	}
-
-	const image = await makeBankImage({
-		bank: fakeTrickedLoot,
-		title:
-			openables.length === 1
-				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
-				: 'Loot From Opening',
-		user,
-		previousCL,
-		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
-	});
-
 	if (loot.has('Coins')) {
 		await ClientSettings.updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
@@ -241,21 +199,25 @@ async function finalizeOpening({
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
 
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	const response: Awaited<CommandResponse> = {
-		files: [image.file],
-		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`.trim(),
-		components: components.length > 0 ? makeComponents(components) : undefined
-	};
-	if (response.content!.length > 1900) {
-		response.files = [{ name: 'response.txt', attachment: Buffer.from(response.content!) }];
-
-		response.content =
-			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
-	}
+	const response = new MessageBuilder()
+		.setContent(
+			`You have now opened a total of ${openedStr}
+${messages.join(', ')}`.trim()
+		)
+		.addBankImage({
+			bank: loot,
+			title:
+				openables.length === 1
+					? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
+					: 'Loot From Opening',
+			user,
+			previousCL,
+			mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
+		})
+		.addComponents(components);
 
 	return response;
 }
@@ -266,7 +228,7 @@ export async function abstractedOpenCommand(
 	_names: string[],
 	_quantity: number | 'auto',
 	disable_pets: boolean | undefined
-) {
+): Promise<string | MessageBuilderClass> {
 	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));
@@ -281,7 +243,7 @@ export async function abstractedOpenCommand(
 
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';
-		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+		if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
 		if (interaction) await interaction.confirmation('Are you sure you want to open ALL your items?');
 	}
 

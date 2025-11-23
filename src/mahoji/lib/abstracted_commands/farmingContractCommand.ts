@@ -1,16 +1,12 @@
-import { makeComponents, toTitleCase } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import type { IFarmingContract, IFarmingContractDifficultyLevel } from '@oldschoolgg/schemas';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 
-import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
-import { roughMergeMahojiResponse } from '@/lib/discord/utils.js';
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
-import type {
-	ContractOption,
-	FarmingContract,
-	FarmingContractDifficultyLevel
-} from '@/lib/skilling/skills/farming/utils/types.js';
+import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
 import { farmingPlantCommand, harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { abstractedOpenCommand } from '@/mahoji/lib/abstracted_commands/openCommand.js';
 
@@ -19,12 +15,7 @@ function makeEasierFarmingContractButton() {
 		.setCustomId('FARMING_CONTRACT_EASIER')
 		.setLabel('Ask for easier Contract')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('977410792754413668');
-}
-
-async function janeImage(content: string) {
-	const image = await newChatHeadImage({ content, head: 'jane' });
-	return { files: [{ attachment: image, name: 'jane.jpg' }] };
+		.setEmoji({ id: EmojiId.Seedpack });
 }
 
 const contractToFarmingLevel = {
@@ -33,20 +24,20 @@ const contractToFarmingLevel = {
 	hard: 85
 };
 
-export function getFarmingContractOfUser(user: MUser) {
-	const currentContract: FarmingContract =
-		(user.user.minion_farmingContract as FarmingContract | null) ?? Farming.defaultFarmingContract;
-	return currentContract;
+function isValidDifficulty(input: string): input is IFarmingContractDifficultyLevel {
+	return ['easy', 'medium', 'hard'].includes(input);
 }
 
-function formatNewContractContent(plantName: string, difficulty: FarmingContractDifficultyLevel) {
+function formatNewContractContent(plantName: string, difficulty: IFarmingContractDifficultyLevel) {
 	return `Your new farming contract is: ${plantName} (${toTitleCase(difficulty)} contract)`;
 }
 
-export async function farmingContractCommand(user: MUser, input?: ContractOption): CommandResponse {
+export async function farmingContractCommand(
+	user: MUser,
+	input?: ContractOption
+): Promise<string | MessageBuilderClass> {
 	const farmingLevel = user.skillsAsLevels.farming;
-	const currentContract: FarmingContract =
-		(user.user.minion_farmingContract as FarmingContract | null) ?? Farming.defaultFarmingContract;
+	const currentContract: IFarmingContract = user.fetchFarmingContract();
 	const plant = currentContract.hasContract ? Farming.findPlant(currentContract.plantToGrow) : null;
 
 	if (!input) {
@@ -62,15 +53,22 @@ export async function farmingContractCommand(user: MUser, input?: ContractOption
 	}
 
 	if (user.owns('Seed pack')) {
-		return janeImage('You need to open your seed pack before receiving a new contract!');
+		return new MessageBuilder().addChatHeadImage(
+			'jane',
+			'You need to open your seed pack before receiving a new contract!'
+		);
 	}
 
 	if (!currentContract.hasContract && input === 'easier') {
-		return janeImage("You currently don't have a contract, so you can't ask for something easier!");
+		return new MessageBuilder().addChatHeadImage(
+			'jane',
+			"You currently don't have a contract, so you can't ask for something easier!"
+		);
 	}
 
 	if (input !== 'easier' && farmingLevel < contractToFarmingLevel[input]) {
-		return janeImage(
+		return new MessageBuilder().addChatHeadImage(
+			'jane',
 			`You need ${contractToFarmingLevel[input]} farming to receive a contract of ${input} difficulty!`
 		);
 	}
@@ -78,103 +76,102 @@ export async function farmingContractCommand(user: MUser, input?: ContractOption
 	if (currentContract.hasContract) {
 		if (input === 'easier') {
 			if (currentContract.difficultyLevel === 'easy') {
-				return janeImage('Pardon me, but you already have the easiest contract level available!');
+				return new MessageBuilder().addChatHeadImage(
+					'jane',
+					'Pardon me, but you already have the easiest contract level available!'
+				);
 			}
-			const newContractLevel: FarmingContractDifficultyLevel =
+			const newContractLevel: IFarmingContractDifficultyLevel =
 				currentContract.difficultyLevel === 'hard' ? 'medium' : 'easy';
-			const plantInformation = getPlantToGrow(user, {
+			const plantInformation = getPlantToGrow({
+				user,
 				contractLevel: newContractLevel,
 				ignorePlant: currentContract.plantToGrow!
 			});
 			const plantToGrow = plantInformation[0];
 			const plantTier = plantInformation[1];
 
-			const farmingContractUpdate: FarmingContract = {
+			await user.updateFarmingContract({
 				hasContract: true,
 				difficultyLevel: newContractLevel,
 				plantToGrow,
 				plantTier,
 				contractsCompleted: currentContract.contractsCompleted
-			};
-			await user.update({
-				minion_farmingContract: farmingContractUpdate as any
 			});
 
-			return {
-				content: formatNewContractContent(plantToGrow, newContractLevel),
-				files: (
-					await janeImage(
-						`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
-					)
-				).files,
-				components:
-					newContractLevel !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
-			};
+			const response = new MessageBuilder()
+				.setContent(formatNewContractContent(plantToGrow, newContractLevel))
+				.addChatHeadImage(
+					'jane',
+					`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
+				)
+				.addComponents(newContractLevel !== 'easy' ? [makeEasierFarmingContractButton()] : undefined);
+
+			return response;
 		}
 
 		let easierStr = '';
 		if (currentContract.difficultyLevel !== 'easy') {
 			easierStr = "\nYou can request an easier contract if you'd like.";
 		}
+		const response = new MessageBuilder()
+			.addChatHeadImage(
+				'jane',
+				`Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`
+			)
+			.addComponents(
+				currentContract.difficultyLevel !== 'easy' ? [makeEasierFarmingContractButton()] : undefined
+			);
 
-		return {
-			files: (
-				await janeImage(
-					`Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`
-				)
-			).files,
-			components:
-				currentContract.difficultyLevel !== 'easy'
-					? makeComponents([makeEasierFarmingContractButton()])
-					: undefined
-		};
+		return response;
 	}
 
-	if (user.minionIsBusy) {
-		return janeImage(
+	if (await user.minionIsBusy()) {
+		return new MessageBuilder().addChatHeadImage(
+			'jane',
 			"You are busy at the moment! I can't give you a new farming contract like that. Please, come back when you have some free time for us to talk."
 		);
 	}
 
-	const plantInformation = getPlantToGrow(user, {
-		contractLevel: input as FarmingContractDifficultyLevel,
+	if (!isValidDifficulty(input)) {
+		throw new Error(`Oopsie woopsie >.<`);
+	}
+
+	const plantInformation = getPlantToGrow({
+		user,
+		contractLevel: input,
 		ignorePlant: currentContract.plantToGrow
 	});
 	const plantToGrow = plantInformation[0] as string;
 	const plantTier = plantInformation[1] as 0 | 1 | 2 | 3 | 4 | 5;
 
-	const farmingContractUpdate: FarmingContract = {
+	await user.updateFarmingContract({
 		hasContract: true,
-		difficultyLevel: input as FarmingContractDifficultyLevel,
+		difficultyLevel: input,
 		plantToGrow,
 		plantTier,
 		contractsCompleted: currentContract.contractsCompleted
-	};
-
-	await user.update({
-		minion_farmingContract: farmingContractUpdate as any
 	});
 
-	return {
-		content: formatNewContractContent(plantToGrow, input as FarmingContractDifficultyLevel),
-		files: (
-			await janeImage(
-				`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
-			)
-		).files,
-		components: input !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
-	};
+	const response = new MessageBuilder()
+		.setContent(formatNewContractContent(plantToGrow, input))
+		.addChatHeadImage(
+			'jane',
+			`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
+		)
+		.addComponents(input !== 'easy' ? [makeEasierFarmingContractButton()] : undefined);
+	return response;
 }
 
 export function canRunAutoContract(user: MUser) {
 	// Must be above 45 farming
-	if (user.skillLevel('farming') < 45) return false;
+	if (user.skillsAsLevels.farming < 45) return false;
 
 	// If we don't have a contract, we can auto contract
-	const contract = user.user.minion_farmingContract as FarmingContract | null;
+	const contract = user.fetchFarmingContract();
 	if (!contract || !contract.hasContract) return true;
 
-	const farmingDetails = getFarmingInfoFromUser(user);
+	const farmingDetails = user.farmingInfo();
 
 	// If the patch we're contracted to is ready, we can auto contract
 	const contractedPatch = farmingDetails.patchesDetailed.find(
@@ -189,7 +186,7 @@ function bestFarmingContractUserCanDo(user: MUser) {
 		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
 }
 
-export async function autoContract(interaction: MInteraction, user: MUser): CommandResponse {
+export async function autoContract(interaction: MInteraction, user: MUser): Promise<string | MessageBuilderClass> {
 	const contract = user.farmingContract();
 	const plant = contract.contract ? Farming.findPlant(contract.contract.plantToGrow) : null;
 	const patch = contract.farmingInfo.patchesDetailed.find(p => p.plant === plant);
@@ -199,14 +196,15 @@ export async function autoContract(interaction: MInteraction, user: MUser): Comm
 		const openResponse = await abstractedOpenCommand(null, user, ['seed pack'], 'auto', false);
 		await user.sync();
 		const contractResponse = await farmingContractCommand(user, bestContractTierCanDo);
-		return roughMergeMahojiResponse(openResponse, contractResponse);
+		const msg =
+			openResponse instanceof MessageBuilder ? openResponse : new MessageBuilder().setContent(openResponse);
+		return msg.merge(contractResponse);
 	}
 
 	// If they have no contract, get them a contract, recurse.
 	if (!contract.contract) {
 		const contractResult = await farmingContractCommand(user, bestContractTierCanDo);
-		await user.update({ minion_farmingContract: true });
-		const newContract = (user.user.minion_farmingContract ?? Farming.defaultFarmingContract) as FarmingContract;
+		const newContract: IFarmingContract = user.fetchFarmingContract();
 		if (!newContract.hasContract || !newContract.plantToGrow) return contractResult;
 		return farmingPlantCommand({
 			user,

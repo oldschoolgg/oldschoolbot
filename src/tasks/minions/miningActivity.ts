@@ -252,7 +252,7 @@ export function calculateMiningResult({
 export const miningTask: MinionTask = {
 	type: 'Mining',
 	async run(data: MiningActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { oreID, channelID, duration, powermine } = data;
+		const { oreID, channelId, duration, powermine } = data;
 		const { quantity } = data;
 		const minutes = Math.round(duration / Time.Minute);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
@@ -340,6 +340,12 @@ export const miningTask: MinionTask = {
 			str += `\n\n${messages.join('\n')}`;
 		}
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: str },
+			data,
+			loot
+		});
 	}
 };

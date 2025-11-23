@@ -2,6 +2,7 @@ import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+	clearScreen: false,
 	test: {
 		name: 'Old School Bot - Integration',
 		include: ['tests/integration/**/*.test.ts'],
@@ -10,13 +11,19 @@ export default defineConfig({
 		coverage: {
 			provider: 'v8',
 			reporter: 'text',
-			include: ['src/mahoji/lib/abstracted_commands/minionKill/*.ts', 'src/lib/structures/*.ts']
+			include: [
+				'src/mahoji/lib/abstracted_commands/minionKill/*.ts',
+				'src/lib/structures/*.ts',
+				'src/lib/skilling/skills/farming/**/*.ts'
+			]
 		},
 		testTimeout: 60_000,
-		maxConcurrency: 5,
-		maxWorkers: 5,
-		minWorkers: 5
+		maxConcurrency: 4,
+		isolate: true,
+		pool: 'forks',
+		maxWorkers: 5
 	},
+
 	resolve: {
 		alias: {
 			'@': path.resolve(import.meta.dirname, './src')

@@ -49,3 +49,7 @@ test-bot-store-*.json
 diffs
 
 src/prisma/clients
+
+.DS_Store
+
+itx

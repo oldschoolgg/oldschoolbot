@@ -13,7 +13,6 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
-import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.
@@ -22,11 +21,11 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = await user.hasMonsterRequirements(monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -52,7 +51,7 @@ const minimumSoloGear = new Gear({
 export async function kkCommand(
 	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	inputName: string,
 	inputQuantity: number | undefined
 ) {
@@ -63,6 +62,7 @@ export async function kkCommand(
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize: 8,
@@ -72,10 +72,10 @@ export async function kkCommand(
 			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];
 			}
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, 'your minion is busy.'];
 			}
-			const [hasReqs, reason] = await hasMonsterRequirements(user, KalphiteKingMonster);
+			const [hasReqs, reason] = await user.hasMonsterRequirements(KalphiteKingMonster);
 			if (!hasReqs) {
 				return [true, `you don't have the requirements for this monster; ${reason}`];
 			}
@@ -99,12 +99,9 @@ export async function kkCommand(
 		}
 	};
 
-	let users: MUser[] = [];
-	if (type === 'mass') {
-		const usersWhoConfirmed = await interaction.makeParty(partyOptions);
-		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
-	} else {
-		users = [user];
+	const users: MUser[] = type === 'mass' ? await globalClient.makeParty(partyOptions) : [user];
+	if (await ActivityManager.anyMinionIsBusy(users.map(u => u.id))) {
+		return 'One or more party members have their minion busy.';
 	}
 
 	if (users.length === 1) {
@@ -305,7 +302,7 @@ export async function kkCommand(
 
 	await ActivityManager.startTrip<BossActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'KalphiteKing',

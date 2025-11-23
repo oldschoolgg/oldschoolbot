@@ -189,7 +189,7 @@ export async function handleDisassembly({
 
 	// The time it takes to disassemble 1 of this item.
 	let timePer = Time.Second * 0.33;
-	const maxTripLength = user.calcMaxTripLength('Disassembling');
+	const maxTripLength = await user.calcMaxTripLength('Disassembling');
 
 	const messages: string[] = [];
 	if (bank.has('Dwarven toolkit')) {
@@ -352,8 +352,8 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			.join(', ')
 			.slice(0, 1500)}`,
 		files: [
-			{ name: 'disassemble-analysis.txt', attachment: Buffer.from(table.toString()) },
-			{ name: 'material-analysis.txt', attachment: Buffer.from(await materialAnalysis(user, bank)) }
+			{ name: 'disassemble-analysis.txt', buffer: Buffer.from(table.toString()) },
+			{ name: 'material-analysis.txt', buffer: Buffer.from(await materialAnalysis(user, bank)) }
 		]
 	};
 }
@@ -362,14 +362,14 @@ export async function disassembleCommand({
 	user,
 	itemToDisassembleName,
 	quantityToDisassemble,
-	channelID
+	channelId
 }: {
 	user: MUser;
 	itemToDisassembleName: string;
 	quantityToDisassemble: number | undefined;
-	channelID: string;
+	channelId: string;
 }): CommandResponse {
-	if (user.minionIsBusy) return 'Your minion is busy.';
+	if (await user.minionIsBusy()) return 'Your minion is busy.';
 	const item = Items.getItem(itemToDisassembleName);
 	if (!item) return "That's not a valid item.";
 	const group = findDisassemblyGroup(item);
@@ -388,7 +388,7 @@ export async function disassembleCommand({
 
 	await ActivityManager.startTrip<DisassembleTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration: result.duration,
 		type: 'Disassembling',
 		i: item.id,

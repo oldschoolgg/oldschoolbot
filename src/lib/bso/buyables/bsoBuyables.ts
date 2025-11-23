@@ -9,11 +9,11 @@ import { veteranCapeBuyables } from '@/lib/bso/buyables/veteranCapeBuyables.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
 
 import { isAtleastThisOld, Time } from '@oldschoolgg/toolkit';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Bank } from 'oldschooljs';
 
 import type { Buyable } from '@/lib/data/buyables/buyables.js';
 import { capeBuyables } from '@/lib/data/buyables/capes.js';
-import { mentionCommand } from '@/lib/discord/index.js';
 
 const bsoCastleWarsBuyables: Buyable[] = (
 	[
@@ -86,8 +86,8 @@ export const bsoBuyables: Buyable[] = [
 			if (user.cl.has('Golden cape shard')) {
 				return [false, 'You cannot buy a Golden cape shard if you already bought/received one.'];
 			}
-			const djsUser = await globalClient.users.fetch(user.id);
-			if (!isAtleastThisOld(djsUser.createdAt, Number(Time.Year))) {
+			const createdAt = DiscordSnowflake.timestampFrom(user.id);
+			if (!isAtleastThisOld(createdAt, Number(Time.Year))) {
 				return [false, 'Your account must be atleast 1 year old to buy this.'];
 			}
 
@@ -110,7 +110,7 @@ export const bsoBuyables: Buyable[] = [
 			if (totalPercentUntrimmed < 100) {
 				return [
 					false,
-					`You don't meet the requirements to buy an untrimmed Completionist cape. Refer to ${mentionCommand(
+					`You don't meet the requirements to buy an untrimmed Completionist cape. Refer to ${globalClient.mentionCommand(
 						'completion',
 						'check'
 					)} to see what you are missing.`
@@ -130,7 +130,7 @@ export const bsoBuyables: Buyable[] = [
 			if (totalPercentTrimmed < 100) {
 				return [
 					false,
-					`You don't meet the requirements to buy a trimmed Completionist cape. Refer to ${mentionCommand(
+					`You don't meet the requirements to buy a trimmed Completionist cape. Refer to ${globalClient.mentionCommand(
 						'completion',
 						'check'
 					)} to see what you are missing.`

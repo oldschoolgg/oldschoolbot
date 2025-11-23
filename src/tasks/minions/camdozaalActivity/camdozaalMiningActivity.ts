@@ -9,7 +9,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { quantity, channelID, duration } = data;
+		const { quantity, channelId, duration } = data;
 
 		// amulet of glory check for mining
 		let barroniteGems = 256;
@@ -112,6 +112,6 @@ export const camdozaalMiningTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

@@ -1,35 +1,23 @@
 import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
 
-import {
-	formatDuration,
-	PerkTier,
-	removeFromArr,
-	SpecialResponse,
-	stringMatches,
-	Time,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
-import { RateLimitManager } from '@sapphire/ratelimits';
-import { type ButtonInteraction, MessageFlags } from 'discord.js';
+import { type APIMessageComponentInteraction, SpecialResponse } from '@oldschoolgg/discord';
+import { formatDuration, PerkTier, removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
-import { MInteraction } from '@/lib/structures/MInteraction.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { shootingStarsCommand, starCache } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-
-const buttonRatelimiter = new RateLimitManager(Time.Second * 2, 1);
+import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 
 async function giveawayButtonHandler(user: MUser, customID: string, interaction: MInteraction): CommandResponse {
 	const split = customID.split('_');
@@ -127,15 +115,14 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return { content: 'You left the giveaway.', ephemeral: true };
 }
 
-async function repeatTripHandler(user: MUser, interaction: MInteraction): CommandResponse {
-	if (user.minionIsBusy) {
+async function repeatTripHandler(user: MUser, id: string, interaction: MInteraction): CommandResponse {
+	if (await user.minionIsBusy()) {
 		return { content: 'Your minion is busy.', ephemeral: true };
 	}
 	const trips = await fetchRepeatTrips(user);
 	if (trips.length === 0) {
 		return { content: "Couldn't find a trip to repeat.", ephemeral: true };
 	}
-	const id = interaction.customId!;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
 	if (!matchingActivity) {
@@ -164,19 +151,22 @@ async function handleGearPresetEquip(user: MUser, id: string, interaction: MInte
 async function handlePinnedTripRepeat(user: MUser, id: string, interaction: MInteraction): CommandResponse {
 	const [, pinnedTripID] = id.split('_');
 	if (!pinnedTripID) return { content: 'Invalid pinned trip.', ephemeral: true };
-	const trip = await prisma.pinnedTrip.findFirst({ where: { user_id: user.id, id: pinnedTripID } });
-	if (!trip) {
+	const trip = await prisma.pinnedTrip.findFirst({
+		where: { user_id: user.id, id: pinnedTripID },
+		include: { activity: true }
+	});
+	if (!trip || !trip.activity) {
 		return {
 			content: "You don't have a pinned trip with this ID, and you cannot repeat trips of other users.",
 			ephemeral: true
 		};
 	}
-	return repeatTrip(user, interaction, { data: trip.data, type: trip.activity_type });
+	return repeatTrip(user, interaction, trip.activity);
 }
 
 async function handleGEButton(user: MUser, id: string): CommandResponse {
 	if (id === 'ge_cancel_dms') {
-		const mention = mentionCommand('config', 'user', 'toggle');
+		const mention = globalClient.mentionCommand('config', 'user', 'toggle');
 		if (user.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			return {
 				content: `You already disabled Grand Exchange DM's, you can re-enable them using ${mention}.`,
@@ -224,10 +214,8 @@ async function globalButtonInteractionHandler({
 }: {
 	id: string;
 	interaction: MInteraction;
-}): CommandResponse {
-	Logging.logDebug(`${interaction.user.username} clicked button: ${id}`, {
-		...interaction.getDebugInfo()
-	});
+}): Promise<CommandResponse | null> {
+	Logging.logDebug(`${interaction.userId} clicked button: ${id}`);
 
 	if (globalClient.isShuttingDown) {
 		return {
@@ -236,18 +224,18 @@ async function globalButtonInteractionHandler({
 		};
 	}
 
-	const userID = interaction.user.id;
+	const userID = interaction.userId;
 
-	const ratelimit = buttonRatelimiter.acquire(userID);
-	if (ratelimit.limited) {
+	const ratelimit = await Cache.tryRatelimit(userID, 'global_buttons');
+	if (!ratelimit.success) {
 		return {
-			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(ratelimit.remainingTime, true)}.`,
+			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(ratelimit.timeRemainingMs, true)}.`,
 			ephemeral: true
 		};
 	}
 
 	const user = await mUserFetch(userID);
-	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, id, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('DONATE_IC')) return ItemContracts.donateICHandler(interaction);
@@ -256,8 +244,7 @@ async function globalButtonInteractionHandler({
 
 	if (id.startsWith('ge_')) return handleGEButton(user, id);
 
-	// if (!isValidGlobalInteraction(id)) return;
-	if (user.isBusy) {
+	if (await user.getIsLocked()) {
 		return { content: 'You cannot use a command right now.', ephemeral: true };
 	}
 
@@ -268,13 +255,9 @@ async function globalButtonInteractionHandler({
 		ignoreUserIsBusy: true
 	};
 
-	const timeSinceMessage = Date.now() - new Date(interaction.message!.createdTimestamp).getTime();
+	const timeSinceMessage = Date.now() - interaction.createdTimestamp;
 	if (timeSinceMessage > Time.Day) {
-		Logging.logDebug(
-			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
-				interaction.message?.id
-			}]`
-		);
+		Logging.logDebug(`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}]`);
 	}
 
 	async function doClue(tier: ClueTier['name']) {
@@ -304,7 +287,7 @@ async function globalButtonInteractionHandler({
 		});
 	}
 
-	if (id === 'CLAIM_DAILY') {
+	if (id === InteractionID.Commands.ClaimDaily) {
 		return runCommand({
 			commandName: 'minion',
 			args: { daily: {} },
@@ -312,7 +295,7 @@ async function globalButtonInteractionHandler({
 		});
 	}
 
-	if (id === 'CHECK_PATCHES') {
+	if (id === InteractionID.Commands.CheckPatches) {
 		return runCommand({
 			commandName: 'farming',
 			args: { check_patches: {} },
@@ -320,7 +303,7 @@ async function globalButtonInteractionHandler({
 		});
 	}
 
-	if (id === 'CANCEL_TRIP') {
+	if (id === InteractionID.Commands.CancelTrip) {
 		return runCommand({
 			commandName: 'minion',
 			args: { cancel: {} },
@@ -346,7 +329,7 @@ async function globalButtonInteractionHandler({
 		});
 	}
 
-	if (id === 'BUY_MINION') {
+	if (id === InteractionID.Commands.BuyMinion) {
 		return runCommand({
 			commandName: 'minion',
 			args: { buy: {} },
@@ -355,7 +338,7 @@ async function globalButtonInteractionHandler({
 	}
 
 	if (id === 'DO_FISHING_CONTEST') {
-		if (user.perkTier() < PerkTier.Four) {
+		if ((await user.fetchPerkTier()) < PerkTier.Four) {
 			return {
 				content: 'You need to be a Tier 3 patron to use this button.',
 				ephemeral: true
@@ -368,65 +351,66 @@ async function globalButtonInteractionHandler({
 		});
 	}
 
-	if (id === 'OPEN_BEGINNER_CASKET') {
-		return openCasket('Beginner');
+	if (id === InteractionID.Open.BeginnerCasket) return openCasket('Beginner');
+	if (id === InteractionID.Open.EasyCasket) return openCasket('Easy');
+	if (id === InteractionID.Open.MediumCasket) return openCasket('Medium');
+	if (id === InteractionID.Open.HardCasket) return openCasket('Hard');
+	if (id === InteractionID.Open.EliteCasket) return openCasket('Elite');
+	if (id === InteractionID.Open.MasterCasket) return openCasket('Master');
+	if (id === InteractionID.Open.GrandMasterCasket) return openCasket('Grandmaster');
+	if (id === InteractionID.Open.EliteCasket) return openCasket('Master');
+
+	if (await user.minionIsBusy()) {
+		return { content: `${user.minionName} is busy.`, ephemeral: true };
 	}
 
-	if (id === 'OPEN_EASY_CASKET') {
-		return openCasket('Easy');
-	}
-
-	if (id === 'OPEN_MEDIUM_CASKET') {
-		return openCasket('Medium');
-	}
-
-	if (id === 'OPEN_HARD_CASKET') {
-		return openCasket('Hard');
-	}
-
-	if (id === 'OPEN_ELITE_CASKET') {
-		return openCasket('Elite');
-	}
-
-	if (id === 'OPEN_MASTER_CASKET') {
-		return openCasket('Master');
-	}
-	if (id === 'OPEN_GRANDMASTER_CASKET') {
-		return openCasket('Grandmaster');
-	}
-	if (id === 'OPEN_ELDER_CASKET') {
-		return openCasket('Elder');
-	}
-
-	if (user.minionIsBusy) {
-		return { content: `${user.minionName} is busy.`, flags: MessageFlags.Ephemeral };
+	if (id.startsWith('FARMING_PATRON_HARVEST_')) {
+		const patchType = id.split('_')[3];
+		if (!Farming.isPatchName(patchType)) {
+			return { content: 'Invalid patch type.', ephemeral: true };
+		}
+		const perkTier = await user.fetchPerkTier();
+		if (perkTier < 4) {
+			return { content: 'You cannot use this button.', ephemeral: true };
+		}
+		return runCommand({
+			commandName: 'farming',
+			args: {
+				patron: {
+					harvest: {
+						patch: patchType
+					}
+				}
+			},
+			...options
+		});
 	}
 
 	switch (id) {
-		case 'DO_BEGINNER_CLUE':
+		case InteractionID.Commands.DoBeginnerClue:
 			return doClue('Beginner');
-		case 'DO_EASY_CLUE':
+		case InteractionID.Commands.DoEasyClue:
 			return doClue('Easy');
-		case 'DO_MEDIUM_CLUE':
+		case InteractionID.Commands.DoMediumClue:
 			return doClue('Medium');
-		case 'DO_HARD_CLUE':
+		case InteractionID.Commands.DoHardClue:
 			return doClue('Hard');
-		case 'DO_ELITE_CLUE':
+		case InteractionID.Commands.DoEliteClue:
 			return doClue('Elite');
-		case 'DO_MASTER_CLUE':
+		case InteractionID.Commands.DoMasterClue:
 			return doClue('Master');
 		case 'DO_GRANDMASTER_CLUE':
 			return doClue('Grandmaster');
 		case 'DO_ELDER_CLUE':
 			return doClue('Elder');
 
-		case 'DO_BIRDHOUSE_RUN':
+		case InteractionID.Commands.DoBirdHouseRun:
 			return runCommand({
 				commandName: 'activities',
 				args: { birdhouses: { action: 'harvest' } },
 				...options
 			});
-		case 'AUTO_SLAY': {
+		case InteractionID.Slayer.AutoSlay: {
 			return runCommand({
 				commandName: 'slayer',
 				args: { autoslay: {} },
@@ -448,7 +432,7 @@ async function globalButtonInteractionHandler({
 		case InteractionID.Slayer.BlockTask: {
 			return doSlayerCmd({ args: { manage: { command: 'block', new: true } } });
 		}
-		case 'AUTO_FARM': {
+		case InteractionID.Commands.AutoFarm: {
 			return runCommand({
 				commandName: 'farming',
 				args: {
@@ -457,10 +441,10 @@ async function globalButtonInteractionHandler({
 				...options
 			});
 		}
-		case 'AUTO_FARMING_CONTRACT': {
+		case InteractionID.Commands.AutoFarmingContract: {
 			return autoContract(interaction, user);
 		}
-		case 'FARMING_CONTRACT_EASIER': {
+		case InteractionID.Commands.FarmingContractEasier: {
 			return runCommand({
 				commandName: 'farming',
 				args: {
@@ -471,7 +455,7 @@ async function globalButtonInteractionHandler({
 				...options
 			});
 		}
-		case 'OPEN_SEED_PACK': {
+		case InteractionID.Open.SeedPack: {
 			return runCommand({
 				commandName: 'open',
 				args: {
@@ -481,41 +465,52 @@ async function globalButtonInteractionHandler({
 				...options
 			});
 		}
-		case 'NEW_SLAYER_TASK': {
+		case InteractionID.Commands.NewSlayerTask: {
 			return runCommand({
 				commandName: 'slayer',
 				args: { new_task: {} },
 				...options
 			});
 		}
-		case 'DO_SHOOTING_STAR': {
-			const star = starCache.get(user.id);
-			starCache.delete(user.id);
-			if (star && star.expiry > Date.now()) {
-				const str = await shootingStarsCommand(interaction.channelId, user, star);
-				return str;
+		case InteractionID.Commands.DoShootingStar: {
+			const validStar = await prisma.shootingStars.findFirst({
+				where: {
+					user_id: user.id
+				}
+			});
+			let errorMessage: string | null = null;
+			if (!validStar) {
+				errorMessage = 'You do not have any shooting stars to mine.';
+			} else if (validStar.expires_at.getTime() < Date.now()) {
+				errorMessage = 'This shooting star has expired.';
+			} else if (validStar.has_been_mined) {
+				errorMessage = 'You have already mined this shooting star.';
 			}
-			return {
-				content: `${
-					star && star.expiry < Date.now()
-						? 'The Crashed Star has expired!'
-						: `That Crashed Star was not discovered by ${user.minionName}.`
-				}`,
-				ephemeral: true
-			};
+			if (errorMessage || !validStar) {
+				return {
+					content: errorMessage!,
+					ephemeral: true
+				};
+			}
+			await prisma.shootingStars.update({
+				where: {
+					id: validStar.id
+				},
+				data: {
+					has_been_mined: true
+				}
+			});
+			return shootingStarsCommand(interaction.channelId, user, validStar);
 		}
-		case 'START_TOG': {
+		case InteractionID.Commands.StartTearsOfGuthix: {
 			return runCommand({
 				commandName: 'minigames',
 				args: { tears_of_guthix: { start: {} } },
 				...options
 			});
 		}
-		default: {
-		}
 	}
-
-	return { content: 'Unknown button? Report this as a bug.', ephemeral: true };
+	return null;
 }
 
 const ignoredInteractionIDs = [
@@ -524,14 +519,21 @@ const ignoredInteractionIDs = [
 	...Object.values(InteractionID.Party)
 ];
 
-export async function globalButtonInteractionHandlerWrapper(_interaction: ButtonInteraction) {
-	const interaction = new MInteraction({ interaction: _interaction });
-	const id = interaction.customId;
+export async function globalButtonInteractionHandlerWrapper(
+	rawInteraction: APIMessageComponentInteraction,
+	interaction: MInteraction
+) {
+	const id = rawInteraction.data.custom_id;
 	if (!id) return;
 	if ((ignoredInteractionIDs as string[]).includes(id)) return;
 	if (['DYN_', 'LP_'].some(s => id.startsWith(s))) return;
-	const response: Awaited<CommandResponse> = await globalButtonInteractionHandler({ interaction, id });
-	if (response === SpecialResponse.PaginatedMessageResponse) return;
-	if (response === SpecialResponse.SilentErrorResponse) return;
+	const response = await globalButtonInteractionHandler({ interaction, id });
+	if (
+		response === null ||
+		response === SpecialResponse.PaginatedMessageResponse ||
+		response === SpecialResponse.SilentErrorResponse ||
+		response === SpecialResponse.RespondedManually
+	)
+		return;
 	await interaction.reply(response);
 }

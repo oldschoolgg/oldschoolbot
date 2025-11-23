@@ -88,7 +88,7 @@ export const clueCommand = defineCommand({
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
-			autocomplete: async (_: string, user: MUser) => {
+			autocomplete: async ({ user }: StringAutoComplete) => {
 				const res: { name: string; value: string }[] = [
 					{ name: 'Elder (Info)', value: 'Elder (Info)' },
 					...ClueTiers.map(i => ({
@@ -107,7 +107,7 @@ export const clueCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		if (options.tier === 'Elder (Info)') {
 			const reqs = await checkElderClueRequirements(user);
 			if (reqs.unmetRequirements.length > 0) {
@@ -118,7 +118,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			return 'You meet all the requirements to do Elder clues.';
 		}
 
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return 'Your minion is busy.';
 		}
 
@@ -150,7 +150,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			}
 		}
 
-		let maxTripLength = user.calcMaxTripLength('ClueCompletion');
+		let maxTripLength = await user.calcMaxTripLength('ClueCompletion');
 
 		const boosts = [];
 
@@ -400,7 +400,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		await ActivityManager.startTrip<ClueActivityTaskOptions>({
 			ci: clueTier.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			q: quantity,
 			iQty: options.quantity,
 			duration,

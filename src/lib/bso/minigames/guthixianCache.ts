@@ -1,3 +1,4 @@
+import { time } from '@oldschoolgg/discord';
 import { formatDuration, getInterval, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
@@ -24,20 +25,20 @@ export async function userHasDoneCurrentGuthixianCache(user: MUser) {
 	);
 }
 
-export async function joinGuthixianCache(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function joinGuthixianCache(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return `${user.minionName} is busy.`;
 	}
 
 	const currentInterval = getGuthixianCacheInterval();
 
 	if (await userHasDoneCurrentGuthixianCache(user)) {
-		return `You already participated in the current Guthixian Cache, try again at: ${currentInterval.nextResetStr}`;
+		return `You already participated in the current Guthixian Cache, try again at: ${time(currentInterval.end)}`;
 	}
 
 	const task = await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: 1,
 		duration: Time.Minute * 10,
 		type: 'GuthixianCache',

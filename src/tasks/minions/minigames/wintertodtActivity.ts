@@ -12,8 +12,9 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 		const hasMasterCape = user.hasEquippedOrInBank('Firemaking master cape');
+
 		const { newScore } = await user.incrementMinigameScore('wintertodt', quantity);
 		const loot = new Bank();
 
@@ -159,6 +160,12 @@ export const wintertodtTask: MinionTask = {
 			]
 		});
 
-		return handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: output, files: [image] },
+			data,
+			loot: itemsAdded
+		});
 	}
 };

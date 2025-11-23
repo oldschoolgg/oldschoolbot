@@ -12,7 +12,6 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
-import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.
@@ -21,11 +20,11 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = await user.hasMonsterRequirements(monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -48,7 +47,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 export async function nexCommand(
 	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	inputName: string,
 	inputQuantity: number | undefined
 ) {
@@ -63,6 +62,7 @@ export async function nexCommand(
 	if (failureReason) return failureReason;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize: 8,
@@ -72,10 +72,10 @@ export async function nexCommand(
 			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];
 			}
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, 'your minion is busy.'];
 			}
-			const [hasReqs, reason] = await hasMonsterRequirements(user, NexMonster);
+			const [hasReqs, reason] = await user.hasMonsterRequirements(NexMonster);
 			if (!hasReqs) {
 				return [true, `you don't have the requirements for this monster; ${reason}`];
 			}
@@ -103,13 +103,11 @@ export async function nexCommand(
 		}
 	};
 
-	let users: MUser[] = [];
-	if (type === 'mass') {
-		const usersWhoConfirmed = await interaction.makeParty(partyOptions);
-		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
-	} else {
-		users = [user];
+	const users: MUser[] = type === 'mass' ? await globalClient.makeParty(partyOptions) : [user];
+	if (await ActivityManager.anyMinionIsBusy(users)) {
+		return `One of the minions in the party is already busy.`;
 	}
+
 	let debugStr = '';
 	let effectiveTime = NexMonster.timeToFinish;
 	if (isWeekend()) {
@@ -285,7 +283,7 @@ export async function nexCommand(
 
 	await ActivityManager.startTrip<BossActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Nex',

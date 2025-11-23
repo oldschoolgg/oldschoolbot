@@ -43,7 +43,7 @@ export const buildCommand = defineCommand({
 			name: 'name',
 			description: 'The object you want to build.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.filter(c => c.level <= user.skillsAsLevels.construction)
 					.map(i => ({
@@ -60,7 +60,7 @@ export const buildCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const object = Constructables.find(
 			object =>
 				stringMatches(object.id.toString(), options.name) ||
@@ -94,7 +94,7 @@ export const buildCommand = defineCommand({
 		const userBank = user.bank;
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = user.calcMaxTripLength('Construction');
+		const maxTripLength = await user.calcMaxTripLength('Construction');
 		const maxForMaterials = planksHas / planksQtyCost;
 
 		const boosts: string[] = [];
@@ -158,7 +158,7 @@ export const buildCommand = defineCommand({
 		await ActivityManager.startTrip<ConstructionActivityTaskOptions>({
 			objectID: object.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Construction'

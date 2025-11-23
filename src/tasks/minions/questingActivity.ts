@@ -1,3 +1,4 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
 import { Emoji } from '@oldschoolgg/toolkit';
@@ -9,7 +10,7 @@ import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 export const questingTask: MinionTask = {
 	type: 'Questing',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { channelID } = data;
+		const { channelId } = data;
 
 		const currentQP = user.QP;
 
@@ -40,31 +41,29 @@ export const questingTask: MinionTask = {
 			}
 		});
 
-		const { roll } = rng;
 		const herbLevel = user.skillsAsLevels.herblore;
-		if (herbLevel === 1 && newQP > 5 && roll(2)) {
+		if (herbLevel === 1 && newQP > 5 && rng.roll(2)) {
 			await user.addXP({ skillName: 'herblore', amount: 250 });
 			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
 		}
 
-		if (roll(globalDroprates.zippyQuesting.baseRate)) {
-			str +=
-				'\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!';
+		if (rng.roll(globalDroprates.zippyQuesting.baseRate)) {
+			str += `\n${BSOEmoji.Zippy} While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!`;
 			await user.addItemsToBank({ items: new Bank().add('Zippy'), collectionLog: true });
 		}
 
 		const magicXP = Number(user.user.skills_magic);
-		if (magicXP === 0 && roll(2)) {
+		if (magicXP === 0 && rng.roll(2)) {
 			await user.addXP({ skillName: 'magic', amount: 325 });
 			str += `${Emoji.Magic} You received 325 Magic XP for completing Witch's Potion.`;
-		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
+		} else if (magicXP < 1000 && newQP > 15 && rng.roll(2)) {
 			await user.addXP({ skillName: 'magic', amount: 1000 });
 			str += `${Emoji.Magic} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
-		} else if (user.skillsAsLevels.cooking >= 40 && newQP > 50 && magicXP < 2500 && roll(2)) {
+		} else if (user.skillsAsLevels.cooking >= 40 && newQP > 50 && magicXP < 2500 && rng.roll(2)) {
 			await user.addXP({ skillName: 'magic', amount: 2500 });
 			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

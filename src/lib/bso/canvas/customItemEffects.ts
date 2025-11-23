@@ -1,9 +1,9 @@
 import { getPaintedItemImage, paintColorsMap } from '@/lib/bso/paintColors.js';
 
-import { LRUCache } from 'lru-cache';
 import { itemID } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
+import { itemEffectImageCache } from '@/lib/cache.js';
 import { type CanvasImage, canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 
@@ -20,8 +20,6 @@ export const customItemEffect = new Map([
 		}
 	]
 ]);
-
-export const itemEffectImageCache = new LRUCache<string, CanvasImage>({ max: 1000 });
 
 export async function applyCustomItemEffects(user: MUser | null, item: number) {
 	if (!user) return null;

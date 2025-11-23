@@ -1,3 +1,5 @@
+import { globalConfig } from '@/lib/constants.js';
+
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
 	firemaking: '<:firemaking:630911040175210518>',
@@ -31,3 +33,43 @@ export const skillEmoji = {
 	invention: '<:Invention:936219232146980874>',
 	divination: '<:Divination:1187656347345494116>'
 };
+
+export const EmojiId = {
+	ClueScroll: '365003979840552960',
+	Farming: '630911040355565599',
+	Casket: '365003978678730772',
+	Seedpack: '977410792754413668',
+	Slayer: '630911040560824330',
+	MoneyBag: '493286312854683654',
+	BirdsNest: '692946556399124520',
+	Leagues: '660333438016028723',
+	Gear: '835314891950129202',
+	Minion: '778418736180494347',
+	MysteryBox: '680783258488799277',
+	Bank: '739459924693614653',
+	ItemContract: '988422348434718812',
+	HugeXPLamp: '988325171498721290',
+	Fishing: '630911040091193356'
+};
+
+export const ReactEmoji = globalConfig.isProduction
+	? {
+			Happy: 'RSHappy:380915244760825857',
+			Sad: 'RSSad:380915244652036097',
+			Gift: '🎁'
+		}
+	: {
+			Happy: '😃',
+			Sad: '😞',
+			Gift: '🎁'
+		};
+
+export const miscEmojis = {
+	barrowsChests: '<:Dharoks_helm:403038864199122947>',
+	hespori: '<:Bottomless_compost_bucket:545978484078411777>',
+	bryophyta: '<:Bryophytas_essence:455835859799769108>',
+	crazyArchaeologist: '<:Fedora:456179157303427092>',
+	derangedArchaeologist: '<:Fedora:456179157303427092>',
+	mimic: '<:Casket:365003978678730772>',
+	obor: '<:Hill_giant_club:421045456194240523>'
+} as const;

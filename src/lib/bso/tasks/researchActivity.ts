@@ -2,7 +2,7 @@ import type { ResearchTaskOptions } from '@/lib/bso/bsoTypes.js';
 import type { Invention } from '@/lib/bso/skills/invention/inventions.js';
 import { inventionsCanUnlockFromResearch } from '@/lib/bso/skills/invention/research.js';
 
-import { bold, userMention } from 'discord.js';
+import { bold, userMention } from '@oldschoolgg/discord';
 
 export const researchActivityTask: MinionTask = {
 	type: 'Research',
@@ -46,6 +46,6 @@ export const researchActivityTask: MinionTask = {
 ${discoveredStr}
 ${xpStr}`;
 
-		handleTripFinish(user, data.channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId: data.channelId, message: str, data });
 	}
 };

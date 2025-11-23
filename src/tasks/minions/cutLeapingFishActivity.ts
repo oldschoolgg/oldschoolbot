@@ -7,7 +7,7 @@ import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
 export const cutLeapingFishTask: MinionTask = {
 	type: 'CutLeapingFish',
 	async run(data: CutLeapingFishActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { fishID, channelID, quantity, duration } = data;
+		const { fishID, channelId, quantity, duration } = data;
 
 		const barbarianFish = LeapingFish.find(LeapingFish => LeapingFish.item.id === fishID)!;
 
@@ -80,6 +80,6 @@ export const cutLeapingFishTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

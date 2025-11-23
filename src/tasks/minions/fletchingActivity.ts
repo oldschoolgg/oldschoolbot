@@ -6,7 +6,7 @@ import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
 export const fletchingTask: MinionTask = {
 	type: 'Fletching',
 	async run(data: FletchingActivityTaskOptions, { user, handleTripFinish }) {
-		const { fletchableName, quantity, channelID, duration } = data;
+		const { fletchableName, quantity, channelId, duration } = data;
 
 		const fletchableItem = Fletching.Fletchables.find(fletchable => fletchable.name === fletchableName)!;
 
@@ -42,9 +42,8 @@ export const fletchingTask: MinionTask = {
 
 		handleTripFinish(
 			user,
-			channelID,
+			channelId,
 			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}. ${craftXpRes}`,
-			undefined,
 			data,
 			loot
 		);

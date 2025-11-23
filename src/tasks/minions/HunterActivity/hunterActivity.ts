@@ -16,7 +16,6 @@ import {
 	toKMB
 } from 'oldschooljs';
 
-import type { Prisma } from '@/prisma/main.js';
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
@@ -286,7 +285,7 @@ export const hunterTask: MinionTask = {
 		const {
 			creatureID,
 			quantity,
-			channelID,
+			channelId,
 			usingHuntPotion = false,
 			wildyPeak,
 			duration,
@@ -370,7 +369,7 @@ export const hunterTask: MinionTask = {
 
 		const scoreToAdd = Math.floor(successfulQuantity);
 		if (scoreToAdd > 0) {
-			await user.incrementCreatureScore(creature.id);
+			await user.incrementCreatureScore(creature.id, scoreToAdd);
 		}
 
 		let xpStr = '';
@@ -406,10 +405,10 @@ export const hunterTask: MinionTask = {
 
 		if (newWildyGear) {
 			await user.update({
-				gear_wildy: newWildyGear.raw() as Prisma.InputJsonObject
+				gear_wildy: newWildyGear.raw()
 			});
 		}
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

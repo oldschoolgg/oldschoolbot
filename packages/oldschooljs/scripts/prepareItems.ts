@@ -1,12 +1,15 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/rng';
+import { objectValues } from '@oldschoolgg/toolkit';
 import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { clone } from 'remeda';
 
 import { EquipmentSlot, type Item } from '@/meta/item.js';
 import { CLUE_SCROLL_NAMES, CLUE_SCROLLS, Items, USELESS_ITEMS } from '@/structures/Items.js';
-import { increaseNumByPercent, reduceNumByPercent } from '@/util/smallUtils.js';
 import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
+import { fetchPrices } from './fetchPrices.js';
+import { fetchRawItems } from './fetchRawItems.js';
 import { itemChanges } from './manualItemChanges.js';
 
 const ITEM_UPDATE_CONFIG = {
@@ -40,15 +43,6 @@ const itemsToRename = [
 const itemsBeingModified = new Set([...equipmentModSrc.map(i => i[0]), ...itemsToRename.map(i => i.id)]);
 
 const newItemJSON: { [key: string]: Item } = {};
-
-interface RawItemCollection {
-	[index: string]: Item & {
-		duplicate: boolean;
-		noted: boolean;
-		placeholder: boolean;
-		linked_id_item: number | null;
-	};
-}
 
 // This regex matches the nearly 600 individual clue-step items:
 const clueStepRegex = /^Clue scroll \((beginner|easy|medium|hard|elite|master)\) - .*$/;
@@ -281,23 +275,10 @@ const keysToWarnIfRemovedOrAdded: (keyof Item)[] = ['equipable', 'equipment', 'w
 
 export default async function prepareItems(): Promise<void> {
 	const messages: string[] = [];
-	const allItemsRaw: RawItemCollection = await fetch(
-		'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/37322fed3abb2d58236c59dfc6babb37a27a50ea/docs/items-complete.json'
-	).then((res): Promise<any> => res.json());
+	const allItemsRaw = await fetchRawItems();
 	const allItems = clone(allItemsRaw);
 
-	const allPrices = await fetch('https://prices.runescape.wiki/api/v1/osrs/latest', {
-		headers: {
-			'User-Agent': 'oldschooljs - @magnaboy'
-		}
-	})
-		.then((res): Promise<any> => res.json())
-		.then(res => res.data);
-
-	if (!allPrices[20_997]) {
-		throw new Error('Failed to fetch prices');
-	}
-
+	const allPrices = await fetchPrices();
 	const newItems: Item[] = [];
 	const nameChanges: string[] = [];
 
@@ -508,13 +489,13 @@ export default async function prepareItems(): Promise<void> {
 		messages.push(`Name Changes:\n	${nameChanges.join('\n	')}`);
 	}
 
-	const deletedItems: any[] = Object.values(previousItems)
-		.filter((i: any) => !(newItemJSON as any)[i.id])
+	const deletedItems: Item[] = objectValues(previousItems)
+		.filter(i => !newItemJSON[i.id])
 		.filter(i => i !== null && i !== undefined);
 
 	messages.push(`
 New Items: ${moidLink(newItems.map(i => i.id))}
-Deleted Items: ${moidLink(deletedItems)}
+Deleted Items: ${moidLink(deletedItems.map(i => i.id))}
 `);
 
 	if (deletedItems.length > 0) {

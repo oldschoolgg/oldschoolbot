@@ -13,6 +13,7 @@ import {
 } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 
 import { formatDuration, formatOrdinal, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
@@ -25,7 +26,7 @@ const boostPerPlayer = 5;
 
 async function startCommand(
 	interaction: MInteraction,
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	floor: string | undefined,
 	solo: boolean | undefined
@@ -43,7 +44,7 @@ async function startCommand(
 	}
 
 	const dungeonLength = Time.Minute * 5 * (floorToDo / 2);
-	let quantity = Math.floor(user.calcMaxTripLength('Dungeoneering') / dungeonLength);
+	let quantity = Math.floor((await user.calcMaxTripLength('Dungeoneering')) / dungeonLength);
 	let duration = quantity * dungeonLength;
 
 	const message = `${user.usernameOrMention} has created a Dungeoneering party! Use the buttons below to join/leave.
@@ -53,6 +54,7 @@ async function startCommand(
 **Required Stats:** ${formatSkillRequirements(requiredSkills(floorToDo))}`;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 1,
 		maxSize: maxTeamSize,
@@ -62,7 +64,7 @@ async function startCommand(
 			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];
 			}
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, 'your minion is busy.'];
 			}
 
@@ -84,12 +86,9 @@ async function startCommand(
 		return `You can't start a Dungeoneering party for Floor ${floorToDo} because ${leaderCheck[1]}`;
 	}
 
-	let users: MUser[] = [];
-	if (!isSolo) {
-		const usersWhoConfirmed = await interaction.makeParty(partyOptions);
-		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
-	} else {
-		users = [user];
+	const users: MUser[] = isSolo ? [user] : await globalClient.makeParty(partyOptions);
+	if (await ActivityManager.anyMinionIsBusy(users)) {
+		return 'One or more party members have their minion busy.';
 	}
 
 	const boosts = [];
@@ -136,7 +135,7 @@ async function startCommand(
 
 	// Calculate new number of floors will be done now that it is about to start
 	const perFloor = duration / quantity;
-	quantity = Math.floor(user.calcMaxTripLength('Dungeoneering') / perFloor);
+	quantity = Math.floor((await user.calcMaxTripLength('Dungeoneering')) / perFloor);
 	duration = quantity * perFloor;
 
 	let str = `${partyOptions.leader.usernameOrMention}'s dungeoneering party (${users
@@ -151,7 +150,7 @@ async function startCommand(
 
 	await ActivityManager.startTrip<DungeoneeringOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Dungeoneering',
@@ -184,7 +183,7 @@ async function buyCommand(user: MUser, name?: string, quantity?: number) {
 		}. You need ${overallCost}, but you have only ${balance.toLocaleString()}.`;
 	}
 
-	await user.addItemsToBank({ items: { [item.id]: quantity }, collectionLog: true });
+	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
 	await user.update({
 		dungeoneering_tokens: {
 			decrement: overallCost
@@ -210,7 +209,7 @@ export const dgCommand = defineCommand({
 					type: 'String',
 					name: 'floor',
 					description: 'The floor you want to do. (Optional, defaults to max)',
-					autocomplete: async (_: string, user: MUser) => {
+					autocomplete: async ({ user }: StringAutoComplete) => {
 						return [7, 6, 5, 4, 3, 2, 1]
 							.filter(floor => hasRequiredLevels(user, floor))
 							.map(i => ({ name: `Floor ${i}`, value: i.toString() }));
@@ -239,7 +238,7 @@ export const dgCommand = defineCommand({
 					type: 'String',
 					name: 'item',
 					description: 'The item you want to buy.',
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return dungBuyables
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
@@ -256,9 +255,9 @@ export const dgCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction }) => {
 		if (interaction) await interaction.defer();
-		if (options.start) return startCommand(interaction, channelID, user, options.start.floor, options.start.solo);
+		if (options.start) return startCommand(interaction, channelId, user, options.start.floor, options.start.solo);
 		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);
 		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.user.dungeoneering_tokens.toLocaleString()}
 **Max floor:** ${calcMaxFloorUserCanDo(user)}`;

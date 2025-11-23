@@ -22,7 +22,7 @@ export const cookCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to cook.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					...Cookables.map(i => i.name),
 					...LeapingFish.map(i => i.item.name),
@@ -43,7 +43,7 @@ export const cookCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		let { quantity, name } = options;
 
 		const barbarianFish = LeapingFish.find(
@@ -54,7 +54,7 @@ export const cookCommand = defineCommand({
 		);
 
 		if (barbarianFish) {
-			return cutLeapingFishCommand({ user, channelID, name, quantity });
+			return cutLeapingFishCommand({ user, channelId, name, quantity });
 		}
 
 		const forestryFood = ForestryRations.find(
@@ -63,7 +63,7 @@ export const cookCommand = defineCommand({
 		);
 
 		if (forestryFood) {
-			return forestersRationCommand({ user, channelID, name, quantity });
+			return forestersRationCommand({ user, channelId, name, quantity });
 		}
 
 		const cookable = Cooking.Cookables.find(
@@ -124,7 +124,7 @@ export const cookCommand = defineCommand({
 		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
 
-		const maxTripLength = user.calcMaxTripLength('Cooking');
+		const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
@@ -153,7 +153,7 @@ export const cookCommand = defineCommand({
 		await ActivityManager.startTrip<CookingActivityTaskOptions>({
 			cookableID: cookable.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Cooking'

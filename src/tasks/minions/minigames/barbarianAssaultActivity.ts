@@ -5,7 +5,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 		const { honour_level: currentHonourLevel } = await user.fetchStats();
 
 		let basePoints = 35;
@@ -42,6 +42,13 @@ export const barbAssaultTask: MinionTask = {
 ${resultStr}`;
 		if (flappyRes.shouldGiveBoost) resultStr += `\n\n${flappyRes.userMsg}`;
 
-		handleTripFinish(user, channelID, resultStr, undefined, data, null);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: {
+				content: resultStr
+			},
+			data
+		});
 	}
 };

@@ -5,7 +5,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 export const fogTask: MinionTask = {
 	type: 'FistOfGuthix',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		const { newScore } = await user.incrementMinigameScore('fist_of_guthix', quantity);
 
@@ -22,6 +22,6 @@ export const fogTask: MinionTask = {
 
 		await user.addToGodFavour(['Guthix'], data.duration);
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		return handleTripFinish({ user, channelId, message: str, data });
 	}
 };

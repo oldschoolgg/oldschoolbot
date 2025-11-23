@@ -32,7 +32,7 @@ const combinationalRunesArray: string[] = [
 export const guardiansOfTheRiftTask: MinionTask = {
 	type: 'GuardiansOfTheRift',
 	async run(data: GuardiansOfTheRiftActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } = data;
+		const { channelId, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } = data;
 		await user.incrementMinigameScore('guardians_of_the_rift', quantity);
 
 		const miningXP = quantity * 5 * minedFragments;
@@ -175,6 +175,6 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, null);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data });
 	}
 };

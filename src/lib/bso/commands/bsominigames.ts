@@ -30,7 +30,8 @@ import { TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/minig
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
-import { ownedMaterialOption } from '@/lib/discord/index.js';
+import { choicesOf } from '@/discord/index.js';
+import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
 
 export const bsoMinigamesCommand = defineCommand({
 	name: 'bsominigames',
@@ -129,7 +130,7 @@ export const bsoMinigamesCommand = defineCommand({
 							name: 'name',
 							description: 'The thing you want to buy.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return OuraniaBuyables.filter(i =>
 									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.item.name, value: i.item.name }));
@@ -159,7 +160,7 @@ export const bsoMinigamesCommand = defineCommand({
 							type: 'String',
 							name: 'location',
 							description: 'The location you want to fish at.',
-							choices: fishingLocations.map(i => ({ name: i.name, value: i.name }))
+							choices: choicesOf(fishingLocations.map(i => i.name))
 						}
 					]
 				},
@@ -248,7 +249,7 @@ export const bsoMinigamesCommand = defineCommand({
 							type: 'String',
 							description: 'The godly item to sacrifice.',
 							required: true,
-							autocomplete: async (value: string, user: MUser) => {
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								return user.bank
 									.items()
 									.filter(i => allGodlyItems.includes(i[0].id))
@@ -310,7 +311,7 @@ export const bsoMinigamesCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const {
 			baxtorian_bathhouses,
 			monkey_rumble,
@@ -322,10 +323,10 @@ export const bsoMinigamesCommand = defineCommand({
 		} = options;
 
 		if (options.turaels_trials?.start) {
-			return turaelsTrialsStartCommand(user, channelID, options.turaels_trials.start.method);
+			return turaelsTrialsStartCommand(user, channelId, options.turaels_trials.start.method);
 		}
 		if (options.guthixian_cache?.join) {
-			return joinGuthixianCache(user, channelID);
+			return joinGuthixianCache(user, channelId);
 		}
 		if (options.guthixian_cache?.stats) {
 			const boost = user.user.guthixian_cache_boosts_available;
@@ -348,13 +349,13 @@ export const bsoMinigamesCommand = defineCommand({
 			const sim = baxBathSim();
 			return {
 				content: baxBathHelpStr,
-				files: [{ name: 'sim.txt', attachment: Buffer.from(sim) }]
+				files: [{ name: 'sim.txt', buffer: Buffer.from(sim) }]
 			};
 		}
 
 		if (baxtorian_bathhouses?.start) {
 			return baxtorianBathhousesStartCommand({
-				channelID,
+				channelId,
 				user: user,
 				tier: baxtorian_bathhouses.start.tier,
 				ore: baxtorian_bathhouses.start.heating,
@@ -362,32 +363,32 @@ export const bsoMinigamesCommand = defineCommand({
 			});
 		}
 
-		if (monkey_rumble?.start) return monkeyRumbleCommand(user, channelID);
+		if (monkey_rumble?.start) return monkeyRumbleCommand(user, channelId);
 		if (monkey_rumble?.stats) return monkeyRumbleStatsCommand(user);
 
 		if (ourania_delivery_service?.buy) {
 			return odsBuyCommand(user, ourania_delivery_service.buy.name, ourania_delivery_service.buy.quantity ?? 1);
 		}
 		if (ourania_delivery_service?.stats) return odsStatsCommand(user);
-		if (ourania_delivery_service?.start) return odsStartCommand(user, channelID);
+		if (ourania_delivery_service?.start) return odsStartCommand(user, channelId);
 
 		if (fishing_contest?.stats_info) return fishingContestStatsCommand(user);
 		if (fishing_contest?.fish) {
-			return fishingContestStartCommand(user, channelID, fishing_contest.fish.location);
+			return fishingContestStartCommand(user, channelId, fishing_contest.fish.location);
 		}
 
 		if (fist_of_guthix?.start) {
-			return fistOfGuthixCommand(user, channelID);
+			return fistOfGuthixCommand(user, channelId);
 		}
 		if (stealing_creation?.start) {
-			return stealingCreationCommand(user, channelID);
+			return stealingCreationCommand(user, channelId);
 		}
 		if (options.tinkering_workshop?.start) {
-			return tinkeringWorkshopCommand(user, options.tinkering_workshop.start.material, channelID);
+			return tinkeringWorkshopCommand(user, options.tinkering_workshop.start.material, channelId);
 		}
 
 		if (options.balthazars_big_bonanza?.start) {
-			return bonanzaCommand(user, channelID);
+			return bonanzaCommand(user, channelId);
 		}
 
 		return 'Invalid command.';

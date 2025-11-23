@@ -1,8 +1,8 @@
-import { MessageFlags, userMention } from 'discord.js';
+import { userMention } from '@oldschoolgg/discord';
 
 async function rawLinkAccount(firstUserID: string, secondUserID: string) {
-	const firstUser = await globalClient.fetchUser(firstUserID);
-	const secondUser = await globalClient.fetchUser(secondUserID);
+	const firstUser = await globalClient.fetchRUser(firstUserID);
+	const secondUser = await globalClient.fetchRUser(secondUserID);
 
 	if (!firstUser || !secondUser) {
 		return 'Invalid user.';
@@ -43,7 +43,7 @@ async function rawLinkAccount(firstUserID: string, secondUserID: string) {
 	return `Successfully linked ${userMention(firstUser.id.toString())} and ${userMention(secondUser.id.toString())} to the same group. There are now ${inGroup.length} alts in the group.`;
 }
 
-export const linkCommand: RoboChimpCommand = {
+export const linkCommand = defineCommand({
 	name: 'link',
 	description: 'Link alt accounts.',
 	options: [
@@ -60,14 +60,8 @@ export const linkCommand: RoboChimpCommand = {
 			required: true
 		}
 	],
-	run: async ({
-		options,
-		user
-	}: CommandRunOptions<{
-		first_user: MahojiUserOption;
-		second_user: MahojiUserOption;
-	}>) => {
-		if (!user.isMod()) return { content: 'Ook OOK OOK', flags: MessageFlags.Ephemeral };
+	run: async ({ options, user }) => {
+		if (!user.isMod()) return { content: 'Ook OOK OOK', ephemeral: true };
 		return rawLinkAccount(options.first_user.user.id, options.second_user.user.id);
 	}
-};
+});

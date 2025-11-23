@@ -7,12 +7,12 @@ import {
 } from '@/lib/bso/collection-log/main.js';
 import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
 
-import { Events, formatOrdinal, increaseNumByPercent, noOp, notEmpty, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
+import { bold } from '@oldschoolgg/discord';
+import { Events, formatOrdinal, increaseNumByPercent, notEmpty, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, convertXPtoLVL, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
 
 import { type User, UserEventType } from '@/prisma/main.js';
-import { Channel, globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
@@ -20,7 +20,6 @@ import Skillcapes from '@/lib/skilling/skillcapes.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const maxFilter = SkillsArray.map(s => `"skills.${s}" >= ${MAX_LEVEL_XP}`).join(' AND ');
 const makeQuery = (ironman: boolean) => `SELECT count(id)::int
@@ -29,11 +28,14 @@ WHERE ${maxFilter}
 ${ironman ? 'AND "minion.ironman" = true' : ''};`;
 
 async function howManyMaxed() {
-	const [normies, irons] = (
-		(await Promise.all([prisma.$queryRawUnsafe(makeQuery(false)), prisma.$queryRawUnsafe(makeQuery(true))])) as any
+	const [normies, irons]: number[] = (
+		await prisma.$transaction([
+			prisma.$queryRawUnsafe<{ count: bigint }[]>(makeQuery(false)),
+			prisma.$queryRawUnsafe<{ count: bigint }[]>(makeQuery(true))
+		])
 	)
-		.map((i: any) => i[0].count)
-		.map((i: any) => Number.parseInt(i));
+		.map(i => i[0].count)
+		.map(i => Number(i));
 
 	return {
 		normies,
@@ -51,9 +53,9 @@ async function onMax(user: MUser) {
 	} 🎉`;
 
 	globalClient.emit(Events.ServerNotification, str);
-	sendToChannelID(Channel.GeneralChannel, { content: str }).catch(noOp);
-	const djsUser = await globalClient.users.fetch(user.id);
-	djsUser.send(globalConfig.maxingMessage).catch(noOp);
+	globalClient.sendMessage(globalConfig.supportServerID, { content: str });
+	const clientSettings = await ClientSettings.fetch({ maxing_message: true });
+	globalClient.sendDm(user.id, clientSettings.maxing_message);
 }
 
 interface StaticXPBoost {
@@ -403,7 +405,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 		if (currentTotalLevel < MAX_TOTAL_LEVEL && user.totalLevel >= MAX_TOTAL_LEVEL) {
 			str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
-			onMax(user);
+			await onMax(user);
 		} else if (currentLevel !== newLevel) {
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`

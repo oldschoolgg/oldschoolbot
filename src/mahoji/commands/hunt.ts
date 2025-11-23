@@ -286,7 +286,7 @@ export const huntCommand = defineCommand({
 			name: 'name',
 			description: 'The creature you want to hunt.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Hunter.Creatures.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -315,7 +315,7 @@ export const huntCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		if (options.stamina_potions === undefined) {
 			options.stamina_potions = true;
 		}
@@ -330,7 +330,7 @@ export const huntCommand = defineCommand({
 
 		const crystalImpling = creature.name === 'Crystal impling';
 
-		const maxTripLength = user.calcMaxTripLength('Hunter');
+		const maxTripLength = await user.calcMaxTripLength('Hunter');
 		const elligibleForQuickTrap =
 			creature.huntTechnique === HunterTechniqueEnum.BoxTrapping && user.owns('Quick trap');
 		const elligibleForWebshooter = user.owns('Webshooter') && !crystalImpling;
@@ -412,7 +412,7 @@ export const huntCommand = defineCommand({
 		await ActivityManager.startTrip<HunterActivityTaskOptions>({
 			creatureID: creature.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			usingHuntPotion: isUsingHunterPotion ? true : undefined,

@@ -1,8 +1,9 @@
 import { isAtleastThisOld, Time } from '@oldschoolgg/toolkit';
-import { ComponentType } from 'discord.js';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Bank } from 'oldschooljs';
 
 import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
 	if (user.hasMinion) return 'You already have a minion!';
@@ -13,8 +14,8 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 		minion_ironman: Boolean(ironman)
 	});
 
-	const apiUser = await globalClient.users.fetch(user.id);
-	const starter = isAtleastThisOld(apiUser.createdAt, Time.Year * 2)
+	const createdAt = DiscordSnowflake.timestampFrom(user.id);
+	const starter = isAtleastThisOld(createdAt, Time.Year * 2)
 		? new Bank({
 				Shark: 300,
 				'Saradomin brew(4)': 50,
@@ -36,15 +37,7 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 		await user.addItemsToBank({ items: starter, collectionLog: false });
 	}
 	// Ensure user has a userStats row
-	await prisma.userStats.upsert({
-		where: {
-			user_id: BigInt(user.id)
-		},
-		create: {
-			user_id: BigInt(user.id)
-		},
-		update: {}
-	});
+	await fetchUserStats(user.id);
 
 	return {
 		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
@@ -60,11 +53,6 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 Please click the buttons below for important links.
 
 ${starter !== null ? `**You received these starter items:** ${starter}.` : ''}`,
-		components: [
-			{
-				type: ComponentType.ActionRow,
-				components: mahojiInformationalButtons
-			}
-		]
+		components: mahojiInformationalButtons
 	};
 }

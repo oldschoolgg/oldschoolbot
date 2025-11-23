@@ -13,7 +13,7 @@ export async function lmsCommand(
 		buy?: { name?: string; quantity?: number };
 	},
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	interaction: MInteraction
 ) {
 	const stats = await getUsersLMSStats(user);
@@ -69,17 +69,17 @@ export async function lmsCommand(
 		return `You spent ${cost} points to buy ${loot}. You now have ${user.user.lms_points} LMS points.`;
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to do an LMS trip';
 	}
 	const durationPerGame = Time.Minute * 5.5;
-	const quantity = Math.floor(user.calcMaxTripLength('LastManStanding') / durationPerGame);
+	const quantity = Math.floor((await user.calcMaxTripLength('LastManStanding')) / durationPerGame);
 	const duration = randomVariation(quantity * durationPerGame, 5);
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'lms',
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'LastManStanding',
 		quantity

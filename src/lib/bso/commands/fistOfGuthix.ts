@@ -3,11 +3,11 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function fistOfGuthixCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) return 'Your minion is busy.';
+export async function fistOfGuthixCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return 'Your minion is busy.';
 
 	const gameTime = Time.Minute * 7.5;
-	const quantity = Math.floor(user.calcMaxTripLength('FistOfGuthix') / gameTime);
+	const quantity = Math.floor((await user.calcMaxTripLength('FistOfGuthix')) / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
 	const str = `${
@@ -16,7 +16,7 @@ export async function fistOfGuthixCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'FistOfGuthix',

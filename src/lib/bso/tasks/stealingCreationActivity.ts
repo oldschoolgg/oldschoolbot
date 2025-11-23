@@ -5,7 +5,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 export const scTask: MinionTask = {
 	type: 'StealingCreation',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		const { newScore } = await user.incrementMinigameScore('stealing_creation', quantity);
 
@@ -20,6 +20,6 @@ export const scTask: MinionTask = {
 
 		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

@@ -151,7 +151,7 @@ export function calculateAgilityResult({
 export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { courseID, quantity, channelID, duration, alch } = data;
+		const { courseID, quantity, channelId, duration, alch } = data;
 		const minutes = Math.round(duration / Time.Minute);
 		const currentLevel = user.skillsAsLevels.agility;
 
@@ -300,6 +300,6 @@ export const agilityTask: MinionTask = {
 			if (msgs.length > 0) str += `\n\n${msgs.join('\n')}`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

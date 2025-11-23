@@ -20,7 +20,7 @@ export const mixCommand = defineCommand({
 			name: 'name',
 			description: 'The potion you want to mix.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Herblore.Mixables.map(i => i.item.name)
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -49,7 +49,7 @@ export const mixCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const mixableItem = Herblore.Mixables.find(
 			i => stringMatches(i.item.name, options.name) || i.aliases.some(alias => stringMatches(alias, options.name))
 		);
@@ -90,7 +90,7 @@ export const mixCommand = defineCommand({
 			} gp for each item so they don't have to go.`;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Herblore');
+		const maxTripLength = await user.calcMaxTripLength('Herblore');
 		let quantity = optionQuantity ?? mixableItem.defaultQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
@@ -150,7 +150,7 @@ export const mixCommand = defineCommand({
 		await ActivityManager.startTrip<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.item.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			zahur: Boolean(zahur),
 			wesley: Boolean(wesley),
 			quantity,

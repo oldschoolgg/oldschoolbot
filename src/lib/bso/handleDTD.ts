@@ -1,6 +1,5 @@
 import { itemID } from 'oldschooljs';
 
-import type { Prisma } from '@/prisma/main.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 
@@ -17,7 +16,7 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 			rangeSetup.weapon = null;
 		}
 		await user.update({
-			gear_range: rangeSetup as Prisma.InputJsonObject
+			gear_range: rangeSetup
 		});
 
 		if (monster.name === 'Koschei the deathless') {

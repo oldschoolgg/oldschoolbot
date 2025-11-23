@@ -13,7 +13,7 @@ export const mahojiUseCommand = defineCommand({
 			name: 'item',
 			description: 'The item you want to pick.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				const res = user.bank.items().filter(i => {
 					if (!allUsableItems.has(i[0].id)) return false;
 					return !value ? true : i[0].name.toLowerCase().includes(value.toLowerCase());
@@ -26,7 +26,7 @@ export const mahojiUseCommand = defineCommand({
 			name: 'secondary_item',
 			description: 'Optional second item to use the first one on.',
 			required: false,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				const res = user.bank.items().filter(i => {
 					if (!allUsableItems.has(i[0].id)) return false;
 					return !value ? true : i[0].name.toLowerCase().includes(value.toLowerCase());

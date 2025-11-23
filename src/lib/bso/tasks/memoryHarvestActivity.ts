@@ -180,7 +180,7 @@ export const memoryHarvestTask: MinionTask = {
 	type: 'MemoryHarvest',
 	async run(data: MemoryHarvestOptions, { user, handleTripFinish }) {
 		const {
-			channelID,
+			channelId,
 			duration,
 			e: energyItemID,
 			t: harvestMethodIndex,
@@ -216,14 +216,13 @@ export const memoryHarvestTask: MinionTask = {
 
 		if (cost.length > 0) {
 			if (!user.owns(cost)) {
-				return handleTripFinish(
+				return handleTripFinish({
 					user,
-					channelID,
-					`${user}, ${user.minionName} couldn't complete the trip because they didn't have the required items: ${cost}.`,
-					undefined,
+					channelId,
+					message: `${user}, ${user.minionName} couldn't complete the trip because they didn't have the required items: ${cost}.`,
 					data,
 					loot
-				);
+				});
 			}
 			await user.removeItemsFromBank(cost);
 		}
@@ -254,6 +253,6 @@ export const memoryHarvestTask: MinionTask = {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}`;
 		}
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

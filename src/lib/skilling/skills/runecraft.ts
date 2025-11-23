@@ -1,5 +1,5 @@
 import { Emoji, Time } from '@oldschoolgg/toolkit';
-import { Bank, itemID, LootTable } from 'oldschooljs';
+import { Bank, type ItemBank, itemID, LootTable } from 'oldschooljs';
 
 import { defineSkill } from '@/lib/skilling/types.js';
 
@@ -312,7 +312,7 @@ const RCPouches = [
 	}
 ];
 
-const raimentsOfTheEyeItems: { [key: number]: number } = {
+const raimentsOfTheEyeItems: ItemBank = {
 	[itemID('Hat of the eye')]: 10,
 	[itemID('Robe top of the eye')]: 10,
 	[itemID('Robe bottoms of the eye')]: 10,

@@ -14,6 +14,7 @@ import Agility from '@/lib/skilling/skills/agility.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList } from '@/lib/util/smallUtils.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export interface RequirementFailure {
@@ -367,12 +368,7 @@ export class Requirements {
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
 
 		const tames = await user.fetchTames();
-
-		const poh = await prisma.playerOwnedHouse.upsert({
-			where: { user_id: user.id },
-			update: {},
-			create: { user_id: user.id }
-		});
+		const poh = await getPOH(user.id);
 		return {
 			user,
 			minigames,

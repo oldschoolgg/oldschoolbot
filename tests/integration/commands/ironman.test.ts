@@ -1,8 +1,8 @@
 import { miniID, Time } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { type Prisma, TableBankType } from '@/prisma/main.js';
+import type { Prisma } from '@/prisma/main.js';
 import { DELETED_USER_ID } from '../../../src/lib/constants.js';
 import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand.js';
 import { mockedId } from '../util.js';
@@ -133,10 +133,11 @@ describe('Ironman Command', () => {
 			collectionLog: true
 		});
 		expect(userBeingReset.cl.length).toEqual(3);
-		const clBankId = await global.prisma.tableBank.findFirstOrThrow({
-			where: { user_id: userId, type: TableBankType.CollectionLog }
-		});
-		expect(await global.prisma!.tableBankItem.count({ where: { bank_id: clBankId.id } })).toEqual(3);
+		expect(
+			await global.prisma.jsonBank.count({
+				where: { user_id: userId, type: 'CollectionLog' }
+			})
+		).toEqual(1);
 
 		const result = await ironmanCommand(userBeingReset, null);
 		expect(result).toEqual('You are now an ironman.');
@@ -170,10 +171,9 @@ describe('Ironman Command', () => {
 		expect(userStats?.cl_array).toEqual(undefined);
 		expect(userStats?.cl_array_length).toEqual(undefined);
 
-		const tableBanks = await global.prisma!.tableBank.findMany({ where: { user_id: userId } });
+		const tableBanks = await global.prisma!.jsonBank.findMany({ where: { user_id: userId } });
 		for (const tableBank of tableBanks) {
-			const items = await global.prisma!.tableBankItem.count({ where: { bank_id: tableBank.id } });
-			expect(items).toEqual(0);
+			expect(Object.keys(tableBank.bank as ItemBank).length).toEqual(0);
 		}
 
 		// Bingo

@@ -29,12 +29,12 @@ const mediumDiaryBoost = 20;
 
 export async function darkAltarCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	extracts
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	extracts?: boolean;
 }) {
@@ -79,7 +79,7 @@ export async function darkAltarCommand({
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}
 
-	const maxTripLength = user.calcMaxTripLength('DarkAltar');
+	const maxTripLength = await user.calcMaxTripLength('DarkAltar');
 	// Calculate Abyssal amulet boost:
 	if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
 		const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
@@ -118,7 +118,7 @@ export async function darkAltarCommand({
 
 	await ActivityManager.startTrip<DarkAltarOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'DarkAltar',

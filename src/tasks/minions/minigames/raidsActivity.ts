@@ -74,7 +74,7 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 export const raidsTask: MinionTask = {
 	type: 'Raids',
 	async run(data: RaidsOptions, { handleTripFinish }) {
-		const { channelID, users, challengeMode, duration, leader, quantity: _quantity, cc } = data;
+		const { channelId, users, challengeMode, duration, leader, quantity: _quantity, cc } = data;
 		const quantity = _quantity ?? 1;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const previousCLs = allUsers.map(i => i.cl.clone());
@@ -227,45 +227,48 @@ export const raidsTask: MinionTask = {
 		const shouldShowImage = allUsers.length <= 3 && Array.from(raidResults.values()).every(i => i.loot.length <= 6);
 
 		if (users.length === 1) {
-			return handleTripFinish(
-				allUsers[0],
-				channelID,
-				resultMessage,
-				shouldShowImage
-					? await drawChestLootImage({
-							entries: [
-								{
-									loot: totalLoot,
-									user: allUsers[0],
-									previousCL: previousCLs[0],
-									customTexts: []
-								}
-							],
-							type: 'Chambers of Xerician'
-						})
-					: undefined,
-				data,
-				totalLoot
-			);
-		}
-
-		handleTripFinish(
-			allUsers[0],
-			channelID,
-			resultMessage,
-			shouldShowImage
+			const img = shouldShowImage
 				? await drawChestLootImage({
-						entries: allUsers.map((u, index) => ({
-							loot: raidResults.get(u.id)!.loot,
-							user: u,
-							previousCL: previousCLs[index],
-							customTexts: []
-						})),
+						entries: [
+							{
+								loot: totalLoot,
+								user: allUsers[0],
+								previousCL: previousCLs[0],
+								customTexts: []
+							}
+						],
 						type: 'Chambers of Xerician'
 					})
-				: undefined,
-			data,
-			null
-		);
+				: undefined;
+			return handleTripFinish({
+				user: allUsers[0],
+				channelId,
+				message: { content: resultMessage, files: [img] },
+				data,
+				loot: totalLoot
+			});
+		}
+
+		const img = shouldShowImage
+			? await drawChestLootImage({
+					entries: allUsers.map((u, index) => ({
+						loot: raidResults.get(u.id)!.loot,
+						user: u,
+						previousCL: previousCLs[index],
+						customTexts: []
+					})),
+					type: 'Chambers of Xerician'
+				})
+			: undefined;
+
+		return handleTripFinish({
+			user: allUsers[0],
+			channelId,
+			message: {
+				content: resultMessage,
+				files: [img]
+			},
+			data
+		});
 	}
 };

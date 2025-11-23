@@ -115,9 +115,9 @@ export const dropRatesCommand = defineCommand({
 			name: 'thing',
 			description: 'The thing you want to check.',
 			required: true,
-			autocomplete: async (val: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return droprates
-					.filter(i => (!val ? true : i.name.toLowerCase().includes(val.toLowerCase())))
+					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
 			}
 		}
@@ -130,7 +130,7 @@ export const dropRatesCommand = defineCommand({
 			output += `\n\n**Notes:**\n${obj.notes.join('\n')}`;
 		}
 		if (output.length >= 2000) {
-			return { files: [{ attachment: Buffer.from(output), name: 'droprates.txt' }] };
+			return { files: [{ buffer: Buffer.from(output), name: 'droprates.txt' }] };
 		}
 		return output;
 	}

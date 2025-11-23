@@ -6,7 +6,8 @@ import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',
 	async run(data: MahoganyHomesActivityTaskOptions, { user, handleTripFinish }) {
-		let { channelID, quantity, xp, duration, points } = data;
+		let { channelId, quantity, xp, duration, points } = data;
+
 		await user.incrementMinigameScore('mahogany_homes', quantity);
 
 		let bonusXP = 0;
@@ -37,6 +38,6 @@ export const mahoganyHomesTask: MinionTask = {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

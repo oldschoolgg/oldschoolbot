@@ -36,7 +36,7 @@ export const templeTrekkingTask: MinionTask = {
 	type: 'Trekking',
 
 	async run(data: TempleTrekkingActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, difficulty, duration } = data;
+		const { channelId, quantity, difficulty, duration } = data;
 		await user.incrementMinigameScore('temple_trekking', quantity);
 		const userBank = user.bank.clone();
 		const loot = new Bank();
@@ -97,6 +97,6 @@ export const templeTrekkingTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

@@ -31,7 +31,7 @@ export const kibbleCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const kibble = kibbles.find(e => [e.item.name, e.type].some(s => stringMatches(s, options.kibble)));
 		if (!kibble) {
 			return `No matching kibble found, they are: ${kibbles.map(k => k.item.name).join(', ')}.`;
@@ -88,10 +88,10 @@ export const kibbleCommand = defineCommand({
 			timePer = Math.floor(timePer / 2);
 		}
 		const duration = timePer * options.quantity;
-		const maxTripLength = user.calcMaxTripLength('KibbleMaking');
-		if (duration > user.calcMaxTripLength('KibbleMaking')) {
+		const maxTripLength = await user.calcMaxTripLength('KibbleMaking');
+		if (duration > maxTripLength) {
 			return `The maximum amount of ${kibble.item.name} you can create in ${formatDuration(
-				user.calcMaxTripLength('KibbleMaking')
+				maxTripLength
 			)} is ${Math.floor(maxTripLength / timePer)}.`;
 		}
 
@@ -104,7 +104,7 @@ export const kibbleCommand = defineCommand({
 
 		await ActivityManager.startTrip<KibbleOptions>({
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity: options.quantity,
 			duration,
 			type: 'KibbleMaking',

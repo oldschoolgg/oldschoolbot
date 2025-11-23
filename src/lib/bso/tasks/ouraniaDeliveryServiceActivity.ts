@@ -48,7 +48,7 @@ const OuraniaTipTable = new LootTable().tertiary(9, BaseTable);
 export const odsTask: MinionTask = {
 	type: 'OuraniaDeliveryService',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		await user.incrementMinigameScore('ourania_delivery_service', quantity);
 
@@ -102,6 +102,6 @@ export const odsTask: MinionTask = {
 		}
 		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

@@ -9,7 +9,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@tailwindcss/vite": "^4.1.5",
+		"@tailwindcss/vite": "4.1.17",
 		"preact": "^10.26.9",
 		"react-use-websocket": "^4.13.0",
 		"tailwindcss": "^4.1.5",
@@ -17,7 +17,7 @@
 		"wouter-preact": "^3.7.1"
 	},
 	"devDependencies": {
-		"@preact/preset-vite": "^2.10.1",
+		"@preact/preset-vite": "2.10.2",
 		"vite": "npm:rolldown-vite@latest"
 	}
 }

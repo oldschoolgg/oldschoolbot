@@ -73,15 +73,12 @@ export const BSOTestUtil = {
 	) {
 		const previousBank = user.bank.clone();
 		const currentXP = clone(user.skillsAsXP);
-		const commandResult = await user.runCommand(
-			stealCommand,
-			{ name: Monsters.get(monster)!.name, quantity },
-			true
-		);
+		const commandResult = await user.runCommand(stealCommand, { name: Monsters.get(monster)!.name, quantity });
 		if (shouldFail) {
 			expect(commandResult).not.toContain('is now going to');
 		}
 		const activityResult = (await user.runActivity()) as MonsterActivityTaskOptions | undefined;
+		await user.sync();
 		const newXP = clone(user.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
 		for (const skill of SkillsArray) xpGained[skill] = 0;

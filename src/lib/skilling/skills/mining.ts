@@ -1,7 +1,7 @@
 import { bsoOres } from '@/lib/bso/skills/mining/ores.js';
 
 import { Emoji } from '@oldschoolgg/toolkit';
-import { itemID, LootTable } from 'oldschooljs';
+import { type ItemBank, itemID, LootTable } from 'oldschooljs';
 
 import { defineSkill, type Ore } from '@/lib/skilling/types.js';
 
@@ -301,7 +301,7 @@ const CamdozaalMine: Ore = {
 	clueScrollChance: 741_600
 };
 
-const prospectorItems: { [key: number]: number } = {
+const prospectorItems: ItemBank = {
 	[itemID('Prospector helmet')]: 0.4,
 	[itemID('Prospector jacket')]: 0.8,
 	[itemID('Prospector legs')]: 0.6,

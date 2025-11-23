@@ -1,5 +1,6 @@
 import type { DOAStoredRaid } from '@/lib/bso/bsoTypes.js';
 
+import { bold } from '@oldschoolgg/discord';
 import { percentChance, randArrItem, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -9,13 +10,12 @@ import {
 	reduceNumByPercent,
 	Time
 } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { mentionCommand } from '@/discord/utils.js';
 import { calcSetupPercent } from '@/lib/data/cox.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { mentionCommand } from '@/lib/discord/index.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { Gear } from '../structures/Gear.js';
@@ -218,14 +218,14 @@ const requirements: {
 
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
-				return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+				return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 					'minion',
 					'charge'
 				)}`;
 			}
 			const voidStaffCharges = VOID_STAFF_CHARGES_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped('Void staff') && user.user.void_staff_charges < voidStaffCharges) {
-				return `You need atleast ${voidStaffCharges} Void staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+				return `You need atleast ${voidStaffCharges} Void staff charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 					'minion',
 					'charge'
 				)}`;
@@ -528,7 +528,7 @@ export async function checkDOAUser({
 	if (!user.hasMinion) {
 		return `${user.usernameOrMention} doesn't have a minion`;
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention}'s minion is busy`;
 	}
 
@@ -729,7 +729,7 @@ export async function checkDOATeam(users: MUser[], challengeMode: boolean, quant
 	const checkedUsers: CheckedDOAUser[] = [];
 
 	for (const user of users) {
-		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
+		if (await user.minionIsBusy()) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkDOAUser({ user, challengeMode, duration: Time.Hour, quantity });
 		if (typeof checkResult === 'string') {
 			return checkResult;

@@ -9,7 +9,7 @@ export async function sawmillCommand(
 	user: MUser,
 	plankName: string,
 	quantity: number | undefined,
-	channelID: string,
+	channelId: string,
 	speed: number | undefined
 ) {
 	const plank = Planks.find(
@@ -36,7 +36,7 @@ export async function sawmillCommand(
 		boosts.push('10% for Woodcutting Guild unlocked');
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Sawmill');
+	const maxTripLength = await user.calcMaxTripLength('Sawmill');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
@@ -85,7 +85,7 @@ export async function sawmillCommand(
 		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
-		channelID
+		channelId
 	});
 
 	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${

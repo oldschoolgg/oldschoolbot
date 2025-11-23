@@ -26,11 +26,10 @@ import { calculateDungeoneeringResult } from '@/lib/bso/tasks/dungeoneeringActiv
 import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHarvestActivity.js';
 import { calculateTuraelsTrialsResult } from '@/lib/bso/tasks/turaelsTrialsActivity.js';
 
+import { bold } from '@oldschoolgg/discord';
 import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions } from 'discord.js';
-import { bold } from 'discord.js';
-import { Bank, convertBankToPerHourStats, Items, itemID, toKMB } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, convertLVLtoXP, Items, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -175,7 +174,7 @@ export const ratesCommand = defineCommand({
 				);
 			}
 			return {
-				...(interaction.returnStringOrFile(tableArr.join('\n')) as InteractionReplyOptions)
+				...interaction.returnStringOrFile(tableArr.join('\n'))
 			};
 		}
 		if (options.misc?.zygomite_seeds) {
@@ -246,7 +245,7 @@ ${zygomiteFarmingSource
 
 			return {
 				content: 'Assumes abyssal jibwings (e) and divine ring',
-				...(interaction.returnStringOrFile(results) as InteractionReplyOptions)
+				...interaction.returnStringOrFile(results)
 			};
 		}
 
@@ -330,7 +329,6 @@ ${zygomiteFarmingSource
 								});
 
 								if (typeof inputResult === 'string') {
-									console.log(inputResult);
 									continue;
 								}
 								const result = calculateHunterResult({
@@ -378,7 +376,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
+				...interaction.returnStringOrFile(results),
 				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
 			};
 		}
@@ -434,7 +432,7 @@ ${zygomiteFarmingSource
 			}
 
 			return {
-				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
+				...interaction.returnStringOrFile(results),
 				content: 'Assumes: Slayer master cape (8% boost to slayer xp)'
 			};
 		}
@@ -491,7 +489,12 @@ ${zygomiteFarmingSource
 										bank: new Bank(),
 										hasEquipped: () => true,
 										hasEquippedOrInBank: () => true,
-										skillAsLevels: { mining: miningLevel, smithing: 120 }
+										skillsAsLevels: { mining: miningLevel, smithing: 120 },
+										skillsAsXP: {
+											mining: convertLVLtoXP(miningLevel),
+											smithing: convertLVLtoXP(120)
+										},
+										usingPet: () => true
 									} as any as GearBank;
 
 									const result = calculateMiningInput({
@@ -556,7 +559,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
+				...interaction.returnStringOrFile(results),
 				content:
 					'Assumes: Mining master cape, full Prospector, Glory, Varrock armour 4, 120 mining, Volcanic pickaxe.'
 			};
@@ -710,7 +713,7 @@ ${zygomiteFarmingSource
 			for (const floor of [1, 2, 3, 4, 5, 6, 7]) {
 				for (const hasPortent of [true, false]) {
 					const dungeonLength = Time.Minute * 5 * (floor / 2);
-					const quantity = Math.floor(user.calcMaxTripLength('Dungeoneering') / dungeonLength);
+					const quantity = Math.floor((await user.calcMaxTripLength('Dungeoneering')) / dungeonLength);
 					const duration = quantity * dungeonLength;
 					const dungeoneeringLevel = 120;
 					const goraShardChance = calcGorajanShardChance({
@@ -742,7 +745,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
+				...interaction.returnStringOrFile(results),
 				content: 'Assumes: 120 Dungeoneering, Ring of luck, master cape (For gora shard chance)'
 			};
 		}
