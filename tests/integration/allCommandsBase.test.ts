@@ -2,7 +2,7 @@ import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
 import type { IChannel, IRole } from '@oldschoolgg/schemas';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP } from 'oldschooljs';
-import PromiseQueue, { TimeoutError } from 'p-queue';
+import PromiseQueue from 'p-queue';
 import { omit } from 'remeda';
 import { test } from 'vitest';
 
@@ -321,13 +321,9 @@ test(
 						}
 					})
 					.catch(err => {
-						if (err instanceof TimeoutError) {
-							throw new Error(
-								`Command ${command.name} with options ${JSON.stringify(options)} timed out.`
-							);
-						} else {
-							throw err;
-						}
+						throw new Error(
+							`Command ${command.name} with options ${JSON.stringify(options)} errored: ${err}`
+						);
 					});
 			}
 		}

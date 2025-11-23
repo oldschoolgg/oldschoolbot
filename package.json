@@ -61,7 +61,7 @@
 		"lru-cache": "^10.3.0",
 		"luxon": "^3.7.2",
 		"oldschooljs": "workspace:*",
-		"p-queue": "9.0.1",
+		"p-queue": "8.1.1",
 		"pg": "^8.16.3",
 		"pglite-prisma-adapter": "^0.6.1",
 		"piscina": "^5.1.3",
