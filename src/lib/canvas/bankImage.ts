@@ -4,7 +4,6 @@ import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import { chunk, cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
-import { loadImage } from 'skia-canvas';
 
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import {
@@ -12,7 +11,8 @@ import {
 	type BGSpriteName,
 	CanvasImage,
 	getClippedRegion,
-	type IBgSprite
+	type IBgSprite,
+	loadImage
 } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { BitField, PerkTier } from '@/lib/constants.js';

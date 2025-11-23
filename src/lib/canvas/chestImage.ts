@@ -1,16 +1,15 @@
 import { randInt } from '@oldschoolgg/rng';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
-import { type Image, loadImage } from 'skia-canvas';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
+import { type CanvasImage, loadImage } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { TOBUniques } from '@/lib/data/tob.js';
 
 const chestLootTypes: {
 	title: string;
-	chestImage: Promise<Image>;
-	chestImagePurple: Promise<Image>;
+	chestImage: Promise<CanvasImage>;
+	chestImagePurple: Promise<CanvasImage>;
 	width: number;
 	height: number;
 	purpleItems: (number | string)[];

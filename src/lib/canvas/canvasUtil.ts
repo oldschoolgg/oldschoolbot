@@ -14,6 +14,7 @@ export function createCanvas(width: number, height: number) {
 export type Canvas = ReturnType<typeof createCanvas>;
 export const CanvasImage = Image;
 export type CanvasImage = Image;
+export { loadImage };
 
 export type { CanvasContext };
 
