@@ -4,7 +4,7 @@ import { groupBy } from 'remeda';
 import { redis } from '@/lib/redis.js';
 import { CHANNELS } from '@/util.js';
 
-async function syncBlacklists() {
+export async function syncBlacklists() {
 	const allBlacklist = await roboChimpClient.blacklistedEntity.findMany();
 	const a = groupBy(allBlacklist, b => b.type);
 	await redis.del(RedisKeys.BlacklistedUsers);

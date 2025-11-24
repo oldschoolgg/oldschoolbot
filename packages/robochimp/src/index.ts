@@ -1,3 +1,4 @@
+import { syncBlacklists } from '@/commands/blacklist.js';
 import './discord/client.js';
 
 import { startServer } from './http/server.js';
@@ -15,6 +16,7 @@ async function main() {
 	await initPrismaClients();
 	await startServer();
 	await globalClient.login();
+	await syncBlacklists();
 }
 
 main();
