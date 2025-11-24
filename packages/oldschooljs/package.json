@@ -22,7 +22,8 @@
 		"test:unit": "vitest run --coverage",
 		"generate": "tsx --tsconfig scripts/tsconfig.json scripts/prepare",
 		"enum": "tsx --tsconfig scripts/tsconfig.json scripts/enum.ts",
-		"build": "tsdown"
+		"build": "tsdown",
+		"postbuild": "tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts"
 	},
 	"dependencies": {
 		"deepmerge": "4.3.1"
