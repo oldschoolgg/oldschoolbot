@@ -98,7 +98,11 @@ describe('Sanity', () => {
 				throw new Error(`Expected ${name}[${id}] to match, instead received: ${nameForId} ${idForName}`);
 			}
 		}
+
+		expect(Items.getOrThrow('Dragon egg').id).toEqual(48210);
+		expect(Items.getItem(48210)!.name).toEqual('Dragon egg');
 	});
+
 	test('deleted items', () => {
 		for (const [id, name] of itemsToDelete) {
 			if (Items.getItem(name)?.id === id || Items.get(id)) {
