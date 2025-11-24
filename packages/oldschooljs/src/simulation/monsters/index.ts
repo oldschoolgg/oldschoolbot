@@ -18,8 +18,10 @@ const monstersObject = {
 };
 
 const allMonsters: [number, Monster][] = Object.values(monstersObject).map((monster: Monster) => [monster.id, monster]);
+const allMonstersArr: Monster[] = allMonsters.map(([, mon]) => mon);
 const allMonstersMap = new Map<number, Monster>(allMonsters);
 class MonsterCollection {
+	public values: Monster[] = allMonstersArr;
 	map<T>(callback: (value: Monster) => T): T[] {
 		const result: T[] = [];
 		for (const mon of allMonsters.map(([, mon]) => mon)) {
@@ -31,7 +33,7 @@ class MonsterCollection {
 		return allMonstersMap.get(id);
 	}
 	find(predicate: (value: Monster) => boolean): Monster | undefined {
-		for (const mon of allMonsters.map(([, mon]) => mon)) {
+		for (const mon of allMonstersArr) {
 			if (predicate(mon)) return mon;
 		}
 		return undefined;
