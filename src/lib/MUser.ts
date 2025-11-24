@@ -390,6 +390,7 @@ export class MUserClass {
 	}
 
 	async fetchPerkTier(): Promise<0 | PerkTier> {
+		if (process.env.TEST) return 0;
 		return getUsersPerkTier(this);
 	}
 

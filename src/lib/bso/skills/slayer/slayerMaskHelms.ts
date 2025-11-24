@@ -2,6 +2,8 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
 import { type Item, Items, type Monster, Monsters } from 'oldschooljs';
 
+import { slayerMaskLeaderboardCache } from '@/lib/cache.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';
 
@@ -163,4 +165,37 @@ for (const mask of slayerMaskHelms) {
 	}
 }
 
-export const slayerMasksHelmsCL = slayerMaskHelms.flatMap(i => [i.helm.id, i.mask.id]);
+export const slayerMasksHelmsCL: number[] = slayerMaskHelms.flatMap(i => [i.helm.id, i.mask.id]);
+const allSpecialSlayerHelms: Set<number> = new Set(slayerMaskHelms.map(i => i.helm.id));
+
+export function handleSlayerMaskGlow({
+	itemID,
+	user,
+	glow
+}: {
+	itemID: number;
+	user: MUser | undefined | null;
+	glow:
+		| {
+				color: string;
+				radius: number;
+				blur: number;
+		  }
+		| undefined;
+}):
+	| {
+			color: string;
+			radius: number;
+			blur: number;
+	  }
+	| undefined {
+	if (!user) return glow;
+	if (!allSpecialSlayerHelms.has(itemID)) return glow;
+	if (slayerMaskLeaderboardCache.get(itemID) !== user.id) return glow;
+
+	return {
+		color: OSRSCanvas.COLORS.PURPLE,
+		radius: 12,
+		blur: 16
+	};
+}

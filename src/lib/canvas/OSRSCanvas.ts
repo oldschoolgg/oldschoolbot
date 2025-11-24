@@ -1,4 +1,5 @@
 import { applyCustomItemEffects } from '@/lib/bso/canvas/customItemEffects.js';
+import { handleSlayerMaskGlow } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -397,10 +398,12 @@ export class OSRSCanvas {
 			itemIcon.height
 		] as const;
 
+		glow = handleSlayerMaskGlow({ itemID, user, glow });
+
 		if (glow) {
 			this.drawGlowingBlur(
-				destX + this.itemSize.width / 2,
-				destY + this.itemSize.height / 2,
+				destX + itemIcon.width / 2,
+				destY + itemIcon.height / 2,
 				glow.radius,
 				glow.color,
 				glow.blur
