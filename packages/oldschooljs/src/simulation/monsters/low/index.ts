@@ -186,7 +186,6 @@ import { PhrinShade } from './n-s/PhrinShade.js';
 import { Pirate } from './n-s/Pirate.js';
 import { PitScorpion } from './n-s/PitScorpion.js';
 import { PoisonScorpion } from './n-s/PoisonScorpion.js';
-import { PollnivnianBandit } from './n-s/PollnivnianBandit.js';
 import { Porazdir } from './n-s/Porazdir.js';
 import { PrifddinasElf } from './n-s/PrifddinasElf.js';
 import { PriffRabbit } from './n-s/PriffRabbit.js';
@@ -526,7 +525,6 @@ export const allLowMonsters: Record<string, SimpleMonster> = {
 	TzHaarHur,
 	Rogue,
 	PrifddinasElf,
-	PollnivnianBandit,
 	WarriorWoman,
 	AlKharidWarrior,
 	Ghoul,
