@@ -11,7 +11,7 @@ export class TSVWriter {
 		this.bufferSize = bufferSize;
 	}
 
-	writeRow(row: string[]) {
+	writeRow(row: string[]): void {
 		if (!this.columns) {
 			this.columns = row.length;
 		}
@@ -31,7 +31,7 @@ export class TSVWriter {
 		}
 	}
 
-	end() {
+	end(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			this.flush();
 			this.stream.end(() => resolve());

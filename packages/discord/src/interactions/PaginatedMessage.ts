@@ -131,7 +131,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 		this.ephemeral = ephemeral ?? false;
 	}
 
-	async run(targetUsers?: string[]) {
+	async run(targetUsers?: string[]): Promise<SpecialResponse.PaginatedMessageResponse> {
 		await this.interaction.defer({ ephemeral: this.ephemeral });
 		const interactionResponse: any = await this.interaction.replyWithResponse({ ...(await this.render()) });
 		if (this.totalPages === 1) return SpecialResponse.PaginatedMessageResponse;

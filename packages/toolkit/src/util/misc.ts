@@ -2,7 +2,7 @@ import emojiRegex from 'emoji-regex';
 
 const rawEmojiRegex = emojiRegex();
 
-export function stripEmojis(str: string) {
+export function stripEmojis(str: string): string {
 	return str.replace(rawEmojiRegex, '');
 }
 
@@ -61,9 +61,9 @@ export enum PerkTier {
 	Seven = 7
 }
 
-export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
+export const alphabeticalSort = (a: string, b: string): number => a.localeCompare(b);
 
-export function getInterval(intervalHours: number) {
+export function getInterval(intervalHours: number): { start: Date; end: Date } {
 	const currentTime = new Date();
 	const currentHour = currentTime.getHours();
 
@@ -81,7 +81,7 @@ export function getInterval(intervalHours: number) {
 	};
 }
 
-export function getNextUTCReset(last_timeStamp: number, cd: number) {
+export function getNextUTCReset(last_timeStamp: number, cd: number): number {
 	const coolDownEnd = new Date(last_timeStamp + cd);
 
 	const nextUTCReset = new Date(
@@ -98,12 +98,11 @@ export function objHasAnyPropInCommon(obj: object, other: object): boolean {
 	return false;
 }
 
-export function sleep(ms: number) {
+export function sleep(ms: number): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export function noOp() {}
+export function noOp(): void {}
 
 /**
  * Shows what percentage a value is of a total value, for example calculating what percentage of 20 is 5? (25%)
@@ -186,7 +185,7 @@ export function scaleNumber(num: number, inMin: number, inMax: number, outMin: n
 	return ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 }
 
-export function stripNonAlphanumeric(str: string) {
+export function stripNonAlphanumeric(str: string): string {
 	return str.replace(/[^a-zA-Z0-9]/g, '');
 }
 
@@ -217,4 +216,8 @@ ALTER TABLE ${table} ADD CONSTRAINT ${constraint}${rest.trim()};`
 		sql = typeof sub === 'string' ? sql.replace(r, sub) : sql.replace(r, (...a) => sub(...a));
 	}
 	return sql;
+}
+
+export function cleanUsername(username: string): string {
+	return stripEmojis(username).replace(/[@|*]/g, '').substring(0, 32);
 }

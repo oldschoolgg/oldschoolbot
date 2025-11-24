@@ -12,6 +12,7 @@ import {
 	type APIEmoji,
 	type APIGuild,
 	type APIGuildMember,
+	type APIInteraction,
 	type APIRole,
 	type APIWebhook,
 	GatewayDispatchEvents,
@@ -26,7 +27,13 @@ import {
 } from 'discord-api-types/v10';
 
 import { BitField } from '../BitField.js';
-import { type CollectorOptions, createInteractionCollector } from '../interactions/interactionCollector.js';
+import { apiInteractionParse } from '../interactions/apiInteractionParse.js';
+import {
+	type CollectorOptions,
+	createInteractionCollector,
+	type InteractionCollector
+} from '../interactions/interactionCollector.js';
+import type { MInteraction } from '../interactions/MInteraction.js';
 import { type PermissionKey, Permissions } from '../Permissions.js';
 import {
 	type DiscordClientEventsMap,
@@ -112,7 +119,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		});
 	}
 
-	createInteractionCollector(options: CollectorOptions) {
+	createInteractionCollector(options: CollectorOptions): InteractionCollector {
 		return createInteractionCollector(options);
 	}
 
@@ -132,14 +139,14 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return this.userUsernameFetcher(userId);
 	}
 
-	async login() {
+	async login(): Promise<void> {
 		await this.ws.connect();
 		return new Promise<void>(resolve => {
 			this.once('ready', () => resolve());
 		});
 	}
 
-	get applicationId() {
+	get applicationId(): string {
 		const id = this.application?.id;
 		if (!id) throw new Error('Application ID is not set yet.');
 		return id;
@@ -159,11 +166,11 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return channels;
 	}
 
-	async leaveGuild(guildId: string) {
+	async leaveGuild(guildId: string): Promise<void> {
 		await this.rest.delete(Routes.userGuild(guildId));
 	}
 
-	public apiCommandsRoute() {
+	public apiCommandsRoute(): `/applications/${string}/commands` {
 		const route = this.isProduction
 			? Routes.applicationCommands(this.applicationId)
 			: Routes.applicationGuildCommands(this.applicationId, this.mainServerId);
@@ -235,25 +242,23 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		}
 	}
 
-	async sendDm(userId: string, message: SendableMessage) {
+	async sendDm(userId: string, message: SendableMessage): Promise<IMessage> {
 		const dmChannel: APIChannel = (await this.rest.post(Routes.userChannels(), {
 			body: { recipient_id: userId }
 		})) as APIChannel;
 		return this.sendMessage(dmChannel.id, message);
 	}
 
-	async deleteMessage(channelId: string, messageId: string) {
+	async deleteMessage(channelId: string, messageId: string): Promise<void> {
 		const route = Routes.channelMessage(channelId, messageId);
-		const res = await this.rest.delete(route);
-		return res;
+		await this.rest.delete(route);
 	}
 
-	async editMessage(channelId: string, messageId: string, body: SendableMessage) {
+	async editMessage(channelId: string, messageId: string, body: SendableMessage): Promise<void> {
 		const route = Routes.channelMessage(channelId, messageId);
-		const res = await this.rest.patch(route, {
+		await this.rest.patch(route, {
 			body
 		});
-		return res;
 	}
 
 	async fetchChannel(channelId: string): Promise<ValidAPIChannel | null> {
@@ -285,12 +290,12 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return (res ?? null) as IMessage | null;
 	}
 
-	async giveRole(guildId: string, userId: string, roleId: string) {
+	async giveRole(guildId: string, userId: string, roleId: string): Promise<void> {
 		const route = Routes.guildMemberRole(guildId, userId, roleId);
 		await this.rest.put(route);
 	}
 
-	async takeRole(guildId: string, userId: string, roleId: string) {
+	async takeRole(guildId: string, userId: string, roleId: string): Promise<void> {
 		const route = Routes.guildMemberRole(guildId, userId, roleId);
 		await this.rest.delete(route);
 	}
@@ -354,7 +359,7 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		text: string;
 		type?: ActivityType;
 		status?: PresenceUpdateStatus;
-	}) {
+	}): Promise<void> {
 		const d: GatewayUpdatePresence = {
 			op: GatewayOpcodes.PresenceUpdate,
 			d: {
@@ -377,7 +382,10 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		return Promise.all(shardIds.map(shardId => this.ws.send(shardId, packet)));
 	}
 
-	async respondToAutocompleteInteraction(interaction: IInteraction, choices: APIApplicationCommandOptionChoice[]) {
+	async respondToAutocompleteInteraction(
+		interaction: IInteraction,
+		choices: APIApplicationCommandOptionChoice[]
+	): Promise<void> {
 		const route = Routes.interactionCallback(interaction.id, interaction.token);
 		await this.rest.post(route, {
 			body: {
@@ -389,12 +397,24 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		});
 	}
 
-	async addReaction({ channelId, messageId, emojiId }: { channelId: string; messageId: string; emojiId: string }) {
+	async addReaction({
+		channelId,
+		messageId,
+		emojiId
+	}: {
+		channelId: string;
+		messageId: string;
+		emojiId: string;
+	}): Promise<void> {
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emojiId));
 		await this.rest.put(route);
 	}
 
-	public async [Symbol.asyncDispose]() {
+	apiInteractionParse(itx: APIInteraction): Promise<MInteraction | undefined> {
+		return apiInteractionParse(this, itx);
+	}
+
+	public async [Symbol.asyncDispose](): Promise<void> {
 		await this.ws.destroy();
 	}
 }

@@ -19,9 +19,13 @@ export default defineConfig({
 		},
 		testTimeout: 60_000,
 		maxConcurrency: 4,
-		isolate: true,
-		pool: 'threads',
-		maxWorkers: 5
+		isolate: false,
+		pool: 'forks',
+		maxWorkers: 10,
+		sequence: {
+			shuffle: true,
+			seed: 1
+		}
 	},
 
 	resolve: {

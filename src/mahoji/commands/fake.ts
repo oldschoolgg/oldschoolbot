@@ -1,15 +1,15 @@
 import { randInt } from '@oldschoolgg/rng';
-import type { Image } from 'skia-canvas';
 
 import {
 	type CanvasContext,
+	type CanvasImage,
 	canvasToBuffer,
 	createCanvas,
 	loadAndCacheLocalImage,
 	measureTextWidth
 } from '@/lib/canvas/canvasUtil.js';
 
-let bg: Image | null = null;
+let bg: CanvasImage | null = null;
 
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 

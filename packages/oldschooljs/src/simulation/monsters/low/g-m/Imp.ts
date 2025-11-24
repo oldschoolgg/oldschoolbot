@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const ImpTable = new LootTable()
+export const ImpTable: LootTable = new LootTable()
 	.tertiary(5000, 'Imp champion scroll')
 	.tertiary(25, 'Ensouled imp head')
 	.every('Fiendish ashes')
@@ -44,7 +44,7 @@ export const ImpTable = new LootTable()
 	.add('Flyer', 1, 2)
 	.add('Potion', 1, 1);
 
-export default new SimpleMonster({
+export const Imp: SimpleMonster = new SimpleMonster({
 	id: 5007,
 	name: 'Imp',
 	table: ImpTable,

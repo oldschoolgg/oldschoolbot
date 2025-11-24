@@ -1,7 +1,7 @@
 import { calcWhatPercent, deepEqual, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
-import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
+import { Prisma, type TriviaQuestion, type User } from '@/prisma/clients/robochimp/client.js';
 import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
@@ -89,15 +89,32 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 }
 
 export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {
-	const result: RobochimpUser = await roboChimpClient.user.upsert({
+	const userId = BigInt(userID);
+	try {
+		const result = await roboChimpClient.user.upsert({
+			where: {
+				id: userId
+			},
+			create: {
+				id: userId
+			},
+			update: {}
+		});
+		return result;
+	} catch (err) {
+		// Ignore unique constraint errors, they already have a row
+		if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
+			throw err;
+		}
+	}
+
+	// They definitely should have a row now
+	const result = await roboChimpClient.user.findFirstOrThrow({
 		where: {
-			id: BigInt(userID)
-		},
-		create: {
-			id: BigInt(userID)
-		},
-		update: {}
+			id: userId
+		}
 	});
+
 	return result;
 }
 

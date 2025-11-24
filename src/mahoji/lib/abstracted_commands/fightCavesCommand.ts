@@ -1,6 +1,6 @@
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { Bank, itemID, Monsters } from 'oldschooljs';
+import { Bank, EMonster, itemID } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
@@ -17,7 +17,7 @@ async function determineDuration(user: MUser): Promise<[number, string]> {
 	let debugStr = '';
 
 	// Reduce time based on KC
-	const jadKC = await user.getKC(Monsters.TzTokJad.id);
+	const jadKC = await user.getKC(EMonster.TZTOKJAD);
 	const zukKC = await user.fetchMinigameScore('inferno');
 	const experienceKC = jadKC + zukKC * 3;
 	const percentIncreaseFromKC = Math.min(50, experienceKC);
@@ -109,7 +109,7 @@ export async function fightCavesCommand(user: MUser, channelId: string): Command
 
 	const { fight_caves_attempts: attempts } = await user.fetchStats();
 
-	const jadKC = await user.getKC(Monsters.TzTokJad.id);
+	const jadKC = await user.getKC(EMonster.TZTOKJAD);
 	const zukKC = await user.fetchMinigameScore('inferno');
 	const hasInfernoKC = zukKC > 0;
 
@@ -127,7 +127,7 @@ export async function fightCavesCommand(user: MUser, channelId: string): Command
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
-		usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+		usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 		usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 	// 15% boost for on task

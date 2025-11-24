@@ -29,6 +29,7 @@ export async function minionKillCommand(
 	solo: boolean | undefined,
 	onTask: boolean | undefined
 ): CommandResponse {
+	if (inputQuantity !== undefined && inputQuantity < 1) return 'Quantity must be greater than 0.';
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}

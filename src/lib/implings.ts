@@ -1,24 +1,24 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, LootTable, Openables } from 'oldschooljs';
+import {
+	BabyImpling,
+	Bank,
+	CrystalImpling,
+	DragonImpling,
+	EarthImpling,
+	EclecticImpling,
+	EssenceImpling,
+	GourmetImpling,
+	LootTable,
+	LuckyImpling,
+	MagpieImpling,
+	NatureImpling,
+	NinjaImpling,
+	YoungImpling
+} from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import activityInArea, { WorldLocations } from '@/lib/util/activityInArea.js';
-
-const {
-	BabyImpling,
-	YoungImpling,
-	GourmetImpling,
-	EarthImpling,
-	EssenceImpling,
-	EclecticImpling,
-	NatureImpling,
-	MagpieImpling,
-	NinjaImpling,
-	CrystalImpling,
-	DragonImpling,
-	LuckyImpling
-} = Openables;
 
 export const implings: Record<number, { level: number; catchXP: number }> = {
 	[BabyImpling.id]: { level: 17, catchXP: 18 },

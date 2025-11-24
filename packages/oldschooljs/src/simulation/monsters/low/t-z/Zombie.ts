@@ -2,7 +2,7 @@ import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const ZombieTable = new LootTable({ limit: 128 })
+export const ZombieTable: LootTable = new LootTable({ limit: 128 })
 	.every('Bones')
 	.tertiary(5000, 'Zombie champion scroll')
 
@@ -34,7 +34,7 @@ export const ZombieTable = new LootTable({ limit: 128 })
 	/* Subtables */
 	.add(HerbDropTable, 1, 25);
 
-export default new SimpleMonster({
+export const Zombie: SimpleMonster = new SimpleMonster({
 	id: 26,
 	name: 'Zombie',
 	table: ZombieTable,

@@ -14,7 +14,7 @@ export class SimpleOpenable extends Openable {
 		this.table = options.table;
 	}
 
-	public open(quantity = 1) {
+	public open(quantity = 1): Bank {
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {

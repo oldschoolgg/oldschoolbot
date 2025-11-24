@@ -1,5 +1,5 @@
 import { calcPercentOfNum, calcWhatPercent, Emoji, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
-import { Bank, itemID, Monsters } from 'oldschooljs';
+import { Bank, EMonster, itemID, Monsters } from 'oldschooljs';
 
 import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
@@ -29,7 +29,7 @@ export const fightCavesTask: MinionTask = {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 			usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 		if (preJadDeathTime) {
@@ -116,7 +116,7 @@ export const fightCavesTask: MinionTask = {
 			});
 		}
 
-		const { newKC } = await user.incrementKC(Monsters.TzTokJad.id, 1);
+		const { newKC } = await user.incrementKC(EMonster.TZTOKJAD, 1);
 		const loot = Monsters.TzTokJad.kill(1, { onSlayerTask: isOnTask });
 
 		if (loot.has('Tzrek-jad')) {

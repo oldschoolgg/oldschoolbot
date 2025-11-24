@@ -3,7 +3,7 @@ import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const AraxxorUniqueTable = new LootTable()
+const AraxxorUniqueTable: LootTable = new LootTable()
 	.add('Araxyte fang')
 	.add('Noxious blade')
 	.add('Noxious point')
@@ -14,7 +14,7 @@ const SupplyDrop = new LootTable()
 	.add(new LootTable().add('Prayer potion(3)', [1, 2]).add('Prayer potion(4)'))
 	.add(new LootTable().add('Wild pie', [2, 3]).add('Shark', [2, 3]));
 
-const AraxxorTable = new LootTable()
+const AraxxorTable: LootTable = new LootTable()
 	.tertiary(50, 'Clue scroll (elite)')
 	.tertiary(200, 'Coagulated venom')
 	.tertiary(150, AraxxorUniqueTable)
@@ -61,7 +61,7 @@ const AraxxorTable = new LootTable()
 	.add('Bark', 15, 1)
 	.add(RareDropTable);
 
-export const Araxxor = new SimpleMonster({
+export const Araxxor: SimpleMonster = new SimpleMonster({
 	id: 13668,
 	name: 'Araxxor',
 	table: AraxxorTable,
