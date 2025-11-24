@@ -51,40 +51,40 @@ export class BaseInteraction {
 		this.rawInteraction = rawInteraction;
 	}
 
-	get customId() {
+	get customId(): string | null {
 		if (this._data.kind !== 'Button') throw new Error('Interaction is not a button interaction.');
 		return this._data.custom_id;
 	}
 
-	get raw() {
+	get raw(): IChatInputCommandInteraction | IButtonInteraction {
 		return this._data;
 	}
 
-	get deferred() {
+	get deferred(): boolean {
 		return this._deferred;
 	}
-	get replied() {
+	get replied(): boolean {
 		return this._replied;
 	}
-	get ephemeral() {
+	get ephemeral(): boolean {
 		return this._ephemeral;
 	}
-	get channelId() {
+	get channelId(): string {
 		return this._data.channel_id;
 	}
-	get guildId() {
+	get guildId(): string | null {
 		return this._data.guild_id;
 	}
 
-	get createdTimestamp() {
+	get createdTimestamp(): number {
 		return this._data.created_timestamp;
 	}
 
-	get kind() {
+	get kind(): 'ChatInputCommand' | 'Button' {
 		return this._data.kind;
 	}
 
-	get messageId() {
+	get messageId(): string {
 		if (this._data.kind !== 'Button') throw new Error('InteractionHasNoMessage');
 		return this._data.message.id;
 	}
@@ -136,11 +136,13 @@ export class BaseInteraction {
 		}) as Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 	}
 
-	async baseDeferReply(options: { ephemeral?: boolean; withResponse?: boolean; threadId?: string } = {}) {
+	async baseDeferReply(
+		options: { ephemeral?: boolean; withResponse?: boolean; threadId?: string } = {}
+	): Promise<ReturnType<typeof this.sendCallback> | undefined> {
 		if (this._deferred) return;
 		if (this.replied) throw new Error('baseDeferReply: Tried to defer an interaction that was already replied');
 		const flags = options.ephemeral ? MessageFlags.Ephemeral : 0;
-		const res = await this.rest.post(Routes.interactionCallback(this.id, this.token), {
+		const res: any = await this.rest.post(Routes.interactionCallback(this.id, this.token), {
 			auth: false,
 			body: { type: InteractionResponseType.DeferredChannelMessageWithSource, data: { flags } },
 			query: makeURLSearchParams({ with_response: options.withResponse ?? false, thread_id: options.threadId })
@@ -161,14 +163,18 @@ export class BaseInteraction {
 		return res;
 	}
 
-	async baseDeferUpdate(options: { withResponse?: boolean } = {}) {
+	async baseDeferUpdate(
+		options: { withResponse?: boolean } = {}
+	): Promise<ReturnType<typeof this.sendCallback> | undefined> {
 		if (this._deferred || this._replied) throw new Error('baseDeferUpdate: InteractionAlreadyReplied');
 		const res = await this.sendCallback(InteractionResponseType.DeferredMessageUpdate);
 		this._deferred = true;
 		return options.withResponse ? res : undefined;
 	}
 
-	async update(options: SendableMessage & { withResponse?: boolean }) {
+	async update(
+		options: SendableMessage & { withResponse?: boolean }
+	): Promise<ReturnType<typeof this.sendCallback> | undefined> {
 		if (this._deferred || this._replied) throw new Error('update: InteractionAlreadyReplied');
 		const res = await this.sendCallback(InteractionResponseType.UpdateMessage, options);
 		this._replied = true;
@@ -196,7 +202,7 @@ export class BaseInteraction {
 		await this.rest.delete(Routes.webhookMessage(this.applicationId, this.token, message), { auth: false });
 	}
 
-	public async silentButtonAck() {
+	public async silentButtonAck(): Promise<void> {
 		await this.rest.post(Routes.interactionCallback(this.id, this.token), {
 			body: {
 				type: InteractionResponseType.DeferredMessageUpdate
@@ -204,8 +210,8 @@ export class BaseInteraction {
 		});
 	}
 
-	public async deferredMessageUpdate() {
-		return this.rest.post(Routes.interactionCallback(this.id, this.token), {
+	public async deferredMessageUpdate(): Promise<void> {
+		await this.rest.post(Routes.interactionCallback(this.id, this.token), {
 			body: {
 				type: InteractionResponseType.DeferredMessageUpdate
 			}

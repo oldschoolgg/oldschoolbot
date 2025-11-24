@@ -11,7 +11,10 @@ import {
 import type { DiscordClient } from '../client/DiscordClient.js';
 import { MInteraction } from './MInteraction.js';
 
-export async function apiInteractionParse(client: DiscordClient, itx: APIInteraction) {
+export async function apiInteractionParse(
+	client: DiscordClient,
+	itx: APIInteraction
+): Promise<MInteraction | undefined> {
 	const guildId = itx.guild_id ?? null;
 	const userId = (itx.member?.user.id ?? itx.user?.id)!;
 	// const member: IMember | null = guildId ? await Cache.getMember(guildId, userId) : null;
