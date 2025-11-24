@@ -12,7 +12,7 @@ const VyreTable = new LootTable({ limit: 132 })
 	.oneIn(5000, 'Blood shard')
 	.tertiary(99_175, 'Rocky');
 
-export default new SimpleMonster({
+export const Vyre: SimpleMonster = new SimpleMonster({
 	id: 9710,
 	name: 'Vyre',
 	pickpocketTable: VyreTable,

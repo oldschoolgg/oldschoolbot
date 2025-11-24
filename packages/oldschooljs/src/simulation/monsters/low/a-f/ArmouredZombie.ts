@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const ArmouredZombieTable = new LootTable({ limit: 128 })
+export const ArmouredZombieTable: LootTable = new LootTable({ limit: 128 })
 	.every('Bones')
 
 	/* Runes and ammunition */
@@ -38,7 +38,7 @@ export const ArmouredZombieTable = new LootTable({ limit: 128 })
 	.tertiary(600, 'Broken zombie helmet')
 	.tertiary(5000, 'Zombie champion scroll');
 
-export default new SimpleMonster({
+export const ArmouredZombie: SimpleMonster = new SimpleMonster({
 	id: 12_720,
 	name: 'Armoured Zombie',
 	table: ArmouredZombieTable,

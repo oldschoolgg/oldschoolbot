@@ -1,14 +1,17 @@
 import LootTable from '@/structures/LootTable.js';
 
-const GWMegaRareTable = new LootTable()
+const GWMegaRareTable: LootTable = new LootTable()
 	.add('Coins', [19_500, 20_000], 113)
 	.add('Rune spear', 1, 8)
 	.add('Shield left half', 1, 4)
 	.add('Dragon spear', 1, 3);
 
-export const ShardTable = new LootTable().add('Godsword shard 1').add('Godsword shard 2').add('Godsword shard 3');
+export const ShardTable: LootTable = new LootTable()
+	.add('Godsword shard 1')
+	.add('Godsword shard 2')
+	.add('Godsword shard 3');
 
-export const GWGemTable = new LootTable()
+export const GWGemTable: LootTable = new LootTable()
 	.add('Coins', [19_500, 20_000], 63)
 	.add('Uncut sapphire', 1, 32)
 	.add('Uncut emerald', 1, 16)
@@ -20,7 +23,7 @@ export const GWGemTable = new LootTable()
 	.add('Tooth half of key')
 	.add(GWMegaRareTable);
 
-const GWRareDropTable = new LootTable()
+const GWRareDropTable: LootTable = new LootTable()
 	/* Runes and ammunition */
 	.add('Nature rune', [62, 67], 3)
 	.add('Adamant javelin', [15, 20], 2)

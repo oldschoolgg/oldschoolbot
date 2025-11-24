@@ -1,9 +1,9 @@
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
-const runeArmorTable = new LootTable().add('Rune platelegs', 1, 1).add('Rune plateskirt', 1, 1);
+const runeArmorTable: LootTable = new LootTable().add('Rune platelegs', 1, 1).add('Rune plateskirt', 1, 1);
 
-const coinsKeyHalfTable = new LootTable()
+const coinsKeyHalfTable: LootTable = new LootTable()
 	.every('Coins', 750)
 	.add('Tooth half of key', 1, 1)
 	.add('Loop half of key', 1, 1);
@@ -58,7 +58,7 @@ const CrystalChestTable = new LootTable({ limit: 128 })
 	.add('Adamant sq shield', 1, 2)
 	.add(runeArmorTable, 1);
 
-export default new SimpleOpenable({
+export const CrystalChest: SimpleOpenable = new SimpleOpenable({
 	id: 989,
 	name: 'Crystal chest',
 	aliases: ['crystal chest'],
