@@ -1,5 +1,4 @@
 import { formatDuration, stringSearch } from '@oldschoolgg/toolkit';
-
 import { Bank, EMonster } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
