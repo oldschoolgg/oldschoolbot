@@ -1,4 +1,4 @@
-import { syncBlacklists } from '@/commands/blacklist.js';
+import { syncBlacklists } from '@/lib/syncBlacklists.js';
 import './discord/client.js';
 
 import { startServer } from './http/server.js';
