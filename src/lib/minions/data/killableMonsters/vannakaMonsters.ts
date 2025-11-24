@@ -402,11 +402,11 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
-		id: Monsters.DaganothFledgeling.id,
-		name: Monsters.DaganothFledgeling.name,
-		aliases: Monsters.DaganothFledgeling.aliases,
+		id: Monsters.DagannothFledgeling.id,
+		name: Monsters.DagannothFledgeling.name,
+		aliases: Monsters.DagannothFledgeling.aliases,
 		timeToFinish: Time.Second * 20,
-		table: Monsters.DaganothFledgeling,
+		table: Monsters.DagannothFledgeling,
 
 		wildy: false,
 
@@ -1115,11 +1115,11 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
-		id: Monsters.Otherworldlybeing.id,
-		name: Monsters.Otherworldlybeing.name,
-		aliases: Monsters.Otherworldlybeing.aliases,
+		id: Monsters.OtherworldlyBeing.id,
+		name: Monsters.OtherworldlyBeing.name,
+		aliases: Monsters.OtherworldlyBeing.aliases,
 		timeToFinish: Time.Second * 20,
-		table: Monsters.Otherworldlybeing,
+		table: Monsters.OtherworldlyBeing,
 
 		wildy: false,
 
