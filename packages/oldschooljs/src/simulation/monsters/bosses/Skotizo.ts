@@ -8,7 +8,7 @@ const AncientShardTable = new LootTable({ limit: 100 })
 	.add('Ancient shard', 4, 4)
 	.add('Ancient shard', 5, 1);
 
-const SkotizoTable = new LootTable()
+const SkotizoTable: LootTable = new LootTable()
 	.every('Infernal ashes')
 	.every('Clue scroll (hard)')
 	.every(AncientShardTable)
@@ -51,7 +51,7 @@ const SkotizoTable = new LootTable()
 	.tertiary(128, 'Dark totem')
 	.tertiary(200, 'Jar of darkness');
 
-export default new SimpleMonster({
+export const Skotizo: SimpleMonster = new SimpleMonster({
 	id: 7286,
 	name: 'Skotizo',
 	table: SkotizoTable,

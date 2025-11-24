@@ -13,7 +13,7 @@ const LizardmanTable = new LootTable({ limit: 78 })
 	.add('Xerician fabric', 1, 8)
 	.oneIn(125, "Xeric's talisman (inert)");
 
-export default new SimpleMonster({
+export const Lizardman: SimpleMonster = new SimpleMonster({
 	id: 6914,
 	name: 'Lizardman',
 	table: LizardmanTable,

@@ -90,7 +90,7 @@ export function uniqueArr<T>(arr: readonly T[]): T[] {
  *
  * @param arr The array of numbers to sum.
  */
-export function sumArr(arr: readonly number[]) {
+export function sumArr(arr: readonly number[]): number {
 	return arr.reduce((a, b) => a + b, 0);
 }
 
@@ -100,7 +100,7 @@ export function sumArr(arr: readonly number[]) {
  * @param value The value to add variation too.
  * @param percentage The max percentage to fluctuate the value by, in both negative/positive.
  */
-export function randomVariation(value: number, percentage: number) {
+export function randomVariation(value: number, percentage: number): number {
 	const lowerLimit = value * (1 - percentage / 100);
 	const upperLimit = value * (1 + percentage / 100);
 	return randFloat(lowerLimit, upperLimit);

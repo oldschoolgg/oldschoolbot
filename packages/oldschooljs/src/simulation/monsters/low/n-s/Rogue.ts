@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const RogueTable = new LootTable()
+const RogueTable: LootTable = new LootTable()
 	// Weaponry
 	.add('Iron dagger(p)', 1, 1 / 128)
 
@@ -12,7 +12,7 @@ const RogueTable = new LootTable()
 	.add('Lockpick', 1, 1 / 25.6)
 	.tertiary(257_211, 'Rocky');
 
-export default new SimpleMonster({
+export const Rogue: SimpleMonster = new SimpleMonster({
 	id: 526,
 	name: 'Rogue',
 	pickpocketTable: RogueTable,

@@ -53,7 +53,7 @@ const trawlerFish = [
 	}
 ];
 
-const RawJunkTable = new LootTable()
+const RawJunkTable: LootTable = new LootTable()
 	.add('Broken arrow')
 	.add('Broken glass')
 	.add('Broken staff')
@@ -64,9 +64,9 @@ const RawJunkTable = new LootTable()
 	.add('Pot')
 	.add('Rusty sword');
 
-const JunkTable = new LootTable().add(RawJunkTable, [0, 1]).add(RawJunkTable, [0, 1]);
+const JunkTable: LootTable = new LootTable().add(RawJunkTable, [0, 1]).add(RawJunkTable, [0, 1]);
 
-export function FishingTrawler(fishingLevel: number, hasEliteArd: boolean, bank?: Bank) {
+export function FishingTrawler(fishingLevel: number, hasEliteArd: boolean, bank?: Bank): { loot: Bank; xp: number } {
 	const loot = new Bank();
 	if (roll(5000)) {
 		loot.add('Heron');

@@ -162,7 +162,7 @@ const ReanimatedDragon = new SimpleMonster({
 	aliases: ['reanimated dragon']
 });
 
-export const ReanimatedMonsters = {
+export const ReanimatedMonsters: Record<string, SimpleMonster> = {
 	ReanimatedGoblin,
 	ReanimatedMonkey,
 	ReanimatedImp,

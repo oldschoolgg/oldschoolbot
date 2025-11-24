@@ -1,4 +1,4 @@
-import { MathRNG } from '@oldschoolgg/rng';
+import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
 
 import type { Item } from '@/meta/item.js';
 import { toKMB } from '../util/smallUtils.js';
@@ -213,7 +213,7 @@ export class Bank {
 		return this;
 	}
 
-	public random(rng = MathRNG): BankItem | null {
+	public random(rng: RNGProvider = MathRNG): BankItem | null {
 		const entries = Array.from(this.map.entries());
 		if (entries.length === 0) return null;
 		const randomEntry = rng.pick(entries);
@@ -346,7 +346,7 @@ export class Bank {
 		return errors;
 	}
 
-	public validateOrThrow() {
+	public validateOrThrow(): void {
 		const errors = this.validate();
 		if (errors.length > 0) {
 			throw new Error(`Bank validation failed: ${errors.join(', ')}`);
