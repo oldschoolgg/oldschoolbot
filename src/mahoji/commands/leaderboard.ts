@@ -1,3 +1,6 @@
+import { bsoItemContractDonationGivenLb, bsoItemContractLb } from '@/lib/bso/leaderboards/itemContractsLb.js';
+import { bsoTamesHatchedLb } from '@/lib/bso/leaderboards/tamesHatchedLb.js';
+
 import { calcWhatPercent, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
@@ -956,6 +959,22 @@ export const leaderboardCommand = defineCommand({
 
 		if (options.cl) {
 			return clLb(interaction, options.cl.cl, Boolean(options.cl.ironmen_only), Boolean(options.cl.tames));
+		}
+
+		if (options.item_contract_streak) {
+			return bsoItemContractLb(interaction, Boolean(options.item_contract_streak.ironmen_only));
+		}
+
+		if (options.tames_hatched) {
+			return bsoTamesHatchedLb(interaction, Boolean(options.tames_hatched.ironmen_only));
+		}
+
+		if (options.total_ic_donation_given) {
+			return bsoItemContractDonationGivenLb(interaction, true);
+		}
+
+		if (options.unique_ic_donation_given) {
+			return bsoItemContractDonationGivenLb(interaction, false);
 		}
 
 		if (options.clues) {
