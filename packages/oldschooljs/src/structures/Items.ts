@@ -20,7 +20,7 @@ export interface ItemCollection {
 	[index: string]: Item;
 }
 
-export const CLUE_SCROLLS = [
+export const CLUE_SCROLLS: number[] = [
 	// Clue scrolls
 	2677, 2801, 2722, 12_073, 19_835, 23_182
 ];
@@ -35,7 +35,7 @@ const collator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: tr
 const key = (x: SortableItem): string =>
 	Array.isArray(x) ? (x.length ? key(x[0]!) : '') : typeof x === 'string' ? x : x.name;
 
-function sortAlpha(arr: SortableItem[]): SortableItem[] {
+export function sortAlpha(arr: SortableItem[]): SortableItem[] {
 	const sorted = [...arr].map(v => (Array.isArray(v) ? sortAlpha(v) : v));
 	sorted.sort((a, b) => collator.compare(key(a), key(b)));
 	return sorted;
@@ -50,7 +50,7 @@ export const CLUE_SCROLL_NAMES: string[] = [
 	'Clue scroll (master)'
 ];
 
-export const USELESS_ITEMS = [
+export const USELESS_ITEMS: number[] = [
 	617, 8890, 6964, 2513, 19_492, 11_071, 11_068, 21_284, 24_735, 21_913, 4703, 4561, 2425, 4692, 3741,
 
 	// Quest blood vial
@@ -72,12 +72,11 @@ export const USELESS_ITEMS = [
 ];
 
 class ItemsSingleton extends Collection<number, Item> {
-	sortAlpha = sortAlpha;
 	public getById(id: number): Item | undefined {
 		return super.get(id);
 	}
 
-	modifyItem(itemName: ItemResolvable, data: Partial<Item>) {
+	modifyItem(itemName: ItemResolvable, data: Partial<Item>): void {
 		if (data.id) throw new Error('Cannot change item ID');
 		const id = this.resolveID(itemName)!;
 		const item = this.get(id);
@@ -191,7 +190,7 @@ class ItemsSingleton extends Collection<number, Item> {
 	}
 }
 
-export const Items = new ItemsSingleton();
+export const Items: ItemsSingleton = new ItemsSingleton();
 
 for (const [id, item] of Object.entries(items)) {
 	const numID = Number.parseInt(id);

@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { gzip } from 'node:zlib';
 
-export async function asyncGzip(buffer: Buffer) {
+export async function asyncGzip(buffer: Buffer): Promise<Buffer> {
 	return new Promise<Buffer>((resolve, reject) => {
 		gzip(buffer, {}, (error, gzipped) => {
 			if (error) {
@@ -12,6 +12,6 @@ export async function asyncGzip(buffer: Buffer) {
 	});
 }
 
-export function md5sum(str: string) {
+export function md5sum(str: string): string {
 	return createHash('md5').update(str).digest('hex');
 }

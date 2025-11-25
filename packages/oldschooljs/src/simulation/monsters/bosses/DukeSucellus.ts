@@ -14,18 +14,18 @@ const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add('Eye of the duke', 1, 1)
 	.add('Magus vestige', 1, 1);
 
-const ClueTable = new LootTable()
+const ClueTable: LootTable = new LootTable()
 	.add('Clue scroll (easy)')
 	.add('Clue scroll (medium)')
 	.add('Clue scroll (hard)')
 	.add('Clue scroll (elite)');
 
-const SupplyTable = new LootTable()
+const SupplyTable: LootTable = new LootTable()
 	.every('Pineapple pizza', [3, 4])
 	.every('Prayer potion(3)')
 	.every('Super combat potion(2)');
 
-const ResourceTable = new LootTable()
+const ResourceTable: LootTable = new LootTable()
 	.add('Bronze chainbody', [11, 17], 1)
 	.add('Mithril chainbody', [5, 7], 1)
 	.add('Adamant chainbody', [6, 10], 1)
@@ -94,7 +94,7 @@ class DukeSucellusSingleton extends Monster {
 	}
 }
 
-export const DukeSucellus = new DukeSucellusSingleton({
+export const DukeSucellus: DukeSucellusSingleton = new DukeSucellusSingleton({
 	id: 12_191,
 	name: 'Duke Sucellus',
 	aliases: ['duke sucellus']

@@ -220,17 +220,11 @@ h1 {
 	opacity: 1;
 }
 
-.rehype-heading-wrapper:not(:first-child):is(
-		.rehype-level-h3,
-		.rehype-level-h4,
-		.rehype-level-h5
-	) {
+.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h3, .rehype-level-h4, .rehype-level-h5) {
 	margin-block-start: 2em;
 }
 
-.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h2):not(
-		.rehype-with-extra-margin
-	) {
+.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h2):not(.rehype-with-extra-margin) {
 	margin-block-start: 3.75em;
 }
 

@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { BasiliskKnightPreTable } from '../low/a-f/BasiliskKnight.js';
 
-const BasiliskSentinelTable = new LootTable()
+const BasiliskSentinelTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(BasiliskKnightPreTable, 3)
 	.tertiary(19, 'Clue scroll (hard)')
@@ -18,7 +18,7 @@ const BasiliskSentinelTable = new LootTable()
 	.tertiary(754, 'Eternal gem')
 	.tertiary(754, 'Imbued heart');
 
-export default new SimpleMonster({
+export const BasiliskSentinel: SimpleMonster = new SimpleMonster({
 	id: 9258,
 	name: 'Basilisk Sentinel',
 	table: BasiliskSentinelTable,

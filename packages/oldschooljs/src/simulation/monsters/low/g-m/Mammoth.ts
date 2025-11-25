@@ -3,7 +3,7 @@ import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const AllotmentSeedTable = new LootTable()
+const AllotmentSeedTable: LootTable = new LootTable()
 	.add('Potato seed', 3, 15)
 	.add('Onion seed', 3, 10)
 	.add('Cabbage seed', 3, 8)
@@ -12,7 +12,7 @@ const AllotmentSeedTable = new LootTable()
 	.add('Strawberry seed', 3, 4)
 	.add('Watermelon seed', 3, 1);
 
-const BushSeedTable = new LootTable()
+const BushSeedTable: LootTable = new LootTable()
 	.add('Redberry seed', 2, 6)
 	.add('Cadavaberry seed', 2, 4)
 	.add('Dwellberry seed', 2, 3)
@@ -20,7 +20,7 @@ const BushSeedTable = new LootTable()
 	.add('Whiteberry seed', 2, 2)
 	.add('Poison ivy seed', 2, 2);
 
-const HopsSeedTable = new LootTable()
+const HopsSeedTable: LootTable = new LootTable()
 	.add('Barley seed', 4, 15)
 	.add('Hammerstone seed', 4, 10)
 	.add('Asgarnian seed', 4, 8)
@@ -29,7 +29,7 @@ const HopsSeedTable = new LootTable()
 	.add('Krandorian seed', 4, 4)
 	.add('Wildblood seed', 4, 1);
 
-const FruitTreeSeedTable = new LootTable()
+const FruitTreeSeedTable: LootTable = new LootTable()
 	.add('Apple tree seed', 1, 18)
 	.add('Banana tree seed', 1, 12)
 	.add('Orange tree seed', 1, 10)
@@ -37,7 +37,7 @@ const FruitTreeSeedTable = new LootTable()
 	.add('Pineapple seed', 1, 3)
 	.add('Papaya tree seed', 1, 1);
 
-export const MammothTable = new LootTable()
+export const MammothTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Herbs */
@@ -68,7 +68,7 @@ export const MammothTable = new LootTable()
 	.oneIn(400, 'Long bone')
 	.oneIn(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const Mammoth: SimpleMonster = new SimpleMonster({
 	id: 6604,
 	name: 'Mammoth',
 	table: MammothTable,

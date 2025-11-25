@@ -66,7 +66,7 @@ const stages: Stage[] = [
 		commands: [
 			{
 				cmd: [
-					'prettier --use-tabs --write "**/*.json" && biome check --write --unsafe --diagnostic-level=error',
+					'biome check --write --diagnostic-level=error',
 					'prettier --use-tabs --write "**/*.{yaml,yml,css,html}"',
 					'prisma format --schema ./prisma/robochimp.prisma && prisma format --schema ./prisma/schema.prisma'
 				],

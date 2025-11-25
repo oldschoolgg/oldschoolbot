@@ -1,6 +1,6 @@
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, Emoji, formatDuration, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, Items, itemID, Monsters } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { BitField } from '@/lib/constants.js';
@@ -288,7 +288,7 @@ async function infernoRun({
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
-		usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+		usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 		score > 0 &&
 		usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 

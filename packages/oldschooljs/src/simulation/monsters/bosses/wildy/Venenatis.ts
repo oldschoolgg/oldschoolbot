@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const VenenatisUniqueTable = new LootTable()
+const VenenatisUniqueTable: LootTable = new LootTable()
 	.oneIn(196, 'Fangs of venenatis')
 	.oneIn(256, 'Dragon 2h sword')
 	.oneIn(256, 'Dragon pickaxe')
@@ -16,7 +16,7 @@ const VenenatisSecondarySupplyTable = new LootTable({ limit: 18 })
 	.add('Ranging potion(2)', [2, 3], 1)
 	.add('Super combat potion(2)', [2, 3], 1);
 
-const VenenatisTable = new LootTable()
+const VenenatisTable: LootTable = new LootTable()
 	/* Unique table */
 	.every(VenenatisUniqueTable)
 
@@ -65,9 +65,9 @@ const VenenatisTable = new LootTable()
 	.tertiary(1500, 'Venenatis spiderling')
 	.tertiary(5013, 'Curved bone');
 
-const VenenatisTotalTable = new LootTable().every(VenenatisSecondarySupplyTable).every(VenenatisTable);
+const VenenatisTotalTable: LootTable = new LootTable().every(VenenatisSecondarySupplyTable).every(VenenatisTable);
 
-export default new SimpleMonster({
+export const Venenatis: SimpleMonster = new SimpleMonster({
 	id: 6610,
 	name: 'Venenatis',
 	table: VenenatisTotalTable,
