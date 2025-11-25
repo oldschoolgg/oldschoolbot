@@ -1,10 +1,10 @@
 import { notEmpty } from './util/typeChecking.js';
 
-export function cleanString(str: string) {
+export function cleanString(str: string): string {
 	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
 }
 
-export function stringMatches(str: string | number = '', str2: string | number = '') {
+export function stringMatches(str: string | number = '', str2: string | number = ''): boolean {
 	return cleanString(str.toString()) === cleanString(str2.toString());
 }
 
@@ -12,7 +12,7 @@ export function replaceWhitespaceAndUppercase(str: string): string {
 	return str.replace(/\s/g, '').toUpperCase();
 }
 
-export function toTitleCase(str: string) {
+export function toTitleCase(str: string): string {
 	const splitStr = str.toLowerCase().split(' ');
 	for (let i = 0; i < splitStr.length; i++) {
 		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
@@ -20,7 +20,7 @@ export function toTitleCase(str: string) {
 	return splitStr.join(' ');
 }
 
-export function truncateString(str: string, maxLen: number) {
+export function truncateString(str: string, maxLen: number): string {
 	if (str.length < maxLen) return str;
 	return `${str.slice(0, maxLen - 3)}...`;
 }
@@ -42,7 +42,7 @@ export function miniID(length: number): string {
 export function stringSearch(
 	queryString: string,
 	searchSpace: string | string[] | { name: string; alias?: string[]; aliases?: string[] }
-) {
+): boolean {
 	if (typeof searchSpace === 'string') {
 		return searchSpace.toLowerCase().includes(queryString.toLowerCase());
 	}
@@ -63,7 +63,7 @@ export function stringSearch(
 	return false;
 }
 
-export function ellipsize(str: string, maxLen = 2000) {
+export function ellipsize(str: string, maxLen = 2000): string {
 	if (str.length > maxLen) {
 		return `${str.substring(0, maxLen - 3)}...`;
 	}
@@ -87,7 +87,20 @@ export function containsBlacklistedWord(str: string): boolean {
 	return false;
 }
 
-export function splitMessage(text: string, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
+export function splitMessage(
+	text: string,
+	{
+		maxLength = 2000,
+		char = '\n',
+		prepend = '',
+		append = ''
+	}: {
+		maxLength?: number | undefined;
+		char?: string | undefined;
+		prepend?: string | undefined;
+		append?: string | undefined;
+	} = {}
+): string[] {
 	if (text.length <= maxLength) return [text];
 	let splitText: string[] = [text];
 	if (Array.isArray(char)) {

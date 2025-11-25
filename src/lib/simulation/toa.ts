@@ -1,3 +1,4 @@
+import { bold } from '@oldschoolgg/discord';
 import { percentChance, randArrItem, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -15,7 +16,6 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
@@ -23,7 +23,6 @@ import { clamp } from 'remeda';
 import { type Minigame, XpGainSource } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
@@ -212,8 +211,8 @@ const toaRequirements: {
 	{
 		name: 'Blowpipe',
 		doesMeet: ({ user, quantity }) => {
-			const blowpipeData = user.blowpipe;
-			const cmdMention = mentionCommand('minion', 'blowpipe');
+			const blowpipeData = user.getBlowpipe();
+			const cmdMention = globalClient.mentionCommand('minion', 'blowpipe');
 			if (!user.owns('Toxic blowpipe')) {
 				return 'Needs Toxic blowpipe (with darts and scales equipped) in bank';
 			}
@@ -339,7 +338,7 @@ const toaRequirements: {
 			}
 			const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
 			if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
-				return `You need at least ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+				return `You need at least ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 					'minion',
 					'charge'
 				)}`;
@@ -347,7 +346,7 @@ const toaRequirements: {
 
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
-				return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+				return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 					'minion',
 					'charge'
 				)}`;
@@ -977,7 +976,7 @@ async function calcTOAInput({
 		cost.remove('Saradomin brew(4)', quantity);
 	}
 
-	const { blowpipe } = user;
+	const blowpipe = user.getBlowpipe();
 	const dartID = blowpipe.dartID ?? itemID('Rune dart');
 	const dartQuantity = blowpipe.dartQuantity ?? BP_DARTS_NEEDED;
 	const blowpipeCost = new Bank();
@@ -1056,9 +1055,9 @@ async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number)
 	if (users.length < 1 || users.length > 8) {
 		return 'TOA team must be 1-8 users';
 	}
-
+	const anyIsBusy = await ActivityManager.anyMinionIsBusy(users);
+	if (anyIsBusy) return `All team members must have their minions free.`;
 	for (const user of users) {
-		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOAUser(
 			user,
 			await user.fetchMinigameScore('tombs_of_amascut'),
@@ -1079,12 +1078,12 @@ export async function toaStartCommand(
 	interaction: MInteraction,
 	user: MUser,
 	solo: boolean,
-	channelID: string,
+	channelId: string,
 	_raidLevel: number,
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
 
@@ -1106,20 +1105,21 @@ export async function toaStartCommand(
 		return initialCheck[1];
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
 	const maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 1,
 		maxSize,
 		ironmanAllowed: true,
 		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! **Raid Level: ${raidLevel}**. Use the buttons below to join/leave.`,
 		customDenier: async user => {
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, `${user.usernameOrMention} minion is busy`];
 			}
 
@@ -1127,16 +1127,10 @@ export async function toaStartCommand(
 		}
 	};
 
-	let usersWhoConfirmed = [];
-	try {
-		usersWhoConfirmed = solo ? [user] : await interaction.makeParty(partyOptions);
-	} catch (err: any) {
-		return {
-			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			ephemeral: true
-		};
+	const users: MUser[] = solo ? [user] : await globalClient.makeParty(partyOptions);
+	if (await ActivityManager.anyMinionIsBusy(users)) {
+		return `All team members must have their minions free.`;
 	}
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const teamCheckFailure = await checkTOATeam(users, raidLevel, 1);
 	if (teamCheckFailure) {
@@ -1159,7 +1153,7 @@ export async function toaStartCommand(
 		raidLevel,
 		quantity: 1
 	})[0].duration;
-	const maxTripLength = Math.max(...users.map(i => i.calcMaxTripLength('TombsOfAmascut')));
+	const maxTripLength = Math.max(...(await Promise.all(users.map(i => i.calcMaxTripLength('TombsOfAmascut')))));
 	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
 	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
@@ -1260,7 +1254,7 @@ export async function toaStartCommand(
 
 	await ActivityManager.startTrip<TOAOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: realDuration,
 		type: 'TombsOfAmascut',
 		leader: user.id,
@@ -1527,7 +1521,7 @@ async function toaCheckCommand(user: MUser) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
 
-	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand('raid', 'toa', 'start')}`;
+	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${globalClient.mentionCommand('raid', 'toa', 'start')}`;
 }
 
 function calculateBoostString(user: MUser) {
@@ -1566,7 +1560,7 @@ function calculateBoostString(user: MUser) {
 	return str;
 }
 
-export async function toaHelpCommand(user: MUser, channelID: string) {
+export async function toaHelpCommand(user: MUser, channelId: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
 	const stats = await user.fetchStats();
 	const { entryKC, normalKC, expertKC, totalKC } = getToaKCs(stats.toa_raid_levels_bank);
@@ -1611,5 +1605,5 @@ ${toaRequirements
 ${calculateBoostString(user)}
 `.slice(0, 1900);
 
-	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
+	return channelId === '1069176960523190292' ? { content: str, ephemeral: true } : str;
 }

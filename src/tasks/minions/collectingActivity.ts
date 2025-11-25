@@ -7,7 +7,7 @@ import { collectables } from '@/mahoji/lib/collectables.js';
 export const collectingTask: MinionTask = {
 	type: 'Collecting',
 	async run(data: CollectingOptions, { user, handleTripFinish }) {
-		const { collectableID, quantity, channelID, duration } = data;
+		const { collectableID, quantity, channelId, duration } = data;
 
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
@@ -33,6 +33,6 @@ export const collectingTask: MinionTask = {
 
 		await ClientSettings.updateBankSetting('collecting_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
+		handleTripFinish({ user, channelId, message: str, data, loot: loot ?? null });
 	}
 };

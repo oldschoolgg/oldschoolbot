@@ -21,15 +21,15 @@ export const otherActivities = [
 	}
 ];
 
-export function otherActivitiesCommand(type: string, user: MUser, channelID: string) {
+export function otherActivitiesCommand(type: string, user: MUser, channelId: string) {
 	if (type === 'ChampionsChallenge') {
-		return championsChallengeCommand(user, channelID);
+		return championsChallengeCommand(user, channelId);
 	}
 	if (type === 'StrongholdOfSecurity') {
-		return strongHoldOfSecurityCommand(user, channelID);
+		return strongHoldOfSecurityCommand(user, channelId);
 	}
 	if (type === 'CombatRing') {
-		return combatRingCommand(user, channelID);
+		return combatRingCommand(user, channelId);
 	}
 	return 'Invalid activity type.';
 }

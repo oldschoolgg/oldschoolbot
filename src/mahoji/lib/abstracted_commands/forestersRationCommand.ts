@@ -6,12 +6,12 @@ import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/mini
 
 export async function forestersRationCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	quantity?: number;
 }) {
@@ -27,7 +27,7 @@ export async function forestersRationCommand({
 	}
 
 	const rationCookTime = Time.Second * 1.9;
-	const maxTripLength = user.calcMaxTripLength('Cooking');
+	const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / rationCookTime);
 
@@ -61,7 +61,7 @@ export async function forestersRationCommand({
 
 	await ActivityManager.startTrip<CreateForestersRationsActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		rationName: forestryFood.name,
 		quantity,
 		duration,

@@ -9,11 +9,20 @@ import { Gear } from '../../src/lib/structures/Gear.js';
 import { GearBank } from '../../src/lib/structures/GearBank.js';
 
 function makeFullGear() {
-	const obj: any = {};
+	const obj: UserFullGearSetup = {
+		melee: new Gear(),
+		mage: new Gear(),
+		range: new Gear(),
+		fashion: new Gear(),
+		wildy: new Gear(),
+		skilling: new Gear(),
+		misc: new Gear(),
+		other: new Gear()
+	};
 	for (const type of GearSetupTypes) {
 		obj[type] = new Gear();
 	}
-	return obj as UserFullGearSetup;
+	return obj;
 }
 
 export function makeGearBank({ bank, skillsAsLevels }: { bank?: Bank; skillsAsLevels?: Skills } = {}) {

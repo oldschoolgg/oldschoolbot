@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export default new SimpleMonster({
+export const BeardedBandit: SimpleMonster = new SimpleMonster({
 	id: 736,
 	name: 'Bearded Pollnivnian Bandit',
 	table: new LootTable({ limit: 5 }).every('Bones').add('Coins', [10, 300]),

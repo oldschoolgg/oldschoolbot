@@ -3,8 +3,8 @@ import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { plunderBoosts, plunderRooms } from '@/lib/minions/data/plunder.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
 
-export async function pyramidPlunderCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+export async function pyramidPlunderCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	const skills = user.skillsAsLevels;
 	const thievingLevel = skills.thieving;
 	const minLevel = plunderRooms[0].thievingLevel;
@@ -39,7 +39,7 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 			plunderTime = reduceNumByPercent(plunderTime, percent);
 		}
 	}
-	const maxQuantity = Math.floor(user.calcMaxTripLength('Plunder') / plunderTime);
+	const maxQuantity = Math.floor((await user.calcMaxTripLength('Plunder')) / plunderTime);
 	const tripLength = maxQuantity * plunderTime;
 
 	await ActivityManager.startTrip<PlunderActivityTaskOptions>({
@@ -48,7 +48,7 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 		userID: user.id,
 		duration: tripLength,
 		type: 'Plunder',
-		channelID,
+		channelId,
 		minigameID: 'pyramid_plunder'
 	});
 

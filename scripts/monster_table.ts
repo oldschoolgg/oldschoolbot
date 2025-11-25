@@ -1,52 +1,54 @@
+import './base.js';
+
+import { writeFileSync } from 'node:fs';
 import { calcPerHour, Time, TSVWriter } from '@oldschoolgg/toolkit';
-import { Bank, convertBankToPerHourStats, Items, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, EItem, Items } from 'oldschooljs';
 import { omit } from 'remeda';
 
 import type { PlayerOwnedHouse } from '@/prisma/main.js';
-
-import '../src/lib/safeglobals.js';
-
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { PeakTier } from '@/lib/util/peaks.js';
 import { type BitField, PVM_METHODS } from '../src/lib/constants.js';
 import { degradeableItems } from '../src/lib/degradeableItems.js';
 import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants.js';
 import { SkillsArray } from '../src/lib/skilling/types.js';
 import { slayerMasters } from '../src/lib/slayer/slayerMasters.js';
-import type { SlayerTaskUnlocksEnum } from '../src/lib/slayer/slayerUnlocks.js';
+import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '../src/lib/slayer/slayerUnlocks.js';
 import { ChargeBank } from '../src/lib/structures/Bank.js';
 import { Gear } from '../src/lib/structures/Gear.js';
 import { GearBank } from '../src/lib/structures/GearBank.js';
 import { KCBank } from '../src/lib/structures/KCBank.js';
-import { MUserStats } from '../src/lib/structures/MUserStats.js';
 import {
 	type MinionKillReturn,
 	newMinionKillCommand
 } from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
 import { doMonsterTrip } from '../src/tasks/minions/monsterActivity.js';
 
-const MAX_TRIP_LENGTH = Time.Hour * 600;
 const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints', 'slayer'];
 
 function round(int: number) {
 	return Math.round(int / 1000) * 1000;
 }
 
-const slayerUnlocks: SlayerTaskUnlocksEnum[] = [];
+const slayerUnlocks: SlayerTaskUnlocksEnum[] = SlayerRewardsShop.map(i => i.id);
+
 const bank = new Bank();
 for (const item of Items.values()) bank.add(item.id, 1000000);
+
 bank.add('Black chinchompa', 100000000);
+bank.add('Shark', 100000000);
+
 const chargeBank = new ChargeBank();
-for (const deg of degradeableItems) chargeBank.add(deg.settingsKey, 1000000);
-const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: MinionKillReturn }[] = [];
-const userStats = new MUserStats({} as any);
+for (const deg of degradeableItems) chargeBank.add(deg.settingsKey, 1_000_000);
 
 const attackStyleSets: AttackStyles[][] = [
 	['attack', 'strength', 'defence'],
 	['ranged'],
-	['magic'],
-	['ranged', 'defence'],
-	['magic', 'defence']
+	['magic']
+	// ['ranged', 'defence'],
+	// ['magic', 'defence']
 ];
 
 const skillsAsXP: any = {};
@@ -56,130 +58,155 @@ for (const skill of SkillsArray) {
 	skillsAsXP[skill] = 15_000_000;
 }
 
-async function main() {
-	for (const monster of killableMonsters) {
-		const monsterKC = 10000;
-		const gearBank = new GearBank({
-			chargeBank,
-			gear: {
-				mage: new Gear(),
-				melee: new Gear(),
-				range: new Gear(),
-				misc: new Gear(),
-				skilling: new Gear(),
-				wildy: new Gear(),
-				fashion: new Gear(),
-				other: new Gear()
-			},
-			bank,
-			skillsAsXP,
-			minionName: 'Minion'
-		});
-
-		const pkEvasionExperience = 100000000;
-		const master = slayerMasters.find(m => m.tasks.find(t => t.monster.id === monster.id));
-		const task = master?.tasks.find(t => t.monster.id === monster.id);
-		const currentSlayerTask =
-			master && task
-				? {
-						currentTask: {
-							id: 1,
-							created_at: new Date(),
-							quantity: 10000,
-							quantity_remaining: 10000,
-							slayer_master_id: master.id,
-							monster_id: monster.id,
-							skipped: false,
-							user_id: ''
-						},
-						assignedTask: task,
-						slayerMaster: master,
-						slayerPoints: 1000
+function getSlayerTask(monster: KillableMonster) {
+	const master = slayerMasters.find(m => m.tasks.find(t => t.monster.id === monster.id));
+	const task = master?.tasks.find(t => t.monster.id === monster.id);
+	const currentSlayerTask =
+		master && task
+			? {
+					currentTask: {
+						id: 1,
+						created_at: new Date(),
+						quantity: 10000,
+						quantity_remaining: 10000,
+						slayer_master_id: master.id,
+						monster_id: monster.id,
+						skipped: false,
+						user_id: ''
+					},
+					assignedTask: task,
+					slayerMaster: master,
+					slayerPoints: 1000,
+					statsWithStreaks: {
+						slayer_task_streak: 1,
+						slayer_wildy_task_streak: 1
 					}
-				: {
-						currentTask: null,
-						assignedTask: null,
-						slayerMaster: null,
-						slayerPoints: 1
-					};
-
-		for (const isTryingToUseWildy of [true, false]) {
-			for (const inputPVMMethod of PVM_METHODS) {
-				for (const attackStyles of attackStyleSets) {
-					const bitfield: BitField[] = [];
-					const kcBank = new KCBank();
-					const commandResult = await newMinionKillCommand({
-						gearBank,
-						attackStyles,
-						currentSlayerTask: currentSlayerTask as any,
-						monster,
-						isTryingToUseWildy,
-						monsterKC,
-						inputPVMMethod,
-						maxTripLength: MAX_TRIP_LENGTH,
-						pkEvasionExperience,
-						poh: {
-							pool: 29_241
-						} as PlayerOwnedHouse,
-						inputQuantity: undefined,
-						combatOptions: [],
-						slayerUnlocks: [],
-						favoriteFood: resolveItems(['Shark']),
-						bitfield: [],
-						currentPeak: { peakTier: 'medium' } as any
-					});
-					if (typeof commandResult === 'string') continue;
-					if (commandResult.quantity === null || !commandResult.quantity) {
-						throw new Error(`Invalid quantity: ${commandResult.quantity} for ${monster.name}`);
-					}
-					const {
-						bob,
-						usingCannon,
-						cannonMulti,
-						chinning,
-						hasWildySupplies,
-						died,
-						pkEncounters,
-						isInWilderness
-					} = commandResult.currentTaskOptions;
-					const tripResult = doMonsterTrip({
-						type: 'MonsterKilling',
-						monster,
-						q: commandResult.quantity,
-						cl: new Bank(),
-						usingCannon,
-						cannonMulti,
-						bob,
-						died,
-						pkEncounters,
-						hasWildySupplies,
-						isInWilderness,
-						hasEliteCA: true,
-						hasKourendHard: true,
-						kcBank,
-						gearBank,
-						tertiaryItemPercentageChanges: new Map(),
-						// @ts-expect-error
-						slayerInfo: currentSlayerTask,
-						slayerUnlocks,
-						hasKourendElite: true,
-						userStats,
-						attackStyles,
-						duration: commandResult.duration,
-						bitfield,
-						chinning
-					});
-
-					results.push({ tripResult, commandResult });
 				}
+			: {
+					currentTask: null,
+					assignedTask: null,
+					slayerMaster: null,
+					slayerPoints: 1,
+					statsWithStreaks: {
+						slayer_task_streak: 1,
+						slayer_wildy_task_streak: 1
+					}
+				};
+	return currentSlayerTask;
+}
+
+function makeGearBank(): GearBank {
+	const gearBank = new GearBank({
+		chargeBank,
+		gear: {
+			mage: new Gear(),
+			melee: new Gear(),
+			range: new Gear(),
+			misc: new Gear(),
+			skilling: new Gear(),
+			wildy: new Gear(),
+			fashion: new Gear(),
+			other: new Gear()
+		},
+		bank,
+		skillsAsXP,
+		minionName: 'Minion'
+	});
+	return gearBank;
+}
+const gearBank = makeGearBank();
+
+async function main() {
+	const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: MinionKillReturn; time: number }[] =
+		[];
+
+	for (const monster of killableMonsters) {
+		const currentSlayerTask = getSlayerTask(monster);
+		for (const inputPVMMethod of PVM_METHODS) {
+			for (const attackStyles of attackStyleSets) {
+				const MAX_TRIP_LENGTH = monster.timeToFinish < Time.Second * 30 ? Time.Hour * 100 : Time.Hour * 600;
+
+				const start = performance.now();
+				const bitfield: BitField[] = [];
+				const kcBank = new KCBank();
+				const commandResult = newMinionKillCommand({
+					gearBank,
+					attackStyles,
+					currentSlayerTask: currentSlayerTask,
+					monster,
+					isTryingToUseWildy: Boolean(monster.wildy || monster.canBePked),
+					monsterKC: 10000,
+					inputPVMMethod,
+					maxTripLength: MAX_TRIP_LENGTH,
+					pkEvasionExperience: 100000000,
+					poh: {
+						pool: 29_241
+					} as PlayerOwnedHouse,
+					inputQuantity: undefined,
+					combatOptions: [],
+					slayerUnlocks: [],
+					favoriteFood: [EItem.SHARK],
+					bitfield: [],
+					currentPeak: { peakTier: PeakTier.Medium, startTime: Date.now(), finishTime: Date.now() + 1000 }
+				});
+				if (typeof commandResult === 'string') return null;
+				if (commandResult.quantity === null || !commandResult.quantity) {
+					throw new Error(`Invalid quantity: ${commandResult.quantity} for ${monster.name}`);
+				}
+				const {
+					bob,
+					usingCannon,
+					cannonMulti,
+					chinning,
+					hasWildySupplies,
+					died,
+					pkEncounters,
+					isInWilderness
+				} = commandResult.currentTaskOptions;
+				const tripResult = doMonsterTrip({
+					type: 'MonsterKilling',
+					monster,
+					q: commandResult.quantity,
+					cl: new Bank(),
+					usingCannon,
+					cannonMulti,
+					bob,
+					died,
+					pkEncounters,
+					hasWildySupplies,
+					isInWilderness,
+					hasEliteCA: true,
+					hasKourendHard: true,
+					kcBank,
+					gearBank,
+					tertiaryItemPercentageChanges: new Map(),
+					slayerInfo: currentSlayerTask,
+					slayerUnlocks,
+					hasKourendElite: true,
+					attackStyles,
+					duration: commandResult.duration,
+					bitfield,
+					chinning
+				});
+				const end = performance.now();
+
+				results.push({ tripResult, commandResult, time: end - start });
 			}
 		}
 	}
-
-	function sortingKey(a: (typeof results)[0]) {
-		return `${a.tripResult.monster.name}.${a.commandResult.attackStyles.join('-')}.${JSON.stringify(a.commandResult.currentTaskOptions)}`;
-	}
-	results.sort((a, b) => sortingKey(a).localeCompare(sortingKey(b)));
+	writeFileSync(
+		'data/monster_table_raw.json',
+		JSON.stringify(
+			results
+				.map(_r => ({
+					tripResult: omit(_r.tripResult, ['slayerContext']),
+					commandResult: _r.commandResult
+				}))
+				.slice(0, 10),
+			null,
+			4
+		)
+	);
 
 	const headers = [
 		'Monster',
@@ -189,15 +216,17 @@ async function main() {
 		'Options',
 		'Food',
 		'GP/hr',
-		'Cost/hr',
-		'Raw Command',
-		'Raw Trip'
+		'Cost/hr'
+		// 'Raw Command',
+		// 'Raw Trip'
 	];
 	const tsvWriter = new TSVWriter('data/monster_data.tsv');
 
 	tsvWriter.writeRow(headers);
 
-	for (const { tripResult, commandResult } of results) {
+	const parsedResults = [];
+
+	for (const { tripResult, commandResult, time } of results) {
 		const xpHr = round(calcPerHour(tripResult.updateBank.xpBank.totalXP(), commandResult.duration));
 
 		const options: string[] = [];
@@ -227,25 +256,27 @@ async function main() {
 			.replace('ranged', 'range')
 			.replace('strength', 'str');
 
-		tsvWriter.writeRow([
-			tripResult.monster.name,
-			styles,
-			`${toKMB(xpHr)} XP/hr`,
-			...skills.map(s =>
-				toKMB(calcPerHour(tripResult.updateBank.xpBank.amount(s as any), commandResult.duration))
-			),
-			options.join(' '),
-			`${sharksPerHour.toFixed(1)} Sharks/hr`,
-			`${convertBankToPerHourStats(commandResult.updateBank.itemLootBank.clone().add(commandResult.updateBank.itemLootBankNoCL), commandResult.duration)} Loot/hr`,
-			`${convertBankToPerHourStats(commandResult.updateBank.itemCostBank, commandResult.duration)} Cost/hr`,
-			JSON.stringify(omit(commandResult, ['updateBank'])),
-			JSON.stringify(omit(tripResult, ['updateBank', 'slayerContext', 'monster']))
-		]);
+		const totalLoot: Bank = tripResult.updateBank.itemLootBank.clone().freeze();
+
+		parsedResults.push({
+			monster: tripResult.monster.name,
+			attackStyles: styles,
+			xpHr,
+			skills: skills.map(s => calcPerHour(tripResult.updateBank.xpBank.amount(s as any), commandResult.duration)),
+			options,
+			sharksPerHour,
+			lootPerHour: convertBankToPerHourStats(totalLoot, commandResult.duration),
+			costPerHour: convertBankToPerHourStats(commandResult.updateBank.itemCostBank, commandResult.duration),
+			gpHr: calcPerHour(totalLoot.value(), commandResult.duration),
+			totalLoot,
+			totalValue: totalLoot.value(),
+			time
+		});
 	}
-	tsvWriter.end().then(() => process.exit());
+
+	parsedResults.sort((a, b) => b.time - a.time);
+
+	writeFileSync('data/monster_data.json', JSON.stringify(parsedResults, null, 4));
 }
 
-main().catch(err => {
-	console.error(err);
-	process.exit(1);
-});
+main();

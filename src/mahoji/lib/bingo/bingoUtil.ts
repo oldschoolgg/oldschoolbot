@@ -34,7 +34,7 @@ export type GlobalBingoTile = (OneOf | AllOf | BankTile | CustomReq) & {
 	name: string;
 };
 
-export function isGlobalTile(data: any): data is StoredGlobalTile {
+export function isGlobalTile(data: StoredBingoTile): data is StoredGlobalTile {
 	return 'global' in data;
 }
 

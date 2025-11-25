@@ -8,7 +8,7 @@ interface RNGProvider {
 	percentChance(percent: number): boolean;
 }
 
-export function convertPercentChance(percent: number) {
+export function convertPercentChance(percent: number): string {
 	return (1 / (percent / 100)).toFixed(1);
 }
 
@@ -20,7 +20,7 @@ function gaussianRand(rng: RNGProvider, rolls = 3) {
 	return rand / rolls;
 }
 
-export function gaussianRandom(rng: RNGProvider, min: number, max: number, rolls?: number) {
+export function gaussianRandom(rng: RNGProvider, min: number, max: number, rolls?: number): number {
 	return Math.floor(min + gaussianRand(rng, rolls) * (max - min + 1));
 }
 
@@ -30,7 +30,7 @@ export function perTimeUnitChance(
 	oneInXPerTimeUnitChance: number,
 	timeUnitInMilliseconds: number,
 	successFunction: () => unknown
-) {
+): void {
 	const unitsPassed = Math.floor(durationMilliseconds / timeUnitInMilliseconds);
 	const perUnitChance = oneInXPerTimeUnitChance / (timeUnitInMilliseconds / 60_000);
 

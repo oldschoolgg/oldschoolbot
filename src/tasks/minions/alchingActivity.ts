@@ -5,7 +5,7 @@ import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
 export const alchingTask: MinionTask = {
 	type: 'Alching',
 	async run(data: AlchingActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { itemID, quantity, channelID, alchValue, duration } = data;
+		const { itemID, quantity, channelId, alchValue, duration } = data;
 		const loot = new Bank().add('Coins', alchValue);
 
 		const item = Items.getOrThrow(itemID);
@@ -38,6 +38,6 @@ export const alchingTask: MinionTask = {
 			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');
 
-		handleTripFinish(user, channelID, responses, undefined, data, loot);
+		return handleTripFinish({ user, channelId, message: responses, data, loot });
 	}
 };

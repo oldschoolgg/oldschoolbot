@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
 
 import { type MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
 import {
@@ -6,17 +7,15 @@ import {
 	getBrimKeyChanceFromCBLevel,
 	getLarranKeyChanceFromCBLevel,
 	getSlayersEnchantmentChanceFromHP,
-	getTotemChanceFromHP,
-	roll
+	getTotemChanceFromHP
 } from '@/util/util.js';
+import { Bank } from './Bank.js';
+import type LootTable from './LootTable.js';
+import type { LootTableRollOptions } from './LootTable.js';
 
 const monsterData = JSON.parse(
 	fs.readFileSync(new URL('../assets/monsters_data.json', import.meta.url), 'utf8')
 ) as Record<string, MonsterData>;
-
-import { Bank } from './Bank.js';
-import type LootTable from './LootTable.js';
-import type { LootTableRollOptions } from './LootTable.js';
 
 export interface MonsterOptions {
 	id: number;
@@ -51,6 +50,7 @@ export interface MonsterKillOptions {
 	farmingLevel?: number;
 	isAwakened?: boolean;
 	lootTableOptions?: LootTableRollOptions;
+	rng?: RNGProvider;
 }
 
 export abstract class Monster {
@@ -108,6 +108,7 @@ export class SimpleMonster extends Monster {
 	}
 
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {
+		const rng = options.rng ?? MathRNG;
 		const loot = new Bank();
 		const canGetBrimKey = options.onSlayerTask && options.slayerMaster === MonsterSlayerMaster.Konar;
 		const wildySlayer = options.onSlayerTask && options.slayerMaster === MonsterSlayerMaster.Krystilia;
@@ -131,23 +132,23 @@ export class SimpleMonster extends Monster {
 
 		for (let i = 0; i < quantity; i++) {
 			if (canGetBrimKey) {
-				if (roll(getBrimKeyChanceFromCBLevel(this.data.combatLevel))) {
+				if (rng.roll(getBrimKeyChanceFromCBLevel(this.data.combatLevel))) {
 					loot.add('Brimstone key');
 				}
 			}
 			if (wildySlayer && this.data.hitpoints) {
-				if (roll(getSlayersEnchantmentChanceFromHP(this.data.hitpoints))) {
+				if (rng.roll(getSlayersEnchantmentChanceFromHP(this.data.hitpoints))) {
 					loot.add("Slayer's enchantment");
 				}
-				if (roll(getLarranKeyChanceFromCBLevel(this.data.combatLevel, slayerMonster))) {
+				if (rng.roll(getLarranKeyChanceFromCBLevel(this.data.combatLevel, slayerMonster))) {
 					loot.add("Larran's key");
 				}
 			}
 			if (options.inCatacombs && this.data.hitpoints && !wildySlayer) {
-				if (roll(getAncientShardChanceFromHP(this.data.hitpoints))) {
+				if (rng.roll(getAncientShardChanceFromHP(this.data.hitpoints))) {
 					loot.add('Ancient shard');
 				}
-				if (roll(getTotemChanceFromHP(this.data.hitpoints))) {
+				if (rng.roll(getTotemChanceFromHP(this.data.hitpoints))) {
 					// Always drop Dark totem base and bot will transmog accordingly.
 					loot.add('Dark totem base');
 				}

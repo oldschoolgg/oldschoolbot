@@ -159,7 +159,7 @@ async function checkTOBUser(
 	}
 
 	// Range
-	const blowpipeData = user.blowpipe;
+	const blowpipeData = user.getBlowpipe();
 	if (!user.owns('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
 		return [
 			true,
@@ -232,7 +232,7 @@ async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, 
 	}
 
 	for (const user of users) {
-		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
+		if (await user.minionIsBusy()) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOBUser(user, isHardMode, users.length, quantity);
 		if (checkResult[1]) {
 			return checkResult[1];
@@ -278,13 +278,13 @@ export async function tobStatsCommand(user: MUser) {
 export async function tobStartCommand(
 	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	isHardMode: boolean,
 	maxSizeInput: number | undefined,
 	solo: boolean,
 	quantity: number | undefined
 ) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
 	const initialCheck = await checkTOBUser(user, isHardMode);
@@ -298,13 +298,14 @@ export async function tobStartCommand(
 			return 'You need at least 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
 		}
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
 	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 5 }) ?? 5;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize,
@@ -313,7 +314,7 @@ export async function tobStartCommand(
 			isHardMode ? '**Hard mode** ' : ''
 		}Theatre of Blood mass! Use the buttons below to join/leave.`,
 		customDenier: async _user => {
-			if (_user.minionIsBusy) {
+			if (await _user.minionIsBusy()) {
 				return [true, `${_user.usernameOrMention} minion is busy`];
 			}
 
@@ -321,20 +322,10 @@ export async function tobStartCommand(
 		}
 	};
 
-	let usersWhoConfirmed = [];
-	try {
-		if (solo) {
-			usersWhoConfirmed = [user, user, user];
-		} else {
-			usersWhoConfirmed = await interaction.makeParty(partyOptions);
-		}
-	} catch (err: any) {
-		return {
-			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			ephemeral: true
-		};
+	const users = solo ? [user, user, user] : await globalClient.makeParty(partyOptions);
+	if (await ActivityManager.anyMinionIsBusy(users)) {
+		return `All team members must have their minions free.`;
 	}
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const team = await Promise.all(
 		users.map(async u => {
@@ -354,7 +345,7 @@ export async function tobStartCommand(
 		})
 	);
 	const { baseDuration, reductions, maxUserReduction } = calcTOBBaseDuration({ team, hardMode: isHardMode });
-	const maxTripLength = user.calcMaxTripLength('TheatreOfBlood');
+	const maxTripLength = await user.calcMaxTripLength('TheatreOfBlood');
 
 	const maxTripsCanFit = Math.max(1, Math.floor(maxTripLength / baseDuration));
 
@@ -405,7 +396,7 @@ export async function tobStartCommand(
 		users.map(async u => {
 			const supplies = await calcTOBInput(u);
 			const { total } = calculateTOBUserGearPercents(u);
-			const blowpipeData = u.blowpipe;
+			const blowpipeData = u.getBlowpipe();
 			const { realCost } = await u.specialRemoveItems(
 				supplies
 					.clone()
@@ -459,7 +450,7 @@ export async function tobStartCommand(
 
 	await ActivityManager.startTrip<TheatreOfBloodTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: totalDuration,
 		type: 'TheatreOfBlood',
 		leader: user.id,

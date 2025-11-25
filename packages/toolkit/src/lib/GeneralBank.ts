@@ -44,7 +44,7 @@ export class GeneralBank<T extends string | number> {
 		this.validate();
 	}
 
-	get _bank() {
+	get _bank(): GeneralBankType<T> {
 		return this.bank;
 	}
 
@@ -87,7 +87,7 @@ export class GeneralBank<T extends string | number> {
 		return Object.entries(this.bank) as [T, number][];
 	}
 
-	length() {
+	length(): number {
 		return Object.keys(this.bank).length;
 	}
 

@@ -2,9 +2,9 @@ import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const CrazyArchaeologistUniqueTable = new LootTable().add('Odium shard 2').add('Malediction shard 2');
+const CrazyArchaeologistUniqueTable: LootTable = new LootTable().add('Odium shard 2').add('Malediction shard 2');
 
-const CrazyArchaeologistTable = new LootTable()
+const CrazyArchaeologistTable: LootTable = new LootTable()
 	.every('Bones')
 	.tertiary(128, 'Clue scroll (hard)')
 	.add(CrazyArchaeologistUniqueTable, 1, 1)
@@ -51,7 +51,7 @@ const CrazyArchaeologistTable = new LootTable()
 	.add(RareDropTable, 1, 4)
 	.add(GemTable, 1, 4);
 
-export default new SimpleMonster({
+export const CrazyArchaeologist: SimpleMonster = new SimpleMonster({
 	id: 6618,
 	name: 'Crazy Archaeologist',
 	table: CrazyArchaeologistTable,

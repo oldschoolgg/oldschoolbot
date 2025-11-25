@@ -1,5 +1,5 @@
+import { bold } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { quests } from '@/lib/minions/data/quests.js';
@@ -77,7 +77,7 @@ export const lapsCommand = defineCommand({
 			name: 'name',
 			description: 'The course you want to do laps on.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return courses
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -100,7 +100,7 @@ export const lapsCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const course = courses.find(
 			course =>
 				stringMatches(course.id.toString(), options.name) ||
@@ -129,7 +129,7 @@ export const lapsCommand = defineCommand({
 			}
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Agility');
+		const maxTripLength = await user.calcMaxTripLength('Agility');
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
@@ -165,7 +165,7 @@ export const lapsCommand = defineCommand({
 		await ActivityManager.startTrip<AgilityActivityTaskOptions>({
 			courseID: course.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Agility',

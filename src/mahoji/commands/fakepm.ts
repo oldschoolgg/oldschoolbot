@@ -1,8 +1,6 @@
-import type { Image } from 'skia-canvas';
+import { type CanvasImage, canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
-
-let bg: Image | null = null;
+let bg: CanvasImage | null = null;
 
 export const fakepmCommand = defineCommand({
 	name: 'fakepm',
@@ -37,7 +35,7 @@ export const fakepmCommand = defineCommand({
 		ctx.fillText(`From ${options.username}: ${options.message}`, 5, 97);
 
 		return {
-			files: [{ attachment: await canvasToBuffer(canvas), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
+			files: [{ buffer: await canvasToBuffer(canvas), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
 		};
 	}
 });

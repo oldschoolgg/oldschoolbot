@@ -6,7 +6,7 @@ import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',
 	async run(data: ClueActivityTaskOptions, { user, handleTripFinish }) {
-		const { ci: clueID, channelID, q: quantity, implingClues } = data;
+		const { ci: clueID, channelId, q: quantity, implingClues } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID)!;
 
 		const str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
@@ -25,6 +25,6 @@ export const clueTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

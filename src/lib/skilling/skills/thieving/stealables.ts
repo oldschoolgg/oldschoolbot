@@ -18,7 +18,6 @@ const {
 	MasterFarmer,
 	MenaphiteThug,
 	Paladin,
-	PollnivnianBandit,
 	PrifddinasElf,
 	Rogue,
 	TzHaarHur,
@@ -574,21 +573,6 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 3,
 		slope: 0.772_09,
 		intercept: 17.703_09,
-		petChance: 257_211
-	},
-	{
-		name: 'Pollnivnian Bandit',
-		type: 'pickpockable',
-		level: 55,
-		xp: 84.3,
-		table: PollnivnianBandit.pickpocketTable!,
-		id: PollnivnianBandit.id,
-		stunTime: 5,
-		stunDamage: 5,
-		// No current data on slope/intercept
-		slope: 0.772_09,
-		intercept: 17.703_09,
-		customTickRate: 2.5,
 		petChance: 257_211
 	},
 	{

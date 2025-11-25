@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const CaveGoblinTable = new LootTable()
+const CaveGoblinTable: LootTable = new LootTable()
 	.add('Bat shish')
 	.add("Coated frogs' legs")
 	.add('Fingers')
@@ -18,7 +18,7 @@ const CaveGoblinTable = new LootTable()
 	.add('Unlit torch', 1)
 	.tertiary(257_211, 'Rocky');
 
-export default new SimpleMonster({
+export const CaveGoblin: SimpleMonster = new SimpleMonster({
 	id: 6434,
 	name: 'Cave goblin',
 	pickpocketTable: CaveGoblinTable,

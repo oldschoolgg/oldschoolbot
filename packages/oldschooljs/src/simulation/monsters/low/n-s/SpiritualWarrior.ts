@@ -34,7 +34,7 @@ const SpiritualWarriorTable = new LootTable({ limit: 127 })
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const SpiritualWarrior: SimpleMonster = new SimpleMonster({
 	id: 2210,
 	name: 'Spiritual Warrior',
 	table: SpiritualWarriorTable,

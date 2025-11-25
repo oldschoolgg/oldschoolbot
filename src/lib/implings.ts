@@ -1,54 +1,38 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, LootTable, Openables } from 'oldschooljs';
+import {
+	BabyImpling,
+	Bank,
+	CrystalImpling,
+	DragonImpling,
+	EarthImpling,
+	EclecticImpling,
+	EssenceImpling,
+	GourmetImpling,
+	LootTable,
+	LuckyImpling,
+	MagpieImpling,
+	NatureImpling,
+	NinjaImpling,
+	YoungImpling
+} from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import activityInArea, { WorldLocations } from '@/lib/util/activityInArea.js';
 
-const {
-	BabyImpling,
-	YoungImpling,
-	GourmetImpling,
-	EarthImpling,
-	EssenceImpling,
-	EclecticImpling,
-	NatureImpling,
-	MagpieImpling,
-	NinjaImpling,
-	CrystalImpling,
-	DragonImpling,
-	LuckyImpling
-} = Openables;
-
-export const implings: Record<number, { level: number }> = {
-	// [Impling ID, Level to Catch]
-	[BabyImpling.id]: { level: 17 },
-	[YoungImpling.id]: { level: 22 },
-	[GourmetImpling.id]: { level: 28 },
-	[EarthImpling.id]: { level: 36 },
-	[EssenceImpling.id]: { level: 42 },
-	[EclecticImpling.id]: { level: 50 },
-	[NatureImpling.id]: { level: 58 },
-	[MagpieImpling.id]: { level: 65 },
-	[NinjaImpling.id]: { level: 74 },
-	[CrystalImpling.id]: { level: 80 },
-	[DragonImpling.id]: { level: 83 },
-	[LuckyImpling.id]: { level: 89 }
-};
-
-export const puroImplings: Record<number, { catchXP: number }> = {
-	// [Impling ID, XP for Catch]
-	[BabyImpling.id]: { catchXP: 18 },
-	[YoungImpling.id]: { catchXP: 20 },
-	[GourmetImpling.id]: { catchXP: 22 },
-	[EarthImpling.id]: { catchXP: 25 },
-	[EssenceImpling.id]: { catchXP: 27 },
-	[EclecticImpling.id]: { catchXP: 30 },
-	[NatureImpling.id]: { catchXP: 34 },
-	[MagpieImpling.id]: { catchXP: 44 },
-	[NinjaImpling.id]: { catchXP: 52 },
-	[DragonImpling.id]: { catchXP: 65 },
-	[LuckyImpling.id]: { catchXP: 80 }
+export const implings: Record<number, { level: number; catchXP: number }> = {
+	[BabyImpling.id]: { level: 17, catchXP: 18 },
+	[YoungImpling.id]: { level: 22, catchXP: 20 },
+	[GourmetImpling.id]: { level: 28, catchXP: 22 },
+	[EarthImpling.id]: { level: 36, catchXP: 25 },
+	[EssenceImpling.id]: { level: 42, catchXP: 27 },
+	[EclecticImpling.id]: { level: 50, catchXP: 30 },
+	[NatureImpling.id]: { level: 58, catchXP: 34 },
+	[MagpieImpling.id]: { level: 65, catchXP: 44 },
+	[NinjaImpling.id]: { level: 74, catchXP: 52 },
+	[CrystalImpling.id]: { level: 80, catchXP: 0 },
+	[DragonImpling.id]: { level: 83, catchXP: 65 },
+	[LuckyImpling.id]: { level: 89, catchXP: 80 }
 };
 
 export const puroImpSpellTable = new LootTable()

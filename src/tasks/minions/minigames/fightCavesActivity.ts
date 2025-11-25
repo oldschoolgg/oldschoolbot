@@ -1,7 +1,6 @@
 import { calcPercentOfNum, calcWhatPercent, Emoji, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
-import { Bank, itemID, Monsters } from 'oldschooljs';
+import { Bank, EMonster, itemID, Monsters } from 'oldschooljs';
 
-import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
 import { fightCavesCost } from '@/mahoji/lib/abstracted_commands/fightCavesCommand.js';
@@ -11,7 +10,7 @@ const TokkulID = itemID('Tokkul');
 export const fightCavesTask: MinionTask = {
 	type: 'FightCaves',
 	async run(data: FightCavesActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelID, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
+		const { channelId, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
 
 		const tokkulReward = rng.randInt(2000, 6000);
 		const diedToJad = rng.percentChance(jadDeathChance);
@@ -30,7 +29,7 @@ export const fightCavesTask: MinionTask = {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 			usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 		if (preJadDeathTime) {
@@ -62,19 +61,22 @@ export const fightCavesTask: MinionTask = {
 
 			await user.transactItems({ itemsToAdd: itemLootBank, collectionLog: false });
 
-			return handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user} You died ${formatDuration(
-					preJadDeathTime
-				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
-				await chatHeadImage({
-					content: `You die before you even reach TzTok-Jad... At least you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
-					head: 'mejJal'
-				}),
+				channelId,
+				message: new MessageBuilder()
+					.setContent(
+						`${user} You died ${formatDuration(
+							preJadDeathTime
+						)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`
+					)
+					.addChatHeadImage(
+						'mejJal',
+						`You die before you even reach TzTok-Jad... At least you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`
+					),
 				data,
-				itemLootBank
-			);
+				loot: itemLootBank
+			});
 		}
 
 		if (diedToJad) {
@@ -100,20 +102,21 @@ export const fightCavesTask: MinionTask = {
 				});
 			}
 
-			return handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user} ${msg}`,
-				await chatHeadImage({
-					content: `TzTok-Jad stomp you to death... Nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
-					head: 'mejJal'
-				}),
+				channelId,
+				message: new MessageBuilder()
+					.setContent(`${user} ${msg}`)
+					.addChatHeadImage(
+						'mejJal',
+						`TzTok-Jad stomp you to death... Nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`
+					),
 				data,
-				failBank
-			);
+				loot: failBank
+			});
 		}
 
-		const { newKC } = await user.incrementKC(Monsters.TzTokJad.id, 1);
+		const { newKC } = await user.incrementKC(EMonster.TZTOKJAD, 1);
 		const loot = Monsters.TzTokJad.kill(1, { onSlayerTask: isOnTask });
 
 		if (loot.has('Tzrek-jad')) {
@@ -187,18 +190,21 @@ export const fightCavesTask: MinionTask = {
 			// End slayer code
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user} ${msg}`,
-			await chatHeadImage({
-				content: `You defeated TzTok-Jad for the ${formatOrdinal(
+		const message = new MessageBuilder()
+			.setContent(`${user} ${msg}`)
+			.addChatHeadImage(
+				'mejJal',
+				`You defeated TzTok-Jad for the ${formatOrdinal(
 					newKC
-				)} time! I am most impressed, I give you... ${loot}.`,
-				head: 'mejJal'
-			}),
+				)} time! I am most impressed, I give you... ${loot}.`
+			);
+
+		return handleTripFinish({
+			user,
+			channelId,
+			message,
 			data,
 			loot
-		);
+		});
 	}
 };

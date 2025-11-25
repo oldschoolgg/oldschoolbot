@@ -1,4 +1,4 @@
-import { dateFm } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
 
 import { UserEventType, type xp_gains_skill_enum } from '@/prisma/main/enums.js';
 import type { Prisma, UserEvent } from '@/prisma/main.js';

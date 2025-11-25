@@ -1,9 +1,9 @@
 import LootTable from '@/structures/LootTable.js';
 import { BlessingTable, PrayerPageTable, TeleportScrollTable } from './General.js';
 
-export const MediumUnicornTable = new LootTable().add('White unicorn mask').add('Black unicorn mask');
+export const MediumUnicornTable: LootTable = new LootTable().add('White unicorn mask').add('Black unicorn mask');
 
-export const MediumElegantTable = new LootTable()
+export const MediumElegantTable: LootTable = new LootTable()
 	.add('Purple elegant shirt')
 	.add('Purple elegant legs')
 	.add('Purple elegant blouse')
@@ -21,7 +21,7 @@ export const MediumElegantTable = new LootTable()
 	.add('Gold elegant blouse')
 	.add('Gold elegant skirt');
 
-export const MediumRareTable = new LootTable()
+export const MediumRareTable: LootTable = new LootTable()
 	.add('Ranger boots')
 	.add('Wizard boots')
 	.add('Leprechaun hat')
@@ -120,20 +120,22 @@ export const MediumRareTable = new LootTable()
 	.add(MediumElegantTable, 1, 8);
 
 // For some reason the medium table has 1 less firelighter chance?
-export const MediumSubFirelighterTable = new LootTable()
+export const MediumSubFirelighterTable: LootTable = new LootTable()
 	.add('Red firelighter', [4, 9])
 	.add('Green firelighter', [4, 9])
 	.add('Blue firelighter', [4, 9])
 	.add('Purple firelighter', [4, 9])
 	.add('White firelighter', [4, 9]);
 
-export const MediumFirelighterTable = new LootTable().add('Gnomish firelighter').add(MediumSubFirelighterTable, 1, 9);
+export const MediumFirelighterTable: LootTable = new LootTable()
+	.add('Gnomish firelighter')
+	.add(MediumSubFirelighterTable, 1, 9);
 
-export const MediumAmuletTable = new LootTable().add('Strength amulet (t)').add('Amulet of power', 1, 9);
+export const MediumAmuletTable: LootTable = new LootTable().add('Strength amulet (t)').add('Amulet of power', 1, 9);
 
-export const MediumBowTable = new LootTable().add('Yew comp bow').add('Yew longbow', 1, 9);
+export const MediumBowTable: LootTable = new LootTable().add('Yew comp bow').add('Yew longbow', 1, 9);
 
-export const MediumStandardTable = new LootTable()
+export const MediumStandardTable: LootTable = new LootTable()
 	.add('Coins', [200, 1000])
 	.add('Lobster', [8, 12])
 	.add('Swordfish', [8, 12])
@@ -166,6 +168,8 @@ export const MediumStandardTable = new LootTable()
 	.add(MediumAmuletTable)
 	.add(MediumBowTable);
 
-export const MediumClueTable = new LootTable().add(MediumStandardTable, 1, 10).add(MediumRareTable, 1, 1);
+export const MediumClueTable: LootTable = new LootTable().add(MediumStandardTable, 1, 10).add(MediumRareTable, 1, 1);
 
-export const MediumCasket = new LootTable().add(MediumClueTable, [3, 5]).tertiary(30, 'Clue scroll (master)');
+export const MediumCasket: LootTable = new LootTable()
+	.add(MediumClueTable, [3, 5])
+	.tertiary(30, 'Clue scroll (master)');

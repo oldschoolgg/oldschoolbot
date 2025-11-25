@@ -3,7 +3,7 @@ import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const NechryaelPreTable = new LootTable()
+export const NechryaelPreTable: LootTable = new LootTable()
 	/* Weapons and armor */
 	.add('Adamant platelegs', 1, 8)
 	.add('Rune 2h sword', 1, 8)
@@ -38,14 +38,14 @@ export const NechryaelPreTable = new LootTable()
 	.add(RareDropTable, 1, 2)
 	.add(GemTable, 1, 10);
 
-const NechryaelTable = new LootTable()
+const NechryaelTable: LootTable = new LootTable()
 	.every('Malicious ashes')
 	.every(NechryaelPreTable)
 
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const Nechryael: SimpleMonster = new SimpleMonster({
 	id: 8,
 	name: 'Nechryael',
 	table: NechryaelTable,
