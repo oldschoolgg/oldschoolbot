@@ -68,6 +68,7 @@ export async function handleFinish({
 
 	const res = new MessageBuilder()
 		.setContent(results.join(', '))
+		.addAllowedUserMentions([user.id])
 		.addComponents([makeTameRepeatTripButton()])
 		.addBankImage({
 			bank: itemsAdded,
