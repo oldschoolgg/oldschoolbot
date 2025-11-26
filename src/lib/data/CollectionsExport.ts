@@ -1108,6 +1108,17 @@ export const barbarianAssaultCL = resolveItems([
 	'Granite helm',
 	'Granite body'
 ]);
+export const barracudaTrialsCL = resolveItems([
+	EItem.STORMY_KEY,
+	EItem.BARREL_STAND,
+	EItem.RALPHS_FABRIC_ROLL,
+	EItem.FETID_KEY,
+	EItem.CAPTURED_WIND_MOTE,
+	EItem.GURTOB_FABRIC_ROLL,
+	EItem.SERRATED_KEY,
+	EItem.HEART_OF_ITHELL,
+	EItem.GWYNAS_FABRIC_ROLL
+]);
 export const brimhavenAgilityArenaCL = resolveItems([
 	'Agility arena ticket',
 	'Brimhaven voucher',
@@ -1618,7 +1629,8 @@ export const skillingPetsCL = resolveItems([
 	'Giant squirrel',
 	'Tangleroot',
 	'Rocky',
-	'Rift guardian'
+	'Rift guardian',
+	'Soup'
 ]);
 export const slayerCL = resolveItems([
 	// Crawling hand
@@ -1775,7 +1787,8 @@ export const miscellaneousCL = resolveItems([
 	'Blue egg sac',
 	'Broken zombie axe',
 	'Broken zombie helmet',
-	EItem.HELMET_OF_THE_MOON
+	EItem.HELMET_OF_THE_MOON,
+	EItem.SQUID_BEAK
 ]);
 
 export const diariesCL = [
@@ -2252,3 +2265,84 @@ export const avasDevices: { item: Item; reduction: number }[] = [
 	{ item: Items.getOrThrow("Ava's accumulator"), reduction: 72 },
 	{ item: Items.getOrThrow("Ava's assembler"), reduction: 80 }
 ];
+
+export const shellbaneGryphon = resolveItems([
+	EItem.JAR_OF_FEATHERS,
+	EItem.GULL,
+	EItem.BELLES_FOLLY_TARNISHED,
+	EItem.GRYPHON_FEATHER
+]);
+
+export const boatPaintsCL = resolveItems([
+	EItem.BARRACUDA_PAINT,
+	EItem.SHARK_PAINT,
+	EItem.INKY_PAINT,
+	EItem.ANGLERS_PAINT,
+	EItem.SALVORS_PAINT,
+	EItem.ARMADYLEAN_PAINT,
+	EItem.ZAMORAKIAN_PAINT,
+	EItem.GUTHIXIAN_PAINT,
+	EItem.SARADOMINIST_PAINT,
+	EItem.MERCHANTS_PAINT,
+	EItem.SANDY_PAINT
+]);
+export const lostSchematicsCL = resolveItems([
+	EItem.SALVAGING_STATION_SCHEMATIC,
+	EItem.GALE_CATCHER_SCHEMATIC,
+	EItem.ETERNAL_BRAZIER_SCHEMATIC,
+	EItem.ROSEWOOD_CARGO_HOLD_SCHEMATIC,
+	EItem.ROSEWOOD_HULL_SCHEMATIC,
+	EItem.ROSEWOOD_AND_COTTON_SAILS_SCHEMATIC,
+	EItem.DRAGON_HELM_SCHEMATIC,
+	EItem.DRAGON_KEEL_SCHEMATIC,
+	EItem.DRAGON_SALVAGING_HOOK_SCHEMATIC,
+	EItem.DRAGON_CANNON_SCHEMATIC
+]);
+
+export const oceanEncountersCL = resolveItems([
+	EItem.TINY_PEARL,
+	EItem.SMALL_PEARL,
+	EItem.SHINY_PEARL,
+	EItem.BRIGHT_PEARL,
+	EItem.BIG_PEARL,
+	EItem.HUGE_PEARL,
+	EItem.ENORMOUS_PEARL,
+	EItem.SHIMMERING_PEARL,
+	EItem.GLISTENING_PEARL,
+	EItem.BRILLIANT_PEARL,
+	EItem.RADIANT_PEARL
+]);
+
+export const sailingMiscellaneousCL = resolveItems([
+	EItem.DRAGON_METAL_SHEET,
+	EItem.DRAGON_NAILS,
+	EItem.DRAGON_CANNONBALL,
+	EItem.ECHO_PEARL,
+	EItem.SWIFT_ALBATROSS_FEATHER,
+	EItem.NARWHAL_HORN,
+	EItem.RAY_BARBS,
+	EItem.BROKEN_DRAGON_HOOK,
+	EItem.BOTTLED_STORM,
+	EItem.DRAGON_CANNON_BARREL,
+	EItem.BOAT_BOTTLE_EMPTY
+]);
+
+export const seaTreasuresCL = resolveItems([
+	EItem.MEDALLION_FRAGMENT1,
+	EItem.MEDALLION_FRAGMENT2,
+	EItem.MEDALLION_FRAGMENT3,
+	EItem.MEDALLION_FRAGMENT4,
+	EItem.MEDALLION_FRAGMENT5,
+	EItem.MEDALLION_FRAGMENT6,
+	EItem.MEDALLION_FRAGMENT7,
+	EItem.MEDALLION_FRAGMENT8,
+	EItem.SAILORS_AMULET_INERT,
+	EItem.RUSTY_LOCKET,
+	EItem.MOULDY_BLOCK,
+	EItem.DULL_KNIFE,
+	EItem.BROKEN_COMPASS,
+	EItem.RUSTY_COIN,
+	EItem.BROKEN_SEXTANT,
+	EItem.MOULDY_DOLL,
+	EItem.SMASHED_MIRROR
+]);
