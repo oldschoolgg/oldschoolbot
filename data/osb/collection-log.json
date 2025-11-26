@@ -5172,6 +5172,21 @@
 					"Youngllef"
 				]
 			},
+			"boat_paints": {
+				"items": [
+					"Angler's paint",
+					"Armadylean paint",
+					"Barracuda paint",
+					"Guthixian paint",
+					"Inky paint",
+					"Merchant's paint",
+					"Salvor's paint",
+					"Sandy paint",
+					"Saradominist paint",
+					"Shark paint",
+					"Zamorakian paint"
+				]
+			},
 			"camdozaal": {
 				"items": [
 					"Ancient astroscope",
@@ -5556,6 +5571,20 @@
 					"Quetzin"
 				]
 			},
+			"lost_schematics": {
+				"items": [
+					"Dragon cannon schematic",
+					"Dragon helm schematic",
+					"Dragon keel schematic",
+					"Dragon salvaging hook schematic",
+					"Eternal brazier schematic",
+					"Gale catcher schematic",
+					"Rosewood & cotton sails schematic",
+					"Rosewood cargo hold schematic",
+					"Rosewood hull schematic",
+					"Salvaging station schematic"
+				]
+			},
 			"monkey_backpacks": {
 				"kc_activity": {},
 				"items": [
@@ -5580,6 +5609,21 @@
 			},
 			"my_notes": {
 				"items": ["Ancient page"]
+			},
+			"ocean_encounters": {
+				"items": [
+					"Big pearl",
+					"Bright pearl",
+					"Brilliant pearl",
+					"Enormous pearl",
+					"Glistening pearl",
+					"Huge pearl",
+					"Radiant pearl",
+					"Shimmering pearl",
+					"Shiny pearl",
+					"Small pearl",
+					"Tiny pearl"
+				]
 			},
 			"random_events": {
 				"items": [
@@ -5675,6 +5719,35 @@
 					"Mark of grace"
 				],
 				"is_activity": true
+			},
+			"sailing_miscellaneous": {
+				"items": [
+					"Boat bottle (empty)",
+					"Bottled storm",
+					"Broken dragon hook",
+					"Dragon cannon barrel",
+					"Dragon cannonball",
+					"Dragon metal sheet",
+					"Dragon nails",
+					"Echo pearl",
+					"Narwhal horn",
+					"Ray barbs",
+					"Swift albatross feather"
+				]
+			},
+			"sea_treasures": {
+				"items": [
+					"Broken compass",
+					"Broken sextant",
+					"Dull knife",
+					"Medallion fragment",
+					"Mouldy block",
+					"Mouldy doll",
+					"Rusty coin",
+					"Rusty locket",
+					"Sailors' amulet (inert)",
+					"Smashed mirror"
+				]
 			},
 			"shayzien_armour": {
 				"items": [
@@ -5957,6 +6030,7 @@
 					"Right skull half",
 					"Shaman mask",
 					"Shield left half",
+					"Squid beak",
 					"Superior mining gloves",
 					"Top of sceptre",
 					"Uncut onyx",
