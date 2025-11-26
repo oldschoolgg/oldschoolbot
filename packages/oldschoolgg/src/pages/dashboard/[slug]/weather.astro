@@ -1,0 +1,15 @@
+---
+export const prerender = false;
+
+import { DashboardPageWrapper } from '../../../components/Dashboard/DashboardPageWrapper.tsx';
+import { WeatherPage } from '../../../components/Dashboard/WeatherPage.tsx';
+import Layout from '../../../layouts/Layout.astro';
+
+const { slug } = Astro.params;
+---
+
+<Layout>
+	<DashboardPageWrapper client:only="react" slug={slug} pageTitle="Weather">
+		{(props: any) => <WeatherPage client:only="react" {...props} />}
+	</DashboardPageWrapper>
+</Layout>

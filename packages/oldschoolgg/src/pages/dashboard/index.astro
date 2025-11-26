@@ -1,0 +1,25 @@
+---
+export const prerender = false;
+
+import { rawApi } from '../../lib/rawApi.js';
+import { globalState } from '../../lib/state.js';
+
+// Handle redirect client-side
+const user = globalState.getState().user;
+if (!user?.id) {
+	console.warn('No user found in global state, redirecting to login.');
+	return Astro.redirect('/login');
+} else {
+	console.warn('Syncing state');
+	rawApi.syncState().then(() => {
+		const updatedUser = globalState.getState().user;
+		if (updatedUser?.id) {
+			return Astro.redirect(`/dashboard/${updatedUser.id}`);
+		} else {
+			return Astro.redirect('/login');
+		}
+	});
+}
+---
+
+<div>Redirectingff...</div>

@@ -17,3 +17,9 @@ export const httpRes = {
 		return Response.json(json, { status: 200 });
 	}
 };
+
+type HonoVariables = {
+	user: RUser | null;
+};
+
+export type HonoServerGeneric = { Bindings: {}; Variables: HonoVariables };

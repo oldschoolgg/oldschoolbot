@@ -1,0 +1,19 @@
+---
+export const prerender = false;
+
+import { CustomCommands } from '../../../components/Dashboard/CustomCommands.tsx';
+import { DashboardPageWrapper } from '../../../components/Dashboard/DashboardPageWrapper.tsx';
+import Layout from '../../../layouts/Layout.astro';
+
+const { slug } = Astro.params;
+---
+
+<Layout>
+	<DashboardPageWrapper
+		client:only="react"
+		slug={slug}
+		pageTitle="Custom Commands"
+	>
+		{(props: any) => <CustomCommands client:only="react" {...props} />}
+	</DashboardPageWrapper>
+</Layout>

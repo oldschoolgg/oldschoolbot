@@ -1,0 +1,15 @@
+---
+export const prerender = false;
+
+import { DashboardPageWrapper } from '../../../components/Dashboard/DashboardPageWrapper.tsx';
+import { PollsPage } from '../../../components/Dashboard/PollsPage.tsx';
+import Layout from '../../../layouts/Layout.astro';
+
+const { slug } = Astro.params;
+---
+
+<Layout>
+	<DashboardPageWrapper client:only="react" slug={slug} pageTitle="Polls">
+		{(props: any) => <PollsPage client:only="react" {...props} />}
+	</DashboardPageWrapper>
+</Layout>

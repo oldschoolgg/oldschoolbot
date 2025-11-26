@@ -1,0 +1,78 @@
+---
+interface Props {
+	variant?: "filled" | "outlined" | "ghost" | "kick";
+	size?: "sm" | "md" | "lg";
+	rounded?: "none" | "sm" | "md" | "lg" | "full";
+	fullWidth?: boolean;
+	disabled?: boolean;
+	type?: "button" | "submit" | "reset";
+	href?: string;
+	class?: string;
+	onClick?: (event: MouseEvent) => void;
+}
+
+const {
+	variant = "filled",
+	size = "md",
+	rounded = "md",
+	fullWidth = false,
+	disabled = false,
+	type = "button",
+	href,
+	class: className = "",
+} = Astro.props;
+
+const variantClasses = {
+	filled: "border-2 border-blue-400/10 bg-[var(--color-bright-saturated-blue)]",
+	kick: "border-2 border-green-400/10 bg-[var(--color-kickgreen)] text-black",
+	discord: "border-2 border-blue-400/10 bg-blue-400 text-black",
+	outlined: "border-2 border-main",
+	ghost: "border-0 bg-transparent hover:bg-opacity-10",
+};
+
+// Size styles
+const sizeClasses = {
+	sm: "px-3 py-1.5 text-sm",
+	md: "px-4 py-2 text-base",
+	lg: "px-6 py-3 text-lg",
+};
+
+// Rounded styles
+const roundedClasses = {
+	none: "rounded-none",
+	sm: "rounded-sm",
+	md: "rounded-md",
+	lg: "rounded-lg",
+	full: "rounded-full",
+};
+
+// Combine classes
+const buttonClasses = [
+	"inline-flex items-center justify-center gap-2",
+	"font-medium transition-all duration-200",
+	"hover:opacity-80 active:opacity-60",
+	"focus:outline-none focus:ring-2 focus:ring-offset-2",
+	variantClasses[variant],
+	sizeClasses[size],
+	roundedClasses[rounded],
+	fullWidth ? "w-full" : "",
+	disabled
+		? "opacity-50 cursor-not-allowed pointer-events-none"
+		: "cursor-pointer",
+	className,
+]
+	.filter(Boolean)
+	.join(" ");
+
+const Component = href ? "a" : "button";
+---
+
+<Component
+	class={buttonClasses}
+	href={href}
+	type={href ? undefined : type}
+	disabled={href ? undefined : disabled}
+	{...Astro.props}
+>
+	<slot />
+</Component>
