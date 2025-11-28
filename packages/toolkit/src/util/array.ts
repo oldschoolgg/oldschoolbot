@@ -1,4 +1,4 @@
-export function averageArr(arr: number[]) {
+export function averageArr(arr: number[]): number {
 	return sumArr(arr) / arr.length;
 }
 
@@ -35,7 +35,7 @@ export function uniqueArr<T>(arr: readonly T[]): T[] {
  *
  * @param arr The array of numbers to sum.
  */
-export function sumArr(arr: readonly number[]) {
+export function sumArr(arr: readonly number[]): number {
 	return arr.reduce((a, b) => a + b, 0);
 }
 
@@ -53,6 +53,6 @@ export function partition<T>(arr: T[], filter: (item: T) => boolean): [T[], T[]]
 	return [firstArray, secondArray];
 }
 
-export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
+export function removeFromArr<T>(arr: T[] | readonly T[], item: T): T[] {
 	return arr.filter(i => i !== item);
 }

@@ -1,8 +1,10 @@
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { calcPercentOfNum, calcWhatPercent, percentChance, randInt, roll } from '@/util/smallUtils.js';
+import { calcPercentOfNum, calcWhatPercent } from '@/util/smallUtils.js';
 
 export interface TeamMember {
 	id: string;
@@ -56,8 +58,8 @@ const data: Record<string, [number[], number]> = {
 const nonUniqueItemRanges = resolveNameBank(data);
 
 const NonUniqueTable = new SimpleTable<number>();
-for (const [id, data] of Object.entries(nonUniqueItemRanges)) {
-	NonUniqueTable.add(Number.parseInt(id), data[1]);
+for (const [id, d] of Object.entries(nonUniqueItemRanges)) {
+	NonUniqueTable.add(Number.parseInt(id), d[1]);
 }
 
 // Phosani
@@ -99,8 +101,8 @@ const phosaniData: Record<string, [number[], number]> = {
 const phosaniNonUniqueItemRanges = resolveNameBank(phosaniData);
 
 const PhosaniNonUniqueTable = new SimpleTable<number>();
-for (const [id, data] of Object.entries(phosaniNonUniqueItemRanges)) {
-	PhosaniNonUniqueTable.add(Number.parseInt(id), data[1]);
+for (const [id, d] of Object.entries(phosaniNonUniqueItemRanges)) {
+	PhosaniNonUniqueTable.add(Number.parseInt(id), d[1]);
 }
 
 const GearTable = new SimpleTable<string>()
@@ -239,6 +241,4 @@ class NightmareClass {
 	}
 }
 
-const Nightmare = new NightmareClass();
-
-export default Nightmare;
+export const Nightmare: NightmareClass = new NightmareClass();

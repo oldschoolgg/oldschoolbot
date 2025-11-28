@@ -1,11 +1,10 @@
-import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { MathRNG, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
-import { globalConfig } from '@/lib/constants.js';
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
-import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export async function isUsersDailyReady(
 	user: MUser
@@ -23,9 +22,8 @@ export async function isUsersDailyReady(
 	return { isReady: true };
 }
 
-async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
-	const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
-	const member = await guild?.members.fetch(user.id).catch(() => null);
+async function reward(user: MUser, triviaCorrect: boolean): Promise<MessageBuilderClass> {
+	const member = await globalClient.fetchMainServerMember(user.id);
 
 	const loot = dailyRoll(1, triviaCorrect);
 
@@ -79,7 +77,8 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
 	if (triviaCorrect && roll(13)) {
-		const { pet } = await user.giveRandomBotMessagesPet();
+		const pet = MathRNG.pick(pets);
+		await user.giveBotMessagePet(pet);
 		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 	}
 
@@ -91,17 +90,16 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		collectionLog: true,
 		itemsToAdd: loot
 	});
-	const image = await makeBankImage({
+
+	return new MessageBuilder().setContent(`${dmStr}\nYou received ${loot}`).addBankImage({
 		bank: itemsAdded,
-		title: `${user.rawUsername}'s Daily`,
+		title: `Daily Loot`,
 		previousCL,
 		showNewCL: true
 	});
-	return { content: `${dmStr}\nYou received ${loot}`, files: [image.file] };
 }
 
 export async function dailyCommand(interaction: MInteraction, user: MUser): CommandResponse {
-	if (interaction) await interaction.defer();
 	const check = await isUsersDailyReady(user);
 	if (!check.isReady) {
 		return `**${Emoji.Diango} Diango says...** You can claim your next daily in ${formatDuration(
@@ -114,30 +112,13 @@ export async function dailyCommand(interaction: MInteraction, user: MUser): Comm
 	});
 
 	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
-
-	let correctUser: string | null = null;
-	const buttons = new DynamicButtons({
-		interaction,
-		usersWhoCanInteract: [user.id]
-	});
 	const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
-	for (const answer of allAnswers) {
-		buttons.add({
-			name: answer,
-			fn: ({ interaction }) => {
-				if (question.answers.includes(answer)) {
-					correctUser = interaction.user.id;
-				}
-			},
-			cantBeBusy: false
-		});
-	}
 
-	await buttons.render({
-		messageOptions: {
-			content: `**${Emoji.Diango} Diango asks ${user.badgedUsername}...** ${question.question}`
-		},
-		isBusy: false
+	const choice = await globalClient.pickStringWithButtons({
+		interaction,
+		options: allAnswers.map(answer => ({ label: answer, id: answer })),
+		content: `**${Emoji.Diango} Diango asks ${user.badgedUsername}...** ${question.question}`
 	});
-	return reward(user, correctUser !== null);
+	if (!choice) return reward(user, false);
+	return reward(user, question.answers.includes(choice.choice.label!));
 }

@@ -4,8 +4,8 @@ import { Bank, ItemGroups } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function championsChallengeCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function championsChallengeCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 
@@ -20,7 +20,7 @@ export async function championsChallengeCommand(user: MUser, channelID: string) 
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: 1,
 		duration: randomVariation(Time.Minute * 20, 5),
 		type: 'ChampionsChallenge',

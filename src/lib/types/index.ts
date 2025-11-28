@@ -8,6 +8,7 @@ export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
 	leader: MUser;
+	interaction: MInteraction;
 	message: string;
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];

@@ -3,7 +3,7 @@ import LootTable from '@/structures/LootTable.js';
 
 const replaceItems = ['Fish barrel', 'Tackle box', 'Big harpoonfish', 'Tiny tempor'];
 
-const PoolCasketTable = new LootTable()
+const PoolCasketTable: LootTable = new LootTable()
 	.add('Rune med helm', 1, 9)
 	.add('Rune full helm', 1, 9)
 	.add('Rune chainbody', 1, 9)
@@ -135,9 +135,9 @@ export function Tempoross({
 	quantity: number;
 	fishingLevel: number;
 	userBank: Bank;
-}) {
+}): Bank {
 	const loot = new Bank();
-	const lootTable = new LootTable()
+	const lootTable: LootTable = new LootTable()
 		.add('Spirit flakes', [32, 64], 2000)
 		.add(PoolCasketTable, 1, 400)
 		.add('Plank', [20, 30], 350)

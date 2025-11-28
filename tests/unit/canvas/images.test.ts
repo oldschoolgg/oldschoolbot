@@ -1,5 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import deepEqual from 'fast-deep-equal';
+import { deepEqual } from '@oldschoolgg/toolkit';
 import { describe, test } from 'vitest';
 
 import { type ChartOptions, createApexChartConfig, createChart } from '../../../src/lib/util/chart.js';

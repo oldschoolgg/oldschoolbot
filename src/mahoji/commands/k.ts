@@ -1,9 +1,8 @@
 import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions } from 'discord.js';
 
+import { choicesOf } from '@/discord/index.js';
 import { PVM_METHODS } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
-import { choicesOf } from '@/lib/discord/index.js';
 import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
@@ -12,10 +11,10 @@ import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/m
 
 const wikiPrefix = 'https://wiki.oldschool.gg/osb';
 
-async function fetchUsersRecentlyKilledMonsters(userID: string): Promise<number[]> {
+async function fetchUsersRecentlyKilledMonsters(userId: string): Promise<number[]> {
 	const res = await prisma.userStats.findUnique({
 		where: {
-			user_id: BigInt(userID)
+			user_id: BigInt(userId)
 		},
 		select: {
 			recently_killed_monsters: true
@@ -38,8 +37,8 @@ export const minionKCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to kill.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
-				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(user.id);
+			autocomplete: async ({ value, userId }: StringAutoComplete) => {
+				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(userId);
 				return autocompleteMonsters
 					.filter(m =>
 						!value
@@ -95,14 +94,14 @@ export const minionKCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction }) => {
 		if (options.show_info) {
 			return interaction.returnStringOrFile(await monsterInfo(user, options.name));
 		}
 		return minionKillCommand(
 			user,
 			interaction,
-			channelID,
+			channelId,
 			options.name,
 			options.quantity,
 			options.method,
@@ -114,7 +113,7 @@ export const minionKCommand = defineCommand({
 	}
 });
 
-async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
+async function monsterInfo(user: MUser, name: string): Promise<string> {
 	const otherMon = autocompleteMonsters.find(m => m.name === name || m.aliases.includes(name));
 	if (otherMon && 'link' in otherMon) {
 		return `View information, item costs, boosts and requirements for ${otherMon.name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;
@@ -152,8 +151,10 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 			hpString = `${noFoodBoost}% boost for no food`;
 		}
 	}
-	const maxCanKillSlay = Math.floor(user.calcMaxTripLength('MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
-	const maxCanKill = Math.floor(user.calcMaxTripLength('MonsterKilling') / timeToFinish);
+	const maxCanKillSlay = Math.floor(
+		(await user.calcMaxTripLength('MonsterKilling')) / reduceNumByPercent(timeToFinish, 15)
+	);
+	const maxCanKill = Math.floor((await user.calcMaxTripLength('MonsterKilling')) / timeToFinish);
 
 	const { QP } = user;
 
@@ -186,7 +187,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 
 	str.push(
 		`Maximum trip length: ${formatDuration(
-			user.calcMaxTripLength('MonsterKilling')
+			await user.calcMaxTripLength('MonsterKilling')
 		)}.\nNormal kill time: ${formatDuration(
 			monster.timeToFinish
 		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`

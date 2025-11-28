@@ -1,5 +1,6 @@
+import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
+
 import type { Item } from '@/meta/item.js';
-import { randArrItem } from '@/util/smallUtils.js';
 import { toKMB } from '../util/smallUtils.js';
 import { Items } from './Items.js';
 
@@ -36,7 +37,7 @@ export class Bank {
 		return bank;
 	}
 
-	constructor(initialBank?: ItemBank | Bank | Map<number, number>) {
+	constructor(initialBank?: number[] | ItemBank | Bank | Map<number, number>) {
 		this.map = this.makeFromInitialBank(initialBank);
 	}
 
@@ -65,10 +66,20 @@ export class Bank {
 		return this;
 	}
 
-	private makeFromInitialBank(initialBank?: Record<string, number> | Bank | Map<number, number>) {
+	private makeFromInitialBank(initialBank?: number[] | Record<string, number> | Bank | Map<number, number>) {
 		if (!initialBank) return new Map<number, number>();
 		if (initialBank instanceof Bank) return new Map(initialBank.map);
 		if (initialBank instanceof Map) return new Map(initialBank);
+		if (Array.isArray(initialBank)) {
+			const map = new Map<number, number>();
+			for (let i = 0; i < initialBank.length; i += 2) {
+				const itemID = initialBank[i];
+				const qty = initialBank[i + 1];
+				if (!qty) continue;
+				map.set(itemID, qty);
+			}
+			return map;
+		}
 
 		const out = new Map<number, number>();
 		const has = Items.has.bind(Items);
@@ -202,10 +213,10 @@ export class Bank {
 		return this;
 	}
 
-	public random(): BankItem | null {
+	public random(rng: RNGProvider = MathRNG): BankItem | null {
 		const entries = Array.from(this.map.entries());
 		if (entries.length === 0) return null;
-		const randomEntry = randArrItem(entries);
+		const randomEntry = rng.pick(entries);
 		return { id: randomEntry[0], qty: randomEntry[1] };
 	}
 
@@ -335,7 +346,7 @@ export class Bank {
 		return errors;
 	}
 
-	public validateOrThrow() {
+	public validateOrThrow(): void {
 		const errors = this.validate();
 		if (errors.length > 0) {
 			throw new Error(`Bank validation failed: ${errors.join(', ')}`);

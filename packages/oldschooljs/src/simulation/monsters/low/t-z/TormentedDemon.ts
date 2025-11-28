@@ -2,7 +2,7 @@ import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const TormentedDemonHerbTable = new LootTable()
+const TormentedDemonHerbTable: LootTable = new LootTable()
 	.add('Grimy kwuarm', 1, 10)
 	.add('Grimy dwarf weed', 1, 8)
 	.add('Grimy cadantine', 1, 8)
@@ -12,9 +12,11 @@ const TormentedDemonHerbTable = new LootTable()
 	.add('Grimy snapdragon', 1, 4)
 	.add('Grimy torstol', 1, 3);
 
-const TormentedDemonBowTable = new LootTable().add('Magic shortbow (u)', 1, 29).add('Magic longbow (u)', 1, 1);
+const TormentedDemonBowTable: LootTable = new LootTable()
+	.add('Magic shortbow (u)', 1, 29)
+	.add('Magic longbow (u)', 1, 1);
 
-const TormentedDemonTable = new LootTable()
+const TormentedDemonTable: LootTable = new LootTable()
 	.every('Infernal ashes')
 	.oneIn(500, 'Tormented synapse')
 	.oneIn(500, 'Burning claw')
@@ -48,7 +50,7 @@ const TormentedDemonTable = new LootTable()
 	.tertiary(12, 'Guthixian temple teleport', 2)
 	.tertiary(128, 'Clue scroll (elite)');
 
-export default new SimpleMonster({
+export const TormentedDemon: SimpleMonster = new SimpleMonster({
 	id: 13600,
 	name: 'Tormented Demon',
 	table: TormentedDemonTable,

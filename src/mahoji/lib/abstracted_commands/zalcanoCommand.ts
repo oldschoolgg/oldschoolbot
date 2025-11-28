@@ -18,7 +18,7 @@ function calcPerformance(kcLearned: number, skillPercentage: number) {
 	return Math.min(100, basePerformance);
 }
 
-export async function zalcanoCommand(user: MUser, channelID: string, quantity?: number) {
+export async function zalcanoCommand(user: MUser, channelId: string, quantity?: number) {
 	const hasReqs = user.hasSkillReqs(soteSkillRequirements);
 	if (!hasReqs) {
 		return `To fight Zalcano, you need: ${formatSkillRequirements(soteSkillRequirements)}.`;
@@ -51,7 +51,7 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 	else if (kc > 50) healAmountNeeded = 3 * 12;
 	else if (kc > 20) healAmountNeeded = 5 * 12;
 
-	const maxTripLength = user.calcMaxTripLength('Zalcano');
+	const maxTripLength = await user.calcMaxTripLength('Zalcano');
 	if (!quantity) quantity = Math.floor(maxTripLength / baseTime);
 	quantity = Math.max(1, quantity);
 	const duration = quantity * baseTime;
@@ -73,7 +73,7 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 
 	await ActivityManager.startTrip<ZalcanoActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'Zalcano',

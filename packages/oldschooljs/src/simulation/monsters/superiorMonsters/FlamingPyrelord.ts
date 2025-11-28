@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { PyrefiendPreTable } from '../low/n-s/Pyrefiend.js';
 
-const FlamingPyrelordTable = new LootTable()
+const FlamingPyrelordTable: LootTable = new LootTable()
 	.every('Fiendish ashes')
 	.every(PyrefiendPreTable, 3)
 
@@ -15,7 +15,7 @@ const FlamingPyrelordTable = new LootTable()
 	.tertiary(1138, 'Eternal gem')
 	.tertiary(1138, 'Imbued heart');
 
-export default new SimpleMonster({
+export const FlamingPyrelord: SimpleMonster = new SimpleMonster({
 	id: 7394,
 	name: 'Flaming pyrelord',
 	table: FlamingPyrelordTable,
