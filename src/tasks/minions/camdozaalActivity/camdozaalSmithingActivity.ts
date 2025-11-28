@@ -18,7 +18,7 @@ const barroniteDepositLootTable = new LootTable()
 export const camdozaalSmithingTask: MinionTask = {
 	type: 'CamdozaalSmithing',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
-		const { quantity, channelID, duration } = data;
+		const { quantity, channelId, duration } = data;
 
 		// Count loot received during trip
 		const loot = barroniteDepositLootTable.roll(quantity);
@@ -51,6 +51,6 @@ export const camdozaalSmithingTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

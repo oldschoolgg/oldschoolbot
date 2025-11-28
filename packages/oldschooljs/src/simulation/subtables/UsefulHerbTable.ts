@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 
-const UsefulHerbTable = new LootTable()
+const UsefulHerbTable: LootTable = new LootTable()
 	.add('Grimy avantoe', 1, 5)
 	.add('Grimy snapdragon', 1, 4)
 	.add('Grimy ranarr weed', 1, 4)

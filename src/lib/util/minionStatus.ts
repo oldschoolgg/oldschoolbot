@@ -28,6 +28,7 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type {
+	ActivityTaskData,
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
@@ -83,8 +84,7 @@ import type {
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
-export function minionStatus(user: MUser) {
-	const currentTask = ActivityManager.getActivityOfUser(user.id);
+export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) {
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;
@@ -656,9 +656,8 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 		case 'GiantsFoundry': {
-			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently creating ${
-				data.quantity
+				currentTask.quantity
 			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
@@ -720,8 +719,9 @@ export function minionStatus(user: MUser) {
 			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Easter':
-		case 'BlastFurnace': {
-			throw new Error('Removed');
+		case 'BlastFurnace':
+		case 'Revenants': {
+			throw new Error(`Removed`);
 		}
 	}
 }

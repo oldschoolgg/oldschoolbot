@@ -31,9 +31,9 @@ import {
 	type UserStats,
 	type XPGain
 } from '@/prisma/main.js';
-import type { AnyCommand } from '@/lib/discord/commandOptions.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
+import { isGroupActivity } from '@/lib/util/activityTypeCheck.js';
 import { BitField } from '../../src/lib/constants.js';
 import { type GearSetupType, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { trackLoot } from '../../src/lib/lootTrack.js';
@@ -45,7 +45,6 @@ import type { Skills } from '../../src/lib/types/index.js';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti.js';
 import { migrateUser } from '../../src/lib/util/migrateUser.js';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems.js';
-import { isGroupActivity } from '../../src/lib/util.js';
 import { pinTripCommand } from '../../src/mahoji/commands/config.js';
 import { geCommand } from '../../src/mahoji/commands/ge.js';
 import { createOrEditGearSetup } from '../../src/mahoji/commands/gearpresets.js';
@@ -736,7 +735,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 
-			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
+			await user.update({ [`gear_${setup}`]: equippedGear });
 		}
 	},
 	{
@@ -747,7 +746,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 			if (!equippedGear) throw new Error('Equipped gear is undefined');
-			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
+			await user.update({ [`gear_${setup}`]: equippedGear });
 		}
 	},
 	{
@@ -765,7 +764,6 @@ const allTableCommands: TestCommand[] = [
 					ring: 'Berserker ring',
 					weapon: 'Ghrazi rapier'
 				},
-				undefined,
 				undefined
 			);
 		}
@@ -834,7 +832,7 @@ const allTableCommands: TestCommand[] = [
 				select: { id: true }
 			});
 			if (result) {
-				await pinTripCommand(user, result.id.toString(), undefined, undefined);
+				await pinTripCommand(user, result.id.toString(), undefined);
 			}
 		}
 	},

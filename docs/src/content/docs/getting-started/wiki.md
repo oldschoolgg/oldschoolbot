@@ -139,3 +139,9 @@ A command mention [[/gear equip gear_setup\:Melee auto\:melee_strength]] in the 
 
 This is [Testing](/) [links](/) in the [middle](/) of some [text](/) test
 
+
+## Contributors
+
+[[DayV-git#small]]
+
+[[gc]]

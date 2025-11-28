@@ -8,7 +8,7 @@ import { collectables } from '@/mahoji/lib/collectables.js';
 
 export async function collectCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	objectName: string,
 	quantity?: number,
 	no_stams?: boolean
@@ -20,7 +20,7 @@ export async function collectCommand(
 			.join(', ')}.`;
 	}
 
-	const maxTripLength = user.calcMaxTripLength('Collecting');
+	const maxTripLength = await user.calcMaxTripLength('Collecting');
 	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}
@@ -81,7 +81,7 @@ export async function collectCommand(
 	await ActivityManager.startTrip<CollectingOptions>({
 		collectableID: collectable.item.id,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		noStaminas: no_stams,

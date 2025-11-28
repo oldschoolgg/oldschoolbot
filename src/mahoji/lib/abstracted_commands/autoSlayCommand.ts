@@ -2,7 +2,6 @@ import { stringSearch } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants.js';
-import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { AutoslayOptionsEnum, autoslayModes, SlayerMasterEnum } from '@/lib/slayer/constants.js';

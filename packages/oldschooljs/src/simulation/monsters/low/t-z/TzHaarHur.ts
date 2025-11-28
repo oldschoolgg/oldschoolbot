@@ -9,7 +9,7 @@ const TzHaarHurTable = new LootTable({ limit: 195 })
 	.add('Uncut diamond', 1, 1)
 	.tertiary(176_743, 'Rocky');
 
-export default new SimpleMonster({
+export const TzHaarHur: SimpleMonster = new SimpleMonster({
 	id: 2161,
 	name: 'TzHaar-Hur',
 	pickpocketTable: TzHaarHurTable,

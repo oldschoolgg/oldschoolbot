@@ -3,7 +3,7 @@ import WyvernHerbTable from '@/simulation/subtables/WyvernHerbTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const SpittingWyvernTable = new LootTable()
+const SpittingWyvernTable: LootTable = new LootTable()
 	.every('Wyvern bones')
 	.oneIn(512, 'Granite longsword')
 	.oneIn(2560, 'Granite boots')
@@ -59,7 +59,7 @@ const SpittingWyvernTable = new LootTable()
 	.tertiary(350, 'Unidentified rare fossil')
 	.tertiary(12_000, 'Wyvern visage');
 
-export default new SimpleMonster({
+export const FossilIslandWyvernSpitting: SimpleMonster = new SimpleMonster({
 	id: 7794,
 	name: 'Spitting Wyvern',
 	table: SpittingWyvernTable,

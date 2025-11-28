@@ -3,14 +3,14 @@ import { Time } from '@oldschoolgg/toolkit';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function combatRingCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function combatRingCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: randomVariation(Time.Minute * 5, 5),
 		type: 'CombatRing'
 	});

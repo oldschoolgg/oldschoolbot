@@ -4,7 +4,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const CyclopseTable = new LootTable()
+export const CyclopseTable: LootTable = new LootTable()
 	.every('Big bones')
 
 	/* Weapons and armour */
@@ -45,7 +45,7 @@ export const CyclopseTable = new LootTable()
 	.tertiary(512, 'Clue scroll (hard)')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const Cyclops: SimpleMonster = new SimpleMonster({
 	id: 2097,
 	name: 'Cyclops',
 	table: CyclopseTable,

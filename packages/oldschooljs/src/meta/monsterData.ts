@@ -41,9 +41,6 @@ export interface MonsterData {
 	immuneToVenom: boolean;
 	attributes: MonsterAttribute[];
 	category?: string[];
-	examineText?: string;
-	wikiName: string;
-	wikiURL: string;
 	attackLevel: number;
 	strengthLevel: number;
 	defenceLevel: number;

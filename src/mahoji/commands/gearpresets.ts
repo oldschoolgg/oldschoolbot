@@ -1,19 +1,13 @@
-import { cleanString, ParsedCustomEmojiWithGroups, stringMatches } from '@oldschoolgg/toolkit';
+import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
-import { globalConfig } from '@/lib/constants.js';
-import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/lib/discord/index.js';
+import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/discord/index.js';
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { Gear, globalPresets } from '@/lib/structures/Gear.js';
-import { emojiServers } from '@/lib/util/cachedUserIDs.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { gearEquipCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
-
-function maxPresets(user: MUser) {
-	return user.perkTier() * 2 + 4;
-}
 
 type InputGear = Partial<Record<EquipmentSlot, string | undefined>>;
 type ParsedInputGear = Partial<Record<EquipmentSlot, number>>;
@@ -39,14 +33,13 @@ export async function createOrEditGearSetup(
 	name: string,
 	isUpdating: boolean,
 	gearInput: InputGear,
-	emoji: string | undefined,
 	pinned_setup: GearSetupType | 'reset' | undefined
 ) {
 	if (name) {
 		name = cleanString(name).toLowerCase();
 	}
-	if (name.length > 24) return 'Gear preset names must be less than 25 characters long.';
 	if (!name) return "You didn't supply a name.";
+	if (name.length > 24) return 'Gear preset names must be less than 25 characters long.';
 	if (!isUpdating && !isValidNickname(name)) {
 		return 'Invalid name.';
 	}
@@ -63,7 +56,7 @@ export async function createOrEditGearSetup(
 		return 'You cant update a gearpreset you dont have.';
 	}
 
-	const max = maxPresets(user);
+	const max = await user.calcMaxGearPresets();
 	if (userPresets.length >= max && !isUpdating) {
 		return `The maximum amount of gear presets you can have is ${max}, you can unlock more slots by becoming a patron!`;
 	}
@@ -81,17 +74,6 @@ export async function createOrEditGearSetup(
 		if (gearSetup !== null) gearSetup[slot] = null;
 	}
 
-	if (emoji) {
-		const res = ParsedCustomEmojiWithGroups.exec(emoji);
-		if (!res || !res[3]) return "That's not a valid emoji.";
-		emoji = res[3];
-
-		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && globalConfig.isProduction) {
-			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
-		}
-	}
-
 	const gearData = {
 		head: parsedInputGear.head ?? gearSetup?.head?.item ?? null,
 		neck: parsedInputGear.neck ?? gearSetup?.neck?.item ?? null,
@@ -106,7 +88,6 @@ export async function createOrEditGearSetup(
 		ring: parsedInputGear.ring ?? gearSetup?.ring?.item ?? null,
 		ammo: parsedInputGear.ammo ?? gearSetup?.ammo?.item ?? null,
 		ammo_qty: gearSetup?.ammo?.quantity ?? null,
-		emoji_id: emoji ?? undefined,
 		pinned_setup: !pinned_setup || pinned_setup === 'reset' ? undefined : pinned_setup
 	};
 
@@ -140,7 +121,7 @@ const slotOptions = Object.values(EquipmentSlot).map(slot =>
 		name: slot,
 		description: `The item you want to put in the ${slot} slot in this gear setup.`,
 		required: false,
-		autocomplete: async (value: string) => {
+		autocomplete: async ({ value }: StringAutoComplete) => {
 			const matchingItems = (
 				value
 					? allEquippableItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase()))
@@ -213,12 +194,6 @@ export const gearPresetsCommand = defineCommand({
 				{
 					type: 'String',
 					required: false,
-					name: 'emoji',
-					description: 'Pick an emoji for the preset.'
-				},
-				{
-					type: 'String',
-					required: false,
 					name: 'pinned_setup',
 					description: 'Pick a setup to pin this setup too.',
 					choices: choicesOf(GearSetupTypes)
@@ -235,10 +210,10 @@ export const gearPresetsCommand = defineCommand({
 					name: 'gear_preset',
 					description: 'The gear preset you want to select.',
 					required: true,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const presets = await prisma.gearPreset.findMany({
 							where: {
-								user_id: user.id
+								user_id: userId
 							},
 							select: {
 								name: true
@@ -250,12 +225,6 @@ export const gearPresetsCommand = defineCommand({
 					}
 				},
 				...slotOptions,
-				{
-					type: 'String',
-					required: false,
-					name: 'emoji',
-					description: 'Pick an emoji for the preset.'
-				},
 				{
 					type: 'String',
 					required: false,
@@ -275,10 +244,10 @@ export const gearPresetsCommand = defineCommand({
 					name: 'preset',
 					description: 'The gear preset you want to delete.',
 					required: false,
-					autocomplete: async (value: string, user: MUser) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const presets = await prisma.gearPreset.findMany({
 							where: {
-								user_id: user.id
+								user_id: userId
 							},
 							select: {
 								name: true
@@ -300,7 +269,6 @@ export const gearPresetsCommand = defineCommand({
 				options.create.name,
 				false,
 				options.create,
-				options.create.emoji,
 				options.create.pinned_setup
 			);
 		}
@@ -311,7 +279,6 @@ export const gearPresetsCommand = defineCommand({
 				options.edit.gear_preset,
 				true,
 				options.edit,
-				options.edit.emoji,
 				options.edit.pinned_setup
 			);
 		}
@@ -354,7 +321,7 @@ export const gearPresetsCommand = defineCommand({
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
 			const image = await user.generateGearImage({ gearSetup: new Gear(preset) });
-			return { files: [{ attachment: image, name: 'preset.jpg' }] };
+			return { files: [{ buffer: image, name: 'preset.jpg' }] };
 		}
 
 		return 'Invalid command.';

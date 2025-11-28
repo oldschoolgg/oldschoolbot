@@ -262,7 +262,7 @@ for (const stat of Object.values(GearStat)) {
 		for (const id of setup.allItems(false)) {
 			const item = Items.get(id);
 			if (!item) continue;
-			if ([' (75)', ' (100)', ' (50)', ' (25)', ' (0)', ' (l)'].some(t => item.wiki_name?.includes(t))) continue;
+			if ([' (75)', ' (100)', ' (50)', ' (25)', ' (0)', ' (l)'].some(t => item.name?.includes(t))) continue;
 			bisGearItems.add(item.id);
 		}
 	}

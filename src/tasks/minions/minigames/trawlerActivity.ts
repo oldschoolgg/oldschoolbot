@@ -9,7 +9,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
-		const { channelID, quantity } = data;
+		const { channelId, quantity } = data;
 		await user.incrementMinigameScore('fishing_trawler', quantity);
 
 		const loot = new Bank();
@@ -58,6 +58,6 @@ export const trawlerTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

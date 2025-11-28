@@ -6,7 +6,7 @@ import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
 	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { mixableID, quantity, zahur, wesley, channelID, duration } = data;
+		const { mixableID, quantity, zahur, wesley, channelId, duration } = data;
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const xpReceived = zahur && mixableItem.zahur ? 0 : quantity * mixableItem.xp;
@@ -41,9 +41,8 @@ export const herbloreTask: MinionTask = {
 
 		handleTripFinish(
 			user,
-			channelID,
+			channelId,
 			`${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}. ${xpRes}`,
-			undefined,
 			data,
 			loot
 		);

@@ -45,7 +45,7 @@ const defenders = [
 export const cyclopsTask: MinionTask = {
 	type: 'Cyclops',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
-		const { channelID, quantity } = data;
+		const { channelId, quantity } = data;
 
 		const userBank = user.bank;
 
@@ -83,6 +83,6 @@ export const cyclopsTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

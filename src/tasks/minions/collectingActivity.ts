@@ -77,6 +77,6 @@ export const collectingTask: MinionTask = {
 
 		await ClientSettings.updateBankSetting('collecting_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
+		handleTripFinish({ user, channelId, message: str, data, loot: loot ?? null });
 	}
 };

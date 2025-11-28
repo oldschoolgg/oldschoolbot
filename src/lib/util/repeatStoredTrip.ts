@@ -1,9 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { objectValues, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
-import type { Activity, Prisma } from '@/prisma/main.js';
+import type { Activity } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
@@ -44,6 +44,7 @@ import type {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	MahoganyHomesActivityTaskOptions,
+	MinigameActivityTaskOptionsWithNoChanges,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
@@ -127,6 +128,13 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 			activity_type_enum.CombatRing
 		] as activity_type_enum[]
 	).includes(activity.type);
+};
+type ActivityMap = {
+	[K in ActivityTaskData as K['type']]: K;
+};
+
+type MockedCommandOptions = {
+	[key: string]: string | number | boolean | undefined | MockedCommandOptions;
 };
 
 const canRepeatStoredTrip = (activity: Activity, user: MUser) => {
@@ -233,7 +241,9 @@ const tripHandlers = {
 	},
 	[activity_type_enum.AgilityArena]: {
 		commandName: 'minigames',
-		args: (data: ActivityTaskOptionsWithQuantity) => ({ agility_arena: { start: { quantity: data.quantity } } })
+		args: (data: MinigameActivityTaskOptionsWithNoChanges) => ({
+			agility_arena: { start: { quantity: data.quantity } }
+		})
 	},
 	[activity_type_enum.Alching]: {
 		commandName: 'activities',
@@ -554,7 +564,7 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Wintertodt]: {
 		commandName: 'k',
-		args: (data: ActivityTaskOptionsWithQuantity) => ({
+		args: (data: MinigameActivityTaskOptionsWithNoChanges) => ({
 			name: 'wintertodt',
 			quantity: data.quantity
 		})
@@ -772,13 +782,13 @@ const tripHandlers = {
 	}
 } as const;
 
-for (const type of Object.values(activity_type_enum)) {
+for (const type of objectValues(activity_type_enum)) {
 	if (!tripHandlers[type]) {
 		throw new Error(`Missing trip handler for ${type}`);
 	}
 }
 
-export async function fetchRepeatTrips(user: MUser) {
+export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 	const res: Activity[] = await prisma.activity.findMany({
 		where: {
 			user_id: BigInt(user.id),
@@ -791,10 +801,7 @@ export async function fetchRepeatTrips(user: MUser) {
 		},
 		take: 20
 	});
-	const filtered: {
-		type: activity_type_enum;
-		data: Prisma.JsonValue;
-	}[] = [];
+	const filtered: Activity[] = [];
 	for (const trip of res) {
 		if (!canRepeatStoredTrip(trip, user)) continue;
 		if (!filtered.some(i => i.type === trip.type)) {
@@ -830,8 +837,9 @@ async function getLastRepeatableTrip(user: MUser) {
 
 export async function makeRepeatTripButtons(user: MUser) {
 	const trips = await fetchRepeatTrips(user);
+	const limit = Math.min((await user.fetchPerkTier()) + 1, 5);
+
 	const buttons: ButtonBuilder[] = [];
-	const limit = Math.min(user.perkTier() + 1, 5);
 	for (const trip of trips.slice(0, limit)) {
 		buttons.push(
 			new ButtonBuilder()
@@ -870,6 +878,7 @@ export async function repeatTrip(
 		args: handler.args(tripData as any),
 		interaction,
 		user,
-		continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
+		continueDeltaMillis: 0
+		// TODO: continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
 	});
 }

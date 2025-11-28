@@ -4,6 +4,7 @@ import type { UserStats } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { ClueBank } from '@/lib/minions/types.js';
 import { getToaKCs } from '@/lib/simulation/toaUtils.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 
 export class MUserStats {
 	userStats: UserStats;
@@ -31,11 +32,7 @@ export class MUserStats {
 	}
 
 	static async fromID(id: string) {
-		const userStats = await prisma.userStats.upsert({
-			where: { user_id: BigInt(id) },
-			create: { user_id: BigInt(id) },
-			update: {}
-		});
+		const userStats = await fetchUserStats(id);
 		return new MUserStats(userStats);
 	}
 

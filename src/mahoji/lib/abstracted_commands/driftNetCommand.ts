@@ -5,13 +5,13 @@ import { Bank } from 'oldschooljs';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export async function driftNetCommand(
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	minutes: number | undefined,
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const maxTripLength = user.calcMaxTripLength('DriftNet');
+	const maxTripLength = await user.calcMaxTripLength('DriftNet');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);
@@ -75,7 +75,7 @@ export async function driftNetCommand(
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'DriftNet'

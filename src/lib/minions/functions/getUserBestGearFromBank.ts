@@ -91,7 +91,7 @@ export default function getUserBestGearFromBank({
 	// Get all items by slot from user bank
 	for (const [item, quantity] of new Bank().add(gearBank.bank).add(toRemoveFromGear).items()) {
 		const hasStats = item.equipment?.requirements ? gearBank.hasSkillReqs(item.equipment.requirements) : true;
-		if (item.equipable_by_player && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
+		if (item.equipable && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
 			equipables[item.equipment.slot].push(item.id);
 		}
 	}
