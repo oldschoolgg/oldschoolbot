@@ -49,11 +49,11 @@ export function serializeSnapshotItem(item: any): any {
 	if (Array.isArray(item)) return item.map(serializeSnapshotItem);
 
 	// Items
-	if (
-		'id' in item &&
-		'name' in item &&
-		('tradeable' in item || 'customItemData' in item || 'wiki_name' in item || 'equipable_by_player' in item)
-	) {
+	const mustHaveKeys = ['id', 'name'];
+	const optionalKeys = ['tradeable', 'equipment', 'equipable', 'cost', 'lowalch', 'members'];
+	const isItem =
+		mustHaveKeys.every(k => k in item) && (optionalKeys.some(k => k in item) || Object.keys(item).length === 2);
+	if (isItem && 'name' in item) {
 		return item.name;
 	}
 
@@ -111,10 +111,7 @@ export function serializeSnapshotItem(item: any): any {
 			isObj &&
 			'id' in value &&
 			'name' in value &&
-			('tradeable' in value ||
-				'customItemData' in value ||
-				'wiki_name' in value ||
-				'equipable_by_player' in value)
+			('tradeable' in value || 'customItemData' in value || 'wiki_name' in value || 'equipable' in value)
 		) {
 			result[key] = value.name;
 			continue;
