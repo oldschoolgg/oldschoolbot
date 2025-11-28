@@ -1,10 +1,10 @@
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { cryptoRng } from '@oldschoolgg/rng';
-import { chunk } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { EmojiId } from '@/lib/data/emojis.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
+import { chunk } from 'remeda';
 
 export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: MInteraction) {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });

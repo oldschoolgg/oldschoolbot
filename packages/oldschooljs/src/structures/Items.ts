@@ -1,10 +1,6 @@
-import fs from 'node:fs';
 import deepMerge from 'deepmerge';
 
-const items = JSON.parse(fs.readFileSync(new URL('../assets/item_data.json', import.meta.url), 'utf8')) as Record<
-	string,
-	Item
->;
+import items from '@/assets/item_data.json' with { type: 'json' };
 
 import type { Item } from '@/meta/item.js';
 import { Collection } from './Collection.js';
@@ -72,6 +68,23 @@ export const USELESS_ITEMS: number[] = [
 ];
 
 class ItemsSingleton extends Collection<number, Item> {
+	constructor(items: ItemCollection) {
+		super();
+
+		for (const [id, item] of Object.entries(items)) {
+			const numID = Number.parseInt(id);
+
+			if (USELESS_ITEMS.includes(numID)) continue;
+			this.set(numID, item);
+
+			const cleanName = cleanString(item.name);
+			if (!itemNameMap.has(cleanName)) {
+				itemNameMap.set(cleanName, numID);
+			}
+		}
+
+		console.log(`Loaded ${this.size} items into the Items database.`);
+	}
 	public getById(id: number): Item | undefined {
 		return super.get(id);
 	}
@@ -190,19 +203,8 @@ class ItemsSingleton extends Collection<number, Item> {
 	}
 }
 
-export const Items: ItemsSingleton = new ItemsSingleton();
+export const Items: ItemsSingleton = new ItemsSingleton(items as ItemCollection);
 
-for (const [id, item] of Object.entries(items)) {
-	const numID = Number.parseInt(id);
-
-	if (USELESS_ITEMS.includes(numID)) continue;
-	Items.set(numID, item);
-
-	const cleanName = cleanString(item.name);
-	if (!itemNameMap.has(cleanName)) {
-		itemNameMap.set(cleanName, numID);
-	}
-}
 
 export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
 	const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
@@ -243,3 +245,4 @@ export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsRes
 
 	return newArray;
 }
+

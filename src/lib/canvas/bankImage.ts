@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import { chunk, cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
+import { cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
+import { chunk } from 'remeda';
 
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import {
@@ -294,8 +295,8 @@ class BankImageTask {
 
 		const isFarmingContractReadyToHarvest = Boolean(
 			farmingContract?.contract.hasContract &&
-				farmingContract.matchingPlantedCrop &&
-				farmingContract.matchingPlantedCrop.ready
+			farmingContract.matchingPlantedCrop &&
+			farmingContract.matchingPlantedCrop.ready
 		);
 
 		let backgroundImage = background.image!;
@@ -499,7 +500,7 @@ class BankImageTask {
 		const canvasHeight =
 			floor(
 				floor(ceil(items.length / itemsPerRow) * floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08))) +
-					itemSize * 1.5
+				itemSize * 1.5
 			) - 2;
 
 		const {

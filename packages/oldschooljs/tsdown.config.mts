@@ -1,6 +1,6 @@
 import { createTsdownConfig } from '../../scripts/createTsdownConfig.ts';
 
-const entry = ['./src/index.ts'];
+const entry = ['./src/index.ts', './src/strucures/Items.ts'];
 
 export default createTsdownConfig({
 	entry,
@@ -8,5 +8,6 @@ export default createTsdownConfig({
 	skipNodeModulesBundle: true,
 	external: [],
 	noExternal: [],
-	copy: ['src/assets']
+	copy: ['src/assets'],
+	minify: false
 });

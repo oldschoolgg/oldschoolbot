@@ -1,5 +1,6 @@
 import type { IChannel, IMessage } from '@oldschoolgg/schemas';
-import { chunk, sleep } from '@oldschoolgg/toolkit';
+import { sleep } from '@oldschoolgg/toolkit';
+import { chunk } from 'remeda';
 
 import type LastManStandingUsage from '@/lib/structures/LastManStandingUsage.js';
 import { LMS_FINAL, LMS_PREP, LMS_ROUND } from '@/lib/structures/LastManStandingUsage.js';
@@ -10,13 +11,13 @@ function calculateMaxDeaths(game: LastManStandingGame) {
 	return game.prep // have 0 deaths during the preparation phase
 		? 0
 		: // For 16 people, 5 die, 36 -> 7, and so on keeps the game interesting.
-			game.contestants.size >= 16
+		game.contestants.size >= 16
 			? Math.ceil(Math.sqrt(game.contestants.size) + 1)
 			: // If there are more than 7 contestants, proceed to kill them in 4s.
-				game.contestants.size > 7
+			game.contestants.size > 7
 				? 4
 				: // If there are more than 3 contestants, eliminate 2, else 1 (3 -> 2, 2 -> 1)
-					game.contestants.size > 3
+				game.contestants.size > 3
 					? 2
 					: 1;
 }
@@ -69,9 +70,8 @@ function buildTexts(game: LastManStandingGame, results: string[], deaths: string
 	const header = game.prep ? 'Preparation' : game.final ? `Finals, Round: ${game.round}` : `Round: ${game.round}`;
 	const death =
 		deaths.length > 0
-			? `${`**${deaths.length} new gravestone${
-					deaths.length === 1 ? ' litters' : 's litter'
-				} the battlefield.**`}\n\n${deaths.map(d => `- ${d}`).join('\n')}`
+			? `${`**${deaths.length} new gravestone${deaths.length === 1 ? ' litters' : 's litter'
+			} the battlefield.**`}\n\n${deaths.map(d => `- ${d}`).join('\n')}`
 			: '';
 	const panels = chunk(results, 5);
 
