@@ -957,20 +957,23 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		setupType?: GearSetupType | 'all';
 		gearSetup?: Gear;
 	}): Promise<Buffer> {
+		const gearTemplate = this.user.gear_template ?? 0;
 		if (setupType === 'all') {
 			return generateAllGearImage({
 				equippedPet: this.user.minion_equippedPet,
 				bankBgHexColor: this.user.bank_bg_hex,
 				iconPackId: this.iconPackId,
 				farmingContract: this.farmingContract(),
-				gear: this.gear
+				gear: this.gear,
+				gearTemplate
 			});
 		}
 		return generateGearImage({
 			gearSetup: setupType ? this.gear[setupType] : gearSetup!,
 			gearType: setupType,
 			petID: this.user.minion_equippedPet,
-			farmingContract: this.farmingContract()
+			farmingContract: this.farmingContract(),
+			gearTemplate
 		});
 	}
 
