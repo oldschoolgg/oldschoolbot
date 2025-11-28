@@ -1,9 +1,9 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const ScorpiaUniqueTable = new LootTable().add('Odium shard 3').add('Malediction shard 3');
+const ScorpiaUniqueTable: LootTable = new LootTable().add('Odium shard 3').add('Malediction shard 3');
 
-const ScorpiaTable = new LootTable()
+const ScorpiaTable: LootTable = new LootTable()
 	.tertiary(18, 'Ensouled scorpion head')
 	.tertiary(100, 'Clue scroll (hard)')
 	.tertiary(2016, "Scorpia's offspring")
@@ -48,7 +48,7 @@ const ScorpiaTable = new LootTable()
 	.add('Blighted super restore(4)', 5, 5)
 	.add('Wilderness crabs teleport', 2, 2);
 
-export default new SimpleMonster({
+export const Scorpia: SimpleMonster = new SimpleMonster({
 	id: 6615,
 	name: 'Scorpia',
 	table: ScorpiaTable,

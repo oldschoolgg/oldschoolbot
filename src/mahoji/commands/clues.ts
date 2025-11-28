@@ -1,5 +1,5 @@
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { EmbedBuilder } from 'discord.js';
 import { Hiscores } from 'oldschooljs/hiscores';
 
 export const cluesCommand = defineCommand({
@@ -17,27 +17,27 @@ export const cluesCommand = defineCommand({
 		}
 	],
 	run: async ({ options }) => {
-		try {
-			const { clues } = await Hiscores.fetch(options.rsn);
-
-			const embed = new EmbedBuilder()
-				.setAuthor({ name: options.rsn })
-				.setColor(52_224)
-				.setThumbnail('https://i.imgur.com/azW3cSB.png');
-
-			for (const tier of Object.keys(clues) as (keyof typeof clues)[]) {
-				embed.addFields({
-					name: toTitleCase(tier),
-					value: `**Rank:** ${clues[tier].rank.toLocaleString()}\n**Score:** ${clues[
-						tier
-					].score.toLocaleString()}\n`,
-					inline: true
-				});
-			}
-
-			return { embeds: [embed] };
-		} catch (err: any) {
-			return err.message;
+		const { player, error } = await Hiscores.fetch(options.rsn);
+		if (error !== null) {
+			return error;
 		}
+		const clues = player.clues;
+
+		const embed = new EmbedBuilder()
+			.setAuthor({ name: options.rsn })
+			.setColor(52_224)
+			.setThumbnail('https://i.imgur.com/azW3cSB.png');
+
+		for (const tier of Object.keys(clues) as (keyof typeof clues)[]) {
+			embed.addFields({
+				name: toTitleCase(tier),
+				value: `**Rank:** ${clues[tier].rank.toLocaleString()}\n**Score:** ${clues[
+					tier
+				].score.toLocaleString()}\n`,
+				inline: true
+			});
+		}
+
+		return { embeds: [embed] };
 	}
 });

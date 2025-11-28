@@ -9,7 +9,7 @@ class AwakenedTheWhispererSingleton extends Monster {
 	}
 }
 
-export const AwakenedTheWhisperer = new AwakenedTheWhispererSingleton({
+export const AwakenedTheWhisperer: AwakenedTheWhispererSingleton = new AwakenedTheWhispererSingleton({
 	id: 12_205,
 	name: 'The Whisperer (Awakened)',
 	aliases: ['awakened whisperer', 'the whisperer (awakened)']

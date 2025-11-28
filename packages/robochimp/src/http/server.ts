@@ -1,5 +1,5 @@
 import { serve } from '@hono/node-server';
-import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
@@ -8,7 +8,6 @@ import { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
 import { type GithubSponsorsWebhookData, verifyGithubSecret } from '../lib/githubSponsor.js';
 import { parseStrToTier, patreonTask, verifyPatreonSecret } from '../lib/patreon.js';
-import { patronLogWebhook } from '../util.js';
 
 export async function startServer() {
 	const app = new Hono();
@@ -39,10 +38,10 @@ export async function startServer() {
 		const isVerified = verifyPatreonSecret(raw, signature);
 		if (!isVerified) return httpErr.BAD_REQUEST({ message: 'Unverified' });
 
-		// Fire-and-forget
+		// biome-ignore lint/nursery/noFloatingPromises:-
 		patreonTask.run().then(res => {
 			if (res) {
-				patronLogWebhook.send(res.join('\n').slice(0, 1950));
+				console.log(res.join('\n').slice(0, 1950));
 			}
 		});
 
@@ -98,19 +97,20 @@ export async function startServer() {
 	app.get('/minion/:userID', async c => {
 		const params = c.req.param();
 		const queryBot = c.req.query('bot');
-		let userID = params.userID;
+		const userID = params.userID;
 
 		if (!userID || typeof userID !== 'string') {
 			return httpErr.BAD_REQUEST({ message: 'Invalid user ID 1' });
 		}
 
-		if (!isValidDiscordSnowflake(userID)) {
-			const djsUser = globalClient.users.cache.find((u: any) => u.username === userID);
-			if (djsUser) userID = djsUser.id;
-			else return httpErr.NOT_FOUND({ message: 'Could not find this users id' });
-		}
+		// TODO: support for tags/username
+		// if (!isValidDiscordSnowflake(userID)) {
+		// 	const djsUser = globalClient.users.cache.find((u: any) => u.username === userID);
+		// 	if (djsUser) userID = djsUser.id;
+		// 	else return httpErr.NOT_FOUND({ message: 'Could not find this users id' });
+		// }
 
-		if (!userID || !isValidDiscordSnowflake(userID)) {
+		if (!isValidDiscordSnowflake(userID)) {
 			return httpErr.BAD_REQUEST({ message: 'Invalid user ID 3' });
 		}
 

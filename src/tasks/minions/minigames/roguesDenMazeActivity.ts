@@ -23,7 +23,7 @@ export const roguesDenTask: MinionTask = {
 	type: 'RoguesDenMaze',
 
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
-		const { channelID, quantity } = data;
+		const { channelId, quantity } = data;
 
 		await user.incrementMinigameScore('rogues_den', quantity);
 
@@ -57,6 +57,6 @@ export const roguesDenTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, gotLoot ? image.file.attachment : undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

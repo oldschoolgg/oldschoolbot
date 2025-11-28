@@ -1,16 +1,15 @@
+import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	Events,
 	formatDuration,
 	formatOrdinal,
-	makeComponents,
 	reduceNumByPercent,
 	round,
 	stringMatches,
 	Time
 } from '@oldschoolgg/toolkit';
-import type { ButtonBuilder } from 'discord.js';
 import { Bank, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -21,7 +20,6 @@ import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simula
 import { maxOtherStats } from '@/lib/structures/Gear.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const BarbBuyables = [
 	{
@@ -179,6 +177,7 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 	});
 	const loot = new Bank().add(table.roll(quantity));
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+
 	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
 	str += displayCluesAndPets(user, loot);
 	if (loot.has('Pet Penance Queen')) {
@@ -193,27 +192,23 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	const response: Awaited<CommandResponse> = {
-		content: str,
-		files: [
-			(
-				await makeBankImage({
-					bank: itemsAdded,
-					user,
-					previousCL,
-					flags: { showNewCL: 1 }
-				})
-			).file
-		],
-		components: components.length > 0 ? makeComponents(components) : undefined
-	};
+	const response = new MessageBuilder()
+		.setContent(str)
+		.addBankImage({
+			bank: itemsAdded,
+			user,
+			previousCL,
+			flags: { showNewCL: 1 }
+		})
+		.addComponents(components);
+
 	return response;
 }
 
-export async function barbAssaultStartCommand(channelID: string, user: MUser) {
+export async function barbAssaultStartCommand(channelId: string, user: MUser) {
 	const boosts = [];
 
 	let waveTime = randomVariation(Time.Minute * 4, 10);
@@ -238,7 +233,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);
 
-	let quantity = Math.floor(user.calcMaxTripLength('BarbarianAssault') / waveTime);
+	let quantity = Math.floor((await user.calcMaxTripLength('BarbarianAssault')) / waveTime);
 
 	// 10% speed boost for Venator bow
 	const venatorBowChargesPerWave = 50;
@@ -255,7 +250,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		waveTime = reduceNumByPercent(waveTime, 10);
 	}
 
-	quantity = Math.floor(user.calcMaxTripLength('BarbarianAssault') / waveTime);
+	quantity = Math.floor((await user.calcMaxTripLength('BarbarianAssault')) / waveTime);
 
 	const duration = quantity * waveTime;
 
@@ -270,7 +265,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'BarbarianAssault',

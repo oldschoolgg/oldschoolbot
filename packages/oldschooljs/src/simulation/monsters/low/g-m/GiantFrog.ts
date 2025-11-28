@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export default new SimpleMonster({
+export const GiantFrog: SimpleMonster = new SimpleMonster({
 	id: 477,
 	name: 'Giant frog',
 	table: new LootTable({ limit: 128 })

@@ -19,7 +19,7 @@ const SuqahTable = new LootTable({ limit: 129 })
 	.tertiary(400, 'Long bone')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const Suqah: SimpleMonster = new SimpleMonster({
 	id: 787,
 	name: 'Suqah',
 	table: SuqahTable,

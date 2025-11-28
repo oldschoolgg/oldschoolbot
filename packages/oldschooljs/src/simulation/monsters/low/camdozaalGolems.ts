@@ -86,4 +86,4 @@ const ChaosGolem = new SimpleMonster({
 	aliases: ['chaos golem']
 });
 
-export const CamdozaalGolems = { FlawedGolem, MindGolem, BodyGolem, ChaosGolem };
+export const CamdozaalGolems: Record<string, SimpleMonster> = { FlawedGolem, MindGolem, BodyGolem, ChaosGolem };

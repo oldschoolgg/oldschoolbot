@@ -1,13 +1,12 @@
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
-import { calcPercentOfNum, Emoji, formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, Items, itemID, Monsters } from 'oldschooljs';
+import { calcPercentOfNum, Emoji, formatDuration, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { BitField } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { type ProjectileType, projectiles } from '@/lib/gear/projectiles.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
-import type { BlowpipeData } from '@/lib/minions/types.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
@@ -110,7 +109,7 @@ function baseDuration(_attempts: number) {
 async function timesMadeToZuk(userID: string) {
 	const timesMadeToZuk = Number(
 		(
-			await prisma.$queryRawUnsafe<any>(`SELECT COUNT(*)::int
+			await prisma.$queryRawUnsafe<{ count: bigint }[]>(`SELECT COUNT(*)::int
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${userID}
@@ -230,7 +229,7 @@ async function infernoRun({
 	preZukDeathChance.add(hasSuffering, -4, 'Ring of Suffering (i)');
 	zukDeathChance.add(hasSuffering, -4, 'Ring of Suffering (i)');
 
-	const blowpipeData = user.user.blowpipe as any as BlowpipeData;
+	const blowpipeData = user.getBlowpipe();
 	if (!userBank.has('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
 		return 'You need a Toxic blowpipe (with darts and scales equipped) to do the Inferno. You also need Darts and Scales equipped in it.';
 	}
@@ -289,7 +288,7 @@ async function infernoRun({
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
-		usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+		usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 		score > 0 &&
 		usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
@@ -401,7 +400,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: str,
 					head: 'ketKeh'
 				})
@@ -410,7 +409,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	};
 }
 
-export async function infernoStartCommand(user: MUser, channelID: string): CommandResponse {
+export async function infernoStartCommand(user: MUser, channelId: string): CommandResponse {
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
 		await user.fetchMinigameScore('inferno'),
@@ -428,7 +427,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 			files: [
 				{
 					name: 'image.jpg',
-					attachment: await newChatHeadImage({
+					buffer: await newChatHeadImage({
 						content: res,
 						head: 'ketKeh'
 					})
@@ -451,23 +450,16 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 	const realCost = new Bank();
 	try {
 		realCost.add((await user.specialRemoveItems(cost)).realCost);
-	} catch (err: any) {
-		return {
-			files: [
-				{
-					name: 'image.jpg',
-					attachment: await newChatHeadImage({
-						content: `${err.message}`,
-						head: 'ketKeh'
-					})
-				}
-			]
-		};
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return new MessageBuilder().addChatHeadImage('ketKeh', `${err.message}`);
+		}
+		throw err;
 	}
 
 	await ActivityManager.startTrip<InfernoOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: realDuration,
 		type: 'Inferno',
 		zukDeathChance: zukDeathChance.value,
@@ -506,7 +498,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: "You're on your own now JalYt, you face certain death... Prepare to fight for your life.",
 					head: 'ketKeh'
 				})

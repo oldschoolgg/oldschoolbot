@@ -1325,7 +1325,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'TzTok-Jad',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[Monsters.TzTokJad.id]: 1
+				[EMonster.TZTOKJAD]: 1
 			}
 		})
 	},

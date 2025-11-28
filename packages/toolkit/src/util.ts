@@ -15,4 +15,5 @@ export { detailedDiff as deepObjectDiff };
 
 export { default as deepEqual } from 'fast-deep-equal';
 
+export * from './colors.js';
 export * from './string-util.js';

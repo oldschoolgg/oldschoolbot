@@ -2,6 +2,7 @@ import { SeedableRNG } from '@oldschoolgg/rng';
 import type { ItemBank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
+import pets from '@/lib/data/pets.js';
 import { createTestUser } from '../util.js';
 
 test('Chat pets', async () => {
@@ -15,20 +16,14 @@ test('Chat pets', async () => {
 	}
 
 	expect(await fetchPets()).toEqual({});
-	const x = await user.giveRandomBotMessagesPet(new SeedableRNG(1));
+	const pet = new SeedableRNG(1).pick(pets);
+	await user.giveBotMessagePet(pet);
 	const petsX = await fetchPets();
 	expect(Object.keys(petsX).length).toEqual(1);
-	expect(petsX[x.pet.id]).toEqual(1);
+	expect(petsX[pet.id]).toEqual(1);
 
-	const y = await user.giveRandomBotMessagesPet(new SeedableRNG(1));
+	await user.giveBotMessagePet(pet);
 	const petsY = await fetchPets();
 	expect(Object.keys(petsY).length).toEqual(1);
-	expect(petsY[y.pet.id]).toEqual(2);
-
-	await user.giveRandomBotMessagesPet();
-	await user.giveRandomBotMessagesPet();
-	await user.giveRandomBotMessagesPet();
-	const petsFinal = await fetchPets();
-	expect(Object.keys(petsFinal).length).toBeGreaterThan(1);
-	expect(petsY[y.pet.id]).toEqual(2);
+	expect(petsY[pet.id]).toEqual(2);
 });

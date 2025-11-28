@@ -1,5 +1,6 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import { dateFm, stringMatches } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { BitField, BOT_TYPE, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
@@ -7,8 +8,6 @@ import { calcCLDetails } from '@/lib/data/Collections.js';
 import { HolidayItems } from '@/lib/data/holidayItems.js';
 import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const claimables = [
 	{
@@ -24,7 +23,7 @@ const claimables = [
 			if (user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)) {
 				return 'You already claimed this!';
 			}
-			sendToChannelID(Channel.ServerGeneral, {
+			globalClient.sendMessage(Channel.ServerGeneral, {
 				content: `${user.mention} just claimed free T1 patron perks for being maxed in both bots!`
 			});
 			await user.update({
@@ -66,19 +65,12 @@ const claimables = [
 					.map(id => Items.itemNameFromId(id))
 					.join(', ')}.`
 			);
-			return {
-				content: messages.join(' '),
-				files: [
-					(
-						await makeBankImage({
-							bank: itemsToAdd,
-							title: `Halloween Items Claimed`,
-							user,
-							flags: { forceAllPurple: 1 }
-						})
-					).file
-				]
-			};
+			return new MessageBuilder().setContent(messages.join('')).addBankImage({
+				bank: itemsToAdd,
+				title: `Halloween Items Claimed`,
+				user,
+				flags: { forceAllPurple: 1 }
+			});
 		}
 	},
 	...CollectionLog.ranks.map(rank => ({
@@ -118,10 +110,10 @@ export const claimCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to claim.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ userId, value }: StringAutoComplete) => {
 				const claimableItems = await prisma.reclaimableItem.findMany({
 					where: {
-						user_id: user.id
+						user_id: userId
 					}
 				});
 				return [...claimables, ...claimableItems]

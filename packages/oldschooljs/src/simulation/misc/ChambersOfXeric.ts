@@ -1,11 +1,12 @@
+import { randFloat, roll, shuffleArr } from '@oldschoolgg/rng';
+
 import { EItem } from '@/EItem.js';
 import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import Minigame from '@/structures/Minigame.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { randFloat, roll, shuffleArr, sumArr, Time } from '@/util/smallUtils.js';
-import { JSONClone } from '@/util/util.js';
+import { JSONClone, sumArr, Time } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;
@@ -79,7 +80,7 @@ const itemScales = resolveNameBank({
 const NonUniqueTable = new SimpleTable<number>();
 for (const itemID of Object.keys(itemScales)) NonUniqueTable.add(Number.parseInt(itemID));
 
-export const CoXUniqueTable = new LootTable()
+export const CoXUniqueTable: LootTable = new LootTable()
 	.add('Dexterous prayer scroll', 1, 20)
 	.add('Arcane prayer scroll', 1, 20)
 
@@ -108,10 +109,10 @@ const cmTeamTimes = [
 
 export class ChambersOfXericClass extends Minigame {
 	id = 1;
-	aliases = ['raids', 'cox'];
+	aliases: string[] = ['raids', 'cox'];
 	name = 'Chambers of Xeric';
 	allItems: number[] = [...CoXUniqueTable.allItems, ...NonUniqueTable.table.map(i => i.item)];
-	maxRoll = 570_000 * (1 / 8675);
+	maxRoll: number = 570_000 * (1 / 8675);
 
 	/**
 	 * For every 8,675 total points obtained, a 1% chance to obtain a unique loot is given.
@@ -285,4 +286,4 @@ export class ChambersOfXericClass extends Minigame {
 	}
 }
 
-export const ChambersOfXeric = new ChambersOfXericClass();
+export const ChambersOfXeric: ChambersOfXericClass = new ChambersOfXericClass();

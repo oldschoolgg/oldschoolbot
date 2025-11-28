@@ -6,7 +6,7 @@ import { wealthInventorySize } from '@/mahoji/lib/abstracted_commands/chargeWeal
 export const wealthChargeTask: MinionTask = {
 	type: 'WealthCharging',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { quantity, channelID } = data;
+		const { quantity, channelId } = data;
 		let deaths = 0;
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
@@ -34,6 +34,6 @@ export const wealthChargeTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

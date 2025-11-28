@@ -1,11 +1,11 @@
+import { ButtonBuilder, ButtonStyle, userMention } from '@oldschoolgg/discord';
 import { chunk, Emoji, noOp, Time } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { addBanks, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
 import type { Bingo, Prisma } from '@/prisma/main.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import {
 	generateTileName,
 	isGlobalTile,
@@ -68,7 +68,7 @@ export class BingoManager {
 	public durationInDays: number;
 	public teamSize: number;
 	public title: string;
-	public notificationsChannelID: string;
+	public notificationschannelId: string;
 	public ticketPrice: number;
 	public rawBingoTiles: StoredBingoTile[];
 	public bingoTiles: UniversalBingoTile[];
@@ -86,7 +86,7 @@ export class BingoManager {
 		this.teamSize = options.team_size;
 		this.organizers = options.organizers;
 		this.title = options.title;
-		this.notificationsChannelID = options.notifications_channel_id;
+		this.notificationschannelId = options.notifications_channel_id;
 		this.durationInDays = options.duration_days;
 		this.rawBingoTiles = options.bingo_tiles as unknown as StoredBingoTile[];
 		this.creatorID = options.creator_id;
@@ -120,7 +120,7 @@ export class BingoManager {
 		return new ButtonBuilder()
 			.setCustomId(`BUY_BINGO_TICKET_${this.id}`)
 			.setLabel(`Buy Bingo Ticket (${toKMB(this.ticketPrice)})`)
-			.setEmoji('739459924693614653')
+			.setEmoji({ id: EmojiId.Bank })
 			.setStyle(ButtonStyle.Secondary);
 	}
 
@@ -342,9 +342,11 @@ ${teams
 			str += ` They have now finished ${afterUserProgress.tilesCompletedCount}/${this.bingoTiles.length} tiles.`;
 		}
 
-		sendToChannelID(this.notificationsChannelID, {
-			content: str
-		}).catch(noOp);
+		globalClient
+			.sendMessage(this.notificationschannelId, {
+				content: str
+			})
+			.catch(noOp);
 	}
 }
 

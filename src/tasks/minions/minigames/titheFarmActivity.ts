@@ -7,7 +7,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 export const titheFarmTask: MinionTask = {
 	type: 'TitheFarm',
 	async run(data: TitheFarmActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelID } = data;
+		const { channelId } = data;
 		const baseHarvest = 85;
 
 		const userStats = await user.fetchStats();
@@ -104,8 +104,8 @@ export const titheFarmTask: MinionTask = {
 			});
 		}
 
-		const returnStr = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}\n`;
+		const message = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}\n`;
 
-		handleTripFinish(user, channelID, returnStr, undefined, data, loot.length > 0 ? loot : null);
+		handleTripFinish({ user, channelId, message, data, loot });
 	}
 };

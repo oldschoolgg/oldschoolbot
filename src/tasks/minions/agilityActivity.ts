@@ -17,7 +17,7 @@ function chanceOfFailingAgilityPyramid(user: MUser) {
 export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions, { handleTripFinish, user, rng }) {
-		const { courseID, quantity, channelID, duration, alch } = data;
+		const { courseID, quantity, channelId, duration, alch } = data;
 		const loot = new Bank();
 		const currentLevel = user.skillsAsLevels.agility;
 
@@ -146,6 +146,6 @@ export const agilityTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

@@ -8,7 +8,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
 	async run(data: MotherlodeMiningActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelID, duration } = data;
+		const { channelId, duration } = data;
 		const { quantity } = data;
 
 		let xpReceived = quantity * Mining.MotherlodeMine.xp;
@@ -112,6 +112,6 @@ export const motherlodeMiningTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };
