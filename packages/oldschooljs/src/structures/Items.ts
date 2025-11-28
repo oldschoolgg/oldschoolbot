@@ -3,7 +3,7 @@ import deepMerge from 'deepmerge';
 
 const items = JSON.parse(fs.readFileSync(new URL('../assets/item_data.json', import.meta.url), 'utf8')) as Record<
 	string,
-	Item
+	Omit<Item, 'id'>
 >;
 
 import type { Item } from '@/meta/item.js';
@@ -16,9 +16,6 @@ function cleanString(str: string): string {
 export const itemNameMap: Map<string, number> = new Map();
 
 type ItemResolvable = number | string;
-export interface ItemCollection {
-	[index: string]: Item;
-}
 
 export const CLUE_SCROLLS: number[] = [
 	// Clue scrolls
@@ -196,7 +193,7 @@ for (const [id, item] of Object.entries(items)) {
 	const numID = Number.parseInt(id);
 
 	if (USELESS_ITEMS.includes(numID)) continue;
-	Items.set(numID, item);
+	Items.set(numID, { id: numID, ...item });
 
 	const cleanName = cleanString(item.name);
 	if (!itemNameMap.has(cleanName)) {
