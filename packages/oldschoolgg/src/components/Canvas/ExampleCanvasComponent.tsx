@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { OSRSCanvas } from './OSRSCanvas';
-import { CanvasSpritesheet } from './CanvasSpritesheet';
 
-import spriteSheetImage from '../BankImage/items-spritesheet.png?url';
 import spriteSheetData from '../BankImage/items-spritesheet.json?url';
+import spriteSheetImage from '../BankImage/items-spritesheet.png?url';
+import { CanvasSpritesheet } from './CanvasSpritesheet';
+import { OSRSCanvas } from './OSRSCanvas';
 
 interface ExampleCanvasComponentProps {
 	width?: number;
@@ -27,10 +27,7 @@ export function ExampleCanvasComponent({
 
 		async function loadSpritesheets() {
 			try {
-				const osrsItems = await CanvasSpritesheet.create(
-				spriteSheetData,
-					spriteSheetImage
-				);
+				const osrsItems = await CanvasSpritesheet.create(spriteSheetData, spriteSheetImage);
 
 				// Optionally load BSO items spritesheet
 				// const bsoItems = await CanvasSpritesheet.create(

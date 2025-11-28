@@ -1,7 +1,6 @@
+import type { IPublicUser } from '@worp/worp-schemas';
 import { Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-
-import type { IPublicUser } from '@worp/worp-schemas';
 
 import { Button } from '@/components/Input/button.js';
 import { Input } from '@/components/Input/input.js';

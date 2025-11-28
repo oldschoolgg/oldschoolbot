@@ -1,8 +1,7 @@
-
 .bank_container {
 	image-rendering: pixelated;
-	/* width: 100%; */
-	/* height: 100%; */
+	width: 100%;
+	height: 100%;
 	font-smooth: never;
 	display: flex;
 	justify-content: center;
@@ -14,4 +13,5 @@
 	-webkit-font-smoothing: none;
 	image-rendering: pixelated;
 	-ms-interpolation-mode: nearest-neighbor;
+	zoom: 0.9;
 }

@@ -1,16 +1,14 @@
 // Core classes
-export { OSRSCanvas } from './OSRSCanvas';
-export { CanvasSpritesheet } from './CanvasSpritesheet';
-
-// Utilities
-export { loadOSRSFonts, areFontsLoaded, resetFontLoadingState } from './fontLoader';
-export { drawImageWithOutline, getClippedRegion } from './canvasUtil';
 
 // Types
-export type { SpriteData, DrawSpriteOptions } from './CanvasSpritesheet';
-export type { IBgSprite, BGSpriteName } from './canvasUtil';
+export type { DrawSpriteOptions, SpriteData } from './CanvasSpritesheet';
+export { CanvasSpritesheet } from './CanvasSpritesheet';
+export type { BGSpriteName, IBgSprite } from './canvasUtil';
+export { drawImageWithOutline, getClippedRegion } from './canvasUtil';
+export { ExampleCanvasComponent } from './ExampleCanvasComponent';
 export type { FontConfig } from './fontLoader';
-
+// Utilities
+export { areFontsLoaded, loadOSRSFonts, resetFontLoadingState } from './fontLoader';
+export { OSRSCanvas } from './OSRSCanvas';
 // Example components
 export { SimpleCanvasExample } from './SimpleCanvasExample';
-export { ExampleCanvasComponent } from './ExampleCanvasComponent';

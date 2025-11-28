@@ -1,6 +1,6 @@
-import type { CanvasSpritesheet, SpriteData } from "@/components/Canvas/CanvasSpritesheet.ts";
-import { drawImageWithOutline, getClippedRegion, type IBgSprite } from "@/components/Canvas/canvasUtil.ts";
-import { formatItemStackQuantity, generateHexColorForCashStack } from "@/osrs/utils.ts";
+import type { CanvasSpritesheet, SpriteData } from '@/components/Canvas/CanvasSpritesheet.ts';
+import { drawImageWithOutline, getClippedRegion, type IBgSprite } from '@/components/Canvas/canvasUtil.ts';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@/osrs/utils.ts';
 
 const Fonts = {
 	Compact: '16px OSRSFontCompact',
@@ -36,11 +36,7 @@ export class OSRSCanvas {
 
 	private canvas: HTMLCanvasElement;
 
-	constructor({
-		width,
-		height,
-		sprite,
-	}: { width: number; height: number; sprite?: IBgSprite | undefined | null;  }) {
+	constructor({ width, height, sprite }: { width: number; height: number; sprite?: IBgSprite | undefined | null }) {
 		this.canvas = document.createElement('canvas');
 		this.canvas.width = width;
 		this.canvas.height = height;
@@ -294,11 +290,7 @@ export class OSRSCanvas {
 		return null;
 	}
 
-	public static async getItemImage({
-		itemID,
-	}: {
-		itemID: number;
-	}): Promise<HTMLCanvasElement | HTMLImageElement> {
+	public static async getItemImage({ itemID }: { itemID: number }): Promise<HTMLCanvasElement | HTMLImageElement> {
 		// Spritesheet icons
 		const itemSpriteData = OSRSCanvas.getItemSpriteData(itemID);
 		if (itemSpriteData) {
@@ -410,7 +402,7 @@ export class OSRSCanvas {
 	public async toBuffer(): Promise<Blob> {
 		// Convert canvas to Blob (browser equivalent of Buffer)
 		return new Promise((resolve, reject) => {
-			this.canvas.toBlob((blob) => {
+			this.canvas.toBlob(blob => {
 				if (blob) {
 					resolve(blob);
 				} else {

@@ -1,10 +1,10 @@
 ---
-import { BankImage } from "@/components/BankImage/BankImage.tsx";
 import Features from "../components/Features.astro";
 import Layout from "../layouts/Layout.astro";
+import { BankTest } from "@/components/BankTest.tsx";
 ---
 
 <Layout>
-	<BankImage client:only title="asfd" showPrice bank={{ 1: 100, 2: 100 }} />
+	<BankTest client:only />
 	<Features />
 </Layout>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { useImage } from '@/hooks/useImage.tsx';
 
 type SpritesheetData = Record<string, [number, number, number, number]>;
@@ -9,7 +10,7 @@ export class Spritesheet {
 	constructor(
 		public image: HTMLImageElement,
 		private data: SpritesheetData
-	) { }
+	) {}
 
 	get(name: string): HTMLCanvasElement {
 		if (!this.cache.has(name)) {
@@ -37,10 +38,7 @@ export class Spritesheet {
 	}
 }
 
-export function useSpritesheet(
-	imageSource: string | { src: string },
-	data: SpritesheetData
-): Spritesheet | null {
+export function useSpritesheet(imageSource: string | { src: string }, data: SpritesheetData): Spritesheet | null {
 	const imageSrc = typeof imageSource === 'string' ? imageSource : imageSource.src;
 	const [image] = useImage(imageSrc);
 	const [spritesheet, setSpritesheet] = useState<Spritesheet | null>(null);

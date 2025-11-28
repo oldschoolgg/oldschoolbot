@@ -1,8 +1,7 @@
+import type { IUserUpdate, OverlayConfig, WSOverlayConfigUpdate } from '@worp/worp-schemas';
 import { navigate } from 'wouter/use-browser-location';
 import wretch from 'wretch';
 import { retry } from 'wretch/middlewares';
-
-import type { IUserUpdate, OverlayConfig, WSOverlayConfigUpdate } from '@worp/worp-schemas';
 
 import { globalState } from '@/lib/state.ts';
 import type { UserWithManageables } from '../../../server/src/lib/auth.ts';

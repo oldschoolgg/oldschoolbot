@@ -37,6 +37,7 @@ type BufferCanvas = HTMLCanvasElement | OffscreenCanvas;
 type BufferContext = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 export class Renderer {
+	atlasCache = new Map<string, OffscreenCanvas>();
 	options: RendererOptions;
 	ctx: CanvasRenderingContext2D;
 	bufferCanvas: BufferCanvas;
@@ -70,10 +71,7 @@ export class Renderer {
 		bufferCanvasEl.style.display = 'none';
 		document.body.appendChild(bufferCanvasEl);
 
-		this.bufferCanvas =
-			'OffscreenCanvas' in window
-				? bufferCanvasEl.transferControlToOffscreen()
-				: bufferCanvasEl;
+		this.bufferCanvas = 'OffscreenCanvas' in window ? bufferCanvasEl.transferControlToOffscreen() : bufferCanvasEl;
 
 		const buffer = this.bufferCanvas.getContext('2d') as BufferContext | null;
 		if (!buffer) {
@@ -92,6 +90,26 @@ export class Renderer {
 			this.bufferCanvas.height = this.options.canvas.height;
 		}
 	};
+
+	getTintedAtlas(color: string) {
+		const cached = this.atlasCache.get(color);
+		if (cached) return cached;
+
+		const src = this.options.font.image as CanvasImageSource;
+		const w = (src as any).width;
+		const h = (src as any).height;
+
+		const canvas = new OffscreenCanvas(w, h);
+		const ctx = canvas.getContext('2d')!;
+		ctx.drawImage(src, 0, 0);
+		ctx.globalCompositeOperation = 'source-in';
+		ctx.fillStyle = color;
+		ctx.fillRect(0, 0, w, h);
+		ctx.globalCompositeOperation = 'source-over';
+
+		this.atlasCache.set(color, canvas);
+		return canvas;
+	}
 
 	draw(x: number, y: number, text: string, drawOptions: DrawOptions = {}): void {
 		this.checkBufferSize();
@@ -114,41 +132,19 @@ export class Renderer {
 		}
 	}
 
-	drawChar(x: number, y: number, char: PixelChar, scale: number): void {
-		const offsetX = x + char.offset[0] * scale;
-		const offsetY = y + char.offset[1] * scale;
-		const charWidth = char.rect[2] * scale;
-		const charHeight = char.rect[3] * scale;
-
-		this.buffer.imageSmoothingEnabled = false;
-		this.buffer.drawImage(
-			this.options.font.image,
-			char.rect[0],
-			char.rect[1],
-			char.rect[2],
-			char.rect[3],
-			offsetX,
-			offsetY,
-			charWidth,
-			charHeight
-		);
-
-		this.buffer.fillStyle = this.color;
-		this.buffer.globalCompositeOperation = 'source-in';
-		this.buffer.fillRect(offsetX, offsetY, charWidth, charHeight);
-		this.buffer.globalCompositeOperation = 'source-over';
-
-		this.ctx.imageSmoothingEnabled = false;
+	drawChar(x: number, y: number, char: PixelChar, scale: number) {
+		const atlas = this.getTintedAtlas(this.color);
+		const [sx, sy, sw, sh] = char.rect;
 		this.ctx.drawImage(
-			this.buffer.canvas as CanvasImageSource,
-			offsetX,
-			offsetY,
-			charWidth,
-			charHeight,
-			offsetX,
-			offsetY,
-			charWidth,
-			charHeight
+			atlas,
+			sx,
+			sy,
+			sw,
+			sh,
+			x + char.offset[0] * scale,
+			y + char.offset[1] * scale,
+			sw * scale,
+			sh * scale
 		);
 	}
 }

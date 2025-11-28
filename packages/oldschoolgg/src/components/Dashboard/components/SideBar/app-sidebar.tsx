@@ -1,6 +1,5 @@
-import { ChevronDown, MenuIcon } from 'lucide-react';
-
 import type { IPublicUser } from '@worp/worp-schemas';
+import { ChevronDown, MenuIcon } from 'lucide-react';
 
 import { Logo } from '@/components/Logo.js';
 import { rawApi } from '@/lib/rawApi.ts';

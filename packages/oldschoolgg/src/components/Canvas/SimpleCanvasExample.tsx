@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { OSRSCanvas } from './OSRSCanvas';
+
 import { loadOSRSFonts } from './fontLoader';
+import { OSRSCanvas } from './OSRSCanvas';
 
 interface SimpleCanvasExampleProps {
 	width?: number;

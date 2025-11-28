@@ -1,8 +1,7 @@
-
-import type { Item, Item } from '@/osrs/item.ts';
+import type { Item } from '@/osrs/item.ts';
+import { toKMB } from '@/osrs/utils.ts';
 import bsoItemsJson from '../../../../data/bso/custom-items.json' with { type: 'json' };
 import itemsJson from '../../../oldschooljs/src/assets/item_data.json' with { type: 'json' };
-import { toKMB } from '@/osrs/utils.ts';
 
 function normalizeName(str: string): string {
 	return str.replace(/\s/g, '').toUpperCase();

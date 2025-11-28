@@ -1,20 +1,20 @@
-import {chunkArr} from '@oldschoolgg/util';
-import React, { useEffect, useRef } from 'react';
 import { useElementSize } from '@mantine/hooks';
+import { chunkArr } from '@oldschoolgg/util';
 import { useFont } from '@react-hooks-library/core';
-
-import styles from './BankImage.module.css';
-import spriteSheetImage from './items-spritesheet.png';
-import spriteSheetData from './items-spritesheet.json';
-import bankSpritesheet from '@/assets/spritesheets/bank.png';
+import type React from 'react';
+import { useEffect, useRef } from 'react';
 import bankSpritesheetData from '@/assets/spritesheets/bank.json';
-import { useImage } from '@/hooks/useImage.tsx';
-import { generateHexColorForCashStack, formatItemStackQuantity, toKMB } from '@/osrs/utils.ts';
-import { useSpritesheet, type Spritesheet } from './useSpritesheet.ts';
-import { type BankSortMethod, sorts } from '@/components/BankImage/bankImageUtil.ts';
-import { Bank, type ItemBank } from '@/osrs/Bank.ts';
-import { Renderer } from '@/components/BitMapFont/Renderer.ts';
+import bankSpritesheet from '@/assets/spritesheets/bank.png';
+import { type BankSortMethod, drawBorder, sorts } from '@/components/BankImage/bankImageUtil.ts';
 import { loadFont } from '@/components/BitMapFont/loadFont.ts';
+import { Renderer } from '@/components/BitMapFont/Renderer.ts';
+import { useImage } from '@/hooks/useImage.tsx';
+import { Bank, type ItemBank } from '@/osrs/Bank.ts';
+import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '@/osrs/utils.ts';
+import styles from './BankImage.module.css';
+import spriteSheetData from './items-spritesheet.json';
+import spriteSheetImage from './items-spritesheet.png';
+import { type Spritesheet, useSpritesheet } from './useSpritesheet.ts';
 
 type SpriteSheetData = Record<string, [number, number, number, number]>;
 
@@ -28,149 +28,84 @@ interface Props {
 	showAsKc?: boolean;
 }
 
-function createScaledPattern(
-	ctx: CanvasRenderingContext2D,
-	image: HTMLImageElement,
-	scale: number,
-	repeat: 'repeat' | 'repeat-x' | 'repeat-y'
-): CanvasPattern {
-	console.log(`Creating scaled pattern with scale: ${scale} scale, ${image.width}x${image.height} image size`);
-	const scaledCanvas = document.createElement('canvas');
-	scaledCanvas.width = image.width * scale;
-	scaledCanvas.height = image.height * scale;
-	const scaledCtx = scaledCanvas.getContext('2d')!;
-	scaledCtx.imageSmoothingEnabled = false;
-	scaledCtx.drawImage(image, 0, 0, image.width * scale, image.height * scale);
-	return ctx.createPattern(scaledCanvas, repeat)!;
-}
-
-function drawScaledText(
-	ctx: CanvasRenderingContext2D,
-	text: string,
-	x: number,
-	y: number,
-	fontSize: number,
-	fontFamily: string,
-	color: string,
-	scale: number
-) {
-	const tempCanvas = document.createElement('canvas');
-	const tempCtx = tempCanvas.getContext('2d', { alpha: true })!;
-
-	tempCtx.font = `${fontSize}px "${fontFamily}"`;
-	const metrics = tempCtx.measureText(text);
-	const textWidth = Math.ceil(metrics.width);
-	const textHeight = fontSize * 2;
-
-	tempCanvas.width = textWidth + 4;
-	tempCanvas.height = textHeight;
-
-	tempCtx.imageSmoothingEnabled = false;
-	tempCtx.textBaseline = 'top';
-	tempCtx.font = `${fontSize}px "${fontFamily}"`;
-	tempCtx.fillStyle = color;
-	tempCtx.fillText(text, 0, 0);
-
-	ctx.imageSmoothingEnabled = false;
-	ctx.drawImage(
-		tempCanvas,
-		0, 0, tempCanvas.width, tempCanvas.height,
-		x, y - fontSize * scale, tempCanvas.width * scale, tempCanvas.height * scale
-	);
-}
-
-function drawBorder(ctx: CanvasRenderingContext2D, bankSpritesheet: Spritesheet, scale: number = 1) {
-	const corner = bankSpritesheet.get('bank_border_c');
-	const top = bankSpritesheet.get('bank_border_h');
-	const side = bankSpritesheet.get('bank_border_v');
-	console.log(`corner: ${corner.width}x${corner.height}, top: ${top.width}x${top.height}, side: ${side.width}x${side.height}`);
-
-	const scaledTopHeight = top.height * scale;
-	const scaledSideWidth = side.width * scale;
-
-	// Draw top border
-	ctx.fillStyle = createScaledPattern(ctx, top, scale, 'repeat-x');
-	ctx.fillRect(0, 0, ctx.canvas.width, scaledTopHeight);
-
-	// Draw bottom border
-	ctx.save();
-	ctx.fillStyle = createScaledPattern(ctx, top, scale, 'repeat-x');
-	ctx.translate(0, ctx.canvas.height);
-	ctx.scale(1, -1);
-	ctx.fillRect(0, 0, ctx.canvas.width, scaledTopHeight);
-	ctx.restore();
-
-	// Draw title line
-	ctx.save();
-	ctx.fillStyle = createScaledPattern(ctx, top, scale, 'repeat-x');
-	ctx.translate(scaledSideWidth, 27 * scale);
-	ctx.fillRect(0, 0, ctx.canvas.width, scaledTopHeight);
-	ctx.restore();
-
-	// Draw left border
-	ctx.save();
-	ctx.fillStyle = createScaledPattern(ctx, side, scale, 'repeat-y');
-	ctx.translate(0, scaledSideWidth);
-	ctx.fillRect(0, 0, scaledSideWidth, ctx.canvas.height);
-	ctx.restore();
-
-	// Draw right border
-	ctx.save();
-	ctx.fillStyle = createScaledPattern(ctx, side, scale, 'repeat-y');
-	ctx.translate(ctx.canvas.width, 0);
-	ctx.scale(-1, 1);
-	ctx.fillRect(0, 0, scaledSideWidth, ctx.canvas.height);
-	ctx.restore();
-
-	// Draw corner borders
-	const scaledCornerWidth = corner.width * scale;
-	const scaledCornerHeight = corner.height * scale;
-
-	// Top left
-	ctx.save();
-	ctx.imageSmoothingEnabled = false;
-	ctx.drawImage(corner, 0, 0, corner.width, corner.height, 0, 0, scaledCornerWidth, scaledCornerHeight);
-	ctx.restore();
-
-	// Top right
-	ctx.save();
-	ctx.translate(ctx.canvas.width, 0);
-	ctx.scale(-1, 1);
-	ctx.imageSmoothingEnabled = false;
-	ctx.drawImage(corner, 0, 0, corner.width, corner.height, 0, 0, scaledCornerWidth, scaledCornerHeight);
-	ctx.restore();
-
-	// Bottom right
-	ctx.save();
-	ctx.translate(ctx.canvas.width, ctx.canvas.height);
-	ctx.scale(-1, -1);
-	ctx.imageSmoothingEnabled = false;
-	ctx.drawImage(corner, 0, 0, corner.width, corner.height, 0, 0, scaledCornerWidth, scaledCornerHeight);
-	ctx.restore();
-
-	// Bottom left
-	ctx.save();
-	ctx.translate(0, ctx.canvas.height);
-	ctx.scale(1, -1);
-	ctx.imageSmoothingEnabled = false;
-	ctx.drawImage(corner, 0, 0, corner.width, corner.height, 0, 0, scaledCornerWidth, scaledCornerHeight);
-	ctx.restore();
-}
-
-const spacer = 22;
+const spacer = 32;
 const itemSize = 32;
 const distanceFromEdge = spacer * 0.6;
-
-const RENDER_SCALE = 4;
+const RENDER_SCALE = 1;
+const MIN_HEIGHT = 95;
 
 export function setupDisplayCanvas(canvas: HTMLCanvasElement, width: number, height: number) {
-	canvas.width = width * RENDER_SCALE;
-	canvas.height = height * RENDER_SCALE;
+	canvas.width = width;
+	canvas.height = height;
 	canvas.style.width = `${width}px`;
 	canvas.style.height = `${height}px`;
 }
 
+function createRenderCanvas(width: number, height: number, scale: number) {
+	const renderCanvas = document.createElement('canvas');
+	renderCanvas.width = Math.max(1, Math.floor(width * scale));
+	renderCanvas.height = Math.max(1, Math.floor(height * scale));
+	renderCanvas.style.width = `${width}px`;
+	renderCanvas.style.height = `${height}px`;
+	return renderCanvas;
+}
+
+interface LayoutDimensions {
+	columns: number;
+	rows: number;
+	width: number;
+	height: number;
+	itemSpacingX: number;
+	itemSpacingY: number;
+}
+
+function calculateLayout(bank: ItemBank, ghosts: number[], availableWidth: number): LayoutDimensions {
+	// Calculate number of columns that fit in the available width
+	const columns = Math.max(1, Math.floor((availableWidth - distanceFromEdge * 2) / (itemSize + spacer)));
+
+	// Count total items (including ghosts)
+	const osBank = new Bank(bank);
+	for (const ghost of ghosts) {
+		if (!osBank.has(ghost)) {
+			osBank.add(ghost, 0);
+		}
+	}
+	const totalItems = osBank.length;
+
+	// Calculate number of rows needed
+	const rows = Math.max(1, Math.ceil(totalItems / columns));
+
+	// Calculate precise dimensions
+	const width = Math.floor(availableWidth);
+	const contentHeight = rows * (itemSize + spacer) + distanceFromEdge * 2;
+	const height = Math.floor(Math.max(MIN_HEIGHT, contentHeight));
+
+	// Calculate actual spacing between items
+	// Total space available for items and spacing
+	const availableContentWidth = availableWidth - (distanceFromEdge * 2);
+	// Space taken by items
+	const totalItemWidth = columns * itemSize;
+	// Remaining space for gaps between items
+	const totalGapSpace = availableContentWidth - totalItemWidth;
+	// Space per gap (columns + 1 gaps for equal padding on both sides)
+	const gapSize = totalGapSpace / (columns + 1);
+	// Distance between item centers
+	const itemSpacingX = itemSize + gapSize;
+
+	const itemSpacingY = itemSize + spacer / 2;
+
+	return {
+		columns,
+		rows,
+		width,
+		height,
+		itemSpacingX,
+		itemSpacingY
+	};
+}
+
 interface DrawBankOptions {
+	container: HTMLDivElement;
 	canvas: HTMLCanvasElement;
 	itemsSpritesheet: HTMLImageElement;
 	bankSpritesheet: Spritesheet;
@@ -182,10 +117,11 @@ interface DrawBankOptions {
 	ghosts?: number[];
 	showAsKC?: boolean;
 	font: any;
+	boldFont: any;
 }
 
-
 function drawBank({
+	container,
 	canvas,
 	itemsSpritesheet,
 	bankSpritesheet,
@@ -196,35 +132,36 @@ function drawBank({
 	sort,
 	ghosts = [],
 	showAsKC = false,
-	font
+	font,
+	boldFont
 }: DrawBankOptions) {
-	const columns = Math.floor((width - distanceFromEdge * 2) / (itemSize + spacer * 2));
-	const osBank = new Bank(bank);
+	console.log(`Drawing bank image at width ${width}px with ${bank.length} items and ${ghosts.length} ghosts.`);
+	const start = performance.now();
 
+	// Calculate layout dimensions
+	const layout = calculateLayout(bank, ghosts, width);
+
+	// Prepare bank data
+	const osBank = new Bank(bank);
 	for (const ghost of ghosts) {
 		if (!osBank.has(ghost)) {
 			osBank.add(ghost, 0);
 		}
 	}
-
 	const bankEntries = osBank.items().sort(sorts[sort]);
-	const chunkedLoot = chunkArr(bankEntries, Math.max(columns, 1));
-	const rows = chunkedLoot.length;
+	const chunkedLoot = chunkArr(bankEntries, layout.columns);
 
-	const height = Math.floor(Math.max(95, rows * (itemSize + spacer) + distanceFromEdge * 2));
-	width = Math.floor(width);
-
-	// Setup display canvas at high resolution
-	setupDisplayCanvas(canvas, width, height);
-	const ctx = canvas.getContext('2d', { alpha: false })!;
-
-	// Create a dedicated renderer for the canvas
+	// Create render canvas with calculated dimensions
+	const renderCanvas = createRenderCanvas(layout.width, layout.height, RENDER_SCALE);
+	const ctx = renderCanvas.getContext('2d', { alpha: false })!;
 	const renderer = new Renderer({
 		font: font,
-		canvas: canvas
+		canvas: renderCanvas
 	});
-
-	const baseFontSize = 12;
+	const rendererBold = new Renderer({
+		font: boldFont,
+		canvas: renderCanvas
+	});
 
 	ctx.imageSmoothingEnabled = false;
 	ctx.fillStyle = '#494034';
@@ -233,21 +170,30 @@ function drawBank({
 	const repeaterImage = bankSpritesheet.get('repeating_bg');
 	const ptrn = ctx.createPattern(repeaterImage, 'repeat')!;
 	ctx.fillStyle = ptrn;
-	ctx.fillRect(0, 0, width * RENDER_SCALE * 2, height * RENDER_SCALE * 2);
+	ctx.fillRect(0, 0, renderCanvas.width, renderCanvas.height);
 
-	for (let i = 0; i < chunkedLoot.length; i++) {
-		for (let x = 0; x < chunkedLoot[i].length; x++) {
-			const [item, quantity] = chunkedLoot[i][x];
+	// Draw items
+	const baseSpacing = spacer + distanceFromEdge;
+
+	console.log('Drawing items');
+
+	const TEXT_RENDER_SCALE = 0.5;
+	const TITLE_TEXT_RENDER_SCALE = 1;
+
+	for (let row = 0; row < chunkedLoot.length; row++) {
+		for (let col = 0; col < chunkedLoot[row].length; col++) {
+			const [item, quantity] = chunkedLoot[row][col];
 			const [sX, sY, sW, sH] = (spriteSheetData as unknown as SpriteSheetData)[item.id]!;
 
-			const spacing = spacer + distanceFromEdge;
+			// Calculate position using layout spacing
+			const xLoc = Math.floor(baseSpacing + col * layout.itemSpacingX) * RENDER_SCALE;
+			const yLoc = (Math.floor(baseSpacing + row * layout.itemSpacingY) + 12) * RENDER_SCALE;
 
-			const xLoc = Math.floor(spacing + x * (width / columns)) * RENDER_SCALE;
-			const yLoc = (Math.floor(spacing + i * (itemSize + spacer / 2)) + 12) * RENDER_SCALE;
-
+			// Draw item with ghost effect if needed
 			if (ghosts.includes(item.id) && quantity === 0) {
 				ctx.globalAlpha = 0.2;
 			}
+
 			ctx.drawImage(
 				itemsSpritesheet,
 				sX,
@@ -259,46 +205,86 @@ function drawBank({
 				sW * RENDER_SCALE,
 				sH * RENDER_SCALE
 			);
+
 			ctx.globalAlpha = 1;
 
-			const textXLoc = Math.floor((Math.floor(spacing + x * (width / columns)) - 3) * RENDER_SCALE);
-			const textYLoc = Math.floor((Math.floor(spacing + i * (itemSize + spacer / 2)) + 12 + 6) * RENDER_SCALE);
+			// Calculate text position
+			const textXLoc = Math.floor((baseSpacing + col * layout.itemSpacingX - 6) * RENDER_SCALE);
+			const textYLoc = Math.floor((baseSpacing + row * layout.itemSpacingY + 10) * RENDER_SCALE);
 
+			// Draw quantity
 			if (quantity > 0) {
 				const quantityColor = generateHexColorForCashStack(quantity);
 				let formattedQuantity = formatItemStackQuantity(quantity);
 				if (showAsKC) formattedQuantity = `${formattedQuantity} KC`;
 
-				// Draw shadow
-				renderer.draw(textXLoc + RENDER_SCALE, textYLoc + RENDER_SCALE, formattedQuantity, { color: '#000000', scale: RENDER_SCALE });
-				// Draw main text
-				renderer.draw(textXLoc, textYLoc, formattedQuantity, { color: quantityColor, scale: RENDER_SCALE });
+				// Shadow
+				renderer.draw(textXLoc + TEXT_RENDER_SCALE, textYLoc + TEXT_RENDER_SCALE, formattedQuantity, {
+					color: '#000000',
+					scale: TEXT_RENDER_SCALE
+				});
+				// Main text
+				renderer.draw(textXLoc, textYLoc, formattedQuantity, { color: quantityColor, scale: TEXT_RENDER_SCALE });
 			}
 
+			// Draw price if enabled
 			if (showPrice) {
 				const value = (item.price ?? 0) * quantity;
 				const fmted = toKMB(value);
 				const valueColor = generateHexColorForCashStack(value);
 
-				// Draw shadow
-				renderer.draw(textXLoc + RENDER_SCALE, textYLoc + Math.floor(24 * RENDER_SCALE) + RENDER_SCALE, fmted, { color: '#000000', scale: RENDER_SCALE });
-				// Draw main text
-				renderer.draw(textXLoc, textYLoc + Math.floor(24 * RENDER_SCALE), fmted, { color: valueColor, scale: RENDER_SCALE });
+				// Shadow
+				renderer.draw(textXLoc + TEXT_RENDER_SCALE, textYLoc + Math.floor(24 * TEXT_RENDER_SCALE) + TEXT_RENDER_SCALE, fmted, {
+					color: '#000000',
+					scale: TEXT_RENDER_SCALE
+				});
+				// Main text
+				renderer.draw(textXLoc, textYLoc + Math.floor(24 * TEXT_RENDER_SCALE), fmted, {
+					color: valueColor,
+					scale: TEXT_RENDER_SCALE
+				});
 			}
 		}
 	}
 
+	// Draw border
+	console.log('Drawing border');
 	drawBorder(ctx, bankSpritesheet, RENDER_SCALE);
 
+	// Draw title if provided
 	if (title) {
-		const titleX = Math.floor((width / 2) * RENDER_SCALE);
-		const titleY = Math.floor(22 * RENDER_SCALE);
+		// Measure text width for centering
+		const chars = Array.from(title);
+		let textAdvance = 0;
+		for (let c = 0; c < chars.length; c++) {
+			const ch = chars[c];
+			const charMeta = (font as any).characters?.[ch];
+			textAdvance += (charMeta ? charMeta.width : 0) * 1;
+		}
 
-		drawScaledText(ctx, title, titleX + RENDER_SCALE, titleY + RENDER_SCALE, baseFontSize, 'RuneScape Bold 12', '#000000', RENDER_SCALE);
-		drawScaledText(ctx, title, titleX, titleY, baseFontSize, 'RuneScape Bold 12', '#ff981f', RENDER_SCALE);
+		const titleX = Math.floor((renderCanvas.width - textAdvance) / 2);
+		const titleY = Math.floor(9 * TITLE_TEXT_RENDER_SCALE);
+
+		rendererBold.draw(titleX + TITLE_TEXT_RENDER_SCALE, titleY + TITLE_TEXT_RENDER_SCALE, title, { color: '#000000', scale: TITLE_TEXT_RENDER_SCALE });
+		rendererBold.draw(titleX, titleY, title, { color: '#ff981f', scale: TITLE_TEXT_RENDER_SCALE });
+		console.log({titleX, titleY});
 	}
 
-	console.log(`Generated bank image: ${width}x${height} (rendered at ${canvas.width}x${canvas.height})`);
+	canvas.width = renderCanvas.width;
+	canvas.height = renderCanvas.height;
+	canvas.style.width = `${layout.width}px`;
+	canvas.style.height = `${layout.height}px`;
+	canvas.style.display = 'block';
+	canvas.style.maxWidth = 'none';
+
+	const displayCtx = canvas.getContext('2d', { alpha: false })!;
+	displayCtx.imageSmoothingEnabled = false;
+	displayCtx.clearRect(0, 0, canvas.width, canvas.height);
+	displayCtx.drawImage(renderCanvas, 0, 0);
+
+	console.log(
+		`[${performance.now() - start}ms] Generated bank image: ${layout.columns}x${layout.rows} grid, display ${canvas.width}x${canvas.height}, rendered ${renderCanvas.width}x${renderCanvas.height}`
+	);
 }
 
 export const BankImage: React.FC<Props> = ({
@@ -311,13 +297,11 @@ export const BankImage: React.FC<Props> = ({
 	showAsKc
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const fontRef = useRef<any>(null);
-
-	const {ref: containerRef, width} = useElementSize();
-
+	const compactFontRef = useRef<any>(null);
+	const boldFontRef = useRef<any>(null);
+	const { ref: containerRef, width } = useElementSize();
 	const compactFont = useFont('OSRSFontCompact Regular', 'https://cdn.oldschool.gg/fonts/osrs-font-compact.otf');
 	const boldFont = useFont('RuneScape Bold 12', 'https://cdn.oldschool.gg/fonts/osrs-font-bold.ttf');
-
 	const [itemsSpritesheet] = useImage(spriteSheetImage.src);
 	const bankSheet = useSpritesheet(
 		bankSpritesheet,
@@ -327,22 +311,22 @@ export const BankImage: React.FC<Props> = ({
 	const fontsLoaded = compactFont.loaded && boldFont.loaded;
 	const isFinishedLoading = fontsLoaded && itemsSpritesheet && bankSheet && canvasRef.current;
 
-		useEffect(() => {
-			if (canvasRef.current) {
-				loadFont(
-					'/osrs_bitmap_fonts/compact_16.png',
-					'/osrs_bitmap_fonts/compact_16.json'
-					).then((_font: any) => {
-						fontRef.current = _font;
-					})
-
-			}
-		}, [canvasRef]);
+	useEffect(() => {
+		if (canvasRef.current) {
+			loadFont('/osrs_bitmap_fonts/compact_24.png', '/osrs_bitmap_fonts/compact_24.json').then((_font: any) => {
+				compactFontRef.current = _font;
+			});
+			loadFont('/osrs_bitmap_fonts/bold_12.png', '/osrs_bitmap_fonts/bold_12.json').then((_font: any) => {
+				boldFontRef.current = _font;
+			});
+		}
+	}, [canvasRef]);
 
 	useEffect(() => {
-		if (isFinishedLoading && width > 0 && canvasRef.current && fontRef.current) {
+		if (isFinishedLoading && width > 0 && canvasRef.current && compactFontRef.current && boldFontRef.current) {
 			console.log(`Drawing bank image. ${bankSheet.image.width}x${bankSheet.image.height} spritesheet size.`);
 			drawBank({
+				container: containerRef.current!,
 				canvas: canvasRef.current!,
 				itemsSpritesheet: itemsSpritesheet!,
 				bankSpritesheet: bankSheet!,
@@ -353,14 +337,27 @@ export const BankImage: React.FC<Props> = ({
 				sort,
 				ghosts,
 				showAsKC: showAsKc,
-				font: fontRef.current
+				font: compactFontRef.current,
+				boldFont: boldFontRef.current
 			});
 		}
-	}, [isFinishedLoading, itemsSpritesheet, bankSheet, bank, customWidth, width, title, showPrice, sort, ghosts, showAsKc]);
+	}, [
+		isFinishedLoading,
+		itemsSpritesheet,
+		bankSheet,
+		bank,
+		customWidth,
+		width,
+		title,
+		showPrice,
+		sort,
+		ghosts,
+		showAsKc
+	]);
 
 	return (
 		<div className={styles.bank_container} id="bank" ref={containerRef}>
-			{isFinishedLoading ? "" : 'Loading...'}
+			{isFinishedLoading ? '' : 'Loading...'}
 			<canvas className={styles.bank_image_canvas} ref={canvasRef} />
 		</div>
 	);

@@ -27,7 +27,7 @@ export interface FontJsonConfig {
 
 export interface FontJsonSymbol {
 	height: number;
-	id: number; // char code (e.g. 65 for 'A')
+	id: number;
 	width: number;
 	x: number;
 	xadvance: number;
@@ -70,7 +70,7 @@ export async function loadFont(imgSrc: string, jsonUrl: string): Promise<LoadedF
 	const image = await new Promise<HTMLImageElement>((resolve, reject) => {
 		const img = new Image();
 		img.addEventListener('load', () => resolve(img), { once: true });
-		img.addEventListener('error', (e) => reject(e), { once: true });
+		img.addEventListener('error', e => reject(e), { once: true });
 		img.src = imgSrc;
 	});
 

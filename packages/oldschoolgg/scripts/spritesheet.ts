@@ -2,7 +2,6 @@ import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
 import { Stopwatch } from '@oldschoolgg/toolkit';
-
 import sharp from 'sharp';
 
 const SPRITESHEETS_DIR = './';

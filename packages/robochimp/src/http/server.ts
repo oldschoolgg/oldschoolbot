@@ -3,28 +3,37 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
-import { httpErr, httpRes } from '@/http/serverUtil.js';
+import { discordServer } from '@/http/discordRoutes.js';
+import { economyTransactionServer } from '@/http/economyTransactionRoutes.js';
+import { attachUser } from '@/http/middlewares.js';
+import { oauthHonoServer } from '@/http/oauth.js';
+import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 import { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
 import { type GithubSponsorsWebhookData, verifyGithubSecret } from '../lib/githubSponsor.js';
 import { parseStrToTier, patreonTask, verifyPatreonSecret } from '../lib/patreon.js';
 
 export async function startServer() {
-	const app = new Hono();
+	const app = new Hono<HonoServerGeneric>();
 
 	app.use(
-		'*',
 		cors({
-			origin: '*',
+			origin: globalConfig.frontendUrl,
 			allowMethods: ['GET', 'POST', 'OPTIONS'],
-			allowHeaders: ['Content-Type', 'x-patreon-signature', 'x-hub-signature']
+			allowHeaders: ['Content-Type', 'x-patreon-signature', 'x-hub-signature'],
+			credentials: true
 		})
 	);
 
+	app.use('*', attachUser);
 	app.use('*', async (c, next) => {
 		console.log(`${c.req.method} ${c.req.url}`);
 		return next();
 	});
+
+	app.route('/economy-transactions', economyTransactionServer);
+	app.route('/oauth', oauthHonoServer);
+	app.route('/discord', discordServer);
 
 	app.post('/webhooks/patreon', async c => {
 		const signature = c.req.header('x-patreon-signature');
