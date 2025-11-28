@@ -6,7 +6,7 @@ import items from '../src/assets/item_data.json' with { type: 'json' };
 
 const itemsCopy = clone(items);
 
-for (const [_id, item] of Object.entries(items)) {
+for (const [_id, item] of Object.entries(items) as [string, any][]) {
 	if (unobtainableLeaguesItems.includes(item.id)) {
 		item.tradeable = false;
 		item.tradeable_on_ge = false;
@@ -21,6 +21,27 @@ for (const [_id, item] of Object.entries(items)) {
 	}
 	if (item.id === 27840 || item.id === 27841) {
 		item.equipment.attack_magic = 0;
+	}
+	delete item.wiki_name;
+	delete item.equipable_by_player;
+	delete item.equipable_weapon;
+	delete item.incomplete;
+	delete item.id;
+
+	if (item.price === 0) {
+		delete item.price;
+	}
+	if ([0, 1].includes(item.highalch)) {
+		delete item.highalch;
+	}
+	if ([0, 1].includes(item.lowalch)) {
+		delete item.lowalch;
+	}
+	if (item.cost === 1) {
+		delete item.cost;
+	}
+	if (item.weapon?.stances) {
+		delete item.weapon.stances;
 	}
 }
 
