@@ -2685,6 +2685,24 @@ const Createables: Createable[] = [
 			'Soiled page': 1
 		})
 	},
+	/*
+	{
+		name: 'Medallion of the deep',
+		inputItems: {
+			[EItem.MEDALLION_FRAGMENT1]: 1,
+			[EItem.MEDALLION_FRAGMENT2]: 1,
+			[EItem.MEDALLION_FRAGMENT3]: 1,
+			[EItem.MEDALLION_FRAGMENT4]: 1,
+			[EItem.MEDALLION_FRAGMENT5]: 1,
+			[EItem.MEDALLION_FRAGMENT6]: 1,
+			[EItem.MEDALLION_FRAGMENT7]: 1,
+			[EItem.MEDALLION_FRAGMENT8]: 1,
+		},
+		outputItems: new Bank({
+			'Medallion of the deep': 1
+		})
+	},
+	*/
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

@@ -66,6 +66,13 @@ export const Eatables: readonly Eatable[] = [
 		id: itemID('Pike'),
 		healAmount: 8
 	},
+	/*
+	{
+		name: 'Red crab meat',
+		id: itemID('Red crab meat'),
+		healAmount: 8
+	},
+	*/
 	{
 		name: 'Salmon',
 		id: itemID('Salmon'),
@@ -122,6 +129,13 @@ export const Eatables: readonly Eatable[] = [
 		id: itemID('Chilli potato'),
 		healAmount: 14
 	},
+	/*
+	{
+		name: 'Blue crab meat',
+		id: itemID('Blue crab meat'),
+		healAmount: 14
+	},
+	*/
 	{
 		name: 'Chocolate cake',
 		id: itemID('Chocolate cake'),
@@ -148,6 +162,13 @@ export const Eatables: readonly Eatable[] = [
 		healAmount: 16,
 		pvmBoost: 1
 	},
+	/*
+	{
+		name: 'Giant krill',
+		id: itemID('Giant krill'),
+		healAmount: 17
+	},
+	*/
 	{
 		name: 'Anchovy pizza',
 		id: itemID('Anchovy pizza'),
@@ -164,6 +185,20 @@ export const Eatables: readonly Eatable[] = [
 		healAmount: 18,
 		wildyOnly: true
 	},
+	/*
+	{
+		name: 'Haddock',
+		id: itemID('Haddock'),
+		healAmount: (user: GearBank) => {
+			const hp = user.skillsAsLevels.hitpoints;
+			const baseHeal = 18;
+			const healed = hp + baseHeal;
+			const overhealCap = 109;
+
+			return Math.min(healed, overhealCap);
+		},
+	},
+	*/
 	{
 		name: 'Curry',
 		id: itemID('Curry'),
@@ -174,6 +209,18 @@ export const Eatables: readonly Eatable[] = [
 		id: itemID('Ugthanki kebab'),
 		healAmount: 19
 	},
+	/*
+	{
+		name: 'Yellowfin',
+		id: itemID('Yellowfin'),
+		healAmount: 19 // Also restores 20% run energy
+	},
+	{
+		name: 'Rainbow crab meat',
+		id: itemID('Rainbow crab meat'),
+		healAmount: 19
+	},
+	*/
 	{
 		name: 'Mushroom potato',
 		id: itemID('Mushroom potato'),
@@ -185,6 +232,13 @@ export const Eatables: readonly Eatable[] = [
 		healAmount: 20,
 		pvmBoost: 2
 	},
+	/*
+	{
+		name: 'Halibut',
+		id: itemID('Halibut'),
+		healAmount: 20
+	},
+	*/
 	{
 		name: 'Sea turtle',
 		id: itemID('Sea turtle'),
@@ -225,6 +279,14 @@ export const Eatables: readonly Eatable[] = [
 		healAmount: 22,
 		pvmBoost: 3
 	},
+	/*
+	{
+		name: 'Bluefin',
+		id: itemID('Bluefin'),
+		healAmount: 22
+	},
+	Also restores 5 prayer points
+	*/
 	{
 		name: 'Anglerfish',
 		id: itemID('Anglerfish'),
@@ -258,4 +320,11 @@ export const Eatables: readonly Eatable[] = [
 		pvmBoost: 4,
 		wildyOnly: true
 	}
+	/*
+	{
+		name: 'Marlin',
+		id: itemID('Marlin'),
+		healAmount: 24
+	},
+	*/
 ];
