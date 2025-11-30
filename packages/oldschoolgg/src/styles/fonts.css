@@ -160,25 +160,10 @@
 }
 
 @font-face {
-	font-family: "SmallestPixel";
-	font-style: normal;
-	font-display: swap;
-	src: url("https://static.worp.tv/fonts/SmallestPixel.woff2") format("woff2");
-}
-
-@font-face {
 	font-family: "ByteBounce";
 	font-style: normal;
 	font-display: swap;
 	src: url("https://cdn.kickplays.org/fonts/ByteBounce.ttf") format("truetype");
-}
-
-@font-face {
-	font-family: "upheaval";
-	src: url("https://cdn.kickplays.org/fonts/upheaval.ttf") format("truetype");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
 }
 
 .font-inter {
@@ -189,20 +174,12 @@
 	font-family: "Beckman", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
-.font-pikminneue {
-	font-family: "PikminneueLatin", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
 .font-staat {
 	font-family: "StaatlichesRegularLatin", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .font-pixel {
 	font-family: "SmallestPixel", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-.font-upheaval {
-	font-family: "upheaval", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .font-roboto {
@@ -232,28 +209,6 @@
 
 .font-geo {
 	font-family: "Geo", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-@font-face {
-	font-family: "Englebert";
-	font-style: normal;
-	font-display: swap;
-	src: url("https://static.worp.tv/fonts/Englebert.ttf") format("truetype");
-}
-
-.font-englebert {
-	font-family: "Englebert", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-@font-face {
-	font-family: "TruculentaVariable";
-	font-style: normal;
-	font-display: swap;
-	src: url("https://static.worp.tv/fonts/TruculentaVariable.woff2") format("woff2");
-}
-
-.font-truc {
-	font-family: "TruculentaVariable", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 @font-face {

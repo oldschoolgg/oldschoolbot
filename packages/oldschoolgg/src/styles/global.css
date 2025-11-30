@@ -14,16 +14,12 @@
 }
 
 body {
-	--color-kickgreen: #53fc18;
 	--color-blood-orange: oklch(0.64 0.22 32.24 / 1);
 	--color-navy: oklch(0.22 0.06 238.76);
 	--color-navy-2: oklch(0.29 0.03 247.1);
 	--color-bright-blue: oklch(0.47 0.15 248.07);
 	--color-bright-saturated-blue: oklch(0.39 0.19 263.55);
 	--color-dark: #111117;
-
-	/* background-color: var(--color-dark); */
-	/* color: #f1f1f1; */
 
 	--color-background: white;
 	--color-text: black;
@@ -37,7 +33,6 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-size: 1.1rem;
-	/* font-family: "Cabin","Crimson Text", sans-serif; */
 	font-family: "DMSansVariable", "Crimson Text", sans-serif;
 }
 
@@ -51,16 +46,12 @@ body {
 h1,
 h2,
 h3 {
-	font-family: "DMSansVariable";
+	font-family: "DMSansVariable", sans-serif;
 	font-weight: bold;
 }
 
 main {
 	padding: 24px 32px;
-}
-
-header {
-	font-family: "DMSansVariable";
 }
 
 .bg-primary {
@@ -69,8 +60,4 @@ header {
 
 .border-main {
 	border: 2px solid hsl(215.97deg 100% 72.5% / 18%);
-}
-
-header {
-	color: white;
 }

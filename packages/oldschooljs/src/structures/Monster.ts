@@ -1,5 +1,6 @@
 import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
 
+import _monsterData from '@/assets/monsters_data.json' with { type: 'json' };
 import { type MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
 import {
 	getAncientShardChanceFromHP,
@@ -11,8 +12,6 @@ import {
 import { Bank } from './Bank.js';
 import type LootTable from './LootTable.js';
 import type { LootTableRollOptions } from './LootTable.js';
-
-import _monsterData from '@/assets/monsters_data.json' with { type: 'json' };
 
 const monsterData: Record<number, MonsterData> = _monsterData as Record<number, MonsterData>;
 export interface MonsterOptions {

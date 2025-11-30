@@ -1,9 +1,9 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 export function useImage(url: string) {
-	const [image, setImage] = React.useState<HTMLImageElement | null>(null);
+	const [image, setImage] = useState<HTMLImageElement | null>(null);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!url) return;
 		const img = document.createElement('img');
 

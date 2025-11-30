@@ -1,14 +1,12 @@
-import { type Plugin } from 'vite';
 import path from 'node:path';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
+import type { Plugin } from 'vite';
 
-const manualChunks = {
-	oldschooljs: ['oldschooljs']
-};
-
-type ManualChunks = Record<string, string[]>;
+// const manualChunks = {
+// 	oldschooljs: ['oldschooljs']
+// };
 
 function splitVendorChunkPlugin() {
 	const plugin: Plugin = {
@@ -19,20 +17,17 @@ function splitVendorChunkPlugin() {
 					rollupOptions: {
 						output: {
 							manualChunks(id) {
-								if (id.includes('oldschooljs') && id.includes('monster')) {
-									return 'oldschooljs_monsters';
-								}
-								if (id.includes('oldschooljs') && id.includes('item')) {
+								if (id.includes('oldschooljs') && id.includes('item_data')) {
 									return 'oldschooljs_items';
 								}
 								if (id.includes('oldschooljs')) {
-									console.log(`oldschooljs: ${id}`);
+									return 'oldschooljs';
 								}
-								for (const [chunkName, matchingNames] of Object.entries(manualChunks)) {
-									if (matchingNames.some(m => id.includes(m))) {
-										return chunkName;
-									}
-								}
+								// for (const [chunkName, matchingNames] of Object.entries(manualChunks)) {
+								// 	if (matchingNames.some(m => id.includes(m))) {
+								// 		return chunkName;
+								// 	}
+								// }
 								if (id.includes('node_modules')) {
 									const match = /.*node_modules\/((?:@[^/]+\/)?[^/]+)/.exec(id);
 									return match !== null && match.length > 0 ? match[1] : 'vendor';
@@ -74,10 +69,12 @@ export default defineConfig({
 				'@': path.resolve('./src')
 			}
 		},
-		plugins: [tailwindcss(),
-		splitVendorChunkPlugin()],
+		plugins: [tailwindcss(), splitVendorChunkPlugin()],
 		define: {
 			...config
+		},
+		build: {
+			minify: false
 		}
 	},
 	devToolbar: { enabled: false },

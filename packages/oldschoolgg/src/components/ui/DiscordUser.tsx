@@ -1,33 +1,31 @@
 import { useEffect, useState } from 'react';
 
-import { type DiscordUser, rawApi } from '../../lib/rawApi.ts';
-
 interface DiscordUserCardProps {
 	userId: string;
 }
 
 export const DiscordUserCard: React.FC<DiscordUserCardProps> = ({ userId }) => {
-	const [user, setUser] = useState<DiscordUser | null>(null);
+	const [user, setUser] = useState<any | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		const fetchUser = async () => {
-			try {
-				const response = await rawApi.discordUser(userId);
-				if ('error' in response || !response.id) {
-					throw new Error('Failed to fetch user data');
-				}
-				setUser(response);
-			} catch (err) {
-				setError(err instanceof Error ? err.message : 'An error occurred');
-			} finally {
-				setLoading(false);
-			}
-		};
+	// useEffect(() => {
+	// 	const fetchUser = async () => {
+	// 		try {
+	// 			const response = await rawApi.discordUser(userId);
+	// 			if ('error' in response || !response.id) {
+	// 				throw new Error('Failed to fetch user data');
+	// 			}
+	// 			setUser(response);
+	// 		} catch (err) {
+	// 			setError(err instanceof Error ? err.message : 'An error occurred');
+	// 		} finally {
+	// 			setLoading(false);
+	// 		}
+	// 	};
 
-		fetchUser();
-	}, [userId]);
+	// 	fetchUser();
+	// }, [userId]);
 
 	if (loading) {
 		return (

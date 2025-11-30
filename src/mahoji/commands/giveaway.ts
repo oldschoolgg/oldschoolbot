@@ -2,6 +2,7 @@ import { ButtonBuilder, ButtonStyle, EmbedBuilder, messageLink, time } from '@ol
 import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
+import { chunk } from 'remeda';
 
 import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
@@ -13,7 +14,6 @@ import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { chunk } from 'remeda';
 
 function makeGiveawayButtons(giveawayID: number) {
 	return [
@@ -70,8 +70,8 @@ export const giveawayCommand = defineCommand({
 						const res = !value
 							? filterableTypes
 							: [...filterableTypes].filter(filter =>
-								filter.name.toLowerCase().includes(value.toLowerCase())
-							);
+									filter.name.toLowerCase().includes(value.toLowerCase())
+								);
 						return [...res]
 							.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
 							.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
@@ -238,7 +238,8 @@ export const giveawayCommand = defineCommand({
 
 			const lines = giveaways.map(
 				(g: Giveaway) =>
-					`${perkTier >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
+					`${
+						perkTier >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
 					}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
 						g.finish_date,
 						'R'

@@ -1,0 +1,12 @@
+---
+import { TOBSimulator } from "@/components/ToBSimulator.jsx";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+    pageTitle="Theatre of Blood Simulator"
+    keywords={["theatre of blood simulator", "tob", "simulator", "osrs"]}
+    desc="The Theatre of Blood/ToB simulator lets you simulate getting loot from the Theatre of Blood."
+>
+    <TOBSimulator client:load />
+</Layout>

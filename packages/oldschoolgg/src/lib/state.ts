@@ -1,22 +1,14 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
-import type { UserWithManageables } from './rawApi.js';
+import type { StateUser } from './rawApi.js';
 
 type GlobalState = {
-	user: UserWithManageables | null;
+	user: StateUser | null;
 };
 
-export const globalState = create<GlobalState>()(
-	persist(
-		(_, __) => ({
-			user: null
-		}),
-		{
-			name: 'worp-storage'
-		}
-	)
-);
+export const globalState = create<GlobalState>()((_, __) => ({
+	user: null
+}));
 
 globalState.subscribe(state => {
 	console.log({ state });

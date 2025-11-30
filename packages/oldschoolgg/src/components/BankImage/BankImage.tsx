@@ -1,25 +1,18 @@
 import { useElementSize } from '@mantine/hooks';
 import { chunkArr } from '@oldschoolgg/util';
-import { useFont } from '@react-hooks-library/core';
 import type React from 'react';
 import { useEffect, useRef } from 'react';
-import bankSpritesheetData from '@/assets/spritesheets/bank.json';
-import bankSpritesheet from '@/assets/spritesheets/bank.png';
+
 import { type BankSortMethod, drawBorder, sorts } from '@/components/BankImage/bankImageUtil.ts';
 import { loadFont } from '@/components/BitMapFont/loadFont.ts';
 import { Renderer } from '@/components/BitMapFont/Renderer.ts';
-import { useImage } from '@/hooks/useImage.tsx';
 import { Bank, type ItemBank } from '@/osrs/Bank.ts';
 import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '@/osrs/utils.ts';
+import { type Spritesheet, useSpritesheet } from '../../hooks/useSpritesheet.js';
 import styles from './BankImage.module.css';
-import spriteSheetData from './items-spritesheet.json';
-import spriteSheetImage from './items-spritesheet.png';
-import { type Spritesheet, useSpritesheet } from './useSpritesheet.ts';
-
-type SpriteSheetData = Record<string, [number, number, number, number]>;
 
 interface Props {
-	bank: ItemBank;
+	bank: ItemBank | Bank;
 	title: string | null;
 	showPrice: boolean;
 	sort?: BankSortMethod;
@@ -33,13 +26,6 @@ const itemSize = 32;
 const distanceFromEdge = spacer * 0.6;
 const RENDER_SCALE = 1;
 const MIN_HEIGHT = 95;
-
-export function setupDisplayCanvas(canvas: HTMLCanvasElement, width: number, height: number) {
-	canvas.width = width;
-	canvas.height = height;
-	canvas.style.width = `${width}px`;
-	canvas.style.height = `${height}px`;
-}
 
 function createRenderCanvas(width: number, height: number, scale: number) {
 	const renderCanvas = document.createElement('canvas');
@@ -75,14 +61,21 @@ function calculateLayout(bank: ItemBank, ghosts: number[], availableWidth: numbe
 	// Calculate number of rows needed
 	const rows = Math.max(1, Math.ceil(totalItems / columns));
 
+	// Calculate actual spacing between items
+	const itemSpacingY = itemSize + spacer / 2;
+
 	// Calculate precise dimensions
 	const width = Math.floor(availableWidth);
-	const contentHeight = rows * (itemSize + spacer) + distanceFromEdge * 2;
+	// Items start at Y position: baseSpacing + 12
+	// Last item ends at: baseSpacing + 12 + (rows - 1) * itemSpacingY + itemSize
+	// To have symmetric padding, bottom padding should equal top padding (baseSpacing + 12)
+	const topPadding = spacer + distanceFromEdge + 12;
+	const contentHeight = topPadding + (rows - 1) * itemSpacingY + itemSize + topPadding;
 	const height = Math.floor(Math.max(MIN_HEIGHT, contentHeight));
 
 	// Calculate actual spacing between items
 	// Total space available for items and spacing
-	const availableContentWidth = availableWidth - (distanceFromEdge * 2);
+	const availableContentWidth = availableWidth - distanceFromEdge * 2;
 	// Space taken by items
 	const totalItemWidth = columns * itemSize;
 	// Remaining space for gaps between items
@@ -91,8 +84,6 @@ function calculateLayout(bank: ItemBank, ghosts: number[], availableWidth: numbe
 	const gapSize = totalGapSpace / (columns + 1);
 	// Distance between item centers
 	const itemSpacingX = itemSize + gapSize;
-
-	const itemSpacingY = itemSize + spacer / 2;
 
 	return {
 		columns,
@@ -107,7 +98,7 @@ function calculateLayout(bank: ItemBank, ghosts: number[], availableWidth: numbe
 interface DrawBankOptions {
 	container: HTMLDivElement;
 	canvas: HTMLCanvasElement;
-	itemsSpritesheet: HTMLImageElement;
+	itemsSpritesheet: Spritesheet;
 	bankSpritesheet: Spritesheet;
 	bank: ItemBank;
 	width: number;
@@ -121,7 +112,6 @@ interface DrawBankOptions {
 }
 
 function drawBank({
-	container,
 	canvas,
 	itemsSpritesheet,
 	bankSpritesheet,
@@ -183,7 +173,11 @@ function drawBank({
 	for (let row = 0; row < chunkedLoot.length; row++) {
 		for (let col = 0; col < chunkedLoot[row].length; col++) {
 			const [item, quantity] = chunkedLoot[row][col];
-			const [sX, sY, sW, sH] = (spriteSheetData as unknown as SpriteSheetData)[item.id]!;
+			if (!itemsSpritesheet.data[item.id.toString()]) {
+				console.log(`Missing spritesheet data for item ID ${item.id}, skipping draw.`);
+				continue;
+			}
+			const [_sX, _sY, sW, sH] = itemsSpritesheet.data[item.id.toString()]!;
 
 			// Calculate position using layout spacing
 			const xLoc = Math.floor(baseSpacing + col * layout.itemSpacingX) * RENDER_SCALE;
@@ -194,17 +188,14 @@ function drawBank({
 				ctx.globalAlpha = 0.2;
 			}
 
-			ctx.drawImage(
-				itemsSpritesheet,
-				sX,
-				sY,
-				sW,
-				sH,
-				xLoc + ((itemSize - sW) / 2) * RENDER_SCALE,
-				yLoc + ((itemSize - sH) / 2) * RENDER_SCALE,
-				sW * RENDER_SCALE,
-				sH * RENDER_SCALE
-			);
+			itemsSpritesheet.draw({
+				id: item.id,
+				ctx,
+				x: xLoc + ((itemSize - sW) / 2) * RENDER_SCALE,
+				y: yLoc + ((itemSize - sH) / 2) * RENDER_SCALE,
+				width: sW * RENDER_SCALE,
+				height: sH * RENDER_SCALE
+			});
 
 			ctx.globalAlpha = 1;
 
@@ -224,7 +215,10 @@ function drawBank({
 					scale: TEXT_RENDER_SCALE
 				});
 				// Main text
-				renderer.draw(textXLoc, textYLoc, formattedQuantity, { color: quantityColor, scale: TEXT_RENDER_SCALE });
+				renderer.draw(textXLoc, textYLoc, formattedQuantity, {
+					color: quantityColor,
+					scale: TEXT_RENDER_SCALE
+				});
 			}
 
 			// Draw price if enabled
@@ -234,10 +228,15 @@ function drawBank({
 				const valueColor = generateHexColorForCashStack(value);
 
 				// Shadow
-				renderer.draw(textXLoc + TEXT_RENDER_SCALE, textYLoc + Math.floor(24 * TEXT_RENDER_SCALE) + TEXT_RENDER_SCALE, fmted, {
-					color: '#000000',
-					scale: TEXT_RENDER_SCALE
-				});
+				renderer.draw(
+					textXLoc + TEXT_RENDER_SCALE,
+					textYLoc + Math.floor(24 * TEXT_RENDER_SCALE) + TEXT_RENDER_SCALE,
+					fmted,
+					{
+						color: '#000000',
+						scale: TEXT_RENDER_SCALE
+					}
+				);
 				// Main text
 				renderer.draw(textXLoc, textYLoc + Math.floor(24 * TEXT_RENDER_SCALE), fmted, {
 					color: valueColor,
@@ -265,9 +264,12 @@ function drawBank({
 		const titleX = Math.floor((renderCanvas.width - textAdvance) / 2);
 		const titleY = Math.floor(9 * TITLE_TEXT_RENDER_SCALE);
 
-		rendererBold.draw(titleX + TITLE_TEXT_RENDER_SCALE, titleY + TITLE_TEXT_RENDER_SCALE, title, { color: '#000000', scale: TITLE_TEXT_RENDER_SCALE });
+		rendererBold.draw(titleX + TITLE_TEXT_RENDER_SCALE, titleY + TITLE_TEXT_RENDER_SCALE, title, {
+			color: '#000000',
+			scale: TITLE_TEXT_RENDER_SCALE
+		});
 		rendererBold.draw(titleX, titleY, title, { color: '#ff981f', scale: TITLE_TEXT_RENDER_SCALE });
-		console.log({titleX, titleY});
+		console.log({ titleX, titleY });
 	}
 
 	canvas.width = renderCanvas.width;
@@ -300,16 +302,15 @@ export const BankImage: React.FC<Props> = ({
 	const compactFontRef = useRef<any>(null);
 	const boldFontRef = useRef<any>(null);
 	const { ref: containerRef, width } = useElementSize();
-	const compactFont = useFont('OSRSFontCompact Regular', 'https://cdn.oldschool.gg/fonts/osrs-font-compact.otf');
-	const boldFont = useFont('RuneScape Bold 12', 'https://cdn.oldschool.gg/fonts/osrs-font-bold.ttf');
-	const [itemsSpritesheet] = useImage(spriteSheetImage.src);
-	const bankSheet = useSpritesheet(
-		bankSpritesheet,
-		bankSpritesheetData as any as Record<string, [number, number, number, number]>
-	);
 
-	const fontsLoaded = compactFont.loaded && boldFont.loaded;
-	const isFinishedLoading = fontsLoaded && itemsSpritesheet && bankSheet && canvasRef.current;
+	const bankSheet = useSpritesheet(
+		'https://cdn.oldschool.gg/website/spritesheets/bank.a0bf6f62.webp',
+		'https://cdn.oldschool.gg/website/spritesheets/bank.0b91c04f.json'
+	);
+	const itemsSpritesheet = useSpritesheet(
+		'https://cdn.oldschool.gg/website/spritesheets/items-spritesheet.6299efef.webp',
+		'https://cdn.oldschool.gg/website/spritesheets/items-spritesheet.043bb5f4.json'
+	);
 
 	useEffect(() => {
 		if (canvasRef.current) {
@@ -323,14 +324,22 @@ export const BankImage: React.FC<Props> = ({
 	}, [canvasRef]);
 
 	useEffect(() => {
-		if (isFinishedLoading && width > 0 && canvasRef.current && compactFontRef.current && boldFontRef.current) {
+		if (!bankSheet || !itemsSpritesheet) {
+			console.log('Spritesheets not loaded yet, skipping bank image draw.');
+			return;
+		}
+		if (!compactFontRef.current || !boldFontRef.current) {
+			console.log('Fonts not loaded yet, skipping bank image draw.');
+			return;
+		}
+		if (canvasRef.current && width > 0 && canvasRef.current) {
 			console.log(`Drawing bank image. ${bankSheet.image.width}x${bankSheet.image.height} spritesheet size.`);
 			drawBank({
 				container: containerRef.current!,
 				canvas: canvasRef.current!,
-				itemsSpritesheet: itemsSpritesheet!,
+				itemsSpritesheet,
 				bankSpritesheet: bankSheet!,
-				bank,
+				bank: 'toJSON' in bank ? bank.toJSON() : bank,
 				width: customWidth ?? Math.min(1000, width),
 				title,
 				showPrice,
@@ -341,23 +350,10 @@ export const BankImage: React.FC<Props> = ({
 				boldFont: boldFontRef.current
 			});
 		}
-	}, [
-		isFinishedLoading,
-		itemsSpritesheet,
-		bankSheet,
-		bank,
-		customWidth,
-		width,
-		title,
-		showPrice,
-		sort,
-		ghosts,
-		showAsKc
-	]);
+	}, [itemsSpritesheet, bankSheet, bank, customWidth, width, title, showPrice, sort, ghosts, showAsKc]);
 
 	return (
 		<div className={styles.bank_container} id="bank" ref={containerRef}>
-			{isFinishedLoading ? '' : 'Loading...'}
 			<canvas className={styles.bank_image_canvas} ref={canvasRef} />
 		</div>
 	);

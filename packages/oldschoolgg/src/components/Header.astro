@@ -1,14 +1,26 @@
 ---
 import Button from './Button.astro';
 
-const links = [
-	{ label: 'Commands', href: '/commands' },
-	{ label: 'Widgets', href: '/commands' }
-	// {
-	// 	label: 'Tools',
-	// 	children: [{ label: 'Troll Video Generator', href: '/blog' }]
-	// }
+interface LinkChild {
+	label: string;
+	href: string;
+	color?: string;
+}
+
+interface Link {
+	label: string;
+	href?: string;
+	color?: string;
+	children?: LinkChild[];
+}
+
+const links: Link[] = [
+	{ label: 'Wiki', href: 'https://wiki.oldschool.gg/' },
 ];
+
+const isExternalLink = (href: string) => {
+	return href.startsWith('http://') || href.startsWith('https://');
+};
 ---
 
 <header class="w-full  backdrop-blur-md py-4">
@@ -31,8 +43,8 @@ const links = [
       <div class="hidden lg:flex items-center gap-8 font-semibold">
         {links.map((link) => (
           link.children ? (
-            <div class="relative dropdown cursor-pointer">
-              <button class="flex items-center gap-1 hover:opacity-70 transition-opacity dropdown-trigger">
+            <div class="relative dropdown cursor-pointer" style={link.color ? `color: ${link.color}` : undefined}>
+              <button class="flex items-center gap-1 hover-link transition-all dropdown-trigger">
                 {link.label}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -40,15 +52,37 @@ const links = [
               </button>
               <div class="absolute top-full left-0 mt-2 w-58 rounded-lg border-main bg-primary shadow-lg hidden dropdown-menu">
                 {link.children.map((child) => (
-                  <a href={child.href} class="block px-4 py-3 hover:opacity-70 transition-opacity">
+                  <a
+                    href={child.href}
+                    class="flex items-center gap-2 px-4 py-3 hover-link transition-all"
+                    style={child.color ? `color: ${child.color}` : undefined}
+                    target={isExternalLink(child.href) ? "_blank" : undefined}
+                    rel={isExternalLink(child.href) ? "noopener noreferrer" : undefined}
+                  >
                     {child.label}
+                    {isExternalLink(child.href) && (
+                      <svg class="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                      </svg>
+                    )}
                   </a>
                 ))}
               </div>
             </div>
           ) : (
-            <a href={link.href} class="hover:opacity-70 transition-opacity">
+            <a
+              href={link.href}
+              class="flex items-center gap-1.5 hover-link transition-all"
+              style={link.color ? `color: ${link.color}` : undefined}
+              target={isExternalLink(link.href) ? "_blank" : undefined}
+              rel={isExternalLink(link.href) ? "noopener noreferrer" : undefined}
+            >
               {link.label}
+              {isExternalLink(link.href) && (
+                <svg class="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              )}
             </a>
           )
         ))}
@@ -65,8 +99,8 @@ const links = [
         {links.map((link) => (
           link.children ? (
             <!-- Mobile Dropdown -->
-            <div class="mobile-dropdown">
-              <button class="flex items-center justify-between w-full hover:opacity-70 transition-opacity mobile-dropdown-trigger">
+            <div class="mobile-dropdown" style={link.color ? `color: ${link.color}` : undefined}>
+              <button class="flex items-center justify-between w-full hover-link transition-all mobile-dropdown-trigger">
                 <span>{link.label}</span>
                 <svg class="w-4 h-4 mobile-dropdown-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -74,15 +108,37 @@ const links = [
               </button>
               <div class="hidden mobile-dropdown-menu pl-4 mt-2 flex-col gap-2">
                 {link.children.map((child) => (
-                  <a href={child.href} class="py-2 hover:opacity-70 transition-opacity">
+                  <a
+                    href={child.href}
+                    class="flex items-center gap-2 py-2 hover-link transition-all"
+                    style={child.color ? `color: ${child.color}` : undefined}
+                    target={isExternalLink(child.href) ? "_blank" : undefined}
+                    rel={isExternalLink(child.href) ? "noopener noreferrer" : undefined}
+                  >
                     {child.label}
+                    {isExternalLink(child.href) && (
+                      <svg class="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                      </svg>
+                    )}
                   </a>
                 ))}
               </div>
             </div>
           ) : (
-            <a href={link.href} class="hover:opacity-70 transition-opacity">
+            <a
+              href={link.href}
+              class="flex items-center gap-1.5 hover-link transition-all"
+              style={link.color ? `color: ${link.color}` : undefined}
+              target={isExternalLink(link.href) ? "_blank" : undefined}
+              rel={isExternalLink(link.href) ? "noopener noreferrer" : undefined}
+            >
               {link.label}
+              {isExternalLink(link.href) && (
+                <svg class="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              )}
             </a>
           )
         ))}
@@ -152,6 +208,11 @@ const links = [
 </script>
 
 <style>
+  header {
+    font-family: "DMSansVariable";
+    color: white;
+  }
+
   /* Desktop dropdown animation */
   .dropdown-menu {
     animation: fadeIn 0.2s ease-in-out;
@@ -175,5 +236,20 @@ const links = [
 
   .rotate-180 {
     transform: rotate(180deg);
+  }
+
+  /* Hover effect for links with custom colors */
+  .hover-link {
+    position: relative;
+  }
+
+  .hover-link:hover {
+    filter: brightness(0.85);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .hover-link:hover {
+      filter: brightness(1.2);
+    }
   }
 </style>

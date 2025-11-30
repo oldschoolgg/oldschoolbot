@@ -59,7 +59,8 @@
 			"a11y": {
 				"useAltText": "off",
 				"useKeyWithClickEvents": "off",
-				"useButtonType": "off"
+				"useButtonType": "off",
+				"noSvgWithoutTitle": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "warn",

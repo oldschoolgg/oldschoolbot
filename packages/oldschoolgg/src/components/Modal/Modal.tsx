@@ -3,7 +3,7 @@ import { Modal as ResponsiveModal } from 'react-responsive-modal';
 
 import './Modal.css';
 
-import { Button } from '@/components/Input/button.tsx';
+import { Button } from '@/components/ui/button.js';
 
 export function Modal({
 	title,

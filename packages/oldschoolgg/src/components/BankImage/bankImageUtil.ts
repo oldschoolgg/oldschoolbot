@@ -1,4 +1,4 @@
-import type { Spritesheet } from '@/components/BankImage/useSpritesheet.ts';
+import type { Spritesheet } from '@/hooks/useSpritesheet.js';
 import type { Item } from '@/osrs/item.ts';
 
 export const BankSortMethods = ['value', 'alch', 'name', 'quantity'] as const;

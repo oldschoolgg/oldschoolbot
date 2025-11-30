@@ -1,4 +1,4 @@
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { Bank } from 'oldschooljs';
 import { chunk } from 'remeda';
 import { expect, test } from 'vitest';

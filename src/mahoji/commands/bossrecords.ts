@@ -1,10 +1,10 @@
 import { EmbedBuilder, type PaginatedMessagePage } from '@oldschoolgg/discord';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
+import { chunk } from 'remeda';
 
 import { miscEmojis } from '@/lib/data/emojis.js';
 import pets from '@/lib/data/pets.js';
-import { chunk } from 'remeda';
 
 function getEmojiForBoss(key: keyof typeof miscEmojis | string) {
 	if (key in miscEmojis) {

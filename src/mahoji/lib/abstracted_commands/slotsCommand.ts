@@ -1,10 +1,10 @@
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
+import { chunk } from 'remeda';
 
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
-import { chunk } from 'remeda';
 
 interface Button {
 	name: string;

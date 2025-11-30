@@ -1,4 +1,4 @@
-import LootTable from '@/structures/LootTable.js';
+import LootTable from '../../structures/LootTable.js';
 import {
 	BlessingTable,
 	FirelighterTable,

@@ -1,5 +1,5 @@
 import { type GatewayMessageCreateDispatchData, InteractionType } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 
 import { TEST_SERVER_ID } from '@/constants.js';
 

@@ -9,10 +9,10 @@
 			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		},
-		"./GeneralBank": {
-			"types": "./dist/esm/lib/GeneralBank.d.mts",
-			"require": "./dist/cjs/lib/GeneralBank.cjs",
-			"import": "./dist/esm/lib/GeneralBank.mjs"
+		"./node": {
+			"types": "./dist/esm/node/index.d.mts",
+			"require": "./dist/cjs/node/index.cjs",
+			"import": "./dist/esm/node/index.mjs"
 		}
 	},
 	"scripts": {
