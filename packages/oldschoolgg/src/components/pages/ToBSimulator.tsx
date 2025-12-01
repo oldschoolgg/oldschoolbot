@@ -2,12 +2,12 @@ import { useCallback, useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
-import type { Bank } from '@/osrs/index.js';
+import { useBank } from '@/hooks/useBank.js';
 import { TheatreOfBlood } from '@/osrs/TheatreOfBlood.js';
 
 export const TOBSimulator = () => {
-	const [currentLoot, setLoot] = useState<Bank | null>(null);
-	const [totalLoot, setTotalLoot] = useState<Bank | null>(null);
+	const currentLoot = useBank();
+	const totalLoot = useBank();
 	const [kc, setKC] = useState(0);
 
 	const doLoot = useCallback(() => {
@@ -21,24 +21,22 @@ export const TOBSimulator = () => {
 			]
 		});
 		setKC(kc + 1);
-		setLoot(loot);
-		setTotalLoot(loot.clone().add(totalLoot ?? undefined));
+		loot.clear().add(loot);
+		totalLoot.add(loot);
 	}, [kc, totalLoot]);
 
 	return (
 		<div>
-			<Button onClick={doLoot}>Simulte ToB Raid</Button>
+			<Button onClick={doLoot}>Simulate ToB Raid</Button>
 
-			{currentLoot?.length && totalLoot?.length && (
-				<div className="flex flex-col w-full max-w-full">
-					<div className="flex justify-around">
-						<div className="w-6/12">
-							<BankImage bank={currentLoot} title={`Loot`} showPrice={false} />
-						</div>
+			<div className="flex flex-col w-full max-w-full">
+				<div className="flex justify-around">
+					<div className="w-6/12">
+						<BankImage bank={currentLoot} title={`Loot`} showPrice={false} />
 					</div>
-					<BankImage bank={totalLoot} title={`Total Loot - ${kc} KC`} showPrice={false} />
 				</div>
-			)}
+				<BankImage bank={totalLoot} title={`Total Loot - ${kc} KC`} showPrice={false} />
+			</div>
 		</div>
 	);
 };

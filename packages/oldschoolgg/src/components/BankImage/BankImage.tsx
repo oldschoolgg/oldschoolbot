@@ -1,5 +1,7 @@
 import { useElementSize } from '@mantine/hooks';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { chunkArr } from '@oldschoolgg/util';
+import { toKMB } from 'oldschooljs';
 import type React from 'react';
 import { useEffect, useRef } from 'react';
 
@@ -7,7 +9,6 @@ import { type BankSortMethod, drawBorder, sorts } from '@/components/BankImage/b
 import { loadFont } from '@/components/BitMapFont/loadFont.js';
 import { Renderer } from '@/components/BitMapFont/Renderer.js';
 import { Bank, type ItemBank } from '@/osrs/index.js';
-import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '@/osrs/utils.js';
 import { type Spritesheet, useSpritesheet } from '../../hooks/useSpritesheet.js';
 import styles from './BankImage.module.css';
 
@@ -338,7 +339,7 @@ export const BankImage: React.FC<Props> = ({
 			console.log('Fonts not loaded yet, skipping bank image draw.');
 			return;
 		}
-		if (canvasRef.current && width > 0 && canvasRef.current) {
+		if (canvasRef.current && width > 0) {
 			console.log(`Drawing bank image. ${bankSheet.image.width}x${bankSheet.image.height} spritesheet size.`);
 			drawBank({
 				container: containerRef.current!,

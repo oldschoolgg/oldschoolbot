@@ -1,6 +1,6 @@
 import { createTsdownConfig } from '../../scripts/createTsdownConfig.ts';
 
-const entry = ['./src/index.ts', './src/strucures/Items.ts'];
+const entry = ['./src/index.ts'];
 
 export default createTsdownConfig({
 	entry,

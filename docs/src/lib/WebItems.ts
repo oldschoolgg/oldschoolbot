@@ -32,7 +32,6 @@ export const WebItems = {
 	get: (
 		name: string | number
 	): { item: Item; imageUrl: string; isBso: boolean } | { item: null; imageUrl: null; isBso: null } => {
-		const original = name;
 		if (typeof name === 'string') {
 			if (!Number.isNaN(Number(name))) {
 				name = Number(name);

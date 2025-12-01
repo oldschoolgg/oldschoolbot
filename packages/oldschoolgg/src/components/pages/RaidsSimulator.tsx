@@ -1,3 +1,4 @@
+import { toKMB } from 'oldschooljs';
 import { useCallback, useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
@@ -5,7 +6,6 @@ import { Button } from '@/components/ui/button.js';
 import { Select } from '@/components/ui/Select.js';
 import { ChambersOfXeric, type TeamMember } from '@/osrs/CoX.js';
 import { Bank } from '@/osrs/index.js';
-import { toKMB } from '@/osrs/utils.js';
 
 const RAID_TYPES = ['solo', 'team of 4'] as const;
 type RaidType = (typeof RAID_TYPES)[number];

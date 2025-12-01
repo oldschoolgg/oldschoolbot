@@ -1,3 +1,4 @@
+import { toKMB } from 'oldschooljs';
 import { useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
@@ -13,7 +14,6 @@ import {
 	MasterCasket,
 	MediumCasket
 } from '@/osrs/index.js';
-import { toKMB } from '@/osrs/utils.js';
 
 interface ClueTier {
 	name: string;
