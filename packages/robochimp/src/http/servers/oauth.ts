@@ -5,8 +5,8 @@ import { Hono } from 'hono';
 import { setCookie } from 'hono/cookie';
 
 import { globalConfig } from '@/constants.js';
-import { encryptToken } from '@/http/auth.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
+import { encryptToken } from '@/modules/encryption.js';
 
 export const oauthHonoServer = new Hono<HonoServerGeneric>();
 

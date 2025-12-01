@@ -2,15 +2,15 @@ import type { MiddlewareHandler } from 'hono';
 import { deleteCookie, getCookie } from 'hono/cookie';
 
 import { globalConfig } from '@/constants.js';
-import { handleAuthenticationFromToken } from '@/http/auth.js';
 import { type HonoServerGeneric, httpErr } from '@/http/serverUtil.js';
+import { handleAuthenticationFromToken } from '@/modules/encryption.js';
 import { Bits } from '@/util.js';
 
 export const ensureAuthenticated: MiddlewareHandler = async (c, next) => {
 	const user = c.get('user');
 
 	if (!user) {
-		return new Response('UNAUTHORIZED', { status: 401 });
+		return httpErr.UNAUTHORIZED();
 	}
 
 	await next();

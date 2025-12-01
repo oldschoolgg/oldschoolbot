@@ -3,7 +3,10 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 
 import { ensureAuthenticated } from '@/http/middlewares.js';
-import { httpErr, httpRes } from '@/http/serverUtil.js';
+import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
+
+export const economyTransactionServer = new Hono<HonoServerGeneric>();
+economyTransactionServer.use(ensureAuthenticated);
 
 const economyTransactionTypeEnum = z.enum(['trade', 'giveaway', 'duel', 'gri', 'gift']);
 
@@ -73,8 +76,6 @@ const querySchema = z.object({
 		})
 });
 
-export const economyTransactionServer = new Hono();
-economyTransactionServer.use(ensureAuthenticated);
 economyTransactionServer.get('/', async c => {
 	const rawQuery = c.req.query();
 
