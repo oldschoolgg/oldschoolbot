@@ -84,7 +84,8 @@
 			"correctness": {
 				"useExhaustiveDependencies": "off",
 				"noConstructorReturn": "off",
-				"useParseIntRadix": "off"
+				"useParseIntRadix": "off",
+				"noUnknownProperty": "off"
 			},
 			"complexity": {
 				"noExtraBooleanCast": "warn",

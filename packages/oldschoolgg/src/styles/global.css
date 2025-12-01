@@ -33,7 +33,7 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-size: 1.1rem;
-	font-family: "Inter", sans-serif;
+	font-family: "InterVariable", sans-serif;
 }
 
 html,
@@ -46,7 +46,6 @@ body {
 h1,
 h2,
 h3 {
-	font-family: "Inter", sans-serif;
 	font-weight: bold;
 }
 
