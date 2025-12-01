@@ -314,10 +314,16 @@ export const BankImage: React.FC<Props> = ({
 
 	useEffect(() => {
 		if (canvasRef.current) {
-			loadFont('/osrs_bitmap_fonts/compact_24.png', '/osrs_bitmap_fonts/compact_24.json').then((_font: any) => {
+			loadFont(
+				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/compact_24.png',
+				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/osrs_bitmap_fonts/compact_24.json'
+			).then((_font: any) => {
 				compactFontRef.current = _font;
 			});
-			loadFont('/osrs_bitmap_fonts/bold_12.png', '/osrs_bitmap_fonts/bold_12.json').then((_font: any) => {
+			loadFont(
+				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/osrs_bitmap_fonts/bold_12.png',
+				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/osrs_bitmap_fonts/bold_12.json'
+			).then((_font: any) => {
 				boldFontRef.current = _font;
 			});
 		}

@@ -1,4 +1,9 @@
-import { type ItemCollection, ItemsSingleton } from '@/structures/ItemsClass.js';
+import {
+	type ArrayItemsResolvable,
+	type ArrayItemsResolved,
+	type ItemCollection,
+	ItemsSingleton
+} from '@/structures/ItemsClass.js';
 import items from '../assets/item_data.json' with { type: 'json' };
 
 export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
@@ -21,3 +26,24 @@ export function resolveItems(_itemArray: string | number | (string | number)[]):
 }
 
 export const Items: ItemsSingleton = new ItemsSingleton(items as ItemCollection);
+
+export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsResolved {
+	const newArray: ArrayItemsResolved = [];
+
+	for (const item of itemArray) {
+		if (typeof item === 'number') {
+			newArray.push(item);
+		} else if (Array.isArray(item)) {
+			const test = Items.resolveItems(item);
+			newArray.push(test);
+		} else {
+			const osItem = Items.getItem(item);
+			if (!osItem) {
+				throw new Error(`deepResolveItems: No item found for: ${item}.`);
+			}
+			newArray.push(osItem.id);
+		}
+	}
+
+	return newArray;
+}

@@ -1,4 +1,5 @@
-import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
+import type { RNGProvider } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { randomSnowflake } from '@oldschoolgg/util';
 import { Bank, Items } from 'oldschooljs';
 

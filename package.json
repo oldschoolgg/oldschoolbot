@@ -32,9 +32,9 @@
 		"test:ci:unit": "pnpm concurrent \"pnpm test:unit\" \"pnpm test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"============MISC": "============",
 		"concurrent": "concurrently --raw --kill-others-on-fail",
-		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!robochimp\" build",
+		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" --filter \"!robochimp\" build",
 		"============monorepo": "============",
-		"monorepo:build": "pnpm concurrent \"pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\"  build\" \"pnpm gen\" && tsx esbuild.mts",
+		"monorepo:build": "pnpm concurrent \"pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" build\" \"pnpm gen\" && tsx esbuild.mts",
 		"monorepo:test": "pnpm --stream --workspace-concurrency=2 -r test"
 	},
 	"dependencies": {
