@@ -118,7 +118,7 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
 			<div
 				ref={ref}
 				role="tabpanel"
-				data-state={isActive ? 'active' : 'inactive'}
+				data-state={'active'}
 				className={cn(
 					'mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
 					className

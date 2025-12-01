@@ -21,7 +21,7 @@ export const TOBSimulator = () => {
 			]
 		});
 		setKC(kc + 1);
-		loot.clear().add(loot);
+		currentLoot.clear().add(loot);
 		totalLoot.add(loot);
 	}, [kc, totalLoot]);
 
