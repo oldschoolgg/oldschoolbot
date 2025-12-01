@@ -4,9 +4,24 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import type { Plugin } from 'vite';
 
-// const manualChunks = {
-// 	oldschooljs: ['oldschooljs']
-// };
+function dynamicAlias(): Plugin {
+	return {
+		name: 'dynamic-alias',
+		resolveId(source, importer) {
+			if (importer?.includes('oldschooljs')) {
+				console.log({ source, importer });
+			}
+			if (source.includes('@') && importer?.includes('oldschooljs')) {
+				const resolved = path
+					.join(process.cwd(), `../oldschooljs/src/${source.split('@')[1]}`)
+					.replace('.js', '.ts');
+				return resolved;
+			}
+
+			return null;
+		}
+	};
+}
 
 function splitVendorChunkPlugin() {
 	const plugin: Plugin = {
@@ -64,17 +79,20 @@ export default defineConfig({
 		ssr: {
 			noExternal: ['zod']
 		},
-		resolve: {
-			alias: {
-				'@': path.resolve('./src')
-			}
-		},
+		// resolve: {
+		// 	alias: {
+		// 		'@': path.resolve('./src')
+		// 	}
+		// },
 		plugins: [tailwindcss(), splitVendorChunkPlugin()],
 		define: {
 			...config
 		},
 		build: {
 			minify: false
+			// rollupOptions: {
+			// 	treeshake: 'smallest'
+			// }
 		}
 	},
 	devToolbar: { enabled: false },

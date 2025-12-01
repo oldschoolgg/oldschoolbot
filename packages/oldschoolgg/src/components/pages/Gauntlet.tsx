@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
 import { LabelledSwitch } from '@/components/ui/LabelledSwitch.js';
-import type { Bank } from '@/osrs/Bank.js';
 import { Gauntlet } from '@/osrs/Gauntlet.js';
+import type { Bank } from '@/osrs/index.js';
 
 export const GauntletPage = () => {
 	const [currentLoot, setLoot] = useState<Bank | null>(null);

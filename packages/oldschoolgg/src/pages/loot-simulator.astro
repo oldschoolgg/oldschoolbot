@@ -1,5 +1,5 @@
 ---
-import { LootSimulatorPage } from "@/components/LootSimulator.jsx";
+import { LootSimulatorPage } from "@/components/pages/LootSimulator.js";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -8,5 +8,5 @@ import Layout from "../layouts/Layout.astro";
 	keywords={["drop simulator", "loot simulator", "osrs", "loot", "simulator"]}
 	desc="Oldschool.gg's loot simulator lets you simulate loot and drops from monsters in OSRS. Simply pick a monster and kill it hundreds of times instantly."
 >
-	<LootSimulatorPage client:load />
+	<LootSimulatorPage client:only />
 </Layout>

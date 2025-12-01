@@ -60,10 +60,8 @@ function buttonClassNames(variant: ButtonVariant = 'default', size: ButtonSize =
 	return cn(baseClasses, variantClasses, sizeClasses);
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	({ className, variant = 'default', size = 'default', ...props }, ref) => (
 		<button ref={ref} className={cn(buttonClassNames(variant, size), className)} {...props} />
 	)
 );
-
-export { Button };

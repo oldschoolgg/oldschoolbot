@@ -1,5 +1,5 @@
 ---
-import { RaidsSimulatorPage } from "@/components/RaidsSimulator.jsx";
+import { RaidsSimulatorPage } from "@/components/pages/RaidsSimulator.js";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -14,5 +14,5 @@ import Layout from "../layouts/Layout.astro";
 	]}
 	desc="Oldschool.gg's Raids/Chambers of Xeric simulator lets you simulate raids and see what loot your team would get, shown in a realistic image."
 >
-	<RaidsSimulatorPage client:load />
+	<RaidsSimulatorPage client:only />
 </Layout>

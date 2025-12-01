@@ -3,11 +3,11 @@ import { chunkArr } from '@oldschoolgg/util';
 import type React from 'react';
 import { useEffect, useRef } from 'react';
 
-import { type BankSortMethod, drawBorder, sorts } from '@/components/BankImage/bankImageUtil.ts';
-import { loadFont } from '@/components/BitMapFont/loadFont.ts';
-import { Renderer } from '@/components/BitMapFont/Renderer.ts';
-import { Bank, type ItemBank } from '@/osrs/Bank.ts';
-import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '@/osrs/utils.ts';
+import { type BankSortMethod, drawBorder, sorts } from '@/components/BankImage/bankImageUtil.js';
+import { loadFont } from '@/components/BitMapFont/loadFont.js';
+import { Renderer } from '@/components/BitMapFont/Renderer.js';
+import { Bank, type ItemBank } from '@/osrs/index.js';
+import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '@/osrs/utils.js';
 import { type Spritesheet, useSpritesheet } from '../../hooks/useSpritesheet.js';
 import styles from './BankImage.module.css';
 

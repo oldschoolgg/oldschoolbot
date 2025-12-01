@@ -2,16 +2,18 @@ import { useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
-import { Bank } from '@/osrs/Bank.js';
+import {
+	Bank,
+	BeginnerCasket,
+	EasyCasket,
+	EliteCasket,
+	HardCasket,
+	type LootTable,
+	MasterCasket,
+	MediumCasket
+} from '@/osrs/index.js';
 import type { ItemBank } from '@/osrs/types.ts';
 import { toKMB } from '@/osrs/utils.js';
-import { BeginnerCasket } from '../../../oldschooljs/src/simulation/clues/Beginner.js';
-import { EasyCasket } from '../../../oldschooljs/src/simulation/clues/Easy.js';
-import { EliteCasket } from '../../../oldschooljs/src/simulation/clues/Elite.js';
-import { HardCasket } from '../../../oldschooljs/src/simulation/clues/Hard.js';
-import { MasterCasket } from '../../../oldschooljs/src/simulation/clues/Master.js';
-import { MediumCasket } from '../../../oldschooljs/src/simulation/clues/Medium.js';
-import type LootTable from '../../../oldschooljs/src/structures/LootTable.js';
 
 interface ClueTier {
 	name: string;

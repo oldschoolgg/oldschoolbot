@@ -1,8 +1,7 @@
 import { percentChance, roll } from '@oldschoolgg/rng';
 
-import { Bank } from '@/osrs/Bank.js';
+import { Bank, LootTable } from '@/osrs/index.js';
 import { SimpleTable } from '@/osrs/SimpleTable.js';
-import { LootTable } from '../../../oldschooljs/src/structures/LootTable.js';
 
 export interface TeamMember {
 	id: string;

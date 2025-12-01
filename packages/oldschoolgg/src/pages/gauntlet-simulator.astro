@@ -1,5 +1,5 @@
 ---
-import { GauntletPage } from "@/components/Gauntlet.jsx";
+import { GauntletPage } from "@/components/pages/Gauntlet.js";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -8,5 +8,5 @@ import Layout from "../layouts/Layout.astro";
     keywords={["gauntlet simulator", "corrupted gauntlet", "simulator", "osrs"]}
     desc="The Gauntlet simulator lets you simulate getting loot from the Gauntlet minigame."
 >
-    <GauntletPage client:load />
+    <GauntletPage client:only />
 </Layout>

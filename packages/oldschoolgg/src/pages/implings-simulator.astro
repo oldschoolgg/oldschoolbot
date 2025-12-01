@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { ImplingsSimulator } from "@/components/ImplingsSimulator.js";
+import { ImplingsSimulator as ImplingsSimulatorComponent } from "@/components/pages/ImplingsSimulator.js";
 ---
 
 <Layout
@@ -14,5 +14,5 @@ import { ImplingsSimulator } from "@/components/ImplingsSimulator.js";
 	]}
 	desc="The Impling/Puro Puro simulator lets you simulate getting loot from Implings."
 >
-	<ImplingsSimulator client:load />
+	<ImplingsSimulatorComponent client:only />
 </Layout>

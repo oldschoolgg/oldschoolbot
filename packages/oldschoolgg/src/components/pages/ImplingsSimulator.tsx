@@ -1,9 +1,8 @@
-import { Bank } from 'oldschooljs';
-import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 import { useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
+import { Bank, Implings } from '@/osrs/index.js';
 
 export const ImplingsSimulator = () => {
 	const [currentLoot, setLoot] = useState<Bank | null>(null);

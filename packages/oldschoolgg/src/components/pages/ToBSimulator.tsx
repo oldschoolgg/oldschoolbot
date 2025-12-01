@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
-import type { Bank } from '@/osrs/Bank.js';
+import type { Bank } from '@/osrs/index.js';
 import { TheatreOfBlood } from '@/osrs/TheatreOfBlood.js';
 
 export const TOBSimulator = () => {

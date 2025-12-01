@@ -101,6 +101,10 @@ export default class LootTable {
 			if (this.allItems.includes(items)) return;
 			this.allItems.push(items);
 		} else {
+			if (!items.item) {
+				console.trace(`Invalid LootTableItem: missing item property: ${JSON.stringify(items)}`);
+				throw new Error(`Invalid LootTableItem: missing item property: ${JSON.stringify(items)}`);
+			}
 			this.addToAllItems(items.item);
 		}
 	}

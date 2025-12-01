@@ -1,4 +1,4 @@
-import { type Bank, LootTable } from 'oldschooljs';
+import { type Bank, LootTable } from '@/osrs/index.js';
 
 const DiedTable: LootTable = new LootTable()
 	.add('Adamant dagger')

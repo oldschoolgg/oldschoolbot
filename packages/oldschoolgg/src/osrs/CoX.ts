@@ -1,10 +1,7 @@
 import { randFloat, roll, shuffleArr } from '@oldschoolgg/rng';
 import { SimpleTable, sumArr, Time } from '@oldschoolgg/toolkit';
 
-import { Bank, type ItemBank } from '@/osrs/Bank.js';
-import { WebItems } from '@/osrs/WebItems.js';
-import type { LootBank } from '../../../oldschooljs/src/structures/Bank.js';
-import LootTable from '../../../oldschooljs/src/structures/LootTable.js';
+import { Bank, type ItemBank, Items, type LootBank, LootTable } from '@/osrs/index.js';
 
 export interface TeamMember {
 	id: string;
@@ -57,7 +54,7 @@ for (const [name, scale] of Object.entries({
 	'Torn prayer scroll': 999_999,
 	'Dark relic': 999_999
 })) {
-	itemScales.set(WebItems.get(name)!.item!.id, scale as number);
+	itemScales.set(Items.getId(name), scale as number);
 }
 
 const NonUniqueTable = new SimpleTable<number>();
@@ -168,7 +165,6 @@ export class ChambersOfXericClass {
 			}
 		}
 
-		console.log('Calculating team points');
 		// The sum of all members personal points is the team points.
 		const teamPoints = sumArr(options.team.map(val => val.personalPoints));
 
@@ -180,9 +176,7 @@ export class ChambersOfXericClass {
 		// This table is used to pick which team member gets the unique(s).
 		const uniqueDeciderTable = new SimpleTable<string>();
 
-		console.log({ options, teamPoints, dropChances, uniqueLoot });
 		for (const teamMember of options.team) {
-			console.log('Calc stuff or team member', teamMember.id);
 			// Give every team member a Loot.
 			lootResult[teamMember.id] = new Bank();
 
@@ -204,15 +198,8 @@ export class ChambersOfXericClass {
 			uniqueDeciderTable.add(teamMember.id, teamMember.personalPoints);
 		}
 
-		console.log('Distributing unique loot');
 		// For every unique item received, add it to someones loot.
-		let its = 500;
 		while (uniqueLoot.length > 0) {
-			its--;
-			if (its === 0) {
-				break;
-			}
-			console.log('Rolling for unique recipient');
 			if (uniqueDeciderTable.table.length === 0) break;
 			const receipientID = uniqueDeciderTable.roll()!;
 			const uniqueItem = uniqueLoot.random()!;
@@ -224,20 +211,17 @@ export class ChambersOfXericClass {
 			uniqueDeciderTable.delete(receipientID);
 		}
 
-		console.log(`unique decider: ${uniqueDeciderTable.length} / ${options.team.length}`);
 		for (const leftOverRecipient of uniqueDeciderTable.table) {
 			const pointsOfThisMember = options.team.find(
 				member => member.id === leftOverRecipient.item
 			)!.personalPoints;
 
 			const entries = Object.entries(this.rollNonUniqueLoot(pointsOfThisMember));
-			console.log('Rolling non-unique loot for', leftOverRecipient.item, entries.length);
 			for (const [itemID, quantity] of entries) {
 				lootResult[leftOverRecipient.item].add(Number.parseInt(itemID), quantity);
 			}
 		}
 
-		console.log('hhhhhhhhhhhhh');
 		const onyxChance = options.team.length * 70;
 		for (const bank of shuffleArr(Object.values(lootResult))) {
 			if (roll(onyxChance)) {
@@ -246,7 +230,6 @@ export class ChambersOfXericClass {
 			}
 		}
 
-		console.log('returning');
 		return lootResult;
 	}
 }

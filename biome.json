@@ -60,7 +60,9 @@
 				"useAltText": "off",
 				"useKeyWithClickEvents": "off",
 				"useButtonType": "off",
-				"noSvgWithoutTitle": "off"
+				"noSvgWithoutTitle": "off",
+				"noStaticElementInteractions": "off",
+				"noLabelWithoutControl": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "warn",
