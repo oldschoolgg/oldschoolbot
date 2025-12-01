@@ -1,0 +1,73 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const cards = [
+	{
+		title: "Old School Bot",
+		image: "osbot",
+		desc: `Old School Bot is a discord bot based around Old School RuneScape, click here to read more about it.`,
+		link: "/oldschoolbot",
+	},
+	{
+		title: "Loot Simulator",
+		image: "bandos",
+		desc: "The loot simulator lets you simulate loot and drops from monsters in OSRS. Simply pick a monster and kill it hundreds of times instantly.",
+		link: "/loot-simulator",
+	},
+	{
+		title: "Clue Simulator",
+		image: "forest",
+		desc: "The Clue Simulator lets you simulate opening clue caskets, to see what loot and items you would get from all levels of clue scrolls.",
+		link: "/clue-simulator",
+	},
+	{
+		title: "Raids Simulator",
+		image: "raids",
+		desc: "The Raids/Chambers of Xeric simulator lets you simulate raids and see what loot your team would get, shown in a realistic image.",
+		link: "/raids-simulator",
+	},
+	{
+		title: "Theatre of Blood Simulator",
+		image: "tob",
+		desc: "The Theatre of Blood (ToB) simulator lets you simulate getting loot from the Theatre of Blood.",
+		link: "/theatre-of-blood-simulator",
+	},
+	{
+		title: "Gauntlet Simulator",
+		image: "gauntlet",
+		desc: "The Gauntlet simulator lets you simulate getting loot from the Gauntlet.",
+		link: "/gauntlet",
+	},
+	{
+		title: "Impling Simulator",
+		image: "implings",
+		desc: "The Impling/Puro Puro simulator lets you simulate getting loot from Implings.",
+		link: "/implings-simulator",
+	},
+];
+---
+
+<Layout>
+	<div
+		class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 max-w-7xl mx-auto"
+	>
+		{
+			cards.map((card) => (
+				<a
+					href={card.link}
+					class="shadow-md rounded-lg overflow-hidden text-white relative max-w-sm"
+				>
+					<img
+						class="h-56 max-h-40 lg:h-60 w-full object-cover"
+						src={`https://cdn.oldschool.gg/website/feature-images/${card.image}.webp`}
+						alt=""
+					/>
+					<div class="p-4">
+						<h2 class="text-xl font-medium mb-1">{card.title}</h2>
+						<p class="text-sm text-gray-400">{card.desc}</p>
+					</div>
+				</a>
+			))
+		}
+	</div>
+</Layout>

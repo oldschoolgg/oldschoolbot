@@ -1,7 +1,7 @@
-import { globalConfig } from '../constants.js';
-import { patreonTask } from '../lib/patreon.js';
-import { detectMischief } from '../mischiefDetection.js';
-import { CHANNELS } from '../util.js';
+import { globalConfig } from '@/constants.js';
+import { detectMischief } from '@/lib/mischiefDetection.js';
+import { patreonTask } from '@/lib/patreon.js';
+import { CHANNELS } from '@/util.js';
 
 export const toolsCommand = defineCommand({
 	name: 'tools',

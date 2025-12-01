@@ -1,7 +1,7 @@
 import { ButtonBuilder, ButtonStyle, userMention } from '@oldschoolgg/discord';
-import { chunk, Emoji, noOp, Time } from '@oldschoolgg/toolkit';
+import { Emoji, noOp, Time } from '@oldschoolgg/toolkit';
 import { addBanks, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
-import { groupBy } from 'remeda';
+import { chunk, groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
 import type { Bingo, Prisma } from '@/prisma/main.js';
