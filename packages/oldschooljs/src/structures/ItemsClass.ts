@@ -61,8 +61,6 @@ export class ItemsSingleton extends Collection<number, Item> {
 				this.itemNameMap.set(cleanName, numID);
 			}
 		}
-
-		console.log(`Loaded ${this.size.toLocaleString()} items into the Items database.`);
 	}
 	public getById(id: number): Item | undefined {
 		return super.get(id);
