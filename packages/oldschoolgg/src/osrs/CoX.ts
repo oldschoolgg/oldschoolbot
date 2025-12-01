@@ -10,7 +10,7 @@ export interface TeamMember {
 	canReceiveDust?: boolean;
 }
 
-export interface ChambersOfXericOptions {
+interface ChambersOfXericOptions {
 	challengeMode?: boolean;
 	timeToComplete?: number;
 	team: TeamMember[];
@@ -60,7 +60,7 @@ for (const [name, scale] of Object.entries({
 const NonUniqueTable = new SimpleTable<number>();
 for (const [id] of itemScales.entries()) NonUniqueTable.add(id);
 
-export const CoXUniqueTable: LootTable = new LootTable()
+const CoXUniqueTable: LootTable = new LootTable()
 	.add('Dexterous prayer scroll', 1, 20)
 	.add('Arcane prayer scroll', 1, 20)
 

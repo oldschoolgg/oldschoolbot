@@ -8,6 +8,7 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"baseUrl": "."
+		"baseUrl": ".",
+		"lib": ["DOM"]
 	}
 }

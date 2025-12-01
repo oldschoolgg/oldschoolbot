@@ -6,7 +6,6 @@ export interface FontCharacter {
 
 export interface LoadedFont {
 	image: HTMLImageElement;
-	metadata: Record<string, string | number>;
 	characters: Record<string, FontCharacter>;
 }
 
@@ -76,7 +75,6 @@ export async function loadFont(imgSrc: string, jsonUrl: string): Promise<LoadedF
 
 	return {
 		image,
-		metadata: data.config,
 		characters
 	};
 }

@@ -1,1 +1,0 @@
-export type ItemBank = Record<number, number>;

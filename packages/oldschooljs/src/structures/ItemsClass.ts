@@ -4,7 +4,7 @@ import type { Item } from '@/meta/item.js';
 import { Collection } from '@/structures/Collection.js';
 
 export interface ItemCollection {
-	[index: string]: Item;
+	[index: string]: Omit<Item, 'id'>;
 }
 
 // const collator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true });
@@ -54,7 +54,7 @@ export class ItemsSingleton extends Collection<number, Item> {
 			const numID = Number.parseInt(id);
 
 			if (USELESS_ITEMS.includes(numID)) continue;
-			this.set(numID, item);
+			this.set(numID, { id: Number(id), ...item });
 
 			const cleanName = cleanString(item.name);
 			if (!this.itemNameMap.has(cleanName)) {
@@ -62,7 +62,7 @@ export class ItemsSingleton extends Collection<number, Item> {
 			}
 		}
 
-		console.log(`Loaded ${this.size} items into the Items database.`);
+		console.log(`Loaded ${this.size.toLocaleString()} items into the Items database.`);
 	}
 	public getById(id: number): Item | undefined {
 		return super.get(id);

@@ -2,11 +2,12 @@ import { useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
-import { Bank, Implings } from '@/osrs/index.js';
+import { useBank } from '@/hooks/useBank.js';
+import { Implings } from '@/osrs/index.js';
 
 export const ImplingsSimulator = () => {
-	const [currentLoot, setLoot] = useState<Bank | null>(null);
-	const [totalLoot, setTotalLoot] = useState<Bank | null>(null);
+	const currentLoot = useBank();
+	const totalLoot = useBank();
 	const [lastOpenedName, setLastOpenedName] = useState<string | null>(null);
 	const [openedCount, setOpenedCount] = useState<Record<string, number>>({});
 
@@ -14,8 +15,8 @@ export const ImplingsSimulator = () => {
 		<div className="flex flex-col items-center gap-12">
 			<Button
 				onClick={() => {
-					setLoot(null);
-					setTotalLoot(null);
+					currentLoot.clear();
+					totalLoot.clear();
 					setLastOpenedName(null);
 					setOpenedCount({});
 				}}
@@ -31,8 +32,8 @@ export const ImplingsSimulator = () => {
 						className="flex flex-col items-center justify-center relative cursor-pointer hover:bg-white/10 p-2 px-4"
 						onClick={() => {
 							const loot = _i.open();
-							setLoot(loot);
-							setTotalLoot(new Bank(totalLoot ?? undefined).add(loot));
+							currentLoot.clear().add(loot);
+							totalLoot.add(loot);
 							setLastOpenedName(_i.name);
 							setOpenedCount(prev => ({
 								...prev,

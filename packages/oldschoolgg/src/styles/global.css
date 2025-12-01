@@ -33,7 +33,7 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-size: 1.1rem;
-	font-family: "DMSansVariable", "Crimson Text", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 html,
@@ -46,7 +46,7 @@ body {
 h1,
 h2,
 h3 {
-	font-family: "DMSansVariable", sans-serif;
+	font-family: "Inter", sans-serif;
 	font-weight: bold;
 }
 

@@ -1,4 +1,4 @@
-import { Input } from './input.tsx';
+import { Input } from './input.js';
 
 interface NumberInputProps {
 	value: number;

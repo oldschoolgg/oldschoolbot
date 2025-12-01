@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
+import { useBank } from '@/hooks/useBank.js';
 import {
 	Bank,
 	BeginnerCasket,
@@ -12,7 +13,6 @@ import {
 	MasterCasket,
 	MediumCasket
 } from '@/osrs/index.js';
-import type { ItemBank } from '@/osrs/types.ts';
 import { toKMB } from '@/osrs/utils.js';
 
 interface ClueTier {
@@ -56,13 +56,14 @@ const ClueTiers = [
 
 export function CluePage() {
 	const [lastOpenedName, setLastOpenedName] = useState<string | null>(null);
-	const [currentLoot, setCurrentLoot] = useState<ItemBank>({});
+	const currentLoot = useBank();
 	const [quantity, setQuantity] = useState(1);
 
 	const handleTierClick = (tier: ClueTier) => {
 		setLastOpenedName(tier.name);
 		const loot = tier.table.roll(quantity);
-		setCurrentLoot(loot.toJSON());
+		loot.clear();
+		currentLoot.add(loot);
 	};
 
 	return (

@@ -3,22 +3,13 @@ import { percentChance, roll } from '@oldschoolgg/rng';
 import { Bank, LootTable } from '@/osrs/index.js';
 import { SimpleTable } from '@/osrs/SimpleTable.js';
 
-export interface TeamMember {
+interface TeamMember {
 	id: string;
-	/**
-	 * The rooms they died in.
-	 */
 	deaths: number[];
 }
 
-export interface TheatreOfBloodOptions {
-	/**
-	 * Whether or not this raid is in Challenge Mode or not.
-	 */
+interface TheatreOfBloodOptions {
 	hardMode: boolean;
-	/**
-	 * The members of the raid team, 1-5 people.
-	 */
 	team: TeamMember[];
 }
 
@@ -26,13 +17,13 @@ interface ParsedMember extends TeamMember {
 	numDeaths: number;
 	points: number;
 }
-export interface TOBRoom {
+interface TOBRoom {
 	name: string;
 	difficultyRating: number;
 	timeWeighting: number;
 }
 
-export const TOBRooms: TOBRoom[] = [
+const TOBRooms: TOBRoom[] = [
 	{
 		name: 'Maiden',
 		difficultyRating: 1,
@@ -65,7 +56,7 @@ export const TOBRooms: TOBRoom[] = [
 	}
 ];
 
-export const ToBUniqueTable: LootTable = new LootTable()
+const ToBUniqueTable: LootTable = new LootTable()
 	.add('Scythe of vitur (uncharged)')
 	.add('Ghrazi rapier', 1, 2)
 	.add('Sanguinesti staff (uncharged)', 1, 2)

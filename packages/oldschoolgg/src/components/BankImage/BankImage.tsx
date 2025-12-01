@@ -12,7 +12,7 @@ import { type Spritesheet, useSpritesheet } from '../../hooks/useSpritesheet.js'
 import styles from './BankImage.module.css';
 
 interface Props {
-	bank: ItemBank | Bank;
+	bank: Bank;
 	title: string | null;
 	showPrice: boolean;
 	sort?: BankSortMethod;

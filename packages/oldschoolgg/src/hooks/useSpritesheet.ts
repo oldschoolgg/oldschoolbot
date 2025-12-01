@@ -67,7 +67,7 @@ export function useSpritesheet(imageSource: string | { src: string }, dataUrl: s
 	}, []);
 
 	useEffect(() => {
-		if (image && data) {
+		if (image && data && Object.keys(data).length > 0) {
 			setSpritesheet(new Spritesheet(image, data));
 		}
 	}, [image, data]);

@@ -1,7 +1,8 @@
-import type { Spritesheet } from '@/hooks/useSpritesheet.js';
-import type { Item } from '@/osrs/item.ts';
+import type { Item } from 'oldschooljs';
 
-export const BankSortMethods = ['value', 'alch', 'name', 'quantity'] as const;
+import type { Spritesheet } from '@/hooks/useSpritesheet.js';
+
+const BankSortMethods = ['value', 'alch', 'name', 'quantity'] as const;
 
 export type BankSortMethod = (typeof BankSortMethods)[number];
 type SortFn = (a: [Item, number], b: [Item, number]) => number;
@@ -12,13 +13,9 @@ export const sorts: Record<BankSortMethod, SortFn> = {
 	quantity: (a, b) => b[1] - a[1]
 };
 
-export function isValidBankSortMethod(method: string): method is BankSortMethod {
-	return BankSortMethods.includes(method as BankSortMethod);
-}
-
-export function createScaledPattern(
+function createScaledPattern(
 	ctx: CanvasRenderingContext2D,
-	image: HTMLImageElement,
+	image: HTMLImageElement | HTMLCanvasElement,
 	scale: number,
 	repeat: 'repeat' | 'repeat-x' | 'repeat-y'
 ): CanvasPattern {

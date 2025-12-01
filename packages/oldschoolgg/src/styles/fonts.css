@@ -1,229 +1,275 @@
-@font-face {
-	font-family: "Floane";
-	src:
-		url("https://static.worp.tv/fonts/Floane-BoldItalic.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/Floane-BoldItalic.woff") format("woff");
-	font-weight: bold;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Floane";
-	src:
-		url("https://static.worp.tv/fonts/Floane-Regular.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/Floane-Regular.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Floane";
-	src:
-		url("https://static.worp.tv/fonts/Floane-Bold.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/Floane-Bold.woff") format("woff");
-	font-weight: bold;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Dream Orphanage Rg";
-	src:
-		url("https://static.worp.tv/fonts/DreamOrphanageRg-Regular.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/DreamOrphanageRg-Regular.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Arthead FREE";
-	src:
-		url("https://static.worp.tv/fonts/ArtheadFREERegular.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/ArtheadFREERegular.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Galter";
-	src:
-		url("https://static.worp.tv/fonts/GalterRegular.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/GalterRegular.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Floane";
-	src:
-		url("https://static.worp.tv/fonts/Floane-RegularItalic.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/Floane-RegularItalic.woff") format("woff");
-	font-weight: normal;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Riven";
-	src:
-		url("https://static.worp.tv/fonts/Riven.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/Riven.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Galter";
-	src:
-		url("https://static.worp.tv/fonts/GalterRegular.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/GalterRegular.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Kingthings Organica";
-	src:
-		url("https://static.worp.tv/fonts/KingthingsOrganica.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/KingthingsOrganica.woff") format("woff");
-	font-weight: 100;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Square Antiqua";
-	src:
-		url("https://static.worp.tv/fonts/SquareAntiqua-Bold.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/SquareAntiqua-Bold.woff") format("woff");
-	font-weight: bold;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Square Antiqua";
-	src:
-		url("https://static.worp.tv/fonts/SquareAntiqua-BookOblique.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/SquareAntiqua-BookOblique.woff") format("woff");
-	font-weight: normal;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Square Antiqua";
-	src:
-		url("https://static.worp.tv/fonts/SquareAntiqua-BoldOblique.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/SquareAntiqua-BoldOblique.woff") format("woff");
-	font-weight: bold;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Square Antiqua";
-	src:
-		url("https://static.worp.tv/fonts/SquareAntiqua-Book.woff2") format("woff2"),
-		url("https://static.worp.tv/fonts/SquareAntiqua-Book.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "PikminneueLatin";
-	font-style: normal;
-	font-display: swap;
-	src: url("https://static.worp.tv/fonts/PikminneueLatin.woff2") format("woff2");
-}
-
-@font-face {
-	font-family: "Beckman";
-	font-style: normal;
-	font-display: swap;
-	src: url("https://static.worp.tv/fonts/Beckman.woff2") format("woff2");
-}
-
-@font-face {
-	font-family: "StaatlichesRegularLatin";
-	font-style: normal;
-	font-display: swap;
-	src: url("https://static.worp.tv/fonts/StaatlichesRegularLatin.woff2") format("woff2");
-}
-
-@font-face {
-	font-family: "ByteBounce";
-	font-style: normal;
-	font-display: swap;
-	src: url("https://cdn.kickplays.org/fonts/ByteBounce.ttf") format("truetype");
-}
-
 .font-inter {
-	font-family: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
-.font-beckman {
-	font-family: "Beckman", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-.font-staat {
-	font-family: "StaatlichesRegularLatin", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-.font-pixel {
-	font-family: "SmallestPixel", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-.font-roboto {
-	font-family: "Roboto", sans-serif;
-	font-optical-sizing: auto;
-	font-style: normal;
-	font-variation-settings: "wdth" 100;
-}
-
+/*
+	Inter
+*/
 @font-face {
-	font-family: "Geist";
+	font-family: "InterVariable";
 	font-style: normal;
+	font-weight: 100 900;
 	font-display: swap;
-	src: url("https://static.worp.tv/fonts/GeistVF.woff2") format("woff2");
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterVariable.woff2") format("woff2");
 }
-
-.font-geist {
-	font-family: "Geist", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
 @font-face {
-	font-family: "Geo";
-	font-style: normal;
+	font-family: "InterVariable";
+	font-style: italic;
+	font-weight: 100 900;
 	font-display: swap;
-	src: url("https://static.worp.tv/fonts/Geo.woff2") format("woff2");
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterVariable-Italic.woff2") format("woff2");
 }
 
-.font-geo {
-	font-family: "Geo", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
+/* static fonts */
 @font-face {
-	font-family: "DMSansVariable";
+	font-family: "Inter";
 	font-style: normal;
+	font-weight: 100;
 	font-display: swap;
-	src: url("https://static.worp.tv/fonts/DMSansVariable.woff2") format("woff2");
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-Thin.woff2") format("woff2");
 }
-
-.font-dmsans {
-	font-family: "DMSansVariable", "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
+@font-face {
+	font-family: "Inter";
+	font-style: italic;
+	font-weight: 100;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-ThinItalic.woff2") format("woff2");
 }
-
-.playfair-display {
-	font-family: "Playfair Display", serif;
-	font-optical-sizing: auto;
+@font-face {
+	font-family: "Inter";
 	font-style: normal;
+	font-weight: 200;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-ExtraLight.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: italic;
+	font-weight: 200;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-ExtraLightItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-Light.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: italic;
+	font-weight: 300;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-LightItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-Regular.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-Italic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-Medium.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: italic;
+	font-weight: 500;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-MediumItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-SemiBold.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: italic;
+	font-weight: 600;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-SemiBoldItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-Bold.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: italic;
+	font-weight: 700;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-BoldItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-ExtraBold.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: italic;
+	font-weight: 800;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-ExtraBoldItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 900;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-Black.woff2") format("woff2");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: italic;
+	font-weight: 900;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/Inter-BlackItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: normal;
+	font-weight: 100;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-Thin.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: italic;
+	font-weight: 100;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-ThinItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: normal;
+	font-weight: 200;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-ExtraLight.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: italic;
+	font-weight: 200;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-ExtraLightItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-Light.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: italic;
+	font-weight: 300;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-LightItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-Regular.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-Italic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-Medium.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: italic;
+	font-weight: 500;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-MediumItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-SemiBold.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: italic;
+	font-weight: 600;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-SemiBoldItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-Bold.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: italic;
+	font-weight: 700;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-BoldItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-ExtraBold.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: italic;
+	font-weight: 800;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-ExtraBoldItalic.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: normal;
+	font-weight: 900;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-Black.woff2") format("woff2");
+}
+@font-face {
+	font-family: "InterDisplay";
+	font-style: italic;
+	font-weight: 900;
+	font-display: swap;
+	src: url("https://cdn.oldschool.gg/fonts/inter/InterDisplay-BlackItalic.woff2") format("woff2");
 }

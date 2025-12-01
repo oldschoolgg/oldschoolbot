@@ -12,21 +12,15 @@
 		"@astrojs/react": "^4.4.2",
 		"@mantine/hooks": "^8.3.9",
 		"@oldschoolgg/util": "workspace:*",
-		"@react-hooks-library/core": "^0.6.2",
 		"@tailwindcss/vite": "^4.1.17",
 		"astro": "^5.15.9",
-		"lucide-react": "^0.469.0",
 		"oldschooljs": "workspace:*",
-		"pixel-text": "^1.0.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
 		"react-responsive-modal": "^6.4.2",
 		"tailwindcss": "^4.1.17",
 		"vite": "^6.4.1",
-		"wouter": "^3.7.1",
-		"wretch": "^2.11.0",
-		"xml2js": "^0.6.2",
-		"zustand": "^4.5.7"
+		"wretch": "^2.11.0"
 	},
 	"devDependencies": {
 		"@types/react": "^19.2.6",

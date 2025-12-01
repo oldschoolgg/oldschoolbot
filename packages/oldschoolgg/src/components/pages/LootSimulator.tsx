@@ -1,15 +1,17 @@
 import { useInterval } from '@mantine/hooks';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import type React from 'react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
 import { LabelledSwitch } from '@/components/ui/LabelledSwitch.js';
 import { Select } from '@/components/ui/Select.js';
-import { Bank, Monsters } from '@/osrs/index.js';
+import { useBank } from '@/hooks/useBank.js';
+import { Monsters } from '@/osrs/index.js';
 
-const sortedMonsters = Monsters.values.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+const sortedMonsters = Monsters.values
+	.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+	.filter(_m => 'table' in _m && _m.table);
 
 interface KillOptions {
 	increment: number;
@@ -21,8 +23,8 @@ const defaultKillOpts: KillOptions = {
 	autoKill: false
 };
 
-export const LootSimulatorPage: React.FC = () => {
-	const lootRef = useRef<Bank>(new Bank());
+export const LootSimulatorPage = () => {
+	const bank = useBank();
 	const [currentKC, setCurrentKC] = useState(0);
 	const [selMon, setSelMon] = useState<number | null>(null);
 	const [killOpts, setKillOpts] = useState<KillOptions>(defaultKillOpts);
@@ -38,7 +40,7 @@ export const LootSimulatorPage: React.FC = () => {
 	function kill() {
 		if (!selectedMonster) return;
 		const newLoot = selectedMonster.kill(killOpts.increment, {});
-		lootRef.current.add(newLoot);
+		bank.add(newLoot);
 		setCurrentKC(t => t + killOpts.increment);
 	}
 
@@ -98,7 +100,7 @@ export const LootSimulatorPage: React.FC = () => {
 									onChange={value => {
 										setKillOpts({ ...killOpts, autoKill: false });
 										setSelMon(Number(value));
-										lootRef.current.clear();
+										bank.clear();
 										setCurrentKC(0);
 									}}
 								/>
@@ -112,7 +114,7 @@ export const LootSimulatorPage: React.FC = () => {
 							<Button
 								variant="outline"
 								onClick={() => {
-									lootRef.current.clear();
+									bank.clear();
 									setCurrentKC(0);
 								}}
 							>
@@ -123,7 +125,7 @@ export const LootSimulatorPage: React.FC = () => {
 
 					<BankImage
 						title={`Loot from ${currentKC.toLocaleString()}x ${selectedMonster.name}`}
-						bank={lootRef.current}
+						bank={bank}
 						showPrice={showPrice}
 					/>
 				</div>

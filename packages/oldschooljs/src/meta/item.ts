@@ -75,10 +75,6 @@ export interface Item {
 	 */
 	name: string;
 	/**
-	 * If the item has incomplete wiki data.
-	 */
-	incomplete?: boolean;
-	/**
 	 * If the item is a members-only.
 	 */
 	members?: boolean;
@@ -103,11 +99,6 @@ export interface Item {
 	 */
 	equipable?: true;
 	/**
-	 * If the item is equipable by a player and is equipable in-game.
-	 */
-	equipable_by_player?: true;
-	equipable_weapon?: true;
-	/**
 	 * The store price of an item.
 	 */
 	cost?: number;
@@ -126,7 +117,6 @@ export interface Item {
 	/**
 	 * The OSRS Wiki name for the item.
 	 */
-	wiki_name?: string | null; // null for interface items
 	equipment?: ItemEquipment;
 	weapon?: ItemWeapon;
 	/**
@@ -146,5 +136,5 @@ export interface ItemWeaponStance {
 export interface ItemWeapon {
 	attack_speed: number | null;
 	weapon_type?: string;
-	stances?: ItemWeaponStance[];
+	// stances?: ItemWeaponStance[];
 }

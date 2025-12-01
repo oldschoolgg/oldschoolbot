@@ -49,13 +49,13 @@ const cards = [
 
 <Layout>
 	<div
-		class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-5"
+		class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 max-w-7xl mx-auto"
 	>
 		{
 			cards.map((card) => (
 				<a
 					href={card.link}
-					class="shadow-md rounded-lg overflow-hidden bg-primary_main text-white relative"
+					class="shadow-md rounded-lg overflow-hidden text-white relative max-w-sm"
 				>
 					<img
 						class="h-56 max-h-40 lg:h-60 w-full object-cover"
@@ -63,10 +63,8 @@ const cards = [
 						alt=""
 					/>
 					<div class="p-4">
-						<h2 class="text-xl font-medium text-gold mb-1">
-							{card.title}
-						</h2>
-						<p>{card.desc}</p>
+						<h2 class="text-xl font-medium mb-1">{card.title}</h2>
+						<p class="text-sm text-gray-400">{card.desc}</p>
 					</div>
 				</a>
 			))

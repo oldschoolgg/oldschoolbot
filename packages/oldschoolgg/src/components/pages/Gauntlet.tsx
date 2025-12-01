@@ -1,23 +1,26 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
 import { LabelledSwitch } from '@/components/ui/LabelledSwitch.js';
+import { useBank } from '@/hooks/useBank.js';
 import { Gauntlet } from '@/osrs/Gauntlet.js';
 import type { Bank } from '@/osrs/index.js';
 
 export const GauntletPage = () => {
-	const [currentLoot, setLoot] = useState<Bank | null>(null);
-	const [totalLoot, setTotalLoot] = useState<Bank | null>(null);
+	const currentLoot = useBank();
+	const totalLoot = useBank();
 	const [corrupted, setCorrupted] = useState(false);
 	const [kc, setKC] = useState(0);
 
-	function doLoot() {
+	const doLoot = useCallback(() => {
 		const loot = Gauntlet({ died: false, type: corrupted ? 'corrupted' : 'normal' }) as any as Bank;
 		setKC(kc + 1);
-		setLoot(loot);
-		setTotalLoot(loot.clone().add(totalLoot));
-	}
+		currentLoot.clear();
+		currentLoot.add(loot);
+		totalLoot.add(loot);
+	}, [corrupted, kc, currentLoot, totalLoot]);
+
 	return (
 		<div>
 			<div className="mb-1 flex flex-col">

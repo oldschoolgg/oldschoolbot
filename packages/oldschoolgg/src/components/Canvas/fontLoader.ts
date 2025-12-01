@@ -21,21 +21,15 @@ const DEFAULT_FONTS: FontConfig[] = [
 let fontsLoaded = false;
 let loadingPromise: Promise<void> | null = null;
 
-/**
- * Load OSRS fonts. Can be called multiple times safely.
- */
 export async function loadOSRSFonts(fonts: FontConfig[] = DEFAULT_FONTS): Promise<void> {
-	// If fonts are already loaded, return immediately
 	if (fontsLoaded) {
 		return;
 	}
 
-	// If loading is in progress, return the existing promise
 	if (loadingPromise) {
 		return loadingPromise;
 	}
 
-	// Start loading fonts
 	loadingPromise = (async () => {
 		try {
 			await Promise.all(
@@ -43,11 +37,11 @@ export async function loadOSRSFonts(fonts: FontConfig[] = DEFAULT_FONTS): Promis
 					try {
 						const font = new FontFace(family, `url(${url})`);
 						await font.load();
+						// @ts-expect-error
 						document.fonts.add(font);
 						console.log(`Loaded font: ${family}`);
 					} catch (err) {
 						console.warn(`Failed to load font ${family} from ${url}:`, err);
-						// Don't throw, just warn - some fonts may be optional
 					}
 				})
 			);
@@ -62,16 +56,10 @@ export async function loadOSRSFonts(fonts: FontConfig[] = DEFAULT_FONTS): Promis
 	return loadingPromise;
 }
 
-/**
- * Check if fonts are loaded
- */
 export function areFontsLoaded(): boolean {
 	return fontsLoaded;
 }
 
-/**
- * Reset the font loading state (useful for testing)
- */
 export function resetFontLoadingState(): void {
 	fontsLoaded = false;
 	loadingPromise = null;
