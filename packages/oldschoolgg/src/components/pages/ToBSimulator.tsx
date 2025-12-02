@@ -21,9 +21,10 @@ export const TOBSimulator = () => {
 			]
 		});
 		setKC(kc + 1);
-		currentLoot.clear().add(loot);
+		currentLoot.clear();
+		currentLoot.add(loot);
 		totalLoot.add(loot);
-	}, [kc, totalLoot]);
+	}, [kc, totalLoot, currentLoot]);
 
 	return (
 		<div>

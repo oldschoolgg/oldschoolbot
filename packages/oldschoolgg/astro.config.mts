@@ -13,21 +13,10 @@ function splitVendorChunkPlugin() {
 					rollupOptions: {
 						output: {
 							manualChunks(id) {
-								for (const osmod of [
-									'item_data',
-									'EItem',
-									'monster',
-									'openables',
-									'misc',
-									'util',
-									'EGear'
-								]) {
+								for (const osmod of ['item_data', 'EItem', 'monster']) {
 									if (id.includes('oldschooljs') && id.includes(osmod)) {
 										return `oldschooljs_${osmod}`;
 									}
-								}
-								if (id.includes('oldschooljs')) {
-									return 'oldschooljs';
 								}
 								if (id.includes('node_modules')) {
 									const match = /.*node_modules\/((?:@[^/]+\/)?[^/]+)/.exec(id);
@@ -75,10 +64,7 @@ export default defineConfig({
 			...config
 		},
 		build: {
-			minify: true,
-			rollupOptions: {
-				treeshake: 'smallest'
-			}
+			minify: true
 		}
 	},
 	devToolbar: { enabled: false },

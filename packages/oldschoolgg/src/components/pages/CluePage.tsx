@@ -62,7 +62,7 @@ export function CluePage() {
 	const handleTierClick = (tier: ClueTier) => {
 		setLastOpenedName(tier.name);
 		const loot = tier.table.roll(quantity);
-		loot.clear();
+		currentLoot.clear();
 		currentLoot.add(loot);
 	};
 
@@ -103,15 +103,15 @@ export function CluePage() {
 						))}
 					</div>
 				</div>
-				<div className="w-2/4" style={{ zoom: 1.1 }}>
-					{Boolean(Object.keys(currentLoot).length) && (
+				{lastOpenedName && (
+					<div className="w-2/4" style={{ zoom: 1.1 }}>
 						<BankImage
 							showPrice={false}
 							title={`Loot from ${quantity}x ${lastOpenedName} (Value: ${toKMB(new Bank(currentLoot).value())})`}
 							bank={currentLoot}
 						/>
-					)}
-				</div>
+					</div>
+				)}
 			</div>
 		</div>
 	);

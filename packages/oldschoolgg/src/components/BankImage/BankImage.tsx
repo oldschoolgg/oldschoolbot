@@ -317,13 +317,13 @@ export const BankImage: React.FC<Props> = ({
 		if (canvasRef.current) {
 			loadFont(
 				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/compact_24.png',
-				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/osrs_bitmap_fonts/compact_24.json'
+				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/compact_24.json'
 			).then((_font: any) => {
 				compactFontRef.current = _font;
 			});
 			loadFont(
-				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/osrs_bitmap_fonts/bold_12.png',
-				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/osrs_bitmap_fonts/bold_12.json'
+				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/bold_12.png',
+				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/bold_12.json'
 			).then((_font: any) => {
 				boldFontRef.current = _font;
 			});
@@ -357,7 +357,7 @@ export const BankImage: React.FC<Props> = ({
 				boldFont: boldFontRef.current
 			});
 		}
-	}, [itemsSpritesheet, bankSheet, bank, customWidth, width, title, showPrice, sort, ghosts, showAsKc]);
+	}, [itemsSpritesheet, bankSheet, bank.toString(), customWidth, width, title, showPrice, sort, ghosts, showAsKc]);
 
 	return (
 		<div className={styles.bank_container} id="bank" ref={containerRef}>
