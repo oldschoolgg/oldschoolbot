@@ -108,7 +108,10 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 
 They received these items: ${loot}`;
 
-		await globalClient.sendMessage(giveaway.channel_id, str);
+		await globalClient.sendMessage(giveaway.channel_id, {
+			content: str,
+			allowedMentions: { users: [giveaway.user_id, winner.id] }
+		});
 	} catch (err) {
 		Logging.logError(err as Error);
 	}
