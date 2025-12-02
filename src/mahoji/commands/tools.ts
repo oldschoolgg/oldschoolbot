@@ -1003,10 +1003,10 @@ export const toolsCommand = defineCommand({
 
 				const counts = ironmanOnly ? snapshot.ironman : snapshot.all;
 				const count = counts[item.id] ?? 0;
-				const timestamp = snapshot.date.toLocaleString();
+				const timestamp = Math.floor(snapshot.date.getTime() / 1000);
 				const userLabel = ironmanOnly ? 'ironman users' : 'users';
 
-				return `As of ${timestamp}, there are ${count.toLocaleString()} ${userLabel} who have at least one ${item.name} in their bank.`;
+				return `As of <t:${timestamp}:f>, there are ${count.toLocaleString()} ${userLabel} who have at least one ${item.name} in their bank.`;
 			}
 			if (patron.sacrificed_bank) {
 				if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
