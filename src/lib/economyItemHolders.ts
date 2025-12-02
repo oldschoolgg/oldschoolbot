@@ -19,8 +19,10 @@ function normaliseCounts(raw?: Record<string, unknown>): HolderCounts {
 	for (const [key, value] of entries) {
 		const itemId = Number(key);
 		if (!Number.isInteger(itemId)) continue;
-		const asNumber =
-			typeof value === 'bigint' ? Number(value) : typeof value === 'string' ? Number(value) : Number(value);
+
+		if (typeof value !== 'number' && typeof value !== 'bigint' && typeof value !== 'string') continue;
+
+		const asNumber = Number(value);
 		if (Number.isNaN(asNumber)) continue;
 		result[itemId] = asNumber;
 	}
