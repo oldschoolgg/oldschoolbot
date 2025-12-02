@@ -43,7 +43,7 @@ export const ImplingsSimulator = () => {
 					>
 						<img
 							className="max-w-10 w-10"
-							src={`http://cdn.oldschool.gg/icons/implings/${_i.name.split(' ')[0].toLowerCase()}.webp`}
+							src={`https://cdn.oldschool.gg/icons/implings/${_i.name.split(' ')[0].toLowerCase()}.webp`}
 						/>
 						<p className="text-sm font-bold">{_i.name.replace(' impling', '')}</p>
 					</div>
