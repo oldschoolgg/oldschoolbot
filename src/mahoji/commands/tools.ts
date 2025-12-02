@@ -3,7 +3,7 @@ import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolki
 import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
-import type { Activity } from '@/prisma/main.js';
+import type { Activity, xp_gains_skill_enum } from '@/prisma/main.js';
 import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
@@ -27,6 +27,7 @@ import {
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 const skillsVals = Object.values(Skills);
+const skillMap = new Map(skillsVals.map(skill => [skill.id, skill] as const));
 
 function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
@@ -36,12 +37,12 @@ const whereInMassClause = (id: string) =>
 	`OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${id}%')`;
 
 async function activityExport(user: MUser): CommandResponse {
-	const allActivities = await prisma.$queryRawUnsafe<
-		Activity[]
-	>(`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
+	const allActivities = await prisma.$queryRawUnsafe<Activity[]>(
+		`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
 FROM activity
 WHERE user_id = '${user.id}'
-OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${user.id}%');`);
+OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${user.id}%');`
+	);
 	let res = ['Start', 'Finish', 'Duration', 'Type', 'Data'].join('\t');
 	for (const { start_date, finish_date, duration, type, data } of allActivities) {
 		res += `\n${start_date}\t${finish_date}\t${duration}\t${type}\t${JSON.stringify(data)}`;
@@ -57,28 +58,36 @@ OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIK
 async function minionStats(user: MUser) {
 	const { id } = user;
 	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = await Promise.all([
-		prisma.$queryRawUnsafe<{ count: bigint }[]>(`SELECT count(id)
+		prisma.$queryRawUnsafe<{ count: bigint }[]>(
+			`SELECT count(id)
 FROM activity
 WHERE user_id = ${id}
-${whereInMassClause(id)};`),
-		prisma.$queryRawUnsafe<{ id: string; start_date: Date; type: string }[]>(`SELECT id, start_date, type
+${whereInMassClause(id)};`
+		),
+		prisma.$queryRawUnsafe<{ id: string; start_date: Date; type: string }[]>(
+			`SELECT id, start_date, type
 FROM activity
 WHERE user_id = ${id}
 ORDER BY id ASC
-LIMIT 1;`),
-		prisma.$queryRawUnsafe<{ type: string; qty: bigint }[]>(`
+LIMIT 1;`
+		),
+		prisma.$queryRawUnsafe<{ type: string; qty: bigint }[]>(
+			`
 SELECT type, count(type) as qty
 FROM activity
 WHERE user_id = ${id}
 ${whereInMassClause(id)}
 GROUP BY type
 ORDER BY qty DESC
-LIMIT 15;`),
-		prisma.$queryRawUnsafe<{ sum: bigint }[]>(`
+LIMIT 15;`
+		),
+		prisma.$queryRawUnsafe<{ sum: bigint }[]>(
+			`
 SELECT sum(duration)
 FROM activity
 WHERE user_id = ${id}
-${whereInMassClause(id)};`)
+${whereInMassClause(id)};`
+		)
 	]);
 
 	const totalDuration = Number(_totalDuration.sum);
@@ -98,23 +107,27 @@ ${whereInMassClause(id)};`)
 `;
 }
 
-async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean) {
+async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean, userToCheck?: MUser) {
 	if (!parseStaticTimeInterval(interval)) {
 		return 'Invalid time interval.';
 	}
 
 	let tierFilter = '';
 	let title = '';
+	let clueTierName: string | null = null;
 
 	if (tier) {
 		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
 		if (!clueTier) return 'Invalid clue scroll tier.';
 		const tierId = clueTier.id;
 		tierFilter = `AND (a."data"->>'ci')::int = ${tierId}`;
-		title = `Highest ${clueTier.name} clue scroll completions in the past ${interval}`;
+		clueTierName = clueTier.name;
+		title = `Highest ${clueTier.name} clue scroll completions in the last ${interval}`;
 	} else {
-		title = `Highest All clue scroll completions in the past ${interval}`;
+		title = `Highest All clue scroll completions in the last ${interval}`;
 	}
+
+	const userFilter = userToCheck ? ` AND a.user_id::text = '${userToCheck.id}'` : '';
 
 	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate
 	  FROM activity a
@@ -123,16 +136,31 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 	  AND a.finish_date >= now() - interval '1 ${interval}' AND a.completed = true
 	  ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
 	  ${tierFilter}
+	  ${userFilter}
 	  GROUP BY a.user_id
 	  ORDER BY qty DESC, lastDate ASC
-	  LIMIT 10`;
+	  LIMIT ${userToCheck ? '1' : '10'}`;
 
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
+		if (userToCheck) {
+			const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+			const tierLabel = clueTierName ? `${clueTierName} ` : '';
+			return `No ${tierLabel}clue scroll completions found for ${username} in the last ${interval}.`;
+		}
 		return 'No results found.';
 	}
 
+	// Per-user view
+	if (userToCheck) {
+		const row = res[0];
+		const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+		const tierLabel = clueTierName ? `${clueTierName} ` : '';
+		return `${username} has completed ${Number(row.qty).toLocaleString()} ${tierLabel}clue scrolls in the last ${interval}.`;
+	}
+
+	// Leaderboard view
 	let place = 0;
 	const embed = new EmbedBuilder()
 		.setTitle(title)
@@ -156,37 +184,64 @@ interface XPRecord {
 	lastDate: string;
 }
 
+interface PersonalXPRecord {
+	skill: xp_gains_skill_enum;
+	total_xp: number;
+}
+
 async function executeXPGainsQuery(
 	intervalValue: string,
 	skillId: string | undefined,
-	ironmanOnly: boolean
+	ironmanOnly: boolean,
+	userId?: string
 ): Promise<XPRecord[]> {
 	const query = `
-        SELECT
-            x.user_id::text AS user,
-            sum(x.xp) AS total_xp,
-            max(x.date) AS lastDate
-        FROM
-            xp_gains AS x
-        INNER JOIN
-            users AS u ON u.id = x.user_id::text
-        WHERE
-            x.date > now() - INTERVAL '1 ${intervalValue}'
-            ${skillId ? `AND x.skill = '${skillId}'` : ''}
-            ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
-        GROUP BY
-            x.user_id
-        ORDER BY
-            total_xp DESC,
-            lastDate ASC
-        LIMIT 10;
-    `;
+SELECT
+    x.user_id::text AS user,
+    sum(x.xp) AS total_xp,
+    max(x.date) AS lastDate
+FROM
+    xp_gains AS x
+INNER JOIN
+    users AS u ON u.id = x.user_id::text
+WHERE
+    x.date > now() - INTERVAL '1 ${intervalValue}'
+    ${skillId ? `AND x.skill = '${skillId}'` : ''}
+    ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+    ${userId ? ` AND x.user_id::text = '${userId}'` : ''}
+GROUP BY
+    x.user_id
+ORDER BY
+    total_xp DESC,
+    lastDate ASC
+LIMIT ${userId ? '1' : '10'};
+`;
 
 	const result = await prisma.$queryRawUnsafe<XPRecord[]>(query);
 	return result;
 }
 
-async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
+async function executePersonalSkillXPGainsQuery(intervalValue: string, userId: string): Promise<PersonalXPRecord[]> {
+	const query = `
+SELECT
+    x.skill,
+    SUM(x.xp) AS total_xp
+FROM
+    xp_gains AS x
+WHERE
+    x.date > now() - INTERVAL '1 ${intervalValue}'
+    AND x.user_id::text = '${userId}'
+GROUP BY
+    x.skill
+HAVING
+    SUM(x.xp) > 0
+ORDER BY
+    total_xp DESC;`;
+
+	return prisma.$queryRawUnsafe<PersonalXPRecord[]>(query);
+}
+
+async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean, userToCheck?: MUser) {
 	if (!parseStaticTimeInterval(interval)) {
 		return 'Invalid time interval.';
 	}
@@ -195,21 +250,60 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 		: undefined;
 
-	const xpRecords = await executeXPGainsQuery(interval, skillObj?.id, Boolean(ironmanOnly));
+	const xpRecords = await executeXPGainsQuery(interval, skillObj?.id, Boolean(ironmanOnly), userToCheck?.id);
 
 	if (xpRecords.length === 0) {
+		if (userToCheck) {
+			const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+			return `No XP gains found for ${username} in the last ${interval}.`;
+		}
 		return 'No results found.';
+	}
+
+	if (userToCheck) {
+		const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+
+		// No specific skill: show per-skill breakdown for this user
+		if (!skillObj) {
+			const personalSkillRecords = await executePersonalSkillXPGainsQuery(interval, userToCheck.id);
+
+			if (personalSkillRecords.length === 0) {
+				return `No XP gains found for ${username} in the last ${interval}.`;
+			}
+
+			const totalXP = personalSkillRecords.reduce((acc, record) => acc + Number(record.total_xp), 0);
+
+			const lines = personalSkillRecords.map(record => {
+				const skillInfo = skillMap.get(record.skill);
+				const skillName = skillInfo?.name ?? record.skill;
+				const skillEmoji = skillInfo?.emoji ?? '';
+				const prefix = skillEmoji ? `${skillEmoji} ` : '';
+				return `${prefix}${skillName}: ${Number(record.total_xp).toLocaleString()} XP`;
+			});
+
+			lines.push(`Total XP: ${totalXP.toLocaleString()} XP`);
+
+			return `${username}'s XP gains in the last ${interval}:\n${lines.join('\n')}`;
+		}
+
+		// Specific skill: show a single line summary
+		const personalRecord = xpRecords[0];
+		return `${username} gained ${Number(
+			personalRecord.total_xp
+		).toLocaleString()} ${skillObj.name} XP in the last ${interval}.`;
 	}
 
 	let place = 0;
 	const embed = new EmbedBuilder()
-		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
+		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the last ${interval}`)
 		.setDescription(
 			(
 				await Promise.all(
 					xpRecords.map(
 						async record =>
-							`${++place}. **${await Cache.getBadgedUsername(record.user)}**: ${Number(record.total_xp).toLocaleString()} XP`
+							`${++place}. **${await Cache.getBadgedUsername(record.user)}**: ${Number(
+								record.total_xp
+							).toLocaleString()} XP`
 					)
 				)
 			).join('\n')
@@ -218,7 +312,91 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 	return { embeds: [embed] };
 }
 
-export async function kcGains(interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
+async function dryStreakForUserMonster(
+	mon: (typeof effectiveMonsters)[number],
+	item: Item,
+	userId: string,
+	ironmanOnly: boolean
+) {
+	const username = (await Cache.getBadgedUsername(userId)) ?? `<@${userId}>`;
+	const key = 'monster_scores';
+
+	const [row] = await prisma.$queryRawUnsafe<
+		{
+			cl_qty: number | null;
+			kc: number | null;
+		}[]
+	>(`SELECT
+		("collectionLogBank"->>'${item.id}')::int AS cl_qty,
+		("${key}"->>'${mon.id}')::int AS kc
+	FROM users
+	INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+	WHERE users.id = '${userId}'
+	${ironmanOnly ? ' AND "minion.ironman" = true' : ''};`);
+
+	if (!row) {
+		return 'No data found for that user.';
+	}
+
+	const clQty = row.cl_qty ?? 0;
+	const kc = row.kc ?? 0;
+
+	if (clQty > 0) {
+		return `${username} already has ${item.name} on their collection log.`;
+	}
+
+	if (kc === 0) {
+		return `${username} has 0 KC at ${mon.name}, so they don't have a dry streak yet.`;
+	}
+
+	return `**Dry streak for ${item.name} from ${mon.name} for ${username}:**\n${kc.toLocaleString()} KC without the drop.`;
+}
+
+async function dryStreakForUserEntity(entity: DrystreakEntity, item: Item, userId: string, ironmanOnly: boolean) {
+	const username = (await Cache.getBadgedUsername(userId)) ?? `<@${userId}>`;
+
+	const openable = allOpenables.find(o => o.name === entity.name);
+	if (openable) {
+		const [row] = await prisma.$queryRawUnsafe<
+			{
+				cl_qty: number | null;
+				opens: number | null;
+			}[]
+		>(`SELECT
+			("collectionLogBank"->>'${item.id}')::int AS cl_qty,
+			("openable_scores"->>'${openable.id}')::int AS opens
+		FROM users
+		INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+		WHERE users.id = '${userId}'
+		${ironmanOnly ? ' AND "minion.ironman" = true' : ''};`);
+
+		if (!row) {
+			return 'No data found for that user.';
+		}
+
+		const clQty = row.cl_qty ?? 0;
+		const opens = row.opens ?? 0;
+
+		if (clQty > 0) {
+			return `${username} already has ${item.name} on their collection log.`;
+		}
+
+		if (opens === 0) {
+			return `${username} hasn't opened any ${openable.name} yet, so they don't have a dry streak.`;
+		}
+
+		return `**Dry streak for ${item.name} from ${entity.name} for ${username}:**\n${entity.format(opens)}`;
+	}
+
+	return 'Per-user dry streak checks are only supported for monsters and openables right now. Leave the user ID blank to see the top 10 driest players instead.';
+}
+
+export async function kcGains(
+	interval: string,
+	monsterName: string,
+	ironmanOnly?: boolean,
+	userToCheck?: MUser
+): CommandResponse {
 	if (!parseStaticTimeInterval(interval)) {
 		return 'Invalid time interval.';
 	}
@@ -230,6 +408,8 @@ export async function kcGains(interval: string, monsterName: string, ironmanOnly
 		return 'Invalid monster.';
 	}
 
+	const userFilter = userToCheck ? ` AND a.user_id::text = '${userToCheck.id}'` : '';
+
 	const query = `
     SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate
     FROM activity a
@@ -238,18 +418,31 @@ export async function kcGains(interval: string, monsterName: string, ironmanOnly
     AND a.finish_date >= now() - interval '1 ${interval}'
     AND a.completed = true
     ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+    ${userFilter}
     GROUP BY a.user_id
     ORDER BY qty DESC, lastDate ASC
-    LIMIT 10`;
+    LIMIT ${userToCheck ? '1' : '10'}`;
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
+		if (userToCheck) {
+			const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+			return `No ${monster.name} KC recorded for ${username} in the last ${interval}.`;
+		}
 		return 'No results found.';
 	}
 
+	// Per-user view
+	if (userToCheck) {
+		const row = res[0];
+		const username = (await Cache.getBadgedUsername(userToCheck.id)) ?? `<@${userToCheck.id}>`;
+		return `${username} has gained ${Number(row.qty).toLocaleString()} ${monster.name} KC in the last ${interval}.`;
+	}
+
+	// Leaderboard view
 	let place = 0;
 	const embed = new EmbedBuilder()
-		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
+		.setTitle(`Highest ${monster.name} KC gains in the last ${interval}`)
 		.setDescription(
 			(
 				await Promise.all(
@@ -325,19 +518,19 @@ function convertOpenableToDryStreakEntity(openable: UnifiedOpenable): DrystreakE
 		name: openable.name,
 		items: openable.allItems,
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; val: number }[]
-			>(`SELECT id, ("openable_scores"->>'${openable.id}')::int AS val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(
+				`SELECT id, ("openable_scores"->>'${openable.id}')::int AS val
 FROM users
 INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 AND "openable_scores"->>'${openable.id}' IS NOT NULL
 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ORDER BY ("openable_scores"->>'${openable.id}')::int DESC
-LIMIT 10;`);
+LIMIT 10;`
+			);
 			return result;
 		},
-		format: val => `${val.toLocaleString()} ${openable.name}`
+		format: val => `${(val as number).toLocaleString()} ${openable.name}`
 	};
 }
 
@@ -390,59 +583,62 @@ LIMIT 10;`);
 			'Harmonised orb'
 		]),
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; val: number }[]
-			>(`SELECT "id", ("monster_scores"->>'${NightmareMonster.id}')::int AS val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(
+				`SELECT "id", ("monster_scores"->>'${NightmareMonster.id}')::int AS val
 		   FROM users
 		   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 		   WHERE "collectionLogBank"->>'${item.id}' IS NULL
 		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL
 		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 		   ORDER BY ("monster_scores"->>'${NightmareMonster.id}')::int DESC
-		   LIMIT 10;`);
+		   LIMIT 10;`
+			);
 			return result;
 		},
 
-		format: num => `${num.toLocaleString()} KC`
+		format: num => `${(num as number).toLocaleString()} KC`
 	},
 	{
 		name: 'Barbarian Assault (Pet penance queen)',
 		items: resolveItems(['Pet penance queen']),
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT "id", high_gambles AS val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(
+				`SELECT "id", high_gambles AS val
 				   FROM users
 				   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
 				   AND high_gambles > 0
 				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 				   ORDER BY high_gambles DESC
-				   LIMIT 10;`);
+				   LIMIT 10;`
+			);
 			return result;
 		},
-		format: num => `${num.toLocaleString()} Gambles`
+		format: num => `${(num as number).toLocaleString()} Gambles`
 	},
 	{
 		name: 'Guardians of the Rift',
 		items: guardiansOfTheRiftCL,
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; val: number }[]
-			>(`SELECT users.id, gotr_rift_searches AS val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(
+				`SELECT users.id, gotr_rift_searches AS val
             FROM users
             INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
             WHERE "collectionLogBank"->>'${item.id}' IS NULL
             ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
             ORDER BY gotr_rift_searches DESC
-            LIMIT 10;`);
+            LIMIT 10;`
+			);
 			return result;
 		},
-		format: num => `${num.toLocaleString()} Rift Searches`
+		format: num => `${(num as number).toLocaleString()} Rift Searches`
 	},
 	{
 		name: 'Evil Chicken Outfit',
 		items: ItemGroups.evilChickenOutfit,
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(
+				`
             SELECT *
 			FROM
 			(
@@ -459,10 +655,11 @@ LIMIT 10;`);
             LIMIT 10
 			)
 			AS eggs
-			WHERE eggs.val > 0;`);
+			WHERE eggs.val > 0;`
+			);
 			return result;
 		},
-		format: num => `${num.toLocaleString()} Bird Eggs Offered`
+		format: num => `${(num as number).toLocaleString()} Bird Eggs Offered`
 	},
 	{
 		name: 'Random Events',
@@ -489,47 +686,48 @@ LIMIT 10;`);
 				val: `${i.mbox_opens} Mystery box Opens, ${i.baguettes_received} Baguettes`
 			}));
 		},
-		format: num => `${num.toLocaleString()}`
+		format: num => `${num.toString()}`
 	},
 	{
 		name: 'Superior Slayer Creatures',
 		items: resolveItems(['Imbued heart', 'Eternal gem']),
 		run: async ({ ironmanOnly, item }) => {
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; slayer_superior_count: number }[]
-			>(`SELECT id, slayer_superior_count
+			const result = await prisma.$queryRawUnsafe<{ id: string; slayer_superior_count: number }[]>(
+				`SELECT id, slayer_superior_count
 FROM users
 INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ORDER BY slayer_superior_count DESC
-LIMIT 10;`);
+LIMIT 10;`
+			);
 			return result.map(i => ({
 				id: i.id,
 				val: `${i.slayer_superior_count} Superiors Slayed`
 			}));
 		},
-		format: num => `${num.toLocaleString()}`
+		format: num => `${num.toString()}`
 	}
 ];
+
 for (const minigame of dryStreakMinigames) {
 	dryStreakEntities.push({
 		name: minigame.name,
 		items: minigame.items,
 		run: async ({ item, ironmanOnly }) => {
 			const minigameObj = Minigames.find(i => i.column === minigame.key)!;
-			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, "minigame"."${
-				minigameObj.column
-			}" AS val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(
+				`SELECT users.id, "minigame"."${minigameObj.column}" AS val
 FROM users
 INNER JOIN "minigames" "minigame" on "minigame"."user_id" = "users"."id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
 ORDER BY "minigame"."${minigameObj.column}" DESC
-LIMIT 10;`);
+LIMIT 10;`
+			);
 			return result;
 		},
-		format: num => `${num.toLocaleString()} KC`
+		format: num => `${(num as number).toLocaleString()} KC`
 	});
 }
 
@@ -541,9 +739,10 @@ for (const openable of allOpenables) {
 	}
 }
 
-async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean) {
+async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean, userToCheck?: MUser) {
 	const item = Items.getItem(itemName);
 	if (!item) return 'Invalid item.';
+
 	const entity = dryStreakEntities.find(
 		e =>
 			stringMatches(e.name, sourceName) ||
@@ -555,6 +754,10 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 			return `That's not a valid item dropped for this thing, valid items are: ${entity.items
 				.map(id => Items.itemNameFromId(id))
 				.join(', ')}.`;
+		}
+
+		if (userToCheck) {
+			return dryStreakForUserEntity(entity, item, userToCheck.id, ironmanOnly);
 		}
 
 		const result = await entity.run({ item, ironmanOnly });
@@ -571,6 +774,10 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, sourceName)));
 	if (!mon) {
 		return "That's not a valid monster or minigame.";
+	}
+
+	if (userToCheck) {
+		return dryStreakForUserMonster(mon, item, userToCheck.id, ironmanOnly);
 	}
 
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
@@ -634,7 +841,10 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 		await Promise.all(
 			result.map(
 				async ({ id, qty }) =>
-					`${result.length < 10 ? '(Anonymous)' : await Cache.getBadgedUsername(id)}: ${Number.parseInt(qty, 10).toLocaleString()}`
+					`${result.length < 10 ? '(Anonymous)' : await Cache.getBadgedUsername(id)}: ${Number.parseInt(
+						qty,
+						10
+					).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;
@@ -724,6 +934,12 @@ export const toolsCommand = defineCommand({
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
+						},
+						{
+							type: 'User',
+							name: 'user',
+							description: 'Provide the user to view clue completions for a specific account.',
+							required: false
 						}
 					]
 				},
@@ -744,6 +960,12 @@ export const toolsCommand = defineCommand({
 							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
+							required: false
+						},
+						{
+							type: 'User',
+							name: 'user',
+							description: 'Provide the user to view KC gains for a specific account.',
 							required: false
 						}
 					]
@@ -766,6 +988,12 @@ export const toolsCommand = defineCommand({
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
+						},
+						{
+							type: 'User',
+							name: 'user',
+							description: 'Provide the user to view XP gains for a specific account.',
+							required: false
 						}
 					]
 				},
@@ -780,10 +1008,7 @@ export const toolsCommand = defineCommand({
 							description: 'The source of the item – a monster, minigame, clue, etc.',
 							required: true,
 							autocomplete: async ({ value }: StringAutoComplete) => {
-								return [
-									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
-									...killableMonsters
-								]
+								return [...dryStreakEntities, ...killableMonsters]
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
 							}
@@ -796,6 +1021,13 @@ export const toolsCommand = defineCommand({
 							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
+							required: false
+						},
+						{
+							type: 'User',
+							name: 'user',
+							description:
+								'Provide the user to view drystreaks for a specific account. Leave blank to show the top 10 driest.',
 							required: false
 						}
 					]
@@ -951,22 +1183,57 @@ export const toolsCommand = defineCommand({
 
 			if (patron.clue_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return clueGains(patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
+
+				let userToCheck: MUser | undefined;
+				if (patron.clue_gains.user) {
+					userToCheck = await mUserFetch(patron.clue_gains.user.user.id);
+				}
+
+				return clueGains(
+					patron.clue_gains.time,
+					patron.clue_gains.tier,
+					Boolean(patron.clue_gains.ironman),
+					userToCheck
+				);
 			}
 			if (patron.kc_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return kcGains(patron.kc_gains.time, patron.kc_gains.monster, Boolean(patron.kc_gains.ironman));
+
+				let userToCheck: MUser | undefined;
+				if (patron.kc_gains.user) {
+					userToCheck = await mUserFetch(patron.kc_gains.user.user.id);
+				}
+
+				return kcGains(
+					patron.kc_gains.time,
+					patron.kc_gains.monster,
+					Boolean(patron.kc_gains.ironman),
+					userToCheck
+				);
 			}
 			if (patron.xp_gains) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
+
+				let userToCheck: MUser | undefined;
+				if (patron.xp_gains.user) {
+					userToCheck = await mUserFetch(patron.xp_gains.user.user.id);
+				}
+
+				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman, userToCheck);
 			}
 			if (patron.drystreak) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
+
+				let userToCheck: MUser | undefined;
+				if (patron.drystreak.user) {
+					userToCheck = await mUserFetch(patron.drystreak.user.user.id);
+				}
+
 				return dryStreakCommand(
 					patron.drystreak.source,
 					patron.drystreak.item,
-					Boolean(patron.drystreak.ironman)
+					Boolean(patron.drystreak.ironman),
+					userToCheck
 				);
 			}
 			if (patron.mostdrops) {
