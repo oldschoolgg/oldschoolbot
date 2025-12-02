@@ -1,4 +1,5 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
+import { randArrItem } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
@@ -20,6 +21,7 @@ import { Skills } from '@/lib/skilling/skills/index.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
+import { gifs } from '@/mahoji/commands/admin.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
@@ -995,6 +997,13 @@ export const toolsCommand = defineCommand({
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				const itemID = Number(patron.item_holders.item);
 				const item = Items.get(itemID);
+
+				const blacklist = [
+					795, // War ship
+					11918 // Birthday present
+				];
+				if (item && blacklist.includes(item.id)) return randArrItem(gifs);
+
 				if (!item) return "That's not a valid item.";
 				const ironmanOnly = Boolean(patron.item_holders.ironman);
 				const snapshot = await fetchLatestHolderSnapshot();
