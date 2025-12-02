@@ -21,7 +21,7 @@ async function handleFinishUpdates({
 	winner: MUser;
 	loser: MUser;
 }) {
-	const taxRate = BOT_TYPE === 'OSB' ? 0.95 : 0;
+	const taxRate = BOT_TYPE === 'OSB' ? 0.95 : 1;
 	const winningAmount = amount * 2;
 	const tax = winningAmount - Math.floor(winningAmount * taxRate);
 	const dividedAmount = tax / 1_000_000;
