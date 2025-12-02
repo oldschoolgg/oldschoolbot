@@ -1,7 +1,7 @@
 import './base.js';
 
 import { writeFileSync } from 'node:fs';
-import { calcPerHour, Time, TSVWriter } from '@oldschoolgg/toolkit';
+import { calcPerHour, Time } from '@oldschoolgg/toolkit';
 import { Bank, convertBankToPerHourStats, EItem, Items } from 'oldschooljs';
 import { omit } from 'remeda';
 
@@ -207,22 +207,6 @@ async function main() {
 			4
 		)
 	);
-
-	const headers = [
-		'Monster',
-		'AttackStyle',
-		'XP/hr',
-		...skills.map(s => `${s} XP/hr`),
-		'Options',
-		'Food',
-		'GP/hr',
-		'Cost/hr'
-		// 'Raw Command',
-		// 'Raw Trip'
-	];
-	const tsvWriter = new TSVWriter('data/monster_data.tsv');
-
-	tsvWriter.writeRow(headers);
 
 	const parsedResults = [];
 

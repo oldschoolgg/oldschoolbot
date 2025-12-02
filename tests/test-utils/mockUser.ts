@@ -1,5 +1,6 @@
 import assert from 'node:assert';
-import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
+import { MathRNG } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IUser } from '@oldschoolgg/schemas';
 import { Bank, convertLVLtoXP, EItem, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';

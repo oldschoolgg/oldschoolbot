@@ -1,4 +1,5 @@
-import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit';
+import { miniID, truncateString } from '@oldschoolgg/toolkit';
+import { containsBlacklistedWord } from '@oldschoolgg/toolkit/node';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { GiftBoxStatus } from '@/prisma/main.js';

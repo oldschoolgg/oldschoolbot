@@ -1,7 +1,7 @@
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng';
-import { chunk } from '@oldschoolgg/toolkit';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { Bank, toKMB } from 'oldschooljs';
+import { chunk } from 'remeda';
 
 import { EmojiId } from '@/lib/data/emojis.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';

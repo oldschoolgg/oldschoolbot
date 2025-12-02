@@ -17,7 +17,7 @@ type Timings = Record<string, number>;
 type Skips = Record<string, true>;
 
 const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
-	name => !['test-dashboard', 'robochimp', 'cli'].includes(name)
+	name => !['test-dashboard', 'robochimp', 'cli', 'oldschoolgg'].includes(name)
 );
 
 const isUsingRealPostgres = process.env.USE_REAL_PG === '1';

@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import { chunk, cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
+import { cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
+import { chunk } from 'remeda';
 
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import {

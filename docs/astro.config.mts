@@ -2,11 +2,63 @@ import preact from '@astrojs/preact';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
+import type { Plugin } from 'vite';
 
-import remarkItems from './src/plugins/items';
-import rehypeFixInlineSpacing from './src/plugins/rehypeFixInlineSpacing';
+import remarkItems from './src/plugins/items.js';
+import rehypeFixInlineSpacing from './src/plugins/rehypeFixInlineSpacing.js';
 
-// https://astro.build/config
+function splitVendorChunkPlugin() {
+	const plugin: Plugin = {
+		name: 'split-vendor-chunk-plugin',
+		config() {
+			return {
+				build: {
+					rollupOptions: {
+						output: {
+							manualChunks(id) {
+								for (const osmod of [
+									'item_data',
+									'EItem',
+									'monster',
+									'openables',
+									'misc',
+									'util',
+									'EGear'
+								]) {
+									if (id.includes('oldschooljs') && id.includes(osmod)) {
+										return `oldschooljs_${osmod}`;
+									}
+								}
+								if (id.includes('oldschooljs')) {
+									return 'oldschooljs';
+								}
+								if (id.includes('remeda')) {
+									return 'remeda';
+								}
+								if (id.includes('data/bso')) {
+									return `${id.split('data/bso/')[1].split('/')[0].split('.')[0]}-data`;
+								}
+								if (id.includes('data/osb')) {
+									return `${id.split('data/osb/')[1].split('/')[0].split('.')[0]}-data`;
+								}
+								if (id.includes('item_data.json')) {
+									return 'osb-item-data';
+								}
+								if (id.includes('bso/custom-items.json')) {
+									return 'bso-item-data';
+								}
+								return null;
+							}
+						}
+					}
+				}
+			};
+		}
+	};
+
+	return plugin;
+}
+
 export default defineConfig({
 	vite: {
 		resolve: {
@@ -14,39 +66,14 @@ export default defineConfig({
 				'@data': '../../../data'
 			}
 		},
-		plugins: [tailwindcss()],
+		plugins: [tailwindcss(), splitVendorChunkPlugin()],
 		ssr: {
 			noExternal: ['zod']
-		},
-		esbuild: {
-			minify: false
 		},
 		build: {
 			minify: true,
 			cssCodeSplit: true,
-			cssMinify: true,
-			rollupOptions: {
-				output: {
-					manualChunks: id => {
-						if (id.includes('item_data.json')) {
-							return 'osb-item-data';
-						}
-						if (id.includes('bso/custom-items.json')) {
-							return 'bso-item-data';
-						}
-						if (id.includes('EItem')) {
-							return 'eitem';
-						}
-						if (id.includes('data/bso')) {
-							return `${id.split('data/bso/')[1].split('/')[0].split('.')[0]}-data`;
-						}
-						if (id.includes('data/osb')) {
-							return `${id.split('data/osb/')[1].split('/')[0].split('.')[0]}-data`;
-						}
-						return null;
-					}
-				}
-			}
+			cssMinify: true
 		}
 	},
 	i18n: {
@@ -57,7 +84,7 @@ export default defineConfig({
 		enabled: false
 	},
 	markdown: {
-		remarkPlugins: [remarkItems],
+		remarkPlugins: [remarkItems as any],
 		rehypePlugins: [rehypeFixInlineSpacing],
 		smartypants: false,
 		syntaxHighlight: false
