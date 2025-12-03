@@ -1,4 +1,7 @@
-import { ownedItemOption } from '@/discord/index.js';
+import { stringMatches } from '@oldschoolgg/toolkit';
+
+import { ownedItemOption } from '@/lib/discord/index.js';
+import { BERT_SAND_ID } from '@/lib/minions/data/bertSand.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import Potions from '@/lib/minions/data/potions.js';
 import { quests } from '@/lib/minions/data/quests.js';
@@ -17,6 +20,7 @@ import { castCommand } from '@/mahoji/lib/abstracted_commands/castCommand.js';
 import { chargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
 import { chargeWealthCommand } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';
 import { chompyHuntClaimCommand, chompyHuntCommand } from '@/mahoji/lib/abstracted_commands/chompyHuntCommand.js';
+import { collectBertSand } from '@/mahoji/lib/abstracted_commands/collectBertSand.js';
 import { collectCommand } from '@/mahoji/lib/abstracted_commands/collectCommand.js';
 import { decantCommand } from '@/mahoji/lib/abstracted_commands/decantCommand.js';
 import { driftNetCommand } from '@/mahoji/lib/abstracted_commands/driftNetCommand.js';
@@ -138,10 +142,15 @@ export const activitiesCommand = defineCommand({
 					type: 'String',
 					name: 'item',
 					description: 'The item to collect.',
-					autocomplete: async ({ value }: StringAutoComplete) => {
-						return collectables
-							.filter(p => (!value ? true : p.item.name.toLowerCase().includes(value.toLowerCase())))
+					autocomplete: async (value: string) => {
+						const query = value?.toLowerCase() ?? '';
+						const dailyOptions = [{ name: "Bert's sand (Daily)", value: BERT_SAND_ID }].filter(option =>
+							!query ? true : option.name.toLowerCase().includes(query)
+						);
+						const regularOptions = collectables
+							.filter(p => (!query ? true : p.item.name.toLowerCase().includes(query)))
 							.map(p => ({ name: p.item.name, value: p.item.name }));
+						return [...dailyOptions, ...regularOptions];
 					},
 					required: true
 				},
@@ -544,13 +553,16 @@ export const activitiesCommand = defineCommand({
 			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.collect) {
-			return collectCommand(
-				user,
-				channelId,
-				options.collect.item,
-				options.collect.quantity,
-				options.collect.no_stams
-			);
+			const collectItem = options.collect.item;
+			if (
+				collectItem === BERT_SAND_ID ||
+				stringMatches(collectItem, "bert's sand") ||
+				stringMatches(collectItem, 'bert sand') ||
+				stringMatches(collectItem, 'hand in the sand')
+			) {
+				return collectBertSand(user, channelID);
+			}
+			return collectCommand(user, channelID, collectItem, options.collect.quantity, options.collect.no_stams);
 		}
 		if (options.quest) {
 			return questCommand(user, channelId, options.quest.name);
