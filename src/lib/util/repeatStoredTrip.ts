@@ -712,7 +712,7 @@ const tripHandlers: {
 			underwater: {
 				agility_thieving: {
 					training_skill: data.trainingSkill,
-					minutes: Math.floor(data.duration / Time.Minute),
+					minutes: data.minutes ?? Math.max(1, Math.floor(data.duration / Time.Minute)),
 					no_stams: data.noStams
 				}
 			}
@@ -722,7 +722,9 @@ const tripHandlers: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
 			underwater: {
-				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
+				drift_net_fishing: {
+					minutes: data.minutes ?? Math.max(1, Math.floor(data.duration / Time.Minute))
+				}
 			}
 		})
 	},
