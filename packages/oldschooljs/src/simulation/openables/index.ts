@@ -25,6 +25,7 @@ import {
 } from './Implings.js';
 import { IntricatePouch } from './IntricatePouch.js';
 import { LarransChest } from './LarransChest.js';
+import { MoonKeyChest } from './MoonKeyChest.js';
 import { MuddyChest } from './MuddyChest.js';
 import { MysteryBox } from './MysteryBox.js';
 import { NestBoxEmpty } from './NestBoxEmpty.js';
@@ -54,6 +55,7 @@ export {
 	OgreCoffin,
 	SinisterChest,
 	BrimstoneChest,
+	MoonKeyChest,
 	LarransChest,
 	SeedPack,
 	BabyImpling,
@@ -96,6 +98,7 @@ const openablesObject: Record<string, SimpleOpenable> = {
 	OgreCoffin,
 	SinisterChest,
 	BrimstoneChest,
+	MoonKeyChest,
 	LarransChest,
 	SeedPack,
 	BabyImpling,

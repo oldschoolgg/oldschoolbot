@@ -23,6 +23,7 @@ import {
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
+	MoonKeyChest,
 	MuddyChest,
 	MysteryBox,
 	NestBoxEmpty,
@@ -455,6 +456,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['crystal chest'],
 		output: CrystalChestTable,
 		allItems: CrystalChestTable.allItems
+	},
+	{
+		name: 'Chest (moon key)',
+		id: itemID('Moon key'),
+		openedItem: Items.getOrThrow('Moon key'),
+		aliases: ['moon key chest', 'moon key'],
+		output: async ({ quantity }) => ({ bank: MoonKeyChest.open(quantity, {}) }),
+		allItems: MoonKeyChest.allItems
 	},
 	{
 		name: 'Builders supply crate',
