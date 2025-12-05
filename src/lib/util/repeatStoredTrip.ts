@@ -757,8 +757,10 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 	for (const trip of res) {
 		if (!taskCanBeRepeated(trip, user)) continue;
 		const data = ActivityManager.convertStoredActivityToFlatActivity(trip);
-		if (data.type === activity_type_enum.Farming && data.autoFarmed) {
-			continue;
+		if (data.type === activity_type_enum.Farming) {
+			if (!data.autoFarmed) {
+				continue;
+			}
 		}
 		if (!filtered.some(i => i.type === trip.type)) {
 			filtered.push(trip);
