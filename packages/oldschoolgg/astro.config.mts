@@ -33,11 +33,11 @@ function splitVendorChunkPlugin() {
 	return plugin;
 }
 
+const production = false;
+
 const config: Record<string, string> = {
-	__API_URL__: process.env.API_URL || 'https://api.oldschool.gg',
+	__API_URL__: production ? 'https://api.oldschool.gg' : 'https://osgtestapi.magnaboy.com',
 	__FRONTEND_URL__: process.env.FRONTEND_URL || 'https://oldschool.gg',
-	__WS_URL__: process.env.WS_URL || 'wss://ws.oldschool.gg',
-	__DISCORD_CLIENT_ID__: process.env.DISCORD_CLIENT_ID || ''
 };
 
 for (const [key, value] of Object.entries(config)) {
@@ -45,9 +45,11 @@ for (const [key, value] of Object.entries(config)) {
 }
 
 export default defineConfig({
+	prefetch: true,
+	site: 'https://oldschool.gg',
 	server: {
-		allowedHosts: ['wfe.magnaboy.com'],
-		port: 3002,
+		allowedHosts: ['osgtest.magnaboy.com'],
+		port: 5488,
 		host: true
 	},
 	vite: {

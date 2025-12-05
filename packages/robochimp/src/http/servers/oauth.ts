@@ -7,6 +7,7 @@ import { setCookie } from 'hono/cookie';
 import { globalConfig } from '@/constants.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 import { encryptToken } from '@/modules/encryption.js';
+import { AuthenticatedUser } from '@/http/servers/api-types.js';
 
 export const oauthHonoServer = new Hono<HonoServerGeneric>();
 
@@ -53,7 +54,7 @@ oauthHonoServer.use(
 			}
 		});
 		if (!user) {
-			return c.json({ error: 'User not found' }, 400);
+			return httpErr.NOT_FOUND({ message: 'Robochimp user not found' });
 		}
 
 		const secret = JSON.stringify({
@@ -87,7 +88,7 @@ oauthHonoServer.use(
 			sameSite: 'lax',
 			path: '/'
 		});
-		return c.redirect(`${globalConfig.frontendUrl}/login_callback`);
+		return c.redirect(`${globalConfig.frontendUrl}/login-callback`);
 	}
 );
 
@@ -107,11 +108,12 @@ oauthHonoServer.get('/me', async c => {
 		return httpErr.NOT_FOUND({ message: 'Discord user not found' });
 	}
 
-	return httpRes.JSON({
+	const result: AuthenticatedUser = {
 		id: discordUser.id,
 		username: discordUser.username,
 		avatar: discordUser.avatar,
 		global_name: discordUser.global_name,
 		bits: user.bits
-	});
+	};
+	return httpRes.JSON(result);
 });

@@ -20,6 +20,7 @@ body {
 	--color-bright-blue: oklch(0.47 0.15 248.07);
 	--color-bright-saturated-blue: oklch(0.39 0.19 263.55);
 	--color-dark: #111117;
+	--color-blurple: #5865F2;
 
 	--color-background: white;
 	--color-text: black;
@@ -59,4 +60,20 @@ main {
 
 .border-main {
 	border: 2px solid hsl(215.97deg 100% 72.5% / 18%);
+}
+
+/* Dropdown animation */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fadeIn {
+	animation: fadeIn 0.2s ease-in-out;
 }

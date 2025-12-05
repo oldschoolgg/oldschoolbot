@@ -3,7 +3,7 @@
 	"type": "module",
 	"version": "0.0.1",
 	"scripts": {
-		"start": "astro dev --port 3002 --host",
+		"start": "astro dev --port 5488 --host",
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro"
@@ -15,11 +15,14 @@
 		"@oldschoolgg/util": "workspace:*",
 		"@tailwindcss/vite": "^4.1.17",
 		"astro": "^5.16.3",
+		"lucide-react": "^0.555.0",
 		"oldschooljs": "workspace:*",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
 		"tailwindcss": "^4.1.17",
-		"vite": "^6.4.1"
+		"vite": "^6.4.1",
+		"wretch": "^3.0.5",
+		"zustand": "^5.0.9"
 	},
 	"devDependencies": {
 		"@types/react": "^19.2.6",

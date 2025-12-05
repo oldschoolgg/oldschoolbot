@@ -26,7 +26,7 @@ export async function userReactsHandler(msg: GatewayMessageCreateDispatchData) {
 					emojiId: roboUser.react_emoji_id
 				});
 			} catch (err) {
-				console.log(`Failed to react with emoji ID: ${roboUser.react_emoji_id} ${err}`);
+				console.log(`Failed to react with emoji ID: '${roboUser.react_emoji_id}' ${err}`);
 			}
 		}
 	}
