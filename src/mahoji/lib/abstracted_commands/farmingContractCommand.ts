@@ -198,6 +198,14 @@ export async function autoContract(interaction: MInteraction, user: MUser): Prom
 		const contractResponse = await farmingContractCommand(user, bestContractTierCanDo);
 		const msg =
 			openResponse instanceof MessageBuilder ? openResponse : new MessageBuilder().setContent(openResponse);
+		const newContract = user.fetchFarmingContract();
+
+		if (newContract.hasContract && newContract.plantToGrow) {
+			msg.setContent(
+				`${msg.message.content}, your new farming contract is: ${toTitleCase(newContract.plantToGrow)}`
+			);
+		}
+
 		return msg.merge(contractResponse);
 	}
 
