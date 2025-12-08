@@ -1,3 +1,4 @@
+import { roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
 
 import { MAX_QP } from '@/lib/minions/data/quests.js';
