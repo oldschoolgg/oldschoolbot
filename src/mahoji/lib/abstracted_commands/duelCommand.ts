@@ -4,6 +4,7 @@ import { Bank, toKMB } from 'oldschooljs';
 
 import { MUserClass } from '@/lib/MUser.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
+import { BOT_TYPE } from '@/lib/constants.js';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -20,7 +21,7 @@ async function handleFinishUpdates({
 	winner: MUser;
 	loser: MUser;
 }) {
-	const taxRate = 0.95;
+	const taxRate = BOT_TYPE === 'OSB' ? 0.95 : 1;
 	const winningAmount = amount * 2;
 	const tax = winningAmount - Math.floor(winningAmount * taxRate);
 	const dividedAmount = tax / 1_000_000;
