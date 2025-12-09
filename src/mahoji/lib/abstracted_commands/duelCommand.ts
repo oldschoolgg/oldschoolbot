@@ -2,9 +2,9 @@ import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { Emoji, Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
+import { BOT_TYPE } from '@/lib/constants.js';
 import { MUserClass } from '@/lib/MUser.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
-import { BOT_TYPE } from '@/lib/constants.js';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;

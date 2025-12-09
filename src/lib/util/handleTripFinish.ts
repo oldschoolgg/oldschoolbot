@@ -147,7 +147,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		requiredPerkTier: PerkTier.Two,
 		fn: async ({ user, components }) => {
 			if (user.bitfield.includes(BitField.DisableDailyButton)) return;
-	
+
 			const { isReady } = await isUsersDailyReady(user);
 			if (isReady) {
 				components.push(makeClaimDailyButton());
