@@ -15,6 +15,7 @@ import { reanimatedMonsters } from '@/lib/minions/data/killableMonsters/reanimat
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import { turaelMonsters } from '@/lib/minions/data/killableMonsters/turaelMonsters.js';
 import { vannakaMonsters } from '@/lib/minions/data/killableMonsters/vannakaMonsters.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 
 const killableMonsters: KillableMonster[] = [
@@ -66,6 +67,50 @@ const killableMonsters: KillableMonster[] = [
 		},
 		defaultAttackStyles: ['attack', 'magic', 'ranged'],
 		customMonsterHP: 600,
+		combatXpMultiplier: 1.09
+	},
+	{
+		id: Monsters.MoonsofPeril.id,
+		name: Monsters.MoonsofPeril.name,
+		aliases: Monsters.MoonsofPeril.aliases,
+		timeToFinish: Time.Minute * 10,
+		table: Monsters.MoonsofPeril,
+		wildy: false,
+
+		difficultyRating: 4,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		requiredQuests: [QuestID.ChildrenOfTheSun],
+		itemInBankBoosts: [
+			{
+				[itemID('Soulreaper axe')]: 10,
+				[itemID('Noxious halberd')]: 8,
+				[itemID("Osmumten's fang")]: 6,
+				[itemID('Arkan blade')]: 4
+			},
+			{
+				[itemID('Dual macuahuitl')]: 8,
+				[itemID("Inquisitor's mace")]: 6,
+				[itemID('Zombie axe')]: 4
+			},
+			{
+				[itemID('Blade of saeldor')]: 6,
+				[itemID('Sulphur blades')]: 4
+			},
+			{
+				[itemID('Dragon claws')]: 10,
+				[itemID('Burning claws')]: 6
+			}
+		],
+		levelRequirements: {
+			herblore: 66,
+			cooking: 50,
+			fishing: 50,
+			hunter: 50
+		},
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
+		customMonsterHP: 1500,
 		combatXpMultiplier: 1.09
 	},
 	{

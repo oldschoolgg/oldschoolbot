@@ -1,6 +1,6 @@
 {
-	"hash": "5c30cde39a793c978853119e8724e527",
-	"date": "2025-09-19T05:35:44.280Z",
+	"hash": "bee2d5d43babfae5afdd733c7f0365e2",
+	"date": "2025-12-10T05:34:25.922Z",
 	"data": [
 		{
 			"id": 2,
@@ -3513,6 +3513,42 @@
 			"items_required": [],
 			"qp_required": 20,
 			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 13012,
+			"name": "Moons of Peril",
+			"base_kill_time_ms": 600000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [
+				{
+					"Arkan blade": 4,
+					"Noxious halberd": 8,
+					"Osmumten's fang": 6,
+					"Soulreaper axe": 10
+				},
+				{
+					"Dual macuahuitl": 8,
+					"Inquisitor's mace": 6,
+					"Zombie axe": 4
+				},
+				{
+					"Blade of saeldor": 6,
+					"Sulphur blades": 4
+				},
+				{
+					"Burning claws": 6,
+					"Dragon claws": 10
+				}
+			],
 			"can_barrage": false,
 			"can_chin": false,
 			"can_cannon": false,

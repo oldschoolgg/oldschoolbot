@@ -4564,6 +4564,47 @@
 		"attack_styles_used": ["attack_crush"]
 	},
 	{
+		"id": 13012,
+		"name": "Moons of Peril",
+		"time_to_finish": 600000,
+		"wildy": false,
+		"difficulty_rating": 4,
+		"items_required": [],
+		"notify_drops": [],
+		"qp_required": 0,
+		"required_quests": [3],
+		"item_in_bank_boosts": [
+			{
+				"25484": 10,
+				"26219": 6,
+				"29796": 8,
+				"30955": 4
+			},
+			{
+				"24417": 6,
+				"28810": 4,
+				"28997": 8
+			},
+			{
+				"23995": 6,
+				"29084": 4
+			},
+			{
+				"13652": 10,
+				"29577": 6
+			}
+		],
+		"level_requirements": {
+			"herblore": 66,
+			"cooking": 50,
+			"fishing": 50,
+			"hunter": 50
+		},
+		"default_attack_styles": ["attack", "magic", "ranged"],
+		"custom_monster_hp": 1500,
+		"combat_xp_multiplier": 1.09
+	},
+	{
 		"id": 2090,
 		"name": "Moss giant",
 		"time_to_finish": 14000,
