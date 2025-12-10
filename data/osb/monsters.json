@@ -1,6 +1,6 @@
 {
-	"hash": "bee2d5d43babfae5afdd733c7f0365e2",
-	"date": "2025-12-10T05:34:25.922Z",
+	"hash": "a50a59b6234e333ff09c98102a26e86d",
+	"date": "2025-12-10T19:15:11.677Z",
 	"data": [
 		{
 			"id": 2,
@@ -3521,7 +3521,7 @@
 		{
 			"id": 13012,
 			"name": "Moons of Peril",
-			"base_kill_time_ms": 600000,
+			"base_kill_time_ms": 720000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -3530,23 +3530,53 @@
 			"qp_required": 0,
 			"item_in_bank_boosts": [
 				{
-					"Arkan blade": 4,
-					"Noxious halberd": 8,
-					"Osmumten's fang": 6,
-					"Soulreaper axe": 10
+					"Abyssal dagger": 2,
+					"Abyssal whip": 1,
+					"Arkan blade": 1,
+					"Blade of saeldor": 3,
+					"Dragon hasta": 1,
+					"Dragon sword": 1,
+					"Ghrazi rapier": 4,
+					"Noxious halberd": 3,
+					"Osmumten's fang": 2,
+					"Soulreaper axe": 5,
+					"Voidwaker": 2,
+					"Zamorakian hasta": 2,
+					"Zombie axe": 1
 				},
 				{
-					"Dual macuahuitl": 8,
-					"Inquisitor's mace": 6,
-					"Zombie axe": 4
+					"Abyssal bludgeon": 2,
+					"Dual macuahuitl": 5,
+					"Glacial temotli": 4,
+					"Inquisitor's mace": 3,
+					"Sarachnis cudgel": 1,
+					"Soulreaper axe": 3,
+					"Torag's hammers": 1,
+					"Ursine chainmace (u)": 2,
+					"Zamorakian hasta": 2,
+					"Zombie axe": 1
 				},
 				{
-					"Blade of saeldor": 6,
-					"Sulphur blades": 4
+					"Abyssal tentacle": 2,
+					"Abyssal whip": 2,
+					"Arkan blade": 1,
+					"Blade of saeldor": 3,
+					"Dragon scimitar": 1,
+					"Ghrazi rapier": 2,
+					"Noxious halberd": 4,
+					"Soulreaper axe": 5,
+					"Sulphur blades": 2,
+					"Zamorakian hasta": 1,
+					"Zombie axe": 1
 				},
 				{
-					"Burning claws": 6,
-					"Dragon claws": 10
+					"Abyssal dagger": 2,
+					"Burning claws": 2,
+					"Crystal halberd": 5,
+					"Dragon claws": 4,
+					"Dragon dagger": 2,
+					"Dragon mace": 2,
+					"Voidwaker": 5
 				}
 			],
 			"can_barrage": false,

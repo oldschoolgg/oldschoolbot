@@ -4566,35 +4566,474 @@
 	{
 		"id": 13012,
 		"name": "Moons of Peril",
-		"time_to_finish": 600000,
+		"time_to_finish": 720000,
 		"wildy": false,
 		"difficulty_rating": 4,
-		"items_required": [],
 		"notify_drops": [],
 		"qp_required": 0,
 		"required_quests": [3],
+		"equipped_item_boosts": [
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 26382
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 30750
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 22326
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 12931
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 24271
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4716
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4724
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4745
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4753
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 29028
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 10828
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 3751
+					}
+				],
+				"gear_setup": "melee",
+				"required": true
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 26384
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 30753
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 22327
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 11832
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4720
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4728
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4749
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4757
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 10551
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 4757
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 3140
+					}
+				],
+				"gear_setup": "melee",
+				"required": true
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 26386
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 30756
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 22328
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 11834
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4722
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4730
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4751
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 4759
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 4087
+					}
+				],
+				"gear_setup": "melee",
+				"required": true
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 21295
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 6570
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 22114
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 6568
+					}
+				],
+				"gear_setup": "melee",
+				"required": true
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 22981
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 7462
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 7461
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 7460
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 11133
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 21736
+					}
+				],
+				"gear_setup": "melee",
+				"required": true
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 31097
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 31095
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 31094
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 31091
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 13239
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 28945
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 11840
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 21733
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 21643
+					}
+				],
+				"gear_setup": "melee",
+				"required": true
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 29801
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 19553
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 6585
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 1725
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 1704
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 1731
+					}
+				],
+				"gear_setup": "melee",
+				"required": true
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 25485
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 11773
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 20657
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 30895
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 25975
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 22975
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 11772
+					}
+				],
+				"gear_setup": "melee",
+				"required": true
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 2,
+						"item_id": 27544
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 22947
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 20220
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 20223
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 20226
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 20229
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 20232
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 20235
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 22945
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 22943
+					}
+				],
+				"gear_setup": "melee",
+				"required": false
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 22322
+					},
+					{
+						"boost_percent": 5,
+						"item_id": 11283
+					},
+					{
+						"boost_percent": 4,
+						"item_id": 12954
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 6524
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 8850
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 12831
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 1187
+					},
+					{
+						"boost_percent": 2,
+						"item_id": 23991
+					},
+					{
+						"boost_percent": 1,
+						"item_id": 1201
+					}
+				],
+				"gear_setup": "melee",
+				"required": false
+			}
+		],
 		"item_in_bank_boosts": [
 			{
-				"25484": 10,
-				"26219": 6,
-				"29796": 8,
-				"30955": 4
+				"4151": 1,
+				"11889": 2,
+				"13265": 2,
+				"21009": 1,
+				"22324": 4,
+				"22731": 1,
+				"23995": 3,
+				"25484": 5,
+				"26219": 2,
+				"27690": 2,
+				"28810": 1,
+				"29796": 3,
+				"30955": 1
 			},
 			{
-				"24417": 6,
-				"28810": 4,
-				"28997": 8
+				"4747": 1,
+				"11889": 2,
+				"13263": 2,
+				"23528": 1,
+				"24417": 3,
+				"25484": 3,
+				"27657": 2,
+				"28810": 1,
+				"28997": 5,
+				"29889": 4
 			},
 			{
-				"23995": 6,
-				"29084": 4
+				"4151": 2,
+				"4587": 1,
+				"11889": 1,
+				"12006": 2,
+				"22324": 2,
+				"23995": 3,
+				"25484": 5,
+				"28810": 1,
+				"29084": 2,
+				"29796": 4,
+				"30955": 1
 			},
 			{
-				"13652": 10,
-				"29577": 6
+				"1215": 2,
+				"1434": 2,
+				"13265": 2,
+				"13652": 4,
+				"23987": 5,
+				"27690": 5,
+				"29577": 2
+			}
+		],
+		"degradeable_item_usage": [
+			{
+				"required": false,
+				"gear_setup": "melee",
+				"items": [
+					{
+						"item_id": 22325,
+						"boost_percent": 10
+					}
+				]
 			}
 		],
 		"level_requirements": {
+			"attack": 70,
+			"strength": 70,
+			"defence": 70,
+			"prayer": 70,
 			"herblore": 66,
 			"cooking": 50,
 			"fishing": 50,
