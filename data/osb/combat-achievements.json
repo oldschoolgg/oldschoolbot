@@ -1106,11 +1106,59 @@
 						}
 					}
 				]
+			},
+			{
+				"id": 151,
+				"name": "Perilous Novice",
+				"type": "kill_count",
+				"monster": "Moons of Peril",
+				"desc": "Open the Reward Chest 5 times.",
+				"requirements": [
+					{
+						"kcRequirement": {
+							"Moons of Peril": [5, 13012]
+						}
+					}
+				]
+			},
+			{
+				"id": 152,
+				"name": "Lunar Triplet",
+				"type": "kill_count",
+				"monster": "Moons of Peril",
+				"desc": "Open the Reward Chest after defeating all three Moons.",
+				"requirements": [
+					{
+						"kcRequirement": {
+							"Moons of Peril": [1, 13012]
+						}
+					}
+				]
+			},
+			{
+				"id": 153,
+				"name": "Moons of Peril Speed-Trialist",
+				"type": "speed",
+				"monster": "Moons of Peril",
+				"desc": "Defeat all three Moons in one run in under 8 minutes.",
+				"rng": {
+					"chance_per_kill": 1
+				}
+			},
+			{
+				"id": 154,
+				"name": "Back to Our Roots",
+				"type": "restriction",
+				"monster": "Moons of Peril",
+				"desc": "Defeat all three Moons in one run by only attacking with a Dragon Scimitar.",
+				"rng": {
+					"chance_per_kill": 1
+				}
 			}
 		],
 		"name": "Medium",
 		"taskPoints": 2,
-		"rewardThreshold": 138
+		"rewardThreshold": 146
 	},
 	"hard": {
 		"tasks": [
@@ -1990,11 +2038,85 @@
 				"rng": {
 					"chance_per_kill": 15
 				}
+			},
+			{
+				"id": 275,
+				"name": "The Clone Zone",
+				"type": "mechanical",
+				"monster": "Moons of Peril",
+				"desc": "Defeat the Eclipse moon by only attacking its clones.",
+				"rng": {
+					"chance_per_kill": 10
+				}
+			},
+			{
+				"id": 276,
+				"name": "Betrayal",
+				"type": "restriction",
+				"monster": "Moons of Peril",
+				"desc": "Defeat a Moon using its associated weapon drop.",
+				"rng": {
+					"chance_per_kill": 1
+				}
+			},
+			{
+				"id": 277,
+				"name": "Fortified",
+				"type": "restriction",
+				"monster": "Moons of Peril",
+				"desc": "Defeat a Moon without consuming any supplies.",
+				"rng": {
+					"chance_per_kill": 10
+				}
+			},
+			{
+				"id": 278,
+				"name": "Perilous Dancer",
+				"type": "perfection",
+				"monster": "Moons of Peril",
+				"desc": "Defeat all the Moons in one run while only taking damage from regular attacks.",
+				"rng": {
+					"chance_per_kill": 20
+				}
+			},
+			{
+				"id": 279,
+				"name": "Perilous Champion",
+				"type": "kill_count",
+				"monster": "Moons of Peril",
+				"desc": "Open the Reward Chest 25 times.",
+				"requirements": [
+					{
+						"kcRequirement": {
+							"Moons of Peril": [25, 13012]
+						}
+					}
+				]
+			},
+			{
+				"id": 280,
+				"name": "Moons of Peril Speed-Chaser",
+				"type": "speed",
+				"monster": "Moons of Peril",
+				"desc": "Defeat all three Moons in one run in under 6 minutes.",
+				"rng": {
+					"chance_per_kill": 1
+				}
+			},
+			{
+				"id": 281,
+				"name": "Fat of the Land",
+				"type": "stamina",
+				"monster": "Moons of Peril",
+				"desc": "Defeat 30 Moons of Peril bosses without leaving the dungeon.",
+				"rng": {
+					"chance_per_kill": 50
+				}
 			}
 		],
 		"name": "Hard",
 		"taskPoints": 3,
-		"rewardThreshold": 363
+		"rewardThreshold": 392
 	},
 	"elite": {
 		"tasks": [
@@ -3692,11 +3814,21 @@
 				"rng": {
 					"chance_per_kill": 20
 				}
+			},
+			{
+				"id": 1155,
+				"name": "High Hitter",
+				"type": "mechanical",
+				"monster": "Moons of Peril",
+				"desc": "\tDefeat a Moon before they start their second special attack.",
+				"rng": {
+					"chance_per_kill": 50
+				}
 			}
 		],
 		"name": "Elite",
 		"taskPoints": 4,
-		"rewardThreshold": 955
+		"rewardThreshold": 988
 	},
 	"master": {
 		"tasks": [
@@ -5413,7 +5545,7 @@
 		],
 		"name": "Master",
 		"taskPoints": 5,
-		"rewardThreshold": 1720
+		"rewardThreshold": 1753
 	},
 	"grandmaster": {
 		"tasks": [
@@ -6609,6 +6741,6 @@
 		],
 		"name": "Grandmaster",
 		"taskPoints": 6,
-		"rewardThreshold": 2368
+		"rewardThreshold": 2401
 	}
 }
