@@ -3820,7 +3820,7 @@
 				"name": "High Hitter",
 				"type": "mechanical",
 				"monster": "Moons of Peril",
-				"desc": "\tDefeat a Moon before they start their second special attack.",
+				"desc": "Defeat a Moon before they start their second special attack.",
 				"rng": {
 					"chance_per_kill": 50
 				}
