@@ -1806,7 +1806,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		name: 'High Hitter',
 		type: 'mechanical',
 		monster: 'Moons of Peril',
-		desc: '	Defeat a Moon before they start their second special attack.',
+		desc: 'Defeat a Moon before they start their second special attack.',
 		rng: {
 			chancePerKill: 50,
 			hasChance: data => isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data)
