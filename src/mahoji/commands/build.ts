@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -135,7 +136,8 @@ export const buildCommand = defineCommand({
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDuration(
+		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatTripDuration(
+			user,
 			duration
 		)} to finish. Removed ${cost} from your bank. **${xpHr}**
 

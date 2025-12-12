@@ -1,7 +1,8 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function myNotesCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) {
@@ -30,7 +31,8 @@ export async function myNotesCommand(user: MUser, channelId: string) {
 
 	return `${
 		user.minionName
-	} is now rummaging ${quantity} skeletons for Ancient pages, it'll take around ${formatDuration(
+	} is now rummaging ${quantity} skeletons for Ancient pages, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish. Removed ${foodRemoved}.`;
 }
