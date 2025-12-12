@@ -336,18 +336,20 @@ export const runecraftCommand = defineCommand({
 
 		response += `Essence into ${runeObj.name}, it'll take around ${formatDuration(
 			duration
-		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${quantityPerEssence * quantity
-			}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
+		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
+			quantityPerEssence * quantity
+		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
 		if (!runeObj.stams) {
 			response += `\nNote: You are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;
 		}
 
 		if (runeObj.inputRune) {
-			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}${teleportReduction > 1 && !hasRingOfTheElements
-				? ', 50% less ring of dueling charges due to Crafting cape'
-				: ''
-				}.`;
+			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}${
+				teleportReduction > 1 && !hasRingOfTheElements
+					? ', 50% less ring of dueling charges due to Crafting cape'
+					: ''
+			}.`;
 		}
 
 		return response;

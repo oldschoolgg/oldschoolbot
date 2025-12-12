@@ -100,16 +100,19 @@ export async function coxStatsCommand(user: MUser) {
 		1
 	)}% ${Emoji.CombatSword} ${calcWhatPercent(normalSolo.reductions[user.id], normalSolo.maxUserReduction).toFixed(
 		1
-	)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), false))[0].deathChance.toFixed(1)}% ${Emoji.CombatSword
-		} ${calcWhatPercent(normalTeam.reductions[user.id], normalTeam.maxUserReduction).toFixed(1)}%)
+	)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), false))[0].deathChance.toFixed(1)}% ${
+		Emoji.CombatSword
+	} ${calcWhatPercent(normalTeam.reductions[user.id], normalTeam.maxUserReduction).toFixed(1)}%)
 **Challenge Mode:** ${minigameScores.raids_challenge_mode} KC (Solo: ${Emoji.Skull} ${(await createTeam([user], true))[0].deathChance.toFixed(1)}%  ${Emoji.CombatSword} ${calcWhatPercent(
-			cmSolo.reductions[user.id],
-			cmSolo.maxUserReduction
-		).toFixed(1)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), true))[0].deathChance.toFixed(1)}% ${Emoji.CombatSword
-		} ${calcWhatPercent(cmTeam.reductions[user.id], cmTeam.maxUserReduction).toFixed(1)}%)
+		cmSolo.reductions[user.id],
+		cmSolo.maxUserReduction
+	).toFixed(1)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), true))[0].deathChance.toFixed(1)}% ${
+		Emoji.CombatSword
+	} ${calcWhatPercent(cmTeam.reductions[user.id], cmTeam.maxUserReduction).toFixed(1)}%)
 **Total Points:** ${totalPoints}
-**Total Uniques:** ${totalUniques} ${totalUniques > 0 ? `(1 unique per ${Math.floor(totalPoints / totalUniques).toLocaleString()} pts)` : ''
-		}\n
+**Total Uniques:** ${totalUniques} ${
+		totalUniques > 0 ? `(1 unique per ${Math.floor(totalPoints / totalUniques).toLocaleString()} pts)` : ''
+	}\n
 **Melee:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
 **Range:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
 **Mage:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
@@ -150,8 +153,9 @@ export async function coxCommand(
 		minSize: 2,
 		maxSize,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is hosting a ${isChallengeMode ? '**Challenge mode** ' : ''
-			}Chambers of Xeric mass! Use the buttons below to join/leave.`,
+		message: `${user.usernameOrMention} is hosting a ${
+			isChallengeMode ? '**Challenge mode** ' : ''
+		}Chambers of Xeric mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (!user.hasMinion) {
 				return [true, "you don't have a minion."];
@@ -254,8 +258,9 @@ export async function coxCommand(
 			totalCost.add(realAmmoCost.realCost);
 			supplies.add(realAmmoCost.realCost);
 			const { total } = calculateUserGearPercents(u);
-			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword
-				} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n`;
+			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
+				Emoji.CombatSword
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n`;
 			return {
 				userID: u.id,
 				itemsRemoved: supplies
@@ -290,15 +295,18 @@ export async function coxCommand(
 	});
 
 	let str = isSolo
-		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${quantity > 1 ? 's' : ''
-		}. The total trip will take ${await formatTripDuration(user, duration)}.`
+		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+				quantity > 1 ? 's' : ''
+			}. The total trip will take ${await formatTripDuration(user, duration)}.`
 		: isFakeMass
-			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${quantity > 1 ? 's' : ''
-			} - the total trip will take ${await formatTripDuration(user, duration)}.`
+			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+					quantity > 1 ? 's' : ''
+				} - the total trip will take ${await formatTripDuration(user, duration)}.`
 			: `${partyOptions.leader.usernameOrMention}'s party (${users
-				.map(u => u.usernameOrMention)
-				.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${quantity > 1 ? 's' : ''
-			} - the total trip will take ${await formatTripDuration(user, duration)}.`;
+					.map(u => u.usernameOrMention)
+					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+					quantity > 1 ? 's' : ''
+				} - the total trip will take ${await formatTripDuration(user, duration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

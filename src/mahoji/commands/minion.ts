@@ -90,8 +90,9 @@ export async function getUserInfo(user: MUser) {
 **Bitfields:** ${result.bitfields}
 **Patreon Connected:** ${result.patreon}
 **Github Connected:** ${result.github}
-**Leagues:** ${roboChimpUser.leagues_completed_tasks_ids.length} tasks, ${roboChimpUser.leagues_points_total
-			} points (Rank ${leaguesRanking > 500 ? 'Unranked! Get more points!' : formatOrdinal(leaguesRanking)})
+**Leagues:** ${roboChimpUser.leagues_completed_tasks_ids.length} tasks, ${
+			roboChimpUser.leagues_points_total
+		} points (Rank ${leaguesRanking > 500 ? 'Unranked! Get more points!' : formatOrdinal(leaguesRanking)})
 **Global CL:** ${globalCLPercent}% (${clRank > 500 ? 'Unranked! Get more CL slots completed!' : formatOrdinal(clRank)})
 `
 	};

@@ -303,8 +303,9 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 		shadeID: shade.shadeName
 	});
 
-	let str = `${user.minionName
-		} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${await formatTripDuration(user, duration)}.`;
+	let str = `${
+		user.minionName
+	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${await formatTripDuration(user, duration)}.`;
 	if (messages.length > 0) {
 		str += `\n**Messages:** ${messages.join(', ')}`;
 	}

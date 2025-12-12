@@ -97,19 +97,19 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 	const str = `${user.usernameOrMention}'s party (${mahojiUsers
 		.map(u => u.usernameOrMention)
 		.join(', ')}${solo ? ' and 3 others' : ''}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
-			details.quantity,
-			details.fakeDuration
-		).toFixed(1)}/hr) - the total trip will take ${await formatTripDuration(user, details.fakeDuration)}.
+		details.quantity,
+		details.fakeDuration
+	).toFixed(1)}/hr) - the total trip will take ${await formatTripDuration(user, details.fakeDuration)}.
 
 ${effectiveTeam
-			.map(i => {
-				return `${userMention(i.id)}: Contrib[${i.contribution.toFixed(2)}%] Death[${i.deathChance.toFixed(
-					2
-				)}%] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
-					i.totalDefensivePercent
-				)}%] *${i.messages.join(', ')}*`;
-			})
-			.join('\n')}
+	.map(i => {
+		return `${userMention(i.id)}: Contrib[${i.contribution.toFixed(2)}%] Death[${i.deathChance.toFixed(
+			2
+		)}%] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
+			i.totalDefensivePercent
+		)}%] *${i.messages.join(', ')}*`;
+	})
+	.join('\n')}
 `;
 
 	return str;

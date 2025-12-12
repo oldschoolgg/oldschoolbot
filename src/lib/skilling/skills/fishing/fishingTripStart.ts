@@ -50,8 +50,8 @@ export function calcFishingTripStart({
 		scaledTimePerFish *= Math.max(
 			0.83,
 			-0.000_541_351 * gearBank.skillsAsLevels.fishing ** 2 +
-			0.089_066_3 * gearBank.skillsAsLevels.fishing -
-			2.681_53
+				0.089_066_3 * gearBank.skillsAsLevels.fishing -
+				2.681_53
 		);
 	}
 

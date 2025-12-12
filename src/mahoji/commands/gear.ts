@@ -199,13 +199,14 @@ export const gearCommand = defineCommand({
 				content: `These are the best in slot items for ${options.best_in_slot.stat}.
 
 ${res
-						.slice(0, 10)
-						.map(
-							(setup, idx) =>
-								`${idx + 1}. ${setup.toString()} has ${setup.getStats()[options.best_in_slot!.stat]} ${options.best_in_slot!.stat
-								}`
-						)
-						.join('\n')}`,
+	.slice(0, 10)
+	.map(
+		(setup, idx) =>
+			`${idx + 1}. ${setup.toString()} has ${setup.getStats()[options.best_in_slot!.stat]} ${
+				options.best_in_slot!.stat
+			}`
+	)
+	.join('\n')}`,
 				files: [{ buffer: await canvasToBuffer(totalCanvas), name: 'best_in_slot.png' }]
 			};
 		}

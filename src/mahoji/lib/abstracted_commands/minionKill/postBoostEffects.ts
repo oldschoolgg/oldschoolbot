@@ -50,9 +50,9 @@ export const postBoostEffects: PostBoostEffect[] = [
 				attackStylesUsed: isInWilderness
 					? ['wildy']
 					: uniqueArr([
-						...(Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]),
-						gearToCheck
-					]),
+							...(Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]),
+							gearToCheck
+						]),
 				learningPercentage: percentReduced,
 				isWilderness: isInWilderness,
 				minimumHealAmount: monster.minimumHealAmount

@@ -1,4 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
+
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export async function aerialFishingCommand(user: MUser, channelId: string) {

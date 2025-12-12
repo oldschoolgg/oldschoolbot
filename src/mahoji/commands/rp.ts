@@ -430,8 +430,9 @@ Date: ${dateFm(date)}`;
 				date
 			});
 			await globalClient.sendMessage(Channel.BotLogs, {
-				content: `${adminUser.logName} created userevent for ${targetUser.logName}: ${type} ${dateFm(date)} ${skill ?? ''
-					}`
+				content: `${adminUser.logName} created userevent for ${targetUser.logName}: ${type} ${dateFm(date)} ${
+					skill ?? ''
+				}`
 			});
 			return `Done: ${confirmationStr.replace('Please confirm:', '')}`;
 		}
@@ -510,7 +511,8 @@ Date: ${dateFm(date)}`;
 				return 'No gear slot specified.';
 			}
 			await interaction.confirmation(
-				`Unequip ${gearSlot} gear from ${targetUser.usernameOrMention}?${warningMsgs.length > 0 ? warningMsgs.join('\n') : ''
+				`Unequip ${gearSlot} gear from ${targetUser.usernameOrMention}?${
+					warningMsgs.length > 0 ? warningMsgs.join('\n') : ''
 				}`
 			);
 			const slotsToUnequip = gearSlot === 'all' ? allGearSlots : [gearSlot];
@@ -556,7 +558,8 @@ Date: ${dateFm(date)}`;
 				);
 			}
 			await interaction.confirmation(
-				`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${userToStealFrom.usernameOrMention
+				`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
+					userToStealFrom.usernameOrMention
 				}?`
 			);
 			let missing = new Bank();
@@ -568,8 +571,9 @@ Date: ${dateFm(date)}`;
 			}
 
 			await globalClient.sendMessage(Channel.BotLogs, {
-				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${userToStealFrom.logName
-					} for ${options.player.steal_items.reason ?? 'No reason'}`,
+				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${
+					userToStealFrom.logName
+				} for ${options.player.steal_items.reason ?? 'No reason'}`,
 				files: [{ buffer: Buffer.from(items.toString()), name: 'items.txt' }]
 			});
 
@@ -610,8 +614,9 @@ Date: ${dateFm(date)}`;
 			const result = await migrateUser(sourceUser, destUser);
 			if (result === true) {
 				await globalClient.sendMessage(Channel.BotLogs, {
-					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${reason ? `, for ${reason}` : ''
-						}`
+					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
+						reason ? `, for ${reason}` : ''
+					}`
 				});
 				return 'Done';
 			}
@@ -690,9 +695,11 @@ Date: ${dateFm(date)}`;
 				totalsRcvd.add(row.recipient_id, 'Coins', sentValueLast100);
 
 				// Add report row:
-				report += `${row.date.toLocaleString('en-us')}\t${row.guild_id}\t${row.sender_id}\t${row.recipient_id
-					}\t${row.sender}\t${row.recipient
-					}\t${sentBank}\t${recvBank}\t${sentValueGuide}\t${recvValueGuide}\t${sentValueLast100}\t${recvValueLast100}\n`;
+				report += `${row.date.toLocaleString('en-us')}\t${row.guild_id}\t${row.sender_id}\t${
+					row.recipient_id
+				}\t${row.sender}\t${
+					row.recipient
+				}\t${sentBank}\t${recvBank}\t${sentValueGuide}\t${recvValueGuide}\t${sentValueLast100}\t${recvValueLast100}\n`;
 			}
 			report += '\n\n';
 			report += 'User ID\tTotal Sent\tTotal Received\n';

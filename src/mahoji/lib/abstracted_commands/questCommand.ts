@@ -30,8 +30,9 @@ export async function questCommand(user: MUser, channelId: string, name?: string
 		if (quest.prerequisitesQuests) {
 			for (const prerequisite of quest.prerequisitesQuests) {
 				if (!user.user.finished_quest_ids.includes(prerequisite)) {
-					return `You need to complete "${quests.find(q => q.id === prerequisite)?.name}" before starting ${quest.name
-						}.`;
+					return `You need to complete "${quests.find(q => q.id === prerequisite)?.name}" before starting ${
+						quest.name
+					}.`;
 				}
 			}
 		}

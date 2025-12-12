@@ -194,12 +194,13 @@ export const infernoTask: MinionTask = {
 
 **Loot:** ${loot}
 **XP:** ${xpStr}
-You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${unusedItems.length
+You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
+				unusedItems.length
 					? `, you didn't use ${percSuppliesRefunded.toFixed(
-						2
-					)}% of your supplies, ${unusedItems} was returned to your bank`
+							2
+						)}% of your supplies, ${unusedItems} was returned to your bank`
 					: '.'
-				}
+			}
 `,
 			files: [
 				await chatHeadImage({

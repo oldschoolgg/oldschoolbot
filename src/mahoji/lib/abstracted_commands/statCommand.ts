@@ -594,10 +594,10 @@ GROUP BY data->>'plantsName'`;
 			const res = await getSlayerTaskStats(user.id);
 			return `**Your Top Slayer Tasks**
 ${res
-					.sort((a, b) => b.total_killed - a.total_killed)
-					.slice(0, 15)
-					.map(i => `**${i.monsterName}**: ${i.total_killed.toLocaleString()} Killed in ${i.total_tasks} tasks`)
-					.join('\n')}`;
+	.sort((a, b) => b.total_killed - a.total_killed)
+	.slice(0, 15)
+	.map(i => `**${i.monsterName}**: ${i.total_killed.toLocaleString()} Killed in ${i.total_tasks} tasks`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -608,11 +608,11 @@ ${res
 			if (result.length === 0) return "You haven't built anything yet.";
 			return `You've built...
 ${result
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 15)
-					.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
-					.join('\n')}`;
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -623,11 +623,11 @@ ${result
 			if (result.length === 0) return "You haven't alched anything yet.";
 			return `You've alched...
 ${result
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 15)
-					.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
-					.join('\n')}`;
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -638,11 +638,11 @@ ${result
 			if (result.length === 0) return "You haven't made anything yet.";
 			return `You've made...
 ${result
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 15)
-					.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
-					.join('\n')}`;
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -653,11 +653,11 @@ ${result
 			if (result.length === 0) return "You haven't mined anything yet.";
 			return `You've mined...
 ${result
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 15)
-					.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
-					.join('\n')}`;
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -668,11 +668,11 @@ ${result
 			if (result.length === 0) return "You haven't burnt anything yet.";
 			return `You've burnt...
 ${result
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 15)
-					.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
-					.join('\n')}`;
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -683,11 +683,11 @@ ${result
 			if (result.length === 0) return "You haven't smithed anything yet.";
 			return `You've smithed...
 ${result
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 15)
-					.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
-					.join('\n')}`;
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -698,10 +698,10 @@ ${result
 			if (result.length === 0) return "You haven't cast anything yet.";
 			return `You've cast...
 ${result
-					.sort((a, b) => b.qty - a.qty)
-					.slice(0, 15)
-					.map(i => `${i.castable.name}: ${i.qty.toLocaleString()}`)
-					.join('\n')}`;
+	.sort((a, b) => b.qty - a.qty)
+	.slice(0, 15)
+	.map(i => `${i.castable.name}: ${i.qty.toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -712,11 +712,11 @@ ${result
 			if (result.length === 0) return "You haven't collected anything yet.";
 			return `You've collected...
 ${result
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 15)
-					.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
-					.join('\n')}`;
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -727,11 +727,11 @@ ${result
 			if (result.length === 0) return "You haven't chopped anything yet.";
 			return `You've chopped...
 ${result
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 15)
-					.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
-					.join('\n')}`;
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -742,11 +742,11 @@ ${result
 			if (result.length === 0) return "You haven't smelted anything yet.";
 			return `You've smelted...
 ${result
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 15)
-					.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
-					.join('\n')}`;
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	},
 	{
@@ -1031,13 +1031,13 @@ FROM   (
 			return {
 				content: `**Rarest CL Items**
 ${bank
-						.items()
-						.filter(i => allCLItemsFiltered.has(i[0].id))
-						.sort(sorts.quantity)
-						.reverse()
-						.slice(0, 10)
-						.map((ent, ind) => `${++ind}. ${ent[0].name}: ${ent[1]}`)
-						.join('\n')}`
+	.items()
+	.filter(i => allCLItemsFiltered.has(i[0].id))
+	.sort(sorts.quantity)
+	.reverse()
+	.slice(0, 10)
+	.map((ent, ind) => `${++ind}. ${ent[0].name}: ${ent[1]}`)
+	.join('\n')}`
 			};
 		}
 	},
@@ -1057,13 +1057,13 @@ FROM   (
 			return {
 				content: `**Rarest CL Items (Ironmen)**
 ${bank
-						.items()
-						.filter(i => allCLItemsFiltered.has(i[0].id))
-						.sort(sorts.quantity)
-						.reverse()
-						.slice(0, 10)
-						.map((ent, ind) => `${++ind}. ${ent[0].name}: ${ent[1]}`)
-						.join('\n')}`
+	.items()
+	.filter(i => allCLItemsFiltered.has(i[0].id))
+	.sort(sorts.quantity)
+	.reverse()
+	.slice(0, 10)
+	.map((ent, ind) => `${++ind}. ${ent[0].name}: ${ent[1]}`)
+	.join('\n')}`
 			};
 		}
 	},
@@ -1135,23 +1135,23 @@ LIMIT 5;`
 
 			const response = `**Luckiest CoX Raiders**
 ${(
-					await Promise.all(
-						luckiest.map(
-							async i =>
-								`${await Cache.getBadgedUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
-						)
-					)
-				).join('\n')}
+	await Promise.all(
+		luckiest.map(
+			async i =>
+				`${await Cache.getBadgedUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+		)
+	)
+).join('\n')}
 
 **Unluckiest CoX Raiders**
 ${(
-					await Promise.all(
-						unluckiest.map(
-							async i =>
-								`${await Cache.getBadgedUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
-						)
-					)
-				).join('\n')}`;
+	await Promise.all(
+		unluckiest.map(
+			async i =>
+				`${await Cache.getBadgedUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+		)
+	)
+).join('\n')}`;
 			return {
 				content: response
 			};

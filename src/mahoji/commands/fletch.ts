@@ -97,7 +97,8 @@ export const fletchCommand = defineCommand({
 			type: 'Fletching'
 		});
 
-		return `${user.minionName} is now Fletching ${quantity}${sets} ${fletchable.name
-			}, it'll take around ${await formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		return `${user.minionName} is now Fletching ${quantity}${sets} ${
+			fletchable.name
+		}, it'll take around ${await formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 });

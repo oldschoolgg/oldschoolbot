@@ -80,7 +80,8 @@ export async function guardiansOfTheRiftStartCommand(
 	if (inventorySize > 28) {
 		rolls += Math.max(Math.ceil(inventorySize / 28), 1);
 		boosts.push(
-			`Extra ${Math.max(Math.ceil(inventorySize / 28), 1)} rolls for +${inventorySize - 28
+			`Extra ${Math.max(Math.ceil(inventorySize / 28), 1)} rolls for +${
+				inventorySize - 28
 			} inv spaces from pouches`
 		);
 	}
@@ -116,7 +117,8 @@ export async function guardiansOfTheRiftStartCommand(
 	if (user.hasEquippedOrInBank('Abyssal lantern')) {
 		const firemakingLevel = user.skillLevel('firemaking');
 		boosts.push(
-			`Extra 1 rolls and ${2 * Math.floor(firemakingLevel / 30)
+			`Extra 1 rolls and ${
+				2 * Math.floor(firemakingLevel / 30)
 			} Barriers/Guardians fixed for Abyssal lantern (${firemakingLevel} FM lvl)`
 		);
 		barrierAndGuardian += 2 * Math.floor(firemakingLevel / 30);
@@ -182,6 +184,7 @@ export async function guardiansOfTheRiftStartCommand(
 
 	return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${formatDuration(
 		duration
-	)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}${combinationRunes ? `\nYour minion also consumed ${removeRunesAndNecks}.` : ''
-		}`;
+	)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}${
+		combinationRunes ? `\nYour minion also consumed ${removeRunesAndNecks}.` : ''
+	}`;
 }

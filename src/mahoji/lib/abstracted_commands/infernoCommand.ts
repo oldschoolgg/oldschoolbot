@@ -317,10 +317,11 @@ async function infernoRun({
 	const projectileType: ProjectileType = rangeGear.equippedWeapon()?.name === 'Twisted bow' ? 'arrow' : 'bolt';
 	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
-		return `You're using incorrect projectiles, you're using a ${rangeGear.equippedWeapon()?.name
-			}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
-				.map(i => Items.itemNameFromId(i))
-				.join(', ')}.`;
+		return `You're using incorrect projectiles, you're using a ${
+			rangeGear.equippedWeapon()?.name
+		}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
+			.map(i => Items.itemNameFromId(i))
+			.join(', ')}.`;
 	}
 
 	duration.value = randomVariation(duration.value, (randInt(1, 10) + randInt(1, 10) + randInt(1, 10)) / 3);
@@ -477,17 +478,20 @@ export async function infernoStartCommand(user: MUser, channelId: string): Comma
 **Attempts:** ${attempts}
 
 **Duration:** ${await formatTripDuration(user, duration.value)}
-**Boosts:** ${duration.messages.join(', ')} ${duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
-			}
+**Boosts:** ${duration.messages.join(', ')} ${
+			duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
+		}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${preZukDeathChance.missed.length === 0
+**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${
+			preZukDeathChance.missed.length === 0
 				? ''
 				: `*(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*`
-			}
-**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${zukDeathChance.missed.length === 0
+		}
+**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${
+			zukDeathChance.missed.length === 0
 				? ''
 				: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
-			}
+		}
 
 **Items To Be Used:** ${realCost}`,
 		files: [

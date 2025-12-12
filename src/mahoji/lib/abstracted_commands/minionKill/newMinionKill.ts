@@ -149,11 +149,11 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 
 	const killsRemaining = currentSlayerTask
 		? killsRemainingOnTask({
-			isOnTask,
-			monster,
-			task: currentSlayerTask,
-			slayerUnlocks
-		})
+				isOnTask,
+				monster,
+				task: currentSlayerTask,
+				slayerUnlocks
+			})
 		: null;
 
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];

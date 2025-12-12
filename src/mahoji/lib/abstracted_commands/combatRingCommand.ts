@@ -1,4 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
+
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function combatRingCommand(user: MUser, channelId: string) {

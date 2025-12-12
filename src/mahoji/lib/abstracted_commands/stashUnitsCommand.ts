@@ -23,11 +23,11 @@ export async function getParsedStashUnits(userID: string): Promise<ParsedUnit[]>
 			unit,
 			isFull: builtUnit
 				? unit.items.every(slot => {
-					if (Array.isArray(slot)) {
-						return slot.some(i => builtUnit.items_contained.includes(i));
-					}
-					return builtUnit.items_contained.includes(slot);
-				})
+						if (Array.isArray(slot)) {
+							return slot.some(i => builtUnit.items_contained.includes(i));
+						}
+						return builtUnit.items_contained.includes(slot);
+					})
 				: false,
 			builtUnit,
 			tier

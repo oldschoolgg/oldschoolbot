@@ -112,7 +112,8 @@ export const sacrificeCommand = defineCommand({
 			const deathRunes = quantity * 200;
 
 			await interaction.confirmation(
-				`${user.badgedUsername}.. are you sure you want to sacrifice your ${item.name}${bankToSac.length > 1 ? 's' : ''
+				`${user.badgedUsername}.. are you sure you want to sacrifice your ${item.name}${
+					bankToSac.length > 1 ? 's' : ''
 				} for ${deathRunes} death runes? *Note: These are cute, fluffy little cats.*`
 			);
 

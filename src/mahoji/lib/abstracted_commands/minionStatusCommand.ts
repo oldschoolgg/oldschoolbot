@@ -1,4 +1,5 @@
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';

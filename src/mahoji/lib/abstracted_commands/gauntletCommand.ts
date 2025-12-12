@@ -1,4 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
+
 import { BitField } from '@/lib/constants.js';
 import type { GauntletOptions } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';

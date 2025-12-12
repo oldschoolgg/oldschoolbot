@@ -47,8 +47,8 @@ export const smeltingCommand = defineCommand({
 
 		const bar = blast_furnace
 			? Smithing.BlastableBars.find(
-				bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
-			)
+					bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
+				)
 			: Smithing.Bars.find(bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name));
 
 		if (!bar) {
@@ -154,9 +154,11 @@ export const smeltingCommand = defineCommand({
 			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 
-		const response = `${user.minionName} is now smelting ${quantity}x ${bar.name
-			}, it'll take around ${await formatTripDuration(user, duration)} to finish. ${blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
-			} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
+		const response = `${user.minionName} is now smelting ${quantity}x ${
+			bar.name
+		}, it'll take around ${await formatTripDuration(user, duration)} to finish. ${
+			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
+		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
 
 		return response;
 	}

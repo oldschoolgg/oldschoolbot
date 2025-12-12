@@ -1,5 +1,6 @@
 import { userMention } from '@oldschoolgg/discord';
 import { shuffleArr } from '@oldschoolgg/rng';
+
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 
 export const triviaCommand = defineCommand({

@@ -57,16 +57,17 @@ export const caCommand = defineCommand({
 		const completedTaskIDs = new Set(user.user.completed_ca_task_ids);
 
 		const currentPoints = user.caPoints();
-		const generalProgressString = `You have completed ${completedTaskIDs.size}/${allCombatAchievementTasks.length
-			} (${calcWhatPercent(completedTaskIDs.size, allCombatAchievementTasks.length).toFixed(
-				2
-			)}%) tasks for ${currentPoints} points. ${nextCATier(currentPoints)}.\r\nUse ${globalClient.mentionCommand(
-				'ca',
-				'claim'
-			)} to claim tasks (for tasks that don't automatically claim), and ${globalClient.mentionCommand(
-				'ca',
-				'view'
-			)} to view your specific tasks.`;
+		const generalProgressString = `You have completed ${completedTaskIDs.size}/${
+			allCombatAchievementTasks.length
+		} (${calcWhatPercent(completedTaskIDs.size, allCombatAchievementTasks.length).toFixed(
+			2
+		)}%) tasks for ${currentPoints} points. ${nextCATier(currentPoints)}.\r\nUse ${globalClient.mentionCommand(
+			'ca',
+			'claim'
+		)} to claim tasks (for tasks that don't automatically claim), and ${globalClient.mentionCommand(
+			'ca',
+			'view'
+		)} to view your specific tasks.`;
 
 		if (options.claim) {
 			const tasksToCheck = allCombatAchievementTasks
@@ -139,8 +140,9 @@ export const caCommand = defineCommand({
 			let result = '';
 
 			for (const group of Object.values(CombatAchievements)) {
-				result += `${group.name} (${group.tasks.filter(i => completedTaskIDs.has(i.id)).length}/${group.tasks.length
-					} completed). Each task in this tier awards ${group.taskPoints} points\n`;
+				result += `${group.name} (${group.tasks.filter(i => completedTaskIDs.has(i.id)).length}/${
+					group.tasks.length
+				} completed). Each task in this tier awards ${group.taskPoints} points\n`;
 				for (const task of group.tasks) {
 					if (options.view.type === 'complete' && !completedTaskIDs.has(task.id)) {
 						continue;

@@ -207,10 +207,11 @@ export async function pestControlStartCommand(user: MUser, channelId: string) {
 
 	const { boatType } = getBoatType(user, user.combatLevel);
 
-	let str = `${user.minionName
-		} is now doing ${quantity}x Pest Control games on the ${boatType} boat. The trip will take ${formatDuration(
-			duration
-		)}.`;
+	let str = `${
+		user.minionName
+	} is now doing ${quantity}x Pest Control games on the ${boatType} boat. The trip will take ${formatDuration(
+		duration
+	)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n**Boosts:** ${boosts.join(', ')}.`;

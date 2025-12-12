@@ -146,8 +146,9 @@ export const lapsCommand = defineCommand({
 			)}.`;
 		}
 
-		let response = `${user.minionName} is now doing ${quantity}x ${course.name
-			} laps, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
+		let response = `${user.minionName} is now doing ${quantity}x ${
+			course.name
+		} laps, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 
 		const alchResult = course.name === 'Ape Atoll Agility Course' || !options.alch ? null : alching(user, duration);
 		if (alchResult !== null) {
@@ -171,9 +172,9 @@ export const lapsCommand = defineCommand({
 				alchResult === null
 					? undefined
 					: {
-						itemID: alchResult.itemToAlch.id,
-						quantity: alchResult.maxCasts
-					}
+							itemID: alchResult.itemToAlch.id,
+							quantity: alchResult.maxCasts
+						}
 		});
 
 		return response;

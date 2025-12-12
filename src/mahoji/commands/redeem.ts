@@ -1,4 +1,5 @@
 import { bold } from '@oldschoolgg/discord';
+
 import { BOT_TYPE } from '@/lib/constants.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
 
@@ -61,15 +62,15 @@ export const redeemCommand = defineCommand({
 				}),
 				'bit' in product
 					? roboChimpClient.user.update({
-						where: {
-							id: BigInt(user.id)
-						},
-						data: {
-							store_bitfield: {
-								push: product.bit
+							where: {
+								id: BigInt(user.id)
+							},
+							data: {
+								store_bitfield: {
+									push: product.bit
+								}
 							}
-						}
-					})
+						})
 					: undefined
 			].filter(notEmpty)
 		);

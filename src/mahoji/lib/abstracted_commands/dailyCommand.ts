@@ -1,4 +1,5 @@
 import { MathRNG, roll, shuffleArr } from '@oldschoolgg/rng';
+
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { CONSTANTS } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';

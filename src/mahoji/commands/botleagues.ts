@@ -91,8 +91,8 @@ export const botLeaguesCommand = defineCommand({
 				return `You don't have any trophies you can claim. You have ${roboChimpUser.leagues_points_total.toLocaleString()} points.
 
 ${leaguesTrophiesBuyables
-						.map(i => `${i.item.name}: Requires ${i.leaguesPointsRequired.toLocaleString()} points`)
-						.join('\n')}`;
+	.map(i => `${i.item.name}: Requires ${i.leaguesPointsRequired.toLocaleString()} points`)
+	.join('\n')}`;
 			}
 
 			await user.addItemsToBank({ items: loot, collectionLog: false });

@@ -31,8 +31,10 @@ function notifyUniques(user: MUser, activity: string, uniques: number[], loot: B
 	if (itemsToAnnounce.length > 0) {
 		globalClient.emit(
 			Events.ServerNotification,
-			`**${user.badgedUsername}'s** minion, ${user.minionName
-			}, while offering ${qty}x ${activity}, found **${itemsToAnnounce}**${randQty ? ` on their ${formatOrdinal(randQty)} offering!` : '!'
+			`**${user.badgedUsername}'s** minion, ${
+				user.minionName
+			}, while offering ${qty}x ${activity}, found **${itemsToAnnounce}**${
+				randQty ? ` on their ${formatOrdinal(randQty)} offering!` : '!'
 			}`
 		);
 	}
@@ -199,8 +201,9 @@ export const offerCommand = defineCommand({
 				}),
 				user.removeItemsFromBank(new Bank().add(specialBone.item.id, quantity))
 			]);
-			return `You handed over ${quantity} ${specialBone.item.name}${quantity > 1 ? "'s" : ''
-				} to Barlak and received ${xp} Construction XP.`;
+			return `You handed over ${quantity} ${specialBone.item.name}${
+				quantity > 1 ? "'s" : ''
+			} to Barlak and received ${xp} Construction XP.`;
 		}
 
 		const speedMod = 1.5;
@@ -254,7 +257,8 @@ export const offerCommand = defineCommand({
 			duration,
 			type: 'Offering'
 		});
-		return `${user.minionName} is now offering ${quantity}x ${bone.name
-			} at the Chaos altar, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
+		return `${user.minionName} is now offering ${quantity}x ${
+			bone.name
+		} at the Chaos altar, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 	}
 });

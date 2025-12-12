@@ -138,8 +138,9 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		channelId: channelId.toString()
 	});
 
-	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${quantity > 1 ? 's' : ''
-		}. The demon butler has charged you ${toKMB(cost)} GP.`;
+	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${
+		quantity > 1 ? 's' : ''
+	}. The demon butler has charged you ${toKMB(cost)} GP.`;
 
 	if (consumedItems.length) {
 		response += `\nYou have used ${consumedItems} for teleports.`;

@@ -118,8 +118,9 @@ export const buyCommand = defineCommand({
 				kc += await user.fetchMinigameScore('tob_hard');
 			}
 			if (kc < req) {
-				return `You need ${req} KC in ${Minigames.find(i => i.column === key)?.name
-					} to buy this, you only have ${kc} KC.`;
+				return `You need ${req} KC in ${
+					Minigames.find(i => i.column === key)?.name
+				} to buy this, you only have ${kc} KC.`;
 			}
 		}
 
