@@ -15,6 +15,7 @@ export interface DegradeableItem {
 		| 'ash_sanctifier_charges'
 		| 'serp_helm_charges'
 		| 'blood_fury_charges'
+		| 'chemistry_amulet_charges'
 		| 'tum_shadow_charges'
 		| 'blood_essence_charges'
 		| 'trident_charges'
@@ -138,6 +139,19 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: Items.getOrThrow('Serpentine helm (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Serpentine_helm:1068491236123619379>'
+	},
+	{
+		item: Items.getOrThrow('Amulet of chemistry'),
+		settingsKey: 'chemistry_amulet_charges',
+		itemsToRefundOnBreak: new Bank().freeze(),
+		refundVariants: [],
+		setup: 'skilling',
+		aliases: ['amulet of chemistry', 'chemistry'],
+		chargeInput: {
+			cost: new Bank().add('Amulet of chemistry').freeze(),
+			charges: 5
+		},
+		emoji: '🧪'
 	},
 	{
 		item: Items.getOrThrow('Amulet of blood fury'),
@@ -399,6 +413,7 @@ export async function degradeItem({
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
 		chargesToDegrade: chargesToDegrade,
+		chargesRemaining: chargesAfter,
 		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges`
 	};
 }
