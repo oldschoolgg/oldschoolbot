@@ -47,15 +47,10 @@ async function getAdapter(
 	return { adapter, pgLiteClient };
 }
 
-interface BotDB {
-	prismaClient: PrismaClient;
-	adapter: PrismaPg;
-	pgLiteClient: PGlite | null;
-}
-async function makePrismaClient(): Promise<BotDB> {
+async function makePrismaClient() {
 	const { adapter, pgLiteClient } = await getAdapter(BOT_TYPE);
 	const prismaClient = new PrismaClient({
-		log: [{ emit: 'event', level: 'query' }, 'info', 'warn', 'error'],
+		log: [{ emit: 'event', level: 'query' }, 'info', 'warn'],
 		adapter,
 		transactionOptions: {
 			maxWait: 15_000,
@@ -83,13 +78,13 @@ async function makePrismaClient(): Promise<BotDB> {
 
 interface RoboChimpDB {
 	prismaClient: RobochimpPrismaClient;
-	adapter: PrismaPg;
+	adapter: PrismaPg | PrismaPGlite;
 	pgLiteClient: PGlite | null;
 }
 async function makeRobochimpPrismaClient(): Promise<RoboChimpDB> {
 	const { adapter, pgLiteClient } = await getAdapter('robochimp');
 	const prismaClient = new RobochimpPrismaClient({
-		log: ['warn', 'error'],
+		log: ['warn'],
 		adapter
 	});
 	return { prismaClient, adapter, pgLiteClient };

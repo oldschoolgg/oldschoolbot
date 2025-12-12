@@ -1,6 +1,6 @@
 import { randFloat, randInt, roll } from '@oldschoolgg/rng';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
+import { type Bank, EMonster, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { caTiers } from '@/lib/combat_achievements/combatAchievements.js';
 import type { PvMMethod } from '@/lib/constants.js';
@@ -299,7 +299,7 @@ export function getCommonTaskName(task: Monster) {
 		case Monsters.GuardDog.id:
 			commonName = 'Dog';
 			break;
-		case Monsters.TzHaarKet.id:
+		case EMonster.TZHAARKET:
 			commonName = 'TzHaar';
 			break;
 		case Monsters.RevenantImp.id:
@@ -440,9 +440,9 @@ const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeo
 function filterPieces(myLoot: Bank, myClLoot: Bank, combinedBank: Bank, pieces: number[], numPieces: number) {
 	for (let x = 0; x < numPieces; x++) {
 		const bank: number[] = pieces.map(piece => combinedBank.amount(piece));
-		const minBank = Math.min(...bank);
+		const lowestAmountOwned = Math.min(...bank);
 		for (let i = 0; i < bank.length; i++) {
-			if (bank[i] === minBank) {
+			if (bank[i] === lowestAmountOwned) {
 				myLoot.add(pieces[i]);
 				combinedBank.add(pieces[i]);
 				myClLoot.add(pieces[i]);
@@ -452,40 +452,40 @@ function filterPieces(myLoot: Bank, myClLoot: Bank, combinedBank: Bank, pieces: 
 	}
 }
 
-export function filterLootReplace(myBank: Bank, myLoot: Bank) {
+export function filterLootReplace({ currentBank, itemsToAdd }: { currentBank: Bank; itemsToAdd: Bank }) {
 	const numHydraPieces =
-		myLoot.amount("Hydra's eye") + myLoot.amount("Hydra's fang") + myLoot.amount("Hydra's heart");
+		itemsToAdd.amount("Hydra's eye") + itemsToAdd.amount("Hydra's fang") + itemsToAdd.amount("Hydra's heart");
 	const numNoxPieces =
-		myLoot.amount('Noxious point') + myLoot.amount('Noxious blade') + myLoot.amount('Noxious pommel');
-	const numTotemPieces = myLoot.amount('Dark totem base');
-	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
+		itemsToAdd.amount('Noxious point') + itemsToAdd.amount('Noxious blade') + itemsToAdd.amount('Noxious pommel');
+	const numTotemPieces = itemsToAdd.amount('Dark totem base');
+	const numBludgeonPieces = itemsToAdd.amount('Bludgeon claw');
 
 	if (!numHydraPieces && !numNoxPieces && !numTotemPieces && !numBludgeonPieces) {
-		return { bankLoot: myLoot, clLoot: myLoot };
+		return { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 	}
 
 	for (const item of filterLootItems) {
-		myLoot.set(item, 0);
+		itemsToAdd.set(item, 0);
 	}
 
-	const myClLoot = myLoot.clone();
-	const combinedBank = new Bank(myBank).add(myLoot);
+	const myClLoot = itemsToAdd.clone();
+	const combinedBank = currentBank.clone().add(itemsToAdd);
 
 	if (numHydraPieces) {
-		filterPieces(myLoot, myClLoot, combinedBank, hydraPieces, numHydraPieces);
+		filterPieces(itemsToAdd, myClLoot, combinedBank, hydraPieces, numHydraPieces);
 	}
 	if (numNoxPieces) {
-		filterPieces(myLoot, myClLoot, combinedBank, noxPieces, numNoxPieces);
+		filterPieces(itemsToAdd, myClLoot, combinedBank, noxPieces, numNoxPieces);
 	}
 	if (numTotemPieces) {
-		filterPieces(myLoot, myClLoot, combinedBank, totemPieces, numTotemPieces);
+		filterPieces(itemsToAdd, myClLoot, combinedBank, totemPieces, numTotemPieces);
 	}
 	if (numBludgeonPieces) {
-		filterPieces(myLoot, myClLoot, combinedBank, bludgeonPieces, numBludgeonPieces);
+		filterPieces(itemsToAdd, myClLoot, combinedBank, bludgeonPieces, numBludgeonPieces);
 	}
 
 	return {
-		bankLoot: myLoot,
+		bankLoot: itemsToAdd,
 		clLoot: myClLoot
 	};
 }

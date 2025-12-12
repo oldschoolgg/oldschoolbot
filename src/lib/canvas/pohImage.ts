@@ -2,7 +2,6 @@ import * as fs from 'node:fs';
 import path from 'node:path';
 import { randInt } from '@oldschoolgg/rng';
 import { objectEntries } from '@oldschoolgg/toolkit';
-import { loadImage } from 'skia-canvas';
 
 import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import {
@@ -11,7 +10,8 @@ import {
 	type CanvasImage,
 	canvasToBuffer,
 	createCanvas,
-	loadAndCacheLocalImage
+	loadAndCacheLocalImage,
+	loadImage
 } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '@/lib/poh/index.js';
@@ -126,11 +126,13 @@ class PoHImage {
 				ctx.drawImage(image, x - width / 2, y - height, width, height);
 			}
 		}
-		const activity = ActivityManager.getActivityOfUser(poh.user_id);
-		if (!activity) {
-			const image = this.imageCache.get(11)!;
-			const [x, y] = this.randMinionCoords();
-			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
+		if (!process.env.TEST) {
+			const activity = await ActivityManager.getActivityOfUser(poh.user_id);
+			if (!activity) {
+				const image = this.imageCache.get(11)!;
+				const [x, y] = this.randMinionCoords();
+				ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
+			}
 		}
 		return canvasToBuffer(canvas);
 	}

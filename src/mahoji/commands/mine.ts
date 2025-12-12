@@ -158,7 +158,7 @@ export const mineCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to mine.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [...Mining.Ores.map(i => i.name), Mining.MotherlodeMine.name]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -172,7 +172,8 @@ export const mineCommand = defineCommand({
 			name: 'quantity',
 			description: 'The quantity you want to mine (optional).',
 			required: false,
-			min_value: 1
+			min_value: 1,
+			max_value: 100_000
 		},
 		{
 			type: 'Boolean',
@@ -181,7 +182,7 @@ export const mineCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const { quantity, powermine } = options;
 
 		const motherlodeMine =
@@ -189,7 +190,7 @@ export const mineCommand = defineCommand({
 			Mining.MotherlodeMine.aliases?.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
-			return motherlodeMineCommand({ user, channelID, quantity });
+			return motherlodeMineCommand({ user, channelId, quantity });
 		}
 		const ore = Mining.Ores.find(
 			ore =>
@@ -229,7 +230,7 @@ export const mineCommand = defineCommand({
 		const res = determineMiningTrip({
 			gearBank: user.gearBank,
 			ore,
-			maxTripLength: user.calcMaxTripLength('Mining'),
+			maxTripLength: await user.calcMaxTripLength('Mining'),
 			isPowermining: !!powermine,
 			quantityInput: quantity,
 			hasKaramjaMedium
@@ -238,7 +239,7 @@ export const mineCommand = defineCommand({
 		await ActivityManager.startTrip<MiningActivityTaskOptions>({
 			oreID: ore.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity: res.quantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powermine: res.isPowermining,

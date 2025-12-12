@@ -1,12 +1,10 @@
-import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
-import deepEqual from 'fast-deep-equal';
+import { calcWhatPercent, deepEqual, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
-import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
+import { Prisma, type TriviaQuestion, type User } from '@/prisma/clients/robochimp/client.js';
 import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
-import { cacheRoboChimpUser } from '@/lib/perkTier.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export type RobochimpUser = User;
@@ -83,7 +81,6 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 			...updateObj
 		}
 	});
-	cacheRoboChimpUser(newUser);
 
 	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
@@ -92,17 +89,31 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 }
 
 export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {
-	const result: RobochimpUser = await roboChimpClient.user.upsert({
-		where: {
-			id: BigInt(userID)
-		},
-		create: {
-			id: BigInt(userID)
-		},
-		update: {}
-	});
+	const userId = BigInt(userID);
+	try {
+		const result = await roboChimpClient.user.upsert({
+			where: {
+				id: userId
+			},
+			create: {
+				id: userId
+			},
+			update: {}
+		});
+		return result;
+	} catch (err) {
+		// Ignore unique constraint errors, they already have a row
+		if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
+			throw err;
+		}
+	}
 
-	cacheRoboChimpUser(result);
+	// They definitely should have a row now
+	const result = await roboChimpClient.user.findFirstOrThrow({
+		where: {
+			id: userId
+		}
+	});
 
 	return result;
 }

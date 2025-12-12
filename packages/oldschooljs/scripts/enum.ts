@@ -2,7 +2,7 @@ import { writeFileSync } from 'node:fs';
 
 import type { Item } from '@/meta/item.js';
 import { Monsters } from '@/simulation/monsters/index.js';
-import Items from '@/structures/Items.js';
+import { Items } from '@/structures/Items.js';
 
 export function safeItemName(itemName: string) {
 	let key = itemName;
@@ -42,6 +42,7 @@ async function main() {
 		enumItems.push([key, item.id]);
 	}
 
+	enumItems.push(['EMPTY_BIRD_NEST', 5075]);
 	const forcedChanges = [
 		['Ultor ring', 25485],
 		['Bellator ring', 25488],

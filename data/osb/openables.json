@@ -612,6 +612,32 @@
 		]
 	},
 	{
+		"name": "Chest (moon key)",
+		"id": 30109,
+		"opened_item": "Moon key",
+		"all_items": [
+			"Cabbage",
+			"Coal",
+			"Crystal key",
+			"Dragon platelegs",
+			"Dragonstone",
+			"Gold ore",
+			"Helmet of the moon",
+			"Huasca seed",
+			"Moon key",
+			"Nature rune",
+			"Onyx bolts",
+			"Raw monkfish",
+			"Rune platebody",
+			"Spinach roll",
+			"Sun-kissed bones",
+			"Sunfire splinters",
+			"Uncut diamond",
+			"Uncut onyx",
+			"Watermelon seed"
+		]
+	},
+	{
 		"name": "Crystal chest",
 		"id": 989,
 		"opened_item": "Crystal key",
@@ -1950,7 +1976,7 @@
 			"Zamorak robe legs",
 			"Zamorak robe top",
 			"Zamorak stole",
-			"Zombie head"
+			"Zombie head (treasure trails)"
 		]
 	},
 	{
@@ -2918,7 +2944,7 @@
 			"Zamorak platelegs",
 			"Zamorak plateskirt",
 			"Zamorak stole",
-			"Zombie head"
+			"Zombie head (treasure trails)"
 		]
 	},
 	{

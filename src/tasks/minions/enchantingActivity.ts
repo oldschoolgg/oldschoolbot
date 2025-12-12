@@ -4,7 +4,7 @@ import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
 export const enchantingTask: MinionTask = {
 	type: 'Enchanting',
 	async run(data: EnchantingActivityTaskOptions, { user, handleTripFinish }) {
-		const { itemID, quantity, channelID, duration } = data;
+		const { itemID, quantity, channelId, duration } = data;
 
 		const enchantable = Enchantables.find(fletchable => fletchable.id === itemID)!;
 
@@ -23,6 +23,6 @@ export const enchantingTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished enchanting ${quantity}x ${enchantable.name}, you received ${loot}. ${xpRes}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

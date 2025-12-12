@@ -1,17 +1,9 @@
-import { roll, shuffleArr } from '@oldschoolgg/rng';
-import { awaitMessageComponentInteraction, channelIsSendable, chunk, noOp, Time } from '@oldschoolgg/toolkit';
-import {
-	ActionRowBuilder,
-	type BaseMessageOptions,
-	ButtonBuilder,
-	type ButtonInteraction,
-	ButtonStyle,
-	type CacheType
-} from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { Bank, toKMB } from 'oldschooljs';
+import { chunk } from 'remeda';
 
-import { SILENT_ERROR } from '@/lib/constants.js';
-import { silentButtonAck } from '@/lib/discord/utils.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: MInteraction) {
@@ -20,10 +12,6 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 	if (!amount) {
 		return 'amount must be between 1000000 and 3000000000 exclusively.';
 	}
-
-	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel))
-		return 'Please give the bot permission to send messages in this channel before running this command.';
 
 	await interaction.defer();
 
@@ -82,9 +70,9 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 			'0'
 		];
 
-		buttonsToShow.push(roll(10) ? '10x' : '0');
-		buttonsToShow.push(roll(10) ? '5x' : '0');
-		return shuffleArr(buttonsToShow.map(n => buttons.find(i => i.name === n)!)).map((item, index) => ({
+		buttonsToShow.push(cryptoRng.roll(10) ? '10x' : '0');
+		buttonsToShow.push(cryptoRng.roll(10) ? '5x' : '0');
+		return cryptoRng.shuffle(buttonsToShow.map(n => buttons.find(i => i.name === n)!)).map((item, index) => ({
 			...item,
 			picked: false,
 			id: `LP_${index}`
@@ -109,94 +97,61 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 	}
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
-	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): BaseMessageOptions['components'] {
+	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }) {
 		const chunkedButtons = chunk(buttonsToShow, 5);
 		return chunkedButtons.map(c =>
-			new ActionRowBuilder<ButtonBuilder>().addComponents(
-				c.map(b => {
-					const button = new ButtonBuilder()
+			c.map(b => {
+				const button = new ButtonBuilder()
 
-						.setCustomId(b.id.toString())
-						.setStyle(
-							b.picked
-								? b.name !== '0'
-									? ButtonStyle.Success
-									: ButtonStyle.Danger
-								: ButtonStyle.Secondary
-						);
+					.setCustomId(b.id.toString())
+					.setStyle(
+						b.picked ? (b.name !== '0' ? ButtonStyle.Success : ButtonStyle.Danger) : ButtonStyle.Secondary
+					);
 
-					if (showTrueNames) {
-						button.setLabel(b.name);
-					}
-					if (!showTrueNames) {
-						button.setEmoji('680783258488799277');
-					}
-					if (b.name === '10x' && !b.picked && showTrueNames) {
-						button.setStyle(ButtonStyle.Primary);
-					}
-					return button;
-				})
-			)
+				if (showTrueNames) {
+					button.setLabel(b.name);
+				}
+				if (!showTrueNames) {
+					button.setEmoji({ id: EmojiId.MysteryBox });
+				}
+				if (b.name === '10x' && !b.picked && showTrueNames) {
+					button.setStyle(ButtonStyle.Primary);
+				}
+				return button;
+			})
 		);
 	}
 
-	const sentMessage = await channel.send({
+	await interaction.reply({
 		content: `${user}, Pick *one* button!`,
 		components: getCurrentButtons({ showTrueNames: false })
 	});
 
-	const finalize = async ({ button }: { button: ButtonInstance }) => {
-		const amountReceived = Math.floor(button.mod(amount));
-		if (amountReceived > 0) {
-			await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
-		}
-		await ClientSettings.updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
-		await user.updateGPTrackSetting('gp_luckypick', amountReceived - amount);
-		await sentMessage.edit({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
-		return amountReceived === 0
+	const selectionResult = await globalClient.pickStringWithButtons({
+		interaction,
+		options: buttonsToShow.map(_b => ({ label: '', id: _b.id, emoji: EmojiId.MysteryBox })),
+		content: `${user}, Pick *one* button!`
+	});
+	if (!selectionResult) {
+		await user.addItemsToBank({ items: new Bank().add('Coins', amount) });
+		return `You didn't pick any buttons in time, so you were refunded ${toKMB(amount)} GP.`;
+	}
+
+	const pickedButton = buttonsToShow.find(b => b.id === selectionResult.choice.id)!;
+	const index = Number.parseInt(pickedButton.id.split('_')[1]);
+	buttonsToShow[index].picked = true;
+	const amountReceived = Math.floor(pickedButton.mod(amount));
+	if (amountReceived > 0) {
+		await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
+	}
+	await ClientSettings.updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
+	await user.updateGPTrackSetting('gp_luckypick', amountReceived - amount);
+	const content =
+		amountReceived === 0
 			? `${user} picked the wrong button and lost ${toKMB(amount)}!`
 			: `${user} won ${toKMB(amountReceived)}!`;
+	return {
+		content,
+		components: getCurrentButtons({ showTrueNames: true })
 	};
-
-	const cancel = async () => {
-		await sentMessage.delete();
-		if (!buttonsToShow.some(b => b.picked)) {
-			await user.addItemsToBank({ items: new Bank().add('Coins', amount) });
-			return `You didn't pick any buttons in time, so you were refunded ${toKMB(amount)} GP.`;
-		}
-		throw new Error(SILENT_ERROR);
-	};
-
-	try {
-		const selection = await awaitMessageComponentInteraction({
-			message: sentMessage,
-			filter: i => {
-				if (i.user.id !== (user.id ?? interaction.user.id).toString()) {
-					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-					return false;
-				}
-				return true;
-			},
-			time: Time.Second * 10
-		});
-		sentMessage.delete().catch(noOp);
-
-		const pickedButton = buttonsToShow.find(b => b.id === selection.customId)!;
-		const index = Number.parseInt(pickedButton.id.split('_')[1]);
-		buttonsToShow[index].picked = true;
-
-		try {
-			await silentButtonAck(selection as ButtonInteraction<CacheType>);
-			const result = await finalize({ button: pickedButton });
-			return {
-				content: result,
-				components: getCurrentButtons({ showTrueNames: true })
-			};
-		} catch (err) {
-			Logging.logError(err as Error);
-			return 'Error.';
-		}
-	} catch (_err) {
-		return cancel();
-	}
 }

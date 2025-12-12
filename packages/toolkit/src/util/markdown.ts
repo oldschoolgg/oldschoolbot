@@ -89,7 +89,7 @@ export class Markdown {
 		return this;
 	}
 
-	addLine(str: string) {
+	addLine(str: string): this {
 		this.elements.push(`${str}\n`);
 		return this;
 	}

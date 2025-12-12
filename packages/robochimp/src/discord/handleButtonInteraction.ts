@@ -1,10 +1,15 @@
-import { type Interaction, MessageFlags } from 'discord.js';
+import type { ButtonMInteraction } from '@oldschoolgg/discord';
 
-export async function handleButtonInteraction(interaction: Interaction) {
-	if (!interaction.isButton()) return;
+import { globalConfig } from '@/constants.js';
+
+export async function handleButtonInteraction(interaction: ButtonMInteraction) {
 	const id = interaction.customId;
+	if (!id) return;
 
-	const member = (await globalClient.fetchSupportServer()).members.cache.get(interaction.user.id);
+	const member = await globalClient.fetchMember({
+		guildId: globalConfig.supportServerID,
+		userId: interaction.userId
+	});
 	if (!member) return;
 
 	if (id.includes('roles.')) {
@@ -17,35 +22,35 @@ export async function handleButtonInteraction(interaction: Interaction) {
 		if (!pingableRole) return;
 
 		if (id.includes('add')) {
-			if (member.roles.cache.has(pingableRole.role_id)) {
-				return interaction.reply({ content: 'You already have this role.', flags: MessageFlags.Ephemeral });
+			if (member.roles.includes(pingableRole.role_id)) {
+				return interaction.reply({ content: 'You already have this role.', ephemeral: true });
 			}
 			try {
-				await member.roles.add(pingableRole.role_id);
+				await globalClient.giveRole(globalConfig.supportServerID, interaction.userId, pingableRole.role_id);
 				return interaction.reply({
 					content: `Gave you the \`${pingableRole.name}\` role.`,
-					flags: MessageFlags.Ephemeral
+					ephemeral: true
 				});
 			} catch {
 				return interaction.reply({
 					content: 'An error occured trying to give you the role.',
-					flags: MessageFlags.Ephemeral
+					ephemeral: true
 				});
 			}
 		} else {
-			if (!member.roles.cache.has(pingableRole.role_id)) {
-				return interaction.reply({ content: "You don't have this role.", flags: MessageFlags.Ephemeral });
+			if (!member.roles.includes(pingableRole.role_id)) {
+				return interaction.reply({ content: "You don't have this role.", ephemeral: true });
 			}
 			try {
-				await member.roles.remove(pingableRole.role_id);
+				await globalClient.takeRole(globalConfig.supportServerID, interaction.userId, pingableRole.role_id);
 				return interaction.reply({
 					content: `Removed the \`${pingableRole.name}\` role from you.`,
-					flags: MessageFlags.Ephemeral
+					ephemeral: true
 				});
 			} catch {
 				return interaction.reply({
 					content: 'An error occured trying to remove the role.',
-					flags: MessageFlags.Ephemeral
+					ephemeral: true
 				});
 			}
 		}

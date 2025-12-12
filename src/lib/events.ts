@@ -1,14 +1,13 @@
-import { roll } from '@oldschoolgg/rng';
-import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
-import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextChannel } from 'discord.js';
-import { LRUCache } from 'lru-cache';
+import { bold, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
+import { MathRNG, roll } from '@oldschoolgg/rng';
+import type { IMessage } from '@oldschoolgg/schemas';
+import { Emoji, Events, getNextUTCReset, isFunction, Time } from '@oldschoolgg/toolkit';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
-import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
-import { Channel, globalConfig } from '@/lib/constants.js';
+import { CHAT_PET_COOLDOWN_CACHE, lastRoboChimpSyncCache, RARE_ROLES_CACHE } from '@/lib/cache.js';
+import { CONSTANTS, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -38,30 +37,29 @@ const rareRolesSrc: [string, number, string][] = [
 	['670212876832735244', 1_000_000, 'Third Age']
 ];
 
-const userCache = new LRUCache<string, number>({ max: 1000 });
-function rareRoles(msg: Message) {
+async function rareRoles(msg: IMessage) {
 	if (!globalConfig.isProduction) return;
 
-	if (!msg.guild || msg.guild.id !== globalConfig.supportServerID) {
+	if (msg.guild_id !== globalConfig.supportServerID) {
 		return;
 	}
 
-	const lastMessage = userCache.get(msg.author.id) ?? 1;
+	const lastMessage = RARE_ROLES_CACHE.get(msg.author_id) ?? 1;
 	if (Date.now() - lastMessage < Time.Second * 13) return;
-	userCache.set(msg.author.id, Date.now());
+	RARE_ROLES_CACHE.set(msg.author_id, Date.now());
 
-	if (!roll(10)) return;
+	if (!roll(10) || !msg.guild_id) return;
 
 	for (const [roleID, chance, name] of rareRolesSrc) {
 		if (roll(chance / 10)) {
-			if (msg.member?.roles.cache.has(roleID)) continue;
-			if (!globalConfig.isProduction && msg.channel.isSendable()) {
-				return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
-			}
-			msg.member?.roles.add(roleID);
-			msg.react(Emoji.Gift);
-
-			const channel = globalClient.channels.cache.get(Channel.Notifications);
+			const member = await Cache.getMainServerMember(msg.author_id);
+			if (!member || member.roles.includes(roleID)) continue;
+			await globalClient.giveRole(msg.guild_id, msg.author_id, roleID);
+			await globalClient.reactToMsg({
+				channelId: msg.channel_id,
+				messageId: msg.id,
+				emojiId: 'Gift'
+			});
 
 			if (
 				!rareRolesSrc
@@ -69,8 +67,10 @@ function rareRoles(msg: Message) {
 					.map(i => i[2])
 					.includes(name)
 			) {
-				(channel as TextChannel).send(
-					`${Emoji.Fireworks} **${msg.author.username}** just received the **${name}** role. `
+				const username = await Cache.getBadgedUsername(msg.author_id);
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Fireworks} **${username}** just received the **${name}** role. `
 				);
 			}
 			break;
@@ -78,44 +78,34 @@ function rareRoles(msg: Message) {
 	}
 }
 
-const petCache = new LRUCache<string, number>({ max: 2000 });
-async function petMessages(msg: Message) {
-	if (!msg.guild) return;
-	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild.id);
-	if (!cachedSettings?.petchannel) return;
+async function petMessages(msg: IMessage) {
+	if (!msg.guild_id) return;
+	const guildSettings = await Cache.getGuild(msg.guild_id);
+	if (!guildSettings.petchannel) return;
 
-	const key = `${msg.author.id}.${msg.guild.id}`;
+	const key = `${msg.author_id}.${msg.guild_id}`;
 	// If they sent a message in this server in the past 1.5 mins, return.
-	const lastMessage = petCache.get(key) ?? 1;
+	const lastMessage = CHAT_PET_COOLDOWN_CACHE.get(key) ?? 1;
 	if (Date.now() - lastMessage < 80_000) return;
-	petCache.set(key, Date.now());
+	CHAT_PET_COOLDOWN_CACHE.set(key, Date.now());
 
-	const pet = pets[Math.floor(Math.random() * pets.length)];
-	if (roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
-		const user = await mUserFetch(msg.author.id);
-		const userPets = user.user.pets as ItemBank;
-		const newUserPets = { ...userPets };
-		if (!newUserPets[pet.id]) newUserPets[pet.id] = 1;
-		else newUserPets[pet.id]++;
-		await user.update({
-			pets: { ...newUserPets }
-		});
-		if (!channelIsSendable(msg.channel)) return;
-		if (userPets[pet.id] > 1) {
-			await msg.channel.send(
-				`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`
-			);
-		} else {
-			await msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
-Type \`/tools user mypets\` to see your pets.`);
-		}
+	const pet = MathRNG.pick(pets);
+	if (MathRNG.roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
+		Logging.logDebug(`${msg.author_id} triggered a pet message`);
+		const user = await mUserFetch(msg.author_id);
+		const { isNewPet } = await user.giveBotMessagePet(pet);
+		await globalClient.replyToMessage(
+			msg,
+			isNewPet
+				? `You have a funny feeling like you’re being followed. ${pet.emoji}
+Type \`/tools user mypets\` to see your pets.`
+				: `You have a funny feeling like they would have been followed. ${pet.emoji}`
+		);
 	}
 }
 
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
-
-export const TEARS_OF_GUTHIX_CD = Time.Day * 7;
 
 const cooldownTimers: {
 	name: string;
@@ -127,30 +117,29 @@ const cooldownTimers: {
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: TEARS_OF_GUTHIX_CD,
+		cd: CONSTANTS.TEARS_OF_GUTHIX_CD,
 		command: ['minigames', 'tears_of_guthix', 'start'],
 		utcReset: true
 	},
 	{
 		name: 'Daily',
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
-		cd: Time.Hour * 12,
+		cd: CONSTANTS.DAILY_COOLDOWN,
 		command: ['minion', 'daily'],
 		utcReset: false
 	}
 ];
 
 interface MentionCommandOptions {
-	msg: Message;
 	user: MUser;
-	components: BaseMessageOptions['components'];
+	components: BaseSendableMessage['components'];
 	content: string;
 }
 interface MentionCommand {
 	name: command_name_enum;
 	aliases: string[];
 	description: string;
-	run: (options: MentionCommandOptions) => Promise<unknown>;
+	run: (options: MentionCommandOptions) => Promise<SendableMessage>;
 }
 
 const mentionCommands: MentionCommand[] = [
@@ -158,41 +147,39 @@ const mentionCommands: MentionCommand[] = [
 		name: 'bs',
 		aliases: ['bs'],
 		description: 'Searches your bank.',
-		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
-			return msg.reply({
+		run: async ({ user, components, content }: MentionCommandOptions) => {
+			return {
 				files: [
-					(
-						await makeBankImage({
-							bank: user.bankWithGP.filter(i => i.name.toLowerCase().includes(content.toLowerCase())),
-							title: 'Your Bank',
-							user
-						})
-					).file.attachment
+					await makeBankImage({
+						bank: user.bankWithGP.filter(i => i.name.toLowerCase().includes(content.toLowerCase())),
+						title: 'Your Bank',
+						user
+					})
 				],
 				components
-			});
+			};
 		}
 	},
 	{
 		name: 'bal',
 		aliases: ['bal', 'gp'],
 		description: 'Shows how much GP you have.',
-		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			return msg.reply({
+		run: async ({ user, components }: MentionCommandOptions) => {
+			return {
 				content: `${Emoji.MoneyBag} You have ${toKMB(user.GP)} (${user.GP.toLocaleString()}) GP.`,
 				components
-			});
+			};
 		}
 	},
 	{
 		name: 'is',
 		aliases: ['is'],
 		description: 'Searches for items.',
-		run: async ({ msg, components, user, content }: MentionCommandOptions) => {
+		run: async ({ components, user, content }: MentionCommandOptions) => {
 			const items = Items.filter(i =>
 				[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase())
 			).array();
-			if (items.length === 0) return msg.reply('No results for that item.');
+			if (items.length === 0) return { content: 'No results for that item.' };
 
 			const gettedItem = items[0];
 			const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
@@ -223,38 +210,36 @@ const mentionCommands: MentionCommand[] = [
 				str += `\n...and ${items.length - 5} others`;
 			}
 
-			return msg.reply({ embeds: [new EmbedBuilder().setDescription(str)], components });
+			return { embeds: [new EmbedBuilder().setDescription(str)], components };
 		}
 	},
 	{
 		name: 'bank',
 		aliases: ['b', 'bank'],
 		description: 'Shows your bank.',
-		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			return msg.reply({
+		run: async ({ user, components }: MentionCommandOptions) => {
+			return {
 				files: [
-					(
-						await makeBankImage({
-							bank: user.bankWithGP,
-							title: 'Your Bank',
-							user,
-							flags: {
-								page: 0
-							}
-						})
-					).file.attachment
+					await makeBankImage({
+						bank: user.bankWithGP,
+						title: 'Your Bank',
+						user,
+						flags: {
+							page: 0
+						}
+					})
 				],
 				components
-			});
+			};
 		}
 	},
 	{
 		name: 'cd',
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
-		run: async ({ msg, user, components }: MentionCommandOptions) => {
+		run: async ({ user, components }: MentionCommandOptions) => {
 			const stats = await user.fetchStats();
-			return msg.reply({
+			return {
 				content: cooldownTimers
 					.map(cd => {
 						const lastDone = cd.timeStamp(user, stats);
@@ -265,47 +250,54 @@ const mentionCommands: MentionCommand[] = [
 							const durationRemaining = dateFm(new Date(nextReset));
 							return `${cd.name}: ${durationRemaining}`;
 						}
-						return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
+						return bold(
+							`${cd.name}: Ready ${globalClient.mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`
+						);
 					})
 					.join('\n'),
 				components
-			});
+			};
 		}
 	},
 	{
 		name: 'stats',
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
-		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			return msg.reply({
+		run: async ({ user, components }: MentionCommandOptions) => {
+			return {
 				embeds: [await minionStatsEmbed(user)],
 				components
-			});
+			};
 		}
 	}
 ];
 
-export async function onMessage(msg: Message) {
+export async function onMessage(msg: IMessage) {
+	// biome-ignore lint/nursery/noFloatingPromises:-
 	rareRoles(msg);
+	// biome-ignore lint/nursery/noFloatingPromises:-
 	petMessages(msg);
-	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
+	if (!msg.content) return;
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
-	const user = await mUserFetch(msg.author.id);
+
+	const sendable = await globalClient.channelIsSendable(msg.channel_id);
+	if (!sendable) return;
+
+	const user = await mUserFetch(msg.author_id);
 	const result = await minionStatusCommand(user);
-	const { components } = result;
 
 	const command = mentionCommands.find(i =>
 		i.aliases.some(alias => msg.content.startsWith(`${mentionText} ${alias}`))
 	);
 	if (command) {
-		Logging.logDebug(`${msg.author.id} used the ${command.name} mention command`);
+		Logging.logDebug(`${msg.author_id} used the ${command.name} mention command`);
 		const msgContentWithoutCommand = msg.content.split(' ').slice(2).join(' ');
 		await prisma.commandUsage.create({
 			data: {
 				user_id: BigInt(user.id),
-				channel_id: BigInt(msg.channelId),
-				guild_id: msg.guildId ? BigInt(msg.guildId) : undefined,
+				channel_id: BigInt(msg.channel_id),
+				guild_id: msg.guild_id ? BigInt(msg.guild_id) : undefined,
 				command_name: command.name,
 				args: msgContentWithoutCommand,
 				inhibited: false,
@@ -314,20 +306,28 @@ export async function onMessage(msg: Message) {
 		});
 
 		try {
-			await command.run({ msg, user, components, content: msgContentWithoutCommand });
+			const response = await command.run({
+				user,
+				components: result.components,
+				content: msgContentWithoutCommand
+			});
+			await globalClient.replyToMessage(msg, response);
 		} catch (err) {
-			if (typeof err === 'string') return msg.reply(err);
-			if (err instanceof UserError) return msg.reply(err.message);
+			let errMsg = 'There was an error running that command.';
+			if (typeof err === 'string') errMsg = err;
+			else if (err instanceof Error) errMsg = err.message;
+			await globalClient.replyToMessage(msg, { content: errMsg });
 			Logging.logError(err as Error);
 		}
 		return;
 	}
 
 	if (content.match(mentionRegex)) {
-		return msg.reply({
+		await globalClient.replyToMessage(msg, {
 			content: result.content,
-			components
+			components: result.components
 		});
+		return;
 	}
 }
 

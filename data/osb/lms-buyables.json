@@ -132,54 +132,22 @@
 		"cost": 1
 	},
 	{
-		"item": {
-			"id": 24868,
-			"name": "Golden armadyl special attack",
-			"incomplete": true,
-			"cost": 1,
-			"lowalch": 0,
-			"highalch": 0,
-			"price": 0
-		},
+		"item": "Golden armadyl special attack",
 		"cost": 75,
 		"only_cl": true
 	},
 	{
-		"item": {
-			"id": 24869,
-			"name": "Golden bandos special attack",
-			"incomplete": true,
-			"cost": 1,
-			"lowalch": 0,
-			"highalch": 0,
-			"price": 0
-		},
+		"item": "Golden bandos special attack",
 		"cost": 75,
 		"only_cl": true
 	},
 	{
-		"item": {
-			"id": 24870,
-			"name": "Golden saradomin special attack",
-			"incomplete": true,
-			"cost": 1,
-			"lowalch": 0,
-			"highalch": 0,
-			"price": 0
-		},
+		"item": "Golden saradomin special attack",
 		"cost": 75,
 		"only_cl": true
 	},
 	{
-		"item": {
-			"id": 24871,
-			"name": "Golden zamorak special attack",
-			"incomplete": true,
-			"cost": 1,
-			"lowalch": 0,
-			"highalch": 0,
-			"price": 0
-		},
+		"item": "Golden zamorak special attack",
 		"cost": 75,
 		"only_cl": true
 	},

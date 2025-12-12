@@ -12,6 +12,15 @@
 
 :root {
 	font-family: "InterVariable", sans-serif;
+	font-feature-settings:
+		"liga" 1,
+		"calt" 1;
+	--sl-font: "InterVariable", sans-serif;
+	--font-display: "InterVariable", sans-serif;
+	--font-sans: "InterVariable", sans-serif;
+}
+
+:root {
 	font-optical-sizing: auto;
 	color-scheme: light dark;
 
@@ -22,7 +31,7 @@
 	--verydark-brown: #100e0c;
 
 	--sl-nav-pad-x: 1rem;
-	--sl-font: "Inter", sans-serif;
+	--sl-font: "InterVariable", sans-serif;
 	--sl-content-width: 55rem;
 	--sl-color-hairline-light: rgba(0, 0, 0, 0);
 
@@ -202,17 +211,11 @@ h1 {
 	opacity: 1;
 }
 
-.rehype-heading-wrapper:not(:first-child):is(
-		.rehype-level-h3,
-		.rehype-level-h4,
-		.rehype-level-h5
-	) {
+.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h3, .rehype-level-h4, .rehype-level-h5) {
 	margin-block-start: 2em;
 }
 
-.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h2):not(
-		.rehype-with-extra-margin
-	) {
+.rehype-heading-wrapper:not(:first-child):is(.rehype-level-h2):not(.rehype-with-extra-margin) {
 	margin-block-start: 3.75em;
 }
 
@@ -258,10 +261,6 @@ ol + ol li blockquote {
 
 .edit_this_page {
 	color: var(--sl-color-text-accent);
-}
-
-.sl-badge {
-	font-family: "Inter", sans-serif;
 }
 
 .danger:where(.astro-ixkmpc6r) {

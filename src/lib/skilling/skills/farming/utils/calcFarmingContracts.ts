@@ -1,9 +1,9 @@
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import type { IPlantTier } from '@oldschoolgg/schemas';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
-import type { PlantTier } from '@/lib/skilling/skills/farming/utils/types.js';
 
 export function openSeedPack(seedTier: number): Bank {
 	const loot = new Bank();
@@ -147,10 +147,13 @@ const hardPlants: PlantsList = [
 	[90, 'Redwood tree', 5]
 ];
 
-export function getPlantToGrow(
-	user: MUser,
-	{ contractLevel, ignorePlant }: { contractLevel: 'easy' | 'medium' | 'hard'; ignorePlant: string | null }
-): [string, PlantTier] {
+interface GetPlantArgs {
+	user: MUser;
+	contractLevel: 'easy' | 'medium' | 'hard';
+	ignorePlant: string | null;
+}
+
+export function getPlantToGrow({ user, contractLevel, ignorePlant }: GetPlantArgs): [string, IPlantTier] {
 	const farmingLevel = user.skillsAsLevels.farming;
 
 	let contractType: PlantsList = [];
@@ -170,5 +173,5 @@ export function getPlantToGrow(
 	const plantToGrow = plantFromContract[1];
 	const tier = plantFromContract[2];
 
-	return [plantToGrow, tier as PlantTier];
+	return [plantToGrow, tier as IPlantTier];
 }

@@ -1,7 +1,7 @@
+import { choicesOf } from '@/discord/index.js';
 import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
-import { choicesOf } from '@/lib/discord/index.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
 	agilityArenaBuyables,
@@ -74,8 +74,7 @@ import {
 	soulWarsBuyCommand,
 	soulWarsImbueables,
 	soulWarsImbueCommand,
-	soulWarsStartCommand,
-	soulWarsTokensCommand
+	soulWarsStartCommand
 } from '@/mahoji/lib/abstracted_commands/soulWarsCommand.js';
 import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
@@ -116,7 +115,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							description: 'The item to buy.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return BarbBuyables.filter(i =>
 									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.item.name, value: i.item.name }));
@@ -217,7 +216,7 @@ export const minigamesCommand = defineCommand({
 							description: 'The item to purchase.',
 							type: 'String',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return LMSBuyables.filter(i =>
 									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.item.name, value: i.item.name }));
@@ -307,7 +306,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The skill you want XP in.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return pestControlBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -441,7 +440,7 @@ export const minigamesCommand = defineCommand({
 							description: 'The reward to purchase.',
 							type: 'String',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return TrekShopItems.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
@@ -500,7 +499,7 @@ export const minigamesCommand = defineCommand({
 							name: 'fletching',
 							description: 'The item you wish to fletch',
 							required: false,
-							autocomplete: async (value: number) => {
+							autocomplete: async ({ value }: NumberAutoComplete) => {
 								const search = value?.toString() ?? '';
 								return zeroTimeFletchables
 									.filter(i => i.name.toLowerCase().includes(search.toLowerCase()))
@@ -569,7 +568,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return mageTrainingArenaBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -601,7 +600,7 @@ export const minigamesCommand = defineCommand({
 							name: 'tier',
 							required: false,
 							description: 'The tier contract you wish to do.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return contractTiers
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.tier.toString() }));
@@ -619,7 +618,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return mahoganyHomesBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -725,7 +724,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to buy.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return soulWarsBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
@@ -752,7 +751,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to imbue.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return soulWarsImbueables
 									.filter(i =>
 										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())
@@ -793,7 +792,7 @@ export const minigamesCommand = defineCommand({
 							name: 'item',
 							description: 'The item to buy.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return VolcanicMineShop.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: `${i.name}`, value: i.name }));
@@ -898,7 +897,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							description: 'The alloy/metal to use.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return giantsFoundryAlloys
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
@@ -923,7 +922,7 @@ export const minigamesCommand = defineCommand({
 							name: 'item',
 							description: 'The item to buy.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return giantsFoundryBuyables
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: `${i.name}`, value: i.name }));
@@ -994,7 +993,7 @@ export const minigamesCommand = defineCommand({
 							name: 'item',
 							description: 'The item to buy.',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return nightmareZoneBuyables
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: `${i.name}`, value: i.name }));
@@ -1024,7 +1023,7 @@ export const minigamesCommand = defineCommand({
 							name: 'name',
 							required: true,
 							description: 'The item to imbue.',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return nightmareZoneImbueables
 									.filter(i =>
 										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())
@@ -1065,14 +1064,14 @@ export const minigamesCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ interaction, options, user, channelID }) => {
+	run: async ({ interaction, options, user, channelId }) => {
 		/**
 		 *
 		 * Barbarian Assault
 		 *
 		 */
 		if (options.barb_assault?.start) {
-			return barbAssaultStartCommand(channelID, user);
+			return barbAssaultStartCommand(channelId, user);
 		}
 		if (options.barb_assault?.buy) {
 			return barbAssaultBuyCommand(
@@ -1106,7 +1105,7 @@ export const minigamesCommand = defineCommand({
 			return castleWarsStatsCommand(user);
 		}
 		if (options.castle_wars?.start) {
-			return castleWarsStartCommand(user, channelID);
+			return castleWarsStartCommand(user, channelId);
 		}
 
 		/**
@@ -1114,7 +1113,7 @@ export const minigamesCommand = defineCommand({
 		 * LMS
 		 *
 		 */
-		if (options.lms) return lmsCommand(options.lms, user, channelID, interaction);
+		if (options.lms) return lmsCommand(options.lms, user, channelId, interaction);
 
 		/**
 		 *
@@ -1131,7 +1130,7 @@ export const minigamesCommand = defineCommand({
 			);
 		}
 		if (options.pest_control?.start) {
-			return pestControlStartCommand(user, channelID);
+			return pestControlStartCommand(user, channelId);
 		}
 		if (options.pest_control?.buy) {
 			return pestControlBuyCommand(user, options.pest_control.buy.name);
@@ -1142,28 +1141,28 @@ export const minigamesCommand = defineCommand({
 		 * Fishing Trawler
 		 *
 		 */
-		if (options.fishing_trawler?.start) return fishingTrawlerCommand(user, channelID);
+		if (options.fishing_trawler?.start) return fishingTrawlerCommand(user, channelId);
 
 		/**
 		 *
 		 * Mage Arena
 		 *
 		 */
-		if (options.mage_arena?.start) return mageArenaCommand(user, channelID);
+		if (options.mage_arena?.start) return mageArenaCommand(user, channelId);
 
 		/**
 		 *
 		 * Mage Arena 2
 		 *
 		 */
-		if (options.mage_arena_2?.start) return mageArena2Command(user, channelID);
+		if (options.mage_arena_2?.start) return mageArena2Command(user, channelId);
 
 		/**
 		 *
 		 * Gnome Restaurant
 		 *
 		 */
-		if (options.gnome_restaurant?.start) return gnomeRestaurantCommand(user, channelID);
+		if (options.gnome_restaurant?.start) return gnomeRestaurantCommand(user, channelId);
 
 		/**
 		 *
@@ -1177,7 +1176,7 @@ export const minigamesCommand = defineCommand({
 			}
 			if (options.temple_trek.start) {
 				const { difficulty, quantity } = options.temple_trek.start!;
-				return trekCommand(user, channelID, difficulty, quantity);
+				return trekCommand(user, channelId, difficulty, quantity);
 			}
 		}
 
@@ -1188,7 +1187,7 @@ export const minigamesCommand = defineCommand({
 		 */
 		if (options.sepulchre?.start) {
 			const fletchingItem = options.sepulchre.start.fletching;
-			return sepulchreCommand(user, channelID, fletchingItem);
+			return sepulchreCommand(user, channelId, fletchingItem);
 		}
 
 		/**
@@ -1197,7 +1196,7 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.gauntlet?.start) {
-			return gauntletCommand(user, channelID, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
+			return gauntletCommand(user, channelId, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
 		}
 
 		/**
@@ -1210,7 +1209,7 @@ export const minigamesCommand = defineCommand({
 				return mageTrainingArenaBuyCommand(user, options.mage_training_arena.buy.name);
 			}
 			if (options.mage_training_arena.start) {
-				return mageTrainingArenaStartCommand(user, channelID);
+				return mageTrainingArenaStartCommand(user, channelId);
 			}
 			if (options.mage_training_arena.points) {
 				return mageTrainingArenaPointsCommand(user);
@@ -1231,7 +1230,7 @@ export const minigamesCommand = defineCommand({
 				);
 			}
 			if (options.mahogany_homes.start) {
-				return mahoganyHomesBuildCommand(user, channelID, options.mahogany_homes.start.tier);
+				return mahoganyHomesBuildCommand(user, channelId, options.mahogany_homes.start.tier);
 			}
 			if (options.mahogany_homes.points) {
 				return mahoganyHomesPointsCommand(user);
@@ -1244,7 +1243,7 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.tears_of_guthix) {
-			return tearsOfGuthixCommand(user, channelID);
+			return tearsOfGuthixCommand(user, channelId);
 		}
 
 		/**
@@ -1253,7 +1252,7 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.pyramid_plunder) {
-			return pyramidPlunderCommand(user, channelID);
+			return pyramidPlunderCommand(user, channelId);
 		}
 
 		/**
@@ -1262,7 +1261,7 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.rogues_den) {
-			return roguesDenCommand(user, channelID);
+			return roguesDenCommand(user, channelId);
 		}
 
 		/**
@@ -1272,7 +1271,7 @@ export const minigamesCommand = defineCommand({
 		 */
 		if (options.soul_wars) {
 			if (options.soul_wars.start) {
-				return soulWarsStartCommand(user, channelID);
+				return soulWarsStartCommand(user, channelId);
 			}
 			if (options.soul_wars.imbue) {
 				return soulWarsImbueCommand(user, options.soul_wars.imbue.name);
@@ -1281,7 +1280,7 @@ export const minigamesCommand = defineCommand({
 				return soulWarsBuyCommand(user, options.soul_wars.buy.name, options.soul_wars.buy.quantity);
 			}
 			if (options.soul_wars.tokens) {
-				return soulWarsTokensCommand(user.user);
+				return `You have ${user.user.zeal_tokens} Zeal Tokens.`;
 			}
 		}
 
@@ -1291,7 +1290,7 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.volcanic_mine?.start) {
-			return volcanicMineCommand(user, channelID, options.volcanic_mine.start.quantity);
+			return volcanicMineCommand(user, channelId, options.volcanic_mine.start.quantity);
 		}
 		if (options.volcanic_mine?.buy) {
 			return volcanicMineShopCommand(
@@ -1311,7 +1310,7 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.agility_arena?.start) {
-			return agilityArenaCommand(user, channelID, options.agility_arena.start.quantity);
+			return agilityArenaCommand(user, channelId, options.agility_arena.start.quantity);
 		}
 		if (options.agility_arena?.buy) {
 			return agilityArenaBuyCommand(user, options.agility_arena.buy.item, options.agility_arena.buy.quantity);
@@ -1326,7 +1325,7 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.trouble_brewing) {
-			return troubleBrewingStartCommand(user, channelID);
+			return troubleBrewingStartCommand(user, channelId);
 		}
 
 		/**
@@ -1339,7 +1338,7 @@ export const minigamesCommand = defineCommand({
 				user,
 				options.giants_foundry.start.name,
 				options.giants_foundry.start.quantity,
-				channelID
+				channelId
 			);
 		}
 		if (options.giants_foundry?.buy) {
@@ -1358,7 +1357,7 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.gotr) {
-			return guardiansOfTheRiftStartCommand(user, channelID, options.gotr.start?.combination_runes);
+			return guardiansOfTheRiftStartCommand(user, channelId, options.gotr.start?.combination_runes);
 		}
 
 		/**
@@ -1367,7 +1366,7 @@ export const minigamesCommand = defineCommand({
 		 *
 		 */
 		if (options.nmz?.start) {
-			return nightmareZoneStartCommand(user, options.nmz.start.strategy, channelID);
+			return nightmareZoneStartCommand(user, options.nmz.start.strategy, channelId);
 		}
 		if (options.nmz?.buy) {
 			return nightmareZoneShopCommand(interaction, user, options.nmz.buy.item, options.nmz.buy.quantity);
@@ -1385,7 +1384,7 @@ export const minigamesCommand = defineCommand({
 		if (options.shades_of_morton?.start) {
 			return shadesOfMortonStartCommand(
 				user,
-				channelID,
+				channelId,
 				options.shades_of_morton.start.logs,
 				options.shades_of_morton.start.shade
 			);

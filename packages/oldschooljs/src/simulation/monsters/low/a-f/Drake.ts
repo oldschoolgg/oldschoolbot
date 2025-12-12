@@ -4,7 +4,7 @@ import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const DrakeNotedHerbTable = new LootTable()
+const DrakeNotedHerbTable: LootTable = new LootTable()
 	.add('Grimy avantoe', [1, 3], 10)
 	.add('Grimy kwuarm', [1, 3], 10)
 	.add('Grimy ranarr weed', [1, 3], 8)
@@ -14,21 +14,21 @@ const DrakeNotedHerbTable = new LootTable()
 	.add('Grimy lantadyme', [1, 3], 6)
 	.add('Grimy torstol', [1, 3], 6);
 
-const DrakeOnTaskUniqueTable = new LootTable()
+const DrakeOnTaskUniqueTable: LootTable = new LootTable()
 	/* Pre-roll */
 	.oneIn(2000, 'Dragon thrownaxe', [100, 200])
 	.oneIn(2000, 'Dragon knife', [100, 200])
 	.oneIn(512, "Drake's tooth")
 	.oneIn(512, "Drake's claw");
 
-const DrakeOffTaskUniqueTable = new LootTable()
+const DrakeOffTaskUniqueTable: LootTable = new LootTable()
 	/* Pre-roll */
 	.oneIn(10_000, 'Dragon thrownaxe', [100, 200])
 	.oneIn(10_000, 'Dragon knife', [100, 200])
 	.oneIn(2560, "Drake's tooth")
 	.oneIn(2560, "Drake's claw");
 
-export const DrakePreTable = new LootTable()
+export const DrakePreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Rune full helm', 1, 3)
 	.add("Red d'hide body", 1, 2)
@@ -59,7 +59,7 @@ export const DrakePreTable = new LootTable()
 	/* Rdt */
 	.add(GemTable, 1, 1);
 
-const DrakeTable = new LootTable()
+const DrakeTable: LootTable = new LootTable()
 	.every('Drake bones')
 	.every(DrakePreTable)
 	.every(DrakeOffTaskUniqueTable)
@@ -67,7 +67,7 @@ const DrakeTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-const DrakeOnTaskTable = new LootTable()
+const DrakeOnTaskTable: LootTable = new LootTable()
 	.every('Drake bones')
 	.every(DrakePreTable)
 	.every(DrakeOnTaskUniqueTable)
@@ -75,7 +75,7 @@ const DrakeOnTaskTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const Drake: SimpleMonster = new SimpleMonster({
 	id: 8612,
 	name: 'Drake',
 	table: DrakeTable,

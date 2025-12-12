@@ -1,5 +1,5 @@
-import { Events, formatOrdinal, noOp, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
+import { bold } from '@oldschoolgg/discord';
+import { Events, formatOrdinal, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
 import { UserEventType } from '@/prisma/main/enums.js';
@@ -9,7 +9,6 @@ import { skillEmoji } from '@/lib/data/emojis.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${MAX_LEVEL_XP}`).join(' AND ');
@@ -19,11 +18,14 @@ WHERE ${maxFilter}
 ${ironman ? 'AND "minion.ironman" = true' : ''};`;
 
 async function howManyMaxed() {
-	const [normies, irons] = (
-		(await Promise.all([prisma.$queryRawUnsafe(makeQuery(false)), prisma.$queryRawUnsafe(makeQuery(true))])) as any
+	const [normies, irons]: number[] = (
+		await prisma.$transaction([
+			prisma.$queryRawUnsafe<{ count: bigint }[]>(makeQuery(false)),
+			prisma.$queryRawUnsafe<{ count: bigint }[]>(makeQuery(true))
+		])
 	)
-		.map((i: any) => i[0].count)
-		.map((i: any) => Number.parseInt(i));
+		.map(i => i[0].count)
+		.map(i => Number(i));
 
 	return {
 		normies,
@@ -41,10 +43,9 @@ async function onMax(user: MUser) {
 	} 🎉`;
 
 	globalClient.emit(Events.ServerNotification, str);
-	sendToChannelID(globalConfig.supportServerID, { content: str }).catch(noOp);
-	const kUser = await globalClient.users.fetch(user.id);
+	globalClient.sendMessage(globalConfig.supportServerID, { content: str });
 	const clientSettings = await ClientSettings.fetch({ maxing_message: true });
-	kUser.send(clientSettings.maxing_message).catch(noOp);
+	globalClient.sendDm(user.id, clientSettings.maxing_message);
 }
 
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
@@ -168,7 +169,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 		if (currentTotalLevel < MAX_TOTAL_LEVEL && user.totalLevel >= MAX_TOTAL_LEVEL) {
 			str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
-			onMax(user);
+			await onMax(user);
 		} else if (currentLevel !== newLevel) {
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`

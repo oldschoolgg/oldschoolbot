@@ -4,8 +4,6 @@ import {
 	calcWhatPercent,
 	exponentialPercentScale,
 	formatDuration,
-	GeneralBank,
-	type GeneralBankType,
 	increaseNumByPercent,
 	objectEntries,
 	reduceNumByPercent,
@@ -13,11 +11,11 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/node';
 import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -457,13 +455,13 @@ export const startColosseumRun = (options: {
 	throw new Error('Colosseum run did not end correctly.');
 };
 
-export async function colosseumCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function colosseumCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} is busy`;
 	}
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${mentionCommand(
+		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${globalClient.mentionCommand(
 			'activities',
 			'quest'
 		)}.`;
@@ -630,7 +628,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	try {
 		const result = await user.specialRemoveItems(cost);
 		realCost.add(result.realCost);
-	} catch (err: any) {
+	} catch (err: unknown) {
 		if (err instanceof UserError) {
 			return err.message;
 		}
@@ -665,7 +663,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<ColoTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: res.realDuration,
 		type: 'Colosseum',
 		fakeDuration: res.fakeDuration,

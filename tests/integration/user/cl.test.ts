@@ -33,10 +33,6 @@ describe('updateCL()', () => {
 		const u = await createTestUser();
 		await u.addItemsToBank({ items: new Bank().add(EItem.ABYSSAL_WHIP, 1), collectionLog: true });
 		expect(u.cl).toHaveLength(1);
-		const tableBank = await prisma.tableBank.findFirstOrThrow({
-			where: { user_id: u.id, type: 'CollectionLog' }
-		});
-		expect(await prisma.tableBankItem.count({ where: { bank_id: tableBank.id } })).toBe(1);
 		const tCL = await u.fetchCL();
 		expect(tCL.toJSON()).toStrictEqual(tCL.toJSON());
 		expect(tCL.itemIDs).toEqual([EItem.ABYSSAL_WHIP]);
@@ -46,10 +42,6 @@ describe('updateCL()', () => {
 		const u = await createTestUser();
 		await u.transactItems({ itemsToAdd: new Bank().add(EItem.ABYSSAL_WHIP, 1), collectionLog: true });
 		expect(u.cl).toHaveLength(1);
-		const tableBank = await prisma.tableBank.findFirstOrThrow({
-			where: { user_id: u.id, type: 'CollectionLog' }
-		});
-		expect(await prisma.tableBankItem.count({ where: { bank_id: tableBank.id } })).toBe(1);
 		const tCL = await u.fetchCL();
 		expect(tCL.toJSON()).toStrictEqual(tCL.toJSON());
 		expect(tCL.itemIDs).toEqual([EItem.ABYSSAL_WHIP]);

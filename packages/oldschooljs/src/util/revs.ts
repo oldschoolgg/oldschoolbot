@@ -1,7 +1,8 @@
+import { randInt, roll } from '@oldschoolgg/rng';
+
 import type { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { CustomKillLogic, MonsterKillOptions } from '@/structures/Monster.js';
-import { randInt, roll } from './smallUtils.js';
 
 type RevTableKey =
 	| 'uniqueTable'
@@ -53,7 +54,7 @@ export function makeRevTable(table: RevTable): CustomKillLogic {
 	return cb;
 }
 
-export const revsUniqueTable = new LootTable()
+export const revsUniqueTable: LootTable = new LootTable()
 	.add('Amulet of avarice', 1, 2)
 	.add("Craw's bow (u)", 1, 1)
 	.add("Thammaron's sceptre (u)", 1, 1)

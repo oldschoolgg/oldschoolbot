@@ -1,6 +1,7 @@
-import LootTable from '@/structures/LootTable.js';
+import type { Bank } from '../../structures/Bank.js';
+import LootTable from '../..//structures/LootTable.js';
 
-const DiedTable = new LootTable()
+const DiedTable: LootTable = new LootTable()
 	.add('Adamant dagger')
 	.add('Adamant full helm')
 	.add('Adamant mace', [2, 3])
@@ -29,7 +30,7 @@ const DiedTable = new LootTable()
 	.add('Silver bar', [15, 30])
 	.add('Uncut sapphire', [1, 3]);
 
-const StandardInnerTable = new LootTable()
+const StandardInnerTable: LootTable = new LootTable()
 	// Gear
 	.add('Rune full helm', [2, 4])
 	.add('Rune chainbody', [1, 2])
@@ -58,7 +59,7 @@ const StandardInnerTable = new LootTable()
 	.add('Battlestaff', [4, 8])
 	.add('Coins', [20_000, 80_000]);
 
-const StandardTable = new LootTable()
+const StandardTable: LootTable = new LootTable()
 	.every('Crystal shard', [3, 7])
 	.every(StandardInnerTable, 2)
 	.tertiary(25, 'Clue scroll (elite)')
@@ -67,7 +68,7 @@ const StandardTable = new LootTable()
 	.tertiary(2000, 'Enhanced crystal weapon seed')
 	.tertiary(2000, 'Youngllef');
 
-const CorruptedInnerTable = new LootTable()
+const CorruptedInnerTable: LootTable = new LootTable()
 	// Gear
 	.add('Rune full helm', [3, 5])
 	.add('Rune chainbody', [2, 3])
@@ -102,7 +103,7 @@ const CorruptedInnerTable = new LootTable()
 	.add('Battlestaff', [8, 12])
 	.add('Coins', [75_000, 150_000]);
 
-const CorruptedTable = new LootTable()
+const CorruptedTable: LootTable = new LootTable()
 	// Gauntlet cape is given manually in OSB
 	.every('Crystal shard', [5, 9])
 	.every(CorruptedInnerTable, 3)
@@ -117,7 +118,7 @@ interface NormalGauntletOptions {
 	type: 'normal' | 'corrupted';
 }
 
-export function Gauntlet({ died, type }: NormalGauntletOptions) {
+export function Gauntlet({ died, type }: NormalGauntletOptions): Bank {
 	const loot = died ? DiedTable.roll() : type === 'normal' ? StandardTable.roll() : CorruptedTable.roll();
 	return loot;
 }

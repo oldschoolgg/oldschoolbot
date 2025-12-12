@@ -1,12 +1,12 @@
+import { userMention } from '@oldschoolgg/discord';
 import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
-import { ChannelType, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calculateNexDetails, checkNexUser } from '@/lib/simulation/nex.js';
 import type { NexTaskOptions } from '@/lib/types/minions.js';
 
-export async function nexCommand(interaction: MInteraction, user: MUser, channelID: string, solo: boolean | undefined) {
+export async function nexCommand(interaction: MInteraction, user: MUser, channelId: string, solo: boolean | undefined) {
 	const ownerCheck = checkNexUser(user);
 	if (ownerCheck[1]) {
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
@@ -19,26 +19,15 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 	if (solo) {
 		mahojiUsers = [user];
 	} else {
-		const channel = globalClient.channels.cache.get(channelID.toString());
-		if (!channel || channel.type !== ChannelType.GuildText) return 'You need to run this in a text channel.';
-
-		let usersWhoConfirmed: MUser[] = [];
-		try {
-			usersWhoConfirmed = await interaction.makeParty({
-				minSize: 1,
-				maxSize: 10,
-				leader: user,
-				ironmanAllowed: true,
-				message: `${user} is hosting a Nex mass! Use the buttons below to join/leave.`,
-				customDenier: async user => checkNexUser(await mUserFetch(user.id))
-			});
-		} catch (err: any) {
-			return {
-				content: typeof err === 'string' ? err : 'Your mass failed to start.',
-				ephemeral: true
-			};
-		}
-		usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);
+		const usersWhoConfirmed: MUser[] = await globalClient.makeParty({
+			interaction,
+			minSize: 1,
+			maxSize: 10,
+			leader: user,
+			ironmanAllowed: true,
+			message: `${user} is hosting a Nex mass! Use the buttons below to join/leave.`,
+			customDenier: async user => checkNexUser(await mUserFetch(user.id))
+		});
 
 		if (usersWhoConfirmed.length < 1 || usersWhoConfirmed.length > 10) {
 			return `${user}, your mass didn't start because it needs between 1-10 users.`;
@@ -95,7 +84,7 @@ export async function nexCommand(interaction: MInteraction, user: MUser, channel
 
 	await ActivityManager.startTrip<NexTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: details.duration,
 		type: 'Nex',
 		leader: user.id,

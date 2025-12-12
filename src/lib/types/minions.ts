@@ -7,7 +7,6 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
-import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
 
@@ -16,22 +15,16 @@ export interface ActivityTaskOptions {
 	duration: number;
 	id: number;
 	finishDate: number;
-	channelID: string;
+	channelId: string;
 }
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 	type:
 		| 'Questing'
-		| 'Wintertodt'
-		| 'Cyclops'
-		| 'GloryCharging'
-		| 'WealthCharging'
 		| 'BarbarianAssault'
-		| 'AgilityArena'
 		| 'ChampionsChallenge'
 		| 'MyNotes'
 		| 'AerialFishing'
-		| 'DriftNet'
 		| 'SoulWars'
 		| 'RoguesDenMaze'
 		| 'CastleWars'
@@ -41,7 +34,6 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'MageArena2'
 		| 'BigChompyBirdHunting'
 		| 'PestControl'
-		| 'VolcanicMine'
 		| 'TearsOfGuthix'
 		| 'LastManStanding'
 		| 'BirthdayEvent'
@@ -50,7 +42,8 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'ShootingStars'
 		| 'HalloweenEvent'
 		| 'StrongholdOfSecurity'
-		| 'CombatRing';
+		| 'CombatRing'
+		| 'Revenants';
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
@@ -70,6 +63,8 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	quantity: number;
 	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
 	iQty?: number;
+	// Optional number of minutes specified by the user when minutes are the primary input.
+	minutes?: number;
 }
 
 export interface ShootingStarsOptions extends ActivityTaskOptions {
@@ -345,11 +340,10 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Birdhouse';
-	birdhouseName: string | null;
 	placing: boolean;
 	gotCraft: boolean;
-	birdhouseData: BirdhouseData;
-	currentDate: number;
+	birdhouseId?: number;
+	birdhouseName?: string | null;
 }
 
 interface MinigameActivityTaskOptions extends ActivityTaskOptions {
@@ -372,8 +366,7 @@ export interface MinigameActivityTaskOptionsWithNoChanges extends MinigameActivi
 		| 'BarbarianAssault'
 		| 'ChampionsChallenge'
 		| 'CastleWars'
-		| 'AgilityArena'
-		| 'GiantsFoundry';
+		| 'AgilityArena';
 }
 
 export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -459,7 +452,6 @@ export interface GroupMonsterActivityTaskOptions extends Omit<MonsterActivityTas
 export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	type: 'Raids';
 	leader: string;
-	users: string[];
 	challengeMode: boolean;
 	isFakeMass: boolean;
 	maxSizeInput?: number;
@@ -469,7 +461,6 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TheatreOfBlood';
 	leader: string;
-	users: string[];
 	hardMode: boolean;
 	fakeDuration: number;
 	wipedRooms: (null | number)[];
@@ -544,6 +535,7 @@ export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOption
 	trainingSkill: UnderwaterAgilityThievingTrainingSkill;
 	quantity: number;
 	noStams: boolean;
+	minutes?: number;
 }
 
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {

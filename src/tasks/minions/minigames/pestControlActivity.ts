@@ -7,7 +7,7 @@ import { getBoatType } from '@/mahoji/lib/abstracted_commands/pestControlCommand
 export const pestControlTask: MinionTask = {
 	type: 'PestControl',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 
 		const { boatType, pointsPerGame, bonusPointsPerGame } = getBoatType(user, user.combatLevel);
 
@@ -27,6 +27,6 @@ export const pestControlTask: MinionTask = {
 		if (bonusPointsPerGame > 0) {
 			str += `\n\n**Bonus points:** ${bonusPointsPerGame} per game`;
 		}
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

@@ -29,7 +29,7 @@ const unlimitedAirRuneProviders = resolveItems([
 	'Dust battlestaff'
 ]);
 
-export async function butlerCommand(user: MUser, plankName: string, quantity: number | undefined, channelID: string) {
+export async function butlerCommand(user: MUser, plankName: string, quantity: number | undefined, channelId: string) {
 	const plank = Planks.find(
 		plank => stringMatches(plank.name, plankName) || stringMatches(plank.name.split(' ')[0], plankName)
 	);
@@ -45,7 +45,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 
 	const timePerPlank = (Time.Second * 15) / 26;
 
-	const maxTripLength = user.calcMaxTripLength('Butler');
+	const maxTripLength = await user.calcMaxTripLength('Butler');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
@@ -136,7 +136,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
-		channelID: channelID.toString()
+		channelId: channelId.toString()
 	});
 
 	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${

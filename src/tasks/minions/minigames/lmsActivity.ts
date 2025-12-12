@@ -97,7 +97,7 @@ export function calculateResultOfLMSGames(
 export const lmsTask: MinionTask = {
 	type: 'LastManStanding',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID, quantity, duration } = data;
+		const { channelId, quantity, duration } = data;
 		await user.incrementMinigameScore('lms', quantity);
 		const lmsStats = await getUsersLMSStats(user);
 
@@ -115,17 +115,14 @@ export const lmsTask: MinionTask = {
 		});
 		const newLmsStats = await getUsersLMSStats(user);
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${
-				user.minionName
-			} finished playing ${quantity}x Last Man Standing matches, you received ${points} points and now have ${
-				user.user.lms_points
-			} points in total, and have won a total of ${newLmsStats.gamesWon}x games. ${calcPerHour(
-				points,
-				duration
-			).toFixed(2)} points/hr
+		const message = `${user}, ${
+			user.minionName
+		} finished playing ${quantity}x Last Man Standing matches, you received ${points} points and now have ${
+			user.user.lms_points
+		} points in total, and have won a total of ${newLmsStats.gamesWon}x games. ${calcPerHour(
+			points,
+			duration
+		).toFixed(2)} points/hr
 ${result
 	.map(
 		(i, inde) =>
@@ -133,10 +130,13 @@ ${result
 				i.kills
 			} kills`
 	)
-	.join('\n')}`,
-			undefined,
-			data,
-			null
-		);
+	.join('\n')}`;
+
+		return handleTripFinish({
+			user,
+			channelId,
+			message,
+			data
+		});
 	}
 };
