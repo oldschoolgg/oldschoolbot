@@ -1,5 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit';
 import { toKMB } from 'oldschooljs';
+
 export const gpCommand = defineCommand({
 	name: 'gp',
 	description: 'See your current GP balance.',
