@@ -109,6 +109,19 @@ export const rpCommand = defineCommand({
 				},
 				{
 					type: 'Subcommand',
+					name: 'viewgear',
+					description: 'View a users gear.',
+					options: [
+						{
+							type: 'User',
+							name: 'user',
+							description: 'The user.',
+							required: true
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
 					name: 'add_patron_time',
 					description: 'Give user temporary patron time.',
 					options: [
@@ -481,6 +494,15 @@ Date: ${dateFm(date)}`;
 				return `${codeBlock('json', json)}`;
 			}
 			return { files: [await makeBankImage({ bank, title: userToCheck.usernameOrMention })] };
+		}
+
+		if (options.player?.viewgear) {
+			const userToCheck = await mUserFetch(options.player.viewgear.user.user.id);
+			const gearImage = await userToCheck.generateGearImage({ setupType: 'all' });
+			return {
+				content: `${userToCheck.usernameOrMention}'s gear setups`,
+				files: [{ buffer: gearImage, name: 'gear.png' }]
+			};
 		}
 
 		if (options.player?.add_patron_time) {
