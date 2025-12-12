@@ -2185,7 +2185,7 @@
 		},
 		"items": [
 			{
-				"item": "Opal ring",
+				"item": ["Opal ring", "Ring of pursuit"],
 				"lvl": 1
 			},
 			{
@@ -2201,276 +2201,295 @@
 				"lvl": 7
 			},
 			{
-				"item": "Pre-nature amulet",
+				"item": ["Gold amulet", "Gold amulet (u)"],
 				"lvl": 8
 			},
 			{
-				"item": "Gold amulet",
-				"lvl": 8
-			},
-			{
-				"item": "Amulet of power",
-				"lvl": 8
-			},
-			{
-				"item": "Jade ring",
+				"item": [
+					"Jade ring",
+					"Ring of returning(1)",
+					"Ring of returning(2)",
+					"Ring of returning(3)",
+					"Ring of returning(4)",
+					"Ring of returning(5)"
+				],
 				"lvl": 13
 			},
 			{
-				"item": "Holy symbol",
+				"item": ["Efaritay's aid", "Topaz ring"],
 				"lvl": 16
 			},
 			{
-				"item": "Opal necklace",
+				"item": ["Holy symbol", "Unblessed symbol", "Unstrung symbol"],
 				"lvl": 16
 			},
 			{
-				"item": "Topaz ring",
+				"item": ["Dodgy necklace", "Opal necklace"],
 				"lvl": 16
 			},
 			{
-				"item": "Ring of recoil",
+				"item": ["Ring of recoil", "Sapphire ring"],
 				"lvl": 20
 			},
 			{
-				"item": "Sapphire ring",
-				"lvl": 20
-			},
-			{
-				"item": "Opal bracelet",
+				"item": [
+					"Games necklace(1)",
+					"Games necklace(2)",
+					"Games necklace(3)",
+					"Games necklace(4)",
+					"Games necklace(5)",
+					"Games necklace(6)",
+					"Games necklace(7)",
+					"Games necklace(8)",
+					"Sapphire necklace"
+				],
 				"lvl": 22
 			},
 			{
-				"item": "Sapphire necklace",
+				"item": ["Expeditious bracelet", "Opal bracelet"],
 				"lvl": 22
 			},
 			{
-				"item": "Bracelet of clay",
+				"item": ["Bracelet of clay", "Sapphire bracelet"],
 				"lvl": 23
 			},
 			{
-				"item": "Sapphire bracelet",
-				"lvl": 23
-			},
-			{
-				"item": "Sapphire amulet",
+				"item": ["Amulet of magic", "Sapphire amulet", "Sapphire amulet (u)"],
 				"lvl": 24
 			},
 			{
-				"item": "Jade necklace",
+				"item": [
+					"Jade necklace",
+					"Necklace of passage(1)",
+					"Necklace of passage(2)",
+					"Necklace of passage(3)",
+					"Necklace of passage(4)",
+					"Necklace of passage(5)"
+				],
 				"lvl": 25
 			},
 			{
-				"item": "Emerald ring",
+				"item": ["Amulet of bounty", "Opal amulet", "Opal amulet (u)"],
 				"lvl": 27
 			},
 			{
-				"item": "Opal amulet",
+				"item": [
+					"Emerald ring",
+					"Ring of dueling(1)",
+					"Ring of dueling(2)",
+					"Ring of dueling(3)",
+					"Ring of dueling(4)",
+					"Ring of dueling(5)",
+					"Ring of dueling(6)",
+					"Ring of dueling(7)",
+					"Ring of dueling(8)"
+				],
 				"lvl": 27
 			},
 			{
-				"item": "Binding necklace",
+				"item": ["Binding necklace", "Emerald necklace"],
 				"lvl": 29
 			},
 			{
-				"item": "Emerald necklace",
+				"item": ["Flamtaer bracelet", "Jade bracelet"],
 				"lvl": 29
 			},
 			{
-				"item": "Jade bracelet",
-				"lvl": 29
-			},
-			{
-				"item": "Emerald bracelet",
+				"item": [
+					"Castle wars bracelet(1)",
+					"Castle wars bracelet(2)",
+					"Castle wars bracelet(3)",
+					"Emerald bracelet"
+				],
 				"lvl": 30
 			},
 			{
-				"item": "Emerald amulet",
+				"item": ["Amulet of defence", "Emerald amulet", "Emerald amulet (u)", "Pre-nature amulet"],
 				"lvl": 31
 			},
 			{
-				"item": "Topaz necklace",
+				"item": ["Necklace of faith", "Topaz necklace"],
 				"lvl": 32
 			},
 			{
-				"item": "Jade amulet",
+				"item": ["Amulet of chemistry", "Jade amulet", "Jade amulet (u)"],
 				"lvl": 34
 			},
 			{
-				"item": "Ring of forging",
+				"item": ["Ring of forging", "Ruby ring"],
 				"lvl": 34
 			},
 			{
-				"item": "Ruby ring",
-				"lvl": 34
-			},
-			{
-				"item": "Salve amulet",
-				"lvl": 35
-			},
-			{
-				"item": "Salve amulet (e)",
-				"lvl": 35
-			},
-			{
-				"item": "Topaz bracelet",
+				"item": ["Bracelet of slaughter", "Topaz bracelet"],
 				"lvl": 38
 			},
 			{
-				"item": "Ruby necklace",
+				"item": [
+					"Digsite pendant (1)",
+					"Digsite pendant (2)",
+					"Digsite pendant (3)",
+					"Digsite pendant (4)",
+					"Digsite pendant (5)",
+					"Ruby necklace"
+				],
 				"lvl": 40
 			},
 			{
-				"item": "Ruby bracelet",
+				"item": ["Inoculation bracelet", "Ruby bracelet"],
 				"lvl": 42
 			},
 			{
-				"item": "Diamond ring",
+				"item": "Gold tiara",
+				"lvl": 42
+			},
+			{
+				"item": ["Diamond ring", "Ring of life"],
 				"lvl": 43
 			},
 			{
-				"item": "Ring of life",
-				"lvl": 43
-			},
-			{
-				"item": "Archers ring",
+				"item": [
+					"Burning amulet(1)",
+					"Burning amulet(2)",
+					"Burning amulet(3)",
+					"Burning amulet(4)",
+					"Burning amulet(5)",
+					"Topaz amulet",
+					"Topaz amulet (u)"
+				],
 				"lvl": 45
 			},
 			{
-				"item": "Seers ring",
-				"lvl": 45
-			},
-			{
-				"item": "Topaz amulet",
-				"lvl": 45
-			},
-			{
-				"item": "Warrior ring",
-				"lvl": 45
-			},
-			{
-				"item": "Ring of coins",
+				"item": ["Amulet of strength", "Ruby amulet", "Ruby amulet (u)"],
 				"lvl": 50
 			},
 			{
-				"item": "Ruby amulet",
-				"lvl": 50
-			},
-			{
-				"item": "Strength amulet (t)",
-				"lvl": 50
-			},
-			{
-				"item": "Dragonstone ring",
+				"item": [
+					"Dragonstone ring",
+					"Ring of wealth",
+					"Ring of wealth (1)",
+					"Ring of wealth (2)",
+					"Ring of wealth (3)",
+					"Ring of wealth (4)",
+					"Ring of wealth (5)"
+				],
 				"lvl": 55
 			},
 			{
-				"item": "Ring of wealth",
-				"lvl": 55
-			},
-			{
-				"item": "Diamond necklace",
+				"item": ["Diamond necklace", "Phoenix necklace"],
 				"lvl": 56
 			},
 			{
-				"item": "Phoenix necklace",
-				"lvl": 56
-			},
-			{
-				"item": "Diamond bracelet",
+				"item": [
+					"Abyssal bracelet(1)",
+					"Abyssal bracelet(2)",
+					"Abyssal bracelet(3)",
+					"Abyssal bracelet(4)",
+					"Abyssal bracelet(5)",
+					"Diamond bracelet"
+				],
 				"lvl": 58
 			},
 			{
-				"item": "Onyx ring",
+				"item": ["Onyx ring", "Ring of stone"],
 				"lvl": 67
 			},
 			{
-				"item": "Ring of stone",
-				"lvl": 67
-			},
-			{
-				"item": "Diamond amulet",
+				"item": ["Amulet of power", "Diamond amulet", "Diamond amulet (u)"],
 				"lvl": 70
 			},
 			{
-				"item": "Skills necklace",
+				"item": [
+					"Dragon necklace",
+					"Skills necklace",
+					"Skills necklace(1)",
+					"Skills necklace(2)",
+					"Skills necklace(3)",
+					"Skills necklace(4)",
+					"Skills necklace(5)",
+					"Skills necklace(6)"
+				],
 				"lvl": 72
 			},
 			{
-				"item": "Combat bracelet",
+				"item": [
+					"Combat bracelet",
+					"Combat bracelet(1)",
+					"Combat bracelet(2)",
+					"Combat bracelet(3)",
+					"Combat bracelet(4)",
+					"Dragonstone bracelet"
+				],
 				"lvl": 74
 			},
 			{
-				"item": "Dragonstone bracelet",
-				"lvl": 74
+				"item": [
+					"Slayer ring (1)",
+					"Slayer ring (2)",
+					"Slayer ring (3)",
+					"Slayer ring (4)",
+					"Slayer ring (5)",
+					"Slayer ring (6)",
+					"Slayer ring (7)",
+					"Slayer ring (8)"
+				],
+				"lvl": 75
 			},
 			{
 				"item": [
 					"Amulet of glory",
 					"Amulet of glory (t)",
+					"Amulet of glory (t1)",
+					"Amulet of glory (t2)",
+					"Amulet of glory (t3)",
 					"Amulet of glory (t4)",
+					"Amulet of glory (t5)",
 					"Amulet of glory (t6)",
+					"Amulet of glory(1)",
+					"Amulet of glory(2)",
+					"Amulet of glory(3)",
 					"Amulet of glory(4)",
+					"Amulet of glory(5)",
 					"Amulet of glory(6)",
-					"Dragonstone amulet"
+					"Dragonstone amulet",
+					"Dragonstone amulet (u)"
 				],
 				"lvl": 80
 			},
 			{
-				"item": "Berserker necklace",
+				"item": ["Archers ring", "Berserker ring", "Ring of coins", "Seers ring", "Warrior ring"],
+				"lvl": 80
+			},
+			{
+				"item": ["Berserker necklace", "Onyx necklace"],
 				"lvl": 82
 			},
 			{
-				"item": "Onyx necklace",
-				"lvl": 82
-			},
-			{
-				"item": "Onyx bracelet",
+				"item": ["Onyx bracelet", "Regen bracelet"],
 				"lvl": 84
 			},
 			{
-				"item": "Regen bracelet",
-				"lvl": 84
+				"item": ["Amulet of rancour", "Amulet of rancour (s)"],
+				"lvl": 86
 			},
 			{
-				"item": "Onyx amulet",
-				"lvl": 90
-			},
-			{
-				"item": "Zenyte ring",
+				"item": ["Ring of suffering", "Ring of suffering (r)", "Zenyte ring"],
 				"lvl": 89
 			},
 			{
-				"item": "Ring of suffering",
-				"lvl": 89
-			},
-			{
-				"item": "Zenyte necklace",
-				"lvl": 92
-			},
-			{
-				"item": "Necklace of anguish",
-				"lvl": 92
-			},
-			{
-				"item": "Zenyte bracelet",
-				"lvl": 95
-			},
-			{
-				"item": "Tormented bracelet",
-				"lvl": 95
-			},
-			{
-				"item": "Zenyte amulet",
-				"lvl": 98
-			},
-			{
-				"item": "Amulet of torture",
-				"lvl": 98
-			},
-			{
-				"item": "Amulet of fury",
+				"item": ["Amulet of fury", "Onyx amulet", "Onyx amulet (u)"],
 				"lvl": 90
+			},
+			{
+				"item": ["Necklace of anguish", "Zenyte necklace"],
+				"lvl": 92
+			},
+			{
+				"item": ["Tormented bracelet", "Zenyte bracelet"],
+				"lvl": 95
+			},
+			{
+				"item": ["Amulet of torture", "Zenyte amulet", "Zenyte amulet (u)"],
+				"lvl": 98
 			}
 		]
 	},
