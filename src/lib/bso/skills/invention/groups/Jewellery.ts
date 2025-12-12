@@ -42,8 +42,8 @@ export const Jewellery: DisassemblySourceGroup = {
 			].map(i),
 			lvl: 22
 		},
-
 		{ item: ['Opal bracelet', 'Expeditious bracelet'].map(i), lvl: 22 },
+		{ item: i('Tiara'), lvl: 23 },
 		{ item: ['Sapphire bracelet', 'Bracelet of clay'].map(i), lvl: 23 },
 		{ item: ['Sapphire amulet (u)', 'Sapphire amulet', 'Amulet of magic'].map(i), lvl: 24 },
 		{
