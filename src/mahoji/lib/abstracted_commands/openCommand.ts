@@ -10,6 +10,7 @@ import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import { patronMsg } from '@/lib/util/smallUtils.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
+import { notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -84,12 +85,11 @@ export async function abstractedOpenUntilCommand(
 		cost,
 		loot,
 		messages: [
-			`You opened ${amountOpened}x ${openable.openedItem.name} ${
-				targetCount === 0
-					? `but you didn't get a ${openUntil.name}!`
-					: targetCount >= quantity
-						? `and successfully obtained ${targetCount}x ${openUntil.name}.`
-						: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
+			`You opened ${amountOpened}x ${openable.openedItem.name} ${targetCount === 0
+				? `but you didn't get a ${openUntil.name}!`
+				: targetCount >= quantity
+					? `and successfully obtained ${targetCount}x ${openUntil.name}.`
+					: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
 			}`
 		],
 		openables: [openable],
@@ -168,8 +168,8 @@ export async function abstractedOpenCommand(
 	const openables = names.includes('all')
 		? allOpenables.filter(({ openedItem }) => user.owns(openedItem.id) && !favorites.includes(openedItem.id))
 		: names
-				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
-				.filter(notEmpty);
+			.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
+			.filter(notEmpty);
 
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';
