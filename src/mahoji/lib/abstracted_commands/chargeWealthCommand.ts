@@ -53,9 +53,11 @@ export async function chargeWealthCommand(user: MUser, channelId: string, quanti
 
 	await user.removeItemsFromBank(new Bank().add('Ring of wealth', quantityWealths));
 
-	return `${user.minionName
-		} is now charging ${quantityWealths} Rings of wealth, doing ${wealthInventorySize} Rings of wealth in ${quantity} trips, it'll take around ${formatDuration(
-			duration
-		)} to finish. Removed ${quantityWealths}x Ring of wealth from your bank.${hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
-		}`;
+	return `${
+		user.minionName
+	} is now charging ${quantityWealths} Rings of wealth, doing ${wealthInventorySize} Rings of wealth in ${quantity} trips, it'll take around ${formatDuration(
+		duration
+	)} to finish. Removed ${quantityWealths}x Ring of wealth from your bank.${
+		hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
+	}`;
 }

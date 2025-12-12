@@ -85,8 +85,9 @@ export async function castCommand(channelId: string, user: MUser, name: string, 
 	}
 	const cost = determineRunes(user, spell.input.clone().multiply(quantity));
 	if (!userBank.has(cost)) {
-		return `You don't have the materials needed to cast ${quantity}x ${spell.name}, you need ${spell.input
-			}, you're missing **${cost.clone().remove(userBank)}** (Cost: ${cost}).`;
+		return `You don't have the materials needed to cast ${quantity}x ${spell.name}, you need ${
+			spell.input
+		}, you're missing **${cost.clone().remove(userBank)}** (Cost: ${cost}).`;
 	}
 
 	const userGP = user.GP;

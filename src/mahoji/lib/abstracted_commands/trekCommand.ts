@@ -40,8 +40,9 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 				if (!meetsRequirements) {
 					return `You don't have the requirements to do ${tier.difficulty} treks! Your ${readableStatName(
 						unmetKey!
-					)} stat in your ${setup} setup is ${has}, but you need at least ${tier.minimumGearRequirements[setup]?.[unmetKey!]
-						}.`;
+					)} stat in your ${setup} setup is ${has}, but you need at least ${
+						tier.minimumGearRequirements[setup]?.[unmetKey!]
+					}.`;
 				}
 			}
 		}

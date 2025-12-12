@@ -146,8 +146,9 @@ export async function soulWarsStartCommand(user: MUser, channelId: string) {
 		minigameID: 'soul_wars'
 	});
 
-	return `${user.minionName
-		} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${await formatTripDuration(user, duration)}.`;
+	return `${
+		user.minionName
+	} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${await formatTripDuration(user, duration)}.`;
 }
 
 export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: number) {
@@ -170,8 +171,9 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 	}
 	const bal = user.user.zeal_tokens;
 	if (bal < item.tokens * quantity) {
-		return `You don't have enough Zeal Tokens to buy ${quantity} ${item.item.name}. You have ${bal} but need ${item.tokens * quantity
-			}.`;
+		return `You don't have enough Zeal Tokens to buy ${quantity} ${item.item.name}. You have ${bal} but need ${
+			item.tokens * quantity
+		}.`;
 	}
 	await user.update({
 		zeal_tokens: {
@@ -215,6 +217,7 @@ export async function soulWarsImbueCommand(user: MUser, input = '') {
 			}
 		}
 	});
-	return `Added ${loot} to your bank, removed ${imbueCost}x Zeal Tokens and ${cost}.${user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''
-		}`;
+	return `Added ${loot} to your bank, removed ${imbueCost}x Zeal Tokens and ${cost}.${
+		user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''
+	}`;
 }

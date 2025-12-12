@@ -201,8 +201,9 @@ export const mineCommand = defineCommand({
 		);
 
 		if (!ore) {
-			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${Mining.MotherlodeMine.name
-				}.`;
+			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
+				Mining.MotherlodeMine.name
+			}.`;
 		}
 
 		if (user.skillsAsLevels.mining < ore.level) {
@@ -249,11 +250,13 @@ export const mineCommand = defineCommand({
 			type: 'Mining'
 		});
 
-		let response = `${user.minionName} is now mining ${ore.name} until your minion ${quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
-			}, it'll take ${quantity
+		let response = `${user.minionName} is now mining ${ore.name} until your minion ${
+			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
+		}, it'll take ${
+			quantity
 				? `between ${await formatTripDuration(user, res.fakeDurationMin)} **and** ${await formatTripDuration(user, res.fakeDurationMax)}`
 				: await formatTripDuration(user, res.duration)
-			} to finish.`;
+		} to finish.`;
 
 		if (res.boosts.length > 0) {
 			response += `\n\n**Boosts:** ${res.boosts.join(', ')}.`;

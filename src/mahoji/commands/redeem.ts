@@ -63,15 +63,15 @@ export const redeemCommand = defineCommand({
 				}),
 				'bit' in product
 					? roboChimpClient.user.update({
-						where: {
-							id: BigInt(user.id)
-						},
-						data: {
-							store_bitfield: {
-								push: product.bit
+							where: {
+								id: BigInt(user.id)
+							},
+							data: {
+								store_bitfield: {
+									push: product.bit
+								}
 							}
-						}
-					})
+						})
 					: undefined
 			].filter(notEmpty)
 		);

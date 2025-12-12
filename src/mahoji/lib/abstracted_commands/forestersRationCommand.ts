@@ -69,6 +69,7 @@ export async function forestersRationCommand({
 		type: 'CreateForestersRations'
 	});
 
-	return `${user.minionName} is now creating ${quantity}x ${forestryFood.name
-		}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
+	return `${user.minionName} is now creating ${quantity}x ${
+		forestryFood.name
+	}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 }

@@ -258,15 +258,18 @@ export async function giantsFoundryShopCommand(
 
 	const cost = quantity * shopItem.cost;
 	if (cost > currentUserReputation) {
-		return `You don't have enough Foundry Reputation to buy ${quantity.toLocaleString()}x ${shopItem.name} (${shopItem.cost
-			} Foundry Reputation each).\nYou have ${currentUserReputation} Foundry Reputation.\n${currentUserReputation < shopItem.cost
+		return `You don't have enough Foundry Reputation to buy ${quantity.toLocaleString()}x ${shopItem.name} (${
+			shopItem.cost
+		} Foundry Reputation each).\nYou have ${currentUserReputation} Foundry Reputation.\n${
+			currentUserReputation < shopItem.cost
 				? "You don't have enough Foundry Reputation for any of this item."
 				: `You only have enough for ${Math.floor(currentUserReputation / shopItem.cost).toLocaleString()}`
-			}`;
+		}`;
 	}
 
 	await interaction.confirmation(
-		`Are you sure you want to spend **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${shopItem.name
+		`Are you sure you want to spend **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${
+			shopItem.name
 		}**?`
 	);
 
