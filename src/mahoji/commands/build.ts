@@ -136,7 +136,7 @@ export const buildCommand = defineCommand({
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatTripDuration(
+		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${await formatTripDuration(
 			user,
 			duration
 		)} to finish. Removed ${cost} from your bank. **${xpHr}**

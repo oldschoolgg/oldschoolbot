@@ -84,7 +84,7 @@ export const lightCommand = defineCommand({
 			type: 'Firemaking'
 		});
 
-		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatTripDuration(
+		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${await formatTripDuration(
 			user,
 			duration
 		)} to finish.`;

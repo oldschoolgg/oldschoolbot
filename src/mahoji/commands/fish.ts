@@ -105,7 +105,7 @@ export const fishCommand = defineCommand({
 			flakesQuantity: res.flakesBeingUsed
 		});
 
-		let response = `${user.minionName} is now fishing ${res.quantity}x ${fish.name}, it'll take around ${formatTripDuration(
+		let response = `${user.minionName} is now fishing ${res.quantity}x ${fish.name}, it'll take around ${await formatTripDuration(
 			user,
 			res.duration
 		)} to finish.`;

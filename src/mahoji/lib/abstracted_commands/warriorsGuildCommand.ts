@@ -123,7 +123,7 @@ async function cyclopsCommand(user: MUser, channelId: string, quantity: number |
 		type: 'Cyclops'
 	});
 
-	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatTripDuration(
+	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${await formatTripDuration(
 		user,
 		duration
 	)} to finish. ${

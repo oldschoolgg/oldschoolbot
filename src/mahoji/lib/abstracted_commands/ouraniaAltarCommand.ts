@@ -134,7 +134,7 @@ export async function ouraniaAltarStartCommand({
 		response += ' Pure ';
 	}
 
-	response += `Essence at the Ourania Altar, it'll take around ${formatTripDuration(
+	response += `Essence at the Ourania Altar, it'll take around ${await formatTripDuration(
 		user,
 		duration
 	)} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.\n\n**Boosts:** ${boosts.join(

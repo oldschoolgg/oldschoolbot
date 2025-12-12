@@ -143,7 +143,7 @@ export const cookCommand = defineCommand({
 			type: 'Cooking'
 		});
 
-		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatTripDuration(
+		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${await formatTripDuration(
 			user,
 			duration
 		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
