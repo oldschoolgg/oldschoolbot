@@ -188,8 +188,8 @@ export class BingoManager {
 				this.bingoTiles.length === 0
 					? 'No tiles.'
 					: chunk(bingoTable, rowsForSquare(this.bingoTiles.length))
-						.map(row => `${row.join(' ')}`)
-						.join('\n'),
+							.map(row => `${row.join(' ')}`)
+							.join('\n'),
 			tilesCompleted,
 			tilesNotCompleted,
 			tilesCompletedMap: new Set(tilesCompleted.map(t => t.name))
@@ -254,12 +254,12 @@ export class BingoManager {
 				...team,
 				trophy: this.isGlobal
 					? (BingoTrophies.filter(
-						t =>
-							index < 3 ||
-							team.tilesCompletedCount >= t.guaranteedAt ||
-							100 - t.percentile <=
-							ss.quantileRank(tilesCompletedCounts, team.tilesCompletedCount) * 100
-					)[0] ?? null)
+							t =>
+								index < 3 ||
+								team.tilesCompletedCount >= t.guaranteedAt ||
+								100 - t.percentile <=
+									ss.quantileRank(tilesCompletedCounts, team.tilesCompletedCount) * 100
+						)[0] ?? null)
 					: null,
 				rank: index + 1
 			}))
@@ -270,13 +270,14 @@ export class BingoManager {
 		const { teams } = await this.fetchAllParticipants();
 		return `${this.title} - Bingo Leaderboard
 ${teams
-				.slice(0, 10)
-				.map(
-					(team, index) =>
-						`${++index}. <@${team.participants.map(participant => userMention(participant.user_id))}> - ${team.tilesCompletedCount
-						} tiles`
-				)
-				.join('\n')}`;
+	.slice(0, 10)
+	.map(
+		(team, index) =>
+			`${++index}. <@${team.participants.map(participant => userMention(participant.user_id))}> - ${
+				team.tilesCompletedCount
+			} tiles`
+	)
+	.join('\n')}`;
 	}
 
 	async findTeamWithUser(userID: string) {
