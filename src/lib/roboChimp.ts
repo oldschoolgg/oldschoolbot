@@ -101,7 +101,7 @@ export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser>
 			update: {}
 		});
 		return result;
-	} catch (err: unknown) {
+	} catch (err) {
 		// Ignore unique constraint errors, they already have a row
 		if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
 			throw err;

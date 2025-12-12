@@ -3,7 +3,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
-import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const leaguesTrophiesBuyables = [
 	{
@@ -92,8 +92,8 @@ export const botLeaguesCommand = defineCommand({
 				return `You don't have any trophies you can claim. You have ${roboChimpUser.leagues_points_total.toLocaleString()} points.
 
 ${leaguesTrophiesBuyables
-	.map(i => `${i.item.name}: Requires ${i.leaguesPointsRequired.toLocaleString()} points`)
-	.join('\n')}`;
+						.map(i => `${i.item.name}: Requires ${i.leaguesPointsRequired.toLocaleString()} points`)
+						.join('\n')}`;
 			}
 
 			await user.addItemsToBank({ items: loot, collectionLog: false });
@@ -146,7 +146,7 @@ ${leaguesTrophiesBuyables
 			return doMenuWrapper({
 				ironmanOnly: false,
 				interaction,
-				users: result.map((r: RobochimpUser) => ({
+				users: result.map(r => ({
 					id: r.id.toString(),
 					score: r.leagues_points_total
 				})),
