@@ -1,4 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -9,9 +10,9 @@ import Mining from '@/lib/skilling/skills/mining.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
-
 export function determineMiningTrip({
 	gearBank,
 	ore,

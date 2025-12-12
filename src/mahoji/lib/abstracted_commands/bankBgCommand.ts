@@ -1,8 +1,8 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-
 export async function bankBgCommand(interaction: MInteraction, user: MUser, name: string) {
 	const bankImages = bankImageTask.backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));

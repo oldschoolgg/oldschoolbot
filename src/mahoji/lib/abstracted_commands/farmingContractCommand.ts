@@ -1,5 +1,6 @@
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import type { IFarmingContract, IFarmingContractDifficultyLevel } from '@oldschoolgg/schemas';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { EmojiId } from '@/lib/data/emojis.js';

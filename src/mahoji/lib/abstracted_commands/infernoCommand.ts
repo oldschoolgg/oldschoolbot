@@ -1,4 +1,5 @@
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, Emoji, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
@@ -9,6 +10,7 @@ import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const minimumRangeItems = Items.resolveFullItems([
 	'Amulet of fury',

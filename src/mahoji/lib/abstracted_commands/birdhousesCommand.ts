@@ -1,9 +1,10 @@
 import { time } from '@oldschoolgg/discord';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export function calcBirdhouseLimit() {
 	const base = 4;
 	return base;

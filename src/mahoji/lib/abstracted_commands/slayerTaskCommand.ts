@@ -1,4 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
+import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
 import { EItem, type Monster, Monsters } from 'oldschooljs';
 
 import type { SafeUserUpdateInput } from '@/lib/MUser.js';

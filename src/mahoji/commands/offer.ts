@@ -1,4 +1,5 @@
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
 import { Offerables } from '@/lib/data/offerData.js';
@@ -6,6 +7,7 @@ import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const specialBones = [
 	{

@@ -1,4 +1,5 @@
 import { percentChance, randInt } from '@oldschoolgg/rng';
+import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 import { pick } from 'remeda';
@@ -8,8 +9,8 @@ import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/t
 import type { AddXpParams } from '@/lib/minions/types.js';
 import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
-
 export async function trekCommand(user: MUser, channelId: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 	if (!tier) return 'that is not a valid difficulty';

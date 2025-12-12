@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 

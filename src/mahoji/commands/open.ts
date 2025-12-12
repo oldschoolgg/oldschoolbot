@@ -1,10 +1,11 @@
+import { truncateString } from '@oldschoolgg/toolkit';
+
 import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
 import {
 	abstractedOpenCommand,
 	abstractedOpenUntilCommand,
 	OpenUntilItems
 } from '@/mahoji/lib/abstracted_commands/openCommand.js';
-
 export const openCommand = defineCommand({
 	name: 'open',
 	description: 'Open an item (caskets, keys, boxes, etc).',

@@ -1,7 +1,8 @@
+import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
+
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '@/lib/types/minions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-
 export async function questCommand(user: MUser, channelId: string, name?: string) {
 	if (!user.hasMinion) {
 		return 'You need a minion to do a questing trip';

@@ -1,6 +1,8 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export const craftCommand = defineCommand({
 	name: 'craft',
 	description: 'Craft items with the Crafting skill.',

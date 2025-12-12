@@ -1,4 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
+import { formatDuration, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import type { PlayerOwnedHouse } from '@/prisma/main.js';
@@ -8,9 +9,9 @@ import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
-
 export const clueTierBoosts: Record<
 	ClueTier['name'],
 	{ condition: (user: MUser, poh: PlayerOwnedHouse) => boolean; boost: string; durationMultiplier: number }[]

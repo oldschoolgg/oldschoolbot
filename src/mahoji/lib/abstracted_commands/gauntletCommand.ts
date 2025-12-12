@@ -1,7 +1,9 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, toTitleCase } from '@oldschoolgg/toolkit';
 
 import { BitField } from '@/lib/constants.js';
 import type { GauntletOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const baseRequirements = {

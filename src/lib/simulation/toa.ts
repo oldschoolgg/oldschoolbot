@@ -5,6 +5,7 @@ import {
 	calcWhatPercent,
 	Emoji,
 	exponentialPercentScale,
+	formatDuration,
 	increaseNumByPercent,
 	objectEntries,
 	reduceNumByPercent,

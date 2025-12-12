@@ -1,11 +1,12 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function motherlodeMineCommand({
 	user,
 	channelId,

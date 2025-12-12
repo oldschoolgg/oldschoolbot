@@ -1,7 +1,8 @@
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, EGear } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export const Armours = [
 	{
 		name: 'Rune',

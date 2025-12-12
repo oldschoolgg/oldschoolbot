@@ -1,10 +1,11 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { pluraliseItemName } from '@/lib/util/smallUtils.js';
-
 export const smithCommand = defineCommand({
 	name: 'smith',
 	description: 'Smith things using the Smithing skill.',

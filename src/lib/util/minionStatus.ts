@@ -1,5 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
-import { Emoji, increaseNumByPercent, reduceNumByPercent, toTitleCase } from '@oldschoolgg/toolkit';
+import { Emoji, formatDuration, increaseNumByPercent, reduceNumByPercent, toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

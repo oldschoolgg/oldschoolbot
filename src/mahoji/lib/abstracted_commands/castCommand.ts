@@ -1,7 +1,8 @@
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-
 export async function castCommand(channelId: string, user: MUser, name: string, quantity: number | undefined) {
 	const spell = Castables.find(spell => stringMatches(spell.id.toString(), name) || stringMatches(spell.name, name));
 	const boosts = [];

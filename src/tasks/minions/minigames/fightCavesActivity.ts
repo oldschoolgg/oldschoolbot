@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent, Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, calcWhatPercent, Emoji, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, itemID, Monsters } from 'oldschooljs';
 
 import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';

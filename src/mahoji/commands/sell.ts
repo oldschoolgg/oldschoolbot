@@ -1,3 +1,4 @@
+import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 

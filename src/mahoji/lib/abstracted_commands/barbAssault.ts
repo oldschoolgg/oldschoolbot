@@ -3,6 +3,7 @@ import { randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	Events,
+	formatDuration,
 	formatOrdinal,
 	reduceNumByPercent,
 	round,
@@ -19,7 +20,7 @@ import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simula
 import { maxOtherStats } from '@/lib/structures/Gear.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export const BarbBuyables = [
 	{
 		item: Items.getOrThrow('Fighter hat'),

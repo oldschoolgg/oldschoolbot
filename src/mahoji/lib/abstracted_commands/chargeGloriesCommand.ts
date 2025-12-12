@@ -1,7 +1,7 @@
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-
 export const gloriesInventorySize = 26;
 const gloriesInventoryTime = Time.Minute * 2.2;
 

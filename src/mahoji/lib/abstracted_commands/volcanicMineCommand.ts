@@ -1,6 +1,8 @@
+import { objectEntries, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 const skillReqs = {

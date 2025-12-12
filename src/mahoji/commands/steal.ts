@@ -1,13 +1,14 @@
 import { bold } from '@oldschoolgg/discord';
 import { randInt } from '@oldschoolgg/rng';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
-
 export const stealCommand = defineCommand({
 	name: 'steal',
 	description: 'Sends your minion to steal to train Thieving.',

@@ -1,4 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
@@ -6,6 +7,7 @@ import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 async function miningCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	let miningLevel = user.skillsAsLevels.mining;

@@ -1,8 +1,9 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export const soulWarsBuyables = [
 	{
 		item: Items.getOrThrow('Red soul cape'),

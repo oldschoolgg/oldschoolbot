@@ -1,6 +1,7 @@
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
+
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-
 export async function myNotesCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';

@@ -1,9 +1,11 @@
 import { bold } from '@oldschoolgg/discord';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
 const unlimitedFireRuneProviders = [

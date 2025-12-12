@@ -1,8 +1,9 @@
 import { randFloat } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function driftNetCommand(
 	channelId: string,
 	user: MUser,

@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 export async function premiumPatronTime(timeMs: number, tier: number, userToGive: MUser, interaction: MInteraction) {
 	if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';

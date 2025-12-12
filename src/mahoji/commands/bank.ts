@@ -1,4 +1,5 @@
 import { codeBlock, EmbedBuilder } from '@oldschoolgg/discord';
+import { Emoji } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 import { chunk } from 'remeda';
 

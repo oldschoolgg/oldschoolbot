@@ -1,9 +1,10 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { Planks } from '@/lib/minions/data/planks.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function sawmillCommand(
 	user: MUser,
 	plankName: string | number,

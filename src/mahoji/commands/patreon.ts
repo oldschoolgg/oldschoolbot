@@ -1,3 +1,4 @@
+import { Emoji } from '@oldschoolgg/toolkit';
 export const patreonCommand = defineCommand({
 	name: 'patreon',
 	description: 'Shows the patreon link for the bot, where you can donate.',

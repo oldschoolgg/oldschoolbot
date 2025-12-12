@@ -1,7 +1,9 @@
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',

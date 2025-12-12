@@ -1,8 +1,9 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function cutLeapingFishCommand({
 	user,
 	channelId,

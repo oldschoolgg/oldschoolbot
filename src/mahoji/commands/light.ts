@@ -1,8 +1,8 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
-
 export const lightCommand = defineCommand({
 	name: 'light',
 	description: 'Light logs to train Firemaking.',

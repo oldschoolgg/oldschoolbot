@@ -1,4 +1,5 @@
 import { bold } from '@oldschoolgg/discord';
+import { FormattedCustomEmoji, formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { skillOption } from '@/discord/index.js';

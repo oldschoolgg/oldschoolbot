@@ -1,3 +1,4 @@
+import { miniID, truncateString } from '@oldschoolgg/toolkit';
 import { containsBlacklistedWord } from '@oldschoolgg/toolkit/node';
 import { Bank, type ItemBank } from 'oldschooljs';
 
@@ -7,7 +8,6 @@ import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
-
 export const giftCommand = defineCommand({
 	name: 'gift',
 	description: 'Create gifts for other users, or open one you received.',

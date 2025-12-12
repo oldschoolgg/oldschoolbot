@@ -1,10 +1,10 @@
+import { calcWhatPercent, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { type GiantsFoundryBank, TOTAL_GIANT_WEAPONS } from '@/lib/giantsFoundry.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
-
 export const giantsFoundryAlloys = [
 	{
 		name: 'Bronze',

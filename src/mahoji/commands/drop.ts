@@ -1,9 +1,9 @@
+import { Emoji, ellipsize } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { filterOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-
 export const dropCommand = defineCommand({
 	name: 'drop',
 	description: 'Drop items from your bank.',

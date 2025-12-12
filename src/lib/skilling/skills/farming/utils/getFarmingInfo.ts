@@ -1,4 +1,4 @@
-import { Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { formatDuration, Time, toTitleCase } from '@oldschoolgg/toolkit';
 
 import type { User } from '@/prisma/main.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';

@@ -1,3 +1,4 @@
+import { formatDuration, reduceNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
 import { sepulchreBoosts, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
@@ -11,7 +12,7 @@ import TippedBolts from '@/lib/skilling/skills/fletching/fletchables/tippedBolts
 import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippedDragonBolts.js';
 import type { Fletchable } from '@/lib/skilling/types.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function sepulchreCommand(user: MUser, channelId: string, fletching?: number) {
 	const skills = user.skillsAsLevels;
 	const agilityLevel = skills.agility;

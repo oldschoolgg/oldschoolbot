@@ -1,10 +1,11 @@
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Eatables } from '@/lib/data/eatables.js';
 import { warmGear } from '@/lib/data/filterables.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function wintertodtCommand(user: MUser, channelId: string, quantity?: number) {
 	const fmLevel = user.skillsAsLevels.firemaking;
 	const wcLevel = user.skillsAsLevels.woodcutting;

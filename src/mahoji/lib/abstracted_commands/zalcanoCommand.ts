@@ -1,8 +1,10 @@
 import { percentChance } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { EMonster } from 'oldschooljs';
 
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 function calcPerformance(kcLearned: number, skillPercentage: number) {

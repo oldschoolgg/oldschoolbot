@@ -1,4 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, Emoji, formatDuration } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, TOBRooms } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
@@ -17,6 +18,7 @@ import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 

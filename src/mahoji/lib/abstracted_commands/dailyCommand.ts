@@ -1,11 +1,11 @@
 import { MathRNG, roll, shuffleArr } from '@oldschoolgg/rng';
+import { Emoji, formatDuration, isWeekend, uniqueArr } from '@oldschoolgg/toolkit';
 
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { CONSTANTS } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
-
 export async function isUsersDailyReady(
 	user: MUser
 ): Promise<{ isReady: true } | { isReady: false; durationUntilReady: number }> {

@@ -1,8 +1,10 @@
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { Plank } from '@/lib/skilling/skills/construction/constructables.js';
 import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 interface IContract {
 	name: string;

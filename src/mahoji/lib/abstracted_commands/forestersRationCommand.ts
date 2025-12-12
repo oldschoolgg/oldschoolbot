@@ -1,8 +1,9 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function forestersRationCommand({
 	user,
 	channelId,

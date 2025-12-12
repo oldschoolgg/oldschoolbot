@@ -1,4 +1,5 @@
 import { bold } from '@oldschoolgg/discord';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import Buyables from '@/lib/data/buyables/buyables.js';

@@ -1,6 +1,8 @@
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+
 import { plunderBoosts, plunderRooms } from '@/lib/minions/data/plunder.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function pyramidPlunderCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	const skills = user.skillsAsLevels;

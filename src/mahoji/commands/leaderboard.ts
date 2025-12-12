@@ -1,3 +1,4 @@
+import { calcWhatPercent, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import { defineOption } from '@/discord/index.js';
@@ -15,6 +16,14 @@ import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
 import { userEventsToMap } from '@/lib/util/userEvents.js';
 
+type XPLeaderboardRow = {
+	id: string;
+	osb_xp_percent: number;
+	bso_xp_percent: number;
+	average_percentage: number;
+};
+
+type MasteryLeaderboardRow = { id: string; avg: number };
 async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolean) {
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
@@ -377,14 +386,7 @@ type GlobalLbType = (typeof globalLbTypes)[number];
 
 async function globalLb(interaction: MInteraction, type: GlobalLbType) {
 	if (type === 'xp') {
-		const result = await roboChimpClient.$queryRaw<
-			{
-				id: string;
-				osb_xp_percent: number;
-				bso_xp_percent: number;
-				average_percentage: number;
-			}[]
-		>`SELECT id::text,
+		const result = await roboChimpClient.$queryRaw<XPLeaderboardRow[]>`SELECT id::text,
          (osb_total_xp / (200000000.0 * 23) * 100) as osb_xp_percent,
          (bso_total_xp / (5000000000.0 * 26) * 100) as bso_xp_percent,
          (((osb_total_xp / (200000000.0 * 23) * 100) + (bso_total_xp / (5000000000.0 * 26) * 100)) / 2) as average_percentage
@@ -395,7 +397,7 @@ async function globalLb(interaction: MInteraction, type: GlobalLbType) {
 		return doMenuWrapper({
 			ironmanOnly: false,
 			interaction,
-			users: result.map(r => ({
+			users: result.map((r: XPLeaderboardRow) => ({
 				id: r.id,
 				score: r.average_percentage,
 				osb: r.osb_xp_percent,
@@ -407,16 +409,16 @@ async function globalLb(interaction: MInteraction, type: GlobalLbType) {
 	}
 	if (type === 'mastery') {
 		const result = await roboChimpClient.$queryRaw<
-			{ id: string; avg: number }[]
+			MasteryLeaderboardRow[]
 		>`SELECT id::text, ((osb_mastery + bso_mastery) / 2) AS avg
-			 FROM public.user
-			 WHERE osb_mastery IS NOT NULL AND bso_mastery IS NOT NULL
-			 ORDER BY avg DESC
-			 LIMIT 10;`;
+                         FROM public.user
+                         WHERE osb_mastery IS NOT NULL AND bso_mastery IS NOT NULL
+                         ORDER BY avg DESC
+                         LIMIT 10;`;
 		return doMenuWrapper({
 			ironmanOnly: false,
 			interaction,
-			users: result.map(r => ({ id: r.id, score: r.avg })),
+			users: result.map((r: MasteryLeaderboardRow) => ({ id: r.id, score: r.avg })),
 			title: 'Global (OSB+BSO) Mastery Leaderboard',
 			formatter: v => `${v.toFixed(2)}%`
 		});

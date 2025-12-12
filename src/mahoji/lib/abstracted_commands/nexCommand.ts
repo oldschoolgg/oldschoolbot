@@ -1,10 +1,11 @@
 import { userMention } from '@oldschoolgg/discord';
+import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calculateNexDetails, checkNexUser } from '@/lib/simulation/nex.js';
 import type { NexTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function nexCommand(interaction: MInteraction, user: MUser, channelId: string, solo: boolean | undefined) {
 	const ownerCheck = checkNexUser(user);
 	if (ownerCheck[1]) {

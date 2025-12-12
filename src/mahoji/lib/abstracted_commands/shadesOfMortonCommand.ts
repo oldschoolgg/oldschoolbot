@@ -1,6 +1,8 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
 

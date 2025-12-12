@@ -1,10 +1,11 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-
 export async function collectCommand(
 	user: MUser,
 	channelId: string,

@@ -1,6 +1,7 @@
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
 import type { IGuild } from '@oldschoolgg/schemas';
 import {
+	formatDuration,
 	hexToDecimal,
 	isValidHexColor,
 	miniID,

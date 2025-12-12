@@ -4,6 +4,7 @@ import {
 	calcPerHour,
 	calcWhatPercent,
 	cleanString,
+	formatDuration,
 	noOp,
 	notEmpty,
 	sleep,

@@ -1,9 +1,9 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { bulkUpdateCommands } from '@/discord/utils.js';
 import { Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { initTickers } from '@/lib/tickers.js';
-
 export const onStartup = async () => {
 	// Wait 10 seconds before starting tickers to reduce lag on startup
 	TimerManager.setTimeout(

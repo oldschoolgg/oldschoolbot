@@ -1,8 +1,8 @@
+import { Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { Prisma } from '@/prisma/main.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
-
 export const payCommand = defineCommand({
 	name: 'pay',
 	description: 'Send GP to another user.',

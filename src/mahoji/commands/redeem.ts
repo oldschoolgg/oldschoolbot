@@ -1,8 +1,8 @@
 import { bold } from '@oldschoolgg/discord';
+import { notEmpty, ProductID, products } from '@oldschoolgg/toolkit';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
-
 export const redeemCommand = defineCommand({
 	name: 'redeem',
 	description: 'Redeem a code you received.',

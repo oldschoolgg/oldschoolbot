@@ -1,4 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, Emoji, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import {
@@ -18,8 +19,8 @@ import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
-
 export async function coxBoostsCommand(user: MUser) {
 	const boostStr = [];
 	let workFromBank = false;

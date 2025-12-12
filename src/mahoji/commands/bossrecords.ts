@@ -1,4 +1,5 @@
 import { EmbedBuilder, type PaginatedMessagePage } from '@oldschoolgg/discord';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
 import { chunk } from 'remeda';
 

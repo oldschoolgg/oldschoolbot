@@ -1,7 +1,9 @@
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const plainGraceful = new Bank({
 	'Graceful hood': 1,

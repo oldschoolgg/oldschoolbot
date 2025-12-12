@@ -1,9 +1,10 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-
 export const smeltingCommand = defineCommand({
 	name: 'smelt',
 	description: 'Smelt ores/items.',

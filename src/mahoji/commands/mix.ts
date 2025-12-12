@@ -1,8 +1,9 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export const mixCommand = defineCommand({
 	name: 'mix',
 	description: 'Mix potions to train Herblore.',

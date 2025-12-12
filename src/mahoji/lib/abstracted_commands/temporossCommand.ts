@@ -1,5 +1,7 @@
-import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
+import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function temporossCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const fLevel = user.skillLevel('fishing');
 	if (fLevel < 35) {

@@ -1,10 +1,11 @@
 import { dateFm } from '@oldschoolgg/discord';
+import { Emoji, getNextUTCReset, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 
 import { CONSTANTS } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-
 export const tearsOfGuthixSkillReqs = {
 	firemaking: 49,
 	crafting: 20,

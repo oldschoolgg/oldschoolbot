@@ -1,3 +1,4 @@
+import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
 import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/discord/index.js';

@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Hiscores } from 'oldschooljs/hiscores';
-
 export const cluesCommand = defineCommand({
 	name: 'clues',
 	description: 'See your OSRS clue scores.',

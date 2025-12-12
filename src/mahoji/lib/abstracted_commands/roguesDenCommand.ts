@@ -1,7 +1,8 @@
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function roguesDenCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	if (user.skillsAsLevels.agility < 50 || user.skillsAsLevels.thieving < 50) {

@@ -1,8 +1,9 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function tiaraRunecraftCommand({
 	user,
 	channelId,

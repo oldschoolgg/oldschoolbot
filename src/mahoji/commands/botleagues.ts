@@ -1,8 +1,9 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const leaguesTrophiesBuyables = [
 	{
@@ -145,7 +146,7 @@ ${leaguesTrophiesBuyables
 			return doMenuWrapper({
 				ironmanOnly: false,
 				interaction,
-				users: result.map(r => ({
+				users: result.map((r: RobochimpUser) => ({
 					id: r.id.toString(),
 					score: r.leagues_points_total
 				})),

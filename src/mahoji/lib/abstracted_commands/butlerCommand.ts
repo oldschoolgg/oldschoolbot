@@ -1,8 +1,10 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { Planks } from '@/lib/minions/data/planks.js';
 import type { ButlerActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const unlimitedEarthRuneProviders = resolveItems([
 	'Staff of earth',

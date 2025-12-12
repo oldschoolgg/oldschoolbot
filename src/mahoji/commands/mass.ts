@@ -1,3 +1,5 @@
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
+
 import type { GearSetupType } from '@/prisma/main/enums.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
@@ -7,6 +9,7 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.

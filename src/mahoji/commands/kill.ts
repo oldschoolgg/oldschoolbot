@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { PerkTier } from '@/lib/constants.js';

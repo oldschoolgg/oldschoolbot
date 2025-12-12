@@ -1,9 +1,11 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const axes = [
 	{

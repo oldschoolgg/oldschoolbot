@@ -1,5 +1,6 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { SimpleTable, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
@@ -10,7 +11,7 @@ import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTim
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
 import { makeShootingStarButton } from '@/lib/util/interactions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export const starSizes: Star[] = [
 	{
 		size: 9,

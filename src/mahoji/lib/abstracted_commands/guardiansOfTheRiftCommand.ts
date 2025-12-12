@@ -1,4 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -6,7 +7,6 @@ import { pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-
 export async function guardiansOfTheRiftStartCommand(
 	user: MUser,
 	channelId: string,

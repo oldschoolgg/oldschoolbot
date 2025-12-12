@@ -1,4 +1,4 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { DarkAltarOptions } from '@/lib/types/minions.js';

@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ACCOUNT_TYPES, Hiscores } from 'oldschooljs/hiscores';
 
 import { statsEmbed } from '@/lib/util/statsEmbed.js';

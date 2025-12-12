@@ -1,3 +1,4 @@
+import { stringSearch } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants.js';

@@ -1,3 +1,4 @@
+import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import type { GearStat } from 'oldschooljs/gear';
 

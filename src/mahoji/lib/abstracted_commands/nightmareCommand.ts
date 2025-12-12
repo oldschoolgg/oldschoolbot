@@ -1,3 +1,4 @@
+import { formatDuration, reduceNumByPercent, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Items, resolveItems, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -11,6 +12,7 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';

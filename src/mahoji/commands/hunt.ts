@@ -1,3 +1,4 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
@@ -6,9 +7,9 @@ import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirement
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-
 export const huntCommand = defineCommand({
 	name: 'hunt',
 	description: 'Hunt creatures with the Hunter skill.',

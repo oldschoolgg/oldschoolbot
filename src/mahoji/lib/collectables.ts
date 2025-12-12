@@ -1,7 +1,7 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
-import { Time } from '@oldschoolgg/toolkit';
 
 interface Collectable {
 	item: Item;

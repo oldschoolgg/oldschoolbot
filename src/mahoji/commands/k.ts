@@ -1,3 +1,5 @@
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+
 import { choicesOf } from '@/discord/index.js';
 import { PVM_METHODS } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
@@ -5,6 +7,7 @@ import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableM
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
 import findMonster from '@/lib/util/findMonster.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
 const wikiPrefix = 'https://wiki.oldschool.gg/osb';

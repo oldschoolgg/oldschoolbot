@@ -1,7 +1,9 @@
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+
 import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
 import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
-
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export const fletchCommand = defineCommand({
 	name: 'fletch',
 	description: 'Fletch items with the Fletching skill.',

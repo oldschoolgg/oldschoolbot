@@ -1,10 +1,10 @@
 import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
-
 export async function lmsCommand(
 	options: {
 		stats?: {};
