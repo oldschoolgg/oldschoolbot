@@ -3,6 +3,7 @@ import { shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, uniqueArr } from '@oldschoolgg/toolkit';
 
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
+
 export const triviaCommand = defineCommand({
 	name: 'trivia',
 	description: 'Try to answer a random trivia question!',

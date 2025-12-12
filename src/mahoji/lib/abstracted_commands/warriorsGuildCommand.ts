@@ -3,6 +3,7 @@ import { Bank, EGear } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+
 export const Armours = [
 	{
 		name: 'Rune',
@@ -64,9 +65,8 @@ async function tokensCommand(user: MUser, channelId: string, quantity: number | 
 		type: 'AnimatedArmour'
 	});
 
-	const response = `${user.minionName} is now killing ${quantity}x animated ${
-		armorSet.name
-	} armour, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
+	const response = `${user.minionName} is now killing ${quantity}x animated ${armorSet.name
+		} armour, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 
 	return response;
 }
@@ -124,11 +124,10 @@ async function cyclopsCommand(user: MUser, channelId: string, quantity: number |
 
 	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(
 		duration
-	)} to finish. ${
-		hasAttackCape
+	)} to finish. ${hasAttackCape
 			? 'You used no warrior guild tokens because you have an Attack cape.'
 			: `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
-	}`;
+		}`;
 
 	return response;
 }

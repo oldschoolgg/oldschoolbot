@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+
 export async function cutLeapingFishCommand({
 	user,
 	channelId,
@@ -69,7 +70,6 @@ export async function cutLeapingFishCommand({
 		type: 'CutLeapingFish'
 	});
 
-	return `${user.minionName} is now cutting ${quantity}x ${
-		barbarianFish.item.name
-	}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
+	return `${user.minionName} is now cutting ${quantity}x ${barbarianFish.item.name
+		}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 }

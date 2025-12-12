@@ -4,6 +4,7 @@ import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.j
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
 import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+
 export const fletchCommand = defineCommand({
 	name: 'fletch',
 	description: 'Fletch items with the Fletching skill.',
@@ -99,8 +100,7 @@ export const fletchCommand = defineCommand({
 			type: 'Fletching'
 		});
 
-		return `${user.minionName} is now Fletching ${quantity}${sets} ${
-			fletchable.name
-		}, it'll take around ${await formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		return `${user.minionName} is now Fletching ${quantity}${sets} ${fletchable.name
+			}, it'll take around ${await formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 });

@@ -4,6 +4,7 @@ import { Items } from 'oldschooljs';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+
 export async function enchantCommand(user: MUser, channelId: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
 		item =>
@@ -46,9 +47,8 @@ export async function enchantCommand(user: MUser, channelId: string, name: strin
 	const cost = determineRunes(user, enchantable.input.clone().multiply(quantity));
 
 	if (!userBank.has(cost)) {
-		return `You don't have the materials needed to enchant ${quantity}x ${enchantable.name}, you need ${
-			enchantable.input
-		}, you're missing **${cost.clone().remove(userBank)}**.`;
+		return `You don't have the materials needed to enchant ${quantity}x ${enchantable.name}, you need ${enchantable.input
+			}, you're missing **${cost.clone().remove(userBank)}**.`;
 	}
 	await user.transactItems({ itemsToRemove: cost });
 

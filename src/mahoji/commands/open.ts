@@ -6,6 +6,7 @@ import {
 	abstractedOpenUntilCommand,
 	OpenUntilItems
 } from '@/mahoji/lib/abstracted_commands/openCommand.js';
+
 export const openCommand = defineCommand({
 	name: 'open',
 	description: 'Open an item (caskets, keys, boxes, etc).',

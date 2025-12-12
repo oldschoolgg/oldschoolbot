@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
+
 export async function underwaterAgilityThievingCommand(
 	channelId: string,
 	user: MUser,

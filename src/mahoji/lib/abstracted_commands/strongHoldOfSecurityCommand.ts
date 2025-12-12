@@ -3,6 +3,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+
 export async function strongHoldOfSecurityCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';

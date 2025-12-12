@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
+
 export async function cancelUsersListings(user: MUser) {
 	const activeListings = await prisma.gEListing.findMany({
 		where: {

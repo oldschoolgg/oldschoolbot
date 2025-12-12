@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import Createables from '@/lib/data/createables.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
+
 export const createCommand = defineCommand({
 	name: 'create',
 	description: 'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',

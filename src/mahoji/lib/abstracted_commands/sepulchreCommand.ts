@@ -13,6 +13,7 @@ import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippe
 import type { Fletchable } from '@/lib/skilling/types.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+
 export async function sepulchreCommand(user: MUser, channelId: string, fletching?: number) {
 	const skills = user.skillsAsLevels;
 	const agilityLevel = skills.agility;
@@ -115,11 +116,10 @@ export async function sepulchreCommand(user: MUser, channelId: string, fletching
 		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});
 
-	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
-		completableFloors[0].number
-	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
-		tripLength
-	)}, with each lap taking ${await formatTripDuration(user, lapLength)}.`;
+	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${completableFloors[0].number
+		}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
+			tripLength
+		)}, with each lap taking ${await formatTripDuration(user, lapLength)}.`;
 
 	if (fletchable && itemsNeeded) {
 		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;

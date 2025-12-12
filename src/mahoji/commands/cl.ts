@@ -2,6 +2,7 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 
 import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '@/lib/collectionLogTask.js';
 import { allCollectionLogs } from '@/lib/data/Collections.js';
+
 export const collectionLogCommand = defineCommand({
 	name: 'cl',
 	description: 'See your Collection Log.',

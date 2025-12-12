@@ -4,6 +4,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { petMessage } from '@/lib/util/displayCluesAndPets.js';
+
 export async function capeGambleStatsCommand(user: MUser) {
 	const stats = await user.fetchStats();
 

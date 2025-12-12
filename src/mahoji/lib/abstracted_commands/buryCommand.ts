@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+
 export async function buryCommand(user: MUser, channelId: string, boneName: string, quantity?: number) {
 	const speedMod = 1;
 

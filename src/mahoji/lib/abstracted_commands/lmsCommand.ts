@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
+
 export async function lmsCommand(
 	options: {
 		stats?: {};
@@ -95,9 +96,8 @@ export async function lmsCommand(
 		quantity
 	});
 
-	return `${
-		user.minionName
-	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatDuration(
-		duration
-	)}.`;
+	return `${user.minionName
+		} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatDuration(
+			duration
+		)}.`;
 }

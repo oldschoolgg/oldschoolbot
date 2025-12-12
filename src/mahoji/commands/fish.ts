@@ -3,6 +3,7 @@ import { EMonster, ItemGroups } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
+
 export const fishCommand = defineCommand({
 	name: 'fish',
 	description: 'Send your minion to fish fish.',

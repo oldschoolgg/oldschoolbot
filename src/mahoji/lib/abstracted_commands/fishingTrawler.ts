@@ -1,6 +1,7 @@
 import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+
 export async function fishingTrawlerCommand(user: MUser, channelId: string) {
 	if (user.skillLevel('fishing') < 15) {
 		return 'You need at least level 15 Fishing to do the Fishing Trawler.';

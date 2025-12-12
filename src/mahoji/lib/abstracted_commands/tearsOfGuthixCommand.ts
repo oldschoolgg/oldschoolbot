@@ -6,6 +6,7 @@ import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+
 export const tearsOfGuthixSkillReqs = {
 	firemaking: 49,
 	crafting: 20,
@@ -68,9 +69,8 @@ export async function tearsOfGuthixCommand(user: MUser, channelId: string) {
 	const missingIronmanSkillMessage = getTearsOfGuthixMissingIronmanMessage(user);
 
 	if (missingSkillsMessage || missingIronmanSkillMessage) {
-		return `You are not skilled enough to participate in Tears of Guthix. ${
-			missingSkillsMessage ?? ''
-		} ${missingIronmanSkillMessage ?? ''}`.trim();
+		return `You are not skilled enough to participate in Tears of Guthix. ${missingSkillsMessage ?? ''
+			} ${missingIronmanSkillMessage ?? ''}`.trim();
 	}
 
 	const duration = Math.min(Time.Minute * 2 + Time.Second * 0.6 * userQP, Time.Minute * 30);
@@ -84,7 +84,6 @@ export async function tearsOfGuthixCommand(user: MUser, channelId: string) {
 		type: 'TearsOfGuthix'
 	});
 
-	return `${
-		user.minionName
-	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${await formatTripDuration(user, duration)}.`;
+	return `${user.minionName
+		} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${await formatTripDuration(user, duration)}.`;
 }

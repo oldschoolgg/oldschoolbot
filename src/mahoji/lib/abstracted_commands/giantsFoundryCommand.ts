@@ -5,6 +5,7 @@ import { type GiantsFoundryBank, TOTAL_GIANT_WEAPONS } from '@/lib/giantsFoundry
 import { trackLoot } from '@/lib/lootTrack.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
+
 export const giantsFoundryAlloys = [
 	{
 		name: 'Bronze',
@@ -257,18 +258,15 @@ export async function giantsFoundryShopCommand(
 
 	const cost = quantity * shopItem.cost;
 	if (cost > currentUserReputation) {
-		return `You don't have enough Foundry Reputation to buy ${quantity.toLocaleString()}x ${shopItem.name} (${
-			shopItem.cost
-		} Foundry Reputation each).\nYou have ${currentUserReputation} Foundry Reputation.\n${
-			currentUserReputation < shopItem.cost
+		return `You don't have enough Foundry Reputation to buy ${quantity.toLocaleString()}x ${shopItem.name} (${shopItem.cost
+			} Foundry Reputation each).\nYou have ${currentUserReputation} Foundry Reputation.\n${currentUserReputation < shopItem.cost
 				? "You don't have enough Foundry Reputation for any of this item."
 				: `You only have enough for ${Math.floor(currentUserReputation / shopItem.cost).toLocaleString()}`
-		}`;
+			}`;
 	}
 
 	await interaction.confirmation(
-		`Are you sure you want to spend **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${
-			shopItem.name
+		`Are you sure you want to spend **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${shopItem.name
 		}**?`
 	);
 

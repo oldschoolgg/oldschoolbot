@@ -11,6 +11,7 @@ import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
+
 export async function trekCommand(user: MUser, channelId: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 	if (!tier) return 'that is not a valid difficulty';
@@ -39,9 +40,8 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 				if (!meetsRequirements) {
 					return `You don't have the requirements to do ${tier.difficulty} treks! Your ${readableStatName(
 						unmetKey!
-					)} stat in your ${setup} setup is ${has}, but you need at least ${
-						tier.minimumGearRequirements[setup]?.[unmetKey!]
-					}.`;
+					)} stat in your ${setup} setup is ${has}, but you need at least ${tier.minimumGearRequirements[setup]?.[unmetKey!]
+						}.`;
 				}
 			}
 		}

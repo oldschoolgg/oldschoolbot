@@ -10,6 +10,7 @@ import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+
 export const huntCommand = defineCommand({
 	name: 'hunt',
 	description: 'Hunt creatures with the Hunter skill.',
@@ -122,7 +123,7 @@ export const huntCommand = defineCommand({
 			Math.min(
 				Math.floor(
 					(await user.getCreatureScore(creature.id)) /
-						(Time.Hour / ((creature.catchTime * Time.Second) / traps))
+					(Time.Hour / ((creature.catchTime * Time.Second) / traps))
 				),
 				creature.huntTechnique === HunterTechniqueEnum.Tracking ? 20 : 10
 			),
@@ -239,9 +240,8 @@ export const huntCommand = defineCommand({
 					break;
 				}
 			}
-			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${
-				wildyPeak?.peakTier
-			} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions.`;
+			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${wildyPeak?.peakTier
+				} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions.`;
 		}
 
 		await trackLoot({
@@ -269,9 +269,8 @@ export const huntCommand = defineCommand({
 			type: 'Hunter'
 		});
 
-		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
-			crystalImpling ? ' ' : ` ${quantity}x `
-		}${creature.name}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
+		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${crystalImpling ? ' ' : ` ${quantity}x `
+			}${creature.name}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

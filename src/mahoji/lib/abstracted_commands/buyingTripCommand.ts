@@ -5,6 +5,7 @@ import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
 import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+
 export async function buyingTripCommand(
 	user: MUser,
 	channelId: string,

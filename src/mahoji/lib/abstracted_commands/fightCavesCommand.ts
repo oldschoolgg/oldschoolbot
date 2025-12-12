@@ -5,6 +5,7 @@ import { Bank, EMonster, itemID } from 'oldschooljs';
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+
 export const fightCavesCost = new Bank({
 	'Prayer potion(4)': 10,
 	'Saradomin brew(4)': 6,

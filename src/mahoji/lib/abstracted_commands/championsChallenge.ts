@@ -3,6 +3,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+
 export async function championsChallengeCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';

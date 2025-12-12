@@ -11,6 +11,7 @@ import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
 import { createChart } from '@/lib/util/chart.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
 	sellTransactions: GETransaction[];

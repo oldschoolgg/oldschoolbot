@@ -5,6 +5,7 @@ import { Bank, Items } from 'oldschooljs';
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+
 export function calcBirdhouseLimit() {
 	const base = 4;
 	return base;
@@ -29,12 +30,12 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 
 	let birdhouseToPlant = inputBirdhouseName
 		? birdhouses.find(_birdhouse =>
-				_birdhouse.aliases.some(
-					alias =>
-						stringMatches(alias, inputBirdhouseName) ||
-						stringMatches(alias.split(' ')[0], inputBirdhouseName)
-				)
+			_birdhouse.aliases.some(
+				alias =>
+					stringMatches(alias, inputBirdhouseName) ||
+					stringMatches(alias.split(' ')[0], inputBirdhouseName)
 			)
+		)
 		: undefined;
 	if (!birdhouseToPlant && existingBirdhouse.birdhouse) birdhouseToPlant = existingBirdhouse.birdhouse;
 
@@ -129,7 +130,6 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 		birdhouseId: birdhouseToPlant.birdhouseItem
 	});
 
-	return `${infoStr.join(' ')}\n\nIt'll take around ${await formatTripDuration(user, duration)} to finish.\n\n${
-		boostStr.length > 0 ? '**Boosts**: ' : ''
-	}${boostStr.join(', ')}`;
+	return `${infoStr.join(' ')}\n\nIt'll take around ${await formatTripDuration(user, duration)} to finish.\n\n${boostStr.length > 0 ? '**Boosts**: ' : ''
+		}${boostStr.join(', ')}`;
 }

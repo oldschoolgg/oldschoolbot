@@ -5,6 +5,7 @@ import { finishables } from '@/lib/finishables.js';
 import { sorts } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
+
 export const finishCommand = defineCommand({
 	name: 'finish',
 	description: 'Simulate finishing a CL.',

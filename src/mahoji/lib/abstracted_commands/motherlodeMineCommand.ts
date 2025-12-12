@@ -7,6 +7,7 @@ import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
+
 export async function motherlodeMineCommand({
 	user,
 	channelId,
@@ -89,13 +90,11 @@ export async function motherlodeMineCommand({
 		fakeDurationMin: Math.floor(fakeDurationMin),
 		type: 'MotherlodeMining'
 	});
-	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${
-		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
-	}, it'll take ${
-		quantity
+	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
+		}, it'll take ${quantity
 			? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
 			: await formatTripDuration(user, duration)
-	} to finish.`;
+		} to finish.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

@@ -6,6 +6,7 @@ import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { pluraliseItemName } from '@/lib/util/smallUtils.js';
+
 export const smithCommand = defineCommand({
 	name: 'smith',
 	description: 'Smith things using the Smithing skill.',
@@ -117,9 +118,8 @@ export const smithCommand = defineCommand({
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${smithedItem.name}${
-				smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
-			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
+			)}, try a lower quantity. The highest amount of ${smithedItem.name}${smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
+				} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
 		await user.transactItems({ itemsToRemove: cost });
@@ -134,17 +134,14 @@ export const smithCommand = defineCommand({
 			type: 'Smithing'
 		});
 
-		return `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
-			smithedItem.name
-		}, removed ${cost} from your bank, it'll take around ${await formatTripDuration(user, duration)} to finish. ${
-			setBonus > 0
+		return `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${smithedItem.name
+			}, removed ${cost} from your bank, it'll take around ${await formatTripDuration(user, duration)} to finish. ${setBonus > 0
 				? `${setBonus}% chance to save 1 tick while smithing each item for using Smiths' Uniform item/items.`
 				: ''
-		}\n${doubleCBall ? 'Twice as fast Cannonball production using Double ammo mould.' : ''}
-		\n${
-			diaryCannonball
+			}\n${doubleCBall ? 'Twice as fast Cannonball production using Double ammo mould.' : ''}
+		\n${diaryCannonball
 				? 'Faster Cannonball production using the Shilo village furnance due to completing the Elite Karamja Diary.'
 				: ''
-		}`;
+			}`;
 	}
 });
