@@ -1,6 +1,5 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
-import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
@@ -250,9 +249,8 @@ export async function shootingStarsCommand(
 		size: star.size
 	});
 
-	let str = `${user.minionName} is now mining a size ${star.size} Crashed Star with ${
-		usersWith - 1 || 'no'
-	} other players! The trip will take ${formatDuration(duration)}.`;
+	let str = `${user.minionName} is now mining a size ${star.size} Crashed Star with ${usersWith - 1 || 'no'
+		} other players! The trip will take ${await formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

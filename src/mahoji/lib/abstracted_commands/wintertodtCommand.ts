@@ -1,4 +1,3 @@
-import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Eatables } from '@/lib/data/eatables.js';
@@ -115,5 +114,5 @@ export async function wintertodtCommand(user: MUser, channelId: string, quantity
 
 	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
 		durationPerTodt * quantity
-	)}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
+	)}. (${await formatTripDuration(user, durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
 }

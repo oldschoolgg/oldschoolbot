@@ -1,5 +1,5 @@
 import { type APIMessageComponentInteraction, SpecialResponse } from '@oldschoolgg/discord';
-import { formatDuration, removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';

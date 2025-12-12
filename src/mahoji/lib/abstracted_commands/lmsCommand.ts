@@ -1,5 +1,4 @@
 import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
@@ -96,9 +95,8 @@ export async function lmsCommand(
 		quantity
 	});
 
-	return `${
-		user.minionName
-	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatDuration(
-		duration
-	)}.`;
+	return `${user.minionName
+		} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatDuration(
+			duration
+		)}.`;
 }

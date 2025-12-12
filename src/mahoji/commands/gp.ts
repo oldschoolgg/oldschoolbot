@@ -1,4 +1,3 @@
-import { Emoji } from '@oldschoolgg/toolkit';
 import { toKMB } from 'oldschooljs';
 
 export const gpCommand = defineCommand({

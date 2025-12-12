@@ -1,5 +1,4 @@
 import { randomVariation } from '@oldschoolgg/rng';
-import { calcWhatPercent, Emoji, formatDuration } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, TOBRooms } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
@@ -77,8 +76,7 @@ async function checkTOBUser(
 	if (!user.hasSkillReqs(minStats)) {
 		return [
 			true,
-			`${
-				user.usernameOrMention
+			`${user.usernameOrMention
 			} doesn't meet the skill requirements to do the Theatre of Blood, you need: ${formatSkillRequirements(
 				minStats
 			)}.`
@@ -268,11 +266,11 @@ export async function tobStatsCommand(user: MUser) {
 **Death Chances:** ${deathChances.deathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
 **Wipe Chances:** ${deathChances.wipeDeathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
 **Hard Mode Death Chances:** ${hardDeathChances.deathChances
-		.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
-		.join(', ')}
+			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
+			.join(', ')}
 **Hard Mode Wipe Chances:** ${hardDeathChances.wipeDeathChances
-		.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
-		.join(', ')}`;
+			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
+			.join(', ')}`;
 }
 
 export async function tobStartCommand(
@@ -310,9 +308,8 @@ export async function tobStartCommand(
 		minSize: 2,
 		maxSize,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is hosting a ${
-			isHardMode ? '**Hard mode** ' : ''
-		}Theatre of Blood mass! Use the buttons below to join/leave.`,
+		message: `${user.usernameOrMention} is hosting a ${isHardMode ? '**Hard mode** ' : ''
+			}Theatre of Blood mass! Use the buttons below to join/leave.`,
 		customDenier: async _user => {
 			if (await _user.minionIsBusy()) {
 				return [true, `${_user.usernameOrMention} minion is busy`];
@@ -425,9 +422,8 @@ export async function tobStartCommand(
 					chargesToDegrade: usedCharges
 				});
 			}
-			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
-				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${realCost}\n\n`;
+			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword
+				} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${realCost}\n\n`;
 			return {
 				userID: u.id,
 				effectiveCost
@@ -465,9 +461,8 @@ export async function tobStartCommand(
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to do ${qty}x Theatre of Blood raid${
-		qty > 1 ? 's' : ''
-	} - the total trip will take ${formatDuration(totalFakeDuration)}.${solo ? " You're in a team of 3." : ''}`;
+		.join(', ')}) is now off to do ${qty}x Theatre of Blood raid${qty > 1 ? 's' : ''
+		} - the total trip will take ${await formatTripDuration(user, totalFakeDuration)}.${solo ? " You're in a team of 3." : ''}`;
 
 	str += ` \n\n${debugStr}`;
 

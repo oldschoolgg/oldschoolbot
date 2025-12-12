@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
@@ -59,15 +58,13 @@ export async function tiaraRunecraftCommand({
 	}
 
 	if (numTiaraOwned === 0 || numTalismansOwned === 0) {
-		return `You don't have ${
-			numTiaraOwned === 0
-				? 'any tiaras. You can acquire some through crafting at a furnance, or purchasing from other players.'
-				: `${tiaraObj.inputTalisman}. You can acquire some from PvM, or purchasing from other players.`
-		}`;
+		return `You don't have ${numTiaraOwned === 0
+			? 'any tiaras. You can acquire some through crafting at a furnance, or purchasing from other players.'
+			: `${tiaraObj.inputTalisman}. You can acquire some from PvM, or purchasing from other players.`
+			}`;
 	} else if (numTalismansOwned < quantity || numTiaraOwned < quantity) {
-		return `You don't have enough ${
-			numTiaraOwned < quantity ? 'tiaras' : `${tiaraObj.inputTalisman}`
-		} to craft ${quantity}x ${tiaraObj.name}. You can acquire some from PvM, or purchasing from other players.`;
+		return `You don't have enough ${numTiaraOwned < quantity ? 'tiaras' : `${tiaraObj.inputTalisman}`
+			} to craft ${quantity}x ${tiaraObj.name}. You can acquire some from PvM, or purchasing from other players.`;
 	}
 
 	const numberOfInventories = Math.floor(quantity / TIARAS_PER_INVENTORY);
@@ -78,9 +75,8 @@ export async function tiaraRunecraftCommand({
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${tiaraObj.name} you can craft is ${
-			maxCanDoOwned < maxCanDo ? maxCanDoOwned : maxCanDo
-		}.`;
+		)}, try a lower quantity. The highest amount of ${tiaraObj.name} you can craft is ${maxCanDoOwned < maxCanDo ? maxCanDoOwned : maxCanDo
+			}.`;
 	}
 
 	const totalCost = new Bank();
@@ -99,9 +95,8 @@ export async function tiaraRunecraftCommand({
 		type: 'TiaraRunecraft'
 	});
 
-	let response = `${user.minionName} is now turning ${quantity}x Tiaras into ${
-		tiaraObj.name
-	}s, it'll take around ${formatDuration(duration)} to finish.`;
+	let response = `${user.minionName} is now turning ${quantity}x Tiaras into ${tiaraObj.name
+		}s, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 
 	if (boosts.length > 0) response += `\n\n**Boosts:** ${boosts.join(', ')}`;
 

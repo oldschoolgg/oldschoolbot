@@ -1,4 +1,3 @@
-import { calcPercentOfNum, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { GearSetupType } from '@/prisma/main/enums.js';
@@ -51,9 +50,9 @@ export const postBoostEffects: PostBoostEffect[] = [
 				attackStylesUsed: isInWilderness
 					? ['wildy']
 					: uniqueArr([
-							...(Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]),
-							gearToCheck
-						]),
+						...(Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]),
+						gearToCheck
+					]),
 				learningPercentage: percentReduced,
 				isWilderness: isInWilderness,
 				minimumHealAmount: monster.minimumHealAmount

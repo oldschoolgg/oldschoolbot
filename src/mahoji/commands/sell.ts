@@ -1,4 +1,3 @@
-import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -284,8 +283,7 @@ export const sellCommand = defineCommand({
 		]);
 
 		return interaction.returnStringOrFile(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
-				user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
 			}.`
 		);
 	}

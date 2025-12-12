@@ -3,7 +3,6 @@ import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	exponentialPercentScale,
-	formatDuration,
 	increaseNumByPercent,
 	objectEntries,
 	reduceNumByPercent,

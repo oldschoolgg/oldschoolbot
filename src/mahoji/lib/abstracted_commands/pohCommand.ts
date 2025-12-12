@@ -1,4 +1,3 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { type PlayerOwnedHouse, Prisma } from '@/prisma/main.js';
@@ -123,9 +122,8 @@ export async function pohBuildCommand(interaction: MInteraction, user: MUser, na
 	}
 
 	if (obj.requiredInPlace && inPlace !== obj.requiredInPlace) {
-		return `Building a ${obj.name} requires you have a ${
-			getPOHObject(obj.requiredInPlace).name
-		} built there first.`;
+		return `Building a ${obj.name} requires you have a ${getPOHObject(obj.requiredInPlace).name
+			} built there first.`;
 	}
 
 	if (obj.itemCost) {
@@ -212,9 +210,8 @@ export async function pohMountItemCommand(user: MUser, name: string) {
 
 	return {
 		files: [await makePOHImage(user)],
-		content: `You mounted a ${item.name} in your house, using 2x Magic stone and 1x ${
-			item.name
-		} (given back when another item is mounted).${currItem ? ` Refunded 1x ${Items.itemNameFromId(currItem)}.` : ''}`
+		content: `You mounted a ${item.name} in your house, using 2x Magic stone and 1x ${item.name
+			} (given back when another item is mounted).${currItem ? ` Refunded 1x ${Items.itemNameFromId(currItem)}.` : ''}`
 	};
 }
 

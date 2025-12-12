@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -139,15 +138,14 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		channelId: channelId.toString()
 	});
 
-	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${
-		quantity > 1 ? 's' : ''
-	}. The demon butler has charged you ${toKMB(cost)} GP.`;
+	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${quantity > 1 ? 's' : ''
+		}. The demon butler has charged you ${toKMB(cost)} GP.`;
 
 	if (consumedItems.length) {
 		response += `\nYou have used ${consumedItems} for teleports.`;
 	}
 
-	response += `\nThey'll come back in around ${formatDuration(duration)}.`;
+	response += `\nThey'll come back in around ${await formatTripDuration(user, duration)}.`;
 
 	return response;
 }

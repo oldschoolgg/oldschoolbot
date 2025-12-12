@@ -1,5 +1,3 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
-
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function castleWarsStartCommand(user: MUser, channelId: string) {
@@ -17,9 +15,8 @@ export async function castleWarsStartCommand(user: MUser, channelId: string) {
 		minigameID: 'castle_wars'
 	});
 
-	return `${
-		user.minionName
-	} is now doing ${quantity} games of Castle Wars. The trip will take around ${formatDuration(duration)}.`;
+	return `${user.minionName
+		} is now doing ${quantity} games of Castle Wars. The trip will take around ${await formatTripDuration(user, duration)}.`;
 }
 export async function castleWarsStatsCommand(user: MUser) {
 	const { bank } = user;

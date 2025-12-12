@@ -1,5 +1,4 @@
 import { percentChance, randInt } from '@oldschoolgg/rng';
-import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, itemID } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
@@ -158,7 +157,7 @@ export async function fightCavesCommand(user: MUser, channelId: string): Command
 	const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
 	return {
-		content: `**Duration:** ${formatDuration(fakeDuration)} (${(fakeDuration / 1000 / 60).toFixed(2)} minutes)
+		content: `**Duration:** ${await formatTripDuration(user, fakeDuration)} (${(fakeDuration / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}

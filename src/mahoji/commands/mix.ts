@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
@@ -81,9 +80,8 @@ export const mixCommand = defineCommand({
 		if (isInstantTrip) {
 			timeToMixSingleItem = 0.000_001;
 			requiredItems.add('Coins', mixableWesley ? 50 : 200);
-			cost = `decided to pay ${
-				mixableWesley ? 'Wesley 50' : 'Zahur 200'
-			} gp for each item so they don't have to go.`;
+			cost = `decided to pay ${mixableWesley ? 'Wesley 50' : 'Zahur 200'
+				} gp for each item so they don't have to go.`;
 		}
 
 		const maxTripLength = await user.calcMaxTripLength('Herblore');
@@ -131,8 +129,7 @@ export const mixCommand = defineCommand({
 			type: 'Herblore'
 		});
 
-		return `${user.minionName} ${cost} making ${quantity}x ${
-			mixableItem.outputMultiple ? 'batches of' : ''
-		}${itemName}, it'll take around ${formatDuration(duration)} to finish.`;
+		return `${user.minionName} ${cost} making ${quantity}x ${mixableItem.outputMultiple ? 'batches of' : ''
+			}${itemName}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 	}
 });

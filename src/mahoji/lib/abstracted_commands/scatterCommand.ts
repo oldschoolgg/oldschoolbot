@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
@@ -56,5 +55,5 @@ export async function scatterCommand(user: MUser, channelId: string, ashName: st
 		type: 'Scattering'
 	});
 
-	return `${user.minionName} is now scattering ${cost}, it'll take around ${formatDuration(duration)} to finish.`;
+	return `${user.minionName} is now scattering ${cost}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 }

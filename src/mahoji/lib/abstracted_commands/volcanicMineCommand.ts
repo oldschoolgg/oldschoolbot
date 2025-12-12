@@ -1,4 +1,3 @@
-import { formatDuration, objectEntries, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
@@ -155,11 +154,9 @@ export async function volcanicMineCommand(user: MUser, channelId: string, gameQu
 
 	const duration = VolcanicMineGameTime * gameQuantity;
 
-	const str = `${
-		user.minionName
-	} is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${formatDuration(duration)}.${
-		boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
-	}\n**Supply Usage:** ${suppliesUsage}`;
+	const str = `${user.minionName
+		} is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${await formatTripDuration(user, duration)}.${boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
+		}\n**Supply Usage:** ${suppliesUsage}`;
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
@@ -183,15 +180,13 @@ export async function volcanicMineShopCommand(interaction: MInteraction, user: M
 	}
 	const cost = quantity * shopItem.cost;
 	if (cost > currentUserPoints) {
-		return `You don't have enough points to buy ${quantity.toLocaleString()}x ${shopItem.name}. ${
-			currentUserPoints < shopItem.cost
-				? "You don't have enough points for any of this item."
-				: `You only have enough for ${Math.floor(currentUserPoints / shopItem.cost).toLocaleString()}`
-		}`;
+		return `You don't have enough points to buy ${quantity.toLocaleString()}x ${shopItem.name}. ${currentUserPoints < shopItem.cost
+			? "You don't have enough points for any of this item."
+			: `You only have enough for ${Math.floor(currentUserPoints / shopItem.cost).toLocaleString()}`
+			}`;
 	}
 	await interaction.confirmation(
-		`Are you sure you want to spent **${cost.toLocaleString()}** Volcanic Mine points to buy **${quantity.toLocaleString()}x ${
-			shopItem.name
+		`Are you sure you want to spent **${cost.toLocaleString()}** Volcanic Mine points to buy **${quantity.toLocaleString()}x ${shopItem.name
 		}**?`
 	);
 
@@ -213,11 +208,10 @@ export async function volcanicMineShopCommand(interaction: MInteraction, user: M
 		});
 	}
 
-	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Volcanic Mine points.${
-		shopItem.clOnly
-			? `\n${quantity > 1 ? 'These items were' : 'This item was'} directly added to your collection log.`
-			: ''
-	}`;
+	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Volcanic Mine points.${shopItem.clOnly
+		? `\n${quantity > 1 ? 'These items were' : 'This item was'} directly added to your collection log.`
+		: ''
+		}`;
 }
 
 export async function volcanicMineStatsCommand(user: MUser) {

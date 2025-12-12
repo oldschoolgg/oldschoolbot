@@ -1,5 +1,4 @@
 import { cryptoRng } from '@oldschoolgg/rng/crypto';
-import { Emoji, Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants.js';
@@ -77,9 +76,8 @@ export async function duelCommand(
 	const amount = mahojiParseNumber({ input: duelAmount, min: 1, max: 500_000_000_000 });
 	if (!amount) {
 		const winner = Math.random() >= 0.5 ? duelSourceUser : duelTargetUser;
-		return `${winner} won the duel against ${
-			winner.id === duelSourceUser.id ? duelTargetUser : duelSourceUser
-		} with ${Math.floor(Math.random() * 30 + 1)} HP remaining.`;
+		return `${winner} won the duel against ${winner.id === duelSourceUser.id ? duelTargetUser : duelSourceUser
+			} with ${Math.floor(Math.random() * 30 + 1)} HP remaining.`;
 	}
 
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";

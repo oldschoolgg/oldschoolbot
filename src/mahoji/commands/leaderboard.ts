@@ -1,4 +1,3 @@
-import { calcWhatPercent, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import { defineOption } from '@/discord/index.js';
@@ -203,8 +202,8 @@ async function openLb(interaction: MInteraction, name: string, ironmanOnly: bool
 	const openable = !name
 		? undefined
 		: allOpenables.find(
-				item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
-			);
+			item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
+		);
 	if (openable) {
 		entityID = openable.id;
 		openableName = openable.name;
@@ -510,8 +509,7 @@ LIMIT 10;`
 		})),
 		title: 'Weekly Movers Leaderboard',
 		render: (u, username) =>
-			`**${username}:** Gained ${u.count_increase} CL slots, from ${u.cl_completion_count} to ${
-				u.cl_completion_count + u.count_increase
+			`**${username}:** Gained ${u.count_increase} CL slots, from ${u.cl_completion_count} to ${u.cl_completion_count + u.count_increase
 			}, and their global rank went from ${u.cl_global_rank - u.rank_difference} to ${u.cl_global_rank}`
 	});
 }
@@ -718,8 +716,8 @@ export const leaderboardCommand = defineCommand({
 								!value
 									? true
 									: [i.name, ...i.aliases].some(str =>
-											str.toLowerCase().includes(value.toLowerCase())
-										)
+										str.toLowerCase().includes(value.toLowerCase())
+									)
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}

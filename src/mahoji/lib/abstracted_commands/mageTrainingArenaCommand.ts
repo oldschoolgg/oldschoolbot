@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, LootTable } from 'oldschooljs';
 
 import { getNewUser } from '@/lib/settings/settings.js';
@@ -104,8 +103,8 @@ export async function mageTrainingArenaPointsCommand(user: MUser) {
 	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.
 **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
 ${mageTrainingArenaBuyables
-	.map(i => `${i.item.name} - ${i.cost} pts - ${formatDuration((i.cost / pizazzPointsPerHour) * (Time.Minute * 60))}`)
-	.join('\n')}
+			.map(i => `${i.item.name} - ${i.cost} pts - ${formatDuration((i.cost / pizazzPointsPerHour) * (Time.Minute * 60))}`)
+			.join('\n')}
 
 Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena start**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
@@ -136,9 +135,8 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelId: stri
 		minigameID: 'magic_training_arena'
 	});
 
-	return `${
-		user.minionName
-	} is now doing ${quantity} Magic Training Arena rooms. The trip will take around ${formatDuration(
-		duration
-	)}. Removed ${cost} from your bank.`;
+	return `${user.minionName
+		} is now doing ${quantity} Magic Training Arena rooms. The trip will take around ${formatDuration(
+			duration
+		)}. Removed ${cost} from your bank.`;
 }

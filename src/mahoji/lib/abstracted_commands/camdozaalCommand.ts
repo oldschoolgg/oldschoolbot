@@ -1,5 +1,4 @@
 import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
@@ -70,13 +69,11 @@ async function miningCommand(user: MUser, channelId: string, quantity: number | 
 		type: 'CamdozaalMining'
 	});
 
-	let response = `${user.minionName} is now mining inside the Ruins of Camdozaal until your minion ${
-		quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
-	}, it'll take ${
-		quantity
-			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-			: formatDuration(duration)
-	} to finish.`;
+	let response = `${user.minionName} is now mining inside the Ruins of Camdozaal until your minion ${quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
+		}, it'll take ${quantity
+			? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
+			: await formatTripDuration(user, duration)
+		} to finish.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

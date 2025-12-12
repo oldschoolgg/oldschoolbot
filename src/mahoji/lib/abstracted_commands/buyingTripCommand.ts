@@ -1,4 +1,3 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem, Items } from 'oldschooljs';
 
 import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';
@@ -48,7 +47,7 @@ export async function buyingTripCommand(
 	}
 
 	await interaction.confirmation(
-		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${averageCost.toLocaleString()} ea) and take ${formatDuration(duration)}. Please confirm.`
+		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${averageCost.toLocaleString()} ea) and take ${await formatTripDuration(user, duration)}. Please confirm.`
 	);
 
 	await user.transactItems({ itemsToRemove: cost });
@@ -64,5 +63,5 @@ export async function buyingTripCommand(
 		totalCost
 	});
 
-	return `${user.minionName} is now buying ${quantity}x ${itemDisplayName} and will return in ${formatDuration(duration)}.`;
+	return `${user.minionName} is now buying ${quantity}x ${itemDisplayName} and will return in ${await formatTripDuration(user, duration)}.`;
 }

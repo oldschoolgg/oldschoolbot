@@ -1,4 +1,3 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -75,7 +74,7 @@ export async function alchCommand(
 		await interaction.confirmation(
 			`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
 				alchValue
-			)}). This will take approximately ${formatDuration(duration)}, and consume ${consumedItems.clone().remove(osItem.id, quantity)}.`
+			)}). This will take approximately ${await formatTripDuration(user, duration)}, and consume ${consumedItems.clone().remove(osItem.id, quantity)}.`
 		);
 	}
 

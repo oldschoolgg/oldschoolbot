@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
@@ -93,7 +92,7 @@ export async function agilityArenaCommand(
 		minigameID: 'agility_arena'
 	});
 
-	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
+	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${await formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

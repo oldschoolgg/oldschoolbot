@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
@@ -69,7 +68,6 @@ export async function cutLeapingFishCommand({
 		type: 'CutLeapingFish'
 	});
 
-	return `${user.minionName} is now cutting ${quantity}x ${
-		barbarianFish.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.`;
+	return `${user.minionName} is now cutting ${quantity}x ${barbarianFish.item.name
+		}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 }

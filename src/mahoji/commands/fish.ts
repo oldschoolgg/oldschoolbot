@@ -1,4 +1,3 @@
-import { formatDuration, stringSearch } from '@oldschoolgg/toolkit';
 import { EMonster, ItemGroups } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';

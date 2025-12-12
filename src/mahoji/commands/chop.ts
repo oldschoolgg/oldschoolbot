@@ -1,5 +1,4 @@
 import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
@@ -180,14 +179,12 @@ export const chopCommand = defineCommand({
 			if (user.hasEquippedOrInBank('Forestry basket') || user.hasEquippedOrInBank('Log basket')) {
 				if (log.name === 'Redwood Logs') {
 					boosts.push(
-						`+10 trip minutes for having a ${
-							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						`+10 trip minutes for having a ${user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
 						}`
 					);
 				} else {
 					boosts.push(
-						`+5 trip minutes for having a ${
-							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						`+5 trip minutes for having a ${user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
 						}`
 					);
 				}
@@ -230,13 +227,11 @@ export const chopCommand = defineCommand({
 			type: 'Woodcutting'
 		});
 
-		let response = `${user.minionName} is now chopping ${log.name} until your minion ${
-			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
-		}, it'll take ${
-			quantity
-				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-				: formatDuration(duration)
-		} to finish.`;
+		let response = `${user.minionName} is now chopping ${log.name} until your minion ${quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
+			}, it'll take ${quantity
+				? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
+				: await formatTripDuration(user, duration)
+			} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

@@ -1,6 +1,5 @@
 import { shuffleArr } from '@oldschoolgg/rng';
 import type { IUser } from '@oldschoolgg/schemas';
-import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';

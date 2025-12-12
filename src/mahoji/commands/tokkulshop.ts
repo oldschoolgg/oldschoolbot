@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
@@ -142,13 +141,11 @@ export const tksCommand = defineCommand({
 		if (duration > maxTripLength) {
 			return `This trip is too long. You need to ${action} less at a time, to fit your max trip length of ${formatDuration(
 				maxTripLength
-			)}. ${
-				maxCanTransact
-					? `The max ${item.name.toLowerCase()}s you can ${
-							action === 'buy' ? 'buy' : 'sell'
-						} is ${maxCanTransact}`
-					: ''
-			}`;
+			)}. ${maxCanTransact
+				? `The max ${item.name.toLowerCase()}s you can ${action === 'buy' ? 'buy' : 'sell'
+				} is ${maxCanTransact}`
+				: ''
+				}`;
 		}
 
 		// Confirmation the user has to accept before trip is sent
@@ -173,10 +170,9 @@ export const tksCommand = defineCommand({
 		});
 
 		// Trip start message
-		return `${user.minionName} is now ${action}ing ${action === 'buy' ? loot : cost} ${
-			action === 'buy' ? 'from' : 'to'
-		} the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${formatDuration(
-			duration
-		)}.`;
+		return `${user.minionName} is now ${action}ing ${action === 'buy' ? loot : cost} ${action === 'buy' ? 'from' : 'to'
+			} the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${formatDuration(
+				duration
+			)}.`;
 	}
 });

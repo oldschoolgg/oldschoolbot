@@ -1,5 +1,4 @@
 import { dateFm } from '@oldschoolgg/discord';
-import { evalMathExpression, formatDuration, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Items, toKMB } from 'oldschooljs';
 
 import type { GEListing, GETransaction } from '@/prisma/main.js';

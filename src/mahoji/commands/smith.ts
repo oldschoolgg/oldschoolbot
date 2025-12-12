@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
@@ -117,9 +116,8 @@ export const smithCommand = defineCommand({
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${smithedItem.name}${
-				smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
-			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
+			)}, try a lower quantity. The highest amount of ${smithedItem.name}${smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
+				} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
 		await user.transactItems({ itemsToRemove: cost });
@@ -134,17 +132,14 @@ export const smithCommand = defineCommand({
 			type: 'Smithing'
 		});
 
-		return `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
-			smithedItem.name
-		}, removed ${cost} from your bank, it'll take around ${formatDuration(duration)} to finish. ${
-			setBonus > 0
+		return `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${smithedItem.name
+			}, removed ${cost} from your bank, it'll take around ${await formatTripDuration(user, duration)} to finish. ${setBonus > 0
 				? `${setBonus}% chance to save 1 tick while smithing each item for using Smiths' Uniform item/items.`
 				: ''
-		}\n${doubleCBall ? 'Twice as fast Cannonball production using Double ammo mould.' : ''}
-		\n${
-			diaryCannonball
+			}\n${doubleCBall ? 'Twice as fast Cannonball production using Double ammo mould.' : ''}
+		\n${diaryCannonball
 				? 'Faster Cannonball production using the Shilo village furnance due to completing the Elite Karamja Diary.'
 				: ''
-		}`;
+			}`;
 	}
 });

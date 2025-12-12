@@ -1,4 +1,3 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
@@ -53,11 +52,9 @@ export async function chargeGloriesCommand(user: MUser, channelId: string, quant
 
 	await user.removeItemsFromBank(new Bank().add('Amulet of glory', quantityGlories));
 
-	return `${
-		user.minionName
-	} is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatDuration(
-		duration
-	)} to finish. Removed ${quantityGlories}x Amulet of glory from your bank.${
-		hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
-	}`;
+	return `${user.minionName
+		} is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatDuration(
+			duration
+		)} to finish. Removed ${quantityGlories}x Amulet of glory from your bank.${hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
+		}`;
 }

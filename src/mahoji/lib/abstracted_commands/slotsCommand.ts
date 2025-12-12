@@ -1,6 +1,5 @@
 import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import { cryptoRng } from '@oldschoolgg/rng/crypto';
-import { SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
 

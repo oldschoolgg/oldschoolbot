@@ -1,5 +1,4 @@
 import { time } from '@oldschoolgg/discord';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -29,12 +28,12 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 
 	let birdhouseToPlant = inputBirdhouseName
 		? birdhouses.find(_birdhouse =>
-				_birdhouse.aliases.some(
-					alias =>
-						stringMatches(alias, inputBirdhouseName) ||
-						stringMatches(alias.split(' ')[0], inputBirdhouseName)
-				)
+			_birdhouse.aliases.some(
+				alias =>
+					stringMatches(alias, inputBirdhouseName) ||
+					stringMatches(alias.split(' ')[0], inputBirdhouseName)
 			)
+		)
 		: undefined;
 	if (!birdhouseToPlant && existingBirdhouse.birdhouse) birdhouseToPlant = existingBirdhouse.birdhouse;
 
@@ -129,7 +128,6 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 		birdhouseId: birdhouseToPlant.birdhouseItem
 	});
 
-	return `${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${
-		boostStr.length > 0 ? '**Boosts**: ' : ''
-	}${boostStr.join(', ')}`;
+	return `${infoStr.join(' ')}\n\nIt'll take around ${await formatTripDuration(user, duration)} to finish.\n\n${boostStr.length > 0 ? '**Boosts**: ' : ''
+		}${boostStr.join(', ')}`;
 }

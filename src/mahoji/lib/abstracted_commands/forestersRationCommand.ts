@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
@@ -68,7 +67,6 @@ export async function forestersRationCommand({
 		type: 'CreateForestersRations'
 	});
 
-	return `${user.minionName} is now creating ${quantity}x ${
-		forestryFood.name
-	}, it'll take around ${formatDuration(duration)} to finish.`;
+	return `${user.minionName} is now creating ${quantity}x ${forestryFood.name
+		}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 }

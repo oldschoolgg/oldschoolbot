@@ -1,4 +1,3 @@
-import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import * as z from 'zod';
@@ -150,11 +149,11 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 
 	const killsRemaining = currentSlayerTask
 		? killsRemainingOnTask({
-				isOnTask,
-				monster,
-				task: currentSlayerTask,
-				slayerUnlocks
-			})
+			isOnTask,
+			monster,
+			task: currentSlayerTask,
+			slayerUnlocks
+		})
 		: null;
 
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];

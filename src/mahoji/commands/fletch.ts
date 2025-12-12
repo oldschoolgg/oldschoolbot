@@ -1,5 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-
 import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
 import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -99,8 +97,7 @@ export const fletchCommand = defineCommand({
 			type: 'Fletching'
 		});
 
-		return `${user.minionName} is now Fletching ${quantity}${sets} ${
-			fletchable.name
-		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		return `${user.minionName} is now Fletching ${quantity}${sets} ${fletchable.name
+			}, it'll take around ${await formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 });

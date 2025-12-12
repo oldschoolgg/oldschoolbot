@@ -1,5 +1,4 @@
 import { bold, dateFm, userMention } from '@oldschoolgg/discord';
-import { Emoji, formatOrdinal, notEmpty, stringMatches, Time, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
 import { md5sum } from '@oldschoolgg/toolkit/node';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
@@ -108,9 +107,8 @@ async function makeTeamCommand(
 	if (allUsers.length !== bingo.teamSize) return `Your team must have only ${bingo.teamSize} users, no more or less.`;
 
 	await interaction.confirmation({
-		content: `${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${
-			bingo.teamSize
-		} users need to confirm. ${bold(`You will be charged ${toKMB(bingo.ticketPrice)}`)}`,
+		content: `${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${bingo.teamSize
+			} users need to confirm. ${bold(`You will be charged ${toKMB(bingo.ticketPrice)}`)}`,
 		users: allUsers.map(i => i.id)
 	});
 
@@ -234,11 +232,11 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 async function getBingoFromUserInput(input: string) {
 	const where = Number.isNaN(Number(input))
 		? {
-				title: input
-			}
+			title: input
+		}
 		: {
-				id: Number(input)
-			};
+			id: Number(input)
+		};
 	const bingo = await prisma.bingo.findFirst({
 		where
 	});
@@ -697,9 +695,8 @@ export const bingoCommand = defineCommand({
 **Notifications Channel:** ${createOptions.notifications_channel_id}
 **Organizers:** ${createOptions.organizers.map(userMention).join(', ')}
 
-${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you will be charged after confirming.** ${
-				Emoji.Warning
-			}
+${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you will be charged after confirming.** ${Emoji.Warning
+				}
 `;
 
 			await interaction.confirmation(disclaimer);
@@ -905,11 +902,9 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 								quantity: 1,
 								key: `bso-bingo-2-${trophy.item.id}`,
 								item_id: trophy.item.id,
-								description: `Awarded for placing in the top ${trophy.percentile}% of ${
-									bingo.title
-								}. Your team (${(await Promise.all(team.participants.map(async t => await Cache.getBadgedUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${
-									team.tilesCompletedCount
-								} tiles completed.`,
+								description: `Awarded for placing in the top ${trophy.percentile}% of ${bingo.title
+									}. Your team (${(await Promise.all(team.participants.map(async t => await Cache.getBadgedUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${team.tilesCompletedCount
+									} tiles completed.`,
 								date: bingo.endDate.toISOString(),
 								user_id: userId
 							}))
@@ -948,11 +943,10 @@ ${yourTeam.bingoTableStr}`
 					: '';
 
 				if (bingo.isGlobal) {
-					progressString += `\n${
-						yourTeam.trophy
-							? `**Trophy:** ${yourTeam.trophy.emoji} ${yourTeam.trophy.item.name}\n`
-							: 'Your team has not qualified for a trophy.'
-					}`;
+					progressString += `\n${yourTeam.trophy
+						? `**Trophy:** ${yourTeam.trophy.emoji} ${yourTeam.trophy.item.name}\n`
+						: 'Your team has not qualified for a trophy.'
+						}`;
 				}
 			}
 

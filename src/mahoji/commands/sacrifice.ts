@@ -1,4 +1,3 @@
-import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
 import { filterOption } from '@/discord/index.js';
@@ -113,8 +112,7 @@ export const sacrificeCommand = defineCommand({
 			const deathRunes = quantity * 200;
 
 			await interaction.confirmation(
-				`${user.badgedUsername}.. are you sure you want to sacrifice your ${item.name}${
-					bankToSac.length > 1 ? 's' : ''
+				`${user.badgedUsername}.. are you sure you want to sacrifice your ${item.name}${bankToSac.length > 1 ? 's' : ''
 				} for ${deathRunes} death runes? *Note: These are cute, fluffy little cats.*`
 			);
 

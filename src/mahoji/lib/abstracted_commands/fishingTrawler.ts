@@ -1,5 +1,3 @@
-import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function fishingTrawlerCommand(user: MUser, channelId: string) {

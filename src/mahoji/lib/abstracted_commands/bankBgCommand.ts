@@ -1,4 +1,3 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';

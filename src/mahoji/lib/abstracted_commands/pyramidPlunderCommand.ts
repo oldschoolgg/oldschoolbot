@@ -1,5 +1,3 @@
-import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-
 import { plunderBoosts, plunderRooms } from '@/lib/minions/data/plunder.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -52,13 +50,11 @@ export async function pyramidPlunderCommand(user: MUser, channelId: string) {
 		minigameID: 'pyramid_plunder'
 	});
 
-	let str = `${
-		user.minionName
-	} is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${
-		completableRooms.length < 2 ? 1 : completableRooms[completableRooms.length - 2].number
-	} and ${completableRooms[completableRooms.length - 1].number}, the trip will take ${formatDuration(
-		tripLength
-	)}, with each cycle taking ${formatDuration(plunderTime)}.`;
+	let str = `${user.minionName
+		} is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${completableRooms.length < 2 ? 1 : completableRooms[completableRooms.length - 2].number
+		} and ${completableRooms[completableRooms.length - 1].number}, the trip will take ${formatDuration(
+			tripLength
+		)}, with each cycle taking ${await formatTripDuration(user, plunderTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

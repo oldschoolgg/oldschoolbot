@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { SkillNameType } from '@/lib/skilling/types.js';
@@ -88,12 +87,10 @@ export async function collectCommand(
 		type: 'Collecting'
 	});
 
-	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
-		collectable.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.${
-		cost.toString().length > 0
+	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${collectable.item.name
+		}, it'll take around ${await formatTripDuration(user, duration)} to finish.${cost.toString().length > 0
 			? `
 Removed ${cost} from your bank.`
 			: ''
-	}${no_stams ? '\n50% longer trip due to not using Stamina potions.' : ''}`;
+		}${no_stams ? '\n50% longer trip due to not using Stamina potions.' : ''}`;
 }

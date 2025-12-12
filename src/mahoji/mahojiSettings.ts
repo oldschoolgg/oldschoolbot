@@ -1,4 +1,3 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';

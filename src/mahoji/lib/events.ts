@@ -1,4 +1,3 @@
-import { Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { bulkUpdateCommands } from '@/discord/utils.js';

@@ -1,5 +1,3 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
-
 import type { GearSetupType } from '@/prisma/main/enums.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
@@ -31,11 +29,9 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 		}
 
 		if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
-			return `${
-				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
-			} have enough food. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
-				users.length === 1 ? 'start the mass' : 'enter the mass'
-			}.`;
+			return `${users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
+				} have enough food. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${users.length === 1 ? 'start the mass' : 'enter the mass'
+				}.`;
 		}
 	}
 }
@@ -137,10 +133,10 @@ export const massCommand = defineCommand({
 		let str = `${user.usernameOrMention}'s party (${users
 			.map(u => u.usernameOrMention)
 			.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
-			perKillTime
-		)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDuration(
-			duration
-		)}. ${killsPerHr}`;
+				perKillTime
+			)} instead of ${await formatTripDuration(user, monster.timeToFinish)}- the total trip will take ${formatDuration(
+				duration
+			)}. ${killsPerHr}`;
 
 		if (usersKickedForBusy.length > 0) {
 			str += `\nThe following users were removed, because their minion became busy before the mass started: ${usersKickedForBusy

@@ -1,4 +1,3 @@
-import { notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -109,19 +108,19 @@ export const genericUsables: {
 	loot: Bank | (() => Bank) | null;
 	response: (loot: Bank) => string;
 }[] = [
-	{
-		items: [Items.getOrThrow('Banana'), Items.getOrThrow('Monkey')],
-		cost: new Bank().add('Banana').freeze(),
-		loot: null,
-		response: () => 'You fed a Banana to your Monkey!'
-	},
-	{
-		items: [Items.getOrThrow('Mithril seeds')],
-		cost: new Bank().add('Mithril seeds').freeze(),
-		loot: () => flowerTable.roll(),
-		response: loot => `You planted a Mithril seed and got ${loot}!`
-	}
-];
+		{
+			items: [Items.getOrThrow('Banana'), Items.getOrThrow('Monkey')],
+			cost: new Bank().add('Banana').freeze(),
+			loot: null,
+			response: () => 'You fed a Banana to your Monkey!'
+		},
+		{
+			items: [Items.getOrThrow('Mithril seeds')],
+			cost: new Bank().add('Mithril seeds').freeze(),
+			loot: () => flowerTable.roll(),
+			response: loot => `You planted a Mithril seed and got ${loot}!`
+		}
+	];
 for (const genericU of genericUsables) {
 	usables.push({
 		items: genericU.items,

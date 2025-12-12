@@ -1,5 +1,4 @@
 import { percentChance } from '@oldschoolgg/rng';
-import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { EMonster } from 'oldschooljs';
 
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
@@ -83,5 +82,5 @@ export async function zalcanoCommand(user: MUser, channelId: string, quantity?: 
 
 	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(
 		duration
-	)}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
+	)}. (${await formatTripDuration(user, baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
 }

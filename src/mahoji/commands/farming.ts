@@ -1,5 +1,3 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-
 import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 import { choicesOf } from '@/discord/index.js';
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';

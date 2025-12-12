@@ -1,4 +1,3 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
@@ -122,7 +121,7 @@ export const huntCommand = defineCommand({
 			Math.min(
 				Math.floor(
 					(await user.getCreatureScore(creature.id)) /
-						(Time.Hour / ((creature.catchTime * Time.Second) / traps))
+					(Time.Hour / ((creature.catchTime * Time.Second) / traps))
 				),
 				creature.huntTechnique === HunterTechniqueEnum.Tracking ? 20 : 10
 			),
@@ -239,9 +238,8 @@ export const huntCommand = defineCommand({
 					break;
 				}
 			}
-			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${
-				wildyPeak?.peakTier
-			} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions.`;
+			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${wildyPeak?.peakTier
+				} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions.`;
 		}
 
 		await trackLoot({
@@ -269,9 +267,8 @@ export const huntCommand = defineCommand({
 			type: 'Hunter'
 		});
 
-		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
-			crystalImpling ? ' ' : ` ${quantity}x `
-		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${crystalImpling ? ' ' : ` ${quantity}x `
+			}${creature.name}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

@@ -3,7 +3,6 @@ import { randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	Events,
-	formatDuration,
 	formatOrdinal,
 	reduceNumByPercent,
 	round,
@@ -171,8 +170,8 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 		high_gambles:
 			name === 'High'
 				? {
-						increment: quantity
-					}
+					increment: quantity
+				}
 				: undefined
 	});
 	const loot = new Bank().add(table.roll(quantity));
@@ -185,8 +184,7 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 
 		globalClient.emit(
 			Events.ServerNotification,
-			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${
-				user.minionName
+			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${user.minionName
 			}, just received a Pet penance queen from their ${formatOrdinal(
 				await user.fetchUserStat('high_gambles')
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
@@ -254,13 +252,12 @@ export async function barbAssaultStartCommand(channelId: string, user: MUser) {
 
 	const duration = quantity * waveTime;
 
-	boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
+	boosts.push(`Each wave takes ${await formatTripDuration(user, waveTime)}`);
 
-	let str = `${
-		user.minionName
-	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
-		waveTime
-	)} - the total trip will take ${formatDuration(duration)}.`;
+	let str = `${user.minionName
+		} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
+			waveTime
+		)} - the total trip will take ${await formatTripDuration(user, duration)}.`;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

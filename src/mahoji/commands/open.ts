@@ -1,5 +1,3 @@
-import { truncateString } from '@oldschoolgg/toolkit';
-
 import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
 import {
 	abstractedOpenCommand,

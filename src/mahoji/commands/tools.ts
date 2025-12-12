@@ -1,5 +1,4 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
@@ -89,12 +88,12 @@ ${whereInMassClause(id)};`)
 
 	return `**Total Activities:** ${totalActivities.count}
 **Common Activities:** ${countsPerActivity
-		.slice(0, 3)
-		.map(i => `${i.qty}x ${i.type}`)
-		.join(', ')}
-**Total Minion Activity:** ${formatDuration(totalDuration)}
+			.slice(0, 3)
+			.map(i => `${i.qty}x ${i.type}`)
+			.join(', ')}
+**Total Minion Activity:** ${await formatTripDuration(user, totalDuration)}
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
-**Average Per Day:** ${formatDuration(perDay)}
+**Average Per Day:** ${await formatTripDuration(user, perDay)}
 `;
 }
 
@@ -518,9 +517,8 @@ for (const minigame of dryStreakMinigames) {
 		items: minigame.items,
 		run: async ({ item, ironmanOnly }) => {
 			const minigameObj = Minigames.find(i => i.column === minigame.key)!;
-			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, "minigame"."${
-				minigameObj.column
-			}" AS val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, "minigame"."${minigameObj.column
+				}" AS val
 FROM users
 INNER JOIN "minigames" "minigame" on "minigame"."user_id" = "users"."id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
@@ -672,8 +670,7 @@ async function checkMassesCommand(guildId: string | null) {
 			if ('users' in m) {
 				return [
 					remainingTime,
-					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
-						m.channelId
+					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${m.channelId
 					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
@@ -1061,11 +1058,10 @@ export const toolsCommand = defineCommand({
 				}
 			});
 			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
-You last reset your temporary CL: ${
-				lastReset?.last_temp_cl_reset
+You last reset your temporary CL: ${lastReset?.last_temp_cl_reset
 					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
 					: 'Never'
-			}`;
+				}`;
 		}
 		if (options.user?.checkmasses) {
 			return checkMassesCommand(guildId);

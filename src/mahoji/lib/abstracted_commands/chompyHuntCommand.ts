@@ -1,5 +1,4 @@
 import { percentChance } from '@oldschoolgg/rng';
-import { formatDuration, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';

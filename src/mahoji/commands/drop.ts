@@ -1,4 +1,3 @@
-import { Emoji, ellipsize } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { filterOption } from '@/discord/index.js';

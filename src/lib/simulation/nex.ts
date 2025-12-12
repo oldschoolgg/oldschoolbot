@@ -3,7 +3,6 @@ import { percentChance, randFloat, randInt, randomVariation, roll } from '@oldsc
 import {
 	calcWhatPercent,
 	exponentialPercentScale,
-	formatDuration,
 	increaseNumByPercent,
 	reduceNumByPercent,
 	sumArr,

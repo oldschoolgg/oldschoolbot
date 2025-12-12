@@ -1,5 +1,4 @@
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
-import { calcPercentOfNum, calcWhatPercent, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { Plank } from '@/lib/skilling/skills/construction/constructables.js';
@@ -117,9 +116,8 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	const { item, cost } = buyable;
 	const balance = user.user.carpenter_points;
 	if (balance < cost * quantity) {
-		return `You don't have enough Carpenter Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${
-			cost * quantity
-		}, but you have only ${balance}.`;
+		return `You don't have enough Carpenter Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${cost * quantity
+			}, but you have only ${balance}.`;
 	}
 	const loot = new Bank().add(item.id, quantity);
 	await user.transactItems({
@@ -184,9 +182,8 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelId: string, 
 		tier: tierData.tier
 	});
 
-	let str = `${user.minionName} is now doing ${quantity}x ${
-		tierData.name
-	} Mahogany homes contracts, the trip will take ${formatDuration(duration)}. Removed ${itemsNeeded} from your bank.`;
+	let str = `${user.minionName} is now doing ${quantity}x ${tierData.name
+		} Mahogany homes contracts, the trip will take ${await formatTripDuration(user, duration)}. Removed ${itemsNeeded} from your bank.`;
 
 	if (hasSack) {
 		str += "\nYou're getting more XP/Hr because of your Plank sack!";

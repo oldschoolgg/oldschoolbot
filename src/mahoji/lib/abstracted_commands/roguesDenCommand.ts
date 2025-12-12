@@ -1,4 +1,3 @@
-import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
@@ -54,11 +53,10 @@ export async function roguesDenCommand(user: MUser, channelId: string) {
 		type: 'RoguesDenMaze'
 	});
 
-	let str = `${
-		user.minionName
-	} is now off to complete the Rogues' Den maze ${quantity}x times, their trip will take ${formatDuration(
-		duration
-	)} (${formatDuration(baseTime)} per lap).`;
+	let str = `${user.minionName
+		} is now off to complete the Rogues' Den maze ${quantity}x times, their trip will take ${formatDuration(
+			duration
+		)} (${await formatTripDuration(user, baseTime)} per lap).`;
 
 	if (staminasToRemove.length > 0) {
 		str += ` Removed ${staminasToRemove} from your bank.`;

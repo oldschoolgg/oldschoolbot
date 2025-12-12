@@ -1,6 +1,5 @@
 import {
 	calcWhatPercent,
-	formatDuration,
 	reduceNumByPercent,
 	round,
 	stringMatches,
@@ -397,11 +396,10 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 		strategy
 	});
 
-	return `${
-		user.minionName
-	} is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${formatDuration(
-		duration
-	)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
+	return `${user.minionName
+		} is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${formatDuration(
+			duration
+		)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
 }
 
 export async function nightmareZoneShopCommand(
@@ -431,13 +429,11 @@ export async function nightmareZoneShopCommand(
 	const costPerItem = shopItem.cost;
 	const cost = quantity * costPerItem;
 	if (cost > currentUserPoints) {
-		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${
-			shopItem.name
-		} (${costPerItem} Nightmare Zone points each).\nYou have ${currentUserPoints} Nightmare Zone points.\n${
-			currentUserPoints < costPerItem
+		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${shopItem.name
+			} (${costPerItem} Nightmare Zone points each).\nYou have ${currentUserPoints} Nightmare Zone points.\n${currentUserPoints < costPerItem
 				? "You don't have enough Nightmare Zone points for any of this item."
 				: `You only have enough for ${Math.floor(currentUserPoints / costPerItem).toLocaleString()}`
-		}`;
+			}`;
 	}
 
 	const loot = new Bank(shopItem.output).multiply(quantity);
@@ -491,7 +487,6 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 			}
 		}
 	});
-	return `Added ${loot} to your bank, removed ${imbueCost}x Nightmare Zone points and ${cost}.${
-		user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''
-	}`;
+	return `Added ${loot} to your bank, removed ${imbueCost}x Nightmare Zone points and ${cost}.${user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''
+		}`;
 }

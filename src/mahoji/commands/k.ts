@@ -1,5 +1,3 @@
-import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-
 import { choicesOf } from '@/discord/index.js';
 import { PVM_METHODS } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
@@ -173,8 +171,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string> {
 		const gearReductions = gearStats.replace(/: Reduced from (?:[0-9]+?), /, '\n').replace('), ', ')\n');
 		if (hpNeededPerKill > 0) {
 			itemRequirements.push(
-				`**Healing Required:** ${gearReductions}\nYou require ${
-					hpNeededPerKill * maxCanKill
+				`**Healing Required:** ${gearReductions}\nYou require ${hpNeededPerKill * maxCanKill
 				} hp for a full trip.\n`
 			);
 		} else {
@@ -190,7 +187,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string> {
 			await user.calcMaxTripLength('MonsterKilling')
 		)}.\nNormal kill time: ${formatDuration(
 			monster.timeToFinish
-		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`
+		)}. You can kill up to ${maxCanKill} per trip (${await formatTripDuration(user, timeToFinish)} per kill).`
 	);
 
 	str.push(
@@ -210,7 +207,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string> {
 	str.push(
 		`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills can take between (${formatDuration(
 			min
-		)}) and (${formatDuration(max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
+		)}) and (${await formatTripDuration(user, max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
 			min * 0.9
 		)}) to (${formatDuration(max * 0.9)}) to finish.\n`
 	);

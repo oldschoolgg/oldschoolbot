@@ -1,5 +1,4 @@
 import { percentChance, randInt } from '@oldschoolgg/rng';
-import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 import { pick } from 'remeda';
@@ -39,9 +38,8 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 				if (!meetsRequirements) {
 					return `You don't have the requirements to do ${tier.difficulty} treks! Your ${readableStatName(
 						unmetKey!
-					)} stat in your ${setup} setup is ${has}, but you need at least ${
-						tier.minimumGearRequirements[setup]?.[unmetKey!]
-					}.`;
+					)} stat in your ${setup} setup is ${has}, but you need at least ${tier.minimumGearRequirements[setup]?.[unmetKey!]
+						}.`;
 				}
 			}
 		}
@@ -119,7 +117,7 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 
 	let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will take ${formatDuration(
 		duration
-	)}, with each trek taking ${formatDuration(tripTime)}.`;
+	)}, with each trek taking ${await formatTripDuration(user, tripTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

@@ -1,5 +1,4 @@
 import { randomVariation } from '@oldschoolgg/rng';
-import { formatDuration, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
@@ -89,13 +88,11 @@ export async function motherlodeMineCommand({
 		fakeDurationMin: Math.floor(fakeDurationMin),
 		type: 'MotherlodeMining'
 	});
-	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${
-		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
-	}, it'll take ${
-		quantity
-			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-			: formatDuration(duration)
-	} to finish.`;
+	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
+		}, it'll take ${quantity
+			? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
+			: await formatTripDuration(user, duration)
+		} to finish.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

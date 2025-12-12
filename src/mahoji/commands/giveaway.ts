@@ -1,5 +1,4 @@
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
-import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 import { chunk } from 'remeda';
@@ -70,8 +69,8 @@ export const giveawayCommand = defineCommand({
 						const res = !value
 							? filterableTypes
 							: [...filterableTypes].filter(filter =>
-									filter.name.toLowerCase().includes(value.toLowerCase())
-								);
+								filter.name.toLowerCase().includes(value.toLowerCase())
+							);
 						return [...res]
 							.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
 							.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
@@ -239,8 +238,7 @@ export const giveawayCommand = defineCommand({
 
 			const lines = giveaways.map(
 				(g: Giveaway) =>
-					`${
-						perkTier >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
+					`${perkTier >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
 					}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
 						g.finish_date,
 						'R'

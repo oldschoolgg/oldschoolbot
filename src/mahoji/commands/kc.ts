@@ -1,4 +1,3 @@
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { type BossRecords, bossNameMap, Hiscores, mappedBossNames } from 'oldschooljs/hiscores';
 
 export const kcCommand = defineCommand({

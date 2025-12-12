@@ -1,5 +1,4 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
@@ -85,12 +84,11 @@ export async function abstractedOpenUntilCommand(
 		cost,
 		loot,
 		messages: [
-			`You opened ${amountOpened}x ${openable.openedItem.name} ${
-				targetCount === 0
-					? `but you didn't get a ${openUntil.name}!`
-					: targetCount >= quantity
-						? `and successfully obtained ${targetCount}x ${openUntil.name}.`
-						: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
+			`You opened ${amountOpened}x ${openable.openedItem.name} ${targetCount === 0
+				? `but you didn't get a ${openUntil.name}!`
+				: targetCount >= quantity
+					? `and successfully obtained ${targetCount}x ${openUntil.name}.`
+					: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
 			}`
 		],
 		openables: [openable],
@@ -169,8 +167,8 @@ export async function abstractedOpenCommand(
 	const openables = names.includes('all')
 		? allOpenables.filter(({ openedItem }) => user.owns(openedItem.id) && !favorites.includes(openedItem.id))
 		: names
-				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
-				.filter(notEmpty);
+			.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
+			.filter(notEmpty);
 
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';

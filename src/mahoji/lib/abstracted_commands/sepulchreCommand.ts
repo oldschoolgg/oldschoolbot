@@ -1,4 +1,3 @@
-import { formatDuration, reduceNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
 import { sepulchreBoosts, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
@@ -115,11 +114,10 @@ export async function sepulchreCommand(user: MUser, channelId: string, fletching
 		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});
 
-	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
-		completableFloors[0].number
-	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
-		tripLength
-	)}, with each lap taking ${formatDuration(lapLength)}.`;
+	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${completableFloors[0].number
+		}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
+			tripLength
+		)}, with each lap taking ${await formatTripDuration(user, lapLength)}.`;
 
 	if (fletchable && itemsNeeded) {
 		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;
