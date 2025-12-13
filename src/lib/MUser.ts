@@ -18,6 +18,7 @@ import {
 	UserError,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { Mutex } from 'async-mutex';
 import {
 	Bank,
 	convertXPtoLVL,
@@ -39,7 +40,7 @@ import type {
 	xp_gains_skill_enum
 } from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
-import { modifyUserBusy } from '@/lib/cache.js';
+import { MUTEX_CACHE, modifyUserBusy } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -1396,6 +1397,28 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 
 	async isBlacklisted(): Promise<boolean> {
 		return Cache.isUserBlacklisted(this.id);
+	}
+
+	private getMutex(): Mutex {
+		const cached = MUTEX_CACHE.get(this.id);
+		if (cached) return cached;
+		const mutex = new Mutex();
+		MUTEX_CACHE.set(this.id, mutex);
+		return mutex;
+	}
+
+	async withLock<T>(id: string, fn: (user: MUserClass) => Promise<T>, timeoutMs = 60_000): Promise<T> {
+		const mutex = this.getMutex();
+		let timer: NodeJS.Timeout | undefined;
+
+		const timeoutPromise = new Promise<never>((_, reject) => {
+			timer = setTimeout(() => reject(new Error(`${id} held lock for over 60s`)), timeoutMs);
+		});
+
+		const res = await Promise.race([mutex.runExclusive(() => fn(this)), timeoutPromise]);
+
+		if (timer) clearTimeout(timer);
+		return res as T;
 	}
 }
 
