@@ -111,7 +111,7 @@ function getButtons(): ButtonInstance[] {
 }
 
 export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: MInteraction) {
-	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 10_000_000_000 });
+	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
 
 	if (!amount) {
 		return 'amount must be between 1,000,000 and 3,000,000,000 exclusively.';
