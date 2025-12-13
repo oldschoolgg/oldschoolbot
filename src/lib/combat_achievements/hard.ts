@@ -1,9 +1,10 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
 import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import type { TOAOptions } from '@/lib/types/minions.js';
+import type { MonsterActivityTaskOptions, TOAOptions } from '@/lib/types/minions.js';
 
 export const hardCombatAchievements: CombatAchievement[] = [
 	{
@@ -884,6 +885,91 @@ export const hardCombatAchievements: CombatAchievement[] = [
 				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
 				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
 				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 275,
+		name: 'The Clone Zone',
+		type: 'mechanical',
+		monster: 'Moons of Peril',
+		desc: 'Defeat the Eclipse moon by only attacking its clones.',
+		rng: {
+			chancePerKill: 10,
+			hasChance: data => isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data)
+		}
+	},
+	{
+		id: 276,
+		name: 'Betrayal',
+		type: 'restriction',
+		monster: 'Moons of Peril',
+		desc: 'Defeat a Moon using its associated weapon drop.',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) => {
+				const moonsWeapons = resolveItems(['Eclipse atlatl', 'Dual macuahuitl', 'Blue moon spear']);
+				return isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data) && user.hasEquippedOrInBank(moonsWeapons);
+			}
+		}
+	},
+	{
+		id: 277,
+		name: 'Fortified',
+		type: 'restriction',
+		monster: 'Moons of Peril',
+		desc: 'Defeat a Moon without consuming any supplies.',
+		rng: {
+			chancePerKill: 10,
+			hasChance: data => isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data)
+		}
+	},
+	{
+		id: 278,
+		name: 'Perilous Dancer',
+		type: 'perfection',
+		monster: 'Moons of Peril',
+		desc: 'Defeat all the Moons in one run while only taking damage from regular attacks.',
+		rng: {
+			chancePerKill: 20,
+			hasChance: data => isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data)
+		}
+	},
+	{
+		id: 279,
+		name: 'Perilous Champion',
+		type: 'kill_count',
+		monster: 'Moons of Peril',
+		desc: 'Open the Reward Chest 25 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				'Moons of Peril': [25, Monsters.MoonsofPeril.id]
+			}
+		})
+	},
+	{
+		id: 280,
+		name: 'Moons of Peril Speed-Chaser',
+		type: 'speed',
+		monster: 'Moons of Peril',
+		desc: 'Defeat all three Moons in one run in under 6 minutes.',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data) && timePerKill <= 6;
+			}
+		}
+	},
+	{
+		id: 281,
+		name: 'Fat of the Land',
+		type: 'stamina',
+		monster: 'Moons of Peril',
+		desc: 'Defeat 30 Moons of Peril bosses without leaving the dungeon.',
+		rng: {
+			chancePerKill: 50,
+			hasChance: data => isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data)
 		}
 	}
 ];

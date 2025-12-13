@@ -48,6 +48,7 @@ export interface MonsterKillOptions {
 	isAwakened?: boolean;
 	lootTableOptions?: LootTableRollOptions;
 	rng?: RNGProvider;
+	cl?: Bank;
 }
 
 export abstract class Monster {
