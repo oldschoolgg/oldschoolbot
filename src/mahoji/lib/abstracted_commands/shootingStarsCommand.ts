@@ -284,13 +284,13 @@ const activitiesCantGetStars: activity_type_enum[] = [
 export async function handleTriggerShootingStar(user: MUser, data: ActivityTaskData, components: ButtonBuilder[]) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillsAsLevels.mining;
-	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
+	const eligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
 	const minutes = Math.floor(data.duration / Time.Minute);
 	if (minutes < 1) return;
 	const baseChance = Math.floor(540 / minutes);
 	if (!roll(baseChance)) return;
 	const shootingStarTable = new SimpleTable<Star>();
-	for (const star of elligibleStars) shootingStarTable.add(star, star.chance);
+	for (const star of eligibleStars) shootingStarTable.add(star, star.chance);
 	const star = shootingStarTable.roll();
 	if (!star) return;
 
