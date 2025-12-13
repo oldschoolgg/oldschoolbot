@@ -1,5 +1,6 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
+import type { Mutex } from 'async-mutex';
 import { LRUCache } from 'lru-cache';
 import type PromiseQueue from 'p-queue';
 
@@ -77,3 +78,5 @@ export function modifyUserBusy({
 export function userIsBusy(userID: string): boolean {
 	return busyUsers.has(userID);
 }
+
+export const MUTEX_CACHE = new Map<string, Mutex>();

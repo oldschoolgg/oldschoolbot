@@ -11,6 +11,7 @@ import { isValidNickname } from '@/lib/util/smallUtils.js';
 
 export const giftCommand = defineCommand({
 	name: 'gift',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Create gifts for other users, or open one you received.',
 	options: [
 		{
