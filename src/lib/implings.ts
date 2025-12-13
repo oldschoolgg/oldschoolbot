@@ -197,7 +197,7 @@ export async function handlePassiveImplings(
 		});
 		if (costRes.success) {
 			baseChance = reduceNumByPercent(baseChance, inventionBoosts.webshooter.passiveImplingBoostPercent);
-			messages.push(costRes.messages);
+			messages.push(`:spider_web: Webshooter (${costRes.messages})`);
 		}
 	}
 
