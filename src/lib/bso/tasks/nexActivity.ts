@@ -140,7 +140,22 @@ export const nexTask: MinionTask = {
 				duration
 			}))
 		});
+		function splitMessage(str: string, maxLength = 1900): string[] {
+			const parts: string[] = [];
+			let current = '';
 
+			for (const line of str.split('\n')) {
+				if ((current + '\n' + line).length > maxLength) {
+					parts.push(current);
+					current = line;
+				} else {
+					current += (current ? '\n' : '') + line;
+				}
+			}
+
+			if (current) parts.push(current);
+			return parts;
+		}
 		// Show deaths in the result
 		const deathEntries = Object.entries(deaths);
 		if (deathEntries.length > 0) {
@@ -156,19 +171,37 @@ export const nexTask: MinionTask = {
 			if (Object.values(kcAmounts).length === 0) {
 				resultStr = `${users.map(id => `<@${id}>`).join(' ')} Your team all died, and failed to defeat Nex.`;
 			}
-			return handleTripFinish({ user: leaderUser, channelId, message: resultStr, data });
+			const messages = splitMessage(resultStr);
+
+			await handleTripFinish({
+				user: leaderUser,
+				channelId,
+				message: messages[0],
+				data
+			});
+
+			if (messages[1]) {
+				await handleTripFinish({
+					user: leaderUser,
+					channelId,
+					message: messages[1],
+					data
+				});
+			}
+
+			return;
+
 		}
 		const message = new MessageBuilder().setContent(
 			!kcAmounts[userID]
 				? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
-				: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
-						NexMonster.name
-					}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${await leaderUser.getKC(
-						NexMonster.id
-					)}.\n\n${soloXP}`
+				: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${NexMonster.name
+				}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${await leaderUser.getKC(
+					NexMonster.id
+				)}.\n\n${soloXP}`
 		);
 
-		if (!kcAmounts[userID]) {
+		if (kcAmounts[userID]) {
 			message.addBankImage({
 				bank: soloItemsAdded,
 				title: `Loot From ${quantity} ${NexMonster.name}:`,
