@@ -18,6 +18,24 @@ import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
+export async function checkElderCasketOpenable(
+	user: MUser,
+	openables: UnifiedOpenable | UnifiedOpenable[]
+): Promise<string | null> {
+	const list = Array.isArray(openables) ? openables : [openables];
+
+	if (!list.some(o => o.openedItem.id === itemID('Reward casket (elder)'))) {
+		return null;
+	}
+
+	const result = await checkElderClueRequirements(user);
+	if (result.unmetRequirements.length > 0) {
+		return `You don't have the requirements to open Elder caskets: ${result.unmetRequirements.join(', ')}`;
+	}
+
+	return null;
+}
+
 export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2))
 	.map(id => Items.getOrThrow(id))
 	.sort((a, b) => {
@@ -55,6 +73,9 @@ export async function abstractedOpenUntilCommand(
 	let amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
 
+	const elderError = await checkElderCasketOpenable(user, openable);
+	if (elderError) return elderError;
+
 	// Calculate how many we have keys to open:
 	if (openable.extraCostPerOpen) {
 		const howManyCanOpen = user.bank.fits(openable.extraCostPerOpen);
@@ -65,7 +86,7 @@ export async function abstractedOpenUntilCommand(
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	const max = Math.min(100, amountOfThisOpenableOwned);
+	const max = Math.min(10000, amountOfThisOpenableOwned);
 	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
@@ -256,13 +277,9 @@ export async function abstractedOpenCommand(
 		}
 	}
 
-	if (openables.some(o => o.openedItem.id === itemID('Reward casket (elder)'))) {
-		const result = await checkElderClueRequirements(user);
-		if (result.unmetRequirements.length > 0) {
-			return `You don't have the requirements to open Elder caskets: ${result.unmetRequirements.join(', ')}`;
-		}
-	}
-
+	const elderError = await checkElderCasketOpenable(user, openables);
+	if (elderError) return elderError;
+	
 	const cost = new Bank();
 	const kcBank = new Bank();
 	const loot = new Bank();
