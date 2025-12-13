@@ -161,11 +161,6 @@ async function icDonateValidation(user: MUser, donator: MUser) {
 		return "That user's Item Contract isn't ready.";
 	}
 
-	const busyRes = await Promise.all([user.minionIsBusy(), donator.minionIsBusy()]);
-	if (busyRes[0] || busyRes[1]) {
-		return 'One of you is busy, and cannot do this trade right now.';
-	}
-
 	const cost = new Bank().add(details.currentItem.id);
 	if (!donator.bank.has(cost)) {
 		return `You don't own ${cost}.`;
