@@ -173,18 +173,11 @@ export const nexTask: MinionTask = {
 			}
 			const messages = splitMessage(resultStr);
 
-			await handleTripFinish({
-				user: leaderUser,
-				channelId,
-				message: messages[0],
-				data
-			});
-
-			if (messages[1]) {
+			for (const message of messages) {
 				await handleTripFinish({
 					user: leaderUser,
 					channelId,
-					message: messages[1],
+					message,
 					data
 				});
 			}
