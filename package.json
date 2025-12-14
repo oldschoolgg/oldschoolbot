@@ -35,7 +35,7 @@
 		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!robochimp\" build",
 		"============monorepo": "============",
 		"monorepo:build": "pnpm concurrent \"pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" build\" \"pnpm gen\" && tsx esbuild.mts",
-		"monorepo:test": "pnpm --stream --workspace-concurrency=2 -r test"
+		"monorepo:test": "pnpm --stream --workspace-concurrency=2 -r test && pnpm test"
 	},
 	"dependencies": {
 		"@discordjs/rest": "^2.6.0",
