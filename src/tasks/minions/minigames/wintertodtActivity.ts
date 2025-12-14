@@ -35,10 +35,14 @@ export const wintertodtTask: MinionTask = {
 		}
 
 		let gotToad = false;
-		const dropRate = clAdjustedDroprate(user, 'Wintertoad', 3000 / Math.floor(duration / Time.Minute), 1.2);
-		if (duration > Time.Minute * 20 && rng.roll(dropRate)) {
-			gotToad = true;
-			loot.add('Wintertoad');
+
+		if (duration >= Time.Minute * 20) {
+			const dropRate = clAdjustedDroprate(user, 'Wintertoad', 100, 1.2);
+
+			if (rng.roll(dropRate)) {
+				gotToad = true;
+				loot.add('Wintertoad');
+			}
 		}
 
 		// Track loot in Economy Stats
@@ -47,10 +51,8 @@ export const wintertodtTask: MinionTask = {
 		if (loot.has('Phoenix')) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Phoenix! Their Wintertodt KC is ${
-					newScore
+				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${user.minionName
+				}, just received a Phoenix! Their Wintertodt KC is ${newScore
 				}, and their Firemaking level is ${user.skillsAsLevels.firemaking}.`
 			);
 		}
