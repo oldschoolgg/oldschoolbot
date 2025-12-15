@@ -6582,6 +6582,78 @@
 		"price": 10000
 	},
 	{
+		"id": 74002,
+		"name": "Candy trident",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"equipable_by_player": true,
+		"equipable_weapon": true,
+		"cost": 400,
+		"lowalch": 160,
+		"highalch": 240,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 8,
+			"attack_slash": 8,
+			"attack_crush": 8,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 1,
+			"defence_slash": 1,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 4,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": null
+		},
+		"weapon": {
+			"attack_speed": 5,
+			"weapon_type": "spear",
+			"stances": [
+				{
+					"combat_style": "lunge",
+					"attack_type": "stab",
+					"attack_style": "controlled",
+					"experience": "shared",
+					"boosts": null
+				},
+				{
+					"combat_style": "swipe",
+					"attack_type": "slash",
+					"attack_style": "controlled",
+					"experience": "shared",
+					"boosts": null
+				},
+				{
+					"combat_style": "pound",
+					"attack_type": "crush",
+					"attack_style": "controlled",
+					"experience": "shared",
+					"boosts": null
+				},
+				{
+					"combat_style": "block",
+					"attack_type": "stab",
+					"attack_style": "defensive",
+					"experience": "defence",
+					"boosts": null
+				}
+			]
+		},
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
 		"id": 63160,
 		"name": "Cannonball cabbage",
 		"tradeable": true,
@@ -19797,6 +19869,16 @@
 				"defence": 1
 			}
 		},
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 74006,
+		"name": "Ember",
+		"members": true,
+		"cost": 1,
 		"price": 1,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
@@ -44995,6 +45077,78 @@
 		}
 	},
 	{
+		"id": 74005,
+		"name": "Seer snowglobe",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"equipable_by_player": true,
+		"equipable_weapon": true,
+		"cost": 10,
+		"lowalch": 4,
+		"highalch": 6,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 4,
+			"attack_slash": 2,
+			"attack_crush": -4,
+			"attack_magic": 1,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 1,
+			"defence_ranged": 0,
+			"melee_strength": 3,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 1
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword",
+			"stances": [
+				{
+					"combat_style": "stab",
+					"attack_type": "stab",
+					"attack_style": "accurate",
+					"experience": "attack",
+					"boosts": null
+				},
+				{
+					"combat_style": "lunge",
+					"attack_type": "stab",
+					"attack_style": "aggressive",
+					"experience": "strength",
+					"boosts": null
+				},
+				{
+					"combat_style": "slash",
+					"attack_type": "slash",
+					"attack_style": "aggressive",
+					"experience": "strength",
+					"boosts": null
+				},
+				{
+					"combat_style": "block",
+					"attack_type": "stab",
+					"attack_style": "defensive",
+					"experience": "defence",
+					"boosts": null
+				}
+			]
+		},
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 70203,
 		"name": "Seer sweet",
 		"tradeable": true,
@@ -47326,6 +47480,78 @@
 		}
 	},
 	{
+		"id": 74004,
+		"name": "Smokey snowglobe",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"equipable_by_player": true,
+		"equipable_weapon": true,
+		"cost": 10,
+		"lowalch": 4,
+		"highalch": 6,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 4,
+			"attack_slash": 2,
+			"attack_crush": -4,
+			"attack_magic": 1,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 1,
+			"defence_ranged": 0,
+			"melee_strength": 3,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "weapon",
+			"requirements": {
+				"attack": 1
+			}
+		},
+		"weapon": {
+			"attack_speed": 4,
+			"weapon_type": "stab_sword",
+			"stances": [
+				{
+					"combat_style": "stab",
+					"attack_type": "stab",
+					"attack_style": "accurate",
+					"experience": "attack",
+					"boosts": null
+				},
+				{
+					"combat_style": "lunge",
+					"attack_type": "stab",
+					"attack_style": "aggressive",
+					"experience": "strength",
+					"boosts": null
+				},
+				{
+					"combat_style": "slash",
+					"attack_type": "slash",
+					"attack_style": "aggressive",
+					"experience": "strength",
+					"boosts": null
+				},
+				{
+					"combat_style": "block",
+					"attack_type": "stab",
+					"attack_style": "defensive",
+					"experience": "defence",
+					"boosts": null
+				}
+			]
+		},
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 72031,
 		"name": "Snail oil",
 		"tradeable": true,
@@ -47689,6 +47915,41 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 74003,
+		"name": "Snowglobe santa hat",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"equipable_by_player": true,
+		"cost": 160,
+		"lowalch": 64,
+		"highalch": 96,
+		"buy_limit": 5,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": null
+		},
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -51561,6 +51822,74 @@
 			]
 		},
 		"price": 100000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 74001,
+		"name": "Titan ballista (xmas)",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"equipable_by_player": true,
+		"equipable_weapon": true,
+		"cost": 950000,
+		"lowalch": 380000,
+		"highalch": 570000,
+		"buy_limit": 8,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 125,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 15,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": {
+				"ranged": 75,
+				"strength": 120
+			}
+		},
+		"weapon": {
+			"attack_speed": 7,
+			"weapon_type": "crossbow",
+			"stances": [
+				{
+					"combat_style": "accurate",
+					"attack_type": null,
+					"attack_style": null,
+					"experience": "ranged",
+					"boosts": "accuracy and damage"
+				},
+				{
+					"combat_style": "rapid",
+					"attack_type": null,
+					"attack_style": null,
+					"experience": "ranged",
+					"boosts": "attack speed by 1 tick"
+				},
+				{
+					"combat_style": "longrange",
+					"attack_type": null,
+					"attack_style": null,
+					"experience": "ranged and defence",
+					"boosts": "attack range by 2 squares"
+				}
+			]
+		},
+		"price": 1,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true

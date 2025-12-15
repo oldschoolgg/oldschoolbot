@@ -14328,6 +14328,44 @@ setCustomItem(73_606, 'Witch card', 'Coal', {
 	}
 });
 
+setCustomItem(74_001, 'Titan ballista (xmas)', 'Titan ballista', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(74_002, 'Candy trident', 'Atlantean trident', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(74_003, 'Snowglobe santa hat', 'Santa hat', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(74_004, 'Smokey snowglobe', 'Bronze dagger', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(74_005, 'Seer snowglobe', 'Bronze dagger', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(74_006, 'Ember', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',
