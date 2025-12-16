@@ -38,8 +38,24 @@ A: Cannonballs are used at 16 per minute in single combat areas and 50 per minut
 **Q: How do I get an elemental/mind shield for wyverns?**  
 A: [[/buy name\:Mind shield]]
 
-**Q: How can I obtain the Ancient ceremonial robes?**  
+**Q: How can I obtain the Ancient ceremonial robes?**
 A: [[/k name\:Blood Reaver]] (requires a Frozen key)
+
+---
+
+## Slayer jewellery
+
+### Bracelets of slaughter & expeditious bracelets
+
+- Charge bracelets with [[/minion charge item\:Bracelet of slaughter amount\:X]] or [[/minion charge item\:Expeditious bracelet amount\:X]] (each bracelet adds 30 charges to your pool). Stored charges are used automatically; you do not need to equip the bracelet.
+- Choose how charges are used with [[/slayer jewellery set task\:all bracelet\:slaughter]] or set overrides per task. View current settings and charge totals with [[/slayer jewellery view]].
+- Effects only apply while on-task: Slaughter has a 25% chance to not consume a kill (extending tasks), while Expeditious has a 25% chance to count an extra kill (shortening tasks). Charges are consumed when a proc occurs.
+
+### Slayer rings
+
+- Unlock the ability to make rings with [[/slayer rewards unlock unlockable\:Ring Bling]].
+- Craft [[/create item\:Slayer ring (8)]] with 75 [[/skill crafting]] using a gold bar and enchanted gem, or combine an Eternal gem to make [[/create item\:Slayer ring (eternal)]].
+- You can also buy a ring straight from the Slayer shop: [[/slayer rewards buy item\:Slayer ring quantity\:1]].
 
 ---
 
