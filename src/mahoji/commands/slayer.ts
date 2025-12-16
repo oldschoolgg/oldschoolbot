@@ -12,6 +12,7 @@ import {
 	slayerTaskNameList
 } from '@/lib/slayer/slayerJewellery.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
+import { slayerTasksForAutocomplete } from '@/lib/slayer/tasks/index.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import {
 	slayerShopBuyCommand,
@@ -106,11 +107,23 @@ export const slayerCommand = defineCommand({
 							description: 'Task name or "all" for every task.',
 							required: true,
 							autocomplete: async ({ value }: StringAutoComplete) => {
-								const tasks = ['all', ...slayerTaskNameList()];
-								return tasks
-									.filter(task => (!value ? true : task.toLowerCase().includes(value.toLowerCase())))
-									.slice(0, 25)
-									.map(task => ({ name: task, value: task }));
+								const seen = new Set<string>();
+
+								const entries = slayerTasksForAutocomplete
+									.filter(task => {
+										const name = task.monster.name;
+										if (seen.has(name)) return false;
+										seen.add(name);
+										return true;
+									})
+									.map(task => ({
+										name: task.monster.name,
+										value: task.monster.name
+									}));
+
+								return entries
+									.filter(e => (!value ? true : e.name.toLowerCase().includes(value.toLowerCase())))
+									.slice(0, 25);
 							}
 						},
 						{
