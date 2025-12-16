@@ -23,7 +23,7 @@ export const ZMember = z.object({
 	guild_id: z.string(),
 	roles: z.array(z.string()),
 	permissions: ZPermission.array(),
-	joined_at: z.string().optional()
+	joined_at: z.string().nullable().optional()
 });
 export type IMember = z.infer<typeof ZMember>;
 
