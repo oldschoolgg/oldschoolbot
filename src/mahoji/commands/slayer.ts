@@ -2,6 +2,15 @@ import { Monsters } from 'oldschooljs';
 
 import { choicesOf } from '@/discord/index.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
+import {
+	getSlayerBraceletChargesFromUser,
+	matchSlayerTaskName,
+	normalizeSlayerTaskKey,
+	parseSlayerJewelleryConfig,
+	type SlayerJewellerySetting,
+	SlayerJewellerySettings,
+	slayerTaskNameList
+} from '@/lib/slayer/slayerJewellery.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import {
@@ -78,6 +87,48 @@ export const slayerCommand = defineCommand({
 					name: 'new',
 					description: 'Get a new task (if applicable)',
 					required: false
+				}
+			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'jewellery',
+			description: 'Configure Slayer bracelet effects.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'set',
+					description: 'Choose which Slayer bracelet effect to use.',
+					options: [
+						{
+							type: 'String',
+							name: 'task',
+							description: 'Task name or "all" for every task.',
+							required: true,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								const tasks = ['all', ...slayerTaskNameList()];
+								return tasks
+									.filter(task => (!value ? true : task.toLowerCase().includes(value.toLowerCase())))
+									.slice(0, 25)
+									.map(task => ({ name: task, value: task }));
+							}
+						},
+						{
+							type: 'String',
+							name: 'bracelet',
+							description: 'Which bracelet effect to apply.',
+							required: true,
+							choices: SlayerJewellerySettings.map(setting => ({
+								name: setting,
+								value: setting
+							}))
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'view',
+					description: 'View Slayer bracelet settings and charges.'
 				}
 			]
 		},
@@ -268,6 +319,48 @@ export const slayerCommand = defineCommand({
 					newTask: Boolean(options.manage.new),
 					interaction
 				});
+			}
+		}
+		if (options.jewellery) {
+			const currentConfig = parseSlayerJewelleryConfig(user.user.slayer_jewellery_config);
+			if (options.jewellery.view) {
+				const charges = getSlayerBraceletChargesFromUser(user.user);
+				const overrides = Object.entries(currentConfig).filter(([task]) => task !== 'all');
+				const lines = [
+					`All tasks (applies only when no task override is set): ${currentConfig.all ?? 'off'}`,
+					overrides.length
+						? overrides
+								.sort((a, b) => a[0].localeCompare(b[0]))
+								.map(([task, setting]) => {
+									const displayName =
+										slayerTaskNameList().find(name => name.toLowerCase() === task) ?? task;
+									return `${displayName}: ${setting}`;
+								})
+								.join('\n')
+						: 'No task-specific overrides set (defaults to off).'
+				];
+				lines.push(
+					'Task-specific settings override "All tasks"; the global setting only applies when no override exists.'
+				);
+				lines.push(
+					`Charges - Slaughter: ${charges.slaughter.toLocaleString()}, Expeditious: ${charges.expeditious.toLocaleString()}`
+				);
+				return lines.join('\n');
+			}
+			if (options.jewellery.set) {
+				const taskName = matchSlayerTaskName(options.jewellery.set.task);
+				if (!taskName) {
+					return 'Invalid Slayer task name. Use autocomplete to pick a task or "all".';
+				}
+				const bracelet = options.jewellery.set.bracelet as SlayerJewellerySetting;
+				const newConfig = {
+					...currentConfig,
+					[normalizeSlayerTaskKey(taskName)]: bracelet
+				};
+				await user.update({ slayer_jewellery_config: newConfig });
+
+				const targetName = taskName === 'all' ? 'all tasks' : taskName;
+				return `You set your Slayer bracelet behaviour for ${targetName} to **${bracelet}**.`;
 			}
 		}
 		if (options.rewards) {
