@@ -9,7 +9,7 @@ import { BitField } from '@/lib/constants.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
+import { updateGiveawayMessage, userWasMemberAtGiveawayStart } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
@@ -75,6 +75,14 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	}
 
 	if (action === 'ENTER') {
+		const wasMemberAtStart = await userWasMemberAtGiveawayStart(giveaway, user.id);
+		if (!wasMemberAtStart) {
+			return {
+				content:
+					'You must have been a member of this server when the giveaway started, and still be a member, to enter.',
+				ephemeral: true
+			};
+		}
 		if (giveaway.users_entered.includes(user.id)) {
 			return {
 				content: 'You are already entered in this giveaway.',
