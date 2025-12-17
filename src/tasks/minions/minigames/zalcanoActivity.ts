@@ -1,4 +1,3 @@
-import { Events } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
@@ -63,15 +62,6 @@ export const zalcanoTask: MinionTask = {
 			if (result) {
 				str += result.message;
 			}
-		}
-
-		if (loot.has('Smolcano')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${rng.randInt(newKC - quantity, newKC)}!`
-			);
 		}
 
 		const { previousCL, itemsAdded } = await user.transactItems({
