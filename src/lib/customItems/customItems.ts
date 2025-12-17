@@ -14332,7 +14332,7 @@ setCustomItem(74_001, 'Titan ballista (xmas)', 'Titan ballista', {
 	}
 });
 
-setCustomItem(74_002, 'Candy trident', 'Atlantean trident', {
+setCustomItem(74_002, 'Atlantean trident (xmas)', 'Atlantean trident', {
 	customItemData: {
 		cantDropFromMysteryBoxes: true,
 		isSuperUntradeable: true

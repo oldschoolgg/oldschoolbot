@@ -626,6 +626,24 @@ export const dyedItems: DyedItem[] = [
 				dye: Items.getOrThrow('Spooky dye')
 			}
 		]
+	},
+	{
+		baseItem: Items.getOrThrow('Titan ballista'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Titan ballista (xmas)'),
+				dye: Items.getOrThrow('Christmas dye')
+			}
+		]
+	},
+	{
+		baseItem: Items.getOrThrow('Atlantean trident'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Atlantean trident (xmas)'),
+				dye: Items.getOrThrow('Christmas dye')
+			}
+		]
 	}
 ];
 

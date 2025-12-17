@@ -2410,6 +2410,46 @@
 		}
 	},
 	{
+		"id": 74002,
+		"name": "Atlantean trident (xmas)",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 400,
+		"lowalch": 160,
+		"highalch": 240,
+		"buy_limit": 125,
+		"equipment": {
+			"attack_stab": 8,
+			"attack_slash": 8,
+			"attack_crush": 8,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 1,
+			"defence_slash": 1,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 4,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "2h",
+			"requirements": null
+		},
+		"weapon": {
+			"attack_speed": 5,
+			"weapon_type": "spear"
+		},
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true
+		}
+	},
+	{
 		"id": 73285,
 		"name": "Atlantis jumper",
 		"tradeable": true,
@@ -5818,46 +5858,6 @@
 		"highalch": 27,
 		"buy_limit": 13000,
 		"price": 10000
-	},
-	{
-		"id": 74002,
-		"name": "Candy trident",
-		"members": true,
-		"tradeable": true,
-		"tradeable_on_ge": true,
-		"noteable": true,
-		"equipable": true,
-		"cost": 400,
-		"lowalch": 160,
-		"highalch": 240,
-		"buy_limit": 125,
-		"equipment": {
-			"attack_stab": 8,
-			"attack_slash": 8,
-			"attack_crush": 8,
-			"attack_magic": 0,
-			"attack_ranged": 0,
-			"defence_stab": 1,
-			"defence_slash": 1,
-			"defence_crush": 0,
-			"defence_magic": 0,
-			"defence_ranged": 0,
-			"melee_strength": 4,
-			"ranged_strength": 0,
-			"magic_damage": 0,
-			"prayer": 0,
-			"slot": "2h",
-			"requirements": null
-		},
-		"weapon": {
-			"attack_speed": 5,
-			"weapon_type": "spear"
-		},
-		"price": 1,
-		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"isSuperUntradeable": true
-		}
 	},
 	{
 		"id": 63160,
