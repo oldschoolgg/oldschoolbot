@@ -38,6 +38,11 @@ class MonsterCollection {
 		}
 		return undefined;
 	}
+	set(id: number, monster: Monster): void {
+		monstersObject[id] = monster;
+		allMonstersMap.set(id, monster);
+		this.values = Array.from(allMonstersMap.values());
+	}
 }
 
 const monstersCollection = Object.assign(new MonsterCollection(), monstersObject);
