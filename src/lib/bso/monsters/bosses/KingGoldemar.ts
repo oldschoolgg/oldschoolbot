@@ -47,12 +47,4 @@ setCustomMonster(EBSOMonster.KING_GOLDEMAR, 'King Goldemar', KingGoldemarLootTab
 	aliases: ['king goldemar', 'dwarf king', 'goldemar', 'kg']
 });
 
-export const KingGoldemar = Monsters.find(mon => {
-	if (mon.name.toLowerCase().includes('golde')) {
-		console.log(`Found King Goldemar monster as ${mon.name} with ID ${mon.id}`);
-	}
-	return mon.name === 'King Goldemar';
-})!;
-if (!KingGoldemar) {
-	throw new Error('Could not find King Goldemar monster');
-}
+export const KingGoldemar = Monsters.find(mon => mon.name === 'King Goldemar')!;
