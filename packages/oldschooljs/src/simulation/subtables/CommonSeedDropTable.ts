@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 
-export const CommonSeedDropTable = new LootTable()
+export const CommonSeedDropTable: LootTable = new LootTable()
 	.add('Limpwurt seed', 1, 137)
 	.add('Strawberry seed', 1, 131)
 	.add('Marrentill seed', 1, 125)

@@ -1,8 +1,6 @@
 import { randArrItem } from '@oldschoolgg/rng';
 import { LootTable } from 'oldschooljs';
 
-export const PUMPKINHEAD_ID = 93_898_458;
-
 export const pumpkinHeadUniqueTable = new LootTable()
 	.add('Haunted cloak', 1, 2)
 	.add("Pumpkinhead's headbringer")

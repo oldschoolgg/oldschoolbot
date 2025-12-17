@@ -3,14 +3,14 @@ import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const ZamorakRobesTable = new LootTable()
+const ZamorakRobesTable: LootTable = new LootTable()
 	.add('Zamorak monk top', 1, 4)
 	.add('Zamorak monk top', 1, 4)
 	.add('Elder chaos hood', 1, 1)
 	.add('Elder chaos robe', 1, 1)
 	.add('Elder chaos top', 1, 1);
 
-export const ElderChaosDruidTable = new LootTable()
+export const ElderChaosDruidTable: LootTable = new LootTable()
 	.every('Bones')
 	.add(ZamorakRobesTable, 1, 1)
 
@@ -49,7 +49,7 @@ export const ElderChaosDruidTable = new LootTable()
 	.tertiary(20, 'Ensouled chaos druid head')
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const ElderChaosDruid: SimpleMonster = new SimpleMonster({
 	id: 6607,
 	name: 'Elder Chaos druid',
 	table: ElderChaosDruidTable,

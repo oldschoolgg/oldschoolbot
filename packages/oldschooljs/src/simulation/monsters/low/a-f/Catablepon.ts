@@ -4,7 +4,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const CatableponTable = new LootTable()
+export const CatableponTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Armour */
@@ -45,7 +45,7 @@ export const CatableponTable = new LootTable()
 	/* Tertiary */
 	.tertiary(101, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const Catablepon: SimpleMonster = new SimpleMonster({
 	id: 2475,
 	name: 'Catablepon',
 	table: CatableponTable,

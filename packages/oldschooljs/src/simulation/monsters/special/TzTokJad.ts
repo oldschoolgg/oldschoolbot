@@ -20,10 +20,8 @@ export class TzTokJadClass extends Monster {
 	}
 }
 
-const TzTokJad = new TzTokJadClass({
+export const TzTokJad: TzTokJadClass = new TzTokJadClass({
 	id: 3127,
 	name: 'TzTok-Jad',
 	aliases: ['tztok-jad', 'jad', 'tztok jad']
 });
-
-export default TzTokJad;

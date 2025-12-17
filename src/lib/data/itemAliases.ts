@@ -1,5 +1,5 @@
 import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
-import { ItemGroups, Items, itemNameMap, resolveItems } from 'oldschooljs';
+import { ItemGroups, Items } from 'oldschooljs';
 
 function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
@@ -10,13 +10,13 @@ function setItemAlias(id: number, name: string | string[], rename = true) {
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
 		firstName = name;
-		itemNameMap.set(name, id);
-		itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
+		Items.itemNameMap.set(name, id);
+		Items.itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
 	} else {
 		for (const _name of name) {
 			if (!firstName) firstName = _name;
-			itemNameMap.set(_name, id);
-			itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
+			Items.itemNameMap.set(_name, id);
+			Items.itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
 		}
 	}
 	// Update the item name to it's first alias
@@ -379,7 +379,7 @@ setItemAlias(26_507, 'Placeholder steel trophy');
 setItemAlias(26_505, 'Placeholder iron trophy');
 setItemAlias(26_503, 'Placeholder bronze trophy');
 
-export const allTrophyItems = resolveItems([
+export const allTrophyItems = Items.resolveItems([
 	'BSO dragon trophy',
 	'BSO rune trophy',
 	'BSO adamant trophy',

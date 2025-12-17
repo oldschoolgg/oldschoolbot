@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const SpindelUniqueTable = new LootTable()
+const SpindelUniqueTable: LootTable = new LootTable()
 	.oneIn(358, 'Dragon 2h sword')
 	.oneIn(358, 'Dragon pickaxe')
 	.oneIn(618, 'Fangs of venenatis')
@@ -16,7 +16,7 @@ const SpindelSecondarySupplyTable = new LootTable({ limit: 18 })
 	.add('Ranging potion(2)', [2, 3], 1)
 	.add('Super combat potion(2)', [2, 3], 1);
 
-const SpindelTable = new LootTable()
+const SpindelTable: LootTable = new LootTable()
 	/* Unique table */
 	.every(SpindelUniqueTable)
 
@@ -60,9 +60,9 @@ const SpindelTable = new LootTable()
 	.tertiary(100, 'Clue scroll (elite)')
 	.tertiary(2800, 'Venenatis spiderling');
 
-const SpindelTotalTable = new LootTable().every(SpindelSecondarySupplyTable).every(SpindelTable);
+const SpindelTotalTable: LootTable = new LootTable().every(SpindelSecondarySupplyTable).every(SpindelTable);
 
-export default new SimpleMonster({
+export const Spindel: SimpleMonster = new SimpleMonster({
 	id: 11_998,
 	name: 'Spindel',
 	table: SpindelTotalTable,

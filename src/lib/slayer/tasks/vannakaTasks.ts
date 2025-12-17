@@ -110,7 +110,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DaganothFledgeling.id,
+			Monsters.DagannothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
@@ -345,10 +345,10 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.Otherworldlybeing,
+		monster: Monsters.OtherworldlyBeing,
 		amount: [40, 90],
 		weight: 8,
-		monsters: [Monsters.Otherworldlybeing.id],
+		monsters: [Monsters.OtherworldlyBeing.id],
 		combatLevel: 40,
 		questPoints: 3,
 		unlocked: true

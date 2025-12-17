@@ -30,15 +30,12 @@ for (const item of Items.values()) {
 		continue;
 	}
 
-	if (
-		item.tradeable_on_ge ||
-		(Boolean(item.tradeable) && Boolean(item.equipable_by_player) && Boolean(item.equipment?.slot))
-	) {
+	if (item.tradeable_on_ge || (Boolean(item.tradeable) && Boolean(item.equipable) && Boolean(item.equipment?.slot))) {
 		tmbTable.push(item.id);
 	} else if (!item.tradeable) {
 		umbTable.push(item.id);
 	}
-	if (Boolean(item.equipable_by_player) && Boolean(item.equipment?.slot)) {
+	if (Boolean(item.equipable) && Boolean(item.equipment?.slot)) {
 		embTable.push(item.id);
 	}
 }

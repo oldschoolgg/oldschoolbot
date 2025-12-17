@@ -5,7 +5,6 @@ import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
 import { Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
-import { PUMPKINHEAD_ID } from '@/lib/bso/pumpkinHead.js';
 
 export const bsoEffectiveMonsters = [
 	{
@@ -14,22 +13,22 @@ export const bsoEffectiveMonsters = [
 		aliases: ['king goldemar', 'kg']
 	},
 	{
-		id: VasaMagus.id,
+		id: EBSOMonster.VASA_MAGUS,
 		name: 'Vasa Magus',
 		aliases: ['vasa', 'vasa magus', 'vm']
 	},
 	{
-		id: Naxxus.id,
+		id: EBSOMonster.NAXXUS,
 		name: 'Naxxus',
 		aliases: ['naxx', 'nax', 'naxxus']
 	},
 	{
-		id: Ignecarus.id,
+		id: EBSOMonster.IGNECARUS,
 		name: 'Ignecarus',
 		aliases: ['igne', 'ignecarus']
 	},
 	{
-		id: PUMPKINHEAD_ID,
+		id: EBSOMonster.PUMPKINHEAD,
 		name: 'Pumpkinhead',
 		aliases: ['pumpkinhead', 'ph']
 	},
@@ -39,7 +38,7 @@ export const bsoEffectiveMonsters = [
 		id: EBSOMonster.MOKTANG
 	},
 	{
-		id: KalphiteKingMonster.id,
+		id: EBSOMonster.KALPHITE_KING,
 		name: 'Kalphite King',
 		aliases: ['kalphite king', 'kk']
 	},

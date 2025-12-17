@@ -14,18 +14,19 @@
 		"@astrojs/starlight": "0.36.2",
 		"@astrojs/starlight-tailwind": "4.0.2",
 		"@tailwindcss/vite": "4.1.17",
-		"astro": "5.16.0",
+		"astro": "5.16.3",
 		"collapse-white-space": "^2.1.0",
 		"oldschooljs": "workspace:*",
 		"preact": "^10.26.9",
 		"remeda": "^2.23.0",
-		"tailwindcss": "^4.1.14",
+		"vite": "^6.4.1",
+		"tailwindcss": "^4.1.17",
 		"unified": "^11.0.5",
 		"unist-util-visit": "^5.0.0",
 		"unist-util-visit-parents": "^6.0.1"
 	},
 	"devDependencies": {
 		"@types/hast": "^3.0.4",
-		"typescript": "^5.9.2"
+		"typescript": "^5.9.3"
 	}
 }

@@ -14,7 +14,8 @@ import {
 
 import type { DiscordClient } from '../client/DiscordClient.js';
 import type { BaseSendableMessage, SendableMessage } from '../client/types.js';
-import { convertApiMemberToZMember } from '../index.js';
+import { convertApiMemberToZMember } from '../conversions.js';
+import type { SpecialResponse } from '../util.js';
 import { BaseInteraction } from './BaseInteraction.js';
 import { interactionConfirmation } from './confirmation.js';
 import { PaginatedMessage, type PaginatedMessageOptions } from './PaginatedMessage.js';
@@ -70,13 +71,13 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 		return this.kind === 'ChatInputCommand';
 	}
 
-	makePaginatedMessage(options: PaginatedMessageOptions) {
+	makePaginatedMessage(options: PaginatedMessageOptions): Promise<SpecialResponse.PaginatedMessageResponse> {
 		this.isPaginated = true;
 		return new PaginatedMessage({ interaction: this, ...options }).run([this.userId]);
 	}
 
-	async defer({ ephemeral }: { ephemeral?: boolean } = {}) {
-		return this.baseDeferReply({ ephemeral });
+	async defer({ ephemeral }: { ephemeral?: boolean } = {}): Promise<void> {
+		await this.baseDeferReply({ ephemeral });
 	}
 
 	async reply(message: SendableMessage): Promise<null> {
@@ -120,7 +121,7 @@ export class MInteraction<T extends AnyInteraction = AnyInteraction> extends Bas
 					| { ephemeral?: false; users?: string[] }
 					| { ephemeral?: boolean; users?: undefined }
 			  ))
-	) {
+	): Promise<void> {
 		return interactionConfirmation(this, message);
 	}
 

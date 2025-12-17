@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const PyrelordPreTable = new LootTable()
+export const PyrelordPreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Steel axe', 1, 4)
 	.add('Steel full helm', 1, 4)
@@ -31,14 +31,14 @@ export const PyrelordPreTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 1, 3);
 
-const PyrelordTable = new LootTable()
+const PyrelordTable: LootTable = new LootTable()
 	.every('Fiendish ashes')
 	.every(PyrelordPreTable)
 
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const Pyrelord: SimpleMonster = new SimpleMonster({
 	id: 6762,
 	name: 'Pyrelord',
 	table: PyrelordTable,

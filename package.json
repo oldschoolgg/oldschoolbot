@@ -32,14 +32,14 @@
 		"test:ci:unit": "pnpm concurrent \"pnpm test:unit\" \"pnpm test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"============MISC": "============",
 		"concurrent": "concurrently --raw --kill-others-on-fail",
-		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!robochimp\" build",
+		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" --filter \"!robochimp\" build",
 		"============monorepo": "============",
-		"monorepo:build": "pnpm concurrent \"pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" build\" \"pnpm gen\" && tsx esbuild.mts",
+		"monorepo:build": "pnpm concurrent \"pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" build\" \"pnpm gen\" && tsx esbuild.mts",
 		"monorepo:test": "pnpm --stream --workspace-concurrency=2 -r test && pnpm test"
 	},
 	"dependencies": {
 		"@discordjs/rest": "^2.6.0",
-		"@discordjs/ws": "^2.0.3",
+		"@discordjs/ws": "^2.0.4",
 		"@electric-sql/pglite": "^0.3.10",
 		"@oldschoolgg/collectionlog": "workspace:*",
 		"@oldschoolgg/discord": "workspace:*",
@@ -53,7 +53,7 @@
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sapphire/timer-manager": "^1.0.2",
-		"@vladfrangu/async_event_emitter": "^2.4.7",
+		"async-mutex": "^0.5.0",
 		"bufferutil": "^4.0.9",
 		"dotenv": "^16.5.0",
 		"exit-hook": "^4.0.0",
@@ -68,30 +68,31 @@
 		"remeda": "^2.23.0",
 		"rimraf": "6.1.2",
 		"simple-statistics": "^7.8.3",
-		"skia-canvas": "^3.0.7",
+		"skia-canvas": "^3.0.8",
 		"sonic-boom": "^4.2.0",
 		"ts-pattern": "^5.7.1",
-		"tsdown": "^0.16.1",
 		"zod": "^4.1.12"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.4",
+		"@biomejs/biome": "2.3.8",
 		"@types/luxon": "^3.7.1",
 		"@types/node": "^24.5.2",
 		"@types/pg": "^8.15.5",
 		"@vitest/coverage-v8": "^4.0.8",
+		"@vladfrangu/async_event_emitter": "^2.4.7",
 		"concurrently": "^9.2.0",
-		"esbuild": "0.25.11",
+		"esbuild": "0.27.1",
 		"nodemon": "^3.1.10",
 		"prettier": "^3.6.2",
 		"prisma": "^6.19.0",
-		"sharp": "^0.34.4",
-		"tsx": "^4.20.5",
-		"typescript": "^5.9.2",
-		"vitest": "^4.0.0"
+		"sharp": "0.34.5",
+		"tsdown": "0.16.1",
+		"tsx": "4.21.0",
+		"typescript": "^5.9.3",
+		"vitest": "4.0.15"
 	},
 	"pnpm": {
 		"neverBuiltDependencies": []
 	},
-	"packageManager": "pnpm@10.17.0+sha512.fce8a3dd29a4ed2ec566fb53efbb04d8c44a0f05bc6f24a73046910fb9c3ce7afa35a0980500668fa3573345bd644644fa98338fa168235c80f4aa17aa17fbef"
+	"packageManager": "pnpm@10.23.0"
 }

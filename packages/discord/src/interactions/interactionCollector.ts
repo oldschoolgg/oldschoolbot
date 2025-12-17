@@ -4,7 +4,6 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { APIInteraction } from 'discord-api-types/v10';
 
 import type { DiscordClient } from '../client/DiscordClient.js';
-import { apiInteractionParse } from './apiInteractionParse.js';
 import type { ButtonMInteraction, MInteraction } from './MInteraction.js';
 
 type InteractionTypeCollected = ButtonMInteraction;
@@ -26,7 +25,6 @@ type CollectorEvents = {
 };
 
 export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
-	private client: DiscordClient;
 	private filter?: (i: InteractionTypeCollected) => boolean | Promise<boolean>;
 	private maxCollected: number;
 	private timeoutMs?: number;
@@ -43,7 +41,6 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 	constructor({ filter, maxCollected = 1, timeoutMs, channelId, messageId, users, interaction }: CollectorOptions) {
 		super();
 		this.interaction = interaction;
-		this.client = interaction.client;
 		this.filter = filter;
 		this.channelId = channelId;
 		this.messageId = messageId;
@@ -52,7 +49,7 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 		this.interactionType = 'Button';
 		this.users = users;
 		this.boundListener = async (i: APIInteraction) => {
-			const mitx = await apiInteractionParse(this.client, i);
+			const mitx = await this.client.apiInteractionParse(i);
 			if (!mitx?.isButton()) return;
 			try {
 				await this.onInteraction(mitx);
@@ -67,6 +64,10 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 			this.timer = TimerManager.setTimeout(() => this.stop('timeout'), this.timeoutMs);
 			this.timer.unref?.();
 		}
+	}
+
+	private get client(): DiscordClient {
+		return this.interaction.client;
 	}
 
 	private async doFilter(itx: InteractionTypeCollected): Promise<boolean | string> {
@@ -123,7 +124,7 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 		}
 	}
 
-	stop(reason = 'user') {
+	stop(reason = 'user'): void {
 		if (this.endedFlag) return;
 		this.endedFlag = true;
 		try {
@@ -137,11 +138,11 @@ export class InteractionCollector extends AsyncEventEmitter<CollectorEvents> {
 		}
 	}
 
-	ended() {
+	ended(): boolean {
 		return this.endedFlag;
 	}
 
-	size() {
+	size(): number {
 		return this.collected.size;
 	}
 }

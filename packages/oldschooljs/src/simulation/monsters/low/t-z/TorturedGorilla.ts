@@ -3,7 +3,7 @@ import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const UniqueTable = new LootTable()
+const UniqueTable: LootTable = new LootTable()
 	.add('Zenyte shard', 1, 5)
 	.add('Ballista limbs', 1, 3)
 	.add('Ballista spring', 1, 3)
@@ -11,7 +11,7 @@ const UniqueTable = new LootTable()
 	.add('Heavy frame', 1, 1)
 	.add('Monkey tail', 1, 1);
 
-const TorturedGorillaTable = new LootTable()
+const TorturedGorillaTable: LootTable = new LootTable()
 	.every('Big bones')
 	.oneIn(1000, UniqueTable)
 
@@ -54,7 +54,7 @@ const TorturedGorillaTable = new LootTable()
 	.tertiary(1500, 'Clue scroll (elite)')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const TorturedGorilla: SimpleMonster = new SimpleMonster({
 	id: 7097,
 	name: 'Tortured Gorilla',
 	table: TorturedGorillaTable,

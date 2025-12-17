@@ -5,7 +5,8 @@ import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { asyncGzip, formatDuration, PerkTier, stringMatches, stringSearch, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, PerkTier, stringMatches, stringSearch, Time } from '@oldschoolgg/toolkit';
+import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';

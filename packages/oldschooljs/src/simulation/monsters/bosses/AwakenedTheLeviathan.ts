@@ -9,7 +9,7 @@ class AwakenedTheLeviathanSingleton extends Monster {
 	}
 }
 
-export const AwakenedTheLeviathan = new AwakenedTheLeviathanSingleton({
+export const AwakenedTheLeviathan: AwakenedTheLeviathanSingleton = new AwakenedTheLeviathanSingleton({
 	id: 12_215,
 	name: 'The Leviathan (Awakened)',
 	aliases: ['the leviathan (awakened)']

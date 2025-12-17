@@ -70,6 +70,8 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	quantity: number;
 	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
 	iQty?: number;
+	// Optional number of minutes specified by the user when minutes are the primary input.
+	minutes?: number;
 }
 
 export interface ShootingStarsOptions extends ActivityTaskOptions {
@@ -584,6 +586,7 @@ export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOption
 	trainingSkill: UnderwaterAgilityThievingTrainingSkill;
 	quantity: number;
 	noStams: boolean;
+	minutes?: number;
 }
 
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {

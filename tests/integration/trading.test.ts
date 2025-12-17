@@ -1,4 +1,5 @@
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
+import { sleep } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { chunk } from 'remeda';
 import { expect, test } from 'vitest';
@@ -78,6 +79,7 @@ test('Trade consistency', async () => {
 					if (typeof res === 'string' && !res.includes('Trade failed')) {
 						break;
 					}
+					await sleep(20);
 				}
 				if (attempts === 100) {
 					throw new Error('Trade failed 100 times in a row, something is wrong');

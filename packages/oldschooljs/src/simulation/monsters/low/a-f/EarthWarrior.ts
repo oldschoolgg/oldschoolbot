@@ -4,7 +4,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const EarthWarriorTable = new LootTable({ limit: 128 })
+export const EarthWarriorTable: LootTable = new LootTable({ limit: 128 })
 	.tertiary(5000, 'Earth warrior champion scroll')
 
 	// Weapons
@@ -25,7 +25,7 @@ export const EarthWarriorTable = new LootTable({ limit: 128 })
 	.add(GemTable, 1, 2)
 	.add('Coins', 12, 18);
 
-export default new SimpleMonster({
+export const EarthWarrior: SimpleMonster = new SimpleMonster({
 	id: 2840,
 	name: 'Earth Warrior',
 	table: EarthWarriorTable,

@@ -1,6 +1,6 @@
 import { deepMerge, replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
 import type { DeepPartial } from '@sapphire/utilities';
-import { type Item, type ItemRequirements, Items, itemNameMap } from 'oldschooljs';
+import { type Item, type ItemRequirements, Items } from 'oldschooljs';
 
 export const customPrices: Record<number, number> = [];
 
@@ -52,8 +52,8 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	}
 	Items.set(id, data);
 	const cleanName = replaceWhitespaceAndUppercase(name);
-	itemNameMap.set(cleanName, id);
-	itemNameMap.set(name, id);
+	Items.itemNameMap.set(cleanName, id);
+	Items.itemNameMap.set(name, id);
 
 	// Add the item to the custom items array
 	customItems.push(id);

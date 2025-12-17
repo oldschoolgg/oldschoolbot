@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const SpiritualRangerZarosTable = new LootTable()
+const SpiritualRangerZarosTable: LootTable = new LootTable()
 
 	/* Ancient ceremonial robes */
 	.add('Ancient ceremonial mask', 1, 1)
@@ -51,7 +51,7 @@ const SpiritualRangerZarosTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const SpiritualRangerZaros: SimpleMonster = new SimpleMonster({
 	id: 11291,
 	name: 'Spiritual Ranger (Zaros)',
 	table: SpiritualRangerZarosTable,

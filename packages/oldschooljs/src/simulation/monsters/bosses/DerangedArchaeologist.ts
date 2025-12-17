@@ -3,7 +3,7 @@ import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const DerangedArchaeologistTable = new LootTable()
+const DerangedArchaeologistTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Unique */
@@ -55,7 +55,7 @@ const DerangedArchaeologistTable = new LootTable()
 	.tertiary(200, 'Clue scroll (elite)')
 	.tertiary(3500 / 12, 'Unidentified rare fossil');
 
-export default new SimpleMonster({
+export const DerangedArchaeologist: SimpleMonster = new SimpleMonster({
 	id: 7806,
 	name: 'Deranged Archaeologist',
 	table: DerangedArchaeologistTable,

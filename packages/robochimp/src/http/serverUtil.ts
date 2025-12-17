@@ -12,8 +12,15 @@ export const httpErr = {
 		return Response.json({ error: 'RATELIMITED', message }, { status: 429 });
 	}
 };
+
 export const httpRes = {
 	JSON: (json: object): Response => {
 		return Response.json(json, { status: 200 });
 	}
 };
+
+type HonoVariables = {
+	user: RUser | null;
+};
+
+export type HonoServerGeneric = { Bindings: {}; Variables: HonoVariables };

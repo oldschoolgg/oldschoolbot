@@ -9,7 +9,6 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		wiki_name: 'Abyssal cape',
 		equipment: {
 			attack_stab: 12,
 			attack_slash: 12,
