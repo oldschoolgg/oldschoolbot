@@ -43,7 +43,7 @@ export function clAdjustedDroprate(
 	increaseMultiplier: number
 ) {
 	const amountInCL = user instanceof Bank ? user.amount(item) : user.cl.amount(item);
-	if (amountInCL === 0) return baseRate;
+	if (amountInCL === 0) return Math.floor(baseRate);
 	let newRate = baseRate;
 	for (let i = 0; i < amountInCL; i++) {
 		newRate *= increaseMultiplier;
