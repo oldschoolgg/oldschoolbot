@@ -213,7 +213,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						bonusLoot.add(DougTable.roll());
 					}
 					await user.statsBankUpdate('doug_loot_bank', bonusLoot);
-					messages.push(`Doug did some mining while you were on your trip and got you: ${bonusLoot}.`);
+					messages.push(`Doug mined you these items: ${bonusLoot}.`);
 					break;
 				}
 				case itemID('Harry'): {
@@ -256,14 +256,13 @@ const tripFinishEffects: TripFinishEffect[] = [
 					ClientSettings.updateBankSetting('magic_cost_bank', alchResult.bankToRemove),
 					ClientSettings.updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'))
 				]);
+				const hasMasterCape = user.hasEquipped('Magic master cape');
 				messages.push(
 					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${
 						alchResult.itemToAlch.name
-					} <:alch:739456571347566623> ${toKMB(alchResult.bankToAdd.amount('Coins'))} GP ${
-						!voidlingEquipped && !user.hasEquipped('Magic master cape')
-							? '<:bank:739459924693614653>⏬'
-							: ''
-					}${user.hasEquipped('Magic master cape') ? '<:Magicmastercape:1115026341314703492>⏫' : ''}`
+					} ${toKMB(alchResult.bankToAdd.amount('Coins'))} GP ${
+						!voidlingEquipped && !hasMasterCape ? '<:bank:739459924693614653>⏬' : ''
+					}${hasMasterCape ? '<:Magicmastercape:1115026341314703492>⏫' : ''}`
 				);
 				return {
 					itemsToAddWithCL: alchResult.bankToAdd,
