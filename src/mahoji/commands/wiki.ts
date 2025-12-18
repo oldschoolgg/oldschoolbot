@@ -1,6 +1,5 @@
 import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
 import { nanoid } from 'nanoid';
-import { fetch } from 'undici';
 
 type WikiPage = {
 	pageid: number;
