@@ -1,5 +1,4 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { fetch } from 'undici';
 
 type WikiPage = {
 	pageid: number;
