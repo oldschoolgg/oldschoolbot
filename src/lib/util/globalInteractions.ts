@@ -11,7 +11,6 @@ import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
-import { handleWikiButtonInteraction } from '@/mahoji/commands/wiki.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
@@ -214,10 +213,6 @@ async function globalButtonInteractionHandler({
 	interaction: MInteraction;
 }): Promise<CommandResponse | null> {
 	Logging.logDebug(`${interaction.userId} clicked button: ${id}`);
-
-	if (id.startsWith('wiki:')) {
-		if (await handleWikiButtonInteraction(interaction, id)) return SpecialResponse.RespondedManually;
-	}
 
 	if (globalClient.isShuttingDown) {
 		return {
