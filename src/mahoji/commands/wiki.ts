@@ -1,5 +1,4 @@
 import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
-import { nanoid } from 'nanoid';
 
 type WikiPage = {
 	pageid: number;
@@ -149,7 +148,7 @@ export const wikiCommand = defineCommand({
 			if (topPages.length === 0) return 'No results found.';
 
 			const userID = interaction.userId;
-			const token = nanoid(10);
+			const token = `${interaction.userId}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 			const cacheKey = `wiki:${userID}:${token}`;
 
 			wikiButtonCache.set(cacheKey, { createdAt: Date.now(), userID, pages: topPages });
