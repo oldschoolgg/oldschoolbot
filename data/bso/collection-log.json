@@ -11300,6 +11300,10 @@
 				"items": ["Beehive", "Buzz", "Honey", "Honeycomb"],
 				"counts": false
 			},
+			"bso_christmas_2025": {
+				"items": ["Ember", "Seer snowglobe", "Smokey snowglobe", "Snowglobe santa hat"],
+				"counts": false
+			},
 			"christmas_2022": {
 				"items": [
 					"Christmas cape",
