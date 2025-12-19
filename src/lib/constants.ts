@@ -193,7 +193,8 @@ export enum BitField {
 	UseSuperRestoresForDwarvenBlessing = 231,
 	DisableSizeMatters = 232,
 	DisabledTameImplingOpening = 233,
-	HasHalloweenWallkit = 234
+	HasHalloweenWallkit = 234,
+	HasEarnedRiftGuardianFromStar = 235
 }
 
 interface BitFieldData {
@@ -454,6 +455,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Disable Size Matters unlock',
 		protected: false,
 		userConfigurable: true
+	},
+	[BitField.HasEarnedRiftGuardianFromStar]: {
+		name: 'Has Earned Rift Guardian From Star',
+		protected: false,
+		userConfigurable: false
 	}
 } as const;
 

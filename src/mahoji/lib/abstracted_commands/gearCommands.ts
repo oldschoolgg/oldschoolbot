@@ -3,7 +3,6 @@ import { Bank, Items } from 'oldschooljs';
 import type { GearStat } from 'oldschooljs/gear';
 
 import type { GearPreset } from '@/prisma/main.js';
-import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { isValidGearSetup, isValidGearStat } from '@/lib/gear/functions/isValidGearSetup.js';
@@ -341,7 +340,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 
 		function showGearLost(options: GearLostOptions) {
 			const results = calculateGearLostOnDeathWilderness(options);
-			return results; // Return the entire results object
+			return results;
 		}
 
 		function calculateAndGetString(options: GearLostOptions, smited: boolean): string {
@@ -385,7 +384,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 	if (text) {
 		return gear.toString();
 	}
-	const image = await generateGearImage({ gearSetup: gear, gearType: input, petID: user.user.minion_equippedPet });
+	const image = await user.generateGearImage({ gearSetup: gear, setupType: input });
 	return { files: [{ buffer: image, name: 'gear.png' }] };
 }
 
