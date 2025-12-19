@@ -9,7 +9,7 @@ import {
 	ZRole
 } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
-import { RedisKeys } from '@oldschoolgg/util';
+import { isValidDiscordSnowflake, RedisKeys } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
 
 import type { Guild } from '@/prisma/main.js';
@@ -224,6 +224,9 @@ class CacheManager {
 	}
 
 	async getBadgedUsername(userId: string) {
+		if (!isValidDiscordSnowflake(userId)) {
+			throw new Error(`Invalid userID: ${userId}`);
+		}
 		return fetchUsernameAndCache(userId);
 	}
 

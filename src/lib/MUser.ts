@@ -18,6 +18,7 @@ import {
 	UserError,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import {
 	Bank,
@@ -1447,6 +1448,9 @@ declare global {
 }
 
 async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+	if (!isValidDiscordSnowflake(userID)) {
+		throw new Error(`Invalid userID: ${userID}`);
+	}
 	const user =
 		updates !== undefined
 			? await prisma.user.upsert({
