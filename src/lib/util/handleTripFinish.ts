@@ -618,7 +618,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 			}
 			if (xmasLoot.length === 0) return;
-			messages.push(`You found some Christmas event items: ${xmasLoot}.`);
+			messages.push(`🎁 You found some Christmas event items: ${xmasLoot}.`);
 			return {
 				itemsToAddWithCL: xmasLoot
 			};
