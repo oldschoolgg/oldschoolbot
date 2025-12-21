@@ -5,6 +5,7 @@ import {
 	Bank,
 	BrimstoneChest,
 	BronzeHAMChest,
+	CastleWarsSupplyCrate,
 	EItem,
 	EliteMimicTable,
 	ElvenCrystalChest,
@@ -419,8 +420,8 @@ const osjsOpenables: UnifiedOpenable[] = [
 	},
 	{
 		name: 'Castle wars supply crate',
-		id: itemID('Castle wars supply crate'),
-		openedItem: getOSItem('Castle wars supply crate'),
+		id: 30_690,
+		openedItem: Items.getOrThrow(30_690),
 		aliases: ['castle wars supply crate'],
 		output: async (
 			args: OpenArgs

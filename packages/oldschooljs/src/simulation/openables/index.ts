@@ -3,6 +3,7 @@ import type Openable from '@/structures/Openable.js';
 import type { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 import { BrimstoneChest } from './BrimstoneChest.js';
 import { Casket } from './Casket.js';
+import CastleWarsSupplyCrate from './CastleWarsSupplyCrate.js';
 import { CrystalChest } from './CrystalChest.js';
 import { ElvenCrystalChest } from './ElvenCrystalChest.js';
 import { GiantEggSacFull } from './GiantEggSacFull.js';
@@ -78,7 +79,7 @@ export {
 	ExpertSack,
 	MasterSack,
 	ZombiePiratesLocker,
-	type CastleWarsSupplyCrate
+	CastleWarsSupplyCrate
 };
 
 const openablesObject: Record<string, SimpleOpenable> = {

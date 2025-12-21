@@ -182,7 +182,16 @@ export const minigamesCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a trip.',
+					options: [
+						{
+							type: "Integer",
+							name: 'quantity',
+							description: 'The amount of games to do.',
+							required: false,
+							min_value: 1
+						}
+					]
 				}
 			]
 		},
