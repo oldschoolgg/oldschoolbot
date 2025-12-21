@@ -19,6 +19,7 @@ function formatBankForDisplay(bank: Bank): string {
 
 export const tradeCommand = defineCommand({
 	name: 'trade',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Allows you to trade items with other players.',
 	options: [
 		{

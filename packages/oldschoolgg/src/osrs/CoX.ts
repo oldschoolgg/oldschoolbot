@@ -110,7 +110,7 @@ export class ChambersOfXericClass {
 		return chances;
 	}
 
-	public elligibleForDust(teamSize: number, completionTime: number): boolean {
+	public eligibleForDust(teamSize: number, completionTime: number): boolean {
 		for (const [teamSizeRange, timeRequired] of cmTeamTimes) {
 			if (teamSize <= teamSizeRange) {
 				return completionTime <= timeRequired;
@@ -154,12 +154,12 @@ export class ChambersOfXericClass {
 
 	public complete(_options: ChambersOfXericOptions): LootBank {
 		const options = JSON.parse(JSON.stringify(_options)) as ChambersOfXericOptions;
-		const elligibleForDust =
+		const eligibleForDust =
 			typeof options.timeToComplete === 'number' &&
 			options.challengeMode &&
-			this.elligibleForDust(options.team.length, options.timeToComplete);
+			this.eligibleForDust(options.team.length, options.timeToComplete);
 
-		if (elligibleForDust) {
+		if (eligibleForDust) {
 			for (const member of options.team) {
 				member.personalPoints += 5000;
 			}
@@ -180,12 +180,12 @@ export class ChambersOfXericClass {
 			// Give every team member a Loot.
 			lootResult[teamMember.id] = new Bank();
 
-			// If the team and team member is elligible for dust, roll for this user.
-			if (elligibleForDust && teamMember.canReceiveDust && roll(400)) {
+			// If the team and team member is eligible for dust, roll for this user.
+			if (eligibleForDust && teamMember.canReceiveDust && roll(400)) {
 				lootResult[teamMember.id].add('Metamorphic dust');
 			}
 
-			if (elligibleForDust && roll(75)) {
+			if (eligibleForDust && roll(75)) {
 				lootResult[teamMember.id].add('Twisted ancestral colour kit');
 			}
 

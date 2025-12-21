@@ -65,16 +65,25 @@ export async function rawCommandHandlerInner({
 			};
 		}
 
-		const response: Awaited<CommandResponse> = await command.run({
-			interaction,
-			options,
-			user,
-			member: interaction.member,
-			channelId: interaction.channelId,
-			guildId: interaction.guildId,
-			userId: interaction.userId,
-			rng
-		});
+		const runClosure = () =>
+			command.run({
+				interaction,
+				options,
+				user,
+				member: interaction.member,
+				channelId: interaction.channelId,
+				guildId: interaction.guildId,
+				userId: interaction.userId,
+				rng
+			});
+
+		const requiresLock = Boolean('flags' in command && command.flags?.includes('REQUIRES_LOCK'));
+		if (requiresLock) {
+			await interaction.defer();
+		}
+		const response: Awaited<CommandResponse> = requiresLock
+			? await user.withLock(command.name, runClosure)
+			: await runClosure();
 		return response;
 	} catch (err) {
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
