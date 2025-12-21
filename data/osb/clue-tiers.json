@@ -4,6 +4,16 @@
 		"id": 23245,
 		"scroll_id": 23182,
 		"time_to_finish": 168000,
+		"milestone_rewards": [
+			{
+				"item_reward": 30902,
+				"score_needed": 50
+			},
+			{
+				"item_reward": 30904,
+				"score_needed": 100
+			}
+		],
 		"mimic_chance": false,
 		"all_items": [
 			"Air rune",
@@ -88,10 +98,20 @@
 		"id": 20546,
 		"scroll_id": 2677,
 		"time_to_finish": 192000,
-		"milestone_reward": {
-			"item_reward": 20164,
-			"score_needed": 500
-		},
+		"milestone_rewards": [
+			{
+				"item_reward": 30906,
+				"score_needed": 100
+			},
+			{
+				"item_reward": 30908,
+				"score_needed": 200
+			},
+			{
+				"item_reward": 20164,
+				"score_needed": 500
+			}
+		],
 		"mimic_chance": false,
 		"all_items": [
 			"A powdered wig",
@@ -310,10 +330,20 @@
 		"id": 20543,
 		"scroll_id": 12073,
 		"time_to_finish": 510000,
-		"milestone_reward": {
-			"item_reward": 19941,
-			"score_needed": 200
-		},
+		"milestone_rewards": [
+			{
+				"item_reward": 30918,
+				"score_needed": 50
+			},
+			{
+				"item_reward": 30920,
+				"score_needed": 150
+			},
+			{
+				"item_reward": 19941,
+				"score_needed": 200
+			}
+		],
 		"mimic_chance": 35,
 		"all_items": [
 			"3rd age amulet",
@@ -505,6 +535,16 @@
 		"id": 20544,
 		"scroll_id": 2722,
 		"time_to_finish": 510000,
+		"milestone_rewards": [
+			{
+				"item_reward": 30914,
+				"score_needed": 50
+			},
+			{
+				"item_reward": 30916,
+				"score_needed": 150
+			}
+		],
 		"mimic_chance": false,
 		"all_items": [
 			"3rd age amulet",
@@ -749,10 +789,20 @@
 		"id": 19836,
 		"scroll_id": 19835,
 		"time_to_finish": 1170000,
-		"milestone_reward": {
-			"item_reward": 22675,
-			"score_needed": 100
-		},
+		"milestone_rewards": [
+			{
+				"item_reward": 30922,
+				"score_needed": 25
+			},
+			{
+				"item_reward": 30924,
+				"score_needed": 75
+			},
+			{
+				"item_reward": 22675,
+				"score_needed": 100
+			}
+		],
 		"mimic_chance": 15,
 		"all_items": [
 			"3rd age amulet",
@@ -934,10 +984,20 @@
 		"id": 20545,
 		"scroll_id": 2801,
 		"time_to_finish": 306000,
-		"milestone_reward": {
-			"item_reward": 20249,
-			"score_needed": 400
-		},
+		"milestone_rewards": [
+			{
+				"item_reward": 30910,
+				"score_needed": 100
+			},
+			{
+				"item_reward": 30912,
+				"score_needed": 250
+			},
+			{
+				"item_reward": 20249,
+				"score_needed": 400
+			}
+		],
 		"mimic_chance": false,
 		"all_items": [
 			"Adamant axe",
