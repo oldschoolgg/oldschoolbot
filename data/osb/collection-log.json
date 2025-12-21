@@ -4685,7 +4685,6 @@
 				"is_activity": true
 			},
 			"scroll_cases": {
-				"unobtainable": true,
 				"items": [
 					"Major beginner scroll case",
 					"Major easy scroll case",
