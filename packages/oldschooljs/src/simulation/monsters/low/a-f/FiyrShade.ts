@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const FiyrShadeTable = new LootTable().every('Fiyr remains');
+export const FiyrShadeTable: LootTable = new LootTable().every('Fiyr remains');
 
-export default new SimpleMonster({
+export const FiyrShade: SimpleMonster = new SimpleMonster({
 	id: 1286,
 	name: 'Fiyr Shade',
 	table: FiyrShadeTable,

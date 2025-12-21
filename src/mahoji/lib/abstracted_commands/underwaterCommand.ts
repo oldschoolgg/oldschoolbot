@@ -1,21 +1,19 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, randFloat, reduceNumByPercent } from 'e';
+import { randFloat } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/skilling/skills/agility';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import type { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
+import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
 
 export async function underwaterAgilityThievingCommand(
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	trainingSkill: UnderwaterAgilityThievingTrainingSkill,
 	minutes: number | undefined,
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const maxTripLength = calcMaxTripLength(user, 'UnderwaterAgilityThieving');
+	const maxTripLength = await user.calcMaxTripLength('UnderwaterAgilityThieving');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);
@@ -25,8 +23,9 @@ export async function underwaterAgilityThievingCommand(
 		return 'You need Graceful top, legs and gloves to do Underwater Agility and Thieving.';
 	}
 
-	if (minutes < 1 || !Number.isInteger(minutes) || Number.isNaN(minutes))
+	if (minutes < 1 || !Number.isInteger(minutes) || Number.isNaN(minutes)) {
 		return 'Please specify a valid number of minutes.';
+	}
 
 	const tripLength = Time.Minute * minutes;
 
@@ -38,7 +37,7 @@ export async function underwaterAgilityThievingCommand(
 		)}.`;
 	}
 
-	const boosts = [];
+	const boosts: string[] = [];
 	const itemsToRemove = new Bank();
 	// Adjust numbers to end up with average 1351 loot actions per hour
 	let oneLootActionTime = randFloat(10, 10.2) * Time.Second;
@@ -76,17 +75,18 @@ export async function underwaterAgilityThievingCommand(
 		return `You need ${quantity}x Stamina potion(4) for the whole trip, try a lower trip length, turn of stamina usage or make/buy more Stamina potion(4).`;
 	}
 
-	await addSubTaskToActivityTask<UnderwaterAgilityThievingTaskOptions>({
+	await ActivityManager.startTrip<UnderwaterAgilityThievingTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		trainingSkill,
 		quantity,
+		minutes,
 		duration,
 		noStams,
 		type: 'UnderwaterAgilityThieving'
 	});
 
-	await user.removeItemsFromBank(itemsToRemove);
+	await user.transactItems({ itemsToRemove });
 
 	let str = `${user.minionName} is now doing Underwater Agility and Thieving, it will take around ${formatDuration(
 		duration

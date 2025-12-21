@@ -1,30 +1,25 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
-import type { CollectingOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { collectables } from '../../mahoji/lib/collectables';
+import type { CollectingOptions } from '@/lib/types/minions.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
 
 export const collectingTask: MinionTask = {
 	type: 'Collecting',
-	async run(data: CollectingOptions) {
-		const { collectableID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CollectingOptions, { user, handleTripFinish }) {
+		const { collectableID, quantity, channelId, duration } = data;
 
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
 
-		const [hasMoryHard] = await userhasDiaryTier(user, MorytaniaDiary.hard);
+		const hasMoryHard = user.hasDiary('morytania.hard');
 		const moryHardBoost = collectable.item.name === 'Mort myre fungus' && hasMoryHard;
 		if (moryHardBoost) {
 			colQuantity *= 2;
 		}
 		const totalQuantity = quantity * colQuantity;
 		const loot = new Bank().add(collectable.item.id, totalQuantity);
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -36,8 +31,8 @@ export const collectingTask: MinionTask = {
 			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}
 
-		updateBankSetting('collecting_loot', loot);
+		await ClientSettings.updateBankSetting('collecting_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
+		handleTripFinish({ user, channelId, message: str, data, loot: loot ?? null });
 	}
 };

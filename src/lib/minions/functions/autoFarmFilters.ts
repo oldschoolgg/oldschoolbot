@@ -1,14 +1,13 @@
 import { Bank } from 'oldschooljs';
 
-import type { MUserClass } from '../../MUser';
-import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
-import type { Plant } from '../../skilling/types';
-import type { IPatchDataDetailed } from '../farming/types';
+import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
+import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { Plant } from '@/lib/skilling/types.js';
 
 export function replant(
 	p: Plant,
 	farmingLevel: number,
-	user: MUserClass,
+	user: MUser,
 	userBank: Bank,
 	patchesDetailed: IPatchDataDetailed[]
 ) {
@@ -22,7 +21,7 @@ export function replant(
 	return false;
 }
 
-export function allFarm(p: Plant, farmingLevel: number, user: MUserClass, userBank: Bank) {
+export function allFarm(p: Plant, farmingLevel: number, user: MUser, userBank: Bank) {
 	if (p.level > farmingLevel) return false;
 	const [numOfPatches] = calcNumOfPatches(p, user, user.QP);
 	if (numOfPatches === 0) return false;

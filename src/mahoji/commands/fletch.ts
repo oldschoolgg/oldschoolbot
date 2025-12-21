@@ -1,18 +1,10 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import Fletching from '../../lib/skilling/skills/fletching';
-import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
-import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import type { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import Fletching from '@/lib/skilling/skills/fletching/index.js';
+import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
 
-export const fletchCommand: OSBMahojiCommand = {
+export const fletchCommand = defineCommand({
 	name: 'fletch',
 	description: 'Fletch items with the Fletching skill.',
 	attributes: {
@@ -22,11 +14,11 @@ export const fletchCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The item you want to Fletch.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Fletchables.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -36,15 +28,14 @@ export const fletchCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to fletch (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelId }) => {
 		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, options.name));
 
 		if (!fletchable) return 'That is not a valid fletchable item.';
@@ -58,12 +49,7 @@ export const fletchCommand: OSBMahojiCommand = {
 		}
 
 		if (fletchable.requiredSlayerUnlocks) {
-			const mySlayerUnlocks = user.user.slayer_unlocks;
-
-			const { success, errors } = hasSlayerUnlock(
-				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
-				fletchable.requiredSlayerUnlocks
-			);
+			const { success, errors } = user.checkHasSlayerUnlocks(fletchable.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
@@ -77,7 +63,7 @@ export const fletchCommand: OSBMahojiCommand = {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Fletching');
+		const maxTripLength = await user.calcMaxTripLength('Fletching');
 		let { quantity } = options;
 
 		if (!quantity) {
@@ -102,12 +88,12 @@ export const fletchCommand: OSBMahojiCommand = {
 				.remove(userBank)}**.`;
 		}
 
-		await user.removeItemsFromBank(itemsNeeded);
+		await user.transactItems({ itemsToRemove: itemsNeeded });
 
-		await addSubTaskToActivityTask<FletchingActivityTaskOptions>({
+		await ActivityManager.startTrip<FletchingActivityTaskOptions>({
 			fletchableName: fletchable.name,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity,
 			duration,
 			type: 'Fletching'
@@ -117,4 +103,4 @@ export const fletchCommand: OSBMahojiCommand = {
 			fletchable.name
 		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
-};
+});

@@ -1,17 +1,15 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import type { PlunderActivityTaskOptions } from './../../../lib/types/minions';
+import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';
+import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const plunderTask: MinionTask = {
 	type: 'Plunder',
-	async run(data: PlunderActivityTaskOptions) {
-		const { channelID, quantity, rooms, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: PlunderActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelId, quantity, rooms } = data;
+
 		await user.incrementMinigameScore('pyramid_plunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [
@@ -31,12 +29,11 @@ export const plunderTask: MinionTask = {
 			}
 		}
 
-		const { itemsAdded, previousCL } = await transactItems({
-			userID: user.id,
+		const { itemsAdded, previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP, duration: data.duration });
+		const xpRes = await user.addXP({ skillName: 'thieving', amount: thievingXP, duration: data.duration });
 
 		const str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}`;
 
@@ -45,9 +42,7 @@ export const plunderTask: MinionTask = {
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
-					SkillsEnum.Thieving
-				)}!`
+				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillsAsLevels.thieving}!`
 			);
 		}
 
@@ -58,6 +53,6 @@ export const plunderTask: MinionTask = {
 			title: `Loot From ${quantity}x Pyramid Plunder:`
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

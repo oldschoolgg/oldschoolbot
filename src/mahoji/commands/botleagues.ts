@@ -1,77 +1,71 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { chunk } from 'e';
-import { Bank } from 'oldschooljs';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { leagueBuyables } from '../../lib/data/leaguesBuyables';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { getUsername } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { doMenu } from './leaderboard';
+import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const leaguesTrophiesBuyables = [
 	{
-		item: getOSItem('BSO dragon trophy'),
+		item: Items.getOrThrow('BSO dragon trophy'),
 		leaguesPointsRequired: 60_000
 	},
 	{
-		item: getOSItem('BSO rune trophy'),
+		item: Items.getOrThrow('BSO rune trophy'),
 		leaguesPointsRequired: 50_000
 	},
 	{
-		item: getOSItem('BSO adamant trophy'),
+		item: Items.getOrThrow('BSO adamant trophy'),
 		leaguesPointsRequired: 40_000
 	},
 	{
-		item: getOSItem('BSO mithril trophy'),
+		item: Items.getOrThrow('BSO mithril trophy'),
 		leaguesPointsRequired: 30_000
 	},
 	{
-		item: getOSItem('BSO steel trophy'),
+		item: Items.getOrThrow('BSO steel trophy'),
 		leaguesPointsRequired: 20_000
 	},
 	{
-		item: getOSItem('BSO iron trophy'),
+		item: Items.getOrThrow('BSO iron trophy'),
 		leaguesPointsRequired: 10_000
 	},
 	{
-		item: getOSItem('BSO bronze trophy'),
+		item: Items.getOrThrow('BSO bronze trophy'),
 		leaguesPointsRequired: 5000
 	}
 ];
 
-export const botLeaguesCommand: OSBMahojiCommand = {
+export const botLeaguesCommand = defineCommand({
 	name: 'botleagues',
 	description: 'Compete in the OSB/BSO Leagues.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'help',
 			description: 'Shows help and information about leagues.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'claim_trophy',
 			description: 'Claim your leagues trophys.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leaderboard',
 			description: 'The leagues leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy_reward',
 			description: 'Buy a reward with your leagues points.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item to buy.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return leagueBuyables
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
@@ -80,18 +74,7 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		help?: {};
-		claim_trophy?: {};
-		leaderboard?: {};
-		buy_reward?: { item: string };
-	}>) => {
-		const user = await mUserFetch(userID.toString());
+	run: async ({ options, user, interaction }) => {
 		const roboChimpUser = await roboChimpUserFetch(user.id);
 
 		if (options.claim_trophy) {
@@ -142,8 +125,7 @@ ${leaguesTrophiesBuyables
 			});
 
 			const loot = new Bank().add(item.item.id, quantity);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				itemsToAdd: loot,
 				collectionLog: true
 			});
@@ -152,39 +134,27 @@ ${leaguesTrophiesBuyables
 		}
 
 		if (options.leaderboard) {
+			await interaction.defer();
 			const result = await roboChimpClient.user.findMany({
 				where: {
-					leagues_points_total: {
-						gt: 0
-					}
+					leagues_points_total: { gt: 0 }
 				},
-				orderBy: {
-					leagues_points_total: 'desc'
-				},
+				orderBy: { leagues_points_total: 'desc' },
 				take: 100
 			});
-			await deferInteraction(interaction);
-			doMenu(
+
+			return doMenuWrapper({
+				ironmanOnly: false,
 				interaction,
-				user,
-				channelID,
-				await Promise.all(
-					chunk(result, 10).map(async subList =>
-						(
-							await Promise.all(
-								subList.map(
-									async ({ id, leagues_points_total }) =>
-										`**${await getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-								)
-							)
-						).join('\n')
-					)
-				),
-				'Leagues Points Leaderboard'
-			);
-			return null;
+				users: result.map(r => ({
+					id: r.id.toString(),
+					score: r.leagues_points_total
+				})),
+				title: 'Leagues Points Leaderboard',
+				formatter: v => `${v.toLocaleString()} Pts`
+			});
 		}
 
 		return 'https://wiki.oldschool.gg/bso/leagues/';
 	}
-};
+});

@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { WyrmPreTable } from '../low/t-z/Wyrm';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { WyrmPreTable } from '../low/t-z/Wyrm.js';
 
-const ShadowWyrmTable = new LootTable()
+const ShadowWyrmTable: LootTable = new LootTable()
 	.every('Wyrm bones')
 	.every(WyrmPreTable, 3)
 	.tertiary(26, 'Clue scroll (hard)')
@@ -13,7 +13,7 @@ const ShadowWyrmTable = new LootTable()
 	.tertiary(724, 'Eternal gem')
 	.tertiary(724, 'Imbued heart');
 
-export default new SimpleMonster({
+export const ShadowWyrm: SimpleMonster = new SimpleMonster({
 	id: 10_398,
 	name: 'Shadow Wyrm',
 	table: ShadowWyrmTable,

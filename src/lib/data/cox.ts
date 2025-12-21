@@ -1,25 +1,19 @@
-import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { percentChance, randInt, randomVariation, shuffleArr } from '@oldschoolgg/rng';
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
-	shuffleArr
-} from 'e';
-import { Bank, type ChambersOfXericOptions, type Item, itemID, resolveItems } from 'oldschooljs';
+	Time
+} from '@oldschoolgg/toolkit';
+import { Bank, type ChambersOfXericOptions, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { SkillsEnum } from '../skilling/types';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import type { Skills } from '../types';
-import getOSItem from '../util/getOSItem';
-import { logError } from '../util/logError';
-import { formatList, itemNameFromID } from '../util/smallUtils';
-import { getSimilarItems } from './similarItems';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import type { Skills } from '@/lib/types/index.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 const bareMinStats: Skills = {
 	attack: 80,
@@ -146,7 +140,7 @@ export async function createTeam(
 
 		points = Math.floor(randomVariation(points, 5));
 		if (points < 1 || points > 60_000) {
-			logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
+			Logging.logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
 		}
 
@@ -271,11 +265,11 @@ export const minimumCoxSuppliesNeeded = new Bank({
 });
 
 export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): Promise<string | null> {
-	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
+	const hasHerbalist = users.some(u => u.skillsAsLevels.herblore >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with at least level 78 Herblore';
 	}
-	const hasFarmer = users.some(u => u.skillLevel(SkillsEnum.Farming) >= 55);
+	const hasFarmer = users.some(u => u.skillsAsLevels.farming >= 55);
 	if (!hasFarmer) {
 		return 'nobody with at least level 55 Farming';
 	}
@@ -312,7 +306,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 				return `${user.usernameOrMention} doesn't have the 200 KC required for Challenge Mode.`;
 			}
 		}
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return `${user.usernameOrMention}'s minion is already doing an activity and cannot join.`;
 		}
 
@@ -326,11 +320,17 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 			if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
 				if (REQUIRED_BOW.includes(rangeWeapon.id)) {
 					if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded || !REQUIRED_ARROWS.includes(rangeAmmo.item)) {
-						return `<@${user.id}> needs ${arrowsNeeded} of one of these arrows equipped: ${formatList(REQUIRED_ARROWS.map(itemNameFromID), 'or')}.`;
+						return `<@${user.id}> needs ${arrowsNeeded} of one of these arrows equipped: ${formatList(
+							REQUIRED_ARROWS.map(i => Items.itemNameFromId(i)),
+							'or'
+						)}.`;
 					}
 				} else if (REQUIRED_CROSSBOW.includes(rangeWeapon.id)) {
 					if (!rangeAmmo || rangeAmmo.quantity < boltsNeeded || !REQUIRED_BOLTS.includes(rangeAmmo.item)) {
-						return `<@${user.id}> needs ${boltsNeeded} of ones of these bolts equipped: ${formatList(REQUIRED_BOLTS.map(itemNameFromID), 'or')}.`;
+						return `<@${user.id}> needs ${boltsNeeded} of ones of these bolts equipped: ${formatList(
+							REQUIRED_BOLTS.map(i => Items.itemNameFromId(i)),
+							'or'
+						)}.`;
 					}
 				}
 			}
@@ -339,7 +339,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		// Charge weapons check
 		if (user.gear.melee.hasEquipped('Scythe of vitur')) {
 			const scytheResult = checkUserCanUseDegradeableItem({
-				item: getOSItem('Scythe of vitur'),
+				item: Items.getOrThrow('Scythe of vitur'),
 				chargesToDegrade: SCYTHE_CHARGERS_PER_COX * quantity,
 				user
 			});
@@ -349,7 +349,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		}
 		if (user.gear.melee.hasEquipped('Abyssal tentacle')) {
 			const tentacleResult = checkUserCanUseDegradeableItem({
-				item: getOSItem('Abyssal tentacle'),
+				item: Items.getOrThrow('Abyssal tentacle'),
 				chargesToDegrade: TENTACLE_CHARGES_PER_COX * quantity,
 				user
 			});
@@ -359,7 +359,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		}
 		if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
 			const sangResult = checkUserCanUseDegradeableItem({
-				item: getOSItem('Sanguinesti staff'),
+				item: Items.getOrThrow('Sanguinesti staff'),
 				chargesToDegrade: SANGUINESTI_CHARGES_PER_COX * quantity,
 				user
 			});
@@ -369,7 +369,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		}
 		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
 			const shadowResult = checkUserCanUseDegradeableItem({
-				item: getOSItem("Tumeken's shadow"),
+				item: Items.getOrThrow("Tumeken's shadow"),
 				chargesToDegrade: SHADOW_CHARGES_PER_COX * quantity,
 				user
 			});
@@ -428,7 +428,7 @@ export const itemBoosts: ItemBoost[][] = [
 	[
 		// melee weapon boost
 		{
-			item: getOSItem('Scythe of vitur'),
+			item: Items.getOrThrow('Scythe of vitur'),
 			boost: 8,
 			mustBeEquipped: true,
 			setup: 'melee',
@@ -436,25 +436,25 @@ export const itemBoosts: ItemBoost[][] = [
 			requiredCharges: SCYTHE_CHARGERS_PER_COX
 		},
 		{
-			item: getOSItem('Dragon hunter lance'),
+			item: Items.getOrThrow('Dragon hunter lance'),
 			boost: 5,
 			mustBeEquipped: true,
 			setup: 'melee'
 		},
 		{
-			item: getOSItem('Soulreaper axe'),
+			item: Items.getOrThrow('Soulreaper axe'),
 			boost: 4,
 			mustBeEquipped: true,
 			setup: 'melee'
 		},
 		{
-			item: getOSItem("Osmumten's fang"),
+			item: Items.getOrThrow("Osmumten's fang"),
 			boost: 3,
 			mustBeEquipped: true,
 			setup: 'melee'
 		},
 		{
-			item: getOSItem('Abyssal tentacle'),
+			item: Items.getOrThrow('Abyssal tentacle'),
 			boost: 2,
 			mustBeEquipped: true,
 			setup: 'melee',
@@ -465,25 +465,25 @@ export const itemBoosts: ItemBoost[][] = [
 	[
 		// Range weapon boost
 		{
-			item: getOSItem('Twisted bow'),
+			item: Items.getOrThrow('Twisted bow'),
 			boost: 8,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Bow of faerdhinen (c)'),
+			item: Items.getOrThrow('Bow of faerdhinen (c)'),
 			boost: 5,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Dragon hunter crossbow'),
+			item: Items.getOrThrow('Dragon hunter crossbow'),
 			boost: 4,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Zaryte crossbow'),
+			item: Items.getOrThrow('Zaryte crossbow'),
 			boost: 3,
 			mustBeEquipped: true,
 			setup: 'range'
@@ -492,43 +492,43 @@ export const itemBoosts: ItemBoost[][] = [
 	[
 		// range ammo boost
 		{
-			item: getOSItem('Dragon arrow'),
+			item: Items.getOrThrow('Dragon arrow'),
 			boost: 3,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Ruby dragon bolts (e)'),
+			item: Items.getOrThrow('Ruby dragon bolts (e)'),
 			boost: 2,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Diamond dragon bolts (e)'),
+			item: Items.getOrThrow('Diamond dragon bolts (e)'),
 			boost: 2,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Amethyst arrow'),
+			item: Items.getOrThrow('Amethyst arrow'),
 			boost: 1,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Ruby dragon bolts'),
+			item: Items.getOrThrow('Ruby dragon bolts'),
 			boost: 1,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Diamond dragon bolts'),
+			item: Items.getOrThrow('Diamond dragon bolts'),
 			boost: 1,
 			mustBeEquipped: true,
 			setup: 'range'
 		},
 		{
-			item: getOSItem('Dragon bolts'),
+			item: Items.getOrThrow('Dragon bolts'),
 			boost: 1,
 			mustBeEquipped: true,
 			setup: 'range'
@@ -537,7 +537,7 @@ export const itemBoosts: ItemBoost[][] = [
 	[
 		// mage weapon boost
 		{
-			item: getOSItem("Tumeken's shadow"),
+			item: Items.getOrThrow("Tumeken's shadow"),
 			boost: 8,
 			mustBeEquipped: true,
 			setup: 'mage',
@@ -545,7 +545,7 @@ export const itemBoosts: ItemBoost[][] = [
 			requiredCharges: SHADOW_CHARGES_PER_COX
 		},
 		{
-			item: getOSItem('Sanguinesti staff'),
+			item: Items.getOrThrow('Sanguinesti staff'),
 			boost: 4,
 			mustBeEquipped: true,
 			setup: 'mage',
@@ -556,17 +556,17 @@ export const itemBoosts: ItemBoost[][] = [
 	[
 		// defense reduction weapon boost
 		{
-			item: getOSItem('Elder maul'),
+			item: Items.getOrThrow('Elder maul'),
 			boost: 5,
 			mustBeEquipped: false
 		},
 		{
-			item: getOSItem('Dragon warhammer'),
+			item: Items.getOrThrow('Dragon warhammer'),
 			boost: 3,
 			mustBeEquipped: false
 		},
 		{
-			item: getOSItem('Bandos godsword'),
+			item: Items.getOrThrow('Bandos godsword'),
 			boost: 2.5,
 			mustBeEquipped: false
 		}
@@ -574,7 +574,7 @@ export const itemBoosts: ItemBoost[][] = [
 	[
 		// zaryte crossbow spec weapon
 		{
-			item: getOSItem('Zaryte crossbow'),
+			item: Items.getOrThrow('Zaryte crossbow'),
 			boost: 3,
 			mustBeEquipped: false
 		}
@@ -582,7 +582,7 @@ export const itemBoosts: ItemBoost[][] = [
 	[
 		// lightbearer increases spec
 		{
-			item: getOSItem('Lightbearer'),
+			item: Items.getOrThrow('Lightbearer'),
 			boost: 2,
 			mustBeEquipped: false
 		}
@@ -590,7 +590,7 @@ export const itemBoosts: ItemBoost[][] = [
 	[
 		// pickaxe boost
 		{
-			item: getOSItem('Dragon pickaxe'),
+			item: Items.getOrThrow('Dragon pickaxe'),
 			boost: 1,
 			mustBeEquipped: false
 		}

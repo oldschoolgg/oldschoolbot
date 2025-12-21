@@ -1,10 +1,10 @@
-import { Monsters } from 'oldschooljs';
+import { EMonster, Monsters } from 'oldschooljs';
 
-import killableMonsters from '../../minions/data/killableMonsters';
-import { QuestID } from '../../minions/data/quests';
-import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import type { AssignableSlayerTask } from '../types';
-import { bossTasks } from './bossTasks';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { bossTasks } from '@/lib/slayer/tasks/bossTasks.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const nieveTasks: AssignableSlayerTask[] = [
 	{
@@ -162,7 +162,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DaganothFledgeling.id,
+			Monsters.DagannothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
@@ -456,7 +456,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.TzHaarKet,
 		amount: [110, 180],
 		weight: 10,
-		monsters: [Monsters.TzHaarKet.id, Monsters.TzHaarXil.id, Monsters.TzHaarMej.id],
+		monsters: [EMonster.TZHAARKET, Monsters.TzHaarXil.id, Monsters.TzHaarMej.id],
 		unlocked: false
 	},
 	{

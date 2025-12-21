@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const AviansieTable = new LootTable({ limit: 128 })
 	.every('Bones')
@@ -38,7 +38,7 @@ const AviansieTable = new LootTable({ limit: 128 })
 	.tertiary(35, 'Ensouled aviansie head')
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const Aviansie: SimpleMonster = new SimpleMonster({
 	id: 3169,
 	name: 'Aviansie',
 	table: AviansieTable,

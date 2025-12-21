@@ -1,17 +1,11 @@
-import { Time } from 'e';
-import { Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import {
-	commanderZilyanaCL,
-	generalGraardorCL,
-	kreeArraCL,
-	krilTsutsarothCL
-} from '../../../../data/CollectionsExport';
-import { SkillsEnum } from '../../../../skilling/types';
-import type { KillableMonster } from '../../../types';
+import { commanderZilyanaCL, generalGraardorCL, kreeArraCL, krilTsutsarothCL } from '@/lib/data/CollectionsExport.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
-const killableBosses: KillableMonster[] = [
+export const gwdKillables: KillableMonster[] = [
 	{
 		id: Monsters.GeneralGraardor.id,
 		name: Monsters.GeneralGraardor.name,
@@ -43,7 +37,7 @@ const killableBosses: KillableMonster[] = [
 			strength: 70
 		},
 		uniques: [...resolveItems(['Rune sword']), ...generalGraardorCL],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		customMonsterHP: 656,
 		combatXpMultiplier: 1.126,
 		healAmountNeeded: 20 * 5,
@@ -99,7 +93,7 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultAttackStyles: ['ranged'],
 		customMonsterHP: 723,
 		combatXpMultiplier: 1.132,
 		healAmountNeeded: 18 * 4,
@@ -151,8 +145,8 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		defaultAttackStyles: ['ranged'],
+		disallowedAttackStyles: ['attack', 'strength', 'magic'],
 		customMonsterHP: 641,
 		combatXpMultiplier: 1.159,
 		healAmountNeeded: 18 * 4,
@@ -200,7 +194,7 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		customMonsterHP: 708,
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 20 * 3,
@@ -213,5 +207,3 @@ const killableBosses: KillableMonster[] = [
 		}
 	}
 ];
-
-export default killableBosses;

@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const SkeletonHellhoundTable = new LootTable().every('Bones').oneIn(5000, 'Skeleton champion scroll');
+const SkeletonHellhoundTable: LootTable = new LootTable().every('Bones').oneIn(5000, 'Skeleton champion scroll');
 
-const VetionUniqueTable = new LootTable()
+const VetionUniqueTable: LootTable = new LootTable()
 	.oneIn(196, "Skull of vet'ion")
 	.oneIn(256, 'Dragon 2h sword')
 	.oneIn(256, 'Dragon pickaxe')
@@ -18,7 +18,7 @@ const VetionSecondarySupplyTable = new LootTable({ limit: 18 })
 	.add('Ranging potion(2)', [2, 3], 1)
 	.add('Super combat potion(2)', [2, 3], 1);
 
-const VetionTable = new LootTable()
+const VetionTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(SkeletonHellhoundTable, 4)
 
@@ -73,9 +73,9 @@ const VetionTable = new LootTable()
 	.tertiary(5000, 'Skeleton champion scroll')
 	.tertiary(5013, 'Curved bone');
 
-const VetionTotalTable = new LootTable().every(VetionSecondarySupplyTable).every(VetionTable);
+const VetionTotalTable: LootTable = new LootTable().every(VetionSecondarySupplyTable).every(VetionTable);
 
-export default new SimpleMonster({
+export const Vetion: SimpleMonster = new SimpleMonster({
 	id: 6611,
 	name: "Vet'ion",
 	table: VetionTotalTable,

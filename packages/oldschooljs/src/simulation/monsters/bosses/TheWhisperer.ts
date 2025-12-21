@@ -1,11 +1,12 @@
-import { randInt, roll, uniqueArr } from 'e';
+import { randInt, roll } from '@oldschoolgg/rng';
 
-import type { MonsterKillOptions } from '../../../meta/types';
-import Bank from '../../../structures/Bank';
-import LootTable from '../../../structures/LootTable';
-import Monster from '../../../structures/Monster';
-import { itemID } from '../../../util';
-import { VirtusTable } from '../../subtables/VirtusTable';
+import { EItem } from '@/EItem.js';
+import { VirtusTable } from '@/simulation/subtables/VirtusTable.js';
+import { Bank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
+import { Monster } from '@/structures/Monster.js';
+import { uniqueArr } from '@/util/smallUtils.js';
 
 const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add(VirtusTable, 1, 1)
@@ -13,18 +14,18 @@ const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add("Siren's staff", 1, 1)
 	.add('Bellator vestige', 1, 1);
 
-const ClueTable = new LootTable()
+const ClueTable: LootTable = new LootTable()
 	.add('Clue scroll (easy)')
 	.add('Clue scroll (medium)')
 	.add('Clue scroll (hard)')
 	.add('Clue scroll (elite)');
 
-const SupplyTable = new LootTable()
+const SupplyTable: LootTable = new LootTable()
 	.every('Manta ray', [3, 4])
 	.every('Prayer potion(3)', [1, 1])
 	.every('Ancient brew(2)', 1);
 
-const ResourceTable = new LootTable()
+const ResourceTable: LootTable = new LootTable()
 	.add('Battlestaff', [70, 105], 2)
 	.add('Bronze longsword', [16, 24], 1)
 	.add('Mithril longsword', [7, 10], 1)
@@ -54,14 +55,14 @@ const ResourceTable = new LootTable()
 	.add('Chaos rune', [140, 210], 1);
 
 class TheWhispererSingleton extends Monster {
-	public allItems: number[] = uniqueArr([
+	public override allItems: number[] = uniqueArr([
 		...ClueTable.allItems,
 		...SupplyTable.allItems,
 		...ResourceTable.allItems,
 		...TradeableUniqueTable.allItems,
-		itemID("Awakener's orb"),
-		itemID('Shadow quartz'),
-		itemID('Wisp')
+		EItem.AWAKENERS_ORB,
+		EItem.SHADOW_QUARTZ,
+		EItem.WISP
 	]);
 
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {
@@ -92,7 +93,7 @@ class TheWhispererSingleton extends Monster {
 	}
 }
 
-export const TheWhisperer = new TheWhispererSingleton({
+export const TheWhisperer: TheWhispererSingleton = new TheWhispererSingleton({
 	id: 12_204,
 	name: 'The Whisperer',
 	aliases: ['the whisperer', 'whisperer']

@@ -1,26 +1,23 @@
-import { percentChance } from 'e';
-import { Bank, EMonster, Misc, randomVariation } from 'oldschooljs';
+import { percentChance, randomVariation } from '@oldschoolgg/rng';
+import { Bank, EMonster, Misc } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/lootTrack';
-import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
-import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
-import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { BitField } from '@/lib/constants.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
+import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const RawNightmare = Misc.Nightmare;
 
 export const nightmareTask: MinionTask = {
 	type: 'Nightmare',
-	async run(data: NightmareActivityTaskOptions) {
-		const { channelID, quantity, duration, isPhosani = false, userID, method } = data;
+	async run(data: NightmareActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelId, quantity, duration, isPhosani = false, method } = data;
 
 		const monsterID = isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
-		const user = await mUserFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
 		const [userStats] = await getNightmareGearStats(user, team, isPhosani);
@@ -47,7 +44,7 @@ export const nightmareTask: MinionTask = {
 			}
 		}
 
-		const xpRes = await addMonsterXP(user, {
+		const xpRes = await user.addMonsterXP({
 			monsterID: EMonster.NIGHTMARE,
 			quantity: Math.ceil(quantity / team.length),
 			duration,
@@ -72,7 +69,7 @@ export const nightmareTask: MinionTask = {
 		}
 
 		// Fix purple items on solo kills
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
+		const { previousCL, itemsAdded } = await user.transactItems({ itemsToAdd: userLoot, collectionLog: true });
 
 		announceLoot({
 			user,
@@ -98,14 +95,12 @@ export const nightmareTask: MinionTask = {
 		});
 
 		if (!kc) {
-			handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
-				undefined,
-				data,
-				null
-			);
+				channelId,
+				message: `${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
+				data
+			});
 		} else {
 			const image = await makeBankImage({
 				bank: itemsAdded,
@@ -116,14 +111,16 @@ export const nightmareTask: MinionTask = {
 
 			const kc = await user.getKC(monsterID);
 			const kcPerHour = (quantity / (duration / (1000 * 60 * 60))).toFixed(2);
-			handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName} (${kcPerHour}/hr), you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
-				image.file.attachment,
+				channelId: channelId,
+				message: {
+					content: `${user}, ${user.minionName} finished killing ${quantity} ${monsterName} (${kcPerHour}/hr), you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
+					files: [image]
+				},
 				data,
-				itemsAdded
-			);
+				loot: itemsAdded
+			});
 		}
 	}
 };

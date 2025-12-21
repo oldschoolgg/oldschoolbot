@@ -1,19 +1,18 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { sumArr } from 'e';
+import { Emoji, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
-import { ClueTiers } from '../clues/clueTiers';
 
-import { MAX_CLUES_DROPPED } from '../constants';
-import { allPetsCL } from '../data/CollectionsExport';
-import pets from '../data/pets';
-import { formatList } from './smallUtils';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { MAX_CLUES_DROPPED } from '@/lib/constants.js';
+import { allPetsCL } from '@/lib/data/CollectionsExport.js';
+import pets from '@/lib/data/pets.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 export function petMessage(loot: Bank | null | undefined) {
 	const emoji = pets.find(p => loot?.has(p.name))?.emoji;
 	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling like you're being followed...**`;
 }
 
-export async function displayCluesAndPets(user: MUser, loot: Bank | null | undefined) {
+export function displayCluesAndPets(user: MUser, loot: Bank | null | undefined) {
 	let ret = '';
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 	if (clueReceived.length > 0) {

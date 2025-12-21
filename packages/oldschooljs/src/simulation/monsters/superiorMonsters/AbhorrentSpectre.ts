@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { AberrantSpectrePreTable } from '../low/a-f/AberrantSpectre';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { AberrantSpectrePreTable } from '../low/a-f/AberrantSpectre.js';
 
-const AbhorrentSpectreTable = new LootTable()
+const AbhorrentSpectreTable: LootTable = new LootTable()
 	.every(AberrantSpectrePreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
 
@@ -12,7 +12,7 @@ const AbhorrentSpectreTable = new LootTable()
 	.tertiary(754, 'Eternal gem')
 	.tertiary(754, 'Imbued heart');
 
-export default new SimpleMonster({
+export const AbhorrentSpectre: SimpleMonster = new SimpleMonster({
 	id: 7402,
 	name: 'Abhorrent spectre',
 	table: AbhorrentSpectreTable,

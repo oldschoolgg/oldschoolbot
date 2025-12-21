@@ -1,14 +1,11 @@
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
+import { randArrItem } from '@oldschoolgg/rng';
+import { Bank, Items } from 'oldschooljs';
 
-import { fossilIslandNotesCL } from '../../../lib/data/CollectionsExport';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { fossilIslandNotesCL } from '@/lib/data/CollectionsExport.js';
 
-export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCommandInteraction, quantity: number) {
+export async function buyFossilIslandNotes(user: MUser, interaction: MInteraction, quantity: number) {
 	const cost = new Bank().add('Numulite', 300).multiply(quantity);
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 	if (user.QP < 3) {
@@ -18,8 +15,7 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 		return "You don't have enough Numulite.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`${user}, please confirm that you want to buy ${quantity}x Fossil Island note for: ${cost}.`
 	);
 
@@ -29,13 +25,13 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 		const filteredPages = fossilIslandNotesCL.filter(page => !tempClWithNewUniques.has(page));
 		const outPage =
 			filteredPages.length === 0
-				? getOSItem(randArrItem(fossilIslandNotesCL))
-				: getOSItem(randArrItem(filteredPages));
+				? Items.getOrThrow(randArrItem(fossilIslandNotesCL))
+				: Items.getOrThrow(randArrItem(filteredPages));
 		tempClWithNewUniques.add(outPage);
 		loot.add(outPage);
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
 
 	return `You purchased ${loot}.`;
 }

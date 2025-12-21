@@ -1,27 +1,23 @@
-import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { truncateString } from '@oldschoolgg/toolkit';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { allOpenables, allOpenablesIDs } from '../../lib/openables';
-import { deferInteraction } from '../../lib/util/interactionReply';
+import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
 import {
-	OpenUntilItems,
 	abstractedOpenCommand,
-	abstractedOpenUntilCommand
-} from '../lib/abstracted_commands/openCommand';
+	abstractedOpenUntilCommand,
+	OpenUntilItems
+} from '@/mahoji/lib/abstracted_commands/openCommand.js';
 
-export const openCommand: OSBMahojiCommand = {
+export const openCommand = defineCommand({
 	name: 'open',
 	description: 'Open an item (caskets, keys, boxes, etc).',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to open.',
 			required: false,
-			autocomplete: async (value, user) => {
-				const botUser = await mUserFetch(user.id);
-				return botUser.bank
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
+				return user.bank
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
 					.filter(i => {
@@ -37,7 +33,7 @@ export const openCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to open (defaults to one).',
 			required: false,
@@ -45,11 +41,11 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'open_until',
 			description: 'Keep opening items until you get this item.',
 			required: false,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				if (!value) return OpenUntilItems.map(i => ({ name: i.name, value: i.name }));
 				return OpenUntilItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase())).map(i => ({
 					name: i.name,
@@ -58,7 +54,7 @@ export const openCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'result_quantity',
 			description: 'The number of the target item you want to obtain before stopping.',
 			required: false,
@@ -66,13 +62,9 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 1000
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		interaction
-	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; result_quantity?: number }>) => {
-		if (interaction) await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+	run: async ({ user, options, interaction }) => {
+		if (interaction) await interaction.defer();
+
 		if (!options.name) {
 			return `You have... ${truncateString(
 				user.bank.filter(item => allOpenablesIDs.has(item.id)).toString(),
@@ -82,15 +74,15 @@ export const openCommand: OSBMahojiCommand = {
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(
 				interaction,
-				user.id,
+				user,
 				options.name,
 				options.open_until,
 				options.result_quantity
 			);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');
+			return abstractedOpenCommand(interaction, user, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
+		return abstractedOpenCommand(interaction, user, [options.name], options.quantity);
 	}
-};
+});

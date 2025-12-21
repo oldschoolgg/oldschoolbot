@@ -1,23 +1,17 @@
-import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { itemID } from 'oldschooljs';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
+import { Items, itemID } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { userhasDiaryTier } from '../../lib/diaries.js';
-import { QuestID } from '../../lib/minions/data/quests';
-import { DiaryID } from '../../lib/minions/types.js';
-import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
-import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Mining from '../../lib/skilling/skills/mining';
-import type { Ore } from '../../lib/skilling/types';
-import type { GearBank } from '../../lib/structures/GearBank';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
-import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
+import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
+import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import type { Ore } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
 
 export function determineMiningTrip({
 	gearBank,
@@ -50,14 +44,16 @@ export function determineMiningTrip({
 	}
 	// Default bronze pickaxe, last in the array
 	let currentPickaxe = pickaxes[pickaxes.length - 1];
-	boosts.push(`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(currentPickaxe.id)}`);
+	boosts.push(
+		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(currentPickaxe.id)}`
+	);
 
 	// For each pickaxe, if they have it, give them its' bonus and break.
 	for (const pickaxe of pickaxes) {
 		if (!gearBank.hasEquippedOrInBank([pickaxe.id]) || gearBank.skillsAsLevels.mining < pickaxe.miningLvl) continue;
 		currentPickaxe = pickaxe;
 		boosts.pop();
-		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(pickaxe.id)}`);
 		break;
 	}
 
@@ -68,7 +64,7 @@ export function determineMiningTrip({
 			glovesEffect = glove.Depletions[ore.name];
 			if (glovesEffect) {
 				boosts.push(
-					`mining gloves saves ${ore.name} from becoming depleted **${glovesEffect}x** ${glovesEffect > 1 ? 'times' : 'time'} using ${itemNameFromID(glove.id)}`
+					`mining gloves saves ${ore.name} from becoming depleted **${glovesEffect}x** ${glovesEffect > 1 ? 'times' : 'time'} using ${Items.itemNameFromId(glove.id)}`
 				);
 				break;
 			}
@@ -80,7 +76,7 @@ export function determineMiningTrip({
 		if (!gearBank.hasEquippedOrInBank(armour.id) || !armour.Percentages[ore.name]) continue;
 		armourEffect = armour.Percentages[ore.name];
 		if (armourEffect) {
-			boosts.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
+			boosts.push(`**${armourEffect}%** chance to mine an extra ore using ${Items.itemNameFromId(armour.id)}`);
 			break;
 		}
 	}
@@ -148,7 +144,7 @@ export function determineMiningTrip({
 	};
 }
 
-export const mineCommand: OSBMahojiCommand = {
+export const mineCommand = defineCommand({
 	name: 'mine',
 	description: 'Send your minion to mine things.',
 	attributes: {
@@ -158,11 +154,11 @@ export const mineCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to mine.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [...Mining.Ores.map(i => i.name), Mining.MotherlodeMine.name]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -172,25 +168,21 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to mine (optional).',
 			required: false,
-			min_value: 1
+			min_value: 1,
+			max_value: 100_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'powermine',
 			description: 'Set this to true to powermine. Higher xp/hour, No loot (default false, optional).',
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelId }) => {
 		const { quantity, powermine } = options;
 
 		const motherlodeMine =
@@ -198,7 +190,7 @@ export const mineCommand: OSBMahojiCommand = {
 			Mining.MotherlodeMine.aliases?.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
-			return motherlodeMineCommand({ user, channelID, quantity });
+			return motherlodeMineCommand({ user, channelId, quantity });
 		}
 		const ore = Mining.Ores.find(
 			ore =>
@@ -234,21 +226,20 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const hasKaramjaMedium =
-			ore.name === 'Gem rock' ? (await userhasDiaryTier(user, [DiaryID.Karamja, 'medium']))[0] : false;
+		const hasKaramjaMedium = user.hasDiary('karamja.medium');
 		const res = determineMiningTrip({
 			gearBank: user.gearBank,
 			ore,
-			maxTripLength: calcMaxTripLength(user, 'Mining'),
+			maxTripLength: await user.calcMaxTripLength('Mining'),
 			isPowermining: !!powermine,
 			quantityInput: quantity,
 			hasKaramjaMedium
 		});
 
-		await addSubTaskToActivityTask<MiningActivityTaskOptions>({
+		await ActivityManager.startTrip<MiningActivityTaskOptions>({
 			oreID: ore.id,
-			userID: userID.toString(),
-			channelID: channelID.toString(),
+			userID: user.id,
+			channelId,
 			quantity: res.quantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powermine: res.isPowermining,
@@ -272,4 +263,4 @@ export const mineCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

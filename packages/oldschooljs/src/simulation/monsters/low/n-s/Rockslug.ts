@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const RockslugTable = new LootTable()
+export const RockslugTable: LootTable = new LootTable()
 	/* Armour */
 	.oneIn(512, 'Mystic gloves (light)')
 
@@ -27,7 +27,7 @@ export const RockslugTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 1, 6);
 
-export default new SimpleMonster({
+export const Rockslug: SimpleMonster = new SimpleMonster({
 	id: 421,
 	name: 'Rockslug',
 	table: RockslugTable,

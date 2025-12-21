@@ -1,10 +1,7 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit/util';
-import { clamp, percentChance, sumArr } from 'e';
+import { calcPerHour, Emoji, formatOrdinal, gaussianRandom, SimpleTable, sumArr } from '@oldschoolgg/toolkit';
+import { clamp } from 'remeda';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 interface LMSGameSimulated {
 	position: number;
@@ -56,11 +53,15 @@ const extraEncountersTable = new SimpleTable<number>()
 	.add(6, 3)
 	.add(7, 1);
 
-export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typeof getUsersLMSStats>>) {
+export function calculateResultOfLMSGames(
+	rng: RNGProvider,
+	qty: number,
+	lmsStats: Awaited<ReturnType<typeof getUsersLMSStats>>
+) {
 	const gameResults: LMSGameSimulated[] = [];
 
 	// 0 at 0kc, 1 at 120kc
-	const experienceFactor = clamp(lmsStats.totalGames / 120, 0, 1);
+	const experienceFactor = clamp(lmsStats.totalGames / 120, { min: 0, max: 1 });
 
 	let chanceToWinFight = 12.5;
 	chanceToWinFight += experienceFactor * 75;
@@ -70,11 +71,11 @@ export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnT
 		let kills = 0;
 		let died = false;
 		for (let t = 0; t < encounters; t++) {
-			const wonFight = percentChance(chanceToWinFight);
+			const wonFight = rng.percentChance(chanceToWinFight);
 			if (wonFight) kills++;
 			else died = true;
 		}
-		const diedPosition = gaussianRandom(2, 24 - Math.ceil(12 * experienceFactor), 5);
+		const diedPosition = gaussianRandom(rng, 2, 24 - Math.ceil(12 * experienceFactor), 5);
 
 		const position = died ? diedPosition : 1;
 		let points = 0;
@@ -95,37 +96,33 @@ export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnT
 
 export const lmsTask: MinionTask = {
 	type: 'LastManStanding',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration } = data;
 		await user.incrementMinigameScore('lms', quantity);
 		const lmsStats = await getUsersLMSStats(user);
 
-		const result = calculateResultOfLMSGames(quantity, lmsStats);
+		const result = calculateResultOfLMSGames(rng, quantity, lmsStats);
 
 		await prisma.lastManStandingGame.createMany({
 			data: result.map(i => ({ ...i, user_id: BigInt(user.id), points: undefined }))
 		});
 		const points = sumArr(result.map(i => i.points));
 
-		const { newUser } = await user.update({
+		await user.update({
 			lms_points: {
 				increment: points
 			}
 		});
 		const newLmsStats = await getUsersLMSStats(user);
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${
-				user.minionName
-			} finished playing ${quantity}x Last Man Standing matches, you received ${points} points and now have ${
-				newUser.lms_points
-			} points in total, and have won a total of ${newLmsStats.gamesWon}x games. ${calcPerHour(
-				points,
-				duration
-			).toFixed(2)} points/hr
+		const message = `${user}, ${
+			user.minionName
+		} finished playing ${quantity}x Last Man Standing matches, you received ${points} points and now have ${
+			user.user.lms_points
+		} points in total, and have won a total of ${newLmsStats.gamesWon}x games. ${calcPerHour(
+			points,
+			duration
+		).toFixed(2)} points/hr
 ${result
 	.map(
 		(i, inde) =>
@@ -133,10 +130,13 @@ ${result
 				i.kills
 			} kills`
 	)
-	.join('\n')}`,
-			undefined,
-			data,
-			null
-		);
+	.join('\n')}`;
+
+		return handleTripFinish({
+			user,
+			channelId,
+			message,
+			data
+		});
 	}
 };

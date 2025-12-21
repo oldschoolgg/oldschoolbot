@@ -1,34 +1,34 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { AraxyteTable } from '../low/a-f/Araxyte';
-import AbhorrentSpectre from './AbhorrentSpectre';
-import BasiliskSentinel from './BasiliskSentinel';
-import CaveAbomination from './CaveAbomination';
-import ChasmCrawler from './ChasmCrawler';
-import ChokeDevil from './ChokeDevil';
-import Cockathrice from './Cockathrice';
-import ColossalHydra from './ColossalHydra';
-import CrushingHand from './CrushingHand';
-import FlamingPyrelord from './FlamingPyrelord';
-import GiantRockslug from './GiantRockslug';
-import GreaterAbyssalDemon from './GreaterAbyssalDemon';
-import GuardianDrake from './GuardianDrake';
-import InsatiableBloodveld from './InsatiableBloodveld';
-import InsatiableMutatedBloodveld from './InsatiableMutatedBloodveld';
-import KingKurask from './KingKurask';
-import MalevolentMage from './MalevolentMage';
-import MarbleGargoyle from './MarbleGargoyle';
-import MonstrousBasilisk from './MonstrousBasilisk';
-import Nechryarch from './Nechryarch';
-import NightBeast from './NightBeast';
-import NuclearSmokeDevil from './NuclearSmokeDevil';
-import RepugnantSpectre from './RepugnantSpectre';
-import ScreamingBanshee from './ScreamingBanshee';
-import ScreamingTwistedBanshee from './ScreamingTwistedBanshee';
-import ShadowWyrm from './ShadowWyrm';
-import SpikedTuroth from './SpikedTuroth';
-import VitreousJelly from './VitreousJelly';
-import VitreousWarpedJelly from './VitreousWarpedJelly';
+import { LootTable } from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { AraxyteTable } from '../low/a-f/Araxyte.js';
+import { AbhorrentSpectre } from './AbhorrentSpectre.js';
+import { BasiliskSentinel } from './BasiliskSentinel.js';
+import { CaveAbomination } from './CaveAbomination.js';
+import { ChasmCrawler } from './ChasmCrawler.js';
+import { ChokeDevil } from './ChokeDevil.js';
+import { Cockathrice } from './Cockathrice.js';
+import { ColossalHydra } from './ColossalHydra.js';
+import { CrushingHand } from './CrushingHand.js';
+import { FlamingPyrelord } from './FlamingPyrelord.js';
+import { GiantRockslug } from './GiantRockslug.js';
+import { GreaterAbyssalDemon } from './GreaterAbyssalDemon.js';
+import { GuardianDrake } from './GuardianDrake.js';
+import { InsatiableBloodveld } from './InsatiableBloodveld.js';
+import { InsatiableMutatedBloodveld } from './InsatiableMutatedBloodveld.js';
+import { KingKurask } from './KingKurask.js';
+import { MalevolentMage } from './MalevolentMage.js';
+import { MarbleGargoyle } from './MarbleGargoyle.js';
+import { MonstrousBasilisk } from './MonstrousBasilisk.js';
+import { Nechryarch } from './Nechryarch.js';
+import { NightBeast } from './NightBeast.js';
+import { NuclearSmokeDevil } from './NuclearSmokeDevil.js';
+import { RepugnantSpectre } from './RepugnantSpectre.js';
+import { ScreamingBanshee } from './ScreamingBanshee.js';
+import { ScreamingTwistedBanshee } from './ScreamingTwistedBanshee.js';
+import { ShadowWyrm } from './ShadowWyrm.js';
+import { SpikedTuroth } from './SpikedTuroth.js';
+import { VitreousJelly } from './VitreousJelly.js';
+import { VitreousWarpedJelly } from './VitreousWarpedJelly.js';
 
 const DreadbornAraxyte = new SimpleMonster({
 	id: 13680,
@@ -43,7 +43,7 @@ const DreadbornAraxyte = new SimpleMonster({
 	aliases: ['dreadborn araxyte']
 });
 
-export const allSuperiorMonsters = {
+export const allSuperiorMonsters: Record<string, SimpleMonster> = {
 	AbhorrentSpectre,
 	BasiliskSentinel,
 	CaveAbomination,

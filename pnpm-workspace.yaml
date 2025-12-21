@@ -1,3 +1,18 @@
 packages:
-  - "packages/*"
-  - "docs"
+  - packages/*
+  - docs
+  - "!**/packages/test-dashboard"
+
+ignoredBuiltDependencies:
+  - wtf_wikipedia
+
+neverBuiltDependencies: []
+
+overrides:
+  "sharp": "0.34.5"
+  "dotenv": "16.5.0"
+  "discord-api-types": "0.38.32"
+  "undici-types": "7.14.0"
+  "@types/node": "24.5.2"
+  "esbuild": "0.27.1"
+  "emoji-regex": "10.6.0"

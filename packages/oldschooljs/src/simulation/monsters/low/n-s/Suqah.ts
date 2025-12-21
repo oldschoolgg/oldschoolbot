@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const SuqahTable = new LootTable({ limit: 129 })
 	.every('Big bones')
@@ -19,7 +19,7 @@ const SuqahTable = new LootTable({ limit: 129 })
 	.tertiary(400, 'Long bone')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const Suqah: SimpleMonster = new SimpleMonster({
 	id: 787,
 	name: 'Suqah',
 	table: SuqahTable,

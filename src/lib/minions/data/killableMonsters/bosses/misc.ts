@@ -1,15 +1,15 @@
-import { Time, roll } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
-
+import { roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
-import { BitField } from '../../../../../../src/lib/constants';
-import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
-import { SkillsEnum } from '../../../../skilling/types';
-import { Gear } from '../../../../structures/Gear';
-import type { KillableMonster } from '../../../types';
-import { QuestID } from '../../quests';
 
-const killableBosses: KillableMonster[] = [
+import { BitField } from '@/lib/constants.js';
+import { corporealBeastCL, muspahCL } from '@/lib/data/CollectionsExport.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { Gear } from '@/lib/structures/Gear.js';
+
+export const miscBossKillables: KillableMonster[] = [
 	{
 		id: Monsters.GiantMole.id,
 		name: Monsters.GiantMole.name,
@@ -35,7 +35,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		combatXpMultiplier: 1.075,
 		itemCost: {
 			itemCost: new Bank().add('Prayer potion(4)'),
@@ -76,7 +76,7 @@ const killableBosses: KillableMonster[] = [
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
-		defaultAttackStyles: [SkillsEnum.Ranged]
+		defaultAttackStyles: ['ranged']
 	},
 	{
 		id: Monsters.Zulrah.id,
@@ -140,8 +140,8 @@ const killableBosses: KillableMonster[] = [
 				[GearStat.AttackRanged]: 47
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		defaultAttackStyles: ['ranged', 'magic'],
+		disallowedAttackStyles: ['attack', 'strength'],
 		itemCost: [
 			{
 				itemCost: new Bank().add('Zul-andra teleport'),
@@ -188,7 +188,7 @@ const killableBosses: KillableMonster[] = [
 				'Ornate rejuvenation pool': 10
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Strength],
+		defaultAttackStyles: ['strength'],
 		customMonsterHP: 510,
 		combatXpMultiplier: 1.05,
 		healAmountNeeded: 20 * 3,
@@ -197,7 +197,7 @@ const killableBosses: KillableMonster[] = [
 				[GearStat.MeleeStrength]: 10
 			}
 		},
-		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		disallowedAttackStyles: ['magic', 'ranged'],
 		attackStylesUsed: [GearStat.AttackMagic],
 		attackStyleToUse: GearStat.AttackCrush
 	},
@@ -296,8 +296,8 @@ const killableBosses: KillableMonster[] = [
 				'Ornate rejuvenation pool': 50
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack],
-		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		defaultAttackStyles: ['attack'],
+		disallowedAttackStyles: ['magic', 'ranged'],
 		combatXpMultiplier: 1.55
 	},
 	{
@@ -352,7 +352,7 @@ const killableBosses: KillableMonster[] = [
 			slayer: 91
 		},
 		slayerOnly: true,
-		defaultAttackStyles: [SkillsEnum.Strength],
+		defaultAttackStyles: ['strength'],
 		combatXpMultiplier: 1.15,
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackCrush,
@@ -389,7 +389,7 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Twisted bow')]: 10
 			}
 		],
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultAttackStyles: ['ranged'],
 		combatXpMultiplier: 1.075,
 		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -420,8 +420,8 @@ const killableBosses: KillableMonster[] = [
 			fletching: 50
 		},
 		uniques: muspahCL,
-		defaultAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		defaultAttackStyles: ['magic', 'ranged'],
+		disallowedAttackStyles: ['attack', 'strength'],
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		attackStyleToUse: GearStat.AttackMagic,
 		notifyDrops: resolveItems(['Muphin']),
@@ -580,7 +580,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		customMonsterHP: 575,
 		combatXpMultiplier: 1.2,
 		healAmountNeeded: 20
@@ -695,7 +695,7 @@ const killableBosses: KillableMonster[] = [
 			agility: 52,
 			magic: 49
 		},
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		customMonsterHP: 575,
 		combatXpMultiplier: 1.2,
 		healAmountNeeded: 20 * 200,
@@ -871,7 +871,7 @@ const killableBosses: KillableMonster[] = [
 
 		attackStylesUsed: [GearStat.AttackSlash],
 		attackStyleToUse: GearStat.AttackSlash,
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 20 * 10,
 		minimumGearRequirements: {
 			melee: {
@@ -1007,7 +1007,7 @@ const killableBosses: KillableMonster[] = [
 		},
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 40 * 10,
 		minimumGearRequirements: {
 			melee: {
@@ -1156,7 +1156,7 @@ const killableBosses: KillableMonster[] = [
 		},
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 10 * 10,
 		minimumGearRequirements: {
 			melee: {
@@ -1299,7 +1299,7 @@ const killableBosses: KillableMonster[] = [
 		},
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 10 * 10,
 		minimumGearRequirements: {
 			melee: {
@@ -1438,7 +1438,7 @@ const killableBosses: KillableMonster[] = [
 		},
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 10 * 10,
 		minimumGearRequirements: {
 			melee: {
@@ -1465,5 +1465,3 @@ const killableBosses: KillableMonster[] = [
 		}
 	}
 ];
-
-export default killableBosses;

@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const BlackKnightTable = new LootTable({ limit: 128 })
+const BlackKnightTable = new LootTable({ limit: 128 })
 	.every('Bones')
 
 	/* Weapons and armour */
@@ -44,7 +44,7 @@ export const BlackKnightTable = new LootTable({ limit: 128 })
 	/* Gem drop table */
 	.add(GemTable, 1, 3);
 
-export default new SimpleMonster({
+export const BlackKnight: SimpleMonster = new SimpleMonster({
 	id: 516,
 	name: 'Black Knight',
 	table: BlackKnightTable,

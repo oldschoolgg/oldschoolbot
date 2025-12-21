@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const BrutalGreenDragonTable = new LootTable()
+const BrutalGreenDragonTable: LootTable = new LootTable()
 	.every('Dragon bones')
 	.every('Green dragonhide', 2)
 
@@ -51,7 +51,7 @@ const BrutalGreenDragonTable = new LootTable()
 	.tertiary(28, 'Ensouled dragon head')
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const BrutalGreenDragon: SimpleMonster = new SimpleMonster({
 	id: 2918,
 	name: 'Brutal green Dragon',
 	table: BrutalGreenDragonTable,

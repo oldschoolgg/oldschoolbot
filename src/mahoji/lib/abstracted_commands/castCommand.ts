@@ -1,16 +1,10 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs';
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 
-import { Castables } from '../../../lib/skilling/skills/magic/castables';
-import type { CastingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../../lib/util/determineRunes';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
 
-export async function castCommand(channelID: string, user: MUser, name: string, quantity: number | undefined) {
+export async function castCommand(channelId: string, user: MUser, name: string, quantity: number | undefined) {
 	const spell = Castables.find(spell => stringMatches(spell.id.toString(), name) || stringMatches(spell.name, name));
 	const boosts = [];
 	const missedBoosts = [];
@@ -21,11 +15,11 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		)}.`;
 	}
 
-	if (user.skillLevel(SkillsEnum.Magic) < spell.level) {
+	if (user.skillsAsLevels.magic < spell.level) {
 		return `${user.minionName} needs ${spell.level} Magic to cast ${spell.name}.`;
 	}
 
-	if (spell.craftLevel && user.skillLevel(SkillsEnum.Crafting) < spell.craftLevel) {
+	if (spell.craftLevel && user.skillsAsLevels.crafting < spell.craftLevel) {
 		return `${user.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`;
 	}
 
@@ -39,7 +33,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 
 	if (spell.travelTime) {
 		let { travelTime } = spell;
-		if (userHasGracefulEquipped(user)) {
+		if (user.hasGracefulEquipped()) {
 			travelTime = reduceNumByPercent(travelTime, 20); // 20% boost for having graceful
 			boosts.push('20% for Graceful outfit');
 		} else {
@@ -50,7 +44,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 			const boostLevels = spell.agilityBoost.map(boost => boost[0]);
 			const boostPercentages = spell.agilityBoost.map(boost => boost[1]);
 
-			const availableBoost = boostLevels.find(boost => user.skillLevel(SkillsEnum.Agility) >= boost);
+			const availableBoost = boostLevels.find(boost => user.skillsAsLevels.agility >= boost);
 			if (availableBoost) {
 				const boostIndex = boostLevels.indexOf(availableBoost);
 
@@ -71,7 +65,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Casting');
+	const maxTripLength = await user.calcMaxTripLength('Casting');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / castTimeMilliSeconds);
@@ -108,12 +102,12 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 	}
 
 	await user.removeItemsFromBank(cost);
-	await updateBankSetting('magic_cost_bank', cost);
+	await ClientSettings.updateBankSetting('magic_cost_bank', cost);
 
-	await addSubTaskToActivityTask<CastingActivityTaskOptions>({
+	await ActivityManager.startTrip<CastingActivityTaskOptions>({
 		spellID: spell.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Casting'

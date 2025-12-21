@@ -1,6 +1,6 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
-const WyvernHerbTable = new LootTable()
+const WyvernHerbTable: LootTable = new LootTable()
 	.add('Grimy kwuarm', 2, 260)
 	.add('Grimy cadantine', 2, 208)
 	.add('Grimy dwarf weed', 2, 208)
