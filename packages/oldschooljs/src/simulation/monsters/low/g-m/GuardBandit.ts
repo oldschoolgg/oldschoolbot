@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const GuardBanditTable = new LootTable().every('Bones');
+export const GuardBanditTable: LootTable = new LootTable().every('Bones');
 
-export default new SimpleMonster({
+export const GuardBandit: SimpleMonster = new SimpleMonster({
 	id: 1027,
 	name: 'Guard Bandit',
 	table: GuardBanditTable,

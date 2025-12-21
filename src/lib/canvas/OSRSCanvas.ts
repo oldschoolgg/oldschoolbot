@@ -1,21 +1,20 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import fetch from 'node-fetch';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import {
 	type Canvas,
 	type CanvasRenderingContext2D as CanvasContext,
 	FontLibrary,
 	type Image,
-	Canvas as SkiaCanvas,
-	loadImage
+	loadImage,
+	Canvas as SkiaCanvas
 } from 'skia-canvas';
 
-import { BOT_TYPE } from '../constants';
-import { CanvasModule } from './CanvasModule';
-import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet';
-import { type CanvasImage, type IBgSprite, drawImageWithOutline, getClippedRegion } from './canvasUtil';
-import { type IconPackID, ItemIconPacks } from './iconPacks';
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
+import type { CanvasSpritesheet, SpriteData } from '@/lib/canvas/CanvasSpritesheet.js';
+import { type CanvasImage, drawImageWithOutline, getClippedRegion, type IBgSprite } from '@/lib/canvas/canvasUtil.js';
+import { type IconPackID, ItemIconPacks } from '@/lib/canvas/iconPacks.js';
+import { BOT_TYPE } from '@/lib/constants.js';
 
 const Fonts = {
 	Compact: '16px OSRSFontCompact',
@@ -73,6 +72,7 @@ export class OSRSCanvas {
 		iconPackId
 	}: { width: number; height: number; sprite?: IBgSprite | undefined | null; iconPackId?: IconPackID | null }) {
 		this.canvas = new SkiaCanvas(width, height);
+		this.canvas.gpu = false;
 		this.ctx = this.canvas.getContext('2d');
 		this.ctx.imageSmoothingEnabled = false;
 		this.sprite = sprite ?? null;
@@ -112,15 +112,7 @@ export class OSRSCanvas {
 		return this.canvas;
 	}
 
-	private rawDrawText({
-		text,
-		x,
-		y
-	}: {
-		text: string;
-		x: number;
-		y: number;
-	}) {
+	private rawDrawText({ text, x, y }: { text: string; x: number; y: number }) {
 		const textPath = this.ctx.outlineText(text);
 		this.ctx.fill(textPath.offset(x, y));
 	}
@@ -322,7 +314,10 @@ export class OSRSCanvas {
 	public static async getItemImage({
 		itemID,
 		iconPackId
-	}: { itemID: number; iconPackId?: IconPackID }): Promise<Canvas | CanvasImage> {
+	}: {
+		itemID: number;
+		iconPackId?: IconPackID;
+	}): Promise<Canvas | CanvasImage> {
 		// Custom item icon pack icons
 		if (iconPackId && ItemIconPacks[iconPackId].icons.has(itemID)) {
 			return ItemIconPacks[iconPackId].icons.get(itemID) as Image;
@@ -349,7 +344,7 @@ export class OSRSCanvas {
 			return image;
 		}
 		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.buffer()
+			result => result.arrayBuffer().then(Buffer.from)
 		);
 
 		await writeFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`), imageBuffer);
@@ -399,8 +394,8 @@ export class OSRSCanvas {
 
 		if (glow) {
 			this.drawGlowingBlur(
-				destX + this.itemSize.width / 2,
-				destY + this.itemSize.height / 2,
+				destX + itemIcon.width / 2,
+				destY + itemIcon.height / 2,
 				glow.radius,
 				glow.color,
 				glow.blur

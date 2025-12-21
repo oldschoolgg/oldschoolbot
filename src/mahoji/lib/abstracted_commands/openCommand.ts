@@ -1,24 +1,21 @@
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { notEmpty, sumArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
+import { notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField, MAX_CLUES_DROPPED, PerkTier } from '../../../lib/constants';
-import type { UnifiedOpenable } from '../../../lib/openables';
-import { allOpenables, getOpenableLoot } from '../../../lib/openables';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings';
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { BitField, MAX_CLUES_DROPPED, PerkTier } from '@/lib/constants.js';
+import type { UnifiedOpenable } from '@/lib/openables.js';
+import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
+import { patronMsg } from '@/lib/util/smallUtils.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
 export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2))
-	.map(getOSItem)
+	.map(id => Items.getOrThrow(id))
 	.sort((a, b) => {
 		if (b.name.includes('Clue')) return 1;
 		if (a.name.includes('Clue')) return -1;
@@ -26,8 +23,8 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 	});
 
 export async function abstractedOpenUntilCommand(
-	interaction: ChatInputCommandInteraction,
-	userID: string,
+	interaction: MInteraction,
+	user: MUser,
 	name: string,
 	openUntilItem: string,
 	result_quantity?: number
@@ -42,15 +39,14 @@ export async function abstractedOpenUntilCommand(
 		return 'The quantity must be a positive integer.';
 	}
 
-	const user = await mUserFetch(userID);
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
 	const openable = allOpenables.find(i => i.openedItem === openableItem.openedItem);
 	if (!openable) return "That's not a valid item.";
-	const openUntil = getItem(openUntilItem);
+	const openUntil = Items.getItem(openUntilItem);
 	if (!openUntil) {
 		return `That's not a valid item to open until, you can only do it with items that you can get from ${openable.openedItem.name}.`;
 	}
@@ -65,8 +61,7 @@ export async function abstractedOpenUntilCommand(
 	const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
 
 	if (targetClue && clueStack >= MAX_CLUES_DROPPED) {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`You're trying to open until you receive a ${openUntil.name}, but you already have ${MAX_CLUES_DROPPED} clues banked, which is the maximum. You won't be able to receive more. Are you sure you want to continue?`
 		);
 	}
@@ -117,66 +112,57 @@ async function finalizeOpening({
 	loot: Bank;
 	messages: string[];
 	openables: UnifiedOpenable[];
-}) {
+}): Promise<MessageBuilderClass> {
 	const { bank } = user;
-	if (!bank.has(cost)) return `You don't have ${cost}.`;
+	if (!bank.has(cost)) return new MessageBuilder().setContent(`You don't have ${cost}.`);
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
-	const { previousCL } = await transactItems({
-		userID: user.id,
+	const { previousCL } = await user.transactItems({
 		itemsToAdd: loot,
 		collectionLog: true,
 		filterLoot: false
 	});
 
-	const image = await makeBankImage({
-		bank: loot,
-		title:
-			openables.length === 1
-				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
-				: 'Loot From Opening',
-		user,
-		previousCL,
-		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
-	});
-
 	if (loot.has('Coins')) {
-		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
+		await ClientSettings.updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
 
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	const response: Awaited<CommandResponse> = {
-		files: [image.file],
-		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`.trim(),
-		components: components.length > 0 ? makeComponents(components) : undefined
-	};
-	if (response.content!.length > 1900) {
-		response.files = [{ name: 'response.txt', attachment: Buffer.from(response.content!) }];
+	const response = new MessageBuilder()
+		.setContent(
+			`You have now opened a total of ${openedStr}
+${messages.join(', ')}`.trim()
+		)
+		.addBankImage({
+			bank: loot,
+			title:
+				openables.length === 1
+					? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
+					: 'Loot From Opening',
+			user,
+			previousCL,
+			mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
+		})
+		.addComponents(components);
 
-		response.content =
-			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
-	}
-
-	response.content += await displayCluesAndPets(user, loot);
+	response.addContent(displayCluesAndPets(user, loot));
 
 	return response;
 }
 
 export async function abstractedOpenCommand(
-	interaction: ChatInputCommandInteraction | null,
-	userID: string,
+	interaction: MInteraction | null,
+	user: MUser,
 	_names: string[],
 	_quantity: number | 'auto' = 1
-) {
-	const user = await mUserFetch(userID);
+): Promise<string | MessageBuilderClass> {
 	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));
@@ -188,8 +174,8 @@ export async function abstractedOpenCommand(
 
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';
-		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
-		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
+		if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
+		if (interaction) await interaction.confirmation('Are you sure you want to open ALL your items?');
 	}
 
 	if (openables.length === 0) return "That's not a valid item.";

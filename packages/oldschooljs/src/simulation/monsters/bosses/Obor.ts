@@ -1,6 +1,5 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { itemTupleToTable } from '../../../util';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const OborTable = new LootTable({ limit: 118 })
 	.every('Big bones')
@@ -43,7 +42,7 @@ const OborTable = new LootTable({ limit: 118 })
 		5
 	);
 
-export default new SimpleMonster({
+export const Obor: SimpleMonster = new SimpleMonster({
 	id: 7416,
 	name: 'Obor',
 	table: OborTable,

@@ -1,13 +1,10 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { UserError } from '@oldschoolgg/toolkit/structures';
-import { objectEntries, reduceNumByPercent } from 'e';
+import { Emoji, objectEntries, reduceNumByPercent, UserError } from '@oldschoolgg/toolkit';
 import { type Bank, itemID } from 'oldschooljs';
 
-import { Eatables } from '../../data/eatables';
-import type { GearSetupType } from '../../gear/types';
-import type { GearBank } from '../../structures/GearBank';
-import { updateBankSetting } from '../../util/updateBankSetting';
-import getUserFoodFromBank from './getUserFoodFromBank';
+import { Eatables } from '@/lib/data/eatables.js';
+import type { GearSetupType } from '@/lib/gear/types.js';
+import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 export function removeFoodFromUserRaw({
 	totalHealingNeeded,
@@ -71,6 +68,17 @@ export function removeFoodFromUserRaw({
 	}
 }
 
+export type RemoveFoodFromUserParams = {
+	user: MUser;
+	totalHealingNeeded: number;
+	healPerAction: number;
+	activityName: string;
+	attackStylesUsed: GearSetupType[];
+	learningPercentage?: number;
+	isWilderness?: boolean;
+	unavailableBank?: Bank;
+};
+
 export default async function removeFoodFromUser({
 	user,
 	totalHealingNeeded,
@@ -80,16 +88,7 @@ export default async function removeFoodFromUser({
 	learningPercentage,
 	isWilderness,
 	unavailableBank
-}: {
-	user: MUser;
-	totalHealingNeeded: number;
-	healPerAction: number;
-	activityName: string;
-	attackStylesUsed: GearSetupType[];
-	learningPercentage?: number;
-	isWilderness?: boolean;
-	unavailableBank?: Bank;
-}): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
+}: RemoveFoodFromUserParams): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
 	const result = removeFoodFromUserRaw({
 		gearBank: user.gearBank,
 		totalHealingNeeded,
@@ -106,8 +105,8 @@ export default async function removeFoodFromUser({
 			).join(', ')}.`
 		);
 	} else {
-		await transactItems({ userID: user.id, itemsToRemove: result.foodToRemove });
-		await updateBankSetting('economyStats_PVMCost', result.foodToRemove);
+		await user.transactItems({ itemsToRemove: result.foodToRemove });
+		await ClientSettings.updateBankSetting('economyStats_PVMCost', result.foodToRemove);
 		return {
 			foodRemoved: result.foodToRemove,
 			reductions: result.reductions,

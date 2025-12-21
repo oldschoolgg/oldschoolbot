@@ -1,13 +1,10 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
-import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
-import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
-import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
+import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 
 const axes = [
 	{
@@ -62,7 +59,7 @@ const axes = [
 	}
 ];
 
-export const chopCommand: OSBMahojiCommand = {
+export const chopCommand = defineCommand({
 	name: 'chop',
 	description: 'Chop logs using the Woodcutting skill.',
 	attributes: {
@@ -72,11 +69,11 @@ export const chopCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The tree you want to chop.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Woodcutting.Logs.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -86,44 +83,34 @@ export const chopCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity of logs you want to chop (optional).',
 			required: false,
-			min_value: 1
+			min_value: 1,
+			max_value: 100_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'powerchop',
 			description: 'Set this to true to powerchop. Higher xp/hour, No loot (default false, optional).',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'forestry_events',
 			description: 'Set this to true to participate in forestry events. (default false, optional).',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'twitchers_gloves',
 			description: "Change the settings of your Twitcher's gloves. (default egg, optional)",
 			required: false,
 			choices: Woodcutting.twitchersGloves.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{
-		name: string;
-		quantity?: number;
-		powerchop?: boolean;
-		forestry_events?: boolean;
-		twitchers_gloves?: TwitcherGloves;
-	}>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelId }) => {
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -210,6 +197,8 @@ export const chopCommand: OSBMahojiCommand = {
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible
+		const maxTripLength = await user.calcMaxTripLength('Woodcutting');
+
 		const [timeToChop, newQuantity] = determineWoodcuttingTime({
 			quantity,
 			user,
@@ -217,7 +206,8 @@ export const chopCommand: OSBMahojiCommand = {
 			axeMultiplier,
 			powerchopping: powerchop,
 			forestry: forestry_events,
-			woodcuttingLvl: wcLvl
+			woodcuttingLvl: wcLvl,
+			maxTripLength
 		});
 
 		const duration = timeToChop;
@@ -225,10 +215,10 @@ export const chopCommand: OSBMahojiCommand = {
 		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>({
+		await ActivityManager.startTrip<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop === true ? true : undefined,
@@ -254,4 +244,4 @@ export const chopCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

@@ -1,23 +1,18 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { randInt } from 'e';
+import { calcPerHour, Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { winterTodtPointsTable } from '../../../lib/simulation/simulatedKillables';
-import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
-import Firemaking from '../../../lib/skilling/skills/firemaking';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { winterTodtPointsTable } from '@/lib/simulation/simulatedKillables.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, quantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { channelId, quantity } = data;
+
 		const { newScore } = await user.incrementMinigameScore('wintertodt', quantity);
 		const loot = new Bank();
 
@@ -38,7 +33,7 @@ export const wintertodtTask: MinionTask = {
 		}
 
 		// Track loot in Economy Stats
-		await updateBankSetting('economyStats_wintertodtLoot', loot);
+		await ClientSettings.updateBankSetting('economyStats_wintertodtLoot', loot);
 
 		if (loot.has('Phoenix')) {
 			globalClient.emit(
@@ -47,7 +42,7 @@ export const wintertodtTask: MinionTask = {
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
 					newScore
-				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
+				}, and their Firemaking level is ${user.skillsAsLevels.firemaking}.`
 			);
 		}
 
@@ -57,9 +52,9 @@ export const wintertodtTask: MinionTask = {
 		 * Adding/cutting a root gives 10pts, therefore number of roots from this trip is totalPoints/10
 		 */
 		const numberOfRoots = Math.floor((totalPoints - 50 * quantity) / 10);
-		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
-		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
-		const conLevel = user.skillLevel(SkillsEnum.Construction);
+		const fmLvl = user.skillsAsLevels.firemaking;
+		const wcLvl = user.skillsAsLevels.woodcutting;
+		const conLevel = user.skillsAsLevels.construction;
 
 		let fmXpToGive = Math.floor(fmLvl * 100 * quantity + numberOfRoots * (fmLvl * 3));
 		let fmBonusXP = 0;
@@ -67,10 +62,10 @@ export const wintertodtTask: MinionTask = {
 		const constructionXPPerBrazier = conLevel * 4;
 		let numberOfBraziers = 0;
 		for (let i = 0; i < quantity; i++) {
-			numberOfBraziers += randInt(1, 7);
+			numberOfBraziers += rng.randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
-		let xpStr = await user.addXP({ skillName: SkillsEnum.Construction, amount: conXP, duration: data.duration });
+		let xpStr = await user.addXP({ skillName: 'construction', amount: conXP, duration: data.duration });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
@@ -94,20 +89,19 @@ export const wintertodtTask: MinionTask = {
 		}
 
 		xpStr += `, ${await user.addXP({
-			skillName: SkillsEnum.Woodcutting,
+			skillName: 'woodcutting',
 			amount: wcXpToGive,
 			duration: data.duration,
 			source: 'Wintertodt'
 		})}`;
 		xpStr += `, ${await user.addXP({
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: fmXpToGive,
 			duration: data.duration,
 			source: 'Wintertodt'
 		})}`;
 
-		const { itemsAdded, previousCL } = await transactItems({
-			userID: user.id,
+		const { itemsAdded, previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -141,6 +135,12 @@ export const wintertodtTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: output, files: [image] },
+			data,
+			loot: itemsAdded
+		});
 	}
 };

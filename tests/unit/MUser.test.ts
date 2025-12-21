@@ -1,7 +1,7 @@
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { mockMUser } from './userutil';
+import { mockMUser } from './userutil.js';
 
 const testUser = mockMUser({
 	skills_agility: convertLVLtoXP(50),

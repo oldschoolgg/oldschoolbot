@@ -1,48 +1,35 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
-import { Bank, Monsters, itemID } from 'oldschooljs';
+import { calcPercentOfNum, calcWhatPercent, Emoji, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, itemID, Monsters } from 'oldschooljs';
 
-import chatHeadImage from '../../../lib/canvas/chatHeadImage';
-import { userhasDiaryTier } from '../../../lib/diaries';
-import { DiaryID } from '../../../lib/minions/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { percentChance } from '../../../lib/util/rng';
-import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
+import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
+import { fightCavesCost } from '@/mahoji/lib/abstracted_commands/fightCavesCommand.js';
 
 const TokkulID = itemID('Tokkul');
 
 export const fightCavesTask: MinionTask = {
 	type: 'FightCaves',
-	async run(data: FightCavesActivityTaskOptions) {
-		const { userID, channelID, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: FightCavesActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
 
-		const tokkulReward = randInt(2000, 6000);
-		const diedToJad = percentChance(jadDeathChance);
+		const tokkulReward = rng.randInt(2000, 6000);
+		const diedToJad = rng.percentChance(jadDeathChance);
 
-		const { fight_caves_attempts: newFightCavesAttempts } = await userStatsUpdate(
-			user.id,
-			{
-				fight_caves_attempts: {
-					increment: 1
-				}
-			},
-			{ fight_caves_attempts: true }
-		);
+		await user.statsUpdate({
+			fight_caves_attempts: {
+				increment: 1
+			}
+		});
+		const newFightCavesAttempts = await user.fetchUserStat('fight_caves_attempts');
 
 		const attemptsStr = `You have tried Fight caves ${newFightCavesAttempts}x times`;
 
 		// Add slayer
-		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const usersTask = await user.fetchSlayerInfo();
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 			usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 		if (preJadDeathTime) {
@@ -72,33 +59,36 @@ export const fightCavesTask: MinionTask = {
 				}
 			}
 
-			await transactItems({ userID: user.id, itemsToAdd: itemLootBank, collectionLog: false });
+			await user.transactItems({ itemsToAdd: itemLootBank, collectionLog: false });
 
-			return handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user} You died ${formatDuration(
-					preJadDeathTime
-				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
-				await chatHeadImage({
-					content: `You die before you even reach TzTok-Jad... At least you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
-					head: 'mejJal'
-				}),
+				channelId,
+				message: new MessageBuilder()
+					.setContent(
+						`${user} You died ${formatDuration(
+							preJadDeathTime
+						)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`
+					)
+					.addChatHeadImage(
+						'mejJal',
+						`You die before you even reach TzTok-Jad... At least you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`
+					),
 				data,
-				itemLootBank
-			);
+				loot: itemLootBank
+			});
 		}
 
 		if (diedToJad) {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
-			await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: failBank });
+			await user.transactItems({ collectionLog: true, itemsToAdd: failBank });
 
-			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
-			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
+			const rangeXP = await user.addXP({ skillName: 'ranged', amount: 46_080, duration });
+			const hpXP = await user.addXP({ skillName: 'hitpoints', amount: 15_322, duration });
 
 			let msg = `${rangeXP}. ${hpXP}.`;
 			if (isOnTask) {
-				const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: 11_760, duration });
+				const slayXP = await user.addXP({ skillName: 'slayer', amount: 11_760, duration });
 				msg = `**Slayer task cancelled.** \n${msg} ${slayXP}.`;
 
 				await prisma.slayerTask.update({
@@ -112,20 +102,21 @@ export const fightCavesTask: MinionTask = {
 				});
 			}
 
-			return handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user} ${msg}`,
-				await chatHeadImage({
-					content: `TzTok-Jad stomp you to death... Nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
-					head: 'mejJal'
-				}),
+				channelId,
+				message: new MessageBuilder()
+					.setContent(`${user} ${msg}`)
+					.addChatHeadImage(
+						'mejJal',
+						`TzTok-Jad stomp you to death... Nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`
+					),
 				data,
-				failBank
-			);
+				loot: failBank
+			});
 		}
 
-		const { newKC } = await user.incrementKC(Monsters.TzTokJad.id, 1);
+		const { newKC } = await user.incrementKC(EMonster.TZTOKJAD, 1);
 		const loot = Monsters.TzTokJad.kill(1, { onSlayerTask: isOnTask });
 
 		if (loot.has('Tzrek-jad')) {
@@ -146,33 +137,29 @@ export const fightCavesTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 
-		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration, minimal: true });
-		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration, minimal: true });
+		const rangeXP = await user.addXP({ skillName: 'ranged', amount: 47_580, duration, minimal: true });
+		const hpXP = await user.addXP({ skillName: 'hitpoints', amount: 15_860, duration, minimal: true });
 
 		let msg = `${rangeXP}. ${hpXP}.`;
 		if (isOnTask) {
-			const { slayer_task_streak: currentStreak } = await userStatsUpdate(
-				user.id,
-				{
-					slayer_task_streak: {
-						increment: 1
-					}
-				},
-				{ slayer_task_streak: true }
-			);
+			await user.statsUpdate({
+				slayer_task_streak: {
+					increment: 1
+				}
+			});
+			const currentStreak = await user.fetchUserStat('slayer_task_streak');
 
 			// 25,250 for Jad + 11,760 for waves.
 			const slayerXP = 37_010;
 			const points = await calculateSlayerPoints(
 				currentStreak,
 				usersTask.slayerMaster!,
-				(await userhasDiaryTier(user, [DiaryID.KourendKebos, 'elite']))[0]
+				user.hasDiary('kourend&kebos.elite')
 			);
 
 			const secondNewUser = await user.update({
@@ -191,7 +178,7 @@ export const fightCavesTask: MinionTask = {
 			});
 
 			const slayXP = await user.addXP({
-				skillName: SkillsEnum.Slayer,
+				skillName: 'slayer',
 				amount: slayerXP,
 				duration,
 				minimal: true
@@ -199,22 +186,25 @@ export const fightCavesTask: MinionTask = {
 
 			const xpMessage = `${msg} ${slayXP}`;
 
-			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
+			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.user.slayer_points}; return to a Slayer master.**`;
 			// End slayer code
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user} ${msg}`,
-			await chatHeadImage({
-				content: `You defeated TzTok-Jad for the ${formatOrdinal(
+		const message = new MessageBuilder()
+			.setContent(`${user} ${msg}`)
+			.addChatHeadImage(
+				'mejJal',
+				`You defeated TzTok-Jad for the ${formatOrdinal(
 					newKC
-				)} time! I am most impressed, I give you... ${loot}.`,
-				head: 'mejJal'
-			}),
+				)} time! I am most impressed, I give you... ${loot}.`
+			);
+
+		return handleTripFinish({
+			user,
+			channelId,
+			message,
 			data,
 			loot
-		);
+		});
 	}
 };

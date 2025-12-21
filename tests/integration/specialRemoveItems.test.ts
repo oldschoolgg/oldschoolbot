@@ -1,14 +1,15 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { Gear } from '../../src/lib/structures/Gear';
-import { createTestUser } from './util';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import { createTestUser } from './util.js';
 
 describe('specialRemoveItems', () => {
 	test("should deduct for NO ava's", async () => {
 		const user = await createTestUser();
 		const gear = new Gear();
 		gear.equip('Rune arrow', 1000);
+		// @ts-expect-error
 		await user.update({
 			gear_range: gear.raw() as any,
 			bank: new Bank().add('Egg', 1000).toJSON()
@@ -23,6 +24,7 @@ describe('specialRemoveItems', () => {
 		const gear = new Gear();
 		gear.equip('Rune arrow', 1000);
 		gear.equip("Ava's assembler");
+		// @ts-expect-error
 		await user.update({
 			gear_range: gear.raw() as any,
 			bank: new Bank().add('Egg', 1000).toJSON()
@@ -38,6 +40,7 @@ describe('specialRemoveItems', () => {
 		const gear = new Gear();
 		gear.equip('Rune javelin', 1000);
 		gear.equip("Ava's assembler");
+		// @ts-expect-error
 		await user.update({
 			gear_range: gear.raw() as any,
 			bank: new Bank().add('Egg', 1000).toJSON()

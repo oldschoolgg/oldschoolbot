@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const DarkWarriorTable = new LootTable({ limit: 128 })
+const DarkWarriorTable = new LootTable({ limit: 128 })
 	.every('Bones')
 
 	/* Weapons and armour */
@@ -34,7 +34,7 @@ export const DarkWarriorTable = new LootTable({ limit: 128 })
 	.add('Iron ore', 1, 1)
 	.add('Sardine', 1, 1);
 
-export default new SimpleMonster({
+export const DarkWarrior: SimpleMonster = new SimpleMonster({
 	id: 531,
 	name: 'Dark warrior',
 	table: DarkWarriorTable,

@@ -1,0 +1,2720 @@
+[
+	{
+		"name": "Easy",
+		"tasks": [
+			{
+				"id": 48,
+				"name": "Achieve base level 20 stats"
+			},
+			{
+				"id": 81,
+				"name": "Acquire, complete and open 1 Grandmaster clues/caskets"
+			},
+			{
+				"id": 78,
+				"name": "Acquire, complete and open 10 Hard clues/caskets"
+			},
+			{
+				"id": 75,
+				"name": "Acquire, complete and open 100 Beginner clues/caskets"
+			},
+			{
+				"id": 80,
+				"name": "Acquire, complete and open 2 Master clues/caskets"
+			},
+			{
+				"id": 77,
+				"name": "Acquire, complete and open 20 Medium clues/caskets"
+			},
+			{
+				"id": 79,
+				"name": "Acquire, complete and open 5 Elite clues/caskets"
+			},
+			{
+				"id": 76,
+				"name": "Acquire, complete and open 50 Easy clues/caskets"
+			},
+			{
+				"id": 66,
+				"name": "Alch 250 of any item"
+			},
+			{
+				"id": 82,
+				"name": "Build and fill all beginner stash units"
+			},
+			{
+				"id": 83,
+				"name": "Build and fill all easy stash units"
+			},
+			{
+				"id": 84,
+				"name": "Build and fill all medium stash units"
+			},
+			{
+				"id": 71,
+				"name": "Burn 250 logs"
+			},
+			{
+				"id": 73,
+				"name": "Cast 100 spells"
+			},
+			{
+				"id": 87,
+				"name": "Catch 10 implings passively"
+			},
+			{
+				"id": 86,
+				"name": "Catch 10 unique implings in puro puro"
+			},
+			{
+				"id": 26,
+				"name": "Catch a Crimson swift"
+			},
+			{
+				"id": 27,
+				"name": "Catch a Swamp lizard"
+			},
+			{
+				"id": 99,
+				"name": "Charge a Ring of wealth"
+			},
+			{
+				"id": 100,
+				"name": "Charge an Amulet of glory"
+			},
+			{
+				"id": 65,
+				"name": "Chop 250 of any logs"
+			},
+			{
+				"id": 5,
+				"name": "Chop 50 Oak logs"
+			},
+			{
+				"id": 67,
+				"name": "Clean 250 herbs"
+			},
+			{
+				"id": 59,
+				"name": "Complete 5 Bloodveld slayer tasks"
+			},
+			{
+				"id": 60,
+				"name": "Complete 5 Dagannoth slayer tasks"
+			},
+			{
+				"id": 43,
+				"name": "Complete a Farming contract"
+			},
+			{
+				"id": 30,
+				"name": "Complete a Fishing Trawler trip."
+			},
+			{
+				"id": 101,
+				"name": "Complete a game of Trouble brewing"
+			},
+			{
+				"id": 107,
+				"name": "Complete a Guthixian cache"
+			},
+			{
+				"id": 28,
+				"name": "Complete a slayer task"
+			},
+			{
+				"id": 105,
+				"name": "Complete a Tinkering Workshop trip"
+			},
+			{
+				"id": 44,
+				"name": "Complete an Item Contract"
+			},
+			{
+				"id": 49,
+				"name": "Complete the barrows collection log"
+			},
+			{
+				"id": 9,
+				"name": "Complete the Easy Ardougne diary"
+			},
+			{
+				"id": 10,
+				"name": "Complete the Easy Desert diary"
+			},
+			{
+				"id": 11,
+				"name": "Complete the Easy Falador diary"
+			},
+			{
+				"id": 12,
+				"name": "Complete the Easy Fremennik diary"
+			},
+			{
+				"id": 13,
+				"name": "Complete the Easy Kandarin diary"
+			},
+			{
+				"id": 14,
+				"name": "Complete the Easy Karamja diary"
+			},
+			{
+				"id": 15,
+				"name": "Complete the Easy Kourend Kebos diary"
+			},
+			{
+				"id": 16,
+				"name": "Complete the Easy Lumbridge/Draynor diary"
+			},
+			{
+				"id": 17,
+				"name": "Complete the Easy Morytania diary"
+			},
+			{
+				"id": 18,
+				"name": "Complete the Easy Varrock diary"
+			},
+			{
+				"id": 8,
+				"name": "Complete the Easy Western Prov diary"
+			},
+			{
+				"id": 7,
+				"name": "Complete the Easy Wilderness diary"
+			},
+			{
+				"id": 64,
+				"name": "Construct 500 objects"
+			},
+			{
+				"id": 42,
+				"name": "Cook 1000 of anything"
+			},
+			{
+				"id": 4,
+				"name": "Cut 5 Sapphires"
+			},
+			{
+				"id": 25,
+				"name": "Defeat a lesser demon"
+			},
+			{
+				"id": 51,
+				"name": "Defeat Obor 5 times"
+			},
+			{
+				"id": 20,
+				"name": "Do 5 Pest Control Games"
+			},
+			{
+				"id": 2,
+				"name": "Do 50 laps at the Gnome Stronghold Agility Course"
+			},
+			{
+				"id": 62,
+				"name": "Do a High gamble in Barb assault"
+			},
+			{
+				"id": 19,
+				"name": "Do a Tears of Guthix Trip"
+			},
+			{
+				"id": 41,
+				"name": "Fish 1000 fish"
+			},
+			{
+				"id": 98,
+				"name": "Fletch 1000 darts from scratch"
+			},
+			{
+				"id": 97,
+				"name": "Fletch 1000 javelins"
+			},
+			{
+				"id": 45,
+				"name": "Kill 10 unique monsters"
+			},
+			{
+				"id": 53,
+				"name": "Kill every Dagannoth King 50 times"
+			},
+			{
+				"id": 54,
+				"name": "Kill every Godwars Dungeon Boss"
+			},
+			{
+				"id": 52,
+				"name": "Kill every Wilderness boss 5 times"
+			},
+			{
+				"id": 55,
+				"name": "Kill Hespori"
+			},
+			{
+				"id": 56,
+				"name": "Kill Hespori 5 times"
+			},
+			{
+				"id": 50,
+				"name": "Kill the King Black Dragon 100 times"
+			},
+			{
+				"id": 6,
+				"name": "Make 5 Willow shield's"
+			},
+			{
+				"id": 70,
+				"name": "Mine 250 ores"
+			},
+			{
+				"id": 32,
+				"name": "Mix 100 Antipoison potions."
+			},
+			{
+				"id": 31,
+				"name": "Mix 100 Attack potions."
+			},
+			{
+				"id": 33,
+				"name": "Mix 100 Strength potions."
+			},
+			{
+				"id": 69,
+				"name": "Mix 250 potions"
+			},
+			{
+				"id": 68,
+				"name": "Mix 250 unf potions"
+			},
+			{
+				"id": 3,
+				"name": "Obtain 10 Marks of grace"
+			},
+			{
+				"id": 57,
+				"name": "Obtain a fire cape"
+			},
+			{
+				"id": 29,
+				"name": "Offer any bones."
+			},
+			{
+				"id": 85,
+				"name": "Offer one of each bird egg"
+			},
+			{
+				"id": 38,
+				"name": "Open a CMB"
+			},
+			{
+				"id": 37,
+				"name": "Open a EMB"
+			},
+			{
+				"id": 39,
+				"name": "Open a HMB"
+			},
+			{
+				"id": 40,
+				"name": "Open a PMB"
+			},
+			{
+				"id": 35,
+				"name": "Open a TMB"
+			},
+			{
+				"id": 36,
+				"name": "Open a UMB"
+			},
+			{
+				"id": 96,
+				"name": "Open the Crystal chest"
+			},
+			{
+				"id": 63,
+				"name": "Reach 5% CL completion"
+			},
+			{
+				"id": 21,
+				"name": "Reach combat level 50"
+			},
+			{
+				"id": 22,
+				"name": "Reach total level 500"
+			},
+			{
+				"id": 89,
+				"name": "Receive 10,000 Prayer XP from the ash sanctifier"
+			},
+			{
+				"id": 103,
+				"name": "Receive 100 Carpenter points in Mahogany Homes"
+			},
+			{
+				"id": 104,
+				"name": "Receive 2000 Warrior guild tokens from Animated Armours"
+			},
+			{
+				"id": 34,
+				"name": "Receive any custom pet"
+			},
+			{
+				"id": 90,
+				"name": "Receive some bars from an adze"
+			},
+			{
+				"id": 91,
+				"name": "Receive some ores from ore spirits"
+			},
+			{
+				"id": 95,
+				"name": "Receive some XP from silverhawk boots"
+			},
+			{
+				"id": 102,
+				"name": "Runecraft atleast 1 of every Tiara"
+			},
+			{
+				"id": 58,
+				"name": "Sacrifice 10 different items"
+			},
+			{
+				"id": 47,
+				"name": "Sacrifice 100m worth of items/GP"
+			},
+			{
+				"id": 88,
+				"name": "Scatter some ashes"
+			},
+			{
+				"id": 46,
+				"name": "Slay a superior slayer creature"
+			},
+			{
+				"id": 1,
+				"name": "Smelt 100 Bronze bars from scratch"
+			},
+			{
+				"id": 92,
+				"name": "Smelt some bars with Klik"
+			},
+			{
+				"id": 72,
+				"name": "Smith items from 250 Bronze bars"
+			},
+			{
+				"id": 74,
+				"name": "Smith items from 50 Iron bars"
+			},
+			{
+				"id": 93,
+				"name": "Tan some hides with the portable tanner"
+			},
+			{
+				"id": 106,
+				"name": "Unlock any boon"
+			},
+			{
+				"id": 94,
+				"name": "Upgrade some clues with the clue upgrader"
+			}
+		],
+		"points": 20
+	},
+	{
+		"name": "Elite",
+		"tasks": [
+			{
+				"id": 3038,
+				"name": "Achieve an Item Contract streak of 20"
+			},
+			{
+				"id": 3035,
+				"name": "Achieve base level 100 stats"
+			},
+			{
+				"id": 3112,
+				"name": "Acquire, complete and open 100 Elder clues/caskets"
+			},
+			{
+				"id": 3083,
+				"name": "Acquire, complete and open 200 Grandmaster clues/caskets"
+			},
+			{
+				"id": 3082,
+				"name": "Acquire, complete and open 200 Master clues/caskets"
+			},
+			{
+				"id": 3080,
+				"name": "Acquire, complete and open 300 Hard clues/caskets"
+			},
+			{
+				"id": 3079,
+				"name": "Acquire, complete and open 300 Medium clues/caskets"
+			},
+			{
+				"id": 3077,
+				"name": "Acquire, complete and open 500 Beginner clues/caskets"
+			},
+			{
+				"id": 3078,
+				"name": "Acquire, complete and open 500 Easy clues/caskets"
+			},
+			{
+				"id": 3081,
+				"name": "Acquire, complete and open 500 Elite clues/caskets"
+			},
+			{
+				"id": 3066,
+				"name": "Burn 8000 logs"
+			},
+			{
+				"id": 3069,
+				"name": "Cast 10,000 spells"
+			},
+			{
+				"id": 3094,
+				"name": "Catch 30 of every impling passively (excluding lucky implings)"
+			},
+			{
+				"id": 3020,
+				"name": "Catch 500 Black salamanders"
+			},
+			{
+				"id": 3060,
+				"name": "Chop 50,000 of any logs"
+			},
+			{
+				"id": 3062,
+				"name": "Clean 15,000 herbs"
+			},
+			{
+				"id": 3036,
+				"name": "Complete 100 Farming contracts"
+			},
+			{
+				"id": 3028,
+				"name": "Complete 250 games of Monkey Rumble"
+			},
+			{
+				"id": 3013,
+				"name": "Complete 250 slayer tasks"
+			},
+			{
+				"id": 3018,
+				"name": "Complete 300 Gnome restaurant deliveries"
+			},
+			{
+				"id": 3037,
+				"name": "Complete 50 Item Contracts"
+			},
+			{
+				"id": 3002,
+				"name": "Complete the Elite Ardougne diary"
+			},
+			{
+				"id": 3003,
+				"name": "Complete the Elite Desert diary"
+			},
+			{
+				"id": 3004,
+				"name": "Complete the Elite Falador diary"
+			},
+			{
+				"id": 3005,
+				"name": "Complete the Elite Fremennik diary"
+			},
+			{
+				"id": 3006,
+				"name": "Complete the Elite Kandarin diary"
+			},
+			{
+				"id": 3007,
+				"name": "Complete the Elite Karamja diary"
+			},
+			{
+				"id": 3008,
+				"name": "Complete the Elite Kourend Kebos diary"
+			},
+			{
+				"id": 3009,
+				"name": "Complete the Elite Lumbridge/Draynor diary"
+			},
+			{
+				"id": 3010,
+				"name": "Complete the Elite Morytania diary"
+			},
+			{
+				"id": 3011,
+				"name": "Complete the Elite Varrock diary"
+			},
+			{
+				"id": 3001,
+				"name": "Complete the Elite Western Prov diary"
+			},
+			{
+				"id": 3000,
+				"name": "Complete the Elite Wilderness diary"
+			},
+			{
+				"id": 3102,
+				"name": "Complete the Trouble Brewing CL"
+			},
+			{
+				"id": 3059,
+				"name": "Construct 50,000 objects"
+			},
+			{
+				"id": 3107,
+				"name": "Create a Divine ring"
+			},
+			{
+				"id": 3111,
+				"name": "Create an Axe of the high sungod"
+			},
+			{
+				"id": 3108,
+				"name": "Create any set of eagle jibwings"
+			},
+			{
+				"id": 3109,
+				"name": "Create any set of enhanced eagle jibwings"
+			},
+			{
+				"id": 3084,
+				"name": "Create Drygore igne claws"
+			},
+			{
+				"id": 3085,
+				"name": "Create Dwarven igne claws"
+			},
+			{
+				"id": 3055,
+				"name": "Defeat the Emerged Inferno"
+			},
+			{
+				"id": 3019,
+				"name": "Defeat Wintertodt 1000 times"
+			},
+			{
+				"id": 3103,
+				"name": "Defeat Zalcano 1000 times"
+			},
+			{
+				"id": 3034,
+				"name": "Disassemble 250 unique items"
+			},
+			{
+				"id": 3106,
+				"name": "Feed a perk-item to your Eagle tame"
+			},
+			{
+				"id": 3044,
+				"name": "Feed a perk-item to your Igne tame"
+			},
+			{
+				"id": 3045,
+				"name": "Feed a perk-item to your Monkey tame"
+			},
+			{
+				"id": 3073,
+				"name": "Finish the Abyssal Dragon (Malygos) CL"
+			},
+			{
+				"id": 3070,
+				"name": "Finish the graceful CL"
+			},
+			{
+				"id": 3075,
+				"name": "Finish the Ignecarus CL"
+			},
+			{
+				"id": 3031,
+				"name": "Finish the Kalphite King CL"
+			},
+			{
+				"id": 3076,
+				"name": "Finish the King Goldemar CL"
+			},
+			{
+				"id": 3032,
+				"name": "Finish the Nex CL"
+			},
+			{
+				"id": 3071,
+				"name": "Finish the Queen Black Dragon CL"
+			},
+			{
+				"id": 3030,
+				"name": "Finish the Sea Kraken CL"
+			},
+			{
+				"id": 3072,
+				"name": "Finish the Vasa Magus CL"
+			},
+			{
+				"id": 3098,
+				"name": "Fletch 1,000,000 darts"
+			},
+			{
+				"id": 3097,
+				"name": "Fletch 200,000 javelins"
+			},
+			{
+				"id": 3039,
+				"name": "Kill 150 unique monsters"
+			},
+			{
+				"id": 3093,
+				"name": "Kill Naxxus 300 times"
+			},
+			{
+				"id": 3110,
+				"name": "Kill Solis"
+			},
+			{
+				"id": 3054,
+				"name": "Kill the Corporeal Beast 1000 times"
+			},
+			{
+				"id": 3053,
+				"name": "Kill Zulrah 1000 times"
+			},
+			{
+				"id": 3046,
+				"name": "Make 100 Extraordinary kibble"
+			},
+			{
+				"id": 3065,
+				"name": "Mine 25,000 ores"
+			},
+			{
+				"id": 3064,
+				"name": "Mix 15,000 potions"
+			},
+			{
+				"id": 3063,
+				"name": "Mix 15,000 unf potions"
+			},
+			{
+				"id": 3024,
+				"name": "Mix 1500 Stamina potions."
+			},
+			{
+				"id": 3021,
+				"name": "Mix 1500 Super attack potions."
+			},
+			{
+				"id": 3023,
+				"name": "Mix 1500 Super defence potions."
+			},
+			{
+				"id": 3022,
+				"name": "Mix 1500 Super strength potions."
+			},
+			{
+				"id": 3025,
+				"name": "Mix 2500 Saradomin brews."
+			},
+			{
+				"id": 3015,
+				"name": "Obtain 1000 Marks of grace"
+			},
+			{
+				"id": 3104,
+				"name": "Obtain all Custom Slayer masks"
+			},
+			{
+				"id": 3091,
+				"name": "Offer 100 of each bird egg"
+			},
+			{
+				"id": 3047,
+				"name": "Open 1000x TMB"
+			},
+			{
+				"id": 3048,
+				"name": "Open 1000x UMB"
+			},
+			{
+				"id": 3049,
+				"name": "Open 100x EMB"
+			},
+			{
+				"id": 3050,
+				"name": "Open 50x CMB"
+			},
+			{
+				"id": 3051,
+				"name": "Open 50x HMB"
+			},
+			{
+				"id": 3052,
+				"name": "Open 50x PMB"
+			},
+			{
+				"id": 3095,
+				"name": "Open the Crystal chest 1000 times"
+			},
+			{
+				"id": 3058,
+				"name": "Reach 60% CL completion"
+			},
+			{
+				"id": 3017,
+				"name": "Reach total level 2500"
+			},
+			{
+				"id": 3086,
+				"name": "Receive 1,000,000 XP from silverhawk boots"
+			},
+			{
+				"id": 3090,
+				"name": "Receive 10,000 bars from an adze"
+			},
+			{
+				"id": 3027,
+				"name": "Receive 3x 3rd age items"
+			},
+			{
+				"id": 3092,
+				"name": "Receive 5000 ores from ore spirits"
+			},
+			{
+				"id": 3042,
+				"name": "Receive a dragon egg and hatch it"
+			},
+			{
+				"id": 3105,
+				"name": "Receive a eagle egg and hatch it"
+			},
+			{
+				"id": 3043,
+				"name": "Receive a monkey egg and hatch it"
+			},
+			{
+				"id": 3101,
+				"name": "Receive all Balthazars Big Bonanza spectator clothes"
+			},
+			{
+				"id": 3096,
+				"name": "Receive and use a deathtouched dart"
+			},
+			{
+				"id": 3033,
+				"name": "Receive any 25 custom pets"
+			},
+			{
+				"id": 3099,
+				"name": "Receive, and alch, 50x Magical artifacts"
+			},
+			{
+				"id": 3100,
+				"name": "Runecraft 10,000 Tiaras"
+			},
+			{
+				"id": 3041,
+				"name": "Sacrifice 10b worth of items/GP"
+			},
+			{
+				"id": 3057,
+				"name": "Sacrifice 250 different items"
+			},
+			{
+				"id": 3056,
+				"name": "Sacrifice 5b GP"
+			},
+			{
+				"id": 3089,
+				"name": "Scatter 1000 of every ashes"
+			},
+			{
+				"id": 3040,
+				"name": "Slay 250 superior slayer creatures"
+			},
+			{
+				"id": 3012,
+				"name": "Smelt 300 Adamantite bars from scratch"
+			},
+			{
+				"id": 3068,
+				"name": "Smith items from 30,000 Runite bars"
+			},
+			{
+				"id": 3067,
+				"name": "Smith items from 50,000 Adamantite bars"
+			},
+			{
+				"id": 3087,
+				"name": "Tan 20,000 hides with the portable tanner"
+			},
+			{
+				"id": 3088,
+				"name": "Upgrade 500 clues with the clue upgrader"
+			}
+		],
+		"points": 150
+	},
+	{
+		"name": "Hard",
+		"tasks": [
+			{
+				"id": 2061,
+				"name": "Achieve an Item Contract streak of 15"
+			},
+			{
+				"id": 2057,
+				"name": "Achieve base level 90 stats"
+			},
+			{
+				"id": 2069,
+				"name": "Achieve level 120 Agility"
+			},
+			{
+				"id": 2087,
+				"name": "Achieve level 120 Attack"
+			},
+			{
+				"id": 2085,
+				"name": "Achieve level 120 Construction"
+			},
+			{
+				"id": 2070,
+				"name": "Achieve level 120 Cooking"
+			},
+			{
+				"id": 2077,
+				"name": "Achieve level 120 Crafting"
+			},
+			{
+				"id": 2089,
+				"name": "Achieve level 120 Defence"
+			},
+			{
+				"id": 2169,
+				"name": "Achieve level 120 Divination"
+			},
+			{
+				"id": 2092,
+				"name": "Achieve level 120 Dungeoneering"
+			},
+			{
+				"id": 2080,
+				"name": "Achieve level 120 Farming"
+			},
+			{
+				"id": 2075,
+				"name": "Achieve level 120 Firemaking"
+			},
+			{
+				"id": 2071,
+				"name": "Achieve level 120 Fishing"
+			},
+			{
+				"id": 2079,
+				"name": "Achieve level 120 Fletching"
+			},
+			{
+				"id": 2081,
+				"name": "Achieve level 120 Herblore"
+			},
+			{
+				"id": 2091,
+				"name": "Achieve level 120 Hitpoints"
+			},
+			{
+				"id": 2084,
+				"name": "Achieve level 120 Hunter"
+			},
+			{
+				"id": 2094,
+				"name": "Achieve level 120 Invention"
+			},
+			{
+				"id": 2086,
+				"name": "Achieve level 120 Magic"
+			},
+			{
+				"id": 2072,
+				"name": "Achieve level 120 Mining"
+			},
+			{
+				"id": 2078,
+				"name": "Achieve level 120 Prayer"
+			},
+			{
+				"id": 2090,
+				"name": "Achieve level 120 Ranged"
+			},
+			{
+				"id": 2076,
+				"name": "Achieve level 120 Runecraft"
+			},
+			{
+				"id": 2093,
+				"name": "Achieve level 120 Slayer"
+			},
+			{
+				"id": 2073,
+				"name": "Achieve level 120 Smithing"
+			},
+			{
+				"id": 2088,
+				"name": "Achieve level 120 Strength"
+			},
+			{
+				"id": 2083,
+				"name": "Achieve level 120 Thieving"
+			},
+			{
+				"id": 2074,
+				"name": "Achieve level 120 Woodcutting"
+			},
+			{
+				"id": 2131,
+				"name": "Acquire, complete and open 250 Beginner clues/caskets"
+			},
+			{
+				"id": 2132,
+				"name": "Acquire, complete and open 250 Easy clues/caskets"
+			},
+			{
+				"id": 2135,
+				"name": "Acquire, complete and open 250 Elite clues/caskets"
+			},
+			{
+				"id": 2134,
+				"name": "Acquire, complete and open 250 Hard clues/caskets"
+			},
+			{
+				"id": 2133,
+				"name": "Acquire, complete and open 250 Medium clues/caskets"
+			},
+			{
+				"id": 2137,
+				"name": "Acquire, complete and open 30 Grandmaster clues/caskets"
+			},
+			{
+				"id": 2136,
+				"name": "Acquire, complete and open 50 Master clues/caskets"
+			},
+			{
+				"id": 2170,
+				"name": "Acquire, complete and open a Elder clue/casket"
+			},
+			{
+				"id": 2117,
+				"name": "Alch 5000 of any item"
+			},
+			{
+				"id": 2139,
+				"name": "Build and fill all master stash units"
+			},
+			{
+				"id": 2122,
+				"name": "Burn 3500 logs"
+			},
+			{
+				"id": 2164,
+				"name": "Buy all Balthazars Big Bonanza rewards"
+			},
+			{
+				"id": 2162,
+				"name": "Buy all Fist of guthix rewards"
+			},
+			{
+				"id": 2163,
+				"name": "Buy all Stealing creation rewards"
+			},
+			{
+				"id": 2049,
+				"name": "Buy any master cape"
+			},
+			{
+				"id": 2128,
+				"name": "Cast 5000 spells"
+			},
+			{
+				"id": 2109,
+				"name": "Catch 10 Lucky implings"
+			},
+			{
+				"id": 2153,
+				"name": "Catch 20 of every impling passively (excluding Lucky implings)"
+			},
+			{
+				"id": 2028,
+				"name": "Catch 500 Red salamanders"
+			},
+			{
+				"id": 2159,
+				"name": "Charge 2500x Amulet of glory"
+			},
+			{
+				"id": 2158,
+				"name": "Charge 2500x Ring of wealth"
+			},
+			{
+				"id": 2116,
+				"name": "Chop 10,000 of any logs"
+			},
+			{
+				"id": 2118,
+				"name": "Clean 10,000 herbs"
+			},
+			{
+				"id": 2021,
+				"name": "Complete 100 Gnome restaurant deliveries"
+			},
+			{
+				"id": 2015,
+				"name": "Complete 100 slayer tasks"
+			},
+			{
+				"id": 2026,
+				"name": "Complete 150 Last Man Standing games"
+			},
+			{
+				"id": 2025,
+				"name": "Complete 250 Temple Treks"
+			},
+			{
+				"id": 2060,
+				"name": "Complete 30 Item Contracts"
+			},
+			{
+				"id": 2024,
+				"name": "Complete 50 Castle Wars games"
+			},
+			{
+				"id": 2059,
+				"name": "Complete 50 Farming contracts"
+			},
+			{
+				"id": 2045,
+				"name": "Complete 50 games of Monkey Rumble"
+			},
+			{
+				"id": 2023,
+				"name": "Complete the Champions Challenge"
+			},
+			{
+				"id": 2065,
+				"name": "Complete the Corrupted Gauntlet"
+			},
+			{
+				"id": 2066,
+				"name": "Complete the Corrupted Gauntlet 100 times"
+			},
+			{
+				"id": 2002,
+				"name": "Complete the Hard Ardougne diary"
+			},
+			{
+				"id": 2003,
+				"name": "Complete the Hard Desert diary"
+			},
+			{
+				"id": 2004,
+				"name": "Complete the Hard Falador diary"
+			},
+			{
+				"id": 2005,
+				"name": "Complete the Hard Fremennik diary"
+			},
+			{
+				"id": 2006,
+				"name": "Complete the Hard Kandarin diary"
+			},
+			{
+				"id": 2007,
+				"name": "Complete the Hard Karamja diary"
+			},
+			{
+				"id": 2008,
+				"name": "Complete the Hard Kourend Kebos diary"
+			},
+			{
+				"id": 2009,
+				"name": "Complete the Hard Lumbridge/Draynor diary"
+			},
+			{
+				"id": 2010,
+				"name": "Complete the Hard Morytania diary"
+			},
+			{
+				"id": 2011,
+				"name": "Complete the Hard Varrock diary"
+			},
+			{
+				"id": 2001,
+				"name": "Complete the Hard Western Prov diary"
+			},
+			{
+				"id": 2000,
+				"name": "Complete the Hard Wilderness diary"
+			},
+			{
+				"id": 2115,
+				"name": "Construct 25,000 objects"
+			},
+			{
+				"id": 2141,
+				"name": "Create a mainhand and offhand Volcanic pickaxe"
+			},
+			{
+				"id": 2165,
+				"name": "Create a Mangobeak from scratch"
+			},
+			{
+				"id": 2055,
+				"name": "Create any invention"
+			},
+			{
+				"id": 2050,
+				"name": "Create every piece of Nex armor from scratch"
+			},
+			{
+				"id": 2142,
+				"name": "Create Volcanic igne claws"
+			},
+			{
+				"id": 2041,
+				"name": "Defeat 10 Scorpia"
+			},
+			{
+				"id": 2038,
+				"name": "Defeat 100 Black dragons"
+			},
+			{
+				"id": 2040,
+				"name": "Defeat 100 Blue dragons"
+			},
+			{
+				"id": 2039,
+				"name": "Defeat 100 Steel dragons"
+			},
+			{
+				"id": 2043,
+				"name": "Defeat 50 Bryophyta"
+			},
+			{
+				"id": 2042,
+				"name": "Defeat 50 Obor"
+			},
+			{
+				"id": 2012,
+				"name": "Defeat a black demon"
+			},
+			{
+				"id": 2014,
+				"name": "Defeat a lava dragon"
+			},
+			{
+				"id": 2129,
+				"name": "Defeat Nex 500 Times"
+			},
+			{
+				"id": 2020,
+				"name": "Defeat Tempoross 100 times"
+			},
+			{
+				"id": 2107,
+				"name": "Defeat the Inferno"
+			},
+			{
+				"id": 2022,
+				"name": "Defeat Wintertodt 250 times"
+			},
+			{
+				"id": 2056,
+				"name": "Disassemble 100 unique items"
+			},
+			{
+				"id": 2113,
+				"name": "Do 50 High gambles in Barb assault"
+			},
+			{
+				"id": 2016,
+				"name": "Do 50 laps at the Ape Atoll Course"
+			},
+			{
+				"id": 2058,
+				"name": "Do a total of 3000 agility course laps "
+			},
+			{
+				"id": 2068,
+				"name": "Dye an item"
+			},
+			{
+				"id": 2054,
+				"name": "Finish the Baxtorian Bathhouse CL"
+			},
+			{
+				"id": 2046,
+				"name": "Finish the skilling pets CL"
+			},
+			{
+				"id": 2166,
+				"name": "Fletch 1000 Dragon javelins"
+			},
+			{
+				"id": 2156,
+				"name": "Fletch 50,000 javelins"
+			},
+			{
+				"id": 2157,
+				"name": "Fletch 500,000 darts"
+			},
+			{
+				"id": 2108,
+				"name": "Fletch 5000 Dragon arrows"
+			},
+			{
+				"id": 2062,
+				"name": "Kill 75 unique monsters"
+			},
+			{
+				"id": 2103,
+				"name": "Kill every Godwars Dungeon Boss 250 times"
+			},
+			{
+				"id": 2106,
+				"name": "Kill Hespori 100 times"
+			},
+			{
+				"id": 2140,
+				"name": "Kill Moktang"
+			},
+			{
+				"id": 2152,
+				"name": "Kill Naxxus 10 times"
+			},
+			{
+				"id": 2105,
+				"name": "Kill the Corporeal Beast 250 times"
+			},
+			{
+				"id": 2104,
+				"name": "Kill Zulrah 100 times"
+			},
+			{
+				"id": 2095,
+				"name": "Make 100 Delicious kibble"
+			},
+			{
+				"id": 2121,
+				"name": "Mine 10,000 ores"
+			},
+			{
+				"id": 2119,
+				"name": "Mix 10,000 unf potions"
+			},
+			{
+				"id": 2029,
+				"name": "Mix 1000 Prayer potions."
+			},
+			{
+				"id": 2048,
+				"name": "Mix 250 Heat res. brews from scratch"
+			},
+			{
+				"id": 2138,
+				"name": "Mix 250 Heat res. restore from scratch"
+			},
+			{
+				"id": 2034,
+				"name": "Mix 500 Magic potions."
+			},
+			{
+				"id": 2033,
+				"name": "Mix 500 Ranging potions."
+			},
+			{
+				"id": 2036,
+				"name": "Mix 500 Saradomin brews."
+			},
+			{
+				"id": 2035,
+				"name": "Mix 500 Stamina potions."
+			},
+			{
+				"id": 2030,
+				"name": "Mix 500 Super attack potions."
+			},
+			{
+				"id": 2032,
+				"name": "Mix 500 Super defence potions."
+			},
+			{
+				"id": 2031,
+				"name": "Mix 500 Super strength potions."
+			},
+			{
+				"id": 2120,
+				"name": "Mix 5000 potions"
+			},
+			{
+				"id": 2017,
+				"name": "Obtain 500 Marks of grace"
+			},
+			{
+				"id": 2150,
+				"name": "Offer 25 of each bird egg"
+			},
+			{
+				"id": 2101,
+				"name": "Open 20x HMB"
+			},
+			{
+				"id": 2102,
+				"name": "Open 20x PMB"
+			},
+			{
+				"id": 2097,
+				"name": "Open 250x TMB"
+			},
+			{
+				"id": 2098,
+				"name": "Open 250x UMB"
+			},
+			{
+				"id": 2100,
+				"name": "Open 25x CMB"
+			},
+			{
+				"id": 2167,
+				"name": "Open 50 Divine eggs"
+			},
+			{
+				"id": 2099,
+				"name": "Open 50x EMB"
+			},
+			{
+				"id": 2052,
+				"name": "Open a Blacksmith crate"
+			},
+			{
+				"id": 2155,
+				"name": "Open the Crystal chest 250 times"
+			},
+			{
+				"id": 2114,
+				"name": "Reach 35% CL completion"
+			},
+			{
+				"id": 2018,
+				"name": "Reach combat level 126"
+			},
+			{
+				"id": 2019,
+				"name": "Reach total level 2000"
+			},
+			{
+				"id": 2037,
+				"name": "Receive 10 different Gilded items"
+			},
+			{
+				"id": 2143,
+				"name": "Receive 100,000 Prayer XP from the ash sanctifier"
+			},
+			{
+				"id": 2151,
+				"name": "Receive 1000 ores from ore spirits"
+			},
+			{
+				"id": 2144,
+				"name": "Receive 500,000 XP from silverhawk boots"
+			},
+			{
+				"id": 2149,
+				"name": "Receive 5000 bars from an adze"
+			},
+			{
+				"id": 2096,
+				"name": "Receive a Zippy"
+			},
+			{
+				"id": 2047,
+				"name": "Receive an Abyssal cape"
+			},
+			{
+				"id": 2051,
+				"name": "Receive any 10 custom pets"
+			},
+			{
+				"id": 2053,
+				"name": "Receive any partyhat"
+			},
+			{
+				"id": 2044,
+				"name": "Receive every monkey backpack"
+			},
+			{
+				"id": 2160,
+				"name": "Receive, and alch, 10x Magical artifacts"
+			},
+			{
+				"id": 2161,
+				"name": "Runecraft 5000 Tiaras"
+			},
+			{
+				"id": 2112,
+				"name": "Sacrifice 100 different items"
+			},
+			{
+				"id": 2110,
+				"name": "Sacrifice 2b GP"
+			},
+			{
+				"id": 2064,
+				"name": "Sacrifice 3b worth of items/GP"
+			},
+			{
+				"id": 2111,
+				"name": "Sacrifice any third age item"
+			},
+			{
+				"id": 2148,
+				"name": "Scatter 500 of every ashes"
+			},
+			{
+				"id": 2063,
+				"name": "Slay 50 superior slayer creatures"
+			},
+			{
+				"id": 2013,
+				"name": "Smelt 100 Mithril bars from scratch"
+			},
+			{
+				"id": 2154,
+				"name": "Smelt 5000 bars with Klik"
+			},
+			{
+				"id": 2126,
+				"name": "Smith items from 10,000 Runite bars"
+			},
+			{
+				"id": 2125,
+				"name": "Smith items from 15,000 Adamantite bars"
+			},
+			{
+				"id": 2123,
+				"name": "Smith items from 20,000 Mithril bars"
+			},
+			{
+				"id": 2147,
+				"name": "Tan 10,000 hides with the portable tanner"
+			},
+			{
+				"id": 2168,
+				"name": "Unlock every boon"
+			},
+			{
+				"id": 2067,
+				"name": "Unlock every invention blueprint"
+			},
+			{
+				"id": 2146,
+				"name": "Upgrade 100 clues with the clue upgrader"
+			}
+		],
+		"points": 85
+	},
+	{
+		"name": "Master",
+		"tasks": [
+			{
+				"id": 4015,
+				"name": "Achieve a TzKal cape"
+			},
+			{
+				"id": 4105,
+				"name": "Achieve an Item Contract streak of 50"
+			},
+			{
+				"id": 4012,
+				"name": "Achieve base level 110 stats"
+			},
+			{
+				"id": 4135,
+				"name": "Acquire, complete and open 1000 Beginner clues/caskets"
+			},
+			{
+				"id": 4136,
+				"name": "Acquire, complete and open 1000 Easy clues/caskets"
+			},
+			{
+				"id": 4139,
+				"name": "Acquire, complete and open 1000 Elite clues/caskets"
+			},
+			{
+				"id": 4138,
+				"name": "Acquire, complete and open 1000 Hard clues/caskets"
+			},
+			{
+				"id": 4137,
+				"name": "Acquire, complete and open 1000 Medium clues/caskets"
+			},
+			{
+				"id": 4158,
+				"name": "Acquire, complete and open 200 Elder clues/caskets"
+			},
+			{
+				"id": 4141,
+				"name": "Acquire, complete and open 500 Grandmaster clues/caskets"
+			},
+			{
+				"id": 4140,
+				"name": "Acquire, complete and open 750 Master clues/caskets"
+			},
+			{
+				"id": 4126,
+				"name": "Alch 10,000 of any item"
+			},
+			{
+				"id": 4023,
+				"name": "Build a Ancient rejuvenation pool in your PoH"
+			},
+			{
+				"id": 4000,
+				"name": "Build a Demonic Throne"
+			},
+			{
+				"id": 4131,
+				"name": "Burn 15,000 logs"
+			},
+			{
+				"id": 4111,
+				"name": "Buy a Artisan's cape"
+			},
+			{
+				"id": 4110,
+				"name": "Buy a Combatant's cape"
+			},
+			{
+				"id": 4113,
+				"name": "Buy a Gatherer's cape"
+			},
+			{
+				"id": 4112,
+				"name": "Buy a Support cape"
+			},
+			{
+				"id": 4106,
+				"name": "Buy every dungeoneering reward"
+			},
+			{
+				"id": 4134,
+				"name": "Cast 50,000 spells"
+			},
+			{
+				"id": 4151,
+				"name": "Catch 50 mystery implings, and 100 of every other impling passively (excluding Lucky implings)"
+			},
+			{
+				"id": 4125,
+				"name": "Chop 100,000 of any logs"
+			},
+			{
+				"id": 4127,
+				"name": "Clean 100,000 herbs"
+			},
+			{
+				"id": 4104,
+				"name": "Complete 100 Item Contracts"
+			},
+			{
+				"id": 4040,
+				"name": "Complete 1000 games of Monkey Rumble"
+			},
+			{
+				"id": 4031,
+				"name": "Complete 1000 Gnome restaurant deliveries"
+			},
+			{
+				"id": 4102,
+				"name": "Complete 500 Farming contracts"
+			},
+			{
+				"id": 4024,
+				"name": "Complete 500 slayer tasks"
+			},
+			{
+				"id": 4021,
+				"name": "Complete the Inferno 30 Times"
+			},
+			{
+				"id": 4124,
+				"name": "Construct 100,000 objects"
+			},
+			{
+				"id": 4044,
+				"name": "Create a Dwarven warhammer from scratch"
+			},
+			{
+				"id": 4109,
+				"name": "Create an Infernal slayer helmet(i)"
+			},
+			{
+				"id": 4013,
+				"name": "Create every draconic shield"
+			},
+			{
+				"id": 4045,
+				"name": "Create every Dwarven item from scratch"
+			},
+			{
+				"id": 4009,
+				"name": "Create every god book"
+			},
+			{
+				"id": 4042,
+				"name": "Create every Gorajan armor piece"
+			},
+			{
+				"id": 4047,
+				"name": "Create every invention"
+			},
+			{
+				"id": 4014,
+				"name": "Create every nightmare staff from scratch"
+			},
+			{
+				"id": 4010,
+				"name": "Create every pair of Cerberus boots"
+			},
+			{
+				"id": 4017,
+				"name": "Create every piece of enchanted Zenyte jewellery"
+			},
+			{
+				"id": 4016,
+				"name": "Create every piece of Zenyte jewellery"
+			},
+			{
+				"id": 4145,
+				"name": "Create Gorajan igne claws"
+			},
+			{
+				"id": 4032,
+				"name": "Defeat Wintertodt 2500 times"
+			},
+			{
+				"id": 4048,
+				"name": "Disassemble 500 unique items"
+			},
+			{
+				"id": 4027,
+				"name": "Do 1000 laps at the Daemonheim Rooftop Course"
+			},
+			{
+				"id": 4026,
+				"name": "Do 1000 laps at the Prifddinas Rooftop Course"
+			},
+			{
+				"id": 4025,
+				"name": "Do 2000 laps at the Ardougne Rooftop Course"
+			},
+			{
+				"id": 4041,
+				"name": "Finish the CMB CL"
+			},
+			{
+				"id": 4046,
+				"name": "Finish the Fishing Contest CL"
+			},
+			{
+				"id": 4018,
+				"name": "Finish the god wars CL"
+			},
+			{
+				"id": 4149,
+				"name": "Finish the Naxxus CL"
+			},
+			{
+				"id": 4155,
+				"name": "Fletch 100,000 Elder bows from scratch"
+			},
+			{
+				"id": 4153,
+				"name": "Fletch 50,000 dragon darts"
+			},
+			{
+				"id": 4122,
+				"name": "Hatch a tame which is atleast level 90"
+			},
+			{
+				"id": 4130,
+				"name": "Mine 50,000 ores"
+			},
+			{
+				"id": 4129,
+				"name": "Mix 100,000 potions"
+			},
+			{
+				"id": 4128,
+				"name": "Mix 100,000 unf potions"
+			},
+			{
+				"id": 4033,
+				"name": "Mix 1000 Stamina potions."
+			},
+			{
+				"id": 4034,
+				"name": "Mix 5000 Saradomin brews."
+			},
+			{
+				"id": 4035,
+				"name": "Mix 5000 Super restores."
+			},
+			{
+				"id": 4028,
+				"name": "Obtain 5000 Marks of grace"
+			},
+			{
+				"id": 4038,
+				"name": "Obtain a First Age item"
+			},
+			{
+				"id": 4154,
+				"name": "Obtain all Custom Slayer helms"
+			},
+			{
+				"id": 4114,
+				"name": "Open 5000x TMB"
+			},
+			{
+				"id": 4115,
+				"name": "Open 5000x UMB"
+			},
+			{
+				"id": 4117,
+				"name": "Open 500x CMB"
+			},
+			{
+				"id": 4116,
+				"name": "Open 500x EMB"
+			},
+			{
+				"id": 4118,
+				"name": "Open 500x HMB"
+			},
+			{
+				"id": 4119,
+				"name": "Open 500x PMB"
+			},
+			{
+				"id": 4152,
+				"name": "Open the Crystal chest 3000 times"
+			},
+			{
+				"id": 4123,
+				"name": "Reach 90% CL completion"
+			},
+			{
+				"id": 4142,
+				"name": "Reach 92% CL completion"
+			},
+			{
+				"id": 4143,
+				"name": "Reach 93% CL completion"
+			},
+			{
+				"id": 4030,
+				"name": "Reach total level 3000"
+			},
+			{
+				"id": 4039,
+				"name": "Receive 10 3rd age items"
+			},
+			{
+				"id": 4075,
+				"name": "Receive 1b Agility"
+			},
+			{
+				"id": 4093,
+				"name": "Receive 1b Attack"
+			},
+			{
+				"id": 4091,
+				"name": "Receive 1b Construction"
+			},
+			{
+				"id": 4076,
+				"name": "Receive 1b Cooking"
+			},
+			{
+				"id": 4083,
+				"name": "Receive 1b Crafting"
+			},
+			{
+				"id": 4095,
+				"name": "Receive 1b Defence"
+			},
+			{
+				"id": 4157,
+				"name": "Receive 1b Divination"
+			},
+			{
+				"id": 4099,
+				"name": "Receive 1b Dungeoneering"
+			},
+			{
+				"id": 4086,
+				"name": "Receive 1b Farming"
+			},
+			{
+				"id": 4081,
+				"name": "Receive 1b Firemaking"
+			},
+			{
+				"id": 4077,
+				"name": "Receive 1b Fishing"
+			},
+			{
+				"id": 4085,
+				"name": "Receive 1b Fletching"
+			},
+			{
+				"id": 4087,
+				"name": "Receive 1b Herblore"
+			},
+			{
+				"id": 4097,
+				"name": "Receive 1b Hitpoints"
+			},
+			{
+				"id": 4090,
+				"name": "Receive 1b Hunter"
+			},
+			{
+				"id": 4101,
+				"name": "Receive 1b Invention"
+			},
+			{
+				"id": 4092,
+				"name": "Receive 1b Magic"
+			},
+			{
+				"id": 4078,
+				"name": "Receive 1b Mining"
+			},
+			{
+				"id": 4084,
+				"name": "Receive 1b Prayer"
+			},
+			{
+				"id": 4096,
+				"name": "Receive 1b Ranged"
+			},
+			{
+				"id": 4082,
+				"name": "Receive 1b Runecraft"
+			},
+			{
+				"id": 4100,
+				"name": "Receive 1b Slayer"
+			},
+			{
+				"id": 4079,
+				"name": "Receive 1b Smithing"
+			},
+			{
+				"id": 4094,
+				"name": "Receive 1b Strength"
+			},
+			{
+				"id": 4089,
+				"name": "Receive 1b Thieving"
+			},
+			{
+				"id": 4080,
+				"name": "Receive 1b Woodcutting"
+			},
+			{
+				"id": 4146,
+				"name": "Receive 5,000,000 XP from silverhawk boots"
+			},
+			{
+				"id": 4049,
+				"name": "Receive 500m Agility"
+			},
+			{
+				"id": 4067,
+				"name": "Receive 500m Attack"
+			},
+			{
+				"id": 4065,
+				"name": "Receive 500m Construction"
+			},
+			{
+				"id": 4050,
+				"name": "Receive 500m Cooking"
+			},
+			{
+				"id": 4057,
+				"name": "Receive 500m Crafting"
+			},
+			{
+				"id": 4069,
+				"name": "Receive 500m Defence"
+			},
+			{
+				"id": 4156,
+				"name": "Receive 500m Divination"
+			},
+			{
+				"id": 4072,
+				"name": "Receive 500m Dungeoneering"
+			},
+			{
+				"id": 4060,
+				"name": "Receive 500m Farming"
+			},
+			{
+				"id": 4055,
+				"name": "Receive 500m Firemaking"
+			},
+			{
+				"id": 4051,
+				"name": "Receive 500m Fishing"
+			},
+			{
+				"id": 4059,
+				"name": "Receive 500m Fletching"
+			},
+			{
+				"id": 4061,
+				"name": "Receive 500m Herblore"
+			},
+			{
+				"id": 4071,
+				"name": "Receive 500m Hitpoints"
+			},
+			{
+				"id": 4064,
+				"name": "Receive 500m Hunter"
+			},
+			{
+				"id": 4074,
+				"name": "Receive 500m Invention"
+			},
+			{
+				"id": 4066,
+				"name": "Receive 500m Magic"
+			},
+			{
+				"id": 4052,
+				"name": "Receive 500m Mining"
+			},
+			{
+				"id": 4058,
+				"name": "Receive 500m Prayer"
+			},
+			{
+				"id": 4070,
+				"name": "Receive 500m Ranged"
+			},
+			{
+				"id": 4056,
+				"name": "Receive 500m Runecraft"
+			},
+			{
+				"id": 4073,
+				"name": "Receive 500m Slayer"
+			},
+			{
+				"id": 4053,
+				"name": "Receive 500m Smithing"
+			},
+			{
+				"id": 4068,
+				"name": "Receive 500m Strength"
+			},
+			{
+				"id": 4063,
+				"name": "Receive 500m Thieving"
+			},
+			{
+				"id": 4054,
+				"name": "Receive 500m Woodcutting"
+			},
+			{
+				"id": 4007,
+				"name": "Receive all Chambers of Xeric Armor"
+			},
+			{
+				"id": 4008,
+				"name": "Receive all Chambers of Xeric items"
+			},
+			{
+				"id": 4006,
+				"name": "Receive all Chambers of Xeric Weapons"
+			},
+			{
+				"id": 4005,
+				"name": "Receive all Inquisitor armour pieces"
+			},
+			{
+				"id": 4004,
+				"name": "Receive all Justiciar items"
+			},
+			{
+				"id": 4043,
+				"name": "Receive any 30 custom pets"
+			},
+			{
+				"id": 4002,
+				"name": "Receive atleast 1000 Agility Arena tickets"
+			},
+			{
+				"id": 4011,
+				"name": "Receive every Revenant weapon"
+			},
+			{
+				"id": 4121,
+				"name": "Sacrifice 1000 different items"
+			},
+			{
+				"id": 4120,
+				"name": "Sacrifice 10b GP"
+			},
+			{
+				"id": 4108,
+				"name": "Sacrifice 20b worth of items/GP"
+			},
+			{
+				"id": 4150,
+				"name": "Scatter 5000 of every ashes"
+			},
+			{
+				"id": 4107,
+				"name": "Slay 500 superior slayer creatures"
+			},
+			{
+				"id": 4022,
+				"name": "Smelt 2000 Runite bars from scratch"
+			},
+			{
+				"id": 4144,
+				"name": "Smith items from 200,000 Mithril bars"
+			},
+			{
+				"id": 4133,
+				"name": "Smith items from 50,000 Runite bars"
+			},
+			{
+				"id": 4132,
+				"name": "Smith items from 90,000 Adamantite bars"
+			},
+			{
+				"id": 4148,
+				"name": "Tan 70,000 hides with the portable tanner"
+			},
+			{
+				"id": 4103,
+				"name": "Unlock every slayer unlock"
+			},
+			{
+				"id": 4147,
+				"name": "Upgrade 2000 clues with the clue upgrader"
+			}
+		],
+		"points": 250
+	},
+	{
+		"name": "Medium",
+		"tasks": [
+			{
+				"id": 1057,
+				"name": "Achieve an Item Contract streak of 5"
+			},
+			{
+				"id": 1071,
+				"name": "Achieve base level 80 stats"
+			},
+			{
+				"id": 1066,
+				"name": "Achieve maximum Kourend favour"
+			},
+			{
+				"id": 1124,
+				"name": "Acquire, complete and open 10 Grandmaster clues/caskets"
+			},
+			{
+				"id": 1123,
+				"name": "Acquire, complete and open 20 Master clues/caskets"
+			},
+			{
+				"id": 1118,
+				"name": "Acquire, complete and open 200 Beginner clues/caskets"
+			},
+			{
+				"id": 1119,
+				"name": "Acquire, complete and open 200 Easy clues/caskets"
+			},
+			{
+				"id": 1121,
+				"name": "Acquire, complete and open 200 Hard clues/caskets"
+			},
+			{
+				"id": 1120,
+				"name": "Acquire, complete and open 200 Medium clues/caskets"
+			},
+			{
+				"id": 1122,
+				"name": "Acquire, complete and open 50 Elite clues/caskets"
+			},
+			{
+				"id": 1103,
+				"name": "Alch 1000 of any item"
+			},
+			{
+				"id": 1017,
+				"name": "Build a jewellery box in your PoH"
+			},
+			{
+				"id": 1015,
+				"name": "Build a pool in your PoH"
+			},
+			{
+				"id": 1018,
+				"name": "Build a prayer altar in your PoH"
+			},
+			{
+				"id": 1019,
+				"name": "Build a spellbook altar in your PoH"
+			},
+			{
+				"id": 1067,
+				"name": "Build a Tame Nursery"
+			},
+			{
+				"id": 1016,
+				"name": "Build a throne in your PoH"
+			},
+			{
+				"id": 1126,
+				"name": "Build and fill all elite stash units"
+			},
+			{
+				"id": 1125,
+				"name": "Build and fill all hard stash units"
+			},
+			{
+				"id": 1108,
+				"name": "Burn 500 logs"
+			},
+			{
+				"id": 1111,
+				"name": "Cast 500 spells"
+			},
+			{
+				"id": 1129,
+				"name": "Catch 1 of every impling passively"
+			},
+			{
+				"id": 1030,
+				"name": "Catch 200 Orange salamanders"
+			},
+			{
+				"id": 1090,
+				"name": "Catch 5 Dragon implings"
+			},
+			{
+				"id": 1089,
+				"name": "Catch 5 Lucky implings"
+			},
+			{
+				"id": 1143,
+				"name": "Charge 1000x Amulet of glory"
+			},
+			{
+				"id": 1142,
+				"name": "Charge 1000x Ring of wealth"
+			},
+			{
+				"id": 1102,
+				"name": "Chop 5000 of any logs"
+			},
+			{
+				"id": 1104,
+				"name": "Clean 500 herbs"
+			},
+			{
+				"id": 1112,
+				"name": "Collect 500 Blue dragon scales"
+			},
+			{
+				"id": 1113,
+				"name": "Collect 500 Mort myre fungus"
+			},
+			{
+				"id": 1114,
+				"name": "Collect 500 Red spider's eggs"
+			},
+			{
+				"id": 1050,
+				"name": "Compete in the Fishing Contest"
+			},
+			{
+				"id": 1029,
+				"name": "Complete 10 Castle Wars games"
+			},
+			{
+				"id": 1056,
+				"name": "Complete 10 Item Contracts"
+			},
+			{
+				"id": 1145,
+				"name": "Complete 100 games of Trouble brewing"
+			},
+			{
+				"id": 1052,
+				"name": "Complete 20 Farming contracts"
+			},
+			{
+				"id": 1026,
+				"name": "Complete 20 Gnome restaurant deliveries"
+			},
+			{
+				"id": 1096,
+				"name": "Complete 5 Abyssal Demon slayer tasks"
+			},
+			{
+				"id": 1095,
+				"name": "Complete 5 Blue dragon slayer tasks"
+			},
+			{
+				"id": 1039,
+				"name": "Complete 5 games of Monkey Rumble"
+			},
+			{
+				"id": 1094,
+				"name": "Complete 5 Gargoyle slayer tasks"
+			},
+			{
+				"id": 1097,
+				"name": "Complete 5 Hellhound slayer tasks"
+			},
+			{
+				"id": 1098,
+				"name": "Complete 5 Nechryael slayer tasks"
+			},
+			{
+				"id": 1020,
+				"name": "Complete 50 slayer tasks"
+			},
+			{
+				"id": 1064,
+				"name": "Complete the Gauntlet"
+			},
+			{
+				"id": 1065,
+				"name": "Complete the Gauntlet 100 times"
+			},
+			{
+				"id": 1003,
+				"name": "Complete the Medium Ardougne diary"
+			},
+			{
+				"id": 1004,
+				"name": "Complete the Medium Desert diary"
+			},
+			{
+				"id": 1005,
+				"name": "Complete the Medium Falador diary"
+			},
+			{
+				"id": 1006,
+				"name": "Complete the Medium Fremennik diary"
+			},
+			{
+				"id": 1007,
+				"name": "Complete the Medium Kandarin diary"
+			},
+			{
+				"id": 1008,
+				"name": "Complete the Medium Karamja diary"
+			},
+			{
+				"id": 1009,
+				"name": "Complete the Medium Kourend Kebos diary"
+			},
+			{
+				"id": 1010,
+				"name": "Complete the Medium Lumbridge/Draynor diary"
+			},
+			{
+				"id": 1011,
+				"name": "Complete the Medium Morytania diary"
+			},
+			{
+				"id": 1012,
+				"name": "Complete the Medium Varrock diary"
+			},
+			{
+				"id": 1002,
+				"name": "Complete the Medium Western Prov diary"
+			},
+			{
+				"id": 1001,
+				"name": "Complete the Medium Wilderness diary"
+			},
+			{
+				"id": 1101,
+				"name": "Construct 10,000 objects"
+			},
+			{
+				"id": 1116,
+				"name": "Create every godsword"
+			},
+			{
+				"id": 1013,
+				"name": "Defeat 100 greater demons"
+			},
+			{
+				"id": 1062,
+				"name": "Defeat Skotizo"
+			},
+			{
+				"id": 1063,
+				"name": "Defeat Skotizo 10 times"
+			},
+			{
+				"id": 1025,
+				"name": "Defeat Tempoross 50 times"
+			},
+			{
+				"id": 1028,
+				"name": "Defeat Wintertodt 50 times"
+			},
+			{
+				"id": 1072,
+				"name": "Disassemble 1000 Rune armor pieces"
+			},
+			{
+				"id": 1051,
+				"name": "Disassemble some items"
+			},
+			{
+				"id": 1099,
+				"name": "Do 10 High gambles in Barb assault"
+			},
+			{
+				"id": 1021,
+				"name": "Do 50 laps at the Varrock Rooftop Course"
+			},
+			{
+				"id": 1055,
+				"name": "Do a birdhouse trip"
+			},
+			{
+				"id": 1117,
+				"name": "Finish the Treebeard CL"
+			},
+			{
+				"id": 1139,
+				"name": "Fletch 10,000 javelins"
+			},
+			{
+				"id": 1140,
+				"name": "Fletch 100,000 darts"
+			},
+			{
+				"id": 1086,
+				"name": "Fletch 1000 Adamant arrows"
+			},
+			{
+				"id": 1087,
+				"name": "Fletch 1000 Amethyst arrows"
+			},
+			{
+				"id": 1088,
+				"name": "Fletch 1000 Dragon arrows"
+			},
+			{
+				"id": 1084,
+				"name": "Fletch 1000 Magic longbows"
+			},
+			{
+				"id": 1083,
+				"name": "Fletch 1000 Magic shortbows"
+			},
+			{
+				"id": 1085,
+				"name": "Fletch 1000 Rune arrows"
+			},
+			{
+				"id": 1153,
+				"name": "Have 3 unique items destroyed by the Chincannon"
+			},
+			{
+				"id": 1058,
+				"name": "Kill 25 unique monsters"
+			},
+			{
+				"id": 1069,
+				"name": "Kill a Tormented Demon"
+			},
+			{
+				"id": 1079,
+				"name": "Kill every Godwars Dungeon Boss 50 times"
+			},
+			{
+				"id": 1082,
+				"name": "Kill Hespori 25 times"
+			},
+			{
+				"id": 1081,
+				"name": "Kill the Corporeal Beast"
+			},
+			{
+				"id": 1070,
+				"name": "Kill the Queen Black dragon"
+			},
+			{
+				"id": 1080,
+				"name": "Kill Zulrah"
+			},
+			{
+				"id": 1068,
+				"name": "Make 100 Simple kibble"
+			},
+			{
+				"id": 1107,
+				"name": "Mine 1000 ores"
+			},
+			{
+				"id": 1032,
+				"name": "Mix 100 Energy potions."
+			},
+			{
+				"id": 1031,
+				"name": "Mix 100 Restore potions."
+			},
+			{
+				"id": 1106,
+				"name": "Mix 500 potions"
+			},
+			{
+				"id": 1033,
+				"name": "Mix 500 Prayer potions."
+			},
+			{
+				"id": 1105,
+				"name": "Mix 500 unf potions"
+			},
+			{
+				"id": 1022,
+				"name": "Obtain 100 Marks of grace"
+			},
+			{
+				"id": 1128,
+				"name": "Offer 5 of each bird egg"
+			},
+			{
+				"id": 1053,
+				"name": "Offer a chewed bones"
+			},
+			{
+				"id": 1054,
+				"name": "Offer an unsired"
+			},
+			{
+				"id": 1073,
+				"name": "Open 100x TMB"
+			},
+			{
+				"id": 1074,
+				"name": "Open 100x UMB"
+			},
+			{
+				"id": 1076,
+				"name": "Open 10x CMB"
+			},
+			{
+				"id": 1075,
+				"name": "Open 30x EMB"
+			},
+			{
+				"id": 1077,
+				"name": "Open 5x HMB"
+			},
+			{
+				"id": 1078,
+				"name": "Open 5x PMB"
+			},
+			{
+				"id": 1044,
+				"name": "Open a Chimpling jar"
+			},
+			{
+				"id": 1155,
+				"name": "Open a Divine egg"
+			},
+			{
+				"id": 1043,
+				"name": "Open a Magic crate"
+			},
+			{
+				"id": 1042,
+				"name": "Open a Monkey crate"
+			},
+			{
+				"id": 1045,
+				"name": "Open a Mystery impling jar"
+			},
+			{
+				"id": 1046,
+				"name": "Open an Eternal impling jar"
+			},
+			{
+				"id": 1047,
+				"name": "Open an Infernal impling jar"
+			},
+			{
+				"id": 1138,
+				"name": "Open the Crystal chest 50 times"
+			},
+			{
+				"id": 1100,
+				"name": "Reach 15% CL completion"
+			},
+			{
+				"id": 1023,
+				"name": "Reach combat level 90"
+			},
+			{
+				"id": 1061,
+				"name": "Reach honour level 5"
+			},
+			{
+				"id": 1024,
+				"name": "Reach total level 1000"
+			},
+			{
+				"id": 1135,
+				"name": "Receive 1000 bars from an adze"
+			},
+			{
+				"id": 1147,
+				"name": "Receive 1000 Carpenter points in Mahogany Homes"
+			},
+			{
+				"id": 1131,
+				"name": "Receive 25,000 Prayer XP from the ash sanctifier"
+			},
+			{
+				"id": 1136,
+				"name": "Receive 250 ores from ore spirits"
+			},
+			{
+				"id": 1132,
+				"name": "Receive 50,000 XP from silverhawk boots"
+			},
+			{
+				"id": 1149,
+				"name": "Receive a Giant's hand"
+			},
+			{
+				"id": 1156,
+				"name": "Receive a Grandmaster clue from divination"
+			},
+			{
+				"id": 1150,
+				"name": "Receive a Materials bag"
+			},
+			{
+				"id": 1040,
+				"name": "Receive any 5 custom pets"
+			},
+			{
+				"id": 1049,
+				"name": "Receive any XP lamp"
+			},
+			{
+				"id": 1038,
+				"name": "Receive every defender"
+			},
+			{
+				"id": 1027,
+				"name": "Receive the full Angler outfit"
+			},
+			{
+				"id": 1151,
+				"name": "Receive the full Inventors' outfit."
+			},
+			{
+				"id": 1144,
+				"name": "Receive, and alch, a Magical artifact"
+			},
+			{
+				"id": 1146,
+				"name": "Runecraft 1000 Tiaras"
+			},
+			{
+				"id": 1060,
+				"name": "Sacrifice 1b worth of items/GP"
+			},
+			{
+				"id": 1093,
+				"name": "Sacrifice 50 different items"
+			},
+			{
+				"id": 1091,
+				"name": "Sacrifice 500m GP"
+			},
+			{
+				"id": 1092,
+				"name": "Sacrifice all barrows items"
+			},
+			{
+				"id": 1130,
+				"name": "Scatter 100 of every ashes"
+			},
+			{
+				"id": 1059,
+				"name": "Slay 20 superior slayer creatures"
+			},
+			{
+				"id": 1137,
+				"name": "Smelt 1000 bars with Klik"
+			},
+			{
+				"id": 1014,
+				"name": "Smelt 500 Iron bars from scratch"
+			},
+			{
+				"id": 1110,
+				"name": "Smith items from 1000 Bronze bars"
+			},
+			{
+				"id": 1115,
+				"name": "Smith items from 2500 Steel bars"
+			},
+			{
+				"id": 1109,
+				"name": "Smith items from 500 Iron bars"
+			},
+			{
+				"id": 1134,
+				"name": "Tan 1000 hides with the portable tanner"
+			},
+			{
+				"id": 1133,
+				"name": "Upgrade 25 clues with the clue upgrader"
+			},
+			{
+				"id": 1152,
+				"name": "Use a Guthix engram"
+			},
+			{
+				"id": 1154,
+				"name": "Use any portent"
+			}
+		],
+		"points": 45
+	}
+]

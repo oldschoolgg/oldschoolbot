@@ -1,14 +1,14 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { GemTable } from '../../subtables/RareDropTable';
-import RareSeedTable from '../../subtables/RareSeedTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const TatteredPageTable = new LootTable()
+const TatteredPageTable: LootTable = new LootTable()
 	.add('Tattered moon page')
 	.add('Tattered sun page')
 	.add('Tattered temple page');
 
-const HerbTable = new LootTable()
+const HerbTable: LootTable = new LootTable()
 	.add('Grimy kwuarm', [10, 15], 31)
 	.add('Grimy cadantine', [10, 15], 27)
 	.add('Grimy dwarf weed', [10, 15], 25)
@@ -18,7 +18,7 @@ const HerbTable = new LootTable()
 	.add('Grimy snapdragon', [5, 10], 15)
 	.add('Grimy torstol', [5, 10], 12);
 
-const SarachnisTable = new LootTable()
+const SarachnisTable: LootTable = new LootTable()
 	/* Pre-roll */
 	.oneIn(192, 'Dragon med helm')
 	.oneIn(384, 'Sarachnis cudgel')
@@ -76,7 +76,7 @@ const SarachnisTable = new LootTable()
 	.tertiary(2000, 'Jar of eyes')
 	.tertiary(3000, 'Sraracha');
 
-export default new SimpleMonster({
+export const Sarachnis: SimpleMonster = new SimpleMonster({
 	id: 8713,
 	name: 'Sarachnis',
 	table: SarachnisTable,

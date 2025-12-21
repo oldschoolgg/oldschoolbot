@@ -1,22 +1,19 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function troubleBrewingStartCommand(user: MUser, channelID: string) {
+export async function troubleBrewingStartCommand(user: MUser, channelId: string) {
 	const timePerGame = Time.Minute * 20;
-	const maxTripLength = calcMaxTripLength(user, 'TroubleBrewing');
+	const maxTripLength = await user.calcMaxTripLength('TroubleBrewing');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'TroubleBrewing',
-		channelID: channelID.toString(),
+		channelId,
 		minigameID: 'trouble_brewing'
 	});
 

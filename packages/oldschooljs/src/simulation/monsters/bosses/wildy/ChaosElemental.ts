@@ -1,15 +1,15 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import RareDropTable from '../../../subtables/RareDropTable';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const ChaosElementalMinorTable = new LootTable()
+const ChaosElementalMinorTable: LootTable = new LootTable()
 	.add('Blighted anglerfish', 2, 1)
 	.add('Blighted karambwan', 3, 1)
 	.add('Blighted super restore(4)', 1, 1)
 	.add('Dragon bones', 1, 1)
 	.add('Super combat potion(1)', 1, 1);
 
-const ChaosElementalTable = new LootTable()
+const ChaosElementalTable: LootTable = new LootTable()
 	.every(ChaosElementalMinorTable, 1)
 	.tertiary(200, 'Clue scroll (elite)')
 	.tertiary(300, 'Pet chaos elemental')
@@ -59,7 +59,7 @@ const ChaosElementalTable = new LootTable()
 	/* Subtables */
 	.add(RareDropTable, 1, 8);
 
-export default new SimpleMonster({
+export const ChaosElemental: SimpleMonster = new SimpleMonster({
 	id: 2054,
 	name: 'Chaos Elemental',
 	table: ChaosElementalTable,

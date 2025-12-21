@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { TwistedBansheePreTable } from '../low/t-z/TwistedBanshee';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { TwistedBansheePreTable } from '../low/t-z/TwistedBanshee.js';
 
-const ScreamingTwistedBansheeTable = new LootTable()
+const ScreamingTwistedBansheeTable: LootTable = new LootTable()
 	.every(TwistedBansheePreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
 
@@ -12,7 +12,7 @@ const ScreamingTwistedBansheeTable = new LootTable()
 	.tertiary(1286, 'Eternal gem')
 	.tertiary(1286, 'Imbued heart');
 
-export default new SimpleMonster({
+export const ScreamingTwistedBanshee: SimpleMonster = new SimpleMonster({
 	id: 7391,
 	name: 'Screaming twisted banshee',
 	table: ScreamingTwistedBansheeTable,

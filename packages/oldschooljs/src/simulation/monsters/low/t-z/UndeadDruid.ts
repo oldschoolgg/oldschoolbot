@@ -1,17 +1,20 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { UncommonSeedDropTable } from '../../../subtables';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const TatteredPageTable = new LootTable()
+const TatteredPageTable: LootTable = new LootTable()
 	.add('Tattered moon page')
 	.add('Tattered sun page')
 	.add('Tattered temple page');
 
-const HerbHerbDropTable = new LootTable().add(HerbDropTable, 1, 1).add(HerbDropTable, 2, 1).add(HerbDropTable, 3, 1);
+const HerbHerbDropTable: LootTable = new LootTable()
+	.add(HerbDropTable, 1, 1)
+	.add(HerbDropTable, 2, 1)
+	.add(HerbDropTable, 3, 1);
 
-export const UndeadDruidTable = new LootTable()
+export const UndeadDruidTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Tertiary */
@@ -57,7 +60,7 @@ export const UndeadDruidTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 1, 1);
 
-export default new SimpleMonster({
+export const UndeadDruid: SimpleMonster = new SimpleMonster({
 	id: 2145,
 	name: 'Undead Druid',
 	table: UndeadDruidTable,

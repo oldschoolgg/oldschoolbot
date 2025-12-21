@@ -1,28 +1,28 @@
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
-import { CombatCannonItemBank } from '../../minions/data/combatConstants';
-import { QuestID } from '../../minions/data/quests';
-import type { MinigameName } from '../../settings/settings';
-import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
-import type { MUserStats } from '../../structures/MUserStats';
-import type { Skills } from '../../types';
-import { chompyHats } from '../CollectionsExport';
-import { aerialFishBuyables } from './aerialFishBuyables';
-import { canifisClothes } from './canifisClothes';
-import { capeBuyables } from './capes';
-import { castleWarsBuyables } from './castleWars';
-import { forestryBuyables } from './forestryBuyables';
-import { fremennikClothes } from './frem';
-import { gnomeClothes } from './gnomeClothes';
-import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
-import { mairinsMarketBuyables } from './mairinsMarketBuyables';
-import { miningBuyables } from './mining';
-import { godCapes, perduBuyables, prayerBooks } from './perdu';
-import { runeBuyables } from './runes';
-import { shootingStarsBuyables } from './shootingStarsBuyables';
-import { skillCapeBuyables } from './skillCapeBuyables';
-import { slayerBuyables } from './slayerBuyables';
-import { troubleBrewingBuyables } from './troubleBrewingShop';
+import { aerialFishBuyables } from '@/lib/data/buyables/aerialFishBuyables.js';
+import { canifisClothes } from '@/lib/data/buyables/canifisClothes.js';
+import { capeBuyables } from '@/lib/data/buyables/capes.js';
+import { castleWarsBuyables } from '@/lib/data/buyables/castleWars.js';
+import { forestryBuyables } from '@/lib/data/buyables/forestryBuyables.js';
+import { fremennikClothes } from '@/lib/data/buyables/frem.js';
+import { gnomeClothes } from '@/lib/data/buyables/gnomeClothes.js';
+import { guardiansOfTheRiftBuyables } from '@/lib/data/buyables/guardiansOfTheRifBuyables.js';
+import { mairinsMarketBuyables } from '@/lib/data/buyables/mairinsMarketBuyables.js';
+import { miningBuyables } from '@/lib/data/buyables/mining.js';
+import { godCapes, perduBuyables, prayerBooks } from '@/lib/data/buyables/perdu.js';
+import { runeBuyables } from '@/lib/data/buyables/runes.js';
+import { shootingStarsBuyables } from '@/lib/data/buyables/shootingStarsBuyables.js';
+import { skillCapeBuyables } from '@/lib/data/buyables/skillCapeBuyables.js';
+import { slayerBuyables } from '@/lib/data/buyables/slayerBuyables.js';
+import { troubleBrewingBuyables } from '@/lib/data/buyables/troubleBrewingShop.js';
+import { chompyHats } from '@/lib/data/CollectionsExport.js';
+import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { Skills } from '@/lib/types/index.js';
 
 export interface Buyable {
 	name: string;
@@ -39,6 +39,9 @@ export interface Buyable {
 	collectionLogReqs?: number[];
 	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
 	maxQuantity?: number;
+	quantityPerHour?: number;
+	shopQuantity?: number;
+	changePer?: number;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -1168,6 +1171,15 @@ for (const id of ItemGroups.teamCapes) {
 		outputItems: new Bank().add(id),
 		gpCost: 15_000
 	});
+}
+
+for (const buyable of Buyables) {
+	if (buyable.itemCost instanceof Bank) {
+		buyable.itemCost.freeze();
+	}
+	if (buyable.outputItems instanceof Bank) {
+		buyable.outputItems.freeze();
+	}
 }
 
 export default Buyables;

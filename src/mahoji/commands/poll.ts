@@ -1,35 +1,23 @@
-import { type CommandRunOptions, type OSBMahojiCommand, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { SpecialResponse } from '@oldschoolgg/discord';
 
-import { deferInteraction } from '../../lib/util/interactionReply';
-
-export const pollCommand: OSBMahojiCommand = {
+export const pollCommand = defineCommand({
 	name: 'poll',
 	description: 'Create a reaction poll.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'question',
 			description: 'The poll question.',
 			required: true
 		}
 	],
-	run: async ({ interaction, options, user, channelID }: CommandRunOptions<{ question: string }>) => {
-		const channel = globalClient.channels.cache.get(channelID.toString());
-		if (!channelIsSendable(channel)) return { ephemeral: true, content: 'Invalid channel.' };
-		await deferInteraction(interaction, true);
-		try {
-			const message = await channel.send({
-				content: `**Poll from ${user.username}:** ${options.question}`,
-				allowedMentions: {
-					parse: []
-				}
-			});
-			await message.react('380915244760825857');
-			await message.react('380915244652036097');
-			return 'Poll created. Users can click on the two reactions to vote.';
-		} catch {
-			return 'There was an error making the poll.';
-		}
+	run: async ({ interaction, channelId, user, options }) => {
+		const createdMessage = await interaction.replyWithResponse({
+			content: `Poll from ${user.username}: ${options.question}`
+		});
+		const messageId = createdMessage!.message_id;
+		await globalClient.reactToMsg({ channelId: channelId, messageId, emojiId: 'Happy' });
+		await globalClient.reactToMsg({ channelId: channelId, messageId, emojiId: 'Sad' });
+		return SpecialResponse.RespondedManually;
 	}
-};
+});

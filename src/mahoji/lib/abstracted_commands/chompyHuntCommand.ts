@@ -1,18 +1,14 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
+import { formatDuration, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { avasDevices, chompyHats } from '../../../lib/data/CollectionsExport';
-import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 const diaryBoosts = [
-	[WesternProv.elite, 100],
-	[WesternProv.medium, 50],
-	[WesternProv.easy, 25]
+	['westernprovinces.elite', 100],
+	['westernprovinces.medium', 50],
+	['westernprovinces.easy', 25]
 ] as const;
 
 const baseChompyPerHour = 100;
@@ -32,7 +28,7 @@ export async function chompyHuntClaimCommand(user: MUser) {
 	return `Added the following hats to your bank: ${missingHatsBank}`;
 }
 
-export async function chompyHuntCommand(user: MUser, channelID: string) {
+export async function chompyHuntCommand(user: MUser, channelId: string) {
 	if (user.QP < 10) {
 		return 'You need at least 10 QP to hunt Chompy birds.';
 	}
@@ -42,12 +38,12 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 		return 'You need an Ogre bow equipped in your range outfit, and Ogre arrows to hunt Chompy birds!';
 	}
 
-	const tripLength = calcMaxTripLength(user, 'BigChompyBirdHunting');
+	const tripLength = await user.calcMaxTripLength('BigChompyBirdHunting');
 
-	const boosts = [];
+	const boosts: string[] = [];
 	let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
 	for (const [diary, boost] of diaryBoosts) {
-		const [hasDiary] = await userhasDiaryTier(user, diary);
+		const hasDiary = user.hasDiary(diary);
 		if (hasDiary) {
 			let bonus = 0;
 			for (let i = 0; i < quantity; i++) {
@@ -56,7 +52,7 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 				}
 			}
 			quantity += bonus;
-			boosts.push(`${boost}% for ${diary.name} ${WesternProv.name}`);
+			boosts.push(`${boost}% for ${diary.replace('.', ' ')}`);
 
 			break;
 		}
@@ -71,13 +67,16 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 	const realCost = new Bank();
 	try {
 		realCost.add((await user.specialRemoveItems(cost)).realCost);
-	} catch (err: any) {
-		return `You cannot hunt chompy birds. ${err.message}`;
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return err.message;
+		}
+		throw err;
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration: tripLength,
 		type: 'BigChompyBirdHunting',
 		quantity,

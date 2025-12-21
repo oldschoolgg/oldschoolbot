@@ -1,18 +1,16 @@
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 
-import { roll } from '@/lib/util/rng';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-function calcPoints() {
+function calcPoints(rng: RNGProvider) {
 	let base = 42.5;
-	if (roll(5)) {
+	if (rng.roll(5)) {
 		base = 30;
 	}
-	if (roll(15)) {
+	if (rng.roll(15)) {
 		base = 10;
 	}
-	if (roll(2)) {
+	if (rng.roll(2)) {
 		base = increaseNumByPercent(base, 20);
 	} else {
 		base = reduceNumByPercent(base, 20);
@@ -22,13 +20,12 @@ function calcPoints() {
 
 export const soulWarsTask: MinionTask = {
 	type: 'SoulWars',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
+		const { channelId, quantity } = data;
 
 		let points = 0;
 		for (let i = 0; i < quantity; i++) {
-			points += calcPoints();
+			points += calcPoints(rng);
 		}
 
 		await user.update({
@@ -39,8 +36,8 @@ export const soulWarsTask: MinionTask = {
 
 		await user.incrementMinigameScore('soul_wars', quantity);
 
-		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n`;
+		const message = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n`;
 
-		handleTripFinish(user, channelID, str, undefined!, data, null);
+		return handleTripFinish({ user, channelId, message, data });
 	}
 };

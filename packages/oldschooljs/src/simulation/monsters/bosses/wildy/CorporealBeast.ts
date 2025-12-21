@@ -1,10 +1,13 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const SigilTable = new LootTable().add('Spectral sigil', 1, 3).add('Arcane sigil', 1, 3).add('Elysian sigil', 1, 1);
+const SigilTable: LootTable = new LootTable()
+	.add('Spectral sigil', 1, 3)
+	.add('Arcane sigil', 1, 3)
+	.add('Elysian sigil', 1, 1);
 
-export const CorporealBeastTable = new LootTable()
+export const CorporealBeastTable: LootTable = new LootTable()
 
 	.add('Spirit shield', 1, 8)
 	.add('Holy elixir', 1, 3)
@@ -56,7 +59,7 @@ export const CorporealBeastTable = new LootTable()
 	.tertiary(1000, 'Jar of spirits')
 	.tertiary(5000, 'Pet dark core');
 
-export default new SimpleMonster({
+export const CorporealBeast: SimpleMonster = new SimpleMonster({
 	id: 319,
 	name: 'Corporeal Beast',
 	table: CorporealBeastTable,

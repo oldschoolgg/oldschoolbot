@@ -1,8 +1,7 @@
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 // Assumes always playing on Castle Wars worlds(which give +1 ticket)"
 const ticketTable = new SimpleTable<number>()
@@ -14,9 +13,8 @@ const ticketTable = new SimpleTable<number>()
 
 export const castleWarsTask: MinionTask = {
 	type: 'CastleWars',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, quantity, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelId, quantity } = data;
 
 		await user.incrementMinigameScore('castle_wars', quantity);
 
@@ -25,17 +23,15 @@ export const castleWarsTask: MinionTask = {
 			const tickets = ticketTable.rollOrThrow();
 			loot.add('Castle wars ticket', tickets).add('Castle wars supply crate', tickets);
 		}
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 
 		handleTripFinish(
 			user,
-			channelID,
+			channelId,
 			`${user.mention}, ${user.minionName} finished ${quantity}x Castle Wars games and received ${loot}.`,
-			undefined,
 			data,
 			loot
 		);

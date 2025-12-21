@@ -1,0 +1,17 @@
+{
+	"name": "@oldschoolgg/util",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "rimraf ./dist && tsc -p src --noEmit false",
+		"test": "pnpm tsc -p src --noEmit"
+	},
+	"dependencies": {
+		"@oldschoolgg/rng": "workspace:*"
+	}
+}

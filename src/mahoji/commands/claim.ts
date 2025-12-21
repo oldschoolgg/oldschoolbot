@@ -1,14 +1,13 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { dateFm } from '@oldschoolgg/discord';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
-import { calcCLDetails } from '../../lib/data/Collections';
-import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { sendToChannelID } from '../../lib/util/webhook';
+import { BitField, BOT_TYPE, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
+import { calcCLDetails } from '@/lib/data/Collections.js';
+import { HolidayItems } from '@/lib/data/holidayItems.js';
+import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const claimables = [
 	{
@@ -24,7 +23,7 @@ const claimables = [
 			if (user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)) {
 				return 'You already claimed this!';
 			}
-			sendToChannelID(Channel.ServerGeneral, {
+			globalClient.sendMessage(Channel.ServerGeneral, {
 				content: `${user.mention} just claimed free T1 patron perks for being maxed in both bots!`
 			});
 			await user.update({
@@ -33,6 +32,45 @@ const claimables = [
 				}
 			});
 			return 'You claimed free T1 patron perks in OSB for being maxed in both bots. You can claim this on BSO too for free patron perks on BSO.';
+		}
+	},
+	{
+		name: `Halloween Items`,
+		action: async (user: MUser) => {
+			if (BOT_TYPE === 'BSO') {
+				return 'This command is only for OSB.';
+			}
+			const messages: string[] = [];
+			const allItemsCanGet = [...HolidayItems.Halloween.halloweenItems];
+			const isPermIron = user.isIronman && user.bitfield.includes(BitField.PermanentIronman);
+			if (isPermIron) {
+				allItemsCanGet.push(...HolidayItems.Halloween.halloweenOnlyForPermIrons);
+				messages.push('As a permanent ironman, you are eligible for extra Halloween items!');
+			}
+			const ownedItems = user.allItemsOwned;
+			const itemsToAdd = new Bank();
+			for (const item of allItemsCanGet) {
+				if (!ownedItems.has(item)) {
+					itemsToAdd.add(item);
+				}
+			}
+
+			if (itemsToAdd.length === 0) {
+				return `You already have all Halloween items.`;
+			}
+			await user.transactItems({ itemsToAdd, collectionLog: true });
+			messages.push(
+				`You have claimed the following Halloween items: ${itemsToAdd.itemIDs
+					.sort((a, b) => b - a)
+					.map(id => Items.itemNameFromId(id))
+					.join(', ')}.`
+			);
+			return new MessageBuilder().setContent(messages.join('')).addBankImage({
+				bank: itemsToAdd,
+				title: `Halloween Items Claimed`,
+				user,
+				flags: { forceAllPurple: 1 }
+			});
 		}
 	},
 	...CollectionLog.ranks.map(rank => ({
@@ -63,19 +101,19 @@ const claimables = [
 	}))
 ];
 
-export const claimCommand: OSBMahojiCommand = {
+export const claimCommand = defineCommand({
 	name: 'claim',
 	description: 'Claim prizes, rewards and other things.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to claim.',
 			required: true,
-			autocomplete: async (value, user) => {
+			autocomplete: async ({ userId, value }: StringAutoComplete) => {
 				const claimableItems = await prisma.reclaimableItem.findMany({
 					where: {
-						user_id: user.id
+						user_id: userId
 					}
 				});
 				return [...claimables, ...claimableItems]
@@ -87,14 +125,13 @@ export const claimCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }) => {
 		const claimable = claimables.find(i => stringMatches(i.name, options.name));
 		if (!claimable) {
 			const reclaimableData = await getReclaimableItemsOfUser(user);
 			const rawData = reclaimableData.raw.find(i => i.name === options.name);
 			if (!rawData) {
-				return 'You are not elligible for this item.';
+				return 'You are not eligible for this item.';
 			}
 			if (!reclaimableData.totalCanClaim.has(rawData.item_id)) {
 				return 'You already claimed this item. If you lose it, you can reclaim it.';
@@ -108,12 +145,14 @@ ${rawData.name}: ${rawData.description}.
 ${dateFm(new Date(rawData.date))}`;
 		}
 
-		const requirementCheck = await claimable.hasRequirement(user);
-		if (typeof requirementCheck === 'string') {
-			return `You are not eligible to claim this: ${requirementCheck}`;
+		if ('hasRequirement' in claimable && claimable.hasRequirement) {
+			const requirementCheck = await claimable.hasRequirement(user);
+			if (typeof requirementCheck === 'string') {
+				return `You are not eligible to claim this: ${requirementCheck}`;
+			}
 		}
 
 		const result = await claimable.action(user);
 		return result;
 	}
-};
+});

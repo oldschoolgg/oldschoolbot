@@ -1,11 +1,7 @@
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { roll } from '@oldschoolgg/rng';
+import { Bank, LootTable } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')
@@ -58,9 +54,8 @@ export const tipTable = new LootTable()
 
 export const gnomeResTask: MinionTask = {
 	type: 'GnomeRestaurant',
-	async run(data: GnomeRestaurantActivityTaskOptions) {
-		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
-		const user = await mUserFetch(userID);
+	async run(data: GnomeRestaurantActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelId, quantity, duration, gloriesRemoved } = data;
 
 		await user.incrementMinigameScore('gnome_restaurant', quantity);
 
@@ -77,21 +72,20 @@ export const gnomeResTask: MinionTask = {
 			loot.add(tipTable.roll());
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: totalXP,
 			duration
 		});
 
-		const str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
+		const str = `<@${user.id}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
 
-		updateBankSetting('gnome_res_loot', loot);
+		await ClientSettings.updateBankSetting('gnome_res_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

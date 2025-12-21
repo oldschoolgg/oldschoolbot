@@ -1,16 +1,16 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 
-import { SkillsEnum } from '../../types';
-import { calcConBonusXP } from './calcConBonusXP';
-import Constructables from './constructables';
+import { defineSkill } from '@/lib/skilling/types.js';
+import { calcConBonusXP } from './calcConBonusXP.js';
+import Constructables from './constructables.js';
 
-export const Construction = {
+export const Construction = defineSkill({
 	aliases: ['con', 'construction'],
-	id: SkillsEnum.Construction,
+	id: 'construction',
 	emoji: Emoji.Construction,
 	name: 'Construction',
 	constructables: Constructables,
 	util: {
 		calcConBonusXP
 	}
-};
+});

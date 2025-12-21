@@ -1,14 +1,14 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const HerbTable = new LootTable()
+const HerbTable: LootTable = new LootTable()
 	.add('Grimy avantoe', 1, 5)
 	.add('Grimy ranarr weed', 1, 4)
 	.add('Grimy snapdragon', 1, 4)
 	.add('Grimy torstol', 1, 3);
 
-const BloodReaverTable = new LootTable()
+const BloodReaverTable: LootTable = new LootTable()
 	.every('Malicious ashes')
 
 	/* Ancient ceremonial robes */
@@ -55,7 +55,7 @@ const BloodReaverTable = new LootTable()
 	/* Tertiary */
 	.tertiary(112, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const BloodReaver: SimpleMonster = new SimpleMonster({
 	id: 11_293,
 	name: 'Blood Reaver',
 	table: BloodReaverTable,
