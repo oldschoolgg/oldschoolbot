@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, test } from 'vitest';
 
+import { EItem } from '@/EItem.js';
 import { EquipmentSlot } from '@/meta/item.js';
 import Openables from '@/simulation/openables/index.js';
 import { Items } from '@/structures/Items.js';
@@ -144,4 +145,19 @@ test('modifyItem', () => {
 test('Dwarf toolkit', () => {
 	expect(Items.get(0)).toBeUndefined();
 	expect(Items.getItem('Dwarf toolkit')).toBeNull();
+});
+
+test('Misc', () => {
+	const sailingItems = [EItem.SAILING_CAPE, EItem.SAILING_CAPE_T, EItem.SAILING_HOOD];
+	for (const item of sailingItems) {
+		const it = Items.getItem(item)!;
+		expect(it).toBeDefined();
+		expect(it.equipable).toBe(true);
+		expect(it.tradeable).toBe(false);
+		expect(it.tradeable_on_ge).toBe(false);
+		// @ts-expect-error
+		expect(it.equipment!.requirements.sailing).toBe(99);
+		expect(it.equipment?.slot).toBeDefined();
+		expect(it.equipment?.attack_crush).toBe(0);
+	}
 });
