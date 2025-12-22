@@ -24,6 +24,7 @@ import {
 	araxxorCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
+	boatPaintsCL,
 	brimhavenAgilityArenaCL,
 	bryophytaCL,
 	callistoCL,
@@ -84,6 +85,7 @@ import {
 	kreeArraCL,
 	krilTsutsarothCL,
 	lastManStandingCL,
+	lostSchematicsCL,
 	magicTrainingArenaCL,
 	mahoganyHomesCL,
 	miscellaneousCL,
@@ -93,14 +95,17 @@ import {
 	myNotesCL,
 	NexCL,
 	oborCL,
+	oceanEncountersCL,
 	pestControlCL,
 	questCL,
 	randomEventsCL,
 	revenantsCL,
 	roguesDenCL,
 	rooftopAgilityCL,
+	sailingMiscellaneousCL,
 	sarachnisCL,
 	scorpiaCL,
+	seaTreasuresCL,
 	shadesOfMorttonCL,
 	shayzienArmourCL,
 	skillingPetsCL,
@@ -969,6 +974,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['pet', 'pets'],
 				items: allPetsCL
 			},
+			'Boat Paints': {
+				alias: ['boat paints', 'paints'],
+				items: boatPaintsCL
+			},
 			Camdozaal: {
 				items: camdozaalCL
 			},
@@ -1021,6 +1030,10 @@ export const allCollectionLogs: ICollection = {
 				unobtainable: true,
 				items: CollectionLog.HunterGuild.items
 			},
+			'Lost Schematics': {
+				alias: ['schematics', 'lost schematics'],
+				items: lostSchematicsCL
+			},
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
 				kcActivity: {
@@ -1037,6 +1050,10 @@ export const allCollectionLogs: ICollection = {
 			'My Notes': {
 				alias: ['my notes'],
 				items: myNotesCL
+			},
+			'Ocean Encounters': {
+				alias: ['encounters', 'ocean encounters'],
+				items: oceanEncountersCL
 			},
 			'Random Events': {
 				alias: ['random'],
@@ -1084,6 +1101,14 @@ export const allCollectionLogs: ICollection = {
 				items: rooftopAgilityCL,
 				isActivity: true,
 				fmtProg: skillProg('agility')
+			},
+			'Sailing Miscellaneous': {
+				alias: ['sailing', 'sailing misc', 'sailing miscellaneous'],
+				items: sailingMiscellaneousCL
+			},
+			'Sea Treasures': {
+				alias: ['sea', 'sea treasures'],
+				items: seaTreasuresCL
 			},
 			'Shayzien Armour': {
 				items: shayzienArmourCL
