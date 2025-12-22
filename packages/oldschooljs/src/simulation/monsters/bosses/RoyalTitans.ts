@@ -83,7 +83,6 @@ const EldricTable: LootTable = new LootTable({ limit: 56 })
 	.add('Prayer potion(4)', [1, 2], 2)
 	.add('Desiccated page', [3, 12], 2);
 
-
 const TotalEldricTable: LootTable = new LootTable()
 	.oneIn(32, 'Giantsoul amulet (uncharged)')
 	.oneIn(150, 'Ice element staff crown')
