@@ -1,8 +1,8 @@
-import type { GearPreset } from '@prisma/client';
 import { Bank, Items, itemID } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 import { describe, expect, it, test } from 'vitest';
 
+import type { GearPreset } from '@/prisma/main.js';
 import { constructGearSetup, Gear } from '../../src/lib/structures/Gear.js';
 
 describe('Gear', () => {
@@ -325,7 +325,6 @@ describe('Gear', () => {
 			ring: itemID('Berserker ring'),
 			ammo: itemID('Dragon arrow'),
 			ammo_qty: 153,
-			emoji_id: null,
 			times_equipped: 0,
 			pinned_setup: null
 		};
@@ -362,7 +361,6 @@ describe('Gear', () => {
 			ring: null,
 			ammo: null,
 			ammo_qty: null,
-			emoji_id: null,
 			times_equipped: 0,
 			pinned_setup: null
 		};

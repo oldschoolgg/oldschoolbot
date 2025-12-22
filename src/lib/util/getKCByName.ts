@@ -1,5 +1,5 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import type { Monster } from 'oldschooljs';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import type { ItemBank } from 'oldschooljs';
 
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { Minigames } from '@/lib/settings/minigames.js';
@@ -10,7 +10,7 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 		mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
 	);
 	if (mon) {
-		return [mon.name, await user.getKC((mon as unknown as Monster).id)];
+		return [mon.name, await user.getKC(mon.id)];
 	}
 
 	const minigame = Minigames.find(
@@ -25,7 +25,7 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 		return [creature.name, await user.getCreatureScore(creature.id)];
 	}
 
-	const stats = await user.fetchStats({ slayer_superior_count: true, tithe_farms_completed: true });
+	const stats = await user.fetchStats();
 	const special: [string[], number][] = [
 		[['superior', 'superiors', 'superior slayer monster'], stats.slayer_superior_count],
 		[['tithe farm', 'Tithe farm', 'tithefarm', 'tithe'], stats.tithe_farms_completed]
@@ -36,4 +36,58 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 	}
 
 	return [null, 0];
+}
+
+export type AllKillCountEntry = {
+	name: string;
+	amount: number;
+	type: 'Monster' | 'Minigame' | 'Hunter' | 'Special';
+};
+
+export async function getAllKillCounts(user: MUser): Promise<AllKillCountEntry[]> {
+	const stats = await user.fetchStats();
+	const monsterScores = (stats.monster_scores as ItemBank) ?? ({} as ItemBank);
+	const creatureScores = (stats.creature_scores as ItemBank) ?? ({} as ItemBank);
+	const result: AllKillCountEntry[] = [];
+
+	for (const monster of effectiveMonsters) {
+		const monsterID = monster.id;
+		result.push({
+			name: monster.name,
+			amount: monsterScores[monsterID] ?? 0,
+			type: 'Monster'
+		});
+	}
+
+	const minigameScores = await user.fetchMinigameScores();
+	for (const { minigame, score } of minigameScores) {
+		if (minigame.name === 'Tithe farm') continue;
+		result.push({
+			name: minigame.name,
+			amount: score ?? 0,
+			type: 'Minigame'
+		});
+	}
+
+	for (const creature of Hunter.Creatures) {
+		result.push({
+			name: creature.name,
+			amount: creatureScores[creature.id] ?? 0,
+			type: 'Hunter'
+		});
+	}
+
+	result.push({
+		name: 'Superior slayer monsters',
+		amount: stats.slayer_superior_count ?? 0,
+		type: 'Special'
+	});
+
+	result.push({
+		name: 'Tithe farm',
+		amount: stats.tithe_farms_completed ?? 0,
+		type: 'Special'
+	});
+
+	return result;
 }

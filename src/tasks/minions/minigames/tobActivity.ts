@@ -1,6 +1,5 @@
-import { roll, shuffleArr } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit/util';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { Emoji, Events, formatOrdinal, miniID } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
@@ -10,13 +9,10 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { TheatreOfBlood } from '@/lib/simulation/tob.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { XPCounter } from '@/lib/structures/XPCounter.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
-async function handleTobXP(user: MUser, isHm: boolean) {
+function handleTobXP(user: MUser, isHm: boolean, xpCounter: XPCounter): void {
 	let hitpointsXP = 13_000;
 	let rangeXP = 1000;
 	let magicXP = 1000;
@@ -29,40 +25,25 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 		meleeXP *= 1.2;
 	}
 
-	const results = [];
-	results.push(
-		await user.addXP({
-			skillName: SkillsEnum.Hitpoints,
-			amount: hitpointsXP,
-			minimal: true,
-			source: 'TheatreOfBlood'
-		})
-	);
-	results.push(
-		await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'TheatreOfBlood' })
-	);
-	results.push(
-		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'TheatreOfBlood' })
-	);
+	xpCounter.add('hitpoints', hitpointsXP);
+	xpCounter.add('ranged', rangeXP);
+	xpCounter.add('magic', magicXP);
 	let styles = resolveAttackStyles({
 		attackStyles: user.getAttackStyles()
 	});
-	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
-		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	if ((['magic', 'ranged'] as const).some(style => styles.includes(style))) {
+		styles = ['attack', 'strength', 'defence'];
 	}
 	const perSkillMeleeXP = meleeXP / styles.length;
 	for (const style of styles) {
-		results.push(
-			await user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true, source: 'TheatreOfBlood' })
-		);
+		xpCounter.add(style, perSkillMeleeXP);
 	}
-	return results;
 }
 
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',
-	async run(data: TheatreOfBloodTaskOptions) {
-		const { channelID, users, hardMode, leader, wipedRooms, duration, deaths: allDeaths, quantity } = data;
+	async run(data: TheatreOfBloodTaskOptions, { handleTripFinish }) {
+		const { channelId, users, hardMode, leader, wipedRooms, duration, deaths: allDeaths, quantity } = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const minigameID = hardMode ? 'tob_hard' : 'tob';
 		const allTag = allUsers.map(u => u.toString()).join('');
@@ -70,10 +51,16 @@ export const tobTask: MinionTask = {
 		const globalTobCost = new Bank();
 		const totalLoot = new Bank();
 		const previousCLs = allUsers.map(i => i.cl.clone());
+		const isSolo = users.length === 1;
 		let raidId = 0;
 		let wipeCount = 0;
 		let earnedAttempts = 0;
 		let resultMessage = `**${allTag} Your ${hardMode ? 'Hard Mode ' : ''}Theatre of Blood has finished**\n`;
+
+		const totalXPCounts: Record<string, XPCounter> = {};
+		for (const user of allUsers) {
+			totalXPCounts[user.id] = new XPCounter();
+		}
 
 		for (let i = 0; i < quantity; i++) {
 			raidId = i + 1;
@@ -90,7 +77,9 @@ export const tobTask: MinionTask = {
 				team: tobUsers
 			});
 
-			resultMessage += `\n **Raid${quantity < 2 ? '' : ` ${raidId}`} results:**`;
+			resultMessage += `\n **Raid${quantity < 2 ? '' : ` ${raidId}`} results (Unique chance: ${result.percentChanceOfUnique
+				.toFixed(2)
+				.replace('.00', '')}%):**`;
 
 			// Give them all +1 attempts
 			const diedToMaiden = wipedRoom !== null && wipedRoom === 0;
@@ -107,14 +96,10 @@ export const tobTask: MinionTask = {
 				continue;
 			}
 
-			resultMessage += `\n Unique chance: ${result.percentChanceOfUnique.toFixed(
-				2
-			)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})`;
-
 			// Track loot for T3+ patrons
 			await Promise.all(
 				allUsers.map(user => {
-					return userStatsBankUpdate(user, 'tob_loot', new Bank(result.loot[user.id]));
+					return user.statsBankUpdate('tob_loot', new Bank(result.loot[user.id]));
 				})
 			);
 
@@ -146,7 +131,7 @@ export const tobTask: MinionTask = {
 				teamsLoot.add(userID, userLoot);
 
 				// Add XP
-				const xpResult = await handleTobXP(user, hardMode);
+				handleTobXP(user, hardMode, totalXPCounts[user.id]);
 
 				const items = userLoot.items();
 
@@ -169,12 +154,28 @@ export const tobTask: MinionTask = {
 				const lootStr = userLoot.remove('Coins', 100_000).toString();
 				const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `${lootStr}`;
 
-				resultMessage += `\n ${deathStr}**${user}** received: ${str} ${xpResult}`;
+				const receivedPrefix = isSolo ? '' : `**${user}** received: `;
+				resultMessage += `\n ${deathStr}${receivedPrefix}${str}`;
 
 				if (raidId < quantity) {
 					resultMessage += '\n';
 				}
 			}
+		}
+
+		// Give everyone their XP:
+		const xpString = (
+			await Promise.all(
+				allUsers.map(async u => {
+					const theirXP = totalXPCounts[u.id];
+					if (theirXP.length === 0) return null;
+					await u.addXPCounter({ xpCounter: theirXP, source: 'TheatreOfBlood', minimal: true });
+					return `${u.mention} received ${theirXP} XP`;
+				})
+			)
+		).filter(i => i !== null);
+		if (xpString.length > 0) {
+			resultMessage += `\n\n${xpString.join('\n')}`;
 		}
 		// Give everyone their loot:
 		await Promise.all(
@@ -188,7 +189,7 @@ export const tobTask: MinionTask = {
 			await Promise.all(
 				allUsers.map(u => {
 					const key = hardMode ? 'tob_hard_attempts' : 'tob_attempts';
-					return userStatsUpdate(u.id, {
+					return u.statsUpdate({
 						[key]: {
 							increment: earnedAttempts
 						}
@@ -201,11 +202,10 @@ export const tobTask: MinionTask = {
 			await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, successfulRaidCount)));
 		}
 		if (wipeCount > 0) {
-			// Update economy stats:
-			await updateBankSetting('tob_cost', globalTobCost);
+			await ClientSettings.updateBankSetting('tob_cost', globalTobCost);
 		}
 
-		await updateBankSetting('tob_loot', totalLoot);
+		await ClientSettings.updateBankSetting('tob_loot', totalLoot);
 		await trackLoot({
 			totalLoot,
 			id: minigameID,
@@ -222,46 +222,47 @@ export const tobTask: MinionTask = {
 		const shouldShowImage =
 			allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6 && i[1].length > 0);
 
-		if (users.length === 1) {
-			return handleTripFinish(
-				allUsers[0],
-				channelID,
-				resultMessage,
-				shouldShowImage
-					? await await drawChestLootImage({
-							entries: [
-								{
-									loot: totalLoot.remove('Coins', raidId * 100_000),
-									user: allUsers[0],
-									previousCL: previousCLs[0],
-									customTexts: []
-								}
-							],
-							type: 'Theatre of Blood'
-						})
-					: undefined,
-				data,
-				totalLoot
-			);
-		}
-
-		handleTripFinish(
-			allUsers[0],
-			channelID,
-			resultMessage,
-			shouldShowImage
+		if (isSolo) {
+			const image = shouldShowImage
 				? await drawChestLootImage({
-						entries: allUsers.map((u, index) => ({
-							loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
-							user: u,
-							previousCL: previousCLs[index],
-							customTexts: []
-						})),
+						entries: [
+							{
+								loot: totalLoot.remove('Coins', raidId * 100_000),
+								user: allUsers[0],
+								previousCL: previousCLs[0],
+								customTexts: []
+							}
+						],
 						type: 'Theatre of Blood'
 					})
-				: undefined,
+				: undefined;
+			return handleTripFinish({
+				user: allUsers[0],
+				channelId,
+				message: { content: resultMessage, files: [image] },
+				data,
+				loot: totalLoot
+			});
+		}
+
+		const image = shouldShowImage
+			? await drawChestLootImage({
+					entries: allUsers.map((u, index) => ({
+						loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
+						user: u,
+						previousCL: previousCLs[index],
+						customTexts: []
+					})),
+					type: 'Theatre of Blood'
+				})
+			: undefined;
+
+		return handleTripFinish({
+			user: allUsers[0],
+			channelId,
+			message: { content: resultMessage, files: [image] },
 			data,
-			null
-		);
+			loot: totalLoot
+		});
 	}
 };

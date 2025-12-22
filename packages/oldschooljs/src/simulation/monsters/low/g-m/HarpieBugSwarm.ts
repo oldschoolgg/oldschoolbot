@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const HarpieBugSwarmTable = new LootTable()
+const HarpieBugSwarmTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Steel axe', 1, 4)
 	.add('Steel full helm', 1, 4)
@@ -34,7 +34,7 @@ const HarpieBugSwarmTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const HarpieBugSwarm: SimpleMonster = new SimpleMonster({
 	id: 464,
 	name: 'Harpie Bug Swarm',
 	table: HarpieBugSwarmTable,

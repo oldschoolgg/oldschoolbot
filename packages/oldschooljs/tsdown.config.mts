@@ -1,8 +1,13 @@
 import { createTsdownConfig } from '../../scripts/createTsdownConfig.ts';
 
-const entry = ['./src/index.ts', './src/hiscores/index.ts'];
+const entry = ['./src/index.ts'];
 
 export default createTsdownConfig({
 	entry,
-	copy: [{ from: 'src/assets', to: 'dist/assets' }]
+	unbundle: true,
+	skipNodeModulesBundle: true,
+	external: [],
+	noExternal: [],
+	copy: ['src/assets'],
+	minify: false
 });

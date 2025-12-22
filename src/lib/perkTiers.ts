@@ -1,6 +1,4 @@
-import { perkTierCache } from './cache.js';
-import { BitField, globalConfig, PerkTier, Roles } from './constants.js';
-import { roboChimpCache } from './perkTier.js';
+import { BitField, globalConfig, PerkTier, Roles } from '@/lib/constants.js';
 
 export const allPerkBitfields: BitField[] = [
 	BitField.IsPatronTier6,
@@ -13,58 +11,51 @@ export const allPerkBitfields: BitField[] = [
 	BitField.BothBotsMaxedFreeTierOnePerks
 ];
 
-function getUsersPerkTierRaw(user: { bitfield: BitField[]; id: string }): PerkTier | 0 {
-	if ([BitField.isModerator].some(bit => user.bitfield.includes(bit))) {
+export async function getUsersPerkTier(user: MUser): Promise<PerkTier | 0> {
+	if (user.isMod()) {
 		return PerkTier.Four;
 	}
 
-	const elligibleTiers = [];
+	const eligibleTiers = [];
 	if (
 		user.bitfield.includes(BitField.IsPatronTier1) ||
 		user.bitfield.includes(BitField.HasPermanentTierOne) ||
 		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
 	) {
-		elligibleTiers.push(PerkTier.Two);
+		eligibleTiers.push(PerkTier.Two);
 	} else {
-		const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
-		const member = guild?.members.cache.get(user.id);
-		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
-			elligibleTiers.push(PerkTier.One);
+		const member = await Cache.getMember(globalConfig.supportServerID, user.id);
+		if (member && [Roles.Booster].some(roleID => member.roles.includes(roleID))) {
+			eligibleTiers.push(PerkTier.One);
 		}
 	}
 
-	const roboChimpCached = roboChimpCache.get(user.id);
+	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
 	if (roboChimpCached) {
-		elligibleTiers.push(roboChimpCached.perk_tier);
+		eligibleTiers.push(roboChimpCached.perk_tier);
 	}
 
 	const bitfield = user.bitfield;
 
 	if (bitfield.includes(BitField.IsPatronTier6)) {
-		elligibleTiers.push(PerkTier.Seven);
+		eligibleTiers.push(PerkTier.Seven);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier5)) {
-		elligibleTiers.push(PerkTier.Six);
+		eligibleTiers.push(PerkTier.Six);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier4)) {
-		elligibleTiers.push(PerkTier.Five);
+		eligibleTiers.push(PerkTier.Five);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier3)) {
-		elligibleTiers.push(PerkTier.Four);
+		eligibleTiers.push(PerkTier.Four);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier2)) {
-		elligibleTiers.push(PerkTier.Three);
+		eligibleTiers.push(PerkTier.Three);
 	}
 
-	return Math.max(...elligibleTiers, 0);
-}
-
-export function getUsersPerkTier(user: MUser): PerkTier | 0 {
-	const perkTier = getUsersPerkTierRaw(user.user);
-	perkTierCache.set(user.id, perkTier);
-	return perkTier;
+	return Math.max(...eligibleTiers, 0);
 }

@@ -1,9 +1,8 @@
-import { time } from 'discord.js';
 import emojiRegex from 'emoji-regex';
 
 const rawEmojiRegex = emojiRegex();
 
-export function stripEmojis(str: string) {
+export function stripEmojis(str: string): string {
 	return str.replace(rawEmojiRegex, '');
 }
 
@@ -62,13 +61,9 @@ export enum PerkTier {
 	Seven = 7
 }
 
-export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
+export const alphabeticalSort = (a: string, b: string): number => a.localeCompare(b);
 
-export function dateFm(date: Date) {
-	return `${time(date, 'T')} (${time(date, 'R')})`;
-}
-
-export function getInterval(intervalHours: number) {
+export function getInterval(intervalHours: number): { start: Date; end: Date } {
 	const currentTime = new Date();
 	const currentHour = currentTime.getHours();
 
@@ -82,12 +77,11 @@ export function getInterval(intervalHours: number) {
 
 	return {
 		start: startInterval,
-		end: endInterval,
-		nextResetStr: dateFm(endInterval)
+		end: endInterval
 	};
 }
 
-export function getNextUTCReset(last_timeStamp: number, cd: number) {
+export function getNextUTCReset(last_timeStamp: number, cd: number): number {
 	const coolDownEnd = new Date(last_timeStamp + cd);
 
 	const nextUTCReset = new Date(
@@ -104,12 +98,11 @@ export function objHasAnyPropInCommon(obj: object, other: object): boolean {
 	return false;
 }
 
-export function sleep(ms: number) {
+export function sleep(ms: number): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export function noOp() {}
+export function noOp(): void {}
 
 /**
  * Shows what percentage a value is of a total value, for example calculating what percentage of 20 is 5? (25%)
@@ -149,8 +142,18 @@ export function increaseNumByPercent(value: number, percent: number): number {
 	return value + value * (percent / 100);
 }
 
-export function objectEntries<T extends Record<PropertyKey, unknown>>(obj: T) {
-	return Object.entries(obj) as [keyof T, T[keyof T]][];
+export function objectValues<T extends object>(obj: T): { [K in keyof T]-?: T[K] }[keyof T][] {
+	const keys = Object.keys(obj) as (keyof T)[];
+	const out = [] as { [K in keyof T]-?: T[K] }[keyof T][];
+	for (const k of keys) out.push(obj[k]);
+	return out;
+}
+
+export function objectEntries<T extends object>(obj: T): { [K in keyof T]-?: [K, T[K]] }[keyof T][] {
+	const keys = Object.keys(obj) as (keyof T)[];
+	const out = [] as { [K in keyof T]-?: [K, T[K]] }[keyof T][];
+	for (const k of keys) out.push([k, obj[k]]);
+	return out;
 }
 
 /**
@@ -182,6 +185,39 @@ export function scaleNumber(num: number, inMin: number, inMax: number, outMin: n
 	return ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 }
 
-export function stripNonAlphanumeric(str: string) {
+export function stripNonAlphanumeric(str: string): string {
 	return str.replace(/[^a-zA-Z0-9]/g, '');
+}
+
+export function rewriteSqlToIdempotent(sql: string): string {
+	const rules: [RegExp, string | ((...a: any[]) => string)][] = [
+		[/\bCREATE\s+TABLE\s+("?[\w]+"?)/gi, 'CREATE TABLE IF NOT EXISTS $1'],
+		[/\bCREATE\s+UNIQUE\s+INDEX\s+("?[\w]+"?)/gi, 'CREATE UNIQUE INDEX IF NOT EXISTS $1'],
+		[/\bCREATE\s+INDEX\s+("?[\w]+"?)/gi, 'CREATE INDEX IF NOT EXISTS $1'],
+		[/\bCREATE\s+SCHEMA\s+("?[\w]+"?)/gi, 'CREATE SCHEMA IF NOT EXISTS $1'],
+		[/\bCREATE\s+VIEW\s+("?[\w]+"?)/gi, 'CREATE OR REPLACE VIEW $1'],
+		[
+			/\bCREATE\s+TYPE\s+("?[\w]+"?)\s+AS\s+ENUM\s*\(([^;]+)\);/gi,
+			(_m, name, values) =>
+				`DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = ${name.replace(/"/g, "'")}) THEN
+        CREATE TYPE ${name} AS ENUM (${values.trim()});
+    END IF;
+END $$;`
+		],
+		[
+			/\bALTER\s+TABLE\s+("?[\w]+"?)\s+ADD\s+CONSTRAINT\s+("?[\w]+"?)([^;]*);/gi,
+			(_m, table, constraint, rest) =>
+				`ALTER TABLE ${table} DROP CONSTRAINT IF EXISTS ${constraint};
+ALTER TABLE ${table} ADD CONSTRAINT ${constraint}${rest.trim()};`
+		]
+	];
+	for (const [r, sub] of rules) {
+		sql = typeof sub === 'string' ? sql.replace(r, sub) : sql.replace(r, (...a) => sub(...a));
+	}
+	return sql;
+}
+
+export function cleanUsername(username: string): string {
+	return stripEmojis(username).replace(/[@|*]/g, '').substring(0, 32);
 }

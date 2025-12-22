@@ -1,3 +1,4 @@
+import type { RNGProvider } from '@oldschoolgg/rng';
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 import { match } from 'ts-pattern';
@@ -6,7 +7,6 @@ import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot
 import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
-import type { RNGProvider } from '@/lib/util/rng.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
@@ -50,17 +50,17 @@ export function calcFishingTripResult({
 
 	if (fish.name === 'Barbarian fishing') {
 		for (let i = 0; i < quantity; i++) {
-			if (canGetSturgeon && rng.roll(sturgeonChance)) {
+			if (canGetSturgeon && rng.percentChance(100 / sturgeonChance)) {
 				xpReceived += 80;
 				leapingSturgeon += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
 				agilityXpReceived += 7;
 				strengthXpReceived += 7;
-			} else if (canGetSalmon && rng.roll(salmonChance)) {
+			} else if (canGetSalmon && rng.percentChance(100 / salmonChance)) {
 				xpReceived += 70;
 				leapingSalmon += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
 				agilityXpReceived += 6;
 				strengthXpReceived += 6;
-			} else if (rng.roll(leapingChance)) {
+			} else if (rng.percentChance(100 / leapingChance)) {
 				xpReceived += 50;
 				leapingTrout += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
 				agilityXpReceived += 5;

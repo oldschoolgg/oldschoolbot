@@ -12,7 +12,8 @@ export * from './util/typeChecking.js';
 
 import { detailedDiff } from 'deep-object-diff';
 export { detailedDiff as deepObjectDiff };
+
 export { default as deepEqual } from 'fast-deep-equal';
 
+export * from './colors.js';
 export * from './string-util.js';
-export * from './util/chanceTemporary.js';

@@ -24,7 +24,7 @@
 		"target": "es2024",
 		"useDefineForClassFields": true,
 		"noEmit": true,
-		"verbatimModuleSyntax": true,
+		"verbatimModuleSyntax": false,
 		"allowUnreachableCode": false,
 		"allowUnusedLabels": false,
 		"exactOptionalPropertyTypes": false,

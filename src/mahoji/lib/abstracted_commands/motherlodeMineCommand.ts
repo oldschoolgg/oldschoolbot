@@ -1,21 +1,19 @@
-import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function motherlodeMineCommand({
 	user,
-	channelID,
+	channelId,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 }) {
 	let miningLevel = user.skillsAsLevels.mining;
@@ -74,16 +72,16 @@ export async function motherlodeMineCommand({
 		powermining: powermine,
 		goldSilverBoost,
 		miningLvl: miningLevel,
-		maxTripLength: calcMaxTripLength(user, 'MotherlodeMining'),
+		maxTripLength: await user.calcMaxTripLength('MotherlodeMining'),
 		hasKaramjaMedium: false
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-	await addSubTaskToActivityTask<MotherlodeMiningActivityTaskOptions>({
+	await ActivityManager.startTrip<MotherlodeMiningActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: newQuantity,
 		iQty: quantity ? quantity : undefined,
 		duration,

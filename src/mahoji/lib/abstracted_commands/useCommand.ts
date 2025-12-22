@@ -1,9 +1,9 @@
-import { notEmpty } from '@oldschoolgg/toolkit/util';
+import { notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { assert } from '@/lib/util/logError.js';
-import { flowerTable } from './hotColdCommand.js';
+import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 
 interface Usable {
 	items: Item[];
@@ -16,7 +16,7 @@ interface UsableUnlock {
 	bitfield: BitField;
 	resultMessage: string;
 }
-const usableUnlocks: UsableUnlock[] = [
+export const usableUnlocks: UsableUnlock[] = [
 	{
 		item: Items.getOrThrow('Torn prayer scroll'),
 		bitfield: BitField.HasTornPrayerScroll,
@@ -90,10 +90,12 @@ for (const usableUnlock of usableUnlocks) {
 			if (user.bitfield.includes(usableUnlock.bitfield)) {
 				return "You already used this item, you can't use it again.";
 			}
-			await user.removeItemsFromBank(new Bank().add(usableUnlock.item.id));
-			await user.update({
-				bitfield: {
-					push: usableUnlock.bitfield
+			await user.transactItems({
+				itemsToRemove: new Bank().add(usableUnlock.item.id),
+				otherUpdates: {
+					bitfield: {
+						push: usableUnlock.bitfield
+					}
 				}
 			});
 			return usableUnlock.resultMessage;
@@ -101,7 +103,7 @@ for (const usableUnlock of usableUnlocks) {
 	});
 }
 
-const genericUsables: {
+export const genericUsables: {
 	items: [Item, Item] | [Item];
 	cost: Bank;
 	loot: Bank | (() => Bank) | null;
@@ -135,8 +137,8 @@ for (const genericU of genericUsables) {
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
 export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {
-	const firstItem = Items.get(_firstItem);
-	const secondItem = _secondItem === undefined ? null : Items.get(_secondItem);
+	const firstItem = Items.getItem(_firstItem);
+	const secondItem = _secondItem === undefined ? null : Items.getItem(_secondItem);
 	if (!firstItem || (_secondItem !== undefined && !secondItem)) return "That's not a valid item.";
 	const items = [firstItem, secondItem].filter(notEmpty);
 	assert(items.length === 1 || items.length === 2);

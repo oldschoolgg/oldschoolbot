@@ -1,12 +1,11 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 
-export async function championsChallengeCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function championsChallengeCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 
@@ -19,9 +18,9 @@ export async function championsChallengeCommand(user: MUser, channelID: string) 
 	for (const id of ItemGroups.championScrolls) cost.add(id);
 	await user.transactItems({ itemsToRemove: cost });
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity: 1,
 		duration: randomVariation(Time.Minute * 20, 5),
 		type: 'ChampionsChallenge',

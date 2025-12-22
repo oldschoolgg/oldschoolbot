@@ -1,32 +1,28 @@
+import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
+	exponentialPercentScale,
+	formatDuration,
 	increaseNumByPercent,
 	objectEntries,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
 	sumArr,
-	Time
+	Time,
+	UserError
 } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
-import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/node';
+import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-import { degradeChargeBank } from './degradeableItems.js';
-import { trackLoot } from './lootTrack.js';
-import { QuestID } from './minions/data/quests.js';
-import type { Skills } from './types/index.js';
-import type { ColoTaskOptions } from './types/minions.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { ColoTaskOptions } from '@/lib/types/minions.js';
+import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);
@@ -459,14 +455,13 @@ export const startColosseumRun = (options: {
 	throw new Error('Colosseum run did not end correctly.');
 };
 
-export async function colosseumCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function colosseumCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} is busy`;
 	}
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${mentionCommand(
-			globalClient,
+		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${globalClient.mentionCommand(
 			'activities',
 			'quest'
 		)}.`;
@@ -516,7 +511,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		for (const items of Object.values(gearNeeded)) {
 			if (!items.some(g => gear.hasEquipped(g))) {
 				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${formatList(
-					items.map(itemNameFromID),
+					items.map(i => Items.itemNameFromId(i)),
 					'or'
 				)}.`;
 			}
@@ -525,14 +520,14 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your melee setup to enter the Colosseum: ${formatList(
-			meleeWeapons.map(itemNameFromID),
+			meleeWeapons.map(i => Items.itemNameFromId(i)),
 			'or'
 		)}.`;
 	}
 
 	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your range setup to enter the Colosseum: ${formatList(
-			rangeWeapons.map(itemNameFromID),
+			rangeWeapons.map(i => Items.itemNameFromId(i)),
 			'or'
 		)}.`;
 	}
@@ -554,7 +549,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	const venatorBowCharges = calculateVenCharges();
 
 	const res = startColosseumRun({
-		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
+		kcBank: new ColosseumWaveBank((await user.fetchStats()).colo_kc_bank as ItemBank),
 		hasScythe,
 		hasTBow,
 		hasVenBow,
@@ -633,7 +628,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	try {
 		const result = await user.specialRemoveItems(cost);
 		realCost.add(result.realCost);
-	} catch (err: any) {
+	} catch (err: unknown) {
 		if (err instanceof UserError) {
 			return err.message;
 		}
@@ -641,8 +636,8 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	}
 	messages.push(`Removed ${realCost}`);
 
-	await updateBankSetting('colo_cost', realCost);
-	await userStatsBankUpdate(user, 'colo_cost', realCost);
+	await ClientSettings.updateBankSetting('colo_cost', realCost);
+	await user.statsBankUpdate('colo_cost', realCost);
 	await trackLoot({
 		totalCost: realCost,
 		id: 'colo',
@@ -666,9 +661,9 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		messages.push(degradeResults);
 	}
 
-	await addSubTaskToActivityTask<ColoTaskOptions>({
+	await ActivityManager.startTrip<ColoTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: res.realDuration,
 		type: 'Colosseum',
 		fakeDuration: res.fakeDuration,

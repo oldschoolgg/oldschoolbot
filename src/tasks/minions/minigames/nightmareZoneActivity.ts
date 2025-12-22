@@ -1,13 +1,10 @@
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const nightmareZoneTask: MinionTask = {
 	type: 'NightmareZone',
-	async run(data: NightmareZoneActivityTaskOptions) {
-		const { quantity, userID, channelID, duration, strategy } = data;
-		const user = await mUserFetch(userID);
+	async run(data: NightmareZoneActivityTaskOptions, { user, handleTripFinish }) {
+		const { quantity, channelId, duration, strategy } = data;
 
 		const attackStyles = resolveAttackStyles({
 			attackStyles: user.getAttackStyles()
@@ -34,7 +31,7 @@ export const nightmareZoneTask: MinionTask = {
 
 		res.push(
 			await user.addXP({
-				skillName: SkillsEnum.Hitpoints,
+				skillName: 'hitpoints',
 				amount: Math.floor((strategy === 'experience' ? 1.5 : 1) * monsterHP * quantity * 1.33),
 				duration,
 				source: 'NightmareZone'
@@ -54,6 +51,6 @@ export const nightmareZoneTask: MinionTask = {
 		} finished killing ${quantity}x Nightmare Zone monsters. Your Nightmare Zone KC is now ${score.newScore}.
  \n**XP Gains:** ${res.join(' ')}\nYou gained **${pointsReceived.toLocaleString()}** Nightmare Zone points.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

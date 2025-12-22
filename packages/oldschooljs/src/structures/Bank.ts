@@ -1,12 +1,10 @@
+import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
+
 import type { Item } from '@/meta/item.js';
-import { randArrItem } from '@/util/smallUtils.js';
-import itemID from '../util/itemID.js';
 import { toKMB } from '../util/smallUtils.js';
-import Items from './Items.js';
+import { Items } from './Items.js';
 
 const frozenErrorStr = 'Tried to mutate a frozen Bank.';
-
-const isValidInteger = (str: string): boolean => /^-?\d+$/.test(str);
 
 type ItemResolvable = Item | string | number;
 
@@ -14,26 +12,21 @@ function isValidBankQuantity(qty: number): boolean {
 	return typeof qty === 'number' && qty >= 1 && Number.isInteger(qty);
 }
 
-function sanitizeItemBank(mutSource: ItemBank) {
-	for (const [key, qty] of Object.entries(mutSource)) {
-		if (!isValidBankQuantity(qty)) {
-			delete mutSource[key];
-		}
-		const item = Items.get(Number.parseInt(key));
-		if (!item) {
-			delete mutSource[key];
-		}
-	}
-}
-
 export class Bank {
 	private map: Map<number, number>;
 	public frozen = false;
 
 	static withSanitizedValues(source: ItemBank | IntKeyBank): Bank {
-		const mutSource = { ...source };
-		sanitizeItemBank(mutSource);
-		return new Bank(mutSource);
+		const map = new Map<number, number>();
+		for (const [key, qty] of Object.entries(source)) {
+			const id = Number.parseInt(key);
+			if (!Items.has(id)) continue;
+			if (!isValidBankQuantity(qty)) continue;
+			map.set(id, qty);
+		}
+		const bank = new Bank();
+		bank.map = map;
+		return bank;
 	}
 
 	static fromNameBank(nameBank: Record<string, number>): Bank {
@@ -44,7 +37,7 @@ export class Bank {
 		return bank;
 	}
 
-	constructor(initialBank?: IntKeyBank | ItemBank | Bank) {
+	constructor(initialBank?: number[] | ItemBank | Bank | Map<number, number>) {
 		this.map = this.makeFromInitialBank(initialBank);
 	}
 
@@ -59,7 +52,7 @@ export class Bank {
 
 	private resolveItemID(item: ItemResolvable): number {
 		if (typeof item === 'number') return item;
-		if (typeof item === 'string') return itemID(item);
+		if (typeof item === 'string') return Items.getId(item);
 		return item.id;
 	}
 
@@ -73,22 +66,41 @@ export class Bank {
 		return this;
 	}
 
-	private makeFromInitialBank(initialBank?: IntKeyBank | ItemBank | Bank) {
-		if (!initialBank) return new Map();
-		if (initialBank instanceof Bank) {
-			return new Map(initialBank.map.entries());
+	private makeFromInitialBank(initialBank?: number[] | Record<string, number> | Bank | Map<number, number>) {
+		if (!initialBank) return new Map<number, number>();
+		if (initialBank instanceof Bank) return new Map(initialBank.map);
+		if (initialBank instanceof Map) return new Map(initialBank);
+		if (Array.isArray(initialBank)) {
+			const map = new Map<number, number>();
+			for (let i = 0; i < initialBank.length; i += 2) {
+				const itemID = initialBank[i];
+				const qty = initialBank[i + 1];
+				if (!qty) continue;
+				map.set(itemID, qty);
+			}
+			return map;
 		}
-		const entries = Object.entries(initialBank);
-		if (entries.length === 0) return new Map();
-		if (isValidInteger(entries[0][0])) {
-			return new Map(entries.map(([k, v]) => [Number(k), v]));
-		} else {
-			return new Map(entries.map(([k, v]) => [Items.get(k)!.id, v]));
+
+		const out = new Map<number, number>();
+		const has = Items.has.bind(Items);
+		const getId = Items.resolveID.bind(Items);
+
+		for (const k in initialBank) {
+			const qty = initialBank[k];
+			if (qty == null) continue;
+			const n = +k;
+			const id = Number.isInteger(n) && has(n) ? n : getId(k);
+			if (id) {
+				out.set(id, qty);
+			}
 		}
+		return out;
 	}
 
 	public toJSON(): ItemBank {
-		return Object.fromEntries(this.map);
+		const out: ItemBank = {};
+		for (const [k, v] of this.map) out[k] = v;
+		return out;
 	}
 
 	public set(item: ItemResolvable, quantity: number): this {
@@ -146,7 +158,7 @@ export class Bank {
 		// Bank.add('Twisted bow');
 		// Bank.add('Twisted bow', 5);
 		if (typeof item === 'string') {
-			return this.addItem(itemID(item), quantity);
+			return this.addItem(Items.getId(item), quantity);
 		}
 
 		if (item instanceof Bank) {
@@ -168,13 +180,9 @@ export class Bank {
 		for (const [itemID, qty] of Object.entries(item)) {
 			let int: number | undefined = Number.parseInt(itemID);
 			if (Number.isNaN(int)) {
-				int = Items.get(itemID)?.id;
+				int = Items.getId(itemID);
 			}
-			if (!int) {
-				console.trace(`Tried to add a invalid item to a bank with an id of '${itemID}'`);
-				return this;
-			}
-			this.addItem(int, qty);
+			this.addItem(int!, qty);
 		}
 
 		return this;
@@ -186,7 +194,7 @@ export class Bank {
 		// Bank.remove('Twisted bow');
 		// Bank.remove('Twisted bow', 5);
 		if (typeof item === 'string') {
-			return this.removeItem(itemID(item), quantity);
+			return this.removeItem(Items.getId(item), quantity);
 		}
 
 		// Bank.remove(123);
@@ -205,10 +213,10 @@ export class Bank {
 		return this;
 	}
 
-	public random(): BankItem | null {
+	public random(rng: RNGProvider = MathRNG): BankItem | null {
 		const entries = Array.from(this.map.entries());
 		if (entries.length === 0) return null;
-		const randomEntry = randArrItem(entries);
+		const randomEntry = rng.pick(entries);
 		return { id: randomEntry[0], qty: randomEntry[1] };
 	}
 
@@ -245,20 +253,13 @@ export class Bank {
 		const arr: [Item, number][] = [];
 		for (const [key, val] of this.map.entries()) {
 			if (val < 1) continue;
-			const item = Items.get(key)!;
+			const item = Items.getById(key);
 			if (!item) {
-				console.trace(`Bank has an invalid item: ${key}, with quantity of ${val}`);
 				continue;
 			}
 			arr.push([item, val]);
 		}
 		return arr;
-	}
-
-	public forEach(fn: (item: Item, quantity: number) => unknown): void {
-		for (const item of this.items()) {
-			fn(...item);
-		}
 	}
 
 	public clone(): Bank {
@@ -345,7 +346,7 @@ export class Bank {
 		return errors;
 	}
 
-	public validateOrThrow() {
+	public validateOrThrow(): void {
 		const errors = this.validate();
 		if (errors.length > 0) {
 			throw new Error(`Bank validation failed: ${errors.join(', ')}`);

@@ -2,10 +2,7 @@ import { Bank, type EquipmentSlot, type Item, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { GearSetupType } from '@/lib/gear/types.js';
-import type { Gear } from '@/lib/structures/Gear.js';
-import type { Skills } from '@/lib/types/index.js';
-import { assert } from '@/lib/util/logError.js';
-import { skillsMeetRequirements } from '@/lib/util.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 function getItemScore(item: Item) {
 	return Object.values(item.equipment!).reduce(
@@ -14,17 +11,20 @@ function getItemScore(item: Item) {
 	);
 }
 
-export default function getUserBestGearFromBank(
-	userBank: Bank,
-	userGear: Gear,
-	gearType: GearSetupType,
-	skills: Skills,
-	gearStat: GearStat,
-	extra: string | null = null
-) {
-	assert(Object.values(GearStat).includes(gearStat as any));
+export default function getUserBestGearFromBank({
+	gearBank,
+	gearStat,
+	gearSetup,
+	extra
+}: {
+	gearBank: GearBank;
+	gearSetup: GearSetupType;
+	gearStat: GearStat;
+	extra: string | null;
+}) {
 	const toRemoveFromGear: Bank = new Bank();
 	const toRemoveFromBank: Bank = new Bank();
+	const userGear = gearBank.gear[gearSetup];
 	const gearToEquip = { ...userGear.raw() };
 
 	let score2h = 0;
@@ -38,7 +38,7 @@ export default function getUserBestGearFromBank(
 	// Get extra settings (prayer or strength)
 	switch (extra) {
 		case 'strength':
-			switch (gearType) {
+			switch (gearSetup) {
 				case 'skilling':
 				case 'misc':
 				case 'fashion':
@@ -89,11 +89,9 @@ export default function getUserBestGearFromBank(
 	}
 
 	// Get all items by slot from user bank
-	for (const [item, quantity] of new Bank().add(userBank).add(toRemoveFromGear).items()) {
-		const hasStats = item.equipment?.requirements
-			? skillsMeetRequirements(skills, item.equipment.requirements)
-			: true;
-		if (item.equipable_by_player && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
+	for (const [item, quantity] of new Bank().add(gearBank.bank).add(toRemoveFromGear).items()) {
+		const hasStats = item.equipment?.requirements ? gearBank.hasSkillReqs(item.equipment.requirements) : true;
+		if (item.equipable && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
 			equipables[item.equipment.slot].push(item.id);
 		}
 	}
@@ -164,6 +162,6 @@ export default function getUserBestGearFromBank(
 		toRemoveFromGear,
 		toRemoveFromBank,
 		gearToEquip,
-		userFinalBank: new Bank(userBank).add(toRemoveFromGear).remove(toRemoveFromBank)
+		userFinalBank: new Bank(gearBank.bank).add(toRemoveFromGear).remove(toRemoveFromBank)
 	};
 }

@@ -1,24 +1,26 @@
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { loadImage } from 'skia-canvas';
 
+import { CanvasSpritesheet } from '@/lib/canvas/CanvasSpritesheet.js';
+import { loadImage } from '@/lib/canvas/canvasUtil.js';
+import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BOT_TYPE } from '@/lib/constants.js';
-import { CanvasSpritesheet } from './CanvasSpritesheet.js';
-import { ItemIconPacks } from './iconPacks.js';
 
 class CanvasModuleSingleton {
 	private didInit = false;
+	public allItemIdsWithSprite = new Set<number>();
 
 	public Spritesheet!: {
 		OSRSItems: CanvasSpritesheet;
 		BSOItems: CanvasSpritesheet;
 	};
 
-	constructor() {
-		this.init();
+	public async ensureInit() {
+		if (this.didInit) return;
+		await this.init();
 	}
 
-	async init() {
+	private async init() {
 		if (this.didInit) return;
 
 		this.Spritesheet = {
@@ -31,6 +33,10 @@ class CanvasModuleSingleton {
 				'./src/lib/resources/spritesheets/bso-items-spritesheet.png'
 			)
 		};
+		this.allItemIdsWithSprite = new Set([
+			...this.Spritesheet.OSRSItems.allItemIds,
+			...this.Spritesheet.BSOItems.allItemIds
+		]);
 
 		// Init/load icon pack icons
 		for (const pack of Object.values(ItemIconPacks)) {

@@ -1,4 +1,4 @@
-import { deepMerge, getWrappedArrayItem } from '@oldschoolgg/toolkit/util';
+import { deepMerge, getWrappedArrayItem } from '@oldschoolgg/toolkit';
 
 const colors = [
 	'#fd7f6f',
@@ -35,6 +35,9 @@ function randomHexColor(value: number): string {
 }
 
 async function renderChart(url: string) {
+	if (process.env.NODE_ENV === 'TEST') {
+		return Buffer.from([]);
+	}
 	const response = await fetch(url, {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' }

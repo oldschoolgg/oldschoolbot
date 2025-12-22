@@ -1,34 +1,28 @@
-import { objectEntries } from '@oldschoolgg/toolkit';
-import { stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { Prisma } from '@prisma/client';
-import { type ArrayItemsResolved, type Bank, type ItemBank, Items } from 'oldschooljs';
+import { objectEntries, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit';
+import { type ArrayItemsResolved, type Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { type BitField, BitFieldData } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
-import type { TOAOptions } from '@/lib/types/minions.js';
-
-export function itemNameFromID(itemID: number) {
-	return Items.get(itemID)?.name;
-}
 
 export function formatItemReqs(items: ArrayItemsResolved) {
 	const str = [];
 	for (const item of items) {
 		if (Array.isArray(item)) {
-			str.push(item.map(itemNameFromID).join(' OR '));
+			str.push(item.map(i => Items.itemNameFromId(i)).join(' OR '));
 		} else {
-			str.push(itemNameFromID(item));
+			str.push(Items.itemNameFromId(item));
 		}
 	}
 	return str.join(', ');
 }
 
-export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
+export function formatSkillRequirements(reqs: SkillRequirements, emojis = true) {
 	const arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
-		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
@@ -58,25 +52,6 @@ export function readableStatName(slot: string) {
 	return toTitleCase(slot.replace('_', ' '));
 }
 
-export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
-	let entryKC = 0;
-	let normalKC = 0;
-	let expertKC = 0;
-	for (const [levelStr, qty] of Object.entries(toaRaidLevelsBank as ItemBank)) {
-		const level = Number(levelStr);
-		if (level >= 300) {
-			expertKC += qty;
-			continue;
-		}
-		if (level >= 150) {
-			normalKC += qty;
-			continue;
-		}
-		entryKC += qty;
-	}
-	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
-}
-
 export function calculateSimpleMonsterDeathChance({
 	hardness,
 	currentKC,
@@ -102,7 +77,7 @@ export function calculateSimpleMonsterDeathChance({
 export const staticTimeIntervals = ['day', 'week', 'month'] as const;
 type StaticTimeInterval = (typeof staticTimeIntervals)[number];
 export function parseStaticTimeInterval(input: string): input is StaticTimeInterval {
-	if (staticTimeIntervals.includes(input as any)) {
+	if (staticTimeIntervals.includes(input as StaticTimeInterval)) {
 		return true;
 	}
 	return false;
@@ -126,8 +101,6 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 	return [true, null];
 }
 
-export const zodEnum = <T>(arr: T[] | readonly T[]): [T, ...T[]] => arr as [T, ...T[]];
-
 export function isValidNickname(str?: string) {
 	return Boolean(
 		str &&
@@ -146,20 +119,16 @@ export function formatList(_itemList: (string | undefined | null)[], end?: strin
 	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
 }
 
-export function normalizeTOAUsers(data: TOAOptions) {
-	const _detailedUsers = data.detailedUsers;
-	const detailedUsers = (
-		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
-	).map(userArr =>
-		userArr.map(user => ({
-			id: user[0],
-			points: user[1],
-			deaths: user[2]
-		}))
-	);
-	return detailedUsers;
+export function isValidSkill(skill: string): skill is SkillNameType {
+	return SkillsArray.includes(skill as SkillNameType);
 }
 
-export function isValidSkill(skill: string): skill is SkillsEnum {
-	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
+export function patronMsg(tierNeeded: number) {
+	return `You need to be a Tier ${
+		tierNeeded - 1
+	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
+}
+
+export function isValidBitField(bit: number): bit is BitField {
+	return Boolean(BitFieldData[bit as keyof typeof BitFieldData]);
 }

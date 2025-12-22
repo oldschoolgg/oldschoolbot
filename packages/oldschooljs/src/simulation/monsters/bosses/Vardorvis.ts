@@ -1,10 +1,12 @@
+import { randInt, roll } from '@oldschoolgg/rng';
+
+import { EItem } from '@/EItem.js';
 import { VirtusTable } from '@/simulation/subtables/VirtusTable.js';
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import { Monster } from '@/structures/Monster.js';
-import itemID from '@/util/itemID.js';
-import { randInt, roll, uniqueArr } from '@/util/smallUtils.js';
+import { uniqueArr } from '@/util/smallUtils.js';
 
 const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add(VirtusTable, 1, 1)
@@ -12,18 +14,18 @@ const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add("Executioner's axe head", 1, 1)
 	.add('Ultor vestige', 1, 1);
 
-const ClueTable = new LootTable()
+const ClueTable: LootTable = new LootTable()
 	.add('Clue scroll (easy)')
 	.add('Clue scroll (medium)')
 	.add('Clue scroll (hard)')
 	.add('Clue scroll (elite)');
 
-const SupplyTable = new LootTable()
+const SupplyTable: LootTable = new LootTable()
 	.every('Tuna potato', [3, 4])
 	.every('Prayer potion(3)')
 	.every('Super combat potion(2)');
 
-const ResourceTable = new LootTable()
+const ResourceTable: LootTable = new LootTable()
 	.add('Coal', [130, 195], 8)
 	.add('Adamantite ore', [45, 67], 8)
 	.add('Rune javelin heads', [36, 54], 8)
@@ -57,9 +59,9 @@ class VardorvisSingleton extends Monster {
 		...SupplyTable.allItems,
 		...ResourceTable.allItems,
 		...TradeableUniqueTable.allItems,
-		itemID("Awakener's orb"),
-		itemID('Blood quartz'),
-		itemID('Butch')
+		EItem.AWAKENERS_ORB,
+		EItem.BLOOD_QUARTZ,
+		EItem.BUTCH
 	]);
 
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {
@@ -90,7 +92,7 @@ class VardorvisSingleton extends Monster {
 	}
 }
 
-export const Vardorvis = new VardorvisSingleton({
+export const Vardorvis: VardorvisSingleton = new VardorvisSingleton({
 	id: 12_223,
 	name: 'Vardorvis',
 	aliases: ['vardorvis']

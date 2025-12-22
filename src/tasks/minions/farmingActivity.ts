@@ -1,32 +1,20 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
-import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField } from '@/lib/constants.js';
-import type { PatchTypes } from '@/lib/minions/farming/index.js';
-import type { FarmingContract } from '@/lib/minions/farming/types.js';
-import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { Farming, type PatchTypes } from '@/lib/skilling/skills/farming/index.js';
+import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
-import { randInt, roll } from '@/lib/util/rng.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
-	async run(data: FarmingActivityTaskOptions) {
-		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate, pid } =
-			data;
-		const user = await mUserFetch(userID);
-		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
-		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	async run(data: FarmingActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { plantsName, patchType, quantity, upgradeType, payment, channelId, planting, currentDate, pid } = data;
+		const currentFarmingLevel = user.skillsAsLevels.farming;
+		const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
 		let baseBonus = 1;
 		let bonusXP = 0;
 		let plantXp = 0;
@@ -118,14 +106,14 @@ export const farmingTask: MinionTask = {
 			}
 
 			str += `\n${await user.addXP({
-				skillName: SkillsEnum.Farming,
+				skillName: 'farming',
 				amount: Math.floor(farmingXpReceived + bonusXP),
 				duration: data.duration
 			})}`;
 
 			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
 
-			updateBankSetting('farming_loot_bank', loot);
+			await ClientSettings.updateBankSetting('farming_loot_bank', loot);
 			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
@@ -147,7 +135,7 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			handleTripFinish(user, channelID, str, undefined, data, null);
+			handleTripFinish({ user, channelId, message: str, data });
 		} else if (patchType.patchPlanted) {
 			// If they do have something planted here, harvest it and possibly replant.
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
@@ -173,7 +161,7 @@ export const farmingTask: MinionTask = {
 			const shouldCleanHerb =
 				plantToHarvest.herbXp !== undefined &&
 				user.bitfield.includes(BitField.CleanHerbsFarming) &&
-				user.skillLevel(SkillsEnum.Herblore) >= plantToHarvest.herbLvl!;
+				user.skillsAsLevels.herblore >= plantToHarvest.herbLvl!;
 
 			if (plantToHarvest.givesCrops) {
 				let cropToHarvest = plantToHarvest.outputCrop;
@@ -181,7 +169,7 @@ export const farmingTask: MinionTask = {
 					cropToHarvest = plantToHarvest.cleanHerbCrop;
 				}
 				if (plantToHarvest.variableYield) {
-					cropYield = calcVariableYield(
+					cropYield = Farming.calcVariableYield(
 						plantToHarvest,
 						patchType.lastUpgradeType,
 						currentFarmingLevel,
@@ -196,7 +184,7 @@ export const farmingTask: MinionTask = {
 							Math.floor(
 								plantToHarvest.chance1 +
 									(plantToHarvest.chance99 - plantToHarvest.chance1) *
-										((user.skillLevel(SkillsEnum.Farming) - 1) / 98)
+										((user.skillsAsLevels.farming - 1) / 98)
 							) * baseBonus
 						) + 1;
 					const chanceToSaveLife = (plantChanceFactor + 1) / 256;
@@ -226,9 +214,9 @@ export const farmingTask: MinionTask = {
 				if (shouldCleanHerb && plantToHarvest.herbXp) {
 					herbloreXp = cropYield * plantToHarvest.herbXp;
 					const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
-					await user.addItemsToCollectionLog(uncleanedHerbLoot);
+					await user.addItemsToCollectionLog({ itemsToAdd: uncleanedHerbLoot });
 					const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
-					await userStatsBankUpdate(user, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
+					await user.statsBankUpdate('herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
@@ -246,8 +234,11 @@ export const farmingTask: MinionTask = {
 					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					if (GP < gpToCutTree) {
-						return sendToChannelID(channelID, {
-							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`
+						return handleTripFinish({
+							user,
+							channelId,
+							message: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`,
+							data
 						});
 					}
 					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
@@ -261,11 +252,11 @@ export const farmingTask: MinionTask = {
 							typeof plantToHarvest.woodcuttingXp === 'number'
 					);
 
-					const amountOfLogs = randInt(5, 10) * alivePlants;
+					const amountOfLogs = rng.randInt(5, 10) * alivePlants;
 					loot.add(plantToHarvest.outputLogs, amountOfLogs);
 
 					if (plantToHarvest.outputRoots) {
-						loot.add(plantToHarvest.outputRoots, randInt(1, 4) * alivePlants);
+						loot.add(plantToHarvest.outputRoots, rng.randInt(1, 4) * alivePlants);
 					}
 
 					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;
@@ -299,16 +290,16 @@ export const farmingTask: MinionTask = {
 			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 
 			const xpRes = await user.addXP({
-				skillName: SkillsEnum.Farming,
+				skillName: 'farming',
 				amount: Math.floor(farmingXpReceived + bonusXP),
 				duration: data.duration
 			});
 			const wcXP = await user.addXP({
-				skillName: SkillsEnum.Woodcutting,
+				skillName: 'woodcutting',
 				amount: Math.floor(woodcuttingXp)
 			});
 			await user.addXP({
-				skillName: SkillsEnum.Herblore,
+				skillName: 'herblore',
 				amount: Math.floor(herbloreXp),
 				source: 'CleaningHerbsWhileFarming'
 			});
@@ -333,7 +324,7 @@ export const farmingTask: MinionTask = {
 				);
 			}
 
-			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);
+			const { petDropRate } = skillingPetDropRate(user, 'farming', plantToHarvest.petChance);
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
 				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
@@ -346,25 +337,25 @@ export const farmingTask: MinionTask = {
 					userID: user.id,
 					duration: data.duration,
 					finishDate: data.finishDate,
-					channelID: data.channelID,
+					channelId: data.channelId,
 					id: 1
 				};
-				await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
+				await combatAchievementTripEffect({ user, messages: infoStr, data: fakeMonsterTaskOptions });
 				loot = hesporiLoot;
 			} else if (
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll(petDropRate / alivePlants)
+				rng.roll(Math.ceil(petDropRate / alivePlants))
 			) {
 				loot.add('Tangleroot');
 			}
-			if (plantToHarvest.seedType === 'seaweed' && roll(3)) loot.add('Seaweed spore', randInt(1, 3));
+			if (plantToHarvest.seedType === 'seaweed' && rng.roll(3)) loot.add('Seaweed spore', rng.randInt(1, 3));
 
 			if (plantToHarvest.seedType !== 'hespori') {
 				let hesporiSeeds = 0;
 				for (let i = 0; i < alivePlants; i++) {
-					if (roll(plantToHarvest.petChance / 500)) {
+					if (rng.roll(Math.ceil(plantToHarvest.petChance / 500))) {
 						hesporiSeeds++;
 					}
 				}
@@ -409,16 +400,12 @@ export const farmingTask: MinionTask = {
 
 			let janeMessage = false;
 			if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
-				const farmingContractUpdate: FarmingContract = {
+				await user.updateFarmingContract({
 					hasContract: false,
 					difficultyLevel: null,
 					plantToGrow: currentContract.plantToGrow,
 					plantTier: currentContract.plantTier,
 					contractsCompleted: contractsCompleted + 1
-				};
-
-				await user.update({
-					minion_farmingContract: farmingContractUpdate as any
 				});
 
 				loot.add('Seed pack');
@@ -434,12 +421,12 @@ export const farmingTask: MinionTask = {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			await updateBankSetting('farming_loot_bank', loot);
+			await ClientSettings.updateBankSetting('farming_loot_bank', loot);
 			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-			await userStatsBankUpdate(user, 'farming_harvest_loot_bank', loot);
+			await user.statsBankUpdate('farming_harvest_loot_bank', loot);
 			if (pid) {
 				await prisma.farmedCrop.update({
 					where: {
@@ -451,21 +438,23 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			handleTripFinish(
+			const message = new MessageBuilder().setContent(infoStr.join('\n'));
+			if (janeMessage) {
+				message.addChatHeadImage(
+					'jane',
+					`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+						contractsCompleted + 1
+					} farming contracts.`
+				);
+			}
+
+			return handleTripFinish({
 				user,
-				channelID,
-				infoStr.join('\n'),
-				janeMessage
-					? await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-								contractsCompleted + 1
-							} farming contracts.`,
-							head: 'jane'
-						})
-					: undefined,
+				channelId,
+				message,
 				data,
 				loot
-			);
+			});
 		}
 	}
 };

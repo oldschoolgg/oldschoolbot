@@ -1,7 +1,8 @@
-import { randFloat, Time } from '@oldschoolgg/toolkit';
+import { randFloat } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
-import type { ActivityTaskOptions } from './types/minions.js';
+import type { ActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const kittens = resolveItems([
 	'Grey and black kitten',
@@ -50,10 +51,12 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 
 		// Sync to avoid out of date CL
 		await user.sync();
-		await user.update({
-			minion_equippedPet: nextPet
+		await user.addItemsToCollectionLog({
+			itemsToAdd: new Bank().add(nextPet),
+			otherUpdates: {
+				minion_equippedPet: nextPet
+			}
 		});
-		await user.addItemsToCollectionLog(new Bank().add(nextPet));
 		messages.push(`Your ${Items.getOrThrow(equippedPet).name} grew into a ${Items.getOrThrow(nextPet).name}!`);
 	}
 }

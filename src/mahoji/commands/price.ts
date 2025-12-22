@@ -1,10 +1,10 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Items, toKMB } from 'oldschooljs';
 
-import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { sellPriceOfItem } from './sell.js';
+import { itemOption } from '@/discord/index.js';
+import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 
-export const priceCommand: OSBMahojiCommand = {
+export const priceCommand = defineCommand({
 	name: 'price',
 	description: 'Looks up the price of an item.',
 	options: [
@@ -14,8 +14,8 @@ export const priceCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ item: string }>) => {
-		const item = Items.get(options.item);
+	run: async ({ options }) => {
+		const item = Items.getItem(options.item);
 		if (!item) return "Couldn't find that item.";
 
 		const { basePrice: priceOfItem } = sellPriceOfItem(item);
@@ -30,4 +30,4 @@ export const priceCommand: OSBMahojiCommand = {
 
 		return { embeds: [embed] };
 	}
-};
+});

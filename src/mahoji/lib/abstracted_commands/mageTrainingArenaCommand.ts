@@ -1,13 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, LootTable } from 'oldschooljs';
 
 import { getNewUser } from '@/lib/settings/settings.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { pizazzPointsPerHour } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 
 const RuneTable = new LootTable()
@@ -97,7 +93,7 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 		}
 	});
 
-	await user.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
+	await user.addItemsToBank({ items: new Bank().add(item.id, 1), collectionLog: true });
 
 	return `Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`;
 }
@@ -114,11 +110,11 @@ ${mageTrainingArenaBuyables
 Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena start**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
 
-export async function mageTrainingArenaStartCommand(user: MUser, channelID: string): CommandResponse {
-	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
+export async function mageTrainingArenaStartCommand(user: MUser, channelId: string): CommandResponse {
+	if (await user.minionIsBusy()) return `${user.minionName} is currently busy.`;
 
 	const roomDuration = Time.Minute * 14;
-	const quantity = Math.floor(calcMaxTripLength(user, 'MageTrainingArena') / roomDuration);
+	const quantity = Math.floor((await user.calcMaxTripLength('MageTrainingArena')) / roomDuration);
 	const duration = quantity * roomDuration;
 
 	const cost = determineRunes(user, new Bank().add(RuneTable.roll())).multiply(quantity);
@@ -129,11 +125,11 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
 
 	await user.transactItems({ itemsToRemove: cost });
 
-	await updateBankSetting('mta_cost', cost);
+	await ClientSettings.updateBankSetting('mta_cost', cost);
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'MageTrainingArena',
 		quantity,

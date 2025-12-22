@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { describe, expect, test } from 'vitest';
 
 import { PercentCounter } from '../../src/lib/structures/PercentCounter.js';

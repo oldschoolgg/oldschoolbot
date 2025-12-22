@@ -1,19 +1,16 @@
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const enchantingTask: MinionTask = {
 	type: 'Enchanting',
-	async run(data: EnchantingActivityTaskOptions) {
-		const { itemID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: EnchantingActivityTaskOptions, { user, handleTripFinish }) {
+		const { itemID, quantity, channelId, duration } = data;
 
 		const enchantable = Enchantables.find(fletchable => fletchable.id === itemID)!;
 
 		const xpReceived = quantity * enchantable.xp;
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Magic,
+			skillName: 'magic',
 			amount: xpReceived,
 			duration
 		});
@@ -26,6 +23,6 @@ export const enchantingTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished enchanting ${quantity}x ${enchantable.name}, you received ${loot}. ${xpRes}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

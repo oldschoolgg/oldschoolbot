@@ -1,15 +1,13 @@
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
 import { Construction } from '@/lib/skilling/skills/construction/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',
-	async run(data: ConstructionActivityTaskOptions) {
-		const { objectID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ConstructionActivityTaskOptions, { user, handleTripFinish }) {
+		const { objectID, quantity, channelId, duration } = data;
+
 		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
@@ -18,7 +16,7 @@ export const constructionTask: MinionTask = {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Construction,
+			skillName: 'construction',
 			amount: xpReceived + bonusXP,
 			duration
 		});
@@ -29,6 +27,6 @@ export const constructionTask: MinionTask = {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

@@ -1,24 +1,19 @@
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const sawmillTask: MinionTask = {
 	type: 'Sawmill',
-	async run(data: SawmillActivityTaskOptions) {
-		const { userID, channelID, plankID, plankQuantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: SawmillActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelId, plankID, plankQuantity } = data;
 
-		const loot = new Bank({
-			[plankID]: plankQuantity
-		});
+		const loot = new Bank().add(plankID, plankQuantity);
 
 		let str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
 
 		if (
 			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm']) &&
-			user.getAttackStyles().includes(SkillsEnum.Strength) &&
+			user.getAttackStyles().includes('strength') &&
 			!user.hasEquippedOrInBank(['Helm of raedwald'])
 		) {
 			loot.add('Helm of raedwald');
@@ -31,6 +26,6 @@ export const sawmillTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

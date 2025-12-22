@@ -1,9 +1,8 @@
-import { ApplicationCommandOptionType, type User } from 'discord.js';
-
+import { ownedItemOption } from '@/discord/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import Potions from '@/lib/minions/data/potions.js';
 import { quests } from '@/lib/minions/data/quests.js';
-import Agility, { type UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import Agility from '@/lib/skilling/skills/agility.js';
 import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
@@ -33,19 +32,18 @@ import { scatterCommand } from '@/mahoji/lib/abstracted_commands/scatterCommand.
 import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-import { ownedItemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
-export const activitiesCommand: OSBMahojiCommand = {
+export const activitiesCommand = defineCommand({
 	name: 'activities',
 	description: 'Miscellaneous activities you can do.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'plank_make',
 			description: 'Turn logs into planks.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'action',
 					description: 'The method you wish to make planks.',
 					required: true,
@@ -55,14 +53,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'The type of planks to make.',
 					required: true,
 					choices: Planks.map(i => ({ name: i.name, value: i.name }))
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity of planks to make.',
 					required: false,
@@ -71,12 +69,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'chompy_hunt',
 			description: 'Send your minion to hunt Chompys.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'action',
 					description: 'Start a Chompy hunting trip, or claim hats.',
 					choices: ['start', 'claim'].map(i => ({ name: i, value: i })),
@@ -85,24 +83,24 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'my_notes',
 			description: 'Send your minion to rummage skeletons for Ancient pages.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'warriors_guild',
 			description: 'Send your minion to the Warriors Guild.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'action',
 					description: 'Get tokens, or kill Cyclops.',
 					choices: ['tokens', 'cyclops'].map(i => ({ name: i, value: i })),
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity (optional).',
 					required: false,
@@ -111,19 +109,19 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'camdozaal',
 			description: 'Camdozaal activities',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'action',
 					description: 'Mining, smithing, or fishing inside the Ruins of Camdozaal',
 					choices: ['mining', 'smithing', 'fishing'].map(i => ({ name: i, value: i })),
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to do (optional).',
 					required: false,
@@ -132,15 +130,15 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'collect',
 			description: 'Sends your minion to collect items.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item to collect.',
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return collectables
 							.filter(p => (!value ? true : p.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(p => ({ name: p.item.name, value: p.item.name }));
@@ -148,14 +146,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity of collecting trips.',
 					required: false,
 					min_value: 1
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'no_stams',
 					description: "Don't use stamina potions when collecting.",
 					required: false
@@ -163,18 +161,18 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'quest',
 			description: 'Send your minion to do quests.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The name of the quest (optional).',
-					autocomplete: async (_value: string, user: User) => {
-						const mUser = await mUserFetch(user.id);
+					autocomplete: async ({ userId }: StringAutoComplete) => {
+						const user = await mUserFetch(userId);
 						let list = quests
-							.filter(i => !mUser.user.finished_quest_ids.includes(i.id))
+							.filter(i => !user.user.finished_quest_ids.includes(i.id))
 							.map(i => ({ name: i.name, value: i.name }));
 						if (list.length === 0) {
 							list = quests.map(i => ({ name: `${i.name} (completed)`, value: i.name }));
@@ -186,15 +184,15 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'decant',
 			description: 'Decant potions into different dosages.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'potion_name',
 					description: 'The name of the potion.',
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Potions.filter(p =>
 							!value ? true : p.name.toLowerCase().includes(value.toLowerCase())
 						).map(p => ({ name: p.name, value: p.name }));
@@ -202,7 +200,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'dose',
 					description: 'The dosage to decant them too. (default 4)',
 					required: false,
@@ -212,12 +210,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'charge',
 			description: 'Charge glories, or rings of wealth.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you want to charge',
 					required: true,
@@ -233,7 +231,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The amount of inventories you want to charge.  (optional)',
 					required: false,
@@ -242,17 +240,17 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'fight_caves',
 			description: 'Fight TzTok-Jad and do the Fight Caves.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'inferno',
 			description: 'Fight TzKal-Zuk and do the Inferno.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'action',
 					description: 'The action you want to perform',
 					required: true,
@@ -264,12 +262,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'birdhouses',
 			description: 'Plant Birdhouse traps.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'action',
 					description: 'The action to perform.',
 					required: true,
@@ -279,7 +277,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'birdhouse',
 					description: 'The birdhouse to plant.',
 					required: false,
@@ -288,28 +286,28 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'aerial_fishing',
 			description: 'The Aerial Fishing activity.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'enchant',
 			description: 'Enchant items, like jewellry and bolts.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The item to enchant.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Enchantables.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to enchant.',
 					required: false,
@@ -318,23 +316,23 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'bury',
 			description: 'Bury bones!',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The bone to bury.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Prayer.Bones.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to bury.',
 					required: false,
@@ -343,23 +341,23 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'scatter',
 			description: 'Scatter ashes!',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The ash to scatter.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Prayer.Ashes.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to scatter.',
 					required: false,
@@ -368,19 +366,19 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'puro_puro',
 			description: 'Hunt implings in Puro-Puro.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'impling',
 					description: 'The impling to hunt',
 					required: true,
 					choices: puroOptions.map(i => ({ name: i.name, value: i.name }))
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'dark_lure',
 					description: 'Use Dark Lure spell?',
 					required: false
@@ -388,15 +386,16 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'alch',
 			description: 'Alch items for GP.',
 			options: [
 				{
-					...ownedItemOption(i => Boolean(i.highalch))
+					...ownedItemOption(i => Boolean(i.highalch)),
+					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to alch.',
 					required: false,
@@ -405,23 +404,23 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cast',
 			description: 'Cast spells to train Magic.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'spell',
 					description: 'The spell to cast.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Castables.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to cast (Optional).',
 					required: false,
@@ -430,31 +429,31 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'underwater',
 			description: 'The Underwater.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'agility_thieving',
 					description: 'Underwater Agility and Thieving.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'training_skill',
 							description: 'The skill/skills to train.',
 							required: true,
 							choices: Agility.underwaterAgilityThievingTrainingSkill.map(i => ({ name: i, value: i }))
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'minutes',
 							description: 'How many minutes to do (optional).',
 							required: false,
 							min_value: 1
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'no_stams',
 							description: "Don't use stams?",
 							required: false
@@ -462,19 +461,19 @@ export const activitiesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'drift_net_fishing',
 					description: 'The Drift Net fishing activity.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'minutes',
 							description: 'How many minutes to do (optional).',
 							required: false,
 							min_value: 1
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'no_stams',
 							description: "Don't use stams?",
 							required: false
@@ -484,12 +483,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'other',
 			description: 'Other, smaller activities.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'activity',
 					description: 'The activity to do.',
 					required: true,
@@ -498,46 +497,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		channelID,
-		userID,
-		interaction
-	}: CommandRunOptions<{
-		plank_make?: { action: string; type: string; quantity?: number };
-		chompy_hunt?: { action: 'start' | 'claim' };
-		my_notes?: {};
-		warriors_guild?: { action: string; quantity?: number };
-		camdozaal?: { action: string; quantity?: number };
-		collect?: { item: string; quantity?: number; no_stams?: boolean };
-		quest?: {
-			name?: string;
-		};
-		decant?: { potion_name: string; dose?: number };
-		charge?: { item: string; quantity?: number };
-		fight_caves?: {};
-		inferno?: { action: string };
-		birdhouses?: { action?: string; birdhouse?: string };
-		aerial_fishing?: {};
-		enchant?: { name: string; quantity?: number };
-		bury?: { name: string; quantity?: number };
-		scatter?: { name: string; quantity?: number };
-		puro_puro?: { impling: string; dark_lure?: boolean; implingTier?: number };
-		alch?: { item: string; quantity?: number };
-		cast?: { spell: string; quantity?: number };
-		underwater?: {
-			agility_thieving?: {
-				training_skill: UnderwaterAgilityThievingTrainingSkill;
-				minutes?: number;
-				no_stams?: boolean;
-			};
-			drift_net_fishing?: { minutes?: number; no_stams?: boolean };
-		};
-		other?: {
-			activity: string;
-		};
-	}>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, channelId, user, interaction }) => {
 		// Minion can be busy
 		if (options.decant) {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
@@ -546,95 +506,89 @@ export const activitiesCommand: OSBMahojiCommand = {
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
 
 		// Minion must be free
-		const isBusy = user.minionIsBusy;
+		const isBusy = await user.minionIsBusy();
 		const busyStr = `${user.minionName} is currently busy.`;
 		if (isBusy) return busyStr;
 
 		if (options.other) {
-			return otherActivitiesCommand(options.other.activity, user, channelID);
+			return otherActivitiesCommand(options.other.activity, user, channelId);
 		}
 		if (options.birdhouses?.action === 'harvest') {
-			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
+			return birdhouseHarvestCommand(user, channelId, options.birdhouses.birdhouse);
 		}
-		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
+		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelId);
 		if (options.plank_make?.action === 'sawmill') {
-			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
+			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelId);
 		}
 		if (options.plank_make?.action === 'butler') {
-			return butlerCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
+			return butlerCommand(user, options.plank_make.type, options.plank_make.quantity, channelId);
 		}
 		if (options.chompy_hunt?.action === 'start') {
-			return chompyHuntCommand(user, channelID);
+			return chompyHuntCommand(user, channelId);
 		}
 		if (options.chompy_hunt?.action === 'claim') {
 			return chompyHuntClaimCommand(user);
 		}
 		if (options.my_notes) {
-			return myNotesCommand(user, channelID);
+			return myNotesCommand(user, channelId);
 		}
 		if (options.warriors_guild) {
 			return warriorsGuildCommand(
 				user,
-				channelID,
+				channelId,
 				options.warriors_guild.action,
 				options.warriors_guild.quantity
 			);
 		}
 		if (options.camdozaal) {
-			return camdozaalCommand(user, channelID, options.camdozaal.action, options.camdozaal.quantity);
+			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.collect) {
 			return collectCommand(
 				user,
-				channelID,
+				channelId,
 				options.collect.item,
 				options.collect.quantity,
 				options.collect.no_stams
 			);
 		}
 		if (options.quest) {
-			return questCommand(user, channelID, options.quest.name);
+			return questCommand(user, channelId, options.quest.name);
 		}
 		if (options.charge?.item === 'glory') {
-			return chargeGloriesCommand(user, channelID, options.charge.quantity);
+			return chargeGloriesCommand(user, channelId, options.charge.quantity);
 		}
 		if (options.charge?.item === 'wealth') {
-			return chargeWealthCommand(user, channelID, options.charge.quantity);
+			return chargeWealthCommand(user, channelId, options.charge.quantity);
 		}
 		if (options.fight_caves) {
-			return fightCavesCommand(user, channelID);
+			return fightCavesCommand(user, channelId);
 		}
 		if (options.aerial_fishing) {
-			return aerialFishingCommand(user, channelID);
+			return aerialFishingCommand(user, channelId);
 		}
 		if (options.enchant) {
-			return enchantCommand(user, channelID, options.enchant.name, options.enchant.quantity);
+			return enchantCommand(user, channelId, options.enchant.name, options.enchant.quantity);
 		}
 		if (options.bury) {
-			return buryCommand(user, channelID, options.bury.name, options.bury.quantity);
+			return buryCommand(user, channelId, options.bury.name, options.bury.quantity);
 		}
 		if (options.scatter) {
-			return scatterCommand(user, channelID, options.scatter.name, options.scatter.quantity);
+			return scatterCommand(user, channelId, options.scatter.name, options.scatter.quantity);
 		}
 		if (options.alch) {
-			return alchCommand(interaction, channelID, user, options.alch.item, options.alch.quantity);
+			return alchCommand(interaction, channelId, user, options.alch.item, options.alch.quantity);
 		}
 		if (options.puro_puro) {
-			return puroPuroStartCommand(
-				user,
-				channelID,
-				options.puro_puro.impling,
-				options.puro_puro.dark_lure,
-				options.puro_puro.implingTier
-			);
+			return puroPuroStartCommand(user, channelId, options.puro_puro.impling, options.puro_puro.dark_lure);
 		}
 		if (options.cast) {
-			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);
+			return castCommand(channelId, user, options.cast.spell, options.cast.quantity);
 		}
 		if (options.underwater) {
 			if (options.underwater.agility_thieving) {
 				return underwaterAgilityThievingCommand(
-					channelID,
+					channelId,
 					user,
 					options.underwater.agility_thieving.training_skill,
 					options.underwater.agility_thieving.minutes,
@@ -643,7 +597,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			}
 			if (options.underwater.drift_net_fishing) {
 				return driftNetCommand(
-					channelID,
+					channelId,
 					user,
 					options.underwater.drift_net_fishing.minutes,
 					options.underwater.drift_net_fishing.no_stams
@@ -653,4 +607,4 @@ export const activitiesCommand: OSBMahojiCommand = {
 
 		return 'Invalid command.';
 	}
-};
+});

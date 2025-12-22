@@ -1,12 +1,19 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import { chunk, sumArr } from '@oldschoolgg/toolkit';
-import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import { cleanString } from '@oldschoolgg/toolkit/string-util';
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
-import { loadImage } from 'skia-canvas';
+import { chunk } from 'remeda';
 
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
+import {
+	type BaseCanvasArgs,
+	type BGSpriteName,
+	CanvasImage,
+	getClippedRegion,
+	type IBgSprite,
+	loadImage
+} from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
@@ -15,8 +22,6 @@ import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBa
 import type { FlagMap, Flags } from '@/lib/minions/types.js';
 import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
 import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
-import { type BaseCanvasArgs, type BGSpriteName, CanvasImage, getClippedRegion, type IBgSprite } from './canvasUtil.js';
-import { OSRSCanvas } from './OSRSCanvas.js';
 
 interface BankImageResult {
 	image: Buffer;
@@ -222,13 +227,10 @@ class BankImageTask {
 	public _bgSpriteData: CanvasImage = new CanvasImage();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: CanvasImage;
-	public ready!: Promise<void>;
-
-	public constructor() {
-		this.ready = this.init();
-	}
+	public ready: boolean = false;
 
 	async init() {
+		await CanvasModule.ensureInit();
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
@@ -238,7 +240,7 @@ class BankImageTask {
 		const basePath = './src/lib/resources/images/bank_backgrounds/spritesheet/';
 		const files = await fs.readdir(basePath);
 		for (const file of files) {
-			const bgName: BGSpriteName = file.split('\\').pop()?.split('/').pop()?.split('.').shift()! as BGSpriteName;
+			const bgName: BGSpriteName = file.split('\\').pop()!.split('/').pop()!.split('.').shift()! as BGSpriteName;
 			const d = await loadImage(await fs.readFile(basePath + file));
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {
@@ -342,7 +344,8 @@ class BankImageTask {
 			const [item, quantity] = items[i];
 
 			const isNewCLItem =
-				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
+				flags.has('forceAllPurple') ||
+				(flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.has(item.id));
 
 			await c.drawItemIDSprite({
 				itemID: item.id,
@@ -399,6 +402,10 @@ class BankImageTask {
 			mahojiFlags?: BankFlag[];
 		} & BaseCanvasArgs
 	): Promise<BankImageResult> {
+		if (!this.ready) {
+			await this.init();
+			this.ready = true;
+		}
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));
@@ -431,7 +438,7 @@ class BankImageTask {
 		// Sorting
 		const favorites = user?.user.favoriteItems;
 		const weightings = user?.user.bank_sort_weightings as ItemBank;
-		const perkTier = user ? user.perkTier() : 0;
+		const perkTier = user ? await user.fetchPerkTier() : 0;
 		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : (user?.bankSortMethod ?? 'value');
 		const sortInput = flags.get('sort');
 		const sort = sortInput ? (BankSortMethods.find(s => s === sortInput) ?? defaultSort) : defaultSort;
@@ -506,9 +513,10 @@ class BankImageTask {
 		const isTransparent = Boolean(bgImage.transparent);
 
 		const isPurple: boolean =
-			flags.get('showNewCL') !== undefined &&
-			currentCL !== undefined &&
-			items.some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
+			flags.has('forceAllPurple') ||
+			(flags.has('showNewCL') &&
+				currentCL !== undefined &&
+				items.some(([item]) => !currentCL.has(item.id) && allCLItems.has(item.id)));
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 

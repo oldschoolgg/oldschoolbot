@@ -34,7 +34,7 @@ sidebar:
 
 ## Obtaining
 
-Elder Clues are extremely rare and mostly found from end-game bosses and high level skilling. Known sources include Elder Birdhouses, Akumu, Venatrix, implings, Fishing, Woodcutting, and Grandmaster Caskets.
+Elder Clues are extremely rare and mostly found from end-game bosses and high level skilling. Known sources include Elder Birdhouses, Akumu, Venatrix, implings, Fishing and Woodcutting.
 
 ## General Loot Table
 

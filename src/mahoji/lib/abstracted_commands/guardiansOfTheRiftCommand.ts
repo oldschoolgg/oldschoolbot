@@ -1,21 +1,16 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function guardiansOfTheRiftStartCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	combinationRunes: boolean | undefined
 ) {
 	const rcLevel = user.skillLevel('runecraft');
@@ -24,7 +19,7 @@ export async function guardiansOfTheRiftStartCommand(
 	}
 
 	const timePerGame = Time.Minute * 10;
-	const maxTripLength = calcMaxTripLength(user, 'GuardiansOfTheRift');
+	const maxTripLength = await user.calcMaxTripLength('GuardiansOfTheRift');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	// Being reduced with ticks
@@ -40,7 +35,7 @@ export async function guardiansOfTheRiftStartCommand(
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
 	for (const pouch of Runecraft.pouches) {
-		if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+		if (user.skillsAsLevels.runecraft < pouch.level) continue;
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 		if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
 	}
@@ -78,7 +73,7 @@ export async function guardiansOfTheRiftStartCommand(
 		break;
 	}
 
-	if (user.skillLevel(SkillsEnum.Mining) >= 99 && user.hasEquippedOrInBank('Mining cape')) {
+	if (user.skillsAsLevels.mining >= 99 && user.hasEquippedOrInBank('Mining cape')) {
 		boosts.push('**5%** chance to mine an extra essence/fragment using Mining cape');
 		minedFragments *= 1.05;
 	}
@@ -92,7 +87,7 @@ export async function guardiansOfTheRiftStartCommand(
 		);
 	}
 
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		boosts.push('Extra 2 Barriers/Guardians fixed for Full Graceful equipped');
 		barrierAndGuardian += 2;
 	}
@@ -103,14 +98,10 @@ export async function guardiansOfTheRiftStartCommand(
 		rolls -= 1;
 	}
 
-	if (
-		user.skillLevel(SkillsEnum.Runecraft) >= 99 &&
-		user.hasEquippedOrInBank('Runecraft cape') &&
-		inventorySize > 28
-	) {
+	if (user.skillsAsLevels.runecraft >= 99 && user.hasEquippedOrInBank('Runecraft cape') && inventorySize > 28) {
 		barrierAndGuardian += 2;
 		boosts.push('Extra 2 Barriers/Guardians fixed for Runecraft cape');
-	} else if (user.skillLevel(SkillsEnum.Magic) >= 67) {
+	} else if (user.skillsAsLevels.magic >= 67) {
 		const NPCContactRuneCost = determineRunes(
 			user,
 			new Bank({ 'Astral rune': 1, 'Cosmic rune': 1, 'Air rune': 2 }).clone().multiply(quantity)
@@ -145,7 +136,7 @@ export async function guardiansOfTheRiftStartCommand(
 				.clone()
 				.multiply(quantity * 5)
 		);
-		if (user.skillLevel(SkillsEnum.Magic) < 82 || !bank.has(magicImbueRuneCost)) {
+		if (user.skillsAsLevels.magic < 82 || !bank.has(magicImbueRuneCost)) {
 			return `You need enough Magic Imbue runes and 82 Magic. You don't have enough runes and or Magic lvl. You need ${magicImbueRuneCost}`;
 		}
 		removeRunesAndNecks.add(magicImbueRuneCost);
@@ -159,7 +150,7 @@ export async function guardiansOfTheRiftStartCommand(
 		rolls += 2;
 		boosts.push('Extra 2 rolls for Combination runecrafting');
 		await user.removeItemsFromBank(removeRunesAndNecks);
-		updateBankSetting('gotr_cost', removeRunesAndNecks);
+		await ClientSettings.updateBankSetting('gotr_cost', removeRunesAndNecks);
 		await trackLoot({
 			id: 'guardians_of_the_rift',
 			type: 'Minigame',
@@ -179,12 +170,12 @@ export async function guardiansOfTheRiftStartCommand(
 	barrierAndGuardian = Math.round(randomVariation(barrierAndGuardian, 10));
 	rolls = Math.max(rolls, 1);
 
-	await addSubTaskToActivityTask<GuardiansOfTheRiftActivityTaskOptions>({
+	await ActivityManager.startTrip<GuardiansOfTheRiftActivityTaskOptions>({
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'GuardiansOfTheRift',
-		channelID: channelID.toString(),
+		channelId,
 		minigameID: 'guardians_of_the_rift',
 		minedFragments,
 		barrierAndGuardian,

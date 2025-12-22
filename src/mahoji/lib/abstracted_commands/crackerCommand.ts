@@ -1,9 +1,8 @@
-import { shuffleArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { ChatInputCommandInteraction, User } from 'discord.js';
+import { shuffleArr } from '@oldschoolgg/rng';
+import type { IUser } from '@oldschoolgg/schemas';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const HatTable = new LootTable()
@@ -31,10 +30,10 @@ export async function crackerCommand({
 	interaction,
 	otherPersonAPIUser
 }: {
-	otherPersonAPIUser: User;
+	otherPersonAPIUser: IUser;
 	ownerID: string;
 	otherPersonID: string;
-	interaction: ChatInputCommandInteraction;
+	interaction: MInteraction;
 }) {
 	const otherPerson = await mUserFetch(otherPersonID);
 	const owner = await mUserFetch(ownerID);
@@ -46,8 +45,7 @@ export async function crackerCommand({
 		return "You don't have any Christmas crackers.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`${Emoji.ChristmasCracker} Are you sure you want to use your cracker on them? Either person could get the partyhat! Please confirm if you understand and wish to use it.`
 	);
 

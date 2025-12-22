@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const KillerwattTable = new LootTable()
+export const KillerwattTable: LootTable = new LootTable()
 	.every('Ashes')
 
 	/* Weapons */
@@ -42,7 +42,7 @@ export const KillerwattTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 1, 5);
 
-export default new SimpleMonster({
+export const Killerwatt: SimpleMonster = new SimpleMonster({
 	id: 469,
 	name: 'Killerwatt',
 	table: KillerwattTable,

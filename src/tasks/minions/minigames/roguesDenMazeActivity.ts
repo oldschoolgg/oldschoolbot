@@ -1,9 +1,8 @@
+import { randInt } from '@oldschoolgg/rng';
 import { Bank, ItemGroups } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { randInt } from '@/lib/util/rng.js';
 
 function getLowestCountOutfitPiece(bank: Bank): number {
 	let lowestCountPiece = 0;
@@ -23,16 +22,15 @@ function getLowestCountOutfitPiece(bank: Bank): number {
 export const roguesDenTask: MinionTask = {
 	type: 'RoguesDenMaze',
 
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, quantity, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelId, quantity } = data;
 
 		await user.incrementMinigameScore('rogues_den', quantity);
 
 		const loot = new Bank();
 		const userBankCopy = user.allItemsOwned.clone();
 
-		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
+		let str = `<@${user.id}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 
 		for (let i = 0; i < quantity; i++) {
 			if (randInt(1, 8) <= 5) {
@@ -59,6 +57,6 @@ export const roguesDenTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, gotLoot ? image.file.attachment : undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

@@ -1,26 +1,21 @@
-import { percentChance, roll } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import Runecraft, { ouraniaAltarTables } from '@/lib/skilling/skills/runecraft.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
-	async run(data: OuraniaAltarOptions) {
-		const { quantity, userID, channelID, duration, daeyalt } = data;
-		const user = await mUserFetch(userID);
-		const lvl = user.skillLevel(SkillsEnum.Runecraft);
+	async run(data: OuraniaAltarOptions, { user, handleTripFinish, rng }) {
+		const { quantity, channelId, duration, daeyalt } = data;
+
+		const lvl = user.skillsAsLevels.runecraft;
 		const loot = new Bank();
-		const [hasArdyMedium] = await userhasDiaryTier(user, ArdougneDiary.medium);
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_487_213);
+		const hasArdyMedium = user.hasDiary('ardougne.medium');
+		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_487_213);
 		const selectedLootTable = ouraniaAltarTables[Math.min(Math.floor(lvl / 10), 10)];
 		let totalXp = 0;
 
@@ -33,7 +28,7 @@ const ouraniaAltarTask: MinionTask = {
 				runeXp = 29.7;
 			}
 			totalXp += runeXp * 1.7;
-			if (roll(petDropRate)) {
+			if (rng.roll(petDropRate)) {
 				loot.add('Rift guardian');
 			}
 			loot.add(essenceLoot);
@@ -49,8 +44,8 @@ const ouraniaAltarTask: MinionTask = {
 			const rBonus = raimentBonus(user, qty);
 			if (hasArdyMedium) {
 				for (let i = 0; i < qty; i++) {
-					if (!rRune && percentChance(10)) dBonus++;
-					else if (rRune?.ardyDiaryChance && percentChance(rRune.ardyDiaryChance)) dBonus++;
+					if (!rRune && rng.percentChance(10)) dBonus++;
+					else if (rRune?.ardyDiaryChance && rng.percentChance(rRune.ardyDiaryChance)) dBonus++;
 				}
 				diaryQuantity += dBonus;
 			}
@@ -59,7 +54,7 @@ const ouraniaAltarTask: MinionTask = {
 		}
 
 		const xpRes = `\n${await user.addXP({
-			skillName: SkillsEnum.Runecraft,
+			skillName: 'runecraft',
 			amount: totalXp,
 			duration,
 			source: 'OuraniaAltar'
@@ -71,13 +66,13 @@ const ouraniaAltarTask: MinionTask = {
 			raimentQuantity > 0 ? `\n${raimentQuantity} bonus runes from the Raiments of the eye outfit.` : ''
 		} ${xpRes}`;
 
-		if (loot.amount('Rift guardian') > 0) {
+		if (loot.has('Rift guardian')) {
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while runecrafting at the Ourania Altar at level ${user.skillLevel(
-					SkillsEnum.Runecraft
+					'runecraft'
 				)} Runecrafting!`
 			);
 		}
@@ -87,7 +82,7 @@ const ouraniaAltarTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		updateBankSetting('ourania_loot', loot);
+		await ClientSettings.updateBankSetting('ourania_loot', loot);
 		await trackLoot({
 			id: 'ourania_altar',
 			type: 'Skilling',
@@ -104,7 +99,7 @@ const ouraniaAltarTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };
 

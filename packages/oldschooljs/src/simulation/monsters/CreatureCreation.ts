@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const Newtroost = new SimpleMonster({
+const Newtroost: SimpleMonster = new SimpleMonster({
 	id: 3605,
 	name: 'Newtroost',
 	table: new LootTable()
@@ -11,7 +11,7 @@ const Newtroost = new SimpleMonster({
 	aliases: ['newtroost']
 });
 
-const Unicow = new SimpleMonster({
+const Unicow: SimpleMonster = new SimpleMonster({
 	id: 3601,
 	name: 'Unicow',
 	table: new LootTable()
@@ -21,7 +21,7 @@ const Unicow = new SimpleMonster({
 	aliases: ['unicow']
 });
 
-const Spidine = new SimpleMonster({
+const Spidine: SimpleMonster = new SimpleMonster({
 	id: 3602,
 	name: 'Spidine',
 	table: new LootTable()
@@ -31,7 +31,7 @@ const Spidine = new SimpleMonster({
 	aliases: ['spidine']
 });
 
-const Swordchick = new SimpleMonster({
+const Swordchick: SimpleMonster = new SimpleMonster({
 	id: 3603,
 	name: 'Swordchick',
 	table: new LootTable()
@@ -41,7 +41,7 @@ const Swordchick = new SimpleMonster({
 	aliases: ['swordchick']
 });
 
-const Jubster = new SimpleMonster({
+const Jubster: SimpleMonster = new SimpleMonster({
 	id: 3604,
 	name: 'Jubster',
 	table: new LootTable()
@@ -51,7 +51,7 @@ const Jubster = new SimpleMonster({
 	aliases: ['jubster']
 });
 
-const Frogeel = new SimpleMonster({
+const Frogeel: SimpleMonster = new SimpleMonster({
 	id: 3600,
 	name: 'Frogeel',
 	table: new LootTable()
@@ -61,4 +61,11 @@ const Frogeel = new SimpleMonster({
 	aliases: ['frogeel']
 });
 
-export const CreatureCreation = { Frogeel, Newtroost, Spidine, Swordchick, Unicow, Jubster };
+export const CreatureCreation: Record<string, SimpleMonster> = {
+	Frogeel,
+	Newtroost,
+	Spidine,
+	Swordchick,
+	Unicow,
+	Jubster
+};

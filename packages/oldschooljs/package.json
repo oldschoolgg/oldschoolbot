@@ -20,7 +20,8 @@
 	"scripts": {
 		"test": "concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
 		"test:unit": "vitest run --coverage",
-		"generate": "tsx --tsconfig scripts/tsconfig.json scripts/prepare",
+		"generate": "tsx --tsconfig scripts/tsconfig.json scripts/prepare && tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts",
+		"enum": "tsx --tsconfig scripts/tsconfig.json scripts/enum.ts",
 		"build": "tsdown"
 	},
 	"dependencies": {
@@ -28,7 +29,6 @@
 	},
 	"devDependencies": {
 		"deep-object-diff": "^1.1.9",
-		"fast-glob": "^3.3.3",
 		"wtf_wikipedia": "^10.3.2"
 	}
 }

@@ -1,38 +1,32 @@
-import { calcWhatPercent, noOp, notEmpty, randArrItem, sleep, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { allAbstractCommands, bulkUpdateCommands, type MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
-import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { type ClientStorage, economy_transaction_type } from '@prisma/client';
-import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
+import { dateFm } from '@oldschoolgg/discord';
+import { randArrItem } from '@oldschoolgg/rng';
+import {
+	calcPerHour,
+	calcWhatPercent,
+	cleanString,
+	formatDuration,
+	noOp,
+	notEmpty,
+	sleep,
+	stringMatches,
+	Time,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
+import { gracefulExit } from 'exit-hook';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
-import {
-	BadgesEnum,
-	BitField,
-	BitFieldData,
-	badges,
-	Channel,
-	DISABLED_COMMANDS,
-	globalConfig,
-	META_CONSTANTS
-} from '@/lib/constants.js';
-import { economyLog } from '@/lib/economyLogs.js';
+import { economy_transaction_type } from '@/prisma/main/enums.js';
+import type { ClientStorage } from '@/prisma/main.js';
+import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
+import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
-import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
-import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction, interactionReply } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
-import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
-import { syncCustomPrices } from '@/mahoji/lib/events.js';
-import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
+import { isValidBitField } from '@/lib/util/smallUtils.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -91,7 +85,7 @@ async function getAllTradedItems(giveUniques = false) {
 
 const viewableThings: {
 	name: string;
-	run: (clientSettings: ClientStorage) => Promise<Bank | InteractionReplyOptions>;
+	run: (clientSettings: ClientStorage) => Promise<Bank | SendableMessage>;
 }[] = [
 	{
 		name: 'ToB Cost',
@@ -163,16 +157,6 @@ AND ("gear.melee" IS NOT NULL OR
 		}
 	},
 	{
-		name: 'Memory Analysis',
-		run: async () => {
-			return {
-				content: Object.entries(memoryAnalysis())
-					.map(i => `${i[0]}: ${i[1]}`)
-					.join('\n')
-			};
-		}
-	},
-	{
 		name: 'Economy Bank',
 		run: async () => {
 			const [blowpipeRes, totalGP, result] = await prisma.$transaction([
@@ -204,10 +188,11 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 			}
 			return {
 				files: [
-					(await makeBankImage({ bank: economyBank })).file,
-					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4)), {
-						name: 'bank.json'
-					})
+					await makeBankImage({ bank: economyBank }),
+					{
+						name: 'bank.json',
+						buffer: Buffer.from(JSON.stringify(economyBank.toJSON(), null, 4))
+					}
 				]
 			};
 		}
@@ -272,7 +257,7 @@ LIMIT 10;
 			return {
 				content: `**Grand Exchange Data**
 
-The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets every ${formatDuration(
+The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every ${formatDuration(
 					GrandExchange.config.buyLimit.interval
 				)}.
 **Tax Rate:** ${GrandExchange.config.tax.rate()}%
@@ -281,18 +266,18 @@ The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets ever
 **Total Tax GP G.E Has To Spend on Item Sinks:** ${settings.taxBank.toLocaleString()} GP
 `,
 				files: [
-					(
-						await makeBankImage({
-							bank: await GrandExchange.fetchOwnedBank(),
-							title: 'Items in the G.E'
-						})
-					).file,
-					new AttachmentBuilder(Buffer.from(allTx.map(i => i.join('\t')).join('\n')), {
-						name: 'transactions.txt'
+					await makeBankImage({
+						bank: await GrandExchange.fetchOwnedBank(),
+						title: 'Items in the G.E'
 					}),
-					new AttachmentBuilder(Buffer.from(allLi.map(i => i.join('\t')).join('\n')), {
-						name: 'listings.txt'
-					})
+					{
+						name: 'transactions.txt',
+						buffer: Buffer.from(allTx.map(i => i.join('\t')).join('\n'))
+					},
+					{
+						name: 'listings.txt',
+						buffer: Buffer.from(allLi.map(i => i.join('\t')).join('\n'))
+					}
 				]
 			};
 		}
@@ -348,8 +333,9 @@ from bot_item_sell;`);
 
 			return {
 				files: [
-					new AttachmentBuilder(
-						Buffer.from(
+					{
+						name: 'output.txt',
+						buffer: Buffer.from(
 							result
 								.map(
 									(row, index) =>
@@ -361,9 +347,8 @@ from bot_item_sell;`);
 										).toFixed(1)}%)`
 								)
 								.join('\n')
-						),
-						{ name: 'output.txt' }
-					)
+						)
+					}
 				]
 			};
 		}
@@ -392,46 +377,36 @@ ORDER BY slots_used DESC;
 	}
 ];
 
-export const adminCommand: OSBMahojiCommand = {
+export const adminCommand = defineCommand({
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
-	guildID: globalConfig.supportServerID,
+	guildId: globalConfig.supportServerID,
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'shut_down',
 			description: 'Shut down the bot without rebooting.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'reboot',
-			description: 'Reboot the bot.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'sync_commands',
 			description: 'Sync commands',
 			options: []
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'item_stats',
 			description: 'item stats',
 			options: [{ ...itemOption(), required: true }]
 		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_blacklist',
-			description: 'Sync blacklist'
-		},
 		//
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cancel_task',
 			description: 'Cancel a users task',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
@@ -439,12 +414,25 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
+			name: 'clear_busy',
+			description: 'Make a user not busy',
+			options: [
+				{
+					type: 'User',
+					name: 'user',
+					description: 'The user',
+					required: true
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
 			name: 'bypass_age',
 			description: 'Bypass age for a user',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
@@ -452,18 +440,18 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'badges',
 			description: 'Manage badges of a user',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'add',
 					description: 'The badge to add',
 					required: false,
@@ -472,7 +460,7 @@ export const adminCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'remove',
 					description: 'The badge to remove',
 					required: false,
@@ -483,31 +471,31 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'command',
 			description: 'Enable/disable commands',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'disable',
 					description: 'The command to disable',
 					required: false,
-					autocomplete: async (value: string) => {
-						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allAbstractCommands(globalClient.mahojiClient)
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						const disabledCommands = await Cache.getDisabledCommands();
+						return globalClient.allCommands
 							.filter(i => !disabledCommands.includes(i.name))
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'enable',
 					description: 'The command to enable',
 					required: false,
 					autocomplete: async () => {
-						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allAbstractCommands(globalClient.mahojiClient)
+						const disabledCommands = await Cache.getDisabledCommands();
+						return globalClient.allCommands
 							.filter(i => disabledCommands.includes(i.name))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -515,13 +503,13 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'set_price',
 			description: 'item stats',
 			options: [
 				{ ...itemOption(), required: true },
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'price',
 					description: 'The price to set',
 					required: true,
@@ -530,33 +518,33 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'bitfield',
 			description: 'Manage bitfield of a user',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'add',
 					description: 'The bitfield to add',
 					required: false,
-					autocomplete: async value => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'remove',
 					description: 'The bitfield to remove',
 					required: false,
-					autocomplete: async value => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));
@@ -565,7 +553,7 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'ltc',
 			description: 'Ltc?',
 			options: [
@@ -578,12 +566,12 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View something',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'thing',
 					description: 'The thing',
 					required: true,
@@ -592,57 +580,37 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'give_items',
 			description: 'Spawn items for a user',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'items',
 					description: 'The items to give',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'reason',
 					description: 'The reason'
 				}
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction,
-		guildID
-	}: CommandRunOptions<{
-		reboot?: {};
-		shut_down?: {};
-		sync_commands?: {};
-		item_stats?: { item: string };
-		sync_blacklist?: {};
-		cancel_task?: { user: MahojiUserOption };
-		badges?: { user: MahojiUserOption; add?: string; remove?: string };
-		bypass_age?: { user: MahojiUserOption };
-		command?: { enable?: string; disable?: string };
-		set_price?: { item: string; price: number };
-		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
-		ltc?: { item?: string };
-		view?: { thing: string };
-		give_items?: { user: MahojiUserOption; items: string; reason?: string };
-	}>) => {
-		await deferInteraction(interaction);
+	run: async ({ options, userId, interaction, guildId }) => {
+		await interaction.defer();
 
-		const adminUser = await mUserFetch(userID);
-		const isAdmin = globalConfig.adminUserIDs.includes(userID);
-		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
+		const adminUser = await mUserFetch(userId);
+		const isAdmin = adminUser.isAdmin();
+		const isMod = isAdmin || adminUser.isMod();
+		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
 		}
 
@@ -654,9 +622,14 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await ActivityManager.cancelActivity(user.id);
-			globalClient.busyCounterCache.delete(user.id);
-			Cooldowns.delete(user.id);
 			return 'Done.';
+		}
+		if (options.clear_busy) {
+			const { user } = options.clear_busy.user;
+			const isBusy = await Cache.getUserLockStatus(user.id);
+			if (!isBusy) return `${user.username} isn't busy.`;
+			await Cache.setUserLockStatus(user.id, 'unlocked');
+			return `Cleared busy for ${user.username}.`;
 		}
 
 		if (options.badges) {
@@ -671,11 +644,8 @@ export const adminCommand: OSBMahojiCommand = {
 			if (!badge) return 'Invalid badge.';
 			const [badgeName, badgeID] = badge;
 
-			const userToUpdateBadges = await mahojiUsersSettingsFetch(options.badges.user.user.id, {
-				badges: true,
-				id: true
-			});
-			let newBadges = [...userToUpdateBadges.badges];
+			const userToUpdateBadges = await mUserFetch(options.badges.user.user.id);
+			let newBadges = [...userToUpdateBadges.user.badges];
 
 			if (action === 'add') {
 				if (newBadges.includes(badgeID)) return "Already has this badge, so can't add.";
@@ -685,7 +655,7 @@ export const adminCommand: OSBMahojiCommand = {
 				newBadges = newBadges.filter(i => i !== badgeID);
 			}
 
-			await mahojiUserSettingsUpdate(userToUpdateBadges.id, {
+			await userToUpdateBadges.update({
 				badges: uniqueArr(newBadges)
 			});
 
@@ -695,11 +665,11 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 
 		if (options.bypass_age) {
-			const input = await mahojiUsersSettingsFetch(options.bypass_age.user.user.id, { bitfield: true, id: true });
-			if (input.bitfield.includes(BitField.BypassAgeRestriction)) {
+			const userToBypassAge = await mUserFetch(options.bypass_age.user.user.id);
+			if (userToBypassAge.bitfield.includes(BitField.BypassAgeRestriction)) {
 				return 'This user is already bypassed.';
 			}
-			await mahojiUserSettingsUpdate(input.id, {
+			await userToBypassAge.update({
 				bitfield: {
 					push: BitField.BypassAgeRestriction
 				}
@@ -711,45 +681,24 @@ export const adminCommand: OSBMahojiCommand = {
 			const { disable } = options.command;
 			const { enable } = options.command;
 
-			const currentDisabledCommands = (await prisma.clientStorage.findFirst({
-				where: { id: globalConfig.clientID },
-				select: { disabled_commands: true }
-			}))!.disabled_commands;
+			const currentDisabledCommands = await Cache.getDisabledCommands();
 
-			const command = allAbstractCommands(globalClient.mahojiClient).find(c =>
-				stringMatches(c.name, disable ?? enable ?? '-')
-			);
+			const command = globalClient.allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
 			if (!command) return "That's not a valid command.";
 
 			if (disable) {
 				if (currentDisabledCommands.includes(command.name)) {
 					return 'That command is already disabled.';
 				}
-				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
-				await prisma.clientStorage.update({
-					where: {
-						id: globalConfig.clientID
-					},
-					data: {
-						disabled_commands: newDisabled
-					}
-				});
-				DISABLED_COMMANDS.add(command.name);
+				const newDisabled = uniqueArr([...currentDisabledCommands, command.name.toLowerCase()]);
+				await Cache.setDisabledCommands(newDisabled);
 				return `Disabled \`${command.name}\`.`;
 			}
 			if (enable) {
 				if (!currentDisabledCommands.includes(command.name)) {
 					return 'That command is not disabled.';
 				}
-				await prisma.clientStorage.update({
-					where: {
-						id: globalConfig.clientID
-					},
-					data: {
-						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
-					}
-				});
-				DISABLED_COMMANDS.delete(command.name);
+				await Cache.setDisabledCommands(currentDisabledCommands.filter(i => i !== command.name.toLowerCase()));
 				return `Enabled \`${command.name}\`.`;
 			}
 			return 'Invalid.';
@@ -759,14 +708,13 @@ export const adminCommand: OSBMahojiCommand = {
 			if (!item) return 'Invalid item.';
 			const { price } = options.set_price;
 			if (!price || price < 1 || price > 1_000_000_000) return 'Invalid price.';
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}) to \`${price.toLocaleString()}\`?`
 			);
-			const settings = await mahojiClientSettingsFetch({ custom_prices: true });
+			const settings = await ClientSettings.fetch({ custom_prices: true });
 			const current = settings.custom_prices as ItemBank;
 			const newPrices = { ...current, [item.id]: price };
-			await mahojiClientSettingsUpdate({
+			await ClientSettings.update({
 				custom_prices: newPrices
 			});
 			await syncCustomPrices();
@@ -785,12 +733,7 @@ export const adminCommand: OSBMahojiCommand = {
 			}
 			const bit = Number.parseInt(bitEntry[0]);
 
-			if (
-				!bit ||
-				!(BitFieldData as any)[bit] ||
-				[7, 8].includes(bit) ||
-				(action !== 'add' && action !== 'remove')
-			) {
+			if (!bit || !isValidBitField(bit) || [7, 8].includes(bit) || (action !== 'add' && action !== 'remove')) {
 				return 'Invalid bitfield.';
 			}
 
@@ -812,47 +755,27 @@ export const adminCommand: OSBMahojiCommand = {
 				bitfield: uniqueArr(newBits)
 			});
 
-			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData as any)[bit].name}' bit to ${
+			return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit to ${
 				options.bitfield.user.user.username
 			}.`;
 		}
-		if (options.reboot) {
-			globalClient.isShuttingDown = true;
-			await economyLog('Flushing economy log due to reboot', true);
-			await interactionReply(interaction, {
-				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
-			});
-			await sleep(Time.Second * 20);
-			await sendToChannelID(Channel.GeneralChannel, {
-				content: `I am shutting down! Goodbye :(
 
-${META_CONSTANTS.RENDERED_STR}`
-			}).catch(noOp);
-			import('exit-hook').then(({ gracefulExit }) => gracefulExit(1));
-			return 'Turning off...';
-		}
 		if (options.shut_down) {
-			debugLog('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
-			const timer = globalConfig.isProduction ? Time.Second * 30 : Time.Second * 5;
-			await interactionReply(interaction, {
+			const timer = Time.Second * 30;
+			await interaction.reply({
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
-			await economyLog('Flushing economy log due to shutdown', true);
 			await Promise.all([sleep(timer), GrandExchange.queue.onIdle()]);
-			await sendToChannelID(Channel.GeneralChannel, {
-				content: `I am shutting down! Goodbye :(
+			await globalClient
+				.sendMessage(Channel.GeneralChannel, {
+					content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
-			}).catch(noOp);
-			import('exit-hook').then(({ gracefulExit }) => gracefulExit(0));
+				})
+				.catch(noOp);
+			await gracefulExit(0);
 			return 'Turning off...';
-		}
-
-		if (options.sync_blacklist) {
-			await syncBlacklists();
-			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
-Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		/**
@@ -865,80 +788,28 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.sync_commands) {
-			if (!globalConfig.isProduction) {
-				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
-					commands: Array.from(globalClient.mahojiClient.commands.values()),
-					guildID: globalConfig.supportServerID
-				});
-				return 'Done.';
-			}
-
-			const global = Boolean(globalConfig.isProduction);
-			const totalCommands = Array.from(globalClient.mahojiClient.commands.values());
-			const globalCommands = totalCommands.filter(i => !i.guildID);
-			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
-			if (global) {
-				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
-					commands: globalCommands,
-					guildID: null
-				});
-				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
-					commands: guildCommands,
-					guildID: guildID.toString()
-				});
-			} else {
-				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
-					commands: totalCommands,
-					guildID: guildID.toString()
-				});
-			}
-
-			// If not in production, remove all global commands.
-			if (!globalConfig.isProduction) {
-				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
-					commands: [],
-					guildID: null
-				});
-			}
-
-			return `Synced commands ${global ? 'globally' : 'locally'}.
-${totalCommands.length} Total commands
-${globalCommands.length} Global commands
-${guildCommands.length} Guild commands`;
+			await bulkUpdateCommands();
+			return 'Done.';
 		}
 
 		if (options.view) {
 			const thing = viewableThings.find(i => i.name === options.view?.thing);
 			if (!thing) return 'Invalid';
-			const clientSettings = await mahojiClientSettingsFetch();
+			const clientSettings = await ClientSettings.fetch();
 			const res = await thing.run(clientSettings);
 			if (!(res instanceof Bank)) return res;
-			const image = await makeBankImage({
+			return new MessageBuilder().addBankImage({
 				bank: res,
 				title: thing.name,
-				flags: { sort: thing.name === 'All Equipped Items' ? 'name' : (undefined as any) }
+				flags: thing.name === 'All Equipped Items' ? { sort: 'name' } : undefined
 			});
-			return { files: [image.file] };
 		}
 
 		if (options.give_items) {
 			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
 			const user = await mUserFetch(options.give_items.user.user.id);
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to give ${items} to ${user.usernameOrMention}?`
-			);
-			await sendToChannelID(Channel.BotLogs, {
+			await interaction.confirmation(`Are you sure you want to give ${items} to ${user.usernameOrMention}?`);
+			await globalClient.sendMessage(Channel.BotLogs, {
 				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
 					options.give_items.reason ?? 'No reason'
 				}`
@@ -952,7 +823,9 @@ ${guildCommands.length} Guild commands`;
 			const item = Items.getItem(options.item_stats.item);
 			if (!item) return 'Invalid item.';
 			const isIron = false;
-			const ownedResult: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
+			const ownedResult = await prisma.$queryRawUnsafe<
+				{ qty: bigint }[]
+			>(`SELECT SUM((bank->>'${item.id}')::int) as qty
 FROM users
 WHERE bank->>'${item.id}' IS NOT NULL;`);
 			return `There are ${ownedResult[0].qty.toLocaleString()} ${item.name} owned by everyone.
@@ -982,7 +855,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 				}
 
 				return {
-					files: [{ attachment: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
+					files: [{ buffer: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
 				};
 			}
 
@@ -1011,10 +884,10 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			}
 
 			return {
-				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
+				files: [{ buffer: Buffer.from(str), name: 'output.txt' }]
 			};
 		}
 
 		return 'Invalid command.';
 	}
-};
+});

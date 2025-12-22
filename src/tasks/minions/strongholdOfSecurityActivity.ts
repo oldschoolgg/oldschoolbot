@@ -1,13 +1,11 @@
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const strongholdTask: MinionTask = {
 	type: 'StrongholdOfSecurity',
-	async run(data: ActivityTaskOptionsWithNoChanges) {
-		const { channelID, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelId } = data;
 
 		const loot = new Bank().add('Coins', 10_000).add('Fancy boots').add('Fighting boots').add('Fancier boots');
 
@@ -18,9 +16,8 @@ export const strongholdTask: MinionTask = {
 
 		handleTripFinish(
 			user,
-			channelID,
+			channelId,
 			`${user}, ${user.minionName} finished the Stronghold of Security, and received ${loot}.`,
-			undefined,
 			data,
 			loot
 		);

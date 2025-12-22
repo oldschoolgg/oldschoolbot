@@ -1,14 +1,8 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { Bank, type Item, Items, resolveItems, SkillsEnum, toKMB } from 'oldschooljs';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -28,26 +22,24 @@ export const timePerAlch = Time.Second * 3;
 export const timePerAlchAgility = Time.Second * (3 + 10);
 
 export async function alchCommand(
-	interaction: ChatInputCommandInteraction | null,
-	channelID: string,
+	interaction: MInteraction | null,
+	channelId: string,
 	user: MUser,
 	item: string,
 	quantity: number | undefined
 ) {
 	const userBank = user.bank;
 	let osItem = Items.getItem(item);
-
-	const [favAlchs] = user.favAlchs(calcMaxTripLength(user, 'Alching')) as Item[];
+	const maxTripLength = await user.calcMaxTripLength('Alching');
+	const [favAlchs] = user.favAlchs(maxTripLength);
 	if (!osItem) osItem = favAlchs;
 
 	if (!osItem) return 'Invalid item.';
 	if (!osItem.highalch || !osItem.tradeable) return 'This item cannot be alched.';
 
-	if (user.skillLevel(SkillsEnum.Magic) < 55) {
+	if (user.skillsAsLevels.magic < 55) {
 		return 'You need level 55 Magic to cast High Alchemy';
 	}
-
-	const maxTripLength = calcMaxTripLength(user, 'Alching');
 
 	const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));
 
@@ -56,7 +48,7 @@ export async function alchCommand(
 	}
 	quantity = clamp(quantity, { min: 1, max: maxCasts });
 
-	if (quantity * timePerAlch > maxTripLength) {
+	if (quantity * timePerAlch > maxTripLength || quantity < 1 || maxCasts < 1) {
 		return `The max number of alchs you can do is ${maxCasts}!`;
 	}
 
@@ -71,33 +63,29 @@ export async function alchCommand(
 	}
 
 	const alchValue = quantity * osItem.highalch;
-	const consumedItems = new Bank({
-		...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
-		'Nature rune': quantity
-	});
-	consumedItems.add(osItem.id, quantity);
+	const consumedItems = new Bank().add(osItem.id, quantity).add('Nature rune', quantity);
+	if (fireRuneCost > 0) {
+		consumedItems.add('Fire rune', fireRuneCost);
+	}
 
 	if (!user.owns(consumedItems)) {
 		return `You don't have the required items, you need ${consumedItems}`;
 	}
 	if (interaction) {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
 				alchValue
-			)}). This will take approximately ${formatDuration(duration)}, and consume ${
-				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
-			} ${quantity}x Nature runes.`
+			)}). This will take approximately ${formatDuration(duration)}, and consume ${consumedItems.clone().remove(osItem.id, quantity)}.`
 		);
 	}
 
-	await user.removeItemsFromBank(consumedItems);
-	await updateBankSetting('magic_cost_bank', consumedItems);
+	await user.transactItems({ itemsToRemove: consumedItems });
+	await ClientSettings.updateBankSetting('magic_cost_bank', consumedItems);
 
-	await addSubTaskToActivityTask<AlchingActivityTaskOptions>({
+	await ActivityManager.startTrip<AlchingActivityTaskOptions>({
 		itemID: osItem.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		alchValue,

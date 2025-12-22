@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { HydraPreTable } from '../low/g-m/Hydra.js';
 
-const ColossalHydraTable = new LootTable()
+const ColossalHydraTable: LootTable = new LootTable()
 	.every('Hydra bones')
 	.every(HydraPreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
@@ -14,7 +14,7 @@ const ColossalHydraTable = new LootTable()
 	.tertiary(160, 'Eternal gem')
 	.tertiary(160, 'Imbued heart');
 
-export default new SimpleMonster({
+export const ColossalHydra: SimpleMonster = new SimpleMonster({
 	id: 10_402,
 	name: 'Colossal Hydra',
 	table: ColossalHydraTable,

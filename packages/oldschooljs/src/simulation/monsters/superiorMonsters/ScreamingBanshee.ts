@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { BansheePreTable } from '../low/a-f/Banshee.js';
 
-const ScreamingBansheeTable = new LootTable()
+const ScreamingBansheeTable: LootTable = new LootTable()
 	.every(BansheePreTable, 3)
 	.tertiary(13, 'Clue scroll (easy)')
 
@@ -12,7 +12,7 @@ const ScreamingBansheeTable = new LootTable()
 	.tertiary(1286, 'Eternal gem')
 	.tertiary(1286, 'Imbued heart');
 
-export default new SimpleMonster({
+export const ScreamingBanshee: SimpleMonster = new SimpleMonster({
 	id: 7390,
 	name: 'Screaming banshee',
 	table: ScreamingBansheeTable,

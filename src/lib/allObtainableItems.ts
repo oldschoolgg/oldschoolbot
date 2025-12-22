@@ -1,5 +1,5 @@
 import { isFunction, notEmpty } from '@oldschoolgg/toolkit';
-import { Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
+import { AncientCavernAncientPageTable, Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import Buyables from '@/lib/data/buyables/buyables.js';
@@ -7,7 +7,21 @@ import { allCLItems } from '@/lib/data/Collections.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import { armorAndItemPacks } from '@/lib/data/creatables/armorPacks.js';
 import Createables from '@/lib/data/createables.js';
+import { baseFilters } from '@/lib/data/filterables.js';
 import { ChewedBonesLootTable } from '@/lib/data/offerData.js';
+import { growablePets } from '@/lib/growablePets.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { Planks } from '@/lib/minions/data/planks.js';
+import { plunderRooms } from '@/lib/minions/data/plunder.js';
+import Potions from '@/lib/minions/data/potions.js';
+import { EasyEncounterLoot, HardEncounterLoot, MediumEncounterLoot } from '@/lib/minions/data/templeTrekking.js';
+import { allOpenables } from '@/lib/openables.js';
+import { RandomEvents } from '@/lib/randomEvents.js';
+import { shadeChestOpenables } from '@/lib/shadesKeys.js';
+import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simulation/baGamble.js';
+import { RawJunkTable, trawlerFish } from '@/lib/simulation/fishingTrawler.js';
+import { rewardsGuardianTable } from '@/lib/simulation/rewardsGuardian.js';
+import { nonUniqueTable } from '@/lib/simulation/toa.js';
 import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
@@ -24,19 +38,6 @@ import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 import { tipTable } from '@/tasks/minions/minigames/gnomeRestaurantActivity.js';
-import { growablePets } from './growablePets.js';
-import killableMonsters from './minions/data/killableMonsters/index.js';
-import { Planks } from './minions/data/planks.js';
-import { plunderRooms } from './minions/data/plunder.js';
-import Potions from './minions/data/potions.js';
-import { EasyEncounterLoot, HardEncounterLoot, MediumEncounterLoot } from './minions/data/templeTrekking.js';
-import { allOpenables } from './openables.js';
-import { RandomEvents } from './randomEvents.js';
-import { shadeChestOpenables } from './shadesKeys.js';
-import { HighGambleTable, LowGambleTable, MediumGambleTable } from './simulation/baGamble.js';
-import { RawJunkTable, trawlerFish } from './simulation/fishingTrawler.js';
-import { rewardsGuardianTable } from './simulation/rewardsGuardian.js';
-import { nonUniqueTable } from './simulation/toa.js';
 
 export const ALL_OBTAINABLE_ITEMS = new Set<number>();
 const totalBankToAdd = new Bank();
@@ -48,12 +49,18 @@ for (const item of Smithing.SmithableItems) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Smithing.BlastableBars) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Buyables) {
 	totalBankToAdd.add(isFunction(item.outputItems) ? undefined : item.outputItems);
-	const buyable = Items.getOrThrow(item.name);
+	const buyable = Items.getItem(item.name);
 	if (buyable) totalBankToAdd.add(buyable);
 }
 for (const item of allFarmingItems) ALL_OBTAINABLE_ITEMS.add(item);
-for (const item of Createables) totalBankToAdd.add(item.outputItems);
-for (const item of armorAndItemPacks) totalBankToAdd.add(item.outputItems);
+for (const item of Createables) {
+	if (isFunction(item.outputItems)) continue;
+	totalBankToAdd.add(item.outputItems);
+}
+for (const item of armorAndItemPacks) {
+	if (isFunction(item.outputItems)) continue;
+	totalBankToAdd.add(item.outputItems);
+}
 for (const item of Hunter.Creatures) {
 	for (const i of item.table.allItems) ALL_OBTAINABLE_ITEMS.add(i);
 }
@@ -115,7 +122,28 @@ for (const impling of Implings) {
 	impling.table.allItems.map(i => ALL_OBTAINABLE_ITEMS.add(i));
 }
 
+const bsoTrophies = Items.resolveItems([
+	'BSO dragon trophy',
+	'BSO rune trophy',
+	'BSO adamant trophy',
+	'BSO mithril trophy',
+	'BSO steel trophy',
+	'BSO iron trophy',
+	'BSO bronze trophy'
+]);
+const compTrophies = Items.resolveItems([
+	'Comp. dragon trophy',
+	'Comp. rune trophy',
+	'Comp. adamant trophy',
+	'Comp. mithril trophy',
+	'Comp. steel trophy',
+	'Comp. iron trophy',
+	'Comp. bronze trophy'
+]);
+
 for (const item of [
+	...bsoTrophies,
+	...compTrophies,
 	Mining.GemRockTable.allItems,
 	Mining.GraniteRockTable.allItems,
 	Mining.SandstoneRockTable.allItems,
@@ -139,6 +167,7 @@ for (const item of [
 	MediumGambleTable.allItems,
 	HighGambleTable.allItems,
 	EasyEncounterLoot.allItems,
+	AncientCavernAncientPageTable.allItems,
 	MediumEncounterLoot.allItems,
 	HardEncounterLoot.allItems,
 	Woodcutting.Logs.filter(i => i.lootTable).map(i => i.lootTable?.allItems)
@@ -153,24 +182,8 @@ for (const castable of Castables) {
 	totalBankToAdd.add(castable.output);
 }
 
+for (const id of baseFilters.map(i => i.items(undefined)).flat(100)) {
+	ALL_OBTAINABLE_ITEMS.add(id);
+}
+
 for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);
-
-// writeFileSync(
-// 	'not_in_list_but_owned.txt',
-// 	ids
-// 		.filter(i => !ALL_OBTAINABLE_ITEMS.has(i))
-// 		.map(Items.getOrThrow)
-// 		.filter(i => i.tradeable)
-// 		.map(i => i.name)
-// 		.join('\n')
-// );
-
-// writeFileSync(
-// 	'in_list_but_not_owned.txt',
-// 	Array.from(ALL_OBTAINABLE_ITEMS.values())
-// 		.filter(i => !ids.includes(i))
-// 		.map(Items.getOrThrow)
-// 		.filter(i => i.tradeable)
-// 		.map(i => i.name)
-// 		.join('\n')
-// );

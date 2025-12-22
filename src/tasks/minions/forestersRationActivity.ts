@@ -1,36 +1,34 @@
 import { Bank } from 'oldschooljs';
 
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const CreateForestersRationsTask: MinionTask = {
 	type: 'CreateForestersRations',
-	async run(data: CreateForestersRationsActivityTaskOptions) {
-		const { rationName, userID, channelID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CreateForestersRationsActivityTaskOptions, { user, handleTripFinish }) {
+		const { rationName, channelId, quantity, duration } = data;
+
 		const ration = ForestryRations.find(ration => ration.name === rationName)!;
 		const rationsCreated = ration.rationsAmount * quantity;
 
-		const rationBank = new Bank();
-		rationBank.add("Forester's ration", rationsCreated);
+		const loot = new Bank();
+		loot.add("Forester's ration", rationsCreated);
 
 		const xpPerAction = 51.1;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: xpPerAction * quantity,
 			duration
 		});
 
-		const str = `${user}, ${user.minionName} finished creating ${quantity}x ${ration.name}. ${xpRes}\n\n You received: ${rationBank}.`;
+		const message = `${user}, ${user.minionName} finished creating ${quantity}x ${ration.name}. ${xpRes}\n\n You received: ${loot}.`;
 
 		await user.transactItems({
 			collectionLog: true,
-			itemsToAdd: rationBank
+			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, rationBank);
+		handleTripFinish({ user, channelId, message, data, loot });
 	}
 };

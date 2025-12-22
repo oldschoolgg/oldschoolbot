@@ -1,10 +1,9 @@
-import { randArrItem, roll, Time } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
-import { LRUCache } from 'lru-cache';
+import { MathRNG } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-import { BitField } from './constants.js';
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { BitField } from '@/lib/constants.js';
 
 interface RandomEvent {
 	id: number;
@@ -174,28 +173,23 @@ export const RandomEvents: RandomEvent[] = [
 	}
 ];
 
-const cache = new LRUCache<string, number>({ max: 500 });
-
 const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut, activity_type_enum.Buy];
 
 export async function triggerRandomEvent(user: MUser, type: activity_type_enum, duration: number, messages: string[]) {
 	if (doesntGetRandomEvent.includes(type)) return {};
 	const minutes = Math.min(30, duration / Time.Minute);
 	const randomEventChance = 60 - minutes;
-	if (!roll(randomEventChance)) return {};
+	if (!MathRNG.roll(randomEventChance)) return {};
 	if (user.bitfield.includes(BitField.DisabledRandomEvents)) {
-		return {};
+		return;
 	}
 
-	const prev = cache.get(user.id);
+	const ratelimitResult = await Cache.tryRatelimit(user.id, 'random_events');
 
 	// Max 1 event per 3h mins per user
-	if (prev && Date.now() - prev < Time.Hour * 3) {
-		return {};
-	}
-	cache.set(user.id, Date.now());
+	if (!ratelimitResult.success) return;
 
-	const event = randArrItem(RandomEvents);
+	const event = MathRNG.pick(RandomEvents);
 	const loot = new Bank();
 	if (event.outfit) {
 		for (const piece of event.outfit) {
@@ -206,7 +200,7 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 		}
 	}
 	loot.add(event.loot.roll());
-	await userStatsBankUpdate(user, 'random_event_completions_bank', new Bank().add(event.id));
+	await user.statsBankUpdate('random_event_completions_bank', new Bank().add(event.id));
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 	return {
 		itemsToAddWithCL: loot

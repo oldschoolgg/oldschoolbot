@@ -1,9 +1,8 @@
 import { writeFileSync } from 'node:fs';
 
-import { SkillsEnum } from '@/constants.js';
 import type { Item } from '@/meta/item.js';
 import { Monsters } from '@/simulation/monsters/index.js';
-import Items from '@/structures/Items.js';
+import { Items } from '@/structures/Items.js';
 
 export function safeItemName(itemName: string) {
 	let key = itemName;
@@ -43,6 +42,7 @@ async function main() {
 		enumItems.push([key, item.id]);
 	}
 
+	enumItems.push(['EMPTY_BIRD_NEST', 5075]);
 	const forcedChanges = [
 		['Ultor ring', 25485],
 		['Bellator ring', 25488],
@@ -69,8 +69,9 @@ async function main() {
 				[
 					'black mask',
 					'slayer',
-					'collection',
-					...Object.values(SkillsEnum).map(n => `${n.toLowerCase()} `)
+					'collection'
+					// TODO
+					// ...Object.values(SkillsEnum).map(n => `${n.toLowerCase()} `)
 				].some(_str => _item.name.toLowerCase().includes(_str)))
 		) {
 			eGearStr += `\n\t${codeKey} = ${value},`;

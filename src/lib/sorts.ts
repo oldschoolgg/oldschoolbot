@@ -1,6 +1,6 @@
 import type { Item } from 'oldschooljs';
 
-import { marketPriceOrBotPrice } from './marketPrices.js';
+import { marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 
 export const BankSortMethods = ['value', 'alch', 'name', 'quantity', 'market'] as const;
 
@@ -13,3 +13,7 @@ export const sorts: Record<BankSortMethod, SortFn> = {
 	name: (a, b) => a[0].name.localeCompare(b[0].name),
 	quantity: (a, b) => b[1] - a[1]
 };
+
+export function isValidBankSortMethod(method: string): method is BankSortMethod {
+	return BankSortMethods.includes(method as BankSortMethod);
+}

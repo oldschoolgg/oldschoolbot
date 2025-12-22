@@ -1,16 +1,11 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { discrimName, type MahojiUserOption, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { filterOption } from '@/discord/index.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
-import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { addToGPTaxBalance, mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const MAX_CHARACTER_LENGTH = 950;
 
@@ -22,71 +17,56 @@ function formatBankForDisplay(bank: Bank): string {
 	return fullStr;
 }
 
-export const tradeCommand: OSBMahojiCommand = {
+export const tradeCommand = defineCommand({
 	name: 'trade',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Allows you to trade items with other players.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.User,
+			type: 'User',
 			name: 'user',
 			description: 'The user you want to trade items with.',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'send',
 			description: 'The items you want to send to the other player.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'receive',
 			description: 'The items you want to receieve from the other player.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'price',
 			description: 'A shortcut for adding GP to the received items.',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'An optional search of items by name.',
 			required: false
 		}
 	],
-	run: async ({
-		interaction,
-		userID,
-		guildID,
-		options,
-		user
-	}: CommandRunOptions<{
-		user: MahojiUserOption;
-		send?: string;
-		receive?: string;
-		price?: string;
-		filter?: string;
-		search?: string;
-	}>) => {
-		await deferInteraction(interaction);
-		if (!guildID) return 'You can only run this in a server.';
-		const senderUser = await mUserFetch(userID);
-		const senderAPIUser = user;
-		const recipientUser = await mUserFetch(options.user.user.id);
-		const recipientAPIUser = options.user.user;
+	run: async ({ interaction, user: senderUser, guildId, options }) => {
+		await interaction.defer();
 
-		const isBlacklisted = BLACKLISTED_USERS.has(recipientUser.id);
-		if (isBlacklisted) return "Blacklisted players can't buy items.";
+		if (!guildId) return 'You can only run this in a server.';
+		const recipientUser = await mUserFetch(options.user.user.id);
+
+		if (await recipientUser.isBlacklisted()) return "Blacklisted players can't buy items.";
 		if (senderUser.user.minion_ironman || recipientUser.user.minion_ironman) {
 			return "Iron players can't trade items.";
 		}
 		if (recipientUser.id === senderUser.id) return "You can't trade yourself.";
-		if (recipientAPIUser.bot) return "You can't trade a bot.";
-		if (recipientUser.isBusy) return 'That user is busy right now.';
+		if (options.user.user.bot) return "You can't trade a bot.";
+		if (await recipientUser.getIsLocked()) return 'That user is busy right now.';
 
 		const itemsSent =
 			!options.search && !options.filter && !options.send
@@ -120,16 +100,17 @@ export const tradeCommand: OSBMahojiCommand = {
 		}
 
 		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
+
+		await senderUser.sync();
 		if (!senderUser.owns(itemsSent)) return "You don't own those items.";
 
-		await handleMahojiConfirmation(
-			interaction,
-			`**${senderUser}** is giving: ${formatBankForDisplay(itemsSent)}
+		await interaction.confirmation({
+			content: `**${senderUser}** is giving: ${formatBankForDisplay(itemsSent)}
 **${recipientUser}** is giving: ${formatBankForDisplay(itemsReceived)}
 
 Both parties must click confirm to make the trade.`,
-			[recipientUser.id, senderUser.id]
-		);
+			users: [recipientUser.id, senderUser.id]
+		});
 
 		await senderUser.sync();
 		await recipientUser.sync();
@@ -142,7 +123,7 @@ Both parties must click confirm to make the trade.`,
 		}
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: BigInt(guildID),
+				guild_id: BigInt(guildId),
 				sender: BigInt(senderUser.id),
 				recipient: BigInt(recipientUser.id),
 				items_sent: itemsSent.toJSON(),
@@ -155,28 +136,28 @@ Both parties must click confirm to make the trade.`,
 			`${senderUser.mention} sold ${itemsSent} to ${recipientUser.mention} for ${itemsReceived}.`
 		);
 		if (itemsReceived.has('Coins')) {
-			await addToGPTaxBalance(recipientUser.id, itemsReceived.amount('Coins'));
+			await ClientSettings.addToGPTaxBalance(recipientUser, itemsReceived.amount('Coins'));
 		}
 		if (itemsSent.has('Coins')) {
-			await addToGPTaxBalance(senderUser.id, itemsSent.amount('Coins'));
+			await ClientSettings.addToGPTaxBalance(senderUser, itemsSent.amount('Coins'));
 		}
 
 		const sentFull = itemsSent.toStringFull();
 		const receivedFull = itemsReceived.toStringFull();
-		const files: { attachment: Buffer; name: string }[] = [];
+		const files: { buffer: Buffer; name: string }[] = [];
 		if (sentFull.length > MAX_CHARACTER_LENGTH) {
-			files.push({ attachment: Buffer.from(sentFull), name: 'items_sent.txt' });
+			files.push({ buffer: Buffer.from(sentFull), name: 'items_sent.txt' });
 		}
 		if (receivedFull.length > MAX_CHARACTER_LENGTH) {
-			files.push({ attachment: Buffer.from(receivedFull), name: 'items_received.txt' });
+			files.push({ buffer: Buffer.from(receivedFull), name: 'items_received.txt' });
 		}
 
-		const content = `${discrimName(senderAPIUser)} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
-			recipientAPIUser
-		)} in return for ${formatBankForDisplay(itemsReceived)}.
+		const content = `${senderUser.mention} sold ${formatBankForDisplay(itemsSent)} to ${recipientUser.mention} in return for ${formatBankForDisplay(itemsReceived)}.
 
-  You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
+You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
 
-		return files.length > 0 ? { content, files } : content;
+		const response = { content, allowedMentions: { users: [senderUser.id, recipientUser.id] } };
+
+		return files.length > 0 ? { ...response, files } : response;
 	}
-};
+});

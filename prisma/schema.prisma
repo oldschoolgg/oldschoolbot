@@ -1,5 +1,8 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client"
+  runtime    = "nodejs"
+  engineType = "client"
+  output     = "../src/prisma/clients/main"
 }
 
 datasource db {
@@ -8,7 +11,7 @@ datasource db {
 }
 
 model Activity {
-  id             Int                @id @unique @default(autoincrement())
+  id             Int                @id @default(autoincrement())
   user_id        BigInt
   start_date     DateTime           @db.Timestamp(6)
   finish_date    DateTime           @db.Timestamp(6)
@@ -19,11 +22,9 @@ model Activity {
   channel_id     BigInt?
   data           Json?              @db.JsonB
   pinnedTrip     PinnedTrip[]
+  all_user_ids   BigInt[]           @default([])
 
-  @@index([user_id, finish_date])
-  @@index([completed])
-  @@index([user_id, type])
-  @@index([finish_date])
+  @@index([user_id, completed, finish_date])
   @@map("activity")
 }
 
@@ -184,7 +185,6 @@ model GearPreset {
   ammo       Int?
   ammo_qty   Int?
 
-  emoji_id       String?        @db.VarChar(19)
   times_equipped Int            @default(0)
   pinned_setup   GearSetupType?
 
@@ -323,7 +323,7 @@ model User {
   favorite_bh_seeds          Int[]              @default([])
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
-  minion_name                String?            @map("minion.name")
+  minion_name                String?            @map("minion.name") @db.Text()
   bank_bg_hex                String?
   bankBackground             Int                @default(1)
   attack_style               String[]           @default([])
@@ -416,10 +416,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
-  cached_networth_value BigInt?
-
-  username             String? @db.VarChar(32)
-  username_with_badges String? @db.VarChar()
+  username             String? @db.Text()
+  username_with_badges String? @db.Text()
 
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
@@ -428,7 +426,8 @@ model User {
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
 
-  cl_array Int[] @default([])
+  cl_array                      Int[]    @default([])
+  completed_achievement_diaries String[] @default([])
 
   gear_template Int? @db.SmallInt
 
@@ -447,7 +446,6 @@ model ReclaimableItem {
   quantity    Int
 
   @@id([user_id, key])
-  @@unique([user_id, key])
   @@map("reclaimable_item")
 }
 
@@ -618,6 +616,15 @@ model EconomyItem {
   @@map("economy_item")
 }
 
+model EconomyItemBanks {
+  id   Int      @id @default(autoincrement())
+  date DateTime @default(now())
+
+  bank Json @db.JsonB
+
+  @@map("economy_item_banks")
+}
+
 model LastManStandingGame {
   id       Int      @id @default(autoincrement())
   user_id  BigInt
@@ -759,6 +766,8 @@ model UserStats {
 
   quivers_sacrificed Int @default(0)
 
+  recently_killed_monsters Int[] @default([])
+
   @@map("user_stats")
 }
 
@@ -786,6 +795,7 @@ model FarmedCrop {
   was_autofarmed      Boolean
   paid_for_protection Boolean
 
+  @@index([user_id, date_planted])
   @@map("farmed_crop")
 }
 
@@ -976,7 +986,7 @@ enum GEListingType {
 }
 
 model GEListing {
-  id   Int           @id @unique @default(autoincrement())
+  id   Int           @id @default(autoincrement())
   type GEListingType
 
   userfacing_id String
@@ -997,12 +1007,12 @@ model GEListing {
   buyTransactions  GETransaction[] @relation("buy_transactions")
   sellTransactions GETransaction[] @relation("sell_transactions")
 
-  @@index([created_at])
+  @@index([type, cancelled_at, fulfilled_at, user_id, item_id, asking_price_per_item, created_at])
   @@map("ge_listing")
 }
 
 model GETransaction {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   created_at DateTime @default(now())
 
@@ -1032,7 +1042,7 @@ model GEBank {
 }
 
 model Bingo {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   creator    User   @relation(fields: [creator_id], references: [id])
   creator_id String @db.VarChar(19)
@@ -1062,7 +1072,7 @@ model Bingo {
 }
 
 model BingoTeam {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   bingo    Bingo @relation(fields: [bingo_id], references: [id])
   bingo_id Int
@@ -1100,7 +1110,7 @@ model GiftBox {
   id         String        @id
   created_at DateTime      @default(now()) @db.Timestamp(6)
   status     GiftBoxStatus
-  name       String?
+  name       String?       @db.Text()
 
   creator_id String? @db.VarChar(19)
   creator    User?   @relation("gift_boxes_created", fields: [creator_id], references: [id])
@@ -1111,14 +1121,6 @@ model GiftBox {
   items Json @default("{}") @db.Json
 
   @@map("gift_box")
-}
-
-model ItemMetadata {
-  id Int @id
-
-  name String?
-
-  @@map("item_metadata")
 }
 
 enum UserEventType {
@@ -1149,13 +1151,24 @@ model Badges {
   @@map("badges")
 }
 
-model CollectionLogSlot {
-  group_name String
-  item_id    Int
+model CLCategory {
+  name        String           @id
+  total_items Int
+  items       CLCategoryItem[]
+  counts      Boolean
 
-  @@id([group_name, item_id])
-  @@unique([group_name, item_id])
-  @@map("collection_log_slot")
+  @@map("categories")
+}
+
+model CLCategoryItem {
+  category_name String
+  item_id       Int
+
+  category CLCategory @relation(fields: [category_name], references: [name], onDelete: Cascade)
+
+  @@id([category_name, item_id])
+  @@index([item_id])
+  @@map("category_items")
 }
 
 enum command_name_enum {
@@ -1426,4 +1439,91 @@ enum command_name_enum {
   xpgains
   xpto99
   zalcano
+}
+
+enum TableBankType {
+  Bank
+  CollectionLog
+}
+
+model TableBank {
+  id      Int           @id @default(autoincrement())
+  user_id String
+  type    TableBankType
+
+  items TableBankItem[]
+
+  @@unique([user_id, type])
+  @@map("table_bank")
+}
+
+model TableBankItem {
+  bank_id  Int
+  item_id  Int
+  quantity BigInt @db.BigInt
+
+  bank TableBank @relation(fields: [bank_id], references: [id], onDelete: Cascade)
+
+  @@id([bank_id, item_id])
+  @@map("table_bank_item")
+}
+
+enum JsonBankType {
+  Bank
+  CollectionLog
+  HunterCreaturesCaught
+  MonsterKCs
+  AgilityLapsCounts
+  SacrificedItems
+  OpenedItems
+
+  ToBCost
+  ToBLoot
+  ToACost
+  ToALoot
+  ToARaidLevels
+  ColoCost
+  ColoLoot
+  ColoKC
+  BuyCommandCost
+  BuyCommandLoot
+  CreateCommandCost
+  CreateCommandLoot
+  ShadesOfMortonCost
+  GiantFoundryCost
+  GiantFoundryLoot
+
+  FarmingCost
+  FarmingLoot
+  HerbsCleanedWhileFarming
+
+  RandomEventCompletions
+  ForestryEventsCompletions
+  PuroPuroImplingsCaught
+  PassiveImplingsCaught
+  BirdEggsOffered
+  ScatteredAshes
+}
+
+model JsonBank {
+  id      Int          @id @default(autoincrement())
+  user_id String
+  type    JsonBankType
+
+  bank Json @db.JsonB
+
+  @@unique([user_id, type])
+  @@map("json_bank")
+}
+
+model ShootingStars {
+  id Int @id @default(autoincrement())
+
+  user_id        String
+  size           Int
+  expires_at     DateTime
+  has_been_mined Boolean  @default(false)
+
+  @@index([user_id, expires_at])
+  @@map("shooting_stars")
 }

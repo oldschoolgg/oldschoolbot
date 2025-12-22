@@ -1,19 +1,12 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { pluraliseItemName } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
-export const smithCommand: OSBMahojiCommand = {
+export const smithCommand = defineCommand({
 	name: 'smith',
 	description: 'Smith things using the Smithing skill.',
 	attributes: {
@@ -23,11 +16,11 @@ export const smithCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to smith.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return smithables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -37,23 +30,21 @@ export const smithCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to smith (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, user, channelId }) => {
 		const smithedItem = Smithing.SmithableItems.find(_smithedItem =>
 			stringMatches(_smithedItem.name, options.name)
 		);
 
 		if (!smithedItem) return 'That is not a valid item to smith.';
 
-		if (user.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
+		if (user.skillsAsLevels.smithing < smithedItem.level) {
 			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${pluraliseItemName(
 				smithedItem.name
 			)}.`;
@@ -90,8 +81,7 @@ export const smithCommand: OSBMahojiCommand = {
 				doubleCBall = true;
 				timeToUse /= 2;
 			}
-			const [has] = await userhasDiaryTier(user, KaramjaDiary.elite);
-			if (has) {
+			if (user.hasDiary('karamja.elite')) {
 				diaryCannonball = true;
 				timeToUse /= 1.23;
 			}
@@ -100,7 +90,7 @@ export const smithCommand: OSBMahojiCommand = {
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 
-		let maxTripLength = calcMaxTripLength(user, 'Smithing');
+		let maxTripLength = await user.calcMaxTripLength('Smithing');
 
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;
@@ -133,12 +123,12 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		await user.transactItems({ itemsToRemove: cost });
-		updateBankSetting('smithing_cost', cost);
+		await ClientSettings.updateBankSetting('smithing_cost', cost);
 
-		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
+		await ActivityManager.startTrip<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity,
 			duration,
 			type: 'Smithing'
@@ -157,4 +147,4 @@ export const smithCommand: OSBMahojiCommand = {
 				: ''
 		}`;
 	}
-};
+});

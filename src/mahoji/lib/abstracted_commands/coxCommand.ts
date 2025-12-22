@@ -1,8 +1,6 @@
-import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { Bank, randomVariation } from 'oldschooljs';
+import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, Emoji, formatDuration, sumArr } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import {
 	calcCoxDuration,
@@ -19,12 +17,8 @@ import {
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function coxBoostsCommand(user: MUser) {
@@ -90,10 +84,7 @@ export async function coxBoostsCommand(user: MUser) {
 }
 
 export async function coxStatsCommand(user: MUser) {
-	const [minigameScores, stats] = await Promise.all([
-		user.fetchMinigames(),
-		user.fetchStats({ total_cox_points: true })
-	]);
+	const [minigameScores, stats] = await Promise.all([user.fetchMinigames(), user.fetchStats()]);
 	let totalUniques = 0;
 	const { cl } = user;
 	for (const item of coxUniques) {
@@ -131,7 +122,8 @@ Check \`/raid cox itemboosts\` for more information on Item boosts.`;
 }
 
 export async function coxCommand(
-	channelID: string,
+	interaction: MInteraction,
+	channelId: string,
 	user: MUser,
 	type: 'solo' | 'mass' | 'fakemass',
 	maxSizeInput: number | undefined,
@@ -150,13 +142,14 @@ export async function coxCommand(
 			return 'You need at least 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.';
 		}
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
 	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 15 }) ?? 15;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize,
@@ -165,10 +158,10 @@ export async function coxCommand(
 			isChallengeMode ? '**Challenge mode** ' : ''
 		}Chambers of Xeric mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
-			if (!user.user.minion_hasBought) {
+			if (!user.hasMinion) {
 				return [true, "you don't have a minion."];
 			}
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, 'your minion is busy.'];
 			}
 			if (!hasMinRaidsRequirements(user)) {
@@ -202,7 +195,6 @@ export async function coxCommand(
 			return [false];
 		}
 	};
-	const channel = globalClient.channels.cache.get(channelID.toString());
 
 	let users: MUser[] = [];
 	let isFakeMass = false;
@@ -212,8 +204,10 @@ export async function coxCommand(
 		users = new Array(fakeUsers).fill(user);
 		isFakeMass = true;
 	} else if (type === 'mass') {
-		if (!channelIsSendable(channel)) return 'No channel found.';
-		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
+		users = await globalClient.makeParty(partyOptions);
+		if (await ActivityManager.anyMinionIsBusy(users)) {
+			return `All team members must have their minions free.`;
+		}
 	} else {
 		users = [user];
 	}
@@ -224,7 +218,7 @@ export async function coxCommand(
 		reductions,
 		degradeables
 	} = await calcCoxDuration(users, isChallengeMode);
-	const maxTripLength = calcMaxTripLength(user, 'Raids');
+	const maxTripLength = await user.calcMaxTripLength('Raids');
 	const maxCanDo = Math.max(Math.floor(maxTripLength / raidDuration), 1);
 	const quantity = _quantity && _quantity * raidDuration <= maxTripLength ? _quantity : maxCanDo;
 
@@ -275,7 +269,7 @@ export async function coxCommand(
 		})
 	]);
 
-	updateBankSetting('cox_cost', totalCost);
+	await ClientSettings.updateBankSetting('cox_cost', totalCost);
 
 	await trackLoot({
 		id: minigameID,
@@ -288,9 +282,9 @@ export async function coxCommand(
 		}))
 	});
 
-	await addSubTaskToActivityTask<RaidsOptions>({
+	await ActivityManager.startTrip<RaidsOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'Raids',
 		leader: user.id,

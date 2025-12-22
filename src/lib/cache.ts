@@ -1,22 +1,82 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import type { PerkTier } from '@oldschoolgg/toolkit/util';
-import type { Giveaway, Guild, User } from '@prisma/client';
+import { Time } from '@oldschoolgg/toolkit';
+import { TimerManager } from '@sapphire/timer-manager';
+import type { Mutex } from 'async-mutex';
 import { LRUCache } from 'lru-cache';
+import type PromiseQueue from 'p-queue';
 
-export const perkTierCache = new Map<string, 0 | PerkTier>();
+import type { Giveaway } from '@/prisma/main.js';
+import { globalConfig } from '@/lib/constants.js';
+import type { MarketPriceData } from '@/lib/marketPrices.js';
 
-export type PartialUser = Pick<User, 'bitfield' | 'badges' | 'minion_hasBought'>;
-export const partialUserCache = new Map<string, PartialUser>();
+export const lastRoboChimpSyncCache = new Map<string, number>();
 
-type CachedGuild = Pick<Guild, 'disabledCommands' | 'id' | 'petchannel' | 'staffOnlyChannels'>;
-export const untrustedGuildSettingsCache = new LRUCache<string, CachedGuild>({ max: 1000 });
+export const partyLockCache: Set<string> = new Set();
+if (globalConfig.isProduction) {
+	TimerManager.setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+}
 
+export const CHAT_PET_COOLDOWN_CACHE = new LRUCache<string, number>({ max: 2000 });
 export const giveawayCache = new LRUCache<number, Giveaway>({
 	max: 10,
 	ttl: Time.Second * 10,
 	ttlAutopurge: true,
 	ttlResolution: Time.Second
 });
+export const GE_SLOTS_CACHE = new LRUCache<
+	string,
+	{
+		slots: number;
+		doesntHaveNames: string[];
+		possibleExtra: number;
+		maxPossible: number;
+	}
+>({
+	ttl: Time.Hour,
+	max: 300
+});
+export const RARE_ROLES_CACHE = new LRUCache<string, number>({ max: 1000 });
 
-export const usernameWithBadgesCache = new Map<string, string>();
-export const lastRoboChimpSyncCache = new Map<string, number>();
+export const userQueues: Map<string, PromiseQueue> = new Map();
+export const CUSTOM_PRICE_CACHE = new Map<number, number>();
+export const marketPricemap = new Map<number, MarketPriceData>();
+
+const busyUsers = new Set<string>();
+
+export function modifyUserBusy({
+	reason,
+	userID,
+	type
+}: {
+	type: 'lock' | 'unlock';
+	userID: string;
+	reason: string;
+}): void {
+	const isBusy = busyUsers.has(userID);
+
+	switch (type) {
+		case 'lock': {
+			if (isBusy) {
+				Logging.logDebug(`Tried to busy-lock an already busy user. UserID[${userID}] Reason[${reason}]`);
+				return;
+			} else {
+				busyUsers.add(userID);
+			}
+			break;
+		}
+		case 'unlock': {
+			if (!isBusy) {
+				Logging.logDebug(`Tried to unlock an already unlocked user. UserID[${userID}] Reason[${reason}]`);
+				return;
+			} else {
+				busyUsers.delete(userID);
+			}
+			break;
+		}
+	}
+}
+
+export function userIsBusy(userID: string): boolean {
+	return busyUsers.has(userID);
+}
+
+export const MUTEX_CACHE = new Map<string, Mutex>();

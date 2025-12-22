@@ -1,14 +1,14 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { defineSkill } from '@/lib/skilling/types.js';
 import { Fletchables } from './fletchables/index.js';
 
-const Fletching = {
+const Fletching = defineSkill({
 	aliases: ['fletch', 'fletching'],
 	Fletchables,
-	id: SkillsEnum.Fletching,
+	id: 'fletching',
 	emoji: Emoji.Fletching,
 	name: 'Fletching'
-};
+});
 
 export default Fletching;

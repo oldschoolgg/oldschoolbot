@@ -1,24 +1,22 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { roll } from '@/lib/util/rng.js';
 import { gloriesInventorySize } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
 
 export const gloryChargingTask: MinionTask = {
 	type: 'GloryCharging',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { quantity, channelId } = data;
+
 		let deaths = 0;
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
-			if (roll(99)) {
+			if (rng.roll(99)) {
 				deaths++;
 			} else {
 				for (let i = 0; i < gloriesInventorySize; i++) {
-					if (roll(25_000)) {
+					if (rng.roll(25_000)) {
 						loot.add('Amulet of eternal glory');
 					} else {
 						loot.add('Amulet of glory(6)');
@@ -52,6 +50,6 @@ export const gloryChargingTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

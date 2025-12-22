@@ -1,4 +1,4 @@
-import { notEmpty } from '@oldschoolgg/toolkit/util';
+import { notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 
 const res = resolveItems;

@@ -1,8 +1,9 @@
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
+import { exponentialPercentScale, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, EquipmentSlot, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 import { describe, expect, test } from 'vitest';
 
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import Buyables from '../../src/lib/data/buyables/buyables.js';
 import { marketPriceOfBank } from '../../src/lib/marketPrices.js';
 import { allOpenables } from '../../src/lib/openables.js';
@@ -18,6 +19,7 @@ describe('Sanity', () => {
 		expect(itemID('Broad arrows')).toEqual(4160);
 		expect(itemID('Frozen key')).toEqual(26_356);
 		expect(itemID('Clue box')).toEqual(12_789);
+		expect(itemID('Beige pumpkin (happy)')).toEqual(30246);
 		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
@@ -98,5 +100,13 @@ describe('Sanity', () => {
 	test('clamp', () => {
 		expect(clamp(100, { min: 0, max: 50 })).toEqual(50);
 		expect(clamp(100, { min: 200, max: 250 })).toEqual(200);
+	});
+
+	test('Duplicate killable monsters', () => {
+		const monsterNames = killableMonsters.map(m => m.name).sort((a, b) => a.localeCompare(b));
+		expect(uniqueArr(monsterNames).length).toEqual(monsterNames.length);
+
+		const monsterIDs = killableMonsters.map(m => m.id);
+		expect(uniqueArr(monsterIDs)).toEqual(monsterIDs);
 	});
 });

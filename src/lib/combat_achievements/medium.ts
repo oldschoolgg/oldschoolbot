@@ -1,9 +1,8 @@
 import { ItemGroups, Monsters } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import { isCertainMonsterTrip } from './caUtils.js';
-import type { CombatAchievement } from './combatAchievements.js';
 
 export const mediumCombatAchievements: CombatAchievement[] = [
 	{
@@ -127,11 +126,11 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Crazy Archaeologist',
 		desc: 'Kill the Crazy Archaeologist with only magical attacks.',
+		details: 'You must be training Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.CrazyArchaeologist.id)(data) &&
-				user.getAttackStyles().includes(SkillsEnum.Magic)
+				isCertainMonsterTrip(Monsters.CrazyArchaeologist.id)(data) && user.getAttackStyles().includes('magic')
 		}
 	},
 	{
@@ -198,11 +197,12 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Deranged Archaeologist',
 		desc: 'Kill the Deranged Archaeologist with only magical attacks.',
+		details: 'You must be training Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.DerangedArchaeologist.id)(data) &&
-				user.getAttackStyles().includes(SkillsEnum.Magic)
+				user.getAttackStyles().includes('magic')
 		}
 	},
 	{
@@ -294,14 +294,16 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'King Black Dragon',
 		desc: 'Kill the King Black Dragon with a stab weapon.',
+		details:
+			'You must be training melee and have a weapon equipped in melee gear with a positive stab attack bonus.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => {
 				const wep = user.gear.melee.equippedWeapon();
 				return (
 					isCertainMonsterTrip(Monsters.KingBlackDragon.id)(data) &&
-					!user.getAttackStyles().includes(SkillsEnum.Magic) &&
-					!user.getAttackStyles().includes(SkillsEnum.Ranged) &&
+					!user.getAttackStyles().includes('magic') &&
+					!user.getAttackStyles().includes('ranged') &&
 					wep !== null &&
 					Boolean(wep.equipment) &&
 					Boolean(wep.equipment?.attack_stab ?? -1 > 0)
@@ -405,6 +407,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Skotizo',
 		desc: 'Kill Skotizo with a demonbane weapon equipped.',
+		details: 'You must have a demonbane weapon equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -554,6 +557,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Amoxliatl using only glacial temotli as a weapon.',
 		type: 'restriction',
 		monster: 'Amoxliatl',
+		details: 'You must have a Glacial temotli equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>

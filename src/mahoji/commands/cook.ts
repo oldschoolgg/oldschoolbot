@@ -1,19 +1,14 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit/datetime';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Cooking, { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
-import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { cutLeapingFishCommand } from '@/mahoji/lib/abstracted_commands/cutLeapingFishCommand.js';
 import { forestersRationCommand } from '@/mahoji/lib/abstracted_commands/forestersRationCommand.js';
 
-export const cookCommand: OSBMahojiCommand = {
+export const cookCommand = defineCommand({
 	name: 'cook',
 	description: 'Cook things using the cooking skill.',
 	attributes: {
@@ -23,11 +18,11 @@ export const cookCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to cook.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					...Cookables.map(i => i.name),
 					...LeapingFish.map(i => i.item.name),
@@ -41,15 +36,14 @@ export const cookCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to cook (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelId }) => {
 		let { quantity, name } = options;
 
 		const barbarianFish = LeapingFish.find(
@@ -60,7 +54,7 @@ export const cookCommand: OSBMahojiCommand = {
 		);
 
 		if (barbarianFish) {
-			return cutLeapingFishCommand({ user, channelID, name, quantity });
+			return cutLeapingFishCommand({ user, channelId, name, quantity });
 		}
 
 		const forestryFood = ForestryRations.find(
@@ -69,7 +63,7 @@ export const cookCommand: OSBMahojiCommand = {
 		);
 
 		if (forestryFood) {
-			return forestersRationCommand({ user, channelID, name, quantity });
+			return forestersRationCommand({ user, channelId, name, quantity });
 		}
 
 		const cookable = Cooking.Cookables.find(
@@ -90,8 +84,8 @@ export const cookCommand: OSBMahojiCommand = {
 
 		// These are just for notifying the user, they only take effect in the Activity.
 		const boosts = [];
-		const [hasEasyDiary] = await userhasDiaryTier(user, KourendKebosDiary.easy);
-		const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		const hasEasyDiary = user.hasDiary('kourend&kebos.easy');
+		const hasEliteDiary = user.hasDiary('kourend&kebos.elite');
 		if (hasEasyDiary) boosts.push('Using Hosidius Range');
 		if (hasEasyDiary && hasEliteDiary) boosts.push('Kourend Elite Diary');
 		const hasGaunts = user.hasEquipped('Cooking gauntlets');
@@ -113,7 +107,7 @@ export const cookCommand: OSBMahojiCommand = {
 		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
 
-		const maxTripLength = calcMaxTripLength(user, 'Cooking');
+		const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
@@ -139,10 +133,10 @@ export const cookCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(totalCost);
 
-		await addSubTaskToActivityTask<CookingActivityTaskOptions>({
+		await ActivityManager.startTrip<CookingActivityTaskOptions>({
 			cookableID: cookable.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity,
 			duration,
 			type: 'Cooking'
@@ -152,4 +146,4 @@ export const cookCommand: OSBMahojiCommand = {
 			duration
 		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}
-};
+});

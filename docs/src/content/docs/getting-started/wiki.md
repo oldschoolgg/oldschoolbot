@@ -34,13 +34,19 @@ This section shows ways you can format things
 
 ### Items
 
+[[Twisted bow?raw]]
+
+[[28820]]
+
+Raw Image [[Orange?raw]]
+
 `[[Twisted bow]]`
 [[Twisted bow]]
 
 `[[Remy]]`
 [[Remy]]
 
-Items can appear in the middle of text [[Twisted bow]] Items can [[Coal]] appear in the middle of text Items can appear in the middle [[Egg]] of text
+Items can appear in the middle of text [[Twisted bow]] Items can [[Coal]] appear in the middle of text Items can appear in the middle [[Dwarven warhammer]] of text
 
 ### Discord Commands
 
@@ -133,4 +139,9 @@ A command mention [[/gear equip gear_setup\:Melee auto\:melee_strength]] in the 
 
 This is [Testing](/) [links](/) in the [middle](/) of some [text](/) test
 
-[[Twisted bow?raw]]
+
+## Contributors
+
+[[DayV-git#small]]
+
+[[gc]]

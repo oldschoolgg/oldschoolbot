@@ -1,13 +1,11 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { randArrItem } from '@oldschoolgg/rng';
 import { Bank, Items } from 'oldschooljs';
 
 import { fossilIslandNotesCL } from '@/lib/data/CollectionsExport.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 
-export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCommandInteraction, quantity: number) {
+export async function buyFossilIslandNotes(user: MUser, interaction: MInteraction, quantity: number) {
 	const cost = new Bank().add('Numulite', 300).multiply(quantity);
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 	if (user.QP < 3) {
@@ -17,8 +15,7 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 		return "You don't have enough Numulite.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`${user}, please confirm that you want to buy ${quantity}x Fossil Island note for: ${cost}.`
 	);
 

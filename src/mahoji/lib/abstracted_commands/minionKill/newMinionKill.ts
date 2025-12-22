@@ -1,38 +1,38 @@
-import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/datetime';
-import type { PlayerOwnedHouse } from '@prisma/client';
+import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
-import z from 'zod';
+import * as z from 'zod';
 
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import type { BitField, PvMMethod } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
-import {
-	type AttackStyles,
-	attackStylesArr,
-	getAttackStylesContext,
-	resolveAttackStyles
-} from '@/lib/minions/functions/index.js';
+import { type AttackStyles, getAttackStylesContext, resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
+import { wildySlayerOnlyMonsters } from '@/lib/slayer/constants.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { type CurrentSlayerInfo, determineCombatBoosts, wildySlayerOnlyMonsters } from '@/lib/slayer/slayerUtil.js';
+import { type CurrentSlayerInfo, determineCombatBoosts } from '@/lib/slayer/slayerUtil.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { Peak } from '@/lib/util/peaks.js';
-import { zodEnum } from '@/lib/util/smallUtils.js';
-import { killsRemainingOnTask } from './calcTaskMonstersRemaining.js';
-import { type PostBoostEffect, postBoostEffects } from './postBoostEffects.js';
-import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed.js';
+import { killsRemainingOnTask } from '@/mahoji/lib/abstracted_commands/minionKill/calcTaskMonstersRemaining.js';
+import {
+	type PostBoostEffect,
+	postBoostEffects
+} from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
+import {
+	CombatMethodOptionsSchema,
+	speedCalculations
+} from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),
 	quantity: z.number().int().positive(),
 	isOnTask: z.boolean(),
 	isInWilderness: z.boolean(),
-	attackStyles: z.array(z.enum(zodEnum(attackStylesArr))),
+	attackStyles: z.array(z.enum(['attack', 'strength', 'defence', 'magic', 'ranged'])),
 	currentTaskOptions: CombatMethodOptionsSchema,
 	messages: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)

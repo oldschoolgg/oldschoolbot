@@ -1,15 +1,14 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { AnimatedArmourActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { Armours } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 
 export const animatedArmorTask: MinionTask = {
 	type: 'AnimatedArmour',
-	async run(data: AnimatedArmourActivityTaskOptions) {
-		const { armourID, userID, channelID, quantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: AnimatedArmourActivityTaskOptions, { user, handleTripFinish }) {
+		const { armourID, channelId, quantity } = data;
+
 		const armour = Armours.find(armour => armour.name === armourID)!;
 
 		const baseQuantity = quantity * armour.tokens;
@@ -32,6 +31,6 @@ export const animatedArmorTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${armour.name} armour and received ${loot}.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot, messages);
+		return handleTripFinish({ user, channelId, message: { content: str }, data, loot, messages });
 	}
 };

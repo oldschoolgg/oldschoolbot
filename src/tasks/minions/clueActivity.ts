@@ -2,14 +2,12 @@ import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',
-	async run(data: ClueActivityTaskOptions) {
-		const { ci: clueID, userID, channelID, q: quantity, implingClues } = data;
+	async run(data: ClueActivityTaskOptions, { user, handleTripFinish }) {
+		const { ci: clueID, channelId, q: quantity, implingClues } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID)!;
-		const user = await mUserFetch(userID);
 
 		const str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
 			user.minionName
@@ -18,12 +16,15 @@ export const clueTask: MinionTask = {
 		} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
 
 		// Add the number of clues found in implings to CL. Must be on completion to avoid gaming.
-		if (implingClues) await user.addItemsToCollectionLog(new Bank().add(clueTier.scrollID, implingClues));
+		if (implingClues) {
+			await user.addItemsToCollectionLog({ itemsToAdd: new Bank().add(clueTier.scrollID, implingClues) });
+		}
+
 		const loot = new Bank().add(clueTier.id, quantity);
 		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

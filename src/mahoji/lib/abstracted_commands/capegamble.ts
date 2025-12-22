@@ -1,23 +1,14 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { roll } from '@oldschoolgg/rng';
+import { Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { petMessage } from '@/lib/util/displayCluesAndPets.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { roll } from '@/lib/util/rng.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function capeGambleStatsCommand(user: MUser) {
-	const stats = await user.fetchStats({
-		firecapes_sacrificed: true,
-		infernal_cape_sacrifices: true,
-		quivers_sacrificed: true
-	});
+	const stats = await user.fetchStats();
 
-	return `You can gamble Fire capes, Infernal capes and Quivers like this: ${mentionCommand(globalClient, 'gamble', 'item')}.
+	return `You can gamble Fire capes, Infernal capes and Quivers like this: ${globalClient.mentionCommand('gamble', 'item')}.
 
 **Fire Capes Gambled:** ${stats.firecapes_sacrificed}
 **Infernal Capes Gambled:** ${stats.infernal_cape_sacrifices}
@@ -70,12 +61,7 @@ const itemGambles = [
 	}
 ] as const;
 
-export async function capeGambleCommand(
-	user: MUser,
-	type: string,
-	interaction: ChatInputCommandInteraction,
-	autoconfirm = false
-) {
+export async function capeGambleCommand(user: MUser, type: string, interaction: MInteraction, autoconfirm = false) {
 	const src = itemGambles.find(i => i.type === type);
 	if (!src) return 'Invalid type. You can only gamble fire capes, infernal capes, or quivers.';
 	const { item } = src;
@@ -85,27 +71,19 @@ export async function capeGambleCommand(
 	if (capesOwned < 1) return `You have no ${item.name}'s to gamble!`;
 
 	if (!autoconfirm) {
-		await handleMahojiConfirmation(interaction, `Are you sure you want to gamble a ${item.name}?`);
+		await interaction.confirmation(`Are you sure you want to gamble a ${item.name}?`);
 	}
 
 	// Double check after confirmation dialogue:
 	await user.sync();
 	if (user.bank.amount(item.id) < 1) return `You have no ${item.name}'s to gamble!`;
 
-	const newStats = await userStatsUpdate(
-		user.id,
-		{
-			[key]: {
-				increment: 1
-			}
-		},
-		{
-			infernal_cape_sacrifices: true,
-			firecapes_sacrificed: true,
-			quivers_sacrificed: true
+	await user.statsUpdate({
+		[key]: {
+			increment: 1
 		}
-	);
-	const newSacrificedCount = newStats[key];
+	});
+	const newSacrificedCount: number = await user.fetchUserStat(key);
 
 	const { chance } = src;
 	const pet = src.success.loot;
@@ -119,7 +97,7 @@ export async function capeGambleCommand(
 		globalClient.emit(
 			Events.ServerNotification,
 			`**${user.badgedUsername}'s** just received their ${formatOrdinal(
-				(await mUserFetch(user.id)).cl.amount(pet.id)
+				user.cl.amount(pet.id)
 			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);
 		return {
@@ -127,7 +105,7 @@ export async function capeGambleCommand(
 			files: [
 				{
 					name: 'image.jpg',
-					attachment: await newChatHeadImage({
+					buffer: await newChatHeadImage({
 						content: src.success.message,
 						head: src.chatHead
 					})
@@ -140,7 +118,7 @@ export async function capeGambleCommand(
 		files: [
 			{
 				name: 'image.jpg',
-				attachment: await newChatHeadImage({
+				buffer: await newChatHeadImage({
 					content: src.failMessage(newSacrificedCount),
 					head: src.chatHead
 				})

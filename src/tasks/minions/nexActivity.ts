@@ -1,5 +1,5 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { userMention } from 'discord.js';
+import { userMention } from '@oldschoolgg/discord';
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -8,14 +8,12 @@ import type { NexContext } from '@/lib/simulation/nex.js';
 import { handleNexKills, purpleNexItems } from '@/lib/simulation/nex.js';
 import type { NexTaskOptions } from '@/lib/types/minions.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const nexTask: MinionTask = {
 	type: 'Nex',
-	async run(data: NexTaskOptions) {
-		const { quantity, channelID, users, wipedKill, duration, teamDetails } = data;
+	async run(data: NexTaskOptions, { handleTripFinish }) {
+		const { quantity, channelId, users, wipedKill, duration, teamDetails } = data;
 		const realUsers = teamDetails.filter(u => !u[3]);
 		const allMention = realUsers.map(t => userMention(t[0])).join(' ');
 		const allMUsers = await Promise.all(users.map(id => mUserFetch(id)));
@@ -72,31 +70,32 @@ export const nexTask: MinionTask = {
 				}))
 		});
 
-		await updateBankSetting('nex_loot', loot.totalLoot());
+		await ClientSettings.updateBankSetting('nex_loot', loot.totalLoot());
 
-		return handleTripFinish(
-			allMUsers[0],
-			channelID,
-			{
+		const image =
+			users.length === 1 && loot.totalLoot().length > 0
+				? await makeBankImage({
+						bank: loot.totalLoot(),
+						title: `Loot From ${survivedQuantity}x Nex`,
+						user: allMUsers[0],
+						previousCL,
+						spoiler: loot.purpleItems.some(i => loot.totalLoot().has(i))
+					})
+				: undefined;
+
+		return handleTripFinish({
+			user: allMUsers[0],
+			channelId,
+			message: {
 				content:
 					survivedQuantity === 0
 						? `${allMention} your minion${solo ? '' : 's'} died in all kill attempts.`
 						: `${allMention} Your team finished killing ${quantity}x Nex.${solo ? ` You died ${teamResult[0].deaths.length} time${teamResult[0].deaths.length === 1 ? '' : 's'}, your KC is now ${(await getKCByName(await mUserFetch(teamResult[0].id), 'Nex'))[1]}.` : ''}${wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''}
-${loot.formatLoot(kc)}`
+${loot.formatLoot(kc)}`,
+				files: [image]
 			},
-			users.length === 1 && loot.totalLoot().length > 0
-				? (
-						await makeBankImage({
-							bank: loot.totalLoot(),
-							title: `Loot From ${survivedQuantity}x Nex`,
-							user: allMUsers[0],
-							previousCL,
-							spoiler: loot.purpleItems.some(i => loot.totalLoot().has(i))
-						})
-					).file
-				: undefined,
 			data,
-			loot.totalLoot()
-		);
+			loot: loot.totalLoot()
+		});
 	}
 };

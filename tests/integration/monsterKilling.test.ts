@@ -10,12 +10,9 @@ test('Killing Men', async () => {
 	const startingBank = new Bank().add('Shark', 1_000_000);
 	await user.addItemsToBank({ items: startingBank });
 	await user.max();
-	await user.runCommand(minionKCommand, {
+	await user.runCmdAndTrip(minionKCommand, {
 		name: 'general graardor'
 	});
-
-	await user.runActivity();
-	await user.sync();
 
 	expect(user.bank.amount('Shark')).toBeLessThan(1_000_000);
 

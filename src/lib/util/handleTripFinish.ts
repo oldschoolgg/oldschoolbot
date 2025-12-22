@@ -1,28 +1,19 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import type { activity_type_enum } from '@prisma/client';
-import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
+import { getNextUTCReset } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
+import type { activity_type_enum } from '@/prisma/main/enums.js';
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField, PerkTier } from '@/lib/constants.js';
+import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
+import { MUserClass } from '@/lib/MUser.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
-import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import {
-	tearsOfGuthixIronmanReqs,
-	tearsOfGuthixSkillReqs
-} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-import { displayCluesAndPets } from './displayCluesAndPets.js';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -33,11 +24,15 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
-} from './interactions.js';
-import { hasSkillReqs } from './smallUtils.js';
-import { sendToChannelID } from './webhook.js';
-
-const collectors = new Map<string, MessageCollector>();
+} from '@/lib/util/interactions.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import {
+	tearsOfGuthixIronmanReqs,
+	tearsOfGuthixSkillReqs
+} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 
 const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'GroupMonsterKilling',
@@ -51,6 +46,10 @@ interface TripFinishEffectOptions {
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
+	components: ButtonBuilder[];
+	lastDailyTimestamp: bigint | null;
+	lastTearsOfGuthixTimestamp: bigint | null;
+	perkTier: PerkTier | 0;
 }
 
 type TripEffectReturn = {
@@ -60,7 +59,7 @@ type TripEffectReturn = {
 
 export interface TripFinishEffect {
 	name: string;
-	// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+	requiredPerkTier?: PerkTier;
 	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined | void>;
 }
 
@@ -71,7 +70,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(EItem.COINS);
 				if (typeof GP === 'number') {
-					await updateClientGPTrackSetting('gp_pvm', GP);
+					await ClientSettings.updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
 			return {};
@@ -84,7 +83,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
-				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
+				await user.statsBankUpdate('passive_implings_bank', imp.bank);
 				return {
 					itemsToAddWithCL: imp.bank
 				};
@@ -109,88 +108,60 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async options => {
 			return combatAchievementTripEffect(options);
 		}
-	}
-];
-
-export async function handleTripFinish(
-	user: MUser,
-	channelID: string,
-	_message: string | ({ content: string } & MessageCreateOptions),
-	attachment:
-		| AttachmentBuilder
-		| Buffer
-		| undefined
-		| {
-				name: string;
-				attachment: Buffer;
-		  },
-	data: ActivityTaskData,
-	loot: Bank | null,
-	_messages?: string[],
-	_components?: ButtonBuilder[]
-) {
-	const message = typeof _message === 'string' ? { content: _message } : _message;
-	if (attachment) {
-		if (!message.files) {
-			message.files = [attachment];
-		} else if (Array.isArray(message.files)) {
-			message.files.push(attachment);
-		} else {
-			console.warn(`Unexpected attachment type in handleTripFinish: ${typeof attachment}`);
+	},
+	{
+		name: 'Shooting Stars',
+		fn: async ({ user, data, components }) => {
+			await handleTriggerShootingStar(user, data, components);
 		}
-	}
-	const perkTier = user.perkTier();
-	const messages: string[] = [];
-
-	const itemsToAddWithCL = new Bank();
-	const itemsToRemove = new Bank();
-	for (const effect of tripFinishEffects) {
-		const stopwatch = new Stopwatch().start();
-		const res = await effect.fn({ data, user, loot, messages });
-		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
-		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
-		stopwatch.stop();
-		if (stopwatch.duration > 500) {
-			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
+	},
+	{
+		name: 'Open Casket Button',
+		fn: async ({ loot, components }) => {
+			const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
+			if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 		}
-	}
-	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
-		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
-	}
+	},
+	{
+		name: 'Birdhouse Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components }) => {
+			const birdHousedetails = user.fetchBirdhouseData();
+			if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
+				components.push(makeBirdHouseTripButton());
+			}
+		}
+	},
+	{
+		name: 'Autocontract Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components }) => {
+			if (user.bitfield.includes(BitField.DisableAutoFarmContractButton)) return;
+			const canRun = Boolean(await canRunAutoContract(user));
+			if (!canRun) return;
+			components.push(makeAutoContractButton());
+		}
+	},
+	{
+		name: 'Claim Daily Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components }) => {
+			if (user.bitfield.includes(BitField.DisableDailyButton)) return;
 
-	if (_messages) messages.push(..._messages);
-	if (messages.length > 0) {
-		message.content += `\n**Messages:** ${messages.join(', ')}`;
-	}
-
-	message.content += await displayCluesAndPets(user, loot);
-
-	const existingCollector = collectors.get(user.id);
-
-	if (existingCollector) {
-		existingCollector.stop();
-		collectors.delete(user.id);
-	}
-
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return;
-
-	const components: ButtonBuilder[] = [];
-	components.push(makeRepeatTripButton());
-	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
-	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
-	if (perkTier > PerkTier.One) {
-		components.push(...buildClueButtons(loot, perkTier, user));
-
-		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats({
-			last_tears_of_guthix_timestamp: true,
-			last_daily_timestamp: true
-		});
-
-		// Tears of Guthix start button if ready
-		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
-			const last = Number(last_tears_of_guthix_timestamp);
-			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
+			const { isReady } = await isUsersDailyReady(user);
+			if (isReady) {
+				components.push(makeClaimDailyButton());
+			}
+		}
+	},
+	{
+		name: 'Tears of Guthix Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components, lastTearsOfGuthixTimestamp }) => {
+			if (user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) return;
+			const lastPlayedDate = Number(lastTearsOfGuthixTimestamp);
+			const nextReset = getNextUTCReset(lastPlayedDate, CONSTANTS.TEARS_OF_GUTHIX_CD);
+			const ready = nextReset < Date.now();
 			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
 			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
 
@@ -198,47 +169,158 @@ export async function handleTripFinish(
 				components.push(makeTearsOfGuthixButton());
 			}
 		}
-
-		// Minion daily button if ready
-		if (!user.bitfield.includes(BitField.DisableDailyButton)) {
-			const last = Number(last_daily_timestamp);
-			const ready = last <= 0 || Date.now() - last >= Time.Hour * 12;
-
-			if (ready) {
-				components.push(makeClaimDailyButton());
+	},
+	{
+		name: 'Clue Buttons',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components, loot, perkTier }) => {
+			components.push(...buildClueButtons(loot ?? null, perkTier, user));
+		}
+	},
+	{
+		name: 'Slayer Task Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ user, components, data }) => {
+			const { currentTask } = await user.fetchSlayerInfo();
+			if (
+				(currentTask === null || currentTask.quantity_remaining <= 0) &&
+				['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
+			) {
+				components.push(makeNewSlayerTaskButton());
+			} else if (!user.bitfield.includes(BitField.DisableAutoSlayButton)) {
+				components.push(makeAutoSlayButton());
 			}
 		}
-
-		const birdHousedetails = calculateBirdhouseDetails(user);
-		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
-			components.push(makeBirdHouseTripButton());
-
-		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
-			components.push(makeAutoContractButton());
-
-		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
-		if (
-			(currentTask === null || currentTask.quantity_remaining <= 0) &&
-			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
-		) {
-			components.push(makeNewSlayerTaskButton());
-		} else if (!user.bitfield.includes(BitField.DisableAutoSlayButton)) {
-			components.push(makeAutoSlayButton());
-		}
-		if (loot?.has('Seed pack')) {
-			components.push(makeOpenSeedPackButton());
+	},
+	{
+		name: 'Open Seed Pack Button',
+		requiredPerkTier: PerkTier.Two,
+		fn: async ({ components, loot }) => {
+			if (loot?.has('Seed pack')) {
+				components.push(makeOpenSeedPackButton());
+			}
 		}
 	}
+];
 
-	if (_components) {
-		components.push(..._components);
+type OSBSendableMessage = string | MessageBuilderClass | BaseSendableMessage;
+
+export async function handleTripFinish(
+	user: MUser,
+	_channelId: string,
+	_message: OSBSendableMessage,
+	_data: ActivityTaskData,
+	_loot?: Bank | null,
+	_messages?: string[]
+): Promise<void>;
+
+export async function handleTripFinish(params: {
+	user: MUser;
+	channelId: string;
+	message: OSBSendableMessage;
+	data: ActivityTaskData;
+	loot?: Bank | null;
+	messages?: string[];
+}): Promise<void>;
+
+export async function handleTripFinish(
+	userOrParams:
+		| MUser
+		| {
+				user: MUser;
+				channelId: string;
+				message: OSBSendableMessage;
+				data: ActivityTaskData;
+				loot?: Bank | null;
+				messages?: string[];
+		  },
+	_channelId?: string,
+	_message?: OSBSendableMessage,
+	_data?: ActivityTaskData,
+	_loot?: Bank | null,
+	_messages?: string[]
+) {
+	const {
+		data,
+		user,
+		loot,
+		channelId,
+		messages: inputMessages,
+		message: inputMessage
+	} = userOrParams instanceof MUserClass
+		? {
+				user: userOrParams as MUser,
+				channelId: _channelId!,
+				message: _message!,
+				data: _data!,
+				loot: _loot!,
+				messages: _messages
+			}
+		: userOrParams;
+
+	Logging.logDebug(`Handling trip finish for ${user.logName} (${data.type})`);
+	const message =
+		inputMessage instanceof MessageBuilder
+			? inputMessage
+			: typeof inputMessage === 'string'
+				? new MessageBuilder().setContent(inputMessage)
+				: new MessageBuilder(inputMessage);
+
+	const perkTier = await user.fetchPerkTier();
+
+	const { last_tears_of_guthix_timestamp, last_daily_timestamp } =
+		perkTier > PerkTier.One
+			? await user.fetchStats()
+			: { last_tears_of_guthix_timestamp: null, last_daily_timestamp: null };
+
+	const messages: string[] = inputMessages ?? [];
+
+	const components: ButtonBuilder[] = [];
+	components.push(makeRepeatTripButton());
+
+	const itemsToAddWithCL = new Bank();
+	const itemsToRemove = new Bank();
+	for (const effect of tripFinishEffects) {
+		if (effect.requiredPerkTier && perkTier < effect.requiredPerkTier) continue;
+		const start = performance.now();
+		const res = await effect.fn({
+			data,
+			user,
+			loot: loot ?? null,
+			components,
+			messages,
+			lastDailyTimestamp: last_daily_timestamp,
+			lastTearsOfGuthixTimestamp: last_tears_of_guthix_timestamp,
+			perkTier
+		});
+		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
+		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
+		const end = performance.now();
+		const duration = end - start;
+		Logging.logPerf({
+			text: `TripEffect.${effect.name}`,
+			duration
+		});
+	}
+	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
+		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
 
-	handleTriggerShootingStar(user, data, components);
+	if (_messages) messages.push(..._messages);
+	if (messages.length > 0) {
+		message.addContent(`\n**Messages:** ${messages.join(', ')}`);
+	}
+
+	message.addContent(displayCluesAndPets(user, loot));
 
 	if (components.length > 0) {
-		message.components = makeComponents(components);
+		message.addComponents(components);
 	}
 
-	sendToChannelID(channelID, message);
+	message.addAllowedUserMentions([user.id]);
+	if ('users' in data) {
+		message.addAllowedUserMentions(data.users);
+	}
+
+	await globalClient.sendMessageOrWebhook(channelId, message);
 }

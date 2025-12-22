@@ -1,56 +1,46 @@
-import { noOp, uniqueArr } from '@oldschoolgg/toolkit';
+import type { ItemBank } from 'oldschooljs';
 
-import { GeImageGenerator } from '@/lib/canvas/geImage.js';
-import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
-import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
-import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
-import { syncCustomPrices } from '@/mahoji/lib/events.js';
-import { cacheBadges } from './badges.js';
-import { syncBlacklists } from './blacklists.js';
-import { globalConfig } from './constants.js';
-import { GrandExchange } from './grandExchange.js';
-import { cacheGEPrices } from './marketPrices.js';
-import { populateRoboChimpCache } from './perkTier.js';
-import { RawSQL } from './rawSql.js';
-import { runStartupScripts } from './startupScripts.js';
-import { logWrapFn } from './util.js';
+import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
+import { syncCollectionLogSlotTable } from '@/lib/collection-log/databaseCl.js';
+import { badges, globalConfig } from '@/lib/constants.js';
+import { GrandExchange } from '@/lib/grandExchange.js';
+import { cacheGEPrices } from '@/lib/marketPrices.js';
 
-async function syncCollectionLogSlotTable() {
-	await prisma.collectionLogSlot.deleteMany();
-	const items = allCollectionLogsFlat
-		.filter(i => i.counts !== false)
-		.map(cl =>
-			uniqueArr(cl.items).map(item => ({
-				group_name: cl.name,
-				item_id: item
-			}))
-		)
-		.flat(100);
-	await prisma.collectionLogSlot.createMany({
-		data: items
-	});
+async function updateBadgeTable() {
+	const badgesInDb = await prisma.badges.findMany();
+	for (const [_id, emojiString] of Object.entries(badges)) {
+		const id = Number(_id);
+		if (!badgesInDb.find(b => b.id === id)) {
+			await prisma.badges.create({
+				data: {
+					id,
+					text: emojiString
+				}
+			});
+		}
+	}
 }
 
-export const preStartup = logWrapFn('PreStartup', async () => {
-	await GeImageGenerator.init();
+export async function syncCustomPrices() {
+	const clientData = await ClientSettings.fetch({ custom_prices: true });
+	for (const [key, value] of Object.entries(clientData.custom_prices as ItemBank)) {
+		CUSTOM_PRICE_CACHE.set(Number(key), Number(value));
+	}
+}
+
+export const preStartup = async () => {
+	await prisma.clientStorage.upsert({
+		where: { id: globalConfig.clientID },
+		create: { id: globalConfig.clientID },
+		update: {},
+		select: { id: true }
+	});
 
 	await Promise.all([
-		prisma.clientStorage.upsert({
-			where: { id: globalConfig.clientID },
-			create: { id: globalConfig.clientID },
-			update: {}
-		}),
-		syncActiveUserIDs(),
-		ActivityManager.syncActivityCache(),
-		runStartupScripts(),
-		syncDisabledCommands(),
-		syncBlacklists(),
 		syncCustomPrices(),
-		cacheBadges(),
 		GrandExchange.init(),
-		populateRoboChimpCache(),
 		cacheGEPrices(),
-		prisma.$queryRawUnsafe(RawSQL.updateAllUsersCLArrays()).then(noOp),
-		syncCollectionLogSlotTable()
+		syncCollectionLogSlotTable(),
+		updateBadgeTable()
 	]);
-});
+};

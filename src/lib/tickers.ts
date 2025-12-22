@@ -1,65 +1,58 @@
-import { noOp, removeFromArr, Time } from '@oldschoolgg/toolkit';
-import { awaitMessageComponentInteraction, cleanUsername } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
-import type { TextChannel } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
-import { farmingPatchNames, getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
+import type { User } from '@/prisma/main.js';
+import { analyticsTick } from '@/lib/analytics.js';
+import { globalConfig } from '@/lib/constants.js';
+import { GrandExchange } from '@/lib/grandExchange.js';
+import { MUserClass } from '@/lib/MUser.js';
+import { cacheGEPrices } from '@/lib/marketPrices.js';
+import { collectMetrics } from '@/lib/metrics.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
-import { logError } from '@/lib/util/logError.js';
-import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
-import { BitField, Channel, globalConfig } from './constants.js';
-import { GrandExchange } from './grandExchange.js';
-import { mahojiUserSettingsUpdate } from './MUser.js';
-import { collectMetrics } from './metrics.js';
-import { populateRoboChimpCache } from './perkTier.js';
-import { fetchUsersWithoutUsernames } from './rawSql.js';
-import { runCommand } from './settings/settings.js';
-import { informationalButtons } from './sharedComponents.js';
-import { getSupportGuild } from './util.js';
 
-let lastMessageID: string | null = null;
-let lastMessageGEID: string | null = null;
-const supportEmbed = new EmbedBuilder()
-	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-	.addFields({
-		name: '📖 Read the FAQ',
-		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/getting-started/faq/ - also make sure to read the other pages of the website, which might contain the information you need.'
-	})
-	.addFields({
-		name: '🔎 Search',
-		value: 'Search this channel first, you might find your question has already been asked and answered.'
-	})
-	.addFields({
-		name: '💬 Ask',
-		value: "If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
-	})
-	.addFields({
-		name: '⚠️ Dont ping anyone',
-		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
-	});
+// let lastMessageID: string | null = null;
+// let lastMessageGEID: string | null = null;
+// const supportEmbed = new EmbedBuilder()
+// 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
+// 	.addFields({
+// 		name: '📖 Read the FAQ',
+// 		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/getting-started/faq/ - also make sure to read the other pages of the website, which might contain the information you need.'
+// 	})
+// 	.addFields({
+// 		name: '🔎 Search',
+// 		value: 'Search this channel first, you might find your question has already been asked and answered.'
+// 	})
+// 	.addFields({
+// 		name: '💬 Ask',
+// 		value: "If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
+// 	})
+// 	.addFields({
+// 		name: '⚠️ Dont ping anyone',
+// 		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
+// 	});
 
-const geEmbed = new EmbedBuilder()
-	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-	.addFields({
-		name: "⚠️ Don't get scammed",
-		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
-	})
-	.addFields({
-		name: '🔎 Search',
-		value: 'Search this channel first, someone might already be selling/buying what you want.'
-	})
-	.addFields({
-		name: '💬 Read the rules/Pins',
-		value: 'Read the pinned rules/instructions before using the channel.'
-	})
-	.addFields({
-		name: 'Keep Ads Short',
-		value: 'Keep your ad less than 10 lines long, as short as possible.'
-	});
+// const geEmbed = new EmbedBuilder()
+// 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
+// 	.addFields({
+// 		name: "⚠️ Don't get scammed",
+// 		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
+// 	})
+// 	.addFields({
+// 		name: '🔎 Search',
+// 		value: 'Search this channel first, someone might already be selling/buying what you want.'
+// 	})
+// 	.addFields({
+// 		name: '💬 Read the rules/Pins',
+// 		value: 'Read the pinned rules/instructions before using the channel.'
+// 	})
+// 	.addFields({
+// 		name: 'Keep Ads Short',
+// 		value: 'Keep your ad less than 10 lines long, as short as possible.'
+// 	});
 
 /**
  * Tickers should idempotent, and be able to run at any time.
@@ -69,6 +62,7 @@ export const tickers: {
 	startupWait?: number;
 	interval: number;
 	timer: NodeJS.Timeout | null;
+	productionOnly?: true;
 	cb: () => Promise<unknown>;
 }[] = [
 	{
@@ -92,11 +86,11 @@ export const tickers: {
 	{
 		name: 'metrics',
 		timer: null,
-		interval: Time.Minute,
+		interval: Time.Second * 5,
 		cb: async () => {
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
-				...(await collectMetrics())
+				...collectMetrics()
 			};
 			if (Number.isNaN(data.eventLoopDelayMean)) {
 				data.eventLoopDelayMean = 0;
@@ -121,26 +115,59 @@ export const tickers: {
 		interval: Time.Minute * 3.5,
 		timer: null,
 		cb: async () => {
-			if (!globalConfig.isProduction) return;
 			const basePlantTime = 1_626_556_507_451;
 			const now = Date.now();
-			const users = await prisma.user.findMany({
-				where: {
-					bitfield: {
-						hasSome: [
-							BitField.IsPatronTier3,
-							BitField.IsPatronTier4,
-							BitField.IsPatronTier5,
-							BitField.IsPatronTier6,
-							BitField.isModerator
-						]
-					}
-				}
-			});
-			for (const user of users) {
-				if (user.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
-				const { patches } = await getFarmingInfoFromUser(user);
-				for (const patchType of farmingPatchNames) {
+			const keys = [
+				'farmingPatches.herb',
+				'farmingPatches.fruit tree',
+				'farmingPatches.tree',
+				'farmingPatches.allotment',
+				'farmingPatches.hops',
+				'farmingPatches.cactus',
+				'farmingPatches.bush',
+				'farmingPatches.spirit',
+				'farmingPatches.hardwood',
+				'farmingPatches.seaweed',
+				'farmingPatches.vine',
+				'farmingPatches.calquat',
+				'farmingPatches.redwood',
+				'farmingPatches.crystal',
+				'farmingPatches.celastrus',
+				'farmingPatches.hespori',
+				'farmingPatches.flower',
+				'farmingPatches.mushroom',
+				'farmingPatches.belladonna'
+			];
+			const users = await prisma.$queryRawUnsafe<User[]>(`SELECT *
+FROM users u
+WHERE
+  bitfield && ARRAY[
+    4,  -- IsPatronTier3
+    5,  -- IsPatronTier4
+    6,  -- IsPatronTier5
+    21, -- IsPatronTier6
+    7   -- isModerator
+  ]::int[]
+AND last_command_date > now() - INTERVAL '5 days'
+AND EXISTS (
+  SELECT 1
+  FROM farmed_crop fc
+  WHERE fc.user_id = u.id
+    AND fc.date_planted > now() - INTERVAL '2 days'
+)
+AND NOT (bitfield @> ARRAY[
+    37  -- DisabledFarmingReminders
+]::int[])
+AND (
+  ${keys.map(_key => `("${_key}" IS NOT NULL AND NOT "${_key}"::jsonb ? 'wasReminded')`).join(' OR ')}
+)
+ORDER BY random()
+LIMIT 10;`);
+			for (const user of users.map(_u => new MUserClass(_u))) {
+				const { patches } = Farming.getFarmingInfoFromUser(user);
+
+				const patchesReadyToHarvest: FarmingPatchName[] = [];
+				for (const patchType of Farming.farmingPatchNames) {
 					const patch = patches[patchType];
 					if (!patch) continue;
 					if (patch.plantTime < basePlantTime) continue;
@@ -158,125 +185,82 @@ export const tickers: {
 					if (!planted) continue;
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
-					await mahojiUserSettingsUpdate(user.id, {
-						[getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
-					});
+					patchesReadyToHarvest.push(patchType);
+				}
 
-					// Build buttons (only show Harvest/replant if not busy):
-					const farmingReminderButtons = new ActionRowBuilder<ButtonBuilder>();
-					if (!ActivityManager.minionIsBusy(user.id)) {
-						farmingReminderButtons.addComponents(
+				if (patchesReadyToHarvest.length === 0) continue;
+				const userUpdates: Partial<Record<FarmingPatchSettingsKey, IPatchData>> = {};
+				for (const patchType of patchesReadyToHarvest) {
+					userUpdates[Farming.getFarmingKeyFromName(patchType)] = {
+						...patches[patchType],
+						wasReminded: true
+					};
+				}
+
+				if (globalConfig.isProduction) {
+					await globalClient.sendDm(user.id, {
+						content: `The following farming patches are ready to be harvested: ${patchesReadyToHarvest.join(', ')}.`,
+						components: [
 							new ButtonBuilder()
-								.setLabel('Harvest & Replant')
-								.setStyle(ButtonStyle.Primary)
-								.setCustomId('HARVEST')
-						);
-					}
-					// Always show disable reminders:
-					farmingReminderButtons.addComponents(
-						new ButtonBuilder()
-							.setLabel('Disable Reminders')
-							.setStyle(ButtonStyle.Secondary)
-							.setCustomId('DISABLE')
-					);
-					const djsUser = await globalClient.users.cache.get(user.id);
-					if (!djsUser) continue;
-					const message = await djsUser
-						.send({
-							content: `The ${planted.name} planted in your ${patchType} patches are ready to be harvested!`,
-							components: [farmingReminderButtons]
-						})
-						.catch(noOp);
-					if (!message) return;
-					try {
-						const selection = await awaitMessageComponentInteraction({
-							message,
-							time: Time.Minute * 5,
-							filter: () => true
-						});
-						if (!selection.isButton()) return;
-						message.edit({ components: [] });
+								.setLabel('Disable Reminders')
+								.setStyle(ButtonStyle.Secondary)
+								.setCustomId('DISABLE'),
+							...patchesReadyToHarvest.map(_p =>
+								new ButtonBuilder()
+									.setLabel(`Harvest ${_p}`)
+									.setStyle(ButtonStyle.Primary)
+									.setCustomId(`FARMING_PATRON_HARVEST_${_p}`)
+							)
+						]
+					});
+				}
+			}
+		}
+	},
+	// TEMPORARILY DISABLE
+	// {
+	// 	name: 'support_channel_messages',
+	// 	timer: null,
+	// 	startupWait: Time.Second * 22,
+	// 	interval: Time.Minute * 20,
+	// 	productionOnly: true,
+	// 	cb: async () => {
+	// 		const messages = await globalClient.fetchChannelMessages(Channel.HelpAndSupport, { limit: 10 })!;
+	// 		if (messages.some(m => m.author_id === globalClient.applicationId)) return;
+	// 		if (lastMessageID) {
+	// 			await globalClient.deleteMessage(Channel.HelpAndSupport, lastMessageID).catch(noOp);
+	// 		}
 
-						// Check disable first so minion doesn't have to be free to disable reminders.
-						if (selection.customId === 'DISABLE') {
-							await mahojiUserSettingsUpdate(user.id, {
-								bitfield: removeFromArr(user.bitfield, BitField.DisabledFarmingReminders)
-							});
-							await djsUser.send('Farming patch reminders have been disabled.');
-							return;
-						}
-						if (ActivityManager.minionIsBusy(user.id)) {
-							selection.reply({ content: 'Your minion is busy.' });
-							return;
-						}
-						if (selection.customId === 'HARVEST') {
-							message.author = djsUser;
-							runCommand({
-								commandName: 'farming',
-								args: { harvest: { patch_name: patchType } },
-								bypassInhibitors: true,
-								channelID: message.channel.id,
-								guildID: undefined,
-								user: await mUserFetch(user.id),
-								member: message.member,
-								interaction: selection,
-								continueDeltaMillis: selection.createdAt.getTime() - message.createdAt.getTime()
-							});
-						}
-					} catch {
-						message.edit({ components: [] });
-					}
-				}
-			}
-		}
-	},
-	{
-		name: 'support_channel_messages',
-		timer: null,
-		startupWait: Time.Second * 22,
-		interval: Time.Minute * 20,
-		cb: async () => {
-			if (!globalConfig.isProduction) return;
-			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.HelpAndSupport) as TextChannel | undefined;
-			if (!channel) return;
-			const messages = await channel.messages.fetch({ limit: 5 });
-			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
-			if (lastMessageID) {
-				const message = await channel.messages.fetch(lastMessageID).catch(noOp);
-				if (message) {
-					await message.delete();
-				}
-			}
-			const res = await channel.send({
-				embeds: [supportEmbed],
-				components: [new ActionRowBuilder<ButtonBuilder>().addComponents(informationalButtons)]
-			});
-			lastMessageID = res.id;
-		}
-	},
-	{
-		name: 'ge_channel_messages',
-		startupWait: Time.Second * 19,
-		timer: null,
-		interval: Time.Minute * 20,
-		cb: async () => {
-			if (!globalConfig.isProduction) return;
-			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel | undefined;
-			if (!channel) return;
-			const messages = await channel.messages.fetch({ limit: 5 });
-			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
-			if (lastMessageGEID) {
-				const message = await channel.messages.fetch(lastMessageGEID).catch(noOp);
-				if (message) {
-					await message.delete();
-				}
-			}
-			const res = await channel.send({ embeds: [geEmbed] });
-			lastMessageGEID = res.id;
-		}
-	},
+	// 		const res = await globalClient.sendMessage(Channel.HelpAndSupport, {
+	// 			embeds: [supportEmbed],
+	// 			components: informationalButtons
+	// 		});
+	// 		if (!res) return;
+
+	// 		lastMessageID = res.id;
+	// 	}
+	// },
+	// {
+	// 	name: 'ge_channel_messages',
+	// 	startupWait: Time.Second * 19,
+	// 	timer: null,
+	// 	interval: Time.Minute * 20,
+	// 	productionOnly: true,
+	// 	cb: async () => {
+	// 		const messages = await globalClient.fetchChannelMessages(Channel.GrandExchange, { limit: 10 })!;
+	// 		if (messages.some(m => m.author_id === globalClient.applicationId)) return;
+	// 		if (lastMessageGEID) {
+	// 			await globalClient.deleteMessage(Channel.GrandExchange, lastMessageGEID).catch(noOp);
+	// 		}
+
+	// 		const res = await globalClient.sendMessage(Channel.GrandExchange, {
+	// 			embeds: [geEmbed]
+	// 		});
+	// 		if (!res) return;
+
+	// 		lastMessageGEID = res.id;
+	// 	}
+	// },
 	{
 		name: 'ge_ticker',
 		startupWait: Time.Second * 30,
@@ -287,59 +271,39 @@ export const tickers: {
 		}
 	},
 	{
-		name: 'robochimp_cache',
-		startupWait: Time.Minute * 5,
+		name: 'Analytics',
 		timer: null,
-		interval: Time.Minute * 5,
+		interval: Time.Hour * 4.44,
+		startupWait: Time.Minute * 30,
 		cb: async () => {
-			await populateRoboChimpCache();
+			await analyticsTick();
 		}
 	},
 	{
-		// Fetch users without usernames, and put in their usernames.
-		name: 'username_filling',
-		startupWait: Time.Minute * 10,
+		name: 'Presence Update',
 		timer: null,
-		interval: Time.Minute * 33.33,
+		interval: Time.Hour * 8.44,
 		cb: async () => {
-			const users = await fetchUsersWithoutUsernames();
-			if (process.env.TEST) return;
-			for (const { id } of users) {
-				const djsUser = await globalClient.users.fetch(id).catch(() => null);
-				if (!djsUser) {
-					debugLog(`username_filling: Could not fetch user with ID ${id}, skipping...`);
-					continue;
-				}
-				const user = await prisma.user.upsert({
-					where: {
-						id
-					},
-					select: {
-						username: true,
-						badges: true,
-						minion_ironman: true
-					},
-					create: {
-						id
-					},
-					update: {}
-				});
-				const badges = makeBadgeString(user.badges, user.minion_ironman);
-				const username = cleanUsername(djsUser.username);
-				const usernameWithBadges = `${badges ? `${badges} ` : ''}${username}`;
-				await prisma.user.update({
-					where: {
-						id
-					},
-					data: {
-						username_with_badges: usernameWithBadges,
-						username
-					}
-				});
-				debugLog(
-					`username_filling: Updated user[${id}] to username[${username}] withbadges[${usernameWithBadges}]`
-				);
-			}
+			globalClient.setPresence({ text: '/help' });
+		}
+	},
+	{
+		name: 'Economy Item Snapshot',
+		timer: null,
+		startupWait: Time.Minute * 20,
+		interval: Time.Hour * 13.55,
+		cb: async () => {
+			await prisma.$executeRaw`INSERT INTO economy_item_banks (bank)
+VALUES (get_economy_bank());`;
+		}
+	},
+	{
+		name: 'Cache G.E Prices',
+		timer: null,
+		interval: Time.Hour * 12.55,
+		startupWait: Time.Minute * 25,
+		cb: async () => {
+			await cacheGEPrices();
 		}
 	}
 ];
@@ -347,16 +311,16 @@ export const tickers: {
 export function initTickers() {
 	for (const ticker of tickers) {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
+		if (ticker.productionOnly && !globalConfig.isProduction) continue;
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				if (ticker.interval > Time.Minute * 30) {
+					Logging.logDebug(`Running ${ticker.name} ticker`);
+				}
 				await ticker.cb();
 			} catch (err) {
-				logError(err);
-				debugLog(`${ticker.name} ticker errored`, {
-					type: 'TICKER',
-					error: err instanceof Error ? (err.message ?? err) : err
-				});
+				Logging.logError(err as Error);
 			} finally {
 				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
 				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);
