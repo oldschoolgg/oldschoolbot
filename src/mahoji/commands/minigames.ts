@@ -185,7 +185,7 @@ export const minigamesCommand = defineCommand({
 					description: 'Start a trip.',
 					options: [
 						{
-							type: "Integer",
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The amount of games to do.',
 							required: false,

@@ -1,7 +1,7 @@
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
-const CastleWarsSupplyCrate = new LootTable()
+const CastleWarsSupplyCrateTable: LootTable = new LootTable()
 	.add('Blighted manta ray', [15, 25])
 	.add('Blighted anglerfish', [25, 35])
 	.add('Blighted karambwan', [35, 45])
@@ -14,9 +14,9 @@ const CastleWarsSupplyCrate = new LootTable()
 	.add('Rune javelin', [100, 120])
 	.add('Castle wars ticket', 2);
 
-export default new SimpleOpenable({
-	id: 30690,
+export const CastleWarsSupplyCrate: SimpleOpenable = new SimpleOpenable({
+	id: 30_690,
 	name: 'Castle wars supply crate',
 	aliases: ['castle wars supply crate'],
-	table: CastleWarsSupplyCrate
+	table: CastleWarsSupplyCrateTable
 });
