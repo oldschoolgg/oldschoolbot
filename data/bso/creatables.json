@@ -830,6 +830,16 @@
 			}
 		},
 		{
+			"name": "Axe of the high sungod (xmas)",
+			"items_created": {
+				"Axe of the high sungod (xmas)": 1
+			},
+			"items_required": {
+				"Axe of the high sungod": 1,
+				"Christmas dye": 1
+			}
+		},
+		{
 			"name": "Babi",
 			"items_created": {
 				"Babi": 1

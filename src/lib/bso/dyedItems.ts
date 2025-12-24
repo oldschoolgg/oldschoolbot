@@ -644,6 +644,15 @@ export const dyedItems: DyedItem[] = [
 				dye: Items.getOrThrow('Christmas dye')
 			}
 		]
+	},
+	{
+		baseItem: Items.getOrThrow('Axe of the high sungod'),
+		dyedVersions: [
+			{
+				item: Items.getOrThrow('Axe of the high sungod (xmas)'),
+				dye: Items.getOrThrow('Christmas dye')
+			}
+		]
 	}
 ];
 

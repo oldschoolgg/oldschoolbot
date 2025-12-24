@@ -241,6 +241,10 @@
 		]
 	},
 	{
+		"main_item": "Axe of the high sungod",
+		"similar_items": ["Axe of the high sungod", "Axe of the high sungod (xmas)"]
+	},
+	{
 		"main_item": "Bandos godsword",
 		"similar_items": ["Bandos godsword", "Bandos godsword (or)"]
 	},
