@@ -20,5 +20,3 @@ export const Glass: DisassemblySourceGroup = {
 	],
 	parts: { precious: 20, smooth: 40 }
 };
-
-export default Glass;

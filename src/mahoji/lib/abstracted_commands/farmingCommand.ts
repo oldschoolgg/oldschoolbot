@@ -213,6 +213,11 @@ export async function farmingPlantCommand({
 		duration *= 0.9;
 	}
 
+	if (user.bitfield.includes(BitField.HasMoondashCharm)) {
+		boostStr.push('25% faster for Moondash charm');
+		duration = reduceNumByPercent(duration, 25);
+	}
+
 	if (user.hasDiary('ardougne.hard')) {
 		boostStr.push(`4% time for Ardougne Hard diary`);
 		duration *= 0.96;

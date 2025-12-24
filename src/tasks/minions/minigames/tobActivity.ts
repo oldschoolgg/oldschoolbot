@@ -1,7 +1,7 @@
 import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';
 
 import { randArrItem, roll, shuffleArr } from '@oldschoolgg/rng';
-import { convertPercentChance, Emoji, miniID } from '@oldschoolgg/toolkit';
+import { Emoji, miniID } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
@@ -11,9 +11,10 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { TheatreOfBlood } from '@/lib/simulation/tob.js';
+import { XPCounter } from '@/lib/structures/XPCounter.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 
-async function handleTobXP(user: MUser, isHm: boolean) {
+function handleTobXP(user: MUser, isHm: boolean, xpCounter: XPCounter): void {
 	let hitpointsXP = 13_000;
 	let rangeXP = 1000;
 	let magicXP = 1000;
@@ -26,17 +27,9 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 		meleeXP *= 1.2;
 	}
 
-	const results = [];
-	results.push(
-		await user.addXP({
-			skillName: 'hitpoints',
-			amount: hitpointsXP,
-			minimal: true,
-			source: 'TheatreOfBlood'
-		})
-	);
-	results.push(await user.addXP({ skillName: 'ranged', amount: rangeXP, minimal: true, source: 'TheatreOfBlood' }));
-	results.push(await user.addXP({ skillName: 'magic', amount: magicXP, minimal: true, source: 'TheatreOfBlood' }));
+	xpCounter.add('hitpoints', hitpointsXP);
+	xpCounter.add('ranged', rangeXP);
+	xpCounter.add('magic', magicXP);
 	let styles = resolveAttackStyles({
 		attackStyles: user.getAttackStyles()
 	});
@@ -45,11 +38,8 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 	}
 	const perSkillMeleeXP = meleeXP / styles.length;
 	for (const style of styles) {
-		results.push(
-			await user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true, source: 'TheatreOfBlood' })
-		);
+		xpCounter.add(style, perSkillMeleeXP);
 	}
-	return results;
 }
 
 export const tobTask: MinionTask = {
@@ -73,10 +63,16 @@ export const tobTask: MinionTask = {
 		const globalTobCost = new Bank();
 		const totalLoot = new Bank();
 		const previousCLs = allUsers.map(i => i.cl.clone());
+		const isSolo = users.length === 1;
 		let raidId = 0;
 		let wipeCount = 0;
 		let earnedAttempts = 0;
 		let resultMessage = `**${allTag} Your ${hardMode ? 'Hard Mode ' : ''}Theatre of Blood has finished**\n`;
+
+		const totalXPCounts: Record<string, XPCounter> = {};
+		for (const user of allUsers) {
+			totalXPCounts[user.id] = new XPCounter();
+		}
 
 		for (let i = 0; i < quantity; i++) {
 			raidId = i + 1;
@@ -93,7 +89,9 @@ export const tobTask: MinionTask = {
 				team: tobUsers
 			});
 
-			resultMessage += `\n **Raid${quantity < 2 ? '' : ` ${raidId}`} results:**`;
+			resultMessage += `\n **Raid${quantity < 2 ? '' : ` ${raidId}`} results (Unique chance: ${result.percentChanceOfUnique
+				.toFixed(2)
+				.replace('.00', '')}%):**`;
 
 			// Give them all +1 attempts
 			const diedToMaiden = wipedRoom !== null && wipedRoom === 0;
@@ -109,10 +107,6 @@ export const tobTask: MinionTask = {
 				globalTobCost.add('Coins', users.length * 100_000);
 				continue;
 			}
-
-			resultMessage += `\n Unique chance: ${result.percentChanceOfUnique.toFixed(
-				2
-			)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})`;
 
 			// Track loot for T3+ patrons
 			if (!chincannonUser) {
@@ -154,7 +148,7 @@ export const tobTask: MinionTask = {
 				teamsLoot.add(userID, userLoot);
 
 				// Add XP
-				const xpResult = await handleTobXP(user, hardMode);
+				handleTobXP(user, hardMode, totalXPCounts[user.id]);
 
 				const items = userLoot.items();
 
@@ -165,9 +159,10 @@ export const tobTask: MinionTask = {
 				const lootStr = userLoot.remove('Coins', 100_000).toString();
 				const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `${lootStr}`;
 
-				resultMessage += `\n ${deathStr}**${user}** ${
-					chincannonUser ? 'had this loot blown up' : 'received'
-				}: ${str} ${xpResult}`;
+				const receivedPrefix = isSolo
+					? ''
+					: `**${user}** ${chincannonUser ? 'had this loot blown up' : 'received'}: `;
+				resultMessage += `\n ${deathStr}${receivedPrefix}${str}`;
 
 				if (raidId < quantity) {
 					resultMessage += '\n';
@@ -175,12 +170,27 @@ export const tobTask: MinionTask = {
 			}
 		}
 
+		// Give everyone their XP:
+		const xpString = (
+			await Promise.all(
+				allUsers.map(async u => {
+					const theirXP = totalXPCounts[u.id];
+					if (theirXP.length === 0) return null;
+					await u.addXPCounter({ xpCounter: theirXP, source: 'TheatreOfBlood', minimal: true });
+					return `${u.mention} received ${theirXP} XP`;
+				})
+			)
+		).filter(i => i !== null);
+		if (xpString.length > 0) {
+			resultMessage += `\n\n${xpString.join('\n')}`;
+		}
+
+		// Give everyone their loot:
 		if (chincannonUser) {
 			await Promise.all(
 				allUsers.map(u => u.statsBankUpdate('chincannon_destroyed_loot_bank', teamsLoot.get(u.id)))
 			);
 		} else {
-			// Give everyone their loot:
 			await Promise.all(allUsers.map(u => u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true })));
 		}
 
@@ -202,7 +212,6 @@ export const tobTask: MinionTask = {
 			await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, successfulRaidCount)));
 		}
 		if (wipeCount > 0) {
-			// Update economy stats:
 			await ClientSettings.updateBankSetting('tob_cost', globalTobCost);
 		}
 
@@ -229,7 +238,7 @@ export const tobTask: MinionTask = {
 		const shouldShowImage =
 			allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6 && i[1].length > 0);
 
-		if (users.length === 1) {
+		if (isSolo) {
 			const image = shouldShowImage
 				? await drawChestLootImage({
 						entries: [

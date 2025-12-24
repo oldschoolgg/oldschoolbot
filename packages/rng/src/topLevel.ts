@@ -1,14 +1,14 @@
 import { MathRNG } from './providers/math.js';
 
-export function randInt(min: number, max: number) {
+export function randInt(min: number, max: number): number {
 	return MathRNG.randInt(min, max);
 }
 
-export function percentChance(percent: number) {
+export function percentChance(percent: number): boolean {
 	return MathRNG.percentChance(percent);
 }
 
-export function roll(max: number) {
+export function roll(max: number): boolean {
 	if (max > 9007199254742) {
 		throw new Error(`roll number too big, got ${max}`);
 	}
@@ -37,7 +37,7 @@ export function shuffleArr<T>(array: readonly T[]): T[] {
 	return copy;
 }
 
-export function randFloat(min: number, max: number) {
+export function randFloat(min: number, max: number): number {
 	return MathRNG.randFloat(min, max);
 }
 
@@ -47,7 +47,7 @@ export function randFloat(min: number, max: number) {
  * @param value The value to add variation too.
  * @param percentage The max percentage to fluctuate the value by, in both negative/positive.
  */
-export function randomVariation(value: number, percentage: number) {
+export function randomVariation(value: number, percentage: number): number {
 	const lowerLimit = value * (1 - percentage / 100);
 	const upperLimit = value * (1 + percentage / 100);
 	return MathRNG.randFloat(lowerLimit, upperLimit);

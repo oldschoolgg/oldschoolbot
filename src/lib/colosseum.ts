@@ -13,7 +13,7 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/GeneralBank';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/node';
 import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 

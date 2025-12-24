@@ -193,7 +193,8 @@ export enum BitField {
 	UseSuperRestoresForDwarvenBlessing = 231,
 	DisableSizeMatters = 232,
 	DisabledTameImplingOpening = 233,
-	HasHalloweenWallkit = 234
+	HasHalloweenWallkit = 234,
+	HasEarnedRiftGuardianFromStar = 235
 }
 
 interface BitFieldData {
@@ -454,6 +455,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Disable Size Matters unlock',
 		protected: false,
 		userConfigurable: true
+	},
+	[BitField.HasEarnedRiftGuardianFromStar]: {
+		name: 'Has Earned Rift Guardian From Star',
+		protected: false,
+		userConfigurable: false
 	}
 } as const;
 
@@ -521,7 +527,7 @@ const globalConfigSchema = z.object({
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string(),
-	minimumLoggedPerfDuration: z.number().default(100),
+	minimumLoggedPerfDuration: z.number().default(400),
 	guildIdsToCache: z.array(z.string())
 });
 
@@ -615,6 +621,6 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 ];
 
 export const CONSTANTS = {
-	DAILY_COOLDOWN: Time.Hour * 12,
+	DAILY_COOLDOWN: BOT_TYPE === 'BSO' ? Time.Hour * 4 : Time.Hour * 12,
 	TEARS_OF_GUTHIX_CD: Time.Day * 7
 };

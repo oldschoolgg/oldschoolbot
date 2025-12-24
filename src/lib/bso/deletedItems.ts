@@ -1,5 +1,5 @@
 import { cleanString } from '@oldschoolgg/toolkit';
-import { Items, itemNameMap } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 
 export const itemsToDelete = [
 	[26_237, 'Zaryte bow'],
@@ -100,7 +100,7 @@ export function deleteItem(itemID: number, itemName: string) {
 	if (existing.name !== itemName) throw new Error(`Tried to delete item with non-matching name ${itemName}${itemID}`);
 	Items.delete(itemID);
 	const cleanName = cleanString(itemName);
-	if (itemNameMap.get(cleanName) === itemID) itemNameMap.delete(cleanString(itemName));
+	if (Items.itemNameMap.get(cleanName) === itemID) Items.itemNameMap.delete(cleanString(itemName));
 	let itemTest = null;
 	try {
 		itemTest = Items.getOrThrow(itemID);

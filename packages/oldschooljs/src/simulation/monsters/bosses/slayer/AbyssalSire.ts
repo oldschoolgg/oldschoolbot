@@ -4,13 +4,13 @@ import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const HerbSubTable = new LootTable()
+const HerbSubTable: LootTable = new LootTable()
 	.add('Grimy kwuarm', 25, 10)
 	.add('Grimy dwarf weed', 25, 9)
 	.add('Grimy cadantine', 25, 9)
 	.add('Grimy lantadyme', 25, 7);
 
-const AbyssalSireTable = new LootTable()
+const AbyssalSireTable: LootTable = new LootTable()
 	.every('Abyssal ashes')
 
 	/* Weapons and armour */
@@ -65,7 +65,7 @@ const AbyssalSireTable = new LootTable()
 	/* Tertiary */
 	.tertiary(180, 'Clue scroll (elite)');
 
-export default new SimpleMonster({
+export const AbyssalSire: SimpleMonster = new SimpleMonster({
 	id: 5886,
 	name: 'Abyssal Sire',
 	table: AbyssalSireTable,

@@ -232,8 +232,9 @@ interface FishType {
 }
 
 export function getCurrentFishType(dateOverride?: Date): FishType {
-	const day = (dateOverride ?? new Date()).getTime();
-	const rng = new SeedableRNG(day);
+	const date = dateOverride ?? new Date();
+	const seed = Number(`${date.getUTCFullYear()}${date.getUTCMonth() + 1}${date.getUTCDate()}`);
+	const rng = new SeedableRNG(seed);
 	return {
 		temperature: rng.shuffle(['cold', 'warm'] as const)[0],
 		water: rng.shuffle(['ocean', 'lake', 'river'] as const)[0]

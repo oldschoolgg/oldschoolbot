@@ -26,13 +26,9 @@ export async function grandExchangeHandler(msg: IMessage) {
 		['has over 10 lines', msg.content.split(/\r\n|\r|\n/).length > 10],
 		['has over 450 characters', msg.content.length > 450]
 	] as const;
-	for (const [reason, bool] of conditions) {
+	for (const [_reason, bool] of conditions) {
 		if (bool) {
 			await globalClient.deleteMessage(msg.channel_id, msg.id);
-			await globalClient.sendDm(
-				msg.author_id,
-				`Your message was deleted from the grand-exchange channel, because it: ${reason}.`
-			);
 			break;
 		}
 	}

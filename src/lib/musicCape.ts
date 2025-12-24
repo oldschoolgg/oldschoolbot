@@ -58,7 +58,7 @@ export const musicCapeRequirements = new Requirements()
 			[EMonster.MIMIC]: 1,
 			[Monsters.Hespori.id]: 1,
 			[Monsters.Bryophyta.id]: 1,
-			[Monsters.TzTokJad.id]: 1,
+			[EMonster.TZTOKJAD]: 1,
 			[Monsters.Skotizo.id]: 1,
 			[Monsters.GeneralGraardor.id]: 1,
 			[Monsters.CommanderZilyana.id]: 1,

@@ -1,7 +1,7 @@
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { formatDuration, reduceNumByPercent, stringSearch, Time } from '@oldschoolgg/toolkit';
-import { Bank, ItemGroups, Items, itemID, Monsters } from 'oldschooljs';
+import { Bank, EMonster, ItemGroups, Items, itemID } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -65,7 +65,7 @@ export const fishCommand = defineCommand({
 		}
 
 		if (fish.name === 'Infernal eel') {
-			const jadKC = await user.getKC(Monsters.TzTokJad.id);
+			const jadKC = await user.getKC(EMonster.TZTOKJAD);
 			if (jadKC === 0) {
 				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 			}

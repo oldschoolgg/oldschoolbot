@@ -1,4 +1,4 @@
-import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
@@ -133,10 +133,6 @@ export const aerialFishingTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', 636_833);
 		if (rng.roll(Math.ceil(petDropRate / totalFishCaught))) {
 			loot.add('Heron');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
-			);
 		}
 
 		await user.transactItems({

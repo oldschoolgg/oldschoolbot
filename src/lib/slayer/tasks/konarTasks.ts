@@ -158,7 +158,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DaganothFledgeling.id,
+			Monsters.DagannothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id

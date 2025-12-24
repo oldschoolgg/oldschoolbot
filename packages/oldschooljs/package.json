@@ -20,10 +20,9 @@
 	"scripts": {
 		"test": "concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
 		"test:unit": "vitest run --coverage",
-		"generate": "tsx --tsconfig scripts/tsconfig.json scripts/prepare",
+		"generate": "tsx --tsconfig scripts/tsconfig.json scripts/prepare && tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts",
 		"enum": "tsx --tsconfig scripts/tsconfig.json scripts/enum.ts",
-		"build": "tsdown",
-		"postbuild": "tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts"
+		"build": "tsdown"
 	},
 	"dependencies": {
 		"deepmerge": "4.3.1"

@@ -10559,6 +10559,7 @@
 					"Mithril trimmed set (lg)",
 					"Mithril trimmed set (sk)",
 					"Moktang totem",
+					"Moon key",
 					"Mystic air staff",
 					"Mystic boots (or)",
 					"Mystic dust staff",
@@ -11041,6 +11042,7 @@
 					"Corgi",
 					"Craig",
 					"Eggy",
+					"Ember",
 					"Flappy",
 					"Frosty",
 					"Gregoyle",
@@ -11298,6 +11300,10 @@
 				"items": ["Beehive", "Buzz", "Honey", "Honeycomb"],
 				"counts": false
 			},
+			"bso_christmas_2025": {
+				"items": ["Ember", "Seer snowglobe", "Smokey snowglobe", "Snowglobe santa hat"],
+				"counts": false
+			},
 			"christmas_2022": {
 				"items": [
 					"Christmas cape",
@@ -11345,6 +11351,8 @@
 			"dyed_items_(discontinued)": {
 				"counts": false,
 				"items": [
+					"Atlantean trident (xmas)",
+					"Axe of the high sungod (xmas)",
 					"Deathly collector",
 					"Demonic piercer",
 					"Drygore longsword (xmas)",
@@ -11360,6 +11368,7 @@
 					"Offhand drygore rapier (xmas)",
 					"Santa claws",
 					"The Grim Reaper",
+					"Titan ballista (xmas)",
 					"TzKal cape (spooky)",
 					"Vasa cloak (xmas)",
 					"Zaryte crossbow (xmas)"

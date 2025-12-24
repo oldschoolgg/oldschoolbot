@@ -54,7 +54,7 @@ export function makeRevTable(table: RevTable): CustomKillLogic {
 	return cb;
 }
 
-export const revsUniqueTable = new LootTable()
+export const revsUniqueTable: LootTable = new LootTable()
 	.add('Amulet of avarice', 1, 2)
 	.add("Craw's bow (u)", 1, 1)
 	.add("Thammaron's sceptre (u)", 1, 1)

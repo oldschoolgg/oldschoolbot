@@ -3,7 +3,7 @@ import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 
 import { randFloat, randInt, roll } from '@oldschoolgg/rng';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
-import { type Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
+import { type Bank, EMonster, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { caTiers } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, type PvMMethod } from '@/lib/constants.js';
@@ -345,7 +345,7 @@ export function getCommonTaskName(task: Monster | CustomMonster) {
 		case Monsters.GuardDog.id:
 			commonName = 'Dog';
 			break;
-		case Monsters.TzHaarKet.id:
+		case EMonster.TZHAARKET:
 			commonName = 'TzHaar';
 			break;
 		case Monsters.RevenantImp.id:

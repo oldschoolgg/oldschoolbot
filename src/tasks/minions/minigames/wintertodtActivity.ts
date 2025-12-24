@@ -1,6 +1,6 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { calcPerHour, Emoji, Events, Time } from '@oldschoolgg/toolkit';
+import { calcPerHour, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -43,17 +43,6 @@ export const wintertodtTask: MinionTask = {
 
 		// Track loot in Economy Stats
 		await ClientSettings.updateBankSetting('economyStats_wintertodtLoot', loot);
-
-		if (loot.has('Phoenix')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Phoenix! Their Wintertodt KC is ${
-					newScore
-				}, and their Firemaking level is ${user.skillsAsLevels.firemaking}.`
-			);
-		}
 
 		/**
 		 * https://oldschool.runescape.wiki/w/Wintertodt#Rewards_2

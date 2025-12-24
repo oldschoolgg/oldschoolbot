@@ -14,6 +14,7 @@ import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
 
 export const gambleCommand = defineCommand({
 	name: 'gamble',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Partake in various gambling activities.',
 	options: [
 		/**

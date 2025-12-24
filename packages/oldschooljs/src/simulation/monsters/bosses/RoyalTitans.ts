@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const BrandaTable = new LootTable()
+const BrandaTable: LootTable = new LootTable()
 	.add('Mystic fire staff', 2, 12)
 	.add('Fire battlestaff', 3, 12)
 	.add('Rune plateskirt', 1, 12)
@@ -37,7 +37,7 @@ const BrandaTable = new LootTable()
 	.add('Desiccated page', [3, 12], 16)
 	.add('Prayer potion(4)', [1, 2], 14);
 
-const TotalBrandaTable = new LootTable()
+const TotalBrandaTable: LootTable = new LootTable()
 	.every(BrandaTable, 2)
 	.oneIn(32, 'Giantsoul amulet (uncharged)')
 	.oneIn(150, 'Fire element staff crown')
@@ -46,7 +46,7 @@ const TotalBrandaTable = new LootTable()
 	.tertiary(100, 'Clue scroll (elite)')
 	.tertiary(3000, 'Bran');
 
-const EldricTable = new LootTable()
+const EldricTable: LootTable = new LootTable()
 	.add('Water battlestaff', 3, 8)
 	.add('Rune platelegs', 1, 8)
 	.add('Rune sq shield', 1, 8)
@@ -83,7 +83,7 @@ const EldricTable = new LootTable()
 	.add('Prayer potion(4)', [1, 2], 9)
 	.add('Desiccated page', [3, 12], 9);
 
-const TotalEldricTable = new LootTable()
+const TotalEldricTable: LootTable = new LootTable()
 	.every(EldricTable, 2)
 	.oneIn(32, 'Giantsoul amulet (uncharged)')
 	.oneIn(150, 'Ice element staff crown')
@@ -92,26 +92,26 @@ const TotalEldricTable = new LootTable()
 	.tertiary(100, 'Clue scroll (elite)')
 	.tertiary(3000, 'Bran');
 
-const RoyalTitansSacTable = new LootTable()
+const RoyalTitansSacTable: LootTable = new LootTable()
 	.tertiary(25, 'Clue scroll (hard)')
 	.tertiary(100, 'Clue scroll (elite)')
 	.tertiary(1500, 'Bran');
 
-export const Branda = new SimpleMonster({
+export const Branda: SimpleMonster = new SimpleMonster({
 	id: 12596,
 	name: 'Royal Titans (Branda)',
 	table: TotalBrandaTable,
 	aliases: ['royal titans (branda)', 'branda', 'fire queen']
 });
 
-export const Eldric = new SimpleMonster({
+export const Eldric: SimpleMonster = new SimpleMonster({
 	id: 14147,
 	name: 'Royal Titans (Eldric)',
 	table: TotalEldricTable,
 	aliases: ['royal titans (eldric)', 'eldric', 'ice king']
 });
 
-export const RoyalTitans = new SimpleMonster({
+export const RoyalTitans: SimpleMonster = new SimpleMonster({
 	id: 14148,
 	name: 'Royal Titans (sacrifice)',
 	table: RoyalTitansSacTable,

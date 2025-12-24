@@ -147,7 +147,12 @@ export function getClippedRegion(image: Image | Canvas, x: number, y: number, wi
 	return canvas;
 }
 
-export async function canvasToBuffer(canvas: Canvas): Promise<Buffer> {
+export async function canvasToBuffer(canvas: Image | Canvas): Promise<Buffer> {
+	if (canvas instanceof Image) {
+		const tmp = createCanvas(canvas.width, canvas.height);
+		tmp.getContext('2d').drawImage(canvas, 0, 0);
+		return tmp.png;
+	}
 	return canvas.png;
 }
 

@@ -131,7 +131,7 @@ export const claimCommand = defineCommand({
 			const reclaimableData = await getReclaimableItemsOfUser(user);
 			const rawData = reclaimableData.raw.find(i => i.name === options.name);
 			if (!rawData) {
-				return 'You are not elligible for this item.';
+				return 'You are not eligible for this item.';
 			}
 			if (!reclaimableData.totalCanClaim.has(rawData.item_id)) {
 				return 'You already claimed this item. If you lose it, you can reclaim it.';

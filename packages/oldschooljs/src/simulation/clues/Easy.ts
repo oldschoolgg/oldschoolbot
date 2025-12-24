@@ -1,20 +1,20 @@
-import { EItem } from '@/EItem.js';
-import LootTable from '@/structures/LootTable.js';
+import { EItem } from '../../EItem.js';
+import LootTable from '../../structures/LootTable.js';
 import { BlessingTable, FirelighterTable, PrayerPageTable, TeleportScrollTable } from './General.js';
 
-export const EasyChefTable = new LootTable().add('Golden apron').add("Golden chef's hat");
+export const EasyChefTable: LootTable = new LootTable().add('Golden apron').add("Golden chef's hat");
 
-export const EasySubMonkTable = new LootTable().add("Monk's robe top (g)").add("Monk's robe (g)");
+export const EasySubMonkTable: LootTable = new LootTable().add("Monk's robe top (g)").add("Monk's robe (g)");
 
-export const EasyMonkTable = new LootTable().add('Coins', [3400, 6200], 4).add(EasySubMonkTable);
+export const EasyMonkTable: LootTable = new LootTable().add('Coins', [3400, 6200], 4).add(EasySubMonkTable);
 
-export const EasyCapeTable = new LootTable()
+export const EasyCapeTable: LootTable = new LootTable()
 	.add('Team cape zero')
 	.add('Team cape i')
 	.add('Team cape x')
 	.add('Cape of skulls');
 
-export const EasyElegantTable = new LootTable()
+export const EasyElegantTable: LootTable = new LootTable()
 	.add('Red elegant shirt')
 	.add('Red elegant legs')
 	.add('Red elegant blouse')
@@ -28,7 +28,7 @@ export const EasyElegantTable = new LootTable()
 	.add('Blue elegant blouse')
 	.add('Blue elegant skirt');
 
-export const EasyRareTable = new LootTable()
+export const EasyRareTable: LootTable = new LootTable()
 	.add('Highwayman mask')
 	.add('Blue beret')
 	.add('Black beret')
@@ -142,13 +142,13 @@ export const EasyRareTable = new LootTable()
 	.add(EasyCapeTable)
 	.add(EasyElegantTable, 1, 6);
 
-export const EasyAmuletTable = new LootTable().add('Amulet of magic (t)').add('Amulet of magic', 1, 9);
+export const EasyAmuletTable: LootTable = new LootTable().add('Amulet of magic (t)').add('Amulet of magic', 1, 9);
 
-export const EasyBlessingsTable = new LootTable().add(BlessingTable).add('Coins', [3000, 7000], 2);
+export const EasyBlessingsTable: LootTable = new LootTable().add(BlessingTable).add('Coins', [3000, 7000], 2);
 
-export const EasyBowTable = new LootTable().add('Willow comp bow').add('Willow longbow', 1, 9);
+export const EasyBowTable: LootTable = new LootTable().add('Willow comp bow').add('Willow longbow', 1, 9);
 
-export const EasyStandardTable = new LootTable()
+export const EasyStandardTable: LootTable = new LootTable()
 	.add('Coins', [50, 200])
 	.add('Trout', [6, 10])
 	.add('Salmon', [6, 10])
@@ -183,6 +183,6 @@ export const EasyStandardTable = new LootTable()
 	.add(FirelighterTable)
 	.add(TeleportScrollTable);
 
-export const EasyClueTable = new LootTable().add(EasyStandardTable, 1, 11).add(EasyRareTable, 1, 1);
-export const EasyCasket = new LootTable().add(EasyClueTable, [2, 4]).tertiary(50, 'Clue scroll (master)');
+export const EasyClueTable: LootTable = new LootTable().add(EasyStandardTable, 1, 11).add(EasyRareTable, 1, 1);
+export const EasyCasket: LootTable = new LootTable().add(EasyClueTable, [2, 4]).tertiary(50, 'Clue scroll (master)');
 EasyCasket.allItems.push(EItem.CLUE_SCROLL_MASTER);

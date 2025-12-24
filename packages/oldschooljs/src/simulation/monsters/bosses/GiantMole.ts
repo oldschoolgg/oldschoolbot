@@ -2,7 +2,7 @@ import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const GiantMoleTable = new LootTable()
+const GiantMoleTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every('Mole claw', 1)
 	.every('Mole skin', [1, 3])
@@ -38,7 +38,7 @@ const GiantMoleTable = new LootTable()
 	.add(RareDropTable, 1, 4)
 	.add(GemTable, 1, 5);
 
-export default new SimpleMonster({
+export const GiantMole: SimpleMonster = new SimpleMonster({
 	id: 5779,
 	name: 'Giant Mole',
 	table: GiantMoleTable,

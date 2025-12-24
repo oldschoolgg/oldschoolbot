@@ -19,7 +19,7 @@ import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
 
 import { sumArr } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, LuckyImpling, Monsters, resolveItems } from 'oldschooljs';
 
 import { all3rdAgeItems, gracefulCL, troubleBrewingCL } from '@/lib/data/CollectionsExport.js';
 import { implings } from '@/lib/implings.js';
@@ -687,7 +687,7 @@ export const eliteTasks: Task[] = [
 		has: async ({ userStats }) => {
 			const loot = new Bank(userStats.passive_implings_bank as ItemBank);
 			for (const implingId of Object.keys(implings)) {
-				if (Number(implingId) !== Openables.LuckyImpling.id && loot.amount(Number(implingId)) < 30) {
+				if (Number(implingId) !== LuckyImpling.id && loot.amount(Number(implingId)) < 30) {
 					return false;
 				}
 			}

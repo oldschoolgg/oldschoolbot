@@ -4,7 +4,7 @@ import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const IorwerthWarriorTable = new LootTable()
+const IorwerthWarriorTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Weapons and armour */
@@ -49,7 +49,7 @@ const IorwerthWarriorTable = new LootTable()
 	.tertiary(50, 'Ensouled elf head')
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const IorwerthWarrior: SimpleMonster = new SimpleMonster({
 	id: 3429,
 	name: 'Iorwerth Warrior',
 	table: IorwerthWarriorTable,

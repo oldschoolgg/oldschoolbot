@@ -1,6 +1,6 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
-import { allChristmasEvent2024Items } from '@/lib/bso/collection-log/holiday.js';
+import { allChristmasEvent2024Items, allChristmasEvent2025Items } from '@/lib/bso/collection-log/holiday.js';
 import {
 	abyssalDragonCL,
 	akumuCL,
@@ -1917,6 +1917,11 @@ export const allCollectionLogs: ICollection = {
 			'BSO Birthday 2022': {
 				alias: ['bso birthday 2022'],
 				items: resolveItems(['Honey', 'Honeycomb', 'Beehive', 'Buzz']),
+				counts: false
+			},
+			'BSO Christmas 2025': {
+				alias: ['xmas 2025', 'christmas 2025'],
+				items: allChristmasEvent2025Items,
 				counts: false
 			},
 			'Christmas 2022': {

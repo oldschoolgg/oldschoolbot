@@ -1,6 +1,6 @@
 {
-	"hash": "ac30e3053a810b773afbbb9c7c9982c1",
-	"date": "2025-10-02T12:43:57.187Z",
+	"hash": "6e99679cadc7e5f3571790ea266eac4c",
+	"date": "2025-12-24T04:50:42.790Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -735,6 +735,16 @@
 			}
 		},
 		{
+			"name": "Atlantean trident (xmas)",
+			"items_created": {
+				"Atlantean trident (xmas)": 1
+			},
+			"items_required": {
+				"Atlantean trident": 1,
+				"Christmas dye": 1
+			}
+		},
+		{
 			"name": "Attack master cape (inverted)",
 			"items_created": {
 				"Attack master cape (inverted)": 1
@@ -817,6 +827,16 @@
 			"items_required": {
 				"Axe handle": 1,
 				"Sun-god axe head": 1
+			}
+		},
+		{
+			"name": "Axe of the high sungod (xmas)",
+			"items_created": {
+				"Axe of the high sungod (xmas)": 1
+			},
+			"items_required": {
+				"Axe of the high sungod": 1,
+				"Christmas dye": 1
 			}
 		},
 		{
@@ -6869,6 +6889,16 @@
 			},
 			"items_required": {
 				"Elder rune": 20
+			}
+		},
+		{
+			"name": "Moon key",
+			"items_created": {
+				"Moon key": 1
+			},
+			"items_required": {
+				"Loop half of key (moon key)": 1,
+				"Tooth half of key (moon key)": 1
 			}
 		},
 		{
@@ -14037,6 +14067,16 @@
 			"required_stats": {
 				"crafting": 105,
 				"fletching": 105
+			}
+		},
+		{
+			"name": "Titan ballista (xmas)",
+			"items_created": {
+				"Titan ballista (xmas)": 1
+			},
+			"items_required": {
+				"Christmas dye": 1,
+				"Titan ballista": 1
 			}
 		},
 		{

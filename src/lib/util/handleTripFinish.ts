@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
@@ -38,6 +39,7 @@ import {
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
 import { alching } from '@/mahoji/commands/laps.js';
+import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 
@@ -212,7 +214,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						bonusLoot.add(DougTable.roll());
 					}
 					await user.statsBankUpdate('doug_loot_bank', bonusLoot);
-					messages.push(`Doug did some mining while you were on your trip and got you: ${bonusLoot}.`);
+					messages.push(`Doug mined you these items: ${bonusLoot}.`);
 					break;
 				}
 				case itemID('Harry'): {
@@ -255,14 +257,13 @@ const tripFinishEffects: TripFinishEffect[] = [
 					ClientSettings.updateBankSetting('magic_cost_bank', alchResult.bankToRemove),
 					ClientSettings.updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'))
 				]);
+				const hasMasterCape = user.hasEquipped('Magic master cape');
 				messages.push(
 					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${
 						alchResult.itemToAlch.name
-					} <:alch:739456571347566623> ${toKMB(alchResult.bankToAdd.amount('Coins'))} GP ${
-						!voidlingEquipped && !user.hasEquipped('Magic master cape')
-							? '<:bank:739459924693614653>⏬'
-							: ''
-					}${user.hasEquipped('Magic master cape') ? '<:Magicmastercape:1115026341314703492>⏫' : ''}`
+					} ${toKMB(alchResult.bankToAdd.amount('Coins'))} GP ${
+						!voidlingEquipped && !hasMasterCape ? '<:bank:739459924693614653>⏬' : ''
+					}${hasMasterCape ? '<:Magicmastercape:1115026341314703492>⏫' : ''}`
 				);
 				return {
 					itemsToAddWithCL: alchResult.bankToAdd,
@@ -507,12 +508,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Claim Daily Button',
 		requiredPerkTier: PerkTier.Two,
-		fn: async ({ user, components, lastDailyTimestamp }) => {
+		fn: async ({ user, components }) => {
 			if (user.bitfield.includes(BitField.DisableDailyButton)) return;
-			const last = Number(lastDailyTimestamp);
-			const ready = last <= 0 || Date.now() - last >= CONSTANTS.DAILY_COOLDOWN;
 
-			if (ready) {
+			const { isReady } = await isUsersDailyReady(user);
+			if (isReady) {
 				components.push(makeClaimDailyButton());
 			}
 		}
@@ -588,6 +588,39 @@ const tripFinishEffects: TripFinishEffect[] = [
 			);
 			return {
 				itemsToAddWithCL: mysteriousLoot
+			};
+		}
+	},
+	{
+		name: 'Christmas Event',
+		fn: async ({ user, messages, data }) => {
+			const minutes = Math.floor(data.duration / Time.Minute);
+			if (minutes < 1) return;
+			const xmasLoot = new Bank();
+
+			const snowglobeDroprate = 1920;
+			const santaHatDropRate = user.cl.has(BSOItem.SNOWGLOBE_SANTA_HAT) ? 20160 * 2 : 20160;
+			const emberDroprate = user.cl.has(BSOItem.EMBER) ? 11520 * 2 : 11520;
+
+			const unownedSnowglobe = [BSOItem.SEER_SNOWGLOBE, BSOItem.SMOKEY_SNOWGLOBE].find(s => !user.cl.has(s));
+
+			for (let i = 0; i < minutes; i++) {
+				if (MathRNG.roll(santaHatDropRate)) {
+					xmasLoot.add(BSOItem.SNOWGLOBE_SANTA_HAT);
+				}
+				if (MathRNG.roll(emberDroprate)) {
+					xmasLoot.add(BSOItem.EMBER);
+				}
+
+				// Give unowned snowglobe first, otherwise a random one
+				if (MathRNG.roll(snowglobeDroprate)) {
+					xmasLoot.add(unownedSnowglobe ?? MathRNG.pick([BSOItem.SEER_SNOWGLOBE, BSOItem.SMOKEY_SNOWGLOBE]));
+				}
+			}
+			if (xmasLoot.length === 0) return;
+			messages.push(`🎁 You found some Christmas event items: ${xmasLoot}.`);
+			return {
+				itemsToAddWithCL: xmasLoot
 			};
 		}
 	}

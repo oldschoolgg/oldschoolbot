@@ -157,7 +157,7 @@ export const raidsTask: MinionTask = {
 
 		let resultMessage = `<@${leader}> Your ${challengeMode ? 'Challenge Mode Raid' : 'Raid'}${
 			quantity > 1 ? 's have' : ' has'
-		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
+		} finished, your team received ${totalPoints.toLocaleString()} points.\n`;
 		await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, quantity)));
 
 		for (const [_userID, userData] of raidResults) {

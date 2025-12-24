@@ -1,4 +1,4 @@
-import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
@@ -78,10 +78,6 @@ export const camdozaalFishingTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', guppy.petChance!);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Heron');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing in Camdozaal at level ${currentFishLevel} Fishing!`
-			);
 		}
 
 		// Give the user the items from the trip

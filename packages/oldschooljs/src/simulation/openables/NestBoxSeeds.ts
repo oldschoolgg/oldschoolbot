@@ -2,7 +2,7 @@ import { EItem } from '@/EItem.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
-const NestBoxSeedsTable = new LootTable()
+const NestBoxSeedsTable: LootTable = new LootTable()
 	// source: https://oldschool.runescape.wiki/w/Bird_nest
 	.every(EItem.EMPTY_BIRD_NEST)
 	.add('Acorn', 1, 248)
@@ -32,7 +32,7 @@ const NestBoxSeedsTable = new LootTable()
 	.add('Celastrus seed', 1, 6)
 	.add('Redwood tree seed', 1, 1);
 
-export default new SimpleOpenable({
+export const NestBoxSeeds: SimpleOpenable = new SimpleOpenable({
 	id: 12_793,
 	name: 'Nest box (seeds)',
 	aliases: ['nest box (seeds)', 'seeds nest box', 'nest box seeds', 'seed nest box'],

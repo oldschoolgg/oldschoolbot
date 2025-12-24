@@ -1,8 +1,11 @@
 {
 	"extends": "../../../tsconfig.base.json",
 	"compilerOptions": {
+		"lib": ["DOM", "DOM.Iterable"],
 		"rootDir": "./",
-		"outDir": "../dist"
+		"outDir": "../dist",
+		"isolatedDeclarations": true,
+		"isolatedModules": true
 	},
 	"include": ["."]
 }

@@ -1,6 +1,6 @@
 {
-	"hash": "7360c379e2a0b51db5b5172998f403a8",
-	"date": "2025-09-27T08:29:43.912Z",
+	"hash": "0d4bb4667231028921cf8a5e337b0fa2",
+	"date": "2025-12-09T10:45:20.898Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -4018,6 +4018,16 @@
 				"Mithril kiteshield (t)": 1,
 				"Mithril platebody (t)": 1,
 				"Mithril plateskirt (t)": 1
+			}
+		},
+		{
+			"name": "Moon key",
+			"items_created": {
+				"Moon key": 1
+			},
+			"items_required": {
+				"Loop half of key (moon key)": 1,
+				"Tooth half of key (moon key)": 1
 			}
 		},
 		{

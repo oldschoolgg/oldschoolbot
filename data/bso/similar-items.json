@@ -176,6 +176,10 @@
 		"similar_items": ["Artisan's cape", "Completionist cape", "Completionist cape (t)"]
 	},
 	{
+		"main_item": "Atlantean trident",
+		"similar_items": ["Atlantean trident", "Atlantean trident (xmas)"]
+	},
+	{
 		"main_item": "Attack cape",
 		"similar_items": [
 			"Attack cape",
@@ -235,6 +239,10 @@
 			"Ghommal's avernic defender 5",
 			"Ghommal's avernic defender 6"
 		]
+	},
+	{
+		"main_item": "Axe of the high sungod",
+		"similar_items": ["Axe of the high sungod", "Axe of the high sungod (xmas)"]
 	},
 	{
 		"main_item": "Bandos godsword",
@@ -1931,6 +1939,10 @@
 	{
 		"main_item": "Tidal collector",
 		"similar_items": ["Deathly collector", "Deathly collector (i)", "Tidal collector", "Tidal collector (i)"]
+	},
+	{
+		"main_item": "Titan ballista",
+		"similar_items": ["Titan ballista", "Titan ballista (xmas)"]
 	},
 	{
 		"main_item": "Tormented bracelet",

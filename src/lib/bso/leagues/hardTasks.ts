@@ -23,7 +23,7 @@ import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 import { allThirdAgeItems } from '@/lib/bso/tables/sharedTables.js';
 
 import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, LuckyImpling, Monsters, resolveItems } from 'oldschooljs';
 
 import { allGildedItems, masterCapesCL, monkeyBackpacksCL, skillingPetsCL } from '@/lib/data/CollectionsExport.js';
 import { implings } from '@/lib/implings.js';
@@ -1132,7 +1132,7 @@ export const hardTasks: Task[] = [
 		has: async ({ userStats }) => {
 			const loot = new Bank(userStats.passive_implings_bank as ItemBank);
 			for (const implingId of Object.keys(implings)) {
-				if (Number(implingId) !== Openables.LuckyImpling.id && loot.amount(Number(implingId)) < 20) {
+				if (Number(implingId) !== LuckyImpling.id && loot.amount(Number(implingId)) < 20) {
 					return false;
 				}
 			}

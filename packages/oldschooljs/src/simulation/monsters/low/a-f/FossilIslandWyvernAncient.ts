@@ -3,9 +3,9 @@ import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const AncientWyvernTreeSeedTable = new LootTable().add('Mahogany seed', 1, 2).add('Magic seed', 1, 1);
+const AncientWyvernTreeSeedTable: LootTable = new LootTable().add('Mahogany seed', 1, 2).add('Magic seed', 1, 1);
 
-const AncientWyvernTable = new LootTable()
+const AncientWyvernTable: LootTable = new LootTable()
 	.every('Wyvern bones')
 	.oneIn(600, 'Granite longsword')
 	.oneIn(600, 'Granite boots')
@@ -72,7 +72,7 @@ const AncientWyvernTable = new LootTable()
 	.tertiary(350, 'Clue scroll (elite)')
 	.tertiary(10_000, 'Wyvern visage');
 
-export default new SimpleMonster({
+export const FossilIslandWyvernAncient: SimpleMonster = new SimpleMonster({
 	id: 7795,
 	name: 'Ancient Wyvern',
 	table: AncientWyvernTable,

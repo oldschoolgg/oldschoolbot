@@ -80,6 +80,7 @@ export async function driftNetCommand(
 		userID: user.id,
 		channelId,
 		quantity,
+		minutes,
 		duration,
 		type: 'DriftNet'
 	});
