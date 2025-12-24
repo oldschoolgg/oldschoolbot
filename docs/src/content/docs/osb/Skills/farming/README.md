@@ -11,9 +11,9 @@ When harvesting trees, either:
 
 Other farming activities:
 
-- [Farming Contracts](farming-contracts.md)
-- [Tithe Farm](tithe-farm.md)
-- [Hespori](farmables.md#hespori)
+- [Farming Contracts](farming-contracts)
+- [Tithe Farm](tithe-farm)
+- [Hespori](farmables#hespori)
 
 ---
 
@@ -29,10 +29,10 @@ XP, speed, and harvest quantity can be boosted by the following:
   - Boots: +0.2% XP
   - Full set: +2.5% XP **(works from bank)**
 
-- **[Magic secateurs](../../Buyables/buyables.md#quest-items)** – 10% harvest quantity boost **(works from bank)**
+- **[Magic secateurs](../../Buyables/buyables#quest-items)** – 10% harvest quantity boost **(works from bank)**
 - **Farming cape** – 5% harvest quantity boost **(works from bank)**
 - **Full graceful outfit** – 10% trip speed **(must be equipped and charged)**
-- **[Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance)** – 10% trip speed **(must be equipped in any setup and charged)**
+- **[Ring of endurance](../agility/hallowed-sepulchre#ring-of-endurance)** – 10% trip speed **(must be equipped in any setup and charged)**
 
 ---
 
@@ -52,11 +52,11 @@ XP, speed, and harvest quantity can be boosted by the following:
 
 Auto farming automatically plants seeds based on your filter.
 
-- **All Farm** – [[/farming auto_farm_filter auto_farm_filter_data\:AllFarm]]  
+- **All Farm** – [[/farming auto_farm_filter auto_farm_filter_data\:AllFarm]]
   Plants the highest seed in every patch
 
-- **Replant** – [[/farming auto_farm_filter auto_farm_filter_data\:Replant]]  
-  Replants the same seed in only the patches that had it  
+- **Replant** – [[/farming auto_farm_filter auto_farm_filter_data\:Replant]]
+  Replants the same seed in only the patches that had it
   _(Empty other patches using [[/farming harvest]] for better control)_
 
 ---
@@ -65,7 +65,7 @@ Auto farming automatically plants seeds based on your filter.
 
 - **Compost** – Buy for 400gp: [[/buy name\:Compost]]
 - **Supercompost** – Made via [[/farming compost_bin]] or dropped/bought
-- **Ultracompost** – Use 2× Volcanic ash + 1× Supercompost:  
+- **Ultracompost** – Use 2× Volcanic ash + 1× Supercompost:
   [[/create item\:Ultracompost]]
 
 ---
