@@ -6,14 +6,14 @@ import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skil
 import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
 
 export async function underwaterAgilityThievingCommand(
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	trainingSkill: UnderwaterAgilityThievingTrainingSkill,
 	minutes: number | undefined,
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const maxTripLength = user.calcMaxTripLength('UnderwaterAgilityThieving');
+	const maxTripLength = await user.calcMaxTripLength('UnderwaterAgilityThieving');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);
@@ -77,9 +77,10 @@ export async function underwaterAgilityThievingCommand(
 
 	await ActivityManager.startTrip<UnderwaterAgilityThievingTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		trainingSkill,
 		quantity,
+		minutes,
 		duration,
 		noStams,
 		type: 'UnderwaterAgilityThieving'

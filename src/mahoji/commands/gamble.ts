@@ -1,8 +1,8 @@
 import { randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
+import { choicesOf } from '@/discord/index.js';
 import { BitField } from '@/lib/constants.js';
-import { choicesOf } from '@/lib/discord/index.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
 import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';
@@ -13,6 +13,7 @@ import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
 
 export const gambleCommand = defineCommand({
 	name: 'gamble',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Partake in various gambling activities.',
 	options: [
 		/**
@@ -162,7 +163,7 @@ export const gambleCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, interaction, guildID, user, rng }) => {
+	run: async ({ options, interaction, guildId, user, rng }) => {
 		if (options.item) {
 			if (options.item.item) {
 				return capeGambleCommand(user, options.item.item, interaction, options.item.autoconfirm);
@@ -235,7 +236,7 @@ export const gambleCommand = defineCommand({
 			});
 			await prisma.economyTransaction.create({
 				data: {
-					guild_id: guildID ? BigInt(guildID) : undefined,
+					guild_id: guildId ? BigInt(guildId) : undefined,
 					sender: BigInt(senderUser.id),
 					recipient: BigInt(recipientuser.id),
 					items_sent: loot.toJSON(),

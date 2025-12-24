@@ -1,10 +1,9 @@
-import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit';
+import { miniID, truncateString } from '@oldschoolgg/toolkit';
+import { containsBlacklistedWord } from '@oldschoolgg/toolkit/node';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { GiftBoxStatus } from '@/prisma/main.js';
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { BOT_TYPE } from '@/lib/constants.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -12,6 +11,7 @@ import { isValidNickname } from '@/lib/util/smallUtils.js';
 
 export const giftCommand = defineCommand({
 	name: 'gift',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Create gifts for other users, or open one you received.',
 	options: [
 		{
@@ -24,18 +24,18 @@ export const giftCommand = defineCommand({
 					name: 'gift',
 					description: 'The gift to open.',
 					required: true,
-					autocomplete: async (input: string, user: MUser) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const gifts = await prisma.giftBox.findMany({
 							where: {
-								owner_id: user.id,
+								owner_id: userId,
 								status: GiftBoxStatus.Sent
 							}
 						});
 						return gifts
 							.filter(g => {
-								if (!input) return true;
+								if (!value) return true;
 								const str = g.name ?? g.id;
-								return str.toLowerCase().includes(input.toLowerCase());
+								return str.toLowerCase().includes(value.toLowerCase());
 							})
 							.map(g => ({ name: g.name ? `${g.name} (${g.id})` : g.id, value: g.id }));
 					}
@@ -77,7 +77,7 @@ export const giftCommand = defineCommand({
 					name: 'gift',
 					description: 'The gift to send.',
 					required: true,
-					autocomplete: async (input: string, user: MUser) => {
+					autocomplete: async ({ value, user }: StringAutoComplete) => {
 						const gifts = await prisma.giftBox.findMany({
 							where: {
 								creator_id: user.id,
@@ -86,9 +86,9 @@ export const giftCommand = defineCommand({
 						});
 						return gifts
 							.filter(g => {
-								if (!input) return true;
+								if (!value) return true;
 								const str = g.name ?? g.id;
-								return str.toLowerCase().includes(input.toLowerCase());
+								return str.toLowerCase().includes(value.toLowerCase());
 							})
 							.map(g => ({ name: g.name ? `${g.name} (${g.id})` : g.id, value: g.id }));
 					}
@@ -160,7 +160,7 @@ ${truncateString(giftsOwnedButNotOpened.map(g => `${g.name ? `${g.name} (${g.id}
 			});
 			return {
 				content: 'You opened the gift box!',
-				files: [image.file]
+				files: [image]
 			};
 		}
 
@@ -210,7 +210,7 @@ ${items}`
 				}
 			});
 
-			return `You wrapped up your items into a gift box! You can send it to someone with ${mentionCommand(
+			return `You wrapped up your items into a gift box! You can send it to someone with ${globalClient.mentionCommand(
 				'gift',
 				'send'
 			)}. This gift box has an id of ${gift.id}${gift.name ? `, and is called \`${gift.name}\`` : ''}.`;
@@ -224,7 +224,7 @@ ${items}`
 				return 'You must provide a valid user to send the gift box to.';
 			}
 			const recipient = await mUserFetch(options.send.user.user.id);
-			if (recipient.isIronman || BLACKLISTED_USERS.has(recipient.id)) {
+			if (recipient.isIronman || (await recipient.isBlacklisted())) {
 				return 'This person cannot receive gift boxes.';
 			}
 			const giftBox = await prisma.giftBox.findFirst({

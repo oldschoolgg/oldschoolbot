@@ -1,9 +1,7 @@
-import { discrimName, Events } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { filterOption } from '@/lib/discord/index.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
+import { filterOption } from '@/discord/index.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
@@ -21,6 +19,7 @@ function formatBankForDisplay(bank: Bank): string {
 
 export const tradeCommand = defineCommand({
 	name: 'trade',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Allows you to trade items with other players.',
 	options: [
 		{
@@ -55,21 +54,19 @@ export const tradeCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ interaction, user: senderUser, guildID, options }) => {
+	run: async ({ interaction, user: senderUser, guildId, options }) => {
 		await interaction.defer();
 
-		if (!guildID) return 'You can only run this in a server.';
+		if (!guildId) return 'You can only run this in a server.';
 		const recipientUser = await mUserFetch(options.user.user.id);
-		const recipientAPIUser = options.user.user;
 
-		const isBlacklisted = BLACKLISTED_USERS.has(recipientUser.id);
-		if (isBlacklisted) return "Blacklisted players can't buy items.";
+		if (await recipientUser.isBlacklisted()) return "Blacklisted players can't buy items.";
 		if (senderUser.user.minion_ironman || recipientUser.user.minion_ironman) {
 			return "Iron players can't trade items.";
 		}
 		if (recipientUser.id === senderUser.id) return "You can't trade yourself.";
-		if (recipientAPIUser.bot) return "You can't trade a bot.";
-		if (recipientUser.isBusy) return 'That user is busy right now.';
+		if (options.user.user.bot) return "You can't trade a bot.";
+		if (await recipientUser.getIsLocked()) return 'That user is busy right now.';
 
 		const itemsSent =
 			!options.search && !options.filter && !options.send
@@ -126,7 +123,7 @@ Both parties must click confirm to make the trade.`,
 		}
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: BigInt(guildID),
+				guild_id: BigInt(guildId),
 				sender: BigInt(senderUser.id),
 				recipient: BigInt(recipientUser.id),
 				items_sent: itemsSent.toJSON(),
@@ -147,20 +144,20 @@ Both parties must click confirm to make the trade.`,
 
 		const sentFull = itemsSent.toStringFull();
 		const receivedFull = itemsReceived.toStringFull();
-		const files: { attachment: Buffer; name: string }[] = [];
+		const files: { buffer: Buffer; name: string }[] = [];
 		if (sentFull.length > MAX_CHARACTER_LENGTH) {
-			files.push({ attachment: Buffer.from(sentFull), name: 'items_sent.txt' });
+			files.push({ buffer: Buffer.from(sentFull), name: 'items_sent.txt' });
 		}
 		if (receivedFull.length > MAX_CHARACTER_LENGTH) {
-			files.push({ attachment: Buffer.from(receivedFull), name: 'items_received.txt' });
+			files.push({ buffer: Buffer.from(receivedFull), name: 'items_received.txt' });
 		}
 
-		const content = `${senderUser.username} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
-			recipientAPIUser
-		)} in return for ${formatBankForDisplay(itemsReceived)}.
+		const content = `${senderUser.mention} sold ${formatBankForDisplay(itemsSent)} to ${recipientUser.mention} in return for ${formatBankForDisplay(itemsReceived)}.
 
-  You can now buy/sell items in the Grand Exchange: ${mentionCommand('ge')}`;
+You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
 
-		return files.length > 0 ? { content, files } : content;
+		const response = { content, allowedMentions: { users: [senderUser.id, recipientUser.id] } };
+
+		return files.length > 0 ? { ...response, files } : response;
 	}
 });

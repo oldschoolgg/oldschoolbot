@@ -10,9 +10,12 @@ function normalizeName(str: string): string {
 }
 
 const OSBItems = new Map<number | string, Item>();
-for (const item of Object.values(itemsJson) as Item[]) {
+for (const [_id, _item] of Object.entries(itemsJson) as [string, Omit<Item, 'id'>][]) {
+	const id = Number(_id);
+	const item: Item = { id, ..._item };
 	const name = normalizeName(item.name);
-	OSBItems.set(item.id, item);
+	OSBItems.set(id.toString(), item);
+	OSBItems.set(id, item);
 	if (OSBItems.has(name)) continue;
 	OSBItems.set(normalizeName(item.name), item);
 }

@@ -23,7 +23,10 @@ export const xpCommand = defineCommand({
 		}
 	],
 	run: async ({ options }) => {
-		const player = await Hiscores.fetch(options.rsn);
+		const { player, error } = await Hiscores.fetch(options.rsn);
+		if (error !== null) {
+			return error;
+		}
 
 		if (options.to_99) {
 			let totalXP = 0;

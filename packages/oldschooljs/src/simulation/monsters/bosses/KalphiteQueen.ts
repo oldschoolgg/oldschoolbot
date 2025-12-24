@@ -2,7 +2,7 @@ import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const KqConsumablesTable = new LootTable()
+const KqConsumablesTable: LootTable = new LootTable()
 	.add('Monkfish', 3, 1)
 	.add('Shark', 2, 1)
 	.add('Dark crab', 2, 1)
@@ -74,7 +74,7 @@ const KalphiteQueenTable = new LootTable({ limit: 256 })
 	.tertiary(2000, 'Jar of sand')
 	.tertiary(3000, 'Kalphite princess');
 
-export default new SimpleMonster({
+export const KalphiteQueen: SimpleMonster = new SimpleMonster({
 	id: 963,
 	name: 'Kalphite Queen',
 	table: KalphiteQueenTable,

@@ -12,6 +12,7 @@ interface WoodcuttingTimeOptions {
 	powerchopping: boolean;
 	forestry: boolean;
 	woodcuttingLvl: number;
+	maxTripLength: number;
 }
 
 export function determineWoodcuttingTime({
@@ -21,7 +22,8 @@ export function determineWoodcuttingTime({
 	axeMultiplier,
 	powerchopping,
 	forestry,
-	woodcuttingLvl
+	woodcuttingLvl,
+	maxTripLength
 }: WoodcuttingTimeOptions): [number, number] {
 	let timeElapsed = 0;
 
@@ -42,7 +44,6 @@ export function determineWoodcuttingTime({
 
 	let newQuantity = 0;
 
-	let maxTripLength = user.calcMaxTripLength('Woodcutting');
 	if (!powerchopping && user.hasEquippedOrInBank('Log basket')) {
 		maxTripLength += Time.Minute * 5;
 	}

@@ -3,7 +3,7 @@ import TalismanTable from '@/simulation/subtables/TalismanTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const DagannothRexTable = new LootTable()
+const DagannothRexTable: LootTable = new LootTable()
 	.every('Dagannoth bones')
 	.every('Dagannoth hide')
 	.tertiary(20, 'Ensouled dagannoth head')
@@ -56,7 +56,7 @@ const DagannothRexTable = new LootTable()
 	.add(GemTable, 1, 10)
 	.add(TalismanTable);
 
-export default new SimpleMonster({
+export const DagannothRex: SimpleMonster = new SimpleMonster({
 	id: 2267,
 	name: 'Dagannoth Rex',
 	table: DagannothRexTable,

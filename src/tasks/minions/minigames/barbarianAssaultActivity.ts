@@ -5,7 +5,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
-		const { channelID, quantity } = data;
+		const { channelId, quantity } = data;
 
 		const { honour_level: currentHonourLevel } = await user.fetchStats();
 
@@ -36,6 +36,13 @@ export const barbAssaultTask: MinionTask = {
 		resultStr = `${user.mention}, ${user.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
 ${resultStr}`;
 
-		handleTripFinish(user, channelID, resultStr, undefined, data, null);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: {
+				content: resultStr
+			},
+			data
+		});
 	}
 };

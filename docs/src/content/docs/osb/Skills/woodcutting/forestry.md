@@ -12,8 +12,8 @@ This minigame is conducted passively while completing _almost any_ woodcutting t
 
 ## Boosts
 
-- Regular woodcutting [axe boosts](./#axes)
-- 20% boost to Bird nests from [Twitcher's gloves](forestry.md#twitchers-gloves)
+- Regular woodcutting [axe boosts](#axes)
+- 20% boost to Bird nests from [Twitcher's gloves](forestry#twitchers-gloves)
 
 ## Forestry Events
 

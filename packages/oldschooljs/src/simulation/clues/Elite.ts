@@ -1,5 +1,5 @@
-import { EItem } from '@/EItem.js';
-import LootTable from '@/structures/LootTable.js';
+import { EItem } from '../../EItem.js';
+import LootTable from '../../structures/LootTable.js';
 import {
 	BlessingTable,
 	FirelighterTable,
@@ -9,7 +9,7 @@ import {
 	TeleportScrollTable
 } from './General.js';
 
-export const Elite3rdageTable = new LootTable()
+export const Elite3rdageTable: LootTable = new LootTable()
 	.add('3rd age range coif')
 	.add('3rd age range top')
 	.add('3rd age range legs')
@@ -28,7 +28,7 @@ export const Elite3rdageTable = new LootTable()
 	.add('3rd age wand')
 	.add('3rd age bow');
 
-export const EliteMegaRareTable = new LootTable()
+export const EliteMegaRareTable: LootTable = new LootTable()
 	.add('Gilded scimitar')
 	.add('Gilded boots')
 	.add('Battlestaff', 100)
@@ -49,7 +49,7 @@ export const EliteMegaRareTable = new LootTable()
 	.add(GildedTable, 1, 5)
 	.add(Elite3rdageTable);
 
-export const EliteTuxedoTable = new LootTable()
+export const EliteTuxedoTable: LootTable = new LootTable()
 	.add('Dark tuxedo jacket')
 	.add('Dark tuxedo cuffs')
 	.add('Dark trousers')
@@ -61,7 +61,7 @@ export const EliteTuxedoTable = new LootTable()
 	.add('Light tuxedo shoes')
 	.add('Light bow tie');
 
-export const EliteRareTable = new LootTable()
+export const EliteRareTable: LootTable = new LootTable()
 	.add('Dragon cane')
 	.add('Briefcase')
 	.add('Sagacious spectacles')
@@ -113,9 +113,9 @@ export const EliteRareTable = new LootTable()
 	.add(EliteMegaRareTable, 1, 2)
 	.add(EliteTuxedoTable);
 
-export const EliteSeedTable = new LootTable().add('Magic seed').add('Yew seed').add('Palm tree seed');
+export const EliteSeedTable: LootTable = new LootTable().add('Magic seed').add('Yew seed').add('Palm tree seed');
 
-export const EliteStandardTable = new LootTable()
+export const EliteStandardTable: LootTable = new LootTable()
 	.add('Coins', [20_000, 30_000])
 	.add('Tuna potato', [15, 20])
 	.add('Summer pie', [15, 20])
@@ -147,6 +147,6 @@ export const EliteStandardTable = new LootTable()
 	.add(TeleportScrollTable, 1, 2)
 	.add(BlessingTable);
 
-export const EliteClueTable = new LootTable().add(EliteStandardTable, 1, 24).add(EliteRareTable, 1, 1);
-export const EliteCasket = new LootTable().add(EliteClueTable, [4, 6]).tertiary(5, 'Clue scroll (master)');
+export const EliteClueTable: LootTable = new LootTable().add(EliteStandardTable, 1, 24).add(EliteRareTable, 1, 1);
+export const EliteCasket: LootTable = new LootTable().add(EliteClueTable, [4, 6]).tertiary(5, 'Clue scroll (master)');
 EliteCasket.allItems.push(EItem.CLUE_SCROLL_MASTER);

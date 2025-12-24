@@ -6,7 +6,7 @@ title: "Divination"
 
 ### Memory Harvesting Overview
 
-Divination is a skill where you harvest divine energies from memories.  
+Divination is a skill where you harvest divine energies from memories.
 Memory harvesting is the primary training method and involves capturing memories to convert them into experience (XP) or energy.
 
 ### Methods
@@ -17,16 +17,16 @@ Memory harvesting is the primary training method and involves capturing memories
 
 ### Boosts
 
-- [**Wisp-buster**](../invention/#inventions): Boosts XP/hr by 30%
-- [**Divine hand**](../invention/#inventions): Boosts energy by 30% and enables clue scroll drops from memories  
+- [**Wisp-buster**](/bso/skills/invention/#inventions): Boosts XP/hr by 30%
+- [**Divine hand**](/bso/skills/invention/#inventions): Boosts energy by 30% and enables clue scroll drops from memories
   _Only one of the above inventions can be active at a time._
 
 - **Jar of memories:** Adds +7 minutes to max trip length when equipped
 - **Boons:** Boosts XP by 10% if the appropriate boon is unlocked
 - **Guthixian Cache Boost:** +20% XP and energy for one trip per boost
-- **Divination potion:** Grants extra energy/XP and +10 level boost for [[/memoryharvest]]
+- **Divination potion:** Grants extra energy/XP and +10 level boost for memory harvesting
 - **Diviner's outfit:** +4% XP boost
-- [**Divination Master Cape**](../../custom-items/equippables/#master-capes)
+- [**Divination Master Cape**](/bso/custom-items/capes/#master-capes)
 
 ### Other Notes
 
@@ -36,7 +36,7 @@ Memory harvesting is the primary training method and involves capturing memories
 
 ## Boons
 
-Boons are items created with energy to boost XP from specific energy tiers by 10%.  
+Boons are items created with energy to boost XP from specific energy tiers by 10%.
 Energy from one tier is used to make the boon for the next tier.
 
 - No boon exists for Pale energy. Pale is used to make Flickering boon

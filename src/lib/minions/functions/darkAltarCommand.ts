@@ -27,12 +27,12 @@ const mediumDiaryBoost = 20;
 
 export async function darkAltarCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	extracts
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	extracts?: boolean;
 }) {
@@ -77,7 +77,7 @@ export async function darkAltarCommand({
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}
 
-	const maxTripLength = user.calcMaxTripLength('DarkAltar');
+	const maxTripLength = await user.calcMaxTripLength('DarkAltar');
 	let quantity = Math.floor(maxTripLength / timePerRune);
 	let duration = maxTripLength;
 	const totalCost = new Bank();
@@ -99,7 +99,7 @@ export async function darkAltarCommand({
 
 	await ActivityManager.startTrip<DarkAltarOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'DarkAltar',

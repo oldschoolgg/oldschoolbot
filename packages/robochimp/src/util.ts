@@ -1,7 +1,4 @@
 import { PerkTier } from '@oldschoolgg/toolkit';
-import { WebhookClient } from 'discord.js';
-
-import { globalConfig } from './constants.js';
 
 export enum Bits {
 	Admin = 1,
@@ -72,8 +69,4 @@ export const tiers: PatronTier[] = [
 	{ id: PatronTierID.One, bit: Bits.IsPatronTier1, perkTier: PerkTier.Two, number: 1 }
 ];
 
-export const allPatronBits = tiers.map(t => t.bit);
-
-export const patronLogWebhook = globalConfig.isProduction
-	? new WebhookClient({ url: globalConfig.patronLogWebhookURL })
-	: ({} as any);
+export const allPatronBits: Bits[] = tiers.map(t => t.bit);

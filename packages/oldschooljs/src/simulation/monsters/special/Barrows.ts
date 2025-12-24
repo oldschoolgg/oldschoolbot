@@ -1,10 +1,11 @@
+import { roll } from '@oldschoolgg/rng';
+
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import { Monster } from '@/structures/Monster.js';
-import { roll } from '@/util/smallUtils.js';
 
-const BarrowsTable = new LootTable();
+const BarrowsTable: LootTable = new LootTable();
 
 [
 	"Ahrim's hood",
@@ -38,7 +39,7 @@ const BarrowsTable = new LootTable();
 	"Verac's flail"
 ].map(item => BarrowsTable.add(item));
 
-const OtherTable = new LootTable()
+const OtherTable: LootTable = new LootTable()
 	.add('Coins', [2, 760], 380)
 	.add('Mind rune', [381, 504], 125)
 	.add('Chaos rune', [168, 210], 125)
@@ -48,11 +49,11 @@ const OtherTable = new LootTable()
 	.add(new LootTable().add('Loop half of key').add('Tooth half of key'), 1, 6)
 	.add('Dragon med helm');
 
-const ClueTable = new LootTable().tertiary(29, 'Clue scroll (elite)');
+const ClueTable: LootTable = new LootTable().tertiary(29, 'Clue scroll (elite)');
 
 const NUMBER_OF_BROTHERS = 6;
 
-export class Barrows extends Monster {
+class BarrowsClass extends Monster {
 	public kill(quantity: number, options: MonsterKillOptions): Bank {
 		const loot = new Bank();
 
@@ -83,7 +84,7 @@ export class Barrows extends Monster {
 }
 
 // Uses NPC id for Dharoks
-export default new Barrows({
+export const Barrows: BarrowsClass = new BarrowsClass({
 	id: 1673,
 	name: 'Barrows',
 	aliases: ['barrows'],

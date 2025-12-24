@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
 	"assist": {
 		"actions": {
 			"source": {
@@ -12,6 +12,7 @@
 							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
 							":BLANK_LINE:",
 							["@/prisma/**"],
+							["@/discord/**"],
 							[":ALIAS:", ":PATH:"]
 						]
 					}
@@ -32,6 +33,8 @@
 			"**/*.cjs",
 			"**/*.d.ts",
 			"**/*.tsx",
+			"**/*.html",
+			"**/*.css",
 			"!**/node_modules",
 			"!**/dist",
 			"!**/coverage",
@@ -56,7 +59,10 @@
 			"a11y": {
 				"useAltText": "off",
 				"useKeyWithClickEvents": "off",
-				"useButtonType": "off"
+				"useButtonType": "off",
+				"noSvgWithoutTitle": "off",
+				"noStaticElementInteractions": "off",
+				"noLabelWithoutControl": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "warn",
@@ -64,7 +70,8 @@
 				"noAsyncPromiseExecutor": "off",
 				"noConfusingVoidType": "off",
 				"noFocusedTests": "off",
-				"noArrayIndexKey": "warn"
+				"noArrayIndexKey": "off",
+				"noUnsafeDeclarationMerging": "warn"
 			},
 			"style": {
 				"noNonNullAssertion": "off",
@@ -75,19 +82,26 @@
 				"noInferrableTypes": "off"
 			},
 			"correctness": {
-				"useExhaustiveDependencies": "warn",
+				"useExhaustiveDependencies": "off",
 				"noConstructorReturn": "off",
-				"useParseIntRadix": "off"
+				"useParseIntRadix": "off",
+				"noUnknownProperty": "off"
 			},
 			"complexity": {
 				"noExtraBooleanCast": "warn",
-				"noBannedTypes": "warn",
+				"noBannedTypes": "off",
 				"noForEach": "warn",
 				"noStaticOnlyClass": "off",
 				"noUselessContinue": "warn"
 			},
 			"performance": {
 				"noAccumulatingSpread": "warn"
+			},
+			"nursery": {
+				"noFloatingPromises": "warn",
+				"noImportCycles": "warn",
+				"noShadow": "warn",
+				"noMisusedPromises": "warn"
 			}
 		}
 	},
@@ -104,6 +118,22 @@
 			"quoteStyle": "single",
 			"trailingCommas": "none",
 			"arrowParentheses": "asNeeded"
+		}
+	},
+	"html": {
+		"experimentalFullSupportEnabled": true,
+		"formatter": {
+			"enabled": true,
+			"selfCloseVoidElements": "always"
+		}
+	},
+	"css": {
+		"parser": {
+			"cssModules": true,
+			"tailwindDirectives": true
+		},
+		"formatter": {
+			"enabled": true
 		}
 	}
 }

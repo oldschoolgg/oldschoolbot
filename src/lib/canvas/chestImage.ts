@@ -1,17 +1,15 @@
 import { randInt } from '@oldschoolgg/rng';
-import { AttachmentBuilder } from 'discord.js';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
-import { type Image, loadImage } from 'skia-canvas';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
-import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
+import { type CanvasImage, loadImage } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { TOBUniques } from '@/lib/data/tob.js';
 
 const chestLootTypes: {
 	title: string;
-	chestImage: Promise<Image>;
-	chestImagePurple: Promise<Image>;
+	chestImage: Promise<CanvasImage>;
+	chestImagePurple: Promise<CanvasImage>;
 	width: number;
 	height: number;
 	purpleItems: (number | string)[];
@@ -128,7 +126,7 @@ async function drawSingleChestCanvas(
 	canvas.ctx.drawImage(chestImage, x, y);
 
 	canvas.drawTitleText({
-		text: `${user.rawUsername} (${toKMB(loot.value())})`,
+		text: `${user.username} (${toKMB(loot.value())})`,
 		x: canvas.width / 2,
 		y: 21,
 		center: true
@@ -201,10 +199,11 @@ function combineCanvases(canvases: OSRSCanvas[]): OSRSCanvas {
 	return combinedCanvas;
 }
 
-export async function drawChestLootImage(options: {
+export interface DrawChestLootImageOptions {
 	entries: ChestLootEntry[];
 	type: (typeof chestLootTypes)[number]['title'];
-}): Promise<AttachmentBuilder> {
+}
+export async function drawChestLootImage(options: DrawChestLootImageOptions): Promise<SendableFile> {
 	const type = chestLootTypes.find(t => t.title === options.type);
 	if (!type) {
 		throw new Error(`Invalid chest type: ${options.type}`);
@@ -221,13 +220,13 @@ export async function drawChestLootImage(options: {
 	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}${type.title.toLowerCase().replace(/\s+/g, '')}-${randInt(1, 1000)}.png`;
 
 	if (canvasResults.length === 1) {
-		const imageBuffer = await canvasResults[0].canvas.toScaledOutput(2);
-		return new AttachmentBuilder(imageBuffer, { name: fileName });
+		const imageBuffer = await canvasResults[0].canvas.toBuffer();
+		return { name: fileName, buffer: imageBuffer };
 	}
 
 	const canvases = canvasResults.map(result => result.canvas);
 	const combinedCanvas = combineCanvases(canvases);
-	const combinedBuffer = await combinedCanvas.toScaledOutput(2);
+	const combinedBuffer = await combinedCanvas.toBuffer();
 
-	return new AttachmentBuilder(combinedBuffer, { name: fileName });
+	return { name: fileName, buffer: combinedBuffer };
 }
