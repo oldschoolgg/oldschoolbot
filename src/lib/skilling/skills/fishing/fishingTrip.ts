@@ -179,14 +179,14 @@ export function calcFishingTripResult({
 		}
 	}
 
-    const totalCatchRolls = totalCatches + totalExtraCatchRolls;
+	const totalCatchRolls = totalCatches + totalExtraCatchRolls;
 
-    // Extra fish granted by items like Rada's blessing or Spirit flakes shouldn't roll extra clues or pets,
-    // since they are duplicates of the same catch tick. Those rolls should only be based on the number of
-    // actual catches performed.
-    if (fish.clueScrollChance) {
-            addSkillingClueToLoot(gearBank, 'fishing', totalCatches, fish.clueScrollChance, updateBank.itemLootBank);
-    }
+	// Extra fish granted by items like Rada's blessing or Spirit flakes shouldn't roll extra clues or pets,
+	// since they are duplicates of the same catch tick. Those rolls should only be based on the number of
+	// actual catches performed.
+	if (fish.clueScrollChance) {
+		addSkillingClueToLoot(gearBank, 'fishing', totalCatches, fish.clueScrollChance, updateBank.itemLootBank);
+	}
 
 	if (fish.petChance) {
 		const petChanceToUse =
@@ -194,7 +194,7 @@ export function calcFishingTripResult({
 
 		if (petChanceToUse) {
 			const { petDropRate } = skillingPetDropRate(gearBank, 'fishing', petChanceToUse);
-                    for (let i = 0; i < totalCatches; i++) {
+			for (let i = 0; i < totalCatches; i++) {
 				if (rngProvider.roll(petDropRate)) {
 					updateBank.itemLootBank.add('Heron');
 				}
