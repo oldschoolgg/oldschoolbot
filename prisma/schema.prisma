@@ -200,6 +200,7 @@ model Giveaway {
   duration    Int
   completed   Boolean
   channel_id  String   @db.VarChar(19)
+  guild_id    String?  @db.VarChar(19)
   loot        Json     @db.Json
   message_id  String   @db.VarChar(19)
   reaction_id String?  @db.VarChar(19)
