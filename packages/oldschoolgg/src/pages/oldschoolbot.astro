@@ -1,0 +1,106 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+const features = [
+    {
+        title: "Kill Simulating",
+        desc: "Simulate killing up to a million of a monster, in one command, and see a realistic image of all the loot.",
+        image: {
+            src: "https://cdn.oldschool.gg/website/kill.webp",
+            width: 486,
+            height: 425,
+            alt: "Loot simulator command image.",
+        },
+    },
+    {
+        title: "Clue Simulating",
+        desc: "Simulate opening up to 50,000 clue scrolls at once, and see all the loot in a realistic image.",
+        image: {
+            src: "https://cdn.oldschool.gg/website/casket.webp",
+            width: 486,
+            height: 425,
+            alt: "Clue simulator command image.",
+        },
+    },
+    {
+        title: "JMod Social Feeds",
+        desc: "Keep up to date with updates and the JMods by instantly getting any tweet or reddit post/comment sent to your channel.",
+        image: {
+            src: "https://cdn.oldschool.gg/website/jmod.webp",
+            width: 518,
+            height: 539,
+            alt: "Jagex mod tweets and social media feeds.",
+        },
+    },
+    {
+        title: "Check Hiscores",
+        desc: "Check the stats of any account with a simple command.",
+        image: {
+            src: "https://cdn.oldschool.gg/website/stats.webp",
+            width: 456,
+            height: 475,
+            alt: "Checking RuneScape account stats.",
+        },
+    },
+];
+---
+
+<Layout pageTitle="Old School Bot">
+    <div class="max-w-7xl mx-auto px-4 mt-8">
+        <p class="text-secondary mb-10">
+            Old School Bot is a Discord bot based around Old School RuneScape.
+            It has fun and useful commands, such as showing your account stats
+            or simulating the loot from monsters and clues.
+        </p>
+
+        <div class="mb-12">
+            <ul class="flex flex-wrap gap-4 list-none p-0">
+                <li>
+                    <a
+                        class="text-blue-400 underline"
+                        href="https://wiki.oldschool.gg/"
+                        target="_blank">Wiki</a
+                    >
+                </li>
+                <li>
+                    <a
+                        class="text-blue-400 underline"
+                        href="https://wiki.oldschool.gg/commands"
+                        target="_blank">Commands List</a
+                    >
+                </li>
+                <li>
+                    <a
+                        class="text-blue-400 underline"
+                        href="https://www.patreon.com/oldschoolbot"
+                        target="_blank">Patreon</a
+                    >
+                </li>
+            </ul>
+        </div>
+
+        <div class="flex flex-col gap-12 mt-12">
+            {
+                features.map((feat) => (
+                    <div
+                        class={`flex flex-row justify-around flex-wrap items-center my-12`}
+                    >
+                        <div class="px-8" style="flex: 0 0 45%">
+                            <h3 class="text-3xl">{feat.title}</h3>
+                            <p class="text-gray-400">{feat.desc}</p>
+                        </div>
+
+                        <img
+                            alt={feat.image.alt}
+                            loading="lazy"
+                            src={feat.image.src}
+                            width={feat.image.width}
+                            height={feat.image.height}
+                            class="rounded-xl max-w-sm w-full"
+                        />
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</Layout>

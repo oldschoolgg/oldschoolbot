@@ -21,6 +21,7 @@ const allBuyablesAutocomplete = [
 
 export const buyCommand = defineCommand({
 	name: 'buy',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Allows you to purchase items.',
 	options: [
 		{

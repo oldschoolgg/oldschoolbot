@@ -1,4 +1,5 @@
-import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
+import type { RNGProvider } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IChannel, IMember } from '@oldschoolgg/schemas';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 

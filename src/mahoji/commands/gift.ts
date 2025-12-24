@@ -1,4 +1,5 @@
-import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit';
+import { miniID, truncateString } from '@oldschoolgg/toolkit';
+import { containsBlacklistedWord } from '@oldschoolgg/toolkit/node';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { GiftBoxStatus } from '@/prisma/main.js';
@@ -10,6 +11,7 @@ import { isValidNickname } from '@/lib/util/smallUtils.js';
 
 export const giftCommand = defineCommand({
 	name: 'gift',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Create gifts for other users, or open one you received.',
 	options: [
 		{

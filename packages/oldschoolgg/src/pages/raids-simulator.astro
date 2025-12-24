@@ -1,0 +1,18 @@
+---
+import { RaidsSimulatorPage } from "@/components/pages/RaidsSimulator.js";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+	pageTitle="Raids Simulator"
+	keywords={[
+		"raids simulator",
+		"raids",
+		"cox",
+		"chambers of xeric",
+		"simulator",
+	]}
+	desc="Oldschool.gg's Raids/Chambers of Xeric simulator lets you simulate raids and see what loot your team would get, shown in a realistic image."
+>
+	<RaidsSimulatorPage client:only />
+</Layout>

@@ -1,5 +1,5 @@
-import { EItem } from '@/EItem.js';
-import LootTable from '@/structures/LootTable.js';
+import { EItem } from '../../EItem.js';
+import LootTable from '../../structures/LootTable.js';
 import { BlessingTable, FirelighterTable, PrayerPageTable, TeleportScrollTable } from './General.js';
 
 export const EasyChefTable: LootTable = new LootTable().add('Golden apron').add("Golden chef's hat");

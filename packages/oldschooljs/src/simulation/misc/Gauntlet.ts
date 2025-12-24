@@ -1,5 +1,5 @@
-import type { Bank } from '@/structures/Bank.js';
-import LootTable from '@/structures/LootTable.js';
+import type { Bank } from '../../structures/Bank.js';
+import LootTable from '../..//structures/LootTable.js';
 
 const DiedTable: LootTable = new LootTable()
 	.add('Adamant dagger')

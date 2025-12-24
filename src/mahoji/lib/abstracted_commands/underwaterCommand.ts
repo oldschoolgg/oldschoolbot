@@ -80,6 +80,7 @@ export async function underwaterAgilityThievingCommand(
 		channelId,
 		trainingSkill,
 		quantity,
+		minutes,
 		duration,
 		noStams,
 		type: 'UnderwaterAgilityThieving'
