@@ -28,7 +28,7 @@ title: "Nihiliz"
 - Drygore rapier: +15%
 - Offhand drygore rapier: +10%
 - Dragon warhammer: +5%
-- [Additional global boosts apply](../../skills/combat-skills.md#boosts)
+- [Additional global boosts apply](/bso/skills/combat-skills#boosts)
 
 ---
 
