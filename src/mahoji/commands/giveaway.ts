@@ -38,6 +38,7 @@ function makeGiveawayRepeatButton(giveawayID: number) {
 
 export const giveawayCommand = defineCommand({
 	name: 'giveaway',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Giveaway items from your ban to other players.',
 	attributes: {
 		requiresMinion: true,
@@ -159,7 +160,8 @@ export const giveawayCommand = defineCommand({
 						title: `${apiUser?.username ?? user.username}'s Giveaway`
 					})
 				],
-				components: makeGiveawayButtons(giveawayID)
+				components: makeGiveawayButtons(giveawayID),
+				allowedMentions: { users: [user.id] }
 			});
 			if (!message) {
 				return `There was an error sending the giveaway message. Please ensure I have permission to send messages and attach files in <#${channelId}>.`;

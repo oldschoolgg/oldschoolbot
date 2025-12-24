@@ -18,7 +18,7 @@ Contributors are allowed to merge PRs/changes to the wiki without approval.
 
 ## Running the wiki locally
 
-1. Install the bot - see [setup guide](https://github.com/oldschoolgg/oldschoolbot/blob/master/SETUP.md)
+1. Install the bot - see [setup guide](https://github.com/oldschoolgg/oldschoolbot/blob/master/SETUP)
 2. `cd docs`
 3. `pnpm dev`
 
@@ -47,6 +47,18 @@ Raw Image [[Orange?raw]]
 [[Remy]]
 
 Items can appear in the middle of text [[Twisted bow]] Items can [[Coal]] appear in the middle of text Items can appear in the middle [[Dwarven warhammer]] of text
+
+### Auto Page Links
+
+[[Nihiliz]]
+[[Marimbo's Monkey Rumble]]
+[[Depths of Atlantis]]
+[[Dungeoneering]]
+[[Emerged Zuk Inferno]]
+[[Vasa Magus]]
+
+Link to specific subheader:
+[[Vasa Magus#loot]]
 
 ### Discord Commands
 

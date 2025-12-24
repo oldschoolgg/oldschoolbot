@@ -406,6 +406,10 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		messageId: string;
 		emojiId: string;
 	}): Promise<void> {
+		// Handle format like: :SkyStare:718251514899988488
+		if (emojiId.includes(':')) {
+			emojiId = emojiId.split(':').slice(-1)[0];
+		}
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emojiId));
 		await this.rest.put(route);
 	}

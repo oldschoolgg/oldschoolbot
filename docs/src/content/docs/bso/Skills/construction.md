@@ -6,13 +6,13 @@ title: "Construction"
 
 - **Elder Plank** – Made with [[/activities plank_make action\:Sawmill type\:Elder plank]], using Elder Logs. Base cost = 8.5k. Strongly advised to use a Demon Butler unless using speed 5.
 - **Elder Table** – Built at [[construction:105]] using Elder Planks.
-- **Ancient Rejuvenation Pool** – Built at [[construction:105]] on top of an ornate pool.  
-  Requires: 500 brews, 150 restores, 100 staminas, 200 prayer pots, 30 elder planks, 20 marble blocks.  
-  Provides boosts to [QBD](../bso-custom-killables/demi-bosses/queen-black-dragon.md#boosts), Corp, [Malygos](../bso-custom-killables/demi-bosses/malygos.md#boosts), and [Nihiliz](../bso-custom-killables/demi-bosses/nihiliz.md#boosts).
-- [Scroll of Proficiency](dungeoneering-training/dg-rewards.md#buyable-boosts-utility) – 15% of planks saved in construction.
-- [Construction Master Cape](../custom-items/equippables/#master-capes) – Hatches Nursery Eggs at 2x speed.
-- [Drygore Saw](../invention/#inventions) – 40% speed boost to [[/build]].
-- [Baby Yaga House](../custom-items/pets.md#meme-pets-and-no-perk-pets) – Perkless custom pet.
+- **Ancient Rejuvenation Pool** – Built at [[construction:105]] on top of an ornate pool.
+  Requires: 500 brews, 150 restores, 100 staminas, 200 prayer pots, 30 elder planks, 20 marble blocks.
+  Provides boosts to [Queen Black Dragon], Corp, [[Malygos]], and [[Nihiliz]]
+- [Scroll of Proficiency](dungeoneering-training/dg-rewards#buyable-boosts-utility) – 15% of planks saved in construction.
+- [Construction Master Cape](/bso/custom-items/capes/#master-capes) – Hatches Nursery Eggs at 2x speed.
+- [Drygore Saw](/bso/skills/invention/#inventions) – 40% speed boost to [[/build]].
+- [Baby Yaga House](/bso/custom-items/pets#meme-pets-and-no-perk-pets) – Perkless custom pet.
 
 ---
 

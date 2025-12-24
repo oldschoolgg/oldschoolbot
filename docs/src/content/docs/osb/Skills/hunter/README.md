@@ -127,7 +127,7 @@ Among regular hunting methods, there are many other activities that can help lev
 
 - [Aerial fishing](https://wiki.oldschool.gg/skills/fishing/aerial-fishing)
   - Requires 35 hunter + 43 fishing
-- [Drift net fishing](../fishing/drift-net-fishing.md)
+- [Drift net fishing](../fishing/drift-net-fishing)
   - Requires 44 hunter + 47 fishing
 - [Herbiboar](https://wiki.oldschool.gg/skills/hunter/herbiboar)
   - Requires 80 hunter + 31 herblore
@@ -135,5 +135,5 @@ Among regular hunting methods, there are many other activities that can help lev
   - Requires 5 hunter + 5 crafting + 3qp for the lowest level birdhouses
 - [Passive Implings](https://wiki.oldschool.gg/skills/hunter/passive-implings)
   - Doesn't actually give xp, but is dependent on your current hunter level.
-- [Puro Puro](puro-puro.md)
+- [Puro Puro](puro-puro)
   - Requires 17 hunter + 36 woodcutting + 31 crafting + 3 quest points
