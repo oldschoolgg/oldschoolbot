@@ -14766,6 +14766,112 @@ setCustomItem(
 	1
 );
 
+setCustomItem(75_022, 'Gemstone Bundle', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_023, 'Gemstone Satchel', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_024, 'Gemstone Core', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_025, 'Verdant Log', 'Logs', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_026, 'Ancient Verdant Log', 'Logs', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_027, 'Living Bark', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_028, 'Ancient Cap', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_029, 'Colossal Stem', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_030, 'Brimstone Spore', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_031, 'Crystalline Ore', 'Iron ore', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_032, 'Gem Infused Ore', 'Iron ore', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_033, 'Dense Crystal Shard', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_034, 'Diluted Brimstone', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_035, 'Myconid Plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_036, 'Crystalline Plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_037, 'Verdant Plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_038, 'Ancient Verdant Plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_039, 'Damaged Relic', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_040, 'Tarnished Idol', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_041, 'Scrap Crystal', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_042, 'Sentinel Core', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_043, 'Verdant Heart', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+
+setCustomItem(75_044, 'Elder Mimic Casket (locked)', 'Casket', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_045, 'Elder Mimic Casket', 'Casket', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_046, 'Elder Sigil', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_047, 'Elder Sigil Fragment', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+
+setCustomItem(
+	75_048,
+	'Starfire Bow',
+	'Twisted bow',
+	{
+		tradeable: true,
+		tradeable_on_ge: true,
+		buy_limit: 10,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0, 
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: {
+				ranged: 0 
+			}
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	75_049,
+	'Prismare Ring',
+	'Ring of suffering',
+	{
+		tradeable: true,
+		tradeable_on_ge: true,
+		buy_limit: 10,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Ring,
+			requirements: {
+			}
+		}
+	},
+	10_000
+);
+
+setCustomItem(75_050, 'Celestyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_051, 'Starfire Agate', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_052, 'Verdantyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_053, 'Oneiryte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_054, 'Firaxyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_055, 'Prismare', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_056, 'Juvenile Gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_057, 'Adolescent Gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_058, 'Mature Gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_059, 'Elder Gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_060, 'Ancient Gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 
 export const discontinuedItems = resolveItems([
 	'Turkey',
