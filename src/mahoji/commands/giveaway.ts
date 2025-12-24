@@ -1,10 +1,10 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
-import { randInt } from '@oldschoolgg/rng';
-import { chunk, Emoji, Time } from '@oldschoolgg/toolkit';
+import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
+import { chunk } from 'remeda';
 
 import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
@@ -40,6 +40,7 @@ function makeGiveawayRepeatButton(giveawayID: number) {
 
 export const giveawayCommand = defineCommand({
 	name: 'giveaway',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Giveaway items from your ban to other players.',
 	attributes: {
 		requiresMinion: true,
@@ -94,7 +95,7 @@ export const giveawayCommand = defineCommand({
 			options: []
 		}
 	],
-	run: async ({ options, user, guildId, interaction, channelId, user: apiUser }): CommandResponse => {
+	run: async ({ options, user, guildId, interaction, channelId, user: apiUser, rng }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
 
 		if (options.start) {
@@ -155,7 +156,7 @@ export const giveawayCommand = defineCommand({
 				return 'You cannot have a giveaway with no items in it.';
 			}
 
-			const giveawayID = randInt(1, 500_000_000);
+			const giveawayID = rng.randInt(1, 500_000_000);
 
 			const message = await globalClient.sendMessage(channelId, {
 				content: generateGiveawayContent(user.id, duration.fromNow, []),
@@ -165,7 +166,8 @@ export const giveawayCommand = defineCommand({
 						title: `${apiUser?.username ?? user.username}'s Giveaway`
 					})
 				],
-				components: makeGiveawayButtons(giveawayID)
+				components: makeGiveawayButtons(giveawayID),
+				allowedMentions: { users: [user.id] }
 			});
 			if (!message) {
 				return `There was an error sending the giveaway message. Please ensure I have permission to send messages and attach files in <#${channelId}>.`;

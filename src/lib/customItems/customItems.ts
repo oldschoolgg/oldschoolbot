@@ -43,7 +43,6 @@ setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000
 // 	duplicate: false,
 // 	tradeable: true,
 // 	tradeable_on_ge: true,
-// 	wiki_name: 'Abyssal lance',
 // 	equipment: {
 // 		attack_stab: 155,
 // 		attack_slash: 135,
@@ -69,7 +68,6 @@ setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000
 // 	duplicate: false,
 // 	tradeable: true,
 // 	tradeable_on_ge: true,
-// 	wiki_name: 'Abyssal defender',
 // 	equipment: {
 // 		attack_stab: 77,
 // 		attack_slash: 67,
@@ -1138,7 +1136,6 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		wiki_name: 'Abyssal cape',
 		equipment: {
 			attack_stab: 0,
 			attack_slash: 0,
@@ -14325,6 +14322,44 @@ setCustomItem(73_606, 'Witch card', 'Coal', {
 	customItemData: {
 		cantDropFromMysteryBoxes: true,
 		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(74_001, 'Titan ballista (xmas)', 'Titan ballista', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(74_002, 'Atlantean trident (xmas)', 'Atlantean trident', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(74_003, 'Snowglobe santa hat', 'Santa hat', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(74_004, 'Smokey snowglobe', 'Bronze dagger', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(74_005, 'Seer snowglobe', 'Bronze dagger', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(74_006, 'Ember', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
 	}
 });
 

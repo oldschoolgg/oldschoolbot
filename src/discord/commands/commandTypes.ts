@@ -26,6 +26,7 @@ export interface AbstractCommandAttributes {
 export function defineCommand<const T extends AnyArr<unknown>>(
 	cmd: Readonly<{
 		name: string;
+		flags?: CommandFlag[];
 		attributes?: Omit<AbstractCommandAttributes, 'description'>;
 		description: string;
 		options: T;
@@ -63,8 +64,11 @@ export type CommandRunOptions<TOpts = {}> = {
 	rng: RNGProvider;
 };
 
+type CommandFlag = 'REQUIRES_LOCK';
+
 export type AnyCommand = Readonly<{
 	name: string;
+	flags?: CommandFlag[];
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 	description: string;
 	options: readonly CommandOption[];

@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const WallBeastTable = new LootTable()
+export const WallBeastTable: LootTable = new LootTable()
 	/* Runes */
 	.add('Air rune', 3, 8)
 	.add('Cosmic rune', 2, 2)
@@ -33,7 +33,7 @@ export const WallBeastTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const WallBeast: SimpleMonster = new SimpleMonster({
 	id: 476,
 	name: 'Wall beast',
 	table: WallBeastTable,

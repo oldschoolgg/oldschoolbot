@@ -1,5 +1,5 @@
 import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
-import { EItem, Monsters } from 'oldschooljs';
+import { EItem, type Monster, Monsters } from 'oldschooljs';
 
 import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -41,7 +41,7 @@ export async function slayerListBlocksCommand(mahojiUser: MUser) {
 	let outstr =
 		`You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
 		` and have ${maxBlocks - myBlockList.length} remaining\n\n**Blocked Tasks:**\n`;
-	const myBlockedMonsters = Monsters.filter(m => myBlockList.includes(m.id));
+	const myBlockedMonsters: Monster[] = myBlockList.map(_id => Monsters.get(_id)).filter(notEmpty);
 	outstr += `${myBlockedMonsters.map(getCommonTaskName).join('\n')}`;
 	return `${outstr}\n\nTry: \`/slayer manage block\` to block a task.`;
 }
@@ -309,9 +309,7 @@ export async function slayerUnblockCommand(mahojiUser: MUser, monsterName: strin
 	if (!osjsMonster) {
 		return `Cannot find Monster with name **${monsterName}**`;
 	}
-	const blockedMonsters = mahojiUser.user.slayer_blocked_ids
-		.map(mId => Monsters.find(m => m.id === mId))
-		.filter(notEmpty);
+	const blockedMonsters = mahojiUser.user.slayer_blocked_ids.map(mId => Monsters.get(mId)).filter(notEmpty);
 	if (blockedMonsters.length === 0) {
 		return "You don't currently have any monsters blocked.";
 	}

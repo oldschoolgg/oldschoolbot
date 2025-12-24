@@ -39,7 +39,7 @@ export const gearCommand = defineCommand({
 					description: 'A list of equippable items to equip.'
 				},
 				{
-					...ownedItemOption(item => Boolean(item.equipable_by_player) && Boolean(item.equipment)),
+					...ownedItemOption(item => Boolean(item.equipable) && Boolean(item.equipment)),
 					name: 'item',
 					description: 'The item you want to equip.'
 				},

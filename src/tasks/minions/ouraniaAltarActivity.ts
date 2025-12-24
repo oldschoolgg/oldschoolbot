@@ -1,4 +1,3 @@
-import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -65,17 +64,6 @@ const ouraniaAltarTask: MinionTask = {
 		}${
 			raimentQuantity > 0 ? `\n${raimentQuantity} bonus runes from the Raiments of the eye outfit.` : ''
 		} ${xpRes}`;
-
-		if (loot.has('Rift guardian')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Rift guardian while runecrafting at the Ourania Altar at level ${user.skillLevel(
-					'runecraft'
-				)} Runecrafting!`
-			);
-		}
 
 		await user.transactItems({
 			collectionLog: true,

@@ -71,7 +71,6 @@ describe('Sanity', () => {
 		expect(itemID('Frozen key')).toEqual(26_356);
 		for (const item of Items.resolveFullItems(['Hellfire bow (broken)', 'Hellfire bownana (broken)'])) {
 			expect(item.equipable).toEqual(undefined);
-			expect(item.equipable_by_player).toEqual(undefined);
 			expect(item.equipment).toEqual(undefined);
 		}
 	});

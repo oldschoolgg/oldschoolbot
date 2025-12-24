@@ -23,7 +23,7 @@ export async function interactionConfirmation(
 				| { ephemeral?: false; users?: string[] }
 				| { ephemeral?: boolean; users?: undefined }
 		  ))
-) {
+): Promise<void> {
 	const ephemeral = typeof message !== 'string' ? (message.ephemeral ?? false) : false;
 	interaction.isConfirmation = true;
 	const content = typeof message === 'string' ? message : message.content;

@@ -361,7 +361,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			xpStr += ` (${toKMB(rawXPHr)}/Hr)`;
 		} else {
-			xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()}${skill.emoji}XP.`;
+			xpStr += `🚫 ${params.amount.toLocaleString()} ${params.skillName} XP`;
 		}
 		return xpStr;
 	}

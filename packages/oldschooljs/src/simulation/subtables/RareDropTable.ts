@@ -5,7 +5,7 @@ const MegaRareTable = new LootTable({ limit: 128 })
 	.add('Shield left half', 1, 4)
 	.add('Dragon spear', 1, 3);
 
-export const GemTable = new LootTable({ limit: 128 })
+export const GemTable: LootTable = new LootTable({ limit: 128 })
 	.add('Uncut sapphire', 1, 32)
 	.add('Uncut emerald', 1, 16)
 	.add('Uncut ruby', 1, 8)
@@ -16,7 +16,7 @@ export const GemTable = new LootTable({ limit: 128 })
 	.add('Tooth half of key')
 	.add(MegaRareTable);
 
-export const RareDropTable = new LootTable()
+export const RareDropTable: LootTable = new LootTable()
 	/* Runes and ammunition */
 	.add('Nature rune', 67, 3)
 	.add('Adamant javelin', 20, 2)

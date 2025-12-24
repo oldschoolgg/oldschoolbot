@@ -72,7 +72,7 @@ export function rollForBSOThings(args: MidPVMEffectArgs) {
 
 	const minutes = Math.ceil(duration / Time.Minute);
 	const osjsMon = Monsters.get(monster.id);
-	if (osjsMon?.data.attributes.includes(MonsterAttribute.Dragon)) {
+	if (osjsMon?.data.attributes?.includes(MonsterAttribute.Dragon)) {
 		const dropRate = clAdjustedDroprate(cl, 'Klik', 8500, 1.5);
 		for (let i = 0; i < minutes; i++) {
 			if (roll(dropRate)) {

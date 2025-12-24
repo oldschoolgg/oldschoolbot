@@ -7,7 +7,7 @@ const BoneTable = new LootTable({ limit: 10_000 })
 	.add('Raurg bones', 1, 766)
 	.add('Ourg bones', 1, 375);
 
-const OgreCoffinTable = new LootTable()
+const OgreCoffinTable: LootTable = new LootTable()
 	.every(BoneTable)
 
 	/* Loot roll */
@@ -36,7 +36,7 @@ const OgreCoffinTable = new LootTable()
 	.add('Grimy lantadyme', 1, 4)
 	.add('Clue scroll (easy)', 1, 1);
 
-export default new SimpleOpenable({
+export const OgreCoffin: SimpleOpenable = new SimpleOpenable({
 	id: 4850,
 	name: 'Ogre coffin',
 	aliases: ['ogre coffin', 'ogre chest', 'ogre coffin chest'],

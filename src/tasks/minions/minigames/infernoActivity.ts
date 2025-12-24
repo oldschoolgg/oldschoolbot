@@ -1,6 +1,6 @@
 import { roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, itemID, Monsters } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
@@ -30,7 +30,7 @@ export const infernoTask: MinionTask = {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 			score > 0 &&
 			usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 

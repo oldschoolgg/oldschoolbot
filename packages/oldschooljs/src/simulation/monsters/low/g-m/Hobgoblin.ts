@@ -3,7 +3,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const HerbTable = new LootTable()
+const HerbTable: LootTable = new LootTable()
 	.add('Grimy guam leaf', 1, 10)
 	.add('Grimy marrentill', 1, 10)
 	.add('Grimy tarromin', 1, 5)
@@ -15,7 +15,7 @@ const HerbTable = new LootTable()
 	.add('Grimy lantadyme', 1, 3)
 	.add('Grimy dwarf weed', 1, 3);
 
-export const HobgoblinTable = new LootTable()
+export const HobgoblinTable: LootTable = new LootTable()
 	.tertiary(5000, 'Hobgoblin champion scroll')
 	.tertiary(70, 'Clue scroll (beginner)')
 	.every('Bones')
@@ -48,7 +48,7 @@ export const HobgoblinTable = new LootTable()
 	.add('Goblin mail', 1, 2)
 	.add(GemTable, 1, 2);
 
-export default new SimpleMonster({
+export const Hobgoblin: SimpleMonster = new SimpleMonster({
 	id: 3049,
 	name: 'Hobgoblin',
 	table: HobgoblinTable,

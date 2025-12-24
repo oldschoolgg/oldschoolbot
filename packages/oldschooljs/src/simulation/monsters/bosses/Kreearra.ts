@@ -2,13 +2,16 @@ import GWRareDropTable, { GWGemTable, ShardTable } from '@/simulation/subtables/
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const KreearraArmorTable = new LootTable().add('Armadyl helmet').add('Armadyl chestplate').add('Armadyl chainskirt');
+const KreearraArmorTable: LootTable = new LootTable()
+	.add('Armadyl helmet')
+	.add('Armadyl chestplate')
+	.add('Armadyl chainskirt');
 
-const MinionUniqueTable = new LootTable().add('Coins', [1000, 1100], 124).add(KreearraArmorTable, 1, 3);
+const MinionUniqueTable: LootTable = new LootTable().add('Coins', [1000, 1100], 124).add(KreearraArmorTable, 1, 3);
 
-const MinionShardTable = new LootTable().add('Coins', [1000, 1100], 9).add(ShardTable, 1, 3);
+const MinionShardTable: LootTable = new LootTable().add('Coins', [1000, 1100], 9).add(ShardTable, 1, 3);
 
-const MinionTable = new LootTable()
+const MinionTable: LootTable = new LootTable()
 	.every('Bones')
 	.every('Feather', [1, 11])
 	.add(MinionUniqueTable, 1, 1)
@@ -23,13 +26,13 @@ const MinionTable = new LootTable()
 	.add('Grimy kwuarm', 1, 8)
 	.tertiary(128, 'Clue scroll (hard)');
 
-const UniqueTable = new LootTable()
+const UniqueTable: LootTable = new LootTable()
 	.add(KreearraArmorTable, 1, 4)
 	.add(ShardTable, 1, 2)
 	.add('Armadyl hilt')
 	.add('Coins', [20_500, 21_000], 5);
 
-const KreearraTable = new LootTable()
+const KreearraTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(MinionTable, 3)
 	.every('Feather', [1, 16])
@@ -67,7 +70,7 @@ const KreearraTable = new LootTable()
 	.add(GWRareDropTable, 1, 8)
 	.add(GWGemTable, 1, 2);
 
-export default new SimpleMonster({
+export const Kreearra: SimpleMonster = new SimpleMonster({
 	id: 3162,
 	name: "Kree'arra",
 	table: KreearraTable,

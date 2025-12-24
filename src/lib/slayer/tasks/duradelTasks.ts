@@ -1,6 +1,6 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
-import { Monsters } from 'oldschooljs';
+import { EMonster, Monsters } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -157,7 +157,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DaganothFledgeling.id,
+			Monsters.DagannothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
@@ -434,7 +434,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.TzHaarKet,
 		amount: [130, 199],
 		weight: 10,
-		monsters: [Monsters.TzHaarKet.id, Monsters.TzHaarXil.id, Monsters.TzHaarMej.id],
+		monsters: [EMonster.TZHAARKET, Monsters.TzHaarXil.id, Monsters.TzHaarMej.id],
 		unlocked: false
 	},
 	{

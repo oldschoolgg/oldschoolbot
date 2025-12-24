@@ -314,7 +314,7 @@ export const finishables: Finishable[] = [
 	}
 ];
 
-const monsterPairedCLs = [...Monsters.values(), ...Object.values(BSOMonsters)]
+const monsterPairedCLs = [...Monsters.map(m => m), ...Object.values(BSOMonsters)]
 	.map(mon => {
 		const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
 		if (!cl) return null;

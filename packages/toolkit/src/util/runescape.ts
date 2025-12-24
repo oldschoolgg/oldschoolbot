@@ -1,4 +1,4 @@
-export function generateHexColorForCashStack(coins: number) {
+export function generateHexColorForCashStack(coins: number): string {
 	if (coins > 9_999_999) {
 		return '#00FF80';
 	}
@@ -10,7 +10,7 @@ export function generateHexColorForCashStack(coins: number) {
 	return '#FFFF00';
 }
 
-export function formatItemStackQuantity(quantity: number) {
+export function formatItemStackQuantity(quantity: number): string {
 	if (quantity > 9_999_999) {
 		return `${Math.floor(quantity / 1_000_000)}M`;
 	} else if (quantity > 99_999) {

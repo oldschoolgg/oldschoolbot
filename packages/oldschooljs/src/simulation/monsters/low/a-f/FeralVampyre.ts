@@ -4,7 +4,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const FeralVampyreTable = new LootTable({ limit: 128 })
+export const FeralVampyreTable: LootTable = new LootTable({ limit: 128 })
 	.every('Vampyre dust')
 
 	/* Runes */
@@ -31,7 +31,7 @@ export const FeralVampyreTable = new LootTable({ limit: 128 })
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const FeralVampyre: SimpleMonster = new SimpleMonster({
 	id: 3234,
 	name: 'Feral Vampyre',
 	table: FeralVampyreTable,

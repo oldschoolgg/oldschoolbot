@@ -1,4 +1,4 @@
-import { calcWhatPercent, Events, formatOrdinal } from '@oldschoolgg/toolkit';
+import { calcWhatPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameName } from '@/lib/settings/minigames.js';
@@ -47,17 +47,6 @@ export const gauntletTask: MinionTask = {
 		const newKc = await user.fetchMinigameScore(key);
 
 		const str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
-
-		if (loot.amount('Youngllef') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a **Youngllef** <:Youngllef:604670894798798858> while doing the ${name} for the ${formatOrdinal(
-					newKc
-				)} time!`
-			);
-		}
 
 		await ClientSettings.updateBankSetting('gauntlet_loot', loot);
 

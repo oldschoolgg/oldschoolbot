@@ -4,7 +4,7 @@ import { botReactHandler } from './messageCreate/botReactHandler.js';
 import { grandExchangeHandler } from './messageCreate/grandExchangeHandler.js';
 import { voteReactionHandler } from './messageCreate/voteReactionHandler.js';
 
-async function tagHandler(msg: IMessage) {
+async function tagHandler(msg: IMessage): Promise<void> {
 	if (
 		msg.content.startsWith('.') &&
 		msg.content.length > 1 &&

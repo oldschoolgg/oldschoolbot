@@ -241,6 +241,4 @@ class NightmareClass {
 	}
 }
 
-const Nightmare = new NightmareClass();
-
-export default Nightmare;
+export const Nightmare: NightmareClass = new NightmareClass();

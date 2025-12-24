@@ -26,3 +26,10 @@ export const allChristmasEvent2024Items = resolveItems([
 	'Snowflake amulet',
 	'Snowdream staff'
 ]);
+
+export const allChristmasEvent2025Items = resolveItems([
+	'Snowglobe santa hat',
+	'Smokey snowglobe',
+	'Seer snowglobe',
+	'Ember'
+]);

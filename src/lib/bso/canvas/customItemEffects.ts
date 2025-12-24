@@ -1,20 +1,46 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { getPaintedItemImage, paintColorsMap } from '@/lib/bso/paintColors.js';
 
-import { itemID } from 'oldschooljs';
+import { randFloat, randInt } from '@oldschoolgg/rng';
+import { EItem } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
 import { itemEffectImageCache } from '@/lib/cache.js';
 import { type CanvasImage, canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { BitField } from '@/lib/constants.js';
 
-export const customItemEffect = new Map([
+type CustomItemEffectCallBack = (img: CanvasImage | Canvas, user: MUser) => Canvas | null;
+
+export const customItemEffect = new Map<number, CustomItemEffectCallBack>([
 	[
-		itemID('Eggy'),
-		(img: CanvasImage | Canvas, userID: string | undefined) => {
-			const userIDEffective = userID ?? '11111';
+		BSOItem.EGGY,
+		(img, user) => {
 			const canvas = createCanvas(img.width, img.height);
 			const ctx = canvas.getContext('2d');
-			ctx.filter = `hue-rotate(${userIDEffective.slice(-3)}deg) saturate(.45)`;
+			ctx.filter = `hue-rotate(${user.id.slice(-3)}deg) saturate(.45)`;
+			ctx.drawImage(img, 0, 0);
+			return canvas;
+		}
+	],
+	[
+		EItem.RIFT_GUARDIAN,
+		(img, user) => {
+			if (!user.bitfield.includes(BitField.HasEarnedRiftGuardianFromStar)) return null;
+			const canvas = createCanvas(img.width, img.height);
+			const ctx = canvas.getContext('2d');
+
+			ctx.save();
+			ctx.fillStyle = '#f0e0af';
+			for (let i = 0; i < 40; i++) {
+				if (i % 12 !== 0) {
+					ctx.filter = `saturate(0.${randInt(50, 70)}) brightness(${randFloat(0.7, 1.3)})`;
+					ctx.globalAlpha = randFloat(0.3, 0.8);
+				}
+				ctx.fillRect(randInt(4, canvas.width - 4), randInt(2, canvas.height - 2), 1, 1);
+			}
+			ctx.restore();
+
 			ctx.drawImage(img, 0, 0);
 			return canvas;
 		}
@@ -40,8 +66,8 @@ export async function applyCustomItemEffects(user: MUser | null, item: number) {
 	const effect = customItemEffect.get(item);
 	if (!effect) return null;
 	const resultingImage = await OSRSCanvas.getItemImage({ itemID: item });
-	const effectedImageCanvas = await effect(resultingImage, user.id);
-	const effectedImage = await canvasToBuffer(effectedImageCanvas);
+	const effectedImageCanvas = await effect(resultingImage, user);
+	const effectedImage = await canvasToBuffer(effectedImageCanvas ?? resultingImage);
 	const image = await loadImage(effectedImage);
 	itemEffectImageCache.set(key, image);
 	return image;

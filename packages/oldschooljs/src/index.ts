@@ -1,3 +1,4 @@
+import type { ArrayItemsResolved } from '@/structures/ItemsClass.js';
 import { ECreature } from './ECreature.js';
 import { EGear } from './EGear.js';
 import { EItem } from './EItem.js';
@@ -8,7 +9,7 @@ import * as Misc from './simulation/misc/index.js';
 import { Monsters } from './simulation/monsters/index.js';
 import Openables from './simulation/openables/index.js';
 import { Bank, type ItemBank, type LootBank } from './structures/Bank.js';
-import { type ArrayItemsResolved, deepResolveItems, Items, itemNameMap, resolveItems } from './structures/Items.js';
+import { deepResolveItems, Items, resolveItems } from './structures/Items.js';
 import LootTable from './structures/LootTable.js';
 import { type Monster, type MonsterKillOptions, SimpleMonster } from './structures/Monster.js';
 import type { OpenableOpenOptions } from './structures/Openable.js';
@@ -47,13 +48,12 @@ export {
 	averageBank,
 	convertLVLtoXP,
 	convertXPtoLVL,
-	deepResolveItems,
 	increaseBankQuantitesByPercent,
-	itemNameMap,
 	calcDropRatesFromBank,
 	convertBankToPerHourStats,
 	SimpleMonster,
-	generateRandomBank
+	generateRandomBank,
+	deepResolveItems
 };
 
 export type { ItemBank, LootBank, OpenableOpenOptions, MonsterKillOptions, Monster, ArrayItemsResolved };

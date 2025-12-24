@@ -145,12 +145,7 @@ export function renderBsoItemsFile() {
 	writeFileSync(
 		'data/bso/custom-items.json',
 		JSON.stringify(
-			customItems
-				.map(id => Items.get(id)!)
-				.sort((a, b) => a.name.localeCompare(b.name))
-				.map(item => {
-					return omit(item, ['wiki_name']);
-				}),
+			customItems.map(id => Items.get(id)!).sort((a, b) => a.name.localeCompare(b.name)),
 			null,
 			4
 		),

@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 
-export const Mimic3rdAgeTable = new LootTable()
+export const Mimic3rdAgeTable: LootTable = new LootTable()
 	.add('3rd age range coif')
 	.add('3rd age range top')
 	.add('3rd age range legs')
@@ -25,7 +25,7 @@ export const Mimic3rdAgeTable = new LootTable()
 	.add('3rd age pickaxe')
 	.add('3rd age axe');
 
-export const EliteMimicTable = new LootTable()
+export const EliteMimicTable: LootTable = new LootTable()
 	.every('Mahogany plank')
 	.oneIn(44, 'Ring of 3rd age')
 	.oneIn(250, Mimic3rdAgeTable)
@@ -37,7 +37,7 @@ export const EliteMimicTable = new LootTable()
 	.add('Raw manta ray', 15, 2)
 	.add('Wine of zamorak', 25, 2);
 
-export const MasterMimicTable = new LootTable()
+export const MasterMimicTable: LootTable = new LootTable()
 	.every('Mahogany plank')
 	.oneIn(40, 'Ring of 3rd age')
 	.oneIn(228, Mimic3rdAgeTable)

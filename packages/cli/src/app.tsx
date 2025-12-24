@@ -17,7 +17,7 @@ type Timings = Record<string, number>;
 type Skips = Record<string, true>;
 
 const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
-	name => !['test-dashboard', 'robochimp', 'cli'].includes(name)
+	name => !['test-dashboard', 'robochimp', 'cli', 'oldschoolgg'].includes(name)
 );
 
 const isUsingRealPostgres = process.env.USE_REAL_PG === '1';
@@ -63,7 +63,7 @@ const stages: Stage[] = [
 		commands: [
 			{
 				cmd: [
-					'prettier --use-tabs --write "**/*.json" && biome check --write --unsafe --diagnostic-level=error',
+					'biome check --write --diagnostic-level=error',
 					'prettier --use-tabs --write "**/*.{yaml,yml,css,html}"',
 					'prisma format --schema ./prisma/robochimp.prisma && prisma format --schema ./prisma/schema.prisma'
 				],

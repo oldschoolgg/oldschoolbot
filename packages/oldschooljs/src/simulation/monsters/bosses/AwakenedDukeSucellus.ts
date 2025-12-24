@@ -9,7 +9,7 @@ class AwakenedDukeSucellusSingleton extends Monster {
 	}
 }
 
-export const AwakenedDukeSucellus = new AwakenedDukeSucellusSingleton({
+export const AwakenedDukeSucellus: AwakenedDukeSucellusSingleton = new AwakenedDukeSucellusSingleton({
 	id: 12_192,
 	name: 'Duke Sucellus (Awakened)',
 	aliases: ['duke sucellus (awakened)']

@@ -8,5 +8,14 @@ export function getAllAlternateMonsters(options: { monster: Monster } | { monste
 	const useMonster = 'monster' in options;
 	const monsterId = useMonster ? options.monster.id : options.monsterId;
 	const monsters = allSlayerTasks.map(task => (task.monsters.includes(monsterId) ? task.monsters : [])).flat(2);
-	return useMonster ? Monsters.filter(m => monsters.includes(m.id)).map(m => m) : monsters;
+	if (!useMonster) {
+		return monsters;
+	}
+	const filtered: Monster[] = [];
+	for (const m of Monsters.values) {
+		if (monsters.includes(m.id)) {
+			filtered.push(m);
+		}
+	}
+	return filtered;
 }

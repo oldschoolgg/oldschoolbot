@@ -1,6 +1,6 @@
 {
-	"hash": "ac30e3053a810b773afbbb9c7c9982c1",
-	"date": "2025-10-02T12:43:57.187Z",
+	"hash": "714835ced4de383962d889d4d58c67fc",
+	"date": "2025-12-17T17:07:50.505Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -732,6 +732,16 @@
 				"crafting": 105,
 				"smithing": 105,
 				"magic": 105
+			}
+		},
+		{
+			"name": "Atlantean trident (xmas)",
+			"items_created": {
+				"Atlantean trident (xmas)": 1
+			},
+			"items_required": {
+				"Atlantean trident": 1,
+				"Christmas dye": 1
 			}
 		},
 		{
@@ -6879,6 +6889,16 @@
 			},
 			"items_required": {
 				"Elder rune": 20
+			}
+		},
+		{
+			"name": "Moon key",
+			"items_created": {
+				"Moon key": 1
+			},
+			"items_required": {
+				"Loop half of key (moon key)": 1,
+				"Tooth half of key (moon key)": 1
 			}
 		},
 		{
@@ -14047,6 +14067,16 @@
 			"required_stats": {
 				"crafting": 105,
 				"fletching": 105
+			}
+		},
+		{
+			"name": "Titan ballista (xmas)",
+			"items_created": {
+				"Titan ballista (xmas)": 1
+			},
+			"items_required": {
+				"Christmas dye": 1,
+				"Titan ballista": 1
 			}
 		},
 		{
