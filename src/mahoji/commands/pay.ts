@@ -6,6 +6,7 @@ import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const payCommand = defineCommand({
 	name: 'pay',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Send GP to another user.',
 	options: [
 		{

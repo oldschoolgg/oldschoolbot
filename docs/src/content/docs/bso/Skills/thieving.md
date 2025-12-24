@@ -5,12 +5,12 @@ description: /steal
 
 ## Custom Content and Boosts
 
-- [**Wilvus**](../custom-items/pets.md#miscellaneous-pets) – 2× speed boost to [[/steal]]
-- [**Thieving Master Cape**](../custom-items/equippables/#master-capes) – 30% speed boost to [[/steal]]
+- [**Wilvus**](/bso/custom-items/pets#miscellaneous-pets) – 2× speed boost to [[/steal]]
+- [**Thieving Master Cape**](/bso/custom-items/capes/#master-capes) – 30% speed boost to [[/steal]]
 
 - **Thieves' Armband**
 
-  - Dropped when sending trips with [Wilvus](../custom-items/pets.md#resource-gathering-and-loot-affecting-pets) equipped
+  - Dropped when sending trips with [Wilvus](/bso/custom-items/pets#resource-gathering-and-loot-affecting-pets) equipped
   - Drop rate: 1/5,000 per 6 minutes (rounded up)
     - e.g. 30-minute trip = 5 rolls, 10-minute trip = 2 rolls
   - 50% increased pickpocket success (works from bank)

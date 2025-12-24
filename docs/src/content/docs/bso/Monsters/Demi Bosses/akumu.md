@@ -10,7 +10,7 @@ Akumu is a high level demi-boss fought with your **Melee** setup. Kill it using 
 
 - [[hitpoints:120]] [[attack:120]] [[strength:120]] [[defence:120]] [[slayer:120]]
 - [[Combatant's cape]]
-- 1 kill of [Solis](solis.md)
+- 1 kill of [Solis](solis)
 
 #### Items (per kill)
 
@@ -25,7 +25,7 @@ These supplies are consumed every kill.
 
 - Axe of the high sungod – 20%
 - Ancient Rejuvenation Pool – 5%
-- [Additional global boosts apply](../../skills/combat-skills.md#boosts)
+- [Additional global boosts apply](/bso/skills/combat-skills#boosts)
 
 ## Loot
 
