@@ -279,7 +279,7 @@ export async function abstractedOpenCommand(
 
 	const elderError = await checkElderCasketOpenable(user, openables);
 	if (elderError) return elderError;
-	
+
 	const cost = new Bank();
 	const kcBank = new Bank();
 	const loot = new Bank();
