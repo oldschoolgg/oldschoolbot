@@ -15,8 +15,7 @@ import './leagues.js';
 import './paintCans.js';
 import './summoning.js';
 
-import { EquipmentSlot } from '@oldschoolgg/gear';
-import { type ItemRequirements, Items, resolveItems } from 'oldschooljs';
+import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs';
 
 import { customItems, maxedRequirements, setCustomItem, UN_EQUIPPABLE } from './util.js';
 
@@ -113,7 +112,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 250,
+		buy_limit: 75,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -127,7 +126,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 250,
+		buy_limit: 50,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -141,7 +140,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 100,
+		buy_limit: 50,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -155,7 +154,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 50,
+		buy_limit: 5,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -169,7 +168,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		buy_limit: 25,
+		buy_limit: 2,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -228,7 +227,7 @@ setCustomItem(516, 'Nuts of monkey', 'Rune platelegs');
 /**
  * Exclusive Items
  *
- * Items from 40_000 to 45_000 will not be dropped by any mystery box and are untradeable
+ * Items from 40_000 to 45_000 will not be dropped by any mystery box, and are untradeable
  */
 // Master capes
 setCustomItem(40_000, 'Construction master cape', 'Abyssal cape', {}, 200_000_000);
@@ -1230,6 +1229,7 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
+				// @ts-expect-error dgg
 				dungeoneering: 99,
 				magic: 99
 			}
@@ -1260,6 +1260,7 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
+				// @ts-expect-error dgg
 				dungeoneering: 99,
 				ranged: 99
 			}
@@ -1290,6 +1291,7 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
+				// @ts-expect-error dgg
 				dungeoneering: 99
 			}
 		}
@@ -2968,7 +2970,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	100_000_000
@@ -6810,7 +6813,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -7273,7 +7275,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true,
 			cantBeSacrificed: true,
 			isDiscontinued: true
@@ -8488,7 +8489,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true,
 			isDiscontinued: true
 		}
@@ -8876,7 +8876,7 @@ setCustomItem(
 setCustomItem(
 	71_611,
 	'Cob cap',
-	'Bronze full helm',
+	'Bronze gloves',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
@@ -9793,7 +9793,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -11680,7 +11679,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true,
 			isDiscontinued: true
 		}
@@ -12486,7 +12484,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true,
 			cantBeSacrificed: true,
 			isDiscontinued: true
@@ -12888,7 +12885,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -13059,7 +13055,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superUntradeableButTradeableOnGE: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13073,7 +13069,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superUntradeableButTradeableOnGE: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13087,7 +13083,7 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
-			superUntradeableButTradeableOnGE: true
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	500_000
@@ -13473,7 +13469,6 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			dontTradeOnGE: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14369,409 +14364,408 @@ setCustomItem(74_006, 'Ember', 'Herbi', {
 });
 
 setCustomItem(
-	74_007,
-	'The whale card',
+	75_001,
+	'Dragonbane glaive', 
+	'Dragonhunter lance',
+	{
+		equipment: {
+			attack_stab: 125,
+			attack_slash: 85,
+			attack_crush: 85,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 105,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Weapon,
+			requirements: {
+                attack: 120,
+				strength: 120
+			}
+		},
+        highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+        }
+	},
+	50_000_000
+);
+setCustomItem(
+	75_002,
+	'Dragonbane aegis',
+	'Dragonfire shield',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: -65,
+			attack_ranged: -45,
+
+			defence_stab: 105,
+			defence_slash: 105,
+			defence_crush: 105,
+			defence_magic: -25,
+			defence_ranged: -15,
+
+			melee_strength: 20,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			slot: EquipmentSlot.Shield,
+			requirements: {
+                defence: 120,
+                strength: 120
+			}
+		},
+        highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+        }
+	},
+	50_000_000
+);
+setCustomItem(
+	75_003,
+	'Vitrolic curse',
+	'Bronze arrow',
+	{
+		equipment: {
+			attack_stab: 10,
+			attack_slash: 10,
+			attack_crush: 10,
+			attack_magic: 10,
+			attack_ranged: 10,
+
+			defence_stab: 10,
+			defence_slash: 10,
+			defence_crush: 10,
+			defence_magic: 10,
+			defence_ranged: 10,
+
+			melee_strength: 5,
+			ranged_strength: 5,
+			magic_damage: 5,
+			prayer: 7,
+			slot: EquipmentSlot.Ammo,
+			requirements: {
+                prayer: 120,
+                defence: 120,
+				hitpoints: 120
+			}
+		},
+        highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+        }
+	},
+	50_000_000
+);
+setCustomItem(
+	75_004,
+	'Shattered pendant',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_005,
+	'Celestial pendant',
+	'Amulet of fury',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+		}
+	},
+	1
+);
+setCustomItem(
+	75_006,
+	'Brimstone elixir',
 	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isDiscontinued: true
 		}
 	},
-	1_000_000
-);
-
-setCustomItem(
-	74_008,
-	'Wubbles',
-	'Herbi',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isDiscontinued: true
-		}
-	},
-	1_000_000
+	1
 );
 setCustomItem(
-	74_009,
-	'Wubufu',
-	'Herbi',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isDiscontinued: true
-		}
-	},
-	1_000_000
-);
-setCustomItem(
-	74_010,
-	'Wabbit eggs',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-setCustomItem(
-	74_011,
-	'Magnegg',
-	'Herbi',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-setCustomItem(
-	73_969,
-	'Radiant Magnabbit',
-	'Herbi',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isPet: true
-		}
-	},
-	1_000_000
-);
-
-setCustomItem(
-	74_012,
-	'Magnabbit',
-	'Herbi',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-setCustomItem(
-	74_013,
-	'The whale card (fake)',
+	75_007,
+	'Primordial bones',
 	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
 		}
 	},
-	1_000_000
+	1
 );
-
 setCustomItem(
-	73_968,
-	'Partycrab',
-	'Bronze full helm',
+	75_008,
+	'Primordial scales',
+	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isPet: true
 		}
 	},
-	1_000_000
+	1
 );
 setCustomItem(
-	73_982,
-	'Patricia',
-	'Bronze full helm',
+	75_009,
+	'Primordial spine',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_010,
+	'Primordial heartstring',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_011,
+	'Sacrilegious flask',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_012,
+	'Forsaken tear',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_013,
+	'Celestial flame',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_014,
+	'Ignilace',
+	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isPet: true
+            isSuperUntradeable: true
 		}
 	},
-	1_000_000
+	1
 );
+
 setCustomItem(
-	73_983,
-	'Old crab cage',
-	'Bronze kiteshield',
-	{
-		customItemData: {
-			isSuperUntradeable: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-setCustomItem(
-	73_984,
-	'Sun Scream',
+	75_015,
+	'Ignilace seed',
 	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-setCustomItem(
-	73_985,
-	'Lydia',
-	'Bronze full helm',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			dontTradeOnGE: true,
-			isPet: true
+            isSuperUntradeable: true
 		}
 	},
-	1_000_000
+	1
 );
+
 setCustomItem(
-	73_986,
-	'Shiny Partycrab',
-	'Bronze full helm',
+	75_016,
+	'Elderflame bow',
+	'Twisted bow',
 	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 250,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 45,
+			magic_damage: 0,
+			prayer: 8,
+			slot: EquipmentSlot.Weapon,
+			requirements: {
+				ranged: 120
+			}
+		},
+        highalch: 200_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+
+setCustomItem(
+	75_017,
+	'Searcrown band',
+	'Berserker ring',
+	{
+		equipment: {
+			attack_stab: 15,
+			attack_slash: 15,
+			attack_crush: 15,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 45,
+			defence_slash: 45,
+			defence_crush: 45,
+			defence_magic: 45,
+			defence_ranged: 45,
+
+			melee_strength: 25,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			slot: EquipmentSlot.Ring,
+			requirements: {
+				defence: 115
+			}
+		},
+        highalch: 100_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	25_000_000
+);
+
+setCustomItem(
+	75_018,
+	'Orylin',
+	'Coal',
+	{
+        tradeable: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			dontTradeOnGE: true,
-			isPet: true
+            isSuperUntradeable: true
 		}
 	},
-	1_000_000
+	1
 );
+
 setCustomItem(
-	73_987,
-	'Gothic Dwarven warhammer',
-	'Dwarven warhammer',
+	75_019,
+	'Orrodin',
+	'Coal',
 	{
+        tradeable: false,
 		customItemData: {
-			isSecret: true,
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+            isSuperUntradeable: true
 		}
 	},
-	1_000_000_000
+	1
 );
+
 setCustomItem(
-	73_988,
-	'Purple sand dollar',
+	75_020,
+	'Elderflame arrow',
+	'Barbed arrow',
+	{
+		tradeable: true,
+		tradeable_on_ge: true,
+		buy_limit: 100_000,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 55,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 130,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Ammo,
+			requirements: {
+				ranged: 120
+			}
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	75_021,
+	'Elderflame arrowtips',
 	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	250_000
-);
-setCustomItem(
-	73_989,
-	'Black shell',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	250_000
-);
-setCustomItem(
-	73_990,
-	'Purple dust',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	250_000
-);
-setCustomItem(
-	73_991,
-	'Sun Scream (unf)',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
-);
-setCustomItem(
-	73_992,
-	'Bottle of sea water',
-	'Bronze kiteshield',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	250_000
-);
-setCustomItem(
-	73_993,
-	'Mysterious bottle',
-	'Bronze kiteshield',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	250_000
-);
-setCustomItem(
-	73_970,
-	'Summer crate (s9)',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
+	1
 );
 
-setCustomItem(
-	73_971,
-	'Summer crate key (s9)',
-	'Coal',
-	{
-		customItemData: {
-			dontTradeOnGE: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
-);
-
-setCustomItem(
-	73_972,
-	'Imitation Crab Hat',
-	'Bronze full helm',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-
-setCustomItem(
-	73_973,
-	'Summer partyhat',
-	'Blue partyhat',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-
-setCustomItem(
-	73_974,
-	'Coral bikini top',
-	'Bronze platebody',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
-);
-
-setCustomItem(
-	73_975,
-	'Coral bikini bottom',
-	'Bronze platelegs',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
-);
-
-setCustomItem(
-	73_976,
-	'Palm board shorts',
-	'Bronze platelegs',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
-);
-
-setCustomItem(
-	73_977,
-	'Beach sandals',
-	'Bronze boots',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
-);
-
-setCustomItem(
-	73_978,
-	'Shell necklace',
-	'Amulet of strength',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
-);
-
-setCustomItem(
-	73_979,
-	'Beachball shield',
-	'Bronze kiteshield',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
-);
-
-setCustomItem(
-	73_980,
-	'Beach pina colada',
-	'Coal',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	250_000
-);
-
-setCustomItem(
-	73_981,
-	'Whale floaty',
-	'Coal',
-	{
-		customItemData: {
-			isDiscontinued: true,
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	500_000
-);
 
 export const discontinuedItems = resolveItems([
 	'Turkey',
