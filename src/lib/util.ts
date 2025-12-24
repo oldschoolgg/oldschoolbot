@@ -1,4 +1,5 @@
 import { cleanUsername } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import type { Prisma, User } from '@/prisma/main.js';
@@ -33,6 +34,10 @@ function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'mini
 
 export async function fetchUsernameAndCache(_id: string | bigint): Promise<string> {
 	const id = _id.toString();
+
+	if (!isValidDiscordSnowflake(id)) {
+		throw new Error(`Invalid userID: ${id}`);
+	}
 	const cached = await Cache._getBadgedUsernameRaw(id);
 	if (cached) return cached;
 	let user = await prisma.user.upsert({

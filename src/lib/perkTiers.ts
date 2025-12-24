@@ -16,46 +16,46 @@ export async function getUsersPerkTier(user: MUser): Promise<PerkTier | 0> {
 		return PerkTier.Four;
 	}
 
-	const elligibleTiers = [];
+	const eligibleTiers = [];
 	if (
 		user.bitfield.includes(BitField.IsPatronTier1) ||
 		user.bitfield.includes(BitField.HasPermanentTierOne) ||
 		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
 	) {
-		elligibleTiers.push(PerkTier.Two);
+		eligibleTiers.push(PerkTier.Two);
 	} else {
 		const member = await Cache.getMember(globalConfig.supportServerID, user.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.includes(roleID))) {
-			elligibleTiers.push(PerkTier.One);
+			eligibleTiers.push(PerkTier.One);
 		}
 	}
 
 	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
 	if (roboChimpCached) {
-		elligibleTiers.push(roboChimpCached.perk_tier);
+		eligibleTiers.push(roboChimpCached.perk_tier);
 	}
 
 	const bitfield = user.bitfield;
 
 	if (bitfield.includes(BitField.IsPatronTier6)) {
-		elligibleTiers.push(PerkTier.Seven);
+		eligibleTiers.push(PerkTier.Seven);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier5)) {
-		elligibleTiers.push(PerkTier.Six);
+		eligibleTiers.push(PerkTier.Six);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier4)) {
-		elligibleTiers.push(PerkTier.Five);
+		eligibleTiers.push(PerkTier.Five);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier3)) {
-		elligibleTiers.push(PerkTier.Four);
+		eligibleTiers.push(PerkTier.Four);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier2)) {
-		elligibleTiers.push(PerkTier.Three);
+		eligibleTiers.push(PerkTier.Three);
 	}
 
-	return Math.max(...elligibleTiers, 0);
+	return Math.max(...eligibleTiers, 0);
 }

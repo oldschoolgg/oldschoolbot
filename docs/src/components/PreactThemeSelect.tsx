@@ -87,7 +87,7 @@ export const PreactThemeSelect = () => {
 		<button
 			ref={btnRef}
 			type="button"
-			class="theme-toggle"
+			class="theme-toggle social-icon"
 			id="theme-toggle"
 			title="Toggle theme (auto / light / dark)"
 			aria-label="light theme"
