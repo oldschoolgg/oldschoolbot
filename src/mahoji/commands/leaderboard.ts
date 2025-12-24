@@ -564,7 +564,7 @@ async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, 
 
 	const minigameMap = new Map(minigames.map(m => [m.user_id.toString(), m.giants_foundry ?? 0]));
 
-	const rows = stats
+	let rows = stats
 		.map(s => {
 			const json = (s.gf_weapons_made ?? {}) as Record<string, number>;
 			const uniques = Object.keys(json).length;
@@ -579,7 +579,7 @@ async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, 
 	if (ironmanOnly) {
 		const irons = await prisma.user.findMany({ where: { minion_ironman: true }, select: { id: true } });
 		const ironSet = new Set(irons.map(i => i.id.toString()));
-		rows.filter(r => ironSet.has(r.id));
+		rows = rows.filter(r => ironSet.has(r.id));
 	}
 
 	rows.sort((a, b) => (sortByTotal ? b.total - a.total : b.uniques - a.uniques));
@@ -589,13 +589,18 @@ async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, 
 	return doMenuWrapper({
 		ironmanOnly,
 		interaction,
-		users: top.map(t => ({ id: t.id, score: t.total })),
+		users: top.map(t => ({ id: t.id, score: sortByTotal ? t.total : t.uniques })),
 		title: sortByTotal
 			? `Giant’s Foundry – Total Weapons${ironmanOnly ? ' (Ironmen Only)' : ''}`
 			: `Giant’s Foundry – Unique Weapons${ironmanOnly ? ' (Ironmen Only)' : ''}`,
 		render: (u, name) => {
 			const row = top.find(r => r.id === u.id);
-			return `**${name}:** ${row?.total.toLocaleString()} total (${row?.uniques} uniques)`;
+
+			if (sortByTotal) {
+				return `**${name}:** ${row?.total.toLocaleString()} total (${row?.uniques.toLocaleString()} uniques)`;
+			}
+
+			return `**${name}:** ${row?.uniques.toLocaleString()} uniques (${row?.total.toLocaleString()} total)`;
 		}
 	});
 }
