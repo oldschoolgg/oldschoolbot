@@ -948,6 +948,18 @@ export const allCollectionLogs: ICollection = {
 				allItems: BSOMonsters.Celestara.allItems,
 				items: BSOMonsters.Celestara.allItems!,
 				fmtProg: kcProg(BSOMonsters.Celestara.id)
+			},
+			Orym: {
+				alias: ['orym'],
+				allItems: BSOMonsters.Orym.allItems,
+				items: BSOMonsters.Orym.allItems!,
+				fmtProg: kcProg(BSOMonsters.Orym.id)
+			},
+			Orrodil: {
+				alias: ['orrodil'],
+				allItems: BSOMonsters.Orrodil.allItems,
+				items: BSOMonsters.Orrodil.allItems!,
+				fmtProg: kcProg(BSOMonsters.Orrodil.id)
 			}
 		}
 	},

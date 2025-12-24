@@ -34,6 +34,14 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 			return 'Your minion threw the dart at the moon, it did not reach.';
 		}
 
+		if (monster.name === 'Orym') {
+			return 'Your minion threw the dart at the fury of the stars, they spin on, unphased.';
+		}
+
+		if (monster.name === 'Orrodil') {
+			return 'The dart corrupts into a pile of foul bile and venomous sludge.';
+		}
+
 		if (monster.name === 'Yeti') {
 			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
 		}

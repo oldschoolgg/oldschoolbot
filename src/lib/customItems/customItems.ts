@@ -14363,6 +14363,410 @@ setCustomItem(74_006, 'Ember', 'Herbi', {
 	}
 });
 
+setCustomItem(
+	75_001,
+	'Dragonbane glaive', 
+	'Dragonhunter lance',
+	{
+		equipment: {
+			attack_stab: 125,
+			attack_slash: 85,
+			attack_crush: 85,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 105,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Weapon,
+			requirements: {
+                attack: 120,
+				strength: 120
+			}
+		},
+        highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+        }
+	},
+	50_000_000
+);
+setCustomItem(
+	75_002,
+	'Dragonbane aegis',
+	'Dragonfire shield',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: -65,
+			attack_ranged: -45,
+
+			defence_stab: 105,
+			defence_slash: 105,
+			defence_crush: 105,
+			defence_magic: -25,
+			defence_ranged: -15,
+
+			melee_strength: 20,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			slot: EquipmentSlot.Shield,
+			requirements: {
+                defence: 120,
+                strength: 120
+			}
+		},
+        highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+        }
+	},
+	50_000_000
+);
+setCustomItem(
+	75_003,
+	'Vitrolic curse',
+	'Bronze arrow',
+	{
+		equipment: {
+			attack_stab: 10,
+			attack_slash: 10,
+			attack_crush: 10,
+			attack_magic: 10,
+			attack_ranged: 10,
+
+			defence_stab: 10,
+			defence_slash: 10,
+			defence_crush: 10,
+			defence_magic: 10,
+			defence_ranged: 10,
+
+			melee_strength: 5,
+			ranged_strength: 5,
+			magic_damage: 5,
+			prayer: 7,
+			slot: EquipmentSlot.Ammo,
+			requirements: {
+                prayer: 120,
+                defence: 120,
+				hitpoints: 120
+			}
+		},
+        highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+        }
+	},
+	50_000_000
+);
+setCustomItem(
+	75_004,
+	'Shattered pendant',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_005,
+	'Celestial pendant',
+	'Amulet of fury',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+		}
+	},
+	1
+);
+setCustomItem(
+	75_006,
+	'Brimstone elixir',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+		}
+	},
+	1
+);
+setCustomItem(
+	75_007,
+	'Primordial bones',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+		}
+	},
+	1
+);
+setCustomItem(
+	75_008,
+	'Primordial scales',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+		}
+	},
+	1
+);
+setCustomItem(
+	75_009,
+	'Primordial spine',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_010,
+	'Primordial heartstring',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_011,
+	'Sacrilegious flask',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_012,
+	'Forsaken tear',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_013,
+	'Celestial flame',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+setCustomItem(
+	75_014,
+	'Ignilace',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	75_015,
+	'Ignilace seed',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	75_016,
+	'Elderflame bow',
+	'Twisted bow',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 250,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 45,
+			magic_damage: 0,
+			prayer: 8,
+			slot: EquipmentSlot.Weapon,
+			requirements: {
+				ranged: 120
+			}
+		},
+        highalch: 200_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+
+setCustomItem(
+	75_017,
+	'Searcrown band',
+	'Berserker ring',
+	{
+		equipment: {
+			attack_stab: 15,
+			attack_slash: 15,
+			attack_crush: 15,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 45,
+			defence_slash: 45,
+			defence_crush: 45,
+			defence_magic: 45,
+			defence_ranged: 45,
+
+			melee_strength: 25,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			slot: EquipmentSlot.Ring,
+			requirements: {
+				defence: 115
+			}
+		},
+        highalch: 100_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	25_000_000
+);
+
+setCustomItem(
+	75_018,
+	'Orylin',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	75_019,
+	'Orrodin',
+	'Coal',
+	{
+        tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	75_020,
+	'Elderflame arrow',
+	'Barbed arrow',
+	{
+		tradeable: true,
+		tradeable_on_ge: true,
+		buy_limit: 100_000,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 55,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 130,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Ammo,
+			requirements: {
+				ranged: 120
+			}
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	75_021,
+	'Elderflame arrowtips',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',

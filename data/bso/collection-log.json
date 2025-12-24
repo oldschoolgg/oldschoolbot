@@ -4215,6 +4215,14 @@
 			"celestara": {
 				"all_items": ["Lunite", "Moondash charm", "Moonlight essence", "Noom"],
 				"items": ["Lunite", "Moondash charm", "Moonlight essence", "Noom"]
+			},
+			"orym": {
+				"all_items": ["Forsaken tear", "Sacrilegious flask", "Orrodin", "Primordial heartstring", "Primordial spine"],
+				"items": ["Forsaken tear", "Sacrilegious flask", "Orrodin", "Primordial heartstring", "Primordial spine"]
+			},
+			"orrodil": {
+				"all_items": ["Celestial flame", "Shattered pendant", "Orrodin", "Primordial heartstring", "Primordial spine"],
+				"items": ["Celestial flame", "Shattered pendant", "Orrodin", "Primordial heartstring", "Primordial spine"]
 			}
 		}
 	},
