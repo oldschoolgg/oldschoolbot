@@ -10,19 +10,19 @@ Achievement Diary items can be purchased using the [[/buy]] command if the respe
 
 ## Commands
 
-- **Check your currently completed diaries:**  
+- **Check your currently completed diaries:**
   [[/minion achievementdiary]]
 
-- **Check the requirements of a diary:**  
+- **Check the requirements of a diary:**
   [[/minion achievementdiary diary\:Falador]]
 
-- **Claim the rewards for a diary:**  
+- **Claim the rewards for a diary:**
   [[/minion achievementdiary claim\:True diary\:Falador]]
 
-- **Use an XP lamp:**  
+- **Use an XP lamp:**
   [[/minion lamp item\:antique lamp 1/2/3/4 skill\:[skill]]]
 
-- **Buy the achievement diary cape:**  
+- **Buy the achievement diary cape:**
   [[/buy name\:Achievement diary cape]]
 
 ## Diary Perks
@@ -31,74 +31,74 @@ You get a 10% boost to clue scrolls for having the achievement diary cape equipp
 
 ### Ardougne Diary
 
-- **Hard**  
+- **Hard**
   10% increased chance of success when pickpocketing anywhere
-- **Elite**  
-  4% faster Farming trips  
-  50% more fish at Fishing Trawler  
+- **Elite**
+  4% faster Farming trips
+  50% more fish at Fishing Trawler
   25% bonus Marks of Grace from the Ardougne Rooftop Agility Course
 
 ### Falador Diary
 
-- **Hard**  
+- **Hard**
   3.5x faster hide tanning
-- **Elite**  
-  Slightly increased quality of ores from [Motherlode Mine](../skills/mining/motherlode-mine.md)
+- **Elite**
+  Slightly increased quality of ores from [Motherlode Mine](../skills/mining/motherlode-mine)
 
 ### Kandarin Diary
 
-- **Hard**  
+- **Hard**
   10% bonus Barbarian Assault points
 
 ### Karamja Diary
 
-- **Easy**  
-  ~13.3% increase when buying from the Tokkul shop  
+- **Easy**
+  ~13.3% increase when buying from the Tokkul shop
   ~133% increase in Tokkul received when selling to the Tokkul shop
 
-- **Medium**  
-  While worn: increased Agility XP from redeeming Agility tickets  
+- **Medium**
+  While worn: increased Agility XP from redeeming Agility tickets
   10% additional Agility XP from all obstacles in the Brimhaven Agility Arena
 
-- **Elite**  
+- **Elite**
   10% chance to receive 2 Agility arena tickets per successful pillar tag at the Brimhaven Agility Arena
 
 ### Kourend & Kebos Diary
 
-- **Medium**  
+- **Medium**
   20% boost to Dense essence block gathering speed
-- **Hard**  
+- **Hard**
   Ash sanctifier for passive prayer XP during combat (half XP)
-- **Elite**  
-  10% bonus runes when crafting Blood runes  
+- **Elite**
+  10% bonus runes when crafting Blood runes
   Ash sanctifier gives full passive prayer XP during combat
 
 ### Lumbridge & Draynor Diary
 
-- **Hard**  
+- **Hard**
   10% bonus XP from [Tears of Guthix](https://wiki.oldschool.gg/miscellaneous/tears-of-guthix)
 
 ### Morytania Diary
 
 **Note:** The 50% rune boost from Barrows is always active.
 
-- **Hard**  
-  2x Mort Myre fungi collection  
+- **Hard**
+  2x Mort Myre fungi collection
   50% more prayer XP from Shades of Mort'ton
 
-- **Elite**  
+- **Elite**
   50% more [[firemaking]] XP from Shades of Mort'ton
 
 ### Western Provinces Diary
 
-- **Easy**  
+- **Easy**
   25% boost to hunting Chompy birds
-- **Medium**  
+- **Medium**
   50% boost to hunting Chompy birds
-- **Elite**  
+- **Elite**
   100% boost to hunting Chompy birds
 
 ### Wilderness Diary
 
-- **Elite**  
+- **Elite**
   3x speed boost when charging glories at the [Fountain of Rune](https://wiki.oldschool.gg/skills/magic/fountain-of-rune)

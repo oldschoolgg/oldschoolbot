@@ -13,7 +13,7 @@ You can training your thieving via a unique method that combines an agility and 
 - 10% boost for Merfolk trident **(equipped anywhere)**
   - You can also use any magic trident for this boost (Trident of the seas/swamp/toxic trident)
 - \-50% boost for NOT wearing Flippers
-  - 6% boost for [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) _only when wearing Flippers_ **(works from bank)**
+  - 6% boost for [Ring of endurance](../agility/hallowed-sepulchre#ring-of-endurance) _only when wearing Flippers_ **(works from bank)**
   - 30% boost for using Stamina potion(4) _only when wearing Flippers_
 
 ## Rewards

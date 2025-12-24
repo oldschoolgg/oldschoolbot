@@ -18,6 +18,7 @@ import {
 	UserError,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
 import {
 	Bank,
@@ -37,6 +38,7 @@ import type {
 	Prisma,
 	User,
 	UserStats,
+	XpGainSource,
 	xp_gains_skill_enum
 } from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
@@ -77,6 +79,7 @@ import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
+import type { XPCounter } from '@/lib/structures/XPCounter.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
@@ -1029,6 +1032,22 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		return chargeBank;
 	}
 
+	async addXPCounter({
+		xpCounter,
+		source,
+		minimal
+	}: {
+		xpCounter: XPCounter;
+		source?: XpGainSource;
+		minimal?: boolean;
+	}): Promise<string> {
+		const results = [];
+		for (const [skillName, amount] of xpCounter.entries()) {
+			results.push(await this.addXP({ skillName, amount, source, minimal }));
+		}
+		return results.join(' ');
+	}
+
 	async addXPBank(xpBank: XPBank) {
 		const results = [];
 		for (const options of xpBank.xpList) {
@@ -1429,6 +1448,9 @@ declare global {
 }
 
 async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
+	if (!isValidDiscordSnowflake(userID)) {
+		throw new Error(`Invalid userID: ${userID}`);
+	}
 	const user =
 		updates !== undefined
 			? await prisma.user.upsert({
