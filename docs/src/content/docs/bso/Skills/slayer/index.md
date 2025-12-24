@@ -4,15 +4,15 @@ title: "Slayer"
 
 ### Custom Content and Boosts
 
-- [Infernal Slayer Helm](../../minigames/emerged-zuk-inferno.md#rewards-all-are-untradeable) - Provides a +18% boost on task (+22% when imbued)
-- [Scroll of Longevity](../dungeoneering-training/dg-rewards.md#buyable-boosts-utility) - 2x task length
+- [Infernal Slayer Helm](../../minigames/emerged-zuk-inferno#rewards-all-are-untradeable) - Provides a +18% boost on task (+22% when imbued)
+- [Scroll of Longevity](../dungeoneering-training/dg-rewards#buyable-boosts-utility) - 2x task length
 - Size Matters - 2x task length
-- Pore Decisions - Unlocks tasks within the [Polypore Dungeon](/custom-items/custom-monsters#polypore-dungeon)
+- Pore Decisions - Unlocks tasks within the [[Polypore Dungeon]]
 - Block and Roll (5000 Slayer Points) - +3 blocks
 - elite combat achievements - 25% more superiors
-- [Slayer Master Cape](../../custom-items/equippables/#master-capes) - Doubles the amount of superiors you kill on a task
+- [Slayer Master Cape](/bso/custom-items/capes/#master-capes) - Doubles the amount of superiors you kill on a task
 
-n.b. for boosts please see the [combat skills](../combat-skills.md) section
+n.b. for boosts please see the [combat skills](../combat-skills) section
 
 ### Methods
 
