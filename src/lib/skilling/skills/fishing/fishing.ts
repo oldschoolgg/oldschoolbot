@@ -288,10 +288,92 @@ const camdozaalFishes: Fish[] = [
 	}
 ];
 
+//Gemstone Fishing Activity
+
+export interface GemstoneFish {
+	name: string;
+	id: number;
+	level: number;
+	xp: number;
+	petChance: number;
+	clueScrollChance: number;
+	bait: number | null;
+	timeToFish: number;
+}
+
+export const gemstoneFishes: GemstoneFish[] = [
+	{
+		name: 'Juvenile gemscale',
+		id: 75056,
+		level: 20,
+		xp: 150,
+		petChance: 426_954,
+		clueScrollChance: 870_000, 
+		bait: null, 
+		timeToFish: 12 
+	},
+	{
+		name: 'Adolescent gemscale',
+		id: 75057,
+		level: 40,
+		xp: 450,
+		petChance: 426_954,
+		clueScrollChance: 870_000,
+		bait: null,
+		timeToFish: 14 
+	},
+	{
+		name: 'Mature gemscale',
+		id: 75058,
+		level: 60,
+		xp: 950,
+		petChance: 426_954,
+		clueScrollChance: 870_000,
+		bait: null,
+		timeToFish: 16
+	},
+	{
+		name: 'Elder gemscale',
+		id: 75059,
+		level: 80,
+		xp: 2100,
+		petChance: 426_954,
+		clueScrollChance: 870_000,
+		bait: null,
+		timeToFish: 18
+	},
+	{
+		name: 'Ancient gemscale',
+		id: 75060,
+		level: 120,
+		xp: 4500,
+		petChance: 426_954,
+		clueScrollChance: 870_000,
+		bait: null,
+		timeToFish: 20
+	}
+];
+
+export function determineGemstoneFish(fishingLevel: number): GemstoneFish | null {
+	if (fishingLevel < 20) return null;
+	
+	const availableFish = gemstoneFishes.filter(fish => fishingLevel >= fish.level);
+	return availableFish[availableFish.length - 1];
+}
+
+export function calculateGemstoneFishingXpRate(fish: GemstoneFish, fishingLevel: number): number {
+	const catchesPerHour = 3600 / fish.timeToFish;
+	
+	const levelBonus = 1 + (Math.min(fishingLevel - fish.level, 30) * 0.01);
+	
+	return Math.floor(catchesPerHour * fish.xp * levelBonus);
+}
+
 export const Fishing = defineSkill({
 	aliases: ['fishing'],
 	Fishes: fishes,
 	camdozaalFishes,
+	gemstoneFishes: gemstoneFishes,
 	id: 'fishing',
 	emoji: Emoji.Fishing,
 	anglerItems,

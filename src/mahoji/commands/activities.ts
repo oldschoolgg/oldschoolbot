@@ -13,6 +13,7 @@ import { birdhouseCheckCommand, birdhouseHarvestCommand } from '@/mahoji/lib/abs
 import { buryCommand } from '@/mahoji/lib/abstracted_commands/buryCommand.js';
 import { butlerCommand } from '@/mahoji/lib/abstracted_commands/butlerCommand.js';
 import { camdozaalCommand } from '@/mahoji/lib/abstracted_commands/camdozaalCommand.js';
+import { gemstoneFishingCommand } from '../lib/abstracted_commands/gemstoneFishingCommand.js';
 import { castCommand } from '@/mahoji/lib/abstracted_commands/castCommand.js';
 import { chargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
 import { chargeWealthCommand } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';
@@ -116,7 +117,7 @@ export const activitiesCommand = defineCommand({
 				}
 			]
 		},
-		{
+{
 			type: 'Subcommand',
 			name: 'camdozaal',
 			description: 'Camdozaal activities',
@@ -132,6 +133,20 @@ export const activitiesCommand = defineCommand({
 					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to do (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'gemstone_fishing',
+			description: 'Fish for gemstone fish',
+			options: [
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The quantity of fish to catch (optional).',
 					required: false,
 					min_value: 1
 				}
@@ -572,6 +587,9 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.camdozaal) {
 			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
+		}
+		if (options.gemstone_fishing) {
+			return gemstoneFishingCommand(user, channelId, options.gemstone_fishing.quantity);
 		}
 		if (options.collect) {
 			return collectCommand(

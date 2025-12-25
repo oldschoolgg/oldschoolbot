@@ -485,6 +485,7 @@ enum XpGainSource {
   PuroPuro
   MahoganyHomes
   AerialFishing
+  GemstoneFishing
   CleaningHerbsWhileFarming
   CamdozaalMining
   CamdozaalSmithing
@@ -887,6 +888,7 @@ enum activity_type_enum {
   AgilityArena
   ChampionsChallenge
   AerialFishing
+  GemstoneFishing
   DriftNet
   MahoganyHomes
   GnomeRestaurant
@@ -1156,6 +1158,7 @@ enum command_name_enum {
   activities
   admin
   aerialfish
+  gemstonefish
   agilityarena
   alch
   amrod

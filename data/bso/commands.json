@@ -7,6 +7,7 @@
 			"desc": "Miscellaneous activities you can do.",
 			"subOptions": [
 				"aerial_fishing",
+			
 				"alch",
 				"birdhouses",
 				"bury",
@@ -18,6 +19,7 @@
 				"decant",
 				"enchant",
 				"fight_caves",
+				"gemstone_fishing",
 				"inferno",
 				"my_notes",
 				"other",

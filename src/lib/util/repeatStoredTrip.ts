@@ -267,6 +267,12 @@ const tripHandlers: {
 			camdozaal: { action: 'fishing', quantity: data.iQty }
 		})
 	},
+	[activity_type_enum.GemstoneFishing]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			gemstone: { action: 'fishing', quantity: data.iQty }
+		})
+	},
 	[activity_type_enum.BarbarianAssault]: {
 		commandName: 'minigames',
 		args: () => ({ barb_assault: { start: {} } })
