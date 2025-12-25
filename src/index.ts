@@ -15,6 +15,8 @@ async function main() {
 	await createDb();
 	Logging.logDebug(`Starting up after ${process.uptime()}s`);
 	await Promise.all([preStartup(), globalClient.login()]);
+	// intentional type error
+	Logging.logError(1);
 }
 
 process.on('uncaughtException', err => {
