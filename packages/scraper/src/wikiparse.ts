@@ -7,10 +7,12 @@ export type ParsedInfoBoxItem = {
 	tradeable: boolean;
 	tradeable_on_ge: boolean;
 	noteable: boolean;
-	cost: number;
+	value: number;
 	members: boolean;
 	id: number;
 	name: string;
+	examine?: string;
+	weight?: number;
 	equipment?: ItemEquipment;
 	weapon?: ItemWeapon;
 };
@@ -24,6 +26,7 @@ interface WikiItemJSON {
 			id?: { text: string; number: number };
 			value?: { text: string; number: number };
 			weight?: { text: string; number: number };
+			examine?: { text: string };
 			members?: { text: string };
 			tradeable?: { text: string };
 			stackable?: { text: string };
@@ -200,7 +203,9 @@ function createItemFromInfobox(
 
 	const id = idProp.number || 0;
 	const name = getProp('name')?.text || wikiJson.title;
-	const cost = getProp('value')?.number || mainInfobox.value?.number || 0;
+	const value = getProp('value')?.number || mainInfobox.value?.number || 0;
+	const examine = getProp('examine')?.text || mainInfobox.examine?.text;
+	const weight = getProp('weight')?.number || mainInfobox.weight?.number;
 	const members = convertYesNoToBoolean(getProp('members')?.text || mainInfobox.members?.text);
 	const tradeable = convertYesNoToBoolean(getProp('tradeable')?.text);
 	const stackable = convertYesNoToBoolean(getProp('stackable')?.text || mainInfobox.stackable?.text);
@@ -214,15 +219,11 @@ function createItemFromInfobox(
 		tradeable: Boolean(tradeable),
 		tradeable_on_ge: Boolean(tradeable),
 		equipable: Boolean(equipable),
-		cost,
+		value,
 		stackable: Boolean(stackable),
 		noteable: Boolean(noteable),
-		// ...(cost > 0
-		// 	? {
-		// 		lowalch: Math.floor(cost * 0.4),
-		// 		highalch: Math.floor(cost * 0.6)
-		// 	}
-		// 	: {}),
+		examine,
+		weight,
 	};
 
 	if (combatInfobox && equipable) {
@@ -276,14 +277,14 @@ export function convertWikiJSONToItem(wikiJson: WikiItemJSON) {
 	const combatInfobox = extractCombatStatsInfobox(wikiJson.sections);
 
 	if (!mainInfobox) {
-		return null;
+		return 'missing main infobox data';
 	}
 
 	const versionCount = getVersionCount(mainInfobox);
 
 	const hasValidId = mainInfobox.id || mainInfobox.id1;
 	if (!hasValidId) {
-		return null;
+		return 'missing item id in infobox';
 	}
 
 	const items: ParsedInfoBoxItem[] = [];

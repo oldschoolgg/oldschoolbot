@@ -155,9 +155,7 @@ export type FullItem = {
 	id: number;
 	name: string;
 
-	cost?: number;
-	lowalch?: number;
-	highalch?: number;
+	value?: number;
 	buy_limit?: number;
 	equipment?: ItemEquipment;
 	weapon?: ItemWeapon;

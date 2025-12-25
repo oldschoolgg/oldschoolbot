@@ -28,12 +28,15 @@ function getInitial() {
 			continue;
 		}
 
+		// if (item.id < 25328) continue;
+		if (item.id > 100_000) continue;
+		if (item.name.startsWith('poh_') || item.name.startsWith('cert_poh')) continue;
 		itemsToProcess.push(item);
 	}
 	return { itemsToProcess, currentData };
 }
 
-export const OSRS_WIKI_RATELIMIT = 350;
+export const OSRS_WIKI_RATELIMIT = 300;
 export const OSRS_WIKI_USER_AGENT = () => {
 	return `Fetching All Items Once / discord[@magnaboy] ratelimit[${OSRS_WIKI_RATELIMIT}ms]`;
 };
@@ -47,6 +50,7 @@ async function main() {
 	const newData: Record<string, FullItem> = {};
 	for (const [id, item] of currentData.entries()) {
 		const fullItem: FullItem = { ...(item) as FullItem, id: Number(id), visibility: checkItemVisibility(item as any) };
+		if (fullItem.id > 100_000) continue;
 		newData[id] = fullItem;
 	}
 
@@ -57,18 +61,25 @@ async function main() {
 		await sleep(OSRS_WIKI_RATELIMIT);
 		const moidItem = itemsToProcess[i];
 
-		const newItem = await scrapeItemWikiPage(moidItem.id);
+		const newItem = await scrapeItemWikiPage(moidItem);
 
 		if (typeof newItem === 'string') {
 			console.log(`Failed to get item data for ${moidItem.name}[${moidItem.id}]: ${newItem}`);
 			continue;
 		}
+
+		if (newItem.length === 0) {
+			console.log(`No data found for ${moidItem.name}[${moidItem.id}]`);
+			continue;
+		}
+
 		for (const item of newItem) {
+			if (item.id > 100_000) continue;
 			const fullItem: FullItem = { ...item, visibility: checkItemVisibility(item as any) };
 			newData[item.id] = fullItem;
 		}
 
-		saveDataFile('full-items.json', (newData));
+		if (i % 4 === 0 || i === itemsToProcess.length - 1) saveDataFile('full-items.json', (newData));
 		const end = performance.now();
 		const duration = end - start;
 		durations.push(duration);
@@ -78,11 +89,15 @@ async function main() {
 			(remaining * avgDuration) /
 			Time.Hour
 		);
-		console.log(
-			`Processed ${moidItem.name}[${moidItem.id}] (${i + 1}/${itemsToProcess.length
-			}) in ${duration.toFixed(2)}ms. Avg: ${avgDuration.toFixed(2)}ms. Est. time left: ${timeLeft.toFixed(2)}h (${remaining} items).`
-		);
+		if (i % 10 === 0) {
+			console.log(
+				`Processed ${moidItem.name}[${moidItem.id}] (${i + 1}/${itemsToProcess.length
+				}) in ${duration.toFixed(2)}ms. Avg: ${avgDuration.toFixed(2)}ms. Est. time left: ${timeLeft.toFixed(2)}h (${remaining} items).`
+			);
+		}
 	}
+
+	saveDataFile('full-items.json', (newData));
 }
 
 main();
