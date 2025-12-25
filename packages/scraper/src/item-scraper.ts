@@ -10,6 +10,37 @@ import currentItemData from './data/full-items.json' with {type: 'json'};
 import { MoidItem } from '@oldschoolgg/schemas';
 import { saveDataFile } from './util.js';
 
+const itemNameMapping: Record<number, string> = {
+	1555: "Pet kitten",
+	1556: "Pet kitten (light)",
+	1557: "Pet kitten (brown)",
+	1558: "Pet kitten (black)",
+	1559: "Pet kitten (brown-grey)",
+	1560: "Pet kitten (blue-grey)",
+
+	1561: "Pet cat",
+	1562: "Pet cat (light)",
+	1563: "Pet cat (brown)",
+	1564: "Pet cat (black)",
+	1565: "Pet cat (brown-grey)",
+	1566: "Pet cat (blue-grey)",
+
+	1567: "Pet cat (overgrown)",
+	1568: "Pet cat (overgrown, light)",
+	1569: "Pet cat (overgrown, brown)",
+	1570: "Pet cat (overgrown, black)",
+	1571: "Pet cat (overgrown, brown-grey)",
+	1572: "Pet cat (overgrown, blue-grey)"
+};
+
+function resolveItemName(item: MoidItem): string {
+	if (itemNameMapping[item.id]) {
+		return itemNameMapping[item.id];
+	}
+	return item.name;
+}
+
+
 function getInitial() {
 	const moidItems = Object.entries(moidData.data).map((ent => ({ ...ent[1], id: Number(ent[0]) }))) as MoidItem[];
 	const currentData = new Map(Object.entries(currentItemData.data).map(ent => ([Number(ent[0]), ent[1]])));
@@ -25,6 +56,13 @@ function getInitial() {
 		if (USELESS_ITEMS.includes(item.id)) continue;
 
 		if (currentData.has(item.id)) {
+			continue;
+		}
+
+		if (item.name === 'Pet cat' && item.id !== 1561) {
+			continue;
+		}
+		if (item.name === 'Pet kitten' && item.id !== 1555) {
 			continue;
 		}
 
@@ -74,12 +112,16 @@ async function main() {
 		}
 
 		for (const item of newItem) {
-			if (item.id > 100_000) continue;
-			const fullItem: FullItem = { ...item, visibility: checkItemVisibility(item as any) };
+			if (item.id > 100_000) {
+				console.log(`----------- ${item.name}[${item.id}] ---------------`);
+				continue;
+			}
+			const fullItem: FullItem = { ...item, visibility: checkItemVisibility(item as any), name: resolveItemName(moidItem) };
+			console.log(`${item.name}[${item.id}] ${JSON.stringify(fullItem)}`);
 			newData[item.id] = fullItem;
 		}
 
-		if (i % 4 === 0 || i === itemsToProcess.length - 1) saveDataFile('full-items.json', (newData));
+		saveDataFile('full-items.json', (newData));
 		const end = performance.now();
 		const duration = end - start;
 		durations.push(duration);
@@ -89,12 +131,10 @@ async function main() {
 			(remaining * avgDuration) /
 			Time.Hour
 		);
-		if (i % 10 === 0) {
-			console.log(
-				`Processed ${moidItem.name}[${moidItem.id}] (${i + 1}/${itemsToProcess.length
-				}) in ${duration.toFixed(2)}ms. Avg: ${avgDuration.toFixed(2)}ms. Est. time left: ${timeLeft.toFixed(2)}h (${remaining} items).`
-			);
-		}
+		console.log(
+			`Processed ${moidItem.name}[${moidItem.id}] (${newItem.length} items) (${i + 1}/${itemsToProcess.length
+			}) in ${duration.toFixed(2)}ms. Avg: ${avgDuration.toFixed(2)}ms. Est. time left: ${timeLeft.toFixed(2)}h (${remaining} items).`
+		);
 	}
 
 	saveDataFile('full-items.json', (newData));

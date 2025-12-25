@@ -31,6 +31,12 @@ interface WikiItemJSON {
 			tradeable?: { text: string };
 			stackable?: { text: string };
 			equipable?: { text: string };
+			alchable?: { text: string };
+
+			// Follower/NPC properties (used to distinguish from items)
+			race?: { text: string };
+			location?: { text: string };
+			map?: { text: string };
 
 			// Combat stats (if present)
 			astab?: { text: string; number: number };
@@ -103,12 +109,43 @@ function extractCombatStatsInfobox(sections: WikiItemJSON['sections']) {
 	return null;
 }
 
+/**
+ * Determines if an infobox is a follower/NPC infobox (not an item)
+ * Follower infoboxes have properties like race, location, map
+ * and typically lack item properties like tradeable, stackable
+ */
+function isFollowerInfobox(infobox: any): boolean {
+	// Check for follower-specific properties
+	const hasFollowerProps = Boolean(infobox.race || infobox.location || infobox.map);
+
+	// Check for item-specific properties
+	const hasItemProps = Boolean(
+		infobox.tradeable ||
+		infobox.stackable ||
+		infobox.value ||
+		infobox.value1 ||
+		infobox.weight ||
+		infobox.weight1 ||
+		infobox.alchable
+	);
+
+	// If it has follower props but no item props, it's a follower
+	if (hasFollowerProps && !hasItemProps) {
+		return true;
+	}
+
+	return false;
+}
+
 function extractMainInfobox(sections: WikiItemJSON['sections']) {
 	for (const section of sections as any[]) {
 		if (section.infoboxes) {
 			for (const infobox of section.infoboxes) {
 				if (infobox.name || infobox.id || infobox['name1']) {
-					return infobox;
+					// Skip follower/NPC infoboxes, only return item infoboxes
+					if (!isFollowerInfobox(infobox)) {
+						return infobox;
+					}
 				}
 			}
 		}

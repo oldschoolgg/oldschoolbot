@@ -82,6 +82,7 @@ type RawWikiResponse = {
 
 
 export async function scrapeItemWikiPage(item: MoidItem) {
+	console.log(`scrapeItemWikiPage ${item.name}[${item.id}]`);
 	// const params = [
 	// 	'item_id',
 	// 	'item_name',
@@ -136,7 +137,7 @@ export async function scrapeItemWikiPage(item: MoidItem) {
 	// @ts-expect-error
 	const content: string = rawPageContents.query.pages[0].revisions[0].slots.main.content;
 	if (content.startsWith('#REDIRECT')) {
-		console.log(`Item ${item.name} is a redirect, fetching actual page...`);
+		console.log(`	Item ${item.name} is a redirect, fetching actual page...`);
 		rawPageContents = await pfetch(
 			buildWikiUrl(content.replace('#REDIRECT', '').trim().split('[').join('').split(']').join('').trim()),
 			{

@@ -50,6 +50,19 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 		return ItemVisibility.NeverAdd;
 	}
 
+	if ([4553, 4554, 4555, 4556, 4500, 4597, 4598].includes(item.id)) {
+		return ItemVisibility.NeverAdd;
+	}
+
+	if ([4519].includes(item.id)) {
+		return ItemVisibility.Unobtainable;
+	}
+
+	if (item.id > 3273 && item.id < 3324) {
+		return ItemVisibility.NeverAdd;
+	}
+
+
 	/**
 	 *
 	 *  Config Name Checks
@@ -75,6 +88,7 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 		].some(suffix => cfnm?.endsWith(suffix))) {
 			return ItemVisibility.Unobtainable;
 		}
+
 
 		if ([
 			'olaf2_',
@@ -111,6 +125,7 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 			'agility_swing',
 			'agility_balance',
 			'agility_contortion',
+			'agility_jump',
 			'agility_climb',
 			'agility_strength',
 			'agility_swing',
@@ -120,8 +135,17 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 			'dt2_lassar_',
 			'dt2_stranglewood',
 			'dt2_ghorrock_',
+			'dwarf_rock_',
 			'dt2_scar_',
-			'deadman_blighted_'
+			'troll_key_',
+			'swamp_cave_',
+			'regicide_alchemy_',
+			'easter_egg_2005_',
+			'deadman_blighted_',
+			'pickpocket_guide',
+			'regicide_barrel_',
+			'boardgames_',
+			'fenk_'
 		].some(suffix => cfnm?.includes(suffix))) {
 			return ItemVisibility.Unobtainable;
 		}
@@ -139,9 +163,11 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 			return ItemVisibility.NeverAdd;
 		}
 
-
 		if (cfnm.startsWith('pog_') && cfnm.endsWith('lamp')) {
 			return ItemVisibility.NeverAdd;
+		}
+		if (cfnm.startsWith('brew_') && cfnm.endsWith('_monkey')) {
+			return ItemVisibility.Unobtainable;
 		}
 
 		if (
@@ -178,7 +204,10 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 				'deadman_quest_',
 				'trailblazer_reloaded_league_points',
 				'bought_trailblazer_reloaded_league_points_negative',
-				'any_nails'
+				'any_nails',
+				'viking_jug',
+				'viking_buck',
+				'viking_airti'
 			].some(suffix => cfnm?.startsWith(suffix))
 		) {
 			return ItemVisibility.NeverAdd;
