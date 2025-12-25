@@ -30,3 +30,26 @@ export function objectToSnakeCase<T>(input: T): T {
 
 	return input;
 }
+
+export function sortObjectKeys<T>(
+	obj: T
+): T {
+	if (Array.isArray(obj)) {
+		return obj.map(sortObjectKeys) as T;
+	}
+
+	if (obj !== null && typeof obj === 'object') {
+		return Object.keys(obj)
+			.sort()
+			.reduce<Record<string, unknown>>((acc, key) => {
+				acc[key] = sortObjectKeys((obj as Record<string, unknown>)[key]);
+				return acc;
+			}, {}) as T;
+	}
+
+	return obj;
+}
+
+export function toSortedSnakeCaseObject<T>(obj: T): T {
+	return sortObjectKeys(objectToSnakeCase(obj));
+}

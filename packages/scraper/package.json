@@ -10,13 +10,14 @@
 	"scripts": {
 		"build": "rimraf ./dist && tsc -p src --noEmit false",
 		"moid": "tsx src/moid.ts",
+		"prices": "tsx src/prices.ts",
 		"scrapeitems": "tsx src/item-scraper.ts",
 		"test": "pnpm tsc -p src --noEmit"
 	},
 	"dependencies": {
+		"@oldschoolgg/schemas": "workspace:*",
 		"@oldschoolgg/toolkit": "workspace:*",
 		"@oldschoolgg/util": "workspace:*",
-		"@oldschoolgg/schemas": "workspace:*",
 		"oldschooljs": "workspace:*",
 		"remeda": "^2.23.0",
 		"wtf_wikipedia": "^10.3.2"

@@ -150,3 +150,25 @@ export enum ItemVisibility {
 
 export * from './item-lists.js';
 export * from './itemVisibility.js';
+
+export type FullItem = {
+	id: number;
+	name: string;
+
+	cost?: number;
+	lowalch?: number;
+	highalch?: number;
+	buy_limit?: number;
+	equipment?: ItemEquipment;
+	weapon?: ItemWeapon;
+	price?: number;
+
+	// Booleans
+	members: boolean;
+	tradeable: boolean;
+	tradeable_on_ge: boolean;
+	stackable: boolean;
+	noteable: boolean;
+	equipable: boolean;
+	visibility: ItemVisibility;
+};

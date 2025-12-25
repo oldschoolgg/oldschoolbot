@@ -1,7 +1,6 @@
 import { pfetch } from '@oldschoolgg/toolkit/node';
 import { objectToSnakeCase } from '@oldschoolgg/util';
-
-import { MoidSourceItem } from './types.js';
+import { MoidSourceItem } from '@oldschoolgg/schemas';
 import { saveDataFile } from './util.js';
 
 async function fetchMoidData() {

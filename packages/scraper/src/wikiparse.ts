@@ -1,5 +1,19 @@
-import { Item, ItemEquipment, EquipmentSlot } from 'oldschooljs';
+import { ItemEquipment, EquipmentSlot, ItemWeapon } from 'oldschooljs';
 
+
+export type ParsedInfoBoxItem = {
+	equipable: boolean;
+	stackable: boolean;
+	tradeable: boolean;
+	tradeable_on_ge: boolean;
+	noteable: boolean;
+	cost: number;
+	members: boolean;
+	id: number;
+	name: string;
+	equipment?: ItemEquipment;
+	weapon?: ItemWeapon;
+};
 interface WikiItemJSON {
 	title: string;
 	sections: Array<{
@@ -176,7 +190,7 @@ function createItemFromInfobox(
 	wikiJson: WikiItemJSON,
 	version: number,
 	totalVersions: number
-): Item | null {
+): ParsedInfoBoxItem | null {
 	const getProp = (propName: string) => getVersionedProp(mainInfobox, propName, version, totalVersions);
 
 	const idProp = getProp('id');
@@ -191,27 +205,24 @@ function createItemFromInfobox(
 	const tradeable = convertYesNoToBoolean(getProp('tradeable')?.text);
 	const stackable = convertYesNoToBoolean(getProp('stackable')?.text || mainInfobox.stackable?.text);
 	const equipable = convertYesNoToBoolean(getProp('equipable')?.text);
+	const noteable = convertYesNoToBoolean(getProp('noteable')?.text || mainInfobox.noteable?.text);
 
-	const item: Item = {
+	const item: ParsedInfoBoxItem = {
 		id,
 		name,
-		...(members === true && { members }),
-		tradeable,
-		tradeable_on_ge: tradeable,
-		// noteable: Boolean(moidData.notedId),
-		equipable: equipable as true | undefined,
+		members: Boolean(members),
+		tradeable: Boolean(tradeable),
+		tradeable_on_ge: Boolean(tradeable),
+		equipable: Boolean(equipable),
 		cost,
-		...(cost > 0
-			? {
-				lowalch: Math.floor(cost * 0.4),
-				highalch: Math.floor(cost * 0.6)
-			}
-			: {}),
-
-		// ...(geItem?.limit && { buy_limit: geItem.limit }),
-		...(tradeable === true && { tradeable }),
-		...(stackable === true && { stackable }),
-		...(equipable && { equipable: true })
+		stackable: Boolean(stackable),
+		noteable: Boolean(noteable),
+		// ...(cost > 0
+		// 	? {
+		// 		lowalch: Math.floor(cost * 0.4),
+		// 		highalch: Math.floor(cost * 0.6)
+		// 	}
+		// 	: {}),
 	};
 
 	if (combatInfobox && equipable) {
@@ -260,7 +271,7 @@ function createItemFromInfobox(
 	return item;
 }
 
-export function convertWikiJSONToItem(wikiJson: WikiItemJSON): Item[] | null {
+export function convertWikiJSONToItem(wikiJson: WikiItemJSON) {
 	const mainInfobox: any = extractMainInfobox(wikiJson.sections);
 	const combatInfobox = extractCombatStatsInfobox(wikiJson.sections);
 
@@ -268,16 +279,14 @@ export function convertWikiJSONToItem(wikiJson: WikiItemJSON): Item[] | null {
 		return null;
 	}
 
-	// Determine the number of versions
 	const versionCount = getVersionCount(mainInfobox);
 
-	// Check if we have valid data
 	const hasValidId = mainInfobox.id || mainInfobox.id1;
 	if (!hasValidId) {
 		return null;
 	}
 
-	const items: Item[] = [];
+	const items: ParsedInfoBoxItem[] = [];
 
 	for (let version = 1; version <= versionCount; version++) {
 		const item = createItemFromInfobox(mainInfobox, combatInfobox, wikiJson, version, versionCount);
