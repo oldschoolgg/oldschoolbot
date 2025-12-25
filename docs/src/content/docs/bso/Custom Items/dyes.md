@@ -4,7 +4,7 @@ title: "Dyes"
 
 Dyes can be used on certain items by using the [[/create]] command. This process is irreversible, permanently turns items untradeable, and removes the dye.
 
-Ice, blood, shadow, and third age dyes can only be obtained from Grandmaster caskets. Monkey dyes can be obtained from catching Chimplings, encountering special monkeys during [Mad Marimbo's Monkey Rumble](../minigames/mad-marimbos-monkey-rumble/), or by buying them from the minigame's shop. Dungeoneering dyes can be purchased from the Dungeoneering shop. Squid dye can be obtained from [Sea Kraken](../bso-custom-killables/demi-bosses/sea-kraken.md). Volcanic dyes can be obtained from [Moktang](../bso-custom-killables/bosses/moktang.md). Oceanic dyes can be obtained from [Depths of Atlantis](../bso-custom-killables/raids/depths-of-atlantis-doa.md).
+Ice, blood, shadow, and third age dyes can only be obtained from Grandmaster caskets. Monkey dyes can be obtained from catching Chimplings, encountering special monkeys during [[Marimbo's Monkey Rumble]], or by buying them from the minigame's shop. Dungeoneering dyes can be purchased from the Dungeoneering shop. Squid dye can be obtained from [[Sea Kraken]]. Volcanic dyes can be obtained from [[Moktang]]. Oceanic dyes can be obtained from [[Depths of Atlantis]].
 
 ## Ice dye
 

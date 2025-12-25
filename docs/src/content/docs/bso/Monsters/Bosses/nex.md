@@ -6,8 +6,8 @@ import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 ## Nex
 
-Nex is an endgame boss that requires [[prayer:95]] and a Frozen Key to start. You can either solo or mass it, and it requires high-level ranged gear to fight. Its unique drops include Pernix, Torva, and Virtus gear. Nex also drops a decent amount of TMBs and Grandmaster clues.  
-[[/k name\:Nex (Solo)]]  
+Nex is an endgame boss that requires [[prayer:95]] and a Frozen Key to start. You can either solo or mass it, and it requires high-level ranged gear to fight. Its unique drops include Pernix, Torva, and Virtus gear. Nex also drops a decent amount of TMBs and Grandmaster clues.
+[[/k name\:Nex (Solo)]]
 [[/k name\:Nex (Mass)]]
 
 ## Gear Recommendations
@@ -29,17 +29,17 @@ To fight Nex, aim for a gear setup with 205+ ranged attack and as high ranged de
 <Tabs>
 <TabItem label="With Zak">
 
-9 kills per trip  
-Removed brews/restores from users: **45/15**  
-Trip duration: 1 hour 12 minutes 28 seconds  
+9 kills per trip
+Removed brews/restores from users: **45/15**
+Trip duration: 1 hour 12 minutes 28 seconds
 _Note: Includes time boost from Hitpoints Master Cape and T3 Patron_
 
 </TabItem>
 <TabItem label="Without Zak">
 
-7 kills per trip  
-Removed brews/restores from users: **28/10**  
-Trip duration: 56 minutes 19 seconds  
+7 kills per trip
+Removed brews/restores from users: **28/10**
+Trip duration: 56 minutes 19 seconds
 _Note: Includes time boost from Hitpoints Master Cape and T3 Patron_
 
 </TabItem>
@@ -62,9 +62,9 @@ _All boosts are divided by team size._
 Nex drops broken armour pieces that must be repaired using components from God Wars sets. The Torva set is made by using [[/create item\:revert]] on Bandos pieces, then [[/create item\:[piece name]]]. Pernix and Virtus use the same process, with Armadyl and Ancestral components respectively.
 
 - **Ancient emblem** – No current use
-- **Bloodsoaked feather** – Used to create the Nex pet, [Nexterminator](../../custom-items/pets.md#meme-pets-and-no-perk-pets)
+- **Bloodsoaked feather** – Used to create the Nex pet, [[Nexterminator]]
 - **Ancient hilt** – Used to create the Ancient Godsword
-- **Nex armour** – Torva, Pernix, and Virtus armour sets; can be upgraded to best-in-slot [Gorajan armour](../../skills/dungeoneering-training/dg-rewards.md#buyable-gear)
+- **Nex armour** – Torva, Pernix, and Virtus armour sets; can be upgraded to best-in-slot [Gorajan armour](/bso/skills/dungeoneering/#gorajan-armour)
   - Drop rate for hitting the gear table scales with team size; any specific item is ~1/1600
 - **Nex weapons** – Dropped from the same table as Nex armour
   - **Zaryte Bow** – Boosts Nex performance and used to create the Hellfire Bow

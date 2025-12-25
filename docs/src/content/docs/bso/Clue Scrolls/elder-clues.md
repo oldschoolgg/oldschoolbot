@@ -1,7 +1,5 @@
 ---
 title: "Elder Clues"
-sidebar:
-  order: 4
 ---
 
 ## Prerequisites
@@ -27,9 +25,9 @@ sidebar:
 
 ## Boosts
 
-- [Clue global boosts (OSB Wiki)](https://wiki.oldschool.gg/miscellaneous/clue-scrolls/boosts#global-boosts)
-- [Clue Hunter Outfit](equippables/#clue-hunter-outfit) – 2x speed
-- [Zippy](/custom-items/pets#resource-gathering-and-loot-effecting-pets) – 1/15 chance to double; also boosts lower tier caskets (stacks with global double)
+- [Clue global boosts (OSB Wiki)](/osb/clues/#global-boosts)
+- [Clue Hunter Outfit](/bso/custom-items/#clue-hunter-outfit) – 2x speed
+- [Zippy](/bso/custom-items/pets/#miscellaneous-effects) – 1/15 chance to double; also boosts lower tier caskets (stacks with global double)
 - Clue score – up to 10% at ~60 clues completed
 
 ## Obtaining

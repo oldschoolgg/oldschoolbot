@@ -20,8 +20,8 @@ Uses heat res pots
 
 1. `Sun-metal bar` can be smelted with 1 Sun-metal scraps and 12 coal, requiring level 110 smithing.
 2. `Sun-god axe head` can be smithed with 2 Sun-metal bars and level 110 smithing.
-3. `Axe handle base` can be created with 1 [Dwarven bar](../bosses/king-goldemar.md) and 1 [Volcanic shards](../bosses/moktang.md#rewards).
-4. `Axe handle` can be created with 30[ Athelas paste](../../skills/herblore.md#custom-content-and-boosts), [10 Ent hide](treebeard.md#loot), [1 Perfect chitin](../bosses/kalphite-king.md#loot) and 1 Axe handle base.
+3. `Axe handle base` can be created with 1x [[Dwarven bar]] and 1x [[Volcanic shards]].
+4. `Axe handle` can be created with 30x [[Athelas paste]], 10x [[Ent hide]], 1x [[Perfect chitin]] and 1 Axe handle base.
 5. `Axe of the high sungod (u)`can be created with an `Axe Handle` and the axe head.
 6. Finally, [[/create]] the `Axe of the high sungod` requiring 2 million `Atomic energy`. This is a one-time operation.
 
