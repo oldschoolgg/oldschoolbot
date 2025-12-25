@@ -138,3 +138,15 @@ export interface ItemWeapon {
 	weapon_type?: string;
 	// stances?: ItemWeaponStance[];
 }
+
+export enum ItemVisibility {
+	// Normal items.
+	Regular,
+	// Valid items, but should never be available in OSB (e.g. leagues items)
+	Unobtainable,
+	// Never add under any circumstance (e.g. null items, noted items, etc)
+	NeverAdd,
+}
+
+export * from './item-lists.js';
+export * from './itemVisibility.js';

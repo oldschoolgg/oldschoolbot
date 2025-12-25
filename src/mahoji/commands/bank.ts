@@ -94,6 +94,13 @@ export const bankCommand = defineCommand({
 			description: 'An additional flag to apply to your bank.',
 			required: false,
 			choices: choicesOf(bankFlags)
+		},
+		{
+			type: 'Integer',
+			name: 'limit',
+			description: 'Limited the amount of items return',
+			required: false,
+			min_value: 1
 		}
 	],
 	run: async ({ user, options, interaction }) => {

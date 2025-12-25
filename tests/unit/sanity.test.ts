@@ -20,6 +20,15 @@ describe('Sanity', () => {
 		expect(itemID('Frozen key')).toEqual(26_356);
 		expect(itemID('Clue box')).toEqual(12_789);
 		expect(itemID('Beige pumpkin (happy)')).toEqual(30246);
+		expect(Items.getId('Sailing cape')).toEqual(31288);
+		expect(Items.getId('Sailing cape(t)')).toEqual(31290);
+		expect(Items.getId('Sailing hood')).toEqual(31292);
+		expect(Items.getId('Blue crab')).toEqual(31674);
+		expect(Items.getId('Raw blue crab meat')).toEqual(31692);
+		expect(Items.getId('Blue crab meat')).toEqual(31695);
+		expect(Items.getId('Dragon cannonball')).toEqual(31916);
+		expect(Items.getId('Bottled storm')).toEqual(31949);
+		expect(Items.getId('Boat bottle (empty)')).toEqual(31989);
 		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
@@ -30,6 +39,7 @@ describe('Sanity', () => {
 		expect(itemIsTradeable(itemID('Ric'))).toEqual(false);
 		expect(itemIsTradeable(itemID("Pharaoh's sceptre"))).toEqual(true);
 	});
+
 	test('casket names', () => {
 		expect(itemID('Reward casket (beginner)')).toEqual(23_245);
 		expect(itemID('Reward casket (easy)')).toEqual(20_546);
@@ -79,9 +89,11 @@ describe('Sanity', () => {
 			}
 		}
 	});
-	test('market price of coins', () => {
+
+	test('price of coins', () => {
 		const b = new Bank().add('Coins', 66);
 		expect(marketPriceOfBank(b)).toEqual(66);
+		expect(Items.getOrThrow('Coins').price).toEqual(1);
 	});
 
 	test('rings', () => {

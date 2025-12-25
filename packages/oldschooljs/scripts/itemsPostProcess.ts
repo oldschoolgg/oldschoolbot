@@ -1,12 +1,16 @@
+import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { clone } from 'remeda';
 
 import { unobtainableLeaguesItems } from '@/item-groups/unobtainable.js';
-import items from '../src/assets/item_data.json' with { type: 'json' };
+import _items from '../src/assets/item_data.json' with { type: 'json' };
+import { ITEMS_TO_IGNORE_PRICES } from './util/misc.js';
 
-const itemsCopy = clone(items);
+const items = _items as Record<number, any>;
+const ORIGINAL_ITEMS = clone(items);
 
 for (const [_id, item] of Object.entries(items) as [string, any][]) {
+	const id = Number(_id);
 	if (unobtainableLeaguesItems.includes(item.id)) {
 		item.tradeable = false;
 		item.tradeable_on_ge = false;
@@ -19,7 +23,12 @@ for (const [_id, item] of Object.entries(items) as [string, any][]) {
 			}
 		}
 	}
-	if (item.id === 27840 || item.id === 27841) {
+
+	if ([995].includes(id)) {
+		item.price = 1;
+	}
+
+	if (id === 27840 || id === 27841) {
 		item.equipment.attack_magic = 0;
 	}
 	delete item.wiki_name;
@@ -28,18 +37,20 @@ for (const [_id, item] of Object.entries(items) as [string, any][]) {
 	delete item.incomplete;
 	delete item.id;
 
-	if (item.price === 0) {
+	if (!item.price) {
 		delete item.price;
 	}
-	if ([0, 1].includes(item.highalch)) {
+	if ([0, 1].includes(item.highalch) || !item.highalch) {
 		delete item.highalch;
 	}
-	if ([0, 1].includes(item.lowalch)) {
+	if ([0, 1].includes(item.lowalch) || !item.lowalch) {
 		delete item.lowalch;
 	}
-	if (item.cost === 1) {
+
+	if (item.cost === 1 || ITEMS_TO_IGNORE_PRICES.includes(id)) {
 		delete item.cost;
 	}
+
 	if (item.weapon?.stances) {
 		delete item.weapon.stances;
 	}
@@ -53,7 +64,11 @@ for (const [id, newName] of Object.entries(itemRenames)) {
 	(items as any)[id as any].name = newName;
 }
 
-const didChange = JSON.stringify(itemsCopy) !== JSON.stringify(items);
+const didChange = JSON.stringify(ORIGINAL_ITEMS) !== JSON.stringify(items);
 if (didChange) {
 	writeFileSync('./src/assets/item_data.json', JSON.stringify(items, null, 4));
+} else {
+	console.log('No changes to item_data.json');
 }
+
+execSync('biome check --write --diagnostic-level=error', { stdio: 'inherit' });

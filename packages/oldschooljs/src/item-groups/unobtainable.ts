@@ -627,6 +627,8 @@ const unobtainableBarrowsGear: number[] = [
 	])
 ];
 
+const unobtainableAgilityShortcutItems: number[] = [11793, 31134, 31135, 6521, 6517];
+
 export const allUnobtainableItems: number[] = [
 	...unobtainableGauntletGear,
 	...unobtainableEmirsArenaGear,
@@ -635,5 +637,6 @@ export const allUnobtainableItems: number[] = [
 	...unobtainableDeadmanModeItems,
 	...unobtainableLockedItems,
 	...unobtainableLMSItems,
-	...unobtainableBarrowsGear
+	...unobtainableBarrowsGear,
+	...unobtainableAgilityShortcutItems,
 ];

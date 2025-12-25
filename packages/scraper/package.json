@@ -1,0 +1,24 @@
+{
+	"name": "@oldschoolgg/scraper",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "rimraf ./dist && tsc -p src --noEmit false",
+		"moid": "tsx src/moid.ts",
+		"scrapeitems": "tsx src/item-scraper.ts",
+		"test": "pnpm tsc -p src --noEmit"
+	},
+	"dependencies": {
+		"@oldschoolgg/toolkit": "workspace:*",
+		"@oldschoolgg/util": "workspace:*",
+		"@oldschoolgg/schemas": "workspace:*",
+		"oldschooljs": "workspace:*",
+		"remeda": "^2.23.0",
+		"wtf_wikipedia": "^10.3.2"
+	}
+}

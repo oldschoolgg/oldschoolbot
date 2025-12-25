@@ -393,6 +393,27 @@ importers:
         specifier: ^4.1.12
         version: 4.1.12
 
+  packages/scraper:
+    dependencies:
+      '@oldschoolgg/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+      '@oldschoolgg/toolkit':
+        specifier: workspace:*
+        version: link:../toolkit
+      '@oldschoolgg/util':
+        specifier: workspace:*
+        version: link:../util
+      oldschooljs:
+        specifier: workspace:*
+        version: link:../oldschooljs
+      remeda:
+        specifier: ^2.23.0
+        version: 2.23.0
+      wtf_wikipedia:
+        specifier: ^10.3.2
+        version: 10.3.2(encoding@0.1.13)
+
   packages/spritesheet:
     dependencies:
       fast-glob:

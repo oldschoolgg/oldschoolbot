@@ -11,48 +11,6 @@ export interface ItemCollection {
 const key = (x: SortableItem): string =>
 	Array.isArray(x) ? (x.length ? key(x[0]!) : '') : typeof x === 'string' ? x : x.name;
 
-export const USELESS_ITEMS: number[] = [
-	0, 89, 617, 8890, 6964, 2513, 19_492, 11_071, 11_068, 21_284, 24_735, 21_913, 4703, 4561, 2425, 4692, 3741,
-
-	// Quest blood vial
-	22_405,
-
-	// Pharaoh's sceptres
-	9045, 9046, 9047, 9048, 9049, 9050, 9051, 13_074, 13_075, 13_076, 13_077, 13_078, 16_176, 21_445, 21_446, 26_948,
-	26_950, 26_945,
-
-	// Removed items
-	10_639, 10_641, 10_644, 10_646, 10_647, 10_648, 10_649, 10_651, 10_652, 10_654, 10_657, 10_658, 10_659, 10_661,
-	27_794, 27_795, 27_796, 27_797, 27_798, 27_799, 27_800, 27_801, 30_320,
-
-	// Clue scrolls - Duplicate or individual step clues that don't match filter
-	3550, 3577, 2793, 12_113, 10_184, 12_027,
-
-	// SOTE Quest Clues
-	23_814, 23_815, 23_816, 23_817,
-
-	// Coal bags
-	12019, 25627, 24480,
-
-	// Gem bags
-	12020, 25628, 24481,
-
-	// Agility
-	// 11793, 31134, 31135,6521,	6517,
-
-	// PoH
-	12726,
-
-	// Clan Wars cape
-	12659, 12660, 12661, 12662, 12663, 12664, 12665, 12666, 12667, 12668, 12669, 12670, 12671, 12672, 12673, 12674,
-	12675, 12676, 12677, 12678, 12679, 12680, 12681, 12682, 12683, 12684, 12685, 12686, 12687, 12688, 12689, 12690,
-	21396, 21397, 21398, 21399, 21400, 21401, 21402, 21403, 21404, 21405, 21406, 21407, 21408, 21409, 21410, 21411,
-	21412, 21413, 21414, 21415, 21416, 21417, 21418, 21419, 21420, 21421, 21422, 21423, 21424, 21425, 21426, 21427,
-
-	// Misc
-	12862, 20782, 25246, 26761, 31174, 31216, 31214, 31212, 31211, 31328, 31329, 31172
-];
-
 type ResolvableItem = number | string;
 export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
 export type ArrayItemsResolved = (number | number[])[];
@@ -74,7 +32,7 @@ export class ItemsSingleton extends Collection<number, Item> {
 		for (const [id, item] of Object.entries(items)) {
 			const numID = Number.parseInt(id);
 
-			if (USELESS_ITEMS.includes(numID)) continue;
+			// TOODOOOOOOOOO if (USELESS_ITEMS.includes(numID)) continue;
 			this.set(numID, { id: Number(id), ...item });
 
 			const cleanName = cleanString(item.name);
