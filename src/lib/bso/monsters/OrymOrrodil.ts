@@ -37,7 +37,7 @@ export const Orym: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Orym',
 	aliases: ['orym'],
-	timeToFinish: Time.Minute * 20,
+	timeToFinish: Time.Minute * 40,
 	hp: 2500,
 
 table: new LootTable()
@@ -173,7 +173,7 @@ export const Orrodil: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Orrodil',
 	aliases: ['orrodil'],
-	timeToFinish: Time.Minute * 20,
+	timeToFinish: Time.Minute * 40,
 	hp: 2500,
 	table: new LootTable()
 		.every('Primordial Bones', [2, 5])

@@ -33,6 +33,7 @@ import { buyTask } from '@/tasks/minions/buyActivity.js';
 import { camdozaalFishingTask } from '@/tasks/minions/camdozaalActivity/camdozaalFishingActivity.js';
 import { camdozaalMiningTask } from '@/tasks/minions/camdozaalActivity/camdozaalMiningActivity.js';
 import { camdozaalSmithingTask } from '@/tasks/minions/camdozaalActivity/camdozaalSmithingActivity.js';
+import { gemstoneFishingTask } from '../tasks/minions/gemstoneFishingActivity.js';
 import { castingTask } from '@/tasks/minions/castingActivity.js';
 import { clueTask } from '@/tasks/minions/clueActivity.js';
 import { collectingTask } from '@/tasks/minions/collectingActivity.js';
@@ -237,6 +238,7 @@ export const allTasks: MinionTask[] = [
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
+	gemstoneFishingTask,
 	myNotesTask,
 	colosseumTask,
 	CreateForestersRationsTask,
