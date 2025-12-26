@@ -1,6 +1,6 @@
 {
-	"hash": "714835ced4de383962d889d4d58c67fc",
-	"date": "2025-12-17T17:07:50.505Z",
+	"hash": "6e99679cadc7e5f3571790ea266eac4c",
+	"date": "2025-12-24T04:50:42.790Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -827,6 +827,16 @@
 			"items_required": {
 				"Axe handle": 1,
 				"Sun-god axe head": 1
+			}
+		},
+		{
+			"name": "Axe of the high sungod (xmas)",
+			"items_created": {
+				"Axe of the high sungod (xmas)": 1
+			},
+			"items_required": {
+				"Axe of the high sungod": 1,
+				"Christmas dye": 1
 			}
 		},
 		{
