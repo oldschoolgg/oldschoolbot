@@ -105,6 +105,7 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Shrimpy',
 	'Waddles',
 	'Tasty',
+	'Night-mare',
 	'Ember'
 ]);
 
