@@ -1,6 +1,6 @@
 import { EquipmentSlot } from 'oldschooljs';
 
-import { setCustomItem } from './util';
+import { setCustomItem } from '@/lib/customItems/util.js';
 
 setCustomItem(
 	24_214,
@@ -9,7 +9,6 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		wiki_name: 'Abyssal cape',
 		equipment: {
 			attack_stab: 12,
 			attack_slash: 12,

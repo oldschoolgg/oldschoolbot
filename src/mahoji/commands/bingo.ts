@@ -1,43 +1,22 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	type MahojiUserOption,
-	type OSBMahojiCommand,
-	channelIsSendable,
-	isValidDiscordSnowflake,
-	mentionCommand
-} from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches, truncateString } from '@oldschoolgg/toolkit/string-util';
-
+import { bold, dateFm, userMention } from '@oldschoolgg/discord';
+import { Emoji, formatOrdinal, notEmpty, stringMatches, Time, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
 import { md5sum } from '@oldschoolgg/toolkit/node';
-import { dateFm, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import type { Prisma } from '@prisma/client';
-import {
-	ApplicationCommandOptionType,
-	type ChatInputCommandInteraction,
-	type User,
-	bold,
-	userMention
-} from 'discord.js';
-import { Time, chunk, noOp, notEmpty, uniqueArr } from 'e';
-import { Bank, type ItemBank, toKMB } from 'oldschooljs';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { clImageGenerator } from '../../lib/collectionLogTask';
-import { BOT_TYPE, globalConfig } from '../../lib/constants';
-import { getUsername, getUsernameSync } from '../../lib/util';
-import { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { isValidNickname } from '../../lib/util/smallUtils';
-import { BingoManager, BingoTrophies } from '../lib/bingo/BingoManager';
-import type { StoredBingoTile } from '../lib/bingo/bingoUtil';
-import { generateTileName, getAllTileItems, isGlobalTile } from '../lib/bingo/bingoUtil';
-import { globalBingoTiles } from '../lib/bingo/globalTiles';
-import { doMenu, getPos } from './leaderboard';
+import type { Prisma } from '@/prisma/main.js';
+import { clImageGenerator } from '@/lib/collectionLogTask.js';
+import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
+import { doMenuWrapper } from '@/lib/menuWrapper.js';
+import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
+import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
+import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
+import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 
-const bingoAutocomplete = async (value: string, user: User) => {
+const bingoAutocomplete = async ({ value, user }: StringAutoComplete) => {
 	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
 	return bingos
 		.map(i => new BingoManager(i))
@@ -54,23 +33,23 @@ type MakeTeamOptions = {
 	bingo: string;
 };
 
-export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
+export async function fetchBingosThatUserIsInvolvedIn(userId: string) {
 	const bingos = await prisma.bingo.findMany({
 		where: {
 			OR: [
 				{
 					bingo_participant: {
 						some: {
-							user_id: userID
+							user_id: userId
 						}
 					}
 				},
 				{
-					creator_id: userID
+					creator_id: userId
 				},
 				{
 					organizers: {
-						has: userID
+						has: userId
 					}
 				}
 			]
@@ -80,38 +59,34 @@ export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
 	return bingos;
 }
 
-async function bingoTeamLeaderboard(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	bingo: BingoManager
-): CommandResponse {
+async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManager): CommandResponse {
 	const { teams } = await bingo.fetchAllParticipants();
 
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(teams, 10).map((subList, i) =>
-			subList
-				.map(
-					(team, j) =>
-						`${getPos(i, j)}** ${`${team.trophy?.emoji} `}${team.participants
-							.map(pt => getUsernameSync(pt.user_id))
-							.join(', ')}:** ${team.tilesCompletedCount.toLocaleString()}`
-				)
-				.join('\n')
-		),
-		'Bingo Team Leaderboard'
+	const users = await Promise.all(
+		[...teams]
+			.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount)
+			.map(async team => {
+				const names = await Promise.all(team.participants.map(pt => Cache.getBadgedUsername(pt.user_id)));
+				const label = `${team.trophy?.emoji ? `${team.trophy.emoji} ` : ''}${names.join(', ')}`;
+				return {
+					id: team.team_id.toString(),
+					score: team.tilesCompletedCount,
+					customName: label
+				};
+			})
 	);
-	return {
-		ephemeral: true,
-		content: 'Loading Bingo Leaderboard...'
-	};
+
+	return doMenuWrapper({
+		ironmanOnly: false,
+		interaction,
+		users,
+		title: 'Bingo Team Leaderboard',
+		formatter: v => v.toLocaleString()
+	});
 }
 
 async function makeTeamCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	bingo: BingoManager,
 	creatorUser: MUser,
 	options: MakeTeamOptions
@@ -131,15 +106,13 @@ async function makeTeamCommand(
 		).map(id => mUserFetch(id))
 	);
 	if (allUsers.length !== bingo.teamSize) return `Your team must have only ${bingo.teamSize} users, no more or less.`;
-	if (allUsers.some(u => BLACKLISTED_USERS.has(u.id))) return 'You cannot have blacklisted users on your team.';
 
-	await handleMahojiConfirmation(
-		interaction,
-		`${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${
+	await interaction.confirmation({
+		content: `${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${
 			bingo.teamSize
 		} users need to confirm. ${bold(`You will be charged ${toKMB(bingo.ticketPrice)}`)}`,
-		allUsers.map(i => i.id)
-	);
+		users: allUsers.map(i => i.id)
+	});
 
 	for (const user of allUsers) {
 		const teamWithUser = await bingo.findTeamWithUser(user.id);
@@ -150,6 +123,10 @@ async function makeTeamCommand(
 			return `${user} doesn't have enough GP to buy a ticket! They need ${toKMB(
 				bingo.ticketPrice
 			)} GP, but only have ${toKMB(user.GP)} GP.`;
+		}
+		const isBlacklisted = await Cache.isUserBlacklisted(user.id);
+		if (isBlacklisted) {
+			return `${user} is blacklisted and cannot join bingo teams.`;
 		}
 	}
 	await prisma.$transaction([
@@ -184,17 +161,16 @@ async function makeTeamCommand(
 	return "Successfully created a bingo team! Have fun. You can leave the team before the bingo starts if you'd like, but doing so will delete the team, causing all users to have to join or make a new team.";
 }
 
-async function leaveTeamCommand(interaction: ChatInputCommandInteraction, bingo: BingoManager) {
+async function leaveTeamCommand(interaction: MInteraction, bingo: BingoManager) {
 	if (bingo.isActive()) return "You can't leave a bingo team after bingo has started.";
 	if (bingo.wasFinalized) {
 		return "You can't leave a bingo team after bingo has ended.";
 	}
 
-	const team = await bingo.findTeamWithUser(interaction.user.id);
+	const team = await bingo.findTeamWithUser(interaction.userId);
 	if (!team) return "You're not in a team for this bingo.";
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		'Are you sure you want to leave your team? Doing so will delete/disband the team, and all of you will need to join a new team.'
 	);
 
@@ -243,7 +219,7 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	const items = [];
 
 	for (const name of arr) {
-		const item = getItem(name);
+		const item = Items.getItem(name);
 		if (item) {
 			items.push(item);
 		}
@@ -269,27 +245,29 @@ async function getBingoFromUserInput(input: string) {
 	return bingo;
 }
 
-export const bingoCommand: OSBMahojiCommand = {
+export const bingoCommand = defineCommand({
 	name: 'bingo',
 	description: 'Bingo!',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'make_team',
 			description: 'Make your own bingo team, with other players.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, _: User, member) => {
-						if (!member || !member.guild) return [];
+					autocomplete: async ({ value, guildId, userId }: StringAutoComplete) => {
+						if (!guildId) return [];
+						const member = await globalClient.fetchMember({ guildId, userId });
+						if (!member || !member.guild_id) return [];
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
 									{
-										guild_id: member.guild.id,
+										guild_id: member.guild_id,
 										was_finalized: false
 									},
 									{
@@ -307,25 +285,25 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'second_user',
 					description: 'The second user.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'third_user',
 					description: 'The third user.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'fourth_user',
 					description: 'The fourth user.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'fifth_user',
 					description: 'The fifth user.',
 					required: false
@@ -333,23 +311,23 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leave_team',
 			description: 'Leave your bingo team.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
 									{
 										bingo_participant: {
 											some: {
-												user_id: user.id
+												user_id: userId
 											}
 										}
 									}
@@ -365,12 +343,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View bingo info.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
@@ -379,12 +357,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leaderboard',
 			description: 'View the bingo leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo to check the leaderboard of.',
 					required: true,
@@ -393,18 +371,18 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'create_bingo',
 			description: 'Create a bingo.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'title',
 					description: 'The title of the bingo.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'duration_days',
 					description: 'The duration of the bingo in days.',
 					required: true,
@@ -412,20 +390,20 @@ export const bingoCommand: OSBMahojiCommand = {
 					max_value: 31
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'start_date_unix_seconds',
 					description: 'The start date in unix seconds.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'ticket_price',
 					description: 'The ticket price.',
 					required: true,
 					min_value: 1
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'team_size',
 					description: 'The team size.',
 					required: true,
@@ -433,13 +411,13 @@ export const bingoCommand: OSBMahojiCommand = {
 					max_value: 5
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'notifications_channel_id',
 					description: 'The channel to send notifications to.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'organizers',
 					description: 'The organizers (user IDs separated by comma).',
 					required: true
@@ -447,59 +425,59 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'manage_bingo',
 			description: 'Manage your bingo.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
-						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
+						const bingos = await fetchBingosThatUserIsInvolvedIn(userId);
 						return bingos
 							.map(i => new BingoManager(i))
-							.filter(b => b.creatorID === user.id || b.organizers.includes(user.id))
+							.filter(b => b.creatorID === userId || b.organizers.includes(userId))
 							.filter(bingo => (!value ? true : bingo.id.toString() === value))
 							.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'add_tile',
 					description: 'Add a tile to your bingo.',
 					required: false,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return globalBingoTiles
 							.filter(t => (!value ? true : t.name.toLowerCase().includes(value.toLowerCase())))
 							.map(t => ({
 								name: t.name,
-								value: t.id
+								value: t.id.toString()
 							}));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'csv_dump',
 					description: 'Dump a csv file with all the bingo results.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'remove_tile',
 					description: 'Remove a tile from your bingo.',
 					required: false,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
 									{
-										creator_id: user.id
+										creator_id: userId
 									},
 									{
 										organizers: {
-											has: user.id
+											has: userId
 										}
 									}
 								],
@@ -519,20 +497,20 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'finalize',
 					description: 'Finalize/end the bingo.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'add_extra_gp',
 					description: 'Add extra gp to the prize.',
 					required: false,
 					min_value: 1_000_000
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'trophy_handout',
 					description: 'Hand out trophies.',
 					required: false
@@ -540,17 +518,17 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'items',
 			description: 'View your progress/items.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo to check your items of.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
-						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
+						const bingos = await fetchBingosThatUserIsInvolvedIn(userId);
 						return bingos
 							.map(i => new BingoManager(i))
 							.filter(b => b.isActive())
@@ -561,46 +539,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		interaction,
-		channelID
-	}: CommandRunOptions<{
-		items?: {
-			bingo: string;
-		};
-		leaderboard?: {
-			bingo: string;
-		};
-		make_team?: MakeTeamOptions;
-		leave_team?: {
-			bingo: string;
-		};
-		create_bingo?: {
-			title: string;
-			duration_days: number;
-			start_date_unix_seconds: number;
-			ticket_price: number;
-			team_size: number;
-			notifications_channel_id: string;
-			organizers: string;
-		};
-		manage_bingo?: {
-			bingo: string;
-			csv_dump?: boolean;
-			add_tile?: string;
-			remove_tile?: string;
-			finalize?: boolean;
-			add_extra_gp?: number;
-			trophy_handout?: boolean;
-		};
-		view?: {
-			bingo: string;
-		};
-	}>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ user, userId, options, interaction }) => {
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
 			if (Number.isNaN(bingoID)) {
@@ -620,7 +559,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			const bingo = new BingoManager(bingoParticipant.bingo);
 			const teamProgress = (await bingo.determineProgressOfTeam(bingoParticipant.bingo_team_id))!;
 
-			const clItems = [];
+			const clItems: number[] = [];
 
 			for (const tile of teamProgress.tilesNotCompleted) {
 				const tileItems = getAllTileItems(tile);
@@ -648,7 +587,7 @@ export const bingoCommand: OSBMahojiCommand = {
 
 			const image = await clImageGenerator.makeArbitraryCLImage({
 				user,
-				clItems,
+				clItems: new Set(clItems),
 				userBank: teamProgress.cl,
 				title: 'Bingo'
 			});
@@ -668,7 +607,7 @@ export const bingoCommand: OSBMahojiCommand = {
 		if (options.leaderboard) {
 			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
-			return bingoTeamLeaderboard(interaction, user, channelID, new BingoManager(bingo));
+			return bingoTeamLeaderboard(interaction, new BingoManager(bingo));
 		}
 
 		if (options.create_bingo) {
@@ -681,18 +620,26 @@ export const bingoCommand: OSBMahojiCommand = {
 				return `You need at least ${creationCost} to create a bingo.`;
 			}
 
-			const channel = globalClient.channels.cache.get(options.create_bingo.notifications_channel_id);
-			if (!channel || !channelIsSendable(channel)) {
+			const channelId = options.create_bingo.notifications_channel_id;
+			if (!isValidDiscordSnowflake(channelId)) {
+				return "That's not a valid channel ID, if you need help on how to get a channel id, you can ask us for help.";
+			}
+			const channel = await Cache.getChannel(options.create_bingo.notifications_channel_id);
+			const sendable = await globalClient.channelIsSendable(channel);
+			if (!sendable) {
+				return 'I cannot send messages to the notifications channel.';
+			}
+			if (!channel || !channel.guild_id) {
 				return 'Invalid notifications channel.';
 			}
 			if (!isValidNickname(options.create_bingo.title)) {
 				return 'Invalid title.';
 			}
-			const member = await channel.guild.members.fetch(userID).catch(noOp);
-			if (globalConfig.isProduction && (!member || !member.permissions.has('Administrator'))) {
+			const member = await globalClient.fetchMember({ guildId: channel.guild_id, userId });
+			if (globalConfig.isProduction && (!member || !member.permissions.includes('ADMINISTRATOR'))) {
 				return 'You can only use a notifications channel if you are an Administrator of that server.';
 			}
-			if (channel.guild.id !== interaction.guildId) {
+			if (channel.guild_id !== interaction.guildId) {
 				return 'The notifications channel must be in the same server as the command.';
 			}
 
@@ -709,7 +656,7 @@ export const bingoCommand: OSBMahojiCommand = {
 					.filter(id => isValidDiscordSnowflake(id)),
 				bingo_tiles: [],
 				creator_id: user.id,
-				guild_id: channel.guildId
+				guild_id: channel.guild_id
 			};
 
 			if (createOptions.team_size < 1 || createOptions.team_size > 5) {
@@ -734,8 +681,7 @@ export const bingoCommand: OSBMahojiCommand = {
 - Once your Bingo starts, you cannot stop it, or change any settings. Ensure everything is accurate before then.
 - You can only have 1 Bingo active at a time.
 - Ironmen will be able to enter, for free. However, they cannot win rewards.
-- Note: You need to add tiles yourself, using our predefined tiles AND/OR your own custom tiles. You can add tiles using ${mentionCommand(
-				globalClient,
+- Note: You need to add tiles yourself, using our predefined tiles AND/OR your own custom tiles. You can add tiles using ${globalClient.mentionCommand(
 				'bingo',
 				'manage_bingo',
 				'add_tile'
@@ -756,14 +702,14 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 			}
 `;
 
-			await handleMahojiConfirmation(interaction, disclaimer);
+			await interaction.confirmation(disclaimer);
 
 			await user.removeItemsFromBank(new Bank().add('Coins', fee));
 			await prisma.bingo.create({
 				data: createOptions
 			});
 
-			debugLog('Created bingo', createOptions);
+			Logging.logDebug('Created bingo', createOptions);
 
 			return 'Created your Bingo succesfully!';
 		}
@@ -787,8 +733,7 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 					return 'This bingo was already finalized.';
 				}
 				const loot = new Bank().add('Coins', await bingo.countTotalGPInPrizePool());
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to end the Bingo? ${bold('This cannot be undone.')}
 
 The creator of the bingo (${userMention(
@@ -812,23 +757,25 @@ The creator of the bingo (${userMention(
 				return {
 					files: [
 						{
-							attachment: Buffer.from(
-								teams
-									.map(team =>
-										[
-											team.participants.map(u => getUsernameSync(u.user_id)).join(','),
-											team.tilesCompletedCount,
-											team.trophy?.item.name ?? 'No Trophy'
-										].join('\t')
+							buffer: Buffer.from(
+								(
+									await Promise.all(
+										teams.map(team =>
+											[
+												team.participants
+													.map(u => Cache.getBadgedUsername(u.user_id))
+													.join(','),
+												team.tilesCompletedCount,
+												team.trophy?.item.name ?? 'No Trophy'
+											].join('\t')
+										)
 									)
-									.join('\n')
+								).join('\n')
 							),
 							name: 'teams.txt'
 						},
 						{
-							attachment: Buffer.from(
-								users.map(u => [u.id, u.tilesCompletedCount].join('\t')).join('\n')
-							),
+							buffer: Buffer.from(users.map(u => [u.id, u.tilesCompletedCount].join('\t')).join('\n')),
 							name: 'users.txt'
 						}
 					]
@@ -858,7 +805,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					},
 					data: {
 						bingo_tiles: {
-							push: tileToAdd as any as Prisma.InputJsonObject
+							push: tileToAdd as any as PrismaCompatibleJsonObject
 						}
 					}
 				});
@@ -879,11 +826,11 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					tileName = generateTileName(globalTile);
 				} else {
 					const tileToRemove = newTiles.find(
-						t => md5sum(generateTileName(t)) === options.manage_bingo?.remove_tile
+						t => md5sum(generateTileName(t)) === options.manage_bingo!.remove_tile
 					);
 					if (tileToRemove) {
 						newTiles = newTiles.filter(
-							t => md5sum(generateTileName(t)) !== options.manage_bingo?.remove_tile!
+							t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!
 						);
 						tileName = generateTileName(tileToRemove);
 					}
@@ -893,16 +840,13 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					return 'Invalid tile to remove.';
 				}
 
-				await handleMahojiConfirmation(
-					interaction,
-					`Are you sure you want to remove this tile?\n\n${tileName}`
-				);
+				await interaction.confirmation(`Are you sure you want to remove this tile?\n\n${tileName}`);
 				await prisma.bingo.update({
 					where: {
 						id: bingo.id
 					},
 					data: {
-						bingo_tiles: newTiles as any as Prisma.InputJsonObject[]
+						bingo_tiles: newTiles as any as PrismaCompatibleJsonObject[]
 					}
 				});
 
@@ -920,8 +864,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					return `You need at least ${cost} to add that much GP to the prize pool.`;
 				}
 
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to add ${cost} to the prize pool? You cannot undo this.`
 				);
 
@@ -936,7 +879,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 						}
 					}
 				});
-				debugLog('Added extra gp to bingo', { bingoID: bingo.id, amount });
+				Logging.logDebug('Added extra gp to bingo', { bingoID: bingo.id, amount });
 
 				return `Added ${cost} to the prize pool.`;
 			}
@@ -955,7 +898,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 						trophy => trophy.percentile >= team.trophy!.percentile
 					);
 
-					for (const userID of team.participants.map(t => t.user_id)) {
+					for (const userId of team.participants.map(t => t.user_id)) {
 						const reclaimableItems: Prisma.ReclaimableItemCreateManyInput[] = await Promise.all(
 							trophiesToReceive.map(async trophy => ({
 								name: `Bingo Trophy (${trophy.item.name})`,
@@ -964,11 +907,11 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 								item_id: trophy.item.id,
 								description: `Awarded for placing in the top ${trophy.percentile}% of ${
 									bingo.title
-								}. Your team (${(await Promise.all(team.participants.map(async t => await getUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${
+								}. Your team (${(await Promise.all(team.participants.map(async t => await Cache.getBadgedUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${
 									team.tilesCompletedCount
 								} tiles completed.`,
 								date: bingo.endDate.toISOString(),
-								user_id: userID
+								user_id: userId
 							}))
 						);
 						toInsert.push(...reclaimableItems);
@@ -1028,7 +971,7 @@ ${progressString}
 				},
 				files: [
 					{
-						attachment: Buffer.from(bingo.bingoTiles.map((t, i) => `${++i}. ${t.name}`).join('\n')),
+						buffer: Buffer.from(bingo.bingoTiles.map((t, i) => `${++i}. ${t.name}`).join('\n')),
 						name: 'tiles_board.txt'
 					}
 				]
@@ -1037,4 +980,4 @@ ${progressString}
 
 		return 'Invalid command.';
 	}
-};
+});

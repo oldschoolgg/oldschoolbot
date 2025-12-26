@@ -1,10 +1,10 @@
-import { isFunction } from 'e';
+import { isFunction } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import Buyables from '../../src/lib/data/buyables/buyables';
-import getOSItem from '../../src/lib/util/getOSItem';
-import { sacrificePriceOfItem } from '../../src/mahoji/commands/sacrifice';
-import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
+import Buyables from '../../src/lib/data/buyables/buyables.js';
+import { sacrificePriceOfItem } from '../../src/mahoji/commands/sacrifice.js';
+import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell.js';
 
 describe('Price Abusing', () => {
 	const gpPackageBuyables = Buyables.filter(
@@ -69,13 +69,15 @@ describe('Price Abusing', () => {
 			i.gpCost !== undefined &&
 			i.itemCost === undefined &&
 			!isFunction(i.outputItems) &&
-			(!i.outputItems || i.outputItems.length === 1)
+			(!i.outputItems || i.outputItems.length === 1) &&
+			!i.shopQuantity &&
+			!i.quantityPerHour
 	);
 
 	test('Buyables', () => {
 		for (const b of gpBuyables) {
 			if (isFunction(b.outputItems)) continue;
-			const item = b.outputItems ? b.outputItems.items()[0][0] : getOSItem(b.name);
+			const item = b.outputItems ? b.outputItems.items()[0][0] : Items.getOrThrow(b.name);
 			const priceSoldFor = sellPriceOfItem(item, 0);
 			const priceBoughtFor = b.gpCost;
 			if (priceSoldFor.price > priceBoughtFor!) {

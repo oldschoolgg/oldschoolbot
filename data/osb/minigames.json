@@ -1,0 +1,182 @@
+[
+	{
+		"name": "Barbarian Assault",
+		"aliases": ["ba", "barb"],
+		"column": "barb_assault"
+	},
+	{
+		"name": "Big Chompy Bird Hunting",
+		"aliases": ["chimpy", "bcbh"],
+		"column": "big_chompy_bird_hunting"
+	},
+	{
+		"name": "Brimhaven Agility Arena",
+		"aliases": ["baa", "aa", "agilarena"],
+		"column": "agility_arena"
+	},
+	{
+		"name": "Castle Wars",
+		"aliases": ["cw", "cwars"],
+		"column": "castle_wars"
+	},
+	{
+		"name": "Chambers of Xeric",
+		"aliases": ["cox", "raid1", "raids1", "chambers", "xeric"],
+		"column": "raids"
+	},
+	{
+		"name": "Chambers of Xeric - Challenge Mode",
+		"aliases": ["coxcm", "raid1cm", "raids1cm", "chamberscm", "xericcm"],
+		"column": "raids_challenge_mode"
+	},
+	{
+		"name": "Champions' Challenge",
+		"aliases": ["champion", "scrolls"],
+		"column": "champions_challenge"
+	},
+	{
+		"name": "Corrupted Gauntlet",
+		"aliases": ["cgauntlet", "corruptedg", "corruptg", "cg"],
+		"column": "corrupted_gauntlet"
+	},
+	{
+		"name": "Fishing Trawler",
+		"aliases": ["trawler", "ft"],
+		"column": "fishing_trawler"
+	},
+	{
+		"name": "Fortis Colosseum",
+		"aliases": ["colo"],
+		"column": "colosseum"
+	},
+	{
+		"name": "Gauntlet",
+		"aliases": ["gauntlet", "gaunt", "ng"],
+		"column": "gauntlet"
+	},
+	{
+		"name": "Giants' Foundry",
+		"aliases": ["giants", "foundry", "giants foundry", "giants' foundry"],
+		"column": "giants_foundry"
+	},
+	{
+		"name": "Gnome Restaurant",
+		"aliases": ["gh", "gnome", "restaurant"],
+		"column": "gnome_restaurant"
+	},
+	{
+		"name": "Guardians Of The Rift",
+		"aliases": ["guardians of the rift", "gotr", "guardian of the rift"],
+		"column": "guardians_of_the_rift"
+	},
+	{
+		"name": "Hallowed Sepulchre",
+		"aliases": ["hs", "sepulchre"],
+		"column": "sepulchre"
+	},
+	{
+		"name": "Inferno",
+		"aliases": ["inferno", "zuk"],
+		"column": "inferno"
+	},
+	{
+		"name": "Last Man Standing",
+		"aliases": ["last man standing", "lms"],
+		"column": "lms"
+	},
+	{
+		"name": "Magic Training Arena",
+		"aliases": ["mta"],
+		"column": "magic_training_arena"
+	},
+	{
+		"name": "Mahogany Homes",
+		"aliases": ["mh", "mahogany", "homes"],
+		"column": "mahogany_homes"
+	},
+	{
+		"name": "Nightmare Zone",
+		"aliases": ["nightmare zone", "nmz"],
+		"column": "nmz"
+	},
+	{
+		"name": "Pest Control",
+		"aliases": ["pest", "pc"],
+		"column": "pest_control"
+	},
+	{
+		"name": "Puro Puro",
+		"aliases": ["puro", "puro puro"],
+		"column": "puro_puro"
+	},
+	{
+		"name": "Pyramid Plunder",
+		"aliases": ["pp", "pyramid", "plunder"],
+		"column": "pyramid_plunder"
+	},
+	{
+		"name": "Rogues' Den",
+		"aliases": ["rd", "rogues", "den"],
+		"column": "rogues_den"
+	},
+	{
+		"name": "Shades of Mort'ton",
+		"aliases": ["som", "shades of mort'ton"],
+		"column": "shades_of_morton"
+	},
+	{
+		"name": "Soul Wars",
+		"aliases": ["sw", "soul"],
+		"column": "soul_wars"
+	},
+	{
+		"name": "Tears Of Guthix",
+		"aliases": ["tog"],
+		"column": "tears_of_guthix"
+	},
+	{
+		"name": "Temple Trekking",
+		"aliases": ["tt", "trek"],
+		"column": "temple_trekking"
+	},
+	{
+		"name": "Tempoross",
+		"aliases": ["temp", "ross", "tempo", "watertodt"],
+		"column": "tempoross"
+	},
+	{
+		"name": "Theatre of Blood",
+		"aliases": ["tob", "theatre of blood"],
+		"column": "tob"
+	},
+	{
+		"name": "Theatre of Blood - Hard Mode",
+		"aliases": ["tob hard", "tob hard mode"],
+		"column": "tob_hard"
+	},
+	{
+		"name": "Tithe farm",
+		"aliases": ["tf", "tithe"],
+		"column": "tithe_farm"
+	},
+	{
+		"name": "Tombs of Amascut",
+		"aliases": ["toa", "tombs of amascut"],
+		"column": "tombs_of_amascut"
+	},
+	{
+		"name": "Trouble Brewing",
+		"aliases": ["trouble brewing", "tb"],
+		"column": "trouble_brewing"
+	},
+	{
+		"name": "Volcanic Mine",
+		"aliases": ["vm"],
+		"column": "volcanic_mine"
+	},
+	{
+		"name": "Wintertodt",
+		"aliases": ["wt"],
+		"column": "wintertodt"
+	}
+]

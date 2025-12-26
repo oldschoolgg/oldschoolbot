@@ -1,28 +1,20 @@
+import './base.js';
+
 import { readFileSync, writeFileSync } from 'node:fs';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { md5sum } from '@oldschoolgg/toolkit/node';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { uniqueArr } from '@oldschoolgg/toolkit/util';
 import { DateTime } from 'luxon';
-import { Bank, Items, type LootTable } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import { applyStaticDefine } from '../meta.js';
-applyStaticDefine();
-import { BOT_TYPE } from '@/lib/constants';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
+import { BOT_TYPE } from '@/lib/constants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { tearDownScript } from './scriptUtil.js';
 
-export function createMonstersJson() {
+function createMonstersJson() {
 	const stopwatch = new Stopwatch();
 	const monstersJsonFile = [];
 
 	for (const monster of killableMonsters) {
-		let allDroppableItems: number[] = [];
-		if ('rawTable' in monster) {
-			allDroppableItems.push(...(monster.rawTable as LootTable).allItems);
-		}
-		allDroppableItems.push(...monster.table.kill(200_000, {}).itemIDs);
-		allDroppableItems = uniqueArr(allDroppableItems);
-		allDroppableItems.sort((a, b) => a - b);
-
 		monstersJsonFile.push({
 			id: monster.id,
 			name: monster.name,
@@ -44,8 +36,7 @@ export function createMonstersJson() {
 			can_barrage: monster.canBarrage ?? false,
 			can_chin: monster.canChinning ?? false,
 			can_cannon: monster.canCannon ?? false,
-			cannon_multi: monster.cannonMulti ?? false,
-			all_droppable_items: allDroppableItems
+			cannon_multi: monster.cannonMulti ?? false
 		});
 	}
 
@@ -73,3 +64,6 @@ export function createMonstersJson() {
 	);
 	stopwatch.check('Finished monsters file.');
 }
+
+createMonstersJson();
+tearDownScript();

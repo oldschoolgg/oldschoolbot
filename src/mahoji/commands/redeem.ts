@@ -1,28 +1,21 @@
-import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { Time, notEmpty } from 'e';
+import { bold } from '@oldschoolgg/discord';
+import { notEmpty, ProductID, products } from '@oldschoolgg/toolkit';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { BOT_TYPE } from '../../lib/constants';
-import { addToDoubleLootTimer } from '../../lib/doubleLoot';
-import { roboChimpSyncData } from '../../lib/roboChimp';
+import { BOT_TYPE } from '@/lib/constants.js';
+import { roboChimpSyncData } from '@/lib/roboChimp.js';
 
-export const redeemCommand: OSBMahojiCommand = {
+export const redeemCommand = defineCommand({
 	name: 'redeem',
 	description: 'Redeem a code you received.',
-	attributes: {
-		cooldown: 10
-	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'code',
 			description: 'The code to redeem.',
 			required: true
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ code: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }) => {
 		const code = await roboChimpClient.storeCode.findFirst({
 			where: {
 				code: options.code
@@ -71,7 +64,7 @@ export const redeemCommand: OSBMahojiCommand = {
 				'bit' in product
 					? roboChimpClient.user.update({
 							where: {
-								id: BigInt(userID)
+								id: BigInt(user.id)
 							},
 							data: {
 								store_bitfield: {
@@ -83,23 +76,8 @@ export const redeemCommand: OSBMahojiCommand = {
 			].filter(notEmpty)
 		);
 
-		if (BOT_TYPE === 'BSO') {
-			if (product.type === 'active') {
-				switch (product.id) {
-					case ProductID.OneHourDoubleLoot: {
-						await addToDoubleLootTimer(Time.Hour, `Purchased by ${user}`);
-						break;
-					}
-					case ProductID.ThreeHourDoubleLoot: {
-						await addToDoubleLootTimer(Time.Hour * 3, `Purchased by ${user}`);
-						break;
-					}
-				}
-			}
-		}
-
 		await roboChimpSyncData(user);
 
 		return `You have redeemed: ${bold(product.name)}!`;
 	}
-};
+});

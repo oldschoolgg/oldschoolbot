@@ -1,25 +1,24 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 
-import { skillEmoji } from '../../data/emojis';
-import type { Skill } from '../types';
-import { SkillsEnum } from '../types';
-import Agility from './agility';
-import { Construction } from './construction';
-import Cooking from './cooking/cooking';
-import Crafting from './crafting';
-import Farming from './farming';
-import Firemaking from './firemaking';
-import { Fishing } from './fishing/fishing';
-import Fletching from './fletching';
-import Herblore from './herblore/herblore';
-import Hunter from './hunter/hunter';
-import Magic from './magic';
-import Mining from './mining';
-import Prayer from './prayer';
-import Runecraft from './runecraft';
-import Smithing from './smithing';
-import Thieving from './thieving';
-import Woodcutting from './woodcutting/woodcutting';
+import { skillEmoji } from '@/lib/data/emojis.js';
+import type { Skill } from '@/lib/skilling/types.js';
+import Agility from './agility.js';
+import { Construction } from './construction/index.js';
+import Cooking from './cooking/cooking.js';
+import Crafting from './crafting/index.js';
+import { Farming } from './farming/index.js';
+import Firemaking from './firemaking.js';
+import { Fishing } from './fishing/fishing.js';
+import Fletching from './fletching/index.js';
+import Herblore from './herblore/herblore.js';
+import Hunter from './hunter/hunter.js';
+import Magic from './magic/index.js';
+import Mining from './mining.js';
+import Prayer from './prayer.js';
+import Runecraft from './runecraft.js';
+import Smithing from './smithing/index.js';
+import { Thieving } from './thieving/index.js';
+import Woodcutting from './woodcutting/woodcutting.js';
 
 export const Skills: Record<string, Skill> = {
 	Crafting,
@@ -41,58 +40,56 @@ export const Skills: Record<string, Skill> = {
 	Magic,
 	Hitpoints: {
 		aliases: ['hitpoints', 'hp'],
-		id: SkillsEnum.Hitpoints,
+		id: 'hitpoints',
 		emoji: Emoji.Hitpoints,
 		name: 'Hitpoints'
 	},
 	Attack: {
 		aliases: ['attack', 'atk'],
-		id: SkillsEnum.Attack,
+		id: 'attack',
 		emoji: Emoji.Attack,
 		name: 'Attack'
 	},
 	Strength: {
 		aliases: ['str', 'strength'],
-		id: SkillsEnum.Strength,
+		id: 'strength',
 		emoji: Emoji.Strength,
 		name: 'Strength'
 	},
 	Defence: {
 		aliases: ['def', 'defence'],
-		id: SkillsEnum.Defence,
+		id: 'defence',
 		emoji: Emoji.Defence,
 		name: 'Defence'
 	},
 	Ranged: {
 		aliases: ['range', 'ranged'],
-		id: SkillsEnum.Ranged,
+		id: 'ranged',
 		emoji: Emoji.Ranged,
 		name: 'Ranged'
 	},
 	Slayer: {
 		aliases: ['worst skill', 'slayer', 'slay'],
-		id: SkillsEnum.Slayer,
+		id: 'slayer',
 		emoji: Emoji.Slayer,
 		name: 'Slayer'
 	},
 	Dungeoneering: {
 		aliases: ['dg', 'dungeoneering'],
-		id: SkillsEnum.Dungeoneering,
+		id: 'dungeoneering',
 		emoji: Emoji.Dungeoneering,
 		name: 'Dungeoneering'
 	},
 	Invention: {
 		aliases: ['invention', 'inv'],
-		id: SkillsEnum.Invention,
+		id: 'invention',
 		emoji: Emoji.Invention,
 		name: 'Invention'
 	},
 	Divination: {
 		aliases: ['divination', 'div'],
-		id: SkillsEnum.Divination,
+		id: 'divination',
 		emoji: skillEmoji.divination,
 		name: 'Divination'
 	}
 };
-
-export default Skills;

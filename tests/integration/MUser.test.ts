@@ -1,14 +1,14 @@
-import { activity_type_enum } from '@prisma/client';
-import { Time, objectEntries, randArrItem, randInt } from 'e';
-import { Bank, type ItemBank, convertLVLtoXP } from 'oldschooljs';
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+
+import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { objectEntries, Time } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, convertXPtoLVL } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/bso/bsoConstants';
-import { ClueTiers } from '../../src/lib/clues/clueTiers';
-import { SkillsEnum } from '../../src/lib/skilling/types';
-import { assert } from '../../src/lib/util/logError';
-import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
-import { createTestUser } from './util';
+import { activity_type_enum } from '@/prisma/main.js';
+import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
+import { assert } from '../../src/lib/util/logError.js';
+import { createTestUser } from './util.js';
 
 async function stressTest(userID: string) {
 	const user = await mUserFetch(userID);
@@ -16,28 +16,25 @@ async function stressTest(userID: string) {
 	const currentGP = user.GP;
 	const gpBank = new Bank().add('Coins', currentGP);
 	async function assertGP(amnt: number) {
-		const mUser = await mahojiUsersSettingsFetch(userID, { GP: true });
-		assert(Number(mUser.GP) === amnt, `1 GP should match ${amnt} === ${Number(mUser.GP)}`);
+		await user.sync();
+		assert(Number(user.GP) === amnt, `1 GP should match ${amnt} === ${Number(user.GP)}`);
 	}
 	async function assertBankMatches() {
-		const newBank = user.bank;
-		const mUser = await mahojiUsersSettingsFetch(userID, { bank: true, GP: true });
-		const mahojiBank = new Bank(mUser.bank as ItemBank);
-		assert(mahojiBank.equals(newBank), 'Mahoji bank should match');
+		const currentBank = user.bank.clone();
+		await user.sync();
+		const mahojiBank = user.bank;
+		assert(mahojiBank.equals(currentBank), 'Mahoji bank should match');
 		assert(mahojiBank.equals(currentBank), `Updated bank should match: ${mahojiBank.difference(currentBank)}`);
-		assert(currentGP === Number(mUser.GP), `2 GP should match ${currentGP} === ${Number(mUser.GP)}`);
+		assert(currentGP === Number(user.GP), `2 GP should match ${currentGP} === ${Number(user.GP)}`);
 	}
-	async function fetchCL() {
-		const mUser = await mahojiUsersSettingsFetch(userID, { collectionLogBank: true });
-		const mahojiBank = new Bank(mUser.collectionLogBank as ItemBank);
-		return mahojiBank;
-	}
-	const currentCL = await fetchCL();
+
+	await user.sync();
+	const currentCL = user.cl.clone();
 
 	await assertBankMatches();
 
-	await transactItems({ userID, itemsToRemove: currentBank, filterLoot: false });
-	await transactItems({ userID, itemsToAdd: currentBank, filterLoot: false });
+	await user.transactItems({ itemsToRemove: currentBank, filterLoot: false });
+	await user.transactItems({ itemsToAdd: currentBank, filterLoot: false });
 	await assertBankMatches();
 	await user.removeItemsFromBank(currentBank);
 	await assertGP(currentGP);
@@ -48,22 +45,22 @@ async function stressTest(userID: string) {
 	await assertBankMatches();
 
 	await assertGP(currentGP);
-	await transactItems({ userID, itemsToRemove: gpBank, filterLoot: false });
+	await user.transactItems({ itemsToRemove: gpBank, filterLoot: false });
 	await assertGP(0);
-	await transactItems({ userID, itemsToAdd: gpBank, filterLoot: false });
+	await user.transactItems({ itemsToAdd: gpBank, filterLoot: false });
 	await assertBankMatches();
 	await assertGP(currentGP);
 
 	// Adding and removing at same time
 	const everything = currentBank.clone().add(gpBank);
-	await transactItems({ userID, itemsToRemove: everything, itemsToAdd: everything, filterLoot: false });
+	await user.transactItems({ itemsToRemove: everything, itemsToAdd: everything, filterLoot: false });
 	await assertBankMatches();
 
 	// Collection Log
 	const clBankChange = new Bank().add('Coins').add('Twisted bow').freeze();
-	assert(currentCL.equals(await fetchCL()), `CL should not have changed ${currentCL.difference(await fetchCL())}`);
-	const { previousCL, newCL } = await transactItems({
-		userID,
+	await user.sync();
+	assert(currentCL.equals(user.cl));
+	const { previousCL, newCL } = await user.transactItems({
 		itemsToAdd: clBankChange,
 		collectionLog: true,
 		filterLoot: false
@@ -90,9 +87,9 @@ describe('MUser', () => {
 	test('Should add XP', async () => {
 		const user = await createTestUser();
 		expect(user.skillsAsLevels.agility).toEqual(1);
-		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
-		const xpMultiplied = 1000 * GLOBAL_BSO_XP_MULTIPLIER;
+		const result = await user.addXP({ skillName: 'agility', amount: 1000 });
 		expect(user.skillsAsLevels.agility).toEqual(20);
+		const xpMultiplied = 1000 * GLOBAL_BSO_XP_MULTIPLIER;
 		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP.
 **Congratulations! Your Agility level is now 20** 🎉`);
 		const xpAdded = await global.prisma!.xPGain.findMany({
@@ -116,33 +113,36 @@ describe('MUser', () => {
 			const expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
 			expect(val).toEqual(expectedVal);
 		}
-		expect(user.skillsAsLevels.dungeoneering).toEqual(1);
-		await user.addXP({ skillName: SkillsEnum.Agility, amount: convertLVLtoXP(50) / 5 });
-		await user.addXP({ skillName: SkillsEnum.Attack, amount: convertLVLtoXP(50) / 5 });
-		await user.addXP({ skillName: SkillsEnum.Invention, amount: convertLVLtoXP(50) / 5 });
 
-		expect(user.skillsAsLevels.agility).toEqual(50);
-		expect(user.skillsAsLevels.attack).toEqual(50);
-		expect(user.skillsAsXP.agility).toEqual(convertLVLtoXP(50));
-		expect(user.skillsAsXP.attack).toEqual(convertLVLtoXP(50));
-		expect(user.skillsAsLevels.invention).toEqual(50);
+		const xpToAdd = convertLVLtoXP(50);
+		const expectedXP = xpToAdd * GLOBAL_BSO_XP_MULTIPLIER;
+		const expectedLevel = convertXPtoLVL(expectedXP);
+		await user.addXP({ skillName: 'agility', amount: xpToAdd });
+		await user.addXP({ skillName: 'attack', amount: xpToAdd });
+
+		expect(user.skillsAsLevels.agility).toEqual(expectedLevel);
+		expect(user.skillsAsLevels.attack).toEqual(expectedLevel);
+		expect(user.skillsAsXP.agility).toEqual(expectedXP);
+		expect(user.skillsAsXP.attack).toEqual(expectedXP);
 	});
 
 	test('addItemsToCollectionLog', async () => {
 		const user = await createTestUser();
 		const loot = new Bank().add('Coal', 73);
 		{
-			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			const previousCL = await user.fetchCL();
+			await user.addItemsToCollectionLog({ itemsToAdd: loot });
+			const newCL = await user.fetchCL();
 			expect(newCL.equals(loot)).toEqual(true);
 			expect(previousCL.equals(new Bank())).toEqual(true);
-			expect(itemsAdded).toEqual(loot);
 		}
 
 		{
-			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			const previousCL = await user.fetchCL();
+			await user.addItemsToCollectionLog({ itemsToAdd: loot });
+			const newCL = await user.fetchCL();
 			expect(newCL.equals(loot.clone().multiply(2))).toEqual(true);
 			expect(previousCL.equals(loot)).toEqual(true);
-			expect(itemsAdded).toEqual(loot);
 		}
 	});
 

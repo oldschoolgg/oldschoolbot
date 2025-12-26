@@ -1,11 +1,11 @@
-import { Time } from 'e';
-import { Bank, randomVariation, resolveItems } from 'oldschooljs';
+import { randomVariation } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, resolveItems } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function strongHoldOfSecurityCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function strongHoldOfSecurityCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
 	const count = await prisma.activity.count({
@@ -24,8 +24,7 @@ export async function strongHoldOfSecurityCommand(user: MUser, channelID: string
 			}
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: bootsBank
 		});
@@ -33,9 +32,9 @@ export async function strongHoldOfSecurityCommand(user: MUser, channelID: string
 		return `You've already completed the Stronghold of Security!${bootsBank.length > 0 ? ` You reclaimed these items: ${bootsBank}.` : ''}`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration: randomVariation(Time.Minute * 10, 5),
 		type: 'StrongholdOfSecurity'
 	});

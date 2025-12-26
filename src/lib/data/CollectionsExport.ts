@@ -1,14 +1,12 @@
-import type { Minigame } from '@prisma/client';
-import { Bank, type Item, ItemGroups, getItemOrThrow, resolveItems } from 'oldschooljs';
+import { allDOAPets, customPetsCL, discontinuedCustomPetsCL } from '@/lib/bso/collection-log/main.js';
+import { allHolidayItems, PartyhatTable } from '@/lib/bso/holidayItems.js';
+import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
+import { LampTable } from '@/lib/bso/xpLamps.js';
 
-import { removeDiscontinuedItems } from '../customItems/customItems';
-import { growablePets } from '../growablePets';
-import { stoneSpirits } from '../minions/data/stoneSpirits';
-import type { MinigameScore } from '../settings/minigames';
-import type { MUserStats } from '../structures/MUserStats';
-import getOSItem from '../util/getOSItem';
-import { assert } from '../util/logError';
-import { LampTable } from '../xpLamps';
+import { Bank, EItem, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
+
+import type { Minigame } from '@/prisma/main.js';
+import { removeDiscontinuedItems } from '@/lib/customItems/customItems.js';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -16,13 +14,15 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants';
-import { PartyhatTable, allHolidayItems } from './holidayItems';
+} from '@/lib/data/gracefulVariants.js';
+import { growablePets } from '@/lib/growablePets.js';
+import type { MinigameScore } from '@/lib/settings/minigames.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export interface IToReturnCollection {
 	category: string;
 	name: string;
-	collection: number[];
+	collection: Set<number>;
 	completions?: Record<string, number>;
 	isActivity?: boolean;
 	collectionObtained: number;
@@ -30,6 +30,7 @@ export interface IToReturnCollection {
 	leftList?: ILeftListStatus;
 	userItems: Bank;
 	counts: boolean;
+	unobtainable: boolean;
 }
 
 export type CollectionStatus = 'not_started' | 'started' | 'completed';
@@ -63,6 +64,7 @@ interface ICollectionActivity {
 		counts?: false;
 		alias?: string[];
 		items: number[];
+		unobtainable?: true;
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
@@ -76,31 +78,6 @@ export interface ICollection {
 		activities: ICollectionActivity;
 	};
 }
-
-export const inventorOutfit = resolveItems([
-	"Inventors' helmet",
-	"Inventors' torso",
-	"Inventors' legs",
-	"Inventors' gloves",
-	"Inventors' boots",
-	"Inventors' backpack"
-]);
-
-export const moktangCL = resolveItems([
-	'Mini moktang',
-	'Volcanic dye',
-	'Igne gear frame',
-	'Volcanic shards',
-	'Dragonstone upgrade kit'
-]);
-
-export const dwarvenOutfit = resolveItems([
-	'Dwarven full helm',
-	'Dwarven platebody',
-	'Dwarven platelegs',
-	'Dwarven boots',
-	'Dwarven gloves'
-]);
 
 export const abyssalSireCL = resolveItems([
 	'Abyssal orphan',
@@ -209,6 +186,7 @@ export const muspahCL = resolveItems([
 	'Ancient essence'
 ]);
 export const crazyArchaeologistCL = resolveItems(['Odium shard 2', 'Malediction shard 2', 'Fedora']);
+export const derangedArchaeologistCL = resolveItems(['Steel ring']);
 export const dagannothKingsCL = resolveItems([
 	'Pet dagannoth prime',
 	'Pet dagannoth supreme',
@@ -832,8 +810,7 @@ export const cluesHardCL = resolveItems([
 	'Guthix crozier',
 	'Zamorak stole',
 	'Zamorak crozier',
-	// Zombie head
-	19_912,
+	'Zombie head (treasure trails)',
 	'Cyclops head',
 	"Pirate's hat",
 	'Red cavalier',
@@ -1443,23 +1420,6 @@ export const pestControlCL = resolveItems([
 	'Elite void top',
 	'Elite void robe'
 ]);
-export const doaMetamorphPets = resolveItems(['Bruce', 'Pearl', 'Bluey']);
-export const allDOAPets = resolveItems([...doaMetamorphPets, 'Crush']);
-
-export const doaCL = resolveItems([
-	'Shark jaw',
-	'Shark tooth',
-	'Oceanic relic',
-	'Aquifer aegis',
-	'Oceanic dye',
-	'Crush',
-	...doaMetamorphPets,
-	'Oceanic shroud (tier 1)',
-	'Oceanic shroud (tier 2)',
-	'Oceanic shroud (tier 3)',
-	'Oceanic shroud (tier 4)',
-	'Oceanic shroud (tier 5)'
-]);
 
 export const roguesDenCL = resolveItems([...ItemGroups.rogueOutfit]);
 
@@ -1492,31 +1452,6 @@ export const titheFarmCL = resolveItems([
 	'Seed box',
 	"Gricoller's can",
 	'Herb sack'
-]);
-
-export const spectatorClothes = resolveItems([
-	'A stylish hat (male, yellow)',
-	'Shirt (male, yellow)',
-	'Leggings (yellow)',
-	'A stylish hat (male, maroon)',
-	'Shirt (male, maroon)',
-	'Leggings (maroon)',
-	'A stylish hat (male, green)',
-	'Shirt (male, green)',
-	'Leggings (green)',
-	'A stylish hat (female, yellow)',
-	'Shirt (female, yellow)',
-	'Skirt (yellow)',
-	'A stylish hat (female, maroon)',
-	'Shirt (female, maroon)',
-	'Skirt (maroon)',
-	'A stylish hat (female, green)',
-	'Shirt (female, green)',
-	'Skirt (green)',
-	'Shoes (male, shoes)',
-	'Shoes (male, boots)',
-	'Shoes (female, straps)',
-	'Shoes (female, flats)'
 ]);
 
 export const troubleBrewingCL = resolveItems([
@@ -1631,7 +1566,9 @@ export const allPetsCL = resolveItems([
 	'Nid',
 	'Huberte',
 	'Moxi',
-	'Bran'
+	'Bran',
+	'Yami',
+	'Dom'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1915,7 +1852,11 @@ export const slayerCL = resolveItems([
 	'Aranea boots',
 	'Glacial temotli',
 	'Pendant of ates (inert)',
-	'Frozen tear'
+	'Frozen tear',
+	EItem.EARTHBOUND_TECPATL,
+	EItem.ANTLER_GUARD,
+	EItem.ALCHEMISTS_SIGNET,
+	EItem.BROKEN_ANTLER
 ]);
 
 export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
@@ -1992,7 +1933,8 @@ export const miscellaneousCL = resolveItems([
 	'Elite black knight platelegs',
 	'Blue egg sac',
 	'Broken zombie axe',
-	'Broken zombie helmet'
+	'Broken zombie helmet',
+	EItem.HELMET_OF_THE_MOON
 ]);
 export const diariesCL = resolveItems([
 	'Karamja gloves 1',
@@ -2291,225 +2233,6 @@ export const questCL = resolveItems([
 	'Hardleather gloves'
 ]);
 
-export const customPetsCL = resolveItems([
-	'Doug',
-	'Zippy',
-	'Shelldon',
-	'Remy',
-	'Lil Lamb',
-	'Harry',
-	'Klik',
-	'Wintertoad',
-	'Scruffy',
-	'Zak',
-	'Hammy',
-	'Skipper',
-	'Ori',
-	'Takon',
-	'Obis',
-	'Peky',
-	'Plopper',
-	'Brock',
-	'Wilvus',
-	'Ishi',
-	'Sandy',
-	'Baby kalphite king',
-	'Steve',
-	'Frostbite',
-	'Voidling',
-	'Baby duckling',
-	'Jal-MejJak',
-	'Blabberbeak',
-	'Queen black dragonling',
-	'Mr. E',
-	'Nexterminator',
-	'Phoenix eggling',
-	'Cogsworth',
-	'Mini moktang',
-	'Brain lee',
-	'Balloon cat',
-	'Baby yaga house',
-	'Gary',
-	'Crush',
-	'Herbert',
-	'Echo',
-	'Doopy',
-	'Fungo',
-	'Noom',
-	'Baby venatrix',
-	'Mini akumu',
-	'Octo'
-]);
-
-export const discontinuedCustomPetsCL = resolveItems([
-	'Hoppy',
-	'Craig',
-	'Smokey',
-	'Flappy',
-	'Corgi',
-	'Snappy the turtle',
-	'Cob',
-	'Gregoyle',
-	'Mini Pumpkinhead',
-	'Seer',
-	'Leia',
-	'Buzz',
-	'Kuro',
-	'Frosty',
-	'Eggy',
-	'Buggy',
-	'Casper',
-	'Mini mortimer',
-	'Rudolph',
-	'Cluckers',
-	'Polterpup',
-	'Mumpkin',
-	'Grinchling',
-	'Shrimpy',
-	'Waddles',
-	'Tasty'
-]);
-
-export const kingGoldemarCL = resolveItems([
-	'Broken dwarven warhammer',
-	'Dwarven ore',
-	'Dwarven crate',
-	'Athelas seed'
-]);
-
-export const abyssalDragonCL = resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']);
-
-export const nihilizCL = resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nihil shard', 'Nexling']);
-
-export const vasaMagusCL = resolveItems([
-	'Tattered robes of Vasa',
-	'Jar of magic',
-	'Voidling',
-	'Magus scroll',
-	'Magical artifact'
-]);
-
-export const brokenTorvaOutfit = resolveItems([
-	'Torva full helm (broken)',
-	'Torva platebody (broken)',
-	'Torva platelegs (broken)',
-	'Torva boots (broken)',
-	'Torva gloves (broken)'
-]);
-export const brokenPernixOutfit = resolveItems([
-	'Pernix cowl (broken)',
-	'Pernix body (broken)',
-	'Pernix chaps (broken)',
-	'Pernix boots (broken)',
-	'Pernix gloves (broken)'
-]);
-export const brokenVirtusOutfit = resolveItems([
-	'Virtus mask (broken)',
-	'Virtus robe top (broken)',
-	'Virtus robe legs (broken)',
-	'Virtus boots (broken)',
-	'Virtus gloves (broken)'
-]);
-export const torvaOutfit = resolveItems([
-	'Torva full helm',
-	'Torva platebody',
-	'Torva platelegs',
-	'Torva boots',
-	'Torva gloves'
-]);
-export const pernixOutfit = resolveItems([
-	'Pernix cowl',
-	'Pernix body',
-	'Pernix chaps',
-	'Pernix boots',
-	'Pernix gloves'
-]);
-export const virtusOutfit = resolveItems([
-	'Virtus mask',
-	'Virtus robe top',
-	'Virtus robe legs',
-	'Virtus boots',
-	'Virtus gloves'
-]);
-export const nexAncientWeapons = resolveItems(['Virtus crystal', 'Zaryte bow']);
-
-export const nexUniqueDrops = [
-	...brokenTorvaOutfit,
-	...brokenPernixOutfit,
-	...brokenVirtusOutfit,
-	...nexAncientWeapons
-];
-
-export const nexCL = [
-	...nexUniqueDrops,
-	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem', 'Ancient hilt'])
-];
-
-export const naxxusCL = resolveItems([
-	'Dark crystal',
-	'Abyssal gem',
-	'Tattered tome',
-	'Spellbound ring',
-	'Korulsi seed'
-]);
-
-export const kalphiteKingCL = resolveItems([
-	'Drygore mace',
-	'Offhand drygore mace',
-	'Drygore longsword',
-	'Offhand drygore longsword',
-	'Drygore rapier',
-	'Offhand drygore rapier',
-	'Perfect chitin',
-	'Baby kalphite king'
-]);
-
-export const ignecarusCL = resolveItems(['Ignecarus scales', 'Ignecarus dragonclaw', 'Dragon egg', 'Ignis ring']);
-
-export const treeBeardCL = resolveItems([
-	// Tangleroot pets
-	20_661,
-	24_555,
-	24_557,
-	24_559,
-	24_561,
-	24_563,
-	'Mysterious seed',
-	'Korulsi seed',
-	'Grand crystal acorn',
-	'Ent hide'
-]);
-
-export const seaKrakenCL = resolveItems([
-	// Tangleroot pets
-	'Fish sack',
-	'Pufferfish',
-	'Squid dye'
-]);
-
-export const queenBlackDragonCL = resolveItems([
-	'Queen black dragonling',
-	'Draconic visage',
-	'Royal dragon kiteshield',
-	'Dragonbone upgrade kit',
-	'Royal torsion spring',
-	'Royal sight',
-	'Royal frame',
-	'Royal bolt stabiliser'
-]);
-
-export const akumuCL = resolveItems(['Mini akumu', 'Nightmarish ashes', 'Cursed onyx', 'Demon statuette']);
-export const venatrixCL = resolveItems(['Baby venatrix', 'Venatrix eggs', 'Venatrix webbing', 'Spiders leg bottom']);
-
-export const customBossesDropsThatCantBeDroppedInMBs = [
-	...kingGoldemarCL,
-	...abyssalDragonCL,
-	...vasaMagusCL,
-	...nexCL,
-	...kalphiteKingCL,
-	...ignecarusCL
-];
-
 export const holidayCL = allHolidayItems;
 
 export const gracefulCL = removeDiscontinuedItems(
@@ -2522,28 +2245,6 @@ export const gracefulCL = removeDiscontinuedItems(
 		...gracefulCapes
 	]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)', 'Agility master cape']).includes(id))
 );
-
-export const gorajanWarriorOutfit = resolveItems([
-	'Gorajan warrior helmet',
-	'Gorajan warrior top',
-	'Gorajan warrior legs',
-	'Gorajan warrior gloves',
-	'Gorajan warrior boots'
-]);
-export const gorajanOccultOutfit = resolveItems([
-	'Gorajan occult helmet',
-	'Gorajan occult top',
-	'Gorajan occult legs',
-	'Gorajan occult gloves',
-	'Gorajan occult boots'
-]);
-export const gorajanArcherOutfit = resolveItems([
-	'Gorajan archer helmet',
-	'Gorajan archer top',
-	'Gorajan archer legs',
-	'Gorajan archer gloves',
-	'Gorajan archer boots'
-]);
 
 const metamorphPets = resolveItems([
 	'Little parasite',
@@ -2583,206 +2284,6 @@ export const antiSantaOutfit = new Bank({
 	'Antisanta boots': 1
 });
 
-export const cmbClothes = resolveItems([
-	'Swanky boots',
-	'Darkmeyer hood',
-	'Darkmeyer torso',
-	'Darkmeyer trousers',
-	'Darkmeyer boots',
-	'Gorilla mask',
-	'Thinker robes',
-	'Thinker trousers',
-	'Thinker gloves',
-	'Thinker boots',
-	"Prifddinian worker's robes",
-	"Prifddinian worker's trousers",
-	"Prifddinian worker's gloves",
-	"Prifddinian worker's boots",
-	"Prifddinian musician's robe top",
-	"Prifddinian musician's robe bottom",
-	"Prifddinian musician's gloves",
-	"Prifddinian musician's boots",
-	'Dervish head wrap (blue-gold)',
-	'Dervish hood (red)',
-	'Dervish robe (blue-gold)',
-	'Dervish robe (red)',
-	'Dervish trousers (blue-gold)',
-	'Dervish skirt (red)',
-	'Dervish shoes (blue-gold)',
-	'Dervish shoes (red)',
-	'Eastern knot',
-	'Eastern bun',
-	'Eastern robe (blue)',
-	'Eastern kimono (blue)',
-	'Eastern trousers (blue)',
-	'Eastern skirt (blue)',
-	'Eastern sandals (male)',
-	'Eastern sandals (blue, female)',
-	'Tribal ringlet (red, male)',
-	'Tribal ringlet (red, female)',
-	'Tribal shirt (red)',
-	'Tribal top (red)',
-	'Tribal trousers (red)',
-	'Tribal skirt (red)',
-	'Tribal shoes (red, male)',
-	'Samba headdress (blue, male)',
-	'Samba headdress (blue, female)',
-	'Samba top (blue, male)',
-	'Samba top (blue, female)',
-	'Samba loincloth (blue, male)',
-	'Samba loincloth (blue, female)',
-	'Samba sandals (blue, male)',
-	'Theatrical hat (blue)',
-	'Theatrical earrings (blue)',
-	'Theatrical tunic (blue, male)',
-	'Theatrical tunic (blue, female)',
-	'Theatrical trousers (blue)',
-	'Theatrical skirt (blue)',
-	'Theatrical shoes (blue, male)',
-	'Theatrical shoes (blue, female)',
-	"Pharaoh's nemes (green)",
-	"Pharaoh's bun (green)",
-	"Pharaoh's ankh (green)",
-	"Pharaoh's top (green)",
-	"Pharaoh's shendyt (green, male)",
-	"Pharaoh's shendyt (green, female)",
-	"Pharaoh's sandals (green, male)",
-	"Pharaoh's sandals (green, female)",
-	'Wushanko headdress (blue)',
-	'Wushanko hat (blue)',
-	'Wushanko top (blue)',
-	'Wushanko jacket (blue)',
-	'Wushanko skirt (blue)',
-	'Wushanko trousers (blue)',
-	'Wushanko shoes (blue, male)',
-	'Wushanko shoes (blue, female)',
-	'Silken turban (blue, male)',
-	'Silken turban (blue, female)',
-	'Silken top (blue, male)',
-	'Silken top (blue, female)',
-	'Silken trousers (blue)',
-	'Silken skirt (blue)',
-	'Silken boots (blue, male)',
-	'Silken boots (blue, female)',
-	"Colonist's hat (blue)",
-	"Colonist's bonnet (blue)",
-	"Colonist's coat (blue)",
-	"Colonist's dress top (blue)",
-	"Colonist's trousers (blue)",
-	"Colonist's skirt (blue)",
-	"Colonist's boots (blue)",
-	"Colonist's shoes (blue)",
-	'Feathered serpent headdress (blue, male)',
-	'Feathered serpent headdress (blue, female)',
-	'Feathered serpent body (blue, male)',
-	'Feathered serpent body (blue, female)',
-	'Feathered serpent skirt (blue, male)',
-	'Feathered serpent skirt (blue, female)',
-	'Feathered serpent boots (blue, female)',
-	'Highland war paint (blue, male)',
-	'Highland war paint (blue, female)',
-	'Highland shirt (blue)',
-	'Highland top (blue)',
-	'Highland kilt (blue, male)',
-	'Highland kilt (blue, female)',
-	'Highland boots (blue, male)',
-	'Highland boots (blue, female)',
-	"Musketeer's hat (blue, male)",
-	"Musketeer's hat (blue, female)",
-	"Musketeer's tabard (blue)",
-	"Musketeer's top (blue)",
-	"Musketeer's trousers (blue, male)",
-	"Musketeer's trousers (blue, female)",
-	"Musketeer's boots (blue, male)",
-	"Musketeer's boots (blue, female)",
-	'Elf-style wig (black, male)',
-	'Elf-style wig (black, female)',
-	'Elf-style coat (black)',
-	'Elf-style dress top (black)',
-	'Elf-style trousers (black)',
-	'Elf-style skirt (black)',
-	'Elf-style boots (black)',
-	'Elf-style shoes (black)',
-	'Werewolf mask (red, male)',
-	'Werewolf torso (red, male)',
-	'Werewolf legs (red, male)',
-	'Werewolf claws (red, male)',
-	'Werewolf paws (red, male)',
-	'Ikuchi orokami mask',
-	'Kodama orokami mask',
-	'Akkorokamui orokami mask',
-	'Karasu orokami mask',
-	'Akateko orokami mask',
-	'Nue orokami mask',
-	'Shinigami orokami mask',
-	'Oni orokami mask',
-	"Shaman's headdress",
-	"Shaman's leggings",
-	"Shaman's moccasins",
-	"Shaman's poncho",
-	"Shaman's hand wraps",
-	'Fang of Mohegan',
-	'Round glasses',
-	'Stylish glasses',
-	'Pyjama slippers',
-	'Pyjama top',
-	'Pyjama bottoms',
-	'Tuxedo jacket',
-	'Tuxedo trousers',
-	'Tuxedo shoes',
-	'Tuxedo gloves',
-	'Tuxedo cravat',
-	'Evening bolero',
-	'Evening dipped skirt',
-	'Evening gloves',
-	'Evening boots',
-	'Evening masquerade mask',
-	'Black afro',
-	'Brown afro',
-	'Burgundy afro',
-	'Dark blue afro',
-	'Dark brown afro',
-	'Dark green afro',
-	'Dark grey afro',
-	'Green afro',
-	'Indigo afro',
-	'Light blue afro',
-	'Light brown afro',
-	'Light grey afro',
-	'Military grey afro',
-	'Mint green afro',
-	'Orange afro',
-	'Peach afro',
-	'Pink afro',
-	'Purple afro',
-	'Red afro',
-	'Rainbow afro',
-	'Taupe afro',
-	'Turquoise afro',
-	'Vermilion afro',
-	'Violet afro',
-	'White afro',
-	'Yellow afro',
-	'Red top hat',
-	'Green top hat',
-	'Blue top hat',
-	'White top hat',
-	'Pink disco top',
-	'Pink disco legs',
-	'Pink disco gloves',
-	'Pink disco boots',
-	'Green disco top',
-	'Green disco legs',
-	'Green disco gloves',
-	'Green disco boots',
-	'Blue disco top',
-	'Blue disco legs',
-	'Blue disco gloves',
-	'Blue disco boots'
-]);
-
-assert(cmbClothes.length === new Set(cmbClothes).size, 'Should be no duplicates in CMB clothes');
-
 export const allClueItems = [
 	...cluesBeginnerCL,
 	...cluesEasyCL,
@@ -2813,246 +2314,77 @@ interface LMSBuyable {
 }
 
 export const LMSBuyables: LMSBuyable[] = [
-	{ item: getOSItem("Deadman's chest"), cost: 160 },
-	{ item: getOSItem("Deadman's legs"), cost: 160 },
-	{ item: getOSItem("Deadman's cape"), cost: 160 },
-	{ item: getOSItem('Swift blade'), cost: 350 },
-	{ item: getOSItem('Guthixian icon'), cost: 500 },
-	{ item: getOSItem('Trouver parchment'), cost: 18 },
-	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
-	{ item: getOSItem('Blighted entangle sack'), quantity: 70, cost: 1 },
-	{ item: getOSItem('Blighted teleport spell sack'), quantity: 50, cost: 1 },
-	{ item: getOSItem('Blighted vengeance sack'), quantity: 50, cost: 1 },
-	{ item: getOSItem('Blighted ancient ice sack'), quantity: 30, cost: 1 },
-	{ item: getOSItem('Adamant arrow'), quantity: 350, cost: 1 },
-	{ item: getOSItem('Bolt rack'), quantity: 200, cost: 1 },
-	{ item: getOSItem('Rune arrow'), quantity: 300, cost: 3 },
-	{ item: getOSItem('Dragonstone bolts (e)'), quantity: 20, cost: 3 },
-	{ item: getOSItem('Blighted karambwan'), quantity: 12, cost: 1 },
-	{ item: getOSItem('Blighted manta ray'), quantity: 15, cost: 1 },
-	{ item: getOSItem('Blighted anglerfish'), quantity: 15, cost: 1 },
-	{ item: getOSItem('Blighted super restore(4)'), quantity: 4, cost: 1 },
-	{ item: getOSItem('Climbing boots'), quantity: 20, cost: 1 },
-	{ item: getOSItem('Looting bag'), cost: 1 },
-	{ item: getOSItem('Looting bag note'), cost: 1 },
-	{ item: getOSItem('Ring of wealth scroll'), cost: 5 },
-	{ item: getOSItem('Magic shortbow scroll'), cost: 5 },
-	{ item: getOSItem('Clue box'), cost: 5 },
-	{ item: getOSItem('Crystal weapon seed'), cost: 12 },
-	{ item: getOSItem('Granite clamp'), cost: 25 },
-	{ item: getOSItem('Ornate maul handle'), cost: 15 },
-	{ item: getOSItem('Steam staff upgrade kit'), cost: 13 },
-	{ item: getOSItem('Lava staff upgrade kit'), cost: 13 },
-	{ item: getOSItem('Dragon pickaxe upgrade kit'), cost: 14 },
-	{ item: getOSItem('Ward upgrade kit'), cost: 20 },
-	{ item: getOSItem('Green dark bow paint'), cost: 25 },
-	{ item: getOSItem('Yellow dark bow paint'), cost: 25 },
-	{ item: getOSItem('White dark bow paint'), cost: 25 },
-	{ item: getOSItem('Blue dark bow paint'), cost: 25 },
-	{ item: getOSItem('Volcanic whip mix'), cost: 25 },
-	{ item: getOSItem('Frozen whip mix'), cost: 25 },
-	{ item: getOSItem('Rune pouch'), cost: 75 },
-	{ item: getOSItem('Rune pouch note'), cost: 75 },
-	{ item: getOSItem('Decorative emblem'), cost: 100 },
-	{ item: getOSItem("Saradomin's tear"), cost: 150 },
-	{ item: getOSItem('Target teleport scroll'), cost: 250 },
-	{ item: getOSItem("Vesta's longsword (inactive)"), cost: 300 },
-	{ item: getOSItem('Armadyl halo'), cost: 450 },
-	{ item: getOSItem('Bandos halo'), cost: 450 },
-	{ item: getOSItem('Seren halo'), cost: 450 },
-	{ item: getOSItem('Ancient halo'), cost: 450 },
-	{ item: getOSItem('Brassica halo'), cost: 450 },
-	{ item: getOSItem('Paddewwa teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Senntisten teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Annakarl teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Carrallanger teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Dareeyak teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Ghorrock teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Kharyrll teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Lassar teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Target teleport'), cost: 1 },
+	{ item: Items.getOrThrow("Deadman's chest"), cost: 160 },
+	{ item: Items.getOrThrow("Deadman's legs"), cost: 160 },
+	{ item: Items.getOrThrow("Deadman's cape"), cost: 160 },
+	{ item: Items.getOrThrow('Swift blade'), cost: 350 },
+	{ item: Items.getOrThrow('Guthixian icon'), cost: 500 },
+	{ item: Items.getOrThrow('Trouver parchment'), cost: 18 },
+	{ item: Items.getOrThrow('Wilderness crabs teleport'), cost: 1 },
+	{ item: Items.getOrThrow('Blighted entangle sack'), quantity: 70, cost: 1 },
+	{ item: Items.getOrThrow('Blighted teleport spell sack'), quantity: 50, cost: 1 },
+	{ item: Items.getOrThrow('Blighted vengeance sack'), quantity: 50, cost: 1 },
+	{ item: Items.getOrThrow('Blighted ancient ice sack'), quantity: 30, cost: 1 },
+	{ item: Items.getOrThrow('Adamant arrow'), quantity: 350, cost: 1 },
+	{ item: Items.getOrThrow('Bolt rack'), quantity: 200, cost: 1 },
+	{ item: Items.getOrThrow('Rune arrow'), quantity: 300, cost: 3 },
+	{ item: Items.getOrThrow('Dragonstone bolts (e)'), quantity: 20, cost: 3 },
+	{ item: Items.getOrThrow('Blighted karambwan'), quantity: 12, cost: 1 },
+	{ item: Items.getOrThrow('Blighted manta ray'), quantity: 15, cost: 1 },
+	{ item: Items.getOrThrow('Blighted anglerfish'), quantity: 15, cost: 1 },
+	{ item: Items.getOrThrow('Blighted super restore(4)'), quantity: 4, cost: 1 },
+	{ item: Items.getOrThrow('Climbing boots'), quantity: 20, cost: 1 },
+	{ item: Items.getOrThrow('Looting bag'), cost: 1 },
+	{ item: Items.getOrThrow('Looting bag note'), cost: 1 },
+	{ item: Items.getOrThrow('Ring of wealth scroll'), cost: 5 },
+	{ item: Items.getOrThrow('Magic shortbow scroll'), cost: 5 },
+	{ item: Items.getOrThrow('Clue box'), cost: 5 },
+	{ item: Items.getOrThrow('Crystal weapon seed'), cost: 12 },
+	{ item: Items.getOrThrow('Granite clamp'), cost: 25 },
+	{ item: Items.getOrThrow('Ornate maul handle'), cost: 15 },
+	{ item: Items.getOrThrow('Steam staff upgrade kit'), cost: 13 },
+	{ item: Items.getOrThrow('Lava staff upgrade kit'), cost: 13 },
+	{ item: Items.getOrThrow('Dragon pickaxe upgrade kit'), cost: 14 },
+	{ item: Items.getOrThrow('Ward upgrade kit'), cost: 20 },
+	{ item: Items.getOrThrow('Green dark bow paint'), cost: 25 },
+	{ item: Items.getOrThrow('Yellow dark bow paint'), cost: 25 },
+	{ item: Items.getOrThrow('White dark bow paint'), cost: 25 },
+	{ item: Items.getOrThrow('Blue dark bow paint'), cost: 25 },
+	{ item: Items.getOrThrow('Volcanic whip mix'), cost: 25 },
+	{ item: Items.getOrThrow('Frozen whip mix'), cost: 25 },
+	{ item: Items.getOrThrow('Rune pouch'), cost: 75 },
+	{ item: Items.getOrThrow('Rune pouch note'), cost: 75 },
+	{ item: Items.getOrThrow('Decorative emblem'), cost: 100 },
+	{ item: Items.getOrThrow("Saradomin's tear"), cost: 150 },
+	{ item: Items.getOrThrow('Target teleport scroll'), cost: 250 },
+	{ item: Items.getOrThrow("Vesta's longsword (inactive)"), cost: 300 },
+	{ item: Items.getOrThrow('Armadyl halo'), cost: 450 },
+	{ item: Items.getOrThrow('Bandos halo'), cost: 450 },
+	{ item: Items.getOrThrow('Seren halo'), cost: 450 },
+	{ item: Items.getOrThrow('Ancient halo'), cost: 450 },
+	{ item: Items.getOrThrow('Brassica halo'), cost: 450 },
+	{ item: Items.getOrThrow('Paddewwa teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Senntisten teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Annakarl teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Carrallanger teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Dareeyak teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Ghorrock teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Kharyrll teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Lassar teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Target teleport'), cost: 1 },
 	// Capes
-	{ item: getOSItem("Victor's cape (1)"), cost: null, wins: 1 },
-	{ item: getOSItem("Victor's cape (10)"), cost: null, wins: 10 },
-	{ item: getOSItem("Victor's cape (50)"), cost: null, wins: 50 },
-	{ item: getOSItem("Victor's cape (100)"), cost: null, wins: 100 },
-	{ item: getOSItem("Victor's cape (500)"), cost: null, wins: 500 },
-	{ item: getOSItem("Victor's cape (1000)"), cost: null, wins: 1000 },
+	{ item: Items.getOrThrow("Victor's cape (1)"), cost: null, wins: 1 },
+	{ item: Items.getOrThrow("Victor's cape (10)"), cost: null, wins: 10 },
+	{ item: Items.getOrThrow("Victor's cape (50)"), cost: null, wins: 50 },
+	{ item: Items.getOrThrow("Victor's cape (100)"), cost: null, wins: 100 },
+	{ item: Items.getOrThrow("Victor's cape (500)"), cost: null, wins: 500 },
+	{ item: Items.getOrThrow("Victor's cape (1000)"), cost: null, wins: 1000 },
 	// Special attacks
-	{ item: getOSItem('Golden armadyl special attack'), cost: 75, onlyCL: true },
-	{ item: getOSItem('Golden saradomin special attack'), cost: 75, onlyCL: true },
-	{ item: getOSItem('Golden bandos special attack'), cost: 75, onlyCL: true },
-	{ item: getOSItem('Golden zamorak special attack'), cost: 75, onlyCL: true }
+	{ item: Items.getOrThrow('Golden armadyl special attack'), cost: 75, onlyCL: true },
+	{ item: Items.getOrThrow('Golden saradomin special attack'), cost: 75, onlyCL: true },
+	{ item: Items.getOrThrow('Golden bandos special attack'), cost: 75, onlyCL: true },
+	{ item: Items.getOrThrow('Golden zamorak special attack'), cost: 75, onlyCL: true }
 ];
-
-export const fishingContestCL = resolveItems([
-	'Fishing hat',
-	'Fishing jacket',
-	'Fishing waders',
-	'Fishing boots',
-	'Contest rod',
-	"Beginner's tackle box",
-	'Basic tackle box',
-	'Standard tackle box',
-	'Professional tackle box',
-	"Champion's tackle box",
-	'Golden fishing trophy'
-]);
-
-export const balthazarsBigBonanzaCL = resolveItems([
-	'A stylish hat (male, yellow)',
-	'Shirt (male, yellow)',
-	'Leggings (yellow)',
-	'A stylish hat (male, maroon)',
-	'Shirt (male, maroon)',
-	'Leggings (maroon)',
-	'A stylish hat (male, green)',
-	'Shirt (male, green)',
-	'Leggings (green)',
-	'A stylish hat (female, yellow)',
-	'Shirt (female, yellow)',
-	'Skirt (yellow)',
-	'A stylish hat (female, maroon)',
-	'Shirt (female, maroon)',
-	'Skirt (maroon)',
-	'A stylish hat (female, green)',
-	'Shirt (female, green)',
-	'Skirt (green)',
-	'Shoes (male, shoes)',
-	'Shoes (male, boots)',
-	'Shoes (female, straps)',
-	'Shoes (female, flats)',
-	"Giant's hand",
-	'Acrobat set',
-	'Clown set',
-	'Ringmaster set'
-]);
-
-export const stealingCreationCL = resolveItems([
-	'Stealing creation token',
-	"Fletcher's gloves",
-	"Fletcher's boots",
-	"Fletcher's top",
-	"Fletcher's hat",
-	"Fletcher's legs"
-]);
-
-export const fistOfGuthixCL = resolveItems([
-	'Rune spikeshield',
-	'Rune berserker shield',
-	'Adamant spikeshield',
-	'Adamant berserker shield',
-	'Guthix engram',
-	'Fist of guthix token'
-]);
-
-export const baxtorianBathhousesCL = resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling']);
-
-export const monkeyRumbleCL = resolveItems([
-	'Monkey egg',
-	'Marimbo statue',
-	'Monkey dye',
-	'Banana enchantment scroll',
-	'Rumble token',
-	'Big banana',
-	'Monkey crate',
-	'Gorilla rumble greegree',
-	'Beginner rumble greegree',
-	'Intermediate rumble greegree',
-	'Ninja rumble greegree',
-	'Expert ninja rumble greegree',
-	'Elder rumble greegree'
-]);
-
-export const odsCL = resolveItems([
-	'Master runecrafter hat',
-	'Master runecrafter robe',
-	'Master runecrafter skirt',
-	'Master runecrafter boots',
-	'Elder thread',
-	'Elder talisman',
-	'Magic crate',
-	'Lychee seed',
-	'Avocado seed',
-	'Mysterious seed',
-	'Mango seed',
-	'Magical artifact'
-]);
-
-export const tinkeringWorshopCL = resolveItems([...inventorOutfit, 'Materials bag']);
-
-export const polyporeDungeonCL = resolveItems([
-	'Mycelium leggings web',
-	'Mycelium poncho web',
-	'Mycelium visor web',
-	'Neem drupe',
-	'Polypore spore',
-	'Grifolic flake',
-	'Grifolic gloves',
-	'Grifolic orb',
-	'Gorajian mushroom',
-	'Tombshroom spore',
-	'Ganodermic flake',
-	'Ganodermic gloves',
-	'Ganodermic boots'
-]);
-
-export const superiorTormentedDemonCL = resolveItems([
-	'Dragon claw',
-	'Offhand dragon claw',
-	'Ruined dragon armour slice',
-	'Ruined dragon armour lump',
-	'Ruined dragon armour shard',
-	'Dragon limbs'
-]);
-
-export const dungeoneeringCL = resolveItems([
-	'Chaotic rapier',
-	'Chaotic longsword',
-	'Chaotic maul',
-	'Chaotic staff',
-	'Chaotic crossbow',
-	'Offhand Chaotic rapier',
-	'Offhand Chaotic longsword',
-	'Offhand chaotic crossbow',
-	'Scroll of life',
-	'Scroll of efficiency',
-	'Scroll of cleansing',
-	'Scroll of dexterity',
-	'Scroll of teleportation',
-	'Scroll of farming',
-	'Scroll of proficiency',
-	'Scroll of mystery',
-	'Scroll of longevity',
-	'Scroll of the hunt',
-	'Farseer kiteshield',
-	'Chaotic remnant',
-	'Frostbite',
-	'Gorajan shards',
-	'Amulet of zealots',
-	'Herbicide',
-	'Gorajan warrior helmet',
-	'Gorajan warrior top',
-	'Gorajan warrior legs',
-	'Gorajan warrior gloves',
-	'Gorajan warrior boots',
-	'Gorajan archer helmet',
-	'Gorajan archer top',
-	'Gorajan archer legs',
-	'Gorajan archer gloves',
-	'Gorajan archer boots',
-	'Gorajan occult helmet',
-	'Gorajan occult top',
-	'Gorajan occult legs',
-	'Gorajan occult gloves',
-	'Gorajan occult boots',
-	'Arcane blast necklace',
-	'Farsight snapshot necklace',
-	"Brawler's hook necklace",
-	'Daemonheim agility pass',
-	'Dungeoneering dye',
-	'Gorajan bonecrusher (u)'
-]);
 
 export const shootingStarsCL = resolveItems(['Celestial ring (uncharged)', 'Star fragment']);
 export const skillingMiscCL = resolveItems([
@@ -3157,91 +2489,33 @@ export const vardorvisCL = resolveItems([
 	'Strangled tablet'
 ]);
 
-export const vladDrakanCL = resolveItems([
-	'Vampyre hunter boots',
-	'Vampyre hunter legs',
-	'Vampyre hunter top',
-	'Vampyre hunter cuffs',
-	'Vampyre hunter hat',
-	'Blightbrand',
-	'Vampyric plushie',
-	'Echo'
-]);
-
-export const divinersOutfit = resolveItems([
-	"Diviner's headwear",
-	"Diviner's robe",
-	"Diviner's legwear",
-	"Diviner's handwear",
-	"Diviner's footwear"
-]);
-
-export const araxxorCL = resolveItems([
-	'Nid',
-	'Araxyte venom sack',
-	'Spider cave teleport',
-	'Araxyte fang',
-	'Noxious point',
-	'Noxious blade',
-	'Noxious pommel',
-	'Araxyte head',
-	'Jar of venom',
-	'Coagulated venom'
-]);
-
 export const amoxliatlCL = resolveItems(['Moxi', 'Glacial temotli', 'Pendant of ates (inert)', 'Frozen tear']);
 
-const wizardOutfit = resolveItems([
-	'Snowdream robe legs',
-	'Snowdream wizard hat',
-	'Snowdream robe top',
-	'Snowdream wizard socks'
-]);
-
-export const blackSantaOutfit = resolveItems([
-	'Black santa top',
-	'Black santa legs',
-	'Black santa gloves',
-	'Black santa boots'
-]);
-
-export const allChristmasEventItems = resolveItems([
-	...wizardOutfit,
-	...blackSantaOutfit,
-	'Snowdream rune',
-	'Snowdream pillow',
-	'Chef-touched heart (choc)',
-	'Sungod slippers',
-	'Icey santa hat',
-	'Grinchling',
-	'Shrimpy',
-	'Snowflake amulet',
-	'Snowdream staff'
-]);
-
 export const chompyHats = [
-	[getItemOrThrow('Chompy bird hat (ogre bowman)'), 30],
-	[getItemOrThrow('Chompy bird hat (bowman)'), 40],
-	[getItemOrThrow('Chompy bird hat (ogre yeoman)'), 50],
-	[getItemOrThrow('Chompy bird hat (yeoman)'), 70],
-	[getItemOrThrow('Chompy bird hat (ogre marksman)'), 95],
-	[getItemOrThrow('Chompy bird hat (marksman)'), 125],
-	[getItemOrThrow('Chompy bird hat (ogre woodsman)'), 170],
-	[getItemOrThrow('Chompy bird hat (woodsman)'), 225],
-	[getItemOrThrow('Chompy bird hat (ogre forester)'), 300],
-	[getItemOrThrow('Chompy bird hat (forester)'), 400],
-	[getItemOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
-	[getItemOrThrow('Chompy bird hat (bowmaster)'), 700],
-	[getItemOrThrow('Chompy bird hat (ogre expert)'), 1000],
-	[getItemOrThrow('Chompy bird hat (expert)'), 1300],
-	[getItemOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
-	[getItemOrThrow('Chompy bird hat (dragon archer)'), 2250],
-	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
-	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
+	[Items.getOrThrow('Chompy bird hat (ogre bowman)'), 30],
+	[Items.getOrThrow('Chompy bird hat (bowman)'), 40],
+	[Items.getOrThrow('Chompy bird hat (ogre yeoman)'), 50],
+	[Items.getOrThrow('Chompy bird hat (yeoman)'), 70],
+	[Items.getOrThrow('Chompy bird hat (ogre marksman)'), 95],
+	[Items.getOrThrow('Chompy bird hat (marksman)'), 125],
+	[Items.getOrThrow('Chompy bird hat (ogre woodsman)'), 170],
+	[Items.getOrThrow('Chompy bird hat (woodsman)'), 225],
+	[Items.getOrThrow('Chompy bird hat (ogre forester)'), 300],
+	[Items.getOrThrow('Chompy bird hat (forester)'), 400],
+	[Items.getOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
+	[Items.getOrThrow('Chompy bird hat (bowmaster)'), 700],
+	[Items.getOrThrow('Chompy bird hat (ogre expert)'), 1000],
+	[Items.getOrThrow('Chompy bird hat (expert)'), 1300],
+	[Items.getOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
+	[Items.getOrThrow('Chompy bird hat (dragon archer)'), 2250],
+	[Items.getOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[Items.getOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
 export const avasDevices: { item: Item; reduction: number }[] = [
-	{ item: getOSItem("Ava's attractor"), reduction: 60 },
-	{ item: getOSItem("Ava's accumulator"), reduction: 72 },
-	{ item: getOSItem("Ava's assembler"), reduction: 80 }
+	{ item: Items.getOrThrow("Ava's attractor"), reduction: 60 },
+	{ item: Items.getOrThrow("Ava's accumulator"), reduction: 72 },
+	{ item: Items.getOrThrow("Ava's assembler"), reduction: 80 }
 ];
+
+// export * from '@/lib/bso/bsoCl.js';

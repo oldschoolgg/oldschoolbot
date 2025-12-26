@@ -1,13 +1,10 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { EmbedBuilder } from 'discord.js';
-import { toKMB } from 'oldschooljs';
+import { EmbedBuilder } from '@oldschoolgg/discord';
+import { Items, toKMB } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { getItem } from '../../lib/util/getOSItem';
-import { itemOption } from '../lib/mahojiCommandOptions';
-import { sellPriceOfItem } from './sell';
+import { itemOption } from '@/discord/index.js';
+import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 
-export const priceCommand: OSBMahojiCommand = {
+export const priceCommand = defineCommand({
 	name: 'price',
 	description: 'Looks up the price of an item.',
 	options: [
@@ -17,8 +14,8 @@ export const priceCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ item: string }>) => {
-		const item = getItem(options.item);
+	run: async ({ options }) => {
+		const item = Items.getItem(options.item);
 		if (!item || item.customItemData?.isSecret) return "Couldn't find that item.";
 
 		const { basePrice: priceOfItem } = sellPriceOfItem(item);
@@ -35,6 +32,6 @@ export const priceCommand: OSBMahojiCommand = {
 **Alch value:** ${toKMB(item.highalch ?? 0)}`
 			);
 
-		return { embeds: [embed.data] };
+		return { embeds: [embed] };
 	}
-};
+});

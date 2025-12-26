@@ -1,11 +1,9 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
-import type { Fish } from '../../types';
-import { SkillsEnum } from '../../types';
-import { calcFishingTripResult } from './fishingTrip';
-import { calcFishingTripStart } from './fishingTripStart';
-import { anglerItems, calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil';
+import { defineSkill, type Fish } from '@/lib/skilling/types.js';
+import { calcFishingTripResult } from './fishingTrip.js';
+import { anglerItems, calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
 const fishes: Fish[] = [
 	{
@@ -290,11 +288,11 @@ const camdozaalFishes: Fish[] = [
 	}
 ];
 
-export const Fishing = {
+export const Fishing = defineSkill({
 	aliases: ['fishing'],
 	Fishes: fishes,
 	camdozaalFishes,
-	id: SkillsEnum.Fishing,
+	id: 'fishing',
 	emoji: Emoji.Fishing,
 	anglerItems,
 	name: 'Fishing',
@@ -302,7 +300,6 @@ export const Fishing = {
 		calcFishingTripResult,
 		calcRadasBlessingBoost,
 		calcMinnowQuantityRange,
-		calcAnglerBoostPercent,
-		calcFishingTripStart
+		calcAnglerBoostPercent
 	}
-};
+});

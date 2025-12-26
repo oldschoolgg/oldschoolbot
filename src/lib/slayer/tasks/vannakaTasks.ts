@@ -1,9 +1,9 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
 import { Monsters } from 'oldschooljs';
 
-import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
-import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import type { AssignableSlayerTask } from '../types';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const vannakaTasks: AssignableSlayerTask[] = [
 	{
@@ -24,7 +24,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		weight: 5,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, EBSOMonster.MALYGOS],
 		combatLevel: 85,
 		slayerLevel: 85,
 		unlocked: true
@@ -110,7 +110,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DaganothFledgeling.id,
+			Monsters.DagannothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
@@ -275,7 +275,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
 			Monsters.KalphiteQueen.id,
-			KalphiteKingMonster.id
+			EBSOMonster.KALPHITE_KING
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -345,10 +345,10 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.Otherworldlybeing,
+		monster: Monsters.OtherworldlyBeing,
 		amount: [40, 90],
 		weight: 8,
-		monsters: [Monsters.Otherworldlybeing.id],
+		monsters: [Monsters.OtherworldlyBeing.id],
 		combatLevel: 40,
 		questPoints: 3,
 		unlocked: true
@@ -447,7 +447,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
 			Monsters.VyrewatchSentinel.id,
-			BSOMonsters.VladimirDrakan.id
+			EBSOMonster.VLADIMIR_DRAKAN
 		],
 		combatLevel: 35,
 		questPoints: 1,

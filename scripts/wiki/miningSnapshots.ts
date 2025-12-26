@@ -1,15 +1,13 @@
-import { Table, calcPerHour } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
+import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
-applyStaticDefine();
+import '../base.js';
 
-import '../../src/lib/safeglobals.js';
+import { MathRNG } from '@oldschoolgg/rng';
 
 import { calculateMiningInput } from '@/mahoji/commands/mine.js';
 import { calculateMiningResult } from '@/tasks/minions/miningActivity.js';
-import { applyStaticDefine } from '../../meta.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import Mining from '../../src/lib/skilling/skills/mining.js';
 import type { Ore } from '../../src/lib/skilling/types.js';
@@ -25,7 +23,7 @@ function bankToPerHour(bank: Bank, duration: number): FloatBank {
 	return perHourBank;
 }
 
-export function main() {
+function main() {
 	const gearBank = makeGearBank();
 
 	gearBank.gear.skilling.equip('Varrock armour 4');
@@ -94,7 +92,8 @@ export function main() {
 							hasMiningMasterCape: true,
 							portentResult: null,
 							amountOfSpiritsToUse: 0,
-							spiritOre: undefined
+							spiritOre: undefined,
+							rng: MathRNG
 						});
 						result.loot.remove('Rock golem', 1000);
 						result.loot.remove('Loop half of key (moon key)', 1000);

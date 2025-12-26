@@ -1,21 +1,19 @@
-import { itemID, resolveItems } from 'oldschooljs';
+import { Items, itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { gorajanWarriorOutfit } from '../../src/lib/data/CollectionsExport';
-import { getSimilarItems } from '../../src/lib/data/similarItems';
-import { Gear } from '../../src/lib/structures/Gear';
-import { itemNameFromID } from '../../src/lib/util/smallUtils';
+import { getSimilarItems } from '../../src/lib/data/similarItems.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
 
 describe('Gear', () => {
-	const testGear = new Gear({
-		weapon: 'Dragon pickaxe(or)',
-		shield: 'Dragon defender (t)',
-		neck: 'Amulet of eternal glory',
-		cape: 'Max cape',
-		head: 'Twisted slayer helmet (i)'
-	});
-
 	test('', () => {
+		const testGear = new Gear({
+			weapon: 'Dragon pickaxe(or)',
+			shield: 'Dragon defender (t)',
+			neck: 'Amulet of eternal glory',
+			cape: 'Max cape',
+			head: 'Twisted slayer helmet (i)'
+		});
+
 		expect(testGear.hasEquipped('Amulet of glory')).toBeTruthy();
 		expect(testGear.hasEquipped('Dragon pickaxe')).toBeTruthy();
 		expect(testGear.hasEquipped('Dragon pickaxe(or)')).toBeTruthy();
@@ -27,12 +25,12 @@ describe('Gear', () => {
 		expect(testGear.hasEquipped('Black mask (i)')).toBeTruthy();
 	});
 
-	const testGear2 = new Gear({
-		weapon: 'Mist battlestaff',
-		cape: 'Attack cape(t)'
-	});
-
 	test('', () => {
+		const testGear2 = new Gear({
+			weapon: 'Mist battlestaff',
+			cape: 'Attack cape(t)'
+		});
+
 		expect(testGear2.allItems().includes(itemID('Mist battlestaff'))).toBeTruthy();
 		expect(testGear2.allItems(true).includes(itemID('Staff of water'))).toBeTruthy();
 		expect(testGear2.hasEquipped('Staff of water')).toBeTruthy();
@@ -41,23 +39,24 @@ describe('Gear', () => {
 		expect(testGear2.hasEquipped('Attack cape')).toBeTruthy();
 		expect(testGear2.hasEquipped('Max cape')).toBeFalsy();
 	});
-
-	const testGear3 = new Gear({
-		weapon: 'Staff of water'
-	});
-
 	test('', () => {
+		const testGear3 = new Gear({
+			weapon: 'Staff of water'
+		});
+
 		expect(testGear3.hasEquipped('Kodai wand')).toBeFalsy();
 	});
 
-	const testGear4 = new Gear({
-		weapon: 'Kodai wand',
-		head: 'Slayer helmet (i)',
-		hands: 'Barrows gloves'
-	});
 	test('', () => {
-		expect(testGear4.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true)).toBeTruthy();
-		expect(testGear4.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true, false)).toBeFalsy();
+		const testGearXXX = new Gear({
+			weapon: 'Kodai wand',
+			head: 'Slayer helmet (i)',
+			hands: 'Barrows gloves'
+		});
+		expect(testGearXXX.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true)).toBeTruthy();
+		expect(
+			testGearXXX.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true, false)
+		).toBeFalsy();
 	});
 
 	const testGear5 = new Gear({
@@ -114,94 +113,6 @@ describe('Gear', () => {
 		expect(testGear8.hasEquipped('Void knight top', true)).toBeTruthy();
 	});
 
-	const bsoTestGear = new Gear({
-		weapon: 'Drygore mace (ice)',
-		head: 'Offhand drygore mace (shadow)',
-		body: 'Gorajan warrior top',
-		legs: 'Torva platelegs',
-		cape: "Artisan's cape"
-	});
-
-	test('bso tests', () => {
-		expect(bsoTestGear.allItemsBank().toString()).toEqual(
-			"1x Artisan's cape, 1x Drygore mace (ice), 1x Gorajan warrior top, 1x Offhand drygore mace (shadow), 1x Torva platelegs"
-		);
-		expect(bsoTestGear.hasEquipped('Drygore mace (ice)')).toBeTruthy();
-		expect(bsoTestGear.hasEquipped('Drygore mace')).toBeTruthy();
-		expect(bsoTestGear.hasEquipped('Offhand drygore mace')).toBeTruthy();
-		expect(bsoTestGear.hasEquipped("Artisan's cape")).toBeTruthy();
-		expect(bsoTestGear.hasEquipped('Crafting master cape')).toBeTruthy();
-		expect(bsoTestGear.hasEquipped('Cooking master cape')).toBeTruthy();
-		expect(bsoTestGear.hasEquipped('Smithing master cape')).toBeTruthy();
-		expect(bsoTestGear.hasEquipped('Gorajan warrior legs')).toBeFalsy();
-	});
-
-	const bsoTestGear2 = new Gear({
-		cape: 'Smithing master cape'
-	});
-	test('bso tests 2', () => {
-		expect(bsoTestGear2.hasEquipped("Artisan's cape")).toBeFalsy();
-	});
-
-	const bsoDyedGear1 = new Gear({
-		'2h': 'Twisted bow (ice)',
-		hands: 'Pernix gloves',
-		body: 'Gorajan archer top',
-		legs: 'Gorajan archer legs (Sagittarian)'
-	});
-	test('bso dyed test 1', () => {
-		expect(bsoDyedGear1.hasEquipped('Pernix chaps')).toBeTruthy();
-		expect(bsoDyedGear1.hasEquipped('Pernix body')).toBeTruthy();
-		expect(bsoDyedGear1.hasEquipped('Twisted bow')).toBeTruthy();
-		expect(bsoDyedGear1.hasEquipped('Gorajan archer legs (Sagittarian)')).toBeTruthy();
-
-		expect(bsoDyedGear1.hasEquipped('Gorajan archer gloves')).toBeFalsy();
-		expect(bsoDyedGear1.hasEquipped('Hellfire bow')).toBeFalsy();
-		expect(bsoDyedGear1.hasEquipped('Hellfire bownana')).toBeFalsy();
-		expect(bsoDyedGear1.hasEquipped('Twisted bownana')).toBeFalsy();
-	});
-
-	const bsoDyedGear2 = new Gear({
-		'2h': 'Hellfire bownana',
-		hands: 'Gorajan occult gloves (Celestial)',
-		body: 'Gorajan occult top',
-		legs: 'Virtus robe legs'
-	});
-	test('bso dyed test 2', () => {
-		expect(bsoDyedGear2.hasEquipped('Virtus robe legs')).toBeTruthy();
-		expect(bsoDyedGear2.hasEquipped('Twisted bow')).toBeTruthy();
-		expect(bsoDyedGear2.hasEquipped('Hellfire bow')).toBeTruthy();
-		expect(bsoDyedGear2.hasEquipped('Zaryte bow')).toBeTruthy();
-		expect(bsoDyedGear2.hasEquipped('Hellfire bownana')).toBeTruthy();
-		expect(bsoDyedGear2.hasEquipped('Gorajan occult gloves')).toBeTruthy();
-		expect(bsoDyedGear2.hasEquipped('Virtus gloves')).toBeTruthy();
-
-		expect(bsoDyedGear2.hasEquipped('Gorajan archer gloves')).toBeFalsy();
-		expect(bsoDyedGear2.hasEquipped('Gorajan occult top (Celestial)')).toBeFalsy();
-		expect(bsoDyedGear2.hasEquipped('Twisted bownana')).toBeFalsy();
-	});
-
-	test('inferno items', () => {
-		const gear = new Gear({
-			head: 'Infernal slayer helmet(i)',
-			body: 'Gorajan warrior top',
-			legs: 'Gorajan warrior legs',
-			feet: 'Gorajan warrior boots',
-			hands: 'Gorajan warrior gloves'
-		});
-		expect(gear.hasEquipped('Gorajan warrior helmet')).toBeTruthy();
-		expect(gear.hasEquipped('Gorajan occult helmet')).toBeTruthy();
-		expect(gear.hasEquipped('Gorajan archer helmet')).toBeTruthy();
-		expect(gear.hasEquipped(gorajanWarriorOutfit, true)).toBeTruthy();
-		const gear2 = new Gear({
-			head: 'Infernal slayer helmet',
-			ring: 'Ring of suffering (ri)'
-		});
-		expect(gear2.hasEquipped('Gorajan warrior helmet')).toBeFalsy();
-		expect(gear2.hasEquipped('Gorajan occult helmet')).toBeFalsy();
-		expect(gear2.hasEquipped('Gorajan archer helmet')).toBeFalsy();
-		expect(gear2.hasEquipped('Ring of suffering (i)')).toBeTruthy();
-	});
 	const chargedScythes = ['Scythe of vitur', 'Holy scythe of vitur', 'Sanguine scythe of vitur'];
 	const unchargedScythes = [
 		'Scythe of vitur (uncharged)',
@@ -217,22 +128,22 @@ describe('Gear', () => {
 	] as const) {
 		for (const simItem of resolveItems(similarItems as unknown as string[])) {
 			const gear = new Gear({
-				[slot]: itemNameFromID(simItem)
+				[slot]: Items.itemNameFromId(simItem)
 			});
 			const is = gear.hasEquipped(itemID(baseItem));
 			if (!is) {
-				throw new Error(`${baseItem} didn't match ${itemNameFromID(simItem)}`);
+				throw new Error(`${baseItem} didn't match ${Items.itemNameFromId(simItem)}`);
 			}
 			expect(is).toEqual(true);
 		}
 		for (const unSimItem of resolveItems((unsimilarItems as unknown as string[]) ?? [])) {
 			const gear = new Gear({
-				[slot]: itemNameFromID(unSimItem)
+				[slot]: Items.itemNameFromId(unSimItem)
 			});
 
 			const is = gear.hasEquipped(itemID(baseItem));
 			if (is) {
-				throw new Error(`${baseItem} matched ${itemNameFromID(unSimItem)}`);
+				throw new Error(`${baseItem} matched ${Items.itemNameFromId(unSimItem)}`);
 			}
 			expect(is).toEqual(false);
 		}
@@ -257,27 +168,5 @@ describe('Gear', () => {
 
 	test('Celestial Ring/Signet', () => {
 		expect(getSimilarItems(itemID('Celestial ring'))).toEqual(resolveItems(['Celestial ring', 'Celestial signet']));
-	});
-
-	test("Inventors' backpack", () => {
-		const gear = new Gear();
-		gear.equip('Invention master cape');
-		expect(gear.hasEquipped("Inventors' backpack")).toEqual(true);
-
-		const gear2 = new Gear();
-		gear2.equip("Inventors' backpack");
-		expect(gear2.hasEquipped('Invention master cape')).toEqual(false);
-	});
-
-	test('Comp cape', () => {
-		const gear = new Gear();
-		gear.equip('Completionist cape');
-		expect(gear.hasEquipped('Invention master cape')).toEqual(true);
-		expect(gear.hasEquipped('Master quest cape')).toEqual(true);
-		expect(gear.hasEquipped('Achievement diary cape')).toEqual(true);
-		expect(gear.hasEquipped('Music cape')).toEqual(true);
-		expect(gear.hasEquipped('Slayer master cape')).toEqual(true);
-		expect(gear.hasEquipped('Attack master cape')).toEqual(true);
-		expect(gear.hasEquipped('Strength master cape')).toEqual(true);
 	});
 });

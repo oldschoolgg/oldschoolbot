@@ -1,19 +1,19 @@
-import type { activity_type_enum } from '@prisma/client';
-import { Time, calcPercentOfNum, calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, PerkTier, Time } from '@oldschoolgg/toolkit';
 
-import { BitField, PerkTier } from '../constants';
+import type { activity_type_enum } from '@/prisma/main.js';
+import { BitField } from '@/lib/constants.js';
 
-export function patronMaxTripBonus(user: MUser) {
-	const perkTier = user.perkTier();
+export function patronMaxTripBonus(perkTier: PerkTier | 0) {
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
 	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
 	return 0;
 }
 
-export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
+export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
+	const perkTier = await user.fetchPerkTier();
 	let max = Time.Minute * 30;
-	max += patronMaxTripBonus(user);
+	max += patronMaxTripBonus(perkTier);
 
 	const hasMasterHPCape = user.hasEquipped('Hitpoints master cape');
 	let masterHPCapeBoost = 0;
@@ -95,7 +95,6 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	const sac = Number(user.user.sacrificedValue);
 	const { isIronman } = user;
 	const sacPercent = Math.min(100, calcWhatPercent(sac, isIronman ? 5_000_000_000 : 10_000_000_000));
-	const perkTier = user.perkTier();
 	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
 
 	if (user.bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost)) {

@@ -1,14 +1,15 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import type { GEListing, GETransaction } from '@prisma/client';
-import { calcPercentOfNum, calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
-import type { Canvas } from 'skia-canvas';
 
-import type { GEListingWithTransactions } from '../../mahoji/commands/ge';
-import { CanvasSpritesheet } from './CanvasSpritesheet';
-import { OSRSCanvas } from './OSRSCanvas';
+import type { GEListing, GETransaction } from '@/prisma/main.js';
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
+import { CanvasSpritesheet } from '@/lib/canvas/CanvasSpritesheet.js';
+import type { Canvas } from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import type { GEListingWithTransactions } from '@/mahoji/commands/ge.js';
 
 class GeImageGeneratorSingleton {
+	public ready = false;
 	public geInterface: Canvas | null = null;
 	public geSlotLocked: Canvas | null = null;
 	public geSlotOpen: Canvas | null = null;
@@ -26,9 +27,11 @@ class GeImageGeneratorSingleton {
 		this.geSlotLocked = geSpritesheet.getSprite('ge_slot_locked');
 		this.geSlotOpen = geSpritesheet.getSprite('ge_slot_open');
 		this.geProgressShadow = geSpritesheet.getSprite('ge_progress_shadow');
+		this.ready = true;
 	}
 
 	async getSlotImage(
+		user: MUser | null,
 		canvas: OSRSCanvas,
 		slot: number,
 		locked: boolean,
@@ -67,7 +70,8 @@ class GeImageGeneratorSingleton {
 							radius: 10
 						}
 					: undefined,
-			quantity: listing.total_quantity
+			quantity: listing.total_quantity,
+			user: user ?? null
 		});
 
 		// Draw item name
@@ -100,7 +104,10 @@ class GeImageGeneratorSingleton {
 
 		const maxWidth = progressShadowImage.width;
 		ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
-		let percentFullfilled = calcWhatPercent(listing.quantity_remaining, listing.total_quantity);
+		let percentFullfilled = calcWhatPercent(
+			listing.total_quantity - listing.quantity_remaining,
+			listing.total_quantity
+		);
 		if (listing.type === 'Sell') {
 			percentFullfilled = 100 - percentFullfilled;
 		}
@@ -110,17 +117,6 @@ class GeImageGeneratorSingleton {
 		} else {
 			ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
 		}
-		// if (listing.quantity_remaining > 0) {
-		// 	progressWidth = Math.floor(
-		// 		(maxWidth * (listing.total_quantity - listing.quantity_remaining)) / listing.total_quantity
-		// 	);
-		// 	if (progressWidth === maxWidth) {
-		// 		ctx.fillStyle = OSRSCanvas.COLORS.DARK_GREEN;
-		// 	}
-		// } else {
-		// 	ctx.fillStyle = OSRSCanvas.COLORS.DARK_RED;
-		// 	progressWidth = maxWidth;
-		// }
 
 		ctx.fillRect(0, 0, progressWidth, progressShadowImage.height);
 		ctx.drawImage(progressShadowImage, 0, 0, progressShadowImage.width, progressShadowImage.height);
@@ -128,6 +124,7 @@ class GeImageGeneratorSingleton {
 	}
 
 	async createInterface(opts: {
+		user?: MUser;
 		slotsUsed: number;
 		maxSlots: number;
 		page: number;
@@ -136,6 +133,10 @@ class GeImageGeneratorSingleton {
 			sellTransactions: GETransaction[];
 		})[];
 	}): Promise<Buffer> {
+		await CanvasModule.ensureInit();
+		if (!this.ready) {
+			await this.init();
+		}
 		let { slotsUsed, maxSlots, page, activeListings } = opts;
 		const canvas = new OSRSCanvas({ width: this.geInterface!.width, height: this.geInterface!.height });
 		canvas.ctx.drawImage(this.geInterface!, 0, 0, canvas.width, canvas.height);
@@ -167,7 +168,7 @@ class GeImageGeneratorSingleton {
 
 			canvas.ctx.save();
 			canvas.ctx.translate(startX + x * (this.geSlotOpen!.width + 2), startY + y);
-			await this.getSlotImage(canvas, i + 1, i >= slotsUsed, listing);
+			await this.getSlotImage(opts.user ?? null, canvas, i + 1, i >= slotsUsed, listing);
 			canvas.ctx.restore();
 
 			x++;

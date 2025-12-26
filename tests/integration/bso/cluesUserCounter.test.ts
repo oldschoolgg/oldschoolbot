@@ -2,7 +2,7 @@ import { Bank, EItem } from 'oldschooljs';
 import { describe, it } from 'vitest';
 
 import { clueCommand } from '../../../src/mahoji/commands/clue.js';
-import { mockClient } from '../util';
+import { mockClient } from '../util.js';
 
 describe('Clues User Counter', async () => {
 	const client = await mockClient();

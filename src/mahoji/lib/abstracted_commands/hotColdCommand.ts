@@ -1,11 +1,7 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
-import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
@@ -29,7 +25,7 @@ const explanation =
 	"Hot and Cold Rules: You pick hot (red, yellow, orange) or cold (purple, blue, assorted), and if you guess right, you win. If it's mixed, you lose. If its black or white, you win **5x** your bet.";
 
 export async function hotColdCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	choice: 'hot' | 'cold' | undefined,
 	_amount: string | undefined
@@ -42,16 +38,14 @@ export async function hotColdCommand(
 	const flowerLoot = flowerTable.roll();
 	const flower = flowerLoot.items()[0][0];
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.
 ${explanation}`
 	);
 
 	await user.sync();
 	if (user.GP < amount) return "You can't afford to gamble that much.";
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		itemsToAdd: flowerLoot,
 		collectionLog: true
 	});
@@ -63,7 +57,7 @@ ${explanation}`
 			text: `You received ${flowerLoot}`
 		});
 	const response: Awaited<CommandResponse> = {
-		embeds: [embed.data]
+		embeds: [embed]
 	};
 
 	// You get 5x if you roll a black/white flower
@@ -74,16 +68,12 @@ ${explanation}`
 				increment: amountWon
 			}
 		});
-		await userStatsUpdate(
-			user.id,
-			{
-				gp_hotcold: {
-					increment: amountWon
-				}
-			},
-			{}
-		);
-		await mahojiClientSettingsUpdate({
+		await user.statsUpdate({
+			gp_hotcold: {
+				increment: amountWon
+			}
+		});
+		await ClientSettings.update({
 			gp_hotcold: {
 				decrement: amountWon
 			}
@@ -104,7 +94,7 @@ ${explanation}`
 	const arrToCheck = choice === 'hot' ? hot : cold;
 	const playerDidWin = flower.name !== 'Mixed flowers' && arrToCheck.includes(flower.id);
 	const key = playerDidWin ? 'increment' : 'decrement';
-	await mahojiClientSettingsUpdate({
+	await ClientSettings.update({
 		gp_hotcold: {
 			[key]: amount
 		}
@@ -117,27 +107,19 @@ ${explanation}`
 				increment: amount * 2
 			}
 		});
-		await userStatsUpdate(
-			user.id,
-			{
-				gp_hotcold: {
-					increment: amount
-				}
-			},
-			{}
-		);
+		await user.statsUpdate({
+			gp_hotcold: {
+				increment: amount
+			}
+		});
 		embed.setDescription(`You **won** ${toKMB(amountWon)}!`).setColor(6_875_960);
 		return response;
 	}
-	await userStatsUpdate(
-		user.id,
-		{
-			gp_hotcold: {
-				decrement: amount
-			}
-		},
-		{}
-	);
+	await user.statsUpdate({
+		gp_hotcold: {
+			decrement: amount
+		}
+	});
 
 	embed.setDescription(`You lost ${toKMB(amount)}.`).setColor(15_417_396);
 	return response;

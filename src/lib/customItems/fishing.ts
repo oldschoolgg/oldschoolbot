@@ -1,4 +1,4 @@
-import { setCustomItem } from './util';
+import { setCustomItem } from '@/lib/customItems/util.js';
 
 setCustomItem(
 	50_606,

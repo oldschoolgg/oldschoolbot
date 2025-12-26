@@ -1,20 +1,12 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, calcPercentOfNum } from 'e';
-import { Bank, resolveItems } from 'oldschooljs';
+import { calcPercentOfNum, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { BlacksmithOutfit } from '../../lib/bsoOpenables';
-import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
-import Smithing from '../../lib/skilling/skills/smithing';
-import smithables from '../../lib/skilling/skills/smithing/smithables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { pluraliseItemName } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
+import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
+import { pluraliseItemName } from '@/lib/util/smallUtils.js';
 
-export const smithCommand: OSBMahojiCommand = {
+export const smithCommand = defineCommand({
 	name: 'smith',
 	description: 'Smith things using the Smithing skill.',
 	attributes: {
@@ -24,11 +16,11 @@ export const smithCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to smith.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return smithables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -38,28 +30,21 @@ export const smithCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to smith (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, user, channelId }) => {
 		const smithedItem = Smithing.SmithableItems.find(_smithedItem =>
 			stringMatches(_smithedItem.name, options.name)
 		);
 
 		if (!smithedItem) return 'That is not a valid item to smith.';
-		if (smithedItem.requiresBlacksmith) {
-			if (!user.hasEquippedOrInBank(BlacksmithOutfit, 'every')) {
-				return 'You need the Blacksmith outfit equipped or in your bank to smith this item.';
-			}
-		}
 
-		if (user.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
+		if (user.skillsAsLevels.smithing < smithedItem.level) {
 			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${pluraliseItemName(
 				smithedItem.name
 			)}.`;
@@ -73,22 +58,21 @@ export const smithCommand: OSBMahojiCommand = {
 		// If they have the entire Smiths' Uniform, give 100% chance save 1 tick each item
 		let setBonus = 0;
 		if (
-			user.hasEquippedOrInBank(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Smithing.smithsUniformItems).map(i => Number.parseInt(i)),
-				'every'
+				true
 			)
 		) {
 			setBonus += 100;
 		} else {
 			// For each Smiths' Uniform item, check if they have it, give % chance to save 1 tick each item
 			for (const [itemID, bonus] of Object.entries(Smithing.smithsUniformItems)) {
-				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
+				if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
 					setBonus += bonus;
 				}
 			}
 		}
 
-		let maxTripLength = calcMaxTripLength(user, 'Smithing');
 		let { timeToUse } = smithedItem;
 		let doubleCBall = false;
 		let diaryCannonball = false;
@@ -97,8 +81,7 @@ export const smithCommand: OSBMahojiCommand = {
 				doubleCBall = true;
 				timeToUse /= 2;
 			}
-			const [has] = await userhasDiaryTier(user, KaramjaDiary.elite);
-			if (has) {
+			if (user.hasDiary('karamja.elite')) {
 				diaryCannonball = true;
 				timeToUse /= 1.23;
 			}
@@ -106,18 +89,22 @@ export const smithCommand: OSBMahojiCommand = {
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		let timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
+		const boosts: string[] = [];
 		if (user.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
+			boosts.push('4x for Takon');
 		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
+			boosts.push('2x for Dwarven greathammer');
 		}
+
+		let maxTripLength = await user.calcMaxTripLength('Smithing');
 
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;
 		}
 
 		let { quantity } = options;
-		// If no quantity provided, set it to the max.
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
 			if (smithedItem.name.includes('Dwarven') || smithedItem.name.includes('Gorajan')) {
@@ -140,7 +127,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		const hasScroll = user.owns('Scroll of efficiency');
 		if (hasScroll) {
-			const itemsThatCanBeSaved = resolveItems([
+			const itemsThatCanBeSaved = Items.resolveItems([
 				'Bronze bar',
 				'Iron bar',
 				'Steel bar',
@@ -151,11 +138,16 @@ export const smithCommand: OSBMahojiCommand = {
 				'Runite bar',
 				'Dwarven bar'
 			]);
+			const savedItems = new Bank();
 			for (const [item, qty] of baseCost.items()) {
 				if (itemsThatCanBeSaved.includes(item.id)) {
 					const saved = Math.floor(calcPercentOfNum(15, qty));
 					cost.remove(item.id, saved);
+					savedItems.add(item.id, saved);
 				}
+			}
+			if (savedItems.length > 0) {
+				boosts.push(`Scroll of efficiency saved you: ${savedItems}`);
 			}
 		}
 
@@ -168,38 +160,35 @@ export const smithCommand: OSBMahojiCommand = {
 			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
-		updateBankSetting('smithing_cost', cost);
+		await user.transactItems({ itemsToRemove: cost });
+		await ClientSettings.updateBankSetting('smithing_cost', cost);
 
-		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
+		await ActivityManager.startTrip<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity,
 			duration,
 			type: 'Smithing',
 			cantBeDoubled: smithedItem.cantBeDoubled
 		});
+
 		let str = `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
 			smithedItem.name
 		}, removed ${cost} from your bank, it'll take around ${formatDuration(duration)} to finish. ${
 			setBonus > 0
 				? `${setBonus}% chance to save 1 tick while smithing each item for using Smiths' Uniform item/items.`
 				: ''
-		}${doubleCBall ? 'Twice as fast Cannonball production using Double ammo mould.' : ''}${
+		}\n${doubleCBall ? 'Twice as fast Cannonball production using Double ammo mould.' : ''}
+		\n${
 			diaryCannonball
 				? 'Faster Cannonball production using the Shilo village furnance due to completing the Elite Karamja Diary.'
 				: ''
 		}`;
 
-		if (user.usingPet('Takon')) {
-			str += ' Takon is Smithing for you, at incredible speeds and skill.';
-		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
-			str += ' 2x faster for Dwarven greathammer.';
-		}
-		if (hasScroll) {
-			str += ' Your Scroll of efficiency enables you to save 15% of the bars used.';
+		if (boosts.length > 0) {
+			str += `\n**Boosts:** ${boosts.join(', ')}`;
 		}
 		return str;
 	}
-};
+});

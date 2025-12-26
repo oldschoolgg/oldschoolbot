@@ -1,12 +1,11 @@
-import { Time, randInt, roll } from 'e';
+import { incrementUserCounter } from '@/lib/bso/userCounter.js';
+
+import { randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { incrementUserCounter } from '../../mahoji/lib/userCounter.js';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 
 const possibleFound = new LootTable()
 	.add('Reward casket (beginner)')
@@ -26,10 +25,9 @@ const possibleFound = new LootTable()
 
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',
-	async run(data: ClueActivityTaskOptions) {
-		const { ci: clueID, userID, channelID, q: quantity, duration } = data;
+	async run(data: ClueActivityTaskOptions, { user, handleTripFinish }) {
+		const { ci: clueID, userID, channelId, q: quantity, duration } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID)!;
-		const user = await mUserFetch(userID);
 
 		await incrementUserCounter(userID, `cluecompletions.${clueTier.name}`, quantity);
 
@@ -50,15 +48,15 @@ export const clueTask: MinionTask = {
 				bonusLoot.add(item);
 			}
 			if (bonusLoot.length > 0) {
-				await updateBankSetting('zippy_loot', bonusLoot);
-				await userStatsBankUpdate(user.id, 'loot_from_zippy_bank', bonusLoot);
+				await ClientSettings.updateBankSetting('zippy_loot', bonusLoot);
+				await user.statsBankUpdate('loot_from_zippy_bank', bonusLoot);
 			}
 
 			loot.add(bonusLoot);
 
 			if (roll(15)) {
-				await updateBankSetting('zippy_loot', loot);
-				await userStatsBankUpdate(user.id, 'loot_from_zippy_bank', loot);
+				await ClientSettings.updateBankSetting('zippy_loot', loot);
+				await user.statsBankUpdate('loot_from_zippy_bank', loot);
 				loot.multiply(2);
 				str += '\nZippy has **doubled** your loot.';
 			}
@@ -66,12 +64,10 @@ export const clueTask: MinionTask = {
 			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

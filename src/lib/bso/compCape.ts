@@ -1,21 +1,56 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { type UserStats, tame_growth } from '@prisma/client';
-import { calcWhatPercent, objectEntries, sumArr } from 'e';
-import { Bank, type ItemBank, ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
-
-import { ClueTiers } from '../clues/clueTiers';
-import { BitField } from '../constants';
 import {
 	abyssalDragonCL,
+	allDOAPets,
+	customPetsCL,
+	doaCL,
+	dungeoneeringCL,
+	ignecarusCL,
+	kalphiteKingCL,
+	kingGoldemarCL,
+	moktangCL,
+	naxxusCL,
+	nexCL,
+	nihilizCL,
+	polyporeDungeonCL,
+	queenBlackDragonCL,
+	seaKrakenCL,
+	treeBeardCL,
+	vasaMagusCL
+} from '@/lib/bso/collection-log/main.js';
+import {
+	balthazarsBigBonanzaCL,
+	baxtorianBathhousesCL,
+	fishingContestCL,
+	fistOfGuthixCL,
+	monkeyRumbleCL,
+	odsCL,
+	stealingCreationCL,
+	tinkeringWorshopCL
+} from '@/lib/bso/collection-log/minigames.js';
+import { cookingCL, craftingCL, creatablesCL, herbloreCL, smithingCL } from '@/lib/bso/collection-log/special.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { kibbleCL } from '@/lib/bso/kibble.js';
+import { allLeagueTasks, leagueTasks } from '@/lib/bso/leagues/leagues.js';
+import { cmbClothes } from '@/lib/bso/openables/cmb.js';
+import { divinationEnergies } from '@/lib/bso/skills/divination.js';
+import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
+import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
+import { slayerMasksHelmsCL } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
+import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
+
+import { calcWhatPercent, objectEntries, sumArr, toTitleCase } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
+
+import { tame_growth, type UserStats } from '@/prisma/main.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
+import {
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
-	allDOAPets,
 	allPetsCL,
-	balthazarsBigBonanzaCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
-	baxtorianBathhousesCL,
 	brimhavenAgilityArenaCL,
 	bryophytaCL,
 	callistoCL,
@@ -42,24 +77,18 @@ import {
 	cluesMediumCL,
 	cluesRaresCL,
 	cluesSharedCL,
-	cmbClothes,
 	commanderZilyanaCL,
 	corporealBeastCL,
 	crazyArchaeologistCL,
 	creatureCreationCL,
-	customPetsCL,
 	cyclopsCL,
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
 	diariesCL,
-	doaCL,
-	dungeoneeringCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
-	fishingContestCL,
 	fishingTrawlerCL,
-	fistOfGuthixCL,
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
@@ -72,11 +101,8 @@ import {
 	hallowedSepulchreCL,
 	hesporiCL,
 	holidayCL,
-	ignecarusCL,
-	kalphiteKingCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
-	kingGoldemarCL,
 	krakenCL,
 	kreeArraCL,
 	krilTsutsarothCL,
@@ -85,19 +111,11 @@ import {
 	magicTrainingArenaCL,
 	mahoganyHomesCL,
 	miscellaneousCL,
-	moktangCL,
 	monkeyBackpacksCL,
-	monkeyRumbleCL,
 	motherlodeMineCL,
 	muspahCL,
-	naxxusCL,
-	nexCL,
-	nihilizCL,
 	oborCL,
-	odsCL,
 	pestControlCL,
-	polyporeDungeonCL,
-	queenBlackDragonCL,
 	questCL,
 	randomEventsCL,
 	revenantsCL,
@@ -105,7 +123,6 @@ import {
 	rooftopAgilityCL,
 	sarachnisCL,
 	scorpiaCL,
-	seaKrakenCL,
 	shadesOfMorttonCL,
 	shayzienArmourCL,
 	shootingStarsCL,
@@ -114,22 +131,18 @@ import {
 	skotizoCL,
 	slayerCL,
 	soulWarsCL,
-	stealingCreationCL,
 	templeTrekkingCL,
 	temporossCL,
+	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theNightmareCL,
-	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
-	tinkeringWorshopCL,
 	titheFarmCL,
 	tobMetamorphPets,
 	tormentedDemonCL,
-	treeBeardCL,
 	troubleBrewingCL,
 	tzHaarCL,
-	vasaMagusCL,
 	venenatisCL,
 	vetionCL,
 	volcanicMineCL,
@@ -137,33 +150,18 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from '../data/CollectionsExport';
-import { creatablesCL } from '../data/createables';
-import { kibbleCL } from '../data/kibble';
-import { getSimilarItems } from '../data/similarItems';
-import { slayerMasksHelmsCL } from '../data/slayerMaskHelms';
-import { diaries, diariesObject } from '../diaries';
-import { growablePetsCL } from '../growablePets';
-import { implingsCL } from '../implings';
-import { inventionCL } from '../invention/inventions';
-import { allLeagueTasks, leagueTasks } from '../leagues/leagues';
-import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
-import { type DiaryID, type DiaryTierName, diaryTiers } from '../minions/types';
-import { PoHObjects, getPOHObject } from '../poh';
-import { getFarmingInfoFromUser } from '../skilling/functions/getFarmingInfo';
-import Skillcapes from '../skilling/skillcapes';
-import Agility from '../skilling/skills/agility';
-import { cookingCL } from '../skilling/skills/cooking/cooking';
-import { craftingCL } from '../skilling/skills/crafting/craftables';
-import { dungBuyables } from '../skilling/skills/dung/dungData';
-import { allFarmingItems } from '../skilling/skills/farming';
-import { fletchingCL } from '../skilling/skills/fletching/fletchables';
-import { herbloreCL } from '../skilling/skills/herblore/mixables';
-import { smithingCL } from '../skilling/skills/smithing/smithables';
-import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
-import { type RequirementFailure, Requirements } from '../structures/Requirements';
-import { TameSpeciesID, tameFeedableItems } from '../tames';
-import { divinationEnergies } from './divination';
+} from '@/lib/data/CollectionsExport.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { diaries } from '@/lib/diaries.js';
+import { growablePetsCL } from '@/lib/growablePets.js';
+import { implingsCL } from '@/lib/implings.js';
+import { getPOHObject, PoHObjects } from '@/lib/poh/index.js';
+import Skillcapes from '@/lib/skilling/skillcapes.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import { allFarmingItems, Farming } from '@/lib/skilling/skills/farming/index.js';
+import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
+import { type RequirementFailure, Requirements } from '@/lib/structures/Requirements.js';
 
 const minigameRequirements = new Requirements()
 	.add({ name: "Complete Balthazar's Big Bonanza CL", clRequirement: balthazarsBigBonanzaCL })
@@ -265,7 +263,7 @@ const pvmRequirements = new Requirements()
 	.add({
 		name: 'Kill a Frost dragon',
 		kcRequirement: {
-			[BSOMonsters.FrostDragon.id]: 1
+			[EBSOMonster.FROST_DRAGON]: 1
 		}
 	})
 	.add({
@@ -334,7 +332,7 @@ const skillingRequirements = new Requirements()
 	.add({
 		name: 'Grow 5 Spirit trees',
 		has: ({ user }) => {
-			const info = getFarmingInfoFromUser(user.user);
+			const info = Farming.getFarmingInfoFromUser(user);
 			const hasFive = info.patches.spirit.lastQuantity >= 5;
 			return hasFive || user.bitfield.includes(BitField.GrewFiveSpiritTrees);
 		}
@@ -758,16 +756,16 @@ const tameRequirements = new Requirements()
 	});
 
 const diaryRequirements = new Requirements();
-for (const [, b] of objectEntries(diariesObject)) {
+for (const b of diaries) {
 	diaryRequirements.add({
 		name: `Complete the ${b.name} achievement diary`,
-		diaryRequirement: diaries.flatMap(i => {
-			const res: [DiaryID, DiaryTierName][] = [];
-			for (const a of diaryTiers) {
-				res.push([i.id, a]);
-			}
-			return res;
-		})
+		diaryRequirement: diaries
+			.flatMap(i => {
+				return ['easy', 'medium', 'hard', 'elite'].map(_tier =>
+					`${i.name}.${_tier}`.replace(/\s/g, '').toLowerCase()
+				);
+			})
+			.flat(100) as Parameters<MUser['hasDiary']>[0][]
 	});
 }
 diaryRequirements.add({ name: 'Complete Achievement Diary CL', clRequirement: diariesCL });

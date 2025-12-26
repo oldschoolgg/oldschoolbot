@@ -1,14 +1,18 @@
-import { randomVariation } from '@oldschoolgg/toolkit';
-import { Time, calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round } from 'e';
-import { Bank, resolveItems } from 'oldschooljs';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit,
+	pernixOutfit
+} from '@/lib/bso/collection-log/main.js';
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
+
+import { randFloat, randInt, randomVariation } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { inventionBoosts } from '../invention/inventions';
-import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import getOSItem from '../util/getOSItem';
-import { logError } from '../util/logError';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, pernixOutfit } from './CollectionsExport';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 
 interface TOBRoom {
 	name: string;
@@ -316,8 +320,8 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 		// Reduce time for gear
 		const gearPercents = calculateTOBUserGearPercents(u.user);
 		// Blowpipe
-		const darts = u.user.blowpipe.dartID!;
-		const dartItem = getOSItem(darts);
+		const darts = u.user.getBlowpipe().dartID!;
+		const dartItem = Items.getOrThrow(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
 		let blowPipePercent = 0;
 		if (dartIndex >= 3) {
@@ -510,7 +514,7 @@ export function createTOBRaid({
 	if (!wipedRoom) deathDuration = null;
 
 	if (wipedRoom !== null && (!TOBRooms.includes(wipedRoom) || [-1].includes(TOBRooms.indexOf(wipedRoom)))) {
-		logError(new Error('Had non-existant wiped room for tob'), {
+		Logging.logError(new Error('Had non-existant wiped room for tob'), {
 			room: JSON.stringify(wipedRoom),
 			team: JSON.stringify(parsedTeam)
 		});

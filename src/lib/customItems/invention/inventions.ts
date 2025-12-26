@@ -1,4 +1,4 @@
-import { setCustomItem } from '../util';
+import { setCustomItem } from '@/lib/customItems/util.js';
 
 function addInvention(id: number, name: string, itemToExtend = 'Coal') {
 	setCustomItem(

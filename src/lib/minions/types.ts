@@ -1,22 +1,31 @@
-import type { GearSetupType, XpGainSource } from '@prisma/client';
-import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
+import type { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
+import type {
+	ArrayItemsResolved,
+	Bank,
+	EMonster,
+	Item,
+	ItemBank,
+	MonsterKillOptions,
+	SimpleMonster
+} from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import type { BitField } from '@/lib/constants.js';
+import type { QuestID } from '@/lib/minions/data/quests.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { POHBoosts } from '@/lib/poh/index.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import type { LevelRequirements, Ore, SkillNameType } from '@/lib/skilling/types.js';
+import type { GearRequirement, GearRequirements } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { XPBank } from '@/lib/structures/XPBank.js';
+import type { Skills } from '@/lib/types/index.js';
 import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
-import type { ClueTier } from '../clues/clueTiers';
-import type { BitField } from '../constants';
-import type { POHBoosts } from '../poh';
-import type { MinigameName } from '../settings/minigames';
-import type { LevelRequirements, SkillNameType, SkillsEnum } from '../skilling/types';
-import type { XPBank } from '../structures/Bank';
-import type { GearRequirement, GearRequirements } from '../structures/Gear';
-import type { GearBank } from '../structures/GearBank';
-import type { MUserStats } from '../structures/MUserStats';
-import type { UpdateBank } from '../structures/UpdateBank';
-import type { Skills } from '../types';
-import type { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
-import type { QuestID } from './data/quests';
-import type { AttackStyles } from './functions';
 
 export type KillableMonsterEffect = (opts: {
 	gearBank: GearBank;
@@ -110,15 +119,14 @@ export interface KillableMonster {
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
-	diaryRequirement?: [DiaryID, DiaryTierName];
+	diaryRequirement?: Parameters<MUser['hasDiary']>[0];
 	wildySlayerCave?: boolean;
 	requiredBitfield?: BitField;
-
 	minimumWeaponShieldStats?: Partial<Record<GearSetupType, Required<GearRequirement>>>;
 	tameCantKill?: true;
 	customRequirement?: (user: MUser) => Promise<string | null>;
 	setupsUsed?: GearSetupType[];
-	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
+	kcRequirements?: Partial<Record<EBSOMonster, number>>;
 }
 /*
  * Monsters will have an array of Consumables
@@ -137,27 +145,14 @@ export interface Consumable {
 }
 
 export interface AddXpParams {
-	skillName: SkillsEnum | SkillNameType;
+	skillName: SkillNameType;
 	amount: number;
 	duration?: number;
 	multiplier?: boolean;
 	minimal?: boolean;
 	artificial?: boolean;
-	masterCapeBoost?: boolean;
 	source?: XpGainSource;
-}
-
-export interface AddMonsterXpParams {
-	monsterID: number;
-	quantity: number;
-	duration: number;
-	isOnTask: boolean;
-	taskQuantity: number | null;
-	minimal?: boolean;
-	usingCannon?: boolean;
-	cannonMulti?: boolean;
-	burstOrBarrage?: number;
-	superiorCount?: number;
+	masterCapeBoost?: boolean;
 }
 
 export interface BlowpipeData {
@@ -165,22 +160,6 @@ export interface BlowpipeData {
 	dartQuantity: number;
 	dartID: number | null;
 }
-
-export interface MegaDuckLocation {
-	x: number;
-	y: number;
-	placesVisited: string[];
-	usersParticipated: Record<string, number>;
-	steps: [number, number][];
-}
-
-export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
-	x: 1356,
-	y: 209,
-	usersParticipated: {},
-	placesVisited: [],
-	steps: []
-};
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
@@ -197,7 +176,7 @@ export interface DiaryTier {
 	minigameReqs?: Partial<Record<MinigameName, number>>;
 	lapsReqs?: Record<string, number>;
 	qp?: number;
-	monsterScores?: Record<string, number>;
+	monsterScores?: Partial<Record<EMonster, number>>;
 	customReq?: (user: MUser, summary: boolean, stats: MUserStats) => [true] | [false, string];
 }
 export enum DiaryID {
@@ -213,4 +192,12 @@ export enum DiaryID {
 	Morytania = 9,
 	Varrock = 10,
 	Wilderness = 11
+}
+
+export interface Star extends Ore {
+	size: number;
+	level: number;
+	chance: number;
+	dustAvailable: number;
+	additionalDustPercent: number;
 }

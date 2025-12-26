@@ -1,17 +1,13 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { randArrItem, randInt } from 'e';
-import { Bank, SkillsEnum, itemID } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';
-import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { calcMaxRCQuantity, userStatsUpdate } from '../../../mahoji/mahojiSettings';
-import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian';
-import type { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { rewardsGuardianTable } from '@/lib/simulation/rewardsGuardian.js';
+import { bloodEssence } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
 const catalyticRunesArray: string[] = [
 	'Mind rune',
@@ -35,34 +31,31 @@ const combinationalRunesArray: string[] = [
 
 export const guardiansOfTheRiftTask: MinionTask = {
 	type: 'GuardiansOfTheRift',
-	async run(data: GuardiansOfTheRiftActivityTaskOptions) {
-		const { channelID, userID, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } =
-			data;
-		const user = await mUserFetch(userID);
+	async run(data: GuardiansOfTheRiftActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } = data;
 		await user.incrementMinigameScore('guardians_of_the_rift', quantity);
 
 		const miningXP = quantity * 5 * minedFragments;
 		const craftingXP = quantity * 80 * barrierAndGuardian;
+		const rcLevel = user.skillsAsLevels.runecraft;
 		const rcXP =
-			quantity *
-			(45 * user.skillLevel(SkillsEnum.Runecraft) + 300 * barrierAndGuardian + 17 * minedFragments) *
-			Math.min(user.skillLevel(SkillsEnum.Runecraft) / 99, 1);
+			quantity * (45 * rcLevel + 300 * barrierAndGuardian + 17 * minedFragments) * Math.min(rcLevel / 99, 1);
 
 		const [xpResRunecraft, xpResCrafting, xpResMining] = await Promise.all([
 			user.addXP({
-				skillName: SkillsEnum.Runecraft,
+				skillName: 'runecraft',
 				amount: Math.floor(rcXP),
 				duration,
 				source: 'GuardiansOfTheRift'
 			}),
 			user.addXP({
-				skillName: SkillsEnum.Crafting,
+				skillName: 'crafting',
 				amount: Math.floor(craftingXP),
 				duration,
 				source: 'GuardiansOfTheRift'
 			}),
 			user.addXP({
-				skillName: SkillsEnum.Mining,
+				skillName: 'mining',
 				amount: Math.floor(miningXP),
 				duration,
 				source: 'GuardiansOfTheRift'
@@ -74,9 +67,9 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		const { bank } = user;
 		// For each pouch the user has, increase their inventory size.
 		for (const pouch of Runecraft.pouches) {
-			if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+			if (rcLevel < pouch.level) continue;
 			if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
-			if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
+			if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
 		}
 
 		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
@@ -102,12 +95,12 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			const isElemental = i % 2 === 0;
 			if (isElemental) {
 				if (combinationRunes) {
-					rune = randArrItem(combinationalRunesArray);
+					rune = rng.pick(combinationalRunesArray);
 				} else {
-					rune = randArrItem(elementalRunesArray);
+					rune = rng.pick(elementalRunesArray);
 				}
 			} else {
-				rune = randArrItem(catalyticRunesArray);
+				rune = rng.pick(catalyticRunesArray);
 			}
 			const runeObj = Runecraft.Runes.find(
 				_rune => stringMatches(_rune.name, rune) || stringMatches(_rune.name.split(' ')[0], rune)
@@ -122,21 +115,17 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		const rewardsGuardianLoot = new Bank();
 		let rewardsQty = 0;
 		for (let i = 0; i < quantity; i++) {
-			rewardsQty += randInt(rolls - 1, rolls);
+			rewardsQty += rng.randInt(rolls - 1, rolls);
 		}
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) rewardsQty *= 2;
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
-		await userStatsUpdate(
-			user.id,
-			{
-				gotr_rift_searches: {
-					increment: rewardsQty
-				}
-			},
-			{}
-		);
+		await user.statsUpdate({
+			gotr_rift_searches: {
+				increment: rewardsQty
+			}
+		});
 
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
@@ -144,8 +133,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		runesLoot.add('Blood rune', bonusBloods);
 		totalLoot.add(runesLoot);
 
-		const { previousCL } = await transactItems({
-			userID: user.id,
+		const { previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: totalLoot
 		});
@@ -157,7 +145,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			previousCL
 		});
 
-		let str = `<@${userID}>, ${
+		let str = `<@${user.id}>, ${
 			user.minionName
 		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also received: ${runesLoot}${
 			setBonus - 1 > 0
@@ -170,7 +158,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			str += `\n\n**Blood essence used:** ${bonusBloods.toLocaleString()}`;
 		}
 
-		updateBankSetting('gotr_loot', totalLoot);
+		await ClientSettings.updateBankSetting('gotr_loot', totalLoot);
 		await trackLoot({
 			id: 'guardians_of_the_rift',
 			type: 'Minigame',
@@ -187,6 +175,6 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, null);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data });
 	}
 };

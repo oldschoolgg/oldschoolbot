@@ -1,17 +1,11 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
-import { Items, itemID } from 'oldschooljs';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
-import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../../lib/util/determineRunes';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
+import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
 
-export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
+export async function enchantCommand(user: MUser, channelId: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
 		item =>
 			stringMatches(item.name, name) ||
@@ -23,17 +17,13 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 		return 'That is not a valid item to enchant.';
 	}
 
-	if (enchantable.id === itemID('Magic banana') && !user.bitfield.includes(BitField.HasBananaEnchantmentScroll)) {
-		return "You haven't learnt this spell yet.";
-	}
-
-	if (user.skillLevel(SkillsEnum.Magic) < enchantable.level) {
+	if (user.skillsAsLevels.magic < enchantable.level) {
 		return `${user.minionName} needs ${enchantable.level} Magic to enchant ${enchantable.name}.`;
 	}
 
 	const userBank = user.bank;
 
-	const maxTripLength = calcMaxTripLength(user, 'Enchanting');
+	const maxTripLength = await user.calcMaxTripLength('Enchanting');
 
 	const timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
 
@@ -61,18 +51,17 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 			enchantable.input
 		}, you're missing **${cost.clone().remove(userBank)}**.`;
 	}
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
-	updateBankSetting('magic_cost_bank', cost);
+	await ClientSettings.updateBankSetting('magic_cost_bank', cost);
 
-	await addSubTaskToActivityTask<EnchantingActivityTaskOptions>({
+	await ActivityManager.startTrip<EnchantingActivityTaskOptions>({
 		itemID: enchantable.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
-		type: 'Enchanting',
-		cantBeDoubled: enchantable.cantBeDoubled
+		type: 'Enchanting'
 	});
 
 	const xpHr = `${Math.round(((enchantable.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;

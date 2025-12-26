@@ -1,18 +1,16 @@
+import { BlacksmithOutfit } from '@/lib/bso/bsoConstants.js';
+import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
+
 import { Bank } from 'oldschooljs';
 
-import { BlacksmithOutfit } from '../../lib/bsoOpenables';
-import { dwarvenOutfit } from '../../lib/data/CollectionsExport';
-import Smithing from '../../lib/skilling/skills/smithing/';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
+import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 
 export const smithingTask: MinionTask = {
 	type: 'Smithing',
-	async run(data: SmithingActivityTaskOptions) {
-		const { smithedBarID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: SmithingActivityTaskOptions, { user, handleTripFinish }) {
+		const { smithedBarID, quantity, channelId, duration } = data;
 
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
 
@@ -24,7 +22,7 @@ export const smithingTask: MinionTask = {
 		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: xpReceived,
 			duration
 		});
@@ -42,12 +40,11 @@ export const smithingTask: MinionTask = {
 			collectionLog = false;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog,
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

@@ -1,5 +1,6 @@
-import { Time, randInt, roll } from 'e';
-import { Bank, HerbDropTable, LootTable, itemTupleToTable, resolveItems } from 'oldschooljs';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, HerbDropTable, itemTupleToTable, LootTable, resolveItems } from 'oldschooljs';
 
 const LowTierCoffin = new LootTable()
 	.add("Monk's robe top")
@@ -54,6 +55,7 @@ const GrandmasterTierCoffin = new LootTable()
 	.add(
 		itemTupleToTable([
 			['Super restore(4)', 3],
+
 			['Saradomin brew(4)', 1]
 		]),
 		[2, 6]
@@ -149,6 +151,7 @@ export const sepulchreFloors = [
 		numCoffins: 4,
 		marksRange: [6, 8]
 	},
+
 	{
 		number: 7,
 		petChance: 1500,

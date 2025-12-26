@@ -1,8 +1,9 @@
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import type { Bank } from 'oldschooljs';
 
-import { BitField } from '../constants';
-import { ClueTiers } from './clueTiers';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
+import { EmojiId } from '@/lib/data/emojis.js';
 
 export function getClueScoresFromOpenables(openableScores: Bank) {
 	return openableScores.filter(item => Boolean(ClueTiers.find(ct => ct.id === item.id)));
@@ -18,7 +19,7 @@ export function buildClueButtons(loot: Bank | null, perkTier: number, user: MUse
 					.setCustomId(`DO_${clue.name.toUpperCase()}_CLUE`)
 					.setLabel(`Do ${clue.name} Clue`)
 					.setStyle(ButtonStyle.Secondary)
-					.setEmoji('365003979840552960')
+					.setEmoji({ id: EmojiId.ClueScroll })
 			)
 		);
 	}

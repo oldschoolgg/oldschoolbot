@@ -1,18 +1,11 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { Time, reduceNumByPercent, round } from 'e';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
+import { formatDuration, reduceNumByPercent, round, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import Constructables from '../../lib/skilling/skills/construction/constructables';
-import type { Skills } from '../../lib/types';
-import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { hasSkillReqs } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import Constructables from '@/lib/skilling/skills/construction/constructables.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -36,7 +29,7 @@ const ds2Requirements: Skills = {
 	slayer: 18
 };
 
-export const buildCommand: OSBMahojiCommand = {
+export const buildCommand = defineCommand({
 	name: 'build',
 	description: 'Sends your minion to train Construction by building things.',
 	attributes: {
@@ -46,15 +39,13 @@ export const buildCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The object you want to build.',
 			required: true,
-			autocomplete: async (value: string, user: User) => {
-				const mUser = await mUserFetch(user.id);
-				const conLevel = mUser.skillLevel('construction');
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.filter(c => c.level <= conLevel)
+					.filter(c => c.level <= user.skillsAsLevels.construction)
 					.map(i => ({
 						name: i.name,
 						value: i.name
@@ -62,22 +53,21 @@ export const buildCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to build (defaults to max).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelId }) => {
 		const object = Constructables.find(
 			object =>
 				stringMatches(object.id.toString(), options.name) ||
 				stringMatches(object.name, options.name) ||
 				stringMatches(object.name.split(' ')[0], options.name)
 		);
-		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
+		const hasDs2Requirements = user.hasSkillReqs(ds2Requirements);
 
 		if (!object) return 'Thats not a valid object to build.';
 
@@ -90,7 +80,7 @@ export const buildCommand: OSBMahojiCommand = {
 				return `${user.minionName} needs 205 Quest Points to build a ${object.name}.`;
 			}
 			if (!hasDs2Requirements) {
-				return `In order to build a ${object.name}, you need: ${ds2Reason}.`;
+				return `In order to build a ${object.name}, you need to have completed the Dragon Slayer II quest, and have the prerequisite stats.`;
 			}
 			if (!user.hasEquippedOrInBank('Mythical cape')) {
 				return `${user.minionName} needs to own a Mythical cape to build a ${object.name}.`;
@@ -104,7 +94,7 @@ export const buildCommand: OSBMahojiCommand = {
 		const userBank = user.bank;
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = calcMaxTripLength(user, 'Construction');
+		const maxTripLength = await user.calcMaxTripLength('Construction');
 		const maxForMaterials = planksHas / planksQtyCost;
 
 		const boosts: string[] = [];
@@ -161,14 +151,14 @@ export const buildCommand: OSBMahojiCommand = {
 		cost.add('Coins', gpNeeded);
 		if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
-		updateBankSetting('construction_cost_bank', cost);
+		await ClientSettings.updateBankSetting('construction_cost_bank', cost);
 
-		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>({
+		await ActivityManager.startTrip<ConstructionActivityTaskOptions>({
 			objectID: object.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity,
 			duration,
 			type: 'Construction'
@@ -186,4 +176,4 @@ You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} invent
 		}
 		return str;
 	}
-};
+});

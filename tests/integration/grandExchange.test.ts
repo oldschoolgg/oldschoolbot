@@ -1,13 +1,14 @@
-import { Time, calcPercentOfNum, randArrItem, randInt, shuffleArr } from 'e';
+import { randArrItem, shuffleArr } from '@oldschoolgg/rng';
+import { calcPercentOfNum, Time } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { assert, describe, expect, test } from 'vitest';
 
-import { GrandExchange } from '../../src/lib/grandExchange';
-import { geCommand } from '../../src/mahoji/commands/ge';
-import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import type { TestUser } from './util';
-import { createTestUser, mockClient } from './util';
+import { GrandExchange } from '../../src/lib/grandExchange.js';
+import { geCommand } from '../../src/mahoji/commands/ge.js';
+import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import type { TestUser } from './util.js';
+import { createTestUser, mockClient } from './util.js';
 
 const TICKS_TO_RUN = 50;
 const AMOUNT_USERS = 10;
@@ -37,10 +38,10 @@ describe('Grand Exchange', async () => {
 
 	test(
 		'Fuzz',
+		{
+			timeout: Time.Minute * 2
+		},
 		async () => {
-			// biome-ignore lint/suspicious/noSelfCompare: <explanation>
-			assert(randInt(1, 100_000) !== randInt(1, 100_000));
-
 			await GrandExchange.totalReset();
 			await GrandExchange.init();
 
@@ -142,9 +143,6 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 
 			await GrandExchange.queue.onEmpty();
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
-		},
-		{
-			timeout: Time.Minute * 10
 		}
 	);
 

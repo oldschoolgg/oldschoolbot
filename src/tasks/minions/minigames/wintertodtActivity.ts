@@ -1,23 +1,18 @@
-import { calcPerHour } from '@oldschoolgg/toolkit';
-import { Time, randInt, roll } from 'e';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+
+import { calcPerHour, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
-import Firemaking from '../../../lib/skilling/skills/firemaking';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration } = data;
 		const hasMasterCape = user.hasEquippedOrInBank('Firemaking master cape');
 
 		const { newScore } = await user.incrementMinigameScore('wintertodt', quantity);
@@ -26,7 +21,7 @@ export const wintertodtTask: MinionTask = {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = randInt(1000, 5000);
+			const points = rng.randInt(1000, 5000);
 			totalPoints += points;
 
 			loot.add(
@@ -41,13 +36,13 @@ export const wintertodtTask: MinionTask = {
 
 		let gotToad = false;
 		const dropRate = clAdjustedDroprate(user, 'Wintertoad', 3000 / Math.floor(duration / Time.Minute), 1.2);
-		if (duration > Time.Minute * 20 && roll(dropRate)) {
+		if (duration > Time.Minute * 20 && rng.roll(dropRate)) {
 			gotToad = true;
 			loot.add('Wintertoad');
 		}
 
 		// Track loot in Economy Stats
-		await updateBankSetting('economyStats_wintertodtLoot', loot);
+		await ClientSettings.updateBankSetting('economyStats_wintertodtLoot', loot);
 
 		/**
 		 * https://oldschool.runescape.wiki/w/Wintertodt#Rewards_2
@@ -55,9 +50,9 @@ export const wintertodtTask: MinionTask = {
 		 * Adding/cutting a root gives 10pts, therefore number of roots from this trip is totalPoints/10
 		 */
 		const numberOfRoots = Math.floor((totalPoints - 50 * quantity) / 10);
-		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
-		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
-		const conLevel = user.skillLevel(SkillsEnum.Construction);
+		const fmLvl = user.skillsAsLevels.firemaking;
+		const wcLvl = user.skillsAsLevels.woodcutting;
+		const conLevel = user.skillsAsLevels.construction;
 
 		let fmXpToGive = Math.floor(fmLvl * 100 * quantity + numberOfRoots * (fmLvl * 3));
 		let fmBonusXP = 0;
@@ -65,10 +60,10 @@ export const wintertodtTask: MinionTask = {
 		const constructionXPPerBrazier = conLevel * 4;
 		let numberOfBraziers = 0;
 		for (let i = 0; i < quantity; i++) {
-			numberOfBraziers += randInt(1, 7);
+			numberOfBraziers += rng.randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
-		let xpStr = await user.addXP({ skillName: SkillsEnum.Construction, amount: conXP, duration: data.duration });
+		let xpStr = await user.addXP({ skillName: 'construction', amount: conXP, duration: data.duration });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
@@ -92,18 +87,18 @@ export const wintertodtTask: MinionTask = {
 		}
 
 		xpStr += `, ${await user.addXP({
-			skillName: SkillsEnum.Woodcutting,
+			skillName: 'woodcutting',
 			amount: wcXpToGive,
 			duration: data.duration,
 			source: 'Wintertodt'
 		})}`;
 		xpStr += `, ${await user.addXP({
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: fmXpToGive,
 			duration: data.duration,
 			source: 'Wintertodt'
 		})}`;
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
@@ -111,8 +106,7 @@ export const wintertodtTask: MinionTask = {
 			loot.multiply(2);
 		}
 
-		const { itemsAdded, previousCL } = await transactItems({
-			userID: user.id,
+		const { itemsAdded, previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -155,6 +149,12 @@ export const wintertodtTask: MinionTask = {
 			]
 		});
 
-		return handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: output, files: [image] },
+			data,
+			loot: itemsAdded
+		});
 	}
 };

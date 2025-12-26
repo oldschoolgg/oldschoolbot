@@ -4,10 +4,10 @@ title: "Woodcutting"
 
 ### **Custom Content and Boosts**
 
-- [Dwarven Greataxe](../custom-items/equippables/#dwarven-tools) - speed (requires lvl 99 wc)
-- [Drygore Axe](invention/#inventions) - speed
+- [Dwarven Greataxe](/bso/custom-items/#dwarven-equipment) - speed (requires lvl 99 wc)
+- [Drygore Axe](/bso/skills/invention/#inventions) - speed
 - Elder Logs - logs obtained from Elder trees at lvl 105 wc
-- [Woodcutting Master Cape](../custom-items/equippables/#master-capes) - 2x Woodcutting loot
+- [Woodcutting Master Cape](/bso/custom-items/capes/#master-capes) - 2x Woodcutting loot
 
 ### Optimal Gear Setup
 

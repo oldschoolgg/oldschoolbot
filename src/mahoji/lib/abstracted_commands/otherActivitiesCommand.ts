@@ -1,8 +1,7 @@
-import { activity_type_enum } from '@prisma/client';
-
-import { championsChallengeCommand } from './championsChallenge';
-import { combatRingCommand } from './combatRingCommand';
-import { strongHoldOfSecurityCommand } from './strongHoldOfSecurityCommand';
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { championsChallengeCommand } from '@/mahoji/lib/abstracted_commands/championsChallenge.js';
+import { combatRingCommand } from '@/mahoji/lib/abstracted_commands/combatRingCommand.js';
+import { strongHoldOfSecurityCommand } from '@/mahoji/lib/abstracted_commands/strongHoldOfSecurityCommand.js';
 
 export const otherActivities = [
 	{
@@ -22,15 +21,15 @@ export const otherActivities = [
 	}
 ];
 
-export function otherActivitiesCommand(type: string, user: MUser, channelID: string) {
+export function otherActivitiesCommand(type: string, user: MUser, channelId: string) {
 	if (type === 'ChampionsChallenge') {
-		return championsChallengeCommand(user, channelID);
+		return championsChallengeCommand(user, channelId);
 	}
 	if (type === 'StrongholdOfSecurity') {
-		return strongHoldOfSecurityCommand(user, channelID);
+		return strongHoldOfSecurityCommand(user, channelId);
 	}
 	if (type === 'CombatRing') {
-		return combatRingCommand(user, channelID);
+		return combatRingCommand(user, channelId);
 	}
 	return 'Invalid activity type.';
 }

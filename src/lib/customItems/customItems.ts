@@ -1,23 +1,23 @@
 // Base custom items are referenced elsewhere in the custom items files and must be loaded first
-import './baseCustomItems';
-import '../deletedItems';
-import './invention';
-import './customItemsFancy';
-import './farming';
-import './pets';
-import './fishing';
-import './nex';
-import './nonCustomChanges';
-import './baxBath';
-import './dwarven';
-import './moktang';
-import './leagues';
-import './paintCans';
+import './baseCustomItems.js';
+import '../bso/deletedItems.js';
+import './invention/index.js';
+import './customItemsFancy.js';
+import './farming.js';
+import './pets.js';
+import './fishing.js';
+import './nex.js';
+import './nonCustomChanges.js';
+import './baxBath.js';
+import './dwarven.js';
+import './moktang.js';
+import './leagues.js';
+import './paintCans.js';
+import './summoning.js';
 
 import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs';
 
-import getOSItem from '../util/getOSItem';
-import { UN_EQUIPPABLE, customItems, maxedRequirements, setCustomItem } from './util';
+import { customItems, maxedRequirements, setCustomItem, UN_EQUIPPABLE } from './util.js';
 
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
 setCustomItem(
@@ -43,7 +43,6 @@ setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000
 // 	duplicate: false,
 // 	tradeable: true,
 // 	tradeable_on_ge: true,
-// 	wiki_name: 'Abyssal lance',
 // 	equipment: {
 // 		attack_stab: 155,
 // 		attack_slash: 135,
@@ -69,7 +68,6 @@ setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000
 // 	duplicate: false,
 // 	tradeable: true,
 // 	tradeable_on_ge: true,
-// 	wiki_name: 'Abyssal defender',
 // 	equipment: {
 // 		attack_stab: 77,
 // 		attack_slash: 67,
@@ -785,7 +783,7 @@ setCustomItem(
 			}
 		}
 	},
-	(getOSItem('Twisted bow').price! + getOSItem('Zaryte bow').price!) * 1.1
+	(Items.getOrThrow('Twisted bow').price! + Items.getOrThrow('Zaryte bow').price!) * 1.1
 );
 // ----------
 // MMMR
@@ -1138,7 +1136,6 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
-		wiki_name: 'Abyssal cape',
 		equipment: {
 			attack_stab: 0,
 			attack_slash: 0,
@@ -2912,7 +2909,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		},
 		equipment: {
-			...getOSItem('Dragon dagger').equipment!,
+			...Items.getOrThrow('Dragon dagger').equipment!,
 			slot: EquipmentSlot.Shield
 		}
 	},
@@ -6094,7 +6091,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		},
 		equipment: {
-			...getOSItem('Heavy ballista').equipment!,
+			...Items.getOrThrow('Heavy ballista').equipment!,
 			requirements: {
 				strength: 120
 			}
@@ -14268,6 +14265,101 @@ setCustomItem(73414, 'Veteran staff (5 year)', 'Staff of fire', {
 	customItemData: {
 		cantDropFromMysteryBoxes: true,
 		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(323_424, 'Ivy', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+/**
+ * Halloween
+ */
+setCustomItem(73_600, 'Halloween candy', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(73_601, 'Night-Mare', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isDiscontinued: true
+	}
+});
+
+setCustomItem(73_602, 'Death card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73_603, 'Pumpkinman card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73_604, 'Vampire card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73_605, 'Ghost card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(73_606, 'Witch card', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(74_001, 'Titan ballista (xmas)', 'Titan ballista', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(74_002, 'Atlantean trident (xmas)', 'Atlantean trident', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(74_003, 'Snowglobe santa hat', 'Santa hat', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(74_004, 'Smokey snowglobe', 'Bronze dagger', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(74_005, 'Seer snowglobe', 'Bronze dagger', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(74_006, 'Ember', 'Herbi', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
 	}
 });
 

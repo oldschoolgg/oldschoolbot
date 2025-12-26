@@ -1,21 +1,18 @@
-import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
-import { Bank, type ItemBank, addItemToBank, randomVariation, toKMB } from 'oldschooljs';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
+import { calcUserGorajanShardChance } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { skillingPetDropRate } from '@/lib/util';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { isDoubleLootActive } from '../../lib/doubleLoot';
-import Agility from '../../lib/skilling/skills/agility';
-import { calcUserGorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
-import { type Course, SkillsEnum } from '../../lib/skilling/types';
-import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { logError } from '../../lib/util/logError';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { addItemToBank, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
+
+import Agility from '@/lib/skilling/skills/agility.js';
+import type { Course } from '@/lib/skilling/types.js';
+import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 function chanceOfFailingAgilityPyramid(lvl: number) {
 	if (lvl < 40) return 95;
@@ -153,20 +150,14 @@ export function calculateAgilityResult({
 
 export const agilityTask: MinionTask = {
 	type: 'Agility',
-	async run(data: AgilityActivityTaskOptions) {
-		const { courseID, quantity, userID, channelID, duration, alch } = data;
+	async run(data: AgilityActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { courseID, quantity, channelId, duration, alch } = data;
 		const minutes = Math.round(duration / Time.Minute);
-		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Agility);
+		const currentLevel = user.skillsAsLevels.agility;
 
-		const course = Agility.Courses.find(course => course.id === courseID);
+		const course = Agility.Courses.find(course => course.id === courseID)!;
 
-		if (!course) {
-			logError(`Invalid course ID provided: ${courseID}`);
-			return;
-		}
-
-		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
+		const hasArdyElite = user.hasDiary('ardougne.elite');
 		const hasDiaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
 
 		const messages: string[] = [];
@@ -188,36 +179,20 @@ export const agilityTask: MinionTask = {
 			hasAgilityPortent: portentResult.didCharge
 		});
 
-		const stats = await user.fetchStats({ laps_scores: true });
-		const { laps_scores: newLapScores } = await userStatsUpdate(
-			user.id,
-			{
-				laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, successfulLaps),
-				xp_from_graceful_portent: {
-					increment: portentXP
-				}
-			},
-			{ laps_scores: true }
-		);
+		const previousLapScores = await user.fetchUserStat('laps_scores');
+		const newLapScores = addItemToBank(previousLapScores as ItemBank, course.id, successfulLaps);
+		await user.statsUpdate({
+			laps_scores: newLapScores,
+			xp_from_graceful_portent: {
+				increment: portentXP
+			}
+		});
 
 		let xpRes = await user.addXP({
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: xpReceived,
 			duration
 		});
-
-		// Agility pyramid gp tracking
-		if (course.name === 'Agility Pyramid') {
-			await userStatsUpdate(
-				user.id,
-				{
-					gp_from_agil_pyramid: {
-						increment: loot.amount('Coins')
-					}
-				},
-				{}
-			);
-		}
 
 		// Roll for monkey backpacks
 		if (course.name === 'Ape Atoll Agility Course') {
@@ -232,15 +207,15 @@ export const agilityTask: MinionTask = {
 		}
 
 		if (alch) {
-			const alchedItem = getOSItem(alch.itemID);
+			const alchedItem = Items.getOrThrow(alch.itemID);
 			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP({
-				skillName: SkillsEnum.Magic,
+				skillName: 'magic',
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			await updateClientGPTrackSetting('gp_alch', alchGP);
+			await ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
@@ -292,10 +267,10 @@ export const agilityTask: MinionTask = {
 
 			if (course.id === 30) {
 				if (
-					user.skillLevel(SkillsEnum.Dungeoneering) >= 80 &&
+					user.skillsAsLevels.dungeoneering >= 80 &&
 					roll(Math.floor((calcUserGorajanShardChance(user).chance * 2.5) / minutes))
 				) {
-					const item = roll(30) ? getOSItem('Dungeoneering dye') : getOSItem('Gorajan shards');
+					const item = roll(30) ? Items.getOrThrow('Dungeoneering dye') : Items.getOrThrow('Gorajan shards');
 					let shardQty = 1;
 					if (isDoubleLootActive(duration)) {
 						shardQty *= 2;
@@ -309,15 +284,14 @@ export const agilityTask: MinionTask = {
 		// Roll for pet
 		const { petDropRate } = skillingPetDropRate(
 			user,
-			SkillsEnum.Agility,
+			'agility',
 			typeof course.petChance === 'number' ? course.petChance : course.petChance(currentLevel)
 		);
-		if (roll(petDropRate / quantity)) {
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Giant squirrel');
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -326,6 +300,6 @@ export const agilityTask: MinionTask = {
 			if (msgs.length > 0) str += `\n\n${msgs.join('\n')}`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

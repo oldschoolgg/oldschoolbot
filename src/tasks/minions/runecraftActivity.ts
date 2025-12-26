@@ -1,22 +1,20 @@
-import { Time, increaseNumByPercent } from 'e';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+
+import { roll } from '@oldschoolgg/rng';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { skillingPetDropRate } from '@/lib/util';
-import { roll } from '@/lib/util/rng';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
+import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
-	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
-		const user = await mUserFetch(userID);
+	async run(data: RunecraftActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { runeID, essenceQuantity, channelId, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 
@@ -50,12 +48,12 @@ export const runecraftTask: MinionTask = {
 		const magicXpReceived = imbueCasts * 86;
 
 		let xpRes = `\n${await user.addXP({
-			skillName: SkillsEnum.Runecraft,
+			skillName: 'runecraft',
 			amount: xpReceived,
 			duration
 		})}`;
 		if (magicXpReceived > 0) {
-			xpRes += `\n${await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXpReceived, duration })}`;
+			xpRes += `\n${await user.addXP({ skillName: 'magic', amount: magicXpReceived, duration })}`;
 		}
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
@@ -80,9 +78,7 @@ export const runecraftTask: MinionTask = {
 			runeQuantity += extractBonus;
 		}
 
-		const loot = new Bank({
-			[rune.id]: runeQuantity
-		});
+		const loot = new Bank().add(rune.id, runeQuantity);
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
@@ -94,8 +90,8 @@ export const runecraftTask: MinionTask = {
 			}
 		}
 
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_795_758);
-		if (roll(petDropRate / essenceQuantity)) {
+		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_795_758);
+		if (rng.roll(Math.ceil(petDropRate / essenceQuantity))) {
 			loot.add('Rift guardian');
 		}
 
@@ -117,12 +113,11 @@ export const runecraftTask: MinionTask = {
 			str += ` **\nExtract bonus:** ${extractBonus!.toLocaleString()}`;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

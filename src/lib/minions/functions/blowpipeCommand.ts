@@ -1,8 +1,6 @@
-import type { Prisma } from '@prisma/client';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem, Items } from 'oldschooljs';
 
-import getOSItem, { getItem } from '../../util/getOSItem';
-import type { BlowpipeData } from '../types';
+import type { BlowpipeData } from '@/lib/minions/types.js';
 
 const defaultBlowpipe: BlowpipeData = {
 	scales: 0,
@@ -20,7 +18,7 @@ export const blowpipeDarts = [
 	'Rune dart',
 	'Amethyst dart',
 	'Dragon dart'
-].map(getOSItem);
+].map(name => Items.getOrThrow(name));
 
 export function validateBlowpipeData(data: BlowpipeData) {
 	if (Object.keys(data).length !== 3) throw new Error('Failed BP validation');
@@ -46,25 +44,25 @@ export async function blowpipeCommand(
 		return addCommand(user, add, quantity);
 	}
 
-	const rawBlowpipeData = { ...user.blowpipe };
+	const rawBlowpipeData = { ...user.getBlowpipe() };
 	const hasBlowpipe = user.owns('Toxic blowpipe') || user.owns('Toxic blowpipe (empty)');
 	if (!hasBlowpipe) return "You don't own a Toxic blowpipe.";
 
 	try {
 		validateBlowpipeData(rawBlowpipeData);
-	} catch (err: any) {
+	} catch (_err: unknown) {
 		await user.update({
 			blowpipe: { ...defaultBlowpipe }
 		});
 
-		return `Your blowpipe got corrupted somehow (${err.message}), this shouldn't happen! It's a bug. Your blowpipe was reset.`;
+		return `Your blowpipe got corrupted somehow, this shouldn't happen! It's a bug. Your blowpipe was reset.`;
 	}
 	let str = `**Toxic Blowpipe** <:Toxic_blowpipe:887011870068838450>
 
 Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 `;
 
-	const item = rawBlowpipeData.dartID ? getOSItem(rawBlowpipeData.dartID) : null;
+	const item = rawBlowpipeData.dartID ? Items.getItem(rawBlowpipeData.dartID) : null;
 	if (item) {
 		str += `${item.name}'s: ${rawBlowpipeData.dartQuantity?.toLocaleString()}x`;
 	}
@@ -73,7 +71,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 }
 
 async function addCommand(user: MUser, itemName: string, quantity = 1) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "You can't add to your blowpipe, because your minion is out on a trip.";
 	}
 	if (!user.owns('Toxic blowpipe') && user.owns('Toxic blowpipe (empty)')) {
@@ -89,20 +87,20 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const item = getItem(itemName);
+	const item = Items.getItem(itemName);
 	if (!item) return 'Invalid item.';
 
 	const userBank = user.bank;
 
 	const itemsToRemove = new Bank();
-	if (!blowpipeDarts.includes(item) && item !== getOSItem("Zulrah's scales")) {
+	if (!blowpipeDarts.includes(item) && item.id !== EItem.ZULRAHS_SCALES) {
 		return "You can only charge your blowpipe with darts and Zulrah's scales.";
 	}
 	itemsToRemove.add(item.id, Math.max(1, quantity || userBank.amount(item.id)));
 
 	const dart = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
 
-	const rawBlowpipeData = { ...user.blowpipe };
+	const rawBlowpipeData = { ...user.getBlowpipe() };
 	validateBlowpipeData(rawBlowpipeData);
 	if (dart && !itemsToRemove.amount(dart[0].id)) {
 		throw new Error('wtf! not meant to happen');
@@ -110,7 +108,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 
 	if (rawBlowpipeData.dartID !== null && dart && rawBlowpipeData.dartID !== dart[0].id) {
 		return `You already have ${
-			getOSItem(rawBlowpipeData.dartID).name
+			Items.getOrThrow(rawBlowpipeData.dartID).name
 		}'s in your Blowpipe, do \`/minion blowpipe remove_darts:true\` to remove them first.`;
 	}
 
@@ -129,15 +127,18 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	if (!userBank.has(itemsToRemove)) {
 		return `You don't own ${itemsToRemove}.`;
 	}
-	await user.removeItemsFromBank(itemsToRemove);
-	await user.update({
-		blowpipe: currentData as any as Prisma.InputJsonObject
+	await user.transactItems({
+		itemsToRemove,
+		otherUpdates: {
+			blowpipe: currentData
+		}
 	});
+
 	return `You added ${itemsToRemove} to your Toxic blowpipe.`;
 }
 
 async function removeDartsCommand(user: MUser) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "You can't remove darts from your blowpipe, because your minion is out on a trip.";
 	}
 	const hasBlowpipe = user.owns('Toxic blowpipe');
@@ -145,7 +146,7 @@ async function removeDartsCommand(user: MUser) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...user.blowpipe };
+	const rawBlowpipeData = { ...user.getBlowpipe() };
 	validateBlowpipeData(rawBlowpipeData);
 	if (!rawBlowpipeData.dartID || rawBlowpipeData.dartQuantity === 0) {
 		return 'Your Toxic blowpipe has no darts in it.';
@@ -154,16 +155,19 @@ async function removeDartsCommand(user: MUser) {
 	const returnedBank = new Bank().add(rawBlowpipeData.dartID, rawBlowpipeData.dartQuantity);
 	rawBlowpipeData.dartID = null;
 	rawBlowpipeData.dartQuantity = 0;
-	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await user.update({
-		blowpipe: rawBlowpipeData as any as Prisma.InputJsonObject
+	await user.transactItems({
+		itemsToAdd: returnedBank,
+		collectionLog: false,
+		otherUpdates: {
+			blowpipe: rawBlowpipeData
+		}
 	});
 	validateBlowpipeData(rawBlowpipeData);
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;
 }
 
 async function unchargeCommand(user: MUser) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "You can't uncharge your blowpipe, because your minion is out on a trip.";
 	}
 	const hasBlowpipe = user.owns('Toxic blowpipe');
@@ -171,7 +175,7 @@ async function unchargeCommand(user: MUser) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...user.blowpipe };
+	const rawBlowpipeData = { ...user.getBlowpipe() };
 	const returnedBank = new Bank();
 	if (rawBlowpipeData.scales) {
 		returnedBank.add("Zulrah's scales", rawBlowpipeData.scales);
@@ -184,9 +188,10 @@ async function unchargeCommand(user: MUser) {
 		return 'You have no darts or scales in your Blowpipe.';
 	}
 
-	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await user.update({
-		blowpipe: { scales: 0, dartID: null, dartQuantity: 0 }
+	await user.transactItems({
+		itemsToAdd: returnedBank,
+		collectionLog: false,
+		otherUpdates: { blowpipe: { scales: 0, dartID: null, dartQuantity: 0 } }
 	});
 
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;

@@ -1,7 +1,7 @@
-import './capes';
-import './inventions';
+import './capes.js';
+import './inventions.js';
 
-import { setCustomItem } from '../util';
+import { setCustomItem } from '@/lib/customItems/util.js';
 
 setCustomItem(
 	63_400,

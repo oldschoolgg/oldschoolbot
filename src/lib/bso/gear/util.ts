@@ -1,7 +1,7 @@
 import { resolveItems } from 'oldschooljs';
 
-import type { ProjectileType } from '@/lib/constants';
-import type { Gear } from '@/lib/structures/Gear';
+import type { ProjectileType } from '@/lib/gear/projectiles.js';
+import type { Gear } from '@/lib/structures/Gear.js';
 
 export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
 	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {

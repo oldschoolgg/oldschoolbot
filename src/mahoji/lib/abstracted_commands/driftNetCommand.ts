@@ -1,26 +1,23 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, randFloat, reduceNumByPercent } from 'e';
+import { randFloat } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export async function driftNetCommand(
-	channelID: string,
+	channelId: string,
 	user: MUser,
 	minutes: number | undefined,
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const maxTripLength = calcMaxTripLength(user, 'DriftNet');
+	const maxTripLength = await user.calcMaxTripLength('DriftNet');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);
 	}
 
-	if (user.skillLevel(SkillsEnum.Fishing) < 47 || user.skillLevel(SkillsEnum.Hunter) < 44) {
+	if (user.skillsAsLevels.fishing < 47 || user.skillsAsLevels.hunter < 44) {
 		return 'You need at least level 44 Hunter and 47 Fishing to do Drift net fishing.';
 	}
 
@@ -79,10 +76,11 @@ export async function driftNetCommand(
 		return `You need ${quantity}x Drift net for the whole trip, try a lower trip length or make/buy more Drift net.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
+		minutes,
 		duration,
 		type: 'DriftNet'
 	});

@@ -1,8 +1,11 @@
+import { doaCL } from '@/lib/bso/collection-log/main.js';
+
 import { CollectionLog } from '@oldschoolgg/collectionlog';
+import { PerkTier, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
-import { BitField, MAX_XP } from '../constants';
-import { doaCL } from '../data/CollectionsExport';
+import { BitField, MAX_XP } from '@/lib/constants.js';
+import type { Skills } from '@/lib/types/index.js';
 
 export function hasUnlockedAtlantis(user: MUser) {
 	return doaCL.some(itemID => user.cl.has(itemID));
@@ -40,7 +43,7 @@ export function clAdjustedDroprate(
 	increaseMultiplier: number
 ) {
 	const amountInCL = user instanceof Bank ? user.amount(item) : user.cl.amount(item);
-	if (amountInCL === 0) return baseRate;
+	if (amountInCL === 0) return Math.floor(baseRate);
 	let newRate = baseRate;
 	for (let i = 0; i < amountInCL; i++) {
 		newRate *= increaseMultiplier;
@@ -71,7 +74,7 @@ export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 	return petChance;
 }
 
-export function birdhouseLimit(user: MUser) {
+export function calcBirdhouseLimit(user: MUser) {
 	let base = 4;
 	if (user.bitfield.includes(BitField.HasScrollOfTheHunt)) base += 4;
 	if (user.hasEquippedOrInBank('Hunter master cape')) base += 4;
@@ -83,4 +86,23 @@ export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
 	const amountInCl = cl.amount('Baby yaga house');
 	if (amountInCl > 1) rate *= amountInCl;
 	return Math.floor(rate);
+}
+
+export function moidLink(items: number[]) {
+	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
+}
+
+export function calcTotalLevel(skills: Skills) {
+	return sumArr(Object.values(skills));
+}
+
+export async function isElligibleForPresent(user: MUser) {
+	if (user.isIronman) return true;
+	if ((await user.fetchPerkTier()) >= PerkTier.Four) return true;
+	if (user.totalLevel >= 2000) return true;
+	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(duration)
+FROM activity
+WHERE user_id = ${BigInt(user.id)};`);
+	if (totalActivityDuration[0].sum >= Time.Hour * 80) return true;
+	return false;
 }

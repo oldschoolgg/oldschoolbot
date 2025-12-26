@@ -1,14 +1,11 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions';
-import { skillingPetDropRate } from '@/lib/util';
-import { handleTripFinish } from '@/lib/util/handleTripFinish';
-import { makeBankImage } from '@/lib/util/makeBankImage';
-import { roll } from '@/lib/util/rng';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 const guppy = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
 const cavefish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw cavefish')!;
@@ -36,9 +33,9 @@ function generateFishTable(currentFishLevel: number): LootTable {
 
 export const camdozaalFishingTask: MinionTask = {
 	type: 'CamdozaalFishing',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration } = data;
+
 		const currentFishLevel = user.skillsAsLevels.fishing;
 
 		const camdozaalFishTable = generateFishTable(currentFishLevel);
@@ -79,17 +76,12 @@ export const camdozaalFishingTask: MinionTask = {
 
 		// Heron Pet roll
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', guppy.petChance!);
-		if (roll(petDropRate / quantity)) {
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Heron');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing in Camdozaal at level ${currentFishLevel} Fishing!`
-			);
 		}
 
 		// Give the user the items from the trip
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -102,6 +94,6 @@ export const camdozaalFishingTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

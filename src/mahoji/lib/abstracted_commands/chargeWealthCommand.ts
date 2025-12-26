@@ -1,16 +1,12 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const wealthInventorySize = 26;
 const wealthInventoryTime = Time.Minute * 2.2;
 
-export async function chargeWealthCommand(user: MUser, channelID: string, quantity: number | undefined) {
+export async function chargeWealthCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const userBank = user.bank;
 
 	const amountHas = userBank.amount('Ring of wealth');
@@ -18,14 +14,14 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		return `You don't have enough Rings of wealth to recharge. Your minion does trips of ${wealthInventorySize}x rings of wealth.`;
 	}
 
-	const [hasDiary] = await userhasDiaryTier(user, WildernessDiary.elite);
+	const hasDiary = user.hasDiary('wilderness.hard');
 
 	let invDuration = wealthInventoryTime;
 	if (hasDiary) {
 		invDuration /= 3;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'WealthCharging');
+	const maxTripLength = await user.calcMaxTripLength('WealthCharging');
 
 	const max = Math.min(amountHas / wealthInventorySize, Math.floor(maxTripLength / invDuration));
 	if (quantity === undefined) {
@@ -47,9 +43,9 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		return `You don't have enough Rings of wealth, ${quantityWealths} required.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'WealthCharging'

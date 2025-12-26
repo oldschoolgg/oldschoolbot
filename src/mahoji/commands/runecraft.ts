@@ -1,35 +1,29 @@
-import { type CommandRunOptions, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, reduceNumByPercent } from 'e';
-import { Bank, SkillsEnum, itemID } from 'oldschooljs';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../lib/util/determineRunes';
-import { getOSItem } from '../../lib/util/getOSItem';
-import { formatSkillRequirements } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
-import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
-import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
+import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { Bank, Items, itemID } from 'oldschooljs';
+
+import { darkAltarCommand } from '@/lib/minions/functions/darkAltarCommand.js';
+import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { ouraniaAltarStartCommand } from '@/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
+import { tiaraRunecraftCommand } from '@/mahoji/lib/abstracted_commands/tiaraRunecraftCommand.js';
+import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
 const runeTypes = [
-	{ item: getOSItem('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },
+	{ item: Items.getOrThrow('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },
 	{
-		item: getOSItem('Twisted extract'),
+		item: Items.getOrThrow('Twisted extract'),
 		runes: new Set(['mist', 'dust', 'mud', 'smoke', 'steam', 'lava', 'cosmic', 'chaos', 'sunfire'])
 	},
-	{ item: getOSItem('Mangled extract'), runes: new Set(['nature', 'law', 'astral', 'death']) },
-	{ item: getOSItem('Scarred extract'), runes: new Set(['blood', 'soul', 'wrath']) }
+	{ item: Items.getOrThrow('Mangled extract'), runes: new Set(['nature', 'law', 'astral', 'death']) },
+	{ item: Items.getOrThrow('Scarred extract'), runes: new Set(['blood', 'soul', 'wrath']) }
 ];
 
-export const runecraftCommand: OSBMahojiCommand = {
+export const runecraftCommand = defineCommand({
 	name: 'runecraft',
 	description: 'Sends your minion to craft runes with essence, or craft tiaras.',
 	attributes: {
@@ -40,11 +34,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rune',
 			description: 'The Rune/Tiara you want to craft.',
 			required: true,
-			autocomplete: async value => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return [
 					...Runecraft.Runes.map(i => i.name),
 					'ourania altar',
@@ -60,7 +54,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount of runes/tiaras you want to craft.',
 			required: false,
@@ -68,36 +62,25 @@ export const runecraftCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'usestams',
 			description: 'Set this to false to not use stamina potions (default true)',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'daeyalt_essence',
 			description: 'Set this to true to use daeyalt essence (default false)',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'extracts',
 			description: 'Set this to true to use extracts (default false)',
 			required: false
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		channelID
-	}: CommandRunOptions<{
-		rune: string;
-		quantity?: number;
-		usestams?: boolean;
-		daeyalt_essence?: boolean;
-		extracts?: boolean;
-	}>) => {
-		const user = await mUserFetch(userID.toString());
+	run: async ({ user, options, channelId }) => {
 		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
@@ -109,15 +92,15 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const tiaraObj = Runecraft.Tiaras.find(_tiara => stringMatches(_tiara.name, rune));
 
 		if (tiaraObj) {
-			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
+			return tiaraRunecraftCommand({ user, channelId, name: rune, quantity });
 		}
 
 		if (rune.includes('ourania')) {
-			return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence });
+			return ouraniaAltarStartCommand({ user, channelId, quantity, usestams, daeyalt_essence });
 		}
 
 		if (rune.includes('(zeah)')) {
-			return darkAltarCommand({ user, channelID, name: rune, extracts });
+			return darkAltarCommand({ user, channelId, name: rune, extracts });
 		}
 
 		const runeObj = Runecraft.Runes.find(
@@ -151,15 +134,15 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		let { tripLength } = runeObj;
 		const boosts = [];
-		if (userHasGracefulEquipped(user)) {
+		if (user.hasGracefulEquipped()) {
 			tripLength -= tripLength * 0.1;
 			boosts.push('10% for Graceful');
 		}
 
-		if (user.skillLevel(SkillsEnum.Agility) >= 90) {
+		if (user.skillsAsLevels.agility >= 90) {
 			tripLength *= 0.9;
 			boosts.push('10% for 90+ Agility');
-		} else if (user.skillLevel(SkillsEnum.Agility) >= 60) {
+		} else if (user.skillsAsLevels.agility >= 60) {
 			tripLength *= 0.95;
 			boosts.push('5% for 60+ Agility');
 		}
@@ -185,23 +168,19 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		// For each pouch the user has, increase their inventory size.
 		for (const pouch of Runecraft.pouches) {
-			if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+			if (user.skillsAsLevels.runecraft < pouch.level) continue;
 			if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 			if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
 		}
 
 		if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 
-		if (
-			user.skillLevel(SkillsEnum.Runecraft) >= 99 &&
-			user.hasEquippedOrInBank('Runecraft cape') &&
-			inventorySize > 28
-		) {
+		if (user.skillsAsLevels.runecraft >= 99 && user.hasEquippedOrInBank('Runecraft cape') && inventorySize > 28) {
 			tripLength *= 0.97;
 			boosts.push('3% for Runecraft cape');
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
+		const maxTripLength = await user.calcMaxTripLength('Runecraft');
 
 		if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
 			const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
@@ -307,7 +286,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 					.clone()
 					.multiply(numberOfInventories)
 			);
-			if (user.skillLevel(SkillsEnum.Magic) >= 82 && bank.has(magicImbueRuneCost)) {
+			if (user.skillsAsLevels.magic >= 82 && bank.has(magicImbueRuneCost)) {
 				removeTalismanAndOrRunes.add(magicImbueRuneCost);
 				imbueCasts = numberOfInventories;
 			} else {
@@ -334,7 +313,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 					1
 				)}x Binding necklace.`;
 			}
-			if (user.skillLevel(SkillsEnum.Crafting) >= 99 && user.hasEquippedOrInBank('Crafting cape')) {
+			if (user.skillsAsLevels.crafting >= 99 && user.hasEquippedOrInBank('Crafting cape')) {
 				teleportReduction = 2;
 			}
 			const ringOfTheElementsRuneCost = determineRunes(
@@ -377,19 +356,18 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (daeyalt_essence) {
 			totalCost.add('Daeyalt essence', essenceRequired);
-			if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 		} else {
 			totalCost.add('Pure essence', essenceRequired);
 		}
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting('runecraft_cost', totalCost);
+		await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
 
-		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
+		await ActivityManager.startTrip<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			essenceQuantity: quantity,
 			useStaminas: usestams,
 			daeyaltEssence: daeyalt_essence,
@@ -428,4 +406,4 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

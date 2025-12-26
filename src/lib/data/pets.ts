@@ -1,12 +1,11 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-
-import getOSItem from '../util/getOSItem';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
 const xpEmoji = Emoji.XP;
 const gpEmoji = Emoji.GP;
 const fm = (num: number) => num.toLocaleString();
 
-interface Pet {
+export interface Pet {
 	id: number;
 	emoji: string;
 	chance: number;
@@ -600,11 +599,21 @@ const pets: Pet[] = [
 		formatFinish: (num: number) =>
 			`You had to spend ${fm(num)} Permits to get the Tiny Tempor! <:TinyTempor:824483631694217277>`,
 		bossKeys: ['tempoross']
+	},
+	{
+		id: 49,
+		emoji: '<:Nexling:931565564151869460>',
+		chance: 500,
+		name: 'Nexling',
+		type: 'SPECIAL',
+		altNames: ['NEXLING'],
+		formatFinish: (num: number) =>
+			`You had to kill Nex ${fm(num)} times to get Nexling! <:Nexling:931565564151869460>`
 	}
 ];
 
 for (const pet of pets) {
-	getOSItem(pet.name);
+	Items.getOrThrow(pet.name);
 }
 
 export default pets;

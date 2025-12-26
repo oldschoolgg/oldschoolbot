@@ -1,27 +1,43 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
+import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
+
+import type { ButtonBuilder } from '@oldschoolgg/discord';
+import { percentChance } from '@oldschoolgg/rng';
+import { Emoji, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
-import { BitField, PerkTier } from '@/lib/constants';
-import { roboChimpUserFetch } from '@/lib/roboChimp';
-import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import type { UnifiedOpenable } from '../../../lib/openables';
-import { allOpenables, getOpenableLoot } from '../../../lib/openables';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../../lib/util/logError';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
+import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import type { UnifiedOpenable } from '@/lib/openables.js';
+import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { assert } from '@/lib/util/logError.js';
+import { patronMsg } from '@/lib/util/smallUtils.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
+export async function checkElderCasketOpenable(
+	user: MUser,
+	openables: UnifiedOpenable | UnifiedOpenable[]
+): Promise<string | null> {
+	const list = Array.isArray(openables) ? openables : [openables];
+
+	if (!list.some(o => o.openedItem.id === itemID('Reward casket (elder)'))) {
+		return null;
+	}
+
+	const result = await checkElderClueRequirements(user);
+	if (result.unmetRequirements.length > 0) {
+		return `You don't have the requirements to open Elder caskets: ${result.unmetRequirements.join(', ')}`;
+	}
+
+	return null;
+}
+
 export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2))
-	.map(getOSItem)
+	.map(id => Items.getOrThrow(id))
 	.sort((a, b) => {
 		if (b.name.includes('Clue')) return 1;
 		if (a.name.includes('Clue')) return -1;
@@ -29,20 +45,24 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 	});
 
 export async function abstractedOpenUntilCommand(
-	userID: string,
+	user: MUser,
 	name: string,
 	openUntilItem: string,
 	disable_pets: boolean | undefined
 ) {
-	const user = await mUserFetch(userID);
-	const perkTier = user.perkTier();
+	const quantity = 1;
+	if (quantity < 1 || !Number.isInteger(quantity)) {
+		return 'The quantity must be a positive integer.';
+	}
+
+	const perkTier = await user.fetchPerkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
 	const openable = allOpenables.find(i => i.openedItem === openableItem.openedItem);
 	if (!openable) return "That's not a valid item.";
-	const openUntil = getItem(openUntilItem);
+	const openUntil = Items.getItem(openUntilItem);
 	if (!openUntil) {
 		return `That's not a valid item to open until, you can only do it with items that you can get from ${openable.openedItem.name}.`;
 	}
@@ -52,6 +72,9 @@ export async function abstractedOpenUntilCommand(
 
 	let amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
+
+	const elderError = await checkElderCasketOpenable(user, openable);
+	if (elderError) return elderError;
 
 	// Calculate how many we have keys to open:
 	if (openable.extraCostPerOpen) {
@@ -63,7 +86,7 @@ export async function abstractedOpenUntilCommand(
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	const max = Math.min(100, amountOfThisOpenableOwned);
+	const max = Math.min(10000, amountOfThisOpenableOwned);
 	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
@@ -155,8 +178,7 @@ async function finalizeOpening({
 			for (let i = 0; i < amountOfThisOpenable; i++) {
 				if (percentChance(bonusChancePercent)) smokeyBonus++;
 			}
-			await userStatsBankUpdate(
-				user.id,
+			await user.statsBankUpdate(
 				hasSmokey ? 'smokey_loot_bank' : 'octo_loot_bank',
 				new Bank().add(openable.openedItem.id, smokeyBonus)
 			);
@@ -182,7 +204,7 @@ async function finalizeOpening({
 	if (!user.owns(cost)) {
 		return `You don't own: ${cost}.`;
 	}
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 	const { previousCL } = await user.addItemsToBank({
 		items: loot,
 		collectionLog: true,
@@ -190,89 +212,44 @@ async function finalizeOpening({
 		dontAddToTempCL: openables.some(i => itemsThatDontAddToTempCL.includes(i.id))
 	});
 
-	const fakeTrickedLoot = loot.clone();
-
-	const openableWithTricking = openables.find(i => 'trickableItems' in i);
-	if (
-		openableWithTricking &&
-		'trickableItems' in openableWithTricking &&
-		openableWithTricking.trickableItems !== undefined
-	) {
-		const activeTrick = await prisma.mortimerTricks.findFirst({
-			where: {
-				target_id: user.id,
-				completed: false
-			}
-		});
-		if (activeTrick) {
-			// Pick a random item not in CL, or just a random one if all are in CL
-			const trickedItem =
-				shuffleArr(openableWithTricking.trickableItems).find(i => !user.cl.has(i)) ??
-				randArrItem(openableWithTricking.trickableItems);
-			fakeTrickedLoot.add(trickedItem);
-			const trickster = await globalClient.users.fetch(activeTrick.trickster_id).catch(noOp);
-			trickster
-				?.send(
-					`You just tricked ${user.rawUsername} into thinking they got a ${Items.itemNameFromId(trickedItem)}!`
-				)
-				.catch(noOp);
-			await prisma.mortimerTricks.update({
-				where: {
-					id: activeTrick.id
-				},
-				data: {
-					completed: true
-				}
-			});
-		}
-	}
-
-	const image = await makeBankImage({
-		bank: fakeTrickedLoot,
-		title:
-			openables.length === 1
-				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
-				: 'Loot From Opening',
-		user,
-		previousCL,
-		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
-	});
-
 	if (loot.has('Coins')) {
-		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
+		await ClientSettings.updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
 
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	const response: Awaited<CommandResponse> = {
-		files: [image.file],
-		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`.trim(),
-		components: components.length > 0 ? makeComponents(components) : undefined
-	};
-	if (response.content!.length > 1900) {
-		response.files = [{ name: 'response.txt', attachment: Buffer.from(response.content!) }];
-
-		response.content =
-			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
-	}
+	const response = new MessageBuilder()
+		.setContent(
+			`You have now opened a total of ${openedStr}
+${messages.join(', ')}`.trim()
+		)
+		.addBankImage({
+			bank: loot,
+			title:
+				openables.length === 1
+					? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
+					: 'Loot From Opening',
+			user,
+			previousCL,
+			mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
+		})
+		.addComponents(components);
 
 	return response;
 }
 
 export async function abstractedOpenCommand(
-	interaction: ChatInputCommandInteraction | null,
-	userID: string,
+	interaction: MInteraction | null,
+	user: MUser,
 	_names: string[],
 	_quantity: number | 'auto',
 	disable_pets: boolean | undefined
-) {
-	const user = await mUserFetch(userID);
+): Promise<string | MessageBuilderClass> {
 	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));
@@ -287,8 +264,8 @@ export async function abstractedOpenCommand(
 
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';
-		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
-		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
+		if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
+		if (interaction) await interaction.confirmation('Are you sure you want to open ALL your items?');
 	}
 
 	if (openables.length === 0) return "That's not a valid item.";
@@ -300,12 +277,8 @@ export async function abstractedOpenCommand(
 		}
 	}
 
-	if (openables.some(o => o.openedItem.id === itemID('Reward casket (elder)'))) {
-		const result = await checkElderClueRequirements(user);
-		if (result.unmetRequirements.length > 0) {
-			return `You don't have the requirements to open Elder caskets: ${result.unmetRequirements.join(', ')}`;
-		}
-	}
+	const elderError = await checkElderCasketOpenable(user, openables);
+	if (elderError) return elderError;
 
 	const cost = new Bank();
 	const kcBank = new Bank();

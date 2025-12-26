@@ -1,24 +1,17 @@
-import { formatDuration, isWeekend } from '@oldschoolgg/toolkit';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { calcBossFood } from '@/lib/bso/calcBossFood.js';
+import { gorajanArcherOutfit, pernixOutfit } from '@/lib/bso/collection-log/main.js';
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
+import { getNexGearStats } from '@/lib/bso/util/getNexGearStats.js';
+
+import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
-import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
-import { calcBossFood } from '../../../lib/bso/calcBossFood';
-import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
-import { trackLoot } from '../../../lib/lootTrack';
-import type { KillableMonster } from '../../../lib/minions/types';
-import { NexMonster } from '../../../lib/nex';
-import { setupParty } from '../../../lib/party';
-import type { MakePartyOptions } from '../../../lib/types';
-import type { BossActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
-import { getNexGearStats } from '../../../lib/util/getNexGearStats';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { hasMonsterRequirements } from '../../mahojiSettings';
+import { trackLoot } from '@/lib/lootTrack.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.
@@ -27,11 +20,11 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = await user.hasMonsterRequirements(monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -52,13 +45,13 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 }
 
 export async function nexCommand(
-	interaction: ChatInputCommandInteraction | null,
+	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	inputName: string,
 	inputQuantity: number | undefined
 ) {
-	if (interaction) await deferInteraction(interaction);
+	await interaction.defer();
 	const userBank = user.bank;
 	if (!userBank.has('Frozen key')) {
 		return `${user.minionName} attempts to enter the Ancient Prison to fight Nex, but finds a giant frozen, metal door blocking their way.`;
@@ -69,6 +62,7 @@ export async function nexCommand(
 	if (failureReason) return failureReason;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize: 8,
@@ -78,10 +72,10 @@ export async function nexCommand(
 			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];
 			}
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, 'your minion is busy.'];
 			}
-			const [hasReqs, reason] = await hasMonsterRequirements(user, NexMonster);
+			const [hasReqs, reason] = await user.hasMonsterRequirements(NexMonster);
 			if (!hasReqs) {
 				return [true, `you don't have the requirements for this monster; ${reason}`];
 			}
@@ -109,15 +103,11 @@ export async function nexCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'No channel found.';
-	let users: MUser[] = [];
-	if (type === 'mass') {
-		const usersWhoConfirmed = await setupParty(channel, user, partyOptions);
-		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
-	} else {
-		users = [user];
+	const users: MUser[] = type === 'mass' ? await globalClient.makeParty(partyOptions) : [user];
+	if (await ActivityManager.anyMinionIsBusy(users)) {
+		return `One of the minions in the party is already busy.`;
 	}
+
 	let debugStr = '';
 	let effectiveTime = NexMonster.timeToFinish;
 	if (isWeekend()) {
@@ -291,16 +281,16 @@ export async function nexCommand(
 
 	foodString += `${foodRemoved.join(', ')}.`;
 
-	await addSubTaskToActivityTask<BossActivityTaskOptions>({
+	await ActivityManager.startTrip<BossActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Nex',
 		users: users.map(u => u.id)
 	});
 
-	updateBankSetting('nex_cost', totalCost);
+	await ClientSettings.updateBankSetting('nex_cost', totalCost);
 
 	let str =
 		type === 'solo'

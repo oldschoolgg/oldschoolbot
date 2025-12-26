@@ -11,25 +11,25 @@ You can train smithing using the [[/smelt]] and [[/smith]] commands:
 
 ## Fastest Route to 99
 
-[[/smith name\:Bronze dagger quantity\:32]]  
-[[/smith name\:Bronze scimitar quantity\:24]]  
-[[/smith name\:Bronze warhammer quantity\:69]]  
-[[/smith name\:Bronze platebody quantity\:57]]  
-[[/smith name\:Iron warhammer quantity\:150]]  
-[[/smith name\:Iron platebody quantity\:124]]  
-[[/smith name\:Steel warhammer quantity\:34]]  
+[[/smith name\:Bronze dagger quantity\:32]]
+[[/smith name\:Bronze scimitar quantity\:24]]
+[[/smith name\:Bronze warhammer quantity\:69]]
+[[/smith name\:Bronze platebody quantity\:57]]
+[[/smith name\:Iron warhammer quantity\:150]]
+[[/smith name\:Iron platebody quantity\:124]]
+[[/smith name\:Steel warhammer quantity\:34]]
 [[/smelt name\:Gold bar blast_furnace\:True]] — repeat until [[smithing:99]]
 
-**Materials Needed:**  
-572 Bronze bar  
-1,070 Iron bar  
-102 Steel bar  
-231,268 Gold ore  
+**Materials Needed:**
+572 Bronze bar
+1,070 Iron bar
+102 Steel bar
+231,268 Gold ore
 1 Goldsmith gauntlets (for [Blast Furnace](https://wiki.oldschool.gg/skills/smithing/blast-furnace))
 
 ## Smiths' Uniform
 
-The Smiths' uniform can be purchased with reputation from the [Giant's Foundry](giants-foundry.md) minigame. When equipped in the skilling setup, it provides:
+The Smiths' uniform can be purchased with reputation from the [Giant's Foundry](giants-foundry) minigame. When equipped in the skilling setup, it provides:
 
 - 15% speed boost to Giant's Foundry
 - 1 tick (0.6s) speed boost to any smithable item
@@ -47,8 +47,8 @@ The Smiths' uniform can be purchased with reputation from the [Giant's Foundry](
 | Adamantite | [[smithing:70]]    | 37.5   | Adamantite ore + 6 Coal |
 | Runite     | [[smithing:85]]    | 50.0   | Runite ore + 8 Coal     |
 
-\* Has a 50% chance to fail in a regular furnace. Ring of forging does **not** work.  
-\*\* [Goldsmith gauntlets](https://wiki.oldschool.gg/miscellaneous/buyables) increase gold bar XP to 56.2.
+\* Has a 50% chance to fail in a regular furnace. Ring of forging does **not** work.
+\*\* [Goldsmith gauntlets](https://wiki.oldschool.gg/Buyables/buyables) increase gold bar XP to 56.2.
 
 ## Blast Furnace
 

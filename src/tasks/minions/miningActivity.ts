@@ -1,22 +1,22 @@
-import { Time, increaseNumByPercent, randInt, roll } from 'e';
-import { Bank, SkillsEnum, itemID, toKMB } from 'oldschooljs';
+import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
+import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
+import { type StoneSpirit, stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import type { GearBank } from '@/lib/structures/GearBank';
-import { skillingPetDropRate } from '@/lib/util';
-import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import { InventionID } from '../../lib/invention/inventions';
-import { type StoneSpirit, stoneSpirits } from '../../lib/minions/data/stoneSpirits';
-import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import Mining from '../../lib/skilling/skills/mining';
-import Smithing from '../../lib/skilling/skills/smithing';
-import type { Ore } from '../../lib/skilling/types';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { randInt } from '@oldschoolgg/rng';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, itemID, toKMB } from 'oldschooljs';
+
+import { upgradedDragonstoneOutfit } from '@/lib/data/CollectionsExport.js';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import type { Ore } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export function calculateMiningResult({
 	ore,
@@ -30,7 +30,8 @@ export function calculateMiningResult({
 	portentResult,
 	spiritOre,
 	amountOfSpiritsToUse,
-	collectionLog
+	collectionLog,
+	rng
 }: {
 	ore: Ore;
 	duration: number;
@@ -44,6 +45,7 @@ export function calculateMiningResult({
 	amountOfSpiritsToUse: number;
 	spiritOre: StoneSpirit | undefined;
 	collectionLog: Bank;
+	rng: RNGProvider;
 }) {
 	const messages: string[] = [];
 	const barsFromKlikBank = new Bank();
@@ -59,7 +61,7 @@ export function calculateMiningResult({
 	let taintedQty = 0; // 6xp per chunk rolled
 	if (ore.name === 'Tainted essence chunk') {
 		for (let i = 0; i < quantity; i++) {
-			taintedQty += randInt(1, 4);
+			taintedQty += rng.randInt(1, 4);
 		}
 		totalMiningXPToAdd = taintedQty * ore.xp;
 	}
@@ -78,13 +80,13 @@ export function calculateMiningResult({
 
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
-		addSkillingClueToLoot(gearBank.skillsAsLevels.mining, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
+		addSkillingClueToLoot(gearBank.skillsAsLevels.mining, 'mining', quantity, ore.clueScrollChance, loot);
 	}
 
 	// Roll for pet
 	if (ore.petChance) {
-		const { petDropRate } = skillingPetDropRate(gearBank, SkillsEnum.Mining, ore.petChance);
-		if (roll(petDropRate / quantity)) {
+		const { petDropRate } = skillingPetDropRate(gearBank, 'mining', ore.petChance);
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			loot.add('Rock golem');
 		}
 	}
@@ -92,7 +94,7 @@ export function calculateMiningResult({
 	if (numberOfMinutes > 10 && ore.minerals && gearBank.skillsAsLevels.mining >= 60) {
 		let numberOfMinerals = 0;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(ore.minerals)) numberOfMinerals++;
+			if (rng.roll(ore.minerals)) numberOfMinerals++;
 		}
 
 		if (numberOfMinerals > 0) {
@@ -113,7 +115,7 @@ export function calculateMiningResult({
 			globalDroprates.doug.clIncrease
 		);
 		for (let i = 0; i < minutesInTrip; i++) {
-			if (roll(droprate)) {
+			if (rng.roll(droprate)) {
 				loot.add('Doug');
 				messages.push(
 					"<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining."
@@ -249,14 +251,12 @@ export function calculateMiningResult({
 
 export const miningTask: MinionTask = {
 	type: 'Mining',
-	async run(data: MiningActivityTaskOptions) {
-		const { oreID, userID, channelID, duration, powermine } = data;
+	async run(data: MiningActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { oreID, channelId, duration, powermine } = data;
 		const { quantity } = data;
 		const minutes = Math.round(duration / Time.Minute);
-		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
-		const sd = await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true });
 		const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
 		const amountOfSpiritsToUse =
 			spiritOre !== undefined ? Math.min(quantity, user.bank.amount(spiritOre.spirit.id)) : 0;
@@ -286,30 +286,30 @@ export const miningTask: MinionTask = {
 			quantity,
 			hasMiningMasterCape,
 			ore,
-			disabledInventions: sd.disabled_inventions,
+			disabledInventions: user.user.disabled_inventions,
 			gearBank: user.gearBank,
 			amountOfSpiritsToUse,
 			spiritOre,
 			portentResult,
-			collectionLog: user.cl
+			collectionLog: user.cl,
+			rng
 		});
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove: totalCost
 		});
 
 		let xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: totalMiningXPToAdd,
 			duration
 		});
 
 		if (smithingXPFromAdze > 0) {
 			xpRes += ` ${await user.addXP({
-				skillName: SkillsEnum.Smithing,
+				skillName: 'smithing',
 				amount: smithingXPFromAdze,
 				duration
 			})}`;
@@ -318,16 +318,16 @@ export const miningTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
 
 		if (barsFromKlikBank.length > 0) {
-			await userStatsBankUpdate(user.id, 'bars_from_klik_bank', barsFromKlikBank);
+			await user.statsBankUpdate('bars_from_klik_bank', barsFromKlikBank);
 		}
 		if (oresFromSpiritsBank.length > 0) {
-			await userStatsBankUpdate(user.id, 'ores_from_spirits_bank', oresFromSpiritsBank);
+			await user.statsBankUpdate('ores_from_spirits_bank', oresFromSpiritsBank);
 		}
 		if (barsFromAdzeBank.length > 0) {
-			await userStatsBankUpdate(user.id, 'bars_from_adze_bank', barsFromAdzeBank);
+			await user.statsBankUpdate('bars_from_adze_bank', barsFromAdzeBank);
 		}
 		if (spiritualMiningPortentXP > 0) {
-			await userStatsUpdate(user.id, {
+			await user.statsUpdate({
 				xp_from_mining_portent: {
 					increment: spiritualMiningPortentXP
 				}
@@ -340,6 +340,12 @@ export const miningTask: MinionTask = {
 			str += `\n\n${messages.join('\n')}`;
 		}
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: str },
+			data,
+			loot
+		});
 	}
 };

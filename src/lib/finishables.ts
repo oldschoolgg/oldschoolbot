@@ -1,5 +1,12 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { notEmpty, randArrItem, roll } from 'e';
+import { kalphiteKingCL, moktangCL, naxxusCL, nexCL, nexUniqueDrops } from '@/lib/bso/collection-log/main.js';
+import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
+import { Naxxus, rollNaxxusLoot } from '@/lib/bso/monsters/bosses/Naxxus.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/bso/monsters/nex.js';
+
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BeginnerCasket,
@@ -9,17 +16,17 @@ import {
 	EliteMimicTable,
 	HardCasket,
 	ItemGroups,
+	Items,
+	itemID,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
 	Monsters,
 	Nightmare,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
-import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot';
-import { allCollectionLogsFlat } from './data/Collections';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import {
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
@@ -29,34 +36,23 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
-	kalphiteKingCL,
-	moktangCL,
-	naxxusCL,
-	nexCL,
-	nexUniqueDrops,
 	temporossCL,
-	theGauntletCL,
-	theNightmareCL,
-	theNightmareNormalCL,
 	theatreOfBloodCapes,
 	theatreOfBloodHardUniques,
 	theatreOfBloodNormalUniques,
+	theGauntletCL,
+	theNightmareCL,
+	theNightmareNormalCL,
 	wintertodtCL
-} from './data/CollectionsExport';
-import pets from './data/pets';
-import killableMonsters from './minions/data/killableMonsters';
-import { KalphiteKingMonster, kalphiteKingLootTable } from './minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
-import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
-import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
-import { NEX_UNIQUE_DROPRATE, NexMonster } from './nex';
-import { openShadeChest } from './shadesKeys';
-import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
-import { gauntlet } from './simulation/gauntlet';
-import { getTemporossLoot } from './simulation/tempoross';
-import { TheatreOfBlood } from './simulation/tob';
-import { WintertodtCrate } from './simulation/wintertodt';
-import getOSItem from './util/getOSItem';
+} from '@/lib/data/CollectionsExport.js';
+import pets from '@/lib/data/pets.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { openShadeChest } from '@/lib/shadesKeys.js';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import { gauntlet } from '@/lib/simulation/gauntlet.js';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { TheatreOfBlood } from '@/lib/simulation/tob.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
@@ -308,8 +304,8 @@ export const finishables: Finishable[] = [
 		aliases: ['shades of morton'],
 		kill: ({ accumulatedLoot, totalRuns }) => {
 			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
-				const key = getOSItem(`${tier} key red`);
-				const lock = getOSItem(`${tier} locks`);
+				const key = Items.getOrThrow(`${tier} key red`);
+				const lock = Items.getOrThrow(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
 				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
 			}
@@ -318,13 +314,11 @@ export const finishables: Finishable[] = [
 	}
 ];
 
-const monsterPairedCLs = [...Monsters.values(), ...Object.values(BSOMonsters)]
+const monsterPairedCLs = [...Monsters.map(m => m), ...Object.values(BSOMonsters)]
 	.map(mon => {
 		const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
 		if (!cl) return null;
-		if (!('allItems' in mon) || !mon.allItems) return;
-		if (!cl.items.every(id => mon.allItems!.includes(id))) return null;
-		if (finishables.some(f => stringMatches(f.name, mon.name))) return null;
+		if (mon.allItems?.some(id => !cl.items.has(id))) return null;
 		return {
 			name: mon.name,
 			aliases: mon.aliases,
@@ -339,7 +333,7 @@ for (const mon of monsterPairedCLs) {
 	finishables.push({
 		name: mon.name,
 		aliases: mon.aliases,
-		cl: mon.cl,
+		cl: Array.from(mon.cl),
 		kill: ({ accumulatedLoot }) => {
 			const cost = new Bank();
 			if (killableMonster?.healAmountNeeded) {

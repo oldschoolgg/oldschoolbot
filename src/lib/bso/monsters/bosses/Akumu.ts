@@ -1,0 +1,86 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { UncutGemTable } from '@/lib/bso/tables/sharedTables.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
+
+export const AkumuLootTable = new LootTable()
+	.tertiary(1000, 'Mini akumu')
+	.every('Nightmarish ashes', [5, 10])
+	.tertiary(4, 'Cursed onyx')
+	.tertiary(122, 'Demon statuette')
+	.tertiary(85, 'Elder scroll piece')
+	.add(
+		new LootTable()
+			.add(MysteryBoxes)
+			.add('Battlestaff', [150, 350], 2)
+			.add('Black dragonhide', [100, 400], 2)
+			.add('Cannonball', [200, 400], 2)
+			.add(UncutGemTable, [2, 4], 2)
+	);
+
+export const Akumu: CustomMonster = {
+	isCustom: true,
+	id: EBSOMonster.AKUMU,
+	baseMonster: Monsters.AbyssalSire,
+	name: 'Akumu',
+	aliases: ['akumu'],
+	timeToFinish: Time.Minute * 25,
+	hp: 3330,
+	table: AkumuLootTable,
+	difficultyRating: 5,
+	healAmountNeeded: 250 * 22,
+	attackStyleToUse: GearStat.AttackSlash,
+	attackStylesUsed: [GearStat.AttackSlash],
+	levelRequirements: {
+		hitpoints: 120,
+		attack: 120,
+		strength: 120,
+		defence: 120,
+		slayer: 120
+	},
+	pohBoosts: {
+		pool: {
+			'Ancient rejuvenation pool': 5
+		}
+	},
+	deathProps: {
+		hardness: 0.5,
+		steepness: 0.999,
+		lowestDeathChance: 5,
+		highestDeathChance: 65
+	},
+	minimumHealAmount: 22,
+	allItems: resolveItems([]),
+	minimumGearRequirements: {
+		melee: {}
+	},
+	itemCost: {
+		itemCost: new Bank()
+			.add('Super combat potion(4)')
+			.add('Lumina')
+			.add('Saradomin brew (4)', 3)
+			.add('Super restore (4)', 1),
+		qtyPerKill: 1
+	},
+	tameCantKill: true,
+	itemsRequired: resolveItems(["Combatant's cape"]),
+	setupsUsed: ['melee'],
+	equippedItemBoosts: [
+		{
+			gearSetup: 'melee',
+			items: [
+				{
+					boostPercent: 20,
+					itemID: itemID('Axe of the high sungod')
+				}
+			]
+		}
+	],
+	kcRequirements: {
+		[EBSOMonster.SOLIS]: 1
+	}
+};

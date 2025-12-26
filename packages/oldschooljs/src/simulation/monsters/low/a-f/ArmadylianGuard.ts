@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const ArmadylianGuardTable = new LootTable()
+export const ArmadylianGuardTable: LootTable = new LootTable()
 	.every('Bones')
 
 	/* Weapons and armour */
@@ -35,7 +35,7 @@ export const ArmadylianGuardTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 1, 9);
 
-export default new SimpleMonster({
+export const ArmadylianGuard: SimpleMonster = new SimpleMonster({
 	id: 6587,
 	name: 'Armadylian Guard',
 	table: ArmadylianGuardTable,

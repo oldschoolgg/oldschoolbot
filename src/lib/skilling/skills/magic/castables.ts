@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import Prayer from '../prayer';
+import Prayer from '@/lib/skilling/skills/prayer.js';
 
 export interface Castable {
 	id: number;

@@ -1,0 +1,3629 @@
+{
+	"unlocks": [
+		{
+			"item": "Arcane prayer scroll",
+			"bitfield": 17,
+			"result_message": "You used your Arcane prayer scroll, and unlocked the Augury prayer."
+		},
+		{
+			"item": "Banana enchantment scroll",
+			"bitfield": 205,
+			"result_message": "You have used your Banana enchantment scroll - you feel your monkey magic skills have improved."
+		},
+		{
+			"item": "Boon of ancient energy",
+			"bitfield": 226,
+			"result_message": "You used your Boon of ancient energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of bright energy",
+			"bitfield": 215,
+			"result_message": "You used your Boon of bright energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of brilliant energy",
+			"bitfield": 221,
+			"result_message": "You used your Boon of brilliant energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of elder energy",
+			"bitfield": 220,
+			"result_message": "You used your Boon of elder energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of flickering energy",
+			"bitfield": 214,
+			"result_message": "You used your Boon of flickering energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of gleaming energy",
+			"bitfield": 218,
+			"result_message": "You used your Boon of gleaming energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of glowing energy",
+			"bitfield": 216,
+			"result_message": "You used your Boon of glowing energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of incandescent energy",
+			"bitfield": 224,
+			"result_message": "You used your Boon of incandescent energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of luminous energy",
+			"bitfield": 223,
+			"result_message": "You used your Boon of luminous energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of lustrous energy",
+			"bitfield": 219,
+			"result_message": "You used your Boon of lustrous energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of radiant energy",
+			"bitfield": 222,
+			"result_message": "You used your Boon of radiant energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of sparkling energy",
+			"bitfield": 217,
+			"result_message": "You used your Boon of sparkling energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Boon of vibrant energy",
+			"bitfield": 225,
+			"result_message": "You used your Boon of vibrant energy, and now receive bonus XP!"
+		},
+		{
+			"item": "Daemonheim agility pass",
+			"bitfield": 206,
+			"result_message": "You show your pass to the Daemonheim guards, and they grant you access to their rooftops."
+		},
+		{
+			"item": "Deadeye prayer scroll",
+			"bitfield": 45,
+			"result_message": "You used your Deadeye prayer scroll, and unlocked the Deadeye prayer."
+		},
+		{
+			"item": "Dexterous prayer scroll",
+			"bitfield": 16,
+			"result_message": "You used your Dexterous prayer scroll, and unlocked the Rigour prayer."
+		},
+		{
+			"item": "Frozen tablet",
+			"bitfield": 34,
+			"result_message": "You used your Frozen tablet."
+		},
+		{
+			"item": "Guthix engram",
+			"bitfield": 210,
+			"result_message": "You place the Guthix engram in Juna's cave, restoring some balance to the world..."
+		},
+		{
+			"item": "Moondash charm",
+			"bitfield": 228,
+			"result_message": "You used your Moondash charm, the power of the moon now boosts your farming trips."
+		},
+		{
+			"item": "Mystic vigour prayer scroll",
+			"bitfield": 46,
+			"result_message": "You used your Mystic vigour prayer scroll, and unlocked the Mystic vigour prayer."
+		},
+		{
+			"item": "Runescroll of bloodbark",
+			"bitfield": 25,
+			"result_message": "You used your Runescroll of bloodbark, and unlocked the ability to create Bloodbark armour."
+		},
+		{
+			"item": "Runescroll of swampbark",
+			"bitfield": 29,
+			"result_message": "You used your Runescroll of Swampbark, and unlocked the ability to create Swampbark armour."
+		},
+		{
+			"item": "Saradomin's light",
+			"bitfield": 30,
+			"result_message": "You used your Saradomin's light."
+		},
+		{
+			"item": "Scarred tablet",
+			"bitfield": 31,
+			"result_message": "You used your Scarred tablet."
+		},
+		{
+			"item": "Scroll of farming",
+			"bitfield": 202,
+			"result_message": "You have used your Scroll of farming - you feel your Farming skills have improved and are now able to use more Farming patches."
+		},
+		{
+			"item": "Scroll of longevity",
+			"bitfield": 203,
+			"result_message": "You have used your Scroll of longevity - your future slayer tasks will always have 2x more quantity."
+		},
+		{
+			"item": "Scroll of the hunt",
+			"bitfield": 204,
+			"result_message": "You have used your Scroll of the hunt - you feel your hunting skills have improved."
+		},
+		{
+			"item": "Sirenic tablet",
+			"bitfield": 32,
+			"result_message": "You used your Sirenic tablet."
+		},
+		{
+			"item": "Slepey tablet",
+			"bitfield": 20,
+			"result_message": "You used your Slepey tablet, and unlocked the Slepe teleport."
+		},
+		{
+			"item": "Strangled tablet",
+			"bitfield": 33,
+			"result_message": "You used your Strangled tablet."
+		},
+		{
+			"item": "Torn prayer scroll",
+			"bitfield": 18,
+			"result_message": "You used your Torn prayer scroll, and unlocked the Preserve prayer."
+		}
+	],
+	"generic": [
+		{
+			"items": ["Ashes", "Skipper"],
+			"cost": {
+				"592": 1
+			},
+			"loot": {
+				"72030": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Ashy flour", "Fresh rat milk"],
+			"cost": {
+				"72026": 1,
+				"72030": 1
+			},
+			"loot": {
+				"72039": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Banana", "Monkey"],
+			"cost": {
+				"1963": 1
+			},
+			"loot": null
+		},
+		{
+			"items": ["Blabberbeak", "Magical mango"],
+			"cost": {
+				"48328": 1,
+				"63197": 1
+			},
+			"loot": {
+				"65197": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Bones", "Mumpkin"],
+			"cost": {
+				"526": 1,
+				"73252": 1
+			},
+			"loot": {
+				"73255": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Bucket", "Remy"],
+			"cost": {
+				"1925": 1
+			},
+			"loot": {
+				"72024": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Candle", "Celebratory cake"],
+			"cost": {
+				"36": 1,
+				"52620": 1
+			},
+			"loot": {
+				"121521": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Chomped chocolate bits", "Takon"],
+			"cost": {
+				"72029": 1
+			},
+			"loot": {
+				"72055": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Chomped chocolate bits", "Ori"],
+			"cost": {
+				"72029": 1
+			},
+			"loot": {
+				"72055": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Christmas cake recipe", "Doug"],
+			"cost": {},
+			"loot": {
+				"72038": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Christmas cake recipe", "Wilvus"],
+			"cost": {},
+			"loot": {
+				"72038": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Cocoa bean", "Steve"],
+			"cost": {
+				"72028": 1
+			},
+			"loot": {
+				"72029": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Cocoa bean", "Frostbite"],
+			"cost": {
+				"72028": 1
+			},
+			"loot": {
+				"72029": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Demonic piercer", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"71919": 1
+			},
+			"loot": {
+				"71426": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Demonic piercer", "Monkey dye"],
+			"cost": {
+				"48228": 1,
+				"71919": 1
+			},
+			"loot": {
+				"40070": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Demonic piercer", "Christmas dye"],
+			"cost": {
+				"70235": 1,
+				"71919": 1
+			},
+			"loot": {
+				"70227": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Demonic piercer", "Oceanic dye"],
+			"cost": {
+				"70441": 1,
+				"71919": 1
+			},
+			"loot": {
+				"71427": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (3a)", "Blood dye"],
+			"cost": {
+				"41076": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41064": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (3a)", "Ice dye"],
+			"cost": {
+				"41076": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41058": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (3a)", "Shadow dye"],
+			"cost": {
+				"41076": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41070": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (3a)", "Christmas dye"],
+			"cost": {
+				"41076": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70242": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (blood)", "Ice dye"],
+			"cost": {
+				"41064": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41058": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (blood)", "Shadow dye"],
+			"cost": {
+				"41064": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41070": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (blood)", "Third age dye"],
+			"cost": {
+				"41064": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41076": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (blood)", "Christmas dye"],
+			"cost": {
+				"41064": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70242": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (ice)", "Blood dye"],
+			"cost": {
+				"41058": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41064": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (ice)", "Shadow dye"],
+			"cost": {
+				"41058": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41070": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (ice)", "Third age dye"],
+			"cost": {
+				"41058": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41076": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (ice)", "Christmas dye"],
+			"cost": {
+				"41058": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70242": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (shadow)", "Blood dye"],
+			"cost": {
+				"41070": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41064": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (shadow)", "Ice dye"],
+			"cost": {
+				"41070": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41058": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (shadow)", "Third age dye"],
+			"cost": {
+				"41070": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41076": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (shadow)", "Christmas dye"],
+			"cost": {
+				"41070": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70242": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (xmas)", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"70242": 1
+			},
+			"loot": {
+				"41064": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (xmas)", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"70242": 1
+			},
+			"loot": {
+				"41058": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (xmas)", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"70242": 1
+			},
+			"loot": {
+				"41070": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore longsword (xmas)", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"70242": 1
+			},
+			"loot": {
+				"41076": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (3a)", "Blood dye"],
+			"cost": {
+				"41074": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41062": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (3a)", "Ice dye"],
+			"cost": {
+				"41074": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41056": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (3a)", "Shadow dye"],
+			"cost": {
+				"41074": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41068": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (3a)", "Christmas dye"],
+			"cost": {
+				"41074": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70240": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (blood)", "Ice dye"],
+			"cost": {
+				"41062": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41056": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (blood)", "Shadow dye"],
+			"cost": {
+				"41062": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41068": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (blood)", "Third age dye"],
+			"cost": {
+				"41062": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41074": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (blood)", "Christmas dye"],
+			"cost": {
+				"41062": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70240": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (ice)", "Blood dye"],
+			"cost": {
+				"41056": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41062": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (ice)", "Shadow dye"],
+			"cost": {
+				"41056": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41068": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (ice)", "Third age dye"],
+			"cost": {
+				"41056": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41074": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (ice)", "Christmas dye"],
+			"cost": {
+				"41056": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70240": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (shadow)", "Blood dye"],
+			"cost": {
+				"41068": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41062": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (shadow)", "Ice dye"],
+			"cost": {
+				"41068": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41056": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (shadow)", "Third age dye"],
+			"cost": {
+				"41068": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41074": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (shadow)", "Christmas dye"],
+			"cost": {
+				"41068": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70240": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (xmas)", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"70240": 1
+			},
+			"loot": {
+				"41062": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (xmas)", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"70240": 1
+			},
+			"loot": {
+				"41056": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (xmas)", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"70240": 1
+			},
+			"loot": {
+				"41068": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore mace (xmas)", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"70240": 1
+			},
+			"loot": {
+				"41074": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (3a)", "Blood dye"],
+			"cost": {
+				"41072": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41060": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (3a)", "Ice dye"],
+			"cost": {
+				"41072": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41054": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (3a)", "Shadow dye"],
+			"cost": {
+				"41072": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41066": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (3a)", "Christmas dye"],
+			"cost": {
+				"41072": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70238": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (blood)", "Ice dye"],
+			"cost": {
+				"41060": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41054": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (blood)", "Shadow dye"],
+			"cost": {
+				"41060": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41066": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (blood)", "Third age dye"],
+			"cost": {
+				"41060": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41072": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (blood)", "Christmas dye"],
+			"cost": {
+				"41060": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70238": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (ice)", "Blood dye"],
+			"cost": {
+				"41054": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41060": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (ice)", "Shadow dye"],
+			"cost": {
+				"41054": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41066": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (ice)", "Third age dye"],
+			"cost": {
+				"41054": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41072": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (ice)", "Christmas dye"],
+			"cost": {
+				"41054": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70238": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (shadow)", "Blood dye"],
+			"cost": {
+				"41066": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41060": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (shadow)", "Ice dye"],
+			"cost": {
+				"41066": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41054": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (shadow)", "Third age dye"],
+			"cost": {
+				"41066": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41072": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (shadow)", "Christmas dye"],
+			"cost": {
+				"41066": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70238": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (xmas)", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"70238": 1
+			},
+			"loot": {
+				"41060": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (xmas)", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"70238": 1
+			},
+			"loot": {
+				"41054": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (xmas)", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"70238": 1
+			},
+			"loot": {
+				"41066": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Drygore rapier (xmas)", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"70238": 1
+			},
+			"loot": {
+				"41072": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven pumpkinsmasher", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"71622": 1
+			},
+			"loot": {
+				"41088": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven pumpkinsmasher", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"71622": 1
+			},
+			"loot": {
+				"41086": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven pumpkinsmasher", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"71622": 1
+			},
+			"loot": {
+				"41087": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven pumpkinsmasher", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"71622": 1
+			},
+			"loot": {
+				"41089": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven pumpkinsmasher", "Monkey dye"],
+			"cost": {
+				"48228": 1,
+				"71622": 1
+			},
+			"loot": {
+				"40067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven pumpkinsmasher", "Volcanic dye"],
+			"cost": {
+				"52672": 1,
+				"71622": 1
+			},
+			"loot": {
+				"52673": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven pumpkinsmasher", "Christmas dye"],
+			"cost": {
+				"70235": 1,
+				"71622": 1
+			},
+			"loot": {
+				"70233": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (3a)", "Blood dye"],
+			"cost": {
+				"41089": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41088": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (3a)", "Ice dye"],
+			"cost": {
+				"41089": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41086": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (3a)", "Shadow dye"],
+			"cost": {
+				"41089": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41087": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (3a)", "Monkey dye"],
+			"cost": {
+				"41089": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (3a)", "Volcanic dye"],
+			"cost": {
+				"41089": 1,
+				"52672": 1
+			},
+			"loot": {
+				"52673": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (3a)", "Christmas dye"],
+			"cost": {
+				"41089": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70233": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (3a)", "Spooky dye"],
+			"cost": {
+				"41089": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (blood)", "Ice dye"],
+			"cost": {
+				"41088": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41086": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (blood)", "Shadow dye"],
+			"cost": {
+				"41088": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41087": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (blood)", "Third age dye"],
+			"cost": {
+				"41088": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41089": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (blood)", "Monkey dye"],
+			"cost": {
+				"41088": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (blood)", "Volcanic dye"],
+			"cost": {
+				"41088": 1,
+				"52672": 1
+			},
+			"loot": {
+				"52673": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (blood)", "Christmas dye"],
+			"cost": {
+				"41088": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70233": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (blood)", "Spooky dye"],
+			"cost": {
+				"41088": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (ice)", "Blood dye"],
+			"cost": {
+				"41086": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41088": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (ice)", "Shadow dye"],
+			"cost": {
+				"41086": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41087": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (ice)", "Third age dye"],
+			"cost": {
+				"41086": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41089": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (ice)", "Monkey dye"],
+			"cost": {
+				"41086": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (ice)", "Volcanic dye"],
+			"cost": {
+				"41086": 1,
+				"52672": 1
+			},
+			"loot": {
+				"52673": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (ice)", "Christmas dye"],
+			"cost": {
+				"41086": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70233": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (ice)", "Spooky dye"],
+			"cost": {
+				"41086": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (shadow)", "Blood dye"],
+			"cost": {
+				"41087": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41088": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (shadow)", "Ice dye"],
+			"cost": {
+				"41087": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41086": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (shadow)", "Third age dye"],
+			"cost": {
+				"41087": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41089": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (shadow)", "Monkey dye"],
+			"cost": {
+				"41087": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (shadow)", "Volcanic dye"],
+			"cost": {
+				"41087": 1,
+				"52672": 1
+			},
+			"loot": {
+				"52673": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (shadow)", "Christmas dye"],
+			"cost": {
+				"41087": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70233": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (shadow)", "Spooky dye"],
+			"cost": {
+				"41087": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (volcanic)", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"52673": 1
+			},
+			"loot": {
+				"41088": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (volcanic)", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"52673": 1
+			},
+			"loot": {
+				"41086": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (volcanic)", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"52673": 1
+			},
+			"loot": {
+				"41087": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (volcanic)", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"52673": 1
+			},
+			"loot": {
+				"41089": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (volcanic)", "Monkey dye"],
+			"cost": {
+				"48228": 1,
+				"52673": 1
+			},
+			"loot": {
+				"40067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (volcanic)", "Christmas dye"],
+			"cost": {
+				"52673": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70233": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warhammer (volcanic)", "Spooky dye"],
+			"cost": {
+				"52673": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warnana", "Blood dye"],
+			"cost": {
+				"40067": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41088": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warnana", "Ice dye"],
+			"cost": {
+				"40067": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41086": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warnana", "Shadow dye"],
+			"cost": {
+				"40067": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41087": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warnana", "Third age dye"],
+			"cost": {
+				"40067": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41089": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warnana", "Volcanic dye"],
+			"cost": {
+				"40067": 1,
+				"52672": 1
+			},
+			"loot": {
+				"52673": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warnana", "Christmas dye"],
+			"cost": {
+				"40067": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70233": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Dwarven warnana", "Spooky dye"],
+			"cost": {
+				"40067": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Egg", "Klik"],
+			"cost": {
+				"1944": 1
+			},
+			"loot": {
+				"72035": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Ensouled demon head", "Mumpkin"],
+			"cost": {
+				"13501": 1,
+				"73252": 1
+			},
+			"loot": {
+				"73253": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Ginger root", "Dodgy bread"],
+			"cost": {
+				"72038": 1,
+				"72039": 1
+			},
+			"loot": {
+				"72040": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Gloom and doom potion", "Broomstick"],
+			"cost": {
+				"70126": 1,
+				"70180": 1
+			},
+			"loot": {
+				"70194": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Gorajan archer boots (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70462": 1
+			},
+			"loot": {
+				"40114": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan archer boots (Sagittarian)", "Oceanic dye"],
+			"cost": {
+				"40114": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70462": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan archer gloves (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70461": 1
+			},
+			"loot": {
+				"40113": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan archer gloves (Sagittarian)", "Oceanic dye"],
+			"cost": {
+				"40113": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70461": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan archer helmet (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70458": 1
+			},
+			"loot": {
+				"40110": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan archer helmet (Sagittarian)", "Oceanic dye"],
+			"cost": {
+				"40110": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70458": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan archer legs (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70460": 1
+			},
+			"loot": {
+				"40112": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan archer legs (Sagittarian)", "Oceanic dye"],
+			"cost": {
+				"40112": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70460": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan archer top (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70459": 1
+			},
+			"loot": {
+				"40111": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan archer top (Sagittarian)", "Oceanic dye"],
+			"cost": {
+				"40111": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70459": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult boots (Celestial)", "Oceanic dye"],
+			"cost": {
+				"40109": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70457": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult boots (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70457": 1
+			},
+			"loot": {
+				"40109": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult gloves (Celestial)", "Oceanic dye"],
+			"cost": {
+				"40108": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70456": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult gloves (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70456": 1
+			},
+			"loot": {
+				"40108": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult helmet (Celestial)", "Oceanic dye"],
+			"cost": {
+				"40105": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70453": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult helmet (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70453": 1
+			},
+			"loot": {
+				"40105": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult legs (Celestial)", "Oceanic dye"],
+			"cost": {
+				"40107": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70455": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult legs (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70455": 1
+			},
+			"loot": {
+				"40107": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult top (Celestial)", "Oceanic dye"],
+			"cost": {
+				"40106": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70454": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan occult top (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70454": 1
+			},
+			"loot": {
+				"40106": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior boots (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70452": 1
+			},
+			"loot": {
+				"41104": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior boots (Primal)", "Oceanic dye"],
+			"cost": {
+				"41104": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70452": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior gloves (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70451": 1
+			},
+			"loot": {
+				"41103": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior gloves (Primal)", "Oceanic dye"],
+			"cost": {
+				"41103": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70451": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior helmet (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70448": 1
+			},
+			"loot": {
+				"41100": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior helmet (Primal)", "Oceanic dye"],
+			"cost": {
+				"41100": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70448": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior legs (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70450": 1
+			},
+			"loot": {
+				"41102": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior legs (Primal)", "Oceanic dye"],
+			"cost": {
+				"41102": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70450": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior top (Oceanic)", "Dungeoneering dye"],
+			"cost": {
+				"48254": 1,
+				"70449": 1
+			},
+			"loot": {
+				"41101": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Gorajan warrior top (Primal)", "Oceanic dye"],
+			"cost": {
+				"41101": 1,
+				"70441": 1
+			},
+			"loot": {
+				"70449": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hairy banana-butter", "Peky"],
+			"cost": {
+				"72036": 1
+			},
+			"loot": {
+				"72034": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Hellfire bow (ice)", "Monkey dye"],
+			"cost": {
+				"48228": 1,
+				"71426": 1
+			},
+			"loot": {
+				"40070": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bow (ice)", "Christmas dye"],
+			"cost": {
+				"70235": 1,
+				"71426": 1
+			},
+			"loot": {
+				"70227": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bow (ice)", "Oceanic dye"],
+			"cost": {
+				"70441": 1,
+				"71426": 1
+			},
+			"loot": {
+				"71427": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bow (ice)", "Spooky dye"],
+			"cost": {
+				"71426": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71919": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bow (Oceanic)", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"71427": 1
+			},
+			"loot": {
+				"71426": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bow (Oceanic)", "Monkey dye"],
+			"cost": {
+				"48228": 1,
+				"71427": 1
+			},
+			"loot": {
+				"40070": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bow (Oceanic)", "Christmas dye"],
+			"cost": {
+				"70235": 1,
+				"71427": 1
+			},
+			"loot": {
+				"70227": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bow (Oceanic)", "Spooky dye"],
+			"cost": {
+				"71427": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71919": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bownana", "Ice dye"],
+			"cost": {
+				"40070": 1,
+				"48202": 1
+			},
+			"loot": {
+				"71426": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bownana", "Christmas dye"],
+			"cost": {
+				"40070": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70227": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bownana", "Oceanic dye"],
+			"cost": {
+				"40070": 1,
+				"70441": 1
+			},
+			"loot": {
+				"71427": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Hellfire bownana", "Spooky dye"],
+			"cost": {
+				"40070": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71919": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Ho-ho hammer", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"70233": 1
+			},
+			"loot": {
+				"41088": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Ho-ho hammer", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"70233": 1
+			},
+			"loot": {
+				"41086": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Ho-ho hammer", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"70233": 1
+			},
+			"loot": {
+				"41087": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Ho-ho hammer", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"70233": 1
+			},
+			"loot": {
+				"41089": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Ho-ho hammer", "Monkey dye"],
+			"cost": {
+				"48228": 1,
+				"70233": 1
+			},
+			"loot": {
+				"40067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Ho-ho hammer", "Volcanic dye"],
+			"cost": {
+				"52672": 1,
+				"70233": 1
+			},
+			"loot": {
+				"52673": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Ho-ho hammer", "Spooky dye"],
+			"cost": {
+				"70233": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71622": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Infernal slayer helmet(i) (ice)", "Christmas dye"],
+			"cost": {
+				"70235": 1,
+				"71440": 1
+			},
+			"loot": {
+				"72015": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Infernal slayer helmet(i) (xmas)", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"72015": 1
+			},
+			"loot": {
+				"71440": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Klik", "Celebratory cake with candle"],
+			"cost": {
+				"121521": 1
+			},
+			"loot": {
+				"121234": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Knife", "Turkey"],
+			"cost": {
+				"48330": 1
+			},
+			"loot": {
+				"48331": 3
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Logs", "Phoenix eggling"],
+			"cost": {
+				"1511": 1
+			},
+			"loot": {
+				"72035": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Message in a bottle"],
+			"cost": {
+				"71425": 1
+			},
+			"loot": null
+		},
+		{
+			"items": ["Metallic chocolate dust", "Fresh rat milk"],
+			"cost": {
+				"72026": 1,
+				"72055": 1
+			},
+			"loot": {
+				"72027": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Milk with spoon", "Harry"],
+			"cost": {
+				"72033": 1
+			},
+			"loot": {
+				"72036": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Mistleboe", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"70227": 1
+			},
+			"loot": {
+				"71426": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Mistleboe", "Monkey dye"],
+			"cost": {
+				"48228": 1,
+				"70227": 1
+			},
+			"loot": {
+				"40070": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Mistleboe", "Oceanic dye"],
+			"cost": {
+				"70227": 1,
+				"70441": 1
+			},
+			"loot": {
+				"71427": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Mistleboe", "Spooky dye"],
+			"cost": {
+				"70227": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71919": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Mithril seeds"],
+			"cost": {
+				"299": 1
+			}
+		},
+		{
+			"items": ["Offhand drygore longsword (3a)", "Blood dye"],
+			"cost": {
+				"41075": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41063": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (3a)", "Ice dye"],
+			"cost": {
+				"41075": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41057": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (3a)", "Shadow dye"],
+			"cost": {
+				"41075": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41069": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (3a)", "Christmas dye"],
+			"cost": {
+				"41075": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70241": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (blood)", "Ice dye"],
+			"cost": {
+				"41063": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41057": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (blood)", "Shadow dye"],
+			"cost": {
+				"41063": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41069": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (blood)", "Third age dye"],
+			"cost": {
+				"41063": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41075": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (blood)", "Christmas dye"],
+			"cost": {
+				"41063": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70241": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (ice)", "Blood dye"],
+			"cost": {
+				"41057": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41063": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (ice)", "Shadow dye"],
+			"cost": {
+				"41057": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41069": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (ice)", "Third age dye"],
+			"cost": {
+				"41057": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41075": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (ice)", "Christmas dye"],
+			"cost": {
+				"41057": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70241": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (shadow)", "Blood dye"],
+			"cost": {
+				"41069": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41063": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (shadow)", "Ice dye"],
+			"cost": {
+				"41069": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41057": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (shadow)", "Third age dye"],
+			"cost": {
+				"41069": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41075": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (shadow)", "Christmas dye"],
+			"cost": {
+				"41069": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70241": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (xmas)", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"70241": 1
+			},
+			"loot": {
+				"41063": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (xmas)", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"70241": 1
+			},
+			"loot": {
+				"41057": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (xmas)", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"70241": 1
+			},
+			"loot": {
+				"41069": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore longsword (xmas)", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"70241": 1
+			},
+			"loot": {
+				"41075": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (3a)", "Blood dye"],
+			"cost": {
+				"41073": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41061": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (3a)", "Ice dye"],
+			"cost": {
+				"41073": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41055": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (3a)", "Shadow dye"],
+			"cost": {
+				"41073": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (3a)", "Christmas dye"],
+			"cost": {
+				"41073": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70239": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (blood)", "Ice dye"],
+			"cost": {
+				"41061": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41055": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (blood)", "Shadow dye"],
+			"cost": {
+				"41061": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (blood)", "Third age dye"],
+			"cost": {
+				"41061": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41073": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (blood)", "Christmas dye"],
+			"cost": {
+				"41061": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70239": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (ice)", "Blood dye"],
+			"cost": {
+				"41055": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41061": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (ice)", "Shadow dye"],
+			"cost": {
+				"41055": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (ice)", "Third age dye"],
+			"cost": {
+				"41055": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41073": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (ice)", "Christmas dye"],
+			"cost": {
+				"41055": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70239": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (shadow)", "Blood dye"],
+			"cost": {
+				"41067": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41061": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (shadow)", "Ice dye"],
+			"cost": {
+				"41067": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41055": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (shadow)", "Third age dye"],
+			"cost": {
+				"41067": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41073": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (shadow)", "Christmas dye"],
+			"cost": {
+				"41067": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70239": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (xmas)", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"70239": 1
+			},
+			"loot": {
+				"41061": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (xmas)", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"70239": 1
+			},
+			"loot": {
+				"41055": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (xmas)", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"70239": 1
+			},
+			"loot": {
+				"41067": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore mace (xmas)", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"70239": 1
+			},
+			"loot": {
+				"41073": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (3a)", "Blood dye"],
+			"cost": {
+				"41071": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41059": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (3a)", "Ice dye"],
+			"cost": {
+				"41071": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41053": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (3a)", "Shadow dye"],
+			"cost": {
+				"41071": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41065": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (3a)", "Christmas dye"],
+			"cost": {
+				"41071": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70237": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (blood)", "Ice dye"],
+			"cost": {
+				"41059": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41053": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (blood)", "Shadow dye"],
+			"cost": {
+				"41059": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41065": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (blood)", "Third age dye"],
+			"cost": {
+				"41059": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41071": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (blood)", "Christmas dye"],
+			"cost": {
+				"41059": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70237": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (ice)", "Blood dye"],
+			"cost": {
+				"41053": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41059": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (ice)", "Shadow dye"],
+			"cost": {
+				"41053": 1,
+				"48201": 1
+			},
+			"loot": {
+				"41065": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (ice)", "Third age dye"],
+			"cost": {
+				"41053": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41071": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (ice)", "Christmas dye"],
+			"cost": {
+				"41053": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70237": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (shadow)", "Blood dye"],
+			"cost": {
+				"41065": 1,
+				"48203": 1
+			},
+			"loot": {
+				"41059": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (shadow)", "Ice dye"],
+			"cost": {
+				"41065": 1,
+				"48202": 1
+			},
+			"loot": {
+				"41053": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (shadow)", "Third age dye"],
+			"cost": {
+				"41065": 1,
+				"48204": 1
+			},
+			"loot": {
+				"41071": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (shadow)", "Christmas dye"],
+			"cost": {
+				"41065": 1,
+				"70235": 1
+			},
+			"loot": {
+				"70237": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (xmas)", "Blood dye"],
+			"cost": {
+				"48203": 1,
+				"70237": 1
+			},
+			"loot": {
+				"41059": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (xmas)", "Ice dye"],
+			"cost": {
+				"48202": 1,
+				"70237": 1
+			},
+			"loot": {
+				"41053": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (xmas)", "Shadow dye"],
+			"cost": {
+				"48201": 1,
+				"70237": 1
+			},
+			"loot": {
+				"41065": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Offhand drygore rapier (xmas)", "Third age dye"],
+			"cost": {
+				"48204": 1,
+				"70237": 1
+			},
+			"loot": {
+				"41071": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Pumpkin", "Mumpkin"],
+			"cost": {
+				"1959": 1,
+				"73252": 1
+			},
+			"loot": {
+				"73254": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Pumpkin carving knife", "Heirloom pumpkin"],
+			"cost": {
+				"73279": 1
+			},
+			"loot": {
+				"73271": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Raw rat milk", "Klik"],
+			"cost": {
+				"72024": 1
+			},
+			"loot": {
+				"72025": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Scorched rat milk", "Wintertoad"],
+			"cost": {
+				"72025": 1
+			},
+			"loot": {
+				"72026": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Scorched rat milk", "Frosty"],
+			"cost": {
+				"72025": 1
+			},
+			"loot": {
+				"72026": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Shiny mango", "Magus scroll"],
+			"cost": {
+				"50023": 1,
+				"63127": 1
+			},
+			"loot": {
+				"63197": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Spooky aura", "Spooky sheet"],
+			"cost": {
+				"71925": 1,
+				"71926": 1
+			},
+			"loot": {
+				"71921": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Tinderbox", "Celebratory cake with candle"],
+			"cost": {
+				"121521": 1
+			},
+			"loot": {
+				"122001": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Twisted bow (3a)", "Blood dye"],
+			"cost": {
+				"40084": 1,
+				"48203": 1
+			},
+			"loot": {
+				"40083": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (3a)", "Ice dye"],
+			"cost": {
+				"40084": 1,
+				"48202": 1
+			},
+			"loot": {
+				"40081": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (3a)", "Shadow dye"],
+			"cost": {
+				"40084": 1,
+				"48201": 1
+			},
+			"loot": {
+				"40082": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (3a)", "Monkey dye"],
+			"cost": {
+				"40084": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40068": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (blood)", "Ice dye"],
+			"cost": {
+				"40083": 1,
+				"48202": 1
+			},
+			"loot": {
+				"40081": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (blood)", "Shadow dye"],
+			"cost": {
+				"40083": 1,
+				"48201": 1
+			},
+			"loot": {
+				"40082": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (blood)", "Third age dye"],
+			"cost": {
+				"40083": 1,
+				"48204": 1
+			},
+			"loot": {
+				"40084": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (blood)", "Monkey dye"],
+			"cost": {
+				"40083": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40068": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (ice)", "Blood dye"],
+			"cost": {
+				"40081": 1,
+				"48203": 1
+			},
+			"loot": {
+				"40083": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (ice)", "Shadow dye"],
+			"cost": {
+				"40081": 1,
+				"48201": 1
+			},
+			"loot": {
+				"40082": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (ice)", "Third age dye"],
+			"cost": {
+				"40081": 1,
+				"48204": 1
+			},
+			"loot": {
+				"40084": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (ice)", "Monkey dye"],
+			"cost": {
+				"40081": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40068": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (shadow)", "Blood dye"],
+			"cost": {
+				"40082": 1,
+				"48203": 1
+			},
+			"loot": {
+				"40083": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (shadow)", "Ice dye"],
+			"cost": {
+				"40082": 1,
+				"48202": 1
+			},
+			"loot": {
+				"40081": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (shadow)", "Third age dye"],
+			"cost": {
+				"40082": 1,
+				"48204": 1
+			},
+			"loot": {
+				"40084": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bow (shadow)", "Monkey dye"],
+			"cost": {
+				"40082": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40068": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bownana", "Blood dye"],
+			"cost": {
+				"40068": 1,
+				"48203": 1
+			},
+			"loot": {
+				"40083": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bownana", "Ice dye"],
+			"cost": {
+				"40068": 1,
+				"48202": 1
+			},
+			"loot": {
+				"40081": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bownana", "Shadow dye"],
+			"cost": {
+				"40068": 1,
+				"48201": 1
+			},
+			"loot": {
+				"40082": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Twisted bownana", "Third age dye"],
+			"cost": {
+				"40068": 1,
+				"48204": 1
+			},
+			"loot": {
+				"40084": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["TzKal cape (Oceanic)", "Volcanic dye"],
+			"cost": {
+				"52672": 1,
+				"70464": 1
+			},
+			"loot": {
+				"70463": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["TzKal cape (Oceanic)", "Spooky dye"],
+			"cost": {
+				"70464": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71922": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["TzKal cape (spooky)", "Volcanic dye"],
+			"cost": {
+				"52672": 1,
+				"71922": 1
+			},
+			"loot": {
+				"70463": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["TzKal cape (spooky)", "Oceanic dye"],
+			"cost": {
+				"70441": 1,
+				"71922": 1
+			},
+			"loot": {
+				"70464": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["TzKal cape (Volcanic)", "Oceanic dye"],
+			"cost": {
+				"70441": 1,
+				"70463": 1
+			},
+			"loot": {
+				"70464": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["TzKal cape (Volcanic)", "Spooky dye"],
+			"cost": {
+				"70463": 1,
+				"71620": 1
+			},
+			"loot": {
+				"71922": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Vasa cloak (saradomin)", "Christmas dye"],
+			"cost": {
+				"70235": 1,
+				"71520": 1
+			},
+			"loot": {
+				"70249": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Vasa cloak (saradomin)", "Zamorak egg"],
+			"cost": {
+				"71491": 1,
+				"71520": 1
+			},
+			"loot": {
+				"71521": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Vasa cloak (xmas)", "Saradomin egg"],
+			"cost": {
+				"70249": 1,
+				"71489": 1
+			},
+			"loot": {
+				"71520": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Vasa cloak (xmas)", "Zamorak egg"],
+			"cost": {
+				"70249": 1,
+				"71491": 1
+			},
+			"loot": {
+				"71521": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Vasa cloak (zamorak)", "Christmas dye"],
+			"cost": {
+				"70235": 1,
+				"71521": 1
+			},
+			"loot": {
+				"70249": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Vasa cloak (zamorak)", "Saradomin egg"],
+			"cost": {
+				"71489": 1,
+				"71521": 1
+			},
+			"loot": {
+				"71520": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Vial", "Gary"],
+			"cost": {
+				"229": 1
+			},
+			"loot": {
+				"72031": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Vial", "Plopper"],
+			"cost": {
+				"229": 1
+			},
+			"loot": {
+				"72031": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Vial", "Herbert"],
+			"cost": {
+				"229": 1
+			},
+			"loot": {
+				"72032": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Vial", "Ishi"],
+			"cost": {
+				"229": 1
+			},
+			"loot": {
+				"72032": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Wooden spoon", "Fresh rat milk"],
+			"cost": {
+				"7433": 1,
+				"72026": 1
+			},
+			"loot": {
+				"72033": 1
+			},
+			"add_to_cl": true
+		},
+		{
+			"items": ["Zaryte bow (3a)", "Blood dye"],
+			"cost": {
+				"40080": 1,
+				"48203": 1
+			},
+			"loot": {
+				"40079": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (3a)", "Ice dye"],
+			"cost": {
+				"40080": 1,
+				"48202": 1
+			},
+			"loot": {
+				"40077": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (3a)", "Shadow dye"],
+			"cost": {
+				"40080": 1,
+				"48201": 1
+			},
+			"loot": {
+				"40078": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (3a)", "Monkey dye"],
+			"cost": {
+				"40080": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40069": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (blood)", "Ice dye"],
+			"cost": {
+				"40079": 1,
+				"48202": 1
+			},
+			"loot": {
+				"40077": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (blood)", "Shadow dye"],
+			"cost": {
+				"40079": 1,
+				"48201": 1
+			},
+			"loot": {
+				"40078": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (blood)", "Third age dye"],
+			"cost": {
+				"40079": 1,
+				"48204": 1
+			},
+			"loot": {
+				"40080": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (blood)", "Monkey dye"],
+			"cost": {
+				"40079": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40069": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (ice)", "Blood dye"],
+			"cost": {
+				"40077": 1,
+				"48203": 1
+			},
+			"loot": {
+				"40079": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (ice)", "Shadow dye"],
+			"cost": {
+				"40077": 1,
+				"48201": 1
+			},
+			"loot": {
+				"40078": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (ice)", "Third age dye"],
+			"cost": {
+				"40077": 1,
+				"48204": 1
+			},
+			"loot": {
+				"40080": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (ice)", "Monkey dye"],
+			"cost": {
+				"40077": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40069": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (shadow)", "Blood dye"],
+			"cost": {
+				"40078": 1,
+				"48203": 1
+			},
+			"loot": {
+				"40079": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (shadow)", "Ice dye"],
+			"cost": {
+				"40078": 1,
+				"48202": 1
+			},
+			"loot": {
+				"40077": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (shadow)", "Third age dye"],
+			"cost": {
+				"40078": 1,
+				"48204": 1
+			},
+			"loot": {
+				"40080": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bow (shadow)", "Monkey dye"],
+			"cost": {
+				"40078": 1,
+				"48228": 1
+			},
+			"loot": {
+				"40069": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bownana", "Blood dye"],
+			"cost": {
+				"40069": 1,
+				"48203": 1
+			},
+			"loot": {
+				"40079": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bownana", "Ice dye"],
+			"cost": {
+				"40069": 1,
+				"48202": 1
+			},
+			"loot": {
+				"40077": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bownana", "Shadow dye"],
+			"cost": {
+				"40069": 1,
+				"48201": 1
+			},
+			"loot": {
+				"40078": 1
+			},
+			"add_to_cl": false
+		},
+		{
+			"items": ["Zaryte bownana", "Third age dye"],
+			"cost": {
+				"40069": 1,
+				"48204": 1
+			},
+			"loot": {
+				"40080": 1
+			},
+			"add_to_cl": false
+		}
+	]
+}

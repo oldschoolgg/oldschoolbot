@@ -1,22 +1,21 @@
-import type { Minigame, PlayerOwnedHouse, activity_type_enum } from '@prisma/client';
-import { calcWhatPercent, objectEntries } from 'e';
-import type { Bank } from 'oldschooljs';
+import type { MTame } from '@/lib/bso/structures/MTame.js';
 
-import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import type { ClueTier } from '../clues/clueTiers';
-import type { BitField } from '../constants';
-import { BOT_TYPE, BitFieldData } from '../constants';
-import { diaries, userhasDiaryTierSync } from '../diaries';
-import { effectiveMonsters } from '../minions/data/killableMonsters';
-import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
-import type { RobochimpUser } from '../roboChimp';
-import { type MinigameName, minigameColumnToNameMap } from '../settings/minigames';
-import Agility from '../skilling/skills/agility';
-import type { Skills } from '../types';
-import { formatList, itemNameFromID } from '../util/smallUtils';
-import type { MTame } from './MTame';
-import { MUserStats } from './MUserStats';
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
+import { type Bank, Items } from 'oldschooljs';
+
+import type { Minigame, PlayerOwnedHouse } from '@/prisma/main.js';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { type BitField, BitFieldData, BOT_TYPE } from '@/lib/constants.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import type { ClueBank } from '@/lib/minions/types.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
+import { type MinigameName, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { Skills } from '@/lib/types/index.js';
+import { formatList } from '@/lib/util/smallUtils.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export interface RequirementFailure {
 	reason: string;
@@ -30,12 +29,12 @@ interface RequirementUserArgs {
 	roboChimpUser: RobochimpUser;
 	clueCounts: ClueBank;
 	poh: PlayerOwnedHouse;
-	uniqueRunesCrafted: number[];
-	uniqueActivitiesDone: activity_type_enum[];
 	tames: MTame[];
 }
 
-type ManualHasFunction = (args: RequirementUserArgs) => RequirementFailure[] | undefined | string | boolean;
+type ManualHasFunction = (
+	args: RequirementUserArgs
+) => RequirementFailure[] | Promise<RequirementFailure[]> | undefined | string | boolean;
 
 type Requirement = {
 	name?: string;
@@ -50,7 +49,7 @@ type Requirement = {
 	| { OR: Requirement[] }
 	| { minigames: Partial<Record<MinigameName, number>> }
 	| { bitfieldRequirement: BitField }
-	| { diaryRequirement: [DiaryID, DiaryTierName][] }
+	| { diaryRequirement: Parameters<MUser['hasDiary']>[0][] }
 	| { clueCompletions: Partial<Record<ClueTier['name'], number>> }
 );
 
@@ -59,6 +58,10 @@ export class Requirements {
 
 	get size() {
 		return this.requirements.length;
+	}
+
+	toJSON() {
+		return this.requirements;
 	}
 
 	formatRequirement(req: Requirement): (string | string[])[] {
@@ -75,7 +78,7 @@ export class Requirements {
 			requirementParts.push(
 				`Items Must Be in CL: ${
 					Array.isArray(req.clRequirement)
-						? formatList(req.clRequirement.map(itemNameFromID))
+						? formatList(req.clRequirement.map(i => Items.itemNameFromId(i)))
 						: req.clRequirement.toString()
 				}`
 			);
@@ -133,9 +136,7 @@ export class Requirements {
 
 		if ('diaryRequirement' in req) {
 			requirementParts.push(
-				`Achievement Diary Requirement: ${formatList(
-					req.diaryRequirement.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])?.name}`)
-				)}`
+				`Achievement Diary Requirement: ${formatList(req.diaryRequirement.map(i => i.replace('.', ' ')))}`
 			);
 		}
 
@@ -172,12 +173,15 @@ export class Requirements {
 		return this;
 	}
 
-	checkSingleRequirement(requirement: Requirement, userArgs: RequirementUserArgs): RequirementFailure[] {
+	async checkSingleRequirement(
+		requirement: Requirement,
+		userArgs: RequirementUserArgs
+	): Promise<RequirementFailure[]> {
 		const { user, stats, minigames, clueCounts } = userArgs;
 		const results: RequirementFailure[] = [];
 
 		if ('has' in requirement) {
-			const result = requirement.has(userArgs);
+			const result = await requirement.has(userArgs);
 			if (typeof result === 'boolean') {
 				if (!result) {
 					results.push({ reason: requirement.name });
@@ -208,7 +212,9 @@ export class Requirements {
 		if ('clRequirement' in requirement) {
 			if (!user.cl.has(requirement.clRequirement)) {
 				const missingItems = Array.isArray(requirement.clRequirement)
-					? formatList(requirement.clRequirement.filter(i => !user.cl.has(i)).map(itemNameFromID))
+					? formatList(
+							requirement.clRequirement.filter(i => !user.cl.has(i)).map(i => Items.itemNameFromId(i))
+						)
 					: requirement.clRequirement.clone().remove(user.cl);
 				results.push({
 					reason: `You need ${missingItems} in your CL.`
@@ -309,14 +315,11 @@ export class Requirements {
 
 		if ('diaryRequirement' in requirement) {
 			const unmetDiaries = requirement.diaryRequirement
-				.map(([diary, tier]) => {
-					const { hasDiary, diaryGroup } = userhasDiaryTierSync(user, [diary, tier], {
-						stats,
-						minigameScores: minigames
-					});
+				.map(diary => {
+					const hasDiary = user.hasDiary(diary);
 					return {
 						has: hasDiary,
-						tierName: `${tier} ${diaryGroup.name}`
+						tierName: diary.replace('.', ' ')
 					};
 				})
 				.filter(i => !i.has);
@@ -340,7 +343,7 @@ export class Requirements {
 		}
 
 		if ('OR' in requirement) {
-			const orResults = requirement.OR.map(req => this.checkSingleRequirement(req, userArgs));
+			const orResults = await Promise.all(requirement.OR.map(req => this.checkSingleRequirement(req, userArgs)));
 			if (!orResults.some(i => i.length === 0)) {
 				results.push({
 					reason: `You need to meet one of these requirements:\n${orResults.map((res, index) => {
@@ -358,28 +361,14 @@ export class Requirements {
 
 	static async fetchRequiredData(user: MUser) {
 		const minigames = await user.fetchMinigames();
-		const stashUnits = await getParsedStashUnits(user.id);
-		const stats = await MUserStats.fromID(user.id);
+		const stashUnits = await user.fetchStashUnits();
+		const stats = await user.fetchMStats();
 		const roboChimpUser = await user.fetchRobochimpUser();
 		const clueCounts =
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
 
-		const [_uniqueRunesCrafted, uniqueActivitiesDone, poh] = await prisma.$transaction([
-			prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
-FROM activity
-WHERE user_id = ${BigInt(user.id)}
-AND type = 'Runecraft'
-AND data->>'runeID' IS NOT NULL;`,
-			prisma.$queryRaw<{ type: activity_type_enum }[]>`SELECT DISTINCT(type)
-FROM activity
-WHERE user_id = ${BigInt(user.id)}
-GROUP BY type;`,
-			prisma.playerOwnedHouse.upsert({ where: { user_id: user.id }, update: {}, create: { user_id: user.id } })
-		]);
-		const uniqueRunesCrafted = _uniqueRunesCrafted.map(i => Number(i.rune_id));
-
 		const tames = await user.fetchTames();
-
+		const poh = await getPOH(user.id);
 		return {
 			user,
 			minigames,
@@ -388,8 +377,6 @@ GROUP BY type;`,
 			roboChimpUser,
 			clueCounts,
 			poh,
-			uniqueRunesCrafted,
-			uniqueActivitiesDone: uniqueActivitiesDone.map(i => i.type),
 			tames
 		};
 	}
@@ -399,11 +386,13 @@ GROUP BY type;`,
 		return requirements.map(i => i.check(data));
 	}
 
-	check(data: Awaited<ReturnType<typeof Requirements.fetchRequiredData>>) {
-		const results = this.requirements.map(i => ({
-			result: this.checkSingleRequirement(i, data),
-			requirement: i
-		}));
+	async check(data: Awaited<ReturnType<typeof Requirements.fetchRequiredData>>) {
+		const results = await Promise.all(
+			this.requirements.map(async i => ({
+				result: await this.checkSingleRequirement(i, data),
+				requirement: i
+			}))
+		);
 
 		const flatReasons = results.flatMap(r => r.result);
 		const totalRequirements = this.requirements.length;

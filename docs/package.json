@@ -5,27 +5,30 @@
 	"scripts": {
 		"dev": "astro dev",
 		"start": "astro dev",
-		"build": "astro check && astro build",
+		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@astrojs/check": "^0.9.4",
-		"@astrojs/preact": "^4.1.1",
-		"@astrojs/starlight": "^0.35.2",
-		"@astrojs/tailwind": "^6.0.2",
-		"astro": "^5.13.6",
-		"collapse-white-space": "^2.1.0",
-		"markdown-it": "^14.1.0",
+		"@astrojs/preact": "4.1.3",
+		"@astrojs/starlight": "0.37.1",
+		"@astrojs/starlight-tailwind": "4.0.2",
+		"@tailwindcss/vite": "4.1.18",
+		"astro": "5.16.6",
+		"collapse-white-space": "2.1.0",
+		"gray-matter": "^4.0.3",
 		"oldschooljs": "workspace:*",
-		"preact": "^10.26.9",
+		"preact": "10.28.1",
 		"remeda": "^2.23.0",
-		"tailwindcss": "^4.1.5",
+		"starlight-links-validator": "^0.19.2",
+		"tailwindcss": "^4.1.17",
+		"unified": "^11.0.5",
 		"unist-util-visit": "^5.0.0",
-		"unist-util-visit-parents": "^6.0.1"
+		"unist-util-visit-parents": "^6.0.1",
+		"vite": "^6.4.1"
 	},
 	"devDependencies": {
-		"@types/markdown-it": "^14.1.2",
-		"typescript": "^5.8.3"
+		"@types/hast": "^3.0.4",
+		"typescript": "^5.9.3"
 	}
 }

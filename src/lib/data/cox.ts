@@ -1,24 +1,19 @@
-import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
+
+import { percentChance, randInt, randomVariation, shuffleArr } from '@oldschoolgg/rng';
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
-	shuffleArr
-} from 'e';
-import { Bank, type ChambersOfXericOptions, type Item } from 'oldschooljs';
+	Time
+} from '@oldschoolgg/toolkit';
+import { Bank, type ChambersOfXericOptions, type Item, Items } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { inventionBoosts } from '../invention/inventions';
-import { SkillsEnum } from '../skilling/types';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import type { Skills } from '../types';
-import getOSItem from '../util/getOSItem';
-import { logError } from '../util/logError';
+import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import type { Skills } from '@/lib/types/index.js';
 
 const bareMinStats: Skills = {
 	attack: 80,
@@ -111,7 +106,7 @@ export async function createTeam(
 
 		points = Math.floor(randomVariation(points, 5));
 		if (points < 1 || points > 60_000) {
-			logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
+			Logging.logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
 		}
 
@@ -237,11 +232,11 @@ export const minimumCoxSuppliesNeeded = new Bank({
 });
 
 export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): Promise<string | null> {
-	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
+	const hasHerbalist = users.some(u => u.skillsAsLevels.herblore >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with at least level 78 Herblore';
 	}
-	const hasFarmer = users.some(u => u.skillLevel(SkillsEnum.Farming) >= 55);
+	const hasFarmer = users.some(u => u.skillsAsLevels.farming >= 55);
 	if (!hasFarmer) {
 		return 'nobody with at least level 55 Farming';
 	}
@@ -277,12 +272,12 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 				return `${user.usernameOrMention} doesn't have the 200 KC required for Challenge Mode.`;
 			}
 		}
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return `${user.usernameOrMention}'s minion is already doing an activity and cannot join.`;
 		}
 		if (user.gear.melee.hasEquipped('Abyssal tentacle')) {
 			const tentacleResult = checkUserCanUseDegradeableItem({
-				item: getOSItem('Abyssal tentacle'),
+				item: Items.getOrThrow('Abyssal tentacle'),
 				chargesToDegrade: TENTACLE_CHARGES_PER_COX,
 				user
 			});
@@ -292,7 +287,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		}
 		if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
 			const sangResult = checkUserCanUseDegradeableItem({
-				item: getOSItem('Sanguinesti staff'),
+				item: Items.getOrThrow('Sanguinesti staff'),
 				chargesToDegrade: SANGUINESTI_CHARGES_PER_COX,
 				user
 			});
@@ -302,7 +297,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		}
 		if (user.gear.mage.hasEquipped('Void staff')) {
 			const voidStaffResult = checkUserCanUseDegradeableItem({
-				item: getOSItem('Void staff'),
+				item: Items.getOrThrow('Void staff'),
 				chargesToDegrade: VOID_STAFF_CHARGES_PER_COX,
 				user
 			});
@@ -312,7 +307,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		}
 		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
 			const shadowResult = checkUserCanUseDegradeableItem({
-				item: getOSItem("Tumeken's shadow"),
+				item: Items.getOrThrow("Tumeken's shadow"),
 				chargesToDegrade: SHADOW_CHARGES_PER_COX,
 				user
 			});
@@ -376,51 +371,51 @@ interface ItemBoost {
 const itemBoosts: ItemBoost[][] = [
 	[
 		{
-			item: getOSItem('Twisted bow'),
+			item: Items.getOrThrow('Twisted bow'),
 			boost: 7,
 			mustBeEquipped: false
 		},
 		{
-			item: getOSItem('Bow of faerdhinen (c)'),
+			item: Items.getOrThrow('Bow of faerdhinen (c)'),
 			boost: 6,
 			mustBeEquipped: false
 		},
 		{
-			item: getOSItem('Dragon hunter crossbow'),
+			item: Items.getOrThrow('Dragon hunter crossbow'),
 			boost: 5,
 			mustBeEquipped: false
 		}
 	],
 	[
 		{
-			item: getOSItem('Dragon warhammer'),
+			item: Items.getOrThrow('Dragon warhammer'),
 			boost: 3,
 			mustBeEquipped: false
 		},
 		{
-			item: getOSItem('Bandos godsword'),
+			item: Items.getOrThrow('Bandos godsword'),
 			boost: 2.5,
 			mustBeEquipped: false
 		},
 		{
-			item: getOSItem('Bandos godsword (or)'),
+			item: Items.getOrThrow('Bandos godsword (or)'),
 			boost: 2.5,
 			mustBeEquipped: false
 		}
 	],
 	[
 		{
-			item: getOSItem('Drygore rapier'),
+			item: Items.getOrThrow('Drygore rapier'),
 			boost: 8,
 			mustBeEquipped: true
 		},
 		{
-			item: getOSItem('Dragon hunter lance'),
+			item: Items.getOrThrow('Dragon hunter lance'),
 			boost: 3,
 			mustBeEquipped: false
 		},
 		{
-			item: getOSItem('Abyssal tentacle'),
+			item: Items.getOrThrow('Abyssal tentacle'),
 			boost: 2,
 			mustBeEquipped: false,
 			mustBeCharged: true,
@@ -429,7 +424,7 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
-			item: getOSItem('Void staff'),
+			item: Items.getOrThrow('Void staff'),
 			boost: 9,
 			mustBeEquipped: true,
 			setup: 'mage',
@@ -437,7 +432,7 @@ const itemBoosts: ItemBoost[][] = [
 			requiredCharges: VOID_STAFF_CHARGES_PER_COX
 		},
 		{
-			item: getOSItem("Tumeken's shadow"),
+			item: Items.getOrThrow("Tumeken's shadow"),
 			boost: 8,
 			mustBeEquipped: false,
 			setup: 'mage',
@@ -445,7 +440,7 @@ const itemBoosts: ItemBoost[][] = [
 			requiredCharges: SHADOW_CHARGES_PER_COX
 		},
 		{
-			item: getOSItem('Sanguinesti staff'),
+			item: Items.getOrThrow('Sanguinesti staff'),
 			boost: 7,
 			mustBeEquipped: false,
 			setup: 'mage',
@@ -455,13 +450,13 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
-			item: getOSItem('Offhand spidergore rapier'),
+			item: Items.getOrThrow('Offhand spidergore rapier'),
 			boost: 6.5,
 			mustBeEquipped: true,
 			setup: 'melee'
 		},
 		{
-			item: getOSItem('Offhand drygore rapier'),
+			item: Items.getOrThrow('Offhand drygore rapier'),
 			boost: 4,
 			mustBeEquipped: true,
 			setup: 'melee'

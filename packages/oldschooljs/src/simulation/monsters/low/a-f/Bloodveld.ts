@@ -1,10 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { itemTupleToTable } from '../../../../util';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const BloodveldPreTable = new LootTable()
+export const BloodveldPreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Steel axe', 1, 4)
 	.add('Steel full helm', 1, 4)
@@ -53,7 +52,7 @@ export const BloodveldPreTable = new LootTable()
 	/* RDT */
 	.add(GemTable, 1, 4);
 
-const BloodveldTable = new LootTable()
+const BloodveldTable: LootTable = new LootTable()
 	.every('Vile ashes')
 	.every(BloodveldPreTable)
 
@@ -61,7 +60,7 @@ const BloodveldTable = new LootTable()
 	.tertiary(256, 'Clue scroll (hard)')
 	.tertiary(35, 'Ensouled bloodveld head');
 
-export default new SimpleMonster({
+export const Bloodveld: SimpleMonster = new SimpleMonster({
 	id: 484,
 	name: 'Bloodveld',
 	table: BloodveldTable,

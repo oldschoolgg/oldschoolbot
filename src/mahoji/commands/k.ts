@@ -1,26 +1,22 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { choicesOf } from '@/discord/index.js';
+import { PVM_METHODS } from '@/lib/constants.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
-import { PVM_METHODS, type PvMMethod } from '@/lib/constants';
-import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters';
-import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
-
-async function fetchUsersRecentlyKilledMonsters(userID: string) {
-	const res = await prisma.$queryRawUnsafe<{ mon_id: string; last_killed: Date }[]>(
-		`SELECT DISTINCT((data->>'mi')) AS mon_id, MAX(start_date) as last_killed
-FROM activity
-WHERE user_id = $1
-AND type = 'MonsterKilling'
-AND finish_date > now() - INTERVAL '31 days'
-GROUP BY 1
-ORDER BY 2 DESC
-LIMIT 10;`,
-		BigInt(userID)
-	);
-	return res.map(i => Number(i.mon_id));
+async function fetchUsersRecentlyKilledMonsters(userId: string): Promise<number[]> {
+	const res = await prisma.userStats.findUnique({
+		where: {
+			user_id: BigInt(userId)
+		},
+		select: {
+			recently_killed_monsters: true
+		}
+	});
+	if (!res) return [];
+	return res.recently_killed_monsters;
 }
 
-export const minionKCommand: OSBMahojiCommand = {
+export const minionKCommand = defineCommand({
 	name: 'k',
 	description: 'Send your minion to kill things.',
 	attributes: {
@@ -29,12 +25,12 @@ export const minionKCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to kill.',
 			required: true,
-			autocomplete: async (value, user) => {
-				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(user.id);
+			autocomplete: async ({ value, userId }: StringAutoComplete) => {
+				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(userId);
 				return autocompleteMonsters
 					.filter(m =>
 						!value
@@ -58,57 +54,44 @@ export const minionKCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount you want to kill.',
 			required: false,
 			min_value: 0
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'method',
 			description: 'If you want to cannon/barrage/burst.',
 			required: false,
-			choices: PVM_METHODS.map(i => ({ name: i, value: i }))
+			choices: choicesOf(PVM_METHODS)
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'wilderness',
 			description: 'If you want to kill the monster in the wilderness.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'solo',
 			description: 'Solo (if its a group boss)',
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		name: string;
-		quantity?: number;
-		method?: PvMMethod;
-		wilderness?: boolean;
-		solo?: boolean;
-		onTask?: boolean;
-	}>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, user, channelId, interaction }) => {
 		return minionKillCommand(
 			user,
 			interaction,
-			channelID,
+			channelId,
 			options.name,
 			options.quantity,
 			options.method,
 			options.wilderness,
 			options.solo,
+			// @ts-expect-error: Passed by the bot only
 			options.onTask
 		);
 	}
-};
+});

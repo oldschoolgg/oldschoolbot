@@ -1,38 +1,35 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
-import { notEmpty } from 'e';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { finishables } from '../../lib/finishables';
-import { sorts } from '../../lib/sorts';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { Workers } from '../../lib/workers';
+import { finishables } from '@/lib/finishables.js';
+import { sorts } from '@/lib/sorts.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { Workers } from '@/lib/workers/index.js';
 
-export const finishCommand: OSBMahojiCommand = {
+export const finishCommand = defineCommand({
 	name: 'finish',
 	description: 'Simulate finishing a CL.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'input',
 			description: 'The CL/thing you want to finish. (e.g. corp, pets, raids)',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return finishables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'tertiaries',
 			description: 'Whether or not to include Tertiaries (e.g. capes)',
 			required: false
 		}
 	],
-	run: async ({ interaction, options }: CommandRunOptions<{ input: string; tertiaries?: boolean }>) => {
-		await deferInteraction(interaction);
+	run: async ({ interaction, options }) => {
+		await interaction.defer();
 		const { input: finishable, tertiaries } = options;
 		const val = finishables.find(
 			i => stringMatches(i.name, finishable) || i.aliases?.some(alias => stringMatches(alias, finishable))
@@ -61,19 +58,20 @@ export const finishCommand: OSBMahojiCommand = {
 			return {
 				content: `${result}
 ${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,
-				files: [image.file, costImage?.file].filter(notEmpty)
+				files: [image, costImage].filter(notEmpty)
 			};
 		}
 
 		return {
 			content: `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.`,
 			files: [
-				image.file,
-				new AttachmentBuilder(Buffer.from(finishStr.map(i => `${i[0].name}: ${i[1]} KC`).join('\n')), {
-					name: 'finish.txt'
-				}),
-				costImage?.file
+				image,
+				{
+					name: 'finish.txt',
+					buffer: Buffer.from(finishStr.map(i => `${i[0].name}: ${i[1]} KC`).join('\n'))
+				},
+				costImage
 			].filter(notEmpty)
 		};
 	}
-};
+});

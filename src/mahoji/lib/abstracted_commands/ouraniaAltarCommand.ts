@@ -1,26 +1,20 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, increaseNumByPercent } from 'e';
+import { formatDuration, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
-import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { OuraniaAltarOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
 
 const gracefulPenalty = 20;
 
 export async function ouraniaAltarStartCommand({
 	user,
-	channelID,
+	channelId,
 	quantity,
 	usestams,
 	daeyalt_essence
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	quantity?: number;
 	usestams?: boolean;
 	daeyalt_essence?: boolean;
@@ -33,20 +27,20 @@ export async function ouraniaAltarStartCommand({
 	const numEssenceOwned = bank.amount('Pure essence');
 	const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 	const boosts = [];
-	const mageLvl = user.skillLevel(SkillsEnum.Magic);
+	const mageLvl = user.skillsAsLevels.magic;
 	const spellbookSwap = mageLvl > 95;
 
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
 	for (const pouch of Runecraft.pouches) {
-		if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+		if (user.skillsAsLevels.runecraft < pouch.level) continue;
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 		if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
 	}
 
 	if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 
-	if (!userHasGracefulEquipped(user) || !spellbookSwap) {
+	if (!user.hasGracefulEquipped() || !spellbookSwap) {
 		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
 		timePerTrip = increaseNumByPercent(timePerTrip, gracefulPenalty);
 	}
@@ -65,7 +59,7 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip *= 0.98;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'OuraniaAltar');
+	const maxTripLength = await user.calcMaxTripLength('OuraniaAltar');
 	const maxCanDo = Math.floor(maxTripLength / timePerTrip) * inventorySize;
 
 	// If no quantity provided, set it to the max.
@@ -119,14 +113,14 @@ export async function ouraniaAltarStartCommand({
 	if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('runecraft_cost', totalCost);
+	await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
 
-	await addSubTaskToActivityTask<OuraniaAltarOptions>({
+	await ActivityManager.startTrip<OuraniaAltarOptions>({
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'OuraniaAltar',
-		channelID: channelID.toString(),
+		channelId,
 		stamina,
 		daeyalt
 	});

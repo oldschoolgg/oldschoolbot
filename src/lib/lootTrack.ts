@@ -1,9 +1,8 @@
-import { cleanString, formatDuration } from '@oldschoolgg/toolkit/util';
-import type { LootTrack, loot_track_type } from '@prisma/client';
-import { Time } from 'e';
+import { cleanString, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { makeBankImage } from './util/makeBankImage';
+import type { LootTrack, loot_track_type } from '@/prisma/main.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 type TrackLootOptions =
 	| {
@@ -145,9 +144,9 @@ export async function getDetailsOfSingleTrackedLoot(user: MUser, trackedLoot: Lo
 	]);
 
 	return {
-		content: `Loot/Cost from ${trackedLoot.total_kc.toLocaleString()}x ${trackedLoot.key} for ${user.rawUsername}
+		content: `Loot/Cost from ${trackedLoot.total_kc.toLocaleString()}x ${trackedLoot.key} for ${user.username}
 **Total Duration:** ${formatDuration(trackedLoot.total_duration * Time.Minute)}
 **Total KC:** ${trackedLoot.total_kc}`,
-		files: [cost.file, loot.file]
+		files: [cost, loot]
 	};
 }

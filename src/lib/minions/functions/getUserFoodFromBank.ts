@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { Eatables } from '../../data/eatables';
-import type { GearBank } from '../../structures/GearBank';
+import { Eatables } from '@/lib/data/eatables.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 export function getRealHealAmount(gearBank: GearBank, healAmount: ((user: GearBank) => number) | number) {
 	if (typeof healAmount === 'number') {
@@ -9,7 +9,15 @@ export function getRealHealAmount(gearBank: GearBank, healAmount: ((user: GearBa
 	}
 	return healAmount(gearBank);
 }
-
+export type GetUserFoodFromBankParams = {
+	gearBank: GearBank;
+	totalHealingNeeded: number;
+	favoriteFood: readonly number[];
+	minimumHealAmount?: number;
+	isWilderness?: boolean;
+	unavailableBank?: Bank;
+	raw?: boolean;
+};
 export default function getUserFoodFromBank({
 	gearBank,
 	totalHealingNeeded,
@@ -18,15 +26,7 @@ export default function getUserFoodFromBank({
 	isWilderness,
 	unavailableBank,
 	raw
-}: {
-	gearBank: GearBank;
-	totalHealingNeeded: number;
-	favoriteFood: readonly number[];
-	minimumHealAmount?: number;
-	isWilderness?: boolean;
-	unavailableBank?: Bank;
-	raw?: boolean;
-}): false | Bank {
+}: GetUserFoodFromBankParams): false | Bank {
 	let userBank = gearBank.bank;
 	if (unavailableBank) userBank = userBank.clone().remove(unavailableBank);
 	let totalHealingCalc = totalHealingNeeded;

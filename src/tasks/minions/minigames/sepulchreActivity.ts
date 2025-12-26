@@ -1,20 +1,16 @@
 import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { roll } from '../../../lib/util/rng';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
-	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, userID, duration, fletch } = data;
-		const user = await mUserFetch(userID);
+	async run(data: SepulchreActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, floors, duration, fletch } = data;
+
 		await user.incrementMinigameScore('sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
@@ -38,7 +34,7 @@ export const sepulchreTask: MinionTask = {
 				agilityXP += floor.xp;
 				thievingXP = 200 * numCoffinsOpened;
 			}
-			if (roll(highestCompletedFloor.petChance)) {
+			if (rng.roll(highestCompletedFloor.petChance)) {
 				loot.add('Giant squirrel');
 			}
 		}
@@ -47,7 +43,7 @@ export const sepulchreTask: MinionTask = {
 		let fletchQuantity = 0;
 		const fletchingLoot = new Bank();
 
-		let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
+		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
 
 		if (fletch) {
 			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
@@ -65,32 +61,31 @@ export const sepulchreTask: MinionTask = {
 			fletchXpReceived = fletchQuantity * fletchable.xp;
 
 			fletchXpRes = await user.addXP({
-				skillName: SkillsEnum.Fletching,
+				skillName: 'fletching',
 				amount: fletchXpReceived,
 				duration
 			});
 			fletchingLoot.add(fletchable.id, quantityToGive);
 		}
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: agilityXP,
 			duration
 		});
 
 		const thievingXpRes = await user.addXP({
-			skillName: SkillsEnum.Thieving,
+			skillName: 'thieving',
 			amount: thievingXP,
 			duration
 		});
@@ -126,8 +121,7 @@ export const sepulchreTask: MinionTask = {
 
 		// Handle fletching loot separately after generating the main loot image
 		if (fletchable && fletch) {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: fletchingLoot
 			});
@@ -140,6 +134,6 @@ export const sepulchreTask: MinionTask = {
 			}
 		}
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

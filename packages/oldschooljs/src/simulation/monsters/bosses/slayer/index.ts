@@ -1,11 +1,12 @@
-import AbyssalSire from './AbyssalSire';
-import AlchemicalHydra from './AlchemicalHydra';
-import Cerberus from './Cerberus';
-import GrotesqueGuardians from './GrotesqueGuardians';
-import Kraken from './Kraken';
-import ThermonuclearSmokeDevil from './ThermonuclearSmokeDevil';
+import type { SimpleMonster } from '@/structures/Monster.js';
+import { AbyssalSire } from './AbyssalSire.js';
+import { AlchemicalHydra } from './AlchemicalHydra.js';
+import { Cerberus } from './Cerberus.js';
+import { GrotesqueGuardians } from './GrotesqueGuardians.js';
+import { Kraken } from './Kraken.js';
+import { ThermonuclearSmokeDevil } from './ThermonuclearSmokeDevil.js';
 
-export const allSlayerBosses = {
+export const allSlayerBosses: Record<string, SimpleMonster> = {
 	AbyssalSire,
 	Cerberus,
 	AlchemicalHydra,

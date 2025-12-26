@@ -1,16 +1,12 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const gloriesInventorySize = 26;
 const gloriesInventoryTime = Time.Minute * 2.2;
 
-export async function chargeGloriesCommand(user: MUser, channelID: string, quantity: number | undefined) {
+export async function chargeGloriesCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const userBank = user.bank;
 
 	const amountHas = userBank.amount('Amulet of glory');
@@ -18,14 +14,14 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 		return `You don't have enough Amulets of glory to recharge. Your minion does trips of ${gloriesInventorySize}x glories.`;
 	}
 
-	const [hasDiary] = await userhasDiaryTier(user, WildernessDiary.elite);
+	const hasDiary = user.hasDiary('wilderness.elite');
 
 	let invDuration = gloriesInventoryTime;
 	if (hasDiary) {
 		invDuration /= 3;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'GloryCharging');
+	const maxTripLength = await user.calcMaxTripLength('GloryCharging');
 
 	const max = Math.min(amountHas / gloriesInventorySize, Math.floor(maxTripLength / invDuration));
 	if (!quantity) {
@@ -47,9 +43,9 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 		return `You don't have enough ${quantityGlories}x Amulet of glory.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'GloryCharging'

@@ -1,18 +1,10 @@
-import { type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import {
-	ActionRowBuilder,
-	type BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	type ChatInputCommandInteraction
-} from 'discord.js';
-import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
+import { SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
+import { chunk } from 'remeda';
 
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 interface Button {
 	name: string;
@@ -58,9 +50,9 @@ function generateColumn() {
 	while (column.length < 3) {
 		const button = buttonTable.rollOrThrow();
 		if (column.some(i => i.name === button.name)) continue;
-		column.push({ ...button, id: randInt(1, 999_999_999).toString() });
+		column.push({ ...button, id: cryptoRng.randInt(1, 999_999_999).toString() });
 	}
-	return shuffleArr(column);
+	return cryptoRng.shuffle(column);
 }
 
 function getButtons(): ButtonInstance[] {
@@ -87,11 +79,11 @@ function determineWinnings(bet: number, buttons: ButtonInstance[]) {
 }
 
 export async function slotsCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	_amount: string | undefined
 ): CommandResponse {
-	await deferInteraction(interaction);
+	await interaction.defer();
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (user.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
@@ -108,11 +100,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		return 'You can only gamble between 20m and 1b.';
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel)) return 'Invalid channel.';
-
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
 	await user.sync();
@@ -121,50 +109,46 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		return "You don't have enough GP to make this bet.";
 	}
 
-	await user.removeItemsFromBank(new Bank().add('Coins', amount));
+	await user.transactItems({ itemsToRemove: new Bank().add('Coins', amount) });
 	const buttonsToShow = getButtons();
 	const chunkedButtons = chunk(buttonsToShow, 3);
 
 	const { winningRow, amountReceived } = determineWinnings(amount, buttonsToShow);
 
-	function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }): BaseMessageOptions['components'] {
+	function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }) {
 		return chunkedButtons.map(c =>
-			new ActionRowBuilder<ButtonBuilder>().addComponents(
-				c.map((b, index) => {
-					const shouldShowThisButton = !columnsToHide.includes(index);
-					const isWinning = columnsToHide.length === 0 && winningRow?.includes(b);
-					return new ButtonBuilder()
-						.setCustomId(b.id)
-						.setStyle(
-							!shouldShowThisButton
-								? ButtonStyle.Secondary
-								: isWinning
-									? ButtonStyle.Success
-									: ButtonStyle.Secondary
-						)
-						.setEmoji(shouldShowThisButton ? b.emoji : '❓');
-				})
-			)
+			c.map((b, index) => {
+				const shouldShowThisButton = !columnsToHide.includes(index);
+				const isWinning = columnsToHide.length === 0 && winningRow?.includes(b);
+				return new ButtonBuilder()
+					.setCustomId(b.id)
+					.setStyle(
+						!shouldShowThisButton
+							? ButtonStyle.Secondary
+							: isWinning
+								? ButtonStyle.Success
+								: ButtonStyle.Secondary
+					)
+					.setEmoji(shouldShowThisButton ? { id: b.emoji } : { name: '❓' });
+			})
 		);
 	}
 
-	const sentMessage = await channel
-		.send({
-			content: 'Slots',
-			components: getCurrentButtons({ columnsToHide: [0, 1, 2] })
-		})
-		.catch(noOp);
+	await interaction.reply({
+		content: 'Slots',
+		components: getCurrentButtons({ columnsToHide: [0, 1, 2] })
+	});
+
 	await sleep(2000);
 
 	const finishContent =
 		amountReceived === 0
 			? "Unlucky, you didn't win anything, and lost your bet!"
 			: `You won ${toKMB(amountReceived)}!`;
-	sentMessage?.delete().catch(noOp);
 
-	await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived), collectionLog: false });
-	await updateClientGPTrackSetting('gp_slots', amountReceived - amount);
-	await updateGPTrackSetting('gp_slots', amountReceived - amount, user);
+	await user.transactItems({ itemsToAdd: new Bank().add('Coins', amountReceived), collectionLog: false });
+	await ClientSettings.updateClientGPTrackSetting('gp_slots', amountReceived - amount);
+	await user.updateGPTrackSetting('gp_slots', amountReceived - amount);
 
 	return { content: finishContent, components: getCurrentButtons({ columnsToHide: [] }) };
 }

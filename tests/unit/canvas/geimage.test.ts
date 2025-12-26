@@ -1,10 +1,10 @@
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { GEListingType } from '@prisma/client';
 import { EItem } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import { GeImageGenerator } from '@/lib/canvas/geImage';
+import { GEListingType } from '@/prisma/main.js';
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('GE Images', async () => {
@@ -15,7 +15,8 @@ describe('GE Images', async () => {
 			slotsUsed: 2,
 			maxSlots: 8,
 			page: 1,
-			activeListings: []
+			activeListings: [],
+			user: undefined
 		});
 		await writeFile(path.join(baseSnapshotPath, 'ge-no-listings.png'), geImage);
 	});

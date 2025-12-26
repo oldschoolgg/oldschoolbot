@@ -1,19 +1,19 @@
-import { objHasAnyPropInCommon } from '@oldschoolgg/toolkit/util';
-import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
-import { objectEntries } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
-import { mergeDeep } from 'remeda';
+import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { type ClientBankKey, userStatsUpdate } from '../../mahoji/mahojiSettings';
-import type { MUserClass } from '../MUser';
-import { degradeChargeBank } from '../degradeableItems';
-import type { GearSetup } from '../gear/types';
-import { MaterialBank } from '../invention/MaterialBank';
-import { transactMaterialsFromUser } from '../invention/inventions';
-import type { JsonKeys } from '../util';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
-import { ChargeBank, XPBank } from './Bank';
-import { KCBank } from './KCBank';
+import { objectEntries } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank } from 'oldschooljs';
+
+import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
+import { degradeChargeBank } from '@/lib/degradeableItems.js';
+import type { GearSetup } from '@/lib/gear/types.js';
+import type { SafeUserUpdateInput } from '@/lib/MUser.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { KCBank } from '@/lib/structures/KCBank.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
+import type { ClientBankKey } from '@/lib/util/clientSettings.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
+import type { JsonKeys } from '@/lib/util.js';
 
 export class UpdateBank {
 	// Things removed
@@ -34,37 +34,6 @@ export class UpdateBank {
 	public userUpdates: Pick<Prisma.UserUpdateInput, 'slayer_points'> = {};
 
 	public clientStatsBankUpdates: Partial<Record<ClientBankKey, Bank>> = {};
-
-	public merge(other: UpdateBank) {
-		this.chargeBank.add(other.chargeBank);
-		this.itemCostBank.add(other.itemCostBank);
-		this.itemLootBank.add(other.itemLootBank);
-		this.xpBank.add(other.xpBank);
-		this.kcBank.add(other.kcBank);
-		this.materialsCostBank.add(other.materialsCostBank);
-		this.itemLootBankNoCL.add(other.itemLootBankNoCL);
-
-		for (const [key, value] of objectEntries(other.clientStatsBankUpdates)) {
-			this.clientStatsBankUpdates[key] = (this.clientStatsBankUpdates[key] ?? new Bank()).add(value);
-		}
-
-		for (const [key, value] of objectEntries(other.userStatsBankUpdates)) {
-			this.userStatsBankUpdates[key] = (this.userStatsBankUpdates[key] ?? new Bank()).add(value);
-		}
-
-		if (objHasAnyPropInCommon(this.gearChanges, other.gearChanges)) {
-			throw new Error('Gear changes conflict');
-		}
-		if (objHasAnyPropInCommon(this.userStats, other.userStats)) {
-			throw new Error('User stats conflict');
-		}
-		if (objHasAnyPropInCommon(this.userUpdates, other.userUpdates)) {
-			throw new Error('User updates conflict');
-		}
-		this.gearChanges = mergeDeep(this.gearChanges, other.gearChanges);
-		this.userStats = mergeDeep(this.userStats, other.userStats);
-		this.userUpdates = mergeDeep(this.userUpdates, other.userUpdates);
-	}
 
 	async transactWithItemsOrThrow(...args: Parameters<UpdateBank['transact']>) {
 		const res = await this.transact(...args);
@@ -110,9 +79,9 @@ export class UpdateBank {
 			const { realCost } = await user.specialRemoveItems(this.itemCostBank, { isInWilderness });
 			totalCost.add(realCost);
 		}
-		let itemTransactionResult: Awaited<ReturnType<MUserClass['addItemsToBank']>> | null = null;
+		let itemTransactionResult: Awaited<ReturnType<MUser['addItemsToBank']>> | null = null;
 		if (this.itemLootBank.length > 0) {
-			itemTransactionResult = await user.addItemsToBank({ items: this.itemLootBank, collectionLog: true });
+			itemTransactionResult = await user.transactItems({ itemsToAdd: this.itemLootBank, collectionLog: true });
 		}
 
 		// XP
@@ -120,41 +89,32 @@ export class UpdateBank {
 			results.push(await user.addXPBank(this.xpBank));
 		}
 
-		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
+		const userStatsUpdates: Prisma.UserStatsUpdateInput = this.userStats ?? {};
+
 		// KC
 		if (this.kcBank.length() > 0) {
-			const currentScores = (await user.fetchStats({ monster_scores: true })).monster_scores as ItemBank;
+			const currentScores = (await user.fetchUserStat('monster_scores')) as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}
 			userStatsUpdates.monster_scores = currentScores;
 		}
 
-		// User stats
-		if (Object.keys(this.userStats).length > 0) {
-			userStatsUpdates = mergeDeep(userStatsUpdates, this.userStats);
-		}
 		if (Object.keys(this.userStatsBankUpdates).length > 0) {
-			const currentStats = await prisma.userStats.upsert({
-				where: {
-					user_id: BigInt(user.id)
-				},
-				create: { user_id: BigInt(user.id) },
-				update: {}
-			});
+			const currentStats = await fetchUserStats(user.id);
 			for (const [key, value] of objectEntries(this.userStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
 				userStatsUpdates[key] = newValue.toJSON();
 			}
 		}
 
-		await userStatsUpdate(user.id, userStatsUpdates);
+		await user.statsUpdate(userStatsUpdates);
 
-		const userUpdates: Prisma.UserUpdateInput = this.userUpdates;
+		const userUpdates: SafeUserUpdateInput = this.userUpdates;
 
 		// Gear
 		for (const [key, v] of objectEntries(this.gearChanges)) {
-			userUpdates[`gear_${key}`] = v! as Prisma.InputJsonValue;
+			userUpdates[`gear_${key}`] = v;
 		}
 
 		if (Object.keys(userUpdates).length > 0) {
@@ -178,12 +138,12 @@ export class UpdateBank {
 				(acc, key) => ({ ...acc, [key]: true }),
 				{} as Record<string, boolean>
 			);
-			const currentStats = await mahojiClientSettingsFetch(keysToSelect);
+			const currentStats = await ClientSettings.fetch(keysToSelect);
 			for (const [key, value] of objectEntries(this.clientStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
 				clientUpdates[key] = newValue.toJSON();
 			}
-			await mahojiClientSettingsUpdate(clientUpdates);
+			await ClientSettings.update(clientUpdates);
 		}
 
 		await user.sync();

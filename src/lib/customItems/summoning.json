@@ -1,0 +1,1522 @@
+{
+	"73611": {
+		"id": 73611,
+		"name": "Spirit terrorbird pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73612": {
+		"id": 73612,
+		"name": "Granite crab pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73613": {
+		"id": 73613,
+		"name": "Praying mantis pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73614": {
+		"id": 73614,
+		"name": "Giant ent pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73615": {
+		"id": 73615,
+		"name": "Spirit cobra pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73616": {
+		"id": 73616,
+		"name": "Spirit dagannoth pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73617": {
+		"id": 73617,
+		"name": "Thorny snail pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73618": {
+		"id": 73618,
+		"name": "Beaver pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73619": {
+		"id": 73619,
+		"name": "Karam. overlord pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73620": {
+		"id": 73620,
+		"name": "Hydra pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73621": {
+		"id": 73621,
+		"name": "Spirit jelly pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73622": {
+		"id": 73622,
+		"name": "Bunyip pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73623": {
+		"id": 73623,
+		"name": "War tortoise pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73624": {
+		"id": 73624,
+		"name": "Fruit bat pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73625": {
+		"id": 73625,
+		"name": "Abyssal parasite pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73626": {
+		"id": 73626,
+		"name": "Abyssal lurker pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73627": {
+		"id": 73627,
+		"name": "Unicorn stallion pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73628": {
+		"id": 73628,
+		"name": "Magpie pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73629": {
+		"id": 73629,
+		"name": "Dreadfowl pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73630": {
+		"id": 73630,
+		"name": "Stranger plant pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73631": {
+		"id": 73631,
+		"name": "Spirit wolf pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73632": {
+		"id": 73632,
+		"name": "Desert wyrm pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73633": {
+		"id": 73633,
+		"name": "Evil turnip pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73634": {
+		"id": 73634,
+		"name": "Vampire bat pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73635": {
+		"id": 73635,
+		"name": "Spirit scorpion pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73636": {
+		"id": 73636,
+		"name": "Arctic bear pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73637": {
+		"id": 73637,
+		"name": "Spirit spider pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73638": {
+		"id": 73638,
+		"name": "Bloated leech pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73639": {
+		"id": 73639,
+		"name": "Spirit kalphite pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73640": {
+		"id": 73640,
+		"name": "Honey badger pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73641": {
+		"id": 73641,
+		"name": "Albino rat pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73642": {
+		"id": 73642,
+		"name": "Granite lobster pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73643": {
+		"id": 73643,
+		"name": "Macaw pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73644": {
+		"id": 73644,
+		"name": "Bronze minotaur pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73645": {
+		"id": 73645,
+		"name": "Iron minotaur pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73646": {
+		"id": 73646,
+		"name": "Steel minotaur pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73647": {
+		"id": 73647,
+		"name": "Mithril minotaur pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73648": {
+		"id": 73648,
+		"name": "Adamant minotaur pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73649": {
+		"id": 73649,
+		"name": "Rune minotaur pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73650": {
+		"id": 73650,
+		"name": "Smoke devil pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73651": {
+		"id": 73651,
+		"name": "Bull ant pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73652": {
+		"id": 73652,
+		"name": "Wolpertinger pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73653": {
+		"id": 73653,
+		"name": "Compost mound pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73654": {
+		"id": 73654,
+		"name": "Pack yak pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73655": {
+		"id": 73655,
+		"name": "Sp. cockatrice pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73656": {
+		"id": 73656,
+		"name": "Sp. guthatrice pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73657": {
+		"id": 73657,
+		"name": "Sp. saratrice pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73658": {
+		"id": 73658,
+		"name": "Sp. zamatrice pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73659": {
+		"id": 73659,
+		"name": "Sp. pengatrice pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73660": {
+		"id": 73660,
+		"name": "Sp. coraxatrice pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73661": {
+		"id": 73661,
+		"name": "Sp. vulatrice pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73662": {
+		"id": 73662,
+		"name": "Barker toad pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73664": {
+		"id": 73664,
+		"name": "Green charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73665": {
+		"id": 73665,
+		"name": "Crimson charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73666": {
+		"id": 73666,
+		"name": "Abyssal charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73667": {
+		"id": 73667,
+		"name": "Blue charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73668": {
+		"id": 73668,
+		"name": "Ravager charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73669": {
+		"id": 73669,
+		"name": "Shifter charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73670": {
+		"id": 73670,
+		"name": "Spinner charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73671": {
+		"id": 73671,
+		"name": "Torcher charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73672": {
+		"id": 73672,
+		"name": "Obsidian charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73673": {
+		"id": 73673,
+		"name": "Summoning cape",
+		"equipable": true,
+		"equipable_by_player": true,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 2,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "cape",
+			"requirements": null
+		},
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73674": {
+		"id": 73674,
+		"name": "Summoning hood",
+		"equipable": true,
+		"equipable_by_player": true,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 2,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": null
+		},
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73675": {
+		"id": 73675,
+		"name": "Herbcall scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73676": {
+		"id": 73676,
+		"name": "Fruitfall scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73677": {
+		"id": 73677,
+		"name": "Fish rain scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73678": {
+		"id": 73678,
+		"name": "Howl scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73679": {
+		"id": 73679,
+		"name": "Thieving fingers scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73680": {
+		"id": 73680,
+		"name": "Abyssal stealth scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73681": {
+		"id": 73681,
+		"name": "Egg spawn scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73682": {
+		"id": 73682,
+		"name": "Multichop scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73683": {
+		"id": 73683,
+		"name": "Cheese feast scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73684": {
+		"id": 73684,
+		"name": "Unburden scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73685": {
+		"id": 73685,
+		"name": "Venom shot scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73686": {
+		"id": 73686,
+		"name": "Insane ferocity scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73687": {
+		"id": 73687,
+		"name": "Healing aura scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73688": {
+		"id": 73688,
+		"name": "Winter storage scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73689": {
+		"id": 73689,
+		"name": "Oph. incubation scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73690": {
+		"id": 73690,
+		"name": "Magic focus scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73691": {
+		"id": 73691,
+		"name": "Swallow whole scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73692": {
+		"id": 73692,
+		"name": "Testudo scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73693": {
+		"id": 73693,
+		"name": "Generate compost scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73694": {
+		"id": 73694,
+		"name": "Tireless run scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73695": {
+		"id": 73695,
+		"name": "Regrowth scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73696": {
+		"id": 73696,
+		"name": "Call to arms scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73697": {
+		"id": 73697,
+		"name": "Blood drain scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73698": {
+		"id": 73698,
+		"name": "Dreadfowl strike scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73699": {
+		"id": 73699,
+		"name": "Sandstorm scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73700": {
+		"id": 73700,
+		"name": "Vampire touch scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73701": {
+		"id": 73701,
+		"name": "Evil flames scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73702": {
+		"id": 73702,
+		"name": "Crushing claw scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73703": {
+		"id": 73703,
+		"name": "Mantis strike scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73704": {
+		"id": 73704,
+		"name": "Arctic blast scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73705": {
+		"id": 73705,
+		"name": "Toad bark scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73706": {
+		"id": 73706,
+		"name": "Dissolve scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73707": {
+		"id": 73707,
+		"name": "Abyssal drain scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73708": {
+		"id": 73708,
+		"name": "Doomsphere scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73709": {
+		"id": 73709,
+		"name": "Spike shot scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73710": {
+		"id": 73710,
+		"name": "Acorn missile scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73711": {
+		"id": 73711,
+		"name": "Petrifying gaze scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73712": {
+		"id": 73712,
+		"name": "Slime spray scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73713": {
+		"id": 73713,
+		"name": "Electric lash scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73714": {
+		"id": 73714,
+		"name": "Bronze bull rush scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73715": {
+		"id": 73715,
+		"name": "Iron bull rush scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73716": {
+		"id": 73716,
+		"name": "Steel bull rush scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73717": {
+		"id": 73717,
+		"name": "Mith bull rush scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73718": {
+		"id": 73718,
+		"name": "Addy bull rush scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73719": {
+		"id": 73719,
+		"name": "Rune bull rush scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73720": {
+		"id": 73720,
+		"name": "Poisonous blast scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73721": {
+		"id": 73721,
+		"name": "Dust cloud scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73722": {
+		"id": 73722,
+		"name": "Summoning cape (t)",
+		"equipable": true,
+		"equipable_by_player": true,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 2,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "cape",
+			"requirements": null
+		},
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73723": {
+		"id": 73723,
+		"name": "Gold charm",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73724": {
+		"id": 73724,
+		"name": "Ibis pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73725": {
+		"id": 73725,
+		"name": "Stony shell scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73726": {
+		"id": 73726,
+		"name": "Swamp titan pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73727": {
+		"id": 73727,
+		"name": "Spirit mosquito pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73728": {
+		"id": 73728,
+		"name": "Void spinner pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73729": {
+		"id": 73729,
+		"name": "Forge regent pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73730": {
+		"id": 73730,
+		"name": "Spirit larupia pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73731": {
+		"id": 73731,
+		"name": "Geyser titan pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73732": {
+		"id": 73732,
+		"name": "Lava titan pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73733": {
+		"id": 73733,
+		"name": "Steel titan pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73734": {
+		"id": 73734,
+		"name": "Obsidian golem pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73735": {
+		"id": 73735,
+		"name": "Talon beast pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73736": {
+		"id": 73736,
+		"name": "Abyssal titan pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73737": {
+		"id": 73737,
+		"name": "Void torcher pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73738": {
+		"id": 73738,
+		"name": "Giant chinchompa pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73739": {
+		"id": 73739,
+		"name": "Fire titan pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73740": {
+		"id": 73740,
+		"name": "Moss titan pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73741": {
+		"id": 73741,
+		"name": "Ice titan pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73742": {
+		"id": 73742,
+		"name": "Spirit tz-kih pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73743": {
+		"id": 73743,
+		"name": "Spirit graahk pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73744": {
+		"id": 73744,
+		"name": "Spirit kyatt pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73745": {
+		"id": 73745,
+		"name": "Void shifter pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73746": {
+		"id": 73746,
+		"name": "Pyrelord pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73747": {
+		"id": 73747,
+		"name": "Void ravager pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73748": {
+		"id": 73748,
+		"name": "Ravenous locust pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73749": {
+		"id": 73749,
+		"name": "Iron titan pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73750": {
+		"id": 73750,
+		"name": "Titan's con. scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73751": {
+		"id": 73751,
+		"name": "Steel of legends scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73752": {
+		"id": 73752,
+		"name": "Volcanic str. scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73753": {
+		"id": 73753,
+		"name": "Essence shipment scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73754": {
+		"id": 73754,
+		"name": "Iron within scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73755": {
+		"id": 73755,
+		"name": "Immense heat scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73756": {
+		"id": 73756,
+		"name": "Famine scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73757": {
+		"id": 73757,
+		"name": "Deadly claw scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73758": {
+		"id": 73758,
+		"name": "Swamp plague scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73759": {
+		"id": 73759,
+		"name": "Boil scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73760": {
+		"id": 73760,
+		"name": "Explode scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73761": {
+		"id": 73761,
+		"name": "Goad scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73762": {
+		"id": 73762,
+		"name": "Ambush scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73763": {
+		"id": 73763,
+		"name": "Ebon thunder scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73764": {
+		"id": 73764,
+		"name": "Pester scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73765": {
+		"id": 73765,
+		"name": "Fireball assault scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73766": {
+		"id": 73766,
+		"name": "Rending scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73767": {
+		"id": 73767,
+		"name": "Inferno scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73768": {
+		"id": 73768,
+		"name": "Rise from the ashes scroll",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73769": {
+		"id": 73769,
+		"name": "Summoning master cape",
+		"equipable": true,
+		"equipable_by_player": true,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 1,
+			"defence_crush": 1,
+			"defence_magic": 0,
+			"defence_ranged": 2,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "cape",
+			"requirements": null
+		},
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73770": {
+		"id": 73770,
+		"name": "Spirit shards",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	},
+	"73771": {
+		"id": 73771,
+		"name": "Summoning pouch",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"customItemData": {
+			"tags": ["SUMMONING", "IN_UMB"]
+		}
+	}
+}

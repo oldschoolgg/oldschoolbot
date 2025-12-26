@@ -1,17 +1,16 @@
-import { calcPercentOfNum, roll } from 'e';
+import { calcBabyYagaHouseDroprate } from '@/lib/bso/bsoUtil.js';
+
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { calcBabyYagaHouseDroprate } from '@/lib/bso/bsoUtil';
-import { Construction } from '@/lib/skilling/skills/construction';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { Construction } from '@/lib/skilling/skills/construction/index.js';
+import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',
-	async run(data: ConstructionActivityTaskOptions) {
-		const { objectID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ConstructionActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { objectID, quantity, channelId, duration } = data;
+
 		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
@@ -20,7 +19,7 @@ export const constructionTask: MinionTask = {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Construction,
+			skillName: 'construction',
 			amount: xpReceived + bonusXP,
 			duration
 		});
@@ -28,7 +27,7 @@ export const constructionTask: MinionTask = {
 		const loot = new Bank();
 		const petDropRate = calcBabyYagaHouseDroprate(object.xp, user.cl);
 		for (let i = 0; i < quantity; i++) {
-			if (roll(petDropRate)) {
+			if (rng.roll(petDropRate)) {
 				loot.add('Baby yaga house');
 				break;
 			}
@@ -45,6 +44,6 @@ export const constructionTask: MinionTask = {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

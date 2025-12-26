@@ -1,17 +1,15 @@
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Bank, Items, SkillsEnum } from 'oldschooljs';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
-import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
-import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
-import Mining from '../../../lib/skilling/skills/mining';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
+import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
-async function miningCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	let miningLevel = user.skillLevel(SkillsEnum.Mining);
+async function miningCommand(user: MUser, channelId: string, quantity: number | undefined) {
+	let miningLevel = user.skillsAsLevels.mining;
 	if (miningLevel < 14) {
 		return 'You need at least level 14 Mining to mine in the Ruins of Camdozaal.';
 	}
@@ -55,17 +53,17 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		powermining: powermine,
 		goldSilverBoost,
 		miningLvl: miningLevel,
-		maxTripLength: calcMaxTripLength(user, 'CamdozaalMining'),
 		hasGlory: user.hasEquipped('Amulet of glory'),
+		maxTripLength: await user.calcMaxTripLength('CamdozaalMining'),
 		hasKaramjaMedium: false
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity: newQuantity,
 		iQty: quantity ? quantity : undefined,
 		duration,
@@ -87,12 +85,12 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 	return response;
 }
 
-async function smithingCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	if (user.skillLevel(SkillsEnum.Smithing) < 14) {
+async function smithingCommand(user: MUser, channelId: string, quantity: number | undefined) {
+	if (user.skillsAsLevels.smithing < 14) {
 		return 'You need at least level 14 Smithing to smith in the Ruins of Camdozaal.';
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'CamdozaalSmithing');
+	const maxTripLength = await user.calcMaxTripLength('CamdozaalSmithing');
 	const timePerSmith = 3.5 * Time.Second;
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerSmith);
@@ -118,9 +116,9 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 
 	await user.removeItemsFromBank(new Bank().add('Barronite deposit', quantity));
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'CamdozaalSmithing'
@@ -131,13 +129,13 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 	)} to finish.`;
 }
 
-async function fishingCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	if (user.skillLevel(SkillsEnum.Fishing) < 7) {
+async function fishingCommand(user: MUser, channelId: string, quantity: number | undefined) {
+	if (user.skillsAsLevels.fishing < 7) {
 		return 'You need at least level 7 Fishing to fish in the Ruins of Camdozaal.';
 	}
 	const inputQuantity = quantity;
 
-	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
+	const maxTripLength = await user.calcMaxTripLength('CamdozaalFishing');
 	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
 	const timePerFish = camdozaalfish.timePerFish * Time.Second;
 
@@ -154,9 +152,9 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		iQty: inputQuantity,
 		duration,
@@ -167,16 +165,16 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 		duration
 	)} to finish.`;
 }
-export async function camdozaalCommand(user: MUser, channelID: string, choice: string, quantity: number | undefined) {
+export async function camdozaalCommand(user: MUser, channelId: string, choice: string, quantity: number | undefined) {
 	const qp = user.QP;
 	if (qp <= 16) {
 		return "You haven't completed enough quests to enter the Ruins of Camdozaal, return when you have at least 17 quest points.";
 	}
 	if (choice === 'mining') {
-		return miningCommand(user, channelID, quantity);
+		return miningCommand(user, channelId, quantity);
 	}
 	if (choice === 'smithing') {
-		return smithingCommand(user, channelID, quantity);
+		return smithingCommand(user, channelId, quantity);
 	}
-	return fishingCommand(user, channelID, quantity);
+	return fishingCommand(user, channelId, quantity);
 }

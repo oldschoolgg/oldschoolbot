@@ -1,0 +1,273 @@
+import { type Item, Items, LootTable } from 'oldschooljs';
+
+interface Crate {
+	item: Item;
+	key: Item;
+	keyCostGP: number;
+	table: LootTable;
+}
+
+export const keyCrates: Crate[] = [
+	{
+		item: Items.getOrThrow('Supply crate (s1)'),
+		key: Items.getOrThrow('Supply crate key (s1)'),
+		keyCostGP: 50_000_000,
+		table: new LootTable()
+			.add(new LootTable().add('OSB Jumper').add('BSO Jumper').add("Skipper's tie").add("Remy's chef hat"), 1, 2)
+			.add('Paint box', 1, 7)
+			.add('Archon headdress', 1, 5)
+			.add('Archon tassets', 1, 5)
+			.add('Archon crest', 1, 5)
+			.add('Archon gloves', 1, 5)
+			.add('Archon boots', 1, 5)
+			.add('Coins', 100_000, 10)
+			.add('Magic logs', [200, 300], 10)
+			.add('Draconic visage', 1, 10)
+			.add('Chocolate bar', 1, 10)
+			.add('Baguette', 1, 10)
+			.add('Kebab', 1, 10)
+			.add('Spinach roll', 1, 6)
+	},
+	{
+		item: Items.getOrThrow('Birthday crate (s2)'),
+		key: Items.getOrThrow('Birthday crate key (s2)'),
+		keyCostGP: 50_000_000,
+		table: new LootTable()
+			.oneIn(250, 'Golden cape shard')
+			.add(
+				new LootTable()
+					.add('Cake partyhat')
+					.add('Rubber flappy')
+					.add('Shelldon shield')
+					.add("Koschei's toothpick"),
+				1,
+				2
+			)
+			.add('Paint box', 1, 5)
+			.add('Imperial helmet', 1, 5)
+			.add('Imperial cuirass', 1, 5)
+			.add('Imperial legs', 1, 5)
+			.add('Imperial gloves', 1, 5)
+			.add('Imperial sabatons', 1, 5)
+			.add('Chocolate bomb', 1, 10)
+			.add('Cake', 1, 11)
+			.add('Chocolate cake', 1, 11)
+			.add('Chocolate bar', 1, 10)
+			.add('Peach', 1, 10)
+			.add('Beer', 1, 10)
+			.add('Birthday balloons', 1, 6)
+	},
+	{
+		item: Items.getOrThrow('Spooky crate (s3)'),
+		key: Items.getOrThrow('Spooky crate key (s3)'),
+		keyCostGP: 20_000_000,
+		table: new LootTable()
+			.add(
+				new LootTable()
+					.add('Cob cap')
+					.add('Pumpkin peepers')
+					.add('Spooky sombrero')
+					.add('Demonic halloween mask')
+					.add('Spooky spider parasol'),
+				1,
+				3
+			)
+			.add('Spooky dye', 1, 2)
+			.add(
+				new LootTable()
+					.add('Count Draynor torso')
+					.add('Count Draynor bottoms')
+					.add('Count Draynor cape')
+					.add('Count Draynor hands')
+					.add('Count Draynor shoes')
+					.add('Count Draynor fangs'),
+				1,
+				5
+			)
+			.add('Bones', 1, 9)
+			.add('Paint box', 1, 1)
+			.add('Vial of blood', 1, 5)
+			.add('Blood rune', [100, 200], 5)
+			.add('Spooky spider parasol', 1, 4)
+			.add('Voodoo doll', 1, 5)
+			.add('Ghostweave', [100, 200], 29)
+			.add('Pumpkin', [5, 15], 16)
+			.add('Purple sweets', [1, 3], 16)
+	},
+	{
+		item: Items.getOrThrow('Festive crate (s4)'),
+		key: Items.getOrThrow('Festive crate key (s4)'),
+		keyCostGP: 20_000_000,
+		table: new LootTable()
+			.add(
+				new LootTable()
+					.add('Christmas cape (classic)', 1, 1)
+					.add('Christmas cape (rainbow)', 1, 2)
+					.add('Christmas cape (snowy tree)', 1, 2)
+					.add('Christmas cape (wintertodt blue)', 1, 2)
+					.add('Festive partyhat')
+			)
+			.add('Christmas cape (rainbow)')
+			.add('Christmas jumper (green)')
+			.add('Christmas jumper (jolly red)')
+			.add('Christmas jumper (frosty)')
+			.add('Mistle-bow-tie')
+			.add(new LootTable().add('Frosty parasol').add('Frosty wings').add('Frosty cape').add('Frosty staff'))
+			.add(
+				new LootTable()
+					.add('Carrot')
+					.add('Pavlova')
+					.add('Prawns')
+					.add('Pretzel')
+					.add('Roast potatoes')
+					.add('Gr-egg-oyle special')
+					.add('Christmas pudding')
+					.add('Yule log')
+					.add("Dougs' chocolate mud")
+					.add('Corn on the cob')
+					.add('Roasted ham')
+					.add('Pumpkinhead pie'),
+				1,
+				89
+			)
+	},
+	{
+		item: Items.getOrThrow('Easter crate (s5)'),
+		key: Items.getOrThrow('Easter crate key (s5)'),
+		keyCostGP: 10_000_000,
+		table: new LootTable()
+			.tertiary(5000, 'Golden bunny ears')
+			.tertiary(750, new LootTable().add('Cute bunny cape').add('Bunny plushie'))
+			.add(
+				new LootTable()
+					.add('Easter jumper')
+					.add('Easter-egg delight')
+					.add('Easter-egg salad')
+					.add('Easter tunic')
+					.add('Easter breeches')
+					.add('Easter shoes'),
+				1,
+				1
+			)
+			.add(new LootTable().add('Carrot').add('Egg').add('Easter egg'), [2, 3], 99)
+	},
+	{
+		item: Items.getOrThrow('Birthday crate (s6)'),
+		key: Items.getOrThrow('Birthday crate key (s6)'),
+		keyCostGP: 12_000_000,
+		table: new LootTable()
+			.tertiary(5000, 'Ethereal partyhat')
+			.add(
+				new LootTable()
+					.add('Swan hat')
+					.add('Swan scarf')
+					.add('BSO banner')
+					.add('Gambling skillcape')
+					.add('Monkey cape')
+					.add('BSO flowers')
+					.add('Dice plushie')
+					.add('Offhand dice plushie'),
+				1,
+				1
+			)
+			.add('Hoppy plushie')
+			.add('Plopper nose')
+			.add('Rose tinted glasses')
+			.add('Blabberbeak jumper', 1, 1)
+			.add('Paint box', 1, 2)
+			.add(
+				new LootTable()
+					.add('Ceremonial hat')
+					.add('Ceremonial cape')
+					.add('Ceremonial boots')
+					.add('Ceremonial legs')
+					.add('Ceremonial top'),
+				1,
+				5
+			)
+			.add(
+				new LootTable()
+					.add('Raw plopper bacon')
+					.add('Beer')
+					.add('Birthday balloons')
+					.add('Blueberry birthday cake')
+					.add('Cake'),
+				1,
+				88
+			)
+	},
+	{
+		item: Items.getOrThrow('Sinister crate (s7)'),
+		key: Items.getOrThrow('Sinister crate key (s7)'),
+		keyCostGP: 20_666_666,
+		table: new LootTable()
+			.tertiary(2500, 'White hween mask')
+			.tertiary(110, 'Paint box')
+			.add(
+				new LootTable()
+					.add('Mortimer cape', 1, 2)
+					.add('Puzzle box (kuro)', 1, 2)
+					.add('Pumpkinhead boxhat', 1, 2)
+					.add('Deathless victims', 1, 2)
+					.add('Pumpkin sweater', 1, 2)
+					.add('Spooky dye', 1, 2)
+					.add('Pumpkin cloak')
+					.add('Venomous cloak')
+					.add('Bloody cloak')
+					.add('Purple cloak', 1, 3)
+					.add('Dark cloak')
+					.add('White cloak')
+					.add('Sinister sweater'),
+				1,
+				1
+			)
+			.add(
+				new LootTable()
+					.add('Bones')
+					.add('Vial of blood')
+					.add('Blood rune', [100, 200])
+					.add('Ghostweave', [100, 200])
+					.add('Pumpkin', [1, 4])
+					.add('Purple sweets', [1, 3]),
+				1,
+				100
+			)
+	},
+	{
+		item: Items.getOrThrow('Frozen crate (s8)'),
+		key: Items.getOrThrow('Frozen crate key (s8)'),
+		keyCostGP: 20_666_666,
+		table: new LootTable()
+			.tertiary(3111, 'BSO Santa hat')
+			.tertiary(110, 'Paint box')
+			.tertiary(150, 'Christmas dye')
+			.add(
+				new LootTable()
+					.add('Atlantis jumper')
+					.add('OSB earmuffs')
+					.add('BSO earmuffs')
+					.add('Skippers')
+					.add('BSO socks')
+					.add('White beanie')
+					.add('OSB beanie')
+					.add('BSO beanie')
+					.add('Green beanie')
+					.add('Orange beanie')
+					.add('Jolly beanie')
+					.add('Aquatic beanie')
+					.add('Dark beanie')
+					.add('Frosticle top'),
+				1,
+				1
+			)
+			.add(
+				new LootTable()
+					.add('Cinnamon doughnut-ball')
+					.add('Christmas choc-stocking')
+					.add('Cake')
+					.add('Purple sweets', [1, 3]),
+				1,
+				100
+			)
+	}
+];

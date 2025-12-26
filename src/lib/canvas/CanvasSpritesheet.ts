@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
-import { type Canvas, type Image, loadImage } from 'skia-canvas';
-import { type CanvasContext, createCanvas } from './canvasUtil';
+
+import { type Canvas, type CanvasContext, type CanvasImage, createCanvas, loadImage } from '@/lib/canvas/canvasUtil.js';
 
 export interface SpriteData {
 	x: number;
@@ -22,11 +22,13 @@ export interface DrawSpriteOptions {
 
 export class CanvasSpritesheet {
 	private readonly spriteData: Map<string, [number, number, number, number]>;
-	private readonly image: Image;
+	private readonly image: CanvasImage;
+	public readonly allItemIds: number[];
 
-	private constructor(spriteData: Map<string, [number, number, number, number]>, image: Image) {
+	private constructor(spriteData: Map<string, [number, number, number, number]>, image: CanvasImage) {
 		this.spriteData = spriteData;
 		this.image = image;
+		this.allItemIds = Array.from(this.spriteData.keys()).map(id => Number(id));
 	}
 
 	static async create(jsonPath: string, imagePath: string): Promise<CanvasSpritesheet> {
@@ -55,7 +57,7 @@ export class CanvasSpritesheet {
 		return { x, y, width, height };
 	}
 
-	getImage(): Image {
+	getImage(): CanvasImage {
 		return this.image;
 	}
 

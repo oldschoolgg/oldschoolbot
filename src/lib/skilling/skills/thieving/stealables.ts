@@ -1,8 +1,9 @@
-import { Time } from 'e';
+import { bsoStealables } from '@/lib/bso/skills/thieving/bsoStealables.js';
+
+import { Time } from '@oldschoolgg/toolkit';
 import { LootTable, Monsters } from 'oldschooljs';
 
-import { KING_GOLDEMAR_GUARD_ID } from '../../../bso/bsoConstants';
-import { QuestID } from '../../../minions/data/quests';
+import { QuestID } from '@/lib/minions/data/quests.js';
 
 const {
 	BeardedBandit,
@@ -19,7 +20,6 @@ const {
 	MasterFarmer,
 	MenaphiteThug,
 	Paladin,
-	PollnivnianBandit,
 	PrifddinasElf,
 	Rogue,
 	TzHaarHur,
@@ -578,21 +578,6 @@ const pickpocketables: Stealable[] = [
 		petChance: 257_211
 	},
 	{
-		name: 'Pollnivnian Bandit',
-		type: 'pickpockable',
-		level: 55,
-		xp: 84.3,
-		table: PollnivnianBandit.pickpocketTable!,
-		id: PollnivnianBandit.id,
-		stunTime: 5,
-		stunDamage: 5,
-		// No current data on slope/intercept
-		slope: 0.772_09,
-		intercept: 17.703_09,
-		customTickRate: 2.5,
-		petChance: 257_211
-	},
-	{
 		name: 'Yanille Watchman',
 		type: 'pickpockable',
 		level: 65,
@@ -645,24 +630,6 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 1,
 		slope: 0.520_83,
 		intercept: 17.187_5,
-		petChance: 108_718
-	},
-	{
-		name: 'Black knight guard',
-		type: 'pickpockable',
-		level: 75,
-		xp: 198.5,
-		table: new LootTable()
-			.add('Coins', [20, 30])
-			.add('Coins', [200, 300])
-			.add('Bread')
-			.add('Mithril arrow', [1, 16])
-			.tertiary(215, 'Dark Temple key'),
-		id: Monsters.BlackKnight.id,
-		stunTime: 5,
-		stunDamage: 1,
-		slope: 0.475_65,
-		intercept: 0.180_65,
 		petChance: 108_718
 	},
 	{
@@ -720,20 +687,7 @@ const pickpocketables: Stealable[] = [
 		fireCapeRequired: true,
 		petChance: 176_743
 	},
-	{
-		name: 'Royal dwarven guard',
-		type: 'pickpockable',
-		level: 99,
-		xp: 95.4,
-		aliases: ['royal dwarven guard'],
-		table: new LootTable().every('Coins', [985, 1485]).tertiary(100_000, 'Kebab'),
-		id: KING_GOLDEMAR_GUARD_ID,
-		stunTime: 5,
-		stunDamage: 9,
-		slope: 0.488_13,
-		intercept: 2.065_13,
-		petChance: 176_743
-	}
+	...bsoStealables
 ];
 
 export const stealables: Stealable[] = [...stalls, ...pickpocketables];

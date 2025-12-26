@@ -1,9 +1,9 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { LootTable, itemID } from 'oldschooljs';
+import { bsoLogs } from '@/lib/bso/skills/woodcutting/logs.js';
 
-import { BitField } from '../../../constants';
-import type { Log } from '../../types';
-import { SkillsEnum } from '../../types';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { itemID, LootTable } from 'oldschooljs';
+
+import { defineSkill, type Log } from '@/lib/skilling/types.js';
 
 const sulliuscepTable = new LootTable()
 	.add('Numulite', [4, 8], 34)
@@ -176,7 +176,6 @@ const logs: Log[] = [
 		aliases: ['sul', 'sulli', 'mush', 'mushroom'],
 		findNewTreeTime: 38,
 		bankingTime: 100,
-		// TODO: Get real slope and intercept from wiki
 		slope: 0.13,
 		intercept: 9.47,
 		depletionChance: 100 * (1 / 16),
@@ -202,25 +201,6 @@ const logs: Log[] = [
 		clueScrollChance: 72_321
 	},
 	{
-		level: 80,
-		xp: 550,
-		id: 323_424,
-		name: 'Ivy',
-		findNewTreeTime: 7,
-		bankingTime: 16,
-		slope: 0.03,
-		intercept: -0.49,
-		depletionChance: 100 * (1 / 8),
-		wcGuild: false,
-		qpRequired: 0,
-		customReq: user => {
-			if (!user.bitfield.includes(BitField.HasPlantedIvy)) {
-				return 'You have no Ivy planted in your PoH.';
-			}
-		},
-		hasNoLoot: true
-	},
-	{
 		level: 90,
 		xp: 380,
 		id: itemID('Redwood logs'),
@@ -236,21 +216,7 @@ const logs: Log[] = [
 		clueScrollChance: 72_321,
 		clueNestsOnly: true
 	},
-	{
-		level: 105,
-		xp: 600,
-		id: 50_017,
-		name: 'Elder Logs',
-		findNewTreeTime: 8.5,
-		bankingTime: 25,
-		slope: 0.057_05,
-		intercept: -0.71,
-		depletionChance: 100 * (1 / 11),
-		petChance: 42_321,
-		qpRequired: 0,
-		clueScrollChance: 42_321,
-		clueNestsOnly: true
-	}
+	...bsoLogs
 ];
 
 const twitchersGloves = ['egg', 'ring', 'seed', 'clue'] as const;
@@ -263,14 +229,14 @@ const lumberjackItems: { [key: number]: number } = {
 	[itemID('Lumberjack boots')]: 0.2
 };
 
-const Woodcutting = {
+const Woodcutting = defineSkill({
 	aliases: ['wc', 'woodcutting'],
 	Logs: logs,
-	id: SkillsEnum.Woodcutting,
+	id: 'woodcutting',
 	emoji: Emoji.Woodcutting,
 	name: 'Woodcutting',
 	lumberjackItems,
 	twitchersGloves
-};
+});
 
 export default Woodcutting;

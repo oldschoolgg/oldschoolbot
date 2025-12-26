@@ -4,9 +4,10 @@ import { EItem } from 'oldschooljs';
 import { EGear } from 'oldschooljs/EGear';
 import { describe, test } from 'vitest';
 
-import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage';
-import Farming from '@/lib/skilling/skills/farming';
-import { Gear, constructGearSetup } from '@/lib/structures/Gear';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 const COXMaxMeleeGear = constructGearSetup({
@@ -22,6 +23,7 @@ const COXMaxMeleeGear = constructGearSetup({
 });
 
 describe('Gear Images', async () => {
+	await bankImageTask.ready;
 	const gear = COXMaxMeleeGear.clone();
 	gear.equip(EGear.DRAGON_ARROW, 100);
 
@@ -125,7 +127,8 @@ describe('Gear Images', async () => {
 				plant: Farming.Plants.find(p => p.name === 'Yew tree'),
 				matchingPlantedCrop: {
 					ready: true
-				} as any
+				} as any,
+				farmingInfo: {} as any
 			}
 		});
 		await writeFile(path.join(baseSnapshotPath, 'gear-farming-contract.png'), gearImage);

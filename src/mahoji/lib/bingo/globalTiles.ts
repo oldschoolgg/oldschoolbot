@@ -1,10 +1,9 @@
-import { uniqueArr } from 'e';
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { skillingPetsCL } from '../../../lib/data/CollectionsExport';
-import { TanglerootTable } from '../../../lib/minions/data/killableMonsters/custom/Treebeard';
-import { assert } from '../../../lib/util/logError';
-import type { GlobalBingoTile } from './bingoUtil';
+import { skillingPetsCL } from '@/lib/data/CollectionsExport.js';
+import { assert } from '@/lib/util/logError.js';
+import type { GlobalBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 
 const otherSpiritShieldParts = resolveItems(['Blessed spirit shield', 'Holy elixir', 'Spirit shield']);
 const allSpiritShieldSets = [
@@ -543,7 +542,7 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 	{
 		id: 54,
 		name: 'Receive all Tangleroot variants from Treebeard',
-		oneOf: TanglerootTable.allItems
+		allOf: [20_661, 24_555, 24_557, 24_559, 24_561, 24_563]
 	},
 	{
 		id: 55,

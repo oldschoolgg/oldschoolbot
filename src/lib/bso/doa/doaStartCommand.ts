@@ -1,36 +1,32 @@
-import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { Time, clamp } from 'e';
-import { Bank, Items } from 'oldschooljs';
-
-import { bankToStrShortNames } from '@/lib/util/smallUtils';
-import { mahojiParseNumber, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
-import { degradeItem } from '../../degradeableItems';
+import type { DOAOptions } from '@/lib/bso/bsoTypes.js';
 import {
 	calcDOAInput,
 	calculateUserGearPercents,
 	checkDOATeam,
 	checkDOAUser,
 	createDOATeam
-} from '../../depthsOfAtlantis';
-import { trackLoot } from '../../lootTrack';
-import { setupParty } from '../../party';
-import type { MakePartyOptions } from '../../types';
-import type { DOAOptions } from '../../types/minions';
-import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import { updateBankSetting } from '../../util/updateBankSetting';
+} from '@/lib/bso/depthsOfAtlantis.js';
+
+import { Emoji, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
+
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import { bankToStrShortNames } from '@/lib/util/smallUtils.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function doaStartCommand(
+	interaction: MInteraction,
 	user: MUser,
 	challengeMode: boolean,
 	solo: boolean,
-	channelID: string,
+	channelId: string,
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
 
@@ -44,13 +40,14 @@ export async function doaStartCommand(
 		return initialCheck;
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
 	const maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 1,
 		maxSize,
@@ -71,19 +68,11 @@ export async function doaStartCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return 'No channel found.';
+	const users = solo ? [user] : (await globalClient.makeParty(partyOptions)).slice(0, maxSize);
 
-	let usersWhoConfirmed = [];
-	try {
-		usersWhoConfirmed = solo ? [user] : await setupParty(channel, user, partyOptions);
-	} catch (err: any) {
-		return {
-			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			ephemeral: true
-		};
+	if (await ActivityManager.anyMinionIsBusy(users.map(u => u.id))) {
+		return 'One of the users in your mass has a busy minion.';
 	}
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const teamCheck = await checkDOATeam(users, challengeMode, 1);
 	if (typeof teamCheck === 'string') {
@@ -100,9 +89,9 @@ export async function doaStartCommand(
 		quantity: 1,
 		challengeMode
 	}).fakeDuration;
-	const maxTripLength = Math.max(...users.map(i => calcMaxTripLength(i, 'DepthsOfAtlantis')));
-	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), 1, 5);
-	const quantity = clamp(quantityInput ?? maxQuantity, 1, maxQuantity);
+	const maxTripLength = Math.max(...(await Promise.all(users.map(i => i.calcMaxTripLength('DepthsOfAtlantis')))));
+	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
+	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
 	const createdDOATeam = createDOATeam({
 		team: teamCheck,
@@ -145,7 +134,7 @@ export async function doaStartCommand(
 			} else {
 				throw new Error('No staff equipped');
 			}
-			await userStatsBankUpdate(u.id, 'doa_cost', realCost);
+			await u.statsBankUpdate('doa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 
@@ -163,7 +152,7 @@ export async function doaStartCommand(
 		})
 	);
 
-	await updateBankSetting('doa_cost', totalCost);
+	await ClientSettings.updateBankSetting('doa_cost', totalCost);
 	await trackLoot({
 		totalCost,
 		id: 'depths_of_atlantis',
@@ -175,9 +164,9 @@ export async function doaStartCommand(
 			duration: createdDOATeam.realDuration
 		}))
 	});
-	await addSubTaskToActivityTask<DOAOptions>({
+	await ActivityManager.startTrip<DOAOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration: createdDOATeam.realDuration,
 		type: 'DepthsOfAtlantis',
 		leader: user.id,
