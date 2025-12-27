@@ -45,23 +45,31 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 		item.name.toLowerCase() === 'null' ||
 		item.wiki_name?.includes(' (Worn)') ||
 		(item.wiki_name && CLUE_STEP_REGEX.exec(item.wiki_name)) ||
-		item.name.trim().length === 0
+		item.name.trim().length === 0 ||
+		item.name.endsWith('special attack')
 	) {
 		return ItemVisibility.NeverAdd;
 	}
 
-	if ([4553, 4554, 4555, 4556, 4500, 4597, 4598].includes(item.id)) {
+	if ([4553, 4554, 4555, 4556, 4500, 4597, 4598,
+		4211, // roving_elf_crystal
+	].includes(item.id)) {
+		return ItemVisibility.NeverAdd;
+	}
+	if (['Dummy'].includes(item.name)) {
 		return ItemVisibility.NeverAdd;
 	}
 
-	if ([4519].includes(item.id)) {
+	if ([4519, 678].includes(item.id)) {
 		return ItemVisibility.Unobtainable;
 	}
 
 	if (item.id > 3273 && item.id < 3324) {
 		return ItemVisibility.NeverAdd;
 	}
-
+	if (item.id > 11142 && item.id < 11150) {
+		return ItemVisibility.NeverAdd;
+	}
 
 	/**
 	 *
@@ -83,8 +91,70 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 		if (cfnm.includes('_dummy') || cfnm.includes('dummy_') || cfnm.includes('cert_dummy')) {
 			return ItemVisibility.Unobtainable;
 		}
+
+		if (['hw20_poh_pumpkin_build', 'xm21_snow', 'lotg_grubfoot_follower_obj',
+			'deadman_apocalypse_bow',
+			'deadman_apocalypse_staff',
+			'league_bank_heist_teleport',
+			'deadman_apocalypse_sword',
+			'echo_godsword',
+			'weapon_of_sol',
+			'league_clue_compass_teleport',
+			'league_relic_pocket_kingdom_item',
+			'leprechauns_vault',
+			'thousand_bone_door',
+			'crystal_blessing',
+			'sunlight_cuffs',
+			'drygore_blowpipe_loaded',
+			'ring_of_kings',
+			'tangled_lizard_charged',
+			'amulet_of_kings',
+			'thunder_khopesh',
+			'tangled_lizard_uncharged',
+			'damned_gloves',
+			'drygore_blowpipe',
+			'mokhaiotl_puzzle_lore_tablet'
+		].includes(cfnm)) {
+			return ItemVisibility.Unobtainable;
+		}
+
+		if (['tiara_soul', 'speedrun_points',
+			'league_5_league_points',
+			'league_5_league_points_negative',
+			'trailblazer_reloaded_league_points',
+			'trailblazer_reloaded_league_points_negative',
+			'bought_trailblazer_reloaded_league_points_negative',
+			'deadman_points',
+			'bas_diving_helmet_unfinished',
+			'bas_diving_backpack_unfinished',
+			'devils_element',
+			'easter24_reward_book_easter_open',
+			'sunlight_antler',
+			'moonlight_antler',
+			'hg_lootsack_droptracking'
+		].includes(cfnm)) {
+			return ItemVisibility.NeverAdd;
+		}
+
+		if (cfnm.includes('_league_points')) {
+			return ItemVisibility.NeverAdd;
+		}
+
+		if ([
+			'gauntlet_',
+			'magic_rock_of_',
+			'gathering_event_',
+			'forestry_poh_',
+			'league_4_',
+			'tgod_tablet',
+			'vmq4_moki_tablet',
+			'hw24_poh_'
+		].some(suffix => cfnm?.startsWith(suffix))) {
+			return ItemVisibility.Unobtainable;
+		}
 		if ([
 			'_bh',
+			'echoing_orb',
 		].some(suffix => cfnm?.endsWith(suffix))) {
 			return ItemVisibility.Unobtainable;
 		}
@@ -145,7 +215,12 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 			'pickpocket_guide',
 			'regicide_barrel_',
 			'boardgames_',
-			'fenk_'
+			'fenk_',
+			'100_osman_',
+			'brain_inv_crate_',
+			'hk_',
+			'slice_artifac',
+			'pattern_',
 		].some(suffix => cfnm?.includes(suffix))) {
 			return ItemVisibility.Unobtainable;
 		}
@@ -162,11 +237,20 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 		if (cfnm.startsWith('arceuus_corpse') && cfnm.endsWith('initial')) {
 			return ItemVisibility.NeverAdd;
 		}
+		if (cfnm.startsWith('league_5') && cfnm.endsWith('_scroll')) {
+			return ItemVisibility.Unobtainable;
+		}
 
 		if (cfnm.startsWith('pog_') && cfnm.endsWith('lamp')) {
 			return ItemVisibility.NeverAdd;
 		}
 		if (cfnm.startsWith('brew_') && cfnm.endsWith('_monkey')) {
+			return ItemVisibility.Unobtainable;
+		}
+		if (cfnm.startsWith('slayer_') && cfnm.endsWith('_object')) {
+			return ItemVisibility.Unobtainable;
+		}
+		if (['magictraining_bones', 'magictraining_peachspell', 'magictraining_encha', 'magictraining_dragonstone'].some(_s => cfnm.startsWith(_s))) {
 			return ItemVisibility.Unobtainable;
 		}
 
@@ -177,7 +261,6 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 				'cluequest_',
 				'rocko_',
 				'placeholder_',
-				'varlamore_nasty',
 				'lost_schematic_',
 				'beta_',
 				'br_',
@@ -188,7 +271,6 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 				'pvpchamp_',
 				'bas_puzzle_',
 				'clanwars_',
-				'varlamore_fi',
 				'con_contract_',
 				'nzone',
 				'pvpa_',
@@ -202,12 +284,15 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 				'bought_speedrun',
 				'bh_xp_',
 				'deadman_quest_',
-				'trailblazer_reloaded_league_points',
-				'bought_trailblazer_reloaded_league_points_negative',
 				'any_nails',
 				'viking_jug',
 				'viking_buck',
-				'viking_airti'
+				'viking_airti',
+
+				'varlamore_nasty',
+				'varlamore_fi',
+				'varlamore_nice',
+				'aluft_'
 			].some(suffix => cfnm?.startsWith(suffix))
 		) {
 			return ItemVisibility.NeverAdd;

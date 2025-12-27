@@ -155,9 +155,31 @@ export type FullItem = {
 	id: number;
 	name: string;
 
+	examine?: string;
+	worn_options?: string[];
+	aka?: string;
+	removal?: string;
+	removal_update?: string;
 	value?: number;
 	buy_limit?: number;
-	equipment?: ItemEquipment;
+	equipment?: {
+		attack_stab: number;
+		attack_slash: number;
+		attack_crush: number;
+		attack_magic: number;
+		attack_range: number;
+		defence_stab: number;
+		defence_slash: number;
+		defence_crush: number;
+		defence_magic: number;
+		defence_range: number;
+		melee_strength: number;
+		range_strength: number;
+		magic_damage: number;
+		prayer: number;
+		slot: EquipmentSlot;
+		requirements: Partial<ItemRequirements> | null;
+	};
 	weapon?: ItemWeapon;
 	price?: number;
 
@@ -168,5 +190,4 @@ export type FullItem = {
 	stackable: boolean;
 	noteable: boolean;
 	equipable: boolean;
-	visibility: ItemVisibility;
 };
