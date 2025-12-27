@@ -2,6 +2,7 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, EGear } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const Armours = [
 	{
@@ -66,7 +67,7 @@ async function tokensCommand(user: MUser, channelId: string, quantity: number | 
 
 	const response = `${user.minionName} is now killing ${quantity}x animated ${
 		armorSet.name
-	} armour, it'll take around ${formatDuration(duration)} to finish.`;
+	} armour, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 
 	return response;
 }
@@ -122,7 +123,8 @@ async function cyclopsCommand(user: MUser, channelId: string, quantity: number |
 		type: 'Cyclops'
 	});
 
-	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(
+	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${await formatTripDuration(
+		user,
 		duration
 	)} to finish. ${
 		hasAttackCape

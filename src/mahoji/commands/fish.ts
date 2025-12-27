@@ -1,8 +1,9 @@
-import { formatDuration, stringSearch } from '@oldschoolgg/toolkit';
+import { stringSearch } from '@oldschoolgg/toolkit';
 import { EMonster, ItemGroups } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const fishCommand = defineCommand({
 	name: 'fish',
@@ -104,7 +105,8 @@ export const fishCommand = defineCommand({
 			flakesQuantity: res.flakesBeingUsed
 		});
 
-		let response = `${user.minionName} is now fishing ${res.quantity}x ${fish.name}, it'll take around ${formatDuration(
+		let response = `${user.minionName} is now fishing ${res.quantity}x ${fish.name}, it'll take around ${await formatTripDuration(
+			user,
 			res.duration
 		)} to finish.`;
 

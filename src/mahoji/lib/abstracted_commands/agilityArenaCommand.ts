@@ -1,8 +1,9 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const plainGraceful = new Bank({
 	'Graceful hood': 1,
@@ -93,7 +94,7 @@ export async function agilityArenaCommand(
 		minigameID: 'agility_arena'
 	});
 
-	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
+	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${await formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

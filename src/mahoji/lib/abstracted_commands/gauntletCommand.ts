@@ -3,6 +3,7 @@ import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, toTitleCase 
 
 import { BitField } from '@/lib/constants.js';
 import type { GauntletOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const baseRequirements = {
@@ -142,7 +143,7 @@ export async function gauntletCommand(user: MUser, channelId: string, type: 'cor
 
 	const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : '';
 
-	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatDuration(duration)}.
+	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${await formatTripDuration(user, duration)}.
 ${boostsStr}
 `;
 }

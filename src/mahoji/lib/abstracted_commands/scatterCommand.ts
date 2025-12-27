@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { ScatteringActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function scatterCommand(user: MUser, channelId: string, ashName: string, quantity?: number) {
 	const speedMod = 1;
@@ -56,5 +57,5 @@ export async function scatterCommand(user: MUser, channelId: string, ashName: st
 		type: 'Scattering'
 	});
 
-	return `${user.minionName} is now scattering ${cost}, it'll take around ${formatDuration(duration)} to finish.`;
+	return `${user.minionName} is now scattering ${cost}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 }

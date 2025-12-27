@@ -3,6 +3,7 @@ import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function driftNetCommand(
 	channelId: string,
@@ -84,7 +85,7 @@ export async function driftNetCommand(
 
 	await user.removeItemsFromBank(itemsToRemove);
 
-	let str = `${user.minionName} is now doing Drift net fishing, it will take around ${formatDuration(duration)}.`;
+	let str = `${user.minionName} is now doing Drift net fishing, it will take around ${await formatTripDuration(user, duration)}.`;
 
 	if (itemsToRemove.length > 0) {
 		str += ` Removed ${itemsToRemove} from your bank.`;
