@@ -1,6 +1,7 @@
-import { pfetch } from "@oldschoolgg/toolkit/node";
-import { saveDataFile } from "./util.js";
-import { objectToSnakeCase } from "@oldschoolgg/util";
+import { pfetch } from '@oldschoolgg/toolkit/node';
+import { objectToSnakeCase } from '@oldschoolgg/util';
+
+import { saveDataFile } from './util.js';
 
 type ItemPrice = {
 	high: number;
@@ -27,4 +28,3 @@ async function fetchPrices() {
 }
 
 fetchPrices();
-

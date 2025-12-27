@@ -1,17 +1,22 @@
+import type { MoidSourceItem } from '@oldschoolgg/schemas';
 import { pfetch } from '@oldschoolgg/toolkit/node';
 import { objectToSnakeCase } from '@oldschoolgg/util';
-import { MoidSourceItem } from '@oldschoolgg/schemas';
+
 import { saveDataFile } from './util.js';
 
 async function fetchMoidData() {
-	const moidSource = (await pfetch('https://chisel.weirdgloop.org/moid/data_files/itemsmin.js', {
-		cacheForSeconds: 60 * 60 * 24, // 24 hours
-	})
-		.then(res => res.text())
-		.then(txt => JSON.parse(txt.replace('items=', '')))
+	const moidSource = (
+		await pfetch('https://chisel.weirdgloop.org/moid/data_files/itemsmin.js', {
+			cacheForSeconds: 60 * 60 * 24 // 24 hours
+		})
+			.then(res => res.text())
+			.then(txt => JSON.parse(txt.replace('items=', '')))
 	)
-		.filter((item: MoidSourceItem) => item.id !== 0 && item.name.toLowerCase() !== 'null' && item.name.trim().length > 0)
-		.sort((a: MoidSourceItem, b: MoidSourceItem) => a.id - b.id).map((_item: MoidSourceItem) => {
+		.filter(
+			(item: MoidSourceItem) => item.id !== 0 && item.name.toLowerCase() !== 'null' && item.name.trim().length > 0
+		)
+		.sort((a: MoidSourceItem, b: MoidSourceItem) => a.id - b.id)
+		.map((_item: MoidSourceItem) => {
 			const item: any = objectToSnakeCase(_item);
 			if (![0, 1].includes(item.stackable)) {
 				throw new Error(`Unexpected stackable value for item ID ${item.id}: ${item.stackable}`);
@@ -30,8 +35,8 @@ async function fetchMoidData() {
 			}
 
 			return objectToSnakeCase({
-				...(item),
-			})
+				...item
+			});
 		});
 
 	const obj: any = {};

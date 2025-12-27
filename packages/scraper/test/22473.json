@@ -1,0 +1,103 @@
+{
+	"batchcomplete": true,
+	"query": {
+		"pages": [
+			{
+				"pageid": 117598,
+				"ns": 0,
+				"title": "Lil' zik",
+				"revisions": [
+					{
+						"revid": 15014656,
+						"parentid": 15013852,
+						"user": "Data",
+						"timestamp": "2025-11-04T01:44:25Z",
+						"slots": {
+							"main": {
+								"contentmodel": "wikitext",
+								"contentformat": "text/x-wiki",
+								"content": "{{Multi Infobox\n|text1 = Follower\n|item1 =\n{{Infobox NPC\n|version1 = Lil' Zik\n|version2 = Lil' Maiden\n|version3 = Lil' Bloat\n|version4 = Lil' Nylo\n|version5 = Lil' Sot\n|version6 = Lil' Xarp\n|name1 = Lil' Zik\n|name2 = Lil' Maiden\n|name3 = Lil' Bloat\n|name4 = Lil' Nylo\n|name5 = Lil' Sot\n|name6 = Lil' Xarp\n|image1 = [[File:Lil' Zik.png|290px]]\n|image2 = [[File:Lil' Maiden.png|250px]]\n|image3 = [[File:Lil' Bloat.png|200px]]\n|image4 = [[File:Lil' Nylo.png|250px]]\n|image5 = [[File:Lil' Sot.png|290px]]\n|image6 = [[File:Lil' Xarp.png|290px]]\n|release1 = [[7 June]] [[2018]]\n|release2 = [[3 June]] [[2021]]\n|release3 = [[3 June]] [[2021]]\n|release4 = [[3 June]] [[2021]]\n|release5 = [[3 June]] [[2021]]\n|release6 = [[3 June]] [[2021]]\n|update1 = The Theatre of Blood\n|update2 = Theatre of Blood: New Modes\n|update3 = Theatre of Blood: New Modes\n|update4 = Theatre of Blood: New Modes\n|update5 = Theatre of Blood: New Modes\n|update6 = Theatre of Blood: New Modes\n|members = Yes\n|race1 = [[Vampyre]]/[[Nylocas]] hybrid\n|race2 = [[Human]] (formerly)\n|race3 = [[Undead]]\n|race4 = [[Nylocas]]\n|race5 = [[Dark beast]]\n|race6 = [[Yarasa]]\n|location = [[Theatre of Blood]]\n|options = Talk-to, Metamorphosis, Pick-up\n|examine1 = What has eight legs and runs a Vampyric Theatre?\n|examine2 = Freed from her torturous constraints.\n|examine3 = Smaller size, same smell.\n|examine4 = Eight legs of unparalleled loyalty.\n|examine5 = Has a lot of anger for such a small monster.\n|examine6 = The prince of Yarasa.\n|map = No\n|id1 = 8336,8337\n|id2 = 10761,10870\n|id3 = 10762,10871\n|id4 = 10763,10872\n|id5 = 10764,10873\n|id6 = 10765,10874\n|leagueRegion = Morytania\n}}\n|text2 = Item\n|item2 =\n{{Infobox Item\n|version1 = Lil' Zik\n|version2 = Lil' Maiden\n|version3 = Lil' Bloat\n|version4 = Lil' Nylo\n|version5 = Lil' Sot\n|version6 = Lil' Xarp\n|name1 = Lil' zik\n|name2 = Lil' maiden\n|name3 = Lil' bloat\n|name4 = Lil' nylo\n|name5 = Lil' sot\n|name6 = Lil' xarp\n|image1 = [[File:Lil' zik.png]]\n|image2 = [[File:Lil' maiden.png]]\n|image3 = [[File:Lil' bloat.png]]\n|image4 = [[File:Lil' nylo.png]]\n|image5 = [[File:Lil' sot.png]]\n|image6 = [[File:Lil' xarp.png]]\n|release1 = [[7 June]] [[2018]]\n|release2 = [[3 June]] [[2021]]\n|release3 = [[3 June]] [[2021]]\n|release4 = [[3 June]] [[2021]]\n|release5 = [[3 June]] [[2021]]\n|release6 = [[3 June]] [[2021]]\n|update1 = The Theatre of Blood\n|update2 = Theatre of Blood: New Modes\n|update3 = Theatre of Blood: New Modes\n|update4 = Theatre of Blood: New Modes\n|update5 = Theatre of Blood: New Modes\n|update6 = Theatre of Blood: New Modes\n|members = Yes\n|quest = No\n|tradeable = No\n|placeholder = \n|equipable = No\n|stackable = No\n|noteable = \n|options = Drop\n|examine1 = What has eight legs and runs a Vampyric Theatre?\n|examine2 = Freed from her torturous constraints.\n|examine3 = Smaller size, same smell.\n|examine4 = Eight legs of unparalleled loyalty.\n|examine5 = Has a lot of anger for such a small monster.\n|examine6 = The prince of Yarasa.\n|value = 1\n|alchable = No\n|weight = 0.015\n|id1 = 22473\n|id2 = 25748\n|id3 = 25749\n|id4 = 25750\n|id5 = 25751\n|id6 = 25752\n}}\n}}\n{{Synced switch\n|version1 = [[File:Lil' Zik chathead.png|left]]\n|version2 = [[File:Lil' Maiden chathead.png|left]]\n|version3 = [[File:Lil' Bloat chathead.png|left]]\n|version4 = [[File:Lil' Nylo chathead.png|left]]\n|version5 = [[File:Lil' Sot chathead.png|left]]\n|version6 = [[File:Lil' Xarp chathead.png|left]]\n|version7 = [[File:Lil' zik detail.png|left|100px]]\n|version8 = [[File:Lil' maiden detail.png|left|120px]]\n|version9 = [[File:Lil' bloat detail.png|left|130px]]\n|version10 = [[File:Lil' nylo detail.png|left|140px]]\n|version11 = [[File:Lil' sot detail.png|left|140px]]\n|version12 = [[File:Lil' xarp detail.png|left|120px]]\n}}\n'''Lil' Zik''' is a [[pet]] that can be obtained from completing the [[Theatre of Blood]]. It is a much smaller version of [[Verzik Vitur]]'s final form. Players have a chance of receiving the pet when looting the monumental chests in Verzik's treasure vault. The drop rate is dependent on the player's performance in the raid, unaffected by that of teammates, ranging from 1/650 to 1/6,500 in regular raids and ranging from 1/500 to 1/5,000 in Hard Mode raids. The maximum rate is reached with 10 individual points (which are invisible to the players; the maximum per player is 32, or 18 if not including the MVP bonuses for each room).{{CiteTwitter|url=https://twitter.com/JagexKieren/status/1145476707174031361|author=Mod Kieren|date=1 July 2019|archiveurl=http://archive.is/gSAa7|archivedate=22 June 2020}} The highest rate is reached by dying no more than twice per raid, with more deaths allowed if the player deals the most damage in some rooms, assuming participation in each room.\n\nLil' Zik is able to ''[[Metamorphosis|metamorphose]]'' into five other pets which are smaller versions of the other bosses encountered in the Theatre of Blood, which requires using [[Sanguine dust]] on it. The dust can be acquired from the Theatre's Hard Mode version and clearing it under a specific time.\n\nWhen a player receives the pet, it will automatically try to appear as their follower. At the same time, a message in the [[Chat Interface|chatbox]] will state {{mes|You have a funny feeling like you're being followed.|color=red}} However, if a player receives a pet while having a follower out (for example, a [[cat]]), it will be placed into their [[inventory]]. When this occurs, the message in the chatbox will instead state {{mes|You feel something weird sneaking into your backpack.|color=red}}\n\nIf a player's inventory is full '''and''' they have a follower already, they '''will not''' receive the pet; it must instead be claimed from [[Probita]] in [[East Ardougne]].\n\nOn [[death]], if a player loses their pet (as a follower or in your inventory) it will wander around the area for 30 seconds before despawning. Even if the player returns in time, the pet cannot be picked up, and can be reclaimed from Probita.\n\n==Dialogue==\n{{Hastranscript|npc}}\n\n==Item sources==\n{{Drop sources|Lil' zik}}\n\n==Trivia==\n*The inventory sprite uses Verzik's phase 2 form, whereas the pet itself is her phase 3 form.\n\n==References==\n{{Reflist}}\n\n{{Theatre of Blood}}\n{{Pets}}\n[[Category:Collection log items]]"
+							}
+						},
+						"comment": "/* Dialogue */"
+					}
+				],
+				"contentmodel": "wikitext",
+				"pagelanguage": "en-gb",
+				"pagelanguagehtmlcode": "en-GB",
+				"pagelanguagedir": "ltr",
+				"touched": "2025-12-09T20:26:01Z",
+				"lastrevid": 15014656,
+				"length": 6217,
+				"talkid": 567005,
+				"fullurl": "https://oldschool.runescape.wiki/w/Lil%27_zik",
+				"editurl": "https://oldschool.runescape.wiki/w/Lil%27_zik?action=edit",
+				"canonicalurl": "https://oldschool.runescape.wiki/w/Lil%27_zik",
+				"categories": [
+					{
+						"ns": 14,
+						"title": "Category:Collection log items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Content released in 2018"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Content released in 2021"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items appearing in drop table"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items that cannot be alchemised"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Members' NPCs"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Members' items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Non-player characters"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Pages that contain switch infobox data"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Pets"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Theatre of Blood"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Untradeable items"
+					}
+				],
+				"thumbnail": {
+					"source": "https://oldschool.runescape.wiki/images/thumb/Lil%27_Zik.png/50px-Lil%27_Zik.png?5a023",
+					"width": 50,
+					"height": 45
+				},
+				"pageimage": "Lil'_Zik.png",
+				"extract": "Lil' Zik is a pet that can be obtained from completing the Theatre of Blood. It is a much smaller version of Verzik Vitur's final form. Players have a chance of receiving the pet when looting the monumental chests in Verzik's treasure vault. The drop rate is dependent on the player's performance in the raid, unaffected by that of teammates, ranging from 1/650 to 1/6,500 in regular raids and ranging from 1/500 to 1/5,000 in Hard Mode raids. The maximum rate is reached with 10 individual points (which are invisible to the players; the maximum per player is 32, or 18 if not including the MVP bonuses for each room). The highest rate is reached by dying no more than twice per raid, with more deaths allowed if the player deals the most damage in some rooms, assuming participation in each room.\nLil' Zik is able to metamorphose into five other pets which are smaller versions of the other bosses encountered in the Theatre of Blood, which requires using Sanguine dust on it. The dust can be acquired from the Theatre's Hard Mode version and clearing it under a specific time.\nWhen a player receives the pet, it will automatically try to appear as their follower. At the same time, a message in the chatbox will state You have a funny feeling like you're being followed. However, if a player receives a pet while having a follower out (for example, a cat), it will be placed into their inventory. When this occurs, the message in the chatbox will instead state You feel something weird sneaking into your backpack.\nIf a player's inventory is full and they have a follower already, they will not receive the pet; it must instead be claimed from Probita in East Ardougne.\nOn death, if a player loses their pet (as a follower or in your inventory) it will wander around the area for 30 seconds before despawning. Even if the player returns in time, the pet cannot be picked up, and can be reclaimed from Probita."
+			}
+		]
+	},
+	"limits": {
+		"categories": 500
+	}
+}

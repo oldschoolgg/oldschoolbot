@@ -3,9 +3,6 @@ packages:
   - docs
   - "!**/packages/test-dashboard"
 
-ignoredBuiltDependencies:
-  - wtf_wikipedia
-
 neverBuiltDependencies: []
 
 overrides:

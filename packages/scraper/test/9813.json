@@ -1,0 +1,115 @@
+{
+	"batchcomplete": true,
+	"query": {
+		"pages": [
+			{
+				"pageid": 13563,
+				"ns": 0,
+				"title": "Quest point cape",
+				"revisions": [
+					{
+						"revid": 15042179,
+						"parentid": 15042176,
+						"user": "Telemonke",
+						"timestamp": "2025-11-19T23:04:58Z",
+						"slots": {
+							"main": {
+								"contentmodel": "wikitext",
+								"contentformat": "text/x-wiki",
+								"content": "{{External|rs=Quest Cape}}\n{{Infobox Item\n|version1 = Untrimmed\n|version2 = Trimmed\n|name1 = Quest point cape\n|name2 = Quest point cape (t)\n|image1 = [[File:Quest point cape.png]]\n|image2 = [[File:Quest point cape (t).png]]\n|release1 = [[18 October]] [[2006]]\n|release2 = [[5 March]] [[2015]]\n|update1 = Capes of Achievement... and Goats!\n|update2 = Achievement Diaries\n|aka = QPC, QC, Quest cape\n|members = Yes\n|quest = No\n|tradeable = No\n|placeholder = Yes\n|equipable = Yes\n|stackable = No\n|noteable = No\n|options1 = Wear, Teleport, Trim, Drop\n|options2 = Wear, Teleport, Untrim, Drop\n|wornoptions1 = Trim, Teleport\n|wornoptions2 = Untrim, Teleport\n|examine = The cape worn by only the most experienced adventurers.\n|value = 99000\n|weight = 0.453\n|id1 = 9813\n|id2 = 13068\n}}\n{{Synced switch\n|version1 = [[File:Quest point cape detail.png|left|120px]]\n|version2 = [[File:Quest point cape (t) detail.png|left|120px]]\n}}\nThe '''quest point cape''' is a [[Cape of Accomplishment|cape of accomplishment]] that can be obtained by players who have completed all [[quests]] (excluding [[miniquests]]). The cape, along with the [[quest point hood]], can be purchased from the [[Wise Old Man]] in [[Draynor Village]] for 99,000 [[coins]]. To trim the cape, players must complete all [[achievement diaries]], thus earning them the [[achievement diary cape]] as well.\n\nShould a new quest be released, the cape will be unequipped, and the player will not be able to equip or operate it until the new quest is completed. If the player's inventory is full, the cape will be banked instead. In the event that their inventory and bank are both full, the cape will be '''lost''', and will have to be re-purchased from the Wise Old Man.\n\nThe cape is a popular goal for [[Ironman Mode|ironmen]] due to its quick teleport to a [[Fairy rings|fairy ring]]. Additionally, performing the quest cape emote in the [[Wise Old Man]]'s house is an elite task in the [[Lumbridge & Draynor Diary]]. The emote can also be used at the top of [[White Knights' Castle|Falador Castle]] for a task in the [[elite Falador Diary]].\n\nUnlike skill hiscores, there is no official way to track the number of players who currently own the cape; it must be shared by Jagex. In February 2020, there were '''61,766''' current members who had obtained the quest point cape.{{CiteVideo|author=Old School RuneScape|title=OSRS Data Stream 2020 - Old School RuneScape's 7th Birthday!|url=https://www.youtube.com/watch?v=UfB2bBacxJ8&t=31m43s|timestamp=31m43s|date=26 February 2020|site=YouTube|notes=|name=}}\n\n{{Costume storage|cape rack|Quest point cape set, along with the [[Quest point hood|hood]]|set=true}} Players who own a quest cape but no longer have all quests completed will find they cannot store the cape until they re-complete all quests. However, quest capes that were already mounted on the cape rack prior to new quests becoming available will remain on the rack. Quest capes on cape racks therefore represent that the home owner at one point or another had attained all available quest points at the time of mounting. \n[[File:Quest point cape emote.gif|thumb|200px|A player performing the Quest point cape's emote.]]\n{{Listen|align=right|title=The music that plays when you purchase a Cape of Accomplishment|desc=|filename=Cape of Accomplishment.ogg}}\n\n==Stats and benefits==\n\n=== Stats ===\n{{Infobox Bonuses\n|version1 = Untrimmed\n|version2 = Trimmed\n|astab = 0\n|aslash = 0\n|acrush = 0\n|amagic = 0\n|arange = 0\n|dstab = +9\n|dslash = +9\n|dcrush = +9\n|dmagic = +9\n|drange = +9\n|str = 0\n|rstr = 0\n|mdmg = 0\n|prayer1 = 0\n|prayer2 = +4\n|slot = cape\n|image1 = [[File:Quest point cape equipped.png]]\n|image2 = [[File:Quest point cape (t) equipped.png]]\n|altimage1 = [[File:Quest point cape equipped female.png|150px]]\n|altimage2 = [[File:Quest point cape (t) equipped female.png|150px]]\n}}\n\n===Cape benefits===\nIn addition to the defensive stats above, the cape can teleport players to the [[Legends' Guild]] gates an unlimited number of times. This is especially convenient as it is the second [[Closest fairy ring to teleport|closest]] available teleport to a [[fairy ring]] after the [[player-owned house|POH]]. Additionally, players with the maximum number of quest points will find that the prices of dreams in the [[Nightmare Zone]] are reduced by 10,000 coins. The cape does not have to be worn to achieve this effect.\n\n==Minimum skill levels==\nThe minimum levels required to acquire the quest point cape are:\n{{Sync}}\n{{DiarySkillStats\n|float=no\n|selectable=no\n|margin=no\n|extra-css=width:inherit;\n|Attack = 50\n|Hitpoints = 50\n|Mining = 70\n|Strength = 60\n|Agility = 70\n|Smithing = 70\n|Defence = 65\n|Herblore = 70\n|Fishing = 60\n|Ranged = 62\n|Thieving = 72\n|Cooking = 65\n|Prayer = 50\n|Crafting = 70\n|Firemaking = 75\n|Magic = 75\n|Fletching = 60\n|Woodcutting = 70\n|Runecraft = 60\n|Slayer = 69\n|Farming = 70\n|Construction = 70\n|Hunter = 70\n|Sailing = 45\n|Combat = 85\n|Quest = {{Globals|quest points}}\n|Total = 1551\n|WoodcuttingNotes=(71)|MiningNotes=(72)|FishingNotes=(62)|CookingNotes=(70)}}\n\nFour skills, Woodcutting, Cooking, Fishing, and Mining allow for a [[temporary boost]] to be used to reach that level. While players need these levels to acquire the cape, they do not need them in order to wear it. The lowest level needed to complete all quests using boosts in these 4 skills is shown without (parentheses).  \n\nAlthough Mining and Woodcutting can be boosted to the highest quest-required level, level 70 unboosted is required in both skills for [[Song of the Elves]]. Likewise, although Fishing can be boosted to the highest quest-required level, level 60 unboosted is required for [[The Fremennik Exiles]].  Level 65 Cooking is the minimum requirement needed when using a boost for [[Recipe for Disaster]], which is the quest with the highest cooking requirement regardless of boost. \n\nThe shown combat stats only get a player to a [[combat level]] of 71, while [[Dream Mentor]] requires a combat level of 85. Completion of [[While Guthix Sleeps]] requires the player to enter the [[Warrior's Guild]], requiring a combined [[Attack]] and [[Strength]] level of at least 130, or level 99 in  either skill, while the shown stats only add up to 110. To reach a combat level of 85 with the lowest total level while still gaining access to the Warrior's Guild, a player would need: 70 Attack, 70 Strength, 62 Ranged, 75 Magic, 65 Defence, 68 Hitpoints, and 50 Prayer. Therefore, the absolute minimum total level (with maximum boosts, 85 Combat, and a combined total of 130 in Attack and Strength) required to complete all quests is 1551.\n\n[[Ironmen]] may need higher levels in some skills due to item requirements: for example, [[magic logs]] are required for [[Desert Treasure I]] and [[Mourning's End Part I]], and although they can be obtained in numerous ways, each has a high skill requirement or is nonviable for most lower-levelled players. Another example is if players burn the [[raw karambwan]] in [[Tai Bwo Wannai Trio]], they will need 65 Fishing to be able to fish another.\n\n==Highest skill and combat requirements by quest==\nThe quests requiring the highest skill and combat levels, along with the levels required (some without boosts) are:\n\n{| class=\"wikitable sortable lighttable\"\n|-\n!Skill\n!Level\n!Quest\n|-\n|{{SCP|Agility}} [[Agility]]\n|70\n|[[Song of the Elves]]\n|-\n|{{SCP|Attack}} [[Attack]]\n|50\n|[[Sins of the Father]]\n|-\n|{{SCP|Construction}} [[Construction]]\n|70\n|[[Song of the Elves]]\n|-\n|{{SCP|Cooking}} [[Cooking]]\n|70*\n|[[Recipe for Disaster]] (Freeing King Awowogei)\n|-\n|{{SCP|Crafting}} [[Crafting]]\n|70\n|[[Monkey Madness II]]\n|-\n|{{SCP|Defence}} [[Defence]]\n|65\n|[[King's Ransom]]\n|-\n|{{SCP|Farming}} [[Farming]]\n|70\n|[[Song of the Elves]]\n|-\n|{{SCP|Firemaking}} [[Firemaking]]\n|75\n|[[Desert Treasure II - The Fallen Empire]]\n|-\n|{{SCP|Fishing}} [[Fishing]]\n|62*\n|[[Swan Song]]\n|-\n|{{SCP|Fletching}} [[Fletching]]\n|60\n|[[Sins of the Father]]\n|-\n|{{SCP|Herblore}} [[Herblore]]\n|70\n|[[Song of the Elves]]\n|-\n|{{SCP|Hitpoints}} [[Hitpoints]]\n|50\n|[[Dragon Slayer II]]\n|-\n|{{SCP|Hunter}} [[Hunter]]\n|70\n|[[Song of the Elves]]\n|-\n|{{SCP|Magic}} [[Magic]]\n|75\n|[[Dragon Slayer II]]/[[Desert Treasure II - The Fallen Empire]]\n|-\n|{{SCP|Mining}} [[Mining]]\n|72*\n|[[Making Friends with My Arm]]\n|-\n|{{SCP|Prayer}} [[Prayer]]\n|50\n|[[The Great Brain Robbery]]\n|-\n|{{SCP|Ranged}} [[Ranged]]\n|62\n|[[The Curse of Arrav]]\n|-\n|{{SCP|Runecraft}} [[Runecraft]]\n|60\n|[[Desert Treasure II - The Fallen Empire]]\n|-\n|{{SCP|Sailing}} [[Sailing]]\n|45\n|[[Troubled Tortugans]]\n|-\n|{{SCP|Slayer}} [[Slayer]]\n|69\n|[[Monkey Madness II]]\n|-\n|{{SCP|Smithing}} [[Smithing]]\n|70\n|[[Dragon Slayer II]]/[[Song of the Elves]]\n|-\n|{{SCP|Strength}} [[Strength]]\n|60\n|[[The Path of Glouphrie]]\n|-\n|{{SCP|Thieving}} [[Thieving]]\n|72\n|[[While Guthix Sleeps]]\n|-\n|{{SCP|Woodcutting}} [[Woodcutting]]\n|71*\n|[[Grim Tales]]\n|-\n|{{SCP|Combat}} [[Combat level]]\n|85\n|[[Dream Mentor]]\n|-\n|{{SCP|Quest}} [[Quest points]]\n|200\n|[[Dragon Slayer II]]\n|}\n<nowiki>*</nowiki> These levels are obtainable with [[Temporary skill boost|temporary skill boosts]].\n\n* Level 65 Cooking is the lowest level required using the maximum boost of +5. \n* Level 60 Fishing is the lowest level required to complete [[The Fremennik Exiles]].\n* Level 70 Mining is the lowest level required to complete [[Song of the Elves]].\n* Level 70 Woodcutting is the lowest level required to complete [[Song of the Elves]].\n\n==Quest point cape (t)==\nThe '''quest point cape (t)''' requires completion of all [[Achievement Diaries]], which significantly increases the minimum requirements from those of the regular untrimmed version{{Sync}}\n{{DiarySkillStats\n|float=no\n|selectable=no\n|margin=no\n|extra-css=width:inherit;\n|Attack = 50\n|Hitpoints = 70\n|Mining = 85\n|Strength = 76\n|Agility = 90\n|Smithing = 91\n|Defence = 70\n|Herblore = 90\n|Fishing = 96\n|Ranged = 70\n|Thieving = 91\n|Cooking = 95\n|Prayer = 85\n|Crafting = 85\n|Firemaking = 85\n|Magic = 96\n|Fletching = 95\n|Woodcutting = 90\n|Runecraft = 91\n|Slayer = 95\n|Farming = 91\n|Construction = 78\n|Hunter = 70\n|Combat = 100\n|Quest = {{Globals|quest points}}\n|Total = 1954\n}}\n\n===Comparison to ''RuneScape''{{'}}s master quest cape===\nBoth the trimmed quest cape and ''RuneScape''{{'}}s [[rsw:Master_quest_cape|master quest cape]] were released in 2015. While the trimmed version requires the achievement diaries, it requires no additional quests, including miniquests. This is in contrast to the ''RuneScape'' master quest cape, which requires completion of all quests and miniquests, obtaining all post-quest rewards, finding most lore-related books, and several other requirements.\n\nCompleting all quests and diaries in ''Old School'' will also require completion of multiple miniquests, but there are several miniquests which can be incomplete for players to trim and equip the trimmed cape. These are [[Into the Tombs]], [[Hopespear's Will]], [[The Frozen Door]], [[Daddy's Home]], [[In Search of Knowledge]], [[Mage Arena II]], [[Family Pest]], [[The Enchanted Key]], and [[Bear Your Soul]].\n\n==Shop locations==\n{{Store locations list|Quest point cape}}\n\n==Used in recommended equipment==\n{{main|Cape of Accomplishment#Used in recommended equipment}}\n{{Used in recommended equipment|Quest point cape,Quest point cape (t)}}\n\n==Changes==\n{{Subject changes header}}\n{{Subject changes\n|date = 7 April 2016\n|update = Hell-Rats, Fairy Rings & Perks\n|change = A \"Teleport\" option was added, granting unlimited teleports to the Legends' Guild.\n}}\n{{Subject changes\n|date = 5 March 2015\n|update = Achievement Diaries\n|change = The \"Trim\" option was added, allowing players to trim or untrim the cape.\n}}\n{{Subject changes footer}}\n\n==Gallery==\n<gallery>\nQuest Cape (Badge).png|The quest cape [[Steam Badges|Steam Badge]].\n</gallery>\n\n==Trivia==\n* The quest point cape is required to complete the [[Lumbridge & Draynor Diary#Elite|Lumbridge & Draynor Elite diary]], which makes the trimmed version unobtainable without first obtaining the untrimmed version. This is the only cape of accomplishment in the game where this is the case.\n* If you have completed the achievement diaries, you can trim (and untrim) the quest point cape even if you no longer meet the requirements to wear it.\n* The quest point cape was first offered to be \"trimmable\" in [[Poll:Old School feature poll 10: New Rewards|Old School feature poll 10: New Rewards]], where it was proposed that players would be able to trim the cape upon completion of an Endurance dream in the [[Nightmare Zone]] [[minigame]].\n** Completing a normal Endurance dream would have trimmed the cape light blue, increased the Defence bonuses from +9 to +11, and gave the cape a +2 Prayer bonus. This proposal only gained 74% support, and thus did not pass.\n** Completing a hard Endurance dream would have trimmed the cape as well, giving it +1 in all Attack bonuses in addition to the blue-trimmed cape's bonuses. Players would have had a choice of trim colours for this version of the cape, and it would have identical bonuses to a [[fire cape]], excluding the fire cape's Strength bonus. This proposal only gained 73% support.\n\n== References ==\n{{reflist}}{{Skillcape}}\n{{Cape}}\n[[Category:Capes of Accomplishment]]\n{{Teleportation items}}"
+							}
+						},
+						"comment": "/* Highest skill and combat requirements by quest */ added sailing"
+					}
+				],
+				"contentmodel": "wikitext",
+				"pagelanguage": "en-gb",
+				"pagelanguagehtmlcode": "en-GB",
+				"pagelanguagedir": "ltr",
+				"touched": "2025-12-18T06:06:51Z",
+				"lastrevid": 15042179,
+				"length": 13243,
+				"talkid": 53913,
+				"fullurl": "https://oldschool.runescape.wiki/w/Quest_point_cape",
+				"editurl": "https://oldschool.runescape.wiki/w/Quest_point_cape?action=edit",
+				"canonicalurl": "https://oldschool.runescape.wiki/w/Quest_point_cape",
+				"categories": [
+					{
+						"ns": 14,
+						"title": "Category:Cape slot items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Capes"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Capes of Accomplishment"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Content released in 2006"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Content released in 2015"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Equipable items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items storable in the costume room"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items with different stats between versions"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Members' items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Not used in any recommended equipment"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Pages that contain switch infobox data"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Pages with AKA"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Skill masters"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Teleportation items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Untradeable items"
+					}
+				],
+				"thumbnail": {
+					"source": "https://oldschool.runescape.wiki/images/thumb/Quest_point_cape_emote.gif/50px-Quest_point_cape_emote.gif?49954",
+					"width": 50,
+					"height": 71
+				},
+				"pageimage": "Quest_point_cape_emote.gif",
+				"extract": "The quest point cape is a cape of accomplishment that can be obtained by players who have completed all quests (excluding miniquests). The cape, along with the quest point hood, can be purchased from the Wise Old Man in Draynor Village for 99,000 coins. To trim the cape, players must complete all achievement diaries, thus earning them the achievement diary cape as well.\nShould a new quest be released, the cape will be unequipped, and the player will not be able to equip or operate it until the new quest is completed. If the player's inventory is full, the cape will be banked instead. In the event that their inventory and bank are both full, the cape will be lost, and will have to be re-purchased from the Wise Old Man.\nThe cape is a popular goal for ironmen due to its quick teleport to a fairy ring. Additionally, performing the quest cape emote in the Wise Old Man's house is an elite task in the Lumbridge & Draynor Diary. The emote can also be used at the top of Falador Castle for a task in the elite Falador Diary.\nUnlike skill hiscores, there is no official way to track the number of players who currently own the cape; it must be shared by Jagex. In February 2020, there were 61,766 current members who had obtained the quest point cape.\nThis item can be stored in the cape rack of a costume room, as part of the Quest point cape set, along with the hood. Ultimate Ironmen will be unable to retrieve individual pieces until the full set is stored. Players who own a quest cape but no longer have all quests completed will find they cannot store the cape until they re-complete all quests. However, quest capes that were already mounted on the cape rack prior to new quests becoming available will remain on the rack. Quest capes on cape racks therefore represent that the home owner at one point or another had attained all available quest points at the time of mounting."
+			}
+		]
+	},
+	"limits": {
+		"categories": 500
+	}
+}

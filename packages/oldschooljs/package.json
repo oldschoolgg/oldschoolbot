@@ -32,7 +32,6 @@
 		"@oldschoolgg/schemas": "workspace:*"
 	},
 	"devDependencies": {
-		"deep-object-diff": "^1.1.9",
-		"wtf_wikipedia": "^10.3.2"
+		"deep-object-diff": "^1.1.9"
 	}
 }

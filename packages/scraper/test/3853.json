@@ -1,0 +1,131 @@
+{
+	"batchcomplete": true,
+	"query": {
+		"pages": [
+			{
+				"pageid": 10636,
+				"ns": 0,
+				"title": "Games necklace",
+				"revisions": [
+					{
+						"revid": 14918393,
+						"parentid": 14913854,
+						"user": "Tenshibeat",
+						"timestamp": "2025-06-12T04:56:43Z",
+						"slots": {
+							"main": {
+								"contentmodel": "wikitext",
+								"contentformat": "text/x-wiki",
+								"content": "{{External|rs}}\n{{Infobox Item\n|defver = 8\n|version1 = 1\n|version2 = 2\n|version3 = 3\n|version4 = 4\n|version5 = 5\n|version6 = 6\n|version7 = 7\n|version8 = 8\n|name1 = Games necklace(1)\n|name2 = Games necklace(2)\n|name3 = Games necklace(3)\n|name4 = Games necklace(4)\n|name5 = Games necklace(5)\n|name6 = Games necklace(6)\n|name7 = Games necklace(7)\n|name8 = Games necklace(8)\n|image1 = [[File:Games necklace(1).png]]\n|image2 = [[File:Games necklace(2).png]]\n|image3 = [[File:Games necklace(3).png]]\n|image4 = [[File:Games necklace(4).png]]\n|image5 = [[File:Games necklace(5).png]]\n|image6 = [[File:Games necklace(6).png]]\n|image7 = [[File:Games necklace(7).png]]\n|image8 = [[File:Games necklace(8).png]]\n|release = [[24 November]] [[2004]]\n|update = Burthorpe Games Room\n|members = Yes\n|quest = No\n|tradeable = Yes\n|placeholder1 = Yes\n|placeholder2 = No\n|placeholder3 = No\n|placeholder4 = No\n|placeholder5 = No\n|placeholder6 = No\n|placeholder7 = No\n|placeholder8 = Yes\n|equipable = Yes\n|stackable = No\n|noteable = Yes\n|options = Wear, Rub, Drop\n|wornoptions = Burthorpe, Barbarian Outpost, Corporeal Beast, Tears of Guthix, Wintertodt Camp\n|examine = An enchanted necklace.\n|value = 1050\n|weight = 0.010\n|exchange1 = No\n|exchange2 = No\n|exchange3 = No\n|exchange4 = No\n|exchange5 = No\n|exchange6 = No\n|exchange7 = No\n|exchange8 = Yes\n|id1 = 3867\n|id2 = 3865\n|id3 = 3863\n|id4 = 3861\n|id5 = 3859\n|id6 = 3857\n|id7 = 3855\n|id8 = 3853\n}}\n[[File:Games necklace detail.png|left|140px]]\nA '''games necklace''' is a [[sapphire necklace]] which has been enchanted using the [[Lvl-1 Enchant]] spell. It has 8 charges which can teleport the player to [[Burthorpe]],  [[Barbarian Outpost]],  [[Corporeal Beast]], [[Tears of Guthix (minigame)|Tears of Guthix]], and the [[Wintertodt Camp]]. After all 8 charges are used, the necklace will be destroyed.\n\nWhen teleporting using the necklace, the message {{Mes|You rub the necklace...}} will be displayed, followed by a message with the number of charges remaining, ex. {{Mes|Your games necklace has three uses left.|colour=Purple}} If using the last charge on the necklace, the message {{Mes|Your games necklace crumbles to dust.|colour=Purple}} will be displayed instead. \n\nWhen a games necklace has one charge remaining, it is recommended not to use the last charge, but instead to save it and cast [[High Level Alchemy]] on it, as the necklace's alchemy value is irrespective of its charge.\n\n==Combat stats==\n{{Infobox Bonuses\n|version1 = 1\n|version2 = 2\n|version3 = 3\n|version4 = 4\n|version5 = 5\n|version6 = 6\n|version7 = 7\n|version8 = 8\n|astab = 0\n|aslash = 0\n|acrush = 0\n|amagic = 0\n|arange = 0\n|dstab = 0\n|dslash = 0\n|dcrush = 0\n|dmagic = 0\n|drange = 0\n|str = 0\n|rstr = 0\n|mdmg = 0\n|prayer = 0\n|slot = neck\n|image = [[File:Games necklace equipped male.png|130px]]\n|altimage = [[File:Games necklace equipped female.png|150px]]\n}}\n\n==Creation==\n{{Recipe\n|skill1 = Magic\n|skill1lvl = 7\n|skill1boostable = Yes\n|skill1exp = 17.5\n|members = Yes\n|ticks = 1\n|ticksnote = Manual casting is 3 ticks, auto-casting is 7 ticks\n|mat1 = Sapphire necklace\n|mat2 = Cosmic rune\n|mat3 = Water rune\n|output1 = Games necklace(8)\n}}\n\n==Teleportation options==\n{{TeleportLocationTableHead}}\n{{TeleportLocationLine|name=[[Barbarian Outpost]]|x=2520|y=3571|r=2}}\n{{TeleportLocationLine|name=[[Burthorpe Games Room]]|x=2899|y=3553|r=3}}\n{{TeleportLocationLine|name=[[Corporeal Beast|Corporeal Beast's Lair]]|x=2967|y=4254|r=2|mapID=10031}}\n{{TeleportLocationLine|name=[[Tears of Guthix (minigame)|Tears of Guthix Minigame]]|note={{Efn|Requires completion of [[Tears of Guthix]] quest|group=L}}|x=3245|y=9500|mapID=10146|mtype=pin}}\n{{TeleportLocationLine|name=[[Wintertodt Camp]]|note={{Efn|Must have visited [[Zeah]] at least once|group=L}}|x=1631|y=3940|r=4}}\n{{TableBottom}}\n{{Notelist|group=L}}\n\n===Price per teleport===\nBecause the high alchemy value is the same regardless of the number of charges, some of the cost of usage can be reclaimed by alching when one charge remains.\n\n{| class=\"wikitable align-center-1\"\n! colspan=\"2\" |Item\n!Necklace Cost\n!Cost Per Teleport\n!Cost if Alching<ref group=\"n\">Assuming a [[staff of fire]] or variant is used.</ref>\n|-\n|{{plinkp|Games necklace|pic=Games necklace(8)}}||Games necklace(8)\n|{{Coins|{{GEP|Games necklace(8)}}}}\n|{{Coins|(- {{GEP|Games necklace(8)}}) / 8 round 0}}\n|{{Coins|(630 - ({{GEP|Games necklace(8)}} + {{GEP|Nature rune}})) / 7 round 0}}\n|}\n<references group=\"n\" />\n\n==Products==\n{{Uses material list|Games necklace(8)}}\n\n==Item sources==\n===Games necklace(2)===\n{{Drop sources|Games necklace(2)}}\n\n==Used in recommended equipment==\n{{Used in recommended equipment|Games necklace}}\n\n==Changes==\n{{Subject changes header}}\n{{Subject changes\n|date = 29 May 2025\n|update = Yama CAs & More!\n|change = The games necklace(8) has been exempted from the [[Grand Exchange#Convenience fee and item sink|Grand Exchange convenience fee]].\n}}\n{{Subject changes\n|date = 31 August 2017\n|update = Fossil Island Kudos Display, the Champion's Cape, and much more.\n|change = Partially charged versions of the item could now be turned into bank placeholders.\n}}\n{{Subject changes\n|date = 24 September 2015\n|update = New Animations & Barbarian Assault Changes\n|change = The games necklace teleport menu now lists Burthorpe rather than Burthorpe games room, to reflect the recent change in teleport location.\n}}\n\n{{Subject changes\n|date = 25 June 2015\n|update = Boss Room Counters & Platinum Tokens\n|poll = Old School Content Poll 34: XP droplets & Slayer\n|change = The destinations of the games room minigame teleport and games necklace teleport have been switched.\n}}\n{{Subject changes\n|date = 21 May 2015\n|update = World Switcher & RotG (i)\n|change = Games necklace worn interface options no longer refer to the Barbarian Outpost as Barbarian Assault.\n}}\n{{Subject changes\n|date = 26 February 2015\n|update = The Grand Exchange\n|change = Partially charged versions of the item were made untradeable on the [[Trading Post]]/[[Grand Exchange]].\n}}\n{{Subject changes\n|change = A teleport to [[Tears of Guthix (minigame)|Tears of Guthix]] was added to the games necklace.\n|date = 13 November 2014\n|update = Time Played & Plenty More\n}}\n{{Subject changes\n|change = A teleport to the [[Corporeal Beast]]'s lair was added to the games necklace.\n|date = 16 October 2014\n|update = Corporeal Beast\n}}\n{{Subject changes\n|date = 30 April 2007\n|update = 24 Carat Update\n|change = The item was graphically updated.\n}}\n{{Subject changes\n|daterange = 29 November 2004 –<br/>17 January 2005\n|change = The item was made members-only.\n}}\n{{Subject changes footer}}\n\n===Gallery (historical)===\n{|style=\"text-align: center\" cellpadding=\"15\"\n|[[File:Games necklace detail (historical).png|center|300x150px]]\n|[[File:Games necklace detail.png|center|300x150px]]\n|-\n|[[File:Games necklace (historical).png|center]]\n|[[File:Games necklace.png|center]]\n|-\n|24 November 2004 ⁠–<br/>30 April 2007\n|30 April 2007 ⁠–<br/>present\n|}\n\n==Trivia==\n*Only the fully charged games necklace can be traded on the [[Grand Exchange]].\n*The in-game price checker can still calculate the price of partially charged necklace as a fraction of the GE price of a fully charged necklace.\n*The internal name for the games necklace is the \"necklace of minigames\".{{CiteDiscord|author=Mod Lykos|url=https://discord.com/channels/177206626514632704/269673599554551808/1355293135168868392|date=28 March 2025|quote=the internal name for the games necklace is \"necklace of minigames\"|image=Lykos necklace of minigames.png}}\n\n==References==\n{{Reflist}}\n\n{{Necklace}}\n{{Sapphire}}\n{{Teleportation items}}\n\n[[Category:Items with charges]]\n[[Category:Sapphire]]\n[[Category:Items exempt from Grand Exchange tax]]"
+							}
+						},
+						"comment": "ge tax exemption update"
+					}
+				],
+				"contentmodel": "wikitext",
+				"pagelanguage": "en-gb",
+				"pagelanguagehtmlcode": "en-GB",
+				"pagelanguagedir": "ltr",
+				"touched": "2025-12-24T15:19:06Z",
+				"lastrevid": 14918393,
+				"length": 7716,
+				"talkid": 574519,
+				"fullurl": "https://oldschool.runescape.wiki/w/Games_necklace",
+				"editurl": "https://oldschool.runescape.wiki/w/Games_necklace?action=edit",
+				"canonicalurl": "https://oldschool.runescape.wiki/w/Games_necklace",
+				"categories": [
+					{
+						"ns": 14,
+						"title": "Category:Content released in 2004"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Equipable items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Grand Exchange items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items appearing in drop table"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items dropped by monster"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items exempt from Grand Exchange tax"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items with charges"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Jewellery"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Magic"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Members' items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Neck slot items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Necklace"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Non-GE items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Noteable items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Pages that contain switch infobox data"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Pages with maps"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Sapphire"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Teleportation items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Tradeable items"
+					}
+				],
+				"thumbnail": {
+					"source": "https://oldschool.runescape.wiki/images/thumb/Games_necklace_detail.png/50px-Games_necklace_detail.png?9bcc8",
+					"width": 50,
+					"height": 56
+				},
+				"pageimage": "Games_necklace_detail.png",
+				"extract": "A games necklace is a sapphire necklace which has been enchanted using the Lvl-1 Enchant spell. It has 8 charges which can teleport the player to Burthorpe,  Barbarian Outpost,  Corporeal Beast, Tears of Guthix, and the Wintertodt Camp. After all 8 charges are used, the necklace will be destroyed.\nWhen teleporting using the necklace, the message You rub the necklace... will be displayed, followed by a message with the number of charges remaining, ex. Your games necklace has three uses left. If using the last charge on the necklace, the message Your games necklace crumbles to dust. will be displayed instead. \nWhen a games necklace has one charge remaining, it is recommended not to use the last charge, but instead to save it and cast High Level Alchemy on it, as the necklace's alchemy value is irrespective of its charge."
+			}
+		]
+	},
+	"limits": {
+		"categories": 500
+	}
+}

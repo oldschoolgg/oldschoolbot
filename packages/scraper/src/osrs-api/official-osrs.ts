@@ -1,35 +1,23 @@
-import currentData from '../data/os-catalogue.json' with {type: 'json'};
+import type { StringifiedInteger } from '@oldschoolgg/schemas';
+import { toSortedSnakeCaseObject } from '@oldschoolgg/util';
+import { readFileSync } from 'fs';
 import { omit } from 'remeda';
-import { toSortedSnakeCaseObject } from "@oldschoolgg/util";
-import { saveDataFile } from "../util.js";
 
-type OSRSApiPrice = string | number;
+import { type DataFileContent, saveDataFile } from '../util.js';
+import {
+	type ICatalogueItem,
+	type ICatalogueItemsResponse,
+	ZCatalogueItemSchema,
+	ZCatalogueItemsResponseSchema
+} from './types.js';
 
-type CatalogueItem = {
-	id: number
-	name: string
-	description: string
-	current: {
-		trend: string
-		price: OSRSApiPrice
-	}
-	today: {
-		trend: string
-		price: OSRSApiPrice
-	}
-	members: 'true' | 'false'
-};
+const currentItemData = JSON.parse(readFileSync('./src/data/os-catalogue.json', 'utf-8')) as DataFileContent<
+	Record<StringifiedInteger, ICatalogueItem>
+>;
+const BASE_URL = 'https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/items.json';
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
-export type CatalogueItemsResponse = {
-	total: number
-	items: CatalogueItem[];
-}
-
-const BASE_URL = "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/items.json";
-// const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
-const ALPHABET = 'mnopqrstuvwxyz'.split('');
-
-async function fetchPage(category: number, alpha: string, page: number): Promise<CatalogueItemsResponse> {
+async function fetchPage(category: number, alpha: string, page: number): Promise<ICatalogueItemsResponse> {
 	const url = `${BASE_URL}?category=${category}&alpha=${alpha}&page=${page}`;
 	console.log(`Fetching: ${url}`);
 
@@ -41,7 +29,7 @@ async function fetchPage(category: number, alpha: string, page: number): Promise
 		try {
 			const text = await fetch(url).then(res => res.text());
 			const res = JSON.parse(text);
-			return res as CatalogueItemsResponse;
+			return ZCatalogueItemsResponseSchema.parse(res);
 		} catch (err) {
 			lastError = err;
 			console.error(`Attempt ${attempt}/${MAX_RETRIES} failed for URL: ${url}`);
@@ -58,10 +46,10 @@ async function fetchPage(category: number, alpha: string, page: number): Promise
 	throw lastError;
 }
 
-const output: Record<string, CatalogueItem> = {};
+const output: Record<string, ICatalogueItem> = {};
 
-for (const x of Object.values(currentData.data)) {
-	output[x.id] = x as CatalogueItem;
+for (const x of Object.values(currentItemData.data)) {
+	output[x.id] = ZCatalogueItemSchema.parse(x);
 }
 
 async function scrapeAll(category: number): Promise<void> {
@@ -75,9 +63,13 @@ async function scrapeAll(category: number): Promise<void> {
 			}
 
 			for (const item of data.items) {
-				output[item.id] = omit(toSortedSnakeCaseObject(item), ['icon', 'icon_large', 'type', 'type_icon'] as any[]) as CatalogueItem;
+				output[item.id] = ZCatalogueItemSchema.parse(
+					omit(toSortedSnakeCaseObject(item), ['icon', 'icon_large', 'type', 'type_icon'] as any[])
+				);
 			}
-			console.log(`	Processed page ${page} for alpha ${alpha}, total items so far: ${Object.keys(output).length}`);
+			console.log(
+				`	Processed page ${page} for alpha ${alpha}, total items so far: ${Object.keys(output).length}`
+			);
 			saveDataFile('os-catalogue.json', output);
 			page++;
 		}

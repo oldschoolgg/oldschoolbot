@@ -1,7 +1,5 @@
-import type { MoidItem } from '@oldschoolgg/schemas';
-
 import { USELESS_ITEMS } from '@/meta/item-lists.js';
-import { type Item, ItemGroups, ItemVisibility } from '../../src/index.js';
+import { type FullItem, type Item, ItemGroups, ItemVisibility } from '../../src/index.js';
 
 const CLUE_STEP_REGEX = /^Clue scroll \((beginner|easy|medium|hard|elite|master)\) - .*$/;
 const CLUE_SCROLL_NAMES: string[] = [
@@ -22,7 +20,7 @@ type PossibleOldOptions = {
 	wiki_name?: string;
 };
 
-export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOldOptions>): ItemVisibility {
+export function checkItemVisibility(item: (Item | FullItem) & Partial<PossibleOldOptions>): ItemVisibility {
 	const n = item.name.toLowerCase();
 
 	if (CLUE_SCROLL_IDS.includes(item.id)) return ItemVisibility.Regular;

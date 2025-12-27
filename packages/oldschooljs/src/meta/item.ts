@@ -154,7 +154,9 @@ export * from './itemVisibility.js';
 export type FullItem = {
 	id: number;
 	name: string;
+	config_name: string;
 
+	destroy?: string;
 	examine?: string;
 	worn_options?: string[];
 	aka?: string;

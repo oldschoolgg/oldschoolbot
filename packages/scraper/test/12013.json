@@ -1,0 +1,99 @@
+{
+	"batchcomplete": true,
+	"query": {
+		"pages": [
+			{
+				"pageid": 33516,
+				"ns": 0,
+				"title": "Prospector helmet",
+				"revisions": [
+					{
+						"revid": 14935003,
+						"parentid": 14849634,
+						"user": "Koslas",
+						"timestamp": "2025-07-09T14:44:27Z",
+						"slots": {
+							"main": {
+								"contentmodel": "wikitext",
+								"contentformat": "text/x-wiki",
+								"content": "{{Infobox Item\n|name = Prospector helmet\n|image = [[File:Prospector helmet.png]]\n|release = [[24 April]] [[2014]]\n|update = The Motherlode Mine!\n|members = Yes\n|quest = No\n|tradeable = No\n|placeholder = Yes\n|equipable = Yes\n|stackable = No\n|noteable = No\n|options = Wear, Drop\n|examine = Helps you when you're mining.\n|value = 40\n|weight = 0.907\n|id = 12013,29472\n|leagueRegion =  misthalin, asgarnia\n}}\n[[File:Prospector helmet detail.png|left|150px]]\n[[File:Prospector helmet chathead.png|left]]\nThe '''prospector helmet''' is a helmet acquired from the [[Motherlode Mine]] in exchange for 40 [[golden nugget]]s, or from the [[Volcanic Mine]] for 26,000 points. The helmet grants 0.4% bonus [[Mining]] [[experience]]. This is increased to 2.5% when wearing the full [[Prospector kit]]. Despite having two lights attached to it, the Prospector helmet does '''not''' act as a light source.\n\nWearing the prospector helmet while entering the [[Mining Guild]] is a task in the hard [[Falador Diary]].\n\nLike the rest of the Prospector kit, the helmet provides partial protection against the [[Desert heat|heat of the Kharidian desert]], adding 4 seconds to the interval between required sips from a waterskin, or 34 seconds if the entire set is worn.\n\n{{Costume storage|armour case|[[Prospector kit]] set|set=true}}\n\n'''Note''': Any piece of the set that was purchased from the [[Petrified Pete's Ore Shop]] can't be sold for [[Golden nugget|golden nuggets]] at the [[Prospector Percy's Nugget Shop]]. If you try to do this, you will receive the message \"''You can't sell this item back to Percy as you did not buy it from this shop''\".\n\n==Combat stats==\n{{Infobox Bonuses\n|astab = 0\n|aslash = 0\n|acrush = 0\n|amagic = 0\n|arange = 0\n|dstab = 0\n|dslash = 0\n|dcrush = 0\n|dmagic = 0\n|drange = 0\n|str = 0\n|rstr = 0\n|mdmg = 0\n|prayer = 0\n|slot = head\n|image = [[File:Prospector helmet equipped male.png|135px]]\n|altimage = [[File:Prospector helmet equipped female.png|120px]]\n}}\n\n==Shop locations==\n{{Store locations list|Prospector helmet}}\n\n==Products==\n{{Uses material list|Prospector helmet}}\n\n==Used in recommended equipment==\n{{Used in recommended equipment|Prospector helmet}}\n\n==Gallery==\n<gallery heights=\"250\" style=\"text-align:left\">\nProspector kit (male) equipped.png|The prospector kit on body type A.\nProspector kit (female) equipped.png|The prospector kit on body type B.\n</gallery>\n\n==Changes==\n{{Subject changes header}}\n{{Subject changes\n|date = 24 July 2014\n|update = F2P Trial Expansion & More\n|change = The Prospector hat chathead now animates correctly.\n}}\n{{Subject changes footer}}\n\n{{Motherlode Mine}}\n{{Skilling outfits}}\n[[Category:Items storable in the costume room]]\n[[Category:Collection log items]]\n[[Category:Heat-resistant gear]]"
+							}
+						},
+						"comment": ""
+					}
+				],
+				"contentmodel": "wikitext",
+				"pagelanguage": "en-gb",
+				"pagelanguagehtmlcode": "en-GB",
+				"pagelanguagedir": "ltr",
+				"touched": "2025-12-11T15:55:29Z",
+				"lastrevid": 14935003,
+				"length": 2752,
+				"talkid": 193266,
+				"fullurl": "https://oldschool.runescape.wiki/w/Prospector_helmet",
+				"editurl": "https://oldschool.runescape.wiki/w/Prospector_helmet?action=edit",
+				"canonicalurl": "https://oldschool.runescape.wiki/w/Prospector_helmet",
+				"categories": [
+					{
+						"ns": 14,
+						"title": "Category:Collection log items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Content released in 2014"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Equipable items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Head slot items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Heat-resistant gear"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items storable in the costume room"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Members' items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Mining"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Motherlode Mine"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Skilling equipment"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Untradeable items"
+					}
+				],
+				"thumbnail": {
+					"source": "https://oldschool.runescape.wiki/images/thumb/Prospector_helmet_detail.png/50px-Prospector_helmet_detail.png?fc038",
+					"width": 50,
+					"height": 27
+				},
+				"pageimage": "Prospector_helmet_detail.png",
+				"extract": "The prospector helmet is a helmet acquired from the Motherlode Mine in exchange for 40 golden nuggets, or from the Volcanic Mine for 26,000 points. The helmet grants 0.4% bonus Mining experience. This is increased to 2.5% when wearing the full Prospector kit. Despite having two lights attached to it, the Prospector helmet does not act as a light source.\nWearing the prospector helmet while entering the Mining Guild is a task in the hard Falador Diary.\nLike the rest of the Prospector kit, the helmet provides partial protection against the heat of the Kharidian desert, adding 4 seconds to the interval between required sips from a waterskin, or 34 seconds if the entire set is worn.\nThis item can be stored in the armour case of a costume room, as part of the Prospector kit set. Ultimate Ironmen will be unable to retrieve individual pieces until the full set is stored.\nNote: Any piece of the set that was purchased from the Petrified Pete's Ore Shop can't be sold for golden nuggets at the Prospector Percy's Nugget Shop. If you try to do this, you will receive the message \"You can't sell this item back to Percy as you did not buy it from this shop\"."
+			}
+		]
+	},
+	"limits": {
+		"categories": 500
+	}
+}

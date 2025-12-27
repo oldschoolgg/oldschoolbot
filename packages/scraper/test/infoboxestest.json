@@ -1,0 +1,597 @@
+[
+	{
+		"type": "template",
+		"name": "Infobox Item",
+		"params": [
+			{
+				"name": "defver",
+				"value": [
+					{
+						"type": "text",
+						"value": " 2\n"
+					}
+				]
+			},
+			{
+				"name": "version1",
+				"value": [
+					{
+						"type": "text",
+						"value": " Uncharged\n"
+					}
+				]
+			},
+			{
+				"name": "version2",
+				"value": [
+					{
+						"type": "text",
+						"value": " Charged\n"
+					}
+				]
+			},
+			{
+				"name": "name",
+				"value": [
+					{
+						"type": "text",
+						"value": " Ancient wyvern shield\n"
+					}
+				]
+			},
+			{
+				"name": "image1",
+				"value": [
+					{
+						"type": "text",
+						"value": " "
+					},
+					{
+						"type": "link",
+						"target": "File:Ancient wyvern shield (uncharged).png",
+						"text": null,
+						"isFile": true,
+						"isCategory": false
+					},
+					{
+						"type": "text",
+						"value": "\n"
+					}
+				]
+			},
+			{
+				"name": "image2",
+				"value": [
+					{
+						"type": "text",
+						"value": " "
+					},
+					{
+						"type": "link",
+						"target": "File:Ancient wyvern shield.png",
+						"text": null,
+						"isFile": true,
+						"isCategory": false
+					},
+					{
+						"type": "text",
+						"value": "\n"
+					}
+				]
+			},
+			{
+				"name": "release",
+				"value": [
+					{
+						"type": "text",
+						"value": " "
+					},
+					{
+						"type": "link",
+						"target": "7 September",
+						"text": null,
+						"isFile": false,
+						"isCategory": false
+					},
+					{
+						"type": "text",
+						"value": " "
+					},
+					{
+						"type": "link",
+						"target": "2017",
+						"text": null,
+						"isFile": false,
+						"isCategory": false
+					},
+					{
+						"type": "text",
+						"value": "\n"
+					}
+				]
+			},
+			{
+				"name": "update",
+				"value": [
+					{
+						"type": "text",
+						"value": " Fossil Island\n"
+					}
+				]
+			},
+			{
+				"name": "members",
+				"value": [
+					{
+						"type": "text",
+						"value": " Yes\n"
+					}
+				]
+			},
+			{
+				"name": "quest",
+				"value": [
+					{
+						"type": "text",
+						"value": " No\n"
+					}
+				]
+			},
+			{
+				"name": "tradeable1",
+				"value": [
+					{
+						"type": "text",
+						"value": " Yes\n"
+					}
+				]
+			},
+			{
+				"name": "tradeable2",
+				"value": [
+					{
+						"type": "text",
+						"value": " No\n"
+					}
+				]
+			},
+			{
+				"name": "placeholder1",
+				"value": [
+					{
+						"type": "text",
+						"value": " Yes\n"
+					}
+				]
+			},
+			{
+				"name": "placeholder2",
+				"value": [
+					{
+						"type": "text",
+						"value": " No\n"
+					}
+				]
+			},
+			{
+				"name": "equipable",
+				"value": [
+					{
+						"type": "text",
+						"value": " Yes\n"
+					}
+				]
+			},
+			{
+				"name": "stackable",
+				"value": [
+					{
+						"type": "text",
+						"value": " No\n"
+					}
+				]
+			},
+			{
+				"name": "noteable1",
+				"value": [
+					{
+						"type": "text",
+						"value": " Yes\n"
+					}
+				]
+			},
+			{
+				"name": "noteable2",
+				"value": [
+					{
+						"type": "text",
+						"value": " No\n"
+					}
+				]
+			},
+			{
+				"name": "options1",
+				"value": [
+					{
+						"type": "text",
+						"value": " Wield, Inspect, Drop\n"
+					}
+				]
+			},
+			{
+				"name": "options2",
+				"value": [
+					{
+						"type": "text",
+						"value": " Wield, Inspect, Empty, Drop\n"
+					}
+				]
+			},
+			{
+				"name": "wornoptions1",
+				"value": [
+					{
+						"type": "text",
+						"value": " Check, Recharge\n"
+					}
+				]
+			},
+			{
+				"name": "wornoptions2",
+				"value": [
+					{
+						"type": "text",
+						"value": " Operate, Check, Recharge\n"
+					}
+				]
+			},
+			{
+				"name": "examine",
+				"value": [
+					{
+						"type": "text",
+						"value": " A magical shield with a wyvern visage.\n"
+					}
+				]
+			},
+			{
+				"name": "value",
+				"value": [
+					{
+						"type": "text",
+						"value": " 2000000\n"
+					}
+				]
+			},
+			{
+				"name": "weight",
+				"value": [
+					{
+						"type": "text",
+						"value": " 4.535\n"
+					}
+				]
+			},
+			{
+				"name": "exchange1",
+				"value": [
+					{
+						"type": "text",
+						"value": " Yes\n"
+					}
+				]
+			},
+			{
+				"name": "exchange2",
+				"value": [
+					{
+						"type": "text",
+						"value": " No\n"
+					}
+				]
+			},
+			{
+				"name": "id1",
+				"value": [
+					{
+						"type": "text",
+						"value": " 21634\n"
+					}
+				]
+			},
+			{
+				"name": "id2",
+				"value": [
+					{
+						"type": "text",
+						"value": " 21633\n"
+					}
+				]
+			},
+			{
+				"name": "leagueRegion",
+				"value": [
+					{
+						"type": "text",
+						"value": " Misthalin\n"
+					}
+				]
+			}
+		]
+	},
+	{
+		"type": "template",
+		"name": "Infobox Bonuses",
+		"params": [
+			{
+				"name": "version1",
+				"value": [
+					{
+						"type": "text",
+						"value": " Uncharged\n"
+					}
+				]
+			},
+			{
+				"name": "version2",
+				"value": [
+					{
+						"type": "text",
+						"value": " Charged\n"
+					}
+				]
+			},
+			{
+				"name": "astab",
+				"value": [
+					{
+						"type": "text",
+						"value": " -10\n"
+					}
+				]
+			},
+			{
+				"name": "aslash",
+				"value": [
+					{
+						"type": "text",
+						"value": " -10\n"
+					}
+				]
+			},
+			{
+				"name": "acrush",
+				"value": [
+					{
+						"type": "text",
+						"value": " -10\n"
+					}
+				]
+			},
+			{
+				"name": "amagic",
+				"value": [
+					{
+						"type": "text",
+						"value": " +15\n"
+					}
+				]
+			},
+			{
+				"name": "arange",
+				"value": [
+					{
+						"type": "text",
+						"value": " -10\n"
+					}
+				]
+			},
+			{
+				"name": "dstab1",
+				"value": [
+					{
+						"type": "text",
+						"value": " +22\n"
+					}
+				]
+			},
+			{
+				"name": "dstab2",
+				"value": [
+					{
+						"type": "text",
+						"value": " +72\n"
+					}
+				]
+			},
+			{
+				"name": "dslash1",
+				"value": [
+					{
+						"type": "text",
+						"value": " +30\n"
+					}
+				]
+			},
+			{
+				"name": "dslash2",
+				"value": [
+					{
+						"type": "text",
+						"value": " +80\n"
+					}
+				]
+			},
+			{
+				"name": "dcrush1",
+				"value": [
+					{
+						"type": "text",
+						"value": " +25\n"
+					}
+				]
+			},
+			{
+				"name": "dcrush2",
+				"value": [
+					{
+						"type": "text",
+						"value": " +75\n"
+					}
+				]
+			},
+			{
+				"name": "dmagic",
+				"value": [
+					{
+						"type": "text",
+						"value": " +15\n"
+					}
+				]
+			},
+			{
+				"name": "drange1",
+				"value": [
+					{
+						"type": "text",
+						"value": " -55\n"
+					}
+				]
+			},
+			{
+				"name": "drange2",
+				"value": [
+					{
+						"type": "text",
+						"value": " -5\n"
+					}
+				]
+			},
+			{
+				"name": "str",
+				"value": [
+					{
+						"type": "text",
+						"value": " -2\n"
+					}
+				]
+			},
+			{
+				"name": "rstr",
+				"value": [
+					{
+						"type": "text",
+						"value": " 0\n"
+					}
+				]
+			},
+			{
+				"name": "mdmg",
+				"value": [
+					{
+						"type": "text",
+						"value": " 2\n"
+					}
+				]
+			},
+			{
+				"name": "prayer",
+				"value": [
+					{
+						"type": "text",
+						"value": " 0\n"
+					}
+				]
+			},
+			{
+				"name": "slot",
+				"value": [
+					{
+						"type": "text",
+						"value": " shield\n"
+					}
+				]
+			},
+			{
+				"name": "image1",
+				"value": [
+					{
+						"type": "text",
+						"value": " "
+					},
+					{
+						"type": "link",
+						"target": "File:Ancient wyvern shield (uncharged) equipped male.png",
+						"text": "180px",
+						"isFile": true,
+						"isCategory": false
+					},
+					{
+						"type": "text",
+						"value": "\n"
+					}
+				]
+			},
+			{
+				"name": "image2",
+				"value": [
+					{
+						"type": "text",
+						"value": " "
+					},
+					{
+						"type": "link",
+						"target": "File:Ancient wyvern shield equipped male.png",
+						"text": "180px",
+						"isFile": true,
+						"isCategory": false
+					},
+					{
+						"type": "text",
+						"value": "\n"
+					}
+				]
+			},
+			{
+				"name": "altimage1",
+				"value": [
+					{
+						"type": "text",
+						"value": " "
+					},
+					{
+						"type": "link",
+						"target": "File:Ancient wyvern shield (uncharged) equipped female.png",
+						"text": "180px",
+						"isFile": true,
+						"isCategory": false
+					},
+					{
+						"type": "text",
+						"value": "\n"
+					}
+				]
+			},
+			{
+				"name": "altimage2",
+				"value": [
+					{
+						"type": "text",
+						"value": " "
+					},
+					{
+						"type": "link",
+						"target": "File:Ancient wyvern shield equipped female.png",
+						"text": "180px",
+						"isFile": true,
+						"isCategory": false
+					},
+					{
+						"type": "text",
+						"value": "\n"
+					}
+				]
+			}
+		]
+	}
+]

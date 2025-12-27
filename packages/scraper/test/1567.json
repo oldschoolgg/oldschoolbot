@@ -1,0 +1,87 @@
+{
+	"batchcomplete": true,
+	"query": {
+		"pages": [
+			{
+				"pageid": 12627,
+				"ns": 0,
+				"title": "Cat",
+				"revisions": [
+					{
+						"revid": 15020191,
+						"parentid": 14981907,
+						"user": "Bank",
+						"timestamp": "2025-11-08T08:37:07Z",
+						"slots": {
+							"main": {
+								"contentmodel": "wikitext",
+								"contentformat": "text/x-wiki",
+								"content": "{{External|rs|rsc}}\n{{otheruses|the follower|other cats|Cat (disambiguation)}}\n{{Multi Infobox\n|text1 = Follower\n|item1 =\n{{Infobox NPC\n|version1 = Grey and black\n|version2 = White\n|version3 = Brown\n|version4 = Black\n|version5 = Grey and brown\n|version6 = Grey and blue\n|name = Cat\n|image1 = [[File:Cat (grey and black).png|180px]]\n|image2 = [[File:Cat (white).png|180px]]\n|image3 = [[File:Cat (brown).png|180px]]\n|image4 = [[File:Cat (black).png|180px]]\n|image5 = [[File:Cat (grey and brown).png|180px]]\n|image6 = [[File:Cat (grey and blue).png|180px]]\n|release = [[28 July]] [[2003]]\n|update = New Members Quest Online\n|members = Yes\n|race = [[Cat (race)|Cat]]\n|location = [[Gertrude]]\n|options = Pick-up, Talk-to, Chase, Interact\n|examine = A fully grown feline.\n|map = No\n|id1 = 1619,6662\n|id2 = 1620,6663\n|id3 = 1621,6664\n|id4 = 1622,6665\n|id5 = 1623,6666\n|id6 = 1624,6667\n|leagueRegion = Misthalin\n}}\n|text2 = Item\n|item2 =\n{{Infobox Item\n|version1 = Grey and black\n|version2 = White\n|version3 = Brown\n|version4 = Black\n|version5 = Grey and brown\n|version6 = Grey and blue\n|name = Pet cat\n|image1 = [[File:Pet cat (grey and black).png]]\n|image2 = [[File:Pet cat (white).png]]\n|image3 = [[File:Pet cat (brown).png]]\n|image4 = [[File:Pet cat (black).png]]\n|image5 = [[File:Pet cat (grey and brown).png]]\n|image6 = [[File:Pet cat (grey and blue).png]]\n|release = [[28 July]] [[2003]]\n|update = New Members Quest Online\n|members = Yes\n|quest = No\n|tradeable = No\n|placeholder = \n|equipable = No\n|stackable = No\n|noteable = \n|options = Drop\n|examine = This cat definitely likes you.\n|value = 1\n|alchable = No\n|weight = 1.500\n|id1 = 1561\n|id2 = 1562\n|id3 = 1563\n|id4 = 1564\n|id5 = 1565\n|id6 = 1566\n}}\n}}\n{{Synced switch\n|version1 = [[File:Cat (grey and black) chathead.png|left]]\n|version2 = [[File:Cat (white) chathead.png|left]]\n|version3 = [[File:Cat (brown) chathead.png|left]]\n|version4 = [[File:Cat (black) chathead.png|left]]\n|version5 = [[File:Cat (grey and brown) chathead.png|left]]\n|version6 = [[File:Cat (grey and blue) chathead.png|left]]\n|version7 = [[File:Pet cat (grey and black) detail.png|left|120px]]\n|version8 = [[File:Pet cat (white) detail.png|left|120px]]\n|version9 = [[File:Pet cat (brown) detail.png|left|120px]]\n|version10 = [[File:Pet cat (black) detail.png|left|120px]]\n|version11 = [[File:Pet cat (grey and brown) detail.png|left|120px]]\n|version12 = [[File:Pet cat (grey and blue) detail.png|left|120px]]\n}}\n'''Cats''' are common [[pet]]s that can follow the player. In order to obtain a pet cat, a player must complete the [[Gertrude's Cat]] quest, after which [[Gertrude]] will give them a [[kitten]] as part of the reward. After three hours, the kitten will grow into a pet cat. Cats no longer need the food nor attention required of a kitten, and will not run away.\n\nAfter another five-six hours of having the adult cat following the player, it will become an [[overgrown cat]]. Overgrown cats can be trained into [[wily cat]]s, that will eventually become [[lazy cat]]s. Lazy cats can repeatedly be trained back into wily cats.\n\nOnly one kitten may be owned at a time, including the [[hellkitten]] variant. Players may purchase a new kitten from [[Gertrude]] for {{Nocoins|100}} coins whenever their current kitten turns into an overgrown cat, or their cat is stored in a [[player-owned house]] [[menagerie]]. The colour of the kitten will be randomised, unless the player wears a [[ring of Charos (a)]] while purchasing the kitten, which allows them to choose the colour.\n\nAny type of cat can be turned into a [[Hellcat]] variant by chasing the [[hell-rat]]s in [[Evil Dave's Basement of Doom|Evil Dave's basement]]. Hellcats can be morphed back into their original colour by feeding them a [[bucket of milk]]. \n\nCats can be interacted with in a number of ways, such as by stroking them, showing them a [[ball of wool]] or wielding a [[mouse toy]] while the cat follows the player. Cats may be spoken to with a [[catspeak amulet]], or without it after partial completion of [[Dragon Slayer II]]. They can also ''chase'' [[rat]]s, with a [[Rat#Cats|successful catch rate]] depending on the type of cat. Regular adult cats have a success rate of 50%.\n\nPlayers may name their wily and lazy cats by speaking to [[Felkrash]] after the completion of [[Ratcatchers]].\n\nSimilar to every pet, cats can be stored in the [[menagerie]] of a [[player-owned house]]. They however cannot be insured by [[Probita]] and will run off if the player dies, if they were either in the player's inventory or following the player.\n\nPlayers can ''use'' their adult cats, including hellcats, on [[civilian]]s in [[West Ardougne]] in the south-western area of the city to sell it to them for 100 [[death runes]] ({{Coins|{{GEP|Death rune|100}}}}). This increases to 200 death runes ({{Coins|{{GEP|Death rune|200}}}}) with the [[Ardougne Diary#Easy|easy Ardougne achievement diary]] reward. Cats can also be shooed-away if the player no longer wishes to keep them.\n\nIf a cat dies in combat, it is permanently lost and the message {{mes|colour=black|bg=DarkGrey|Your cat has passed away.}} will appear in the chatbox. Cats cannot die in a [[Menagerie#Arena|Menagerie arena]]. Cats can also be lost if they are following the player when their [[members]]hip expires. If a cat is lost and replaced, quest dialogue will not reflect this; the replacement will recall events as though they were the same cat.\n\n==Combat stats==\n[[File:Cat.gif|right|thumb|A cat walking.|250px]]\nWhen fighting [[Hell-Rat Behemoth]]s, the [[King rat]] or in the [[Rat Pits]], cats have the following combat stats:{{CiteTwitter|author=Mod Ash|url=https://twitter.com/JagexAsh/status/1221515347687366657|date=27 January 2020|archiveurl=https://archive.is/4aRke|archivedate=28 May 2020|quote=[do you know the actual levels for each type of cat?] Attack, Strength, Defence, HP for each...\nKitten: 1, 1, 0, 4\nGrown: 4, 3, 0, 6\nOvergrown: 3, 5, 0, 10\nLazy: 6, 6, 2, 14\nWily: 12, 8, 2, 12\n@OSRS_Wiki}}\n\n{|class=\"wikitable align-left-2\" style=\"text-align:center;\"\n! colspan=2 |Cat\n!{{SCP|Hitpoints|link=yes}}\n!{{SCP|Attack|link=yes}}\n!{{SCP|Strength|link=yes}}\n!Max Hit\n!{{SCP|Defence|link=yes}}\n|-\n|{{plinkt|Kitten|txt=Kitten|pic=Pet kitten (grey and black)}}\n|4\n|1\n|1\n|1\n|0\n|-\n|{{plinkt|Cat|txt=Cat|pic=Pet cat (grey and black)}}\n|6\n|4\n|3\n|1\n|0\n|-\n|{{plinkt|Overgrown cat|txt=Overgrown cat|pic=Pet cat (overgrown, grey and black)}}\n|10\n|3\n|5\n|1\n|0\n|-\n|{{plinkt|Wily cat|txt=Wily cat|pic=Wily cat (grey and black)}}\n|12\n|12\n|8\n|2\n|2\n|-\n|{{plinkt|Lazy cat|txt=Lazy cat|pic=Lazy cat (grey and black)}}\n|14\n|6\n|6\n|1\n|2\n|}\n\n==Quests==\n*[[Gertrude's Cat]]\n*[[Icthlarin's Little Helper]]\n*[[Ratcatchers]]\n*[[A Tail of Two Cats]]\n*[[Recipe for Disaster]] ([[Freeing Evil Dave|Evil Dave section]])\n\n==Dialogue==\n{{hastranscript|NPC}}\n\n==Changes==\n{{Subject changes header}}\n{{Subject changes\n|date = 7 April 2016\n|update = Hell-Rats, Fairy Rings & Perks\n|poll = \n|change = Attempted to fix a bug whereby cats occasionally tried to grow into the wrong state.\n}}\n{{Subject changes\n|date = 28 May 2015\n|update = Farming & World Switcher Tweaks\n|change = West Ardougne citizens no longer say they're giving you 100 death runes if they're actually going to give you 200.\n}}\n\n{{Subject changes\n|date = 16 May 2006\n|update = Game engine upgraded!\n|change = The NPC was made invisible on the minimap.\n}}\n{{Subject changes\n|date = 26 April 2005\n|update = Desert Month Finale\n|change = *The \"Stroke\", \"Shoo-away\", and \"Chase vermin\" options were replaced with an \"Interact-with\" option. \n*A \"Talk-to\" option was added.\n}}\n{{Subject changes footer}}\n===Gallery (historical)===\n<tabber>\n2=\n{|style=\"text-align: center\" cellpadding=\"15\"\n|[[File:Pet cat (white) detail (beta).png|center|300x150px]]\n|[[File:Pet cat (white) detail.png|center|300x150px]]\n|-\n|[[File:Pet cat (white) (beta).png|center]]\n|[[File:Pet cat (white).png|center]]\n|-\n|RuneScape 2<br/>Beta\n|March/April 2004 –<br/>present\n|}\n|-|\n3=\n{|style=\"text-align: center\" cellpadding=\"15\"\n|[[File:Cat (brown) (beta).png|center|300x150px]]\n|[[File:Cat (brown).png|center|300x150px]]\n|-\n|[[File:Pet cat (brown) detail (beta).png|center|300x150px]]\n|[[File:Pet cat (brown) detail.png|center|300x150px]]\n|-\n|[[File:Pet cat (brown) (beta).png|center]]\n|[[File:Pet cat (brown).png|center]]\n|-\n|RuneScape 2<br/>Beta\n|March/April 2004 –<br/>present\n|}\n|-|\n4=\n{|style=\"text-align: center\" cellpadding=\"15\"\n|[[File:Cat (black) (beta).png|center|300x150px]]\n|[[File:Cat (black).png|center|300x150px]]\n|-\n|[[File:Pet cat (black) detail (beta).png|center|300x150px]]\n|[[File:Pet cat (black) detail.png|center|300x150px]]\n|-\n|[[File:Pet cat (black) (beta).png|center]]\n|[[File:Pet cat (black).png|center]]\n|-\n|RuneScape 2<br/>Beta\n|March/April 2004 –<br/>present\n|}\n|-|\n5=\n{|style=\"text-align: center\" cellpadding=\"15\"\n|[[File:Pet cat (grey and brown) detail (beta).png|center|300x150px]]\n|[[File:Pet cat (grey and brown) detail.png|center|300x150px]]\n|-\n|[[File:Pet cat (grey and brown) (beta).png|center]]\n|[[File:Pet cat (grey and brown).png|center]]\n|-\n|RuneScape 2<br/>Beta\n|March/April 2004 –<br/>present\n|}\n|-|\n6=\n{|style=\"text-align: center\" cellpadding=\"15\"\n|[[File:Pet cat (grey and blue) detail (beta).png|center|300x150px]]\n|[[File:Pet cat (grey and blue) detail.png|center|300x150px]]\n|-\n|[[File:Pet cat (grey and blue) (beta).png|center]]\n|[[File:Pet cat (grey and blue).png|center]]\n|-\n|RuneScape 2<br/>Beta\n|March/April 2004 –<br/>present\n|}\n</tabber>\n\n==Trivia==\n* Attempting to cast a [[High Level Alchemy]] spell on any cat will result in a message saying, \"You can't do that to a defenceless cat!\"\n\n==References==\n{{Reflist}}\n\n{{Pets}}"
+							}
+						},
+						"comment": "Clarified that only wily and lazy cats can be named."
+					}
+				],
+				"contentmodel": "wikitext",
+				"pagelanguage": "en-gb",
+				"pagelanguagehtmlcode": "en-GB",
+				"pagelanguagedir": "ltr",
+				"touched": "2025-12-24T15:19:57Z",
+				"lastrevid": 15020191,
+				"length": 9665,
+				"talkid": 110046,
+				"fullurl": "https://oldschool.runescape.wiki/w/Cat",
+				"editurl": "https://oldschool.runescape.wiki/w/Cat?action=edit",
+				"canonicalurl": "https://oldschool.runescape.wiki/w/Cat",
+				"categories": [
+					{
+						"ns": 14,
+						"title": "Category:Content released in 2003"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Items that cannot be alchemised"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Members' NPCs"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Members' items"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Non-player characters"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Pages that contain switch infobox data"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Pets"
+					},
+					{
+						"ns": 14,
+						"title": "Category:Untradeable items"
+					}
+				],
+				"thumbnail": {
+					"source": "https://oldschool.runescape.wiki/images/thumb/Cat_%28grey_and_black%29.png/50px-Cat_%28grey_and_black%29.png?ae447",
+					"width": 50,
+					"height": 59
+				},
+				"pageimage": "Cat_(grey_and_black).png",
+				"extract": "Cats are common pets that can follow the player. In order to obtain a pet cat, a player must complete the Gertrude's Cat quest, after which Gertrude will give them a kitten as part of the reward. After three hours, the kitten will grow into a pet cat. Cats no longer need the food nor attention required of a kitten, and will not run away.\nAfter another five-six hours of having the adult cat following the player, it will become an overgrown cat. Overgrown cats can be trained into wily cats, that will eventually become lazy cats. Lazy cats can repeatedly be trained back into wily cats.\nOnly one kitten may be owned at a time, including the hellkitten variant. Players may purchase a new kitten from Gertrude for 100 coins whenever their current kitten turns into an overgrown cat, or their cat is stored in a player-owned house menagerie. The colour of the kitten will be randomised, unless the player wears a ring of Charos (a) while purchasing the kitten, which allows them to choose the colour.\nAny type of cat can be turned into a Hellcat variant by chasing the hell-rats in Evil Dave's basement. Hellcats can be morphed back into their original colour by feeding them a bucket of milk. \nCats can be interacted with in a number of ways, such as by stroking them, showing them a ball of wool or wielding a mouse toy while the cat follows the player. Cats may be spoken to with a catspeak amulet, or without it after partial completion of Dragon Slayer II. They can also chase rats, with a successful catch rate depending on the type of cat. Regular adult cats have a success rate of 50%.\nPlayers may name their wily and lazy cats by speaking to Felkrash after the completion of Ratcatchers.\nSimilar to every pet, cats can be stored in the menagerie of a player-owned house. They however cannot be insured by Probita and will run off if the player dies, if they were either in the player's inventory or following the player.\nPlayers can use their adult cats, including hellcats, on civilians in West Ardougne in the south-western area of the city to sell it to them for 100 death runes (10,900). This increases to 200 death runes (21,800) with the easy Ardougne achievement diary reward. Cats can also be shooed-away if the player no longer wishes to keep them.\nIf a cat dies in combat, it is permanently lost and the message Your cat has passed away. will appear in the chatbox. Cats cannot die in a Menagerie arena. Cats can also be lost if they are following the player when their membership expires. If a cat is lost and replaced, quest dialogue will not reflect this; the replacement will recall events as though they were the same cat."
+			}
+		]
+	},
+	"limits": {
+		"categories": 500
+	}
+}

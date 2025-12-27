@@ -1,56 +1,63 @@
-import { writeFileSync } from 'node:fs';
-import { sleep, Time } from '@oldschoolgg/toolkit';
-// @ts-expect-error
-import wtf from 'wtf_wikipedia';
-import { scrapeItemWikiPage } from './scrape-item.js';
-import { USELESS_ITEMS, checkItemVisibility, ItemVisibility, FullItem } from 'oldschooljs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import type { StringifiedInteger } from '@oldschoolgg/schemas';
+import { sleep } from '@oldschoolgg/toolkit';
+import { toSortedSnakeCaseObject } from '@oldschoolgg/util';
+import { checkItemVisibility, type FullItem, ItemVisibility, USELESS_ITEMS } from 'oldschooljs';
+import { chunk } from 'remeda';
 
-import moidData from './data/moid-items.json' with {type: 'json'};
-import currentItemData from './data/full-items.json' with {type: 'json'};
-import { MoidItem } from '@oldschoolgg/schemas';
-import { saveDataFile } from './util.js';
+import { resolveItemName } from './item-names.js';
+import { OSRSWikiAPI } from './osrs-wiki/api.js';
+import { OSRS_WIKI_RATELIMIT, OSRS_WIKI_USER_AGENT } from './osrs-wiki/wiki.js';
+import { type DataFileContent, saveDataFile, stripHtmlComments } from './util.js';
 
-const itemNameMapping: Record<number, string> = {
-	1555: "Pet kitten",
-	1556: "Pet kitten (light)",
-	1557: "Pet kitten (brown)",
-	1558: "Pet kitten (black)",
-	1559: "Pet kitten (brown-grey)",
-	1560: "Pet kitten (blue-grey)",
+const currentItemData = JSON.parse(readFileSync('./src/data/full-items.json', 'utf-8')) as DataFileContent<
+	Record<StringifiedInteger, FullItem>
+>;
+const currentData = new Map(Object.entries(currentItemData.data).map(ent => [Number(ent[0]), ent[1]]));
 
-	1561: "Pet cat",
-	1562: "Pet cat (light)",
-	1563: "Pet cat (brown)",
-	1564: "Pet cat (black)",
-	1565: "Pet cat (brown-grey)",
-	1566: "Pet cat (blue-grey)",
+const moidData = JSON.parse(readFileSync('./src/data/moid-items.json', 'utf-8')) as DataFileContent<
+	Record<StringifiedInteger, FullItem>
+>;
+const moidItems = Object.entries(moidData.data).map(ent => ({ ...ent[1], id: Number(ent[0]) }));
+const moidItemMap = new Map(moidItems.map(i => [i.id, i]));
 
-	1567: "Pet cat (overgrown)",
-	1568: "Pet cat (overgrown, light)",
-	1569: "Pet cat (overgrown, brown)",
-	1570: "Pet cat (overgrown, black)",
-	1571: "Pet cat (overgrown, brown-grey)",
-	1572: "Pet cat (overgrown, blue-grey)"
-};
+const SCRAPE_ONCE_NAMES = ['Pet cat', 'Overgrown cat', 'Wily cat', 'Kitten', 'Lazy cat'];
 
-function resolveItemName(item: MoidItem): string {
-	if (itemNameMapping[item.id]) {
-		return itemNameMapping[item.id];
-	}
-	return item.name;
-}
+async function main() {
+	const api = new OSRSWikiAPI({ userAgent: OSRS_WIKI_USER_AGENT(), throttleMs: 4000 });
 
-
-function getInitial() {
-	const moidItems = Object.entries(moidData.data).map((ent => ({ ...ent[1], id: Number(ent[0]) }))) as MoidItem[];
-	const currentData = new Map(Object.entries(currentItemData.data).map(ent => ([Number(ent[0]), ent[1]])));
-	console.log(`Total MOID items: ${moidItems.length}`);
-	console.log(`Current data has ${currentData.size} items`);
-
-	const itemsToProcess: MoidItem[] = [];
+	const itemsToProcess: (typeof moidItems)[0][] = [];
 	for (const item of moidItems) {
+		if (SCRAPE_ONCE_NAMES.includes(item.name) && itemsToProcess.some(_i => _i.name === item.name)) continue;
 		const visibility = checkItemVisibility(item);
 		if (visibility === ItemVisibility.NeverAdd) continue;
+
+		const fi = currentData.get(item.id);
+		if (fi) {
+			if (['</span>', 'sic]', 'class=', '<sup'].some(str => fi.examine?.includes(str))) {
+				itemsToProcess.push(item);
+				continue;
+			}
+			if (fi.examine !== item.examine) {
+				console.log(`${item.name}[${item.id}] OSRS[${item.examine}] Wiki[${fi.examine}]`);
+				itemsToProcess.push(item);
+				continue;
+			}
+			if (resolveItemName(item) === null && fi.name !== item.name) {
+				console.log(`Name mismatch ID ${item.id}: MOID[${item.name}] FI[${fi.name}]`);
+			}
+			// if (fi.value !== item.value) {
+			// 	console.log(`value mismatch ID ${item.id}: MOID[${item.value}] FI[${fi.value}]`);
+			// 	itemsToProcess.push(item);
+			// 	continue;
+			// }
+			// if (fi.members !== item.members && !fi.config_name.startsWith('br') && !fi.config_name.startsWith('dt2_') && !fi.config_name.startsWith('barbassault_') && !fi.config_name.startsWith('league')) {
+			// 	console.log(`members mismatch ID ${item.name} [${item.id}]: MOID[${item.members}] FI[${fi.members}]`);
+			// }
+			// if (fi.noteable !== Boolean(item.noted_id)) {
+			// 	console.log(`noteable mismatch ID ${item.id}`);
+			// }
+		}
 		if (visibility === ItemVisibility.Unobtainable) continue;
 
 		if (USELESS_ITEMS.includes(item.id)) continue;
@@ -59,85 +66,69 @@ function getInitial() {
 			continue;
 		}
 
-		if (item.name === 'Pet cat' && item.id !== 1561) {
-			continue;
-		}
-		if (item.name === 'Pet kitten' && item.id !== 1555) {
-			continue;
-		}
-
-		// if (item.id < 25328) continue;
-		if (item.id > 100_000) continue;
-		if (item.name.startsWith('poh_') || item.name.startsWith('cert_poh')) continue;
 		itemsToProcess.push(item);
 	}
-	return { itemsToProcess, currentData };
-}
-
-export const OSRS_WIKI_RATELIMIT = 300;
-export const OSRS_WIKI_USER_AGENT = () => {
-	return `Fetching All Items Once / discord[@magnaboy] ratelimit[${OSRS_WIKI_RATELIMIT}ms]`;
-};
-
-async function main() {
-	const { itemsToProcess, currentData } = getInitial();
 
 	console.log(`Items to process: ${itemsToProcess.length}`);
 	writeFileSync('./items_to_process.json', JSON.stringify(itemsToProcess, null, 4));
 
 	const newData: Record<string, FullItem> = {};
-	for (const [id, item] of currentData.entries()) {
-		const fullItem: FullItem = { ...(item) as FullItem, id: Number(id), visibility: checkItemVisibility(item as any) };
-		if (fullItem.id > 100_000) continue;
-		newData[id] = fullItem;
+	for (const [id, item] of Array.from(currentData.entries()).sort((a, b) => Number(a[0]) - Number(b[0]))) {
+		const moidItem = moidItemMap.get(id)!;
+		if (!moidItem) throw new Error('no moid item');
+		const fullItem: FullItem = { ...(item as FullItem), id: Number(id) };
+		if (fullItem.id > 100_000 || !Number.isInteger(fullItem.id) || fullItem.id <= 0) {
+			throw new Error(`Item ID found: ${fullItem.id} (${fullItem.name})`);
+		}
+		if (fullItem.destroy?.includes('<!--')) {
+			fullItem.destroy = stripHtmlComments(fullItem.destroy);
+		}
+		if ('removalupdate' in fullItem) {
+			throw new Error('item has removalupdate key');
+		}
+		if ('version' in fullItem) {
+			delete fullItem.version;
+		}
+		// if ('equipment' in fullItem && 'version' in fullItem.equipment) {
+		// 	delete fullItem.equipment.version;
+		// }
+		// if ('equipment' in fullItem && 'combatstyle' in fullItem.equipment) {
+		// 	fullItem.equipment.combat_style = fullItem.equipment.combatstyle;
+		// 	delete fullItem.equipment.combatstyle;
+		// }
+
+		for (const key of ['destroy', 'examine', 'removal_update'] as const) {
+			if (!fullItem[key]) {
+				delete fullItem[key];
+			}
+		}
+		newData[id] = toSortedSnakeCaseObject(fullItem);
 	}
 
-	const durations: number[] = [];
+	const processedIDs = new Set<number>();
 
-	for (let i = 0; i < itemsToProcess.length; i++) {
-		const start = performance.now();
+	for (const list of chunk(itemsToProcess, 30)) {
 		await sleep(OSRS_WIKI_RATELIMIT);
-		const moidItem = itemsToProcess[i];
 
-		const newItem = await scrapeItemWikiPage(moidItem);
+		console.log(`Fetching ${list.length} items`);
+		const items = await api.pages.scrapeItemIds(list.map(i => i.id));
 
-		if (typeof newItem === 'string') {
-			console.log(`Failed to get item data for ${moidItem.name}[${moidItem.id}]: ${newItem}`);
-			continue;
-		}
-
-		if (newItem.length === 0) {
-			console.log(`No data found for ${moidItem.name}[${moidItem.id}]`);
-			continue;
-		}
-
-		for (const item of newItem) {
-			if (item.id > 100_000) {
-				console.log(`----------- ${item.name}[${item.id}] ---------------`);
+		for (const item of items) {
+			processedIDs.add(item.id);
+			if (Number.isNaN(item.id) || !Number.isInteger(item.id) || item.id <= 0 || item.id > 100_000) {
+				console.log(`Skipping item with invalid ID: ${item.name} [${item.id}]`);
 				continue;
 			}
-			const fullItem: FullItem = { ...item, visibility: checkItemVisibility(item as any), name: resolveItemName(moidItem) };
-			console.log(`${item.name}[${item.id}] ${JSON.stringify(fullItem)}`);
+			const moidItem = moidItemMap.get(item.id)!;
+			const fullItem: FullItem = {
+				...item,
+				name: resolveItemName(item) ?? item.name,
+				config_name: moidItem!.config_name
+			};
 			newData[item.id] = fullItem;
 		}
-
-		saveDataFile('full-items.json', (newData));
-		const end = performance.now();
-		const duration = end - start;
-		durations.push(duration);
-		const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
-		const remaining = itemsToProcess.length - (i + 1);
-		const timeLeft = (
-			(remaining * avgDuration) /
-			Time.Hour
-		);
-		console.log(
-			`Processed ${moidItem.name}[${moidItem.id}] (${newItem.length} items) (${i + 1}/${itemsToProcess.length
-			}) in ${duration.toFixed(2)}ms. Avg: ${avgDuration.toFixed(2)}ms. Est. time left: ${timeLeft.toFixed(2)}h (${remaining} items).`
-		);
+		saveDataFile('./full-items.json', newData);
 	}
-
-	saveDataFile('full-items.json', (newData));
 }
 
 main();
