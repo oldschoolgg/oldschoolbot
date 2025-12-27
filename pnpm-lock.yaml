@@ -410,12 +410,12 @@ importers:
       oldschooljs:
         specifier: workspace:*
         version: link:../oldschooljs
-      pqueue:
-        specifier: ^0.3.1
-        version: 0.3.1
       remeda:
         specifier: ^2.23.0
         version: 2.23.0
+      wretch:
+        specifier: ^3.0.6
+        version: 3.0.6
       wtf_wikipedia:
         specifier: ^10.3.2
         version: 10.3.2(encoding@0.1.13)
@@ -3729,10 +3729,6 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
-  pqueue@0.3.1:
-    resolution: {integrity: sha512-g+KyGi1vdM1LiHX5L1FNzN0GWeocXa4QHWfuv8hdAPUAhCuUl+tvq5fA0JM1sGaFd7C3np0rEWoX84XwkvaMBg==}
-    engines: {node: ~0.8}
-
   preact-render-to-string@6.6.1:
     resolution: {integrity: sha512-IIMfXRjmbSP9QmG18WJLQa4Z4yx3J0VC9QN5q9z2XYlWSzFlJ+bSm/AyLyyV/YFwjof1OXFX2Mz6Ao60LXudJg==}
     peerDependencies:
@@ -4608,6 +4604,10 @@ packages:
   wrap-ansi@9.0.2:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
     engines: {node: '>=18'}
+
+  wretch@3.0.6:
+    resolution: {integrity: sha512-qshuQ0s5973Mu9mL5PG6QYG/bD0jihX9bovq7jgGE8r6ndH+JPOzzxihh/gaanKKsrFvvIdZ+KN4BoFyTj4PWg==}
+    engines: {node: '>=22'}
 
   ws@8.18.3:
     resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
@@ -8483,8 +8483,6 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
-  pqueue@0.3.1: {}
-
   preact-render-to-string@6.6.1(preact@10.28.1):
     dependencies:
       preact: 10.28.1
@@ -9463,6 +9461,8 @@ snapshots:
       ansi-styles: 6.2.3
       string-width: 7.2.0
       strip-ansi: 7.1.2
+
+  wretch@3.0.6: {}
 
   ws@8.18.3(bufferutil@4.0.9):
     optionalDependencies:

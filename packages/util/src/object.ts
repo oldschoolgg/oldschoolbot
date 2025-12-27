@@ -31,9 +31,7 @@ export function objectToSnakeCase<T>(input: T): T {
 	return input;
 }
 
-export function sortObjectKeys<T>(
-	obj: T
-): T {
+export function sortObjectKeys<T>(obj: T): T {
 	if (Array.isArray(obj)) {
 		return obj.map(sortObjectKeys) as T;
 	}
