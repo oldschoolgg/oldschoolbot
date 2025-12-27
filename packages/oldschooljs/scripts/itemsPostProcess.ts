@@ -36,18 +36,14 @@ for (const [_id, item] of Object.entries(items) as [string, any][]) {
 	delete item.equipable_weapon;
 	delete item.incomplete;
 	delete item.id;
+	delete item.highalch;
+	delete item.lowalch;
 
 	if (!item.price) {
 		delete item.price;
 	}
-	if ([0, 1].includes(item.highalch) || !item.highalch) {
-		delete item.highalch;
-	}
-	if ([0, 1].includes(item.lowalch) || !item.lowalch) {
-		delete item.lowalch;
-	}
 
-	if (item.cost === 1 || ITEMS_TO_IGNORE_PRICES.includes(id)) {
+	if (item.cost === 1) {
 		delete item.cost;
 	}
 

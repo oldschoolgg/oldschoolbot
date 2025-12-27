@@ -27,6 +27,7 @@ COPY packages/util/package.json ./packages/util/package.json
 COPY packages/spritesheet/package.json ./packages/spritesheet/package.json
 COPY packages/cli/package.json ./packages/cli/package.json
 COPY packages/rng/package.json ./packages/rng/package.json
+COPY packages/scraper/package.json ./packages/scraper/package.json
 COPY packages/schemas/package.json ./packages/schemas/package.json
 COPY packages/robochimp/package.json ./packages/robochimp/package.json
 COPY docs/package.json ./docs/package.json

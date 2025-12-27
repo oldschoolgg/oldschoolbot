@@ -1,3 +1,5 @@
+import type { GearStats } from '@/gear/index.js';
+
 export enum EquipmentSlot {
 	TwoHanded = '2h',
 	Ammo = 'ammo',
@@ -43,24 +45,10 @@ export interface ItemRequirements {
 /**
  * The equipment bonuses of equipable armour/weapons.
  */
-export interface ItemEquipment {
-	attack_stab: number;
-	attack_slash: number;
-	attack_crush: number;
-	attack_magic: number;
-	attack_ranged: number;
-	defence_stab: number;
-	defence_slash: number;
-	defence_crush: number;
-	defence_magic: number;
-	defence_ranged: number;
-	melee_strength: number;
-	ranged_strength: number;
-	magic_damage: number;
-	prayer: number;
+export type ItemEquipment = GearStats & {
 	slot: EquipmentSlot;
 	requirements: Partial<ItemRequirements> | null;
-}
+};
 
 /**
  * A representation of an Old School RuneScape (OSRS) item.
@@ -164,21 +152,7 @@ export type FullItem = {
 	removal_update?: string;
 	value?: number;
 	buy_limit?: number;
-	equipment?: {
-		attack_stab: number;
-		attack_slash: number;
-		attack_crush: number;
-		attack_magic: number;
-		attack_range: number;
-		defence_stab: number;
-		defence_slash: number;
-		defence_crush: number;
-		defence_magic: number;
-		defence_range: number;
-		melee_strength: number;
-		range_strength: number;
-		magic_damage: number;
-		prayer: number;
+	equipment?: GearStats & {
 		slot: EquipmentSlot;
 		requirements: Partial<ItemRequirements> | null;
 	};

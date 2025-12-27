@@ -89,6 +89,7 @@ async function main() {
 		if ('version' in fullItem) {
 			delete fullItem.version;
 		}
+
 		// if ('equipment' in fullItem && 'version' in fullItem.equipment) {
 		// 	delete fullItem.equipment.version;
 		// }

@@ -10,12 +10,14 @@ const KEY_REMAPPINGS = {
 	aslash: 'attack_slash',
 	acrush: 'attack_crush',
 	amagic: 'attack_magic',
-	arange: 'attack_range',
+	arange: 'attack_ranged',
+
 	dstab: 'defence_stab',
 	dslash: 'defence_slash',
 	dcrush: 'defence_crush',
 	dmagic: 'defence_magic',
-	drange: 'defence_range',
+	drange: 'defence_ranged',
+
 	str: 'melee_strength',
 	rstr: 'ranged_strength',
 	mdmg: 'magic_damage',
@@ -28,12 +30,14 @@ const STAT_KEYS = [
 	'attack_slash',
 	'attack_crush',
 	'attack_magic',
-	'attack_range',
+	'attack_ranged',
+
 	'defence_stab',
 	'defence_slash',
 	'defence_crush',
 	'defence_magic',
-	'defence_range',
+	'defence_ranged',
+
 	'melee_strength',
 	'ranged_strength',
 	'magic_damage'
