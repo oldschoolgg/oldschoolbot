@@ -253,7 +253,7 @@ async function favAlchConfig(
 	const currentFavorites = user.user.favorite_alchables;
 	if (manyToAdd) {
 		const items = parseBank({ inputStr: manyToAdd, noDuplicateItems: true })
-			.filter(i => i.highalch !== undefined && i.highalch > 1)
+			.filter(i => i.high_alch !== undefined && i.high_alch > 1)
 			.filter(i => !currentFavorites.includes(i.id));
 		if (items.length === 0) return 'No valid items were given.';
 		const newFavs = uniqueArr([...currentFavorites, ...items.items().map(i => i[0].id)]);
@@ -277,7 +277,7 @@ async function favAlchConfig(
 		return `Your current favorite alchable items are: ${currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')}.`;
 	}
 
-	if (!item.highalch) return "That item isn't alchable.";
+	if (!item.high_alch) return "That item isn't alchable.";
 
 	const action = removeItem ? 'remove' : 'add';
 	const isAlreadyFav = currentFavorites.includes(item.id);
@@ -844,13 +844,13 @@ export const configCommand = defineCommand({
 					description: 'Manage your favorite alchables.',
 					options: [
 						{
-							...itemOption(item => item.highalch !== undefined && item.highalch > 10),
+							...itemOption(item => item.high_alch !== undefined && item.high_alch > 10),
 							name: 'add',
 							description: 'Add an item to your favorite alchables.',
 							required: false
 						},
 						{
-							...itemOption(item => item.highalch !== undefined && item.highalch > 10),
+							...itemOption(item => item.high_alch !== undefined && item.high_alch > 10),
 							name: 'remove',
 							description: 'Remove an item from your favorite alchables.',
 							required: false

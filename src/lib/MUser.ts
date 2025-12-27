@@ -192,7 +192,7 @@ function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean
 		Math.floor(tripLength / (agility ? timePerAlchAgility : timePerAlch)),
 		bank.amount(item.id)
 	);
-	return maxCasts * (item.highalch ?? 0);
+	return maxCasts * (item.high_alch ?? 0);
 }
 
 export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
@@ -329,7 +329,7 @@ export class MUserClass {
 		return this.user.favorite_alchables
 			.filter(id => bank.has(id))
 			.map(id => Items.getItem(id))
-			.filter(i => i !== null && i?.highalch !== undefined && i.highalch > 0 && i.tradeable)
+			.filter(i => i !== null && i?.high_alch !== undefined && i.high_alch > 0 && i.tradeable)
 			.sort((a, b) => alchPrice(bank, b!, duration, agility) - alchPrice(bank, a!, duration, agility)) as Item[];
 	}
 

@@ -43,7 +43,7 @@ describe('parseItemPage', () => {
 			expect(item.equipable).toEqual(true);
 			expect(item.noteable).toEqual(false);
 			expect(item.stackable).toEqual(false);
-			expect(item.equipment?.defence_range).toEqual(9);
+			expect(item.equipment?.defence_ranged).toEqual(9);
 			expect(item.equipment?.magic_damage).toEqual(0);
 			expect(item.members).toEqual(true);
 			expect(item.equipment?.slot).toEqual(EquipmentSlot.Cape);

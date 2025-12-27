@@ -391,7 +391,7 @@ export const activitiesCommand = defineCommand({
 			description: 'Alch items for GP.',
 			options: [
 				{
-					...ownedItemOption(i => Boolean(i.highalch)),
+					...ownedItemOption(i => Boolean(i.cost)),
 					required: true
 				},
 				{

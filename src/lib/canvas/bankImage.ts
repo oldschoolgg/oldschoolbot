@@ -361,7 +361,7 @@ class BankImageTask {
 			if (flags.has('sv') || mahojiFlags?.includes('show_price')) {
 				bottomItemText = (item.price ?? 0) * quantity;
 			} else if (flags.has('av') || mahojiFlags?.includes('show_alch')) {
-				bottomItemText = (item.highalch ?? 0) * quantity;
+				bottomItemText = (item.high_alch ?? 0) * quantity;
 			} else if (flags.has('id') || mahojiFlags?.includes('show_id')) {
 				bottomItemText = item.id.toString();
 			} else if (flags.has('names') || mahojiFlags?.includes('show_names')) {

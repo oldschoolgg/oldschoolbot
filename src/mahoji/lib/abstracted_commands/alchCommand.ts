@@ -35,7 +35,7 @@ export async function alchCommand(
 	if (!osItem) osItem = favAlchs;
 
 	if (!osItem) return 'Invalid item.';
-	if (!osItem.highalch || !osItem.tradeable) return 'This item cannot be alched.';
+	if (!osItem.high_alch || !osItem.tradeable) return 'This item cannot be alched.';
 
 	if (user.skillsAsLevels.magic < 55) {
 		return 'You need level 55 Magic to cast High Alchemy';
@@ -62,7 +62,7 @@ export async function alchCommand(
 		}
 	}
 
-	const alchValue = quantity * osItem.highalch;
+	const alchValue = quantity * osItem.high_alch;
 	const consumedItems = new Bank().add(osItem.id, quantity).add('Nature rune', quantity);
 	if (fireRuneCost > 0) {
 		consumedItems.add('Fire rune', fireRuneCost);

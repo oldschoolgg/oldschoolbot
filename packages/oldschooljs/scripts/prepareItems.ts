@@ -1,13 +1,13 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { objectValues } from '@oldschoolgg/toolkit';
-import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
+import { clone } from 'remeda';
 
 import { checkItemVisibility, EquipmentSlot, type FullItem, type Item, ItemVisibility } from '@/meta/item.js';
 import { Items } from '@/structures/Items.js';
 import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
 import { itemChanges } from './manualItemChanges.js';
-import { ITEMS_TO_IGNORE_PRICES, moidLink } from './util/misc.js';
+import { ITEMS_TO_IGNORE_PRICES } from './util/misc.js';
 
 const ITEM_KEYS_TO_DELETE = [
 	'quest_item',
@@ -93,8 +93,6 @@ const itemsToRename = [
 	}
 ];
 
-const newItemJSON: { [key: string]: Item } = {};
-
 function itemShouldntBeAdded(item: any) {
 	return checkItemVisibility(item) === ItemVisibility.NeverAdd;
 }
@@ -106,8 +104,6 @@ const manualItems: Item[] = [
 		members: true,
 		equipable: true,
 		cost: 75_000,
-		lowalch: 30_000,
-		highalch: 45_000,
 		equipment: {
 			attack_stab: 4,
 			attack_slash: 4,
@@ -142,8 +138,6 @@ const manualItems: Item[] = [
 		tradeable_on_ge: true,
 		noteable: true,
 		cost: 100,
-		lowalch: 40,
-		highalch: 60,
 		price: 2011
 	},
 	{
@@ -154,8 +148,6 @@ const manualItems: Item[] = [
 		tradeable_on_ge: false,
 		noteable: true,
 		cost: 100,
-		lowalch: 1,
-		highalch: 1,
 		price: 1,
 		equipment: {
 			attack_stab: 0,
@@ -184,48 +176,51 @@ const manualItems: Item[] = [
 		tradeable_on_ge: false,
 		noteable: true,
 		cost: 100,
-		lowalch: 1,
-		highalch: 1,
 		price: 1
 	}
 ];
 
-export default async function prepareItems(): Promise<void> {
+type ItemWithoutID = Omit<Item, 'id'>;
+
+async function prepareItems(): Promise<void> {
 	const messages: string[] = [];
-	const allItems = JSON.parse(readFileSync('../../scraper/src/data/full-items.json', 'utf-8')).data as Record<
+	const previousItems = JSON.parse(readFileSync('./src/assets/item_data.json', 'utf-8'));
+	const newItemJSON: { [key: string]: ItemWithoutID } = clone(previousItems);
+
+	const allItems = JSON.parse(readFileSync('../scraper/src/data/full-items.json', 'utf-8')).data as Record<
 		string,
 		FullItem
 	>;
-	const newItems: Item[] = [];
+	const newItems: ItemWithoutID[] = [];
 
 	for (const _item of Object.values(allItems)) {
-		const previousItem = Items.get(_item.id);
-		let item: Item = {
-			id: _item.id,
+		const id = Number(_item.id);
+		const previousItem = previousItems[id] as Item | undefined;
+		let item: ItemWithoutID = {
 			name: _item.name,
 			members: _item.members,
 			tradeable: _item.tradeable,
 			tradeable_on_ge: _item.tradeable_on_ge,
 			stackable: _item.stackable,
-			noteable: _item.noteable,
+			noteable: previousItem?.noteable,
 			cost: previousItem?.cost ?? _item.value,
 			buy_limit: _item.buy_limit,
 			equipment: _item.equipment
 		};
 		for (const bool of ['equipable'] as const) {
-			if (item[bool]) {
-				_item[bool] = item[bool];
+			if (_item[bool]) {
+				item[bool] = _item[bool];
 			}
 		}
 
-		if (itemShouldntBeAdded(item)) continue;
+		if (itemShouldntBeAdded(item) && !previousItem) {
+			console.log(`Skipping item that shouldn't be added: ${item.name}[${id}]`);
+			continue;
+		}
 
 		if (item.name === "Pharaoh's sceptre") {
-			// @ts-expect-error
-			item = {
-				...allItems[26_950],
-				id: item.id
-			};
+			item = previousItems[id];
+			continue;
 		}
 
 		for (const [_key, value] of Object.entries(item)) {
@@ -238,23 +233,23 @@ export default async function prepareItems(): Promise<void> {
 			}
 		}
 
-		if (!previousItem && bsoItemsJson[item.id.toString() as keyof typeof bsoItemsJson]) {
-			throw new Error(`!!!!!!! New item added ${item.name}[${item.id}] clashes with BSO item !!!!!!!`);
+		if (!previousItem && bsoItemsJson[id.toString() as keyof typeof bsoItemsJson]) {
+			throw new Error(`!!!!!!! New item added ${item.name}[${id}] clashes with BSO item !!!!!!!`);
 		}
 
-		if (ITEMS_TO_IGNORE_PRICES.includes(item.id)) {
+		if (ITEMS_TO_IGNORE_PRICES.includes(id)) {
 			delete item.price;
 		} else {
 			item.price = previousItem?.price ?? item.price;
 		}
 
-		const rename = itemsToRename.find(i => i.id === item.id);
+		const rename = itemsToRename.find(i => i.id === id);
 		if (rename) {
 			item.name = rename.name;
 		}
 
-		if (equipmentModifications.has(item.id)) {
-			const copyItem = Items.get(equipmentModifications.get(item.id)!)!;
+		if (equipmentModifications.has(id)) {
+			const copyItem = Items.get(equipmentModifications.get(id)!)!;
 			item.equipment = copyItem.equipment;
 			item.equipable = copyItem.equipable as true | undefined;
 		}
@@ -270,29 +265,27 @@ export default async function prepareItems(): Promise<void> {
 			}
 		}
 
-		if (previousItem?.equipment?.requirements && !item.equipment?.requirements) {
-			// @ts-expect-error ignore
-			item.equipment = {
-				...item.equipment,
-				requirements: previousItem.equipment.requirements
-			};
+		if (!previousItem?.equipment && item.equipment) {
+			item.equipment = previousItem?.equipment;
 		}
 
-		if (previousItem && item.id < 30_000) {
+		if (previousItem && id < 30_000) {
 			item = previousItem;
 		}
 
-		if (itemChanges[item.id]) {
-			item = deepMerge(item, itemChanges[item.id]) as any;
+		if (itemChanges[id]) {
+			item = deepMerge(item, itemChanges[id]) as any;
 		}
 
-		newItemJSON[item.id] = item;
-
-		for (const item of manualItems) {
-			newItemJSON[item.id] = item;
+		if (!previousItem && id < 30_000) {
+			continue;
 		}
+		newItemJSON[id] = item;
 	}
 
+	for (const item of manualItems) {
+		newItemJSON[item.id] = item;
+	}
 	// @ts-expect-error
 	newItemJSON[0] = undefined;
 
@@ -301,8 +294,8 @@ export default async function prepareItems(): Promise<void> {
 		.filter(i => i !== null && i !== undefined);
 
 	messages.push(`
-New Items: ${moidLink(newItems.map(i => i.id))}
-Deleted Items: ${moidLink(deletedItems.map(i => i.id))}
+New Items: ${newItems.map(i => i.name)}
+Deleted Items: ${deletedItems.map(i => i.name)}
 `);
 
 	if (deletedItems.length > 0) {
@@ -326,11 +319,8 @@ GROUP BY id
 `);
 	}
 
-	const diffOutput: any = diff(previousItems, newItemJSON);
-	for (const [key, val] of Object.entries(diffOutput as any)) {
-		if (!val || Object.values(val).every(t => !t)) {
-			delete diffOutput[key];
-		}
-	}
+	console.log(newItemJSON[32928].name);
 	writeFileSync('./src/assets/item_data.json', `${JSON.stringify(newItemJSON, null, '	')}\n`);
 }
+
+prepareItems();

@@ -111,7 +111,7 @@ export const agilityTask: MinionTask = {
 
 		if (alch) {
 			const alchedItem = Items.getOrThrow(alch.itemID);
-			const alchGP = alchedItem.highalch! * alch.quantity;
+			const alchGP = alchedItem.high_alch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP({
 				skillName: 'magic',

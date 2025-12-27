@@ -47,7 +47,7 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 }
 
 export function sellStorePriceOfItem(item: Item, qty: number): { price: number; basePrice: number } {
-	if (!item.cost || !item.lowalch) return { price: 0, basePrice: 0 };
+	if (!item.cost) return { price: 0, basePrice: 0 };
 	const basePrice = item.cost;
 	// Sell price decline with stock by 3% until 10% of item value and is always low alch price when stock is 0.
 	const percentageFirstEleven = (0.4 - 0.015 * Math.min(qty - 1, 10)) * Math.min(qty, 11);

@@ -33,8 +33,15 @@ export class ItemsSingleton extends Collection<number, Item> {
 			const numID = Number.parseInt(id);
 
 			// TOODOOOOOOOOO if (USELESS_ITEMS.includes(numID)) continue;
-			this.set(numID, { id: Number(id), ...item });
-
+			this.set(numID, {
+				id: Number(id),
+				...item,
+				high_alch: item.cost ? Math.floor(item.cost * 0.6) : 0,
+				low_alch: item.cost ? Math.floor(item.cost * 0.4) : 0
+			});
+			if (!item.name) {
+				throw new Error(`Item with ID ${id} has no name.`);
+			}
 			const cleanName = cleanString(item.name);
 			if (!this.itemNameMap.has(cleanName)) {
 				this.itemNameMap.set(cleanName, numID);

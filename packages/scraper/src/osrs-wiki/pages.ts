@@ -10,7 +10,7 @@ export class PagesAPI {
 	async scrapeItemIds(itemIds: number[]): Promise<FullItem[]> {
 		const bucketResults = await this.client.buckets.item.fetchById(itemIds);
 
-		const rawApiResponse = await this.client.wiki.request({
+		const rawApiResponse: any = await this.client.wiki.request({
 			action: 'query',
 			titles: bucketResults.map(_b => _b.pageName).join('|'),
 			prop: 'revisions|info|categories|pageimages|extracts',
@@ -26,6 +26,9 @@ export class PagesAPI {
 		});
 
 		const results: FullItem[] = [];
+		if (!rawApiResponse.query || !rawApiResponse.query.pages) {
+			return [];
+		}
 		for (const page of (rawApiResponse as any).query.pages) {
 			const content: string = page.revisions[0].slots.main.content;
 			if (content.startsWith('#redirect')) {

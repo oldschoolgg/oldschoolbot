@@ -58,7 +58,7 @@ async function main() {
 			// 	console.log(`noteable mismatch ID ${item.id}`);
 			// }
 		}
-		if (visibility === ItemVisibility.Unobtainable) continue;
+		// if (visibility === ItemVisibility.Unobtainable) continue;
 
 		if (USELESS_ITEMS.includes(item.id)) continue;
 

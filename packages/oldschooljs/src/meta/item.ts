@@ -62,6 +62,8 @@ export interface Item {
 	 * Name of the item.
 	 */
 	name: string;
+	high_alch?: number;
+	low_alch?: number;
 	/**
 	 * If the item is a members-only.
 	 */
@@ -90,14 +92,6 @@ export interface Item {
 	 * The store price of an item.
 	 */
 	cost?: number;
-	/**
-	 * The low alchemy value of the item (cost * 0.4).
-	 */
-	lowalch?: number;
-	/**
-	 * The high alchemy value of the item (cost * 0.6).
-	 */
-	highalch?: number;
 	/**
 	 * The GE buy limit of the item.
 	 */

@@ -194,7 +194,7 @@ export default function calculateGearLostOnDeathWilderness(
 					const i = Items.getOrThrow(_i);
 					if (lockedItems.includes(i.id)) return -1;
 					// Get the hichest value for the item, be it protection value (cost), ge price or high alch
-					return Math.max(i.price ?? 0, i.cost ?? 0, i.highalch ?? 0);
+					return Math.max(i.price ?? 0, i.cost ?? 0, i.high_alch ?? 0);
 				})
 				.reduce((sum, current) => sum + current, 0),
 			originalItem: Items.getOrThrow(originalItem)
