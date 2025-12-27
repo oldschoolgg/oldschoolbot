@@ -638,5 +638,5 @@ export const allUnobtainableItems: number[] = [
 	...unobtainableLockedItems,
 	...unobtainableLMSItems,
 	...unobtainableBarrowsGear,
-	...unobtainableAgilityShortcutItems,
+	...unobtainableAgilityShortcutItems
 ];

@@ -171,11 +171,11 @@ export const USELESS_ITEMS: number[] = [
 	31211, // Event lamp
 	31218, // Gridmaster points
 	31220, // Gridmaster points negative
-	11527, // Mausoleum bridge repair
+	11527 // Mausoleum bridge repair
 ];
 
 export const UNOBTAINABLE_IDS: number[] = [
 	31174, // Corrupted shark
 	31172, // Battlehat
-	12862, // Thanksgiving dinner
+	12862 // Thanksgiving dinner
 ];

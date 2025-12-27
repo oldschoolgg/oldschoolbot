@@ -145,7 +145,7 @@ export enum ItemVisibility {
 	// Valid items, but should never be available in OSB (e.g. leagues items)
 	Unobtainable,
 	// Never add under any circumstance (e.g. null items, noted items, etc)
-	NeverAdd,
+	NeverAdd
 }
 
 export * from './item-lists.js';

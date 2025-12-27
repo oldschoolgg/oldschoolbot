@@ -1,6 +1,7 @@
 import type { MoidItem } from '@oldschoolgg/schemas';
-import { USELESS_ITEMS } from "@/meta/item-lists.js";
-import { Item, ItemGroups, ItemVisibility } from "../../src/index.js";
+
+import { USELESS_ITEMS } from '@/meta/item-lists.js';
+import { type Item, ItemGroups, ItemVisibility } from '../../src/index.js';
 
 const CLUE_STEP_REGEX = /^Clue scroll \((beginner|easy|medium|hard|elite|master)\) - .*$/;
 const CLUE_SCROLL_NAMES: string[] = [
@@ -19,7 +20,7 @@ type PossibleOldOptions = {
 	linked_id_item?: number;
 	placeholder?: boolean;
 	wiki_name?: string;
-}
+};
 
 export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOldOptions>): ItemVisibility {
 	const n = item.name.toLowerCase();
@@ -51,9 +52,18 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 		return ItemVisibility.NeverAdd;
 	}
 
-	if ([4553, 4554, 4555, 4556, 4500, 4597, 4598,
-		4211, // roving_elf_crystal
-	].includes(item.id)) {
+	if (
+		[
+			4553,
+			4554,
+			4555,
+			4556,
+			4500,
+			4597,
+			4598,
+			4211 // roving_elf_crystal
+		].includes(item.id)
+	) {
 		return ItemVisibility.NeverAdd;
 	}
 	if (['Dummy'].includes(item.name)) {
@@ -92,47 +102,56 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 			return ItemVisibility.Unobtainable;
 		}
 
-		if (['hw20_poh_pumpkin_build', 'xm21_snow', 'lotg_grubfoot_follower_obj',
-			'deadman_apocalypse_bow',
-			'deadman_apocalypse_staff',
-			'league_bank_heist_teleport',
-			'deadman_apocalypse_sword',
-			'echo_godsword',
-			'weapon_of_sol',
-			'league_clue_compass_teleport',
-			'league_relic_pocket_kingdom_item',
-			'leprechauns_vault',
-			'thousand_bone_door',
-			'crystal_blessing',
-			'sunlight_cuffs',
-			'drygore_blowpipe_loaded',
-			'ring_of_kings',
-			'tangled_lizard_charged',
-			'amulet_of_kings',
-			'thunder_khopesh',
-			'tangled_lizard_uncharged',
-			'damned_gloves',
-			'drygore_blowpipe',
-			'mokhaiotl_puzzle_lore_tablet'
-		].includes(cfnm)) {
+		if (
+			[
+				'hw20_poh_pumpkin_build',
+				'xm21_snow',
+				'lotg_grubfoot_follower_obj',
+				'deadman_apocalypse_bow',
+				'deadman_apocalypse_staff',
+				'league_bank_heist_teleport',
+				'deadman_apocalypse_sword',
+				'echo_godsword',
+				'weapon_of_sol',
+				'league_clue_compass_teleport',
+				'league_relic_pocket_kingdom_item',
+				'leprechauns_vault',
+				'thousand_bone_door',
+				'crystal_blessing',
+				'sunlight_cuffs',
+				'drygore_blowpipe_loaded',
+				'ring_of_kings',
+				'tangled_lizard_charged',
+				'amulet_of_kings',
+				'thunder_khopesh',
+				'tangled_lizard_uncharged',
+				'damned_gloves',
+				'drygore_blowpipe',
+				'mokhaiotl_puzzle_lore_tablet'
+			].includes(cfnm)
+		) {
 			return ItemVisibility.Unobtainable;
 		}
 
-		if (['tiara_soul', 'speedrun_points',
-			'league_5_league_points',
-			'league_5_league_points_negative',
-			'trailblazer_reloaded_league_points',
-			'trailblazer_reloaded_league_points_negative',
-			'bought_trailblazer_reloaded_league_points_negative',
-			'deadman_points',
-			'bas_diving_helmet_unfinished',
-			'bas_diving_backpack_unfinished',
-			'devils_element',
-			'easter24_reward_book_easter_open',
-			'sunlight_antler',
-			'moonlight_antler',
-			'hg_lootsack_droptracking'
-		].includes(cfnm)) {
+		if (
+			[
+				'tiara_soul',
+				'speedrun_points',
+				'league_5_league_points',
+				'league_5_league_points_negative',
+				'trailblazer_reloaded_league_points',
+				'trailblazer_reloaded_league_points_negative',
+				'bought_trailblazer_reloaded_league_points_negative',
+				'deadman_points',
+				'bas_diving_helmet_unfinished',
+				'bas_diving_backpack_unfinished',
+				'devils_element',
+				'easter24_reward_book_easter_open',
+				'sunlight_antler',
+				'moonlight_antler',
+				'hg_lootsack_droptracking'
+			].includes(cfnm)
+		) {
 			return ItemVisibility.NeverAdd;
 		}
 
@@ -140,97 +159,108 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 			return ItemVisibility.NeverAdd;
 		}
 
-		if ([
-			'gauntlet_',
-			'magic_rock_of_',
-			'gathering_event_',
-			'forestry_poh_',
-			'league_4_',
-			'tgod_tablet',
-			'vmq4_moki_tablet',
-			'hw24_poh_'
-		].some(suffix => cfnm?.startsWith(suffix))) {
+		if (
+			[
+				'gauntlet_',
+				'magic_rock_of_',
+				'gathering_event_',
+				'forestry_poh_',
+				'league_4_',
+				'tgod_tablet',
+				'vmq4_moki_tablet',
+				'hw24_poh_'
+			].some(suffix => cfnm?.startsWith(suffix))
+		) {
 			return ItemVisibility.Unobtainable;
 		}
-		if ([
-			'_bh',
-			'echoing_orb',
-		].some(suffix => cfnm?.endsWith(suffix))) {
+		if (['_bh', 'echoing_orb'].some(suffix => cfnm?.endsWith(suffix))) {
 			return ItemVisibility.Unobtainable;
 		}
 
+		if (
+			[
+				'olaf2_',
+				'slice_artifact_',
+				'arravcertificate_',
+				'slayerguide',
+				'poh_menagerie',
+				'hosidius_servery_',
+				'bh_emblem',
+				'trail_slidingpuzzle',
+				'poh_achievementgallery',
+				'poh_superior_',
+				'raids_bat',
+				'raids_fish',
+				'raids_seed',
+				'raids_vial',
+				'pickpocket_guide_',
+				'raids_storag',
+				'fossil_map',
+				'sigil_of_',
+				'dni23_',
+				'easter17_egg_',
+				'vmq3_',
+				'osb5_',
+				'bh_2023_emble',
+				'sigil_of_the_',
+				'bas_puzzle',
+				'wildy_loot_k',
+				'barbassault_ico',
+				'_echoing_orb',
+				'sailing_charting_drink_crate',
+				'dummy_shoe_',
 
-		if ([
-			'olaf2_',
-			'slice_artifact_',
-			'arravcertificate_',
-			'slayerguide',
-			'poh_menagerie',
-			'hosidius_servery_',
-			'bh_emblem',
-			'trail_slidingpuzzle',
-			'poh_achievementgallery',
-			'poh_superior_',
-			'raids_bat',
-			'raids_fish',
-			'raids_seed',
-			'raids_vial',
-			'pickpocket_guide_',
-			'raids_storag',
-			'fossil_map',
-			'sigil_of_',
-			'dni23_',
-			'easter17_egg_',
-			'vmq3_',
-			'osb5_',
-			'bh_2023_emble',
-			'sigil_of_the_',
-			'bas_puzzle',
-			'wildy_loot_k',
-			'barbassault_ico',
-			'_echoing_orb',
-			'sailing_charting_drink_crate',
-			'dummy_shoe_',
+				'agility_swing',
+				'agility_balance',
+				'agility_contortion',
+				'agility_jump',
+				'agility_climb',
+				'agility_strength',
+				'agility_swing',
 
-			'agility_swing',
-			'agility_balance',
-			'agility_contortion',
-			'agility_jump',
-			'agility_climb',
-			'agility_strength',
-			'agility_swing',
-
-			'wgs_henge_',
-			'wgs_guthix_',
-			'dt2_lassar_',
-			'dt2_stranglewood',
-			'dt2_ghorrock_',
-			'dwarf_rock_',
-			'dt2_scar_',
-			'troll_key_',
-			'swamp_cave_',
-			'regicide_alchemy_',
-			'easter_egg_2005_',
-			'deadman_blighted_',
-			'pickpocket_guide',
-			'regicide_barrel_',
-			'boardgames_',
-			'fenk_',
-			'100_osman_',
-			'brain_inv_crate_',
-			'hk_',
-			'slice_artifac',
-			'pattern_',
-		].some(suffix => cfnm?.includes(suffix))) {
+				'wgs_henge_',
+				'wgs_guthix_',
+				'dt2_lassar_',
+				'dt2_stranglewood',
+				'dt2_ghorrock_',
+				'dwarf_rock_',
+				'dt2_scar_',
+				'troll_key_',
+				'swamp_cave_',
+				'regicide_alchemy_',
+				'easter_egg_2005_',
+				'deadman_blighted_',
+				'pickpocket_guide',
+				'regicide_barrel_',
+				'boardgames_',
+				'fenk_',
+				'100_osman_',
+				'brain_inv_crate_',
+				'hk_',
+				'slice_artifac',
+				'pattern_'
+			].some(suffix => cfnm?.includes(suffix))
+		) {
 			return ItemVisibility.Unobtainable;
 		}
 		if (cfnm.includes('slug2_') || cfnm.includes('dorgesh_powerstation') || cfnm.includes('surok_')) {
 			return ItemVisibility.Unobtainable;
 		}
-		if (cfnm.includes('eyeglo_') || cfnm.includes('elemental_workshop_2') || cfnm.includes('hw06_spray') || cfnm.includes('huntguide_')) {
+		if (
+			cfnm.includes('eyeglo_') ||
+			cfnm.includes('elemental_workshop_2') ||
+			cfnm.includes('hw06_spray') ||
+			cfnm.includes('huntguide_')
+		) {
 			return ItemVisibility.Unobtainable;
 		}
-		if (cfnm.includes('barbassault_egg') || cfnm.includes('barbassault_heal') || cfnm.includes('barbassault_vial') || cfnm.includes('barbassault_playericon') || cfnm.includes('barbassault_horn_')) {
+		if (
+			cfnm.includes('barbassault_egg') ||
+			cfnm.includes('barbassault_heal') ||
+			cfnm.includes('barbassault_vial') ||
+			cfnm.includes('barbassault_playericon') ||
+			cfnm.includes('barbassault_horn_')
+		) {
 			return ItemVisibility.Unobtainable;
 		}
 
@@ -250,7 +280,14 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 		if (cfnm.startsWith('slayer_') && cfnm.endsWith('_object')) {
 			return ItemVisibility.Unobtainable;
 		}
-		if (['magictraining_bones', 'magictraining_peachspell', 'magictraining_encha', 'magictraining_dragonstone'].some(_s => cfnm.startsWith(_s))) {
+		if (
+			[
+				'magictraining_bones',
+				'magictraining_peachspell',
+				'magictraining_encha',
+				'magictraining_dragonstone'
+			].some(_s => cfnm.startsWith(_s))
+		) {
 			return ItemVisibility.Unobtainable;
 		}
 
@@ -297,18 +334,23 @@ export function checkItemVisibility(item: (Item | MoidItem) & Partial<PossibleOl
 		) {
 			return ItemVisibility.NeverAdd;
 		}
-		if (['_worn', '_dummy', '_bh_inactive', '_deadman_starter', '_dummyitem'].some(suffix => cfnm?.endsWith(suffix))) {
+		if (
+			['_worn', '_dummy', '_bh_inactive', '_deadman_starter', '_dummyitem'].some(suffix => cfnm?.endsWith(suffix))
+		) {
 			return ItemVisibility.NeverAdd;
 		}
 		if (
-			['clue scroll', 'challenge scroll', 'casket', 'puzzle box', 'armour set',
+			[
+				'clue scroll',
+				'challenge scroll',
+				'casket',
+				'puzzle box',
+				'armour set',
 				'_ornament_25',
 				'_ornament_50',
 				'_ornament_75',
-				'_ornament_100',
-			].some(str =>
-				n.includes(str)
-			)
+				'_ornament_100'
+			].some(str => n.includes(str))
 		) {
 			return ItemVisibility.NeverAdd;
 		}
