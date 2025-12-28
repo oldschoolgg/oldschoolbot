@@ -2179,6 +2179,222 @@
 			}
 		]
 	},
+		{
+		"is_custom": true,
+		"id": 142003,
+		"name": "Crystalline Sentinel",
+		"time_to_finish": 210000,
+		"hp": 800,
+		"table": {},
+		"difficulty_rating": 2,
+		"qp_required": 500,
+		"heal_amount_needed": 3200,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash"],
+		"level_requirements": {
+			"hitpoints": 70,
+			"attack": 70,
+			"strength": 70,
+			"defence": 70
+		},
+		"poh_boosts": {
+			"pool": {
+				"fancy_rejuvenation_pool": 3,
+				"ornate_rejuvenation_pool": 5,
+				"ancient_rejuvenation_pool": 7
+			}
+		},
+		"death_props": {
+			"hardness": 0.3,
+			"steepness": 0.95,
+			"lowest_death_chance": 2,
+			"highest_death_chance": 15
+		},
+		"minimum_heal_amount": 12,
+		"all_items": ["Sentinel core"],
+		"minimum_gear_requirements": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 67,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 192,
+				"defence_slash": 185,
+				"defence_crush": 200,
+				"defence_magic": -3,
+				"defence_ranged": 192,
+				"melee_strength": 66,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"minimum_weapon_shield_stats": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 93,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"item_cost": {
+			"item_cost": {
+				"12695": 1,
+				"2434": 2
+			},
+			"qty_per_kill": 1
+		},
+		"setups_used": ["melee"],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 4151
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 8,
+						"item_id": 11838
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 6,
+						"item_id": 12954
+					}
+				]
+			}
+		]
+	},
+	{
+		"is_custom": true,
+		"id": 142004,
+		"name": "Fungal Behemoth",
+		"time_to_finish": 270000,
+		"hp": 1200,
+		"table": {},
+		"difficulty_rating": 3,
+		"qp_required": 750,
+		"heal_amount_needed": 6000,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash"],
+		"level_requirements": {
+			"hitpoints": 75,
+			"attack": 75,
+			"strength": 75,
+			"defence": 75
+		},
+		"poh_boosts": {
+			"pool": {
+				"fancy_rejuvenation_pool": 3,
+				"ornate_rejuvenation_pool": 5,
+				"ancient_rejuvenation_pool": 7
+			}
+		},
+		"death_props": {
+			"hardness": 0.35,
+			"steepness": 0.96,
+			"lowest_death_chance": 3,
+			"highest_death_chance": 18
+		},
+		"minimum_heal_amount": 14,
+		"all_items": ["Fungal heart"],
+		"minimum_gear_requirements": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 67,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 192,
+				"defence_slash": 185,
+				"defence_crush": 200,
+				"defence_magic": -3,
+				"defence_ranged": 192,
+				"melee_strength": 66,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"minimum_weapon_shield_stats": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 93,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"item_cost": {
+			"item_cost": {
+				"12695": 1,
+				"2434": 3,
+				"6685": 2
+			},
+			"qty_per_kill": 1
+		},
+		"setups_used": ["melee"],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 13263
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 8,
+						"item_id": 11838
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 6,
+						"item_id": 12954
+					}
+				]
+			}
+		],
+		"xp_multiplier": true
+	},
 	{
 		"id": 5862,
 		"name": "Cerberus",

@@ -4223,6 +4223,14 @@
 			"orrodil": {
 				"all_items": ["Celestial flame", "Shattered pendant", "Orrodin", "Primordial heartstring", "Primordial spine"],
 				"items": ["Celestial flame", "Shattered pendant", "Orrodin", "Primordial heartstring", "Primordial spine"]
+			},
+			"fungal_behemoth": {
+				"all_items": ["verdant_heart"],
+				"items": ["verdant_heart"]
+			},
+			"crystalline_sentinel": {
+				"all_items": ["sentinel_core"],
+				"items": ["sentinel_core"]
 			}
 		}
 	},

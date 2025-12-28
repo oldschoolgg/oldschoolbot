@@ -10,7 +10,7 @@ import { Treebeard } from '@/lib/bso/monsters/demi-bosses/Treebeard.js';
 import { VladimirDrakan } from '@/lib/bso/monsters/demi-bosses/VladimirDrakan.js';
 import { Yeti } from '@/lib/bso/monsters/demi-bosses/Yeti.js';
 import { CockroachSoldier, EliteBlackKnight } from '@/lib/bso/monsters/misc.js';
-import { OrymOrrodilMonsters } from '@/lib/bso/monsters/OrymOrrodil.js';
+import { VerdantIslandMonsters } from '@/lib/bso/monsters/VerdantIsland.js';
 import { resourceDungeonMonsters } from '@/lib/bso/monsters/resourceDungeons.js';
 import { SunMoonMonsters } from '@/lib/bso/monsters/SunMoon.js';
 
@@ -30,7 +30,7 @@ export const BSOMonsters = {
 	Venatrix,
 	...resourceDungeonMonsters,
 	...SunMoonMonsters,
-	...OrymOrrodilMonsters
+	...VerdantIslandMonsters
 };
 
 export const BSOMonstersMap = new Map<number, (typeof BSOMonsters)[keyof typeof BSOMonsters]>();
