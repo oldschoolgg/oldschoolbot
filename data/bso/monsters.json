@@ -1023,6 +1023,38 @@
 			"can_cannon": false,
 			"cannon_multi": false
 		},
+				{
+			"id": 142003,
+			"name": "Crystalline Sentinel",
+			"base_kill_time_ms": 35000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": ["Combatant's cape"],
+			"qp_required": 200,
+			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+				{
+			"id": 142004,
+			"name": "Fungal Behemoth",
+			"base_kill_time_ms": 35000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": ["Combatant's cape"],
+			"qp_required": 200,
+			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
 		{
 			"id": 5862,
 			"name": "Cerberus",
