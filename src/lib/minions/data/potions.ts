@@ -441,7 +441,11 @@ const Potions = [
 			'Prayer regeneration potion(3)',
 			'Prayer regeneration potion(4)'
 		])
-	}
+	},
+	{
+		name: 'Brimstone elixir',
+		items: resolveItems('Brimstone elixir')
+	},
 ];
 
 export default Potions;
