@@ -1,3 +1,4 @@
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { describe, it } from 'vitest';
 
@@ -45,5 +46,31 @@ describe('BSO Christmas cracker command', async () => {
 
 		const missing = UNIQUE_PARTY_HATS.filter(hat => !seen.has(hat));
 		expect(missing.length, `Missing partyhats from BSO cracker command: ${missing.join(', ')}`).toBe(0);
+	});
+
+	it('allows ironman to open a cracker on themselves', async ({ expect }) => {
+		const ironman = await client.mockUser({
+			bank: new Bank().add('Christmas cracker', 1),
+			isIronman: true
+		});
+
+		const interaction = {
+			confirmation: async (_msg: string) => true,
+			defer: async () => {},
+			send: async () => {},
+			editReply: async () => {}
+		} as unknown as any;
+
+		const result = await crackerCommand({
+			ownerID: ironman.id,
+			otherPersonID: ironman.id,
+			otherPersonAPIUser: { bot: false, id: ironman.id, username: ironman.username } as any,
+			interaction
+		});
+
+		expect(result).toContain(Emoji.ChristmasCracker);
+
+		const hasPartyhat = ironman.bank.items().some(([item]) => item.name.includes('partyhat'));
+		expect(hasPartyhat).toBe(true);
 	});
 });

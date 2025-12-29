@@ -31,7 +31,15 @@ export async function crackerCommand({
 }) {
 	const otherPerson = await mUserFetch(otherPersonID);
 	const owner = await mUserFetch(ownerID);
-	if (otherPerson.user.minion_ironman) return 'That person is an ironman, they stand alone.';
+	if (owner.isIronman && owner.id === otherPerson.id) {
+		if (!owner.owns('Christmas cracker')) {
+			return "You don't have any Christmas crackers!";
+		}
+		await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
+		const loot = partyHatTableRoll();
+		await owner.addItemsToBank({ items: loot, collectionLog: true });
+		return `${Emoji.ChristmasCracker} ${owner} pulled a Christmas cracker with... yourself? You received ${loot}.`;
+	}
 	if (otherPersonAPIUser.bot) return "Bot's don't have hands.";
 	if (otherPerson.id === owner.id) return 'Nice try.';
 
