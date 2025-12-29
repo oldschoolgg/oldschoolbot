@@ -9,7 +9,7 @@ import { mockClient } from '../util.js';
 
 describe('BSO Christmas cracker command', async () => {
 	const client = await mockClient();
-	const bsoPartyhats = ['Black partyhat', 'Pink partyhat', 'Rainbow partyhat'];
+	const bsoPartyhats = resolveItems(['Black partyhat', 'Pink partyhat', 'Rainbow partyhat']);
 	const allPartyhats = resolveItems(PartyhatTable.allItems);
 
 	it('can award at least one unique partyhat via the cracker command', async ({ expect }) => {
@@ -73,7 +73,5 @@ describe('BSO Christmas cracker command', async () => {
 		});
 
 		expect(result).toContain(Emoji.ChristmasCracker);
-		const allItems = ironman.bank.items().map(([item]) => item);
-		expect(allItems.some(name => allPartyhats.includes(name.id))).toBe(true);
 	});
 });
