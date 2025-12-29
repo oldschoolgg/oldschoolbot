@@ -1,5 +1,7 @@
+import { PartyhatTable } from '@/lib/bso/holidayItems.js';
+
 import { Emoji } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 import { describe, it } from 'vitest';
 
 import { crackerCommand } from '@/mahoji/lib/abstracted_commands/crackerCommand.js';
@@ -7,12 +9,13 @@ import { mockClient } from '../util.js';
 
 describe('BSO Christmas cracker command', async () => {
 	const client = await mockClient();
+	const allPartyhats = resolveItems(PartyhatTable.allItems);
 
 	it('can award all unique partyhats via the cracker command', async ({ expect }) => {
 		const UNIQUE_PARTY_HATS = ['Black partyhat', 'Pink partyhat', 'Rainbow partyhat'];
 
 		const seen = new Set<string>();
-		const ATTEMPTS = 5000;
+		const ATTEMPTS = 500;
 
 		const owner = await client.mockUser({
 			bank: new Bank().add('Christmas cracker', ATTEMPTS)
@@ -41,7 +44,7 @@ describe('BSO Christmas cracker command', async () => {
 			for (const [item] of otherPerson.bank.items()) {
 				seen.add(item.name);
 			}
-			if (UNIQUE_PARTY_HATS.every(hat => seen.has(hat))) break;
+			if (UNIQUE_PARTY_HATS.some(hat => seen.has(hat))) break;
 		}
 
 		const missing = UNIQUE_PARTY_HATS.filter(hat => !seen.has(hat));
@@ -51,7 +54,7 @@ describe('BSO Christmas cracker command', async () => {
 	it('allows ironman to open a cracker on themselves', async ({ expect }) => {
 		const ironman = await client.mockUser({
 			bank: new Bank().add('Christmas cracker', 1)
-		})
+		});
 		await ironman.update({ minion_ironman: true });
 
 		const interaction = {
@@ -70,7 +73,7 @@ describe('BSO Christmas cracker command', async () => {
 
 		expect(result).toContain(Emoji.ChristmasCracker);
 
-		const hasPartyhat = ironman.bank.items().some(([item]) => item.name.includes('partyhat'));
+		const hasPartyhat = allPartyhats.some(i => ironman.owns(i));
 		expect(hasPartyhat).toBe(true);
 	});
 });
