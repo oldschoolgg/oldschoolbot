@@ -962,7 +962,7 @@ export const leaderboardCommand = defineCommand({
 		}
 
 		if (options.mastery) {
-			return masteryLb(interaction, Boolean(options.mastery.ironmen_only);
+			return masteryLb(interaction, Boolean(options.mastery.ironmen_only));
 		}
 
 		return 'Invalid input.';
