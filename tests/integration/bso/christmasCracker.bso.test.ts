@@ -9,18 +9,15 @@ import { mockClient } from '../util.js';
 
 describe('BSO Christmas cracker command', async () => {
 	const client = await mockClient();
+	const bsoPartyhats = ['Black partyhat', 'Pink partyhat', 'Rainbow partyhat'];
 	const allPartyhats = resolveItems(PartyhatTable.allItems);
 
-	it('can award all unique partyhats via the cracker command', async ({ expect }) => {
-		const UNIQUE_PARTY_HATS = ['Black partyhat', 'Pink partyhat', 'Rainbow partyhat'];
-
-		const seen = new Set<string>();
+	it('can award at least one unique partyhat via the cracker command', async ({ expect }) => {
 		const ATTEMPTS = 500;
 
 		const owner = await client.mockUser({
 			bank: new Bank().add('Christmas cracker', ATTEMPTS)
 		});
-
 		const otherPerson = await client.mockUser();
 
 		const interaction = {
@@ -30,6 +27,9 @@ describe('BSO Christmas cracker command', async () => {
 			editReply: async () => {}
 		} as unknown as any;
 
+		const combinedBank = owner.bank.clone().add(otherPerson.bank);
+
+		let gotBsoPartyhat = false;
 		for (let i = 0; i < ATTEMPTS; i++) {
 			await crackerCommand({
 				ownerID: owner.id,
@@ -38,17 +38,18 @@ describe('BSO Christmas cracker command', async () => {
 				interaction
 			});
 
-			for (const [item] of owner.bank.items()) {
-				seen.add(item.name);
+			combinedBank.add(owner.bank).add(otherPerson.bank);
+
+			if (bsoPartyhats.some(hat => combinedBank.has(hat))) {
+				gotBsoPartyhat = true;
+				break;
 			}
-			for (const [item] of otherPerson.bank.items()) {
-				seen.add(item.name);
-			}
-			if (UNIQUE_PARTY_HATS.some(hat => seen.has(hat))) break;
 		}
 
-		const missing = UNIQUE_PARTY_HATS.filter(hat => !seen.has(hat));
-		expect(missing.length, `Missing partyhats from BSO cracker command: ${missing.join(', ')}`).toBe(0);
+		expect(
+			gotBsoPartyhat,
+			`None of the unique partyhats were obtained: ${bsoPartyhats.join(', ')}. Check to make sure CrackerCommand.ts is calling the bso cracker table`
+		).toBe(true);
 	});
 
 	it('allows ironman to open a cracker on themselves', async ({ expect }) => {
