@@ -42,7 +42,6 @@ export async function crackerCommand({
 	}
 	if (otherPersonAPIUser.bot) return "Bot's don't have hands.";
 	if (otherPerson.id === owner.id) return 'Nice try.';
-
 	if (!owner.bank.has('Christmas cracker')) {
 		return "You don't have any Christmas crackers.";
 	}

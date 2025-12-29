@@ -298,7 +298,6 @@ export async function mockUser(
 		QP: number;
 		maxed: boolean;
 		levels: Partial<Record<SkillNameType, number>>;
-		isIronman?: boolean;
 	}> = {}
 ) {
 	const rangeGear = new Gear();
