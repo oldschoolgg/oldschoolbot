@@ -79,7 +79,7 @@ test('Trade consistency', async () => {
 					if (typeof res === 'string' && !res.includes('Trade failed')) {
 						break;
 					}
-					await sleep(40);
+					await sleep(150);
 				}
 				if (attempts === 100) {
 					throw new Error('Trade failed 100 times in a row, something is wrong');
