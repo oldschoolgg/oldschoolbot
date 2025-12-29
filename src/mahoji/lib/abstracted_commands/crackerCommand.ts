@@ -7,14 +7,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
-const HatTable = new LootTable()
-	.add('Red partyhat', 1, 32)
-	.add('Yellow partyhat', 1, 28)
-	.add('White partyhat', 1, 23)
-	.add('Green partyhat', 1, 20)
-	.add('Blue partyhat', 1, 15)
-	.add('Purple partyhat', 1, 10);
-
 const JunkTable = new LootTable()
 	.add('Chocolate bar', 1, 1 / 5.2)
 	.add('Silver bar', 1, 1 / 7.6)
