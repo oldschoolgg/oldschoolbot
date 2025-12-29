@@ -1,15 +1,11 @@
 import { Bank } from 'oldschooljs';
-import { beforeAll, describe, it } from 'vitest';
+import { describe, it } from 'vitest';
 
 import { crackerCommand } from '@/mahoji/lib/abstracted_commands/crackerCommand.js';
 import { mockClient } from '../util.js';
 
-describe('BSO Christmas cracker command', () => {
-	let client: Awaited<ReturnType<typeof mockClient>>;
-
-	beforeAll(async () => {
-		client = await mockClient();
-	});
+describe('BSO Christmas cracker command', async () => {
+	const client = await mockClient();
 
 	it('can award all unique partyhats via the cracker command', async ({ expect }) => {
 		const UNIQUE_PARTY_HATS = ['Black partyhat', 'Pink partyhat', 'Rainbow partyhat'];
