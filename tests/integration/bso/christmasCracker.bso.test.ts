@@ -3,7 +3,7 @@ import { partyHatTableRoll } from '@/lib/bso/holidayItems.js';
 import { Bank } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-describe('BSO partyhat table – unique partyhats are obtainable', () => {
+describe('BSO Christmas cracker test', async () => {
 	it('PartyhatTable contains all expected partyhats', () => {
 		const EXPECTED = [
 			'Black partyhat',
