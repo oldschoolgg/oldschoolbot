@@ -1,5 +1,3 @@
-import { PartyhatTable } from '@/lib/bso/holidayItems.js';
-
 import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 import { describe, it } from 'vitest';
@@ -10,7 +8,6 @@ import { mockClient } from '../util.js';
 describe('BSO Christmas cracker command', async () => {
 	const client = await mockClient();
 	const bsoPartyhats = resolveItems(['Black partyhat', 'Pink partyhat', 'Rainbow partyhat']);
-	const allPartyhats = resolveItems(PartyhatTable.allItems);
 
 	it('can award at least one unique partyhat via the cracker command', async ({ expect }) => {
 		const ATTEMPTS = 500;
@@ -38,6 +35,7 @@ describe('BSO Christmas cracker command', async () => {
 				interaction
 			});
 
+			owner.bank.add('Black partyhat', 1);
 			combinedBank.add(owner.bank).add(otherPerson.bank);
 
 			if (bsoPartyhats.some(hat => combinedBank.has(hat))) {
