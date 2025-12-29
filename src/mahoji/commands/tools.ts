@@ -1,5 +1,6 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
+import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';

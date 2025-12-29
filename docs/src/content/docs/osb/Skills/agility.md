@@ -60,4 +60,4 @@ When completing laps of the Ape Atoll agility course you can earn a [monkey back
 
 - [Hallowed Sepulchre](/osb/activities/hallowed-sepulchre)
 - [Brimhaven Agility Arena](/osb/activities/brimhaven-agility-arena)
-- [Underwater Agility](../thieving/underwater-training.md)
+- [Underwater Agility](../thieving/underwater-training)

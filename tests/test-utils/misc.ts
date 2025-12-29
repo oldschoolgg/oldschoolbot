@@ -1,8 +1,7 @@
-import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
+import type { RNGProvider } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { randomSnowflake } from '@oldschoolgg/util';
-import { Bank, Items } from 'oldschooljs';
-
-import { allUnobtainableItems } from '../../packages/oldschooljs/dist/esm/item-groups/unobtainable.mjs';
+import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 const idsUsed = new Set<string>();
 export const handleTripFinishResults = new Map<string, any>();
@@ -17,12 +16,12 @@ export function mockedId() {
 }
 
 export function mockSnowflake(rng: RNGProvider) {
-	return rng.randInt(1, 5_000_000_000_000).toString();
+	return randomSnowflake(rng);
 }
 
 export const bankWithAllItems = new Bank();
 for (const item of Items.keys()) {
-	if (allUnobtainableItems.includes(item)) continue;
+	if (ItemGroups.allUnobtainableItems.includes(item)) continue;
 	bankWithAllItems.add(item, 100_000);
 }
 bankWithAllItems.freeze();

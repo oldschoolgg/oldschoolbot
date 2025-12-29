@@ -87,7 +87,6 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		this.ws.on(WebSocketShardEvents.Dispatch, async (packet, shardId) => {
 			switch (packet.t) {
 				case 'READY': {
-					this.emit('debug', { message: `Shard ${shardId} is ready.` });
 					if (shardId === 0) {
 						await this.onReady(packet.d);
 					}
@@ -406,6 +405,10 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		messageId: string;
 		emojiId: string;
 	}): Promise<void> {
+		// Handle format like: :SkyStare:718251514899988488
+		if (emojiId.includes(':')) {
+			emojiId = emojiId.split(':').slice(-1)[0];
+		}
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emojiId));
 		await this.rest.put(route);
 	}

@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
 
 import { type MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
@@ -9,14 +8,12 @@ import {
 	getSlayersEnchantmentChanceFromHP,
 	getTotemChanceFromHP
 } from '@/util/util.js';
+import _monsterData from '../assets/monsters_data.json' with { type: 'json' };
 import { Bank } from './Bank.js';
 import type LootTable from './LootTable.js';
 import type { LootTableRollOptions } from './LootTable.js';
 
-const monsterData = JSON.parse(
-	fs.readFileSync(new URL('../assets/monsters_data.json', import.meta.url), 'utf8')
-) as Record<string, MonsterData>;
-
+const monsterData: Record<number, MonsterData> = _monsterData as Record<number, MonsterData>;
 export interface MonsterOptions {
 	id: number;
 	name: string;

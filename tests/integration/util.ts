@@ -1,4 +1,4 @@
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IMember, IMessage, IUser } from '@oldschoolgg/schemas';
 import { sleep } from '@oldschoolgg/toolkit';
 import { vi } from 'vitest';
