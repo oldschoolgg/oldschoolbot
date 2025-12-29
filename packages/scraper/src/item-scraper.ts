@@ -34,7 +34,7 @@ async function main() {
 
 		const fi = currentData.get(item.id);
 		if (fi) {
-			if (['</span>', 'sic]', 'class=', '<sup'].some(str => fi.examine?.includes(str))) {
+			if (['</span>', 'sic]', 'class=', '<sup', '#'].some(str => fi.examine?.includes(str))) {
 				itemsToProcess.push(item);
 				continue;
 			}
@@ -76,7 +76,7 @@ async function main() {
 	for (const [id, item] of Array.from(currentData.entries()).sort((a, b) => Number(a[0]) - Number(b[0]))) {
 		const moidItem = moidItemMap.get(id)!;
 		if (!moidItem) throw new Error('no moid item');
-		const fullItem: FullItem = { ...(item as FullItem), id: Number(id) };
+		const fullItem: FullItem = { ...(item as FullItem), id: Number(id), name: resolveItemName(item) ?? item.name, config_name: moidItem.config_name };
 		if (fullItem.id > 100_000 || !Number.isInteger(fullItem.id) || fullItem.id <= 0) {
 			throw new Error(`Item ID found: ${fullItem.id} (${fullItem.name})`);
 		}

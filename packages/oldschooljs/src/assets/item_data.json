@@ -176499,6 +176499,11 @@
 			"requirements": null
 		}
 	},
+	"30047": {
+		"name": "Graceful hood",
+		"members": true,
+		"cost": 35
+	},
 	"30048": {
 		"name": "Graceful cape",
 		"members": true,
@@ -176522,6 +176527,12 @@
 			"slot": "cape",
 			"requirements": null
 		}
+	},
+	"30050": {
+		"name": "Graceful cape",
+		"members": true,
+		"equipable": true,
+		"cost": 40
 	},
 	"30051": {
 		"name": "Graceful top",
@@ -176547,6 +176558,12 @@
 			"requirements": null
 		}
 	},
+	"30053": {
+		"name": "Graceful top",
+		"members": true,
+		"equipable": true,
+		"cost": 55
+	},
 	"30054": {
 		"name": "Graceful legs",
 		"members": true,
@@ -176570,6 +176587,12 @@
 			"slot": "legs",
 			"requirements": null
 		}
+	},
+	"30056": {
+		"name": "Graceful legs",
+		"members": true,
+		"equipable": true,
+		"cost": 60
 	},
 	"30057": {
 		"name": "Graceful gloves",
@@ -176595,6 +176618,12 @@
 			"requirements": null
 		}
 	},
+	"30059": {
+		"name": "Graceful gloves",
+		"members": true,
+		"equipable": true,
+		"cost": 30
+	},
 	"30060": {
 		"name": "Graceful boots",
 		"members": true,
@@ -176618,6 +176647,12 @@
 			"slot": "feet",
 			"requirements": null
 		}
+	},
+	"30062": {
+		"name": "Graceful boots",
+		"members": true,
+		"equipable": true,
+		"cost": 40
 	},
 	"30064": {
 		"name": "Tome of earth",
@@ -180710,6 +180745,20 @@
 		"members": true,
 		"cost": 47000
 	},
+	"30554": {
+		"name": "Raging echoes rug",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"cost": 500
+	},
+	"30557": {
+		"name": "Raging echoes curtains",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"cost": 500
+	},
 	"30560": {
 		"name": "Raging echoes scrying pool scroll",
 		"members": true,
@@ -183409,6 +183458,25 @@
 		"name": "Dom",
 		"members": true
 	},
+	"31132": {
+		"name": "Dinh's blazing bulwark",
+		"equipable": true,
+		"cost": 1250000
+	},
+	"31133": {
+		"name": "Venator bow",
+		"equipable": true,
+		"cost": 750000
+	},
+	"31172": {
+		"name": "Battlehat",
+		"members": true,
+		"equipable": true
+	},
+	"31174": {
+		"name": "Corrupted shark",
+		"members": true
+	},
 	"31181": {
 		"name": "Grid master tabard",
 		"members": true,
@@ -183824,12 +183892,20 @@
 		"tradeable_on_ge": false,
 		"equipable": false
 	},
+	"31252": {
+		"name": "Spirit angler headband",
+		"members": true
+	},
 	"31253": {
 		"name": "Fossilised skull",
 		"members": true,
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": false
+	},
+	"31254": {
+		"name": "Tankard",
+		"members": true
 	},
 	"31255": {
 		"name": "Barnacle blaster",
@@ -183871,8 +183947,44 @@
 		"equipable": false,
 		"cost": 160
 	},
+	"31276": {
+		"name": "Rock golem",
+		"members": true
+	},
+	"31277": {
+		"name": "Rock golem",
+		"members": true
+	},
+	"31278": {
+		"name": "Rock golem",
+		"members": true
+	},
+	"31279": {
+		"name": "Beaver",
+		"members": true
+	},
+	"31280": {
+		"name": "Beaver",
+		"members": true
+	},
+	"31281": {
+		"name": "Beaver",
+		"members": true
+	},
+	"31282": {
+		"name": "Beaver",
+		"members": true
+	},
 	"31283": {
 		"name": "Soup",
+		"members": true
+	},
+	"31285": {
+		"name": "Gull",
+		"members": true
+	},
+	"31287": {
+		"name": "Gulliver",
 		"members": true
 	},
 	"31288": {
@@ -183902,7 +184014,7 @@
 		}
 	},
 	"31290": {
-		"name": "Sailing cape (t)",
+		"name": "Sailing cape(t)",
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,
@@ -184986,6 +185098,12 @@
 		"tradeable_on_ge": true,
 		"equipable": false,
 		"cost": 320
+	},
+	"31698": {
+		"name": "Burnt crab meat",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true
 	},
 	"31700": {
 		"name": "Raw rainbow crab meat",
@@ -189380,6 +189498,13 @@
 		"tradeable_on_ge": false,
 		"equipable": false
 	},
+	"32886": {
+		"name": "Chain",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"cost": 150
+	},
 	"32889": {
 		"name": "Lead bar",
 		"members": true,
@@ -189444,7 +189569,7 @@
 		"cost": 50
 	},
 	"32928": {
-		"name": "Lovley [sic] jubbly bib",
+		"name": "Lovley jubbly bib",
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"equipable": true,

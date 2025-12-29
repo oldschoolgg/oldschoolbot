@@ -37,7 +37,6 @@ const BOOLEAN_KEYS_TO_FOLD = [
 	'equipment',
 	'weapon'
 ];
-const previousItems = JSON.parse(readFileSync('./src/assets/item_data.json', 'utf-8'));
 
 const equipmentModifications = new Map();
 const equipmentModSrc = [
@@ -196,21 +195,52 @@ async function prepareItems(): Promise<void> {
 	for (const _item of Object.values(allItems)) {
 		const id = Number(_item.id);
 		const previousItem = previousItems[id] as Item | undefined;
+		if (previousItem) {
+			if (id >= 31_000) {
+				previousItem.name = _item.name;
+			}
+			newItemJSON[id] = previousItem;
+			continue;
+		}
+
 		let item: ItemWithoutID = {
 			name: _item.name,
 			members: _item.members,
 			tradeable: _item.tradeable,
 			tradeable_on_ge: _item.tradeable_on_ge,
 			stackable: _item.stackable,
-			noteable: previousItem?.noteable,
-			cost: previousItem?.cost ?? _item.value,
-			buy_limit: _item.buy_limit,
-			equipment: _item.equipment
+			// @ts-expect-error
+			equipable: _item.equipable,
+			noteable: previousItem?.noteable
 		};
-		for (const bool of ['equipable'] as const) {
-			if (_item[bool]) {
-				item[bool] = _item[bool];
-			}
+
+		if (_item.equipment) {
+			item.equipment = previousItem?.equipment ?? {
+				attack_stab: _item.equipment.attack_stab,
+				attack_slash: _item.equipment.attack_slash,
+				attack_crush: _item.equipment.attack_crush,
+				attack_magic: _item.equipment.attack_magic,
+				attack_ranged: _item.equipment.attack_ranged,
+				defence_stab: _item.equipment.defence_stab,
+				defence_slash: _item.equipment.defence_slash,
+				defence_crush: _item.equipment.defence_crush,
+				defence_magic: _item.equipment.defence_magic,
+				defence_ranged: _item.equipment.defence_ranged,
+				melee_strength: _item.equipment.melee_strength,
+				ranged_strength: _item.equipment.ranged_strength,
+				magic_damage: _item.equipment.magic_damage,
+				prayer: _item.equipment.prayer,
+				slot: _item.equipment.slot,
+				requirements: _item.equipment.requirements
+			};
+		}
+
+		const cost = previousItem?.cost ?? _item.value;
+		if (cost) {
+			item.cost = cost;
+		}
+		if (previousItem?.buy_limit) {
+			item.buy_limit = previousItem.buy_limit;
 		}
 
 		if (itemShouldntBeAdded(item) && !previousItem) {
@@ -255,6 +285,15 @@ async function prepareItems(): Promise<void> {
 		}
 
 		if (previousItem) {
+			if (previousItem.highalch) {
+				item.highalch = previousItem.highalch;
+			}
+			if (previousItem.lowalch) {
+				item.lowalch = previousItem.lowalch;
+			}
+			if (!previousItem.buy_limit && item.buy_limit) {
+				delete item.buy_limit;
+			}
 			// item.cost = previousItem.cost;
 			if (previousItem.equipment?.requirements) {
 				// @ts-expect-error ignore
@@ -265,9 +304,7 @@ async function prepareItems(): Promise<void> {
 			}
 		}
 
-		if (!previousItem?.equipment && item.equipment) {
-			item.equipment = previousItem?.equipment;
-		}
+		item.equipment = previousItem?.equipment;
 
 		if (previousItem && id < 30_000) {
 			item = previousItem;
@@ -319,7 +356,6 @@ GROUP BY id
 `);
 	}
 
-	console.log(newItemJSON[32928].name);
 	writeFileSync('./src/assets/item_data.json', `${JSON.stringify(newItemJSON, null, '	')}\n`);
 }
 
