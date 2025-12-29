@@ -40,6 +40,7 @@ import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDe
 import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
+import type { MUserClass } from '@/lib/MUser.js';
 
 function handleSlayerTaskCompletion({
 	slayerContext,
@@ -151,6 +152,7 @@ function getSlayerContext({
 
 interface newOptions {
 	type: 'MonsterKilling';
+	user: MUserClass;
 	monster: KillableMonster;
 	q: number;
 	iQty?: number;
@@ -180,6 +182,7 @@ interface newOptions {
 
 export function doMonsterTrip(data: newOptions) {
 	let {
+		user,
 		monster,
 		q: quantity,
 		usingCannon,
@@ -431,6 +434,7 @@ export function doMonsterTrip(data: newOptions) {
 		updateBank.itemLootBank.add(loot);
 		updateBank.xpBank.add(
 			addMonsterXPRaw({
+				user,
 				monsterID: monster.id,
 				quantity,
 				duration,
@@ -560,6 +564,7 @@ export const monsterTask: MinionTask = {
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
 		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({
 			...data,
+			user,
 			monster,
 			tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
 				user.hasEquipped('Ring of wealth (i)'),

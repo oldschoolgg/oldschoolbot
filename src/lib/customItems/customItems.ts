@@ -14783,22 +14783,19 @@ setCustomItem(75_035, 'Myconid plank', 'Plank', { customItemData: { cantDropFrom
 setCustomItem(75_036, 'Crystalline plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_037, 'Verdant plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_038, 'Ancient verdant plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_039, 'Damaged relic', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_040, 'Tarnished idol', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_041, 'Scrap crystal', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_042, 'Sentinel core', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_043, 'Verdant heart', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_044, 'Elder mimic casket (locked)', 'Casket', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_045, 'Elder mimic casket', 'Casket', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_046, 'Elder sigil', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_047, 'Elder sigil fragment (1)', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_048, 'Elder sigil fragment (2)', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_049, 'Elder sigil fragment (3)', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_050, 'Archon relic', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_051, 'Elderflame catalyst', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_039, 'Sentinel core', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_040, 'Verdant heart', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_041, 'Elder mimic casket (locked)', 'Casket', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_042, 'Elder mimic casket', 'Casket', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_043, 'Elder sigil', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_044, 'Elder sigil fragment (1)', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_045, 'Elder sigil fragment (2)', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_046, 'Elder sigil fragment (3)', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_047, 'Archon relic', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(75_048, 'Elderflame catalyst', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
 
 setCustomItem(
-	75_052,
+	75_049,
 	'Starfire bow',
 	'Twisted bow',
 	{
@@ -14832,7 +14829,7 @@ setCustomItem(
 );
 
 setCustomItem(
-	75_053,
+	75_050,
 	'Prismare ring',
 	'Ring of suffering',
 	{
@@ -14864,18 +14861,17 @@ setCustomItem(
 	10_000
 );
 
-setCustomItem(75_054, 'Celestyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_055, 'Starfire agate', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_056, 'Verdantyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_057, 'Oneiryte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_058, 'Firaxyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_059, 'Prismare', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_060, 'Juvenile gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_061, 'Adolescent gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_062, 'Mature gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_063, 'Elder gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_064, 'Ancient gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_065, 'Brimstone base', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_051, 'Celestyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_052, 'Starfire agate', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_053, 'Verdantyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_054, 'Oneiryte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_055, 'Firaxyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_056, 'Prismare', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_057, 'Juvenile gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_058, 'Adolescent gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_059, 'Mature gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_060, 'Elder gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_061, 'Ancient gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',

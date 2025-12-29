@@ -36,6 +36,7 @@ const miscHpMap: Record<number, number> = {
 };
 
 export function addMonsterXPRaw(params: {
+	user: MUser;
 	monsterID: number;
 	quantity: number;
 	duration: number;
@@ -86,10 +87,17 @@ export function addMonsterXPRaw(params: {
 	} else if (maybeOSJSMonster?.data?.hitpoints) {
 		hp = maybeOSJSMonster.data.hitpoints;
 	}
-	if (maybeMonster?.combatXpMultiplier) {
-		xpMultiplier = maybeMonster.combatXpMultiplier;
+	
+	// Get XP multiplier (default to 1 if not defined)
+	if (maybeMonster?.combatXpMultiplier !== undefined) {
+		xpMultiplier =
+			typeof maybeMonster.combatXpMultiplier === 'function'
+				? maybeMonster.combatXpMultiplier(params.user, attackStyles)
+				: maybeMonster.combatXpMultiplier;
+	} else {
+		xpMultiplier = 1;
 	}
-
+	
 	// Calculate superior XP:
 	let superiorSlayXp = 0;
 	let superiorXp = 0;
@@ -99,6 +107,7 @@ export function addMonsterXPRaw(params: {
 	}
 
 	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
+	
 	const xpPerSkill = totalXP / attackStyles.length;
 
 	const xpBank = new XPBank();

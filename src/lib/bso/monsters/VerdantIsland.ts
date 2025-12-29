@@ -6,6 +6,7 @@ import { Bank, itemID, LootTable, Monsters, RareDropTable, resolveItems } from '
 import { GearStat } from 'oldschooljs/gear';
 
 import { addStatsOfItemsTogether, Gear } from '@/lib/structures/Gear.js';
+import { MUserClass } from '@/lib/MUser.js';
 
 const IslandTable = new LootTable()
 	.add('Ancient cap', [5, 15])
@@ -273,10 +274,10 @@ export const FungalBehemoth: CustomMonster = {
 		}
 	},
 	deathProps: {
-		hardness: 0.35,
-		steepness: 0.96,
-		lowestDeathChance: 3,
-		highestDeathChance: 18
+		hardness: 0.01,
+		steepness: 0.01,
+		lowestDeathChance: 1,
+		highestDeathChance: 1
 	},
 	minimumHealAmount: 14,
 	allItems: resolveItems(['Verdant heart']),
@@ -324,24 +325,42 @@ export const FungalBehemoth: CustomMonster = {
 			]
 		}
 	],
-	// XP scaling function
-	xpMultiplier: (user) => {
+	combatXpMultiplier: (user: MUserClass, attackStyles?: string[]) => {
 		const skills = user.skillsAsLevels;
-		const avgCombatLevel = (skills.attack + skills.strength + skills.defence + skills.hitpoints + skills.magic + skills.ranged) / 6;
 		
-		// Base mult at 75 is 1.0 (full ~2.5m/h)
-		// At 120, mult ~0.4 (reduces to ~1m/h)
-		const levelDiff = Math.max(0, avgCombatLevel - 75);
-		const scalingFactor = Math.max(0.4, 1.0 - (levelDiff * 0.013));
+		let combatLevel = 0;
+		const styleTypes = (attackStyles || []).map(s => s.toLowerCase());
+
+		
+		if (styleTypes.some(s => ['attack', 'strength', 'defence'].includes(s))) {
+			combatLevel = (skills.attack + skills.strength + skills.defence + skills.hitpoints) / 4;
+		} else if (styleTypes.includes('ranged')) {
+			combatLevel = (skills.ranged + skills.defence + skills.hitpoints) / 3;
+		} else if (styleTypes.includes('magic')) {
+			combatLevel = (skills.magic + skills.defence + skills.hitpoints) / 3;
+		} else {
+			combatLevel = (skills.attack + skills.strength + skills.defence + 
+						skills.hitpoints + skills.magic + skills.ranged) / 6;
+			console.log('[XP MULT] Combat type: UNKNOWN (using average) | Level:', combatLevel);
+		}
+		
+		const clampedLevel = Math.min(90, Math.max(75, combatLevel));
+		
+		const t = (clampedLevel - 75) / 15;
+		const exponentialT = Math.pow(t, 2);
+		const scalingFactor = 8.5 - exponentialT * 5.1;
+		
+		console.log('[XP MULT] Clamped:', clampedLevel, '| Multiplier:', scalingFactor.toFixed(2), 
+					'| Est XP/hr:', Math.round(294000 * scalingFactor / 1000) + 'k');
 		
 		return scalingFactor;
-	}
+	},
 };
 
 export const ElderMimic: CustomMonster = {
 	isCustom: true,
 	id: EBSOMonster.ELDER_MIMIC,
-	baseMonster: Monsters.Mimic,
+	baseMonster: Monsters.AbyssalSire,
 	name: 'Elder Mimic',
 	aliases: ['elder mimic', 'elder'],
 	timeToFinish: Time.Minute * 800,
@@ -404,8 +423,8 @@ export const Orym: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Orym',
 	aliases: ['orym'],
-	timeToFinish: Time.Minute * 40,
-	hp: 2500,
+	timeToFinish: Time.Minute * 18,
+	hp: 1800,
 	table: new LootTable()
 		.every('Primordial Bones', [2, 5])
 		.every('Primordial Scales', [12, 50])
@@ -448,8 +467,8 @@ export const Orym: CustomMonster = {
 		.add('Grimy torstol', [25, 60])
 		.add('Grimy dwarf weed', [30, 75])
 		.add('Grimy lantadyme', [35, 90])
-		.add('Ignilace', [3, 20])
-		.add('Ignilace seed', [1, 3]),
+		.add('Ignilace', [5, 30])
+		.add('Ignilace seed', [1, 10]),
 
 	difficultyRating: 5,
 	qpRequired: 2500,
@@ -538,8 +557,8 @@ export const Orrodil: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Orrodil',
 	aliases: ['orrodil'],
-	timeToFinish: Time.Minute * 40,
-	hp: 2500,
+	timeToFinish: Time.Minute * 18,
+	hp: 1800,
 	table: new LootTable()
 		.every('Primordial Bones', [2, 5])
 		.every('Primordial Scales', [12, 50])
@@ -555,10 +574,11 @@ export const Orrodil: CustomMonster = {
 		.add('Enhanced super restore', [20, 50])
 		.add('Enhanced saradomin brew', [20, 50])
 
-		.add('Black dragonhide', [200, 400])
-		.add('Blue dragonhide', [300, 500])
-		.add('Red dragonhide', [250, 450])
-		.add('Battlestaff', [250, 500])
+		.add('Black dragonhide', [100, 400])
+		.add('Blue dragonhide', [200, 500])
+		.add('Red dragonhide', [150, 450])
+		.add('Battlestaff', [100, 300])
+		.add('Royal dragonhide', [50, 200])
 
 		.add('Death rune', [2000, 5000])
 		.add('Blood rune', [2000, 5000])
