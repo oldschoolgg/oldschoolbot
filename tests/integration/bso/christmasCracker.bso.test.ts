@@ -73,8 +73,7 @@ describe('BSO Christmas cracker command', async () => {
 		});
 
 		expect(result).toContain(Emoji.ChristmasCracker);
-
-		const hasPartyhat = allPartyhats.some(i => ironman.owns(i));
-		expect(hasPartyhat).toBe(true);
+		const allItems = ironman.bank.items().map(([item]) => item);
+		expect(allItems.some(name => allPartyhats.includes(name.id))).toBe(true);
 	});
 });
