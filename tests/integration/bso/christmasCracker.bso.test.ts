@@ -24,7 +24,7 @@ describe('BSO Christmas cracker command', async () => {
 			editReply: async () => {}
 		} as unknown as any;
 
-		const combinedBank = owner.bank.clone().add(otherPerson.bank);
+		const combinedBank = new Bank()
 
 		let gotBsoPartyhat = false;
 		for (let i = 0; i < ATTEMPTS; i++) {
@@ -35,7 +35,6 @@ describe('BSO Christmas cracker command', async () => {
 				interaction
 			});
 
-			owner.bank.add('Black partyhat', 1);
 			combinedBank.add(owner.bank).add(otherPerson.bank);
 
 			if (bsoPartyhats.some(hat => combinedBank.has(hat))) {
