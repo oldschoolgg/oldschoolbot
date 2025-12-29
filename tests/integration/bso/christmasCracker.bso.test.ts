@@ -9,7 +9,7 @@ describe('BSO Christmas cracker test', async () => {
 			'Black partyhat',
 			'Pink partyhat',
 			'Rainbow partyhat',
-			'Red Partyhat',
+			'Red partyhat',
 			'Yellow partyhat',
 			'Blue partyhat',
 			'Purple partyhat',
