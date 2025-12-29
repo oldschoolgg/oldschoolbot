@@ -1,3 +1,5 @@
+import { partyHatTableRoll } from '@/lib/bso/holidayItems.js';
+
 import { shuffleArr } from '@oldschoolgg/rng';
 import type { IUser } from '@oldschoolgg/schemas';
 import { Emoji } from '@oldschoolgg/toolkit';
@@ -50,7 +52,7 @@ export async function crackerCommand({
 	);
 
 	await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
-	const winnerLoot = HatTable.roll();
+	const winnerLoot = partyHatTableRoll();
 	const loserLoot = JunkTable.roll();
 	const [winner, loser] = shuffleArr([otherPerson, owner]);
 	await winner.addItemsToBank({ items: winnerLoot, collectionLog: true });
