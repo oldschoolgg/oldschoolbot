@@ -15,7 +15,7 @@ import styles from './BankImage.module.css';
 interface Props {
 	bank: Bank;
 	title: string | null;
-	showPrice: boolean;
+	showPrice?: boolean;
 	sort?: BankSortMethod;
 	width?: number;
 	ghosts?: number[];
@@ -119,7 +119,7 @@ function drawBank({
 	bank,
 	width,
 	title,
-	showPrice,
+	showPrice = false,
 	sort,
 	ghosts = [],
 	showAsKC = false,
@@ -293,7 +293,7 @@ function drawBank({
 export const BankImage: React.FC<Props> = ({
 	bank,
 	title,
-	showPrice,
+	showPrice = false,
 	sort = 'value',
 	width: customWidth,
 	ghosts,

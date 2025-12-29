@@ -1,7 +1,8 @@
-import { useState } from "react";
-import NavLinks from "./NavLinks.js";
-import UserProfileLink from "./UserProfileLink.js";
-import { globalState } from "@/lib/api.js";
+import { useState } from 'react';
+
+import { globalState } from '@/lib/api.js';
+import NavLinks from './NavLinks.js';
+import UserProfileLink from './UserProfileLink.js';
 
 interface LinkChild {
 	label: string;
@@ -16,11 +17,15 @@ interface Link {
 	children?: LinkChild[];
 }
 
-const links: Link[] = [{ label: "Wiki", href: "https://wiki.oldschool.gg/" }];
+const links: Link[] = [{ label: 'Wiki', href: 'https://wiki.oldschool.gg/' }];
 
 export default function Header() {
 	const state = globalState();
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+	const loginLink = <a data-astro-prefetch="tap" href="/login" className="transition-all hover:brightness-120">
+									Login
+								</a>;
 
 	return (
 		<header className="w-full backdrop-blur-md py-4 text-white">
@@ -35,12 +40,7 @@ export default function Header() {
 						aria-label="Toggle menu"
 						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
 					>
-						<svg
-							className="w-6 h-6"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
+						<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								strokeLinecap="round"
 								strokeLinejoin="round"
@@ -55,9 +55,7 @@ export default function Header() {
 						{state.user ? (
 							<UserProfileLink user={state.user} />
 						) : (
-							<a href="/login" className="transition-all hover:brightness-120">
-								Login
-							</a>
+						loginLink
 						)}
 					</div>
 				</nav>
@@ -69,9 +67,7 @@ export default function Header() {
 							{state.user ? (
 								<UserProfileLink user={state.user} />
 							) : (
-								<a href="/login" className="transition-all hover:brightness-120">
-									Login
-								</a>
+								loginLink
 							)}
 						</div>
 					</div>

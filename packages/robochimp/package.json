@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "pnpm gen && tsx esbuild.mts",
+		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm tsx esbuild.mts && node --enable-source-maps ./dist/index.js\"",
 		"start": "pnpm build && node --enable-source-maps ./dist/index.js",
 		"dev": "tsx esbuild.mts && node --enable-source-maps ./dist/index.js",
 		"test": "tsc -p src && pnpm test:unit",

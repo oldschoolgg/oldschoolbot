@@ -1,12 +1,45 @@
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Hono } from 'hono';
+import type { ItemBank } from 'oldschooljs';
 
+import type { FullMinionData } from '@/http/servers/api-types.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 
 export const minionServer = new Hono<HonoServerGeneric>();
 
-minionServer.get('/:userID', async c => {
+minionServer.get('/:bot/me', async c => {
+	console.log('minion me endpoint hit');
 	const params = c.req.param();
+	const user = c.get('user');
+	if (!user) {
+		return httpErr.UNAUTHORIZED();
+	}
+	const bot = params.bot === 'bso' ? 'bso' : 'osb';
+	const botUser = await (bot === 'osb'
+		? osbClient.user.findFirst({ where: { id: user.id.toString() } })
+		: bsoClient.user.findFirst({ where: { id: user.id.toString() } }));
+	if (!botUser) {
+		return httpErr.NOT_FOUND({ message: 'Bot user not found' });
+	}
+	const response: FullMinionData = {
+		is_ironman: botUser?.minion_ironman,
+		gp: Number(botUser?.GP),
+		qp: botUser?.QP,
+		collection_log_bank: botUser?.collectionLogBank as ItemBank,
+		bitfield: botUser?.bitfield,
+		osb_total_level: user.osbTotalLevel,
+		bso_total_level: user.bsoTotalLevel,
+		osb_cl_percent: user.osbClPercent,
+		bso_cl_percent: user.bsoClPercent,
+		osb_mastery: user.osbMastery,
+		bso_mastery: user.bsoMastery
+	};
+	return httpRes.JSON(response);
+});
+
+minionServer.get('/:bot/:userID', async c => {
+	const params = c.req.param();
+	console.log(params);
 	const queryBot = c.req.query('bot');
 	const userID = params.userID;
 

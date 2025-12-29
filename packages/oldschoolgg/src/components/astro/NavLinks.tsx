@@ -1,5 +1,5 @@
-import { ExternalLink, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, ExternalLink } from 'lucide-react';
+import { useState } from 'react';
 
 interface LinkChild {
 	label: string;
@@ -20,19 +20,19 @@ interface NavLinksProps {
 }
 
 const isExternalLink = (href: string) => {
-	return href.startsWith("http://") || href.startsWith("https://");
+	return href.startsWith('http://') || href.startsWith('https://');
 };
 
 const getLinkAttrs = (href: string) => ({
-	target: isExternalLink(href) ? "_blank" : undefined,
-	rel: isExternalLink(href) ? "noopener noreferrer" : undefined,
+	target: isExternalLink(href) ? '_blank' : undefined,
+	rel: isExternalLink(href) ? 'noopener noreferrer' : undefined
 });
 
 export default function NavLinks({ mobile = false, links }: NavLinksProps) {
 	const [openDropdowns, setOpenDropdowns] = useState<Set<number>>(new Set());
 
 	const toggleDropdown = (index: number) => {
-		setOpenDropdowns((prev) => {
+		setOpenDropdowns(prev => {
 			const newSet = new Set(prev);
 			if (newSet.has(index)) {
 				newSet.delete(index);
@@ -46,13 +46,13 @@ export default function NavLinks({ mobile = false, links }: NavLinksProps) {
 		});
 	};
 
-	const hoverClass = "transition-all hover:brightness-120";
+	const hoverClass = 'transition-all hover:brightness-120';
 	const dropdownButtonClass = mobile
 		? `flex items-center justify-between w-full ${hoverClass}`
 		: `flex items-center gap-1 ${hoverClass}`;
 	const dropdownMenuClass = mobile
-		? "mobile-dropdown-menu pl-4 mt-2 gap-2"
-		: "absolute top-full left-0 mt-2 w-58 rounded-lg border-main bg-primary shadow-lg animate-fadeIn";
+		? 'mobile-dropdown-menu pl-4 mt-2 gap-2'
+		: 'absolute top-full left-0 mt-2 w-58 rounded-lg border-main bg-primary shadow-lg animate-fadeIn';
 	const linkClass = mobile
 		? `flex items-center gap-2 py-2 ${hoverClass}`
 		: `flex items-center gap-2 px-4 py-3 ${hoverClass}`;
@@ -63,7 +63,7 @@ export default function NavLinks({ mobile = false, links }: NavLinksProps) {
 				link.children ? (
 					<div
 						key={index}
-						className={mobile ? "mobile-dropdown" : "relative dropdown cursor-pointer"}
+						className={mobile ? 'mobile-dropdown' : 'relative dropdown cursor-pointer'}
 						style={link.color ? { color: link.color } : undefined}
 					>
 						<button className={dropdownButtonClass} onClick={() => toggleDropdown(index)}>
@@ -71,7 +71,7 @@ export default function NavLinks({ mobile = false, links }: NavLinksProps) {
 							<div
 								className={
 									mobile
-										? `transition-transform duration-300 ${openDropdowns.has(index) ? "rotate-180" : ""}`
+										? `transition-transform duration-300 ${openDropdowns.has(index) ? 'rotate-180' : ''}`
 										: undefined
 								}
 							>
@@ -79,7 +79,7 @@ export default function NavLinks({ mobile = false, links }: NavLinksProps) {
 							</div>
 						</button>
 						<div
-							className={`${dropdownMenuClass} ${openDropdowns.has(index) ? (mobile ? "flex flex-col" : "") : "hidden"}`}
+							className={`${dropdownMenuClass} ${openDropdowns.has(index) ? (mobile ? 'flex flex-col' : '') : 'hidden'}`}
 						>
 							{link.children.map((child, childIndex) => (
 								<a
@@ -107,7 +107,7 @@ export default function NavLinks({ mobile = false, links }: NavLinksProps) {
 						{link.label}
 						{isExternalLink(link.href!) && <ExternalLink size={16} />}
 					</a>
-				),
+				)
 			)}
 		</>
 	);

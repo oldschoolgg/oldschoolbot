@@ -37,7 +37,7 @@ const production = false;
 
 const config: Record<string, string> = {
 	__API_URL__: production ? 'https://api.oldschool.gg' : 'https://osgtestapi.magnaboy.com',
-	__FRONTEND_URL__: process.env.FRONTEND_URL || 'https://oldschool.gg',
+	__FRONTEND_URL__: process.env.FRONTEND_URL || 'https://oldschool.gg'
 };
 
 for (const [key, value] of Object.entries(config)) {
@@ -54,7 +54,10 @@ export default defineConfig({
 	},
 	vite: {
 		ssr: {
-			noExternal: ['zod']
+			noExternal: ['zod', 'oldschooljs']
+		},
+		optimizeDeps: {
+			include: ['oldschooljs']
 		},
 		resolve: {
 			alias: {

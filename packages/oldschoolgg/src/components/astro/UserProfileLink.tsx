@@ -1,7 +1,7 @@
-import type { GlobalState } from "@/lib/api.js";
+import type { GlobalState } from '@/lib/api.js';
 
 interface UserProfileLinkProps {
-	user: GlobalState["user"];
+	user: GlobalState['user'];
 }
 
 export default function UserProfileLink({ user }: UserProfileLinkProps) {
@@ -13,15 +13,15 @@ export default function UserProfileLink({ user }: UserProfileLinkProps) {
 
 	return (
 		<a
-			href={`/user/${user.id}`}
+			href={`/account`}
 			data-astro-prefetch="tap"
-			className="flex items-center gap-2 transition-all hover:brightness-120"
+			className="flex items-center gap-2 transition-all bg-neutral-500/10 hover:bg-neutral-500/20 px-4 py-2 rounded-lg"
 		>
-			<span>{user.global_name || user.username || "User"}</span>
+			<span>{user.global_name || user.username || 'User'}</span>
 			<img
 				src={avatarUrl}
 				alt={`${user.global_name || user.username}'s avatar`}
-				className="w-4 h-4 rounded-full"
+				className="w-7 h-7 rounded-full"
 			/>
 		</a>
 	);
