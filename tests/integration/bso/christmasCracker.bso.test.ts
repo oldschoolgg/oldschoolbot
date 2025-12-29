@@ -1,5 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit';
-import { Bank, resolveItems } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import { describe, it } from 'vitest';
 
 import { crackerCommand } from '@/mahoji/lib/abstracted_commands/crackerCommand.js';
@@ -7,7 +7,7 @@ import { mockClient } from '../util.js';
 
 describe('BSO Christmas cracker command', async () => {
 	const client = await mockClient();
-	const bsoPartyhats = resolveItems(['Black partyhat', 'Pink partyhat', 'Rainbow partyhat']);
+	const bsoPartyhats = ['Black partyhat', 'Pink partyhat', 'Rainbow partyhat'];
 
 	it('can award at least one unique partyhat via the cracker command', async ({ expect }) => {
 		const ATTEMPTS = 500;
@@ -24,20 +24,16 @@ describe('BSO Christmas cracker command', async () => {
 			editReply: async () => {}
 		} as unknown as any;
 
-		const combinedBank = new Bank()
-
 		let gotBsoPartyhat = false;
 		for (let i = 0; i < ATTEMPTS; i++) {
-			await crackerCommand({
+			const commandResult = await crackerCommand({
 				ownerID: owner.id,
 				otherPersonID: otherPerson.id,
 				otherPersonAPIUser: { bot: false, id: otherPerson.id, username: otherPerson.username } as any,
 				interaction
 			});
 
-			combinedBank.add(owner.bank).add(otherPerson.bank);
-
-			if (bsoPartyhats.some(hat => combinedBank.has(hat))) {
+			if (bsoPartyhats.some(hat => commandResult.includes(hat))) {
 				gotBsoPartyhat = true;
 				break;
 			}
