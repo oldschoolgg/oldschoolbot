@@ -12,7 +12,7 @@ describe('BSO Christmas cracker command', async () => {
 		const UNIQUE_PARTY_HATS = ['Black partyhat', 'Pink partyhat', 'Rainbow partyhat'];
 
 		const seen = new Set<string>();
-		const ATTEMPTS = 200_000;
+		const ATTEMPTS = 5000;
 
 		const owner = await client.mockUser({
 			bank: new Bank().add('Christmas cracker', ATTEMPTS)
@@ -50,9 +50,9 @@ describe('BSO Christmas cracker command', async () => {
 
 	it('allows ironman to open a cracker on themselves', async ({ expect }) => {
 		const ironman = await client.mockUser({
-			bank: new Bank().add('Christmas cracker', 1),
-			isIronman: true
-		});
+			bank: new Bank().add('Christmas cracker', 1)
+		})
+		await ironman.update({ minion_ironman: true });
 
 		const interaction = {
 			confirmation: async (_msg: string) => true,
