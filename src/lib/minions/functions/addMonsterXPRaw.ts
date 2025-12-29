@@ -1,6 +1,7 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { NAXXUS_HP } from '@/lib/bso/monsters/bosses/Naxxus.js';
 
+import { randomVariation } from '@oldschoolgg/rng';
 import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
 
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '@/lib/minions/data/combatConstants.js';
@@ -35,7 +36,7 @@ const miscHpMap: Record<number, number> = {
 };
 
 export function addMonsterXPRaw(params: {
-	rng: RNGProvider;
+	user: MUser;
 	monsterID: number;
 	quantity: number;
 	duration: number;
@@ -59,9 +60,9 @@ export function addMonsterXPRaw(params: {
 	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;
 	const cannonQty = params.cannonMulti
-		? params.rng.randomVariation(Math.floor((xpPercentToCannonM / 100) * params.quantity), xpCannonVaryPercent)
+		? randomVariation(Math.floor((xpPercentToCannonM / 100) * params.quantity), xpCannonVaryPercent)
 		: params.usingCannon
-			? params.rng.randomVariation(Math.floor((xpPercentToCannon / 100) * params.quantity), xpCannonVaryPercent)
+			? randomVariation(Math.floor((xpPercentToCannon / 100) * params.quantity), xpCannonVaryPercent)
 			: 0;
 
 	// Remove superiors from the regular count to be added separately.
@@ -86,10 +87,17 @@ export function addMonsterXPRaw(params: {
 	} else if (maybeOSJSMonster?.data?.hitpoints) {
 		hp = maybeOSJSMonster.data.hitpoints;
 	}
-	if (maybeMonster?.combatXpMultiplier) {
-		xpMultiplier = maybeMonster.combatXpMultiplier;
+	
+	// Get XP multiplier (default to 1 if not defined)
+	if (maybeMonster?.combatXpMultiplier !== undefined) {
+		xpMultiplier =
+			typeof maybeMonster.combatXpMultiplier === 'function'
+				? maybeMonster.combatXpMultiplier(params.user, attackStyles)
+				: maybeMonster.combatXpMultiplier;
+	} else {
+		xpMultiplier = 1;
 	}
-
+	
 	// Calculate superior XP:
 	let superiorSlayXp = 0;
 	let superiorXp = 0;
@@ -99,6 +107,7 @@ export function addMonsterXPRaw(params: {
 	}
 
 	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
+	
 	const xpPerSkill = totalXP / attackStyles.length;
 
 	const xpBank = new XPBank();

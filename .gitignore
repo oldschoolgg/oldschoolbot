@@ -46,16 +46,11 @@ wiki.xml
 test-bot-store-*.json
 
 .db
+diffs
 
 src/prisma/clients
-src/prisma/migrations
 
 .DS_Store
-.aiignore
-.noai
 
 itx
-
-.claude
-
-diffs
+src/mahoji/lib/abstracted_commands/minionKill/minionKill.ts
