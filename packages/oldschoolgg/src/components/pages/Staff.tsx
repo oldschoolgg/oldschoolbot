@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.js';
 import { api, globalState } from '@/lib/api.js';
 import type { FullMinionData } from '../../../../robochimp/src/http/servers/api-types.js';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.js';
 
 export function StaffPage() {
 	const state = globalState();
@@ -26,25 +26,25 @@ export function StaffPage() {
 			<div className="flex w-full justify-center mt-24">
 				<Button onClick={api.logOut}>Log Out</Button>
 			</div>
-           <Tabs defaultValue="one" className="w-full">
-			<TabsList className="mb-4">
-				<TabsTrigger value="one">One</TabsTrigger>
-				<TabsTrigger value="two">Two</TabsTrigger>
-				<TabsTrigger value="three">Three</TabsTrigger>
-			</TabsList>
+			<Tabs defaultValue="one" className="w-full">
+				<TabsList className="mb-4">
+					<TabsTrigger value="one">One</TabsTrigger>
+					<TabsTrigger value="two">Two</TabsTrigger>
+					<TabsTrigger value="three">Three</TabsTrigger>
+				</TabsList>
 
-			<TabsContent value="one">
-				<div className="p-4 border rounded">Tab One Content</div>
-			</TabsContent>
+				<TabsContent value="one">
+					<div className="p-4 border rounded">Tab One Content</div>
+				</TabsContent>
 
-			<TabsContent value="two">
-				<div className="p-4 border rounded">Tab Two Content</div>
-			</TabsContent>
+				<TabsContent value="two">
+					<div className="p-4 border rounded">Tab Two Content</div>
+				</TabsContent>
 
-			<TabsContent value="three">
-				<div className="p-4 border rounded">Tab Three Content</div>
-			</TabsContent>
-		</Tabs>
+				<TabsContent value="three">
+					<div className="p-4 border rounded">Tab Three Content</div>
+				</TabsContent>
+			</Tabs>
 		</div>
 	);
 }

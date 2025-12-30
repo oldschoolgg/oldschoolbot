@@ -3,8 +3,8 @@ import { retry } from 'wretch/middlewares';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import type { EconomyTransactionsQuery, EconomyTransactionsResponse } from '@/components/Staff/economyTransactions.js';
 import type { AuthenticatedUser, FullMinionData } from '../../../robochimp/src/http/servers/api-types.js';
-import { EconomyTransactionsQuery, EconomyTransactionsResponse } from '@/components/Staff/economyTransactions.js';
 
 const rawApiWretch = wretch(__API_URL__)
 	.options({ credentials: 'include' })
@@ -75,9 +75,7 @@ export const api = {
 		}
 	},
 	staff: {
-		fetchEconomyTransactions: (
-			query: EconomyTransactionsQuery
-		): Promise<EconomyTransactionsResponse> => {
+		fetchEconomyTransactions: (query: EconomyTransactionsQuery): Promise<EconomyTransactionsResponse> => {
 			const params = new URLSearchParams();
 
 			params.append('bot', query.bot);

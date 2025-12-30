@@ -1,7 +1,7 @@
-import { Input } from '@/components/ui/input.js';
-import type { Bot, TransactionType } from './economyTransactions.js';
 import { Button } from '@/components/ui/button.js';
+import { Input } from '@/components/ui/input.js';
 import { Select } from '@/components/ui/Select.js';
+import type { Bot, TransactionType } from './economyTransactions.js';
 
 interface TransactionFiltersProps {
 	bot: Bot;
@@ -33,7 +33,7 @@ function isoDateInputValue(d: Date | null): string {
 
 function parseDateInputValue(v: string): Date | null {
 	if (!v) return null;
-	const [y, m, d] = v.split('-').map((x) => Number(x));
+	const [y, m, d] = v.split('-').map(x => Number(x));
 	if (!y || !m || !d) return null;
 	// local date at midnight
 	return new Date(y, m - 1, d, 0, 0, 0, 0);
@@ -59,16 +59,19 @@ export function TransactionFilters({
 	onReset
 }: TransactionFiltersProps) {
 	return (
-		<div >
+		<div>
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				<label className="block">
 					<div className="mb-1 text-sm font-medium ">Bot</div>
 
 					<Select
-					options={[{label: "OSB", value: 'osb'}, {label: 'BSO', value: 'bso'}]}
-					value={bot}
-					onChange={_t => onBotChange(_t as Bot)}
-					disabled={loading}
+						options={[
+							{ label: 'OSB', value: 'osb' },
+							{ label: 'BSO', value: 'bso' }
+						]}
+						value={bot}
+						onChange={_t => onBotChange(_t as Bot)}
+						disabled={loading}
 					/>
 				</label>
 
@@ -77,7 +80,7 @@ export function TransactionFilters({
 					<select
 						className="w-full rounded-md border border-main  px-3 py-2 text-sm  shadow-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:opacity-50"
 						value={type}
-						onChange={(e) => onTypeChange(e.currentTarget.value as TransactionType | '')}
+						onChange={e => onTypeChange(e.currentTarget.value as TransactionType | '')}
 						disabled={loading}
 					>
 						<option value="">All types</option>
@@ -94,7 +97,7 @@ export function TransactionFilters({
 					<Input
 						placeholder="Discord ID (comma-separated)"
 						value={sender}
-						onChange={(e) => onSenderChange(e.currentTarget.value)}
+						onChange={e => onSenderChange(e.currentTarget.value)}
 						disabled={loading}
 					/>
 				</label>
@@ -104,7 +107,7 @@ export function TransactionFilters({
 					<Input
 						placeholder="Discord ID"
 						value={recipient}
-						onChange={(e) => onRecipientChange(e.currentTarget.value)}
+						onChange={e => onRecipientChange(e.currentTarget.value)}
 						disabled={loading}
 					/>
 				</label>
@@ -114,7 +117,7 @@ export function TransactionFilters({
 					<Input
 						placeholder="Discord Server ID"
 						value={guildId}
-						onChange={(e) => onGuildIdChange(e.currentTarget.value)}
+						onChange={e => onGuildIdChange(e.currentTarget.value)}
 						disabled={loading}
 					/>
 				</label>
@@ -124,7 +127,7 @@ export function TransactionFilters({
 					<Input
 						type="date"
 						value={isoDateInputValue(dateFrom)}
-						onChange={(e) => onDateFromChange(parseDateInputValue(e.currentTarget.value))}
+						onChange={e => onDateFromChange(parseDateInputValue(e.currentTarget.value))}
 						disabled={loading}
 					/>
 				</label>
@@ -134,24 +137,18 @@ export function TransactionFilters({
 					<Input
 						type="date"
 						value={isoDateInputValue(dateTo)}
-						onChange={(e) => onDateToChange(parseDateInputValue(e.currentTarget.value))}
+						onChange={e => onDateToChange(parseDateInputValue(e.currentTarget.value))}
 						disabled={loading}
 					/>
 				</label>
 			</div>
 
 			<div className="flex flex-wrap items-center gap-2 mt-4">
-				<Button
-					onClick={onSearch}
-					disabled={loading}
-				>
+				<Button onClick={onSearch} disabled={loading}>
 					{loading ? 'Searching…' : 'Search'}
 				</Button>
 
-				<Button
-					onClick={onReset}
-					disabled={loading}
-				>
+				<Button onClick={onReset} disabled={loading}>
 					Reset Filters
 				</Button>
 			</div>

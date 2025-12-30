@@ -23,9 +23,11 @@ export default function Header() {
 	const state = globalState();
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-	const loginLink = <a data-astro-prefetch="tap" href="/login" className="transition-all hover:brightness-120">
-									Login
-								</a>;
+	const loginLink = (
+		<a data-astro-prefetch="tap" href="/login" className="transition-all hover:brightness-120">
+			Login
+		</a>
+	);
 
 	return (
 		<header className="w-full backdrop-blur-md py-4 text-white">
@@ -52,11 +54,7 @@ export default function Header() {
 
 					<div className="hidden lg:flex items-center gap-8 font-semibold">
 						<NavLinks links={links} />
-						{state.user ? (
-							<UserProfileLink user={state.user} />
-						) : (
-						loginLink
-						)}
+						{state.user ? <UserProfileLink user={state.user} /> : loginLink}
 					</div>
 				</nav>
 
@@ -64,11 +62,7 @@ export default function Header() {
 					<div className="lg:hidden mt-4 pb-4 border-t pt-4">
 						<div className="flex flex-col gap-4">
 							<NavLinks links={links} mobile={true} />
-							{state.user ? (
-								<UserProfileLink user={state.user} />
-							) : (
-								loginLink
-							)}
+							{state.user ? <UserProfileLink user={state.user} /> : loginLink}
 						</div>
 					</div>
 				)}

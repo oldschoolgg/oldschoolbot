@@ -1,11 +1,6 @@
+import { type ColumnDef, flexRender, getCoreRowModel, type SortingState, useReactTable } from '@tanstack/react-table';
 import * as React from 'react';
-import {
-	type ColumnDef,
-	type SortingState,
-	flexRender,
-	getCoreRowModel,
-	useReactTable
-} from '@tanstack/react-table';
+
 import type { EconomyTransaction, TransactionType } from './economyTransactions.js';
 
 const TYPE_BADGE_CLASSES: Record<TransactionType, string> = {
@@ -112,9 +107,7 @@ export function TransactionTable({
 			{
 				accessorKey: 'id',
 				header: 'Transaction ID',
-				cell: ({ row }) => (
-					<span className="font-mono text-xs text-slate-500">{String(row.original.id)}</span>
-				),
+				cell: ({ row }) => <span className="font-mono text-xs text-slate-500">{String(row.original.id)}</span>,
 				enableSorting: false
 			}
 		],
@@ -131,7 +124,7 @@ export function TransactionTable({
 		manualSorting: true,
 		enableMultiSort: false,
 		enableSortingRemoval: false,
-		onSortingChange: (updater) => {
+		onSortingChange: updater => {
 			const next = typeof updater === 'function' ? updater(sorting) : updater;
 			onSortStatusChange(fromSortingState<EconomyTransaction>(next, sortStatus));
 		}
@@ -148,7 +141,7 @@ export function TransactionTable({
 			<div className="overflow-x-auto">
 				<table className="min-w-full border-separate border-spacing-0">
 					<thead>
-						{table.getHeaderGroups().map((hg) => (
+						{table.getHeaderGroups().map(hg => (
 							<tr key={hg.id}>
 								{hg.headers.map((header, i) => {
 									const col = header.column;
@@ -194,10 +187,7 @@ export function TransactionTable({
 					<tbody className="divide-y divide-slate-200">
 						{loading ? (
 							<tr>
-								<td
-									colSpan={columns.length}
-									className="px-3 py-10 text-center text-sm text-slate-500"
-								>
+								<td colSpan={columns.length} className="px-3 py-10 text-center text-sm text-slate-500">
 									<span className="inline-flex items-center gap-2">
 										<span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-transparent" />
 										Loading…
@@ -211,16 +201,17 @@ export function TransactionTable({
 								</td>
 							</tr>
 						) : (
-							table.getRowModel().rows.map((row) => (
+							table.getRowModel().rows.map(row => (
 								<tr key={row.original.id} className="odd:even:bg-slate-50 hover:bg-slate-100">
 									{row.getVisibleCells().map((cell, i) => {
 										const isLast = i === row.getVisibleCells().length - 1;
 										return (
 											<td
 												key={cell.id}
-												className={['px-3 py-2 align-middle', !isLast ? 'border-r border-[var(--color-border)]' : ''].join(
-													' '
-												)}
+												className={[
+													'px-3 py-2 align-middle',
+													!isLast ? 'border-r border-[var(--color-border)]' : ''
+												].join(' ')}
 											>
 												{flexRender(cell.column.columnDef.cell, cell.getContext())}
 											</td>
