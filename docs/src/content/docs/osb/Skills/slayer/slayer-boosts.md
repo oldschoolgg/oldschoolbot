@@ -10,7 +10,7 @@ You can check the boosts for a specific monster and by how much by using the [[/
 
 You can find boosts for bosses under the [boss boosts page.](https://wiki.oldschool.gg/bosses/boosts-and-requirements)
 
-Certain foods give boosts to the trip time during PvM. See more information [here](../../getting-started/combat-skills.md#food-boosts).
+Certain foods give boosts to the trip time during PvM. See more information [here](../../getting-started/combat-skills#food-boosts).
 
 Cannon boosts a number of bosses by a variable amount, the same applies for bursting and barraging.
 

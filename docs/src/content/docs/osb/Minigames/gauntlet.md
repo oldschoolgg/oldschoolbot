@@ -28,7 +28,7 @@ Start a run with:
 
 - +5% for unlocking **Augury**, or +2% if using **Mystic Might** (45+ prayer)
 
-  - Use: [[/us eitem item\:Arcane prayer scroll]]
+  - Use: [[/use item item\:Arcane prayer scroll]]
 
 - +5% for unlocking **Rigour**, or +2% if using **Eagle Eye** (44+ prayer)
 

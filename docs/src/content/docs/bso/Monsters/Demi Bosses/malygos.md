@@ -26,15 +26,15 @@ Kill Malygos using [[/k name\:Malygos]].
 - Saradomin Godsword – 5%
 - Ancient Rejuvenation Pool – 10%
 - Dragon Hunter Lance / Dragon Hunter Crossbow – 20%
-- [Additional global boosts apply](../../skills/combat-skills.md#boosts) (This is a Wilderness boss)
+- [Additional global boosts apply](/bso/skills/combat-skills#boosts) (This is a Wilderness boss)
 
 ## Loot
 
-- [**Abyssal Thread**](../../skills/runecraft.md): Used to create the [Abyssal Pouch](../../skills/runecraft.md#custom-content-and-boosts)
-- [**Abyssal Cape**](../../custom-items/equippables/#abyssal-equipment): 50% damage reduction (halves food usage); also required for creating the Vasa Cloak and TzKal Cape
-- [**Abyssal Dragon Bones**](../../skills/prayer.md): 1.7x more XP than Superior Dragon Bones; used in Dragon's Fury potions
+- [**Abyssal Thread**](/bso/skills/runecraft): Used to create the [Abyssal Pouch](/bso/skills/runecraft#custom-content-and-boosts)
+- [**Abyssal Cape**](/bso/custom-items/#abyssal-equipment): 50% damage reduction (halves food usage); also required for creating the Vasa Cloak and TzKal Cape
+- [**Abyssal Dragon Bones**](/bso/skills/prayer): 1.7x more XP than Superior Dragon Bones; used in Dragon's Fury potions
 - **Dragon Hunter Lance**
-- [**Ori**](../../custom-items/pets.md#resource-gathering-and-loot-effecting-pets): Pet that gives +25% loot from PvM trips when equipped
+- [**Ori**](../../custom-items/pets#resource-gathering-and-loot-effecting-pets): Pet that gives +25% loot from PvM trips when equipped
 
 | **Uniques Drop Table**    | **Drop Rate** |
 | ------------------------- | ------------- |
