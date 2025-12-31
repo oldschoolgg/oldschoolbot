@@ -1,6 +1,8 @@
 import { EmbedBuilder, type PaginatedPages } from '@oldschoolgg/discord';
 import { chunk } from 'remeda';
 
+import { getUsername } from '@/lib/util.js';
+
 const LB_PAGE_SIZE = 10;
 
 function getPos(page: number, record: number) {
@@ -30,7 +32,7 @@ export async function doMenuWrapper<M extends object = {}>({
 		const makePage = async () => {
 			const chnk = chunked[c];
 			const linesPromises = chnk.map(async (user, i) => {
-				const username: string = user.customName ?? (await Cache.getBadgedUsername(user.id));
+				const username: string = user.customName ?? (await getUsername(user.id));
 				const body = render
 					? render(user, username)
 					: `**${username}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`;
