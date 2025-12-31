@@ -4,11 +4,11 @@ import { cors } from 'hono/cors';
 
 import { attachUser } from '@/http/middlewares.js';
 import { discordServer } from '@/http/servers/discord.js';
-import { economyTransactionServer } from '@/http/servers/economyTransactions.js';
 import { minionServer } from '@/http/servers/minion.js';
 import { oauthHonoServer } from '@/http/servers/oauth.js';
 import { webhooksServer } from '@/http/servers/webhooks.js';
 import type { HonoServerGeneric } from '@/http/serverUtil.js';
+import { staffServer } from '@/http/staff/staff.js';
 import { globalConfig } from '../constants.js';
 
 export async function startServer() {
@@ -25,11 +25,12 @@ export async function startServer() {
 
 	app.use('*', attachUser);
 	app.use('*', async (c, next) => {
+		c.set('prisma', roboChimpClient);
 		console.log(`${c.req.method} ${c.req.url}`);
 		return next();
 	});
 
-	app.route('/economy-transactions', economyTransactionServer);
+	app.route('/staff', staffServer);
 	app.route('/oauth', oauthHonoServer);
 	app.route('/discord', discordServer);
 	app.route('/webhooks', webhooksServer);
