@@ -8,16 +8,14 @@ import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 export const minionServer = new Hono<HonoServerGeneric>();
 
 minionServer.get('/:bot/me', async c => {
-	console.log('minion me endpoint hit');
 	const params = c.req.param();
 	const user = c.get('user');
 	if (!user) {
 		return httpErr.UNAUTHORIZED();
 	}
 	const bot = params.bot === 'bso' ? 'bso' : 'osb';
-	const botUser = await (bot === 'osb'
-		? osbClient.user.findFirst({ where: { id: user.id.toString() } })
-		: bsoClient.user.findFirst({ where: { id: user.id.toString() } }));
+	const opt = { where: { id: user.id.toString() } } as const;
+	const botUser = await (bot === 'osb' ? osbClient.user.findFirst(opt) : bsoClient.user.findFirst(opt));
 	if (!botUser) {
 		return httpErr.NOT_FOUND({ message: 'Bot user not found' });
 	}
@@ -45,13 +43,6 @@ minionServer.get('/:bot/:userID', async c => {
 	if (!userID || typeof userID !== 'string') {
 		return httpErr.BAD_REQUEST({ message: 'Invalid user ID' });
 	}
-
-	// TODO: support for tags/username
-	// if (!isValidDiscordSnowflake(userID)) {
-	// 	const djsUser = globalClient.users.cache.find((u: any) => u.username === userID);
-	// 	if (djsUser) userID = djsUser.id;
-	// 	else return httpErr.NOT_FOUND({ message: 'Could not find this users id' });
-	// }
 
 	if (!isValidDiscordSnowflake(userID)) {
 		return httpErr.BAD_REQUEST({ message: 'Invalid user ID, not a valid snowflake' });
