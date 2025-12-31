@@ -4738,6 +4738,7 @@
 				"is_activity": true
 			},
 			"castle_wars": {
+				"all_items": ["Castle wars supply crate", "Castle wars ticket"],
 				"items": [
 					"Decorative magic hat",
 					"Decorative magic robe",

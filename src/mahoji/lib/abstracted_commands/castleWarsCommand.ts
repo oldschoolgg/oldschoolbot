@@ -2,10 +2,14 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function castleWarsStartCommand(user: MUser, channelId: string) {
+export async function castleWarsStartCommand(user: MUser, channelId: string, quantity?: number) {
 	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
-	const gameLength = Time.Minute * 18;
-	const quantity = Math.floor((await user.calcMaxTripLength('CastleWars')) / gameLength);
+	const gameLength = Time.Minute * 20;
+	const userMaxGames = Math.floor((await user.calcMaxTripLength('CastleWars')) / gameLength);
+	if (!quantity || quantity > userMaxGames) {
+		quantity = userMaxGames;
+	}
+
 	const duration = quantity * gameLength;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
@@ -25,5 +29,6 @@ export async function castleWarsStatsCommand(user: MUser) {
 	const { bank } = user;
 	const kc = await user.fetchMinigameScore('castle_wars');
 	return `You have **${bank.amount('Castle wars ticket')}** Castle wars tickets.
+You have **${bank.amount('Castle wars supply crate')}** Castle wars supply crates.
 You have played ${kc} Castle Wars games.`;
 }
