@@ -1087,8 +1087,6 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					const assignedTask = selectedMaster.tasks.find(m => m.monster.id === selectedMonster.id)!;
 
-					if (!selectedMaster) return 'Invalid slayer master.';
-					if (!selectedMonster) return 'Invalid monster.';
 					if (!assignedTask) {
 						const possibleMasters = slayerMasters
 							.filter(m => m.tasks.some(t => t.monster.id === selectedMonster?.id))
