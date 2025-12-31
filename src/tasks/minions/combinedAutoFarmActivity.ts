@@ -1,10 +1,9 @@
 import type { BaseSendableMessage } from '@oldschoolgg/discord';
-import { Time } from '@oldschoolgg/toolkit';
-import { Bank, toKMB } from 'oldschooljs';
+import { formatDuration } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
-import { skillEmoji } from '@/lib/data/emojis.js';
-import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
+import type { AutoFarmStepData, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish as defaultHandleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeAutoContractButton } from '@/lib/util/interactions.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
@@ -22,170 +21,59 @@ interface HandleCombinedAutoFarmOptions {
 
 interface BuildAggregateMessageArgs {
 	summaries: FarmingStepSummary[];
-	totalLoot: Bank;
-	user: MUser;
+	steps: AutoFarmStepData[];
 }
 
-function formatList(parts: string[]): string {
-	if (parts.length === 0) return '';
-	if (parts.length === 1) return parts[0];
-	if (parts.length === 2) return `${parts[0]} and ${parts[1]}`;
-	return `${parts.slice(0, -1).join(', ')}, and ${parts[parts.length - 1]}`;
+function getPatchLabel(step: AutoFarmStepData): string {
+	const patchType = step.patchType as Partial<AutoFarmStepData['patchType']> & {
+		friendlyName?: string;
+		patchName?: string;
+	};
+	return step.patchName ?? patchType.friendlyName ?? patchType.patchName ?? 'patch';
 }
 
-function calcPerHour(amount: number, totalDuration: number): string {
-	if (amount <= 0 || totalDuration <= 0) {
-		return '';
-	}
-	const perHour = Math.floor((amount / (totalDuration / Time.Minute)) * 60);
-	const rounded = Math.floor(perHour / 1000) * 1000;
-	return rounded > 0 ? ` (${toKMB(rounded)}/Hr)` : '';
-}
-
-function buildAggregateMessage({ summaries, totalLoot, user }: BuildAggregateMessageArgs): string | null {
+function buildAggregateMessage({ summaries, steps }: BuildAggregateMessageArgs): string | null {
 	if (summaries.length === 0) {
 		return null;
 	}
 
-	const plantedOrder: string[] = [];
-	const plantedTotals = new Map<string, number>();
-	const harvestedOrder: string[] = [];
-	const harvestedTotals = new Map<string, { quantity: number; alive: number; died: number }>();
 	let totalDuration = 0;
 	let farmingXP = 0;
 	let woodcuttingXP = 0;
-	let herbloreXP = 0;
 	const boosts = new Set<string>();
-	let contractsCompleted = 0;
-	const payNotes: string[] = [];
-	const payNotesSeen = new Set<string>();
-	const xpNoticesBySkill = new Map<string, string>();
 
 	for (const summary of summaries) {
-		if (summary.planted) {
-			const current = plantedTotals.get(summary.planted.itemName) ?? 0;
-			if (!plantedTotals.has(summary.planted.itemName)) {
-				plantedOrder.push(summary.planted.itemName);
-			}
-			plantedTotals.set(summary.planted.itemName, current + summary.planted.quantity);
-		}
-
-		if (summary.harvested) {
-			const current = harvestedTotals.get(summary.harvested.itemName);
-			if (!current) {
-				harvestedOrder.push(summary.harvested.itemName);
-				harvestedTotals.set(summary.harvested.itemName, {
-					quantity: summary.harvested.quantity,
-					alive: summary.harvested.alive,
-					died: summary.harvested.died
-				});
-			} else {
-				current.quantity += summary.harvested.quantity;
-				current.alive += summary.harvested.alive;
-				current.died += summary.harvested.died;
-			}
-		}
-
 		totalDuration += summary.duration ?? 0;
 		farmingXP += summary.xp.totalFarming;
 		woodcuttingXP += summary.xp.woodcutting;
-		herbloreXP += summary.xp.herblore;
+	}
 
-		if (summary.payNote && !payNotesSeen.has(summary.payNote)) {
-			payNotesSeen.add(summary.payNote);
-			payNotes.push(summary.payNote);
-		}
+	for (const summary of summaries) {
+		if (!summary.boosts) continue;
 
-		for (const [skill, message] of Object.entries(summary.xpMessages)) {
-			if (!message) continue;
-			let latestLine: string | null = null;
-			for (const rawLine of message.split('\n')) {
-				const line = rawLine.trim();
-				if (!line) continue;
-				if (line.startsWith('You received') || line.startsWith('+')) {
-					continue;
-				}
-				latestLine = line;
-			}
-			if (!latestLine) continue;
-			xpNoticesBySkill.set(skill, latestLine);
-		}
-
-		if (summary.boosts) {
-			for (const boost of summary.boosts) {
-				boosts.add(boost);
-			}
-		}
-
-		if (summary.contractCompleted) {
-			contractsCompleted += 1;
+		for (const boost of summary.boosts) {
+			boosts.add(boost);
 		}
 	}
 
-	const lines: string[] = [`${user}, ${user.minionName} finished auto farming your patches.`];
+	const totalDurationFormatted = formatDuration(totalDuration);
+	const bonusXP = summaries.reduce((total, summary) => total + summary.xp.bonus, 0);
+	const patchSummaryParts = steps.map(step => {
+		const plantName = step.plantsName ?? 'Unknown plant';
+		return `${getPatchLabel(step)}: ${step.quantity.toLocaleString()}x ${plantName}`;
+	});
+	const patchSummaryShort = patchSummaryParts.length > 0 ? patchSummaryParts.join(' • ') : 'None';
+	const boostSummary = boosts.size > 0 ? Array.from(boosts).join(', ') : 'None';
 
-	if (plantedOrder.length > 0) {
-		const plantedParts = plantedOrder.map(name => `${plantedTotals.get(name)!.toLocaleString()}x ${name}`);
-		lines.push(`Your minion planted ${formatList(plantedParts)}.`);
-	}
+	const lines = [
+		`Auto-farm complete (${totalDurationFormatted})`,
+		`XP: ${farmingXP.toLocaleString()} Farming (${bonusXP.toLocaleString()} bonus) • ${woodcuttingXP.toLocaleString()} WC`,
+		`Patches: ${patchSummaryShort}`,
+		`Boosts: ${boostSummary}`,
+		'Loot:'
+	];
 
-	if (harvestedOrder.length > 0) {
-		const harvestedParts = harvestedOrder.map(name => {
-			const data = harvestedTotals.get(name)!;
-			const status =
-				data.died > 0 ? ` (${data.alive.toLocaleString()} alive, ${data.died.toLocaleString()} died)` : '';
-			return `${data.quantity.toLocaleString()}x ${name}${status}`;
-		});
-		lines.push(`You harvested ${formatList(harvestedParts)}.`);
-	}
-
-	const xpParts: string[] = [];
-	if (farmingXP > 0) {
-		xpParts.push(`${farmingXP.toLocaleString()} ${skillEmoji.farming} XP${calcPerHour(farmingXP, totalDuration)}`);
-	}
-	if (woodcuttingXP > 0) {
-		xpParts.push(
-			`${woodcuttingXP.toLocaleString()} ${skillEmoji.woodcutting} XP${calcPerHour(woodcuttingXP, totalDuration)}`
-		);
-	}
-	if (herbloreXP > 0) {
-		xpParts.push(
-			`${herbloreXP.toLocaleString()} ${skillEmoji.herblore} XP${calcPerHour(herbloreXP, totalDuration)}`
-		);
-	}
-	if (xpParts.length > 0) {
-		lines.push(`You received ${formatList(xpParts)}.`);
-	}
-
-	if (boosts.size > 0) {
-		lines.push(`**Boosts:** ${Array.from(boosts).join(', ')}.`);
-	}
-
-	if (contractsCompleted > 0) {
-		const suffix = contractsCompleted === 1 ? '' : 's';
-		lines.push(`Completed ${contractsCompleted.toLocaleString()} farming contract${suffix}.`);
-	}
-
-	if (totalLoot.length > 0) {
-		lines.push(`You received: ${totalLoot}.`);
-	}
-
-	if (payNotes.length > 0) {
-		lines.push(payNotes.join('\n'));
-	}
-	const xpNotices: string[] = [];
-	const xpNoticesSeen = new Set<string>();
-	for (const line of xpNoticesBySkill.values()) {
-		if (xpNoticesSeen.has(line)) continue;
-		xpNoticesSeen.add(line);
-		xpNotices.push(line);
-	}
-
-	if (xpNotices.length > 0) {
-		lines.push(xpNotices.join('\n'));
-	}
-
-	return lines.join('\n\n').replace(/:minion:\s+:minion:\s*/gi, ':minion: ');
+	return lines.join('\n');
 }
 export async function handleCombinedAutoFarm({
 	user,
@@ -265,13 +153,20 @@ export async function handleCombinedAutoFarm({
 		return;
 	}
 
-	const aggregatedContent =
-		summaries.length === messages.length ? buildAggregateMessage({ summaries, totalLoot, user }) : null;
+	const aggregatedContent = summaries.length === messages.length ? buildAggregateMessage({ summaries, steps }) : null;
 	const content = aggregatedContent ?? messages.join('\n\n');
-	const message: BaseSendableMessage = { content };
+	let message: InstanceType<typeof MessageBuilder> | BaseSendableMessage = aggregatedContent
+		? new MessageBuilder().setContent(content).addBankImage({ bank: totalLoot })
+		: { content };
 
 	if (attachments.length > 0) {
-		message.files = attachments;
+		if (message instanceof MessageBuilder) {
+			for (const attachment of attachments) {
+				message.addFile(attachment);
+			}
+		} else {
+			message.files = attachments;
+		}
 	}
 
 	const loot = totalLoot.length > 0 ? totalLoot : null;
@@ -290,7 +185,11 @@ export async function handleCombinedAutoFarm({
 	}
 
 	if (extraComponents?.length) {
-		message.components = extraComponents;
+		if (message instanceof MessageBuilder) {
+			message.addComponents(extraComponents);
+		} else {
+			message.components = extraComponents;
+		}
 	}
 
 	await handleTripFinish({
