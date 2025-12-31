@@ -2,14 +2,8 @@ import { type ColumnDef, flexRender, getCoreRowModel, type SortingState, useReac
 import * as React from 'react';
 
 import type { EconomyTransaction, TransactionType } from './economyTransactions.js';
-
-const TYPE_BADGE_CLASSES: Record<TransactionType, string> = {
-	trade: 'bg-blue-50 text-blue-700 ring-blue-200',
-	giveaway: 'bg-green-50 text-green-700 ring-green-200',
-	duel: 'bg-red-50 text-red-700 ring-red-200',
-	gri: 'bg-orange-50 text-orange-700 ring-orange-200',
-	gift: 'bg-pink-50 text-pink-700 ring-pink-200'
-};
+import { toTitleCase } from '@oldschoolgg/util';
+import { timeAgo } from '@/lib/utils.js';
 
 export type TransactionTableSortStatus<T> = {
 	columnAccessor: keyof T | string;
@@ -60,7 +54,12 @@ export function TransactionTable({
 			{
 				accessorKey: 'date',
 				header: 'Date',
-				cell: ({ row }) => new Date(row.original.date).toLocaleString(),
+				cell: ({ row }) => (
+					<div className='flex items-center flex-col'>
+						{new Date(row.original.date).toLocaleString()}
+						<p className='text-xs'>{timeAgo(new Date(row.original.date))}</p>
+					</div>
+				),
 				enableSorting: true
 			},
 			{
@@ -70,12 +69,8 @@ export function TransactionTable({
 					const t = row.original.type;
 					return (
 						<span
-							className={[
-								'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ring-1 ring-inset',
-								TYPE_BADGE_CLASSES[t]
-							].join(' ')}
-						>
-							{String(t).toUpperCase()}
+							className="">
+							{toTitleCase(t)}
 						</span>
 					);
 				},
@@ -103,12 +98,6 @@ export function TransactionTable({
 						<span className="text-slate-400">-</span>
 					),
 				enableSorting: true
-			},
-			{
-				accessorKey: 'id',
-				header: 'Transaction ID',
-				cell: ({ row }) => <span className="font-mono text-xs text-slate-500">{String(row.original.id)}</span>,
-				enableSorting: false
 			}
 		],
 		[]
@@ -202,14 +191,14 @@ export function TransactionTable({
 							</tr>
 						) : (
 							table.getRowModel().rows.map(row => (
-								<tr key={row.original.id} className="odd:even:bg-slate-50 hover:bg-slate-100">
+								<tr key={row.original.id} className="odd:bg-gray-900/50 bg-gray-900 hover:bg-blue-500/30">
 									{row.getVisibleCells().map((cell, i) => {
 										const isLast = i === row.getVisibleCells().length - 1;
 										return (
 											<td
 												key={cell.id}
 												className={[
-													'px-3 py-2 align-middle',
+													'px-3 py-3 align-middle text-sm',
 													!isLast ? 'border-r border-[var(--color-border)]' : ''
 												].join(' ')}
 											>
