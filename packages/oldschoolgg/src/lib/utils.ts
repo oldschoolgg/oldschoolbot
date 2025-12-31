@@ -10,28 +10,25 @@ export type TimeAgoOptions = {
 };
 
 const UNITS: Array<{ unit: Intl.RelativeTimeFormatUnit; ms: number }> = [
-	{ unit: "year", ms: 365.25 * 24 * 60 * 60 * 1000 },
-	{ unit: "month", ms: 30.4375 * 24 * 60 * 60 * 1000 },
-	{ unit: "week", ms: 7 * 24 * 60 * 60 * 1000 },
-	{ unit: "day", ms: 24 * 60 * 60 * 1000 },
-	{ unit: "hour", ms: 60 * 60 * 1000 },
-	{ unit: "minute", ms: 60 * 1000 },
-	{ unit: "second", ms: 1000 },
+	{ unit: 'year', ms: 365.25 * 24 * 60 * 60 * 1000 },
+	{ unit: 'month', ms: 30.4375 * 24 * 60 * 60 * 1000 },
+	{ unit: 'week', ms: 7 * 24 * 60 * 60 * 1000 },
+	{ unit: 'day', ms: 24 * 60 * 60 * 1000 },
+	{ unit: 'hour', ms: 60 * 60 * 1000 },
+	{ unit: 'minute', ms: 60 * 1000 },
+	{ unit: 'second', ms: 1000 }
 ];
 
-export function timeAgo(
-	date: Date | number,
-	opts: TimeAgoOptions = {}
-): string {
+export function timeAgo(date: Date | number, opts: TimeAgoOptions = {}): string {
 	const nowMs = opts.now instanceof Date ? opts.now.getTime() : (opts.now ?? Date.now());
 	const dateMs = date instanceof Date ? date.getTime() : date;
 
-	if (!Number.isFinite(dateMs)) throw new TypeError("Invalid date");
-	if (!Number.isFinite(nowMs)) throw new TypeError("Invalid now");
+	if (!Number.isFinite(dateMs)) throw new TypeError('Invalid date');
+	if (!Number.isFinite(nowMs)) throw new TypeError('Invalid now');
 
 	const maxUnits = Math.max(1, Math.floor(opts.maxUnits ?? 1));
 	const rtf = new Intl.RelativeTimeFormat(opts.locale, {
-		numeric: opts.numeric ?? "always",
+		numeric: opts.numeric ?? 'always'
 	});
 
 	let diffMs = dateMs - nowMs;
@@ -48,15 +45,15 @@ export function timeAgo(
 			parts.push(rtf.format(whole, unit));
 		} else {
 			const abs = Math.abs(whole);
-			parts.push(`${abs} ${unit}${abs === 1 ? "" : "s"}`);
+			parts.push(`${abs} ${unit}${abs === 1 ? '' : 's'}`);
 		}
 
 		diffMs -= whole * ms;
 	}
 
-	if (parts.length === 0) return rtf.format(0, "second");
+	if (parts.length === 0) return rtf.format(0, 'second');
 	if (parts.length === 1) return parts[0];
 
 	const isPast = dateMs < nowMs;
-	return isPast ? `${parts.join(", ")} ago` : `in ${parts.join(", ")}`;
+	return isPast ? `${parts.join(', ')} ago` : `in ${parts.join(', ')}`;
 }

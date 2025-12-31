@@ -1,9 +1,9 @@
+import { toTitleCase } from '@oldschoolgg/util';
 import { type ColumnDef, flexRender, getCoreRowModel, type SortingState, useReactTable } from '@tanstack/react-table';
 import * as React from 'react';
 
-import type { EconomyTransaction, TransactionType } from './economyTransactions.js';
-import { toTitleCase } from '@oldschoolgg/util';
 import { timeAgo } from '@/lib/utils.js';
+import type { EconomyTransaction, TransactionType } from './economyTransactions.js';
 
 export type TransactionTableSortStatus<T> = {
 	columnAccessor: keyof T | string;
@@ -55,9 +55,9 @@ export function TransactionTable({
 				accessorKey: 'date',
 				header: 'Date',
 				cell: ({ row }) => (
-					<div className='flex items-center flex-col'>
+					<div className="flex items-center flex-col">
 						{new Date(row.original.date).toLocaleString()}
-						<p className='text-xs'>{timeAgo(new Date(row.original.date))}</p>
+						<p className="text-xs">{timeAgo(new Date(row.original.date))}</p>
 					</div>
 				),
 				enableSorting: true
@@ -67,12 +67,7 @@ export function TransactionTable({
 				header: 'Type',
 				cell: ({ row }) => {
 					const t = row.original.type;
-					return (
-						<span
-							className="">
-							{toTitleCase(t)}
-						</span>
-					);
+					return <span className="">{toTitleCase(t)}</span>;
 				},
 				enableSorting: true
 			},
@@ -191,7 +186,10 @@ export function TransactionTable({
 							</tr>
 						) : (
 							table.getRowModel().rows.map(row => (
-								<tr key={row.original.id} className="odd:bg-gray-900/50 bg-gray-900 hover:bg-blue-500/30">
+								<tr
+									key={row.original.id}
+									className="odd:bg-gray-900/50 bg-gray-900 hover:bg-blue-500/30"
+								>
 									{row.getVisibleCells().map((cell, i) => {
 										const isLast = i === row.getVisibleCells().length - 1;
 										return (
