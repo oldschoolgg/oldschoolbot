@@ -1,4 +1,5 @@
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
+import type { DiscordUser } from '@prisma/robochimp';
 import { Hono } from 'hono';
 
 import type { AUserIdentity } from '@/http/api-types.js';
@@ -12,13 +13,16 @@ userServer.get('/identity/:userId', async c => {
 		return httpErr.BAD_REQUEST({ message: 'Invalid user ID. Must be a valid Discord snowflake' });
 	}
 
-	const user = await c.get('prisma').discordUser.findUnique({
+	let user: DiscordUser | null = await c.get('prisma').discordUser.findUnique({
 		where: { id: userId }
 	});
 
 	if (!user) {
-		return httpErr.NOT_FOUND({ message: 'User not found' });
+		const fetched = await globalClient.fetchUser(userId).catch(() => null);
+		if (!fetched) return httpErr.NOT_FOUND({ message: 'User not found' });
+		user = await globalClient.upsertDiscordUser(fetched);
 	}
+
 	const data: AUserIdentity = {
 		user_id: user.id,
 		username: user.username!,
