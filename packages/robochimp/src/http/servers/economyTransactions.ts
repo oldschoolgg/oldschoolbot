@@ -2,11 +2,12 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Hono } from 'hono';
 import { z } from 'zod';
 
-import { ensureAuthenticated } from '@/http/middlewares.js';
+import { ensureAuthenticated, ensureModeratorUser } from '@/http/middlewares.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 
 export const economyTransactionServer = new Hono<HonoServerGeneric>();
 economyTransactionServer.use(ensureAuthenticated);
+economyTransactionServer.use(ensureModeratorUser);
 
 const economyTransactionTypeEnum = z.enum(['trade', 'giveaway', 'duel', 'gri', 'gift']);
 

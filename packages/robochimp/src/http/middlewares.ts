@@ -13,6 +13,17 @@ export const ensureAuthenticated: MiddlewareHandler = async (c, next) => {
 		return httpErr.UNAUTHORIZED();
 	}
 
+	const isBlacklisted: boolean =
+		(await roboChimpClient.blacklistedEntity.count({
+			where: {
+				type: 'user',
+				id: user.id
+			}
+		})) > 0;
+	if (isBlacklisted) {
+		return httpErr.FORBIDDEN({ message: 'You are blacklisted.' });
+	}
+
 	await next();
 };
 
