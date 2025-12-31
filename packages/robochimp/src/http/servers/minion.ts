@@ -35,9 +35,9 @@ minionServer.get('/:bot/me', async c => {
 	return httpRes.JSON(response);
 });
 
-minionServer.get('/:bot/:userID', async c => {
+minionServer.get('/:bot/:userID?', async c => {
 	const params = c.req.param();
-	const queryBot = c.req.query('bot');
+	const queryBot = params.bot === 'osb' ? 'osb' : 'bso';
 	const userID = params.userID;
 
 	if (!userID || typeof userID !== 'string') {

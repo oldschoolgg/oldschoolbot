@@ -1,5 +1,5 @@
 import type { Hono } from 'hono';
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, test, vi } from 'vitest';
 
 import { startServer } from '@/http/server.js';
 import { initPrismaClients } from '@/lib/prisma.js';
@@ -143,14 +143,13 @@ describe('Hono app (testRequest)', () => {
 		});
 	});
 
-	it.skip('GET /minion/:id?bot=bso (BSO)', async () => {
-		const res = await testRequest(`/minion/${TEST_USER.id}?bot=bso`);
-		expect(res.status).toBe(404);
-		expect(await res.json()).toEqual({ error: 'NOT_FOUND', message: 'User not found' });
+	test('Missing bot', async () => {
+		const res = await testRequest('/minion/not-a-snowflake');
+		expect(res.status).toBe(400);
 	});
 
-	it('GET /minion/:bad -> 404 when no match', async () => {
-		const res = await testRequest('/minion/not-a-snowflake');
+	test('Invalid user ID', async () => {
+		const res = await testRequest('/minion/osb/not-a-snowflake');
 		expect(res.status).toBe(400);
 	});
 });
