@@ -27,7 +27,7 @@ export type FullMinionData = RoboChimpInfo & {
 	bitfield: number[];
 };
 
-export type AUserIdentity = {
+export type SUserIdentity = {
 	user_id: string;
 	username: string;
 	avatar: string | null;

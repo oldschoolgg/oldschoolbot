@@ -52,7 +52,19 @@ export function EconomyTransactionsPage() {
 			if (dateTo) query.date_to = dateTo.toISOString();
 
 			const response = await api.staff.fetchEconomyTransactions(query);
-			setTransactions(response.data);
+			// setTransactions(response.data);
+			setTransactions([
+				{
+					id: '1',
+					sender: '157797566833098752',
+					recipient: '157797566833098752',
+					guild_id: null,
+					type: 'trade',
+					date: new Date().toISOString(),
+					items_sent: '{}',
+					items_received: '{}'
+				}
+			]);
 			setTotal(response.pagination.total);
 		} catch (err) {
 			console.error('Error loading economy transactions:', err);

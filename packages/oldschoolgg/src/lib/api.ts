@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import type { EconomyTransactionsQuery, EconomyTransactionsResponse } from '@/components/Staff/economyTransactions.js';
-import type { AuthenticatedUser, FullMinionData } from '../../../robochimp/src/http/servers/api-types.js';
+import type { AuthenticatedUser, FullMinionData, SUserIdentity } from '../../../robochimp/src/http/api-types.js';
 
 const rawApiWretch = wretch(__API_URL__)
 	.options({ credentials: 'include' })
@@ -91,7 +91,10 @@ export const api = {
 			if (query.limit !== undefined) params.append('limit', query.limit.toString());
 			if (query.offset !== undefined) params.append('offset', query.offset.toString());
 
-			return rawApiWretch.url(`/economy-transactions?${params.toString()}`).get().json();
+			return rawApiWretch.url(`/staff/economy-transactions?${params.toString()}`).get().json();
+		},
+		fetchUserIdentity: (userId: string): Promise<SUserIdentity> => {
+			return rawApiWretch.url(`/staff/user/identity/${userId}`).get().json();
 		}
 	}
 };

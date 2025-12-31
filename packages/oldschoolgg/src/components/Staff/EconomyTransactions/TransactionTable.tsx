@@ -1,9 +1,10 @@
 import { toTitleCase } from '@oldschoolgg/util';
 import { type ColumnDef, flexRender, getCoreRowModel, type SortingState, useReactTable } from '@tanstack/react-table';
-import * as React from 'react';
+import { useMemo } from 'react';
 
+import { UserIndentity } from '@/components/Staff/UserIdentity.js';
 import { timeAgo } from '@/lib/utils.js';
-import type { EconomyTransaction, TransactionType } from './economyTransactions.js';
+import type { EconomyTransaction } from './economyTransactions.js';
 
 export type TransactionTableSortStatus<T> = {
 	columnAccessor: keyof T | string;
@@ -49,7 +50,7 @@ export function TransactionTable({
 	onPageChange,
 	onSortStatusChange
 }: TransactionTableProps) {
-	const columns = React.useMemo<ColumnDef<EconomyTransaction>[]>(
+	const columns = useMemo<ColumnDef<EconomyTransaction>[]>(
 		() => [
 			{
 				accessorKey: 'date',
@@ -74,13 +75,19 @@ export function TransactionTable({
 			{
 				accessorKey: 'sender',
 				header: 'Sender',
-				cell: ({ row }) => <span className="font-mono text-sm">{String(row.original.sender)}</span>,
+				cell: ({ row }) => {
+					const userId = row.original.sender;
+					return <UserIndentity userId={userId} />;
+				},
 				enableSorting: true
 			},
 			{
 				accessorKey: 'recipient',
 				header: 'Recipient',
-				cell: ({ row }) => <span className="font-mono text-sm">{String(row.original.recipient)}</span>,
+				cell: ({ row }) => {
+					const userId = row.original.recipient;
+					return <UserIndentity userId={userId} />;
+				},
 				enableSorting: true
 			},
 			{
@@ -98,7 +105,7 @@ export function TransactionTable({
 		[]
 	);
 
-	const sorting = React.useMemo(() => toSortingState(sortStatus), [sortStatus]);
+	const sorting = useMemo(() => toSortingState(sortStatus), [sortStatus]);
 
 	const table = useReactTable({
 		data: transactions,

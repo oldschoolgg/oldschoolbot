@@ -24,26 +24,14 @@ export async function startServer() {
 	);
 
 	app.use('*', attachUser);
-	app.use('*', async (c, _next) => {
+	app.use('*', async (c, next) => {
 		if (c.req.method === 'OPTIONS') {
 			return c.text('OK');
 		}
 		c.set('prisma', roboChimpClient);
 
-		const target = `${c.req.url.replace('http://osgtestapi.magnaboy.com', 'https://api.oldschool.gg')}`;
-		console.log(`Proxying request: ${c.req.method} ${c.req.url} -> ${target}`);
-
-		const proxiedRes = await fetch(target, {
-			headers: {
-				Cookie: 'g'
-			}
-		}).then(res => res.json());
-
-		return c.json(proxiedRes);
-		// console.log(`${c.req.method} ${c.req.url}`);
-		// return next();
-		// console.log(`${c.req.method} ${c.req.url}`);
-		// return next();
+		console.log(`${c.req.method} ${c.req.url}`);
+		return next();
 	});
 
 	app.route('/staff', staffServer);
