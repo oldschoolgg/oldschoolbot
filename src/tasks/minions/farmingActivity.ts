@@ -91,14 +91,6 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 		lines.push(`Total time spent: ${formatDuration(summary.totalDuration)}.`);
 	}
 
-	if (summary.steps.length > 0) {
-		const stepDescriptions = summary.steps.map(step => {
-			const patchLabel = step.patchType ? `${step.patchType}: ` : '';
-			return `${patchLabel}${step.quantity.toLocaleString()}x ${step.plantsName}`;
-		});
-		lines.push(`Summary: ${stepDescriptions.join('; ')}.`);
-	}
-
 	const xpParts: string[] = [];
 	if (summary.totalXP > 0) {
 		xpParts.push(
@@ -112,7 +104,7 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 		xpParts.push(`${summary.totalHerbloreXP.toLocaleString()} Herblore XP`);
 	}
 	if (xpParts.length > 0) {
-		lines.push(`XP gained: ${xpParts.join(' | ')}.`);
+		lines.push(`XP gained: ${xpParts.join(', ')}.`);
 	}
 
 	if (summary.contractsCompleted > 0) {
