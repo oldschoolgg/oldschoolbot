@@ -155,7 +155,7 @@ export async function handleCombinedAutoFarm({
 
 	const aggregatedContent = summaries.length === messages.length ? buildAggregateMessage({ summaries, steps }) : null;
 	const content = aggregatedContent ?? messages.join('\n\n');
-	let message: InstanceType<typeof MessageBuilder> | BaseSendableMessage = aggregatedContent
+	const message: InstanceType<typeof MessageBuilder> | BaseSendableMessage = aggregatedContent
 		? new MessageBuilder().setContent(content).addBankImage({ bank: totalLoot })
 		: { content };
 

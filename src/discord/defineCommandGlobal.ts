@@ -5,5 +5,3 @@ declare global {
 }
 
 global.defineCommand ??= defineCommandSrc;
-
-export {};
