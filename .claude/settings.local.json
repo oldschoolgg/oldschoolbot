@@ -1,7 +1,0 @@
-{
-	"permissions": {
-		"allow": ["Bash(pnpm add:*)", "Bash(pnpm exec tsc:*)", "Bash(pnpm run build:*)"],
-		"deny": [],
-		"ask": []
-	}
-}
