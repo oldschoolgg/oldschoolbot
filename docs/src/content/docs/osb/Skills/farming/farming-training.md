@@ -8,6 +8,8 @@ Set your default compost using:
 [[/farming default_compost compost\:Ultracompost]]  
 Make sure to maintain your compost supply. At minimum, use supercompost (easy to get from wildy bosses or [[/farming compost_bin]]).
 
+Auto farming pairs well with this plan: once your patches are planted, use [[/farming auto_farm]] to clear ready patches in one trip (see [Auto Farming](auto-farming.md)).
+
 Ultracompost is created by mining volcanic ash and combining it with supercompost:  
 [[/mine name\:Volcanic ash]]  
 [[/create item\:Ultracompost]]

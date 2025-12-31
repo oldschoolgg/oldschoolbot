@@ -1,11 +1,24 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { EmbedBuilder } from '@oldschoolgg/discord';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
 import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 import { choicesOf } from '@/discord/index.js';
-import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
-import { superCompostables } from '@/lib/data/filterables.js';
 import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
+import {
+	compostBinPlantNameAutoComplete,
+	farmingPlantNameAutoComplete,
+	titheFarmBuyRewardAutoComplete
+} from '@/lib/skilling/skills/farming/autocompletes.js';
+import {
+	getPlantsForPatch,
+	getPrimarySeedForPlant,
+	parsePreferredSeeds,
+	serializePreferredSeeds
+} from '@/lib/skilling/skills/farming/autoFarm/preferences.js';
 import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { FarmingSeedPreference } from '@/lib/skilling/skills/farming/utils/types.js';
 import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
 import {
 	compostBinCommand,
@@ -19,6 +32,72 @@ const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	AllFarm: 'All crops will be farmed with the highest available seed',
 	Replant: 'Only planted crops will be replanted, using the same seed'
 };
+
+function formatPreference(preference: FarmingSeedPreference | undefined): string {
+	if (!preference) {
+		return 'not set (uses auto farm filter)';
+	}
+	if (preference.type === 'highest_available') {
+		return 'highest_available';
+	}
+	if (preference.type === 'empty') {
+		return 'empty';
+	}
+	const item = Items.getItem(preference.seedID);
+	const itemName = item?.name ?? `Item ${preference.seedID}`;
+	return `seed: ${itemName}`;
+}
+
+function buildPreferencesEmbed(
+	patchesDetailed: ReturnType<typeof Farming.getFarmingInfoFromUser>['patchesDetailed'],
+	preferences: Map<FarmingPatchName, FarmingSeedPreference>,
+	preferContract: boolean
+): EmbedBuilder {
+	const descriptionLines: string[] = [`Contract priority: ${preferContract ? 'enabled' : 'disabled'}.`];
+	for (const patch of patchesDetailed) {
+		descriptionLines.push(`${patch.friendlyName} → ${formatPreference(preferences.get(patch.patchName))}`);
+	}
+
+	return new EmbedBuilder().setTitle('Auto-farm preferences').setDescription(descriptionLines.join('\n'));
+}
+
+function resolveSeedPreferenceInput(patchName: FarmingPatchName, seedInput: string): FarmingSeedPreference | string {
+	const trimmed = seedInput.trim();
+	if (trimmed.length === 0) {
+		return 'Please specify a seed preference.';
+	}
+	const normalized = trimmed.toLowerCase().replace(/\s+/g, '_');
+	if (normalized === 'highest_available') {
+		return { type: 'highest_available' };
+	}
+	if (normalized === 'empty') {
+		return { type: 'empty' };
+	}
+
+	const plantsForPatch = getPlantsForPatch(patchName);
+	let matchingPlant = plantsForPatch.find(
+		plant => stringMatches(plant.name, trimmed) || plant.aliases.some(alias => stringMatches(alias, trimmed))
+	);
+
+	if (!matchingPlant) {
+		matchingPlant = plantsForPatch.find(plant =>
+			plant.inputItems
+				.items()
+				.some(([item]) => stringMatches(item.name, trimmed) || stringMatches(item.name, normalized))
+		);
+	}
+
+	if (!matchingPlant) {
+		return `I couldn't find a seed or plant matching "${seedInput}" for that patch.`;
+	}
+
+	const seedID = getPrimarySeedForPlant(matchingPlant);
+	if (!seedID) {
+		return `Unable to determine the seed item for ${matchingPlant.name}.`;
+	}
+
+	return { type: 'seed', seedID };
+}
 
 export const farmingCommand = defineCommand({
 	name: 'farming',
@@ -41,11 +120,7 @@ export const farmingCommand = defineCommand({
 					name: 'plant_name',
 					description: 'The plant you want to plant.',
 					required: true,
-					autocomplete: async ({ value, user }: StringAutoComplete) => {
-						return Farming.Plants.filter(i => user.skillsAsLevels.farming >= i.level)
-							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i.name, value: i.name }));
-					}
+					autocomplete: farmingPlantNameAutoComplete
 				},
 				{
 					type: 'Integer',
@@ -80,6 +155,36 @@ export const farmingCommand = defineCommand({
 					description: 'The auto farm filter you want to use by default. (default: AllFarm)',
 					required: true,
 					choices: choicesOf(Object.values(AutoFarmFilterEnum))
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'set_preferred',
+			description: 'View or update your per-patch autofarm preferences.',
+			required: false,
+			options: [
+				{
+					type: 'String',
+					name: 'patch',
+					description: 'The patch to view or modify.',
+					required: false,
+					choices: Farming.farmingPatchNames.map(name => ({
+						name: toTitleCase(name.replace(/_/g, ' ')),
+						value: name
+					}))
+				},
+				{
+					type: 'String',
+					name: 'seed',
+					description: "Preferred seed (item name, 'highest_available', or 'empty').",
+					required: false
+				},
+				{
+					type: 'Boolean',
+					name: 'prefer_contract',
+					description: 'Prioritize farming contracts when available.',
+					required: false
 				}
 			]
 		},
@@ -130,11 +235,7 @@ export const farmingCommand = defineCommand({
 					name: 'buy_reward',
 					description: 'Buy a Tithe Farm reward.',
 					required: false,
-					autocomplete: async ({ value }: StringAutoComplete) => {
-						return TitheFarmBuyables.filter(i =>
-							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
-						).map(i => ({ name: i.name, value: i.name }));
-					}
+					autocomplete: titheFarmBuyRewardAutoComplete
 				}
 			]
 		},
@@ -149,11 +250,7 @@ export const farmingCommand = defineCommand({
 					name: 'plant_name',
 					description: 'The plant you want to put in the Compost Bins.',
 					required: true,
-					autocomplete: async ({ value }: StringAutoComplete) => {
-						return superCompostables
-							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i, value: i }));
-					}
+					autocomplete: compostBinPlantNameAutoComplete
 				},
 				{
 					type: 'Integer',
@@ -182,10 +279,10 @@ export const farmingCommand = defineCommand({
 	],
 	run: async ({ user, options, interaction, channelId }) => {
 		await interaction.defer();
-		const { patchesDetailed } = Farming.getFarmingInfoFromUser(user);
+		const { patchesDetailed, patches } = Farming.getFarmingInfoFromUser(user);
 
 		if (options.auto_farm) {
-			return autoFarm(interaction, user, patchesDetailed);
+			return autoFarm(user, patchesDetailed, patches, interaction);
 		}
 		if (options.always_pay) {
 			const isEnabled = user.user.minion_defaultPay;
@@ -214,6 +311,77 @@ export const farmingCommand = defineCommand({
 			});
 
 			return `${autoFarmFilter} filter is now enabled when autofarming: ${autoFarmFilterTexts[autoFarmFilter]}.`;
+		}
+		if (options.set_preferred) {
+			const preferenceMap = parsePreferredSeeds(
+				(user.user as unknown as { minion_farmingPreferredSeeds?: Record<string, unknown> })
+					.minion_farmingPreferredSeeds
+			);
+			let preferContractCurrent = Boolean(
+				(user.user as unknown as { minion_farmingPreferContract?: boolean }).minion_farmingPreferContract
+			);
+			const responses: string[] = [];
+			const patchNameInput = options.set_preferred.patch as FarmingPatchName | undefined;
+			const seedInput = options.set_preferred.seed ?? undefined;
+			const preferContractInput = options.set_preferred.prefer_contract;
+
+			if (typeof preferContractInput === 'boolean') {
+				if (preferContractInput !== preferContractCurrent) {
+					await user.update({
+						minion_farmingPreferContract: preferContractInput
+					} as any);
+					preferContractCurrent = preferContractInput;
+				}
+				responses.push(`Contract priority is now ${preferContractInput ? 'enabled' : 'disabled'}.`);
+			}
+
+			if (!patchNameInput && !seedInput) {
+				const embed = buildPreferencesEmbed(patchesDetailed, preferenceMap, preferContractCurrent);
+				if (responses.length > 0) {
+					return { content: responses.join('\n'), embeds: [embed] };
+				}
+				return { embeds: [embed] };
+			}
+
+			if (!patchNameInput && seedInput) {
+				return 'You must provide a patch when setting a seed preference.';
+			}
+
+			if (patchNameInput) {
+				const patchData = patchesDetailed.find(patch => patch.patchName === patchNameInput);
+				if (!patchData) {
+					return 'Invalid patch.';
+				}
+
+				if (!seedInput) {
+					const summary = `${patchData.friendlyName} → ${formatPreference(
+						preferenceMap.get(patchData.patchName)
+					)}`;
+					if (responses.length > 0) {
+						responses.push(summary);
+						return responses.join('\n');
+					}
+					return summary;
+				}
+
+				const resolvedPreference = resolveSeedPreferenceInput(patchData.patchName, seedInput);
+				if (typeof resolvedPreference === 'string') {
+					return resolvedPreference;
+				}
+
+				preferenceMap.set(patchData.patchName, resolvedPreference);
+				await user.update({
+					minion_farmingPreferredSeeds: serializePreferredSeeds(preferenceMap)
+				} as any);
+
+				const summary = `${patchData.friendlyName} → ${formatPreference(resolvedPreference)}`;
+				responses.push(summary);
+				return responses.join('\n');
+			}
+
+			if (responses.length > 0) {
+				return responses.join('\n');
+			}
 		}
 		if (options.plant) {
 			return farmingPlantCommand({

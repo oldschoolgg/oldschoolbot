@@ -3,19 +3,10 @@ import { Bank } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import { superCompostables } from '@/lib/data/filterables.js';
+import { prepareFarmingStep, treeCheck } from '@/lib/minions/functions/farmingTripHelpers.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { Plant } from '@/lib/skilling/types.js';
+import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
-
-function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
-	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
-		const gpToCutTree = plant.seedType === 'redwood' ? 2000 * quantity : 200 * quantity;
-		if (bal < gpToCutTree) {
-			return `Your minion does not have ${plant.treeWoodcuttingLevel} Woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cannot harvest them.`;
-		}
-	}
-	return null;
-}
 
 export async function harvestCommand({
 	user,
@@ -52,8 +43,10 @@ export async function harvestCommand({
 		return `Please come back when your crops have finished growing in ${formatDuration(patch.readyIn!)}!`;
 	}
 
-	const treeStr = !plant ? null : treeCheck(plant, currentWoodcuttingLevel, GP, patch.lastQuantity);
-	if (treeStr) return treeStr;
+	const treeCheckResult = !plant
+		? { error: null, fee: 0 }
+		: treeCheck(plant, currentWoodcuttingLevel, GP, patch.lastQuantity);
+	if (treeCheckResult.error) return treeCheckResult.error;
 
 	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
 	const timePerPatchHarvest = Time.Second * plant.timePerHarvest;
@@ -67,7 +60,7 @@ export async function harvestCommand({
 	}
 
 	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
-		boostStr.push('10% time for Ring of Endurance');
+		boostStr.push('10% time for Ring of endurance');
 		duration *= 0.9;
 	}
 
@@ -127,11 +120,8 @@ export async function farmingPlantCommand({
 	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	const userBank = user.bank;
 	const alwaysPay = user.user.minion_defaultPay;
 	const questPoints = user.QP;
-	const { GP } = user;
-	const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
 	const currentDate = Date.now();
 
 	const infoStr: string[] = [];
@@ -154,105 +144,45 @@ export async function farmingPlantCommand({
 	const { patchesDetailed, patches } = user.farmingInfo();
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
-	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
-	const timePerPatchHarvest = Time.Second * plant.timePerHarvest;
-	const timePerPatchPlant = Time.Second * 5;
-
-	const planted = Farming.findPlant(patchType.lastPlanted);
-
-	if (patchType.ready === false) {
-		return `Please come back when your crops have finished growing in ${formatDuration(patchType.readyIn!)}!`;
-	}
-
-	const treeStr = !planted ? null : treeCheck(planted, currentWoodcuttingLevel, GP, patchType.lastQuantity);
-	if (treeStr) return treeStr;
-
-	const [numOfPatches] = Farming.calcNumOfPatches(plant, user, questPoints);
+	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
 	if (numOfPatches === 0) {
 		return 'There are no available patches to you.';
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('Farming');
 
-	// If no quantity provided, set it to the max PATCHES available.
-	const maxCanDo = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));
-	if (quantity === null) {
-		quantity = maxCanDo;
-	}
-	quantity = Math.min(quantity, numOfPatches);
-
-	if (quantity > numOfPatches) {
+	if (quantity !== null && quantity > numOfPatches) {
 		return `There are not enough ${plant.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
 	}
 
-	let duration = 0;
-	if (patchType.patchPlanted) {
-		duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
-		if (quantity > patchType.lastQuantity) {
-			duration += (quantity - patchType.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
-		}
-	} else {
-		duration = quantity * (timePerPatchTravel + timePerPatchPlant);
-	}
-
-	// Reduce time if user has graceful equipped
-	if (user.hasGracefulEquipped()) {
-		boostStr.push('10% time for Graceful');
-		duration *= 0.9;
-	}
-
-	if (user.hasEquipped('Ring of endurance')) {
-		boostStr.push('10% time for Ring of Endurance');
-		duration *= 0.9;
-	}
-
-	if (user.hasDiary('ardougne.hard')) {
-		boostStr.push(`4% time for Ardougne Hard diary`);
-		duration *= 0.96;
-	}
-	if (user.hasDiary('ardougne.elite')) {
-		boostStr.push(`4% time for Ardougne Elite diary`);
-		duration *= 0.96;
-	}
-
-	if (duration > maxTripLength) {
-		return `${user.minionName} can't go on trips longer than ${formatDuration(
-			maxTripLength
-		)}, try a lower quantity. The highest amount of ${plant.name} you can plant is ${maxCanDo}.`;
-	}
-
-	const cost = new Bank();
-	for (const [seed, qty] of plant.inputItems.items()) {
-		if (userBank.amount(seed.id) < qty * quantity) {
-			if (userBank.amount(seed.id) > qty) {
-				quantity = Math.floor(userBank.amount(seed.id) / qty);
-			}
-		}
-		cost.add(seed.id, qty * quantity);
-	}
-
-	let didPay = false;
-	if (wantsToPay && plant.protectionPayment) {
-		const paymentCost = plant.protectionPayment.clone().multiply(quantity);
-		if (userBank.has(paymentCost)) {
-			cost.add(paymentCost);
-			didPay = true;
-			infoStr.push(`You are paying a nearby farmer ${paymentCost} to look after your patches.`);
-		} else {
-			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
-		}
-	}
-
 	const compostTier = (user.user.minion_defaultCompostToUse as CropUpgradeType) ?? 'compost';
-	let upgradeType: CropUpgradeType | null = null;
-	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
-		const compostCost = new Bank().add(compostTier, quantity);
-		if (user.owns(compostCost)) {
-			infoStr.push(`You are treating your patches with ${compostCost}.`);
-			cost.add(compostCost);
-			upgradeType = compostTier;
-		}
+	const availableBank = user.bank.clone().add('Coins', user.GP);
+	const prepared = await prepareFarmingStep({
+		user,
+		plant,
+		quantity,
+		pay: wantsToPay,
+		patchDetailed: patchType,
+		maxTripLength,
+		availableBank,
+		compostTier
+	});
+	if (!prepared.success) {
+		return prepared.error;
 	}
+
+	quantity = prepared.data.quantity;
+	const {
+		cost,
+		didPay,
+		duration,
+		upgradeType,
+		infoStr: preparedInfo,
+		boostStr: preparedBoosts,
+		treeChopFee
+	} = prepared.data;
+	infoStr.push(...preparedInfo);
+	boostStr.push(...preparedBoosts);
 
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
 	await user.transactItems({ itemsToRemove: cost });
@@ -277,7 +207,7 @@ export async function farmingPlantCommand({
 	const inserted = await prisma.farmedCrop.create({
 		data: {
 			user_id: user.id,
-			date_planted: new Date(),
+			date_planted: new Date(currentDate),
 			item_id: plant.id,
 			quantity_planted: quantity,
 			was_autofarmed: autoFarmed,
@@ -296,6 +226,8 @@ export async function farmingPlantCommand({
 		quantity,
 		upgradeType,
 		payment: didPay,
+		treeChopFeePaid: 0,
+		treeChopFeePlanned: treeChopFee,
 		planting: true,
 		duration,
 		currentDate,
