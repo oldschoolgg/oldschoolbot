@@ -10,6 +10,9 @@ export const httpErr = {
 	},
 	RATELIMITED: ({ message }: { message?: string } = {}): Response => {
 		return Response.json({ error: 'RATELIMITED', message }, { status: 429 });
+	},
+	FORBIDDEN: ({ message }: { message?: string } = {}): Response => {
+		return Response.json({ error: 'FORBIDDEN', message }, { status: 403 });
 	}
 };
 
