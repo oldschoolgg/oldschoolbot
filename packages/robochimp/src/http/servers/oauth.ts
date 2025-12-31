@@ -5,7 +5,7 @@ import { Hono } from 'hono';
 import { deleteCookie, setCookie } from 'hono/cookie';
 
 import { globalConfig } from '@/constants.js';
-import type { AuthenticatedUser } from '@/http/servers/api-types.js';
+import type { AuthenticatedUser } from '@/http/api-types.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 import { encryptToken } from '@/modules/encryption.js';
 
