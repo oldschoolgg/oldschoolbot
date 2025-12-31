@@ -21,7 +21,7 @@ You can do it using: [[/activities inferno action:Start Inferno Trip emerged:tru
 
 ## Boosts
 
-Boosts listed here are specifically for Emerged Zuk attempts. Refer to the [Inferno ](inferno.md#bso-specific-boosts)guide or the [OSB Wiki](https://wiki.oldschool.gg/bosses/inferno) for other boosts you think you may be missing. The boosts that apply there will also apply to emerged runs since you have to complete the regular inferno prior to challenging the emerged version of Zuk in each run.
+Boosts listed here are specifically for Emerged Zuk attempts. Refer to the [Inferno ](inferno#bso-specific-boosts)guide or the [OSB Wiki](https://wiki.oldschool.gg/bosses/inferno) for other boosts you think you may be missing. The boosts that apply there will also apply to emerged runs since you have to complete the regular inferno prior to challenging the emerged version of Zuk in each run.
 
 The number of times you have completed the Inferno and the Emerged Inferno will also contribute to the boosts you receive greatly. Due to the math surrounding how these boosts are calculated, they are left out of this page.
 

@@ -1,7 +1,5 @@
 ---
 title: "Grandmaster Clues"
-sidebar:
-  order: 3
 ---
 
 ## Prerequisites
@@ -19,16 +17,16 @@ Master clue scrolls can be created by Watson using [[/create item\:Master clue q
 
 ## Boosts
 
-- [Clue global boosts (OSB Wiki)](https://wiki.oldschool.gg/miscellaneous/clue-scrolls/boosts#global-boosts)
-- [Clue Hunter Outfit](equippables/#clue-hunter-outfit) – 2x speed
-- [Zippy](/custom-items/pets#resource-gathering-and-loot-effecting-pets) – 1/15 chance to double; also boosts Beginner to Master caskets, UMB, and TMB (stacks with global double)
+- [Clue global boosts (OSB Wiki)](/osb/clues/#global-boosts)
+- [Clue Hunter Outfit](/bso/custom-items/#clue-hunter-outfit) – 2x speed
+- [Zippy](/bso/custom-items/pets/#miscellaneous-effects) – 1/15 chance to double; also boosts Beginner to Master caskets, UMB, and TMB (stacks with global double)
 - Clue score – up to 10% at ~60 clues completed
 
 ## Obtaining
 
 Grandmaster Clues can be received from a wide range of content. Drop rates vary and change often. Common sources include:
 
-[Kalphite King](/bosses/kalphite-king), [Vasa Magus](../bso-custom-killables/bosses/vasa-magus.md), [Sea Kraken](/bosses/sea-kraken), [Ignecarus](/bosses/ignecarus), [Nex](/bosses/nex), [Malygos](/bosses/malygos), [QBD](../bso-custom-killables/demi-bosses/queen-black-dragon.md#rewards), [Elder Birdhouses](../skills/hunter.md), Fishing, Woodcutting, Master Clue Caskets, and [Item Contracts](/custom-items/item-contracts).
+[[Kalphite King]], [[Vasa Magus]], [[Sea Kraken]], [[Ignecarus]], [[Nex]], [[Malygos]], [[Queen Black Dragon]], [Elder Birdhouses](/bso/skills/hunter), Fishing, Woodcutting, Master Clue Caskets, and [Item Contracts](/bso/item-contracts/).
 
 ## General Loot Table
 
@@ -52,10 +50,10 @@ Grandmaster Caskets contain:
 Each casket gives 5–11 loot rolls, so actual drop rates vary. Denoted as `x`:
 
 - Malygos and Ignecarus Masks – x/50
-- [Deathtouched Dart](/custom-items/misc) – x/4000
-- [Dyes](/custom-items/dyes?q=dyes) – x/10000
-- [First Age Equipment](/custom-items/equippables#first-age) – x/130000
-- [Dwarven Blessing](/custom-items/equippables#dwarven-equipment) – x/10000
-- [Clue Hunter](/custom-items/equippables#clue-hunter-outfit) – x/2500
-- [Blabberbeak](pets.md#meme-pets-and-no-perk-pets) – x/20000
+- [[Deathtouched Dart]] – x/4000
+- [[Dyes]](/bso/custom-items/dyes/) – x/10000
+- [First Age Equipment](/bso/custom-items/#first-age) – x/130000
+- [[Dwarven Blessing]] – x/10000
+- [Clue Hunter](/bso/custom-items/#clue-hunter-outfit) – x/2500
+- [[Blabberbeak]] – x/20000
 - Ring of Luck – x/8000

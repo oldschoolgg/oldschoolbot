@@ -1,6 +1,6 @@
 import { makeURLSearchParams, REST } from '@discordjs/rest';
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
-import type { IChannel, IInteraction, IMember, IMessage, IRole, IUser, IWebhook } from '@oldschoolgg/schemas';
+import type { IChannel, IInteraction, IMember, IMessage, IRole, IWebhook } from '@oldschoolgg/schemas';
 import { uniqueArr } from '@oldschoolgg/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -14,6 +14,7 @@ import {
 	type APIGuildMember,
 	type APIInteraction,
 	type APIRole,
+	type APIUser,
 	type APIWebhook,
 	GatewayDispatchEvents,
 	GatewayOpcodes,
@@ -87,7 +88,6 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		this.ws.on(WebSocketShardEvents.Dispatch, async (packet, shardId) => {
 			switch (packet.t) {
 				case 'READY': {
-					this.emit('debug', { message: `Shard ${shardId} is ready.` });
 					if (shardId === 0) {
 						await this.onReady(packet.d);
 					}
@@ -332,9 +332,9 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		}
 	}
 
-	async fetchUser(userId: string): Promise<IUser> {
+	async fetchUser(userId: string): Promise<APIUser> {
 		const res = await this.rest.get(Routes.user(userId));
-		return res as IUser;
+		return res as APIUser;
 	}
 
 	async fetchMember({ guildId, userId }: { guildId: string; userId: string }): Promise<IMember> {
@@ -406,6 +406,10 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		messageId: string;
 		emojiId: string;
 	}): Promise<void> {
+		// Handle format like: :SkyStare:718251514899988488
+		if (emojiId.includes(':')) {
+			emojiId = emojiId.split(':').slice(-1)[0];
+		}
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emojiId));
 		await this.rest.put(route);
 	}

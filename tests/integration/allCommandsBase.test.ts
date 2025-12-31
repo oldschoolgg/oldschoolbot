@@ -1,4 +1,5 @@
-import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
+import type { RNGProvider } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IChannel, IRole } from '@oldschoolgg/schemas';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP } from 'oldschooljs';

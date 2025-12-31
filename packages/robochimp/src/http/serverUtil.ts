@@ -1,3 +1,5 @@
+import type { RobochimpPrismaClient } from '@/lib/prisma.js';
+
 export const httpErr = {
 	UNAUTHORIZED: ({ message }: { message?: string } = {}): Response => {
 		return Response.json({ error: 'UNAUTHORIZED', message }, { status: 401 });
@@ -10,10 +12,21 @@ export const httpErr = {
 	},
 	RATELIMITED: ({ message }: { message?: string } = {}): Response => {
 		return Response.json({ error: 'RATELIMITED', message }, { status: 429 });
+	},
+	FORBIDDEN: ({ message }: { message?: string } = {}): Response => {
+		return Response.json({ error: 'FORBIDDEN', message }, { status: 403 });
 	}
 };
+
 export const httpRes = {
 	JSON: (json: object): Response => {
 		return Response.json(json, { status: 200 });
 	}
 };
+
+type HonoVariables = {
+	user: RUser | null;
+	prisma: RobochimpPrismaClient;
+};
+
+export type HonoServerGeneric = { Bindings: {}; Variables: HonoVariables };

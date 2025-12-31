@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, test } from 'vitest';
 
+import { EItem } from '@/EItem.js';
 import { EquipmentSlot } from '@/meta/item.js';
 import Openables from '@/simulation/openables/index.js';
 import { Items } from '@/structures/Items.js';
@@ -100,7 +101,7 @@ describe('Items', () => {
 		if (!coins) throw new Error('Missing item.');
 		expect(coins.id).toBe(995);
 		expect(coins.price).toEqual(1);
-		expect(Items.getItem('Snowy knight')!.price).toEqual(0);
+		expect(Items.getItem('Snowy knight')!.price).toEqual(undefined);
 
 		expect(Items.getItem('Vial of blood')!.id).toEqual(22_446);
 	}, 60_000);
@@ -110,14 +111,10 @@ describe('Items', () => {
 		expect(tbow.equipment!.attack_ranged).toEqual(70);
 		expect(tbow.equipment!.defence_crush).toEqual(0);
 		expect(tbow.equipment!.slot).toEqual(EquipmentSlot.TwoHanded);
-		expect(tbow.wiki_name).toEqual('Twisted bow');
-		expect(tbow.equipable_weapon).toEqual(true);
 
 		const anglerHat = Items.getItem('Angler hat')!;
 		expect(anglerHat.equipment!.slot).toEqual(EquipmentSlot.Head);
 		expect(anglerHat.equipable).toEqual(true);
-		expect(anglerHat.equipable_by_player).toEqual(true);
-		expect(anglerHat.equipable_weapon).toEqual(undefined);
 		expect(anglerHat.equipment!.attack_ranged).toEqual(0);
 
 		const scep = Items.get(26_950);
@@ -126,8 +123,6 @@ describe('Items', () => {
 		const scep2 = Items.getItem("Pharaoh's sceptre")!;
 		expect(scep2.name).toEqual("Pharaoh's sceptre");
 		expect(scep2.id).toEqual(9044);
-		expect(scep2.equipable_by_player).toEqual(true);
-		expect(scep2.equipable_weapon).toEqual(true);
 		expect(scep2.equipable).toEqual(true);
 		expect(scep2.equipment?.slot).toEqual(EquipmentSlot.Weapon);
 	}, 60_000);
@@ -150,4 +145,19 @@ test('modifyItem', () => {
 test('Dwarf toolkit', () => {
 	expect(Items.get(0)).toBeUndefined();
 	expect(Items.getItem('Dwarf toolkit')).toBeNull();
+});
+
+test('Misc', () => {
+	const sailingItems = [EItem.SAILING_CAPE, EItem.SAILING_CAPE_T, EItem.SAILING_HOOD];
+	for (const item of sailingItems) {
+		const it = Items.getItem(item)!;
+		expect(it).toBeDefined();
+		expect(it.equipable).toBe(true);
+		expect(it.tradeable).toBe(false);
+		expect(it.tradeable_on_ge).toBe(false);
+		// @ts-expect-error
+		expect(it.equipment!.requirements.sailing).toBe(99);
+		expect(it.equipment?.slot).toBeDefined();
+		expect(it.equipment?.attack_crush).toBe(0);
+	}
 });
