@@ -26,6 +26,7 @@ export async function startServer() {
 	app.use('*', attachUser);
 	app.use('*', async (c, next) => {
 		c.set('prisma', roboChimpClient);
+		c.set('client', globalClient);
 		console.log(`${c.req.method} ${c.req.url}`);
 		return next();
 	});

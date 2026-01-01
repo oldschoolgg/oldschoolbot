@@ -1,3 +1,4 @@
+import type { RoboChimpBotClient } from '@/discord/RoboChimpBotClient.js';
 import type { RobochimpPrismaClient } from '@/lib/prisma.js';
 
 export const httpErr = {
@@ -27,6 +28,7 @@ export const httpRes = {
 type HonoVariables = {
 	user: RUser | null;
 	prisma: RobochimpPrismaClient;
+	client: RoboChimpBotClient;
 };
 
 export type HonoServerGeneric = { Bindings: {}; Variables: HonoVariables };
