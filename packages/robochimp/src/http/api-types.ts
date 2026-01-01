@@ -19,7 +19,7 @@ type RoboChimpInfo = {
 	bso_mastery: number | null;
 };
 
-export type FullMinionData = RoboChimpInfo & {
+export type FullMinionData = {
 	gp: number;
 	is_ironman: boolean;
 	qp: number;
