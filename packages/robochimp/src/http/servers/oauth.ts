@@ -54,7 +54,7 @@ oauthHonoServer.use(
 			}
 		});
 		if (!user) {
-			return c.json({ error: 'User not found' }, 400);
+			return c.json({ error: 'Robochimp user not found' }, 400);
 		}
 		const isBlacklisted: boolean =
 			(await roboChimpClient.blacklistedEntity.count({
