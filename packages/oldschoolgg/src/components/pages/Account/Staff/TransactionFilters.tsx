@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button.js';
 import { Input } from '@/components/ui/input.js';
 import { Select } from '@/components/ui/Select.js';
-import type { Bot, TransactionType } from './economyTransactions.js';
+import type { Bot, TransactionType } from './types.js';
 
 interface TransactionFiltersProps {
 	bot: Bot;
@@ -35,7 +35,6 @@ function parseDateInputValue(v: string): Date | null {
 	if (!v) return null;
 	const [y, m, d] = v.split('-').map(x => Number(x));
 	if (!y || !m || !d) return null;
-	// local date at midnight
 	return new Date(y, m - 1, d, 0, 0, 0, 0);
 }
 

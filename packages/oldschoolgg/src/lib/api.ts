@@ -3,8 +3,17 @@ import { retry } from 'wretch/middlewares';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { EconomyTransactionsQuery, EconomyTransactionsResponse } from '@/components/Staff/economyTransactions.js';
+import type { EconomyTransactionsQuery, EconomyTransactionsResponse } from '@/components/pages/Account/Staff/types.js';
 import type { AuthenticatedUser, FullMinionData, SUserIdentity } from '../../../robochimp/src/http/api-types.js';
+
+export type MinionInfo = {
+	user_id: string;
+	bot: 'osb' | 'bso';
+	username: string | null;
+	avatar: string | null;
+	has_minion: boolean;
+	is_ironman: boolean;
+};
 
 const rawApiWretch = wretch(__API_URL__)
 	.options({ credentials: 'include' })
@@ -36,17 +45,23 @@ export const globalState = create<GlobalState>(
 );
 
 async function syncState() {
-	const res = await rawApiWretch.url('/oauth/me').get().json<OResponse<AuthenticatedUser>>();
-
-	if (!('error' in res)) {
-		globalState.setState({
-			user: res
+	await rawApiWretch
+		.url('/oauth/me')
+		.get()
+		.unauthorized(() => {
+			logOut();
+		})
+		.json<OResponse<AuthenticatedUser>>(res => {
+			if (!('error' in res)) {
+				globalState.setState({
+					user: res
+				});
+				return res;
+			} else {
+				logOut();
+				return res.error;
+			}
 		});
-		return res;
-	} else {
-		logOut();
-		return res.error;
-	}
 }
 
 type OError = {
@@ -62,9 +77,31 @@ export const api = {
 		logOut
 	},
 	minion: {
+		list: async (): Promise<MinionInfo[]> => {
+			const res = await rawApiWretch
+				.url('/minion/list')
+				.get()
+				.unauthorized(() => {
+					logOut();
+				})
+				.json<MinionInfo[]>();
+
+			return res;
+		},
 		me: async (bot: 'osb' | 'bso') => {
 			const res = await rawApiWretch
 				.url(`/minion/${bot}/me`)
+				.get()
+				.unauthorized(() => {
+					logOut();
+				})
+				.json<FullMinionData>();
+
+			return res;
+		},
+		get: async (bot: 'osb' | 'bso', userId: string): Promise<FullMinionData> => {
+			const res = await rawApiWretch
+				.url(`/minion/${bot}/user/${userId}`)
 				.get()
 				.unauthorized(() => {
 					logOut();

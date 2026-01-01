@@ -1,20 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { api } from '../../../lib/api.js';
-import { StaffPage } from '../StaffPage.js';
-import type {
-	Bot,
-	EconomyTransaction,
-	EconomyTransactionsQuery,
-	SortField,
-	TransactionType
-} from './economyTransactions.js';
+import { api } from '@/lib/api.js';
 import { TransactionFilters } from './TransactionFilters.js';
 import { TransactionTable, type TransactionTableSortStatus } from './TransactionTable.js';
+import type { Bot, EconomyTransaction, EconomyTransactionsQuery, SortField, TransactionType } from './types.js';
 
 const PAGE_SIZE = 50;
 
-export function EconomyTransactionsPage() {
+export function EconomyTransactions() {
 	const [transactions, setTransactions] = useState<EconomyTransaction[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [total, setTotal] = useState(0);
@@ -52,19 +45,7 @@ export function EconomyTransactionsPage() {
 			if (dateTo) query.date_to = dateTo.toISOString();
 
 			const response = await api.staff.fetchEconomyTransactions(query);
-			// setTransactions(response.data);
-			setTransactions([
-				{
-					id: '1',
-					sender: '157797566833098752',
-					recipient: '157797566833098752',
-					guild_id: null,
-					type: 'trade',
-					date: new Date().toISOString(),
-					items_sent: '{}',
-					items_received: '{}'
-				}
-			]);
+			setTransactions(response.data);
 			setTotal(response.pagination.total);
 		} catch (err) {
 			console.error('Error loading economy transactions:', err);
@@ -93,54 +74,52 @@ export function EconomyTransactionsPage() {
 	};
 
 	return (
-		<StaffPage>
-			<div className="min-h-[calc(100vh-60px)] ">
-				<div className="mx-auto max-w-6xl px-4 py-8">
-					<div className="flex flex-col gap-6">
-						<div>
-							<h1 className="text-2xl font-bold ">Economy Transactions</h1>
-							<p className="mt-1 text-sm ">Search and filter economy transactions across bots</p>
-						</div>
-
-						<TransactionFilters
-							bot={bot}
-							sender={sender}
-							recipient={recipient}
-							guildId={guildId}
-							type={type}
-							dateFrom={dateFrom}
-							dateTo={dateTo}
-							loading={loading}
-							onBotChange={b => {
-								setBot(b);
-								setPage(1);
-							}}
-							onSenderChange={setSender}
-							onRecipientChange={setRecipient}
-							onGuildIdChange={setGuildId}
-							onTypeChange={setType}
-							onDateFromChange={setDateFrom}
-							onDateToChange={setDateTo}
-							onSearch={handleSearch}
-							onReset={handleReset}
-						/>
-
-						<TransactionTable
-							transactions={transactions}
-							loading={loading}
-							total={total}
-							page={page}
-							pageSize={PAGE_SIZE}
-							sortStatus={sortStatus}
-							onPageChange={setPage}
-							onSortStatusChange={s => {
-								setSortStatus(s);
-								setPage(1);
-							}}
-						/>
+		<div className="min-h-[calc(100vh-60px)]">
+			<div className="mx-auto max-w-6xl px-4 py-8">
+				<div className="flex flex-col gap-6">
+					<div>
+						<h1 className="text-2xl font-bold">Economy Transactions</h1>
+						<p className="mt-1 text-sm">Search and filter economy transactions across bots</p>
 					</div>
+
+					<TransactionFilters
+						bot={bot}
+						sender={sender}
+						recipient={recipient}
+						guildId={guildId}
+						type={type}
+						dateFrom={dateFrom}
+						dateTo={dateTo}
+						loading={loading}
+						onBotChange={b => {
+							setBot(b);
+							setPage(1);
+						}}
+						onSenderChange={setSender}
+						onRecipientChange={setRecipient}
+						onGuildIdChange={setGuildId}
+						onTypeChange={setType}
+						onDateFromChange={setDateFrom}
+						onDateToChange={setDateTo}
+						onSearch={handleSearch}
+						onReset={handleReset}
+					/>
+
+					<TransactionTable
+						transactions={transactions}
+						loading={loading}
+						total={total}
+						page={page}
+						pageSize={PAGE_SIZE}
+						sortStatus={sortStatus}
+						onPageChange={setPage}
+						onSortStatusChange={s => {
+							setSortStatus(s);
+							setPage(1);
+						}}
+					/>
 				</div>
 			</div>
-		</StaffPage>
+		</div>
 	);
 }

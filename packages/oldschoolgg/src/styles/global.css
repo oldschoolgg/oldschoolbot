@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./fonts.css";
+@import "./position.css";
 
 .dark {
 	--color-background: #0b080c;

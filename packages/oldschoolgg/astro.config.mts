@@ -33,7 +33,7 @@ function splitVendorChunkPlugin() {
 	return plugin;
 }
 
-const production = false;
+const production = process.env.NODE_ENV === 'production';
 
 const config: Record<string, string> = {
 	__API_URL__: production ? 'https://api.oldschool.gg' : 'https://osgtestapi.magnaboy.com',
@@ -47,6 +47,7 @@ for (const [key, value] of Object.entries(config)) {
 export default defineConfig({
 	prefetch: true,
 	site: 'https://oldschool.gg',
+	trailingSlash: 'ignore',
 	server: {
 		allowedHosts: ['osgtest.magnaboy.com'],
 		port: 5488,

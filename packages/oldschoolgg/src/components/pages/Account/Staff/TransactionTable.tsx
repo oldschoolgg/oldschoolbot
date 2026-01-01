@@ -2,9 +2,9 @@ import { toTitleCase } from '@oldschoolgg/util';
 import { type ColumnDef, flexRender, getCoreRowModel, type SortingState, useReactTable } from '@tanstack/react-table';
 import { useMemo } from 'react';
 
-import { UserIndentity } from '@/components/Staff/UserIdentity.js';
+import { UserIndentity } from '@/components/UserIdentity.js';
 import { timeAgo } from '@/lib/utils.js';
-import type { EconomyTransaction } from './economyTransactions.js';
+import type { EconomyTransaction } from './types.js';
 
 export type TransactionTableSortStatus<T> = {
 	columnAccessor: keyof T | string;
