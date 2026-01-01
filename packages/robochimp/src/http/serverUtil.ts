@@ -20,7 +20,7 @@ export const httpErr = {
 };
 
 export const httpRes = {
-	JSON: (json: object): Response => {
+	JSON: <T>(json: T): Response => {
 		return Response.json(json, { status: 200 });
 	}
 };

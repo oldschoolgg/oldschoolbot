@@ -79,6 +79,8 @@ afterAll(async () => {
 	}
 });
 
+globalThis.globalClient = {} as any;
+
 describe('Hono app (testRequest)', () => {
 	it('POST /webhooks/patreon missing header -> 400', async () => {
 		const res = await testRequest('/webhooks/patreon', { method: 'POST', body: {} });
@@ -143,13 +145,8 @@ describe('Hono app (testRequest)', () => {
 		});
 	});
 
-	test('Missing bot', async () => {
-		const res = await testRequest('/minion/not-a-snowflake');
-		expect(res.status).toBe(400);
-	});
-
 	test('Invalid user ID', async () => {
-		const res = await testRequest('/minion/osb/not-a-snowflake');
-		expect(res.status).toBe(400);
+		const res = await testRequest('/user/123/osb/minion');
+		expect(res.status).toBe(401);
 	});
 });

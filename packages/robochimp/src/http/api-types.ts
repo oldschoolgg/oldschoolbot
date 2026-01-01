@@ -8,17 +8,6 @@ export type AuthenticatedUser = {
 	bits: number[];
 };
 
-type RoboChimpInfo = {
-	osb_total_level: number | null;
-	bso_total_level: number | null;
-	// osb_total_xp: number | null;
-	// bso_total_xp: number | null;
-	osb_cl_percent: number | null;
-	bso_cl_percent: number | null;
-	osb_mastery: number | null;
-	bso_mastery: number | null;
-};
-
 export type FullMinionData = {
 	gp: number;
 	is_ironman: boolean;
