@@ -1,3 +1,4 @@
+import type { RoboChimpBotClient } from '@/discord/RoboChimpBotClient.js';
 import type { RobochimpPrismaClient } from '@/lib/prisma.js';
 
 export const httpErr = {
@@ -19,7 +20,7 @@ export const httpErr = {
 };
 
 export const httpRes = {
-	JSON: (json: object): Response => {
+	JSON: <T>(json: T): Response => {
 		return Response.json(json, { status: 200 });
 	}
 };
@@ -27,6 +28,7 @@ export const httpRes = {
 type HonoVariables = {
 	user: RUser | null;
 	prisma: RobochimpPrismaClient;
+	client: RoboChimpBotClient;
 };
 
 export type HonoServerGeneric = { Bindings: {}; Variables: HonoVariables };
