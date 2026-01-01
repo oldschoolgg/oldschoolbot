@@ -15,15 +15,14 @@ type MinionParams = {
 	userId: string;
 } | null;
 
-function parseMinionFromPath(): MinionParams {
+function parseMinionFromQuery(): MinionParams {
 	if (typeof window === 'undefined') return null;
-	const path = window.location.pathname;
-	const match = path.match(/\/account\/minion\/(osb|bso)\/(\d+)/);
-	if (match) {
-		return {
-			bot: match[1] as 'osb' | 'bso',
-			userId: match[2]
-		};
+	const params = new URLSearchParams(window.location.search);
+	const bot = params.get('bot');
+	const userId = params.get('id');
+
+	if (bot && userId && (bot === 'osb' || bot === 'bso')) {
+		return { bot, userId };
 	}
 	return null;
 }
@@ -51,7 +50,7 @@ export function AccountPage() {
 	const state = globalState();
 	const [data, setData] = useState<FullMinionData | null>(null);
 	const [currentTab, setCurrentTab] = useState(getCurrentTab());
-	const [selectedMinion, setSelectedMinion] = useState<MinionParams>(parseMinionFromPath());
+	const [selectedMinion, setSelectedMinion] = useState<MinionParams>(parseMinionFromQuery());
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -59,13 +58,13 @@ export function AccountPage() {
 	}, []);
 
 	useEffect(() => {
-		const minion = parseMinionFromPath();
+		const minion = parseMinionFromQuery();
 		setSelectedMinion(minion);
 		setLoading(true);
 
 		if (minion) {
 			api.minion
-				.get(minion.bot, minion.userId)
+				.get(minion.userId, minion.bot)
 				.then(setData)
 				.finally(() => setLoading(false));
 		} else {
