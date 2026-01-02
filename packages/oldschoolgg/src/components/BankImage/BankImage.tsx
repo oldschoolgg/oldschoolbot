@@ -248,7 +248,6 @@ function drawBank({
 	}
 
 	// Draw border
-	console.log('Drawing border');
 	drawBorder(ctx, bankSpritesheet, RENDER_SCALE);
 
 	// Draw title if provided
@@ -270,7 +269,6 @@ function drawBank({
 			scale: TITLE_TEXT_RENDER_SCALE
 		});
 		rendererBold.draw(titleX, titleY, title, { color: '#ff981f', scale: TITLE_TEXT_RENDER_SCALE });
-		console.log({ titleX, titleY });
 	}
 
 	canvas.width = renderCanvas.width;

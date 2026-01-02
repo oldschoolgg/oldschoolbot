@@ -6,13 +6,20 @@ import { persist } from 'zustand/middleware';
 import type { EconomyTransactionsQuery, EconomyTransactionsResponse } from '@/components/pages/Account/Staff/types.js';
 import type { AuthenticatedUser, FullMinionData, SUserIdentity } from '../../../robochimp/src/http/api-types.js';
 
-export type MinionInfo = {
-	user_id: string;
-	bot: 'osb' | 'bso';
-	username: string | null;
-	avatar: string | null;
-	has_minion: boolean;
+export type SimpleMinionInfo = {
 	is_ironman: boolean;
+	has_minion: boolean;
+	bot: 'osb' | 'bso';
+	total_level: number;
+};
+
+export type Account = {
+	user_id: string;
+	minions: SimpleMinionInfo[];
+};
+
+export type UsersMinionsResponse = {
+	users: Account[];
 };
 
 const rawApiWretch = wretch(__API_URL__)
@@ -64,9 +71,6 @@ async function syncState() {
 		});
 }
 
-type OError = {
-	error: string;
-};
 type OResponse<T> = T | { error: string };
 
 export const api = {
@@ -77,14 +81,14 @@ export const api = {
 		logOut
 	},
 	minion: {
-		list: async (): Promise<MinionInfo[]> => {
+		listForUser: async (userId: string): Promise<UsersMinionsResponse> => {
 			const res = await rawApiWretch
-				.url('/minion/list')
+				.url(`/user/${userId}/minions`)
 				.get()
 				.unauthorized(() => {
 					logOut();
 				})
-				.json<MinionInfo[]>();
+				.json<UsersMinionsResponse>();
 
 			return res;
 		},
@@ -99,9 +103,9 @@ export const api = {
 
 			return res;
 		},
-		get: async (bot: 'osb' | 'bso', userId: string): Promise<FullMinionData> => {
+		get: async (userId: string, bot: 'osb' | 'bso'): Promise<FullMinionData> => {
 			const res = await rawApiWretch
-				.url(`/minion/${bot}/user/${userId}`)
+				.url(`/user/${userId}/${bot}/minion`)
 				.get()
 				.unauthorized(() => {
 					logOut();

@@ -5,7 +5,7 @@ import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.js';
 import { api, globalState } from '@/lib/api.js';
-import type { FullMinionData } from '../../../../robochimp/src/http/servers/api-types.js';
+import type { FullMinionData } from '../../../../robochimp/src/http/api-types.js';
 
 export function StaffPage() {
 	const state = globalState();

@@ -48,13 +48,13 @@ export default function NavLinks({ mobile = false, links }: NavLinksProps) {
 
 	const hoverClass = 'transition-all hover:brightness-120';
 	const dropdownButtonClass = mobile
-		? `flex items-center justify-between w-full ${hoverClass}`
+		? `flex items-center justify-between w-full py-2 px-4 rounded-lg bg-neutral-500/10 hover:bg-neutral-500/20 font-semibold ${hoverClass}`
 		: `flex items-center gap-1 ${hoverClass}`;
 	const dropdownMenuClass = mobile
 		? 'mobile-dropdown-menu pl-4 mt-2 gap-2'
 		: 'absolute top-full left-0 mt-2 w-58 rounded-lg border-main bg-primary shadow-lg animate-fadeIn';
 	const linkClass = mobile
-		? `flex items-center gap-2 py-2 ${hoverClass}`
+		? `flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-neutral-500/10 hover:bg-neutral-500/20 font-semibold ${hoverClass}`
 		: `flex items-center gap-2 px-4 py-3 ${hoverClass}`;
 
 	return (

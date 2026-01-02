@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"scripts": {
 		"start": "astro dev --port 5488 --host",
-		"build": "astro build",
+		"build": "concurrently \"astro build\" \"tsc\"",
 		"preview": "astro preview",
 		"astro": "astro"
 	},

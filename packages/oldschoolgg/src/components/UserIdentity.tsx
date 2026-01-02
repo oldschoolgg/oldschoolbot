@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { api } from '@/lib/api.js';
-import type { SUserIdentity } from '../../../../robochimp/src/http/api-types.js';
+import type { SUserIdentity } from '../../../robochimp/src/http/api-types.js';
 
 export function UserIndentity({ userId }: { userId: string }) {
 	const [identity, setIdentity] = useState<SUserIdentity | null>(null);
