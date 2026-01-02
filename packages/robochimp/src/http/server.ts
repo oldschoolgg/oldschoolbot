@@ -25,9 +25,6 @@ export async function startServer(port: number) {
 
 	app.use('*', attachUser);
 	app.use('*', async (c, next) => {
-		if (c.req.method === 'OPTIONS') {
-			return c.text('OK');
-		}
 		c.set('prisma', roboChimpClient);
 		c.set('client', globalClient);
 		console.log(`${c.req.method} ${c.req.url}`);
