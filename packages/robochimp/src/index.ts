@@ -1,6 +1,7 @@
 import { syncBlacklists } from '@/lib/syncBlacklists.js';
 import './discord/client.js';
 
+import { globalConfig } from '@/constants.js';
 import { startServer } from './http/server.js';
 import { initPrismaClients } from './lib/prisma.js';
 
@@ -14,7 +15,7 @@ process.on('unhandledRejection', err => {
 
 async function main() {
 	await initPrismaClients();
-	await startServer();
+	await startServer(globalConfig.httpPort);
 	await globalClient.login();
 	await syncBlacklists();
 }
