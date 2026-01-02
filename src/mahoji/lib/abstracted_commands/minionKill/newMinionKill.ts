@@ -1,3 +1,4 @@
+import type { ECombatOption } from '@oldschoolgg/schemas';
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
@@ -7,7 +8,6 @@ import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import type { BitField, PvMMethod } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
-import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import { type AttackStyles, getAttackStylesContext, resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -45,7 +45,7 @@ export interface MinionKillOptions {
 	currentSlayerTask: CurrentSlayerInfo;
 	monster: KillableMonster;
 	isTryingToUseWildy: boolean;
-	combatOptions: readonly CombatOptionsEnum[];
+	combatOptions: readonly ECombatOption[];
 	inputPVMMethod: PvMMethod | undefined;
 	monsterKC: number;
 	poh: PlayerOwnedHouse;

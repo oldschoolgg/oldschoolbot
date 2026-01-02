@@ -11,7 +11,7 @@ import type { HonoServerGeneric } from '@/http/serverUtil.js';
 import { staffServer } from '@/http/staff/staff.js';
 import { globalConfig } from '../constants.js';
 
-export async function startServer() {
+export async function startServer(port: number) {
 	const app = new Hono<HonoServerGeneric>();
 
 	app.use(
@@ -40,6 +40,6 @@ export async function startServer() {
 	app.route('/webhooks', webhooksServer);
 	app.route('/user', userServer);
 
-	serve({ fetch: app.fetch, port: globalConfig.httpPort });
+	serve({ fetch: app.fetch, port });
 	return app;
 }

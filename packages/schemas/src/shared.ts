@@ -58,3 +58,15 @@ export type IPermission = z.infer<typeof ZPermission>;
 
 export const ZSnowflake = z.string().regex(/^\d+$/);
 export type ISnowflake = z.infer<typeof ZSnowflake>;
+
+export const ZBotType = z.enum(['osb', 'bso']);
+export type IBotType = z.infer<typeof ZBotType>;
+
+export const ZStringInteger = z.string().refine(
+	val => {
+		const num = Number(val);
+		return !isNaN(num) && Number.isInteger(num);
+	},
+	{ message: 'Invalid integer string' }
+);
+export type TStringInteger = z.infer<typeof ZStringInteger>;
