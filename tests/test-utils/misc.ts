@@ -16,7 +16,7 @@ export function mockedId() {
 }
 
 export function mockSnowflake(rng: RNGProvider) {
-	return rng.randInt(1, 5_000_000_000_000).toString();
+	return randomSnowflake(rng);
 }
 
 export const bankWithAllItems = new Bank();

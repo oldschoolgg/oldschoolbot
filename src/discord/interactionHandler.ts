@@ -3,7 +3,6 @@ import {
 	type APIInteraction,
 	ApplicationCommandType,
 	ComponentType,
-	type DiscordClient,
 	InteractionType,
 	MInteraction
 } from '@oldschoolgg/discord';
@@ -12,11 +11,18 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 
 import { autoCompleteHandler } from '@/discord/autoCompleteHandler.js';
 import { commandHandler } from '@/discord/commandHandler.js';
+import type { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
+import { DISCORD_USER_IDS_INSERTED_CACHE } from '@/lib/cache.js';
 import { globalButtonInteractionHandlerWrapper } from '@/lib/util/globalInteractions.js';
 
-export async function interactionHandler(client: DiscordClient, itx: APIInteraction) {
+export async function interactionHandler(client: OldSchoolBotClient, itx: APIInteraction) {
 	const guildId = itx.guild_id ?? null;
-	const userId = (itx.member?.user.id ?? itx.user?.id)!;
+	const user = (itx.member?.user ?? itx.user)!;
+	const userId = user.id;
+
+	if (!DISCORD_USER_IDS_INSERTED_CACHE.has(userId) && user) {
+		client.upsertDiscordUser(user);
+	}
 
 	if (itx.type === InteractionType.ApplicationCommandAutocomplete) {
 		const d: IAutoCompleteInteraction = {
