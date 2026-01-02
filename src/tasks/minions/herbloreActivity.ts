@@ -82,7 +82,7 @@ async function applyAmuletOfChemistry({
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
 
-	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish, rng }) {
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
 		const { mixableID, quantity, zahur, wesley, channelId, duration } = data;
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
@@ -146,6 +146,6 @@ export const herbloreTask: MinionTask = {
 
 		completionMessage = `${completionMessage} ${xpRes}`;
 
-		handleTripFinish(user, channelID, completionMessage, undefined, data, loot);
+		handleTripFinish(user, channelId, completionMessage, data, loot);
 	}
 };
