@@ -512,10 +512,10 @@ describe('auto farm helpers', () => {
 		});
 		const mutableUser = user.user as MutableUser & {
 			minion_farmingContract?: any;
-			minion_farmingPreferContract?: boolean;
+			minion_farmingPreferredContract?: boolean;
 		};
 		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
-		mutableUser.minion_farmingPreferContract = true;
+		mutableUser.minion_farmingPreferredContract = true;
 		mutableUser.minion_farmingContract = {
 			hasContract: true,
 			difficultyLevel: 'easy',
@@ -562,10 +562,10 @@ describe('auto farm helpers', () => {
 		});
 		const mutableUser = user.user as MutableUser & {
 			minion_farmingContract?: any;
-			minion_farmingPreferContract?: boolean;
+			minion_farmingPreferredContract?: boolean;
 		};
 		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
-		mutableUser.minion_farmingPreferContract = false;
+		mutableUser.minion_farmingPreferredContract = false;
 		mutableUser.minion_farmingContract = {
 			hasContract: true,
 			difficultyLevel: 'easy',

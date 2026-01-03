@@ -142,7 +142,7 @@ export async function autoFarm(
 
 	const autoFarmFilter = user.autoFarmFilter ?? AutoFarmFilterEnum.AllFarm;
 	const preferContract = Boolean(
-		(user.user as unknown as { minion_farmingPreferContract?: boolean }).minion_farmingPreferContract
+		(user.user as unknown as { minion_farmingPreferredContract?: boolean }).minion_farmingPreferredContract
 	);
 
 	const preferredSeeds = parsePreferredSeeds(

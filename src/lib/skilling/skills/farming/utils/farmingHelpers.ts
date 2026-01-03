@@ -28,13 +28,13 @@ export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
 	return plant;
 }
 
-export function hasAnyReadyPatch(patches: IPatchDataDetailed[]): boolean {
-	return patches.some(p => p.ready === true);
+export function hasAnyReadyPatch(patches?: IPatchDataDetailed[] | null): boolean {
+	return (patches ?? []).some(p => p.ready === true);
 }
 
 export async function canShowAutoFarmButton(user: MUser): Promise<boolean> {
 	const { getFarmingInfoFromUser } = await import('./getFarmingInfo.js');
-	const info = getFarmingInfoFromUser(user);
+	const info = await getFarmingInfoFromUser(user);
 	return hasAnyReadyPatch(info.patchesDetailed);
 }
 

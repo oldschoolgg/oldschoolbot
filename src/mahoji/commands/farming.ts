@@ -318,7 +318,7 @@ export const farmingCommand = defineCommand({
 					.minion_farmingPreferredSeeds
 			);
 			let preferContractCurrent = Boolean(
-				(user.user as unknown as { minion_farmingPreferContract?: boolean }).minion_farmingPreferContract
+				(user.user as unknown as { minion_farmingPreferredContract?: boolean }).minion_farmingPreferredContract
 			);
 			const responses: string[] = [];
 			const patchNameInput = options.set_preferred.patch as FarmingPatchName | undefined;
@@ -328,7 +328,7 @@ export const farmingCommand = defineCommand({
 			if (typeof preferContractInput === 'boolean') {
 				if (preferContractInput !== preferContractCurrent) {
 					await user.update({
-						minion_farmingPreferContract: preferContractInput
+						minion_farmingPreferredContract: preferContractInput
 					} as any);
 					preferContractCurrent = preferContractInput;
 				}

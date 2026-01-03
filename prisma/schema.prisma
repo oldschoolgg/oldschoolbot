@@ -291,24 +291,24 @@ model User {
 
   sacrificedValue BigInt @default(0)
 
-  GP                           BigInt    @default(0)
-  QP                           Int       @default(0)
-  bank                         Json      @default("{}") @db.Json
-  collectionLogBank            Json      @default("{}") @db.JsonB
-  blowpipe                     Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
-  slayer_unlocks               Int[]     @default([]) @map("slayer.unlocks")
-  slayer_blocked_ids           Int[]     @default([]) @map("slayer.blocked_ids")
-  slayer_last_task             Int       @default(0) @map("slayer.last_task")
-  badges                       Int[]     @default([])
-  bitfield                     Int[]     @default([])
-  temp_cl                      Json      @default("{}") @db.Json
-  last_temp_cl_reset           DateTime? @db.Timestamp(6)
-  minion_equippedPet           Int?      @map("minion.equippedPet")
-  minion_farmingContract       Json?     @map("minion.farmingContract") @db.Json
-  minion_farmingPreferContract Boolean   @default(false) @map("minion.farmingPreferContract")
-  minion_farmingPreferredSeeds Json?     @map("minion.farmingPreferredSeeds") @db.Json
-  minion_birdhouseTraps        Json?     @map("minion.birdhouseTraps") @db.Json
-  finished_quest_ids           Int[]     @default([])
+  GP                              BigInt    @default(0)
+  QP                              Int       @default(0)
+  bank                            Json      @default("{}") @db.Json
+  collectionLogBank               Json      @default("{}") @db.JsonB
+  blowpipe                        Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
+  slayer_unlocks                  Int[]     @default([]) @map("slayer.unlocks")
+  slayer_blocked_ids              Int[]     @default([]) @map("slayer.blocked_ids")
+  slayer_last_task                Int       @default(0) @map("slayer.last_task")
+  badges                          Int[]     @default([])
+  bitfield                        Int[]     @default([])
+  temp_cl                         Json      @default("{}") @db.Json
+  last_temp_cl_reset              DateTime? @db.Timestamp(6)
+  minion_equippedPet              Int?      @map("minion.equippedPet")
+  minion_farmingContract          Json?     @map("minion.farmingContract") @db.Json
+  minion_farmingPreferredContract Boolean   @default(false) @map("minion.farmingPreferContract")
+  minion_farmingPreferredSeeds    Json?     @map("minion.farmingPreferredSeeds") @db.Json
+  minion_birdhouseTraps           Json?     @map("minion.birdhouseTraps") @db.Json
+  finished_quest_ids              Int[]     @default([])
 
   // Relations
   farmedCrops    FarmedCrop[]
