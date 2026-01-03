@@ -5,6 +5,7 @@ import { persist } from 'zustand/middleware';
 
 import type { EconomyTransactionsQuery, EconomyTransactionsResponse } from '@/components/pages/Account/Staff/types.js';
 import type { AuthenticatedUser, FullMinionData, SUserIdentity } from '../../../robochimp/src/http/api-types.js';
+import type { ServiceStatus } from '../../../robochimp/src/structures/ServiceManager.js';
 
 export type SimpleMinionInfo = {
 	is_ironman: boolean;
@@ -136,6 +137,9 @@ export const api = {
 		},
 		fetchUserIdentity: (userId: string): Promise<SUserIdentity> => {
 			return rawApiWretch.url(`/staff/user/identity/${userId}`).get().json();
+		},
+		getBots: (): Promise<ServiceStatus[]> => {
+			return rawApiWretch.url(`/staff/bots`).get().json();
 		}
 	}
 };
