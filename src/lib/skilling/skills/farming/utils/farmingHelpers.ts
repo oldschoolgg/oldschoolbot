@@ -34,7 +34,7 @@ export function hasAnyReadyPatch(patches?: IPatchDataDetailed[] | null): boolean
 
 export async function canShowAutoFarmButton(user: MUser): Promise<boolean> {
 	const { getFarmingInfoFromUser } = await import('./getFarmingInfo.js');
-	const info = await getFarmingInfoFromUser(user);
+	const info = getFarmingInfoFromUser(user);
 	return hasAnyReadyPatch(info.patchesDetailed);
 }
 

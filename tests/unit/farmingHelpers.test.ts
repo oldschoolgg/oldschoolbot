@@ -67,12 +67,12 @@ describe('farming helpers', () => {
 
 	it('determines whether the auto farm button should be shown', async () => {
 		const readyPatches = [{ ready: true } as IPatchDataDetailed];
-		getFarmingInfoFromUserMock.mockResolvedValueOnce({ patchesDetailed: readyPatches });
+		getFarmingInfoFromUserMock.mockReturnValueOnce({ patchesDetailed: readyPatches });
 
 		const result = await canShowAutoFarmButton(mockMUser());
 		expect(result).toBe(true);
 
-		getFarmingInfoFromUserMock.mockResolvedValueOnce({ patchesDetailed: [{ ready: null } as IPatchDataDetailed] });
+		getFarmingInfoFromUserMock.mockReturnValueOnce({ patchesDetailed: [{ ready: null } as IPatchDataDetailed] });
 		const resultWithoutReady = await canShowAutoFarmButton(mockMUser());
 		expect(resultWithoutReady).toBe(false);
 	});
