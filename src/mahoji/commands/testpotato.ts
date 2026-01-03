@@ -938,6 +938,7 @@ export const testPotatoCommand = globalConfig.isProduction
 						sang_charges: 10_000,
 						trident_charges: 10_000,
 						serp_helm_charges: 10_000,
+						chemistry_amulet_charges: 10_000,
 						blood_fury_charges: 10_000,
 						tum_shadow_charges: 10_000,
 						blood_essence_charges: 10_000,
