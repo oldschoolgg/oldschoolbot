@@ -17,7 +17,7 @@ staffBotServer.use(ensureModeratorUser);
 staffBotServer.get('/', async () => {
 	try {
 		const statuses = await serviceManager.statusAll();
-		return httpRes.JSON({ statuses });
+		return httpRes.JSON(statuses);
 	} catch (error: any) {
 		return httpErr.BAD_REQUEST({ message: 'Failed to fetch service statuses' });
 	}

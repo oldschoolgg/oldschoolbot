@@ -6,7 +6,7 @@ const execAsync = promisify(exec);
 
 type ServiceAction = 'start' | 'stop' | 'restart' | 'status';
 
-interface ServiceStatus {
+export interface ServiceStatus {
 	service: IServiceType;
 	active: boolean;
 	state: string;
