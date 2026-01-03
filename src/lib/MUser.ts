@@ -13,6 +13,7 @@ import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
 import { percentChance, randArrItem, SeedableRNG } from '@oldschoolgg/rng';
 import {
+	type ECombatOption,
 	type IBirdhouseData,
 	type IBlowpipeData,
 	type IFarmingContract,
@@ -72,7 +73,6 @@ import { projectiles } from '@/lib/gear/projectiles.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import backgroundImages from '@/lib/minions/data/bankBackgrounds.js';
-import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { type AddMonsterXpParams, addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import { blowpipeDarts, validateBlowpipeData } from '@/lib/minions/functions/blowpipeCommand.js';
 import getUserFoodFromBank, { type GetUserFoodFromBankParams } from '@/lib/minions/functions/getUserFoodFromBank.js';
@@ -378,7 +378,7 @@ export class MUserClass {
 	}
 
 	get combatOptions() {
-		return this.user.combat_options as readonly CombatOptionsEnum[];
+		return this.user.combat_options as readonly ECombatOption[];
 	}
 
 	get isIronman() {

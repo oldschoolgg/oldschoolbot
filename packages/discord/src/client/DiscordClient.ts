@@ -1,6 +1,6 @@
 import { makeURLSearchParams, REST } from '@discordjs/rest';
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
-import type { IChannel, IInteraction, IMember, IMessage, IRole, IUser, IWebhook } from '@oldschoolgg/schemas';
+import type { IChannel, IInteraction, IMember, IMessage, IRole, IWebhook } from '@oldschoolgg/schemas';
 import { uniqueArr } from '@oldschoolgg/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -14,6 +14,7 @@ import {
 	type APIGuildMember,
 	type APIInteraction,
 	type APIRole,
+	type APIUser,
 	type APIWebhook,
 	GatewayDispatchEvents,
 	GatewayOpcodes,
@@ -331,9 +332,9 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 		}
 	}
 
-	async fetchUser(userId: string): Promise<IUser> {
+	async fetchUser(userId: string): Promise<APIUser> {
 		const res = await this.rest.get(Routes.user(userId));
-		return res as IUser;
+		return res as APIUser;
 	}
 
 	async fetchMember({ guildId, userId }: { guildId: string; userId: string }): Promise<IMember> {

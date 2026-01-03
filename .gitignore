@@ -53,3 +53,5 @@ src/prisma/clients
 .DS_Store
 
 itx
+
+.claude

@@ -1,5 +1,6 @@
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
+import { ECombatOption } from '@oldschoolgg/schemas';
 import { Bank } from 'oldschooljs';
 
 import type { Consumable } from '@/lib/minions/types.js';
@@ -23,12 +24,7 @@ interface CombatOptionsDesc {
 	desc: string;
 	aliases: string[];
 }
-export enum CombatOptionsEnum {
-	NullOption = 0,
-	AlwaysCannon = 1,
-	AlwaysIceBurst = 2,
-	AlwaysIceBarrage = 3
-}
+
 export enum SlayerActivityConstants {
 	None = 0,
 	IceBarrage = 1,
@@ -49,19 +45,19 @@ export const cannonBanks = [
 
 export const CombatOptionsArray: CombatOptionsDesc[] = [
 	{
-		id: CombatOptionsEnum.AlwaysCannon,
+		id: ECombatOption.AlwaysCannon,
 		name: 'Always Cannon',
 		desc: 'Use cannon whenever possible',
 		aliases: ['always cannon', 'alwayscannon', 'use cannon', 'cannon']
 	},
 	{
-		id: CombatOptionsEnum.AlwaysIceBurst,
+		id: ECombatOption.AlwaysIceBurst,
 		name: 'Always Ice Burst',
 		desc: 'Use Ice burst whenever possible',
 		aliases: ['always burst', 'alwaysiceburst', 'always ice burst', 'burst', 'ice burst']
 	},
 	{
-		id: CombatOptionsEnum.AlwaysIceBarrage,
+		id: ECombatOption.AlwaysIceBarrage,
 		name: 'Always Ice Barrage',
 		desc: 'Use Ice barrage whenever possible',
 		aliases: ['always barrage', 'alwaysicebarrage', 'always ice barrage', 'barrage', 'ice barrage']

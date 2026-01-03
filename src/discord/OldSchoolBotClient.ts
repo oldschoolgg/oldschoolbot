@@ -1,5 +1,6 @@
 import {
 	type APIApplication,
+	type APIUser,
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
@@ -11,9 +12,11 @@ import {
 } from '@oldschoolgg/discord';
 import type { IChannel, IWebhook } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
 import { mentionCommand } from '@/discord/utils.js';
+import { DISCORD_USER_IDS_INSERTED_CACHE } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { ReactEmoji } from '@/lib/data/emojis.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
@@ -28,6 +31,27 @@ export class OldSchoolBotClient extends DiscordClient {
 		this.on('ready', async e => {
 			await this.handleReadyEvent(e);
 		});
+	}
+
+	async upsertDiscordUser(user: APIUser) {
+		if (DISCORD_USER_IDS_INSERTED_CACHE.has(user.id)) return;
+		const data = {
+			id: user.id,
+			username: user.username,
+			global_name: user.global_name,
+			avatar: user.avatar,
+			created_at: new Date(DiscordSnowflake.timestampFrom(user.id))
+		} as const;
+		await roboChimpClient.discordUser
+			.upsert({
+				where: {
+					id: user.id
+				},
+				create: data,
+				update: data
+			})
+			.catch(console.error);
+		DISCORD_USER_IDS_INSERTED_CACHE.add(user.id);
 	}
 
 	mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
