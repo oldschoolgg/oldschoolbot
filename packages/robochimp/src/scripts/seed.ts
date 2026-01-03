@@ -89,6 +89,19 @@ async function seedRobochimpDb() {
 			})
 		)
 	);
+
+	await roboChimpClient.$transaction([
+		...userIds.slice(-50).map(id =>
+			roboChimpClient.blacklistedEntity.upsert({
+				where: { id },
+				create: {
+					type: 'user',
+					id
+				},
+				update: {}
+			})
+		)
+	]);
 }
 
 async function main() {
