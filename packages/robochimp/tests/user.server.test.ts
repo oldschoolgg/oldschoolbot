@@ -1,16 +1,15 @@
-import { MathRNG } from '@oldschoolgg/rng';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
-import { startServer } from '@/http/server.js';
-import { initPrismaClients } from '@/lib/prisma.js';
 import { encryptToken } from '@/modules/encryption.js';
 
 const TEST_USER_ID = '123456789012345678';
 const TEST_USER_ID_2 = '987654321098765432';
 
-const app = await startServer(MathRNG.randInt(2000, 65000));
-await initPrismaClients();
-globalThis.globalClient = {} as any;
+let app: any;
+
+// const app = await startServer(MathRNG.randInt(2000, 65000));
+// await initPrismaClients();
+// globalThis.globalClient = {} as any;
 
 async function createTestUser(userId: string, bot: 'osb' | 'bso' = 'osb') {
 	await roboChimpClient.user.upsert({
@@ -109,11 +108,11 @@ async function testRequest(
 	};
 }
 
-afterAll(async () => {
-	for (const c of [globalThis.osbClient, globalThis.bsoClient, globalThis.roboChimpClient]) {
-		if (c?.$disconnect) await c.$disconnect();
-	}
-});
+// afterAll(async () => {
+// 	for (const c of [globalThis.osbClient, globalThis.bsoClient, globalThis.roboChimpClient]) {
+// 		if (c?.$disconnect) await c.$disconnect();
+// 	}
+// });
 
 describe.skip('User Config Update (PATCH /:userId/:bot/minion)', () => {
 	let testUser1Token: string;

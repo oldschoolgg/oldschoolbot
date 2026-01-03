@@ -78,7 +78,7 @@ export type FullMinionData = {
 	};
 };
 
-export type AUserIdentity = {
+export type SUserIdentity = {
 	user_id: string;
 	username: string;
 	avatar: string | null;
