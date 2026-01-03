@@ -81,6 +81,12 @@
 		]
 	},
 	{
+		"name": "Bird nest (egg)",
+		"id": 5071,
+		"opened_item": "Bird nest (egg)",
+		"all_items": ["Bird nest", "Blue bird egg", "Green bird egg", "Red bird egg"]
+	},
+	{
 		"name": "Birthday present",
 		"id": 11918,
 		"opened_item": "Birthday present",
