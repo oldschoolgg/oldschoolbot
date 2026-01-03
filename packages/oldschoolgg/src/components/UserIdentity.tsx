@@ -3,10 +3,36 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api.js';
 import type { SUserIdentity } from '../../../robochimp/src/http/api-types.js';
 
+const resolved = new Map<string, SUserIdentity>();
+const inFlight = new Map<string, Promise<SUserIdentity>>();
+
+function fetchUserIdentityCached(userId: string): Promise<SUserIdentity> {
+	const hit = resolved.get(userId);
+	if (hit) return Promise.resolve(hit);
+
+	const pending = inFlight.get(userId);
+	if (pending) return pending;
+
+	const p = api.staff
+		.fetchUserIdentity(userId)
+		.then(v => {
+			resolved.set(userId, v);
+			inFlight.delete(userId);
+			return v;
+		})
+		.catch(e => {
+			inFlight.delete(userId);
+			throw e;
+		});
+
+	inFlight.set(userId, p);
+	return p;
+}
+
 export function UserIndentity({ userId }: { userId: string }) {
 	const [identity, setIdentity] = useState<SUserIdentity | null>(null);
 	useEffect(() => {
-		api.staff.fetchUserIdentity(userId).then(setIdentity);
+		fetchUserIdentityCached(userId).then(setIdentity);
 	}, []);
 
 	const avatar = identity?.avatar
