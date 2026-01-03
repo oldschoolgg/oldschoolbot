@@ -10,7 +10,7 @@ interface ServiceStatus {
 	service: IServiceType;
 	active: boolean;
 	state: string;
-	subState: string;
+	sub_state: string;
 	uptime: number | null;
 	memory: {
 		current: number;
@@ -20,7 +20,7 @@ interface ServiceStatus {
 		usage: number;
 	} | null;
 	pid: number | null;
-	restartCount: number;
+	restart_count: number;
 }
 
 class ServiceManager {
@@ -91,12 +91,12 @@ class ServiceManager {
 				service,
 				active,
 				state,
-				subState,
+				sub_state: subState,
 				uptime,
 				memory,
 				cpu,
 				pid,
-				restartCount
+				restart_count: restartCount
 			};
 		} catch (error: any) {
 			console.error(`Error fetching status for ${service}:`, error.message);
@@ -104,12 +104,12 @@ class ServiceManager {
 				service,
 				active: false,
 				state: 'unknown',
-				subState: 'unknown',
+				sub_state: 'unknown',
 				uptime: null,
 				memory: null,
 				cpu: null,
 				pid: null,
-				restartCount: 0
+				restart_count: 0
 			};
 		}
 	}
