@@ -71,6 +71,11 @@ If you are a Tier 1 patron or higher, you will see an **Auto Slay** button at th
 
   Note: There is no way to override "always on" settings. If you want to do certain tasks in the Catacombs, for example, disable "always cannon" and specify [[/slayer autoslay mode\:ehp]]. If you've saved EHP mode as your default, override it with [[/slayer autoslay mode\:default]].
 
+- **View or configure Slayer jewellery behaviour:**
+
+  - Check current bracelet settings and remaining charges: [[/slayer jewellery view]]
+  - Set a global or task-specific bracelet preference (Slaughter / Expeditious / Off): [[/slayer jewellery set task\:all bracelet\:slaughter]]
+
 - **Use the Ash sanctifier on your task:**
 
   - If you’ve completed the Hard or Elite Kebos & Kourend diary, you can use the Ash sanctifier to gain passive prayer XP when killing monsters that drop demonic ashes.

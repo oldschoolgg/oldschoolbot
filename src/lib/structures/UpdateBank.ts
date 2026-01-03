@@ -26,7 +26,10 @@ export class UpdateBank {
 	public gearChanges: Partial<Record<GearSetupType, GearSetup>> = {};
 	public userStats: Omit<Prisma.UserStatsUpdateInput, 'user_id'> = {};
 	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
-	public userUpdates: Pick<Prisma.UserUpdateInput, 'slayer_points'> = {};
+	public userUpdates: Pick<
+		Prisma.UserUpdateInput,
+		'slayer_points' | 'slayer_slaughter_charges' | 'slayer_expeditious_charges'
+	> = {};
 
 	async transact(user: MUser, { isInWilderness }: { isInWilderness?: boolean } = { isInWilderness: false }) {
 		// Check everything first

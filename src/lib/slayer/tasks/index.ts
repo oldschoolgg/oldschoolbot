@@ -23,3 +23,15 @@ export const allSlayerTasks: AssignableSlayerTask[] = [
 
 export const allSlayerMonsters = allSlayerTasks.map(m => m.monster);
 export const allSlayerMonstersIDs = new Set(allSlayerMonsters.map(m => m.id));
+
+export const slayerTasksForAutocomplete: AssignableSlayerTask[] = [
+	...duradelTasks,
+	...konarTasks,
+	...krystiliaTasks,
+	...vannakaTasks,
+	...nieveTasks,
+	...chaeldarTasks,
+	...turaelTasks,
+	...mazchnaTasks,
+	...bossTasks
+];
