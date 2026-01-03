@@ -42,7 +42,6 @@ export const ZUserMinionGetRequest = z.strictObject({
 });
 
 export const ZUserMinionsGetRequest = z.strictObject({
-	bot: ZBotType,
 	targetUserId: ZSnowflake
 });
 
