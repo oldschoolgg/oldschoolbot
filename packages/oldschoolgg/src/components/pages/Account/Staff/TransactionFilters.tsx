@@ -76,19 +76,15 @@ export function TransactionFilters({
 
 				<label className="block">
 					<div className="mb-1 text-sm font-medium ">Transaction Type</div>
-					<select
-						className="w-full rounded-md border border-main  px-3 py-2 text-sm  shadow-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:opacity-50"
+					<Select
+						options={['All', 'Trade', 'Giveaway', 'Duel', 'GRI', 'Gift'].map(t => ({
+							label: t,
+							value: t === 'All' ? '' : (t.toLowerCase() as TransactionType)
+						}))}
 						value={type}
-						onChange={e => onTypeChange(e.currentTarget.value as TransactionType | '')}
+						onChange={e => onTypeChange(e as TransactionType | '')}
 						disabled={loading}
-					>
-						<option value="">All types</option>
-						<option value="trade">Trade</option>
-						<option value="giveaway">Giveaway</option>
-						<option value="duel">Duel</option>
-						<option value="gri">GRI</option>
-						<option value="gift">Gift</option>
-					</select>
+					/>
 				</label>
 
 				<label className="block">
