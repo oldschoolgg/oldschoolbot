@@ -2,7 +2,7 @@ import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import type { DiscordUser } from '@prisma/robochimp';
 import { Hono } from 'hono';
 
-import type { AUserIdentity } from '@/http/api-types.js';
+import type { SUserIdentity } from '@/http/api-types.js';
 import { type HonoServerGeneric, httpErr } from '@/http/serverUtil.js';
 
 export const userServer = new Hono<HonoServerGeneric>();
@@ -23,7 +23,7 @@ userServer.get('/identity/:userId', async c => {
 		user = await globalClient.upsertDiscordUser(fetched);
 	}
 
-	const data: AUserIdentity = {
+	const data: SUserIdentity = {
 		user_id: user.id,
 		username: user.username!,
 		avatar: user.avatar

@@ -15,7 +15,7 @@ import styles from './BankImage.module.css';
 interface Props {
 	bank: Bank;
 	title: string | null;
-	showPrice: boolean;
+	showPrice?: boolean;
 	sort?: BankSortMethod;
 	width?: number;
 	ghosts?: number[];
@@ -119,7 +119,7 @@ function drawBank({
 	bank,
 	width,
 	title,
-	showPrice,
+	showPrice = false,
 	sort,
 	ghosts = [],
 	showAsKC = false,
@@ -248,7 +248,6 @@ function drawBank({
 	}
 
 	// Draw border
-	console.log('Drawing border');
 	drawBorder(ctx, bankSpritesheet, RENDER_SCALE);
 
 	// Draw title if provided
@@ -270,7 +269,6 @@ function drawBank({
 			scale: TITLE_TEXT_RENDER_SCALE
 		});
 		rendererBold.draw(titleX, titleY, title, { color: '#ff981f', scale: TITLE_TEXT_RENDER_SCALE });
-		console.log({ titleX, titleY });
 	}
 
 	canvas.width = renderCanvas.width;
@@ -293,7 +291,7 @@ function drawBank({
 export const BankImage: React.FC<Props> = ({
 	bank,
 	title,
-	showPrice,
+	showPrice = false,
 	sort = 'value',
 	width: customWidth,
 	ghosts,

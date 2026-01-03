@@ -1,5 +1,5 @@
 import { bold, EmbedBuilder, inlineCode } from '@oldschoolgg/discord';
-import type { IGuild } from '@oldschoolgg/schemas';
+import { ECombatOption, type IGuild } from '@oldschoolgg/schemas';
 import {
 	formatDuration,
 	hexToDecimal,
@@ -19,7 +19,7 @@ import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
-import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { CombatOptionsArray } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
@@ -545,18 +545,18 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 	// If enabling Ice Barrage, make sure burst isn't also enabled:
 	if (
 		nextBool &&
-		newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
-		combatOptions.includes(CombatOptionsEnum.AlwaysIceBurst)
+		newcbopt.id === ECombatOption.AlwaysIceBarrage &&
+		combatOptions.includes(ECombatOption.AlwaysIceBurst)
 	) {
-		combatOptions = removeFromArr(combatOptions, CombatOptionsEnum.AlwaysIceBurst);
+		combatOptions = removeFromArr(combatOptions, ECombatOption.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
 	if (
 		nextBool &&
-		newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
-		combatOptions.includes(CombatOptionsEnum.AlwaysIceBarrage)
+		newcbopt.id === ECombatOption.AlwaysIceBurst &&
+		combatOptions.includes(ECombatOption.AlwaysIceBarrage)
 	) {
-		combatOptions = removeFromArr(combatOptions, CombatOptionsEnum.AlwaysIceBarrage);
+		combatOptions = removeFromArr(combatOptions, ECombatOption.AlwaysIceBarrage);
 	}
 	if (nextBool && !combatOptions.includes(newcbopt.id)) {
 		await user.update({

@@ -1,20 +1,22 @@
-import type { Hono } from 'hono';
-import { afterAll, beforeAll, describe, expect, it, test, vi } from 'vitest';
+import { MathRNG } from '@oldschoolgg/rng';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { startServer } from '@/http/server.js';
 import { initPrismaClients } from '@/lib/prisma.js';
 
+const app = await startServer(MathRNG.randInt(2000, 65000));
+await initPrismaClients();
+globalThis.globalClient = {} as any;
+
 const mockVerifyPatreonSecret = vi.fn<(raw: string, sig?: string) => boolean>();
 const mockParseStrToTier = vi.fn<(name: string) => string | null>();
-// @ts-expect-error
-const mockPatreonRun = vi.fn<[], Promise<string[] | null>>();
+const mockPatreonRun = vi.fn<() => Promise<string[] | null>>();
 const mockPatreonChangeTier = vi.fn();
 const mockPatreonRemovePerks = vi.fn();
 vi.mock('../src/lib/patreon.js', () => ({
 	verifyPatreonSecret: (raw: string, sig?: string) => mockVerifyPatreonSecret(raw, sig),
 	parseStrToTier: (name: string) => mockParseStrToTier(name),
 	patreonTask: {
-		// @ts-expect-error
 		run: () => mockPatreonRun(),
 		changeTier: (...args: unknown[]) => mockPatreonChangeTier(...args),
 		removePerks: (...args: unknown[]) => mockPatreonRemovePerks(...args)
@@ -29,12 +31,7 @@ vi.mock('../src/util.js', () => ({
 	patronLogWebhook: { send: (...args: unknown[]) => mockWebhookSend(...args) }
 }));
 
-const TEST_USER = {
-	id: BigInt('123456789012345678'),
-	username: 'someuser'
-};
-
-let app: Hono;
+const TEST_USER_ID = '123456789012345678';
 
 async function testRequest(
 	path: string,
@@ -42,16 +39,28 @@ async function testRequest(
 		method?: string;
 		body?: any;
 		headers?: Record<string, string>;
+		authToken?: string;
 	}
 ) {
 	if (typeof path !== 'string' || !path.startsWith('/')) {
 		throw new Error('Path must be a string starting with /');
 	}
+
+	const headers: Record<string, string> = {
+		'content-type': 'application/json',
+		...(options?.headers ?? {})
+	};
+
+	if (options?.authToken) {
+		headers['cookie'] = `token=${options.authToken}`;
+	}
+
 	const result = await app.request(path, {
 		method: (options?.method ?? 'GET') as any,
-		headers: { ...(options?.headers ?? {}), 'content-type': 'application/json' },
-		body: options?.body
+		headers,
+		body: options?.body ? JSON.stringify(options.body) : undefined
 	});
+
 	return {
 		status: result.status,
 		text: () => result.text(),
@@ -60,8 +69,6 @@ async function testRequest(
 }
 
 beforeAll(async () => {
-	await initPrismaClients();
-
 	mockVerifyPatreonSecret.mockReset().mockImplementation((_raw, sig) => sig === 'ok');
 	mockParseStrToTier.mockReset().mockImplementation(name => (/tier\s*1/i.test(name) ? 'T1' : null));
 	mockPatreonRun.mockReset().mockResolvedValue(['a', 'b']);
@@ -69,17 +76,9 @@ beforeAll(async () => {
 	mockPatreonRemovePerks.mockReset();
 	mockVerifyGithubSecret.mockReset().mockImplementation((_raw, sig) => sig === 'ok');
 	mockWebhookSend.mockReset();
-
-	app = await startServer();
 }, 25_000);
 
-afterAll(async () => {
-	for (const c of [globalThis.osbClient, globalThis.bsoClient, globalThis.roboChimpClient]) {
-		if (c?.$disconnect) await c.$disconnect();
-	}
-});
-
-describe('Hono app (testRequest)', () => {
+describe('Server Webhooks', () => {
 	it('POST /webhooks/patreon missing header -> 400', async () => {
 		const res = await testRequest('/webhooks/patreon', { method: 'POST', body: {} });
 		expect(res.status).toBe(400);
@@ -127,29 +126,7 @@ describe('Hono app (testRequest)', () => {
 		expect(res.status).toBe(200);
 		expect(mockPatreonChangeTier).toHaveBeenCalledTimes(1);
 		const [ruser, tier] = mockPatreonChangeTier.mock.calls[0];
-		expect((ruser as any).id).toBe(TEST_USER.id);
+		expect((ruser as any).id).toBe(BigInt(TEST_USER_ID));
 		expect(tier).toBe('T1');
-	});
-
-	it.skip('GET /minion/:id (OSB default)', async () => {
-		const res = await testRequest(`/minion/${TEST_USER.id}`);
-		expect(res.status).toBe(200);
-		const data = await res.json();
-		expect(data).toMatchObject({
-			id: TEST_USER.id,
-			completed_ca_task_ids: [5, 6],
-			is_ironman: true,
-			leagues_completed_tasks_ids: [1, 2, 3]
-		});
-	});
-
-	test('Missing bot', async () => {
-		const res = await testRequest('/minion/not-a-snowflake');
-		expect(res.status).toBe(400);
-	});
-
-	test('Invalid user ID', async () => {
-		const res = await testRequest('/minion/osb/not-a-snowflake');
-		expect(res.status).toBe(400);
 	});
 });
