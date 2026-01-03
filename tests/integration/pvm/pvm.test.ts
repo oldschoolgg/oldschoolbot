@@ -203,6 +203,34 @@ describe('PVM', async () => {
 		expect(user.bank.amount('Cannonball')).toEqual(0);
 	});
 
+	it('should prefer granite cannonballs and give boost', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Granite cannonball', 1000).add('Cannonball', 100_000).add(CombatCannonItemBank),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true
+		});
+		await user.setAttackStyle(['ranged']);
+		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
+		expect(result.commandResult).toContain('16.67% for Granite cannonball');
+		expect(user.bank.amount('Granite cannonball')).toBeLessThan(1000);
+		expect(user.bank.amount('Cannonball')).toEqual(100_000);
+	});
+
+	it('should fallback to regular cannonballs if granite runs out', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Granite cannonball', 10).add('Cannonball', 100_000).add(CombatCannonItemBank),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true
+		});
+		await user.setAttackStyle(['ranged']);
+		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
+		expect(result.commandResult).not.toContain('Granite cannonball');
+		expect(user.bank.amount('Granite cannonball')).toEqual(10);
+		expect(user.bank.amount('Cannonball')).toBeLessThan(100_000);
+	});
+
 	it('should use chins', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Red chinchompa', 5000),
