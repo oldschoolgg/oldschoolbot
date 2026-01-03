@@ -9,7 +9,7 @@ import { Select } from '@/components/ui/Select.js';
 import { useBank } from '@/hooks/useBank.js';
 import { Monsters } from '@/osrs/index.js';
 
-const sortedMonsters = Monsters.values
+const sortedMonsters = Array.from(Monsters.values)
 	.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
 	.filter(_m => 'table' in _m && _m.table);
 

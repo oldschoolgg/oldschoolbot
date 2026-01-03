@@ -15,8 +15,10 @@ process.on('unhandledRejection', err => {
 
 async function main() {
 	await initPrismaClients();
+	if (globalConfig.isProduction) {
+		await globalClient.login();
+	}
 	await startServer(globalConfig.httpPort);
-	await globalClient.login();
 	await syncBlacklists();
 }
 
