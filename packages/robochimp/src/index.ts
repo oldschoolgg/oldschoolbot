@@ -19,7 +19,6 @@ async function main() {
 		await globalClient.login();
 	}
 	await startServer(globalConfig.httpPort);
-	await globalClient.login();
 	await syncBlacklists();
 }
 
