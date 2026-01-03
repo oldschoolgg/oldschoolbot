@@ -1,7 +1,7 @@
 import { randArrItem, randInt, SeedableRNG } from '@oldschoolgg/rng';
 import { randomSnowflake } from '@oldschoolgg/util';
 import { generateRandomBank } from 'oldschooljs';
-import { chunk, pick } from 'remeda';
+import { chunk } from 'remeda';
 
 import { initPrismaClients } from '@/lib/prisma.js';
 
