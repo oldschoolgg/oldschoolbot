@@ -50,6 +50,8 @@ export function TransactionTable({
 	onPageChange,
 	onSortStatusChange
 }: TransactionTableProps) {
+	const BUTTONS_CLASS =
+		'rounded-md border border-slate-600 bg-slate-800 px-2 py-1 text-xs font-medium text-slate-200 hover:bg-slate-700 hover:border-slate-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
 	const columns = useMemo<ColumnDef<EconomyTransaction>[]>(
 		() => [
 			{
@@ -73,6 +75,17 @@ export function TransactionTable({
 				enableSorting: true
 			},
 			{
+				accessorKey: 'guild_id',
+				header: 'Guild ID',
+				cell: ({ row }) =>
+					row.original.guild_id ? (
+						<span className="font-mono text-sm">{String(row.original.guild_id)}</span>
+					) : (
+						<span className="text-slate-400">-</span>
+					),
+				enableSorting: true
+			},
+			{
 				accessorKey: 'sender',
 				header: 'Sender',
 				cell: ({ row }) => {
@@ -88,17 +101,6 @@ export function TransactionTable({
 					const userId = row.original.recipient;
 					return <UserIndentity userId={userId} />;
 				},
-				enableSorting: true
-			},
-			{
-				accessorKey: 'guild_id',
-				header: 'Guild ID',
-				cell: ({ row }) =>
-					row.original.guild_id ? (
-						<span className="font-mono text-sm">{String(row.original.guild_id)}</span>
-					) : (
-						<span className="text-slate-400">-</span>
-					),
 				enableSorting: true
 			}
 		],
@@ -131,7 +133,7 @@ export function TransactionTable({
 		<div className="rounded-xl border border-[var(--color-border)] shadow-sm">
 			<div className="overflow-x-auto">
 				<table className="min-w-full border-separate border-spacing-0">
-					<thead>
+					<thead className="text-gray-200">
 						{table.getHeaderGroups().map(hg => (
 							<tr key={hg.id}>
 								{hg.headers.map((header, i) => {
@@ -145,9 +147,11 @@ export function TransactionTable({
 											key={header.id}
 											scope="col"
 											className={[
-												'sticky top-0 z-10 px-3 py-2 text-left text-xs font-semibold text-slate-700',
+												'sticky top-0 z-10 px-4 py-4 text-left text-xs font-semibold',
 												'border-b border-[var(--color-border)]',
-												!isLast ? 'border-r border-[var(--color-border)]' : ''
+												!isLast ? 'border-r border-[var(--color-border)]' : '',
+												col.id === 'date' ? 'w-50' : '',
+												col.id === 'type' ? 'w-24' : ''
 											].join(' ')}
 										>
 											<button
@@ -226,7 +230,7 @@ export function TransactionTable({
 				<div className="flex items-center gap-2">
 					<button
 						type="button"
-						className="rounded-md border border-[var(--color-border)] px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+						className={BUTTONS_CLASS}
 						onClick={() => onPageChange(1)}
 						disabled={safePage <= 1 || loading}
 					>
@@ -234,20 +238,20 @@ export function TransactionTable({
 					</button>
 					<button
 						type="button"
-						className="rounded-md border border-[var(--color-border)] px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+						className={BUTTONS_CLASS}
 						onClick={() => onPageChange(safePage - 1)}
 						disabled={safePage <= 1 || loading}
 					>
 						Prev
 					</button>
 
-					<div className="px-1 text-xs text-slate-600">
+					<div className="px-1 text-xs text-slate-400">
 						Page {safePage} / {totalPages}
 					</div>
 
 					<button
 						type="button"
-						className="rounded-md border border-[var(--color-border)] px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+						className={BUTTONS_CLASS}
 						onClick={() => onPageChange(safePage + 1)}
 						disabled={safePage >= totalPages || loading}
 					>
@@ -255,7 +259,7 @@ export function TransactionTable({
 					</button>
 					<button
 						type="button"
-						className="rounded-md border border-[var(--color-border)] px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+						className={BUTTONS_CLASS}
 						onClick={() => onPageChange(totalPages)}
 						disabled={safePage >= totalPages || loading}
 					>
