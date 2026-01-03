@@ -10,7 +10,7 @@ export const ensureAuthenticated: MiddlewareHandler = async (c, next) => {
 	const user = c.get('user');
 
 	if (!user) {
-		return httpErr.UNAUTHORIZED();
+		return httpErr.UNAUTHORIZED({ message: 'Not Logged In' });
 	}
 
 	const isBlacklisted: boolean =
@@ -31,11 +31,11 @@ export const ensureModeratorUser: MiddlewareHandler<HonoServerGeneric> = async (
 	const user = c.get('user');
 
 	if (!user) {
-		return httpErr.UNAUTHORIZED();
+		return httpErr.UNAUTHORIZED({ message: 'Not Logged In' });
 	}
 
 	if (!user.bits.includes(Bits.Mod) && !user.bits.includes(Bits.Admin)) {
-		return httpErr.UNAUTHORIZED();
+		return httpErr.UNAUTHORIZED({ message: 'Not Staff' });
 	}
 
 	await next();
