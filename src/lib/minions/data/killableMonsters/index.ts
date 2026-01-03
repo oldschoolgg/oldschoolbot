@@ -15,6 +15,7 @@ import { reanimatedMonsters } from '@/lib/minions/data/killableMonsters/reanimat
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import { turaelMonsters } from '@/lib/minions/data/killableMonsters/turaelMonsters.js';
 import { vannakaMonsters } from '@/lib/minions/data/killableMonsters/vannakaMonsters.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 
 const killableMonsters: KillableMonster[] = [
@@ -66,6 +67,244 @@ const killableMonsters: KillableMonster[] = [
 		},
 		defaultAttackStyles: ['attack', 'magic', 'ranged'],
 		customMonsterHP: 600,
+		combatXpMultiplier: 1.09
+	},
+	{
+		id: Monsters.MoonsofPeril.id,
+		name: Monsters.MoonsofPeril.name,
+		aliases: Monsters.MoonsofPeril.aliases,
+		timeToFinish: Time.Minute * 12,
+		table: Monsters.MoonsofPeril,
+		wildy: false,
+
+		difficultyRating: 4,
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		requiredQuests: [QuestID.ChildrenOfTheSun],
+		equippedItemBoosts: [
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Torva full helm') },
+					{ boostPercent: 5, itemID: itemID('Oathplate helm') },
+					{ boostPercent: 4, itemID: itemID('Justiciar faceguard') },
+					{ boostPercent: 4, itemID: itemID('Serpentine helm') },
+					{ boostPercent: 3, itemID: itemID('Neitiznot faceguard') },
+					{ boostPercent: 2, itemID: itemID("Dharok's helm") },
+					{ boostPercent: 2, itemID: itemID("Guthan's helm") },
+					{ boostPercent: 2, itemID: itemID("Torag's helm") },
+					{ boostPercent: 2, itemID: itemID("Verac's helm") },
+					{ boostPercent: 1, itemID: itemID('Blood moon helm') },
+					{ boostPercent: 1, itemID: itemID('Helm of neitiznot') },
+					{ boostPercent: 1, itemID: itemID('Berserker helm') }
+				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Torva platebody') },
+					{ boostPercent: 5, itemID: itemID('Oathplate chest') },
+					{ boostPercent: 4, itemID: itemID('Justiciar chestguard') },
+					{ boostPercent: 3, itemID: itemID('Bandos chestplate') },
+					{ boostPercent: 2, itemID: itemID("Dharok's platebody") },
+					{ boostPercent: 2, itemID: itemID("Guthan's platebody") },
+					{ boostPercent: 2, itemID: itemID("Torag's platebody") },
+					{ boostPercent: 2, itemID: itemID("Verac's brassard") },
+					{ boostPercent: 1, itemID: itemID('Fighter torso') },
+					{ boostPercent: 1, itemID: itemID("Verac's brassard") },
+					{ boostPercent: 1, itemID: itemID('Dragon chainbody') }
+				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 5, itemID: itemID('Oathplate legs') },
+					{ boostPercent: 4, itemID: itemID('Justiciar legguards') },
+					{ boostPercent: 3, itemID: itemID('Bandos tassets') },
+					{ boostPercent: 2, itemID: itemID("Dharok's platelegs") },
+					{ boostPercent: 2, itemID: itemID("Guthan's chainskirt") },
+					{ boostPercent: 2, itemID: itemID("Torag's platelegs") },
+					{ boostPercent: 2, itemID: itemID("Verac's plateskirt") },
+					{ boostPercent: 1, itemID: itemID('Dragon platelegs') }
+				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Infernal cape') },
+					{ boostPercent: 3, itemID: itemID('Fire cape') },
+					{ boostPercent: 2, itemID: itemID('Mythical cape') },
+					{ boostPercent: 1, itemID: itemID('Obsidian cape') }
+				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 4, itemID: itemID('Barrows gloves') },
+					{ boostPercent: 3, itemID: itemID('Dragon gloves') },
+					{ boostPercent: 2, itemID: itemID('Rune gloves') },
+					{ boostPercent: 1, itemID: itemID('Regen bracelet') },
+					{ boostPercent: 1, itemID: itemID('Granite gloves') }
+				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic treads (max)') },
+					{ boostPercent: 4, itemID: itemID('Avernic treads (pr)(et)') },
+					{ boostPercent: 4, itemID: itemID('Avernic treads (pr)(pe)') },
+					{ boostPercent: 4, itemID: itemID('Avernic treads (pr)') },
+					{ boostPercent: 3, itemID: itemID('Primordial boots') },
+					{ boostPercent: 2, itemID: itemID('Echo boots') },
+					{ boostPercent: 1, itemID: itemID('Dragon boots') },
+					{ boostPercent: 1, itemID: itemID('Guardian boots') },
+					{ boostPercent: 1, itemID: itemID('Granite boots') }
+				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 4, itemID: itemID('Amulet of torture') },
+					{ boostPercent: 4, itemID: itemID('Amulet of fury') },
+					{ boostPercent: 3, itemID: itemID('Amulet of strength') },
+					{ boostPercent: 2, itemID: itemID('Amulet of glory') },
+					{ boostPercent: 1, itemID: itemID('Amulet of power') }
+				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Ultor ring') },
+					{ boostPercent: 4, itemID: itemID('Berserker ring (i)') },
+					{ boostPercent: 3, itemID: itemID('Ring of suffering (ri)') },
+					{ boostPercent: 3, itemID: itemID('Steel ring') },
+					{ boostPercent: 2, itemID: itemID('Lightbearer') },
+					{ boostPercent: 1, itemID: itemID('Brimstone ring') },
+					{ boostPercent: 1, itemID: itemID('Warrior ring (i)') }
+				],
+				gearSetup: 'melee',
+				required: true
+			},
+			{
+				items: [
+					{ boostPercent: 2, itemID: itemID("Ghommal's lucky penny") },
+					{ boostPercent: 2, itemID: itemID("Rada's blessing 4") },
+					{ boostPercent: 1, itemID: itemID('Holy blessing') },
+					{ boostPercent: 1, itemID: itemID('Unholy blessing') },
+					{ boostPercent: 1, itemID: itemID('Peaceful blessing') },
+					{ boostPercent: 1, itemID: itemID('Honourable blessing') },
+					{ boostPercent: 1, itemID: itemID('War blessing') },
+					{ boostPercent: 1, itemID: itemID('Ancient blessing') },
+					{ boostPercent: 1, itemID: itemID("Rada's blessing 3") },
+					{ boostPercent: 1, itemID: itemID("Rada's blessing 2") }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 5, itemID: itemID('Dragonfire shield') },
+					{ boostPercent: 4, itemID: itemID('Dragon defender') },
+					{ boostPercent: 3, itemID: itemID('Toktz-ket-xil') },
+					{ boostPercent: 2, itemID: itemID('Rune defender') },
+					{ boostPercent: 2, itemID: itemID('Blessed spirit shield') },
+					{ boostPercent: 2, itemID: itemID('Dragon sq shield') },
+					{ boostPercent: 2, itemID: itemID('Crystal shield') },
+					{ boostPercent: 1, itemID: itemID('Rune kiteshield') }
+				],
+				gearSetup: 'melee',
+				required: false
+			}
+		],
+		itemInBankBoosts: [
+			// ECLIPSE MOON
+			{
+				[itemID('Soulreaper axe')]: 5,
+				[itemID('Ghrazi rapier')]: 4,
+				[itemID('Blade of saeldor')]: 3,
+				[itemID('Noxious halberd')]: 3,
+				[itemID('Voidwaker')]: 2,
+				[itemID("Osmumten's fang")]: 2,
+				[itemID('Zamorakian hasta')]: 2,
+				[itemID('Abyssal dagger')]: 2,
+				[itemID('Zombie axe')]: 1,
+				[itemID('Dragon sword')]: 1,
+				[itemID('Arkan blade')]: 1,
+				[itemID('Dragon hasta')]: 1,
+				[itemID('Abyssal whip')]: 1
+			},
+			// BLUE MOON
+			{
+				[itemID('Dual macuahuitl')]: 5,
+				[itemID('Glacial temotli')]: 4,
+				[itemID("Inquisitor's mace")]: 3,
+				[itemID('Soulreaper axe')]: 3,
+				[itemID('Ursine chainmace (u)')]: 2,
+				[itemID('Zamorakian hasta')]: 2,
+				[itemID('Abyssal bludgeon')]: 2,
+				[itemID('Sarachnis cudgel')]: 1,
+				[itemID('Zombie axe')]: 1,
+				[itemID("Torag's hammers")]: 1
+			},
+			// BLOOD MOON
+			{
+				[itemID('Soulreaper axe')]: 5,
+				[itemID('Noxious halberd')]: 4,
+				[itemID('Blade of saeldor')]: 3,
+				[itemID('Ghrazi rapier')]: 2,
+				[itemID('Abyssal tentacle')]: 2,
+				[itemID('Abyssal whip')]: 2,
+				[itemID('Sulphur blades')]: 2,
+				[itemID('Zombie axe')]: 1,
+				[itemID('Zamorakian hasta')]: 1,
+				[itemID('Dragon scimitar')]: 1,
+				[itemID('Arkan blade')]: 1
+			},
+			// SPEC WEAPON
+			{
+				[itemID('Voidwaker')]: 5,
+				[itemID('Crystal halberd')]: 5,
+				[itemID('Dragon claws')]: 4,
+				[itemID('Dragon dagger')]: 2,
+				[itemID('Burning claws')]: 2,
+				[itemID('Dragon mace')]: 2,
+				[itemID('Abyssal dagger')]: 2
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID('Scythe of vitur'),
+						boostPercent: 10
+					}
+				]
+			}
+		],
+		levelRequirements: {
+			attack: 70,
+			strength: 70,
+			defence: 70,
+			prayer: 70,
+			herblore: 66,
+			cooking: 50,
+			fishing: 50,
+			hunter: 50
+		},
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
+		customMonsterHP: 1500,
 		combatXpMultiplier: 1.09
 	},
 	{

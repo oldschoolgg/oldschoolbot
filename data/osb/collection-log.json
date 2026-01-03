@@ -1945,6 +1945,23 @@
 					"Zamorakian spear"
 				]
 			},
+			"moons_of_peril": {
+				"items": [
+					"Atlatl dart",
+					"Blood moon chestplate",
+					"Blood moon helm",
+					"Blood moon tassets",
+					"Blue moon chestplate",
+					"Blue moon helm",
+					"Blue moon spear",
+					"Blue moon tassets",
+					"Dual macuahuitl",
+					"Eclipse atlatl",
+					"Eclipse moon chestplate",
+					"Eclipse moon helm",
+					"Eclipse moon tassets"
+				]
+			},
 			"nex": {
 				"all_items": [
 					"Air orb",
@@ -2643,7 +2660,7 @@
 					"Warm gloves"
 				]
 			},
-			"yami": {
+			"yama": {
 				"unobtainable": true,
 				"items": [
 					"Barrel of demonic tallow (full)",

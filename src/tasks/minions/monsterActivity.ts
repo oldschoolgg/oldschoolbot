@@ -157,7 +157,8 @@ export function doMonsterTrip(data: newOptions) {
 		hasKourendElite,
 		attackStyles,
 		duration,
-		bitfield
+		bitfield,
+		cl
 	} = data;
 	const currentKC = kcBank.amount(monster.id);
 	const updateBank = new UpdateBank();
@@ -296,7 +297,8 @@ export function doMonsterTrip(data: newOptions) {
 		inCatacombs: isInCatacombs,
 		lootTableOptions: {
 			tertiaryItemPercentageChanges
-		}
+		},
+		cl
 	};
 
 	// Calculate superiors and assign loot.
