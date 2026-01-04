@@ -865,7 +865,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async addMonsterXP(params: AddMonsterXpParams) {
-		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles(), rng: cryptoRng });
+		const res = addMonsterXPRaw({ ...params, user: this, attackStyles: this.getAttackStyles(), rng: cryptoRng });
 		const result = await this.addXPBank(res);
 		return `**XP Gains:** ${result}`;
 	}

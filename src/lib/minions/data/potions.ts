@@ -445,7 +445,7 @@ const Potions = [
 	{
 		name: 'Brimstone elixir',
 		items: resolveItems('Brimstone elixir')
-	},
+	}
 ];
 
 export default Potions;

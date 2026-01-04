@@ -792,6 +792,12 @@ const tripHandlers: {
 			name: `Ignecarus ${data.users.length === 1 ? 'solo' : 'mass'}`
 		})
 	},
+	[activity_type_enum.BurningDominion]: {
+		commandName: 'k',
+		args: () => ({
+			name: 'Burning Dominion'
+		})
+	},
 	[activity_type_enum.KibbleMaking]: {
 		commandName: 'kibble',
 		args: (data: KibbleOptions) => ({

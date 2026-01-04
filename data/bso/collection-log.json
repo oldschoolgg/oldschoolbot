@@ -4189,20 +4189,42 @@
 				"items": ["Lunite", "Moondash charm", "Moonlight essence", "Noom"]
 			},
 			"orym": {
-				"all_items": ["Forsaken tear", "Sacrilegious flask", "Orrodin", "Primordial heartstring", "Primordial spine"],
-				"items": ["Forsaken tear", "Sacrilegious flask", "Orrodin", "Primordial heartstring", "Primordial spine"]
+				"all_items": [
+					"Forsaken tear",
+					"Orylin",
+					"Primordial heartstring",
+					"Primordial spine",
+					"Sacrilegious flask"
+				],
+				"items": ["Forsaken tear", "Orylin", "Primordial heartstring", "Primordial spine", "Sacrilegious flask"]
 			},
 			"orrodil": {
-				"all_items": ["Celestial flame", "Shattered pendant", "Orrodin", "Primordial heartstring", "Primordial spine"],
-				"items": ["Celestial flame", "Shattered pendant", "Orrodin", "Primordial heartstring", "Primordial spine"]
+				"all_items": [
+					"Celestial flame",
+					"Orylin",
+					"Primordial heartstring",
+					"Primordial spine",
+					"Shattered pendant"
+				],
+				"items": [
+					"Celestial flame",
+					"Orylin",
+					"Primordial heartstring",
+					"Primordial spine",
+					"Shattered pendant"
+				]
 			},
 			"fungal_behemoth": {
-				"all_items": ["verdant_heart"],
-				"items": ["verdant_heart"]
+				"all_items": ["Verdant heart"],
+				"items": ["Verdant heart"]
 			},
 			"crystalline_sentinel": {
-				"all_items": ["sentinel_core"],
-				"items": ["sentinel_core"]
+				"all_items": ["Sentinel core"],
+				"items": ["Sentinel core"]
+			},
+			"elder_mimic": {
+				"all_items": ["Elder mimic casket"],
+				"items": ["Elder mimic casket"]
 			}
 		}
 	},
@@ -5852,6 +5874,7 @@
 					"Detective trenchcoat",
 					"Dragon bones",
 					"Elder knowledge",
+					"Elder mimic casket (locked)",
 					"Equippable mystery box",
 					"First age robe bottom",
 					"First age robe top",
@@ -6110,6 +6133,7 @@
 					"Earth battlestaff",
 					"Earth orb",
 					"Elder logs",
+					"Elder mimic casket (locked)",
 					"Enchanted hat",
 					"Enchanted robe",
 					"Enchanted top",
@@ -8104,6 +8128,7 @@
 					"Avantoe potion (unf)",
 					"Bastion potion(3)",
 					"Battlemage potion(3)",
+					"Brimstone elixir",
 					"Cadantine",
 					"Cadantine blood potion (unf)",
 					"Cadantine potion (unf)",
@@ -8542,6 +8567,7 @@
 					"Dragonstone dragon bolts",
 					"Elder bow",
 					"Elder bow(u)",
+					"Elderflame arrow",
 					"Emerald bolt tips",
 					"Emerald bolts",
 					"Emerald dragon bolts",
@@ -10204,6 +10230,7 @@
 					"Cannon base (or)",
 					"Cannon furnace (or)",
 					"Cannon stand (or)",
+					"Celestial pendant",
 					"Celestial signet",
 					"Clothes pouch",
 					"Clown set",
@@ -10284,6 +10311,8 @@
 					"Dragon scimitar (or)",
 					"Dragon sq shield",
 					"Dragon sq shield (g)",
+					"Dragonbane aegis",
+					"Dragonbane glaive",
 					"Dragonbone boots",
 					"Dragonbone full helm",
 					"Dragonbone gloves",
@@ -10315,6 +10344,8 @@
 					"Dwarven igne claws",
 					"Ecumenical key",
 					"Elder pouch",
+					"Elder sigil",
+					"Elderflame bow",
 					"Eldritch nightmare staff",
 					"Elidinis' damaged guardian",
 					"Elidinis' ward (f)",
@@ -10653,6 +10684,7 @@
 					"Seamonkey staff (t1)",
 					"Seamonkey staff (t2)",
 					"Seamonkey staff (t3)",
+					"Searcrown band",
 					"Secateurs attachment",
 					"Seers icon",
 					"Shark tooth necklace",
@@ -10800,6 +10832,7 @@
 					"Virtus robe legs",
 					"Virtus robe top",
 					"Virtus wand",
+					"Vitrolic curse",
 					"Void knight gloves (or)",
 					"Void knight robe (or)",
 					"Void knight top (or)",

@@ -14365,7 +14365,7 @@ setCustomItem(74_006, 'Ember', 'Herbi', {
 
 setCustomItem(
 	75_001,
-	'Dragonbane glaive', 
+	'Dragonbane glaive',
 	'Dragonhunter lance',
 	{
 		equipment: {
@@ -14387,15 +14387,15 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Weapon,
 			requirements: {
-                attack: 120,
+				attack: 120,
 				strength: 120
 			}
 		},
-        highalch: 50_000_000,
+		highalch: 50_000_000,
 		tradeable: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-        }
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -14423,15 +14423,15 @@ setCustomItem(
 			prayer: 3,
 			slot: EquipmentSlot.Shield,
 			requirements: {
-                defence: 120,
-                strength: 120
+				defence: 120,
+				strength: 120
 			}
 		},
-        highalch: 50_000_000,
+		highalch: 50_000_000,
 		tradeable: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-        }
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -14459,16 +14459,16 @@ setCustomItem(
 			prayer: 7,
 			slot: EquipmentSlot.Ammo,
 			requirements: {
-                prayer: 120,
-                defence: 120,
+				prayer: 120,
+				defence: 120,
 				hitpoints: 120
 			}
 		},
-        highalch: 50_000_000,
+		highalch: 50_000_000,
 		tradeable: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-        }
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -14477,10 +14477,10 @@ setCustomItem(
 	'Shattered pendant',
 	'Coal',
 	{
-        tradeable: false,
+		tradeable: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14491,7 +14491,7 @@ setCustomItem(
 	'Amulet of fury',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1
@@ -14502,7 +14502,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1
@@ -14513,7 +14513,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1
@@ -14524,7 +14524,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1
@@ -14534,10 +14534,10 @@ setCustomItem(
 	'Primordial spine',
 	'Coal',
 	{
-        tradeable: false,
+		tradeable: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14547,10 +14547,10 @@ setCustomItem(
 	'Primordial heartstring',
 	'Coal',
 	{
-        tradeable: false,
+		tradeable: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14560,10 +14560,10 @@ setCustomItem(
 	'Sacrilegious flask',
 	'Coal',
 	{
-        tradeable: false,
+		tradeable: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14573,10 +14573,10 @@ setCustomItem(
 	'Forsaken tear',
 	'Coal',
 	{
-        tradeable: false,
+		tradeable: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14586,10 +14586,10 @@ setCustomItem(
 	'Celestial flame',
 	'Coal',
 	{
-        tradeable: false,
+		tradeable: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14601,7 +14601,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14614,7 +14614,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14647,7 +14647,7 @@ setCustomItem(
 				ranged: 120
 			}
 		},
-        highalch: 200_000_000,
+		highalch: 200_000_000,
 		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -14683,7 +14683,7 @@ setCustomItem(
 				defence: 115
 			}
 		},
-        highalch: 100_000_000,
+		highalch: 100_000_000,
 		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -14697,10 +14697,10 @@ setCustomItem(
 	'Orylin',
 	'Coal',
 	{
-        tradeable: false,
+		tradeable: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14711,10 +14711,10 @@ setCustomItem(
 	'Orrodin',
 	'Coal',
 	{
-        tradeable: false,
+		tradeable: false,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-            isSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -14785,14 +14785,62 @@ setCustomItem(75_037, 'Verdant plank', 'Plank', { customItemData: { cantDropFrom
 setCustomItem(75_038, 'Ancient verdant plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_039, 'Sentinel core', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_040, 'Verdant heart', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_041, 'Elder mimic casket (locked)', 'Casket', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_042, 'Elder mimic casket', 'Casket', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_043, 'Elder sigil', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_044, 'Elder sigil fragment (1)', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_045, 'Elder sigil fragment (2)', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_046, 'Elder sigil fragment (3)', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_047, 'Archon relic', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
-setCustomItem(75_048, 'Elderflame catalyst', 'Coal', { tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } }, 1);
+setCustomItem(
+	75_041,
+	'Elder mimic casket (locked)',
+	'Casket',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	1
+);
+setCustomItem(
+	75_042,
+	'Elder mimic casket',
+	'Casket',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	1
+);
+setCustomItem(
+	75_043,
+	'Elder sigil',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	1
+);
+setCustomItem(
+	75_044,
+	'Elder sigil fragment (1)',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	1
+);
+setCustomItem(
+	75_045,
+	'Elder sigil fragment (2)',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	1
+);
+setCustomItem(
+	75_046,
+	'Elder sigil fragment (3)',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	1
+);
+setCustomItem(
+	75_047,
+	'Archon relic',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	1
+);
+setCustomItem(
+	75_048,
+	'Elderflame catalyst',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	1
+);
 
 setCustomItem(
 	75_049,
@@ -14816,12 +14864,12 @@ setCustomItem(
 			defence_ranged: 0,
 
 			melee_strength: 0,
-			ranged_strength: 0, 
+			ranged_strength: 0,
 			magic_damage: 0,
 			prayer: 0,
 			slot: EquipmentSlot.TwoHanded,
 			requirements: {
-				ranged: 0 
+				ranged: 0
 			}
 		}
 	},
@@ -14854,8 +14902,7 @@ setCustomItem(
 			magic_damage: 0,
 			prayer: 0,
 			slot: EquipmentSlot.Ring,
-			requirements: {
-			}
+			requirements: {}
 		}
 	},
 	10_000

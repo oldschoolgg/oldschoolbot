@@ -87,7 +87,7 @@ export function addMonsterXPRaw(params: {
 	} else if (maybeOSJSMonster?.data?.hitpoints) {
 		hp = maybeOSJSMonster.data.hitpoints;
 	}
-	
+
 	// Get XP multiplier (default to 1 if not defined)
 	if (maybeMonster?.combatXpMultiplier !== undefined) {
 		xpMultiplier =
@@ -97,7 +97,7 @@ export function addMonsterXPRaw(params: {
 	} else {
 		xpMultiplier = 1;
 	}
-	
+
 	// Calculate superior XP:
 	let superiorSlayXp = 0;
 	let superiorXp = 0;
@@ -107,7 +107,7 @@ export function addMonsterXPRaw(params: {
 	}
 
 	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
-	
+
 	const xpPerSkill = totalXP / attackStyles.length;
 
 	const xpBank = new XPBank();

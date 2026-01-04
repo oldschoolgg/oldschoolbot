@@ -2,7 +2,14 @@ import { resolveItems } from 'oldschooljs';
 
 export const projectiles = {
 	arrow: {
-		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow', 'Elderflame arrow']),
+		items: resolveItems([
+			'Adamant arrow',
+			'Rune arrow',
+			'Amethyst arrow',
+			'Dragon arrow',
+			'Hellfire arrow',
+			'Elderflame arrow'
+		]),
 		savedByAvas: true,
 		weapons: resolveItems(['Twisted bow'])
 	},

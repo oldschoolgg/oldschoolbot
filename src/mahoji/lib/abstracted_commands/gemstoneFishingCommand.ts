@@ -1,10 +1,11 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
+
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export async function gemstoneFishingCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const fishingLevel = user.skillsAsLevels.fishing;
-	
+
 	if (fishingLevel < 20) {
 		return 'You need at least level 20 Fishing to catch gemstone fish.';
 	}
