@@ -1,5 +1,3 @@
-import { Bank } from 'oldschooljs';
-
 import { BankImage } from '@/components/BankImage/BankImage.js';
 import type { FullMinionData } from '../../../../../robochimp/src/http/api-types.js';
 
@@ -22,7 +20,8 @@ export function MinionInfo({ data }: { data: FullMinionData }) {
 					</div>
 				))}
 			</div>
-			<BankImage sort="name" title="Collection Log" bank={new Bank(data.collection_log_bank)} />
+			<BankImage sort="name" title="Bank" bank={data.bank} />
+			<BankImage sort="name" title="Collection Log" bank={data.collection_log_bank} />
 		</div>
 	);
 }

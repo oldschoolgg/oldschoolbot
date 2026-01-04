@@ -110,7 +110,7 @@ export const RaidsSimulatorPage = () => {
 				<BankImage
 					showPrice={false}
 					title={`Loot from ${qty}x Chambers of Xeric (Value: ${toKMB(loot.loot.value())})`}
-					bank={loot.loot}
+					bank={loot.loot.toJSON()}
 				/>
 
 				<BankImage
@@ -118,7 +118,7 @@ export const RaidsSimulatorPage = () => {
 					title={`Total Loot from ${loot.totalKC}x Chambers of Xeric ${
 						loot.totalKC >= 1 ? `(Average ${toKMB(loot.totalLoot.value() / loot.totalKC)} per raid)` : ''
 					}`}
-					bank={loot.totalLoot}
+					bank={loot.totalLoot.toJSON()}
 				/>
 			</div>
 		</div>
