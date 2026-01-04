@@ -1,20 +1,43 @@
 import { randArrItem, randInt, SeedableRNG } from '@oldschoolgg/rng';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { randomSnowflake } from '@oldschoolgg/util';
-import { generateRandomBank } from 'oldschooljs';
 import { chunk } from 'remeda';
 
 import { initPrismaClients } from '@/lib/prisma.js';
+import bsoItemsJson from '../../../../data/bso/bso_items.json' with { type: 'json' };
+import osbAllObtainableItems from '../../../../src/lib/resources/spritesheets/items-spritesheet.json' with {
+	type: 'json'
+};
 
-const userIds: bigint[] = [];
+const userIds: bigint[] = [157797566833098752n];
 
 const rng = new SeedableRNG(1);
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 50; i++) {
 	userIds.push(BigInt(randomSnowflake(rng)));
 }
 
 const userIdsStr: string[] = userIds.map(id => id.toString());
 
+function generateRandomBank(amount: number) {
+	const bank = new Map<string, number>();
+	for (let i = 0; i < amount; i++) {
+		const randItem = randArrItem(Object.keys(osbAllObtainableItems));
+		bank.set(randItem, randInt(1, 5));
+	}
+	return Object.fromEntries(bank);
+}
+
+function generateRandomBsoBank(qty: number) {
+	const bank = generateRandomBank(10);
+	for (let i = 0; i < qty; i++) {
+		const randBsoItem = randArrItem(Object.keys(bsoItemsJson));
+		bank[randBsoItem] = (bank[randBsoItem] ?? 0) + randInt(1, 5);
+	}
+	return bank;
+}
+
 async function seedRobochimpDb() {
+	const sw = new Stopwatch();
 	await roboChimpClient.$transaction([
 		...userIds.map(id =>
 			roboChimpClient.user.upsert({
@@ -37,6 +60,7 @@ async function seedRobochimpDb() {
 			})
 		)
 	]);
+	sw.check('Seeded RoboChimp users');
 
 	await osbClient.$transaction([
 		...userIdsStr.map(id =>
@@ -49,6 +73,8 @@ async function seedRobochimpDb() {
 			})
 		)
 	]);
+	sw.check('Seeded osb users');
+
 	await bsoClient.$transaction([
 		...userIdsStr.map(id =>
 			bsoClient.user.upsert({
@@ -60,38 +86,44 @@ async function seedRobochimpDb() {
 			})
 		)
 	]);
+	sw.check('Seeded bso users');
 
 	const userPairs = chunk(userIds, 2).filter(pair => pair.length === 2);
 
 	await osbClient.$transaction(
-		userPairs.map(([user1, user2]) =>
+		userPairs.slice(0, 5).map(([user1, user2]) =>
 			osbClient.economyTransaction.create({
 				data: {
 					sender: user1,
 					recipient: user2!,
-					items_sent: generateRandomBank(randInt(1, 30)).toJSON(),
-					items_received: generateRandomBank(randInt(1, 30)).toJSON(),
+					items_sent: generateRandomBank(randInt(1, 30)),
+					items_received: generateRandomBank(randInt(1, 30)),
 					type: randArrItem(['trade', 'gift', 'giveaway', 'duel'])
 				}
 			})
 		)
 	);
+	sw.check('Seeded osb transactions');
+
 	await bsoClient.$transaction(
-		userPairs.map(([user1, user2]) =>
+		userPairs.slice(0, 5).map(([user1, user2]) =>
 			bsoClient.economyTransaction.create({
 				data: {
 					sender: user1,
 					recipient: user2!,
-					items_sent: generateRandomBank(randInt(1, 30)).toJSON(),
-					items_received: generateRandomBank(randInt(1, 30)).toJSON(),
+					items_sent: generateRandomBank(randInt(1, 30)),
+					items_received: generateRandomBank(randInt(1, 30)),
 					type: randArrItem(['trade', 'gift', 'giveaway', 'gri', 'duel'])
 				}
 			})
 		)
 	);
 
+	sw.check('Seeded bso transactions');
+
+	await roboChimpClient.blacklistedEntity.deleteMany({});
 	await roboChimpClient.$transaction([
-		...userIds.slice(-50).map(id =>
+		...userIds.slice(-5).map(id =>
 			roboChimpClient.blacklistedEntity.upsert({
 				where: { id },
 				create: {
@@ -102,9 +134,54 @@ async function seedRobochimpDb() {
 			})
 		)
 	]);
+	sw.check('Seeded blacklists');
+
+	const allUserIdsOsb = (
+		await osbClient.user.findMany({
+			select: {
+				id: true
+			}
+		})
+	).map(u => u.id);
+	await osbClient.$transaction(
+		allUserIdsOsb.map(id =>
+			osbClient.user.update({
+				where: { id },
+				data: {
+					minion_hasBought: true,
+					bank: generateRandomBank(randInt(1, 100))
+				}
+			})
+		)
+	);
+	sw.check('Seeded osb user banks');
+
+	const allUserIdsBso = (
+		await bsoClient.user.findMany({
+			select: {
+				id: true
+			}
+		})
+	).map(u => u.id);
+	await bsoClient.$transaction(
+		allUserIdsBso.map(id =>
+			bsoClient.user.update({
+				where: { id },
+				data: {
+					minion_hasBought: true,
+					bank: generateRandomBsoBank(100)
+				}
+			})
+		)
+	);
+	sw.check('Seeded bso user banks');
+	process.exit(0);
 }
 
 async function main() {
+	if (process.env.NODE_ENV === 'production') {
+		throw new Error('Seeding should not be run in production');
+	}
 	await initPrismaClients();
 	await seedRobochimpDb();
 }

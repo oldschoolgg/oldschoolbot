@@ -52,3 +52,25 @@ export const ZSimpleMinionInfo = z.strictObject({
 	total_level: z.number().int().nonnegative()
 });
 export type ISimpleMinionInfo = z.infer<typeof ZSimpleMinionInfo>;
+
+export const ZEconomyTransactionType = z.enum(['trade', 'giveaway', 'duel', 'gri', 'gift']);
+export type IEconomyTransactionType = z.infer<typeof ZEconomyTransactionType>;
+
+export const ZEconomyTransactionSortField = z.enum(['date', 'sender', 'recipient', 'type', 'guild_id']);
+export type IEconomyTransactionSortField = z.infer<typeof ZEconomyTransactionSortField>;
+
+export const ZEconomyTransactionsQuery = z.strictObject({
+	bot: ZBotType,
+	sender: ZSnowflake.optional(),
+	recipient: ZSnowflake.optional(),
+	guild_id: ZSnowflake.optional(),
+	type: ZEconomyTransactionType.optional(),
+	date_from: z.string().optional(),
+	date_to: z.string().optional(),
+	sort_by: ZEconomyTransactionSortField.default('date'),
+	sort_order: z.enum(['asc', 'desc']).optional(),
+	limit: z.number().int().nonnegative().optional(),
+	offset: z.number().int().nonnegative().optional(),
+	page: z.number().int().min(1)
+});
+export type IEconomyTransactionsQuery = z.infer<typeof ZEconomyTransactionsQuery>;
