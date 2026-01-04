@@ -25,7 +25,7 @@ const table = new LootTable()
 			.add('2nd age staff')
 	)
 	.tertiary(47, LampTable)
-	.tertiary(50, 'Elder mimic casket (Locked)')
+	.tertiary(200, 'Elder mimic casket (Locked)')
 	.tertiary(50_000, new LootTable().add('First age robe top').add('First age robe bottom'))
 	.tertiary(30, boxTable, [1, 3])
 	.oneIn(

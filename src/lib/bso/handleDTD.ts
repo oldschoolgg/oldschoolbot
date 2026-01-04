@@ -51,7 +51,11 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 		}
 
 		if (monster.name === 'Venatrix') {
-			return `You throw your dart but gets stuck in Venatrix's web.`;
+			return `You throw your dart but it gets stuck in Venatrix's web.`;
+		}
+
+		if (monster.name === 'Elder Mimic') {
+			return `You throw your dart at the Elder Mimic, only for it to be caught by the Elder Mimic's tongue and added to the hoard.`;
 		}
 
 		await user.statsUpdate({

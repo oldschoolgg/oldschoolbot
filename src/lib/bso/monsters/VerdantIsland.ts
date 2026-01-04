@@ -377,7 +377,6 @@ export const FungalBehemoth: CustomMonster = {
 			combatLevel =
 				(skills.attack + skills.strength + skills.defence + skills.hitpoints + skills.magic + skills.ranged) /
 				6;
-			console.log('[XP MULT] Combat type: UNKNOWN (using average) | Level:', combatLevel);
 		}
 
 		const clampedLevel = Math.min(90, Math.max(75, combatLevel));
@@ -385,15 +384,6 @@ export const FungalBehemoth: CustomMonster = {
 		const t = (clampedLevel - 75) / 15;
 		const exponentialT = Math.pow(t, 2);
 		const scalingFactor = 8.5 - exponentialT * 5.1;
-
-		console.log(
-			'[XP MULT] Clamped:',
-			clampedLevel,
-			'| Multiplier:',
-			scalingFactor.toFixed(2),
-			'| Est XP/hr:',
-			Math.round((294000 * scalingFactor) / 1000) + 'k'
-		);
 
 		return scalingFactor;
 	}
@@ -405,8 +395,8 @@ export const ElderMimic: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Elder Mimic',
 	aliases: ['elder mimic', 'elder'],
-	timeToFinish: Time.Minute * 800,
-	hp: 5000,
+	timeToFinish: Time.Minute * 400,
+	hp: 2000,
 	table: new LootTable().every('Elder mimic casket'),
 
 	difficultyRating: 6,
@@ -450,8 +440,7 @@ export const ElderMimic: CustomMonster = {
 			.add('Clue scroll (Master)', 1)
 			.add('Clue scroll (Grandmaster)', 1)
 			.add('Clue scroll (Elder)', 1)
-			.add('Elder mimic casket (locked)', 1)
-			.add('Coins', 5_000_000_000),
+			.add('Elder mimic casket (locked)', 1),
 		qtyPerKill: 1
 	},
 	groupKillable: false,

@@ -961,19 +961,19 @@ export const allCollectionLogs: ICollection = {
 				items: BSOMonsters.Orrodil.allItems!,
 				fmtProg: kcProg(BSOMonsters.Orrodil.id)
 			},
-			FungalBehemoth: {
+			'Fungal Behemoth': {
 				alias: ['fungal behemoth', 'fungal', 'behemoth'],
 				allItems: BSOMonsters.FungalBehemoth.allItems,
 				items: BSOMonsters.FungalBehemoth.allItems!,
 				fmtProg: kcProg(BSOMonsters.FungalBehemoth.id)
 			},
-			CrystallineSentinel: {
+			'Crystalline Sentinel': {
 				alias: ['crystalline sentinel', 'sentinel', 'crystal sentinel'],
 				allItems: BSOMonsters.CrystallineSentinel.allItems,
 				items: BSOMonsters.CrystallineSentinel.allItems!,
 				fmtProg: kcProg(BSOMonsters.CrystallineSentinel.id)
 			},
-			ElderMimic: {
+			'Elder Mimic': {
 				alias: ['elder mimic', 'elder'],
 				allItems: BSOMonsters.ElderMimic.allItems,
 				items: BSOMonsters.ElderMimic.allItems!,

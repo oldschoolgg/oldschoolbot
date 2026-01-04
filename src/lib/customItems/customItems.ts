@@ -1229,7 +1229,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99,
 				magic: 99
 			}
@@ -1260,7 +1259,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99,
 				ranged: 99
 			}
@@ -1291,7 +1289,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99
 			}
 		}
