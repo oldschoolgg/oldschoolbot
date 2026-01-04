@@ -33,7 +33,6 @@ export const RaidsSimulatorPage = () => {
 	const team = makeRaidTeam(type);
 
 	const handleRaidCompletion = useCallback(() => {
-		console.log(`Completing ${qty}x raid`);
 		const newLoot = new Bank();
 		for (let i = 0; i < qty; i++) {
 			const result = ChambersOfXeric.complete({
@@ -41,7 +40,6 @@ export const RaidsSimulatorPage = () => {
 				challengeMode: false,
 				timeToComplete: 1
 			});
-			console.log('Raid Result:', result);
 			newLoot.add(result['0']);
 		}
 
@@ -54,7 +52,6 @@ export const RaidsSimulatorPage = () => {
 				totalLoot: newTotalLoot
 			};
 		});
-		console.log(`Finished Completing ${qty}x raid`);
 	}, [qty, team]);
 
 	return (

@@ -121,8 +121,9 @@ async function seedRobochimpDb() {
 
 	sw.check('Seeded bso transactions');
 
+	await roboChimpClient.blacklistedEntity.deleteMany({});
 	await roboChimpClient.$transaction([
-		...userIds.slice(-50).map(id =>
+		...userIds.slice(-5).map(id =>
 			roboChimpClient.blacklistedEntity.upsert({
 				where: { id },
 				create: {

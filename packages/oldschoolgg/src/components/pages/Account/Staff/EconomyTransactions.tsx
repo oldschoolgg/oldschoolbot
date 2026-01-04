@@ -1,9 +1,11 @@
+import type { IEconomyTransactionsQuery } from '@oldschoolgg/schemas';
+import { deepMerge } from '@oldschoolgg/toolkit';
 import { useCallback, useEffect, useState } from 'react';
 
+import type { EconomyTransaction } from '@/components/pages/Account/Staff/types.js';
 import { api } from '@/lib/api.js';
 import { TransactionFilters } from './TransactionFilters.js';
 import { TransactionTable, type TransactionTableSortStatus } from './TransactionTable.js';
-import type { Bot, EconomyTransaction, EconomyTransactionsQuery, SortField, TransactionType } from './types.js';
 
 const PAGE_SIZE = 50;
 
@@ -11,15 +13,15 @@ export function EconomyTransactions() {
 	const [transactions, setTransactions] = useState<EconomyTransaction[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [total, setTotal] = useState(0);
-	const [page, setPage] = useState(1);
 
-	const [bot, setBot] = useState<Bot>('osb');
-	const [sender, setSender] = useState('');
-	const [recipient, setRecipient] = useState('');
-	const [guildId, setGuildId] = useState('');
-	const [type, setType] = useState<TransactionType | ''>('');
-	const [dateFrom, setDateFrom] = useState<Date | null>(null);
-	const [dateTo, setDateTo] = useState<Date | null>(null);
+	const [query, setQuery] = useState<IEconomyTransactionsQuery>({
+		bot: 'osb',
+		limit: PAGE_SIZE,
+		offset: 0,
+		sort_by: 'date',
+		sort_order: 'desc',
+		page: 1
+	});
 
 	const [sortStatus, setSortStatus] = useState<TransactionTableSortStatus<EconomyTransaction>>({
 		columnAccessor: 'date',
@@ -29,21 +31,6 @@ export function EconomyTransactions() {
 	const loadTransactions = useCallback(async () => {
 		setLoading(true);
 		try {
-			const query: EconomyTransactionsQuery = {
-				bot,
-				limit: PAGE_SIZE,
-				offset: (page - 1) * PAGE_SIZE,
-				sort_by: sortStatus.columnAccessor as SortField,
-				sort_order: sortStatus.direction
-			};
-
-			if (sender.trim()) query.sender = sender.trim();
-			if (recipient.trim()) query.recipient = recipient.trim();
-			if (guildId.trim()) query.guild_id = guildId.trim();
-			if (type) query.type = type;
-			if (dateFrom) query.date_from = dateFrom.toISOString();
-			if (dateTo) query.date_to = dateTo.toISOString();
-
 			const response = await api.staff.fetchEconomyTransactions(query);
 			setTransactions(response.data);
 			setTotal(response.pagination.total);
@@ -52,25 +39,25 @@ export function EconomyTransactions() {
 		} finally {
 			setLoading(false);
 		}
-	}, [bot, dateFrom, dateTo, guildId, page, recipient, sender, sortStatus, type]);
+	}, [sortStatus, query]);
 
 	useEffect(() => {
 		void loadTransactions();
-	}, [loadTransactions, page, sortStatus, bot]);
+	}, [loadTransactions, sortStatus, query]);
 
 	const handleSearch = () => {
-		setPage(1);
 		loadTransactions();
 	};
 
 	const handleReset = () => {
-		setSender('');
-		setRecipient('');
-		setGuildId('');
-		setType('');
-		setDateFrom(null);
-		setDateTo(null);
-		setPage(1);
+		setQuery({
+			bot: 'osb',
+			limit: PAGE_SIZE,
+			offset: 0,
+			sort_by: 'date',
+			sort_order: 'desc',
+			page: 1
+		});
 	};
 
 	return (
@@ -83,24 +70,14 @@ export function EconomyTransactions() {
 					</div>
 
 					<TransactionFilters
-						bot={bot}
-						sender={sender}
-						recipient={recipient}
-						guildId={guildId}
-						type={type}
-						dateFrom={dateFrom}
-						dateTo={dateTo}
-						loading={loading}
-						onBotChange={b => {
-							setBot(b);
-							setPage(1);
+						query={query}
+						setQuery={partialQuery => {
+							if ('bot' in partialQuery) {
+								partialQuery.page = 1;
+							}
+							return setQuery(prev => deepMerge(prev, partialQuery));
 						}}
-						onSenderChange={setSender}
-						onRecipientChange={setRecipient}
-						onGuildIdChange={setGuildId}
-						onTypeChange={setType}
-						onDateFromChange={setDateFrom}
-						onDateToChange={setDateTo}
+						loading={loading}
 						onSearch={handleSearch}
 						onReset={handleReset}
 					/>
@@ -109,13 +86,13 @@ export function EconomyTransactions() {
 						transactions={transactions}
 						loading={loading}
 						total={total}
-						page={page}
+						page={query.page}
 						pageSize={PAGE_SIZE}
 						sortStatus={sortStatus}
-						onPageChange={setPage}
+						onPageChange={p => setQuery(prev => ({ ...prev, page: p }))}
 						onSortStatusChange={s => {
 							setSortStatus(s);
-							setPage(1);
+							setQuery(prev => ({ ...prev, page: 1 }));
 						}}
 					/>
 				</div>
