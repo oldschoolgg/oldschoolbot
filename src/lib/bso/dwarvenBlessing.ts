@@ -43,8 +43,7 @@ export function dwarvenBlessing({
 		cost.add('Brimstone elixir', brimstoneElixirsNeeded);
 		percentageReduction = 25;
 		itemName = 'Vitrolic curse';
-	}
-	else if (hasBlessing) {
+	} else if (hasBlessing) {
 		const dwarvenBlessingItem = Items.getOrThrow(
 			bitfield.includes(BitField.UseSuperRestoresForDwarvenBlessing) ? 'Super restore(4)' : 'Prayer potion(4)'
 		);

@@ -13,7 +13,6 @@ import { birdhouseCheckCommand, birdhouseHarvestCommand } from '@/mahoji/lib/abs
 import { buryCommand } from '@/mahoji/lib/abstracted_commands/buryCommand.js';
 import { butlerCommand } from '@/mahoji/lib/abstracted_commands/butlerCommand.js';
 import { camdozaalCommand } from '@/mahoji/lib/abstracted_commands/camdozaalCommand.js';
-import { gemstoneFishingCommand } from '../lib/abstracted_commands/gemstoneFishingCommand.js';
 import { castCommand } from '@/mahoji/lib/abstracted_commands/castCommand.js';
 import { chargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
 import { chargeWealthCommand } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';
@@ -33,6 +32,7 @@ import { scatterCommand } from '@/mahoji/lib/abstracted_commands/scatterCommand.
 import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
+import { gemstoneFishingCommand } from '../lib/abstracted_commands/gemstoneFishingCommand.js';
 
 export const activitiesCommand = defineCommand({
 	name: 'activities',
@@ -117,7 +117,7 @@ export const activitiesCommand = defineCommand({
 				}
 			]
 		},
-{
+		{
 			type: 'Subcommand',
 			name: 'camdozaal',
 			description: 'Camdozaal activities',

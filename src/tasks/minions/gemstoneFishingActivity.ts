@@ -1,11 +1,12 @@
 import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
+
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import type { GemstoneFish } from '@/lib/skilling/skills/fishing/fishing.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import type { GemstoneFish } from '@/lib/skilling/skills/fishing/fishing.js';
 
 const juvenileGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Juvenile gemscale')!;
 const adolescentGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Adolescent gemscale')!;
@@ -14,7 +15,6 @@ const elderGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.n
 const ancientGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Ancient gemscale')!;
 
 function generateGemstoneFishTable(currentFishLevel: number): LootTable {
-
 	const gemstoneFishTable = new LootTable().add(juvenileGemscale.id, 1, 5);
 
 	if (currentFishLevel >= adolescentGemscale.level) {

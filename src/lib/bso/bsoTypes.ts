@@ -116,7 +116,7 @@ interface StoredBossUser extends Omit<BossUser, 'user' | 'itemsToRemove'> {
 }
 
 export interface NewBossOptions extends ActivityTaskOptions {
-	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent';
+	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent' | 'BurningDominion';
 	users: string[];
 	quantity: number;
 	bossUsers: StoredBossUser[];

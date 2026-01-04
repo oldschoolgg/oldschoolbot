@@ -308,9 +308,9 @@ export const gemstoneFishes: GemstoneFish[] = [
 		level: 20,
 		xp: 150,
 		petChance: 426_954,
-		clueScrollChance: 870_000, 
-		bait: null, 
-		timeToFish: 12 
+		clueScrollChance: 870_000,
+		bait: null,
+		timeToFish: 12
 	},
 	{
 		name: 'Adolescent gemscale',
@@ -320,7 +320,7 @@ export const gemstoneFishes: GemstoneFish[] = [
 		petChance: 426_954,
 		clueScrollChance: 870_000,
 		bait: null,
-		timeToFish: 14 
+		timeToFish: 14
 	},
 	{
 		name: 'Mature gemscale',
@@ -356,16 +356,16 @@ export const gemstoneFishes: GemstoneFish[] = [
 
 export function determineGemstoneFish(fishingLevel: number): GemstoneFish | null {
 	if (fishingLevel < 20) return null;
-	
+
 	const availableFish = gemstoneFishes.filter(fish => fishingLevel >= fish.level);
 	return availableFish[availableFish.length - 1];
 }
 
 export function calculateGemstoneFishingXpRate(fish: GemstoneFish, fishingLevel: number): number {
 	const catchesPerHour = 3600 / fish.timeToFish;
-	
-	const levelBonus = 1 + (Math.min(fishingLevel - fish.level, 30) * 0.01);
-	
+
+	const levelBonus = 1 + Math.min(fishingLevel - fish.level, 30) * 0.01;
+
 	return Math.floor(catchesPerHour * fish.xp * levelBonus);
 }
 

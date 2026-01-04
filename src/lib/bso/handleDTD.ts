@@ -34,11 +34,11 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 			return 'Your minion threw the dart at the moon, it did not reach.';
 		}
 
-		if (monster.name === 'Orym') {
+		if (monster.name === 'Orrodil') {
 			return 'Your minion threw the dart at the fury of the stars, they spin on, unphased.';
 		}
 
-		if (monster.name === 'Orrodil') {
+		if (monster.name === 'Orym') {
 			return 'The dart corrupts into a pile of foul bile and venomous sludge.';
 		}
 

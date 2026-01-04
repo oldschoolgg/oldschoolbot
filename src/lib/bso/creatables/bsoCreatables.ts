@@ -1450,7 +1450,7 @@ export const bsoCreatables: Createable[] = [
 			'Dwarven bar': 3,
 			'Primordial spine': 1,
 			'Primordial heartstring': 1,
-			'DHL': 1,
+			DHL: 1,
 			'Primordial scales': 2500
 		}),
 		outputItems: new Bank({

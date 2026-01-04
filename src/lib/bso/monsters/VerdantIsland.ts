@@ -5,10 +5,10 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, RareDropTable, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import type { MUserClass } from '@/lib/MUser.js';
 import { addStatsOfItemsTogether, Gear } from '@/lib/structures/Gear.js';
-import { MUserClass } from '@/lib/MUser.js';
 
-const IslandTable = new LootTable()
+export const IslandTable = new LootTable()
 	.add('Ancient cap', [5, 15])
 	.add('Colossal stem', [5, 15])
 	.add('Brimstone spore', [5, 15])
@@ -26,16 +26,34 @@ const IslandTable = new LootTable()
 	.add('Verdant plank', [20, 45])
 	.add('Ancient verdant plank', [10, 25]);
 
-const IslandGemTable = new LootTable()
+export const IslandGemTable = new LootTable()
 	.add('Celestyte', [2, 6])
 	.add('Starfire agate', [2, 6])
 	.add('Verdantyte', [2, 6])
 	.add('Oneiryte', [2, 6])
 	.add('Firaxyte', [2, 6])
-	.add('Gemstone bundle', [1, 3])
-	.add('Gemstone satchel', 1)
-	.add('Gemstone core', 1)
-	.tertiary(500, 'Prismare');
+	.tertiary(25, 'Gemstone bundle')
+	.tertiary(75, 'Gemstone satchel')
+	.tertiary(150, 'Gemstone core')
+	.tertiary(300, 'Prismare');
+
+export const IslandTable3x = new LootTable().every(IslandTable).every(IslandTable).every(IslandTable);
+
+export const IslandTable5x = new LootTable()
+	.every(IslandTable)
+	.every(IslandTable)
+	.every(IslandTable)
+	.every(IslandTable)
+	.every(IslandTable);
+
+export const IslandGemTable3x = new LootTable().every(IslandGemTable).every(IslandGemTable).every(IslandGemTable);
+
+export const IslandGemTable5x = new LootTable()
+	.every(IslandGemTable)
+	.every(IslandGemTable)
+	.every(IslandGemTable)
+	.every(IslandGemTable)
+	.every(IslandGemTable);
 
 const orymMinGear = new Gear();
 orymMinGear.equip('Gorajan warrior helmet');
@@ -107,13 +125,17 @@ export const CrystallineSentinel: CustomMonster = {
 	hp: 800,
 	table: new LootTable()
 		.every('Bones')
-		
+
 		.tertiary(150, 'Clue scroll (medium)')
 		.tertiary(250, 'Clue scroll (hard)')
 		.tertiary(1500, 'Sentinel core')
 		.tertiary(25, RareDropTable)
 		.tertiary(15, IslandTable)
 		.tertiary(8, IslandGemTable)
+		.tertiary(50, IslandTable3x)
+		.tertiary(25, IslandGemTable3x)
+		.tertiary(100, IslandTable5x)
+		.tertiary(50, IslandGemTable5x)
 
 		.add('Celestyte', [3, 8])
 		.add('Oneiryte', [3, 8])
@@ -215,12 +237,20 @@ export const FungalBehemoth: CustomMonster = {
 	timeToFinish: Time.Minute * 4.5,
 	hp: 1200,
 	table: new LootTable()
-		.every('Bones')
-		
 		.tertiary(150, 'Clue scroll (medium)')
 		.tertiary(250, 'Clue scroll (hard)')
 		.tertiary(1500, 'Verdant heart')
 		.tertiary(25, RareDropTable)
+		.tertiary(15, IslandTable)
+		.tertiary(8, IslandGemTable)
+		.tertiary(50, IslandTable3x)
+		.tertiary(25, IslandGemTable3x)
+		.tertiary(100, IslandTable5x)
+		.tertiary(50, IslandGemTable5x)
+
+		.add('Verdantyte', [4, 10])
+		.add('Starfire agate', [2, 6])
+		.add('Oneiryte', [2, 5])
 
 		.add('Grimy guam leaf', [20, 60])
 		.add('Grimy marrentill', [18, 55])
@@ -250,11 +280,17 @@ export const FungalBehemoth: CustomMonster = {
 		.add('Super combat potion(4)', [3, 10])
 		.add('Super restore(4)', [4, 12])
 
+		.add('Ancient cap', [8, 20])
+		.add('Colossal stem', [8, 20])
+		.add('Brimstone spore', [8, 20])
+		.add('Verdant log', [25, 60])
+		.add('Ancient verdant log', [15, 40])
+		.add('Living bark', [20, 50])
+
 		.add('Ranarr seed', [3, 8])
 		.add('Snapdragon seed', [2, 6])
 		.add('Torstol seed', [1, 4])
-		.add('Ignilace seed', [2, 6]),
-
+		.add('Ignilace seed', [1, 2]),
 	difficultyRating: 3,
 	qpRequired: 750,
 	healAmountNeeded: 120 * 50,
@@ -327,11 +363,10 @@ export const FungalBehemoth: CustomMonster = {
 	],
 	combatXpMultiplier: (user: MUserClass, attackStyles?: string[]) => {
 		const skills = user.skillsAsLevels;
-		
+
 		let combatLevel = 0;
 		const styleTypes = (attackStyles || []).map(s => s.toLowerCase());
 
-		
 		if (styleTypes.some(s => ['attack', 'strength', 'defence'].includes(s))) {
 			combatLevel = (skills.attack + skills.strength + skills.defence + skills.hitpoints) / 4;
 		} else if (styleTypes.includes('ranged')) {
@@ -339,22 +374,29 @@ export const FungalBehemoth: CustomMonster = {
 		} else if (styleTypes.includes('magic')) {
 			combatLevel = (skills.magic + skills.defence + skills.hitpoints) / 3;
 		} else {
-			combatLevel = (skills.attack + skills.strength + skills.defence + 
-						skills.hitpoints + skills.magic + skills.ranged) / 6;
+			combatLevel =
+				(skills.attack + skills.strength + skills.defence + skills.hitpoints + skills.magic + skills.ranged) /
+				6;
 			console.log('[XP MULT] Combat type: UNKNOWN (using average) | Level:', combatLevel);
 		}
-		
+
 		const clampedLevel = Math.min(90, Math.max(75, combatLevel));
-		
+
 		const t = (clampedLevel - 75) / 15;
 		const exponentialT = Math.pow(t, 2);
 		const scalingFactor = 8.5 - exponentialT * 5.1;
-		
-		console.log('[XP MULT] Clamped:', clampedLevel, '| Multiplier:', scalingFactor.toFixed(2), 
-					'| Est XP/hr:', Math.round(294000 * scalingFactor / 1000) + 'k');
-		
+
+		console.log(
+			'[XP MULT] Clamped:',
+			clampedLevel,
+			'| Multiplier:',
+			scalingFactor.toFixed(2),
+			'| Est XP/hr:',
+			Math.round((294000 * scalingFactor) / 1000) + 'k'
+		);
+
 		return scalingFactor;
-	},
+	}
 };
 
 export const ElderMimic: CustomMonster = {
@@ -365,8 +407,7 @@ export const ElderMimic: CustomMonster = {
 	aliases: ['elder mimic', 'elder'],
 	timeToFinish: Time.Minute * 800,
 	hp: 5000,
-	table: new LootTable()
-		.every('Elder mimic casket'),
+	table: new LootTable().every('Elder mimic casket'),
 
 	difficultyRating: 6,
 	qpRequired: 1500,
@@ -414,7 +455,7 @@ export const ElderMimic: CustomMonster = {
 		qtyPerKill: 1
 	},
 	groupKillable: false,
-	setupsUsed: ['melee'],
+	setupsUsed: ['melee']
 };
 
 export const Orym: CustomMonster = {
@@ -436,6 +477,12 @@ export const Orym: CustomMonster = {
 		.tertiary(2000, 'Forsaken tear')
 		.tertiary(2500, 'Orylin')
 		.tertiary(25, RareDropTable)
+		.tertiary(5, IslandTable)
+		.tertiary(5, IslandGemTable)
+		.tertiary(25, IslandTable3x)
+		.tertiary(25, IslandGemTable3x)
+		.tertiary(50, IslandTable5x)
+		.tertiary(50, IslandGemTable5x)
 
 		.add('Anti-venom (4)', [20, 55])
 		.add('Black dragonhide', [200, 400])
@@ -496,7 +543,13 @@ export const Orym: CustomMonster = {
 		highestDeathChance: 40
 	},
 	minimumHealAmount: 22,
-	allItems: resolveItems(['Forsaken tear', 'Sacrilegious flask', 'Orylin', 'Primordial heartstring', 'Primordial spine']),
+	allItems: resolveItems([
+		'Forsaken tear',
+		'Sacrilegious flask',
+		'Orylin',
+		'Primordial heartstring',
+		'Primordial spine'
+	]),
 	minimumGearRequirements: {
 		melee: {
 			...orymMinGear.stats,
@@ -508,7 +561,11 @@ export const Orym: CustomMonster = {
 		melee: addStatsOfItemsTogether(resolveItems(['Dragon hunter lance', 'Avernic defender']), [GearStat.AttackStab])
 	},
 	itemCost: {
-		itemCost: new Bank().add('Super combat potion(4)').add('Heat res. brew', 3).add('Heat res. restore').add('Enhanced stamina potion'),
+		itemCost: new Bank()
+			.add('Super combat potion(4)')
+			.add('Heat res. brew', 3)
+			.add('Heat res. restore')
+			.add('Enhanced stamina potion'),
 		qtyPerKill: 1
 	},
 	tameCantKill: true,
@@ -570,6 +627,12 @@ export const Orrodil: CustomMonster = {
 		.tertiary(2000, 'Celestial flame')
 		.tertiary(2500, 'Orrodin')
 		.tertiary(25, RareDropTable)
+		.tertiary(5, IslandTable)
+		.tertiary(5, IslandGemTable)
+		.tertiary(25, IslandTable3x)
+		.tertiary(25, IslandGemTable3x)
+		.tertiary(50, IslandTable5x)
+		.tertiary(50, IslandGemTable5x)
 
 		.add('Enhanced super restore', [20, 50])
 		.add('Enhanced saradomin brew', [20, 50])
@@ -636,7 +699,13 @@ export const Orrodil: CustomMonster = {
 		highestDeathChance: 40
 	},
 	minimumHealAmount: 22,
-	allItems: resolveItems(['Celestial flame', 'Shattered pendant', 'Orylin', 'Primordial heartstring', 'Primordial spine']),
+	allItems: resolveItems([
+		'Celestial flame',
+		'Shattered pendant',
+		'Orylin',
+		'Primordial heartstring',
+		'Primordial spine'
+	]),
 	minimumGearRequirements: {
 		melee: {
 			...orrodilMinGear.stats,
@@ -695,10 +764,195 @@ export const Orrodil: CustomMonster = {
 	]
 };
 
+export const BurningDominionTemplate: CustomMonster = {
+	isCustom: true,
+	id: EBSOMonster.BURNING_DOMINION,
+	baseMonster: Monsters.AbyssalSire,
+	name: 'Burning Dominion',
+	aliases: ['burning dominion', 'dominion', 'burning', 'orym and orrodil'],
+	timeToFinish: Time.Minute * 18,
+	hp: 3600,
+	respawnTime: 0,
+	difficultyRating: 5,
+
+	table: new LootTable()
+		.every('Primordial Bones', [4, 10])
+		.every('Primordial Scales', [24, 100])
+
+		.tertiary(50, 'Clue scroll (grandmaster)')
+		.tertiary(75, 'Elder scroll piece')
+
+		.tertiary(500, 'Primordial heartstring')
+		.tertiary(500, 'Primordial spine')
+
+		.tertiary(1500, 'Sacrilegious flask')
+		.tertiary(1500, 'Forsaken tear')
+		.tertiary(2000, 'Orylin')
+
+		.tertiary(1500, 'Shattered pendant')
+		.tertiary(1500, 'Celestial flame')
+		.tertiary(2000, 'Orrodin')
+
+		.tertiary(20, RareDropTable)
+		.tertiary(4, IslandTable)
+		.tertiary(4, IslandGemTable)
+		.tertiary(20, IslandTable3x)
+		.tertiary(20, IslandGemTable3x)
+		.tertiary(40, IslandTable5x)
+		.tertiary(40, IslandGemTable5x)
+
+		.add('Anti-venom (4)', [30, 75])
+		.add('Enhanced super restore', [25, 60])
+		.add('Enhanced saradomin brew', [25, 60])
+
+		.add('Black dragonhide', [300, 800])
+		.add('Blue dragonhide', [500, 1000])
+		.add('Red dragonhide', [400, 900])
+		.add('Royal dragonhide', [50, 200])
+		.add('Battlestaff', [350, 800])
+
+		.add('Death rune', [4000, 10000])
+		.add('Blood rune', [4000, 10000])
+		.add('Elder rune', [100, 250])
+
+		.add('Bronze bar', [500, 600])
+		.add('Coal', [200, 500])
+		.add('Iron arrow', [200, 1000])
+		.add('Bronze arrow', [200, 1000])
+
+		.add('Calcite', [100, 300])
+		.add('Pyrophosphite', [100, 300])
+		.add('Ashes', [100, 300])
+
+		.add('Iron bar', [500, 600])
+		.add('Iron ore', [500, 600])
+		.add('Rune javelin', [500, 600])
+
+		.add('Dragon dart tip', [600, 700])
+		.add('Dragon arrowtips', [750, 850])
+		.add('Dragon bolts (unf)', [750, 850])
+		.add('Runite bolts (unf)', [900, 1150])
+
+		.add('Grimy torstol', [65, 160])
+		.add('Grimy dwarf weed', [80, 200])
+		.add('Grimy lantadyme', [95, 240])
+
+		.add('Ignilace', [5, 30])
+		.add('Ignilace seed', [1, 10])
+		.add('Uncut zenyte', 1)
+		.add('Uncut onyx', [3, 5])
+		.add('Mahogany plank', [250, 350]),
+
+	qpRequired: 2500,
+	healAmountNeeded: 600 * 200,
+	attackStyleToUse: GearStat.AttackStab,
+	attackStylesUsed: [GearStat.AttackStab],
+
+	levelRequirements: {
+		hitpoints: 120,
+		attack: 115,
+		strength: 115,
+		defence: 115,
+		magic: 115,
+		ranged: 115,
+		slayer: 115
+	},
+
+	pohBoosts: {
+		pool: {
+			'Ancient rejuvenation pool': 5
+		}
+	},
+
+	deathProps: {
+		hardness: 0.4,
+		steepness: 0.999,
+		lowestDeathChance: 5,
+		highestDeathChance: 40
+	},
+
+	minimumHealAmount: 22,
+
+	allItems: resolveItems([
+		'Forsaken tear',
+		'Sacrilegious flask',
+		'Orylin',
+		'Celestial flame',
+		'Shattered pendant',
+		'Orrodin',
+		'Primordial heartstring',
+		'Primordial spine'
+	]),
+
+	minimumGearRequirements: {
+		melee: {
+			...orymMinGear.stats,
+			ranged_strength: 0,
+			attack_ranged: 0
+		}
+	},
+
+	minimumWeaponShieldStats: {
+		melee: addStatsOfItemsTogether(resolveItems(['Dragonbane Glaive', 'Dragonbane Aegis']), [GearStat.AttackStab])
+	},
+
+	itemCost: {
+		itemCost: new Bank()
+			.add('Super combat potion(4)')
+			.add('Heat res. brew', 3)
+			.add('Heat res. restore')
+			.add('Brimstone elixir', 3)
+			.add('Enhanced stamina potion'),
+		qtyPerKill: 1
+	},
+
+	tameCantKill: true,
+	itemsRequired: resolveItems(["Combatant's cape"]),
+	customRequirement: async user => {
+		const tames = await user.fetchTames();
+		const hasMaxedIgne = tames.some(tame => tame.isMaxedIgneTame());
+		if (hasMaxedIgne) return null;
+		return 'You need to have a maxed Igne Tame (best gear, all fed items) to fight Orym & Orrodil.';
+	},
+
+	setupsUsed: ['melee'],
+	equippedItemBoosts: [
+		{
+			gearSetup: 'melee',
+			items: [
+				{
+					boostPercent: 25,
+					itemID: itemID('Dragonbane glaive')
+				}
+			]
+		},
+		{
+			gearSetup: 'melee',
+			items: [
+				{
+					boostPercent: 15,
+					itemID: itemID('Dragonbane aegis')
+				}
+			]
+		},
+		{
+			gearSetup: 'melee',
+			items: [
+				{
+					boostPercent: 7,
+					itemID: itemID('Searcrown band')
+				}
+			]
+		}
+	],
+	groupKillable: true
+};
+
 export const VerdantIslandMonsters = {
 	CrystallineSentinel,
 	FungalBehemoth,
 	ElderMimic,
 	Orym,
 	Orrodil,
+	BurningDominion: BurningDominionTemplate
 };

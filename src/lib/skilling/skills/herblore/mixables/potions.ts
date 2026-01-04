@@ -520,9 +520,8 @@ const Potions: Mixable[] = [
 			'Heat res. brew': 1,
 			'Diluted brimstone': 1,
 			'Primordial scales': 5,
-			'Korulsi': 1,
-			'Ignilace': 1
-
+			Korulsi: 1,
+			Ignilace: 1
 		}),
 		tickRate: 2,
 		bankTimePerPotion: 0.5

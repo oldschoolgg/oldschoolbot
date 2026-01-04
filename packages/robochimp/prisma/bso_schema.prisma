@@ -149,6 +149,8 @@ model ClientStorage {
   gp_pet                  BigInt @default(0)
   ignecarus_cost          Json   @default("{}") @db.Json
   ignecarus_loot          Json   @default("{}") @db.Json
+  dominion_cost           Json   @default("{}") @db.Json
+  dominion_loot           Json   @default("{}") @db.Json
   kibble_cost             Json   @default("{}") @db.Json
   mr_cost                 Json   @default("{}") @db.Json
   mr_loot                 Json   @default("{}") @db.Json
@@ -1196,6 +1198,7 @@ enum activity_type_enum {
   OuraniaDeliveryService
   DarkAltar
   Ignecarus
+  BurningDominion
   OuraniaAltar
   Trekking
   KibbleMaking
@@ -1250,6 +1253,7 @@ enum activity_type_enum {
   Colosseum
   CreateForestersRations
   SnoozeSpellActive
+  BurningDominion
 }
 
 enum xp_gains_skill_enum {

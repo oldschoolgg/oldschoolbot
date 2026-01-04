@@ -1,6 +1,6 @@
 {
-	"hash": "714835ced4de383962d889d4d58c67fc",
-	"date": "2025-12-17T17:07:50.505Z",
+	"hash": "405b4fd4059c097c4bb49f9aa23f9066",
+	"date": "2026-01-04T13:32:20.615Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -2049,6 +2049,23 @@
 			}
 		},
 		{
+			"name": "Celestial pendant",
+			"items_created": {
+				"Celestial pendant": 1
+			},
+			"items_required": {
+				"Dark animica": 7500,
+				"Dwarven bar": 1,
+				"Primordial heartstring": 1,
+				"Primordial spine": 1,
+				"Shattered pendant": 1
+			},
+			"required_stats": {
+				"smithing": 120,
+				"crafting": 120
+			}
+		},
+		{
 			"name": "Celestial signet",
 			"items_created": {
 				"Celestial signet": 1
@@ -3235,6 +3252,41 @@
 			}
 		},
 		{
+			"name": "Dragonbane aegis",
+			"items_created": {
+				"Dragonbane aegis": 1
+			},
+			"items_required": {
+				"Dark animica": 7500,
+				"Dragonfire shield": 1,
+				"Dragonfire ward": 1,
+				"Dwarven bar": 3,
+				"Primordial heartstring": 1,
+				"Primordial scales": 2500
+			},
+			"required_stats": {
+				"smithing": 120,
+				"crafting": 120
+			}
+		},
+		{
+			"name": "Dragonbane glaive",
+			"items_created": {
+				"Dragonbane glaive": 1
+			},
+			"items_required": {
+				"Dark animica": 7500,
+				"Dwarven bar": 3,
+				"Primordial heartstring": 1,
+				"Primordial scales": 2500,
+				"Primordial spine": 1
+			},
+			"required_stats": {
+				"smithing": 120,
+				"crafting": 120
+			}
+		},
+		{
 			"name": "Dragonbone boots",
 			"items_created": {
 				"Dragonbone boots": 1
@@ -3869,6 +3921,29 @@
 				"Abyssal pouch": 1,
 				"Elder thread": 1
 			}
+		},
+		{
+			"name": "Elder sigil",
+			"items_created": {
+				"Elder sigil": 1
+			},
+			"items_required": {
+				"Elder sigil fragment (1)": 1,
+				"Elder sigil fragment (2)": 1,
+				"Elder sigil fragment (3)": 1
+			},
+			"required_stats": {}
+		},
+		{
+			"name": "Elderflame bow",
+			"items_created": {
+				"Elderflame bow": 1
+			},
+			"items_required": {
+				"Elderflame catalyst": 1,
+				"Starfire bow": 1
+			},
+			"required_stats": {}
 		},
 		{
 			"name": "Eldritch nightmare staff",
@@ -13271,6 +13346,18 @@
 			}
 		},
 		{
+			"name": "Searcrown band",
+			"items_created": {
+				"Searcrown band": 1
+			},
+			"items_required": {
+				"Dwarven bar": 1,
+				"Forsaken tear": 1,
+				"Ignis ring(i)": 1
+			},
+			"required_stats": {}
+		},
+		{
 			"name": "Secateurs attachment",
 			"items_created": {
 				"Secateurs attachment": 50
@@ -16783,6 +16870,20 @@
 			"required_stats": {
 				"smithing": 80,
 				"crafting": 80
+			}
+		},
+		{
+			"name": "Vitrolic curse",
+			"items_created": {
+				"Vitrolic curse": 1
+			},
+			"items_required": {
+				"Dwarven blessing": 1,
+				"Infernal core": 1,
+				"Sacrilegious flask": 1
+			},
+			"required_stats": {
+				"prayer": 120
 			}
 		},
 		{

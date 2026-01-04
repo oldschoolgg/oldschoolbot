@@ -1,5 +1,6 @@
 import { bathhouseTask } from '@/lib/bso/tasks/bathhousesActivity.js';
 import { bonanzaTask } from '@/lib/bso/tasks/bonanzaActivity.js';
+import { dominionTask } from '@/lib/bso/tasks/burningDominionActivity.js';
 import { disassemblingTask } from '@/lib/bso/tasks/disassemblingActivity.js';
 import { doaTask } from '@/lib/bso/tasks/doaActivity.js';
 import { dungeoneeringTask } from '@/lib/bso/tasks/dungeoneeringActivity.js';
@@ -32,7 +33,6 @@ import { buyTask } from '@/tasks/minions/buyActivity.js';
 import { camdozaalFishingTask } from '@/tasks/minions/camdozaalActivity/camdozaalFishingActivity.js';
 import { camdozaalMiningTask } from '@/tasks/minions/camdozaalActivity/camdozaalMiningActivity.js';
 import { camdozaalSmithingTask } from '@/tasks/minions/camdozaalActivity/camdozaalSmithingActivity.js';
-import { gemstoneFishingTask } from '../tasks/minions/gemstoneFishingActivity.js';
 import { castingTask } from '@/tasks/minions/castingActivity.js';
 import { clueTask } from '@/tasks/minions/clueActivity.js';
 import { collectingTask } from '@/tasks/minions/collectingActivity.js';
@@ -117,6 +117,7 @@ import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivit
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
+import { gemstoneFishingTask } from '../tasks/minions/gemstoneFishingActivity.js';
 
 export const allTasks: MinionTask[] = [
 	aerialFishingTask,
@@ -233,7 +234,8 @@ export const allTasks: MinionTask[] = [
 	doaTask,
 	memoryHarvestTask,
 	guthixianCacheTask,
-	turaelsTrialsTask
+	turaelsTrialsTask,
+	dominionTask
 ];
 
 type MinionTaskRunOptions = {

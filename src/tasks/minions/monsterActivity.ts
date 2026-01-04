@@ -23,6 +23,7 @@ import { clone } from 'remeda';
 
 import type { BitField } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
+import type { MUserClass } from '@/lib/MUser.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
@@ -40,7 +41,6 @@ import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDe
 import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
-import type { MUserClass } from '@/lib/MUser.js';
 
 function handleSlayerTaskCompletion({
 	slayerContext,
