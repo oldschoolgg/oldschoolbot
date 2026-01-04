@@ -37,7 +37,7 @@ export async function burningDominionCommand(
 			slayer: 110
 		},
 		itemBoosts: [
-			['Dragonbane glaive', 25],
+			['Dragonbane glaive', 100],
 			['Dragonbane aegis', 15],
 			['Searcrown band', 7]
 		],
