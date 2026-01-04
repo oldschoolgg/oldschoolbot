@@ -517,7 +517,7 @@ export interface GemstoneFish {
 export const gemstoneFishes: GemstoneFish[] = [
 	{
 		name: 'Juvenile gemscale',
-		id: 75056,
+		id: 75057,
 		level: 20,
 		xp: 150,
 		petChance: 426_954,
@@ -527,7 +527,7 @@ export const gemstoneFishes: GemstoneFish[] = [
 	},
 	{
 		name: 'Adolescent gemscale',
-		id: 75057,
+		id: 75058,
 		level: 40,
 		xp: 450,
 		petChance: 426_954,
@@ -537,7 +537,7 @@ export const gemstoneFishes: GemstoneFish[] = [
 	},
 	{
 		name: 'Mature gemscale',
-		id: 75058,
+		id: 75059,
 		level: 60,
 		xp: 950,
 		petChance: 426_954,
@@ -546,8 +546,8 @@ export const gemstoneFishes: GemstoneFish[] = [
 		timeToFish: 16
 	},
 	{
-		name: 'Elder gemscale',
-		id: 75059,
+		name: 'Ancient gemscale',
+		id: 75060,
 		level: 80,
 		xp: 2100,
 		petChance: 426_954,
@@ -556,8 +556,8 @@ export const gemstoneFishes: GemstoneFish[] = [
 		timeToFish: 18
 	},
 	{
-		name: 'Ancient gemscale',
-		id: 75060,
+		name: 'Elder gemscale',
+		id: 75061,
 		level: 120,
 		xp: 4500,
 		petChance: 426_954,
