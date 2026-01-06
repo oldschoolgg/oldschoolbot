@@ -265,8 +265,10 @@ function calculateAlivePlants(
 	for (let i = 0; i < patchType.lastQuantity; i++) {
 		for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 			const deathRoll = Math.random();
-			if (deathRoll < Math.floor(plantToHarvest.chanceOfDeath * survivalModifiers.chanceOfDeathReduction) / 128) {
-				quantityDead += 1;
+			const scaled = Math.floor(plantToHarvest.chanceOfDeath * survivalModifiers.chanceOfDeathReduction);
+			const rollThreshold = scaled / 128;
+			if (deathRoll < rollThreshold) {
+				quantityDead++;
 				break;
 			}
 		}
