@@ -55,6 +55,47 @@ const geEmbed = new EmbedBuilder()
 		value: 'Keep your ad less than 10 lines long, as short as possible.'
 	});
 
+type ChannelHelperConfig = {
+	channelId: string;
+	embed: EmbedBuilder;
+	components?: any; // keep loose if your component type is annoying
+	startupQuietPeriodMs?: number; // default 1h
+	minAgeBeforeRepostMs?: number; // default 6h
+};
+
+async function handleHelperChannelTicker({
+	channelId,
+	embed,
+	components,
+	startupQuietPeriodMs = Time.Hour,
+	minAgeBeforeRepostMs = Time.Hour * 6
+}: ChannelHelperConfig) {
+	const messages = await globalClient.fetchChannelMessages(channelId, { limit: 20 })!;
+	if (!messages || messages.length === 0) return;
+
+	const now = Date.now();
+	const latestMessage = messages[0];
+	const existingBotMessage = messages.find(m => m.author_id === globalClient.applicationId);
+
+	if (existingBotMessage) {
+		// If there has been other chat since the last bot message, leave it to avoid spam.
+		if (latestMessage.id !== existingBotMessage.id) return;
+
+		const botMessageAge = now - Number(DiscordSnowflake.timestampFrom(existingBotMessage.id));
+		if (botMessageAge < minAgeBeforeRepostMs) return;
+
+		await globalClient.deleteMessage(channelId, existingBotMessage.id).catch(noOp);
+	} else {
+		const latestMessageAge = now - Number(DiscordSnowflake.timestampFrom(latestMessage.id));
+		if (latestMessageAge < startupQuietPeriodMs) return;
+	}
+
+	await globalClient.sendMessage(channelId, {
+		embeds: [embed],
+		...(components ? { components } : {})
+	});
+}
+
 /**
  * Tickers should idempotent, and be able to run at any time.
  */
@@ -246,26 +287,9 @@ LIMIT 10;`);
 		interval: Time.Minute * 20,
 		productionOnly: true,
 		cb: async () => {
-			const messages = await globalClient.fetchChannelMessages(Channel.HelpAndSupport, { limit: 20 })!;
-			if (!messages || messages.length === 0) return;
-			const now = Date.now();
-			const latestMessage = messages[0];
-			const existingBotMessage = messages.find(m => m.author_id === globalClient.applicationId);
-
-			if (existingBotMessage) {
-				// If there has been other chat since the last bot message, leave it to avoid spam.
-				if (latestMessage.id !== existingBotMessage.id) return;
-				const botMessageAge = now - Number(DiscordSnowflake.timestampFrom(existingBotMessage.id));
-				if (botMessageAge < Time.Hour * 6) return;
-
-				await globalClient.deleteMessage(Channel.HelpAndSupport, existingBotMessage.id).catch(noOp);
-			} else {
-				const latestMessageAge = now - Number(DiscordSnowflake.timestampFrom(latestMessage.id));
-				if (latestMessageAge < Time.Hour) return;
-			}
-
-			await globalClient.sendMessage(Channel.HelpAndSupport, {
-				embeds: [supportEmbed],
+			await handleHelperChannelTicker({
+				channelId: Channel.HelpAndSupport,
+				embed: supportEmbed,
 				components: informationalButtons
 			});
 		}
@@ -277,25 +301,10 @@ LIMIT 10;`);
 		interval: Time.Minute * 20,
 		productionOnly: true,
 		cb: async () => {
-			const messages = await globalClient.fetchChannelMessages(Channel.GrandExchange, { limit: 20 })!;
-			if (!messages || messages.length === 0) return;
-			const now = Date.now();
-			const latestMessage = messages[0];
-			const existingBotMessage = messages.find(m => m.author_id === globalClient.applicationId);
-
-			if (existingBotMessage) {
-				if (latestMessage.id !== existingBotMessage.id) return;
-				const botMessageAge = now - Number(DiscordSnowflake.timestampFrom(existingBotMessage.id));
-				if (botMessageAge < Time.Hour * 6) return;
-
-				await globalClient.deleteMessage(Channel.GrandExchange, existingBotMessage.id).catch(noOp);
-			} else {
-				const latestMessageAge = now - Number(DiscordSnowflake.timestampFrom(latestMessage.id));
-				if (latestMessageAge < Time.Hour) return;
-			}
-
-			await globalClient.sendMessage(Channel.GrandExchange, {
-				embeds: [geEmbed]
+			await handleHelperChannelTicker({
+				channelId: Channel.GrandExchange,
+				embed: geEmbed
+				// no components for GE
 			});
 		}
 	},
