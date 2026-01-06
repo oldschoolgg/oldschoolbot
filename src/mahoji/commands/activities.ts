@@ -1,5 +1,5 @@
 import { ownedItemOption } from '@/discord/index.js';
-import { BERT_SAND_ID } from '@/lib/minions/data/bertSand.js';
+import { BERT_SAND_AUTOCOMPLETE_VALUE } from '@/lib/minions/data/bertSand.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import Potions from '@/lib/minions/data/potions.js';
 import { quests } from '@/lib/minions/data/quests.js';
@@ -18,6 +18,7 @@ import { castCommand } from '@/mahoji/lib/abstracted_commands/castCommand.js';
 import { chargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
 import { chargeWealthCommand } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';
 import { chompyHuntClaimCommand, chompyHuntCommand } from '@/mahoji/lib/abstracted_commands/chompyHuntCommand.js';
+import { collectBertSand } from '@/mahoji/lib/abstracted_commands/collectBertSand.js';
 import { collectCommand } from '@/mahoji/lib/abstracted_commands/collectCommand.js';
 import { decantCommand } from '@/mahoji/lib/abstracted_commands/decantCommand.js';
 import { driftNetCommand } from '@/mahoji/lib/abstracted_commands/driftNetCommand.js';
@@ -33,8 +34,6 @@ import { scatterCommand } from '@/mahoji/lib/abstracted_commands/scatterCommand.
 import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-
-const BERT_SAND_AUTOCOMPLETE_VALUE = 'BERT_SAND_DAILY' as const;
 
 export const activitiesCommand = defineCommand({
 	name: 'activities',
@@ -555,9 +554,16 @@ export const activitiesCommand = defineCommand({
 			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.collect) {
-			const item = options.collect.item === BERT_SAND_AUTOCOMPLETE_VALUE ? BERT_SAND_ID : options.collect.item;
-
-			return collectCommand(user, channelId, item, options.collect.quantity, options.collect.no_stams);
+			if (options.collect.item === BERT_SAND_AUTOCOMPLETE_VALUE) {
+				return collectBertSand(user, channelId);
+			}
+			return collectCommand(
+				user,
+				channelId,
+				options.collect.item,
+				options.collect.quantity,
+				options.collect.no_stams
+			);
 		}
 		if (options.quest) {
 			return questCommand(user, channelId, options.quest.name);

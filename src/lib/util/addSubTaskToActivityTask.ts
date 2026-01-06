@@ -51,7 +51,7 @@ export default async function addSubTaskToActivityTask(taskToAdd: Omit<ActivityT
 		type: taskToAdd.type,
 		data: newData as Prisma.InputJsonValue,
 		group_activity: isGroupActivity(taskToAdd),
-		channel_id: BigInt(taskToAdd.channelID),
+		channel_id: BigInt(taskToAdd.channelId),
 		duration
 	};
 	try {

@@ -5,6 +5,7 @@ import type { MUserClass } from '@/lib/MUser.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 
 export const BERT_SAND_ID = 'bert_sand' as const;
+export const BERT_SAND_AUTOCOMPLETE_VALUE = 'BERT_SAND_DAILY' as const;
 export const BERT_SAND_BUCKETS = 84;
 export const BERT_SAND_DURATION = Time.Second * 15;
 export const BERT_SAND_SKILL_REQS: readonly [SkillNameType, number][] = [

@@ -3,7 +3,7 @@ import { objectValues, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
-import type { Activity } from '@/prisma/main.js';
+import type { Activity, Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
@@ -129,14 +129,6 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
-type ActivityMap = {
-	[K in ActivityTaskData as K['type']]: K;
-};
-
-type MockedCommandOptions = {
-	[key: string]: string | number | boolean | undefined | MockedCommandOptions;
-};
-
 const canRepeatStoredTrip = (activity: Activity, user: MUser) => {
 	if (!taskCanBeRepeated(activity, user)) {
 		return false;
@@ -813,7 +805,7 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 			}
 		}
 		if (!filtered.some(i => i.type === trip.type)) {
-			filtered.push({ type: trip.type, data: trip.data ?? {} });
+			filtered.push(trip);
 		}
 	}
 	return filtered;

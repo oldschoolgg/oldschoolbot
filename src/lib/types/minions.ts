@@ -20,7 +20,7 @@ export interface ActivityTaskOptions {
 	duration: number;
 	id: number;
 	finishDate: number;
-	channelID: string;
+	channelId: string;
 	metadata?: ActivityTaskMetadata;
 }
 

@@ -15,7 +15,7 @@ const NON_REPEATABLE_METADATA: ActivityTaskMetadata = {
 	nonRepeatable: true
 };
 
-export async function collectBertSand(user: MUser, channelID: string) {
+export async function collectBertSand(user: MUser, channelId: string) {
 	const now = Date.now();
 	const stats = await user.fetchStats();
 	const lastCollected = Number(stats.last_bert_sand_timestamp ?? 0n);
@@ -33,7 +33,7 @@ export async function collectBertSand(user: MUser, channelID: string) {
 	await ActivityManager.startTrip<CollectingOptions>({
 		collectableID: BERT_SAND_ITEM_ID,
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity: 1,
 		duration: BERT_SAND_DURATION,
 		type: 'Collecting',

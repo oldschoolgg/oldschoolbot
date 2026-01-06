@@ -8,12 +8,12 @@ import { collectables } from '@/mahoji/lib/collectables.js';
 export const collectingTask: MinionTask = {
 	type: 'Collecting',
 	async run(data: CollectingOptions, { user, handleTripFinish }) {
-		const { collectableID, quantity, channelID, duration, lootQuantityOverride, metadata } = data;
+		const { collectableID, quantity, channelId, duration, lootQuantityOverride, metadata } = data;
 		const isBertSandTrip = metadata?.activityID === BERT_SAND_ID;
 
 		if (isBertSandTrip) {
 			const sendResult = (message: string, loot: Bank | null = null) =>
-				handleTripFinish(user, channelID, `${user}, ${message}`, undefined, data, loot);
+				handleTripFinish({ user, channelId, message: `${user}, ${message}`, data, loot });
 
 			const requirementError = isManualEligible(user);
 			if (requirementError) {
