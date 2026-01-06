@@ -1,11 +1,11 @@
 import type { APIApplicationCommandOptionChoice } from '@oldschoolgg/discord';
+import { GearSetupTypes } from '@oldschoolgg/gear';
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { choicesOf, defineOption } from '@/discord/index.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';

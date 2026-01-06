@@ -1,4 +1,5 @@
 import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
+import { defaultGearSetup, EquipmentSlot, type GearSetup } from '@oldschoolgg/gear';
 import { percentChance } from '@oldschoolgg/rng';
 import {
 	type ECombatOption,
@@ -21,16 +22,7 @@ import {
 } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
-import {
-	Bank,
-	convertXPtoLVL,
-	EMonster,
-	EquipmentSlot,
-	type Item,
-	type ItemBank,
-	Items,
-	resolveItems
-} from 'oldschooljs';
+import { Bank, convertXPtoLVL, EMonster, type Item, type ItemBank, Items, resolveItems } from 'oldschooljs';
 
 import type {
 	activity_type_enum,
@@ -55,7 +47,7 @@ import type { Pet } from '@/lib/data/pets.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import { projectiles } from '@/lib/gear/projectiles.js';
-import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import backgroundImages from '@/lib/minions/data/bankBackgrounds.js';
 import { type AddMonsterXpParams, addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
@@ -75,7 +67,7 @@ import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
-import { defaultGear, Gear } from '@/lib/structures/Gear.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
@@ -244,14 +236,14 @@ export class MUserClass {
 	public get gear(): UserFullGearSetup {
 		if (this._gearLazy) return this._gearLazy;
 		this._gearLazy = {
-			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGear }),
-			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
-			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
-			misc: new Gear((this.user.gear_misc as GearSetup | null) ?? { ...defaultGear }),
-			skilling: new Gear((this.user.gear_skilling as GearSetup | null) ?? { ...defaultGear }),
-			wildy: new Gear((this.user.gear_wildy as GearSetup | null) ?? { ...defaultGear }),
-			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
-			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
+			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGearSetup }),
+			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGearSetup }),
+			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGearSetup }),
+			misc: new Gear((this.user.gear_misc as GearSetup | null) ?? { ...defaultGearSetup }),
+			skilling: new Gear((this.user.gear_skilling as GearSetup | null) ?? { ...defaultGearSetup }),
+			wildy: new Gear((this.user.gear_wildy as GearSetup | null) ?? { ...defaultGearSetup }),
+			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGearSetup }),
+			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGearSetup })
 		};
 		return this._gearLazy;
 	}
@@ -786,7 +778,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		}
 
 		if (ammoRemove) {
-			const equippedAmmo = rangeGear.ammo?.item;
+			const equippedAmmo = rangeGear.get('ammo')?.item;
 			if (!equippedAmmo) {
 				throw new UserError('No ammo equipped.');
 			}
@@ -1088,7 +1080,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
-		const gear = this.gear[setup].raw();
+		const gear: GearSetup = this.gear[setup].raw();
 		const equippedInSlot = gear[slot];
 		if (!equippedInSlot) {
 			return { refundBank: new Bank() };
@@ -1125,9 +1117,9 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 
 	async validateEquippedGear() {
 		const itemsUnequippedAndRefunded = new Bank();
-		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, GearSetup][]) {
-			if (gearSetup['2h'] !== null) {
-				if (gearSetup.weapon?.item) {
+		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, Gear][]) {
+			if (gearSetup.get('2h') !== null) {
+				if (gearSetup.get('weapon')?.item) {
 					const { refundBank } = await this.forceUnequip(
 						gearSetupName,
 						EquipmentSlot.Weapon,
@@ -1135,7 +1127,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 					);
 					itemsUnequippedAndRefunded.add(refundBank);
 				}
-				if (gearSetup.shield?.item) {
+				if (gearSetup.get('shield')?.item) {
 					const { refundBank } = await this.forceUnequip(
 						gearSetupName,
 						EquipmentSlot.Shield,
@@ -1145,7 +1137,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 				}
 			}
 			for (const slot of Object.values(EquipmentSlot)) {
-				const item = gearSetup[slot];
+				const item = gearSetup.get(slot);
 				if (!item) continue;
 				const osItem = Items.get(item.item);
 				if (!osItem) {

@@ -1,23 +1,25 @@
-import { deepEqual, notEmpty } from '@oldschoolgg/toolkit';
-import { Bank, EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
-import type { EGear } from 'oldschooljs/EGear';
+import type { GearSetupType } from '@oldschoolgg/gear';
 import {
 	type DefenceGearStat,
+	defaultGearSetup,
+	EquipmentSlot,
+	type EquipmentSlotKey,
+	type GearSetup,
+	type GearSlotItem,
 	GearStat,
 	type GearStats,
 	type OffenceGearStat,
-	type OtherGearStat
-} from 'oldschooljs/gear';
+	type OtherGearStat,
+	type PartialGearSetup
+} from '@oldschoolgg/gear';
+import { deepEqual, notEmpty } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
+import type { EGear } from 'oldschooljs/EGear';
 import { clone } from 'remeda';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
-import type { GearSetup, GearSetupType, GearSlotItem } from '@/lib/gear/types.js';
 import { assert } from '@/lib/util/logError.js';
-
-export type PartialGearSetup = Partial<{
-	[key in EquipmentSlot]: string;
-}>;
 
 export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.values(GearStat)) {
 	const osItems = items.map(i => Items.getOrThrow(i));
@@ -57,22 +59,6 @@ export const maxOtherStats: { [key in OtherGearStat]: number } = {
 	[GearStat.MagicDamage]: 38,
 	[GearStat.Prayer]: 66
 };
-
-export const defaultGear: GearSetup = {
-	[EquipmentSlot.TwoHanded]: null,
-	[EquipmentSlot.Ammo]: null,
-	[EquipmentSlot.Body]: null,
-	[EquipmentSlot.Cape]: null,
-	[EquipmentSlot.Feet]: null,
-	[EquipmentSlot.Hands]: null,
-	[EquipmentSlot.Head]: null,
-	[EquipmentSlot.Legs]: null,
-	[EquipmentSlot.Neck]: null,
-	[EquipmentSlot.Ring]: null,
-	[EquipmentSlot.Shield]: null,
-	[EquipmentSlot.Weapon]: null
-};
-Object.freeze(defaultGear);
 
 export type GlobalPreset = GearPreset & { defaultSetup: GearSetupType; aliases?: string[] };
 
@@ -318,18 +304,8 @@ const baseStats: GearStats = {
 };
 
 export class Gear {
-	[EquipmentSlot.TwoHanded]: GearSlotItem | null = null;
-	[EquipmentSlot.Ammo]: GearSlotItem | null = null;
-	[EquipmentSlot.Body]: GearSlotItem | null = null;
-	[EquipmentSlot.Cape]: GearSlotItem | null = null;
-	[EquipmentSlot.Feet]: GearSlotItem | null = null;
-	[EquipmentSlot.Hands]: GearSlotItem | null = null;
-	[EquipmentSlot.Head]: GearSlotItem | null = null;
-	[EquipmentSlot.Legs]: GearSlotItem | null = null;
-	[EquipmentSlot.Neck]: GearSlotItem | null = null;
-	[EquipmentSlot.Ring]: GearSlotItem | null = null;
-	[EquipmentSlot.Shield]: GearSlotItem | null = null;
-	[EquipmentSlot.Weapon]: GearSlotItem | null = null;
+	private setup: GearSetup = { ...defaultGearSetup };
+
 	stats = baseStats;
 
 	constructor(_setup: GearSetup | PartialGearSetup | GearPreset = {}) {
@@ -360,18 +336,11 @@ export class Gear {
 				? constructGearSetup(_setup as PartialGearSetup)
 				: (_setup as GearSetup);
 
-		this['2h'] = setup['2h'];
-		this.ammo = setup.ammo;
-		this.body = setup.body;
-		this.cape = setup.cape;
-		this.feet = setup.feet;
-		this.hands = setup.hands;
-		this.head = setup.head;
-		this.legs = setup.legs;
-		this.neck = setup.neck;
-		this.ring = setup.ring;
-		this.shield = setup.shield;
-		this.weapon = setup.weapon;
+		if (setup instanceof Gear) {
+			this.setup = clone(setup.raw());
+		} else {
+			this.setup = clone(setup);
+		}
 
 		this.stats = this.getStats();
 	}
@@ -384,7 +353,7 @@ export class Gear {
 				quantity: 1
 			};
 		}
-		const newGear: GearSetup = { ...defaultGear };
+		const newGear: GearSetup = { ...defaultGearSetup };
 		newGear.head = gearItem(preset.head);
 		newGear.neck = gearItem(preset.neck);
 		newGear.body = gearItem(preset.body);
@@ -413,41 +382,24 @@ export class Gear {
 		return gear;
 	}
 
+	public get(key: EquipmentSlot | EquipmentSlotKey): GearSlotItem | null {
+		return this.setup[key];
+	}
+
+	public set(key: EquipmentSlot | EquipmentSlotKey, value: GearSlotItem | null) {
+		this.setup[key] = value;
+		this.stats = this.getStats();
+	}
+
 	raw(): GearSetup {
-		return clone({
-			ammo: this.ammo,
-			body: this.body,
-			cape: this.cape,
-			feet: this.feet,
-			hands: this.hands,
-			head: this.head,
-			legs: this.legs,
-			neck: this.neck,
-			ring: this.ring,
-			shield: this.shield,
-			weapon: this.weapon,
-			'2h': this['2h']
-		});
+		return clone(this.setup);
 	}
 
 	allItems(similar = false): number[] {
 		const values = new Set<number>();
-		for (const x of [
-			this.ammo,
-			this.body,
-			this.cape,
-			this.feet,
-			this.hands,
-			this.head,
-			this.legs,
-			this.neck,
-			this.ring,
-			this.shield,
-			this.weapon,
-			this['2h']
-		]) {
-			if (x) {
-				values.add(x.item);
+		for (const val of Object.values(this.setup)) {
+			if (val) {
+				values.add(val.item);
 			}
 		}
 
@@ -506,8 +458,8 @@ export class Gear {
 	}
 
 	equippedWeapon(): Item | null {
-		const normalWeapon = this.weapon;
-		const twoHandedWeapon = this['2h'];
+		const normalWeapon = this.setup.weapon;
+		const twoHandedWeapon = this.setup['2h'];
 		if (!normalWeapon && !twoHandedWeapon) return null;
 		return Items.getOrThrow(normalWeapon === null ? twoHandedWeapon!.item : normalWeapon.item);
 	}
@@ -543,7 +495,7 @@ export class Gear {
 			return 'No items';
 		}
 		const items: string[] = [];
-		for (const item of allItems) {
+		for (const item of allItems.sort((a, b) => a - b)) {
 			items.push(Items.itemNameFromId(item) ?? `Unknown Item? (${item})`);
 		}
 		return items.join(', ');
@@ -565,38 +517,38 @@ export class Gear {
 		const { slot } = itemToEquip.equipment;
 
 		const unequipAndEquip = () => {
-			const equippedAlready = this[slot];
+			const equippedAlready = this.setup[slot];
 			if (equippedAlready) {
 				refundBank.add(equippedAlready.item, equippedAlready.quantity);
-				this[slot] = null;
+				this.setup[slot] = null;
 			}
-			this[slot] = { item: itemToEquip.id, quantity };
+			this.setup[slot] = { item: itemToEquip.id, quantity };
 		};
 
 		switch (slot) {
 			case EquipmentSlot.TwoHanded: {
 				// If trying to equip a 2h weapon, remove the weapon and shield.
-				if (this.weapon) {
-					refundBank.add(this.weapon.item, this.weapon.quantity);
-					this.weapon = null;
+				if (this.setup.weapon) {
+					refundBank.add(this.setup.weapon.item, this.setup.weapon.quantity);
+					this.setup.weapon = null;
 				}
-				if (this.shield) {
-					refundBank.add(this.shield.item, this.shield.quantity);
-					this.shield = null;
+				if (this.setup.shield) {
+					refundBank.add(this.setup.shield.item, this.setup.shield.quantity);
+					this.setup.shield = null;
 				}
-				if (this['2h']) {
-					refundBank.add(this['2h'].item, this['2h'].quantity);
-					this['2h'] = null;
+				if (this.setup['2h']) {
+					refundBank.add(this.setup['2h'].item, this.setup['2h'].quantity);
+					this.setup['2h'] = null;
 				}
-				this['2h'] = { item: itemToEquip.id, quantity };
+				this.setup['2h'] = { item: itemToEquip.id, quantity };
 				break;
 			}
 			case EquipmentSlot.Weapon:
 			case EquipmentSlot.Shield: {
-				const twoHanded = this['2h'];
+				const twoHanded = this.setup['2h'];
 				if (twoHanded) {
 					refundBank.add(twoHanded.item, twoHanded.quantity);
-					this['2h'] = null;
+					this.setup['2h'] = null;
 				}
 
 				unequipAndEquip();
@@ -612,8 +564,8 @@ export class Gear {
 
 	toBank() {
 		const bank = new Bank();
-		for (const slot of Object.keys(defaultGear) as (keyof typeof defaultGear)[]) {
-			const equipped = this[slot];
+		for (const slot of Object.keys(defaultGearSetup) as EquipmentSlot[]) {
+			const equipped = this.setup[slot];
 			if (!equipped || !equipped.item || !equipped.quantity) continue;
 			bank.add(equipped.item, equipped.quantity);
 		}

@@ -1,4 +1,5 @@
 import { bold } from '@oldschoolgg/discord';
+import type { GearStats } from '@oldschoolgg/gear';
 import { percentChance, randArrItem, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -17,7 +18,6 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
 
 import { type Minigame, XpGainSource } from '@/prisma/main.js';
@@ -27,7 +27,7 @@ import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getToaKCs, mileStoneBaseDeathChances, type RaidLevel } from '@/lib/simulation/toaUtils.js';
-import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import { constructGearSetup } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
@@ -107,7 +107,6 @@ const maxMageGear = constructGearSetup({
 	'2h': "Tumeken's shadow",
 	ring: 'Lightbearer'
 });
-const maxMage = new Gear(maxMageGear);
 
 const maxRangeGear = constructGearSetup({
 	head: 'Masori mask (f)',
@@ -121,9 +120,6 @@ const maxRangeGear = constructGearSetup({
 	ring: 'Lightbearer',
 	ammo: 'Dragon arrow'
 });
-
-const maxRange = new Gear(maxRangeGear);
-maxRange.ammo!.quantity = 100_000;
 
 const maxMeleeLessThan300Gear = constructGearSetup({
 	head: 'Torva full helm',
@@ -249,7 +245,7 @@ const toaRequirements: {
 				)}`;
 			}
 
-			const rangeAmmo = user.gear.range.ammo;
+			const rangeAmmo = user.gear.range.get('ammo');
 			const rangeWeapon = user.gear.range.equippedWeapon();
 			const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
 			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
@@ -902,14 +898,14 @@ function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): 
 		true
 	);
 	const range = calcSetupPercent(
-		maxRange.stats,
+		maxRangeGear.stats,
 		gear.range.stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
-		maxMage.stats,
+		maxMageGear.stats,
 		gear.mage.stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
@@ -970,7 +966,7 @@ async function calcTOAInput({
 		throw new Error(`${user.logName} had no range weapon for TOA`);
 	}
 	if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
-		cost.add(user.gear.range.ammo?.item, BOW_ARROWS_NEEDED * quantity);
+		cost.add(user.gear.range.get('ammo')?.item, BOW_ARROWS_NEEDED * quantity);
 	}
 	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {
 		cost.remove('Saradomin brew(4)', quantity);

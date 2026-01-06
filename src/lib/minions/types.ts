@@ -1,3 +1,4 @@
+import type { OffenceGearStat } from '@oldschoolgg/gear';
 import type {
 	ArrayItemsResolved,
 	Bank,
@@ -7,7 +8,6 @@ import type {
 	MonsterKillOptions,
 	SimpleMonster
 } from 'oldschooljs';
-import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';

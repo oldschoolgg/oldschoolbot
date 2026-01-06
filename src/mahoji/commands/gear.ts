@@ -1,13 +1,12 @@
+import { GearSetupTypes, GearStat } from '@oldschoolgg/gear';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import { choicesOf, equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '@/discord/index.js';
 import { canvasToBuffer, createCanvas, loadImage } from '@/lib/canvas/canvasUtil.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
 import { equipPet } from '@/lib/minions/functions/equipPet.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 import {

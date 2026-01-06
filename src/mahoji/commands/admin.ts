@@ -1,4 +1,5 @@
 import { dateFm } from '@oldschoolgg/discord';
+import type { GearSetup } from '@oldschoolgg/gear';
 import { randArrItem } from '@oldschoolgg/rng';
 import {
 	calcPerHour,
@@ -19,7 +20,6 @@ import { economy_transaction_type } from '@/prisma/main/enums.js';
 import type { ClientStorage } from '@/prisma/main.js';
 import { bulkUpdateCommands, itemOption } from '@/discord/index.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
-import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { syncCustomPrices } from '@/lib/preStartup.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';

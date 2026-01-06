@@ -963,8 +963,9 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					for (const type of ['melee', 'range', 'mage'] as const) {
 						const currentGear = gear[type];
-						if (currentGear.ammo && Items.getItem(currentGear.ammo.item)?.stackable) {
-							currentGear.ammo.quantity = 10000;
+						const ammo = currentGear.get('ammo');
+						if (ammo && Items.getItem(ammo.item)?.stackable) {
+							currentGear.set('ammo', { ...ammo, quantity: 10_000 });
 						}
 					}
 

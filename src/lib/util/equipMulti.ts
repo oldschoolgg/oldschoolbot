@@ -1,7 +1,7 @@
-import { Bank, EquipmentSlot } from 'oldschooljs';
+import { EquipmentSlot, type GearSetup } from '@oldschoolgg/gear';
+import { Bank } from 'oldschooljs';
 
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
-import type { GearSetup } from '@/lib/gear/types.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 
 export function gearEquipMultiImpl(

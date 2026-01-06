@@ -1,4 +1,4 @@
-import { type DefenceGearStat, GearStat, type OffenceGearStat } from 'oldschooljs/gear';
+import { type DefenceGearStat, GearStat, type OffenceGearStat } from '@oldschoolgg/gear';
 
 import type { GearSetupType } from '@/prisma/main/enums.js';
 

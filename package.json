@@ -46,6 +46,7 @@
 		"@oldschoolgg/rng": "workspace:*",
 		"@oldschoolgg/schemas": "workspace:*",
 		"@oldschoolgg/toolkit": "workspace:*",
+		"@oldschoolgg/gear": "workspace:*",
 		"@oldschoolgg/util": "workspace:*",
 		"@prisma/adapter-pg": "^6.19.0",
 		"@prisma/client": "^6.19.0",

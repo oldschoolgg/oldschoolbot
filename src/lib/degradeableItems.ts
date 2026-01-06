@@ -1,7 +1,7 @@
+import type { GearSetupType, PrimaryGearSetupType } from '@oldschoolgg/gear';
 import { percentChance } from '@oldschoolgg/rng';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
-import type { GearSetupType, PrimaryGearSetupType } from '@/lib/gear/types.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
 import { assert } from '@/lib/util/logError.js';

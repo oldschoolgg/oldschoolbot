@@ -32,6 +32,9 @@ importers:
       '@oldschoolgg/discord':
         specifier: workspace:*
         version: link:packages/discord
+      '@oldschoolgg/gear':
+        specifier: workspace:*
+        version: link:packages/gear
       '@oldschoolgg/rng':
         specifier: workspace:*
         version: link:packages/rng
@@ -273,6 +276,8 @@ importers:
         specifier: ^2.23.0
         version: 2.23.0
 
+  packages/gear: {}
+
   packages/oldschoolgg:
     dependencies:
       '@astrojs/react':
@@ -333,6 +338,9 @@ importers:
 
   packages/oldschooljs:
     dependencies:
+      '@oldschoolgg/gear':
+        specifier: workspace:*
+        version: link:../gear
       deepmerge:
         specifier: 4.3.1
         version: 4.3.1

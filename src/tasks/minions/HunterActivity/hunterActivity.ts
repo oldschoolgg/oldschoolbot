@@ -1,5 +1,6 @@
+import { EquipmentSlot } from '@oldschoolgg/gear';
 import { Events, Time } from '@oldschoolgg/toolkit';
-import { Bank, ECreature, EItem, EquipmentSlot } from 'oldschooljs';
+import { Bank, ECreature, EItem } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
@@ -74,7 +75,7 @@ export const hunterTask: MinionTask = {
 			riskDeathChance += Math.min(Math.floor(((await user.getCreatureScore(creature.id)) ?? 1) / 100), 200);
 
 			// Gives lower death chance depending on what the user got equipped in wildy.
-			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy);
+			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			riskDeathChance += score;
 			for (let i = 0; i < duration / Time.Minute; i++) {
 				if (rng.roll(riskPkChance)) {

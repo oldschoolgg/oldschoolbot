@@ -194,7 +194,7 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			return `Your range gear isn't right: ${rangeCheck}`;
 		}
 		const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(rangeCheck.weapon.id);
-		if (!gearBank.gear.range.ammo?.item && !usingBowfa) {
+		if (!gearBank.gear.range.get('ammo')?.item && !usingBowfa) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
 

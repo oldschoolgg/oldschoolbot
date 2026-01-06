@@ -1,9 +1,7 @@
+import { defaultGearSetup, type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
-import { defaultGear } from '@/lib/structures/Gear.js';
 
 export async function unEquipAllCommand(user: MUser, gearType: GearSetupType, bypassBusy?: boolean): CommandResponse {
 	if (!isValidGearSetup(gearType)) {
@@ -25,7 +23,7 @@ export async function unEquipAllCommand(user: MUser, gearType: GearSetupType, by
 			itemsToAdd: refund,
 			collectionLog: false,
 			otherUpdates: {
-				[`gear_${gearType}`]: defaultGear
+				[`gear_${gearType}`]: defaultGearSetup
 			},
 			response: `You have unequipped all items from your ${toTitleCase(gearType)} setup.`
 		};

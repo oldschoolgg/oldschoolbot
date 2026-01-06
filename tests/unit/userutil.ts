@@ -1,17 +1,17 @@
+import type { GearSetup, PartialGearSetup } from '@oldschoolgg/gear';
 import { Bank, convertLVLtoXP, Items, LootTable, type SimpleMonster } from 'oldschooljs';
 import { isFunction, isObjectType } from 'remeda';
 
 import type { Prisma, User } from '@/prisma/main.js';
 import type { BitField } from '../../src/lib/constants.js';
-import type { GearSetup } from '../../src/lib/gear/types.js';
 import { MUserClass } from '../../src/lib/MUser.js';
-import { constructGearSetup, Gear, type PartialGearSetup } from '../../src/lib/structures/Gear.js';
+import { constructGearSetup, Gear } from '../../src/lib/structures/Gear.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear
 		? undefined
 		: typeof gear.ammo === 'undefined' || typeof gear.ammo === 'string'
-			? constructGearSetup(gear as PartialGearSetup)
+			? constructGearSetup(gear as PartialGearSetup).raw()
 			: (gear as GearSetup);
 	return filteredGear;
 }

@@ -148,7 +148,7 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Kodai wand'])
 		});
-		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
+		expect(user.gear.mage.get('weapon')?.item).toEqual(itemID('Kodai wand'));
 		await user.setAttackStyle(['magic']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
@@ -164,7 +164,7 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Kodai wand'])
 		});
-		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
+		expect(user.gear.mage.get('weapon')?.item).toEqual(itemID('Kodai wand'));
 		await user.setAttackStyle(['attack']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);

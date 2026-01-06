@@ -1,9 +1,9 @@
+import type { GearSetup } from '@oldschoolgg/gear';
 import { objectEntries } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
-import type { GearSetup } from '@/lib/gear/types.js';
 import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
