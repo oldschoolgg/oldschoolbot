@@ -1,6 +1,6 @@
 import { randArrItem, randFloat, randInt, roll } from '@oldschoolgg/rng';
 
-import { reduceNumByPercent } from '@/util/smallUtils.js';
+import { reduceNumByPercent } from '../util/smallUtils.js';
 import { Bank } from './Bank.js';
 import { Items } from './Items.js';
 
@@ -101,6 +101,10 @@ export default class LootTable {
 			if (this.allItems.includes(items)) return;
 			this.allItems.push(items);
 		} else {
+			if (!items.item) {
+				console.trace(`Invalid LootTableItem: missing item property: ${JSON.stringify(items)}`);
+				throw new Error(`Invalid LootTableItem: missing item property: ${JSON.stringify(items)}`);
+			}
 			this.addToAllItems(items.item);
 		}
 	}

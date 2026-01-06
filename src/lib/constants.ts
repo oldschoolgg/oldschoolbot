@@ -433,6 +433,6 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 ];
 
 export const CONSTANTS = {
-	DAILY_COOLDOWN: Time.Hour * 12,
+	DAILY_COOLDOWN: BOT_TYPE === 'BSO' ? Time.Hour * 4 : Time.Hour * 12,
 	TEARS_OF_GUTHIX_CD: Time.Day * 7
 };

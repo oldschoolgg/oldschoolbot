@@ -1,12 +1,12 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/rng';
-import { objectValues } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, objectValues, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { clone } from 'remeda';
 
 import { EquipmentSlot, type Item } from '@/meta/item.js';
-import { CLUE_SCROLL_NAMES, CLUE_SCROLLS, Items, USELESS_ITEMS } from '@/structures/Items.js';
+import { Items } from '@/structures/Items.js';
+import { USELESS_ITEMS } from '@/structures/ItemsClass.js';
 import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
 import { fetchPrices } from './fetchPrices.js';
 import { fetchRawItems } from './fetchRawItems.js';
@@ -46,6 +46,18 @@ const newItemJSON: { [key: string]: Item } = {};
 
 // This regex matches the nearly 600 individual clue-step items:
 const clueStepRegex = /^Clue scroll \((beginner|easy|medium|hard|elite|master)\) - .*$/;
+const CLUE_SCROLL_NAMES: string[] = [
+	'Clue scroll (beginner)',
+	'Clue scroll (easy)',
+	'Clue scroll (medium)',
+	'Clue scroll (hard)',
+	'Clue scroll (elite)',
+	'Clue scroll (master)'
+];
+const CLUE_SCROLLS: number[] = [
+	// Clue scrolls
+	2677, 2801, 2722, 12_073, 19_835, 23_182
+];
 
 function itemShouldntBeAdded(item: any) {
 	if (CLUE_SCROLLS.includes(item.id)) return false;

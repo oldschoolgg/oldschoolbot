@@ -3,7 +3,7 @@ import { groupBy } from 'remeda';
 
 import { redis } from '@/lib/redis.js';
 
-export async function syncBlacklists() {
+export async function syncBlacklists(): Promise<void> {
 	const allBlacklist = await roboChimpClient.blacklistedEntity.findMany();
 	const a = groupBy(allBlacklist, b => b.type);
 	await redis.del(RedisKeys.BlacklistedUsers);

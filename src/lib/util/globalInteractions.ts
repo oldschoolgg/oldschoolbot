@@ -433,7 +433,14 @@ async function globalButtonInteractionHandler({
 		case InteractionID.Commands.DoShootingStar: {
 			const validStar = await prisma.shootingStars.findFirst({
 				where: {
-					user_id: user.id
+					user_id: user.id,
+					has_been_mined: false,
+					expires_at: {
+						gt: new Date()
+					}
+				},
+				orderBy: {
+					expires_at: 'desc'
 				}
 			});
 			let errorMessage: string | null = null;

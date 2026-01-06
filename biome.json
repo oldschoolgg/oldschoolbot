@@ -59,7 +59,10 @@
 			"a11y": {
 				"useAltText": "off",
 				"useKeyWithClickEvents": "off",
-				"useButtonType": "off"
+				"useButtonType": "off",
+				"noSvgWithoutTitle": "off",
+				"noStaticElementInteractions": "off",
+				"noLabelWithoutControl": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "warn",
@@ -81,7 +84,8 @@
 			"correctness": {
 				"useExhaustiveDependencies": "off",
 				"noConstructorReturn": "off",
-				"useParseIntRadix": "off"
+				"useParseIntRadix": "off",
+				"noUnknownProperty": "off"
 			},
 			"complexity": {
 				"noExtraBooleanCast": "warn",

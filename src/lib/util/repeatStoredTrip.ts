@@ -400,8 +400,8 @@ const tripHandlers = {
 		args: (data: FarmingActivityTaskOptions) =>
 			data.autoFarmed
 				? {
-						auto_farm: {}
-					}
+					auto_farm: {}
+				}
 				: {}
 	},
 	[activity_type_enum.FightCaves]: {
@@ -760,7 +760,7 @@ const tripHandlers = {
 			underwater: {
 				agility_thieving: {
 					training_skill: data.trainingSkill,
-					minutes: Math.floor(data.duration / Time.Minute),
+					minutes: data.minutes ?? Math.max(1, Math.floor(data.duration / Time.Minute)),
 					no_stams: data.noStams
 				}
 			}
@@ -770,7 +770,9 @@ const tripHandlers = {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
 			underwater: {
-				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
+				drift_net_fishing: {
+					minutes: data.minutes ?? Math.max(1, Math.floor(data.duration / Time.Minute))
+				}
 			}
 		})
 	},
@@ -803,7 +805,13 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 	});
 	const filtered: Activity[] = [];
 	for (const trip of res) {
-		if (!canRepeatStoredTrip(trip, user)) continue;
+		if (!taskCanBeRepeated(trip, user)) continue;
+		const data = ActivityManager.convertStoredActivityToFlatActivity(trip);
+		if (data.type === activity_type_enum.Farming) {
+			if (!data.autoFarmed) {
+				continue;
+			}
+		}
 		if (!filtered.some(i => i.type === trip.type)) {
 			filtered.push({ type: trip.type, data: trip.data ?? {} });
 		}

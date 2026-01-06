@@ -69,4 +69,4 @@ export const tiers: PatronTier[] = [
 	{ id: PatronTierID.One, bit: Bits.IsPatronTier1, perkTier: PerkTier.Two, number: 1 }
 ];
 
-export const allPatronBits = tiers.map(t => t.bit);
+export const allPatronBits: Bits[] = tiers.map(t => t.bit);

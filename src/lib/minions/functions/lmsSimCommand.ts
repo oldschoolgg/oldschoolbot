@@ -1,5 +1,6 @@
 import type { IChannel, IMessage } from '@oldschoolgg/schemas';
-import { chunk, sleep } from '@oldschoolgg/toolkit';
+import { sleep } from '@oldschoolgg/toolkit';
+import { chunk } from 'remeda';
 
 import type LastManStandingUsage from '@/lib/structures/LastManStandingUsage.js';
 import { LMS_FINAL, LMS_PREP, LMS_ROUND } from '@/lib/structures/LastManStandingUsage.js';

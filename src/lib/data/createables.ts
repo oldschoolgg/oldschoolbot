@@ -1541,6 +1541,16 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Moon key',
+		inputItems: {
+			[itemID('Loop half of key (moon key)')]: 1,
+			[itemID('Tooth half of key (moon key)')]: 1
+		},
+		outputItems: {
+			[itemID('Moon key')]: 1
+		}
+	},
+	{
 		name: 'Master clue',
 		inputItems: {
 			[itemID('Clue scroll (easy)')]: 1,
