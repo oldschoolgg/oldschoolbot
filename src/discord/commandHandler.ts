@@ -35,6 +35,7 @@ export async function rawCommandHandlerInner({
 
 	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
+	// TODO: remove later
 	if (user.user.completed_achievement_diaries.length === 0) {
 		user.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
 	}
