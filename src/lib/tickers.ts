@@ -138,7 +138,21 @@ export const tickers: {
 				'farmingPatches.flower',
 				'farmingPatches.mushroom',
 				'farmingPatches.belladonna'
-			];
+			] as const;
+
+			const patchEligibilityClause = keys
+				.map(k => {
+					const col = `"${k.replaceAll('"', '""')}"`;
+					return `(
+					${col} IS NOT NULL
+					AND (
+						(${col}::jsonb ->> 'wasReminded') IS NULL
+						OR (${col}::jsonb ->> 'wasReminded') = 'false'
+					)
+				)`;
+				})
+				.join(' OR ');
+
 			const users = await prisma.$queryRawUnsafe<User[]>(`SELECT *
 FROM users u
 WHERE
@@ -156,11 +170,9 @@ AND EXISTS (
   WHERE fc.user_id = u.id
     AND fc.date_planted > now() - INTERVAL '2 days'
 )
-AND NOT (bitfield @> ARRAY[
-    37  -- DisabledFarmingReminders
-]::int[])
+AND NOT (bitfield @> ARRAY[37]::int[]) -- DisabledFarmingReminders
 AND (
-  ${keys.map(_key => `("${_key}" IS NOT NULL AND NOT "${_key}"::jsonb ? 'wasReminded')`).join(' OR ')}
+  ${patchEligibilityClause}
 )
 ORDER BY random()
 LIMIT 10;`);
@@ -182,27 +194,20 @@ LIMIT 10;`);
 									stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
 							))
 						: null;
-					const difference = now - patch.plantTime;
 					if (!planted) continue;
+					const difference = now - patch.plantTime;
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
 					patchesReadyToHarvest.push(patchType);
 				}
 
 				if (patchesReadyToHarvest.length === 0) continue;
-				const userUpdates: Partial<Record<FarmingPatchSettingsKey, IPatchData>> = {};
-				for (const patchType of patchesReadyToHarvest) {
-					userUpdates[Farming.getFarmingKeyFromName(patchType)] = {
-						...patches[patchType],
-						wasReminded: true
-					};
-				}
-				if (Object.keys(userUpdates).length > 0) {
-					const updates = userUpdates as SafeUserUpdateInput;
-					await user.update(updates);
-				}
 
-				if (globalConfig.isProduction) {
+				// Don't consume reminder state in dev/stage
+				if (!globalConfig.isProduction) continue;
+
+				try {
+					// DM first
 					await globalClient.sendDm(user.id, {
 						content: `The following farming patches are ready to be harvested: ${patchesReadyToHarvest.join(', ')}.`,
 						components: [
@@ -218,6 +223,18 @@ LIMIT 10;`);
 							)
 						]
 					});
+					const userUpdates: Partial<Record<FarmingPatchSettingsKey, IPatchData>> = {};
+					for (const patchType of patchesReadyToHarvest) {
+						userUpdates[Farming.getFarmingKeyFromName(patchType)] = {
+							...patches[patchType],
+							wasReminded: true
+						};
+					}
+					if (Object.keys(userUpdates).length > 0) {
+						await user.update(userUpdates as SafeUserUpdateInput);
+					}
+				} catch (err) {
+					Logging.logError(err as Error);
 				}
 			}
 		}
@@ -331,7 +348,7 @@ VALUES (get_economy_bank());`;
 
 export function initTickers() {
 	for (const ticker of tickers) {
-		if (ticker.timer !== null) clearTimeout(ticker.timer);
+		if (ticker.timer !== null) TimerManager.clearTimeout(ticker.timer);
 		if (ticker.productionOnly && !globalConfig.isProduction) continue;
 		const fn = async () => {
 			try {
