@@ -1,4 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
+import type { IAutoCompleteInteractionOption } from '@oldschoolgg/schemas';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
@@ -185,27 +186,38 @@ function buildMonsterChoicesForMaster(master: SlayerMaster) {
 		set.set(task.monster.id, getCommonTaskName(task.monster));
 	}
 
-	return [...set.values()]
-		.sort((a, b) => a.localeCompare(b))
-		.map(name => ({ name, value: name }));
+	return [...set.values()].sort((a, b) => a.localeCompare(b)).map(name => ({ name, value: name }));
 }
 
 // value-only matcher for autocomplete
 function filterChoices(choices: { name: string; value: string }[], value: string) {
 	const v = norm(value ?? '');
 	if (!v) return choices.slice(0, MAX_AUTOCOMPLETE_RESULTS);
-	return choices
-		.filter(c => norm(c.name).includes(v))
-		.slice(0, MAX_AUTOCOMPLETE_RESULTS);
+	return choices.filter(c => norm(c.name).includes(v)).slice(0, MAX_AUTOCOMPLETE_RESULTS);
+}
+
+function findStringOptionValue(options: IAutoCompleteInteractionOption[] | undefined, optionName: string) {
+	for (const option of options ?? []) {
+		if ('value' in option && option.name === optionName && typeof option.value === 'string') {
+			return option.value;
+		}
+		if ('options' in option) {
+			const nested = findStringOptionValue(
+				option.options as IAutoCompleteInteractionOption[] | undefined,
+				optionName
+			);
+			if (nested) return nested;
+		}
+	}
+	return null;
 }
 
 // Autocomplete that can “see” the other selected options:
 export async function slayerMonsterAutocomplete({
 	value,
 	options
-}: StringAutoComplete & { options?: Record<string, unknown> }) {
-	// NOTE: adjust how you read master depending on your framework:
-	const masterInput = (options?.master as string | undefined) ?? null;
+}: StringAutoComplete & { options?: IAutoCompleteInteractionOption[] }) {
+	const masterInput = findStringOptionValue(options, 'master');
 
 	if (masterInput) {
 		const master = resolveSlayerMaster(masterInput);

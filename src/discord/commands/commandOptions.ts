@@ -1,5 +1,5 @@
 import type { APIApplicationCommandOptionChoice } from '@oldschoolgg/discord';
-import type { IChannel, IMember, IRole, IUser } from '@oldschoolgg/schemas';
+import type { IAutoCompleteInteractionOption, IChannel, IMember, IRole, IUser } from '@oldschoolgg/schemas';
 
 import type { AnyArr, Lit, Simplify, ToObj, UnionToIntersection } from './typeUtils.js';
 
@@ -18,6 +18,8 @@ export type BaseAutoCompleteOptions = {
 	userId: string;
 	user: MUser;
 	guildId: string | null;
+	options?: IAutoCompleteInteractionOption[];
+	focused?: IAutoCompleteInteractionOption;
 };
 
 export type NumberAutoComplete = BaseAutoCompleteOptions & {
