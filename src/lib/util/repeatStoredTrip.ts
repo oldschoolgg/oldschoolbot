@@ -34,6 +34,7 @@ import type {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
+	ArchaicMiningActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
@@ -270,7 +271,22 @@ const tripHandlers: {
 	[activity_type_enum.GemstoneFishing]: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
-			gemstone: { action: 'fishing', quantity: data.iQty }
+			gemstone_fishing: { quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.AncientMycology]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			ancient_mycology: { quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.ArchaicMining]: {
+		commandName: 'activities',
+		args: (data: ArchaicMiningActivityTaskOptions | ActivityTaskOptionsWithQuantity) => ({
+			archaic_mining: { 
+				type: (data as ArchaicMiningActivityTaskOptions).miningType, 
+				quantity: data.iQty 
+			}
 		})
 	},
 	[activity_type_enum.BarbarianAssault]: {

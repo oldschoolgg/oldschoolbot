@@ -69,7 +69,7 @@ export async function minionKillCommand(
 	}
 
 	if (['burning dominion', 'dominion', 'burning'].some(i => name.toLowerCase().includes(i))) {
-	return 'Orym and Orrodil cannot be fought alone! You need a team to challenge the Burning Dominion. Use `/mass monster: Burning Dominion` instead.';
+		return 'Orym and Orrodil cannot be fought alone! You need a team to challenge the Burning Dominion. Use `/mass monster: Burning Dominion` instead.';
 	}
 
 	let monster = findMonster(name);

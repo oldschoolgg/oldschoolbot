@@ -64,7 +64,7 @@ export const gemstoneFishingTask: MinionTask = {
 			source: 'GemstoneFishing'
 		});
 
-		let str = `${user}, ${user.minionName} finished fishing for gemstone fish! ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished fishing for gemscales! ${xpRes}`;
 
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
@@ -78,7 +78,7 @@ export const gemstoneFishingTask: MinionTask = {
 			loot.add('Heron');
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing for gemstone fish at level ${currentFishLevel} Fishing!`
+				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing for gemscales at level ${currentFishLevel} Fishing!`
 			);
 		}
 

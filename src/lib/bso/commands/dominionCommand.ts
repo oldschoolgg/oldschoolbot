@@ -15,17 +15,17 @@ export async function burningDominionCommand(
 	inputName: string,
 	quantity: number | undefined
 ) {
-	
 	if (interaction) await interaction.defer();
-	
+
 	const isSolo = !inputName.toLowerCase().includes('mass');
 	// i have no idea if this needs to stay in to work and i can't be bothered removing it
 	if (isSolo) {
 		return {
-			content: 'Orym and Orrodil cannot be fought alone! You must gather a team to challenge the Burning Dominion. Use `/k burning dominion mass` instead.'
+			content:
+				'Orym and Orrodil cannot be fought alone! You must gather a team to challenge the Burning Dominion. Use `/k burning dominion mass` instead.'
 		};
 	}
-	
+
 	const finalQuantity = quantity ?? 1;
 
 	const instance = new BossInstance({
@@ -59,7 +59,6 @@ export async function burningDominionCommand(
 		}),
 		gearSetup: 'melee',
 		itemCost: async data => {
-			
 			const userBank = data.user.bank;
 			const kc = await data.user.getKC(EBSOMonster.BURNING_DOMINION);
 
@@ -77,9 +76,9 @@ export async function burningDominionCommand(
 				.add('Saradomin brew(4)', brewsNeeded)
 				.add('Super restore(4)', restoresNeeded)
 				.multiply(data.kills);
-			
+
 			const hasHeatRes = userBank.has(heatResBank);
-			
+
 			return hasHeatRes ? heatResBank : normalBank;
 		},
 		mostImportantStat: 'attack_stab',
@@ -93,25 +92,23 @@ export async function burningDominionCommand(
 		solo: false,
 		canDie: true,
 		customDeathChance: (user, preCalcedDeathChance, solo) => {
-			
 			let baseDeathChance = 95;
 			const gear = user.gear.melee;
 			let dwarvenPieces = 0;
-			
+
 			for (const item of dwarvenOutfit) {
 				if (gear.hasEquipped(item)) {
 					baseDeathChance -= 9.5;
 					dwarvenPieces++;
 				}
 			}
-			
-			
+
 			baseDeathChance -= (100 - preCalcedDeathChance) / 10;
-			
+
 			if (solo) {
 				baseDeathChance *= 2.5;
 			}
-			
+
 			return baseDeathChance;
 		},
 		quantity: finalQuantity,

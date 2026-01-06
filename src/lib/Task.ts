@@ -117,6 +117,8 @@ import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivit
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
+import { ancientMycologyTask } from '../tasks/minions/ancientMycologyActivity.js';
+import { archaicMiningTask } from '../tasks/minions/archaicMiningActivity.js';
 import { gemstoneFishingTask } from '../tasks/minions/gemstoneFishingActivity.js';
 
 export const allTasks: MinionTask[] = [
@@ -209,6 +211,8 @@ export const allTasks: MinionTask[] = [
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
 	gemstoneFishingTask,
+	ancientMycologyTask,
+	archaicMiningTask,
 	myNotesTask,
 	colosseumTask,
 	CreateForestersRationsTask,

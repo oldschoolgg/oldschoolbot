@@ -38,7 +38,10 @@ import {
 	SinisterChest,
 	SteelHAMChest,
 	VolcanicMineOrePack,
-	ZombiePiratesLocker
+	ZombiePiratesLocker,
+	GemstoneBundle,
+	GemstoneSatchel,
+	GemstoneCore
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -479,6 +482,30 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['zombie pirate key', 'zombie pirate locker', 'pirate locker'],
 		output: ZombiePiratesLocker.table,
 		allItems: ZombiePiratesLocker.table.allItems
+	},
+	{
+		name: 'Gemstone Bundle',
+		id: 75_022,
+		openedItem: Items.getOrThrow('Gemstone bundle'),
+		aliases: ['gemstone bundle', 'gem bundle'],
+		output: GemstoneBundle.table,
+		allItems: GemstoneBundle.table.allItems
+	},
+	{
+		name: 'Gemstone Satchel',
+		id: 75_023,
+		openedItem: Items.getOrThrow('Gemstone satchel'),
+		aliases: ['gemstone satchel', 'gem satchel'],
+		output: GemstoneSatchel.table,
+		allItems: GemstoneSatchel.table.allItems
+	},
+	{
+		name: 'Gemstone Core',
+		id: 75_024,
+		openedItem: Items.getOrThrow('Gemstone core'),
+		aliases: ['gemstone core', 'gem core'],
+		output: GemstoneCore.table,
+		allItems: GemstoneCore.table.allItems
 	}
 ];
 

@@ -1,6 +1,6 @@
 {
-	"hash": "1e6968d0f319d154016fc70400659b37",
-	"date": "2026-01-04T13:32:20.602Z",
+	"hash": "ec969f96c1bb2727264c60100a97fd2d",
+	"date": "2026-01-04T22:24:20.567Z",
 	"data": [
 		{
 			"id": 2,
@@ -815,6 +815,23 @@
 					"Giantsoul amulet": 20
 				}
 			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 142006,
+			"name": "Burning Dominion",
+			"base_kill_time_ms": 1080000,
+			"respawn_time_ms": 0,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": ["Combatant's cape"],
+			"qp_required": 2500,
+			"item_in_bank_boosts": [],
 			"can_barrage": false,
 			"can_chin": false,
 			"can_cannon": false,
@@ -1901,7 +1918,7 @@
 		{
 			"id": 142005,
 			"name": "Elder Mimic",
-			"base_kill_time_ms": 48000000,
+			"base_kill_time_ms": 24000000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,

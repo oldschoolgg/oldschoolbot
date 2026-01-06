@@ -30,8 +30,9 @@ export const aerialFishingTask: MinionTask = {
 		const maxRoll = Math.ceil((currentFishLevel * 2 + currentHuntLevel) / 3);
 		const loot = new Bank();
 
+		const pearlChance = Math.floor(100 - ((maxRoll - 40) * 25) / 59);
 		for (let i = 0; i < quantity; i++) {
-			if (rng.roll(100 - ((maxRoll - 40) * 25) / 59)) {
+			if (rng.roll(pearlChance)) {
 				molchPearls++;
 			}
 			const currentRoll = rng.randInt(0, maxRoll);

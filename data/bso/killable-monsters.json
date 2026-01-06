@@ -1396,6 +1396,130 @@
 		]
 	},
 	{
+		"is_custom": true,
+		"id": 142006,
+		"name": "Burning Dominion",
+		"time_to_finish": 1080000,
+		"hp": 3600,
+		"respawn_time": 0,
+		"difficulty_rating": 5,
+		"table": {},
+		"qp_required": 2500,
+		"heal_amount_needed": 120000,
+		"attack_style_to_use": "attack_stab",
+		"attack_styles_used": ["attack_stab"],
+		"level_requirements": {
+			"hitpoints": 120,
+			"attack": 115,
+			"strength": 115,
+			"defence": 115,
+			"magic": 115,
+			"ranged": 115,
+			"slayer": 115
+		},
+		"poh_boosts": {
+			"pool": {
+				"ancient_rejuvenation_pool": 5
+			}
+		},
+		"death_props": {
+			"hardness": 0.4,
+			"steepness": 0.999,
+			"lowest_death_chance": 5,
+			"highest_death_chance": 40
+		},
+		"minimum_heal_amount": 22,
+		"all_items": [
+			"Celestial flame",
+			"Forsaken tear",
+			"Orrodin",
+			"Orylin",
+			"Primordial heartstring",
+			"Primordial spine",
+			"Sacrilegious flask",
+			"Shattered pendant"
+		],
+		"minimum_gear_requirements": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"minimum_weapon_shield_stats": {
+			"melee": {
+				"attack_stab": 125,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"item_cost": {
+			"item_cost": {
+				"12695": 1,
+				"50026": 3,
+				"50027": 1,
+				"70006": 1,
+				"75006": 3
+			},
+			"qty_per_kill": 1
+		},
+		"tame_cant_kill": true,
+		"items_required": ["Combatant's cape"],
+		"setups_used": ["melee"],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 25,
+						"item_id": 75001
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 15,
+						"item_id": 75002
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 7,
+						"item_id": 75017
+					}
+				]
+			}
+		],
+		"group_killable": true
+	},
+	{
 		"id": 6503,
 		"name": "Callisto",
 		"time_to_finish": 420000,
@@ -3282,8 +3406,8 @@
 		"is_custom": true,
 		"id": 142005,
 		"name": "Elder Mimic",
-		"time_to_finish": 48000000,
-		"hp": 5000,
+		"time_to_finish": 24000000,
+		"hp": 2000,
 		"table": {},
 		"difficulty_rating": 6,
 		"qp_required": 1500,
@@ -3344,7 +3468,6 @@
 		},
 		"item_cost": {
 			"item_cost": {
-				"995": 5000000000,
 				"2677": 1,
 				"2722": 1,
 				"2801": 1,
