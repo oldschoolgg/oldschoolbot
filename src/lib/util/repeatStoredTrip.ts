@@ -1,5 +1,6 @@
 import type {
 	BathhouseTaskOptions,
+	BrimstoneDistilleryTaskOptions,
 	DisassembleTaskOptions,
 	DOAOptions,
 	DungeoneeringOptions,
