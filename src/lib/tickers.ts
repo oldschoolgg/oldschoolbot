@@ -1,58 +1,100 @@
-import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
-import { stringMatches, Time } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle, EmbedBuilder } from '@oldschoolgg/discord';
+import { noOp, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import type { User } from '@/prisma/main.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import { globalConfig } from '@/lib/constants.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
+import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import { MUserClass } from '@/lib/MUser.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
+import { informationalButtons } from '@/lib/sharedComponents.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 
-// let lastMessageID: string | null = null;
-// let lastMessageGEID: string | null = null;
-// const supportEmbed = new EmbedBuilder()
-// 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-// 	.addFields({
-// 		name: '📖 Read the FAQ',
-// 		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/getting-started/faq/ - also make sure to read the other pages of the website, which might contain the information you need.'
-// 	})
-// 	.addFields({
-// 		name: '🔎 Search',
-// 		value: 'Search this channel first, you might find your question has already been asked and answered.'
-// 	})
-// 	.addFields({
-// 		name: '💬 Ask',
-// 		value: "If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
-// 	})
-// 	.addFields({
-// 		name: '⚠️ Dont ping anyone',
-// 		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
-// 	});
+const supportEmbed = new EmbedBuilder()
+	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
+	.addFields({
+		name: '📖 Read the FAQ',
+		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/getting-started/faq/ - also make sure to read the other pages of the website, which might contain the information you need.'
+	})
+	.addFields({
+		name: '🔎 Search',
+		value: 'Search this channel first, you might find your question has already been asked and answered.'
+	})
+	.addFields({
+		name: '💬 Ask',
+		value: "If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
+	})
+	.addFields({
+		name: '⚠️ Dont ping anyone',
+		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
+	});
 
-// const geEmbed = new EmbedBuilder()
-// 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-// 	.addFields({
-// 		name: "⚠️ Don't get scammed",
-// 		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
-// 	})
-// 	.addFields({
-// 		name: '🔎 Search',
-// 		value: 'Search this channel first, someone might already be selling/buying what you want.'
-// 	})
-// 	.addFields({
-// 		name: '💬 Read the rules/Pins',
-// 		value: 'Read the pinned rules/instructions before using the channel.'
-// 	})
-// 	.addFields({
-// 		name: 'Keep Ads Short',
-// 		value: 'Keep your ad less than 10 lines long, as short as possible.'
-// 	});
+const geEmbed = new EmbedBuilder()
+	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
+	.addFields({
+		name: "⚠️ Don't get scammed",
+		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
+	})
+	.addFields({
+		name: '🔎 Search',
+		value: 'Search this channel first, someone might already be selling/buying what you want.'
+	})
+	.addFields({
+		name: '💬 Read the rules/Pins',
+		value: 'Read the pinned rules/instructions before using the channel.'
+	})
+	.addFields({
+		name: 'Keep Ads Short',
+		value: 'Keep your ad less than 10 lines long, as short as possible.'
+	});
+
+type ChannelHelperConfig = {
+	channelId: string;
+	embed: EmbedBuilder;
+	components?: any; // keep loose if your component type is annoying
+	startupQuietPeriodMs?: number; // default 1h
+	minAgeBeforeRepostMs?: number; // default 6h
+};
+
+async function handleHelperChannelTicker({
+	channelId,
+	embed,
+	components,
+	startupQuietPeriodMs = Time.Hour,
+	minAgeBeforeRepostMs = Time.Hour * 6
+}: ChannelHelperConfig) {
+	const messages = await globalClient.fetchChannelMessages(channelId, { limit: 20 })!;
+	if (!messages || messages.length === 0) return;
+
+	const now = Date.now();
+	const latestMessage = messages[0];
+	const existingBotMessage = messages.find(m => m.author_id === globalClient.applicationId);
+
+	if (existingBotMessage) {
+		// If there has been other chat since the last bot message, leave it to avoid spam.
+		if (latestMessage.id !== existingBotMessage.id) return;
+
+		const botMessageAge = now - Number(DiscordSnowflake.timestampFrom(existingBotMessage.id));
+		if (botMessageAge < minAgeBeforeRepostMs) return;
+
+		await globalClient.deleteMessage(channelId, existingBotMessage.id).catch(noOp);
+	} else {
+		const latestMessageAge = now - Number(DiscordSnowflake.timestampFrom(latestMessage.id));
+		if (latestMessageAge < startupQuietPeriodMs) return;
+	}
+
+	await globalClient.sendMessage(channelId, {
+		embeds: [embed],
+		...(components ? { components } : {})
+	});
+}
 
 /**
  * Tickers should idempotent, and be able to run at any time.
@@ -137,7 +179,21 @@ export const tickers: {
 				'farmingPatches.flower',
 				'farmingPatches.mushroom',
 				'farmingPatches.belladonna'
-			];
+			] as const;
+
+			const patchEligibilityClause = keys
+				.map(k => {
+					const col = `"${k.replaceAll('"', '""')}"`;
+					return `(
+					${col} IS NOT NULL
+					AND (
+						(${col}::jsonb ->> 'wasReminded') IS NULL
+						OR (${col}::jsonb ->> 'wasReminded') = 'false'
+					)
+				)`;
+				})
+				.join(' OR ');
+
 			const users = await prisma.$queryRawUnsafe<User[]>(`SELECT *
 FROM users u
 WHERE
@@ -155,11 +211,9 @@ AND EXISTS (
   WHERE fc.user_id = u.id
     AND fc.date_planted > now() - INTERVAL '2 days'
 )
-AND NOT (bitfield @> ARRAY[
-    37  -- DisabledFarmingReminders
-]::int[])
+AND NOT (bitfield @> ARRAY[37]::int[]) -- DisabledFarmingReminders
 AND (
-  ${keys.map(_key => `("${_key}" IS NOT NULL AND NOT "${_key}"::jsonb ? 'wasReminded')`).join(' OR ')}
+  ${patchEligibilityClause}
 )
 ORDER BY random()
 LIMIT 10;`);
@@ -181,23 +235,20 @@ LIMIT 10;`);
 									stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
 							))
 						: null;
-					const difference = now - patch.plantTime;
 					if (!planted) continue;
+					const difference = now - patch.plantTime;
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
 					patchesReadyToHarvest.push(patchType);
 				}
 
 				if (patchesReadyToHarvest.length === 0) continue;
-				const userUpdates: Partial<Record<FarmingPatchSettingsKey, IPatchData>> = {};
-				for (const patchType of patchesReadyToHarvest) {
-					userUpdates[Farming.getFarmingKeyFromName(patchType)] = {
-						...patches[patchType],
-						wasReminded: true
-					};
-				}
 
-				if (globalConfig.isProduction) {
+				// Don't consume reminder state in dev/stage
+				if (!globalConfig.isProduction) continue;
+
+				try {
+					// DM first
 					await globalClient.sendDm(user.id, {
 						content: `The following farming patches are ready to be harvested: ${patchesReadyToHarvest.join(', ')}.`,
 						components: [
@@ -213,54 +264,50 @@ LIMIT 10;`);
 							)
 						]
 					});
+					const userUpdates: Partial<Record<FarmingPatchSettingsKey, IPatchData>> = {};
+					for (const patchType of patchesReadyToHarvest) {
+						userUpdates[Farming.getFarmingKeyFromName(patchType)] = {
+							...patches[patchType],
+							wasReminded: true
+						};
+					}
+					if (Object.keys(userUpdates).length > 0) {
+						await user.update(userUpdates as SafeUserUpdateInput);
+					}
+				} catch (err) {
+					Logging.logError(err as Error);
 				}
 			}
 		}
 	},
-	// TEMPORARILY DISABLE
-	// {
-	// 	name: 'support_channel_messages',
-	// 	timer: null,
-	// 	startupWait: Time.Second * 22,
-	// 	interval: Time.Minute * 20,
-	// 	productionOnly: true,
-	// 	cb: async () => {
-	// 		const messages = await globalClient.fetchChannelMessages(Channel.HelpAndSupport, { limit: 10 })!;
-	// 		if (messages.some(m => m.author_id === globalClient.applicationId)) return;
-	// 		if (lastMessageID) {
-	// 			await globalClient.deleteMessage(Channel.HelpAndSupport, lastMessageID).catch(noOp);
-	// 		}
-
-	// 		const res = await globalClient.sendMessage(Channel.HelpAndSupport, {
-	// 			embeds: [supportEmbed],
-	// 			components: informationalButtons
-	// 		});
-	// 		if (!res) return;
-
-	// 		lastMessageID = res.id;
-	// 	}
-	// },
-	// {
-	// 	name: 'ge_channel_messages',
-	// 	startupWait: Time.Second * 19,
-	// 	timer: null,
-	// 	interval: Time.Minute * 20,
-	// 	productionOnly: true,
-	// 	cb: async () => {
-	// 		const messages = await globalClient.fetchChannelMessages(Channel.GrandExchange, { limit: 10 })!;
-	// 		if (messages.some(m => m.author_id === globalClient.applicationId)) return;
-	// 		if (lastMessageGEID) {
-	// 			await globalClient.deleteMessage(Channel.GrandExchange, lastMessageGEID).catch(noOp);
-	// 		}
-
-	// 		const res = await globalClient.sendMessage(Channel.GrandExchange, {
-	// 			embeds: [geEmbed]
-	// 		});
-	// 		if (!res) return;
-
-	// 		lastMessageGEID = res.id;
-	// 	}
-	// },
+	{
+		name: 'support_channel_messages',
+		timer: null,
+		startupWait: Time.Second * 22,
+		interval: Time.Minute * 20,
+		productionOnly: true,
+		cb: async () => {
+			await handleHelperChannelTicker({
+				channelId: Channel.HelpAndSupport,
+				embed: supportEmbed,
+				components: informationalButtons
+			});
+		}
+	},
+	{
+		name: 'ge_channel_messages',
+		startupWait: Time.Second * 19,
+		timer: null,
+		interval: Time.Minute * 20,
+		productionOnly: true,
+		cb: async () => {
+			await handleHelperChannelTicker({
+				channelId: Channel.GrandExchange,
+				embed: geEmbed
+				// no components for GE
+			});
+		}
+	},
 	{
 		name: 'ge_ticker',
 		startupWait: Time.Second * 30,
@@ -327,7 +374,7 @@ LIMIT 10;`;
 
 export function initTickers() {
 	for (const ticker of tickers) {
-		if (ticker.timer !== null) clearTimeout(ticker.timer);
+		if (ticker.timer !== null) TimerManager.clearTimeout(ticker.timer);
 		if (ticker.productionOnly && !globalConfig.isProduction) continue;
 		const fn = async () => {
 			try {
