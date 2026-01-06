@@ -1,22 +1,24 @@
 import { useElementSize } from '@mantine/hooks';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { chunkArr } from '@oldschoolgg/util';
-import { toKMB } from 'oldschooljs';
 import type React from 'react';
 import { useEffect, useRef } from 'react';
 
-import { type BankSortMethod, drawBorder, sorts } from '@/components/BankImage/bankImageUtil.js';
-import { loadFont } from '@/components/BitMapFont/loadFont.js';
-import { Renderer } from '@/components/BitMapFont/Renderer.js';
-import { Bank, type ItemBank } from '@/osrs/index.js';
+import { drawBorder } from '@/components/BankImage/bankImageUtil.js';
+import { useOSRSFonts } from '@/components/Canvas/fontLoader.js';
+import type { ItemBank } from '@/osrs/index.js';
+import bsoItemsSpritesheetJsonUrl from '../../../../../src/lib/resources/spritesheets/bso-items-spritesheet.json?url';
+import bsoItemsSpritesheetPngUrl from '../../../../../src/lib/resources/spritesheets/bso-items-spritesheet.png?url';
+import itemsSpritesheetJsonUrl from '../../../../../src/lib/resources/spritesheets/items-spritesheet.json?url';
+import itemsSpritesheetPngUrl from '../../../../../src/lib/resources/spritesheets/items-spritesheet.png?url';
 import { type Spritesheet, useSpritesheet } from '../../hooks/useSpritesheet.js';
 import styles from './BankImage.module.css';
 
 interface Props {
-	bank: Bank;
+	bank: ItemBank;
 	title: string | null;
 	showPrice?: boolean;
-	sort?: BankSortMethod;
+	sort?: keyof typeof sortingMethods;
 	width?: number;
 	ghosts?: number[];
 	showAsKc?: boolean;
@@ -46,18 +48,11 @@ interface LayoutDimensions {
 	itemSpacingY: number;
 }
 
-function calculateLayout(bank: ItemBank, ghosts: number[], availableWidth: number): LayoutDimensions {
+function calculateLayout(bank: ItemBank, availableWidth: number): LayoutDimensions {
 	// Calculate number of columns that fit in the available width
 	const columns = Math.max(1, Math.floor((availableWidth - distanceFromEdge * 2) / (itemSize + spacer)));
 
-	// Count total items (including ghosts)
-	const osBank = new Bank(bank);
-	for (const ghost of ghosts) {
-		if (!osBank.has(ghost)) {
-			osBank.add(ghost, 0);
-		}
-	}
-	const totalItems = osBank.length;
+	const totalItems = Math.min(MAX_ITEMS_TO_DRAW, Object.keys(bank).length);
 
 	// Calculate number of rows needed
 	const rows = Math.max(1, Math.ceil(totalItems / columns));
@@ -100,61 +95,82 @@ interface DrawBankOptions {
 	container: HTMLDivElement;
 	canvas: HTMLCanvasElement;
 	itemsSpritesheet: Spritesheet;
+	bsoItemsSpritesheet: Spritesheet;
 	bankSpritesheet: Spritesheet;
 	bank: ItemBank;
 	width: number;
 	title: string | null;
 	showPrice: boolean;
-	sort: BankSortMethod;
+	sort: keyof typeof sortingMethods;
 	ghosts?: number[];
 	showAsKC?: boolean;
-	font: any;
-	boldFont: any;
 }
+
+type ItemEntry = [number, number];
+const sortingMethods = {
+	id: (a: ItemEntry, b: ItemEntry) => a[0] - b[0],
+	name: (a: ItemEntry, b: ItemEntry) => a[0].toString().localeCompare(b[0].toString()),
+	quantity: (a: ItemEntry, b: ItemEntry) => b[1] - a[1]
+} as const;
+
+function drawQtyText({
+	ctx,
+	x,
+	y,
+	quantity
+}: {
+	ctx: CanvasRenderingContext2D;
+	x: number;
+	y: number;
+	quantity: number;
+}) {
+	x = x * RENDER_SCALE;
+	y = y * RENDER_SCALE;
+
+	const quantityColor = generateHexColorForCashStack(quantity);
+	const formattedQuantity = formatItemStackQuantity(quantity);
+	const dis = 5 * RENDER_SCALE;
+	const shadowDist = 1 * RENDER_SCALE;
+	for (let i = 0; i < 1; i++) {
+		ctx.fillStyle = '#000000';
+		ctx.fillText(formattedQuantity, x + shadowDist, y + dis + shadowDist);
+	}
+	for (let i = 0; i < 2; i++) {
+		ctx.fillStyle = quantityColor;
+		ctx.fillText(formattedQuantity, x, y + dis);
+	}
+}
+
+const MAX_ITEMS_TO_DRAW = 500;
 
 function drawBank({
 	canvas,
 	itemsSpritesheet,
+	bsoItemsSpritesheet,
 	bankSpritesheet,
 	bank,
 	width,
 	title,
-	showPrice = false,
-	sort,
-	ghosts = [],
-	showAsKC = false,
-	font,
-	boldFont
+	sort
 }: DrawBankOptions) {
-	console.log(`Drawing bank image at width ${width}px with ${bank.length} items and ${ghosts.length} ghosts.`);
 	const start = performance.now();
 
-	// Calculate layout dimensions
-	const layout = calculateLayout(bank, ghosts, width);
+	const layout = calculateLayout(bank, width);
 
 	// Prepare bank data
-	const osBank = new Bank(bank);
-	for (const ghost of ghosts) {
-		if (!osBank.has(ghost)) {
-			osBank.add(ghost, 0);
-		}
-	}
-	const bankEntries = osBank.items().sort(sorts[sort]);
+	const bankEntries = Object.entries(bank)
+		.map(([id, qty]) => [Number(id), qty] as ItemEntry)
+		.slice(0, MAX_ITEMS_TO_DRAW)
+		.sort(sortingMethods[sort]);
+	console.log(`Drawing bank image at width ${width}px with ${bankEntries.length} items.`);
+
 	const chunkedLoot = chunkArr(bankEntries, layout.columns);
 
 	// Create render canvas with calculated dimensions
 	const renderCanvas = createRenderCanvas(layout.width, layout.height, RENDER_SCALE);
 	const ctx = renderCanvas.getContext('2d', { alpha: false })!;
-	const renderer = new Renderer({
-		font: font,
-		canvas: renderCanvas
-	});
-	const rendererBold = new Renderer({
-		font: boldFont,
-		canvas: renderCanvas
-	});
-
 	ctx.imageSmoothingEnabled = false;
+
 	ctx.fillStyle = '#494034';
 
 	// Draw background pattern
@@ -166,115 +182,61 @@ function drawBank({
 	// Draw items
 	const baseSpacing = spacer + distanceFromEdge;
 
-	console.log('Drawing items');
-
-	const TEXT_RENDER_SCALE = 0.5;
-	const TITLE_TEXT_RENDER_SCALE = 1;
-
+	ctx.filter =
+		'url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxmaWx0ZXIgaWQ9ImZpbHRlciIgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj48ZmVDb21wb25lbnRUcmFuc2Zlcj48ZmVGdW5jUiB0eXBlPSJpZGVudGl0eSIvPjxmZUZ1bmNHIHR5cGU9ImlkZW50aXR5Ii8+PGZlRnVuY0IgdHlwZT0iaWRlbnRpdHkiLz48ZmVGdW5jQSB0eXBlPSJkaXNjcmV0ZSIgdGFibGVWYWx1ZXM9IjAgMSIvPjwvZmVDb21wb25lbnRUcmFuc2Zlcj48L2ZpbHRlcj48L3N2Zz4=#filter)';
+	ctx.font = `${RENDER_SCALE * 16}px 'OSRSFontCompact'`;
 	for (let row = 0; row < chunkedLoot.length; row++) {
 		for (let col = 0; col < chunkedLoot[row].length; col++) {
 			const [item, quantity] = chunkedLoot[row][col];
-			if (!itemsSpritesheet.data[item.id.toString()]) {
-				console.log(`Missing spritesheet data for item ID ${item.id}, skipping draw.`);
+
+			const isBsoItem = bsoItemsSpritesheet.data[item];
+			const spritesheetToUse = isBsoItem ? bsoItemsSpritesheet : itemsSpritesheet;
+			const itemData = spritesheetToUse.data[item];
+			if (!itemData) {
+				// console.log(`Missing spritesheet data for item ID ${item}, skipping draw.`);
 				continue;
 			}
-			const [_sX, _sY, sW, sH] = itemsSpritesheet.data[item.id.toString()]!;
+			const [_sX, _sY, sW, sH] = itemData;
 
 			// Calculate position using layout spacing
 			const xLoc = Math.floor(baseSpacing + col * layout.itemSpacingX) * RENDER_SCALE;
 			const yLoc = (Math.floor(baseSpacing + row * layout.itemSpacingY) + 12) * RENDER_SCALE;
 
-			// Draw item with ghost effect if needed
-			if (ghosts.includes(item.id) && quantity === 0) {
-				ctx.globalAlpha = 0.2;
-			}
-
-			itemsSpritesheet.draw({
-				id: item.id,
+			const x = xLoc + ((itemSize - sW) / 2) * RENDER_SCALE;
+			const y = yLoc + ((itemSize - sH) / 2) * RENDER_SCALE;
+			spritesheetToUse.draw({
+				id: item,
 				ctx,
-				x: xLoc + ((itemSize - sW) / 2) * RENDER_SCALE,
-				y: yLoc + ((itemSize - sH) / 2) * RENDER_SCALE,
+				x,
+				y,
 				width: sW * RENDER_SCALE,
 				height: sH * RENDER_SCALE
 			});
 
-			ctx.globalAlpha = 1;
-
-			// Calculate text position
-			const textXLoc = Math.floor((baseSpacing + col * layout.itemSpacingX - 6) * RENDER_SCALE);
-			const textYLoc = Math.floor((baseSpacing + row * layout.itemSpacingY + 10) * RENDER_SCALE);
-
-			// Draw quantity
 			if (quantity > 0) {
-				const quantityColor = generateHexColorForCashStack(quantity);
-				let formattedQuantity = formatItemStackQuantity(quantity);
-				if (showAsKC) formattedQuantity = `${formattedQuantity} KC`;
-
-				// Shadow
-				renderer.draw(textXLoc + TEXT_RENDER_SCALE, textYLoc + TEXT_RENDER_SCALE, formattedQuantity, {
-					color: '#000000',
-					scale: TEXT_RENDER_SCALE
-				});
-				// Main text
-				renderer.draw(textXLoc, textYLoc, formattedQuantity, {
-					color: quantityColor,
-					scale: TEXT_RENDER_SCALE
-				});
-			}
-
-			// Draw price if enabled
-			if (showPrice) {
-				const value = (item.price ?? 0) * quantity;
-				const fmted = toKMB(value);
-				const valueColor = generateHexColorForCashStack(value);
-
-				// Shadow
-				renderer.draw(
-					textXLoc + TEXT_RENDER_SCALE,
-					textYLoc + Math.floor(24 * TEXT_RENDER_SCALE) + TEXT_RENDER_SCALE,
-					fmted,
-					{
-						color: '#000000',
-						scale: TEXT_RENDER_SCALE
-					}
-				);
-				// Main text
-				renderer.draw(textXLoc, textYLoc + Math.floor(24 * TEXT_RENDER_SCALE), fmted, {
-					color: valueColor,
-					scale: TEXT_RENDER_SCALE
-				});
+				const textXLoc = Math.floor(baseSpacing + col * layout.itemSpacingX - 6);
+				const textYLoc = Math.floor(baseSpacing + row * layout.itemSpacingY + 10);
+				drawQtyText({ ctx, x: textXLoc, y: textYLoc, quantity });
 			}
 		}
 	}
 
-	// Draw border
 	drawBorder(ctx, bankSpritesheet, RENDER_SCALE);
 
-	// Draw title if provided
 	if (title) {
-		// Measure text width for centering
-		const chars = Array.from(title);
-		let textAdvance = 0;
-		for (let c = 0; c < chars.length; c++) {
-			const ch = chars[c];
-			const charMeta = (font as any).characters?.[ch];
-			textAdvance += (charMeta ? charMeta.width : 0) * 1;
-		}
-
-		const titleX = Math.floor((renderCanvas.width - textAdvance) / 2);
-		const titleY = Math.floor(9 * TITLE_TEXT_RENDER_SCALE);
-
-		rendererBold.draw(titleX + TITLE_TEXT_RENDER_SCALE, titleY + TITLE_TEXT_RENDER_SCALE, title, {
-			color: '#000000',
-			scale: TITLE_TEXT_RENDER_SCALE
-		});
-		rendererBold.draw(titleX, titleY, title, { color: '#ff981f', scale: TITLE_TEXT_RENDER_SCALE });
+		const titleX = Math.floor(renderCanvas.width / 2);
+		const titleY = 21 * RENDER_SCALE;
+		ctx.font = `${16 * RENDER_SCALE}px 'RuneScape Bold 12'`;
+		ctx.fillStyle = '#000000';
+		ctx.fillText(title, titleX, titleY);
+		ctx.fillStyle = '#ff981f';
+		ctx.fillText(title, titleX, titleY);
 	}
 
 	canvas.width = renderCanvas.width;
 	canvas.height = renderCanvas.height;
-	canvas.style.width = `${layout.width}px`;
-	canvas.style.height = `${layout.height}px`;
+	canvas.style.width = `${layout.width * RENDER_SCALE}px`;
+	canvas.style.height = `${layout.height * RENDER_SCALE}px`;
 	canvas.style.display = 'block';
 	canvas.style.maxWidth = 'none';
 
@@ -292,70 +254,58 @@ export const BankImage: React.FC<Props> = ({
 	bank,
 	title,
 	showPrice = false,
-	sort = 'value',
+	sort = 'quantity',
 	width: customWidth,
 	ghosts,
 	showAsKc
 }) => {
+	const osrsFontsReady = useOSRSFonts();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const compactFontRef = useRef<any>(null);
-	const boldFontRef = useRef<any>(null);
 	const { ref: containerRef, width } = useElementSize();
 
 	const bankSheet = useSpritesheet(
 		'https://cdn.oldschool.gg/website/spritesheets/bank.a0bf6f62.webp',
 		'https://cdn.oldschool.gg/website/spritesheets/bank.0b91c04f.json'
 	);
-	const itemsSpritesheet = useSpritesheet(
-		'https://cdn.oldschool.gg/website/spritesheets/items-spritesheet.6299efef.webp',
-		'https://cdn.oldschool.gg/website/spritesheets/items-spritesheet.043bb5f4.json'
-	);
+	const itemsSpritesheet = useSpritesheet(itemsSpritesheetPngUrl, itemsSpritesheetJsonUrl);
+	const bsoItemsSpritesheet = useSpritesheet(bsoItemsSpritesheetPngUrl, bsoItemsSpritesheetJsonUrl);
 
 	useEffect(() => {
-		if (canvasRef.current) {
-			loadFont(
-				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/compact_24.png',
-				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/compact_24.json'
-			).then((_font: any) => {
-				compactFontRef.current = _font;
-			});
-			loadFont(
-				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/bold_12.png',
-				'https://cdn.oldschool.gg/website/osrs-bitmap-fonts/bold_12.json'
-			).then((_font: any) => {
-				boldFontRef.current = _font;
-			});
-		}
-	}, [canvasRef]);
-
-	useEffect(() => {
-		if (!bankSheet || !itemsSpritesheet) {
+		if (!bankSheet || !itemsSpritesheet || !bsoItemsSpritesheet || !osrsFontsReady) {
 			console.log('Spritesheets not loaded yet, skipping bank image draw.');
 			return;
 		}
-		if (!compactFontRef.current || !boldFontRef.current) {
-			console.log('Fonts not loaded yet, skipping bank image draw.');
-			return;
-		}
+
 		if (canvasRef.current && width > 0) {
-			console.log(`Drawing bank image. ${bankSheet.image.width}x${bankSheet.image.height} spritesheet size.`);
 			drawBank({
 				container: containerRef.current!,
 				canvas: canvasRef.current!,
 				itemsSpritesheet,
+				bsoItemsSpritesheet,
 				bankSpritesheet: bankSheet!,
-				bank: 'toJSON' in bank ? bank.toJSON() : bank,
-				width: customWidth ?? Math.min(1000, width),
+				bank,
+				width: customWidth ?? Math.min(1024, width),
 				title,
 				showPrice,
 				sort,
 				ghosts,
-				showAsKC: showAsKc,
-				font: compactFontRef.current,
-				boldFont: boldFontRef.current
+				showAsKC: showAsKc
 			});
 		}
-	}, [itemsSpritesheet, bankSheet, bank.toString(), customWidth, width, title, showPrice, sort, ghosts, showAsKc]);
+	}, [
+		itemsSpritesheet,
+		bsoItemsSpritesheet,
+		bankSheet,
+		bank.toString(),
+		customWidth,
+		width,
+		title,
+		showPrice,
+		sort,
+		ghosts,
+		showAsKc,
+		osrsFontsReady
+	]);
 
 	return (
 		<div className={styles.bank_container} id="bank" ref={containerRef}>

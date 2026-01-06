@@ -33,10 +33,10 @@ export const TOBSimulator = () => {
 			<div className="flex flex-col w-full max-w-full">
 				<div className="flex justify-around">
 					<div className="w-6/12">
-						<BankImage bank={currentLoot} title={`Loot`} showPrice={false} />
+						<BankImage bank={currentLoot.toJSON()} title={`Loot`} showPrice={false} />
 					</div>
 				</div>
-				<BankImage bank={totalLoot} title={`Total Loot - ${kc} KC`} showPrice={false} />
+				<BankImage bank={totalLoot.toJSON()} title={`Total Loot - ${kc} KC`} showPrice={false} />
 			</div>
 		</div>
 	);
