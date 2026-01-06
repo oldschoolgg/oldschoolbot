@@ -73,6 +73,7 @@ import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/util
 import birdhouses, { type Birdhouse } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
+import type { SlayerSkipSettings } from '@/lib/slayer/types.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
@@ -152,6 +153,7 @@ export async function rawUserUpdate(userId: string, data: Prisma.UserUpdateInput
 const USER_DEFAULTS = {
 	slayer_unlocks: [],
 	slayer_blocked_ids: [],
+	slayer_skip_settings: {},
 	badges: [],
 	bitfield: [],
 	temp_cl: {},
@@ -162,6 +164,7 @@ const USER_DEFAULTS = {
 	attack_style: [],
 	combat_options: [],
 	slayer_autoslay_options: [],
+	slayer_auto_skip_buffer: 0,
 	completed_ca_task_ids: [],
 	store_bitfield: [],
 	cl_array: [],
@@ -1258,6 +1261,28 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		return res;
 	}
 
+	getSlayerSkipSettings(): SlayerSkipSettings {
+		const rawSettings = this.user.slayer_skip_settings ?? {};
+		if (!isObject(rawSettings)) return {};
+		const parsedEntries = Object.entries(rawSettings).map(([masterKey, monsterIDs]) => {
+			if (!Array.isArray(monsterIDs)) return [masterKey, []];
+			const filtered = monsterIDs.filter(id => typeof id === 'number');
+			return [masterKey, filtered];
+		});
+		return Object.fromEntries(parsedEntries);
+	}
+
+	async updateSlayerSkipSettings(masterKey: string, monsterIDs: number[]) {
+		const currentSettings = this.getSlayerSkipSettings();
+		const newSettings = { ...currentSettings, [masterKey]: monsterIDs };
+		await this.update({ slayer_skip_settings: newSettings });
+		return newSettings;
+	}
+
+	async setSlayerAutoSkipBuffer(amount: number) {
+		await this.update({ slayer_auto_skip_buffer: amount });
+	}
+
 	hasSlayerUnlock(unlock: SlayerTaskUnlocksEnum): boolean {
 		return this.user.slayer_unlocks.includes(unlock);
 	}
@@ -1441,8 +1466,9 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 }
 
+export type MUser = MUserClass;
+
 declare global {
-	export type MUser = MUserClass;
 	var mUserFetch: typeof srcMUserFetch;
 	var GlobalMUserClass: typeof MUserClass;
 }

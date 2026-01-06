@@ -10,6 +10,12 @@ import {
 	slayerShopListRewards
 } from '@/mahoji/lib/abstracted_commands/slayerShopCommand.js';
 import {
+	handleSlayerSkipListCommand,
+	setSlayerAutoSkipBufferCommand,
+	slayerMasterAutocomplete,
+	slayerMonsterAutocomplete
+} from '@/mahoji/lib/abstracted_commands/slayerSkipListCommand.js';
+import {
 	slayerListBlocksCommand,
 	slayerNewTaskCommand,
 	slayerSkipTaskCommand,
@@ -78,6 +84,48 @@ export const slayerCommand = defineCommand({
 					name: 'new',
 					description: 'Get a new task (if applicable)',
 					required: false
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'skip_list',
+			description: 'Manage automatic Slayer skip lists (Tier 2+ patrons).',
+			options: [
+				{
+					type: 'String',
+					name: 'action',
+					description: 'Add, remove, or list skip entries',
+					required: true,
+					choices: choicesOf(['add', 'remove', 'list'])
+				},
+				{
+					type: 'String',
+					name: 'master',
+					description: 'Slayer master to manage',
+					required: false,
+					autocomplete: async ({ value }: StringAutoComplete) => slayerMasterAutocomplete(value ?? '')
+				},
+				{
+					type: 'String',
+					name: 'monster',
+					description: 'Monster to add or remove',
+					required: false,
+					autocomplete: async ({ value }: StringAutoComplete) => slayerMonsterAutocomplete(value ?? '')
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'auto_skip_buffer',
+			description: 'Set a Slayer points buffer for auto-skip (Tier 2+ patrons).',
+			options: [
+				{
+					type: 'Integer',
+					name: 'points',
+					description: 'Minimum Slayer points to keep before stopping auto-skip',
+					required: true,
+					min_value: 0
 				}
 			]
 		},
@@ -269,6 +317,17 @@ export const slayerCommand = defineCommand({
 					interaction
 				});
 			}
+		}
+		if (options.skip_list) {
+			return handleSlayerSkipListCommand({
+				user,
+				action: options.skip_list.action,
+				master: options.skip_list.master,
+				monster: options.skip_list.monster
+			});
+		}
+		if (options.auto_skip_buffer) {
+			return setSlayerAutoSkipBufferCommand(user, options.auto_skip_buffer.points);
 		}
 		if (options.rewards) {
 			if (options.rewards.my_unlocks) {
