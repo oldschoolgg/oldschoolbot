@@ -606,6 +606,8 @@ enum XpGainSource {
   MahoganyHomes
   AerialFishing
   GemstoneFishing
+  AncientMycology
+  ArchaicMining
   CleaningHerbsWhileFarming
   CamdozaalMining
   CamdozaalSmithing
@@ -1200,6 +1202,8 @@ enum activity_type_enum {
   ChampionsChallenge
   AerialFishing
   GemstoneFishing
+  AncientMycology
+  ArchaicMining
   DriftNet
   MahoganyHomes
   Nex

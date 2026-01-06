@@ -21,10 +21,10 @@ import {
 import { Bank, Items, itemID, LootTable } from 'oldschooljs';
 
 import type { UnifiedOpenable } from '@/lib/openables.js';
+import { ElderMimicCasketTable } from '../elderOpenables.js';
 import { keyCrates } from '../keyCrates.js';
 import { PaintBoxTable } from '../paintColors.js';
 import { divinationEnergies } from '../skills/divination.js';
-import { ElderMimicCasketTable } from '../elderOpenables.js'
 
 const DivineEggTable = new LootTable().tertiary(100, 'Jar of memories');
 
@@ -192,16 +192,16 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		smokeyApplies: false
 	},
 	{
-    name: 'Elder mimic casket',
-    id: itemID('Elder mimic casket'),
-    openedItem: Items.getOrThrow('Elder mimic casket'),
-    aliases: ['elder mimic casket', 'elder mimic', 'emc'],
-    output: async ({ quantity, user }) => {
-      const loot = ElderMimicCasketTable.roll(quantity, { cl: user.cl });
-      return { bank: loot };
-    },
-    allItems: ElderMimicCasketTable.allItems
-  }
+		name: 'Elder mimic casket',
+		id: itemID('Elder mimic casket'),
+		openedItem: Items.getOrThrow('Elder mimic casket'),
+		aliases: ['elder mimic casket', 'elder mimic', 'emc'],
+		output: async ({ quantity, user }) => {
+			const loot = ElderMimicCasketTable.roll(quantity, { cl: user.cl });
+			return { bank: loot };
+		},
+		allItems: ElderMimicCasketTable.allItems
+	}
 ];
 
 for (const crate of keyCrates) {

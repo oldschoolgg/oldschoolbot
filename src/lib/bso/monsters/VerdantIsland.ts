@@ -35,7 +35,7 @@ export const IslandGemTable = new LootTable()
 	.tertiary(25, 'Gemstone bundle')
 	.tertiary(75, 'Gemstone satchel')
 	.tertiary(150, 'Gemstone core')
-	.tertiary(300, 'Prismare');
+	.tertiary(500, 'Prismare');
 
 export const IslandTable3x = new LootTable().every(IslandTable).every(IslandTable).every(IslandTable);
 
