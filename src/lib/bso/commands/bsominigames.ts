@@ -32,6 +32,7 @@ import { Items } from 'oldschooljs';
 
 import { choicesOf } from '@/discord/index.js';
 import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
+import { brimstoneDistilleryStartCommand, DistilleryRecipes } from '@/lib/bso/minigames/brimstoneDistillery.js';
 
 export const bsoMinigamesCommand = defineCommand({
 	name: 'bsominigames',
@@ -309,6 +310,37 @@ export const bsoMinigamesCommand = defineCommand({
 					]
 				}
 			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'brimstone_distillery',
+			description: 'The Brimstone Distillery minigame.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Begin a brimstone distillation.',
+					options: [
+						{
+							type: 'String',
+							name: 'recipe',
+							description: 'The recipe you want to distill.',
+							required: true,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return DistilleryRecipes.filter(r =>
+									!value ? true : r.name.toLowerCase().includes(value.toLowerCase())
+								).map(r => ({ name: `${r.name} (${r.herbloreLevel} Herblore)`, value: r.name }));
+	}
+						},
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'stats',
+					description: 'View your Brimstone Distillery stats and upgrades.',
+					options: []
+				}
+			]
 		}
 	],
 	run: async ({ options, user, channelId }) => {
@@ -332,7 +364,18 @@ export const bsoMinigamesCommand = defineCommand({
 			const boost = user.user.guthixian_cache_boosts_available;
 			return `You have ${boost} Guthixian cache boost${boost === 1 ? '' : 's'} available.`;
 		}
+		if (options.brimstone_distillery?.start) {
+			return brimstoneDistilleryStartCommand({
+				user,
+				channelId,
+				recipe: options.brimstone_distillery.start.recipe
+			});
+		}
 
+		if (options.brimstone_distillery?.stats) {
+			const Score = await user.fetchMinigameScore('brimstone_distillery');
+			return `You have completed ${Score} Brimstone Distillery trips.`;
+		}
 		if (divine_dominion?.check) {
 			return divineDominionCheck(user);
 		}

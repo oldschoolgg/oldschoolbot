@@ -581,6 +581,8 @@ model Minigame {
   depths_of_atlantis_cm    Int      @default(0)
   guthixian_cache          Int      @default(0)
   turaels_trials           Int      @default(0)
+  brimstone_distillery     Int      @default(0)
+
   new_user                 NewUser?
 
   @@index([user_id])
@@ -1327,6 +1329,7 @@ enum activity_type_enum {
   PuroPuro
   Easter
   BaxtorianBathhouses
+  BrimstoneDistillery
   Naxxus
   Disassembling
   Research

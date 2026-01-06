@@ -21,6 +21,7 @@ import { researchActivityTask } from '@/lib/bso/tasks/researchActivity.js';
 import { scTask } from '@/lib/bso/tasks/stealingCreationActivity.js';
 import { twTask } from '@/lib/bso/tasks/tinkeringWorkshopActivity.js';
 import { turaelsTrialsTask } from '@/lib/bso/tasks/turaelsTrialsActivity.js';
+import { brimstoneDistilleryTask } from '@/lib/bso/tasks/brimstoneDistilleryActivity.js';
 import { vasaTask } from '@/lib/bso/tasks/vasaMagusActivity.js';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
@@ -239,7 +240,8 @@ export const allTasks: MinionTask[] = [
 	memoryHarvestTask,
 	guthixianCacheTask,
 	turaelsTrialsTask,
-	dominionTask
+	dominionTask,
+	brimstoneDistilleryTask
 ];
 
 type MinionTaskRunOptions = {
