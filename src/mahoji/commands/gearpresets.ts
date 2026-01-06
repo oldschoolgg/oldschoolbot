@@ -4,7 +4,8 @@ import { Items } from 'oldschooljs';
 
 import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/discord/index.js';
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
-import { Gear, globalPresets } from '@/lib/structures/Gear.js';
+import { globalPresets } from '@/lib/gear/gearPresets.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { gearEquipCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 

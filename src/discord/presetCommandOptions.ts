@@ -6,9 +6,10 @@ import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 import type { GearPreset } from '@/prisma/main.js';
 import { choicesOf, defineOption } from '@/discord/index.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
+import { type GlobalPreset, globalPresets } from '@/lib/gear/gearPresets.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
-import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
+import { Gear } from '@/lib/structures/Gear.js';
 
 export const filterOption = {
 	type: 'String',
