@@ -102,7 +102,6 @@ export const Organic: DisassemblySourceGroup = {
 				'Cooked slimy eel',
 				'Cooked sweetcorn',
 				'Cooking apple',
-				'Dragon bitter',
 				'Dragon bitter(4)',
 				'Dragon bitter(m)',
 				'Curry leaf',

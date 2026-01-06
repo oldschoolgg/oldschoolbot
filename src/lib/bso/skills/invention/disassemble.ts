@@ -17,15 +17,7 @@ import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import MaterialLootTable from '@/lib/bso/skills/invention/MaterialLootTable.js';
 
 import { percentChance } from '@oldschoolgg/rng';
-import {
-	calcPerHour,
-	calcWhatPercent,
-	formatDuration,
-	reduceNumByPercent,
-	Table,
-	Time,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { calcPerHour, calcWhatPercent, formatDuration, reduceNumByPercent, Table, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -413,17 +405,10 @@ export function calcWholeDisXP(user: MUser, item: Item, quantity: number) {
 	return null;
 }
 
-const duplicateItems = [];
-const foundItems: number[] = [];
+export const allDisassemblyItems: number[] = [];
 for (const group of DisassemblySourceGroups) {
 	for (const itm of group.items) {
 		const items: Item[] = Array.isArray(itm.item) ? itm.item : [itm.item];
-		if (items.some(i => foundItems.includes(i.id))) {
-			duplicateItems.push(items.map(i => ({ name: i.name, group: i.name })));
-		} else {
-			foundItems.push(...items.map(i => i.id));
-		}
+		allDisassemblyItems.push(...items.map(i => i.id));
 	}
 }
-if (duplicateItems.length > 0)
-	console.warn(`Found duplicate items ${uniqueArr(duplicateItems.flat().map(i => i.name))}`);

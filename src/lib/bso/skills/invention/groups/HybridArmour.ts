@@ -29,7 +29,6 @@ export const HybridArmour: DisassemblySourceGroup = {
 			item: i('Void knight robe'),
 			lvl: 42
 		},
-		{ item: i('Berserker ring'), lvl: 45 },
 		{
 			item: i('Crystal helm'),
 			lvl: 70

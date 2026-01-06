@@ -819,7 +819,6 @@
 					"Piscarilius hood",
 					"Piscarilius scarf",
 					"Priest gown",
-					"Priest gown",
 					"Purple boater",
 					"Purple boots",
 					"Purple cape",
@@ -857,8 +856,6 @@
 					"Villager armband",
 					"Villager hat",
 					"Villager robe",
-					"Villager sandals",
-					"Villager sandals",
 					"Villager sandals",
 					"Vyrewatch legs",
 					"Vyrewatch shoes",
@@ -2158,10 +2155,6 @@
 			{
 				"item": "Void knight robe",
 				"lvl": 42
-			},
-			{
-				"item": "Berserker ring",
-				"lvl": 45
 			},
 			{
 				"item": "Crystal helm",
@@ -3561,14 +3554,9 @@
 					"Saradomin platelegs",
 					"Saradomin plateskirt",
 					"Zamorak full helm",
-					"Zamorak full helm",
-					"Zamorak kiteshield",
 					"Zamorak kiteshield",
 					"Zamorak platebody",
-					"Zamorak platebody",
 					"Zamorak platelegs",
-					"Zamorak platelegs",
-					"Zamorak plateskirt",
 					"Zamorak plateskirt"
 				],
 				"lvl": 50
@@ -4155,7 +4143,6 @@
 					"Cooking apple",
 					"Curry leaf",
 					"Desert goat horn",
-					"Dragon bitter",
 					"Dragon bitter",
 					"Dragon bitter(4)",
 					"Dragon bitter(m)",
