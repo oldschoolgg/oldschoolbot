@@ -33,10 +33,10 @@ export async function rawCommandHandlerInner({
 	}
 	const user = await mUserFetch(interaction.userId);
 
-	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(console.error);
+	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
 	if (user.user.completed_achievement_diaries.length === 0) {
-		user.syncCompletedAchievementDiaries().catch(console.error);
+		user.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
 	}
 
 	const shouldIgnoreBusy = ignoreUserIsBusy || busyImmuneCommands.includes(command.name);

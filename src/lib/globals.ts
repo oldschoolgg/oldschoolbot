@@ -24,7 +24,7 @@ async function getAdapter(
 					max: 100,
 					min: 20
 				},
-				{ onPoolError: console.error, onConnectionError: console.error }
+				{ onPoolError: Logging.logError, onConnectionError: Logging.logError }
 			),
 			pgLiteClient: null
 		};
