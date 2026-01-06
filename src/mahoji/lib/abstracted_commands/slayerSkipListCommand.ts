@@ -3,7 +3,6 @@ import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import { PerkTier } from '@/lib/constants.js';
-import type { MUser } from '@/lib/MUser.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { assignNewSlayerTask, getAssignableSlayerTaskIDs, getCommonTaskName } from '@/lib/slayer/slayerUtil.js';
@@ -171,10 +170,52 @@ export async function slayerMasterAutocomplete(value: string) {
 		.map(master => ({ name: master.name, value: getMasterKey(master) }));
 }
 
-export async function slayerMonsterAutocomplete(value: string) {
-	return slayerMonsterChoices
-		.filter(choice => !value || stringMatches(choice.name, value))
+function norm(s: string) {
+	return s
+		.toLowerCase()
+		.replace(/['’]/g, '')
+		.replace(/[^a-z0-9]+/g, ' ')
+		.trim();
+}
+
+function buildMonsterChoicesForMaster(master: SlayerMaster) {
+	const set = new Map<number, string>();
+
+	for (const task of master.tasks) {
+		set.set(task.monster.id, getCommonTaskName(task.monster));
+	}
+
+	return [...set.values()]
+		.sort((a, b) => a.localeCompare(b))
+		.map(name => ({ name, value: name }));
+}
+
+// value-only matcher for autocomplete
+function filterChoices(choices: { name: string; value: string }[], value: string) {
+	const v = norm(value ?? '');
+	if (!v) return choices.slice(0, MAX_AUTOCOMPLETE_RESULTS);
+	return choices
+		.filter(c => norm(c.name).includes(v))
 		.slice(0, MAX_AUTOCOMPLETE_RESULTS);
+}
+
+// Autocomplete that can “see” the other selected options:
+export async function slayerMonsterAutocomplete({
+	value,
+	options
+}: StringAutoComplete & { options?: Record<string, unknown> }) {
+	// NOTE: adjust how you read master depending on your framework:
+	const masterInput = (options?.master as string | undefined) ?? null;
+
+	if (masterInput) {
+		const master = resolveSlayerMaster(masterInput);
+		if (master) {
+			return filterChoices(buildMonsterChoicesForMaster(master), value ?? '');
+		}
+	}
+
+	// fallback: global list
+	return filterChoices(slayerMonsterChoices, value ?? '');
 }
 
 type AssignedSlayerTask = Awaited<ReturnType<typeof assignNewSlayerTask>>;

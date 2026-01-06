@@ -111,7 +111,7 @@ export const slayerCommand = defineCommand({
 					name: 'monster',
 					description: 'Monster to add or remove',
 					required: false,
-					autocomplete: async ({ value }: StringAutoComplete) => slayerMonsterAutocomplete(value ?? '')
+					autocomplete: async (ctx: StringAutoComplete) => slayerMonsterAutocomplete(ctx as any)
 				}
 			]
 		},
@@ -154,9 +154,9 @@ export const slayerCommand = defineCommand({
 										!value
 											? true
 											: r.name.toLowerCase().includes(value) ||
-												r.aliases?.some(alias =>
-													alias.toLowerCase().includes(value.toLowerCase())
-												)
+											r.aliases?.some(alias =>
+												alias.toLowerCase().includes(value.toLowerCase())
+											)
 									)
 									.map(m => {
 										return { name: m.name, value: m.name };
@@ -210,9 +210,9 @@ export const slayerCommand = defineCommand({
 										(!value
 											? true
 											: r.name.toLowerCase().includes(value) ||
-												r.aliases?.some(alias =>
-													alias.toLowerCase().includes(value.toLowerCase())
-												))
+											r.aliases?.some(alias =>
+												alias.toLowerCase().includes(value.toLowerCase())
+											))
 								).map(m => {
 									return { name: m.name, value: m.name };
 								});
@@ -268,9 +268,9 @@ export const slayerCommand = defineCommand({
 										(!value
 											? true
 											: r.name.toLowerCase().includes(value) ||
-												r.aliases?.some(alias =>
-													alias.toLowerCase().includes(value.toLowerCase())
-												))
+											r.aliases?.some(alias =>
+												alias.toLowerCase().includes(value.toLowerCase())
+											))
 								).map(m => {
 									return { name: m.name, value: m.name };
 								});
