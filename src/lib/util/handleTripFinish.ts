@@ -10,8 +10,8 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
-import { BERT_SAND_BUCKETS, hasCollectedThisReset, isManualEligible } from '@/lib/minions/data/bertSand.js';
 import { MUserClass } from '@/lib/MUser.js';
+import { BERT_SAND_BUCKETS, hasCollectedThisReset, isManualEligible } from '@/lib/minions/data/bertSand.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
