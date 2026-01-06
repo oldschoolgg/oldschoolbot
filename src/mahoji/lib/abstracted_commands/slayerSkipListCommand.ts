@@ -196,13 +196,16 @@ function filterChoices(choices: { name: string; value: string }[], value: string
 	return choices.filter(c => norm(c.name).includes(v)).slice(0, MAX_AUTOCOMPLETE_RESULTS);
 }
 
-function findStringOptionValue(options: IAutoCompleteInteractionOption[] | undefined, optionName: string) {
+function findStringOptionValue(
+	options: IAutoCompleteInteractionOption[] | undefined,
+	optionName: string
+): string | null {
 	for (const option of options ?? []) {
 		if ('value' in option && option.name === optionName && typeof option.value === 'string') {
 			return option.value;
 		}
 		if ('options' in option) {
-			const nested = findStringOptionValue(
+			const nested: string | null = findStringOptionValue(
 				option.options as IAutoCompleteInteractionOption[] | undefined,
 				optionName
 			);
