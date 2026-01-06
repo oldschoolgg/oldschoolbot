@@ -33,7 +33,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -74,7 +74,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -115,7 +115,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -156,7 +156,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -197,7 +197,7 @@ const trees: Plant[] = [
 		defaultNumOfPatches: 5,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]

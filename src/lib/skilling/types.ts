@@ -271,7 +271,7 @@ export interface Plant {
 	defaultNumOfPatches: number;
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;
-	canCompostandPay: boolean;
+	canCompostAndPay: boolean;
 	additionalPatchesByQP: number[][];
 	additionalPatchesByFarmLvl: number[][];
 	additionalPatchesByFarmGuildAndLvl: number[][];

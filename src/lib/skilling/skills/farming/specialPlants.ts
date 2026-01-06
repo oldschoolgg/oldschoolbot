@@ -29,7 +29,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -68,7 +68,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -107,7 +107,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -146,7 +146,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -184,7 +184,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 2] // Underwater Fossil Island (2)
@@ -220,7 +220,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -260,7 +260,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -299,7 +299,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -342,7 +342,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 3] // Fossil Island (3)
@@ -377,7 +377,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 12,
 		canPayFarmer: false,
 		canCompostPatch: false,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -411,7 +411,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -449,7 +449,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -487,7 +487,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1] // Canifs patch (1)
@@ -523,7 +523,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -563,7 +563,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 3] // Fossil Island (3)
@@ -600,7 +600,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 4,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[1, 1], // Canifs Patch
@@ -639,7 +639,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -677,7 +677,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -711,7 +711,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -746,7 +746,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: false,
 		canCompostPatch: false,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -781,7 +781,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 3,
 		canPayFarmer: false,
 		canCompostPatch: false,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[3, 1] // Etceteria patch (1)
@@ -821,7 +821,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -862,7 +862,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[33, 1] // Prifddinas (1)
@@ -902,7 +902,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -941,7 +941,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostAndPay: true,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
@@ -981,7 +981,7 @@ const specialPlants: Plant[] = [
 		defaultNumOfPatches: 0,
 		canPayFarmer: true,
 		canCompostPatch: true,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]

@@ -93,7 +93,7 @@ export async function prepareFarmingStep({
 
 	const [numOfPatches] = calcNumOfPatches(plant, user, user.QP);
 	if (numOfPatches === 0) {
-		return { success: false, error: 'There are no available patches to you.' };
+		return { success: false, error: 'There are no patches available for you.' };
 	}
 
 	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
@@ -107,7 +107,7 @@ export async function prepareFarmingStep({
 	if (quantityToDo <= 0) {
 		return {
 			success: false,
-			error: 'There are no available patches to you.'
+			error: 'There are no patches available for you.'
 		};
 	}
 
@@ -152,7 +152,7 @@ export async function prepareFarmingStep({
 	}
 
 	let upgradeType: CropUpgradeType | null = null;
-	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
+	if ((didPay && plant.canCompostAndPay) || (!didPay && plant.canCompostPatch && compostTier)) {
 		const compostCost = new Bank().add(compostTier, quantityToDo);
 		if (availableBank.has(compostCost)) {
 			infoStr.push(`You are treating your patches with ${compostCost}.`);

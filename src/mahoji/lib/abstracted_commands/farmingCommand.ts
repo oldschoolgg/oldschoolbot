@@ -146,7 +146,7 @@ export async function farmingPlantCommand({
 
 	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
 	if (numOfPatches === 0) {
-		return 'There are no available patches to you.';
+		return 'There are no patches available for you.';
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('Farming');

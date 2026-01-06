@@ -74,7 +74,7 @@ describe('calcFarmingContracts', () => {
 		expect(tier).toBe(4);
 	});
 
-	it('throws when there is no suitable plant for the players level', () => {
+	it("throws when there is no suitable plant for the player's level", () => {
 		const user = mockMUser({
 			skills_farming: convertLVLtoXP(1)
 		});

@@ -38,7 +38,7 @@ function createPlant(overrides: PlantOverrides): Plant {
 		defaultNumOfPatches: overrides.defaultNumOfPatches ?? 1,
 		canPayFarmer: false,
 		canCompostPatch: false,
-		canCompostandPay: false,
+		canCompostAndPay: false,
 		additionalPatchesByQP: overrides.additionalPatchesByQP ?? [],
 		additionalPatchesByFarmLvl: overrides.additionalPatchesByFarmLvl ?? [],
 		additionalPatchesByFarmGuildAndLvl: overrides.additionalPatchesByFarmGuildAndLvl ?? [],
@@ -152,7 +152,7 @@ describe('calcsFarming', () => {
 		expect(result).toBe(6);
 	});
 
-	it('returns the expected yield for limpwort plants', () => {
+	it('returns the expected yield for Limpwurt plants', () => {
 		const plant = createPlant({
 			name: 'Limpwurt',
 			seedType: 'flower',

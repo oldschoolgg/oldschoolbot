@@ -305,7 +305,7 @@ model User {
   last_temp_cl_reset              DateTime? @db.Timestamp(6)
   minion_equippedPet              Int?      @map("minion.equippedPet")
   minion_farmingContract          Json?     @map("minion.farmingContract") @db.Json
-  minion_farmingPreferredContract Boolean   @default(false) @map("minion.farmingPreferContract")
+  minion_farmingPreferredContract Boolean   @default(false) @map("minion.farmingPreferredContract")
   minion_farmingPreferredSeeds    Json?     @map("minion.farmingPreferredSeeds") @db.Json
   minion_birdhouseTraps           Json?     @map("minion.birdhouseTraps") @db.Json
   finished_quest_ids              Int[]     @default([])
