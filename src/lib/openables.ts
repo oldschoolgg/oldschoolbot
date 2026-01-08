@@ -41,7 +41,8 @@ import {
 	ZombiePiratesLocker,
 	GemstoneBundle,
 	GemstoneSatchel,
-	GemstoneCore
+	GemstoneCore,
+	ElderHoard
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -506,6 +507,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['gemstone core', 'gem core'],
 		output: GemstoneCore.table,
 		allItems: GemstoneCore.table.allItems
+	},
+		{
+		name: 'Elder Hoard',
+		id: 75_043,
+		openedItem: Items.getOrThrow('Elder sigil'),
+		aliases: ['elder hoard', 'elder sigil'],
+		output: ElderHoard.table,
+		allItems: ElderHoard.table.allItems
 	}
 ];
 

@@ -58,6 +58,10 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 			return `You throw your dart at the Elder Mimic, only for it to be caught by the Elder Mimic's tongue and added to the hoard.`;
 		}
 
+		if (monster.name === 'Burning Dominion') {
+			return `You throw your dart at the furious twins, your minion soils their pants in fear and runs away.`;
+		}
+
 		await user.statsUpdate({
 			death_touched_darts_used: {
 				increment: 1

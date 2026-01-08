@@ -961,6 +961,12 @@ export const allCollectionLogs: ICollection = {
 				items: BSOMonsters.Orrodil.allItems!,
 				fmtProg: kcProg(BSOMonsters.Orrodil.id)
 			},
+			'Burning Dominion': {
+				alias: ['burning dominion', 'burning'],
+				allItems: BSOMonsters.BurningDominion.allItems,
+				items: BSOMonsters.BurningDominion.allItems!,
+				fmtProg: kcProg(BSOMonsters.BurningDominion.id)
+			},
 			'Fungal Behemoth': {
 				alias: ['fungal behemoth', 'fungal', 'behemoth'],
 				allItems: BSOMonsters.FungalBehemoth.allItems,

@@ -53,3 +53,20 @@ export const GemstoneCore: SimpleOpenable = new SimpleOpenable({
 	aliases: ['gemstone core', 'gem core'],
 	table: CoreTable
 });
+
+const ElderHoardBase: LootTable = new LootTable()
+	.add(75_051, 1, 10)
+	.add(75_052, 1, 10)
+	.add(75_053, 1, 10)
+	.add(75_054, 1, 10)
+	.add(75_055, 1, 10)
+	.add(75_056, 1, 1);
+
+const ElderHoardTable: LootTable = new LootTable().every(ElderHoardBase, randInt(3, 6));
+
+export const ElderHoard: SimpleOpenable = new SimpleOpenable({
+	id: 75_024,
+	name: 'Elder hoard',
+	aliases: ['elder hoard', 'elder sigil'],
+	table: ElderHoardTable
+});
