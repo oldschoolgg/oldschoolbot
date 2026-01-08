@@ -11,21 +11,16 @@ export async function unEquipAllCommand(user: MUser, gearType: GearSetupType, by
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
-	return user.update((_user: MUser) => {
-		const currentEquippedGear = _user.gear[gearType];
-		const refund = currentEquippedGear.toBank();
+	const currentEquippedGear = user.gear[gearType];
+	const refund = currentEquippedGear.toBank();
 
-		if (refund.length === 0) {
-			return { response: `You have no items in your ${toTitleCase(gearType)} setup.` };
-		}
-
-		return {
-			itemsToAdd: refund,
-			collectionLog: false,
-			otherUpdates: {
-				[`gear_${gearType}`]: defaultGearSetup
-			},
-			response: `You have unequipped all items from your ${toTitleCase(gearType)} setup.`
-		};
+	if (refund.length === 0) {
+		return `You have no items in your ${toTitleCase(gearType)} setup.`;
+	}
+	await user.transactItems({
+		itemsToAdd: refund,
+		collectionLog: false,
+		gearUpdates: [{ setup: gearType, gear: defaultGearSetup }]
 	});
+	return `You have unequipped ${refund} from your ${toTitleCase(gearType)} setup.`;
 }

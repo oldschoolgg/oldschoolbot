@@ -275,6 +275,7 @@ enum bank_sort_method_enum {
   alch
   name
   quantity
+  market
 }
 
 model User {

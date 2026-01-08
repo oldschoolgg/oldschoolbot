@@ -225,7 +225,7 @@ export function doMonsterTrip(data: newOptions) {
 
 			let reEquipedItems = false;
 			if (!gearBank.bank.has(calc.lostItems)) {
-				updateBank.gearChanges.wildy = calc.newGear;
+				updateBank.gearChanges.push({ setup: 'wildy', gear: calc.newGear });
 			} else {
 				updateBank.itemCostBank.add(calc.lostItems);
 				reEquipedItems = true;

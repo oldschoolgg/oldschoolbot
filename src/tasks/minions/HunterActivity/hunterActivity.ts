@@ -92,9 +92,7 @@ export const hunterTask: MinionTask = {
 				const newGear = user.gear.wildy.raw();
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
-				await user.update({
-					gear_wildy: newGear
-				});
+				await user.updateGear([{ setup: 'wildy', gear: newGear }]);
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
 				diedStr =

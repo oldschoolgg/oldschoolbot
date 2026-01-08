@@ -1,6 +1,10 @@
 type MUserInstance = MUser;
 
 declare global {
+	export type MUserClass = import('./lib/user/MUser.js').MUserClass;
+	export type MUser = import('./lib/user/MUser.js').MUserClass;
+	export var mUserFetch: typeof import('./lib/user/MUser.js').srcMUserFetch;
+
 	export type RNGProvider = import('@oldschoolgg/rng').RNGProvider;
 	export type MInteraction = import('@oldschoolgg/discord').MInteraction;
 

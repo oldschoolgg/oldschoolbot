@@ -148,7 +148,6 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 	}
 
 	const dbKey = `gear_${setup}` as const;
-
 	await user.transactItems({
 		filterLoot: false,
 		itemsToRemove: equipBank,
@@ -409,15 +408,10 @@ export async function gearSwapCommand(
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
-	return user.update(current => {
-		const { gear } = current;
+	await user.updateGear([
+		{ setup: first, gear: user.gear[second].raw() },
+		{ setup: second, gear: user.gear[first].raw() }
+	]);
 
-		return {
-			response: `You swapped your ${first} gear with your ${second} gear.`,
-			otherUpdates: {
-				[`gear_${first}`]: gear[second],
-				[`gear_${second}`]: gear[first]
-			}
-		};
-	});
+	return `You swapped your ${first} gear with your ${second} gear.`;
 }

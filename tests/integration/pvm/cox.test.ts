@@ -17,17 +17,22 @@ test('CoX ', async () => {
 	await user.max();
 	await user.update({
 		tum_shadow_charges: 10000,
-		scythe_of_vitur_charges: 100,
-		gear_mage: COXMaxMageGear.raw() as any,
-		gear_melee: COXMaxMeleeGear.raw() as any,
-		gear_range: {
-			...(COXMaxRangeGear.raw() as any),
-			ammo: {
-				item: itemID('Dragon arrow'),
-				quantity: 10000
+		scythe_of_vitur_charges: 100
+	});
+	await user.updateGear([
+		{ setup: 'mage', gear: COXMaxMageGear.raw() },
+		{ setup: 'melee', gear: COXMaxMeleeGear.raw() },
+		{
+			setup: 'range',
+			gear: {
+				...COXMaxRangeGear.raw(),
+				ammo: {
+					item: itemID('Dragon arrow'),
+					quantity: 10000
+				}
 			}
 		}
-	});
+	]);
 	await user.setBank(
 		new Bank()
 			.add('Shark', 10000)

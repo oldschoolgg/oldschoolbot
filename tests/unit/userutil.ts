@@ -3,8 +3,8 @@ import { Bank, convertLVLtoXP, Items, LootTable, type SimpleMonster } from 'olds
 import { isFunction, isObjectType } from 'remeda';
 
 import type { Prisma, User } from '@/prisma/main.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import type { BitField } from '../../src/lib/constants.js';
-import { MUserClass } from '../../src/lib/MUser.js';
 import { constructGearSetup, Gear } from '../../src/lib/structures/Gear.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {

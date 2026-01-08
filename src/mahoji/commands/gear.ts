@@ -9,6 +9,7 @@ import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
 import { equipPet } from '@/lib/minions/functions/equipPet.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
+import { validateEquippedGear } from '@/lib/user/userUtils.js';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
@@ -21,6 +22,7 @@ const gearValidationChecks = new Set();
 
 export const gearCommand = defineCommand({
 	name: 'gear',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Manage, equip, unequip your gear.',
 	options: [
 		{
@@ -211,7 +213,7 @@ ${res
 			};
 		}
 		if ((options.equip || options.unequip) && !gearValidationChecks.has(user.id)) {
-			const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
+			const { itemsUnequippedAndRefunded } = await validateEquippedGear(user);
 			if (itemsUnequippedAndRefunded.length > 0) {
 				return `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`;
 			}

@@ -9,11 +9,12 @@ describe('specialRemoveItems', () => {
 		const user = await createTestUser();
 		const gear = new Gear();
 		gear.equip('Rune arrow', 1000);
-		// @ts-expect-error
-		await user.update({
-			gear_range: gear.raw() as any,
-			bank: new Bank().add('Egg', 1000).toJSON()
+		await user.rawUpdate({
+			data: {
+				bank: new Bank().add('Egg', 1000).toJSON()
+			}
 		});
+		await user.updateGear([{ setup: 'range', gear: gear.raw() }]);
 		expect(user.gear.range.get('ammo')!.quantity).toBe(1000);
 		await user.specialRemoveItems(new Bank().add('Rune arrow', 1000));
 		expect(user.gear.range.get('ammo')).toBeNull();
@@ -24,11 +25,12 @@ describe('specialRemoveItems', () => {
 		const gear = new Gear();
 		gear.equip('Rune arrow', 1000);
 		gear.equip("Ava's assembler");
-		// @ts-expect-error
-		await user.update({
-			gear_range: gear.raw() as any,
-			bank: new Bank().add('Egg', 1000).toJSON()
+		await user.rawUpdate({
+			data: {
+				bank: new Bank().add('Egg', 1000).toJSON()
+			}
 		});
+		await user.updateGear([{ setup: 'range', gear: gear.raw() }]);
 		expect(user.gear.range.get('ammo')!.quantity).toBe(1000);
 		await user.specialRemoveItems(new Bank().add('Rune arrow', 1000));
 		expect(user.gear.range.get('ammo')!.quantity).toBeLessThan(850);
@@ -40,11 +42,12 @@ describe('specialRemoveItems', () => {
 		const gear = new Gear();
 		gear.equip('Rune javelin', 1000);
 		gear.equip("Ava's assembler");
-		// @ts-expect-error
-		await user.update({
-			gear_range: gear.raw() as any,
-			bank: new Bank().add('Egg', 1000).toJSON()
+		await user.rawUpdate({
+			data: {
+				bank: new Bank().add('Egg', 1000).toJSON()
+			}
 		});
+		await user.updateGear([{ setup: 'range', gear: gear.raw() }]);
 		expect(user.gear.range.get('ammo')!.quantity).toBe(1000);
 		await user.specialRemoveItems(new Bank().add('Rune javelin', 1000));
 		expect(user.gear.range.get('ammo')).toBeNull();

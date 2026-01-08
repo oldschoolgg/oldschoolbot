@@ -1,5 +1,5 @@
 import './lib/safeglobals.js';
-import './lib/MUser.js';
+import './lib/user/MUser.js';
 import './discord/client.js';
 import './lib/cache/redis.js';
 

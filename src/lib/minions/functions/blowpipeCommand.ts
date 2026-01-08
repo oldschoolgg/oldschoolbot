@@ -51,9 +51,7 @@ export async function blowpipeCommand(
 	try {
 		validateBlowpipeData(rawBlowpipeData);
 	} catch (_err: unknown) {
-		await user.update({
-			blowpipe: { ...defaultBlowpipe }
-		});
+		await user.updateBlowpipe({ ...defaultBlowpipe });
 
 		return `Your blowpipe got corrupted somehow, this shouldn't happen! It's a bug. Your blowpipe was reset.`;
 	}
@@ -127,11 +125,10 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	if (!userBank.has(itemsToRemove)) {
 		return `You don't own ${itemsToRemove}.`;
 	}
+
+	await user.updateBlowpipe(currentData);
 	await user.transactItems({
-		itemsToRemove,
-		otherUpdates: {
-			blowpipe: currentData
-		}
+		itemsToRemove
 	});
 
 	return `You added ${itemsToRemove} to your Toxic blowpipe.`;
@@ -155,12 +152,11 @@ async function removeDartsCommand(user: MUser) {
 	const returnedBank = new Bank().add(rawBlowpipeData.dartID, rawBlowpipeData.dartQuantity);
 	rawBlowpipeData.dartID = null;
 	rawBlowpipeData.dartQuantity = 0;
+
+	await user.updateBlowpipe(rawBlowpipeData);
 	await user.transactItems({
 		itemsToAdd: returnedBank,
-		collectionLog: false,
-		otherUpdates: {
-			blowpipe: rawBlowpipeData
-		}
+		collectionLog: false
 	});
 	validateBlowpipeData(rawBlowpipeData);
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;
@@ -188,10 +184,10 @@ async function unchargeCommand(user: MUser) {
 		return 'You have no darts or scales in your Blowpipe.';
 	}
 
+	await user.updateBlowpipe({ scales: 0, dartID: null, dartQuantity: 0 });
 	await user.transactItems({
 		itemsToAdd: returnedBank,
-		collectionLog: false,
-		otherUpdates: { blowpipe: { scales: 0, dartID: null, dartQuantity: 0 } }
+		collectionLog: false
 	});
 
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;
