@@ -14766,8 +14766,8 @@ setCustomItem(
 setCustomItem(75_022, 'Gemstone bundle', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_023, 'Gemstone satchel', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_024, 'Gemstone core', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_025, 'Verdant log', 'Logs', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_026, 'Ancient verdant log', 'Logs', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_025, 'Verdant logs', 'Logs', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_026, 'Ancient verdant logs', 'Logs', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_027, 'Living bark', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_028, 'Ancient cap', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_029, 'Colossal stem', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
@@ -14914,8 +14914,8 @@ setCustomItem(75_056, 'Prismare', 'Coal', { customItemData: { cantDropFromMyster
 setCustomItem(75_057, 'Juvenile gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_058, 'Adolescent gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_059, 'Mature gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_060, 'Elder gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
-setCustomItem(75_061, 'Ancient gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_060, 'Ancient gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_061, 'Elder gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',

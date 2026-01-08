@@ -7,8 +7,14 @@ export default async function reducedTimeForGroup(
 	users: MUser[],
 	monster: KillableMonster
 ): Promise<[number, string[]]> {
-	let reductionMultiplier = 0;
 	const messages = [];
+
+	let teamSpeedMultiplier = 0;
+	for (let i = 0; i < users.length; i++) {
+		teamSpeedMultiplier += 1 + i / 15;
+	}
+
+	let totalIndividualBoostPercent = 0;
 
 	if (monster.name === 'Corporeal Beast') {
 		for (let i = 0; i < users.length; i++) {
@@ -19,7 +25,7 @@ export default async function reducedTimeForGroup(
 				continue;
 			}
 			const { boost } = calcPOHBoosts(poh, monster.pohBoosts!);
-			reductionMultiplier += boost / 100;
+			totalIndividualBoostPercent += boost;
 		}
 	}
 
@@ -27,15 +33,30 @@ export default async function reducedTimeForGroup(
 		const user = users[i];
 		const userKc = await user.getKC(monster.id);
 		const [, userKcReduction] = reducedTimeFromKC(monster, userKc);
+		
 		let userItemBoost = 0;
 		for (const [, boostAmount] of resolveAvailableItemBoosts(user.gearBank, monster).items()) {
 			userItemBoost += boostAmount;
 		}
-		// 1 per user, i/15 for incentive to group (more people compounding i bonus), then add the users kc and item boost percent
-		const multiplier = 1 + i / 15 + userKcReduction / 100 + userItemBoost / 100;
-		reductionMultiplier += multiplier;
-		messages.push(`${multiplier.toFixed(2)}x bonus from ${user.usernameOrMention}`);
+		
+		totalIndividualBoostPercent += userKcReduction + userItemBoost;
+
+		const userTeamBonus = 1 + i / 15;
+		const userPersonalBonus = (userKcReduction + userItemBoost) / 100;
+		messages.push(
+			`${user.usernameOrMention}: ${userTeamBonus.toFixed(2)}x team bonus, ${(userPersonalBonus * 100).toFixed(1)}% personal boost`
+		);
 	}
 
-	return [Math.max(Math.floor(monster.timeToFinish / reductionMultiplier), monster.respawnTime!), messages];
+	// Apply individual boosts as an average multiplier on top of team speed
+	// This ensures individual boosts provide consistent value regardless of team size
+	const averageIndividualBoost = 1 + (totalIndividualBoostPercent / 100 / users.length);
+	const finalMultiplier = teamSpeedMultiplier * averageIndividualBoost;
+
+	const reducedTime = Math.max(
+		Math.floor(monster.timeToFinish / finalMultiplier),
+		monster.respawnTime!
+	);
+
+	return [reducedTime, messages];
 }

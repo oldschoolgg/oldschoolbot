@@ -6,7 +6,7 @@ export const brimstoneDistilleryTask: MinionTask = {
 	async run(data: BrimstoneDistilleryTaskOptions, { user, handleTripFinish }) {
 		const { quantity, channelId, duration, recipe } = data;
 
-		const { loot, herbloreXP, flavorMessage } = calculateDistilleryResult(data, user);
+		const { loot, herbloreXP, flavorMessage } = calculateDistilleryResult(data);
 
 		const { newScore } = await user.incrementMinigameScore('brimstone_distillery', 1);
 

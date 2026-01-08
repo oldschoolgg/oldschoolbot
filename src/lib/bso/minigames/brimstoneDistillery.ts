@@ -14,10 +14,10 @@ import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const HERBLORE_REQUIREMENT = 110;
-const DURATION_PER_DISTILLATION = Time.Minute * 1.5;
-const COAL_PER_DISTILLATION = 10;
-const BASE_DILUTED_BRIMSTONE_PER_DISTILLATION = 1.25;
-const BASE_HERBLORE_XP = 8_500;
+const BASE_DURATION_PER_DISTILLATION = Time.Second * 2.77; // ~1300 per hour base
+const COAL_PER_DISTILLATION = 1;
+const BASE_DILUTED_BRIMSTONE_PER_DISTILLATION = 0.04; // ~50 per 1300 distillations
+const BASE_HERBLORE_XP = 212; // Scales to ~1.7m/hr with 5x multiplier
 
 const UNLUCKY_MESSAGES = [
 	'*Your minion spilled potions all over the place.*',
@@ -64,26 +64,9 @@ const JACKPOT_MESSAGES = [
 	'***The brimstone essence crystallized perfectly for maximum yield!***'
 ];
 
-/*
-	RARITY UPGRADE SYSTEM (STUB)
-	Enable later when the upgrade exists.
-*/
-
-// enum DistilleryRarityTier {
-// 	NONE = 1,
-// 	TIER_1 = 1.15,
-// 	TIER_2 = 1.35,
-// 	TIER_3 = 1.6
-// }
-
-// function getUserRarityMultiplier(_userID: string): number {
-// 	return DistilleryRarityTier.NONE;
-// }
-
 interface DistilleryRecipe {
 	name: string;
 	output: Item;
-	outputQuantity: [number, number];
 	ingredients: { item: Item; quantity: number }[];
 	requiredCatalyst?: Item;
 	catalystQuantity?: number;
@@ -96,7 +79,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Super Restore',
 		output: Items.getOrThrow('Super restore(4)'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Snapdragon'), quantity: 1 },
 			{ item: Items.getOrThrow("Red spiders' eggs"), quantity: 1 }
@@ -108,7 +90,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Saradomin Brew',
 		output: Items.getOrThrow('Saradomin brew(4)'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Toadflax'), quantity: 1 },
 			{ item: Items.getOrThrow('Crushed nest'), quantity: 1 }
@@ -120,7 +101,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Stamina Potion',
 		output: Items.getOrThrow('Stamina potion(4)'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Super energy(4)'), quantity: 1 },
 			{ item: Items.getOrThrow('Amylase crystal'), quantity: 4 }
@@ -133,7 +113,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Enhanced Super Restore',
 		output: Items.getOrThrow('Enhanced super restore'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Super restore(4)'), quantity: 1 },
 			{ item: Items.getOrThrow('Crystal dust'), quantity: 3 }
@@ -145,7 +124,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Enhanced Saradomin Brew',
 		output: Items.getOrThrow('Enhanced saradomin brew'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Saradomin brew(4)'), quantity: 1 },
 			{ item: Items.getOrThrow('Crystal dust'), quantity: 3 }
@@ -157,7 +135,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Enhanced Stamina Potion',
 		output: Items.getOrThrow('Enhanced stamina potion'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Stamina potion(4)'), quantity: 1 },
 			{ item: Items.getOrThrow('Crystal dust'), quantity: 4 }
@@ -170,7 +147,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Heat res. restore',
 		output: Items.getOrThrow('Heat res. restore'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Super restore(4)'), quantity: 1 },
 			{ item: Items.getOrThrow('Lava scale'), quantity: 3 }
@@ -184,7 +160,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Heat res. brew',
 		output: Items.getOrThrow('Heat res. brew'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Saradomin brew(4)'), quantity: 1 },
 			{ item: Items.getOrThrow('Lava scale'), quantity: 3 }
@@ -199,7 +174,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Divination Potion',
 		output: Items.getOrThrow('Divination potion'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Spirit weed'), quantity: 1 },
 			{ item: Items.getOrThrow('Advax berry'), quantity: 1 }
@@ -212,7 +186,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Enhanced Divine Water',
 		output: Items.getOrThrow('Enhanced divine water'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Divine water'), quantity: 1 },
 			{ item: Items.getOrThrow('Crystal dust'), quantity: 2 }
@@ -225,7 +198,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: "Dragon's Fury",
 		output: Items.getOrThrow("Dragon's fury"),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Ignecarus scales'), quantity: 3 },
 			{ item: Items.getOrThrow('Abyssal dragon bones'), quantity: 1 }
@@ -238,7 +210,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	{
 		name: 'Brimstone Elixir',
 		output: Items.getOrThrow('Brimstone elixir'),
-		outputQuantity: [25, 75],
 		ingredients: [
 			{ item: Items.getOrThrow('Extended anti-venom+(4)'), quantity: 1 },
 			{ item: Items.getOrThrow('Heat res. restore'), quantity: 1 },
@@ -254,24 +225,30 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	}
 ];
 
-function rollWeightedOutput(min: number, max: number): number {
-	if (min === max) return min;
-
-	if (Math.random() < 0.01) {
-		return max * 10;
-	}
-
+// Roll for each individual distillation - returns 0, 1, 2, or rarely more
+function rollDistillationOutput(): number {
 	const roll = Math.random();
-	const range = max - min;
 	
-	if (roll < 0.25) {
-		return min + Math.floor(Math.random() * (range * 0.2));
-	} else if (roll < 0.75) {
-		return min + Math.floor(range * 0.35) + Math.floor(Math.random() * (range * 0.2));
-	} else if (roll < 0.95) {
-		return min + Math.floor(range * 0.7) + Math.floor(Math.random() * (range * 0.2));
+	// More volatile distribution with rarer jackpots:
+	// 30% chance: 0 potions (complete failure - very unlucky)
+	// 40% chance: 1 potion (normal success)
+	// 20% chance: 2 potions (lucky)
+	// 8% chance: 3 potions (very lucky)
+	// 1.9% chance: 4 potions (extremely lucky)
+	// 0.1% chance: 10 potions (jackpot - about 1-2 per trip)
+	
+	if (roll < 0.001) {
+		return 10; // 0.1% jackpot
+	} else if (roll < 0.02) {
+		return 4; // 1.9% extremely lucky
+	} else if (roll < 0.10) {
+		return 3; // 8% very lucky
+	} else if (roll < 0.30) {
+		return 2; // 20% lucky
+	} else if (roll < 0.70) {
+		return 1; // 40% normal
 	} else {
-		return min + Math.floor(range * 0.9) + Math.floor(Math.random() * (range * 0.1));
+		return 0; // 30% failure
 	}
 }
 
@@ -286,49 +263,53 @@ export async function brimstoneDistilleryStartCommand({
 }) {
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
 
-	const maxTripLength = await user.calcMaxTripLength('BrimstoneDistillery');
-	const quantity = Math.floor(maxTripLength / DURATION_PER_DISTILLATION);
-	const duration = quantity * DURATION_PER_DISTILLATION;
+	const selectedRecipe = DistilleryRecipes.find(r => stringMatches(r.name, recipe));
+	if (!selectedRecipe) {
+		return `Invalid recipe. Available recipes: ${DistilleryRecipes.map(r => r.name).join(', ')}`;
+	}
 
 	const skillReqs: Skills = { herblore: HERBLORE_REQUIREMENT };
 	if (!user.hasSkillReqs(skillReqs)) {
 		return `You need ${formatSkillRequirements(skillReqs)} to use the Brimstone Distillery.`;
 	}
 
-	const selectedRecipe = DistilleryRecipes.find(r => stringMatches(r.name, recipe));
-	if (!selectedRecipe) {
-		return `Invalid recipe. Available recipes: ${DistilleryRecipes.map(r => r.name).join(', ')}`;
-	}
-
 	if (user.skillLevel('herblore') < selectedRecipe.herbloreLevel) {
 		return `You need ${selectedRecipe.herbloreLevel} Herblore to distill ${selectedRecipe.name}.`;
 	}
 
-	let coalNeeded = COAL_PER_DISTILLATION * quantity;
-	let vialsNeeded = quantity;
+	// Calculate duration with speed boosts
+	let durationPerDistillation = BASE_DURATION_PER_DISTILLATION;
 	const boosts: string[] = [];
 
-	if (user.hasEquippedOrInBank(['Herblore master cape'])) {
-		boosts.push('10% less catalyst usage');
-		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 10));
-		vialsNeeded = Math.floor(reduceNumByPercent(vialsNeeded, 10));
-	}
-
 	if (user.hasEquippedOrInBank(['Celestial pendant'])) {
-		boosts.push('10% chance for extra potions (Celestial Pendant)');
+		boosts.push('10% faster distillation (Celestial Pendant)');
+		durationPerDistillation = Math.floor(reduceNumByPercent(durationPerDistillation, 10));
 	}
 
 	const hasEnhancedStamina = user.bank.has('Enhanced stamina potion');
 	if (hasEnhancedStamina) {
-		boosts.push('10% chance for extra potions (Enhanced Stamina)');
+		boosts.push('10% faster distillation (Enhanced Stamina)');
+		durationPerDistillation = Math.floor(reduceNumByPercent(durationPerDistillation, 10));
 	}
 
 	const hasDragonsFury = user.bank.has("Dragon's fury");
 	if (hasDragonsFury) {
-		boosts.push("10% chance for extra potions (Dragon's Fury catalyst)");
+		boosts.push("10% faster distillation (Dragon's Fury catalyst)");
+		durationPerDistillation = Math.floor(reduceNumByPercent(durationPerDistillation, 10));
 	}
 
-	const costMultiplier = 1.5 + Math.random();
+	const maxTripLength = await user.calcMaxTripLength('BrimstoneDistillery');
+	const quantity = Math.floor(maxTripLength / durationPerDistillation);
+	const duration = quantity * durationPerDistillation;
+
+	let coalNeeded = Math.ceil(COAL_PER_DISTILLATION * quantity);
+	let vialsNeeded = quantity;
+
+	if (user.hasEquippedOrInBank(['Herblore master cape'])) {
+		boosts.push('10% less catalyst usage (Herblore Master Cape)');
+		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 10));
+		vialsNeeded = Math.floor(reduceNumByPercent(vialsNeeded, 10));
+	}
 	
 	const cost = new Bank().add('Coal', coalNeeded);
 
@@ -338,10 +319,12 @@ export async function brimstoneDistilleryStartCommand({
 		cost.add('Vial of water', vialsNeeded);
 	}
 
+	// 1:1 ingredient cost per distillation
 	for (const ingredient of selectedRecipe.ingredients) {
-		cost.add(ingredient.item.id, Math.ceil(ingredient.quantity * quantity * costMultiplier));
+		cost.add(ingredient.item.id, ingredient.quantity * quantity);
 	}
 
+	// Consume boost items
 	if (hasEnhancedStamina) {
 		cost.add('Enhanced stamina potion', 1);
 	}
@@ -365,53 +348,42 @@ export async function brimstoneDistilleryStartCommand({
 		recipe: selectedRecipe.name
 	});
 
-	const costMultiplierText = `${(costMultiplier * 100).toFixed(0)}%`;
 	return `${user.minionName} is distilling ${quantity}x ${selectedRecipe.name} for ${formatDuration(duration)}.
-${Emoji.Herblore} Ingredient cost multiplier: **${costMultiplierText}**
-${Emoji.Herblore} Total ingredients needed: ${selectedRecipe.ingredients.map(i => `${Math.ceil(i.quantity * quantity * costMultiplier)}x ${i.item.name}`).join(', ')}
+${Emoji.Herblore} Ingredients: ${selectedRecipe.ingredients.map(i => `${i.quantity * quantity}x ${i.item.name}`).join(', ')}
 ${Emoji.Herblore} Coal: ${coalNeeded}x | ${selectedRecipe.requiredCatalyst ? `${selectedRecipe.requiredCatalyst.name}: ${vialsNeeded}x` : `Vial of water: ${vialsNeeded}x`}
 Boosts: ${boosts.length ? boosts.join(', ') : 'None'}`;
 }
 
-export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions, user: MUser) {
+export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions ) {
 	const recipe = DistilleryRecipes.find(r => r.name === data.recipe)!;
 	const loot = new Bank();
 	
 	let totalPotions = 0;
 	let unluckyRolls = 0;
+	let normalRolls = 0;
 	let luckyRolls = 0;
+	let veryLuckyRolls = 0;
 	let jackpotRolls = 0;
-	let boostProcs = 0;
-	const [min, max] = recipe.outputQuantity;
 
-	const hasCelestialPendant = user.hasEquipped(['Celestial pendant']);
-	const hasEnhancedStamina = user.bank.has('Enhanced stamina potion');
-	const hasDragonsFury = user.bank.has("Dragon's fury");
-
+	// Roll for each individual distillation
 	for (let i = 0; i < data.quantity; i++) {
-		let amount = rollWeightedOutput(min, max);
-
-		if (hasCelestialPendant && Math.random() < 0.20) {
-			amount = Math.floor(amount * 1.1);
-			boostProcs++;
-		}
-		if (hasEnhancedStamina && Math.random() < 0.10) {
-			amount = Math.floor(amount * 1.1);
-			boostProcs++;
-		}
-		if (hasDragonsFury && Math.random() < 0.10) {
-			amount = Math.floor(amount * 1.1);
-			boostProcs++;
+		const amount = rollDistillationOutput();
+		
+		if (amount > 0) {
+			loot.add(recipe.output.id, amount);
+			totalPotions += amount;
 		}
 		
-		loot.add(recipe.output.id, amount);
-		totalPotions += 1;
-		
-		if (amount >= max * 10) {
+		// Track luck for flavor text
+		if (amount >= 10) {
 			jackpotRolls++;
-		} else if (amount >= min + (max - min) * 0.7) {
+		} else if (amount >= 3) {
+			veryLuckyRolls++;
+		} else if (amount === 2) {
 			luckyRolls++;
-		} else if (amount <= min + (max - min) * 0.2) {
+		} else if (amount === 1) {
+			normalRolls++;
+		} else {
 			unluckyRolls++;
 		}
 	}
@@ -421,15 +393,33 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions, 
 		Math.floor(data.quantity * BASE_DILUTED_BRIMSTONE_PER_DISTILLATION * recipe.brimstoneMultiplier)
 	);
 
+	// Determine flavor message based on overall luck
+	// Calculate percentage deviations from expected values
+	const expectedPotions = data.quantity * 1.11; // Expected average
+	const potionDeviation = ((totalPotions - expectedPotions) / expectedPotions);
+	
 	let flavorMessage = '';
+	
 	if (jackpotRolls > 0) {
 		flavorMessage = `\n\n${randArrItem(JACKPOT_MESSAGES)}`;
-	} else if (luckyRolls > unluckyRolls + 3) {
-		flavorMessage = `\n\n **Lucky!** ${randArrItem(LUCKY_MESSAGES)}`;
-	} else if (unluckyRolls > luckyRolls + 3) {
-		flavorMessage = `\n\n **Unlucky!** ${randArrItem(UNLUCKY_MESSAGES)}`;
+	} else if (potionDeviation > 0.15) {
+		// 15%+ more potions than expected
+		flavorMessage = `\n\n**Lucky!** ${randArrItem(LUCKY_MESSAGES)}`;
+	} else if (potionDeviation < -0.15) {
+		// 15%+ fewer potions than expected
+		flavorMessage = `\n\n**Unlucky!** ${randArrItem(UNLUCKY_MESSAGES)}`;
 	} else {
-		flavorMessage = `\n\n ${randArrItem(NEUTRAL_MESSAGES)}`;
+		flavorMessage = `\n\n${randArrItem(NEUTRAL_MESSAGES)}`;
+	}
+
+	// Add detailed stats
+	const successRate = ((data.quantity - unluckyRolls) / data.quantity * 100).toFixed(1);
+	const avgPerDistillation = (totalPotions / data.quantity).toFixed(2);
+	
+	flavorMessage += `\n📊 Success rate: ${successRate}% | Avg per distillation: ${avgPerDistillation} | Failed: ${unluckyRolls}`;
+	
+	if (jackpotRolls > 0) {
+		flavorMessage += ` | 🎰 Jackpots: ${jackpotRolls}`;
 	}
 
 	return {

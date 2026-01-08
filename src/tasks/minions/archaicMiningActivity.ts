@@ -87,8 +87,8 @@ export const archaicMiningTask: MinionTask = {
 			}
 
 			for (let i = 0; i < quantity; i++) {
-				if (rng.roll(2000)) loot.add('Primordial heartstring');
-				if (rng.roll(2000)) loot.add('Primordial spine');
+				if (rng.roll(5000)) loot.add('Primordial heartstring');
+				if (rng.roll(5000)) loot.add('Primordial spine');
 			}
 		} else {
 			const oreLoot = miningTable.roll(quantity);

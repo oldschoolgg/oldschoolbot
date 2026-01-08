@@ -14,8 +14,8 @@ export const IslandTable = new LootTable()
 	.add('Brimstone spore', [5, 15])
 	.add('Ignilace seed', [2, 8])
 	.add('Ignilace', [3, 12])
-	.add('Verdant log', [20, 50])
-	.add('Ancient verdant log', [10, 30])
+	.add('Verdant logs', [20, 50])
+	.add('Ancient verdant logs', [10, 30])
 	.add('Living bark', [15, 40])
 	.add('Crystalline ore', [20, 50])
 	.add('Gem infused ore', [15, 40])
@@ -283,8 +283,8 @@ export const FungalBehemoth: CustomMonster = {
 		.add('Ancient cap', [8, 20])
 		.add('Colossal stem', [8, 20])
 		.add('Brimstone spore', [8, 20])
-		.add('Verdant log', [25, 60])
-		.add('Ancient verdant log', [15, 40])
+		.add('Verdant logs', [25, 60])
+		.add('Ancient verdant logs', [15, 40])
 		.add('Living bark', [20, 50])
 
 		.add('Ranarr seed', [3, 8])
@@ -691,7 +691,7 @@ export const Orrodil: CustomMonster = {
 	allItems: resolveItems([
 		'Celestial flame',
 		'Shattered pendant',
-		'Orylin',
+		'Orrodin',
 		'Primordial heartstring',
 		'Primordial spine'
 	]),
