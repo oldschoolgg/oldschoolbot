@@ -330,6 +330,7 @@ model User {
   combat_options             Int[]              @default([])
   slayer_remember_master     String?            @map("slayer.remember_master")
   slayer_autoslay_options    Int[]              @default([]) @map("slayer.autoslay_options")
+  slayer_jewellery_config    Json               @default("{}")
   bank_sort_method           String?            @db.VarChar(16)
   bank_sort_weightings       Json               @default("{}") @db.Json
   gambling_lockout_expiry    DateTime?
@@ -371,16 +372,18 @@ model User {
   gear_other    Json? @map("gear.other") @db.Json
 
   // Charges
-  tentacle_charges       Int @default(0)
-  sang_charges           Int @default(0)
-  celestial_ring_charges Int @default(0)
-  ash_sanctifier_charges Int @default(0)
-  serp_helm_charges      Int @default(0)
-  blood_fury_charges     Int @default(0)
-  tum_shadow_charges     Int @default(0)
-  blood_essence_charges  Int @default(0)
-  trident_charges        Int @default(0)
-  venator_bow_charges    Int @default(0)
+  tentacle_charges           Int @default(0)
+  sang_charges               Int @default(0)
+  celestial_ring_charges     Int @default(0)
+  ash_sanctifier_charges     Int @default(0)
+  serp_helm_charges          Int @default(0)
+  blood_fury_charges         Int @default(0)
+  tum_shadow_charges         Int @default(0)
+  blood_essence_charges      Int @default(0)
+  trident_charges            Int @default(0)
+  venator_bow_charges        Int @default(0)
+  slayer_slaughter_charges   Int @default(0)
+  slayer_expeditious_charges Int @default(0)
 
   scythe_of_vitur_charges Int @default(0)
 

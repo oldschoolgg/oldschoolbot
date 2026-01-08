@@ -186,7 +186,9 @@ async function main() {
 					attackStyles,
 					duration: commandResult.duration,
 					bitfield,
-					chinning
+					chinning,
+					slayerBraceletCharges: { slaughter: 0, expeditious: 0 },
+					slayerJewelleryConfig: {}
 				});
 				const end = performance.now();
 

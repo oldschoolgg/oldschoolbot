@@ -19,7 +19,9 @@ export interface DegradeableItem {
 		| 'blood_essence_charges'
 		| 'trident_charges'
 		| 'scythe_of_vitur_charges'
-		| 'venator_bow_charges';
+		| 'venator_bow_charges'
+		| 'slayer_slaughter_charges'
+		| 'slayer_expeditious_charges';
 	itemsToRefundOnBreak: Bank;
 	refundVariants: {
 		variant: Item;
@@ -234,6 +236,32 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: Items.getOrThrow('Venator bow (uncharged)'),
 		convertOnCharge: true,
+		emoji: ''
+	},
+	{
+		item: Items.getOrThrow('Bracelet of slaughter'),
+		settingsKey: 'slayer_slaughter_charges',
+		itemsToRefundOnBreak: new Bank().freeze(),
+		refundVariants: [],
+		setup: 'other',
+		aliases: ['slaughter bracelet', 'slayer slaughter'],
+		chargeInput: {
+			cost: new Bank().add('Bracelet of slaughter').freeze(),
+			charges: 30
+		},
+		emoji: ''
+	},
+	{
+		item: Items.getOrThrow('Expeditious bracelet'),
+		settingsKey: 'slayer_expeditious_charges',
+		itemsToRefundOnBreak: new Bank().freeze(),
+		refundVariants: [],
+		setup: 'other',
+		aliases: ['expeditious bracelet', 'slayer expeditious'],
+		chargeInput: {
+			cost: new Bank().add('Expeditious bracelet').freeze(),
+			charges: 30
+		},
 		emoji: ''
 	}
 ];
