@@ -9,6 +9,8 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { Bank } from 'oldschooljs';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
@@ -118,16 +120,52 @@ export const massCommand = defineCommand({
 			}
 		}
 
-		await ActivityManager.startTrip<GroupMonsterActivityTaskOptions>({
-			mi: monster.id,
-			userID: user.id,
-			channelId,
-			q: quantity,
-			duration,
-			type: 'GroupMonsterKilling',
-			leader: user.id,
-			users: users.map(u => u.id)
-		});
+		// Check if this is Burning Dominion - needs special handling
+		if (monster.id === EBSOMonster.BURNING_DOMINION) {
+			// Build bossUsers array with death chances and item costs
+			const bossUsers = await Promise.all(
+				users.map(async u => {
+					// Calculate death chance based on gear stats vs monster requirements
+					// For now, use a placeholder - you'll need to implement proper death chance calculation
+					const deathChance = 10; // TODO: Implement proper death chance calculation
+					
+					// Get the items to remove (supplies for the trip)
+					const itemsToRemove = new Bank();
+					if (monster.itemCost && typeof monster.itemCost === 'object' && 'itemCost' in monster.itemCost) {
+						itemsToRemove.add(monster.itemCost.itemCost.clone().multiply(quantity));
+					}
+					
+					return {
+						user: u.id,
+						deathChance,
+						itemsToRemove: itemsToRemove.toJSON()
+					};
+				})
+			);
+
+			await ActivityManager.startTrip({
+				mi: monster.id,
+				userID: user.id,
+				channelId,
+				quantity,
+				duration,
+				type: 'BurningDominion',
+				users: users.map(u => u.id),
+				bossUsers
+			} as any);
+		} else {
+			// Standard group monster killing
+			await ActivityManager.startTrip<GroupMonsterActivityTaskOptions>({
+				mi: monster.id,
+				userID: user.id,
+				channelId,
+				q: quantity,
+				duration,
+				type: 'GroupMonsterKilling',
+				leader: user.id,
+				users: users.map(u => u.id)
+			});
+		}
 
 		let killsPerHr = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()} Kills/hr`;
 

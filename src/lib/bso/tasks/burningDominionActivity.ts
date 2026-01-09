@@ -16,7 +16,41 @@ const methodsOfDeath = [
 	'Crushed by Orym',
 	'Pierced by Orrodil',
 	'Burnt to ashes',
-	'Overwhelmed by both dragons'
+	'Overwhelmed by both dragons',
+	'Melted into a puddle',
+	'Turned into dragon food',
+	'Roasted alive',
+	'Caught between twin flames',
+	'Scorched beyond recognition',
+	'Impaled by flaming claws',
+	'Reduced to cinders',
+	'Smashed into the ground',
+	'Tail-whipped into oblivion',
+	'Forgot to bring heat resistance',
+	'Underestimated the heat',
+	'Became a crispy snack',
+	'Failed the DPS check',
+	'Stood in the fire',
+	'Tanked a tail swipe',
+	'Ate a fireball to the face',
+	'Got combo\'d to death',
+	'Forgot to eat',
+	'Panic-ate too late',
+	'Tried to tank it',
+	'Got greedy with DPS',
+	'Missed the dodge',
+	'Lagged at the worst moment',
+	'Got absolutely cooked',
+	'Literally got smoked',
+	'Became well-done steak',
+	'Thought they were invincible',
+	'Tried to solo tank',
+	'Forgot about the other dragon',
+	'Got sandwiched',
+	'Stood in stupid',
+	'Zigged when they should have zagged',
+	'Became a floor tank',
+	'Needed a better gaming chair'
 ];
 
 const BurningDominionNotifyDrops = BurningDominionTemplate.allItems ?? [];
@@ -71,13 +105,20 @@ export const dominionTask: MinionTask = {
 			});
 		}
 
-		await Promise.all(bossUsers.flatMap(u => [u.user.incrementKC(BurningDominionTemplate.id, quantity)]));
+		// Award KC based on individual survival - each user gets KC for kills they survived
+		for (const user of bossUsers.map(u => u.user)) {
+			const userDeaths = deaths[user.id]?.qty ?? 0;
+			const userSuccessfulKills = quantity - userDeaths;
+			await user.incrementKC(BurningDominionTemplate.id, userSuccessfulKills);
+		}
 
-		const killStr = `Your team managed to slay Orym and Orrodil ${quantity} time${quantity > 1 ? 's' : ''}, everyone grabs some loot and escapes from the Burning Dominion.`;
+		const killStr = `Your team fought Orym and Orrodil ${quantity} time${quantity > 1 ? 's' : ''}.`;
 
 		let resultStr = `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`;
 
 		const totalLoot = new Bank();
+		const userResults: string[] = [];
+
 		for (const { user } of bossUsers) {
 			const usersTask = await getUsersCurrentSlayerInfo(user.id);
 			const isOnTask =
@@ -96,13 +137,24 @@ export const dominionTask: MinionTask = {
 				});
 			}
 
-			let lootRolls = quantity;
-			if (deaths[user.id]) {
-				if (deaths[user.id].qty === quantity) continue;
-				else lootRolls = quantity - deaths[user.id].qty;
+			const userDeaths = deaths[user.id]?.qty ?? 0;
+			const userSuccessfulKills = quantity - userDeaths;
+
+			if (userSuccessfulKills === 0) {
+				userResults.push(
+					`${user}: Died on all ${quantity} kill${quantity > 1 ? 's' : ''} (${
+						wrongFoodDeaths.includes(user)
+							? 'Had no proper supplies'
+							: rng
+									.shuffle([...methodsOfDeath])
+									.slice(0, userDeaths)
+									.join(', ')
+					})`
+				);
+				continue;
 			}
 
-			const loot = new Bank().add(BurningDominionTemplate.table.roll(lootRolls));
+			const loot = new Bank().add(BurningDominionTemplate.table.roll(userSuccessfulKills));
 
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
@@ -113,16 +165,52 @@ export const dominionTask: MinionTask = {
 
 			await user.addMonsterXP({
 				monsterID: BurningDominionTemplate.id,
-				quantity,
+				quantity: userSuccessfulKills,
 				duration,
 				isOnTask,
-				taskQuantity: quantity
+				taskQuantity: userSuccessfulKills
 			});
 
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 
-			const purple = loot.itemIDs.some(itemID => BurningDominionNotifyDrops.includes(itemID));
-			resultStr += `\n${purple ? Emoji.Purple : ''}${user} received ${loot}.`;
+			const notifyDropIDs = BurningDominionNotifyDrops.map((item: any) => item.id ?? item);
+			const purple = loot.itemIDs.some(itemID => notifyDropIDs.includes(itemID));
+			
+			// Build user result string
+			let userResult = `${purple ? Emoji.Purple : ''}${user}: ${userSuccessfulKills}/${quantity} kills`;
+			
+			if (userDeaths > 0) {
+				userResult += ` (died ${userDeaths}x: ${
+					wrongFoodDeaths.includes(user)
+						? 'Had no proper supplies'
+						: rng
+								.shuffle([...methodsOfDeath])
+								.slice(0, Math.min(userDeaths, 3))
+								.join(', ')
+				})`;
+			}
+			
+			// Separate uniques from regular loot and show uniques first
+			if (purple) {
+				const uniqueLoot = new Bank();
+				const regularLoot = new Bank();
+				
+				for (const [itemID, qty] of loot.items()) {
+					if (notifyDropIDs.includes(itemID)) {
+						uniqueLoot.add(itemID, qty);
+					} else {
+						regularLoot.add(itemID, qty);
+					}
+				}
+				
+				// Combine with uniques first
+				const sortedLoot = uniqueLoot.clone().add(regularLoot);
+				userResult += ` - ||${sortedLoot}||`;
+			} else {
+				userResult += ` - ${loot}`;
+			}
+			
+			userResults.push(userResult);
 
 			announceLoot({
 				user,
@@ -137,21 +225,7 @@ export const dominionTask: MinionTask = {
 			});
 		}
 
-		if (Object.values(deaths).length > 0) {
-			resultStr += `\n\n**Died in battle**: ${Object.values(deaths)
-				.map(
-					u =>
-						`${u.user.toString()}${u.qty > 1 ? ` x${u.qty}` : ''} (${
-							wrongFoodDeaths.includes(u.user)
-								? 'Had no proper supplies'
-								: rng
-										.shuffle([...methodsOfDeath])
-										.slice(0, u.qty)
-										.join(', ')
-						})`
-				)
-				.join(', ')}.`;
-		}
+		resultStr += '\n' + userResults.join('\n');
 
 		await trackLoot({
 			duration,
