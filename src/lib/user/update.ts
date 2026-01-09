@@ -1,9 +1,8 @@
 import type { GearSetup } from '@oldschoolgg/gear';
-import type { IBirdhouseData, IFarmingContract } from '@oldschoolgg/schemas';
+import type { IBirdhouseData, IBlowpipeData, IFarmingContract } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
 
 import type { AutoFarmFilterEnum, bank_sort_method_enum, CropUpgradeType } from '@/prisma/main.js';
-import type { BlowpipeData } from '@/lib/minions/types.js';
 import type { PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
@@ -68,7 +67,7 @@ type PrismaBooleanKeys = 'minion_defaultPay' | 'minion_ironman' | 'minion_hasBou
 
 export type FullUserUpdateInput = Partial<
 	{
-		blowpipe: BlowpipeData;
+		blowpipe: IBlowpipeData;
 		slayer_last_task: number;
 		minion_farmingContract: IFarmingContract | null;
 		minion_birdhouseTraps: IBirdhouseData | null;

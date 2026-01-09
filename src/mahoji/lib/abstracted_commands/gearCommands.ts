@@ -1,5 +1,5 @@
 import type { GearSetupType } from '@oldschoolgg/gear';
-import { defaultGearSetup, type GearSetup, type GearStat, isValidGearStat } from '@oldschoolgg/gear';
+import { defaultGearSetup, type GearSetup, type GearStat, isValidGearSetup, isValidGearStat } from '@oldschoolgg/gear';
 import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -7,7 +7,6 @@ import type { GearPreset } from '@/prisma/main.js';
 import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import { globalPresets } from '@/lib/gear/gearPresets.js';
 import getUserBestGearFromBank from '@/lib/minions/functions/getUserBestGearFromBank.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';

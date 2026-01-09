@@ -1,9 +1,8 @@
-import { EquipmentSlot, type GearSetup, type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
+import { EquipmentSlot, type GearSetup, type GearSetupType, GearSetupTypes, isValidGearSetup } from '@oldschoolgg/gear';
 import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/discord/index.js';
-import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import { globalPresets } from '@/lib/gear/gearPresets.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';

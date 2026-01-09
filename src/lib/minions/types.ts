@@ -157,11 +157,6 @@ export interface AddMonsterXpParams {
 	superiorCount?: number;
 }
 
-export interface BlowpipeData {
-	scales: number;
-	dartQuantity: number;
-	dartID: number | null;
-}
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;

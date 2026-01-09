@@ -3,6 +3,7 @@ import { defaultGearSetup, type GearSetup } from '@oldschoolgg/gear';
 import { type ECombatOption, type IBlowpipeData, ZBlowpipeData } from '@oldschoolgg/schemas';
 import { cleanUsername, Emoji, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, convertXPtoLVL, type Item, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import { clone } from 'remeda';
 
 import type { User, xp_gains_skill_enum } from '@/prisma/main.js';
 import { modifyUserBusy } from '@/lib/cache.js';
@@ -300,7 +301,7 @@ export class BaseUser {
 	}
 
 	getBlowpipe(): IBlowpipeData {
-		return ZBlowpipeData.parse(this.user.blowpipe);
+		return clone(ZBlowpipeData.parse(this.user.blowpipe));
 	}
 
 	allEquippedGearBank() {

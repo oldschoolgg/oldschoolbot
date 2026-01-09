@@ -1,8 +1,7 @@
+import type { IBlowpipeData } from '@oldschoolgg/schemas';
 import { Bank, EItem, Items } from 'oldschooljs';
 
-import type { BlowpipeData } from '@/lib/minions/types.js';
-
-const defaultBlowpipe: BlowpipeData = {
+const defaultBlowpipe: IBlowpipeData = {
 	scales: 0,
 	dartID: null,
 	dartQuantity: 0
@@ -20,7 +19,7 @@ export const blowpipeDarts = [
 	'Dragon dart'
 ].map(name => Items.getOrThrow(name));
 
-export function validateBlowpipeData(data: BlowpipeData) {
+export function validateBlowpipeData(data: IBlowpipeData) {
 	if (Object.keys(data).length !== 3) throw new Error('Failed BP validation');
 	if (data.dartID === null && data.dartQuantity !== 0) throw new Error('Failed BP validation');
 	if (data.dartID !== null && !blowpipeDarts.some(d => d.id === data.dartID)) {
@@ -44,7 +43,7 @@ export async function blowpipeCommand(
 		return addCommand(user, add, quantity);
 	}
 
-	const rawBlowpipeData = { ...user.getBlowpipe() };
+	const rawBlowpipeData = user.getBlowpipe();
 	const hasBlowpipe = user.owns('Toxic blowpipe') || user.owns('Toxic blowpipe (empty)');
 	if (!hasBlowpipe) return "You don't own a Toxic blowpipe.";
 
@@ -96,30 +95,27 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	}
 	itemsToRemove.add(item.id, Math.max(1, quantity || userBank.amount(item.id)));
 
-	const dart = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
+	const dartBeingAdded = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
 
-	const rawBlowpipeData = { ...user.getBlowpipe() };
+	const rawBlowpipeData = user.getBlowpipe();
 	validateBlowpipeData(rawBlowpipeData);
-	if (dart && !itemsToRemove.amount(dart[0].id)) {
+	if (dartBeingAdded && !itemsToRemove.amount(dartBeingAdded[0].id)) {
 		throw new Error('wtf! not meant to happen');
 	}
 
-	if (rawBlowpipeData.dartID !== null && dart && rawBlowpipeData.dartID !== dart[0].id) {
+	if (rawBlowpipeData.dartID !== null && dartBeingAdded && rawBlowpipeData.dartID !== dartBeingAdded[0].id) {
 		return `You already have ${
 			Items.getOrThrow(rawBlowpipeData.dartID).name
 		}'s in your Blowpipe, do \`/minion blowpipe remove_darts:true\` to remove them first.`;
 	}
 
-	const currentData: BlowpipeData = { ...rawBlowpipeData };
+	const currentData: IBlowpipeData = { ...rawBlowpipeData };
 	validateBlowpipeData(currentData);
 	currentData.scales += itemsToRemove.amount("Zulrah's scales");
 
-	if (dart) {
-		if (currentData.dartID !== null && dart[0].id !== currentData.dartID) {
-			throw new Error('wtf');
-		}
-		currentData.dartID = dart[0].id;
-		currentData.dartQuantity += itemsToRemove.amount(dart[0].id);
+	if (dartBeingAdded) {
+		currentData.dartID = dartBeingAdded[0].id;
+		currentData.dartQuantity += itemsToRemove.amount(dartBeingAdded[0].id);
 	}
 	validateBlowpipeData(currentData);
 	if (!userBank.has(itemsToRemove)) {
@@ -143,15 +139,18 @@ async function removeDartsCommand(user: MUser) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...user.getBlowpipe() };
+	let rawBlowpipeData = user.getBlowpipe();
 	validateBlowpipeData(rawBlowpipeData);
 	if (!rawBlowpipeData.dartID || rawBlowpipeData.dartQuantity === 0) {
 		return 'Your Toxic blowpipe has no darts in it.';
 	}
 	validateBlowpipeData(rawBlowpipeData);
 	const returnedBank = new Bank().add(rawBlowpipeData.dartID, rawBlowpipeData.dartQuantity);
-	rawBlowpipeData.dartID = null;
-	rawBlowpipeData.dartQuantity = 0;
+	rawBlowpipeData = {
+		dartID: null,
+		dartQuantity: 0,
+		scales: rawBlowpipeData.scales
+	};
 
 	await user.updateBlowpipe(rawBlowpipeData);
 	await user.transactItems({

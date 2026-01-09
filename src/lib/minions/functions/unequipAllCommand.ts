@@ -1,7 +1,5 @@
-import { defaultGearSetup, type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
+import { defaultGearSetup, type GearSetupType, GearSetupTypes, isValidGearSetup } from '@oldschoolgg/gear';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-
-import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 
 export async function unEquipAllCommand(user: MUser, gearType: GearSetupType, bypassBusy?: boolean): CommandResponse {
 	if (!isValidGearSetup(gearType)) {
