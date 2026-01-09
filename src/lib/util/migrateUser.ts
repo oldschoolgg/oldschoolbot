@@ -210,7 +210,12 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.$queryRawUnsafe(updateUsers));
 
 	try {
-		await prisma.$transaction(transactions);
+		await prisma.$transaction(
+			transactions,
+			{
+				timeout: 300_000, // 2 minutes
+				maxWait: 30_000
+			});
 	} catch (err: unknown) {
 		Logging.logError(err as Error);
 		throw new UserError('Error migrating user. Sorry about that!');
@@ -238,7 +243,12 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 			})
 		);
 		try {
-			await roboChimpClient.$transaction(robochimpTx);
+			await roboChimpClient.$transaction(
+				robochimpTx,
+				{
+					timeout: 300_000, // 2 minutes
+					maxWait: 30_000
+				});
 		} catch (_err: unknown) {
 			const err = _err as Error;
 			err.message += ' - User already migrated! Robochimp migration failed!';
