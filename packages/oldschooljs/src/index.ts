@@ -23,7 +23,6 @@ import {
 	generateRandomBank,
 	increaseBankQuantitesByPercent
 } from './util/bank.js';
-import { fromKMB, toKMB } from './util/smallUtils.js';
 import { convertLVLtoXP, convertXPtoLVL } from './util/util.js';
 
 export {
@@ -40,8 +39,6 @@ export {
 	EItem,
 	ECreature,
 	ItemGroups,
-	toKMB,
-	fromKMB,
 	resolveItems,
 	addItemToBank,
 	addBanks,
@@ -77,3 +74,5 @@ export * from './hiscores/Hiscores.js';
 export function itemID(name: string | number): number {
 	return Items.getId(name);
 }
+
+export { toKMB } from '@oldschoolgg/util';

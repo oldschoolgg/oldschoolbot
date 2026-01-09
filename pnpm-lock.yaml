@@ -341,6 +341,9 @@ importers:
       '@oldschoolgg/gear':
         specifier: workspace:*
         version: link:../gear
+      '@oldschoolgg/util':
+        specifier: workspace:*
+        version: link:../util
       deepmerge:
         specifier: 4.3.1
         version: 4.3.1
