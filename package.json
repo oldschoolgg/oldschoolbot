@@ -45,7 +45,6 @@
 		"@oldschoolgg/discord": "workspace:*",
 		"@oldschoolgg/rng": "workspace:*",
 		"@oldschoolgg/schemas": "workspace:*",
-		"@oldschoolgg/spritesheet": "workspace:*",
 		"@oldschoolgg/toolkit": "workspace:*",
 		"@oldschoolgg/util": "workspace:*",
 		"@prisma/adapter-pg": "^6.19.0",
@@ -70,6 +69,7 @@
 		"simple-statistics": "^7.8.3",
 		"skia-canvas": "^3.0.8",
 		"sonic-boom": "^4.2.0",
+		"spritesheets": "^0.0.1",
 		"ts-pattern": "^5.7.1",
 		"zod": "^4.1.12"
 	},

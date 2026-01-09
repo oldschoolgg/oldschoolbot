@@ -49,7 +49,7 @@ export class OldSchoolBotClient extends DiscordClient {
 				create: data,
 				update: data
 			})
-			.catch(console.error);
+			.catch(err => Logging.logError(err));
 		DISCORD_USER_IDS_INSERTED_CACHE.add(user.id);
 	}
 
