@@ -72,7 +72,6 @@ export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
 
-export * from './gear/index.js';
 export * from './hiscores/Hiscores.js';
 
 export function itemID(name: string | number): number {

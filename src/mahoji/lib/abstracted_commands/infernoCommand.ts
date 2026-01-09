@@ -180,7 +180,7 @@ async function infernoRun({
 			[rangeGear, 'range'],
 			[mageGear, 'mage']
 		] as const) {
-			if (!gear[key]) {
+			if (!gear.get(key)?.item) {
 				return `You have nothing in your ${key} slot in your ${name} setup.. are you crazy?`;
 			}
 		}
@@ -311,7 +311,7 @@ async function infernoRun({
 	 *
 	 *
 	 */
-	const projectile = rangeGear.ammo;
+	const projectile = rangeGear.get('ammo');
 	if (!projectile) {
 		return 'You have no projectiles equipped in your range setup.';
 	}

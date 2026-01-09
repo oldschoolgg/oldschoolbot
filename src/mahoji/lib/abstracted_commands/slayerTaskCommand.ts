@@ -2,7 +2,6 @@ import { randInt } from '@oldschoolgg/rng';
 import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
 import { EItem, type Monster, Monsters } from 'oldschooljs';
 
-import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { slayerActionButtons } from '@/lib/slayer/slayerButtons.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -15,6 +14,7 @@ import {
 	userCanUseMaster
 } from '@/lib/slayer/slayerUtil.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {

@@ -1,3 +1,4 @@
+import type { GearStats } from '@oldschoolgg/gear';
 import { percentChance, randInt, randomVariation, shuffleArr } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -7,11 +8,10 @@ import {
 	Time
 } from '@oldschoolgg/toolkit';
 import { Bank, type ChambersOfXericOptions, type Item, Items, itemID, resolveItems } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
-import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import { constructGearSetup } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList } from '@/lib/util/smallUtils.js';
 
@@ -199,7 +199,6 @@ export const COXMaxMageGear = constructGearSetup({
 	'2h': "Tumeken's shadow",
 	ring: 'Magus ring'
 });
-const maxMage = new Gear(COXMaxMageGear);
 
 export const COXMaxRangeGear = constructGearSetup({
 	head: 'Masori mask(f)',
@@ -213,7 +212,6 @@ export const COXMaxRangeGear = constructGearSetup({
 	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
 });
-const maxRange = new Gear(COXMaxRangeGear);
 
 export const COXMaxMeleeGear = constructGearSetup({
 	head: 'Torva full helm',
@@ -226,25 +224,24 @@ export const COXMaxMeleeGear = constructGearSetup({
 	'2h': 'Scythe of vitur',
 	ring: 'Ultor ring'
 });
-const maxMelee = new Gear(COXMaxMeleeGear);
 
 export function calculateUserGearPercents(user: MUser) {
 	const melee = calcSetupPercent(
-		maxMelee.stats,
+		COXMaxMeleeGear.stats,
 		user.gear.melee.stats,
 		'melee_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged', 'attack_magic'],
 		true
 	);
 	const range = calcSetupPercent(
-		maxRange.stats,
+		COXMaxRangeGear.stats,
 		user.gear.range.stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
-		maxMage.stats,
+		COXMaxMageGear.stats,
 		user.gear.mage.stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
@@ -311,7 +308,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 		}
 
 		// Range weapon/ammo check
-		const rangeAmmo = user.gear.range.ammo;
+		const rangeAmmo = user.gear.range.get('ammo');
 		const rangeWeapon = user.gear.range.equippedWeapon();
 		const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
 		const boltsNeeded = CROSSBOW_BOLTS_NEEDED * quantity;
@@ -724,7 +721,7 @@ export async function calcCoxInput(u: MUser, quantity: number, solo: boolean) {
 		supplies.add('Super restore(4)', restoresNeeded);
 
 		// get ammo usage (checkCoxTeam() handles checking the proper amount and correct ammo type)
-		const rangeAmmo = u.gear.range.ammo;
+		const rangeAmmo = u.gear.range.get('ammo');
 		const rangeWeapon = u.gear.range.equippedWeapon();
 		if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)') && rangeWeapon && rangeAmmo) {
 			if (REQUIRED_BOW.includes(rangeWeapon.id)) {
