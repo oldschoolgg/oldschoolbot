@@ -31,6 +31,15 @@ If you are a Tier 1 patron or higher, you will see an **Auto Slay** button at th
   - [[/slayer manage command\:skip]] — Costs 30 Slayer points
   - Use [[/slayer new_task master\:Turael]] to cancel your task and reset your streak
 
+- **Patron Slayer skip lists (Tier 2+):**
+
+  - Add a monster to a master-specific skip list: [[/slayer skip_list action\:add master\:Duradel monster\:"Dust devils"]]
+  - Remove a monster from the list: [[/slayer skip_list action\:remove master\:Duradel monster\:"Dust devils"]]
+  - View your lists: [[/slayer skip_list action\:list]]
+  - Set a Slayer point buffer to stop auto-skipping when you’d dip below it: [[/slayer auto_skip_buffer points\:1000]]
+
+  Tier 2+ patrons automatically skip any listed tasks (paying the usual 30 points) when requesting a new assignment, up to 20 auto-skips in a row. If you run out of points or would drop below your buffer, auto-skipping stops and your current task is kept.
+
 - **Buy rewards/unlocks from the Slayer shop:**
 
   - [[/slayer rewards unlock unlockable\:Malevolent Masquerade]]
