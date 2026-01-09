@@ -18,12 +18,10 @@ async function main() {
 }
 
 process.on('uncaughtException', err => {
-	console.error(err);
 	Logging.logError(err);
 });
 
 process.on('unhandledRejection', err => {
-	console.error(err);
 	Logging.logError(err as Error);
 });
 

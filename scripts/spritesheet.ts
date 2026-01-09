@@ -1,11 +1,11 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
-import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
 import { isFunction, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
-import '../src/lib/safeglobals.js';
-
 import { Bank, EItem, GearStat, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
+import { type GenerateResult, SpriteSheetGenerator } from 'spritesheets';
+
+import '../src/lib/safeglobals.js';
 
 import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
 import { HolidayItems } from '@/lib/data/holidayItems.js';
