@@ -25,6 +25,8 @@ export function mahojiParseNumber({
 
 export function resolveAvailableItemBoosts(gearBank: GearBank, monster: KillableMonster): Bank {
 	const boosts = new Bank();
+	
+	// Handle itemInBankBoosts (items in bank or equipped)
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
 			let highestBoostAmount = 0;
@@ -47,6 +49,21 @@ export function resolveAvailableItemBoosts(gearBank: GearBank, monster: Killable
 			}
 		}
 	}
+	
+	// Handle equippedItemBoosts (items must be equipped in specific gear setup)
+	if (monster.equippedItemBoosts) {
+		for (const boostSet of monster.equippedItemBoosts) {
+			const { gearSetup, items } = boostSet;
+			
+			for (const { itemID, boostPercent } of items) {
+				// Check if the item is equipped in the specified gear setup
+				if (gearBank.gear[gearSetup].hasEquipped(itemID)) {
+					boosts.add(itemID, boostPercent);
+				}
+			}
+		}
+	}
+	
 	return boosts;
 }
 

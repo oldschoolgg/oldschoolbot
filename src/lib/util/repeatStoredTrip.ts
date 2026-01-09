@@ -811,9 +811,9 @@ const tripHandlers: {
 		})
 	},
 	[activity_type_enum.BurningDominion]: {
-		commandName: 'k',
+		commandName: 'mass',
 		args: () => ({
-			name: 'Burning Dominion'
+			monster: 'burning dominion'
 		})
 	},
 	[activity_type_enum.KibbleMaking]: {

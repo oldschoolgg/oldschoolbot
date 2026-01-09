@@ -48,10 +48,10 @@ export default async function reducedTimeForGroup(
 		);
 	}
 
-	// Apply individual boosts as an average multiplier on top of team speed
-	// This ensures individual boosts provide consistent value regardless of team size
-	const averageIndividualBoost = 1 + (totalIndividualBoostPercent / 100 / users.length);
-	const finalMultiplier = teamSpeedMultiplier * averageIndividualBoost;
+	// Apply individual boosts directly instead of averaging
+	// Each player's boost contributes fully to the team's speed
+	const individualBoostMultiplier = 1 + (totalIndividualBoostPercent / 100);
+	const finalMultiplier = teamSpeedMultiplier * individualBoostMultiplier;
 
 	const reducedTime = Math.max(
 		Math.floor(monster.timeToFinish / finalMultiplier),

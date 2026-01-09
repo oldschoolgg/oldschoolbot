@@ -759,10 +759,10 @@ export const BurningDominionTemplate: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Burning Dominion',
 	aliases: ['burning dominion', 'dominion', 'burning', 'orym and orrodil'],
-	timeToFinish: Time.Minute * 18,
+	timeToFinish: Time.Minute * 10,
 	hp: 3600,
 	respawnTime: 0,
-	difficultyRating: 5,
+	difficultyRating: 9	,
 
 	table: new LootTable()
 		.every('Primordial Bones', [4, 10])
