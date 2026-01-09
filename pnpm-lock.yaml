@@ -38,9 +38,6 @@ importers:
       '@oldschoolgg/schemas':
         specifier: workspace:*
         version: link:packages/schemas
-      '@oldschoolgg/spritesheet':
-        specifier: workspace:*
-        version: link:packages/spritesheet
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:packages/toolkit
@@ -113,6 +110,9 @@ importers:
       sonic-boom:
         specifier: ^4.2.0
         version: 4.2.0
+      spritesheets:
+        specifier: ^0.0.1
+        version: 0.0.1
       ts-pattern:
         specifier: ^5.7.1
         version: 5.7.1
@@ -407,18 +407,6 @@ importers:
       zod:
         specifier: ^4.1.12
         version: 4.1.12
-
-  packages/spritesheet:
-    dependencies:
-      fast-glob:
-        specifier: 3.3.3
-        version: 3.3.3
-      pureimage:
-        specifier: 0.4.18
-        version: 0.4.18
-      sharp:
-        specifier: 0.34.5
-        version: 0.34.5
 
   packages/toolkit:
     dependencies:
@@ -2940,6 +2928,11 @@ packages:
   ignore-by-default@1.0.1:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
 
+  image-size@2.0.2:
+    resolution: {integrity: sha512-IRqXKlaXwgSMAMtpNzZa1ZAe8m+Sa1770Dhk8VkSsP9LS+iHD62Zd8FQKs8fbPiagBE7BzoFX23cxFnwshpV6w==}
+    engines: {node: '>=16.x'}
+    hasBin: true
+
   import-meta-resolve@4.2.0:
     resolution: {integrity: sha512-Iqv2fzaTQN28s/FwZAoFq0ZSs/7hMAHJVX+w8PZl3cY19Pxk6jFFalxQoIfW2826i/fDLXv8IiEZRIT0lDuWcg==}
 
@@ -4135,6 +4128,10 @@ packages:
 
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
+
+  spritesheets@0.0.1:
+    resolution: {integrity: sha512-ClNAB9UHAA0TY3n9kMVYqbCDG2tj4/1Qv4YGkxSVx4iWKRHxgXUZUHdMmWcoAd4F6Wo33id5bwGUPuMTgVPBnw==}
+    engines: {node: '>=v20.0.0', npm: '>=7.0.0'}
 
   stack-trace@1.0.0-pre2:
     resolution: {integrity: sha512-2ztBJRek8IVofG9DBJqdy2N5kulaacX30Nz7xmkYF6ale9WBVmIy6mFBchvGX7Vx/MyjBhx+Rcxqrj+dbOnQ6A==}
@@ -7483,6 +7480,8 @@ snapshots:
 
   ignore-by-default@1.0.1: {}
 
+  image-size@2.0.2: {}
+
   import-meta-resolve@4.2.0: {}
 
   indent-string@5.0.0: {}
@@ -9093,6 +9092,12 @@ snapshots:
   split2@4.2.0: {}
 
   sprintf-js@1.0.3: {}
+
+  spritesheets@0.0.1:
+    dependencies:
+      fast-glob: 3.3.3
+      image-size: 2.0.2
+      pureimage: 0.4.18
 
   stack-trace@1.0.0-pre2: {}
 

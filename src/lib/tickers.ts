@@ -305,6 +305,23 @@ VALUES (get_economy_bank());`;
 		cb: async () => {
 			await cacheGEPrices();
 		}
+	},
+	{
+		name: 'Upsert achievement diary data',
+		timer: null,
+		interval: Time.Second * 11,
+		cb: async () => {
+			const users = await prisma.$queryRaw<{ id: string }[]>`SELECT id
+FROM users
+WHERE CARDINALITY(completed_achievement_diaries) = 0
+AND CARDINALITY(cl_array) >= 600
+ORDER BY CARDINALITY(cl_array) DESC
+LIMIT 10;`;
+			for (const { id } of users) {
+				const mUser = await mUserFetch(id);
+				await mUser.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
+			}
+		}
 	}
 ];
 
