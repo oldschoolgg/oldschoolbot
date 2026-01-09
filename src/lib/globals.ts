@@ -54,7 +54,7 @@ async function makePrismaClient() {
 		adapter,
 		transactionOptions: {
 			maxWait: 15_000,
-			timeout: 15_000
+			timeout: 150_000
 		}
 	});
 	prismaClient.$on('query', e => {
