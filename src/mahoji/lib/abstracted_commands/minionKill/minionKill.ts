@@ -1,5 +1,5 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import { Monsters } from 'oldschooljs';
+import { itemID, Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';
 import type { PvMMethod } from '@/lib/constants.js';
@@ -99,7 +99,25 @@ export async function minionKillCommand(
 	}
 
 	if (!user.allItemsOwned.has(result.updateBank.itemCostBank)) {
-		return `You don't have the items needed to kill this monster. You're missing: ${result.updateBank.itemCostBank.clone().remove(user.allItemsOwned)}`;
+		const missingBank = result.updateBank.itemCostBank.clone().remove(user.allItemsOwned);
+		const cannonballID = itemID('Cannonball');
+		const graniteCannonballID = itemID('Granite cannonball');
+		const missingCannonball = missingBank.amount(cannonballID);
+		const missingGranite = missingBank.amount(graniteCannonballID);
+		const missingMessages: string[] = [];
+
+		if (missingCannonball > 0 || missingGranite > 0) {
+			const missingQty = Math.max(missingCannonball, missingGranite);
+			missingBank.remove(cannonballID, missingCannonball);
+			missingBank.remove(graniteCannonballID, missingGranite);
+			missingMessages.push(`${missingQty}x Cannonball or ${missingQty}x Granite cannonball`);
+		}
+
+		if (missingBank.length > 0) {
+			missingMessages.push(missingBank.toString());
+		}
+
+		return `You don't have the items needed to kill this monster. You're missing: ${missingMessages.join(', ')}`;
 	}
 
 	const updateResult = await result.updateBank.transact(user);

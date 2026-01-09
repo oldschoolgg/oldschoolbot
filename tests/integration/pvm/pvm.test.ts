@@ -186,6 +186,7 @@ describe('PVM', async () => {
 		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
 		expect(result.xpGained.ranged).toBeGreaterThan(0);
+		expect(result.commandResult).not.toContain('Granite cannonball');
 		expect(user.bank.amount('Cannonball')).toBeLessThan(100_000);
 		expect(result.newKC).toBeGreaterThan(0);
 	});
@@ -200,6 +201,7 @@ describe('PVM', async () => {
 		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon', shouldFail: true });
 		expect(result.commandResult).toContain("You don't have the items needed to kill this monster");
+		expect(result.commandResult).toContain('3x Cannonball or 3x Granite cannonball');
 		expect(user.bank.amount('Cannonball')).toEqual(0);
 	});
 
