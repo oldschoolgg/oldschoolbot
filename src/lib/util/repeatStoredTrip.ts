@@ -1,6 +1,7 @@
 import type {
 	BathhouseTaskOptions,
 	BrimstoneDistilleryTaskOptions,
+	ConstructionContractsTaskOptions,
 	DisassembleTaskOptions,
 	DOAOptions,
 	DungeoneeringOptions,
@@ -993,6 +994,26 @@ const tripHandlers: {
 			turaels_trials: {
 				start: {
 					method: _data.m
+				}
+			}
+		})
+	},
+	[activity_type_enum.BrimstoneDistillery]: {
+		commandName: 'bsominigames',
+		args: (data: BrimstoneDistilleryTaskOptions) => ({
+			brimstone_distillery: {
+				start: {
+					recipe: data.recipe
+				}
+			}
+		})
+	},
+	[activity_type_enum.ConstructionContracts]: {
+		commandName: 'bsominigames',
+		args: (data: ConstructionContractsTaskOptions) => ({
+			construction_contracts: {
+				start: {
+					recipe: data.recipe
 				}
 			}
 		})

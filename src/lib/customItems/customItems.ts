@@ -14916,6 +14916,8 @@ setCustomItem(75_058, 'Adolescent gemscale', 'Coal', { customItemData: { cantDro
 setCustomItem(75_059, 'Mature gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_060, 'Ancient gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_061, 'Elder gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_062, 'Sedryn', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(75_063, 'Bamyr', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',
