@@ -28,6 +28,7 @@ import { runCommand } from '@/lib/settings/settings.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { BrimstoneDistilleryTaskOptions } from '@/lib/bso/bsoTypes.js';
+import type { ConstructionContractsTaskOptions } from '@/lib/bso/bsoTypes.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
 	ActivityTaskData,
@@ -965,10 +966,20 @@ const tripHandlers: {
 			brimstone_distillery: {
 				start: {
 					recipe: data.recipe
+				}
 			}
-		}
-	})
-},
+		})
+	},
+	[activity_type_enum.ConstructionContracts]: {
+		commandName: 'bsominigames',
+		args: (data: ConstructionContractsTaskOptions) => ({
+			construction_contracts: {
+				start: {
+					recipe: data.recipe
+				}
+			}
+		})
+	},
 	[activity_type_enum.Colosseum]: {
 		commandName: 'k',
 		args: (data: ColoTaskOptions) => ({

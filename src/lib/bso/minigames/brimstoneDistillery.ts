@@ -1,68 +1,68 @@
 import type { BrimstoneDistilleryTaskOptions } from '@/lib/bso/bsoTypes.js';
 
 import {
-	Emoji,
 	formatDuration,
 	reduceNumByPercent,
 	stringMatches,
 	Time,
 } from '@oldschoolgg/toolkit';
-import { randArrItem } from '@oldschoolgg/rng';
+import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const HERBLORE_REQUIREMENT = 110;
-const BASE_DURATION_PER_DISTILLATION = Time.Second * 2.77; // ~1300 per hour base
+const BASE_DURATION_PER_DISTILLATION = Time.Second * 2.77;
 const COAL_PER_DISTILLATION = 1;
-const BASE_DILUTED_BRIMSTONE_PER_DISTILLATION = 0.04; // ~50 per 1300 distillations
-const BASE_HERBLORE_XP = 212; // Scales to ~1.7m/hr with 5x multiplier
+const BASE_DILUTED_BRIMSTONE_PER_DISTILLATION = 0.04;
+const BASE_HERBLORE_XP = 212;
 
-const UNLUCKY_MESSAGES = [
-	'*Your minion spilled potions all over the place.*',
-	'*Your minion sneezed into the distillery.*',
-	'*Your minion got distracted and burned half the batch.*',
-	'*A pipe burst and ruined some of your distillation.*',
-	'*Your minion dropped a vial and started a chain reaction.*',
-	'*The heat got too intense and evaporated some potions.*',
-	'*Your minion tripped over the coal bucket.*',
-	'*A sudden draft scattered your carefully measured ingredients.*',
-	'*Your minion forgot to stir and the mixture separated*',
-	'*The distillery hiccupped at the worst possible moment*'
-];
-
-const NEUTRAL_MESSAGES = [
-	'*Your minion maintained steady production.*',
-	'*Everything went according to plan.*',
-	'*Your minion worked efficiently.*',
-	'*The distillery hummed along smoothly.*',
-	'*A typical day at the distillery.*',
-	'*Your minion followed the recipe perfectly.*',
-	'*Consistent output from the distillery.*',
-	'*Your minion kept a steady pace.*'
-];
-
-const LUCKY_MESSAGES = [
-	'*Your minion discovered a super secret recipe for making more potions, but forgot it!*',
-	'*The stars aligned and the distillery produced extra potions!*',
-	'*Your minion accidentally created the perfect mixture!*',
-	'*A mysterious breeze enhanced the distillation process*',
-	'*Your minion found the optimal temperature by pure luck!*',
-	'*The brimstone reacted better than expected!*',
-	'*Your minion hummed a tune that somehow improved yield*',
-	'*Favorable conditions led to exceptional output!*',
-	'*Your minion\'s experimental technique paid off!*',
-	'*The distillery spirits smiled upon your minion today*'
-];
-
-const JACKPOT_MESSAGES = [
-	'***Your minion achieved PERFECT distillation and created significantly more potions!***',
-	'***The distillery overflowed with an enormous batch!***',
-	'***Your minion unlocked the ancient secret of mass production!***',
-	'***A distillation miracle occurred - massively increased output!***',
-	'***The brimstone essence crystallized perfectly for maximum yield!***'
-];
+const FLAVOR_MESSAGES = {
+	disastrous: [
+		'*The distillery exploded multiple times throughout the trip.*',
+		'*Your minion spent most of the time cleaning up catastrophic spills.*',
+		'*Every vial seemed to shatter at the slightest touch.*',
+		'*The brimstone refused to cooperate at every turn.*',
+		'*Your minion questions their career choice as an alchemist.*'
+	],
+	poor: [
+		'*Your minion spilled potions all over the place.*',
+		'*Your minion sneezed into the distillery repeatedly.*',
+		'*Your minion got distracted and burned most batches.*',
+		'*Multiple pipes burst and ruined distillations.*',
+		'*Chain reactions of dropped vials plagued the workshop.*',
+		'*The heat got too intense and evaporated batches.*',
+		'*Your minion tripped over the coal bucket multiple times.*'
+	],
+	average: [
+		'*Your minion maintained steady production.*',
+		'*Everything went according to plan.*',
+		'*Your minion worked efficiently.*',
+		'*The distillery hummed along smoothly.*',
+		'*A typical day at the distillery.*',
+		'*Your minion followed the recipe perfectly.*',
+		'*Consistent output from the distillery.*',
+		'*Your minion kept a steady pace.*'
+	],
+	good: [
+		'*Your minion discovered secret recipes, though they forgot them!*',
+		'*The stars aligned and the distillery produced extra potions!*',
+		'*Your minion accidentally created perfect mixtures repeatedly!*',
+		'*Mysterious breezes enhanced the distillation process!*',
+		'*Your minion found optimal temperatures by pure luck!*',
+		'*The brimstone reacted better than expected throughout!*',
+		'*Your minion hummed tunes that improved yield significantly!*'
+	],
+	exceptional: [
+		'***Your minion achieved PERFECT distillation throughout the entire trip!***',
+		'***The distillery overflowed with enormous batches!***',
+		'***Your minion unlocked ancient secrets of mass production!***',
+		'***Distillation miracles occurred - massively increased output!***',
+		'***The brimstone essence crystallized perfectly for maximum yield!***',
+		'***Every single distillation was a masterwork of alchemy!***'
+	]
+};
 
 interface DistilleryRecipe {
 	name: string;
@@ -109,7 +109,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		xpMultiplier: 1.1,
 		brimstoneMultiplier: 1.2
 	},
-
 	{
 		name: 'Enhanced Super Restore',
 		output: Items.getOrThrow('Enhanced super restore'),
@@ -143,7 +142,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		xpMultiplier: 1.6,
 		brimstoneMultiplier: 1.6
 	},
-
 	{
 		name: 'Heat res. restore',
 		output: Items.getOrThrow('Heat res. restore'),
@@ -170,7 +168,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		xpMultiplier: 1.3,
 		brimstoneMultiplier: 1.3
 	},
-
 	{
 		name: 'Divination Potion',
 		output: Items.getOrThrow('Divination potion'),
@@ -182,7 +179,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		xpMultiplier: 1.25,
 		brimstoneMultiplier: 1.25
 	},
-
 	{
 		name: 'Enhanced Divine Water',
 		output: Items.getOrThrow('Enhanced divine water'),
@@ -194,7 +190,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		xpMultiplier: 1.35,
 		brimstoneMultiplier: 1.35
 	},
-
 	{
 		name: "Dragon's Fury",
 		output: Items.getOrThrow("Dragon's fury"),
@@ -206,7 +201,6 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		xpMultiplier: 1.6,
 		brimstoneMultiplier: 1.6
 	},
-
 	{
 		name: 'Brimstone Elixir',
 		output: Items.getOrThrow('Brimstone elixir'),
@@ -225,31 +219,33 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 	}
 ];
 
-// Roll for each individual distillation - returns 0, 1, 2, or rarely more
-function rollDistillationOutput(): number {
+function getTripQualityMultiplier(): number {
 	const roll = Math.random();
-	
-	// More volatile distribution with rarer jackpots:
-	// 30% chance: 0 potions (complete failure - very unlucky)
-	// 40% chance: 1 potion (normal success)
-	// 20% chance: 2 potions (lucky)
-	// 8% chance: 3 potions (very lucky)
-	// 1.9% chance: 4 potions (extremely lucky)
-	// 0.1% chance: 10 potions (jackpot - about 1-2 per trip)
-	
-	if (roll < 0.001) {
-		return 10; // 0.1% jackpot
-	} else if (roll < 0.02) {
-		return 4; // 1.9% extremely lucky
-	} else if (roll < 0.10) {
-		return 3; // 8% very lucky
-	} else if (roll < 0.30) {
-		return 2; // 20% lucky
-	} else if (roll < 0.70) {
-		return 1; // 40% normal
-	} else {
-		return 0; // 30% failure
-	}
+
+	if (roll < 0.05) return 0.3;
+
+	if (roll < 0.15) return 0.6;
+
+	if (roll < 0.30) return 1.5;
+
+	if (roll < 0.35) return 2.0;
+
+	return 0.85 + Math.random() * 0.3;
+}
+
+function rollDistillationQuality(tripMultiplier: number): number {
+	const baseQuality = Math.random() * 100;
+	const adjustedQuality = baseQuality * tripMultiplier;
+	return Math.min(100, Math.max(0, adjustedQuality));
+}
+
+function qualityToPotionOutput(quality: number): number {
+	if (quality >= 99) return 10;
+	if (quality >= 90) return 4;
+	if (quality >= 75) return 3;
+	if (quality >= 55) return 2;
+	if (quality >= 30) return 1;
+	return 0;
 }
 
 export async function brimstoneDistilleryStartCommand({
@@ -277,7 +273,6 @@ export async function brimstoneDistilleryStartCommand({
 		return `You need ${selectedRecipe.herbloreLevel} Herblore to distill ${selectedRecipe.name}.`;
 	}
 
-	// Calculate duration with speed boosts
 	let durationPerDistillation = BASE_DURATION_PER_DISTILLATION;
 	const boosts: string[] = [];
 
@@ -319,12 +314,10 @@ export async function brimstoneDistilleryStartCommand({
 		cost.add('Vial of water', vialsNeeded);
 	}
 
-	// 1:1 ingredient cost per distillation
 	for (const ingredient of selectedRecipe.ingredients) {
 		cost.add(ingredient.item.id, ingredient.quantity * quantity);
 	}
 
-	// Consume boost items
 	if (hasEnhancedStamina) {
 		cost.add('Enhanced stamina potion', 1);
 	}
@@ -349,83 +342,102 @@ export async function brimstoneDistilleryStartCommand({
 	});
 
 	return `${user.minionName} is distilling ${quantity}x ${selectedRecipe.name} for ${formatDuration(duration)}.
-${Emoji.Herblore} Ingredients: ${selectedRecipe.ingredients.map(i => `${i.quantity * quantity}x ${i.item.name}`).join(', ')}
-${Emoji.Herblore} Coal: ${coalNeeded}x | ${selectedRecipe.requiredCatalyst ? `${selectedRecipe.requiredCatalyst.name}: ${vialsNeeded}x` : `Vial of water: ${vialsNeeded}x`}
+Ingredients: ${selectedRecipe.ingredients.map(i => `${i.quantity * quantity}x ${i.item.name}`).join(', ')}
+Coal: ${coalNeeded}x | ${selectedRecipe.requiredCatalyst ? `${selectedRecipe.requiredCatalyst.name}: ${vialsNeeded}x` : `Vial of water: ${vialsNeeded}x`}
 Boosts: ${boosts.length ? boosts.join(', ') : 'None'}`;
 }
 
-export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions ) {
+export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) {
 	const recipe = DistilleryRecipes.find(r => r.name === data.recipe)!;
 	const loot = new Bank();
+
+	const tripMultiplier = getTripQualityMultiplier();
 	
+	const distillationQualities: number[] = [];
 	let totalPotions = 0;
-	let unluckyRolls = 0;
-	let normalRolls = 0;
-	let luckyRolls = 0;
-	let veryLuckyRolls = 0;
-	let jackpotRolls = 0;
+	let totalQualityPoints = 0;
+	let failedDistillations = 0;
+	let petDropped = false;
 
-	// Roll for each individual distillation
 	for (let i = 0; i < data.quantity; i++) {
-		const amount = rollDistillationOutput();
+		const quality = rollDistillationQuality(tripMultiplier);
+		distillationQualities.push(quality);
 		
-		if (amount > 0) {
-			loot.add(recipe.output.id, amount);
-			totalPotions += amount;
-		}
+		const potionOutput = qualityToPotionOutput(quality);
 		
-		// Track luck for flavor text
-		if (amount >= 10) {
-			jackpotRolls++;
-		} else if (amount >= 3) {
-			veryLuckyRolls++;
-		} else if (amount === 2) {
-			luckyRolls++;
-		} else if (amount === 1) {
-			normalRolls++;
+		if (potionOutput > 0) {
+			loot.add(recipe.output.id, potionOutput);
+			totalPotions += potionOutput;
+			totalQualityPoints += quality;
 		} else {
-			unluckyRolls++;
+			failedDistillations++;
 		}
 	}
 
-	loot.add(
-		'Diluted brimstone',
-		Math.floor(data.quantity * BASE_DILUTED_BRIMSTONE_PER_DISTILLATION * recipe.brimstoneMultiplier)
-	);
+	const brimstoneAmount = Math.floor((totalQualityPoints / 100) * BASE_DILUTED_BRIMSTONE_PER_DISTILLATION * recipe.brimstoneMultiplier);
+	loot.add('Diluted brimstone', brimstoneAmount);
 
-	// Determine flavor message based on overall luck
-	// Calculate percentage deviations from expected values
-	const expectedPotions = data.quantity * 1.11; // Expected average
-	const potionDeviation = ((totalPotions - expectedPotions) / expectedPotions);
-	
-	let flavorMessage = '';
-	
-	if (jackpotRolls > 0) {
-		flavorMessage = `\n\n${randArrItem(JACKPOT_MESSAGES)}`;
-	} else if (potionDeviation > 0.15) {
-		// 15%+ more potions than expected
-		flavorMessage = `\n\n**Lucky!** ${randArrItem(LUCKY_MESSAGES)}`;
-	} else if (potionDeviation < -0.15) {
-		// 15%+ fewer potions than expected
-		flavorMessage = `\n\n**Unlucky!** ${randArrItem(UNLUCKY_MESSAGES)}`;
-	} else {
-		flavorMessage = `\n\n${randArrItem(NEUTRAL_MESSAGES)}`;
+	if (roll(100000 / data.quantity)) {
+		loot.add('Sedryn', 1);
+		petDropped = true;
 	}
 
-	// Add detailed stats
-	const successRate = ((data.quantity - unluckyRolls) / data.quantity * 100).toFixed(1);
-	const avgPerDistillation = (totalPotions / data.quantity).toFixed(2);
-	
-	flavorMessage += `\n📊 Success rate: ${successRate}% | Avg per distillation: ${avgPerDistillation} | Failed: ${unluckyRolls}`;
-	
-	if (jackpotRolls > 0) {
-		flavorMessage += ` | 🎰 Jackpots: ${jackpotRolls}`;
+	const avgQuality = distillationQualities.reduce((sum, q) => sum + q, 0) / data.quantity;
+	const jackpotCount = distillationQualities.filter(q => q >= 99).length;
+	const exceptionalCount = distillationQualities.filter(q => q >= 90 && q < 99).length;
+	const greatCount = distillationQualities.filter(q => q >= 75 && q < 90).length;
+
+	let tripQuality: 'disastrous' | 'poor' | 'average' | 'good' | 'exceptional';
+	if (avgQuality >= 75) tripQuality = 'exceptional';
+	else if (avgQuality >= 60) tripQuality = 'good';
+	else if (avgQuality >= 40) tripQuality = 'average';
+	else if (avgQuality >= 25) tripQuality = 'poor';
+	else tripQuality = 'disastrous';
+
+	let flavorMessage = '';
+
+	if (petDropped) {
+		flavorMessage = `\n\n**As your minion completes the final distillation, a shimmering spirit fox materializes from the brimstone vapors. It circles the distillery gracefully before approaching your minion with knowing eyes.**
+
+*In memory of Sedrukaius, the first to achieve 5b Herblore xp.`;
+	} else {
+		flavorMessage = `\n\n${randArrItem(FLAVOR_MESSAGES[tripQuality])}`;
+		
+		if (tripQuality === 'exceptional') {
+			flavorMessage += `\n**The distillery produced extraordinary results!**`;
+		} else if (tripQuality === 'good') {
+			flavorMessage += `\n**Your minion had a very productive session!**`;
+		} else if (tripQuality === 'average') {
+			flavorMessage += `\n**A standard day at the distillery.**`;
+		} else if (tripQuality === 'poor') {
+			flavorMessage += `\n**The distillery struggled today.**`;
+		} else {
+			flavorMessage += `\n**Perhaps alchemy isn't for everyone.**`;
+		}
+	}
+
+	if (!petDropped) {
+		const avgQualityStr = avgQuality.toFixed(1);
+		const avgPerDistillation = (totalPotions / data.quantity).toFixed(2);
+		const qualityPointsStr = totalQualityPoints.toFixed(0);
+		
+		flavorMessage += `\n📊 Avg Quality: ${avgQualityStr} | Quality Points: ${qualityPointsStr} | Avg Output: ${avgPerDistillation} | Failed: ${failedDistillations}`;
+		
+		const notableResults: string[] = [];
+		if (jackpotCount > 0) notableResults.push(`Jackpots: ${jackpotCount}`);
+		if (exceptionalCount > 0) notableResults.push(`Exceptional: ${exceptionalCount}`);
+		if (greatCount > 0) notableResults.push(`Great: ${greatCount}`);
+		
+		if (notableResults.length > 0) {
+			flavorMessage += `\n${notableResults.join(' | ')}`;
+		}
 	}
 
 	return {
 		loot,
 		herbloreXP: data.quantity * BASE_HERBLORE_XP * recipe.xpMultiplier,
 		recipe,
-		flavorMessage
+		flavorMessage,
+		petDropped
 	};
 }

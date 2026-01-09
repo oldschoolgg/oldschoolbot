@@ -697,6 +697,7 @@ model Minigame {
   guthixian_cache          Int @default(0)
   turaels_trials           Int @default(0)
   brimstone_distillery     Int @default(0)
+  construction_contracts   Int @default(0)
 
 
   new_user NewUser?
@@ -1227,6 +1228,7 @@ enum activity_type_enum {
   Easter
   BaxtorianBathhouses
   BrimstoneDistillery
+  ConstructionContracts
   Naxxus
   Disassembling
   Research
