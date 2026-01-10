@@ -948,6 +948,42 @@ export const allCollectionLogs: ICollection = {
 				allItems: BSOMonsters.Celestara.allItems,
 				items: BSOMonsters.Celestara.allItems!,
 				fmtProg: kcProg(BSOMonsters.Celestara.id)
+			},
+			Orym: {
+				alias: ['orym'],
+				allItems: BSOMonsters.Orym.allItems,
+				items: BSOMonsters.Orym.allItems!,
+				fmtProg: kcProg(BSOMonsters.Orym.id)
+			},
+			Orrodil: {
+				alias: ['orrodil'],
+				allItems: BSOMonsters.Orrodil.allItems,
+				items: BSOMonsters.Orrodil.allItems!,
+				fmtProg: kcProg(BSOMonsters.Orrodil.id)
+			},
+			'Burning Dominion': {
+				alias: ['burning dominion', 'burning'],
+				allItems: BSOMonsters.BurningDominion.allItems,
+				items: BSOMonsters.BurningDominion.allItems!,
+				fmtProg: kcProg(BSOMonsters.BurningDominion.id)
+			},
+			'Fungal Behemoth': {
+				alias: ['fungal behemoth', 'fungal', 'behemoth'],
+				allItems: BSOMonsters.FungalBehemoth.allItems,
+				items: BSOMonsters.FungalBehemoth.allItems!,
+				fmtProg: kcProg(BSOMonsters.FungalBehemoth.id)
+			},
+			'Crystalline Sentinel': {
+				alias: ['crystalline sentinel', 'sentinel', 'crystal sentinel'],
+				allItems: BSOMonsters.CrystallineSentinel.allItems,
+				items: BSOMonsters.CrystallineSentinel.allItems!,
+				fmtProg: kcProg(BSOMonsters.CrystallineSentinel.id)
+			},
+			'Elder Mimic': {
+				alias: ['elder mimic', 'elder'],
+				allItems: BSOMonsters.ElderMimic.allItems,
+				items: BSOMonsters.ElderMimic.allItems!,
+				fmtProg: kcProg(BSOMonsters.ElderMimic.id)
 			}
 		}
 	},

@@ -149,6 +149,8 @@ model ClientStorage {
   gp_pet                  BigInt @default(0)
   ignecarus_cost          Json   @default("{}") @db.Json
   ignecarus_loot          Json   @default("{}") @db.Json
+  dominion_cost           Json   @default("{}") @db.Json
+  dominion_loot           Json   @default("{}") @db.Json
   kibble_cost             Json   @default("{}") @db.Json
   mr_cost                 Json   @default("{}") @db.Json
   mr_loot                 Json   @default("{}") @db.Json
@@ -596,6 +598,9 @@ enum XpGainSource {
   PuroPuro
   MahoganyHomes
   AerialFishing
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
   CleaningHerbsWhileFarming
   CamdozaalMining
   CamdozaalSmithing
@@ -691,6 +696,9 @@ model Minigame {
   depths_of_atlantis_cm    Int @default(0)
   guthixian_cache          Int @default(0)
   turaels_trials           Int @default(0)
+  brimstone_distillery     Int @default(0)
+  construction_contracts   Int @default(0)
+
 
   new_user NewUser?
 
@@ -1171,6 +1179,9 @@ enum activity_type_enum {
   AgilityArena
   ChampionsChallenge
   AerialFishing
+  GemstoneFishing
+  AncientMycology
+  ArchaicMining
   DriftNet
   MahoganyHomes
   Nex
@@ -1194,6 +1205,7 @@ enum activity_type_enum {
   OuraniaDeliveryService
   DarkAltar
   Ignecarus
+  BurningDominion
   OuraniaAltar
   Trekking
   KibbleMaking
@@ -1215,6 +1227,8 @@ enum activity_type_enum {
   PuroPuro
   Easter
   BaxtorianBathhouses
+  BrimstoneDistillery
+  ConstructionContracts
   Naxxus
   Disassembling
   Research
@@ -1248,6 +1262,7 @@ enum activity_type_enum {
   Colosseum
   CreateForestersRations
   SnoozeSpellActive
+  BurningDominion
 }
 
 enum xp_gains_skill_enum {
@@ -1502,6 +1517,7 @@ enum command_name_enum {
   activities
   admin
   aerialfish
+  gemstonefish
   agilityarena
   alch
   amrod

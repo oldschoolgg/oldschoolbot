@@ -27,6 +27,8 @@ import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.
 import { runCommand } from '@/lib/settings/settings.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { BrimstoneDistilleryTaskOptions } from '@/lib/bso/bsoTypes.js';
+import type { ConstructionContractsTaskOptions } from '@/lib/bso/bsoTypes.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
 	ActivityTaskData,
@@ -34,6 +36,7 @@ import type {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
+	ArchaicMiningActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
@@ -265,6 +268,27 @@ const tripHandlers: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
 			camdozaal: { action: 'fishing', quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.GemstoneFishing]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			gemstone_fishing: { quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.AncientMycology]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			ancient_mycology: { quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.ArchaicMining]: {
+		commandName: 'activities',
+		args: (data: ArchaicMiningActivityTaskOptions | ActivityTaskOptionsWithQuantity) => ({
+			archaic_mining: { 
+				type: (data as ArchaicMiningActivityTaskOptions).miningType, 
+				quantity: data.iQty 
+			}
 		})
 	},
 	[activity_type_enum.BarbarianAssault]: {
@@ -760,6 +784,12 @@ const tripHandlers: {
 			name: `Ignecarus ${data.users.length === 1 ? 'solo' : 'mass'}`
 		})
 	},
+	[activity_type_enum.BurningDominion]: {
+		commandName: 'mass',
+		args: () => ({
+			monster: 'burning dominion'
+		})
+	},
 	[activity_type_enum.KibbleMaking]: {
 		commandName: 'kibble',
 		args: (data: KibbleOptions) => ({
@@ -926,6 +956,26 @@ const tripHandlers: {
 			turaels_trials: {
 				start: {
 					method: _data.m
+				}
+			}
+		})
+	},
+	[activity_type_enum.BrimstoneDistillery]: {
+		commandName: 'bsominigames',
+		args: (data: BrimstoneDistilleryTaskOptions) => ({
+			brimstone_distillery: {
+				start: {
+					recipe: data.recipe
+				}
+			}
+		})
+	},
+	[activity_type_enum.ConstructionContracts]: {
+		commandName: 'bsominigames',
+		args: (data: ConstructionContractsTaskOptions) => ({
+			construction_contracts: {
+				start: {
+					recipe: data.recipe
 				}
 			}
 		})

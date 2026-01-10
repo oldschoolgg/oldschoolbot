@@ -32,6 +32,8 @@ import { Items } from 'oldschooljs';
 
 import { choicesOf } from '@/discord/index.js';
 import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
+import { brimstoneDistilleryStartCommand, DistilleryRecipes } from '@/lib/bso/minigames/brimstoneDistillery.js';
+import { constructionContractsStartCommand, ContractRecipes } from '@/lib/bso/minigames/constructionContracts.js';
 
 export const bsoMinigamesCommand = defineCommand({
 	name: 'bsominigames',
@@ -309,6 +311,68 @@ export const bsoMinigamesCommand = defineCommand({
 					]
 				}
 			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'brimstone_distillery',
+			description: 'The Brimstone Distillery minigame.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Begin a brimstone distillation.',
+					options: [
+						{
+							type: 'String',
+							name: 'recipe',
+							description: 'The recipe you want to distill.',
+							required: true,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return DistilleryRecipes.filter(r =>
+									!value ? true : r.name.toLowerCase().includes(value.toLowerCase())
+								).map(r => ({ name: `${r.name} (${r.herbloreLevel} Herblore)`, value: r.name }));
+	}
+						},
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'stats',
+					description: 'View your Brimstone Distillery stats and upgrades.',
+					options: []
+				}
+			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'construction_contracts',
+			description: 'The Construction Contracts minigame.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Begin crafting construction contracts.',
+					options: [
+						{
+							type: 'String',
+							name: 'recipe',
+							description: 'The contract recipe you want to craft.',
+							required: true,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return ContractRecipes.filter(r =>
+									!value ? true : r.name.toLowerCase().includes(value.toLowerCase())
+								).map(r => ({ name: `${r.name} (${r.constructionLevel} Construction)`, value: r.name }));
+							}
+						},
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'stats',
+					description: 'View your Construction Contracts stats and upgrades.',
+					options: []
+				}
+			]
 		}
 	],
 	run: async ({ options, user, channelId }) => {
@@ -331,8 +395,32 @@ export const bsoMinigamesCommand = defineCommand({
 		if (options.guthixian_cache?.stats) {
 			const boost = user.user.guthixian_cache_boosts_available;
 			return `You have ${boost} Guthixian cache boost${boost === 1 ? '' : 's'} available.`;
+}
+		if (options.brimstone_distillery?.start) {
+			return brimstoneDistilleryStartCommand({
+				user,
+				channelId,
+				recipe: options.brimstone_distillery.start.recipe
+			});
 		}
 
+		if (options.brimstone_distillery?.stats) {
+			const Score = await user.fetchMinigameScore('brimstone_distillery');
+			return `You have completed ${Score} Brimstone Distillery trips.`;
+		}
+
+		if (options.construction_contracts?.start) {
+			return constructionContractsStartCommand({
+				user,
+				channelId,
+				recipe: options.construction_contracts.start.recipe
+			});
+		}
+
+		if (options.construction_contracts?.stats) {
+			const Score = await user.fetchMinigameScore('construction_contracts');
+			return `You have completed ${Score} Construction Contracts trips.`;
+		}
 		if (divine_dominion?.check) {
 			return divineDominionCheck(user);
 		}

@@ -1406,6 +1406,109 @@ export const bsoCreatables: Createable[] = [
 			.add('Pernix components', 3),
 		outputItems: new Bank().add('Deathly collector (i)'),
 		noCreatablesCl: true
+	},
+	{
+		name: 'Dragonbane aegis',
+		inputItems: new Bank({
+			'Dark animica': 7500,
+			'Dwarven bar': 3,
+			'Dragonfire shield': 1,
+			'Dragonfire ward': 1,
+			'Wyvern shield': 1,
+			'Primordial heartstring': 1,
+			'Primordial scales': 2500
+		}),
+		outputItems: new Bank({
+			'Dragonbane aegis': 1
+		}),
+		requiredSkills: {
+			smithing: 120,
+			crafting: 120
+		}
+	},
+	{
+		name: 'Celestial pendant',
+		inputItems: new Bank({
+			'Dark animica': 7500,
+			'Dwarven bar': 1,
+			'Primordial spine': 1,
+			'Primordial heartstring': 1,
+			'Shattered pendant': 1
+		}),
+		outputItems: new Bank({
+			'Celestial pendant': 1
+		}),
+		requiredSkills: {
+			smithing: 120,
+			crafting: 120
+		}
+	},
+	{
+		name: 'Dragonbane glaive',
+		inputItems: new Bank({
+			'Dark animica': 7500,
+			'Dwarven bar': 3,
+			'Primordial spine': 1,
+			'Primordial heartstring': 1,
+			DHL: 1,
+			'Primordial scales': 2500
+		}),
+		outputItems: new Bank({
+			'Dragonbane glaive': 1
+		}),
+		requiredSkills: {
+			smithing: 120,
+			crafting: 120
+		}
+	},
+	{
+		name: 'Vitrolic curse',
+		inputItems: new Bank({
+			'Dwarven blessing': 1,
+			'Infernal core': 1,
+			'Sacrilegious flask': 1
+		}),
+		outputItems: new Bank({
+			'Vitrolic curse': 1
+		}),
+		requiredSkills: {
+			prayer: 120
+		}
+	},
+	{
+		name: 'Elder sigil',
+		inputItems: new Bank({
+			'Elder sigil fragment (1)': 1,
+			'Elder sigil fragment (2)': 1,
+			'Elder sigil fragment (3)': 1
+		}),
+		outputItems: new Bank({
+			'Elder sigil': 1
+		}),
+		requiredSkills: {}
+	},
+	{
+		name: 'Searcrown band',
+		inputItems: new Bank({
+			'Ignis ring (i)': 1,
+			'Forsaken tear': 1,
+			'Dwarven bar': 1
+		}),
+		outputItems: new Bank({
+			'Searcrown band': 1
+		}),
+		requiredSkills: {}
+	},
+	{
+		name: 'Elderflame bow',
+		inputItems: new Bank({
+			'Starfire bow': 1,
+			'Elderflame catalyst': 1
+		}),
+		outputItems: new Bank({
+			'Elderflame bow': 1
+		}),
+		requiredSkills: {}
 	}
 ];
 

@@ -32,6 +32,9 @@ import { scatterCommand } from '@/mahoji/lib/abstracted_commands/scatterCommand.
 import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
+import { ancientMycologyCommand } from '../lib/abstracted_commands/ancientMycologyCommand.js';
+import { archaicMiningCommand } from '../lib/abstracted_commands/archaicMiningCommand.js';
+import { gemstoneFishingCommand } from '../lib/abstracted_commands/gemstoneFishingCommand.js';
 
 export const activitiesCommand = defineCommand({
 	name: 'activities',
@@ -132,6 +135,64 @@ export const activitiesCommand = defineCommand({
 					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity to do (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'gemstone_fishing',
+			description: 'Fish for gemstone fish',
+			options: [
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The quantity of fish to catch (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'ancient_mycology',
+			description: 'Harvest Ancient Myconid growth',
+			options: [
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The number of growths to harvest (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'archaic_mining',
+			description: 'Mine archaic ores',
+			options: [
+				{
+					type: 'String',
+					name: 'type',
+					description: 'The type of ore to mine',
+					required: true,
+					choices: [
+						{
+							name: 'Dragonbone',
+							value: 'dragonbone'
+						},
+						{
+							name: 'Crystalline',
+							value: 'crystalline'
+						}
+					]
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The number of ores to mine (optional).',
 					required: false,
 					min_value: 1
 				}
@@ -572,6 +633,16 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.camdozaal) {
 			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
+		}
+		if (options.gemstone_fishing) {
+			return gemstoneFishingCommand(user, channelId, options.gemstone_fishing.quantity);
+		}
+		if (options.ancient_mycology) {
+			return ancientMycologyCommand(user, channelId, options.ancient_mycology.quantity);
+		}
+		if (options.archaic_mining) {
+			const { type, quantity } = options.archaic_mining;
+			return archaicMiningCommand(user, channelId, type as 'dragonbone' | 'crystalline', quantity);
 		}
 		if (options.collect) {
 			return collectCommand(

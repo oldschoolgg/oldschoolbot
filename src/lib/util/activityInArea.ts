@@ -78,6 +78,7 @@ const WorldLocationsChecker = [
 				activity_type_enum.AerialFishing,
 				activity_type_enum.Fishing,
 				activity_type_enum.CamdozaalFishing,
+				activity_type_enum.GemstoneFishing,
 				activity_type_enum.FishingContest
 			];
 			return underWaterLocations.includes(activity.type);

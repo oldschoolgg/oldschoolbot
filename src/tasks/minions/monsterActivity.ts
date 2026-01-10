@@ -23,6 +23,7 @@ import { clone } from 'remeda';
 
 import type { BitField } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
+import type { MUserClass } from '@/lib/MUser.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
@@ -151,6 +152,7 @@ function getSlayerContext({
 
 interface newOptions {
 	type: 'MonsterKilling';
+	user: MUserClass;
 	monster: KillableMonster;
 	q: number;
 	iQty?: number;
@@ -180,6 +182,7 @@ interface newOptions {
 
 export function doMonsterTrip(data: newOptions) {
 	let {
+		user,
 		monster,
 		q: quantity,
 		usingCannon,
@@ -380,9 +383,15 @@ export function doMonsterTrip(data: newOptions) {
 	// Loot
 	const finalQuantity = quantity - newSuperiorCount;
 
-	const loot = wiped
-		? new Bank()
-		: monster.table.kill(oriEffect({ gearBank, quantity: finalQuantity, duration, messages }), killOptions);
+const loot = wiped
+	? new Bank()
+	: monster.table.kill(oriEffect({ 
+		gearBank, 
+		quantity: finalQuantity, 
+		duration, 
+		messages,
+		monster: monster.name // Add this
+	}), killOptions);
 	if (isDoubleLootActive(duration)) {
 		loot.multiply(2);
 		messages.push('**Double loot activated!**');
@@ -431,6 +440,7 @@ export function doMonsterTrip(data: newOptions) {
 		updateBank.itemLootBank.add(loot);
 		updateBank.xpBank.add(
 			addMonsterXPRaw({
+				user,
 				monsterID: monster.id,
 				quantity,
 				duration,
@@ -560,6 +570,7 @@ export const monsterTask: MinionTask = {
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
 		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({
 			...data,
+			user,
 			monster,
 			tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
 				user.hasEquipped('Ring of wealth (i)'),

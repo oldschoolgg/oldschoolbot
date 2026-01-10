@@ -115,8 +115,52 @@ interface StoredBossUser extends Omit<BossUser, 'user' | 'itemsToRemove'> {
 	itemsToRemove: ItemBank;
 }
 
+export interface BrimstoneDistilleryTaskOptions extends MinigameActivityTaskOptions {
+	type: 'BrimstoneDistillery';
+
+	quantity: number;
+
+	/**
+	 * What is being distilled
+	 */
+	recipe: string;
+
+	/**
+	 * rarity upgrade flag.
+	 * Not currently implemented
+	 *
+	 * 0 = none
+	 * 1 = minor boost
+	 * 2 = major boost
+	 * 3 = extreme boost
+	 */
+	rarityUpgradeTier?: 0 | 1 | 2 | 3;
+}
+
+export interface ConstructionContractsTaskOptions extends MinigameActivityTaskOptions {
+	type: 'ConstructionContracts';
+
+	quantity: number;
+
+	/**
+	 * What compact is being crafted
+	 */
+	recipe: string;
+
+	/**
+	 * rarity upgrade flag.
+	 * Not currently implemented
+	 *
+	 * 0 = none
+	 * 1 = minor boost
+	 * 2 = major boost
+	 * 3 = extreme boost
+	 */
+	rarityUpgradeTier?: 0 | 1 | 2 | 3;
+}
+
 export interface NewBossOptions extends ActivityTaskOptions {
-	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent';
+	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent' | 'BurningDominion';
 	users: string[];
 	quantity: number;
 	bossUsers: StoredBossUser[];
@@ -139,4 +183,6 @@ export type BSOActivityTaskData =
 	| FishingContestOptions
 	| TinkeringWorkshopOptions
 	| NewBossOptions
+	| BrimstoneDistilleryTaskOptions
+	| ConstructionContractsTaskOptions
 	| NexTaskOptions;

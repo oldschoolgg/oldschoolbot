@@ -34,6 +34,14 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 			return 'Your minion threw the dart at the moon, it did not reach.';
 		}
 
+		if (monster.name === 'Orrodil') {
+			return 'Your minion threw the dart at the fury of the stars, they spin on, unphased.';
+		}
+
+		if (monster.name === 'Orym') {
+			return 'The dart corrupts into a pile of foul bile and venomous sludge.';
+		}
+
 		if (monster.name === 'Yeti') {
 			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
 		}
@@ -43,7 +51,15 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 		}
 
 		if (monster.name === 'Venatrix') {
-			return `You throw your dart but gets stuck in Venatrix's web.`;
+			return `You throw your dart but it gets stuck in Venatrix's web.`;
+		}
+
+		if (monster.name === 'Elder Mimic') {
+			return `You throw your dart at the Elder Mimic, only for it to be caught by the Elder Mimic's tongue and added to the hoard.`;
+		}
+
+		if (monster.name === 'Burning Dominion') {
+			return `You throw your dart at the furious twins, your minion soils their pants in fear and runs away.`;
 		}
 
 		await user.statsUpdate({

@@ -63,6 +63,9 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'AerialFishing'
 		| 'FishingTrawler'
 		| 'CamdozaalFishing'
+		| 'GemstoneFishing'
+		| 'AncientMycology'
+		| 'ArchaicMining'
 		| 'CamdozaalMining'
 		| 'CamdozaalSmithing'
 		| 'Naxxus'
@@ -180,6 +183,13 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	oreID: number;
 	quantity: number;
 	powermine: boolean;
+	iQty?: number;
+}
+
+export interface ArchaicMiningActivityTaskOptions extends ActivityTaskOptions {
+	type: 'ArchaicMining';
+	miningType: 'dragonbone' | 'crystalline';
+	quantity: number;
 	iQty?: number;
 }
 
@@ -669,6 +679,7 @@ export type ActivityTaskData =
 	| FiremakingActivityTaskOptions
 	| FishingActivityTaskOptions
 	| MiningActivityTaskOptions
+	| ArchaicMiningActivityTaskOptions	
 	| MotherlodeMiningActivityTaskOptions
 	| PlunderActivityTaskOptions
 	| SmithingActivityTaskOptions

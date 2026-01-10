@@ -49,8 +49,26 @@ export default async ({
 			};
 		}
 
+		// Add this logging RIGHT where you have the ori check
+		console.log('=== ORI CHECK DEBUG ===');
+		console.log('ori value:', ori);
+		console.log('ori type:', typeof ori);
+		console.log('ori truthy:', !!ori);
+		console.log('monster name:', osjsMonster.name);
+		console.log('monster name (stringified):', JSON.stringify(osjsMonster.name));
+
+		// Test the array check
+		const matchTest = ORI_DISABLED_MONSTERS.some(m => {
+		const result = stringMatches(m, osjsMonster.name);
+		console.log(`  stringMatches("${m}", "${osjsMonster.name}") = ${result}`);
+		return result;
+		});
+		console.log('any matches found:', matchTest);
+		console.log('condition result (ori && matches):', ori && matchTest);
+		console.log('=== END DEBUG ===');
+
 		if (ori && ORI_DISABLED_MONSTERS.some(m => stringMatches(m, osjsMonster.name))) {
-			return { error: "Ori doesn't work here." };
+		return { error: "Ori doesn't work here." };
 		}
 
 		let qtyToKill = quantity;

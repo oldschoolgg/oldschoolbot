@@ -1,5 +1,6 @@
 import { bathhouseTask } from '@/lib/bso/tasks/bathhousesActivity.js';
 import { bonanzaTask } from '@/lib/bso/tasks/bonanzaActivity.js';
+import { dominionTask } from '@/lib/bso/tasks/burningDominionActivity.js';
 import { disassemblingTask } from '@/lib/bso/tasks/disassemblingActivity.js';
 import { doaTask } from '@/lib/bso/tasks/doaActivity.js';
 import { dungeoneeringTask } from '@/lib/bso/tasks/dungeoneeringActivity.js';
@@ -20,6 +21,8 @@ import { researchActivityTask } from '@/lib/bso/tasks/researchActivity.js';
 import { scTask } from '@/lib/bso/tasks/stealingCreationActivity.js';
 import { twTask } from '@/lib/bso/tasks/tinkeringWorkshopActivity.js';
 import { turaelsTrialsTask } from '@/lib/bso/tasks/turaelsTrialsActivity.js';
+import { brimstoneDistilleryTask } from '@/lib/bso/tasks/brimstoneDistilleryActivity.js';
+import { constructionContractsTask } from '@/lib/bso/tasks/constructionContractsActivity.js';
 import { vasaTask } from '@/lib/bso/tasks/vasaMagusActivity.js';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
@@ -116,6 +119,9 @@ import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivit
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
+import { ancientMycologyTask } from '../tasks/minions/ancientMycologyActivity.js';
+import { archaicMiningTask } from '../tasks/minions/archaicMiningActivity.js';
+import { gemstoneFishingTask } from '../tasks/minions/gemstoneFishingActivity.js';
 
 export const allTasks: MinionTask[] = [
 	aerialFishingTask,
@@ -206,6 +212,9 @@ export const allTasks: MinionTask[] = [
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
+	gemstoneFishingTask,
+	ancientMycologyTask,
+	archaicMiningTask,
 	myNotesTask,
 	colosseumTask,
 	CreateForestersRationsTask,
@@ -231,7 +240,10 @@ export const allTasks: MinionTask[] = [
 	doaTask,
 	memoryHarvestTask,
 	guthixianCacheTask,
-	turaelsTrialsTask
+	turaelsTrialsTask,
+	dominionTask,
+	brimstoneDistilleryTask,
+	constructionContractsTask
 ];
 
 type MinionTaskRunOptions = {

@@ -1396,6 +1396,130 @@
 		]
 	},
 	{
+		"is_custom": true,
+		"id": 142006,
+		"name": "Burning Dominion",
+		"time_to_finish": 1080000,
+		"hp": 3600,
+		"respawn_time": 0,
+		"difficulty_rating": 5,
+		"table": {},
+		"qp_required": 2500,
+		"heal_amount_needed": 120000,
+		"attack_style_to_use": "attack_stab",
+		"attack_styles_used": ["attack_stab"],
+		"level_requirements": {
+			"hitpoints": 120,
+			"attack": 115,
+			"strength": 115,
+			"defence": 115,
+			"magic": 115,
+			"ranged": 115,
+			"slayer": 115
+		},
+		"poh_boosts": {
+			"pool": {
+				"ancient_rejuvenation_pool": 5
+			}
+		},
+		"death_props": {
+			"hardness": 0.4,
+			"steepness": 0.999,
+			"lowest_death_chance": 5,
+			"highest_death_chance": 40
+		},
+		"minimum_heal_amount": 22,
+		"all_items": [
+			"Celestial flame",
+			"Forsaken tear",
+			"Orrodin",
+			"Orylin",
+			"Primordial heartstring",
+			"Primordial spine",
+			"Sacrilegious flask",
+			"Shattered pendant"
+		],
+		"minimum_gear_requirements": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"minimum_weapon_shield_stats": {
+			"melee": {
+				"attack_stab": 125,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"item_cost": {
+			"item_cost": {
+				"12695": 1,
+				"50026": 3,
+				"50027": 1,
+				"70006": 1,
+				"75006": 3
+			},
+			"qty_per_kill": 1
+		},
+		"tame_cant_kill": true,
+		"items_required": ["Combatant's cape"],
+		"setups_used": ["melee"],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 25,
+						"item_id": 75001
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 15,
+						"item_id": 75002
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 7,
+						"item_id": 75017
+					}
+				]
+			}
+		],
+		"group_killable": true
+	},
+	{
 		"id": 6503,
 		"name": "Callisto",
 		"time_to_finish": 420000,
@@ -2527,6 +2651,113 @@
 		"qp_required": 1
 	},
 	{
+		"is_custom": true,
+		"id": 142003,
+		"name": "Crystalline Sentinel",
+		"time_to_finish": 210000,
+		"hp": 800,
+		"table": {},
+		"difficulty_rating": 2,
+		"qp_required": 500,
+		"heal_amount_needed": 3200,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash"],
+		"level_requirements": {
+			"hitpoints": 70,
+			"attack": 70,
+			"strength": 70,
+			"defence": 70
+		},
+		"poh_boosts": {
+			"pool": {
+				"fancy_rejuvenation_pool": 3,
+				"ornate_rejuvenation_pool": 5,
+				"ancient_rejuvenation_pool": 7
+			}
+		},
+		"death_props": {
+			"hardness": 0.3,
+			"steepness": 0.95,
+			"lowest_death_chance": 2,
+			"highest_death_chance": 15
+		},
+		"minimum_heal_amount": 12,
+		"all_items": ["Sentinel core"],
+		"minimum_gear_requirements": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"minimum_weapon_shield_stats": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 91,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"item_cost": {
+			"item_cost": {
+				"2434": 2,
+				"12695": 1
+			},
+			"qty_per_kill": 1
+		},
+		"setups_used": ["melee"],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 4151
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 8,
+						"item_id": 11838
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 6,
+						"item_id": 12954
+					}
+				]
+			}
+		]
+	},
+	{
 		"id": 2097,
 		"name": "Cyclops",
 		"time_to_finish": 35000,
@@ -3172,6 +3403,87 @@
 		"wildy_multi": true
 	},
 	{
+		"is_custom": true,
+		"id": 142005,
+		"name": "Elder Mimic",
+		"time_to_finish": 24000000,
+		"hp": 2000,
+		"table": {},
+		"difficulty_rating": 6,
+		"qp_required": 1500,
+		"heal_amount_needed": 20000,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash", "attack_crush", "attack_stab"],
+		"level_requirements": {
+			"hitpoints": 120,
+			"attack": 120,
+			"strength": 120,
+			"defence": 120,
+			"magic": 120,
+			"ranged": 120
+		},
+		"death_props": {
+			"hardness": 0,
+			"steepness": 0,
+			"lowest_death_chance": 0,
+			"highest_death_chance": 0
+		},
+		"minimum_heal_amount": 18,
+		"all_items": ["Elder mimic casket"],
+		"minimum_gear_requirements": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"minimum_weapon_shield_stats": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 106,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"item_cost": {
+			"item_cost": {
+				"2677": 1,
+				"2722": 1,
+				"2801": 1,
+				"12073": 1,
+				"19835": 1,
+				"19837": 1,
+				"23182": 1,
+				"73123": 1,
+				"75041": 1
+			},
+			"qty_per_kill": 1
+		},
+		"group_killable": false,
+		"setups_used": ["melee"]
+	},
+	{
 		"id": 5295,
 		"name": "Elf Archer",
 		"time_to_finish": 27000,
@@ -3396,6 +3708,114 @@
 		"heal_amount_needed": 100,
 		"attack_style_to_use": "attack_crush",
 		"attack_styles_used": ["attack_crush"]
+	},
+	{
+		"is_custom": true,
+		"id": 142004,
+		"name": "Fungal Behemoth",
+		"time_to_finish": 270000,
+		"hp": 1200,
+		"table": {},
+		"difficulty_rating": 3,
+		"qp_required": 750,
+		"heal_amount_needed": 6000,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash"],
+		"level_requirements": {
+			"hitpoints": 35,
+			"attack": 35,
+			"strength": 35,
+			"defence": 35
+		},
+		"poh_boosts": {
+			"pool": {
+				"fancy_rejuvenation_pool": 3,
+				"ornate_rejuvenation_pool": 5,
+				"ancient_rejuvenation_pool": 7
+			}
+		},
+		"death_props": {
+			"hardness": 0.01,
+			"steepness": 0.01,
+			"lowest_death_chance": 1,
+			"highest_death_chance": 1
+		},
+		"minimum_heal_amount": 14,
+		"all_items": ["Verdant heart"],
+		"minimum_gear_requirements": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"minimum_weapon_shield_stats": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 91,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"item_cost": {
+			"item_cost": {
+				"2434": 3,
+				"6685": 2,
+				"12695": 1
+			},
+			"qty_per_kill": 1
+		},
+		"setups_used": ["melee"],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 13263
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 8,
+						"item_id": 11889
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 6,
+						"item_id": 12954
+					}
+				]
+			}
+		]
 	},
 	{
 		"is_custom": true,
@@ -5271,6 +5691,229 @@
 		"qp_required": 0,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_crush"]
+	},
+	{
+		"is_custom": true,
+		"id": 142002,
+		"name": "Orrodil",
+		"time_to_finish": 1080000,
+		"hp": 1800,
+		"table": {},
+		"qp_required": 2500,
+		"heal_amount_needed": 50000,
+		"attack_style_to_use": "attack_stab",
+		"attack_styles_used": ["attack_stab"],
+		"level_requirements": {
+			"hitpoints": 100,
+			"attack": 100,
+			"strength": 100,
+			"defence": 100,
+			"magic": 100,
+			"ranged": 100,
+			"slayer": 100
+		},
+		"poh_boosts": {
+			"pool": {
+				"ancient_rejuvenation_pool": 5
+			}
+		},
+		"death_props": {
+			"hardness": 0.4,
+			"steepness": 0.999,
+			"lowest_death_chance": 5,
+			"highest_death_chance": 40
+		},
+		"minimum_heal_amount": 22,
+		"all_items": ["Celestial flame", "Orylin", "Primordial heartstring", "Primordial spine", "Shattered pendant"],
+		"minimum_gear_requirements": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"minimum_weapon_shield_stats": {
+			"melee": {
+				"attack_stab": 115,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"item_cost": {
+			"item_cost": {
+				"12695": 1,
+				"70004": 3,
+				"70005": 1,
+				"70006": 1
+			},
+			"qty_per_kill": 1
+		},
+		"tame_cant_kill": true,
+		"items_required": ["Combatant's cape"],
+		"setups_used": ["melee"],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 25,
+						"item_id": 75001
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 15,
+						"item_id": 75002
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 7,
+						"item_id": 75017
+					}
+				]
+			}
+		]
+	},
+	{
+		"is_custom": true,
+		"id": 142001,
+		"name": "Orym",
+		"time_to_finish": 1080000,
+		"hp": 1800,
+		"table": {},
+		"difficulty_rating": 5,
+		"qp_required": 2500,
+		"heal_amount_needed": 70000,
+		"attack_style_to_use": "attack_stab",
+		"attack_styles_used": ["attack_stab"],
+		"level_requirements": {
+			"hitpoints": 120,
+			"attack": 115,
+			"strength": 115,
+			"defence": 115,
+			"magic": 115,
+			"ranged": 115,
+			"slayer": 115
+		},
+		"poh_boosts": {
+			"pool": {
+				"ancient_rejuvenation_pool": 5
+			}
+		},
+		"death_props": {
+			"hardness": 0.4,
+			"steepness": 0.999,
+			"lowest_death_chance": 5,
+			"highest_death_chance": 40
+		},
+		"minimum_heal_amount": 22,
+		"all_items": ["Forsaken tear", "Orylin", "Primordial heartstring", "Primordial spine", "Sacrilegious flask"],
+		"minimum_gear_requirements": {
+			"melee": {
+				"attack_stab": 0,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"minimum_weapon_shield_stats": {
+			"melee": {
+				"attack_stab": 115,
+				"attack_slash": 0,
+				"attack_crush": 0,
+				"attack_magic": 0,
+				"attack_ranged": 0,
+				"defence_stab": 0,
+				"defence_slash": 0,
+				"defence_crush": 0,
+				"defence_magic": 0,
+				"defence_ranged": 0,
+				"melee_strength": 0,
+				"ranged_strength": 0,
+				"magic_damage": 0,
+				"prayer": 0
+			}
+		},
+		"item_cost": {
+			"item_cost": {
+				"12695": 1,
+				"50026": 3,
+				"50027": 1,
+				"70006": 1
+			},
+			"qty_per_kill": 1
+		},
+		"tame_cant_kill": true,
+		"items_required": ["Combatant's cape"],
+		"setups_used": ["melee"],
+		"equipped_item_boosts": [
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 25,
+						"item_id": 75001
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 15,
+						"item_id": 75002
+					}
+				]
+			},
+			{
+				"gear_setup": "melee",
+				"items": [
+					{
+						"boost_percent": 7,
+						"item_id": 75017
+					}
+				]
+			}
+		]
 	},
 	{
 		"id": 2843,
