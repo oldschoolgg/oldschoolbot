@@ -319,12 +319,12 @@ export async function constructionContractsStartCommand({
 	const quantity = Math.floor(maxTripLength / durationPerContract);
 	const duration = quantity * durationPerContract;
 
-	if (!user.hasEquippedOrInBank(['Saw'])) {
-		return "You need a Saw to take on Construction Contracts.";
+	if (!user.hasEquippedOrInBank(['Saw', 'Drygore saw', 'Crystal saw'])) {
+		return "You need a Saw, Drygore saw, or Crystal saw to take on Construction Contracts.";
 	}
 	
-	if (!user.hasEquippedOrInBank(['Hammer'])) {
-		return "You need a Hammer to take on Construction Contracts.";
+	if (!user.hasEquippedOrInBank(['Hammer', 'Dwarven greathammer'])) {
+		return "You need a Hammer or Dwarven greathammer to take on Construction Contracts.";
 	}
 	
 	const cost = new Bank();

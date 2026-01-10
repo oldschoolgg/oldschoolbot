@@ -14,6 +14,8 @@ import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { SlayerContext } from '@/tasks/minions/monsterActivity.js';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { ORI_DISABLED_MONSTERS } from '@/lib/bso/bsoConstants.js';
 
 export type UserStatsNeededForMidPvmEffects = {
 	onTaskMonsterScores: ItemBank;
@@ -39,16 +41,20 @@ export function oriEffect({
 	gearBank,
 	quantity,
 	duration,
-	messages
-}: Pick<MidPVMEffectArgs, 'gearBank' | 'quantity' | 'duration' | 'messages'>) {
+	messages,
+	monster
+}: Pick<MidPVMEffectArgs, 'gearBank' | 'quantity' | 'duration' | 'messages'> & { monster?: string }) {
 	if (!gearBank.usingPet('Ori')) return quantity;
+	
+	if (monster && ORI_DISABLED_MONSTERS.some(m => stringMatches(m, monster))) {
+		return quantity;
+	}
+	
 	let newQuantity = quantity;
 
 	if (duration > Time.Minute * 5) {
-		// Original boost for 5+ minute task:
 		newQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
 	} else {
-		// 25% chance at extra kill otherwise:
 		for (let i = 0; i < quantity; i++) {
 			if (roll(4)) {
 				newQuantity++;
