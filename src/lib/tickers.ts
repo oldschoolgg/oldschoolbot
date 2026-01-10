@@ -293,8 +293,8 @@ LIMIT 10;`);
 		startupWait: Time.Minute * 20,
 		interval: Time.Hour * 13.55,
 		cb: async () => {
-			await prisma.$executeRaw`INSERT INTO economy_item_banks (bank)
-VALUES (get_economy_bank());`;
+			await prisma.$executeRaw`INSERT INTO economy_item_banks (bank, holder_count)
+VALUES (get_economy_bank(), get_item_holder_counts());`;
 		}
 	},
 	{

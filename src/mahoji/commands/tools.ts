@@ -1,4 +1,5 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
+import { randArrItem } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
@@ -11,6 +12,7 @@ import { PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
+import { fetchLatestHolderSnapshot } from '@/lib/economyItemHolders.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
@@ -19,6 +21,7 @@ import { Skills } from '@/lib/skilling/skills/index.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
+import { gifs } from '@/mahoji/commands/admin.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
@@ -821,6 +824,23 @@ export const toolsCommand = defineCommand({
 				},
 				{
 					type: 'Subcommand',
+					name: 'item_holders',
+					description: 'See how many users have at least one of an item in their bank.',
+					options: [
+						{
+							...itemOption(),
+							required: true
+						},
+						{
+							type: 'Boolean',
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
 					name: 'sacrificed_bank',
 					description: 'Shows an image containing all your sacrificed items.'
 				},
@@ -972,6 +992,30 @@ export const toolsCommand = defineCommand({
 			if (patron.mostdrops) {
 				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return mostDrops(user, patron.mostdrops.item, String(patron.mostdrops.filter));
+			}
+			if (patron.item_holders) {
+				if ((await user.fetchPerkTier()) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				const itemID = Number(patron.item_holders.item);
+				const item = Items.get(itemID);
+
+				const blacklist = [
+					795, // War ship
+					11918 // Birthday present
+				];
+				if (item && blacklist.includes(item.id)) return randArrItem(gifs);
+
+				if (!item) return "That's not a valid item.";
+				const ironmanOnly = Boolean(patron.item_holders.ironman);
+				const snapshot = await fetchLatestHolderSnapshot();
+
+				if (!snapshot) return 'No snapshot is available yet.';
+
+				const counts = ironmanOnly ? snapshot.ironman : snapshot.all;
+				const count = counts[item.id] ?? 0;
+				const timestamp = Math.floor(snapshot.date.getTime() / 1000);
+				const userLabel = ironmanOnly ? 'ironman users' : 'users';
+
+				return `As of <t:${timestamp}:f>, there are ${count.toLocaleString()} ${userLabel} who have at least one ${item.name} in their bank.`;
 			}
 			if (patron.sacrificed_bank) {
 				if ((await user.fetchPerkTier()) < PerkTier.Two) return patronMsg(PerkTier.Two);
