@@ -83,9 +83,8 @@ export async function handleNewCLItems({
 
 	// Find CLs with the newly added items, that weren't completed in the previous CL, and now are completed.
 	const newlyCompletedCLs = clsWithTheseItems.filter(cl => {
-		return (
-			cl.items.values().some(item => !previousCL.has(item)) && cl.items.values().every(item => newCL.has(item))
-		);
+		const clItemIDs = [...cl.items.keys()];
+		return clItemIDs.some(id => !previousCL.has(id)) && clItemIDs.every(id => newCL.has(id));
 	});
 
 	for (const finishedCL of newlyCompletedCLs) {
