@@ -1,5 +1,6 @@
 import { EMonster, Monsters } from 'oldschooljs';
 
+import { DagannothKingsTribridID } from '@/lib/minions/data/killableMonsters/index.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { bossTasks } from '@/lib/slayer/tasks/bossTasks.js';
@@ -129,7 +130,8 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 			Monsters.DagannothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
-			Monsters.DagannothPrime.id
+			Monsters.DagannothPrime.id,
+			DagannothKingsTribridID
 		],
 		combatLevel: 75,
 		questPoints: 2,

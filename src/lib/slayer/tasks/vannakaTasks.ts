@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { DagannothKingsTribridID } from '@/lib/minions/data/killableMonsters/index.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
@@ -111,7 +112,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.DagannothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
-			Monsters.DagannothPrime.id
+			Monsters.DagannothPrime.id,
+			DagannothKingsTribridID
 		],
 		combatLevel: 75,
 		questPoints: 2,
