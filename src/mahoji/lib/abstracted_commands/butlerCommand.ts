@@ -4,6 +4,7 @@ import { clamp } from 'remeda';
 
 import { Planks } from '@/lib/minions/data/planks.js';
 import type { ButlerActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const unlimitedEarthRuneProviders = resolveItems([
 	'Staff of earth',
@@ -147,7 +148,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		response += `\nYou have used ${consumedItems} for teleports.`;
 	}
 
-	response += `\nThey'll come back in around ${formatDuration(duration)}.`;
+	response += `\nThey'll come back in around ${await formatTripDuration(user, duration)}.`;
 
 	return response;
 }

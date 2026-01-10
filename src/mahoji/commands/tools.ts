@@ -18,6 +18,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import {
 	stashUnitBuildAllCommand,
@@ -92,9 +93,9 @@ ${whereInMassClause(id)};`)
 		.slice(0, 3)
 		.map(i => `${i.qty}x ${i.type}`)
 		.join(', ')}
-**Total Minion Activity:** ${formatDuration(totalDuration)}
+**Total Minion Activity:** ${await formatTripDuration(user, totalDuration)}
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
-**Average Per Day:** ${formatDuration(perDay)}
+**Average Per Day:** ${await formatTripDuration(user, perDay)}
 `;
 }
 

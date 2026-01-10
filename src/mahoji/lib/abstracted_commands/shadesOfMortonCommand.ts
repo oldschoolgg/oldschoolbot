@@ -1,7 +1,8 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
 
@@ -256,7 +257,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 			const bonusTime = i * Time.Minute;
 			if (bonusTime) {
 				totalTime += bonusTime;
-				messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${coffin}.`);
+				messages.push(`${await formatTripDuration(user, bonusTime)} bonus max trip length for ${coffin}.`);
 				break;
 			}
 		}
@@ -306,7 +307,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 
 	let str = `${
 		user.minionName
-	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
+	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${await formatTripDuration(user, duration)}.`;
 	if (messages.length > 0) {
 		str += `\n**Messages:** ${messages.join(', ')}`;
 	}

@@ -1,9 +1,10 @@
 import { time } from '@oldschoolgg/discord';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export function calcBirdhouseLimit() {
 	const base = 4;
@@ -129,7 +130,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelId: string, in
 		birdhouseId: birdhouseToPlant.birdhouseItem
 	});
 
-	return `${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${
+	return `${infoStr.join(' ')}\n\nIt'll take around ${await formatTripDuration(user, duration)} to finish.\n\n${
 		boostStr.length > 0 ? '**Boosts**: ' : ''
 	}${boostStr.join(', ')}`;
 }

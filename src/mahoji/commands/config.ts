@@ -146,6 +146,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Allow Public API Data Retrieval',
 		bit: BitField.AllowPublicAPIDataRetrieval
+	},
+	{
+		name: 'Show minion return time in your local time',
+		bit: BitField.ShowMinionReturnTime
 	}
 ];
 
