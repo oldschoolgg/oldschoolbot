@@ -15,7 +15,7 @@ import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import Crafting from '@/lib/skilling/skills/crafting/index.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import { findFishingSpotForStoredTrip } from '@/lib/skilling/skills/fishing/fishingRework.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
@@ -149,10 +149,10 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) 
 
 		case 'Fishing': {
 			const data = currentTask as FishingActivityTaskOptions;
+			const fish = findFishingSpotForStoredTrip(data.fishID);
+			const fishName = fish?.name ?? data.fishID;
 
-			const fish = Fishing.Fishes.find(fish => fish.id === data.fishID);
-
-			return `${name} is currently fishing ${data.quantity}x ${fish?.name}. ${formattedDuration} Your ${
+			return `${name} is currently fishing ${data.quantity}x ${fishName}. ${formattedDuration} Your ${
 				Emoji.Fishing
 			} Fishing level is ${user.skillsAsLevels.fishing}`;
 		}
