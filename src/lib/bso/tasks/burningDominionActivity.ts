@@ -26,7 +26,7 @@ const methodsOfDeath = [
 	'Reduced to cinders',
 	'Smashed into the ground',
 	'Tail-whipped into oblivion',
-	'Forgot to bring heat resistance',
+	'Forgot to drink heat resistance',
 	'Underestimated the heat',
 	'Became a crispy snack',
 	'Failed the DPS check',
@@ -105,7 +105,6 @@ export const dominionTask: MinionTask = {
 			});
 		}
 
-		// Award KC based on individual survival - each user gets KC for kills they survived
 		for (const user of bossUsers.map(u => u.user)) {
 			const userDeaths = deaths[user.id]?.qty ?? 0;
 			const userSuccessfulKills = quantity - userDeaths;
@@ -175,8 +174,7 @@ export const dominionTask: MinionTask = {
 
 			const notifyDropIDs = BurningDominionNotifyDrops.map((item: any) => item.id ?? item);
 			const purple = loot.itemIDs.some(itemID => notifyDropIDs.includes(itemID));
-			
-			// Build user result string
+
 			let userResult = `${purple ? Emoji.Purple : ''}${user}: ${userSuccessfulKills}/${quantity} kills`;
 			
 			if (userDeaths > 0) {
@@ -189,8 +187,7 @@ export const dominionTask: MinionTask = {
 								.join(', ')
 				})`;
 			}
-			
-			// Separate uniques from regular loot and show uniques first
+
 			if (purple) {
 				const uniqueLoot = new Bank();
 				const regularLoot = new Bank();
@@ -202,8 +199,7 @@ export const dominionTask: MinionTask = {
 						regularLoot.add(itemID, qty);
 					}
 				}
-				
-				// Combine with uniques first
+
 				const sortedLoot = uniqueLoot.clone().add(regularLoot);
 				userResult += ` - ||${sortedLoot}||`;
 			} else {
