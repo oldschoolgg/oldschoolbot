@@ -1528,3 +1528,18 @@ model ShootingStars {
   @@index([user_id, expires_at])
   @@map("shooting_stars")
 }
+
+enum SystemLogsType {
+  ERROR
+}
+
+model SystemLogs {
+  id Int @id @default(autoincrement())
+
+  date DateTime @default(now())
+
+  type SystemLogsType
+  data Json           @db.JsonB
+
+  @@map("system_logs")
+}
