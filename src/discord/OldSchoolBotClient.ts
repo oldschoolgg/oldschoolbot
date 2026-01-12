@@ -1,3 +1,4 @@
+import { WebSocketShardEvents } from '@discordjs/ws';
 import {
 	type APIApplication,
 	type APIUser,
@@ -29,6 +30,30 @@ export class OldSchoolBotClient extends DiscordClient {
 		super(options);
 		this.on('ready', async e => {
 			await this.handleReadyEvent(e);
+		});
+		this.ws.on(WebSocketShardEvents.Error, p => {
+			Logging.logDebug(`WS Error: ${p.message}`);
+			Logging.logError({
+				err: p,
+				context: {
+					source: 'WebSocketShardEvents.Error'
+				}
+			});
+		});
+		this.ws.on(WebSocketShardEvents.SocketError, p => {
+			Logging.logDebug(`WS SocketError: ${p.message}`);
+			Logging.logError({
+				err: p,
+				context: {
+					source: 'WebSocketShardEvents.SocketError'
+				}
+			});
+		});
+		this.ws.on(WebSocketShardEvents.Closed, p => {
+			Logging.logDebug(`WS Closed: ${p}`);
+		});
+		this.ws.on(WebSocketShardEvents.Resumed, p => {
+			Logging.logDebug(`WS Resumed: ${p}`);
 		});
 	}
 
