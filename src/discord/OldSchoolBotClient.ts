@@ -10,9 +10,10 @@ import {
 	type DiscordClientOptions,
 	Routes
 } from '@oldschoolgg/discord';
-import type { IChannel, IWebhook } from '@oldschoolgg/schemas';
+import type { IChannel, IUserLog, IWebhook } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
+import { omit } from 'remeda';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
 import { mentionCommand } from '@/discord/utils.js';
@@ -215,5 +216,26 @@ export class OldSchoolBotClient extends DiscordClient {
 	}) {
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(ReactEmoji[emojiId]));
 		await this.rest.put(route);
+	}
+
+	async emitUserLog(log: IUserLog & { user_id: string }): Promise<void> {
+		try {
+			const channelId = 'channel_id' in log && log.channel_id ? BigInt(log.channel_id) : null;
+			const guildId = 'guild_id' in log && log.guild_id ? BigInt(log.guild_id) : null;
+			const messageId = 'message_id' in log && log.message_id ? BigInt(log.message_id) : null;
+
+			await prisma.userLog.create({
+				data: {
+					user_id: BigInt(log.user_id),
+					type: log.type,
+					channel_id: channelId,
+					guild_id: guildId,
+					message_id: messageId,
+					data: omit(log, ['user_id', 'type', 'channel_id', 'guild_id', 'message_id'])
+				}
+			});
+		} catch (err) {
+			Logging.logError(err as Error);
+		}
 	}
 }
