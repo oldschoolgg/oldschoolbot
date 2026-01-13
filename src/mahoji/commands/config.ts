@@ -17,7 +17,7 @@ import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { choicesOf, itemOption } from '@/discord/index.js';
 import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BitField, PerkTier } from '@/lib/constants.js';
+import { BitField, PerkTier, SEVEN_DAYS } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { CombatOptionsArray } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
@@ -87,7 +87,7 @@ const toggles: UserConfigToggle[] = [
 			} else if (interaction) {
 				const durations = [
 					{ display: '1 day', duration: Time.Day },
-					{ display: '7 days', duration: Time.Day * 7 },
+					{ display: '7 days', duration: SEVEN_DAYS },
 					{ display: '1 month', duration: Time.Month },
 					{ display: '6 months', duration: Time.Month * 6 },
 					{ display: '1 year', duration: Time.Year }
