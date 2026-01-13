@@ -3,6 +3,80 @@ import type { ItemBank } from 'oldschooljs';
 
 import type { FullMinionData } from '@/http/api-types.js';
 
+type LeaderboardRanks = FullMinionData['leaderboards'];
+
+async function fetchLeaderboardRanks(
+	bot: IBotType,
+	targetUserId: string,
+	skillColumns: string[]
+): Promise<LeaderboardRanks> {
+	const botClient = bot === 'osb' ? osbClient : bsoClient;
+	const clRankQuery = `
+WITH ranked AS (
+	SELECT id::text as id,
+		CARDINALITY(cl_array) AS qty,
+		ROW_NUMBER() OVER (ORDER BY CARDINALITY(cl_array) DESC, id ASC) AS rank
+	FROM users
+	WHERE CARDINALITY(cl_array) > 0
+)
+SELECT rank FROM ranked WHERE id = $1;`;
+	const ironmanClRankQuery = `
+WITH ranked AS (
+	SELECT id::text as id,
+		CARDINALITY(cl_array) AS qty,
+		ROW_NUMBER() OVER (ORDER BY CARDINALITY(cl_array) DESC, id ASC) AS rank
+	FROM users
+	WHERE CARDINALITY(cl_array) > 0
+	AND "minion.ironman" = true
+)
+SELECT rank FROM ranked WHERE id = $1;`;
+
+	const masteryColumn = bot === 'osb' ? 'osb_mastery' : 'bso_mastery';
+	const masteryRankQuery = `
+WITH ranked AS (
+	SELECT id::text as id,
+		${masteryColumn} AS mastery,
+		ROW_NUMBER() OVER (ORDER BY ${masteryColumn} DESC, id ASC) AS rank
+	FROM public.user
+	WHERE ${masteryColumn} IS NOT NULL
+)
+SELECT rank FROM ranked WHERE id = $1;`;
+
+	const totalXpExpression =
+		skillColumns.length > 0
+			? skillColumns.map(column => `"skills.${column.replace('skills_', '')}"::int8`).join(' + ')
+			: '0';
+	const skillsRankQuery = `
+WITH totals AS (
+	SELECT id::text as id,
+		${totalXpExpression} AS totalxp
+	FROM users
+),
+ranked AS (
+	SELECT id,
+		totalxp,
+		ROW_NUMBER() OVER (ORDER BY totalxp DESC, id ASC) AS rank
+	FROM totals
+)
+SELECT rank FROM ranked WHERE id = $1;`;
+
+	const [clRank, ironmanClRank, masteryRank, skillsRank] = await Promise.all([
+		botClient.$queryRawUnsafe<{ rank: number }[]>(clRankQuery, targetUserId),
+		botClient.$queryRawUnsafe<{ rank: number }[]>(ironmanClRankQuery, targetUserId),
+		roboChimpClient.$queryRawUnsafe<{ rank: number }[]>(masteryRankQuery, targetUserId),
+		botClient.$queryRawUnsafe<{ rank: number }[]>(skillsRankQuery, targetUserId)
+	]);
+
+	return {
+		cl: {
+			overall_rank: clRank[0]?.rank ?? null,
+			ironman_rank: ironmanClRank[0]?.rank ?? null
+		},
+		mastery_rank: masteryRank[0]?.rank ?? null,
+		skills_rank: skillsRank[0]?.rank ?? null
+	};
+}
+
 export async function fetchFullMinionData(bot: IBotType, targetUserId: string): Promise<FullMinionData | null> {
 	const opt = { where: { id: targetUserId } } as const;
 	const botUser = await (bot === 'osb' ? osbClient.user.findFirst(opt) : bsoClient.user.findFirst(opt));
@@ -11,11 +85,13 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 	}
 	const skillsXp: Record<string, number> = {};
 	const gear: Record<string, any> = {};
+	const skillColumns: string[] = [];
 
 	for (const [key, value] of Object.entries(botUser)) {
 		if (key.startsWith('skills_')) {
 			const skillName = key.replace('skills_', '');
 			skillsXp[skillName] = Number(value);
+			skillColumns.push(key);
 		}
 		if (key.startsWith('gear_')) {
 			const gearSlot = key.replace('gear_', '');
@@ -36,6 +112,7 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 		}
 	}
 
+	const leaderboards = await fetchLeaderboardRanks(bot, targetUserId, skillColumns);
 	const response: FullMinionData = {
 		user_id: botUser.id,
 		bot: bot,
@@ -45,6 +122,7 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 		is_ironman: botUser.minion_ironman,
 		gp: Number(botUser.GP),
 		qp: botUser.QP,
+		leaderboards,
 
 		bank: botUser.bank as ItemBank,
 		collection_log_bank: botUser.collectionLogBank as ItemBank,

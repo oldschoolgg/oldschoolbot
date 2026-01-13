@@ -17,6 +17,14 @@ export type FullMinionData = {
 	gp: number;
 	is_ironman: boolean;
 	qp: number;
+	leaderboards: {
+		cl: {
+			overall_rank: number | null;
+			ironman_rank: number | null;
+		};
+		mastery_rank: number | null;
+		skills_rank: number | null;
+	};
 
 	bank: ItemBank;
 	collection_log_bank: ItemBank;
