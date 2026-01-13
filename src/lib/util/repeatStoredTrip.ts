@@ -771,6 +771,31 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 	return filtered;
 }
 
+export async function fetchLastRepeatableTrip(user: MUser): Promise<Activity | null> {
+	const res: Activity[] = await prisma.activity.findMany({
+		where: {
+			user_id: BigInt(user.id),
+			finish_date: {
+				gt: new Date(Date.now() - Time.Day * 7)
+			}
+		},
+		orderBy: {
+			id: 'desc'
+		},
+		take: 50
+	});
+
+	for (const trip of res) {
+		if (!taskCanBeRepeated(trip, user)) continue;
+		const data = ActivityManager.convertStoredActivityToFlatActivity(trip);
+		if (data.type === activity_type_enum.Farming && !data.autoFarmed) {
+			continue;
+		}
+		return trip;
+	}
+	return null;
+}
+
 export async function makeRepeatTripButtons(user: MUser) {
 	const trips = await fetchRepeatTrips(user);
 	const limit = Math.min((await user.fetchPerkTier()) + 1, 5);
