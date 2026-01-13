@@ -75,7 +75,8 @@ export enum SlayerTaskUnlocksEnum {
 	Revenenenenenants = 201,
 	EyeSeeYou = 202,
 	MoreEyesThanSense = 203,
-	WarpedReality = 204
+	WarpedReality = 204,
+	OffTaskSlayer = 205
 }
 
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
@@ -599,6 +600,14 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 60,
 		canBeRemoved: true,
 		aliases: ['warped reality']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.OffTaskSlayer,
+		name: 'Off-task Slayer',
+		desc: 'Allows you to kill slayer-only monsters off task (slayer helm boosts still require a task).',
+		slayerPointCost: 5000,
+		canBeRemoved: true,
+		aliases: ['off task slayer', 'off-task slayer', 'taskless slayer']
 	}
 ];
 
