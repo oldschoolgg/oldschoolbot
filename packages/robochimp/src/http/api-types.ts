@@ -23,7 +23,9 @@ export type FullMinionData = {
 			ironman_rank: number | null;
 		};
 		mastery_rank: number | null;
+		mastery_ironman_rank: number | null;
 		skills_rank: number | null;
+		skills_ironman_rank: number | null;
 	};
 
 	bank: ItemBank;

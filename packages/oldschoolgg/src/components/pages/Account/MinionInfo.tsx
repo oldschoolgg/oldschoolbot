@@ -9,6 +9,16 @@ export function MinionInfo({ data }: { data: FullMinionData }) {
 		data.is_ironman && data.leaderboards.cl.ironman_rank
 			? ` (Ironman ${formatRank(data.leaderboards.cl.ironman_rank)})`
 			: '';
+	const masteryRank = formatRank(data.leaderboards.mastery_rank);
+	const masteryIronmanRank =
+		data.is_ironman && data.leaderboards.mastery_ironman_rank
+			? ` (Ironman ${formatRank(data.leaderboards.mastery_ironman_rank)})`
+			: '';
+	const skillsRank = formatRank(data.leaderboards.skills_rank);
+	const skillsIronmanRank =
+		data.is_ironman && data.leaderboards.skills_ironman_rank
+			? ` (Ironman ${formatRank(data.leaderboards.skills_ironman_rank)})`
+			: '';
 	const info = {
 		Ironman: data.is_ironman ? 'Yes' : 'No',
 		GP: data.gp.toLocaleString(),
@@ -17,8 +27,8 @@ export function MinionInfo({ data }: { data: FullMinionData }) {
 		'Collection Log': Object.keys(data.collection_log_bank).length,
 		Sacrificed: `${data.total_sacrificed_value.toLocaleString()} GP`,
 		'LB CL Overall': `${clRank}${clIronmanRank}`,
-		'LB Mastery': formatRank(data.leaderboards.mastery_rank),
-		'LB Skills': formatRank(data.leaderboards.skills_rank)
+		'LB Mastery': `${masteryRank}${masteryIronmanRank}`,
+		'LB Skills': `${skillsRank}${skillsIronmanRank}`
 	};
 	return (
 		<div className="flex items-center justify-center flex-col">

@@ -31,14 +31,23 @@ WITH ranked AS (
 )
 SELECT rank FROM ranked WHERE id = $1;`;
 
-	const masteryColumn = bot === 'osb' ? 'osb_mastery' : 'bso_mastery';
 	const masteryRankQuery = `
 WITH ranked AS (
 	SELECT id::text as id,
-		${masteryColumn} AS mastery,
-		ROW_NUMBER() OVER (ORDER BY ${masteryColumn} DESC, id ASC) AS rank
-	FROM public.user
-	WHERE ${masteryColumn} IS NOT NULL
+		mastery_percentage AS mastery,
+		ROW_NUMBER() OVER (ORDER BY mastery_percentage DESC, id ASC) AS rank
+	FROM users
+	WHERE mastery_percentage IS NOT NULL
+)
+SELECT rank FROM ranked WHERE id = $1;`;
+	const ironmanMasteryRankQuery = `
+WITH ranked AS (
+	SELECT id::text as id,
+		mastery_percentage AS mastery,
+		ROW_NUMBER() OVER (ORDER BY mastery_percentage DESC, id ASC) AS rank
+	FROM users
+	WHERE mastery_percentage IS NOT NULL
+	AND "minion.ironman" = true
 )
 SELECT rank FROM ranked WHERE id = $1;`;
 
@@ -59,12 +68,28 @@ ranked AS (
 	FROM totals
 )
 SELECT rank FROM ranked WHERE id = $1;`;
+	const ironmanSkillsRankQuery = `
+WITH totals AS (
+	SELECT id::text as id,
+		${totalXpExpression} AS totalxp
+	FROM users
+	WHERE "minion.ironman" = true
+),
+ranked AS (
+	SELECT id,
+		totalxp,
+		ROW_NUMBER() OVER (ORDER BY totalxp DESC, id ASC) AS rank
+	FROM totals
+)
+SELECT rank FROM ranked WHERE id = $1;`;
 
-	const [clRank, ironmanClRank, masteryRank, skillsRank] = await Promise.all([
+	const [clRank, ironmanClRank, masteryRank, ironmanMasteryRank, skillsRank, ironmanSkillsRank] = await Promise.all([
 		botClient.$queryRawUnsafe<{ rank: number }[]>(clRankQuery, targetUserId),
 		botClient.$queryRawUnsafe<{ rank: number }[]>(ironmanClRankQuery, targetUserId),
-		roboChimpClient.$queryRawUnsafe<{ rank: number }[]>(masteryRankQuery, targetUserId),
-		botClient.$queryRawUnsafe<{ rank: number }[]>(skillsRankQuery, targetUserId)
+		botClient.$queryRawUnsafe<{ rank: number }[]>(masteryRankQuery, targetUserId),
+		botClient.$queryRawUnsafe<{ rank: number }[]>(ironmanMasteryRankQuery, targetUserId),
+		botClient.$queryRawUnsafe<{ rank: number }[]>(skillsRankQuery, targetUserId),
+		botClient.$queryRawUnsafe<{ rank: number }[]>(ironmanSkillsRankQuery, targetUserId)
 	]);
 
 	return {
@@ -73,7 +98,9 @@ SELECT rank FROM ranked WHERE id = $1;`;
 			ironman_rank: ironmanClRank[0]?.rank ?? null
 		},
 		mastery_rank: masteryRank[0]?.rank ?? null,
-		skills_rank: skillsRank[0]?.rank ?? null
+		mastery_ironman_rank: ironmanMasteryRank[0]?.rank ?? null,
+		skills_rank: skillsRank[0]?.rank ?? null,
+		skills_ironman_rank: ironmanSkillsRank[0]?.rank ?? null
 	};
 }
 
