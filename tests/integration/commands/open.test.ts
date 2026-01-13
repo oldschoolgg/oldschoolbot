@@ -1,14 +1,13 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { openCommand } from '../../../src/mahoji/commands/open';
-import { randomMock } from '../setup';
-import { createTestUser, mockClient } from '../util';
+import { openCommand } from '../../../src/mahoji/commands/open.js';
+import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
 describe('Open Command', async () => {
 	await mockClient();
-	test.concurrent('Open with no quantity', async () => {
-		randomMock();
+	test('Open with no quantity', async () => {
+		mockMathRandom(0.1);
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 100) });
 		const result = await user.runCommand(openCommand, { name: 'reward casket (beginner)' });
@@ -18,16 +17,16 @@ describe('Open Command', async () => {
 		});
 		await user.bankAmountMatch('Reward casket (beginner)', 99);
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 1));
-		await user.bankMatch(new Bank().add('Reward casket (beginner)', 99).add('Fire rune', 17));
+		await user.bankMatch(new Bank().add('Reward casket (beginner)', 99).add('Fire rune', 17 * 2));
 		await user.runCommand(openCommand, { name: 'reward casket (beginner)' });
 		await user.bankAmountMatch('Reward casket (beginner)', 98);
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 2));
-		await user.bankMatch(new Bank().add('Reward casket (beginner)', 98).add('Fire rune', 34));
-		await user.clMatch(new Bank().add('Fire rune', 34));
+		await user.bankMatch(new Bank().add('Reward casket (beginner)', 98).add('Fire rune', 34 * 2));
+		await user.clMatch(new Bank().add('Fire rune', 34 * 2));
 	});
 
-	test.concurrent('Open with quantity', async () => {
-		randomMock();
+	test('Open with quantity', async () => {
+		mockMathRandom(0.1);
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 100) });
 		await user.runCommand(openCommand, { name: 'reward casket (beginner)', quantity: 10 });

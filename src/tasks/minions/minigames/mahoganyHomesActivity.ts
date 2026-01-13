@@ -1,15 +1,13 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
-import { calcConBonusXP } from '../../../lib/skilling/skills/construction/calcConBonusXP';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP.js';
+import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',
-	async run(data: MahoganyHomesActivityTaskOptions) {
-		const { channelID, quantity, xp, duration, userID, points } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MahoganyHomesActivityTaskOptions, { user, handleTripFinish }) {
+		let { channelId, quantity, xp, duration, points } = data;
+
 		await user.incrementMinigameScore('mahogany_homes', quantity);
 
 		let bonusXP = 0;
@@ -18,11 +16,15 @@ export const mahoganyHomesTask: MinionTask = {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Construction,
+			skillName: 'construction',
 			amount: xp + bonusXP,
 			duration,
 			source: 'MahoganyHomes'
 		});
+		const flappyRes = await user.hasFlappy(duration);
+		if (flappyRes.shouldGiveBoost) {
+			points *= 2;
+		}
 
 		await user.update({
 			carpenter_points: {
@@ -30,12 +32,12 @@ export const mahoganyHomesTask: MinionTask = {
 			}
 		});
 
-		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes} ${flappyRes.userMsg}`;
 
 		if (bonusXP > 0) {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

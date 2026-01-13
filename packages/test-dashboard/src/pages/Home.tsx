@@ -6,7 +6,7 @@ import type {
 import { useEffect, useState } from 'preact/hooks';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
-import itemDataUrl from '../../../oldschooljs/src/data/items/item_data.json?url';
+import itemDataUrl from '../../../oldschooljs/src/assets/item_data.json?url';
 
 type Item = {
 	id: string;
@@ -23,7 +23,10 @@ const servers = [
 function Bank({
 	privateUserData,
 	itemData
-}: { privateUserData: ITestBotPrivateUser | null; itemData: Record<string, Item> }) {
+}: {
+	privateUserData: ITestBotPrivateUser | null;
+	itemData: Record<string, Item>;
+}) {
 	const [bankSearchString, setBankSearching] = useState<string>('');
 
 	return (
@@ -38,37 +41,38 @@ function Bank({
 				}}
 			/>
 			<div className="flex flex-row flex-wrap gap-3 bg-[#3d3426] p-4 py-8 font-osrs-compact text_black_outline_sm items-center justify-center">
-				{Object.entries(privateUserData?.raw_user_data.bank)
-					.map(([itemId, quantity]) => {
-						const item = itemData[itemId];
-						if (!item) return { item: { id: itemId, name: 'BROKEN' }, quantity: quantity };
-						return {
-							item,
-							quantity
-						};
-					})
-					.filter(({ item }) => {
-						if (bankSearchString && !item.name.toLowerCase().includes(bankSearchString.toLowerCase()))
-							return false;
-						return true;
-					})
-					.sort((a, b) => {
-						return a.item.name.localeCompare(b.item.name);
-					})
-					.map(({ item, quantity }) => {
-						return (
-							<div key={item.id} className="relative w-10 h-10 flex items-center justify-center">
-								<img
-									className="pixelated"
-									src={`https://cdn.oldschool.gg/icons/items/${item.id}.png`}
-									alt={item.name}
-									title={item.name}
-								/>
-								{/* <span className="font-semibold">{item.name}</span> */}
-								<span className="absolute -bottom-2 right-1/2 translate-x-1/2">x{quantity}</span>
-							</div>
-						);
-					})}
+				{privateUserData &&
+					Object.entries(privateUserData.raw_user_data.bank)
+						.map(([itemId, quantity]) => {
+							const item = itemData[itemId];
+							if (!item) return { item: { id: itemId, name: 'BROKEN' }, quantity: quantity };
+							return {
+								item,
+								quantity
+							};
+						})
+						.filter(({ item }) => {
+							if (bankSearchString && !item.name.toLowerCase().includes(bankSearchString.toLowerCase()))
+								return false;
+							return true;
+						})
+						.sort((a, b) => {
+							return a.item.name.localeCompare(b.item.name);
+						})
+						.map(({ item, quantity }) => {
+							return (
+								<div key={item.id} className="relative w-10 h-10 flex items-center justify-center">
+									<img
+										className="pixelated"
+										src={`https://cdn.oldschool.gg/icons/items/${item.id}.png`}
+										alt={item.name}
+										title={item.name}
+									/>
+									{/* <span className="font-semibold">{item.name}</span> */}
+									<span className="absolute -bottom-2 right-1/2 translate-x-1/2">x{quantity}</span>
+								</div>
+							);
+						})}
 			</div>
 		</>
 	);
@@ -76,38 +80,36 @@ function Bank({
 
 function Stats({ privateUserData }: { privateUserData: ITestBotPrivateUser }) {
 	return (
-		<>
-			<div className="grid grid-cols-3 bg-[#3d3426] font-osrs-compact text_black_outline_sm items-center justify-center w-max">
-				{Object.entries(privateUserData.skills_as_levels).map(([skill, level], idx) => {
-					return (
-						<div
-							key={skill}
-							className="flex items-center justify-end flex-row p-2 px-2 gap-2"
-							style={{
-								background: idx % 2 === 0 ? '#4a4133' : '#3d3426'
-							}}
-						>
-							<div className={'flex flex-col justify-end items-end mr-0.5'}>
-								<span className="text-3xl" style={{ lineHeight: '20px' }}>
-									{level}
-								</span>
-								<span className="" style={{ lineHeight: '12px' }}>
-									{privateUserData.skills_as_xp[skill].toLocaleString()} XP
-								</span>
-							</div>
-
-							<div className="w-10 h-10 flex items-center justify-center scale-110">
-								<img
-									className="pixelated object-contain"
-									src={`https://cdn.oldschool.gg/icons/skills/${skill}.png`}
-									title={skill}
-								/>
-							</div>
+		<div className="grid grid-cols-3 bg-[#3d3426] font-osrs-compact text_black_outline_sm items-center justify-center w-max">
+			{Object.entries(privateUserData.skills_as_levels).map(([skill, level], idx) => {
+				return (
+					<div
+						key={skill}
+						className="flex items-center justify-end flex-row p-2 px-2 gap-2"
+						style={{
+							background: idx % 2 === 0 ? '#4a4133' : '#3d3426'
+						}}
+					>
+						<div className={'flex flex-col justify-end items-end mr-0.5'}>
+							<span className="text-3xl" style={{ lineHeight: '20px' }}>
+								{level}
+							</span>
+							<span className="" style={{ lineHeight: '12px' }}>
+								{privateUserData.skills_as_xp[skill].toLocaleString()} XP
+							</span>
 						</div>
-					);
-				})}
-			</div>
-		</>
+
+						<div className="w-10 h-10 flex items-center justify-center scale-110">
+							<img
+								className="pixelated object-contain"
+								src={`https://cdn.oldschool.gg/icons/skills/${skill}.png`}
+								title={skill}
+							/>
+						</div>
+					</div>
+				);
+			})}
+		</div>
 	);
 }
 
@@ -121,8 +123,8 @@ export function Home() {
 	useEffect(() => {
 		fetch(itemDataUrl)
 			.then(response => response.json())
-			.then(data => {
-				setItemData(data as Record<string, Item>);
+			.then(_data => {
+				setItemData(_data as Record<string, Item>);
 			})
 			.catch(error => console.error('Error fetching item data:', error));
 	}, []);

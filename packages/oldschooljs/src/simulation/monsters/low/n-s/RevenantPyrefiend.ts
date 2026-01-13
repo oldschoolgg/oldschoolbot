@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { makeRevTable } from '../../../../util';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { makeRevTable } from '@/util/revs.js';
 
-export const RevenantPyrefiendTable = new LootTable()
+export const RevenantPyrefiendTable: LootTable = new LootTable()
 	.every('Revenant ether', [1, 8])
 
 	/* Weapons and armour */
@@ -41,7 +41,7 @@ export const RevenantPyrefiendTable = new LootTable()
 	.add('Death rune', [60, 100], 3)
 	.add('Blood rune', [60, 100], 3);
 
-export default new SimpleMonster({
+export const RevenantPyrefiend: SimpleMonster = new SimpleMonster({
 	id: 7932,
 	name: 'Revenant pyrefiend',
 	table: RevenantPyrefiendTable,

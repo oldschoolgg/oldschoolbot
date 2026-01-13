@@ -1,84 +1,122 @@
-import { randArrItem } from 'e';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
-import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
-import { refundChargeBank } from '../../lib/degradeableItems';
-import { trackLoot } from '../../lib/lootTrack';
-import { ChargeBank } from '../../lib/structures/Bank';
-import type { ColoTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { ColosseumWaveBank, colosseumWaves } from '@/lib/colosseum.js';
+import { refundChargeBank } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import type { ColoTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuirass', 'Sunfire fanatic chausses']);
 
 export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
-	async run(data: ColoTaskOptions) {
+	async run(data: ColoTaskOptions, { user, handleTripFinish, rng }) {
 		const {
-			channelID,
-			userID,
+			channelId,
 			loot: possibleLoot,
+			quantity,
 			diedAt,
 			maxGlory,
 			scytheCharges,
 			venatorBowCharges,
-			bloodFuryCharges
+			bloodFuryCharges,
+			voidStaffCharges
 		} = data;
-		const user = await mUserFetch(userID);
 
-		const newKCs = new ColosseumWaveBank();
-		for (let i = 0; i < (diedAt ? diedAt - 1 : 12); i++) {
-			newKCs.add(i + 1);
-		}
-		const stats = await user.fetchStats({ colo_kc_bank: true, colo_max_glory: true });
-		for (const [key, value] of Object.entries(stats.colo_kc_bank as ItemBank))
-			newKCs.add(Number.parseInt(key), value);
-		await userStatsUpdate(user.id, { colo_kc_bank: newKCs._bank });
-		const newKCsStr = `${newKCs
-			.entries()
-			.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
-			.join(', ')}`;
+		const deathCount = diedAt?.filter(value => value !== null).length || 0;
+		const successfulKills = quantity - deathCount;
 
-		let scytheRefund = 0;
-		let venatorBowRefund = 0;
-		let bloodFuryRefund = 0;
-
-		const newWaveKcStr = !diedAt || diedAt > 1 ? `New wave KCs: ${newKCsStr}.` : 'No new KCs.';
-		if (diedAt) {
-			const wave = colosseumWaves.find(i => i.waveNumber === diedAt)!;
-
-			let str = `${user}, you died on wave ${diedAt} to ${randArrItem([
-				...(wave?.reinforcements ?? []),
-				...wave.enemies
-			])}, and received no loot. ${newWaveKcStr}`;
-
-			// Calculate refund for unused charges
-			const completionPercentage = (diedAt - 1) / 12;
-			if (scytheCharges > 0) scytheRefund = Math.ceil(scytheCharges * (1 - completionPercentage));
-			if (venatorBowCharges > 0) venatorBowRefund = Math.ceil(venatorBowCharges * (1 - completionPercentage));
-			if (bloodFuryCharges > 0) bloodFuryRefund = Math.ceil(bloodFuryCharges * (1 - completionPercentage));
-
-			const chargeBank = new ChargeBank();
-			if (scytheRefund > 0) chargeBank.add('scythe_of_vitur_charges', scytheRefund);
-			if (venatorBowRefund > 0) chargeBank.add('venator_bow_charges', venatorBowRefund);
-			if (bloodFuryRefund > 0) chargeBank.add('blood_fury_charges', bloodFuryRefund);
-
-			if (chargeBank.length() > 0) {
-				const refundResults = await refundChargeBank(user, chargeBank);
-
-				const refundMessages = refundResults
-					.map(result => `${result.userMessage} Total charges: ${result.totalCharges}.`)
-					.join('\n');
-
-				str += `\n${refundMessages}`;
+		// Increment wave KCs
+		for (let i = 0; i < quantity; i++) {
+			const newKCs = new ColosseumWaveBank();
+			const waves = diedAt?.[i] ? diedAt[i]! - 1 : 12;
+			for (let j = 0; j < waves; j++) {
+				newKCs.add(j + 1);
 			}
-
-			return handleTripFinish(user, channelID, str, undefined, data, null);
+			const kcBank = await user.fetchStats();
+			for (const [key, value] of Object.entries(kcBank.colo_kc_bank as ItemBank))
+				newKCs.add(Number.parseInt(key), value);
+			await user.statsUpdate({ colo_kc_bank: newKCs._bank });
 		}
 
-		await user.incrementMinigameScore('colosseum');
+		const stats = await user.fetchStats();
+		const coloWaveKCs = stats.colo_kc_bank;
+		const newKCsStr = coloWaveKCs
+			? Object.entries(coloWaveKCs)
+					.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
+					.join(', ')
+			: 'No KCs recorded';
+		const newWaveKcStr = `**Colosseum Wave KCs:** ${newKCsStr}`;
+
+		// Generate death message & calculate refund
+		const finalDeathStr: string[] = [];
+		const deathStr: string[] = [];
+		finalDeathStr.push(`**Deaths: **${Emoji.Skull.repeat(deathCount)}\n`);
+		for (let i = 0; i < quantity; i++) {
+			if (diedAt?.[i] !== null) {
+				const waveNumber = diedAt?.[i];
+				const wave = colosseumWaves.find(i => i.waveNumber === waveNumber)!;
+				if (quantity > 1) {
+					deathStr.push(
+						`- Attempt #${i + 1} Wave #${diedAt?.[i]} to ${rng.pick([
+							...(wave?.reinforcements ?? []),
+							...wave.enemies
+						])}. `
+					);
+				} else {
+					deathStr.push(
+						`You died on wave ${waveNumber} to ${rng.pick([
+							...(wave?.reinforcements ?? []),
+							...wave.enemies
+						])}. `
+					);
+				}
+
+				let scytheRefund = 0;
+				let venatorBowRefund = 0;
+				let bloodFuryRefund = 0;
+				let voidStaffRefund = 0;
+
+				// Calculate refund for unused charges
+				const completionPercentage = (diedAt![i]! - 1) / 12;
+				if (scytheCharges > 0) {
+					scytheRefund = Math.floor((scytheCharges / quantity) * (1 - completionPercentage));
+					scytheRefund = Math.min(scytheRefund, scytheCharges / quantity);
+				}
+				if (venatorBowCharges > 0) {
+					venatorBowRefund = Math.floor((venatorBowCharges / quantity) * (1 - completionPercentage));
+					venatorBowRefund = Math.min(venatorBowRefund, venatorBowCharges / quantity);
+				}
+				if (bloodFuryCharges > 0) {
+					bloodFuryRefund = Math.floor((bloodFuryCharges / quantity) * (1 - completionPercentage));
+					bloodFuryRefund = Math.min(bloodFuryRefund, bloodFuryCharges / quantity);
+				}
+				if (voidStaffCharges > 0) {
+					voidStaffRefund = Math.floor((voidStaffCharges / quantity) * (1 - completionPercentage));
+					voidStaffRefund = Math.min(voidStaffRefund, voidStaffCharges / quantity);
+				}
+
+				const chargeBank = new ChargeBank();
+				if (scytheRefund > 0) chargeBank.add('scythe_of_vitur_charges', scytheRefund);
+				if (venatorBowRefund > 0) chargeBank.add('venator_bow_charges', venatorBowRefund);
+				if (bloodFuryRefund > 0) chargeBank.add('blood_fury_charges', bloodFuryRefund);
+				if (voidStaffRefund > 0) chargeBank.add('void_staff_charges', voidStaffRefund);
+
+				if (chargeBank.length() > 0) {
+					const refundResults = await refundChargeBank(user, chargeBank);
+
+					const refundMessages = refundResults
+						.map(result => `${result.userMessage} (total charges: ${result.totalCharges}).`)
+						.join(' ');
+					deathStr.push(`${refundMessages}`);
+				}
+				deathStr.push('\n');
+			}
+		}
+
+		await user.incrementMinigameScore('colosseum', successfulKills);
 
 		const loot = new Bank().add(possibleLoot);
 
@@ -88,15 +126,15 @@ export const colosseumTask: MinionTask = {
 			for (const item of sunfireItems) {
 				if (loot.has(item) && itemsTheyHave.includes(item)) {
 					loot.remove(item);
-					loot.add(randArrItem(missingItems));
+					loot.add(rng.pick(missingItems));
 				}
 			}
 		}
 
-		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL } = await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
-		await updateBankSetting('colo_loot', loot);
-		await userStatsBankUpdate(user, 'colo_loot', loot);
+		await ClientSettings.updateBankSetting('colo_loot', loot);
+		await user.statsBankUpdate('colo_loot', loot);
 		await trackLoot({
 			totalLoot: loot,
 			id: 'colo',
@@ -113,15 +151,22 @@ export const colosseumTask: MinionTask = {
 			]
 		});
 
-		let str = `${user}, you completed the Colosseum! You received: ${loot}. ${newWaveKcStr}`;
-
+		let gloryStr = null;
 		if (!stats.colo_max_glory || maxGlory > stats.colo_max_glory) {
-			await userStatsUpdate(user.id, { colo_max_glory: maxGlory });
-			str += ` Your new max glory is ${maxGlory}!`;
+			await user.statsUpdate({ colo_max_glory: maxGlory });
+			gloryStr = `**Your new max glory is:** ${maxGlory}!`;
 		}
+
+		finalDeathStr.push(deathStr.join(''));
+		const str =
+			`${user} your minion has returned from the Colosseum! ` +
+			`${user.minionName} killed Sol Heredit ${successfulKills} ${successfulKills === 1 ? 'time' : 'times'}. ` +
+			`${gloryStr !== null ? gloryStr : ''}\n` +
+			`${deathCount > 0 ? `\n${finalDeathStr.join('')}` : ''}` +
+			`\n${newWaveKcStr}`;
 
 		const image = await makeBankImage({ bank: loot, title: 'Colosseum Loot', user, previousCL });
 
-		return handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

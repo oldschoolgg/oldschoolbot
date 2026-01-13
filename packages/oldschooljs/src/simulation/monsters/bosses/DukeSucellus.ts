@@ -1,11 +1,12 @@
-import { randInt, roll, uniqueArr } from 'e';
+import { randInt, roll } from '@oldschoolgg/rng';
 
-import type { MonsterKillOptions } from '../../../meta/types';
-import Bank from '../../../structures/Bank';
-import LootTable from '../../../structures/LootTable';
-import Monster from '../../../structures/Monster';
-import itemID from '../../../util/itemID';
-import { VirtusTable } from '../../subtables/VirtusTable';
+import { EItem } from '@/EItem.js';
+import { VirtusTable } from '@/simulation/subtables/VirtusTable.js';
+import { Bank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
+import { Monster } from '@/structures/Monster.js';
+import { uniqueArr } from '@/util/smallUtils.js';
 
 const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add(VirtusTable, 1, 1)
@@ -13,18 +14,18 @@ const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add('Eye of the duke', 1, 1)
 	.add('Magus vestige', 1, 1);
 
-const ClueTable = new LootTable()
+const ClueTable: LootTable = new LootTable()
 	.add('Clue scroll (easy)')
 	.add('Clue scroll (medium)')
 	.add('Clue scroll (hard)')
 	.add('Clue scroll (elite)');
 
-const SupplyTable = new LootTable()
+const SupplyTable: LootTable = new LootTable()
 	.every('Pineapple pizza', [3, 4])
 	.every('Prayer potion(3)')
 	.every('Super combat potion(2)');
 
-const ResourceTable = new LootTable()
+const ResourceTable: LootTable = new LootTable()
 	.add('Bronze chainbody', [11, 17], 1)
 	.add('Mithril chainbody', [5, 7], 1)
 	.add('Adamant chainbody', [6, 10], 1)
@@ -55,14 +56,14 @@ const ResourceTable = new LootTable()
 	.add('Soul rune', [666, 1000], 2);
 
 class DukeSucellusSingleton extends Monster {
-	public allItems: number[] = uniqueArr([
+	public override allItems: number[] = uniqueArr([
 		...ClueTable.allItems,
 		...SupplyTable.allItems,
 		...ResourceTable.allItems,
 		...TradeableUniqueTable.allItems,
-		itemID("Awakener's orb"),
-		itemID('Ice quartz'),
-		itemID('Baron')
+		EItem.AWAKENERS_ORB,
+		EItem.ICE_QUARTZ,
+		EItem.BARON
 	]);
 
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {
@@ -93,7 +94,7 @@ class DukeSucellusSingleton extends Monster {
 	}
 }
 
-export const DukeSucellus = new DukeSucellusSingleton({
+export const DukeSucellus: DukeSucellusSingleton = new DukeSucellusSingleton({
 	id: 12_191,
 	name: 'Duke Sucellus',
 	aliases: ['duke sucellus']

@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import RareDropTable from '../../../subtables/RareDropTable';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const VyrewatchTable = new LootTable()
+export const VyrewatchTable: LootTable = new LootTable()
 	.every('Vampyre dust')
 	/* Weapons and armour */
 	.add('Rune dagger', 1, 8)
@@ -61,7 +61,7 @@ export const VyrewatchTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const Vyrewatch: SimpleMonster = new SimpleMonster({
 	id: 3717,
 	name: 'Vyrewatch',
 	table: VyrewatchTable,

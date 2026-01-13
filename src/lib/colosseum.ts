@@ -1,33 +1,31 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
+import { gorajanGearBoost } from '@/lib/bso/gorajanGearBoost.js';
+
+import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
-	clamp,
+	exponentialPercentScale,
+	formatDuration,
 	increaseNumByPercent,
 	objectEntries,
-	objectValues,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
-	sumArr
-} from 'e';
-import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
+	sumArr,
+	Time,
+	UserError
+} from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/node';
+import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
-import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
-import { degradeChargeBank } from './degradeableItems';
-import type { GearSetupType } from './gear/types';
-import { trackLoot } from './lootTrack';
-import { QuestID } from './minions/data/quests';
-import { ChargeBank } from './structures/Bank';
-import type { Skills } from './types';
-import type { ColoTaskOptions } from './types/minions';
-import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
-import { updateBankSetting } from './util/updateBankSetting';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { degradeChargeBank } from '@/lib/degradeableItems.js';
+import type { GearSetupType } from '@/lib/gear/types.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { ColoTaskOptions } from '@/lib/types/minions.js';
+import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);
@@ -287,7 +285,7 @@ export const colosseumWaves: Wave[] = [
 	}
 ];
 
-function calculateDeathChance(waveKC: number, hasBF: boolean, hasSGS: boolean): number {
+function calculateDeathChance(waveKC: number, hasBF: boolean, hasSGS: boolean, hasBulwark: boolean): number {
 	const cappedKc = Math.min(Math.max(waveKC, 0), 150);
 	const baseChance = 80;
 	const kcReduction = 80 * (1 - Math.exp(-1.5 * cappedKc));
@@ -300,8 +298,11 @@ function calculateDeathChance(waveKC: number, hasBF: boolean, hasSGS: boolean): 
 	if (hasBF) {
 		newChance = reduceNumByPercent(newChance, 5);
 	}
+	if (hasBulwark) {
+		newChance = reduceNumByPercent(newChance, 20);
+	}
 
-	return clamp(newChance, 1, 80);
+	return clamp(newChance, { min: 1, max: 80 });
 }
 
 export class ColosseumWaveBank extends GeneralBank<number> {
@@ -344,7 +345,7 @@ function calculateTimeInMs(waveTwelveKC: number): number {
 function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
 	const waveKCSkillBank = new ColosseumWaveBank();
 	for (const [waveNumber, kc] of kcBank.entries()) {
-		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), 1, 100));
+		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), { min: 1, max: 100 }));
 	}
 	const kcSkill = waveKCSkillBank.amount(wave.waveNumber) ?? 0;
 	const totalKCSkillPercent = sumArr(waveKCSkillBank.entries().map(ent => ent[1])) / waveKCSkillBank.length();
@@ -368,7 +369,54 @@ interface ColosseumResult {
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+	voidCharges: number;
 }
+
+export const colosseumWaveTime = (options: {
+	kcBank: ColosseumWaveBank;
+	hasScythe: boolean;
+	hasTBow: boolean;
+	hasVenBow: boolean;
+	hasClaws: boolean;
+	hasTorture: boolean;
+	hasHFB: boolean;
+	hasVoidStaff: boolean;
+	hasSungodAxe: boolean;
+	hasGora: boolean;
+	hasBHook: boolean;
+}): number => {
+	const waveTwelveKC = options.kcBank.amount(12);
+	let waveDuration = calculateTimeInMs(waveTwelveKC) / 12;
+
+	// reduce wave by 30% for axe (Effectively 40% boost since waveDuration wasn't increased by 10%)
+	if (options.hasSungodAxe) {
+		waveDuration = reduceNumByPercent(waveDuration, 30);
+	} else if (!options.hasScythe) {
+		waveDuration = increaseNumByPercent(waveDuration, 10);
+	}
+	// reduce wave by 12% for HFB (Effectively 22% boost since waveDuration wasn't increased by 10%)
+	if (options.hasHFB) {
+		waveDuration = reduceNumByPercent(waveDuration, 12);
+	} else if (!options.hasTBow) {
+		waveDuration = increaseNumByPercent(waveDuration, 10);
+	}
+	if (options.hasVoidStaff) {
+		waveDuration = reduceNumByPercent(waveDuration, 12);
+	}
+	if (options.hasGora) {
+		waveDuration = reduceNumByPercent(waveDuration, 10);
+	}
+	if (!options.hasVenBow) {
+		waveDuration = increaseNumByPercent(waveDuration, 7);
+	}
+	if (!options.hasClaws) {
+		waveDuration = increaseNumByPercent(waveDuration, 4);
+	}
+	if (!options.hasTorture || !options.hasBHook) {
+		waveDuration = increaseNumByPercent(waveDuration, 5);
+	}
+	return waveDuration;
+};
 
 export const startColosseumRun = (options: {
 	kcBank: ColosseumWaveBank;
@@ -379,47 +427,44 @@ export const startColosseumRun = (options: {
 	hasClaws: boolean;
 	hasSGS: boolean;
 	hasTorture: boolean;
+	voidCharges: number;
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+	hasHFB: boolean;
+	hasVoidStaff: boolean;
+	hasSungodAxe: boolean;
+	hasGora: boolean;
+	hasBHook: boolean;
+	hasBulwark: boolean;
 }): ColosseumResult => {
-	const waveTwelveKC = options.kcBank.amount(12);
-
 	const bank = new Bank();
-
 	const addedWaveKCBank = new ColosseumWaveBank();
-	let waveDuration = calculateTimeInMs(waveTwelveKC) / 12;
 
-	if (!options.hasScythe) {
-		waveDuration = increaseNumByPercent(waveDuration, 10);
-	}
-	if (!options.hasTBow) {
-		waveDuration = increaseNumByPercent(waveDuration, 10);
-	}
-	if (!options.hasVenBow) {
-		waveDuration = increaseNumByPercent(waveDuration, 7);
-	}
-	if (!options.hasClaws) {
-		waveDuration = increaseNumByPercent(waveDuration, 4);
-	}
-	if (!options.hasTorture) {
-		waveDuration = increaseNumByPercent(waveDuration, 5);
-	}
+	const waveDuration = colosseumWaveTime({
+		kcBank: options.kcBank,
+		hasScythe: options.hasScythe,
+		hasTBow: options.hasTBow,
+		hasVenBow: options.hasVenBow,
+		hasClaws: options.hasClaws,
+		hasTorture: options.hasTorture,
+		hasHFB: options.hasHFB,
+		hasVoidStaff: options.hasVoidStaff,
+		hasSungodAxe: options.hasSungodAxe,
+		hasGora: options.hasGora,
+		hasBHook: options.hasBHook
+	});
 
 	const fakeDuration = 12 * waveDuration;
 	const deathChances: number[] = [];
 	let realDuration = 0;
 	let maxGlory = 0;
 
-	// Calculate charges used
-	const scytheCharges = 300;
-	const calculateVenCharges = () => 50;
-
 	for (const wave of colosseumWaves) {
 		realDuration += waveDuration;
 		const kcForThisWave = options.kcBank.amount(wave.waveNumber);
 		maxGlory = Math.max(calculateGlory(options.kcBank, wave), maxGlory);
-		const deathChance = calculateDeathChance(kcForThisWave, options.hasBF, options.hasSGS);
+		const deathChance = calculateDeathChance(kcForThisWave, options.hasBF, options.hasSGS, options.hasBulwark);
 		deathChances.push(deathChance);
 
 		if (percentChance(deathChance)) {
@@ -432,9 +477,10 @@ export const startColosseumRun = (options: {
 				realDuration,
 				totalDeathChance: combinedChance(deathChances),
 				deathChances,
-				scytheCharges: options.hasScythe ? scytheCharges : 0,
-				venatorBowCharges: options.hasVenBow ? calculateVenCharges() : 0,
-				bloodFuryCharges: options.hasBF ? scytheCharges * 3 : 0
+				scytheCharges: options.hasScythe ? options.scytheCharges : 0,
+				venatorBowCharges: options.hasVenBow ? options.venatorBowCharges : 0,
+				bloodFuryCharges: options.hasBF ? options.scytheCharges * 3 : 0,
+				voidCharges: options.hasVoidStaff ? options.voidCharges : 0
 			};
 		}
 		addedWaveKCBank.add(wave.waveNumber);
@@ -449,10 +495,10 @@ export const startColosseumRun = (options: {
 				realDuration,
 				totalDeathChance: combinedChance(deathChances),
 				deathChances,
-
-				scytheCharges: options.hasScythe ? scytheCharges : 0,
-				venatorBowCharges: options.hasVenBow ? calculateVenCharges() : 0,
-				bloodFuryCharges: options.hasBF ? scytheCharges * 3 : 0
+				scytheCharges: options.hasScythe ? options.scytheCharges : 0,
+				venatorBowCharges: options.hasVenBow ? options.venatorBowCharges : 0,
+				bloodFuryCharges: options.hasBF ? options.scytheCharges * 3 : 0,
+				voidCharges: options.hasVoidStaff ? options.voidCharges : 0
 			};
 		}
 	}
@@ -460,14 +506,13 @@ export const startColosseumRun = (options: {
 	throw new Error('Colosseum run did not end correctly.');
 };
 
-export async function colosseumCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function colosseumCommand(user: MUser, channelId: string, quantity: number | undefined) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} is busy`;
 	}
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${mentionCommand(
-			globalClient,
+		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${globalClient.mentionCommand(
 			'activities',
 			'quest'
 		)}.`;
@@ -489,61 +534,68 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	const requiredItems: Partial<Record<GearSetupType, Partial<Record<EquipmentSlot, number[]>>>> = {
 		melee: {
-			head: resolveItems(['Torva full helm', 'Neitiznot faceguard', 'Justiciar faceguard']),
 			cape: resolveItems(['Infernal cape', 'Fire cape']),
-			neck: resolveItems(['Amulet of blood fury', 'Amulet of torture']),
+			head: resolveItems(['Torva full helm', 'Neitiznot faceguard', 'Justiciar faceguard']),
+			neck: resolveItems(["Brawler's hook necklace", 'Amulet of blood fury', 'Amulet of torture']),
 			body: resolveItems(['Torva platebody', 'Bandos chestplate']),
 			legs: resolveItems(['Torva platelegs', 'Bandos tassets']),
-			feet: resolveItems(['Primordial boots']),
-			ring: resolveItems(['Ultor ring', 'Berserker ring (i)'])
+			feet: resolveItems(['Torva boots', 'Primordial boots']),
+			hands: resolveItems(['Torva gloves', 'Ferocious gloves', 'Barrows gloves']),
+			ring: resolveItems(['Ignis ring', 'Ultor ring', 'Berserker ring'])
 		},
 		range: {
-			cape: resolveItems(["Dizana's quiver", "Ava's assembler"]),
-			head: resolveItems(['Masori mask (f)', 'Masori mask', 'Armadyl helmet']),
-			neck: resolveItems(['Necklace of anguish']),
-			body: resolveItems(['Masori body (f)', 'Masori body', 'Armadyl chestplate']),
-			legs: resolveItems(['Masori chaps (f)', 'Masori chaps', 'Armadyl chainskirt']),
-			feet: resolveItems(['Pegasian boots']),
-			ring: resolveItems(['Venator ring', 'Archers ring (i)'])
+			cape: resolveItems(["Ava's assembler"]),
+			head: resolveItems(['Pernix cowl', 'Masori mask', 'Armadyl helmet']),
+			neck: resolveItems(['Farsight snapshot necklace', 'Necklace of anguish']),
+			body: resolveItems(['Pernix body', 'Masori body', 'Armadyl chestplate']),
+			legs: resolveItems(['Pernix chaps', 'Masori chaps', 'Armadyl chainskirt']),
+			feet: resolveItems(['Pernix boots', 'Pegasian boots']),
+			hands: resolveItems(['Pernix gloves', 'Zaryte vambraces', 'Barrows gloves']),
+			ring: resolveItems(['Ring of piercing', 'Venator ring', 'Archers ring'])
 		}
 	};
 
-	const meleeWeapons = resolveItems(['Scythe of vitur', 'Blade of saeldor (c)']);
-	const rangeWeapons = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)']);
+	const meleeWeapons = resolveItems([
+		'Axe of the high sungod',
+		'Scythe of vitur',
+		'Soulreaper axe',
+		'Blade of saeldor (c)'
+	]);
+	const rangeWeapons = resolveItems(['Hellfire bow', 'Zaryte bow', 'Twisted bow', 'Bow of faerdhinen (c)']);
 
 	for (const [gearType, gearNeeded] of objectEntries(requiredItems)) {
 		const gear = user.gear[gearType];
 		if (!gearNeeded) continue;
-		for (const items of objectValues(gearNeeded)) {
+		for (const items of Object.values(gearNeeded)) {
 			if (!items) continue;
-			if (!items.some(g => gear.hasEquipped(g))) {
-				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${formatList(
-					items.map(itemNameFromID),
-					'or'
-				)}.`;
+			if (!items.some(g => gear.hasEquipped(g, true))) {
+				const simGear = items.flatMap(i => getSimilarItems(i));
+				const gearNeeded = [...new Set([...simGear])];
+				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${gearNeeded
+					.map(i => Items.itemNameFromId(i))
+					.join(', ')}.`;
 			}
 		}
 	}
 
 	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your melee setup to enter the Colosseum: ${formatList(
-			meleeWeapons.map(itemNameFromID),
+			meleeWeapons.map(i => Items.itemNameFromId(i)),
 			'or'
 		)}.`;
 	}
 
 	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your range setup to enter the Colosseum: ${formatList(
-			rangeWeapons.map(itemNameFromID),
+			rangeWeapons.map(i => Items.itemNameFromId(i)),
 			'or'
 		)}.`;
 	}
 
-	const messages: string[] = [];
-
+	//OSB boost items:
 	const hasBF = user.gear.melee.hasEquipped('Amulet of blood fury', true, false);
 	const hasScythe = user.gear.melee.hasEquipped('Scythe of vitur', true, true);
-	const hasTBow = user.gear.range.hasEquipped('Twisted bow', true, true);
+	const hasTBow = user.gear.range.hasEquipped('Twisted bow', true, false);
 	function calculateVenCharges() {
 		return 50;
 	}
@@ -555,96 +607,186 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	const bloodFuryCharges = scytheCharges * 3;
 	const venatorBowCharges = calculateVenCharges();
 
-	const res = startColosseumRun({
-		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
+	//BSO boost items:
+	const hasSungodAxe = user.gear.melee.hasEquipped('Axe of the high sungod', true, true);
+	const hasHFB = user.gear.range.hasEquipped('Hellfire bow', true, true);
+	const hasVoidStaff = user.gear.mage.hasEquipped('Void Staff', true, true);
+	const hasGora = gorajanGearBoost(user, 'Colosseum');
+	const hasBHook = !hasBF && user.gear.melee.hasEquipped("Brawler's hook necklace");
+	const hasBulwark = user.owns('Infernal bulwark');
+	const voidCharges = 35;
+
+	// Get trip time and calculate max attempts the user can do per trip
+	const kcBank: ColosseumWaveBank = new ColosseumWaveBank((await user.fetchStats()).colo_kc_bank as ItemBank);
+	const waveDuration = colosseumWaveTime({
+		kcBank,
 		hasScythe,
 		hasTBow,
 		hasVenBow,
-		hasBF,
 		hasClaws,
-		hasSGS,
 		hasTorture,
-		scytheCharges,
-		venatorBowCharges,
-		bloodFuryCharges
+		hasHFB,
+		hasVoidStaff,
+		hasSungodAxe,
+		hasGora,
+		hasBHook
 	});
-	const minutes = res.realDuration / Time.Minute;
+	const oneColoTripTime = waveDuration * 12;
+	const maxUserTripTime = await user.calcMaxTripLength('MonsterKilling');
+	const maxColoQty = Math.max(1, Math.floor(maxUserTripTime / oneColoTripTime));
+	if (!quantity || quantity > maxColoQty) {
+		quantity = maxColoQty;
+	}
 
+	// get all the results and cost from each attempt
 	const chargeBank = new ChargeBank();
-	const cost = new Bank().add('Saradomin brew(4)', 6).add('Super restore(4)', 8).add('Super combat potion(4)');
+	const cost = new Bank();
+	const results: ColosseumResult[] = [];
+	for (let i = 0; i < quantity; i++) {
+		const res = startColosseumRun({
+			kcBank,
+			hasScythe,
+			hasTBow,
+			hasVenBow,
+			hasBF,
+			hasClaws,
+			hasSGS,
+			hasTorture,
+			scytheCharges,
+			venatorBowCharges,
+			bloodFuryCharges,
+			voidCharges,
+			hasHFB,
+			hasVoidStaff,
+			hasSungodAxe,
+			hasGora,
+			hasBHook,
+			hasBulwark
+		});
+		results.push(res);
+		const minutes = res.realDuration / Time.Minute;
 
-	if (user.bank.has('Ranging potion(4)')) {
-		cost.add('Ranging potion(4)');
-	} else if (user.bank.has('Bastion potion(4)')) {
-		cost.add('Bastion potion(4)');
-	} else {
-		return 'You need to have a Ranging potion(4) or Bastion potion(4) in your bank.';
+		// Calculate resources needed for 1 attempt
+		cost.add('Saradomin brew(4)', 6).add('Super restore(4)', 8).add('Super combat potion(4)');
+		if (user.bank.has('Ranging potion(4)')) {
+			cost.add('Ranging potion(4)');
+		} else if (user.bank.has('Bastion potion(4)')) {
+			cost.add('Bastion potion(4)');
+		} else {
+			return 'You need to have a Ranging potion(4) or Bastion potion(4) in your bank.';
+		}
+		if (hasHFB) cost.add('Hellfire arrow', Math.ceil(minutes * 3.5));
+		if (hasTBow) cost.add('Dragon arrow', Math.ceil(minutes * 3));
+		if (hasVoidStaff) chargeBank.add('void_staff_charges', voidCharges);
+		if (hasScythe) chargeBank.add('scythe_of_vitur_charges', scytheCharges);
+		if (hasBF) chargeBank.add('blood_fury_charges', bloodFuryCharges);
+		if (hasVenBow) {
+			chargeBank.add('venator_bow_charges', calculateVenCharges());
+			cost.add(hasHFB ? 'Hellfire arrow' : 'Dragon arrow', hasHFB ? 40 : 50);
+		}
 	}
 
-	if (hasScythe) {
-		messages.push('10% boost for Scythe');
-		chargeBank.add('scythe_of_vitur_charges', scytheCharges);
+	// Generate various messages
+	const costStr: string[] = [];
+	const boosts: string[] = [];
+	const missedBoosts: string[] = [];
+	const deathBoosts: string[] = [];
+	const missedDeathBoosts: string[] = [];
+
+	if (hasSungodAxe) {
+		boosts.push('+40% for Axe of the high sungod');
+	} else if (hasScythe) {
+		boosts.push('+10% for Scythe');
+		missedBoosts.push('+40% for Axe of the high sungod');
 	} else {
-		messages.push('Missed 10% Scythe boost. If you have one, charge it and equip to melee.');
+		missedBoosts.push('+10% for Scythe, +40% for Axe of the high sungod');
 	}
-	if (hasTBow) {
-		messages.push('10% boost for TBow');
-		const arrowsNeeded = Math.ceil(minutes * 3);
-		cost.add('Dragon arrow', arrowsNeeded);
+
+	if (hasHFB) {
+		boosts.push('+22% for Hellfire bow');
+	} else if (hasTBow) {
+		boosts.push('+10% for TBow');
+		missedBoosts.push('+22% for Hellfirebow');
 	} else {
-		messages.push(
-			'Missed 10% TBow boost. If you have one, equip it to range. You also need dragon arrows equipped.'
-		);
+		missedBoosts.push('+10% for TBow, +20% for Hellfire bow');
 	}
+
+	if (hasVoidStaff) {
+		boosts.push('+12% for Void staff');
+	} else {
+		missedBoosts.push('12% for Void staff');
+	}
+
+	if (hasGora) {
+		boosts.push('+10% for Gorajan');
+	} else {
+		missedBoosts.push('+10% for Gorajan');
+	}
+
 	if (hasVenBow) {
-		messages.push('7% boost for Venator bow');
-		chargeBank.add('venator_bow_charges', calculateVenCharges());
-		cost.add('Dragon arrow', 50);
+		boosts.push('+7% boost for Venator bow');
 	} else {
-		messages.push(
-			'Missed 7% Venator bow boost. If you have one, charge it and keep it in your bank. You also need at least 50 dragon arrows equipped.'
+		missedBoosts.push(
+			`+7% for Venator bow (You also need atleast ${hasHFB ? '40' : '50'} ${hasHFB ? 'Hellfire arrow' : 'Dragon arrow'} equipped)`
 		);
+	}
+
+	if (hasTorture || hasBHook) {
+		boosts.push(`5% boost for ${hasBHook ? "Brawler's" : 'Torture'}`);
+	} else {
+		missedBoosts.push("Missed 5% Brawler's/Torture boost");
 	}
 
 	if (hasClaws) {
-		messages.push('4% boost for Dragon claws');
+		boosts.push('+4% for Dragon claws');
 	} else {
-		messages.push('Missed 4% Dragon claws boost.');
+		missedBoosts.push('+4% for Dragon claws');
 	}
 
-	if (hasTorture) {
-		messages.push('5% boost for Torture');
+	if (hasBF) {
+		deathBoosts.push('-5% for blood fury');
 	} else {
-		messages.push('Missed 5% Torture boost.');
-	}
-
-	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {
-		chargeBank.add('blood_fury_charges', bloodFuryCharges);
-		messages.push('-5% death chance for blood fury');
-	} else {
-		messages.push('Missed -5% death chance for blood fury. If you have one, add charges and equip it to melee.');
+		missedDeathBoosts.push('-5% for blood fury');
 	}
 
 	if (hasSGS) {
-		messages.push('-5% death chance for Saradomin godsword');
+		deathBoosts.push('-5% for Saradomin godsword');
 	} else {
-		messages.push('Missed -5% death chance boost for Saradomin godsword.');
+		missedDeathBoosts.push('-5% for Saradomin godsword');
 	}
 
+	if (hasBulwark) {
+		deathBoosts.push('-20% for Infernal bulwark');
+	} else {
+		missedDeathBoosts.push('-20% for Infernal bulwark');
+	}
+
+	// attempt to remove resources and charges from the user
 	const realCost = new Bank();
 	try {
 		const result = await user.specialRemoveItems(cost);
 		realCost.add(result.realCost);
-	} catch (err: any) {
+	} catch (err: unknown) {
 		if (err instanceof UserError) {
 			return err.message;
 		}
 		throw err;
 	}
-	messages.push(`Removed ${realCost}`);
+	costStr.push(`**Removed:** ${realCost}`);
 
-	await updateBankSetting('colo_cost', realCost);
-	await userStatsBankUpdate(user, 'colo_cost', realCost);
+	if (chargeBank.length() > 0) {
+		const hasChargesResult = user.hasCharges(chargeBank);
+		if (!hasChargesResult.hasCharges) {
+			return hasChargesResult.fullUserString!;
+		}
+
+		const degradeResults = await degradeChargeBank(user, chargeBank);
+		costStr.push(degradeResults);
+	}
+
+	// update user stats
+	await ClientSettings.updateBankSetting('colo_cost', realCost);
+	await user.statsBankUpdate('colo_cost', realCost);
 	await trackLoot({
 		totalCost: realCost,
 		id: 'colo',
@@ -658,31 +800,54 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		]
 	});
 
-	if (chargeBank.length() > 0) {
-		const hasChargesResult = user.hasCharges(chargeBank);
-		if (!hasChargesResult.hasCharges) {
-			return hasChargesResult.fullUserString!;
-		}
+	let totalDuration = 0;
+	let totalFakeDuration = 0;
+	let maxGlory = 0;
+	const diedAt: (number | null)[] = [];
+	const totalLoot = new Bank();
+	let totalScytheCharges = 0;
+	let totalVenatorBowCharges = 0;
+	let totalBloodFuryCharges = 0;
+	let totalVoidStaffCharges = 0;
 
-		const degradeResults = await degradeChargeBank(user, chargeBank);
-		messages.push(degradeResults);
+	// go through the results and combine them
+	for (const result of results) {
+		totalDuration += result.realDuration;
+		totalFakeDuration += result.fakeDuration;
+		if (result.maxGlory > maxGlory) maxGlory = result.maxGlory;
+		diedAt.push(result.diedAt);
+		if (result.loot) totalLoot.add(result.loot);
+		totalScytheCharges += result.scytheCharges;
+		totalVenatorBowCharges += result.venatorBowCharges;
+		totalBloodFuryCharges += result.bloodFuryCharges;
+		totalVoidStaffCharges += result.voidCharges;
 	}
 
-	await addSubTaskToActivityTask<ColoTaskOptions>({
+	await ActivityManager.startTrip<ColoTaskOptions>({
 		userID: user.id,
-		channelID,
-		duration: res.realDuration,
+		channelId,
+		duration: totalDuration,
 		type: 'Colosseum',
-		fakeDuration: res.fakeDuration,
-		maxGlory: res.maxGlory,
-		diedAt: res.diedAt ?? undefined,
-		loot: res.loot?.toJSON(),
-		scytheCharges: res.scytheCharges,
-		venatorBowCharges: res.venatorBowCharges,
-		bloodFuryCharges: res.bloodFuryCharges
+		quantity,
+		fakeDuration: totalFakeDuration,
+		maxGlory,
+		diedAt: diedAt,
+		loot: totalLoot.toJSON(),
+		scytheCharges: totalScytheCharges,
+		venatorBowCharges: totalVenatorBowCharges,
+		bloodFuryCharges: totalBloodFuryCharges,
+		voidStaffCharges: totalVoidStaffCharges
 	});
 
-	return `${user.minionName} is now attempting the Colosseum. They will finish in around ${formatDuration(
-		res.fakeDuration
-	)}, unless they die early. ${messages.join(', ')}`;
+	if (missedBoosts.length === 0) missedBoosts.push('None');
+	if (missedDeathBoosts.length === 0) missedDeathBoosts.push('None');
+
+	return (
+		`${user.minionName} is now ${quantity > 1 ? `doing ${quantity} attempts at` : 'attempting'} the Colosseum. They will finish in around ${formatDuration(totalFakeDuration)}, unless they die early.\n\n` +
+		`**Boosts:** ${boosts.join(', ')}.\n` +
+		`**Missed Boosts:** ${missedBoosts.join(', ')}.\n` +
+		`**Death Reduction:** ${deathBoosts.join(', ')}.\n` +
+		`**Missed Death Reduction:** ${missedDeathBoosts.join(', ')}.\n\n` +
+		`${costStr.join(', ')}`
+	);
 }

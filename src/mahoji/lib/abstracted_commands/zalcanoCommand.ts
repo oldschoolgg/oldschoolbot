@@ -1,14 +1,10 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { EMonster } from 'oldschooljs';
 
-import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';
-import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 function calcPerformance(kcLearned: number, skillPercentage: number) {
 	let basePerformance = 50;
@@ -22,10 +18,10 @@ function calcPerformance(kcLearned: number, skillPercentage: number) {
 	return Math.min(100, basePerformance);
 }
 
-export async function zalcanoCommand(user: MUser, channelID: string, quantity?: number) {
-	const [hasReqs, reason] = hasSkillReqs(user, soteSkillRequirements);
+export async function zalcanoCommand(user: MUser, channelId: string, quantity?: number) {
+	const hasReqs = user.hasSkillReqs(soteSkillRequirements);
 	if (!hasReqs) {
-		return `To fight Zalcano, you need: ${reason}.`;
+		return `To fight Zalcano, you need: ${formatSkillRequirements(soteSkillRequirements)}.`;
 	}
 	if (user.QP < 150) {
 		return 'To fight Zalcano, you need 150 QP.';
@@ -45,7 +41,12 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 	baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 	boosts.push(`${skillPercentage / 40}% boost for levels`);
 
-	if (!userHasGracefulEquipped(user)) {
+	if (user.usingPet('Obis')) {
+		baseTime /= 2;
+		boosts.push('2x boost for Obis');
+	}
+
+	if (!user.hasGracefulEquipped()) {
 		baseTime *= 1.15;
 		boosts.push('-15% time penalty for not having graceful equipped');
 	}
@@ -55,7 +56,7 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 	else if (kc > 50) healAmountNeeded = 3 * 12;
 	else if (kc > 20) healAmountNeeded = 5 * 12;
 
-	const maxTripLength = calcMaxTripLength(user, 'Zalcano');
+	const maxTripLength = await user.calcMaxTripLength('Zalcano');
 	if (!quantity) quantity = Math.floor(maxTripLength / baseTime);
 	quantity = Math.max(1, quantity);
 	const duration = quantity * baseTime;
@@ -68,17 +69,16 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 		)}.`;
 	}
 
-	const { foodRemoved } = await removeFoodFromUser({
-		user,
+	const { foodRemoved } = await user.removeFoodFromUser({
 		totalHealingNeeded: healAmountNeeded * quantity,
 		healPerAction: Math.ceil(healAmountNeeded / quantity),
 		activityName: 'Zalcano',
 		attackStylesUsed: []
 	});
 
-	await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>({
+	await ActivityManager.startTrip<ZalcanoActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Zalcano',

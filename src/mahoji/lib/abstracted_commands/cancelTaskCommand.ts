@@ -1,15 +1,18 @@
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { randArrItem } from '@oldschoolgg/rng';
 
-import type { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import type { NexTaskOptions, RaidsOptions } from '@/lib/types/minions.js';
 
-export async function cancelTaskCommand(user: MUser, interaction?: ChatInputCommandInteraction): Promise<string> {
-	const currentTask = ActivityManager.getActivityOfUser(user.id);
+export async function cancelTaskCommand(user: MUser, interaction?: MInteraction): Promise<string> {
+	const currentTask = await ActivityManager.getActivityOfUser(user.id);
 
 	const mName = user.minionName;
 
 	if (!currentTask) {
 		return `${mName} isn't doing anything at the moment, so there's nothing to cancel.`;
+	}
+
+	if (currentTask.type === 'MonkeyRumble') {
+		return `${mName} can't leave the Monkey Rumble arena?`;
 	}
 
 	if (currentTask.type === 'Inferno') {
@@ -34,13 +37,24 @@ export async function cancelTaskCommand(user: MUser, interaction?: ChatInputComm
 		}
 	}
 
-	if ((currentTask as any).users && (currentTask as any).users.length > 1) {
+	if (currentTask.type === 'Mortimer') {
+		return randArrItem([
+			"Run all you want; you're still trapped in my illusion.",
+			"You think you can flee? I'm the maze you can't escape.",
+			"Escape is futile; you're a part of my act now.",
+			'No exits on this stage, only curtains.',
+			"Where do you think you're going? The show's not over.",
+			'Trying to quit the game? I decide when it ends.',
+			"You can't break free; you're woven into my story now."
+		]);
+	}
+
+	if ('users' in currentTask && currentTask.users.length > 1) {
 		return 'Your minion is on a group activity and cannot cancel!';
 	}
 
 	if (interaction) {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${mName} is currently doing a ${currentTask.type} trip.
 Please confirm if you want to call your minion back from their trip.
 They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`

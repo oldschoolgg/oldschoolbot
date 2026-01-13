@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const WildySlayerCaveTable = new LootTable()
+const WildySlayerCaveTable: LootTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 7700)
 	.add('Blighted anglerfish', [1, 2], 5750)
 	.add('Blighted manta ray', [1, 2], 5750)
@@ -26,18 +26,18 @@ const WildySlayerCaveTable = new LootTable()
 	.add('Trouver parchment', 2, 38)
 	.add('Looting bag note', 1, 38);
 
-const HellhoundTable = new LootTable()
+const HellhoundTable: LootTable = new LootTable()
 	.every('Vile ashes')
 	.oneIn(32_768, 'Smouldering stone')
 	.tertiary(40, 'Ensouled hellhound head')
 	.tertiary(64, 'Clue scroll (hard)');
 
-const HellhoundWildyCaveTable = new LootTable()
+const HellhoundWildyCaveTable: LootTable = new LootTable()
 	.every(HellhoundTable)
 	.add(WildySlayerCaveTable, 1, 85)
 	.add(new LootTable(), 1, 15);
 
-export default new SimpleMonster({
+export const Hellhound: SimpleMonster = new SimpleMonster({
 	id: 104,
 	name: 'Hellhound',
 	table: HellhoundTable,

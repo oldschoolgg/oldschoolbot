@@ -1,7 +1,7 @@
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
-const ZombiePiratesLocker = new LootTable()
+const ZombiePiratesLockerTable = new LootTable()
 	/* Pre-roll */
 	.oneIn(275, 'Teleport anchoring scroll')
 
@@ -37,9 +37,9 @@ const ZombiePiratesLocker = new LootTable()
 	.add('Gold ore', [10, 30], 12)
 	.add('Adamant seeds', [10, 20], 8);
 
-export default new SimpleOpenable({
+export const ZombiePiratesLocker: SimpleOpenable = new SimpleOpenable({
 	id: 29_449,
 	name: "Zombie Pirate's Locker",
 	aliases: ['zombie pirate locker', 'pirate locker'],
-	table: ZombiePiratesLocker
+	table: ZombiePiratesLockerTable
 });

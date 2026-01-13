@@ -1,19 +1,13 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, objectEntries } from 'e';
+import { formatDuration, objectEntries, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 const skillReqs = {
-	[SkillsEnum.Prayer]: 70,
-	[SkillsEnum.Hitpoints]: 70,
-	[SkillsEnum.Mining]: 50
+	prayer: 70,
+	hitpoints: 70,
+	mining: 50
 };
 
 export const VolcanicMineGameTime = Time.Minute * 10;
@@ -95,7 +89,7 @@ export const VolcanicMineShop: { name: string; output: Bank; cost: number; clOnl
 	}
 ];
 
-export async function volcanicMineCommand(user: MUser, channelID: string, gameQuantity: number | undefined) {
+export async function volcanicMineCommand(user: MUser, channelId: string, gameQuantity: number | undefined) {
 	const skills = user.skillsAsLevels;
 	if (!hasSkillReqs(user, skillReqs)[0]) {
 		return `You are not skilled enough to participate in the Volcanic Mine. You need the following requirements: ${objectEntries(
@@ -107,7 +101,7 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 			.filter(f => f)
 			.join(', ')}`;
 	}
-	const maxGamesUserCanDo = Math.floor(calcMaxTripLength(user) / VolcanicMineGameTime);
+	const maxGamesUserCanDo = Math.floor((await user.calcMaxTripLength('VolcanicMine')) / VolcanicMineGameTime);
 	if (!gameQuantity || gameQuantity > maxGamesUserCanDo) gameQuantity = maxGamesUserCanDo;
 	const userMiningLevel = skills.mining;
 	const userPrayerLevel = skills.prayer;
@@ -122,7 +116,9 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 		.add('Numulite', 30);
 
 	// Activity boosts
-	if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
+	if (userMiningLevel >= 99 && userSkillingGear.hasEquipped('Dwarven pickaxe')) {
+		boosts.push(`3x boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Dwarven pickaxe'} equipped.`);
+	} else if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
 		boosts.push(`50% boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Crystal pickaxe'} equipped.`);
 	} else if (userMiningLevel >= 61 && userSkillingGear.hasEquipped('Dragon pickaxe')) {
 		boosts.push(`30% boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Dragon pickaxe'} equipped.`);
@@ -157,7 +153,11 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 		return `You don't have all the required supplies for this number of games. You need ${suppliesUsage} for ${gameQuantity} games of Volcanic Mine.`;
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: suppliesUsage });
+	await user.transactItems({ itemsToRemove: suppliesUsage });
+
+	if (user.usingPet('Doug')) {
+		boosts.push('20% more Mining XP for having Doug helping you!');
+	}
 
 	const duration = VolcanicMineGameTime * gameQuantity;
 
@@ -167,9 +167,9 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 		boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
 	}\n**Supply Usage:** ${suppliesUsage}`;
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity: gameQuantity,
 		duration,
 		type: 'VolcanicMine'
@@ -178,12 +178,7 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 	return str;
 }
 
-export async function volcanicMineShopCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	item: string,
-	quantity = 1
-) {
+export async function volcanicMineShopCommand(interaction: MInteraction, user: MUser, item: string, quantity = 1) {
 	const currentUserPoints = user.user.volcanic_mine_points;
 
 	const shopItem = VolcanicMineShop.find(f => stringMatches(f.name, item));
@@ -200,27 +195,29 @@ export async function volcanicMineShopCommand(
 				: `You only have enough for ${Math.floor(currentUserPoints / shopItem.cost).toLocaleString()}`
 		}`;
 	}
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to spent **${cost.toLocaleString()}** Volcanic Mine points to buy **${quantity.toLocaleString()}x ${
 			shopItem.name
 		}**?`
 	);
 
-	if (shopItem.clOnly) {
-		await user.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity));
-	} else {
-		await transactItems({
-			userID: user.id,
-			collectionLog: shopItem.addToCl === true,
-			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
-		});
-	}
-	await user.update({
+	const otherUpdates = {
 		volcanic_mine_points: {
 			decrement: cost
 		}
-	});
+	};
+	if (shopItem.clOnly) {
+		await user.addItemsToCollectionLog({
+			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity),
+			otherUpdates
+		});
+	} else {
+		await user.transactItems({
+			collectionLog: shopItem.addToCl === true,
+			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity),
+			otherUpdates
+		});
+	}
 
 	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Volcanic Mine points.${
 		shopItem.clOnly

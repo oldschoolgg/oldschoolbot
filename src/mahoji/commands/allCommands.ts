@@ -1,93 +1,97 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { globalConfig } from '../../lib/constants';
-import { activitiesCommand } from './activities';
-import { adminCommand } from './admin';
-import { askCommand } from './ask';
-import { bankCommand } from './bank';
-import { bingoCommand } from './bingo';
-import { bossrecordCommand } from './bossrecords';
-import { botLeaguesCommand } from './botleagues';
-import { bsCommand } from './bs';
-import { buildCommand } from './build';
-import { buyCommand } from './buy';
-import { caCommand } from './ca';
-import { casketCommand } from './casket';
-import { chooseCommand } from './choose';
-import { chopCommand } from './chop';
-import { collectionLogCommand } from './cl';
-import { claimCommand } from './claim';
-import { clueCommand } from './clue';
-import { cluesCommand } from './clues';
-import { configCommand } from './config';
-import { cookCommand } from './cook';
-import { craftCommand } from './craft';
-import { createCommand } from './create';
-import { dataCommand } from './data';
-import { dropCommand } from './drop';
-import { dryCalcCommand } from './drycalc';
-import { fakeCommand } from './fake';
-import { fakepmCommand } from './fakepm';
-import { farmingCommand } from './farming';
-import { finishCommand } from './finish';
-import { fishCommand } from './fish';
-import { fletchCommand } from './fletch';
-import { gambleCommand } from './gamble';
-import { geCommand } from './ge';
-import { gearCommand } from './gear';
-import { gearPresetsCommand } from './gearpresets';
-import { giftCommand } from './gift';
-import { giveawayCommand } from './giveaway';
-import { gpCommand } from './gp';
-import { helpCommand } from './help';
-import { huntCommand } from './hunt';
-import { inviteCommand } from './invite';
-import { minionKCommand } from './k';
-import { kcCommand } from './kc';
-import { killCommand } from './kill';
-import { lapsCommand } from './laps';
-import { leaderboardCommand } from './leaderboard';
-import { lightCommand } from './light';
-import { lootCommand } from './loot';
-import { lvlCommand } from './lvl';
-import { mCommand } from './m';
-import { massCommand } from './mass';
-import { mineCommand } from './mine';
-import { minigamesCommand } from './minigames';
-import { minionCommand } from './minion';
-import { mixCommand } from './mix';
-import { offerCommand } from './offer';
-import { openCommand } from './open';
-import { patreonCommand } from './patreon';
-import { payCommand } from './pay';
-import { pohCommand } from './poh';
-import { pollCommand } from './poll';
-import { priceCommand } from './price';
-import { raidCommand } from './raid';
-import { redeemCommand } from './redeem';
-import { rollCommand } from './roll';
-import { rpCommand } from './rp';
-import { runecraftCommand } from './runecraft';
-import { sacrificeCommand } from './sacrifice';
-import { sellCommand } from './sell';
-import { simulateCommand } from './simulate';
-import { slayerCommand } from './slayer';
-import { smeltingCommand } from './smelt';
-import { smithCommand } from './smith';
-import { statsCommand } from './stats';
-import { stealCommand } from './steal';
-import { testPotatoCommand } from './testpotato';
-import { tksCommand } from './tokkulshop';
-import { toolsCommand } from './tools';
-import { tradeCommand } from './trade';
-import { triviaCommand } from './trivia';
-import { mahojiUseCommand } from './use';
-import { wikiCommand } from './wiki';
-import { xpCommand } from './xp';
+import { bsoMinigamesCommand } from '@/lib/bso/commands/bsominigames.js';
+import { completionCommand } from '@/lib/bso/commands/completion.js';
+import { dgCommand } from '@/lib/bso/commands/dg.js';
+import { divinationCommand } from '@/lib/bso/commands/divination.js';
+import { dropRatesCommand } from '@/lib/bso/commands/droprates.js';
+import { icCommand } from '@/lib/bso/commands/ic.js';
+import { inventionCommand } from '@/lib/bso/commands/invention.js';
+import { kibbleCommand } from '@/lib/bso/commands/kibble.js';
+import { bsoLeaguesCommand } from '@/lib/bso/commands/leagues.js';
+import { lotteryCommand } from '@/lib/bso/commands/lottery.js';
+import { megaDuckCommand } from '@/lib/bso/commands/megaduck.js';
+import { nurseryCommand } from '@/lib/bso/commands/nursery.js';
+import { paintCommand } from '@/lib/bso/commands/paint.js';
+import { ratesCommand } from '@/lib/bso/commands/rates.js';
+import { tamesCommand } from '@/lib/bso/commands/tames.js';
+import { testerShopCommand } from '@/lib/bso/commands/testershop.js';
 
-export const allCommands: OSBMahojiCommand[] = [
+import { globalConfig } from '@/lib/constants.js';
+import { activitiesCommand } from '@/mahoji/commands/activities.js';
+import { adminCommand } from '@/mahoji/commands/admin.js';
+import { askCommand } from '@/mahoji/commands/ask.js';
+import { bankCommand } from '@/mahoji/commands/bank.js';
+import { bingoCommand } from '@/mahoji/commands/bingo.js';
+import { bsCommand } from '@/mahoji/commands/bs.js';
+import { buildCommand } from '@/mahoji/commands/build.js';
+import { buyCommand } from '@/mahoji/commands/buy.js';
+import { caCommand } from '@/mahoji/commands/ca.js';
+import { casketCommand } from '@/mahoji/commands/casket.js';
+import { chooseCommand } from '@/mahoji/commands/choose.js';
+import { chopCommand } from '@/mahoji/commands/chop.js';
+import { collectionLogCommand } from '@/mahoji/commands/cl.js';
+import { claimCommand } from '@/mahoji/commands/claim.js';
+import { clueCommand } from '@/mahoji/commands/clue.js';
+import { configCommand } from '@/mahoji/commands/config.js';
+import { cookCommand } from '@/mahoji/commands/cook.js';
+import { craftCommand } from '@/mahoji/commands/craft.js';
+import { createCommand } from '@/mahoji/commands/create.js';
+import { dataCommand } from '@/mahoji/commands/data.js';
+import { dropCommand } from '@/mahoji/commands/drop.js';
+import { farmingCommand } from '@/mahoji/commands/farming.js';
+import { finishCommand } from '@/mahoji/commands/finish.js';
+import { fishCommand } from '@/mahoji/commands/fish.js';
+import { fletchCommand } from '@/mahoji/commands/fletch.js';
+import { gambleCommand } from '@/mahoji/commands/gamble.js';
+import { geCommand } from '@/mahoji/commands/ge.js';
+import { gearCommand } from '@/mahoji/commands/gear.js';
+import { gearPresetsCommand } from '@/mahoji/commands/gearpresets.js';
+import { giftCommand } from '@/mahoji/commands/gift.js';
+import { giveawayCommand } from '@/mahoji/commands/giveaway.js';
+import { gpCommand } from '@/mahoji/commands/gp.js';
+import { helpCommand } from '@/mahoji/commands/help.js';
+import { huntCommand } from '@/mahoji/commands/hunt.js';
+import { inviteCommand } from '@/mahoji/commands/invite.js';
+import { minionKCommand } from '@/mahoji/commands/k.js';
+import { killCommand } from '@/mahoji/commands/kill.js';
+import { lapsCommand } from '@/mahoji/commands/laps.js';
+import { leaderboardCommand } from '@/mahoji/commands/leaderboard.js';
+import { lightCommand } from '@/mahoji/commands/light.js';
+import { lootCommand } from '@/mahoji/commands/loot.js';
+import { mCommand } from '@/mahoji/commands/m.js';
+import { massCommand } from '@/mahoji/commands/mass.js';
+import { mineCommand } from '@/mahoji/commands/mine.js';
+import { minigamesCommand } from '@/mahoji/commands/minigames.js';
+import { minionCommand } from '@/mahoji/commands/minion.js';
+import { mixCommand } from '@/mahoji/commands/mix.js';
+import { offerCommand } from '@/mahoji/commands/offer.js';
+import { openCommand } from '@/mahoji/commands/open.js';
+import { patreonCommand } from '@/mahoji/commands/patreon.js';
+import { payCommand } from '@/mahoji/commands/pay.js';
+import { pohCommand } from '@/mahoji/commands/poh.js';
+import { pollCommand } from '@/mahoji/commands/poll.js';
+import { priceCommand } from '@/mahoji/commands/price.js';
+import { raidCommand } from '@/mahoji/commands/raid.js';
+import { redeemCommand } from '@/mahoji/commands/redeem.js';
+import { rollCommand } from '@/mahoji/commands/roll.js';
+import { rpCommand } from '@/mahoji/commands/rp.js';
+import { runecraftCommand } from '@/mahoji/commands/runecraft.js';
+import { sacrificeCommand } from '@/mahoji/commands/sacrifice.js';
+import { sellCommand } from '@/mahoji/commands/sell.js';
+import { simulateCommand } from '@/mahoji/commands/simulate.js';
+import { slayerCommand } from '@/mahoji/commands/slayer.js';
+import { smeltingCommand } from '@/mahoji/commands/smelt.js';
+import { smithCommand } from '@/mahoji/commands/smith.js';
+import { stealCommand } from '@/mahoji/commands/steal.js';
+import { testPotatoCommand } from '@/mahoji/commands/testpotato.js';
+import { tksCommand } from '@/mahoji/commands/tokkulshop.js';
+import { toolsCommand } from '@/mahoji/commands/tools.js';
+import { tradeCommand } from '@/mahoji/commands/trade.js';
+import { triviaCommand } from '@/mahoji/commands/trivia.js';
+import { mahojiUseCommand } from '@/mahoji/commands/use.js';
+
+export const allCommandsDONTIMPORT: AnyCommand[] = [
 	adminCommand,
 	askCommand,
-	botLeaguesCommand,
 	bsCommand,
 	buildCommand,
 	buyCommand,
@@ -98,7 +102,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	clueCommand,
 	configCommand,
 	claimCommand,
-	cluesCommand,
 	mCommand,
 	gpCommand,
 	payCommand,
@@ -106,12 +109,9 @@ export const allCommands: OSBMahojiCommand[] = [
 	fishCommand,
 	farmingCommand,
 	dropCommand,
-	dryCalcCommand,
 	createCommand,
 	activitiesCommand,
 	dataCommand,
-	fakeCommand,
-	fakepmCommand,
 	fletchCommand,
 	gambleCommand,
 	gearCommand,
@@ -120,7 +120,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	huntCommand,
 	giftCommand,
 	inviteCommand,
-	kcCommand,
 	minionKCommand,
 	lapsCommand,
 	leaderboardCommand,
@@ -155,9 +154,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	mahojiUseCommand,
 	bingoCommand,
 	bankCommand,
-	bossrecordCommand,
-	wikiCommand,
-	lvlCommand,
 	casketCommand,
 	finishCommand,
 	killCommand,
@@ -165,16 +161,30 @@ export const allCommands: OSBMahojiCommand[] = [
 	rpCommand,
 	collectionLogCommand,
 	gearPresetsCommand,
-	statsCommand,
-	xpCommand
+	bsoMinigamesCommand,
+	completionCommand,
+	dgCommand,
+	divinationCommand,
+	dropRatesCommand,
+	icCommand,
+	inventionCommand,
+	kibbleCommand,
+	lotteryCommand,
+	megaDuckCommand,
+	nurseryCommand,
+	paintCommand,
+	ratesCommand,
+	tamesCommand,
+	testerShopCommand,
+	bsoLeaguesCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {
-	allCommands.push(testPotatoCommand);
+	allCommandsDONTIMPORT.push(testPotatoCommand);
 }
 
 const names = new Set<string>();
-for (const cmd of allCommands) {
+for (const cmd of allCommandsDONTIMPORT) {
 	if (names.has(cmd.name)) {
 		throw new Error(`Duplicate command name: ${cmd.name}`);
 	}

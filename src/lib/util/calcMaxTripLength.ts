@@ -1,19 +1,23 @@
-import type { activity_type_enum } from '@prisma/client';
-import { Time, calcPercentOfNum, calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, PerkTier, Time } from '@oldschoolgg/toolkit';
 
-import { PerkTier } from '../constants';
+import type { activity_type_enum } from '@/prisma/main.js';
+import { BitField } from '@/lib/constants.js';
 
-export function patronMaxTripBonus(user: MUser) {
-	const perkTier = user.perkTier();
+export function patronMaxTripBonus(perkTier: PerkTier | 0) {
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
 	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
 	return 0;
 }
 
-export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
+export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
+	const perkTier = await user.fetchPerkTier();
 	let max = Time.Minute * 30;
-	max += patronMaxTripBonus(user);
+	max += patronMaxTripBonus(perkTier);
+
+	const hasMasterHPCape = user.hasEquipped('Hitpoints master cape');
+	let masterHPCapeBoost = 0;
+	let regularHPBoost = false;
 
 	switch (activity) {
 		case 'Fishing':
@@ -35,13 +39,34 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		case 'Pickpocket':
 		case 'SoulWars':
 		case 'Cyclops': {
-			const hpLevel = user.skillsAsLevels.hitpoints;
-			const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
-			max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+			masterHPCapeBoost = 20;
+			regularHPBoost = true;
+			break;
+		}
+		case 'KalphiteKing':
+		case 'Nex':
+		case 'VasaMagus':
+		case 'Ignecarus':
+		case 'KingGoldemar':
+		case 'Moktang':
+		case 'DepthsOfAtlantis':
+		case 'Naxxus':
+		case 'TuraelsTrials':
+		case 'Dungeoneering': {
+			masterHPCapeBoost = 10;
+			regularHPBoost = true;
 			break;
 		}
 		case 'Alching': {
 			max *= 2;
+			break;
+		}
+		case 'TinkeringWorkshop':
+		case 'Disassembling':
+		case 'Research': {
+			if (user.hasEquippedOrInBank('Materials bag')) {
+				max += Time.Minute * 7;
+			}
 			break;
 		}
 		case 'NightmareZone': {
@@ -53,10 +78,28 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		}
 	}
 
+	if (regularHPBoost) {
+		const hpLevel = user.skillsAsLevels.hitpoints;
+		const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
+		max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+
+		if (hasMasterHPCape) {
+			max += calcPercentOfNum(masterHPCapeBoost, max);
+		}
+	}
+
+	if (user.usingPet('Zak')) {
+		max *= 1.4;
+	}
+
 	const sac = Number(user.user.sacrificedValue);
 	const { isIronman } = user;
 	const sacPercent = Math.min(100, calcWhatPercent(sac, isIronman ? 5_000_000_000 : 10_000_000_000));
-	const perkTier = user.perkTier();
 	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
+
+	if (user.bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost)) {
+		max += Time.Minute;
+	}
+
 	return max;
 }

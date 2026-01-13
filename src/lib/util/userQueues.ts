@@ -1,6 +1,7 @@
 import PromiseQueue from 'p-queue';
 
-const userQueues: Map<string, PromiseQueue> = new Map();
+import { userQueues } from '@/lib/cache.js';
+
 function getUserUpdateQueue(userID: string) {
 	const currentQueue = userQueues.get(userID);
 	if (!currentQueue) {

@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Craftable } from '../../../types';
+import type { Craftable } from '@/lib/skilling/types.js';
 
 const Misc: Craftable[] = [
 	{
@@ -244,6 +244,15 @@ const Misc: Craftable[] = [
 		xp: 4,
 		inputItems: new Bank().add('Ball of wool').add('Rabbit foot'),
 		tickRate: 2
+	},
+	{
+		name: 'Obsidian javelin heads',
+		id: itemID('Obsidian javelin heads'),
+		level: 99,
+		xp: 160,
+		inputItems: new Bank().add('Obsidian shards', 1),
+		tickRate: 2,
+		outputMultiple: 10
 	},
 	{
 		name: 'Amulet of rancour',

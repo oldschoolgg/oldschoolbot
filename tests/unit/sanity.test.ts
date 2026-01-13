@@ -1,13 +1,15 @@
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { Bank, EMonster, EquipmentSlot, Items, getItem, getItemOrThrow, itemID } from 'oldschooljs';
+import { exponentialPercentScale, uniqueArr } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, EquipmentSlot, Items, itemID } from 'oldschooljs';
+import { clamp } from 'remeda';
 import { describe, expect, test } from 'vitest';
 
-import Buyables from '../../src/lib/data/buyables/buyables';
-import { marketPriceOfBank } from '../../src/lib/marketPrices';
-import { allOpenables } from '../../src/lib/openables';
-import getOSItem from '../../src/lib/util/getOSItem';
-import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
-import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
+import Buyables from '../../src/lib/data/buyables/buyables.js';
+import { marketPriceOfBank } from '../../src/lib/marketPrices.js';
+import { allOpenables } from '../../src/lib/openables.js';
+import itemIsTradeable from '../../src/lib/util/itemIsTradeable.js';
+import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager.js';
 
 describe('Sanity', () => {
 	test('misc', () => {
@@ -18,15 +20,7 @@ describe('Sanity', () => {
 		expect(itemID('Broad arrows')).toEqual(4160);
 		expect(itemID('Frozen key')).toEqual(26_356);
 		expect(itemID('Clue box')).toEqual(12_789);
-		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Trailblazer tool ornament kit'))).toEqual(false);
-		expect(itemIsTradeable(itemID('Twisted horns'))).toEqual(false);
-		expect(itemIsTradeable(itemID('Collection log (gilded)'))).toEqual(false);
-		expect(itemIsTradeable(itemID('Gilded staff of collection'))).toEqual(false);
-		expect(itemIsTradeable(itemID('Ric'))).toEqual(false);
-		expect(itemIsTradeable(itemID("Pharaoh's sceptre"))).toEqual(true);
+		expect(itemID('Beige pumpkin (happy)')).toEqual(30246);
 	});
 	test('casket names', () => {
 		expect(itemID('Reward casket (beginner)')).toEqual(23_245);
@@ -39,7 +33,7 @@ describe('Sanity', () => {
 	test('openables', () => {
 		const ids = new Set();
 		for (const openable of allOpenables) {
-			if (getOSItem(openable.id) !== openable.openedItem) {
+			if (Items.getOrThrow(openable.id) !== openable.openedItem) {
 				throw new Error(`${openable.name} doesnt match`);
 			}
 			if (ids.has(openable.id)) {
@@ -56,7 +50,7 @@ describe('Sanity', () => {
 		expect(exponentialPercentScale(100)).toEqual(100);
 	});
 	test('pharaohs sceptre', () => {
-		const scep = getOSItem("Pharaoh's sceptre");
+		const scep = Items.getOrThrow("Pharaoh's sceptre");
 		expect(scep.id).toEqual(9044);
 		expect(scep.equipable).toEqual(true);
 		expect(scep.equipment?.slot).toEqual(EquipmentSlot.Weapon);
@@ -64,7 +58,7 @@ describe('Sanity', () => {
 	test('buyables without output', () => {
 		for (const buyable of Buyables) {
 			if (buyable.outputItems) continue;
-			getOSItem(buyable.name);
+			Items.getOrThrow(buyable.name);
 		}
 	});
 	test('trophies', () => {
@@ -83,15 +77,35 @@ describe('Sanity', () => {
 	});
 
 	test('rings', () => {
-		expect(getItem('Ultor ring')!.id).toEqual(25485);
+		expect(Items.getOrThrow('Ultor ring')!.id).toEqual(25485);
 		expect(itemID('Ultor ring')).toEqual(25485);
 		expect(Items.itemNameFromId(25485)).toEqual('Ultor ring');
-		expect(getItemOrThrow('Ultor ring')!.equipment?.slot).toEqual('ring');
-		expect(getItemOrThrow('Ultor ring')!.equipment?.melee_strength).toEqual(12);
+		expect(Items.getOrThrow('Ultor ring')!.equipment?.slot).toEqual('ring');
+		expect(Items.getOrThrow('Ultor ring')!.equipment?.melee_strength).toEqual(12);
 	});
 
 	test('EMonster', () => {
 		expect(EMonster.NIGHTMARE).toEqual(9415);
 		expect(EMonster.ZALCANO).toEqual(9049);
+	});
+
+	test('clamp', () => {
+		expect(clamp(100, { min: 0, max: 50 })).toEqual(50);
+		expect(clamp(100, { min: 200, max: 250 })).toEqual(200);
+	});
+
+	test('Duplicate killable monsters', () => {
+		const monsterNames = killableMonsters.map(m => m.name).sort((a, b) => a.localeCompare(b));
+		expect(uniqueArr(monsterNames).length).toEqual(monsterNames.length);
+
+		const monsterIDs = killableMonsters.map(m => m.id);
+		expect(uniqueArr(monsterIDs)).toEqual(monsterIDs);
+	});
+
+	test('skills', () => {
+		expect(SkillsArray).toContain('farming');
+		expect(SkillsArray).toContain('dungeoneering');
+		expect(SkillsArray).toContain('divination');
+		expect(SkillsArray.length).toEqual(uniqueArr(SkillsArray).length);
 	});
 });

@@ -1,86 +1,266 @@
-import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit/util';
-import { ChannelType, type ChatInputCommandInteraction, type TextChannel, userMention } from 'discord.js';
+import { calcBossFood } from '@/lib/bso/calcBossFood.js';
+import { gorajanArcherOutfit, pernixOutfit } from '@/lib/bso/collection-log/main.js';
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
+import { getNexGearStats } from '@/lib/bso/util/getNexGearStats.js';
+
+import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { setupParty } from '../../../lib/party';
-import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
-import type { NexTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { trackLoot } from '@/lib/lootTrack.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+
+async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
+	// Check if every user has the requirements for this monster.
+	for (const user of users) {
+		if (!user.user.minion_hasBought) {
+			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
+		}
+
+		if (await user.minionIsBusy()) {
+			return `${user.usernameOrMention} is busy right now and can't join!`;
+		}
+
+		const [hasReqs, reason] = await user.hasMonsterRequirements(monster);
+		if (!hasReqs) {
+			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
+		}
+
+		if (!user.owns('Frozen key')) {
+			return `${user} doesn't have a Frozen key.`;
+		}
+
+		const potionsRequired = await calcBossFood(user, NexMonster, users.length, quantity);
+		if (!user.bank.has(potionsRequired)) {
+			return `${
+				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
+			} have enough brews/restores. You need at least ${potionsRequired} to ${
+				users.length === 1 ? 'start the mass' : 'enter the mass'
+			}.`;
+		}
+	}
+}
 
 export async function nexCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
-	solo: boolean | undefined
+	channelId: string,
+	inputName: string,
+	inputQuantity: number | undefined
 ) {
-	const ownerCheck = checkNexUser(user);
-	if (ownerCheck[1]) {
-		return `You can't start a Nex mass: ${ownerCheck[1]}`;
+	await interaction.defer();
+	const userBank = user.bank;
+	if (!userBank.has('Frozen key')) {
+		return `${user.minionName} attempts to enter the Ancient Prison to fight Nex, but finds a giant frozen, metal door blocking their way.`;
+	}
+	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
+
+	const failureReason = await checkReqs([user], NexMonster, 2);
+	if (failureReason) return failureReason;
+
+	const partyOptions: MakePartyOptions = {
+		interaction,
+		leader: user,
+		minSize: 2,
+		maxSize: 8,
+		ironmanAllowed: true,
+		message: `${user.usernameOrMention} is doing a ${NexMonster.name} mass! Use the buttons below to join/leave.`,
+		customDenier: async user => {
+			if (!user.user.minion_hasBought) {
+				return [true, "you don't have a minion."];
+			}
+			if (await user.minionIsBusy()) {
+				return [true, 'your minion is busy.'];
+			}
+			const [hasReqs, reason] = await user.hasMonsterRequirements(NexMonster);
+			if (!hasReqs) {
+				return [true, `you don't have the requirements for this monster; ${reason}`];
+			}
+
+			if (!user.hasEquippedOrInBank('Frozen key')) {
+				return [true, `${user} doesn't have a Frozen key.`];
+			}
+
+			if (NexMonster.healAmountNeeded) {
+				try {
+					calculateMonsterFood(NexMonster, user);
+				} catch (err: any) {
+					return [true, err];
+				}
+
+				// Ensure people have enough food for at least 10 kills.
+				// We don't want to overshoot, as the mass will still fail if there's not enough food
+				const potionReq = await calcBossFood(user, NexMonster, 1, 10);
+				if (!user.bank.has(potionReq)) {
+					return [true, `You don't have enough food. You need at least ${potionReq} to Join the mass.`];
+				}
+			}
+
+			return [false];
+		}
+	};
+
+	const users: MUser[] = type === 'mass' ? await globalClient.makeParty(partyOptions) : [user];
+	if (await ActivityManager.anyMinionIsBusy(users)) {
+		return `One of the minions in the party is already busy.`;
 	}
 
-	await deferInteraction(interaction);
+	let debugStr = '';
+	let effectiveTime = NexMonster.timeToFinish;
+	if (isWeekend()) {
+		effectiveTime = reduceNumByPercent(effectiveTime, 5);
+		debugStr += '5% Weekend boost\n';
+	}
+	const isSolo = users.length === 1;
 
-	let mahojiUsers: MUser[] = [];
-
-	if (solo) {
-		mahojiUsers = [user];
-	} else {
-		const channel = globalClient.channels.cache.get(channelID.toString());
-		if (!channel || channel.type !== ChannelType.GuildText) return 'You need to run this in a text channel.';
-
-		let usersWhoConfirmed: MUser[] = [];
-		try {
-			usersWhoConfirmed = await setupParty(channel as TextChannel, user, {
-				minSize: 1,
-				maxSize: 10,
-				leader: user,
-				ironmanAllowed: true,
-				message: `${user} is hosting a Nex mass! Use the buttons below to join/leave.`,
-				customDenier: async user => checkNexUser(await mUserFetch(user.id))
-			});
-		} catch (err: any) {
-			return {
-				content: typeof err === 'string' ? err : 'Your mass failed to start.',
-				ephemeral: true
-			};
-		}
-		usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);
-
-		if (usersWhoConfirmed.length < 1 || usersWhoConfirmed.length > 10) {
-			return `${user}, your mass didn't start because it needs between 1-10 users.`;
-		}
-		mahojiUsers = await Promise.all(usersWhoConfirmed.map(i => mUserFetch(i.id)));
+	const soloKC = await users[0].getKC(NexMonster.id);
+	if (isSolo && soloKC < 200) {
+		effectiveTime = increaseNumByPercent(effectiveTime, 20);
 	}
 
-	for (const user of mahojiUsers) {
-		const result = checkNexUser(user);
-		if (result[1]) {
-			return result[1];
-		}
+	if (isSolo && soloKC > 500) {
+		effectiveTime = reduceNumByPercent(effectiveTime, 20);
 	}
 
-	const details = await calculateNexDetails({
-		team: mahojiUsers.length === 1 ? [mahojiUsers[0], mahojiUsers[0], mahojiUsers[0], mahojiUsers[0]] : mahojiUsers
-	});
+	for (const user of users) {
+		const [data] = await getNexGearStats(
+			user,
+			users.map(u => u.id)
+		);
+		debugStr += `**${user.usernameOrMention}**: `;
+		const msgs = [];
 
-	const effectiveTeam = details.team.filter(m => !m.fake);
+		const rangeGear = user.gear.range;
+		if (rangeGear.hasEquipped(pernixOutfit, true, true)) {
+			const percent = isSolo ? 20 : 8;
+			effectiveTime = reduceNumByPercent(effectiveTime, percent);
+			msgs.push(`${percent}% boost for full pernix`);
+		} else {
+			let i = 0;
+			for (const inqItem of pernixOutfit) {
+				if (rangeGear.hasEquipped([inqItem], true, true)) {
+					const percent = isSolo ? 2.4 : 1;
+					i += percent;
+				}
+			}
+			if (i > 0) {
+				msgs.push(`${i.toFixed(2)}% boost for pernix items`);
+				effectiveTime = reduceNumByPercent(effectiveTime, i);
+			}
+		}
 
-	for (const user of effectiveTeam) {
-		const mUser = await mUserFetch(user.id);
-		if (!mUser.allItemsOwned.has(user.cost)) {
-			return `${mUser.usernameOrMention} doesn't have the required items: ${user.cost}.`;
+		if (rangeGear.hasEquipped(gorajanArcherOutfit, true, true)) {
+			const perUserPercent = round(15 / users.length, 2);
+			effectiveTime = reduceNumByPercent(effectiveTime, perUserPercent);
+			msgs.push(`${perUserPercent}% for Gorajan archer`);
+		}
+
+		if (data.gearStats.attack_ranged < 200) {
+			const percent = isSolo ? 20 : 10;
+			effectiveTime = increaseNumByPercent(effectiveTime, percent);
+			msgs.push(`-${percent}% penalty for <200 ranged attack`);
+		}
+		if (rangeGear.hasEquipped('Zaryte bow', true, true)) {
+			const percent = isSolo ? 20 : 14;
+			effectiveTime = reduceNumByPercent(effectiveTime, percent);
+			msgs.push(`${percent}% boost for Zaryte bow`);
+		} else if (rangeGear.hasEquipped('Twisted bow', true, true)) {
+			const percent = isSolo ? 15 : 9;
+			effectiveTime = reduceNumByPercent(effectiveTime, percent);
+			msgs.push(`${percent}% boost for Twisted bow`);
+		}
+
+		// Increase duration for lower melee-strength gear.
+		let rangeStrBonus = 0;
+		if (data.percentRangeStrength < 40) {
+			rangeStrBonus = 6;
+		} else if (data.percentRangeStrength < 50) {
+			rangeStrBonus = 3;
+		} else if (data.percentRangeStrength < 60) {
+			rangeStrBonus = 2;
+		}
+		if (rangeStrBonus !== 0) {
+			effectiveTime = increaseNumByPercent(effectiveTime, rangeStrBonus);
+			msgs.push(`-${rangeStrBonus}% penalty for ${data.percentRangeStrength}% range strength`);
+		}
+
+		// Increase duration for lower KC.
+		let kcBonus = -4;
+		if (data.kc < 10) {
+			kcBonus = 15;
+		} else if (data.kc < 25) {
+			kcBonus = 5;
+		} else if (data.kc < 50) {
+			kcBonus = 2;
+		} else if (data.kc < 100) {
+			kcBonus = -2;
+		}
+
+		if (kcBonus < 0) {
+			effectiveTime = reduceNumByPercent(effectiveTime, Math.abs(kcBonus));
+			msgs.push(`${Math.abs(kcBonus)}% boost for KC`);
+		} else {
+			effectiveTime = increaseNumByPercent(effectiveTime, kcBonus);
+			msgs.push(`-${kcBonus}% penalty for KC`);
+		}
+
+		if (data.kc > 500) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 15);
+			msgs.push(`15% for ${user.usernameOrMention} over 500 kc`);
+		} else if (data.kc > 300) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 13);
+			msgs.push(`13% for ${user.usernameOrMention} over 300 kc`);
+		} else if (data.kc > 200) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 10);
+			msgs.push(`10% for ${user.usernameOrMention} over 200 kc`);
+		} else if (data.kc > 100) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 7);
+			msgs.push(`7% for ${user.usernameOrMention} over 100 kc`);
+		} else if (data.kc > 50) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 5);
+			msgs.push(`5% for ${user.usernameOrMention} over 50 kc`);
+		}
+
+		debugStr += `${msgs.join(', ')}. `;
+	}
+
+	let minDuration = 2;
+	if (users.length === 4) minDuration = 1.5;
+	if (users.length === 5) minDuration = 1.2;
+	if (users.length >= 6) minDuration = 1;
+
+	const durQtyRes = await calcDurQty(
+		users,
+		{ ...NexMonster, timeToFinish: effectiveTime },
+		inputQuantity,
+		Time.Minute * minDuration,
+		Time.Minute * 30
+	);
+	if (typeof durQtyRes === 'string') return durQtyRes;
+	const [quantity, duration, perKillTime] = durQtyRes;
+	const secondCheck = await checkReqs(users, NexMonster, quantity);
+	if (secondCheck) return secondCheck;
+
+	let foodString = 'Removed brews/restores from users: ';
+	const foodRemoved: string[] = [];
+	for (const user of users) {
+		const food = await calcBossFood(user, NexMonster, users.length, quantity);
+		if (!user.bank.has(food)) {
+			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
 	}
 
 	const removeResult = await Promise.all(
-		effectiveTeam.map(async i => {
-			const mUser = await mUserFetch(i.id);
+		users.map(async user => {
+			const cost = await calcBossFood(user, NexMonster, users.length, quantity);
+			foodRemoved.push(`${cost} from ${user.usernameOrMention}`);
+			await user.removeItemsFromBank(cost);
 			return {
-				id: mUser.id,
-				cost: (await mUser.specialRemoveItems(i.cost)).realCost
+				id: user.id,
+				cost
 			};
 		})
 	);
@@ -88,50 +268,42 @@ export async function nexCommand(
 	const totalCost = new Bank();
 	for (const u of removeResult) totalCost.add(u.cost);
 
-	await Promise.all([
-		await updateBankSetting('nex_cost', totalCost),
-		await trackLoot({
-			totalCost,
-			id: 'nex',
-			type: 'Monster',
-			changeType: 'cost',
-			users: removeResult.map(i => ({
-				id: i.id,
-				cost: i.cost
-			}))
-		})
-	]);
-
-	await addSubTaskToActivityTask<NexTaskOptions>({
-		userID: user.id,
-		channelID: channelID.toString(),
-		duration: details.duration,
-		type: 'Nex',
-		leader: user.id,
-		users: effectiveTeam.map(i => i.id),
-		teamDetails: details.team.map(i => [i.id, i.teamID, i.contribution, i.deaths, i.fake]),
-		fakeDuration: details.fakeDuration,
-		quantity: details.quantity,
-		wipedKill: details.wipedKill
+	await trackLoot({
+		changeType: 'cost',
+		totalCost,
+		id: NexMonster.name,
+		type: 'Monster',
+		users: removeResult.map(i => ({
+			id: i.id,
+			cost: i.cost
+		}))
 	});
 
-	const str = `${user.usernameOrMention}'s party (${mahojiUsers
-		.map(u => u.usernameOrMention)
-		.join(', ')}${solo ? ' and 3 others' : ''}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
-		details.quantity,
-		details.fakeDuration
-	).toFixed(1)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
+	foodString += `${foodRemoved.join(', ')}.`;
 
-${effectiveTeam
-	.map(i => {
-		return `${userMention(i.id)}: Contrib[${i.contribution.toFixed(2)}%] Death[${i.deathChance.toFixed(
-			2
-		)}%] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
-			i.totalDefensivePercent
-		)}%] *${i.messages.join(', ')}*`;
-	})
-	.join('\n')}
-`;
+	await ActivityManager.startTrip<BossActivityTaskOptions>({
+		userID: user.id,
+		channelId,
+		quantity,
+		duration,
+		type: 'Nex',
+		users: users.map(u => u.id)
+	});
+
+	await ClientSettings.updateBankSetting('nex_cost', totalCost);
+
+	let str =
+		type === 'solo'
+			? `Your minion is now attempting to kill ${quantity}x Nex. ${foodString} The trip will take ${formatDuration(duration)}.`
+			: `${partyOptions.leader.usernameOrMention}'s party (${users
+					.map(u => u.usernameOrMention)
+					.join(', ')}) is now off to kill ${quantity}x ${NexMonster.name}. Each kill takes ${formatDuration(
+					perKillTime
+				)} instead of ${formatDuration(NexMonster.timeToFinish)} - the total trip will take ${formatDuration(
+					duration
+				)}. ${foodString}`;
+
+	str += ` \n\n${debugStr}`;
 
 	return str;
 }

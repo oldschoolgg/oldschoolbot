@@ -1,7 +1,7 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
 
-import type { Skills } from '../../lib/types';
+import type { Skills } from '@/lib/types/index.js';
 
 interface Collectable {
 	item: Item;
@@ -10,6 +10,7 @@ interface Collectable {
 	quantity: number;
 	duration: number;
 	qpRequired?: number;
+	onlyTamesCan?: boolean;
 }
 
 export const collectables: Collectable[] = [
@@ -141,5 +142,31 @@ export const collectables: Collectable[] = [
 		},
 		duration: 10 * Time.Minute,
 		qpRequired: 100
+	},
+	{
+		item: Items.getOrThrow('Neem drupe'),
+		quantity: 5,
+		itemCost: new Bank({
+			'Astral rune': 26,
+			'Cosmic rune': 12
+		}),
+		skillReqs: {
+			magic: 82,
+			herblore: 82,
+			agility: 92
+		},
+		duration: 5 * Time.Minute,
+		qpRequired: 82
+	},
+	{
+		item: Items.getOrThrow('Orange'),
+		quantity: 1,
+		duration: 2 * Time.Minute,
+		onlyTamesCan: true
+	},
+	{
+		item: Items.getOrThrow('Cabbage'),
+		quantity: 28,
+		duration: 1.2 * Time.Minute
 	}
 ];

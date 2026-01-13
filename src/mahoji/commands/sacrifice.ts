@@ -1,25 +1,20 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
+
+import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { cats } from '../../lib/growablePets';
-import minionIcons from '../../lib/minions/data/minionIcons';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import { userStatsBankUpdate } from '../mahojiSettings';
-import { sellPriceOfItem } from './sell';
+import { filterOption } from '@/discord/index.js';
+import { cats } from '@/lib/growablePets.js';
+import minionIcons from '@/lib/minions/data/minionIcons.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 
 async function trackSacBank(user: MUser, bank: Bank) {
 	await Promise.all([
-		updateBankSetting('economyStats_sacrificedBank', bank),
-		userStatsBankUpdate(user, 'sacrificed_bank', bank)
+		await ClientSettings.updateBankSetting('economyStats_sacrificedBank', bank),
+		user.statsBankUpdate('sacrificed_bank', bank)
 	]);
-	const stats = await user.fetchStats({ sacrificed_bank: true });
+	const stats = await user.fetchStats();
 	return new Bank(stats.sacrificed_bank as ItemBank);
 }
 
@@ -52,7 +47,7 @@ export function sacrificePriceOfItem(item: Item, qty: number) {
 	return Math.floor(price * qty);
 }
 
-export const sacrificeCommand: OSBMahojiCommand = {
+export const sacrificeCommand = defineCommand({
 	name: 'sacrifice',
 	description: 'Sacrifice items from your bank to the bot.',
 	attributes: {
@@ -61,28 +56,23 @@ export const sacrificeCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'items',
 			description: 'The items you want to sacrifice.',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'A search query for items in your bank to sacrifice.',
 			required: false
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		interaction
-	}: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ user, options, interaction, rng }) => {
 		const currentIcon = user.user.minion_icon;
 		const sacVal = Number(user.user.sacrificedValue);
-		const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+		const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 		const sacUniqVal = sacrificedBank !== null ? Object.keys(sacrificedBank).length : 0;
 
 		// Show user sacrifice stats if no options are given for /sacrifice
@@ -95,7 +85,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			);
 		}
 
-		await deferInteraction(interaction);
+		await interaction.defer();
 
 		const bankToSac = parseBank({
 			inputStr: options.items,
@@ -124,8 +114,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			const [item, quantity] = bankToSac.items()[0];
 			const deathRunes = quantity * 200;
 
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`${user.badgedUsername}.. are you sure you want to sacrifice your ${item.name}${
 					bankToSac.length > 1 ? 's' : ''
 				} for ${deathRunes} death runes? *Note: These are cute, fluffy little cats.*`
@@ -150,16 +139,37 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			}
 		}
 
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, are you sure you want to sacrifice ${truncateString(bankToSac.toString(), 15000)}? This will add ${totalPrice.toLocaleString()} (${toKMB(
 				totalPrice
 			)}) to your sacrificed amount.`
 		);
 		await user.removeItemsFromBank(bankToSac);
 
-		if (totalPrice > 200_000_000) {
-			globalClient.emit(Events.ServerNotification, `${user.badgedUsername} just sacrificed ${bankToSac}!`);
+		const messages: string[] = [];
+
+		if (totalPrice > 5_000_000_000) {
+			globalClient.emit(Events.ServerNotification, `${user.usernameOrMention} just sacrificed ${bankToSac}!`);
+		}
+		const hasSkipper = user.usingPet('Skipper') || user.owns('Skipper');
+		if (hasSkipper) {
+			totalPrice = Math.floor(totalPrice * 1.3);
+			messages.push(
+				`${BSOEmoji.Skipper} Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.`
+			);
+		}
+
+		let hammyCount = 0;
+		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
+			if (rng.roll(140)) {
+				hammyCount++;
+				messages.push(
+					`${BSOEmoji.Hammy} A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.`
+				);
+			}
+		}
+		if (hammyCount) {
+			await user.addItemsToBank({ items: new Bank().add('Hammy', hammyCount), collectionLog: true });
 		}
 
 		await user.update({
@@ -172,8 +182,6 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		await trackSacBank(user, bankToSac);
 
-		let str = '';
-
 		// Ignores notifying the user/server if the user is using a custom icon
 		if (!currentIcon || minionIcons.find(m => m.emoji === currentIcon)) {
 			for (const icon of minionIcons) {
@@ -181,7 +189,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 				if (newValue >= icon.valueRequired) {
 					if (currentIcon === icon.emoji) break;
 					await user.update({ minion_icon: icon.emoji });
-					str += `\n\nYou have now unlocked the **${icon.name}** minion icon!`;
+					messages.push(`You have now unlocked the **${icon.name}** minion icon!`);
 					globalClient.emit(
 						Events.ServerNotification,
 						`**${user.badgedUsername}** just unlocked the ${icon.emoji} icon for their minion.`
@@ -190,8 +198,13 @@ export const sacrificeCommand: OSBMahojiCommand = {
 				}
 			}
 		}
-		return `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(
+
+		let message = `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(
 			totalPrice
-		)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`;
+		)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}.`;
+		if (messages.length > 0) {
+			message += `\n\n${messages.join('\n')}`;
+		}
+		return message;
 	}
-};
+});

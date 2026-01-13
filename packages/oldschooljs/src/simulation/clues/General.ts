@@ -1,6 +1,6 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '../../structures/LootTable.js';
 
-export const PrayerPageTable = new LootTable()
+export const PrayerPageTable: LootTable = new LootTable()
 	.add('Saradomin page 1')
 	.add('Saradomin page 2')
 	.add('Saradomin page 3')
@@ -26,7 +26,7 @@ export const PrayerPageTable = new LootTable()
 	.add('Ancient page 3')
 	.add('Ancient page 4');
 
-export const GildedTable = new LootTable()
+export const GildedTable: LootTable = new LootTable()
 	.add('Gilded platebody')
 	.add('Gilded platelegs')
 	.add('Gilded plateskirt')
@@ -39,14 +39,14 @@ export const GildedTable = new LootTable()
 	.add('Gilded spear')
 	.add('Gilded hasta');
 
-export const FirelighterTable = new LootTable()
+export const FirelighterTable: LootTable = new LootTable()
 	.add('Red firelighter', [4, 10])
 	.add('Green firelighter', [4, 10])
 	.add('Blue firelighter', [4, 10])
 	.add('Purple firelighter', [4, 10])
 	.add('White firelighter', [4, 10]);
 
-export const SubTeleportScrollTable = new LootTable()
+export const SubTeleportScrollTable: LootTable = new LootTable()
 	.add('Nardah teleport', [5, 15])
 	.add("Mos le'harmless teleport", [5, 15])
 	.add("Mort'ton teleport", [5, 15])
@@ -60,11 +60,13 @@ export const SubTeleportScrollTable = new LootTable()
 	.add('Charge dragonstone jewellery scroll', [5, 15])
 	.add('Iorwerth camp teleport', [5, 15]);
 
-export const TeleportScrollTable = new LootTable().add('Master scroll book (empty)').add(SubTeleportScrollTable, 1, 21);
+export const TeleportScrollTable: LootTable = new LootTable()
+	.add('Master scroll book (empty)')
+	.add(SubTeleportScrollTable, 1, 21);
 
-export const GiveHalfKeyTable = new LootTable().add('Loop half of key').add('Tooth half of key');
+export const GiveHalfKeyTable: LootTable = new LootTable().add('Loop half of key').add('Tooth half of key');
 
-export const BlessingTable = new LootTable()
+export const BlessingTable: LootTable = new LootTable()
 	.add('Holy blessing')
 	.add('Unholy blessing')
 	.add('Peaceful blessing')

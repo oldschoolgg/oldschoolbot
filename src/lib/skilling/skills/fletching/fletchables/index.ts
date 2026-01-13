@@ -1,16 +1,16 @@
-import type { Fletchable } from '../../../types';
-import Arrows from './arrows';
-import Bolts from './bolts';
-import Bows from './bows';
-import Crossbows from './crossbows';
-import Darts from './darts';
-import Javelins from './javelins';
-import Shafts from './shafts';
-import Shields from './shields';
-import { AmethystBroadBolts, BroadArrows, BroadBolts, Slayer } from './slayer';
-import TippedBolts from './tippedBolts';
-import TippedDragonBolts from './tippedDragonBolts';
-import Tips from './tips';
+import type { Fletchable } from '@/lib/skilling/types.js';
+import Arrows from './arrows.js';
+import Bolts from './bolts.js';
+import Bows from './bows.js';
+import Crossbows from './crossbows.js';
+import Darts from './darts.js';
+import Javelins from './javelins.js';
+import Shafts from './shafts.js';
+import Shields from './shields.js';
+import { AmethystBroadBolts, BroadArrows, BroadBolts, Slayer } from './slayer.js';
+import TippedBolts from './tippedBolts.js';
+import TippedDragonBolts from './tippedDragonBolts.js';
+import Tips from './tips.js';
 
 export const Fletchables: Fletchable[] = [
 	...Bows,
@@ -27,6 +27,7 @@ export const Fletchables: Fletchable[] = [
 	...Slayer
 ];
 
+export const fletchingCL = Fletchables.map(i => i.id);
 export const zeroTimeFletchables: Fletchable[] = [
 	BroadArrows,
 	BroadBolts,

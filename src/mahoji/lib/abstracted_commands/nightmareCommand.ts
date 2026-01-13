@@ -1,23 +1,17 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, reduceNumByPercent } from 'e';
-import { Bank, EMonster, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
+import { formatDuration, reduceNumByPercent, Time, UserError } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, Items, resolveItems, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
-import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
-import { BitField } from '../../../lib/constants';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
-import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import type { KillableMonster } from '../../../lib/minions/types';
-import { Gear } from '../../../lib/structures/Gear';
-import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
-import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { hasMonsterRequirements } from '../../mahojiSettings';
+import { BitField } from '@/lib/constants.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
@@ -57,15 +51,15 @@ const sangChargesPerKc = 60;
 
 async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boolean): Promise<string | undefined> {
 	// Check the user has the requirements to kill The Nightmare
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return `${user.usernameOrMention} doesn't have a minion, so they can't fight the nightmare!`;
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} is busy right now and can't fight the nightmare!`;
 	}
 
-	const [hasReqs, reason] = await hasMonsterRequirements(user, monster);
+	const [hasReqs, reason] = await user.hasMonsterRequirements(monster);
 	if (!hasReqs) {
 		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 	}
@@ -101,14 +95,12 @@ function perUserCost(
 	const sangCharges = sangChargesPerKc * quantity;
 	if (isPhosani) {
 		if (hasShadow && user.user.tum_shadow_charges < tumCharges) {
-			return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-				globalClient,
+			return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 				'minion',
 				'charge'
 			)}`;
 		} else if (hasSang && user.user.sang_charges < sangCharges) {
-			return `You need at least ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-				globalClient,
+			return `You need at least ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 				'minion',
 				'charge'
 			)}`;
@@ -131,7 +123,7 @@ function perUserCost(
 	return cost;
 }
 
-export async function nightmareCommand(user: MUser, channelID: string, name: string, qty: number | undefined) {
+export async function nightmareCommand(user: MUser, channelId: string, name: string, qty: number | undefined) {
 	const hasMace = !!user.gear.melee.hasEquipped("Inquisitor's mace");
 	const hasShadow = !!user.gear.mage.hasEquipped("Tumeken's shadow");
 	const hasSang = !!user.gear.mage.hasEquipped('Sanguinesti staff');
@@ -241,6 +233,10 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		}
 	}
 
+	const hasCob = user.usingPet('Cob');
+	if (hasCob && type === 'solo') {
+		effectiveTime /= 2;
+	}
 	const durQtyRes = await calcDurQty(
 		users,
 		{ ...NightmareMonster, timeToFinish: effectiveTime },
@@ -275,28 +271,31 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		soloFoodUsage = realCost.clone().add(foodRemoved);
 
 		totalCost.add(foodRemoved).add(realCost);
-	} catch (_err: any) {
-		return typeof _err === 'string' ? _err : _err.message;
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return err.message;
+		}
+		throw err;
 	}
 
 	// Only remove charges for phosani since these items only boost phosani
 	if (isPhosani) {
 		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
 			await degradeItem({
-				item: getOSItem("Tumeken's shadow"),
+				item: Items.getOrThrow("Tumeken's shadow"),
 				chargesToDegrade: shadowChargesPerKc * quantity,
 				user
 			});
 		} else if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
 			await degradeItem({
-				item: getOSItem('Sanguinesti staff'),
+				item: Items.getOrThrow('Sanguinesti staff'),
 				chargesToDegrade: sangChargesPerKc * quantity,
 				user
 			});
 		}
 	}
 
-	await updateBankSetting('nightmare_cost', totalCost);
+	await ClientSettings.updateBankSetting('nightmare_cost', totalCost);
 	await trackLoot({
 		id: 'nightmare',
 		totalCost,
@@ -310,9 +309,9 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		]
 	});
 
-	await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
+	await ActivityManager.startTrip<NightmareActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Nightmare',
@@ -331,7 +330,9 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
 				)} - the total trip will take ${formatDuration(duration)}.`;
-
+	if (hasCob && type === 'solo') {
+		str += '\n2x Boost from Cob\n';
+	}
 	str += `\nRemoved ${soloFoodUsage} from your bank.${
 		isPhosani
 			? hasShadow

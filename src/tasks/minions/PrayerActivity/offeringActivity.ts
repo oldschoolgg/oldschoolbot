@@ -1,16 +1,12 @@
-import { percentChance, randInt } from 'e';
 import { ItemGroups } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import Prayer from '../../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { OfferingActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export function zealOutfitBoost(user: MUser) {
 	let zealOutfitAmount = 0;
 	for (const piece of ItemGroups.zealOutfit) {
-		if (user.gear.skilling.hasEquipped([piece])) {
+		if (user.hasEquippedOrInBank(piece)) {
 			zealOutfitAmount++;
 		}
 	}
@@ -22,9 +18,9 @@ export function zealOutfitBoost(user: MUser) {
 
 export const offeringTask: MinionTask = {
 	type: 'Offering',
-	async run(data: OfferingActivityTaskOptions) {
-		const { boneID, quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: OfferingActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { boneID, quantity, channelId } = data;
+
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
 
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
@@ -43,20 +39,20 @@ export const offeringTask: MinionTask = {
 		let deathCounter = 0;
 		// roll a 10% chance to get pked per trip
 		for (let i = 0; i < trips; i++) {
-			if (roll(10)) {
+			if (rng.roll(10)) {
 				deathCounter++;
 			}
 		}
 		// calc how many bones are lost
 		for (let i = 0; i < deathCounter; i++) {
-			bonesLost += randInt(1, maxPK);
+			bonesLost += rng.randInt(1, maxPK);
 		}
-		const bonesSaved = Math.floor(quantity * (randInt(90, 110) / 100));
+		const bonesSaved = Math.floor(quantity * (rng.randInt(90, 110) / 100));
 		let zealBonesSaved = 0;
 
 		if (zealOutfitAmount > 0) {
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(zealOutfitChance)) {
+				if (rng.percentChance(zealOutfitChance)) {
 					zealBonesSaved++;
 				}
 			}
@@ -64,21 +60,31 @@ export const offeringTask: MinionTask = {
 
 		const newQuantity = quantity - bonesLost + bonesSaved + zealBonesSaved;
 
-		const xpReceived = newQuantity * bone.xp * XPMod;
+		let xpReceived = newQuantity * bone.xp * XPMod;
+		const bonusXP = xpReceived * rng.randInt(2, 4) - xpReceived;
+		if (user.usingPet('Lil Lamb')) {
+			xpReceived += bonusXP;
+		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Prayer,
+			skillName: 'prayer',
 			amount: xpReceived,
 			duration: data.duration,
 			source: 'OfferingBones'
 		});
 
-		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${bone.name}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, ${xpRes}.`;
+		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
+			bone.name
+		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, ${xpRes}.${
+			user.usingPet('Lil Lamb')
+				? `The RuneScape gods blessed you with ${bonusXP.toLocaleString()} extra XP for you raising the young lamb.`
+				: ''
+		}`;
 
 		if (zealOutfitAmount > 0) {
 			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes helped you offer an extra ${zealBonesSaved} bones.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

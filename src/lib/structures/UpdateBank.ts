@@ -1,22 +1,25 @@
-import { objHasAnyPropInCommon } from '@oldschoolgg/toolkit/util';
-import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
-import { objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
-import { mergeDeep } from 'remeda';
+import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import type { MUserClass } from '../MUser';
-import { degradeChargeBank } from '../degradeableItems';
-import type { GearSetup } from '../gear/types';
-import type { ItemBank } from '../types';
-import type { JsonKeys } from '../util';
-import { ChargeBank, XPBank } from './Bank';
-import { KCBank } from './KCBank';
+import { objectEntries } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank } from 'oldschooljs';
+
+import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
+import { degradeChargeBank } from '@/lib/degradeableItems.js';
+import type { GearSetup } from '@/lib/gear/types.js';
+import type { SafeUserUpdateInput } from '@/lib/MUser.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { KCBank } from '@/lib/structures/KCBank.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
+import type { ClientBankKey } from '@/lib/util/clientSettings.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
+import type { JsonKeys } from '@/lib/util.js';
 
 export class UpdateBank {
 	// Things removed
 	public chargeBank: ChargeBank = new ChargeBank();
 	public itemCostBank: Bank = new Bank();
+	public materialsCostBank: MaterialBank = new MaterialBank();
 
 	// Things added
 	public itemLootBank: Bank = new Bank();
@@ -30,29 +33,20 @@ export class UpdateBank {
 	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
 	public userUpdates: Pick<Prisma.UserUpdateInput, 'slayer_points'> = {};
 
-	public merge(other: UpdateBank) {
-		this.chargeBank.add(other.chargeBank);
-		this.itemCostBank.add(other.itemCostBank);
-		this.itemLootBank.add(other.itemLootBank);
-		this.xpBank.add(other.xpBank);
-		this.kcBank.add(other.kcBank);
-		this.itemLootBankNoCL.add(other.itemLootBankNoCL);
-		for (const [key, value] of objectEntries(other.userStatsBankUpdates)) {
-			this.userStatsBankUpdates[key] = (this.userStatsBankUpdates[key] ?? new Bank()).add(value);
-		}
+	public clientStatsBankUpdates: Partial<Record<ClientBankKey, Bank>> = {};
 
-		if (objHasAnyPropInCommon(this.gearChanges, other.gearChanges)) {
-			throw new Error('Gear changes conflict');
+	async transactWithItemsOrThrow(...args: Parameters<UpdateBank['transact']>) {
+		const res = await this.transact(...args);
+		if (typeof res === 'string') {
+			throw new Error(res);
 		}
-		if (objHasAnyPropInCommon(this.userStats, other.userStats)) {
-			throw new Error('User stats conflict');
+		if (!res.itemTransactionResult) {
+			throw new Error('No item transaction result');
 		}
-		if (objHasAnyPropInCommon(this.userUpdates, other.userUpdates)) {
-			throw new Error('User updates conflict');
-		}
-		this.gearChanges = mergeDeep(this.gearChanges, other.gearChanges);
-		this.userStats = mergeDeep(this.userStats, other.userStats);
-		this.userUpdates = mergeDeep(this.userUpdates, other.userUpdates);
+		return {
+			...res,
+			itemTransactionResult: res.itemTransactionResult!
+		};
 	}
 
 	async transact(user: MUser, { isInWilderness }: { isInWilderness?: boolean } = { isInWilderness: false }) {
@@ -85,9 +79,9 @@ export class UpdateBank {
 			const { realCost } = await user.specialRemoveItems(this.itemCostBank, { isInWilderness });
 			totalCost.add(realCost);
 		}
-		let itemTransactionResult: Awaited<ReturnType<MUserClass['addItemsToBank']>> | null = null;
+		let itemTransactionResult: Awaited<ReturnType<MUser['addItemsToBank']>> | null = null;
 		if (this.itemLootBank.length > 0) {
-			itemTransactionResult = await user.addItemsToBank({ items: this.itemLootBank, collectionLog: true });
+			itemTransactionResult = await user.transactItems({ itemsToAdd: this.itemLootBank, collectionLog: true });
 		}
 
 		// XP
@@ -95,49 +89,61 @@ export class UpdateBank {
 			results.push(await user.addXPBank(this.xpBank));
 		}
 
-		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
+		const userStatsUpdates: Prisma.UserStatsUpdateInput = this.userStats ?? {};
+
 		// KC
 		if (this.kcBank.length() > 0) {
-			const currentScores = (await user.fetchStats({ monster_scores: true })).monster_scores as ItemBank;
+			const currentScores = (await user.fetchUserStat('monster_scores')) as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}
 			userStatsUpdates.monster_scores = currentScores;
 		}
 
-		// User stats
-		if (Object.keys(this.userStats).length > 0) {
-			userStatsUpdates = mergeDeep(userStatsUpdates, this.userStats);
-		}
 		if (Object.keys(this.userStatsBankUpdates).length > 0) {
-			const currentStats = await prisma.userStats.upsert({
-				where: {
-					user_id: BigInt(user.id)
-				},
-				create: { user_id: BigInt(user.id) },
-				update: {}
-			});
+			const currentStats = await fetchUserStats(user.id);
 			for (const [key, value] of objectEntries(this.userStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
 				userStatsUpdates[key] = newValue.toJSON();
 			}
 		}
 
-		await userStatsUpdate(user.id, userStatsUpdates);
+		await user.statsUpdate(userStatsUpdates);
 
-		const userUpdates: Prisma.UserUpdateInput = this.userUpdates;
+		const userUpdates: SafeUserUpdateInput = this.userUpdates;
 
 		// Gear
 		for (const [key, v] of objectEntries(this.gearChanges)) {
-			userUpdates[`gear_${key}`] = v! as Prisma.InputJsonValue;
+			userUpdates[`gear_${key}`] = v;
 		}
 
 		if (Object.keys(userUpdates).length > 0) {
 			await user.update(userUpdates);
 		}
 
+		if (this.materialsCostBank.values().length > 0) {
+			await transactMaterialsFromUser({
+				user,
+				remove: this.materialsCostBank
+			});
+		}
+
 		if (this.itemLootBankNoCL.length > 0) {
 			await user.transactItems({ itemsToAdd: this.itemLootBankNoCL, collectionLog: false });
+		}
+
+		if (Object.keys(this.clientStatsBankUpdates).length > 0) {
+			const clientUpdates: Prisma.ClientStorageUpdateInput = {};
+			const keysToSelect = Object.keys(this.clientStatsBankUpdates).reduce(
+				(acc, key) => ({ ...acc, [key]: true }),
+				{} as Record<string, boolean>
+			);
+			const currentStats = await ClientSettings.fetch(keysToSelect);
+			for (const [key, value] of objectEntries(this.clientStatsBankUpdates)) {
+				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
+				clientUpdates[key] = newValue.toJSON();
+			}
+			await ClientSettings.update(clientUpdates);
 		}
 
 		await user.sync();

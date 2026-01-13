@@ -1,10 +1,10 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import RareDropTable from '../../../subtables/RareDropTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const VyrewatchSentinelTable = new LootTable()
+export const VyrewatchSentinelTable: LootTable = new LootTable()
 	.every('Vampyre dust')
 
 	/* Unique */
@@ -58,7 +58,7 @@ export const VyrewatchSentinelTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-export default new SimpleMonster({
+export const VyrewatchSentinel: SimpleMonster = new SimpleMonster({
 	id: 9756,
 	name: 'Vyrewatch Sentinel',
 	table: VyrewatchSentinelTable,

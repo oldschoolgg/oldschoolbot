@@ -1,14 +1,19 @@
-import { calcPercentOfNum } from 'e';
-import { EItem } from 'oldschooljs';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+
+import { type RNGProvider, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
+import { type Bank, EItem } from 'oldschooljs';
 import { match } from 'ts-pattern';
 
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
-import type { GearBank } from '@/lib/structures/GearBank';
-import { UpdateBank } from '@/lib/structures/UpdateBank';
-import { skillingPetDropRate } from '@/lib/util';
-import type { RNGProvider } from '@/lib/util/rng';
-import type { Fish } from '../../types';
-import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
+import type { Fish } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
 export function calcFishingTripResult({
 	fish,
@@ -16,8 +21,17 @@ export function calcFishingTripResult({
 	duration,
 	flakesQuantity,
 	gearBank,
-	rng
-}: { fish: Fish; quantity: number; duration: number; flakesQuantity?: number; gearBank: GearBank; rng: RNGProvider }) {
+	rng,
+	collectionLog
+}: {
+	fish: Fish;
+	quantity: number;
+	duration: number;
+	flakesQuantity?: number;
+	gearBank: GearBank;
+	rng: RNGProvider;
+	collectionLog: Bank;
+}) {
 	const updateBank = new UpdateBank();
 	const boosts: string[] = [];
 
@@ -43,17 +57,17 @@ export function calcFishingTripResult({
 
 	if (fish.name === 'Barbarian fishing') {
 		for (let i = 0; i < quantity; i++) {
-			if (canGetSturgeon && rng.roll(sturgeonChance)) {
+			if (canGetSturgeon && rng.percentChance(100 / sturgeonChance)) {
 				xpReceived += 80;
 				leapingSturgeon += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
 				agilityXpReceived += 7;
 				strengthXpReceived += 7;
-			} else if (canGetSalmon && rng.roll(salmonChance)) {
+			} else if (canGetSalmon && rng.percentChance(100 / salmonChance)) {
 				xpReceived += 70;
 				leapingSalmon += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
 				agilityXpReceived += 6;
 				strengthXpReceived += 6;
-			} else if (rng.roll(leapingChance)) {
+			} else if (rng.percentChance(100 / leapingChance)) {
 				xpReceived += 50;
 				leapingTrout += blessingEquipped && rng.percentChance(blessingChance) ? 2 : 1;
 				agilityXpReceived += 5;
@@ -140,6 +154,37 @@ export function calcFishingTripResult({
 		for (let i = 0; i < quantity; i++) {
 			if (rng.roll(fish.bigFishRate)) {
 				updateBank.itemLootBank.add(fish.bigFish);
+			}
+		}
+	}
+
+	// BSO Klik pet
+	if (gearBank.usingPet('Klik')) {
+		const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
+		if (cookedFish) {
+			updateBank.itemLootBank.remove(fish.id, quantity);
+			updateBank.itemLootBank.add(cookedFish.id, quantity);
+			boosts.push(
+				'<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!'
+			);
+		}
+	}
+
+	if (duration >= MIN_LENGTH_FOR_PET) {
+		const minutesInTrip = Math.ceil(duration / 1000 / 60);
+		const petChance = clAdjustedDroprate(
+			collectionLog,
+			'Shelldon',
+			globalDroprates.shelldon.baseRate,
+			globalDroprates.shelldon.clIncrease
+		);
+		for (let i = 0; i < minutesInTrip; i++) {
+			if (roll(petChance)) {
+				updateBank.itemLootBank.add('Shelldon');
+				boosts.push(
+					'<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called shelldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!'
+				);
+				break;
 			}
 		}
 	}

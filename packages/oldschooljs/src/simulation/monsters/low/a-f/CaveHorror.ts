@@ -1,11 +1,11 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
-import VariableAllotmentSeedTable from '../../../subtables/VariableAllotmentSeedTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import VariableAllotmentSeedTable from '@/simulation/subtables/VariableAllotmentSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const CaveHorrorPreTable = new LootTable()
+export const CaveHorrorPreTable: LootTable = new LootTable()
 	/* Weapons and armor*/
 	.add('Mithril axe', 1, 3)
 	.add('Rune dagger', 1, 1)
@@ -38,7 +38,7 @@ export const CaveHorrorPreTable = new LootTable()
 	/* Gems */
 	.add(GemTable, 1, 5);
 
-const CaveHorrorTable = new LootTable()
+const CaveHorrorTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(CaveHorrorPreTable)
 
@@ -48,7 +48,7 @@ const CaveHorrorTable = new LootTable()
 	.tertiary(400, 'Long bone')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const CaveHorror: SimpleMonster = new SimpleMonster({
 	id: 1047,
 	name: 'Cave Horror',
 	table: CaveHorrorTable,

@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Craftable } from '../../../types';
+import type { Craftable } from '@/lib/skilling/types.js';
 
 const Gems: Craftable[] = [
 	{
@@ -84,7 +84,8 @@ const Gems: Craftable[] = [
 		level: 89,
 		xp: 200,
 		inputItems: new Bank({ 'Uncut zenyte': 1 }),
-		tickRate: 2
+		tickRate: 2,
+		cantBeDoubled: true
 	}
 ];
 

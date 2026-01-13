@@ -1,23 +1,24 @@
-import { calcPercentOfNum } from 'e';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+
+import { roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',
-	isNew: true,
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
-		const { channelID, quantity } = data;
+		const { channelId, quantity } = data;
 		await user.incrementMinigameScore('fishing_trawler', quantity);
 
 		const loot = new Bank();
 
 		let totalXP = 0;
-		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
+		const hasEliteArdy = user.hasDiary('ardougne.elite');
 		for (let i = 0; i < quantity; i++) {
 			const { loot: _loot, xp } = fishingTrawlerLoot(
 				user.skillsAsLevels.fishing,
@@ -34,13 +35,19 @@ export const trawlerTask: MinionTask = {
 			totalXP += bonusXP;
 		}
 
-		let str = `${user}, ${
-			user.minionName
-		} finished completing the Fishing Trawler ${quantity}x times. ${await user.addXP({
+		let str = `${user}, ${user.minionName} finished completing the Fishing Trawler ${quantity}x times.`;
+
+		if (user.usingPet('Shelldon')) {
+			loot.multiply(2);
+			totalXP *= 1.5;
+			str += '\nYou received **2x** extra fish from Shelldon helping you.';
+		}
+
+		str += await user.addXP({
 			skillName: 'fishing',
 			amount: totalXP,
 			duration: data.duration
-		})}`;
+		});
 
 		if (xpBonusPercent > 0) {
 			str += ` ${xpBonusPercent}% Bonus XP for Angler outfit pieces.`;
@@ -48,8 +55,15 @@ export const trawlerTask: MinionTask = {
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		if (user.hasEquippedOrInBank('Fishing master cape')) {
+			loot.multiply(4);
+			for (let i = 0; i < quantity; i++) {
+				if (roll(2)) loot.add(MysteryBoxes.roll());
+			}
+			str += '\n\nYou received **4x** extra fish because you are a master at Fishing.';
+		}
+
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -61,6 +75,6 @@ export const trawlerTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

@@ -1,10 +1,12 @@
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+
 import type { Item, Monster, MonsterSlayerMaster } from 'oldschooljs';
 
-import type { QuestID } from '../minions/data/quests';
-import type { LevelRequirements } from '../skilling/types';
+import type { QuestID } from '@/lib/minions/data/quests.js';
+import type { LevelRequirements } from '@/lib/skilling/types.js';
 
 export interface AssignableSlayerTask {
-	monster: Monster;
+	monster: Monster | CustomMonster;
 	amount: [number, number];
 	weight: number;
 	monsters: number[];
@@ -18,6 +20,7 @@ export interface AssignableSlayerTask {
 	extendedAmount?: [number, number];
 	extendedUnlockId?: number;
 	wilderness?: boolean;
+	dungeoneeringLevel?: number;
 	requiredQuests?: QuestID[];
 }
 

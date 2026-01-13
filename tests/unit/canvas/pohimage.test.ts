@@ -2,8 +2,8 @@ import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, test } from 'vitest';
 
-import { bankImageTask } from '@/lib/canvas/bankImage';
-import { pohImageGenerator } from '@/lib/canvas/pohImage';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('POH Image', async () => {

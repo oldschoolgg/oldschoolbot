@@ -1,21 +1,21 @@
-import { Time, percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 
-import type { GearBank } from '../../structures/GearBank';
-import type { Ore } from './../types';
+import type { Ore } from '@/lib/skilling/types.js';
 
 interface MiningTimeOptions {
+	hasGlory: boolean;
+	maxTripLength: number;
 	quantity: number | undefined;
 	ore: Ore;
 	ticksBetweenRolls: number;
-	glovesEffect: number;
+	glovesRate: number;
 	armourEffect: number;
 	miningCapeEffect: number;
 	powermining: boolean;
 	goldSilverBoost: boolean;
 	miningLvl: number;
 	passedDuration?: number;
-	maxTripLength: number;
-	gearBank: GearBank;
 	hasKaramjaMedium: boolean;
 }
 
@@ -23,19 +23,19 @@ export function determineMiningTime({
 	quantity,
 	ore,
 	ticksBetweenRolls,
-	glovesEffect,
+	glovesRate,
 	armourEffect,
 	miningCapeEffect,
 	powermining,
 	goldSilverBoost,
 	miningLvl,
 	passedDuration,
+	hasGlory,
 	maxTripLength,
-	gearBank,
 	hasKaramjaMedium
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
-	if (ore.name === 'Gem rock' && gearBank.hasEquipped('Amulet of glory')) {
+	if (ore.name === 'Gem rock' && hasGlory) {
 		intercept *= 3;
 		if (hasKaramjaMedium) {
 			intercept *= 1.5;
@@ -70,18 +70,12 @@ export function determineMiningTime({
 		userMaxTripTicks *= 1.5;
 	}
 
-	let remainingNoDeplete = glovesEffect;
-
 	while (timeElapsed < userMaxTripTicks) {
 		while (!percentChance(chanceOfSuccess)) {
 			timeElapsed += effectiveTicksBetween;
 		}
-		if (remainingNoDeplete <= 0) {
+		if (!percentChance(glovesRate)) {
 			timeElapsed += respawnTimeOrPick;
-			remainingNoDeplete = glovesEffect;
-		} else {
-			timeElapsed += effectiveTicksBetween;
-			remainingNoDeplete--;
 		}
 		newQuantity++;
 		if (percentChance(miningCapeEffect)) {

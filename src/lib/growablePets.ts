@@ -1,8 +1,8 @@
-import { Time, randFloat } from 'e';
-import { Bank, resolveItems } from 'oldschooljs';
+import { randFloat, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, resolveItems } from 'oldschooljs';
 
-import type { ActivityTaskOptions } from './types/minions';
-import getOSItem from './util/getOSItem';
+import type { ActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const kittens = resolveItems([
 	'Grey and black kitten',
@@ -25,14 +25,43 @@ export const cats = resolveItems([
 interface GrowablePet {
 	growthRate: number;
 	stages: number[];
+	shinyVersion?: number;
+	shinyChance?: number;
 }
 
-export const growablePets: GrowablePet[] = [];
+export const growablePets: GrowablePet[] = [
+	{
+		growthRate: (Time.Hour * 8) / Time.Minute,
+		stages: resolveItems(['Baby raven', 'Raven'])
+	},
+	{
+		growthRate: (Time.Hour * 5) / Time.Minute,
+		stages: resolveItems(['Magic kitten', 'Magic cat'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Zamorak egg', 'Baby zamorak hawk', 'Juvenile zamorak hawk', 'Zamorak hawk'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Guthix egg', 'Baby guthix raptor', 'Juvenile guthix raptor', 'Guthix raptor'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Saradomin egg', 'Baby saradomin owl', 'Juvenile saradomin owl', 'Saradomin owl'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Penguin egg', 'Skip'])
+	}
+];
 
 for (let i = 0; i < kittens.length; i++) {
 	growablePets.push({
 		growthRate: (Time.Hour * 3) / Time.Minute,
-		stages: [kittens[i], cats[i]]
+		stages: [kittens[i], cats[i]],
+		shinyChance: 500,
+		shinyVersion: Items.getOrThrow('Shiny cat').id
 	});
 }
 
@@ -44,17 +73,32 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return;
 	const minutesInThisTrip = data.duration / Time.Minute;
 	if (randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
-		const nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
+		let nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
+		const isLastPet = nextPet === equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1];
 		if (nextPet === -1) {
 			throw new Error(`${user.usernameOrMention}'s pet[${equippedPet}] has no index in growable pet stages.`);
+		}
+		if (
+			isLastPet &&
+			equippedGrowablePet.shinyChance &&
+			equippedGrowablePet.shinyVersion &&
+			roll(equippedGrowablePet.shinyChance)
+		) {
+			nextPet = equippedGrowablePet.shinyVersion;
 		}
 
 		// Sync to avoid out of date CL
 		await user.sync();
-		await user.update({
-			minion_equippedPet: nextPet
+		await user.addItemsToCollectionLog({
+			itemsToAdd: new Bank().add(nextPet),
+			otherUpdates: {
+				minion_equippedPet: nextPet
+			}
 		});
-		await user.addItemsToCollectionLog(new Bank().add(nextPet));
-		messages.push(`Your ${getOSItem(equippedPet).name} grew into a ${getOSItem(nextPet).name}!`);
+		messages.push(`Your ${Items.getOrThrow(equippedPet).name} grew into a ${Items.getOrThrow(nextPet).name}!`);
 	}
 }
+
+export const growablePetsCL = growablePets
+	.flatMap(i => i.stages)
+	.filter(i => !resolveItems(['Skip', 'Penguin egg']).includes(i));

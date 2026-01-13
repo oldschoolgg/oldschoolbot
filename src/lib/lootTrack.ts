@@ -1,9 +1,8 @@
-import { cleanString, formatDuration } from '@oldschoolgg/toolkit/util';
-import type { LootTrack, loot_track_type } from '@prisma/client';
-import { Time } from 'e';
+import { cleanString, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { makeBankImage } from './util/makeBankImage';
+import type { LootTrack, loot_track_type } from '@/prisma/main.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 type TrackLootOptions =
 	| {
@@ -18,6 +17,7 @@ type TrackLootOptions =
 				loot: Bank;
 				duration: number;
 			}[];
+			suffix?: 'tame';
 	  }
 	| {
 			id: string;
@@ -28,6 +28,7 @@ type TrackLootOptions =
 				id: string;
 				cost: Bank;
 			}[];
+			suffix?: 'tame';
 	  };
 
 async function trackIndividualsLoot({
@@ -92,7 +93,10 @@ async function trackIndividualsLoot({
 }
 
 export async function trackLoot(opts: TrackLootOptions) {
-	const key = cleanString(opts.id).toLowerCase().replace(/ /g, '_');
+	let key = cleanString(opts.id).toLowerCase().replace(/ /g, '_');
+	if (opts.suffix) {
+		key = `${key}-${opts.suffix}`;
+	}
 	const totalBank = opts.changeType === 'cost' ? opts.totalCost : opts.totalLoot;
 	if (totalBank.length === 0) return;
 
@@ -140,9 +144,9 @@ export async function getDetailsOfSingleTrackedLoot(user: MUser, trackedLoot: Lo
 	]);
 
 	return {
-		content: `Loot/Cost from ${trackedLoot.total_kc.toLocaleString()}x ${trackedLoot.key} for ${user.rawUsername}
+		content: `Loot/Cost from ${trackedLoot.total_kc.toLocaleString()}x ${trackedLoot.key} for ${user.username}
 **Total Duration:** ${formatDuration(trackedLoot.total_duration * Time.Minute)}
 **Total KC:** ${trackedLoot.total_kc}`,
-		files: [cost.file, loot.file]
+		files: [cost, loot]
 	};
 }

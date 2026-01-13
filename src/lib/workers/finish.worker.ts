@@ -1,10 +1,10 @@
-import '../data/itemAliases';
+import '../../lib/customItems/customItems.js';
+import '../data/itemAliases.js';
 
-import { removeFromArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { removeFromArr } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import type { FinishWorkerArgs, FinishWorkerReturn } from '.';
-import getOSItem from '../util/getOSItem';
+import type { FinishWorkerArgs, FinishWorkerReturn } from '@/lib/workers/index.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the finish worker!');
@@ -45,8 +45,7 @@ export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerRetur
 		if (kc === maxAttempts) {
 			return `After ${maxAttempts.toLocaleString()} KC, you still didn't finish the CL, so we're giving up! Missing: ${finishCL
 				.filter(id => !loot.has(id))
-				.map(getOSItem)
-				.map(i => i.name)
+				.map(i => Items.itemNameFromId(i))
 				.join(', ')}`;
 		}
 	}

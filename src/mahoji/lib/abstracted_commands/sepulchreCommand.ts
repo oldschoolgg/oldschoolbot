@@ -1,26 +1,19 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, reduceNumByPercent, sumArr } from 'e';
+import { formatDuration, reduceNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
-import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
+import { sepulchreBoosts, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import Arrows from '@/lib/skilling/skills/fletching/fletchables/arrows.js';
+import Bolts from '@/lib/skilling/skills/fletching/fletchables/bolts.js';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
+import { AmethystBroadBolts, BroadArrows, BroadBolts } from '@/lib/skilling/skills/fletching/fletchables/slayer.js';
+import TippedBolts from '@/lib/skilling/skills/fletching/fletchables/tippedBolts.js';
+import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippedDragonBolts.js';
+import type { Fletchable } from '@/lib/skilling/types.js';
+import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
-import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows';
-import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts';
-import Darts from '../../../lib/skilling/skills/fletching/fletchables/darts';
-import Javelins from '../../../lib/skilling/skills/fletching/fletchables/javelins';
-import { AmethystBroadBolts, BroadArrows, BroadBolts } from '../../../lib/skilling/skills/fletching/fletchables/slayer';
-import TippedBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedBolts';
-import TippedDragonBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedDragonBolts';
-import type { Fletchable } from '../../../lib/skilling/types';
-import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
-import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
-
-export async function sepulchreCommand(user: MUser, channelID: string, fletching?: number) {
+export async function sepulchreCommand(user: MUser, channelId: string, fletching?: number) {
 	const skills = user.skillsAsLevels;
 	const agilityLevel = skills.agility;
 	const thievingLevel = skills.thieving;
@@ -31,7 +24,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	if (thievingLevel < 66) {
 		return 'You need at least level 66 Thieving to do the Hallowed Sepulchre.';
 	}
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		return 'You need Graceful equipped in any setup to do the Hallowed Sepulchre.';
 	}
 
@@ -47,14 +40,21 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	lapLength = reduceNumByPercent(lapLength, percentReduced);
 	const boosts = [`${percentReduced.toFixed(1)}% for minion learning`];
 
-	for (const [item, percent] of sepulchreBoosts.items()) {
-		if (user.hasEquippedOrInBank(item.id)) {
-			boosts.push(`${percent}% for ${item.name}`);
+	const hasCob = user.usingPet('Cob');
+
+	if (hasCob) {
+		lapLength /= 2;
+		boosts.push("2x boost with Cob's help");
+	}
+
+	for (const [id, percent] of sepulchreBoosts.items()) {
+		if (user.hasEquippedOrInBank(id.id)) {
+			boosts.push(`${percent}% for ${id.name}`);
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
 	}
 
-	const maxLaps = Math.floor(calcMaxTripLength(user, 'Sepulchre') / lapLength);
+	const maxLaps = Math.floor((await user.calcMaxTripLength('Sepulchre')) / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	let fletchable: Fletchable | undefined;
@@ -73,10 +73,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 
 		if (fletchable.requiredSlayerUnlocks) {
-			const { success, errors } = hasSlayerUnlock(
-				user.user.slayer_unlocks as SlayerTaskUnlocksEnum[],
-				fletchable.requiredSlayerUnlocks
-			);
+			const { success, errors } = user.checkHasSlayerUnlocks(fletchable.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
@@ -114,13 +111,13 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		await user.removeItemsFromBank(itemsNeeded);
 	}
 
-	await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({
+	await ActivityManager.startTrip<SepulchreActivityTaskOptions>({
 		floors: completableFloors.map(f => f.number),
 		quantity: maxLaps,
 		userID: user.id,
 		duration: tripLength,
 		type: 'Sepulchre',
-		channelID: channelID.toString(),
+		channelId,
 		minigameID: 'sepulchre',
 		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});

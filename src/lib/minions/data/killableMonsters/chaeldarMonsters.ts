@@ -1,10 +1,9 @@
-import { Time } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { SkillsEnum } from '../../../skilling/types';
-import type { KillableMonster } from '../../types';
-import { QuestID } from '../quests';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{
@@ -34,8 +33,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: true,
 		difficultyRating: 4,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		defaultAttackStyles: ['ranged'],
+		disallowedAttackStyles: ['attack', 'strength', 'magic'],
 		healAmountNeeded: 24,
 		pkActivityRating: 7,
 		pkBaseDeathChance: 10,
@@ -83,8 +82,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate', "Black d'hide body"],
-			["Karil's leatherskirt", 'Armadyl chainskirt', "Black d'hide chaps"]
+			['Gorajan archer top', 'Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
+			['Gorajan archer legs', 'Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 20,
 		levelRequirements: {
@@ -112,8 +111,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 87
 		},
 		slayerOnly: true,
-		defaultAttackStyles: [SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
+		defaultAttackStyles: ['magic'],
+		disallowedAttackStyles: ['attack', 'strength', 'ranged'],
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
@@ -274,6 +273,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			[
+				'Virtus wand',
 				'Warped sceptre (uncharged)',
 				'Trident of the seas',
 				'Trident of the seas (full)',
@@ -305,8 +305,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 87
 		},
-		defaultAttackStyles: [SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
+		defaultAttackStyles: ['magic'],
+		disallowedAttackStyles: ['attack', 'strength', 'ranged'],
 		slayerOnly: true,
 		healAmountNeeded: 20 * 7,
 		attackStyleToUse: GearStat.AttackMagic,
@@ -358,7 +358,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 6,
-		itemsRequired: deepResolveItems([["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe']]),
+		itemsRequired: deepResolveItems([
+			['Zaryte bow', "Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe']
+		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
 		itemInBankBoosts: [
@@ -378,7 +380,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 20 * 2,
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		disallowedAttackStyles: ['attack', 'strength', 'magic'],
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,
@@ -432,7 +434,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
 	{
-		id: Monsters.TzHaarKet.id,
+		id: EMonster.TZHAARKET,
 		name: Monsters.TzHaarKet.name,
 		aliases: Monsters.TzHaarKet.aliases,
 		timeToFinish: Time.Second * 35,

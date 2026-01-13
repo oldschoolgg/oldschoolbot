@@ -1,40 +1,63 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Items, SkillsEnum } from 'oldschooljs';
-
-import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
-import { collectables } from '../../mahoji/lib/collectables';
-import { ClueTiers } from '../clues/clueTiers';
-import killableMonsters from '../minions/data/killableMonsters';
-import { Planks } from '../minions/data/planks';
-import { quests } from '../minions/data/quests';
-import Agility from '../skilling/skills/agility';
-import Constructables from '../skilling/skills/construction/constructables';
-import Cooking from '../skilling/skills/cooking/cooking';
-import ForestryRations from '../skilling/skills/cooking/forestersRations';
-import LeapingFish from '../skilling/skills/cooking/leapingFish';
-import Crafting from '../skilling/skills/crafting';
-import Farming from '../skilling/skills/farming';
-import Firemaking from '../skilling/skills/firemaking';
-import { Fishing } from '../skilling/skills/fishing/fishing';
-import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables';
-import Herblore from '../skilling/skills/herblore/herblore';
-import Hunter from '../skilling/skills/hunter/hunter';
-import { Castables } from '../skilling/skills/magic/castables';
-import { Enchantables } from '../skilling/skills/magic/enchantables';
-import Mining from '../skilling/skills/mining';
-import Prayer from '../skilling/skills/prayer';
-import Runecraft from '../skilling/skills/runecraft';
-import Smithing from '../skilling/skills/smithing';
-import { stealables } from '../skilling/skills/thieving/stealables';
-import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
 import type {
+	DisassembleTaskOptions,
+	DOAOptions,
+	DungeoneeringOptions,
+	FishingContestOptions,
+	MemoryHarvestOptions,
+	MoktangTaskOptions,
+	MonkeyRumbleOptions,
+	NewBossOptions,
+	ResearchTaskOptions,
+	TinkeringWorkshopOptions
+} from '@/lib/bso/bsoTypes.js';
+import { fishingLocations } from '@/lib/bso/minigames/fishingContest.js';
+import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
+
+import { randomVariation } from '@oldschoolgg/rng';
+import {
+	Emoji,
+	formatDuration,
+	formatOrdinal,
+	increaseNumByPercent,
+	reduceNumByPercent,
+	toTitleCase
+} from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
+
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { Planks } from '@/lib/minions/data/planks.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import Constructables from '@/lib/skilling/skills/construction/constructables.js';
+import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
+import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
+import Crafting from '@/lib/skilling/skills/crafting/index.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import type {
+	ActivityTaskData,
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
+	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -61,7 +84,6 @@ import type {
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
-	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
@@ -75,15 +97,16 @@ import type {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SpecificQuestOptions,
-	TOAOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TOAOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
-} from '../types/minions';
+} from '@/lib/types/minions.js';
+import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
 
-export function minionStatus(user: MUser) {
-	const currentTask = ActivityManager.getActivityOfUser(user.id);
+export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) {
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;
@@ -123,7 +146,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently crafting ${data.quantity}x ${craftable?.name}. ${formattedDuration} Your ${
 				Emoji.Crafting
-			} Crafting level is ${user.skillLevel(SkillsEnum.Crafting)}`;
+			} Crafting level is ${user.skillsAsLevels.crafting}`;
 		}
 
 		case 'Agility': {
@@ -133,7 +156,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently running ${data.quantity}x ${course?.name} laps. ${formattedDuration} Your ${
 				Emoji.Agility
-			} Agility level is ${user.skillLevel(SkillsEnum.Agility)}`;
+			} Agility level is ${user.skillsAsLevels.agility}`;
 		}
 
 		case 'Cooking': {
@@ -143,7 +166,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently cooking ${data.quantity}x ${cookable?.name}. ${formattedDuration} Your ${
 				Emoji.Cooking
-			} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
+			} Cooking level is ${user.skillsAsLevels.cooking}`;
 		}
 
 		case 'Fishing': {
@@ -153,7 +176,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently fishing ${data.quantity}x ${fish?.name}. ${formattedDuration} Your ${
 				Emoji.Fishing
-			} Fishing level is ${user.skillLevel(SkillsEnum.Fishing)}`;
+			} Fishing level is ${user.skillsAsLevels.fishing}`;
 		}
 
 		case 'Mining': {
@@ -169,7 +192,7 @@ export function minionStatus(user: MUser) {
 						)} **to** ${formatDuration(
 							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
-			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
+			} Your ${Emoji.Mining} Mining level is ${user.skillsAsLevels.mining}`;
 		}
 
 		case 'MotherlodeMining': {
@@ -183,7 +206,7 @@ export function minionStatus(user: MUser) {
 						)} **to** ${formatDuration(
 							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
-			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
+			} Your ${Emoji.Mining} Mining level is ${user.skillsAsLevels.mining}`;
 		}
 
 		case 'Smelting': {
@@ -193,7 +216,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently smelting ${data.quantity}x ${bar?.name}. ${formattedDuration} Your ${
 				Emoji.Smithing
-			} Smithing level is ${user.skillLevel(SkillsEnum.Smithing)}`;
+			} Smithing level is ${user.skillsAsLevels.smithing}`;
 		}
 
 		case 'Smithing': {
@@ -203,7 +226,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently smithing ${data.quantity}x ${SmithableItem?.name}. ${formattedDuration} Your ${
 				Emoji.Smithing
-			} Smithing level is ${user.skillLevel(SkillsEnum.Smithing)}`;
+			} Smithing level is ${user.skillsAsLevels.smithing}`;
 		}
 
 		case 'Offering': {
@@ -213,7 +236,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently offering ${data.quantity}x ${bones?.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
-			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+			} Prayer level is ${user.skillsAsLevels.prayer}`;
 		}
 
 		case 'Burying': {
@@ -223,7 +246,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently burying ${data.quantity}x ${bones?.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
-			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+			} Prayer level is ${user.skillsAsLevels.prayer}`;
 		}
 
 		case 'Scattering': {
@@ -233,7 +256,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently scattering ${data.quantity}x ${ashes?.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
-			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+			} Prayer level is ${user.skillsAsLevels.prayer}`;
 		}
 
 		case 'Firemaking': {
@@ -243,7 +266,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently lighting ${data.quantity}x ${burn?.name}. ${formattedDuration} Your ${
 				Emoji.Firemaking
-			} Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}`;
+			} Firemaking level is ${user.skillsAsLevels.firemaking}`;
 		}
 
 		case 'Questing': {
@@ -263,7 +286,7 @@ export function minionStatus(user: MUser) {
 						)} **to** ${formatDuration(
 							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
-			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillLevel(SkillsEnum.Woodcutting)}`;
+			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillsAsLevels.woodcutting}`;
 		}
 		case 'Runecraft': {
 			const data = currentTask as RunecraftActivityTaskOptions;
@@ -272,9 +295,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently turning ${data.essenceQuantity}x Essence into ${
 				rune?.name
-			}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${user.skillLevel(
-				SkillsEnum.Runecraft
-			)}`;
+			}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${user.skillsAsLevels.runecraft}`;
 		}
 
 		case 'TiaraRunecraft': {
@@ -283,7 +304,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara?.name}. ${formattedDuration} Your ${
 				Emoji.Runecraft
-			} Runecraft level is ${user.skillLevel(SkillsEnum.Runecraft)}`;
+			} Runecraft level is ${user.skillsAsLevels.runecraft}`;
 		}
 
 		case 'FightCaves': {
@@ -302,9 +323,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently fletching ${data.quantity}x ${
 				data.fletchableName
-			}. ${formattedDuration} Your ${Emoji.Fletching} Fletching level is ${user.skillLevel(
-				SkillsEnum.Fletching
-			)}`;
+			}. ${formattedDuration} Your ${Emoji.Fletching} Fletching level is ${user.skillsAsLevels.fletching}`;
 		}
 		case 'Herblore': {
 			const data = currentTask as HerbloreActivityTaskOptions;
@@ -312,7 +331,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently mixing ${data.quantity}x ${mixable?.item.name}. ${formattedDuration} Your ${
 				Emoji.Herblore
-			} Herblore level is ${user.skillLevel(SkillsEnum.Herblore)}`;
+			} Herblore level is ${user.skillsAsLevels.herblore}`;
 		}
 		case 'CutLeapingFish': {
 			const data = currentTask as CutLeapingFishActivityTaskOptions;
@@ -320,7 +339,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently cutting ${data.quantity}x ${
 				barbarianFish?.item.name
-			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
+			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillsAsLevels.cooking}`;
 		}
 		case 'CreateForestersRations': {
 			const data = currentTask as CreateForestersRationsActivityTaskOptions;
@@ -328,7 +347,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently creating ${data.quantity}x ${
 				ration.name
-			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
+			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillsAsLevels.cooking}`;
 		}
 		case 'Wintertodt': {
 			const data = currentTask as ActivityTaskOptionsWithQuantity;
@@ -353,7 +372,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently farming ${data.quantity}x ${plants?.name}. ${formattedDuration} Your ${
 				Emoji.Farming
-			} Farming level is ${user.skillLevel(SkillsEnum.Farming)}.`;
+			} Farming level is ${user.skillsAsLevels.farming}.`;
 		}
 
 		case 'Sawmill': {
@@ -565,9 +584,9 @@ export function minionStatus(user: MUser) {
 
 		case 'DarkAltar': {
 			const data = currentTask as DarkAltarOptions;
-			return `${name} is currently runecrafting ${toTitleCase(
-				data.rune
-			)} runes at the Dark Altar. ${formattedDuration}`;
+			return `${name} is currently runecrafting ${toTitleCase(data.rune)} runes at the Dark Altar${
+				data.useExtracts ? ' with extracts' : ''
+			}. ${formattedDuration}`;
 		}
 		case 'OuraniaAltar': {
 			return `${name} is currently runecrafting at the Ourania Altar. ${formattedDuration}`;
@@ -623,12 +642,15 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
-		case 'Nex': {
-			const data = currentTask as NexTaskOptions;
-			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
-			return `${name} is currently killing Nex ${data.quantity} times with a team of ${
-				data.teamDetails.length
-			}. The trip should take ${formatDuration(durationRemaining)}.`;
+		case 'Buy': {
+			const data = currentTask as BuyActivityTaskOptions;
+			const tripBuyable = findTripBuyable(data.itemID, data.quantity);
+			const itemName = tripBuyable?.displayName ?? Items.get(data.itemID)?.name ?? `Item[${data.itemID}]`;
+			const quantity =
+				tripBuyable?.quantity && tripBuyable.quantity > 0
+					? data.quantity / tripBuyable.quantity
+					: data.quantity;
+			return `${name} is currently buying ${quantity}x ${itemName}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'TroubleBrewing': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
@@ -641,15 +663,85 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'Nex': {
+			const data = currentTask as BossActivityTaskOptions;
+			return `${name} is currently killing ${data.quantity} Nex, with a party of ${data.users.length}. ${formattedDuration}`;
+		}
+		case 'KingGoldemar': {
+			const data = currentTask as NewBossOptions;
+			return `${name} is currently killing ${data.quantity} King Goldemar, with a party of ${data.users.length}. ${formattedDuration}`;
+		}
+		case 'KalphiteKing': {
+			return `${name} is currently killing the Kalphite King. ${formattedDuration}`;
+		}
+		case 'Dungeoneering': {
+			const data = currentTask as DungeoneeringOptions;
+			return `${name} is currently doing Dungeoneering with a team of ${
+				data.users.length
+			} minions, on the ${formatOrdinal(data.floor)} floor. ${formattedDuration}`;
+		}
+
+		case 'OuraniaDeliveryService': {
+			return `${name} is currently delivering in the Ourania Deliver Service. ${formattedDuration}`;
+		}
+		case 'VasaMagus': {
+			return `${name} is currently killing Vasa Magus. ${formattedDuration}`;
+		}
+		case 'Ignecarus': {
+			return `${name} is currently killing Ignecarus. ${formattedDuration}`;
+		}
+		case 'KibbleMaking': {
+			return `${name} is currently making Kibble. ${formattedDuration}`;
+		}
+		case 'MonkeyRumble': {
+			const data = currentTask as MonkeyRumbleOptions;
+			return `${data.monkeys.some(m => m.special) ? Emoji.Purple : ''} ${name} is currently doing ${
+				data.quantity
+			} fights in Monkey Rumble. ${formattedDuration}`;
+		}
+		case 'FishingContest': {
+			const data = currentTask as FishingContestOptions;
+			return `${name} is currently fishing for the fishing contest at ${
+				fishingLocations.find(i => i.id === data.location)!.name
+			}. ${formattedDuration}`;
+		}
+		case 'BaxtorianBathhouses': {
+			return `${name} is currently heating baths at the Baxtorian Bathhouses. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'Naxxus': {
+			const data = currentTask as ActivityTaskOptionsWithQuantity;
+			return `${name} is currently fighting ${data.quantity} Naxxus. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'Disassembling': {
+			const data = currentTask as DisassembleTaskOptions;
+			return `${name} is currently disassembling ${data.qty}x ${Items.itemNameFromId(
+				data.i
+			)}. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'Research': {
+			const data = currentTask as ResearchTaskOptions;
+			return `${name} is currently researching with '${
+				data.material
+			}' materials. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'Moktang': {
+			const data = currentTask as MoktangTaskOptions;
+			return `${name} is currently killing ${data.qty}x Moktang. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'ShootingStars': {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}
 		case 'GiantsFoundry': {
-			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently creating ${
-				data.quantity
+				currentTask.quantity
 			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
@@ -658,6 +750,24 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'FistOfGuthix': {
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
+			return `${name} is currently doing ${
+				data.quantity
+			}x games of Fist of Guthix. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'StealingCreation': {
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
+			return `${name} is currently doing ${
+				data.quantity
+			}x games of Stealing Creation. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'TinkeringWorkshop': {
+			const data = currentTask as TinkeringWorkshopOptions;
+			return `${name} is currently doing ${data.quantity}x projects with ${
+				data.material
+			} materials in the Tinkering Workshop. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'NightmareZone': {
 			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatDuration(
@@ -688,6 +798,22 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'BalthazarsBigBonanza': {
+			return `${name} is currently performing at Balthazars Big Bonanza, the trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'DepthsOfAtlantis': {
+			const data = currentTask as DOAOptions;
+			const durationRemainingNum = data.finishDate - data.duration + data.fakeDuration - Date.now();
+
+			return `${name} is currently attempting the Depths of Atlantis, if your team is successful and doesn't die, the trip should take ${formatDuration(
+				durationRemainingNum
+			)}.`;
+		}
+		case 'BirthdayCollectIngredients': {
+			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(durationRemaining)}.`;
+		}
 		case 'CombatRing': {
 			return `${name} is currently fighting in the Combat Ring! The trip should take ${formatDuration(
 				durationRemaining
@@ -699,6 +825,10 @@ export function minionStatus(user: MUser) {
 				quests.find(i => i.id === data.questID)?.name
 			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'Mortimer':
+			return `${name} is currently fighting Maledict Mortimer! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
 		case 'Colosseum': {
 			const data = currentTask as ColoTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
@@ -707,12 +837,37 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
-		case 'HalloweenEvent': {
+		case 'HalloweenEvent':
 			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
+		case 'GuthixianCache':
+			return `${name} is currently participating in a Guthixian cache. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		case 'MemoryHarvest': {
+			const data = currentTask as MemoryHarvestOptions;
+			const energy = divinationEnergies.find(e => e.item.id === data.e)!;
+			const method = memoryHarvestTypes.find(t => t.id === data.t)!;
+			return `${name} is currently harvesting ${energy.type} memories using ${
+				method.name
+			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'TuraelsTrials': {
+			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+
+		case 'BossEvent': {
+			return `${name} is currently doing a Boss Event! ${formattedDuration}`;
+		}
+
+		case 'SnoozeSpellActive':
+		case 'HalloweenMiniMinigame':
 		case 'Easter':
-		case 'BlastFurnace': {
-			throw new Error('Removed');
+		case 'BlastFurnace':
+		case 'TrickOrTreat':
+		case 'Revenants': {
+			throw new Error(`Removed`);
 		}
 	}
 }

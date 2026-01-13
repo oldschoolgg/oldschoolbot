@@ -1,28 +1,36 @@
 import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
-import { STATIC_DEFINE } from './meta';
-
 export default defineConfig({
+	clearScreen: false,
 	test: {
 		name: 'Old School Bot - Integration',
 		include: ['tests/integration/**/*.test.ts'],
 		setupFiles: 'tests/integration/setup.ts',
+		globalSetup: 'tests/integration/globalSetup.ts',
 		coverage: {
 			provider: 'v8',
 			reporter: 'text',
-			include: ['src/mahoji/lib/abstracted_commands/minionKill/*.ts', 'src/lib/structures/*.ts']
+			include: [
+				'src/mahoji/lib/abstracted_commands/minionKill/*.ts',
+				'src/lib/structures/*.ts',
+				'src/lib/skilling/skills/farming/**/*.ts'
+			]
 		},
 		testTimeout: 60_000,
-		bail: 1,
-		maxConcurrency: 10,
-		maxWorkers: 4,
-		minWorkers: 4
+		maxConcurrency: 4,
+		isolate: false,
+		pool: 'forks',
+		maxWorkers: 10,
+		sequence: {
+			shuffle: true,
+			seed: 1
+		}
 	},
+
 	resolve: {
 		alias: {
 			'@': path.resolve(import.meta.dirname, './src')
 		}
-	},
-	define: STATIC_DEFINE
+	}
 });

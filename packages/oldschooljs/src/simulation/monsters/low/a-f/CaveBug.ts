@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const CaveBugTable = new LootTable({ limit: 128 })
+export const CaveBugTable: LootTable = new LootTable({ limit: 128 })
 	/* Runes and ammunition */
 	.add('Water rune', 8, 5)
 	.add('Nature rune', 1, 5)
@@ -25,7 +25,7 @@ export const CaveBugTable = new LootTable({ limit: 128 })
 	.add('Tinderbox', 1, 3)
 	.add('Empty candle lantern', 1, 1);
 
-export default new SimpleMonster({
+export const CaveBug: SimpleMonster = new SimpleMonster({
 	id: 481,
 	name: 'Cave Bug',
 	table: CaveBugTable,

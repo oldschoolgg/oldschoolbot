@@ -1,19 +1,19 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
-import { PerkTier, dateFm } from '@oldschoolgg/toolkit/util';
+import { dateFm } from '@oldschoolgg/discord';
+import { Emoji, PerkTier, Time } from '@oldschoolgg/toolkit';
 import * as dotenv from 'dotenv';
-import { resolveItems } from 'oldschooljs';
-import { z } from 'zod';
+import { convertLVLtoXP } from 'oldschooljs';
+import * as z from 'zod';
 
-import { SkillsEnum } from './skilling/types';
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
 
 type BotType = 'OSB' | 'BSO';
-export const BOT_TYPE: BotType = 'OSB' as 'BSO' | 'OSB';
+export const BOT_TYPE: BotType = 'BSO' as 'BSO' | 'OSB';
 export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
 const isProduction = process.env.NODE_ENV === 'production';
 const GENERAL_CHANNEL_ID =
@@ -26,6 +26,7 @@ const GENERAL_CHANNEL_ID =
 			: '1154056119019393035';
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
+export const DELETED_USER_ID = '111111111111111111';
 
 interface ChannelConfig {
 	ServerGeneral: string;
@@ -49,7 +50,7 @@ const OSBChannelConfig: ChannelConfig = {
 
 const BSOChannelConfig: ChannelConfig = {
 	ServerGeneral: '342983479501389826',
-	Notifications: '1042760447830536212',
+	Notifications: '811589869314899980',
 	GrandExchange: '738780181946171493',
 	EconomyLogs: '802029843712573510',
 	HelpAndSupport: '970752140324790384',
@@ -98,7 +99,8 @@ export const Roles = {
 	BSOTopTamer: '1054356709222666240',
 	BSOTopMysterious: '1074592096968785960',
 	BSOTopGlobalCL: '848966773885763586',
-	BSOTopFarmer: '894194259731828786'
+	BSOTopFarmer: '894194259731828786',
+	BSODoubleLoot: '923768318442229792'
 };
 
 export enum ActivityGroup {
@@ -153,7 +155,46 @@ export enum BitField {
 	DisableDailyButton = 44,
 
 	HasDeadeyeScroll = 45,
-	HasMysticVigourScroll = 46
+	HasMysticVigourScroll = 46,
+	AllowPublicAPIDataRetrieval = 47,
+
+	HasGivenBirthdayPack = 200,
+	HasPermanentSpawnLamp = 201,
+	HasScrollOfFarming = 202,
+	HasScrollOfLongevity = 203,
+	HasScrollOfTheHunt = 204,
+	HasBananaEnchantmentScroll = 205,
+	HasDaemonheimAgilityPass = 206,
+	DisabledGorajanBoneCrusher = 207,
+	HasLeaguesOneMinuteLengthBoost = 208,
+	HasPlantedIvy = 209,
+	HasGuthixEngram = 210,
+	ScrollOfLongevityDisabled = 211,
+	HasUnlockedYeti = 212,
+	NoItemContractDonations = 213,
+
+	HasFlickeringBoon = 214,
+	HasBrightBoon = 215,
+	HasGlowingBoon = 216,
+	HasSparklingBoon = 217,
+	HasGleamingBoon = 218,
+	HasLustrousBoon = 219,
+	HasElderBoon = 220,
+	HasBrilliantBoon = 221,
+	HasRadiantBoon = 222,
+	HasLuminousBoon = 223,
+	HasIncandescentBoon = 224,
+	HasVibrantBoon = 225,
+	HasAncientBoon = 226,
+	DisabledTameClueOpening = 227,
+	HasMoondashCharm = 228,
+	HasUnlockedVenatrix = 229,
+	GrewFiveSpiritTrees = 230,
+	UseSuperRestoresForDwarvenBlessing = 231,
+	DisableSizeMatters = 232,
+	DisabledTameImplingOpening = 233,
+	HasHalloweenWallkit = 234,
+	HasEarnedRiftGuardianFromStar = 235
 }
 
 interface BitFieldData {
@@ -164,11 +205,11 @@ interface BitFieldData {
 	protected: boolean;
 	userConfigurable: boolean;
 }
-
 export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
 
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
+	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
@@ -176,11 +217,28 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier6]: { name: 'Tier 6 Patron', protected: false, userConfigurable: false },
 
+	[BitField.HasHalloweenWallkit]: { name: 'Halloween Wall Kit Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasArcaneScroll]: { name: 'Arcane Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasSlepeyTablet]: { name: 'Slepey Tablet Used', protected: false, userConfigurable: false },
+	[BitField.HasScrollOfFarming]: { name: 'Scroll of Farming Used', protected: false, userConfigurable: false },
+	[BitField.HasScrollOfLongevity]: { name: 'Scroll of Longevity Used', protected: false, userConfigurable: false },
+	[BitField.HasScrollOfTheHunt]: { name: 'Scroll of the Hunt Used', protected: false, userConfigurable: false },
+	[BitField.HasPlantedIvy]: { name: 'Has Planted Ivy Seed', protected: false, userConfigurable: false },
+	[BitField.HasGuthixEngram]: { name: 'Has Guthix Engram', protected: false, userConfigurable: false },
+	[BitField.HasUnlockedYeti]: { name: 'Yeti Unlocked', protected: false, userConfigurable: false },
+	[BitField.HasBananaEnchantmentScroll]: {
+		name: 'Banana Enchantment Scroll Used',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasDaemonheimAgilityPass]: {
+		name: 'Daemonheim Agility Pass Used',
+		protected: false,
+		userConfigurable: false
+	},
 	[BitField.HasBloodbarkScroll]: { name: 'Runescroll of bloodbark Used', protected: false, userConfigurable: false },
 	[BitField.HasSwampbarkScroll]: { name: 'Runescroll of swampbark Used', protected: false, userConfigurable: false },
 	[BitField.HasSaradominsLight]: { name: "Saradomin's light Used", protected: false, userConfigurable: false },
@@ -191,6 +249,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: false },
 
+	[BitField.HasGivenBirthdayPack]: { name: 'Has Given Birthday Pack', protected: false, userConfigurable: false },
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
 		name: 'Permanent Event Backgrounds',
@@ -198,14 +257,90 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		userConfigurable: false
 	},
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
+	[BitField.HasLeaguesOneMinuteLengthBoost]: {
+		name: 'Leagues One Minute Trip Length Boost',
+		protected: false,
+		userConfigurable: false
+	},
 	[BitField.BothBotsMaxedFreeTierOnePerks]: {
 		name: 'Free T1 Perks for Maxed in OSB/BSO',
 		protected: false,
 		userConfigurable: false
 	},
 
+	[BitField.HasFlickeringBoon]: {
+		name: 'Has Flickering Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasBrightBoon]: {
+		name: 'Has Bright Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasGlowingBoon]: {
+		name: 'Has Glowing Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasSparklingBoon]: {
+		name: 'Has Sparkling Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasGleamingBoon]: {
+		name: 'Has Gleaming Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasLustrousBoon]: {
+		name: 'Has Lustrous Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasElderBoon]: {
+		name: 'Has Elder Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasBrilliantBoon]: {
+		name: 'Has Brilliant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasRadiantBoon]: {
+		name: 'Has Radiant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasLuminousBoon]: {
+		name: 'Has Luminous Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasIncandescentBoon]: {
+		name: 'Has Incandescent Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasVibrantBoon]: {
+		name: 'Has Vibrant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasAncientBoon]: {
+		name: 'Has Ancient Boon',
+		protected: false,
+		userConfigurable: false
+	},
+
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
 	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
+	[BitField.DisabledGorajanBoneCrusher]: {
+		name: 'Disabled Gorajan Bonecrusher',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.DisableBirdhouseRunButton]: {
 		name: 'Disable Birdhouse Run Button',
 		protected: false,
@@ -219,6 +354,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableGrandExchangeDMs]: {
 		name: 'Disable Grand Exchange DMs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.ScrollOfLongevityDisabled]: {
+		name: 'Disable Scroll of Longevity',
 		protected: false,
 		userConfigurable: true
 	},
@@ -239,6 +379,21 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableAutoSlayButton]: {
 		name: 'Disable Auto Slay Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.NoItemContractDonations]: {
+		name: 'Disable Item Contract donations',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledTameClueOpening]: {
+		name: 'Disable Eagle Tame Opening Caskets',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledTameImplingOpening]: {
+		name: 'Disable Tame from Opening Impling Jars',
 		protected: false,
 		userConfigurable: true
 	},
@@ -267,9 +422,45 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.AllowPublicAPIDataRetrieval]: {
+		name: 'Allow Public API Data Retrieval',
+		protected: false,
+		userConfigurable: true
+	},
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
-	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
+	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false },
+
+	[BitField.HasMoondashCharm]: {
+		name: 'Used Moondash Charm',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasUnlockedVenatrix]: {
+		name: 'Has Unlocked Venatrix',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.GrewFiveSpiritTrees]: {
+		name: 'Has grown five spirit trees',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.UseSuperRestoresForDwarvenBlessing]: {
+		name: 'Use Super Restores For Dwarven Blessing',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableSizeMatters]: {
+		name: 'Disable Size Matters unlock',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.HasEarnedRiftGuardianFromStar]: {
+		name: 'Has Earned Rift Guardian From Star',
+		protected: false,
+		userConfigurable: false
+	}
 } as const;
 
 export const BadgesEnum = {
@@ -312,73 +503,19 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.Hacktoberfest]: '<:hacktoberfest:1304259875634942082>'
 };
 
-export const MAX_XP = 200_000_000;
-
-export const LEVEL_99_XP = 13_034_431;
+export const MAX_XP = BOT_TYPE === 'OSB' ? 200_000_000 : 5_000_000_000;
 export const MAX_LEVEL = BOT_TYPE === 'OSB' ? 99 : 120;
-export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
+export const MAX_LEVEL_XP = convertLVLtoXP(MAX_LEVEL);
+export const MAX_TOTAL_LEVEL = SkillsArray.length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export const projectiles = {
-	arrow: {
-		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-		savedByAvas: true,
-		weapons: resolveItems(['Twisted bow'])
-	},
-	ogreArrow: {
-		items: resolveItems(['Ogre Arrow']),
-		savedByAvas: true,
-		weapons: resolveItems(['Ogre bow'])
-	},
-	bolt: {
-		items: resolveItems([
-			'Runite bolts',
-			'Dragon bolts',
-			'Diamond bolts (e)',
-			'Diamond dragon bolts (e)',
-			'Ruby dragon bolts (e)'
-		]),
-		savedByAvas: true,
-		weapons: resolveItems([
-			'Armadyl crossbow',
-			'Dragon hunter crossbow',
-			'Dragon crossbow',
-			'Zaryte crossbow',
-			'Rune crossbow'
-		])
-	},
-	javelin: {
-		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
-		savedByAvas: false,
-		weapons: resolveItems(['Heavy ballista'])
-	}
-} as const;
-export type ProjectileType = keyof typeof projectiles;
-
-const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
-	if (!Array.isArray(args)) return true;
-	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
-			return false;
-		}
-	}
-	return true;
-}
-
-export const DISABLED_COMMANDS = new Set<string>();
-
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
 export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
 export const busyImmuneCommands = ['admin', 'rp'];
-
-export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
-
-export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
 const globalConfigSchema = z.object({
 	clientID: z.string().min(10).max(25),
@@ -386,11 +523,12 @@ const globalConfigSchema = z.object({
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
-	sentryDSN: z.string().url().optional(),
 	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
-	supportServerID: z.string()
+	supportServerID: z.string(),
+	minimumLoggedPerfDuration: z.number().default(400),
+	guildIdsToCache: z.array(z.string())
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
@@ -401,16 +539,30 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
+const guildId = {
+	OldschoolGG: '342983479501389826',
+	TestServer: '940758552425955348'
+};
+
+const emojiServers = new Set([
+	'869497440947015730',
+	'324127314361319427',
+	'363252822369894400',
+	'395236850119213067',
+	'325950337271857152',
+	'395236894096621568'
+]);
+
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
 	isProduction,
 	timeZone: process.env.TZ,
-	sentryDSN: process.env.SENTRY_DSN,
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
-	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID
+	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID,
+	guildIdsToCache: [guildId.OldschoolGG, guildId.TestServer, ...emojiServers]
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
@@ -418,7 +570,7 @@ if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 }
 
 export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
-const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
+const gitRemote = 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
 
@@ -442,15 +594,33 @@ export const patronFeatures = {
 	}
 };
 
-export const BSO_MAX_TOTAL_LEVEL = 3120;
-
 if (!process.env.TEST && isMainThread) {
 	console.log(
 		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
 	);
 }
 
-export const MAX_CLUES_DROPPED = 100;
-
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];
+
+export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
+	activity_type_enum.BirthdayEvent,
+	activity_type_enum.Easter,
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
+	activity_type_enum.Revenants, // This is now under monsterActivity
+	activity_type_enum.KourendFavour, // Kourend favor activity was removed
+
+	// BSO
+	activity_type_enum.BossEvent,
+	activity_type_enum.TrickOrTreat,
+	activity_type_enum.HalloweenMiniMinigame,
+	activity_type_enum.Mortimer,
+	activity_type_enum.BirthdayCollectIngredients,
+	activity_type_enum.SnoozeSpellActive
+];
+
+export const CONSTANTS = {
+	DAILY_COOLDOWN: BOT_TYPE === 'BSO' ? Time.Hour * 4 : Time.Hour * 12,
+	TEARS_OF_GUTHIX_CD: Time.Day * 7
+};

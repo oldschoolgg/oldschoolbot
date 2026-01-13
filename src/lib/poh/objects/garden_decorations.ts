@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import type { PoHObject } from '..';
+import type { PoHObject } from '@/lib/poh/index.js';
 
 const cost = new Bank().add('Magic stone', 2);
 
@@ -196,5 +196,21 @@ export const GardenDecorations: PoHObject[] = [
 		level: 99,
 		itemCost: cost.clone().add('Olmlet'),
 		refundItems: true
+	},
+	{
+		id: 4860,
+		name: 'Marimbo statue',
+		slot: 'garden_decoration',
+		level: 99,
+		itemCost: cost.clone().add('Marimbo statue'),
+		refundItems: true
+	},
+	{
+		id: 9315,
+		name: 'Candy Bowl',
+		slot: 'garden_decoration',
+		level: 50,
+		itemCost: cost.clone().add('Plank', 10).add('Bronze nails', 5),
+		refundItems: false
 	}
 ];

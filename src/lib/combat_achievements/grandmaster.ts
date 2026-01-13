@@ -1,19 +1,18 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Monsters } from 'oldschooljs';
 
-import { Requirements } from '../structures/Requirements';
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
-	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions
-} from '../types/minions';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+	TheatreOfBloodTaskOptions,
+	TOAOptions
+} from '@/lib/types/minions.js';
 
 export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
@@ -33,6 +32,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: "Kill the Alchemical Hydra using only Dharok's Greataxe as a weapon whilst having no more than 10 Hitpoints throughout the entire fight.",
 		type: 'restriction',
 		monster: 'Alchemical Hydra',
+		details: "You must have Dharok's greataxe equipped in your melee gear.",
 		rng: {
 			chancePerKill: 33,
 			hasChance: (data, user) =>
@@ -46,15 +46,14 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric (5-scale) in less than 12 minutes and 30 seconds.',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
+		details: 'Team size must be at least 5 and the duration must be under 12 minutes 30 seconds.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).users.length >= 5 &&
-					!(data as RaidsOptions).isFakeMass &&
 					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
-					(data as RaidsOptions).isFakeMass &&
 					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
 					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1))
 		}
@@ -77,12 +76,12 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric (Solo) in less than 17 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
+		details: 'Team size must be 1 and the duration must be under 17 minutes.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).users.length === 1 &&
-				!(data as RaidsOptions).isFakeMass &&
 				data.duration < Time.Minute * 17 * (data.quantity ?? 1)
 		}
 	},
@@ -92,15 +91,14 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric (Trio) in less than 14 minutes and 30 seconds.',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
+		details: 'Team size must be at least 3 and the duration must be under 14 minutes 30 seconds.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).users.length >= 3 &&
-					!(data as RaidsOptions).isFakeMass &&
 					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
-					(data as RaidsOptions).isFakeMass &&
 					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
 					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1))
 		}
@@ -111,13 +109,14 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 38 minutes and 30 seconds. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
+		details:
+			'Challenge mode must be active, team size must be 1 and the duration must be under 38 minutes 30 seconds.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
 				(data as RaidsOptions).users.length === 1 &&
-				!(data as RaidsOptions).isFakeMass &&
 				data.duration < Time.Minute * 38.5 * (data.quantity ?? 1)
 		}
 	},
@@ -139,17 +138,17 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Trio) in less than 27 minutes.',
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
+		details:
+			'Challenge mode must be active, team size must be at least 3 and the duration must be under 27 minutes.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
 					(data as RaidsOptions).users.length >= 3 &&
-					!(data as RaidsOptions).isFakeMass &&
 					data.duration < Time.Minute * 27 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
-					(data as RaidsOptions).isFakeMass &&
 					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
 					data.duration < Time.Minute * 27 * (data.quantity ?? 1))
 		}
@@ -160,17 +159,17 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (5-scale) in less than 25 minutes.',
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
+		details:
+			'Challenge mode must be active, team size must be at least 5 and the duration must be under 25 minutes.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
 					(data as RaidsOptions).users.length >= 5 &&
-					!(data as RaidsOptions).isFakeMass &&
 					data.duration < Time.Minute * 25 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
-					(data as RaidsOptions).isFakeMass &&
 					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
 					data.duration < Time.Minute * 25 * (data.quantity ?? 1))
 		}
@@ -340,6 +339,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: "Kill Kree'arra by only dealing damage to him with a salamander.",
 		type: 'restriction',
 		monster: "Kree'arra",
+		details: 'You must have a black, red, or orange salamander equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -905,6 +905,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Tzkal-Zuk without equipping a Twisted Bow within the Inferno.',
 		type: 'restriction',
 		monster: 'TzKal-Zuk',
+		details: 'You must not have a Twisted bow equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => data.type === 'Inferno' && !user.hasEquipped('Twisted bow')
@@ -1027,6 +1028,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Vorkath with only your fists.',
 		type: 'restriction',
 		monster: 'Vorkath',
+		details: 'You must not have a weapon equipped in your melee gear.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -1074,8 +1076,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 24
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				Array.isArray(data.diedAt) &&
+				!data.diedAt[index] &&
+				data.duration < Time.Minute * 24 * data.quantity
 		}
 	},
 	{
@@ -1086,7 +1091,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{
@@ -1097,7 +1103,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 30,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{
@@ -1108,7 +1115,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 20,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{
@@ -1129,6 +1137,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Araxxor 6 times in 10:00.',
 		type: 'speed',
 		monster: 'Araxxor',
+		details: 'You must kill at least 6 Araxxor and average 1.66 minutes or less per kill.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data => {

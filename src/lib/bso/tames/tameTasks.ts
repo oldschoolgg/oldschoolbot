@@ -1,0 +1,510 @@
+import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
+import type { MTame } from '@/lib/bso/structures/MTame.js';
+import {
+	type ArbitraryTameActivity,
+	seaMonkeySpells,
+	TameSpeciesID,
+	type TameTaskOptions,
+	TameType,
+	tameKillableMonsters
+} from '@/lib/bso/tames/tames.js';
+import { tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
+
+import { userMention } from '@oldschoolgg/discord';
+import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { calcPerHour, formatDuration, increaseNumByPercent, isFunction, Time } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
+import { isEmpty } from 'remeda';
+
+import type { TameActivity } from '@/prisma/main.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
+import { handlePassiveImplings } from '@/lib/implings.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { allOpenables } from '@/lib/openables.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { makeTameRepeatTripButton } from '@/lib/util/interactions.js';
+import { assert } from '@/lib/util/logError.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
+
+export async function handleFinish({
+	lootToAdd,
+	user,
+	activity,
+	tame,
+	message
+}: {
+	lootToAdd: Bank;
+	message: string;
+	user: MUser;
+	tame: MTame;
+	activity: TameActivity;
+}) {
+	const results: string[] = [message];
+	const previousTameCl = tame.totalLoot.clone();
+	const crateRes = handleCrateSpawns(user, activity.duration);
+	if (crateRes !== null) lootToAdd.add(crateRes);
+
+	await prisma.tame.update({
+		where: {
+			id: tame.id
+		},
+		data: {
+			max_total_loot: previousTameCl.clone().add(lootToAdd).toJSON(),
+			last_activity_date: new Date()
+		}
+	});
+	const { itemsAdded } = await user.addItemsToBank({ items: lootToAdd, collectionLog: false });
+
+	const addRes = await tame.addDuration(activity.duration);
+	if (addRes) results.push(addRes);
+
+	if (!activity.channel_id) {
+		throw new Error('No channel ID found for tame activity');
+	}
+
+	const res = new MessageBuilder()
+		.setContent(results.join(', '))
+		.addAllowedUserMentions([user.id])
+		.addComponents([makeTameRepeatTripButton()])
+		.addBankImage({
+			bank: itemsAdded,
+			title: `${tame}'s Loot`,
+			user: user,
+			previousCL: previousTameCl
+		});
+
+	return globalClient.sendMessageOrWebhook(activity.channel_id, res);
+}
+
+export const arbitraryTameActivities: ArbitraryTameActivity[] = [
+	{
+		name: 'Tempoross',
+		id: 'Tempoross',
+		allowedTames: [TameSpeciesID.Monkey],
+		run: async ({ handleFinish, user, duration, tame, previousTameCL, activity }) => {
+			const quantity = Math.ceil(duration / (Time.Minute * 5));
+			const loot = getTemporossLoot(quantity, tame.maxGathererLevel + 15, previousTameCL);
+			handleFinish({
+				lootToAdd: loot,
+				message: `${user}, ${tame} finished defeating Tempoross ${quantity}x times.`,
+				user,
+				tame,
+				activity
+			});
+		}
+	},
+	{
+		name: 'Wintertodt',
+		id: 'Wintertodt',
+		allowedTames: [TameSpeciesID.Igne],
+		run: async ({ handleFinish, user, duration, tame, activity }) => {
+			const quantity = Math.ceil(duration / (Time.Minute * 5));
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				loot.add(
+					WintertodtCrate.open({
+						points: randArrItem([500, 500, 750, 1000]),
+						itemsOwned: user.bank,
+						skills: user.skillsAsXP,
+						firemakingXP: user.skillsAsXP.firemaking
+					})
+				);
+			}
+			handleFinish({
+				lootToAdd: loot,
+				message: `${user}, ${tame} finished defeating Wintertodt ${quantity}x times.`,
+				user,
+				activity,
+				tame
+			});
+		}
+	}
+];
+
+async function handleImplingLocator(user: MUser, tame: MTame, duration: number, loot: Bank, messages: string[]) {
+	const keepJars = user.bitfield.includes(BitField.DisabledTameImplingOpening);
+	if (tame.hasBeenFed('Impling locator')) {
+		const result = await handlePassiveImplings(
+			user,
+			{
+				type: 'MonsterKilling',
+				duration
+			} as ActivityTaskData,
+			messages,
+			true
+		);
+		if (result && result.bank.length > 0) {
+			const actualImplingLoot = new Bank();
+			for (const [item, qty] of result.bank.items()) {
+				const openable = allOpenables.find(i => i.id === item.id)!;
+				assert(!isEmpty(openable));
+				if (keepJars) {
+					actualImplingLoot.add(openable.id, qty);
+				} else {
+					actualImplingLoot.add(
+						isFunction(openable.output)
+							? (
+									await openable.output({
+										user,
+										quantity: qty,
+										self: openable,
+										totalLeaguesPoints: 0
+									})
+								).bank
+							: openable.output.roll(qty)
+					);
+				}
+			}
+			loot.add(actualImplingLoot);
+			messages.push(`${tame} caught ${result.bank} with their Impling locator`);
+			await tame.addToStatsBank('implings_loot', actualImplingLoot);
+		}
+	}
+}
+
+export async function runTameTask(activity: TameActivity, tame: MTame) {
+	const user = await mUserFetch(activity.user_id);
+
+	const activityData = activity.data as any as TameTaskOptions;
+	switch (activityData.type) {
+		case 'pvm': {
+			const { quantity, monsterID } = activityData;
+			const mon = tameKillableMonsters.find(i => i.id === monsterID)!;
+
+			let killQty = quantity - activity.deaths;
+			if (killQty < 1) {
+				await handleFinish({
+					lootToAdd: new Bank(),
+					message: `${userMention(user.id)}, Your tame died in all their attempts to kill ${
+						mon.name
+					}. Get them some better armor!`,
+					user,
+					activity,
+					tame
+				});
+				return;
+			}
+			const hasOri = tame.hasBeenFed('Ori');
+
+			const oriIsApplying = hasOri && mon.oriWorks !== false;
+			// If less than 8 kills, roll 25% chance per kill
+			if (oriIsApplying) {
+				if (killQty >= 8) {
+					killQty = Math.ceil(increaseNumByPercent(killQty, 25));
+				} else {
+					for (let i = 0; i < quantity; i++) {
+						if (roll(4)) killQty++;
+					}
+				}
+			}
+			const loot = mon.loot({ quantity: killQty, tame });
+			const messages: string[] = [];
+
+			let str = `${user}, ${tame} finished killing ${quantity}x ${mon.name}.${
+				activity.deaths > 0 ? ` ${tame} died ${activity.deaths}x times.` : ''
+			}`;
+			if (oriIsApplying) {
+				messages.push('25% extra loot (ate an Ori)');
+			}
+
+			const { doubleLootMsg } = tame.doubleLootCheck(loot);
+			str += doubleLootMsg;
+			await handleImplingLocator(user, tame, activity.duration, loot, messages);
+
+			if (messages.length > 0) {
+				str += `\n\n**Messages:** ${messages.join(', ')}.`;
+			}
+
+			await trackLoot({
+				duration: activity.duration,
+				kc: activityData.quantity,
+				id: mon.name,
+				changeType: 'loot',
+				type: 'Monster',
+				totalLoot: loot,
+				suffix: 'tame',
+				users: [
+					{
+						id: user.id,
+						loot,
+						duration: activity.duration
+					}
+				]
+			});
+			await handleFinish({
+				lootToAdd: loot,
+				message: str,
+				user,
+				activity,
+				tame
+			});
+			break;
+		}
+		case 'collect': {
+			const { quantity, itemID } = activityData;
+			const collectable = collectables.find(c => c.item.id === itemID)!;
+			const totalQuantity = quantity * collectable.quantity;
+			const loot = new Bank().add(collectable.item.id, totalQuantity);
+			let str = `${user}, ${tame} finished collecting ${totalQuantity}x ${
+				collectable.item.name
+			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
+			const { doubleLootMsg } = tame.doubleLootCheck(loot);
+			str += doubleLootMsg;
+			await handleFinish({
+				lootToAdd: loot,
+				message: str,
+				user,
+				tame,
+				activity
+			});
+			break;
+		}
+		case 'SpellCasting': {
+			const spell = seaMonkeySpells.find(s => s.id === activityData.spellID)!;
+			const loot = new Bank(activityData.loot);
+			let str = `${user}, ${tame} finished casting the ${spell.name} spell for ${formatDuration(
+				activity.duration
+			)}. ${loot
+				.items()
+				.map(([item, qty]) => `${Math.floor(calcPerHour(qty, activity.duration)).toFixed(1)}/hr ${item.name}`)
+				.join(', ')}`;
+			const { doubleLootMsg } = tame.doubleLootCheck(loot);
+			str += doubleLootMsg;
+			await handleFinish({
+				lootToAdd: loot,
+				message: str,
+				user,
+				activity,
+				tame
+			});
+			break;
+		}
+		case 'Clues': {
+			const clueTier = ClueTiers.find(c => c.scrollID === activityData.clueID)!;
+			const messages: string[] = [];
+			const loot = new Bank();
+
+			await handleImplingLocator(user, tame, activity.duration, loot, messages);
+
+			let actualOpenQuantityWithBonus = 0;
+			for (let i = 0; i < activityData.quantity; i++) {
+				actualOpenQuantityWithBonus += randInt(1, 3);
+			}
+
+			if (clueTier.name === 'Master' && !user.bitfield.includes(BitField.DisabledTameClueOpening)) {
+				const hasDivineRing = tame.hasEquipped('Divine ring');
+				const percentChanceOfGMC = hasDivineRing ? 3.5 : 1.5;
+				for (let i = 0; i < activityData.quantity; i++) {
+					if (percentChance(percentChanceOfGMC)) {
+						loot.add('Clue scroll (grandmaster)');
+					}
+				}
+				if (hasDivineRing) messages.push('2x GMC droprate for divine ring');
+			}
+
+			if (user.bitfield.includes(BitField.DisabledTameClueOpening)) {
+				loot.add(clueTier.id, activityData.quantity);
+			} else {
+				const openingLoot = clueTier.table.roll(actualOpenQuantityWithBonus, { cl: user.cl });
+
+				if (tame.hasEquipped('Abyssal jibwings') && clueTier !== ClueTiers[0]) {
+					const lowerTier = ClueTiers[ClueTiers.indexOf(clueTier) - 1];
+					const abysJwLoot = new Bank();
+					let bonusClues = 0;
+					for (let i = 0; i < activityData.quantity; i++) {
+						if (percentChance(5)) {
+							bonusClues++;
+							abysJwLoot.add(lowerTier.table.roll(1, { cl: user.cl }));
+						}
+					}
+					if (abysJwLoot.length > 0) {
+						loot.add(abysJwLoot);
+						await tame.addToStatsBank('abyssal_jibwings_loot', abysJwLoot);
+						messages.push(
+							`You received the loot from ${bonusClues}x ${lowerTier.name} caskets from your Abyssal jibwings.`
+						);
+					}
+				} else if (tame.hasEquipped('3rd age jibwings') && openingLoot.has('Coins')) {
+					const thirdAgeJwLoot = new Bank().add('Coins', openingLoot.amount('Coins'));
+					loot.add(thirdAgeJwLoot);
+					messages.push(`You received ${thirdAgeJwLoot} from your 3rd age jibwings.`);
+					await tame.addToStatsBank('third_age_jibwings_loot', thirdAgeJwLoot);
+				}
+
+				loot.add(openingLoot);
+			}
+
+			if (tame.hasBeenFed('Elder knowledge') && roll(15)) {
+				await tame.addToStatsBank('elder_knowledge_loot_bank', loot);
+				loot.multiply(2);
+				messages.push('2x loot from Elder knowledge (1/15 chance)');
+			}
+
+			let str = `${user}, ${tame} finished completing ${activityData.quantity}x ${Items.itemNameFromId(
+				clueTier.scrollID
+			)}. (${Math.floor(calcPerHour(activityData.quantity, activity.duration)).toFixed(1)} clues/hr)`;
+
+			if (messages.length > 0) {
+				str += `\n\n${messages.join('\n')}`;
+			}
+
+			await handleFinish({
+				lootToAdd: loot,
+				message: str,
+				user,
+				activity,
+				tame
+			});
+			break;
+		}
+		case 'Tempoross':
+		case 'Wintertodt': {
+			const previousTameCL = await prisma.userStats.findFirst({
+				where: {
+					user_id: BigInt(user.id)
+				},
+				select: {
+					tame_cl_bank: true
+				}
+			});
+			const act = arbitraryTameActivities.find(i => i.id === activityData.type)!;
+			await act.run({
+				handleFinish,
+				user,
+				tame,
+				duration: activity.duration,
+				previousTameCL: new Bank(previousTameCL?.tame_cl_bank as ItemBank),
+				activity
+			});
+			break;
+		}
+		default: {
+			console.error('Unmatched tame activity type', activity.type);
+			break;
+		}
+	}
+}
+
+export async function repeatTameTrip({
+	interaction,
+	user,
+	continueDeltaMillis
+}: {
+	interaction: MInteraction;
+	user: MUser;
+	continueDeltaMillis: number | null;
+}): CommandResponse {
+	const activity = await tameLastFinishedActivity(user);
+	if (!activity) {
+		return 'You have no recently completed tame trips to repeat.';
+	}
+	const data = activity.data as unknown as TameTaskOptions;
+	switch (data.type) {
+		case TameType.Combat: {
+			const mon = tameKillableMonsters.find(i => i.id === data.monsterID);
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					kill: {
+						name: mon!.name
+					}
+				},
+				user,
+				interaction,
+				continueDeltaMillis
+			});
+		}
+		case TameType.Gatherer: {
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					collect: {
+						name: Items.getOrThrow(data.itemID).name
+					}
+				},
+				user,
+				interaction,
+				continueDeltaMillis
+			});
+		}
+		case 'SpellCasting': {
+			let args = {};
+			switch (data.spellID) {
+				case 1: {
+					args = {
+						tan: Items.getOrThrow(data.itemID).name
+					};
+					break;
+				}
+				case 2: {
+					args = {
+						plank_make: Items.getOrThrow(data.itemID).name
+					};
+					break;
+				}
+				case 3: {
+					args = {
+						spin_flax: 'flax'
+					};
+					break;
+				}
+				case 4: {
+					args = {
+						superglass_make: 'molten glass'
+					};
+					break;
+				}
+				case 5: {
+					args = {
+						superheat_item: Items.getOrThrow(data.itemID).name
+					};
+					break;
+				}
+			}
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					cast: args
+				},
+				user,
+				interaction,
+				continueDeltaMillis
+			});
+		}
+		case 'Tempoross':
+		case 'Wintertodt': {
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					activity: {
+						name: data.type
+					}
+				},
+				user,
+				interaction,
+				continueDeltaMillis
+			});
+		}
+		case 'Clues': {
+			const clueTier = ClueTiers.find(c => c.scrollID === data.clueID)!;
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					clue: {
+						clue: clueTier.name
+					}
+				},
+				user,
+				interaction,
+				continueDeltaMillis
+			});
+		}
+		default: {
+		}
+	}
+	return 'Unable to find a tame trip to repeat.';
+}

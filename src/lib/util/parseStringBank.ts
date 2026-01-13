@@ -1,10 +1,8 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit/math';
-import { cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
-import { notEmpty } from 'e';
-import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
+import { cleanString, evalMathExpression, notEmpty, stringMatches } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items } from 'oldschooljs';
 
-import { filterableTypes } from '../data/filterables';
-import itemIsTradeable from './itemIsTradeable';
+import { isDeletedItemName } from '@/lib/customItems/util.js';
+import { filterableTypes } from '@/lib/data/filterables.js';
 
 const { floor, max, min } = Math;
 
@@ -21,9 +19,12 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 		return parseQuantityAndItem(split.join(' '));
 	}
 
-	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
+	let [potentialQty, ...potentialName] = split.length === 1 ? ['', split[0]] : split;
 
-	const lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
+	if (isDeletedItemName(str)) return [];
+	if (!Number.isNaN(Number(potentialQty)) && isDeletedItemName(potentialName.join(' '))) return [];
+
+	const lazyItemGet = Items.getItem(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
@@ -42,7 +43,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	} else {
 		osItems = Array.from(
 			Items.filter(
-				i => itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
+				i => Items.itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
 			).values()
 		);
 	}
@@ -100,8 +101,8 @@ function parseBankFromFlags({
 	const itemFilter = filter ? filter.items(user) : undefined;
 	for (const [item, quantity] of bank.items()) {
 		if (maxSize && newBank.length >= maxSize) break;
-		if (flagsKeys.includes('tradeables') && !itemIsTradeable(item.id)) continue;
-		if (flagsKeys.includes('untradeables') && itemIsTradeable(item.id)) continue;
+		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
+		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
 		if (
 			flagsKeys.includes('search') &&

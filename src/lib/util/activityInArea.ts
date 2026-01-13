@@ -1,8 +1,9 @@
 import { Monsters, resolveItems } from 'oldschooljs';
 
-import { soteSkillRequirements } from '../skilling/functions/questRequirements';
-import { courses } from '../skilling/skills/agility';
-import butterflyNettingCreatures from '../skilling/skills/hunter/creatures/butterflyNetting';
+import { activity_type_enum } from '@/prisma/main.js';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import butterflyNettingCreatures from '@/lib/skilling/skills/hunter/creatures/butterflyNetting.js';
 import type {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,
@@ -10,11 +11,12 @@ import type {
 	MonsterActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
-} from '../types/minions';
+} from '@/lib/types/minions.js';
 
 export enum WorldLocations {
 	Priffdinas = 0,
-	World = 1
+	World = 1,
+	Underwater = 2
 }
 
 const WorldLocationsChecker = [
@@ -63,6 +65,22 @@ const WorldLocationsChecker = [
 			}
 
 			return false;
+		}
+	},
+	{
+		area: WorldLocations.Underwater,
+		checker: (_user: MUser, activity: ActivityTaskData) => {
+			const underWaterLocations: activity_type_enum[] = [
+				activity_type_enum.DriftNet,
+				activity_type_enum.UnderwaterAgilityThieving,
+				activity_type_enum.DepthsOfAtlantis,
+				activity_type_enum.FishingTrawler,
+				activity_type_enum.AerialFishing,
+				activity_type_enum.Fishing,
+				activity_type_enum.CamdozaalFishing,
+				activity_type_enum.FishingContest
+			];
+			return underWaterLocations.includes(activity.type);
 		}
 	}
 ];

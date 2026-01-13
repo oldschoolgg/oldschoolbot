@@ -1,0 +1,150 @@
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { bonecrusherEffect } from '@/lib/bso/skills/invention/effects/bonecrusherEffect.js';
+import { clueUpgraderEffect } from '@/lib/bso/skills/invention/effects/clueUpgraderEffect.js';
+import { portableTannerEffect } from '@/lib/bso/skills/invention/effects/portableTannerEffect.js';
+import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
+
+import { roll } from '@oldschoolgg/rng';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
+
+import type { BitField } from '@/lib/constants.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { SlayerContext } from '@/tasks/minions/monsterActivity.js';
+
+export type UserStatsNeededForMidPvmEffects = {
+	onTaskMonsterScores: ItemBank;
+	onTaskWithMaskMonsterScores: ItemBank;
+};
+
+export type MidPVMEffectArgs = {
+	gearBank: GearBank;
+	updateBank: UpdateBank;
+	messages: string[];
+	disabledInventions: number[];
+	duration: number;
+	bitfield: BitField[] | readonly BitField[];
+	slayerContext: SlayerContext;
+	quantity: number;
+	monster: KillableMonster;
+	cl: Bank;
+	userStats: UserStatsNeededForMidPvmEffects;
+	slayerUnlocks: SlayerTaskUnlocksEnum[];
+};
+
+export function oriEffect({
+	gearBank,
+	quantity,
+	duration,
+	messages
+}: Pick<MidPVMEffectArgs, 'gearBank' | 'quantity' | 'duration' | 'messages'>) {
+	if (!gearBank.usingPet('Ori')) return quantity;
+	let newQuantity = quantity;
+
+	if (duration > Time.Minute * 5) {
+		// Original boost for 5+ minute task:
+		newQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
+	} else {
+		// 25% chance at extra kill otherwise:
+		for (let i = 0; i < quantity; i++) {
+			if (roll(4)) {
+				newQuantity++;
+			}
+		}
+	}
+	messages.push(`${newQuantity - quantity}x bonus kills from Ori`);
+	return newQuantity;
+}
+
+export function rollForBSOThings(args: MidPVMEffectArgs) {
+	const { monster, duration, cl, updateBank, messages } = args;
+	bonecrusherEffect(args);
+	portableTannerEffect(args);
+	clueUpgraderEffect({ ...args, type: 'pvm' });
+	slayerMasksHelms(args);
+
+	if (monster.id === Monsters.Vorkath.id && roll(6000)) {
+		updateBank.itemLootBank.add(23_941);
+	}
+
+	const minutes = Math.ceil(duration / Time.Minute);
+	const osjsMon = Monsters.get(monster.id);
+	if (osjsMon?.data.attributes?.includes(MonsterAttribute.Dragon)) {
+		const dropRate = clAdjustedDroprate(cl, 'Klik', 8500, 1.5);
+		for (let i = 0; i < minutes; i++) {
+			if (roll(dropRate)) {
+				updateBank.itemLootBank.add('Klik');
+				break;
+			}
+		}
+	}
+
+	if (monster.id === 290) {
+		for (let i = 0; i < minutes; i++) {
+			if (roll(6000)) {
+				updateBank.itemLootBank.add('Dwarven ore');
+				break;
+			}
+		}
+	}
+
+	if (monster.name.toLowerCase() === 'zulrah') {
+		for (let i = 0; i < minutes; i++) {
+			if (roll(5500)) {
+				updateBank.itemLootBank.add('Brock');
+				break;
+			}
+		}
+	}
+
+	if (updateBank.itemLootBank.has('Brock')) {
+		messages.push('<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.');
+	}
+
+	if (updateBank.itemLootBank.has('Klik')) {
+		messages.push('<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.');
+	}
+}
+
+export function slayerMasksHelms({
+	monster,
+	slayerContext,
+	slayerUnlocks,
+	updateBank,
+	gearBank,
+	userStats,
+	messages
+}: MidPVMEffectArgs) {
+	if (
+		!slayerContext.isOnTask ||
+		!slayerContext.effectiveSlayed ||
+		!slayerUnlocks.includes(SlayerTaskUnlocksEnum.Maskuerade)
+	) {
+		return;
+	}
+	const bankToAdd = new Bank().add(monster.id, slayerContext.effectiveSlayed);
+	const maskHelmForThisMonster = slayerMaskHelms.find(i => i.monsters.includes(monster.id));
+	const matchingMaskOrHelm =
+		maskHelmForThisMonster &&
+		gearBank.hasEquippedOrInBank([maskHelmForThisMonster.mask.id, maskHelmForThisMonster.helm.id])
+			? maskHelmForThisMonster
+			: null;
+	const oldMaskScores = new Bank(userStats.onTaskWithMaskMonsterScores as ItemBank);
+	const newMaskScores = oldMaskScores.clone().add(bankToAdd);
+	if (maskHelmForThisMonster && !gearBank.hasEquippedOrInBank(maskHelmForThisMonster.mask.id)) {
+		for (let i = 0; i < slayerContext.effectiveSlayed; i++) {
+			if (roll(maskHelmForThisMonster.maskDropRate)) {
+				updateBank.itemLootBank.add(maskHelmForThisMonster.mask.id);
+				messages.push(`You unlocked the ${maskHelmForThisMonster.mask.name} mask!`);
+				break;
+			}
+		}
+	}
+	updateBank.userStats.on_task_monster_scores = new Bank(userStats.onTaskMonsterScores as ItemBank)
+		.add(bankToAdd)
+		.toJSON();
+	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores.toJSON() : undefined;
+}

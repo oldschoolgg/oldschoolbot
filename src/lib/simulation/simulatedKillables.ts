@@ -1,7 +1,18 @@
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { Bank } from 'oldschooljs';
+import { nexUniqueDrops } from '@/lib/bso/collection-log/main.js';
+import { chanceOfDOAUnique, pickUniqueToGiveUser } from '@/lib/bso/depthsOfAtlantis.js';
+import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
+import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { KingGoldemarLootTable } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
+import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
+import { NEX_UNIQUE_DROPRATE, nexLootTable } from '@/lib/bso/monsters/nex.js';
+import { zygomiteFarmingSource } from '@/lib/bso/skills/farming/zygomites.js';
+import { calcDwwhChance } from '@/lib/bso/structures/Boss.js';
 
-import { WintertodtCrate } from './wintertodt';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { SimpleTable } from '@oldschoolgg/toolkit';
+import { Bank, Misc } from 'oldschooljs';
+
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 
 export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(420)
@@ -28,16 +39,19 @@ export const winterTodtPointsTable = new SimpleTable<number>()
 
 interface SimulatedKillable {
 	name: string;
+	isCustom: boolean;
+	message?: string;
 	loot: (quantity: number) => Bank;
 }
 const emptyBank = new Bank();
 export const simulatedKillables: SimulatedKillable[] = [
 	{
 		name: 'Wintertodt',
+		isCustom: false,
 		loot: (quantity: number) => {
 			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
-				const points = winterTodtPointsTable.rollOrThrow();
+				const points = randInt(1000, 5000);
 
 				loot.add(
 					WintertodtCrate.open({
@@ -58,5 +72,107 @@ export const simulatedKillables: SimulatedKillable[] = [
 			}
 			return loot;
 		}
-	}
+	},
+	{
+		name: 'The Nightmare',
+		isCustom: false,
+		loot: (quantity: number) => {
+			const bank = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id);
+			}
+			return bank;
+		}
+	},
+	{
+		name: "Phosani's Nightmare",
+		isCustom: false,
+		loot: (quantity: number) => {
+			const bank = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: true }).id);
+			}
+			return bank;
+		}
+	},
+	{
+		name: 'Depths of Atlantis (DOA) - Solo',
+		isCustom: true,
+		loot: (quantity: number) => {
+			const chanceOfUnique = chanceOfDOAUnique(1, false);
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				if (roll(chanceOfUnique)) {
+					loot.add(pickUniqueToGiveUser(loot));
+				} else {
+					loot.add(DOANonUniqueTable.roll());
+				}
+			}
+			return loot;
+		}
+	},
+	{
+		name: 'Nex',
+		isCustom: true,
+		loot: (quantity: number) => {
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				if (roll(NEX_UNIQUE_DROPRATE(1))) {
+					loot.add(randArrItem(nexUniqueDrops), 1);
+				}
+				loot.add(nexLootTable.roll());
+			}
+			return loot;
+		}
+	},
+	{
+		name: 'King Goldemar',
+		isCustom: true,
+		message: '**Assumptions**:\n- Solo\n- Ring of Luck equipped',
+		loot: (quantity: number): Bank => {
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				if (roll(calcDwwhChance(1, true))) {
+					loot.add('Broken dwarven warhammer');
+				}
+			}
+			loot.add(KingGoldemarLootTable.roll(quantity));
+			return loot;
+		}
+	},
+	{
+		name: 'Moktang',
+		isCustom: true,
+		loot: (quantity: number) => {
+			return MoktangLootTable.roll(quantity);
+		}
+	},
+	{
+		name: 'Kalphite King',
+		isCustom: true,
+		loot: (quantity: number) => {
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				KalphiteKingMonster.specialLoot?.({
+					loot: loot,
+					ownedItems: new Bank(),
+					quantity: 1,
+					cl: loot
+				});
+			}
+			loot.add(kalphiteKingLootTable.roll(quantity));
+			return loot;
+		}
+	},
+	...zygomiteFarmingSource.map(src => ({
+		name: src.name,
+		isCustom: true,
+		loot: (quantity: number) => {
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				loot.add(src.lootTable?.roll());
+			}
+			return loot;
+		}
+	}))
 ];

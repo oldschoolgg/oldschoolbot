@@ -1,40 +1,23 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { increaseNumByPercent, randInt } from 'e';
+import { calcPerHour, increaseNumByPercent } from '@oldschoolgg/toolkit';
 
-import { getTemporossLoot } from '../../../lib/simulation/tempoross';
-import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const temporossTask: MinionTask = {
 	type: 'Tempoross',
-	async run(data: TemporossActivityTaskOptions) {
-		const { userID, channelID, quantity, rewardBoost, duration } = data;
-		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const previousScore = await user.fetchMinigameScore('tempoross');
+	async run(data: TemporossActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelId, quantity, rewardBoost, duration } = data;
+
+		const currentLevel = user.skillsAsLevels.fishing;
 		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);
-		const kcForPet = randInt(previousScore, newScore);
 
 		let rewardTokens = quantity * 6;
 		if (rewardBoost > 0) {
 			rewardTokens = Math.ceil(increaseNumByPercent(rewardTokens, rewardBoost));
 		}
 		const loot = getTemporossLoot(rewardTokens, currentLevel, user.bank);
-
-		if (loot.has('Tiny tempor')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.TinyTempor} **${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Tiny tempor! They got the pet on the ${formatOrdinal(
-					kcForPet
-				)} kill, and their Fishing level is ${currentLevel}.`
-			);
-		}
 
 		let fXPtoGive = quantity * 5500 * (currentLevel / 40);
 		let fBonusXP = 0;
@@ -61,14 +44,13 @@ export const temporossTask: MinionTask = {
 		}
 
 		const xpStr = await user.addXP({
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: fXPtoGive,
 			duration,
 			source: 'Tempoross'
 		});
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -88,6 +70,12 @@ export const temporossTask: MinionTask = {
 			output += `\n\n**Fishing Bonus XP:** ${fBonusXP.toLocaleString()}`;
 		}
 
-		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: output, files: [image] },
+			data,
+			loot: itemsAdded
+		});
 	}
 };

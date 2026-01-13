@@ -1,19 +1,16 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum, randInt } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
-import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { skillingPetDropRate } from '../../../lib/util';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import aerialFishingCreatures from '@/lib/skilling/skills/hunter/aerialFishing.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',
-	isNew: true,
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
-		const { quantity, channelID } = data;
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { quantity, channelId } = data;
 		const currentHuntLevel = user.skillsAsLevels.hunter;
 		const currentFishLevel = user.skillsAsLevels.fishing;
 
@@ -30,14 +27,16 @@ export const aerialFishingTask: MinionTask = {
 		let molchPearls = 0;
 
 		// Caught fish and molch pearls received formula
-		const maxRoll = (currentFishLevel * 2 + currentHuntLevel) / 3;
+		const maxRoll = Math.ceil((currentFishLevel * 2 + currentHuntLevel) / 3);
 		const loot = new Bank();
 
+		const molchPearlsChance = Math.ceil(100 - ((maxRoll - 40) * 25) / 59);
+
 		for (let i = 0; i < quantity; i++) {
-			if (roll(100 - ((maxRoll - 40) * 25) / 59)) {
+			if (rng.roll(molchPearlsChance)) {
 				molchPearls++;
 			}
-			const currentRoll = randInt(0, maxRoll);
+			const currentRoll = rng.randInt(0, maxRoll);
 			loot.add(bluegill.table.roll());
 
 			if (
@@ -134,29 +133,20 @@ export const aerialFishingTask: MinionTask = {
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', 636_833);
-		if (roll(petDropRate / totalFishCaught)) {
+		if (rng.roll(Math.ceil(petDropRate / totalFishCaught))) {
 			loot.add('Heron');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
-			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 		str += `\n\nYou received: ${loot}.`;
 
-		if (loot.amount('Golden tench') > 0) {
+		if (loot.has('Golden tench')) {
 			str += '\n\n**The cormorant has brought you a very strange tench.**';
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a **Golden tench** while aerial fishing, their Fishing/Hunter level is ${currentFishLevel}/${currentHuntLevel}!`
-			);
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

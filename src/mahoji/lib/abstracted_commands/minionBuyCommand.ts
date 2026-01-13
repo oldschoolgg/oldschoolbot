@@ -1,10 +1,12 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import { ComponentType } from 'discord.js';
+import { isAtleastThisOld, Time } from '@oldschoolgg/toolkit';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Bank } from 'oldschooljs';
 
-import { mahojiInformationalButtons } from '../../../lib/sharedComponents';
+import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
+import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
-	if (user.user.minion_hasBought) return 'You already have a minion!';
+	if (user.hasMinion) return 'You already have a minion!';
 
 	await user.update({
 		minion_hasBought: true,
@@ -12,16 +14,30 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 		minion_ironman: Boolean(ironman)
 	});
 
+	const createdAt = DiscordSnowflake.timestampFrom(user.id);
+	const starter = isAtleastThisOld(createdAt, Time.Year * 2)
+		? new Bank({
+				Shark: 300,
+				'Saradomin brew(4)': 50,
+				'Super restore(4)': 20,
+				'Anti-dragon shield': 1,
+				'Tiny lamp': 5,
+				'Small lamp': 2,
+				'Tradeable mystery box': 5,
+				'Untradeable Mystery box': 5,
+				'Dragon bones': 50,
+				Coins: 50_000_000,
+				'Clue scroll (beginner)': 10,
+				'Equippable mystery box': 1,
+				'Pet Mystery box': 1
+			})
+		: null;
+
+	if (starter) {
+		await user.addItemsToBank({ items: starter, collectionLog: false });
+	}
 	// Ensure user has a userStats row
-	await prisma.userStats.upsert({
-		where: {
-			user_id: BigInt(user.id)
-		},
-		create: {
-			user_id: BigInt(user.id)
-		},
-		update: {}
-	});
+	await fetchUserStats(user.id);
 
 	return {
 		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
@@ -34,12 +50,9 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 
 <:BSO:863823820435619890> **BSO:** I run a 2nd bot called BSO (Bot School Old), which you can also play, it has lots of fun and unique changes, like 5x XP and infinitely stacking clues. Type \`/help\` for more information.
 
-Please click the buttons below for important links.`,
-		components: [
-			{
-				type: ComponentType.ActionRow,
-				components: mahojiInformationalButtons
-			}
-		]
+Please click the buttons below for important links.
+
+${starter !== null ? `**You received these starter items:** ${starter}.` : ''}`,
+		components: mahojiInformationalButtons
 	};
 }

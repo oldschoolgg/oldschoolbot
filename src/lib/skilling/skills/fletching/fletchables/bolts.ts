@@ -1,5 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
-import type { Fletchable } from '../../../types';
+
+import type { Fletchable } from '@/lib/skilling/types.js';
 
 const Bolts: Fletchable[] = [
 	{
@@ -16,6 +17,14 @@ const Bolts: Fletchable[] = [
 		level: 39,
 		xp: 1.5,
 		inputItems: new Bank({ 'Iron bolts (unf)': 1, feather: 1 }),
+		tickRate: 0.08
+	},
+	{
+		name: 'Silver bolts',
+		id: itemID('Silver bolts'),
+		level: 43,
+		xp: 2.5,
+		inputItems: new Bank({ 'Silver bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.08
 	},
 	{

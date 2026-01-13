@@ -1,20 +1,15 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { calcWhatPercent, percentChance } from 'e';
+import { calcWhatPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { MinigameName } from '@/lib/settings/minigames';
-import { gauntlet } from '../../../lib/simulation/gauntlet';
-import type { GauntletOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { gauntlet } from '@/lib/simulation/gauntlet.js';
+import type { GauntletOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',
-	async run(data: GauntletOptions) {
-		const { channelID, quantity, userID, corrupted } = data;
-		const user = await mUserFetch(userID);
+	async run(data: GauntletOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, corrupted } = data;
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
 		const kc = await user.fetchMinigameScore(key);
@@ -26,7 +21,7 @@ export const gauntletTask: MinionTask = {
 
 		let deaths = 0;
 		for (let i = 0; i < quantity; i++) {
-			const died = percentChance(chanceOfDeath);
+			const died = rng.percentChance(chanceOfDeath);
 			if (died) {
 				deaths++;
 			}
@@ -43,8 +38,7 @@ export const gauntletTask: MinionTask = {
 
 		await user.incrementMinigameScore(key, quantity - deaths);
 
-		const { previousCL } = await transactItems({
-			userID: user.id,
+		const { previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -54,18 +48,7 @@ export const gauntletTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
 
-		if (loot.amount('Youngllef') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a **Youngllef** <:Youngllef:604670894798798858> while doing the ${name} for the ${formatOrdinal(
-					newKc
-				)} time!`
-			);
-		}
-
-		updateBankSetting('gauntlet_loot', loot);
+		await ClientSettings.updateBankSetting('gauntlet_loot', loot);
 
 		const image = await makeBankImage({
 			bank: loot,
@@ -74,6 +57,6 @@ export const gauntletTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

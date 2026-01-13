@@ -1,7 +1,8 @@
-import { Bank, type Item, itemID } from 'oldschooljs';
+import { bsoArmorSetsSrc } from '@/lib/bso/creatables/bsoArmorPacks.js';
 
-import getOSItem from '../../util/getOSItem';
-import type { Createable } from '../createables';
+import { Bank, type Item, Items, itemID } from 'oldschooljs';
+
+import type { Createable } from '@/lib/data/createables.js';
 
 export const armorAndItemPacks: Createable[] = [
 	// Melee armour sets
@@ -2350,6 +2351,7 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Purple partyhat')]: 1,
 			[itemID('White partyhat')]: 1
 		},
+		noCreatablesCl: true,
 		noCl: true
 	},
 	{
@@ -2362,6 +2364,7 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Purple partyhat')]: 1,
 			[itemID('White partyhat')]: 1
 		},
+		noCreatablesCl: true,
 		outputItems: {
 			[itemID('Partyhat set')]: 1
 		}
@@ -2464,17 +2467,18 @@ export const armorAndItemPacks: Createable[] = [
 ];
 
 const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
+	...bsoArmorSetsSrc,
 	{
 		unpacked: new Bank().add("Dagon'hai hat").add("Dagon'hai robe top").add("Dagon'hai robe bottom"),
-		packed: getOSItem("Dagon'hai robes set")
+		packed: Items.getOrThrow("Dagon'hai robes set")
 	},
 	{
 		unpacked: new Bank().add('Masori mask (f)').add('Masori body (f)').add('Masori chaps (f)'),
-		packed: getOSItem('Masori armour set (f)')
+		packed: Items.getOrThrow('Masori armour set (f)')
 	},
 	{
 		unpacked: new Bank().add('Sunfire fanatic helm').add('Sunfire fanatic cuirass').add('Sunfire fanatic chausses'),
-		packed: getOSItem('Sunfire fanatic armour set')
+		packed: Items.getOrThrow('Sunfire fanatic armour set')
 	}
 ];
 

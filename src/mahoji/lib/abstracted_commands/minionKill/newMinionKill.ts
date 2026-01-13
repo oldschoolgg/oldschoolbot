@@ -1,38 +1,43 @@
-import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/datetime';
-import type { PlayerOwnedHouse } from '@prisma/client';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { EItem, Items, Monsters } from 'oldschooljs';
-import { mergeDeep } from 'remeda';
-import z from 'zod';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
-import type { BitField, PvMMethod } from '@/lib/constants';
-import { getSimilarItems } from '@/lib/data/similarItems';
-import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon';
-import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants';
-import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
+import type { ECombatOption } from '@oldschoolgg/schemas';
+import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { EItem, Items, itemID, Monsters } from 'oldschooljs';
+import { mergeDeep } from 'remeda';
+import * as z from 'zod';
+
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
+import { BitField, type PvMMethod } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import { type AttackStyles, getAttackStylesContext } from '@/lib/minions/functions/index.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { wildySlayerOnlyMonsters } from '@/lib/slayer/constants.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { type CurrentSlayerInfo, determineCombatBoosts } from '@/lib/slayer/slayerUtil.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { Peak } from '@/lib/util/peaks.js';
+import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
+import { killsRemainingOnTask } from '@/mahoji/lib/abstracted_commands/minionKill/calcTaskMonstersRemaining.js';
 import {
-	type AttackStyles,
-	attackStylesArr,
-	getAttackStylesContext,
-	resolveAttackStyles
-} from '@/lib/minions/functions';
-import type { KillableMonster } from '@/lib/minions/types';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks';
-import { type CurrentSlayerInfo, determineCombatBoosts, wildySlayerOnlyMonsters } from '@/lib/slayer/slayerUtil';
-import type { GearBank } from '@/lib/structures/GearBank';
-import { UpdateBank } from '@/lib/structures/UpdateBank';
-import type { Peak } from '@/lib/util/peaks';
-import { zodEnum } from '@/lib/util/smallUtils.js';
-import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
-import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
-import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed';
+	type PostBoostEffect,
+	postBoostEffects
+} from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
+import {
+	CombatMethodOptionsSchema,
+	speedCalculations
+} from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),
 	quantity: z.number().int().positive(),
 	isOnTask: z.boolean(),
 	isInWilderness: z.boolean(),
-	attackStyles: z.array(z.enum(zodEnum(attackStylesArr))),
+	attackStyles: z.array(z.enum(['attack', 'strength', 'defence', 'magic', 'ranged'])),
 	currentTaskOptions: CombatMethodOptionsSchema,
 	messages: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)
@@ -45,7 +50,7 @@ export interface MinionKillOptions {
 	currentSlayerTask: CurrentSlayerInfo;
 	monster: KillableMonster;
 	isTryingToUseWildy: boolean;
-	combatOptions: readonly CombatOptionsEnum[];
+	combatOptions: readonly ECombatOption[];
 	inputPVMMethod: PvMMethod | undefined;
 	monsterKC: number;
 	poh: PlayerOwnedHouse;
@@ -56,6 +61,7 @@ export interface MinionKillOptions {
 	bitfield: readonly BitField[];
 	pkEvasionExperience: number;
 	currentPeak: Peak;
+	disabledInventions: InventionID[];
 }
 
 export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
@@ -147,6 +153,9 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			return `${monster.name} cannot be barraged or burst.`;
 		}
 	}
+	if (isBurstingOrBarraging && !isOnTask) {
+		return `You can't barrage or burst ${monster.name}, because you're not on a slayer task.`;
+	}
 
 	const killsRemaining = currentSlayerTask
 		? killsRemainingOnTask({
@@ -157,6 +166,11 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			})
 		: null;
 
+	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === EBSOMonster.YETI) {
+		args.inputQuantity = 1;
+	}
+
+	const inventionsBeingUsed: InventionID[] = [];
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
 
 	const speedDurationResult = speedCalculations({
@@ -170,11 +184,13 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 		combatMethods,
 		relevantGearStat,
 		addPostBoostEffect: (effect: PostBoostEffect) => ephemeralPostTripEffects.push(effect),
+		addInvention: (invention: InventionID) => inventionsBeingUsed.push(invention),
 		killsRemaining
 	});
 	if (typeof speedDurationResult === 'string') {
 		return speedDurationResult;
 	}
+
 	const quantity = speedDurationResult.finalQuantity;
 	let duration = speedDurationResult.timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
@@ -211,6 +227,14 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 		}
 	}
 
+	if (gearBank.gear.wildy.hasEquipped('Hellfire bow') && isInWilderness) {
+		const arrowsNeeded = Math.ceil(duration / (Time.Second * 13));
+		if (gearBank.gear.wildy.ammo?.item !== itemID('Hellfire arrow')) {
+			return `You need Hellfire arrows equipped to kill ${monster.name} with a Hellfire bow.`;
+		}
+		speedDurationResult.updateBank.itemCostBank.add(itemID('Hellfire arrow'), arrowsNeeded);
+	}
+
 	for (const effect of [...postBoostEffects, ...ephemeralPostTripEffects]) {
 		const result = effect.run({
 			...args,
@@ -223,8 +247,10 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			combatMethods,
 			relevantGearStat,
 			currentTaskOptions: speedDurationResult.currentTaskOptions,
+			addInvention: (invention: InventionID) => inventionsBeingUsed.push(invention),
 			killsRemaining
 		});
+		if (typeof result === 'string') return result;
 		if (!result) continue;
 		for (const boostResult of Array.isArray(result) ? result : [result]) {
 			if (boostResult.changes) {
@@ -251,6 +277,15 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 
 	speedDurationResult.updateBank.itemCostBank.freeze();
 	speedDurationResult.updateBank.itemLootBank.freeze();
+
+	if (speedDurationResult.updateBank.itemCostBank.length > 0) {
+		speedDurationResult.messages.push(`Removing items: ${speedDurationResult.updateBank.itemCostBank}`);
+	}
+
+	if (monster.deathProps) {
+		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC: args.monsterKC });
+		speedDurationResult.messages.push(`${deathChance.toFixed(1)}% chance of death`);
+	}
 
 	const result = newMinionKillReturnSchema.parse({
 		duration,

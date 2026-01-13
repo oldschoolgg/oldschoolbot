@@ -1,18 +1,20 @@
-import type { GearSetupType } from '@prisma/client';
-import { Time, calcPercentOfNum, objectKeys, uniqueArr } from 'e';
+import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
+
+import { calcPercentOfNum, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants';
-import { Eatables } from '@/lib/data/eatables';
-import { convertAttackStyleToGearSetup } from '@/lib/gear/functions/convertAttackStyleToGearSetup';
-import { calculateMonsterFoodRaw } from '@/lib/minions/functions/calculateMonsterFood';
-import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC';
-import { removeFoodFromUserRaw } from '@/lib/minions/functions/removeFoodFromUser';
-import { calcWildyPKChance } from '@/lib/util/calcWildyPkChance';
-import { type Peak, PeakTier } from '@/lib/util/peaks';
-import type { BoostArgs, BoostResult } from './speedBoosts';
+import type { GearSetupType } from '@/prisma/main/enums.js';
+import { BitField } from '@/lib/constants.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import { convertAttackStyleToGearSetup } from '@/lib/gear/functions/convertAttackStyleToGearSetup.js';
+import { calculateMonsterFoodRaw } from '@/lib/minions/functions/calculateMonsterFood.js';
+import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
+import { removeFoodFromUserRaw } from '@/lib/minions/functions/removeFoodFromUser.js';
+import { calcWildyPKChance } from '@/lib/util/calcWildyPkChance.js';
+import { type Peak, PeakTier } from '@/lib/util/peaks.js';
+import type { BoostArgs, BoostResult } from '@/mahoji/lib/abstracted_commands/minionKill/speedBoosts.js';
 
-const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
+const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)));
 
 // Runs after we know the quantity/duration/etc
 type PostBoostEffectReturn = Pick<
@@ -26,7 +28,7 @@ export type PostBoostEffect = {
 			BoostArgs,
 			'addPostBoostEffect' | 'itemCost'
 		>
-	) => null | undefined | PostBoostEffectReturn | PostBoostEffectReturn[];
+	) => null | undefined | string | PostBoostEffectReturn | PostBoostEffectReturn[];
 };
 export const postBoostEffects: PostBoostEffect[] = [
 	{
@@ -50,7 +52,10 @@ export const postBoostEffects: PostBoostEffect[] = [
 				totalHealingNeeded: healAmountNeeded * quantity,
 				attackStylesUsed: isInWilderness
 					? ['wildy']
-					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+					: uniqueArr([
+							...(Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]),
+							gearToCheck
+						]),
 				learningPercentage: percentReduced,
 				isWilderness: isInWilderness,
 				minimumHealAmount: monster.minimumHealAmount
@@ -111,10 +116,10 @@ export const postBoostEffects: PostBoostEffect[] = [
 		}) => {
 			if (!isInWilderness) return;
 
-			let confirmationString: string | undefined = undefined;
+			let confirmationString: string | undefined;
 			const messages: string[] = [];
 
-			let hasWildySupplies = undefined;
+			let hasWildySupplies: boolean;
 
 			const antiPkBrewsNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
 			const antiPkRestoresNeeded = Math.max(1, Math.floor(duration / (8 * Time.Minute)));
@@ -169,6 +174,17 @@ export const postBoostEffects: PostBoostEffect[] = [
 					hasWildySupplies
 				}
 			};
+		}
+	},
+	{
+		description: 'Dwarven Blessing Cost',
+		run: ({ gearBank, bitfield, duration }) => {
+			const blessingResult = dwarvenBlessing({ gearBank, duration, bitfield });
+			if (blessingResult) {
+				return {
+					itemCost: blessingResult.itemCost
+				};
+			}
 		}
 	}
 ];

@@ -1,4 +1,5 @@
-import { percentChance, sumArr } from 'e';
+import { percentChance, randFloat, roll } from '@oldschoolgg/rng';
+import { sumArr } from '@oldschoolgg/toolkit';
 import { type Bank, itemID } from 'oldschooljs';
 
 import {
@@ -8,21 +9,21 @@ import {
 	ringNests,
 	strungRabbitFootNestTable,
 	treeSeedsNest
-} from '../../simulation/birdsNest';
-import { type SkillNameType, SkillsEnum } from '../../skilling/types';
-import { GearBank } from '../../structures/GearBank';
-import { randFloat, roll } from '../../util/rng';
+} from '@/lib/simulation/birdsNest.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import { GearBank } from '@/lib/structures/GearBank.js';
 
 const clues = [
-	[itemID('Clue scroll(elite)'), 1 / 10],
-	[itemID('Clue scroll(hard)'), 2 / 10],
-	[itemID('Clue scroll(medium)'), 3 / 10],
-	[itemID('Clue scroll(easy)'), 4 / 10]
+	[itemID('Elder scroll piece'), 0.2 / 10],
+	[itemID('Clue scroll (grandmaster)'), 0.45 / 10],
+	[itemID('Clue scroll(elite)'), 2 / 10],
+	[itemID('Clue scroll(hard)'), 3 / 10],
+	[itemID('Clue scroll(medium)'), 5 / 10]
 ];
 
 export default function addSkillingClueToLoot(
-	user: MUser | GearBank,
-	skill: SkillsEnum | SkillNameType,
+	user: MUser | GearBank | number,
+	skill: SkillNameType,
 	quantity: number,
 	clueChance: number,
 	loot: Bank,
@@ -31,18 +32,23 @@ export default function addSkillingClueToLoot(
 	twitcherSetting?: string,
 	wcCapeNestBoost?: boolean
 ) {
-	const userLevel = user instanceof GearBank ? user.skillsAsLevels[skill] : user.skillLevel(skill);
+	const userLevel =
+		typeof user === 'number'
+			? user
+			: user instanceof GearBank
+				? user.skillsAsLevels[skill]
+				: user.skillLevel(skill);
 	const nestChance = wcCapeNestBoost ? Math.floor(256 * 0.9) : 256;
 	const cluesTotalWeight = sumArr(clues.map(c => c[1]));
 	let chance = Math.floor(clueChance / (100 + userLevel));
 	let nests = 0;
 
-	if (skill === SkillsEnum.Woodcutting && twitcherSetting === 'clue') {
+	if (skill === 'woodcutting' && twitcherSetting === 'clue') {
 		chance = Math.floor((clueChance * 0.8) / (100 + userLevel));
 	}
 
 	for (let i = 0; i < quantity; i++) {
-		if (skill === SkillsEnum.Woodcutting && !clueNestsOnly && roll(nestChance)) {
+		if (skill === 'woodcutting' && !clueNestsOnly && roll(nestChance)) {
 			if (twitcherSetting && percentChance(20)) {
 				switch (twitcherSetting) {
 					case 'egg':
@@ -68,10 +74,11 @@ export default function addSkillingClueToLoot(
 		}
 
 		if (!roll(chance)) continue;
+		const nextTier = false;
 		let gotClue = false;
 		let clueRoll = randFloat(0, cluesTotalWeight);
 		for (const clue of clues) {
-			if (clueRoll < clue[1]) {
+			if (clueRoll < clue[1] || nextTier) {
 				nests++;
 				gotClue = true;
 				loot.add(clue[0]);
@@ -85,7 +92,7 @@ export default function addSkillingClueToLoot(
 			gotClue = true;
 		}
 	}
-	if (skill === SkillsEnum.Woodcutting) {
+	if (skill === 'woodcutting') {
 		loot.add(birdsNestID, nests);
 	}
 	return loot;

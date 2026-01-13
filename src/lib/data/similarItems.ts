@@ -1,4 +1,6 @@
-import { itemID, resolveItems } from 'oldschooljs';
+import { dyedItems } from '@/lib/bso/dyedItems.js';
+
+import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import {
 	gracefulCapes,
@@ -7,7 +9,8 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants';
+} from '@/lib/data/gracefulVariants.js';
+import skillcapes from '@/lib/skilling/skillcapes.js';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];
@@ -33,6 +36,7 @@ const slayerHelmSimilar = resolveItems([
 	'Turquoise slayer helmet',
 	'Hydra slayer helmet',
 	'Twisted slayer helmet',
+	'Infernal slayer helmet',
 	'Tztok slayer helmet',
 	'Vampyric slayer helmet',
 	'Tzkal slayer helmet',
@@ -47,6 +51,7 @@ const slayerHelmSimilarI = resolveItems([
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
 	'Slayer helmet (i)',
+	'Infernal slayer helmet(i)',
 	'Tztok slayer helmet (i)',
 	'Vampyric slayer helmet (i)',
 	'Tzkal slayer helmet (i)',
@@ -86,6 +91,12 @@ const source: [string, (string | number)[]][] = [
 	['Rune axe', ['Rune felling axe', 'Gilded axe']],
 	['Dragon axe', ['Dragon felling axe', '3rd age axe', '3rd age felling axe']],
 	['Crystal axe', ['Crystal felling axe']],
+	['Lumberjack hat', ['Forestry hat']],
+	['Lumberjack top', ['Forestry top']],
+	['Lumberjack legs', ['Forestry legs']],
+	['Lumberjack boots', ['Forestry boots']],
+	['Log basket', ['Forestry basket']],
+	['Forestry kit', ['Forestry basket']],
 	['Rune pickaxe', ['Gilded pickaxe']],
 	['Dragon full helm', ['Dragon full helm (g)']],
 	['Dragon chainbody', ['Dragon chainbody (g)']],
@@ -188,16 +199,32 @@ const source: [string, (string | number)[]][] = [
 	['Graceful boots', gracefulFeet],
 	['Graceful cape', gracefulCapes],
 	['Fire cape', ['Fire max cape', 'Fire max cape (l)']],
-	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)']],
+	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)', 'TzKal cape']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
-	["Ava's accumulator", ['Accumulator max cape']],
+	['Tidal collector', ['Tidal collector (i)', 'Deathly collector', 'Deathly collector (i)']],
+	[
+		"Ava's accumulator",
+		['Accumulator max cape', 'Tidal collector', 'Tidal collector (i)', 'Deathly collector', 'Deathly collector (i)']
+	],
 	[
 		"Ava's assembler",
-		['Assembler max cape', 'Assembler max cape (l)', 'Masori assembler', 'Masori assembler max cape']
+		[
+			"Combatant's cape",
+			'Ranged master cape',
+			'Assembler max cape',
+			'Assembler max cape (l)',
+			'Masori assembler',
+			'Masori assembler max cape',
+			"Blessed dizana's quiver",
+			"Dizana's max cape",
+			'Tidal collector',
+			'Tidal collector (i)',
+			'Deathly collector',
+			'Deathly collector (i)'
+		]
 	],
 	["Blessed dizana's quiver", ["Dizana's max cape"]],
 	['Mythical cape', ['Mythical max cape']],
-	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
 		'Imbued guthix cape',
 		[
@@ -263,7 +290,6 @@ const source: [string, (string | number)[]][] = [
 			]
 		]
 	],
-	['Slayer cape', ['Slayer cape (t)']],
 	['Nose peg', slayerHelmSimilar],
 	['Earmuffs', slayerHelmSimilar],
 	['Spiny helmet', slayerHelmSimilar],
@@ -283,14 +309,33 @@ const source: [string, (string | number)[]][] = [
 			'Steam battlestaff',
 			'Mystic steam staff',
 			'Mud battlestaff',
-			'Mystic mud staff'
+			'Mystic mud staff',
+			'Virtus wand',
+			'Void staff',
+			'Void staff (u)'
 		]
 	],
+	['Torva full helm', ['Gorajan warrior helmet', 'Infernal slayer helmet(i)']],
+	['Torva platebody', ['Gorajan warrior top']],
+	['Torva platelegs', ['Gorajan warrior legs']],
+	['Torva gloves', ['Gorajan warrior gloves']],
+	['Torva boots', ['Gorajan warrior boots']],
+	['Virtus mask', ['Gorajan occult helmet', 'Infernal slayer helmet(i)']],
+	['Virtus robe top', ['Gorajan occult top']],
+	['Virtus robe legs', ['Gorajan occult legs']],
+	['Virtus gloves', ['Gorajan occult gloves']],
+	['Virtus boots', ['Gorajan occult boots']],
+	['Pernix cowl', ['Gorajan archer helmet', 'Infernal slayer helmet(i)']],
+	['Pernix body', ['Gorajan archer top']],
+	['Pernix chaps', ['Gorajan archer legs']],
+	['Pernix gloves', ['Gorajan archer gloves']],
+	['Pernix boots', ['Gorajan archer boots']],
+	['Abyssal cape', ['Vasa cloak', 'TzKal cape', 'Tidal collector']],
 	['Ivandis flail', ['Blisterwood flail']],
-	['Angler hat', ['Spirit angler headband']],
-	['Angler top', ['Spirit angler top']],
-	['Angler waders', ['Spirit angler waders']],
-	['Angler boots', ['Spirit angler boots']],
+	['Angler hat', ['Spirit angler headband', 'Fishing hat']],
+	['Angler top', ['Spirit angler top', 'Fishing jacket']],
+	['Angler waders', ['Spirit angler waders', 'Fishing waders']],
+	['Angler boots', ['Spirit angler boots', 'Fishing boots']],
 	['Flippers', ['Dark flippers']],
 	[
 		'Merfolk trident',
@@ -306,41 +351,37 @@ const source: [string, (string | number)[]][] = [
 			'Uncharged toxic trident (e)'
 		]
 	],
-	['Agility cape', ['Max cape', 'Agility cape(t)']],
-	['Attack cape', ['Max cape', 'Attack cape(t)']],
-	['Construct. cape', ['Max cape', 'Construct. cape(t)']],
-	['Cooking cape', ['Max cape', 'Cooking cape(t)']],
-	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
-	['Defence cape', ['Max cape', 'Defence cape(t)']],
-	['Farming cape', ['Max cape', 'Farming cape(t)']],
-	['Firemaking cape', ['Max cape', 'Firemaking cape(t)']],
-	['Fishing cape', ['Max cape', 'Fishing cape(t)']],
-	['Fletching cape', ['Max cape', 'Fletching cape(t)']],
-	['Herblore cape', ['Max cape', 'Herblore cape(t)']],
-	['Hitpoints cape', ['Max cape', 'Hitpoints cape(t)']],
-	['Hunter cape', ['Max cape', 'Hunter cape(t)']],
-	['Magic cape', ['Max cape', 'Magic cape(t)']],
-	['Mining cape', ['Max cape', 'Mining cape(t)']],
-	['Prayer cape', ['Max cape', 'Prayer cape(t)']],
-	['Ranging cape', ['Max cape', 'Ranging cape(t)']],
-	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
-	['Slayer cape', ['Max cape', 'Slayer cape(t)']],
-	['Smithing cape', ['Max cape', 'Smithing cape(t)']],
-	['Strength cape', ['Max cape', 'Strength cape(t)']],
-	['Thieving cape', ['Max cape', 'Thieving cape(t)']],
-	['Woodcutting cape', ['Max cape', 'Woodcut. cape(t)']],
+	['Ghrazi rapier', ['Holy ghrazi rapier']],
+	['Scythe of vitur', ['Sanguine scythe of vitur', 'Holy scythe of vitur']],
+	['Scythe of vitur (uncharged)', ['Sanguine scythe of vitur (uncharged)', 'Holy scythe of vitur (uncharged)']],
+	['Sanguinesti staff', ['Holy sanguinesti staff']],
+	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
 	['Salve amulet(i)', ['Salve amulet(ei)']],
+	['Zaryte bow', ['Hellfire bow']],
+	['Twisted bow', ['Hellfire bow']],
+	['Gorajan archer helmet', ['Infernal slayer helmet(i)']],
+	['Gorajan occult helmet', ['Infernal slayer helmet(i)']],
+	['Gorajan warrior helmet', ['Infernal slayer helmet(i)']],
+	['Ring of suffering (i)', ['Ring of suffering (ri)']],
 	['Scythe of vitur', [...scytheChargedSimilar]],
 	['Scythe of vitur (uncharged)', [...scytheUnchargedSimilar]],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
 	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
+	['Contest rod', ['Crystal fishing rod']],
+	[
+		"Beginner's tackle box",
+		['Basic tackle box', 'Standard tackle box', 'Professional tackle box', "Champion's tackle box"]
+	],
 	['Magic shortbow', ['Magic shortbow (i)']],
 	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
 	['Celestial ring (uncharged)', ['Celestial signet', 'Celestial ring', 'Celestial signet (uncharged)']],
 	['Celestial ring', ['Celestial signet']],
 	['Celestial signet (uncharged)', ['Celestial signet']],
+	['Kodai wand', ['Virtus wand', 'Void staff', 'Void staff (u)']],
+	['Virtus wand', ['Void staff', 'Void staff (u)']],
+	['Virtus book', ['Abyssal tome']],
 	['Prospector jacket', ['Golden prospector jacket', 'Varrock armour 4']],
 	['Prospector legs', ['Golden prospector legs']],
 	['Prospector boots', ['Golden prospector boots']],
@@ -355,35 +396,117 @@ const source: [string, (string | number)[]][] = [
 	["Elidinis' ward (f)", ["Elidinis' ward (or)"]],
 	['Rune pouch', ['Divine rune pouch']],
 	['Ghrazi rapier', ['Holy ghrazi rapier']],
+	["Inventors' backpack", ['Invention master cape']],
+	['Berserker ring', ['Berserker ring (i)']],
+	['Archers ring', ['Archers ring (i)']],
+	['Ignis ring', ['Ignis ring (i)']],
+	['Ring of piercing', ['Ring of piercing (i)']],
 	["Karil's coif", ['Armadyl helmet', 'Masori mask (f)', 'Masori mask']],
 	["Karil's leathertop", ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
 	["Karil's leatherskirt", ['Armadyl chainskirt', 'Masori chaps (f)', 'Masori chaps']],
 	['Armadyl helmet', ['Masori mask (f)', 'Masori mask']],
 	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
 	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
-	['Music cape', ['Music cape (t)']],
 	['Imbued heart', ['Saturated heart']],
 	["Craw's bow", ['Webweaver bow']],
 	["Viggora's chainmace", ['Ursine chainmace']],
 	["Thammaron's sceptre", ['Accursed sceptre']],
-	['Torva full helm', ['Sanguine torva full helm']],
-	['Torva platebody', ['Sanguine torva platebody']],
-	['Torva platelegs', ['Sanguine torva platelegs']],
-
-	['Lumberjack hat', ['Forestry hat']],
-	['Lumberjack top', ['Forestry top']],
-	['Lumberjack legs', ['Forestry legs']],
-	['Lumberjack boots', ['Forestry boots']],
-	['Log basket', ['Forestry basket']],
-	['Forestry kit', ['Forestry basket']],
 	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']],
-
 	['Ring of suffering (i)', ['Ring of suffering (ri)']],
 	['Amulet of rancour', ['Amulet of rancour (s)']],
-	['Skull sceptre', ['Skull sceptre (i)']]
+	['Skull sceptre', ['Skull sceptre (i)']],
+
+	// Tame gear
+	['Abyssal jibwings', ['Abyssal jibwings (e)']],
+	['3rd age jibwings', ['3rd age jibwings (e)']],
+	['Demonic jibwings', ['Demonic jibwings (e)']],
+
+	// Inventions
+	['Inferno adze', ['Superior inferno adze']],
+	['Gorajan bonecrusher', ['Superior bonecrusher']],
+	['Magic secateurs', ['Arcane harvester']],
+	['Dwarven greataxe', ['Drygore axe']],
+
+	// Mastery capes
+	['Music cape', ['Music cape (t)', 'Completionist cape', 'Completionist cape (t)']],
+	['Achievement diary cape', ['Achievement diary cape(t)', 'Completionist cape', 'Completionist cape (t)']],
+	['Master quest cape', ['Completionist cape', 'Completionist cape (t)']],
+	["Combatant's cape", ['Completionist cape', 'Completionist cape (t)']],
+	["Gatherer's cape", ['Completionist cape', 'Completionist cape (t)']],
+	['Support cape', ['Completionist cape', 'Completionist cape (t)']],
+	["Artisan's cape", ['Completionist cape', 'Completionist cape (t)']]
 ];
 
-const similarItems: Map<number, number[]> = new Map(source.map(entry => [itemID(entry[0]), resolveItems(entry[1])]));
+// Build skill cape & master cape similar items. This also handles comp and comp(t) receiving all skillcape and master cape perks.
+for (const cape of skillcapes) {
+	const untrimmedCape = Items.getOrThrow(cape.untrimmed).name;
+	const trimmedCape = Items.getOrThrow(cape.trimmed).name;
+	const masterCape = Items.getOrThrow(cape.masterCape.id).name;
+	const expertCape = cape.expertCape ? Items.getOrThrow(cape.expertCape.id).name : null;
+	const invertedMasterCape = cape.masterCapeInverted.name;
+
+	const skillCapeList = [
+		trimmedCape,
+		'Max cape',
+		masterCape,
+		'Completionist cape',
+		'Completionist cape (t)',
+		invertedMasterCape
+	];
+	const masterCapeList = ['Completionist cape', 'Completionist cape (t)', invertedMasterCape];
+
+	if (expertCape !== null) {
+		skillCapeList.push(expertCape);
+		masterCapeList.push(expertCape);
+	}
+
+	// Skill cape
+	const existingSkillCape = source.find(s => s[0] === untrimmedCape);
+	if (existingSkillCape) {
+		existingSkillCape[1].push(...skillCapeList);
+	} else {
+		source.push([untrimmedCape, skillCapeList]);
+	}
+
+	// Master cape
+	const existingMasterCape = source.find(s => s[0] === masterCape);
+	if (existingMasterCape) {
+		existingMasterCape[1].push(...masterCapeList);
+	} else {
+		source.push([masterCape, masterCapeList]);
+	}
+}
+
+for (const { baseItem, dyedVersions } of dyedItems) {
+	// Update matching child rows (simmilarItems) first:
+	const matchingChildren = source.filter(s => s[1].includes(baseItem.name));
+
+	if (matchingChildren.length > 0) {
+		for (const matchingRow of matchingChildren) {
+			// Check children (simmilarItems) for dyed variants and add those:
+			for (const subSimilarItem of matchingRow[1]) {
+				const dyedVariant = dyedItems.find(i => i.baseItem.name === subSimilarItem);
+				if (dyedVariant) {
+					matchingRow[1].push(...dyedVariant.dyedVersions.map(i => i.item.id));
+				}
+			}
+		}
+	}
+
+	// Check for existing record and update it, otherwise it would be overwritten.
+	const existingRoot = source.find(s => s[0] === baseItem.name);
+	if (existingRoot) {
+		// Update existing root entry:
+		existingRoot[1].push(...dyedVersions.map(i => i.item.id));
+	} else {
+		// ...Or create a new entry:
+		source.push([baseItem.name, dyedVersions.map(i => i.item.id)]);
+	}
+}
+
+export const similarItems: Map<number, number[]> = new Map(
+	source.map(entry => [itemID(entry[0]), resolveItems(entry[1])])
+);
 
 export const inverseSimilarItems: Map<number, Set<number>> = new Map();
 for (const [baseItem, similarItems] of source) {

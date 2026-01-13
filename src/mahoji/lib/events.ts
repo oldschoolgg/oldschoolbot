@@ -1,70 +1,33 @@
-import type { ItemBank } from 'oldschooljs';
+import { syncDoubleLoot } from '@/lib/bso/doubleLoot.js';
+import { syncSlayerMaskLeaderboardCache } from '@/lib/bso/skills/slayer/slayerMaskLeaderboard.js';
 
-import { startBlacklistSyncing } from '../../lib/blacklists';
-import { usernameWithBadgesCache } from '../../lib/cache';
-import { Channel, META_CONSTANTS, badges, globalConfig } from '../../lib/constants';
-import { initCrons } from '../../lib/crons';
-import { initTickers } from '../../lib/tickers';
-import { logWrapFn } from '../../lib/util';
-import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { CUSTOM_PRICE_CACHE } from '../commands/sell';
+import { Time } from '@oldschoolgg/toolkit';
+import { TimerManager } from '@sapphire/timer-manager';
 
-export async function syncCustomPrices() {
-	const clientData = await mahojiClientSettingsFetch({ custom_prices: true });
-	for (const [key, value] of Object.entries(clientData.custom_prices as ItemBank)) {
-		CUSTOM_PRICE_CACHE.set(Number(key), Number(value));
-	}
-}
+import { bulkUpdateCommands } from '@/discord/utils.js';
+import { Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
+import { initTickers } from '@/lib/tickers.js';
 
-async function updateBadgeTable() {
-	const badgesInDb = await prisma.badges.findMany();
-	for (const [_id, emojiString] of Object.entries(badges)) {
-		const id = Number(_id);
-		if (!badgesInDb.find(b => b.id === id)) {
-			await prisma.badges.create({
-				data: {
-					id,
-					text: emojiString
-				}
-			});
-		}
-	}
-}
+export const onStartup = async () => {
+	await syncDoubleLoot();
+	syncSlayerMaskLeaderboardCache();
 
-async function populateUsernameCache() {
-	const users = await prisma.user.findMany({
-		where: {
-			username_with_badges: {
-				not: null
-			}
+	// Wait 10 seconds before starting tickers to reduce lag on startup
+	TimerManager.setTimeout(
+		() => {
+			initTickers();
 		},
-		select: {
-			id: true,
-			username_with_badges: true
-		}
-	});
-	for (const user of users) {
-		if (!user.username_with_badges) continue;
-		usernameWithBadgesCache.set(user.id, user.username_with_badges);
-	}
-}
-
-export const onStartup = logWrapFn('onStartup', async () => {
-	initCrons();
-	initTickers();
+		globalConfig.isProduction ? Time.Second * 10 : 0
+	);
 
 	if (globalConfig.isProduction) {
-		sendToChannelID(Channel.GeneralChannel, {
-			content: `I have just turned on!\n\n${META_CONSTANTS.RENDERED_STR}`
-		}).catch(console.error);
+		globalClient
+			.sendMessage(Channel.GeneralChannel, {
+				content: `I have just turned on!\n\n${META_CONSTANTS.RENDERED_STR}`
+			})
+			.catch(console.error);
+	} else {
+		// In development, always sync commands on startup.
+		await bulkUpdateCommands();
 	}
-
-	globalClient.application.commands.fetch({
-		guildId: globalConfig.isProduction ? undefined : globalConfig.supportServerID
-	});
-	updateBadgeTable();
-	startBlacklistSyncing();
-
-	populateUsernameCache();
-});
+};

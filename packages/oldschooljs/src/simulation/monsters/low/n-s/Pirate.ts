@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const PirateTable = new LootTable({ limit: 128 })
+export const PirateTable: LootTable = new LootTable({ limit: 128 })
 	.every('Bones')
 
 	/* Weapons and armour */
@@ -37,7 +37,7 @@ export const PirateTable = new LootTable({ limit: 128 })
 	/* Gem drop table */
 	.add(GemTable, 1, 1);
 
-export default new SimpleMonster({
+export const Pirate: SimpleMonster = new SimpleMonster({
 	id: 521,
 	name: 'Pirate',
 	table: PirateTable,

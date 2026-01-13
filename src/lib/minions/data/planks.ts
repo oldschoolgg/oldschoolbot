@@ -1,6 +1,6 @@
 import { itemID } from 'oldschooljs';
 
-import type { Plankable } from '../../skilling/types';
+import type { Plankable } from '@/lib/skilling/types.js';
 
 export const Planks: Plankable[] = [
 	{
@@ -26,5 +26,11 @@ export const Planks: Plankable[] = [
 		inputItem: itemID('Mahogany logs'),
 		outputItem: itemID('Mahogany plank'),
 		gpCost: 1500
+	},
+	{
+		name: 'Elder plank',
+		inputItem: itemID('Elder logs'),
+		outputItem: itemID('Elder plank'),
+		gpCost: 8500
 	}
 ];

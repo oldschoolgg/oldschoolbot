@@ -1,6 +1,6 @@
 {
-	"hash": "a4f21eff2cf87d39c13854f6315b7d42",
-	"date": "2025-07-01T06:46:53.270Z",
+	"hash": "e4c4edaee60ef3edd454d0e900c6564c",
+	"date": "2025-09-27T10:56:17.425Z",
 	"data": [
 		{
 			"name": "activities",
@@ -272,12 +272,6 @@
 			"subOptions": []
 		},
 		{
-			"name": "kc",
-			"desc": "See your OSRS kc for a monster/boss.",
-			"examples": ["/kc name:General Graardor"],
-			"subOptions": []
-		},
-		{
 			"name": "kibble",
 			"desc": "Make kibble from herbs and crops.",
 			"examples": ["/kibble name:Simple kibble quantity:100"],
@@ -317,7 +311,10 @@
 				"movers",
 				"opens",
 				"sacrifice",
-				"skills"
+				"skills",
+				"tames_hatched",
+				"total_ic_donation_given",
+				"unique_ic_donation_given"
 			]
 		},
 		{

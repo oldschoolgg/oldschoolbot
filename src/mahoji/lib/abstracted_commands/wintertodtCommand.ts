@@ -1,31 +1,33 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
-import { Eatables } from '../../../lib/data/eatables';
-import { warmGear } from '../../../lib/data/filterables';
-import { trackLoot } from '../../../lib/lootTrack';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { Eatables } from '@/lib/data/eatables.js';
+import { warmGear } from '@/lib/data/filterables.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function wintertodtCommand(user: MUser, channelID: string, quantity?: number) {
-	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
-	const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+export async function wintertodtCommand(user: MUser, channelId: string, quantity?: number) {
+	const fmLevel = user.skillsAsLevels.firemaking;
+	const wcLevel = user.skillsAsLevels.woodcutting;
 	if (fmLevel < 50) {
 		return 'You need 50 Firemaking to have a chance at defeating the Wintertodt.';
 	}
-
-	const messages = [];
 
 	let durationPerTodt = Time.Minute * 7.3;
 
 	// Up to a 10% boost for 99 WC
 	const wcBoost = (wcLevel + 1) / 10;
 
+	const boosts: string[] = [];
+	const foodStr: string[] = [];
+
 	if (wcBoost > 1) {
-		messages.push(`**Boosts:** ${wcBoost.toFixed(2)}% for Woodcutting level\n`);
+		boosts.push(`**Boosts:** ${wcBoost.toFixed(2)}% for Woodcutting level`);
+	}
+
+	if (user.hasEquippedOrInBank('Dwarven greataxe')) {
+		durationPerTodt /= 2;
+		boosts.push('2x faster for Dwarven greataxe.');
 	}
 
 	durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
@@ -44,7 +46,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 	healAmountNeeded -= warmGearAmount * 15;
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
-	const maxTripLength = calcMaxTripLength(user, 'Wintertodt');
+	const maxTripLength = await user.calcMaxTripLength('Wintertodt');
 	if (!quantity) quantity = Math.floor(maxTripLength / durationPerTodt);
 	quantity = Math.max(1, quantity);
 	const duration = durationPerTodt * quantity;
@@ -69,27 +71,25 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 			continue;
 		}
 
-		let foodStr = `**Food:** ${healAmountNeeded} HP/kill`;
+		foodStr.push(`**Food:** ${healAmountNeeded} HP/kill`);
 
 		if (healAmountNeeded !== baseHealAmountNeeded) {
-			foodStr += `. Reduced from ${baseHealAmountNeeded}, -${calcWhatPercent(
-				baseHealAmountNeeded - healAmountNeeded,
-				baseHealAmountNeeded
-			)}% for wearing warm gear. `;
-		} else {
-			foodStr += '. ';
+			foodStr.push(
+				`Reduced from ${baseHealAmountNeeded}, -${calcWhatPercent(
+					baseHealAmountNeeded - healAmountNeeded,
+					baseHealAmountNeeded
+				)}% for wearing warm gear`
+			);
 		}
 
-		foodStr += ` **Removed ${amountNeeded}x ${food.name}**`;
-
-		messages.push(foodStr);
-
 		const cost = new Bank().add(food.id, amountNeeded);
+
+		foodStr.push(`**Removed ${cost}**`);
 
 		await user.removeItemsFromBank(cost);
 
 		// Track this food cost in Economy Stats
-		await updateBankSetting('economyStats_wintertodtCost', cost);
+		await ClientSettings.updateBankSetting('economyStats_wintertodtCost', cost);
 
 		// Track items lost
 		await trackLoot({
@@ -108,16 +108,22 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		break;
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'wintertodt',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Wintertodt'
 	});
 
-	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
+	const str = `${
+		user.minionName
+	} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
 		durationPerTodt * quantity
-	)}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
+	)}. (${formatDuration(durationPerTodt)} per todt)\n\n${boosts.length > 0 ? `${boosts.join(', ')}\n` : ''}${
+		foodStr.length > 0 ? foodStr.join(', ') : ''
+	}.`;
+
+	return str;
 }

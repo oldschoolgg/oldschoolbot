@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { Bank, LootTable } from '../';
+
+import { Bank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
 
 describe('LootTable', async () => {
 	it('should clone', () => {

@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const SkeletonHellhoundTable = new LootTable().every('Bones').oneIn(5000, 'Skeleton champion scroll');
+const SkeletonHellhoundTable: LootTable = new LootTable().every('Bones').oneIn(5000, 'Skeleton champion scroll');
 
-const CalvarionUniqueTable = new LootTable()
+const CalvarionUniqueTable: LootTable = new LootTable()
 	.oneIn(358, 'Dragon 2h sword')
 	.oneIn(358, 'Dragon pickaxe')
 	.oneIn(618, "Skull of vet'ion")
@@ -18,7 +18,7 @@ const CalvarionSecondarySupplyTable = new LootTable({ limit: 18 })
 	.add('Ranging potion(2)', [2, 3], 1)
 	.add('Super combat potion(2)', [2, 3], 1);
 
-const CalvarionTable = new LootTable()
+const CalvarionTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(SkeletonHellhoundTable, 4)
 
@@ -69,9 +69,9 @@ const CalvarionTable = new LootTable()
 	.tertiary(5000, 'Skeleton champion scroll')
 	.tertiary(5013, 'Curved bone');
 
-const CalvarionTotalTable = new LootTable().every(CalvarionSecondarySupplyTable).every(CalvarionTable);
+const CalvarionTotalTable: LootTable = new LootTable().every(CalvarionSecondarySupplyTable).every(CalvarionTable);
 
-export default new SimpleMonster({
+export const Calvarion: SimpleMonster = new SimpleMonster({
 	id: 11_993,
 	name: "Calvar'ion",
 	table: CalvarionTotalTable,

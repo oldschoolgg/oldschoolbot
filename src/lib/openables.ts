@@ -1,42 +1,58 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { bsoOpenables } from '@/lib/bso/openables/bsoOpenables.js';
+
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import type { IFarmingContract } from '@oldschoolgg/schemas';
+import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BrimstoneChest,
+	BronzeHAMChest,
 	EItem,
-	EMonster,
 	EliteMimicTable,
+	ElvenCrystalChest,
+	EMonster,
+	GiantEggSacFull,
+	GiantsFoundryOrePack,
+	GrubbyChest,
 	HallowedSackTable,
 	Implings,
+	IntricatePouch,
+	IronHAMChest,
 	type Item,
 	type ItemBank,
+	Items,
+	itemID,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
+	MoonKeyChest,
+	MuddyChest,
+	NestBoxEmpty,
+	NestBoxRing,
+	NestBoxSeeds,
+	OgreCoffin,
 	type OpenableOpenOptions,
-	Openables,
-	SkillsEnum,
-	ZombiePiratesLocker,
-	itemID,
-	resolveItems
+	resolveItems,
+	SeedPack,
+	SilverHAMChest,
+	SinisterChest,
+	SteelHAMChest,
+	VolcanicMineOrePack,
+	ZombiePiratesLocker
 } from 'oldschooljs';
 
-import { ClueTiers } from './clues/clueTiers';
-import { cluesRaresCL } from './data/CollectionsExport';
-import { defaultFarmingContract } from './minions/farming';
-import type { FarmingContract } from './minions/farming/types';
-import { shadeChestOpenables } from './shadesKeys';
-import { nestTable } from './simulation/birdsNest';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
+import { shadeChestOpenables } from '@/lib/shadesKeys.js';
+import { nestTable } from '@/lib/simulation/birdsNest.js';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
 	CasketTable,
 	CrystalChestTable,
 	SpoilsOfWarTable
-} from './simulation/misc';
-import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import getOSItem from './util/getOSItem';
-import { roll } from './util/rng';
+} from '@/lib/simulation/misc.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -72,10 +88,11 @@ const FrozenCacheTable = new LootTable()
 	.add('Spirit seed', 1, 2)
 	.add('Rune sword');
 
-interface OpenArgs {
+export interface OpenArgs {
 	quantity: number;
 	user: MUser;
 	self: UnifiedOpenable;
+	totalLeaguesPoints: number;
 }
 
 export interface UnifiedOpenable {
@@ -91,15 +108,56 @@ export interface UnifiedOpenable {
 	emoji?: string;
 	aliases: string[];
 	allItems: number[];
+	isMysteryBox?: boolean;
+	smokeyApplies?: boolean;
+	excludeLootFromBoxes?: boolean;
+	excludeFromOpenAll?: true;
+	extraCostPerOpen?: Bank;
+	trickableItems?: number[];
 }
 
-const clueItemsToNotifyOf = cluesRaresCL
+const clueItemsToNotifyOf = resolveItems([
+	'3rd age range coif',
+	'3rd age range top',
+	'3rd age range legs',
+	'3rd age vambraces',
+	'3rd age robe top',
+	'3rd age robe',
+	'3rd age mage hat',
+	'3rd age amulet',
+	'3rd age plateskirt',
+	'3rd age platelegs',
+	'3rd age platebody',
+	'3rd age full helmet',
+	'3rd age kiteshield',
+	'3rd age longsword',
+	'3rd age wand',
+	'3rd age cloak',
+	'3rd age bow',
+	'3rd age pickaxe',
+	'3rd age axe',
+	'3rd age druidic robe bottoms',
+	'3rd age druidic robe top',
+	'3rd age druidic staff',
+	'3rd age druidic cloak'
+])
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
-	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
+	.concat(
+		resolveItems([
+			'Dwarven blessing',
+			'First age tiara',
+			'First age amulet',
+			'First age cape',
+			'First age bracelet',
+			'First age ring',
+			'First age robe bottom',
+			'First age robe top'
+		])
+	);
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
-	const casketItem = getOSItem(clueTier.id);
+	const casketItem = Items.getOrThrow(clueTier.id);
 	clueOpenables.push({
 		name: casketItem.name,
 		id: casketItem.id,
@@ -107,7 +165,28 @@ for (const clueTier of ClueTiers) {
 		aliases: [clueTier.name.toLowerCase()],
 		output: async ({ quantity, user, self }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			const loot = clueTier.table.roll(quantity);
+
+			// BSO Clue roll code:
+			const includeBuggedRolls = true;
+
+			const loot = new Bank();
+			const hasCHEquipped = user.hasEquippedOrInBank(clueHunterOutfit, 'every');
+			let totalRolls = 0;
+			for (let i = 0; i < quantity; i++) {
+				// Calculate rolls, including bonus rolls (average 2 rolls total per casket):
+				const rolls = randInt(1, 3);
+				totalRolls += rolls;
+				if (clueTier.name === 'Master' && percentChance(hasCHEquipped ? 3.5 : 1.5)) {
+					loot.add('Clue scroll (grandmaster)');
+				}
+			}
+			// Roll loot, and calculate how many bonus rolls were received:
+			clueTier.table.roll(includeBuggedRolls ? totalRolls + quantity : totalRolls, {
+				targetBank: loot,
+				cl: user.cl
+			});
+			const extraClueRolls = totalRolls - quantity;
+
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
@@ -119,11 +198,14 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 
-			const message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+			let message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
+			if (extraClueRolls > 0) {
+				message += `${mimicNumber ? ' ' : ''}${extraClueRolls} extra rolls`;
+			}
 
-			const stats = await user.fetchStats({ openable_scores: true });
+			const stats = await user.fetchStats();
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
 			let gotMilestoneReward = false;
@@ -167,22 +249,26 @@ for (const clueTier of ClueTiers) {
 			return { bank: loot, message };
 		},
 		emoji: Emoji.Casket,
-		allItems: clueTier.allItems
+		allItems: clueTier.allItems,
+		trickableItems: clueTier.trickableItems
 	});
 }
+
+const masterClue = clueOpenables.find(c => c.name === 'Reward casket (master)');
+masterClue!.allItems.push(itemID('Clue scroll (grandmaster)'));
 
 const osjsOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Brimstone chest',
 		id: 23_083,
-		openedItem: getOSItem(23_083),
+		openedItem: Items.getOrThrow(23_083),
 		aliases: ['brimstone chest', 'brimstone'],
 		output: async (
 			args: OpenArgs
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const fishLvl = args.user.skillsAsLevels.fishing;
 			const brimstoneOptions: OpenableOpenOptions = {
 				fishLvl
 			};
@@ -190,68 +276,68 @@ const osjsOpenables: UnifiedOpenable[] = [
 
 			return { bank: openLoot };
 		},
-		allItems: Openables.BrimstoneChest.table.allItems
+		allItems: BrimstoneChest.table.allItems
 	},
 	{
 		name: 'Elven crystal chest',
 		id: 23_951,
-		openedItem: getOSItem(23_951),
+		openedItem: Items.getOrThrow(23_951),
 		aliases: ['elven crystal chest', 'elven chest', 'enhanced', 'enhanced crystal chest', 'elven chest', 'elven'],
-		output: Openables.ElvenCrystalChest.table,
-		allItems: Openables.ElvenCrystalChest.table.allItems
+		output: ElvenCrystalChest.table,
+		allItems: ElvenCrystalChest.table.allItems
 	},
 	{
 		name: 'Giant egg sac(full)',
 		id: 23_517,
-		openedItem: getOSItem(23_517),
+		openedItem: Items.getOrThrow(23_517),
 		aliases: ['giant egg sac(full)', 'giant egg sac full'],
-		output: Openables.GiantEggSacFull.table,
-		allItems: Openables.GiantEggSacFull.table.allItems
+		output: GiantEggSacFull.table,
+		allItems: GiantEggSacFull.table.allItems
 	},
 	{
 		name: 'Grubby chest',
 		id: 23_499,
-		openedItem: getOSItem(23_499),
+		openedItem: Items.getOrThrow(23_499),
 		aliases: ['grubby chest', 'grubby'],
-		output: Openables.GrubbyChest.table,
-		allItems: Openables.GrubbyChest.table.allItems
+		output: GrubbyChest.table,
+		allItems: GrubbyChest.table.allItems
 	},
 	{
 		name: 'Bronze HAM chest',
 		id: 8867,
-		openedItem: getOSItem(8867),
+		openedItem: Items.getOrThrow(8867),
 		aliases: ['bronze', 'bronze ham chest', 'bronze chest'],
-		output: Openables.BronzeHAMChest.table,
-		allItems: Openables.BronzeHAMChest.table.allItems
+		output: BronzeHAMChest.table,
+		allItems: BronzeHAMChest.table.allItems
 	},
 	{
 		name: 'Iron HAM chest',
 		id: 8869,
-		openedItem: getOSItem(8869),
+		openedItem: Items.getOrThrow(8869),
 		aliases: ['iron', 'iron ham chest', 'iron chest'],
-		output: Openables.IronHAMChest.table,
-		allItems: Openables.IronHAMChest.table.allItems
+		output: IronHAMChest.table,
+		allItems: IronHAMChest.table.allItems
 	},
 	{
 		name: 'Silver HAM chest',
 		id: 8868,
-		openedItem: getOSItem(8868),
+		openedItem: Items.getOrThrow(8868),
 		aliases: ['silver', 'silver ham chest', 'silver chest'],
-		output: Openables.SilverHAMChest.table,
-		allItems: Openables.SilverHAMChest.table.allItems
+		output: SilverHAMChest.table,
+		allItems: SilverHAMChest.table.allItems
 	},
 	{
 		name: 'Steel HAM chest',
 		id: 8866,
-		openedItem: getOSItem(8866),
+		openedItem: Items.getOrThrow(8866),
 		aliases: ['steel', 'steel ham chest', 'steel chest'],
-		output: Openables.SteelHAMChest.table,
-		allItems: Openables.SteelHAMChest.table.allItems
+		output: SteelHAMChest.table,
+		allItems: SteelHAMChest.table.allItems
 	},
 	{
 		name: "Larran's chest",
 		id: 23_490,
-		openedItem: getOSItem(23_490),
+		openedItem: Items.getOrThrow(23_490),
 		aliases: [
 			'larran big chest',
 			'larrans big chest',
@@ -266,7 +352,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const fishLvl = args.user.skillsAsLevels.fishing;
 			const larransOptions: OpenableOpenOptions = {
 				fishLvl,
 				chestSize: 'big'
@@ -275,52 +361,44 @@ const osjsOpenables: UnifiedOpenable[] = [
 
 			return { bank: openLoot };
 		},
-		allItems: Openables.LarransChest.table.allItems
+		allItems: LarransChest.table.allItems
 	},
 	{
 		name: 'Muddy chest',
 		id: 991,
-		openedItem: getOSItem(991),
+		openedItem: Items.getOrThrow(991),
 		aliases: ['muddy chest', 'muddy'],
-		output: Openables.MuddyChest.table,
-		allItems: Openables.MuddyChest.table.allItems
-	},
-	{
-		name: 'Mystery box',
-		id: 6199,
-		openedItem: getOSItem(6199),
-		aliases: ['mystery box', 'mystery', 'mbox'],
-		output: Openables.MysteryBox.table,
-		allItems: Openables.MysteryBox.table.allItems
+		output: MuddyChest.table,
+		allItems: MuddyChest.table.allItems
 	},
 	{
 		name: 'Nest box (empty)',
 		id: 12_792,
-		openedItem: getOSItem(12_792),
+		openedItem: Items.getOrThrow(12_792),
 		aliases: ['nest box (empty)', 'empty nest box', 'nest box empty'],
-		output: Openables.NestBoxEmpty.table,
-		allItems: Openables.NestBoxEmpty.table.allItems
+		output: NestBoxEmpty.table,
+		allItems: NestBoxEmpty.table.allItems
 	},
 	{
 		name: 'Nest box (ring)',
 		id: 12_794,
-		openedItem: getOSItem(12_794),
+		openedItem: Items.getOrThrow(12_794),
 		aliases: ['nest box (ring)', 'ring nest box', 'nest box ring'],
-		output: Openables.NestBoxRing.table,
-		allItems: Openables.NestBoxRing.table.allItems
+		output: NestBoxRing.table,
+		allItems: NestBoxRing.table.allItems
 	},
 	{
 		name: 'Nest box (seeds)',
 		id: 12_793,
-		openedItem: getOSItem(12_793),
+		openedItem: Items.getOrThrow(12_793),
 		aliases: ['nest box (seeds)', 'seeds nest box', 'nest box seeds', 'seed nest box'],
-		output: Openables.NestBoxSeeds.table,
-		allItems: Openables.NestBoxSeeds.table.allItems
+		output: NestBoxSeeds.table,
+		allItems: NestBoxSeeds.table.allItems
 	},
 	{
 		name: 'Bird nest',
 		id: 5070,
-		openedItem: getOSItem(5070),
+		openedItem: Items.getOrThrow(5070),
 		aliases: ['bird nest', 'nest'],
 		output: nestTable,
 		allItems: nestTable.allItems
@@ -328,7 +406,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Amylase pack',
 		id: 12641,
-		openedItem: getOSItem(12641),
+		openedItem: Items.getOrThrow(12641),
 		aliases: ['amylase pack', 'amylase'],
 		output: new LootTable().every('Amylase crystal', 100),
 		allItems: resolveItems(['Amylase crystal'])
@@ -336,15 +414,15 @@ const osjsOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Ogre coffin',
 		id: 4850,
-		openedItem: getOSItem(4850),
+		openedItem: Items.getOrThrow(4850),
 		aliases: ['ogre coffin', 'ogre chest', 'ogre coffin chest'],
-		output: Openables.OgreCoffin.table,
-		allItems: Openables.OgreCoffin.table.allItems
+		output: OgreCoffin.table,
+		allItems: OgreCoffin.table.allItems
 	},
 	{
 		name: 'Seed pack',
 		id: 22_993,
-		openedItem: getOSItem(22_993),
+		openedItem: Items.getOrThrow(22_993),
 		aliases: ['seed pack', 'sp'],
 		output: async (
 			args: OpenArgs
@@ -353,51 +431,51 @@ const osjsOpenables: UnifiedOpenable[] = [
 			message?: string;
 		}> => {
 			const { plantTier } =
-				(args.user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
+				(args.user.user.minion_farmingContract as IFarmingContract | null) ?? Farming.defaultFarmingContract;
 			const openLoot = new Bank();
 			for (let i = 0; i < args.quantity; i++) {
-				openLoot.add(openSeedPack(plantTier));
+				openLoot.add(Farming.openSeedPack(plantTier));
 			}
 			return { bank: openLoot };
 		},
-		allItems: Openables.SeedPack.table.allItems
+		allItems: SeedPack.table.allItems
 	},
 	{
 		name: 'Sinister chest',
 		id: 993,
-		openedItem: getOSItem(993),
+		openedItem: Items.getOrThrow(993),
 		aliases: ['sinister chest', 'sinister'],
-		output: Openables.SinisterChest.table,
-		allItems: Openables.SinisterChest.table.allItems
+		output: SinisterChest.table,
+		allItems: SinisterChest.table.allItems
 	},
 	{
 		name: "Ore pack (Giant's Foundry)",
 		id: 27_019,
-		openedItem: getOSItem(27_019),
+		openedItem: Items.getOrThrow(27_019),
 		aliases: ["ore pack (giant's foundry)", 'giants', 'foundry', 'giants foundry'],
-		output: Openables.GiantsFoundryOrePack.table,
-		allItems: Openables.GiantsFoundryOrePack.table.allItems
+		output: GiantsFoundryOrePack.table,
+		allItems: GiantsFoundryOrePack.table.allItems
 	},
 	{
 		name: 'Ore pack (Volcanic Mine)',
 		id: 27_693,
-		openedItem: getOSItem(27_693),
+		openedItem: Items.getOrThrow(27_693),
 		aliases: ['ore pack (volcanic mine)', 'volcanic', 'volcanic mine'],
-		output: Openables.VolcanicMineOrePack.table,
-		allItems: Openables.VolcanicMineOrePack.table.allItems
+		output: VolcanicMineOrePack.table,
+		allItems: VolcanicMineOrePack.table.allItems
 	},
 	{
 		name: 'Intricate pouch',
 		id: 26_908,
-		openedItem: getOSItem(26_908),
+		openedItem: Items.getOrThrow(26_908),
 		aliases: ['intricate pouch', 'intricate'],
-		output: Openables.IntricatePouch.table,
-		allItems: Openables.IntricatePouch.table.allItems
+		output: IntricatePouch.table,
+		allItems: IntricatePouch.table.allItems
 	},
 	{
 		name: "Zombie Pirate's Locker",
 		id: EItem.ZOMBIE_PIRATE_KEY,
-		openedItem: getOSItem('Zombie pirate key'),
+		openedItem: Items.getOrThrow('Zombie pirate key'),
 		aliases: ['zombie pirate key', 'zombie pirate locker', 'pirate locker'],
 		output: ZombiePiratesLocker.table,
 		allItems: ZombiePiratesLocker.table.allItems
@@ -408,7 +486,7 @@ for (const impling of Implings) {
 	osjsOpenables.push({
 		name: impling.name,
 		id: impling.id,
-		openedItem: getOSItem(impling.id),
+		openedItem: Items.getOrThrow(impling.id),
 		aliases: [...impling.aliases, `${impling.name} jar`],
 		output: impling.table,
 		allItems: impling.table.allItems
@@ -419,7 +497,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Birthday present',
 		id: 11_918,
-		openedItem: getOSItem(11_918),
+		openedItem: Items.getOrThrow(11_918),
 		aliases: ['present', 'birthday present'],
 		output: new LootTable().oneIn(10, 'War ship').every('Slice of birthday cake'),
 		emoji: '<:birthdayPresent:680041979710668880>',
@@ -428,7 +506,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Casket',
 		id: 405,
-		openedItem: getOSItem(405),
+		openedItem: Items.getOrThrow(405),
 		aliases: ['casket'],
 		output: CasketTable,
 		emoji: Emoji.Casket,
@@ -437,15 +515,23 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Crystal chest',
 		id: 989,
-		openedItem: getOSItem(989),
+		openedItem: Items.getOrThrow(989),
 		aliases: ['crystal chest'],
 		output: CrystalChestTable,
 		allItems: CrystalChestTable.allItems
 	},
 	{
+		name: 'Chest (moon key)',
+		id: itemID('Moon key'),
+		openedItem: Items.getOrThrow('Moon key'),
+		aliases: ['moon key chest', 'moon key'],
+		output: async ({ quantity }) => ({ bank: MoonKeyChest.open(quantity, {}) }),
+		allItems: MoonKeyChest.allItems
+	},
+	{
 		name: 'Builders supply crate',
 		id: 24_884,
-		openedItem: getOSItem('Builders supply crate'),
+		openedItem: Items.getOrThrow('Builders supply crate'),
 		aliases: ['builders supply crate'],
 		output: BuildersSupplyCrateTable,
 		allItems: BuildersSupplyCrateTable.allItems
@@ -453,7 +539,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Hallowed sack',
 		id: 24_946,
-		openedItem: getOSItem('Hallowed sack'),
+		openedItem: Items.getOrThrow('Hallowed sack'),
 		aliases: ['hallowed sack', 'hallow sack'],
 		output: HallowedSackTable,
 		allItems: HallowedSackTable.allItems
@@ -461,7 +547,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Infernal eel',
 		id: 21_293,
-		openedItem: getOSItem('Infernal eel'),
+		openedItem: Items.getOrThrow('Infernal eel'),
 		aliases: ['infernal eel'],
 		output: new LootTable()
 			.add('Tokkul', [14, 20], 86)
@@ -473,7 +559,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Scaly blue dragonhide',
 		id: 27_897,
-		openedItem: getOSItem('Scaly blue dragonhide'),
+		openedItem: Items.getOrThrow('Scaly blue dragonhide'),
 		aliases: ['Scaly blue dragonhide'],
 		output: new LootTable().add('Blue dragon scale', 50),
 		emoji: Emoji.Casket,
@@ -482,7 +568,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Spoils of war',
 		id: itemID('Spoils of war'),
-		openedItem: getOSItem('Spoils of war'),
+		openedItem: Items.getOrThrow('Spoils of war'),
 		aliases: ['Spoils of war'],
 		output: SpoilsOfWarTable,
 		allItems: SpoilsOfWarTable.allItems
@@ -490,7 +576,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Bag full of gems',
 		id: itemID('Bag full of gems'),
-		openedItem: getOSItem('Bag full of gems'),
+		openedItem: Items.getOrThrow('Bag full of gems'),
 		aliases: ['bag full of gems', 'gem bag'],
 		output: BagFullOfGemsTable,
 		allItems: BagFullOfGemsTable.allItems
@@ -498,7 +584,7 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Cache of runes',
 		id: itemID('Cache of runes'),
-		openedItem: getOSItem('Cache of runes'),
+		openedItem: Items.getOrThrow('Cache of runes'),
 		aliases: ['cache of runes'],
 		output: CacheOfRunesTable,
 		allItems: CacheOfRunesTable.allItems
@@ -506,13 +592,14 @@ export const allOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Frozen cache',
 		id: itemID('Frozen cache'),
-		openedItem: getOSItem('Frozen cache'),
+		openedItem: Items.getOrThrow('Frozen cache'),
 		aliases: ['frozen cache'],
 		output: FrozenCacheTable,
 		allItems: FrozenCacheTable.allItems
 	},
 	...clueOpenables,
 	...osjsOpenables,
+	...bsoOpenables,
 	...shadeChestOpenables
 ];
 
@@ -526,13 +613,15 @@ export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
 export function getOpenableLoot({
 	openable,
 	quantity,
-	user
+	user,
+	totalLeaguesPoints
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
+	totalLeaguesPoints: number;
 }) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity });
+		: openable.output({ user, self: openable, quantity, totalLeaguesPoints });
 }

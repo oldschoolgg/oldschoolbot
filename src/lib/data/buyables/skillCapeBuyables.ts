@@ -1,8 +1,8 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import Skillcapes from '../../skilling/skillcapes';
-import type { Buyable } from './buyables';
+import type { Buyable } from '@/lib/data/buyables/buyables.js';
+import Skillcapes from '@/lib/skilling/skillcapes.js';
 
 export const skillCapeBuyables: Buyable[] = [];
 
@@ -24,6 +24,19 @@ for (const skillcape of Skillcapes) {
 		customReq: async (user: MUser) => {
 			if (user.skillLevel(skillcape.skill) < 99) {
 				return [false, `You need level ${99} ${toTitleCase(skillcape.skill)} to buy a cape of accomplishment.`];
+			}
+			return [true];
+		}
+	});
+
+	// Master
+	skillCapeBuyables.push({
+		name: skillcape.masterCape.name,
+		outputItems: () => new Bank().add(skillcape.masterCape.id),
+		gpCost: 1_000_000_000,
+		customReq: async (user: MUser) => {
+			if (user.skillsAsXP[skillcape.skill] < 500_000_000) {
+				return [false, 'You need 500m XP to buy a master cape.'];
 			}
 			return [true];
 		}

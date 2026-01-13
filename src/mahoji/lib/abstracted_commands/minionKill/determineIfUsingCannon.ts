@@ -1,11 +1,14 @@
+import { canAffordInventionBoostRaw, InventionID } from '@/lib/bso/skills/invention/inventions.js';
+
+import { Time } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
-import type { PvMMethod } from '@/lib/constants';
-import { cannonBanks } from '@/lib/minions/data/combatConstants';
-import { wildyKillableMonsters } from '@/lib/minions/data/killableMonsters/bosses/wildy';
-import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
-import type { KillableMonster } from '@/lib/minions/types';
-import type { GearBank } from '@/lib/structures/GearBank';
+import type { PvMMethod } from '@/lib/constants.js';
+import { cannonBanks } from '@/lib/minions/data/combatConstants.js';
+import { wildyKillableMonsters } from '@/lib/minions/data/killableMonsters/bosses/wildy.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 const monstersCantBeCannoned = [...wildyKillableMonsters, ...revenantMonsters].map(m => m.id);
 
@@ -14,13 +17,15 @@ export function determineIfUsingCannon({
 	monster,
 	isOnTask,
 	combatMethods,
-	isInWilderness
+	isInWilderness,
+	disabledInventions
 }: {
 	gearBank: GearBank;
 	isInWilderness: boolean;
 	monster: KillableMonster;
 	isOnTask: boolean;
 	combatMethods: PvMMethod[];
+	disabledInventions: InventionID[];
 }) {
 	if (!combatMethods.includes('cannon')) {
 		return {
@@ -28,7 +33,8 @@ export function determineIfUsingCannon({
 			cannonMulti: false
 		};
 	}
-	const hasCannon = cannonBanks.some(i => gearBank.bank.has(i));
+	const hasSuperiorCannon = gearBank.bank.has('Superior dwarf multicannon');
+	const hasCannon = hasSuperiorCannon || cannonBanks.some(i => gearBank.bank.has(i));
 	if (combatMethods.includes('cannon') && !hasCannon) {
 		return "You don't have a cannon in your bank.";
 	}
@@ -63,8 +69,20 @@ export function determineIfUsingCannon({
 		}
 	}
 
+	const { canAfford } = canAffordInventionBoostRaw(
+		gearBank.materials,
+		InventionID.SuperiorDwarfMultiCannon,
+		Time.Hour
+	);
+	const canUseSuperiorCannon = !(
+		disabledInventions.includes(InventionID.SuperiorDwarfMultiCannon) && hasSuperiorCannon
+	)
+		? canAfford
+		: false;
+
 	return {
 		usingCannon,
-		cannonMulti
+		cannonMulti,
+		canUseSuperiorCannon
 	};
 }

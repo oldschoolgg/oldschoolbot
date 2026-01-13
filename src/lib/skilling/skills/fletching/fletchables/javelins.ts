@@ -1,5 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
-import type { Fletchable } from '../../../types';
+
+import type { Fletchable } from '@/lib/skilling/types.js';
 
 const Javelins: Fletchable[] = [
 	{
@@ -64,6 +65,14 @@ const Javelins: Fletchable[] = [
 		level: 92,
 		xp: 15,
 		inputItems: new Bank({ 'Dragon javelin heads': 1, 'Javelin shaft': 1 }),
+		tickRate: 0.13
+	},
+	{
+		name: 'Obsidian javelin',
+		id: itemID('Obsidian javelin'),
+		level: 99,
+		xp: 55,
+		inputItems: new Bank({ 'Obsidian javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
 	}
 ];

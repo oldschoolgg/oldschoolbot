@@ -1,10 +1,9 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
-import type { Ash, Bone } from '../types';
-import { SkillsEnum } from '../types';
+import { type Ash, type Bone, defineSkill } from '@/lib/skilling/types.js';
 
-const bones: Bone[] = [
+export const bones: Bone[] = [
 	{
 		name: 'Bones',
 		level: 1,
@@ -124,6 +123,24 @@ const bones: Bone[] = [
 		level: 70,
 		xp: 150,
 		inputId: itemID('Superior dragon bones')
+	},
+	{
+		name: 'Abyssal dragon bones',
+		level: 99,
+		xp: 250,
+		inputId: itemID('Abyssal dragon bones')
+	},
+	{
+		name: 'Frost dragon bones',
+		level: 80,
+		xp: 165,
+		inputId: itemID('Frost dragon bones')
+	},
+	{
+		name: 'Royal dragon bones',
+		level: 99,
+		xp: 250,
+		inputId: itemID('Royal dragon bones')
 	}
 ];
 
@@ -157,16 +174,22 @@ export const ashes: Ash[] = [
 		level: 1,
 		xp: 110,
 		inputId: itemID('Infernal ashes')
+	},
+	{
+		name: 'Nightmarish ashes',
+		level: 1,
+		xp: 965,
+		inputId: itemID('Nightmarish ashes')
 	}
 ];
 
-const Prayer = {
+const Prayer = defineSkill({
 	aliases: ['prayer', 'pray'],
 	Bones: bones,
 	Ashes: ashes,
-	id: SkillsEnum.Prayer,
+	id: 'prayer',
 	emoji: Emoji.Prayer,
 	name: 'Prayer'
-};
+});
 
 export default Prayer;

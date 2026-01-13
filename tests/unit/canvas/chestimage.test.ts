@@ -3,8 +3,18 @@ import path from 'node:path';
 import { Bank } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import { drawChestLootImage } from '@/lib/canvas/chestImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
+import type { MUserClass } from '@/lib/MUser.js';
 import { baseSnapshotPath } from '../../testConstants.js';
+
+function mockChestImageUser(name: string) {
+	return {
+		rawUsername: name,
+		user: { bankBackground: 1 },
+		iconPackId: undefined,
+		paintedItems: new Map()
+	} as any as MUserClass;
+}
 
 describe('Chest Images', async () => {
 	test('TOA Chest Loot Image', async () => {
@@ -12,11 +22,7 @@ describe('Chest Images', async () => {
 
 		const previousCL = new Bank().add('Coins', 1000000);
 
-		const mockUser = {
-			rawUsername: 'TestUser',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser = mockChestImageUser('TestUser');
 
 		const result = await drawChestLootImage({
 			entries: [
@@ -30,7 +36,7 @@ describe('Chest Images', async () => {
 			type: 'Tombs of Amascut'
 		});
 
-		await writeFile(path.join(baseSnapshotPath, 'chest-toa.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-toa.png'), result.buffer);
 	});
 
 	test('TOB Chest Loot Image', async () => {
@@ -38,11 +44,7 @@ describe('Chest Images', async () => {
 
 		const previousCL = new Bank();
 
-		const mockUser = {
-			rawUsername: 'TestUser',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser = mockChestImageUser('TestUser');
 
 		const result = await drawChestLootImage({
 			entries: [
@@ -56,7 +58,7 @@ describe('Chest Images', async () => {
 			type: 'Theatre of Blood'
 		});
 
-		await writeFile(path.join(baseSnapshotPath, 'chest-tob.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-tob.png'), result.buffer);
 	});
 
 	test('COX Chest Loot Image', async () => {
@@ -64,11 +66,7 @@ describe('Chest Images', async () => {
 
 		const previousCL = new Bank();
 
-		const mockUser = {
-			rawUsername: 'TestUser',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser = mockChestImageUser('TestUser');
 
 		const result = await drawChestLootImage({
 			entries: [
@@ -82,7 +80,7 @@ describe('Chest Images', async () => {
 			type: 'Chambers of Xerician'
 		});
 
-		await writeFile(path.join(baseSnapshotPath, 'chest-cox.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-cox.png'), result.buffer);
 	});
 
 	test('Multiple Users Chest Loot', async () => {
@@ -91,17 +89,9 @@ describe('Chest Images', async () => {
 
 		const previousCL = new Bank();
 
-		const mockUser1 = {
-			rawUsername: 'User1',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser1 = mockChestImageUser('User1');
 
-		const mockUser2 = {
-			rawUsername: 'User2',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser2 = mockChestImageUser('User2');
 
 		const result = await drawChestLootImage({
 			entries: [
@@ -110,6 +100,6 @@ describe('Chest Images', async () => {
 			],
 			type: 'Tombs of Amascut'
 		});
-		await writeFile(path.join(baseSnapshotPath, 'chest-multiple-users.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-multiple-users.png'), result.buffer);
 	});
 });

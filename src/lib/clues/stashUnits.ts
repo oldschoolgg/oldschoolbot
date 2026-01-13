@@ -1,6 +1,6 @@
-import { Bank, ItemGroups, deepResolveItems, resolveItems } from 'oldschooljs';
+import { Bank, deepResolveItems, ItemGroups, resolveItems } from 'oldschooljs';
 
-import type { ClueTier } from './clueTiers';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
 
 export interface IStashUnit {
 	id: number;
@@ -192,7 +192,7 @@ export const mediumStashes: StashUnitTier = {
 		{
 			id: 35,
 			desc: 'Castle Wars bank',
-			items: deepResolveItems(['Ruby amulet', 'Mithril scimitar', ...ItemGroups.teamCapes])
+			items: deepResolveItems(['Ruby amulet', 'Mithril scimitar', ItemGroups.teamCapes])
 		},
 		{
 			id: 36,
@@ -261,7 +261,7 @@ export const mediumStashes: StashUnitTier = {
 		{
 			id: 47,
 			desc: 'Barbarian Outpost obstacle course (centre)',
-			items: deepResolveItems(['Steel platebody', 'Maple shortbow', ...ItemGroups.teamCapes])
+			items: deepResolveItems(['Steel platebody', 'Maple shortbow', ItemGroups.teamCapes])
 		},
 		{
 			id: 48,

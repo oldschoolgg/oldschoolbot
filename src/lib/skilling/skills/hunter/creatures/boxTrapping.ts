@@ -1,23 +1,9 @@
 import { LootTable } from 'oldschooljs';
 
-import type { Creature } from '../../../types';
-import { HunterTechniqueEnum } from '../../../types';
+import type { Creature } from '@/lib/skilling/types.js';
+import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 
 const boxTrappingCreatures: Creature[] = [
-	{
-		name: 'Ferret',
-		id: 6,
-		aliases: ['ferret'],
-		level: 27,
-		hunterXP: 115.2,
-		table: new LootTable().every('Ferret'),
-		huntTechnique: HunterTechniqueEnum.BoxTrapping,
-		multiTraps: true,
-		catchTime: 22,
-		qpRequired: 2,
-		slope: 1,
-		intercept: 15
-	},
 	{
 		name: 'Chinchompa',
 		id: 7,

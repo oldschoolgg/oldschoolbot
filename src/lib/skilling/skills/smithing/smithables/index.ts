@@ -1,9 +1,11 @@
-import Adamant from './adamant';
-import Bronze from './bronze';
-import Gold from './gold';
-import Iron from './iron';
-import Mithril from './mithril';
-import Rune from './rune';
-import Steel from './steel';
+import { bsoSmithables } from '@/lib/bso/skills/smithing/bsoSmithables.js';
 
-export default [...Adamant, ...Bronze, ...Gold, ...Iron, ...Mithril, ...Rune, ...Steel];
+import Adamant from './adamant.js';
+import Bronze from './bronze.js';
+import Gold from './gold.js';
+import Iron from './iron.js';
+import Mithril from './mithril.js';
+import Rune from './rune.js';
+import Steel from './steel.js';
+
+export default [...Adamant, ...Bronze, ...Gold, ...Iron, ...Mithril, ...Rune, ...Steel, ...bsoSmithables];

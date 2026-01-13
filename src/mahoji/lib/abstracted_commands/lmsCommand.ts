@@ -1,26 +1,20 @@
-import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time } from 'e';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { LMSBuyables } from '../../../lib/data/CollectionsExport';
-import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity';
+import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
 export async function lmsCommand(
 	options: {
 		stats?: {};
 		start?: {};
 		buy?: { name?: string; quantity?: number };
-		simulate?: { names?: string };
 	},
 	user: MUser,
-	channelID: string,
-	interaction: ChatInputCommandInteraction
+	channelId: string,
+	interaction: MInteraction
 ) {
 	const stats = await getUsersLMSStats(user);
 
@@ -33,13 +27,6 @@ export async function lmsCommand(
 **Average Position:** ${stats.averagePosition.toFixed(2)}
 **Highest Kill Match:** ${stats.highestKillInGame} kills
 **Total Matches:** ${stats.totalGames}`;
-	}
-
-	if (options.simulate) {
-		lmsSimCommand(globalClient.channels.cache.get(channelID.toString()), options.simulate.names);
-		return {
-			content: 'Starting simulation...'
-		};
 	}
 
 	if (options.buy) {
@@ -56,44 +43,43 @@ export async function lmsCommand(
 			return `You are not worthy! You need to have won at least ${itemToBuy.wins} games to buy the ${itemToBuy.item.name}.`;
 		}
 		const loot = new Bank().add(itemToBuy.item.id, quantity * (itemToBuy.quantity ?? 1));
-		await handleMahojiConfirmation(interaction, `Are you sure you want to spend ${cost} points on buying ${loot}?`);
+		await interaction.confirmation(`Are you sure you want to spend ${cost} points on buying ${loot}?`);
 		if (!cost) {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});
 			return `You received ${loot}.`;
 		}
 
-		const { newUser } = await user.update({
+		const otherUpdates = {
 			lms_points: {
 				decrement: cost
 			}
-		});
+		};
 		if (itemToBuy.onlyCL) {
-			await user.addItemsToCollectionLog(loot);
+			await user.addItemsToCollectionLog({ itemsToAdd: loot, otherUpdates });
 		} else {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
-				itemsToAdd: loot
+				itemsToAdd: loot,
+				otherUpdates
 			});
 		}
-		return `You spent ${cost} points to buy ${loot}. You now have ${newUser.lms_points} LMS points.`;
+		return `You spent ${cost} points to buy ${loot}. You now have ${user.user.lms_points} LMS points.`;
 	}
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'Your minion must not be busy to do an LMS trip';
 	}
 	const durationPerGame = Time.Minute * 5.5;
-	const quantity = Math.floor(calcMaxTripLength(user, 'LastManStanding') / durationPerGame);
+	const quantity = Math.floor((await user.calcMaxTripLength('LastManStanding')) / durationPerGame);
 	const duration = randomVariation(quantity * durationPerGame, 5);
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'lms',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'LastManStanding',
 		quantity

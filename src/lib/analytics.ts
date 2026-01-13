@@ -1,8 +1,8 @@
-import { ActivityGroup, globalConfig } from '../lib/constants';
+import { type ItemBank, Items } from 'oldschooljs';
 
-import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
-import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
-import { sql } from './postgres.js';
+import { ActivityGroup, globalConfig } from '@/lib/constants.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { taskGroupFromActivity } from '@/lib/util/taskGroupFromActivity.js';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {
@@ -34,19 +34,42 @@ async function calculateMinionTaskCounts() {
 }
 
 export async function analyticsTick() {
+	Logging.logDebug('Running analyticsTick');
 	const [{ has_bought_count, total_gp, ironman_count, total_sacrificed_value }]: {
 		has_bought_count: bigint;
 		total_sacrificed_value: bigint;
 		ironman_count: bigint;
 		total_gp: bigint;
-	}[] = await sql`
-SELECT 
+	}[] = await prisma.$queryRaw`
+SELECT
     COUNT(*) FILTER (WHERE "minion.hasBought" = true) AS has_bought_count,
     SUM("sacrificedValue")::bigint AS total_sacrificed_value,
     COUNT(*) FILTER (WHERE "minion.ironman" = true) AS ironman_count,
     SUM("GP")::bigint AS total_gp
 FROM users;
 `;
+
+	const artifact = Items.getOrThrow('Magical artifact')!;
+	const statuette = Items.getOrThrow('Demon statuette')!;
+
+	const economyBank = (
+		(await prisma.$queryRaw`
+			SELECT
+				json_object_agg(itemID, itemQTY)::jsonb as banks
+			FROM (
+				SELECT key AS itemID, SUM(value::bigint) AS itemQTY
+				FROM users
+				CROSS JOIN json_each_text(bank)
+				GROUP BY key
+			 ) s;`) as { banks: ItemBank }[]
+	)[0].banks;
+
+	const coinsInGrandExchange: { quantity: bigint }[] =
+		await prisma.$queryRaw`SELECT quantity FROM ge_bank WHERE item_id = 995;`;
+
+	const totalDemonStatuetteGp =
+		(economyBank[statuette.id] ?? 1) ? economyBank[statuette.id] * statuette.highalch! : 0;
+	const totalArtifactGp = (economyBank[artifact.id] ?? 1) ? economyBank[artifact.id] * artifact.highalch! : 0;
 
 	const taskCounts = await calculateMinionTaskCounts();
 	const currentClientSettings = await prisma.clientStorage.upsert({
@@ -67,7 +90,8 @@ FROM users;
 			gp_sell: true,
 			gp_slots: true,
 			gp_tax_balance: true,
-			economyStats_dailiesAmount: true
+			economyStats_dailiesAmount: true,
+			gp_ic: true
 		},
 		create: {
 			id: globalConfig.clientID
@@ -76,13 +100,15 @@ FROM users;
 	});
 	await prisma.analytic.create({
 		data: {
-			guildsCount: globalClient.guilds.cache.size,
-			membersCount: globalClient.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount || 0), 0),
+			guildsCount: 0,
+			membersCount: 0,
 			timestamp: Math.floor(Date.now() / 1000),
 			clueTasksCount: taskCounts.Clue,
 			minigameTasksCount: taskCounts.Minigame,
 			monsterTasksCount: taskCounts.Monster,
 			skillingTasksCount: taskCounts.Skilling,
+			totalGeGp: coinsInGrandExchange[0]?.quantity ?? 0,
+			totalBigAlchGp: totalDemonStatuetteGp + totalArtifactGp,
 			ironMinionsCount: Number(ironman_count),
 			minionsCount: Number(has_bought_count),
 			totalSacrificed: total_sacrificed_value,
@@ -97,9 +123,10 @@ FROM users;
 			gpOpen: currentClientSettings.gp_open,
 			gpDice: currentClientSettings.gp_dice,
 			gpDaily: currentClientSettings.gp_daily,
-			gpLuckypick: currentClientSettings.gp_luckypick,
+			gpLuckyPick: currentClientSettings.gp_luckypick,
 			gpSlots: currentClientSettings.gp_slots,
-			gpHotCold: currentClientSettings.gp_hotcold
+			gpHotCold: currentClientSettings.gp_hotcold,
+			gpItemContracts: currentClientSettings.gp_ic
 		}
 	});
 }

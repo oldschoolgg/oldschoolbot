@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const SulphurNaguaTable = new LootTable()
+const SulphurNaguaTable: LootTable = new LootTable()
 	.tertiary(450, 'Sulphur blades')
 	.tertiary(256, 'Clue scroll (hard)')
 
@@ -22,7 +22,7 @@ const SulphurNaguaTable = new LootTable()
 
 	.add(GemTable, 1, 4);
 
-export const SulphurNagua = new SimpleMonster({
+export const SulphurNagua: SimpleMonster = new SimpleMonster({
 	id: 13_033,
 	name: 'Sulphur Nagua',
 	table: SulphurNaguaTable,

@@ -1,29 +1,45 @@
+import './base.js';
+
 import { readFileSync, writeFileSync } from 'node:fs';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { md5sum } from '@oldschoolgg/toolkit/node';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { DateTime } from 'luxon';
 import { Bank } from 'oldschooljs';
+import { isFunction } from 'remeda';
 
-import { BOT_TYPE } from '@/lib/constants';
-import Createables from '@/lib/data/createables';
+import { BOT_TYPE } from '@/lib/constants.js';
+import Createables from '@/lib/data/createables.js';
+import { tearDownScript } from './scriptUtil.js';
 
-export async function renderCreatablesFile() {
+function renderCreatablesFile() {
 	const stopwatch = new Stopwatch();
 	const creatables = [];
 
 	for (const c of Createables) {
-		const itemsRequired = new Bank(c.inputItems);
-		if (c.GPCost) {
+		const itemsRequired = isFunction(c.inputItems) ? c.inputItems : new Bank(c.inputItems);
+		if (c.GPCost && itemsRequired instanceof Bank) {
 			itemsRequired.add('Coins', c.GPCost);
 		}
-		creatables.push({
+		const creatable: any = {
 			name: c.name,
-			items_created: new Bank(c.outputItems).toNamedBank(),
-			items_required: new Bank(c.inputItems).toNamedBank(),
-			required_stats: c.requiredSkills ?? {},
-			qp_required: c.QPRequired ?? 0,
-			required_slayer_unlocks: c.requiredSlayerUnlocks ?? []
-		});
+			items_created: isFunction(c.outputItems) ? ['Dynamic'] : new Bank(c.outputItems).toNamedBank(),
+			items_required: isFunction(c.inputItems) ? ['Dynamic'] : new Bank(c.inputItems).toNamedBank()
+		};
+		if (c.requiredSkills) {
+			creatable.required_stats = c.requiredSkills;
+		}
+		if (c.QPRequired) {
+			creatable.qp_required = c.QPRequired;
+		}
+		if (c.requiredSlayerUnlocks) {
+			creatable.required_slayer_unlocks = c.requiredSlayerUnlocks;
+		}
+		for (const key of ['type', 'maxCanOwn', 'noCl', 'forceAddToCl', 'cantHveItems']) {
+			if (key in c) {
+				creatable[key] = c[key as keyof typeof c];
+			}
+		}
+		creatables.push(creatable);
 	}
 
 	creatables.sort((a, b) => a.name.localeCompare(b.name));
@@ -49,3 +65,6 @@ export async function renderCreatablesFile() {
 	);
 	stopwatch.check('Finished creatables file.');
 }
+
+renderCreatablesFile();
+tearDownScript();

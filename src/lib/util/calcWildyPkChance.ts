@@ -1,17 +1,15 @@
-import { randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, calcPercentOfNum, calcWhatPercent, reduceNumByPercent } from 'e';
+import { percentChance, randomVariation } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
-import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import type { KillableMonster } from '../minions/types';
-import { maxDefenceStats } from '../structures/Gear';
-import type { GearBank } from '../structures/GearBank';
-import { type Peak, peakFactor } from './peaks';
-import { percentChance } from './rng';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { maxDefenceStats } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { type Peak, peakFactor } from '@/lib/util/peaks.js';
 
 export async function increaseWildEvasionXp(user: MUser, duration: number) {
-	const oldPkXp: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
+	const oldPkXp: { pk_evasion_exp: number } = await user.fetchStats();
 	const newPkXp = Math.floor(Math.min(1_000_000_000, oldPkXp.pk_evasion_exp + duration));
-	await userStatsUpdate(user.id, { pk_evasion_exp: newPkXp });
+	await user.statsUpdate({ pk_evasion_exp: newPkXp });
 }
 export function calcWildyPKChance(
 	currentPeak: Peak,
@@ -77,7 +75,7 @@ export function calcWildyPKChance(
 	const defensiveGearPercent =
 		(defensiveMageGearPercent * 60 + defensiveRangeGearPercent * 40 + defensiveMeleeGearPercent * 20) / 100;
 
-	const deathChanceFromGear = (100 + (100 - defensiveGearPercent) * 5) / 100;
+	const deathChanceFromGear = Math.max(0.05, (100 + (100 - defensiveGearPercent) * 5) / 100);
 	deathChance *= deathChanceFromGear;
 
 	deathChance *= hasSupplies;

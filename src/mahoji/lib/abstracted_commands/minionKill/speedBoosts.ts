@@ -1,12 +1,16 @@
-import { calcWhatPercent, sumArr } from 'e';
-import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
-import type { OffenceGearStat } from 'oldschooljs/gear';
+import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
+import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
+import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
-import type { PvMMethod } from '@/lib/constants';
-import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems';
-import type { PrimaryGearSetupType } from '@/lib/gear/types';
+import { calcWhatPercent, sumArr, Time } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
+import type { OffenceGearStat } from 'oldschooljs/gear';
+import { omit } from 'remeda';
+
+import type { PvMMethod } from '@/lib/constants.js';
+import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import {
-	SlayerActivityConstants,
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
@@ -14,33 +18,35 @@ import {
 	cannonMultiConsumables,
 	cannonSingleConsumables,
 	iceBarrageConsumables,
-	iceBurstConsumables
-} from '@/lib/minions/data/combatConstants';
-import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
-import type { AttackStyles } from '@/lib/minions/functions';
-import type { Consumable } from '@/lib/minions/types';
-import { calcPOHBoosts } from '@/lib/poh';
-import { ChargeBank } from '@/lib/structures/Bank';
-import { maxOffenceStats } from '@/lib/structures/Gear';
-import type { MonsterActivityTaskOptions } from '@/lib/types/minions';
-import getOSItem from '@/lib/util/getOSItem';
-import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
-import { determineIfUsingCannon } from './determineIfUsingCannon';
-import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData';
-import type { MinionKillOptions } from './newMinionKill';
-import type { PostBoostEffect } from './postBoostEffects';
-import { staticEquippedItemBoosts } from './staticEquippedItemBoosts';
+	iceBurstConsumables,
+	SlayerActivityConstants,
+	superiorCannonMultiConsumables,
+	superiorCannonSingleConsumables
+} from '@/lib/minions/data/combatConstants.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { Consumable } from '@/lib/minions/types.js';
+import { calcPOHBoosts } from '@/lib/poh/index.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { maxOffenceStats } from '@/lib/structures/Gear.js';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { determineIfUsingCannon } from '@/mahoji/lib/abstracted_commands/minionKill/determineIfUsingCannon.js';
+import { dragonHunterWeapons } from '@/mahoji/lib/abstracted_commands/minionKill/minionKillData.js';
+import type { MinionKillOptions } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
+import type { PostBoostEffect } from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
+import { staticEquippedItemBoosts } from '@/mahoji/lib/abstracted_commands/minionKill/staticEquippedItemBoosts.js';
+import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
 
 const revSpecialWeapons = {
-	melee: getOSItem("Viggora's chainmace"),
-	range: getOSItem("Craw's bow"),
-	mage: getOSItem("Thammaron's sceptre")
+	melee: Items.getOrThrow("Viggora's chainmace"),
+	range: Items.getOrThrow("Craw's bow"),
+	mage: Items.getOrThrow("Thammaron's sceptre")
 } as const;
 
 const revUpgradedWeapons = {
-	melee: getOSItem('Ursine chainmace'),
-	range: getOSItem('Webweaver bow'),
-	mage: getOSItem('Accursed sceptre')
+	melee: Items.getOrThrow('Ursine chainmace'),
+	range: Items.getOrThrow('Webweaver bow'),
+	mage: Items.getOrThrow('Accursed sceptre')
 } as const;
 
 export type CombatMethodOptions = Pick<
@@ -78,6 +84,7 @@ export type BoostArgs = MinionKillOptions & {
 	relevantGearStat: OffenceGearStat;
 	currentTaskOptions: CombatMethodOptions;
 	addPostBoostEffect: (effect: PostBoostEffect) => void;
+	addInvention: (invention: InventionID) => void;
 	killsRemaining: number | null;
 };
 
@@ -90,27 +97,37 @@ const oneSixthBoost = 16.67;
 
 const cannonBoost: Boost = {
 	description: 'Cannon',
-	run: ({ gearBank, monster, combatMethods, isOnTask, isInWilderness }) => {
-		const cannonResult = determineIfUsingCannon({ gearBank, monster, isOnTask, combatMethods, isInWilderness });
+	run: ({ gearBank, monster, combatMethods, isOnTask, isInWilderness, disabledInventions, addInvention }) => {
+		const cannonResult = determineIfUsingCannon({
+			gearBank,
+			monster,
+			isOnTask,
+			combatMethods,
+			isInWilderness,
+			disabledInventions
+		});
 		if (typeof cannonResult === 'string') return cannonResult;
 		if (!cannonResult.usingCannon) return null;
 		if (monster?.cannonMulti && cannonResult.cannonMulti) {
+			if (cannonResult.canUseSuperiorCannon) addInvention(InventionID.SuperiorDwarfMultiCannon);
 			return {
 				percentageReduction: boostCannonMulti,
-				consumables: [cannonMultiConsumables],
+				consumables: [
+					cannonResult.canUseSuperiorCannon ? superiorCannonMultiConsumables : cannonMultiConsumables
+				],
 				message: `${boostCannonMulti}% for Cannon in multi`,
 				changes: {
 					cannonMulti: true
 				}
 			};
 		} else if (monster?.canCannon) {
+			if (cannonResult.canUseSuperiorCannon) addInvention(InventionID.SuperiorDwarfMultiCannon);
 			return {
 				percentageReduction: boostCannon,
-				consumables: [cannonSingleConsumables],
-				message: `${boostCannon}% for Cannon in singles`,
-				changes: {
-					usingCannon: true
-				}
+				consumables: [
+					cannonResult.canUseSuperiorCannon ? superiorCannonSingleConsumables : cannonSingleConsumables
+				],
+				message: `${boostCannon}% for Cannon in singles`
 			};
 		}
 
@@ -119,12 +136,19 @@ const cannonBoost: Boost = {
 };
 const chinningBoost: Boost = {
 	description: 'Chinning boost',
-	run: ({ combatMethods, attackStyles, monster, gearBank, isOnTask, isInWilderness }) => {
-		const cannonResult = determineIfUsingCannon({ gearBank, monster, isOnTask, combatMethods, isInWilderness });
+	run: ({ combatMethods, attackStyles, monster, gearBank, isOnTask, isInWilderness, disabledInventions }) => {
+		const cannonResult = determineIfUsingCannon({
+			gearBank,
+			monster,
+			isOnTask,
+			combatMethods,
+			isInWilderness,
+			disabledInventions
+		});
 		if (typeof cannonResult === 'string') return cannonResult;
 		if (cannonResult.usingCannon) return null;
 
-		if (combatMethods.includes('chinning') && attackStyles.includes(SkillsEnum.Ranged) && monster?.canChinning) {
+		if (combatMethods.includes('chinning') && attackStyles.includes('ranged') && monster?.canChinning) {
 			const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
 			let chinchompa = chinchompas[0];
 			for (const chin of chinchompas) {
@@ -137,9 +161,9 @@ const chinningBoost: Boost = {
 			const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 63 : chinchompa === 'Red chinchompa' ? 69 : 77;
 			const chinningConsumables: Consumable = {
 				itemCost: new Bank().add(chinchompa, 1),
-				qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
+				qtyPerMinute: attackStyles.includes('defence') ? 24 : 33
 			};
-			if (attackStyles.includes(SkillsEnum.Defence)) {
+			if (attackStyles.includes('defence')) {
 				return {
 					percentageReduction: chinBoostLongRanged,
 					consumables: [chinningConsumables],
@@ -188,12 +212,12 @@ const salveBoost: Boost = {
 
 const dragonHunterBoost: Boost = {
 	description: 'A boost for dragon-hunter gear when killing dragons',
-	run: ({ monster, isInWilderness, osjsMon, primaryStyle: style, gearBank }) => {
+	run: ({ monster, osjsMon, primaryStyle: style, gearBank }) => {
 		const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
 		if (!isDragon || monster.name.toLowerCase() === 'vorkath') return null;
 
 		for (const wep of dragonHunterWeapons) {
-			const hasWep = gearBank.wildyGearCheck(wep.item.id, isInWilderness);
+			const hasWep = gearBank.hasEquippedOrInBank(wep.item.id);
 			if (hasWep && style === wep.attackStyle) {
 				return {
 					percentageReduction: wep.boost,
@@ -234,8 +258,20 @@ const blackMaskBoost: Boost = {
 		if (!isOnTask) return null;
 		const hasBlackMask = gearBank.wildyGearCheck('Black mask', isInWilderness);
 		const hasBlackMaskI = gearBank.wildyGearCheck('Black mask (i)', isInWilderness);
+		const hasInfernalSlayerHelmI = gearBank.hasEquippedOrInBank('Infernal slayer helmet(i)');
+		const hasInfernalSlayerHelm = gearBank.hasEquippedOrInBank('Infernal slayer helmet');
 
-		if (hasBlackMaskI && [SkillsEnum.Magic, SkillsEnum.Ranged].every(s => style.includes(s))) {
+		if (hasInfernalSlayerHelmI) {
+			return {
+				percentageReduction: 22,
+				message: '22% for Infernal slayer helmet(i) on task'
+			};
+		} else if (hasInfernalSlayerHelm) {
+			return {
+				percentageReduction: 22,
+				message: '17% for Infernal slayer helmet on task'
+			};
+		} else if (hasBlackMaskI && ['magic', 'ranged'].every(s => style.includes(s))) {
 			return {
 				percentageReduction: oneSixthBoost,
 				message: `${oneSixthBoost}% for Black mask (i) on task`
@@ -254,9 +290,9 @@ const blackMaskBoost: Boost = {
 export const mainBoostEffects: (Boost | Boost[])[] = [
 	{
 		description: 'Item Boosts',
-		run: ({ monster, gearBank, isInWilderness }) => {
+		run: ({ monster, gearBank }) => {
 			const results: BoostResult[] = [];
-			for (const [item, boostAmount] of resolveAvailableItemBoosts(gearBank, monster, isInWilderness).items()) {
+			for (const [item, boostAmount] of resolveAvailableItemBoosts(gearBank, monster).items()) {
 				results.push({
 					percentageReduction: boostAmount,
 					message: `${boostAmount}% for ${item.name}`
@@ -310,7 +346,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 	cannonBoost,
 	{
 		description: 'Barrage/Bursting',
-		run: ({ monster, attackStyles, combatMethods, isOnTask, isInWilderness, gearBank }) => {
+		run: ({ monster, attackStyles, combatMethods, isInWilderness }) => {
 			const isBarraging = combatMethods.includes('barrage');
 			const isBursting = combatMethods.includes('burst');
 			const canBarrageMonster = monster.canBarrage || (monster.id === Monsters.Jelly.id && isInWilderness);
@@ -318,19 +354,18 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			if (!canBarrageMonster || (!isBarraging && !isBursting)) return null;
 
 			let newAttackStyles = [...attackStyles];
-			if (!newAttackStyles.includes(SkillsEnum.Magic)) {
-				newAttackStyles = [SkillsEnum.Magic];
-				if (attackStyles.includes(SkillsEnum.Defence)) {
-					newAttackStyles.push(SkillsEnum.Defence);
+			if (!newAttackStyles.includes('magic')) {
+				newAttackStyles = ['magic'];
+				if (attackStyles.includes('defence')) {
+					newAttackStyles.push('defence');
 				}
 			}
 
-			const { virtusBoost } = calculateVirtusBoost({ isInWilderness, gearBank, isOnTask });
-			if (isBarraging && attackStyles.includes(SkillsEnum.Magic)) {
+			if (isBarraging && attackStyles.includes('magic') && monster.canBarrage) {
 				return {
-					percentageReduction: boostIceBarrage + virtusBoost,
+					percentageReduction: boostIceBarrage,
 					consumables: [iceBarrageConsumables],
-					message: `${boostIceBarrage + virtusBoost}% for Ice Barrage`,
+					message: `${boostIceBarrage}% for Ice Barrage`,
 					changes: {
 						bob: SlayerActivityConstants.IceBarrage,
 						attackStyles: newAttackStyles
@@ -338,11 +373,11 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes(SkillsEnum.Magic)) {
+			if (isBursting && attackStyles.includes('magic')) {
 				return {
-					percentageReduction: boostIceBurst + virtusBoost,
+					percentageReduction: boostIceBurst,
 					consumables: [iceBurstConsumables],
-					message: `${boostIceBurst + virtusBoost}% for Ice Burst`,
+					message: `${boostIceBurst}% for Ice Burst`,
 					changes: {
 						bob: SlayerActivityConstants.IceBurst,
 						attackStyles: newAttackStyles
@@ -362,7 +397,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 					);
 					if (equippedInThisSet) {
 						degItemBeingUsed.push({
-							item: getOSItem(equippedInThisSet.itemID),
+							item: Items.getOrThrow(equippedInThisSet.itemID),
 							boostPercent: equippedInThisSet.boostPercent
 						});
 					}
@@ -393,7 +428,8 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 								killableMon: monster,
 								osjsMonster: osjsMon!,
 								totalHP: (osjsMon?.data.hitpoints ?? 100) * quantity,
-								duration
+								duration,
+								gearBank
 							})
 						);
 						const actualDegItem = degradeableItems.find(i => i.item.id === degItem.item.id);
@@ -456,6 +492,78 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 			return null;
+		}
+	},
+	{
+		description: 'BSO Boosts',
+		run: ({ isInWilderness, gearBank, monster, attackStyles, bitfield }) => {
+			const results: BoostResult[] = [];
+			if (
+				gearBank.hasEquipped('Gregoyle') &&
+				[Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id].includes(monster.id)
+			) {
+				results.push({
+					percentageReduction: 20,
+					message: '20% boost for Gregoyle'
+				});
+			}
+
+			if (gearBank.hasEquipped('Dwarven warhammer') && !isInWilderness) {
+				results.push({
+					percentageReduction: 40,
+					message: '40% boost for Dwarven warhammer'
+				});
+			}
+
+			const hasZealotsAmulet = gearBank.hasEquipped('Amulet of zealots');
+
+			// If they can afford 2 hours of using the blessing, give them the boost and charge them in postBoosts
+			const blessingResult = dwarvenBlessing({ gearBank, duration: Time.Hour * 2, bitfield });
+			if (blessingResult) {
+				results.push(omit(blessingResult, ['itemCost']));
+			} else if (isInWilderness && hasZealotsAmulet) {
+				results.push({
+					percentageReduction: 5,
+					message: '5% for Amulet of zealots'
+				});
+			}
+
+			// Gorajan
+			const allGorajan = gorajanBoosts.every(e => gearBank.gear[e[1]].hasEquipped(e[0], true));
+			for (const [outfit, setup] of gorajanBoosts) {
+				const expectedSetup = monster.attackStyleToUse ? gearstatToSetup.get(monster.attackStyleToUse) : null;
+				if (allGorajan || (expectedSetup === setup && gearBank.gear[setup].hasEquipped(outfit, true))) {
+					results.push({
+						percentageReduction: 10,
+						message: `10% for ${Items.itemNameFromId(outfit[0])!.split(' ').slice(0, 2).join(' ')} gear`
+					});
+					break;
+				}
+			}
+
+			// Master capes
+			if (attackStyles.includes('ranged') && gearBank.hasEquipped('Ranged master cape')) {
+				results.push({
+					percentageReduction: 15,
+					message: '15% for Ranged master cape'
+				});
+			} else if (attackStyles.includes('magic') && gearBank.hasEquipped('Magic master cape')) {
+				results.push({
+					percentageReduction: 15,
+					message: '15% for Magic master cape'
+				});
+			} else if (
+				!attackStyles.includes('magic') &&
+				!attackStyles.includes('ranged') &&
+				gearBank.hasEquipped('Attack master cape')
+			) {
+				results.push({
+					percentageReduction: 15,
+					message: '15% for Attack master cape'
+				});
+			}
+
+			return results;
 		}
 	}
 ];

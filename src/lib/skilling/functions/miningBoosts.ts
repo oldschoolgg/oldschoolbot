@@ -2,6 +2,16 @@ import { itemID } from 'oldschooljs';
 
 export const pickaxes = [
 	{
+		id: itemID('Volcanic pickaxe'),
+		ticksBetweenRolls: 1.24,
+		miningLvl: 105
+	},
+	{
+		id: itemID('Dwarven pickaxe'),
+		ticksBetweenRolls: 1.5,
+		miningLvl: 99
+	},
+	{
 		id: itemID('Crystal pickaxe'),
 		ticksBetweenRolls: 2.75,
 		miningLvl: 71
@@ -53,43 +63,37 @@ export const pickaxes = [
 	}
 ];
 
-export const miningGloves: { id: number; Depletions: Record<string, number> }[] = [
+export const miningGloves: { id: number; Percentages: Record<string, number> }[] = [
 	{
 		id: itemID('Expert mining gloves'),
-		Depletions: {
-			'Iron ore': 3,
-			'Silver ore': 3,
-			Coal: 3,
-			Sandstone: 1,
-			'Gold ore': 3,
-			'Mithril ore': 2,
-			'Adamantite ore': 2,
-			'Runite ore': 1,
-			Amethyst: 1
+		Percentages: {
+			'Silver ore': 50,
+			Coal: 40,
+			'Gold ore': 33.33,
+			'Mithril ore': 25,
+			'Adamantite ore': 16.66,
+			'Runite ore': 12.5,
+			Amethyst: 25
 		}
 	},
 	{
 		id: itemID('Superior mining gloves'),
-		Depletions: {
-			'Iron ore': 2,
-			'Silver ore': 2,
-			Coal: 2,
-			Sandstone: 0,
-			'Gold ore': 2,
-			'Mithril ore': 1,
-			'Adamantite ore': 1,
-			'Runite ore': 0,
+		Percentages: {
+			'Silver ore': 0,
+			Coal: 0,
+			'Gold ore': 0,
+			'Mithril ore': 25,
+			'Adamantite ore': 16.66,
+			'Runite ore': 12.5,
 			Amethyst: 0
 		}
 	},
 	{
 		id: itemID('Mining gloves'),
-		Depletions: {
-			'Iron ore': 1,
-			'Silver ore': 1,
-			Coal: 1,
-			Sandstone: 0,
-			'Gold ore': 1,
+		Percentages: {
+			'Silver ore': 50,
+			Coal: 40,
+			'Gold ore': 33.33,
 			'Mithril ore': 0,
 			'Adamantite ore': 0,
 			'Runite ore': 0,
@@ -108,9 +112,9 @@ export const varrockArmours: { id: number; Percentages: Record<string, number> }
 			'Iron ore': 10,
 			'Silver ore': 10,
 			Coal: 10,
-			Sandstone: 10,
+			'Sandstone (5kg)': 10,
 			'Gold ore': 10,
-			Granite: 10,
+			'Granite (5kg)': 10,
 			'Mithril ore': 10,
 			'Adamantite ore': 10,
 			'Runite ore': 10,
@@ -126,9 +130,9 @@ export const varrockArmours: { id: number; Percentages: Record<string, number> }
 			'Iron ore': 10,
 			'Silver ore': 10,
 			Coal: 10,
-			Sandstone: 10,
+			'Sandstone (5kg)': 10,
 			'Gold ore': 10,
-			Granite: 10,
+			'Granite (5kg)': 10,
 			'Mithril ore': 10,
 			'Adamantite ore': 10,
 			'Runite ore': 0,
@@ -144,9 +148,9 @@ export const varrockArmours: { id: number; Percentages: Record<string, number> }
 			'Iron ore': 10,
 			'Silver ore': 10,
 			Coal: 10,
-			Sandstone: 10,
+			'Sandstone (5kg)': 10,
 			'Gold ore': 10,
-			Granite: 10,
+			'Granite (5kg)': 10,
 			'Mithril ore': 10,
 			'Adamantite ore': 0,
 			'Runite ore': 0,
@@ -162,9 +166,9 @@ export const varrockArmours: { id: number; Percentages: Record<string, number> }
 			'Iron ore': 10,
 			'Silver ore': 10,
 			Coal: 10,
-			'Sandstone)': 0,
-			'Gold ore': 10,
-			Granite: 0,
+			'Sandstone (5kg)': 0,
+			'Gold ore': 0,
+			'Granite (5kg)': 0,
 			'Mithril ore': 0,
 			'Adamantite ore': 0,
 			'Runite ore': 0,
@@ -180,9 +184,9 @@ export const miningCapeOreEffect: Record<string, number> = {
 	'Iron ore': 5,
 	'Silver ore': 5,
 	Coal: 5,
-	Sandstone: 5,
+	'Sandstone (5kg)': 5,
 	'Gold ore': 5,
-	Granite: 5,
+	'Granite (5kg)': 5,
 	'Mithril ore': 5,
 	'Adamantite ore': 5,
 	'Runite ore': 0,

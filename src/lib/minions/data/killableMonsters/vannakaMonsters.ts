@@ -1,8 +1,10 @@
-import { Time } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { makeKillTable } from '@/lib/bso/monsters/setCustomMonster.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const vannakaMonsters: KillableMonster[] = [
 	{
@@ -38,7 +40,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 3,
-		notifyDrops: resolveItems(['Abyssal head', 'Abyssal dagger']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 85
@@ -81,7 +82,8 @@ export const vannakaMonsters: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 10,
 				'Fancy rejuvenation pool': 10,
-				'Ornate rejuvenation pool': 10
+				'Ornate rejuvenation pool': 10,
+				'Ancient rejuvenation pool': 20
 			}
 		},
 		slayerOnly: true,
@@ -402,11 +404,11 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
-		id: Monsters.DaganothFledgeling.id,
-		name: Monsters.DaganothFledgeling.name,
-		aliases: Monsters.DaganothFledgeling.aliases,
+		id: Monsters.DagannothFledgeling.id,
+		name: Monsters.DagannothFledgeling.name,
+		aliases: Monsters.DagannothFledgeling.aliases,
 		timeToFinish: Time.Second * 20,
-		table: Monsters.DaganothFledgeling,
+		table: Monsters.DagannothFledgeling,
 
 		wildy: false,
 
@@ -1105,21 +1107,19 @@ export const vannakaMonsters: KillableMonster[] = [
 		name: Monsters.OgressWarrior.name,
 		aliases: Monsters.OgressWarrior.aliases,
 		timeToFinish: Time.Second * 25,
-		table: Monsters.OgressWarrior,
-
+		table: makeKillTable(Monsters.OgressWarrior.table!.tertiary(6500, 'Ishi')),
 		wildy: false,
-
 		difficultyRating: 2,
 		qpRequired: 0,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
-		id: Monsters.Otherworldlybeing.id,
-		name: Monsters.Otherworldlybeing.name,
-		aliases: Monsters.Otherworldlybeing.aliases,
+		id: Monsters.OtherworldlyBeing.id,
+		name: Monsters.OtherworldlyBeing.name,
+		aliases: Monsters.OtherworldlyBeing.aliases,
 		timeToFinish: Time.Second * 20,
-		table: Monsters.Otherworldlybeing,
+		table: Monsters.OtherworldlyBeing,
 
 		wildy: false,
 
@@ -1154,9 +1154,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		aliases: Monsters.SeaSnakeYoung.aliases,
 		timeToFinish: Time.Second * 28,
 		table: Monsters.SeaSnakeYoung,
-
 		wildy: false,
-
 		difficultyRating: 2,
 		levelRequirements: {
 			slayer: 40
@@ -1314,8 +1312,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		existsInCatacombs: true,
 		itemsRequired: deepResolveItems([
-			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
-			["Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 0,
 		levelRequirements: {

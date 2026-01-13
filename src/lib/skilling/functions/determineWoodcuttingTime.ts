@@ -1,18 +1,20 @@
-import { Time, percentChance } from 'e';
+import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
+
+import { percentChance } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import type { MUserClass } from './../../MUser';
-import type { Log } from './../types';
+import type { Log } from '@/lib/skilling/types.js';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;
-	user: MUserClass;
+	user: MUser;
 	log: Log;
 	axeMultiplier: number;
 	powerchopping: boolean;
 	forestry: boolean;
 	woodcuttingLvl: number;
+	maxTripLength: number;
 }
 
 export function determineWoodcuttingTime({
@@ -22,7 +24,8 @@ export function determineWoodcuttingTime({
 	axeMultiplier,
 	powerchopping,
 	forestry,
-	woodcuttingLvl
+	woodcuttingLvl,
+	maxTripLength
 }: WoodcuttingTimeOptions): [number, number] {
 	let timeElapsed = 0;
 
@@ -43,7 +46,6 @@ export function determineWoodcuttingTime({
 
 	let newQuantity = 0;
 
-	let maxTripLength = calcMaxTripLength(user, 'Woodcutting');
 	if (!powerchopping && user.hasEquippedOrInBank('Log basket')) {
 		maxTripLength += Time.Minute * 5;
 	}
@@ -52,6 +54,8 @@ export function determineWoodcuttingTime({
 	if (log.name === 'Redwood Logs') {
 		userMaxTripTicks *= 2;
 	}
+
+	if (log.name === 'Ivy') userMaxTripTicks += IVY_MAX_TRIP_LENGTH_BOOST / (Time.Second * 0.6);
 
 	while (timeElapsed < userMaxTripTicks) {
 		// Keep rolling until log chopped

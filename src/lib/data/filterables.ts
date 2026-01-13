@@ -1,18 +1,28 @@
-import { uniqueArr } from 'e';
-import { resolveItems } from 'oldschooljs';
+import { BSOItemGroups } from '@/lib/bso/bsoItemGroups.js';
+import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
+import { PartyhatTable } from '@/lib/bso/holidayItems.js';
+import { gods } from '@/lib/bso/minigames/divineDominion.js';
+import { monkeyEatables } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
+import { tmbTable, umbTable } from '@/lib/bso/openables/mysteryBoxes.js';
+import { DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
+import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '@/lib/bso/skills/invention/index.js';
 
-import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
-import Potions from '../minions/data/potions';
-import { allOpenables } from '../openables';
-import { gracefulItems } from '../skilling/skills/agility';
-import { Craftables } from '../skilling/skills/crafting/craftables';
-import { Fletchables } from '../skilling/skills/fletching/fletchables';
-import Grimy from '../skilling/skills/herblore/mixables/grimy';
-import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
-import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import { allCollectionLogs } from './Collections';
+import { uniqueArr } from '@oldschoolgg/toolkit';
+import {
+	BeginnerClueTable,
+	EasyClueTable,
+	EliteClueTable,
+	HardClueTable,
+	MasterClueTable,
+	MediumClueTable,
+	resolveItems
+} from 'oldschooljs';
+
+import { customItems } from '@/lib/customItems/util.js';
+import { allCollectionLogs } from '@/lib/data/Collections.js';
 import {
 	allClueItems,
+	allPetIDs,
 	cluesBeginnerCL,
 	cluesEasyCL,
 	cluesEliteCL,
@@ -25,8 +35,17 @@ import {
 	cluesSharedCL,
 	temporossCL,
 	wintertodtCL
-} from './CollectionsExport';
-import { Eatables } from './eatables';
+} from '@/lib/data/CollectionsExport.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import Potions from '@/lib/minions/data/potions.js';
+import { allOpenables } from '@/lib/openables.js';
+import { gracefulItems } from '@/lib/skilling/skills/agility.js';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
+import PotionsMixable from '@/lib/skilling/skills/herblore/mixables/potions.js';
+import unfinishedPotions from '@/lib/skilling/skills/herblore/mixables/unfinishedPotions.js';
+import { Lampables } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 
 export const superCompostables = [
 	'Pineapple',
@@ -149,7 +168,7 @@ export const warmGear = resolveItems([
 	'Bomber cap'
 ]) as number[];
 
-const ores = resolveItems([
+export const ores = resolveItems([
 	'Copper ore',
 	'Tin ore',
 	'Iron ore',
@@ -161,7 +180,9 @@ const ores = resolveItems([
 	'Mithril ore',
 	'Lovakite ore',
 	'Adamantite ore',
-	'Runite ore'
+	'Runite ore',
+	'Dwarven ore',
+	'Dark animica'
 ]);
 
 const bars = resolveItems([
@@ -175,7 +196,8 @@ const bars = resolveItems([
 	'Lovakite bar',
 	'Mithril bar',
 	'Adamantite bar',
-	'Runite bar'
+	'Runite bar',
+	'Dwarven bar'
 ]);
 
 const smithingMisc = resolveItems([
@@ -197,6 +219,7 @@ const smithingMisc = resolveItems([
 	'Arcane sigil',
 	'Spectral sigil',
 	'Elysian sigil',
+	'Divine sigil',
 	'Blessed Spirit Shield',
 	'Smouldering stone',
 	'Dragon metal lump',
@@ -260,7 +283,7 @@ const barrows = resolveItems([
 	'Bolt rack'
 ]);
 
-const seeds = resolveItems([
+export const seeds = resolveItems([
 	'Pineapple seed',
 	'Crystal acorn',
 	'Magic seed',
@@ -331,23 +354,25 @@ const seeds = resolveItems([
 	'Tomato seed',
 	'Cabbage seed',
 	'Onion seed',
-	'Potato seed'
+	'Potato seed',
+	...BSOItemGroups.bsoSeeds
 ]);
 
-const allPotions = Potions.flatMap(potion => potion.items);
-const potions = [...new Set(allPotions)];
+export const allPotions = Potions.flatMap(potion => potion.items);
+export const potions = resolveItems(['Lumina', ...new Set(allPotions)]);
 
-const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
-const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
-const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
+export const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
+export const cleanHerbs = [...Grimy.flatMap(clean => clean.item.id), ...BSOItemGroups.bsoHerbs];
 
-const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
-const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
+export const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
 
-const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).filter(
+export const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
+export const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
+
+export const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).filter(
 	item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item)
 );
-const secondaries = [...new Set(allSecondaries)];
+export const secondaries = [...new Set(allSecondaries)];
 
 const herblore = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
 
@@ -376,7 +401,8 @@ const bones = resolveItems([
 	'Wolf bones',
 	'Wyrm bones',
 	'Wyvern bones',
-	'Zogre bones'
+	'Zogre bones',
+	...BSOItemGroups.bsoBones
 ]);
 
 const fletchingItemsSet = uniqueArr(Fletchables.flatMap(item => item.inputItems.itemIDs));
@@ -435,7 +461,8 @@ const spiritShields = resolveItems([
 	'Blessed spirit shield',
 	'Spectral spirit shield',
 	'Arcane spirit shield',
-	'Elysian spirit shield'
+	'Elysian spirit shield',
+	'Divine spirit shield'
 ]);
 
 const gear = resolveItems([
@@ -460,7 +487,13 @@ const cluesAndCaskets = resolveItems([
 	'Reward casket (medium)',
 	'Reward casket (hard)',
 	'Reward casket (elite)',
-	'Reward casket (master)'
+	'Reward casket (master)',
+
+	'Clue scroll (grandmaster)',
+	'Clue scroll (elder)',
+	'Reward casket (grandmaster)',
+	'Reward casket (elder)',
+	'Elder scroll piece'
 ]);
 
 const godwars = resolveItems([
@@ -917,6 +950,72 @@ export const baseFilters: Filterable[] = [
 
 			return user.user.favorite_alchables;
 		}
+	},
+	// BSO
+	{
+		name: 'umb',
+		aliases: ['umb'],
+		items: () => umbTable
+	},
+	{
+		name: 'tmb',
+		aliases: ['tmb'],
+		items: () => tmbTable
+	},
+	{
+		name: 'Pets',
+		aliases: ['pets', 'pmb'],
+		items: () => allPetIDs.flat(Number.POSITIVE_INFINITY) as number[]
+	},
+	{
+		name: 'Holiday',
+		aliases: ['holiday', 'hmb', 'rare', 'rares'],
+		items: () => [...allOpenables.find(o => o.name === 'Holiday Mystery box')!.allItems, ...PartyhatTable.allItems]
+	},
+	{
+		name: 'Custom Items',
+		aliases: ['custom', 'custom items'],
+		items: () => customItems
+	},
+	{
+		name: 'Beginner rewards',
+		aliases: ['beginnerrewards'],
+		items: () => BeginnerClueTable.allItems
+	},
+	{
+		name: 'Easy rewards',
+		aliases: ['easyrewards'],
+		items: () => EasyClueTable.allItems
+	},
+	{
+		name: 'Medium rewards',
+		aliases: ['mediumrewards'],
+		items: () => MediumClueTable.allItems
+	},
+	{
+		name: 'Hard rewards',
+		aliases: ['hardrewards'],
+		items: () => HardClueTable.allItems
+	},
+	{
+		name: 'Elite rewards',
+		aliases: ['eliterewards'],
+		items: () => EliteClueTable.allItems
+	},
+	{
+		name: 'Master rewards',
+		aliases: ['masterrewards'],
+		items: () => MasterClueTable.allItems
+	},
+	{
+		name: 'Grandmaster rewards',
+		aliases: ['grandmasterrewards'],
+		items: () => GrandmasterClueTable.allItems
+	},
+	{
+		name: 'Fruit',
+		aliases: ['fruit'],
+		items: () => monkeyEatables.map(i => i.item.id)
 	}
 ];
 
@@ -934,4 +1033,33 @@ for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 			});
 		}
 	}
+}
+
+for (const type of materialTypes) {
+	let items: number[] = [];
+	if (disassembleFlagMaterials.includes(type as DisassembleFlag)) {
+		items = DisassemblySourceGroups.flatMap(group =>
+			group.items
+				.filter(item => item.flags?.has(type as DisassembleFlag))
+				.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
+		);
+	} else {
+		items = DisassemblySourceGroups.filter(group => Boolean(group.parts[type])).flatMap(group =>
+			group.items.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
+		);
+	}
+	filterableTypes.push({
+		name: `${type}-material`,
+		aliases: [type],
+		items: () => items
+	});
+}
+
+for (const god of gods) {
+	const name = `${god.name} Divine Dominion God Items`;
+	filterableTypes.push({
+		name,
+		aliases: [name.toLowerCase()],
+		items: () => god.godItems
+	});
 }

@@ -1,8 +1,9 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { EItem } from 'oldschooljs/EItem';
+import { bsoBurnables } from '@/lib/bso/skills/firemaking/bsoBurnables.js';
 
-import type { Burnable } from '../types';
-import { SkillsEnum } from '../types';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { EItem, type ItemBank } from 'oldschooljs/EItem';
+
+import { type Burnable, defineSkill } from '@/lib/skilling/types.js';
 
 const burnables: Burnable[] = [
 	{
@@ -64,23 +65,24 @@ const burnables: Burnable[] = [
 		level: 90,
 		xp: 350,
 		inputLogs: EItem.REDWOOD_LOGS
-	}
+	},
+	...bsoBurnables
 ];
 
-const pyromancerItems: { [key: number]: number } = {
+const pyromancerItems: ItemBank = {
 	[EItem.PYROMANCER_HOOD]: 0.4,
 	[EItem.PYROMANCER_GARB]: 0.8,
 	[EItem.PYROMANCER_ROBE]: 0.6,
 	[EItem.PYROMANCER_BOOTS]: 0.2
 };
 
-const Firemaking = {
+const Firemaking = defineSkill({
 	aliases: ['fm', 'firemaking'],
 	Burnables: burnables,
-	id: SkillsEnum.Firemaking,
+	id: 'firemaking',
 	emoji: Emoji.Firemaking,
 	pyromancerItems,
 	name: 'Firemaking'
-};
+});
 
 export default Firemaking;

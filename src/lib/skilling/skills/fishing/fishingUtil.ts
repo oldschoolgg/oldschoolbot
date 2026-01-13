@@ -1,7 +1,7 @@
-import { round } from 'e';
+import { round } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
-import type { GearBank } from '@/lib/structures/GearBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 const anglerItems = [
 	[itemID('Angler hat'), 0.4],
@@ -26,7 +26,7 @@ function calcRadasBlessingBoost(gearBank: GearBank) {
 	return { blessingEquipped: false, blessingChance: 0 };
 }
 
-const minnowQuantity: { [key: number]: [number, number] } = {
+const minnowQuantity: Record<number, [number, number]> = {
 	99: [10, 14],
 	95: [11, 13],
 	90: [10, 13],
@@ -59,4 +59,4 @@ function calcAnglerBoostPercent(gearBank: GearBank) {
 	return round(boostPercent, 1);
 }
 
-export { calcRadasBlessingBoost, calcMinnowQuantityRange, calcAnglerBoostPercent, anglerItems };
+export { anglerItems, calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost };

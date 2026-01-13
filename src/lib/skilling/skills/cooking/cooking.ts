@@ -1,8 +1,9 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { bsoCookables } from '@/lib/bso/skills/cooking/bsoCookables.js';
+
+import { Emoji } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
-import type { Cookable } from '../../types';
-import { SkillsEnum } from '../../types';
+import { type Cookable, defineSkill } from '@/lib/skilling/types.js';
 
 export const Cookables: Cookable[] = [
 	{
@@ -283,15 +284,16 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw manta ray')]: 1 },
 		stopBurnAt: 99,
 		burntCookable: itemID('Burnt manta ray')
-	}
+	},
+	...bsoCookables
 ];
 
-const Cooking = {
+const Cooking = defineSkill({
 	aliases: ['cooking', 'cook'],
 	Cookables,
-	id: SkillsEnum.Cooking,
+	id: 'cooking',
 	emoji: Emoji.Cooking,
 	name: 'Cooking'
-};
+});
 
 export default Cooking;

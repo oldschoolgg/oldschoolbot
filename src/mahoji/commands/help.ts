@@ -1,9 +1,8 @@
-import { ButtonStyle, ComponentType } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder } from '@oldschoolgg/discord';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { mahojiInformationalButtons } from '../../lib/sharedComponents';
+import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 
-export const helpCommand: OSBMahojiCommand = {
+export const helpCommand = defineCommand({
 	name: 'help',
 	description: 'Get information and help with the bot.',
 	options: [],
@@ -20,37 +19,29 @@ export const helpCommand: OSBMahojiCommand = {
 
 Please click the buttons below for important links.`,
 			embeds: [
-				{
-					title: 'BSO',
-					description:
+				new EmbedBuilder()
+					.setTitle('BSO')
+					.setDescription(
 						'Bot School Old (BSO) is a copy of Old School Bot (OSB) that you can play alongside it, it has very fun changes like: 5x XP, 2x faster pvm, HUNDREDS of custom items, pets, monsters and bosses. It works exactly the same as OSB. Just invite it to your server using <https://www.oldschool.gg/invite/bso> and `/minion buy` on it to get started!'
-				}
+					)
 			],
 			components: [
-				{
-					type: ComponentType.ActionRow,
-					components: mahojiInformationalButtons
-				},
-				{
-					type: ComponentType.ActionRow,
-					components: [
-						{
-							type: ComponentType.Button,
-							label: 'Invite BSO',
-							emoji: { id: '863823820435619890' },
-							style: ButtonStyle.Link,
-							url: 'https://www.oldschool.gg/invite/bso'
-						},
-						{
-							type: ComponentType.Button,
-							label: 'BSO Wiki',
-							emoji: { id: '863823820435619890' },
-							style: ButtonStyle.Link,
-							url: 'https://bso-wiki.oldschool.gg/'
-						}
-					]
-				}
+				...mahojiInformationalButtons,
+				new ButtonBuilder({
+					type: ComponentType.Button,
+					label: 'Invite BSO',
+					emoji: { id: '863823820435619890' },
+					style: ButtonStyle.Link,
+					url: 'https://www.oldschool.gg/invite/bso'
+				}),
+				new ButtonBuilder({
+					type: ComponentType.Button,
+					label: 'BSO Wiki',
+					emoji: { id: '863823820435619890' },
+					style: ButtonStyle.Link,
+					url: 'https://wiki.oldschool.gg/bso/changelog/'
+				})
 			]
 		};
 	}
-};
+});

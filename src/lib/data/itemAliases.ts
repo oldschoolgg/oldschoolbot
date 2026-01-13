@@ -1,7 +1,7 @@
-import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/string-util';
-import { ItemGroups, Items, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
+import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
+import { ItemGroups, Items } from 'oldschooljs';
 
-export function setItemAlias(id: number, name: string | string[], rename = true) {
+function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
@@ -10,13 +10,13 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
 		firstName = name;
-		itemNameMap.set(name, id);
-		itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
+		Items.itemNameMap.set(name, id);
+		Items.itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
 	} else {
 		for (const _name of name) {
 			if (!firstName) firstName = _name;
-			itemNameMap.set(_name, id);
-			itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
+			Items.itemNameMap.set(_name, id);
+			Items.itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
 		}
 	}
 	// Update the item name to it's first alias
@@ -26,9 +26,9 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 			name: firstName!,
 			id
 		});
-	}
-	if (Items.get(id)!.name !== firstName) {
-		throw new Error(`Failed to set item alias for item ${id}`);
+		if (Items.get(id)!.name !== firstName) {
+			throw new Error(`Failed to set item alias for item ${id}`);
+		}
 	}
 }
 
@@ -111,6 +111,18 @@ setItemAlias(25_346, 'Blue soul cape');
 
 setItemAlias(6672, 'Fishbowl pet');
 
+setItemAlias(3062, ['pmb'], false);
+setItemAlias(3713, ['hmb'], false);
+setItemAlias(6199, ['tmb'], false);
+setItemAlias(19_939, ['umb'], false);
+setItemAlias(47_509, ['emb'], false);
+setItemAlias(19_837, ['gmc'], false);
+setItemAlias(19_838, ['gm'], false);
+setItemAlias(50_421, ['cmb'], false);
+setItemAlias(40_058, ['ccu'], false);
+setItemAlias(40_059, ['cct'], false);
+setItemAlias(13_345, ['tgb'], false);
+
 // Castle wars
 setItemAlias(25_165, 'Red decorative full helm');
 setItemAlias(4071, 'Red decorative helm');
@@ -183,6 +195,47 @@ setItemAlias(21_633, 'Ancient wyvern shield');
 setItemAlias(22_003, 'Uncharged dragonfire ward');
 setItemAlias(22_002, 'Dragonfire ward');
 
+// LMS Items
+setItemAlias(23_611, 'Armadyl crossbow (LMS)');
+setItemAlias(20_593, 'Armadyl godsword (LMS)');
+setItemAlias(20_408, 'Dark bow (LMS)');
+setItemAlias(20_389, 'Dragon arrow (LMS)');
+setItemAlias(20_784, 'Dragon claws (LMS)');
+setItemAlias(23_628, 'Ghrazi rapier (LMS)');
+setItemAlias(20_557, 'Granite maul (LMS)');
+setItemAlias(23_630, 'Heavy ballista (LMS)');
+setItemAlias(23_648, 'Dragon javelin (LMS)');
+setItemAlias(23_622, 'Infernal cape (LMS)');
+setItemAlias(23_652, "Mage's book (LMS)");
+setItemAlias(23_654, 'Occult necklace (LMS)');
+setItemAlias(23_626, 'Kodai wand (LMS)');
+setItemAlias(23_624, 'Seers ring (i) (LMS)');
+setItemAlias(23_613, 'Staff of the dead (LMS)');
+setItemAlias(20_598, "Ahrim's robetop (LMS)");
+setItemAlias(20_599, "Ahrim's robeskirt (LMS)");
+setItemAlias(23_640, 'Amulet of fury (LMS)');
+setItemAlias(25_518, 'Ancestral hat (LMS)');
+setItemAlias(23_646, 'Bandos tassets (LMS)');
+setItemAlias(23_642, 'Blessed spirit shield (LMS)');
+setItemAlias(23_644, 'Eternal boots (LMS)');
+setItemAlias(23_638, "Guthan's helm (LMS)");
+setItemAlias(23_632, "Karil's leathertop (LMS)");
+setItemAlias(23_637, "Torag's helm (LMS)");
+setItemAlias(23_634, "Torag's platelegs (LMS)");
+setItemAlias(23_636, "Verac's helm (LMS)");
+setItemAlias(23_635, "Verac's plateskirt (LMS)");
+setItemAlias(23_619, "Morrigan's javelin (LMS)");
+setItemAlias(23_615, "Vesta's longsword (LMS)");
+setItemAlias(23_620, "Statius's warhammer (LMS)");
+setItemAlias(25_517, 'Volatile nightmare staff (LMS)');
+setItemAlias(23_617, "Zuriel's staff (LMS)");
+setItemAlias(23_639, "Dharok's helm (LMS)");
+setItemAlias(25_515, "Dharok's platebody (LMS)");
+setItemAlias(23_633, "Dharok's platelegs (LMS)");
+setItemAlias(25_516, "Dharok's greataxe (LMS)");
+// Weird/broken/untradeable/scam/similarly named items
+setItemAlias(19_559, 'Elysian spirit shield dust');
+setItemAlias(2422, "Wise old man's partyhat");
 // Metamorphs
 setItemAlias(24_555, 'Crystal tangleroot');
 setItemAlias(24_557, 'Dragonfruit tangleroot');
@@ -271,6 +324,9 @@ setItemAlias(7126, 'Pirate leggings (red)');
 setItemAlias(6107, 'Ghostly robe top');
 setItemAlias(6108, 'Ghostly robe bottom');
 
+// JMOD Scythe:
+setItemAlias(22_664, 'Scythe of vitur (JMod)');
+
 // Flower crowns
 setItemAlias(27_141, 'Flower crown (bisexual)');
 setItemAlias(27_143, 'Flower crown (asexual)');
@@ -323,7 +379,7 @@ setItemAlias(26_507, 'Placeholder steel trophy');
 setItemAlias(26_505, 'Placeholder iron trophy');
 setItemAlias(26_503, 'Placeholder bronze trophy');
 
-export const allTrophyItems = resolveItems([
+export const allTrophyItems = Items.resolveItems([
 	'BSO dragon trophy',
 	'BSO rune trophy',
 	'BSO adamant trophy',
@@ -352,7 +408,9 @@ for (const item of allTrophyItems) {
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
-			cantBeSacrificed: true
+			cantBeSacrificed: true,
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
 		}
 	});
 }
@@ -363,6 +421,13 @@ for (const item of allTrophyItems) {
 
 export interface CustomItemData {
 	cantBeSacrificed?: true;
+	isSuperUntradeable?: boolean;
+	cantDropFromMysteryBoxes?: boolean;
+	cantBeDropped?: true;
+	isDiscontinued?: true;
+	superTradeableButTradeableOnGE?: true;
+	isSecret?: true;
+	tags?: ('SUMMONING' | 'IN_UMB')[];
 }
 declare module 'oldschooljs' {
 	interface Item {
@@ -374,7 +439,7 @@ for (const id of ItemGroups.teamCapes) {
 	Items.modifyItem(id, {
 		price: 100
 	});
-	if (getItemOrThrow(id).price !== 100) {
+	if (Items.getOrThrow(id).price !== 100) {
 		throw new Error(`Failed to modify price of item ${id}`);
 	}
 }
@@ -383,3 +448,26 @@ Items.modifyItem(9044, {
 	tradeable: true,
 	tradeable_on_ge: true
 });
+
+/**
+ * START BSO Supply Crates
+ */
+setItemAlias(71_433, ['s1'], false);
+setItemAlias(71_434, ['s1 key'], false);
+setItemAlias(71_467, ['s2'], false);
+setItemAlias(71_468, ['s2 key'], false);
+setItemAlias(71_580, ['s3'], false);
+setItemAlias(71_581, ['s3 key'], false);
+setItemAlias(72_016, ['s4'], false);
+setItemAlias(72_017, ['s4 key'], false);
+setItemAlias(73_121, ['s5'], false);
+setItemAlias(73_122, ['s5 key'], false);
+setItemAlias(73_200, ['s6'], false);
+setItemAlias(73_201, ['s6 key'], false);
+setItemAlias(73_250, ['s7'], false);
+setItemAlias(73_251, ['s7 key'], false);
+setItemAlias(73_299, ['s8'], false);
+setItemAlias(73_300, ['s8 key'], false);
+/**
+ * END BSO Supply Crates
+ */

@@ -1,34 +1,22 @@
 import { readFile } from 'node:fs/promises';
-import {
-	CanvasRenderingContext2D as CanvasContext,
-	FontLibrary,
-	Image,
-	Canvas as RawCanvas,
-	loadImage
-} from 'skia-canvas';
+import { type CanvasRenderingContext2D as CanvasContext, Image, loadImage, Canvas as RawCanvas } from 'skia-canvas';
 
-import type { DetailedFarmingContract } from '../minions/farming/types';
-import { assert } from '../util/logError';
-import type { IconPackID } from './iconPacks';
+import type { IconPackID } from '@/lib/canvas/iconPacks.js';
+import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import { assert } from '@/lib/util/logError.js';
 
-export function registerFont(fontFamily: string, fontPath: string) {
-	FontLibrary.use(fontFamily, fontPath);
-}
 export function createCanvas(width: number, height: number) {
-	return new RawCanvas(width, height);
+	const canvas = new RawCanvas(width, height);
+	canvas.gpu = false;
+	return canvas;
 }
 
 export type Canvas = ReturnType<typeof createCanvas>;
-
 export const CanvasImage = Image;
 export type CanvasImage = Image;
+export { loadImage };
 
-export { CanvasContext };
-
-export function fillTextXTimesInCtx(ctx: CanvasContext, text: string, x: number, y: number) {
-	const textPath = ctx.outlineText(text);
-	ctx.fill(textPath.offset(x, y));
-}
+export type { CanvasContext };
 
 export function drawImageWithOutline(
 	ctx: CanvasContext,
@@ -159,7 +147,12 @@ export function getClippedRegion(image: Image | Canvas, x: number, y: number, wi
 	return canvas;
 }
 
-export async function canvasToBuffer(canvas: Canvas): Promise<Buffer> {
+export async function canvasToBuffer(canvas: Image | Canvas): Promise<Buffer> {
+	if (canvas instanceof Image) {
+		const tmp = createCanvas(canvas.width, canvas.height);
+		tmp.getContext('2d').drawImage(canvas, 0, 0);
+		return tmp.png;
+	}
 	return canvas.png;
 }
 
@@ -197,4 +190,26 @@ export interface IBgSprite {
 	tabBorderInactive: Canvas;
 	tabBorderActive: Canvas;
 	oddListColor: string;
+}
+
+export function drawGrid({ canvas, scale, opacity }: { canvas: Canvas; scale: number; opacity: number }): void {
+	const ctx = canvas.getContext('2d');
+	ctx.strokeStyle = `rgba(0,0,0,${opacity})`;
+	ctx.lineWidth = 1;
+	ctx.beginPath();
+
+	const w = canvas.width;
+	const h = canvas.height;
+
+	for (let x = 0; x <= w; x += scale) {
+		ctx.moveTo(x, 0);
+		ctx.lineTo(x, h);
+	}
+
+	for (let y = 0; y <= h; y += scale) {
+		ctx.moveTo(0, y);
+		ctx.lineTo(w, y);
+	}
+
+	ctx.stroke();
 }

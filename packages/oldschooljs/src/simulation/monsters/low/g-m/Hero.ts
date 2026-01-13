@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const HeroTable = new LootTable({ limit: 128 })
 	.add('Coins', [200, 300], 105)
@@ -12,7 +12,7 @@ const HeroTable = new LootTable({ limit: 128 })
 	.tertiary(1_400, 'Clue scroll (elite)')
 	.tertiary(99_175, 'Rocky');
 
-export default new SimpleMonster({
+export const Hero: SimpleMonster = new SimpleMonster({
 	id: 3295,
 	name: 'Hero',
 	pickpocketTable: HeroTable,

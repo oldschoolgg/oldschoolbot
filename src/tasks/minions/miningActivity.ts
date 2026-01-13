@@ -1,98 +1,152 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { Time, increaseNumByPercent, randInt, roll, sumArr } from 'e';
-import { toKMB } from 'oldschooljs';
+import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
+import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
+import { type StoneSpirit, stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 
-import { QuestID } from '../../lib/minions/data/quests';
-import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import Mining, { prospectorItemsArr } from '../../lib/skilling/skills/mining';
-import { type Ore, SkillsEnum } from '../../lib/skilling/types';
-import type { GearBank } from '../../lib/structures/GearBank';
-import { UpdateBank } from '../../lib/structures/UpdateBank';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
+import { randInt } from '@oldschoolgg/rng';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, itemID, toKMB } from 'oldschooljs';
 
-export function determineMiningResult({
+import { upgradedDragonstoneOutfit } from '@/lib/data/CollectionsExport.js';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import type { Ore } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+
+export function calculateMiningResult({
 	ore,
-	quantity,
-	gearBank,
 	duration,
+	disabledInventions,
+	quantity,
 	isPowermining,
-	hasFinishedCOTS
+	gearBank,
+	isUsingObsidianPickaxe,
+	hasMiningMasterCape,
+	portentResult,
+	spiritOre,
+	amountOfSpiritsToUse,
+	collectionLog,
+	rng
 }: {
 	ore: Ore;
-	quantity: number;
-	gearBank: GearBank;
 	duration: number;
+	disabledInventions: InventionID[];
 	isPowermining: boolean;
-	hasFinishedCOTS: boolean;
+	gearBank: GearBank;
+	isUsingObsidianPickaxe: boolean;
+	quantity: number;
+	hasMiningMasterCape: boolean;
+	portentResult: Awaited<ReturnType<typeof chargePortentIfHasCharges>> | null;
+	amountOfSpiritsToUse: number;
+	spiritOre: StoneSpirit | undefined;
+	collectionLog: Bank;
+	rng: RNGProvider;
 }) {
-	const miningLvl = gearBank.skillsAsLevels.mining;
-	let bonusXP = 0;
-	let xpToReceive = quantity * ore.xp;
+	const messages: string[] = [];
+	const barsFromKlikBank = new Bank();
+	const oresFromSpiritsBank = new Bank();
+	const barsFromAdzeBank = new Bank();
+	const totalCost = new Bank();
+	const loot = new Bank();
+	const numberOfMinutes = Math.ceil(duration / Time.Minute);
+
+	let spiritualMiningPortentXP = 0;
+	let totalMiningXPToAdd = quantity * ore.xp;
 
 	let taintedQty = 0; // 6xp per chunk rolled
 	if (ore.name === 'Tainted essence chunk') {
 		for (let i = 0; i < quantity; i++) {
-			taintedQty += randInt(1, 4);
+			taintedQty += rng.randInt(1, 4);
 		}
-		xpToReceive = taintedQty * ore.xp;
+		totalMiningXPToAdd = taintedQty * ore.xp;
 	}
 
-	const equippedProsItems = prospectorItemsArr.filter(item => gearBank.hasEquipped(item.id));
-	const bonusPercent =
-		equippedProsItems.length === 4 ? 2.5 : sumArr(equippedProsItems.map(item => item.boostPercent));
-	if (bonusPercent > 0) {
-		const newXP = Math.floor(increaseNumByPercent(xpToReceive, bonusPercent));
-		bonusXP = newXP - xpToReceive;
-		xpToReceive = newXP;
+	// Prospector outfit
+	if (
+		gearBank.gear.skilling.hasEquipped(
+			Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
+			true
+		)
+	) {
+		const amountToAdd = Math.floor(totalMiningXPToAdd * (2.5 / 100));
+		totalMiningXPToAdd += amountToAdd;
+		messages.push(`2.5% (${amountToAdd.toLocaleString()}) bonus XP for full prospector outfit.`);
 	}
-
-	const updateBank = new UpdateBank();
-	if (ore.xp) {
-		updateBank.xpBank.add('mining', xpToReceive, { duration });
-	}
-
-	const xpHr = toKMB((xpToReceive / (duration / Time.Minute)) * 60).toLocaleString();
 
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
-		addSkillingClueToLoot(gearBank, SkillsEnum.Mining, quantity, ore.clueScrollChance, updateBank.itemLootBank);
+		addSkillingClueToLoot(gearBank.skillsAsLevels.mining, 'mining', quantity, ore.clueScrollChance, loot);
 	}
 
 	// Roll for pet
 	if (ore.petChance) {
-		const { petDropRate } = skillingPetDropRate(gearBank, SkillsEnum.Mining, ore.petChance);
-		if (roll(petDropRate / quantity)) {
-			updateBank.itemLootBank.add('Rock golem');
+		const { petDropRate } = skillingPetDropRate(gearBank, 'mining', ore.petChance);
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
+			loot.add('Rock golem');
 		}
 	}
 
-	const numberOfMinutes = duration / Time.Minute;
-
-	if (numberOfMinutes > 10 && ore.minerals && miningLvl >= 60) {
+	if (numberOfMinutes > 10 && ore.minerals && gearBank.skillsAsLevels.mining >= 60) {
 		let numberOfMinerals = 0;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(ore.minerals)) numberOfMinerals++;
+			if (rng.roll(ore.minerals)) numberOfMinerals++;
 		}
 
 		if (numberOfMinerals > 0) {
-			updateBank.itemLootBank.add('Unidentified minerals', numberOfMinerals);
+			if (hasMiningMasterCape) {
+				numberOfMinerals *= 2;
+				messages.push('2x minerals for Mining master cape.');
+			}
+			loot.add('Unidentified minerals', numberOfMinerals);
 		}
 	}
 
-	if (ore.name === 'Daeyalt essence rock') {
-		let daeyaltQty = 0;
-		for (let i = 0; i < quantity; i++) {
-			daeyaltQty += randInt(2, 3);
+	if (duration >= MIN_LENGTH_FOR_PET) {
+		const minutesInTrip = Math.ceil(duration / Time.Minute);
+		const droprate = clAdjustedDroprate(
+			collectionLog,
+			'Doug',
+			globalDroprates.doug.baseRate,
+			globalDroprates.doug.clIncrease
+		);
+		for (let i = 0; i < minutesInTrip; i++) {
+			if (rng.roll(droprate)) {
+				loot.add('Doug');
+				messages.push(
+					"<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining."
+				);
+				break;
+			}
 		}
-		updateBank.itemLootBank.add(ore.id, daeyaltQty);
-	} else if (!isPowermining) {
+	}
+
+	const isDestroyed = isUsingObsidianPickaxe && ore.id !== itemID('Obsidian shards');
+	if (isDestroyed) messages.push('Your volcanic pickaxe destroyed the ores.');
+	const hasAdze = gearBank.hasEquipped(['Superior inferno adze']);
+	const adzeIsDisabled = disabledInventions.includes(InventionID.SuperiorInfernoAdze);
+	if (!isPowermining && !isDestroyed) {
 		// Gem rocks roll off the GemRockTable
-		if (ore.name === 'Gem rock') {
+		if (ore.name === 'Daeyalt essence rock') {
+			let daeyaltQty = 0;
 			for (let i = 0; i < quantity; i++) {
-				updateBank.itemLootBank.add(Mining.GemRockTable.roll());
+				daeyaltQty += randInt(2, 3);
+			}
+			loot.add(ore.id, daeyaltQty);
+		} else if (ore.name === 'Gem rock') {
+			let effectiveQty = quantity;
+			if (gearBank.hasEquipped(upgradedDragonstoneOutfit, true)) {
+				effectiveQty = Math.ceil(increaseNumByPercent(quantity, 10));
+				messages.push(
+					`You received 10% extra gems from your Dragonstone armour. (${effectiveQty - quantity} extra)`
+				);
+			}
+			for (let i = 0; i < effectiveQty; i++) {
+				loot.add(Mining.GemRockTable.roll());
 			}
 		} else if (ore.name === 'Volcanic ash') {
 			// Volcanic ash
@@ -105,71 +159,193 @@ export function determineMiningResult({
 				[97, 6]
 			];
 			for (const [lvl, multiplier] of tiers.reverse()) {
-				if (miningLvl >= lvl) {
-					updateBank.itemLootBank.add(ore.id, quantity * multiplier);
+				if (gearBank.skillsAsLevels.mining >= lvl) {
+					loot.add(ore.id, quantity * multiplier);
 					break;
 				}
 			}
 		} else if (ore.name === 'Sandstone') {
 			// Sandstone roll off the SandstoneRockTable
 			for (let i = 0; i < quantity; i++) {
-				updateBank.itemLootBank.add(Mining.SandstoneRockTable.roll());
+				loot.add(Mining.SandstoneRockTable.roll());
 			}
 		} else if (ore.name === 'Granite') {
 			// Granite roll off the GraniteRockTable
 			for (let i = 0; i < quantity; i++) {
-				updateBank.itemLootBank.add(Mining.GraniteRockTable.roll());
+				loot.add(Mining.GraniteRockTable.roll());
 			}
 		} else if (ore.name === 'Tainted essence chunk') {
-			updateBank.itemLootBank.add(ore.id, 5 * taintedQty);
+			loot.add(ore.id, 5 * taintedQty);
 		} else {
-			updateBank.itemLootBank.add(ore.id, quantity);
+			loot.add(ore.id, quantity);
+		}
+
+		const hasKlik = gearBank.usingPet('Klik');
+
+		if (hasKlik && !hasAdze) {
+			const smeltedOre = Smithing.Bars.find(o => o.inputOres.has(ore.id) && o.inputOres.length === 1);
+			if (smeltedOre) {
+				barsFromKlikBank.add(smeltedOre.id, quantity);
+				loot.remove(ore.id, loot.amount(ore.id));
+				loot.add(barsFromKlikBank);
+				messages.push(
+					'<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!'
+				);
+			}
+		}
+
+		if (spiritOre && amountOfSpiritsToUse > 0) {
+			const spiritCost = new Bank().add(spiritOre.spirit.id, amountOfSpiritsToUse);
+			totalCost.add(spiritCost);
+
+			const spiritBank = new Bank().add(ore.id, amountOfSpiritsToUse);
+			loot.add(spiritBank);
+			oresFromSpiritsBank.add(ore.id, amountOfSpiritsToUse);
+			messages.push(`You received ${spiritBank} from your ${spiritCost}.`);
 		}
 	}
 
-	if (ore.name === 'Runite ore') {
-		rollForMoonKeyHalf({ user: hasFinishedCOTS, duration, loot: updateBank.itemLootBank });
+	if (spiritOre && amountOfSpiritsToUse > 0 && portentResult?.didCharge) {
+		const spiritCost = new Bank().add(spiritOre.spirit.id, amountOfSpiritsToUse);
+		totalCost.add(spiritCost);
+		spiritualMiningPortentXP = amountOfSpiritsToUse * (ore.xp * (ore.xp / 10));
+		totalMiningXPToAdd += spiritualMiningPortentXP;
+
+		messages.push(
+			`You received ${toKMB(
+				spiritualMiningPortentXP * GLOBAL_BSO_XP_MULTIPLIER
+			)} bonus XP from your Spiritual mining portent (${
+				portentResult.portent.charges_remaining
+			} charges remaining).`
+		);
+	}
+
+	let smithingXPFromAdze = 0;
+	if (hasAdze && !adzeIsDisabled) {
+		const smeltedOre = Smithing.Bars.find(
+			o => o.inputOres.has(ore.id) && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
+		);
+		if (smeltedOre) {
+			if (!isPowermining) {
+				barsFromAdzeBank.add(smeltedOre.id, quantity);
+				loot.remove(ore.id, loot.amount(ore.id));
+				loot.add(barsFromAdzeBank);
+			}
+			smithingXPFromAdze = smeltedOre.xp * quantity;
+			messages.push('Your Superior inferno adze smelted all the ore you mined (No materials used).');
+		}
 	}
 
 	return {
-		updateBank,
-		bonusXP,
-		xpHr
+		totalMiningXPToAdd: Math.floor(totalMiningXPToAdd),
+		smithingXPFromAdze: Math.floor(smithingXPFromAdze),
+		barsFromKlikBank,
+		totalCost,
+		spiritualMiningPortentXP: Math.floor(spiritualMiningPortentXP),
+		loot,
+		barsFromAdzeBank,
+		oresFromSpiritsBank,
+		messages
 	};
 }
 
 export const miningTask: MinionTask = {
 	type: 'Mining',
-	async run(data: MiningActivityTaskOptions) {
-		const { oreID, userID, channelID, duration, powermine } = data;
+	async run(data: MiningActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { oreID, channelId, duration, powermine } = data;
 		const { quantity } = data;
-		const user = await mUserFetch(userID);
+		const minutes = Math.round(duration / Time.Minute);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
-		const { updateBank, bonusXP } = determineMiningResult({
-			ore,
-			quantity,
-			gearBank: user.gearBank,
+
+		const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
+		const amountOfSpiritsToUse =
+			spiritOre !== undefined ? Math.min(quantity, user.bank.amount(spiritOre.spirit.id)) : 0;
+		const hasMiningMasterCape = user.hasEquipped('Mining master cape');
+		const portentResult =
+			amountOfSpiritsToUse > 0
+				? await chargePortentIfHasCharges({
+						user,
+						portentID: PortentID.MiningPortent,
+						charges: minutes
+					})
+				: null;
+		const {
+			totalMiningXPToAdd,
+			smithingXPFromAdze,
+			barsFromKlikBank,
+			totalCost,
+			spiritualMiningPortentXP,
+			loot,
+			messages,
+			barsFromAdzeBank,
+			oresFromSpiritsBank
+		} = calculateMiningResult({
 			duration,
-			isPowermining: powermine,
-			hasFinishedCOTS: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)
+			isPowermining: powermine ?? false,
+			isUsingObsidianPickaxe: user.hasEquipped(['Offhand volcanic pickaxe'], false),
+			quantity,
+			hasMiningMasterCape,
+			ore,
+			disabledInventions: user.user.disabled_inventions,
+			gearBank: user.gearBank,
+			amountOfSpiritsToUse,
+			spiritOre,
+			portentResult,
+			collectionLog: user.cl,
+			rng
 		});
 
-		const updateResult = await updateBank.transact(user);
-		if (typeof updateResult === 'string') throw new Error(updateResult);
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${updateResult.message}${
-			bonusXP > 0 ? ` **Bonus XP:** ${bonusXP.toLocaleString()}` : ''
-		}\n`;
+		await user.transactItems({
+			collectionLog: true,
+			itemsToAdd: loot,
+			itemsToRemove: totalCost
+		});
 
-		if (updateResult.itemTransactionResult?.itemsAdded)
-			str += `\nYou received ${updateResult.itemTransactionResult?.itemsAdded}.`;
+		let xpRes = await user.addXP({
+			skillName: 'mining',
+			amount: totalMiningXPToAdd,
+			duration
+		});
 
-		if (updateBank.itemLootBank.has('Rock golem')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${user.skillsAsLevels.mining} Mining!`
-			);
+		if (smithingXPFromAdze > 0) {
+			xpRes += ` ${await user.addXP({
+				skillName: 'smithing',
+				amount: smithingXPFromAdze,
+				duration
+			})}`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, updateResult.itemTransactionResult?.itemsAdded ?? null);
+		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
+
+		if (barsFromKlikBank.length > 0) {
+			await user.statsBankUpdate('bars_from_klik_bank', barsFromKlikBank);
+		}
+		if (oresFromSpiritsBank.length > 0) {
+			await user.statsBankUpdate('ores_from_spirits_bank', oresFromSpiritsBank);
+		}
+		if (barsFromAdzeBank.length > 0) {
+			await user.statsBankUpdate('bars_from_adze_bank', barsFromAdzeBank);
+		}
+		if (spiritualMiningPortentXP > 0) {
+			await user.statsUpdate({
+				xp_from_mining_portent: {
+					increment: spiritualMiningPortentXP
+				}
+			});
+		}
+
+		str += `\nYou received: ${loot}.`;
+
+		if (messages.length > 0) {
+			str += `\n\n${messages.join('\n')}`;
+		}
+
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: str },
+			data,
+			loot
+		});
 	}
 };

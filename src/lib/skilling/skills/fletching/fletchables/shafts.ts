@@ -1,5 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
-import type { Fletchable } from '../../../types';
+
+import type { Fletchable } from '@/lib/skilling/types.js';
 
 const Shafts: Fletchable[] = [
 	{
@@ -82,6 +83,15 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ 'Redwood logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 105
+	},
+	{
+		name: 'Elder arrow shaft',
+		id: itemID('Arrow shaft'),
+		level: 105,
+		xp: 100,
+		inputItems: new Bank({ 'Elder logs': 1 }),
+		tickRate: 2,
+		outputMultiple: 300
 	},
 	{
 		name: 'Battlestaff',

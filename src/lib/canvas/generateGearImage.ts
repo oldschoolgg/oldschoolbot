@@ -1,13 +1,13 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { EquipmentSlot } from 'oldschooljs';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { EquipmentSlot, type GearStats } from 'oldschooljs';
 
-import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
-import type { GearSetup, GearSetupType } from '../gear/types';
-import { GearSetupTypes } from '../gear/types';
-import { type Gear, maxDefenceStats, maxOffenceStats } from '../structures/Gear';
-import { bankImageTask } from './bankImage';
-import { type BaseCanvasArgs, calcAspectRatioFit } from './canvasUtil';
-import { gearImages, transmogItems } from './gearImageData';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { type BaseCanvasArgs, calcAspectRatioFit } from '@/lib/canvas/canvasUtil.js';
+import { gearImages, transmogItems } from '@/lib/canvas/gearImageData.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
+import { GearSetupTypes } from '@/lib/gear/types.js';
+import { type Gear, maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear.js';
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -100,7 +100,7 @@ function isMaxStat(statKey: string, value: number): boolean {
 	return maxStats[statKey as keyof typeof maxStats] === value;
 }
 
-function drawGearStats(canvas: OSRSCanvas, gearStats: any) {
+function drawGearStats(canvas: OSRSCanvas, gearStats: GearStats) {
 	// Define stat groups with their data
 	const attackStats: StatGroup = {
 		title: 'Attack bonus',
@@ -232,13 +232,19 @@ export async function generateGearImage({
 	gearType,
 	bankBgHexColor,
 	farmingContract,
-	bankBackgroundId
+	bankBackgroundId,
+	user
 }: {
 	gearSetup: Gear;
 	gearType: GearSetupType | null | undefined;
 	petID?: number | null;
 	gearTemplate?: number;
+	user?: MUser;
 } & BaseCanvasArgs) {
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
 	const {
 		sprite,
 		uniqueSprite,
@@ -312,7 +318,8 @@ export async function generateGearImage({
 		await canvas.drawItemIDSprite({
 			itemID: petID,
 			x: 178,
-			y: 190
+			y: 190,
+			user
 		});
 	}
 
@@ -325,7 +332,8 @@ export async function generateGearImage({
 			itemID: item.item,
 			x: x,
 			y: y,
-			quantity: item.quantity === 1 ? undefined : item.quantity
+			quantity: item.quantity === 1 ? undefined : item.quantity,
+			user
 		});
 	}
 
@@ -333,6 +341,7 @@ export async function generateGearImage({
 }
 
 export async function generateAllGearImage({
+	user,
 	bankBackgroundId = 1,
 	gearTemplate = 0,
 	iconPackId,
@@ -341,10 +350,15 @@ export async function generateAllGearImage({
 	bankBgHexColor,
 	farmingContract
 }: BaseCanvasArgs & {
+	user?: MUser;
 	gearTemplate?: number;
 	gear: { [key in GearSetupType]: GearSetup };
 	equippedPet?: number | null;
 }) {
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
 	const {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
@@ -412,7 +426,8 @@ export async function generateAllGearImage({
 				itemID: item.item,
 				x,
 				y,
-				quantity: item.quantity === 1 ? undefined : item.quantity
+				quantity: item.quantity === 1 ? undefined : item.quantity,
+				user
 			});
 		}
 		i++;
@@ -427,7 +442,8 @@ export async function generateAllGearImage({
 		await canvas.drawItemIDSprite({
 			itemID: equippedPet,
 			x: petX,
-			y: petY
+			y: petY,
+			user
 		});
 	}
 

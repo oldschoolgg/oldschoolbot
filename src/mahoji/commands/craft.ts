@@ -1,17 +1,12 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 
-export const craftCommand: OSBMahojiCommand = {
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
+import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
+
+export const craftCommand = defineCommand({
 	name: 'craft',
 	description: 'Craft items with the Crafting skill.',
 	attributes: {
@@ -21,11 +16,11 @@ export const craftCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The item you want to craft.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Craftables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase()))).map(
 					i => ({
 						name: i.name,
@@ -35,16 +30,14 @@ export const craftCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to craft (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, user, channelId }) => {
 		let { quantity } = options;
 
 		if (options.name.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;
@@ -60,7 +53,7 @@ export const craftCommand: OSBMahojiCommand = {
 		}
 
 		const userQP = user.QP;
-		const currentWoodcutLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const currentWoodcutLevel = user.skillsAsLevels.woodcutting;
 
 		if (craftable.qpRequired && userQP < craftable.qpRequired) {
 			return `${user.minionName} needs ${craftable.qpRequired} QP to craft ${craftable.name}.`;
@@ -70,25 +63,57 @@ export const craftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${craftable.wcLvl} Woodcutting Level to craft ${craftable.name}.`;
 		}
 
-		if (user.skillLevel(SkillsEnum.Crafting) < craftable.level) {
+		if (user.skillsAsLevels.crafting < craftable.level) {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
 
+		const maxTripLength = await user.calcMaxTripLength('Crafting');
+		const boosts: string[] = [];
 		const userBank = user.bankWithGP;
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;
-		const [hasFallyHard] = await userhasDiaryTier(user, FaladorDiary.hard);
-		if (craftable.bankChest && (hasFallyHard || user.skillLevel(SkillsEnum.Crafting) >= 99)) {
+		const hasFallyHard = user.hasDiary('falador.hard');
+		if (craftable.bankChest && (hasFallyHard || user.skillsAsLevels.crafting >= 99)) {
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Crafting');
+		const maxCanDo = userBank.fits(craftable.inputItems);
+		const isTannable = Tanning.includes(craftable);
+		if (user.usingPet('Klik') && isTannable) {
+			timeToCraftSingleItem /= 3;
+			boosts.push('3x faster for Klik helping Tan');
+		}
+
+		if (!isTannable) {
+			if (user.hasEquippedOrInBank('Dwarven greathammer')) {
+				timeToCraftSingleItem /= 2;
+				boosts.push('2x faster for Dwarven greathammer');
+			}
+			const boostedTimeToCraftSingleItem = reduceNumByPercent(
+				timeToCraftSingleItem,
+				inventionBoosts.masterHammerAndChisel.speedBoostPercent
+			);
+			const res = await inventionItemBoost({
+				user,
+				inventionID: InventionID.MasterHammerAndChisel,
+				duration: Math.min(
+					maxTripLength,
+					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToCraftSingleItem)) *
+						boostedTimeToCraftSingleItem
+				)
+			});
+			if (res.success) {
+				timeToCraftSingleItem = boostedTimeToCraftSingleItem;
+				boosts.push(
+					`${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster for Master hammer and chisel (${res.messages})`
+				);
+			}
+		}
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
-			const max = userBank.fits(craftable.inputItems);
-			if (max < quantity && max !== 0) quantity = max;
+			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
 
 		const duration = quantity * timeToCraftSingleItem;
@@ -111,19 +136,24 @@ export const craftCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(itemsNeeded);
 
-		updateBankSetting('crafting_cost', itemsNeeded);
+		await ClientSettings.updateBankSetting('crafting_cost', itemsNeeded);
 
-		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
+		await ActivityManager.startTrip<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity,
 			duration,
-			type: 'Crafting'
+			type: 'Crafting',
+			cantBeDoubled: craftable.cantBeDoubled
 		});
-
-		return `${user.minionName} is now crafting ${quantity}${sets} ${
+		let str = `${user.minionName} is now crafting ${quantity}${sets} ${
 			craftable.name
 		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		if (boosts.length > 0) {
+			str += `**Boosts:** ${boosts.join(', ')}`;
+		}
+
+		return str;
 	}
-};
+});

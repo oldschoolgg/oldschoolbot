@@ -1,8 +1,8 @@
-import { deepClone, objectEntries } from 'e';
-import { Bank, type EquipmentSlot, type Item, itemID, resolveItems } from 'oldschooljs';
+import { Bank, type EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
+import { clone } from 'remeda';
 
-import type { GearSetup } from '../gear/types';
-import getOSItem from './getOSItem';
+import type { GearSetup, GearSlotItem } from '@/lib/gear/types.js';
+import skillcapes from '@/lib/skilling/skillcapes.js';
 
 interface IGearSwap {
 	[key: number]: number[];
@@ -91,11 +91,7 @@ const gearSwap: IGearSwap = {
 	[itemID('Accursed sceptre')]: [itemID('Accursed sceptre (u)')],
 	[itemID('Accursed sceptre (a)')]: [itemID('Accursed sceptre (au)')],
 	[itemID('Webweaver bow')]: [itemID('Webweaver bow (u)')],
-	[itemID('Venator bow')]: [itemID('Venator bow (uncharged)')],
-	// These 3 are NOT for BSO
-	[itemID('Sanguine torva platebody')]: [itemID('Torva platebody')],
-	[itemID('Sanguine torva platelegs')]: [itemID('Torva platelegs')],
-	[itemID('Sanguine torva full helm')]: [itemID('Torva full helm')]
+	[itemID('Venator bow')]: [itemID('Venator bow (uncharged)')]
 };
 
 const lockedItems = resolveItems([
@@ -162,8 +158,19 @@ const lockedItems = resolveItems([
 	'Ranger hat (l)',
 	'Healer hat (l)',
 	'Fighter torso (l)',
-	'Ancient sceptre (l)'
+	'Ancient sceptre (l)',
+	"Combatant's cape",
+	...skillcapes.map(s => s.masterCape.name)
 ]);
+
+const itemsThatBreakOnDeath: Record<number, number> = {
+	[itemID('Hellfire bow')]: itemID('Hellfire bow (broken)'),
+	[itemID('Hellfire bownana')]: itemID('Hellfire bownana (broken)'),
+	[itemID('Mistleboe')]: itemID('Hellfire bow (broken)'),
+	[itemID('Hellfire bow (ice)')]: itemID('Hellfire bow (broken)'),
+	[itemID('Hellfire bow (Oceanic)')]: itemID('Hellfire bow (broken)'),
+	[itemID('Demonic piercer')]: itemID('Hellfire bow (broken)')
+};
 
 export default function calculateGearLostOnDeathWilderness(
 	options = <
@@ -177,11 +184,11 @@ export default function calculateGearLostOnDeathWilderness(
 	>{}
 ) {
 	// 1 - Duplicate user gear
-	const userGear = { ...deepClone(options.gear) };
+	const userGear = { ...clone(options.gear) };
 	const removableItems: { slot: EquipmentSlot; sorter: number; originalItem: Item }[] = [];
 
 	// 2 - Swap user gear to the correct gear for death calculations
-	for (const [_slot, _data] of objectEntries(userGear)) {
+	for (const [_slot, _data] of Object.entries(userGear) as [EquipmentSlot, GearSlotItem | null][]) {
 		if (!_data || _data.item === undefined) continue;
 		const originalItem = _data.item;
 		let replacedGear = [_data.item];
@@ -191,13 +198,13 @@ export default function calculateGearLostOnDeathWilderness(
 			slot: _slot,
 			sorter: replacedGear
 				.map(_i => {
-					const i = getOSItem(_i);
+					const i = Items.getOrThrow(_i);
 					if (lockedItems.includes(i.id)) return -1;
 					// Get the hichest value for the item, be it protection value (cost), ge price or high alch
 					return Math.max(i.price ?? 0, i.cost ?? 0, i.highalch ?? 0);
 				})
 				.reduce((sum, current) => sum + current, 0),
-			originalItem: getOSItem(originalItem)
+			originalItem: Items.getOrThrow(originalItem)
 		});
 	}
 
@@ -218,9 +225,24 @@ export default function calculateGearLostOnDeathWilderness(
 		lostItemsBank.add(originalItem.id);
 	}
 
+	const gearThatBroke = new Bank();
+	const gearToRefund = new Bank();
+	for (const item of lostItemsBank.items()) {
+		if (itemsThatBreakOnDeath[item[0].id]) {
+			const itemID = item[0].id;
+			const qty = item[1];
+			gearThatBroke.add(itemID, qty);
+			lostItemsBank.remove(itemID, qty);
+			const brokenID = itemsThatBreakOnDeath[itemID];
+			gearToRefund.add(brokenID, qty);
+		}
+	}
+
 	// 6 - Return lost items + new gear
 	return {
 		lostItems: lostItemsBank,
-		newGear: userGear
+		newGear: userGear,
+		gearThatBroke,
+		gearToRefund
 	};
 }

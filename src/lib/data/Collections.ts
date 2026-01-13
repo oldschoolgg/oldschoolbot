@@ -1,44 +1,95 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
+import { allChristmasEvent2024Items, allChristmasEvent2025Items } from '@/lib/bso/collection-log/holiday.js';
+import {
+	abyssalDragonCL,
+	akumuCL,
+	araxxorCL,
+	customPetsCL,
+	discontinuedCustomPetsCL,
+	divineDominionCL,
+	divinersOutfit,
+	doaCL,
+	dungeoneeringCL,
+	ignecarusCL,
+	kalphiteKingCL,
+	kingGoldemarCL,
+	moktangCL,
+	naxxusCL,
+	nexCL,
+	nihilizCL,
+	polyporeDungeonCL,
+	queenBlackDragonCL,
+	seaKrakenCL,
+	spectatorClothes,
+	superiorTormentedDemonCL,
+	tameGearCL,
+	treeBeardCL,
+	vasaMagusCL,
+	venatrixCL,
+	vladDrakanCL
+} from '@/lib/bso/collection-log/main.js';
+import {
+	balthazarsBigBonanzaCL,
+	baxtorianBathhousesCL,
+	fishingContestCL,
+	fistOfGuthixCL,
+	monkeyRumbleCL,
+	odsCL,
+	stealingCreationCL,
+	tinkeringWorshopCL
+} from '@/lib/bso/collection-log/minigames.js';
+import { cookingCL, craftingCL, creatablesCL, herbloreCL } from '@/lib/bso/collection-log/special.js';
+import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { ElderClueTable } from '@/lib/bso/elderClue.js';
+import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
+import { keyCrates } from '@/lib/bso/keyCrates.js';
+import { kibbleCL } from '@/lib/bso/kibble.js';
+import { AkumuLootTable } from '@/lib/bso/monsters/bosses/Akumu.js';
+import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
+import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
+import { Naxxus, NaxxusLootTableFinishable } from '@/lib/bso/monsters/bosses/Naxxus.js';
+import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
+import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
+import { cmbClothes } from '@/lib/bso/openables/cmb.js';
+import { PaintBoxTable } from '@/lib/bso/paintColors.js';
+import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
+import { divinationEnergies, portents } from '@/lib/bso/skills/divination.js';
+import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
+import { slayerMasksHelmsCL } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
+import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames/tames.js';
+
+import { CollectionLog } from '@oldschoolgg/collectionlog';
+import { calcWhatPercent, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	ChambersOfXeric,
 	Clues,
 	EItem,
 	EMonster,
-	type Item,
 	type ItemBank,
 	ItemGroups,
+	Items,
+	itemID,
 	type Monster,
 	Monsters,
 	resolveItems
 } from 'oldschooljs';
 
-import type { ClueTier } from '../clues/clueTiers';
-import { ClueTiers } from '../clues/clueTiers';
-import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
-import { sepulchreFloors } from '../minions/data/sepulchre';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { CollectionLogType } from '@/lib/collectionLogTask.js';
 import {
-	EasyEncounterLoot,
-	HardEncounterLoot,
-	MediumEncounterLoot,
-	rewardTokens
-} from '../minions/data/templeTrekking';
-import type { MinigameName } from '../settings/minigames';
-import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
-import { allFarmingItems } from '../skilling/skills/farming';
-import { SkillsEnum } from '../skilling/types';
-import { MUserStats } from '../structures/MUserStats';
-import { shuffleRandom } from '../util/smallUtils';
-import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
-import {
-	NexCL,
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
 	allPetsCL,
 	amoxliatlCL,
-	araxxorCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
 	brimhavenAgilityArenaCL,
@@ -56,8 +107,11 @@ import {
 	chompyBirdsCL,
 	cluesBeginnerCL,
 	cluesEasyCL,
+	cluesElderCL,
 	cluesEliteCL,
 	cluesEliteRareCL,
+	cluesGrandmasterCL,
+	cluesGrandmasterRareCL,
 	cluesHardCL,
 	cluesHardRareCL,
 	cluesMasterCL,
@@ -67,14 +121,19 @@ import {
 	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
 	corporealBeastCL,
+	crackerCL,
 	crazyArchaeologistCL,
 	creatureCreationCL,
 	cyclopsCL,
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
+	derangedArchaeologistCL,
 	diariesCL,
 	dukeSucellusCL,
+	emergedZukInfernoCL,
+	expertCapesCL,
+	type FormatProgressFunction,
 	fightCavesCL,
 	fishingTrawlerCL,
 	forestryCL,
@@ -83,21 +142,25 @@ import {
 	giantMoleCL,
 	giantsFoundryCL,
 	gnomeRestaurantCL,
-	godWarsDungeonCL,
 	gracefulCL,
 	grotesqueGuardiansCL,
 	guardiansOfTheRiftCL,
 	hallowedSepulchreCL,
 	hesporiCL,
-	implingsCL,
+	holidayCL,
+	type ICollection,
+	type ILeftListStatus,
+	type IToReturnCollection,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
 	krakenCL,
 	kreeArraCL,
 	krilTsutsarothCL,
 	lastManStandingCL,
+	leaguesCL,
 	magicTrainingArenaCL,
 	mahoganyHomesCL,
+	masterCapesCL,
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
@@ -114,6 +177,8 @@ import {
 	scorpiaCL,
 	shadesOfMorttonCL,
 	shayzienArmourCL,
+	shootingStarsCL,
+	skillingMiscCL,
 	skillingPetsCL,
 	skotizoCL,
 	slayerCL,
@@ -121,13 +186,13 @@ import {
 	spiritAnglerOutfit,
 	templeTrekkingCL,
 	temporossCL,
+	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theLeviathanCL,
 	theNightmareCL,
-	theWhispererCL,
-	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
+	theWhispererCL,
 	titheFarmCL,
 	tormentedDemonCL,
 	troubleBrewingCL,
@@ -140,19 +205,33 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from './CollectionsExport';
-import Createables from './createables';
-import { leagueBuyables } from './leaguesBuyables';
+} from '@/lib/data/CollectionsExport.js';
+import { growablePetsCL } from '@/lib/growablePets.js';
+import { implingsCL } from '@/lib/implings.js';
+import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import {
+	EasyEncounterLoot,
+	HardEncounterLoot,
+	MediumEncounterLoot,
+	rewardTokens
+} from '@/lib/minions/data/templeTrekking.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
+import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
-function kcProg(mon: Monster): FormatProgressFunction {
-	return ({ stats }) => `${stats.kcBank[mon.id] ?? 0} KC`;
+function kcProg(mon: Monster | number): FormatProgressFunction {
+	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;
 }
 
 function mgProg(minigameName: MinigameName): FormatProgressFunction {
 	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
-function skillProg(skillName: SkillsEnum): FormatProgressFunction {
+function skillProg(skillName: SkillNameType): FormatProgressFunction {
 	return ({ user }) => `Level ${user.skillLevel(skillName)} ${skillName}`;
 }
 
@@ -169,7 +248,7 @@ function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
 }
 
 export const allCollectionLogs: ICollection = {
-	Bosses: {
+	PvM: {
 		alias: ['boss'],
 		activities: {
 			'Abyssal Sire': {
@@ -245,6 +324,41 @@ export const allCollectionLogs: ICollection = {
 				items: commanderZilyanaCL,
 				fmtProg: kcProg(Monsters.CommanderZilyana)
 			},
+			'God Wars Dungeon': {
+				alias: ['gwd', 'godwars'],
+				kcActivity: {
+					Default: async user => {
+						return sumArr(
+							await Promise.all(
+								[
+									Monsters.GeneralGraardor.id,
+									Monsters.CommanderZilyana.id,
+									Monsters.Kreearra.id,
+									Monsters.KrilTsutsaroth.id
+								].map(i => user.getKC(i))
+							)
+						);
+					}
+				},
+				allItems: (() => {
+					return [
+						...new Set([
+							...Monsters.GeneralGraardor.allItems,
+							...Monsters.CommanderZilyana.allItems,
+							...Monsters.Kreearra.allItems,
+							...Monsters.KrilTsutsaroth.allItems
+						])
+					];
+				})(),
+				items: [
+					...ItemGroups.godWarsDungeonGodswordShards,
+					...commanderZilyanaCL,
+					...generalGraardorCL,
+					...kreeArraCL,
+					...krilTsutsarothCL
+				].sort((a, b) => a - b),
+				counts: false
+			},
 			'Corporeal Beast': {
 				alias: Monsters.CorporealBeast.aliases,
 				allItems: Monsters.CorporealBeast.allItems,
@@ -256,6 +370,16 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.CrazyArchaeologist.allItems,
 				items: crazyArchaeologistCL,
 				fmtProg: kcProg(Monsters.CrazyArchaeologist)
+			},
+			'Deranged Archaeologist': {
+				alias: Monsters.DerangedArchaeologist.aliases,
+				allItems: Monsters.DerangedArchaeologist.allItems,
+				items: derangedArchaeologistCL,
+				fmtProg: kcProg(Monsters.DerangedArchaeologist)
+			},
+			'Doom of Mokhaiotl': {
+				unobtainable: true,
+				items: CollectionLog.DoomofMokhaiotl.items
 			},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
@@ -283,7 +407,7 @@ export const allCollectionLogs: ICollection = {
 					Default: [Monsters.DukeSucellus.name, Monsters.AwakenedDukeSucellus.name],
 					Awakened: Monsters.AwakenedDukeSucellus.name
 				},
-				allItems: Monsters.DukeSucellus.allItems,
+				allItems: Monsters.DukeSucellus.allItems.filter(item => !OSB_VIRTUS_IDS.includes(item)),
 				items: dukeSucellusCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.DukeSucellus.id] ?? 0} KC`,
@@ -296,7 +420,7 @@ export const allCollectionLogs: ICollection = {
 					Default: [Monsters.TheLeviathan.name, Monsters.AwakenedTheLeviathan.name],
 					Awakened: Monsters.AwakenedTheLeviathan.name
 				},
-				allItems: Monsters.TheLeviathan.allItems,
+				allItems: Monsters.TheLeviathan.allItems.filter(item => !OSB_VIRTUS_IDS.includes(item)),
 				items: theLeviathanCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.TheLeviathan.id] ?? 0} KC`,
@@ -309,12 +433,18 @@ export const allCollectionLogs: ICollection = {
 					Default: [Monsters.Vardorvis.name, Monsters.AwakenedVardorvis.name],
 					Awakened: Monsters.AwakenedVardorvis.name
 				},
-				allItems: Monsters.Vardorvis.allItems,
+				allItems: Monsters.Vardorvis.allItems.filter(item => !OSB_VIRTUS_IDS.includes(item)),
 				items: vardorvisCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.Vardorvis.id] ?? 0} KC`,
 					`${stats.kcBank[Monsters.AwakenedVardorvis.id] ?? 0} Awakened KC`
 				]
+			},
+			'Vladimir Drakan': {
+				alias: BSOMonsters.VladimirDrakan.aliases,
+				allItems: BSOMonsters.VladimirDrakan.table.allItems,
+				items: vladDrakanCL,
+				fmtProg: kcProg(BSOMonsters.VladimirDrakan.id)
 			},
 			'The Whisperer': {
 				alias: ['the whisperer'],
@@ -322,7 +452,7 @@ export const allCollectionLogs: ICollection = {
 					Default: [Monsters.TheWhisperer.name, Monsters.AwakenedTheWhisperer.name],
 					Awakened: Monsters.AwakenedTheWhisperer.name
 				},
-				allItems: Monsters.TheWhisperer.allItems,
+				allItems: Monsters.TheWhisperer.allItems.filter(item => !OSB_VIRTUS_IDS.includes(item)),
 				items: theWhispererCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.TheWhisperer.id] ?? 0} KC`,
@@ -410,6 +540,11 @@ export const allCollectionLogs: ICollection = {
 				items: theInfernoCL,
 				fmtProg: ({ minigames }) => `${minigames.inferno} KC`
 			},
+			'Emerged Zuk Inferno': {
+				alias: ['emerged inferno', 'ezi', 'emerged zuk'],
+				items: emergedZukInfernoCL,
+				fmtProg: ({ minigames }) => `${minigames.emerged_inferno} KC`
+			},
 			'Kalphite Queen': {
 				alias: Monsters.KalphiteQueen.aliases,
 				allItems: Monsters.KalphiteQueen.allItems,
@@ -439,16 +574,6 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.KrilTsutsaroth.allItems,
 				items: krilTsutsarothCL,
 				fmtProg: kcProg(Monsters.KrilTsutsaroth)
-			},
-			Nex: {
-				alias: ['nex'],
-				allItems: [
-					...NexUniqueTable.allItems,
-					...NexNonUniqueTable.allItems,
-					...resolveItems(['Clue scroll (elite)'])
-				],
-				items: NexCL,
-				fmtProg: ({ stats }) => `${stats.kcBank[EMonster.NEX] ?? 0} KC`
 			},
 			'The Nightmare': {
 				alias: [...NightmareMonster.aliases, 'phosani'],
@@ -567,10 +692,20 @@ export const allCollectionLogs: ICollection = {
 				items: vorkathCL,
 				fmtProg: kcProg(Monsters.Vorkath)
 			},
+			Moktang: {
+				alias: ['mt', 'moktang'],
+				items: moktangCL,
+				allItems: MoktangLootTable.allItems,
+				fmtProg: kcProg(EBSOMonster.MOKTANG)
+			},
 			Wintertodt: {
 				alias: ['todt', 'wintertodt', 'wt'],
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
+			},
+			Yami: {
+				unobtainable: true,
+				items: CollectionLog.Yami.items
 			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
@@ -578,12 +713,86 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.Zulrah.allItems,
 				items: zulrahCL,
 				fmtProg: kcProg(Monsters.Zulrah)
-			}
-		}
-	},
-	Raids: {
-		activities: {
-			'Chambers of Xeric': {
+			},
+			'King Goldemar': {
+				alias: KingGoldemar.aliases,
+				allItems: KingGoldemar.allItems,
+				items: kingGoldemarCL,
+				fmtProg: kcProg(KingGoldemar.id)
+			},
+			Malygos: {
+				alias: BSOMonsters.Malygos.aliases,
+				allItems: BSOMonsters.Malygos.table.allItems,
+				items: abyssalDragonCL,
+				fmtProg: kcProg(BSOMonsters.Malygos.id)
+			},
+			Nihiliz: {
+				alias: BSOMonsters.Nihiliz.aliases,
+				allItems: BSOMonsters.Nihiliz.table.allItems,
+				items: nihilizCL,
+				fmtProg: kcProg(BSOMonsters.Nihiliz.id)
+			},
+			'Kalphite King': {
+				alias: KalphiteKingMonster.aliases,
+				allItems: kalphiteKingLootTable.allItems,
+				items: kalphiteKingCL,
+				fmtProg: kcProg(KalphiteKingMonster.id)
+			},
+			Naxxus: {
+				alias: Naxxus.aliases,
+				allItems: NaxxusLootTableFinishable.allItems,
+				items: naxxusCL,
+				fmtProg: kcProg(Naxxus.id)
+			},
+			Nex: {
+				alias: NexMonster.aliases,
+				allItems: nexLootTable.allItems,
+				items: nexCL,
+				fmtProg: kcProg(NexMonster.id)
+			},
+			'Vasa Magus': {
+				alias: VasaMagus.aliases,
+				allItems: VasaMagus.allItems,
+				items: vasaMagusCL,
+				fmtProg: kcProg(VasaMagus.id)
+			},
+			Ignecarus: {
+				alias: Ignecarus.aliases,
+				allItems: Ignecarus.allItems,
+				items: ignecarusCL,
+				fmtProg: kcProg(Ignecarus.id)
+			},
+			Treebeard: {
+				alias: BSOMonsters.Treebeard.aliases,
+				allItems: BSOMonsters.Treebeard.table.allItems,
+				items: treeBeardCL,
+				fmtProg: kcProg(BSOMonsters.Treebeard.id)
+			},
+			'Sea Kraken': {
+				alias: BSOMonsters.SeaKraken.aliases,
+				allItems: BSOMonsters.SeaKraken.table.allItems,
+				items: seaKrakenCL,
+				fmtProg: kcProg(BSOMonsters.SeaKraken.id)
+			},
+			'Queen Black Dragon': {
+				alias: BSOMonsters.QueenBlackDragon.aliases,
+				allItems: BSOMonsters.QueenBlackDragon.table.allItems,
+				items: queenBlackDragonCL,
+				fmtProg: kcProg(BSOMonsters.QueenBlackDragon.id)
+			},
+			Akumu: {
+				alias: ['akumu'],
+				allItems: AkumuLootTable.allItems,
+				items: akumuCL,
+				fmtProg: kcProg(BSOMonsters.Akumu.id)
+			},
+			Venatrix: {
+				alias: ['venatrix'],
+				allItems: VenatrixLootTable.allItems,
+				items: venatrixCL,
+				fmtProg: kcProg(BSOMonsters.Venatrix.id)
+			},
+			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
 					Default: async (_, minigameScores) =>
@@ -623,6 +832,122 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tombs_of_amascut} KC`];
 				}
+			},
+			'Depths of Atlantis': {
+				alias: ['doa'],
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'depths_of_atlantis')!.score,
+					'Challenge Mode': async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'depths_of_atlantis_cm')!.score
+				},
+				items: doaCL,
+				isActivity: true,
+				fmtProg: ({ minigames }) => {
+					return [`${minigames.depths_of_atlantis} KC`, `${minigames.depths_of_atlantis_cm} CM KC`];
+				}
+			},
+			'Superior Tormented Demons': {
+				items: superiorTormentedDemonCL,
+				alias: [
+					'superior tormented demon',
+					'std',
+					'stds',
+					'sup torm',
+					'sup torm demon',
+					'superior tormented demons'
+				],
+				fmtProg: kcProg(BSOMonsters.SuperiorTormentedDemon.id)
+			},
+			"Champion's Challenge": {
+				alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
+				items: championsChallengeCL,
+				isActivity: true,
+				fmtProg: mgProg('champions_challenge')
+			},
+			'Chaos Druids': {
+				allItems: Monsters.ChaosDruid.allItems,
+				kcActivity: Monsters.ChaosDruid.name,
+				items: chaosDruisCL
+			},
+			Revenants: {
+				alias: ['revs'],
+				kcActivity: {
+					Default: async (_, __, stats) => {
+						return sumArr(
+							[
+								Monsters.RevenantImp.id,
+								Monsters.RevenantGoblin.id,
+								Monsters.RevenantPyrefiend.id,
+								Monsters.RevenantHobgoblin.id,
+								Monsters.RevenantCyclops.id,
+								Monsters.RevenantHellhound.id,
+								Monsters.RevenantDemon.id,
+								Monsters.RevenantOrk.id,
+								Monsters.RevenantDarkBeast.id,
+								Monsters.RevenantKnight.id,
+								Monsters.RevenantDragon.id
+							].map(i => stats.kcBank[i] ?? 0)
+						);
+					}
+				},
+				allItems: (() => {
+					return [
+						...new Set([
+							...Monsters.RevenantImp.allItems,
+							...Monsters.RevenantGoblin.allItems,
+							...Monsters.RevenantPyrefiend.allItems,
+							...Monsters.RevenantHobgoblin.allItems,
+							...Monsters.RevenantCyclops.allItems,
+							...Monsters.RevenantHellhound.allItems,
+							...Monsters.RevenantDemon.allItems,
+							...Monsters.RevenantOrk.allItems,
+							...Monsters.RevenantDarkBeast.allItems,
+							...Monsters.RevenantKnight.allItems,
+							...Monsters.RevenantDragon.allItems
+						])
+					];
+				})(),
+				items: revenantsCL
+			},
+			'Polypore Dungeon': {
+				items: polyporeDungeonCL
+			},
+			Slayer: {
+				alias: ['slay'],
+				items: slayerCL,
+				fmtProg: skillProg('slayer')
+			},
+			'Slayer Masks/Helms': {
+				alias: ['slayer Masks/Helms'],
+				items: slayerMasksHelmsCL,
+				fmtProg: skillProg('slayer')
+			},
+			TzHaar: {
+				kcActivity: {
+					Default: [Monsters.TzHaarKet.name, Monsters.TzHaarMej.name, Monsters.TzHaarXil.name],
+					Ket: Monsters.TzHaarKet.name,
+					Mej: Monsters.TzHaarMej.name,
+					Xil: Monsters.TzHaarXil.name
+				},
+				allItems: [
+					...Monsters.TzHaarKet.allItems,
+					...Monsters.TzHaarMej.allItems,
+					...Monsters.TzHaarXil.allItems
+				],
+				items: tzHaarCL
+			},
+			Solis: {
+				alias: ['solis'],
+				allItems: BSOMonsters.Solis.allItems,
+				items: BSOMonsters.Solis.allItems!,
+				fmtProg: kcProg(BSOMonsters.Solis.id)
+			},
+			Celestara: {
+				alias: ['celestara'],
+				allItems: BSOMonsters.Celestara.allItems,
+				items: BSOMonsters.Celestara.allItems!,
+				fmtProg: kcProg(BSOMonsters.Celestara.id)
 			}
 		}
 	},
@@ -687,6 +1012,42 @@ export const allCollectionLogs: ICollection = {
 				items: cluesMasterCL,
 				isActivity: true,
 				fmtProg: clueProg(['Master'])
+			},
+			'Elder Treasure Trails': {
+				alias: ['elder'],
+				allItems: resolveItems([
+					...ElderClueTable.allItems,
+					'Clue bag',
+					'Inventors tools',
+					'Elder knowledge',
+					'Octo'
+				]),
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(73_124)
+				},
+				items: cluesElderCL,
+				isActivity: true,
+				fmtProg: clueProg(['Elder'])
+			},
+			'Grandmaster Treasure Trails': {
+				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
+				allItems: GrandmasterClueTable.allItems,
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(19_838)
+				},
+				items: cluesGrandmasterCL,
+				isActivity: true,
+				fmtProg: clueProg(['Grandmaster'])
+			},
+			'Grandmaster Treasure Trails (Rare)': {
+				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
+				allItems: cluesGrandmasterRareCL,
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(19_838)
+				},
+				items: cluesGrandmasterRareCL,
+				isActivity: true,
+				fmtProg: clueProg(['Grandmaster'])
 			},
 			'Hard Treasure Trail Rewards (Rare)': {
 				alias: [
@@ -754,7 +1115,6 @@ export const allCollectionLogs: ICollection = {
 					}
 				},
 				items: cluesSharedCL,
-
 				isActivity: true,
 				fmtProg: clueProg(ClueTiers.map(i => i.name))
 			},
@@ -772,6 +1132,10 @@ export const allCollectionLogs: ICollection = {
 				items: uniqueArr([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL]),
 				isActivity: true,
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
+			},
+			'Scroll Cases': {
+				unobtainable: true,
+				items: CollectionLog.ScrollCases.items
 			}
 		}
 	},
@@ -873,6 +1237,10 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('mahogany_homes')
 			},
+			'Mastering Mixology': {
+				unobtainable: true,
+				items: CollectionLog.MasteringMixology.items
+			},
 			'Pest Control': {
 				items: pestControlCL,
 				isActivity: true,
@@ -923,37 +1291,79 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('trouble_brewing')
 			},
+			'Vale Totems': {
+				unobtainable: true,
+				items: CollectionLog.ValeTotems.items
+			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,
 				alias: ['vm', 'vmine', 'volcanic'],
+				isActivity: true
+			},
+			'Ourania Delivery Service': {
+				alias: ['ods', 'ourania'],
+				items: odsCL,
 				isActivity: true,
-				fmtProg: mgProg('volcanic_mine')
+				fmtProg: mgProg('ourania_delivery_service')
+			},
+			"Mad Marimbo's Monkey Rumble": {
+				alias: ['mr', 'mmmr', 'mmr', 'monkey rumble', 'mad marimbos monkey rumble'],
+				items: monkeyRumbleCL,
+				isActivity: true,
+				fmtProg: mgProg('monkey_rumble')
+			},
+			'Fishing Contest': {
+				alias: ['fc'],
+				items: fishingContestCL,
+				isActivity: true,
+				fmtProg: mgProg('fishing_contest')
+			},
+			'Baxtorian Bathhouses': {
+				alias: ['bb', 'bax bath', 'baxtorian bathhouses', 'bath', 'baths'],
+				items: baxtorianBathhousesCL,
+				isActivity: true,
+				fmtProg: mgProg('bax_baths')
+			},
+			'Fist of Guthix': {
+				alias: ['fog', 'fist of guthix'],
+				items: fistOfGuthixCL,
+				isActivity: true,
+				fmtProg: mgProg('fist_of_guthix')
+			},
+			'Guthixian Caches': {
+				alias: ['guthixian caches'],
+				items: [...divinersOutfit],
+				isActivity: true,
+				fmtProg: mgProg('guthixian_cache')
+			},
+			'Stealing Creation': {
+				alias: ['stealing creation', 'sc'],
+				items: stealingCreationCL,
+				isActivity: true,
+				fmtProg: mgProg('stealing_creation')
+			},
+			'Tinkering Workshop': {
+				alias: ['tw', 'tinkering workshop'],
+				items: tinkeringWorshopCL,
+				isActivity: true,
+				fmtProg: mgProg('tinkering_workshop')
+			},
+			"Balthazar's Big Bonanza": {
+				alias: ['bbb', 'balthazars big bananza', 'circus'],
+				items: balthazarsBigBonanzaCL,
+				isActivity: true,
+				fmtProg: mgProg('balthazars_big_bonanza')
 			}
 		}
 	},
-	Other: {
+	Skilling: {
 		activities: {
 			'Aerial Fishing': {
 				alias: ['af', 'aerial fishing'],
 				items: aerialFishingCL
 			},
-			'All Pets': {
-				alias: ['pet', 'pets'],
-				items: allPetsCL
-			},
 			Camdozaal: {
 				items: camdozaalCL
-			},
-			"Champion's Challenge": {
-				alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
-				items: championsChallengeCL,
-				isActivity: true,
-				fmtProg: mgProg('champions_challenge')
-			},
-			'Chaos Druids': {
-				allItems: Monsters.ElderChaosDruid.allItems,
-				kcActivity: Monsters.ElderChaosDruid.name,
-				items: chaosDruisCL
 			},
 			'Chompy Birds': {
 				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
@@ -975,7 +1385,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			Forestry: {
 				alias: ['forestry', 'forest', 'for'],
-				fmtProg: skillProg(SkillsEnum.Woodcutting),
+				fmtProg: skillProg('woodcutting'),
 				allItems: forestryCL,
 				items: forestryCL
 			},
@@ -988,6 +1398,10 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.DemonicGorilla.name,
 				items: demonicGorillaCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
+			},
+			'Hunter Guild': {
+				unobtainable: true,
+				items: CollectionLog.HunterGuild.items
 			},
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
@@ -1006,79 +1420,95 @@ export const allCollectionLogs: ICollection = {
 				alias: ['my notes'],
 				items: myNotesCL
 			},
-			'Random Events': {
-				alias: ['random'],
-				items: randomEventsCL
-			},
-			Revenants: {
-				alias: ['revs'],
-				kcActivity: {
-					Default: async user => {
-						const stats = await user.fetchStats({ monster_scores: true });
-						return sumArr(
-							[
-								Monsters.RevenantImp.id,
-								Monsters.RevenantGoblin.id,
-								Monsters.RevenantPyrefiend.id,
-								Monsters.RevenantHobgoblin.id,
-								Monsters.RevenantCyclops.id,
-								Monsters.RevenantHellhound.id,
-								Monsters.RevenantDemon.id,
-								Monsters.RevenantOrk.id,
-								Monsters.RevenantDarkBeast.id,
-								Monsters.RevenantKnight.id,
-								Monsters.RevenantDragon.id
-							].map(i => (stats.monster_scores as ItemBank)[i] ?? 0)
-						);
-					}
-				},
-				allItems: [
-					...Monsters.RevenantImp.allItems,
-					...Monsters.RevenantGoblin.allItems,
-					...Monsters.RevenantPyrefiend.allItems,
-					...Monsters.RevenantHobgoblin.allItems,
-					...Monsters.RevenantCyclops.allItems,
-					...Monsters.RevenantHellhound.allItems,
-					...Monsters.RevenantDemon.allItems,
-					...Monsters.RevenantOrk.allItems,
-					...Monsters.RevenantDarkBeast.allItems,
-					...Monsters.RevenantKnight.allItems,
-					...Monsters.RevenantDragon.allItems
-				],
-				items: revenantsCL
-			},
 			'Rooftop Agility': {
 				alias: ['rooftop', 'laps', 'agility', 'agil'],
 				items: rooftopAgilityCL,
 				isActivity: true,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				fmtProg: skillProg('agility')
 			},
-			'Shayzien Armour': {
-				items: shayzienArmourCL
-			},
-			'Shooting Stars': { items: resolveItems(['Celestial ring (uncharged)', 'Star fragment']) },
+			'Shooting Stars': { items: shootingStarsCL },
 			'Skilling Pets': {
 				alias: ['skill pets'],
 				items: skillingPetsCL
 			},
-			Slayer: {
-				alias: ['slay'],
-				items: slayerCL,
-				fmtProg: skillProg(SkillsEnum.Slayer)
+			Dungeoneering: {
+				alias: ['dg', 'dung', 'dungeoneering'],
+				items: dungeoneeringCL,
+				fmtProg: skillProg('dungeoneering')
 			},
-			TzHaar: {
-				kcActivity: {
-					Default: [Monsters.TzHaarKet.name, Monsters.TzHaarMej.name, Monsters.TzHaarXil.name],
-					Ket: Monsters.TzHaarKet.name,
-					Mej: Monsters.TzHaarMej.name,
-					Xil: Monsters.TzHaarXil.name
-				},
-				allItems: [
-					...Monsters.TzHaarKet.allItems,
-					...Monsters.TzHaarMej.allItems,
-					...Monsters.TzHaarXil.allItems
-				],
-				items: tzHaarCL
+			Farming: {
+				counts: false,
+				items: allFarmingItems,
+				fmtProg: skillProg('farming')
+			},
+			Cooking: {
+				counts: false,
+				items: cookingCL,
+				fmtProg: skillProg('cooking')
+			},
+			Crafting: {
+				counts: false,
+				items: craftingCL,
+				fmtProg: skillProg('crafting')
+			},
+			Herblore: {
+				counts: false,
+				items: herbloreCL,
+				fmtProg: skillProg('herblore')
+			},
+			Smithing: {
+				counts: false,
+				items: smithables.map(i => i.id),
+				fmtProg: skillProg('smithing')
+			},
+			Kibble: {
+				counts: false,
+				items: kibbleCL
+			},
+			Graceful: {
+				counts: false,
+				items: gracefulCL,
+				fmtProg: skillProg('agility')
+			},
+			Fletching: {
+				counts: false,
+				items: fletchingCL,
+				fmtProg: skillProg('fletching')
+			},
+			'Skilling Misc': {
+				items: skillingMiscCL
+			},
+			Invention: {
+				alias: ['inv'],
+				items: inventionCL,
+				fmtProg: skillProg('invention')
+			},
+			Divination: {
+				alias: ['div'],
+				items: resolveItems([
+					...divinersOutfit,
+					...portents.map(p => p.item.id),
+					...divinationEnergies.flatMap(i => [i.boon?.id, i.item.id]).filter(notEmpty),
+					'Divine egg',
+					'Jar of memories',
+					'Doopy'
+				]),
+				fmtProg: skillProg('divination')
+			}
+		}
+	},
+	Other: {
+		activities: {
+			'All Pets': {
+				alias: ['pet', 'pets'],
+				items: allPetsCL
+			},
+			'Random Events': {
+				alias: ['random'],
+				items: randomEventsCL
+			},
+			'Shayzien Armour': {
+				items: shayzienArmourCL
 			},
 			'Tormented Demons': {
 				alias: Monsters.TormentedDemon.aliases,
@@ -1087,14 +1517,15 @@ export const allCollectionLogs: ICollection = {
 				items: tormentedDemonCL,
 				fmtProg: kcProg(Monsters.TormentedDemon)
 			},
+			'Paint Box': {
+				alias: ['misc'],
+				counts: false,
+				items: PaintBoxTable.allItems
+			},
 			Miscellaneous: {
 				alias: ['misc'],
 				items: miscellaneousCL
-			}
-		}
-	},
-	Custom: {
-		activities: {
+			},
 			'Achievement Diary': {
 				counts: false,
 				alias: ['ad', 'diary', 'diaries'],
@@ -1109,44 +1540,49 @@ export const allCollectionLogs: ICollection = {
 				counts: false,
 				items: capesCL
 			},
+			'Master Capes': {
+				counts: false,
+				items: masterCapesCL
+			},
+			'Expert Capes': {
+				counts: false,
+				items: expertCapesCL
+			},
 			Quest: {
 				counts: false,
 				items: questCL
 			},
-			Farming: {
-				counts: false,
-				items: allFarmingItems,
-				fmtProg: skillProg(SkillsEnum.Farming)
+			'Custom Pets': {
+				alias: ['cpets', 'custom pet', 'cpet', 'custom pet'],
+				items: customPetsCL
 			},
 			Implings: {
 				counts: false,
 				items: implingsCL
 			},
-			Graceful: {
+			'Dyed Items': {
 				counts: false,
-				items: gracefulCL,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				items: dyedItems
+					.map(i => i.dyedVersions.filter(i => !discontinuedDyes.includes(i.dye.id)).map(i => i.item.id))
+					.flat(2)
 			},
-			'God Wars Dungeon': {
+			'Clothing Mystery Box': {
 				counts: false,
-				alias: ['gwd', 'god wars'],
-				kcActivity: {
-					Default: [
-						Monsters.CommanderZilyana.name,
-						Monsters.KrilTsutsaroth.name,
-						Monsters.Kreearra.name,
-						Monsters.GeneralGraardor.name,
-						'Nex'
-					]
-				},
-				allItems: [
-					...Monsters.CommanderZilyana.allItems,
-					...Monsters.KrilTsutsaroth.allItems,
-					...Monsters.Kreearra.allItems,
-					...Monsters.GeneralGraardor.allItems,
-					...NexNonUniqueTable.allItems
-				],
-				items: [...godWarsDungeonCL, ...NexCL]
+				items: cmbClothes,
+				alias: ['cmb', 'clothing mystery box']
+			},
+			'Holiday Mystery box': {
+				counts: false,
+				items: holidayCL,
+				alias: ['hmb', 'holiday mystery box']
+			},
+			'Christmas Cracker': {
+				counts: false,
+				items: crackerCL,
+				alias: ['hmb', 'holiday mystery box']
+			},
+			'Growable Pets': {
+				items: growablePetsCL
 			},
 			'The Forgotten Four': {
 				counts: false,
@@ -1170,70 +1606,408 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TheWhisperer.allItems,
 					...Monsters.Vardorvis.allItems,
 					...Monsters.DukeSucellus.allItems
-				],
-				items: uniqueArr([...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL])
+				].filter(item => !OSB_VIRTUS_IDS.includes(item)),
+				items: [...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL]
 			},
 			Creatables: {
 				counts: false,
-				items: uniqueArr(
-					Createables.filter(i => i.noCl !== true).flatMap(i =>
-						new Bank(i.outputItems).items().map(i => i[0].id)
-					)
-				)
+				items: uniqueArr(creatablesCL)
 			},
 			Leagues: {
-				counts: false,
-				items: leagueBuyables.map(i => i.item.id)
+				items: leaguesCL
 			},
-			Skilling: {
-				counts: false,
+			'Spectator Clothes': {
+				items: spectatorClothes,
+				counts: false
+			},
+			'Tame Gear': {
+				items: tameGearCL
+			},
+			'Divine Dominion': {
+				alias: ['dd', 'divine dominion'],
+				items: divineDominionCL
+			}
+		}
+	},
+	Discontinued: {
+		activities: {
+			'Easter 2022': {
+				items: resolveItems(['Chickaxe', 'Leia', 'Decorative easter eggs']),
+				counts: false
+			},
+			'Easter 2023': {
 				items: resolveItems([
-					'Prospector helmet',
-					'Prospector jacket',
-					'Prospector legs',
-					'Prospector boots',
-					'Mining gloves',
-					'Superior mining gloves',
-					'Expert mining gloves',
-					'Golden nugget',
-					'Unidentified minerals',
-					'Big swordfish',
-					'Big shark',
-					'Big bass',
-					'Tangleroot',
-					'Bottomless compost bucket',
-					"Farmer's strawhat",
-					"Farmer's jacket",
-					"Farmer's shirt",
-					"Farmer's boro trousers",
-					"Farmer's boots",
-					"Pharaoh's sceptre",
-					'Baby chinchompa',
-					'Kyatt hat',
-					'Kyatt top',
-					'Kyatt legs',
-					'Spotted cape',
-					'Spottier cape',
-					'Gloves of silence',
-					'Small pouch',
-					'Medium pouch',
-					'Large pouch',
-					'Giant pouch',
-					'Crystal pickaxe',
-					'Crystal axe',
-					'Crystal harpoon',
-					'Rift guardian',
-					'Rock golem',
-					'Heron',
-					'Rocky',
-					'Herbi',
-					'Beaver',
-					'Giant squirrel'
+					'Cute magic egg',
+					'Fancy magic egg',
+					'Big mysterious egg',
+					'Fancy ancient egg',
+					'Sweet small egg',
+					'Mysterious magic egg',
+					'Big ancient egg',
+					'Fancy sweet egg',
+					'Eggy',
+					'Easter egg backpack',
+					'Floppy bunny ears',
+					'Egg coating',
+					'Chocolate pot'
+				]),
+				counts: false
+			},
+			'Easter 2025': {
+				items: resolveItems([
+					'Easter egg (1)',
+					'Easter egg (2)',
+					'Easter egg (3)',
+					'Easter egg (4)',
+					'Easter egg (5)',
+					'Easter egg (6)',
+					'Easter egg (7)',
+					'Easter egg (8)',
+					'Easter egg (9)',
+					'Easter egg (10)',
+					'Easter egg (11)',
+					'Easter egg (12)',
+					'Easter egg (13)',
+					'Easter egg (14)',
+					'Easter cape (1)',
+					'Easter cape (2)',
+					'Monkey egg (Edible)',
+					'Easter Bunny hat',
+					'Easter Bunny top',
+					'Easter Bunny legs',
+					'Easter Bunny gloves',
+					'Easter Bunny boots',
+					'Easter Bunny tail',
+					'Elven bunny ears',
+					'Dragon bunny ears',
+					'Tzhaar bunny ears',
+					'Rune bunny ears',
+					'Vyrewatch bunny ears',
+					'Arceuus bunny ears',
+					'Waddles',
+					'Tasty'
+				]),
+				counts: false
+			},
+			'Thanksgiving 2021': {
+				items: resolveItems(['Raw turkey', 'Turkey', 'Turkey drumstick', 'Burnt turkey', 'Cornucopia']),
+				counts: false
+			},
+			'Custom Pets (Discontinued)': {
+				alias: ['dcpets', 'disc custom pet', 'dcpet', 'dcp', 'discontinued custom pet'],
+				items: discontinuedCustomPetsCL,
+				counts: false
+			},
+			'Halloween 2021': {
+				alias: ['hween2021', 'halloween 2021'],
+				items: resolveItems([
+					'Human appendage',
+					'Sliced femur',
+					'Human blood',
+					'Human tooth',
+					'Candy teeth',
+					'Toffeet',
+					'Chocolified skull',
+					'Rotten sweets',
+					'Hairyfloss',
+					'Eyescream',
+					'Goblinfinger soup',
+					"Benny's brain brew",
+					'Roasted newt',
+					"Choc'rock",
+					'Gregoyle',
+					...pumpkinHeadUniqueTable.allItems
+				]),
+				counts: false
+			},
+			'Halloween 2022': {
+				alias: ['hween2022', 'halloween 2022'],
+				items: resolveItems([
+					'Dirty hoe',
+					'Boo-balloon',
+					'Twinkly topper',
+					'Broomstick',
+					'Spooky graceful hood',
+					'Spooky graceful top',
+					'Spooky graceful legs',
+					'Spooky graceful cape',
+					'Spooky graceful boots',
+					'Spooky graceful gloves',
+					'Kuro',
+					'Spooky box'
+				]),
+				counts: false,
+				allItems: resolveItems([
+					'Pumpkin seed',
+					'Dirty hoe',
+					'Boo-balloon',
+					'Twinkly topper',
+					'Broomstick',
+					'Spooky graceful hood',
+					'Spooky graceful top',
+					'Spooky graceful legs',
+					'Spooky graceful cape',
+					'Spooky graceful boots',
+					'Spooky graceful gloves',
+					'Spooky partyhat',
+					'Orange halloween mask',
+					'Necronomicon',
+					"M'eye hat",
+					'Back pain',
+					'Witch hat',
+					'Spooky mask',
+					'Toffeet',
+					'Chocolified skull',
+					'Eyescream',
+					"Choc'rock",
+					'Rotten sweets',
+					'Gloom and doom potion',
+					'Handled candle',
+					'Kuro',
+					'Spooky box',
+					'Grim sweeper'
 				])
+			},
+			'Halloween 2023': {
+				alias: ['hween2023', 'halloween 2023'],
+				items: resolveItems([
+					'Splooky fwizzle',
+					"Fool's ace",
+					"Pandora's box",
+					'Maledict codex',
+					'Maledict gloves',
+					'Maledict ring',
+					'Maledict amulet',
+					'Maledict boots',
+					'Maledict cape',
+					'Maledict legs',
+					'Maledict top',
+					'Maledict hat',
+					'Purple halloween mask',
+					'Cosmic dice',
+					'Spooky aura',
+					'Spooky sheet',
+					'Evil partyhat',
+					'Soul shield',
+					'Bag of tricks',
+					'Bat bat',
+					'Mini mortimer',
+					'Casper',
+					'Covenant of grimace'
+				]),
+				counts: false,
+				allItems: resolveItems([
+					'Splooky fwizzle',
+					"Fool's ace",
+					"Pandora's box",
+					'Maledict codex',
+					'Maledict gloves',
+					'Maledict ring',
+					'Maledict amulet',
+					'Maledict boots',
+					'Maledict cape',
+					'Maledict legs',
+					'Maledict top',
+					'Maledict hat',
+					'Purple halloween mask',
+					'Cosmic dice',
+					'Spooky aura',
+					'Spooky sheet',
+					'Evil partyhat',
+					'Soul shield',
+					'Bag of tricks',
+					'Bat bat',
+					'Mini mortimer',
+					'Casper',
+					'Covenant of grimace'
+				])
+			},
+			'Halloween Mini-Event 2024': {
+				items: resolveItems(['Spookling token', 'Miniature pumpkin head', 'Polterpup']),
+				counts: false,
+				allItems: resolveItems(['Spookling token', 'Miniature pumpkin head', 'Polterpup'])
+			},
+			'Halloween 2024': {
+				alias: ['hween2024', 'halloween 2024'],
+				items: resolveItems(['Heirloom pumpkin', 'Mumpkin', 'Jack-o-lantern', 'Halloween cracker']),
+				counts: false,
+				allItems: resolveItems(['Heirloom pumpkin', 'Mumpkin', 'Jack-o-lantern', 'Halloween cracker'])
+			},
+			'Halloween 2025': {
+				alias: ['hween2025', 'halloween 2025'],
+				items: resolveItems([
+					BSOItem.HALLOWEEN_CANDY,
+					BSOItem.WITCH_CARD,
+					BSOItem.GHOST_CARD,
+					BSOItem.VAMPIRE_CARD,
+					BSOItem.DEATH_CARD,
+					BSOItem.PUMPKINMAN_CARD,
+					BSOItem.NIGHTMARE
+				]),
+				counts: false,
+				allItems: resolveItems([
+					BSOItem.HALLOWEEN_CANDY,
+					BSOItem.WITCH_CARD,
+					BSOItem.GHOST_CARD,
+					BSOItem.VAMPIRE_CARD,
+					BSOItem.DEATH_CARD,
+					BSOItem.PUMPKINMAN_CARD,
+					BSOItem.NIGHTMARE
+				])
+			},
+			'Halloween Cracker': {
+				items: resolveItems([
+					'Zombie halloween mask',
+					'Bloody halloween mask',
+					'Monster in a backpack',
+					'Pumpkin parasol',
+					'Vampyric halloween mask',
+					'Zombie cow plushie',
+					'Deathtouched tart'
+				]),
+				counts: false,
+				allItems: resolveItems([
+					'Zombie halloween mask',
+					'Bloody halloween mask',
+					'Monster in a backpack',
+					'Pumpkin parasol',
+					'Vampyric halloween mask',
+					'Zombie cow plushie',
+					'Deathtouched tart'
+				])
+			},
+			'Christmas 2021': {
+				alias: ['xmas 2021', 'christmas 2021'],
+				items: resolveItems([
+					'Smokey bbq sauce',
+					'Pumpkinhead pie',
+					'Roasted ham',
+					'Corn on the cob',
+					"Dougs' chocolate mud",
+					"Shepherd's pie",
+					'Flappy meal',
+					'Smokey painting',
+					'Yule log',
+					'Gr-egg-oyle special',
+					'Roast potatoes',
+					'Ratatouille',
+					'Fish n chips',
+					'Pretzel',
+					'Bacon',
+					'Prawns',
+					'Pavlova',
+					'Christmas tree hat',
+					'Christmas pudding',
+					'Christmas pudding amulet',
+					'Festive mistletoe',
+					'Christmas tree kite',
+					'Festive wrapping paper',
+					'Festive jumper (2021)',
+					'Frozen santa hat',
+					'Seer',
+					'Festive present'
+				]),
+				counts: false
+			},
+			'Christmas 2024': {
+				alias: ['xmas 2024', 'christmas 2024'],
+				items: allChristmasEvent2024Items.filter(i => i !== itemID('Snowflake amulet')),
+				counts: false
+			},
+			'BSO Birthday 2022': {
+				alias: ['bso birthday 2022'],
+				items: resolveItems(['Honey', 'Honeycomb', 'Beehive', 'Buzz']),
+				counts: false
+			},
+			'BSO Christmas 2025': {
+				alias: ['xmas 2025', 'christmas 2025'],
+				items: allChristmasEvent2025Items,
+				counts: false
+			},
+			'Christmas 2022': {
+				alias: ['xmas 2022', 'christmas 2022'],
+				items: resolveItems([
+					'Christmas snowglobe',
+					'Festive jumper (2022)',
+					'Christmas cape',
+					'Christmas socks',
+					'Tinsel scarf',
+					'Frosted wreath',
+					'Edible yoyo',
+					'Reinbeer',
+					'Pork sausage',
+					'Pork crackling',
+					'Festive treats',
+					'Snowman plushie',
+					'Snowman top hat',
+					'Festive scarf',
+					'Frosty'
+				]),
+				counts: false
+			},
+			'BSO Birthday 2023': {
+				alias: ['birthday 2023'],
+				items: resolveItems(['Buggy', 'Ban hammer', 'The Interrogator', 'Acrylic set', 'Golden cape shard']),
+				counts: false
+			},
+			'Christmas 2023': {
+				alias: ['xmas 2023', 'christmas 2023'],
+				items: resolveItems([
+					'Santa costume top (male)',
+					'Santa costume top (female)',
+					'Santa costume skirt',
+					'Santa costume pants',
+					'Santa costume gloves',
+					'Santa costume boots',
+					'Tinsel twirler',
+					'Grinch head',
+					'Grinch top',
+					'Grinch legs',
+					'Grinch feet',
+					'Grinch hands',
+					'Grinch santa hat',
+					'Christmas cake',
+					'Rudolph'
+				]),
+				counts: false
+			},
+			'Dyed Items (Discontinued)': {
+				counts: false,
+				items: dyedItems
+					.map(i => i.dyedVersions.filter(i => discontinuedDyes.includes(i.dye.id)).map(i => i.item.id))
+					.flat(2)
+			},
+			'Miscelleanous (Discontinued)': {
+				alias: ['discontinued misc'],
+				items: resolveItems([
+					'Golden cape shard',
+					'Golden cape',
+					'Golden shard',
+					'Golden partyhat',
+					'Black swan'
+				]),
+				counts: false
 			}
 		}
 	}
 };
+
+for (const crate of keyCrates) {
+	allCollectionLogs.Discontinued.activities[crate.item.name] = {
+		alias: [crate.item.name.toLowerCase()],
+		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]).filter(
+			i => !Items.getOrThrow(i).customItemData?.isSecret
+		),
+		counts: false,
+		kcActivity: {
+			Default: async (_, __, { openableScores }) => openableScores.amount(crate.item)
+		},
+		isActivity: true,
+		fmtProg: async ({ stats }) => {
+			return `${stats.openableScores.amount(crate.item.id)} Opened`;
+		}
+	};
+}
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
 export const allDroppedItems = uniqueArr([
 	...Object.values(allCollectionLogs)
@@ -1248,46 +2022,35 @@ export const allDroppedItems = uniqueArr([
 		.flat(100)
 ]);
 
-export const allCLItems = uniqueArr(
+export const allCLItems = new Set(
 	Object.values(allCollectionLogs)
 		.map(e => Object.values(e.activities).map(a => a.items))
 		.flat(100)
 );
 
-export const allCLItemsFiltered = [
-	...new Set(
-		Object.values(allCollectionLogs)
-			.map(e =>
-				Object.values(e.activities)
-					.filter(f => f.counts === undefined)
-					.map(a => a.items)
-			)
-			.flat(100)
-	)
-];
+export const allCLItemsFiltered = new Set(
+	Object.values(allCollectionLogs)
+		.map(e =>
+			Object.values(e.activities)
+				.filter(f => f.counts === undefined)
+				.map(a => a.items)
+		)
+		.flat(100)
+);
 
-const overallPlusItems = [
-	...new Set(
-		Object.entries(allCollectionLogs)
-			.filter(i => i[0] !== 'Discontinued')
-			.map(e => Object.values(e[1].activities).map(a => a.items))
-			.flat(100)
-	)
-];
+export const overallPlusItems = new Set(
+	Object.entries(allCollectionLogs)
+		.filter(i => i[0] !== 'Discontinued')
+		.map(e => Object.values(e[1].activities).map(a => a.items))
+		.flat(100)
+);
 
 export function calcCLDetails(user: MUser | Bank) {
-	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));
-	const debugBank = new Bank(clItems);
-	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
-	const notOwned = shuffleRandom(
-		Number(user instanceof Bank ? '1' : user.id),
-		allCLItemsFiltered.filter(i => !clItems.has(i))
-	).slice(0, 10);
+	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.has(i.id));
+	const owned = clItems.filter(i => allCLItemsFiltered.has(i.id));
 	return {
-		percent: calcWhatPercent(owned.length, allCLItemsFiltered.length),
-		notOwned,
-		owned,
-		debugBank
+		percent: calcWhatPercent(owned.length, allCLItemsFiltered.size),
+		owned
 	};
 }
 
@@ -1299,13 +2062,11 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 			// Sort list by alphabetical order
 			const catEntries = Object.entries(entries.activities).sort((a, b) => 0 - (a > b ? -1 : 1));
 			for (const [activityName, attributes] of catEntries) {
-				let items: number[] = [];
-				if (allItems && attributes.allItems) {
-					items = [...new Set([...attributes.items, ...attributes.allItems])];
-				} else {
-					items = [...new Set(attributes.items)];
-				}
-				if (removeCoins && items.includes(EItem.COINS)) items.splice(items.indexOf(EItem.COINS), 1);
+				const items =
+					allItems && attributes.allItems
+						? new Set([...attributes.items, ...attributes.allItems])
+						: new Set<number>(attributes.items);
+				if (removeCoins) items.delete(EItem.COINS);
 				const [totalCl, userAmount] = getUserClData(userBank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
@@ -1315,27 +2076,39 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 	return leftList;
 }
 
-function getBank(user: MUser, type: 'sacrifice' | 'bank' | 'collection' | 'temp', userStats: MUserStats | null) {
+type CLType = 'sacrifice' | 'bank' | 'collection' | 'temp' | 'tame' | 'disassembly';
+
+export function getBank(user: MUser, type: CLType, userStats: MUserStats | null): Bank {
 	switch (type) {
 		case 'collection':
-			return new Bank(user.cl);
+			return user.cl;
 		case 'bank':
-			return new Bank(user.bankWithGP);
+			return user.bankWithGP;
 		case 'sacrifice':
 			if (!userStats) return new Bank();
 			return new Bank(userStats.sacrificedBank);
+		case 'tame': {
+			if (!userStats) return new Bank();
+			return new Bank(userStats.userStats.tame_cl_bank as ItemBank);
+		}
 		case 'temp':
 			return new Bank(user.user.temp_cl as ItemBank);
+		case 'disassembly': {
+			return new Bank(user.user.disassembled_items_bank as ItemBank);
+		}
 	}
 }
 
-// Get the total items the user has in its CL and the total items to collect
-export function getTotalCl(
-	user: MUser,
-	logType: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: MUserStats | null
-) {
-	return getUserClData(getBank(user, logType, userStats), allCLItemsFiltered);
+export async function getTotalCl(user: MUser, logType: CLType, userStats: MUserStats | null) {
+	let result: [number, number];
+	try {
+		result = getUserClData(getBank(user, logType, userStats), allCLItemsFiltered);
+	} catch (_e) {
+		await user.repairBrokenItems();
+		const newBank = getBank(user, logType, userStats);
+		result = getUserClData(newBank, allCLItemsFiltered);
+	}
+	return result;
 }
 
 export function getCollectionItems(
@@ -1343,15 +2116,15 @@ export function getCollectionItems(
 	allItems: boolean,
 	removeCoins: boolean,
 	returnResolvedCl: boolean
-): { resolvedCl: string; items: number[] };
-export function getCollectionItems(collection: string, allItems?: boolean, removeCoins?: boolean): number[];
+): { resolvedCl: string; items: Set<number> };
+export function getCollectionItems(collection: string, allItems?: boolean, removeCoins?: boolean): Set<number>;
 export function getCollectionItems(
 	collection: string,
 	allItems = false,
 	removeCoins = false,
 	returnResolvedCl?: boolean
-): { resolvedCl: string; items: number[] } | number[] {
-	const returnValue = (clName: string, items: number[]) => {
+): { resolvedCl: string; items: Set<number> } | Set<number> {
+	const returnValue = (clName: string, items: Set<number>) => {
 		return returnResolvedCl !== undefined ? { resolvedCl: clName.toLowerCase(), items } : items;
 	};
 	if (collection === 'overall+') {
@@ -1361,12 +2134,12 @@ export function getCollectionItems(
 		return returnValue('overall', allCLItemsFiltered);
 	}
 
-	let _items: number[] = [];
+	let _items: Set<number> = new Set();
 	let _clName = '';
 	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (stringMatches(category, collection) || entries.alias?.some(a => stringMatches(a, collection))) {
 			_clName = category;
-			_items = uniqueArr(
+			_items = new Set(
 				Object.values(entries.activities)
 					.map(e => [...new Set([...e.items, ...(allItems ? (e.allItems ?? []) : [])])])
 					.flat(2)
@@ -1377,30 +2150,31 @@ export function getCollectionItems(
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
 			if (stringMatches(activityName, collection) || attributes.alias?.find(a => stringMatches(a, collection))) {
 				_clName = activityName;
-				_items = [
-					...new Set([...attributes.items, ...(allItems && attributes.allItems ? attributes.allItems : [])])
-				];
+				_items = new Set([
+					...attributes.items,
+					...(allItems && attributes.allItems ? attributes.allItems : [])
+				]);
 				break loop;
 			}
 		}
 	}
 
-	if (_items.length === 0) {
+	if (_items.size === 0) {
 		const _monster = killableMonsters.find(m =>
 			[m.name, ...m.aliases].some(name => stringMatches(name, collection))
 		);
 		if (_monster) {
 			_clName = _monster.name;
-			_items = uniqueArr(Monsters.get(_monster?.id)!.allItems);
+			_items = new Set(Monsters.get(_monster?.id)!.allItems);
 		}
 	}
-	if (removeCoins && _items.includes(EItem.COINS)) _items = removeFromArr(_items, EItem.COINS);
+	if (removeCoins && _items.has(EItem.COINS)) _items.delete(EItem.COINS);
 	return returnValue(_clName, _items);
 }
 
-function getUserClData(userBank: Bank, clItems: number[]): [number, number] {
-	const owned = userBank.itemIDs.filter(i => clItems.includes(i));
-	return [clItems.length, owned.length];
+function getUserClData(userBank: Bank, clItems: Set<number>): [number, number] {
+	const owned = userBank.itemIDs.filter(i => clItems.has(i));
+	return [clItems.size, owned.length];
 }
 
 export const allClNames: string[] = [];
@@ -1415,24 +2189,27 @@ export async function getCollection(options: {
 	user: MUser;
 	search: string;
 	flags: { [key: string]: string | number | undefined };
-	logType?: 'collection' | 'sacrifice' | 'bank' | 'temp';
+	logType?: CollectionLogType;
 	minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
 
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
+	if (flags.tame) {
+		logType = 'tame';
+	}
 
-	const userStats = await MUserStats.fromID(user.id);
+	const userStats = await user.fetchMStats();
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
-	if (clItems.length >= 500) {
+	if (clItems.size >= 500) {
 		flags.missing = 'missing';
 	}
 
 	if (flags.missing) {
-		clItems = clItems.filter(i => !userCheckBank.has(i));
+		clItems = new Set(clItems.values().filter(i => !userCheckBank.has(i)));
 	}
 
 	const [totalCl, userAmount] = getUserClData(userCheckBank, clItems);
@@ -1445,7 +2222,8 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false
+			counts: false,
+			unobtainable: false
 		};
 	}
 	if (stringMatches(search, 'overall')) {
@@ -1456,10 +2234,12 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false
+			counts: false,
+			unobtainable: false
 		};
 	}
 
+	const igneTameKCs = logType === 'tame' ? await getAllIgneTameKCs(user.id) : null;
 	const minigameScores = options.minigameScoresOverride ?? (await user.fetchMinigameScores());
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
@@ -1472,7 +2252,8 @@ export async function getCollection(options: {
 				collectionTotal: totalCl,
 				leftList: getLeftList(userCheckBank, category, allItems, logType === 'sacrifice'),
 				userItems: userCheckBank,
-				counts: false
+				counts: false,
+				unobtainable: false
 			};
 		}
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
@@ -1502,6 +2283,15 @@ export async function getCollection(options: {
 					if (defaultKc[0] !== null) userKC.Default += defaultKc[1];
 					else userKC = undefined;
 				}
+
+				const tameKillable = tameKillableMonsters.find(
+					m => m.name.toLowerCase() === activityName.toLowerCase()
+				);
+				if (tameKillable && igneTameKCs !== null) {
+					if (!userKC) userKC = {};
+					userKC['Tame KC'] = igneTameKCs.idBank[tameKillable.id] ?? 0;
+				}
+
 				return {
 					category,
 					name: activityName,
@@ -1517,7 +2307,8 @@ export async function getCollection(options: {
 						logType === 'sacrifice'
 					),
 					userItems: userCheckBank,
-					counts: attributes.counts ?? true
+					counts: attributes.counts ?? true,
+					unobtainable: attributes.unobtainable ?? false
 				};
 			}
 		}
@@ -1527,15 +2318,17 @@ export async function getCollection(options: {
 		_type => stringMatches(_type.name, search) || _type.aliases.some(name => stringMatches(name, search))
 	);
 	if (monster) {
+		const igneTameKCs = await getAllIgneTameKCs(user.id);
 		return {
 			category: 'Other',
 			name: monster.name,
 			collection: clItems,
-			completions: { Default: await user.getKC(monster.id) },
+			completions: { Default: await user.getKC(monster.id), TameKC: igneTameKCs.idBank[monster.id] ?? 0 },
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false
+			counts: false,
+			unobtainable: false
 		};
 	}
 
@@ -1543,15 +2336,12 @@ export async function getCollection(options: {
 }
 
 export const allCollectionLogsFlat = Object.values(allCollectionLogs).flatMap(i =>
-	Object.entries(i.activities).map(entry => ({ ...entry[1], name: entry[0] }))
+	Object.entries(i.activities).map(entry => ({
+		...{ ...entry[1], items: new Set(entry[1].items), allItems: new Set(entry[1].allItems) },
+		name: entry[0]
+	}))
 );
 
-export function isCLItem(item: Item | number | [Item, number]): boolean {
-	if (Array.isArray(item)) return isCLItem(item[0]);
-	return allCLItemsFiltered.includes(isObject(item) ? item.id : item);
-}
-
 export const bossCLItems = Object.values({
-	...allCollectionLogs.Bosses.activities,
-	...allCollectionLogs.Raids.activities
+	...allCollectionLogs.PvM.activities
 }).flatMap(i => i.items);

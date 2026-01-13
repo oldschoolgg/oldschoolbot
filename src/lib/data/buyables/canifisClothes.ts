@@ -1,4 +1,4 @@
-import type { Buyable } from './buyables';
+import type { Buyable } from '@/lib/data/buyables/buyables.js';
 
 export const canifisClothes: Buyable[] = [
 	{

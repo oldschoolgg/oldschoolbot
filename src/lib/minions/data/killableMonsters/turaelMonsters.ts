@@ -1,9 +1,9 @@
-import { Time } from 'e';
-import { Monsters, deepResolveItems, itemID } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { deepResolveItems, itemID, Monsters } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { SkillsEnum } from '../../../skilling/types';
-import type { KillableMonster } from '../../types';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const turaelMonsters: KillableMonster[] = [
 	{
@@ -270,11 +270,11 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
 			['Torva platebody', 'Bandos chestplate'],
-			["Verac's plateskirt", 'Bandos tassets', 'Torva platelegs'],
+			['Torva platelegs', "Verac's plateskirt", 'Bandos tassets'],
 			['Arclight', 'Emberlight', 'Abyssal whip', 'Dragon scimitar'],
 			['Rune crossbow', "Karil's crossbow", 'Armadyl crossbow'],
-			['Armadyl chestplate', "Karil's leathertop"],
-			['Armadyl chainskirt', "Karil's leatherskirt"]
+			['Gorajan archer top', 'Pernix body', 'Armadyl chestplate', "Karil's leathertop"],
+			['Gorajan archer legs', 'Pernix chaps', 'Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
 		qpRequired: 175,
 		itemInBankBoosts: [
@@ -707,8 +707,8 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 1,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Strength, SkillsEnum.Attack]
+		defaultAttackStyles: ['ranged'],
+		disallowedAttackStyles: ['strength', 'attack']
 	},
 	{
 		id: Monsters.MonkeyArcher.id,
@@ -721,7 +721,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		qpRequired: 20,
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		disallowedAttackStyles: ['attack', 'strength'],
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged]
@@ -1057,7 +1057,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
 			['Torva platebody', 'Bandos chestplate'],
-			["Verac's plateskirt", 'Bandos tassets', 'Torva platelegs'],
+			['Torva platelegs', "Verac's plateskirt", 'Bandos tassets'],
 			['Abyssal whip', 'Dragon scimitar']
 		]),
 		qpRequired: 175,
@@ -1255,6 +1255,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		qpRequired: 20,
+		requiredQuests: [QuestID.TheCurseOfArrav],
 		canBarrage: true,
 		canChinning: true,
 		healAmountNeeded: 20,

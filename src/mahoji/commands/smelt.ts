@@ -1,19 +1,13 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import Smithing from '../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../mahojiSettings';
 
-export const smeltingCommand: OSBMahojiCommand = {
+export const smeltingCommand = defineCommand({
 	name: 'smelt',
 	description: 'Smelt ores/items.',
 	attributes: {
@@ -23,18 +17,18 @@ export const smeltingCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The name of the thing you want to smelt.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Smithing.Bars.filter(bar => bar.name.toLowerCase().includes(value.toLowerCase()))
 					.slice(0, 10)
 					.map(i => ({ name: i.name, value: i.name }));
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to smelt.',
 			required: false,
@@ -42,21 +36,17 @@ export const smeltingCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'blast_furnace',
 			description: 'If you want to blast furnace the bars.',
 			required: false
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; blast_furnace?: boolean }>) => {
+	run: async ({ user, options, channelId }) => {
 		let { name, quantity, blast_furnace } = options;
-		const user = await mUserFetch(userID);
+
 		if (blast_furnace === undefined) blast_furnace = false;
-		const boosts = [];
+		const boosts: string[] = [];
 
 		const bar = blast_furnace
 			? Smithing.BlastableBars.find(
@@ -73,8 +63,12 @@ export const smeltingCommand: OSBMahojiCommand = {
 			return `Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(bar => bar.name).join(', ')}.`;
 		}
 
-		if (user.skillLevel('smithing') < bar.level) {
+		if (user.skillsAsLevels.smithing < bar.level) {
 			return `${user.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
+		}
+
+		if (bar.id === BSOItem.DWARVEN_BAR && !user.usingPet('Klik')) {
+			return 'You try to smelt the bars, but nothing is happening. Perhaps the furnace is not hot enough to melt dwarven ore.';
 		}
 
 		// All bars take 2.4s to smith normally, add on quarter of a second to account for banking/etc.
@@ -82,12 +76,12 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		if (blast_furnace) {
 			const requiredSkills = {
-				[SkillsEnum.Crafting]: 12,
-				[SkillsEnum.Firemaking]: 16,
-				[SkillsEnum.Magic]: 33,
-				[SkillsEnum.Mining]: 50,
-				[SkillsEnum.Smithing]: 20,
-				[SkillsEnum.Thieving]: 13
+				crafting: 12,
+				firemaking: 16,
+				magic: 33,
+				mining: 50,
+				smithing: 20,
+				thieving: 13
 			};
 			if (!user.hasSkillReqs(requiredSkills)) {
 				return `You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(
@@ -103,13 +97,28 @@ export const smeltingCommand: OSBMahojiCommand = {
 				boosts.push('60% for coal bag');
 				timeToSmithSingleBar *= 0.625;
 			}
-			if (!userHasGracefulEquipped(user)) {
+			if (!user.hasGracefulEquipped()) {
 				timeToSmithSingleBar *= 1.075;
-				boosts.push('-7.5% penalty for not having graceful equipped.');
+				boosts.push('-7.5% penalty for not having graceful equipped');
+			}
+			if (user.hasEquippedOrInBank('Smithing master cape')) {
+				timeToSmithSingleBar /= 2;
+				boosts.push('2x boost for Smithing master cape');
+			}
+			if (user.hasEquippedOrInBank('Dwarven gauntlets') && bar.id !== itemID('Gold bar')) {
+				boosts.push('2x boost for having Dwarven gauntlets equipped');
+				timeToSmithSingleBar /= 2;
 			}
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Smithing');
+		if (!blast_furnace) {
+			if (user.hasEquippedOrInBank('Dwarven gauntlets')) {
+				boosts.push('2x boost for having a Dwarven gauntlets equipped');
+				timeToSmithSingleBar /= 2;
+			}
+		}
+
+		const maxTripLength = await user.calcMaxTripLength('Smithing');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
@@ -120,7 +129,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		const maxCanDo = user.bank.fits(itemsNeeded);
 		if (maxCanDo === 0) {
-			return "You don't have enough supplies to smelt even one of this item!";
+			return `You don't have enough supplies to smelt even one of this item! You need: ${itemsNeeded}.`;
 		}
 		if (maxCanDo < quantity) {
 			quantity = maxCanDo;
@@ -150,29 +159,29 @@ export const smeltingCommand: OSBMahojiCommand = {
 			cost.add('Coins', coinsToRemove);
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
-		updateBankSetting('smithing_cost', cost);
+		await user.transactItems({ itemsToRemove: cost });
+		await ClientSettings.updateBankSetting('smithing_cost', cost);
 
-		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({
+		await ActivityManager.startTrip<SmeltingActivityTaskOptions>({
 			barID: bar.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity,
 			blastf: blast_furnace,
 			duration,
 			type: 'Smelting'
 		});
 
-		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && user.hasEquippedOrInBank('Goldsmith gauntlets')) {
 			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 
 		const response = `${user.minionName} is now smelting ${quantity}x ${
 			bar.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${
-			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
-		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
+			blast_furnace ? `\nYou paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
+		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}.` : ''}`;
 
 		return response;
 	}
-};
+});

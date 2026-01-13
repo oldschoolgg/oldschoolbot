@@ -1,9 +1,9 @@
-import { Time } from 'e';
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 
-import { nestTable, strungRabbitFootNestTable } from '../../../simulation/birdsNest';
-import getOSItem from '../../../util/getOSItem';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, EItem, Items, LootTable } from 'oldschooljs';
+
+import { nestTable, strungRabbitFootNestTable } from '@/lib/simulation/birdsNest.js';
 
 export interface Birdhouse {
 	name: string;
@@ -12,7 +12,7 @@ export interface Birdhouse {
 	huntXP: number;
 	craftLvl: number;
 	craftXP: number;
-	houseItemReq: Bank;
+	birdhouseItem: EItem | BSOItem;
 	craftItemReq: Bank;
 	table: LootTable;
 	normalNestTable: LootTable;
@@ -31,7 +31,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 280,
 		craftLvl: 5,
 		craftXP: 15,
-		houseItemReq: new Bank().add('Bird house', 1),
+		birdhouseItem: EItem.BIRD_HOUSE,
 		craftItemReq: new Bank().add('Logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable),
@@ -48,7 +48,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 420,
 		craftLvl: 15,
 		craftXP: 20,
-		houseItemReq: new Bank().add('Oak bird house', 1),
+		birdhouseItem: EItem.OAK_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Oak logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 2]),
@@ -65,7 +65,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 560,
 		craftLvl: 25,
 		craftXP: 25,
-		houseItemReq: new Bank().add('Willow bird house', 1),
+		birdhouseItem: EItem.WILLOW_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Willow logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 3]),
@@ -82,7 +82,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 700,
 		craftLvl: 35,
 		craftXP: 30,
-		houseItemReq: new Bank().add('Teak bird house', 1),
+		birdhouseItem: EItem.TEAK_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Teak logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 4]),
@@ -99,7 +99,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 820,
 		craftLvl: 45,
 		craftXP: 35,
-		houseItemReq: new Bank().add('Maple bird house', 1),
+		birdhouseItem: EItem.MAPLE_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Maple logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 5]),
@@ -116,7 +116,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 960,
 		craftLvl: 50,
 		craftXP: 40,
-		houseItemReq: new Bank().add('Mahogany bird house', 1),
+		birdhouseItem: EItem.MAHOGANY_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Mahogany logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 4]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 6]),
@@ -133,7 +133,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1020,
 		craftLvl: 60,
 		craftXP: 45,
-		houseItemReq: new Bank().add('Yew bird house', 1),
+		birdhouseItem: EItem.YEW_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Yew logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 4]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 7]),
@@ -150,7 +150,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1140,
 		craftLvl: 75,
 		craftXP: 50,
-		houseItemReq: new Bank().add('Magic bird house', 1),
+		birdhouseItem: EItem.MAGIC_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Magic logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 3]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 8]),
@@ -167,7 +167,7 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1200,
 		craftLvl: 90,
 		craftXP: 55,
-		houseItemReq: new Bank().add('Redwood bird house', 1),
+		birdhouseItem: EItem.REDWOOD_BIRD_HOUSE,
 		craftItemReq: new Bank().add('Redwood logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 3]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 9]),
@@ -176,148 +176,170 @@ const birdhouses: Birdhouse[] = [
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
+	},
+	{
+		name: 'Elder bird house',
+		aliases: ['elder', 'elder bird house'],
+		huntLvl: 99,
+		huntXP: 1600,
+		craftLvl: 99,
+		craftXP: 95,
+		birdhouseItem: BSOItem.ELDER_BIRD_HOUSE,
+		craftItemReq: new Bank().add('Elder logs', 1),
+		table: new LootTable()
+			.every('Raw bird meat', [1, 3])
+			.tertiary(2, nestTable, [5, 18])
+			.tertiary(3, 'Feather', [10, 100])
+			.tertiary(80, 'Clue scroll (grandmaster)')
+			.tertiary(140, 'Elder scroll piece'),
+		huntTechnique: 'bird house trapping',
+		waitTime: 50 * Time.Minute,
+		runTime: 81 * Time.Second,
+		qpRequired: 33,
+		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 9]),
+		strungRabbitFootTable: new LootTable().tertiary(2, strungRabbitFootNestTable, [1, 9])
 	}
 ];
 
 export const birdhouseSeeds = [
 	{
-		item: getOSItem('Hammerstone seed'),
+		item: Items.getOrThrow('Hammerstone seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Asgarnian seed'),
+		item: Items.getOrThrow('Asgarnian seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Barley seed'),
+		item: Items.getOrThrow('Barley seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Yanillian seed'),
+		item: Items.getOrThrow('Yanillian seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Krandorian seed'),
+		item: Items.getOrThrow('Krandorian seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Wildblood seed'),
+		item: Items.getOrThrow('Wildblood seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Potato seed'),
+		item: Items.getOrThrow('Potato seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Onion seed'),
+		item: Items.getOrThrow('Onion seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Cabbage seed'),
+		item: Items.getOrThrow('Cabbage seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Tomato seed'),
+		item: Items.getOrThrow('Tomato seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Sweetcorn seed'),
+		item: Items.getOrThrow('Sweetcorn seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Strawberry seed'),
+		item: Items.getOrThrow('Strawberry seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Watermelon seed'),
+		item: Items.getOrThrow('Watermelon seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Marigold seed'),
+		item: Items.getOrThrow('Marigold seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Rosemary seed'),
+		item: Items.getOrThrow('Rosemary seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Nasturtium seed'),
+		item: Items.getOrThrow('Nasturtium seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Woad seed'),
+		item: Items.getOrThrow('Woad seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Limpwurt seed'),
+		item: Items.getOrThrow('Limpwurt seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Marrentill seed'),
+		item: Items.getOrThrow('Marrentill seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Guam seed'),
+		item: Items.getOrThrow('Guam seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Tarromin seed'),
+		item: Items.getOrThrow('Tarromin seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Harralander seed'),
+		item: Items.getOrThrow('Harralander seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Jute seed'),
+		item: Items.getOrThrow('Jute seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('White lily seed'),
+		item: Items.getOrThrow('White lily seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Snape grass seed'),
+		item: Items.getOrThrow('Snape grass seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Irit seed'),
+		item: Items.getOrThrow('Irit seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Dwarf weed seed'),
+		item: Items.getOrThrow('Dwarf weed seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Kwuarm seed'),
+		item: Items.getOrThrow('Kwuarm seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Cadantine seed'),
+		item: Items.getOrThrow('Cadantine seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Lantadyme seed'),
+		item: Items.getOrThrow('Lantadyme seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Avantoe seed'),
+		item: Items.getOrThrow('Avantoe seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Toadflax seed'),
+		item: Items.getOrThrow('Toadflax seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Ranarr seed'),
+		item: Items.getOrThrow('Ranarr seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Snapdragon seed'),
+		item: Items.getOrThrow('Snapdragon seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Torstol seed'),
+		item: Items.getOrThrow('Torstol seed'),
 		amount: 5
 	}
 ];

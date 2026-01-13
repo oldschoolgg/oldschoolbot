@@ -1,8 +1,7 @@
-import { roll } from 'e';
+import { roll } from '@oldschoolgg/rng';
 
-import type { MonsterKillOptions } from '../../../meta/types';
-import Bank from '../../../structures/Bank';
-import Monster from '../../../structures/Monster';
+import { Bank } from '@/structures/Bank.js';
+import { Monster, type MonsterKillOptions } from '@/structures/Monster.js';
 
 export class TzKalZukClass extends Monster {
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {
@@ -20,7 +19,7 @@ export class TzKalZukClass extends Monster {
 	}
 }
 
-export const TzKalZuk = new TzKalZukClass({
+export const TzKalZuk: TzKalZukClass = new TzKalZukClass({
 	id: 7706,
 	name: 'TzKal-Zuk',
 	aliases: ['tzkal-zuk', 'zuk', 'inferno']

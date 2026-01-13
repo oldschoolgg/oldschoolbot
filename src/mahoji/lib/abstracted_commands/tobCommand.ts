@@ -1,34 +1,33 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { calcWhatPercent } from 'e';
-import { Bank, TOBRooms, itemID, randomVariation } from 'oldschooljs';
-
-import { skillsMeetRequirements } from '@/lib/util';
-import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { getSimilarItems } from '../../../lib/data/similarItems';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
 import {
-	TENTACLE_CHARGES_PER_RAID,
+	canAffordInventionBoost,
+	InventionID,
+	inventionBoosts,
+	inventionItemBoost
+} from '@/lib/bso/skills/invention/inventions.js';
+
+import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, Emoji, formatDuration } from '@oldschoolgg/toolkit';
+import { Bank, Items, itemID, TOBRooms } from 'oldschooljs';
+
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import {
 	baseTOBUniques,
 	calcTOBBaseDuration,
 	calculateTOBDeaths,
 	calculateTOBUserGearPercents,
 	createTOBRaid,
-	minimumTOBSuppliesNeeded
-} from '../../../lib/data/tob';
-import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
-import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
-import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank';
-import { setupParty } from '../../../lib/party';
-import type { MakePartyOptions } from '../../../lib/types';
-import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../../lib/util/determineRunes';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings';
+	minimumTOBSuppliesNeeded,
+	TENTACLE_CHARGES_PER_RAID
+} from '@/lib/data/tob.js';
+import { checkUserCanUseDegradeableItem, degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const minStats = {
 	attack: 90,
@@ -57,8 +56,7 @@ async function calcTOBInput(u: MUser) {
 	}
 
 	items.add(
-		getUserFoodFromBank({
-			gearBank: u.gearBank,
+		u.calculateUsableFood({
 			totalHealingNeeded: healingNeeded,
 			favoriteFood: u.user.favorite_food,
 			minimumHealAmount: 20
@@ -80,11 +78,11 @@ async function checkTOBUser(
 	teamSize?: number,
 	quantity = 1
 ): Promise<[false] | [true, string]> {
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return [true, `${user.usernameOrMention} doesn't have a minion`];
 	}
 
-	if (!skillsMeetRequirements(user.skillsAsXP, minStats)) {
+	if (!user.hasSkillReqs(minStats)) {
 		return [
 			true,
 			`${
@@ -131,24 +129,26 @@ async function checkTOBUser(
 
 	// Melee
 	const meleeGear = user.gear.melee;
-	if (
-		!meleeGear.hasEquipped([
-			'Abyssal tentacle',
-			'Blade of saeldor (c)',
-			'Scythe of vitur (uncharged)',
-			'Scythe of vitur'
-		]) ||
-		!meleeGear.hasEquipped(['Fire cape', 'Infernal cape'])
-	) {
+	const requiredMeleeWeapons = [
+		'Abyssal tentacle',
+		'Blade of saeldor (c)',
+		'Scythe of vitur (uncharged)',
+		'Scythe of vitur',
+		'Drygore longsword'
+	];
+	const requiredMeleeCapes = ['Fire cape', 'Infernal cape', 'TzKal cape', 'Abyssal cape'];
+	if (!meleeGear.hasEquipped(requiredMeleeWeapons) || !meleeGear.hasEquipped(requiredMeleeCapes)) {
 		return [
 			true,
-			`${user.usernameOrMention} needs an Abyssal tentacle/Blade of saeldor(c)/Scythe of vitur and Fire/Infernal cape in their melee setup!`
+			`${user.usernameOrMention} needs one of the following weapons: ${requiredMeleeWeapons.join(
+				'/'
+			)} and one of the following capes: ${requiredMeleeCapes.join('/')} equipped in their melee setup!`
 		];
 	}
 
 	if (meleeGear.hasEquipped('Abyssal tentacle')) {
 		const tentacleResult = checkUserCanUseDegradeableItem({
-			item: getOSItem('Abyssal tentacle'),
+			item: Items.getOrThrow('Abyssal tentacle'),
 			chargesToDegrade: TENTACLE_CHARGES_PER_RAID * quantity,
 			user
 		});
@@ -159,7 +159,7 @@ async function checkTOBUser(
 
 	if (meleeGear.hasEquipped('Scythe of Vitur')) {
 		const scytheResult = checkUserCanUseDegradeableItem({
-			item: getOSItem('Scythe of Vitur'),
+			item: Items.getOrThrow('Scythe of Vitur'),
 			chargesToDegrade: SCYTHE_CHARGES_PER_RAID * quantity,
 			user
 		});
@@ -169,7 +169,7 @@ async function checkTOBUser(
 	}
 
 	// Range
-	const blowpipeData = user.blowpipe;
+	const blowpipeData = user.getBlowpipe();
 	if (!user.owns('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
 		return [
 			true,
@@ -184,27 +184,34 @@ async function checkTOBUser(
 	if (blowpipeData.scales < scalesNeeded) {
 		return [true, `${user.usernameOrMention}, you need at least ${scalesNeeded} scales in your blowpipe.`];
 	}
-	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
+	const dartIndex = blowpipeDarts.indexOf(Items.getOrThrow(blowpipeData.dartID));
 	if (dartIndex < 5) {
 		return [true, `${user.usernameOrMention}'s darts are too weak`];
 	}
 
+	const requiredRangeWeapons = ['Magic shortbow', 'Twisted bow', 'Zaryte bow', 'Hellfire bow'];
+	const requiredRangeAmmo = ['Amethyst arrow', 'Rune arrow', 'Dragon arrow', 'Hellfire arrow'];
 	const rangeGear = user.gear.range;
 	if (
-		!rangeGear.hasEquipped(['Magic shortbow', 'Twisted bow']) ||
-		!rangeGear.hasEquipped(['Amethyst arrow', 'Rune arrow', 'Dragon arrow'])
+		!user.hasEquipped('Chincannon') &&
+		(!rangeGear.hasEquipped(requiredRangeWeapons) || !rangeGear.hasEquipped(requiredRangeAmmo))
 	) {
 		return [
 			true,
-			`${user.usernameOrMention} needs a Magic shortbow or Twisted bow, and rune/dragon arrows, in their range setup!`
+			`${user.usernameOrMention} needs one of the following weapons: ${requiredRangeWeapons.join(
+				'/'
+			)} and one of the following ammo types: ${requiredRangeAmmo.join('/')} equipped in their range setup!`
 		];
+	}
+	if (rangeGear.hasEquipped(['Hellfire arrow']) && !rangeGear.hasEquipped('Hellfire bow')) {
+		return [true, `${user.usernameOrMention}, you can't use Hellfire arrows without a Hellfire bow 🤨`];
 	}
 	if (rangeGear.hasEquipped(['Dragon arrow', 'Magic shortbow'], true)) {
 		return [true, `${user.usernameOrMention}, you can't use Dragon arrows with a Magic shortbow 🤨`];
 	}
 
 	const arrowsRequired = 150 * quantity;
-	if (rangeGear.ammo!.quantity < arrowsRequired) {
+	if (!user.hasEquipped('Chincannon') && rangeGear.ammo!.quantity < arrowsRequired) {
 		return [
 			true,
 			`${user.usernameOrMention}, you need at least ${arrowsRequired} arrows equipped in your range setup.`
@@ -217,34 +224,53 @@ async function checkTOBUser(
 		if (kc < 250) {
 			return [true, `${user.usernameOrMention} needs at least 250 Theatre of Blood KC before doing Hard mode.`];
 		}
-		if (!meleeGear.hasEquipped('Infernal cape')) {
-			return [true, `${user.usernameOrMention} needs an Infernal cape to do Hard mode.`];
+		if (!meleeGear.hasEquipped(['Infernal cape', 'Abyssal cape'], false, true)) {
+			return [true, `${user.usernameOrMention} needs at least an Infernal or Abyssal cape to do Hard mode.`];
 		}
 	}
-
-	if (teamSize === 2) {
-		const kc = await user.fetchMinigameScore(isHardMode ? 'tob_hard' : 'tob');
-		if (kc < 150) {
-			return [true, `${user.usernameOrMention} needs at least 150 KC before doing duo's.`];
+	if (teamSize === 1) {
+		if (
+			!meleeGear.hasEquipped(['Drygore longsword', 'Offhand drygore longsword'], true) &&
+			!meleeGear.hasEquipped('Scythe of vitur')
+		) {
+			return [true, 'You must either have a charged Scythe of vitur, or dual Drygore longswords to solo ToB'];
+		}
+		const minRangeSoloGear = ['Hellfire bow', 'Hellfire arrow'];
+		if (!rangeGear.hasEquipped('Chincannon') && !rangeGear.hasEquipped(minRangeSoloGear, true)) {
+			return [true, 'You must either have a Hellfire bow and Hellfire arrows equipped to solo ToB'];
+		}
+		const mageGear = user.gear.mage;
+		if (
+			!meleeGear.hasEquipped(gorajanWarriorOutfit, true) &&
+			!rangeGear.hasEquipped(gorajanArcherOutfit, true) &&
+			!mageGear.hasEquipped(gorajanOccultOutfit, true)
+		) {
+			return [true, 'You must either have at least one complete set of Gorajan armour to solo ToB'];
 		}
 	}
 
 	return [false];
 }
 
-async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, quantity = 1): Promise<string | null> {
+export async function checkTOBTeam(
+	users: MUser[],
+	isHardMode: boolean,
+	solo: 'solo' | 'trio' | undefined,
+	quantity = 1
+): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
 	}
-	if ((!solo && users.length < 2) || users.length > 5) {
+	if ((solo === undefined && users.length < 2) || users.length > 5) {
 		return 'TOB team must be 2-5 users';
 	}
 
 	for (const user of users) {
-		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
-		const checkResult = await checkTOBUser(user, isHardMode, users.length, quantity);
-		if (checkResult[1]) {
+		if (await user.minionIsBusy()) return `${user.usernameOrMention}'s minion is busy.`;
+		const checkResult = await checkTOBUser(user, isHardMode, solo === 'trio' ? 3 : users.length, quantity);
+		if (!checkResult[0]) {
+		} else {
 			return checkResult[1];
 		}
 	}
@@ -255,7 +281,7 @@ async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, 
 export async function tobStatsCommand(user: MUser) {
 	const [minigameScores, { tob_attempts: attempts, tob_hard_attempts: hardAttempts }] = await Promise.all([
 		user.fetchMinigames(),
-		user.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+		user.fetchStats()
 	]);
 	const hardKC = minigameScores.tob_hard;
 	const kc = minigameScores.tob;
@@ -286,14 +312,15 @@ export async function tobStatsCommand(user: MUser) {
 }
 
 export async function tobStartCommand(
+	interaction: MInteraction,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	isHardMode: boolean,
 	maxSizeInput: number | undefined,
-	solo: boolean,
+	solo: 'solo' | 'trio' | undefined,
 	quantity: number | undefined
 ) {
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
 	const initialCheck = await checkTOBUser(user, isHardMode);
@@ -307,22 +334,23 @@ export async function tobStartCommand(
 			return 'You need at least 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
 		}
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
 	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 5 }) ?? 5;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
-		minSize: 2,
+		minSize: 1,
 		maxSize,
 		ironmanAllowed: true,
 		message: `${user.usernameOrMention} is hosting a ${
 			isHardMode ? '**Hard mode** ' : ''
 		}Theatre of Blood mass! Use the buttons below to join/leave.`,
 		customDenier: async _user => {
-			if (_user.minionIsBusy) {
+			if (await _user.minionIsBusy()) {
 				return [true, `${_user.usernameOrMention} minion is busy`];
 			}
 
@@ -330,28 +358,16 @@ export async function tobStartCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return 'No channel found.';
-	let usersWhoConfirmed = [];
-	try {
-		if (solo) {
-			usersWhoConfirmed = [user, user, user];
-		} else {
-			usersWhoConfirmed = await setupParty(channel, user, partyOptions);
-		}
-	} catch (err: any) {
-		return {
-			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			ephemeral: true
-		};
+	const users = solo ? [user, user, user] : await globalClient.makeParty(partyOptions);
+	if (await ActivityManager.anyMinionIsBusy(users)) {
+		return `All team members must have their minions free.`;
 	}
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const team = await Promise.all(
 		users.map(async u => {
 			const [minigameScores, { tob_attempts, tob_hard_attempts }] = await Promise.all([
 				u.fetchMinigames(),
-				u.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+				u.fetchStats()
 			]);
 			return {
 				user: u,
@@ -365,7 +381,7 @@ export async function tobStartCommand(
 		})
 	);
 	const { baseDuration, reductions, maxUserReduction } = calcTOBBaseDuration({ team, hardMode: isHardMode });
-	const maxTripLength = calcMaxTripLength(user, 'TheatreOfBlood');
+	const maxTripLength = await user.calcMaxTripLength('TheatreOfBlood');
 
 	const maxTripsCanFit = Math.max(1, Math.floor(maxTripLength / baseDuration));
 
@@ -385,26 +401,32 @@ export async function tobStartCommand(
 	let totalFakeDuration = 0;
 	const deaths: number[][][] = [];
 
+	let chinCannonUser: MUser | null = null;
 	const wipedRooms: (number | null)[] = [];
 	for (let i = 0; i < qty; i++) {
 		const {
 			duration,
 			wipedRoom: _wipedRoom,
 			deathDuration,
-			parsedTeam
+			parsedTeam,
+			chinCannonUser: thisChinCannonUser
 		} = createTOBRaid({
 			team,
 			hardMode: isHardMode,
 			baseDuration
 		});
+		if (thisChinCannonUser && !chinCannonUser) {
+			chinCannonUser = thisChinCannonUser;
+		}
 		const wipedRoom = _wipedRoom ? TOBRooms.indexOf(TOBRooms.find(room => _wipedRoom.name === room.name)!) : null;
 		wipedRooms.push(wipedRoom);
 		totalFakeDuration += duration;
 		totalDuration += deathDuration === null ? duration : deathDuration;
-		if (solo) parsedTeam.length = 1;
+		if (solo === 'trio') parsedTeam.length = 1;
 		deaths.push(parsedTeam.map(i => i.deaths));
 	}
-	if (solo) {
+
+	if (solo === 'trio') {
 		users.length = 1;
 		team.length = 1;
 	}
@@ -412,25 +434,45 @@ export async function tobStartCommand(
 
 	const totalCost = new Bank();
 
+	if (chinCannonUser) {
+		if (!canAffordInventionBoost(chinCannonUser, InventionID.ChinCannon, totalDuration).canAfford) {
+			return `${chinCannonUser.usernameOrMention} doesn't have enough materials to use the Chincannon for this trip.`;
+		}
+	}
+
 	const costResult = await Promise.all(
 		users.map(async u => {
 			const supplies = await calcTOBInput(u);
 			const { total } = calculateTOBUserGearPercents(u);
-			const blowpipeData = u.blowpipe;
-			const { realCost } = await u.specialRemoveItems(
-				supplies
-					.clone()
-					.add('Coins', 100_000)
-					.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
-					.add(u.gear.range.ammo?.item, 100)
-					.multiply(qty)
-			);
-			await userStatsBankUpdate(u, 'tob_cost', realCost);
+			const blowpipeData = u.getBlowpipe();
+			const preChincannonCost = supplies
+				.clone()
+				.add('Coins', 100_000)
+				.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)));
+
+			const isChincannonUser = u.id === chinCannonUser?.id;
+
+			if (!isChincannonUser) {
+				preChincannonCost.add(u.gear.range.ammo!.item, 100);
+			}
+			const { realCost } = await u.specialRemoveItems(preChincannonCost.multiply(qty));
+			await u.statsBankUpdate('tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
+			if (isChincannonUser) {
+				const res = await inventionItemBoost({
+					user,
+					inventionID: InventionID.ChinCannon,
+					duration: totalDuration
+				});
+				if (!res.success) {
+					throw new Error(`${u.id} did not have enough charges to use the Chincannon.`);
+				}
+				debugStr += ` ${inventionBoosts.chincannon.tobPercentReduction}% speed increase from the Chincannon (${res.messages})`;
+			}
 			if (u.gear.melee.hasEquipped('Abyssal tentacle')) {
 				await degradeItem({
-					item: getOSItem('Abyssal tentacle'),
+					item: Items.getOrThrow('Abyssal tentacle'),
 					user: u,
 					chargesToDegrade: TENTACLE_CHARGES_PER_RAID * qty
 				});
@@ -440,7 +482,7 @@ export async function tobStartCommand(
 					usedCharges += randomVariation(0.8 * SCYTHE_CHARGES_PER_RAID, 20);
 				}
 				await degradeItem({
-					item: getOSItem('Scythe of Vitur'),
+					item: Items.getOrThrow('Scythe of Vitur'),
 					user: u,
 					chargesToDegrade: usedCharges
 				});
@@ -455,7 +497,7 @@ export async function tobStartCommand(
 		})
 	);
 
-	await updateBankSetting('tob_cost', totalCost);
+	await ClientSettings.updateBankSetting('tob_cost', totalCost);
 	await trackLoot({
 		totalCost,
 		id: isHardMode ? 'tob_hard' : 'tob',
@@ -468,9 +510,9 @@ export async function tobStartCommand(
 		}))
 	});
 
-	await addSubTaskToActivityTask<TheatreOfBloodTaskOptions>({
+	await ActivityManager.startTrip<TheatreOfBloodTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration: totalDuration,
 		type: 'TheatreOfBlood',
 		leader: user.id,
@@ -480,14 +522,17 @@ export async function tobStartCommand(
 		fakeDuration: totalFakeDuration,
 		quantity: qty,
 		deaths,
-		solo
+		solo,
+		cc: chinCannonUser?.id
 	});
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to do ${qty}x Theatre of Blood raid${
 		qty > 1 ? 's' : ''
-	} - the total trip will take ${formatDuration(totalFakeDuration)}.${solo ? " You're in a team of 3." : ''}`;
+	} - the total trip will take ${formatDuration(totalFakeDuration)}.${
+		solo === 'trio' ? " You're in a team of 3." : ''
+	}`;
 
 	str += ` \n\n${debugStr}`;
 

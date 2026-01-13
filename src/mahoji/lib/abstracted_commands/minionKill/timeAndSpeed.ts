@@ -1,24 +1,32 @@
-import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, sumArr } from 'e';
+import {
+	calcWhatPercent,
+	increaseNumByPercent,
+	isObject,
+	reduceNumByPercent,
+	round,
+	sumArr
+} from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
-import z from 'zod';
+import * as z from 'zod';
 
-import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants';
-import { type AttackStyles, getAttackStylesContext } from '@/lib/minions/functions';
-import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC';
-import type { Consumable } from '@/lib/minions/types';
-import { ChargeBank } from '@/lib/structures/Bank';
-import { UpdateBank } from '@/lib/structures/UpdateBank';
-import type { SkillsRequired } from '@/lib/types';
-import { numberEnum } from '@/lib/util/smallUtils.js';
-import { getItemCostFromConsumables } from './handleConsumables';
-import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
+import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import { type AttackStyles, getAttackStylesContext } from '@/lib/minions/functions/index.js';
+import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
+import type { Consumable } from '@/lib/minions/types.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { SkillsRequired } from '@/lib/types/index.js';
+import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
+import {
+	type BoostArgs,
+	type BoostResult,
+	type CombatMethodOptions,
+	mainBoostEffects
+} from '@/mahoji/lib/abstracted_commands/minionKill/speedBoosts.js';
 
 export const CombatMethodOptionsSchema = z.object({
-	bob: z
-		.number()
-		.superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst]))
-		.optional(),
+	bob: z.nativeEnum(SlayerActivityConstants).optional(),
 	usingCannon: z.boolean().optional(),
 	cannonMulti: z.boolean().optional(),
 	chinning: z.boolean().optional(),
@@ -54,8 +62,12 @@ function applySkillBoost(skillsAsLevels: SkillsRequired, duration: number, style
 	return [newDuration, str];
 }
 
+function isBoostResult(obj: unknown): obj is BoostResult {
+	return isObject(obj) && ('percentageReduction' in obj || 'percentageIncrease' in obj);
+}
+
 export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
-	const { monster, monsterKC, attackStyles, gearBank, maxTripLength, inputQuantity } = args;
+	const { monster, monsterKC, attackStyles, gearBank, maxTripLength, inputQuantity, isInWilderness } = args;
 	const { skillsAsLevels } = args.gearBank;
 	const messages: string[] = [];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, monsterKC);
@@ -64,6 +76,15 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	messages.push(skillBoostMsg);
 
 	if (percentReduced >= 1) messages.push(`${percentReduced}% for KC`);
+
+	timeToFinish /= 2;
+	messages.push('2x BSO Boost');
+
+	if (gearBank.gear.wildy.hasEquipped(['Hellfire bow']) && isInWilderness) {
+		timeToFinish /= 3;
+		messages.push('3x boost for Hellfire bow');
+	}
+
 	let currentTaskOptions: CombatMethodOptions = {};
 	const itemCost = new Bank();
 	const charges = new ChargeBank();
@@ -80,11 +101,9 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 		const [res] = results
 			.filter(res => Boolean(res))
 			.sort((a, b) => {
-				if (!a || !b || !('percentageReduction' in (a as any) || !('percentageReduction' in (b as any)))) {
+				if (!isBoostResult(a) || !isBoostResult(b)) {
 					throw new Error('Shouldnt happen');
 				}
-				a = a as any as BoostResult;
-				b = b as any as BoostResult;
 				if (!a.percentageReduction || !b.percentageReduction) throw new Error('Shouldnt happen');
 				return b.percentageReduction - a.percentageReduction;
 			});

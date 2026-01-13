@@ -1,18 +1,73 @@
+import { globSync, readFileSync } from 'node:fs';
 import { collapseWhiteSpace } from 'collapse-white-space';
-import { Items } from 'oldschooljs';
+import matter from 'gray-matter';
+import type { Root } from 'hast';
+import type { Plugin } from 'unified';
 import { visitParents } from 'unist-util-visit-parents';
 
-import bsoItemsJson from '../../../data/bso/bso_items.json';
-import commandsJson from '../../../data/osb/commands.json';
+import bsoCommandsJson from '../../../data/bso/commands.json' with { type: 'json' };
+import commandsJson from '../../../data/osb/commands.json' with { type: 'json' };
 import { authors, authorsMap } from '../../../scripts/wiki/authors.js';
 import { SkillsArray } from '../../../src/lib/skilling/types.js';
 import { toTitleCase } from '../docs-util.js';
+import { WebItems } from '../lib/WebItems.js';
 
-const bsoItems = Object.entries(bsoItemsJson);
 const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
 
-export function remarkItems(_options: any) {
-	return (tree: any) => {
+const ALL_PAGES = globSync('./src/content/docs/**/*.{md,mdx}')
+	.filter(_p => _p.includes('.'))
+	.map(_path => {
+		const paths: string[] = [];
+		const truePath = _path
+			.replace(/\\/g, '/')
+			.replace('src/content/docs', '')
+			.replace(/\.mdx?$/, '')
+			.replace(/\s+/g, '-')
+			.toLowerCase();
+		paths.push(truePath);
+
+		const frontMatter = matter(readFileSync(_path, 'utf-8'));
+		if (frontMatter.data.title) {
+			paths.push(
+				truePath
+					.split('/')
+					.slice(0, -1)
+					.concat(frontMatter.data.title.replace(/\s+/g, '-').toLowerCase())
+					.join('/')
+			);
+		}
+
+		return paths;
+	});
+
+function defaultResolvePage(originalTitle: string): string | null {
+	const [title, sublink] = originalTitle.trim().split('#');
+	let partialMatch: string | null = null;
+	const page = ALL_PAGES.find(_p => {
+		for (const _path of _p.map(p => p.toLowerCase())) {
+			if (_path.endsWith(`/${title.toLowerCase()}`)) return true;
+			if (_path.endsWith(`/${title.replace(/\s+/g, '-').toLowerCase()}`)) return true;
+			if (_path === title.toLowerCase()) return true;
+			if (_path.includes(title.toLowerCase())) partialMatch = _path;
+		}
+		return false;
+	});
+	const match: string | null = page ? page[0] : partialMatch;
+	if (!match) {
+		console.warn(`Could not find page for title: ${originalTitle}`);
+		return null;
+	}
+	return match + (sublink ? `#${sublink}` : '');
+}
+
+interface RemarkItemsOptions {
+	resolvePage?: (title: string) => string | null;
+}
+
+const remarkItems: Plugin<[RemarkItemsOptions?], Root> = (options = {}) => {
+	const resolvePage = options.resolvePage || defaultResolvePage;
+
+	return (tree: Root) => {
 		visitParents(tree, 'text', (node, parents) => {
 			const parent = parents[parents.length - 1];
 			if (!parent || !Array.isArray(parent.children)) return;
@@ -52,7 +107,7 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 </div>`;
 				} else if (
 					[...SkillsArray, 'divination', 'dungeoneering', 'invention', 'qp'].some(
-						s => content.includes(`${s}`) && !content.includes('/') && !content.includes('.') // some commands contain names of skills
+						s => content.includes(`${s}`) && !content.includes('/') && !content.includes('.')
 					)
 				) {
 					const [skillName, level] = content.split(':');
@@ -68,7 +123,9 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 				} else if (content.includes('embed.')) {
 					html = '';
 				} else if (content.startsWith('/')) {
-					const cmd = commandsJson.data.find(c => c.name === content.slice(1).split(' ')[0]);
+					const cmd =
+						commandsJson.data.find(c => c.name === content.slice(1).split(' ')[0]) ||
+						bsoCommandsJson.data.find(c => c.name === content.slice(1).split(' ')[0]);
 					if (!cmd) {
 						console.warn(`Could not find command with name: ${match.slice(1)}`);
 					}
@@ -77,32 +134,25 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 					const githubIcon = `<svg aria-hidden="true" class="github_icon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"></path></svg>`;
 					html = `<div class="github_link">${githubIcon}<a target="_blank" href="https://github.com/oldschoolgg/oldschoolbot/compare/${content}">Commits</a></div>`;
 				} else {
-					let imageURL = null;
-					let [itemName, flag] = content.split('?');
-					console.log({ itemName, flag });
-					const bsoItem = bsoItems.find(
-						([id, name]) =>
-							name.toLowerCase() === itemName.toLowerCase() || id.toLowerCase() === itemName.toLowerCase()
-					);
-					const osbItem = Items.get(itemName) ?? Items.get(Number(itemName));
-					if (bsoItem) {
-						imageURL = `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/images/bso_icons/${bsoItem[0]}.png`;
-					} else if (osbItem) {
-						imageURL = `https://cdn.oldschool.gg/icons/items/${osbItem.id}.png`;
-						itemName = osbItem.name;
-					} else {
-						console.warn(`Could not find item: ${itemName}`);
-						html = `<span class="unknown_item">${itemName}</span>`;
-					}
-					if (imageURL) {
+					const [itemName, flag] = content.split('?');
+					const rawItem = WebItems.get(itemName);
+					if (rawItem.item) {
+						const { item, imageUrl, isBso } = rawItem;
 						if (flag === 'raw') {
-							html = `<img class="osrs_item_image osrs_item_image_full" src="${imageURL}" alt="${itemName}" />`;
+							html = `<img class="osrs_item_image osrs_item_image_full" data-id="item" src="${imageUrl}" alt="${item.name}" />`;
 						} else {
-							html = `<span class="osrs_item">
-									<img class="osrs_item_image" src="${imageURL}" alt="${itemName}" />
-									${flag !== 'raw' ? `<span class="osrs_item_name">${itemName}</span>` : ''}
+							html = `<span class="osrs_item${isBso ? ' bso_item' : ''}">
+									<img class="osrs_item_image" src="${imageUrl}" alt="${item.name}" />
+									<span class="osrs_item_name">${item.name}</span>
 								</span>`;
 						}
+					}
+				}
+
+				if (html === null) {
+					const pageUrl = resolvePage(content);
+					if (pageUrl) {
+						html = `<a href="${pageUrl}">${content}</a>`;
 					}
 				}
 
@@ -124,7 +174,10 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 			}
 
 			const index = parent.children.indexOf(node);
+			// @ts-expect-error
 			parent.children.splice(index, 1, ...newChildren);
 		});
 	};
-}
+};
+
+export default remarkItems;

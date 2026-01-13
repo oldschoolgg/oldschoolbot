@@ -1,103 +1,49 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { calcWhatPercent, sumArr } from 'e';
-import { Bank, randomVariation } from 'oldschooljs';
+import {
+	canAffordInventionBoost,
+	InventionID,
+	inventionBoosts,
+	inventionItemBoost
+} from '@/lib/bso/skills/invention/inventions.js';
+
+import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, Emoji, formatDuration, sumArr } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import {
 	calcCoxDuration,
 	calcCoxInput,
 	calculateUserGearPercents,
 	checkCoxTeam,
-	coxUniques,
 	createTeam,
 	hasMinRaidsRequirements,
-	itemBoosts,
-	maxSpeedReductionFromItems,
 	minimumCoxSuppliesNeeded
-} from '../../../lib/data/cox';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
-import { setupParty } from '../../../lib/party';
-import type { MakePartyOptions } from '../../../lib/types';
-import type { RaidsOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber } from '../../mahojiSettings';
+} from '@/lib/data/cox.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { RaidsOptions } from '@/lib/types/minions.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
-export async function coxBoostsCommand(user: MUser) {
-	const boostStr = [];
-	let workFromBank = false;
-	let boostPercent = 0;
-	boostStr.push('<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>\n');
-	boostStr.push(
-		'*Item boosts help reduce the time required to complete Chambers. Only one boost from each bullet point can be applied. The further left the higher the boost.*\n\n'
-	);
-	boostStr.push('**Equipped boost Items:**\n');
-	for (const set of itemBoosts) {
-		if (set.some(item => !item.mustBeEquipped) && workFromBank === false) {
-			boostStr.push('**Works from bank:**\n');
-			workFromBank = true;
-		}
-		boostStr.push('- ');
-		const ownedItems = set.filter(item => {
-			if (item.mustBeEquipped) {
-				if (item.setup && user.gear[item.setup].hasEquipped(item.item.id, false, true)) {
-					return true;
-				}
-			} else {
-				return user.hasEquippedOrInBank(getSimilarItems(item.item.id));
-			}
-		});
-		if (ownedItems.length > 0) {
-			const maxBoost = Math.max(...ownedItems.map(item => item.boost));
-			const setItems = set.map(item => {
-				if (item.item.name === 'Dragon pickaxe') {
-					if (item.boost === maxBoost && ownedItems.some(ownedItem => ownedItem.item.id === item.item.id)) {
-						boostPercent += item.boost;
-						return `${Emoji.Tick}Pickaxe Boost (3a, Crystal, Dragon)`;
-					} else {
-						return `${Emoji.RedX}Pickaxe Boost (3a, Crystal, Dragon)`;
-					}
-				} else {
-					if (item.boost === maxBoost && ownedItems.some(ownedItem => ownedItem.item.id === item.item.id)) {
-						boostPercent += item.boost;
-						return `${Emoji.Tick}${item.item.name}`;
-					} else {
-						return `${Emoji.RedX}${item.item.name}`;
-					}
-				}
-			});
-			boostStr.push(setItems.join(', '));
-		} else {
-			const setItems = set.map(item => {
-				if (item.item.name === 'Dragon pickaxe') {
-					return `${Emoji.RedX}Pickaxe Boost (3a, Crystal, Dragon)`;
-				} else {
-					return `${Emoji.RedX}${item.item.name}`;
-				}
-			});
-			boostStr.push(setItems.join(', '));
-		}
-		boostStr.push('\n');
-	}
-	const finalPercentage = ((boostPercent / maxSpeedReductionFromItems) * 100).toFixed(1);
-	boostStr.push(
-		`\nYour CoX Item Boost is: **${finalPercentage === '100.0' ? '100' : finalPercentage}/100%**\nEffectively lowering your raid time by: **${boostPercent} minutes**`
-	);
-	return boostStr.join('');
-}
+const uniques = [
+	'Dexterous prayer scroll',
+	'Arcane prayer scroll',
+	'Twisted buckler',
+	'Dragon hunter crossbow',
+	"Dinh's bulwark",
+	'Ancestral hat',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Dragon claws',
+	'Elder maul',
+	'Kodai insignia',
+	'Twisted bow'
+];
 
 export async function coxStatsCommand(user: MUser) {
-	const [minigameScores, stats] = await Promise.all([
-		user.fetchMinigames(),
-		user.fetchStats({ total_cox_points: true })
-	]);
+	const [minigameScores, stats] = await Promise.all([user.fetchMinigames(), user.fetchStats()]);
 	let totalUniques = 0;
 	const { cl } = user;
-	for (const item of coxUniques) {
+	for (const item of uniques) {
 		totalUniques += cl.amount(item);
 	}
 	const totalPoints = stats.total_cox_points;
@@ -127,20 +73,20 @@ export async function coxStatsCommand(user: MUser) {
 **Melee:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
 **Range:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
 **Mage:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
-**Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%\n
-Check \`/raid cox itemboosts\` for more information on Item boosts.`;
+**Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%`;
 }
 
 export async function coxCommand(
-	channelID: string,
+	interaction: MInteraction,
+	channelId: string,
 	user: MUser,
-	type: 'solo' | 'mass' | 'fakemass',
+	type: 'solo' | 'mass',
 	maxSizeInput: number | undefined,
 	isChallengeMode: boolean,
 	_quantity?: number
 ) {
-	if (type !== 'mass' && type !== 'solo' && type !== 'fakemass') {
-		return 'Specify your team setup for Chambers of Xeric, either solo, mass, or mass (4 bots teammates).';
+	if (type !== 'mass' && type !== 'solo') {
+		return 'Specify your team setup for Chambers of Xeric, either solo or mass.';
 	}
 
 	const minigameID = isChallengeMode ? 'raids_challenge_mode' : 'raids';
@@ -151,13 +97,14 @@ export async function coxCommand(
 			return 'You need at least 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.';
 		}
 	}
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
 	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 15 }) ?? 15;
 
 	const partyOptions: MakePartyOptions = {
+		interaction,
 		leader: user,
 		minSize: 2,
 		maxSize,
@@ -166,10 +113,10 @@ export async function coxCommand(
 			isChallengeMode ? '**Challenge mode** ' : ''
 		}Chambers of Xeric mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
-			if (!user.user.minion_hasBought) {
+			if (!user.hasMinion) {
 				return [true, "you don't have a minion."];
 			}
-			if (user.minionIsBusy) {
+			if (await user.minionIsBusy()) {
 				return [true, 'your minion is busy.'];
 			}
 			if (!hasMinRaidsRequirements(user)) {
@@ -192,6 +139,7 @@ export async function coxCommand(
 				isChallengeMode &&
 				!user.hasEquippedOrInBank('Dragon hunter crossbow') &&
 				!user.hasEquippedOrInBank('Twisted bow') &&
+				!user.hasEquippedOrInBank('Zaryte bow') &&
 				!user.hasEquipped(['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'], true)
 			) {
 				return [
@@ -203,18 +151,14 @@ export async function coxCommand(
 			return [false];
 		}
 	};
-	const channel = globalClient.channels.cache.get(channelID.toString());
 
 	let users: MUser[] = [];
-	let isFakeMass = false;
 
-	const fakeUsers = Math.min(maxSizeInput ?? 5, maxSize);
-	if (type === 'fakemass') {
-		users = new Array(fakeUsers).fill(user);
-		isFakeMass = true;
-	} else if (type === 'mass') {
-		if (!channelIsSendable(channel)) return 'No channel found.';
-		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
+	if (type === 'mass') {
+		users = await globalClient.makeParty(partyOptions);
+		if (await ActivityManager.anyMinionIsBusy(users)) {
+			return `All team members must have their minions free.`;
+		}
 	} else {
 		users = [user];
 	}
@@ -223,9 +167,10 @@ export async function coxCommand(
 		duration: raidDuration,
 		maxUserReduction,
 		reductions,
-		degradeables
+		degradeables,
+		chinCannonUser
 	} = await calcCoxDuration(users, isChallengeMode);
-	const maxTripLength = calcMaxTripLength(user, 'Raids');
+	const maxTripLength = await user.calcMaxTripLength('Raids');
 	const maxCanDo = Math.max(Math.floor(maxTripLength / raidDuration), 1);
 	const quantity = _quantity && _quantity * raidDuration <= maxTripLength ? _quantity : maxCanDo;
 
@@ -234,19 +179,22 @@ export async function coxCommand(
 		return `Your mass failed to start because of this reason: ${teamCheckFailure}`;
 	}
 
-	// add variance to cox raid time
+	// This gives a normal duration distribution. Better than (raidDuration * quantity) +/- 5%
 	const duration = sumArr(
 		Array(quantity)
 			.fill(raidDuration)
 			.map(d => randomVariation(d, 5))
 	);
-
 	let debugStr = '';
 	const isSolo = users.length === 1;
 
-	for (const d of degradeables) {
-		d.chargesToDegrade *= quantity;
+	if (chinCannonUser) {
+		if (!canAffordInventionBoost(chinCannonUser, InventionID.ChinCannon, duration).canAfford) {
+			return `${chinCannonUser.usernameOrMention} doesn't have enough materials to use the Chincannon for this trip.`;
+		}
 	}
+
+	const totalCost = new Bank();
 
 	await Promise.all(
 		degradeables.map(async d => {
@@ -254,21 +202,30 @@ export async function coxCommand(
 		})
 	);
 
-	const totalCost = new Bank();
-	const usersToCheck = isFakeMass ? [users[0]] : users;
-
 	const costResult = await Promise.all([
-		...usersToCheck.map(async u => {
-			const { supplies, ammo } = await calcCoxInput(u, quantity, isSolo);
+		...users.map(async u => {
+			const supplies = (await calcCoxInput(u, isSolo)).multiply(quantity);
 			await u.removeItemsFromBank(supplies);
 			totalCost.add(supplies);
-			const realAmmoCost = await u.specialRemoveItems(ammo);
-			totalCost.add(realAmmoCost.realCost);
-			supplies.add(realAmmoCost.realCost);
 			const { total } = calculateUserGearPercents(u);
+
 			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n`;
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}`;
+
+			if (chinCannonUser === u) {
+				const res = await inventionItemBoost({
+					user,
+					inventionID: InventionID.ChinCannon,
+					duration
+				});
+				if (!res.success) {
+					throw new Error(`${u.id} did not have enough charges to use the Chincannon.`);
+				}
+				debugStr += ` ${inventionBoosts.chincannon.coxPercentReduction}% speed increase from the Chincannon (${res.messages})`;
+			}
+
+			debugStr += '\n';
 			return {
 				userID: u.id,
 				itemsRemoved: supplies
@@ -276,7 +233,7 @@ export async function coxCommand(
 		})
 	]);
 
-	updateBankSetting('cox_cost', totalCost);
+	await ClientSettings.updateBankSetting('cox_cost', totalCost);
 
 	await trackLoot({
 		id: minigameID,
@@ -289,32 +246,27 @@ export async function coxCommand(
 		}))
 	});
 
-	await addSubTaskToActivityTask<RaidsOptions>({
+	await ActivityManager.startTrip<RaidsOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'Raids',
 		leader: user.id,
-		users: usersToCheck.map(u => u.id),
+		users: users.map(u => u.id),
 		challengeMode: isChallengeMode,
-		maxSizeInput: isFakeMass ? fakeUsers : maxSize,
-		isFakeMass,
-		quantity
+		quantity,
+		cc: chinCannonUser?.id
 	});
 
 	let str = isSolo
 		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
 				quantity > 1 ? 's' : ''
 			}. The total trip will take ${formatDuration(duration)}.`
-		: isFakeMass
-			? `${partyOptions.leader.usernameOrMention} your party of (${user.minionName} & ${users.length - 1} simulated users) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
-					quantity > 1 ? 's' : ''
-				} - the total trip will take ${formatDuration(duration)}.`
-			: `${partyOptions.leader.usernameOrMention}'s party (${users
-					.map(u => u.usernameOrMention)
-					.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
-					quantity > 1 ? 's' : ''
-				} - the total trip will take ${formatDuration(duration)}.`;
+		: `${partyOptions.leader.usernameOrMention}'s party (${users
+				.map(u => u.usernameOrMention)
+				.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+				quantity > 1 ? 's' : ''
+			} - the total trip will take ${formatDuration(duration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

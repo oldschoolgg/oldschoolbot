@@ -1,7 +1,6 @@
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { UserError } from '@oldschoolgg/toolkit';
 
-import { cancelUsersListings } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { logError } from './logError';
+import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 
 export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
@@ -41,6 +40,17 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.stashUnit.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.bingoParticipant.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.userCounter.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
+
+	// BSO: Delete target
+	transactions.push(prisma.tameActivity.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.tame.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
+
+	// BSO Event: (The update commands are later...)
+	transactions.push(
+		prisma.mortimerTricks.deleteMany({ where: { OR: [{ trickster_id: destUser.id }, { target_id: destUser.id }] } })
+	);
 
 	// For tables that aren't deleted, we often have to convert from target => source first to avoid FK errors, or null
 	transactions.push(
@@ -161,6 +171,36 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		prisma.gEListing.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
 
+	// BSO Updates:
+	transactions.push(
+		prisma.tameActivity.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(prisma.tame.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
+	transactions.push(
+		prisma.fishingContestCatch.updateMany({
+			where: { user_id: BigInt(sourceUser.id) },
+			data: { user_id: BigInt(destUser.id) }
+		})
+	);
+
+	// BSO Event Updates:
+	transactions.push(
+		prisma.mortimerTricks.updateMany({
+			where: { trickster_id: sourceUser.id },
+			data: { trickster_id: destUser.id }
+		})
+	);
+	transactions.push(
+		prisma.mortimerTricks.updateMany({ where: { target_id: sourceUser.id }, data: { target_id: destUser.id } })
+	);
+
+	transactions.push(
+		prisma.userCounter.updateMany({
+			where: { user_id: BigInt(sourceUser.id) },
+			data: { user_id: BigInt(destUser.id) }
+		})
+	);
+
 	// Update Users in group activities:
 	const updateUsers = `UPDATE activity
 	SET data = data::jsonb
@@ -169,14 +209,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	WHERE (data->'users')::jsonb ? '${sourceUser.id}'`;
 	transactions.push(prisma.$queryRawUnsafe(updateUsers));
 
-	// Update `detailedUsers` in ToA
-	const updateToAUsers = `UPDATE activity SET data = data::jsonb || CONCAT('{"detailedUsers":', REPLACE(data->>'detailedUsers', '${sourceUser.id}', '${destUser.id}'),'}')::jsonb WHERE type = 'TombsOfAmascut' AND data->>'detailedUsers' LIKE '%${sourceUser.id}%'`;
-	transactions.push(prisma.$queryRawUnsafe(updateToAUsers));
-
 	try {
 		await prisma.$transaction(transactions);
-	} catch (err: any) {
-		logError(err);
+	} catch (err: unknown) {
+		Logging.logError(err as Error);
 		throw new UserError('Error migrating user. Sorry about that!');
 	}
 
@@ -203,9 +239,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		);
 		try {
 			await roboChimpClient.$transaction(robochimpTx);
-		} catch (err: any) {
+		} catch (_err: unknown) {
+			const err = _err as Error;
 			err.message += ' - User already migrated! Robochimp migration failed!';
-			logError(err);
+			Logging.logError(err);
 			throw new UserError('Robochimp migration failed, but minion data migrated already!');
 		}
 	}

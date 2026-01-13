@@ -1,0 +1,137 @@
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { calcBabyYagaHouseDroprate, clAdjustedDroprate, herbertDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
+
+import { formatDuration, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
+
+import { MAX_XP } from '@/lib/constants.js';
+import Constructables from '@/lib/skilling/skills/construction/constructables.js';
+import Potions from '@/lib/skilling/skills/herblore/mixables/potions.js';
+
+interface GlobalDroprate {
+	name: string;
+	output: (opts: { user: MUser }) => string;
+	notes?: string[];
+}
+
+const droprates: GlobalDroprate[] = [
+	{
+		name: 'Baby yaga house pet',
+		output: () => {
+			const thirtyMinTicks = (Time.Minute * 30) / (Time.Millisecond * 600);
+			const table = new Table();
+			table.addHeader('Object', '1 in X Droprate', 'Num 30min trips');
+			const rows: [string, number, string][] = [];
+			for (const con of Constructables) {
+				const droprate = calcBabyYagaHouseDroprate(con.xp, new Bank());
+				const numBuiltPerTrip = thirtyMinTicks / con.ticks;
+				rows.push([con.name, droprate, (droprate / numBuiltPerTrip).toFixed(2)]);
+			}
+			rows.sort((a, b) => a[1] - b[1]);
+			for (const row of rows) {
+				table.addRow(...row.map(t => t.toString()));
+			}
+			return table.toString();
+		},
+		notes: ['If more than 1 in CL, droprate is multipled by the amount you have in your CL']
+	},
+	{
+		name: 'Slayer masks/helms',
+		output: () => {
+			const table = new Table();
+			table.addHeader('Name', 'Kills For Helm', 'Mask Droprate');
+			for (const a of slayerMaskHelms) {
+				table.addRow(a.helm.name, a.killsRequiredForUpgrade.toString(), a.maskDropRate.toString());
+			}
+			return table.toString();
+		}
+	},
+	{
+		name: 'Herbert (pet)',
+		output: () => {
+			const table = new Table();
+			table.addHeader('Potion Name', 'Droprate per hour', 'Droprate per hour at max xp');
+
+			for (const pot of Potions) {
+				const dropratePerMinute = herbertDroprate(1, pot.level);
+				const dropratePerMinuteAtMax = herbertDroprate(MAX_XP, pot.level);
+				table.addRow(
+					pot.item.name,
+					(1 / (60 / dropratePerMinute)).toString(),
+					(1 / (60 / dropratePerMinuteAtMax)).toString()
+				);
+			}
+
+			return `Herbert is rolled per minute of your trip, and the droprate halves (becomes twice as common) when you have the max (${MAX_XP.toLocaleString()}) Herblore XP.
+
+${table.toString()}`;
+		}
+	}
+];
+
+for (const droprate of Object.values(globalDroprates)) {
+	droprates.push({
+		name: droprate.name,
+		output: ({ user }) => {
+			let str = `**${droprate.name}**\n\n`;
+			str += `${droprate.name} drops at a rate of **1/${droprate.baseRate}** per ${droprate.rolledPer}.\n`;
+			if ('minLength' in droprate && droprate.minLength) {
+				str += `Requires a minimum trip length of **${formatDuration(MIN_LENGTH_FOR_PET)}** to receive.\n`;
+			}
+			if ('tameBaseRate' in droprate) {
+				str += `Tames have a different base rate of **1/${droprate.tameBaseRate}**.\n`;
+			}
+			if ('clIncrease' in droprate) {
+				str += `For each pet in your CL, the droprate is multiplied (made rarer) by **${droprate.clIncrease}x**.\n`;
+			}
+			if ('notes' in droprate) {
+				str += `\n**Notes:**\n${droprate.notes.join('\n')}`;
+			}
+
+			if ('clIncrease' in droprate && 'item' in droprate) {
+				const inCL = user.cl.amount(droprate.item.id);
+				str += `\n\nYou have ${inCL}x ${
+					droprate.item.name
+				} in your CL, so your current droprate is: **1 in ${clAdjustedDroprate(
+					user,
+					droprate.item.id,
+					droprate.baseRate,
+					droprate.clIncrease
+				)}**.`;
+			}
+			return str;
+		}
+	});
+}
+
+export const dropRatesCommand = defineCommand({
+	name: 'droprate',
+	description: 'Check the droprate of something.',
+	options: [
+		{
+			type: 'String',
+			name: 'thing',
+			description: 'The thing you want to check.',
+			required: true,
+			autocomplete: async ({ value }: StringAutoComplete) => {
+				return droprates
+					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+					.map(i => ({ name: i.name, value: i.name }));
+			}
+		}
+	],
+	run: async ({ options, user }) => {
+		const obj = droprates.find(drop => stringMatches(drop.name, options.thing));
+		if (!obj) return 'Invalid thing';
+		let output = obj.output({ user: await mUserFetch(user.id) });
+		if (obj.notes) {
+			output += `\n\n**Notes:**\n${obj.notes.join('\n')}`;
+		}
+		if (output.length >= 2000) {
+			return { files: [{ buffer: Buffer.from(output), name: 'droprates.txt' }] };
+		}
+		return output;
+	}
+});

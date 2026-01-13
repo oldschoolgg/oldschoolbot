@@ -1,6 +1,6 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
-export const LowGambleTable = new LootTable()
+export const LowGambleTable: LootTable = new LootTable()
 	.add('Harralander', [15, 25])
 	.add('Toadflax', [15, 25])
 	.add('Irit leaf', [15, 25])
@@ -34,7 +34,7 @@ export const LowGambleTable = new LootTable()
 	.add('Limpwurt root', [10, 15])
 	.add('Coins', [15_000, 20_000]);
 
-export const MediumGambleTable = new LootTable()
+export const MediumGambleTable: LootTable = new LootTable()
 	.add('Avantoe', [25, 35])
 	.add('Kwuarm', [25, 35])
 	.add('Dwarf weed', [25, 35])
@@ -68,7 +68,7 @@ export const MediumGambleTable = new LootTable()
 	.add('Unicorn horn', [20, 30])
 	.add('Coins', [30_000, 40_000]);
 
-export const HighGambleTable = new LootTable()
+export const HighGambleTable: LootTable = new LootTable()
 	.oneIn(16_000, 'Dragon med helm')
 	.oneIn(16_000, 'Dragon chainbody')
 	.tertiary(15, 'Clue scroll (elite)')
@@ -106,7 +106,7 @@ export const HighGambleTable = new LootTable()
 	.add('Unicorn horn', [30, 50])
 	.add('Coins', [50_000, 75_000]);
 
-export const BarbarianAssault = {
+export const BarbarianAssault: Record<string, LootTable> = {
 	LowGambleTable,
 	MediumGambleTable,
 	HighGambleTable

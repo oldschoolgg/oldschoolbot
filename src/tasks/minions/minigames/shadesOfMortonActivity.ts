@@ -1,19 +1,20 @@
-import { increaseNumByPercent } from 'e';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+
+import { bold } from '@oldschoolgg/discord';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
+import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
+import { assert } from '@/lib/util/logError.js';
+import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',
-	async run(data: ShadesOfMortonOptions) {
-		const { channelID, quantity, userID, logID, shadeID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ShadesOfMortonOptions, { user, handleTripFinish }) {
+		const { channelId, quantity, logID, shadeID, duration } = data;
 
-		await user.incrementMinigameScore('shades_of_morton', quantity);
+		const scoreUpdate = await user.incrementMinigameScore('shades_of_morton', quantity);
 
 		const log = shadesLogs.find(i => i.normalLog.id === logID)!;
 		const shade = shades.find(i => i.shadeName === shadeID)!;
@@ -33,22 +34,50 @@ export const shadesOfMortonTask: MinionTask = {
 			table.add(subTable, 1, shade.highMetalKeys.fraction * multiplier);
 		}
 
-		for (let i = 0; i < quantity; i++) {
-			loot.add(table.roll());
-		}
-
 		const messages: string[] = [];
 
-		const { itemsAdded } = await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
+		// Pet droprate gets rarer if using lower tier shades
+		let gotPet = false;
+		const remains = ['Urium', 'Fiyr', 'Asyn', 'Riyl', 'Phrin', 'Loar'];
+		assert(remains.includes(shadeID), `Invalid shadeID: ${shadeID}`);
+		const baseGaryRate = (remains.indexOf(shadeID) + 1) * 1200;
+		const garyDroprate = clAdjustedDroprate(user, 'Gary', baseGaryRate, 1.4);
+
+		for (let i = 0; i < quantity; i++) {
+			loot.add(table.roll());
+
+			if (!gotPet && roll(garyDroprate)) {
+				gotPet = true;
+				loot.add('Gary');
+				messages.push(
+					bold(
+						"While walking around in the wet, slimey Mort'ton area, you stumble on a gross, goofy looking snail with a blank, confused stare. You decide to take him with you so someone doesn't step on him."
+					)
+				);
+			}
+		}
+
+		const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
+
+		if (loot.has('Gary')) {
+			await user.sync();
+			const kcGot = randInt(scoreUpdate.newScore - quantity + 1, scoreUpdate.newScore);
+			globalClient.emit(
+				Events.ServerNotification,
+				`**${user.badgedUsername}'s** minion, ${user.minionName}, just received their ${formatOrdinal(
+					user.cl.amount('Gary')
+				)} Gary on their ${formatOrdinal(kcGot)} Shades of Mort'ton game!`
+			);
+		}
 
 		let firemakingXP = quantity * log.fmXP;
-		if ((await userhasDiaryTier(user, MorytaniaDiary.elite))[0]) {
+		if (user.hasDiary('morytania.elite')) {
 			firemakingXP = increaseNumByPercent(firemakingXP, 50);
 			messages.push('50% bonus firemaking xp for morytania elite diary');
 		}
 
 		let xpStr = await user.addXP({
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: firemakingXP,
 			duration,
 			source: 'ShadesOfMorton'
@@ -56,14 +85,14 @@ export const shadesOfMortonTask: MinionTask = {
 		let prayerXP = log.prayerXP[shade.shadeName];
 		if (!prayerXP) throw new Error(`No prayer XP for ${shade.shadeName} in ${log.oiledLog.name}!`);
 
-		if ((await userhasDiaryTier(user, MorytaniaDiary.hard))[0]) {
+		if (user.hasDiary('morytania.hard')) {
 			prayerXP = increaseNumByPercent(prayerXP, 50);
 			messages.push('50% bonus prayer xp for morytania hard diary');
 		}
 
 		xpStr += ', ';
 		xpStr += await user.addXP({
-			skillName: SkillsEnum.Prayer,
+			skillName: 'prayer',
 			amount: quantity * prayerXP,
 			duration,
 			source: 'ShadesOfMorton'
@@ -75,6 +104,6 @@ export const shadesOfMortonTask: MinionTask = {
 			str += `\n**Messages:** ${messages.join(', ')}`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };

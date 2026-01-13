@@ -38,10 +38,20 @@ item/
 
 tmp
 
-robochimp
 wiki.xml
 
 *.tsbuildinfo
 */coverage
 
 test-bot-store-*.json
+
+.db
+diffs
+
+src/prisma/clients
+
+.DS_Store
+
+itx
+
+.claude

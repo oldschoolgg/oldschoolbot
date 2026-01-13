@@ -1,0 +1,19 @@
+{
+	"name": "@oldschoolgg/spritesheet",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/esm/index.d.mts",
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs"
+		}
+	},
+	"scripts": {
+		"build": "tsdown"
+	},
+	"dependencies": {
+		"fast-glob": "3.3.3",
+		"pureimage": "0.4.18",
+		"sharp": "^0.34.4"
+	}
+}

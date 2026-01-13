@@ -1,11 +1,10 @@
-import type { Prisma } from '@prisma/client';
-import { randFloat, roll } from 'e';
+import { calcBirdhouseLimit } from '@/lib/bso/bsoUtil.js';
+
+import { roll } from '@oldschoolgg/rng';
 import { Bank, itemID } from 'oldschooljs';
 
-import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
-import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
-import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { sendToChannelID } from '../../../lib/util/webhook';
+import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
+import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 
 const clues = [
 	[itemID('Clue scroll(elite)'), 1 / 10],
@@ -16,27 +15,36 @@ const clues = [
 
 export const birdHouseTask: MinionTask = {
 	type: 'Birdhouse',
-	isNew: true,
-	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish }) {
-		const { birdhouseName, birdhouseData, channelID, duration, placing, gotCraft, currentDate } = data;
+	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, placing, gotCraft, birdhouseId, birdhouseName } = data;
 
+		const birdHouseToPlant = birdhouses.find(bh => {
+			if (birdhouseId) return bh.birdhouseItem === birdhouseId;
+			if (birdhouseName) return bh.name === birdhouseName;
+			return false;
+		})!;
+		const birdhouseData = user.fetchBirdhouseData();
+
+		const birdhouseToCollect = birdhouses.find(bh => {
+			if (typeof birdhouseData.lastPlaced === 'number') return bh.birdhouseItem === birdhouseData.lastPlaced;
+			return bh.name === birdhouseData.lastPlaced;
+		})!;
+
+		const birdHouseLimit = calcBirdhouseLimit(user);
 		let hunterXP = 0;
 		let craftingXP = 0;
 		const strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
 		const loot = new Bank();
 
-		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
-		if (!birdhouse) return;
-
 		if (!placing || !gotCraft) {
-			loot.add('Clockwork', 4);
+			loot.add('Clockwork', birdHouseLimit);
 		}
 
 		if (!birdhouseData.birdhousePlaced) {
-			let str = `${user}, ${user.minionName} finished placing 4x ${birdhouse.name}.`;
+			let str = `${user}, ${user.minionName} finished placing ${birdHouseLimit}x ${birdHouseToPlant.name}. `;
 
 			if (placing && gotCraft) {
-				craftingXP = birdhouse.craftXP * 4;
+				craftingXP = birdHouseToPlant.craftXP * birdHouseLimit;
 				str += await user.addXP({
 					skillName: 'crafting',
 					amount: craftingXP,
@@ -45,114 +53,104 @@ export const birdHouseTask: MinionTask = {
 				});
 			}
 
-			const updateBirdhouseData: BirdhouseData = {
-				lastPlaced: birdhouse.name,
+			await user.updateBirdhouseData({
+				lastPlaced: birdHouseToPlant.birdhouseItem,
 				birdhousePlaced: true,
-				birdhouseTime: currentDate + duration
-			};
-			await user.update({
-				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
+				birdhouseTime: Date.now()
 			});
 
 			str += `\n\n${user.minionName} tells you to come back after your birdhouses are full!`;
 
-			sendToChannelID(channelID, { content: str });
-		} else {
-			let str = '';
-			const birdhouseToCollect = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseData.lastPlaced);
-			if (!birdhouseToCollect) return;
-			if (placing) {
-				str = `${user}, ${user.minionName} finished placing 4x ${birdhouse.name} and collecting 4x full ${birdhouseToCollect.name}.`;
-			} else {
-				str = `${user}, ${user.minionName} finished collecting 4x full ${birdhouseToCollect.name}.`;
-			}
+			return handleTripFinish({ user, channelId, message: str, data });
+		}
 
-			for (let i = 0; i < 4; i++) {
-				if (!roll(200)) continue;
-				let nextTier = false;
-				let gotClue = false;
-				for (const clue of clues) {
-					if (nextTier || randFloat(0, 1) <= clue[1]) {
-						if (user.bank.amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
-							nextTier = true;
-							continue;
-						}
-						gotClue = true;
-						loot.add(clue[0]);
-						break;
+		let str = '';
+		if (placing) {
+			str = `${user}, ${user.minionName} finished placing ${birdHouseLimit}x ${birdHouseToPlant.name} and collecting ${birdHouseLimit}x full ${birdhouseToCollect.name}.`;
+		} else {
+			str = `${user}, ${user.minionName} finished collecting ${birdHouseLimit}x full ${birdhouseToCollect.name}.`;
+		}
+
+		for (let i = 0; i < birdHouseLimit; i++) {
+			if (!rng.roll(200)) continue;
+			let nextTier = false;
+			const gotClue = false;
+			for (const clue of clues) {
+				if (nextTier || rng.randFloat(0, 1) <= clue[1]) {
+					if (user.bank.amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
+						nextTier = true;
+						continue;
 					}
 				}
-				if (!gotClue && roll(1000)) {
+				if (!gotClue && rng.roll(1000)) {
 					loot.add('Clue scroll(beginner)');
 				}
 			}
-
-			hunterXP = birdhouseToCollect.huntXP * 4;
-			for (let i = 0; i < 4; i++) {
-				loot.add(birdhouseToCollect.table.roll());
-				if (strungRabbitFoot) {
-					loot.add(birdhouseToCollect.strungRabbitFootTable.roll());
-				} else {
-					loot.add(birdhouseToCollect.normalNestTable.roll());
-				}
+			if (!gotClue && roll(1000)) {
+				loot.add('Clue scroll(beginner)');
 			}
-			await transactItems({
-				userID: user.id,
-				collectionLog: true,
-				itemsToAdd: loot
-			});
+		}
 
+		hunterXP = birdhouseToCollect.huntXP * birdHouseLimit;
+		for (let i = 0; i < birdHouseLimit; i++) {
+			loot.add(birdhouseToCollect.table.roll());
+			if (strungRabbitFoot) {
+				loot.add(birdhouseToCollect.strungRabbitFootTable.roll());
+			} else {
+				loot.add(birdhouseToCollect.normalNestTable.roll());
+			}
+		}
+		await user.transactItems({
+			collectionLog: true,
+			itemsToAdd: loot
+		});
+
+		const xpRes = await user.addXP({
+			skillName: 'hunter',
+			amount: hunterXP,
+			duration: data.duration,
+			source: 'Birdhouses'
+		});
+
+		str += `\n\n${xpRes} from collecting the birdhouses.`;
+
+		if (placing && gotCraft) {
+			craftingXP = birdHouseToPlant.craftXP * birdHouseLimit;
 			const xpRes = await user.addXP({
-				skillName: 'hunter',
-				amount: hunterXP,
+				skillName: 'crafting',
+				amount: craftingXP,
 				duration: data.duration,
 				source: 'Birdhouses'
 			});
-
-			str += `\n\n${xpRes} from collecting the birdhouses.`;
-
-			if (placing && gotCraft) {
-				craftingXP = birdhouse.craftXP * 4;
-				const xpRes = await user.addXP({
-					skillName: 'crafting',
-					amount: craftingXP,
-					duration: data.duration,
-					source: 'Birdhouses'
-				});
-				str += `${xpRes} for making own birdhouses.`;
-			}
-
-			str += `\n\nYou received: ${loot}.`;
-
-			if (strungRabbitFoot) {
-				str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
-			}
-
-			let updateBirdhouseData: BirdhouseData = {
-				lastPlaced: null,
-				birdhousePlaced: false,
-				birdhouseTime: 0
-			};
-
-			if (placing) {
-				updateBirdhouseData = {
-					lastPlaced: birdhouse.name,
-					birdhousePlaced: true,
-					birdhouseTime: currentDate + duration
-				};
-			}
-
-			await user.update({
-				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
-			});
-
-			if (!placing) {
-				str += '\nThe birdhouses have been cleared. The birdhouse spots are ready to have new birdhouses.';
-			} else {
-				str += `\n${user.minionName} tells you to come back after your birdhouses are full!`;
-			}
-
-			handleTripFinish(user, channelID, str, undefined, data, loot);
+			str += `${xpRes} for making own birdhouses.`;
 		}
+
+		str += `\n\nYou received: ${loot}.`;
+
+		if (strungRabbitFoot) {
+			str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
+		}
+
+		await user.updateBirdhouseData(
+			placing
+				? {
+						lastPlaced: birdHouseToPlant.birdhouseItem,
+						birdhousePlaced: true,
+						birdhouseTime: Date.now()
+					}
+				: {
+						lastPlaced: null,
+						birdhousePlaced: false,
+						birdhouseTime: 0
+					}
+		);
+
+		if (!placing) {
+			str += '\nThe birdhouses have been cleared. The birdhouse spots are ready to have new birdhouses.';
+		} else {
+			str += `\n${user.minionName} tells you to come back after your birdhouses are full!`;
+		}
+
+		return handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

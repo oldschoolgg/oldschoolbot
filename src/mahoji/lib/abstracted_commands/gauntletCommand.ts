@@ -1,12 +1,9 @@
-import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, toTitleCase } from '@oldschoolgg/toolkit';
 
+import { BitField } from '@/lib/constants.js';
+import type { GauntletOptions } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { BitField } from '../../../lib/constants';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GauntletOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 const baseRequirements = {
 	cooking: 70,
@@ -40,14 +37,14 @@ const corruptedRequirements = {
 	ranged: 90
 };
 
-export async function gauntletCommand(user: MUser, channelID: string, type: 'corrupted' | 'normal' = 'normal') {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+export async function gauntletCommand(user: MUser, channelId: string, type: 'corrupted' | 'normal' = 'normal') {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	if (user.QP < 200) {
 		return 'You need at least 200 QP to do the Gauntlet.';
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
-	const prayLevel = user.skillLevel(SkillsEnum.Prayer);
+	const prayLevel = user.skillsAsLevels.prayer;
 
 	if (!user.hasSkillReqs(requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
@@ -59,7 +56,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	const corruptedKC = minigameScores.corrupted_gauntlet;
 	const normalKC = minigameScores.gauntlet;
 
-	if (type === 'corrupted' && normalKC < 50) {
+	if (type === 'corrupted' && normalKC < (user.usingPet('Brock') ? 0 : 50)) {
 		return "You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!";
 	}
 
@@ -74,6 +71,11 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	let baseLength = type === 'corrupted' ? corrPrep + corrHunllef : normPrep + normHunllef;
 
 	const boosts = [];
+
+	if (user.usingPet('Brock')) {
+		boosts.push('2x faster for having Brock');
+		baseLength /= 2;
+	}
 
 	// Gauntlet prep boost
 	let prepBoost = Math.min(100, calcWhatPercent(corruptedKC + normalKC, 100)) / 5;
@@ -121,7 +123,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	// Add a 5% variance to account for randomness of gauntlet
 	const gauntletLength = randomVariation(baseLength, 5);
 
-	const maxTripLength = calcMaxTripLength(user, 'Gauntlet');
+	const maxTripLength = await user.calcMaxTripLength('Gauntlet');
 
 	const quantity = Math.floor(maxTripLength / gauntletLength);
 	const duration = quantity * gauntletLength;
@@ -134,9 +136,9 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<GauntletOptions>({
+	await ActivityManager.startTrip<GauntletOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Gauntlet',

@@ -1,8 +1,7 @@
-import { roll } from 'e';
-import { Bank, type Item, ItemGroups, LootTable, resolveItems } from 'oldschooljs';
+import { roll } from '@oldschoolgg/rng';
+import { Bank, type Item, ItemGroups, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import type { UnifiedOpenable } from './openables';
-import getOSItem from './util/getOSItem';
+import type { UnifiedOpenable } from '@/lib/openables.js';
 
 const BronzeChest = new LootTable({ limit: 99 })
 	.every('Swamp paste', [10, 20])
@@ -158,6 +157,8 @@ const GoldChest = new LootTable({ limit: 143 })
 	.every('Swamp paste', [40, 70])
 	.tertiary(61, 'Gold locks')
 	.tertiary(54, SplitBarkScrollsTable)
+	.oneIn(75 * 5, 'Necromancer kit')
+	.oneIn(80 * 5, 'Shade skull')
 
 	.add('Battlestaff', 3, 11)
 	.add('Adamant spear', 1, 7)
@@ -199,13 +200,7 @@ const chests = [
 	{
 		name: 'Bronze chest',
 		table: BronzeChest,
-		items: resolveItems([
-			'Bronze key red',
-			'Bronze key brown',
-			'Bronze key crimson',
-			'Bronze key black',
-			'Bronze key purple'
-		])
+		items: resolveItems(['Bronze key red', 'Bronze key brown', 'Bronze key crimson', 'Bronze key black'])
 	},
 	{
 		name: 'Steel chest',
@@ -232,13 +227,7 @@ const chests = [
 	{
 		name: 'Silver chest',
 		table: SilverChest,
-		items: resolveItems([
-			'Silver key red',
-			'Silver key brown',
-			'Silver key crimson',
-			'Silver key black',
-			'Silver key purple'
-		])
+		items: resolveItems(['Silver key red', 'Silver key brown', 'Silver key crimson', 'Silver key black'])
 	},
 	{
 		name: 'Gold chest',
@@ -277,7 +266,7 @@ export const shadeChestOpenables: UnifiedOpenable[] = [];
 
 for (const chest of chests) {
 	for (const key of chest.items) {
-		const keyItem = getOSItem(key);
+		const keyItem = Items.getOrThrow(key);
 		shadeChestOpenables.push({
 			name: keyItem.name,
 			id: keyItem.id,

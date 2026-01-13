@@ -1,24 +1,31 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { roll, stripNonAlphanumeric } from 'e';
+import { spawnLampIsReady } from '@/lib/bso/commands/spawnBoxLampCommand.js';
+import { ItemContracts } from '@/lib/bso/itemContracts.js';
+import { getUsersFishingContestDetails } from '@/lib/bso/minigames/fishingContest.js';
+import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
+import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
+import { stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
+
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { EmojiId } from '@/lib/data/emojis.js';
+import { InteractionID } from '@/lib/InteractionID.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { minionBuyButton } from '@/lib/sharedComponents.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
-	makeClaimDailyButton
-} from '@/lib/util/interactions';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField } from '../../../lib/constants';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { minionBuyButton } from '../../../lib/sharedComponents';
-import { minionStatus } from '../../../lib/util/minionStatus';
-import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
-import { isUsersDailyReady } from './dailyCommand';
-import { canRunAutoContract } from './farmingContractCommand';
+	makeClaimDailyButton,
+	makeFishingContestButton,
+	makeosbBsoLeaguesButton,
+	makeSendICButton,
+	makeSpawnLampButton
+} from '@/lib/util/interactions.js';
+import { minionStatus } from '@/lib/util/minionStatus.js';
+import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
+import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 
 async function fetchFavoriteGearPresets(userID: string) {
 	const pinnedPresets = await prisma.gearPreset.findMany({
@@ -34,7 +41,7 @@ async function fetchFavoriteGearPresets(userID: string) {
 			.setStyle(ButtonStyle.Secondary)
 			.setCustomId(`GPE_${i.pinned_setup}_${stripNonAlphanumeric(i.name)}`)
 			.setLabel(`Equip '${toTitleCase(i.name).replace(/_/g, ' ')}' to ${i.pinned_setup}`)
-			.setEmoji(i.emoji_id ?? Emoji.Gear)
+			.setEmoji({ id: EmojiId.Gear })
 	);
 }
 
@@ -51,41 +58,46 @@ async function fetchPinnedTrips(userID: string) {
 			.setStyle(ButtonStyle.Secondary)
 			.setCustomId(`PTR_${i.id}`)
 			.setLabel(`Repeat ${i.custom_name ?? i.activity_type}`)
-			.setEmoji(i.emoji_id ?? '🔁')
+			.setEmoji(i.emoji_id ? { id: i.emoji_id } : { name: '🔁' })
 	);
 }
 
-export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
-	const { minionIsBusy } = user;
-	const birdhouseDetails = minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user);
-	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
+export async function minionStatusCommand(
+	user: MUser,
+	channelId: string
+): Promise<Required<Pick<BaseSendableMessage, 'content' | 'components'>>> {
+	const perkTier = await user.fetchPerkTier();
+
+	const currentActivity = await ActivityManager.getActivityOfUser(user.id);
+	const minionIsBusy = Boolean(currentActivity);
+	const birdhouseDetails = minionIsBusy ? { isReady: false } : user.fetchBirdhouseData();
+	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] = await Promise.all([
 		roboChimpUserFetch(user.id),
 		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
 		minionIsBusy ? [] : fetchPinnedTrips(user.id),
+		getUsersFishingContestDetails(user),
 		isUsersDailyReady(user)
 	]);
 
-	if (user.user.cached_networth_value === null || roll(100)) {
-		await user.update({
-			cached_networth_value: (await user.calculateNetWorth()).value
-		});
-	}
-
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return {
 			content:
 				"You haven't bought a minion yet! Click the button below to buy a minion and start playing the bot.",
-			components: [
-				{
-					components: [minionBuyButton],
-					type: ComponentType.ActionRow
-				}
-			]
+			components: [minionBuyButton]
 		};
 	}
 
-	const status = minionStatus(user);
+	const status = minionStatus(user, currentActivity);
 	const buttons: ButtonBuilder[] = [];
+
+	if (
+		perkTier >= PerkTier.Four &&
+		fishingResult.catchesFromToday.length === 0 &&
+		!user.minionIsBusy &&
+		['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))
+	) {
+		buttons.push(makeFishingContestButton());
+	}
 
 	if (dailyIsReady.isReady && !user.bitfield.includes(BitField.DisableDailyButton)) {
 		buttons.push(makeClaimDailyButton());
@@ -96,7 +108,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 			new ButtonBuilder()
 				.setCustomId('CANCEL_TRIP')
 				.setLabel('Cancel Trip')
-				.setEmoji('778418736180494347')
+				.setEmoji({ id: EmojiId.Minion })
 				.setStyle(ButtonStyle.Secondary)
 		);
 	}
@@ -109,7 +121,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		new ButtonBuilder()
 			.setCustomId('CHECK_PATCHES')
 			.setLabel('Check Patches')
-			.setEmoji(Emoji.Stopwatch)
+			.setEmoji({ id: EmojiId.Farming })
 			.setStyle(ButtonStyle.Secondary)
 	);
 
@@ -140,20 +152,40 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 				new ButtonBuilder()
 					.setCustomId(`DO_${tier.name.toUpperCase()}_CLUE`)
 					.setLabel(`Do ${tier.name} Clue`)
-					.setEmoji('365003979840552960')
+					.setEmoji({ id: EmojiId.ClueScroll })
 					.setStyle(ButtonStyle.Secondary)
 			);
 		}
 	}
 
+	if (perkTier >= PerkTier.Two) {
+		const { tame, species, activity } = await user.getTame();
+		if (tame && !activity) {
+			const lastTameAct = await tameLastFinishedActivity(user);
+			if (lastTameAct) {
+				buttons.push(
+					new ButtonBuilder()
+						.setCustomId(InteractionID.Commands.RepeatTameTrip)
+						.setLabel(`Repeat ${shortTameTripDesc(lastTameAct)}`)
+						.setEmoji({ id: species!.emojiID })
+						.setStyle(ButtonStyle.Secondary)
+				);
+			}
+		}
+	}
+
+	const [spawnLampReady] = await spawnLampIsReady(user, channelId);
+	if (spawnLampReady) {
+		buttons.push(makeSpawnLampButton());
+	}
+
+	const icDetails = ItemContracts.getItemContractDetails(user);
+	if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
+		buttons.push(makeSendICButton(icDetails.currentItem.name));
+	}
+
 	if (roboChimpUser.leagues_points_total === 0) {
-		buttons.push(
-			new ButtonBuilder()
-				.setLabel('OSB/BSO Leagues')
-				.setEmoji('660333438016028723')
-				.setStyle(ButtonStyle.Link)
-				.setURL('https://bso-wiki.oldschool.gg/leagues')
-		);
+		buttons.push(makeosbBsoLeaguesButton());
 	}
 
 	if (gearPresetButtons.length > 0) {
@@ -165,6 +197,6 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	return {
 		content: status,
-		components: makeComponents(buttons)
+		components: buttons
 	};
 }

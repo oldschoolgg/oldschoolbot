@@ -1,10 +1,11 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { LootTable, itemID } from 'oldschooljs';
+import { bsoOres } from '@/lib/bso/skills/mining/ores.js';
 
-import type { Ore } from '../types';
-import { SkillsEnum } from '../types';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { type ItemBank, itemID, LootTable } from 'oldschooljs';
 
-const GemRockTable = new LootTable()
+import { defineSkill, type Ore } from '@/lib/skilling/types.js';
+
+export const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)
 	.add('Uncut jade', 1, 30)
 	.add('Uncut red topaz', 1, 15)
@@ -268,7 +269,8 @@ const ores: Ore[] = [
 		minerals: 20,
 		clueScrollChance: 46_350,
 		aliases: ['amy', 'ame']
-	}
+	},
+	...bsoOres
 ];
 
 // Uses determineMiningTime function, therefore Ore object and id -1
@@ -299,7 +301,7 @@ const CamdozaalMine: Ore = {
 	clueScrollChance: 741_600
 };
 
-const prospectorItems: { [key: number]: number } = {
+const prospectorItems: ItemBank = {
 	[itemID('Prospector helmet')]: 0.4,
 	[itemID('Prospector jacket')]: 0.8,
 	[itemID('Prospector legs')]: 0.6,
@@ -311,7 +313,7 @@ export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemID, 
 	boostPercent: bonus
 }));
 
-const Mining = {
+const Mining = defineSkill({
 	aliases: ['mining'],
 	Ores: ores,
 	MotherlodeMine,
@@ -319,10 +321,10 @@ const Mining = {
 	GemRockTable,
 	GraniteRockTable,
 	SandstoneRockTable,
-	id: SkillsEnum.Mining,
+	id: 'mining',
 	emoji: Emoji.Mining,
 	prospectorItems,
 	name: 'Mining'
-};
+});
 
 export default Mining;

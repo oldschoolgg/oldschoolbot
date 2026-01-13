@@ -1,20 +1,25 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { runRolesTask } from '../../src/lib/rolesTask';
-import type { MinigameName } from '../../src/lib/settings/minigames';
-import { Minigames } from '../../src/lib/settings/minigames';
-import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
-import { createTestUser, mockedId, unMockedCyptoRand } from './util';
+import { runRolesTask } from '../../src/lib/rolesTask.js';
+import type { MinigameName } from '../../src/lib/settings/minigames.js';
+import { Minigames } from '../../src/lib/settings/minigames.js';
+import { createTestUser, mockedId } from './util.js';
 
 describe.skip('Roles Task', async () => {
 	test('Should not throw', async () => {
 		const user = await createTestUser();
-		await userStatsBankUpdate(user, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+		await user.statsBankUpdate('sacrificed_bank', new Bank().add('Coal', 10_000));
+		await user.statsBankUpdate('openable_scores', new Bank().add('Tradeable mystery box', 10_000));
+		await user.update({
+			monkeys_fought: ['a'],
+			disassembled_items_bank: new Bank().add('Twisted bow').toJSON(),
+			skills_invention: 1000
+		});
 		const ironUser = await createTestUser();
 		await ironUser.update({ minion_ironman: true, sacrificedValue: 1_000_000 });
-		await userStatsBankUpdate(ironUser, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+		await ironUser.statsBankUpdate('sacrificed_bank', new Bank().add('Coal', 10_000));
 
 		// Create minigame scores:
 		const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
@@ -38,7 +43,7 @@ describe.skip('Roles Task', async () => {
 				message_id: mockedId(),
 				reaction_id: mockedId(),
 				users_entered: [],
-				id: unMockedCyptoRand(1, 10_000_000),
+				id: Number(mockedId()),
 				completed: false,
 				duration: 10_000
 			}

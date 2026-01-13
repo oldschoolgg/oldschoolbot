@@ -1,4 +1,5 @@
 import { itemID } from 'oldschooljs';
+
 export interface Constructable {
 	id: number;
 	name: string;
@@ -13,7 +14,8 @@ export const Plank = {
 	Plank: itemID('Plank'),
 	OakPlank: itemID('Oak plank'),
 	TeakPlank: itemID('Teak plank'),
-	MahoganyPlank: itemID('Mahogany plank')
+	MahoganyPlank: itemID('Mahogany plank'),
+	ElderPlank: itemID('Elder plank')
 } as const;
 
 const Constructables: Constructable[] = [
@@ -189,7 +191,15 @@ const Constructables: Constructable[] = [
 		input: [Plank.MahoganyPlank, 6],
 		xp: 840,
 		level: 77,
-		ticks: 4.6
+		ticks: 5
+	},
+	{
+		id: 52_634,
+		name: 'Elder table',
+		input: [Plank.ElderPlank, 6],
+		xp: 1540,
+		level: 105,
+		ticks: 4
 	}
 ];
 

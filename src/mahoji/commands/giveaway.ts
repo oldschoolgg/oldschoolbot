@@ -1,55 +1,32 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import {
-	type CommandRunOptions,
-	type OSBMahojiCommand,
-	channelIsSendable,
-	makeComponents,
-	makeEphemeralPaginatedMessage
-} from '@oldschoolgg/toolkit/discord-util';
-import type { Giveaway } from '@prisma/client';
+import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+
+import { ButtonBuilder, ButtonStyle, EmbedBuilder, messageLink, time } from '@oldschoolgg/discord';
+import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
-import {
-	ActionRowBuilder,
-	ApplicationCommandOptionType,
-	AttachmentBuilder,
-	type BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	ChannelType,
-	EmbedBuilder,
-	MessageFlags,
-	messageLink,
-	time
-} from 'discord.js';
-import { Time, randInt } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
+import { chunk } from 'remeda';
 
-import { isModOrAdmin } from '@/lib/util.js';
-import { chunk } from 'e';
-import { giveawayCache } from '../../lib/cache.js';
-import { patronFeatures } from '../../lib/constants';
-import { marketPriceOfBank } from '../../lib/marketPrices';
-import { generateGiveawayContent } from '../../lib/util/giveaway';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { logError, logErrorForInteraction } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import { addToGPTaxBalance } from '../mahojiSettings';
+import type { Giveaway } from '@/prisma/main.js';
+import { giveawayCache } from '@/lib/cache.js';
+import { patronFeatures } from '@/lib/constants.js';
+import { EmojiId } from '@/lib/data/emojis.js';
+import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
+import { marketPriceOfBank } from '@/lib/marketPrices.js';
+import { generateGiveawayContent } from '@/lib/util/giveaway.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
 
-function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
+function makeGiveawayButtons(giveawayID: number) {
 	return [
-		new ActionRowBuilder<ButtonBuilder>().addComponents([
-			new ButtonBuilder()
-				.setCustomId(`GIVEAWAY_ENTER_${giveawayID}`)
-				.setLabel('Join Giveaway')
-				.setStyle(ButtonStyle.Primary),
-			new ButtonBuilder()
-				.setCustomId(`GIVEAWAY_LEAVE_${giveawayID}`)
-				.setLabel('Leave Giveaway')
-				.setStyle(ButtonStyle.Secondary)
-		])
+		new ButtonBuilder()
+			.setCustomId(`GIVEAWAY_ENTER_${giveawayID}`)
+			.setLabel('Join Giveaway')
+			.setStyle(ButtonStyle.Primary),
+		new ButtonBuilder()
+			.setCustomId(`GIVEAWAY_LEAVE_${giveawayID}`)
+			.setLabel('Leave Giveaway')
+			.setStyle(ButtonStyle.Secondary)
 	];
 }
 
@@ -57,12 +34,13 @@ function makeGiveawayRepeatButton(giveawayID: number) {
 	return new ButtonBuilder()
 		.setCustomId(`GIVEAWAY_REPEAT_${giveawayID}`)
 		.setLabel('Repeat This Giveaway')
-		.setEmoji('493286312854683654')
+		.setEmoji({ id: EmojiId.MoneyBag })
 		.setStyle(ButtonStyle.Danger);
 }
 
-export const giveawayCommand: OSBMahojiCommand = {
+export const giveawayCommand = defineCommand({
 	name: 'giveaway',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Giveaway items from your ban to other players.',
 	attributes: {
 		requiresMinion: true,
@@ -70,25 +48,40 @@ export const giveawayCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'start',
 			description: 'Start a giveaway.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'duration',
 					description: 'The duration of the giveaway (e.g. 1h, 1d).',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'items',
 					description: 'The items you want to giveaway.',
 					required: false
 				},
-				filterOption,
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
+					name: 'filter',
+					description: 'The filter you want to use.',
+					required: false,
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						const res = !value
+							? filterableTypes
+							: [...filterableTypes].filter(filter =>
+									filter.name.toLowerCase().includes(value.toLowerCase())
+								);
+						return [...res]
+							.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
+							.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
+					}
+				},
+				{
+					type: 'String',
 					name: 'search',
 					description: 'A search query for items in your bank to giveaway.',
 					required: false
@@ -96,27 +89,14 @@ export const giveawayCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'list',
 			description: 'List giveaways active in this server.',
 			options: []
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		guildID,
-		interaction,
-		channelID,
-		user: apiUser
-	}: CommandRunOptions<{
-		start?: { duration: string; items?: string; filter?: string; search?: string };
-		list?: {};
-	}>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, guildId, interaction, channelId, user: apiUser, rng }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
-		const channel = globalClient.channels.cache.get(channelID.toString());
-		if (!channelIsSendable(channel)) return 'Invalid channel.';
 
 		if (options.start) {
 			const existingGiveaways = await prisma.giveaway.findMany({
@@ -125,11 +105,11 @@ export const giveawayCommand: OSBMahojiCommand = {
 					completed: false
 				}
 			});
-			if (existingGiveaways.length >= 10 && !isModOrAdmin(user)) {
+			if (existingGiveaways.length >= 10 && !user.isModOrAdmin()) {
 				return 'You cannot have more than 10 giveaways active at a time.';
 			}
 
-			if (!guildID) {
+			if (!guildId) {
 				return 'You cannot make a giveaway outside a server.';
 			}
 
@@ -143,6 +123,10 @@ export const giveawayCommand: OSBMahojiCommand = {
 				maxSize: 70
 			});
 
+			if (bank.items().some(i => isSuperUntradeable(i[0]))) {
+				return 'You are trying to sell unsellable items.';
+			}
+
 			if (!user.bankWithGP.has(bank)) {
 				return "You don't own those items.";
 			}
@@ -152,8 +136,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			}
 
 			if (interaction) {
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to do a giveaway with these items? You cannot cancel the giveaway or retrieve the items back afterwards: ${bank}`
 				);
 			}
@@ -173,37 +156,34 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'You cannot have a giveaway with no items in it.';
 			}
 
-			const giveawayID = randInt(1, 500_000_000);
+			const giveawayID = rng.randInt(1, 500_000_000);
 
-			const message = await channel.send({
+			const message = await globalClient.sendMessage(channelId, {
 				content: generateGiveawayContent(user.id, duration.fromNow, []),
 				files: [
-					new AttachmentBuilder(
-						(
-							await makeBankImage({
-								bank,
-								title: `${apiUser?.username ?? user.rawUsername}'s Giveaway`
-							})
-						).file.attachment
-					)
+					await makeBankImage({
+						bank,
+						title: `${apiUser?.username ?? user.username}'s Giveaway`
+					})
 				],
-				components: makeGiveawayButtons(giveawayID)
+				components: makeGiveawayButtons(giveawayID),
+				allowedMentions: { users: [user.id] }
 			});
-
-			try {
-				await user.removeItemsFromBank(bank);
-			} catch (err: any) {
-				return err instanceof Error ? err.message : err;
+			if (!message) {
+				return `There was an error sending the giveaway message. Please ensure I have permission to send messages and attach files in <#${channelId}>.`;
 			}
+
+			await user.removeItemsFromBank(bank);
+
 			if (bank.has('Coins')) {
-				addToGPTaxBalance(user.id, bank.amount('Coins'));
+				await ClientSettings.addToGPTaxBalance(user, bank.amount('Coins'));
 			}
 
 			try {
 				const giveaway = await prisma.giveaway.create({
 					data: {
 						id: giveawayID,
-						channel_id: channelID.toString(),
+						channel_id: channelId.toString(),
 						start_date: new Date(),
 						finish_date: duration.fromNow,
 						completed: false,
@@ -215,8 +195,8 @@ export const giveawayCommand: OSBMahojiCommand = {
 					}
 				});
 				giveawayCache.set(giveaway.id, giveaway);
-			} catch (err: any) {
-				logError(err, {
+			} catch (err: unknown) {
+				Logging.logError(err as Error, {
 					user_id: user.id,
 					giveaway: bank.toString()
 				});
@@ -226,25 +206,20 @@ export const giveawayCommand: OSBMahojiCommand = {
 			return {
 				content: 'Giveaway started.',
 				ephemeral: true,
-				components: makeComponents([makeGiveawayRepeatButton(giveawayID)])
+				components: [makeGiveawayRepeatButton(giveawayID)]
 			};
 		}
 
 		if (options.list) {
-			if (!guildID) {
+			if (!guildId) {
 				return 'You cannot list giveaways outside a server.';
 			}
-			const guild = globalClient.guilds.cache.get(guildID);
-			if (!guild) return;
-
-			const textChannelsOfThisServer = guild.channels.cache
-				.filter(c => c.type === ChannelType.GuildText)
-				.map(i => i.id);
+			const textChannelsOfThisServer = await globalClient.fetchChannelsOfGuild(guildId);
 
 			const giveaways = await prisma.giveaway.findMany({
 				where: {
 					channel_id: {
-						in: textChannelsOfThisServer
+						in: textChannelsOfThisServer.map(i => i.id)
 					},
 					completed: false
 				},
@@ -256,7 +231,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			if (giveaways.length === 0) {
 				return {
 					content: 'There are no active giveaways in this server.',
-					flags: MessageFlags.Ephemeral
+					ephemeral: true
 				};
 			}
 
@@ -267,10 +242,12 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return Emoji.RedX;
 			}
 
+			const perkTier = await user.fetchPerkTier();
+
 			const lines = giveaways.map(
 				(g: Giveaway) =>
 					`${
-						user.perkTier() >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
+						perkTier >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
 					}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
 						g.finish_date,
 						'R'
@@ -281,18 +258,8 @@ export const giveawayCommand: OSBMahojiCommand = {
 				embeds: [new EmbedBuilder().setDescription(chunkLines.join('\n'))]
 			}));
 
-			await makeEphemeralPaginatedMessage(
-				interaction,
-				pages,
-				(err, itx) => {
-					if (itx) {
-						logErrorForInteraction(err, itx);
-					} else {
-						logError(err);
-					}
-				},
-				user.id
-			);
+			return interaction.makePaginatedMessage({ pages, ephemeral: true });
 		}
+		return 'Invalid subcommand.';
 	}
-};
+});

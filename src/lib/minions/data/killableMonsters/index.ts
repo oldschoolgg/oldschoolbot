@@ -1,26 +1,27 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Time } from 'e';
-import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { bsoKillableMonsters } from '@/lib/bso/monsters/bsoKillableMonsters.js';
+import { bsoAutocompleteMonsters, bsoEffectiveMonsters } from '@/lib/bso/monsters/bsoMonstersMisc.js';
+
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { SkillsEnum } from '../../../skilling/types';
-import type { KillableMonster } from '../../types';
-import bosses from './bosses';
-import { camdozaalMonsters } from './camdozaalMonsters';
-import { chaeldarMonsters } from './chaeldarMonsters';
-import { creatureCreationCreatures } from './creatureCreation';
-import { konarMonsters } from './konarMonsters';
-import { krystiliaMonsters } from './krystiliaMonsters';
-import low from './low';
-import { mazchnaMonsters } from './mazchnaMonsters';
-import { nieveMonsters } from './nieveMonsters';
-import { reanimatedMonsters } from './reanimated';
-import { revenantMonsters } from './revs';
-import { turaelMonsters } from './turaelMonsters';
-import { vannakaMonsters } from './vannakaMonsters';
+import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
+import { camdozaalMonsters } from '@/lib/minions/data/killableMonsters/camdozaalMonsters.js';
+import { chaeldarMonsters } from '@/lib/minions/data/killableMonsters/chaeldarMonsters.js';
+import { creatureCreationCreatures } from '@/lib/minions/data/killableMonsters/creatureCreation.js';
+import { konarMonsters } from '@/lib/minions/data/killableMonsters/konarMonsters.js';
+import { krystiliaMonsters } from '@/lib/minions/data/killableMonsters/krystiliaMonsters.js';
+import { lowKillableMonsters } from '@/lib/minions/data/killableMonsters/low.js';
+import { mazchnaMonsters } from '@/lib/minions/data/killableMonsters/mazchnaMonsters.js';
+import { nieveMonsters } from '@/lib/minions/data/killableMonsters/nieveMonsters.js';
+import { reanimatedMonsters } from '@/lib/minions/data/killableMonsters/reanimated.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import { turaelMonsters } from '@/lib/minions/data/killableMonsters/turaelMonsters.js';
+import { vannakaMonsters } from '@/lib/minions/data/killableMonsters/vannakaMonsters.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 const killableMonsters: KillableMonster[] = [
-	...bosses,
+	...bossKillables,
 	...chaeldarMonsters,
 	...konarMonsters,
 	...krystiliaMonsters,
@@ -29,10 +30,11 @@ const killableMonsters: KillableMonster[] = [
 	...nieveMonsters,
 	...turaelMonsters,
 	...vannakaMonsters,
-	...low,
+	...lowKillableMonsters,
 	...revenantMonsters,
 	...creatureCreationCreatures,
 	...reanimatedMonsters,
+	...bsoKillableMonsters,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
@@ -41,10 +43,8 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Barrows,
 		emoji: '<:Dharoks_helm:403038864199122947>',
 		wildy: false,
-
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Barrows gloves')]: 2 },
@@ -63,10 +63,11 @@ const killableMonsters: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 10,
 				'Fancy rejuvenation pool': 10,
-				'Ornate rejuvenation pool': 10
+				'Ornate rejuvenation pool': 10,
+				'Ancient rejuvenation pool': 20
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
 		customMonsterHP: 600,
 		combatXpMultiplier: 1.09
 	},
@@ -85,10 +86,10 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Armadyl chestplate', "Karil's leathertop"],
-			['Armadyl chainskirt', "Karil's leatherskirt"]
+			['Gorajan archer top', 'Pernix body', 'Armadyl chestplate', "Karil's leathertop"],
+			['Gorajan archer legs', 'Pernix chaps', 'Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth prime']),
+
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -126,10 +127,9 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Torva platebody', 'Bandos chestplate', "Torag's platebody"],
-			['Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
+			['Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -164,10 +164,10 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody", 'Torva platebody'],
-			['Bandos tassets', "Torag's platelegs", 'Torva platelegs']
+			['Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth supreme']),
+
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -200,7 +200,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 0,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: ['attack'],
+		attackStyleToUse: GearStat.AttackSlash
 	},
 	{
 		id: Monsters.Guard.id,
@@ -274,6 +275,7 @@ const killableMonsters: KillableMonster[] = [
 			}
 		}
 	},
+
 	{
 		id: Monsters.PriffRabbit.id,
 		name: Monsters.PriffRabbit.name,
@@ -282,7 +284,6 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.PriffRabbit,
 		emoji: '',
 		wildy: false,
-
 		difficultyRating: 10,
 		qpRequired: 205,
 		levelRequirements: {
@@ -311,7 +312,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		qpRequired: 50,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultAttackStyles: ['magic'],
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]
@@ -372,6 +373,13 @@ export const NightmareMonster: KillableMonster = {
 
 export default killableMonsters;
 
+type EffectiveMonster = {
+	id: number;
+	name: string;
+	aliases: string[];
+	emoji?: string;
+};
+
 export const effectiveMonsters = [
 	...killableMonsters,
 	NightmareMonster,
@@ -381,6 +389,11 @@ export const effectiveMonsters = [
 		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>'
 	},
+	{
+		id: 46_274,
+		name: 'Nex',
+		aliases: ['nex']
+	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
 	{ name: 'Mimic', aliases: ['mimic'], id: 23_184, emoji: '<:Tangleroot:324127378978635778>' },
 	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
@@ -389,12 +402,8 @@ export const effectiveMonsters = [
 		aliases: ['phosani', 'phosanis nightmare'],
 		id: EMonster.PHOSANI_NIGHTMARE
 	},
-	{
-		name: 'Nex',
-		aliases: ['nex'],
-		id: EMonster.NEX
-	}
-];
+	...bsoEffectiveMonsters
+] satisfies EffectiveMonster[];
 
 export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));
 
@@ -417,12 +426,6 @@ const otherMonsters = [
 		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
 	})),
 	{
-		name: 'Nex',
-		aliases: ['nex'],
-		id: EMonster.NEX,
-		link: '/bosses/nex/'
-	},
-	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
 		id: EMonster.ZALCANO,
@@ -444,4 +447,4 @@ const otherMonsters = [
 	}
 ];
 
-export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];
+export const autocompleteMonsters = [...killableMonsters, ...otherMonsters, ...bsoAutocompleteMonsters];

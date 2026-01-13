@@ -1,23 +1,18 @@
-import { randInt } from 'e';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { KourendKebosDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { UpdateBank } from '../../../lib/structures/UpdateBank';
-import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
+import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',
-	async run(data: ZalcanoActivityTaskOptions) {
-		const { channelID, quantity, duration, userID, performance, isMVP } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ZalcanoActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration, performance, isMVP } = data;
+
 		const { newKC } = await user.incrementKC(EMonster.ZALCANO, quantity);
-		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
-		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		const hasKourendHard = user.hasDiary('kourend&kebos.hard');
+		const hasKourendElite = user.hasDiary('kourend&kebos.elite');
 		const loot = new Bank();
 
 		let runecraftXP = 0;
@@ -30,27 +25,23 @@ export const zalcanoTask: MinionTask = {
 					team: [{ isMVP, performancePercentage: performance, id: '1' }]
 				})['1']
 			);
-			runecraftXP += randInt(100, 170);
-			smithingXP += randInt(250, 350);
-			miningXP += randInt(1100, 1400);
+			runecraftXP += rng.randInt(100, 170);
+			smithingXP += rng.randInt(250, 350);
+			miningXP += rng.randInt(1100, 1400);
 		}
 
 		const xpRes: string[] = [];
 		xpRes.push(
 			await user.addXP({
-				skillName: SkillsEnum.Mining,
+				skillName: 'mining',
 				amount: miningXP,
 				duration,
 				source: 'Zalcano'
 			})
 		);
 
-		xpRes.push(
-			await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP, duration, source: 'Zalcano' })
-		);
-		xpRes.push(
-			await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, duration, source: 'Zalcano' })
-		);
+		xpRes.push(await user.addXP({ skillName: 'smithing', amount: smithingXP, duration, source: 'Zalcano' }));
+		xpRes.push(await user.addXP({ skillName: 'runecraft', amount: runecraftXP, duration, source: 'Zalcano' }));
 
 		let str = `${user}, ${
 			user.minionName
@@ -73,17 +64,7 @@ export const zalcanoTask: MinionTask = {
 			}
 		}
 
-		if (loot.amount('Smolcano') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${randInt(newKC - quantity, newKC)}!`
-			);
-		}
-
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: updateBank.itemLootBank
 		});
@@ -95,6 +76,6 @@ export const zalcanoTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };
