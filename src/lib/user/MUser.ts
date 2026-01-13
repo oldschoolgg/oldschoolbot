@@ -352,7 +352,9 @@ WHERE user_id = ${this.id};`;
 
 	async incrementCreatureScore(creatureID: number, quantityToAdd: number): Promise<{ newKC: number }> {
 		if (!Number.isInteger(creatureID)) throw new Error('Invalid creatureID');
-		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) {
+			throw new Error(`Tried to increment ${creatureID} creature score by invalid amount: ${quantityToAdd}`);
+		}
 		const query = `
 UPDATE user_stats
 SET creature_scores = add_item_to_bank(creature_scores, '${creatureID}', ${quantityToAdd})
