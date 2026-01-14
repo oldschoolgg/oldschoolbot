@@ -112,6 +112,7 @@ import { userQueueFn } from '@/lib/util/userQueues.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import { defaultIslandUpgrades, IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 
 export async function rawUserUpdate(userId: string, data: Prisma.UserUpdateInput | SafeUserUpdateInput): Promise<User> {
 	const updateData: Prisma.UserUpdateInput = {
@@ -303,7 +304,8 @@ export class MUserClass {
 			materials: this.ownedMaterials(),
 			pet: this.user.minion_equippedPet,
 			skillsAsXP: this.skillsAsXP,
-			minionName: this.minionName
+			minionName: this.minionName,
+			island_upgrades: (this.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
 		});
 	}
 

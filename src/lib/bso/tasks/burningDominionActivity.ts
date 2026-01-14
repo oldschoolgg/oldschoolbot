@@ -5,6 +5,7 @@ import type { BossUser } from '@/lib/bso/structures/Boss.js';
 
 import { Emoji, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
+import { EmbedBuilder } from '@oldschoolgg/discord';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
@@ -54,6 +55,13 @@ const methodsOfDeath = [
 ];
 
 const BurningDominionNotifyDrops = BurningDominionTemplate.allItems ?? [];
+
+function truncateString(str: string, maxLength: number): string {
+	if (str.length <= maxLength) return str;
+	const truncated = str.substring(0, maxLength - 20);
+	const lastComma = truncated.lastIndexOf(',');
+	return truncated.substring(0, lastComma) + '... (truncated)';
+}
 
 export const dominionTask: MinionTask = {
 	type: 'BurningDominion',
@@ -113,10 +121,8 @@ export const dominionTask: MinionTask = {
 
 		const killStr = `Your team fought Orym and Orrodil ${quantity} time${quantity > 1 ? 's' : ''}.`;
 
-		let resultStr = `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`;
-
 		const totalLoot = new Bank();
-		const userResults: string[] = [];
+		const embeds: EmbedBuilder[] = [];
 
 		for (const { user } of bossUsers) {
 			const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -140,15 +146,17 @@ export const dominionTask: MinionTask = {
 			const userSuccessfulKills = quantity - userDeaths;
 
 			if (userSuccessfulKills === 0) {
-				userResults.push(
-					`${user}: Died on all ${quantity} kill${quantity > 1 ? 's' : ''} (${
-						wrongFoodDeaths.includes(user)
-							? 'Had no proper supplies'
-							: rng
-									.shuffle([...methodsOfDeath])
-									.slice(0, userDeaths)
-									.join(', ')
-					})`
+				embeds.push(
+					new EmbedBuilder().setDescription(
+						`${user}: Died on all ${quantity} kill${quantity > 1 ? 's' : ''} (${
+							wrongFoodDeaths.includes(user)
+								? 'Had no proper supplies'
+								: rng
+										.shuffle([...methodsOfDeath])
+										.slice(0, userDeaths)
+										.join(', ')
+						})`
+					)
 				);
 				continue;
 			}
@@ -175,10 +183,10 @@ export const dominionTask: MinionTask = {
 			const notifyDropIDs = BurningDominionNotifyDrops.map((item: any) => item.id ?? item);
 			const purple = loot.itemIDs.some(itemID => notifyDropIDs.includes(itemID));
 
-			let userResult = `${purple ? Emoji.Purple : ''}${user}: ${userSuccessfulKills}/${quantity} kills`;
+			let embedDescription = `${purple ? Emoji.Purple : ''}${user}: ${userSuccessfulKills}/${quantity} kills`;
 			
 			if (userDeaths > 0) {
-				userResult += ` (died ${userDeaths}x: ${
+				embedDescription += ` (died ${userDeaths}x: ${
 					wrongFoodDeaths.includes(user)
 						? 'Had no proper supplies'
 						: rng
@@ -201,12 +209,12 @@ export const dominionTask: MinionTask = {
 				}
 
 				const sortedLoot = uniqueLoot.clone().add(regularLoot);
-				userResult += ` - ||${sortedLoot}||`;
+				embedDescription += `\n||${truncateString(sortedLoot.toString(), 3800)}||`;
 			} else {
-				userResult += ` - ${loot}`;
+				embedDescription += `\n${truncateString(loot.toString(), 3800)}`;
 			}
 			
-			userResults.push(userResult);
+			embeds.push(new EmbedBuilder().setDescription(embedDescription));
 
 			announceLoot({
 				user,
@@ -220,8 +228,6 @@ export const dominionTask: MinionTask = {
 				}
 			});
 		}
-
-		resultStr += '\n' + userResults.join('\n');
 
 		await trackLoot({
 			duration,
@@ -237,6 +243,14 @@ export const dominionTask: MinionTask = {
 			}))
 		});
 
-		return handleTripFinish({ user: bossUsers[0].user, channelId, message: resultStr, data });
+		return handleTripFinish({ 
+			user: bossUsers[0].user, 
+			channelId, 
+			message: {
+				content: `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`,
+				embeds
+			},
+			data 
+		});
 	}
 };

@@ -624,3 +624,64 @@ export const CONSTANTS = {
 	DAILY_COOLDOWN: BOT_TYPE === 'BSO' ? Time.Hour * 4 : Time.Hour * 12,
 	TEARS_OF_GUTHIX_CD: Time.Day * 7
 };
+
+export enum IslandUpgrade {
+	// Boss killing efficiency (Orym/Orrodil/Fungal Behemoth/Crystalline Sentinel)
+	BossEfficiency1 = 1 << 0,    // 1
+	BossEfficiency2 = 1 << 1,    // 2
+	BossEfficiency3 = 1 << 2,    // 4
+	
+	// Megaboss access/bonuses
+	MegabossAccess1 = 1 << 3,    // 8
+	MegabossAccess2 = 1 << 4,    // 16
+	MegabossAccess3 = 1 << 5,    // 32
+	
+	// Minigame bonuses (Construction Contracts/Brimstone Distillery)
+	MinigameBoost1 = 1 << 6,     // 64
+	MinigameBoost2 = 1 << 7,     // 128
+	MinigameBoost3 = 1 << 8,     // 256
+	
+	// Gathering speed (Gemstone Fishing/Ancient Mycology/Archaic Mining)
+	GatheringSpeed1 = 1 << 9,    // 512
+	GatheringSpeed2 = 1 << 10,   // 1024
+	GatheringSpeed3 = 1 << 11,   // 2048
+	
+	// Prismare Ring global XP boost
+	PrismareRing1 = 1 << 12,     // 4096
+	PrismareRing2 = 1 << 13,     // 8192
+	PrismareRing3 = 1 << 14,     // 16384
+}
+
+// Helper function to get upgrade tier for a specific category
+export function getIslandUpgradeTier(
+	userBitfield: number, 
+	upgradeType: 'boss' | 'megaboss' | 'minigame' | 'gathering' | 'prismare'
+): number {
+	switch(upgradeType) {
+		case 'boss':
+			if (userBitfield & IslandUpgrade.BossEfficiency3) return 3;
+			if (userBitfield & IslandUpgrade.BossEfficiency2) return 2;
+			if (userBitfield & IslandUpgrade.BossEfficiency1) return 1;
+			return 0;
+		case 'megaboss':
+			if (userBitfield & IslandUpgrade.MegabossAccess3) return 3;
+			if (userBitfield & IslandUpgrade.MegabossAccess2) return 2;
+			if (userBitfield & IslandUpgrade.MegabossAccess1) return 1;
+			return 0;
+		case 'minigame':
+			if (userBitfield & IslandUpgrade.MinigameBoost3) return 3;
+			if (userBitfield & IslandUpgrade.MinigameBoost2) return 2;
+			if (userBitfield & IslandUpgrade.MinigameBoost1) return 1;
+			return 0;
+		case 'gathering':
+			if (userBitfield & IslandUpgrade.GatheringSpeed3) return 3;
+			if (userBitfield & IslandUpgrade.GatheringSpeed2) return 2;
+			if (userBitfield & IslandUpgrade.GatheringSpeed1) return 1;
+			return 0;
+		case 'prismare':
+			if (userBitfield & IslandUpgrade.PrismareRing3) return 3;
+			if (userBitfield & IslandUpgrade.PrismareRing2) return 2;
+			if (userBitfield & IslandUpgrade.PrismareRing1) return 1;
+			return 0;
+	}
+}

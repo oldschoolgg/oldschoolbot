@@ -9,6 +9,7 @@ import { SkillsArray } from '../../src/lib/skilling/types.js';
 import { ChargeBank } from '../../src/lib/structures/Bank.js';
 import { Gear } from '../../src/lib/structures/Gear.js';
 import { GearBank } from '../../src/lib/structures/GearBank.js';
+import { defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 
 function makeFullGear() {
 	const obj: UserFullGearSetup = {
@@ -47,7 +48,8 @@ export function makeGearBank({ bank, skillsAsLevels }: { bank?: Bank; skillsAsLe
 		materials: new MaterialBank(),
 		pet: null,
 		skillsAsXP,
-		minionName: 'Minion'
+		minionName: 'Minion',
+		island_upgrades: defaultIslandUpgrades
 	});
 	return gb;
 }

@@ -424,6 +424,7 @@ model User {
   disabled_inventions               Int[]              @default([])
   bso_mystery_trail_current_step_id Int?
   store_bitfield                    Int[]              @default([])
+  island_upgrades                   Json               @default("{}") @db.Json
   farmingPatches_herb               Json?              @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree         Json?              @map("farmingPatches.fruit tree") @db.Json
   farmingPatches_tree               Json?              @map("farmingPatches.tree") @db.Json
@@ -1563,6 +1564,7 @@ enum command_name_enum {
   invite
   ironman
   is
+  islandupgrade
   itemtrivia
   jmodcomments
   jmodtweets

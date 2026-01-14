@@ -36,6 +36,8 @@ import type { MinionKillOptions } from '@/mahoji/lib/abstracted_commands/minionK
 import type { PostBoostEffect } from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
 import { staticEquippedItemBoosts } from '@/mahoji/lib/abstracted_commands/minionKill/staticEquippedItemBoosts.js';
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
+import { getBossSpeedBonus, defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
 const revSpecialWeapons = {
 	melee: Items.getOrThrow("Viggora's chainmace"),
@@ -564,6 +566,33 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			}
 
 			return results;
+		}
+	},
+	{
+		description: 'Island Upgrade Boosts',
+		run: ({ monster, gearBank }) => {
+			const verdantIslandBosses = [
+				EBSOMonster.CRYSTALLINE_SENTINEL,
+				EBSOMonster.FUNGAL_BEHEMOTH,
+				EBSOMonster.ORYM,
+				EBSOMonster.ORRODIL,
+				EBSOMonster.BURNING_DOMINION
+			];
+
+			if (!verdantIslandBosses.includes(monster.id)) return null;
+
+			const userUpgrades = gearBank.island_upgrades ?? defaultIslandUpgrades;
+			const bossSpeedBonus = getBossSpeedBonus(userUpgrades);
+
+			if (bossSpeedBonus > 0) {
+				const percentDisplay = (bossSpeedBonus * 100).toFixed(0);
+				return {
+					percentageReduction: bossSpeedBonus * 100,
+					message: `${percentDisplay}% for Island Boss Efficiency upgrade`
+				};
+			}
+
+			return null;
 		}
 	}
 ];
