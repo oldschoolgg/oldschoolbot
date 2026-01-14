@@ -759,8 +759,8 @@ export const BurningDominionTemplate: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Burning Dominion',
 	aliases: ['burning dominion', 'dominion', 'burning', 'orym and orrodil'],
-	timeToFinish: Time.Minute * 10,
-	hp: 3600,
+	timeToFinish: Time.Minute * 20,
+	hp: 5000,
 	respawnTime: 0,
 	difficultyRating: 9	,
 

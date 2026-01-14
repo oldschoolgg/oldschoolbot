@@ -88,6 +88,7 @@ import { toolsCommand } from '@/mahoji/commands/tools.js';
 import { tradeCommand } from '@/mahoji/commands/trade.js';
 import { triviaCommand } from '@/mahoji/commands/trivia.js';
 import { mahojiUseCommand } from '@/mahoji/commands/use.js';
+import { islandUpgradeCommand } from '@/mahoji/commands/islandupgrade.js';
 
 export const allCommandsDONTIMPORT: AnyCommand[] = [
 	adminCommand,
@@ -176,7 +177,8 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	ratesCommand,
 	tamesCommand,
 	testerShopCommand,
-	bsoLeaguesCommand
+	bsoLeaguesCommand,
+	islandUpgradeCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {

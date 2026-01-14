@@ -495,7 +495,8 @@ model User {
 
   magic_words_guessed String[] @default([])
 
-  store_bitfield Int[] @default([])
+  store_bitfield  Int[] @default([])
+  island_upgrades Json  @default("{}") @db.Json
 
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
@@ -1688,6 +1689,7 @@ enum command_name_enum {
   invite
   ironman
   is
+  islandupgrade
   itemtrivia
   jmodcomments
   jmodtweets
