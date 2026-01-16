@@ -30,8 +30,10 @@ export const aerialFishingTask: MinionTask = {
 		const maxRoll = Math.ceil((currentFishLevel * 2 + currentHuntLevel) / 3);
 		const loot = new Bank();
 
+		const molchPearlsChance = Math.ceil(100 - ((maxRoll - 40) * 25) / 59);
+
 		for (let i = 0; i < quantity; i++) {
-			if (rng.roll(100 - ((maxRoll - 40) * 25) / 59)) {
+			if (rng.roll(molchPearlsChance)) {
 				molchPearls++;
 			}
 			const currentRoll = rng.randInt(0, maxRoll);
@@ -94,10 +96,18 @@ export const aerialFishingTask: MinionTask = {
 			duration: data.duration,
 			source: 'AerialFishing'
 		});
-		await user.incrementCreatureScore(bluegill.id, bluegillCaught);
-		await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
-		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
-		await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
+		if (bluegillCaught > 0) {
+			await user.incrementCreatureScore(bluegill.id, bluegillCaught);
+		}
+		if (commonTenchCaught > 0) {
+			await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
+		}
+		if (mottledEelCaught > 0) {
+			await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
+		}
+		if (greaterSirenCaught > 0) {
+			await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
+		}
 
 		let str = `${user}, ${user.minionName} finished aerial fishing and caught ${greaterSirenCaught}x ${greaterSiren.name}, ${mottledEelCaught}x ${mottledEel.name}, ${commonTenchCaught}x ${commonTench.name}, ${bluegillCaught}x ${bluegill.name}, ${huntXP}, ${fishXP}. ${user.minionName} asks if you'd like them to do another of the same trip.`;
 

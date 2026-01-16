@@ -1,6 +1,6 @@
 import { randArrItem, randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { reduceNumByPercent } from '@oldschoolgg/util';
 
-import { reduceNumByPercent } from '../util/smallUtils.js';
 import { Bank } from './Bank.js';
 import { Items } from './Items.js';
 

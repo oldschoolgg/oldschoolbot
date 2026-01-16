@@ -1,7 +1,7 @@
+import { GearStat } from '@oldschoolgg/gear';
 import { roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import { BitField } from '@/lib/constants.js';
 import { corporealBeastCL, muspahCL } from '@/lib/data/CollectionsExport.js';

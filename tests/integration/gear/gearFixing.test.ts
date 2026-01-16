@@ -1,8 +1,10 @@
+import { defaultGearSetup } from '@oldschoolgg/gear';
 import { deepEqual } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 import { assert, describe, test } from 'vitest';
 
-import { defaultGear, Gear } from '../../../src/lib/structures/Gear.js';
+import { validateEquippedGear } from '@/lib/user/userUtils.js';
+import { Gear } from '../../../src/lib/structures/Gear.js';
 import { createTestUser, mockClient } from '../util.js';
 
 describe('Gear Fixing', async () => {
@@ -12,16 +14,14 @@ describe('Gear Fixing', async () => {
 
 		const expectedRefund = new Bank().add('Twisted bow', 5).add('Dragon boots');
 
-		const fixedGear = new Gear().raw();
+		const fixedGear = { ...defaultGearSetup };
 		fixedGear.shield = { item: itemID('Twisted bow'), quantity: 5 };
 		fixedGear.feet = { item: itemID('Dragon boots'), quantity: 1 };
 		fixedGear.body = { item: itemID('Bronze platebody'), quantity: 1 };
 
-		await user.update({
-			gear_melee: fixedGear as any
-		});
+		await user.updateGear([{ setup: 'melee', gear: fixedGear }]);
 
-		const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
+		const { itemsUnequippedAndRefunded } = await validateEquippedGear(user);
 
 		assert(
 			itemsUnequippedAndRefunded.equals(expectedRefund),
@@ -32,7 +32,7 @@ describe('Gear Fixing', async () => {
 
 		assert(
 			deepEqual(user.gear.melee.raw(), {
-				...defaultGear,
+				...defaultGearSetup,
 				body: { item: itemID('Bronze platebody'), quantity: 1 }
 			})
 		);
@@ -48,11 +48,9 @@ describe('Gear Fixing', async () => {
 		fixedGear.shield = { item: itemID('Bronze kiteshield'), quantity: 1 };
 		fixedGear.weapon = { item: itemID('Bronze dagger'), quantity: 1 };
 
-		await user.update({
-			gear_melee: fixedGear as any
-		});
+		await user.updateGear([{ setup: 'melee', gear: fixedGear }]);
 
-		const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
+		const { itemsUnequippedAndRefunded } = await validateEquippedGear(user);
 
 		assert(
 			itemsUnequippedAndRefunded.equals(expectedRefund),
@@ -63,7 +61,7 @@ describe('Gear Fixing', async () => {
 
 		assert(
 			deepEqual(user.gear.melee.raw(), {
-				...defaultGear,
+				...defaultGearSetup,
 				'2h': { item: itemID('Bronze 2h sword'), quantity: 1 }
 			})
 		);

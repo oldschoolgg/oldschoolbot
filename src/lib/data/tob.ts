@@ -1,10 +1,10 @@
+import type { GearStats } from '@oldschoolgg/gear';
 import { randFloat, randInt, randomVariation } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
 
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
-import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import { constructGearSetup, type Gear } from '@/lib/structures/Gear.js';
 
 interface TOBRoom {
 	name: string;
@@ -191,7 +191,6 @@ export const TOBMaxMageGear = constructGearSetup({
 	shield: 'Arcane spirit shield',
 	ring: 'Magus ring'
 });
-const maxMage = new Gear(TOBMaxMageGear);
 
 export const TOBMaxRangeGear = constructGearSetup({
 	head: 'Void ranger helm',
@@ -205,8 +204,6 @@ export const TOBMaxRangeGear = constructGearSetup({
 	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
 });
-const maxRange = new Gear(TOBMaxRangeGear);
-maxRange.ammo!.quantity = 10_000;
 
 export const TOBMaxMeleeGear = constructGearSetup({
 	head: 'Torva full helm',
@@ -219,25 +216,24 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	'2h': 'Scythe of vitur',
 	ring: 'Ultor ring'
 });
-const maxMelee = new Gear(TOBMaxMeleeGear);
 
 export function calculateTOBUserGearPercents(user: MUser) {
 	const melee = calcSetupPercent(
-		maxMelee.stats,
+		TOBMaxMeleeGear.stats,
 		user.gear.melee.stats,
 		'melee_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged', 'attack_magic'],
 		true
 	);
 	const range = calcSetupPercent(
-		maxRange.stats,
+		TOBMaxRangeGear.stats,
 		user.gear.range.stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
-		maxMage.stats,
+		TOBMaxMageGear.stats,
 		user.gear.mage.stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],

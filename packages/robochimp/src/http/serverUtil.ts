@@ -1,3 +1,6 @@
+import type { RoboChimpBotClient } from '@/discord/RoboChimpBotClient.js';
+import type { RobochimpPrismaClient } from '@/lib/prisma.js';
+
 export const httpErr = {
 	UNAUTHORIZED: ({ message }: { message?: string } = {}): Response => {
 		return Response.json({ error: 'UNAUTHORIZED', message }, { status: 401 });
@@ -17,13 +20,15 @@ export const httpErr = {
 };
 
 export const httpRes = {
-	JSON: (json: object): Response => {
+	JSON: <T>(json: T): Response => {
 		return Response.json(json, { status: 200 });
 	}
 };
 
 type HonoVariables = {
 	user: RUser | null;
+	prisma: RobochimpPrismaClient;
+	client: RoboChimpBotClient;
 };
 
 export type HonoServerGeneric = { Bindings: {}; Variables: HonoVariables };
