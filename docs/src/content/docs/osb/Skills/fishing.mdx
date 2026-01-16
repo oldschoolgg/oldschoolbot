@@ -2,11 +2,20 @@
 title: "Fishing"
 ---
 
-You can train Fishing using [[/fish name\:Shrimps quantity\:5]], [[/fish name\:Lobster quantity\:100]]
+You can train Fishing using [[/fish name\:Shrimps/Anchovies quantity\:5]], [[/fish name\:Lobster quantity\:100]]
 
 Fishing bait is buyable with: [[/buy name\:Fishing bait]]
 
 Dark fishing bait and Raw Karambwanji are **not** sold by the bot. You must obtain them yourself or buy from other players.
+
+## Fishing System Updates
+
+The fishing pipeline now uses a **tick-based simulation** (0.6s ticks) with per-catch rolls. Multi-fish spots track each subfish separately, and those catch arrays are persisted so trips resolve correctly after the rework.
+
+- Per-catch extra fish rolls: Rada’s blessing and Spirit flakes add extra fish without additional XP or extra clue/pet rolls.
+- Powerfishing uses faster tick rates (where supported) and disables Spirit flakes.
+- Barbarian cut-eat is supported when **Barbarian fishing** is powerfished at **99 Fishing** and **80 Cooking**, granting Cooking XP while reducing bait usage.
+- Moon key halves can be rolled **per catch** after *Children of the Sun* on eligible fish (see Boosts).
 
 ## Boosts
 
@@ -25,6 +34,15 @@ Obtainable from [Fishing Trawler](fishing-trawler) and [Aerial Fishing](https://
 - 50% chance to catch double fish per action when using Spirit flakes
 - Extra fish gives no additional XP
 
+### Rada’s Blessing
+
+When equipped (and not powerfishing), Rada’s blessing grants a chance at extra fish per catch:
+
+- 2% — Rada’s blessing 1
+- 4% — Rada’s blessing 2
+- 6% — Rada’s blessing 3
+- 8% — Rada’s blessing 4
+
 ### Tools
 
 Equipping the following tools in **any** setup reduces catch time:
@@ -34,9 +52,32 @@ Equipping the following tools in **any** setup reduces catch time:
 - 5% — Pearl barbarian rod (barbarian fishing)
 - 5% — Crystal harpoon (harpooning, caging, netting)
 
+Harpoon boosts for **Tuna/Swordfish** and **Shark** spots:
+
+- 35% — Crystal harpoon
+- 20% — Dragon harpoon
+- 20% — Infernal harpoon
+
+### Storage
+
+- **Fish barrel** or **Fish sack barrel** adds 28 inventory slots and extends trips by 9 minutes (non-minnow).
+
+### Moon Key
+
+After *Children of the Sun*, the following fish have per-catch rolls for moon key halves:
+
+- **Trout/Salmon** — 1/4100
+- **Tuna/Swordfish** — 3/5000
+- **Lobster** — 3/5000
+- **Shark** — 1/580
+
 ### Fish
 
 - [[/fish name\:Barbarian fishing]] — for Barbarian Fishing
+- [[/fish name\:Mackerel/Cod/Bass]] — for net fishing (mackerel/cod/bass)
+- [[/fish name\:Sardine/Herring]] — for bait fishing (sardine/herring)
+- [[/fish name\:Shrimps/Anchovies]] — for net fishing (shrimps/anchovies)
+- [[/fish name\:Trout/Salmon]] — for fly fishing (trout/salmon)
 - **Karambwanji** (bait for Karambwan) requires **15 QP**
 - **Monkfish** requires **100 QP**
 - **Anglerfish** requires **40 QP**
@@ -60,16 +101,13 @@ Base time per game: 13 minutes
 
 ### Fastest Route to 99
 
-- [[/fish name\:Shrimps]] from [[fishing:1]]–[[fishing:5]]
-- [[/fish name\:Sardine]] from [[fishing:5]]–[[fishing:10]] (requires fishing bait)
-- [[/fish name\:Herring]] from [[fishing:10]]–[[fishing:20]] (requires fishing bait)
+- [[/fish name\:Shrimps/Anchovies]] from [[fishing:1]]–[[fishing:5]]
+- [[/fish name\:Sardine/Herring]] from [[fishing:5]]–[[fishing:20]] (requires fishing bait)
 - **OPTIONAL:** Fishing Trawler for Angler outfit
-- [[/fish name\:Trout]] from [[fishing:20]]–[[fishing:30]] (requires feathers)
-- [[/fish name\:Salmon]] from [[fishing:30]]–[[fishing:58]] (requires feathers)
+- [[/fish name\:Trout/Salmon]] from [[fishing:20]]–[[fishing:58]] (requires feathers)
 - **OPTIONAL:** Aerial Fishing (requires minimum [[hunter:35]]) for Pearl barbarian rod
 - [[/fish name\:Barbarian fishing]] from [[fishing:58]]–[[fishing:71]] (requires feathers)
-
-[[/k name\:tempoross]] from [[fishing:71]]–[[fishing:99]] using a crystal harpoon
+- [[/k name\:tempoross]] from [[fishing:71]]–[[fishing:99]] using a crystal harpoon
 
 [Tempoross](/osb/activities/tempoross/) is a faster option than Barbarian Fishing once you have a crystal tool seed (from Zalcano) and a Dragon harpoon (from Wyrms or Tempoross) to create a crystal harpoon. Requires [[fishing:35]]. Tempoross also provides large amounts of raw food for ironmen.
 
