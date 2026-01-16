@@ -25,6 +25,7 @@ interface SimpleRNG {
 	shuffle<T>(array: T[]): T[];
 	pick<T>(array: T[]): T;
 	percentChance(percent: number): boolean;
+	randomVariation(value: number, percentage: number): number;
 }
 
 function createDeterministicRNG(seed = 1): SimpleRNG {
@@ -48,6 +49,10 @@ function createDeterministicRNG(seed = 1): SimpleRNG {
 		},
 		rand() {
 			return next();
+		},
+		randomVariation(value: number, percentage: number) {
+			const delta = value * percentage;
+			return this.randFloat(value - delta, value + delta);
 		},
 		shuffle<T>(array: T[]) {
 			const result = [...array];
@@ -107,6 +112,12 @@ class SequenceRNG implements RNGProvider {
 
 	percentChance(percent: number): boolean {
 		return this.nextRand() < percent / 100;
+	}
+
+	randomVariation(value: number, percentage: number): number {
+		const r = Math.max(0, Math.min(1, this.rand()));
+		const delta = value * percentage;
+		return value - delta + r * (2 * delta);
 	}
 }
 
@@ -889,7 +900,8 @@ describe('calcFishingTripResult', () => {
 			roll: () => false,
 			shuffle: <T>(array: T[]) => array,
 			pick: <T>(array: T[]) => array[0],
-			percentChance: () => false
+			percentChance: () => false,
+			randomVariation: (value, percentage) => value - value * percentage
 		};
 
 		const result = Fishing.util.calcFishingTripResult({
@@ -929,7 +941,8 @@ describe('calcFishingTripResult', () => {
 			roll: () => true,
 			shuffle: <T>(array: T[]) => array,
 			pick: <T>(array: T[]) => array[0],
-			percentChance: () => true
+			percentChance: () => true,
+			randomVariation: (value, percentage) => value + value * percentage
 		};
 
 		const clueSpy = vi.spyOn(addSkillingClueToLootModule, 'default');
@@ -984,7 +997,8 @@ describe('calcFishingTripResult', () => {
 			roll: () => false,
 			shuffle: <T>(array: T[]) => array,
 			pick: <T>(array: T[]) => array[0],
-			percentChance: () => false
+			percentChance: () => false,
+			randomVariation: value => value
 		};
 
 		const result = Fishing.util.calcFishingTripResult({
@@ -1135,7 +1149,8 @@ describe('fishing util helpers', () => {
 				roll: () => false,
 				shuffle: <T>(array: T[]) => array,
 				pick: <T>(array: T[]) => array[0],
-				percentChance: () => false
+				percentChance: () => false,
+				randomVariation: value => value
 			}
 		});
 
