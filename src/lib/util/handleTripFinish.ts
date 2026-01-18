@@ -590,39 +590,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 				itemsToAddWithCL: mysteriousLoot
 			};
 		}
-	},
-	{
-		name: 'Christmas Event',
-		fn: async ({ user, messages, data }) => {
-			const minutes = Math.floor(data.duration / Time.Minute);
-			if (minutes < 1) return;
-			const xmasLoot = new Bank();
-
-			const snowglobeDroprate = 1920;
-			const santaHatDropRate = user.cl.has(BSOItem.SNOWGLOBE_SANTA_HAT) ? 20160 * 2 : 20160;
-			const emberDroprate = user.cl.has(BSOItem.EMBER) ? 11520 * 2 : 11520;
-
-			const unownedSnowglobe = [BSOItem.SEER_SNOWGLOBE, BSOItem.SMOKEY_SNOWGLOBE].find(s => !user.cl.has(s));
-
-			for (let i = 0; i < minutes; i++) {
-				if (MathRNG.roll(santaHatDropRate)) {
-					xmasLoot.add(BSOItem.SNOWGLOBE_SANTA_HAT);
-				}
-				if (MathRNG.roll(emberDroprate)) {
-					xmasLoot.add(BSOItem.EMBER);
-				}
-
-				// Give unowned snowglobe first, otherwise a random one
-				if (MathRNG.roll(snowglobeDroprate)) {
-					xmasLoot.add(unownedSnowglobe ?? MathRNG.pick([BSOItem.SEER_SNOWGLOBE, BSOItem.SMOKEY_SNOWGLOBE]));
-				}
-			}
-			if (xmasLoot.length === 0) return;
-			messages.push(`🎁 You found some Christmas event items: ${xmasLoot}.`);
-			return {
-				itemsToAddWithCL: xmasLoot
-			};
-		}
 	}
 ];
 
