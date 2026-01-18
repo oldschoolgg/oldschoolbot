@@ -10,7 +10,7 @@ export async function bloodEssence(user: MUser, quantity: number): Promise<numbe
 		item: Items.getOrThrow('Blood essence (active)'),
 		user
 	});
-	if (bloodEssenceCharges > 0) {
+	if (bloodEssenceCharges !== null && bloodEssenceCharges > 0) {
 		for (let i = 0; i < quantity; i++) {
 			if (bonusQuantity === bloodEssenceCharges - 1) {
 				break;

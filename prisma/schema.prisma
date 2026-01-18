@@ -410,6 +410,8 @@ model User {
   item_contract_streak              Int                @default(0)
   item_contract_bank                Json               @default("{}") @db.Json
   void_staff_charges                Int                @default(0)
+  prismare_ring_charges             Int?               @default(0)
+  island_upgrades                   Json?              @default("{}")
   last_patron_double_time_trigger   DateTime?          @db.Timestamp(6)
   lottery_input                     Json               @default("{}") @db.Json
   gear_template                     Int                @default(0) @db.SmallInt
@@ -424,7 +426,6 @@ model User {
   disabled_inventions               Int[]              @default([])
   bso_mystery_trail_current_step_id Int?
   store_bitfield                    Int[]              @default([])
-  island_upgrades                   Json               @default("{}") @db.Json
   farmingPatches_herb               Json?              @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree         Json?              @map("farmingPatches.fruit tree") @db.Json
   farmingPatches_tree               Json?              @map("farmingPatches.tree") @db.Json
@@ -466,6 +467,8 @@ model User {
   portent                           Portent[]
 
   @@index([id, last_command_date])
+  @@index([bitfield(ops: raw("gin__int_ops"))], map: "users_bitfield_gin", type: Gin)
+  @@index([cl_array(ops: raw("gin__int_ops"))], map: "users_clarray_gin", type: Gin)
   @@map("users")
 }
 
@@ -582,10 +585,9 @@ model Minigame {
   depths_of_atlantis_cm    Int      @default(0)
   guthixian_cache          Int      @default(0)
   turaels_trials           Int      @default(0)
+  new_user                 NewUser?
   brimstone_distillery     Int      @default(0)
   construction_contracts   Int      @default(0)
-
-  new_user                 NewUser?
 
   @@index([user_id])
   @@map("minigames")
@@ -954,6 +956,8 @@ model GEListing {
   sellTransactions      GETransaction[] @relation("sell_transactions")
 
   @@index([type, cancelled_at, fulfilled_at, user_id, item_id, asking_price_per_item, created_at])
+  @@index([type, fulfilled_at, cancelled_at, user_id, asking_price_per_item(sort: Desc), created_at], map: "idx_ge_listing_buy_filter_sort")
+  @@index([type, fulfilled_at, cancelled_at, user_id, asking_price_per_item, created_at], map: "idx_ge_listing_sell_filter_sort")
   @@map("ge_listing")
 }
 
@@ -972,6 +976,7 @@ model GETransaction {
 
   @@index([sell_listing_id])
   @@index([created_at])
+  @@index([sell_listing_id, created_at(sort: Desc)])
   @@map("ge_transaction")
 }
 
@@ -1200,9 +1205,6 @@ enum XpGainSource {
   PuroPuro
   MahoganyHomes
   AerialFishing
-  GemstoneFishing
-  AncientMycology
-  ArchaicMining
   CleaningHerbsWhileFarming
   CamdozaalMining
   CamdozaalSmithing
@@ -1212,6 +1214,11 @@ enum XpGainSource {
   ForestryEvents
   TuraelsTrials
   MonsterKilling
+  AncientMycology
+  ArchaicMining
+  BrimstoneDistillery
+  ConstructionContracts
+  GemstoneFishing
 }
 
 enum loot_track_type {
@@ -1284,8 +1291,6 @@ enum activity_type_enum {
   ChampionsChallenge
   AerialFishing
   GemstoneFishing
-  AncientMycology
-  ArchaicMining
   DriftNet
   MahoganyHomes
   Nex
@@ -1309,7 +1314,6 @@ enum activity_type_enum {
   OuraniaDeliveryService
   DarkAltar
   Ignecarus
-  BurningDominion
   OuraniaAltar
   Trekking
   KibbleMaking
@@ -1331,8 +1335,6 @@ enum activity_type_enum {
   PuroPuro
   Easter
   BaxtorianBathhouses
-  BrimstoneDistillery
-  ConstructionContracts
   Naxxus
   Disassembling
   Research
@@ -1367,6 +1369,11 @@ enum activity_type_enum {
   CreateForestersRations
   SnoozeSpellActive
   Buy
+  AncientMycology
+  ArchaicMining
+  BurningDominion
+  BrimstoneDistillery
+  ConstructionContracts
 }
 
 enum xp_gains_skill_enum {
@@ -1564,7 +1571,6 @@ enum command_name_enum {
   invite
   ironman
   is
-  islandupgrade
   itemtrivia
   jmodcomments
   jmodtweets

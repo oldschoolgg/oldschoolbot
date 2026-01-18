@@ -5,6 +5,7 @@ import { describe, expect, it, test } from 'vitest';
 
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { defaultSkillsAsXPObj, makeGearBank } from './utils.js';
+import { defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 
 describe('GearBank', () => {
 	it('should calculate combat level', () => {
@@ -53,7 +54,8 @@ describe('GearBank', () => {
 			},
 			minionName: 'Minion',
 			pet: null,
-			materials: new MaterialBank()
+			materials: new MaterialBank(),
+			island_upgrades: defaultIslandUpgrades
 		});
 		expect(gb1.skillsAsLevels.attack).toBe(99);
 		expect(gb1.skillsAsXP.attack).toBe(13034431);

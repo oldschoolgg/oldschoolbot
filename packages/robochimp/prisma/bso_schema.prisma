@@ -471,6 +471,7 @@ model User {
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
   void_staff_charges       Int      @default(0)
+  prismare_ring_charges    Int      @default(0)
 
   last_patron_double_time_trigger DateTime? @db.Timestamp(6)
   lottery_input                   Json      @default("{}") @db.Json
@@ -612,6 +613,11 @@ enum XpGainSource {
   ForestryEvents
   TuraelsTrials
   MonsterKilling
+  AncientMycology
+  ArchaicMining
+  BrimstoneDistillery
+  ConstructionContracts
+  GemstoneFishing
 }
 
 model XPGain {
