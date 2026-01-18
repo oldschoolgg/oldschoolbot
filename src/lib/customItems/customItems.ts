@@ -14918,6 +14918,17 @@ setCustomItem(75_060, 'Ancient gemscale', 'Coal', { customItemData: { cantDropFr
 setCustomItem(75_061, 'Elder gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_062, 'Sedryn', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
 setCustomItem(75_063, 'Bamyr', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1);
+setCustomItem(
+	75_064,
+	'Prismare ring (u)',
+	'Coal',
+	{
+		tradeable: true,
+		tradeable_on_ge: true,
+		buy_limit: 10,
+	},
+	10_000
+);
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',
