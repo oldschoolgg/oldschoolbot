@@ -18,15 +18,12 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node_version: [20.18.1]
+        node_version: [24]
         os: [ubuntu-latest]
-    concurrency:
-      group: ${{ github.ref_name }}-unittests
-      cancel-in-progress: true
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4
-      - run: corepack enable && corepack install && corepack prepare pnpm@9.12.2 --activate
+      - run: corepack enable && corepack install && corepack prepare pnpm@10.17.0 --activate
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v4
         with:

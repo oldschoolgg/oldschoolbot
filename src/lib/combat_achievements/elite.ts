@@ -1,28 +1,17 @@
-import { Monsters } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { Time } from 'e';
-import {
-	MIMIC_MONSTER_ID,
-	NEX_ID,
-	NIGHTMARE_ID,
-	PHOSANI_NIGHTMARE_ID,
-	ZALCANO_ID,
-	demonBaneWeapons
-} from '../constants';
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	TOAOptions
-} from '../types/minions';
-import { anyoneDiedInTOARaid } from '../util';
-import { resolveItems } from '../util';
-import { crossbows } from '../util/minionUtils';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+} from '@/lib/types/minions.js';
+import { crossbows } from '@/lib/util/archery.js';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -314,13 +303,14 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Commander Zilyana in a private instance with melee only.',
 		type: 'restriction',
 		monster: 'Commander Zilyana',
+		details: 'You must not be training Ranged or Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => {
 				const styles = user.getAttackStyles();
 				return (
 					isCertainMonsterTrip(Monsters.CommanderZilyana.id)(data) &&
-					([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
+					(['ranged', 'magic'] as const).every(styl => !styles.includes(styl))
 				);
 			}
 		}
@@ -365,6 +355,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Finish off the Corporeal Beast with a Crystal Halberd special attack.',
 		type: 'restriction',
 		monster: 'Corporeal Beast',
+		details: 'You must have a Crystal halberd equipped.',
 		rng: {
 			chancePerKill: 5,
 			hasChance: (data, user) =>
@@ -538,10 +529,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Finish off a Demonic Gorilla with a demonbane weapon.',
 		type: 'restriction',
 		monster: 'Demonic Gorilla',
+		details: 'You must have a demonbane weapon equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.DemonicGorilla.id)(data) && user.hasEquipped(demonBaneWeapons)
+				isCertainMonsterTrip(Monsters.DemonicGorilla.id)(data) && user.hasEquipped(ItemGroups.demonBaneWeapons)
 		}
 	},
 	// {
@@ -687,6 +679,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: "Defeat K'ril Tsutsaroth in a private instance using only demonbane spells.",
 		type: 'mechanical',
 		monster: "K'ril Tsutsaroth",
+		details: 'You must be training Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -745,6 +738,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: "Kill the Kalphite Queen using only the Verac's Flail as a weapon.",
 		type: 'restriction',
 		monster: 'Kalphite Queen',
+		details: "You must be training Melee and have Verac's flail equipped.",
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -796,7 +790,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NEX_ID]: 1
+				[EMonster.NEX]: 1
 			}
 		})
 	},
@@ -854,7 +848,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: "Phosani's Nightmare",
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[PHOSANI_NIGHTMARE_ID]: 1
+				[EMonster.PHOSANI_NIGHTMARE]: 1
 			}
 		})
 	},
@@ -890,7 +884,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && !user.hasEquipped(demonBaneWeapons, false)
+				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && !user.hasEquipped(ItemGroups.demonBaneWeapons, false)
 		}
 	},
 	{
@@ -901,7 +895,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'The Mimic',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[MIMIC_MONSTER_ID]: 1
+				[EMonster.MIMIC]: 1
 			}
 		})
 	},
@@ -913,7 +907,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NIGHTMARE_ID]: 25
+				[EMonster.NIGHTMARE]: 25
 			}
 		})
 	},
@@ -945,6 +939,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Defeat the Nightmare (Solo) in less than 23 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'The Nightmare',
+		details: 'Solo trip required.',
 		rng: {
 			chancePerKill: 10,
 			hasChance: data =>
@@ -959,6 +954,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Nightmare solo. (Party size required)',
 		type: 'restriction',
 		monster: 'The Nightmare',
+		details: 'Solo trip required.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -985,6 +981,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Defeat the Pestilent Bloat in the Theatre of Blood: Entry Mode by using a crystal halberd special attack as your final attack.',
 		type: 'mechanical',
 		monster: 'Theatre of Blood: Entry Mode',
+		details: 'You must have a Crystal halberd equipped.',
 		rng: {
 			chancePerKill: 2,
 			hasChance: (data, user) => {
@@ -1020,6 +1017,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Defeat the Pestilent Bloat in the Theatre of Blood: Entry Mode with everyone having a salve amulet equipped.',
 		type: 'mechanical',
 		monster: 'Theatre of Blood: Entry Mode',
+		details: 'You must have a Salve amulet equipped.',
 		rng: {
 			chancePerKill: 2,
 			hasChance: (data, user) => {
@@ -1211,6 +1209,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Tombs of Amascut solo without dying. (Party size required)',
 		type: 'perfection',
 		monster: 'Tombs of Amascut',
+		details: 'Team size must be 1 and no one can die.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -1225,6 +1224,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Tombs of Amascut in a group of two or more without anyone dying. (Party size required)',
 		type: 'perfection',
 		monster: 'Tombs of Amascut',
+		details: 'Team size must be at least 2 and no one can die.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -1325,7 +1325,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'TzTok-Jad',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[Monsters.TzTokJad.id]: 1
+				[EMonster.TZTOKJAD]: 1
 			}
 		})
 	},
@@ -1346,6 +1346,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Fight Caves with only melee.',
 		type: 'restriction',
 		monster: 'TzTok-Jad',
+		details: 'You must be training Melee.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => data.type === 'FightCaves' && user.attackClass() === 'melee'
@@ -1393,6 +1394,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Vorkath using melee weapons only.',
 		type: 'restriction',
 		monster: 'Vorkath',
+		details: 'You must be training Melee.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => {
@@ -1441,7 +1443,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Zalcano',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[ZALCANO_ID]: 25
+				[EMonster.ZALCANO]: 25
 			}
 		})
 	},
@@ -1554,6 +1556,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Araxxor 4 times in 10:00.',
 		type: 'speed',
 		monster: 'Araxxor',
+		details: 'You must kill at least 4 Araxxor and average 2.5 minutes or less per kill.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data => {
@@ -1582,6 +1585,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Hit three Tormented Demons within 3 seconds using a ballista or a crossbow.',
 		type: 'mechanical',
 		monster: 'Tormented Demon',
+		details: 'You must have a crossbow or a light/heavy ballista equipped.',
 		rng: {
 			chancePerKill: 5,
 			hasChance: (data, user) =>
@@ -1707,7 +1711,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1147,
 		name: 'Duke Sucellus Speed-Trialist',
-		desc: 'Kill Duke Sucellus in less than 1:45 minutes without a slayer task.',
+		desc: 'Kill Duke Sucellus in less than 1:00 minutes without a slayer task.',
 		type: 'speed',
 		monster: 'Duke Sucellus',
 		rng: {
@@ -1781,6 +1785,20 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 150,
 			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 1154,
+		name: 'No time to pray',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans without losing any prayer points.',
+		rng: {
+			chancePerKill: 20,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
 	}
 ];

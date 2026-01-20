@@ -1,7 +1,6 @@
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
-import itemID from '../../../../util/itemID';
-import type { Fletchable } from '../../../types';
+import type { Fletchable } from '@/lib/skilling/types.js';
 
 const Arrows: Fletchable[] = [
 	{

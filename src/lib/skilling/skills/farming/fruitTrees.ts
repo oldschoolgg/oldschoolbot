@@ -1,7 +1,6 @@
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
-import itemID from '../../../util/itemID';
-import type { Plant } from '../../types';
+import type { Plant } from '@/lib/skilling/types.js';
 
 const fruitTrees: Plant[] = [
 	{

@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const MaleHamMemberTable = new LootTable()
+const MaleHamMemberTable: LootTable = new LootTable()
 	// Armour and weaponry
 	.add('Bronze arrow', [1, 13], 1 / 33.33)
 	.add('Bronze axe', 1, 1 / 33.33)
@@ -46,7 +46,7 @@ const MaleHamMemberTable = new LootTable()
 	.add('Grimy marrentill', 1, 1 / 183.3)
 	.add('Grimy tarromin', 1, 1 / 275);
 
-export default new SimpleMonster({
+export const MaleHamMember: SimpleMonster = new SimpleMonster({
 	id: 2540,
 	name: 'Male H.A.M. Member',
 	pickpocketTable: MaleHamMemberTable,

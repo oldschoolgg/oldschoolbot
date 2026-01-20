@@ -1,13 +1,10 @@
-import type { SkillsEnum } from '../skilling/types';
-
-export interface ItemBank {
-	[key: string]: number;
-}
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
 	leader: MUser;
+	interaction: MInteraction;
 	message: string;
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
@@ -15,25 +12,15 @@ export interface MakePartyOptions {
 }
 
 export type Skills = Partial<{
-	[key in SkillsEnum]: number;
+	[key in SkillNameType]: number;
 }>;
 
 export type SkillRequirements = Skills & { combat?: number };
 export type SkillsRequired = Required<Skills>;
 
-export type CategoryFlag =
-	| 'minion'
-	| 'settings'
-	| 'patron'
-	| 'skilling'
-	| 'pvm'
-	| 'minigame'
-	| 'utility'
-	| 'fun'
-	| 'simulation';
+interface JsonArray extends Array<PrismaCompatibleJsonValue> {}
 
-export interface IDiscordSettings {
-	Roles: Record<string, string>;
-	Channels: Record<string, string>;
-	Emojis: Record<string, string>;
-}
+export type PrismaCompatibleJsonObject = {
+	[Key in string]?: PrismaCompatibleJsonValue;
+};
+export type PrismaCompatibleJsonValue = string | number | boolean | PrismaCompatibleJsonObject | JsonArray | null;

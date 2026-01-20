@@ -1,20 +1,13 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { Prisma } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { clamp, reduceNumByPercent } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { MAX_INT_JAVA } from '../../lib/constants';
-
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
-import { NestBoxesTable } from '../../lib/simulation/misc';
-import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
+import type { Prisma } from '@/prisma/main.js';
+import { filterOption } from '@/discord/index.js';
+import { CUSTOM_PRICE_CACHE } from '@/lib/cache.js';
+import { NestBoxesTable } from '@/lib/simulation/misc.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
 
 /**
  * - Hardcoded prices
@@ -41,17 +34,15 @@ const specialSoldItems = new Map([
 	[itemID('Ecumenical key'), 61_500]
 ]);
 
-export const CUSTOM_PRICE_CACHE = new Map<number, number>();
-
 export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
 	const cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
 	if (!cachePrice && (item.price === undefined || !item.tradeable)) {
 		return { price: 0, basePrice: 0 };
 	}
-	const basePrice = cachePrice ?? item.price;
+	const basePrice = cachePrice ?? item.price ?? 0;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
-	price = clamp(price, 0, MAX_INT_JAVA);
+	price = clamp(price, { min: 0, max: MAX_INT_JAVA });
 	return { price, basePrice };
 }
 
@@ -61,11 +52,11 @@ export function sellStorePriceOfItem(item: Item, qty: number): { price: number; 
 	// Sell price decline with stock by 3% until 10% of item value and is always low alch price when stock is 0.
 	const percentageFirstEleven = (0.4 - 0.015 * Math.min(qty - 1, 10)) * Math.min(qty, 11);
 	let price = ((percentageFirstEleven + Math.max(qty - 11, 0) * 0.1) * item.cost) / qty;
-	price = clamp(price, 0, MAX_INT_JAVA);
+	price = clamp(price, { min: 0, max: MAX_INT_JAVA });
 	return { price, basePrice };
 }
 
-export const sellCommand: OSBMahojiCommand = {
+export const sellCommand = defineCommand({
 	name: 'sell',
 	description: 'Sell items from your bank to the bot for GP.',
 	attributes: {
@@ -74,25 +65,20 @@ export const sellCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'items',
 			description: 'The items you want to sell (e.g. 1 trout, 5 coal',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'A search query for items in your bank to sell.',
 			required: false
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		interaction
-	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ user, options, interaction }) => {
 		const bankToSell = parseBank({
 			inputBank: user.bank,
 			inputStr: options.items,
@@ -149,10 +135,7 @@ export const sellCommand: OSBMahojiCommand = {
 				loot.add('Abyssal pearls', bankToSell.amount('Abyssal green dye') * 50);
 			}
 
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm you want to sell ${abbyBank} for **${loot}**.`
-			);
+			await interaction.confirmation(`${user}, please confirm you want to sell ${abbyBank} for **${loot}**.`);
 
 			await user.transactItems({
 				collectionLog: false,
@@ -160,6 +143,32 @@ export const sellCommand: OSBMahojiCommand = {
 				itemsToRemove: abbyBank
 			});
 			return `You exchanged ${abbyBank} and received: ${loot}.`;
+		}
+
+		if (bankToSell.has('Spirit seed')) {
+			const quantity = bankToSell.amount('Spirit seed');
+			const seedsBank = new Bank().add('Spirit seed', quantity);
+
+			await interaction.confirmation(
+				`${user}, please confirm you want to trade ${seedsBank} for Tier 5 seed pack loot.`
+			);
+
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				loot.add(Farming.openSeedPack(5));
+			}
+
+			await user.transactItems({
+				collectionLog: true,
+				itemsToAdd: loot,
+				itemsToRemove: seedsBank
+			});
+
+			await user.addItemsToCollectionLog({
+				itemsToAdd: new Bank().add('Seed pack', quantity)
+			});
+
+			return `You exchanged ${seedsBank} and received: ${loot}.`;
 		}
 
 		if (
@@ -192,10 +201,7 @@ export const sellCommand: OSBMahojiCommand = {
 				loot.add('Anima-infused bark', bankToSell.amount('Sturdy beehive parts') * 25);
 			}
 
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm you want to sell ${forestryBank} for **${loot}**.`
-			);
+			await interaction.confirmation(`${user}, please confirm you want to sell ${forestryBank} for **${loot}**.`);
 
 			await user.transactItems({
 				collectionLog: false,
@@ -212,18 +218,14 @@ export const sellCommand: OSBMahojiCommand = {
 
 			loot.add('Molch pearl', tenchBank.amount('Golden tench') * 100);
 
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`
-			);
+			await interaction.confirmation(`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`);
 
 			await user.transactItems({ itemsToRemove: tenchBank, itemsToAdd: loot });
 			return `You exchanged ${tenchBank} and received: ${loot}.`;
 		}
 
 		if (bankToSell.has('Ecumenical key')) {
-			const [hasWildyHard] = await userhasDiaryTier(user, WildernessDiary.hard);
-			if (!hasWildyHard) {
+			if (!user.hasDiary('wilderness.hard')) {
 				return 'You need to have completed the Wilderness Hard Diary to sell Ecumenical keys.';
 			}
 		}
@@ -253,8 +255,7 @@ export const sellCommand: OSBMahojiCommand = {
 			});
 		}
 
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, please confirm you want to sell ${bankToSell} for **${totalPrice.toLocaleString()}** (${toKMB(
 				totalPrice
 			)}).`
@@ -265,32 +266,27 @@ export const sellCommand: OSBMahojiCommand = {
 			return "You don't have the items you're trying to sell.";
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			itemsToAdd: new Bank().add('Coins', totalPrice),
 			itemsToRemove: bankToSell
 		});
 
 		await Promise.all([
-			updateClientGPTrackSetting('gp_sell', totalPrice),
-			updateBankSetting('sold_items_bank', bankToSell),
-			userStatsBankUpdate(user, 'items_sold_bank', bankToSell),
-			userStatsUpdate(
-				user.id,
-				{
-					sell_gp: {
-						increment: totalPrice
-					}
-				},
-				{}
-			),
+			ClientSettings.updateClientGPTrackSetting('gp_sell', totalPrice),
+			ClientSettings.updateBankSetting('sold_items_bank', bankToSell),
+			user.statsBankUpdate('items_sold_bank', bankToSell),
+			user.statsUpdate({
+				sell_gp: {
+					increment: totalPrice
+				}
+			}),
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
-		return returnStringOrFile(
+		return interaction.returnStringOrFile(
 			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
 				user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
 			}.`
 		);
 	}
-};
+});

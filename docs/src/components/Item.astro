@@ -1,0 +1,19 @@
+---
+import { WebItems } from "../lib/WebItems.js";
+
+export interface Props {
+    name: string;
+}
+const { name } = Astro.props;
+const itemRes = WebItems.get(name);
+if (!itemRes.item) {
+    throw new Error(`Item not found: ${name}`);
+}
+
+const { item, imageUrl } = itemRes;
+---
+
+<span class="osrs_item">
+    <img class="osrs_item_image" src={imageUrl} alt={item.name} />
+    <span class="osrs_item_name">{item.name}</span>
+</span>

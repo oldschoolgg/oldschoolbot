@@ -1,11 +1,9 @@
-import { Monsters, resolveItems } from 'oldschooljs';
+import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { NIGHTMARE_ID, demonBaneWeapons } from '../constants';
-import { anglerOutfit } from '../data/CollectionsExport';
-import { Requirements } from '../structures/Requirements';
-import type { TOAOptions } from '../types/minions';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
+import type { TOAOptions } from '@/lib/types/minions.js';
 
 export const hardCombatAchievements: CombatAchievement[] = [
 	{
@@ -377,10 +375,12 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: "K'ril Tsutsaroth",
 		desc: "Finish off K'ril Tsutsaroth with a demonbane weapon.",
+		details: 'You must have a demonbane weapon equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.KrilTsutsaroth.id)(data) && user.hasEquipped(demonBaneWeapons, false)
+				isCertainMonsterTrip(Monsters.KrilTsutsaroth.id)(data) &&
+				user.hasEquipped(ItemGroups.demonBaneWeapons, false)
 		}
 	},
 	{
@@ -585,9 +585,10 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Tempoross',
 		desc: 'Subdue Tempoross while wearing any variation of the angler outfit.',
+		details: 'You must have the angler outfit equipped.',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data, user) => data.type === 'Tempoross' && user.hasEquipped(anglerOutfit, false)
+			hasChance: (data, user) => data.type === 'Tempoross' && user.hasEquipped(ItemGroups.anglerOutfit, false)
 		}
 	},
 	{
@@ -609,7 +610,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill The Nightmare once.',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NIGHTMARE_ID]: 1
+				[EMonster.NIGHTMARE]: 1
 			}
 		})
 	},
@@ -737,6 +738,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Hueycoatl whilst wearing two pieces of Hueycoatl armour.',
 		type: 'restriction',
 		monster: 'TheHueycoatl',
+		details: 'You must have at least two pieces of Hueycoatl armour equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -826,6 +828,62 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 70,
 			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 271,
+		name: 'I need room',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans while extinguishing all fires and melting all icicles before they dissipate naturally.',
+		rng: {
+			chancePerKill: 10,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 272,
+		name: 'Perfect Royal Titans',
+		type: 'perfection',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans without getting hit by any avoidable damage. This includes: Melee attacks, Explosions from the ice or fire elemental, Icicle or fire spawn damage, and Ice or fire pulse attacks.',
+		rng: {
+			chancePerKill: 15,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 273,
+		name: 'Titan Killer',
+		type: 'stamina',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans 15 times without anyone leaving the instance. If a player joins the fight, the current streak will be reset to 0. If a player leaves the fight, the task will be failed and a new instance will need to be created.',
+		rng: {
+			chancePerKill: 15,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 274,
+		name: 'Royal Titan Speed-Runner',
+		type: 'speed',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans in less than 1:30 minutes.',
+		rng: {
+			chancePerKill: 15,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
 	}
 ];

@@ -1,19 +1,14 @@
-import { Time } from 'e';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { SkillsEnum } from '../../../lib/skilling/types';
-import type { CollectingOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { collectables } from '../collectables';
-import { getPOH } from './pohCommand';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { CollectingOptions } from '@/lib/types/minions.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
 
 export async function collectCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	objectName: string,
 	quantity?: number,
 	no_stams?: boolean
@@ -25,21 +20,21 @@ export async function collectCommand(
 			.join(', ')}.`;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Collecting');
+	const maxTripLength = await user.calcMaxTripLength('Collecting');
 	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}
 
 	if (collectable.skillReqs) {
-		for (const [skillName, lvl] of Object.entries(collectable.skillReqs)) {
-			if (user.skillLevel(skillName as SkillsEnum) < lvl) {
+		for (const [skillName, lvl] of Object.entries(collectable.skillReqs) as [SkillNameType, number][]) {
+			if (user.skillsAsLevels[skillName] < lvl) {
 				return `You need ${lvl} ${skillName} to collect ${collectable.item.name}.`;
 			}
 		}
 	}
 
 	if (collectable.item.id === 245) {
-		const [hasDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
+		const hasDiary = user.hasDiary('wilderness.hard');
 		if (hasDiary) {
 			collectable.duration = Time.Minute * 2;
 		}
@@ -78,15 +73,15 @@ export async function collectCommand(
 		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
-		await updateBankSetting('collecting_cost', cost);
+		await ClientSettings.updateBankSetting('collecting_cost', cost);
 	}
 
-	await addSubTaskToActivityTask<CollectingOptions>({
+	await ActivityManager.startTrip<CollectingOptions>({
 		collectableID: collectable.item.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		noStaminas: no_stams,

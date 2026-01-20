@@ -1,26 +1,23 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
+import { formatDuration, reduceNumByPercent, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-import { getMinigameScore } from '../../../lib/settings/settings';
-import type { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { userStatsUpdate } from '../../mahojiSettings';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { hasSkillReqs, isValidSkill } from '@/lib/util/smallUtils.js';
 
 const itemBoosts = [
-	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
-	[['Barrows gloves', 'Ferocious gloves'].map(getOSItem), 4],
-	[['Amulet of fury', 'Amulet of torture', 'Amulet of fury (or)', 'Amulet of torture (or)'].map(getOSItem), 5],
-	[['Fire cape', 'Infernal cape', 'Fire max cape', 'Infernal max cape'].map(getOSItem), 6],
-	[['Dragon claws'].map(getOSItem), 5]
+	[Items.resolveFullItems(['Abyssal whip', 'Abyssal tentacle']), 12],
+	[Items.resolveFullItems(['Barrows gloves', 'Ferocious gloves']), 4],
+	[
+		Items.resolveFullItems([
+			'Amulet of fury',
+			'Amulet of torture',
+			'Amulet of fury (or)',
+			'Amulet of torture (or)'
+		]),
+		5
+	],
+	[Items.resolveFullItems(['Fire cape', 'Infernal cape', 'Fire max cape', 'Infernal max cape']), 6],
+	[Items.resolveFullItems(['Dragon claws']), 5]
 ] as const;
 
 export function getBoatType(user: MUser, cbLevel: number) {
@@ -70,55 +67,55 @@ const baseStats = {
 
 export const pestControlBuyables = [
 	{
-		item: getOSItem('Void knight mace'),
+		item: Items.getOrThrow('Void knight mace'),
 		cost: 250,
 		requiredStats: baseStats
 	},
 	{
-		item: getOSItem('Void knight top'),
+		item: Items.getOrThrow('Void knight top'),
 		cost: 250,
 		requiredStats: baseStats
 	},
 	{
-		item: getOSItem('Void knight robe'),
+		item: Items.getOrThrow('Void knight robe'),
 		cost: 250,
 		requiredStats: baseStats
 	},
 	{
-		item: getOSItem('Void knight gloves'),
+		item: Items.getOrThrow('Void knight gloves'),
 		cost: 150,
 		requiredStats: baseStats
 	},
 	{
-		item: getOSItem('Void melee helm'),
+		item: Items.getOrThrow('Void melee helm'),
 		cost: 200,
 		requiredStats: baseStats
 	},
 	{
-		item: getOSItem('Void mage helm'),
+		item: Items.getOrThrow('Void mage helm'),
 		cost: 200,
 		requiredStats: baseStats
 	},
 	{
-		item: getOSItem('Void ranger helm'),
+		item: Items.getOrThrow('Void ranger helm'),
 		cost: 200,
 		requiredStats: baseStats
 	},
 	{
-		item: getOSItem('Void seal(8)'),
+		item: Items.getOrThrow('Void seal(8)'),
 		cost: 10,
 		requiredStats: baseStats
 	},
 	{
-		item: getOSItem('Elite void robe'),
+		item: Items.getOrThrow('Elite void robe'),
 		cost: 200,
-		inputItem: getOSItem('Void knight robe'),
+		inputItem: Items.getOrThrow('Void knight robe'),
 		requiredStats: baseStats
 	},
 	{
-		item: getOSItem('Elite void top'),
+		item: Items.getOrThrow('Elite void top'),
 		cost: 200,
-		inputItem: getOSItem('Void knight top'),
+		inputItem: Items.getOrThrow('Void knight top'),
 		requiredStats: baseStats
 	}
 ];
@@ -143,7 +140,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	}
 
 	const { item, cost } = buyable;
-	const { pest_control_points: balance } = await user.fetchStats({ pest_control_points: true });
+	const { pest_control_points: balance } = await user.fetchStats();
 	if (balance < cost) {
 		return `You don't have enough Void knight commendation points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
 	}
@@ -158,35 +155,31 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	}
 
 	if (buyable.inputItem) {
-		const [hasDiary] = await userhasDiaryTier(user, WesternProv.hard);
+		const hasDiary = user.hasDiary('westernprovinces.hard');
 		if (!hasDiary) {
 			return "You can't buy this because you haven't completed the Western Provinces hard diary.";
 		}
-		await transactItems({ userID: user.id, itemsToRemove: new Bank().add(buyable.inputItem.id) });
+		await user.transactItems({ itemsToRemove: new Bank().add(buyable.inputItem.id) });
 	}
-	await userStatsUpdate(
-		user.id,
-		{
-			pest_control_points: {
-				decrement: cost
-			}
-		},
-		{}
-	);
+	await user.statsUpdate({
+		pest_control_points: {
+			decrement: cost
+		}
+	});
 	const loot = new Bank().add(item.id);
-	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }
 
-export async function pestControlStartCommand(user: MUser, channelID: string) {
-	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
+export async function pestControlStartCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	if (user.combatLevel < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
 	}
 
 	let gameLength = Time.Minute * 2.8;
-	const maxLength = calcMaxTripLength(user, 'PestControl');
+	const maxLength = await user.calcMaxTripLength('PestControl');
 	const gear = user.gear.melee;
 
 	const boosts = [];
@@ -204,9 +197,9 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 
 	const duration = quantity * gameLength;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'PestControl',
 		quantity,
@@ -228,44 +221,34 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 	return str;
 }
 
-export async function pestControlXPCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	skillName: string,
-	amount: number
-) {
-	if (!Object.keys(xpMultiplier).includes(skillName)) {
+export async function pestControlXPCommand(interaction: MInteraction, user: MUser, skillName: string, amount: number) {
+	if (!Object.keys(xpMultiplier).includes(skillName) || !isValidSkill(skillName)) {
 		return "That's not a valid skill to buy XP for.";
 	}
 	if (!amount || amount < 1) {
 		return "That's not a valid amount of points to spend.}";
 	}
 
-	const level = user.skillLevel(skillName as SkillsEnum);
+	const level = user.skillsAsLevels[skillName];
 	if (level < 25) {
 		return 'You need at least level 25 to buy XP from Pest Control.';
 	}
 	const xpPerPoint = Math.floor(Math.pow(level, 2) / 600) * xpMultiplier[skillName as keyof typeof xpMultiplier];
 
-	const { pest_control_points: balance } = await user.fetchStats({ pest_control_points: true });
+	const { pest_control_points: balance } = await user.fetchStats();
 	if (balance < amount) {
 		return `You cannot afford this, because you have only ${balance} points.`;
 	}
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${toTitleCase(skillName)} XP?`
 	);
-	await userStatsUpdate(
-		user.id,
-		{
-			pest_control_points: {
-				decrement: amount
-			}
-		},
-		{}
-	);
+	await user.statsUpdate({
+		pest_control_points: {
+			decrement: amount
+		}
+	});
 	const xpRes = await user.addXP({
-		skillName: skillName as SkillsEnum,
+		skillName,
 		amount: xpPerPoint * amount,
 		duration: undefined,
 		minimal: false,
@@ -277,10 +260,7 @@ ${xpRes}`;
 }
 
 export async function pestControlStatsCommand(user: MUser) {
-	const [kc, stats] = await Promise.all([
-		getMinigameScore(user.id, 'pest_control'),
-		user.fetchStats({ pest_control_points: true })
-	]);
+	const [kc, stats] = await Promise.all([user.fetchMinigameScore('pest_control'), user.fetchStats()]);
 	return `You have ${stats.pest_control_points} Void knight commendation points.
 You have completed ${kc} games of Pest Control.`;
 }

@@ -1,20 +1,17 @@
-import { Time } from 'e';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import LeapingFish from '../../../lib/skilling/skills/cooking/leapingFish';
-import type { CutLeapingFishActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
+import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function cutLeapingFishCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	quantity?: number;
 }) {
@@ -31,7 +28,7 @@ export async function cutLeapingFishCommand({
 
 	const timeToCutSingleItem = barbarianFish.tickRate * Time.Second * 0.6;
 
-	const maxTripLength = calcMaxTripLength(user, 'Cooking');
+	const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / timeToCutSingleItem);
 
@@ -63,10 +60,10 @@ export async function cutLeapingFishCommand({
 	}
 	await user.removeItemsFromBank(finalCost);
 
-	await addSubTaskToActivityTask<CutLeapingFishActivityTaskOptions>({
+	await ActivityManager.startTrip<CutLeapingFishActivityTaskOptions>({
 		fishID: barbarianFish.item.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'CutLeapingFish'

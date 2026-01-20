@@ -1,11 +1,9 @@
-import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { GearStat } from '@oldschoolgg/gear';
+import { Time } from '@oldschoolgg/toolkit';
+import { deepResolveItems, itemID, Monsters } from 'oldschooljs';
 
-import { deepResolveItems } from 'oldschooljs/dist/util/util';
-import { GearStat } from '../../../gear/types';
-import { SkillsEnum } from '../../../skilling/types';
-import type { KillableMonster } from '../../types';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const turaelMonsters: KillableMonster[] = [
 	{
@@ -218,7 +216,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CrawlingHand.id,
@@ -706,8 +707,8 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 1,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Strength, SkillsEnum.Attack]
+		defaultAttackStyles: ['ranged'],
+		disallowedAttackStyles: ['strength', 'attack']
 	},
 	{
 		id: Monsters.MonkeyArcher.id,
@@ -720,7 +721,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		qpRequired: 20,
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		disallowedAttackStyles: ['attack', 'strength'],
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged]
@@ -1254,6 +1255,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		qpRequired: 20,
+		requiredQuests: [QuestID.TheCurseOfArrav],
 		canBarrage: true,
 		canChinning: true,
 		healAmountNeeded: 20,

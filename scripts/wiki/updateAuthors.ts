@@ -1,38 +1,47 @@
+import '../base.js';
+
 import { exec as execNonPromise } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { promisify } from 'node:util';
-import { uniqueArr } from 'e';
+import { uniqueArr } from '@oldschoolgg/toolkit';
 
 import { authorsMap } from './authors.js';
 
 const rawExecAsync = promisify(execNonPromise);
 
-export async function updateAuthors(folderPath = 'docs/src/content') {
-	const command = `git log --pretty=format:"%an" --name-only -- "${folderPath}"`;
-	const result = await rawExecAsync(command);
+async function updateAuthors() {
+	const { stdout } = await rawExecAsync(`git log --pretty=format:"%an%x09" --name-only -- docs/src/content`);
 
-	const fileAuthorMap = new Map<string, Set<string>>();
+	const finalMap: Record<string, string[]> = {};
+	const lines = stdout.split('\n');
 
-	const lines = result.stdout.split('\n');
 	let currentAuthor = '';
-	for (const line of lines) {
-		if (line.trim() === '') continue;
-		if (!line.includes('/')) {
-			currentAuthor = line.toLowerCase();
+	for (const line of lines.map(l => l.replace(/\s/g, ''))) {
+		if (line.length === 0) continue;
+		if (!line.startsWith('docs/src/content/')) {
+			currentAuthor = line.trim().toLowerCase();
+			if (currentAuthor === 'gc') currentAuthor = 'magnaboy';
 		} else {
-			const filePath = [folderPath, line.trim()].join('/').replace('docs/src/content/docs/src/content/docs/', '');
-			const authors = fileAuthorMap.get(filePath) ?? new Set();
-			authors.add(authorsMap.get(currentAuthor)?.displayName ?? currentAuthor);
-			fileAuthorMap.set(filePath, authors);
+			const file = line.trim();
+			if (!finalMap[file]) finalMap[file] = [];
+			finalMap[file].push(currentAuthor);
 		}
 	}
 
-	const finalMap: Record<string, string[]> = {};
-	for (const [file, authors] of Array.from(fileAuthorMap.entries()).sort((a, b) => a[0].localeCompare(b[0]))) {
-		const uniqueAuthors = uniqueArr([...authors].filter(Boolean));
-		if (uniqueAuthors.length === 1 && uniqueAuthors[0].toLowerCase() === 'magnaboy') continue;
-		finalMap[file] = uniqueAuthors;
+	for (const file in finalMap) {
+		const authors = finalMap[file].map(a => authorsMap.get(a)?.displayName ?? a).filter(Boolean);
+		if (authors.length === 0) continue;
+		const uniqueAuthors = uniqueArr(authors);
+		if (uniqueAuthors.length === 1 && uniqueAuthors[0].toLowerCase() === 'magnaboy') {
+			delete finalMap[file];
+		} else {
+			const relPath = file.replace('docs/src/content/docs/', '');
+			finalMap[relPath] = uniqueAuthors;
+			if (relPath !== file) delete finalMap[file];
+		}
 	}
 
 	writeFileSync('data/authors.json', JSON.stringify(finalMap, null, 4));
 }
+
+await updateAuthors();

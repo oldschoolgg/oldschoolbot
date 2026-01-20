@@ -1,27 +1,27 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { type ItemBank, itemID } from 'oldschooljs';
 
-import { Emoji } from '../../../constants';
-import { SkillsEnum } from '../../types';
-import BlastableBars from './blastables';
-import Bars from './smeltables';
-import SmithableItems from './smithables';
+import { defineSkill } from '@/lib/skilling/types.js';
+import BlastableBars from './blastables.js';
+import Bars from './smeltables.js';
+import SmithableItems from './smithables/index.js';
 
-const smithsUniformItems: { [key: number]: number } = {
+const smithsUniformItems: ItemBank = {
 	[itemID('Smiths tunic')]: 20,
 	[itemID('Smiths trousers')]: 20,
 	[itemID('Smiths gloves')]: 20,
 	[itemID('Smiths boots')]: 20
 };
 
-const Smithing = {
+const Smithing = defineSkill({
 	aliases: ['smithing'],
 	Bars,
 	SmithableItems,
 	BlastableBars,
-	id: SkillsEnum.Smithing,
+	id: 'smithing',
 	emoji: Emoji.Smithing,
 	name: 'Smithing',
 	smithsUniformItems
-};
+});
 
 export default Smithing;

@@ -1,5 +1,4 @@
-import { deepMerge } from '@oldschoolgg/toolkit/util';
-import fetch from 'node-fetch';
+import { deepMerge, getWrappedArrayItem } from '@oldschoolgg/toolkit';
 
 const colors = [
 	'#fd7f6f',
@@ -30,25 +29,21 @@ const colors = [
 	'#b3d4ff',
 	'#00bfa0'
 ];
-function getWrappedArrayItem<T>(array: T[], index: number): T {
-	const wrappedIndex = ((index % array.length) + array.length) % array.length;
-	return array[wrappedIndex];
-}
 
 function randomHexColor(value: number): string {
 	return getWrappedArrayItem(colors, Math.floor(value));
 }
 
 async function renderChart(url: string) {
-	if (process.env.TEST) {
-		console.log('\nRENDERING CHART\n');
+	if (process.env.NODE_ENV === 'TEST') {
+		return Buffer.from([]);
 	}
 	const response = await fetch(url, {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' }
 	});
 
-	return response.buffer();
+	return Buffer.from(await response.arrayBuffer());
 }
 
 export interface ChartOptions {

@@ -1,10 +1,8 @@
-import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { GearStat } from '@oldschoolgg/gear';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { GearStat } from '../../../gear/types';
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const vannakaMonsters: KillableMonster[] = [
 	{
@@ -404,11 +402,11 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
-		id: Monsters.DaganothFledgeling.id,
-		name: Monsters.DaganothFledgeling.name,
-		aliases: Monsters.DaganothFledgeling.aliases,
+		id: Monsters.DagannothFledgeling.id,
+		name: Monsters.DagannothFledgeling.name,
+		aliases: Monsters.DagannothFledgeling.aliases,
 		timeToFinish: Time.Second * 20,
-		table: Monsters.DaganothFledgeling,
+		table: Monsters.DagannothFledgeling,
 
 		wildy: false,
 
@@ -964,7 +962,12 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemCost: { itemCost: new Bank().add('Mossy key', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 8,
 		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
+		itemInBankBoosts: [
+			{
+				[itemID('Giantsoul amulet')]: 20
+			}
+		]
 	},
 	{
 		id: Monsters.MountainTroll.id,
@@ -1112,11 +1115,11 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
-		id: Monsters.Otherworldlybeing.id,
-		name: Monsters.Otherworldlybeing.name,
-		aliases: Monsters.Otherworldlybeing.aliases,
+		id: Monsters.OtherworldlyBeing.id,
+		name: Monsters.OtherworldlyBeing.name,
+		aliases: Monsters.OtherworldlyBeing.aliases,
 		timeToFinish: Time.Second * 20,
-		table: Monsters.Otherworldlybeing,
+		table: Monsters.OtherworldlyBeing,
 
 		wildy: false,
 

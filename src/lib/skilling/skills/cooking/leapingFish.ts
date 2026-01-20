@@ -1,22 +1,25 @@
-import getOSItem from '../../../util/getOSItem';
-import type { CutLeapingFish } from '../../types';
+import { type Item, Items } from 'oldschooljs';
 
-const LeapingFish: CutLeapingFish[] = [
+interface CutLeapingFish {
+	item: Item;
+	aliases: string[];
+	tickRate: number;
+}
+
+export const LeapingFish: CutLeapingFish[] = [
 	{
-		item: getOSItem('Leaping sturgeon'),
+		item: Items.getOrThrow('Leaping sturgeon'),
 		aliases: ['leaping sturgeon', 'cut leaping sturgeon', 'sturgeon'],
 		tickRate: 1
 	},
 	{
-		item: getOSItem('Leaping trout'),
+		item: Items.getOrThrow('Leaping trout'),
 		aliases: ['leaping trout', 'cut leaping trout'],
 		tickRate: 1
 	},
 	{
-		item: getOSItem('Leaping salmon'),
+		item: Items.getOrThrow('Leaping salmon'),
 		aliases: ['leaping salmon', 'cut leaping salmon'],
 		tickRate: 1
 	}
 ];
-
-export default LeapingFish;

@@ -1,7 +1,8 @@
-import { Time, percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 
-import type { GearBank } from '../../structures/GearBank';
-import type { Ore } from './../types';
+import type { Ore } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 interface MiningTimeOptions {
 	quantity: number | undefined;
@@ -45,7 +46,14 @@ export function determineMiningTime({
 
 	const bankTime = goldSilverBoost ? ore.bankingTime / 3.3 : ore.bankingTime;
 	const chanceOfSuccess = ore.slope * miningLvl + intercept;
-	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
+
+	let effectiveTicksBetween = ticksBetweenRolls;
+	let respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
+	if (powermining && ore.name === 'Daeyalt essence rock') {
+		effectiveTicksBetween /= 1.7;
+		respawnTimeOrPick =
+			effectiveTicksBetween > ore.respawnTime / 1.7 ? effectiveTicksBetween : ore.respawnTime / 1.7;
+	}
 
 	let newQuantity = 0;
 
@@ -55,7 +63,11 @@ export function determineMiningTime({
 
 	let userMaxTripTicks = (maxTripLength - passedDuration) / (Time.Second * 0.6);
 
-	if (ore.name === 'Amethyst' || ore.name === 'Daeyalt essence rock') {
+	if (ore.name === 'Daeyalt essence rock') {
+		if (!powermining) {
+			userMaxTripTicks *= 2;
+		}
+	} else if (ore.name === 'Amethyst') {
 		userMaxTripTicks *= 1.5;
 	}
 
@@ -63,13 +75,13 @@ export function determineMiningTime({
 
 	while (timeElapsed < userMaxTripTicks) {
 		while (!percentChance(chanceOfSuccess)) {
-			timeElapsed += ticksBetweenRolls;
+			timeElapsed += effectiveTicksBetween;
 		}
 		if (remainingNoDeplete <= 0) {
 			timeElapsed += respawnTimeOrPick;
 			remainingNoDeplete = glovesEffect;
 		} else {
-			timeElapsed += ticksBetweenRolls;
+			timeElapsed += effectiveTicksBetween;
 			remainingNoDeplete--;
 		}
 		newQuantity++;

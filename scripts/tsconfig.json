@@ -1,10 +1,10 @@
 {
 	"extends": "../tsconfig.base.json",
+	"include": [".", "../src/**/*"],
 	"compilerOptions": {
-		"rootDir": "..",
-		"composite": true,
-		"noEmit": true
-	},
-	"include": ["scripts", "src/**/*"],
-	"exclude": ["**/node_modules"]
+		"noEmit": true,
+		"paths": {
+			"@/*": ["../src/*"]
+		}
+	}
 }

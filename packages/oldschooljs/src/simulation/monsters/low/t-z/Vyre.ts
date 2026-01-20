@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const VyreTable = new LootTable({ limit: 132 })
 	.add('Coins', [250, 315], 109)
@@ -11,7 +11,7 @@ const VyreTable = new LootTable({ limit: 132 })
 	.add('Cooked mystery meat')
 	.oneIn(5000, 'Blood shard');
 
-export default new SimpleMonster({
+export const Vyre: SimpleMonster = new SimpleMonster({
 	id: 9710,
 	name: 'Vyre',
 	pickpocketTable: VyreTable,

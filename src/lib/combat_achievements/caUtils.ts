@@ -1,6 +1,7 @@
-import type { CAViewType } from '../../mahoji/commands/ca';
-import type { ActivityTaskData, MonsterActivityTaskOptions } from '../types/minions';
-import type { CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { normalizeTOAUsers } from '@/lib/simulation/toaUtils.js';
+import type { ActivityTaskData, MonsterActivityTaskOptions, TOAOptions } from '@/lib/types/minions.js';
+import type { CAViewType } from '@/mahoji/commands/ca.js';
 
 export function isCertainMonsterTrip(monsterID: number) {
 	return (data: ActivityTaskData) =>
@@ -41,6 +42,10 @@ export const buildCombatAchievementsResult = (
 
 	return {
 		content: result.length <= maxContentLength ? result : 'Result too large. Check the attached file for details.',
-		files: result.length > maxContentLength ? [{ attachment: Buffer.from(result), name: 'caBoss.txt' }] : undefined
+		files: result.length > maxContentLength ? [{ buffer: Buffer.from(result), name: 'caBoss.txt' }] : undefined
 	};
 };
+
+export function anyoneDiedInTOARaid(data: TOAOptions) {
+	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
+}

@@ -1,20 +1,28 @@
-import { Time } from 'e';
+export enum Time {
+	Millisecond = 1,
+	Second = 1000,
+	Minute = 1000 * 60,
+	Hour = 1000 * 60 * 60,
+	Day = 1000 * 60 * 60 * 24,
+	Month = 1000 * 60 * 60 * 24 * 30,
+	Year = 1000 * 60 * 60 * 24 * 365
+}
 
-export function isAtleastThisOld(date: Date | number, expectedAgeInMS: number) {
+export function isAtleastThisOld(date: Date | number, expectedAgeInMS: number): boolean {
 	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
 	return difference >= expectedAgeInMS;
 }
 
-export function isWeekend() {
+export function isWeekend(): boolean {
 	const currentDate = new Date(Date.now() - Time.Hour * 6);
 	return [6, 0].includes(currentDate.getDay());
 }
 
-export function calcPerHour(value: number, duration: number) {
+export function calcPerHour(value: number, duration: number): number {
 	return (value / (duration / Time.Minute)) * 60;
 }
 
-export function formatDuration(ms: number, short = false, precise = false) {
+export function formatDuration(ms: number, short = false, precise = false): string {
 	if (ms < 0) ms = -ms;
 	const time = {
 		day: Math.floor(ms / 86_400_000),

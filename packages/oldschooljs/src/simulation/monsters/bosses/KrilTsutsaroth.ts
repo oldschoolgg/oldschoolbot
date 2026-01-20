@@ -1,13 +1,12 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { itemTupleToTable } from '../../../util';
-import GWRareDropTable, { GWGemTable, ShardTable } from '../../subtables/GWRareDropTable';
+import GWRareDropTable, { GWGemTable, ShardTable } from '@/simulation/subtables/GWRareDropTable.js';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const MinionUniqueTable = new LootTable().add('Coins', [1300, 1400], 124).add('Zamorakian spear', 1, 3);
+const MinionUniqueTable: LootTable = new LootTable().add('Coins', [1300, 1400], 124).add('Zamorakian spear', 1, 3);
 
-const MinionShardTable = new LootTable().add('Coins', [1300, 1400], 9).add(ShardTable, 1, 3);
+const MinionShardTable: LootTable = new LootTable().add('Coins', [1300, 1400], 9).add(ShardTable, 1, 3);
 
-const MinionTable = new LootTable()
+const MinionTable: LootTable = new LootTable()
 	.every('Malicious ashes')
 	.add(MinionUniqueTable, 1, 1)
 	.add(MinionShardTable, 1, 1)
@@ -27,14 +26,14 @@ const ZaklnGritchMinionTable = new LootTable({ limit: 5000 })
 	.every(MinionTable)
 	.add('Lesser demon champion scroll', 1, 1);
 
-const UniqueTable = new LootTable()
+const UniqueTable: LootTable = new LootTable()
 	.add('Steam battlestaff', 1, 4)
 	.add('Zamorakian spear', 1, 4)
 	.add('Staff of the dead')
 	.add('Zamorak hilt')
 	.add(ShardTable, 1, 2);
 
-const KrilTsutsarothTable = new LootTable()
+const KrilTsutsarothTable: LootTable = new LootTable()
 	.every('Infernal ashes')
 	.every(MinionTable, 2)
 	.every(ZaklnGritchMinionTable)
@@ -77,7 +76,7 @@ const KrilTsutsarothTable = new LootTable()
 	.add(GWRareDropTable, 1, 8)
 	.add(GWGemTable, 1, 2);
 
-export default new SimpleMonster({
+export const KrilTsutsaroth: SimpleMonster = new SimpleMonster({
 	id: 3129,
 	name: "K'ril Tsutsaroth",
 	table: KrilTsutsarothTable,

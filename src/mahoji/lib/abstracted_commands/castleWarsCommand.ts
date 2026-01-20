@@ -1,20 +1,16 @@
-import { Time } from 'e';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { getMinigameEntity } from '../../../lib/settings/settings';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function castleWarsStartCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
+export async function castleWarsStartCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	const gameLength = Time.Minute * 18;
-	const quantity = Math.floor(calcMaxTripLength(user, 'CastleWars') / gameLength);
+	const quantity = Math.floor((await user.calcMaxTripLength('CastleWars')) / gameLength);
 	const duration = quantity * gameLength;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'CastleWars',
 		quantity,
@@ -27,7 +23,7 @@ export async function castleWarsStartCommand(user: MUser, channelID: string) {
 }
 export async function castleWarsStatsCommand(user: MUser) {
 	const { bank } = user;
-	const kc = await getMinigameEntity(user.id);
+	const kc = await user.fetchMinigameScore('castle_wars');
 	return `You have **${bank.amount('Castle wars ticket')}** Castle wars tickets.
-You have played ${kc.castle_wars} Castle Wars games.`;
+You have played ${kc} Castle Wars games.`;
 }

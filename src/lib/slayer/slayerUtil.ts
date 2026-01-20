@@ -1,22 +1,23 @@
-import { notEmpty, objectKeys, randFloat, randInt } from 'e';
-import { Bank, type Monster, Monsters } from 'oldschooljs';
+import { randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { ECombatOption } from '@oldschoolgg/schemas';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
+import { type Bank, EMonster, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
-import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import type { PvMMethod } from '../constants';
-import { CombatOptionsEnum } from '../minions/data/combatConstants';
-import type { KillableMonster } from '../minions/types';
+import { caTiers } from '@/lib/combat_achievements/combatAchievements.js';
+import type { PvMMethod } from '@/lib/constants.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { autoslayModes } from '@/lib/slayer/constants.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { bossTasks, wildernessBossTasks } from '@/lib/slayer/tasks/bossTasks.js';
+import type { AssignableSlayerTask, SlayerMaster } from '@/lib/slayer/types.js';
 
-import { getNewUser } from '../settings/settings';
-import { SkillsEnum } from '../skilling/types';
-import { roll, stringMatches } from '../util';
-import { logError } from '../util/logError';
-import { autoslayModes } from './constants';
-import { slayerMasters } from './slayerMasters';
-import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
-import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
-import type { AssignableSlayerTask, SlayerMaster } from './types';
+export const wildySlayerOnlyMonsters = [
+	Monsters.DustDevil,
+	Monsters.GreaterNechryael,
+	Monsters.AbyssalDemon,
+	Monsters.Jelly
+];
 
 export enum SlayerMasterEnum {
 	Reserved = 0,
@@ -30,7 +31,7 @@ export enum SlayerMasterEnum {
 }
 
 interface DetermineBoostParams {
-	cbOpts: readonly CombatOptionsEnum[];
+	cbOpts: readonly ECombatOption[];
 	monster: KillableMonster;
 	methods?: PvMMethod[] | null;
 	isOnTask?: boolean;
@@ -41,16 +42,16 @@ export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[]
 	const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
 
 	// check if user has cannon combat option turned on
-	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
+	if (params.cbOpts.includes(ECombatOption.AlwaysCannon)) {
 		boostMethods.includes('cannon') ? null : boostMethods.push('cannon');
 	}
 
 	// check for special burst case under wildyBurst variable
 	if (params.wildyBurst) {
-		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+		if (params.cbOpts.includes(ECombatOption.AlwaysIceBarrage)) {
 			boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
 		}
-		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+		if (params.cbOpts.includes(ECombatOption.AlwaysIceBurst)) {
 			boostMethods.includes('burst') ? null : boostMethods.push('burst');
 		}
 	}
@@ -59,20 +60,20 @@ export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[]
 	if (params.monster.canBarrage) {
 		// check if the monster exists in catacombs
 		if (params.monster.existsInCatacombs) {
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+			if (params.cbOpts.includes(ECombatOption.AlwaysIceBarrage)) {
 				boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
 			}
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+			if (params.cbOpts.includes(ECombatOption.AlwaysIceBurst)) {
 				boostMethods.includes('burst') ? null : boostMethods.push('burst');
 			}
 		} else if (!params.monster.cannonMulti) {
 			// prevents cases such as: cannoning in singles but receiving multi combat bursting boost
 			return boostMethods;
 		} else {
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+			if (params.cbOpts.includes(ECombatOption.AlwaysIceBarrage)) {
 				boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
 			}
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+			if (params.cbOpts.includes(ECombatOption.AlwaysIceBurst)) {
 				boostMethods.includes('burst') ? null : boostMethods.push('burst');
 			}
 		}
@@ -81,7 +82,7 @@ export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[]
 	return boostMethods;
 }
 
-export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, hasKourendElite: boolean) {
+export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, hasKourendElite: boolean): number {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 
@@ -129,7 +130,7 @@ function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	return (
 		user.QP >= (master.questPoints ?? 0) &&
-		user.skillLevel(SkillsEnum.Slayer) >= (master.slayerLvl ?? 0) &&
+		user.skillsAsLevels.slayer >= (master.slayerLvl ?? 0) &&
 		user.combatLevel >= (master.combatLvl ?? 0)
 	);
 }
@@ -142,7 +143,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.QP) return false;
 	if (task.requiredQuests?.find(quest => !user.user.finished_quest_ids.includes(quest))) return false;
-	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
+	if (task.slayerLevel && task.slayerLevel > user.skillsAsLevels.slayer) return false;
 	if (task.levelRequirements && !user.hasSkillReqs(task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;
@@ -170,7 +171,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	)
 		return false;
 	if (
-		(lmon === 'dust devil' || lmon === 'greater nechryael' || lmon === 'abyssal demon' || lmon === 'jelly') &&
+		wildySlayerOnlyMonsters.some(m => m.id === task.monster.id) &&
 		lmast === 'krystilia' &&
 		!myUnlocks.includes(SlayerTaskUnlocksEnum.IWildyMoreSlayer)
 	)
@@ -181,13 +182,13 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	return true;
 }
 
-export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
+export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
-	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
+	const baseTasks = [...master.tasks].filter(t => userCanUseTask(user, t, master, false));
 	let bossTask = false;
 	let wildyBossTask = false;
 	if (
-		_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
+		user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss) &&
 		(master.name.toLowerCase() === 'konar quo maten' ||
 			master.name.toLowerCase() === 'duradel' ||
 			master.name.toLowerCase() === 'nieve' ||
@@ -197,21 +198,21 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		bossTask = true;
 	}
 
-	if (_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8 && roll(25)) {
+	if (user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8 && roll(25)) {
 		wildyBossTask = true;
 	}
 
 	let assignedTask: AssignableSlayerTask | null = null;
 
 	if (bossTask) {
-		const baseBossTasks = bossTasks.filter(t => userCanUseTask(_user, t, master, true));
+		const baseBossTasks = bossTasks.filter(t => userCanUseTask(user, t, master, true));
 		if (baseBossTasks.length > 0) {
 			assignedTask = weightedPick(baseBossTasks);
 		}
 	}
 
 	if (wildyBossTask) {
-		const baseWildyBossTasks = wildernessBossTasks.filter(t => userCanUseTask(_user, t, master, true));
+		const baseWildyBossTasks = wildernessBossTasks.filter(t => userCanUseTask(user, t, master, true));
 		if (baseWildyBossTasks.length > 0) {
 			assignedTask = weightedPick(baseWildyBossTasks);
 		}
@@ -221,21 +222,26 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		assignedTask = weightedPick(baseTasks);
 	}
 
-	const newUser = await getNewUser(_user.id);
-
 	let maxQuantity = assignedTask?.amount[1];
-	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
-		for (const tier of objectKeys(CombatAchievements)) {
-			if (_user.hasCompletedCATier(tier)) {
+	if (bossTask && user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss)) {
+		for (const tier of caTiers) {
+			if (user.hasCompletedCATier(tier)) {
 				maxQuantity += 5;
 			}
 		}
 	}
 
 	const quantity = randInt(assignedTask?.amount[0], maxQuantity);
+
+	// New user row must exist
+	await prisma.newUser.upsert({
+		where: { id: user.id },
+		create: { id: user.id },
+		update: {}
+	});
 	const currentTask = await prisma.slayerTask.create({
 		data: {
-			user_id: newUser.id,
+			user_id: user.id,
 			quantity,
 			quantity_remaining: quantity,
 			slayer_master_id: master.id,
@@ -243,7 +249,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 			skipped: false
 		}
 	});
-	await _user.update({
+	await user.update({
 		slayer_last_task: assignedTask?.monster.id
 	});
 
@@ -253,7 +259,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 export async function calcMaxBlockedTasks(user: MUser) {
 	const qps = user.QP;
 	let blocks = 0;
-	const [hasLumbyDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.elite);
+	const hasLumbyDiary = user.hasDiary('lumbridge&draynor.elite');
 	if (hasLumbyDiary) {
 		blocks += 1;
 	}
@@ -293,7 +299,7 @@ export function getCommonTaskName(task: Monster) {
 		case Monsters.GuardDog.id:
 			commonName = 'Dog';
 			break;
-		case Monsters.TzHaarKet.id:
+		case EMonster.TZHAARKET:
 			commonName = 'TzHaar';
 			break;
 		case Monsters.RevenantImp.id:
@@ -310,7 +316,7 @@ export function getCommonTaskName(task: Monster) {
 
 export type CurrentSlayerInfo = Awaited<ReturnType<typeof getUsersCurrentSlayerInfo>>;
 export async function getUsersCurrentSlayerInfo(id: string) {
-	const [currentTask, partialUser] = await prisma.$transaction([
+	let [currentTask, partialUser, statsWithStreaks] = await prisma.$transaction([
 		prisma.slayerTask.findFirst({
 			where: {
 				user_id: id,
@@ -327,8 +333,24 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 			select: {
 				slayer_points: true
 			}
+		}),
+		prisma.userStats.findFirst({
+			where: {
+				user_id: BigInt(id)
+			},
+			select: {
+				slayer_task_streak: true,
+				slayer_wildy_task_streak: true
+			}
 		})
 	]);
+
+	if (statsWithStreaks === null) {
+		statsWithStreaks = {
+			slayer_task_streak: 0,
+			slayer_wildy_task_streak: 0
+		};
+	}
 
 	const slayerPoints = partialUser?.slayer_points ?? 0;
 
@@ -337,7 +359,8 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 			currentTask: null,
 			assignedTask: null,
 			slayerMaster: null,
-			slayerPoints
+			slayerPoints,
+			statsWithStreaks
 		};
 	}
 
@@ -345,7 +368,7 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	const assignedTask = slayerMaster?.tasks.find(m => m.monster.id === currentTask.monster_id);
 
 	if (!assignedTask || !slayerMaster) {
-		logError(
+		Logging.logError(
 			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}`,
 			{ userID: id }
 		);
@@ -358,7 +381,8 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 			currentTask: null,
 			assignedTask: null,
 			slayerMaster: null,
-			slayerPoints
+			slayerPoints,
+			statsWithStreaks
 		};
 	}
 
@@ -366,7 +390,8 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		currentTask,
 		assignedTask,
 		slayerMaster,
-		slayerPoints
+		slayerPoints,
+		statsWithStreaks
 	};
 }
 
@@ -415,9 +440,9 @@ const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeo
 function filterPieces(myLoot: Bank, myClLoot: Bank, combinedBank: Bank, pieces: number[], numPieces: number) {
 	for (let x = 0; x < numPieces; x++) {
 		const bank: number[] = pieces.map(piece => combinedBank.amount(piece));
-		const minBank = Math.min(...bank);
+		const lowestAmountOwned = Math.min(...bank);
 		for (let i = 0; i < bank.length; i++) {
-			if (bank[i] === minBank) {
+			if (bank[i] === lowestAmountOwned) {
 				myLoot.add(pieces[i]);
 				combinedBank.add(pieces[i]);
 				myClLoot.add(pieces[i]);
@@ -427,40 +452,40 @@ function filterPieces(myLoot: Bank, myClLoot: Bank, combinedBank: Bank, pieces: 
 	}
 }
 
-export function filterLootReplace(myBank: Bank, myLoot: Bank) {
+export function filterLootReplace({ currentBank, itemsToAdd }: { currentBank: Bank; itemsToAdd: Bank }) {
 	const numHydraPieces =
-		myLoot.amount("Hydra's eye") + myLoot.amount("Hydra's fang") + myLoot.amount("Hydra's heart");
+		itemsToAdd.amount("Hydra's eye") + itemsToAdd.amount("Hydra's fang") + itemsToAdd.amount("Hydra's heart");
 	const numNoxPieces =
-		myLoot.amount('Noxious point') + myLoot.amount('Noxious blade') + myLoot.amount('Noxious pommel');
-	const numTotemPieces = myLoot.amount('Dark totem base');
-	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
+		itemsToAdd.amount('Noxious point') + itemsToAdd.amount('Noxious blade') + itemsToAdd.amount('Noxious pommel');
+	const numTotemPieces = itemsToAdd.amount('Dark totem base');
+	const numBludgeonPieces = itemsToAdd.amount('Bludgeon claw');
 
 	if (!numHydraPieces && !numNoxPieces && !numTotemPieces && !numBludgeonPieces) {
-		return { bankLoot: myLoot, clLoot: myLoot };
+		return { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 	}
 
 	for (const item of filterLootItems) {
-		myLoot.set(item, 0);
+		itemsToAdd.set(item, 0);
 	}
 
-	const myClLoot = myLoot.clone();
-	const combinedBank = new Bank(myBank).add(myLoot);
+	const myClLoot = itemsToAdd.clone();
+	const combinedBank = currentBank.clone().add(itemsToAdd);
 
 	if (numHydraPieces) {
-		filterPieces(myLoot, myClLoot, combinedBank, hydraPieces, numHydraPieces);
+		filterPieces(itemsToAdd, myClLoot, combinedBank, hydraPieces, numHydraPieces);
 	}
 	if (numNoxPieces) {
-		filterPieces(myLoot, myClLoot, combinedBank, noxPieces, numNoxPieces);
+		filterPieces(itemsToAdd, myClLoot, combinedBank, noxPieces, numNoxPieces);
 	}
 	if (numTotemPieces) {
-		filterPieces(myLoot, myClLoot, combinedBank, totemPieces, numTotemPieces);
+		filterPieces(itemsToAdd, myClLoot, combinedBank, totemPieces, numTotemPieces);
 	}
 	if (numBludgeonPieces) {
-		filterPieces(myLoot, myClLoot, combinedBank, bludgeonPieces, numBludgeonPieces);
+		filterPieces(itemsToAdd, myClLoot, combinedBank, bludgeonPieces, numBludgeonPieces);
 	}
 
 	return {
-		bankLoot: myLoot,
+		bankLoot: itemsToAdd,
 		clLoot: myClLoot
 	};
 }

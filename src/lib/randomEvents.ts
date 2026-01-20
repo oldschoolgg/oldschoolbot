@@ -1,18 +1,9 @@
-import { activity_type_enum } from '@prisma/client';
-import { Time, randArrItem, roll } from 'e';
-import { LRUCache } from 'lru-cache';
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
-import {
-	beekeeperOutfit,
-	camoOutfit,
-	lederhosenOutfit,
-	mimeOutfit,
-	zombieOutfit
-} from 'oldschooljs/dist/data/itemConstants';
+import { MathRNG } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
-import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
-import { BitField } from './constants';
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { BitField } from '@/lib/constants.js';
 
 interface RandomEvent {
 	id: number;
@@ -46,14 +37,14 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 1,
 		name: 'Bee keeper',
-		outfit: beekeeperOutfit,
+		outfit: ItemGroups.beekeeperOutfit,
 		uniqueMusic: true,
 		loot: new LootTable().add('Coins', [16, 36]).add('Flax', [1, 27]).every('Genie lamp')
 	},
 	{
 		id: 2,
 		name: 'Drill Demon',
-		outfit: camoOutfit,
+		outfit: ItemGroups.camoOutfit,
 		uniqueMusic: true,
 		loot: new LootTable().every('Genie lamp')
 	},
@@ -65,7 +56,7 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 4,
 		name: 'Freaky Forester',
-		outfit: lederhosenOutfit,
+		outfit: ItemGroups.lederhosenOutfit,
 		uniqueMusic: true,
 		loot: new LootTable().every('Genie lamp')
 	},
@@ -77,7 +68,7 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 6,
 		name: 'Gravedigger',
-		outfit: zombieOutfit,
+		outfit: ItemGroups.zombieOutfit,
 		loot: new LootTable().every('Genie lamp')
 	},
 	{
@@ -88,7 +79,7 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 8,
 		name: 'Mime',
-		outfit: mimeOutfit,
+		outfit: ItemGroups.mimeOutfit,
 		uniqueMusic: true,
 		loot: new LootTable().every('Genie lamp')
 	},
@@ -182,28 +173,23 @@ export const RandomEvents: RandomEvent[] = [
 	}
 ];
 
-const cache = new LRUCache<string, number>({ max: 500 });
-
-const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut];
+const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut, activity_type_enum.Buy];
 
 export async function triggerRandomEvent(user: MUser, type: activity_type_enum, duration: number, messages: string[]) {
 	if (doesntGetRandomEvent.includes(type)) return {};
 	const minutes = Math.min(30, duration / Time.Minute);
 	const randomEventChance = 60 - minutes;
-	if (!roll(randomEventChance)) return {};
+	if (!MathRNG.roll(randomEventChance)) return {};
 	if (user.bitfield.includes(BitField.DisabledRandomEvents)) {
-		return {};
+		return;
 	}
 
-	const prev = cache.get(user.id);
+	const ratelimitResult = await Cache.tryRatelimit(user.id, 'random_events');
 
 	// Max 1 event per 3h mins per user
-	if (prev && Date.now() - prev < Time.Hour * 3) {
-		return {};
-	}
-	cache.set(user.id, Date.now());
+	if (!ratelimitResult.success) return;
 
-	const event = randArrItem(RandomEvents);
+	const event = MathRNG.pick(RandomEvents);
 	const loot = new Bank();
 	if (event.outfit) {
 		for (const piece of event.outfit) {
@@ -214,7 +200,7 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 		}
 	}
 	loot.add(event.loot.roll());
-	await userStatsBankUpdate(user, 'random_event_completions_bank', new Bank().add(event.id));
+	await user.statsBankUpdate('random_event_completions_bank', new Bank().add(event.id));
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 	return {
 		itemsToAddWithCL: loot

@@ -1,20 +1,17 @@
-import { Time } from 'e';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import ForestryRations from '../../../lib/skilling/skills/cooking/forestersRations';
-import type { CreateForestersRationsActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
+import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function forestersRationCommand({
 	user,
-	channelID,
+	channelId,
 	name,
 	quantity
 }: {
 	user: MUser;
-	channelID: string;
+	channelId: string;
 	name: string;
 	quantity?: number;
 }) {
@@ -30,7 +27,7 @@ export async function forestersRationCommand({
 	}
 
 	const rationCookTime = Time.Second * 1.9;
-	const maxTripLength = calcMaxTripLength(user, 'Cooking');
+	const maxTripLength = await user.calcMaxTripLength('Cooking');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / rationCookTime);
 
@@ -62,9 +59,9 @@ export async function forestersRationCommand({
 	}
 	await user.removeItemsFromBank(finalCost);
 
-	await addSubTaskToActivityTask<CreateForestersRationsActivityTaskOptions>({
+	await ActivityManager.startTrip<CreateForestersRationsActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		rationName: forestryFood.name,
 		quantity,
 		duration,

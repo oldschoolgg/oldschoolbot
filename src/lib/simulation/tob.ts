@@ -1,11 +1,10 @@
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { percentChance, roll, sumArr } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
-import type { LootBank } from 'oldschooljs/dist/meta/types';
-import { JSONClone } from 'oldschooljs/dist/util';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { SimpleTable, sumArr } from '@oldschoolgg/toolkit';
+import { Bank, type LootBank, LootTable } from 'oldschooljs';
+import { clone } from 'remeda';
 
-import { TOBRooms } from '../data/tob';
-import { assert } from '../util/logError';
+import { TOBRooms } from '@/lib/data/tob.js';
+import { assert } from '@/lib/util/logError.js';
 
 interface TeamMember {
 	id: string;
@@ -135,7 +134,7 @@ class TheatreOfBloodClass {
 	}
 
 	public complete(_options: TheatreOfBloodOptions) {
-		const options = JSONClone(_options);
+		const options = clone(_options);
 		assert(options.team.length >= 1 || options.team.length <= 5, 'TOB team must have 1-5 members');
 
 		const maxPointsPerPerson = 22;

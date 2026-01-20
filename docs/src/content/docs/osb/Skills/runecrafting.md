@@ -4,13 +4,17 @@ title: "Runecrafting"
 
 You can train Runecrafting using [[/runecraft]].
 
+Runecrafting can also be trained at the [Guardians of the Rift](/osb/activities/guardians-of-the-rift) minigame using `[/minigames gotr start]`.
+When equipped in the skilling setup, the **Raiments of the eye** outfit grants up to **60%** extra runes during the minigame and while regular runecrafting.
+An **Abyssal lantern** can be purchased with Abyssal pearls to further boost barrier repairs and mined fragments based on your Firemaking level.
+
 ## Boosts
 
 There are several boosts available which apply to all runes except blood and soul runes. You can view the boosts for blood and soul runes on the [Dark Altar page](https://wiki.oldschool.gg/skills/runecrafting/dark-altar). The true blood altar uses the same boosts as regular runecrafting.
 
 - 5% for [[agility:60]] **OR** 10% for [[agility:90]]
 - 10% for Graceful (equipped in any setup)
-- 1% for [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) (works from bank but must be charged)
+- 1% for [Ring of endurance](../agility/hallowed-sepulchre#ring-of-endurance) (works from bank but must be charged)
 - 3% for Runecrafting cape
 - 3% for Ring of the elements **(Combination runes only)**
 
@@ -20,11 +24,11 @@ You can create Runecrafting pouches using [[/create]]. Similarly to in-game, hig
 
 | **Pouch**      | **Rc'ing Lvl Required To Use**        |
 | -------------- | ------------------------------------- |
-| Small Pouch    | [[runecrafting:1]]                    |
-| Medium Pouch   | [[runecrafting:25]]                   |
-| Large Pouch    | [[runecrafting:50]]                   |
-| Giant Pouch    | [[runecrafting:75]]                   |
-| Colossal Pouch | [[runecrafting:85]] + [[crafting:56]] |
+| Small Pouch    | [[runecraft:1]]                    |
+| Medium Pouch   | [[runecraft:25]]                   |
+| Large Pouch    | [[runecraft:50]]                   |
+| Giant Pouch    | [[runecraft:75]]                   |
+| Colossal Pouch | [[runecraft:85]] + [[crafting:56]] |
 
 - Requires an Abyssal needle and one of each lower tier pouch to create.
 
@@ -32,20 +36,20 @@ You can create Runecrafting pouches using [[/create]]. Similarly to in-game, hig
 
 | **Rune** | **Required Level**  |
 | -------- | ------------------- |
-| Air      | [[runecrafting:1]]  |
-| Mind     | [[runecrafting:2]]  |
-| Water    | [[runecrafting:5]]  |
-| Earth    | [[runecrafting:9]]  |
-| Fire     | [[runecrafting:14]] |
-| Body     | [[runecrafting:20]] |
-| Cosmic   | [[runecrafting:27]] |
-| Chaos    | [[runecrafting:35]] |
-| Astral   | [[runecrafting:40]] |
-| Nature   | [[runecrafting:44]] |
-| Law      | [[runecrafting:54]] |
-| Death    | [[runecrafting:65]] |
-| Blood    | [[runecrafting:77]] |
-| Wrath    | [[runecrafting:95]] |
+| Air      | [[runecraft:1]]  |
+| Mind     | [[runecraft:2]]  |
+| Water    | [[runecraft:5]]  |
+| Earth    | [[runecraft:9]]  |
+| Fire     | [[runecraft:14]] |
+| Body     | [[runecraft:20]] |
+| Cosmic   | [[runecraft:27]] |
+| Chaos    | [[runecraft:35]] |
+| Astral   | [[runecraft:40]] |
+| Nature   | [[runecraft:44]] |
+| Law      | [[runecraft:54]] |
+| Death    | [[runecraft:65]] |
+| Blood    | [[runecraft:77]] |
+| Wrath    | [[runecraft:95]] |
 
 - Blood runes crafted using the true blood altar also require the stats for Sins of the Father quest:
   - [[woodcutting:62]]
@@ -72,16 +76,16 @@ It's recommended to equip a staff in your skilling setup to provide infinite run
 
 | **Rune** | **Required Level**  |
 | -------- | ------------------- |
-| Mist     | [[runecrafting:6]]  |
-| Dust     | [[runecrafting:10]] |
-| Mud      | [[runecrafting:13]] |
-| Smoke    | [[runecrafting:15]] |
-| Steam    | [[runecrafting:19]] |
-| Lava     | [[runecrafting:23]] |
+| Mist     | [[runecraft:6]]  |
+| Dust     | [[runecraft:10]] |
+| Mud      | [[runecraft:13]] |
+| Smoke    | [[runecraft:15]] |
+| Steam    | [[runecraft:19]] |
+| Lava     | [[runecraft:23]] |
 
 ## Tiaras
 
-Crafting tiaras is a method of runecrafting training, albeit a very slow one. Tiaras don't have any use within the bot, except for being stored in [STASH units](../construction/stash-units.md). They can be created through the [[/runecraft]] command.
+Crafting tiaras is a method of runecrafting training, albeit a very slow one. Tiaras don't have any use within the bot, except for being stored in [STASH units](../construction/stash-units). They can be created through the [[/runecraft]] command.
 
 Tiaras don't have any level requirements for creating them. However, some tiaras including Cosmic, Death, Law & Wrath tiaras require 5, 10, 10 & 200 Quest Points respectively.
 
@@ -93,8 +97,8 @@ Blood runes and Soul runes can be crafted at the Dark Altar using [[/runecraft]]
 
 - [[mining:38]]
 - [[crafting:38]]
-- [[runecrafting:77]] for Bloods
-- [[runecrafting:90]] for Souls
+- [[runecraft:77]] for Bloods
+- [[runecraft:90]] for Souls
 - [[agility:73]] highly recommended
 
 ### Boosts
@@ -106,34 +110,34 @@ Blood runes and Soul runes can be crafted at the Dark Altar using [[/runecraft]]
 
 ## Fastest Route to 99:
 
-[[/runecraft rune\:Air Rune quantity\:103]] (until [[runecrafting:6]])  
-[[/runecraft rune\:Mist Rune quantity\:76]] (until [[runecrafting:10]])  
-[[/runecraft rune\:Dust Rune quantity\:75]] (until [[runecrafting:13]])  
-[[/runecraft rune\:Mud Rune quantity\:61]] (until [[runecrafting:15]])  
-[[/runecraft rune\:Smoke Rune quantity\:164]] (until [[runecrafting:19]])  
-[[/runecraft rune\:Steam Rune quantity\:232]] (until [[runecrafting:23]])  
-[[/runecraft rune\:Lava Rune]] (repeat until [[runecrafting:99]])
+[[/runecraft rune\:Air Rune quantity\:103]] (until [[runecraft:6]])
+[[/runecraft rune\:Mist Rune quantity\:76]] (until [[runecraft:10]])
+[[/runecraft rune\:Dust Rune quantity\:75]] (until [[runecraft:13]])
+[[/runecraft rune\:Mud Rune quantity\:61]] (until [[runecraft:15]])
+[[/runecraft rune\:Smoke Rune quantity\:164]] (until [[runecraft:19]])
+[[/runecraft rune\:Steam Rune quantity\:232]] (until [[runecraft:23]])
+[[/runecraft rune\:Lava Rune]] (repeat until [[runecraft:99]])
 
-**Materials Needed:**  
-1,241,520 Pure essence and 1000–2000 Binding necklaces  
-1,240,800 Earth rune, 293 Water rune, and 315 Air rune  
-(Abyssal sire drops Binding necklaces in quantities of 25)  
+**Materials Needed:**
+1,241,520 Pure essence and 1000–2000 Binding necklaces
+1,240,800 Earth rune, 293 Water rune, and 315 Air rune
+(Abyssal sire drops Binding necklaces in quantities of 25)
 This assumes you have a staff providing infinite fire runes in your skilling setup.
 
-**For each lap of Lava runes:**  
-1 Earth talisman or 2 Astral rune + 7 Fire rune + 7 Water rune for Magic Imbue ([[magic:82]]),  
+**For each lap of Lava runes:**
+1 Earth talisman or 2 Astral rune + 7 Fire rune + 7 Water rune for Magic Imbue ([[magic:82]]),
 1–2 charges from Ring of dueling(8), and sometimes a dose of Stamina potion(4).
 
 ### Alternative Route to 99 (more profitable):
 
-[[/runecraft rune\:Air Rune quantity\:17]]  
-[[/runecraft rune\:Mind Rune quantity\:56]]  
-[[/runecraft rune\:Water Rune quantity\:97]]  
-[[/runecraft rune\:Earth Rune quantity\:176]]  
-[[/runecraft rune\:Fire Rune quantity\:338]]  
-[[/runecraft rune\:Body Rune quantity\:4368]]  
-[[/runecraft rune\:Astral Rune]] – to [[runecrafting:77]]  
-[[/runecraft rune\:Blood Rune]] – to [[runecrafting:90]] (or 99)  
+[[/runecraft rune\:Air Rune quantity\:17]]
+[[/runecraft rune\:Mind Rune quantity\:56]]
+[[/runecraft rune\:Water Rune quantity\:97]]
+[[/runecraft rune\:Earth Rune quantity\:176]]
+[[/runecraft rune\:Fire Rune quantity\:338]]
+[[/runecraft rune\:Body Rune quantity\:4368]]
+[[/runecraft rune\:Astral Rune]] – to [[runecraft:77]]
+[[/runecraft rune\:Blood Rune]] – to [[runecraft:90]] (or 99)
 [[/runecraft rune\:Soul Rune]] – to whatever; this is best XP/hr at the Dark Altar!
 
 **Materials Needed:** 170,382 Pure essence

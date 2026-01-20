@@ -1,24 +1,18 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { calcWhatPercent, percentChance } from 'e';
+import { calcWhatPercent, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants';
-import type { MinigameName } from '../../../lib/settings/settings';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
-import { gauntlet } from '../../../lib/simulation/gauntlet';
-import type { GauntletOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { gauntlet } from '@/lib/simulation/gauntlet.js';
+import type { GauntletOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',
-	async run(data: GauntletOptions) {
-		const { channelID, quantity, userID, corrupted } = data;
-		const user = await mUserFetch(userID);
+	async run(data: GauntletOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, corrupted } = data;
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
-		const kc = await getMinigameScore(user.id, key);
+		const kc = await user.fetchMinigameScore(key);
 
 		let chanceOfDeath = corrupted ? 6 : 3;
 		chanceOfDeath += Math.max(0, calcWhatPercent(50 - kc, 50) / 2);
@@ -27,7 +21,7 @@ export const gauntletTask: MinionTask = {
 
 		let deaths = 0;
 		for (let i = 0; i < quantity; i++) {
-			const died = percentChance(chanceOfDeath);
+			const died = rng.percentChance(chanceOfDeath);
 			if (died) {
 				deaths++;
 			}
@@ -42,16 +36,15 @@ export const gauntletTask: MinionTask = {
 			loot.add('Gauntlet cape');
 		}
 
-		await incrementMinigameScore(userID, key, quantity - deaths);
+		await user.incrementMinigameScore(key, quantity - deaths);
 
-		const { previousCL } = await transactItems({
-			userID: user.id,
+		const { previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 		const name = `${corrupted ? 'Corrupted' : 'Normal'} Gauntlet`;
 
-		const newKc = await getMinigameScore(user.id, key);
+		const newKc = await user.fetchMinigameScore(key);
 
 		const str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
 
@@ -66,7 +59,7 @@ export const gauntletTask: MinionTask = {
 			);
 		}
 
-		updateBankSetting('gauntlet_loot', loot);
+		await ClientSettings.updateBankSetting('gauntlet_loot', loot);
 
 		const image = await makeBankImage({
 			bank: loot,
@@ -75,6 +68,6 @@ export const gauntletTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

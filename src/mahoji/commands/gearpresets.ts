@@ -1,23 +1,12 @@
-import { type CommandOption, type CommandRunOptions, cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { GearPreset } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { EquipmentSlot, type GearSetup, type GearSetupType, GearSetupTypes, isValidGearSetup } from '@oldschoolgg/gear';
+import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
-import { ParsedCustomEmojiWithGroups, globalConfig } from '../../lib/constants';
-import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import type { GearSetup, GearSetupType } from '../../lib/gear/types';
-import { GearSetupTypes } from '../../lib/gear/types';
-
-import { Gear, defaultGear, globalPresets } from '../../lib/structures/Gear';
-import { EquipmentSlot, isValidGearSetup, isValidNickname } from '../../lib/util';
-import { emojiServers } from '../../lib/util/cachedUserIDs';
-import { getItem } from '../../lib/util/getOSItem';
-import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
-import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-
-function maxPresets(user: MUser) {
-	return user.perkTier() * 2 + 4;
-}
+import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/discord/index.js';
+import { globalPresets } from '@/lib/gear/gearPresets.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { gearEquipCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 
 type InputGear = Partial<Record<EquipmentSlot, string | undefined>>;
 type ParsedInputGear = Partial<Record<EquipmentSlot, number>>;
@@ -29,7 +18,7 @@ function parseInputGear(inputGear: InputGear) {
 			remove.push(key as EquipmentSlot);
 			continue;
 		}
-		const item = getItem(val);
+		const item = Items.getItem(val);
 		if (item && item.equipment?.slot === key) {
 			gear[key as EquipmentSlot] = item.id;
 		}
@@ -37,48 +26,19 @@ function parseInputGear(inputGear: InputGear) {
 	return { gear, remove };
 }
 
-function gearPresetToGear(preset: GearPreset): GearSetup {
-	function gearItem(val: null | number) {
-		if (val === null) return null;
-		return {
-			item: val,
-			quantity: 1
-		};
-	}
-	const newGear = { ...defaultGear };
-	newGear.head = gearItem(preset.head);
-	newGear.neck = gearItem(preset.neck);
-	newGear.body = gearItem(preset.body);
-	newGear.legs = gearItem(preset.legs);
-	newGear.cape = gearItem(preset.cape);
-	newGear['2h'] = gearItem(preset.two_handed);
-	newGear.hands = gearItem(preset.hands);
-	newGear.feet = gearItem(preset.feet);
-	newGear.shield = gearItem(preset.shield);
-	newGear.weapon = gearItem(preset.weapon);
-	newGear.ring = gearItem(preset.ring);
-	newGear.ammo = preset.ammo
-		? {
-				item: preset.ammo,
-				quantity: 1
-			}
-		: null;
-	return newGear;
-}
 export async function createOrEditGearSetup(
 	user: MUser,
 	setupToCopy: GearSetupType | undefined,
 	name: string,
 	isUpdating: boolean,
 	gearInput: InputGear,
-	emoji: string | undefined,
 	pinned_setup: GearSetupType | 'reset' | undefined
 ) {
 	if (name) {
 		name = cleanString(name).toLowerCase();
 	}
-	if (name.length > 24) return 'Gear preset names must be less than 25 characters long.';
 	if (!name) return "You didn't supply a name.";
+	if (name.length > 24) return 'Gear preset names must be less than 25 characters long.';
 	if (!isUpdating && !isValidNickname(name)) {
 		return 'Invalid name.';
 	}
@@ -95,7 +55,7 @@ export async function createOrEditGearSetup(
 		return 'You cant update a gearpreset you dont have.';
 	}
 
-	const max = maxPresets(user);
+	const max = await user.calcMaxGearPresets();
 	if (userPresets.length >= max && !isUpdating) {
 		return `The maximum amount of gear presets you can have is ${max}, you can unlock more slots by becoming a patron!`;
 	}
@@ -105,40 +65,28 @@ export async function createOrEditGearSetup(
 	if (setupToCopy) {
 		gearSetup = user.gear[setupToCopy];
 	} else if (isUpdating) {
-		gearSetup = gearPresetToGear(userPresets.find(pre => pre.name === name)!);
+		gearSetup = Gear.fromGearPreset(userPresets.find(pre => pre.name === name)!);
 	}
 
 	// This is required to enable removal of items while editing
 	for (const slot of forceRemove) {
-		if (gearSetup !== null) gearSetup[slot] = null;
-	}
-
-	if (emoji) {
-		const res = ParsedCustomEmojiWithGroups.exec(emoji);
-		if (!res || !res[3]) return "That's not a valid emoji.";
-		emoji = res[3];
-
-		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && globalConfig.isProduction) {
-			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
-		}
+		if (gearSetup !== null) gearSetup.set(slot, null);
 	}
 
 	const gearData = {
-		head: parsedInputGear.head ?? gearSetup?.head?.item ?? null,
-		neck: parsedInputGear.neck ?? gearSetup?.neck?.item ?? null,
-		body: parsedInputGear.body ?? gearSetup?.body?.item ?? null,
-		legs: parsedInputGear.legs ?? gearSetup?.legs?.item ?? null,
-		cape: parsedInputGear.cape ?? gearSetup?.cape?.item ?? null,
-		two_handed: parsedInputGear['2h'] ?? gearSetup?.['2h']?.item ?? null,
-		hands: parsedInputGear.hands ?? gearSetup?.hands?.item ?? null,
-		feet: parsedInputGear.feet ?? gearSetup?.feet?.item ?? null,
-		shield: parsedInputGear.shield ?? gearSetup?.shield?.item ?? null,
-		weapon: parsedInputGear.weapon ?? gearSetup?.weapon?.item ?? null,
-		ring: parsedInputGear.ring ?? gearSetup?.ring?.item ?? null,
-		ammo: parsedInputGear.ammo ?? gearSetup?.ammo?.item ?? null,
-		ammo_qty: gearSetup?.ammo?.quantity ?? null,
-		emoji_id: emoji ?? undefined,
+		head: parsedInputGear.head ?? gearSetup?.get('head')?.item ?? null,
+		neck: parsedInputGear.neck ?? gearSetup?.get('neck')?.item ?? null,
+		body: parsedInputGear.body ?? gearSetup?.get('body')?.item ?? null,
+		legs: parsedInputGear.legs ?? gearSetup?.get('legs')?.item ?? null,
+		cape: parsedInputGear.cape ?? gearSetup?.get('cape')?.item ?? null,
+		two_handed: parsedInputGear['2h'] ?? gearSetup?.get('2h')?.item ?? null,
+		hands: parsedInputGear.hands ?? gearSetup?.get('hands')?.item ?? null,
+		feet: parsedInputGear.feet ?? gearSetup?.get('feet')?.item ?? null,
+		shield: parsedInputGear.shield ?? gearSetup?.get('shield')?.item ?? null,
+		weapon: parsedInputGear.weapon ?? gearSetup?.get('weapon')?.item ?? null,
+		ring: parsedInputGear.ring ?? gearSetup?.get('ring')?.item ?? null,
+		ammo: parsedInputGear.ammo ?? gearSetup?.get('ammo')?.item ?? null,
+		ammo_qty: gearSetup?.get('ammo')?.quantity ?? null,
 		pinned_setup: !pinned_setup || pinned_setup === 'reset' ? undefined : pinned_setup
 	};
 
@@ -155,29 +103,24 @@ export async function createOrEditGearSetup(
 			}
 		},
 		update: {
-			...gearData,
-			times_equipped: {
-				increment: 1
-			}
+			...gearData
 		},
 		create: {
 			...gearData,
 			name,
-			user_id: user.id,
-			times_equipped: 1
+			user_id: user.id
 		}
 	});
 
 	return `Successfully ${isUpdating ? 'updated the' : 'made a new'} preset called \`${preset.name}\`.`;
 }
-
-function makeSlotOption(slot: EquipmentSlot): CommandOption {
-	return {
-		type: ApplicationCommandOptionType.String,
+const slotOptions = Object.values(EquipmentSlot).map(slot =>
+	defineOption({
+		type: 'String',
 		name: slot,
 		description: `The item you want to put in the ${slot} slot in this gear setup.`,
 		required: false,
-		autocomplete: async (value: string) => {
+		autocomplete: async ({ value }: StringAutoComplete) => {
 			const matchingItems = (
 				value
 					? allEquippableItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase()))
@@ -192,15 +135,17 @@ function makeSlotOption(slot: EquipmentSlot): CommandOption {
 			}
 			return matchingItems;
 		}
-	};
-}
+	})
+);
 
-export const gearPresetsCommand: OSBMahojiCommand = {
+const setupOption = choicesOf([...GearSetupTypes, 'reset']);
+
+export const gearPresetsCommand = defineCommand({
 	name: 'gearpresets',
 	description: 'Manage, equip, unequip your gear presets.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View your gear setups.',
 			options: [
@@ -212,7 +157,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'equip',
 			description: 'Equip an item or preset to one of your gear setups.',
 			options: [
@@ -228,12 +173,12 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'create',
 			description: 'Create a new gear preset.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					required: true,
 					description: 'The name to give this preset.'
@@ -244,36 +189,30 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					name: 'copy_setup',
 					description: 'Pick a setup to copy/use for this preset.'
 				},
-				...Object.values(EquipmentSlot).map(makeSlotOption),
+				...slotOptions,
 				{
-					type: ApplicationCommandOptionType.String,
-					required: false,
-					name: 'emoji',
-					description: 'Pick an emoji for the preset.'
-				},
-				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					required: false,
 					name: 'pinned_setup',
 					description: 'Pick a setup to pin this setup too.',
-					choices: GearSetupTypes.map(i => ({ value: i, name: i }))
+					choices: choicesOf(GearSetupTypes)
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'edit',
 			description: 'Edit an existing gear preset.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'gear_preset',
 					description: 'The gear preset you want to select.',
 					required: true,
-					autocomplete: async (value, user) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const presets = await prisma.gearPreset.findMany({
 							where: {
-								user_id: user.id
+								user_id: userId
 							},
 							select: {
 								name: true
@@ -284,36 +223,30 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				},
-				...Object.values(EquipmentSlot).map(makeSlotOption),
+				...slotOptions,
 				{
-					type: ApplicationCommandOptionType.String,
-					required: false,
-					name: 'emoji',
-					description: 'Pick an emoji for the preset.'
-				},
-				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					required: false,
 					name: 'pinned_setup',
 					description: 'Pick a setup to pin this setup too.',
-					choices: [...GearSetupTypes, 'reset'].map(i => ({ value: i, name: i }))
+					choices: setupOption
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'delete',
 			description: 'Delete an existing gear preset.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'preset',
 					description: 'The gear preset you want to delete.',
 					required: false,
-					autocomplete: async (value, user) => {
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
 						const presets = await prisma.gearPreset.findMany({
 							where: {
-								user_id: user.id
+								user_id: userId
 							},
 							select: {
 								name: true
@@ -327,18 +260,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction
-	}: CommandRunOptions<{
-		equip?: { gear_setup: GearSetupType; preset: string };
-		create?: InputGear & { copy_setup?: GearSetupType; name: string; emoji?: string; pinned_setup?: GearSetupType };
-		edit?: InputGear & { gear_preset: string; emoji?: string; pinned_setup?: GearSetupType };
-		delete?: { preset: string };
-		view?: { preset: string };
-	}>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, interaction }) => {
 		if (options.create) {
 			return createOrEditGearSetup(
 				user,
@@ -346,7 +268,6 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				options.create.name,
 				false,
 				options.create,
-				options.create.emoji,
 				options.create.pinned_setup
 			);
 		}
@@ -357,13 +278,12 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				options.edit.gear_preset,
 				true,
 				options.edit,
-				options.edit.emoji,
 				options.edit.pinned_setup
 			);
 		}
 		if (options.delete) {
 			const preset = await prisma.gearPreset.findFirst({
-				where: { user_id: userID, name: options.delete.preset }
+				where: { user_id: user.id, name: options.delete.preset }
 			});
 			if (!preset) {
 				return "You don't have a gear preset with that name.";
@@ -372,7 +292,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			await prisma.gearPreset.delete({
 				where: {
 					user_id_name: {
-						user_id: userID,
+						user_id: user.id,
 						name: preset.name
 					}
 				}
@@ -383,7 +303,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
-				userID: user.id,
+				user,
 				setup: options.equip.gear_setup,
 				item: undefined,
 				items: undefined,
@@ -396,13 +316,13 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		if (options.view) {
 			const preset =
 				(await prisma.gearPreset.findFirst({
-					where: { user_id: userID.toString(), name: options.view.preset }
+					where: { user_id: user.id, name: options.view.preset }
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
-			const image = await generateGearImage(user, new Gear(preset), null, null);
-			return { files: [{ attachment: image, name: 'preset.jpg' }] };
+			const image = await user.generateGearImage({ gearSetup: new Gear(preset) });
+			return { files: [{ buffer: image, name: 'preset.jpg' }] };
 		}
 
 		return 'Invalid command.';
 	}
-};
+});

@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
-import { exponentialPercentScale } from '../src/util';
+
+import { exponentialPercentScale } from '../src/util/math/index.js';
 
 test('exponentialPercentScale', () => {
 	for (let i = 0; i < 100; i++) {

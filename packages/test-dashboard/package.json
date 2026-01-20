@@ -1,0 +1,23 @@
+{
+	"name": "@oldschoolgg/test-dashboard",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"start": "vite",
+		"build": "tsc -b && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@tailwindcss/vite": "4.1.17",
+		"preact": "10.28.2",
+		"react-use-websocket": "^4.13.0",
+		"tailwindcss": "^4.1.17",
+		"oldschooljs": "workspace:*",
+		"wouter-preact": "^3.7.1"
+	},
+	"devDependencies": {
+		"@preact/preset-vite": "2.10.2",
+		"vite": "^6.4.1"
+	}
+}

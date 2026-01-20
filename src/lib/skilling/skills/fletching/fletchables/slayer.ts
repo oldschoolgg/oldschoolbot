@@ -1,8 +1,7 @@
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
-import { SlayerTaskUnlocksEnum } from '../../../../slayer/slayerUnlocks';
-import itemID from '../../../../util/itemID';
-import type { Fletchable } from '../../../types';
+import type { Fletchable } from '@/lib/skilling/types.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 
 const Slayer: Fletchable[] = [
 	{
@@ -82,4 +81,14 @@ const Slayer: Fletchable[] = [
 	}
 ];
 
-export default Slayer;
+const get = (id: number) => {
+	const found = Slayer.find(f => f.id === id);
+	if (!found) throw new Error(`Slayer fletchable with ID "${id}" not found.`);
+	return found;
+};
+
+const BroadArrows = get(itemID('Broad arrows'));
+const BroadBolts = get(itemID('Broad bolts'));
+const AmethystBroadBolts = get(itemID('Amethyst broad bolts'));
+
+export { Slayer, BroadArrows, BroadBolts, AmethystBroadBolts };

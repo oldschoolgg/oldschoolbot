@@ -1,21 +1,18 @@
-import { objectEntries } from 'e';
-import { Monsters } from 'oldschooljs';
+import { objectEntries } from '@oldschoolgg/toolkit';
+import { EMonster, Items, Monsters, resolveItems } from 'oldschooljs';
 
-import type { Minigame } from '@prisma/client';
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { MAX_QP } from './minions/data/quests';
-import type { DiaryTier, DiaryTierName } from './minions/types';
-import { DiaryID } from './minions/types';
-import { Minigames } from './settings/minigames';
-import Skillcapes from './skilling/skillcapes';
-import { courses } from './skilling/skills/agility';
-import { MUserStats } from './structures/MUserStats';
-import type { Skills } from './types';
-import { formatList } from './util';
-import getOSItem from './util/getOSItem';
-import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
+import type { Minigame } from '@/prisma/main.js';
+import { MAX_QP } from '@/lib/minions/data/quests.js';
+import type { DiaryTier, DiaryTierName } from '@/lib/minions/types.js';
+import { DiaryID } from '@/lib/minions/types.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import Skillcapes from '@/lib/skilling/skillcapes.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { Skills } from '@/lib/types/index.js';
+import { formatList, formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
-interface Diary {
+export interface Diary {
 	name: string;
 	id: DiaryID;
 	alias?: string[];
@@ -54,7 +51,12 @@ export function userhasDiaryTierSync(
 		const unownedItems = tier.ownedItems.filter(i => !bank.has(i));
 		if (unownedItems.length > 0) {
 			canDo = false;
-			reasons.push(`You don't own ${formatList(unownedItems.map(itemNameFromID), 'or')}`);
+			reasons.push(
+				`You don't own ${formatList(
+					unownedItems.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}`
+			);
 		}
 	}
 
@@ -63,7 +65,10 @@ export function userhasDiaryTierSync(
 		if (unownedItems.length > 0) {
 			canDo = false;
 			reasons.push(
-				`You don't have **${formatList(unownedItems.map(itemNameFromID), 'or')}** in your collection log`
+				`You don't have **${formatList(
+					unownedItems.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}** in your collection log`
 			);
 		}
 	}
@@ -89,7 +94,7 @@ export function userhasDiaryTierSync(
 	if (tier.lapsReqs) {
 		const entries = Object.entries(tier.lapsReqs);
 		for (const [name, score] of entries) {
-			const course = courses.find(c => c.name === name)!;
+			const course = Agility.Courses.find(c => c.name === name)!;
 
 			if (!lapScores[course.id] || lapScores[course.id] < score) {
 				canDo = false;
@@ -99,10 +104,9 @@ export function userhasDiaryTierSync(
 	}
 
 	if (tier.monsterScores) {
-		const entries = Object.entries(tier.monsterScores);
-		for (const [name, score] of entries) {
-			const mon = Monsters.find(mon => mon.name === name)!;
-			if (!monsterScores[mon.id] || monsterScores[mon.id] < score) {
+		for (const [id, score] of objectEntries(tier.monsterScores)) {
+			const mon = Monsters.get(Number(id))!;
+			if (!monsterScores[mon.id] || monsterScores[mon.id] < score!) {
 				canDo = false;
 				reasons.push(
 					`You don't have **${score} ${mon.name}** KC, you have **${monsterScores[mon.id] ?? 0}** KC`
@@ -127,24 +131,13 @@ export function userhasDiaryTierSync(
 	};
 }
 
-export async function userhasDiaryTier(
-	user: MUser,
-	tier: [DiaryID, DiaryTierName] | DiaryTier
-): Promise<[boolean, string, Diary]> {
-	const result = userhasDiaryTierSync(user, tier, {
-		stats: await MUserStats.fromID(user.id),
-		minigameScores: await user.fetchMinigames()
-	});
-	return [result.hasDiary, result.reasons, result.diaryGroup];
-}
-
-export const WesternProv: Diary = {
+const WesternProv: Diary = {
 	name: 'Western Provinces',
 	id: DiaryID.WesternProvinces,
 	alias: ['western', 'wp', 'west', 'west prov'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Western banner 1')],
+		items: [Items.getOrThrow('Western banner 1')],
 		skillReqs: {
 			fletching: 20,
 			hunter: 9,
@@ -162,7 +155,7 @@ export const WesternProv: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Western banner 2')],
+		items: [Items.getOrThrow('Western banner 2')],
 		skillReqs: {
 			agility: 37,
 			cooking: 42,
@@ -183,7 +176,7 @@ export const WesternProv: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Western banner 3')],
+		items: [Items.getOrThrow('Western banner 3')],
 		skillReqs: {
 			agility: 56,
 			construction: 65,
@@ -208,12 +201,12 @@ export const WesternProv: Diary = {
 		},
 		qp: 92,
 		monsterScores: {
-			Zulrah: 1
+			[EMonster.ZULRAH]: 1
 		}
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Western banner 4')],
+		items: [Items.getOrThrow('Western banner 4')],
 		skillReqs: {
 			agility: 85,
 			attack: 42,
@@ -230,20 +223,20 @@ export const WesternProv: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Magic longbow', 'Void knight top', 'Void knight robe', 'Void knight gloves']),
 		monsterScores: {
-			'Thermonuclear smoke devil': 1
+			[EMonster.THERMONUCLEAR_SMOKE_DEVIL]: 1
 		},
 		minigameReqs: {
 			big_chompy_bird_hunting: 1000
 		}
 	}
 };
-export const ArdougneDiary: Diary = {
+const ArdougneDiary: Diary = {
 	name: 'Ardougne',
 	id: DiaryID.Ardougne,
 	alias: ['ardy', 'ardougn'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Ardougne cloak 1')],
+		items: [Items.getOrThrow('Ardougne cloak 1')],
 		skillReqs: {
 			thieving: 5
 		},
@@ -254,7 +247,7 @@ export const ArdougneDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Ardougne cloak 2')],
+		items: [Items.getOrThrow('Ardougne cloak 2')],
 		skillReqs: {
 			agility: 39,
 			attack: 50,
@@ -274,7 +267,7 @@ export const ArdougneDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Ardougne cloak 3')],
+		items: [Items.getOrThrow('Ardougne cloak 3')],
 		skillReqs: {
 			agility: 56,
 			construction: 50,
@@ -306,7 +299,7 @@ export const ArdougneDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Ardougne cloak 4')],
+		items: [Items.getOrThrow('Ardougne cloak 4')],
 		skillReqs: {
 			agility: 90,
 			cooking: 91,
@@ -334,7 +327,7 @@ const DesertDiary: Diary = {
 	id: DiaryID.Desert,
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Desert amulet 1')],
+		items: [Items.getOrThrow('Desert amulet 1')],
 		skillReqs: {
 			hunter: 5,
 			thieving: 21
@@ -347,7 +340,7 @@ const DesertDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Desert amulet 2')],
+		items: [Items.getOrThrow('Desert amulet 2')],
 		skillReqs: {
 			ranged: 37,
 			crafting: 50,
@@ -368,7 +361,7 @@ const DesertDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Desert amulet 3')],
+		items: [Items.getOrThrow('Desert amulet 3')],
 		skillReqs: {
 			fletching: 10,
 			ranged: 40,
@@ -389,13 +382,13 @@ const DesertDiary: Diary = {
 			'Pollnivneach Rooftop Course': 1
 		},
 		monsterScores: {
-			'Dust Devil': 1
+			[EMonster.DUST_DEVIL]: 1
 		},
 		collectionLogReqs: resolveItems(['Mithril platebody'])
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Desert amulet 4')],
+		items: [Items.getOrThrow('Desert amulet 4')],
 		skillReqs: {
 			agility: 15,
 			herblore: 10,
@@ -413,13 +406,13 @@ const DesertDiary: Diary = {
 	}
 };
 
-export const FaladorDiary: Diary = {
+const FaladorDiary: Diary = {
 	name: 'Falador',
 	id: DiaryID.Falador,
 	alias: ['fally', 'fal'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Falador shield 1')],
+		items: [Items.getOrThrow('Falador shield 1')],
 		skillReqs: {
 			agility: 5,
 			construction: 16,
@@ -429,7 +422,7 @@ export const FaladorDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Falador shield 2')],
+		items: [Items.getOrThrow('Falador shield 2')],
 		skillReqs: {
 			agility: 42,
 			cooking: 20,
@@ -451,7 +444,7 @@ export const FaladorDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Falador shield 3')],
+		items: [Items.getOrThrow('Falador shield 3')],
 		skillReqs: {
 			agility: 59,
 			attack: 65,
@@ -473,8 +466,8 @@ export const FaladorDiary: Diary = {
 		qp: 32,
 		collectionLogReqs: resolveItems(['Mind rune', 'Prospector helmet']),
 		monsterScores: {
-			'Skeletal Wyvern': 1,
-			'Blue Dragon': 1
+			[EMonster.SKELETAL_WYVERN]: 1,
+			[EMonster.BLUE_DRAGON]: 1
 		},
 		lapsReqs: {
 			'Falador Rooftop Course': 1
@@ -482,7 +475,7 @@ export const FaladorDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Falador shield 4')],
+		items: [Items.getOrThrow('Falador shield 4')],
 		skillReqs: {
 			agility: 80,
 			farming: 91,
@@ -514,7 +507,7 @@ const FremennikDiary: Diary = {
 	alias: ['fremmy', 'fremenik', 'fremmenik', 'frem'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Fremennik sea boots 1')],
+		items: [Items.getOrThrow('Fremennik sea boots 1')],
 		skillReqs: {
 			crafting: 23,
 			firemaking: 15,
@@ -528,7 +521,7 @@ const FremennikDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Fremennik sea boots 2')],
+		items: [Items.getOrThrow('Fremennik sea boots 2')],
 		skillReqs: {
 			agility: 35,
 			construction: 37,
@@ -543,7 +536,7 @@ const FremennikDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Fremennik sea boots 3')],
+		items: [Items.getOrThrow('Fremennik sea boots 3')],
 		skillReqs: {
 			agility: 32,
 			construction: 20,
@@ -564,7 +557,7 @@ const FremennikDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Fremennik sea boots 4')],
+		items: [Items.getOrThrow('Fremennik sea boots 4')],
 		skillReqs: {
 			agility: 80,
 			crafting: 80,
@@ -575,27 +568,27 @@ const FremennikDiary: Diary = {
 			strength: 70
 		},
 		monsterScores: {
-			'Dagannoth Rex': 1,
-			'Dagannoth Prime': 1,
-			'Dagannoth Supreme': 1,
-			'General Graardor': 1,
-			"Kree'arra": 1,
-			'Commander Zilyana': 1,
-			"K'ril Tsutsaroth": 1,
-			'Spiritual Mage': 1
+			[EMonster.DAGANNOTH_REX]: 1,
+			[EMonster.DAGANNOTH_PRIME]: 1,
+			[EMonster.DAGANNOTH_SUPREME]: 1,
+			[EMonster.GENERAL_GRAARDOR]: 1,
+			[EMonster.KREEARRA]: 1,
+			[EMonster.COMMANDER_ZILYANA]: 1,
+			[EMonster.KRIL_TSUTSAROTH]: 1,
+			[EMonster.SPIRITUAL_MAGE]: 1
 		},
 		collectionLogReqs: resolveItems(['Astral rune', 'Dragonstone amulet']),
 		qp: 50
 	}
 };
 
-export const KandarinDiary: Diary = {
+const KandarinDiary: Diary = {
 	name: 'Kandarin',
 	id: DiaryID.Kandarin,
 	alias: ['kand'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Kandarin headgear 1')],
+		items: [Items.getOrThrow('Kandarin headgear 1')],
 		skillReqs: {
 			agility: 20,
 			farming: 13,
@@ -605,7 +598,7 @@ export const KandarinDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Kandarin headgear 2')],
+		items: [Items.getOrThrow('Kandarin headgear 2')],
 		skillReqs: {
 			agility: 36,
 			cooking: 43,
@@ -621,7 +614,7 @@ export const KandarinDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Bass', 'Maple shortbow', 'Limpwurt root', 'Coal']),
 		monsterScores: {
-			'Fire Giant': 1
+			[EMonster.FIRE_GIANT]: 1
 		},
 		minigameReqs: {
 			barb_assault: 1
@@ -629,7 +622,7 @@ export const KandarinDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Kandarin headgear 3')],
+		items: [Items.getOrThrow('Kandarin headgear 3')],
 		skillReqs: {
 			agility: 60,
 			construction: 50,
@@ -650,12 +643,12 @@ export const KandarinDiary: Diary = {
 			"Seers' Village Rooftop Course": 1
 		},
 		monsterScores: {
-			'Mithril Dragon': 1
+			[EMonster.MITHRIL_DRAGON]: 1
 		}
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Kandarin headgear 4')],
+		items: [Items.getOrThrow('Kandarin headgear 4')],
 		skillReqs: {
 			agility: 60,
 			cooking: 80,
@@ -679,25 +672,25 @@ export const KandarinDiary: Diary = {
 	}
 };
 
-export const KaramjaDiary: Diary = {
+const KaramjaDiary: Diary = {
 	name: 'Karamja',
 	id: DiaryID.Karamja,
 	alias: ['ramja', 'ram', 'karam', 'kar'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Karamja gloves 1')],
+		items: [Items.getOrThrow('Karamja gloves 1')],
 		skillReqs: {
 			agility: 15,
 			mining: 40
 		},
 		collectionLogReqs: resolveItems(['Gold ore']),
 		monsterScores: {
-			Jogre: 1
+			[EMonster.JOGRE]: 1
 		}
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Karamja gloves 2')],
+		items: [Items.getOrThrow('Karamja gloves 2')],
 		skillReqs: {
 			agility: 12,
 			cooking: 16,
@@ -711,7 +704,7 @@ export const KaramjaDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Karamja gloves 3')],
+		items: [Items.getOrThrow('Karamja gloves 3')],
 		skillReqs: {
 			agility: 53,
 			cooking: 53,
@@ -727,12 +720,12 @@ export const KaramjaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Nature rune', 'Cooked karambwan']),
 		monsterScores: {
-			'Steel Dragon': 1
+			[EMonster.STEEL_DRAGON]: 1
 		}
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Karamja gloves 4')],
+		items: [Items.getOrThrow('Karamja gloves 4')],
 		skillReqs: {
 			farming: 72,
 			herblore: 87,
@@ -742,13 +735,13 @@ export const KaramjaDiary: Diary = {
 	}
 };
 
-export const KourendKebosDiary: Diary = {
+const KourendKebosDiary: Diary = {
 	name: 'Kourend & Kebos',
 	id: DiaryID.KourendKebos,
 	alias: ['kebos', 'kouren', 'kourend', 'kk', 'kek'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem("Rada's blessing 1")],
+		items: [Items.getOrThrow("Rada's blessing 1")],
 		skillReqs: {
 			construction: 25,
 			fishing: 20,
@@ -760,7 +753,7 @@ export const KourendKebosDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem("Rada's blessing 2")],
+		items: [Items.getOrThrow("Rada's blessing 2")],
 		skillReqs: {
 			agility: 49,
 			crafting: 30,
@@ -778,7 +771,7 @@ export const KourendKebosDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem("Rada's blessing 3"), getOSItem('Ash sanctifier')],
+		items: [Items.getOrThrow("Rada's blessing 3"), Items.getOrThrow('Ash sanctifier')],
 		skillReqs: {
 			farming: 74,
 			magic: 66,
@@ -790,13 +783,13 @@ export const KourendKebosDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Adamantite bar']),
 		monsterScores: {
-			Wyrm: 1,
-			'Lizardman Shaman': 1
+			[EMonster.WYRM]: 1,
+			[EMonster.LIZARDMAN_SHAMAN]: 1
 		}
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem("Rada's blessing 4")],
+		items: [Items.getOrThrow("Rada's blessing 4")],
 		skillReqs: {
 			cooking: 84,
 			crafting: 38,
@@ -811,20 +804,20 @@ export const KourendKebosDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Blood rune', 'Redwood logs', 'Dark totem', 'Raw anglerfish']),
 		monsterScores: {
-			Hydra: 1
+			[EMonster.HYDRA]: 1
 		},
 		minigameReqs: {
 			raids: 1
 		}
 	}
 };
-export const LumbridgeDraynorDiary: Diary = {
+const LumbridgeDraynorDiary: Diary = {
 	name: 'Lumbridge & Draynor',
 	id: DiaryID.LumbridgeDraynor,
 	alias: ['lumb', 'draynor', 'lumbridge', 'led'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem("Explorer's ring 1")],
+		items: [Items.getOrThrow("Explorer's ring 1")],
 		skillReqs: {
 			agility: 10,
 			firemaking: 15,
@@ -841,7 +834,7 @@ export const LumbridgeDraynorDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem("Explorer's ring 2")],
+		items: [Items.getOrThrow("Explorer's ring 2")],
 		skillReqs: {
 			agility: 20,
 			crafting: 38,
@@ -861,7 +854,7 @@ export const LumbridgeDraynorDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem("Explorer's ring 3")],
+		items: [Items.getOrThrow("Explorer's ring 3")],
 		skillReqs: {
 			agility: 46,
 			crafting: 70,
@@ -876,7 +869,7 @@ export const LumbridgeDraynorDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem("Explorer's ring 4")],
+		items: [Items.getOrThrow("Explorer's ring 4")],
 		skillReqs: {
 			agility: 70,
 			ranged: 70,
@@ -891,13 +884,13 @@ export const LumbridgeDraynorDiary: Diary = {
 	}
 };
 
-export const MorytaniaDiary: Diary = {
+const MorytaniaDiary: Diary = {
 	name: 'Morytania',
 	id: DiaryID.Morytania,
 	alias: ['mory', 'swamp'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Morytania legs 1')],
+		items: [Items.getOrThrow('Morytania legs 1')],
 		skillReqs: {
 			cooking: 12,
 			crafting: 15,
@@ -905,14 +898,14 @@ export const MorytaniaDiary: Diary = {
 			slayer: 15
 		},
 		monsterScores: {
-			Banshee: 1,
-			Ghoul: 1,
-			Werewolf: 1
+			[EMonster.BANSHEE]: 1,
+			[EMonster.GHOUL]: 1,
+			[EMonster.WEREWOLF]: 1
 		}
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Morytania legs 2')],
+		items: [Items.getOrThrow('Morytania legs 2')],
 		skillReqs: {
 			agility: 42,
 			cooking: 40,
@@ -930,7 +923,7 @@ export const MorytaniaDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Morytania legs 3')],
+		items: [Items.getOrThrow('Morytania legs 3')],
 		skillReqs: {
 			agility: 71,
 			construction: 50,
@@ -947,12 +940,12 @@ export const MorytaniaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Watermelon', 'Mahogany logs', 'Mithril ore', 'Mushroom']),
 		monsterScores: {
-			'Cave Horror': 1
+			[EMonster.CAVE_HORROR]: 1
 		}
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Morytania legs 4')],
+		items: [Items.getOrThrow('Morytania legs 4')],
 		skillReqs: {
 			attack: 70,
 			crafting: 84,
@@ -966,7 +959,7 @@ export const MorytaniaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Raw shark', "Black d'hide body"]),
 		monsterScores: {
-			'Abyssal Demon': 1
+			[EMonster.ABYSSAL_DEMON]: 1
 		}
 	}
 };
@@ -977,7 +970,7 @@ const VarrockDiary: Diary = {
 	alias: ['var'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Varrock armour 1')],
+		items: [Items.getOrThrow('Varrock armour 1')],
 		skillReqs: {
 			agility: 13,
 			crafting: 8,
@@ -990,7 +983,7 @@ const VarrockDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Varrock armour 2')],
+		items: [Items.getOrThrow('Varrock armour 2')],
 		skillReqs: {
 			agility: 30,
 			crafting: 36,
@@ -1008,7 +1001,7 @@ const VarrockDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Varrock armour 3')],
+		items: [Items.getOrThrow('Varrock armour 3')],
 		skillReqs: {
 			agility: 51,
 			construction: 50,
@@ -1026,7 +1019,7 @@ const VarrockDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Varrock armour 4')],
+		items: [Items.getOrThrow('Varrock armour 4')],
 		skillReqs: {
 			cooking: 95,
 			fletching: 81,
@@ -1039,13 +1032,13 @@ const VarrockDiary: Diary = {
 	}
 };
 
-export const WildernessDiary: Diary = {
+const WildernessDiary: Diary = {
 	name: 'Wilderness',
 	id: DiaryID.Wilderness,
 	alias: ['wild', 'wildy'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Wilderness sword 1')],
+		items: [Items.getOrThrow('Wilderness sword 1')],
 		skillReqs: {
 			agility: 15,
 			magic: 21,
@@ -1053,13 +1046,13 @@ export const WildernessDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(["Red spiders' eggs", 'Iron ore']),
 		monsterScores: {
-			Mammoth: 1,
-			'Earth Warrior': 1
+			[EMonster.MAMMOTH]: 1,
+			[EMonster.EARTH_WARRIOR]: 1
 		}
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Wilderness sword 2')],
+		items: [Items.getOrThrow('Wilderness sword 2')],
 		skillReqs: {
 			agility: 60,
 			strength: 60,
@@ -1071,14 +1064,14 @@ export const WildernessDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Mithril ore', 'Yew logs']),
 		monsterScores: {
-			'Green dragon': 1,
-			Ankou: 1,
-			Bloodveld: 1
+			[EMonster.GREEN_DRAGON]: 1,
+			[EMonster.ANKOU]: 1,
+			[EMonster.BLOODVELD]: 1
 		}
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Wilderness sword 3')],
+		items: [Items.getOrThrow('Wilderness sword 3')],
 		skillReqs: {
 			agility: 64,
 			fishing: 53,
@@ -1089,16 +1082,16 @@ export const WildernessDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Black salamander', 'Adamant scimitar']),
 		monsterScores: {
-			'Chaos Elemental': 1,
-			'Crazy Archaeologist': 1,
-			'Chaos Fanatic': 1,
-			Scorpia: 1,
-			'Spiritual Warrior': 1
+			[EMonster.CHAOS_ELEMENTAL]: 1,
+			[EMonster.CRAZY_ARCHAEOLOGIST]: 1,
+			[EMonster.CHAOS_FANATIC]: 1,
+			[EMonster.SCORPIA]: 1,
+			[EMonster.SPIRITUAL_WARRIOR]: 1
 		}
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Wilderness sword 4')],
+		items: [Items.getOrThrow('Wilderness sword 4')],
 		skillReqs: {
 			agility: 60,
 			cooking: 90,
@@ -1114,14 +1107,14 @@ export const WildernessDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Rune scimitar', 'Raw dark crab', 'Dark crab', 'Magic logs']),
 		monsterScores: {
-			Callisto: 1,
-			Venenatis: 1,
-			"Vet'ion": 1
+			[EMonster.CALLISTO]: 1,
+			[EMonster.VENENATIS]: 1,
+			[EMonster.VETION]: 1
 		}
 	}
 };
 
-export const diariesObject = {
+const diariesObject = {
 	ArdougneDiary,
 	DesertDiary,
 	FaladorDiary,
@@ -1136,10 +1129,3 @@ export const diariesObject = {
 	WildernessDiary
 } as const;
 export const diaries = Object.values(diariesObject);
-
-export async function userhasDiaryIDTier(user: MUser, diaryID: DiaryID, tier: DiaryTierName) {
-	return userhasDiaryTierSync(user, [diaryID, tier], {
-		stats: await MUserStats.fromID(user.id),
-		minigameScores: await user.fetchMinigames()
-	});
-}

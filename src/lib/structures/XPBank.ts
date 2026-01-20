@@ -1,8 +1,9 @@
-import { sumArr } from 'e';
-import { skillEmoji } from '../data/emojis';
-import type { AddXpParams } from '../minions/types';
-import type { SkillNameType, SkillsEnum } from '../skilling/types';
-import type { Skills } from '../types';
+import { sumArr } from '@oldschoolgg/toolkit';
+
+import { skillEmoji } from '@/lib/data/emojis.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { Skills } from '@/lib/types/index.js';
 
 export class XPBank {
 	public xpList: AddXpParams[] = [];
@@ -10,22 +11,19 @@ export class XPBank {
 	public add(
 		skill: SkillNameType | XPBank,
 		amount?: number,
-		options: Partial<Omit<AddXpParams, 'skillName' | 'amount'>> = {}
+		options: Partial<{ debugId: string } & Omit<AddXpParams, 'skillName' | 'amount'>> = {}
 	) {
 		if (skill instanceof XPBank) {
 			this.xpList.push(...skill.xpList);
 			return this;
 		}
-		if (!amount) {
-			console.trace(`Tried to add ${amount} XP to ${skill}`);
-		}
 		if (typeof amount !== 'number') {
-			throw new Error(`You must provide an amount of XP to add for ${skill}`);
+			throw new Error(`${options.debugId} You must provide an amount of XP to add for ${skill}`);
 		}
 		if (amount < 0) {
-			throw new Error(`Provided a negative amount of XP to add for ${skill}`);
+			throw new Error(`${options.debugId} Provided a negative amount of XP to add for ${skill}`);
 		}
-		this.xpList.push({ skillName: skill as SkillsEnum, amount, ...options });
+		this.xpList.push({ skillName: skill as SkillNameType, amount, ...options });
 		return this;
 	}
 

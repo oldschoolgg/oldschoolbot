@@ -1,72 +1,30 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
-import type { PvMMethod } from '../../lib/constants';
-import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';
-import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
+import { choicesOf } from '@/discord/index.js';
+import { PVM_METHODS } from '@/lib/constants.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
+import findMonster from '@/lib/util/findMonster.js';
+import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
-import { Time, reduceNumByPercent } from 'e';
-import { Eatables } from '../../lib/data/eatables';
-import { calculateMonsterFood } from '../../lib/minions/functions';
-import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { formatDuration, returnStringOrFile, stringMatches } from '../../lib/util';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import findMonster from '../../lib/util/findMonster';
-import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
-import type { OSBMahojiCommand } from '../lib/util';
+const wikiPrefix = 'https://wiki.oldschool.gg/osb';
 
-export const autocompleteMonsters = [
-	...killableMonsters,
-	{
-		id: -1,
-		name: 'Tempoross',
-		aliases: ['temp', 'tempoross']
-	},
-	...["Phosani's Nightmare", 'Mass Nightmare', 'Solo Nightmare'].map(s => ({
-		id: -1,
-		name: s,
-		aliases: [s.toLowerCase()]
-	})),
-	{
-		name: 'Nex',
-		aliases: ['nex'],
-		id: NEX_ID
-	},
-	{
-		name: 'Zalcano',
-		aliases: ['zalcano'],
-		id: ZALCANO_ID,
-		emoji: '<:Smolcano:604670895113633802>'
-	},
-	{
-		name: 'Wintertodt',
-		aliases: ['wt', 'wintertodt', 'todt'],
-		id: -1,
-		emoji: '<:Phoenix:324127378223792129>'
-	},
-	{
-		name: 'Colosseum',
-		aliases: ['colo', 'colosseum'],
-		id: -1
-	}
-];
-
-async function fetchUsersRecentlyKilledMonsters(userID: string) {
-	const res = await prisma.$queryRawUnsafe<{ mon_id: string; last_killed: Date }[]>(
-		`SELECT DISTINCT((data->>'mi')) AS mon_id, MAX(start_date) as last_killed
-FROM activity
-WHERE user_id = $1
-AND type = 'MonsterKilling'
-AND finish_date > now() - INTERVAL '31 days'
-GROUP BY 1
-ORDER BY 2 DESC
-LIMIT 10;`,
-		BigInt(userID)
-	);
-	return res.map(i => Number(i.mon_id));
+async function fetchUsersRecentlyKilledMonsters(userId: string): Promise<number[]> {
+	const res = await prisma.userStats.findUnique({
+		where: {
+			user_id: BigInt(userId)
+		},
+		select: {
+			recently_killed_monsters: true
+		}
+	});
+	if (!res) return [];
+	return res.recently_killed_monsters;
 }
 
-export const minionKCommand: OSBMahojiCommand = {
+export const minionKCommand = defineCommand({
 	name: 'k',
 	description: 'Send your minion to kill things.',
 	attributes: {
@@ -75,12 +33,12 @@ export const minionKCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to kill.',
 			required: true,
-			autocomplete: async (value, user) => {
-				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(user.id);
+			autocomplete: async ({ value, userId }: StringAutoComplete) => {
+				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(userId);
 				return autocompleteMonsters
 					.filter(m =>
 						!value
@@ -104,100 +62,64 @@ export const minionKCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount you want to kill.',
 			required: false,
 			min_value: 0
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'method',
 			description: 'If you want to cannon/barrage/burst.',
 			required: false,
-			choices: PVM_METHODS.map(i => ({ name: i, value: i }))
+			choices: choicesOf(PVM_METHODS)
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'show_info',
 			description: 'Show information on this monster.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'wilderness',
 			description: 'If you want to kill the monster in the wilderness.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'solo',
 			description: 'Solo (if its a group boss)',
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		name: string;
-		quantity?: number;
-		method?: PvMMethod;
-		show_info?: boolean;
-		wilderness?: boolean;
-		solo?: boolean;
-		onTask?: boolean;
-	}>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelId, interaction }) => {
 		if (options.show_info) {
-			return returnStringOrFile(await monsterInfo(user, options.name));
+			return interaction.returnStringOrFile(await monsterInfo(user, options.name));
 		}
 		return minionKillCommand(
 			user,
 			interaction,
-			channelID,
+			channelId,
 			options.name,
 			options.quantity,
 			options.method,
 			options.wilderness,
 			options.solo,
+			// @ts-expect-error: Passed by the bot only
 			options.onTask
 		);
 	}
-};
+});
 
-export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
+async function monsterInfo(user: MUser, name: string): Promise<string> {
+	const otherMon = autocompleteMonsters.find(m => m.name === name || m.aliases.includes(name));
+	if (otherMon && 'link' in otherMon) {
+		return `View information, item costs, boosts and requirements for ${otherMon.name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;
+	}
+
 	const monster = findMonster(name);
-
-	const prefix = 'https://wiki.oldschool.gg/osb';
-
-	if (stringMatches(name, 'nex')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/nex/>).\n`;
-	}
-
-	if (stringMatches(name, 'colosseum')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/colosseum/>).\n`;
-	}
-
-	if (stringMatches(name, 'wintertodt')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/activities/wintertodt/>).\n`;
-	}
-
-	if (stringMatches(name, 'tempoross')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/skills/fishing/tempoross/>).\n`;
-	}
-
-	if (stringMatches(name, 'zalcano')) {
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/miscelleanous/zalcano/>).\n`;
-	}
-
-	if (stringMatches(name.split(' ').pop(), 'nightmare')) {
-		const link = stringMatches(name.split(' ')[0], 'phosanis') ? '#phosanis-nightmare' : '';
-		return `View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/the-nightmare/${link}>).\n`;
-	}
-
 	if (!monster) {
 		return "That's not a valid monster";
 	}
@@ -206,13 +128,13 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 
 	if (wikiMonsters.includes(monster)) {
 		str.push(
-			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/monsters/#${monster.name.toLowerCase().replace(' ', '-')}>).\n`
+			`View information, item costs, boosts and requirements for ${monster.name} on the [wiki](<${wikiPrefix}/monsters/#${monster.name.toLowerCase().replace(/\s/g, '-')}>).\n`
 		);
 	}
 
 	if (monster.name.includes('Revenant')) {
 		str.push(
-			`View information, item costs, boosts and requirements for ${name} on the [wiki](<${prefix}/bosses/wildy/#revenants>).\n`
+			`View information, item costs, boosts and requirements for ${monster.name} on the [wiki](<${wikiPrefix}/bosses/wildy/#revenants>).\n`
 		);
 	}
 
@@ -229,8 +151,10 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 			hpString = `${noFoodBoost}% boost for no food`;
 		}
 	}
-	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
-	const maxCanKill = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
+	const maxCanKillSlay = Math.floor(
+		(await user.calcMaxTripLength('MonsterKilling')) / reduceNumByPercent(timeToFinish, 15)
+	);
+	const maxCanKill = Math.floor((await user.calcMaxTripLength('MonsterKilling')) / timeToFinish);
 
 	const { QP } = user;
 
@@ -263,7 +187,7 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 
 	str.push(
 		`Maximum trip length: ${formatDuration(
-			calcMaxTripLength(user, 'MonsterKilling')
+			await user.calcMaxTripLength('MonsterKilling')
 		)}.\nNormal kill time: ${formatDuration(
 			monster.timeToFinish
 		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`
@@ -290,9 +214,6 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 			min * 0.9
 		)}) to (${formatDuration(max * 0.9)}) to finish.\n`
 	);
-	const response: InteractionReplyOptions = {
-		content: str.join('\n')
-	};
 
-	return response;
+	return str.join('\n');
 }

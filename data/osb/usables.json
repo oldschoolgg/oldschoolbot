@@ -1,0 +1,84 @@
+{
+	"unlocks": [
+		{
+			"item": "Arcane prayer scroll",
+			"bitfield": 17,
+			"result_message": "You used your Arcane prayer scroll, and unlocked the Augury prayer."
+		},
+		{
+			"item": "Deadeye prayer scroll",
+			"bitfield": 45,
+			"result_message": "You used your Deadeye prayer scroll, and unlocked the Deadeye prayer."
+		},
+		{
+			"item": "Dexterous prayer scroll",
+			"bitfield": 16,
+			"result_message": "You used your Dexterous prayer scroll, and unlocked the Rigour prayer."
+		},
+		{
+			"item": "Frozen tablet",
+			"bitfield": 34,
+			"result_message": "You used your Frozen tablet."
+		},
+		{
+			"item": "Mystic vigour prayer scroll",
+			"bitfield": 46,
+			"result_message": "You used your Mystic vigour prayer scroll, and unlocked the Mystic vigour prayer."
+		},
+		{
+			"item": "Runescroll of bloodbark",
+			"bitfield": 25,
+			"result_message": "You used your Runescroll of bloodbark, and unlocked the ability to create Bloodbark armour."
+		},
+		{
+			"item": "Runescroll of swampbark",
+			"bitfield": 29,
+			"result_message": "You used your Runescroll of Swampbark, and unlocked the ability to create Swampbark armour."
+		},
+		{
+			"item": "Saradomin's light",
+			"bitfield": 30,
+			"result_message": "You used your Saradomin's light."
+		},
+		{
+			"item": "Scarred tablet",
+			"bitfield": 31,
+			"result_message": "You used your Scarred tablet."
+		},
+		{
+			"item": "Sirenic tablet",
+			"bitfield": 32,
+			"result_message": "You used your Sirenic tablet."
+		},
+		{
+			"item": "Slepey tablet",
+			"bitfield": 20,
+			"result_message": "You used your Slepey tablet, and unlocked the Slepe teleport."
+		},
+		{
+			"item": "Strangled tablet",
+			"bitfield": 33,
+			"result_message": "You used your Strangled tablet."
+		},
+		{
+			"item": "Torn prayer scroll",
+			"bitfield": 18,
+			"result_message": "You used your Torn prayer scroll, and unlocked the Preserve prayer."
+		}
+	],
+	"generic": [
+		{
+			"items": ["Banana", "Monkey"],
+			"cost": {
+				"1963": 1
+			},
+			"loot": null
+		},
+		{
+			"items": ["Mithril seeds"],
+			"cost": {
+				"299": 1
+			}
+		}
+	]
+}

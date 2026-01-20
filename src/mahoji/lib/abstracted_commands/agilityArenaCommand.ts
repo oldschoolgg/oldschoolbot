@@ -1,16 +1,8 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import { Bank } from 'oldschooljs';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { Time } from 'e';
-import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
-import getOSItem from '../../../lib/util/getOSItem';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 const plainGraceful = new Bank({
 	'Graceful hood': 1,
@@ -62,10 +54,10 @@ export const agilityArenaBuyables = [
 
 export async function agilityArenaCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	quantity: number | undefined
 ): CommandResponse {
-	const userMaxTrip = calcMaxTripLength(user, 'AgilityArena');
+	const userMaxTrip = await user.calcMaxTripLength('AgilityArena');
 	const maxQuantity = userMaxTrip / Time.Minute;
 
 	if (!quantity || quantity * Time.Minute > userMaxTrip) {
@@ -74,23 +66,27 @@ export async function agilityArenaCommand(
 
 	const duration = quantity * Time.Minute;
 
-	if (!userHasGracefulEquipped(user)) {
-		return mahojiChatHead({
-			content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
-			head: 'izzy'
-		});
+	if (!user.hasGracefulEquipped()) {
+		return {
+			files: [
+				await chatHeadImage({
+					content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
+					head: 'izzy'
+				})
+			]
+		};
 	}
 
-	const boosts = [];
+	const boosts: string[] = [];
 
-	const [hasKaramjaElite] = await userhasDiaryTier(user, KaramjaDiary.elite);
+	const hasKaramjaElite = user.hasDiary('karamja.elite');
 	if (hasKaramjaElite) {
 		boosts.push('10% extra tickets for Karamja Elite diary');
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		duration,
 		type: 'AgilityArena',
 		quantity,
@@ -113,34 +109,40 @@ export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1
 	const { bank } = user;
 	const amountTicketsHas = bank.amount('Brimhaven voucher');
 	if (amountTicketsHas === 0) {
-		return mahojiChatHead({
-			content: "Are ye serious! You have no vouchers, you can't buy anythin!",
-			head: 'izzy'
-		});
+		return {
+			files: [
+				await chatHeadImage({
+					head: 'izzy',
+					content: "Are ye serious! You have no vouchers, you can't buy anythin!"
+				})
+			]
+		};
 	}
 
 	if (buyable) {
 		let cost = qty * buyable.cost;
+		let errorMsg: string | null = null;
 		if (buyable.name === 'Graceful outfit Recolour') {
 			qty = 1;
 			cost = buyable.cost;
 			if (!bank.has(plainGraceful)) {
-				return mahojiChatHead({
-					content: "Ye don't have a full set of Graceful in your bank for me to recolor!",
-					head: 'izzy'
-				});
+				errorMsg = "Ye don't have a full set of Graceful in your bank for me to recolor!";
 			}
 			if (amountTicketsHas < cost) {
-				return mahojiChatHead({
-					content: `Ye don't have enough vouchers, I charge ${buyable.cost} vouchers for a graceful recoloring.`,
-					head: 'izzy'
-				});
+				errorMsg = `Ye don't have enough vouchers, I charge ${buyable.cost} vouchers for a graceful recoloring.`;
 			}
 		} else if (amountTicketsHas < cost) {
-			return mahojiChatHead({
-				content: `Ye don't have enough vouchers, I charge ${buyable.cost * qty} vouchers ${qty}x ${buyable.name}.`,
-				head: 'izzy'
-			});
+			errorMsg = `Ye don't have enough vouchers, I charge ${buyable.cost * qty} vouchers ${qty}x ${buyable.name}.`;
+		}
+		if (errorMsg) {
+			return {
+				files: [
+					await chatHeadImage({
+						head: 'izzy',
+						content: errorMsg
+					})
+				]
+			};
 		}
 
 		const itemsToAdd = new Bank();
@@ -149,7 +151,7 @@ export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1
 			itemsToAdd.add(buyable.output);
 			itemsToRemove.add(buyable.input).add('Brimhaven voucher', cost);
 		} else {
-			itemsToAdd.add(getOSItem(buyable.name), qty);
+			itemsToAdd.add(Items.getOrThrow(buyable.name), qty);
 			itemsToRemove.add('Brimhaven voucher', cost);
 		}
 		await user.transactItems({
@@ -173,13 +175,13 @@ export async function agilityArenaXPCommand(user: MUser, qty: number): CommandRe
 		qty = amountTicketsHas;
 	}
 
-	const [hasKaramjaMed] = await userhasDiaryTier(user, KaramjaDiary.medium);
+	const hasKaramjaMed = user.hasDiary('karamja.medium');
 	const xpToGive = (hasKaramjaMed ? 379.5 : 345) * qty;
 
 	const str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(xpToGive / qty).toFixed(2)} ea)`;
-	await transactItems({ userID: user.id, itemsToRemove: new Bank().add('Agility arena ticket', qty) });
+	await user.transactItems({ itemsToRemove: new Bank().add('Agility arena ticket', qty) });
 	await user.addXP({
-		skillName: SkillsEnum.Agility,
+		skillName: 'agility',
 		amount: xpToGive,
 		artificial: true
 	});

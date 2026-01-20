@@ -1,5 +1,5 @@
-import getOSItem from '../../util/getOSItem';
-import type { GearSetup } from '../types';
+import type { GearSetup } from '@oldschoolgg/gear';
+import { Items } from 'oldschooljs';
 
 export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, number] {
 	const userBodyID = setup.body?.item;
@@ -17,8 +17,8 @@ export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, nu
 		return [false, 'Body and leg armour equipped in wildy setup.', 0];
 	}
 
-	const userBodyItem = getOSItem(userBodyID);
-	const userLegsItem = getOSItem(userLegsID);
+	const userBodyItem = Items.getOrThrow(userBodyID);
+	const userLegsItem = Items.getOrThrow(userLegsID);
 
 	if (!userBodyItem.equipment || !userLegsItem.equipment) {
 		return [false, "The body and or legs equipped in wildy setup doesn't have any stats.", 0];

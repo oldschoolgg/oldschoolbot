@@ -1,29 +1,24 @@
-import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { GearStat } from '@oldschoolgg/gear';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
-import { GearStat } from '../../../gear/types';
-import { SkillsEnum } from '../../../skilling/types';
-import itemID from '../../../util/itemID';
-import type { KillableMonster } from '../../types';
-import { NIGHTMARES_HP } from './../../../constants';
-import bosses from './bosses';
-import { camdozaalMonsters } from './camdozaalMonsters';
-import { chaeldarMonsters } from './chaeldarMonsters';
-import { creatureCreationCreatures } from './creatureCreation';
-import { konarMonsters } from './konarMonsters';
-import { krystiliaMonsters } from './krystiliaMonsters';
-import low from './low';
-import { mazchnaMonsters } from './mazchnaMonsters';
-import { nieveMonsters } from './nieveMonsters';
-import { reanimatedMonsters } from './reanimated';
-import { revenantMonsters } from './revs';
-import { turaelMonsters } from './turaelMonsters';
-import { vannakaMonsters } from './vannakaMonsters';
+import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
+import { camdozaalMonsters } from '@/lib/minions/data/killableMonsters/camdozaalMonsters.js';
+import { chaeldarMonsters } from '@/lib/minions/data/killableMonsters/chaeldarMonsters.js';
+import { creatureCreationCreatures } from '@/lib/minions/data/killableMonsters/creatureCreation.js';
+import { konarMonsters } from '@/lib/minions/data/killableMonsters/konarMonsters.js';
+import { krystiliaMonsters } from '@/lib/minions/data/killableMonsters/krystiliaMonsters.js';
+import { lowKillableMonsters } from '@/lib/minions/data/killableMonsters/low.js';
+import { mazchnaMonsters } from '@/lib/minions/data/killableMonsters/mazchnaMonsters.js';
+import { nieveMonsters } from '@/lib/minions/data/killableMonsters/nieveMonsters.js';
+import { reanimatedMonsters } from '@/lib/minions/data/killableMonsters/reanimated.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import { turaelMonsters } from '@/lib/minions/data/killableMonsters/turaelMonsters.js';
+import { vannakaMonsters } from '@/lib/minions/data/killableMonsters/vannakaMonsters.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 const killableMonsters: KillableMonster[] = [
-	...bosses,
+	...bossKillables,
 	...chaeldarMonsters,
 	...konarMonsters,
 	...krystiliaMonsters,
@@ -32,7 +27,7 @@ const killableMonsters: KillableMonster[] = [
 	...nieveMonsters,
 	...turaelMonsters,
 	...vannakaMonsters,
-	...low,
+	...lowKillableMonsters,
 	...revenantMonsters,
 	...creatureCreationCreatures,
 	...reanimatedMonsters,
@@ -53,6 +48,7 @@ const killableMonsters: KillableMonster[] = [
 			{ [itemID('Barrows gloves')]: 2 },
 			{
 				[itemID("Iban's staff")]: 5,
+				[itemID('Warped sceptre (uncharged)')]: 6,
 				[itemID('Harmonised nightmare staff')]: 7,
 				[itemID("Tumeken's shadow")]: 10
 			},
@@ -68,7 +64,7 @@ const killableMonsters: KillableMonster[] = [
 				'Ornate rejuvenation pool': 10
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
 		customMonsterHP: 600,
 		combatXpMultiplier: 1.09
 	},
@@ -136,6 +132,7 @@ const killableMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID("Iban's staff")]: 3,
+				[itemID('Warped sceptre (uncharged)')]: 4,
 				[itemID('Harmonised nightmare staff')]: 5
 			},
 			{
@@ -201,7 +198,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 0,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: ['attack']
 	},
 	{
 		id: Monsters.Guard.id,
@@ -230,7 +227,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Sarachnis.id,
 		name: Monsters.Sarachnis.name,
 		aliases: Monsters.Sarachnis.aliases,
-		timeToFinish: Time.Minute * 2.35,
+		timeToFinish: Time.Minute * 1.63,
 		table: Monsters.Sarachnis,
 		emoji: '<:Sraracha:608231007803670529>',
 		wildy: false,
@@ -256,6 +253,7 @@ const killableMonsters: KillableMonster[] = [
 			},
 			// Transformation ring
 			{
+				[itemID('Aranea boots')]: 10,
 				[itemID('Ring of stone')]: 10
 			}
 		],
@@ -311,7 +309,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		qpRequired: 50,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultAttackStyles: ['magic'],
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]
@@ -322,7 +320,7 @@ export const NightmareMonster: KillableMonster = {
 	id: 9415,
 	name: 'The Nightmare',
 	aliases: ['nightmare', 'the nightmare'],
-	timeToFinish: Time.Minute * 25,
+	timeToFinish: Time.Minute * 20,
 	table: Monsters.GeneralGraardor,
 	emoji: '<:Little_nightmare:758149284952014928>',
 	wildy: false,
@@ -342,7 +340,7 @@ export const NightmareMonster: KillableMonster = {
 	]),
 	qpRequired: 10,
 	groupKillable: true,
-	respawnTime: Time.Minute * 1.5,
+	respawnTime: Time.Minute * 0.5,
 	levelRequirements: {
 		prayer: 43
 	},
@@ -358,12 +356,12 @@ export const NightmareMonster: KillableMonster = {
 		'Harmonised orb',
 		'Volatile orb'
 	]),
-	healAmountNeeded: 55 * 20,
+	healAmountNeeded: 40 * 20,
 	attackStyleToUse: GearStat.AttackCrush,
 	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {
 		melee: {
-			[GearStat.DefenceSlash]: 150,
+			[GearStat.DefenceSlash]: 100,
 			[GearStat.AttackCrush]: 80
 		}
 	},
@@ -372,13 +370,20 @@ export const NightmareMonster: KillableMonster = {
 
 export default killableMonsters;
 
+type EffectiveMonster = {
+	id: number;
+	name: string;
+	aliases: string[];
+	emoji?: string;
+};
+
 export const effectiveMonsters = [
 	...killableMonsters,
 	NightmareMonster,
 	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
-		id: ZALCANO_ID,
+		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>'
 	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
@@ -387,14 +392,14 @@ export const effectiveMonsters = [
 	{
 		name: "Phosani's Nightmare",
 		aliases: ['phosani', 'phosanis nightmare'],
-		id: PHOSANI_NIGHTMARE_ID
+		id: EMonster.PHOSANI_NIGHTMARE
 	},
 	{
 		name: 'Nex',
 		aliases: ['nex'],
-		id: NEX_ID
+		id: EMonster.NEX
 	}
-];
+] satisfies EffectiveMonster[];
 
 export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));
 
@@ -402,3 +407,46 @@ export const wikiMonsters = killableMonsters
 	.filter(m => m.equippedItemBoosts || m.itemInBankBoosts || m.itemCost || m.requiredQuests)
 	.filter(m => ['Revenant', 'Reanim'].every(b => !m.name.includes(b)))
 	.sort((a, b) => a.name.localeCompare(b.name));
+
+const otherMonsters = [
+	{
+		id: -1,
+		name: 'Tempoross',
+		aliases: ['temp', 'tempoross'],
+		link: '/skills/fishing/tempoross/'
+	},
+	...["Phosani's Nightmare", 'Mass Nightmare', 'Solo Nightmare'].map(s => ({
+		id: -1,
+		name: s,
+		aliases: [s.toLowerCase()],
+		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
+	})),
+	{
+		name: 'Nex',
+		aliases: ['nex'],
+		id: EMonster.NEX,
+		link: '/bosses/nex/'
+	},
+	{
+		name: 'Zalcano',
+		aliases: ['zalcano'],
+		id: EMonster.ZALCANO,
+		emoji: '<:Smolcano:604670895113633802>',
+		link: '/miscellaneous/zalcano/'
+	},
+	{
+		name: 'Wintertodt',
+		aliases: ['wt', 'wintertodt', 'todt'],
+		id: -1,
+		emoji: '<:Phoenix:324127378223792129>',
+		link: '/activities/wintertodt/'
+	},
+	{
+		name: 'Colosseum',
+		aliases: ['colo', 'colosseum'],
+		id: -1,
+		link: '/bosses/colosseum/'
+	}
+];
+
+export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];

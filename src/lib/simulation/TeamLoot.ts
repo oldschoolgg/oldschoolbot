@@ -1,7 +1,6 @@
-import { spoiler, userMention } from 'discord.js';
+import { spoiler, userMention } from '@oldschoolgg/discord';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-
-import { Emoji } from '../constants';
 
 export class TeamLoot {
 	map = new Map<string, Bank>();

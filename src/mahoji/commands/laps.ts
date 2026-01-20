@@ -1,18 +1,11 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { Time } from 'e';
+import { bold } from '@oldschoolgg/discord';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { quests } from '../../lib/minions/data/quests';
-import { courses } from '../../lib/skilling/skills/agility';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { timePerAlchAgility } from '../lib/abstracted_commands/alchCommand';
-import type { OSBMahojiCommand } from '../lib/util';
+import { quests } from '@/lib/minions/data/quests.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',
@@ -28,7 +21,7 @@ const unlimitedFireRuneProviders = [
 ];
 
 function alching(user: MUser, tripLength: number) {
-	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
+	if (user.skillsAsLevels.magic < 55) return null;
 	const { bank } = user;
 	const favAlchables = user.favAlchs(tripLength, true);
 
@@ -70,7 +63,7 @@ function alching(user: MUser, tripLength: number) {
 	};
 }
 
-export const lapsCommand: OSBMahojiCommand = {
+export const lapsCommand = defineCommand({
 	name: 'laps',
 	description: 'Do laps on Agility courses to train Agility.',
 	attributes: {
@@ -80,11 +73,11 @@ export const lapsCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The course you want to do laps on.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return courses
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -94,26 +87,20 @@ export const lapsCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity of laps you want to do (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'alch',
 			description: 'Do you want to alch while doing agility? (optional).',
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, user, channelId }) => {
 		const course = courses.find(
 			course =>
 				stringMatches(course.id.toString(), options.name) ||
@@ -124,7 +111,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			return 'Thats not a valid course.';
 		}
 
-		if (user.skillLevel(SkillsEnum.Agility) < course.level) {
+		if (user.skillsAsLevels.agility < course.level) {
 			return `${user.minionName} needs ${course.level} agility to train at ${course.name}.`;
 		}
 
@@ -142,7 +129,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Agility');
+		const maxTripLength = await user.calcMaxTripLength('Agility');
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
@@ -172,13 +159,13 @@ export const lapsCommand: OSBMahojiCommand = {
 
 			await user.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+			await ClientSettings.updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 
-		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
+		await ActivityManager.startTrip<AgilityActivityTaskOptions>({
 			courseID: course.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Agility',
@@ -193,4 +180,4 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

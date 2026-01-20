@@ -1,23 +1,18 @@
-import { deepClone } from 'e';
+import { randomVariation } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
+import { clone } from 'remeda';
 
-import type { GiantsFoundryBank } from '../../../lib/giantsFoundry';
-import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '../../../lib/giantsFoundry';
-import { trackLoot } from '../../../lib/lootTrack';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import type { GiantsFoundryBank } from '@/lib/giantsFoundry.js';
+import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '@/lib/giantsFoundry.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
-	async run(data: GiantsFoundryActivityTaskOptions) {
-		const { quantity, userID, channelID, duration, metalScore } = data;
-		const user = await mUserFetch(userID);
-		const userSmithingLevel = user.skillLevel(SkillsEnum.Smithing);
+	async run(data: GiantsFoundryActivityTaskOptions, { user, handleTripFinish }) {
+		const { quantity, channelId, duration, metalScore } = data;
+
+		const userSmithingLevel = user.skillsAsLevels.smithing;
 		const boosts = [];
 		let avgMouldBonus = 37.667;
 		if (userSmithingLevel > 79) {
@@ -29,8 +24,8 @@ export const giantsFoundryTask: MinionTask = {
 		let weaponName = '';
 		let highestQuality = 0;
 		let highestQualitySword = '';
-		const currentStats = await user.fetchStats({ gf_weapons_made: true });
-		const newWeapons = deepClone(currentStats.gf_weapons_made) as GiantsFoundryBank;
+		const currentStats = await user.fetchStats();
+		const newWeapons = clone(currentStats.gf_weapons_made) as GiantsFoundryBank;
 
 		for (let i = 0; i < quantity; i++) {
 			const quality = Math.min(Math.floor(randomVariation(metalScore - 5 + avgMouldBonus, 10)), 199);
@@ -51,23 +46,19 @@ export const giantsFoundryTask: MinionTask = {
 		reputationReceived = Math.floor(reputationReceived);
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: xpReceived,
 			duration
 		});
 
-		await userStatsUpdate(
-			user.id,
-			{
-				foundry_reputation: {
-					increment: reputationReceived
-				},
-				gf_weapons_made: newWeapons
+		await user.statsUpdate({
+			foundry_reputation: {
+				increment: reputationReceived
 			},
-			{}
-		);
+			gf_weapons_made: newWeapons
+		});
 
-		await incrementMinigameScore(userID, 'giants_foundry', quantity);
+		await user.incrementMinigameScore('giants_foundry', quantity);
 
 		const loot = new Bank().add('Coins', 2 * xpReceived);
 
@@ -79,12 +70,11 @@ export const giantsFoundryTask: MinionTask = {
 			loot.length > 0 ? `and ${loot}.` : ''
 		}\nThe most prestigious weapon created by your minion was a **${highestQualitySword}** with a score of **${highestQuality}**.`;
 
-		const { itemsAdded } = await transactItems({
-			userID: user.id,
+		const { itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		updateBankSetting('gf_loot', loot);
+		await ClientSettings.updateBankSetting('gf_loot', loot);
 		await trackLoot({
 			id: 'giants_foundry',
 			type: 'Minigame',
@@ -100,8 +90,8 @@ export const giantsFoundryTask: MinionTask = {
 				}
 			]
 		});
-		await userStatsBankUpdate(user, 'gf_loot', loot);
+		await user.statsBankUpdate('gf_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };

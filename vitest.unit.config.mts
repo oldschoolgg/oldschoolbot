@@ -1,5 +1,4 @@
-import { basename, dirname, join } from 'node:path';
-
+import path, { basename, dirname, join } from 'node:path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -9,15 +8,18 @@ export default defineConfig({
 		setupFiles: 'tests/unit/setup.ts',
 		resolveSnapshotPath: (testPath, extension) =>
 			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
-		slowTestThreshold: 0,
 		isolate: false,
-		pool: 'forks',
-		poolOptions: {
-			forks: {
-				maxForks: 5,
-				minForks: 5,
-				execArgv: ['--disable-warning=ExperimentalWarning']
-			}
+		pool: 'threads',
+		maxWorkers: 4,
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'json', 'html'],
+			include: ['src/lib/skilling/skills/farming/**/*.ts']
+		}
+	},
+	resolve: {
+		alias: {
+			'@': path.resolve(import.meta.dirname, './src')
 		}
 	}
 });

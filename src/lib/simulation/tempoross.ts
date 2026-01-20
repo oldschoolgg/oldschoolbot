@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 const replaceItems = ['Fish barrel', 'Tackle box', 'Big harpoonfish'];
 

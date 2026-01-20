@@ -1,13 +1,14 @@
-import { Emoji } from '../../../constants';
-import { SkillsEnum } from '../../types';
-import creatures from './creatures';
+import { Emoji } from '@oldschoolgg/toolkit';
 
-const Hunter = {
+import { defineSkill } from '@/lib/skilling/types.js';
+import creatures from './creatures/index.js';
+
+const Hunter = defineSkill({
 	aliases: ['hunt', 'hunter'],
 	Creatures: creatures,
-	id: SkillsEnum.Hunter,
+	id: 'hunter',
 	emoji: Emoji.Hunter,
 	name: 'Hunter'
-};
+});
 
 export default Hunter;

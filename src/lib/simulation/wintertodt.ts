@@ -1,12 +1,9 @@
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { normal } from '@oldschoolgg/toolkit/util';
-import { calcPercentOfNum, randInt, roll } from 'e';
-import { Bank, LootTable, convertXPtoLVL, resolveItems } from '../util';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, normal, SimpleTable } from '@oldschoolgg/toolkit';
+import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems } from 'oldschooljs';
 
-import { MAX_XP } from '../constants';
-import type { LevelRequirements } from '../skilling/types';
-import { SkillsEnum } from '../skilling/types';
-import itemID from '../util/itemID';
+import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import type { LevelRequirements } from '@/lib/skilling/types.js';
 
 interface WintertodtCrateOptions {
 	points: number;
@@ -153,17 +150,17 @@ class WintertodtCrateClass {
 	determineSkillOfTableSlot(table: WintertodtTable) {
 		switch (table) {
 			case HerbTable:
-				return SkillsEnum.Herblore;
+				return 'herblore';
 			case LogTable:
-				return SkillsEnum.Woodcutting;
+				return 'woodcutting';
 			case GemTable:
-				return SkillsEnum.Crafting;
+				return 'crafting';
 			case FishTable:
-				return SkillsEnum.Fishing;
+				return 'fishing';
 			case OreTable:
-				return SkillsEnum.Mining;
+				return 'mining';
 			default:
-				return SkillsEnum.Farming;
+				return 'farming';
 		}
 	}
 
@@ -173,7 +170,7 @@ class WintertodtCrateClass {
 		if (roll <= 6) {
 			const matTable = roll === 1 ? SeedTables.rollOrThrow() : MaterialTables.rollOrThrow();
 			const skill = this.determineSkillOfTableSlot(matTable);
-			const skillLevel = convertXPtoLVL(skills[skill] ?? 1);
+			const skillLevel = convertXPtoLVL(skills[skill] ?? 1, MAX_LEVEL);
 			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable);
 			const [min, max] = rolledItem[1];
 			return loot.add(rolledItem[0], randInt(min, max));

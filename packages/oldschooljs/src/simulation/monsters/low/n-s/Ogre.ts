@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const OgreTable = new LootTable({ limit: 128 })
 	.every('Big bones')
@@ -13,7 +13,7 @@ const OgreTable = new LootTable({ limit: 128 })
 	.tertiary(400, 'Long bone')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const Ogre: SimpleMonster = new SimpleMonster({
 	id: 136,
 	name: 'Ogre',
 	table: OgreTable,

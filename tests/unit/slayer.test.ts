@@ -1,9 +1,9 @@
 import { writeFileSync } from 'node:fs';
-import { objectEntries } from 'e';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { describe, expect, test } from 'vitest';
 
-import { SlayerTaskUnlocksEnum } from '../../src/lib/slayer/slayerUnlocks';
-import { allSlayerTasks } from '../../src/lib/slayer/tasks';
+import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';
+import { SlayerTaskUnlocksEnum } from '../../src/lib/slayer/slayerUnlocks.js';
 
 describe('Slayer', () => {
 	test('All slayer task monster lists should contain their main monster id', () => {

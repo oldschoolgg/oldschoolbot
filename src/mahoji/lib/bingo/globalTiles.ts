@@ -1,8 +1,7 @@
-import type { Bank } from 'oldschooljs';
+import { type Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { championScrolls, skillingPetsCL } from '../../../lib/data/CollectionsExport';
-import type { GlobalBingoTile } from './bingoUtil';
+import { skillingPetsCL } from '@/lib/data/CollectionsExport.js';
+import type { GlobalBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 
 const otherSpiritShieldParts = resolveItems(['Blessed spirit shield', 'Holy elixir', 'Spirit shield']);
 const allSpiritShieldSets = [
@@ -166,7 +165,7 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 	{
 		id: 18,
 		name: 'Receive any Champion scroll',
-		oneOf: resolveItems(championScrolls)
+		oneOf: ItemGroups.championScrolls
 	},
 	{
 		id: 19,

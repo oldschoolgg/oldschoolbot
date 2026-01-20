@@ -1,31 +1,25 @@
-import { Table } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { removeFromArr } from 'e';
+import { removeFromArr, stringMatches, Table } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
-import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
-import { stringMatches } from '../../../lib/util';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { logError } from '../../../lib/util/logError';
+import { BitField } from '@/lib/constants.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 
 const slayerPurchaseError =
 	'An error occurred trying to make this purchase. Please try again or contact #help-and-support if the issue persists.';
 
 export async function slayerShopBuyCommand({
-	userID,
+	user,
 	buyable,
 	quantity,
 	disable,
 	interaction
 }: {
-	userID: string;
+	user: MUser;
 	buyable: string;
 	quantity?: number;
 	disable?: boolean;
-	interaction?: ChatInputCommandInteraction;
+	interaction?: MInteraction;
 }) {
-	const user = await mUserFetch(userID);
 	const buyableObj = SlayerRewardsShop.find(
 		reward => stringMatches(reward.name, buyable) || reward.aliases?.some(alias => stringMatches(alias, buyable))
 	);
@@ -45,7 +39,7 @@ export async function slayerShopBuyCommand({
 				await user.addItemsToBank({ items: new Bank().add(buyableObj.item, qty), collectionLog: true });
 				return `You bought ${qty}x ${buyableObj.name}.`;
 			} catch (e) {
-				logError(e, {
+				Logging.logError(e as Error, {
 					user_id: user.id,
 					slayer_buyable: buyable,
 					slayer_buyable_id: String(buyableObj.id),
@@ -65,7 +59,7 @@ export async function slayerShopBuyCommand({
 		if (user.user.slayer_points >= cost) {
 			const newUnlocks = [...user.user.slayer_unlocks, buyableObj.id];
 			try {
-				const { newUser } = await user.update({
+				await user.update({
 					slayer_points: { decrement: cost },
 					slayer_unlocks: newUnlocks
 				});
@@ -79,9 +73,9 @@ export async function slayerShopBuyCommand({
 						}
 					});
 				}
-				return `You successfully unlocked ${buyableObj.name}. Remaining slayer points: ${newUser.slayer_points}`;
+				return `You successfully unlocked ${buyableObj.name}. Remaining slayer points: ${user.user.slayer_points}`;
 			} catch (e) {
-				logError(e, { user_id: user.id, slayer_unlock: buyable });
+				Logging.logError(e as Error, { user_id: user.id, slayer_unlock: buyable });
 				return slayerPurchaseError;
 			}
 		} else {
@@ -93,8 +87,7 @@ export async function slayerShopBuyCommand({
 			return `You don't have ${buyableObj.name} unlocked.`;
 		}
 		if (interaction) {
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want disable ${buyableObj.name}? You will have to pay ${buyableObj.slayerPointCost} to unlock it again.`
 			);
 		}
@@ -114,7 +107,7 @@ export function slayerShopListMyUnlocks(mahojiUser: MUser) {
 	if (content.length > 2000) {
 		return {
 			content: 'Your currently unlocked Slayer rewards',
-			files: [{ attachment: Buffer.from(content.replace(/`/g, '')), name: 'myUnlocks.txt' }]
+			files: [{ buffer: Buffer.from(content.replace(/`/g, '')), name: 'myUnlocks.txt' }]
 		};
 	}
 	return content;
@@ -139,6 +132,6 @@ export function slayerShopListRewards(type: 'all' | 'unlocks' | 'buyables') {
 	const content = type === 'all' ? 'List of all slayer rewards' : `List sof slayer ${type}`;
 	return {
 		content,
-		files: [{ attachment: Buffer.from(table.toString()), name: 'slayerRewardsUnlocks.txt' }]
+		files: [{ buffer: Buffer.from(table.toString()), name: 'slayerRewardsUnlocks.txt' }]
 	};
 }

@@ -1,9 +1,5 @@
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
-
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { randomVariation, roll } from '../util';
+import { randomVariation, roll } from '@oldschoolgg/rng';
+import { Bank, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 export const trawlerFish = [
 	{

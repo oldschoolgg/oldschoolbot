@@ -1,36 +1,38 @@
-import type { PlayerOwnedHouse } from '@prisma/client';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Monsters } from 'oldschooljs';
+import type { ECombatOption } from '@oldschoolgg/schemas';
+import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
-import z from 'zod';
-import type { BitField, PvMMethod } from '../../../../lib/constants';
-import { getSimilarItems } from '../../../../lib/data/similarItems';
-import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
-import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
+import * as z from 'zod';
+
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
+import type { BitField, PvMMethod } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import { type AttackStyles, getAttackStylesContext, resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { wildySlayerOnlyMonsters } from '@/lib/slayer/constants.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { type CurrentSlayerInfo, determineCombatBoosts } from '@/lib/slayer/slayerUtil.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { Peak } from '@/lib/util/peaks.js';
+import { killsRemainingOnTask } from '@/mahoji/lib/abstracted_commands/minionKill/calcTaskMonstersRemaining.js';
 import {
-	type AttackStyles,
-	attackStylesArr,
-	getAttackStylesContext,
-	resolveAttackStyles
-} from '../../../../lib/minions/functions';
-import type { KillableMonster } from '../../../../lib/minions/types';
-import type { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
-import { type CurrentSlayerInfo, determineCombatBoosts } from '../../../../lib/slayer/slayerUtil';
-import type { GearBank } from '../../../../lib/structures/GearBank';
-import { UpdateBank } from '../../../../lib/structures/UpdateBank';
-import type { Peak } from '../../../../lib/tickers';
-import { checkRangeGearWeapon, formatDuration, isWeekend, itemNameFromID, zodEnum } from '../../../../lib/util';
-import getOSItem from '../../../../lib/util/getOSItem';
-import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
-import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
-import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed';
+	type PostBoostEffect,
+	postBoostEffects
+} from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
+import {
+	CombatMethodOptionsSchema,
+	speedCalculations
+} from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),
 	quantity: z.number().int().positive(),
 	isOnTask: z.boolean(),
 	isInWilderness: z.boolean(),
-	attackStyles: z.array(z.enum(zodEnum(attackStylesArr))),
+	attackStyles: z.array(z.enum(['attack', 'strength', 'defence', 'magic', 'ranged'])),
 	currentTaskOptions: CombatMethodOptionsSchema,
 	messages: z.array(z.string()),
 	updateBank: z.instanceof(UpdateBank)
@@ -43,7 +45,7 @@ export interface MinionKillOptions {
 	currentSlayerTask: CurrentSlayerInfo;
 	monster: KillableMonster;
 	isTryingToUseWildy: boolean;
-	combatOptions: readonly CombatOptionsEnum[];
+	combatOptions: readonly ECombatOption[];
 	inputPVMMethod: PvMMethod | undefined;
 	monsterKC: number;
 	poh: PlayerOwnedHouse;
@@ -56,7 +58,7 @@ export interface MinionKillOptions {
 	currentPeak: Peak;
 }
 
-export function newMinionKillCommand(args: MinionKillOptions) {
+export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
 	let {
 		combatOptions,
 		attackStyles,
@@ -68,6 +70,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		maxTripLength,
 		slayerUnlocks
 	} = args;
+
 	const osjsMon = Monsters.get(monster.id)!;
 	let { primaryStyle, relevantGearStat } = getAttackStylesContext(attackStyles);
 	const isOnTask =
@@ -89,6 +92,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	if (!monster.wildy && isInWilderness) {
 		return `You can't kill ${monster.name} in the wilderness.`;
+	}
+
+	if (wildySlayerOnlyMonsters.some(m => m.id === monster.id) && isInWilderness && !isOnTask) {
+		return `${monster.name} can only be killed in the wilderness when on a slayer task.`;
 	}
 
 	const matchedRevenantMonster = revenantMonsters.find(m => m.id === monster.id);
@@ -132,8 +139,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	const isBurstingOrBarraging = combatMethods.includes('burst') || combatMethods.includes('barrage');
 	if (isBurstingOrBarraging && !monster.canBarrage) {
-		if (isKillingJelly && !isInWilderness) {
-			return `${monster.name} can only be barraged or burst in the wilderness.`;
+		if (isKillingJelly) {
+			if (!isInWilderness) {
+				return `${monster.name} can only be barraged or burst in the wilderness.`;
+			}
 		} else {
 			return `${monster.name} cannot be barraged or burst.`;
 		}
@@ -149,8 +158,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		: null;
 
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
+
 	const speedDurationResult = speedCalculations({
 		...args,
+		monsterKC: args.monsterKC,
 		attackStyles,
 		isOnTask,
 		osjsMon,
@@ -182,8 +193,8 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		if (typeof rangeCheck === 'string') {
 			return `Your range gear isn't right: ${rangeCheck}`;
 		}
-		const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(rangeCheck.weapon.id);
-		if (!gearBank.gear.range.ammo?.item && !usingBowfa) {
+		const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(rangeCheck.weapon.id);
+		if (!gearBank.gear.range.get('ammo')?.item && !usingBowfa) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
 
@@ -191,7 +202,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		if (rangeCheck.ammo) {
 			speedDurationResult.updateBank.itemCostBank.add(rangeCheck.ammo.item, projectilesNeeded);
 			if (projectilesNeeded > rangeCheck.ammo.quantity) {
-				return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
+				return `You need ${projectilesNeeded.toLocaleString()}x ${Items.itemNameFromId(
 					rangeCheck.ammo.item
 				)} to kill ${quantity}x ${monster.name}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
 			}

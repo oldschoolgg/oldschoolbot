@@ -1,24 +1,19 @@
-import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import type { DarkAltarOptions } from '../../types/minions';
-import { formatDuration, hasSkillReqs } from '../../util';
-import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import getOSItem from '../../util/getOSItem';
+import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 export const darkAltarRunes = {
 	soul: {
-		item: getOSItem('Soul rune'),
+		item: Items.getOrThrow('Soul rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 19.6,
 		level: 90,
 		petChance: 782_999
 	},
 	blood: {
-		item: getOSItem('Blood rune'),
+		item: Items.getOrThrow('Blood rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 17.2,
 		level: 77,
@@ -30,9 +25,19 @@ const gracefulPenalty = 20;
 const agilityPenalty = 35;
 const mediumDiaryBoost = 20;
 
-export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: string; name: string }) {
+export async function darkAltarCommand({
+	user,
+	channelId,
+	name,
+	extracts
+}: {
+	user: MUser;
+	channelId: string;
+	name: string;
+	extracts?: boolean;
+}) {
 	const stats = user.skillsAsLevels;
-	if (!['blood', 'soul'].includes(name.split(' ')[0])) return 'Invalid rune.';
+	if (!['blood', 'soul'].includes(name.toLowerCase().split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {
 		mining: 38,
 		crafting: 38
@@ -51,43 +56,65 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 	let timePerRune = runeData.baseTime;
 
 	const boosts = [];
-	const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+	const hasEliteDiary = user.hasDiary('kourend&kebos.elite');
 	if (hasEliteDiary && rune === 'blood') {
 		boosts.push('10% additional runes for Kourend/Kebos elite diary');
 	}
 
-	const [hasMediumDiary] = await userhasDiaryTier(user, KourendKebosDiary.medium);
+	const hasMediumDiary = user.hasDiary('kourend&kebos.medium');
 	if (hasMediumDiary) {
 		boosts.push(`${mediumDiaryBoost}% faster essence mining for Kourend/Kebos medium diary`);
 		timePerRune = reduceNumByPercent(timePerRune, mediumDiaryBoost);
 	}
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
 		timePerRune = increaseNumByPercent(timePerRune, gracefulPenalty);
 	}
 
-	if (user.skillLevel(SkillsEnum.Agility) < 73) {
+	if (user.skillsAsLevels.agility < 73) {
 		boosts.push(`${agilityPenalty}% slower for less than level 73 Agility`);
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
-	const quantity = Math.floor(maxTripLength / timePerRune);
+	const maxTripLength = await user.calcMaxTripLength('DarkAltar');
+	let quantity = Math.floor(maxTripLength / timePerRune);
+	let duration = maxTripLength;
+	const totalCost = new Bank();
+	if (extracts) {
+		const extractsOwned = user.bank.amount('Scarred extract');
+		quantity = Math.min(quantity, extractsOwned);
+		if (extractsOwned === 0 || quantity === 0) {
+			return "You don't have enough Scarred extracts to craft these runes.";
+		}
+		duration = quantity * timePerRune;
+		totalCost.add('Scarred extract', quantity);
+		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+	}
 
-	await addSubTaskToActivityTask<DarkAltarOptions>({
+	if (totalCost.length > 0) {
+		await user.removeItemsFromBank(totalCost);
+		await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
+	}
+
+	await ActivityManager.startTrip<DarkAltarOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
-		duration: maxTripLength,
+		duration,
 		type: 'DarkAltar',
 		hasElite: hasEliteDiary,
-		rune
+		rune,
+		useExtracts: extracts
 	});
 
 	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDuration(
-		maxTripLength
+		duration
 	)} at the Dark altar.`;
+
+	if (extracts) {
+		response += `\nYou will use ${quantity}x Scarred extract during this trip.`;
+	}
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export default new SimpleMonster({
+export const FremennikCitizen: SimpleMonster = new SimpleMonster({
 	id: 3937,
 	name: 'Fremennik citizen',
 	pickpocketTable: new LootTable().add('Coins', 40),

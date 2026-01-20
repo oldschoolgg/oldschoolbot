@@ -1,17 +1,14 @@
-import { randInt } from 'e';
-import { Bank } from 'oldschooljs';
+import { randInt } from '@oldschoolgg/rng';
+import { Bank, ItemGroups } from 'oldschooljs';
 
-import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function getLowestCountOutfitPiece(bank: Bank): number {
 	let lowestCountPiece = 0;
 	let lowestCountAmount = -1;
 
-	for (const piece of roguesDenOutfit) {
+	for (const piece of ItemGroups.rogueOutfit) {
 		const amount = bank.amount(piece);
 		if (lowestCountAmount === -1 || amount < lowestCountAmount) {
 			lowestCountPiece = piece;
@@ -25,16 +22,15 @@ function getLowestCountOutfitPiece(bank: Bank): number {
 export const roguesDenTask: MinionTask = {
 	type: 'RoguesDenMaze',
 
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, quantity, userID } = data;
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelId, quantity } = data;
 
-		incrementMinigameScore(userID, 'rogues_den', quantity);
+		await user.incrementMinigameScore('rogues_den', quantity);
 
 		const loot = new Bank();
-		const user = await mUserFetch(userID);
 		const userBankCopy = user.allItemsOwned.clone();
 
-		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
+		let str = `<@${user.id}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 
 		for (let i = 0; i < quantity; i++) {
 			if (randInt(1, 8) <= 5) {
@@ -49,8 +45,7 @@ export const roguesDenTask: MinionTask = {
 			str += `\n**${user.minionName} failed to find any Rogue outfit pieces!**`;
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -62,6 +57,6 @@ export const roguesDenTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, gotLoot ? image.file.attachment : undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

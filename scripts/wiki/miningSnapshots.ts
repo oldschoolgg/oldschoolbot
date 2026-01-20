@@ -1,19 +1,18 @@
-import { calcPerHour } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
-
-import '../../src/lib/safeglobals.ts';
-
-import { type Bank, convertLVLtoXP } from 'oldschooljs/dist/meta/types';
+import { MathRNG } from '@oldschoolgg/rng';
+import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
+import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
-import { ClueTiers } from '../../src/lib/clues/clueTiers.ts';
-import Mining from '../../src/lib/skilling/skills/mining.ts';
-import type { Ore } from '../../src/lib/skilling/types.ts';
-import { FloatBank } from '../../src/lib/structures/Bank.ts';
-import { determineMiningTrip } from '../../src/mahoji/commands/mine.ts';
-import { determineMiningResult } from '../../src/tasks/minions/miningActivity.ts';
-import { makeGearBank } from '../../tests/unit/utils.ts';
-import { Table } from '../markdown/markdown.ts';
-import { handleMarkdownEmbed } from '../wiki.ts';
+
+import '../base.js';
+
+import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
+import Mining from '../../src/lib/skilling/skills/mining.js';
+import type { Ore } from '../../src/lib/skilling/types.js';
+import { FloatBank } from '../../src/lib/structures/Bank.js';
+import { determineMiningTrip } from '../../src/mahoji/commands/mine.js';
+import { determineMiningResult } from '../../src/tasks/minions/miningActivity.js';
+import { makeGearBank } from '../../tests/unit/utils.js';
+import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
 function bankToPerHour(bank: Bank, duration: number): FloatBank {
 	const perHourBank = new FloatBank();
@@ -23,7 +22,7 @@ function bankToPerHour(bank: Bank, duration: number): FloatBank {
 	return perHourBank;
 }
 
-export function miningSnapshots() {
+function main() {
 	const gearBank = makeGearBank();
 
 	gearBank.gear.skilling.equip('Varrock armour 4');
@@ -39,7 +38,8 @@ export function miningSnapshots() {
 		level: number;
 		itemsPerHour: FloatBank;
 	}[] = [];
-	for (const level of [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99]) {
+
+	for (const level of [1, 10, 40, 70, 80, 90, 99]) {
 		gearBank.skillsAsLevels.mining = level;
 		gearBank.skillsAsXP.mining = convertLVLtoXP(level);
 		for (const ore of Mining.Ores) {
@@ -58,10 +58,12 @@ export function miningSnapshots() {
 							others.push('COTS');
 						}
 
+						const tripLengthHours = 1000;
+
 						const trip = determineMiningTrip({
 							gearBank,
 							ore,
-							maxTripLength: Time.Hour * 1000,
+							maxTripLength: Time.Hour * tripLengthHours,
 							isPowermining,
 							quantityInput: undefined,
 							hasKaramjaMedium,
@@ -73,17 +75,24 @@ export function miningSnapshots() {
 							gearBank,
 							duration: trip.duration,
 							isPowermining,
-							hasFinishedCOTS
+							hasFinishedCOTS,
+							rng: MathRNG
 						});
 						result.updateBank.itemLootBank.remove('Rock golem', 1000);
 						result.updateBank.itemLootBank.remove('Loop half of key (moon key)', 1000);
 
 						for (const clueTier of ClueTiers) {
-							result.updateBank.itemLootBank.remove(clueTier.scrollID, 1000);
+							result.updateBank.itemLootBank.remove(
+								clueTier.scrollID,
+								result.updateBank.itemLootBank.amount(clueTier.scrollID)
+							);
 						}
 
 						const xp = result.updateBank.xpBank.amount('mining');
-						const xpHr = Math.floor(calcPerHour(xp, trip.duration) / 1000) * 1000;
+						let xpHr = calcPerHour(xp, trip.duration);
+						// Round down to nearest 1000
+						xpHr = Math.floor(xpHr / 1000) * 1000;
+
 						results.push({
 							xpHr,
 							ore,
@@ -111,9 +120,11 @@ export function miningSnapshots() {
 			result.xpHr.toLocaleString(),
 			result.isPowermining ? 'Yes' : 'No',
 			result.others.join(', '),
-			result.itemsPerHour.toItemBankRoundedUp().toString()
+			result.itemsPerHour.toItemBankRoundedUp().toString().replace('No items', '')
 		);
 	}
 
-	handleMarkdownEmbed('miningxphr', 'osb/Skills/mining.md', table.toString());
+	handleMarkdownEmbed('miningxphr', 'osb/Skills/mining.mdx', table.toString());
 }
+
+main();

@@ -1,12 +1,8 @@
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { getMinigameScore } from '../../../lib/settings/minigames';
-import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
 
-export async function temporossCommand(user: MUser, channelID: string, quantity: number | undefined) {
+export async function temporossCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const fLevel = user.skillLevel('fishing');
 	if (fLevel < 35) {
 		return 'You need 35 Fishing to have a chance at defeating Tempoross.';
@@ -23,7 +19,7 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 	if (fBoost > 1) messages.push(`${fBoost.toFixed(2)}% boost for Fishing level`);
 	durationPerRoss = reduceNumByPercent(durationPerRoss, fBoost);
 
-	const kc = await getMinigameScore(user.id, 'tempoross');
+	const kc = await user.fetchMinigameScore('tempoross');
 	const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 	if (kcLearned > 0) {
@@ -45,7 +41,7 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 		durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Tempoross');
+	const maxTripLength = await user.calcMaxTripLength('Tempoross');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / durationPerRoss);
 	}
@@ -60,10 +56,10 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<TemporossActivityTaskOptions>({
+	await ActivityManager.startTrip<TemporossActivityTaskOptions>({
 		minigameID: 'tempoross',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Tempoross',

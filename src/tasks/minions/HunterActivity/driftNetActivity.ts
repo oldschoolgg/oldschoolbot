@@ -1,9 +1,5 @@
-import { Bank } from 'oldschooljs';
-
-import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import driftNetCreatures from '@/lib/skilling/skills/hunter/driftNet.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 // Bonus loot from higher fishing level
 const fishBonusLoot = [
@@ -31,11 +27,10 @@ const fishBonusLoot = [
 
 export const driftNetTask: MinionTask = {
 	type: 'DriftNet',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
-		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
-		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelId, duration } = data;
+		const currentHuntLevel = user.skillsAsLevels.hunter;
+		const currentFishLevel = user.skillsAsLevels.fishing;
 
 		// Current fishable creatures
 		const fishShoal = driftNetCreatures.find(_fish => _fish.name === 'Fish shoal')!;
@@ -50,11 +45,7 @@ export const driftNetTask: MinionTask = {
 			}
 		}
 
-		const loot = new Bank();
-
-		for (let i = 0; i < quantity * 10; i++) {
-			loot.add(fishTable.roll());
-		}
+		const loot = fishTable.roll(quantity * 10);
 
 		const huntXpReceived = Math.round(
 			quantity * (fishShoal.hunterXP + Math.min(currentHuntLevel - 44, 26) * 11.35)
@@ -64,22 +55,21 @@ export const driftNetTask: MinionTask = {
 		);
 
 		let xpRes = `\n${await user.addXP({
-			skillName: SkillsEnum.Hunter,
+			skillName: 'hunter',
 			amount: huntXpReceived,
 			duration
 		})}`;
-		xpRes += `\n${await user.addXP({ skillName: SkillsEnum.Fishing, amount: fishXpReceived, duration })}`;
+		xpRes += `\n${await user.addXP({ skillName: 'fishing', amount: fishXpReceived, duration })}`;
 		await user.incrementCreatureScore(fishShoal.id, fishShoalCaught);
 
 		let str = `${user}, ${user.minionName} finished drift net fishing and caught ${quantity}x ${fishShoal.name}. ${xpRes}\n${user.minionName} asks if you'd like them to do another of the same trip.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 		str += `\n\nYou received: ${loot}.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

@@ -1,0 +1,17 @@
+{
+	"name": "@oldschoolgg/collectionlog",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/esm/index.d.mts",
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs"
+		}
+	},
+	"scripts": {
+		"build": "tsdown"
+	},
+	"dependencies": {
+		"oldschooljs": "workspace:*"
+	}
+}

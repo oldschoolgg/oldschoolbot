@@ -1,8 +1,6 @@
-import { ActivityGroup, globalConfig } from '../lib/constants';
-
-import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
-import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
-import { sql } from './postgres.js';
+import { ActivityGroup, globalConfig } from '@/lib/constants.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { taskGroupFromActivity } from '@/lib/util/taskGroupFromActivity.js';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {
@@ -34,13 +32,14 @@ async function calculateMinionTaskCounts() {
 }
 
 export async function analyticsTick() {
+	Logging.logDebug('Running analyticsTick');
 	const [{ has_bought_count, total_gp, ironman_count, total_sacrificed_value }]: {
 		has_bought_count: bigint;
 		total_sacrificed_value: bigint;
 		ironman_count: bigint;
 		total_gp: bigint;
-	}[] = await sql`
-SELECT 
+	}[] = await prisma.$queryRaw`
+SELECT
     COUNT(*) FILTER (WHERE "minion.hasBought" = true) AS has_bought_count,
     SUM("sacrificedValue")::bigint AS total_sacrificed_value,
     COUNT(*) FILTER (WHERE "minion.ironman" = true) AS ironman_count,
@@ -76,8 +75,8 @@ FROM users;
 	});
 	await prisma.analytic.create({
 		data: {
-			guildsCount: globalClient.guilds.cache.size,
-			membersCount: globalClient.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount || 0), 0),
+			guildsCount: 0,
+			membersCount: 0,
 			timestamp: Math.floor(Date.now() / 1000),
 			clueTasksCount: taskCounts.Clue,
 			minigameTasksCount: taskCounts.Minigame,

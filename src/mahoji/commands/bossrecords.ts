@@ -1,58 +1,39 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { MessageEditOptions } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { chunk } from 'e';
-import { Hiscores } from 'oldschooljs';
-import { bossNameMap } from 'oldschooljs/dist/constants';
-import type { BossRecords } from 'oldschooljs/dist/meta/types';
+import { EmbedBuilder, type PaginatedMessagePage } from '@oldschoolgg/discord';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
+import { chunk } from 'remeda';
 
-import pets from '../../lib/data/pets';
-import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import type { OSBMahojiCommand } from '../lib/util';
+import { miscEmojis } from '@/lib/data/emojis.js';
+import pets from '@/lib/data/pets.js';
 
-// Emojis for bosses with no pets
-const miscEmojis = {
-	barrowsChests: '<:Dharoks_helm:403038864199122947>',
-	hespori: '<:Bottomless_compost_bucket:545978484078411777>',
-	bryophyta: '<:Bryophytas_essence:455835859799769108>',
-	crazyArchaeologist: '<:Fedora:456179157303427092>',
-	derangedArchaeologist: '<:Fedora:456179157303427092>',
-	mimic: '<:Casket:365003978678730772>',
-	obor: '<:Hill_giant_club:421045456194240523>'
-};
-
-type MiscEmojisKeys = keyof typeof miscEmojis;
-
-function getEmojiForBoss(key: MiscEmojisKeys | string) {
+function getEmojiForBoss(key: keyof typeof miscEmojis | string) {
 	if (key in miscEmojis) {
-		return miscEmojis[key as MiscEmojisKeys];
+		return miscEmojis[key as keyof typeof miscEmojis];
 	}
 
 	const pet = pets.find(_pet => _pet.bossKeys?.includes(key));
 	if (pet) return pet.emoji;
 }
 
-export const bossrecordCommand: OSBMahojiCommand = {
+export const bossrecordCommand = defineCommand({
 	name: 'bossrecords',
 	description: 'Shows your OSRS boss records.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'The runescape username you want to check.',
 			required: true
 		}
 	],
-	run: async ({ options, channelID, userID, interaction }: CommandRunOptions<{ rsn: string }>) => {
-		await deferInteraction(interaction);
-		const { bossRecords } = await Hiscores.fetch(options.rsn).catch(err => {
-			throw err.message;
-		});
+	run: async ({ options, interaction }) => {
+		await interaction.defer();
+		const { player, error } = await Hiscores.fetch(options.rsn);
+		if (error !== null) {
+			return error;
+		}
 
-		const sortedEntries = Object.entries(bossRecords)
+		const sortedEntries = Object.entries(player.bossRecords)
 			.filter(([, { rank, score }]) => rank !== -1 && score !== -1)
 			.sort(([, a], [, b]) => a.rank - b.rank);
 
@@ -60,7 +41,7 @@ export const bossrecordCommand: OSBMahojiCommand = {
 			return 'You have no boss records!. Try logging into the game, and logging out.';
 		}
 
-		const pages: MessageEditOptions[] = [];
+		const pages: PaginatedMessagePage[] = [];
 		for (const page of chunk(sortedEntries, 12)) {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${toTitleCase(options.rsn)} - Boss Records` })
@@ -77,13 +58,6 @@ export const bossrecordCommand: OSBMahojiCommand = {
 			pages.push({ embeds: [embed] });
 		}
 
-		const channel = globalClient.channels.cache.get(channelID.toString());
-		if (!channelIsSendable(channel)) return 'Invalid channel.';
-
-		await makePaginatedMessage(channel, pages, userID.toString());
-		return {
-			content: `Showing OSRS Boss Records for \`${options.rsn}\`.`,
-			ephemeral: true
-		};
+		return interaction.makePaginatedMessage({ pages });
 	}
-};
+});

@@ -1,22 +1,15 @@
-import type { Prisma } from '@prisma/client';
-import { Time, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot } from '@oldschoolgg/gear';
+import { Events, Time } from '@oldschoolgg/toolkit';
+import { Bank, ECreature, EItem } from 'oldschooljs';
 
-import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
-import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { trackLoot } from '../../../lib/lootTrack';
-import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
-import Hunter from '../../../lib/skilling/skills/hunter/hunter';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
-import { logError } from '../../../lib/util/logError.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
+import { MAX_LEVEL } from '@/lib/constants.js';
+import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
+import { PeakTier } from '@/lib/util/peaks.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 const riskDeathNumbers = [
 	{
@@ -35,13 +28,11 @@ const riskDeathNumbers = [
 
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
-	async run(data: HunterActivityTaskOptions) {
-		const { creatureID, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
-			data;
-		const user = await mUserFetch(userID);
+	async run(data: HunterActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { creatureID, quantity, channelId, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } = data;
 		const userBank = user.bank;
-		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
-		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
+		const currentLevel = user.skillsAsLevels.hunter;
+		const currentHerbLevel = user.skillsAsLevels.herblore;
 		let gotPked = false;
 		let died = false;
 		let diedStr = '';
@@ -51,16 +42,13 @@ export const hunterTask: MinionTask = {
 		const creature = Hunter.Creatures.find(c => c.id === creatureID);
 
 		if (!creature) {
-			logError(`Invalid creature ID provided: ${creatureID}`);
+			Logging.logError(`Invalid creature ID provided: ${creatureID}`);
 			return;
 		}
 
 		const crystalImpling = creature.name === 'Crystal impling';
 
-		let graceful = false;
-		if (userHasGracefulEquipped(user)) {
-			graceful = true;
-		}
+		const graceful = user.hasGracefulEquipped();
 
 		const experienceScore = await user.getCreatureScore(creature.id);
 
@@ -79,7 +67,7 @@ export const hunterTask: MinionTask = {
 		}
 
 		if (creature.wildy) {
-			let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;
+			let riskPkChance = creature.id === ECreature.BLACK_CHINCHOMPA ? 100 : 200;
 			riskPkChance +=
 				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)?.extraChance ?? 0;
 			let riskDeathChance = 20;
@@ -87,26 +75,24 @@ export const hunterTask: MinionTask = {
 			riskDeathChance += Math.min(Math.floor(((await user.getCreatureScore(creature.id)) ?? 1) / 100), 200);
 
 			// Gives lower death chance depending on what the user got equipped in wildy.
-			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy);
+			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			riskDeathChance += score;
 			for (let i = 0; i < duration / Time.Minute; i++) {
-				if (roll(riskPkChance)) {
+				if (rng.roll(riskPkChance)) {
 					gotPked = true;
 					break;
 				}
 			}
-			if (gotPked && roll(riskDeathChance)) {
+			if (gotPked && rng.roll(riskDeathChance)) {
 				died = true;
 				const cost = new Bank().add('Saradomin brew(4)', 10).add('Super restore(4)', 5);
 				if (userBank.has(cost)) {
-					await transactItems({ userID: user.id, itemsToRemove: cost });
+					await user.transactItems({ itemsToRemove: cost });
 				}
-				const newGear = { ...user.gear.wildy.raw() };
+				const newGear = user.gear.wildy.raw();
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
-				await user.update({
-					gear_wildy: newGear as Prisma.InputJsonObject
-				});
+				await user.updateGear([{ setup: 'wildy', gear: newGear }]);
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
 				diedStr =
@@ -114,10 +100,10 @@ export const hunterTask: MinionTask = {
 			}
 			if (gotPked && !died) {
 				if (userBank.amount('Saradomin brew(4)') >= 10 && userBank.amount('Super restore(4)') >= 5) {
-					const lostBrew = randInt(1, 10);
-					const lostRestore = randInt(1, 5);
+					const lostBrew = rng.randInt(1, 10);
+					const lostRestore = rng.randInt(1, 5);
 					const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
-					await transactItems({ userID: user.id, itemsToRemove: cost });
+					await user.transactItems({ itemsToRemove: cost });
 
 					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, and ${cost}.`;
 					pkedQuantity = 0.1 * successfulQuantity;
@@ -126,18 +112,11 @@ export const hunterTask: MinionTask = {
 			}
 		}
 
-		let babyChinChance = 0;
-		if (creature.name.toLowerCase().includes('chinchompa')) {
-			babyChinChance =
-				creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
-		}
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Hunter, babyChinChance);
-
 		let creatureTable = creature.table;
 		let magicSecStr = '';
 		let herbXP = 0;
 		let xpStr = '';
-		if (creature.id === HERBIBOAR_ID) {
+		if (creature.id === ECreature.HERBIBOAR) {
 			creatureTable = generateHerbiTable(
 				user.skillLevel('herblore'),
 				user.hasEquippedOrInBank('Magic secateurs')
@@ -147,9 +126,9 @@ export const hunterTask: MinionTask = {
 			}
 			// TODO: Check wiki in future for herblore xp from herbiboar
 			if (currentHerbLevel >= 31) {
-				herbXP += quantity * randInt(25, 75);
+				herbXP += quantity * rng.randInt(25, 75);
 				xpStr = await user.addXP({
-					skillName: SkillsEnum.Herblore,
+					skillName: 'herblore',
 					amount: herbXP,
 					duration
 				});
@@ -157,21 +136,34 @@ export const hunterTask: MinionTask = {
 		}
 
 		const loot = new Bank();
-		for (let i = 0; i < successfulQuantity - pkedQuantity; i++) {
+		const actualQty = successfulQuantity - pkedQuantity;
+		for (let i = 0; i < actualQty; i++) {
 			loot.add(creatureTable.roll());
-			if (roll(petDropRate) && creature.name.toLowerCase().includes('chinchompa')) {
-				loot.add(itemID('Baby chinchompa'));
+		}
+
+		if (creature.name.toLowerCase().includes('chinchompa')) {
+			const babyChinChance =
+				creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
+			const { petDropRate } = skillingPetDropRate(user, 'hunter', babyChinChance);
+
+			for (let i = 0; i < actualQty; i++) {
+				if (rng.roll(petDropRate)) {
+					loot.add(EItem.BABY_CHINCHOMPA);
+				}
 			}
 		}
 
-		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await transactItems({
-			userID: user.id,
+		const scoreToAdd = Math.floor(successfulQuantity);
+		if (scoreToAdd > 0) {
+			await user.incrementCreatureScore(creature.id, scoreToAdd);
+		}
+
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 		xpStr += await user.addXP({
-			skillName: SkillsEnum.Hunter,
+			skillName: 'hunter',
 			amount: xpReceived,
 			duration
 		});
@@ -203,7 +195,7 @@ export const hunterTask: MinionTask = {
 			);
 		}
 
-		updateBankSetting('hunter_loot', loot);
+		await ClientSettings.updateBankSetting('hunter_loot', loot);
 		await trackLoot({
 			id: creature.name,
 			changeType: 'loot',
@@ -220,6 +212,6 @@ export const hunterTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

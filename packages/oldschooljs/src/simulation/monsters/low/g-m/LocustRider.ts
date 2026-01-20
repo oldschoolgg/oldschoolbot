@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const LocustRiderTable = new LootTable({ limit: 128 })
 	.every('Bones')
@@ -48,7 +48,7 @@ const LocustRiderTable = new LootTable({ limit: 128 })
 	.add(RareDropTable, 1, 1)
 	.add(GemTable, 1, 15);
 
-export default new SimpleMonster({
+export const LocustRider: SimpleMonster = new SimpleMonster({
 	id: 795,
 	name: 'Locust Rider',
 	table: LocustRiderTable,

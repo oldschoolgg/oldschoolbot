@@ -3,6 +3,8 @@
 	"compilerOptions": {
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact",
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
 		"paths": {
 			"@data/*": ["../../../data/*"]
 		}

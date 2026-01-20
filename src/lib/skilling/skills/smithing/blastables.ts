@@ -1,8 +1,7 @@
-import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, itemID } from 'oldschooljs';
 
-import itemID from '../../../util/itemID';
-import type { BlastableBar } from '../../types';
+import type { BlastableBar } from '@/lib/skilling/types.js';
 
 const BlastableBars: BlastableBar[] = [
 	{

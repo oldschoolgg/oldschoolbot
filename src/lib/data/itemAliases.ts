@@ -1,7 +1,7 @@
-import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/util';
-import { Items, allTeamCapes, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
+import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
+import { ItemGroups, Items } from 'oldschooljs';
 
-export function setItemAlias(id: number, name: string | string[], rename = true) {
+function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
@@ -10,13 +10,13 @@ export function setItemAlias(id: number, name: string | string[], rename = true)
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
 		firstName = name;
-		itemNameMap.set(name, id);
-		itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
+		Items.itemNameMap.set(name, id);
+		Items.itemNameMap.set(replaceWhitespaceAndUppercase(name), id);
 	} else {
 		for (const _name of name) {
 			if (!firstName) firstName = _name;
-			itemNameMap.set(_name, id);
-			itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
+			Items.itemNameMap.set(_name, id);
+			Items.itemNameMap.set(replaceWhitespaceAndUppercase(_name), id);
 		}
 	}
 	// Update the item name to it's first alias
@@ -162,26 +162,6 @@ setItemAlias(27_693, 'Ore pack (Volcanic Mine)');
 setItemAlias(5076, 'Red bird egg');
 setItemAlias(5077, 'Blue bird egg');
 setItemAlias(5078, 'Green bird egg');
-
-// Chompy hats
-setItemAlias(2978, 'Chompy bird hat (ogre bowman)');
-setItemAlias(2979, 'Chompy bird hat (bowman)');
-setItemAlias(2980, 'Chompy bird hat (ogre yeoman)');
-setItemAlias(2981, 'Chompy bird hat (yeoman)');
-setItemAlias(2982, 'Chompy bird hat (ogre marksman)');
-setItemAlias(2983, 'Chompy bird hat (marksman)');
-setItemAlias(2984, 'Chompy bird hat (ogre woodsman)');
-setItemAlias(2985, 'Chompy bird hat (woodsman)');
-setItemAlias(2986, 'Chompy bird hat (ogre forester)');
-setItemAlias(2987, 'Chompy bird hat (forester)');
-setItemAlias(2988, 'Chompy bird hat (ogre bowmaster)');
-setItemAlias(2989, 'Chompy bird hat (bowmaster)');
-setItemAlias(2990, 'Chompy bird hat (ogre expert)');
-setItemAlias(2991, 'Chompy bird hat (expert)');
-setItemAlias(2992, 'Chompy bird hat (ogre dragon archer)');
-setItemAlias(2993, 'Chompy bird hat (dragon archer)');
-setItemAlias(2994, 'Chompy bird hat (expert ogre dragon archer)');
-setItemAlias(2995, 'Chompy bird hat (expert dragon archer)');
 
 // Achievement diary lamps
 setItemAlias(11_137, 'Antique lamp 1');
@@ -343,7 +323,7 @@ setItemAlias(26_507, 'Placeholder steel trophy');
 setItemAlias(26_505, 'Placeholder iron trophy');
 setItemAlias(26_503, 'Placeholder bronze trophy');
 
-export const allTrophyItems = resolveItems([
+export const allTrophyItems = Items.resolveItems([
 	'BSO dragon trophy',
 	'BSO rune trophy',
 	'BSO adamant trophy',
@@ -381,21 +361,22 @@ for (const item of allTrophyItems) {
  * Item modifications
  */
 
-export interface CustomItemData {
-	cantBeSacrificed?: true;
-}
-declare module 'oldschooljs/dist/meta/types' {
+declare module 'oldschooljs' {
 	interface Item {
 		customItemData?: CustomItemData;
 	}
 }
 
-for (const item of allTeamCapes) {
-	Items.modifyItem(item.id, {
+export interface CustomItemData {
+	cantBeSacrificed?: true;
+}
+
+for (const id of ItemGroups.teamCapes) {
+	Items.modifyItem(id, {
 		price: 100
 	});
-	if (getItemOrThrow(item.id).price !== 100) {
-		throw new Error(`Failed to modify price of item ${item.id}`);
+	if (Items.getOrThrow(id).price !== 100) {
+		throw new Error(`Failed to modify price of item ${id}`);
 	}
 }
 

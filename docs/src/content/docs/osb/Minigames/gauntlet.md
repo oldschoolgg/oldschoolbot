@@ -7,7 +7,7 @@ The Gauntlet is a solo minigame with high stat requirements. Both Normal and Cor
 Start a run with:
 
 - [[/minigames gauntlet start]]
-- [[/minigames gauntlet startcorrupted\:True]]
+- [[/minigames gauntlet start corrupted\:True]]
 
 ## Requirements
 
@@ -28,11 +28,11 @@ Start a run with:
 
 - +5% for unlocking **Augury**, or +2% if using **Mystic Might** (45+ prayer)
 
-  - Use: [[/useitem item\:Arcane prayer scroll]]
+  - Use: [[/use item item\:Arcane prayer scroll]]
 
 - +5% for unlocking **Rigour**, or +2% if using **Eagle Eye** (44+ prayer)
 
-  - Use: [[/useitem item\:Dexterous prayer scroll]]
+  - Use: [[/use item item\:Dexterous prayer scroll]]
 
 - Up to +20% prep time boost (based on total KC; 40% in Normal Gauntlet if prep is halved)
 - Up to +20% from experience (0.2% per KC, max at 100 KC)
@@ -49,7 +49,7 @@ You can obtain standard Gauntlet loot such as:
 
 #### Crystal Weapon Seeds
 
-Used to create Crystal Bow or Crystal Halberd.  
+Used to create Crystal Bow or Crystal Halberd.
 Requires [[smithing:78]] and [[crafting:78]]
 
 - [[/create item\:Crystal bow]] – 40 shards
@@ -57,8 +57,8 @@ Requires [[smithing:78]] and [[crafting:78]]
 
 #### Crystal Armour Seeds
 
-Used to create 3-piece Crystal Armour set.  
-Requires [[smithing:70/72/74]] and [[crafting:70/72/74]] respectively
+Used to create 3-piece Crystal Armour set.
+Requires [[smithing:70]] [[smithing:72]] [[smithing:74]] and [[crafting:70]] [[crafting:72]] [[crafting:74]] respectively
 
 - [[/create item\:Crystal helm]] – 150 shards
 - [[/create item\:Crystal body]] – 300 shards
@@ -66,8 +66,8 @@ Requires [[smithing:70/72/74]] and [[crafting:70/72/74]] respectively
 
 #### Enhanced Crystal Weapon Seeds
 
-Requires [[crafting:82]] and [[smithing:82]]  
-Charged versions boost bosses like Sara, Arma, Zulrah, CoX  
+Requires [[crafting:82]] and [[smithing:82]]
+Charged versions boost bosses like Sara, Arma, Zulrah, CoX
 Charged → Inactive → Seed (revert cost: 250 shards)
 
 - [[/create item\:Blade of saeldor (inactive)]] – 100 shards
@@ -79,7 +79,7 @@ Charged → Inactive → Seed (revert cost: 250 shards)
 
 ## Trading Crystal Seeds for Shards
 
-You may trade seeds using the [[/create]] command, e.g.  
+You may trade seeds using the [[/create]] command, e.g.
 [[/create item\:Revert crystal armour seed]]
 
 | **Seed**                       | **Shards** |

@@ -1,39 +1,25 @@
-import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, randArrItem, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { Events } from '../../lib/constants';
-import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
-import { Offerables } from '../../lib/data/offerData';
-import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
-import Prayer from '../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import getOSItem from '../../lib/util/getOSItem';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import type { OSBMahojiCommand } from '../lib/util';
-import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
+import { Offerables } from '@/lib/data/offerData.js';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const specialBones = [
 	{
-		item: getOSItem('Long bone'),
+		item: Items.getOrThrow('Long bone'),
 		xp: 4500
 	},
 	{
-		item: getOSItem('Curved bone'),
+		item: Items.getOrThrow('Curved bone'),
 		xp: 6750
 	}
 ];
 
-const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
+const eggs = Items.resolveFullItems(['Red bird egg', 'Green bird egg', 'Blue bird egg']);
 
 const offerables = new Set(
 	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]
@@ -55,7 +41,7 @@ function notifyUniques(user: MUser, activity: string, uniques: number[], loot: B
 	}
 }
 
-export const offerCommand: OSBMahojiCommand = {
+export const offerCommand = defineCommand({
 	name: 'offer',
 	description: 'Offer bones or bird eggs.',
 	attributes: {
@@ -65,14 +51,12 @@ export const offerCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to offer.',
 			required: true,
-			autocomplete: async (value: string, user: User) => {
-				const botUser = await mUserFetch(user.id);
-
-				return botUser.bank
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
+				return user.bank
 					.items()
 					.filter(i => offerables.has(i[0].id))
 					.filter(i => {
@@ -83,23 +67,17 @@ export const offerCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to offer (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelId, interaction }) => {
 		const userBank = user.bank;
 
-		await deferInteraction(interaction);
+		await interaction.defer();
 		let { quantity } = options;
 		const whichOfferable = Offerables.find(
 			item =>
@@ -123,29 +101,27 @@ export const offerCommand: OSBMahojiCommand = {
 				itemsToRemove: new Bank().add(whichOfferable.itemID, quantity)
 			});
 			if (whichOfferable.economyCounter) {
-				const newStats = await userStatsUpdate(
-					user.id,
-					{
-						[whichOfferable.economyCounter]: {
-							increment: quantity
-						}
-					},
-					{ slayer_chewed_offered: true, slayer_unsired_offered: true }
-				); // Notify uniques
+				await user.statsUpdate({
+					[whichOfferable.economyCounter]: {
+						increment: quantity
+					}
+				});
+				// Notify uniques
 				if (whichOfferable.uniques) {
-					const current = newStats[whichOfferable.economyCounter];
+					const currentCounter = await user.fetchUserStat(whichOfferable.economyCounter);
+
 					notifyUniques(
 						user,
 						whichOfferable.name,
 						whichOfferable.uniques,
 						itemsAdded,
 						quantity,
-						current + randInt(1, quantity)
+						currentCounter + randInt(1, quantity)
 					);
 				}
 			}
 
-			const { file } = await makeBankImage({
+			const file = await makeBankImage({
 				bank: itemsAdded,
 				title: `Loot from offering ${quantity} ${whichOfferable.name}`,
 				flags: { showNewCL: 1 },
@@ -170,7 +146,7 @@ export const offerCommand: OSBMahojiCommand = {
 			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(300)) {
-					loot.add(randArrItem(evilChickenOutfit));
+					loot.add(randArrItem(ItemGroups.evilChickenOutfit));
 				} else {
 					loot.add(birdsNestID);
 					loot.add(treeSeedsNest.roll());
@@ -178,7 +154,7 @@ export const offerCommand: OSBMahojiCommand = {
 			}
 
 			const xpStr = await user.addXP({
-				skillName: SkillsEnum.Prayer,
+				skillName: 'prayer',
 				amount: quantity * 100
 			});
 
@@ -187,11 +163,11 @@ export const offerCommand: OSBMahojiCommand = {
 				itemsToAdd: loot,
 				itemsToRemove: cost
 			});
-			await userStatsBankUpdate(user, 'bird_eggs_offered_bank', cost);
+			await user.statsBankUpdate('bird_eggs_offered_bank', cost);
 
-			notifyUniques(user, egg.name, evilChickenOutfit, loot, quantity);
+			notifyUniques(user, egg.name, ItemGroups.evilChickenOutfit, loot, quantity);
 
-			const { file } = await makeBankImage({
+			const file = await makeBankImage({
 				bank: itemsAdded,
 				title: `${quantity}x ${egg.name}`,
 				user,
@@ -210,7 +186,7 @@ export const offerCommand: OSBMahojiCommand = {
 			if (user.QP < 8) {
 				return 'You need at least 8 QP to offer long/curved bones for XP.';
 			}
-			if (user.skillLevel(SkillsEnum.Construction) < 30) {
+			if (user.skillsAsLevels.construction < 30) {
 				return 'You need at least level 30 Construction to offer long/curved bones for XP.';
 			}
 			const amountHas = userBank.amount(specialBone.item.id);
@@ -221,7 +197,7 @@ export const offerCommand: OSBMahojiCommand = {
 			const xp = quantity * specialBone.xp;
 			await Promise.all([
 				user.addXP({
-					skillName: SkillsEnum.Construction,
+					skillName: 'construction',
 					amount: xp
 				}),
 				user.removeItemsFromBank(new Bank().add(specialBone.item.id, quantity))
@@ -241,7 +217,7 @@ export const offerCommand: OSBMahojiCommand = {
 			return "That's not a valid bone to offer.";
 		}
 
-		if (user.skillLevel(SkillsEnum.Prayer) < bone.level) {
+		if (user.skillsAsLevels.prayer < bone.level) {
 			return `${user.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`;
 		}
 
@@ -250,7 +226,7 @@ export const offerCommand: OSBMahojiCommand = {
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return `You have no ${bone.name}.`;
 
-		const maxTripLength = calcMaxTripLength(user, 'Offering');
+		const maxTripLength = await user.calcMaxTripLength('Offering');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
@@ -274,10 +250,10 @@ export const offerCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(new Bank().add(bone.inputId, quantity));
 
-		await addSubTaskToActivityTask<OfferingActivityTaskOptions>({
+		await ActivityManager.startTrip<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelId,
 			quantity,
 			duration,
 			type: 'Offering'
@@ -286,4 +262,4 @@ export const offerCommand: OSBMahojiCommand = {
 			bone.name
 		} at the Chaos altar, it'll take around ${formatDuration(duration)} to finish.`;
 	}
-};
+});

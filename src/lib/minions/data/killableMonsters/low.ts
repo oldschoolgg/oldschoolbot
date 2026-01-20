@@ -1,14 +1,11 @@
-import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { GearStat } from '@oldschoolgg/gear';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, itemID, Monsters, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { GearStat } from '../../../gear/types';
-import itemID from '../../../util/itemID';
-import type { KillableMonster } from '../../types';
-import { QuestID } from '../quests';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
-const killableMonsters: KillableMonster[] = [
+export const lowKillableMonsters: KillableMonster[] = [
 	{
 		id: Monsters.Imp.id,
 		name: Monsters.Imp.name,
@@ -142,8 +139,8 @@ const killableMonsters: KillableMonster[] = [
 			}
 		],
 		attackStyleToUse: GearStat.AttackRanged,
-		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
+		defaultAttackStyles: ['ranged', 'magic'],
+		disallowedAttackStyles: ['attack', 'strength']
 	},
 	{
 		id: Monsters.BloodReaver.id,
@@ -157,7 +154,7 @@ const killableMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Frozen key']),
 		healAmountNeeded: 30,
 		attackStyleToUse: GearStat.AttackRanged,
-		disallowedAttackStyles: [SkillsEnum.Magic],
+		disallowedAttackStyles: ['magic'],
 		attackStylesUsed: [GearStat.AttackMagic],
 		itemInBankBoosts: [
 			{
@@ -297,5 +294,3 @@ const killableMonsters: KillableMonster[] = [
 		canCannon: true
 	}
 ];
-
-export default killableMonsters;

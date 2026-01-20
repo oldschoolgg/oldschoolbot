@@ -8,5 +8,5 @@ coverage
 .tests
 .git
 .env.local
-docs
 data
+**/node_modules/**
