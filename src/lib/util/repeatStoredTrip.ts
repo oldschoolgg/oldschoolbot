@@ -62,6 +62,7 @@ import type {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	StealingArtefactsActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
@@ -585,6 +586,19 @@ const tripHandlers: {
 		commandName: 'minigames',
 		args: () => ({
 			rogues_den: {}
+		})
+	},
+	[activity_type_enum.StealingArtefacts]: {
+		commandName: 'minigames',
+		args: (data: StealingArtefactsActivityTaskOptions) => ({
+			stealing_artefacts: {
+				start: {
+					quantity: data.quantity,
+					stamina: data.stamina,
+					teleport: data.teleportOptionEnabled,
+					glassblow_product: data.glassblow?.product ?? 'none'
+				}
+			}
 		})
 	},
 	[activity_type_enum.Sawmill]: {

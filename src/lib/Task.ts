@@ -57,6 +57,7 @@ import { roguesDenTask } from '@/tasks/minions/minigames/roguesDenMazeActivity.j
 import { sepulchreTask } from '@/tasks/minions/minigames/sepulchreActivity.js';
 import { shadesOfMortonTask } from '@/tasks/minions/minigames/shadesOfMortonActivity.js';
 import { soulWarsTask } from '@/tasks/minions/minigames/soulWarsActivity.js';
+import { stealingArtefactsTask } from '@/tasks/minions/minigames/stealingArtefactsActivity.js';
 import { togTask } from '@/tasks/minions/minigames/tearsOfGuthixActivity.js';
 import { templeTrekkingTask } from '@/tasks/minions/minigames/templeTrekkingActivity.js';
 import { temporossTask } from '@/tasks/minions/minigames/temporossActivity.js';
@@ -124,6 +125,7 @@ export const allTasks: MinionTask[] = [
 	trawlerTask,
 	brewingTask,
 	roguesDenTask,
+	stealingArtefactsTask,
 	soulWarsTask,
 	wintertodtTask,
 	zalcanoTask,

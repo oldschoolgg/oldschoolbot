@@ -408,6 +408,18 @@ export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions 
 	rooms: number[];
 }
 
+export interface StealingArtefactsActivityTaskOptions extends MinigameActivityTaskOptions {
+	type: 'StealingArtefacts';
+	stamina: boolean;
+	teleportOptionEnabled: boolean;
+	teleportEligible: boolean;
+	glassblow?: {
+		product: import('@/lib/minions/data/stealingArtefacts.js').StealingArtefactsGlassblowProductKey;
+		itemsMade: number;
+		moltenGlassUsed: number;
+	};
+}
+
 export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Zalcano';
 	isMVP: boolean;
@@ -620,6 +632,7 @@ export type ActivityTaskData =
 	| MiningActivityTaskOptions
 	| MotherlodeMiningActivityTaskOptions
 	| PlunderActivityTaskOptions
+	| StealingArtefactsActivityTaskOptions
 	| SmithingActivityTaskOptions
 	| SmeltingActivityTaskOptions
 	| TiaraRunecraftActivityTaskOptions

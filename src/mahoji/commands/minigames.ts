@@ -76,6 +76,7 @@ import {
 	soulWarsImbueCommand,
 	soulWarsStartCommand
 } from '@/mahoji/lib/abstracted_commands/soulWarsCommand.js';
+import { stealingArtefactsCommand } from '@/mahoji/lib/abstracted_commands/stealingArtefactsCommand.js';
 import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
 import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
@@ -696,6 +697,61 @@ export const minigamesCommand = defineCommand({
 		},
 		/**
 		 *
+		 * Stealing artefacts
+		 *
+		 */
+		{
+			name: 'stealing_artefacts',
+			description: 'The Stealing artefacts minigame.',
+			type: 'SubcommandGroup',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Deliveries to complete.',
+							required: false,
+							min_value: 1
+						},
+						{
+							type: 'Boolean',
+							name: 'stamina',
+							description: 'Use stamina for a 30% boost.',
+							required: false
+						},
+						{
+							type: 'Boolean',
+							name: 'teleport',
+							description: 'Enable teleport efficiency checks.',
+							required: false
+						},
+						{
+							type: 'String',
+							name: 'glassblow_product',
+							description: 'Glassblow while stealing artefacts.',
+							required: false,
+							choices: choicesOf([
+								'none',
+								'beer_glass',
+								'empty_candle_lantern',
+								'empty_oil_lamp',
+								'vial',
+								'empty_fishbowl',
+								'unpowered_orb',
+								'lantern_lens',
+								'empty_light_orb'
+							])
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
 		 * Soul Wars
 		 *
 		 */
@@ -1262,6 +1318,15 @@ export const minigamesCommand = defineCommand({
 		 */
 		if (options.rogues_den) {
 			return roguesDenCommand(user, channelId);
+		}
+
+		/**
+		 *
+		 * Stealing artefacts
+		 *
+		 */
+		if (options.stealing_artefacts?.start) {
+			return stealingArtefactsCommand(user, channelId, options.stealing_artefacts.start);
 		}
 
 		/**
