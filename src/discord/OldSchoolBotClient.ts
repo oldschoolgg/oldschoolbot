@@ -8,6 +8,7 @@ import {
 	collectSingleInteraction,
 	DiscordClient,
 	type DiscordClientOptions,
+	GatewayMessageCreateDispatchData,
 	Routes
 } from '@oldschoolgg/discord';
 import type { IChannel, IUserLog, IWebhook } from '@oldschoolgg/schemas';
@@ -216,6 +217,53 @@ export class OldSchoolBotClient extends DiscordClient {
 	}) {
 		const route = Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(ReactEmoji[emojiId]));
 		await this.rest.put(route);
+	}
+
+	async awaitMessages({
+		channelId,
+		max = 1,
+		time = Time.Second * 30,
+		errors = [],
+		filter = () => true
+	}: {
+		channelId: string;
+		max?: number;
+		time?: number;
+		errors?: string[];
+		filter?: (msg: GatewayMessageCreateDispatchData) => boolean;
+	}): Promise<GatewayMessageCreateDispatchData[]> {
+		return new Promise((resolve, reject) => {
+			const collected: GatewayMessageCreateDispatchData[] = [];
+			let timeoutId: NodeJS.Timeout;
+
+			const messageHandler = (msg: GatewayMessageCreateDispatchData) => {
+				if (msg.channel_id !== channelId) return;
+				if (!filter(msg)) return;
+
+				collected.push(msg);
+
+				if (collected.length >= max) {
+					cleanup();
+					resolve(collected);
+				}
+			};
+
+			const cleanup = () => {
+				this.off('rawMessageCreate', messageHandler);
+				if (timeoutId) clearTimeout(timeoutId);
+			};
+
+			timeoutId = setTimeout(() => {
+				cleanup();
+				if (errors.includes('time')) {
+					reject(new Error('Time limit exceeded'));
+				} else {
+					resolve(collected);
+				}
+			}, time);
+
+			this.on('rawMessageCreate', messageHandler);
+		});
 	}
 
 	async emitUserLog(log: IUserLog & { user_id: string }): Promise<void> {
