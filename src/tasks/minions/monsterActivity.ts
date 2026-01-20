@@ -5,7 +5,7 @@ import { clone } from 'remeda';
 
 import type { BitField } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import killableMonsters, { DagannothKingsTribridID } from '@/lib/minions/data/killableMonsters/index.js';
 import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
@@ -421,8 +421,24 @@ export function doMonsterTrip(data: newOptions) {
 		}
 	}
 
-	if (!wiped) updateBank.kcBank.add(monster.id, quantity);
-	const newKC = kcBank.amount(monster.id) + quantity;
+	if (!wiped) {
+		updateBank.kcBank.add(monster.id, quantity);
+		if (monster.id === DagannothKingsTribridID) {
+			updateBank.kcBank.add(Monsters.DagannothPrime.id, quantity);
+			updateBank.kcBank.add(Monsters.DagannothRex.id, quantity);
+			updateBank.kcBank.add(Monsters.DagannothSupreme.id, quantity);
+		}
+	}
+
+	let newKC: string;
+	if (monster.id === DagannothKingsTribridID) {
+		const newPrimeKC = kcBank.amount(Monsters.DagannothPrime.id) + quantity;
+		const newRexKC = kcBank.amount(Monsters.DagannothRex.id) + quantity;
+		const newSupremeKC = kcBank.amount(Monsters.DagannothSupreme.id) + quantity;
+		newKC = `${newPrimeKC} Dagannoth Prime KC, ${newRexKC} Dagannoth Rex KC, ${newSupremeKC} Dagannoth Supreme KC`;
+	} else {
+		newKC = `${kcBank.amount(monster.id) + quantity} KC`;
+	}
 
 	return {
 		slayerContext,

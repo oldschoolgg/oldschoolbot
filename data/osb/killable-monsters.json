@@ -2408,6 +2408,68 @@
 		"attack_styles_used": ["attack_crush"]
 	},
 	{
+		"id": -30001,
+		"name": "Dagannoth Kings (tribrid)",
+		"time_to_finish": 324900,
+		"table": {},
+		"emoji": "<:Dagannoth:324127377305976852>",
+		"wildy": false,
+		"difficulty_rating": 6,
+		"items_required": [
+			4728,
+			4730,
+			4724,
+			4726,
+			[11828, 4736],
+			[11830, 4738],
+			[26384, 11832, 4749],
+			[26386, 11834, 4751]
+		],
+		"notify_drops": ["Pet dagannoth prime", "Pet dagannoth rex", "Pet dagannoth supreme"],
+		"qp_required": 0,
+		"item_in_bank_boosts": [
+			{
+				"11828": 2,
+				"27238": 4
+			},
+			{
+				"11830": 2,
+				"27241": 4
+			},
+			{
+				"20997": 6
+			},
+			{
+				"1409": 3,
+				"24423": 5,
+				"28583": 4
+			},
+			{
+				"12002": 5
+			},
+			{
+				"11832": 2,
+				"26384": 2
+			},
+			{
+				"11834": 2,
+				"26386": 2
+			},
+			{
+				"11806": 4,
+				"13652": 6
+			}
+		],
+		"level_requirements": {
+			"prayer": 43
+		},
+		"heal_amount_needed": 300,
+		"attack_styles_used": ["attack_slash", "attack_magic", "attack_ranged"],
+		"default_attack_styles": ["attack", "magic", "ranged"],
+		"custom_monster_hp": 765,
+		"combat_xp_multiplier": 1.2
+	},
+	{
 		"id": 2266,
 		"name": "Dagannoth Prime",
 		"time_to_finish": 114000,
