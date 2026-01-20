@@ -314,7 +314,9 @@ VALUES (get_economy_bank());`;
 			const users = await prisma.$queryRaw<{ id: string }[]>`SELECT id
 FROM users
 WHERE CARDINALITY(completed_achievement_diaries) = 0
-AND CARDINALITY(cl_array) >= 600
+AND CARDINALITY(cl_array) >= 300
+AND "QP" > 10
+AND last_command_date > NOW() - INTERVAL '3 months'
 ORDER BY CARDINALITY(cl_array) DESC
 LIMIT 10;`;
 			for (const { id } of users) {
