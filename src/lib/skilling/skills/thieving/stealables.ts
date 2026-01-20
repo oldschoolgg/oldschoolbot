@@ -773,7 +773,7 @@ const chests: Stealable[] = [
 			.add('Eclipse red', 1, 5)
 			.add(UncommonSeedDropTable, 1, 10),
 		id: 54773,
-		respawnTime: Time.Second * 1.8,
+		respawnTime: Time.Second * 12,
 		slope: 0.005952,
 		intercept: 0.0982,
 		stunTime: Time.Second * 5
@@ -805,7 +805,7 @@ const chests: Stealable[] = [
 			.add('Coins', [1, 250], 3)
 			.add('Oil lantern', 1, 1)
 			.add('Bullseye lantern', 1, 1)
-			.add('Mining helmet', 1, 1)
+			.add(5014, 1, 1) // Mining Helmet
 			.add('Cave goblin wire', 1, 1),
 		id: 22697,
 		respawnTime: Time.Second * 15
@@ -835,10 +835,10 @@ const chests: Stealable[] = [
 			.add(boltTipTable, 1, 10)
 			.add(UncommonSeedDropTable, 1, 15),
 		id: 34429,
-		respawnTime: Time.Second * 0.6,
+		respawnTime: Time.Second * 12,
 		slope: 0.008369,
 		intercept: -0.1254,
-		stunTime: Time.Second * 20
+		stunTime: Time.Second * 5
 	},
 	{
 		name: 'Ardougne Castle chest',
@@ -868,7 +868,7 @@ const chests: Stealable[] = [
 			.add('Uncut jade', 1, 1)
 			.add('Uncut red topaz', 1, 1)
 			.add('Bullseye lantern', 1, 1)
-			.add('Mining helmet', 1, 1)
+			.add(5014, 1, 1) // Mining Helmet
 			.add('Frog-leather chaps', 1, 1)
 			.add('Frog-leather body', 1, 1)
 			.add('Iron bar', 1, 1)

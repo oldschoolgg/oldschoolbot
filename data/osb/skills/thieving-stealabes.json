@@ -21,7 +21,7 @@
 		"level": 36,
 		"xp": 200,
 		"id": 54773,
-		"respawn_time": 1800,
+		"respawn_time": 12000,
 		"slope": 0.005952,
 		"intercept": 0.0982,
 		"stun_time": 5000
@@ -403,8 +403,9 @@
 		"type": "chest",
 		"level": 84,
 		"xp": 701.7,
+		"prayer_level_required": 43,
 		"id": 14774,
-		"respawn_time": 15000
+		"respawn_time": 9300
 	},
 	{
 		"name": "Scimitar stall",
@@ -471,7 +472,7 @@
 		"level": 64,
 		"xp": 280,
 		"id": 34429,
-		"respawn_time": 600,
+		"respawn_time": 12000,
 		"slope": 0.008369,
 		"intercept": -0.1254,
 		"stun_time": 5000
