@@ -43,8 +43,30 @@ export function getInterpolatedCapXpPerHour(level: number, column: StealingArtef
 	);
 }
 
-export function getStealingArtefactsDeliveriesPerHour(teleportEligible: boolean): number {
-	return teleportEligible ? 55 : 48;
+export function getStealingArtefactsMultiplier({
+	hasGraceful,
+	stamina
+}: {
+	hasGraceful: boolean;
+	stamina: boolean;
+}): number {
+	let multiplier = 1;
+	if (!hasGraceful) multiplier *= 0.7;
+	if (!stamina) multiplier *= 0.7;
+	return multiplier;
+}
+
+export function getStealingArtefactsDeliveriesPerHour({
+	teleportEligible,
+	hasGraceful,
+	stamina
+}: {
+	teleportEligible: boolean;
+	hasGraceful: boolean;
+	stamina: boolean;
+}): number {
+	const base = teleportEligible ? 55 : 48;
+	return base * getStealingArtefactsMultiplier({ hasGraceful, stamina });
 }
 
 export function canUseStealingArtefactsTeleport({
@@ -75,12 +97,9 @@ export function calculateStealingArtefactsXpPerHour({
 	const capBase = getInterpolatedCapXpPerHour(thievingLevel, 'base');
 	const capTeleport = getInterpolatedCapXpPerHour(thievingLevel, 'teleport');
 	const capXpPerHour = teleportEligible ? capTeleport : capBase;
-	const deliveriesPerHour = getStealingArtefactsDeliveriesPerHour(teleportEligible);
+	const deliveriesPerHour = getStealingArtefactsDeliveriesPerHour({ teleportEligible, hasGraceful, stamina });
 	const bonusXpPerHour = deliveriesPerHour * (40 * thievingLevel);
-
-	let multiplier = 1;
-	if (hasGraceful) multiplier *= 1.2;
-	if (stamina) multiplier *= 1.3;
+	const multiplier = getStealingArtefactsMultiplier({ hasGraceful, stamina });
 
 	const rawXpPerHour = (capBase + bonusXpPerHour) * multiplier;
 	const finalXpPerHour = Math.min(rawXpPerHour, capXpPerHour);

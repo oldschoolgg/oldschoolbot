@@ -35,7 +35,13 @@ export async function stealingArtefactsCommand(
 	});
 
 	const maxTripLength = await user.calcMaxTripLength('StealingArtefacts');
-	const deliveriesPerHour = getStealingArtefactsDeliveriesPerHour(teleportEligible);
+	const hasGraceful = user.hasGracefulEquipped();
+	const stamina = options.stamina ?? false;
+	const deliveriesPerHour = getStealingArtefactsDeliveriesPerHour({
+		teleportEligible,
+		hasGraceful,
+		stamina
+	});
 
 	let duration = maxTripLength;
 	if (options.quantity) {
@@ -82,8 +88,6 @@ export async function stealingArtefactsCommand(
 	}
 
 	const deliveries = Math.floor(deliveriesPerHour * (duration / Time.Hour));
-	const hasGraceful = user.hasGracefulEquipped();
-	const stamina = options.stamina ?? false;
 
 	await ActivityManager.startTrip<StealingArtefactsActivityTaskOptions>({
 		userID: user.id,
@@ -99,8 +103,8 @@ export async function stealingArtefactsCommand(
 	});
 
 	const boosts = [
-		hasGraceful ? 'Graceful equipped (+20%)' : null,
-		stamina ? 'Stamina selected (+30%)' : null,
+		hasGraceful ? 'Graceful equipped (no penalty)' : 'No graceful (-30%)',
+		stamina ? 'Stamina selected (no penalty)' : 'No stamina (-30%)',
 		teleportEligible ? 'Teleport efficiency active' : null
 	].filter(Boolean);
 
