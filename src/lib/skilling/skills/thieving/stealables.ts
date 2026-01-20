@@ -746,7 +746,7 @@ const chests: Stealable[] = [
 			.add('Clue scroll (medium)', 1, 2)
 			.add('Dark key', 1, 1)
 			.add(new LootTable(), 1, 34),
-		id: 11736,
+		id: 40739,
 		respawnTime: Time.Second * 1.2,
 		slope: 0.007042,
 		intercept: 0.005917,

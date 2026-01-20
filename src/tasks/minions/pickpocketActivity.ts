@@ -56,8 +56,6 @@ export const pickpocketTask: MinionTask = {
 
 		const userTertChanges = user.buildTertiaryItemChanges();
 
-		console.log(obj.name, obj.type, obj.lootPercent);
-
 		const loot = new Bank();
 
 		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance ?? 0);
@@ -102,7 +100,7 @@ export const pickpocketTask: MinionTask = {
 			const lootMultiplier = isRoguesCastleChest ? (hasHardDiary ? 1.25 : hasMediumDiary ? 1 : 0.75) : 1;
 			const extraLootChance = lootMultiplier > 1 ? (lootMultiplier - 1) * 100 : 0;
 			const baseLootChance = lootMultiplier < 1 ? lootMultiplier * 100 : 100;
-			const clueRolls = isRoguesCastleChest && user.hasEquipped('Ring of wealth (i)') ? 2 : 1;
+			const clueRolls = isRoguesCastleChest && user.owns('Ring of wealth (i)') ? 2 : 1;
 
 			for (let i = 0; i < successfulQuantity; i++) {
 				if (percentChance(baseLootChance)) {

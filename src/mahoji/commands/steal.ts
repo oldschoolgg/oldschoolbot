@@ -198,7 +198,7 @@ export const stealCommand = defineCommand({
 					boosts.push('Standard loot with Wilderness medium diary');
 				}
 
-				if (user.hasEquipped('Ring of wealth (i)')) {
+				if (user.owns('Ring of wealth (i)')) {
 					boosts.push('Ring of wealth (i) increases hard clue chance');
 				}
 			}
