@@ -60,7 +60,7 @@ export const stealingArtefactsTask: MinionTask = {
 
 		const boosts = [
 			hasGraceful ? 'Graceful equipped (+20%)' : null,
-			stamina ? 'Stamina selected (+30%)' : null,
+			stamina ? 'Stamina potions selected (+30%)' : null,
 			teleportEligible ? 'Teleport efficiency active' : null
 		].filter(Boolean);
 

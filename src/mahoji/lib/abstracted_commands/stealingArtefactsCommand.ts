@@ -103,8 +103,8 @@ export async function stealingArtefactsCommand(
 	});
 
 	const boosts = [
-		hasGraceful ? 'Graceful equipped (no penalty)' : 'No graceful (-30%)',
-		stamina ? 'Stamina selected (no penalty)' : 'No stamina (-30%)',
+		hasGraceful ? 'Graceful equipped (no penalty)' : 'No graceful equipped (-30%)',
+		stamina ? 'Stamina potions selected (no penalty)' : 'No stamina potions (-30%)',
 		teleportEligible ? 'Teleport efficiency active' : null
 	].filter(Boolean);
 
