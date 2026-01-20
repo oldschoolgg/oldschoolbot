@@ -126,6 +126,24 @@ export const pickpocketTask: MinionTask = {
 			}
 		}
 
+		const hardClueScrollId = ClueTiers.find(tier => tier.name === 'Hard')?.scrollID;
+		const pkedLoot = new Bank();
+		let pkedLootPercent = 0;
+
+		if (isRoguesCastleChest && loot.length > 0) {
+			pkedLootPercent = randInt(5, 15);
+			for (const [item, quantity] of loot.items()) {
+				if (item.id === hardClueScrollId) {
+					continue;
+				}
+				const lostAmount = Math.floor((quantity * pkedLootPercent) / 100);
+				if (lostAmount > 0) {
+					loot.remove(item.id, lostAmount);
+					pkedLoot.add(item.id, lostAmount);
+				}
+			}
+		}
+
 		if (loot.has('Coins')) {
 			await ClientSettings.updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
@@ -150,6 +168,10 @@ export const pickpocketTask: MinionTask = {
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
+		}
+
+		if (pkedLoot.length > 0) {
+			str += `\nYou were PKed and lost ${pkedLootPercent}% of your loot: ${pkedLoot}.`;
 		}
 
 		if (loot.amount('Rocky') > 0) {
