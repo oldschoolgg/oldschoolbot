@@ -8,7 +8,7 @@ import {
 	collectSingleInteraction,
 	DiscordClient,
 	type DiscordClientOptions,
-	GatewayMessageCreateDispatchData,
+	type GatewayMessageCreateDispatchData,
 	Routes
 } from '@oldschoolgg/discord';
 import type { IChannel, IUserLog, IWebhook } from '@oldschoolgg/schemas';
