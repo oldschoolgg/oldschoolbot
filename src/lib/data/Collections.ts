@@ -790,7 +790,7 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
 			},
 			'Scroll Cases': {
-				unobtainable: true,
+				alias: ['scroll cases', 'casses'],
 				items: CollectionLog.ScrollCases.items
 			}
 		}
