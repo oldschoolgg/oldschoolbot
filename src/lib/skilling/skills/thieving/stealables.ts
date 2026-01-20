@@ -838,7 +838,7 @@ const chests: Stealable[] = [
 		respawnTime: Time.Second * 0.6,
 		slope: 0.008369,
 		intercept: -0.1254,
-		stunTime: Time.Second * 5
+		stunTime: Time.Second * 20
 	},
 	{
 		name: 'Ardougne Castle chest',
@@ -904,7 +904,7 @@ const chests: Stealable[] = [
 			.add('Uncut sapphire', 11, 1)
 			.add('Dragonstone', 2, 1),
 		id: 14774,
-		respawnTime: Time.Second * 15
+		respawnTime: Time.Second * 9.3
 	}
 ];
 
