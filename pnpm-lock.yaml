@@ -364,11 +364,11 @@ importers:
   packages/robochimp:
     dependencies:
       '@hono/node-server':
-        specifier: ^1.19.5
-        version: 1.19.5(hono@4.10.3)
+        specifier: ^1.19.9
+        version: 1.19.9(hono@4.11.4)
       '@hono/oauth-providers':
         specifier: ^0.8.5
-        version: 0.8.5(hono@4.10.3)
+        version: 0.8.5(hono@4.11.4)
       '@octokit/graphql':
         specifier: ^8.1.1
         version: 8.2.2
@@ -391,8 +391,8 @@ importers:
         specifier: 16.5.0
         version: 16.5.0
       hono:
-        specifier: ^4.10.3
-        version: 4.10.3
+        specifier: ^4.11.4
+        version: 4.11.4
       ioredis:
         specifier: ^5.8.2
         version: 5.8.2
@@ -933,8 +933,8 @@ packages:
   '@expressive-code/plugin-text-markers@0.41.3':
     resolution: {integrity: sha512-SN8tkIzDpA0HLAscEYD2IVrfLiid6qEdE9QLlGVSxO1KEw7qYvjpbNBQjUjMr5/jvTJ7ys6zysU2vLPHE0sb2g==}
 
-  '@hono/node-server@1.19.5':
-    resolution: {integrity: sha512-iBuhh+uaaggeAuf+TftcjZyWh2GEgZcVGXkNtskLVoWaXhnJtC5HLHrU8W1KHDoucqO1MswwglmkWLFyiDn4WQ==}
+  '@hono/node-server@1.19.9':
+    resolution: {integrity: sha512-vHL6w3ecZsky+8P5MD+eFfaGTyCeOHUIFYMGpQGbrBTSmNNoxv0if69rEZ5giu36weC5saFuznL411gRX7bJDw==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
@@ -2876,8 +2876,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.10.3:
-    resolution: {integrity: sha512-2LOYWUbnhdxdL8MNbNg9XZig6k+cZXm5IjHn2Aviv7honhBMOHb+jxrKIeJRZJRmn+htUCKhaicxwXuUDlchRA==}
+  hono@4.11.4:
+    resolution: {integrity: sha512-U7tt8JsyrxSRKspfhtLET79pU8K+tInj5QZXs1jSugO1Vq5dFj3kmZsRldo29mTBfcjDRVRXrEZ6LS63Cog9ZA==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -5323,13 +5323,13 @@ snapshots:
     dependencies:
       '@expressive-code/core': 0.41.3
 
-  '@hono/node-server@1.19.5(hono@4.10.3)':
+  '@hono/node-server@1.19.9(hono@4.11.4)':
     dependencies:
-      hono: 4.10.3
+      hono: 4.11.4
 
-  '@hono/oauth-providers@0.8.5(hono@4.10.3)':
+  '@hono/oauth-providers@0.8.5(hono@4.11.4)':
     dependencies:
-      hono: 4.10.3
+      hono: 4.11.4
 
   '@img/colour@1.0.0': {}
 
@@ -7295,7 +7295,7 @@ snapshots:
 
   he@1.2.0: {}
 
-  hono@4.10.3: {}
+  hono@4.11.4: {}
 
   hookable@5.5.3: {}
 
