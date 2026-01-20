@@ -6,6 +6,8 @@ import type { Consumable } from '@/lib/minions/types.js';
 // Configure boost percents
 export const boostCannon = 30;
 export const boostCannonMulti = 55;
+// Applied in addition to the standard cannon boosts when granite cannonballs are used.
+export const boostGraniteCannonball = 16.67;
 export const boostIceBurst = 35;
 export const boostIceBarrage = 55;
 // What % of the kills should be cannon XP
@@ -61,12 +63,26 @@ export const CombatOptionsArray: CombatOptionsDesc[] = [
 ];
 
 export const cannonSingleConsumables: Consumable = {
-	itemCost: new Bank().add('Cannonball', 1),
-	qtyPerMinute: 16
+	itemCost: new Bank().add('Granite cannonball', 1),
+	qtyPerMinute: 50,
+	boostPercent: boostGraniteCannonball,
+	alternativeConsumables: [
+		{
+			itemCost: new Bank().add('Cannonball', 1),
+			qtyPerMinute: 50
+		}
+	]
 };
 export const cannonMultiConsumables: Consumable = {
-	itemCost: new Bank().add('Cannonball', 1),
-	qtyPerMinute: 50
+	itemCost: new Bank().add('Granite cannonball', 1),
+	qtyPerMinute: 16,
+	boostPercent: boostGraniteCannonball,
+	alternativeConsumables: [
+		{
+			itemCost: new Bank().add('Cannonball', 1),
+			qtyPerMinute: 16
+		}
+	]
 };
 // 20% less than always casting to lure.
 export const iceBarrageConsumables: Consumable = {
