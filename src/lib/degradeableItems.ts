@@ -307,32 +307,41 @@ export function checkUserCanUseDegradeableItem({
 	};
 }
 
+export function shouldConsumeDegradeableCharge(user: MUser) {
+	if (!user.hasEquipped("Ghommal's lucky penny")) {
+		return true;
+	}
+	return !percentChance(5);
+}
+
 export async function degradeItem({
 	item,
 	chargesToDegrade,
-	user
+	user,
+	applyLuckyPenny = true
 }: {
 	item: Item;
 	chargesToDegrade: number;
 	user: MUser;
+	applyLuckyPenny?: boolean;
 }) {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
 
-	// 5% chance to not consume a charge when Ghommal's lucky penny is equipped
-	let pennyReduction = 0;
-	if (user.hasEquipped("Ghommal's lucky penny")) {
+	let chargesSpent = chargesToDegrade;
+
+	if (applyLuckyPenny) {
+		chargesSpent = 0;
 		for (let i = 0; i < chargesToDegrade; i++) {
-			if (percentChance(5)) {
-				pennyReduction++;
+			if (shouldConsumeDegradeableCharge(user)) {
+				chargesSpent++;
 			}
 		}
 	}
-	chargesToDegrade -= pennyReduction;
 
 	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
-	const newCharges = Math.floor(currentCharges - chargesToDegrade);
+	const newCharges = Math.floor(currentCharges - chargesSpent);
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
@@ -373,7 +382,7 @@ export async function degradeItem({
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(
-				`${user.usernameOrMention} had missing ${item.name} when trying to degrade by ${chargesToDegrade}`
+				`${user.usernameOrMention} had missing ${item.name} when trying to degrade by ${chargesSpent}`
 			);
 		}
 
@@ -388,8 +397,8 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		chargesToDegrade: chargesToDegrade,
-		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges`
+		chargesToDegrade: chargesSpent,
+		userMessage: `Your ${item.name} degraded by ${chargesSpent} charges`
 	};
 }
 
