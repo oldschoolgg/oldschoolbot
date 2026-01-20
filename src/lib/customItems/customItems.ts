@@ -15,7 +15,8 @@ import './leagues.js';
 import './paintCans.js';
 import './summoning.js';
 
-import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs';
+import { EquipmentSlot } from '@oldschoolgg/gear';
+import { type ItemRequirements, Items, resolveItems } from 'oldschooljs';
 
 import { customItems, maxedRequirements, setCustomItem, UN_EQUIPPABLE } from './util.js';
 

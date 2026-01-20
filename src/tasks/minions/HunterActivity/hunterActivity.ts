@@ -6,15 +6,7 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 
 import { randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import {
-	Bank,
-	ECreature,
-	EquipmentSlot,
-	type ItemBank,
-	increaseBankQuantitesByPercent,
-	itemID,
-	toKMB
-} from 'oldschooljs';
+import { Bank, ECreature, type ItemBank, increaseBankQuantitesByPercent, itemID, toKMB } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
@@ -118,7 +110,7 @@ export function calculateHunterResult({
 		riskDeathChance += Math.min(Math.floor((creatureScores[creature.id] ?? 1) / 100), 200);
 
 		// Gives lower death chance depending on what the user got equipped in wildy.
-		const [, , score] = hasWildyHuntGearEquipped(allGear.wildy);
+		const [, , score] = hasWildyHuntGearEquipped(allGear.wildy.raw());
 		riskDeathChance += score;
 		if (invincible) {
 			riskDeathChance = 1_000_000_000;
@@ -134,8 +126,8 @@ export function calculateHunterResult({
 			const cost = new Bank().add('Saradomin brew(4)', 10).add('Super restore(4)', 5);
 			totalCost.add(cost);
 			const newGear = allGear.wildy.clone();
-			newGear[EquipmentSlot.Body] = null;
-			newGear[EquipmentSlot.Legs] = null;
+			newGear.set('body', null);
+			newGear.set('legs', null);
 
 			newWildyGear = newGear;
 
@@ -404,9 +396,15 @@ export const hunterTask: MinionTask = {
 		}
 
 		if (newWildyGear) {
-			await user.update({
-				gear_wildy: newWildyGear.raw()
-			});
+			Logging.logDebug(
+				`${user.logName} died in wildy hunting ${creature.name}, gear being removed: Before[${user.gear.wildy}] After[${newWildyGear}]`
+			);
+			await user.updateGear([
+				{
+					setup: 'wildy',
+					gear: newWildyGear.raw()
+				}
+			]);
 		}
 
 		return handleTripFinish({ user, channelId, message: str, data, loot });

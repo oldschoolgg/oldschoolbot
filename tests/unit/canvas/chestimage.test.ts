@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
-import type { MUserClass } from '@/lib/MUser.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 function mockChestImageUser(name: string) {

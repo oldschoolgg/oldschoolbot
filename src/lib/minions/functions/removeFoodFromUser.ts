@@ -1,11 +1,11 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 
+import type { GearSetupType } from '@oldschoolgg/gear';
 import { Emoji, objectEntries, reduceNumByPercent, UserError } from '@oldschoolgg/toolkit';
-import { type Bank, itemID } from 'oldschooljs';
+import { type Bank, EItem } from 'oldschooljs';
 
 import { Eatables } from '@/lib/data/eatables.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
 import getUserFoodFromBank, { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 
@@ -31,7 +31,7 @@ export function removeFoodFromUserRaw({
 	const originalTotalHealing = totalHealingNeeded;
 	const gearSetupsUsed = objectEntries(gearBank.gear).filter(entry => attackStylesUsed.includes(entry[0]));
 	const reductions = [];
-	const elyUsed = gearSetupsUsed.some(entry => entry[1].shield?.item === itemID('Elysian spirit shield'));
+	const elyUsed = gearSetupsUsed.some(entry => entry[1].get('shield')?.item === EItem.ELYSIAN_SPIRIT_SHIELD);
 	if (elyUsed) {
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 17.5);
 		reductions.push(`-17.5% for Ely ${Emoji.Ely}`);

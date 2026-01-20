@@ -1,6 +1,7 @@
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
-import { Bank, EquipmentSlot, resolveItems } from 'oldschooljs';
+import { EquipmentSlot } from '@oldschoolgg/gear';
+import { Bank, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect, test } from 'vitest';
 

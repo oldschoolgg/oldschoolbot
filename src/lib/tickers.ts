@@ -10,12 +10,12 @@ import type { User } from '@/prisma/main.js';
 import { analyticsTick } from '@/lib/analytics.js';
 import { globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
-import { MUserClass } from '@/lib/MUser.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 
 /**
@@ -269,6 +269,23 @@ VALUES (get_economy_bank());`;
 		interval: Time.Hour * 14.66,
 		cb: async () => {
 			syncSlayerMaskLeaderboardCache();
+		}
+	},
+	{
+		name: 'Upsert achievement diary data',
+		timer: null,
+		interval: Time.Second * 11,
+		cb: async () => {
+			const users = await prisma.$queryRaw<{ id: string }[]>`SELECT id
+FROM users
+WHERE CARDINALITY(completed_achievement_diaries) = 0
+AND CARDINALITY(cl_array) >= 600
+ORDER BY CARDINALITY(cl_array) DESC
+LIMIT 10;`;
+			for (const { id } of users) {
+				const mUser = await mUserFetch(id);
+				await mUser.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
+			}
 		}
 	}
 ];

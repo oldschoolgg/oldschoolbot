@@ -15,9 +15,12 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 		} else {
 			rangeSetup.weapon = null;
 		}
-		await user.update({
-			gear_range: rangeSetup
-		});
+		await user.updateGear([
+			{
+				setup: 'range',
+				gear: rangeSetup
+			}
+		]);
 
 		if (monster.name === 'Koschei the deathless') {
 			return (

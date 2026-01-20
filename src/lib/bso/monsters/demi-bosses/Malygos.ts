@@ -1,10 +1,10 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import {
 	deepResolveItems,
-	GearStat,
 	GemTable,
 	itemID,
 	LootTable,

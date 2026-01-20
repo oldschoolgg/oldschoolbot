@@ -1,8 +1,9 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
-import { GearStat, LootTable, Monsters } from 'oldschooljs';
+import { LootTable, Monsters } from 'oldschooljs';
 
 export const QueenGoldemar: CustomMonster = {
 	isCustom: true,

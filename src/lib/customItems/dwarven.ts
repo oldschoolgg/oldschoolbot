@@ -1,4 +1,5 @@
-import { EquipmentSlot, Items } from 'oldschooljs';
+import { EquipmentSlot } from '@oldschoolgg/gear';
+import { Items } from 'oldschooljs';
 
 import { setCustomItem } from '@/lib/customItems/util.js';
 

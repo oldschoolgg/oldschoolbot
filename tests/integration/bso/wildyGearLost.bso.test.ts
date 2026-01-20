@@ -24,6 +24,7 @@ test('calculateGearLostOnDeathWilderness', async () => {
 	gear.equip('Amulet of torture');
 
 	await user.update({
+		// @ts-expect-error
 		gear_wildy: gear.raw() as any
 	});
 

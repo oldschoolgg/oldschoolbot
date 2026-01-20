@@ -108,9 +108,9 @@ const allMasterCapes = Skillcapes.map(i => i.masterCape)
 	.map(msc => getSimilarItems(msc.id))
 	.flat(Number.POSITIVE_INFINITY) as number[];
 
-function getEquippedCapes(user: MUser) {
+function getEquippedCapes(user: MUser): number[] {
 	return Object.values(user.gear)
-		.map(val => val.cape)
+		.map(val => val.get('cape'))
 		.filter(notEmpty)
 		.map(i => i.item);
 }

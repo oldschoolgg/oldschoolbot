@@ -5,10 +5,10 @@ import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 import { runeWeaponTable } from '@/lib/bso/tables/sharedTables.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { randomVariation, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Monsters, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 const JewelleryTable = new LootTable()
 	.add(new LootTable().add('Onyx ring').add('Onyx necklace').add('Onyx bracelet').add('Onyx amulet'))

@@ -1,3 +1,4 @@
+import { WebSocketShardEvents } from '@discordjs/ws';
 import {
 	type APIApplication,
 	type APIUser,
@@ -10,9 +11,10 @@ import {
 	type GatewayMessageCreateDispatchData,
 	Routes
 } from '@oldschoolgg/discord';
-import type { IChannel, IWebhook } from '@oldschoolgg/schemas';
+import type { IChannel, IUserLog, IWebhook } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
+import { omit } from 'remeda';
 
 import { makeParty } from '@/discord/interaction/makeParty.js';
 import { mentionCommand } from '@/discord/utils.js';
@@ -30,6 +32,30 @@ export class OldSchoolBotClient extends DiscordClient {
 		super(options);
 		this.on('ready', async e => {
 			await this.handleReadyEvent(e);
+		});
+		this.ws.on(WebSocketShardEvents.Error, p => {
+			Logging.logDebug(`WS Error: ${p.message}`);
+			Logging.logError({
+				err: p,
+				context: {
+					source: 'WebSocketShardEvents.Error'
+				}
+			});
+		});
+		this.ws.on(WebSocketShardEvents.SocketError, p => {
+			Logging.logDebug(`WS SocketError: ${p.message}`);
+			Logging.logError({
+				err: p,
+				context: {
+					source: 'WebSocketShardEvents.SocketError'
+				}
+			});
+		});
+		this.ws.on(WebSocketShardEvents.Closed, p => {
+			Logging.logDebug(`WS Closed: ${p}`);
+		});
+		this.ws.on(WebSocketShardEvents.Resumed, p => {
+			Logging.logDebug(`WS Resumed: ${p}`);
 		});
 	}
 
@@ -50,7 +76,7 @@ export class OldSchoolBotClient extends DiscordClient {
 				create: data,
 				update: data
 			})
-			.catch(console.error);
+			.catch(err => Logging.logError(err));
 		DISCORD_USER_IDS_INSERTED_CACHE.add(user.id);
 	}
 
@@ -238,5 +264,26 @@ export class OldSchoolBotClient extends DiscordClient {
 
 			this.on('rawMessageCreate', messageHandler);
 		});
+	}
+
+	async emitUserLog(log: IUserLog & { user_id: string }): Promise<void> {
+		try {
+			const channelId = 'channel_id' in log && log.channel_id ? BigInt(log.channel_id) : null;
+			const guildId = 'guild_id' in log && log.guild_id ? BigInt(log.guild_id) : null;
+			const messageId = 'message_id' in log && log.message_id ? BigInt(log.message_id) : null;
+
+			await prisma.userLog.create({
+				data: {
+					user_id: BigInt(log.user_id),
+					type: log.type,
+					channel_id: channelId,
+					guild_id: guildId,
+					message_id: messageId,
+					data: omit(log, ['user_id', 'type', 'channel_id', 'guild_id', 'message_id'])
+				}
+			});
+		} catch (err) {
+			Logging.logError(err as Error);
+		}
 	}
 }
