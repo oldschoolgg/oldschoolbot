@@ -127,9 +127,9 @@ export const stealingArtefactsGlassblowingProducts = [
 	{ key: 'empty_light_orb', item: Items.getOrThrow('Empty light orb'), level: 87, xp: 70 }
 ] as const;
 
-export type StealingArtefactsGlassblowProductKey = (typeof stealingArtefactsGlassblowingProducts)[number]['key'];
+export type StealingArtefactsGlassblowingProductKey = (typeof stealingArtefactsGlassblowingProducts)[number]['key'];
 
-export function getGlassblowingProduct(productKey: StealingArtefactsGlassblowProductKey) {
+export function getGlassblowingProduct(productKey: StealingArtefactsGlassblowingProductKey) {
 	return stealingArtefactsGlassblowingProducts.find(product => product.key === productKey);
 }
 
@@ -140,7 +140,7 @@ export function calculateGlassblowingPlan({
 	craftingLevel,
 	xpPerHourCap = 70_000
 }: {
-	productKey: StealingArtefactsGlassblowProductKey;
+	productKey: StealingArtefactsGlassblowingProductKey;
 	hours: number;
 	availableMoltenGlass: number;
 	craftingLevel: number;

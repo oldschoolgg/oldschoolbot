@@ -5,7 +5,7 @@ import {
 	calculateGlassblowingPlan,
 	canUseStealingArtefactsTeleport,
 	getStealingArtefactsDeliveriesPerHour,
-	type StealingArtefactsGlassblowProductKey
+	type StealingArtefactsGlassblowingProductKey
 } from '@/lib/minions/data/stealingArtefacts.js';
 import type { StealingArtefactsActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -53,10 +53,10 @@ export async function stealingArtefactsCommand(
 		duration = maxTripLength;
 	}
 
-	const glassblowProduct = (options.glassblow_product ?? 'none') as 'none' | StealingArtefactsGlassblowProductKey;
+	const glassblowProduct = (options.glassblow_product ?? 'none') as 'none' | StealingArtefactsGlassblowingProductKey;
 	let glassblow:
 		| {
-				product: StealingArtefactsGlassblowProductKey;
+				product: StealingArtefactsGlassblowingProductKey;
 				itemsMade: number;
 				moltenGlassUsed: number;
 		  }

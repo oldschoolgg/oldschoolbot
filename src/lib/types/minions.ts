@@ -414,7 +414,7 @@ export interface StealingArtefactsActivityTaskOptions extends MinigameActivityTa
 	teleportOptionEnabled: boolean;
 	teleportEligible: boolean;
 	glassblow?: {
-		product: import('@/lib/minions/data/stealingArtefacts.js').StealingArtefactsGlassblowProductKey;
+		product: import('@/lib/minions/data/stealingArtefacts.js').StealingArtefactsGlassblowingProductKey;
 		itemsMade: number;
 		moltenGlassUsed: number;
 	};
