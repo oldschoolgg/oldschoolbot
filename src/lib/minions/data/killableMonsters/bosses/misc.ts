@@ -1053,7 +1053,7 @@ export const miscBossKillables: KillableMonster[] = [
 		name: Monsters.Branda.name,
 		aliases: Monsters.Branda.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: 500,
+		respawnTime: Time.Second * 10,
 		table: Monsters.Branda,
 		deathProps: {
 			hardness: 0.2,
@@ -1181,13 +1181,15 @@ export const miscBossKillables: KillableMonster[] = [
 				[GearStat.AttackMagic]: 70
 			}
 		},
-		specialLoot: ({ loot, user }) => {
-			if (
-				user &&
-				loot.has('Mystic vigour prayer scroll') &&
-				user.bitfield.includes(BitField.HasMysticVigourScroll)
-			) {
-				loot.set('Mystic vigour prayer scroll', 0);
+		specialLoot: ({ loot, ownedItems, quantity, bitfield }) => {
+			const hasScroll = ownedItems.has('Mystic vigour prayer scroll');
+			const hasBitfield = bitfield?.includes(BitField.HasMysticVigourScroll);
+			if (hasScroll || hasBitfield) return;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(150)) {
+					loot.add('Mystic vigour prayer scroll');
+					break;
+				}
 			}
 		}
 	},
@@ -1196,10 +1198,10 @@ export const miscBossKillables: KillableMonster[] = [
 		name: Monsters.Eldric.name,
 		aliases: Monsters.Eldric.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: 500,
+		respawnTime: Time.Second * 10,
 		table: Monsters.Eldric,
 		deathProps: {
-			hardness: 0.2,
+			hardness: 0.1,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
@@ -1324,9 +1326,15 @@ export const miscBossKillables: KillableMonster[] = [
 				[GearStat.AttackMagic]: 70
 			}
 		},
-		specialLoot: ({ loot, user }) => {
-			if (user && loot.has('Deadeye prayer scroll') && user.bitfield.includes(BitField.HasDeadeyeScroll)) {
-				loot.set('Deadeye vigour prayer scroll', 0);
+		specialLoot: ({ loot, ownedItems, quantity, bitfield }) => {
+			const hasScroll = ownedItems.has('Deadeye prayer scroll');
+			const hasBitfield = bitfield?.includes(BitField.HasDeadeyeScroll);
+			if (hasScroll || hasBitfield) return;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(150)) {
+					loot.add('Deadeye prayer scroll');
+					break;
+				}
 			}
 		}
 	},
@@ -1335,10 +1343,10 @@ export const miscBossKillables: KillableMonster[] = [
 		name: Monsters.RoyalTitans.name,
 		aliases: Monsters.RoyalTitans.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: 500,
+		respawnTime: Time.Second * 10,
 		table: Monsters.RoyalTitans,
 		deathProps: {
-			hardness: 0.2,
+			hardness: 0.1,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [

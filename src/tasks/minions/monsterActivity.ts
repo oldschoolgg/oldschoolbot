@@ -328,7 +328,7 @@ export function doMonsterTrip(data: newOptions) {
 	const loot = wiped ? new Bank() : monster.table.kill(finalQuantity, killOptions);
 	if (!wiped) {
 		if (monster.specialLoot) {
-			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl });
+			monster.specialLoot({ loot, ownedItems: gearBank.bank, quantity: finalQuantity, cl: data.cl, bitfield });
 		}
 		if (
 			monster.name.toLowerCase() === 'unicorn' &&
