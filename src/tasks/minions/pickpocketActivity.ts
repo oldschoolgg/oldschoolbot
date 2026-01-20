@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
+import { rogueOutfitPercentBonus } from '@/lib/skilling/skills/thieving/thievingUtils.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -52,9 +53,11 @@ export const pickpocketTask: MinionTask = {
 		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
+		const userTertChanges = user.buildTertiaryItemChanges();
+
 		const loot = new Bank();
 
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance ?? 0);
+		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance ?? 0);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {

@@ -1,5 +1,40 @@
 [
 	{
+		"name": "10 coin chest",
+		"type": "chest",
+		"level": 13,
+		"xp": 7.8,
+		"id": 11735,
+		"respawn_time": 15000
+	},
+	{
+		"name": "50 coin chest",
+		"type": "chest",
+		"level": 43,
+		"xp": 125,
+		"id": 11737,
+		"respawn_time": 15000
+	},
+	{
+		"name": "Aldarin Villas chest",
+		"type": "chest",
+		"level": 36,
+		"xp": 200,
+		"id": 54773,
+		"respawn_time": 1800,
+		"slope": 0.005952,
+		"intercept": 0.0982,
+		"stun_time": 5000
+	},
+	{
+		"name": "Ardougne Castle chest",
+		"type": "chest",
+		"level": 72,
+		"xp": 500,
+		"id": 11739,
+		"respawn_time": 15000
+	},
+	{
 		"name": "Baker's stall",
 		"type": "stall",
 		"level": 5,
@@ -21,6 +56,14 @@
 		"intercept": 18.13176,
 		"custom_tick_rate": 2.5,
 		"pet_chance": 257211
+	},
+	{
+		"name": "Blood runes chest",
+		"type": "chest",
+		"level": 59,
+		"xp": 250,
+		"id": 11738,
+		"respawn_time": 15000
 	},
 	{
 		"name": "Cave goblin",
@@ -65,6 +108,22 @@
 		"slope": 0.75735,
 		"intercept": 19.16235,
 		"pet_chance": 257211
+	},
+	{
+		"name": "Dorgesh-Kaan average chest",
+		"type": "chest",
+		"level": 52,
+		"xp": 200,
+		"id": 22697,
+		"respawn_time": 15000
+	},
+	{
+		"name": "Dorgesh-Kaan rich chest",
+		"type": "chest",
+		"level": 78,
+		"xp": 650,
+		"id": 22681,
+		"respawn_time": 15000
 	},
 	{
 		"name": "Elf",
@@ -192,6 +251,17 @@
 		"pet_chance": 99175
 	},
 	{
+		"name": "Isle of Souls chest",
+		"type": "chest",
+		"level": 28,
+		"xp": 150,
+		"id": 11736,
+		"respawn_time": 1200,
+		"slope": 0.007042,
+		"intercept": 0.005917,
+		"stun_time": 30000
+	},
+	{
 		"name": "Knight of Ardougne",
 		"type": "pickpockable",
 		"level": 55,
@@ -286,6 +356,14 @@
 		"pet_chance": 47718
 	},
 	{
+		"name": "Nature rune chest",
+		"type": "chest",
+		"level": 28,
+		"xp": 25,
+		"id": 11736,
+		"respawn_time": 15000
+	},
+	{
 		"name": "Ore stall",
 		"type": "stall",
 		"level": 82,
@@ -319,6 +397,14 @@
 		"slope": 0.66879,
 		"intercept": 27.92979,
 		"pet_chance": 257211
+	},
+	{
+		"name": "Rogues' Castle chest",
+		"type": "chest",
+		"level": 84,
+		"xp": 701.7,
+		"id": 14774,
+		"respawn_time": 15000
 	},
 	{
 		"name": "Scimitar stall",
@@ -370,6 +456,25 @@
 		"respawn_time": 40000,
 		"loot_percent": 25,
 		"pet_chance": 36490
+	},
+	{
+		"name": "Steel arrowtips chest",
+		"type": "chest",
+		"level": 47,
+		"xp": 150,
+		"id": 11742,
+		"respawn_time": 15000
+	},
+	{
+		"name": "Stone chest",
+		"type": "chest",
+		"level": 64,
+		"xp": 280,
+		"id": 34429,
+		"respawn_time": 600,
+		"slope": 0.008369,
+		"intercept": -0.1254,
+		"stun_time": 5000
 	},
 	{
 		"name": "Tea stall",
