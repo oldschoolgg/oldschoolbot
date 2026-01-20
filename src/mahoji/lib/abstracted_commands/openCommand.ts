@@ -27,15 +27,14 @@ export async function abstractedOpenUntilCommand(
 	user: MUser,
 	name: string,
 	openUntilItem: string,
+	maxOpenQuantity?: number,
 	result_quantity?: number
 ) {
-	let quantity = 1;
-
-	if (result_quantity) {
-		quantity = result_quantity;
+	const targetQuantity = result_quantity ?? 1;
+	if (targetQuantity < 1 || !Number.isInteger(targetQuantity)) {
+		return 'The result quantity must be a positive integer.';
 	}
-
-	if (quantity < 1 || !Number.isInteger(quantity)) {
+	if (maxOpenQuantity !== undefined && (maxOpenQuantity < 1 || !Number.isInteger(maxOpenQuantity))) {
 		return 'The quantity must be a positive integer.';
 	}
 
@@ -70,14 +69,15 @@ export async function abstractedOpenUntilCommand(
 	const loot = new Bank();
 	let amountOpened = 0;
 	let targetCount = 0;
-	const max = Math.min(10000, amountOfThisOpenableOwned);
+	const maxOpenLimit = maxOpenQuantity ?? amountOfThisOpenableOwned;
+	const max = Math.min(10000, amountOfThisOpenableOwned, maxOpenLimit);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		targetCount = loot.amount(openUntil.id);
-		if (targetCount >= quantity) break;
+		if (targetCount >= targetQuantity) break;
 	}
 
 	return finalizeOpening({
@@ -88,9 +88,9 @@ export async function abstractedOpenUntilCommand(
 			`You opened ${amountOpened}x ${openable.openedItem.name} ${
 				targetCount === 0
 					? `but you didn't get a ${openUntil.name}!`
-					: targetCount >= quantity
+					: targetCount >= targetQuantity
 						? `and successfully obtained ${targetCount}x ${openUntil.name}.`
-						: `but only received ${targetCount}/${quantity}x ${openUntil.name}.`
+						: `but only received ${targetCount}/${targetQuantity}x ${openUntil.name}.`
 			}`
 		],
 		openables: [openable],
