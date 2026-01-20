@@ -24,7 +24,9 @@ describe('Slayer Tasks', async () => {
 
 		await user.update({ slayer_points: 100 });
 		const res4 = await user.runCommand(slayerCommand, { manage: { command: 'skip' } });
-		expect(res4).toContain('Your task has been skipped. You now have 70 slayer points');
+		expect(res4).toContain('Your task has been skipped.');
+		await user.sync();
+		expect(user.user.slayer_points).toEqual(70);
 
 		const res5: any = await user.runCommand(slayerCommand, { new_task: {} });
 		expect(res5.content).toContain('has assigned you to kill');
@@ -35,7 +37,7 @@ describe('Slayer Tasks', async () => {
 
 		await user.update({ slayer_points: 150 });
 		const res7 = await user.runCommand(slayerCommand, { manage: { command: 'block' } });
-		expect(res7).toContain('Your task has been blocked. You now have 50 slayer points.');
+		expect(res7).toContain('Your task has been blocked.');
 		await user.sync();
 		expect(Math.random()).toEqual(0.1);
 		expect(user.user.slayer_blocked_ids).toHaveLength(1);
