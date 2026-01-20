@@ -10,4 +10,12 @@ describe('Thieving', () => {
 			}
 		}
 	});
+
+	test('All non-pickpocketables should have respawn times', () => {
+		for (const entity of stealables) {
+			if (entity.type !== 'pickpockable' && !entity.respawnTime) {
+				throw new Error(`Missing respawn time for ${entity.name}.`);
+			}
+		}
+	});
 });
