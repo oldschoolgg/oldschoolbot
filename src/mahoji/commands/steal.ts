@@ -177,12 +177,18 @@ export const stealCommand = defineCommand({
 				const hasHardDiary = user.hasDiary('wilderness.hard');
 				const hourlyPotionRate = randInt(5, 10);
 				const potionsRequired = Math.max(1, Math.ceil((duration / Time.Hour) * hourlyPotionRate));
+				const blightedRestoreName = 'Blighted super restore(4)';
+				const prayerPotionName = 'Prayer potion(4)';
+				const blightedRestoreAmount = user.bank.amount(blightedRestoreName);
+				const prayerPotionAmount = user.bank.amount(prayerPotionName);
 
-				if (user.bank.amount('Prayer potion(4)') < potionsRequired) {
-					return `You need at least ${potionsRequired}x Prayer potion(4) to keep Protect from Melee active while stealing from ${stealable.name}.`;
+				if (blightedRestoreAmount >= potionsRequired) {
+					potionsToRemove.add(blightedRestoreName, potionsRequired);
+				} else if (prayerPotionAmount >= potionsRequired) {
+					potionsToRemove.add(prayerPotionName, potionsRequired);
+				} else {
+					return `You need at least ${potionsRequired}x ${blightedRestoreName} or ${prayerPotionName} to keep Protect from Melee active while stealing from ${stealable.name}.`;
 				}
-
-				potionsToRemove.add('Prayer potion(4)', potionsRequired);
 
 				if (!hasMediumDiary) {
 					boosts.push('-25% loot without Wilderness medium diary');
