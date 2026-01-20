@@ -66,8 +66,24 @@ describe('stealing artefacts teleport eligibility', () => {
 
 describe('stealing artefacts delivery rates', () => {
 	test('uses fixed deliveries per hour', () => {
-		expect(getStealingArtefactsDeliveriesPerHour(false)).toBe(48);
-		expect(getStealingArtefactsDeliveriesPerHour(true)).toBe(55);
+		expect(
+			getStealingArtefactsDeliveriesPerHour({ teleportEligible: false, hasGraceful: true, stamina: true })
+		).toBe(48);
+		expect(
+			getStealingArtefactsDeliveriesPerHour({ teleportEligible: true, hasGraceful: true, stamina: true })
+		).toBe(55);
+	});
+
+	test('applies penalties when missing graceful or stamina', () => {
+		expect(
+			getStealingArtefactsDeliveriesPerHour({ teleportEligible: false, hasGraceful: false, stamina: true })
+		).toBeCloseTo(33.6);
+		expect(
+			getStealingArtefactsDeliveriesPerHour({ teleportEligible: false, hasGraceful: true, stamina: false })
+		).toBeCloseTo(33.6);
+		expect(
+			getStealingArtefactsDeliveriesPerHour({ teleportEligible: true, hasGraceful: false, stamina: false })
+		).toBeCloseTo(26.95);
 	});
 });
 
