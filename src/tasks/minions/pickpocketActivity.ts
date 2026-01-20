@@ -50,10 +50,13 @@ export const pickpocketTask: MinionTask = {
 		const { monsterID, quantity, successfulQuantity, channelId, xpReceived, duration } = data;
 
 		const obj = Thieving.stealables.find(_obj => _obj.id === monsterID)!;
+		const isRoguesCastleChest = obj.id === 14774;
 		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
 		const userTertChanges = user.buildTertiaryItemChanges();
+
+		console.log(obj.name, obj.type, obj.lootPercent);
 
 		const loot = new Bank();
 
@@ -93,6 +96,34 @@ export const pickpocketTask: MinionTask = {
 					loot.add('Rocky');
 				}
 			}
+		} else if (obj.type === 'chest') {
+			const hasMediumDiary = isRoguesCastleChest && user.hasDiary('wilderness.medium');
+			const hasHardDiary = isRoguesCastleChest && user.hasDiary('wilderness.hard');
+			const lootMultiplier = isRoguesCastleChest ? (hasHardDiary ? 1.25 : hasMediumDiary ? 1 : 0.75) : 1;
+			const extraLootChance = lootMultiplier > 1 ? (lootMultiplier - 1) * 100 : 0;
+			const baseLootChance = lootMultiplier < 1 ? lootMultiplier * 100 : 100;
+			const clueRolls = isRoguesCastleChest && user.hasEquipped('Ring of wealth (i)') ? 2 : 1;
+
+			for (let i = 0; i < successfulQuantity; i++) {
+				if (percentChance(baseLootChance)) {
+					obj.table.roll(1, { targetBank: loot });
+				}
+
+				if (extraLootChance > 0 && percentChance(extraLootChance)) {
+					obj.table.roll(1, { targetBank: loot });
+				}
+
+				if (isRoguesCastleChest) {
+					for (let rollIndex = 0; rollIndex < clueRolls; rollIndex++) {
+						if (roll(99)) {
+							loot.add('Clue scroll (hard)');
+						}
+					}
+				}
+				if (roll(petDropRate)) {
+					loot.add('Rocky');
+				}
+			}
 		}
 
 		if (loot.has('Coins')) {
@@ -111,13 +142,11 @@ export const pickpocketTask: MinionTask = {
 			quantity - successfulQuantity
 		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
 
-		str += `\n${
-			obj.type === 'pickpockable'
-				? ''
-				: `${
-						100 - obj.lootPercent!
-					}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
-		}`;
+		if (obj.type === 'stall') {
+			str += `\n${
+				100 - obj.lootPercent!
+			}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`;
+		}
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
