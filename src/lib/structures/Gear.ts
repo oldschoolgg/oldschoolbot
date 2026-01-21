@@ -172,7 +172,7 @@ export class Gear {
 	allItems(similar = false): number[] {
 		const values = new Set<number>();
 		for (const val of Object.values(this.setup)) {
-			if (val) {
+			if (val?.item) {
 				values.add(val.item);
 			}
 		}
@@ -182,10 +182,18 @@ export class Gear {
 				const inverse = inverseSimilarItems.get(item);
 				if (inverse) {
 					for (const invSimilarItem of inverse.values()) {
+						if (invSimilarItem === undefined) {
+							Logging.logError(`Inverse Similar item not found for item ID: ${item}`);
+							continue;
+						}
 						values.add(invSimilarItem);
 					}
 				}
 				for (const similarItem of getSimilarItems(item)) {
+					if (similarItem === undefined) {
+						Logging.logError(`Similar item not found for item ID: ${item}`);
+						continue;
+					}
 					values.add(similarItem);
 				}
 			}
