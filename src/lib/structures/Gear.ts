@@ -241,9 +241,13 @@ export class Gear {
 	getStats(): GearStats {
 		const sum = { ...baseStats };
 		for (const id of this.allItems(false)) {
-			const item = Items.getOrThrow(id);
-			for (const keyToAdd of Object.keys(sum) as (keyof GearStats)[]) {
-				sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
+			const item = Items.get(id);
+			if (item) {
+				for (const keyToAdd of Object.keys(sum) as (keyof GearStats)[]) {
+					sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
+				}
+			} else {
+				Logging.logError(`Item not found when calculating gear stats, id[${id}]]`);
 			}
 		}
 		return sum;
