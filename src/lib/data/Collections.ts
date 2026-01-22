@@ -1974,8 +1974,14 @@ export const allCollectionLogs: ICollection = {
 			'Dyed Items (Discontinued)': {
 				counts: false,
 				items: dyedItems
-					.map(i => i.dyedVersions.filter(i => discontinuedDyes.includes(i.dye.id)).map(i => i.item.id))
+					.map(i =>
+						i.dyedVersions
+							.filter(i => discontinuedDyes.includes(i.dye.id))
+							.map(i => ({ id: i.item.id, dye: i.dye.id }))
+					)
 					.flat(2)
+					.sort((a, b) => discontinuedDyes.indexOf(a.dye) - discontinuedDyes.indexOf(b.dye))
+					.map(i => i.id)
 			},
 			'Miscelleanous (Discontinued)': {
 				alias: ['discontinued misc'],
