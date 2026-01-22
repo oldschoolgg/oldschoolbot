@@ -144,12 +144,12 @@ describe('stealing artefacts glassblowing', () => {
 	test('reduces duration to available molten glass', () => {
 		const plan = calculateGlassblowingPlan({
 			productKey: 'beer_glass',
-			hours: 1,
+			hours: 3,
 			availableMoltenGlass: 2000,
 			craftingLevel: 99
 		});
 		if (!plan.success) throw new Error(plan.error);
-		expect(plan.hours).toBeCloseTo(0.5);
+		expect(plan.hours).toBeCloseTo(2);
 		expect(plan.itemsMade).toBe(2000);
 	});
 });

@@ -138,13 +138,13 @@ export function calculateGlassblowingPlan({
 	hours,
 	availableMoltenGlass,
 	craftingLevel,
-	xpPerHourCap = 70_000
+	itemsPerHourCap = 1000
 }: {
 	productKey: StealingArtefactsGlassblowingProductKey;
 	hours: number;
 	availableMoltenGlass: number;
 	craftingLevel: number;
-	xpPerHourCap?: number;
+	itemsPerHourCap?: number;
 }):
 	| { success: true; hours: number; itemsMade: number; craftingXp: number; moltenGlassUsed: number }
 	| {
@@ -166,7 +166,7 @@ export function calculateGlassblowingPlan({
 		return { success: false, error: 'You need Molten glass to glassblow items.' };
 	}
 
-	const itemsPerHour = xpPerHourCap / product.xp;
+	const itemsPerHour = itemsPerHourCap;
 	const maxHoursByGlass = availableMoltenGlass / itemsPerHour;
 	const adjustedHours = Math.min(hours, maxHoursByGlass);
 	const itemsMade = Math.floor(itemsPerHour * adjustedHours);
