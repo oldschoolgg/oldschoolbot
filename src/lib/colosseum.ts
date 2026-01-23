@@ -1,3 +1,4 @@
+import type { EquipmentSlot, GearSetupType } from '@oldschoolgg/gear';
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -11,12 +12,11 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/GeneralBank';
-import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/node';
+import { Bank, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';

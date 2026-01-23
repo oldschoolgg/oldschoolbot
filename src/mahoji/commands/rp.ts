@@ -1,4 +1,5 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
+import type { GearSetupType } from '@oldschoolgg/gear';
 import { randArrItem } from '@oldschoolgg/rng';
 import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
@@ -9,9 +10,8 @@ import { Bank, type Item, type ItemBank } from 'oldschooljs';
 import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
 import { choicesOf, gearSetupOption } from '@/discord/index.js';
 import { marketPricemap } from '@/lib/cache.js';
-import { BitField, Channel, globalConfig } from '@/lib/constants.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
@@ -43,8 +43,8 @@ const itemFilters = [
 
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
-	if (globalConfig.adminUserIDs.includes(user.id) || botAccounts.includes(user.id)) return true;
-	if ([BitField.isModerator].some(bf => user.bitfield.includes(bf))) return true;
+	if (botAccounts.includes(user.id)) return true;
+	if (user.isModOrAdmin()) return true;
 	return false;
 }
 
@@ -379,8 +379,8 @@ export const rpCommand = defineCommand({
 	],
 	run: async ({ options, user: adminUser, interaction, guildId }) => {
 		await interaction.defer();
-		const isAdmin = globalConfig.adminUserIDs.includes(adminUser.id);
-		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
+		const isAdmin = adminUser.isAdmin();
+		const isMod = isAdmin || adminUser.isMod();
 		if (!guildId || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
 		}

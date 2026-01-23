@@ -1,8 +1,9 @@
+import { calcPercentOfNum } from '@oldschoolgg/util';
+
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { calcPercentOfNum } from '@/util/smallUtils.js';
 
 interface TeamMember {
 	id: string;
@@ -54,9 +55,9 @@ for (const [id, _d] of Object.entries(nonUniqueItemRanges)) {
 	NonUniqueTable.add(Number.parseInt(id), _d[1]);
 }
 
-const toolSeedTable = new LootTable().tertiary(40, 'Uncut onyx').every('Crystal tool seed');
+const toolSeedTable: LootTable = new LootTable().tertiary(40, 'Uncut onyx').every('Crystal tool seed');
 
-const tertiaryTable = new LootTable()
+const tertiaryTable: LootTable = new LootTable()
 	.tertiary(2250, 'Smolcano')
 	.tertiary(200, toolSeedTable)
 	.tertiary(1125, 'Zalcano shard');
@@ -100,6 +101,4 @@ class ZalcanoClass {
 	}
 }
 
-const Zalcano = new ZalcanoClass();
-
-export default Zalcano;
+export const Zalcano: ZalcanoClass = new ZalcanoClass();

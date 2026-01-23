@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { GargoylePreTable } from '../low/g-m/Gargoyle.js';
 
-const MarbleGargoyleTable = new LootTable()
+const MarbleGargoyleTable: LootTable = new LootTable()
 	.every(GargoylePreTable, 3)
 	.tertiary(13, 'Clue scroll (hard)')
 
@@ -12,7 +12,7 @@ const MarbleGargoyleTable = new LootTable()
 	.tertiary(519, 'Eternal gem')
 	.tertiary(518, 'Imbued heart');
 
-export default new SimpleMonster({
+export const MarbleGargoyle: SimpleMonster = new SimpleMonster({
 	id: 7407,
 	name: 'Marble gargoyle',
 	table: MarbleGargoyleTable,

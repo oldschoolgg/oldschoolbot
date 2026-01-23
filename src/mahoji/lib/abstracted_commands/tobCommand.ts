@@ -194,7 +194,7 @@ async function checkTOBUser(
 	}
 
 	const arrowsRequired = 150 * quantity;
-	if (rangeGear.ammo!.quantity < arrowsRequired) {
+	if (rangeGear.get('ammo')!.quantity < arrowsRequired) {
 		return [
 			true,
 			`${user.usernameOrMention}, you need at least ${arrowsRequired} arrows equipped in your range setup.`
@@ -402,7 +402,7 @@ export async function tobStartCommand(
 					.clone()
 					.add('Coins', 100_000)
 					.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
-					.add(u.gear.range.ammo?.item, 100)
+					.add(u.gear.range.get('ammo')?.item, 100)
 					.multiply(qty)
 			);
 			await user.statsBankUpdate('tob_cost', realCost);

@@ -9,14 +9,10 @@ ignoredBuiltDependencies:
 neverBuiltDependencies: []
 
 overrides:
-  "@prisma/driver-adapter-utils": "6.15.0"
-  "sharp": "0.34.4"
+  "sharp": "0.34.5"
   "dotenv": "16.5.0"
-  "tsdown>rolldown": "1.0.0-beta.47"
   "discord-api-types": "0.38.32"
   "undici-types": "7.14.0"
   "@types/node": "24.5.2"
-  "esbuild": "0.25.11"
+  "esbuild": "0.27.1"
   "emoji-regex": "10.6.0"
-  "wrap-ansi": "9.0.2"
-  "string-width": "7.2.0"

@@ -4,11 +4,18 @@ import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BrimstoneChest,
+	BronzeHAMChest,
 	EItem,
 	EliteMimicTable,
+	ElvenCrystalChest,
 	EMonster,
+	GiantEggSacFull,
+	GiantsFoundryOrePack,
+	GrubbyChest,
 	HallowedSackTable,
 	Implings,
+	IntricatePouch,
+	IronHAMChest,
 	type Item,
 	type ItemBank,
 	Items,
@@ -16,9 +23,20 @@ import {
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
+	MoonKeyChest,
+	MuddyChest,
+	MysteryBox,
+	NestBoxEmpty,
+	NestBoxRing,
+	NestBoxSeeds,
+	OgreCoffin,
 	type OpenableOpenOptions,
-	Openables,
 	resolveItems,
+	SeedPack,
+	SilverHAMChest,
+	SinisterChest,
+	SteelHAMChest,
+	VolcanicMineOrePack,
 	ZombiePiratesLocker
 } from 'oldschooljs';
 
@@ -187,63 +205,63 @@ const osjsOpenables: UnifiedOpenable[] = [
 
 			return { bank: openLoot };
 		},
-		allItems: Openables.BrimstoneChest.table.allItems
+		allItems: BrimstoneChest.table.allItems
 	},
 	{
 		name: 'Elven crystal chest',
 		id: 23_951,
 		openedItem: Items.getOrThrow(23_951),
 		aliases: ['elven crystal chest', 'elven chest', 'enhanced', 'enhanced crystal chest', 'elven chest', 'elven'],
-		output: Openables.ElvenCrystalChest.table,
-		allItems: Openables.ElvenCrystalChest.table.allItems
+		output: ElvenCrystalChest.table,
+		allItems: ElvenCrystalChest.table.allItems
 	},
 	{
 		name: 'Giant egg sac(full)',
 		id: 23_517,
 		openedItem: Items.getOrThrow(23_517),
 		aliases: ['giant egg sac(full)', 'giant egg sac full'],
-		output: Openables.GiantEggSacFull.table,
-		allItems: Openables.GiantEggSacFull.table.allItems
+		output: GiantEggSacFull.table,
+		allItems: GiantEggSacFull.table.allItems
 	},
 	{
 		name: 'Grubby chest',
 		id: 23_499,
 		openedItem: Items.getOrThrow(23_499),
 		aliases: ['grubby chest', 'grubby'],
-		output: Openables.GrubbyChest.table,
-		allItems: Openables.GrubbyChest.table.allItems
+		output: GrubbyChest.table,
+		allItems: GrubbyChest.table.allItems
 	},
 	{
 		name: 'Bronze HAM chest',
 		id: 8867,
 		openedItem: Items.getOrThrow(8867),
 		aliases: ['bronze', 'bronze ham chest', 'bronze chest'],
-		output: Openables.BronzeHAMChest.table,
-		allItems: Openables.BronzeHAMChest.table.allItems
+		output: BronzeHAMChest.table,
+		allItems: BronzeHAMChest.table.allItems
 	},
 	{
 		name: 'Iron HAM chest',
 		id: 8869,
 		openedItem: Items.getOrThrow(8869),
 		aliases: ['iron', 'iron ham chest', 'iron chest'],
-		output: Openables.IronHAMChest.table,
-		allItems: Openables.IronHAMChest.table.allItems
+		output: IronHAMChest.table,
+		allItems: IronHAMChest.table.allItems
 	},
 	{
 		name: 'Silver HAM chest',
 		id: 8868,
 		openedItem: Items.getOrThrow(8868),
 		aliases: ['silver', 'silver ham chest', 'silver chest'],
-		output: Openables.SilverHAMChest.table,
-		allItems: Openables.SilverHAMChest.table.allItems
+		output: SilverHAMChest.table,
+		allItems: SilverHAMChest.table.allItems
 	},
 	{
 		name: 'Steel HAM chest',
 		id: 8866,
 		openedItem: Items.getOrThrow(8866),
 		aliases: ['steel', 'steel ham chest', 'steel chest'],
-		output: Openables.SteelHAMChest.table,
-		allItems: Openables.SteelHAMChest.table.allItems
+		output: SteelHAMChest.table,
+		allItems: SteelHAMChest.table.allItems
 	},
 	{
 		name: "Larran's chest",
@@ -272,47 +290,47 @@ const osjsOpenables: UnifiedOpenable[] = [
 
 			return { bank: openLoot };
 		},
-		allItems: Openables.LarransChest.table.allItems
+		allItems: LarransChest.table.allItems
 	},
 	{
 		name: 'Muddy chest',
 		id: 991,
 		openedItem: Items.getOrThrow(991),
 		aliases: ['muddy chest', 'muddy'],
-		output: Openables.MuddyChest.table,
-		allItems: Openables.MuddyChest.table.allItems
+		output: MuddyChest.table,
+		allItems: MuddyChest.table.allItems
 	},
 	{
 		name: 'Mystery box',
 		id: 6199,
 		openedItem: Items.getOrThrow(6199),
 		aliases: ['mystery box', 'mystery', 'mbox'],
-		output: Openables.MysteryBox.table,
-		allItems: Openables.MysteryBox.table.allItems
+		output: MysteryBox.table,
+		allItems: MysteryBox.table.allItems
 	},
 	{
 		name: 'Nest box (empty)',
 		id: 12_792,
 		openedItem: Items.getOrThrow(12_792),
 		aliases: ['nest box (empty)', 'empty nest box', 'nest box empty'],
-		output: Openables.NestBoxEmpty.table,
-		allItems: Openables.NestBoxEmpty.table.allItems
+		output: NestBoxEmpty.table,
+		allItems: NestBoxEmpty.table.allItems
 	},
 	{
 		name: 'Nest box (ring)',
 		id: 12_794,
 		openedItem: Items.getOrThrow(12_794),
 		aliases: ['nest box (ring)', 'ring nest box', 'nest box ring'],
-		output: Openables.NestBoxRing.table,
-		allItems: Openables.NestBoxRing.table.allItems
+		output: NestBoxRing.table,
+		allItems: NestBoxRing.table.allItems
 	},
 	{
 		name: 'Nest box (seeds)',
 		id: 12_793,
 		openedItem: Items.getOrThrow(12_793),
 		aliases: ['nest box (seeds)', 'seeds nest box', 'nest box seeds', 'seed nest box'],
-		output: Openables.NestBoxSeeds.table,
-		allItems: Openables.NestBoxSeeds.table.allItems
+		output: NestBoxSeeds.table,
+		allItems: NestBoxSeeds.table.allItems
 	},
 	{
 		name: 'Bird nest',
@@ -335,8 +353,8 @@ const osjsOpenables: UnifiedOpenable[] = [
 		id: 4850,
 		openedItem: Items.getOrThrow(4850),
 		aliases: ['ogre coffin', 'ogre chest', 'ogre coffin chest'],
-		output: Openables.OgreCoffin.table,
-		allItems: Openables.OgreCoffin.table.allItems
+		output: OgreCoffin.table,
+		allItems: OgreCoffin.table.allItems
 	},
 	{
 		name: 'Seed pack',
@@ -357,39 +375,39 @@ const osjsOpenables: UnifiedOpenable[] = [
 			}
 			return { bank: openLoot };
 		},
-		allItems: Openables.SeedPack.table.allItems
+		allItems: SeedPack.table.allItems
 	},
 	{
 		name: 'Sinister chest',
 		id: 993,
 		openedItem: Items.getOrThrow(993),
 		aliases: ['sinister chest', 'sinister'],
-		output: Openables.SinisterChest.table,
-		allItems: Openables.SinisterChest.table.allItems
+		output: SinisterChest.table,
+		allItems: SinisterChest.table.allItems
 	},
 	{
 		name: "Ore pack (Giant's Foundry)",
 		id: 27_019,
 		openedItem: Items.getOrThrow(27_019),
 		aliases: ["ore pack (giant's foundry)", 'giants', 'foundry', 'giants foundry'],
-		output: Openables.GiantsFoundryOrePack.table,
-		allItems: Openables.GiantsFoundryOrePack.table.allItems
+		output: GiantsFoundryOrePack.table,
+		allItems: GiantsFoundryOrePack.table.allItems
 	},
 	{
 		name: 'Ore pack (Volcanic Mine)',
 		id: 27_693,
 		openedItem: Items.getOrThrow(27_693),
 		aliases: ['ore pack (volcanic mine)', 'volcanic', 'volcanic mine'],
-		output: Openables.VolcanicMineOrePack.table,
-		allItems: Openables.VolcanicMineOrePack.table.allItems
+		output: VolcanicMineOrePack.table,
+		allItems: VolcanicMineOrePack.table.allItems
 	},
 	{
 		name: 'Intricate pouch',
 		id: 26_908,
 		openedItem: Items.getOrThrow(26_908),
 		aliases: ['intricate pouch', 'intricate'],
-		output: Openables.IntricatePouch.table,
-		allItems: Openables.IntricatePouch.table.allItems
+		output: IntricatePouch.table,
+		allItems: IntricatePouch.table.allItems
 	},
 	{
 		name: "Zombie Pirate's Locker",
@@ -438,6 +456,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['crystal chest'],
 		output: CrystalChestTable,
 		allItems: CrystalChestTable.allItems
+	},
+	{
+		name: 'Chest (moon key)',
+		id: itemID('Moon key'),
+		openedItem: Items.getOrThrow('Moon key'),
+		aliases: ['moon key chest', 'moon key'],
+		output: async ({ quantity }) => ({ bank: MoonKeyChest.open(quantity, {}) }),
+		allItems: MoonKeyChest.allItems
 	},
 	{
 		name: 'Builders supply crate',

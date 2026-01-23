@@ -3,7 +3,7 @@ import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const AncientZygomiteTable = new LootTable()
+const AncientZygomiteTable: LootTable = new LootTable()
 	.every('Mort myre fungus', [1, 2])
 
 	/* Weapons */
@@ -46,7 +46,7 @@ const AncientZygomiteTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const AncientZygomite: SimpleMonster = new SimpleMonster({
 	id: 7797,
 	name: 'Ancient Zygomite',
 	table: AncientZygomiteTable,

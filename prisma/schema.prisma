@@ -275,6 +275,7 @@ enum bank_sort_method_enum {
   alch
   name
   quantity
+  market
 }
 
 model User {
@@ -1526,4 +1527,42 @@ model ShootingStars {
 
   @@index([user_id, expires_at])
   @@map("shooting_stars")
+}
+
+enum SystemLogsType {
+  ERROR
+}
+
+model SystemLogs {
+  id Int @id @default(autoincrement())
+
+  date DateTime @default(now())
+
+  type SystemLogsType
+  data Json           @db.JsonB
+
+  @@map("system_logs")
+}
+
+enum UserLogType {
+  CLICK_BUTTON
+  CANCEL_TRIP
+}
+
+model UserLog {
+  id Int @id @default(autoincrement())
+
+  user_id    BigInt
+  channel_id BigInt?
+  guild_id   BigInt?
+  message_id BigInt?
+
+  date DateTime @default(now())
+
+  type UserLogType
+
+  data Json @db.JsonB
+
+  @@index([user_id, date])
+  @@map("user_logs")
 }

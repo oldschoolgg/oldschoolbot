@@ -1,5 +1,5 @@
 import { formatDuration, stringSearch } from '@oldschoolgg/toolkit';
-import { ItemGroups, Monsters } from 'oldschooljs';
+import { EMonster, ItemGroups } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -61,7 +61,7 @@ export const fishCommand = defineCommand({
 		}
 
 		if (fish.name === 'Infernal eel') {
-			const jadKC = await user.getKC(Monsters.TzTokJad.id);
+			const jadKC = await user.getKC(EMonster.TZTOKJAD);
 			if (jadKC === 0) {
 				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 			}

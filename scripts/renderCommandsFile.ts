@@ -1,7 +1,8 @@
 import './base.js';
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { md5sum, Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
+import { Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
+import { md5sum } from '@oldschoolgg/toolkit/node';
 import { DateTime } from 'luxon';
 
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';

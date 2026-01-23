@@ -1,7 +1,7 @@
+import { GearStat } from '@oldschoolgg/gear';
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 import { pick } from 'remeda';
 
 import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.js';

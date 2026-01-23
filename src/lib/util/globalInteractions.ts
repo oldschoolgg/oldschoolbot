@@ -212,7 +212,14 @@ async function globalButtonInteractionHandler({
 	id: string;
 	interaction: MInteraction;
 }): Promise<CommandResponse | null> {
-	Logging.logDebug(`${interaction.userId} clicked button: ${id}`);
+	globalClient.emitUserLog({
+		type: 'CLICK_BUTTON',
+		user_id: interaction.userId,
+		button_id: id,
+		channel_id: interaction.channelId,
+		guild_id: interaction.guildId,
+		message_id: interaction.messageId
+	});
 
 	if (globalClient.isShuttingDown) {
 		return {
@@ -433,7 +440,14 @@ async function globalButtonInteractionHandler({
 		case InteractionID.Commands.DoShootingStar: {
 			const validStar = await prisma.shootingStars.findFirst({
 				where: {
-					user_id: user.id
+					user_id: user.id,
+					has_been_mined: false,
+					expires_at: {
+						gt: new Date()
+					}
+				},
+				orderBy: {
+					expires_at: 'desc'
 				}
 			});
 			let errorMessage: string | null = null;

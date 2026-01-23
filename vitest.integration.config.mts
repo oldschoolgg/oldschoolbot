@@ -18,17 +18,16 @@ export default defineConfig({
 			]
 		},
 		testTimeout: 60_000,
-		maxConcurrency: 5,
+		maxConcurrency: 4,
 		isolate: false,
-		pool: 'threads',
-		poolOptions: {
-			threads: {
-				singleThread: false,
-				maxThreads: 4,
-				useAtomics: true
-			}
+		pool: 'forks',
+		maxWorkers: 10,
+		sequence: {
+			shuffle: true,
+			seed: 1
 		}
 	},
+
 	resolve: {
 		alias: {
 			'@': path.resolve(import.meta.dirname, './src')

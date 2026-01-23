@@ -4,9 +4,9 @@ import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const DBHerbTable = new LootTable().add(HerbDropTable, 1, 4).add(HerbDropTable, 2, 1);
+const DBHerbTable: LootTable = new LootTable().add(HerbDropTable, 1, 4).add(HerbDropTable, 2, 1);
 
-export const DarkBeastPreTable = new LootTable()
+export const DarkBeastPreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Black battleaxe', 1, 3)
 	.add('Adamant sq shield', 1, 1)
@@ -46,7 +46,7 @@ export const DarkBeastPreTable = new LootTable()
 	.add(RareDropTable, 1, 3)
 	.add(GemTable, 1, 3);
 
-const DarkBeastTable = new LootTable()
+const DarkBeastTable: LootTable = new LootTable()
 	.every('Big bones')
 	.every(DarkBeastPreTable)
 
@@ -57,7 +57,7 @@ const DarkBeastTable = new LootTable()
 	.tertiary(1200, 'Clue scroll (elite)')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const DarkBeast: SimpleMonster = new SimpleMonster({
 	id: 4005,
 	name: 'Dark Beast',
 	table: DarkBeastTable,

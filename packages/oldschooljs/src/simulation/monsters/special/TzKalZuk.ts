@@ -19,7 +19,7 @@ export class TzKalZukClass extends Monster {
 	}
 }
 
-export const TzKalZuk = new TzKalZukClass({
+export const TzKalZuk: TzKalZukClass = new TzKalZukClass({
 	id: 7706,
 	name: 'TzKal-Zuk',
 	aliases: ['tzkal-zuk', 'zuk', 'inferno']

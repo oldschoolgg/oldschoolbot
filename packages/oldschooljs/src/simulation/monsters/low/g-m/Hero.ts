@@ -12,7 +12,7 @@ const HeroTable = new LootTable({ limit: 128 })
 	.tertiary(1_400, 'Clue scroll (elite)')
 	.tertiary(99_175, 'Rocky');
 
-export default new SimpleMonster({
+export const Hero: SimpleMonster = new SimpleMonster({
 	id: 3295,
 	name: 'Hero',
 	pickpocketTable: HeroTable,

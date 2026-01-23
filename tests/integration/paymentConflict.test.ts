@@ -1,4 +1,4 @@
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
@@ -23,7 +23,7 @@ describe('Payment conflicts', async () => {
 		return payees;
 	}
 
-	test.concurrent(
+	test(
 		'GE Simulation (Payee)',
 		{
 			timeout: Time.Minute * 2
@@ -87,7 +87,7 @@ describe('Payment conflicts', async () => {
 		}
 	);
 
-	test.concurrent('GE Simulation (Payer)', async () => {
+	test('GE Simulation (Payer)', async () => {
 		await mockClient();
 		// May as well test for the Payer also, even though so far we're solid here.
 		const userPayer = await createTestUser(new Bank(bigBank), { GP: 1_000_000_000 });

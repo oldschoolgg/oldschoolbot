@@ -11,7 +11,7 @@ export const constructionTask: MinionTask = {
 		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
-		const outfitMultiplier = Construction.util.calcConBonusXP(user.gear.skilling);
+		const outfitMultiplier = Construction.util.calcConBonusXP(user.gear.skilling.raw());
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}

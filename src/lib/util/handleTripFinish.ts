@@ -10,9 +10,9 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
-import { MUserClass } from '@/lib/MUser.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
@@ -26,6 +26,7 @@ import {
 	makeTearsOfGuthixButton
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import {
@@ -144,12 +145,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Claim Daily Button',
 		requiredPerkTier: PerkTier.Two,
-		fn: async ({ user, components, lastDailyTimestamp }) => {
+		fn: async ({ user, components }) => {
 			if (user.bitfield.includes(BitField.DisableDailyButton)) return;
-			const last = Number(lastDailyTimestamp);
-			const ready = last <= 0 || Date.now() - last >= CONSTANTS.DAILY_COOLDOWN;
 
-			if (ready) {
+			const { isReady } = await isUsersDailyReady(user);
+			if (isReady) {
 				components.push(makeClaimDailyButton());
 			}
 		}

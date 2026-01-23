@@ -1,6 +1,6 @@
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, Emoji, formatDuration, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, Items, itemID, Monsters } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { BitField } from '@/lib/constants.js';
@@ -180,7 +180,7 @@ async function infernoRun({
 			[rangeGear, 'range'],
 			[mageGear, 'mage']
 		] as const) {
-			if (!gear[key]) {
+			if (!gear.get(key)?.item) {
 				return `You have nothing in your ${key} slot in your ${name} setup.. are you crazy?`;
 			}
 		}
@@ -288,7 +288,7 @@ async function infernoRun({
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
-		usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+		usersTask.currentTask?.monster_id === EMonster.TZHAARKET &&
 		score > 0 &&
 		usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
@@ -311,7 +311,7 @@ async function infernoRun({
 	 *
 	 *
 	 */
-	const projectile = rangeGear.ammo;
+	const projectile = rangeGear.get('ammo');
 	if (!projectile) {
 		return 'You have no projectiles equipped in your range setup.';
 	}

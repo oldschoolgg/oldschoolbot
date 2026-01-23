@@ -1,8 +1,8 @@
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { loadImage } from 'skia-canvas';
 
 import { CanvasSpritesheet } from '@/lib/canvas/CanvasSpritesheet.js';
+import { loadImage } from '@/lib/canvas/canvasUtil.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 

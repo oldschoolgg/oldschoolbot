@@ -1,8 +1,6 @@
-import type { Image } from 'skia-canvas';
+import { type CanvasImage, canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
-
-let bg: Image | null = null;
+let bg: CanvasImage | null = null;
 
 export const fakepmCommand = defineCommand({
 	name: 'fakepm',

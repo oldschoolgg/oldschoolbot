@@ -5,6 +5,10 @@
 		".": {
 			"types": "./dist/esm/index.d.mts",
 			"import": "./dist/esm/index.mjs"
+		},
+		"./crypto": {
+			"types": "./dist/esm/crypto.d.mts",
+			"import": "./dist/esm/crypto.mjs"
 		}
 	},
 	"scripts": {

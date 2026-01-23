@@ -1,10 +1,10 @@
 import { randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { ECombatOption } from '@oldschoolgg/schemas';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
-import { type Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
+import { type Bank, EMonster, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { caTiers } from '@/lib/combat_achievements/combatAchievements.js';
 import type { PvMMethod } from '@/lib/constants.js';
-import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { autoslayModes } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -31,7 +31,7 @@ export enum SlayerMasterEnum {
 }
 
 interface DetermineBoostParams {
-	cbOpts: readonly CombatOptionsEnum[];
+	cbOpts: readonly ECombatOption[];
 	monster: KillableMonster;
 	methods?: PvMMethod[] | null;
 	isOnTask?: boolean;
@@ -42,16 +42,16 @@ export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[]
 	const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
 
 	// check if user has cannon combat option turned on
-	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
+	if (params.cbOpts.includes(ECombatOption.AlwaysCannon)) {
 		boostMethods.includes('cannon') ? null : boostMethods.push('cannon');
 	}
 
 	// check for special burst case under wildyBurst variable
 	if (params.wildyBurst) {
-		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+		if (params.cbOpts.includes(ECombatOption.AlwaysIceBarrage)) {
 			boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
 		}
-		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+		if (params.cbOpts.includes(ECombatOption.AlwaysIceBurst)) {
 			boostMethods.includes('burst') ? null : boostMethods.push('burst');
 		}
 	}
@@ -60,20 +60,20 @@ export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[]
 	if (params.monster.canBarrage) {
 		// check if the monster exists in catacombs
 		if (params.monster.existsInCatacombs) {
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+			if (params.cbOpts.includes(ECombatOption.AlwaysIceBarrage)) {
 				boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
 			}
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+			if (params.cbOpts.includes(ECombatOption.AlwaysIceBurst)) {
 				boostMethods.includes('burst') ? null : boostMethods.push('burst');
 			}
 		} else if (!params.monster.cannonMulti) {
 			// prevents cases such as: cannoning in singles but receiving multi combat bursting boost
 			return boostMethods;
 		} else {
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+			if (params.cbOpts.includes(ECombatOption.AlwaysIceBarrage)) {
 				boostMethods.includes('barrage') ? null : boostMethods.push('barrage');
 			}
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+			if (params.cbOpts.includes(ECombatOption.AlwaysIceBurst)) {
 				boostMethods.includes('burst') ? null : boostMethods.push('burst');
 			}
 		}
@@ -299,7 +299,7 @@ export function getCommonTaskName(task: Monster) {
 		case Monsters.GuardDog.id:
 			commonName = 'Dog';
 			break;
-		case Monsters.TzHaarKet.id:
+		case EMonster.TZHAARKET:
 			commonName = 'TzHaar';
 			break;
 		case Monsters.RevenantImp.id:
