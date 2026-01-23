@@ -60,14 +60,5 @@ export async function autoCompleteHandler(interaction: IAutoCompleteInteraction)
 	const command = globalClient.allCommands.find(c => c.name === interaction.command_name)!;
 	const user = await mUserFetch(interaction.user_id);
 	const choices = await handleAutocomplete(user, interaction.guild_id, command, interaction.options);
-
-	try {
-		await globalClient.respondToAutocompleteInteraction(interaction, choices);
-	} catch (err: any) {
-		// These happen when the user types quickly and Discord invalidates older autocomplete requests,
-		// or something already responded to the interaction.
-		if (err?.code === 10062 || err?.code === 40060) return;
-
-		throw err;
-	}
+	await globalClient.respondToAutocompleteInteraction(interaction, choices);
 }
