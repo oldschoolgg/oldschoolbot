@@ -137,7 +137,15 @@ export const minionCommand = defineCommand({
 		{
 			type: 'Subcommand',
 			name: 'stats',
-			description: 'Check the stats of your minion.'
+			description: 'Check the stats of your minion.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'other',
+					description: 'Show only the "Other" stats?',
+					required: false
+				}
+			]
 		},
 		{
 			type: 'Subcommand',
@@ -414,14 +422,48 @@ export const minionCommand = defineCommand({
 			description: 'View your minions mastery.'
 		}
 	],
-	run: async ({ user, options, interaction, rng }) => {
-		const perkTier = await user.fetchPerkTier();
+	run: async ({
+		userID,
+		options,
+		interaction,
+		channelID
+	}: CommandRunOptions<{
+		stats?: { stat?: string; other?: boolean };
+		achievementdiary?: { diary?: string; claim?: boolean };
+		bankbg?: { name?: string };
+		cracker?: { user: MahojiUserOption };
+		lamp?: { item: string; quantity?: number; skill: string };
+		cancel?: {};
+		set_icon?: { icon: string };
+		set_name?: { name: string };
+		level?: { skill: string };
+		kc?: { name: string };
+		buy?: { ironman?: boolean };
+		ironman?: { permanent?: boolean };
+		charge?: { item?: string; amount?: number };
+		daily?: {};
+		train?: { style: AttackStyles };
+		pat?: {};
+		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
+		status?: {};
+		info?: {};
+		peak?: {};
+		mastery?: {};
+	}>) => {
+		const user = await mUserFetch(userID);
+		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
 		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
-			return { embeds: [await minionStatsEmbed(user)] };
+			return {
+				embeds: [
+					await minionStatsEmbed(user, {
+						otherOnly: options.stats.other ?? false
+					})
+				]
+			};
 		}
 
 		if (options.achievementdiary) {
