@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@tailwindcss/vite": "4.1.17",
-		"preact": "^10.26.9",
+		"preact": "10.28.2",
 		"react-use-websocket": "^4.13.0",
 		"tailwindcss": "^4.1.17",
 		"oldschooljs": "workspace:*",

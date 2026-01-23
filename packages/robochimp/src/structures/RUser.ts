@@ -69,6 +69,16 @@ export class RUser {
 		return group.map(u => u.id.toString());
 	}
 
+	async fetchGroup(): Promise<User[]> {
+		const allUserIds = await this.findGroup();
+		const users = await roboChimpClient.user.findMany({
+			where: {
+				id: { in: allUserIds.map(id => BigInt(id)) }
+			}
+		});
+		return users;
+	}
+
 	async update(data: Prisma.UserUncheckedUpdateInput): Promise<this> {
 		const newUser = await roboChimpClient.user.update({
 			where: {

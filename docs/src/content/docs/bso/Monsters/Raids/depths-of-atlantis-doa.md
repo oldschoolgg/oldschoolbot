@@ -1,5 +1,5 @@
 ---
-title: "Depths of Atlantis (DoA)"
+title: "Depths of Atlantis"
 ---
 
 ## Depths of Atlantis (DoA)
@@ -44,7 +44,7 @@ Use [[/raid doa help]] to view missing requirements.
 - Void staff or Tumeken's Shadow charges
 - Javelins (equipped in range setup)
 
-**If Challenge Mode:**  
+**If Challenge Mode:**
 +4 brews, +1 restore, extra stamina, and more staff charges
 
 ## Boosts

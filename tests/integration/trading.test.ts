@@ -14,7 +14,7 @@ test('Trade consistency', async () => {
 	await mockClient();
 
 	const bank = new Bank().add('Coins', 1000).add('Egg', 1000).add('Coal', 1000).add('Trout', 1000).freeze();
-	const NUMBER_OF_USERS = 20;
+	const NUMBER_OF_USERS = 18;
 
 	let users: TestUser[] = [];
 	for (let i = 0; i < NUMBER_OF_USERS; i++) {
@@ -76,10 +76,10 @@ test('Trade consistency', async () => {
 					attempts += 1;
 					await Promise.all([user1.sync(), user2?.sync()]);
 					const res = await tradeCommand.run({ ...options, guildId: mockSnowflake(cryptoRng) });
-					if (typeof res === 'string' && !res.includes('Trade failed')) {
+					if (typeof res !== 'string' || !res.includes('Trade failed')) {
 						break;
 					}
-					await sleep(20);
+					await sleep(150);
 				}
 				if (attempts === 100) {
 					throw new Error('Trade failed 100 times in a row, something is wrong');

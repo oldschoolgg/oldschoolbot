@@ -9,7 +9,7 @@ import {
 	sumArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, Items, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EItem, EMonster, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { BitField } from '@/lib/constants.js';
@@ -71,7 +71,7 @@ export function checkNexUser(user: MUser): [false] | [true, string] {
 	}
 	if (defence < 50) return [true, `${tag}'s range gear is terrible! You need higher mage defence.`];
 	for (const slot of ['ammo', 'body', 'feet', 'head', 'body', 'legs'] as const) {
-		if (!rangeGear[slot]) {
+		if (!rangeGear.get(slot)) {
 			return [true, `${tag} has no item equipped in their ${slot} slot, in their range gear.`];
 		}
 	}
@@ -80,7 +80,7 @@ export function checkNexUser(user: MUser): [false] | [true, string] {
 	if (!allowedWeapons.includes(weapon.id)) {
 		return [true, `${tag} needs to be using one of these weapons: ${weaponsStr}.`];
 	}
-	const { ammo } = rangeGear;
+	const ammo = rangeGear.get('ammo');
 	if (!ammo) return [true, `${tag} has no ammo for their weapon equipped.`];
 	if (!allowedAmmo.includes(ammo.item)) {
 		return [true, `${tag} needs to be using one of these types of ammo: ${ammoStr}`];
@@ -206,15 +206,15 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		const kcPercent = clamp(calcWhatPercent(nexKC, kcLearningCap), { min: 0, max: 100 });
 		const messages: string[] = [];
 
-		if ([rangeGear.ammo?.item].includes(itemID('Rune arrow'))) {
+		if ([rangeGear.get('ammo')?.item].includes(itemID('Rune arrow'))) {
 			offence -= 5;
 		}
 		offence -= 5;
-		const isUsingZCB = rangeGear.weapon?.item === itemID('Zaryte crossbow');
+		const isUsingZCB = rangeGear.get('weapon')?.item === itemID('Zaryte crossbow');
 		if (isUsingZCB) offence += 5;
 
 		offence -= 2;
-		const isUsingVambs = rangeGear.hands?.item === itemID('Zaryte vambraces');
+		const isUsingVambs = rangeGear.get('hands')?.item === itemID('Zaryte vambraces');
 		if (isUsingVambs) offence += 2;
 
 		offence -= 5;
@@ -241,14 +241,14 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 			[itemID('Elysian spirit shield'), increaseNumByPercent(lengthPerKill, 3), 'ely'],
 			[itemID('Spectral spirit shield'), increaseNumByPercent(lengthPerKill, 3), 'spectral']
 		] as const) {
-			if (rangeGear.shield?.item === shield) {
+			if (rangeGear.get('shield')?.item === shield) {
 				const timeToAdd = Math.ceil(time / team.length);
 				maxTripLength += timeToAdd;
 				messages.push(`+${formatDuration(timeToAdd, true)} for ${shortName}`);
 			}
 		}
 
-		if (rangeGear.shield?.item === itemID('Elysian spirit shield')) {
+		if (rangeGear.get('shield')?.item === EItem.ELYSIAN_SPIRIT_SHIELD) {
 			deathChance = reduceNumByPercent(deathChance, 30);
 			messages.push('-30% death% for ely');
 		}
@@ -297,7 +297,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	for (const teamUser of resultTeam.filter(m => !m.fake)) {
 		const user = team.find(u => u.id === teamUser.id)!;
 		const { rangeGear } = nexGearStats(user);
-		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
+		const ammo = rangeGear.get('ammo')?.item ?? EItem.DRAGON_ARROW;
 		// Between 50-60 ammo per kill (before reductions)
 		teamUser.cost.add(ammo, randInt(50, 60) * quantity);
 	}

@@ -220,13 +220,13 @@ export async function drawChestLootImage(options: DrawChestLootImageOptions): Pr
 	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}${type.title.toLowerCase().replace(/\s+/g, '')}-${randInt(1, 1000)}.png`;
 
 	if (canvasResults.length === 1) {
-		const imageBuffer = await canvasResults[0].canvas.toScaledOutput(2);
+		const imageBuffer = await canvasResults[0].canvas.toBuffer();
 		return { name: fileName, buffer: imageBuffer };
 	}
 
 	const canvases = canvasResults.map(result => result.canvas);
 	const combinedCanvas = combineCanvases(canvases);
-	const combinedBuffer = await combinedCanvas.toScaledOutput(2);
+	const combinedBuffer = await combinedCanvas.toBuffer();
 
 	return { name: fileName, buffer: combinedBuffer };
 }

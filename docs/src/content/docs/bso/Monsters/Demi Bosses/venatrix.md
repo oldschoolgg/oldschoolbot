@@ -10,7 +10,7 @@ Venatrix is a spider-like demi-boss fought with your **Melee** setup. Kill it us
 
 - [[qp:500]]
 - [[hitpoints:120]] [[attack:120]] [[strength:120]] [[defence:120]] [[slayer:120]]
-- 1 kill of [Celestara](celestara.md)
+- 1 kill of [Celestara](celestara)
 - Must have unlocked Venatrix (requires the **HasUnlockedVenatrix** bitfield)
 - Need a weapon with at least **134 Slash attack** (equivalent to a [[Soulreaper axe]])
 
@@ -27,7 +27,7 @@ These supplies are consumed every kill.
 
 - Axe of the high sungod – 20%
 - Ancient Rejuvenation Pool – 5%
-- [Additional global boosts apply](../../skills/combat-skills.md#boosts)
+- [Additional global boosts apply](/bso/skills/combat-skills#boosts)
 
 ## Loot
 

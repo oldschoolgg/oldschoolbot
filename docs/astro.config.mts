@@ -2,6 +2,7 @@ import preact from '@astrojs/preact';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
+import starlightLinksValidator from 'starlight-links-validator';
 import type { Plugin } from 'vite';
 
 import remarkItems from './src/plugins/items.js';
@@ -92,6 +93,14 @@ export default defineConfig({
 	site: 'https://wiki.oldschool.gg',
 	integrations: [
 		starlight({
+			plugins: [
+				starlightLinksValidator({
+					errorOnInvalidHashes: false,
+					errorOnLocalLinks: false,
+					errorOnRelativeLinks: false,
+					errorOnFallbackPages: false
+				})
+			],
 			components: {
 				Footer: './src/components/Footer.astro',
 				Header: './src/components/Header.astro'

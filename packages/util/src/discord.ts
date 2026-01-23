@@ -19,5 +19,5 @@ export function randomSnowflake(rng: RNGProvider): string {
 }
 
 export function isValidDiscordSnowflake(snowflake: string): boolean {
-	return /^\d{17,19}$/.test(snowflake);
+	return /^\d{17,20}$/.test(snowflake);
 }
