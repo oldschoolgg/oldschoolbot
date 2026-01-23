@@ -1,7 +1,6 @@
 import { getNextUTCReset, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
-import type { MUserClass } from '@/lib/MUser.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 
 export const BERT_SAND_ID = 'bert_sand' as const;

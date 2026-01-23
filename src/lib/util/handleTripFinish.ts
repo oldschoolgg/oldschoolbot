@@ -269,13 +269,13 @@ export async function handleTripFinish(
 	userOrParams:
 		| MUser
 		| {
-			user: MUser;
-			channelId: string;
-			message: OSBSendableMessage;
-			data: ActivityTaskData;
-			loot?: Bank | null;
-			messages?: string[];
-		},
+				user: MUser;
+				channelId: string;
+				message: OSBSendableMessage;
+				data: ActivityTaskData;
+				loot?: Bank | null;
+				messages?: string[];
+		  },
 	_channelId?: string,
 	_message?: OSBSendableMessage,
 	_data?: ActivityTaskData,
@@ -290,7 +290,7 @@ export async function handleTripFinish(
 		messages: inputMessages,
 		message: inputMessage
 	} = userOrParams instanceof MUserClass
-			? {
+		? {
 				user: userOrParams as MUser,
 				channelId: _channelId!,
 				message: _message!,
@@ -298,7 +298,7 @@ export async function handleTripFinish(
 				loot: _loot!,
 				messages: _messages
 			}
-			: userOrParams;
+		: userOrParams;
 
 	Logging.logDebug(`Handling trip finish for ${user.logName} (${data.type})`);
 	const message =
