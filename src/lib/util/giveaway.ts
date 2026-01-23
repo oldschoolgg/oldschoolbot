@@ -21,6 +21,33 @@ export function generateGiveawayContent(host: string, finishDate: Date, usersEnt
 There are ${usersEntered.length} users entered in this giveaway.`;
 }
 
+export async function resolveGiveawayGuildId(giveaway: Giveaway): Promise<string | null> {
+	if (giveaway.guild_id) return giveaway.guild_id;
+	const message = await globalClient.fetchMessage(giveaway.channel_id, giveaway.message_id);
+	const guildId = message?.guild_id ?? null;
+	if (guildId) {
+		giveaway.guild_id = guildId;
+		await prisma.giveaway.update({
+			where: { id: giveaway.id },
+			data: { guild_id: guildId }
+		});
+	}
+	return guildId;
+}
+
+export async function userWasMemberAtGiveawayStart(giveaway: Giveaway, userId: string): Promise<boolean> {
+	const guildId = await resolveGiveawayGuildId(giveaway);
+	if (!guildId) return false;
+	try {
+		const member = await globalClient.fetchMember({ guildId, userId });
+		if (!member.joined_at) return false;
+		const joinedAt = new Date(member.joined_at).getTime();
+		return joinedAt <= giveaway.start_date.getTime();
+	} catch {
+		return false;
+	}
+}
+
 async function pickRandomGiveawayWinner(giveaway: Giveaway): Promise<MUser | null> {
 	if (giveaway.users_entered.length === 0) return null;
 	const result: { id: string }[] = await prisma.$queryRaw`WITH giveaway_users AS (
@@ -34,12 +61,15 @@ WHERE id IN (SELECT user_id FROM giveaway_users)
 AND "minion.ironman" = false
 AND id != ${giveaway.user_id}
 ORDER BY random()
-LIMIT 1;
+LIMIT 50;
 `;
-	const id = result[0]?.id;
-	if (!id) return null;
-	const user = await mUserFetch(id);
-	return user;
+	for (const { id } of result) {
+		const eligible = await userWasMemberAtGiveawayStart(giveaway, id);
+		if (!eligible) continue;
+		const user = await mUserFetch(id);
+		return user;
+	}
+	return null;
 }
 
 export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
