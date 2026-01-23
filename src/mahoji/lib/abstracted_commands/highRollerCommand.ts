@@ -133,7 +133,7 @@ async function collectDirectInvites({
 	const maxInvites = MAX_PARTICIPANTS - 1;
 
 	if (uniqueInviteIDs.length > maxInvites) {
-		await interaction.reply({
+		await safeEdit(interaction, {
 			content: `You can invite at most ${maxInvites} players (max ${MAX_PARTICIPANTS} including you).`,
 			components: []
 		});
@@ -145,7 +145,7 @@ async function collectDirectInvites({
 		new ButtonBuilder().setCustomId('HR_CONFIRM').setLabel('Confirm').setStyle(ButtonStyle.Success),
 		new ButtonBuilder().setCustomId('HR_DECLINE').setLabel('Decline').setStyle(ButtonStyle.Secondary)
 	];
-	await interaction.reply({
+	await safeEdit(interaction, {
 		content: `${host.badgedUsername} has challenged ${mentionList} to a High Roller Pot for **${stakeDisplay}** each (Payout: ${payoutDescription}). Click Confirm to join.`,
 		components: row,
 		allowedMentions: { users: uniqueInviteIDs }
@@ -175,7 +175,7 @@ async function collectDirectInvites({
 			}
 			confirmed.add(button.userId);
 			await button.silentButtonAck();
-			await interaction.reply({
+			await safeEdit(interaction, {
 				content: `${host.badgedUsername} is waiting on confirmations... (${confirmed.size}/${uniqueInviteIDs.length} ready)\nPayout: ${payoutDescription}`,
 				components: row,
 				allowedMentions: { users: [] }
@@ -186,7 +186,7 @@ async function collectDirectInvites({
 		});
 		collector.on('end', async (_collected, reason) => {
 			if (reason === 'confirmed') {
-				await interaction.reply({
+				await safeEdit(interaction, {
 					content: `${host.badgedUsername}'s High Roller Pot is starting with ${uniqueInviteIDs.length + 1} participants.`,
 					components: [],
 					allowedMentions: { users: [] }
@@ -198,7 +198,7 @@ async function collectDirectInvites({
 			const declinedMentions = [...declined, ...missing]
 				.filter((value, index, array) => array.indexOf(value) === index)
 				.map(id => `<@${id}>`);
-			await interaction.reply({
+			await safeEdit(interaction, {
 				content: declinedMentions.length
 					? `The gamble was cancelled because ${declinedMentions.join(', ')} didn't confirm in time.`
 					: `The gamble was cancelled because not everyone confirmed in time.`,
@@ -228,7 +228,7 @@ async function collectOpenLobby({
 		new ButtonBuilder().setCustomId('HR_LEAVE').setLabel('Leave').setStyle(ButtonStyle.Secondary),
 		new ButtonBuilder().setCustomId('HR_FORCE_START').setLabel('Force start').setStyle(ButtonStyle.Primary)
 	];
-	await interaction.reply({
+	await safeEdit(interaction, {
 		content: `${host.badgedUsername} opened a High Roller Pot for **${stakeDisplay}** each (Payout: ${payoutDescription}). Click Join to participate! (30s)`,
 		components: row,
 		allowedMentions: { users: [] }
@@ -242,7 +242,7 @@ async function collectOpenLobby({
 			.join(', ')}`;
 
 	const updateParticipantsMessage = async () =>
-		interaction.reply({
+		safeEdit(interaction, {
 			content: getParticipantListMessage(),
 			components: row,
 			allowedMentions: { users: [] }
@@ -319,7 +319,7 @@ async function collectOpenLobby({
 		collector.on('end', async (_collected, reason) => {
 			const participants = [...joined];
 			if (participants.length < MIN_PARTICIPANTS) {
-				await interaction.reply({
+				await safeEdit(interaction, {
 					content: `Not enough participants joined the High Roller Pot.`,
 					components: []
 				});
@@ -328,12 +328,12 @@ async function collectOpenLobby({
 			}
 
 			if (reason === 'force_start') {
-				await interaction.reply({
+				await safeEdit(interaction, {
 					content: `${host.badgedUsername} force-started the High Roller Pot with ${participants.length} participants.`,
 					components: []
 				});
 			} else {
-				await interaction.reply({
+				await safeEdit(interaction, {
 					content: `${host.badgedUsername}'s High Roller Pot is starting with ${participants.length} participants.`,
 					components: [],
 					allowedMentions: { users: [] }
@@ -483,8 +483,15 @@ export async function highRollerCommand({
 		participantIDs.unshift(user.id);
 	}
 
-	const limitedIDs = participantIDs.slice(0, MAX_PARTICIPANTS);
-	const participants = await Promise.all(limitedIDs.map(async id => (id === user.id ? user : mUserFetch(id))));
+	if (participantIDs.length > MAX_PARTICIPANTS) {
+		await safeEdit(interaction, {
+			content: `This pot couldn't start because there were too many participants.`,
+			components: [],
+			allowedMentions: { users: [] }
+		});
+		return interaction.returnStringOrFile('The High Roller Pot was cancelled.');
+	}
+	const participants = await Promise.all(participantIDs.map(async id => (id === user.id ? user : mUserFetch(id))));
 
 	if (mode === 'top_three' && participants.length < MIN_TOP_THREE_PARTICIPANTS) {
 		await safeEdit(interaction, {
