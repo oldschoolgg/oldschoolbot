@@ -128,13 +128,18 @@ async function collectDirectInvites({
 		return [host.id];
 	}
 	const uniqueInviteIDs = [...new Set(inviteIDs)];
-	if (uniqueInviteIDs.length > MAX_PARTICIPANTS) {
+
+	// Host always participates, so invites must leave room for host.
+	const maxInvites = MAX_PARTICIPANTS - 1;
+
+	if (uniqueInviteIDs.length > maxInvites) {
 		await interaction.reply({
-			content: `You can invite at most ${MAX_PARTICIPANTS} players.`,
+			content: `You can invite at most ${maxInvites} players (max ${MAX_PARTICIPANTS} including you).`,
 			components: []
 		});
 		return null;
 	}
+
 	const mentionList = uniqueInviteIDs.map(id => `<@${id}>`).join(', ');
 	const row: ButtonBuilder[] = [
 		new ButtonBuilder().setCustomId('HR_CONFIRM').setLabel('Confirm').setStyle(ButtonStyle.Success),
