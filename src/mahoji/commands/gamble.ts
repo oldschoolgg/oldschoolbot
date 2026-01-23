@@ -1,23 +1,19 @@
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { randArrItem } from 'e';
+import { randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants';
+import { choicesOf } from '@/discord/index.js';
+import { BitField } from '@/lib/constants.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
+import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';
+import { duelCommand } from '@/mahoji/lib/abstracted_commands/duelCommand.js';
+import { hotColdCommand } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
+import { luckyPickCommand } from '@/mahoji/lib/abstracted_commands/luckyPickCommand.js';
+import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
 
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
-import { diceCommand } from '../lib/abstracted_commands/diceCommand';
-import { duelCommand } from '../lib/abstracted_commands/duelCommand';
-import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
-import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
-import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
-import type { OSBMahojiCommand } from '../lib/util';
-
-export const gambleCommand: OSBMahojiCommand = {
+export const gambleCommand = defineCommand({
 	name: 'gamble',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Partake in various gambling activities.',
 	options: [
 		/**
@@ -26,23 +22,19 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'item',
 			description: 'Allows you to gamble fire/infernal capes/quivers for a chance at the pets.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you wish to gamble.',
 					required: false,
-					choices: [
-						{ name: 'fire', value: 'fire' },
-						{ name: 'infernal', value: 'infernal' },
-						{ name: 'quiver', value: 'quiver' }
-					]
+					choices: choicesOf(['fire', 'infernal', 'quiver'])
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'autoconfirm',
 					description: "Don't ask confirmation message",
 					required: false
@@ -55,12 +47,12 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'dice',
 			description: 'Allows you to simulate dice rolls, or dice your bot GP.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: false
@@ -73,18 +65,18 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'duel',
 			description: 'Simulates dueling another player, or allows you to duel another player for their bot GP.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user you want to duel.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'The GP you want to duel for.',
 					required: false
@@ -97,12 +89,12 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'lucky_pick',
 			description: 'Allows you play lucky pick and risk your GP.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: true
@@ -115,12 +107,12 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'slots',
 			description: 'Allows you play slots and risk your GP to win big.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: false
@@ -133,19 +125,19 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'hot_cold',
 			description: 'Allows you play Hot Cold and risk your GP to win big.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'choice',
 					description: 'The flower type you want to guess.',
 					required: false,
-					choices: ['hot', 'cold'].map(i => ({ name: i, value: i }))
+					choices: choicesOf(['hot', 'cold'])
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: false
@@ -158,12 +150,12 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'give_random_item',
 			description: 'Give a random item from your bank to someone.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user to give a random item too.',
 					required: true
@@ -171,22 +163,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		interaction,
-		guildID,
-		userID
-	}: CommandRunOptions<{
-		item?: { item?: string; autoconfirm?: boolean };
-		dice?: { amount?: string };
-		duel?: { user: MahojiUserOption; amount?: string };
-		lucky_pick?: { amount: string };
-		slots?: { amount?: string };
-		hot_cold?: { choice?: 'hot' | 'cold'; amount?: string };
-		give_random_item?: { user: MahojiUserOption };
-	}>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, interaction, guildId, user, rng }) => {
 		if (options.item) {
 			if (options.item.item) {
 				return capeGambleCommand(user, options.item.item, interaction, options.item.autoconfirm);
@@ -207,7 +184,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			if (user.bitfield.includes(BitField.SelfGamblingLocked) && options.dice.amount) {
 				return 'You have gambling disabled and cannot gamble!';
 			}
-			return diceCommand(user, interaction, options.dice.amount);
+			return diceCommand(rng, user, interaction, options.dice.amount);
 		}
 
 		// Block GP Gambling from users with the BitField set:
@@ -237,8 +214,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			if (senderUser.isIronman || recipientuser.isIronman) {
 				return 'One of you is an ironman.';
 			}
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to give a random stack of items from your bank to ${recipientuser.usernameOrMention}? Untradeable and favorited items are not included.`
 			);
 
@@ -252,16 +228,15 @@ export const gambleCommand: OSBMahojiCommand = {
 			const [item, qty] = entry;
 			const loot = new Bank().add(item.id, qty);
 
-			await transactItems({ userID: senderUser.id, itemsToRemove: loot });
-			await transactItems({
-				userID: recipientuser.id,
+			await senderUser.transactItems({ itemsToRemove: loot });
+			await recipientuser.transactItems({
 				itemsToAdd: loot,
 				collectionLog: false,
 				filterLoot: false
 			});
 			await prisma.economyTransaction.create({
 				data: {
-					guild_id: guildID ? BigInt(guildID) : undefined,
+					guild_id: guildId ? BigInt(guildId) : undefined,
 					sender: BigInt(senderUser.id),
 					recipient: BigInt(recipientuser.id),
 					items_sent: loot.toJSON(),
@@ -277,4 +252,4 @@ export const gambleCommand: OSBMahojiCommand = {
 
 		return 'Invalid command.';
 	}
-};
+});

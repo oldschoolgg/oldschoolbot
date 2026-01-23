@@ -8,9 +8,9 @@ A tame is a special type of pet that isn't stored in your bank or equipped. You 
 
 **Currently available tames:**
 
-- Dragon tame (PvM trips): see [Igne Tame](igne-tame.md)
-- Monkey tame (gathering): see [Monkey Tame](monkey-tame.md)
-- Eagle tame (clue scrolls): see [Eagle Tame](eagle-tame.md)
+- Dragon tame (PvM trips): see [Igne Tame](igne-tame)
+- Monkey tame (gathering): see [Monkey Tame](monkey-tame)
+- Eagle tame (clue scrolls): see [Eagle Tame](eagle-tame)
 
 ## Commands
 
@@ -31,15 +31,15 @@ A tame is a special type of pet that isn't stored in your bank or equipped. You 
 
 ## Hatching the Tame
 
-To hatch a tame, first build a nursery:  
-[[/nursery build]]  
+To hatch a tame, first build a nursery:
+[[/nursery build]]
 **Requirements:** [[construction:105]], 200 elder planks, 10 marble blocks, 500 feathers
 
-Next, fuel the nursery:  
-[[/nursery fuel]]  
+Next, fuel the nursery:
+[[/nursery fuel]]
 **Requirements:** 2,500 elder logs, 10,000 coal
 
-Then add the egg to the nursery:  
+Then add the egg to the nursery:
 Example: [[/nursery add_egg item\:Dragon egg]]
 
 **Note:** Ring of Luck increases shiny chance by 3% on hatch.

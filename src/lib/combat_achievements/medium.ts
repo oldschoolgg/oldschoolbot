@@ -1,10 +1,8 @@
-import { Monsters } from 'oldschooljs';
+import { ItemGroups, Monsters } from 'oldschooljs';
 
-import { demonBaneWeapons } from '../constants';
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 
 export const mediumCombatAchievements: CombatAchievement[] = [
 	{
@@ -128,11 +126,11 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Crazy Archaeologist',
 		desc: 'Kill the Crazy Archaeologist with only magical attacks.',
+		details: 'You must be training Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.CrazyArchaeologist.id)(data) &&
-				user.getAttackStyles().includes(SkillsEnum.Magic)
+				isCertainMonsterTrip(Monsters.CrazyArchaeologist.id)(data) && user.getAttackStyles().includes('magic')
 		}
 	},
 	{
@@ -199,11 +197,12 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Deranged Archaeologist',
 		desc: 'Kill the Deranged Archaeologist with only magical attacks.',
+		details: 'You must be training Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.DerangedArchaeologist.id)(data) &&
-				user.getAttackStyles().includes(SkillsEnum.Magic)
+				user.getAttackStyles().includes('magic')
 		}
 	},
 	{
@@ -295,14 +294,16 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'King Black Dragon',
 		desc: 'Kill the King Black Dragon with a stab weapon.',
+		details:
+			'You must be training melee and have a weapon equipped in melee gear with a positive stab attack bonus.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => {
 				const wep = user.gear.melee.equippedWeapon();
 				return (
 					isCertainMonsterTrip(Monsters.KingBlackDragon.id)(data) &&
-					!user.getAttackStyles().includes(SkillsEnum.Magic) &&
-					!user.getAttackStyles().includes(SkillsEnum.Ranged) &&
+					!user.getAttackStyles().includes('magic') &&
+					!user.getAttackStyles().includes('ranged') &&
 					wep !== null &&
 					Boolean(wep.equipment) &&
 					Boolean(wep.equipment?.attack_stab ?? -1 > 0)
@@ -406,10 +407,11 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Skotizo',
 		desc: 'Kill Skotizo with a demonbane weapon equipped.',
+		details: 'You must have a demonbane weapon equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && user.hasEquipped(demonBaneWeapons)
+				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && user.hasEquipped(ItemGroups.demonBaneWeapons)
 		}
 	},
 	{
@@ -555,8 +557,9 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Amoxliatl using only glacial temotli as a weapon.',
 		type: 'restriction',
 		monster: 'Amoxliatl',
+		details: 'You must have a Glacial temotli equipped.',
 		rng: {
-			chancePerKill: 10,
+			chancePerKill: 1,
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Amoxliatl.id)(data) && user.hasEquipped('Glacial temotli')
 		}
@@ -570,6 +573,44 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Amoxliatl.id]: 1
+			}
+		})
+	},
+	{
+		id: 148,
+		name: 'It takes too long',
+		type: 'mechanical',
+		monster: 'Royal Titans',
+		desc: 'Kill both Royal Titans while they are charging up their area attack. Both titans must die during the same charging phase.',
+		rng: {
+			chancePerKill: 10,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 149,
+		name: 'Royal Titan Adept',
+		type: 'kill_count',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans 25 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				'Royal Titans': [25, Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id]
+			}
+		})
+	},
+	{
+		id: 150,
+		name: 'Royal Titan Champion',
+		type: 'kill_count',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans 10 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				'Royal Titans': [10, Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id]
 			}
 		})
 	}

@@ -1,9 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-
-import { PoHObjects } from '../../lib/poh';
-import { minionIsBusy } from '../../lib/util/minionIsBusy';
+import { choicesOf, ownedItemOption } from '@/discord/index.js';
+import { PoHObjects } from '@/lib/poh/index.js';
 import {
 	getPOH,
 	makePOHImage,
@@ -13,11 +9,9 @@ import {
 	pohMountItemCommand,
 	pohWallkitCommand,
 	pohWallkits
-} from '../lib/abstracted_commands/pohCommand';
-import { ownedItemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
+} from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 
-export const pohCommand: OSBMahojiCommand = {
+export const pohCommand = defineCommand({
 	name: 'poh',
 	description: 'Allows you to access and build in your POH.',
 	attributes: {
@@ -26,12 +20,12 @@ export const pohCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View your PoH.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'build_mode',
 					description: 'View the slots in your PoH.',
 					required: false
@@ -39,30 +33,30 @@ export const pohCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'wallkit',
 			description: 'Change the wallkit of your PoH.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The wallkit you want to pick.',
 					required: true,
-					choices: pohWallkits.map(i => ({ name: i.name, value: i.name }))
+					choices: choicesOf(pohWallkits.map(i => i.name))
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'build',
 			description: 'Build things in your PoH.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The object you want to build.',
 					required: true,
-					autocomplete: async (value: string) => {
+					autocomplete: async ({ value }: StringAutoComplete) => {
 						return PoHObjects.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({
@@ -74,17 +68,17 @@ export const pohCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'destroy',
 			description: 'Destroy/remove things from your PoH.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The object you want to destroy.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
-						const poh = await getPOH(user.id);
+					autocomplete: async ({ value, userId }: StringAutoComplete) => {
+						const poh = await getPOH(userId);
 						return PoHObjects.filter(obj => poh[obj.slot] === obj.id)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -93,7 +87,7 @@ export const pohCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'mount_item',
 			description: 'Mount an item into your PoH.',
 			options: [
@@ -106,32 +100,20 @@ export const pohCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'items',
 			description: 'List the buildable items in your POH.'
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction
-	}: CommandRunOptions<{
-		view?: { build_mode?: boolean };
-		wallkit?: { name: string };
-		build?: { name: string };
-		destroy?: { name: string };
-		mount_item?: { name: string };
-		items?: { name: string };
-	}>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, interaction }) => {
 		if (!user.hasMinion) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {
-			return makePOHImage(user, options.view.build_mode);
+			return { files: [await makePOHImage(user, options.view.build_mode)] };
 		}
 		if (options.wallkit) {
 			return pohWallkitCommand(user, options.wallkit.name);
 		}
-		if (minionIsBusy(user.id)) return 'You cannot interact with your PoH, because your minion is busy.';
+		if (await user.minionIsBusy()) return 'You cannot interact with your PoH, because your minion is busy.';
 		if (options.build) {
 			return pohBuildCommand(interaction, user, options.build.name);
 		}
@@ -146,4 +128,4 @@ export const pohCommand: OSBMahojiCommand = {
 		}
 		return 'Invalid command.';
 	}
-};
+});

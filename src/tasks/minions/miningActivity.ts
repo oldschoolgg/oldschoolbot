@@ -1,16 +1,15 @@
-import { Time, increaseNumByPercent, randInt, roll, sumArr } from 'e';
+import { Emoji, Events, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
+import { toKMB } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
-import { QuestID } from '../../lib/minions/data/quests';
-import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import Mining, { prospectorItemsArr } from '../../lib/skilling/skills/mining';
-import { type Ore, SkillsEnum } from '../../lib/skilling/types';
-import type { GearBank } from '../../lib/structures/GearBank';
-import { UpdateBank } from '../../lib/structures/UpdateBank';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate, toKMB } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import Mining, { prospectorItemsArr } from '@/lib/skilling/skills/mining.js';
+import type { Ore } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export function determineMiningResult({
 	ore,
@@ -18,7 +17,8 @@ export function determineMiningResult({
 	gearBank,
 	duration,
 	isPowermining,
-	hasFinishedCOTS
+	hasFinishedCOTS,
+	rng
 }: {
 	ore: Ore;
 	quantity: number;
@@ -26,6 +26,7 @@ export function determineMiningResult({
 	duration: number;
 	isPowermining: boolean;
 	hasFinishedCOTS: boolean;
+	rng: RNGProvider;
 }) {
 	const miningLvl = gearBank.skillsAsLevels.mining;
 	let bonusXP = 0;
@@ -34,7 +35,7 @@ export function determineMiningResult({
 	let taintedQty = 0; // 6xp per chunk rolled
 	if (ore.name === 'Tainted essence chunk') {
 		for (let i = 0; i < quantity; i++) {
-			taintedQty += randInt(1, 4);
+			taintedQty += rng.randInt(1, 4);
 		}
 		xpToReceive = taintedQty * ore.xp;
 	}
@@ -57,13 +58,13 @@ export function determineMiningResult({
 
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
-		addSkillingClueToLoot(gearBank, SkillsEnum.Mining, quantity, ore.clueScrollChance, updateBank.itemLootBank);
+		addSkillingClueToLoot(gearBank, 'mining', quantity, ore.clueScrollChance, updateBank.itemLootBank);
 	}
 
 	// Roll for pet
 	if (ore.petChance) {
-		const { petDropRate } = skillingPetDropRate(gearBank, SkillsEnum.Mining, ore.petChance);
-		if (roll(petDropRate / quantity)) {
+		const { petDropRate } = skillingPetDropRate(gearBank, 'mining', ore.petChance);
+		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			updateBank.itemLootBank.add('Rock golem');
 		}
 	}
@@ -73,7 +74,7 @@ export function determineMiningResult({
 	if (numberOfMinutes > 10 && ore.minerals && miningLvl >= 60) {
 		let numberOfMinerals = 0;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(ore.minerals)) numberOfMinerals++;
+			if (rng.roll(ore.minerals)) numberOfMinerals++;
 		}
 
 		if (numberOfMinerals > 0) {
@@ -84,7 +85,7 @@ export function determineMiningResult({
 	if (ore.name === 'Daeyalt essence rock') {
 		let daeyaltQty = 0;
 		for (let i = 0; i < quantity; i++) {
-			daeyaltQty += randInt(2, 3);
+			daeyaltQty += rng.randInt(2, 3);
 		}
 		updateBank.itemLootBank.add(ore.id, daeyaltQty);
 	} else if (!isPowermining) {
@@ -127,7 +128,7 @@ export function determineMiningResult({
 	}
 
 	if (ore.name === 'Runite ore') {
-		rollForMoonKeyHalf({ user: hasFinishedCOTS, duration, loot: updateBank.itemLootBank });
+		rollForMoonKeyHalf({ user: hasFinishedCOTS, duration, loot: updateBank.itemLootBank, rng });
 	}
 
 	return {
@@ -139,19 +140,19 @@ export function determineMiningResult({
 
 export const miningTask: MinionTask = {
 	type: 'Mining',
-	async run(data: MiningActivityTaskOptions) {
-		const { oreID, userID, channelID, duration, powermine } = data;
+	async run(data: MiningActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { oreID, channelId, duration, powermine } = data;
 		const { quantity } = data;
-		const user = await mUserFetch(userID);
-		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
+		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 		const { updateBank, bonusXP } = determineMiningResult({
 			ore,
 			quantity,
 			gearBank: user.gearBank,
 			duration,
 			isPowermining: powermine,
-			hasFinishedCOTS: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)
+			hasFinishedCOTS: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun),
+			rng
 		});
 
 		const updateResult = await updateBank.transact(user);
@@ -170,6 +171,12 @@ export const miningTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, updateResult.itemTransactionResult?.itemsAdded ?? null);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: str },
+			data,
+			loot: updateResult.itemTransactionResult?.itemsAdded
+		});
 	}
 };

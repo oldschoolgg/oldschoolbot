@@ -1,4 +1,4 @@
-import itemID from '../../util/itemID';
+import { itemID } from 'oldschooljs';
 
 interface BaseTKSItem {
 	name: string;
@@ -17,7 +17,7 @@ interface TokkulShopItem extends BaseTKSItem {
 	diaryTokkulReturn?: number;
 }
 
-const TokkulShopItems: TokkulShopItem[] = [
+export const TokkulShopItems: TokkulShopItem[] = [
 	// Ore and Gem Store
 	{
 		name: 'Tin ore',
@@ -381,5 +381,3 @@ const TokkulShopItems: TokkulShopItem[] = [
 		aliases: ['death']
 	}
 ];
-
-export default TokkulShopItems;

@@ -3,71 +3,34 @@
 	"version": "0.0.1",
 	"private": true,
 	"description": "Allows you to interact with the OSRS Hiscores, Wiki, Items, & more.",
-	"main": "dist/index.cjs",
-	"types": "dist/index.d.ts",
+	"type": "module",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
+			"types": "./dist/esm/index.d.mts",
 			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		},
-		"./dist/*": {
-			"types": "./dist/index.d.ts",
+		"./*": {
+			"types": "./dist/esm/index.d.mts",
 			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
-		},
-		"./EGear": {
-			"types": "./dist/EGear.d.ts",
-			"require": "./dist/cjs/EGear.cjs",
-			"import": "./dist/esm/EGear.mjs"
-		},
-		"./EItem": {
-			"types": "./dist/EItem.d.ts",
-			"require": "./dist/cjs/EItem.cjs",
-			"import": "./dist/esm/EItem.mjs"
-		},
-		"./EMonster": {
-			"types": "./dist/EMonster.d.ts",
-			"require": "./dist/cjs/EMonster.cjs",
-			"import": "./dist/esm/EMonster.mjs"
-		},
-		"./wiki": {
-			"types": "./dist/structures/Wiki.d.ts",
-			"require": "./dist/cjs/structures/Wiki.cjs",
-			"import": "./dist/esm/structures/Wiki.mjs"
-		},
-		"./hiscores": {
-			"types": "./dist/structures/Hiscores.d.ts",
-			"require": "./dist/cjs/structures/Hiscores.cjs",
-			"import": "./dist/esm/structures/Hiscores.mjs"
-		},
-		"./constants": {
-			"types": "./dist/constants.d.ts",
-			"require": "./dist/cjs/constants.cjs",
-			"import": "./dist/esm/constants.mjs"
 		}
 	},
 	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/oldschoolgg/oldschooljs.git"
-	},
 	"scripts": {
 		"test": "concurrently \"pnpm test:unit\" \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
 		"test:unit": "vitest run --coverage",
-		"generate": "tsx scripts/prepare",
-		"dev": "pnpm generate && concurrently \"pnpm build:esbuild\" \"pnpm build:esbuild\" && pnpm test",
-		"build:esbuild": "tsx esbuild.ts",
-		"build:types": "tsc -p src"
+		"generate": "tsx --tsconfig scripts/tsconfig.json scripts/prepare && tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts",
+		"enum": "tsx --tsconfig scripts/tsconfig.json scripts/enum.ts",
+		"build": "tsdown"
 	},
 	"dependencies": {
-		"deepmerge": "4.3.1"
+		"deepmerge": "4.3.1",
+		"@oldschoolgg/gear": "workspace:*",
+		"@oldschoolgg/util": "workspace:*"
 	},
 	"devDependencies": {
 		"deep-object-diff": "^1.1.9",
-		"fast-glob": "^3.3.3",
 		"wtf_wikipedia": "^10.3.2"
-	},
-	"keywords": ["runescape"],
-	"files": ["dist"]
+	}
 }

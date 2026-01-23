@@ -1,10 +1,7 @@
+import { EquipmentSlot, type GearSetup, isValidGearSetup } from '@oldschoolgg/gear';
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { isValidGearSetup } from '../gear/functions/isValidGearSetup';
-import type { GearSetup } from '../gear/types';
-import { skillsMeetRequirements } from '../util';
-import { parseStringBank } from './parseStringBank';
+import { parseStringBank } from '@/lib/util/parseStringBank.js';
 
 export function gearEquipMultiImpl(
 	user: MUser,
@@ -20,7 +17,6 @@ export function gearEquipMultiImpl(
 } {
 	if (!isValidGearSetup(setup)) return { success: false, failMsg: 'Invalid gear setup' };
 	const oneItemPerSlot: { [key in EquipmentSlot]?: boolean } = {};
-	const userSkills = user.skillsAsXP;
 	const failedToEquipBank = new Bank();
 	const equipBank = new Bank();
 	for (const [i, _qty] of parseStringBank(items, user.bank, true)) {
@@ -28,14 +24,14 @@ export function gearEquipMultiImpl(
 		if (user.bank.amount(i.id) < qty) continue;
 		// Check skill requirements
 		if (i.equipment?.requirements) {
-			if (!skillsMeetRequirements(userSkills, i.equipment.requirements)) {
+			if (!user.hasSkillReqs(i.equipment.requirements)) {
 				// Warn only for skill requirements, and conflicting weapon/2h/shield loadouts (below).
 				failedToEquipBank.add(i.id, qty);
 				continue;
 			}
 		}
 		// Make sure it's valid equipment
-		if (i.equipable_by_player && i.equipment && !oneItemPerSlot[i.equipment.slot]) {
+		if (i.equipable && i.equipment && !oneItemPerSlot[i.equipment.slot]) {
 			// Ignore items that conflict with previously specified items:
 			if (
 				(oneItemPerSlot[EquipmentSlot.TwoHanded] &&

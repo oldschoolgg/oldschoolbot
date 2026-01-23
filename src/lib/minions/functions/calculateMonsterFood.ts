@@ -1,12 +1,10 @@
-import { calcWhatPercent, reduceNumByPercent } from 'e';
+import { type GearSetupType, GearStat, inverseOfOffenceStat } from '@oldschoolgg/gear';
+import { calcWhatPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 
-import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
-import type { GearSetupType } from '../../gear/types';
-import { GearStat } from '../../gear/types';
-import { maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
-import type { GearBank } from '../../structures/GearBank';
-import { readableStatName } from '../../util/smallUtils';
-import type { KillableMonster } from '../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { readableStatName } from '@/lib/util/smallUtils.js';
 
 const { floor, max } = Math;
 

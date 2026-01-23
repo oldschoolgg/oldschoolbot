@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const VampyreJuvinateTable = new LootTable()
+export const VampyreJuvinateTable: LootTable = new LootTable()
 	/* Weapons */
 	.add('Black battleaxe', 1, 2)
 	.add('Mithril battleaxe', 1, 2)
@@ -44,7 +44,7 @@ export const VampyreJuvinateTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const VampyreJuvinate: SimpleMonster = new SimpleMonster({
 	id: 3694,
 	name: 'Vampyre Juvinate',
 	table: VampyreJuvinateTable,

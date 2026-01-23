@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { GemTable } from '../../subtables';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-const SupplyTable = new LootTable()
+const SupplyTable: LootTable = new LootTable()
 	.add('Rune mace', 1, 2)
 	.add('Rune pickaxe', 1, 1)
 	.add('Rune platebody', 1, 1)
@@ -25,18 +25,21 @@ const SupplyTable = new LootTable()
 	.add('Water talisman', 1, 2)
 	.add(GemTable, 1, 2);
 
-const TearTable = new LootTable().add('Frozen tear', [2, 4]).add('Frozen tear', [5, 10]).add('Frozen tear', [10, 20]);
+const TearTable: LootTable = new LootTable()
+	.add('Frozen tear', [2, 4])
+	.add('Frozen tear', [5, 10])
+	.add('Frozen tear', [10, 20]);
 
-const AmoxliatlTable = new LootTable()
+const AmoxliatlTable: LootTable = new LootTable()
 	.tertiary(3000, 'Moxi')
-	.tertiary(500, 'Tooth half of key (moon key)')
+	.tertiary(125, 'Tooth half of key (moon key)')
 	.tertiary(200, 'Clue scroll (elite)')
 	.tertiary(100, 'Glacial temotli')
 	.tertiary(25, 'Pendant of ates (inert)')
 	.every(SupplyTable, 2)
 	.every(TearTable);
 
-export const Amoxliatl = new SimpleMonster({
+export const Amoxliatl: SimpleMonster = new SimpleMonster({
 	id: 13685,
 	name: 'Amoxliatl',
 	table: AmoxliatlTable,

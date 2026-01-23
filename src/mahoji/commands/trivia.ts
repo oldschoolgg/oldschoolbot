@@ -1,13 +1,10 @@
-import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
-import { shuffleArr, uniqueArr } from 'e';
+import { userMention } from '@oldschoolgg/discord';
+import { shuffleArr } from '@oldschoolgg/rng';
+import { Emoji, uniqueArr } from '@oldschoolgg/toolkit';
 
-import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit/util';
-import { DynamicButtons } from '../../lib/DynamicButtons';
-import { getRandomTriviaQuestions } from '../../lib/roboChimp';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import type { OSBMahojiCommand } from '../lib/util';
+import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 
-export const triviaCommand: OSBMahojiCommand = {
+export const triviaCommand = defineCommand({
 	name: 'trivia',
 	description: 'Try to answer a random trivia question!',
 	attributes: {
@@ -15,57 +12,35 @@ export const triviaCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.User,
+			type: 'User',
 			name: 'duel',
 			description: 'A user to duel in answering the question fastest.',
 			required: false
 		}
 	],
-	run: async ({
-		interaction,
-		userID,
-		channelID,
-		options
-	}: CommandRunOptions<{
-		duel?: MahojiUserOption;
-	}>) => {
-		await deferInteraction(interaction);
-		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
-		const channel = globalClient.channels.cache.get(channelID.toString());
-		const users = [userID.toString()];
+	run: async ({ interaction, userId, options }) => {
+		await interaction.defer();
+		const users: string[] = [userId];
 		if (options.duel) users.push(options.duel.user.id);
 
-		let correctUser: string | null = null;
-		const buttons = new DynamicButtons({
-			channel: channel as TextChannel,
-			usersWhoCanInteract: users,
-			deleteAfterConfirm: true
-		});
-		for (const q of uniqueArr(shuffleArr([question, ...fakeQuestions].map(i => i.answers[0])))) {
-			buttons.add({
-				name: q,
-				fn: ({ interaction }) => {
-					if (question.answers.includes(q)) {
-						correctUser = interaction.user.id;
-					}
-				},
-				cantBeBusy: false
-			});
-		}
+		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
+		const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
 
-		const allMention = users.map(userMention).join(' ');
-
-		await buttons.render({
-			messageOptions: { content: `${allMention} ${question.question}` },
-			isBusy: false
+		const choice = await globalClient.pickStringWithButtons({
+			interaction,
+			options: allAnswers.map(answer => ({ label: answer, id: answer })),
+			content: `**${Emoji.Diango} Diango asks...** ${question.question}`
 		});
+		if (!choice) return `You didn't answer in time!`;
+		const isCorrect = question.answers.includes(choice.choice.label!);
 
 		if (users.length > 1) {
-			if (!correctUser) return `${allMention}, neither of you got it - sad!`;
-			return `${userMention(correctUser)} won the trivia duel!`;
+			return isCorrect
+				? `${userMention(choice.userId)} won the trivia duel!`
+				: `${userMention(choice.userId)} picked the wrong answer...`;
 		}
 		return {
-			content: `You answered ${correctUser !== null ? 'correctly' : 'incorrectly'}!`
+			content: `You answered ${isCorrect ? 'correctly' : 'incorrectly'}!`
 		};
 	}
-};
+});

@@ -1,0 +1,1978 @@
+[
+	{
+		"name": "Adamant 2h sword",
+		"level": 84,
+		"xp": 187.5,
+		"id": 1317,
+		"input_bars": {
+			"2361": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant arrowtips",
+		"level": 75,
+		"xp": 62.5,
+		"id": 43,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Adamant axe",
+		"level": 71,
+		"xp": 62.5,
+		"id": 1357,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant battleaxe",
+		"level": 80,
+		"xp": 187.5,
+		"id": 1371,
+		"input_bars": {
+			"2361": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant bolts (unf)",
+		"level": 73,
+		"xp": 62.5,
+		"id": 9380,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Adamant chainbody",
+		"level": 81,
+		"xp": 187.5,
+		"id": 1111,
+		"input_bars": {
+			"2361": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant claws",
+		"level": 83,
+		"xp": 187.5,
+		"id": 3100,
+		"input_bars": {
+			"2361": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant dagger",
+		"level": 70,
+		"xp": 62.5,
+		"id": 1211,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant dart tip",
+		"level": 74,
+		"xp": 62.5,
+		"id": 823,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Adamant full helm",
+		"level": 77,
+		"xp": 125,
+		"id": 1161,
+		"input_bars": {
+			"2361": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant hasta",
+		"level": 75,
+		"xp": 62.5,
+		"id": 11375,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant javelin heads",
+		"level": 76,
+		"xp": 62.5,
+		"id": 19578,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Adamant kiteshield",
+		"level": 82,
+		"xp": 187.5,
+		"id": 1199,
+		"input_bars": {
+			"2361": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant knife",
+		"level": 77,
+		"xp": 62.5,
+		"id": 867,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Adamant longsword",
+		"level": 76,
+		"xp": 125,
+		"id": 1301,
+		"input_bars": {
+			"2361": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant mace",
+		"level": 72,
+		"xp": 62.5,
+		"id": 1430,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant med helm",
+		"level": 73,
+		"xp": 62.5,
+		"id": 1145,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant platebody",
+		"level": 88,
+		"xp": 312.5,
+		"id": 1123,
+		"input_bars": {
+			"2361": 5
+		},
+		"time_to_use": 4800,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant platelegs",
+		"level": 86,
+		"xp": 187.5,
+		"id": 1073,
+		"input_bars": {
+			"2361": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant plateskirt",
+		"level": 86,
+		"xp": 187.5,
+		"id": 1091,
+		"input_bars": {
+			"2361": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant scimitar",
+		"level": 75,
+		"xp": 125,
+		"id": 1331,
+		"input_bars": {
+			"2361": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant spear",
+		"level": 75,
+		"xp": 62.5,
+		"id": 1245,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant sq shield",
+		"level": 78,
+		"xp": 125,
+		"id": 1183,
+		"input_bars": {
+			"2361": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant sword",
+		"level": 74,
+		"xp": 62.5,
+		"id": 1287,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamant warhammer",
+		"level": 79,
+		"xp": 187.5,
+		"id": 1345,
+		"input_bars": {
+			"2361": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamantite bar",
+		"level": 70,
+		"xp": 37.5,
+		"id": 2361,
+		"input_ores": {
+			"449": 1,
+			"453": 6
+		},
+		"chance_of_fail": 0,
+		"time_to_use": 2400
+	},
+	{
+		"name": "Adamantite limbs",
+		"level": 76,
+		"xp": 62.5,
+		"id": 9429,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Adamantite nails",
+		"level": 74,
+		"xp": 62.5,
+		"id": 4823,
+		"input_bars": {
+			"2361": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Bronze 2h sword",
+		"level": 14,
+		"xp": 37.5,
+		"id": 1307,
+		"input_bars": {
+			"2349": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze arrowtips",
+		"level": 5,
+		"xp": 12.5,
+		"id": 39,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Bronze axe",
+		"level": 1,
+		"xp": 12.5,
+		"id": 1351,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze bar",
+		"level": 1,
+		"xp": 6.2,
+		"id": 2349,
+		"input_ores": {
+			"436": 1,
+			"438": 1
+		},
+		"chance_of_fail": 0,
+		"time_to_use": 2400
+	},
+	{
+		"name": "Bronze battleaxe",
+		"level": 10,
+		"xp": 37.5,
+		"id": 1375,
+		"input_bars": {
+			"2349": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze bolts (unf)",
+		"level": 3,
+		"xp": 12.5,
+		"id": 9375,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Bronze chainbody",
+		"level": 11,
+		"xp": 37.5,
+		"id": 1103,
+		"input_bars": {
+			"2349": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze claws",
+		"level": 13,
+		"xp": 25,
+		"id": 3095,
+		"input_bars": {
+			"2349": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze dagger",
+		"level": 1,
+		"xp": 12.5,
+		"id": 1205,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze dart tip",
+		"level": 4,
+		"xp": 12.5,
+		"id": 819,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Bronze full helm",
+		"level": 7,
+		"xp": 25,
+		"id": 1155,
+		"input_bars": {
+			"2349": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze hasta",
+		"level": 5,
+		"xp": 12.5,
+		"id": 11367,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze javelin heads",
+		"level": 6,
+		"xp": 12.5,
+		"id": 19570,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Bronze kiteshield",
+		"level": 12,
+		"xp": 37.5,
+		"id": 1189,
+		"input_bars": {
+			"2349": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze knife",
+		"level": 7,
+		"xp": 12.5,
+		"id": 864,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Bronze limbs",
+		"level": 6,
+		"xp": 12.5,
+		"id": 9420,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze longsword",
+		"level": 6,
+		"xp": 25,
+		"id": 1291,
+		"input_bars": {
+			"2349": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze mace",
+		"level": 2,
+		"xp": 12.5,
+		"id": 1422,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze med helm",
+		"level": 3,
+		"xp": 12.5,
+		"id": 1139,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze nails",
+		"level": 4,
+		"xp": 12.5,
+		"id": 4819,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Bronze platebody",
+		"level": 18,
+		"xp": 62.5,
+		"id": 1117,
+		"input_bars": {
+			"2349": 5
+		},
+		"time_to_use": 4800,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze platelegs",
+		"level": 16,
+		"xp": 37.5,
+		"id": 1075,
+		"input_bars": {
+			"2349": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze plateskirt",
+		"level": 16,
+		"xp": 37.5,
+		"id": 1087,
+		"input_bars": {
+			"2349": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze scimitar",
+		"level": 5,
+		"xp": 25,
+		"id": 1321,
+		"input_bars": {
+			"2349": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze spear",
+		"level": 5,
+		"xp": 12.5,
+		"id": 1237,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze sq shield",
+		"level": 8,
+		"xp": 25,
+		"id": 1173,
+		"input_bars": {
+			"2349": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze sword",
+		"level": 4,
+		"xp": 12.5,
+		"id": 1277,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze warhammer",
+		"level": 9,
+		"xp": 37.5,
+		"id": 1337,
+		"input_bars": {
+			"2349": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bronze wire",
+		"level": 4,
+		"xp": 12.5,
+		"id": 1794,
+		"input_bars": {
+			"2349": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Bullseye lantern (unf)",
+		"level": 49,
+		"xp": 37.5,
+		"id": 4544,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Cannonball",
+		"level": 35,
+		"xp": 37.5,
+		"id": 2,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 6000,
+		"output_multiple": 4
+	},
+	{
+		"name": "Gold bar",
+		"level": 40,
+		"xp": 22.5,
+		"id": 2357,
+		"input_ores": {
+			"444": 1
+		},
+		"chance_of_fail": 0,
+		"time_to_use": 2400
+	},
+	{
+		"name": "Gold bowl",
+		"level": 50,
+		"xp": 30,
+		"id": 721,
+		"input_bars": {
+			"2357": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1,
+		"qp_required": 111
+	},
+	{
+		"name": "Gold helmet",
+		"level": 50,
+		"xp": 30,
+		"id": 4567,
+		"input_bars": {
+			"2357": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1,
+		"qp_required": 4
+	},
+	{
+		"name": "Iron 2h sword",
+		"level": 29,
+		"xp": 75,
+		"id": 1309,
+		"input_bars": {
+			"2351": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron arrowtips",
+		"level": 20,
+		"xp": 25,
+		"id": 40,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Iron axe",
+		"level": 16,
+		"xp": 25,
+		"id": 1349,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron bar",
+		"level": 15,
+		"xp": 12.5,
+		"id": 2351,
+		"input_ores": {
+			"440": 1
+		},
+		"chance_of_fail": 50,
+		"time_to_use": 2400
+	},
+	{
+		"name": "Iron battleaxe",
+		"level": 25,
+		"xp": 75,
+		"id": 1363,
+		"input_bars": {
+			"2351": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron bolts (unf)",
+		"level": 18,
+		"xp": 25,
+		"id": 9377,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Iron chainbody",
+		"level": 26,
+		"xp": 75,
+		"id": 1101,
+		"input_bars": {
+			"2351": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron claws",
+		"level": 28,
+		"xp": 50,
+		"id": 3096,
+		"input_bars": {
+			"2351": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron dagger",
+		"level": 15,
+		"xp": 25,
+		"id": 1203,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron dart tip",
+		"level": 19,
+		"xp": 25,
+		"id": 820,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Iron full helm",
+		"level": 22,
+		"xp": 50,
+		"id": 1153,
+		"input_bars": {
+			"2351": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron hasta",
+		"level": 20,
+		"xp": 25,
+		"id": 11369,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron javelin heads",
+		"level": 21,
+		"xp": 25,
+		"id": 19572,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Iron kiteshield",
+		"level": 27,
+		"xp": 75,
+		"id": 1191,
+		"input_bars": {
+			"2351": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron knife",
+		"level": 22,
+		"xp": 25,
+		"id": 863,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Iron limbs",
+		"level": 23,
+		"xp": 25,
+		"id": 9423,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron longsword",
+		"level": 21,
+		"xp": 50,
+		"id": 1293,
+		"input_bars": {
+			"2351": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron mace",
+		"level": 17,
+		"xp": 25,
+		"id": 1420,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron med helm",
+		"level": 18,
+		"xp": 25,
+		"id": 1137,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron nails",
+		"level": 19,
+		"xp": 25,
+		"id": 4820,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Iron platebody",
+		"level": 33,
+		"xp": 125,
+		"id": 1115,
+		"input_bars": {
+			"2351": 5
+		},
+		"time_to_use": 4800,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron platelegs",
+		"level": 31,
+		"xp": 75,
+		"id": 1067,
+		"input_bars": {
+			"2351": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron plateskirt",
+		"level": 31,
+		"xp": 75,
+		"id": 1081,
+		"input_bars": {
+			"2351": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron scimitar",
+		"level": 20,
+		"xp": 25,
+		"id": 1323,
+		"input_bars": {
+			"2351": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron spear",
+		"level": 20,
+		"xp": 25,
+		"id": 1239,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron spit",
+		"level": 17,
+		"xp": 25,
+		"id": 7225,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron sq shield",
+		"level": 23,
+		"xp": 50,
+		"id": 1175,
+		"input_bars": {
+			"2351": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron sword",
+		"level": 19,
+		"xp": 25,
+		"id": 1279,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Iron warhammer",
+		"level": 24,
+		"xp": 75,
+		"id": 1335,
+		"input_bars": {
+			"2351": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mith grapple tip",
+		"level": 59,
+		"xp": 50,
+		"id": 9416,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril 2h sword",
+		"level": 64,
+		"xp": 150,
+		"id": 1315,
+		"input_bars": {
+			"2359": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril arrowtips",
+		"level": 55,
+		"xp": 50,
+		"id": 42,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Mithril axe",
+		"level": 51,
+		"xp": 50,
+		"id": 1355,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril bar",
+		"level": 50,
+		"xp": 30,
+		"id": 2359,
+		"input_ores": {
+			"447": 1,
+			"453": 4
+		},
+		"chance_of_fail": 0,
+		"time_to_use": 2400
+	},
+	{
+		"name": "Mithril battleaxe",
+		"level": 60,
+		"xp": 150,
+		"id": 1369,
+		"input_bars": {
+			"2359": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril bolts (unf)",
+		"level": 53,
+		"xp": 50,
+		"id": 9379,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Mithril chainbody",
+		"level": 61,
+		"xp": 150,
+		"id": 1109,
+		"input_bars": {
+			"2359": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril claws",
+		"level": 63,
+		"xp": 100,
+		"id": 3099,
+		"input_bars": {
+			"2359": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril dagger",
+		"level": 50,
+		"xp": 50,
+		"id": 1209,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril dart tip",
+		"level": 54,
+		"xp": 50,
+		"id": 822,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Mithril full helm",
+		"level": 57,
+		"xp": 100,
+		"id": 1159,
+		"input_bars": {
+			"2359": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril hasta",
+		"level": 55,
+		"xp": 50,
+		"id": 11373,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril javelin heads",
+		"level": 56,
+		"xp": 50,
+		"id": 19576,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Mithril kiteshield",
+		"level": 62,
+		"xp": 150,
+		"id": 1197,
+		"input_bars": {
+			"2359": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril knife",
+		"level": 57,
+		"xp": 50,
+		"id": 866,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Mithril limbs",
+		"level": 56,
+		"xp": 50,
+		"id": 9427,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril longsword",
+		"level": 56,
+		"xp": 100,
+		"id": 1299,
+		"input_bars": {
+			"2359": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril mace",
+		"level": 52,
+		"xp": 50,
+		"id": 1428,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril med helm",
+		"level": 53,
+		"xp": 50,
+		"id": 1143,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril nails",
+		"level": 54,
+		"xp": 50,
+		"id": 4822,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Mithril platebody",
+		"level": 68,
+		"xp": 250,
+		"id": 1121,
+		"input_bars": {
+			"2359": 5
+		},
+		"time_to_use": 4800,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril platelegs",
+		"level": 66,
+		"xp": 150,
+		"id": 1071,
+		"input_bars": {
+			"2359": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril plateskirt",
+		"level": 66,
+		"xp": 150,
+		"id": 1085,
+		"input_bars": {
+			"2359": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril scimitar",
+		"level": 55,
+		"xp": 100,
+		"id": 1329,
+		"input_bars": {
+			"2359": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril spear",
+		"level": 55,
+		"xp": 50,
+		"id": 1243,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril sq shield",
+		"level": 58,
+		"xp": 100,
+		"id": 1181,
+		"input_bars": {
+			"2359": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril sword",
+		"level": 54,
+		"xp": 50,
+		"id": 1285,
+		"input_bars": {
+			"2359": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Mithril warhammer",
+		"level": 59,
+		"xp": 150,
+		"id": 1343,
+		"input_bars": {
+			"2359": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Oil lantern frame",
+		"level": 26,
+		"xp": 25,
+		"id": 4540,
+		"input_bars": {
+			"2351": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune 2h sword",
+		"level": 99,
+		"xp": 225,
+		"id": 1319,
+		"input_bars": {
+			"2363": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune arrowtips",
+		"level": 90,
+		"xp": 75,
+		"id": 44,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Rune axe",
+		"level": 86,
+		"xp": 75,
+		"id": 1359,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune battleaxe",
+		"level": 95,
+		"xp": 225,
+		"id": 1373,
+		"input_bars": {
+			"2363": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune chainbody",
+		"level": 96,
+		"xp": 225,
+		"id": 1113,
+		"input_bars": {
+			"2363": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune claws",
+		"level": 98,
+		"xp": 150,
+		"id": 3101,
+		"input_bars": {
+			"2363": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune dagger",
+		"level": 85,
+		"xp": 75,
+		"id": 1213,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune dart tip",
+		"level": 89,
+		"xp": 75,
+		"id": 824,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Rune full helm",
+		"level": 92,
+		"xp": 150,
+		"id": 1163,
+		"input_bars": {
+			"2363": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune hasta",
+		"level": 90,
+		"xp": 75,
+		"id": 11377,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune javelin heads",
+		"level": 91,
+		"xp": 75,
+		"id": 19580,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Rune kiteshield",
+		"level": 97,
+		"xp": 225,
+		"id": 1201,
+		"input_bars": {
+			"2363": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune knife",
+		"level": 92,
+		"xp": 75,
+		"id": 868,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Rune longsword",
+		"level": 91,
+		"xp": 150,
+		"id": 1303,
+		"input_bars": {
+			"2363": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune mace",
+		"level": 87,
+		"xp": 75,
+		"id": 1432,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune med helm",
+		"level": 88,
+		"xp": 75,
+		"id": 1147,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune nails",
+		"level": 89,
+		"xp": 75,
+		"id": 4824,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Rune platebody",
+		"level": 99,
+		"xp": 375,
+		"id": 1127,
+		"input_bars": {
+			"2363": 5
+		},
+		"time_to_use": 4800,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune platelegs",
+		"level": 99,
+		"xp": 225,
+		"id": 1079,
+		"input_bars": {
+			"2363": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune plateskirt",
+		"level": 99,
+		"xp": 225,
+		"id": 1093,
+		"input_bars": {
+			"2363": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune scimitar",
+		"level": 90,
+		"xp": 150,
+		"id": 1333,
+		"input_bars": {
+			"2363": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune spear",
+		"level": 90,
+		"xp": 75,
+		"id": 1247,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune sq shield",
+		"level": 93,
+		"xp": 150,
+		"id": 1185,
+		"input_bars": {
+			"2363": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune sword",
+		"level": 89,
+		"xp": 75,
+		"id": 1289,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Rune warhammer",
+		"level": 94,
+		"xp": 225,
+		"id": 1347,
+		"input_bars": {
+			"2363": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Runite bar",
+		"level": 85,
+		"xp": 50,
+		"id": 2363,
+		"input_ores": {
+			"451": 1,
+			"453": 8
+		},
+		"chance_of_fail": 0,
+		"time_to_use": 2400
+	},
+	{
+		"name": "Runite bolts (unf)",
+		"level": 88,
+		"xp": 75,
+		"id": 9381,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Runite limbs",
+		"level": 91,
+		"xp": 75,
+		"id": 9431,
+		"input_bars": {
+			"2363": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Silver bar",
+		"level": 20,
+		"xp": 13.6,
+		"id": 2355,
+		"input_ores": {
+			"442": 1
+		},
+		"chance_of_fail": 0,
+		"time_to_use": 2400
+	},
+	{
+		"name": "Steel 2h sword",
+		"level": 44,
+		"xp": 112.5,
+		"id": 1311,
+		"input_bars": {
+			"2353": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel arrowtips",
+		"level": 35,
+		"xp": 37.5,
+		"id": 41,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Steel axe",
+		"level": 31,
+		"xp": 37.5,
+		"id": 1353,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel bar",
+		"level": 30,
+		"xp": 17.5,
+		"id": 2353,
+		"input_ores": {
+			"440": 1,
+			"453": 2
+		},
+		"chance_of_fail": 0,
+		"time_to_use": 2400
+	},
+	{
+		"name": "Steel battleaxe",
+		"level": 40,
+		"xp": 112.5,
+		"id": 1365,
+		"input_bars": {
+			"2353": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel bolts (unf)",
+		"level": 33,
+		"xp": 37.5,
+		"id": 9378,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Steel chainbody",
+		"level": 41,
+		"xp": 112.5,
+		"id": 1105,
+		"input_bars": {
+			"2353": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel claws",
+		"level": 43,
+		"xp": 75,
+		"id": 3097,
+		"input_bars": {
+			"2353": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel dagger",
+		"level": 30,
+		"xp": 37.5,
+		"id": 1207,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel dart tip",
+		"level": 34,
+		"xp": 37.5,
+		"id": 821,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Steel full helm",
+		"level": 37,
+		"xp": 75,
+		"id": 1157,
+		"input_bars": {
+			"2353": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel hasta",
+		"level": 35,
+		"xp": 37.5,
+		"id": 11371,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel javelin heads",
+		"level": 36,
+		"xp": 37.5,
+		"id": 19574,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 5
+	},
+	{
+		"name": "Steel kiteshield",
+		"level": 42,
+		"xp": 112.5,
+		"id": 1193,
+		"input_bars": {
+			"2353": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel knife",
+		"level": 37,
+		"xp": 37.5,
+		"id": 865,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3000,
+		"output_multiple": 5
+	},
+	{
+		"name": "Steel limbs",
+		"level": 36,
+		"xp": 37.5,
+		"id": 9425,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel longsword",
+		"level": 36,
+		"xp": 75,
+		"id": 1295,
+		"input_bars": {
+			"2353": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel mace",
+		"level": 32,
+		"xp": 37.5,
+		"id": 1424,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel med helm",
+		"level": 33,
+		"xp": 37.5,
+		"id": 1141,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel nails",
+		"level": 34,
+		"xp": 37.5,
+		"id": 1539,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 15
+	},
+	{
+		"name": "Steel platebody",
+		"level": 48,
+		"xp": 187.5,
+		"id": 1119,
+		"input_bars": {
+			"2353": 5
+		},
+		"time_to_use": 4800,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel platelegs",
+		"level": 46,
+		"xp": 112.5,
+		"id": 1069,
+		"input_bars": {
+			"2353": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel plateskirt",
+		"level": 46,
+		"xp": 112.5,
+		"id": 1083,
+		"input_bars": {
+			"2353": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel scimitar",
+		"level": 35,
+		"xp": 75,
+		"id": 1325,
+		"input_bars": {
+			"2353": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel spear",
+		"level": 35,
+		"xp": 37.5,
+		"id": 1241,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel sq shield",
+		"level": 38,
+		"xp": 75,
+		"id": 1177,
+		"input_bars": {
+			"2353": 2
+		},
+		"time_to_use": 3700,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel studs",
+		"level": 36,
+		"xp": 37.5,
+		"id": 2370,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel sword",
+		"level": 34,
+		"xp": 37.5,
+		"id": 1281,
+		"input_bars": {
+			"2353": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Steel warhammer",
+		"level": 39,
+		"xp": 112.5,
+		"id": 1339,
+		"input_bars": {
+			"2353": 3
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1
+	}
+]

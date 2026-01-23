@@ -1,9 +1,7 @@
-import { Time } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Emoji, Time } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, itemID, LootTable } from 'oldschooljs';
 
-import { Emoji } from '../../constants';
-import itemID from '../../util/itemID';
-import { SkillsEnum } from '../types';
+import { defineSkill } from '@/lib/skilling/types.js';
 
 export interface Rune {
 	levels: number[][];
@@ -294,7 +292,7 @@ const RCPouches = [
 	}
 ];
 
-const raimentsOfTheEyeItems: { [key: number]: number } = {
+const raimentsOfTheEyeItems: ItemBank = {
 	[itemID('Hat of the eye')]: 10,
 	[itemID('Robe top of the eye')]: 10,
 	[itemID('Robe bottoms of the eye')]: 10,
@@ -567,16 +565,16 @@ export const ouraniaAltarTables: LootTable[] = [
 		.add('Soul rune', 1, 900)
 ];
 
-const Runecraft = {
+const Runecraft = defineSkill({
 	aliases: ['runecraft', 'runecrafting'],
 	Runes,
 	Tiaras,
-	id: SkillsEnum.Runecraft,
+	id: 'runecraft',
 	emoji: Emoji.Runecraft,
 	timePerInventory: Time.Minute,
 	pouches: RCPouches,
 	name: 'Runecraft',
 	raimentsOfTheEyeItems
-};
+});
 
 export default Runecraft;

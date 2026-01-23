@@ -1,15 +1,14 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { type CommandOptions, PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit/util';
+import { dateFm } from '@oldschoolgg/discord';
+import { Emoji, PerkTier, Time } from '@oldschoolgg/toolkit';
 import * as dotenv from 'dotenv';
-import { getItemOrThrow, resolveItems } from 'oldschooljs';
-import { z } from 'zod';
+import { convertLVLtoXP } from 'oldschooljs';
+import * as z from 'zod';
 
-import type { AbstractCommand } from '../mahoji/lib/inhibitors';
-import { SkillsEnum } from './skilling/types';
-import type { ActivityTaskData } from './types/minions';
-import type { CanvasImage } from './util/canvasUtil';
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
 
@@ -27,6 +26,7 @@ const GENERAL_CHANNEL_ID =
 			: '1154056119019393035';
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
+export const DELETED_USER_ID = '111111111111111111';
 
 interface ChannelConfig {
 	ServerGeneral: string;
@@ -102,127 +102,12 @@ export const Roles = {
 	BSOTopFarmer: '894194259731828786'
 };
 
-export enum Emoji {
-	MoneyBag = '<:MoneyBag:493286312854683654>',
-	OSBot = '<:OSBot:601768469905801226>',
-	Joy = '😂',
-	Bpaptu = '<:bpaptu:660333438292983818>',
-	Diamond = '💎',
-	Dice = '<:dice:660128887111548957>',
-	Fireworks = '🎆',
-	Tick = '✅',
-	RedX = '❌',
-	Search = '🔎',
-	FancyLoveheart = '💝',
-	Gift = '🎁',
-	Sad = '<:RSSad:380915244652036097>',
-	Happy = '<:RSHappy:380915244760825857>',
-	PeepoOSBot = '<:peepoOSBot:601695641088950282>',
-	PeepoSlayer = '<:peepoSlayer:644411576425775104>',
-	PeepoRanger = '<:peepoRanger:663096705746731089>',
-	PeepoNoob = '<:peepoNoob:660712001500086282>',
-	XP = '<:xp:630911040510623745>',
-	GP = '<:RSGP:369349580040437770>',
-	ThumbsUp = '👍',
-	ThumbsDown = '👎',
-	Casket = '<:Casket:365003978678730772>',
-	Agility = '<:agility:630911040355565568>',
-	Cooking = '<:cooking:630911040426868756>',
-	Fishing = '<:fishing:630911040091193356>',
-	Mining = '<:mining:630911040128811010>',
-	Smithing = '<:smithing:630911040452034590>',
-	Woodcutting = '<:woodcutting:630911040099450892>',
-	Runecraft = '<:runecraft:630911040435257364>',
-	Prayer = '<:prayer:630911040426868746>',
-	Construction = '<:construction:630911040493715476>',
-	Diango = '<:diangoChatHead:678146375300415508>',
-	MysteryBox = '<:mysterybox:680783258488799277>',
-	QuestIcon = '<:questIcon:690191385907036179>',
-	MinigameIcon = '<:minigameIcon:630400565070921761>',
-	Warning = '⚠️',
-	Ironman = '<:ironman:626647335900020746>',
-	Firemaking = '<:firemaking:630911040175210518>',
-	Crafting = '<:crafting:630911040460161047>',
-	EasterEgg = '<:easterEgg:695473553314938920>',
-	TzRekJad = '<:Tzrekjad:324127379188613121>',
-	Phoenix = '<:Phoenix:324127378223792129>',
-	TinyTempor = '<:TinyTempor:824483631694217277>',
-	AnimatedFireCape = '<a:FireCape:394692985184583690>',
-	Fletching = '<:fletching:630911040544309258>',
-	Farming = '<:farming:630911040355565599>',
-	Tangleroot = '<:tangleroot:324127378978635778>',
-	Herblore = '<:herblore:630911040535658496>',
-	Purple = '🟪',
-	Green = '🟩',
-	Blue = '🟦',
-	Thieving = '<:thieving:630910829352452123>',
-	Hunter = '<:hunter:630911040166559784>',
-	Ely = '<:ely:784453586033049630>',
-	Timer = '<:ehpclock:352323705210142721>',
-	ChristmasCracker = '<:cracker:785389969962958858>',
-	SantaHat = '<:santaHat:785874868905181195>',
-	RottenPotato = '<:rottenPotato:791498767051915275>',
-	Magic = '<:magic:630911040334331917>',
-	Hitpoints = '<:hitpoints:630911040460292108>',
-	Strength = '<:strength:630911040481263617>',
-	Attack = '<:attack:630911039969427467>',
-	Defence = '<:defence:630911040393052180>',
-	Ranged = '<:ranged:630911040258834473>',
-	Gear = '<:gear:835314891950129202>',
-	Slayer = '<:slayer:630911040560824330>',
-	CombatAchievements = '<:combatAchievements:1145015804040065184>',
-	Stopwatch = '⏱️',
-	// Badges,
-	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
-	GreenGem = '<:greenGem:778418736495067166>',
-	PinkGem = '<:pinkGem:778418736276963349>',
-	OrangeGem = '<:orangeGem:778418736474095616>',
-	Minion = '<:minion:778418736180494347>',
-	Spanner = '<:spanner:778418736621158410>',
-	DoubleSpanner = '<:doubleSpanner:778418736327688194>',
-	Hammer = '<:hammer:778418736595206184>',
-	Bug = '<:bug:778418736330833951>',
-	Trophy = '<:goldTrophy:778418736561782794>',
-	Crab = '<:crab:778418736432021505>',
-	Snake = '🐍',
-	Skiller = '<:skiller:802136963775463435>',
-	Incinerator = '<:incinerator:802136963674275882>',
-	CollectionLog = '<:collectionLog:802136964027121684>',
-	Bank = '<:bank:739459924693614653>',
-	Minigames = '<:minigameIcon:630400565070921761>',
-	Skull = '<:Skull:802136963926065165>',
-	CombatSword = '<:combat:802136963956080650>',
-	OSRSSkull = '<:skull:863392427040440320>',
-	SOTWTrophy = '<:SOTWtrophy:842938096097820693>',
-
-	DragonTrophy = '<:DragonTrophy:1152881074259624007>',
-	RuneTrophy = '<:RuneTrophy:1152881071445254164>',
-	AdamantTrophy = '<:AdamantTrophy:1152881069281001472>',
-	MithrilTrophy = '<:MithrilTrophy:1152881066353373236>',
-	SteelTrophy = '<:SteelTrophy:1152881062846939206>',
-	IronTrophy = '<:IronTrophy:1152881060972085279>',
-	BronzeTrophy = '<:BronzeTrophy:1152881057788592188>'
-}
-
 export enum ActivityGroup {
 	Skilling = 'Skilling',
 	Clue = 'Clue',
 	Monster = 'Monster',
 	Minigame = 'Minigame'
 }
-
-export enum Events {
-	Error = 'error',
-	Log = 'log',
-	Verbose = 'verbose',
-	Warn = 'warn',
-	Wtf = 'wtf',
-	ServerNotification = 'serverNotification',
-	SkillLevelUp = 'skillLevelUp',
-	EconomyLog = 'economyLog'
-}
-
-export const COINS_ID = 995;
 
 export enum BitField {
 	IsPatronTier1 = 2,
@@ -264,7 +149,13 @@ export enum BitField {
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
 	DisableOpenableNames = 41,
-	ShowDetailedInfo = 42
+	ShowDetailedInfo = 42,
+	DisableTearsOfGuthixButton = 43,
+	DisableDailyButton = 44,
+
+	HasDeadeyeScroll = 45,
+	HasMysticVigourScroll = 46,
+	AllowPublicAPIDataRetrieval = 47
 }
 
 interface BitFieldData {
@@ -367,7 +258,25 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Show Detailed Info',
 		protected: false,
 		userConfigurable: true
-	}
+	},
+	[BitField.DisableTearsOfGuthixButton]: {
+		name: 'Disable Tears of Guthix Trip Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableDailyButton]: {
+		name: 'Disable Minion Daily Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.AllowPublicAPIDataRetrieval]: {
+		name: 'Allow Public API Data Retrieval',
+		protected: false,
+		userConfigurable: true
+	},
+
+	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
 } as const;
 
 export const BadgesEnum = {
@@ -410,129 +319,19 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.Hacktoberfest]: '<:hacktoberfest:1304259875634942082>'
 };
 
-export const MAX_XP = 200_000_000;
-
-export const MIMIC_MONSTER_ID = 23_184;
-
-export const NIGHTMARES_HP = 2400;
-export const ZAM_HASTA_CRUSH = 65;
-export const MAX_INT_JAVA = 2_147_483_647;
-export const HERBIBOAR_ID = 36;
-export const RAZOR_KEBBIT_ID = 35;
-export const BLACK_CHIN_ID = 9;
-export const ZALCANO_ID = 9049;
-export const NIGHTMARE_ID = 9415;
-export const NEX_ID = 11_278;
-
-export const LEVEL_99_XP = 13_034_431;
-export const MAX_LEVEL = 99;
-export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
+export const MAX_XP = BOT_TYPE === 'OSB' ? 200_000_000 : 5_000_000_000;
+export const MAX_LEVEL = BOT_TYPE === 'OSB' ? 99 : 120;
+export const MAX_LEVEL_XP = convertLVLtoXP(MAX_LEVEL);
+export const MAX_TOTAL_LEVEL = SkillsArray.length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export const projectiles = {
-	arrow: {
-		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-		savedByAvas: true,
-		weapons: resolveItems(['Twisted bow'])
-	},
-	bolt: {
-		items: resolveItems([
-			'Runite bolts',
-			'Dragon bolts',
-			'Diamond bolts (e)',
-			'Diamond dragon bolts (e)',
-			'Ruby dragon bolts (e)'
-		]),
-		savedByAvas: true,
-		weapons: resolveItems([
-			'Armadyl crossbow',
-			'Dragon hunter crossbow',
-			'Dragon crossbow',
-			'Zaryte crossbow',
-			'Rune crossbow'
-		])
-	},
-	javelin: {
-		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
-		savedByAvas: false,
-		weapons: resolveItems(['Heavy ballista'])
-	}
-} as const;
-export type ProjectileType = keyof typeof projectiles;
-
-export const PHOSANI_NIGHTMARE_ID = 9416;
-const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
-	if (!Array.isArray(args)) return true;
-	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
-			return false;
-		}
-	}
-	return true;
-}
-
-export const DISABLED_COMMANDS = new Set<string>();
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
-export type PvMMethod = (typeof PVM_METHODS)[number];
-
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
 export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
-export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
-export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
-
-export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
-export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
-
 export const busyImmuneCommands = ['admin', 'rp'];
-
-export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
-
-export const chompyHats = [
-	[getItemOrThrow('Chompy bird hat (ogre bowman)'), 30],
-	[getItemOrThrow('Chompy bird hat (bowman)'), 40],
-	[getItemOrThrow('Chompy bird hat (ogre yeoman)'), 50],
-	[getItemOrThrow('Chompy bird hat (yeoman)'), 70],
-	[getItemOrThrow('Chompy bird hat (ogre marksman)'), 95],
-	[getItemOrThrow('Chompy bird hat (marksman)'), 125],
-	[getItemOrThrow('Chompy bird hat (ogre woodsman)'), 170],
-	[getItemOrThrow('Chompy bird hat (woodsman)'), 225],
-	[getItemOrThrow('Chompy bird hat (ogre forester)'), 300],
-	[getItemOrThrow('Chompy bird hat (forester)'), 400],
-	[getItemOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
-	[getItemOrThrow('Chompy bird hat (bowmaster)'), 700],
-	[getItemOrThrow('Chompy bird hat (ogre expert)'), 1000],
-	[getItemOrThrow('Chompy bird hat (expert)'), 1300],
-	[getItemOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
-	[getItemOrThrow('Chompy bird hat (dragon archer)'), 2250],
-	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
-	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
-] as const;
-
-export const toaPurpleItems = resolveItems([
-	"Tumeken's guardian",
-	"Tumeken's shadow (uncharged)",
-	"Elidinis' ward",
-	'Masori mask',
-	'Masori body',
-	'Masori chaps',
-	'Lightbearer',
-	"Osmumten's fang"
-]);
-
-export enum PeakTier {
-	High = 'high',
-	Medium = 'medium',
-	Low = 'low'
-}
-
-export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
-
-export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
 const globalConfigSchema = z.object({
 	clientID: z.string().min(10).max(25),
@@ -540,11 +339,12 @@ const globalConfigSchema = z.object({
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
-	sentryDSN: z.string().url().optional(),
 	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
-	supportServerID: z.string()
+	supportServerID: z.string(),
+	minimumLoggedPerfDuration: z.number().default(400),
+	guildIdsToCache: z.array(z.string())
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
@@ -555,34 +355,38 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
+const guildId = {
+	OldschoolGG: '342983479501389826',
+	TestServer: '940758552425955348'
+};
+
+const emojiServers = new Set([
+	'869497440947015730',
+	'324127314361319427',
+	'363252822369894400',
+	'395236850119213067',
+	'325950337271857152',
+	'395236894096621568'
+]);
+
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
 	isProduction,
 	timeZone: process.env.TZ,
-	sentryDSN: process.env.SENTRY_DSN,
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
-	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID
+	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID,
+	guildIdsToCache: [guildId.OldschoolGG, guildId.TestServer, ...emojiServers]
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 	throw new Error('The NODE_ENV and isProduction variables must match');
 }
 
-export const ONE_TRILLION = 1_000_000_000_000;
-export const demonBaneWeapons = resolveItems([
-	'Silverlight',
-	'Darklight',
-	'Arclight',
-	'Emberlight',
-	'Scorching bow',
-	'Purging staff'
-]);
-
 export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
-const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
+const gitRemote = 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
 
@@ -600,22 +404,11 @@ META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DA
 
 export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
-export const ItemIconPacks = [
-	{
-		name: 'Halloween',
-		storeBitfield: StoreBitfield.HalloweenItemIconPack,
-		id: 'halloween',
-		icons: new Map<number, CanvasImage>()
-	}
-];
-
 export const patronFeatures = {
 	ShowEnteredInGiveawayList: {
 		tier: PerkTier.Four
 	}
 };
-
-export const gearValidationChecks = new Set();
 
 export const BSO_MAX_TOTAL_LEVEL = 3120;
 
@@ -626,3 +419,20 @@ if (!process.env.TEST && isMainThread) {
 }
 
 export const MAX_CLUES_DROPPED = 100;
+
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
+export type PvMMethod = (typeof PVM_METHODS)[number];
+
+export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
+	activity_type_enum.BirthdayEvent,
+	activity_type_enum.Easter,
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
+	activity_type_enum.Revenants, // This is now under monsterActivity
+	activity_type_enum.KourendFavour // Kourend favor activity was removed
+];
+
+export const CONSTANTS = {
+	DAILY_COOLDOWN: BOT_TYPE === 'BSO' ? Time.Hour * 4 : Time.Hour * 12,
+	TEARS_OF_GUTHIX_CD: Time.Day * 7
+};

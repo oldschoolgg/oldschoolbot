@@ -1,28 +1,25 @@
-import { stripEmojis, truncateString } from '@oldschoolgg/toolkit/util';
-import { reduceNumByPercent } from 'e';
-import { Bank, convertLVLtoXP } from 'oldschooljs';
+import { reduceNumByPercent, stripEmojis, truncateString } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
-import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
-import { SkillsEnum } from '../../src/lib/skilling/types';
-import { pluraliseItemName, skillingPetDropRate } from '../../src/lib/util';
-import getOSItem from '../../src/lib/util/getOSItem';
-import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
-import { mockMUser } from './userutil';
+import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
+import { pluraliseItemName } from '@/lib/util/smallUtils.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { sellPriceOfItem, sellStorePriceOfItem } from '@/mahoji/commands/sell.js';
+import { mockMUser } from './userutil.js';
 
 describe('util', () => {
 	test('stripEmojis', () => {
 		expect(stripEmojis('b👏r👏u👏h')).toEqual('bruh');
 	});
 
-	test('getOSItem', () => {
-		expect(getOSItem('Twisted bow').id).toEqual(20_997);
-		expect(getOSItem(20_997).id).toEqual(20_997);
-		expect(getOSItem('20997').id).toEqual(20_997);
-		expect(getOSItem('3rd age platebody').id).toEqual(10_348);
+	test('Items.getOrThrow', () => {
+		expect(Items.getOrThrow('Twisted bow').id).toEqual(20_997);
+		expect(Items.getOrThrow(20_997).id).toEqual(20_997);
+		expect(Items.getOrThrow('20997').id).toEqual(20_997);
+		expect(Items.getOrThrow('3rd age platebody').id).toEqual(10_348);
 
-		expect(() => getOSItem('Non-existant item')).toThrowError('Item Non-existant item not found.');
+		expect(() => Items.getOrThrow('Non-existant item')).toThrowError('Item Non-existant item not found.');
 	});
 
 	test('getUserFoodFromBank', () => {
@@ -63,15 +60,15 @@ describe('util', () => {
 	});
 
 	test('sellPriceOfItem', () => {
-		const item = getOSItem('Dragon pickaxe');
+		const item = Items.getOrThrow('Dragon pickaxe');
 		const { price } = item;
 		const expected = reduceNumByPercent(price!, 20);
 		expect(sellPriceOfItem(item)).toEqual({ price: expected, basePrice: price });
-		expect(sellPriceOfItem(getOSItem('Yellow square'))).toEqual({ price: 0, basePrice: 0 });
+		expect(sellPriceOfItem(Items.getOrThrow('Yellow square'))).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('sellStorePriceOfItem', () => {
-		const item = getOSItem('Dragon pickaxe');
+		const item = Items.getOrThrow('Dragon pickaxe');
 		const { cost } = item;
 
 		const expectedOneQty =
@@ -80,44 +77,29 @@ describe('util', () => {
 			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost!) / 22;
 		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost! });
 		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost! });
-		expect(sellStorePriceOfItem(getOSItem('Yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
+		expect(sellStorePriceOfItem(Items.getOrThrow('Yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('skillingPetRateFunction', () => {
 		let testUser = mockMUser({
 			skills_agility: convertLVLtoXP(30)
-		}) as any as MUser;
+		});
 		const baseDropRate = 300_000;
 		// Lvl 30
 		const dropRateLvl30 = Math.floor((baseDropRate - 30 * 25) / 1);
-		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl30);
+		expect(skillingPetDropRate(testUser, 'agility', baseDropRate).petDropRate).toEqual(dropRateLvl30);
 		// Lvl 99
 		testUser = mockMUser({
 			skills_agility: convertLVLtoXP(99)
-		}) as any as MUser;
+		});
 		const dropRateLvl99 = Math.floor((baseDropRate - 99 * 25) / 1);
-		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl99);
+		expect(skillingPetDropRate(testUser, 'agility', baseDropRate).petDropRate).toEqual(dropRateLvl99);
 		// Lvl 99 and 200M xp
 		testUser = mockMUser({
 			skills_agility: 200_000_000
-		}) as any as MUser;
+		});
 		const dropRate200M = Math.floor((baseDropRate - 99 * 25) / 15);
-		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRate200M);
-	});
-
-	test('userBusyCache', () => {
-		const id = '1';
-		const cache = new Map();
-		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
-		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(1);
-		expect(cache.get(id)).toEqual(1);
-		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(2);
-		expect(cache.get(id)).toEqual(2);
-		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(1);
-		expect(cache.get(id)).toEqual(1);
-		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(0);
-		expect(cache.get(id)).toEqual(0);
-		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
+		expect(skillingPetDropRate(testUser, 'agility', baseDropRate).petDropRate).toEqual(dropRate200M);
 	});
 
 	test('pluraliseItemName correctly pluralises items', async () => {

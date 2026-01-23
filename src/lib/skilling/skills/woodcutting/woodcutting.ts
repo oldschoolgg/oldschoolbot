@@ -1,9 +1,7 @@
-import { LootTable } from 'oldschooljs';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { itemID, LootTable } from 'oldschooljs';
 
-import { Emoji } from '../../../constants';
-import itemID from '../../../util/itemID';
-import type { Log } from '../../types';
-import { SkillsEnum } from '../../types';
+import { defineSkill, type Log } from '@/lib/skilling/types.js';
 
 const sulliuscepTable = new LootTable()
 	.add('Numulite', [4, 8], 34)
@@ -176,7 +174,6 @@ const logs: Log[] = [
 		aliases: ['sul', 'sulli', 'mush', 'mushroom'],
 		findNewTreeTime: 38,
 		bankingTime: 100,
-		// TODO: Get real slope and intercept from wiki
 		slope: 0.13,
 		intercept: 9.47,
 		depletionChance: 100 * (1 / 16),
@@ -219,6 +216,9 @@ const logs: Log[] = [
 	}
 ];
 
+const twitchersGloves = ['egg', 'ring', 'seed', 'clue'] as const;
+export type TwitcherGloves = (typeof twitchersGloves)[number];
+
 const lumberjackItems: { [key: number]: number } = {
 	[itemID('Lumberjack hat')]: 0.4,
 	[itemID('Lumberjack top')]: 0.8,
@@ -226,13 +226,14 @@ const lumberjackItems: { [key: number]: number } = {
 	[itemID('Lumberjack boots')]: 0.2
 };
 
-const Woodcutting = {
+const Woodcutting = defineSkill({
 	aliases: ['wc', 'woodcutting'],
 	Logs: logs,
-	id: SkillsEnum.Woodcutting,
+	id: 'woodcutting',
 	emoji: Emoji.Woodcutting,
 	name: 'Woodcutting',
-	lumberjackItems
-};
+	lumberjackItems,
+	twitchersGloves
+});
 
 export default Woodcutting;

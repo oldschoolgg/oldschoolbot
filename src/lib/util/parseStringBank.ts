@@ -1,10 +1,8 @@
-import { cleanString, evalMathExpression, stringMatches } from '@oldschoolgg/toolkit/util';
-import { notEmpty } from 'e';
-import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
+import { cleanString, evalMathExpression, notEmpty, stringMatches } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items } from 'oldschooljs';
 
-import { ONE_TRILLION } from '../constants';
-import { filterableTypes } from '../data/filterables';
-import itemIsTradeable from './itemIsTradeable';
+import { filterableTypes } from '@/lib/data/filterables.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 
 const { floor, max, min } = Math;
 
@@ -23,7 +21,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
-	const lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
+	const lazyItemGet = Items.getItem(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
@@ -42,13 +40,13 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	} else {
 		osItems = Array.from(
 			Items.filter(
-				i => itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
+				i => Items.itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
 			).values()
 		);
 	}
 	if (osItems.length === 0) return [];
 
-	const quantity = floor(min(ONE_TRILLION, max(0, parsedQty ?? 0)));
+	const quantity = floor(min(1_000_000_000_000, max(0, parsedQty ?? 0)));
 
 	return [osItems, quantity];
 }

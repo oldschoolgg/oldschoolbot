@@ -1,10 +1,12 @@
-import type { Bank } from 'oldschooljs';
+import { type Bank, convertXPtoLVL, resolveItems } from 'oldschooljs';
 
-import { getSimilarItems } from '../data/similarItems';
-import type { UserFullGearSetup } from '../gear/types';
-import type { Skills, SkillsRequired } from '../types';
-import { hasSkillReqsRaw, resolveItems } from '../util';
-import type { ChargeBank } from './Bank';
+import { MAX_LEVEL } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
+import type { ChargeBank } from '@/lib/structures/Bank.js';
+import type { SkillRequirements, SkillsRequired } from '@/lib/types/index.js';
+import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 
 export class GearBank {
 	gear: UserFullGearSetup;
@@ -12,25 +14,33 @@ export class GearBank {
 	skillsAsLevels: SkillsRequired;
 	skillsAsXP: SkillsRequired;
 	chargeBank: ChargeBank;
+	minionName: string;
 
 	constructor({
 		gear,
 		bank,
-		skillsAsLevels,
 		chargeBank,
-		skillsAsXP
+		skillsAsXP,
+		minionName
 	}: {
 		gear: UserFullGearSetup;
 		bank: Bank;
-		skillsAsLevels: SkillsRequired;
 		chargeBank: ChargeBank;
 		skillsAsXP: SkillsRequired;
+		minionName: string;
 	}) {
 		this.gear = gear;
 		this.bank = bank;
-		this.skillsAsLevels = skillsAsLevels;
 		this.chargeBank = chargeBank;
 		this.skillsAsXP = skillsAsXP;
+		this.minionName = minionName;
+
+		const skillsAsLevels: SkillsRequired = {} as SkillsRequired;
+		for (const skill of SkillsArray) {
+			const xp = skillsAsXP[skill as keyof SkillsRequired] ?? 0;
+			skillsAsLevels[skill as keyof SkillsRequired] = convertXPtoLVL(xp, MAX_LEVEL);
+		}
+		this.skillsAsLevels = skillsAsLevels;
 	}
 
 	wildyGearCheck(item: string | number, isWildy: boolean) {
@@ -67,7 +77,17 @@ export class GearBank {
 		return false;
 	}
 
-	hasSkillReqs(reqs: Skills) {
-		return hasSkillReqsRaw(this.skillsAsLevels, reqs);
+	hasSkillReqs(reqs: SkillRequirements) {
+		return hasSkillReqsRaw({ ...this.skillsAsLevels, combat: this.combatLevel }, reqs);
+	}
+
+	get combatLevel() {
+		const { defence, ranged, hitpoints, magic, prayer, attack, strength } = this.skillsAsLevels;
+
+		const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+		const melee = 0.325 * (attack + strength);
+		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
+		const mage = 0.325 * (Math.floor(magic / 2) + magic);
+		return Math.floor(base + Math.max(melee, range, mage));
 	}
 }

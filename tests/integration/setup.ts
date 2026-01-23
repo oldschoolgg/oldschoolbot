@@ -1,54 +1,78 @@
-import '../globalSetup';
-import '../../src/lib/globals';
-import '../../src/lib/util/transactItemsFromBank';
-import './mocks';
+import '../../src/lib/safeglobals.js';
+import '../../src/lib/cache/redis.js';
 
-import { beforeEach, vi } from 'vitest';
+import { noOp } from '@oldschoolgg/toolkit';
+import type { Bank } from 'oldschooljs';
+import { vi } from 'vitest';
 
-import { PrismaClient } from '@prisma/client';
-import { noOp } from 'e';
+import type { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
+import { globalConfig } from '@/lib/constants.js';
+import { createDb } from '@/lib/globals.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { MUserClass } from '@/lib/user/MUser.js';
+import { handleTripFinishResults } from '../test-utils/misc.js';
+import { TestClient } from './util.js';
 
-if (!roboChimpClient) {
-	throw new Error('Robochimp client not found.');
-}
+await createDb();
+await prisma.clientStorage
+	.upsert({
+		where: { id: globalConfig.clientID },
+		create: { id: globalConfig.clientID },
+		update: {}
+	})
+	.catch(noOp);
 
-export function randomMock(random = 0.1) {
-	Math.random = () => random;
-}
+global.globalClient = new TestClient({} as any) as any as OldSchoolBotClient;
 
-vi.mock('../../src/lib/util/webhook', async () => {
-	const actual: any = await vi.importActual('../../src/lib/util/webhook');
+vi.mock('../../src/lib/util/handleTripFinish.js', async importOriginal => {
+	const originalModule: any = await importOriginal();
 	return {
-		...actual,
-		sendToChannelID: vi.fn()
+		handleTripFinish: async (
+			userOrParams:
+				| MUser
+				| {
+						user: MUser;
+						channelId: string;
+						message: SendableMessage;
+						data: ActivityTaskData;
+						loot?: Bank | null;
+						messages?: string[];
+				  },
+			_channelId?: string,
+			_message?: SendableMessage,
+			_data?: ActivityTaskData,
+			_loot?: Bank | null,
+			_messages?: string[]
+		) => {
+			const {
+				data,
+				user,
+				loot,
+				messages: inputMessages,
+				message: inputMessage
+			} = userOrParams instanceof MUserClass
+				? {
+						user: userOrParams as MUser,
+						message: _message!,
+						data: _data!,
+						loot: _loot!,
+						messages: _messages
+					}
+				: userOrParams;
+
+			handleTripFinishResults.set(`${user.id}-${data.type}`, {
+				message: inputMessage,
+				messages: inputMessages,
+				loot
+			});
+			return (originalModule as any).handleTripFinish(
+				userOrParams as any,
+				_channelId,
+				_message,
+				_data,
+				_loot,
+				_messages
+			);
+		}
 	};
-});
-
-vi.mock('../../src/lib/gear/functions/generateGearImage', async () => {
-	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
-	return {
-		...actual,
-		generateGearImage: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
-	};
-});
-
-vi.mock('../../src/lib/util/chart', async () => {
-	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
-	return {
-		...actual,
-		createChart: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
-	};
-});
-
-// @ts-ignore mock
-globalClient.fetchUser = async (id: string | bigint) => ({
-	id: typeof id === 'string' ? id : String(id),
-	send: async () => {}
-});
-
-const __prismaClient = new PrismaClient();
-__prismaClient.$queryRawUnsafe('CREATE EXTENSION IF NOT EXISTS intarray;').then(noOp).catch(noOp);
-
-beforeEach(async () => {
-	global.prisma = __prismaClient;
 });

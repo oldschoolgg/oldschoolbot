@@ -1,14 +1,11 @@
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { BitField } from '../../../lib/constants';
-import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
-export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
-	const bankImages = bankImageGenerator.backgroundImages;
+export async function bankBgCommand(interaction: MInteraction, user: MUser, name: string) {
+	const bankImages = bankImageTask.backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));
 
 	if (!selectedImage) {
@@ -19,7 +16,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		return 'This is already your bank background.';
 	}
 
-	if (user.bitfield.includes(BitField.isModerator)) {
+	if (user.isModOrAdmin()) {
 		await user.update({
 			bankBackground: selectedImage.id
 		});
@@ -56,7 +53,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	}
 
 	if (selectedImage.bitfield && !user.bitfield.includes(selectedImage.bitfield)) {
-		return "You're not elligible to use this bank background.";
+		return "You're not eligible to use this bank background.";
 	}
 
 	// Check they have required collection log items.
@@ -67,7 +64,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	}
 
 	// Check they have the required perk tier.
-	if (selectedImage.perkTierNeeded && user.perkTier() < selectedImage.perkTierNeeded) {
+	if (selectedImage.perkTierNeeded && (await user.fetchPerkTier()) < selectedImage.perkTierNeeded) {
 		return `This background is only available for Tier ${Number(selectedImage.perkTierNeeded) - 1} patrons.`;
 	}
 
@@ -116,7 +113,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		str +=
 			" **Note:** You'll have to pay this cost again if you switch to another background and want this one again.";
 
-		await handleMahojiConfirmation(interaction, str);
+		await interaction.confirmation(str);
 
 		if (selectedImage.itemCost) {
 			economyCost.add(selectedImage.itemCost);
@@ -133,7 +130,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		bankBackground: selectedImage.id
 	});
 
-	updateBankSetting('economyStats_bankBgCostBank', economyCost);
+	await ClientSettings.updateBankSetting('economyStats_bankBgCostBank', economyCost);
 
 	return `Your bank background is now **${selectedImage.name}**!`;
 }

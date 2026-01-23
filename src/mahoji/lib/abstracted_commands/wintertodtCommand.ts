@@ -1,19 +1,14 @@
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Eatables } from '../../../lib/data/eatables';
-import { warmGear } from '../../../lib/data/filterables';
-import { trackLoot } from '../../../lib/lootTrack';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { Eatables } from '@/lib/data/eatables.js';
+import { warmGear } from '@/lib/data/filterables.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function wintertodtCommand(user: MUser, channelID: string, quantity?: number) {
-	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
-	const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+export async function wintertodtCommand(user: MUser, channelId: string, quantity?: number) {
+	const fmLevel = user.skillsAsLevels.firemaking;
+	const wcLevel = user.skillsAsLevels.woodcutting;
 	if (fmLevel < 50) {
 		return 'You need 50 Firemaking to have a chance at defeating the Wintertodt.';
 	}
@@ -45,7 +40,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 	healAmountNeeded -= warmGearAmount * 15;
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
-	const maxTripLength = calcMaxTripLength(user, 'Wintertodt');
+	const maxTripLength = await user.calcMaxTripLength('Wintertodt');
 	if (!quantity) quantity = Math.floor(maxTripLength / durationPerTodt);
 	quantity = Math.max(1, quantity);
 	const duration = durationPerTodt * quantity;
@@ -90,7 +85,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		await user.removeItemsFromBank(cost);
 
 		// Track this food cost in Economy Stats
-		await updateBankSetting('economyStats_wintertodtCost', cost);
+		await ClientSettings.updateBankSetting('economyStats_wintertodtCost', cost);
 
 		// Track items lost
 		await trackLoot({
@@ -109,10 +104,10 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		break;
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'wintertodt',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'Wintertodt'

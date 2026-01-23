@@ -1,14 +1,9 @@
-import { Time, clamp } from 'e';
-import { Bank } from 'oldschooljs';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { Planks } from '../../../lib/minions/data/planks';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ButlerActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { Planks } from '@/lib/minions/data/planks.js';
+import type { ButlerActivityTaskOptions } from '@/lib/types/minions.js';
 
 const unlimitedEarthRuneProviders = resolveItems([
 	'Staff of earth',
@@ -34,7 +29,7 @@ const unlimitedAirRuneProviders = resolveItems([
 	'Dust battlestaff'
 ]);
 
-export async function butlerCommand(user: MUser, plankName: string, quantity: number | undefined, channelID: string) {
+export async function butlerCommand(user: MUser, plankName: string, quantity: number | undefined, channelId: string) {
 	const plank = Planks.find(
 		plank => stringMatches(plank.name, plankName) || stringMatches(plank.name.split(' ')[0], plankName)
 	);
@@ -43,19 +38,19 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		return `Thats not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`;
 	}
 
-	const level = user.skillLevel(SkillsEnum.Construction);
+	const level = user.skillsAsLevels.construction;
 	if (level < 50) {
 		return 'You need level 50 Construction to use the demon butler.';
 	}
 
 	const timePerPlank = (Time.Second * 15) / 26;
 
-	const maxTripLength = calcMaxTripLength(user, 'Butler');
+	const maxTripLength = await user.calcMaxTripLength('Butler');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
 	}
-	quantity = clamp(quantity, 1, 100_000);
+	quantity = clamp(quantity, { min: 1, max: 100_000 });
 
 	const inputItemOwned = user.bank.amount(plank.inputItem);
 	if (inputItemOwned < quantity) {
@@ -63,7 +58,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 	}
 
 	if (quantity === 0) {
-		return `You don't have any ${itemNameFromID(plank.inputItem)}.`;
+		return `You don't have any ${Items.itemNameFromId(plank.inputItem)}.`;
 	}
 
 	const { GP } = user;
@@ -133,18 +128,18 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 	const costBank = new Bank(consumedItems).add('Coins', cost).add(plank?.inputItem, quantity);
 	await user.removeItemsFromBank(costBank);
 
-	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', cost));
+	await ClientSettings.updateBankSetting('construction_cost_bank', new Bank().add('Coins', cost));
 
-	await addSubTaskToActivityTask<ButlerActivityTaskOptions>({
+	await ActivityManager.startTrip<ButlerActivityTaskOptions>({
 		type: 'Butler',
 		duration,
 		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
-		channelID: channelID.toString()
+		channelId: channelId.toString()
 	});
 
-	let response = `${user.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${
+	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${
 		quantity > 1 ? 's' : ''
 	}. The demon butler has charged you ${toKMB(cost)} GP.`;
 

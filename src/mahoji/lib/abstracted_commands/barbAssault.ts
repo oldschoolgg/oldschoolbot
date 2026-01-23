@@ -1,57 +1,57 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
-import { Bank } from 'oldschooljs';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
+import { randomVariation, roll } from '@oldschoolgg/rng';
+import {
+	calcWhatPercent,
+	Events,
+	formatDuration,
+	formatOrdinal,
+	reduceNumByPercent,
+	round,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
+import { Bank, Items, itemID } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { Events } from '../../../lib/constants';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
-import { getMinigameScore } from '../../../lib/settings/settings';
-import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
-import { maxOtherStats } from '../../../lib/structures/Gear';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { displayCluesAndPets } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { userStatsUpdate } from '../../mahojiSettings';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simulation/baGamble.js';
+import { maxOtherStats } from '@/lib/structures/Gear.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 
 export const BarbBuyables = [
 	{
-		item: getOSItem('Fighter hat'),
+		item: Items.getOrThrow('Fighter hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Ranger hat'),
+		item: Items.getOrThrow('Ranger hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Healer hat'),
+		item: Items.getOrThrow('Healer hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Runner hat'),
+		item: Items.getOrThrow('Runner hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Fighter torso'),
+		item: Items.getOrThrow('Fighter torso'),
 		cost: 375 * 4
 	},
 	{
-		item: getOSItem('Penance skirt'),
+		item: Items.getOrThrow('Penance skirt'),
 		cost: 375 * 4
 	},
 	{
-		item: getOSItem('Runner boots'),
+		item: Items.getOrThrow('Runner boots'),
 		cost: 100 * 4
 	},
 	{
-		item: getOSItem('Penance gloves'),
+		item: Items.getOrThrow('Penance gloves'),
 		cost: 150 * 4
 	}
 ];
@@ -91,10 +91,10 @@ export const GambleTiers = [
 		cost: 500,
 		table: HighGambleTable
 	}
-];
+] as const;
 
 export async function barbAssaultLevelCommand(user: MUser) {
-	const stats = await user.fetchStats({ honour_level: true, honour_points: true });
+	const stats = await user.fetchStats();
 	const currentLevel = stats.honour_level;
 	if (currentLevel === 5) {
 		return "You've already reached the highest possible Honour level.";
@@ -107,14 +107,10 @@ export async function barbAssaultLevelCommand(user: MUser) {
 		if (points < level.cost) {
 			return `You don't have enough points to upgrade to level ${level.level}. You need ${level.cost} points.`;
 		}
-		await userStatsUpdate(
-			user.id,
-			{
-				honour_level: { increment: 1 },
-				honour_points: { decrement: level.cost }
-			},
-			{}
-		);
+		await user.statsUpdate({
+			honour_level: { increment: 1 },
+			honour_points: { decrement: level.cost }
+		});
 
 		return `You've spent ${level.cost} Honour points to level up to Honour level ${level.level}!`;
 	}
@@ -122,12 +118,7 @@ export async function barbAssaultLevelCommand(user: MUser) {
 	return "You've already reached the highest possible Honour level.";
 }
 
-export async function barbAssaultBuyCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	input: string,
-	quantity?: number
-) {
+export async function barbAssaultBuyCommand(interaction: MInteraction, user: MUser, input: string, quantity?: number) {
 	if (typeof input !== 'string') input = '';
 	const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
@@ -141,70 +132,54 @@ export async function barbAssaultBuyCommand(
 	}
 
 	const { item, cost } = buyable;
-	const stats = await user.fetchStats({ honour_points: true });
+	const stats = await user.fetchStats();
 	const balance = stats.honour_points;
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to buy ${quantity.toLocaleString()}x ${item.name}, for ${(cost * quantity).toLocaleString()} honour points?`
 	);
-	await userStatsUpdate(
-		user.id,
-		{
-			honour_points: {
-				decrement: cost * quantity
-			}
-		},
-		{}
-	);
+	await user.statsUpdate({
+		honour_points: {
+			decrement: cost * quantity
+		}
+	});
 
 	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
 
 	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${(cost * quantity).toLocaleString()} Honour Points.`;
 }
 
-export async function barbAssaultGambleCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	tier: string,
-	quantity = 1
-) {
+export async function barbAssaultGambleCommand(interaction: MInteraction, user: MUser, tier: string, quantity = 1) {
 	const buyable = GambleTiers.find(i => stringMatches(tier, i.name));
 	if (!buyable) {
 		return 'You can gamble your points for the Low, Medium and High tiers. For example, `/minigames gamble low`.';
 	}
-	const { honour_points: balance } = await user.fetchStats({ honour_points: true });
+	const { honour_points: balance } = await user.fetchStats();
 	const { cost, name, table } = buyable;
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to do ${quantity.toLocaleString()}x ${name} gamble. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(cost * quantity).toLocaleString()} honour points?`
 	);
-	const newStats = await userStatsUpdate(
-		user.id,
-		{
-			honour_points: {
-				decrement: cost * quantity
-			},
-			high_gambles:
-				name === 'High'
-					? {
-							increment: quantity
-						}
-					: undefined
+	await user.statsUpdate({
+		honour_points: {
+			decrement: cost * quantity
 		},
-		{
-			honour_points: true,
-			high_gambles: true
-		}
-	);
+		high_gambles:
+			name === 'High'
+				? {
+						increment: quantity
+					}
+				: undefined
+	});
 	const loot = new Bank().add(table.roll(quantity));
+	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+
 	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
-	str += await displayCluesAndPets(user.id, loot);
+	str += displayCluesAndPets(user, loot);
 	if (loot.has('Pet Penance Queen')) {
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 
@@ -213,33 +188,27 @@ export async function barbAssaultGambleCommand(
 			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${
 				user.minionName
 			}, just received a Pet penance queen from their ${formatOrdinal(
-				newStats.high_gambles
+				await user.fetchUserStat('high_gambles')
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}
-	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
-
-	const perkTier = user.perkTier();
+	const perkTier = await user.fetchPerkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	const response: Awaited<CommandResponse> = {
-		content: str,
-		files: [
-			(
-				await makeBankImage({
-					bank: itemsAdded,
-					user,
-					previousCL,
-					flags: { showNewCL: 1 }
-				})
-			).file
-		],
-		components: components.length > 0 ? makeComponents(components) : undefined
-	};
+	const response = new MessageBuilder()
+		.setContent(str)
+		.addBankImage({
+			bank: itemsAdded,
+			user,
+			previousCL,
+			flags: { showNewCL: 1 }
+		})
+		.addComponents(components);
+
 	return response;
 }
 
-export async function barbAssaultStartCommand(channelID: string, user: MUser) {
+export async function barbAssaultStartCommand(channelId: string, user: MUser) {
 	const boosts = [];
 
 	let waveTime = randomVariation(Time.Minute * 4, 10);
@@ -252,19 +221,19 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		boosts.push(`${strengthPercent}% for ${user.usernameOrMention}'s melee gear`);
 	}
 	// Up to 30% speed boost for honour level
-	const stats = await user.fetchStats({ honour_level: true });
+	const stats = await user.fetchStats();
 	const totalLevelPercent = stats.honour_level * 6;
 	boosts.push(`${totalLevelPercent}% for honour level`);
 	waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
 
 	// Up to 10%, at 200 kc, speed boost for team average kc
-	const kc = await getMinigameScore(user.id, 'barb_assault');
-	const kcPercent = clamp(calcWhatPercent(kc, 200), 1, 100);
+	const kc = await user.fetchMinigameScore('barb_assault');
+	const kcPercent = clamp(calcWhatPercent(kc, 200), { min: 1, max: 100 });
 	const kcPercentBoost = kcPercent / 10;
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);
 
-	let quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
+	let quantity = Math.floor((await user.calcMaxTripLength('BarbarianAssault')) / waveTime);
 
 	// 10% speed boost for Venator bow
 	const venatorBowChargesPerWave = 50;
@@ -272,7 +241,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	let venBowMsg = '';
 	if (user.gear.range.hasEquipped('Venator Bow') && user.user.venator_bow_charges >= totalVenChargesUsed) {
 		await degradeItem({
-			item: getOSItem('Venator Bow'),
+			item: Items.getOrThrow('Venator Bow'),
 			chargesToDegrade: totalVenChargesUsed,
 			user
 		});
@@ -281,7 +250,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		waveTime = reduceNumByPercent(waveTime, 10);
 	}
 
-	quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
+	quantity = Math.floor((await user.calcMaxTripLength('BarbarianAssault')) / waveTime);
 
 	const duration = quantity * waveTime;
 
@@ -294,9 +263,9 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	)} - the total trip will take ${formatDuration(duration)}.`;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelId,
 		quantity,
 		duration,
 		type: 'BarbarianAssault',
@@ -307,7 +276,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 }
 
 export async function barbAssaultStatsCommand(user: MUser) {
-	const stats = await user.fetchStats({ honour_level: true, honour_points: true, high_gambles: true });
+	const stats = await user.fetchStats();
 	return `**Honour Points:** ${stats.honour_points}
 **Honour Level:** ${stats.honour_level}
 **High Gambles:** ${stats.high_gambles}`;

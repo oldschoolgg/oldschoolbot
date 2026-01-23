@@ -1,11 +1,9 @@
-import { Bank } from 'oldschooljs';
+import { roll } from '@oldschoolgg/rng';
+import { Bank, itemID } from 'oldschooljs';
 
-import { CyclopsTable } from '../../../../lib/simulation/cyclops';
-import type { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
-import { roll } from '../../../../lib/util';
-import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
-import itemID from '../../../../lib/util/itemID';
-import { makeBankImage } from '../../../../lib/util/makeBankImage';
+import { CyclopsTable } from '@/lib/simulation/cyclops.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const cyclopsID = 2097;
 
@@ -46,9 +44,9 @@ const defenders = [
 
 export const cyclopsTask: MinionTask = {
 	type: 'Cyclops',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, quantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelId, quantity } = data;
+
 		const userBank = user.bank;
 
 		const loot = new Bank();
@@ -70,8 +68,7 @@ export const cyclopsTask: MinionTask = {
 			loot.add(CyclopsTable.roll());
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -86,6 +83,6 @@ export const cyclopsTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot: itemsAdded });
 	}
 };

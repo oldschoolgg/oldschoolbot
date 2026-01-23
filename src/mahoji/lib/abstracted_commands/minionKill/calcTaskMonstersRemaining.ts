@@ -1,7 +1,8 @@
 import { Monsters } from 'oldschooljs';
-import type { KillableMonster } from '../../../../lib/minions/types';
-import { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
-import type { CurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
+
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { CurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 
 export function killsRemainingOnTask({
 	isOnTask,

@@ -1,8 +1,7 @@
-import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { deepResolveItems, Monsters, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const krystiliaMonsters: KillableMonster[] = [
 	{

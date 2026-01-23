@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
-export const CrawlingHandPreTable = new LootTable()
+export const CrawlingHandPreTable: LootTable = new LootTable()
 	/* Gloves */
 	.add('Leather gloves', 1, 21)
 	.add('Purple gloves', 1, 2)
@@ -22,13 +22,13 @@ export const CrawlingHandPreTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 2);
 
-const CrawlingHandTable = new LootTable()
+const CrawlingHandTable: LootTable = new LootTable()
 	.every('Bones')
 	// 7975 is the correct Crawling hand item
 	.tertiary(500, 7975, 1)
 	.every(CrawlingHandPreTable);
 
-export default new SimpleMonster({
+export const CrawlingHand: SimpleMonster = new SimpleMonster({
 	id: 448,
 	name: 'Crawling Hand',
 	table: CrawlingHandTable,

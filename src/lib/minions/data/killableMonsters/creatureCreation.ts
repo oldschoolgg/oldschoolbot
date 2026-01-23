@@ -1,10 +1,8 @@
-import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { GearStat } from '@oldschoolgg/gear';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, itemID, Monsters } from 'oldschooljs';
 
-import { GearStat } from '../../../gear/types';
-import itemID from '../../../util/itemID';
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const creatureCreationCreatures: KillableMonster[] = [];
 const creatures = [
@@ -22,7 +20,7 @@ for (const [creature, cost] of creatures) {
 		aliases: creature.aliases,
 		timeToFinish: Time.Minute * 1.3,
 		table: creature,
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 20 * 3,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],

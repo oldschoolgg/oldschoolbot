@@ -1,11 +1,34 @@
-import { Bank, convertLVLtoXP } from 'oldschooljs';
+import { type GearSetup, type GearSetupType, GearStat } from '@oldschoolgg/gear';
+import { Bank, convertLVLtoXP, convertXPtoLVL, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { type GearSetup, GearStat } from '../../src/lib/gear/types';
-import getUserBestGearFromBank from '../../src/lib/minions/functions/getUserBestGearFromBank';
-import { Gear } from '../../src/lib/structures/Gear';
-import type { Skills } from '../../src/lib/types';
-import itemID from '../../src/lib/util/itemID';
+import { SkillsArray } from '@/lib/skilling/types.js';
+import type { Skills } from '@/lib/types/index.js';
+import { default as rawGetUserBestGearFromBank } from '../../src/lib/minions/functions/getUserBestGearFromBank.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import { makeGearBank } from './utils.js';
+
+function getUserBestGearFromBank(
+	bank: Bank,
+	gear: Gear,
+	gearSetup: GearSetupType,
+	skills: Skills,
+	gearStat: GearStat,
+	extra: string | null = null
+) {
+	const skillsAsLevels: Skills = {};
+	for (const skill of SkillsArray) {
+		skillsAsLevels[skill as keyof Skills] = convertXPtoLVL(skills[skill as keyof Skills] ?? 1);
+	}
+	const gearBank = makeGearBank({ bank, skillsAsLevels });
+	gearBank.gear[gearSetup] = gear;
+	return rawGetUserBestGearFromBank({
+		gearBank,
+		gearStat,
+		gearSetup,
+		extra
+	});
+}
 
 const userBank = new Bank({
 	'Bandos chestplate': 4,

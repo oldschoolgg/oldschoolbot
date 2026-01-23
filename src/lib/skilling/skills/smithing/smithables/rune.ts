@@ -1,7 +1,7 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
+import { itemID } from 'oldschooljs';
 
-import itemID from '../../../../util/itemID';
-import type { SmithedItem } from '../../../types';
+import type { SmithedItem } from '@/lib/skilling/types.js';
 
 const Rune: SmithedItem[] = [
 	{

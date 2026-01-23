@@ -1,27 +1,23 @@
-import { percentChance } from 'e';
-import { Bank, Misc } from 'oldschooljs';
+import { percentChance, randomVariation } from '@oldschoolgg/rng';
+import { Bank, EMonster, Misc } from 'oldschooljs';
 
-import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/lootTrack';
-import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
-import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
-import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
-import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { BitField } from '@/lib/constants.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
+import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const RawNightmare = Misc.Nightmare;
 
 export const nightmareTask: MinionTask = {
 	type: 'Nightmare',
-	async run(data: NightmareActivityTaskOptions) {
-		const { channelID, quantity, duration, isPhosani = false, userID, method } = data;
+	async run(data: NightmareActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelId, quantity, duration, isPhosani = false, method } = data;
 
-		const monsterID = isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id;
+		const monsterID = isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
-		const user = await mUserFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
 		const [userStats] = await getNightmareGearStats(user, team, isPhosani);
@@ -48,8 +44,8 @@ export const nightmareTask: MinionTask = {
 			}
 		}
 
-		const xpRes = await addMonsterXP(user, {
-			monsterID: NIGHTMARE_ID,
+		const xpRes = await user.addMonsterXP({
+			monsterID: EMonster.NIGHTMARE,
 			quantity: Math.ceil(quantity / team.length),
 			duration,
 			isOnTask: false,
@@ -57,7 +53,6 @@ export const nightmareTask: MinionTask = {
 		});
 
 		const { newKC } = await user.incrementKC(monsterID, kc);
-
 		const ownsOrUsedTablet =
 			user.bank.has('Slepey tablet') ||
 			(user.bitfield.includes(BitField.HasSlepeyTablet) && user.cl.has('Slepey Tablet'));
@@ -65,13 +60,16 @@ export const nightmareTask: MinionTask = {
 			if (ownsOrUsedTablet) {
 				userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
 			}
-			if (!ownsOrUsedTablet && kc > 0 && newKC >= 100 && !userLoot.has('Slepey tablet')) {
-				userLoot.add('Slepey tablet');
+			if (!ownsOrUsedTablet && !userLoot.has('Slepey tablet')) {
+				// const { newKC } = await user.incrementKC(monsterID, kc);
+				if (newKC >= 25) {
+					userLoot.add('Slepey tablet');
+				}
 			}
 		}
 
 		// Fix purple items on solo kills
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
+		const { previousCL, itemsAdded } = await user.transactItems({ itemsToAdd: userLoot, collectionLog: true });
 
 		announceLoot({
 			user,
@@ -97,14 +95,12 @@ export const nightmareTask: MinionTask = {
 		});
 
 		if (!kc) {
-			handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
-				undefined,
-				data,
-				null
-			);
+				channelId,
+				message: `${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
+				data
+			});
 		} else {
 			const image = await makeBankImage({
 				bank: itemsAdded,
@@ -114,14 +110,17 @@ export const nightmareTask: MinionTask = {
 			});
 
 			const kc = await user.getKC(monsterID);
-			handleTripFinish(
+			const kcPerHour = (quantity / (duration / (1000 * 60 * 60))).toFixed(2);
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
-				image.file.attachment,
+				channelId: channelId,
+				message: {
+					content: `${user}, ${user.minionName} finished killing ${quantity} ${monsterName} (${kcPerHour}/hr), you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
+					files: [image]
+				},
 				data,
-				itemsAdded
-			);
+				loot: itemsAdded
+			});
 		}
 	}
 };

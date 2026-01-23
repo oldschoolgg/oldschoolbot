@@ -1,12 +1,7 @@
-import { Bank } from 'oldschooljs';
-import type { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
+import { type EquipmentSlot, type GearSetupType, GearStat } from '@oldschoolgg/gear';
+import { Bank, type Item, Items } from 'oldschooljs';
 
-import type { GearSetupType } from '../../gear/types';
-import { GearStat } from '../../gear/types';
-import type { Gear } from '../../structures/Gear';
-import type { Skills } from '../../types';
-import { assert, skillsMeetRequirements } from '../../util';
-import getOSItem from '../../util/getOSItem';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 function getItemScore(item: Item) {
 	return Object.values(item.equipment!).reduce(
@@ -15,17 +10,20 @@ function getItemScore(item: Item) {
 	);
 }
 
-export default function getUserBestGearFromBank(
-	userBank: Bank,
-	userGear: Gear,
-	gearType: GearSetupType,
-	skills: Skills,
-	gearStat: GearStat,
-	extra: string | null = null
-) {
-	assert(Object.values(GearStat).includes(gearStat as any));
+export default function getUserBestGearFromBank({
+	gearBank,
+	gearStat,
+	gearSetup,
+	extra
+}: {
+	gearBank: GearBank;
+	gearSetup: GearSetupType;
+	gearStat: GearStat;
+	extra: string | null;
+}) {
 	const toRemoveFromGear: Bank = new Bank();
 	const toRemoveFromBank: Bank = new Bank();
+	const userGear = gearBank.gear[gearSetup];
 	const gearToEquip = { ...userGear.raw() };
 
 	let score2h = 0;
@@ -39,7 +37,7 @@ export default function getUserBestGearFromBank(
 	// Get extra settings (prayer or strength)
 	switch (extra) {
 		case 'strength':
-			switch (gearType) {
+			switch (gearSetup) {
 				case 'skilling':
 				case 'misc':
 				case 'fashion':
@@ -90,11 +88,9 @@ export default function getUserBestGearFromBank(
 	}
 
 	// Get all items by slot from user bank
-	for (const [item, quantity] of new Bank().add(userBank).add(toRemoveFromGear).items()) {
-		const hasStats = item.equipment?.requirements
-			? skillsMeetRequirements(skills, item.equipment.requirements)
-			: true;
-		if (item.equipable_by_player && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
+	for (const [item, quantity] of new Bank().add(gearBank.bank).add(toRemoveFromGear).items()) {
+		const hasStats = item.equipment?.requirements ? gearBank.hasSkillReqs(item.equipment.requirements) : true;
+		if (item.equipable && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
 			equipables[item.equipment.slot].push(item.id);
 		}
 	}
@@ -104,8 +100,8 @@ export default function getUserBestGearFromBank(
 		if (equipables[slot as EquipmentSlot][0]) {
 			// Sort by the extra gear first if that is set
 			equipables[slot as EquipmentSlot] = items.sort((a, b) => {
-				const itemA = getOSItem(a);
-				const itemB = getOSItem(b);
+				const itemA = Items.getOrThrow(a);
+				const itemB = Items.getOrThrow(b);
 				const aGearScore = getItemScore(itemA);
 				const bGearScore = getItemScore(itemB);
 				if (gearStatExtra) {
@@ -119,7 +115,7 @@ export default function getUserBestGearFromBank(
 			});
 
 			// Get the best item (first in slot) and if that exists, add its stats to the calculation
-			const item = getOSItem(equipables[slot as EquipmentSlot][0]);
+			const item = Items.getOrThrow(equipables[slot as EquipmentSlot][0]);
 			gearToEquip[slot as EquipmentSlot] = { item: item.id, quantity: 1 };
 			score2h += slot !== 'weapon' && slot !== 'shield' ? item.equipment![gearStat] : 0;
 			scoreWs += slot !== '2h' ? item.equipment![gearStat] : 0;
@@ -165,6 +161,6 @@ export default function getUserBestGearFromBank(
 		toRemoveFromGear,
 		toRemoveFromBank,
 		gearToEquip,
-		userFinalBank: new Bank(userBank).add(toRemoveFromGear).remove(toRemoveFromBank)
+		userFinalBank: new Bank(gearBank.bank).add(toRemoveFromGear).remove(toRemoveFromBank)
 	};
 }

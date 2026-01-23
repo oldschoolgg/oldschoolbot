@@ -1,16 +1,15 @@
 {
 	"name": "@oldschoolgg/collectionlog",
+	"type": "module",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
+			"types": "./dist/esm/index.d.mts",
 			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		}
 	},
 	"scripts": {
-		"dev": "concurrently \"pnpm build:esbuild\" \"pnpm build:esbuild\"",
-		"build:esbuild": "tsx esbuild.ts",
-		"build:types": "tsc -p src"
+		"build": "tsdown"
 	},
 	"dependencies": {
 		"oldschooljs": "workspace:*"

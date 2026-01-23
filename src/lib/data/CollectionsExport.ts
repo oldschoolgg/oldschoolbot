@@ -1,13 +1,7 @@
-import type { Minigame } from '@prisma/client';
-import { objectEntries } from 'e';
-import type { Bank, Item } from 'oldschooljs';
+import { objectEntries } from '@oldschoolgg/toolkit';
+import { type Bank, EItem, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
-import { ItemGroups, resolveItems } from 'oldschooljs';
-import { growablePets } from '../growablePets';
-import { implings } from '../implings';
-import type { MinigameScore } from '../settings/minigames';
-import type { MUserStats } from '../structures/MUserStats';
-import getOSItem from '../util/getOSItem';
+import type { Minigame } from '@/prisma/main.js';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -15,12 +9,16 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants';
+} from '@/lib/data/gracefulVariants.js';
+import { growablePets } from '@/lib/growablePets.js';
+import { implings } from '@/lib/implings.js';
+import type { MinigameScore } from '@/lib/settings/minigames.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export interface IToReturnCollection {
 	category: string;
 	name: string;
-	collection: number[];
+	collection: Set<number>;
 	completions?: Record<string, number>;
 	isActivity?: boolean;
 	collectionObtained: number;
@@ -28,10 +26,13 @@ export interface IToReturnCollection {
 	leftList?: ILeftListStatus;
 	userItems: Bank;
 	counts: boolean;
+	unobtainable: boolean;
 }
 
+export type CollectionStatus = 'not_started' | 'started' | 'completed';
+
 export interface ILeftListStatus {
-	[key: string]: 'not_started' | 'started' | 'completed';
+	[key: string]: CollectionStatus;
 }
 
 export interface IKCActivity {
@@ -59,6 +60,7 @@ interface ICollectionActivity {
 		counts?: false;
 		alias?: string[];
 		items: number[];
+		unobtainable?: true;
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
@@ -98,20 +100,13 @@ export const alchemicalHydraCL = resolveItems([
 	'Alchemical hydra heads'
 ]);
 
-const karilsItems = resolveItems(["Karil's coif", "Karil's leathertop", "Karil's leatherskirt", "Karil's crossbow"]);
-const ahrimsItems = resolveItems(["Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt", "Ahrim's staff"]);
-const dharokItems = resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]);
-const guthansItems = resolveItems(["Guthan's helm", "Guthan's platebody", "Guthan's chainskirt", "Guthan's warspear"]);
-const toragsItems = resolveItems(["Torag's helm", "Torag's platebody", "Torag's platelegs", "Torag's hammers"]);
-const veracsItems = resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]);
-export const barrowsItemArr = [karilsItems, ahrimsItems, guthansItems, toragsItems, veracsItems, dharokItems];
 export const barrowsChestCL = resolveItems([
-	...karilsItems,
-	...ahrimsItems,
-	...dharokItems,
-	...guthansItems,
-	...toragsItems,
-	...veracsItems,
+	...ItemGroups.karilsItems,
+	...ItemGroups.ahrimsItems,
+	...ItemGroups.dharokItems,
+	...ItemGroups.guthansItems,
+	...ItemGroups.toragsItems,
+	...ItemGroups.veracsItems,
 	'Bolt rack'
 ]);
 export const bryophytaCL = resolveItems(["Bryophyta's essence"]);
@@ -135,14 +130,13 @@ export const cerberusCL = resolveItems([
 export const chaosElementalCL = resolveItems(['Pet chaos elemental', 'Dragon pickaxe', 'Dragon 2h sword']);
 export const chaosFanaticCL = resolveItems(['Pet chaos elemental', 'Odium shard 1', 'Malediction shard 1']);
 
-const godWarsDungeonGodswordShards = resolveItems(['Godsword shard 1', 'Godsword shard 2', 'Godsword shard 3']);
 export const generalGraardorCL = resolveItems([
 	'Pet general graardor',
 	'Bandos chestplate',
 	'Bandos tassets',
 	'Bandos boots',
 	'Bandos hilt',
-	...godWarsDungeonGodswordShards
+	...ItemGroups.godWarsDungeonGodswordShards
 ]);
 export const kreeArraCL = resolveItems([
 	"Pet kree'arra",
@@ -150,7 +144,7 @@ export const kreeArraCL = resolveItems([
 	'Armadyl chestplate',
 	'Armadyl chainskirt',
 	'Armadyl hilt',
-	...godWarsDungeonGodswordShards
+	...ItemGroups.godWarsDungeonGodswordShards
 ]);
 export const krilTsutsarothCL = resolveItems([
 	"Pet k'ril tsutsaroth",
@@ -158,7 +152,7 @@ export const krilTsutsarothCL = resolveItems([
 	'Zamorakian spear',
 	'Steam battlestaff',
 	'Zamorak hilt',
-	...godWarsDungeonGodswordShards
+	...ItemGroups.godWarsDungeonGodswordShards
 ]);
 export const commanderZilyanaCL = resolveItems([
 	'Pet zilyana',
@@ -166,7 +160,7 @@ export const commanderZilyanaCL = resolveItems([
 	'Saradomin hilt',
 	'Saradomin sword',
 	"Saradomin's light",
-	...godWarsDungeonGodswordShards
+	...ItemGroups.godWarsDungeonGodswordShards
 ]);
 
 export const corporealBeastCL = resolveItems([
@@ -187,6 +181,7 @@ export const muspahCL = resolveItems([
 	'Ancient essence'
 ]);
 export const crazyArchaeologistCL = resolveItems(['Odium shard 2', 'Malediction shard 2', 'Fedora']);
+export const derangedArchaeologistCL = resolveItems(['Steel ring']);
 export const dagannothKingsCL = resolveItems([
 	'Pet dagannoth prime',
 	'Pet dagannoth supreme',
@@ -229,7 +224,7 @@ export const godWarsDungeonCL = resolveItems([
 	'Bandos tassets',
 	'Bandos boots',
 	'Bandos hilt',
-	...godWarsDungeonGodswordShards,
+	...ItemGroups.godWarsDungeonGodswordShards,
 	'Frozen key piece (bandos)',
 	'Frozen key piece (saradomin)',
 	'Frozen key piece (zamorak)',
@@ -418,35 +413,6 @@ export const theatreOfBLoodCL = resolveItems([
 	'Sanguine dust',
 	'Holy ornament kit',
 	'Sanguine ornament kit'
-]);
-
-export const toaCL = resolveItems([
-	"Tumeken's guardian",
-	"Tumeken's shadow (uncharged)",
-	"Elidinis' ward",
-	'Masori mask',
-	'Masori body',
-	'Masori chaps',
-	'Lightbearer',
-	"Osmumten's fang",
-	'Thread of elidinis',
-	'Breach of the scarab',
-	'Eye of the corruptor',
-	'Jewel of the sun',
-	'Menaphite ornament kit',
-	'Cursed phalanx',
-	'Masori crafting kit',
-	'Cache of runes',
-	"Icthlarin's shroud (tier 1)",
-	"Icthlarin's shroud (tier 2)",
-	"Icthlarin's shroud (tier 3)",
-	"Icthlarin's shroud (tier 4)",
-	"Icthlarin's shroud (tier 5)",
-	'Remnant of akkha',
-	'Remnant of ba-ba',
-	'Remnant of kephri',
-	'Remnant of zebak',
-	'Ancient remnant'
 ]);
 
 export const cluesBeginnerCL = resolveItems([
@@ -825,8 +791,7 @@ export const cluesHardCL = resolveItems([
 	'Guthix crozier',
 	'Zamorak stole',
 	'Zamorak crozier',
-	// Zombie head
-	19_912,
+	'Zombie head (treasure trails)',
 	'Cyclops head',
 	"Pirate's hat",
 	'Red cavalier',
@@ -1316,14 +1281,7 @@ export const pestControlCL = resolveItems([
 	'Elite void robe'
 ]);
 
-export const roguesDenOutfit = resolveItems([
-	'Rogue mask',
-	'Rogue top',
-	'Rogue trousers',
-	'Rogue boots',
-	'Rogue gloves'
-]);
-export const roguesDenCL = resolveItems([...roguesDenOutfit]);
+export const roguesDenCL = resolveItems([...ItemGroups.rogueOutfit]);
 
 export const shadesOfMorttonCL = resolveItems([
 	'Amulet of the damned (full)',
@@ -1343,13 +1301,7 @@ export const shadesOfMorttonCL = resolveItems([
 ]);
 export const soulWarsCL = resolveItems(["Lil' creator", 'Red soul cape', 'Ectoplasmator']);
 
-export const templeTrekkingOutfit = resolveItems([
-	'Lumberjack hat',
-	'Lumberjack top',
-	'Lumberjack legs',
-	'Lumberjack boots'
-]);
-export const templeTrekkingCL = resolveItems([...templeTrekkingOutfit]);
+export const templeTrekkingCL = ItemGroups.templeTrekkingOutfit;
 
 export const titheFarmCL = resolveItems([
 	"Farmer's strawhat",
@@ -1398,14 +1350,13 @@ export const volcanicMineCL = resolveItems([
 	'Volcanic mine teleport',
 	'Dragon pickaxe (broken)'
 ]);
-export const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const aerialFishingCL = resolveItems([
 	'Golden tench',
 	'Pearl fishing rod',
 	'Pearl fly fishing rod',
 	'Pearl barbarian rod',
 	'Fish sack',
-	...anglerOutfit
+	...ItemGroups.anglerOutfit
 ]);
 export const allPetsCL = resolveItems([
 	'Abyssal orphan',
@@ -1468,7 +1419,10 @@ export const allPetsCL = resolveItems([
 	'Smol heredit',
 	'Nid',
 	'Huberte',
-	'Moxi'
+	'Moxi',
+	'Bran',
+	'Yami',
+	'Dom'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1483,19 +1437,7 @@ export const camdozaalCL = resolveItems([
 	'Imcando hammer'
 ]);
 
-export const championScrolls = resolveItems([
-	'Earth warrior champion scroll',
-	'Ghoul champion scroll',
-	'Giant champion scroll',
-	'Goblin champion scroll',
-	'Hobgoblin champion scroll',
-	'Imp champion scroll',
-	'Jogre champion scroll',
-	'Lesser demon champion scroll',
-	'Skeleton champion scroll',
-	'Zombie champion scroll'
-]);
-export const championsChallengeCL = resolveItems([...championScrolls, "Champion's cape"]);
+export const championsChallengeCL = resolveItems([...ItemGroups.championScrolls, "Champion's cape"]);
 export const chaosDruisCL = resolveItems(['Elder chaos top', 'Elder chaos robe', 'Elder chaos hood']);
 export const chompyBirdsCL = resolveItems([
 	'Chompy chick',
@@ -1601,42 +1543,19 @@ export const monkeyBackpacksCL = resolveItems([
 	'Skeleton monkey',
 	'Zombie monkey'
 ]);
-export const motherlodeMineCL = resolveItems([
-	'Coal bag',
-	'Gem bag',
-	'Prospector helmet',
-	'Prospector jacket',
-	'Prospector legs',
-	'Prospector boots'
-]);
+export const motherlodeMineCL = resolveItems(['Coal bag', 'Gem bag', ...ItemGroups.prospectorOutfit]);
 export const myNotesCL = resolveItems([
 	11_341, 11_342, 11_343, 11_344, 11_345, 11_346, 11_347, 11_348, 11_349, 11_350, 11_351, 11_352, 11_353, 11_354,
 	11_355, 11_356, 11_357, 11_358, 11_359, 11_360, 11_361, 11_362, 11_363, 11_364, 11_365, 11_366
 ]);
 export const randomEventsCL = resolveItems([
-	'Camo top',
-	'Camo bottoms',
-	'Camo helmet',
-	'Lederhosen top',
-	'Lederhosen shorts',
-	'Lederhosen hat',
-	'Zombie shirt',
-	'Zombie trousers',
-	'Zombie mask',
-	'Zombie gloves',
-	'Zombie boots',
-	'Mime mask',
-	'Mime top',
-	'Mime legs',
-	'Mime gloves',
-	'Mime boots',
+	...ItemGroups.camoOutfit,
+	...ItemGroups.lederhosenOutfit,
+	...ItemGroups.zombieOutfit,
+	...ItemGroups.mimeOutfit,
 	'Frog token',
 	'Stale baguette',
-	"Beekeeper's hat",
-	"Beekeeper's top",
-	"Beekeeper's legs",
-	"Beekeeper's gloves",
-	"Beekeeper's boots"
+	...ItemGroups.beekeeperOutfit
 ]);
 export const revenantsCL = resolveItems([
 	"Viggora's chainmace (u)",
@@ -1782,7 +1701,11 @@ export const slayerCL = resolveItems([
 	'Aranea boots',
 	'Glacial temotli',
 	'Pendant of ates (inert)',
-	'Frozen tear'
+	'Frozen tear',
+	EItem.EARTHBOUND_TECPATL,
+	EItem.ANTLER_GUARD,
+	EItem.ALCHEMISTS_SIGNET,
+	EItem.BROKEN_ANTLER
 ]);
 
 export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);
@@ -1800,12 +1723,6 @@ export const tzHaarCL = resolveItems([
 	'Obsidian platelegs'
 ]);
 
-export const evilChickenOutfit = resolveItems([
-	'Evil chicken head',
-	'Evil chicken wings',
-	'Evil chicken legs',
-	'Evil chicken feet'
-]);
 export const miscellaneousCL = resolveItems([
 	'Herbi',
 	'Chompy chick',
@@ -1829,7 +1746,7 @@ export const miscellaneousCL = resolveItems([
 	'Dragon spear',
 	'Amulet of eternal glory',
 	'Shaman mask',
-	...evilChickenOutfit,
+	...ItemGroups.evilChickenOutfit,
 	'Mining gloves',
 	'Superior mining gloves',
 	'Expert mining gloves',
@@ -1857,7 +1774,8 @@ export const miscellaneousCL = resolveItems([
 	'Orange egg sac',
 	'Blue egg sac',
 	'Broken zombie axe',
-	'Broken zombie helmet'
+	'Broken zombie helmet',
+	EItem.HELMET_OF_THE_MOON
 ]);
 
 export const diariesCL = [
@@ -2158,76 +2076,76 @@ interface LMSBuyable {
 }
 
 export const LMSBuyables: LMSBuyable[] = [
-	{ item: getOSItem("Deadman's chest"), cost: 160 },
-	{ item: getOSItem("Deadman's legs"), cost: 160 },
-	{ item: getOSItem("Deadman's cape"), cost: 160 },
-	{ item: getOSItem('Swift blade'), cost: 350 },
-	{ item: getOSItem('Guthixian icon'), cost: 500 },
-	{ item: getOSItem('Trouver parchment'), cost: 18 },
-	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
-	{ item: getOSItem('Blighted entangle sack'), quantity: 70, cost: 1 },
-	{ item: getOSItem('Blighted teleport spell sack'), quantity: 50, cost: 1 },
-	{ item: getOSItem('Blighted vengeance sack'), quantity: 50, cost: 1 },
-	{ item: getOSItem('Blighted ancient ice sack'), quantity: 30, cost: 1 },
-	{ item: getOSItem('Adamant arrow'), quantity: 350, cost: 1 },
-	{ item: getOSItem('Bolt rack'), quantity: 200, cost: 1 },
-	{ item: getOSItem('Rune arrow'), quantity: 300, cost: 3 },
-	{ item: getOSItem('Dragonstone bolts (e)'), quantity: 20, cost: 3 },
-	{ item: getOSItem('Blighted karambwan'), quantity: 12, cost: 1 },
-	{ item: getOSItem('Blighted manta ray'), quantity: 15, cost: 1 },
-	{ item: getOSItem('Blighted anglerfish'), quantity: 15, cost: 1 },
-	{ item: getOSItem('Blighted super restore(4)'), quantity: 4, cost: 1 },
-	{ item: getOSItem('Climbing boots'), quantity: 20, cost: 1 },
-	{ item: getOSItem('Looting bag'), cost: 1 },
-	{ item: getOSItem('Looting bag note'), cost: 1 },
-	{ item: getOSItem('Ring of wealth scroll'), cost: 5 },
-	{ item: getOSItem('Magic shortbow scroll'), cost: 5 },
-	{ item: getOSItem('Clue box'), cost: 5 },
-	{ item: getOSItem('Crystal weapon seed'), cost: 12 },
-	{ item: getOSItem('Granite clamp'), cost: 25 },
-	{ item: getOSItem('Ornate maul handle'), cost: 15 },
-	{ item: getOSItem('Steam staff upgrade kit'), cost: 13 },
-	{ item: getOSItem('Lava staff upgrade kit'), cost: 13 },
-	{ item: getOSItem('Dragon pickaxe upgrade kit'), cost: 14 },
-	{ item: getOSItem('Ward upgrade kit'), cost: 20 },
-	{ item: getOSItem('Green dark bow paint'), cost: 25 },
-	{ item: getOSItem('Yellow dark bow paint'), cost: 25 },
-	{ item: getOSItem('White dark bow paint'), cost: 25 },
-	{ item: getOSItem('Blue dark bow paint'), cost: 25 },
-	{ item: getOSItem('Volcanic whip mix'), cost: 25 },
-	{ item: getOSItem('Frozen whip mix'), cost: 25 },
-	{ item: getOSItem('Rune pouch'), cost: 75 },
-	{ item: getOSItem('Rune pouch note'), cost: 75 },
-	{ item: getOSItem('Decorative emblem'), cost: 100 },
-	{ item: getOSItem("Saradomin's tear"), cost: 150 },
-	{ item: getOSItem('Target teleport scroll'), cost: 250 },
-	{ item: getOSItem("Vesta's longsword (inactive)"), cost: 300 },
-	{ item: getOSItem('Armadyl halo'), cost: 450 },
-	{ item: getOSItem('Bandos halo'), cost: 450 },
-	{ item: getOSItem('Seren halo'), cost: 450 },
-	{ item: getOSItem('Ancient halo'), cost: 450 },
-	{ item: getOSItem('Brassica halo'), cost: 450 },
-	{ item: getOSItem('Paddewwa teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Senntisten teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Annakarl teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Carrallanger teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Dareeyak teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Ghorrock teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Kharyrll teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Lassar teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Target teleport'), cost: 1 },
+	{ item: Items.getOrThrow("Deadman's chest"), cost: 160 },
+	{ item: Items.getOrThrow("Deadman's legs"), cost: 160 },
+	{ item: Items.getOrThrow("Deadman's cape"), cost: 160 },
+	{ item: Items.getOrThrow('Swift blade'), cost: 350 },
+	{ item: Items.getOrThrow('Guthixian icon'), cost: 500 },
+	{ item: Items.getOrThrow('Trouver parchment'), cost: 18 },
+	{ item: Items.getOrThrow('Wilderness crabs teleport'), cost: 1 },
+	{ item: Items.getOrThrow('Blighted entangle sack'), quantity: 70, cost: 1 },
+	{ item: Items.getOrThrow('Blighted teleport spell sack'), quantity: 50, cost: 1 },
+	{ item: Items.getOrThrow('Blighted vengeance sack'), quantity: 50, cost: 1 },
+	{ item: Items.getOrThrow('Blighted ancient ice sack'), quantity: 30, cost: 1 },
+	{ item: Items.getOrThrow('Adamant arrow'), quantity: 350, cost: 1 },
+	{ item: Items.getOrThrow('Bolt rack'), quantity: 200, cost: 1 },
+	{ item: Items.getOrThrow('Rune arrow'), quantity: 300, cost: 3 },
+	{ item: Items.getOrThrow('Dragonstone bolts (e)'), quantity: 20, cost: 3 },
+	{ item: Items.getOrThrow('Blighted karambwan'), quantity: 12, cost: 1 },
+	{ item: Items.getOrThrow('Blighted manta ray'), quantity: 15, cost: 1 },
+	{ item: Items.getOrThrow('Blighted anglerfish'), quantity: 15, cost: 1 },
+	{ item: Items.getOrThrow('Blighted super restore(4)'), quantity: 4, cost: 1 },
+	{ item: Items.getOrThrow('Climbing boots'), quantity: 20, cost: 1 },
+	{ item: Items.getOrThrow('Looting bag'), cost: 1 },
+	{ item: Items.getOrThrow('Looting bag note'), cost: 1 },
+	{ item: Items.getOrThrow('Ring of wealth scroll'), cost: 5 },
+	{ item: Items.getOrThrow('Magic shortbow scroll'), cost: 5 },
+	{ item: Items.getOrThrow('Clue box'), cost: 5 },
+	{ item: Items.getOrThrow('Crystal weapon seed'), cost: 12 },
+	{ item: Items.getOrThrow('Granite clamp'), cost: 25 },
+	{ item: Items.getOrThrow('Ornate maul handle'), cost: 15 },
+	{ item: Items.getOrThrow('Steam staff upgrade kit'), cost: 13 },
+	{ item: Items.getOrThrow('Lava staff upgrade kit'), cost: 13 },
+	{ item: Items.getOrThrow('Dragon pickaxe upgrade kit'), cost: 14 },
+	{ item: Items.getOrThrow('Ward upgrade kit'), cost: 20 },
+	{ item: Items.getOrThrow('Green dark bow paint'), cost: 25 },
+	{ item: Items.getOrThrow('Yellow dark bow paint'), cost: 25 },
+	{ item: Items.getOrThrow('White dark bow paint'), cost: 25 },
+	{ item: Items.getOrThrow('Blue dark bow paint'), cost: 25 },
+	{ item: Items.getOrThrow('Volcanic whip mix'), cost: 25 },
+	{ item: Items.getOrThrow('Frozen whip mix'), cost: 25 },
+	{ item: Items.getOrThrow('Rune pouch'), cost: 75 },
+	{ item: Items.getOrThrow('Rune pouch note'), cost: 75 },
+	{ item: Items.getOrThrow('Decorative emblem'), cost: 100 },
+	{ item: Items.getOrThrow("Saradomin's tear"), cost: 150 },
+	{ item: Items.getOrThrow('Target teleport scroll'), cost: 250 },
+	{ item: Items.getOrThrow("Vesta's longsword (inactive)"), cost: 300 },
+	{ item: Items.getOrThrow('Armadyl halo'), cost: 450 },
+	{ item: Items.getOrThrow('Bandos halo'), cost: 450 },
+	{ item: Items.getOrThrow('Seren halo'), cost: 450 },
+	{ item: Items.getOrThrow('Ancient halo'), cost: 450 },
+	{ item: Items.getOrThrow('Brassica halo'), cost: 450 },
+	{ item: Items.getOrThrow('Paddewwa teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Senntisten teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Annakarl teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Carrallanger teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Dareeyak teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Ghorrock teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Kharyrll teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Lassar teleport'), quantity: 2, cost: 1 },
+	{ item: Items.getOrThrow('Target teleport'), cost: 1 },
 	// Capes
-	{ item: getOSItem("Victor's cape (1)"), cost: null, wins: 1 },
-	{ item: getOSItem("Victor's cape (10)"), cost: null, wins: 10 },
-	{ item: getOSItem("Victor's cape (50)"), cost: null, wins: 50 },
-	{ item: getOSItem("Victor's cape (100)"), cost: null, wins: 100 },
-	{ item: getOSItem("Victor's cape (500)"), cost: null, wins: 500 },
-	{ item: getOSItem("Victor's cape (1000)"), cost: null, wins: 1000 },
+	{ item: Items.getOrThrow("Victor's cape (1)"), cost: null, wins: 1 },
+	{ item: Items.getOrThrow("Victor's cape (10)"), cost: null, wins: 10 },
+	{ item: Items.getOrThrow("Victor's cape (50)"), cost: null, wins: 50 },
+	{ item: Items.getOrThrow("Victor's cape (100)"), cost: null, wins: 100 },
+	{ item: Items.getOrThrow("Victor's cape (500)"), cost: null, wins: 500 },
+	{ item: Items.getOrThrow("Victor's cape (1000)"), cost: null, wins: 1000 },
 	// Special attacks
-	{ item: getOSItem('Golden armadyl special attack'), cost: 75, onlyCL: true },
-	{ item: getOSItem('Golden saradomin special attack'), cost: 75, onlyCL: true },
-	{ item: getOSItem('Golden bandos special attack'), cost: 75, onlyCL: true },
-	{ item: getOSItem('Golden zamorak special attack'), cost: 75, onlyCL: true }
+	{ item: Items.getOrThrow('Golden armadyl special attack'), cost: 75, onlyCL: true },
+	{ item: Items.getOrThrow('Golden saradomin special attack'), cost: 75, onlyCL: true },
+	{ item: Items.getOrThrow('Golden bandos special attack'), cost: 75, onlyCL: true },
+	{ item: Items.getOrThrow('Golden zamorak special attack'), cost: 75, onlyCL: true }
 ];
 
 export const NexCL = resolveItems([
@@ -2307,3 +2225,30 @@ export const araxxorCL = resolveItems([
 ]);
 
 export const amoxliatlCL = resolveItems(['Moxi', 'Glacial temotli', 'Pendant of ates (inert)', 'Frozen tear']);
+
+export const chompyHats = [
+	[Items.getOrThrow('Chompy bird hat (ogre bowman)'), 30],
+	[Items.getOrThrow('Chompy bird hat (bowman)'), 40],
+	[Items.getOrThrow('Chompy bird hat (ogre yeoman)'), 50],
+	[Items.getOrThrow('Chompy bird hat (yeoman)'), 70],
+	[Items.getOrThrow('Chompy bird hat (ogre marksman)'), 95],
+	[Items.getOrThrow('Chompy bird hat (marksman)'), 125],
+	[Items.getOrThrow('Chompy bird hat (ogre woodsman)'), 170],
+	[Items.getOrThrow('Chompy bird hat (woodsman)'), 225],
+	[Items.getOrThrow('Chompy bird hat (ogre forester)'), 300],
+	[Items.getOrThrow('Chompy bird hat (forester)'), 400],
+	[Items.getOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
+	[Items.getOrThrow('Chompy bird hat (bowmaster)'), 700],
+	[Items.getOrThrow('Chompy bird hat (ogre expert)'), 1000],
+	[Items.getOrThrow('Chompy bird hat (expert)'), 1300],
+	[Items.getOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
+	[Items.getOrThrow('Chompy bird hat (dragon archer)'), 2250],
+	[Items.getOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[Items.getOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
+] as const;
+
+export const avasDevices: { item: Item; reduction: number }[] = [
+	{ item: Items.getOrThrow("Ava's attractor"), reduction: 60 },
+	{ item: Items.getOrThrow("Ava's accumulator"), reduction: 72 },
+	{ item: Items.getOrThrow("Ava's assembler"), reduction: 80 }
+];

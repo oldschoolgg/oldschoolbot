@@ -1,11 +1,7 @@
-import { deepClone, objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
-import type { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
-import { resolveItems } from 'oldschooljs/dist/util/util';
-
-import type { GearSetup } from '../gear/types';
-import getOSItem from './getOSItem';
-import itemID from './itemID';
+import type { EquipmentSlot, GearSetup } from '@oldschoolgg/gear';
+import { objectEntries } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
+import { clone } from 'remeda';
 
 interface IGearSwap {
 	[key: number]: number[];
@@ -180,7 +176,7 @@ export default function calculateGearLostOnDeathWilderness(
 	>{}
 ) {
 	// 1 - Duplicate user gear
-	const userGear = { ...deepClone(options.gear) };
+	const userGear = { ...clone(options.gear) };
 	const removableItems: { slot: EquipmentSlot; sorter: number; originalItem: Item }[] = [];
 
 	// 2 - Swap user gear to the correct gear for death calculations
@@ -194,13 +190,13 @@ export default function calculateGearLostOnDeathWilderness(
 			slot: _slot,
 			sorter: replacedGear
 				.map(_i => {
-					const i = getOSItem(_i);
+					const i = Items.getOrThrow(_i);
 					if (lockedItems.includes(i.id)) return -1;
 					// Get the hichest value for the item, be it protection value (cost), ge price or high alch
 					return Math.max(i.price ?? 0, i.cost ?? 0, i.highalch ?? 0);
 				})
 				.reduce((sum, current) => sum + current, 0),
-			originalItem: getOSItem(originalItem)
+			originalItem: Items.getOrThrow(originalItem)
 		});
 	}
 

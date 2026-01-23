@@ -1,7 +1,4 @@
-import { Bank } from 'oldschooljs';
-
-import { itemNameFromID } from '../../util';
-import { logError } from '../../util/logError';
+import { Bank, Items } from 'oldschooljs';
 
 export async function unequipPet(user: MUser) {
 	const equippedPet = user.user.minion_equippedPet;
@@ -9,18 +6,13 @@ export async function unequipPet(user: MUser) {
 
 	const loot = new Bank().add(equippedPet);
 
-	try {
-		await user.addItemsToBank({ items: loot, collectionLog: false });
-	} catch (e) {
-		logError(new Error('Failed to add pet to bank'), {
-			user_id: user.id,
-			pet_to_unequip: equippedPet.toString()
-		});
-		return 'Error removing pet, ask for help in the support server.';
-	}
-	await user.update({
-		minion_equippedPet: null
+	await user.transactItems({
+		itemsToAdd: loot,
+		collectionLog: false,
+		otherUpdates: {
+			minion_equippedPet: null
+		}
 	});
 
-	return `${user.minionName} picks up their ${itemNameFromID(equippedPet)} pet and places it back in their bank.`;
+	return `${user.minionName} picks up their ${Items.itemNameFromId(equippedPet)} pet and places it back in their bank.`;
 }

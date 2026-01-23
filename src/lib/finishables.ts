@@ -1,5 +1,5 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import { notEmpty, randArrItem, roll } from 'e';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BeginnerCasket,
@@ -8,6 +8,9 @@ import {
 	EliteCasket,
 	EliteMimicTable,
 	HardCasket,
+	ItemGroups,
+	Items,
+	itemID,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
@@ -16,9 +19,8 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import { allCollectionLogsFlat } from './data/Collections';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import {
-	NexCL,
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
 	cluesBeginnerCL,
@@ -27,26 +29,24 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
-	evilChickenOutfit,
+	NexCL,
 	temporossCL,
+	theatreOfBLoodCL,
+	theatreOfBLoodNormalCL,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
-	theatreOfBLoodCL,
-	theatreOfBLoodNormalCL,
 	wintertodtCL
-} from './data/CollectionsExport';
-import pets from './data/pets';
-import killableMonsters from './minions/data/killableMonsters';
-import { openShadeChest } from './shadesKeys';
-import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
-import { gauntlet } from './simulation/gauntlet';
-import { handleNexKills } from './simulation/nex';
-import { getTemporossLoot } from './simulation/tempoross';
-import { TheatreOfBlood } from './simulation/tob';
-import { WintertodtCrate } from './simulation/wintertodt';
-import getOSItem from './util/getOSItem';
-import itemID from './util/itemID';
+} from '@/lib/data/CollectionsExport.js';
+import pets from '@/lib/data/pets.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { openShadeChest } from '@/lib/shadesKeys.js';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import { gauntlet } from '@/lib/simulation/gauntlet.js';
+import { handleNexKills } from '@/lib/simulation/nex.js';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { TheatreOfBlood } from '@/lib/simulation/tob.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
@@ -228,12 +228,12 @@ export const finishables: Finishable[] = [
 	},
 	{
 		name: 'Evil Chicken Outfit',
-		cl: evilChickenOutfit,
+		cl: ItemGroups.evilChickenOutfit,
 		aliases: ['evil chicken outfit'],
 		kill: () => {
 			const loot = new Bank();
 			if (roll(300)) {
-				loot.add(randArrItem(evilChickenOutfit));
+				loot.add(randArrItem(ItemGroups.evilChickenOutfit));
 			} else {
 				loot.add(birdsNestID);
 				loot.add(treeSeedsNest.roll());
@@ -262,8 +262,8 @@ export const finishables: Finishable[] = [
 		aliases: ['shades of morton'],
 		kill: ({ accumulatedLoot, totalRuns }) => {
 			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
-				const key = getOSItem(`${tier} key red`);
-				const lock = getOSItem(`${tier} locks`);
+				const key = Items.getOrThrow(`${tier} key red`);
+				const lock = Items.getOrThrow(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
 				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
 			}
@@ -275,7 +275,7 @@ export const finishables: Finishable[] = [
 const monsterPairedCLs = Monsters.map(mon => {
 	const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
 	if (!cl) return null;
-	if (!cl.items.every(id => mon.allItems.includes(id))) return null;
+	if (mon.allItems.some(id => !cl.items.has(id))) return null;
 	return {
 		name: mon.name,
 		aliases: mon.aliases,
@@ -289,7 +289,7 @@ for (const mon of monsterPairedCLs) {
 	finishables.push({
 		name: mon.name,
 		aliases: mon.aliases,
-		cl: mon.cl,
+		cl: Array.from(mon.cl),
 		kill: ({ accumulatedLoot }) => {
 			const cost = new Bank();
 			if (killableMonster?.healAmountNeeded) {

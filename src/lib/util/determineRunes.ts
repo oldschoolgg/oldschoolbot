@@ -1,7 +1,5 @@
-import { notEmpty } from 'e';
-import { Bank } from 'oldschooljs';
-
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { notEmpty } from '@oldschoolgg/toolkit';
+import { Bank, resolveItems } from 'oldschooljs';
 
 const res = resolveItems;
 
@@ -23,7 +21,7 @@ const runeItems: [number[], number[]][] = [
 
 export function determineRunes(user: MUser, runeBank: Bank): Bank {
 	const allWeaponsAndShields = Object.values(user.gear)
-		.map(g => [g.weapon, g.shield])
+		.map(g => [g.get('weapon'), g.get('shield')])
 		.flat(2)
 		.filter(notEmpty)
 		.map(i => i.item);

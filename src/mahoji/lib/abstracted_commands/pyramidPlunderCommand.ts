@@ -1,16 +1,10 @@
-import { Time, reduceNumByPercent } from 'e';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
-import { getMinigameScore } from '../../../lib/settings/minigames';
-import type { PlunderActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { plunderBoosts, plunderRooms } from '@/lib/minions/data/plunder.js';
+import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
 
-export async function pyramidPlunderCommand(user: MUser, channelID: string) {
-	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
+export async function pyramidPlunderCommand(user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
 	const skills = user.skillsAsLevels;
 	const thievingLevel = skills.thieving;
 	const minLevel = plunderRooms[0].thievingLevel;
@@ -24,14 +18,14 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 
 	const boosts = [];
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		plunderTime *= 1.075;
 		boosts.push('-7.5% time penalty for not having graceful equipped');
 	}
 
 	// Every 1h becomes 1% faster to a cap of 10%
 	const percentFaster = Math.min(
-		Math.floor((await getMinigameScore(user.id, 'pyramid_plunder')) / (Time.Hour / plunderTime)),
+		Math.floor((await user.fetchMinigameScore('pyramid_plunder')) / (Time.Hour / plunderTime)),
 		10
 	);
 
@@ -45,16 +39,16 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 			plunderTime = reduceNumByPercent(plunderTime, percent);
 		}
 	}
-	const maxQuantity = Math.floor(calcMaxTripLength(user, 'Plunder') / plunderTime);
+	const maxQuantity = Math.floor((await user.calcMaxTripLength('Plunder')) / plunderTime);
 	const tripLength = maxQuantity * plunderTime;
 
-	await addSubTaskToActivityTask<PlunderActivityTaskOptions>({
+	await ActivityManager.startTrip<PlunderActivityTaskOptions>({
 		rooms: completableRooms.map(room => room.number),
 		quantity: maxQuantity,
 		userID: user.id,
 		duration: tripLength,
 		type: 'Plunder',
-		channelID: channelID.toString(),
+		channelId,
 		minigameID: 'pyramid_plunder'
 	});
 

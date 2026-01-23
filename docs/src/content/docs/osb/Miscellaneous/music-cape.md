@@ -6,8 +6,8 @@ The music cape acts as a sort of completionist cape, requiring a vast amount of 
 
 To buy the music cape, simply use:
 
-- [[/buy name: Music cape]]
-- [[/buy name: Music cape(t)]]
+- [[/buy name\:Music cape]]
+- [[/buy name\:Music cape(t)]]
 
 ---
 

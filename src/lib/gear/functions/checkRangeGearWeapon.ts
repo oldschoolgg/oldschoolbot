@@ -1,16 +1,16 @@
-import { objectEntries } from 'e';
+import { objectEntries } from '@oldschoolgg/toolkit';
+import { EItem, Items } from 'oldschooljs';
 
-import { projectiles } from '../../constants';
-import { getSimilarItems } from '../../data/similarItems';
-import type { Gear } from '../../structures/Gear';
-import { formatList, itemNameFromID } from '../../util';
-import { getOSItem } from '../../util/getOSItem';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { projectiles } from '@/lib/gear/projectiles.js';
+import type { Gear } from '@/lib/structures/Gear.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();
-	const { ammo } = gear;
+	const ammo = gear.get('ammo');
 	if (!weapon) return 'You have no weapon equipped.';
-	const usingBowfa = getSimilarItems(getOSItem('Bow of faerdhinen (c)').id).includes(weapon.id);
+	const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(weapon.id);
 	if (usingBowfa) {
 		return {
 			weapon,
@@ -26,7 +26,10 @@ export function checkRangeGearWeapon(gear: Gear) {
 	if (!projectileCategory[1].items.includes(ammo.item)) {
 		return `You have invalid ammo for your equipped weapon. For ${
 			projectileCategory[0]
-		}-based weapons, you can use: ${formatList(projectileCategory[1].items.map(itemNameFromID), 'or')}.`;
+		}-based weapons, you can use: ${formatList(
+			projectileCategory[1].items.map(i => Items.itemNameFromId(i)),
+			'or'
+		)}.`;
 	}
 
 	return {

@@ -1,7 +1,7 @@
-import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
-import { QuestID } from '../../../minions/data/quests';
+import { Time } from '@oldschoolgg/toolkit';
+import { LootTable, Monsters } from 'oldschooljs';
+
+import { QuestID } from '@/lib/minions/data/quests.js';
 
 const {
 	BeardedBandit,
@@ -18,7 +18,6 @@ const {
 	MasterFarmer,
 	MenaphiteThug,
 	Paladin,
-	PollnivnianBandit,
 	PrifddinasElf,
 	Rogue,
 	TzHaarHur,
@@ -577,21 +576,6 @@ const pickpocketables: Stealable[] = [
 		petChance: 257_211
 	},
 	{
-		name: 'Pollnivnian Bandit',
-		type: 'pickpockable',
-		level: 55,
-		xp: 84.3,
-		table: PollnivnianBandit.pickpocketTable!,
-		id: PollnivnianBandit.id,
-		stunTime: 5,
-		stunDamage: 5,
-		// No current data on slope/intercept
-		slope: 0.772_09,
-		intercept: 17.703_09,
-		customTickRate: 2.5,
-		petChance: 257_211
-	},
-	{
 		name: 'Yanille Watchman',
 		type: 'pickpockable',
 		level: 65,
@@ -704,9 +688,3 @@ const pickpocketables: Stealable[] = [
 ];
 
 export const stealables: Stealable[] = [...stalls, ...pickpocketables];
-
-for (const entity of stealables) {
-	if (!entity.table) {
-		console.error(`Warning! No table for ${entity.name}.`);
-	}
-}

@@ -1,35 +1,39 @@
-import type { GearPreset } from '@prisma/client';
-import { notEmpty, objectKeys, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import type { GearSetupType } from '@oldschoolgg/gear';
+import {
+	type DefenceGearStat,
+	defaultGearSetup,
+	EquipmentSlot,
+	type EquipmentSlotKey,
+	type GearSetup,
+	type GearSlotItem,
+	GearStat,
+	type GearStats,
+	type OffenceGearStat,
+	type OtherGearStat,
+	type PartialGearSetup
+} from '@oldschoolgg/gear';
+import { deepEqual, notEmpty } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
-import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { clone } from 'remeda';
 
-import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
-import type {
-	DefenceGearStat,
-	GearSetup,
-	GearSetupType,
-	GearSlotItem,
-	GearStats,
-	OffenceGearStat,
-	OtherGearStat
-} from '../gear/types';
-import { GearStat } from '../gear/types';
-import type { GearRequirement } from '../minions/types';
-import { assert } from '../util';
-import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID';
+import type { GearPreset } from '@/prisma/main.js';
+import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
+import { assert } from '@/lib/util/logError.js';
 
-export type PartialGearSetup = Partial<{
-	[key in EquipmentSlot]: string;
-}>;
-
-export function hasGracefulEquipped(setup: Gear) {
-	return setup.hasEquipped(
-		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
-		true
-	);
+export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.values(GearStat)) {
+	const osItems = items.map(i => Items.getOrThrow(i));
+	const base: Required<GearRequirement> = {} as Required<GearRequirement>;
+	for (const item of osItems) {
+		for (const stat of Object.values(GearStat)) {
+			const thisStat = item.equipment?.[stat] ?? 0;
+			if (!base[stat]) base[stat] = 0;
+			if (statWhitelist.includes(stat)) {
+				base[stat] += thisStat;
+			}
+		}
+	}
+	return base;
 }
 
 // https://oldschool.runescape.wiki/w/Armour/Highest_bonuses
@@ -56,256 +60,6 @@ export const maxOtherStats: { [key in OtherGearStat]: number } = {
 	[GearStat.Prayer]: 66
 };
 
-export const defaultGear: GearSetup = {
-	[EquipmentSlot.TwoHanded]: null,
-	[EquipmentSlot.Ammo]: null,
-	[EquipmentSlot.Body]: null,
-	[EquipmentSlot.Cape]: null,
-	[EquipmentSlot.Feet]: null,
-	[EquipmentSlot.Hands]: null,
-	[EquipmentSlot.Head]: null,
-	[EquipmentSlot.Legs]: null,
-	[EquipmentSlot.Neck]: null,
-	[EquipmentSlot.Ring]: null,
-	[EquipmentSlot.Shield]: null,
-	[EquipmentSlot.Weapon]: null
-};
-Object.freeze(defaultGear);
-
-export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
-	{
-		name: 'graceful',
-		user_id: '123',
-		head: itemID('Graceful hood'),
-		neck: null,
-		body: itemID('Graceful top'),
-		legs: itemID('Graceful legs'),
-		cape: itemID('Graceful cape'),
-		two_handed: null,
-		hands: itemID('Graceful gloves'),
-		feet: itemID('Graceful boots'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'construction',
-		user_id: '123',
-		head: itemID("Carpenter's helmet"),
-		neck: null,
-		body: itemID("Carpenter's shirt"),
-		legs: itemID("Carpenter's trousers"),
-		cape: null,
-		two_handed: null,
-		hands: null,
-		feet: itemID("Carpenter's boots"),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'thieving',
-		user_id: '123',
-		head: itemID('Rogue mask'),
-		neck: null,
-		body: itemID('Rogue top'),
-		legs: itemID('Rogue trousers'),
-		cape: null,
-		two_handed: null,
-		hands: itemID('Rogue gloves'),
-		feet: itemID('Rogue boots'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'clue_hunter',
-		user_id: '123',
-		head: itemID('Helm of raedwald'),
-		neck: null,
-		body: itemID('Clue hunter garb'),
-		legs: itemID('Clue hunter trousers'),
-		cape: itemID('Clue hunter cloak'),
-		two_handed: null,
-		hands: itemID('Clue hunter gloves'),
-		feet: itemID('Clue hunter boots'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'fishing',
-		user_id: '123',
-		head: itemID('Angler hat'),
-		neck: null,
-		body: itemID('Angler top'),
-		legs: itemID('Angler waders'),
-		cape: null,
-		two_handed: null,
-		hands: null,
-		feet: itemID('Angler boots'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'firemaking',
-		user_id: '123',
-		head: itemID('Pyromancer hood'),
-		neck: null,
-		body: itemID('Pyromancer garb'),
-		legs: itemID('Pyromancer robe'),
-		cape: null,
-		two_handed: null,
-		hands: null,
-		feet: itemID('Pyromancer boots'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'mining',
-		user_id: '123',
-		head: itemID('Prospector helmet'),
-		neck: null,
-		body: itemID('Prospector jacket'),
-		legs: itemID('Prospector legs'),
-		cape: null,
-		two_handed: null,
-		hands: null,
-		feet: itemID('Prospector boots'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'woodcutting',
-		user_id: '123',
-		head: itemID('Lumberjack hat'),
-		neck: null,
-		body: itemID('Lumberjack top'),
-		legs: itemID('Lumberjack legs'),
-		cape: null,
-		two_handed: null,
-		hands: null,
-		feet: itemID('Lumberjack boots'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'farming',
-		user_id: '123',
-		head: itemID("Farmer's strawhat"),
-		neck: null,
-		body: itemID("Farmer's jacket"),
-		legs: itemID("Farmer's boro trousers"),
-		cape: null,
-		two_handed: null,
-		hands: null,
-		feet: itemID("Farmer's boots"),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'runecraft',
-		user_id: '123',
-		head: itemID('Hat of the eye'),
-		neck: null,
-		body: itemID('Robe top of the eye'),
-		legs: itemID('Robe bottoms of the eye'),
-		cape: null,
-		two_handed: null,
-		hands: null,
-		feet: itemID('Boots of the eye'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
-		name: 'smithing',
-		user_id: '123',
-		head: null,
-		neck: null,
-		body: itemID('Smiths tunic'),
-		legs: itemID('Smiths trousers'),
-		cape: null,
-		two_handed: null,
-		hands: itemID('Smiths gloves'),
-		feet: itemID('Smiths boots'),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	}
-];
-
 const baseStats: GearStats = {
 	attack_stab: 0,
 	attack_slash: 0,
@@ -324,18 +78,8 @@ const baseStats: GearStats = {
 };
 
 export class Gear {
-	[EquipmentSlot.TwoHanded]: GearSlotItem | null = null;
-	[EquipmentSlot.Ammo]: GearSlotItem | null = null;
-	[EquipmentSlot.Body]: GearSlotItem | null = null;
-	[EquipmentSlot.Cape]: GearSlotItem | null = null;
-	[EquipmentSlot.Feet]: GearSlotItem | null = null;
-	[EquipmentSlot.Hands]: GearSlotItem | null = null;
-	[EquipmentSlot.Head]: GearSlotItem | null = null;
-	[EquipmentSlot.Legs]: GearSlotItem | null = null;
-	[EquipmentSlot.Neck]: GearSlotItem | null = null;
-	[EquipmentSlot.Ring]: GearSlotItem | null = null;
-	[EquipmentSlot.Shield]: GearSlotItem | null = null;
-	[EquipmentSlot.Weapon]: GearSlotItem | null = null;
+	private setup: GearSetup = { ...defaultGearSetup };
+
 	stats = baseStats;
 
 	constructor(_setup: GearSetup | PartialGearSetup | GearPreset = {}) {
@@ -366,56 +110,96 @@ export class Gear {
 				? constructGearSetup(_setup as PartialGearSetup)
 				: (_setup as GearSetup);
 
-		this['2h'] = setup['2h'];
-		this.ammo = setup.ammo;
-		this.body = setup.body;
-		this.cape = setup.cape;
-		this.feet = setup.feet;
-		this.hands = setup.hands;
-		this.head = setup.head;
-		this.legs = setup.legs;
-		this.neck = setup.neck;
-		this.ring = setup.ring;
-		this.shield = setup.shield;
-		this.weapon = setup.weapon;
+		if (setup instanceof Gear) {
+			this.setup = clone(setup.raw());
+		} else {
+			this.setup = clone(setup);
+		}
 
 		this.stats = this.getStats();
 	}
 
+	static fromGearPreset(preset: GearPreset): Gear {
+		function gearItem(val: null | number) {
+			if (val === null) return null;
+			return {
+				item: val,
+				quantity: 1
+			};
+		}
+		const newGear: GearSetup = { ...defaultGearSetup };
+		newGear.head = gearItem(preset.head);
+		newGear.neck = gearItem(preset.neck);
+		newGear.body = gearItem(preset.body);
+		newGear.legs = gearItem(preset.legs);
+		newGear.cape = gearItem(preset.cape);
+		newGear['2h'] = gearItem(preset.two_handed);
+		newGear.hands = gearItem(preset.hands);
+		newGear.feet = gearItem(preset.feet);
+		newGear.shield = gearItem(preset.shield);
+		newGear.weapon = gearItem(preset.weapon);
+		newGear.ring = gearItem(preset.ring);
+		newGear.ammo = preset.ammo
+			? {
+					item: preset.ammo,
+					quantity: 1
+				}
+			: null;
+		return new Gear(newGear);
+	}
+
+	static fromList(items: (EGear | string)[]): Gear {
+		const gear = new Gear();
+		for (const item of items) {
+			gear.equip(item, 1);
+		}
+		return gear;
+	}
+
+	public get(key: EquipmentSlot | EquipmentSlotKey): GearSlotItem | null {
+		return this.setup[key];
+	}
+
+	public set(key: EquipmentSlot | EquipmentSlotKey, value: GearSlotItem | null) {
+		this.setup[key] = value;
+		this.stats = this.getStats();
+	}
+
 	raw(): GearSetup {
-		return {
-			ammo: this.ammo,
-			body: this.body,
-			cape: this.cape,
-			feet: this.feet,
-			hands: this.hands,
-			head: this.head,
-			legs: this.legs,
-			neck: this.neck,
-			ring: this.ring,
-			shield: this.shield,
-			weapon: this.weapon,
-			'2h': this['2h']
-		};
+		return clone(this.setup);
 	}
 
 	allItems(similar = false): number[] {
-		const gear = this.raw();
-		const values = Object.values(gear)
-			.filter(notEmpty)
-			.map(i => i.item);
+		const values = new Set<number>();
+		for (const val of Object.values(this.setup)) {
+			if (val?.item) {
+				values.add(val.item);
+			}
+		}
 
 		if (similar) {
 			for (const item of [...values]) {
 				const inverse = inverseSimilarItems.get(item);
 				if (inverse) {
-					values.push(...inverse.values());
+					for (const invSimilarItem of inverse.values()) {
+						if (invSimilarItem === undefined) {
+							Logging.logError(`Inverse Similar item not found for item ID: ${item}`);
+							continue;
+						}
+						values.add(invSimilarItem);
+					}
 				}
-				values.push(...getSimilarItems(item));
+				for (const similarItem of getSimilarItems(item)) {
+					if (similarItem === undefined) {
+						Logging.logError(`Similar item not found for item ID: ${item}`);
+						continue;
+					}
+					values.add(similarItem);
+				}
 			}
 		}
 
-		return uniqueArr(values);
+		return Array.from(values);
 	}
 
 	allItemsBank() {
@@ -456,25 +240,29 @@ export class Gear {
 	}
 
 	equippedWeapon(): Item | null {
-		const normalWeapon = this.weapon;
-		const twoHandedWeapon = this['2h'];
+		const normalWeapon = this.setup.weapon;
+		const twoHandedWeapon = this.setup['2h'];
 		if (!normalWeapon && !twoHandedWeapon) return null;
-		return getOSItem(normalWeapon === null ? twoHandedWeapon!.item : normalWeapon.item);
+		return Items.getOrThrow(normalWeapon === null ? twoHandedWeapon!.item : normalWeapon.item);
 	}
 
-	getStats() {
+	getStats(): GearStats {
 		const sum = { ...baseStats };
 		for (const id of this.allItems(false)) {
-			const item = getOSItem(id);
-			for (const keyToAdd of objectKeys(sum)) {
-				sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
+			const item = Items.get(id);
+			if (item) {
+				for (const keyToAdd of Object.keys(sum) as (keyof GearStats)[]) {
+					sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
+				}
+			} else {
+				Logging.logError(`Item not found when calculating gear stats, id[${id}]]`);
 			}
 		}
 		return sum;
 	}
 
 	meetsStatRequirements(gearRequirements: GearRequirement): [false, keyof GearStats, number] | [true, null, null] {
-		const keys = objectKeys(this.stats as Record<keyof GearStats, number>);
+		const keys = Object.keys(this.stats) as (keyof GearStats)[];
 		for (const key of keys) {
 			const required = gearRequirements?.[key];
 			if (!required) continue;
@@ -492,9 +280,9 @@ export class Gear {
 		if (allItems.length === 0) {
 			return 'No items';
 		}
-		const items = [];
-		for (const item of allItems) {
-			items.push(getOSItem(item).name);
+		const items: string[] = [];
+		for (const item of allItems.sort((a, b) => a - b)) {
+			items.push(Items.itemNameFromId(item) ?? `Unknown Item? (${item})`);
 		}
 		return items.join(', ');
 	}
@@ -506,7 +294,7 @@ export class Gear {
 	equip(_itemToEquip: EGear | Item | string, quantity = 1): { refundBank: Bank | null } {
 		const itemToEquip: Item =
 			typeof _itemToEquip === 'string' || typeof _itemToEquip === 'number'
-				? getOSItem(_itemToEquip)
+				? Items.getOrThrow(_itemToEquip)
 				: _itemToEquip;
 		assert(quantity >= 1, 'Cannot equip less than 1 item.');
 		if (!itemToEquip.equipment) throw new Error(`${itemToEquip.name} is not equippable.`);
@@ -515,38 +303,38 @@ export class Gear {
 		const { slot } = itemToEquip.equipment;
 
 		const unequipAndEquip = () => {
-			const equippedAlready = this[slot];
+			const equippedAlready = this.setup[slot];
 			if (equippedAlready) {
 				refundBank.add(equippedAlready.item, equippedAlready.quantity);
-				this[slot] = null;
+				this.setup[slot] = null;
 			}
-			this[slot] = { item: itemToEquip.id, quantity };
+			this.setup[slot] = { item: itemToEquip.id, quantity };
 		};
 
 		switch (slot) {
 			case EquipmentSlot.TwoHanded: {
 				// If trying to equip a 2h weapon, remove the weapon and shield.
-				if (this.weapon) {
-					refundBank.add(this.weapon.item, this.weapon.quantity);
-					this.weapon = null;
+				if (this.setup.weapon) {
+					refundBank.add(this.setup.weapon.item, this.setup.weapon.quantity);
+					this.setup.weapon = null;
 				}
-				if (this.shield) {
-					refundBank.add(this.shield.item, this.shield.quantity);
-					this.shield = null;
+				if (this.setup.shield) {
+					refundBank.add(this.setup.shield.item, this.setup.shield.quantity);
+					this.setup.shield = null;
 				}
-				if (this['2h']) {
-					refundBank.add(this['2h'].item, this['2h'].quantity);
-					this['2h'] = null;
+				if (this.setup['2h']) {
+					refundBank.add(this.setup['2h'].item, this.setup['2h'].quantity);
+					this.setup['2h'] = null;
 				}
-				this['2h'] = { item: itemToEquip.id, quantity };
+				this.setup['2h'] = { item: itemToEquip.id, quantity };
 				break;
 			}
 			case EquipmentSlot.Weapon:
 			case EquipmentSlot.Shield: {
-				const twoHanded = this['2h'];
+				const twoHanded = this.setup['2h'];
 				if (twoHanded) {
 					refundBank.add(twoHanded.item, twoHanded.quantity);
-					this['2h'] = null;
+					this.setup['2h'] = null;
 				}
 
 				unequipAndEquip();
@@ -562,12 +350,18 @@ export class Gear {
 
 	toBank() {
 		const bank = new Bank();
-		for (const slot of objectKeys(defaultGear)) {
-			const equipped = this[slot];
+		for (const slot of Object.keys(defaultGearSetup) as EquipmentSlot[]) {
+			const equipped = this.setup[slot];
 			if (!equipped || !equipped.item || !equipped.quantity) continue;
 			bank.add(equipped.item, equipped.quantity);
 		}
 		return bank;
+	}
+
+	equals(other: Gear): boolean {
+		const thisRaw = this.raw();
+		const otherRaw = other.raw();
+		return deepEqual(thisRaw, otherRaw);
 	}
 }
 
@@ -587,3 +381,6 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	});
 }
+
+export type GearRequirement = Partial<{ [key in GearStat]: number }>;
+export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;

@@ -1,14 +1,11 @@
-import { Time, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { GearStat } from '@oldschoolgg/gear';
+import { roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
-import { GearStat } from '../../../../gear/types';
-import { SkillsEnum } from '../../../../skilling/types';
-import { getOSItem } from '../../../../util/getOSItem';
-import itemID from '../../../../util/itemID';
-import type { KillableMonster, KillableMonsterEffect } from '../../../types';
-import { QuestID } from '../../quests';
+import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster, KillableMonsterEffect } from '@/lib/minions/types.js';
 
 const awakenedDeathProps = {
 	hardness: 0.9,
@@ -18,7 +15,7 @@ const awakenedDeathProps = {
 };
 
 function makeTabletEffect(itemName: string): KillableMonster['effect'] {
-	const item = getOSItem(itemName);
+	const item = Items.getOrThrow(itemName);
 	return ({ quantity, gearBank }: Parameters<KillableMonsterEffect>['0']): ReturnType<KillableMonsterEffect> => {
 		if (gearBank.bank.has(item)) return;
 		let gotTab = false;
@@ -41,7 +38,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		id: Monsters.DukeSucellus.id,
 		name: Monsters.DukeSucellus.name,
 		aliases: Monsters.DukeSucellus.aliases,
-		timeToFinish: Time.Minute * 5.1,
+		timeToFinish: Time.Minute * 3.1,
 		table: Monsters.DukeSucellus,
 		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
@@ -73,13 +70,13 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Bellator ring') },
-					{ boostPercent: 5, itemID: itemID('Ultor ring') }
+					{ boostPercent: 3, itemID: itemID('Ultor ring') }
 				],
 				gearSetup: 'melee'
 			}
 		],
 
-		respawnTime: Time.Minute * 1.5,
+		respawnTime: Time.Minute * 0.5,
 		levelRequirements: {
 			prayer: 43,
 			hitpoints: 70
@@ -89,8 +86,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Torva platebody', 'Bandos chestplate'],
 			['Torva platelegs', 'Bandos tassets']
 		]),
-		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.135,
+		defaultAttackStyles: ['attack'],
+		combatXpMultiplier: 1.525,
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -145,7 +142,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Bellator ring') },
-					{ boostPercent: 5, itemID: itemID('Ultor ring') }
+					{ boostPercent: 3, itemID: itemID('Ultor ring') }
 				],
 				gearSetup: 'melee'
 			}
@@ -161,8 +158,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Torva platebody', 'Bandos chestplate'],
 			['Torva platelegs', 'Bandos tassets']
 		]),
-		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.135,
+		defaultAttackStyles: ['attack'],
+		combatXpMultiplier: 1.525,
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -254,7 +251,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Masori body', 'Armadyl chestplate'],
 			['Masori chaps', 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultAttackStyles: ['ranged'],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -331,7 +328,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Masori body', 'Armadyl chestplate'],
 			['Masori chaps', 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultAttackStyles: ['ranged'],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -409,7 +406,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Ancestral robe top', 'Virtus robe top', "Ahrim's robetop"],
 			['Ancestral robe bottom', 'Virtus robe bottom', "Ahrim's robeskirt"]
 		]),
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultAttackStyles: ['magic'],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 55 * 20,
 		attackStyleToUse: GearStat.AttackMagic,
@@ -512,7 +509,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Ancestral robe top', 'Virtus robe top', "Ahrim's robetop"],
 			['Ancestral robe bottom', 'Virtus robe bottom', "Ahrim's robeskirt"]
 		]),
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultAttackStyles: ['magic'],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackMagic,
@@ -612,7 +609,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Torva platebody', 'Bandos chestplate'],
 			['Torva platelegs', 'Bandos tassets']
 		]),
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -684,7 +681,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Torva platebody', 'Bandos chestplate'],
 			['Torva platelegs', 'Bandos tassets']
 		]),
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackSlash,

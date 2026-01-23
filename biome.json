@@ -1,22 +1,28 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-	"organizeImports": {
-		"enabled": true
+	"$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							["@bso/**", "@/lib/bso/**"],
+							":BLANK_LINE:",
+							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+							":BLANK_LINE:",
+							["@/prisma/**"],
+							["@/discord/**"],
+							[":ALIAS:", ":PATH:"]
+						]
+					}
+				}
+			}
+		}
 	},
 	"files": {
 		"maxSize": 10000000,
-		"ignore": [
-			"node_modules",
-			"dist",
-			"coverage",
-			"profiling",
-			"logs",
-			"icon_cache",
-			".astro",
-			".yarn",
-			".pnpm-store"
-		],
-		"include": [
+		"includes": [
 			"**/*.ts",
 			"**/*.mts",
 			"**/*.json",
@@ -25,8 +31,20 @@
 			"**/*.md",
 			"**/*.mjs",
 			"**/*.cjs",
+			"**/*.d.ts",
 			"**/*.tsx",
-			"**/*.astro"
+			"**/*.html",
+			"**/*.css",
+			"!**/node_modules",
+			"!**/dist",
+			"!**/coverage",
+			"!**/profiling",
+			"!**/logs",
+			"!**/icon_cache",
+			"!**/.astro",
+			"!**/.yarn",
+			"!**/.pnpm-store",
+			"!src/prisma/clients"
 		]
 	},
 	"vcs": {
@@ -40,34 +58,50 @@
 			"recommended": true,
 			"a11y": {
 				"useAltText": "off",
-				"useKeyWithClickEvents": "off"
+				"useKeyWithClickEvents": "off",
+				"useButtonType": "off",
+				"noSvgWithoutTitle": "off",
+				"noStaticElementInteractions": "off",
+				"noLabelWithoutControl": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "warn",
 				"noAssignInExpressions": "warn",
 				"noAsyncPromiseExecutor": "off",
 				"noConfusingVoidType": "off",
-				"noFocusedTests": "off"
+				"noFocusedTests": "off",
+				"noArrayIndexKey": "off",
+				"noUnsafeDeclarationMerging": "warn"
 			},
 			"style": {
 				"noNonNullAssertion": "off",
 				"noParameterAssign": "off",
 				"useExponentiationOperator": "off",
 				"noUselessElse": "off",
-				"useLiteralEnumMembers": "warn"
+				"useLiteralEnumMembers": "warn",
+				"noInferrableTypes": "off"
 			},
 			"correctness": {
-				"useExhaustiveDependencies": "warn",
-				"noUnnecessaryContinue": "warn",
-				"noConstructorReturn": "off"
+				"useExhaustiveDependencies": "off",
+				"noConstructorReturn": "off",
+				"useParseIntRadix": "off",
+				"noUnknownProperty": "off"
 			},
 			"complexity": {
 				"noExtraBooleanCast": "warn",
-				"noBannedTypes": "warn",
-				"noForEach": "warn"
+				"noBannedTypes": "off",
+				"noForEach": "warn",
+				"noStaticOnlyClass": "off",
+				"noUselessContinue": "warn"
 			},
 			"performance": {
 				"noAccumulatingSpread": "warn"
+			},
+			"nursery": {
+				"noFloatingPromises": "warn",
+				"noImportCycles": "warn",
+				"noShadow": "warn",
+				"noMisusedPromises": "warn"
 			}
 		}
 	},
@@ -84,6 +118,22 @@
 			"quoteStyle": "single",
 			"trailingCommas": "none",
 			"arrowParentheses": "asNeeded"
+		}
+	},
+	"html": {
+		"experimentalFullSupportEnabled": true,
+		"formatter": {
+			"enabled": true,
+			"selfCloseVoidElements": "always"
+		}
+	},
+	"css": {
+		"parser": {
+			"cssModules": true,
+			"tailwindDirectives": true
+		},
+		"formatter": {
+			"enabled": true
 		}
 	}
 }

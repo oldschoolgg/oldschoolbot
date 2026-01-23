@@ -1,10 +1,8 @@
-import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { GearStat } from '@oldschoolgg/gear';
+import { Time } from '@oldschoolgg/toolkit';
+import { deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { GearStat } from '../../../gear/types';
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const nieveMonsters: KillableMonster[] = [
 	{

@@ -1,7 +1,7 @@
-import { Emoji } from '../../constants';
-import { QuestID } from '../../minions/data/quests';
-import type { Course } from '../types';
-import { SkillsEnum } from '../types';
+import { Emoji } from '@oldschoolgg/toolkit';
+
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { type Course, defineSkill } from '@/lib/skilling/types.js';
 
 export const courses: Course[] = [
 	{
@@ -231,13 +231,17 @@ const MonkeyBackpacks = [
 	}
 ];
 
-const Agility = {
+const underwaterAgilityThievingTrainingSkill = ['agility', 'thieving', 'agility+thieving'] as const;
+export type UnderwaterAgilityThievingTrainingSkill = (typeof underwaterAgilityThievingTrainingSkill)[number];
+
+const Agility = defineSkill({
 	aliases: ['agility'],
 	Courses: courses,
 	MonkeyBackpacks,
-	id: SkillsEnum.Agility,
+	id: 'agility',
 	emoji: Emoji.Agility,
-	name: 'Agility'
-};
+	name: 'Agility',
+	underwaterAgilityThievingTrainingSkill
+});
 
 export default Agility;

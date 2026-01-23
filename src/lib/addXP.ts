@@ -1,31 +1,31 @@
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { type User, UserEventType } from '@prisma/client';
-import { bold } from 'discord.js';
-import { Time, noOp } from 'e';
-import { convertXPtoLVL, toKMB } from './util';
+import { bold } from '@oldschoolgg/discord';
+import { Events, formatOrdinal, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
-import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
-import { skillEmoji } from './data/emojis';
-import type { AddXpParams } from './minions/types';
-import { sql } from './postgres';
-import Skills from './skilling/skills';
-import { mahojiClientSettingsFetch } from './util/clientSettings';
-import { insertUserEvent } from './util/userEvents';
-import { sendToChannelID } from './util/webhook';
+import { UserEventType } from '@/prisma/main/enums.js';
+import type { User } from '@/prisma/main.js';
+import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
+import { insertUserEvent } from '@/lib/util/userEvents.js';
 
 const skillsVals = Object.values(Skills);
-const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_99_XP}`).join(' AND ');
+const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${MAX_LEVEL_XP}`).join(' AND ');
 const makeQuery = (ironman: boolean) => `SELECT count(id)::int
 FROM users
 WHERE ${maxFilter}
 ${ironman ? 'AND "minion.ironman" = true' : ''};`;
 
 async function howManyMaxed() {
-	const [normies, irons] = (
-		(await Promise.all([prisma.$queryRawUnsafe(makeQuery(false)), prisma.$queryRawUnsafe(makeQuery(true))])) as any
+	const [normies, irons]: number[] = (
+		await prisma.$transaction([
+			prisma.$queryRawUnsafe<{ count: bigint }[]>(makeQuery(false)),
+			prisma.$queryRawUnsafe<{ count: bigint }[]>(makeQuery(true))
+		])
 	)
-		.map((i: any) => i[0].count)
-		.map((i: any) => Number.parseInt(i));
+		.map(i => i[0].count)
+		.map(i => Number(i));
 
 	return {
 		normies,
@@ -43,10 +43,9 @@ async function onMax(user: MUser) {
 	} 🎉`;
 
 	globalClient.emit(Events.ServerNotification, str);
-	sendToChannelID(globalConfig.supportServerID, { content: str }).catch(noOp);
-	const kUser = await globalClient.fetchUser(user.id);
-	const clientSettings = await mahojiClientSettingsFetch({ maxing_message: true });
-	kUser.send(clientSettings.maxing_message).catch(noOp);
+	globalClient.sendMessage(globalConfig.supportServerID, { content: str });
+	const clientSettings = await ClientSettings.fetch({ maxing_message: true });
+	globalClient.sendDm(user.id, clientSettings.maxing_message);
 }
 
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
@@ -60,7 +59,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	const newXP = Math.min(MAX_XP, currentXP + params.amount);
 	const totalXPAdded = newXP - currentXP;
-	const newLevel = convertXPtoLVL(Math.floor(newXP));
+	const newLevel = convertXPtoLVL(Math.floor(newXP), MAX_LEVEL);
 
 	// Pre-MAX_XP
 	let preMax = -1;
@@ -120,7 +119,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			{
 				count: string;
 			}[]
-		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
+		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${MAX_LEVEL_XP};`);
 
 		let str = `${skill.emoji} **${user.badgedUsername}'s** minion, ${
 			user.minionName
@@ -134,14 +133,16 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 					count: string;
 				}[]
 			>(
-				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${LEVEL_99_XP};`
+				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${MAX_LEVEL_XP};`
 			);
 			str += ` They are the ${formatOrdinal(Number.parseInt(ironmenWith.count) + 1)} Ironman to get 99.`;
 		}
 		globalClient.emit(Events.ServerNotification, str);
 	}
 
-	await sql.unsafe(`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`);
+	await prisma.$queryRawUnsafe(
+		`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`
+	);
 	(user.user as User)[`skills_${params.skillName}`] = BigInt(Math.floor(newXP));
 	user.updateProperties();
 
@@ -168,7 +169,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 		if (currentTotalLevel < MAX_TOTAL_LEVEL && user.totalLevel >= MAX_TOTAL_LEVEL) {
 			str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
-			onMax(user);
+			await onMax(user);
 		} else if (currentLevel !== newLevel) {
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`

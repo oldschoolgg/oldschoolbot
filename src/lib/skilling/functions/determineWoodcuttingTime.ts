@@ -1,18 +1,18 @@
-import { Time, percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { EItem } from 'oldschooljs/EItem';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import type { MUserClass } from './../../MUser';
-import type { Log } from './../types';
+import type { Log } from '@/lib/skilling/types.js';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;
-	user: MUserClass;
+	user: MUser;
 	log: Log;
 	axeMultiplier: number;
 	powerchopping: boolean;
 	forestry: boolean;
 	woodcuttingLvl: number;
+	maxTripLength: number;
 }
 
 export function determineWoodcuttingTime({
@@ -22,7 +22,8 @@ export function determineWoodcuttingTime({
 	axeMultiplier,
 	powerchopping,
 	forestry,
-	woodcuttingLvl
+	woodcuttingLvl,
+	maxTripLength
 }: WoodcuttingTimeOptions): [number, number] {
 	let timeElapsed = 0;
 
@@ -33,17 +34,16 @@ export function determineWoodcuttingTime({
 
 	let teakTick = false;
 	if (!forestry && woodcuttingLvl >= 92) {
-		if (resolveItems('Teak logs').includes(log.id) && farmingLvl >= 35) {
+		if (log.id === EItem.TEAK_LOGS && farmingLvl >= 35) {
 			teakTick = true;
 		}
-		if (resolveItems('Mahogany logs').includes(log.id) && farmingLvl >= 55) {
+		if (log.id === EItem.MAHOGANY_LOGS && farmingLvl >= 55) {
 			teakTick = true;
 		}
 	}
 
 	let newQuantity = 0;
 
-	let maxTripLength = calcMaxTripLength(user, 'Woodcutting');
 	if (!powerchopping && user.hasEquippedOrInBank('Log basket')) {
 		maxTripLength += Time.Minute * 5;
 	}

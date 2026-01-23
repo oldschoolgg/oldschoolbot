@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { BasiliskPreTable } from '../low/a-f/Basilisk';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { BasiliskPreTable } from '../low/a-f/Basilisk.js';
 
-const MonstrousBasiliskTable = new LootTable()
+const MonstrousBasiliskTable: LootTable = new LootTable()
 	.every('Bones')
 	.every(BasiliskPreTable, 3)
 
@@ -15,7 +15,7 @@ const MonstrousBasiliskTable = new LootTable()
 	.tertiary(1022, 'Eternal gem')
 	.tertiary(1022, 'Imbued heart');
 
-export default new SimpleMonster({
+export const MonstrousBasilisk: SimpleMonster = new SimpleMonster({
 	id: 7395,
 	name: 'Monstrous basilisk',
 	table: MonstrousBasiliskTable,

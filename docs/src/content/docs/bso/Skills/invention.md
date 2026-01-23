@@ -4,8 +4,8 @@ title: "Invention"
 
 Invention is a skill where you disassemble items to get materials, and then use those materials to make inventions—items that provide boosts and perks. You need [[crafting:90]] to train Invention.
 
-Access Invention: [[/invention]]  
-Invention Minigame: [Tinkering Workshop](../../minigames/tinkering-workshop.md)
+Access Invention: [[/invention]]
+Invention Minigame: [Tinkering Workshop](../../minigames/tinkering-workshop)
 
 ---
 

@@ -1,7 +1,6 @@
-import { Bank } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank, itemID } from 'oldschooljs';
 
-interface Enchantable {
+export interface Enchantable {
 	name: string;
 	alias?: string[];
 	id: number;

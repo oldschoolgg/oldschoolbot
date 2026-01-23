@@ -1,36 +1,19 @@
-import { readFileSync } from 'node:fs';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import Createables from '../../lib/data/createables';
-import type { SkillsEnum } from '../../lib/skilling/types';
-import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import { stringMatches } from '../../lib/util';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
-import { userStatsBankUpdate } from '../mahojiSettings';
+import Createables from '@/lib/data/createables.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
-const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
-
-const content = 'Theses are the items that you can create:';
-const allCreatablesTable = {
-	content,
-	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
-};
-
-export const createCommand: OSBMahojiCommand = {
+export const createCommand = defineCommand({
 	name: 'create',
 	description: 'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'item',
 			description: 'The item you want to create/revert.',
 			required: true,
-			autocomplete: async value => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Createables.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -40,7 +23,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount you want to create.',
 			required: false,
@@ -48,23 +31,17 @@ export const createCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'showall',
 			description: 'Show all creatable items.',
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		interaction,
-		userID
-	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
-		const user = await mUserFetch(userID.toString());
-
+	run: async ({ options, interaction, user }) => {
 		const itemName = options.item?.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
-			return allCreatablesTable;
+			return 'You can view all creatable items at: https://wiki.oldschool.gg/creatables';
 		}
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
@@ -86,19 +63,14 @@ export const createCommand: OSBMahojiCommand = {
 		}
 
 		if (createableItem.requiredSkills) {
-			for (const [skillName, lvl] of Object.entries(createableItem.requiredSkills)) {
-				if (user.skillLevel(skillName as SkillsEnum) < lvl) {
+			for (const [skillName, lvl] of Object.entries(createableItem.requiredSkills) as [SkillNameType, number][]) {
+				if (user.skillsAsLevels[skillName] < lvl) {
 					return `You need ${lvl} ${skillName} to ${action} this item.`;
 				}
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			const mySlayerUnlocks = user.user.slayer_unlocks;
-
-			const { success, errors } = hasSlayerUnlock(
-				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
-				createableItem.requiredSlayerUnlocks
-			);
+			const { success, errors } = user.checkHasSlayerUnlocks(createableItem.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to ${action} this item.\n\nRequired: ${errors}`;
 			}
@@ -108,12 +80,6 @@ export const createCommand: OSBMahojiCommand = {
 			return `You need ${createableItem.GPCost.toLocaleString()} coins to ${action} this item.`;
 		}
 
-		if (createableItem.cantBeInCL) {
-			const { cl } = user;
-			if (Object.keys(createableItem.outputItems).some(itemID => cl.amount(Number(itemID)) > 0)) {
-				return `You can only ${action} this item once!`;
-			}
-		}
 		if (createableItem.maxCanOwn) {
 			const allItems = user.allItemsOwned;
 			const amountOwned = allItems.amount(createableItem.name);
@@ -170,7 +136,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 
-		await handleMahojiConfirmation(interaction, str);
+		await interaction.confirmation(str);
 
 		// Ensure they have the required items to create the item.
 		if (!user.owns(inItems)) {
@@ -194,21 +160,20 @@ export const createCommand: OSBMahojiCommand = {
 			addToCl = true;
 		}
 
-		await transactItems({
-			userID: userID.toString(),
+		await user.transactItems({
 			collectionLog: addToCl,
 			itemsToAdd: outItems,
 			itemsToRemove: inItems
 		});
 
-		await updateBankSetting('create_cost', inItems);
-		await updateBankSetting('create_loot', outItems);
-		await userStatsBankUpdate(user, 'create_cost_bank', inItems);
-		await userStatsBankUpdate(user, 'create_loot_bank', outItems);
+		await ClientSettings.updateBankSetting('create_cost', inItems);
+		await ClientSettings.updateBankSetting('create_loot', outItems);
+		await user.statsBankUpdate('create_cost_bank', inItems);
+		await user.statsBankUpdate('create_loot_bank', outItems);
 
 		if (action === 'revert') {
 			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;
 		}
 		return `You received ${outItems}.${extraMessage}`;
 	}
-};
+});

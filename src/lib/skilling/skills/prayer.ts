@@ -1,7 +1,7 @@
-import { Emoji } from '../../constants';
-import itemID from '../../util/itemID';
-import type { Ash, Bone } from '../types';
-import { SkillsEnum } from '../types';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { itemID } from 'oldschooljs';
+
+import { type Ash, type Bone, defineSkill } from '@/lib/skilling/types.js';
 
 const bones: Bone[] = [
 	{
@@ -159,13 +159,13 @@ export const ashes: Ash[] = [
 	}
 ];
 
-const Prayer = {
+const Prayer = defineSkill({
 	aliases: ['prayer', 'pray'],
 	Bones: bones,
 	Ashes: ashes,
-	id: SkillsEnum.Prayer,
+	id: 'prayer',
 	emoji: Emoji.Prayer,
 	name: 'Prayer'
-};
+});
 
 export default Prayer;

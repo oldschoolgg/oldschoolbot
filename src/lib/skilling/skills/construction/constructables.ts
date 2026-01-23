@@ -1,6 +1,5 @@
-import { itemID } from 'oldschooljs/dist/util';
-
-interface Constructable {
+import { itemID } from 'oldschooljs';
+export interface Constructable {
 	id: number;
 	name: string;
 	input: [number, number];

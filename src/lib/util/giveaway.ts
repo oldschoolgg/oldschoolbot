@@ -1,30 +1,15 @@
-import type { Giveaway } from '@prisma/client';
-import { type MessageEditOptions, time, userMention } from 'discord.js';
-import { Time, debounce, noOp } from 'e';
+import { time, userMention } from '@oldschoolgg/discord';
+import { debounce, Events, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { Events } from '../constants';
-import { sql } from '../postgres.js';
-import { channelIsSendable } from '../util';
-import { logError } from './logError';
-import { sendToChannelID } from './webhook';
+import type { Giveaway } from '@/prisma/main.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
-	await transactItems({
-		userID: creator.id,
+	await creator.transactItems({
 		itemsToAdd: loot
 	});
-	const user = await globalClient.fetchUser(creator.id);
-	debugLog('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
-	user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
-}
-
-async function getGiveawayMessage(giveaway: Giveaway) {
-	const channel = globalClient.channels.cache.get(giveaway.channel_id);
-	if (channelIsSendable(channel)) {
-		const message = await channel.messages.fetch(giveaway.message_id).catch(noOp);
-		if (message) return message;
-	}
+	Logging.logDebug('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
+	await globalClient.sendDm(creator.id, `Your giveaway failed to finish, you were refunded the items: ${loot}.`);
 }
 
 export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[]) {
@@ -38,7 +23,7 @@ There are ${usersEntered.length} users entered in this giveaway.`;
 
 async function pickRandomGiveawayWinner(giveaway: Giveaway): Promise<MUser | null> {
 	if (giveaway.users_entered.length === 0) return null;
-	const result: { id: string }[] = await sql`WITH giveaway_users AS (
+	const result: { id: string }[] = await prisma.$queryRaw`WITH giveaway_users AS (
   SELECT unnest(users_entered) AS user_id
   FROM giveaway
   WHERE id = ${giveaway.id}
@@ -60,21 +45,21 @@ LIMIT 1;
 export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
 	const giveaway = await prisma.giveaway.findFirst({ where: { id: _giveaway.id } });
 	if (!giveaway) return;
-	const message = await getGiveawayMessage(giveaway);
+	const message = await globalClient.fetchMessage(giveaway.channel_id, giveaway.message_id);
 	if (!message) return;
 	const newContent = generateGiveawayContent(giveaway.user_id, giveaway.finish_date, giveaway.users_entered);
-	const edits: MessageEditOptions = {};
+	const edits: BaseSendableMessage = {};
 	if (giveaway.completed) edits.components = [];
 	if (message.content !== newContent) {
 		edits.content = newContent;
 	}
 	if (Object.keys(edits).length > 0) {
-		await message.edit(edits);
+		await globalClient.editMessage(giveaway.channel_id, giveaway.message_id, edits);
 	}
 }, Time.Second);
 
 export async function handleGiveawayCompletion(_giveaway: Giveaway) {
-	debugLog('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
+	Logging.logDebug('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
 	if (_giveaway.completed) {
 		throw new Error('Tried to complete an already completed giveaway.');
 	}
@@ -102,7 +87,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 			return;
 		}
 
-		await transactItems({ userID: winner.id, itemsToAdd: loot });
+		await winner.transactItems({ itemsToAdd: loot });
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: undefined,
@@ -120,13 +105,14 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 		);
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${giveaway.users_entered.length} users joined, the winner is... **${winner.mention}**
-			
+
 They received these items: ${loot}`;
 
-		await sendToChannelID(giveaway.channel_id, {
-			content: str
+		await globalClient.sendMessage(giveaway.channel_id, {
+			content: str,
+			allowedMentions: { users: [giveaway.user_id, winner.id] }
 		});
 	} catch (err) {
-		logError(err);
+		Logging.logError(err as Error);
 	}
 }

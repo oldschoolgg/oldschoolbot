@@ -1,15 +1,11 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';
-import { degradeableItems } from '../../degradeableItems';
-import { stringMatches } from '../../util';
-import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../util/updateBankSetting';
+import { degradeableItems } from '@/lib/degradeableItems.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function degradeableItemsCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	input: string | undefined,
 	quantity: number | undefined
@@ -39,8 +35,7 @@ ${degradeableItems
 		return `You don't own a ${item.item.name} or ${item.unchargedItem?.name}.`;
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to use **${cost}** to add ${amountOfCharges.toLocaleString()} charges to your ${
 			item.item.name
 		}?`
@@ -57,14 +52,14 @@ ${degradeableItems
 			itemsToRemove: new Bank().add(item.unchargedItem?.id).add(cost)
 		});
 	} else {
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 	}
 	const currentCharges = user.user[item.settingsKey];
 	const newCharges = currentCharges + amountOfCharges;
 	await user.update({
 		[item.settingsKey]: newCharges
 	});
-	await updateBankSetting('degraded_items_cost', cost);
+	await ClientSettings.updateBankSetting('degraded_items_cost', cost);
 
 	return `You added **${cost}** to your ${item.item.name}, it now has ${newCharges} charges.`;
 }
