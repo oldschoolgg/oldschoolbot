@@ -350,7 +350,6 @@ export async function onMinionActivityFinish(activity: ActivityTaskData) {
 		// Max once per 30 minutes
 		if (!botJustStarted && hasBeen30MinsSinceLast) {
 			lastRoboChimpSyncCache.set(activity.userID, Date.now());
-			Logging.logDebug(`Syncing RoboChimp for user ${activity.userID}`);
 			await roboChimpSyncData(await mUserFetch(activity.userID));
 		}
 	} catch (err) {

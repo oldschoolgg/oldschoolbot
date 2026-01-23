@@ -46,7 +46,7 @@ client.on('messageCreate', async msg => {
 	}
 	onMessage(msg);
 });
-client.on('error', console.error);
+client.on('error', err => Logging.logError(err));
 
 client.on('interactionCreate', async itx => {
 	const guildId = itx.guild_id ?? null;

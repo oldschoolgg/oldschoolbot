@@ -1,6 +1,8 @@
+import { calcWhatPercent, increaseNumByPercent } from '@oldschoolgg/util';
+
 import { Bank, type ItemBank } from '@/structures/Bank.js';
 import { Items } from '@/structures/Items.js';
-import { calcWhatPercent, increaseNumByPercent, Time } from '@/util/smallUtils.js';
+import { Time } from '@/util/smallUtils.js';
 
 /**
  * Transforms a string-based bank to an ID-based bank

@@ -1,10 +1,10 @@
+import { convertAttackStyleToGearSetup } from '@oldschoolgg/gear';
 import { calcPercentOfNum, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { GearSetupType } from '@/prisma/main/enums.js';
 import { BitField } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
-import { convertAttackStyleToGearSetup } from '@/lib/gear/functions/convertAttackStyleToGearSetup.js';
 import { calculateMonsterFoodRaw } from '@/lib/minions/functions/calculateMonsterFood.js';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
 import { removeFoodFromUserRaw } from '@/lib/minions/functions/removeFoodFromUser.js';
