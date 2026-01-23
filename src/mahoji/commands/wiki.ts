@@ -21,6 +21,7 @@ const wikiAutoInflight = new Map<string, Promise<string[]>>();
 
 const WIKI_AUTOCACHE_TTL = 60_000; // 60s
 const AUTOCOMPLETE_TIMEOUT_MS = 900; // keep under ~1s
+const MAX_WIKI_AUTOCACHE = 500;
 
 function toWikiUrl(title: string) {
 	return `https://oldschool.runescape.wiki/w/${encodeURIComponent(title.replace(/ /g, '_'))}`;
@@ -37,6 +38,18 @@ function buildEmbed(page: { title: string; url: string; extract?: string; thumbn
 
 	if (page.thumbnail) embed.setThumbnail(page.thumbnail);
 	return embed;
+}
+
+function pruneWikiAutoCache() {
+	if (wikiAutoCache.size <= MAX_WIKI_AUTOCACHE) return;
+
+	const entries = [...wikiAutoCache.entries()].sort((a, b) => a[1].ts - b[1].ts);
+	const dropCount = Math.ceil(MAX_WIKI_AUTOCACHE * 0.2);
+
+	for (let i = 0; i < dropCount; i++) {
+		const k = entries[i]?.[0];
+		if (k) wikiAutoCache.delete(k);
+	}
 }
 
 export const wikiCommand = defineCommand({
@@ -88,6 +101,8 @@ export const wikiCommand = defineCommand({
 							const titles: string[] = data?.[1] ?? [];
 
 							wikiAutoCache.set(key, { ts: Date.now(), titles });
+							pruneWikiAutoCache();
+
 							return titles;
 						} catch {
 							return [];
@@ -99,7 +114,13 @@ export const wikiCommand = defineCommand({
 					wikiAutoInflight.set(key, p);
 				}
 
-				const titles = await p;
+				let titles: string[] = [];
+				try {
+					titles = await p;
+				} catch {
+					titles = [];
+				}
+
 				const fallback = titles.length ? titles : (wikiAutoCache.get(key)?.titles ?? []);
 				return fallback.slice(0, 25).map((t: string) => ({ name: t, value: t }));
 			}
