@@ -3,7 +3,6 @@ import { averageArr, calcPercentOfNum, gaussianRandom, toTitleCase } from '@olds
 import { type Item, Items } from 'oldschooljs';
 
 import type { FishingContestCatch } from '@/prisma/main.js';
-import { ISODateString } from '@/lib/util.js';
 
 const warmVerbs = ['freshwater', 'waterborn', 'silver'];
 const coldVerbs = ['pacific', 'long-finned', 'spotted'];
@@ -231,6 +230,12 @@ interface FishType {
 	water: Water;
 }
 
+function getUtcDayRange(date: Date = new Date()) {
+	const start = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+	const end = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1));
+	return { start, end };
+}
+
 export function getCurrentFishType(dateOverride?: Date): FishType {
 	const date = dateOverride ?? new Date();
 	const seed = Number(`${date.getUTCFullYear()}${date.getUTCMonth() + 1}${date.getUTCDate()}`);
@@ -246,20 +251,24 @@ export function getValidLocationsForFishType(type: FishType) {
 }
 
 export async function getTopDailyFishingCatch() {
-	const topThreeCatches: FishingContestCatch[] = await prisma.$queryRawUnsafe(`SELECT *
+	const { start, end } = getUtcDayRange();
+	const topThreeCatches: FishingContestCatch[] = await prisma.$queryRaw`
+SELECT *
 FROM fishing_contest_catch
-WHERE date::date = '${ISODateString()}'
+WHERE date >= ${start} AND date < ${end}
 ORDER BY length_cm DESC
-LIMIT 3;`);
+LIMIT 3;`;
 	return topThreeCatches;
 }
 
 export async function getUsersFishingContestDetails(user: MUser) {
-	const catchesFromToday: FishingContestCatch[] = await prisma.$queryRawUnsafe(`SELECT *
+	const { start, end } = getUtcDayRange();
+	const catchesFromToday: FishingContestCatch[] = await prisma.$queryRaw`
+SELECT *
 FROM fishing_contest_catch
-WHERE user_id = ${user.id}::bigint
-AND date::date = '${ISODateString()}'
-LIMIT 10;`);
+WHERE user_id = ${BigInt(user.id)}
+AND date >= ${start} AND date < ${end}
+LIMIT 10;`;
 	const catchesAllTime = await prisma.fishingContestCatch.count({
 		where: {
 			user_id: BigInt(user.id)
