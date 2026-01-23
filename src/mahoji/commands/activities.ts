@@ -1,3 +1,5 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
+
 import { ownedItemOption } from '@/discord/index.js';
 import { BERT_SAND_AUTOCOMPLETE_VALUE } from '@/lib/minions/data/bertSand.js';
 import { Planks } from '@/lib/minions/data/planks.js';
@@ -554,7 +556,8 @@ export const activitiesCommand = defineCommand({
 			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.collect) {
-			if (options.collect.item === BERT_SAND_AUTOCOMPLETE_VALUE) {
+			const bertSandAliases = ["Bert's sand", "Bert's sand (Daily)", BERT_SAND_AUTOCOMPLETE_VALUE];
+			if (bertSandAliases.some(alias => stringMatches(options.collect?.item, alias))) {
 				return collectBertSand(user, channelId);
 			}
 			return collectCommand(
