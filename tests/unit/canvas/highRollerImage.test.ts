@@ -17,17 +17,10 @@ describe('drawHighRollerImage', () => {
 		});
 
 		expect(result).not.toBeNull();
-		if (!result) {
-			return;
-		}
+		if (!result) return;
 
-		const attachment =
-			'attachment' in result
-				? result.attachment
-				: 'data' in result
-					? (result as { data: unknown }).data
-					: (result as { file?: unknown }).file;
-
-		expect(attachment).toBeTruthy();
+		expect(result.name).toBe('high-roller-results.png');
+		expect(result.buffer).toBeInstanceOf(Buffer);
+		expect(result.buffer.length).toBeGreaterThan(0);
 	});
 });
