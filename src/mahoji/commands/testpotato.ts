@@ -11,6 +11,7 @@ import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
+import { diaries } from '@/lib/diaries.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
 import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
@@ -393,6 +394,45 @@ export const testPotatoCommand = globalConfig.isProduction
 							required: true,
 							min_value: 1,
 							max_value: 200_000_000
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'setdiary',
+					description: 'Mark an achievement diary tier as completed.',
+					options: [
+						{
+							type: 'String',
+							name: 'diary',
+							description: 'The diary you want to mark as completed.',
+							required: true,
+							autocomplete: async ({ value }: StringAutoComplete) => {
+								return diaries
+									.filter(diary =>
+										!value
+											? true
+											: [diary.name, ...(diary.alias ?? [])].some(alias =>
+													alias.toLowerCase().includes(value.toLowerCase())
+												)
+									)
+									.map(diary => ({
+										name: diary.name,
+										value: diary.name
+									}));
+							}
+						},
+						{
+							type: 'String',
+							name: 'tier',
+							description: 'The tier to complete.',
+							required: true,
+							choices: [
+								{ name: 'Easy', value: 'easy' },
+								{ name: 'Medium', value: 'medium' },
+								{ name: 'Hard', value: 'hard' },
+								{ name: 'Elite', value: 'elite' }
+							]
 						}
 					]
 				},
@@ -1004,6 +1044,27 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 				if (options.setxp) {
 					return setXP(user, options.setxp.skill, options.setxp.xp);
+				}
+				if (options.setdiary) {
+					const setDiary = options.setdiary;
+					const selectedDiary = diaries.find(
+						diary =>
+							stringMatches(diary.name, setDiary.diary) ||
+							diary.alias?.some(alias => stringMatches(alias, setDiary.diary))
+					);
+					if (!selectedDiary) return 'Invalid diary.';
+					const tierOrder = ['easy', 'medium', 'hard', 'elite'] as const;
+					const selectedIndex = tierOrder.indexOf(setDiary.tier);
+					const diaryKeys = tierOrder
+						.slice(0, selectedIndex + 1)
+						.map(tier => `${selectedDiary.name}.${tier}`.replace(/\s/g, '').toLowerCase());
+					await user.update({
+						completed_achievement_diaries: uniqueArr([
+							...user.user.completed_achievement_diaries,
+							...diaryKeys
+						])
+					});
+					return `Marked ${selectedDiary.name} ${setDiary.tier} diary as completed.`;
 				}
 				if (options.spawn) {
 					const { preset, collectionlog, item, items } = options.spawn;
