@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
+import { rogueOutfitPercentBonus } from '@/lib/skilling/skills/thieving/thievingUtils.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -49,14 +50,15 @@ export const pickpocketTask: MinionTask = {
 		const { monsterID, quantity, successfulQuantity, channelId, xpReceived, duration } = data;
 
 		const obj = Thieving.stealables.find(_obj => _obj.id === monsterID)!;
+		const isRoguesCastleChest = obj.id === 14774;
 		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
-		const loot = new Bank();
-		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance);
-
 		const userTertChanges = user.buildTertiaryItemChanges();
-		const roguesChance = Thieving.rogueOutfitPercentBonus(user);
+
+		const loot = new Bank();
+
+		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance ?? 0);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
@@ -70,10 +72,7 @@ export const pickpocketTask: MinionTask = {
 					lootItems.remove(id);
 				}
 
-				// TODO: Remove Rocky from loot tables in oldschoolJS
-				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
-
-				if (randInt(1, 100) <= roguesChance) {
+				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
 					loot.add(doubledLoot);
@@ -95,6 +94,52 @@ export const pickpocketTask: MinionTask = {
 					loot.add('Rocky');
 				}
 			}
+		} else if (obj.type === 'chest') {
+			const hasMediumDiary = isRoguesCastleChest && user.hasDiary('wilderness.medium');
+			const hasHardDiary = isRoguesCastleChest && user.hasDiary('wilderness.hard');
+			const lootMultiplier = isRoguesCastleChest ? (hasHardDiary ? 1.25 : hasMediumDiary ? 1 : 0.75) : 1;
+			const extraLootChance = lootMultiplier > 1 ? (lootMultiplier - 1) * 100 : 0;
+			const baseLootChance = lootMultiplier < 1 ? lootMultiplier * 100 : 100;
+			const clueRolls = isRoguesCastleChest && user.owns('Ring of wealth (i)') ? 2 : 1;
+
+			for (let i = 0; i < successfulQuantity; i++) {
+				if (percentChance(baseLootChance)) {
+					obj.table.roll(1, { targetBank: loot });
+				}
+
+				if (extraLootChance > 0 && percentChance(extraLootChance)) {
+					obj.table.roll(1, { targetBank: loot });
+				}
+
+				if (isRoguesCastleChest) {
+					for (let rollIndex = 0; rollIndex < clueRolls; rollIndex++) {
+						if (roll(99)) {
+							loot.add('Clue scroll (hard)');
+						}
+					}
+				}
+				if (roll(petDropRate)) {
+					loot.add('Rocky');
+				}
+			}
+		}
+
+		const hardClueScrollId = ClueTiers.find(tier => tier.name === 'Hard')?.scrollID;
+		const pkedLoot = new Bank();
+		let pkedLootPercent = 0;
+
+		if (isRoguesCastleChest && loot.length > 0) {
+			pkedLootPercent = randInt(5, 15);
+			for (const [item, quantity] of loot.items()) {
+				if (item.id === hardClueScrollId) {
+					continue;
+				}
+				const lostAmount = Math.floor((quantity * pkedLootPercent) / 100);
+				if (lostAmount > 0) {
+					loot.remove(item.id, lostAmount);
+					pkedLoot.add(item.id, lostAmount);
+				}
+			}
 		}
 
 		if (loot.has('Coins')) {
@@ -113,16 +158,18 @@ export const pickpocketTask: MinionTask = {
 			quantity - successfulQuantity
 		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
 
-		str += `\n${
-			obj.type === 'pickpockable'
-				? ''
-				: `${
-						100 - obj.lootPercent!
-					}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
-		}`;
+		if (obj.type === 'stall') {
+			str += `\n${
+				100 - obj.lootPercent!
+			}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`;
+		}
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
+		}
+
+		if (pkedLoot.length > 0) {
+			str += `\nYou were PKed and lost ${pkedLootPercent}% of your loot: ${pkedLoot}.`;
 		}
 
 		if (loot.amount('Rocky') > 0) {
