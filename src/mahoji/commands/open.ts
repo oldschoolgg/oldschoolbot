@@ -77,6 +77,7 @@ export const openCommand = defineCommand({
 				user,
 				options.name,
 				options.open_until,
+				options.quantity,
 				options.result_quantity
 			);
 		}
