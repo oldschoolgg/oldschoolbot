@@ -621,7 +621,8 @@ model EconomyItemBanks {
   id   Int      @id @default(autoincrement())
   date DateTime @default(now())
 
-  bank Json @db.JsonB
+  bank         Json  @db.JsonB
+  holder_count Json? @db.JsonB
 
   @@map("economy_item_banks")
 }
