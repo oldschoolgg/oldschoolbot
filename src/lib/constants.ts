@@ -418,6 +418,7 @@ if (!process.env.TEST && isMainThread) {
 	);
 }
 
+export const SEVEN_DAYS = Time.Day * 7;
 export const MAX_CLUES_DROPPED = 100;
 
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
@@ -434,5 +435,5 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 
 export const CONSTANTS = {
 	DAILY_COOLDOWN: BOT_TYPE === 'BSO' ? Time.Hour * 4 : Time.Hour * 12,
-	TEARS_OF_GUTHIX_CD: Time.Day * 7
+	TEARS_OF_GUTHIX_CD: SEVEN_DAYS
 };

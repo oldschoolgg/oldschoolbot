@@ -6,7 +6,7 @@ import { chunk } from 'remeda';
 
 import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
-import { patronFeatures } from '@/lib/constants.js';
+import { patronFeatures, SEVEN_DAYS } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
@@ -137,7 +137,7 @@ export const giveawayCommand = defineCommand({
 
 			const duration = new Duration(options.start.duration);
 			const ms = duration.offset;
-			if (!ms || ms > Time.Day * 7 || ms < Time.Second * 5) {
+			if (!ms || ms > SEVEN_DAYS || ms < Time.Second * 5) {
 				return 'Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.';
 			}
 

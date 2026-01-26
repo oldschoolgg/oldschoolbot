@@ -5,7 +5,7 @@ import { Items } from 'oldschooljs';
 import { activity_type_enum } from '@/prisma/main/enums.js';
 import type { Activity } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import type { PvMMethod } from '@/lib/constants.js';
+import { type PvMMethod, SEVEN_DAYS } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
@@ -747,7 +747,7 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 		where: {
 			user_id: BigInt(user.id),
 			finish_date: {
-				gt: new Date(Date.now() - Time.Day * 7)
+				gt: new Date(Date.now() - SEVEN_DAYS)
 			}
 		},
 		orderBy: {
@@ -769,6 +769,31 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 		}
 	}
 	return filtered;
+}
+
+export async function fetchLastRepeatableTrip(user: MUser): Promise<Activity | null> {
+	const res: Activity[] = await prisma.activity.findMany({
+		where: {
+			user_id: BigInt(user.id),
+			finish_date: {
+				gt: new Date(Date.now() - SEVEN_DAYS)
+			}
+		},
+		orderBy: {
+			id: 'desc'
+		},
+		take: 50
+	});
+
+	for (const trip of res) {
+		if (!taskCanBeRepeated(trip, user)) continue;
+		const data = ActivityManager.convertStoredActivityToFlatActivity(trip);
+		if (data.type === activity_type_enum.Farming && !data.autoFarmed) {
+			continue;
+		}
+		return trip;
+	}
+	return null;
 }
 
 export async function makeRepeatTripButtons(user: MUser) {
