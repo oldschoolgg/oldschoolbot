@@ -3,10 +3,11 @@ import { objectValues, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { activity_type_enum } from '@/prisma/main/enums.js';
-import type { Activity } from '@/prisma/main.js';
+import type { Activity, Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import { BERT_SAND_ID } from '@/lib/minions/data/bertSand.js';
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
@@ -14,7 +15,7 @@ import { courses } from '@/lib/skilling/skills/agility.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
-	ActivityTaskData,
+	ActivityTaskMetadata,
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
@@ -73,7 +74,40 @@ import type {
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 import puroOptions from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
 
+function getJsonObject(value: Prisma.JsonValue): Prisma.JsonObject | null {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) {
+		return null;
+	}
+	return value as Prisma.JsonObject;
+}
+
+function getTripMetadata(data: Prisma.JsonValue): ActivityTaskMetadata | null {
+	const json = getJsonObject(data);
+	if (!json) {
+		return null;
+	}
+	const metadata = json.metadata;
+	if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
+		return null;
+	}
+	return metadata as ActivityTaskMetadata;
+}
+
+function isNonRepeatableTrip(_type: activity_type_enum, data: Prisma.JsonValue) {
+	const metadata = getTripMetadata(data);
+	if (!metadata?.nonRepeatable) {
+		return false;
+	}
+	if (metadata.activityID === BERT_SAND_ID) {
+		// Bert trips mark their metadata with the Bert activity ID for clarity.
+	}
+	return true;
+}
+
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
+	if (isNonRepeatableTrip(activity.type, activity.data ?? {})) {
+		return false;
+	}
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = ActivityManager.convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
 		return (
@@ -95,20 +129,23 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
-type ActivityMap = {
-	[K in ActivityTaskData as K['type']]: K;
+const canRepeatStoredTrip = (activity: Activity, user: MUser) => {
+	if (!taskCanBeRepeated(activity, user)) {
+		return false;
+	}
+	if (activity.type === activity_type_enum.Farming) {
+		const json = getJsonObject(activity.data ?? {});
+		if (!json) {
+			return false;
+		}
+		if (!(json as unknown as FarmingActivityTaskOptions).autoFarmed) {
+			return false;
+		}
+	}
+	return true;
 };
 
-type MockedCommandOptions = {
-	[key: string]: string | number | boolean | undefined | MockedCommandOptions;
-};
-
-const tripHandlers: {
-	[K in keyof ActivityMap]: {
-		commandName: string;
-		args: (data: ActivityMap[K]) => MockedCommandOptions;
-	};
-} = {
+const tripHandlers = {
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'clue',
 		args: (data: ClueActivityTaskOptions) => ({
@@ -276,13 +313,16 @@ const tripHandlers: {
 	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
-		args: (data: CollectingOptions) => ({
-			collect: {
-				item: Items.itemNameFromId(data.collectableID),
-				no_stams: data.noStaminas,
-				quantity: data.quantity
-			}
-		})
+		args: (data: CollectingOptions) => {
+			const isBertSandTrip = data.metadata?.activityID === BERT_SAND_ID;
+			return {
+				collect: {
+					item: isBertSandTrip ? BERT_SAND_ID : Items.itemNameFromId(data.collectableID),
+					no_stams: isBertSandTrip ? undefined : data.noStaminas,
+					quantity: isBertSandTrip ? undefined : data.quantity
+				}
+			};
+		}
 	},
 	[activity_type_enum.Construction]: {
 		commandName: 'build',
@@ -771,6 +811,30 @@ export async function fetchRepeatTrips(user: MUser): Promise<Activity[]> {
 	return filtered;
 }
 
+async function getLastRepeatableTrip(user: MUser) {
+	const res: Activity[] = await prisma.activity.findMany({
+		where: {
+			user_id: BigInt(user.id),
+			finish_date: {
+				gt: new Date(Date.now() - Time.Day * 7)
+			}
+		},
+		orderBy: {
+			id: 'desc'
+		},
+		take: 20
+	});
+
+	for (const trip of res) {
+		if (!canRepeatStoredTrip(trip, user)) {
+			continue;
+		}
+		return { type: trip.type, data: trip.data ?? {} };
+	}
+
+	return null;
+}
+
 export async function makeRepeatTripButtons(user: MUser) {
 	const trips = await fetchRepeatTrips(user);
 	const limit = Math.min((await user.fetchPerkTier()) + 1, 5);
@@ -787,16 +851,31 @@ export async function makeRepeatTripButtons(user: MUser) {
 	return buttons;
 }
 
-export async function repeatTrip(user: MUser, interaction: MInteraction, activity: Activity): CommandResponse {
-	if (!activity || !activity.data || !activity.type) {
+export async function repeatTrip(
+	user: MUser,
+	interaction: MInteraction,
+	data: { data: Prisma.JsonValue; type: activity_type_enum } | null,
+	allowFallback = true
+): CommandResponse {
+	if (!data?.type || data.data == null) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
-	const handler = tripHandlers[activity.type];
-	const args: ActivityTaskData = ActivityManager.convertStoredActivityToFlatActivity(activity);
+	const tripData = data.data;
+	if (allowFallback && isNonRepeatableTrip(data.type, tripData)) {
+		const fallback = await getLastRepeatableTrip(user);
+		if (fallback) {
+			return repeatTrip(user, interaction, fallback, false);
+		}
+		return {
+			content: 'That activity is not repeatable. You don’t have a previous repeatable activity to resume.',
+			ephemeral: true
+		};
+	}
+	const handler = tripHandlers[data.type];
 	return runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
-		args: handler.args(args as any) as CommandOptions,
+		args: handler.args(tripData as any),
 		interaction,
 		user,
 		continueDeltaMillis: 0

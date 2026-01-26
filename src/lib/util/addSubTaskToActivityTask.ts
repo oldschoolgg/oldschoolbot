@@ -43,17 +43,16 @@ export default async function addSubTaskToActivityTask(taskToAdd: Omit<ActivityT
 
 	const newData: DatabaseStoredActivityData = omit(taskToAdd, ['type', 'userID', 'channelId', 'duration']);
 
-	const data: Prisma.ActivityCreateInput = {
+	const data: Prisma.ActivityUncheckedCreateInput = {
 		user_id: BigInt(taskToAdd.userID),
 		start_date: new Date(),
 		finish_date: finishDate,
 		completed: false,
 		type: taskToAdd.type,
-		data: newData,
+		data: newData as Prisma.InputJsonValue,
 		group_activity: isGroupActivity(taskToAdd),
 		channel_id: BigInt(taskToAdd.channelId),
-		duration,
-		all_user_ids: userIds.map(i => BigInt(i))
+		duration
 	};
 	try {
 		const createdActivity = await prisma.activity.create({

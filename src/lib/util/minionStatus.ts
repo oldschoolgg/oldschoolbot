@@ -4,6 +4,7 @@ import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import { BERT_SAND_BUCKETS, BERT_SAND_ID } from '@/lib/minions/data/bertSand.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import { quests } from '@/lib/minions/data/quests.js';
@@ -542,10 +543,15 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) 
 
 		case 'Collecting': {
 			const data = currentTask as CollectingOptions;
+			if (data.metadata?.activityID === BERT_SAND_ID) {
+				return `${name} is currently collecting ${BERT_SAND_BUCKETS.toLocaleString()} buckets of sand for Bert. ${formattedDuration}`;
+			}
 			const collectable = collectables.find(c => c.item.id === data.collectableID)!;
-			return `${name} is currently collecting ${data.quantity * collectable.quantity}x ${
-				collectable.item.name
-			}. ${formattedDuration}`;
+			const totalQuantity =
+				typeof data.lootQuantityOverride === 'number'
+					? data.lootQuantityOverride
+					: data.quantity * collectable.quantity;
+			return `${name} is currently collecting ${totalQuantity}x ${collectable.item.name}. ${formattedDuration}`;
 		}
 
 		case 'MageTrainingArena': {

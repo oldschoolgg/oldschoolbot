@@ -10,6 +10,7 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
+import { BERT_SAND_BUCKETS, hasCollectedThisReset, isManualEligible } from '@/lib/minions/data/bertSand.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { MUserClass } from '@/lib/user/MUser.js';
@@ -73,6 +74,47 @@ const tripFinishEffects: TripFinishEffect[] = [
 					await ClientSettings.updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
+			return {};
+		}
+	},
+	{
+		name: "Bert's Sand Auto Delivery",
+		fn: async ({ user, messages }) => {
+			if (!user.hasDiary('ardougne.elite')) {
+				return {};
+			}
+
+			const requirementError = isManualEligible(user);
+			if (requirementError) {
+				return {};
+			}
+
+			const now = Date.now();
+			const stats = await user.fetchStats();
+			const lastCollectedBigInt = stats.last_bert_sand_timestamp ?? 0n;
+			const lastCollected = Number(lastCollectedBigInt);
+
+			if (hasCollectedThisReset(lastCollected, now)) {
+				return {};
+			}
+
+			const updated = await prisma.userStats.updateMany({
+				where: {
+					user_id: BigInt(user.id),
+					last_bert_sand_timestamp: lastCollectedBigInt
+				},
+				data: {
+					last_bert_sand_timestamp: BigInt(now)
+				}
+			});
+
+			if (updated.count === 0) {
+				return {};
+			}
+
+			const loot = new Bank({ 'Bucket of sand': BERT_SAND_BUCKETS });
+			await user.addItemsToBank({ items: loot, collectionLog: true });
+			messages.push(`Bert has delivered ${BERT_SAND_BUCKETS.toLocaleString()} Buckets of sand to your bank`);
 			return {};
 		}
 	},

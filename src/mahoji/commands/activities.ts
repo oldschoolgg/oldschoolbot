@@ -1,4 +1,7 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
+
 import { ownedItemOption } from '@/discord/index.js';
+import { BERT_SAND_AUTOCOMPLETE_VALUE } from '@/lib/minions/data/bertSand.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import Potions from '@/lib/minions/data/potions.js';
 import { quests } from '@/lib/minions/data/quests.js';
@@ -17,6 +20,7 @@ import { castCommand } from '@/mahoji/lib/abstracted_commands/castCommand.js';
 import { chargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
 import { chargeWealthCommand } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';
 import { chompyHuntClaimCommand, chompyHuntCommand } from '@/mahoji/lib/abstracted_commands/chompyHuntCommand.js';
+import { collectBertSand } from '@/mahoji/lib/abstracted_commands/collectBertSand.js';
 import { collectCommand } from '@/mahoji/lib/abstracted_commands/collectCommand.js';
 import { decantCommand } from '@/mahoji/lib/abstracted_commands/decantCommand.js';
 import { driftNetCommand } from '@/mahoji/lib/abstracted_commands/driftNetCommand.js';
@@ -139,9 +143,17 @@ export const activitiesCommand = defineCommand({
 					name: 'item',
 					description: 'The item to collect.',
 					autocomplete: async ({ value }: StringAutoComplete) => {
-						return collectables
-							.filter(p => (!value ? true : p.item.name.toLowerCase().includes(value.toLowerCase())))
+						const query = value?.toLowerCase() ?? '';
+
+						const dailyOptions = [
+							{ name: "Bert's sand (Daily)", value: BERT_SAND_AUTOCOMPLETE_VALUE }
+						].filter(option => (!query ? true : option.name.toLowerCase().includes(query)));
+
+						const regularOptions = collectables
+							.filter(p => (!query ? true : p.item.name.toLowerCase().includes(query)))
 							.map(p => ({ name: p.item.name, value: p.item.name }));
+
+						return [...dailyOptions, ...regularOptions];
 					},
 					required: true
 				},
@@ -544,6 +556,10 @@ export const activitiesCommand = defineCommand({
 			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.collect) {
+			const bertSandAliases = ["Bert's sand", "Bert's sand (Daily)", BERT_SAND_AUTOCOMPLETE_VALUE];
+			if (bertSandAliases.some(alias => stringMatches(options.collect?.item, alias))) {
+				return collectBertSand(user, channelId);
+			}
 			return collectCommand(
 				user,
 				channelId,

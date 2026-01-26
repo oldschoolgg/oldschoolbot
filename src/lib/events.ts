@@ -5,6 +5,7 @@ import { Emoji, Events, getNextUTCReset, isFunction, Time } from '@oldschoolgg/t
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
+import type { UserStats } from '@/prisma/main.js';
 import { CHAT_PET_COOLDOWN_CACHE, lastRoboChimpSyncCache, RARE_ROLES_CACHE } from '@/lib/cache.js';
 import { CONSTANTS, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
@@ -109,7 +110,10 @@ const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientI
 
 const cooldownTimers: {
 	name: string;
-	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
+	timeStamp: (
+		user: MUser,
+		stats: Pick<UserStats, 'last_daily_timestamp' | 'last_tears_of_guthix_timestamp' | 'last_bert_sand_timestamp'>
+	) => number;
 	cd: number | ((user: MUser) => number);
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
@@ -127,6 +131,13 @@ const cooldownTimers: {
 		cd: CONSTANTS.DAILY_COOLDOWN,
 		command: ['minion', 'daily'],
 		utcReset: false
+	},
+	{
+		name: "Bert's sand",
+		timeStamp: (_, stats) => Number(stats.last_bert_sand_timestamp ?? 0n),
+		cd: Time.Day,
+		command: ['activities', 'collect', 'item:bert_sand'],
+		utcReset: true
 	}
 ];
 
