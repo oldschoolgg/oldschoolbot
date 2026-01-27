@@ -2276,6 +2276,8 @@ export const allPetIDs = [
 	...mumpkinMetamorphPets
 ];
 
+export { discontinuedCustomPetsCL };
+
 export const antiSantaOutfit = new Bank({
 	'Antisanta mask': 1,
 	'Antisanta jacket': 1,
