@@ -1,4 +1,5 @@
 import { BSOItemGroups } from '@/lib/bso/bsoItemGroups.js';
+import { discontinuedCustomPetsCL } from '@/lib/bso/collection-log/main.js';
 import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { PartyhatTable } from '@/lib/bso/holidayItems.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
@@ -33,7 +34,6 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
-	discontinuedCustomPetsCL,
 	temporossCL,
 	wintertodtCL
 } from '@/lib/data/CollectionsExport.js';
