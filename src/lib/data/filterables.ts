@@ -33,6 +33,7 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
+	discontinuedCustomPetsCL,
 	temporossCL,
 	wintertodtCL
 } from '@/lib/data/CollectionsExport.js';
@@ -184,6 +185,8 @@ export const ores = resolveItems([
 	'Dwarven ore',
 	'Dark animica'
 ]);
+
+const dcPetsExtras = resolveItems(['Black swan']);
 
 const bars = resolveItems([
 	'Bronze bar',
@@ -961,6 +964,11 @@ export const baseFilters: Filterable[] = [
 		name: 'tmb',
 		aliases: ['tmb'],
 		items: () => tmbTable
+	},
+	{
+		name: 'DC Pets',
+		aliases: ['dc pets', 'dcpets', 'dcpet', 'dcp', 'discontinued custom pet', 'disc custom pet'],
+		items: () => [...discontinuedCustomPetsCL, ...dcPetsExtras]
 	},
 	{
 		name: 'Pets',
