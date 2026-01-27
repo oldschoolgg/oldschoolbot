@@ -966,7 +966,7 @@ export const baseFilters: Filterable[] = [
 		items: () => tmbTable
 	},
 	{
-		name: 'DC Pets',
+		name: 'Custom Pets (Discontinued)',
 		aliases: ['dc pets', 'dcpets', 'dcpet', 'dcp', 'discontinued custom pet', 'disc custom pet'],
 		items: () => [...discontinuedCustomPetsCL, ...dcPetsExtras]
 	},
