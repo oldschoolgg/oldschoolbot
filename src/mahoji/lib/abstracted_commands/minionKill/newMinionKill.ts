@@ -17,7 +17,7 @@ import { type AttackStyles, getAttackStylesContext } from '@/lib/minions/functio
 import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { wildySlayerOnlyMonsters } from '@/lib/slayer/constants.js';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { type CurrentSlayerInfo, determineCombatBoosts } from '@/lib/slayer/slayerUtil.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
@@ -85,7 +85,9 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 		currentSlayerTask.currentTask !== null &&
 		currentSlayerTask.assignedTask.monsters.includes(monster.id);
 
-	if (monster.slayerOnly && !isOnTask) {
+	const canKillOffTask = slayerUnlocks.includes(SlayerTaskUnlocksEnum.OffTaskSlayer);
+
+	if (monster.slayerOnly && !isOnTask && !canKillOffTask) {
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
 	}
 
