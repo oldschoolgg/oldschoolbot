@@ -3,6 +3,7 @@ import type { IFarmingContract, IFarmingContractDifficultyLevel } from '@oldscho
 import { toTitleCase } from '@oldschoolgg/toolkit';
 
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
+import { BitField } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
@@ -238,6 +239,16 @@ export async function autoContract(interaction: MInteraction, user: MUser): Prom
 
 	// If they have a contract, and its planted, and it's ready, harvest it.
 	if (patch.ready) {
+		if (user.bitfield.includes(BitField.AutoReplantFarmingContract)) {
+			return farmingPlantCommand({
+				user,
+				interaction,
+				plantName: plant!.name,
+				quantity: patch.lastQuantity,
+				autoFarmed: false,
+				pay: false
+			});
+		}
 		return harvestCommand({ user, seedType: patch.patchName, interaction });
 	}
 
