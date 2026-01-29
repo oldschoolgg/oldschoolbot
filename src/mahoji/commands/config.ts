@@ -62,6 +62,10 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableAutoFarmContractButton
 	},
 	{
+		name: 'Auto Replant Farming Contracts',
+		bit: BitField.AutoReplantFarmingContract
+	},
+	{
 		name: "Disable Grand Exchange DM's",
 		bit: BitField.DisableGrandExchangeDMs
 	},
