@@ -320,6 +320,8 @@ export async function tobStartCommand(
 	solo: 'solo' | 'trio' | undefined,
 	quantity: number | undefined
 ) {
+	return 'ToB disabled till we fix it, sorry.';
+
 	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
