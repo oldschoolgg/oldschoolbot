@@ -141,7 +141,7 @@ function collectModuleInfo(filePath: string): ModuleInfo {
 			}
 		}
 
-		if (ts.isFunctionDeclaration(statement) && statement.name) {
+		if (ts.isFunctionDeclaration(statement)) {
 			const info: FunctionInfo = {
 				returnExpression: statement.body
 					? statement.body.statements.find(ts.isReturnStatement)?.expression
@@ -149,15 +149,25 @@ function collectModuleInfo(filePath: string): ModuleInfo {
 				sourcePath: filePath
 			};
 			const isExported = statement.modifiers?.some(mod => mod.kind === ts.SyntaxKind.ExportKeyword);
-			if (isExported) {
-				exportedFunctions.set(statement.name.text, info);
-			} else {
-				functions.set(statement.name.text, info);
+			const isDefault = statement.modifiers?.some(mod => mod.kind === ts.SyntaxKind.DefaultKeyword);
+			if (statement.name) {
+				if (isExported) {
+					exportedFunctions.set(statement.name.text, info);
+				} else {
+					functions.set(statement.name.text, info);
+				}
+			}
+			if (isDefault) {
+				exportedFunctions.set('default', info);
 			}
 		}
 
 		if (ts.isExportDeclaration(statement)) {
 			reExports.push(statement);
+		}
+
+		if (ts.isExportAssignment(statement) && !statement.isExportEquals) {
+			exports.set('default', statement.expression);
 		}
 	}
 
