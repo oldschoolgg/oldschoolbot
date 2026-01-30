@@ -6,7 +6,7 @@ You can train thieving using the [[/steal]] command. To start training Thieving,
 
 ### Alternatives
 
-You can also train thieving via Pyramid Plunder or obtain the Rogues outfit for double loot when pickpocketing any NPC.- See the [Pyramid Plunder](https://wiki.oldschool.gg/osb/skills/thieving/pyramid-plunder/#_top) page for details.- See the [Rogues Den](https://wiki.oldschool.gg/osb/skills/thieving/rogues-den/#_top) page for details.
+You can also train thieving via Pyramid Plunder or obtain the Rogues outfit for double loot when pickpocketing any NPC. - See the [Pyramid Plunder](https://wiki.oldschool.gg/osb/skills/thieving/pyramid-plunder/#_top) page for details.- See the [Rogues Den](https://wiki.oldschool.gg/osb/skills/thieving/rogues-den/#_top) page for details.
 
 ## Boosts
 
