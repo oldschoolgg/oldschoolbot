@@ -10,6 +10,7 @@ type CommandOption = {
 	description?: string;
 	required?: boolean;
 	choices?: ChoiceValue[];
+	choicesSummary?: string;
 	options?: CommandOption[];
 };
 
@@ -332,7 +333,12 @@ function getPropertyName(name: ts.PropertyName): string | undefined {
 	return undefined;
 }
 
-function parseChoices(node: ts.Expression): ChoiceValue[] | undefined {
+type ParsedChoices = {
+	choices?: ChoiceValue[];
+	summary?: string;
+};
+
+function parseChoiceArray(node: ts.Expression): ChoiceValue[] | undefined {
 	const expression = unwrapExpression(node);
 	if (!ts.isArrayLiteralExpression(expression)) return undefined;
 	const choices: ChoiceValue[] = [];
@@ -368,6 +374,167 @@ function parseChoices(node: ts.Expression): ChoiceValue[] | undefined {
 		}
 	}
 	return choices.length > 0 ? choices : undefined;
+}
+
+function parseArrayLength(filePath: string, node: ts.Expression, seen = new Set<string>()): number | undefined {
+	const expression = unwrapExpression(node);
+	if (ts.isIdentifier(expression)) {
+		if (seen.has(expression.text)) return undefined;
+		seen.add(expression.text);
+		const resolved = resolveIdentifierExpression(filePath, expression.text);
+		return resolved ? parseArrayLength(resolved.sourcePath, resolved.expression, seen) : undefined;
+	}
+	if (ts.isArrayLiteralExpression(expression)) {
+		let count = 0;
+		for (const element of expression.elements) {
+			if (ts.isSpreadElement(element)) {
+				const spreadLength = parseArrayLength(filePath, element.expression, seen);
+				if (spreadLength === undefined) return undefined;
+				count += spreadLength;
+				continue;
+			}
+			count += 1;
+		}
+		return count;
+	}
+	if (ts.isCallExpression(expression)) {
+		const callee = unwrapExpression(expression.expression);
+		if (ts.isIdentifier(callee) && callee.text === 'choicesOf' && expression.arguments[0]) {
+			return parseArrayLength(filePath, expression.arguments[0], seen);
+		}
+		if (ts.isPropertyAccessExpression(callee) && callee.name.text === 'map') {
+			return parseArrayLength(filePath, callee.expression, seen);
+		}
+	}
+	return undefined;
+}
+
+function getCallbackReturnExpression(callback: ts.Expression): ts.Expression | undefined {
+	const unwrapped = unwrapExpression(callback);
+	if (ts.isArrowFunction(unwrapped)) {
+		if (ts.isBlock(unwrapped.body)) {
+			return unwrapped.body.statements.find(ts.isReturnStatement)?.expression;
+		}
+		return unwrapped.body;
+	}
+	if (ts.isFunctionExpression(unwrapped)) {
+		return unwrapped.body.statements.find(ts.isReturnStatement)?.expression;
+	}
+	return undefined;
+}
+
+function parseChoicesFromMap(
+	filePath: string,
+	callExpression: ts.CallExpression,
+	seen = new Set<string>()
+): ParsedChoices | undefined {
+	const callee = unwrapExpression(callExpression.expression);
+	if (!ts.isPropertyAccessExpression(callee) || callee.name.text !== 'map') return undefined;
+
+	const baseChoicesResult = parseChoices(filePath, callee.expression, seen);
+	const baseChoices = baseChoicesResult?.choices;
+	const baseCount = baseChoicesResult?.summary ? undefined : parseArrayLength(filePath, callee.expression, seen);
+	const callback = callExpression.arguments[0];
+	if (!callback || !baseChoices) {
+		if (baseCount !== undefined) {
+			return { summary: `${baseCount} options` };
+		}
+		return baseChoicesResult;
+	}
+	const returnExpression = getCallbackReturnExpression(callback);
+	if (!returnExpression) {
+		if (baseCount !== undefined) {
+			return { summary: `${baseCount} options` };
+		}
+		return undefined;
+	}
+
+	const unwrappedReturn = unwrapExpression(returnExpression);
+	const callbackParam =
+		ts.isArrowFunction(callback) && callback.parameters[0] && ts.isIdentifier(callback.parameters[0].name)
+			? callback.parameters[0].name.text
+			: undefined;
+
+	if (callbackParam) {
+		if (ts.isIdentifier(unwrappedReturn) && unwrappedReturn.text === callbackParam) {
+			return { choices: baseChoices };
+		}
+		if (ts.isObjectLiteralExpression(unwrappedReturn)) {
+			const mappedChoices: ChoiceValue[] = [];
+			const baseValues = baseChoices.map(choice => (typeof choice === 'object' ? choice.value : choice));
+			for (const baseValue of baseValues) {
+				let name: string | undefined;
+				let value: string | number | undefined;
+				for (const prop of unwrappedReturn.properties) {
+					if (!ts.isPropertyAssignment(prop)) continue;
+					const propName = getPropertyName(prop.name);
+					if (!propName) continue;
+					const propValue = unwrapExpression(prop.initializer);
+					if (propName === 'name') {
+						if (ts.isStringLiteral(propValue)) name = propValue.text;
+						if (ts.isIdentifier(propValue) && propValue.text === callbackParam) {
+							name = String(baseValue);
+						}
+					}
+					if (propName === 'value') {
+						if (ts.isStringLiteral(propValue)) value = propValue.text;
+						if (ts.isNumericLiteral(propValue)) value = Number(propValue.text);
+						if (ts.isIdentifier(propValue) && propValue.text === callbackParam) {
+							value = baseValue;
+						}
+					}
+				}
+				if (name !== undefined && value !== undefined) {
+					mappedChoices.push({ name, value });
+				}
+			}
+			if (mappedChoices.length > 0) {
+				return { choices: mappedChoices };
+			}
+		}
+	}
+
+	if (baseCount !== undefined) {
+		return { summary: `${baseCount} options` };
+	}
+	return undefined;
+}
+
+function parseChoices(filePath: string, node: ts.Expression, seen = new Set<string>()): ParsedChoices | undefined {
+	const expression = unwrapExpression(node);
+	if (ts.isArrayLiteralExpression(expression)) {
+		const choices = parseChoiceArray(expression);
+		if (choices) return { choices };
+		const count = parseArrayLength(filePath, expression, seen);
+		return count !== undefined ? { summary: `${count} options` } : undefined;
+	}
+	if (ts.isIdentifier(expression)) {
+		if (seen.has(expression.text)) return undefined;
+		seen.add(expression.text);
+		const resolved = resolveIdentifierExpression(filePath, expression.text);
+		return resolved ? parseChoices(resolved.sourcePath, resolved.expression, seen) : undefined;
+	}
+	if (ts.isCallExpression(expression)) {
+		const callee = unwrapExpression(expression.expression);
+		if (ts.isIdentifier(callee) && callee.text === 'choicesOf' && expression.arguments[0]) {
+			const parsed = parseChoices(filePath, expression.arguments[0], seen);
+			if (parsed) {
+				return parsed;
+			}
+			const count = parseArrayLength(filePath, expression.arguments[0], seen);
+			return count !== undefined ? { summary: `${count} options` } : undefined;
+		}
+		if (ts.isPropertyAccessExpression(callee) && callee.name.text === 'map') {
+			return parseChoicesFromMap(filePath, expression, seen);
+		}
+		if (ts.isIdentifier(callee)) {
+			const functionInfo = resolveIdentifierFunction(filePath, callee.text);
+			if (functionInfo?.returnExpression) {
+				return parseChoices(functionInfo.sourcePath, functionInfo.returnExpression, seen);
+			}
+		}
+	}
+	return undefined;
 }
 
 function parseOptionsArray(filePath: string, node: ts.Expression): CommandOption[] | undefined {
@@ -448,7 +615,11 @@ function parseCommandOption(filePath: string, node: ts.Expression): CommandOptio
 			option.required = value.kind === ts.SyntaxKind.TrueKeyword;
 		}
 		if (key === 'choices') {
-			option.choices = parseChoices(value);
+			const parsedChoices = parseChoices(filePath, value);
+			if (parsedChoices) {
+				option.choices = parsedChoices.choices;
+				option.choicesSummary = parsedChoices.summary;
+			}
 		}
 		if (key === 'options') {
 			option.options = parseOptionsArray(filePath, value);
@@ -478,7 +649,8 @@ function parseCommandDefinition(filePath: string, node: ts.ObjectLiteralExpressi
 				if (!ts.isPropertyAssignment(attr)) continue;
 				const attrKey = getPropertyName(attr.name);
 				if (attrKey !== 'examples') continue;
-				const examples = parseChoices(attr.initializer)?.filter(choice => typeof choice === 'string') as
+				const parsedExamples = parseChoices(filePath, attr.initializer);
+				const examples = parsedExamples?.choices?.filter(choice => typeof choice === 'string') as
 					| string[]
 					| undefined;
 				if (examples && examples.length > 0) {
@@ -521,7 +693,7 @@ function formatOptionToken(option: CommandOption): string {
 
 function formatChoices(option: CommandOption): string {
 	if (!option.choices || option.choices.length === 0) {
-		return '';
+		return option.choicesSummary ?? '';
 	}
 	const names = option.choices.map(choice => {
 		if (typeof choice === 'string' || typeof choice === 'number') {
