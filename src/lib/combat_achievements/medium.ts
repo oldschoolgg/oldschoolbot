@@ -1,8 +1,10 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { ItemGroups, Monsters } from 'oldschooljs';
 
 import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
 import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const mediumCombatAchievements: CombatAchievement[] = [
 	{
@@ -613,5 +615,56 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 				'Royal Titans': [10, Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id]
 			}
 		})
+	},
+	{
+		id: 151,
+		name: 'Perilous Novice',
+		type: 'kill_count',
+		monster: 'Moons of Peril',
+		desc: 'Open the Reward Chest 5 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				'Moons of Peril': [5, Monsters.MoonsofPeril.id]
+			}
+		})
+	},
+	{
+		id: 152,
+		name: 'Lunar Triplet',
+		type: 'kill_count',
+		monster: 'Moons of Peril',
+		desc: 'Open the Reward Chest after defeating all three Moons.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				'Moons of Peril': [1, Monsters.MoonsofPeril.id]
+			}
+		})
+	},
+	{
+		id: 153,
+		name: 'Moons of Peril Speed-Trialist',
+		type: 'speed',
+		monster: 'Moons of Peril',
+		desc: 'Defeat all three Moons in one run in under 8 minutes.',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				const qty = (data as MonsterActivityTaskOptions).q;
+				const timePerKill = data.duration / Time.Minute / qty;
+				return isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data) && timePerKill <= 8;
+			}
+		}
+	},
+	{
+		id: 154,
+		name: 'Back to Our Roots',
+		type: 'restriction',
+		monster: 'Moons of Peril',
+		desc: 'Defeat all three Moons in one run by only attacking with a Dragon Scimitar.',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data) && user.gear.melee.hasEquipped('Dragon scimitar')
+		}
 	}
 ];

@@ -1800,5 +1800,16 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
 				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
+	},
+	{
+		id: 1155,
+		name: 'High Hitter',
+		type: 'mechanical',
+		monster: 'Moons of Peril',
+		desc: 'Defeat a Moon before they start their second special attack.',
+		rng: {
+			chancePerKill: 50,
+			hasChance: data => isCertainMonsterTrip(Monsters.MoonsofPeril.id)(data)
+		}
 	}
 ];

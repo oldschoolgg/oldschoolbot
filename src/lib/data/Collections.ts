@@ -452,6 +452,9 @@ export const allCollectionLogs: ICollection = {
 				items: krilTsutsarothCL,
 				fmtProg: kcProg(Monsters.KrilTsutsaroth)
 			},
+			'Moons of Peril': {
+				items: CollectionLog.MoonsofPeril.items
+			},
 			Nex: {
 				alias: ['nex'],
 				allItems: [
@@ -584,9 +587,9 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Yami: {
+			Yama: {
 				unobtainable: true,
-				items: CollectionLog.Yami.items
+				items: CollectionLog.Yama.items
 			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
