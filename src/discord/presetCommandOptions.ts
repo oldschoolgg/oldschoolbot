@@ -70,7 +70,7 @@ export const skillOption = defineOption({
 export const gearSetupOption = defineOption({
 	type: 'String',
 	name: 'gear_setup',
-	description: 'The gear setup want to select.',
+	description: 'The gear setup you want to select.',
 	required: false,
 	choices: choicesOf(GearSetupTypes)
 });

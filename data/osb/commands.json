@@ -77,7 +77,7 @@
 		},
 		{
 			"name": "casket",
-			"desc": "Simulate opening lots of clues caskets.",
+			"desc": "Simulate opening lots of clue caskets.",
 			"subOptions": []
 		},
 		{

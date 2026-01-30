@@ -18,7 +18,7 @@ async function determineLimit(user: MUser) {
 
 export const casketCommand = defineCommand({
 	name: 'casket',
-	description: 'Simulate opening lots of clues caskets.',
+	description: 'Simulate opening lots of clue caskets.',
 	options: [
 		{
 			type: 'String',

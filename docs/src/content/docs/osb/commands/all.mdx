@@ -115,7 +115,7 @@ _No parameters._
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `potion_name` | `string` | Yes | The name of the potion. | - |
-| `dose` | `integer` | No | The dosage to decant them too. (default 4) | - |
+| `dose` | `integer` | No | The dosage to decant them to. (default 4) | - |
 
 ### /activities charge
 
@@ -444,7 +444,7 @@ Shows your OSRS boss records.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `rsn` | `string` | Yes | The runescape username you want to check. | - |
+| `rsn` | `string` | Yes | The RuneScape username you want to check. | - |
 
 ## /botleagues
 
@@ -570,7 +570,7 @@ _No parameters._
 
 ## /casket
 
-Simulate opening lots of clues caskets.
+Simulate opening lots of clue caskets.
 
 **Usage**
 
@@ -691,7 +691,7 @@ See your OSRS clue scores.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `rsn` | `string` | Yes | Your runescape username. | - |
+| `rsn` | `string` | Yes | Your RuneScape username. | - |
 
 **Examples**
 
@@ -1225,7 +1225,7 @@ Partake in various gambling activities.
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `item` | `string` | No | The item you wish to gamble. | - |
-| `autoconfirm` | `boolean` | No | Don't ask confirmation message | - |
+| `autoconfirm` | `boolean` | No | Don't ask for confirmation | - |
 
 ### /gamble dice
 
@@ -1299,7 +1299,7 @@ Partake in various gambling activities.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `user` | `user` | Yes | The user to give a random item too. | - |
+| `user` | `user` | Yes | The user to give a random item to. | - |
 
 ## /ge
 
@@ -1315,7 +1315,7 @@ Exchange grandly with other players on the bot!
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `item` | `string` | Yes | The item you want to pick. | - |
+| `item` | `string` | Yes | The item you want to buy. | - |
 | `quantity` | `string` | Yes | The quantity of the item to exchange (e.g. 7, 5k, 10m). | - |
 | `price` | `string` | Yes | The price to exchange each item at. (e.g. 7, 5k, 10m). | - |
 
@@ -1405,7 +1405,7 @@ Manage, equip, unequip your gear.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `gear_setup` | `string` | Yes | The gear setup want to select. | - |
+| `gear_setup` | `string` | Yes | The gear setup you want to select. | - |
 | `items` | `string` | No | A list of equippable items to equip. | - |
 | `item` | `string` | No | The item you want to equip. | - |
 | `preset` | `string` | No | The gear preset you want to select. | - |
@@ -1422,7 +1422,7 @@ Manage, equip, unequip your gear.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `gear_setup` | `string` | Yes | The gear setup want to select. | - |
+| `gear_setup` | `string` | Yes | The gear setup you want to select. | - |
 | `item` | `string` | No | The item you want to unequip. | - |
 | `all` | `boolean` | No | Unequip everything in this setup? | - |
 
@@ -1515,7 +1515,7 @@ Manage, equip, unequip your gear presets.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `gear_setup` | `string` | Yes | The gear setup want to select. | - |
+| `gear_setup` | `string` | Yes | The gear setup you want to select. | - |
 | `preset` | `string` | Yes | The gear preset you want to select. | - |
 
 ### /gearpresets create
@@ -1611,7 +1611,7 @@ _No parameters._
 
 ## /giveaway
 
-Giveaway items from your ban to other players.
+Giveaway items from your bank to other players.
 
 ### /giveaway start
 
@@ -1681,7 +1681,7 @@ Hunt creatures with the Hunter skill.
 | `name` | `string` | Yes | The creature you want to hunt. | - |
 | `quantity` | `integer` | No | The quantity you want to hunt (optional). | - |
 | `hunter_potion` | `boolean` | No | Do you want to use Hunter potions for this trip? | - |
-| `stamina_potions` | `boolean` | No | Use stam potions for Herbiboar? | - |
+| `stamina_potions` | `boolean` | No | Use stamina potions for Herbiboar? | - |
 
 **Examples**
 
@@ -1716,7 +1716,7 @@ Send your minion to kill things.
 | `method` | `string` | No | If you want to cannon/barrage/burst. | - |
 | `show_info` | `boolean` | No | Show information on this monster. | - |
 | `wilderness` | `boolean` | No | If you want to kill the monster in the wilderness. | - |
-| `solo` | `boolean` | No | Solo (if its a group boss) | - |
+| `solo` | `boolean` | No | Solo (if it's a group boss) | - |
 
 **Examples**
 
@@ -1734,7 +1734,7 @@ See your OSRS kc for a monster/boss.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `rsn` | `string` | Yes | The runescape username to check | - |
+| `rsn` | `string` | Yes | The RuneScape username to check | - |
 | `boss` | `string` | Yes | The boss you want to check | - |
 
 **Examples**
@@ -1864,7 +1864,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `course` | `string` | Yes | The particular creature you want to check. | - |
+| `course` | `string` | Yes | The particular course you want to check. | - |
 
 ### /lb gp
 
@@ -2038,7 +2038,7 @@ See a level in your OSRS stats.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `rsn` | `string` | Yes | The runescape username to check | - |
+| `rsn` | `string` | Yes | The RuneScape username to check | - |
 | `skill` | `string` | Yes | The skill you want to select. | - |
 
 **Examples**
@@ -2773,7 +2773,7 @@ _No parameters._
 | --- | --- | --- | --- | --- |
 | `item` | `string` | Yes | The item you want to use. | - |
 | `skill` | `string` | Yes | The skill you want to use the item on. | - |
-| `quantity` | `integer` | No | You quantity you want to use. | - |
+| `quantity` | `integer` | No | The quantity you want to use. | - |
 
 ### /minion cancel
 
@@ -3017,7 +3017,7 @@ Send GP to another user.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `user` | `user` | Yes | The user you want to send the GP too. | - |
+| `user` | `user` | Yes | The user you want to send the GP to. | - |
 | `amount` | `string` | Yes | The amount you want to send. (e.g. 100k, 1m, 2.5b, 5*100m) | - |
 
 ## /poh
@@ -3310,7 +3310,7 @@ Admin tools second set
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user. | - |
-| `gear_setup` | `string` | No | The gear setup want to select. | - |
+| `gear_setup` | `string` | No | The gear setup you want to select. | - |
 | `all` | `boolean` | No | Unequip all gear slots | - |
 | `pet` | `boolean` | No | Unequip pet also? | - |
 
@@ -3972,7 +3972,7 @@ Allows you to trade items with other players.
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user you want to trade items with. | - |
 | `send` | `string` | No | The items you want to send to the other player. | - |
-| `receive` | `string` | No | The items you want to receieve from the other player. | - |
+| `receive` | `string` | No | The items you want to receive from the other player. | - |
 | `price` | `string` | No | A shortcut for adding GP to the received items. | - |
 | `filter` | `string` | No | The filter you want to use. | - |
 | `search` | `string` | No | An optional search of items by name. | - |
@@ -4041,7 +4041,7 @@ See your OSRS xp.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `rsn` | `string` | Yes | The runescape username to check | - |
+| `rsn` | `string` | Yes | The RuneScape username to check | - |
 | `to_99` | `boolean` | No | Only show xp remaining until level 99. | - |
 
 **Examples**
