@@ -27,7 +27,7 @@ Miscellaneous activities you can do.
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `action` | `string` | Yes | The method you wish to make planks. | Demon Butler, Sawmill |
-| `type` | `string` | Yes | The type of planks to make. | - |
+| `type` | `string` | Yes | The type of planks to make. | 4 options (see autocomplete) |
 | `quantity` | `integer` | No | The quantity of planks to make. | - |
 
 ### /activities chompy_hunt
@@ -40,7 +40,7 @@ Miscellaneous activities you can do.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `action` | `string` | Yes | Start a Chompy hunting trip, or claim hats. | - |
+| `action` | `string` | Yes | Start a Chompy hunting trip, or claim hats. | 2 options (see autocomplete) |
 
 ### /activities my_notes
 
@@ -62,7 +62,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `action` | `string` | Yes | Get tokens, or kill Cyclops. | - |
+| `action` | `string` | Yes | Get tokens, or kill Cyclops. | 2 options (see autocomplete) |
 | `quantity` | `integer` | No | The quantity (optional). | - |
 
 ### /activities camdozaal
@@ -75,7 +75,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `action` | `string` | Yes | Mining, smithing, or fishing inside the Ruins of Camdozaal | - |
+| `action` | `string` | Yes | Mining, smithing, or fishing inside the Ruins of Camdozaal | 3 options (see autocomplete) |
 | `quantity` | `integer` | No | The quantity to do (optional). | - |
 
 ### /activities collect
@@ -290,7 +290,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `activity` | `string` | Yes | The activity to do. | - |
+| `activity` | `string` | Yes | The activity to do. | 3 options (see autocomplete) |
 
 ## /ask
 
@@ -321,12 +321,12 @@ See your minions bank.
 | `page` | `integer` | No | The page in your bank you want to see. | - |
 | `item` | `string` | No | The item you want to pick. | - |
 | `items` | `string` | No | Type a bank string to lookup | - |
-| `format` | `string` | No | The format to return your bank in. | - |
+| `format` | `string` | No | The format to return your bank in. | json, text_paged, text_full |
 | `search` | `string` | No | Text to search your bank with. | - |
 | `filter` | `string` | No | The filter you want to use. | - |
-| `sort` | `string` | No | The method to sort your bank by. | - |
-| `flag` | `string` | No | A particular flag to apply to your bank. | - |
-| `flag_extra` | `string` | No | An additional flag to apply to your bank. | - |
+| `sort` | `string` | No | The method to sort your bank by. | value, alch, name, quantity, market |
+| `flag` | `string` | No | A particular flag to apply to your bank. | show_price, show_market_price, show_alch, show_id, show_names, show_weights, show_all, wide |
+| `flag_extra` | `string` | No | An additional flag to apply to your bank. | show_price, show_market_price, show_alch, show_id, show_names, show_weights, show_all, wide |
 
 ## /bingo
 
@@ -580,7 +580,7 @@ Simulate opening lots of clue caskets.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `name` | `string` | Yes | The casket you want to open. | - |
+| `name` | `string` | Yes | The casket you want to open. | 6 options (see autocomplete) |
 | `quantity` | `integer` | Yes | The quantity you want to open. | - |
 
 ## /choose
@@ -636,9 +636,9 @@ See your Collection Log.
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `name` | `string` | Yes | The log you want to see. | - |
-| `type` | `string` | No | The type of log you want to see. | - |
-| `flag` | `string` | No | The flag you want to pass. | - |
-| `flag_extra` | `string` | No | An additional flag you want to pass. | - |
+| `type` | `string` | No | The type of log you want to see. | 4 options (see autocomplete) |
+| `flag` | `string` | No | The flag you want to pass. | 2 options (see autocomplete) |
+| `flag_extra` | `string` | No | An additional flag you want to pass. | 2 options (see autocomplete) |
 | `all` | `boolean` | No | Show all items? | - |
 
 **Examples**
@@ -797,7 +797,7 @@ Commands configuring settings and options.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `sort_method` | `string` | No | The way items in your bank should be sorted. | - |
+| `sort_method` | `string` | No | The way items in your bank should be sorted. | value, alch, name, quantity, market |
 | `add_weightings` | `string` | No | Add custom weightings for extra bank sorting (e.g. '1 trout, 5 coal') | - |
 | `remove_weightings` | `string` | No | Remove weightings for extra bank sorting (e.g. '1 trout, 5 coal') | - |
 | `reset_weightings` | `string` | No | Type 'reset' to confirm you want to delete ALL of your bank weightings. | - |
@@ -869,8 +869,8 @@ Commands configuring settings and options.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `master` | `string` | No | Choose default slayer master | - |
-| `autoslay` | `string` | No | Set default autoslay mode | - |
+| `master` | `string` | No | Choose default slayer master | Duradel, Vannaka, Konar quo Maten, Nieve, Chaeldar, Mazchna, Turael, Krystilia |
+| `autoslay` | `string` | No | Set default autoslay mode | 4 options (see autocomplete) |
 
 ### /config user pin_trip
 
@@ -1017,7 +1017,7 @@ Generate fake images of getting loot.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `type` | `string` | Yes | The type you want to generate. | - |
+| `type` | `string` | Yes | The type you want to generate. | 6 options (see autocomplete) |
 | `username` | `string` | Yes | The username to put on the image. | - |
 
 ## /fakepm
@@ -1095,7 +1095,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `compost` | `string` | Yes | The compost you want to use by default. | - |
+| `compost` | `string` | Yes | The compost you want to use by default. | 3 options (see autocomplete) |
 
 ### /farming always_pay
 
@@ -1154,7 +1154,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `input` | `string` | No | The input you want to give. | - |
+| `input` | `string` | No | The input you want to give. | easy, medium, hard, easier |
 
 ## /finish
 
@@ -1224,7 +1224,7 @@ Partake in various gambling activities.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `item` | `string` | No | The item you wish to gamble. | - |
+| `item` | `string` | No | The item you wish to gamble. | fire, infernal, quiver |
 | `autoconfirm` | `boolean` | No | Don't ask for confirmation | - |
 
 ### /gamble dice
@@ -1286,7 +1286,7 @@ Partake in various gambling activities.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `choice` | `string` | No | The flower type you want to guess. | - |
+| `choice` | `string` | No | The flower type you want to guess. | hot, cold |
 | `amount` | `string` | No | Amount you wish to gamble. | - |
 
 ### /gamble give_random_item
@@ -1543,7 +1543,7 @@ Manage, equip, unequip your gear presets.
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `gear_preset` | `string` | Yes | The gear preset you want to select. | - |
-| `pinned_setup` | `string` | No | Pick a setup to pin this setup too. | - |
+| `pinned_setup` | `string` | No | Pick a setup to pin this setup too. | reset |
 
 ### /gearpresets delete
 
@@ -1713,7 +1713,7 @@ Send your minion to kill things.
 | --- | --- | --- | --- | --- |
 | `name` | `string` | Yes | The thing you want to kill. | - |
 | `quantity` | `integer` | No | The amount you want to kill. | - |
-| `method` | `string` | No | If you want to cannon/barrage/burst. | - |
+| `method` | `string` | No | If you want to cannon/barrage/burst. | barrage, cannon, burst, chinning, none |
 | `show_info` | `boolean` | No | Show information on this monster. | - |
 | `wilderness` | `boolean` | No | If you want to kill the monster in the wilderness. | - |
 | `solo` | `boolean` | No | Solo (if it's a group boss) | - |
@@ -1756,7 +1756,7 @@ Simulate killing monsters.
 | `name` | `string` | Yes | The monster you want to simulate killing. | - |
 | `quantity` | `integer` | Yes | The quantity you want to simulate. | - |
 | `catacombs` | `boolean` | No | Killing in catacombs? | - |
-| `master` | `string` | No | On slayer task from a master? | - |
+| `master` | `string` | No | On slayer task from a master? | Duradel, Vannaka, Konar quo Maten, Nieve, Chaeldar, Mazchna, Turael, Krystilia |
 
 ## /laps
 
@@ -1928,7 +1928,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `clue` | `string` | Yes | The clue you want to select. | - |
+| `clue` | `string` | Yes | The clue you want to select. | 6 options (see autocomplete) |
 | `ironmen_only` | `boolean` | No | Only include ironmen. | - |
 
 ### /lb movers
@@ -2142,7 +2142,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `tier` | `string` | Yes | What tier of gamble to do. | - |
+| `tier` | `string` | Yes | What tier of gamble to do. | 3 options (see autocomplete) |
 | `quantity` | `integer` | Yes | The amount of gambles to do. | - |
 
 ### /minigames barb_assault stats
@@ -2250,7 +2250,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `skill` | `string` | Yes | The skill to put XP in. | - |
+| `skill` | `string` | Yes | The skill to put XP in. | attack, strength, defence, hitpoints, ranged, magic, prayer |
 | `amount` | `integer` | Yes | The amount of points you want to spend. | - |
 
 ### /minigames pest_control buy
@@ -2555,7 +2555,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `item` | `string` | Yes | The item to buy. | - |
+| `item` | `string` | Yes | The item to buy. | 5 options (see autocomplete) |
 | `quantity` | `integer` | No | Quantity. | - |
 
 ### /minigames agility_arena xp
@@ -2568,7 +2568,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `quantity` | `integer` | Yes | Quantity. | - |
+| `quantity` | `integer` | Yes | Quantity. | 1, 10, 25, 100, 1000 |
 
 ### /minigames trouble_brewing start
 
@@ -2638,7 +2638,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `strategy` | `string` | Yes | The strategy to use. | - |
+| `strategy` | `string` | Yes | The strategy to use. | experience, points |
 
 ### /minigames nmz buy
 
@@ -2685,8 +2685,8 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `shade` | `string` | Yes | The shade you want to use. | - |
-| `logs` | `string` | Yes | The logs you want to use. | - |
+| `shade` | `string` | Yes | The shade you want to use. | 6 options (see autocomplete) |
+| `logs` | `string` | Yes | The logs you want to use. | 10 options (see autocomplete) |
 
 ## /minion
 
@@ -2856,7 +2856,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `item` | `string` | No | The item you want to charge | - |
+| `item` | `string` | No | The item you want to charge | 11 options (see autocomplete) |
 | `amount` | `integer` | No | The amount you want to charge | - |
 
 ### /minion daily
@@ -2903,7 +2903,7 @@ _No parameters._
 | --- | --- | --- | --- | --- |
 | `remove_darts` | `boolean` | No | Remove all darts from your blowpipe | - |
 | `uncharge` | `boolean` | No | Remove all darts and scales from your blowpipe | - |
-| `add` | `string` | No | Add darts or scales to your blowpipe | - |
+| `add` | `string` | No | Add darts or scales to your blowpipe | 10 options (see autocomplete) |
 | `quantity` | `integer` | No | The quantity of darts/scales to add | - |
 
 ### /minion info
@@ -3046,7 +3046,7 @@ Allows you to access and build in your POH.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `name` | `string` | Yes | The wallkit you want to pick. | - |
+| `name` | `string` | Yes | The wallkit you want to pick. | 2 options (see autocomplete) |
 
 ### /poh build
 
@@ -3140,7 +3140,7 @@ Send your minion to do raids - CoX or ToB.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `type` | `string` | Yes | Choose whether you want to solo, mass, or fake mass. | - |
+| `type` | `string` | Yes | Choose whether you want to solo, mass, or fake mass. | solo, mass, fakemass |
 | `challenge_mode` | `boolean` | No | Choose whether you want to do Challenge Mode. | - |
 | `max_team_size` | `integer` | No | Choose a max size for your team. | - |
 | `quantity` | `integer` | No | The quantity to do. | - |
@@ -3212,7 +3212,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `raid_level` | `integer` | Yes | Choose the raid level you want to do (1-600). | - |
+| `raid_level` | `integer` | Yes | Choose the raid level you want to do (1-600). | 10 options (see autocomplete) |
 | `solo` | `boolean` | No | Do you want to solo? | - |
 | `max_team_size` | `integer` | No | Choose a max size for your team. | - |
 | `quantity` | `integer` | No | The quantity to do. | - |
@@ -3296,7 +3296,7 @@ Admin tools second set
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user. | - |
-| `tier` | `integer` | Yes | The tier to give. | - |
+| `tier` | `integer` | Yes | The tier to give. | 1, 2, 3, 4, 5, 6 |
 | `time` | `string` | Yes | The time. | - |
 
 ### /rp player unequip_all_items
@@ -3326,7 +3326,7 @@ Admin tools second set
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user | - |
 | `items` | `string` | No | The items to take | - |
-| `item_filter` | `string` | No | A preconfigured item filter. | - |
+| `item_filter` | `string` | No | A preconfigured item filter. | 1 options (see autocomplete) |
 | `reason` | `string` | No | The reason | - |
 | `delete` | `boolean` | No | To delete the items instead | - |
 
@@ -3407,7 +3407,7 @@ Admin tools second set
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user that reached max total xp or level | - |
-| `type` | `string` | Yes | Did they reach max total level or max total xp | - |
+| `type` | `string` | Yes | Did they reach max total level or max total xp | 2 options (see autocomplete) |
 | `message_id` | `string` | Yes | The message id of when they got it | - |
 
 ### /rp user_event max
@@ -3421,7 +3421,7 @@ Admin tools second set
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user that reached max total xp or level | - |
-| `type` | `string` | Yes | Did they reach max level or max xp | - |
+| `type` | `string` | Yes | Did they reach max level or max xp | 2 options (see autocomplete) |
 | `skill` | `string` | Yes | What skill? | - |
 | `message_id` | `string` | Yes | The message id of when they got it | - |
 
@@ -3546,7 +3546,7 @@ Slayer skill commands
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `mode` | `string` | No | Which autoslay mode do you want? | - |
+| `mode` | `string` | No | Which autoslay mode do you want? | 4 options (see autocomplete) |
 | `save` | `boolean` | No | Save your choice as default | - |
 
 ### /slayer new_task
@@ -3559,7 +3559,7 @@ Slayer skill commands
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `master` | `string` | No | Which Slayer master do you want a task from? | - |
+| `master` | `string` | No | Which Slayer master do you want a task from? | Duradel, Vannaka, Konar quo Maten, Nieve, Chaeldar, Mazchna, Turael, Krystilia |
 | `save` | `boolean` | No | Save your choice as default | - |
 
 ### /slayer manage
@@ -3572,7 +3572,7 @@ Slayer skill commands
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `command` | `string` | Yes | Skip your current task | - |
+| `command` | `string` | Yes | Skip your current task | skip, block, list_blocks |
 | `new` | `boolean` | No | Get a new task (if applicable) | - |
 
 ### /slayer rewards unlock
@@ -3632,7 +3632,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `type` | `string` | No | What type of rewards to show? | - |
+| `type` | `string` | No | What type of rewards to show? | all, buyables, unlocks |
 
 ### /slayer rewards disable
 
@@ -3780,7 +3780,7 @@ Various tools and miscellaneous commands.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `time` | `string` | Yes | The time period. | - |
+| `time` | `string` | Yes | The time period. | day, week, month |
 | `tier` | `string` | No | The tier of clue scroll. | - |
 | `ironman` | `boolean` | No | Only check ironmen accounts. | - |
 
@@ -3794,7 +3794,7 @@ Various tools and miscellaneous commands.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `time` | `string` | Yes | The time period. | - |
+| `time` | `string` | Yes | The time period. | day, week, month |
 | `monster` | `string` | Yes | The monster you want to pick. | - |
 | `ironman` | `boolean` | No | Only check ironmen accounts. | - |
 
@@ -3808,7 +3808,7 @@ Various tools and miscellaneous commands.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `time` | `string` | Yes | The time period. | - |
+| `time` | `string` | Yes | The time period. | day, week, month |
 | `skill` | `string` | No | The skill you want to select. | - |
 | `ironman` | `boolean` | No | Only check ironmen accounts. | - |
 
@@ -3837,7 +3837,7 @@ Various tools and miscellaneous commands.
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `item` | `string` | Yes | The item you want to pick. | - |
-| `filter` | `string` | No | Filter by account type. | - |
+| `filter` | `string` | No | Filter by account type. | Both, Irons Only, Mains Only |
 
 ### /tools patron sacrificed_bank
 
@@ -3859,7 +3859,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `format` | `string` | No | Bank Image or Json format? | - |
+| `format` | `string` | No | Bank Image or Json format? | bank, json |
 
 ### /tools patron minion_stats
 

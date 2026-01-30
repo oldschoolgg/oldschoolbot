@@ -18,7 +18,7 @@ Slayer skill commands
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `mode` | `string` | No | Which autoslay mode do you want? | - |
+| `mode` | `string` | No | Which autoslay mode do you want? | 4 options (see autocomplete) |
 | `save` | `boolean` | No | Save your choice as default | - |
 
 ## /slayer new_task
@@ -31,7 +31,7 @@ Slayer skill commands
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `master` | `string` | No | Which Slayer master do you want a task from? | - |
+| `master` | `string` | No | Which Slayer master do you want a task from? | Duradel, Vannaka, Konar quo Maten, Nieve, Chaeldar, Mazchna, Turael, Krystilia |
 | `save` | `boolean` | No | Save your choice as default | - |
 
 ## /slayer manage
@@ -44,7 +44,7 @@ Slayer skill commands
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `command` | `string` | Yes | Skip your current task | - |
+| `command` | `string` | Yes | Skip your current task | skip, block, list_blocks |
 | `new` | `boolean` | No | Get a new task (if applicable) | - |
 
 ## /slayer rewards unlock
@@ -104,7 +104,7 @@ _No parameters._
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `type` | `string` | No | What type of rewards to show? | - |
+| `type` | `string` | No | What type of rewards to show? | all, buyables, unlocks |
 
 ## /slayer rewards disable
 

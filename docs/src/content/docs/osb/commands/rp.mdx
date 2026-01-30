@@ -45,7 +45,7 @@ Admin tools second set
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user. | - |
-| `tier` | `integer` | Yes | The tier to give. | - |
+| `tier` | `integer` | Yes | The tier to give. | 1, 2, 3, 4, 5, 6 |
 | `time` | `string` | Yes | The time. | - |
 
 ## /rp player unequip_all_items
@@ -75,7 +75,7 @@ Admin tools second set
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user | - |
 | `items` | `string` | No | The items to take | - |
-| `item_filter` | `string` | No | A preconfigured item filter. | - |
+| `item_filter` | `string` | No | A preconfigured item filter. | 1 options (see autocomplete) |
 | `reason` | `string` | No | The reason | - |
 | `delete` | `boolean` | No | To delete the items instead | - |
 
@@ -156,7 +156,7 @@ Admin tools second set
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user that reached max total xp or level | - |
-| `type` | `string` | Yes | Did they reach max total level or max total xp | - |
+| `type` | `string` | Yes | Did they reach max total level or max total xp | 2 options (see autocomplete) |
 | `message_id` | `string` | Yes | The message id of when they got it | - |
 
 ## /rp user_event max
@@ -170,6 +170,6 @@ Admin tools second set
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
 | `user` | `user` | Yes | The user that reached max total xp or level | - |
-| `type` | `string` | Yes | Did they reach max level or max xp | - |
+| `type` | `string` | Yes | Did they reach max level or max xp | 2 options (see autocomplete) |
 | `skill` | `string` | Yes | What skill? | - |
 | `message_id` | `string` | Yes | The message id of when they got it | - |

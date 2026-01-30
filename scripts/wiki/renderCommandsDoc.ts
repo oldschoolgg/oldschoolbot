@@ -338,42 +338,119 @@ type ParsedChoices = {
 	summary?: string;
 };
 
-function parseChoiceArray(node: ts.Expression): ChoiceValue[] | undefined {
+function parseChoiceArray(filePath: string, node: ts.Expression, seen = new Set<string>()): ChoiceValue[] | undefined {
 	const expression = unwrapExpression(node);
 	if (!ts.isArrayLiteralExpression(expression)) return undefined;
-	const choices: ChoiceValue[] = [];
-	for (const element of expression.elements) {
-		const item = unwrapExpression(element);
-		if (ts.isStringLiteral(item)) {
-			choices.push(item.text);
-			continue;
+
+	const out: ChoiceValue[] = [];
+
+	const pushFromExpression = (expr: ts.Expression) => {
+		const unwrapped = unwrapExpression(expr);
+
+		// "...something"
+		if (ts.isSpreadElement(unwrapped)) {
+			const spread = parseChoiceArray(filePath, unwrapped.expression, seen);
+			if (spread) out.push(...spread);
+			return;
 		}
-		if (ts.isNumericLiteral(item)) {
-			choices.push(Number(item.text));
-			continue;
-		}
-		if (ts.isObjectLiteralExpression(item)) {
-			let name: string | undefined;
-			let value: string | number | undefined;
-			for (const prop of item.properties) {
-				if (!ts.isPropertyAssignment(prop)) continue;
-				const propName = getPropertyName(prop.name);
-				if (!propName) continue;
-				const propValue = unwrapExpression(prop.initializer);
-				if (propName === 'name' && ts.isStringLiteral(propValue)) {
-					name = propValue.text;
-				}
-				if (propName === 'value') {
-					if (ts.isStringLiteral(propValue)) value = propValue.text;
-					if (ts.isNumericLiteral(propValue)) value = Number(propValue.text);
-				}
+
+		// identifier reference (e.g. easy, medium, SOME_CHOICES)
+		if (ts.isIdentifier(unwrapped)) {
+			if (seen.has(unwrapped.text)) return;
+			seen.add(unwrapped.text);
+
+			const resolved = resolveIdentifierExpression(filePath, unwrapped.text);
+			if (!resolved) return;
+
+			const resolvedExpr = unwrapExpression(resolved.expression);
+
+			// identifier points to an array
+			const asArray = parseChoiceArray(resolved.sourcePath, resolvedExpr, seen);
+			if (asArray) {
+				out.push(...asArray);
+				return;
 			}
-			if (name && value !== undefined) {
-				choices.push({ name, value });
+
+			// identifier points to a literal we can use as a single choice
+			if (ts.isStringLiteral(resolvedExpr)) {
+				out.push(resolvedExpr.text);
+				return;
+			}
+			if (ts.isNumericLiteral(resolvedExpr)) {
+				out.push(Number(resolvedExpr.text));
+				return;
+			}
+
+			// identifier points to an object literal {name,value}
+			if (ts.isObjectLiteralExpression(resolvedExpr)) {
+				const parsedObj = parseSingleChoiceObject(resolved.sourcePath, resolvedExpr, seen);
+				if (parsedObj) out.push(parsedObj);
+			}
+
+			return;
+		}
+
+		// direct literals
+		if (ts.isStringLiteral(unwrapped)) {
+			out.push(unwrapped.text);
+			return;
+		}
+		if (ts.isNumericLiteral(unwrapped)) {
+			out.push(Number(unwrapped.text));
+			return;
+		}
+
+		// direct object literal
+		if (ts.isObjectLiteralExpression(unwrapped)) {
+			const parsedObj = parseSingleChoiceObject(filePath, unwrapped, seen);
+			if (parsedObj) out.push(parsedObj);
+		}
+	};
+
+	for (const el of expression.elements) {
+		pushFromExpression(el);
+	}
+
+	return out.length > 0 ? out : undefined;
+}
+
+function parseSingleChoiceObject(
+	filePath: string,
+	obj: ts.ObjectLiteralExpression,
+	_seen: Set<string>
+): { name: string; value: string | number } | undefined {
+	let name: string | undefined;
+	let value: string | number | undefined;
+
+	for (const prop of obj.properties) {
+		if (!ts.isPropertyAssignment(prop)) continue;
+		const propName = getPropertyName(prop.name);
+		if (!propName) continue;
+
+		const init = unwrapExpression(prop.initializer);
+
+		if (propName === 'name') {
+			if (ts.isStringLiteral(init)) name = init.text;
+			if (ts.isIdentifier(init)) {
+				const resolved = resolveIdentifierExpression(filePath, init.text);
+				const v = resolved ? unwrapExpression(resolved.expression) : undefined;
+				if (v && ts.isStringLiteral(v)) name = v.text;
+			}
+		}
+
+		if (propName === 'value') {
+			if (ts.isStringLiteral(init)) value = init.text;
+			if (ts.isNumericLiteral(init)) value = Number(init.text);
+			if (ts.isIdentifier(init)) {
+				const resolved = resolveIdentifierExpression(filePath, init.text);
+				const v = resolved ? unwrapExpression(resolved.expression) : undefined;
+				if (v && ts.isStringLiteral(v)) value = v.text;
+				if (v && ts.isNumericLiteral(v)) value = Number(v.text);
 			}
 		}
 	}
-	return choices.length > 0 ? choices : undefined;
+
+	return name !== undefined && value !== undefined ? { name, value } : undefined;
 }
 
 function parseArrayLength(filePath: string, node: ts.Expression, seen = new Set<string>()): number | undefined {
@@ -503,7 +580,7 @@ function parseChoicesFromMap(
 function parseChoices(filePath: string, node: ts.Expression, seen = new Set<string>()): ParsedChoices | undefined {
 	const expression = unwrapExpression(node);
 	if (ts.isArrayLiteralExpression(expression)) {
-		const choices = parseChoiceArray(expression);
+		const choices = parseChoiceArray(filePath, expression, seen);
 		if (choices) return { choices };
 		const count = parseArrayLength(filePath, expression, seen);
 		return count !== undefined ? { summary: `${count} options` } : undefined;
@@ -693,18 +770,24 @@ function formatOptionToken(option: CommandOption): string {
 
 function formatChoices(option: CommandOption): string {
 	if (!option.choices || option.choices.length === 0) {
-		return option.choicesSummary ?? '';
+		return option.choicesSummary ? `${option.choicesSummary} (see autocomplete)` : '';
 	}
+
 	const names = option.choices.map(choice => {
 		if (typeof choice === 'string' || typeof choice === 'number') {
 			return String(choice);
 		}
 		return choice.name;
 	});
-	if (names.length > 10) {
-		return `${names.length} options`;
+
+	const hasNamedChoices = option.choices.some(c => typeof c === 'object');
+	const MAX_INLINE = hasNamedChoices ? 12 : 8;
+
+	if (names.length <= MAX_INLINE) {
+		return names.join(', ');
 	}
-	return names.join(', ');
+
+	return `${names.length} options (see autocomplete)`;
 }
 
 function formatUsage(commandName: string, pathSegments: string[], options: CommandOption[]): string {

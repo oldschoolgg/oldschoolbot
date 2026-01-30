@@ -104,7 +104,7 @@ Commands configuring settings and options.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `sort_method` | `string` | No | The way items in your bank should be sorted. | - |
+| `sort_method` | `string` | No | The way items in your bank should be sorted. | value, alch, name, quantity, market |
 | `add_weightings` | `string` | No | Add custom weightings for extra bank sorting (e.g. '1 trout, 5 coal') | - |
 | `remove_weightings` | `string` | No | Remove weightings for extra bank sorting (e.g. '1 trout, 5 coal') | - |
 | `reset_weightings` | `string` | No | Type 'reset' to confirm you want to delete ALL of your bank weightings. | - |
@@ -176,8 +176,8 @@ Commands configuring settings and options.
 
 | Name | Type | Required | Description | Choices |
 | --- | --- | --- | --- | --- |
-| `master` | `string` | No | Choose default slayer master | - |
-| `autoslay` | `string` | No | Set default autoslay mode | - |
+| `master` | `string` | No | Choose default slayer master | Duradel, Vannaka, Konar quo Maten, Nieve, Chaeldar, Mazchna, Turael, Krystilia |
+| `autoslay` | `string` | No | Set default autoslay mode | 4 options (see autocomplete) |
 
 ## /config user pin_trip
 
