@@ -82,6 +82,15 @@ function resolveImportPath(fromFile: string, specifier: string): string | null {
 	return null;
 }
 
+function getModuleSpecifierText(node: ts.Expression): string | null {
+	// import ... from 'x'
+	// export ... from 'x'
+	if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+		return node.text;
+	}
+	return null;
+}
+
 function getSourceFile(filePath: string): ts.SourceFile {
 	const content = readFileSync(filePath, 'utf8');
 	return ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true);
@@ -103,7 +112,9 @@ function collectModuleInfo(filePath: string): ModuleInfo {
 
 	for (const statement of sourceFile.statements) {
 		if (ts.isImportDeclaration(statement) && statement.importClause && statement.moduleSpecifier) {
-			const importPath = resolveImportPath(filePath, statement.moduleSpecifier.text);
+			const spec = getModuleSpecifierText(statement.moduleSpecifier);
+			if (!spec) continue;
+			const importPath = resolveImportPath(filePath, spec);
 			if (!importPath) continue;
 			const clause = statement.importClause;
 			if (clause.name) {
@@ -174,7 +185,9 @@ function resolveExport(filePath: string, exportName: string, seen = new Set<stri
 	}
 	for (const exportDecl of info.reExports) {
 		if (!exportDecl.moduleSpecifier) continue;
-		const resolvedPath = resolveImportPath(filePath, exportDecl.moduleSpecifier.text);
+		const spec = getModuleSpecifierText(exportDecl.moduleSpecifier);
+		if (!spec) continue;
+		const resolvedPath = resolveImportPath(filePath, spec);
 		if (!resolvedPath) continue;
 
 		if (!exportDecl.exportClause) {
@@ -214,7 +227,9 @@ function resolveFunction(filePath: string, functionName: string, seen = new Set<
 
 	for (const exportDecl of info.reExports) {
 		if (!exportDecl.moduleSpecifier) continue;
-		const resolvedPath = resolveImportPath(filePath, exportDecl.moduleSpecifier.text);
+		const spec = getModuleSpecifierText(exportDecl.moduleSpecifier);
+		if (!spec) continue;
+		const resolvedPath = resolveImportPath(filePath, spec);
 		if (!resolvedPath) continue;
 
 		if (!exportDecl.exportClause) {
