@@ -182,18 +182,10 @@ export class Gear {
 				const inverse = inverseSimilarItems.get(item);
 				if (inverse) {
 					for (const invSimilarItem of inverse.values()) {
-						if (invSimilarItem === undefined) {
-							Logging.logError(`Inverse Similar item not found for item ID: ${item}`);
-							continue;
-						}
 						values.add(invSimilarItem);
 					}
 				}
 				for (const similarItem of getSimilarItems(item)) {
-					if (similarItem === undefined) {
-						Logging.logError(`Similar item not found for item ID: ${item}`);
-						continue;
-					}
 					values.add(similarItem);
 				}
 			}
