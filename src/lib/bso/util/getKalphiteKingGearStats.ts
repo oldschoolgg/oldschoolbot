@@ -1,8 +1,8 @@
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 
+import type { GearStats } from '@oldschoolgg/gear';
 import { randInt } from '@oldschoolgg/rng';
 import { calcWhatPercent } from '@oldschoolgg/toolkit';
-import type { GearStats } from 'oldschooljs/gear';
 
 import { maxOffenceStats } from '@/lib/structures/Gear.js';
 

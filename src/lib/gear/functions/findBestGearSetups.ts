@@ -1,5 +1,5 @@
-import { EquipmentSlot, ItemGroups, Items } from 'oldschooljs';
-import type { GearStat } from 'oldschooljs/gear';
+import { EquipmentSlot, type GearStat } from '@oldschoolgg/gear';
+import { ItemGroups, Items } from 'oldschooljs';
 
 import { allEquippableItems } from '@/discord/presetCommandOptions.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';

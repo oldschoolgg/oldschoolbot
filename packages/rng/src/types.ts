@@ -6,4 +6,5 @@ export interface RNGProvider {
 	shuffle<T>(array: T[]): T[];
 	pick<T>(array: T[]): T;
 	percentChance(percent: number): boolean;
+	randomVariation(value: number, percentage: number): number;
 }

@@ -211,7 +211,7 @@ async function checkTOBUser(
 	}
 
 	const arrowsRequired = 150 * quantity;
-	if (!user.hasEquipped('Chincannon') && rangeGear.ammo!.quantity < arrowsRequired) {
+	if (!user.hasEquipped('Chincannon') && rangeGear.get('ammo')!.quantity < arrowsRequired) {
 		return [
 			true,
 			`${user.usernameOrMention}, you need at least ${arrowsRequired} arrows equipped in your range setup.`
@@ -453,7 +453,7 @@ export async function tobStartCommand(
 			const isChincannonUser = u.id === chinCannonUser?.id;
 
 			if (!isChincannonUser) {
-				preChincannonCost.add(u.gear.range.ammo!.item, 100);
+				preChincannonCost.add(u.gear.range.get('ammo')!.item, 100);
 			}
 			const { realCost } = await u.specialRemoveItems(preChincannonCost.multiply(qty));
 			await u.statsBankUpdate('tob_cost', realCost);

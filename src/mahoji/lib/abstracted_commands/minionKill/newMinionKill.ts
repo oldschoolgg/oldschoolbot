@@ -1,9 +1,10 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
 import type { ECombatOption } from '@oldschoolgg/schemas';
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { EItem, Items, itemID, Monsters } from 'oldschooljs';
+import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import * as z from 'zod';
 
@@ -16,7 +17,7 @@ import { type AttackStyles, getAttackStylesContext } from '@/lib/minions/functio
 import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { wildySlayerOnlyMonsters } from '@/lib/slayer/constants.js';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { type CurrentSlayerInfo, determineCombatBoosts } from '@/lib/slayer/slayerUtil.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
@@ -84,7 +85,9 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 		currentSlayerTask.currentTask !== null &&
 		currentSlayerTask.assignedTask.monsters.includes(monster.id);
 
-	if (monster.slayerOnly && !isOnTask) {
+	const canKillOffTask = slayerUnlocks.includes(SlayerTaskUnlocksEnum.OffTaskSlayer);
+
+	if (monster.slayerOnly && !isOnTask && !canKillOffTask) {
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
 	}
 
@@ -210,7 +213,7 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			return `Your range gear isn't right: ${rangeCheck}`;
 		}
 		const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(rangeCheck.weapon.id);
-		if (!gearBank.gear.range.ammo?.item && !usingBowfa) {
+		if (!gearBank.gear.range.get('ammo')?.item && !usingBowfa) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
 
@@ -229,10 +232,10 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 
 	if (gearBank.gear.wildy.hasEquipped('Hellfire bow') && isInWilderness) {
 		const arrowsNeeded = Math.ceil(duration / (Time.Second * 13));
-		if (gearBank.gear.wildy.ammo?.item !== itemID('Hellfire arrow')) {
+		if (gearBank.gear.wildy.get('ammo')?.item !== BSOItem.HELLFIRE_ARROW) {
 			return `You need Hellfire arrows equipped to kill ${monster.name} with a Hellfire bow.`;
 		}
-		speedDurationResult.updateBank.itemCostBank.add(itemID('Hellfire arrow'), arrowsNeeded);
+		speedDurationResult.updateBank.itemCostBank.add(BSOItem.HELLFIRE_ARROW, arrowsNeeded);
 	}
 
 	for (const effect of [...postBoostEffects, ...ephemeralPostTripEffects]) {

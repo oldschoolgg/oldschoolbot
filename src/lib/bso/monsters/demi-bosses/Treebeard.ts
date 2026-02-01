@@ -1,8 +1,9 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, GearStat, LootTable, Monsters } from 'oldschooljs';
+import { Bank, LootTable, Monsters } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
 

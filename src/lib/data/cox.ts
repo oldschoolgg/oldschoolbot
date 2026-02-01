@@ -1,5 +1,6 @@
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
+import type { GearStats } from '@oldschoolgg/gear';
 import { percentChance, randInt, randomVariation, shuffleArr } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -9,10 +10,9 @@ import {
 	Time
 } from '@oldschoolgg/toolkit';
 import { Bank, type ChambersOfXericOptions, type Item, Items } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
 
 import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
-import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import { constructGearSetup } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 
 const bareMinStats: Skills = {
@@ -165,7 +165,6 @@ export const maxMageGear = constructGearSetup({
 	shield: 'Virtus book',
 	ring: 'Seers ring(i)'
 });
-const maxMage = new Gear(maxMageGear);
 
 export const maxRangeGear = constructGearSetup({
 	head: 'Pernix cowl',
@@ -179,7 +178,6 @@ export const maxRangeGear = constructGearSetup({
 	ring: 'Ring of piercing(i)',
 	ammo: 'Dragon arrow'
 });
-const maxRange = new Gear(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
 	head: 'Torva full helm',
@@ -193,25 +191,24 @@ export const maxMeleeGear = constructGearSetup({
 	shield: 'Offhand drygore rapier',
 	ring: 'Ignis ring(i)'
 });
-const maxMelee = new Gear(maxMeleeGear);
 
 export function calculateUserGearPercents(user: MUser) {
 	const melee = calcSetupPercent(
-		maxMelee.stats,
+		maxMeleeGear.stats,
 		user.gear.melee.stats,
 		'melee_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged', 'attack_magic'],
 		true
 	);
 	const range = calcSetupPercent(
-		maxRange.stats,
+		maxRangeGear.stats,
 		user.gear.range.stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
-		maxMage.stats,
+		maxMageGear.stats,
 		user.gear.mage.stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],

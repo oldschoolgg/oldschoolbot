@@ -94,5 +94,19 @@ describe('providers', { repeats: 2 }, () => {
 				expect(rng.percentChance(100)).toBe(true);
 			}
 		});
+
+		it('random variation should always be in range', () => {
+			const results = [];
+			for (let i = 0; i < 100; i++) {
+				const res = rng.randomVariation(100, 10);
+				results.push(res);
+				expect(res).toBeGreaterThanOrEqual(90);
+				expect(res).toBeLessThanOrEqual(110);
+			}
+			const amountsLessThan100 = results.filter(n => n < 100).length;
+			const amountsGreaterThan100 = results.filter(n => n > 100).length;
+			expect(amountsLessThan100).toBeGreaterThan(0);
+			expect(amountsGreaterThan100).toBeGreaterThan(0);
+		});
 	}
 });

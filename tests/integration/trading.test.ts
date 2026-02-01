@@ -76,7 +76,7 @@ test('Trade consistency', async () => {
 					attempts += 1;
 					await Promise.all([user1.sync(), user2?.sync()]);
 					const res = await tradeCommand.run({ ...options, guildId: mockSnowflake(cryptoRng) });
-					if (typeof res === 'string' && !res.includes('Trade failed')) {
+					if (typeof res !== 'string' || !res.includes('Trade failed')) {
 						break;
 					}
 					await sleep(150);

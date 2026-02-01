@@ -9,7 +9,7 @@
 	},
 	"scripts": {
 		"build": "rimraf ./dist && tsc -p src --noEmit false",
-		"test": "pnpm tsc -p src --noEmit"
+		"test": "concurrently \"tsc -p src\" \"vitest run\" \"tsc -p tests\""
 	},
 	"dependencies": {
 		"@oldschoolgg/rng": "workspace:*"

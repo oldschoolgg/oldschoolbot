@@ -37,4 +37,10 @@ export class NodeCryptoRNG implements RNGProvider {
 	percentChance(percent: number): boolean {
 		return this.rand() < percent / 100;
 	}
+
+	randomVariation(value: number, percentage: number): number {
+		const lowerLimit = value * (1 - percentage / 100);
+		const upperLimit = value * (1 + percentage / 100);
+		return this.randFloat(lowerLimit, upperLimit);
+	}
 }

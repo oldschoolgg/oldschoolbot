@@ -1,7 +1,7 @@
-import { Bank, type EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
+import type { EquipmentSlot, GearSetup, GearSlotItem } from '@oldschoolgg/gear';
+import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 
-import type { GearSetup, GearSlotItem } from '@/lib/gear/types.js';
 import skillcapes from '@/lib/skilling/skillcapes.js';
 
 interface IGearSwap {

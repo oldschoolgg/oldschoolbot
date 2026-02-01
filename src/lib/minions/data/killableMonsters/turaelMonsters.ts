@@ -1,6 +1,6 @@
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { deepResolveItems, itemID, Monsters } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { KillableMonster } from '@/lib/minions/types.js';

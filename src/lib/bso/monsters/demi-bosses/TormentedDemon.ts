@@ -2,9 +2,9 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '@/lib/bso/tables/sharedTables.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Monsters, RareDropTable } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 export const SuperiorTormentedDemon: CustomMonster = {
 	isCustom: true,

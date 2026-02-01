@@ -1,9 +1,9 @@
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
 
+import type { GearStats } from '@oldschoolgg/gear';
 import { randInt } from '@oldschoolgg/rng';
 import { calcWhatPercent } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
 
 import { maxOffenceStats } from '@/lib/structures/Gear.js';
 

@@ -3,9 +3,9 @@ import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { UncutGemTable } from '@/lib/bso/tables/sharedTables.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 export const AkumuLootTable = new LootTable()
 	.tertiary(1000, 'Mini akumu')

@@ -1,14 +1,14 @@
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import type { Prisma } from '@/prisma/main.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
-import { rawUserUpdate, type SafeUserUpdateInput } from '@/lib/MUser.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
+import type { GearWithSetupType } from '@/lib/user/userTypes.js';
 import { userQueueFn } from '@/lib/util/userQueues.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 
 export interface TransactItemsArgs {
-	userID: string;
+	user: MUser;
 	itemsToAdd?: Bank;
 	itemsToRemove?: Bank;
 	collectionLog?: boolean;
@@ -16,45 +16,47 @@ export interface TransactItemsArgs {
 	dontAddToTempCL?: boolean;
 	neverUpdateHistory?: boolean;
 	otherUpdates?: SafeUserUpdateInput;
+	gearUpdates?: GearWithSetupType[];
 }
 
-export async function unqueuedTransactItems({
-	userID,
+async function unqueuedTransactItems({
+	user,
 	collectionLog,
 	dontAddToTempCL,
 	otherUpdates,
 	filterLoot,
 	neverUpdateHistory,
+	gearUpdates,
 	...options
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
 	const itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
-	const settings = await mUserFetch(userID);
+	await user.sync();
 
 	const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
-	if (itemsToRemove && settings.GP < gpToRemove) {
+	if (itemsToRemove && user.GP < gpToRemove) {
 		const errObj = new Error(
-			`${settings.usernameOrMention} doesn't have enough coins! They need ${gpToRemove} GP, but only have ${settings.GP} GP.`
+			`${user.usernameOrMention} doesn't have enough coins! They need ${gpToRemove} GP, but only have ${user.GP} GP.`
 		);
 		Logging.logError(errObj, {
-			userID: settings.id,
-			previousGP: settings.GP.toString(),
+			userID: user.id,
+			previousGP: user.GP.toString(),
 			gpToRemove: gpToRemove.toString(),
 			itemsToAdd: itemsToAdd?.toString() ?? '',
 			itemsToRemove: itemsToRemove.toString()
 		});
 		throw errObj;
 	}
-	const currentBank = new Bank(settings.user.bank as ItemBank);
-	const previousCL = new Bank(settings.user.collectionLogBank as ItemBank);
+	const currentBank = new Bank(user.user.bank as ItemBank);
+	const previousCL = new Bank(user.user.collectionLogBank as ItemBank);
 
-	let clUpdates: Prisma.UserUpdateArgs['data'] = {};
+	let clUpdates: Partial<Record<'temp_cl' | 'collectionLogBank', ItemBank>> = {};
 	let clLootBank: Bank | null = null;
 	if (itemsToAdd) {
 		const errors = itemsToAdd.validate();
 		if (errors.length > 0) {
 			throw new Error(
-				`Invalid itemsToAdd: UserID[${userID}] Items[${itemsToAdd.toString()}] Errors[${errors.join(', ')}]`
+				`Invalid itemsToAdd: UserID[${user.id}] Items[${itemsToAdd.toString()}] Errors[${errors.join(', ')}]`
 			);
 		}
 		const { bankLoot, clLoot } = filterLoot
@@ -63,7 +65,7 @@ export async function unqueuedTransactItems({
 		clLootBank = clLoot;
 		itemsToAdd = bankLoot;
 
-		clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
+		clUpdates = collectionLog ? user.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
 	}
 
 	let gpUpdate: { increment: number } | undefined;
@@ -84,7 +86,7 @@ export async function unqueuedTransactItems({
 		const errors = itemsToRemove.validate();
 		if (errors.length > 0) {
 			throw new Error(
-				`Invalid itemsToRemove: UserID[${userID}] Items[${itemsToRemove.toString()}] Errors[${errors.join(', ')}]`
+				`Invalid itemsToRemove: UserID[${user.id}] Items[${itemsToRemove.toString()}] Errors[${errors.join(', ')}]`
 			);
 		}
 		if (itemsToRemove.has('Coins')) {
@@ -99,13 +101,13 @@ export async function unqueuedTransactItems({
 		}
 		if (!newBank.has(itemsToRemove)) {
 			const errObj = new Error(
-				`Tried to remove ${itemsToRemove} from ${userID}. but they don't own them. Missing: ${itemsToRemove
+				`Tried to remove ${itemsToRemove} from ${user.id}. but they don't own them. Missing: ${itemsToRemove
 					.clone()
 					.remove(currentBank)}`
 			);
 			Logging.logError(errObj, {
-				userID: settings.id,
-				previousGP: settings.GP.toString(),
+				userID: user.id,
+				previousGP: user.GP.toString(),
 				gpToRemove: gpToRemove.toString(),
 				itemsToAdd: itemsToAdd?.toString() ?? '',
 				itemsToRemove: itemsToRemove.toString()
@@ -115,13 +117,13 @@ export async function unqueuedTransactItems({
 		newBank.remove(itemsToRemove);
 	}
 
-	const updateData: Prisma.UserUpdateInput = {
+	const updateData = {
 		bank: newBank.toJSON(),
 		GP: gpUpdate,
 		...clUpdates,
 		...otherUpdates
-	} as Prisma.UserUpdateInput;
-	const newUser = await rawUserUpdate(userID, updateData);
+	} as const;
+	const newUser = await user.rawUpdate({ data: updateData, gearUpdates });
 
 	const itemsAdded = new Bank(itemsToAdd);
 	if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
@@ -133,27 +135,26 @@ export async function unqueuedTransactItems({
 		itemsRemoved.add('Coins', gpUpdate.increment);
 	}
 
-	const newCL = new Bank(newUser.collectionLogBank as ItemBank);
+	const newCL = new Bank(newUser.user.collectionLogBank as ItemBank);
 
 	if (!dontAddToTempCL && collectionLog) {
-		const activeBingos = await findBingosWithUserParticipating(userID);
+		const activeBingos = await findBingosWithUserParticipating(user.id);
 		for (const bingo of activeBingos) {
 			if (bingo.isActive()) {
-				bingo.handleNewItems(userID, itemsAdded);
+				bingo.handleNewItems(user.id, itemsAdded);
 			}
 		}
 	}
 
 	if (!neverUpdateHistory) {
-		settings._updateRawUser(newUser);
-		await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
+		await handleNewCLItems({ itemsAdded, user: user, previousCL, newCL });
 	}
 
 	return {
 		previousCL,
 		itemsAdded,
 		itemsRemoved: itemsToRemove,
-		newBank: new Bank(newUser.bank as ItemBank),
+		newBank: new Bank(newUser.user.bank as ItemBank),
 		newCL,
 		newUser,
 		clLootBank
@@ -161,15 +162,15 @@ export async function unqueuedTransactItems({
 }
 
 export async function transactItemsFromBank({
-	userID,
+	user,
 	collectionLog = false,
 	filterLoot = true,
 	dontAddToTempCL = false,
 	...options
 }: TransactItemsArgs) {
-	return userQueueFn(userID, async () =>
+	return userQueueFn(user.id, async () =>
 		unqueuedTransactItems({
-			userID,
+			user,
 			collectionLog,
 			dontAddToTempCL,
 			filterLoot,

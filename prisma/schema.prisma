@@ -299,6 +299,14 @@ model SlayerTask {
   @@map("slayer_tasks")
 }
 
+enum bank_sort_method_enum {
+  value
+  alch
+  name
+  quantity
+  market
+}
+
 model User {
   id                                String             @id @db.VarChar(19)
   last_command_date                 DateTime?          @db.Timestamp(6)
@@ -1780,4 +1788,65 @@ enum JsonBankType {
   PassiveImplingsCaught
   BirdEggsOffered
   ScatteredAshes
+}
+
+model JsonBank {
+  id      Int          @id @default(autoincrement())
+  user_id String
+  type    JsonBankType
+
+  bank Json @db.JsonB
+
+  @@unique([user_id, type])
+  @@map("json_bank")
+}
+
+model ShootingStars {
+  id Int @id @default(autoincrement())
+
+  user_id        String
+  size           Int
+  expires_at     DateTime
+  has_been_mined Boolean  @default(false)
+
+  @@index([user_id, expires_at])
+  @@map("shooting_stars")
+}
+
+enum SystemLogsType {
+  ERROR
+}
+
+model SystemLogs {
+  id Int @id @default(autoincrement())
+
+  date DateTime @default(now())
+
+  type SystemLogsType
+  data Json           @db.JsonB
+
+  @@map("system_logs")
+}
+
+enum UserLogType {
+  CLICK_BUTTON
+  CANCEL_TRIP
+}
+
+model UserLog {
+  id Int @id @default(autoincrement())
+
+  user_id    BigInt
+  channel_id BigInt?
+  guild_id   BigInt?
+  message_id BigInt?
+
+  date DateTime @default(now())
+
+  type UserLogType
+
+  data Json @db.JsonB
+
+  @@index([user_id, date])
+  @@map("user_logs")
 }

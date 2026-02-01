@@ -1,3 +1,4 @@
+import { defaultGearSetup, GearSetupTypes } from '@oldschoolgg/gear';
 import { MathRNG, randArrItem, randInt, shuffleArr } from '@oldschoolgg/rng';
 import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
@@ -32,10 +33,10 @@ import {
 	type XPGain
 } from '@/prisma/main.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import { defaultGear, Gear } from '@/lib/structures/Gear.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import { isGroupActivity } from '@/lib/util/activityTypeCheck.js';
 import { BitField } from '../../src/lib/constants.js';
-import { type GearSetupType, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
+import type { UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { trackLoot } from '../../src/lib/lootTrack.js';
 import type { MinigameName } from '../../src/lib/settings/minigames.js';
 import { SkillsArray } from '../../src/lib/skilling/types.js';
@@ -123,7 +124,7 @@ class UserData {
 
 		this.gear = {} as UserFullGearSetup;
 		for (const setupType of GearSetupTypes) {
-			this.gear[setupType] = new Gear(this.mUser.gear[setupType].raw() ?? { ...defaultGear }).clone();
+			this.gear[setupType] = new Gear(this.mUser.gear[setupType].raw() ?? { ...defaultGearSetup }).clone();
 		}
 		this.skillsAsLevels = clone(this.mUser.skillsAsLevels);
 
@@ -282,7 +283,7 @@ class UserData {
 		if (!this.clbank!.equals(target.clbank!)) {
 			errors.push(`CL's don't match. Difference: ${this.clbank!.remove(target.clbank!)}`);
 		}
-		for (const gearSetup of Object.keys(this.gear!) as GearSetupType[]) {
+		for (const gearSetup of GearSetupTypes) {
 			if (!this.gear![gearSetup].equals(target.gear![gearSetup])) {
 				errors.push(`${gearSetup} gear doesn't match`);
 			}
@@ -735,7 +736,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			await user.updateGear([{ setup, gear: equippedGear as any }]);
 		}
 	},
 	{
@@ -746,7 +747,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 			if (!equippedGear) throw new Error('Equipped gear is undefined');
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			await user.updateGear([{ setup, gear: equippedGear }]);
 		}
 	},
 	{
@@ -1313,7 +1314,7 @@ test('test migrating full user on top of full profile', async () => {
 	newData.skillsAsLevels!.cooking = 1_000_000;
 	newData.bingos = [];
 	newData.botItemSell = [];
-	if (newData.gear?.melee) newData.gear.melee.weapon = null;
+	if (newData.gear?.melee) newData.gear.melee.set('weapon', null);
 
 	const badResult = sourceData.equals(newData);
 	expect(badResult.result).toBe(false);

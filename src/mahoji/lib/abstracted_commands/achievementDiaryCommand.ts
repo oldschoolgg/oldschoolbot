@@ -114,7 +114,7 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 
 	const [stats, minigameScores] = await Promise.all([user.fetchMStats(), user.fetchMinigames()]);
 
-	await user.syncCompletedAchievementDiaries({ stats, minigameScores }).catch(console.error);
+	await user.syncCompletedAchievementDiaries({ stats, minigameScores }).catch(err => Logging.logError(err));
 
 	if (!diary) {
 		return `These are the achievement diaries you can claim: ${diaries.map(d => d.name).join(', ')}.`;

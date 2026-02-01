@@ -1,9 +1,9 @@
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '@/lib/bso/tables/sharedTables.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { GemTable, LootTable, Monsters, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import { LowSeedPackTable } from '@/lib/data/seedPackTables.js';
 

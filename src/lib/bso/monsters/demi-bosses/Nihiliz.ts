@@ -1,8 +1,9 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
-import { GearStat, itemID, LootTable, Monsters, RareSeedTable, resolveItems } from 'oldschooljs';
+import { itemID, LootTable, Monsters, RareSeedTable, resolveItems } from 'oldschooljs';
 
 const clueTable = new LootTable()
 	.add('Clue scroll (master)', [1, 3], 1)

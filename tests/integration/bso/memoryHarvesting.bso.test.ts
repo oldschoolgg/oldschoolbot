@@ -24,6 +24,7 @@ describe('Divination', async () => {
 		const user = await createTestUser();
 		const gear = new Gear();
 		await user.update({
+			// @ts-expect-error
 			gear_skilling: gear.raw() as any
 		});
 		await user.runCommand(divinationCommand, {
@@ -53,6 +54,7 @@ describe('Divination', async () => {
 		const user = await createTestUser();
 		const gear = new Gear();
 		await user.update({
+			// @ts-expect-error
 			gear_skilling: gear.raw() as any
 		});
 		await user.runCommand(divinationCommand, {

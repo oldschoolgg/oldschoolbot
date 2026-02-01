@@ -1,10 +1,11 @@
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
+import { GearSetupTypes } from '@oldschoolgg/gear';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 
 import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { Skills, SkillsRequired } from '@/lib/types/index.js';
-import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
+import type { UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { SkillsArray } from '../../src/lib/skilling/types.js';
 import { ChargeBank } from '../../src/lib/structures/Bank.js';
 import { Gear } from '../../src/lib/structures/Gear.js';

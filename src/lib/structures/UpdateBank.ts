@@ -4,13 +4,13 @@ import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { objectEntries } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
+import type { Prisma, UserStats } from '@/prisma/main.js';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
-import type { GearSetup } from '@/lib/gear/types.js';
-import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
+import type { GearWithSetupType } from '@/lib/user/userTypes.js';
 import type { ClientBankKey } from '@/lib/util/clientSettings.js';
 import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 import type { JsonKeys } from '@/lib/util.js';
@@ -28,10 +28,10 @@ export class UpdateBank {
 	public itemLootBankNoCL: Bank = new Bank();
 
 	// Things changed
-	public gearChanges: Partial<Record<GearSetupType, GearSetup>> = {};
+	public gearChanges: GearWithSetupType[] = [];
 	public userStats: Omit<Prisma.UserStatsUpdateInput, 'user_id'> = {};
 	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
-	public userUpdates: Pick<Prisma.UserUpdateInput, 'slayer_points'> = {};
+	public userUpdates: SafeUserUpdateInput = {};
 
 	public clientStatsBankUpdates: Partial<Record<ClientBankKey, Bank>> = {};
 
@@ -113,8 +113,12 @@ export class UpdateBank {
 		const userUpdates: SafeUserUpdateInput = this.userUpdates;
 
 		// Gear
-		for (const [key, v] of objectEntries(this.gearChanges)) {
-			userUpdates[`gear_${key}`] = v;
+		if (this.gearChanges.length > 0) {
+			const gearChanges = user.getGearUpdateData(this.gearChanges);
+			for (const [key, value] of objectEntries(gearChanges)) {
+				// @ts-expect-error TODO
+				userUpdates[key] = value;
+			}
 		}
 
 		if (Object.keys(userUpdates).length > 0) {

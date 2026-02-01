@@ -1,12 +1,12 @@
 import { moidLink } from '@/lib/bso/bsoUtil.js';
 
+import { type GearSetup, GearSetupTypes } from '@oldschoolgg/gear';
 import { deepEqual, deepObjectDiff, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { type ItemBank, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
 import type { GearSetupType, Prisma } from '@/prisma/main.js';
-import { type GearSetup, GearSetupTypes } from '@/lib/gear/types.js';
-import type { SafeUserUpdateInput } from '@/lib/MUser.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 
 type GearX = Required<Record<`gear_${GearSetupType}`, GearSetup | null>>;
 type Changes = {

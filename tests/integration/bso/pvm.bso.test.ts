@@ -68,7 +68,7 @@ describe('BSO PVM', async () => {
 			mageGear: resolveItems(['Kodai wand'])
 		});
 		await user.giveSlayerTask(EMonster.ABYSSAL_DEMON);
-		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
+		expect(user.gear.mage.get('weapon')?.item).toEqual(itemID('Kodai wand'));
 		await user.setAttackStyle(['magic']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
@@ -128,6 +128,7 @@ describe('BSO PVM', async () => {
 
 		await user.max();
 		await user.update({
+			// @ts-expect-error
 			gear_range: gear.raw() as any,
 			skills_hitpoints: 200_000_000
 		});
@@ -140,7 +141,7 @@ describe('BSO PVM', async () => {
 		expect(user.bank.amount('Shark')).toBeLessThan(1_000_000);
 		expect(user.bank.amount('Vial of blood')).toEqual(1000 - quantityKilled);
 		expect(user.bank.amount('Silver stake')).toEqual(1000 - quantityKilled);
-		expect(user.gear.range.ammo!.quantity).toBeLessThan(10_000);
+		expect(user.gear.range.get('ammo')!.quantity).toBeLessThan(10_000);
 	});
 
 	it('should use portable tanner', async () => {
@@ -238,6 +239,6 @@ describe('BSO PVM', async () => {
 		expect(result.commandResult).toContain('Your minion is now killing ');
 		expect(result.commandResult).toContain('3x boost for Hellfire bow');
 		expect(result.activityResult?.duration).toBeGreaterThan(Time.Minute * 29.9);
-		expect(user.gear.wildy.ammo?.quantity).toBeLessThan(10000);
+		expect(user.gear.wildy.get('ammo')?.quantity).toBeLessThan(10000);
 	});
 });

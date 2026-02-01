@@ -1,4 +1,5 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
+import type { GearSetupType } from '@oldschoolgg/gear';
 import { randArrItem } from '@oldschoolgg/rng';
 import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
@@ -11,7 +12,6 @@ import { choicesOf, gearSetupOption } from '@/discord/index.js';
 import { marketPricemap } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';

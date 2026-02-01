@@ -9,9 +9,9 @@ import {
 } from '@/lib/bso/collection-log/main.js';
 import { makeKillTable } from '@/lib/bso/monsters/setCustomMonster.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { Items, itemID, LootTable, RareDropTable } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
 

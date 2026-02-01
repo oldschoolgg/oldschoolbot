@@ -1,8 +1,9 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
-import { deepResolveItems, GearStat, itemID, LootTable, Monsters, RareDropTable, resolveItems } from 'oldschooljs';
+import { deepResolveItems, itemID, LootTable, Monsters, RareDropTable, resolveItems } from 'oldschooljs';
 
 import { HighSeedPackTable } from '@/lib/data/seedPackTables.js';
 

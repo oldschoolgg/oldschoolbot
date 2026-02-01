@@ -2,14 +2,13 @@ import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
 import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
 import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
+import type { OffenceGearStat, PrimaryGearSetupType } from '@oldschoolgg/gear';
 import { calcWhatPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
-import type { OffenceGearStat } from 'oldschooljs/gear';
 import { omit } from 'remeda';
 
 import type { PvMMethod } from '@/lib/constants.js';
 import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
-import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import {
 	boostCannon,
 	boostCannonMulti,

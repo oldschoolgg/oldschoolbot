@@ -1,10 +1,10 @@
 import { BSOMonstersMap } from '@/lib/bso/monsters/customMonsters.js';
 
 import { bold } from '@oldschoolgg/discord';
+import { GearStat } from '@oldschoolgg/gear';
 import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
-import { GearStat, Items } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 
-import type { GearSetupType } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
@@ -198,13 +198,14 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	}
 
 	if (monster.minimumWeaponShieldStats) {
-		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
-			const gear = user.gear[setup as GearSetupType];
+		for (const [setup, minimum] of objectEntries(monster.minimumWeaponShieldStats)) {
+			if (!minimum) continue;
+			const gear = user.gear[setup].raw();
 			const stats = addStatsOfItemsTogether(
 				[gear['2h']?.item, gear.weapon?.item, gear.shield?.item].filter(notEmpty)
 			);
 
-			for (const [key, requiredValue] of Object.entries(minimum)) {
+			for (const [key, requiredValue] of objectEntries(minimum)) {
 				if (requiredValue < 1) continue;
 				const theirValue = stats[key as GearStat] ?? 0;
 				if (theirValue < requiredValue) {
@@ -230,7 +231,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		return "You haven't unlocked this monster.";
 	}
 
-	const rangeAmmo = user.gear.range.ammo?.item;
+	const rangeAmmo = user.gear.range.get('ammo')?.item;
 	if (
 		monster.projectileUsage?.requiredAmmo &&
 		(!rangeAmmo || !monster.projectileUsage?.requiredAmmo.includes(rangeAmmo))
