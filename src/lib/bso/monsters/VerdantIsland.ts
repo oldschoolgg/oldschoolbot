@@ -3,9 +3,9 @@ import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, RareDropTable, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
+import { GearStat } from '@oldschoolgg/gear';
 
-import type { MUserClass } from '@/lib/MUser.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import { addStatsOfItemsTogether, Gear } from '@/lib/structures/Gear.js';
 
 export const IslandTable = new LootTable()
