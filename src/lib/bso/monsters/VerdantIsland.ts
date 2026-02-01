@@ -196,36 +196,36 @@ export const CrystallineSentinel: CustomMonster = {
 		itemCost: new Bank().add('Super combat potion(4)').add('Prayer potion(4)', 2),
 		qtyPerKill: 1
 	},
-	setupsUsed: ['melee'],
+	setupsUsed: ['melee', 'range'],
 	equippedItemBoosts: [
+		{
+			gearSetup: 'range',
+			items: [
+				{
+					boostPercent: 25,
+					itemID: itemID('Vitrolic curse')
+				}
+			]
+		},
+		{
+			gearSetup: 'melee',
+			items: [
+				{
+					boostPercent: 15,
+					itemID: itemID('Starfire bow')
+				}
+			]
+		},
 		{
 			gearSetup: 'melee',
 			items: [
 				{
 					boostPercent: 10,
-					itemID: itemID('Abyssal whip')
-				}
-			]
-		},
-		{
-			gearSetup: 'melee',
-			items: [
-				{
-					boostPercent: 8,
-					itemID: itemID('Saradomin sword')
-				}
-			]
-		},
-		{
-			gearSetup: 'melee',
-			items: [
-				{
-					boostPercent: 6,
-					itemID: itemID('Dragon defender')
+					itemID: itemID("Brawler's hook necklace")
 				}
 			]
 		}
-	]
+	],
 };
 
 export const FungalBehemoth: CustomMonster = {
@@ -331,32 +331,32 @@ export const FungalBehemoth: CustomMonster = {
 		itemCost: new Bank().add('Super combat potion(4)').add('Prayer potion(4)', 3).add('Saradomin brew(4)', 2),
 		qtyPerKill: 1
 	},
-	setupsUsed: ['melee'],
+	setupsUsed: ['melee', 'range'],
 	equippedItemBoosts: [
+		{
+			gearSetup: 'range',
+			items: [
+				{
+					boostPercent: 25,
+					itemID: itemID('Vitrolic curse')
+				}
+			]
+		},
+		{
+			gearSetup: 'melee',
+			items: [
+				{
+					boostPercent: 15,
+					itemID: itemID('Starfire bow')
+				}
+			]
+		},
 		{
 			gearSetup: 'melee',
 			items: [
 				{
 					boostPercent: 10,
-					itemID: itemID('Abyssal bludgeon')
-				}
-			]
-		},
-		{
-			gearSetup: 'melee',
-			items: [
-				{
-					boostPercent: 8,
-					itemID: itemID('Zamorakian hasta')
-				}
-			]
-		},
-		{
-			gearSetup: 'melee',
-			items: [
-				{
-					boostPercent: 6,
-					itemID: itemID('Dragon defender')
+					itemID: itemID("Brawler's hook necklace")
 				}
 			]
 		}
