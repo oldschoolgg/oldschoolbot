@@ -258,7 +258,8 @@ ${items}`
 					items_sent: giftBox.items as string,
 					items_received: undefined,
 					type: 'gift'
-				}
+				},
+				select: { id: true }
 			});
 			return `You sent the gift box to ${recipient.badgedUsername}!`;
 		}

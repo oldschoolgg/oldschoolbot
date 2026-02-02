@@ -183,7 +183,8 @@ export const buyCommand = defineCommand({
 					cost_gp: totalCost.amount('Coins'),
 					cost_bank_excluding_gp: costBankExcludingGP,
 					loot_bank: outItems.toJSON()
-				}
+				},
+				select: { id: true }
 			})
 		]);
 

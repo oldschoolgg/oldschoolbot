@@ -302,7 +302,8 @@ export async function onMessage(msg: IMessage) {
 				args: msgContentWithoutCommand,
 				inhibited: false,
 				is_mention_command: true
-			}
+			},
+			select: { id: true }
 		});
 
 		try {
