@@ -1,6 +1,6 @@
 import { defaultGearSetup } from '@oldschoolgg/gear';
-import { deepEqual } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
+import { isDeepEqual } from 'remeda';
 import { assert, describe, test } from 'vitest';
 
 import { validateEquippedGear } from '@/lib/user/userUtils.js';
@@ -31,7 +31,7 @@ describe('Gear Fixing', async () => {
 		assert(user.bank.equals(expectedRefund), `Expected ${user.bank} to equal ${expectedRefund}`);
 
 		assert(
-			deepEqual(user.gear.melee.raw(), {
+			isDeepEqual(user.gear.melee.raw(), {
 				...defaultGearSetup,
 				body: { item: itemID('Bronze platebody'), quantity: 1 }
 			})
@@ -60,7 +60,7 @@ describe('Gear Fixing', async () => {
 		assert(user.bank.equals(expectedRefund), `Expected ${user.bank} to equal ${expectedRefund}`);
 
 		assert(
-			deepEqual(user.gear.melee.raw(), {
+			isDeepEqual(user.gear.melee.raw(), {
 				...defaultGearSetup,
 				'2h': { item: itemID('Bronze 2h sword'), quantity: 1 }
 			})

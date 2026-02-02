@@ -12,10 +12,10 @@ import {
 	type OtherGearStat,
 	type PartialGearSetup
 } from '@oldschoolgg/gear';
-import { deepEqual, notEmpty } from '@oldschoolgg/toolkit';
+import { notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
-import { clone } from 'remeda';
+import { clone, isDeepEqual } from 'remeda';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
@@ -353,7 +353,7 @@ export class Gear {
 	equals(other: Gear): boolean {
 		const thisRaw = this.raw();
 		const otherRaw = other.raw();
-		return deepEqual(thisRaw, otherRaw);
+		return isDeepEqual(thisRaw, otherRaw);
 	}
 }
 

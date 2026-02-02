@@ -1,7 +1,7 @@
 import { percentChance, roll } from '@oldschoolgg/rng';
-import { calcPerHour, deepEqual, Emoji, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcPerHour, Emoji, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
-import { clone } from 'remeda';
+import { clone, isDeepEqual } from 'remeda';
 
 import type { BitField } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -487,7 +487,7 @@ export const monsterTask: MinionTask = {
 		}
 
 		const recentlyKilledMonsters = uniqueArr([data.mi, ...stats.recently_killed_monsters]).slice(0, 6);
-		if (!deepEqual(recentlyKilledMonsters, stats.recently_killed_monsters)) {
+		if (!isDeepEqual(recentlyKilledMonsters, stats.recently_killed_monsters)) {
 			await prisma.userStats.update({
 				where: { user_id: BigInt(user.id) },
 				data: {
