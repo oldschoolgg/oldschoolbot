@@ -5,7 +5,7 @@ import {
 	type CanvasImage,
 	canvasToBuffer,
 	createCanvas,
-	loadAndCacheLocalImage,
+	loadImage,
 	measureTextWidth
 } from '@/lib/canvas/canvasUtil.js';
 
@@ -191,7 +191,7 @@ export const fakeCommand = defineCommand({
 		ctx.fillStyle = '#000000';
 
 		if (!bg) {
-			bg = await loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
+			bg = await loadImage('./src/lib/resources/images/tob-bg.png');
 		}
 		ctx.drawImage(bg, 0, 0, bg.width, bg.height);
 		for (const [names, fn] of thingMap) {

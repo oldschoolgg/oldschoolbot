@@ -10,7 +10,6 @@ import {
 	type CanvasImage,
 	canvasToBuffer,
 	createCanvas,
-	loadAndCacheLocalImage,
 	loadImage
 } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
@@ -43,8 +42,8 @@ class PoHImage {
 	public ready: boolean = false;
 
 	async init() {
-		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_1.jpg'));
-		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_2.jpg'));
+		this.bgImages.push(await loadImage('./src/lib/poh/images/bg_1.jpg'));
+		this.bgImages.push(await loadImage('./src/lib/poh/images/bg_2.jpg'));
 		for (const folder of FOLDERS) {
 			const currentPath = path.join(CONSTRUCTION_IMG_DIR, folder);
 			const filesInDir = await fs.promises.readdir(currentPath);
