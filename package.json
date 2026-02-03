@@ -43,7 +43,7 @@
 		"@electric-sql/pglite": "^0.3.10",
 		"@oldschoolgg/collectionlog": "workspace:*",
 		"@oldschoolgg/discord": "workspace:*",
-		"@oldschoolgg/rng": "workspace:*",
+		"node-rng": "^0.0.3",
 		"@oldschoolgg/schemas": "workspace:*",
 		"@oldschoolgg/toolkit": "workspace:*",
 		"@oldschoolgg/gear": "workspace:*",

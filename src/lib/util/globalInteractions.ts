@@ -1,6 +1,6 @@
 import { type APIMessageComponentInteraction, SpecialResponse } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { formatDuration, removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';

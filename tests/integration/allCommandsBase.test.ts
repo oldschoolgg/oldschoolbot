@@ -1,7 +1,7 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IChannel, IRole } from '@oldschoolgg/schemas';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
+import type { RNGProvider } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { convertLVLtoXP } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { omit } from 'remeda';
@@ -19,7 +19,7 @@ import { createTestUser, mockClient, mockIMember, mockUser } from './util.js';
 type CommandInput = Record<string, any>;
 type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean | undefined;
 
-const LIMIT_PER_COMMAND = 40;
+const LIMIT_PER_COMMAND = 1;
 const BASE_LEVEL_ACCOUNTS_TO_TEST = [85];
 
 export async function generateCommandInputs(

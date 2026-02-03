@@ -1,4 +1,4 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
+import { cryptoRng } from 'node-rng/crypto';
 
 import type { NewUser } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/discord/commandHandler.js';

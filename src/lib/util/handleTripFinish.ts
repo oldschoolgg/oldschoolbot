@@ -1,6 +1,6 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { getNextUTCReset } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EItem } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';

@@ -1,5 +1,4 @@
 import type { GearStats } from '@oldschoolgg/gear';
-import { MathRNG } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -7,6 +6,7 @@ import {
 	reduceNumByPercent,
 	Time
 } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, type ChambersOfXericOptions, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';

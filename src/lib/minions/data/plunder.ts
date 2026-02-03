@@ -1,4 +1,4 @@
-import { MathRNG } from '@oldschoolgg/rng';
+import { MathRNG } from 'node-rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { skillingPetDropRate } from '@/lib/util.js';

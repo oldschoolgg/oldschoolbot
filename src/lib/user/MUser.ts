@@ -1,5 +1,4 @@
 import { defaultGearSetup, type EquipmentSlot, type GearSetup } from '@oldschoolgg/gear';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import {
 	type IBirdhouseData,
 	type IBlowpipeData,
@@ -11,6 +10,7 @@ import {
 import { calcWhatPercent, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EMonster, type Item, type ItemBank, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 

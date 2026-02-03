@@ -1,7 +1,7 @@
 import '../data/itemAliases.js';
 
-import { MathRNG } from '@oldschoolgg/rng';
 import { stringMatches } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, calcDropRatesFromBank, Misc, Monsters, resolveItems } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';

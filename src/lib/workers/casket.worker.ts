@@ -1,6 +1,6 @@
 import '../data/itemAliases.js';
 
-import { MathRNG } from '@oldschoolgg/rng';
+import { MathRNG } from 'node-rng';
 import { EliteMimicTable, type ItemBank, MasterMimicTable } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

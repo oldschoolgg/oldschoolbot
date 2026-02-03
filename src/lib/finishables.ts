@@ -236,7 +236,7 @@ export const finishables: Finishable[] = [
 		kill: ({ rng }) => {
 			const loot = new Bank();
 			if (rng.roll(300)) {
-				loot.add(rng.pick(ItemGroups.evilChickenOutfit));
+				loot.add(rng.pick(ItemGroups.evilChickenOutfit)!);
 			} else {
 				loot.add(birdsNestID);
 				loot.add(treeSeedsNest.roll());

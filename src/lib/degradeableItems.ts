@@ -1,5 +1,5 @@
 import type { GearSetupType, PrimaryGearSetupType } from '@oldschoolgg/gear';
-import { MathRNG } from '@oldschoolgg/rng';
+import { MathRNG } from 'node-rng';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';

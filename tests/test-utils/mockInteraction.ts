@@ -1,6 +1,6 @@
 import { InteractionType } from '@oldschoolgg/discord';
-import { MathRNG } from '@oldschoolgg/rng';
 import type { IInteractionResponse } from '@oldschoolgg/schemas';
+import { MathRNG } from 'node-rng';
 
 import { TEST_CHANNEL_ID } from '../integration/constants.js';
 

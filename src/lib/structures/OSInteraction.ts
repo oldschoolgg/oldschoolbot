@@ -1,5 +1,5 @@
 import { type AnyInteraction, type InputItx, MInteraction } from '@oldschoolgg/discord';
-import { MathRNG } from '@oldschoolgg/rng';
+import { MathRNG } from 'node-rng';
 
 type OSInputItx<T extends AnyInteraction> = InputItx<T> & { user: MUser };
 

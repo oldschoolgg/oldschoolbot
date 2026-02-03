@@ -1,6 +1,6 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IMember, IMessage, IUser } from '@oldschoolgg/schemas';
 import { sleep } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { vi } from 'vitest';
 
 import { mockedId } from '../test-utils/misc.js';

@@ -1,5 +1,5 @@
-import { randFloat, roll, shuffleArr } from '@oldschoolgg/rng';
 import { sumArr } from '@oldschoolgg/util';
+import { MathRNG, randFloat, roll } from 'node-rng';
 
 import { EItem } from '@/EItem.js';
 import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
@@ -277,7 +277,7 @@ export class ChambersOfXericClass extends Minigame {
 		}
 
 		const onyxChance = options.team.length * 70;
-		for (const bank of shuffleArr(Object.values(lootResult))) {
+		for (const bank of MathRNG.shuffle(Object.values(lootResult))) {
 			if (roll(onyxChance)) {
 				bank.add('Onyx');
 				break;

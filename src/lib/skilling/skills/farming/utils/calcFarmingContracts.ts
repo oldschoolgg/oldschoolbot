@@ -1,6 +1,6 @@
-import { MathRNG } from '@oldschoolgg/rng';
 import type { IPlantTier } from '@oldschoolgg/schemas';
 import { stringMatches } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables.js';

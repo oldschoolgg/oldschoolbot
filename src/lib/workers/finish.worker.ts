@@ -1,8 +1,8 @@
 import type { FinishWorkerArgs, FinishWorkerReturn } from '@/lib/workers/index.js';
 import '../data/itemAliases.js';
 
-import { MathRNG } from '@oldschoolgg/rng';
 import { removeFromArr } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
 
 if (global.prisma) {

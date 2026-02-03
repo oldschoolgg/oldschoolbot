@@ -1,8 +1,8 @@
 import { bold, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
-import { MathRNG, roll } from '@oldschoolgg/rng';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { Emoji, Events, getNextUTCReset, isFunction, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, roll } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
@@ -90,7 +90,7 @@ async function petMessages(msg: IMessage) {
 	if (Date.now() - lastMessage < 80_000) return;
 	CHAT_PET_COOLDOWN_CACHE.set(key, Date.now());
 
-	const pet = MathRNG.pick(pets);
+	const pet = MathRNG.pick(pets)!;
 	if (MathRNG.roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
 		Logging.logDebug(`${msg.author_id} triggered a pet message`);
 		const user = await mUserFetch(msg.author_id);

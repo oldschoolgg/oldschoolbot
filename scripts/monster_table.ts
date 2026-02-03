@@ -1,8 +1,8 @@
 import './base.js';
 
 import { writeFileSync } from 'node:fs';
-import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, convertBankToPerHourStats, EItem, Items } from 'oldschooljs';
 import { omit } from 'remeda';
 

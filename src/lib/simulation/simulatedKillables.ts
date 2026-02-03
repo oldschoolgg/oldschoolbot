@@ -1,5 +1,5 @@
-import { MathRNG } from '@oldschoolgg/rng';
 import { SimpleTable } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';

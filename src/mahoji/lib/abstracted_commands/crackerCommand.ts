@@ -1,6 +1,6 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IUser } from '@oldschoolgg/schemas';
 import { Emoji } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
