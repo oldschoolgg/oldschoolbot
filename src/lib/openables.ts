@@ -42,7 +42,7 @@ import {
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
 import { shadeChestOpenables } from '@/lib/shadesKeys.js';
-import { nestTable } from '@/lib/simulation/birdsNest.js';
+import { birdsNestID, eggNest, nestTable } from '@/lib/simulation/birdsNest.js';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
@@ -339,6 +339,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['bird nest', 'nest'],
 		output: nestTable,
 		allItems: nestTable.allItems
+	},
+	{
+		name: 'Bird nest (egg)',
+		id: 5071,
+		openedItem: Items.getOrThrow(5071),
+		aliases: ['bird nest (egg)'],
+		output: new LootTable().every(birdsNestID).add(eggNest),
+		allItems: resolveItems([birdsNestID, ...eggNest.allItems])
 	},
 	{
 		name: 'Amylase pack',
