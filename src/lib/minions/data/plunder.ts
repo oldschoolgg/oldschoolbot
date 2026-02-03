@@ -1,4 +1,4 @@
-import { randInt, roll } from '@oldschoolgg/rng';
+import { MathRNG } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -123,22 +123,22 @@ export const plunderBoosts = new Bank({
 	"Pharaoh's sceptre": 5
 });
 
-export function lootRoom(user: MUser, room: number): [Bank, number] {
+export function lootRoom(user: MUser, room: number, rng: RNGProvider = MathRNG): [Bank, number] {
 	const loot = new Bank();
 	const roomObj = plunderRooms[room - 1];
 	const { petDropRate } = skillingPetDropRate(user, 'thieving', roomObj.rockyChance);
-	if (roll(petDropRate)) {
+	if (rng.roll(petDropRate)) {
 		loot.add('Rocky');
 	}
 
 	for (let i = 0; i < 2; i++) {
-		if (roll(roomObj.sceptreChance)) {
+		if (rng.roll(roomObj.sceptreChance)) {
 			loot.add("Pharaoh's sceptre");
 			break;
 		}
 	}
 
-	const amountUrns = randInt(9, 14);
+	const amountUrns = rng.randInt(9, 14);
 	for (let i = 0; i < amountUrns; i++) {
 		loot.add(roomObj.roomTable.roll());
 	}

@@ -1,5 +1,5 @@
 import { defaultGearSetup, type EquipmentSlot, type GearSetup } from '@oldschoolgg/gear';
-import { percentChance } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import {
 	type IBirdhouseData,
 	type IBlowpipeData,
@@ -462,7 +462,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			if (avasDevice && projectileCategory?.savedByAvas) {
 				const ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
-					if (percentChance(avasDevice.reduction)) {
+					if (cryptoRng.percentChance(avasDevice.reduction)) {
 						ammoRemove[1]--;
 						realCost.remove(ammoRemove[0].id, 1);
 					}
@@ -487,7 +487,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			if (avasDevice) {
 				const copyDarts = dart?.[1];
 				for (let i = 0; i < copyDarts; i++) {
-					if (percentChance(avasDevice.reduction)) {
+					if (cryptoRng.percentChance(avasDevice.reduction)) {
 						realCost.remove(dart[0].id, 1);
 						dart![1]--;
 					}
@@ -822,7 +822,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async addMonsterXP(params: AddMonsterXpParams) {
-		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles() });
+		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles(), rng: cryptoRng });
 		const result = await this.addXPBank(res);
 		return `**XP Gains:** ${result}`;
 	}

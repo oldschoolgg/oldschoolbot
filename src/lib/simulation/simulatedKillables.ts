@@ -1,3 +1,4 @@
+import { MathRNG } from '@oldschoolgg/rng';
 import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -52,7 +53,8 @@ export const simulatedKillables: SimulatedKillable[] = [
 							mining: 99,
 							farming: 99
 						},
-						firemakingXP: 1
+						firemakingXP: 1,
+						rng: MathRNG
 					})
 				);
 			}

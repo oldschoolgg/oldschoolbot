@@ -1,4 +1,3 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { formatDuration, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -28,7 +27,7 @@ export async function chompyHuntClaimCommand(user: MUser) {
 	return `Added the following hats to your bank: ${missingHatsBank}`;
 }
 
-export async function chompyHuntCommand(user: MUser, channelId: string) {
+export async function chompyHuntCommand({ user, channelId, rng }: OSInteraction & { rng: RNGProvider }) {
 	if (user.QP < 10) {
 		return 'You need at least 10 QP to hunt Chompy birds.';
 	}
@@ -47,7 +46,7 @@ export async function chompyHuntCommand(user: MUser, channelId: string) {
 		if (hasDiary) {
 			let bonus = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(boost)) {
+				if (rng.percentChance(boost)) {
 					bonus++;
 				}
 			}

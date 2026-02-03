@@ -1,5 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
-
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { Plant } from '@/lib/skilling/types.js';
 
@@ -45,6 +43,7 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 }
 
 export function calcVariableYield(
+	rng: RNGProvider,
 	plant: Plant,
 	upgradeType: string | null,
 	farmingLevel: number,
@@ -57,14 +56,14 @@ export function calcVariableYield(
 		for (let i = plant.variableOutputAmount.length; i > 0; i--) {
 			const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
 			if (upgradeType === upgradeTypeNeeded) {
-				cropYield += randInt(min, max);
+				cropYield += rng.randInt(min, max);
 				cropYield *= quantityAlive;
 				break;
 			}
 		}
 	} else if (plant.name === 'Limpwurt' || plant.name === 'Belladonna') {
 		for (let i = 0; i < quantityAlive; i++) {
-			cropYield += 3 + randInt(1, Math.floor(farmingLevel / 10));
+			cropYield += 3 + rng.randInt(1, Math.floor(farmingLevel / 10));
 		}
 	}
 

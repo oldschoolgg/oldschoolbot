@@ -7,6 +7,7 @@ declare global {
 
 	export type RNGProvider = import('@oldschoolgg/rng').RNGProvider;
 	export type MInteraction = import('@oldschoolgg/discord').MInteraction;
+	export type OSInteraction = import('./lib/structures/OSInteraction.js').OSInteraction;
 
 	export type MahojiUserOption = import('./discord/index.js').MahojiUserOption;
 	export type AnyCommand = import('./discord/index.js').AnyCommand;

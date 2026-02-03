@@ -6,8 +6,7 @@ import { vi } from 'vitest';
 import { mockedId } from '../test-utils/misc.js';
 import { mockClient, TestClient } from '../test-utils/mockClient.js';
 import { createTestUser, mockUser, TestUser } from '../test-utils/mockUser.js';
-
-export const TEST_CHANNEL_ID = '1111111111111111';
+import { TEST_CHANNEL_ID } from './constants.js';
 
 export function mockIUser({ userId }: { userId: string }): IUser {
 	const mocked = {

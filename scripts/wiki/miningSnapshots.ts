@@ -67,7 +67,8 @@ function main() {
 							isPowermining,
 							quantityInput: undefined,
 							hasKaramjaMedium,
-							randomVariationEnabled: false
+							randomVariationEnabled: false,
+							rng: MathRNG
 						});
 						const result = determineMiningResult({
 							ore,

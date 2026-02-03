@@ -13,7 +13,7 @@ export async function rawCommandHandlerInner({
 	ignoreUserIsBusy,
 	rng
 }: {
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	command: AnyCommand;
 	options: CommandOptions;
 	ignoreUserIsBusy?: true;
@@ -31,8 +31,7 @@ export async function rawCommandHandlerInner({
 			};
 		}
 	}
-	const user = await mUserFetch(interaction.userId);
-
+	const user = interaction.user;
 	RawSQL.updateUserLastCommandDate({ userId: interaction.userId }).catch(err => Logging.logError(err));
 
 	// TODO: remove later
@@ -105,7 +104,7 @@ export async function rawCommandHandlerInner({
 
 export async function commandHandler(
 	rawInteraction: APIChatInputApplicationCommandInteraction,
-	interaction: MInteraction
+	interaction: OSInteraction
 ) {
 	const command = globalClient.allCommands.find(c => c.name === rawInteraction.data.name)!;
 	const options = convertAPIOptionsToCommandOptions({

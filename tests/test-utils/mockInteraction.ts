@@ -1,11 +1,33 @@
 import { InteractionType } from '@oldschoolgg/discord';
+import { MathRNG } from '@oldschoolgg/rng';
 import type { IInteractionResponse } from '@oldschoolgg/schemas';
 
-import { TEST_CHANNEL_ID } from '../integration/util.js';
+import { TEST_CHANNEL_ID } from '../integration/constants.js';
 
 class MockInteraction {
 	id = '111155555';
 	__response__: any = {};
+	public rawInteraction: any;
+	public userId: string;
+	public user: MUser;
+
+	constructor({ user }: { user: MUser }) {
+		this.userId = user.id;
+		this.user = user;
+		this.rawInteraction = {
+			guild_id: '1',
+			data: {
+				options: [],
+				resolved: {}
+			},
+			channel_id: TEST_CHANNEL_ID,
+			type: InteractionType.ApplicationCommand
+		};
+	}
+
+	get rng() {
+		return MathRNG;
+	}
 
 	async deferReply() {
 		return Promise.resolve();
@@ -22,21 +44,6 @@ class MockInteraction {
 	async replyWithResponse(res: any): Promise<IInteractionResponse> {
 		this.__response__ = res;
 		return { message_id: '2222555555' };
-	}
-
-	public rawInteraction: any;
-	public userId: string;
-	constructor({ user }: { user: MUser }) {
-		this.userId = user.id;
-		this.rawInteraction = {
-			guild_id: '1',
-			data: {
-				options: [],
-				resolved: {}
-			},
-			channel_id: TEST_CHANNEL_ID,
-			type: InteractionType.ApplicationCommand
-		};
 	}
 
 	get channelId() {
@@ -64,6 +71,6 @@ class MockInteraction {
 	}
 }
 
-export function mockInteraction({ user }: { user: MUser }): MInteraction {
-	return new MockInteraction({ user }) as any as MInteraction;
+export function mockInteraction({ user }: { user: MUser }): OSInteraction {
+	return new MockInteraction({ user }) as any as OSInteraction;
 }

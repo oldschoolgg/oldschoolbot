@@ -1,5 +1,6 @@
 import { bold, dateFm, EmbedBuilder } from '@oldschoolgg/discord';
 import { MathRNG, roll } from '@oldschoolgg/rng';
+import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IMessage } from '@oldschoolgg/schemas';
 import { Emoji, Events, getNextUTCReset, isFunction, Time } from '@oldschoolgg/toolkit';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
@@ -134,6 +135,7 @@ interface MentionCommandOptions {
 	user: MUser;
 	components: BaseSendableMessage['components'];
 	content: string;
+	rng: RNGProvider;
 }
 interface MentionCommand {
 	name: command_name_enum;
@@ -263,9 +265,9 @@ const mentionCommands: MentionCommand[] = [
 		name: 'stats',
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
-		run: async ({ user, components }: MentionCommandOptions) => {
+		run: async ({ user, components, rng }: MentionCommandOptions) => {
 			return {
-				embeds: [await minionStatsEmbed(user)],
+				embeds: [await minionStatsEmbed({ user, rng })],
 				components
 			};
 		}
@@ -310,7 +312,8 @@ export async function onMessage(msg: IMessage) {
 			const response = await command.run({
 				user,
 				components: result.components,
-				content: msgContentWithoutCommand
+				content: msgContentWithoutCommand,
+				rng: cryptoRng
 			});
 			await globalClient.replyToMessage(msg, response);
 		} catch (err) {

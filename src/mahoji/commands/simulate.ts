@@ -1,4 +1,4 @@
-import { randInt, roll } from '@oldschoolgg/rng';
+import { MathRNG, randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
@@ -53,7 +53,8 @@ function simulateColosseumRuns(samples = 100) {
 				hasTorture: true,
 				scytheCharges: 300,
 				venatorBowCharges: 50,
-				bloodFuryCharges: 0
+				bloodFuryCharges: 0,
+				rng: MathRNG
 			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);

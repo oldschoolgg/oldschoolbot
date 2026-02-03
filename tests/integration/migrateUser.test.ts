@@ -56,6 +56,7 @@ import {
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity.js';
+import { mockInteraction } from '../test-utils/mockInteraction.js';
 import type { TestUser } from './util.js';
 import { createTestUser, mockClient, mockedId } from './util.js';
 
@@ -685,7 +686,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Set POH Wallkit',
 		cmd: async user => {
-			await pohWallkitCommand(user, 'Hosidius');
+			await pohWallkitCommand(mockInteraction({ user }), 'Hosidius');
 		}
 	},
 	{
@@ -791,7 +792,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Slayer task',
 		cmd: async user => {
-			await assignNewSlayerTask(user, slayerMasters.find(sm => sm.name === 'Turael')!);
+			await assignNewSlayerTask(mockInteraction({ user }), slayerMasters.find(sm => sm.name === 'Turael')!);
 		}
 	},
 	{

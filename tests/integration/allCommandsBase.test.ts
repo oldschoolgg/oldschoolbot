@@ -19,7 +19,7 @@ import { createTestUser, mockClient, mockIMember, mockUser } from './util.js';
 type CommandInput = Record<string, any>;
 type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | IRole | boolean | undefined;
 
-const LIMIT_PER_COMMAND = 1;
+const LIMIT_PER_COMMAND = 40;
 const BASE_LEVEL_ACCOUNTS_TO_TEST = [85];
 
 export async function generateCommandInputs(

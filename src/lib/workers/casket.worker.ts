@@ -1,6 +1,6 @@
 import '../data/itemAliases.js';
 
-import { roll } from '@oldschoolgg/rng';
+import { MathRNG } from '@oldschoolgg/rng';
 import { EliteMimicTable, type ItemBank, MasterMimicTable } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -17,7 +17,7 @@ export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Item
 	if (clueTier.mimicChance) {
 		const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(clueTier.mimicChance)) {
+			if (MathRNG.roll(clueTier.mimicChance)) {
 				loot.add(table.roll());
 				mimicNumber++;
 			}

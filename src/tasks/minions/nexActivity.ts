@@ -12,7 +12,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const nexTask: MinionTask = {
 	type: 'Nex',
-	async run(data: NexTaskOptions, { handleTripFinish }) {
+	async run(data: NexTaskOptions, { handleTripFinish, rng }) {
 		const { quantity, channelId, users, wipedKill, duration, teamDetails } = data;
 		const realUsers = teamDetails.filter(u => !u[3]);
 		const allMention = realUsers.map(t => userMention(t[0])).join(' ');
@@ -31,7 +31,8 @@ export const nexTask: MinionTask = {
 
 		const loot = handleNexKills({
 			quantity: survivedQuantity,
-			team: teamResult
+			team: teamResult,
+			rng
 		});
 
 		const kc = teamResult.map(u => ({ id: u.id, quantity: quantity - u.deaths.length }));
