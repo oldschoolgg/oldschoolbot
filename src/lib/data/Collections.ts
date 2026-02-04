@@ -1,4 +1,3 @@
-import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { calcWhatPercent, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import {
 	Bank,
