@@ -46,15 +46,15 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric (5-scale) in less than 12 minutes and 30 seconds.',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
-		details: 'Team size must be at least 5 and the duration must be under 12 minutes 30 seconds.',
+		details: 'Team size must be at max 5 and the duration must be under 12 minutes 30 seconds.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				(data.type === 'Raids' &&
-					(data as RaidsOptions).users.length >= 5 &&
+					(data as RaidsOptions).users.length <= 5 &&
 					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
-					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					((data as RaidsOptions).maxSizeInput ?? 0) <= 5 &&
 					data.duration < Time.Minute * 12.5 * (data.quantity ?? 1))
 		}
 	},
@@ -91,15 +91,15 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric (Trio) in less than 14 minutes and 30 seconds.',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
-		details: 'Team size must be at least 3 and the duration must be under 14 minutes 30 seconds.',
+		details: 'Team size must be at max 3 and the duration must be under 14 minutes 30 seconds.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				(data.type === 'Raids' &&
-					(data as RaidsOptions).users.length >= 3 &&
+					(data as RaidsOptions).users.length <= 3 &&
 					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
-					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					((data as RaidsOptions).maxSizeInput ?? 0) <= 3 &&
 					data.duration < Time.Minute * 14.5 * (data.quantity ?? 1))
 		}
 	},
@@ -139,17 +139,17 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		details:
-			'Challenge mode must be active, team size must be at least 3 and the duration must be under 27 minutes.',
+			'Challenge mode must be active, team size must be at max 3 and the duration must be under 27 minutes.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
-					(data as RaidsOptions).users.length >= 3 &&
+					(data as RaidsOptions).users.length <= 3 &&
 					data.duration < Time.Minute * 27 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
-					((data as RaidsOptions).maxSizeInput ?? 0) >= 3 &&
+					((data as RaidsOptions).maxSizeInput ?? 0) <= 3 &&
 					data.duration < Time.Minute * 27 * (data.quantity ?? 1))
 		}
 	},
@@ -160,17 +160,17 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		details:
-			'Challenge mode must be active, team size must be at least 5 and the duration must be under 25 minutes.',
+			'Challenge mode must be active, team size must be at max 5 and the duration must be under 25 minutes.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
-					(data as RaidsOptions).users.length >= 5 &&
+					(data as RaidsOptions).users.length <= 5 &&
 					data.duration < Time.Minute * 25 * (data.quantity ?? 1)) ||
 				(data.type === 'Raids' &&
 					(data as RaidsOptions).challengeMode &&
-					((data as RaidsOptions).maxSizeInput ?? 0) >= 5 &&
+					((data as RaidsOptions).maxSizeInput ?? 0) <= 5 &&
 					data.duration < Time.Minute * 25 * (data.quantity ?? 1))
 		}
 	},
