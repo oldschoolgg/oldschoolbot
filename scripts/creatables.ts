@@ -1,8 +1,7 @@
 import './base.js';
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { Stopwatch } from '@oldschoolgg/toolkit';
-import { md5sum } from '@oldschoolgg/toolkit/node';
+import { md5sum, Stopwatch } from '@oldschoolgg/toolkit';
 import { DateTime } from 'luxon';
 import { Bank } from 'oldschooljs';
 

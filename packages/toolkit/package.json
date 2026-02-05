@@ -5,17 +5,13 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"types": "./dist/esm/index.d.mts",
-			"import": "./dist/esm/index.mjs"
-		},
-		"./node": {
-			"types": "./dist/esm/node/index.d.mts",
-			"import": "./dist/esm/node/index.mjs"
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
 		}
 	},
 	"scripts": {
 		"test": "concurrently \"tsc -p src\" \"pnpm vitest run\" \"tsc -p tests\"",
-		"build": "tsc -p src --noEmit && tsdown"
+		"build": "rimraf ./dist && tsc -p src --noEmit false"
 	},
 	"dependencies": {
 		"decimal.js": "^10.6.0",

@@ -4,6 +4,8 @@ import {
 	calcWhatPercent,
 	exponentialPercentScale,
 	formatDuration,
+	GeneralBank,
+	type GeneralBankType,
 	increaseNumByPercent,
 	objectEntries,
 	reduceNumByPercent,
@@ -11,7 +13,6 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/node';
 import { Bank, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
