@@ -1,4 +1,3 @@
-import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { calcWhatPercent, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import {
 	Bank,
@@ -264,10 +263,6 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.DerangedArchaeologist.allItems,
 				items: derangedArchaeologistCL,
 				fmtProg: kcProg(Monsters.DerangedArchaeologist)
-			},
-			'Doom of Mokhaiotl': {
-				unobtainable: true,
-				items: CollectionLog.DoomofMokhaiotl.items
 			},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
@@ -584,10 +579,6 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Yami: {
-				unobtainable: true,
-				items: CollectionLog.Yami.items
-			},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
@@ -788,10 +779,6 @@ export const allCollectionLogs: ICollection = {
 				items: uniqueArr([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL]),
 				isActivity: true,
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
-			},
-			'Scroll Cases': {
-				unobtainable: true,
-				items: CollectionLog.ScrollCases.items
 			}
 		}
 	},
@@ -893,10 +880,6 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('mahogany_homes')
 			},
-			'Mastering Mixology': {
-				unobtainable: true,
-				items: CollectionLog.MasteringMixology.items
-			},
 			'Pest Control': {
 				items: pestControlCL,
 				isActivity: true,
@@ -946,10 +929,6 @@ export const allCollectionLogs: ICollection = {
 				items: troubleBrewingCL,
 				isActivity: true,
 				fmtProg: mgProg('trouble_brewing')
-			},
-			'Vale Totems': {
-				unobtainable: true,
-				items: CollectionLog.ValeTotems.items
 			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,
@@ -1016,10 +995,6 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.DemonicGorilla.name,
 				items: demonicGorillaCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
-			},
-			'Hunter Guild': {
-				unobtainable: true,
-				items: CollectionLog.HunterGuild.items
 			},
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],

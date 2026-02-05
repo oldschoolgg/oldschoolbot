@@ -954,17 +954,6 @@
 				],
 				"items": ["Steel ring"]
 			},
-			"doom_of_mokhaiotl": {
-				"unobtainable": true,
-				"items": [
-					"Avernic treads",
-					"Demon tear",
-					"Dom",
-					"Eye of ayak (uncharged)",
-					"Mokhaiotl cloth",
-					"Mokhaiotl waystone"
-				]
-			},
 			"dagannoth_kings": {
 				"kc_activity": {
 					"default": ["Dagannoth Supreme", "Dagannoth Rex", "Dagannoth Prime"],
@@ -2641,22 +2630,6 @@
 					"Pyromancer robe",
 					"Tome of fire",
 					"Warm gloves"
-				]
-			},
-			"yami": {
-				"unobtainable": true,
-				"items": [
-					"Barrel of demonic tallow (full)",
-					"Chasm teleport scroll",
-					"Dossier",
-					"Forgotten lockbox",
-					"Oathplate chest",
-					"Oathplate helm",
-					"Oathplate legs",
-					"Oathplate shards",
-					"Rite of vile transference",
-					"Soulflame horn",
-					"Yami"
 				]
 			},
 			"zalcano": {
@@ -4683,24 +4656,6 @@
 					"Ring of nature"
 				],
 				"is_activity": true
-			},
-			"scroll_cases": {
-				"unobtainable": true,
-				"items": [
-					"Major beginner scroll case",
-					"Major easy scroll case",
-					"Major elite scroll case",
-					"Major hard scroll case",
-					"Major master scroll case",
-					"Major medium scroll case",
-					"Mimic scroll case",
-					"Minor beginner scroll case",
-					"Minor easy scroll case",
-					"Minor elite scroll case",
-					"Minor hard scroll case",
-					"Minor master scroll case",
-					"Minor medium scroll case"
-				]
 			}
 		}
 	},
@@ -4966,18 +4921,6 @@
 				],
 				"is_activity": true
 			},
-			"mastering_mixology": {
-				"unobtainable": true,
-				"items": [
-					"Alchemist gloves",
-					"Alchemist labcoat",
-					"Alchemist pants",
-					"Alchemist's amulet",
-					"Chugging barrel (disassembled)",
-					"Prescription goggles",
-					"Reagent pouch"
-				]
-			},
 			"pest_control": {
 				"items": [
 					"Elite void robe",
@@ -5073,10 +5016,6 @@
 					"Treasure flag"
 				],
 				"is_activity": true
-			},
-			"vale_totems": {
-				"unobtainable": true,
-				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask"]
 			},
 			"volcanic_mine": {
 				"items": [
@@ -5543,17 +5482,6 @@
 					"Light frame",
 					"Monkey tail",
 					"Zenyte shard"
-				]
-			},
-			"hunter_guild": {
-				"unobtainable": true,
-				"items": [
-					"Guild hunter boots",
-					"Guild hunter headwear",
-					"Guild hunter legs",
-					"Guild hunter top",
-					"Huntsman's kit",
-					"Quetzin"
 				]
 			},
 			"monkey_backpacks": {
