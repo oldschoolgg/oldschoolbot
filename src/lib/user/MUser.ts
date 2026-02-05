@@ -51,6 +51,7 @@ import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/util
 import birdhouses, { type Birdhouse } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
+import type { SlayerSkipSettings } from '@/lib/slayer/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
@@ -70,7 +71,6 @@ import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { SlayerSkipSettings } from '@/lib/slayer/types.js';
 
 export class MUserClass extends BaseUser {
 	constructor(user: User) {
@@ -471,7 +471,8 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			}
 			if (!ammo || ammo < ammoRemove[1]) {
 				throw new UserError(
-					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${ammoRemove?.[1]
+					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
+						ammoRemove?.[1]
 					} but you have only ${ammo}.`
 				);
 			}
@@ -1046,14 +1047,14 @@ export async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateI
 	const user =
 		updates !== undefined
 			? await prisma.user.upsert({
-				create: {
-					id: userID
-				},
-				update: updates,
-				where: {
-					id: userID
-				}
-			})
+					create: {
+						id: userID
+					},
+					update: updates,
+					where: {
+						id: userID
+					}
+				})
 			: await prisma.user.findUnique({ where: { id: userID } });
 
 	if (!user) {

@@ -1,4 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
 import type { IAutoCompleteInteractionOption } from '@oldschoolgg/schemas';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
@@ -235,12 +234,12 @@ export async function slayerMonsterAutocomplete({
 
 type AssignedSlayerTask = Awaited<ReturnType<typeof assignNewSlayerTask>>;
 
-export async function applySlayerTaskExtension(user: MUser, task: AssignedSlayerTask) {
+export async function applySlayerTaskExtension(user: MUser, task: AssignedSlayerTask, rng) {
 	const myUnlocks = user.user.slayer_unlocks ?? [];
 	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(task.currentTask.monster_id));
 	if (extendReward && myUnlocks.includes(extendReward.id)) {
 		const quantity = task.assignedTask.extendedAmount
-			? randInt(task.assignedTask.extendedAmount[0], task.assignedTask.extendedAmount[1])
+			? rng.randInt(task.assignedTask.extendedAmount[0], task.assignedTask.extendedAmount[1])
 			: Math.ceil(task.currentTask.quantity * extendReward.extendMult!);
 		task.currentTask.quantity = quantity;
 		await prisma.slayerTask.update({
@@ -258,7 +257,7 @@ export async function applySlayerTaskExtension(user: MUser, task: AssignedSlayer
 
 export async function assignExtendedSlayerTask(user: MUser, master: SlayerMaster) {
 	const newTask = await assignNewSlayerTask(user, master);
-	return applySlayerTaskExtension(user, newTask);
+	return applySlayerTaskExtension(user, newTask, rng);
 }
 
 export async function autoSkipFromSkipList({

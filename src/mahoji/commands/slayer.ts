@@ -153,7 +153,7 @@ const slayerOptions = [
 									!value
 										? true
 										: r.name.toLowerCase().includes(value) ||
-										r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
+											r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
 								)
 								.map(m => {
 									return { name: m.name, value: m.name };
@@ -207,7 +207,7 @@ const slayerOptions = [
 									(!value
 										? true
 										: r.name.toLowerCase().includes(value) ||
-										r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase())))
+											r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase())))
 							).map(m => {
 								return { name: m.name, value: m.name };
 							});
@@ -263,7 +263,7 @@ const slayerOptions = [
 									(!value
 										? true
 										: r.name.toLowerCase().includes(value) ||
-										r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase())))
+											r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase())))
 							).map(m => {
 								return { name: m.name, value: m.name };
 							});
@@ -291,7 +291,8 @@ export const slayerCommand = defineCommand({
 				user,
 				modeOverride: options.autoslay.mode,
 				saveMode: Boolean(options.autoslay.save),
-				interaction
+				interaction,
+				rng
 			});
 		}
 		if (options.new_task) {
@@ -300,7 +301,8 @@ export const slayerCommand = defineCommand({
 				interaction,
 				slayerMasterOverride: options.new_task.master,
 				saveDefaultSlayerMaster: Boolean(options.new_task.save),
-				showButtons: true
+				showButtons: true,
+				rng
 			});
 		}
 		if (options.manage) {
