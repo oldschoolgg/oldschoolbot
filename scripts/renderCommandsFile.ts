@@ -1,9 +1,10 @@
 import './base.js';
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { md5sum, Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
+import { Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
 import { DateTime } from 'luxon';
 
+import { md5sum } from '@/lib/util/smallUtils.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { BOT_TYPE } from '../src/lib/constants.js';
 import { tearDownScript } from './scriptUtil.js';
