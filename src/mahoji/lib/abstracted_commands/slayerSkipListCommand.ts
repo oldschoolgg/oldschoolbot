@@ -234,7 +234,7 @@ export async function slayerMonsterAutocomplete({
 
 type AssignedSlayerTask = Awaited<ReturnType<typeof assignNewSlayerTask>>;
 
-export async function applySlayerTaskExtension(user: MUser, task: AssignedSlayerTask, rng) {
+export async function applySlayerTaskExtension(user: MUser, task: AssignedSlayerTask, rng: RNGProvider) {
 	const myUnlocks = user.user.slayer_unlocks ?? [];
 	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(task.currentTask.monster_id));
 	if (extendReward && myUnlocks.includes(extendReward.id)) {
@@ -255,19 +255,21 @@ export async function applySlayerTaskExtension(user: MUser, task: AssignedSlayer
 	return task;
 }
 
-export async function assignExtendedSlayerTask(user: MUser, master: SlayerMaster) {
-	const newTask = await assignNewSlayerTask(user, master);
+export async function assignExtendedSlayerTask(user: MUser, master: SlayerMaster, rng: RNGProvider) {
+	const newTask = await assignNewSlayerTask({ user, rng }, master);
 	return applySlayerTaskExtension(user, newTask, rng);
 }
 
 export async function autoSkipFromSkipList({
 	user,
 	master,
-	initialTask
+	initialTask,
+	rng
 }: {
 	user: MUser;
 	master: SlayerMaster;
 	initialTask: AssignedSlayerTask;
+	rng: RNGProvider;
 }) {
 	const masterKey = getMasterKey(master);
 	const skipList = new Set(user.getSlayerSkipSettings()[masterKey] ?? []);
@@ -316,7 +318,7 @@ export async function autoSkipFromSkipList({
 			}
 		});
 		skippedTasks += 1;
-		currentTask = await assignExtendedSlayerTask(user, master);
+		currentTask = await assignExtendedSlayerTask(user, master, rng);
 	}
 
 	const finalTaskWasSkipped = skipList.has(currentTask.assignedTask.monster.id);

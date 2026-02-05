@@ -284,7 +284,7 @@ export const slayerCommand = defineCommand({
 	name: 'slayer',
 	description: 'Slayer skill commands',
 	options: slayerOptions,
-	run: async ({ options, user, interaction }) => {
+	run: async ({ options, user, interaction, rng }) => {
 		await interaction.defer();
 		if (options.autoslay) {
 			return autoSlayCommand({

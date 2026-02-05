@@ -181,7 +181,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	return true;
 }
 
-export async function assignNewSlayerTask({ user, rng }: OSInteraction, master: SlayerMaster) {
+export async function assignNewSlayerTask({ user, rng }: { user: MUser; rng: RNGProvider }, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(user, t, master, false));
 	let bossTask = false;
