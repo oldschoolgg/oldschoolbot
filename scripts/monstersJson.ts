@@ -2,12 +2,12 @@ import './base.js';
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { Stopwatch } from '@oldschoolgg/toolkit';
-import { md5sum } from '@oldschoolgg/toolkit/node';
 import { DateTime } from 'luxon';
 import { Bank, Items } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { md5sum } from '@/lib/util/smallUtils.js';
 import { tearDownScript } from './scriptUtil.js';
 
 function createMonstersJson() {
