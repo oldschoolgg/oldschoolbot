@@ -1,12 +1,12 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/rng';
-import { objectValues } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, objectValues, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { clone } from 'remeda';
 
 import { EquipmentSlot, type Item } from '@/meta/item.js';
-import { Items, USELESS_ITEMS } from '@/structures/Items.js';
+import { Items } from '@/structures/Items.js';
+import { USELESS_ITEMS } from '@/structures/ItemsClass.js';
 import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
 import { fetchPrices } from './fetchPrices.js';
 import { fetchRawItems } from './fetchRawItems.js';

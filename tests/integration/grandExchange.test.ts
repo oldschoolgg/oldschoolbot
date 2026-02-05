@@ -1,5 +1,5 @@
-import { randArrItem, shuffleArr } from '@oldschoolgg/rng';
 import { calcPercentOfNum, Time } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, resolveItems } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { assert, describe, expect, test } from 'vitest';
@@ -63,11 +63,11 @@ describe('Grand Exchange', async () => {
 
 			// Run a bunch of commands to buy/sell
 			const commandPromises = new PQueue({ concurrency: 10 });
-			for (const user of shuffleArr(users)) {
+			for (const user of cryptoRng.shuffle(users)) {
 				for (let i = 0; i < COMMANDS_PER_USER; i++) {
-					const method = randArrItem(['buy', 'sell']);
-					const quantity = randArrItem(quantities);
-					const price = randArrItem(prices);
+					const method = cryptoRng.pick(['buy', 'sell']);
+					const quantity = cryptoRng.pick(quantities);
+					const price = cryptoRng.pick(prices);
 					for (const item of itemPool) {
 						commandPromises.add(() =>
 							user.runCommand(geCommand, {

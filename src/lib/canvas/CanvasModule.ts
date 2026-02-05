@@ -7,6 +7,7 @@ import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 
 class CanvasModuleSingleton {
+	private initPromise: Promise<void> | null = null;
 	private didInit = false;
 	public allItemIdsWithSprite = new Set<number>();
 
@@ -16,8 +17,8 @@ class CanvasModuleSingleton {
 	};
 
 	public async ensureInit() {
-		if (this.didInit) return;
-		await this.init();
+		this.initPromise ??= this.init();
+		await this.initPromise;
 	}
 
 	private async init() {

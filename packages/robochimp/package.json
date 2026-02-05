@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "pnpm gen && tsx esbuild.mts",
+		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm tsx esbuild.mts && node --enable-source-maps ./dist/index.js\"",
 		"start": "pnpm build && node --enable-source-maps ./dist/index.js",
 		"dev": "tsx esbuild.mts && node --enable-source-maps ./dist/index.js",
 		"test": "tsc -p src && pnpm test:unit",
@@ -12,10 +13,11 @@
 		"devsss": "pnpm fetch-schema && pnpm build && pnpm test",
 		"gen": "concurrently \"npx prisma generate --schema prisma/bso_schema.prisma\" \"npx prisma generate --schema prisma/osb_schema.prisma\" \"npx prisma generate --schema prisma/robochimp_schema.prisma\"",
 		"fetch-schema": "tsx ./scripts/fetchSchema.ts",
-		"dbpush": "npx prisma db push --schema=./prisma/robochimp_schema.prisma"
+		"dbpush": "npx prisma db push --schema=./prisma/robochimp_schema.prisma",
+		"seed": "tsx --tsconfig=./src/tsconfig.json ./src/scripts/seed.ts"
 	},
 	"dependencies": {
-		"@hono/node-server": "^1.19.5",
+		"@hono/node-server": "^1.19.9",
 		"@hono/oauth-providers": "^0.8.5",
 		"@octokit/graphql": "^8.1.1",
 		"@oldschoolgg/toolkit": "workspace:*",
@@ -24,10 +26,10 @@
 		"@prisma/client": "^6.19.0",
 		"@sapphire/discord-utilities": "^2.12.0",
 		"dotenv": "^16.5.0",
-		"hono": "^4.10.3",
+		"hono": "^4.11.7",
 		"ioredis": "^5.8.2",
 		"oldschooljs": "workspace:*",
-		"remeda": "^2.23.0",
+		"remeda": "^2.33.4",
 		"zod": "^4.1.12"
 	},
 	"devDependencies": {

@@ -1,9 +1,11 @@
-import { percentChance, randInt } from '@oldschoolgg/rng';
+import type { EquipmentSlot, GearSetupType } from '@oldschoolgg/gear';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	exponentialPercentScale,
 	formatDuration,
+	GeneralBank,
+	type GeneralBankType,
 	increaseNumByPercent,
 	objectEntries,
 	reduceNumByPercent,
@@ -11,12 +13,10 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
-import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/node';
-import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
@@ -336,7 +336,7 @@ function calculateTimeInMs(waveTwelveKC: number): number {
 	return 0;
 }
 
-function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
+function calculateGlory(rng: RNGProvider, kcBank: ColosseumWaveBank, wave: Wave) {
 	const waveKCSkillBank = new ColosseumWaveBank();
 	for (const [waveNumber, kc] of kcBank.entries()) {
 		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), { min: 1, max: 100 }));
@@ -347,7 +347,7 @@ function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
 	const maxPossibleGlory = 60_000;
 	const ourMaxGlory = calcPercentOfNum(expSkill, maxPossibleGlory);
 	const wavePerformance = exponentialPercentScale((totalKCSkillPercent + kcSkill) / 2);
-	const glory = randInt(calcPercentOfNum(wavePerformance, ourMaxGlory), ourMaxGlory);
+	const glory = rng.randInt(calcPercentOfNum(wavePerformance, ourMaxGlory), ourMaxGlory);
 	return glory;
 }
 
@@ -377,6 +377,7 @@ export const startColosseumRun = (options: {
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+	rng: RNGProvider;
 }): ColosseumResult => {
 	const waveTwelveKC = options.kcBank.amount(12);
 
@@ -413,11 +414,11 @@ export const startColosseumRun = (options: {
 	for (const wave of colosseumWaves) {
 		realDuration += waveDuration;
 		const kcForThisWave = options.kcBank.amount(wave.waveNumber);
-		maxGlory = Math.max(calculateGlory(options.kcBank, wave), maxGlory);
+		maxGlory = Math.max(calculateGlory(options.rng, options.kcBank, wave), maxGlory);
 		const deathChance = calculateDeathChance(kcForThisWave, options.hasBF, options.hasSGS);
 		deathChances.push(deathChance);
 
-		if (percentChance(deathChance)) {
+		if (options.rng.percentChance(deathChance)) {
 			return {
 				diedAt: wave.waveNumber,
 				loot: null,
@@ -455,7 +456,8 @@ export const startColosseumRun = (options: {
 	throw new Error('Colosseum run did not end correctly.');
 };
 
-export async function colosseumCommand(user: MUser, channelId: string) {
+export async function colosseumCommand(itx: OSInteraction) {
+	const { user, rng } = itx;
 	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} is busy`;
 	}
@@ -559,7 +561,8 @@ export async function colosseumCommand(user: MUser, channelId: string) {
 		hasTorture,
 		scytheCharges,
 		venatorBowCharges,
-		bloodFuryCharges
+		bloodFuryCharges,
+		rng
 	});
 	const minutes = res.realDuration / Time.Minute;
 
@@ -663,7 +666,7 @@ export async function colosseumCommand(user: MUser, channelId: string) {
 
 	await ActivityManager.startTrip<ColoTaskOptions>({
 		userID: user.id,
-		channelId,
+		channelId: itx.channelId,
 		duration: res.realDuration,
 		type: 'Colosseum',
 		fakeDuration: res.fakeDuration,

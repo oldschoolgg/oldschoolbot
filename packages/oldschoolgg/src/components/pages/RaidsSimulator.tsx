@@ -33,7 +33,6 @@ export const RaidsSimulatorPage = () => {
 	const team = makeRaidTeam(type);
 
 	const handleRaidCompletion = useCallback(() => {
-		console.log(`Completing ${qty}x raid`);
 		const newLoot = new Bank();
 		for (let i = 0; i < qty; i++) {
 			const result = ChambersOfXeric.complete({
@@ -41,7 +40,6 @@ export const RaidsSimulatorPage = () => {
 				challengeMode: false,
 				timeToComplete: 1
 			});
-			console.log('Raid Result:', result);
 			newLoot.add(result['0']);
 		}
 
@@ -54,7 +52,6 @@ export const RaidsSimulatorPage = () => {
 				totalLoot: newTotalLoot
 			};
 		});
-		console.log(`Finished Completing ${qty}x raid`);
 	}, [qty, team]);
 
 	return (
@@ -110,7 +107,7 @@ export const RaidsSimulatorPage = () => {
 				<BankImage
 					showPrice={false}
 					title={`Loot from ${qty}x Chambers of Xeric (Value: ${toKMB(loot.loot.value())})`}
-					bank={loot.loot}
+					bank={loot.loot.toJSON()}
 				/>
 
 				<BankImage
@@ -118,7 +115,7 @@ export const RaidsSimulatorPage = () => {
 					title={`Total Loot from ${loot.totalKC}x Chambers of Xeric ${
 						loot.totalKC >= 1 ? `(Average ${toKMB(loot.totalLoot.value() / loot.totalKC)} per raid)` : ''
 					}`}
-					bank={loot.totalLoot}
+					bank={loot.totalLoot.toJSON()}
 				/>
 			</div>
 		</div>

@@ -1,10 +1,17 @@
 import z from 'zod';
 
-export const ZBlowpipeData = z.object({
-	scales: z.number().int().min(0),
-	dartQuantity: z.number().int().min(0),
-	dartID: z.number().int().nullable()
-});
+export const ZBlowpipeData = z.union([
+	z.object({
+		scales: z.number().int().min(0),
+		dartQuantity: z.number().int().min(0),
+		dartID: z.number().int()
+	}),
+	z.object({
+		scales: z.number().int().min(0),
+		dartQuantity: z.literal(0),
+		dartID: z.null()
+	})
+]);
 
 export type IBlowpipeData = z.infer<typeof ZBlowpipeData>;
 

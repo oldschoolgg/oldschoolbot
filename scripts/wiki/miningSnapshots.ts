@@ -1,5 +1,5 @@
-import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
@@ -67,7 +67,8 @@ function main() {
 							isPowermining,
 							quantityInput: undefined,
 							hasKaramjaMedium,
-							randomVariationEnabled: false
+							randomVariationEnabled: false,
+							rng: MathRNG
 						});
 						const result = determineMiningResult({
 							ore,
