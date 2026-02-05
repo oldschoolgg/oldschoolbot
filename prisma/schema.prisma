@@ -300,6 +300,7 @@ model User {
   slayer_unlocks         Int[]     @default([]) @map("slayer.unlocks")
   slayer_blocked_ids     Int[]     @default([]) @map("slayer.blocked_ids")
   slayer_last_task       Int       @default(0) @map("slayer.last_task")
+  slayer_skip_settings   Json?     @default("{}") @map("slayer_skip_settings")
   badges                 Int[]     @default([])
   bitfield               Int[]     @default([])
   temp_cl                Json      @default("{}") @db.Json
@@ -331,6 +332,7 @@ model User {
   combat_options             Int[]              @default([])
   slayer_remember_master     String?            @map("slayer.remember_master")
   slayer_autoslay_options    Int[]              @default([]) @map("slayer.autoslay_options")
+  slayer_auto_skip_buffer    Int                @default(0) @map("slayer.auto_skip_buffer")
   bank_sort_method           String?            @db.VarChar(16)
   bank_sort_weightings       Json               @default("{}") @db.Json
   gambling_lockout_expiry    DateTime?
