@@ -6,12 +6,10 @@
 	"exports": {
 		".": {
 			"types": "./dist/esm/index.d.mts",
-			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		},
 		"./node": {
 			"types": "./dist/esm/node/index.d.mts",
-			"require": "./dist/cjs/node/index.cjs",
 			"import": "./dist/esm/node/index.mjs"
 		}
 	},

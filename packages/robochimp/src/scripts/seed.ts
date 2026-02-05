@@ -1,6 +1,6 @@
 import { Stopwatch } from '@oldschoolgg/toolkit';
 import { randomSnowflake } from '@oldschoolgg/util';
-import { randArrItem, randInt, SeedableRNG } from 'node-rng';
+import { MathRNG, SeedableRNG } from 'node-rng';
 import { chunk } from 'remeda';
 
 import { initPrismaClients } from '@/lib/prisma.js';
@@ -8,6 +8,9 @@ import bsoItemsJson from '../../../../data/bso/bso_items.json' with { type: 'jso
 import osbAllObtainableItems from '../../../../src/lib/resources/spritesheets/items-spritesheet.json' with {
 	type: 'json'
 };
+
+const osbItemsKeys = Object.keys(osbAllObtainableItems);
+const bsoItemsKeys = Object.keys(bsoItemsJson);
 
 const userIds: bigint[] = [157797566833098752n];
 
@@ -21,8 +24,8 @@ const userIdsStr: string[] = userIds.map(id => id.toString());
 function generateRandomBank(amount: number) {
 	const bank = new Map<string, number>();
 	for (let i = 0; i < amount; i++) {
-		const randItem = randArrItem(Object.keys(osbAllObtainableItems));
-		bank.set(randItem, randInt(1, 5));
+		const randItem = MathRNG.pick(osbItemsKeys);
+		bank.set(randItem, MathRNG.randInt(1, 5));
 	}
 	return Object.fromEntries(bank);
 }
@@ -30,8 +33,8 @@ function generateRandomBank(amount: number) {
 function generateRandomBsoBank(qty: number) {
 	const bank = generateRandomBank(10);
 	for (let i = 0; i < qty; i++) {
-		const randBsoItem = randArrItem(Object.keys(bsoItemsJson));
-		bank[randBsoItem] = (bank[randBsoItem] ?? 0) + randInt(1, 5);
+		const randBsoItem = MathRNG.pick(bsoItemsKeys);
+		bank[randBsoItem] = (bank[randBsoItem] ?? 0) + MathRNG.randInt(1, 5);
 	}
 	return bank;
 }
@@ -96,9 +99,9 @@ async function seedRobochimpDb() {
 				data: {
 					sender: user1,
 					recipient: user2!,
-					items_sent: generateRandomBank(randInt(1, 30)),
-					items_received: generateRandomBank(randInt(1, 30)),
-					type: randArrItem(['trade', 'gift', 'giveaway', 'duel'])
+					items_sent: generateRandomBank(MathRNG.randInt(1, 30)),
+					items_received: generateRandomBank(MathRNG.randInt(1, 30)),
+					type: MathRNG.pick(['trade', 'gift', 'giveaway', 'duel'])
 				}
 			})
 		)
@@ -111,9 +114,9 @@ async function seedRobochimpDb() {
 				data: {
 					sender: user1,
 					recipient: user2!,
-					items_sent: generateRandomBank(randInt(1, 30)),
-					items_received: generateRandomBank(randInt(1, 30)),
-					type: randArrItem(['trade', 'gift', 'giveaway', 'gri', 'duel'])
+					items_sent: generateRandomBank(MathRNG.randInt(1, 30)),
+					items_received: generateRandomBank(MathRNG.randInt(1, 30)),
+					type: MathRNG.pick(['trade', 'gift', 'giveaway', 'gri', 'duel'])
 				}
 			})
 		)
@@ -149,7 +152,7 @@ async function seedRobochimpDb() {
 				where: { id },
 				data: {
 					minion_hasBought: true,
-					bank: generateRandomBank(randInt(1, 100))
+					bank: generateRandomBank(MathRNG.randInt(1, 100))
 				}
 			})
 		)
