@@ -1,5 +1,5 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
-import type { GearSetupType } from '@oldschoolgg/gear';
+import { type GearSetupType, GearSetupTypes } from '@oldschoolgg/gear';
 import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
@@ -25,6 +25,7 @@ import { gifs } from '@/mahoji/commands/admin.js';
 import { getUserInfo } from '@/mahoji/commands/minion.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 
 const itemFilters = [
 	{
@@ -116,6 +117,22 @@ export const rpCommand = defineCommand({
 							name: 'user',
 							description: 'The user.',
 							required: true
+						},
+						{
+							type: 'String',
+							name: 'setup',
+							description: 'The setup you want to view.',
+							required: false,
+							choices: ['All', ...GearSetupTypes, 'Lost on wildy death'].map(i => ({
+								name: toTitleCase(i),
+								value: i
+							}))
+						},
+						{
+							type: 'Boolean',
+							name: 'text_format',
+							description: 'Do you want to see their gear in plaintext?',
+							required: false
 						}
 					]
 				},
@@ -496,7 +513,11 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (options.player?.viewgear) {
-			const userToCheck = await mUserFetch(options.player.viewgear.user.user.id);
+			const { setup, text_format, user } = options.player.viewgear;
+			const userToCheck = await mUserFetch(user.user.id);
+			if (setup) {
+				return gearViewCommand(userToCheck, setup, Boolean(text_format));
+			}
 			const gearImage = await userToCheck.generateGearImage({ setupType: 'all' });
 			return {
 				content: `${userToCheck.usernameOrMention}'s gear setups`,
