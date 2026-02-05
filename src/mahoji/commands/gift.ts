@@ -1,5 +1,4 @@
-import { miniID, truncateString } from '@oldschoolgg/toolkit';
-import { containsBlacklistedWord } from '@oldschoolgg/toolkit/node';
+import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { GiftBoxStatus } from '@/prisma/main.js';
@@ -258,7 +257,8 @@ ${items}`
 					items_sent: giftBox.items as string,
 					items_received: undefined,
 					type: 'gift'
-				}
+				},
+				select: { id: true }
 			});
 			return `You sent the gift box to ${recipient.badgedUsername}!`;
 		}

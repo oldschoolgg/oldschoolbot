@@ -153,7 +153,7 @@ const slayerOptions = [
 									!value
 										? true
 										: r.name.toLowerCase().includes(value) ||
-											r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
+										r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
 								)
 								.map(m => {
 									return { name: m.name, value: m.name };
@@ -207,7 +207,7 @@ const slayerOptions = [
 									(!value
 										? true
 										: r.name.toLowerCase().includes(value) ||
-											r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase())))
+										r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase())))
 							).map(m => {
 								return { name: m.name, value: m.name };
 							});
@@ -263,7 +263,7 @@ const slayerOptions = [
 									(!value
 										? true
 										: r.name.toLowerCase().includes(value) ||
-											r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase())))
+										r.aliases?.some(alias => alias.toLowerCase().includes(value.toLowerCase())))
 							).map(m => {
 								return { name: m.name, value: m.name };
 							});
@@ -312,7 +312,8 @@ export const slayerCommand = defineCommand({
 					user,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
-					interaction
+					interaction,
+					rng
 				});
 			}
 		}

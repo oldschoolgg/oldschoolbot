@@ -15,7 +15,7 @@
 		"@oldschoolgg/util": "workspace:*",
 		"@tailwindcss/vite": "^4.1.17",
 		"@tanstack/react-table": "^8.21.3",
-		"astro": "^5.16.3",
+		"astro": "5.17.1",
 		"lucide-react": "^0.555.0",
 		"oldschooljs": "workspace:*",
 		"react": "^19.2.0",

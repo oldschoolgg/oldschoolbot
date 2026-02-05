@@ -1,5 +1,6 @@
-import { calcWhatPercent, deepEqual, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
+import { isDeepEqual } from 'remeda';
 
 import { Prisma, type TriviaQuestion, type User } from '@/prisma/clients/robochimp/client.js';
 import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
@@ -82,7 +83,7 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 		}
 	});
 
-	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
+	if (!isDeepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
 	}
 	return newUser;

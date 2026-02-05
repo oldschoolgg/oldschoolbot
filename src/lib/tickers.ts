@@ -6,12 +6,12 @@ import type { User } from '@/prisma/main.js';
 import { analyticsTick } from '@/lib/analytics.js';
 import { globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
-import { MUserClass } from '@/lib/MUser.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName, FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 
 // let lastMessageID: string | null = null;
@@ -79,6 +79,7 @@ export const tickers: {
 					}
 				}
 			});
+			if (result.length === 0) return;
 
 			await Promise.all(result.map(t => handleGiveawayCompletion(t)));
 		}
@@ -96,7 +97,10 @@ export const tickers: {
 				data.eventLoopDelayMean = 0;
 			}
 			await prisma.metric.create({
-				data
+				data,
+				select: {
+					timestamp: true
+				}
 			});
 		}
 	},
@@ -163,7 +167,8 @@ AND (
 )
 ORDER BY random()
 LIMIT 10;`);
-			for (const user of users.map(_u => new MUserClass(_u))) {
+			for (const u of users) {
+				const user = new MUserClass(u);
 				const { patches } = Farming.getFarmingInfoFromUser(user);
 
 				const patchesReadyToHarvest: FarmingPatchName[] = [];
@@ -314,7 +319,9 @@ VALUES (get_economy_bank());`;
 			const users = await prisma.$queryRaw<{ id: string }[]>`SELECT id
 FROM users
 WHERE CARDINALITY(completed_achievement_diaries) = 0
-AND CARDINALITY(cl_array) >= 600
+AND CARDINALITY(cl_array) >= 300
+AND "QP" > 10
+AND last_command_date > NOW() - INTERVAL '3 months'
 ORDER BY CARDINALITY(cl_array) DESC
 LIMIT 10;`;
 			for (const { id } of users) {
@@ -325,26 +332,28 @@ LIMIT 10;`;
 	}
 ];
 
+async function runTicker(ticker: (typeof tickers)[number]): Promise<void> {
+	try {
+		if (globalClient.isShuttingDown) return;
+
+		if (ticker.interval > Time.Minute * 30) {
+			Logging.logDebug(`Running ${ticker.name} ticker`);
+		}
+
+		await ticker.cb();
+	} catch (err) {
+		Logging.logError(err as Error);
+	} finally {
+		if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
+		ticker.timer = TimerManager.setTimeout(runTicker, ticker.interval, ticker);
+	}
+}
+
 export function initTickers() {
 	for (const ticker of tickers) {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
 		if (ticker.productionOnly && !globalConfig.isProduction) continue;
-		const fn = async () => {
-			try {
-				if (globalClient.isShuttingDown) return;
-				if (ticker.interval > Time.Minute * 30) {
-					Logging.logDebug(`Running ${ticker.name} ticker`);
-				}
-				await ticker.cb();
-			} catch (err) {
-				Logging.logError(err as Error);
-			} finally {
-				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
-				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);
-			}
-		};
-		ticker.timer = TimerManager.setTimeout(() => {
-			fn();
-		}, ticker.startupWait ?? 1);
+
+		ticker.timer = TimerManager.setTimeout(runTicker, ticker.startupWait ?? 1, ticker);
 	}
 }

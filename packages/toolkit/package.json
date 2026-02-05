@@ -5,26 +5,19 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"types": "./dist/esm/index.d.mts",
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.mjs"
-		},
-		"./node": {
-			"types": "./dist/esm/node/index.d.mts",
-			"require": "./dist/cjs/node/index.cjs",
-			"import": "./dist/esm/node/index.mjs"
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
 		}
 	},
 	"scripts": {
 		"test": "concurrently \"tsc -p src\" \"pnpm vitest run\" \"tsc -p tests\"",
-		"build": "tsc -p src --noEmit && tsdown"
+		"build": "rimraf ./dist && tsc -p src --noEmit false"
 	},
 	"dependencies": {
 		"decimal.js": "^10.6.0",
 		"deep-object-diff": "^1.1.9",
 		"deepmerge": "4.3.1",
-		"@oldschoolgg/rng": "workspace:*",
-		"fast-deep-equal": "3.1.3",
+		"node-rng": "^0.0.3",
 		"math-expression-evaluator": "^1.3.14",
 		"emoji-regex": "^10.6.0"
 	},

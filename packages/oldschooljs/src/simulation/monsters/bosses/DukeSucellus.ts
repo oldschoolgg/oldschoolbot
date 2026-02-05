@@ -1,4 +1,5 @@
-import { randInt, roll } from '@oldschoolgg/rng';
+import { uniqueArr } from '@oldschoolgg/util';
+import { randInt, roll } from 'node-rng';
 
 import { EItem } from '@/EItem.js';
 import { VirtusTable } from '@/simulation/subtables/VirtusTable.js';
@@ -6,7 +7,6 @@ import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import { Monster } from '@/structures/Monster.js';
-import { uniqueArr } from '@/util/smallUtils.js';
 
 const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add(VirtusTable, 1, 1)

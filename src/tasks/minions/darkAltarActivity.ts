@@ -46,7 +46,7 @@ export const darkAltarTask: MinionTask = {
 
 		let bonusBlood = 0;
 		if (rune === 'blood') {
-			bonusBlood = await bloodEssence(user, quantity);
+			bonusBlood = await bloodEssence(rng, user, quantity);
 			runeQuantity += bonusBlood;
 		}
 

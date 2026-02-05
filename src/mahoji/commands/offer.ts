@@ -1,4 +1,3 @@
-import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
@@ -74,7 +73,7 @@ export const offerCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelId, interaction }) => {
+	run: async ({ options, user, channelId, interaction, rng }) => {
 		const userBank = user.bank;
 
 		await interaction.defer();
@@ -116,7 +115,7 @@ export const offerCommand = defineCommand({
 						whichOfferable.uniques,
 						itemsAdded,
 						quantity,
-						currentCounter + randInt(1, quantity)
+						currentCounter + rng.randInt(1, quantity)
 					);
 				}
 			}
@@ -145,8 +144,8 @@ export const offerCommand = defineCommand({
 
 			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
-				if (roll(300)) {
-					loot.add(randArrItem(ItemGroups.evilChickenOutfit));
+				if (rng.roll(300)) {
+					loot.add(rng.pick(ItemGroups.evilChickenOutfit));
 				} else {
 					loot.add(birdsNestID);
 					loot.add(treeSeedsNest.roll());

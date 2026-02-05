@@ -56,6 +56,7 @@ export interface MinionKillOptions {
 	bitfield: readonly BitField[];
 	pkEvasionExperience: number;
 	currentPeak: Peak;
+	rng: RNGProvider;
 }
 
 export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
@@ -194,7 +195,7 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			return `Your range gear isn't right: ${rangeCheck}`;
 		}
 		const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(rangeCheck.weapon.id);
-		if (!gearBank.gear.range.ammo?.item && !usingBowfa) {
+		if (!gearBank.gear.range.get('ammo')?.item && !usingBowfa) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
 
@@ -223,7 +224,8 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			combatMethods,
 			relevantGearStat,
 			currentTaskOptions: speedDurationResult.currentTaskOptions,
-			killsRemaining
+			killsRemaining,
+			rng: args.rng
 		});
 		if (!result) continue;
 		for (const boostResult of Array.isArray(result) ? result : [result]) {

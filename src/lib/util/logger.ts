@@ -57,14 +57,16 @@ function logDebug(str: string, context: LogContext = {}) {
 	}
 }
 
+type AnyContextObj = Record<
+	string,
+	string | number | null | boolean | unknown | Record<string, string | number | null | boolean>
+>;
+
 type RichErrorLogArgs = {
 	err: any;
 	message?: string;
 	interaction?: MInteraction;
-	context?: Record<
-		string,
-		string | number | null | boolean | unknown | Record<string, string | number | null | boolean>
-	>;
+	context?: AnyContextObj;
 };
 
 function logError(error: Error, context?: LogContext): void;
@@ -91,7 +93,7 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 		return;
 	}
 
-	const metaInfo: RichErrorLogArgs['context'] = { ...context };
+	const metaInfo: AnyContextObj = { ...context };
 	if (err?.requestBody?.files) {
 		err.requestBody = [];
 	}
@@ -102,15 +104,26 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	if (!globalConfig.isProduction) {
 		console.error(err);
 	}
-	console.error(
-		JSON.stringify({
-			type: 'ERROR',
-			error: err.stack ?? err.message,
-			info: metaInfo,
-			time: new Date().toISOString(),
-			message: isObject(args) && !(args instanceof Error) ? args.message : undefined
+
+	const rawObj: AnyContextObj = {
+		type: 'ERROR',
+		error: err.stack ?? err.message,
+		time: new Date().toISOString(),
+		message: isObject(args) && !(args instanceof Error) ? args.message : undefined
+	};
+	if (metaInfo && Object.keys(metaInfo).length > 0) {
+		rawObj.info = metaInfo;
+	}
+	prisma.systemLogs
+		.create({
+			data: {
+				type: 'ERROR',
+				data: rawObj as any
+			}
 		})
-	);
+		.catch(console.error);
+
+	console.error(JSON.stringify(rawObj));
 
 	if (process.env.TEST) {
 		throw err;
