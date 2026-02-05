@@ -285,10 +285,7 @@ export async function slayerNewTaskCommand({
 	}x ${commonName}${getAlternateMonsterList(finalTask.assignedTask)}.`;
 
 	if (autoSkipMessage) {
-		const stillSkippedNote = autoSkipResult.finalTaskWasSkipped
-			? ` ${finalTaskName} is on your skip list but couldn't be skipped automatically.`
-			: '';
-		resultMessage += `\n${autoSkipMessage}${stillSkippedNote}`;
+		resultMessage += `\n${autoSkipMessage}`;
 	}
 	if (showButtons) {
 		return {
