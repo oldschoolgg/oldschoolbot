@@ -22,6 +22,7 @@ export type SailingUpgradesBank = {
 	reputation?: number;
 	charts?: number;
 	unlockedRegions?: SailingRegionId[];
+	clamItemId?: number | null;
 };
 
 export function getUpgradesBank(ship: UserShip): SailingUpgradesBank {
@@ -51,6 +52,10 @@ export function getUnlockedRegions(ship: UserShip): SailingRegionId[] {
 
 export function hasUnlockedRegion(ship: UserShip, region: SailingRegionId): boolean {
 	return getUnlockedRegions(ship).includes(region);
+}
+
+export function getClamItemId(ship: UserShip): number | null {
+	return getUpgradesBank(ship).clamItemId ?? null;
 }
 
 export async function updateUpgradesBank(userID: string, updates: Partial<SailingUpgradesBank>) {

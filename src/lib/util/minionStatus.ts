@@ -161,7 +161,7 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'Sailing': {
 			const data = currentTask as SailingActivityTaskOptions;
 			const activity = SailingActivityById.get(data.activity);
-			return `${name} is currently doing ${activity?.name ?? 'Sailing'} (${data.quantity} actions) in ${data.region} on ${data.difficulty}. ${formattedDuration}`;
+			return `${name} is currently doing ${activity?.name ?? 'Sailing'} (${data.quantity} actions). ${formattedDuration}`;
 		}
 
 		case 'Mining': {

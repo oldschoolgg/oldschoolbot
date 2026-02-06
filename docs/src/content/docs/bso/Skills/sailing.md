@@ -8,19 +8,38 @@ Sailing is in active development. This page reflects what is currently implement
 
 ### Commands
 
-- `/sail` - Start a Sailing activity. Supports `activity`, `region`, `difficulty`, `variant`, and `quantity`.
-- `/ship` - View and upgrade your ship, install facilities, and see unlocked regions.
+- `/sail` - Start a Sailing activity. Supports `activity`, `variant`, and `quantity`.
+- `/ship` - View and upgrade your ship, install facilities.
 
 ### Core Systems
 
-- Regions are unlocked using charts. The first time you sail a locked region, charts are consumed to unlock it.
-- Difficulty tiers affect time, XP, loot, and risk.
-- Hazards can cause failures and reduce XP/loot.
 - Facilities unlock specific activities.
 
 ### Activities
 
-Standard activities include sea charting, port tasks, shipwreck salvaging, survey, deep sea trawling, mineral dredging, sea monster hunting, and coral farming.
+Activities currently implemented:
+
+- Sea charting
+- Port tasks (courier, bounty)
+- Shipwreck salvaging
+- Barracuda Trials (Tempor Tantrum, Jubbly Jive, Gwenith Glide)
+- Deep sea trawling
+
+### Ocean Encounters
+
+Ocean encounters are random events that can occur while Sailing. Implemented encounters:
+
+- Clue turtles (Easy/Medium/Hard/Elite by level range; 50 Sailing XP)
+- Castaways (15x Sailing level XP)
+- Lost caskets (beginner through master; adds the casket item, roll not yet implemented)
+- Lost shipments (wooden through ironwood crates; adds the crate item, roll not yet implemented)
+- Mysterious glow (chain XP by level and a gem reward)
+- Ocean Man (cocktail drop)
+- Giant clam (pearls based on item value; adds pearl + XP, requires feeding)
+
+Not yet implemented due to missing detail:
+
+- Strong winds (needs XP/behavior details)
 
 ### Barracuda Trials
 
@@ -45,10 +64,6 @@ Facilities are installed on your ship to unlock content. Examples include:
 - Captain's log (sea charting)
 - Salvaging hook (shipwreck salvaging)
 - Fishing station (deep sea trawling)
-- Enchanted metal detector (survey)
-- Weighted dredging net (mineral dredging)
-- Harpoon mount (sea monster hunting)
-- Coral pens (coral farming)
 - Racing sails (Barracuda Trials)
 - Inoculation station (higher-tier Barracuda Trials)
 - Crystal extractor (periodic Sailing XP during trips; requires 73 Sailing and 67 Construction, built with Heart of Ithell, Ironwood planks, Cupronickel bars, and Magic stones)

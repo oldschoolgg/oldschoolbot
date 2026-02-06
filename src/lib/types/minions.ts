@@ -174,8 +174,8 @@ export interface SailingActivityTaskOptions extends ActivityTaskOptions {
 	activity: SailingActivityId;
 	quantity: number;
 	ship: SailingShipSnapshot;
-	region: SailingRegionId;
-	difficulty: SailingDifficultyId;
+	region?: SailingRegionId;
+	difficulty?: SailingDifficultyId;
 	variant?: string;
 	sailingLevel?: number;
 	iQty?: number;

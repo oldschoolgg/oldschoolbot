@@ -42,6 +42,20 @@
 		"clue_scroll_chance": 214367
 	},
 	{
+		"level": 70,
+		"xp": 210,
+		"id": 32907,
+		"name": "Ironwood Logs",
+		"find_new_tree_time": 6.5,
+		"banking_time": 20,
+		"slope": 0.035,
+		"intercept": 0.6,
+		"depletion_chance": 10,
+		"pet_chance": 120000,
+		"qp_required": 0,
+		"clue_scroll_chance": 120000
+	},
+	{
 		"level": 1,
 		"xp": 25,
 		"id": 1511,

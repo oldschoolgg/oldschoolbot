@@ -203019,5 +203019,89 @@
 		"tradeable": false,
 		"tradeable_on_ge": false,
 		"cost": 0
+	},
+	"32944": {
+		"name": "Lost casket (beginner)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32945": {
+		"name": "Lost casket (easy)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32946": {
+		"name": "Lost casket (medium)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32947": {
+		"name": "Lost casket (hard)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32948": {
+		"name": "Lost casket (elite)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32949": {
+		"name": "Lost casket (master)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32950": {
+		"name": "Lost wooden crate",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32951": {
+		"name": "Lost oak crate",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32952": {
+		"name": "Lost teak crate",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32953": {
+		"name": "Lost mahogany crate",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32954": {
+		"name": "Lost camphor crate",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32955": {
+		"name": "Lost ironwood crate",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
 	}
 }

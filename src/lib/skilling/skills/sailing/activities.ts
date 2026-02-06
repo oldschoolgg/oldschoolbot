@@ -11,11 +11,7 @@ export type SailingActivityId =
 	| 'tempor_tantrum'
 	| 'jubbly_jive'
 	| 'gwenith_glide'
-	| 'survey'
-	| 'deep_sea_trawling'
-	| 'mineral_dredging'
-	| 'sea_monster_hunting'
-	| 'coral_farming';
+	| 'deep_sea_trawling';
 
 export interface SailingActivity {
 	id: SailingActivityId;
@@ -31,7 +27,7 @@ export interface SailingActivity {
 	allowedDifficulties?: Array<'easy' | 'standard' | 'hard' | 'elite'>;
 	hazards?: Array<{ name: string; chance: number; effect: 'fail' | 'delay' | 'damage' }>;
 	variants?: Array<{
-		id: 'courier' | 'protection' | 'investigation' | 'swordfish' | 'shark' | 'marlin';
+		id: 'courier' | 'bounty' | 'swordfish' | 'shark' | 'marlin';
 		name: string;
 		xpMultiplier: number;
 		lootMultiplier: number;
@@ -69,12 +65,6 @@ const ShipwreckSalvageTable = new LootTable()
 
 const BarracudaTrialsTable = new LootTable().add('Sea salt', [1, 2], 1);
 
-const SurveyTable = new LootTable()
-	.add('Sea salt', [2, 6], 3)
-	.add('Coal', [4, 10], 4)
-	.add('Mithril ore', [1, 3], 2)
-	.oneIn(140, 'Clue bottle (medium)');
-
 const DeepSeaTrawlingTable = new LootTable()
 	.add('Raw shark', [1, 3], 4)
 	.add('Raw manta ray', [1, 2], 2)
@@ -82,26 +72,6 @@ const DeepSeaTrawlingTable = new LootTable()
 	.add('Harpoonfish', 1, 1)
 	.oneIn(140, 'Clue bottle (easy)')
 	.oneIn(220, "Trawler's trust");
-
-const MineralDredgingTable = new LootTable()
-	.add('Coal', [5, 12], 5)
-	.add('Mithril ore', [1, 3], 3)
-	.add('Adamantite ore', [1, 2], 2)
-	.add('Nickel ore', [1, 2], 2)
-	.add('Sea salt', [2, 6], 2)
-	.oneIn(140, 'Clue bottle (medium)');
-
-const SeaMonsterHuntingTable = new LootTable()
-	.add('Death rune', [10, 20], 3)
-	.add('Law rune', [15, 30], 3)
-	.add('Raw manta ray', [1, 2], 2)
-	.oneIn(120, 'Clue bottle (hard)');
-
-const CoralFarmingTable = new LootTable()
-	.add('Seaweed', [8, 16], 4)
-	.add('Seaweed spore', [1, 2], 2)
-	.add('Kelp', [3, 6], 3)
-	.oneIn(180, 'Clue bottle (elite)');
 
 export const SailingActivities: SailingActivity[] = [
 	{
@@ -127,8 +97,8 @@ export const SailingActivities: SailingActivity[] = [
 		baseRisk: 0.04,
 		lootTable: PortTasksTable,
 		petChance: 400_000,
-		reputation: 3,
-		allowedDifficulties: ['easy', 'standard', 'hard'],
+		reputation: 0,
+		allowedDifficulties: ['standard'],
 		variants: [
 			{
 				id: 'courier',
@@ -138,18 +108,11 @@ export const SailingActivities: SailingActivity[] = [
 				lootTable: new LootTable().add('Coins', [200, 500], 5).add('Shipping order', 1, 2)
 			},
 			{
-				id: 'protection',
-				name: 'Protection',
+				id: 'bounty',
+				name: 'Bounty',
 				xpMultiplier: 1.15,
-				lootMultiplier: 1,
-				lootTable: new LootTable().add('Coins', [300, 700], 5).add('Sealed message', 1, 1)
-			},
-			{
-				id: 'investigation',
-				name: 'Investigation',
-				xpMultiplier: 1.1,
 				lootMultiplier: 1.1,
-				lootTable: new LootTable().add('Sea salt', [2, 5], 3).add('Sealed letter', 1, 2)
+				lootTable: new LootTable().add('Coins', [300, 700], 5).add('Sealed message', 1, 1)
 			}
 		]
 	},
@@ -162,12 +125,8 @@ export const SailingActivities: SailingActivity[] = [
 		baseRisk: 0.14,
 		lootTable: ShipwreckSalvageTable,
 		petChance: 300_000,
-		reputation: 4,
-		allowedDifficulties: ['standard', 'hard', 'elite'],
-		hazards: [
-			{ name: 'Collapsed hull', chance: 0.08, effect: 'fail' },
-			{ name: 'Hidden reef', chance: 0.03, effect: 'fail' }
-		],
+		reputation: 0,
+		allowedDifficulties: ['standard'],
 		requiredFacility: 'salvaging_hook',
 		requiredShipTiers: { hull: 2 }
 	},
@@ -180,9 +139,8 @@ export const SailingActivities: SailingActivity[] = [
 		baseRisk: 0.06,
 		lootTable: BarracudaTrialsTable,
 		petChance: 260_000,
-		reputation: 5,
+		reputation: 0,
 		allowedDifficulties: ['standard'],
-		hazards: [{ name: 'Whirlpool surge', chance: 0.05, effect: 'fail' }],
 		requiredFacility: 'racing_sails',
 		requiredShipTiers: { hull: 2, sails: 2 },
 		variants: [
@@ -221,9 +179,8 @@ export const SailingActivities: SailingActivity[] = [
 		baseRisk: 0.08,
 		lootTable: BarracudaTrialsTable,
 		petChance: 240_000,
-		reputation: 6,
+		reputation: 0,
 		allowedDifficulties: ['standard'],
-		hazards: [{ name: 'Crosswind drift', chance: 0.06, effect: 'fail' }],
 		requiredFacility: 'inoculation_station',
 		requiredShipTiers: { hull: 3, sails: 3 },
 		variants: [
@@ -262,9 +219,8 @@ export const SailingActivities: SailingActivity[] = [
 		baseRisk: 0.1,
 		lootTable: BarracudaTrialsTable,
 		petChance: 220_000,
-		reputation: 7,
+		reputation: 0,
 		allowedDifficulties: ['standard'],
-		hazards: [{ name: 'Riptide sweep', chance: 0.08, effect: 'fail' }],
 		requiredFacility: 'racing_sails',
 		requiredShipTiers: { hull: 4, sails: 4 },
 		variants: [
@@ -295,21 +251,6 @@ export const SailingActivities: SailingActivity[] = [
 		]
 	},
 	{
-		id: 'survey',
-		name: 'Survey',
-		level: 30,
-		xp: 360,
-		baseTime: Time.Minute * 3,
-		baseRisk: 0.12,
-		lootTable: SurveyTable,
-		petChance: 220_000,
-		reputation: 6,
-		allowedDifficulties: ['standard', 'hard'],
-		hazards: [{ name: 'False reading', chance: 0.05, effect: 'fail' }],
-		requiredFacility: 'enchanted_metal_detector',
-		requiredReputation: 20
-	},
-	{
 		id: 'deep_sea_trawling',
 		name: 'Deep sea trawling',
 		level: 35,
@@ -318,58 +259,10 @@ export const SailingActivities: SailingActivity[] = [
 		baseRisk: 0.14,
 		lootTable: DeepSeaTrawlingTable,
 		petChance: 200_000,
-		reputation: 6,
-		allowedDifficulties: ['standard', 'hard'],
-		hazards: [{ name: 'Net tear', chance: 0.07, effect: 'fail' }],
+		reputation: 0,
+		allowedDifficulties: ['standard'],
 		requiredFacility: 'fishing_station',
-		requiredReputation: 18
-	},
-	{
-		id: 'mineral_dredging',
-		name: 'Mineral dredging',
-		level: 40,
-		xp: 420,
-		baseTime: Time.Minute * 4.5,
-		baseRisk: 0.18,
-		lootTable: MineralDredgingTable,
-		petChance: 190_000,
-		reputation: 7,
-		allowedDifficulties: ['standard', 'hard', 'elite'],
-		hazards: [{ name: 'Snagged dredge', chance: 0.08, effect: 'fail' }],
-		requiredFacility: 'weighted_dredging_net',
-		requiredReputation: 25
-	},
-	{
-		id: 'sea_monster_hunting',
-		name: 'Sea monster hunting',
-		level: 50,
-		xp: 650,
-		baseTime: Time.Minute * 5,
-		baseRisk: 0.25,
-		lootTable: SeaMonsterHuntingTable,
-		petChance: 170_000,
-		reputation: 10,
-		allowedDifficulties: ['hard', 'elite'],
-		hazards: [{ name: 'Sea monster strike', chance: 0.1, effect: 'fail' }],
-		requiredFacility: 'harpoon_mount',
-		requiredShipTiers: { hull: 4, crew: 3 },
-		requiredReputation: 50
-	},
-	{
-		id: 'coral_farming',
-		name: 'Coral farming',
-		level: 55,
-		xp: 520,
-		baseTime: Time.Minute * 4,
-		baseRisk: 0.1,
-		lootTable: CoralFarmingTable,
-		petChance: 160_000,
-		reputation: 9,
-		allowedDifficulties: ['standard', 'hard'],
-		hazards: [{ name: 'Coral blight', chance: 0.04, effect: 'fail' }],
-		requiredFacility: 'coral_pens',
-		requiredShipTiers: { cargo: 3 },
-		requiredReputation: 40
+		requiredReputation: undefined
 	}
 ];
 

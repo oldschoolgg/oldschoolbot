@@ -1,13 +1,12 @@
+import { Bank, type Item, Items } from 'oldschooljs';
+
 import { SailingFacilities, SailingFacilitiesById } from '@/lib/skilling/skills/sailing/facilities.js';
-import { SailingRegionById } from '@/lib/skilling/skills/sailing/regions.js';
 import {
+	getClamItemId,
 	getInstalledFacilities,
 	getOrCreateUserShip,
 	getShipBonusesFromSnapshot,
-	getShipCharts,
 	getShipPartTier,
-	getShipReputation,
-	getUnlockedRegions,
 	snapshotShip,
 	updateUpgradesBank
 } from '@/lib/skilling/skills/sailing/ship.js';
@@ -46,6 +45,30 @@ export const shipCommand = defineCommand({
 					description: 'The facility to install.',
 					required: true,
 					choices: SailingFacilities.map(f => ({ name: f.name, value: f.id }))
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'clam',
+			description: 'Feed the giant clam an item or check its status.',
+			options: [
+				{
+					type: 'String',
+					name: 'item',
+					description: 'The item to feed the clam (tradeable). Leave empty to check status.',
+					required: false,
+					autocomplete: async ({ value }: StringAutoComplete) => {
+						if (!value) return [{ name: 'Type something!', value: Items.getId('Coins').toString() }];
+						return Array.from(
+							Items.filter(item => item.name.toLowerCase().includes(value.toLowerCase())).values()
+						)
+							.slice(0, 25)
+							.map(i => ({
+								name: `${i.name} (ID: ${i.id})`,
+								value: i.id.toString()
+							}));
+					}
 				}
 			]
 		},
@@ -93,11 +116,48 @@ export const shipCommand = defineCommand({
 			const bonuses = getShipBonusesFromSnapshot(snapshot);
 			const name = ship.ship_name ?? 'Unnamed ship';
 			const facilities = getInstalledFacilities(ship).map(f => SailingFacilitiesById.get(f)?.name ?? f);
-			const unlockedRegions = getUnlockedRegions(ship).map(r => SailingRegionById.get(r)?.name ?? r);
-			const rep = getShipReputation(ship);
-			const charts = getShipCharts(ship);
 
-			return `**${name}**\nHull: ${ship.hull_tier}/${MAX_SHIP_TIER}\nSails: ${ship.sails_tier}/${MAX_SHIP_TIER}\nCrew: ${ship.crew_tier}/${MAX_SHIP_TIER}\nNavigation: ${ship.navigation_tier}/${MAX_SHIP_TIER}\nCargo: ${ship.cargo_tier}/${MAX_SHIP_TIER}\n\nReputation: ${rep}\nCharts: ${charts}\nRegions: ${unlockedRegions.length === 0 ? 'None' : unlockedRegions.join(', ')}\nFacilities: ${facilities.length === 0 ? 'None' : facilities.join(', ')}\n\nBonuses:\nSpeed: ${Math.round((1 - bonuses.speedMultiplier) * 100)}%\nSuccess: ${Math.round(bonuses.successBonus * 100)}%\nLoot: ${Math.round(bonuses.lootBonus * 100)}%`;
+			return `**${name}**\nHull: ${ship.hull_tier}/${MAX_SHIP_TIER}\nSails: ${ship.sails_tier}/${MAX_SHIP_TIER}\nCrew: ${ship.crew_tier}/${MAX_SHIP_TIER}\nNavigation: ${ship.navigation_tier}/${MAX_SHIP_TIER}\nCargo: ${ship.cargo_tier}/${MAX_SHIP_TIER}\n\nFacilities: ${facilities.length === 0 ? 'None' : facilities.join(', ')}\n\nBonuses:\nSpeed: ${Math.round((1 - bonuses.speedMultiplier) * 100)}%\nSuccess: ${Math.round(bonuses.successBonus * 100)}%\nLoot: ${Math.round(bonuses.lootBonus * 100)}%`;
+		}
+
+		if (options.clam) {
+			const stored = getClamItemId(ship);
+			const itemInput = options.clam.item?.trim();
+
+			if (!itemInput) {
+				return stored
+					? `Your giant clam is holding: ${Items.get(stored)?.name ?? stored}.`
+					: 'Your giant clam is not holding any item yet.';
+			}
+
+			if (user.skillsAsLevels.sailing < 40) {
+				return `${user.minionName} needs 40 Sailing to feed the giant clam.`;
+			}
+
+			if (stored) {
+				return 'Your giant clam is already holding an item. You must claim its pearl before feeding another.';
+			}
+
+			let item: Item;
+			try {
+				item = Items.getOrThrow(itemInput);
+			} catch {
+				return 'That is not a valid item.';
+			}
+
+			if (!item.tradeable && !item.tradeable_on_ge) {
+				return 'The giant clam only accepts tradeable items.';
+			}
+
+			const cost = new Bank().add(item.id, 1);
+			if (!user.owns(cost)) {
+				return `You don't have any ${item.name}.`;
+			}
+
+			await user.transactItems({ itemsToRemove: cost });
+			await updateUpgradesBank(user.id, { clamItemId: item.id });
+
+			return `You fed the giant clam a ${item.name}. It will return a pearl on your next encounter.`;
 		}
 
 		if (options.install) {

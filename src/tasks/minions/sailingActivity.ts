@@ -3,13 +3,11 @@ import { Bank } from 'oldschooljs';
 
 import { skillEmoji } from '@/lib/data/emojis.js';
 import { SailingActivityById } from '@/lib/skilling/skills/sailing/activities.js';
-import { SailingDifficultyById } from '@/lib/skilling/skills/sailing/difficulties.js';
-import { SailingRegionById } from '@/lib/skilling/skills/sailing/regions.js';
+import { rollOceanEncounters } from '@/lib/skilling/skills/sailing/encounters.js';
 import {
+	getClamItemId,
 	getOrCreateUserShip,
 	getShipBonusesFromSnapshot,
-	getShipCharts,
-	getShipReputation,
 	hasFacility,
 	updateUpgradesBank
 } from '@/lib/skilling/skills/sailing/ship.js';
@@ -25,13 +23,10 @@ export const sailingTask: MinionTask = {
 			throw new Error(`Unknown sailing activity: ${activityId}`);
 		}
 
-		const difficulty = SailingDifficultyById.get(data.difficulty) ?? SailingDifficultyById.get('standard')!;
-		const region = SailingRegionById.get(data.region) ?? SailingRegionById.get('starter_sea')!;
 		const variant = data.variant ? activity.variants?.find(v => v.id === data.variant) : undefined;
 
-		const xpMultiplier = difficulty.xpMultiplier * region.xpMultiplier * (variant?.xpMultiplier ?? 1);
-		const lootMultiplier = difficulty.lootMultiplier * region.lootMultiplier * (variant?.lootMultiplier ?? 1);
-		const baseRiskOverride = activity.baseRisk + difficulty.riskBonus + region.riskBonus;
+		const xpMultiplier = variant?.xpMultiplier ?? 1;
+		const lootMultiplier = variant?.lootMultiplier ?? 1;
 
 		const result = calcSailingTripResult({
 			activity,
@@ -39,54 +34,36 @@ export const sailingTask: MinionTask = {
 			ship,
 			sailingLevel: data.sailingLevel ?? user.skillsAsLevels.sailing,
 			xpMultiplier,
-			lootMultiplier,
-			baseRiskOverride
+			lootMultiplier
 		});
 
 		const shipState = await getOrCreateUserShip(user.id);
 		const extractorTicks = hasFacility(shipState, 'crystal_extractor') ? Math.floor(duration / 63_000) : 0;
 		const extractorXP = extractorTicks * 250;
 
-		const baseFailedActions = result.failedActions;
-		let hazardFailures = 0;
-		const hazardEvents: string[] = [];
-		if (activity.hazards && activity.hazards.length > 0) {
-			for (let i = 0; i < quantity; i++) {
-				for (const hazard of activity.hazards) {
-					const adjustedChance = Math.min(0.5, Math.max(0, hazard.chance + difficulty.riskBonus / 2));
-					if (rng.randFloat(0, 1) <= adjustedChance) {
-						hazardFailures++;
-						hazardEvents.push(hazard.name);
-					}
-				}
+		const { lootBonus } = getShipBonusesFromSnapshot(ship);
+		if (result.successfulActions > 0) {
+			const bonusRolls = Math.floor(result.successfulActions * lootBonus);
+			if (bonusRolls > 0) {
+				result.loot.add(activity.lootTable.roll(bonusRolls));
+				result.bonusRolls = bonusRolls;
 			}
 		}
 
-		if (hazardFailures > 0) {
-			const totalFailed = Math.min(quantity, baseFailedActions + hazardFailures);
-			result.failedActions = totalFailed;
-			result.successfulActions = quantity - totalFailed;
-			result.xpReceived = Math.floor(result.successfulActions * activity.xp * xpMultiplier);
-
-			const { lootBonus } = getShipBonusesFromSnapshot(ship);
-			const newLoot = new Bank();
-			if (result.successfulActions > 0) {
-				const lootRolls = Math.max(1, Math.floor(result.successfulActions * lootMultiplier));
-				newLoot.add(activity.lootTable.roll(lootRolls));
-			}
-
-			const bonusRolls = Math.floor(result.successfulActions * lootBonus);
-			if (bonusRolls > 0) {
-				newLoot.add(activity.lootTable.roll(bonusRolls));
-			}
-
-			result.loot = newLoot;
-			result.bonusRolls = bonusRolls;
+		const encounterResult = rollOceanEncounters({
+			duration,
+			sailingLevel: user.skillsAsLevels.sailing,
+			clamItemId: getClamItemId(shipState),
+			user,
+			rng
+		});
+		if (encounterResult.loot.length > 0) {
+			result.loot.add(encounterResult.loot);
 		}
 
 		const xpRes = await user.addXP({
 			skillName: 'sailing',
-			amount: result.xpReceived + extractorXP,
+			amount: result.xpReceived + extractorXP + encounterResult.xp,
 			duration
 		});
 
@@ -102,19 +79,6 @@ export const sailingTask: MinionTask = {
 		}
 
 		let str = `${user}, ${user.minionName} finished ${activity.name} for ${quantity} actions. ${xpRes}`;
-
-		if (hazardFailures > 0) {
-			str += `\nHazards encountered: ${hazardEvents.slice(0, 3).join(', ')}${hazardEvents.length > 3 ? '...' : ''}.`;
-			str += `\nHazard failures: ${hazardFailures}.`;
-		}
-
-		if (baseFailedActions > 0) {
-			str += `\nBase failures: ${baseFailedActions}.`;
-		}
-
-		if (result.failedActions > 0 && baseFailedActions === 0 && hazardFailures === 0) {
-			str += `\n${result.failedActions} actions failed.`;
-		}
 
 		if (variant?.lootTable) {
 			const bonusLootRolls = Math.max(1, Math.floor(result.successfulActions * lootMultiplier * 0.25));
@@ -138,17 +102,14 @@ export const sailingTask: MinionTask = {
 			str += `\nCargo bonus rolls: ${result.bonusRolls}.`;
 		}
 
-		const currentRep = getShipReputation(shipState);
-		const currentCharts = getShipCharts(shipState);
-		const repGained = Math.floor((activity.reputation * result.successfulActions) / 10);
-		const chartsGained = activity.id === 'sea_charting' ? Math.max(1, Math.floor(result.successfulActions / 5)) : 0;
-
-		if (repGained > 0 || chartsGained > 0) {
-			await updateUpgradesBank(user.id, {
-				reputation: currentRep + repGained,
-				charts: currentCharts + chartsGained
-			});
-			str += `\nReputation gained: ${repGained}. Charts gained: ${chartsGained}.`;
+		if (encounterResult.encounters > 0) {
+			str += `\nOcean encounters: ${encounterResult.encounters} for ${encounterResult.xp} Sailing XP.`;
+			if (encounterResult.messages.length > 0) {
+				str += `\n${encounterResult.messages.join(' ')}`;
+			}
+		}
+		if (encounterResult.clamConsumed) {
+			await updateUpgradesBank(user.id, { clamItemId: null });
 		}
 
 		if (result.loot.length > 0) {
