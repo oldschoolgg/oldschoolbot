@@ -123,8 +123,7 @@ export const sailingTask: MinionTask = {
 
 		const avgActionMs = Math.floor(duration / Math.max(1, quantity));
 		const heartBank = new Bank().add('Heart of Ithell', 1);
-		const shouldAwardHeart =
-			activity.id === 'gwenith_glide' && variant?.id === 'shark' && avgActionMs <= 222_000;
+		const shouldAwardHeart = activity.id === 'gwenith_glide' && variant?.id === 'shark' && avgActionMs <= 222_000;
 		if (shouldAwardHeart && !user.owns(heartBank)) {
 			result.loot.add(heartBank);
 			str += `\nYou earned a Heart of Ithell for a Gwenith Glide (Shark) clear in ${Math.floor(
