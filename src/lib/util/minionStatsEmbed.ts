@@ -65,7 +65,17 @@ export async function minionStatsEmbed({
 		},
 		{
 			name: '\u200b',
-			value: ['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
+			value: [
+				'mining',
+				'smithing',
+				'fishing',
+				'sailing',
+				'cooking',
+				'firemaking',
+				'woodcutting',
+				'farming',
+				'overall'
+			]
 				.map(skillCell)
 				.join('\n'),
 			inline: true

@@ -3676,6 +3676,11 @@
 		"gp_cost": 99000
 	},
 	{
+		"name": "Sailing cape",
+		"output_items": "[Function]",
+		"gp_cost": 99000
+	},
+	{
 		"name": "Salve amulet",
 		"gp_cost": 200000,
 		"ironman_price": 20000,

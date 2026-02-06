@@ -53,6 +53,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_agility: overrides?.skills_agility ?? 0,
 		skills_cooking: 0,
 		skills_fishing: overrides?.skills_fishing ?? 0,
+		skills_sailing: 0,
 		skills_mining: 0,
 		skills_smithing: 0,
 		skills_woodcutting: 0,

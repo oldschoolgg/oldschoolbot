@@ -59,6 +59,15 @@ const Bars: Bar[] = [
 		timeToUse: Time.Second * 2.4
 	},
 	{
+		name: 'Cupronickel bar',
+		level: 74,
+		xp: 32,
+		id: itemID('Cupronickel bar'),
+		inputOres: new Bank({ 'Copper ore': 2, 'Nickel ore': 1 }),
+		chanceOfFail: 0,
+		timeToUse: Time.Second * 2.4
+	},
+	{
 		name: 'Adamantite bar',
 		level: 70,
 		xp: 37.5,

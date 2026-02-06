@@ -147,6 +147,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Slayer hood'),
 		untrimmed: itemID('Slayer cape'),
 		trimmed: itemID('Slayer cape(t)')
+	},
+	{
+		skill: 'sailing',
+		hood: itemID('Sailing hood'),
+		untrimmed: itemID('Sailing cape'),
+		trimmed: itemID('Sailing cape(t)')
 	}
 ];
 

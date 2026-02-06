@@ -67,7 +67,9 @@ import { rollCommand } from '@/mahoji/commands/roll.js';
 import { rpCommand } from '@/mahoji/commands/rp.js';
 import { runecraftCommand } from '@/mahoji/commands/runecraft.js';
 import { sacrificeCommand } from '@/mahoji/commands/sacrifice.js';
+import { sailCommand } from '@/mahoji/commands/sail.js';
 import { sellCommand } from '@/mahoji/commands/sell.js';
+import { shipCommand } from '@/mahoji/commands/ship.js';
 import { simulateCommand } from '@/mahoji/commands/simulate.js';
 import { slayerCommand } from '@/mahoji/commands/slayer.js';
 import { smeltingCommand } from '@/mahoji/commands/smelt.js';
@@ -133,6 +135,7 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	sacrificeCommand,
 	rollCommand,
 	runecraftCommand,
+	sailCommand,
 	raidCommand,
 	pollCommand,
 	pohCommand,
@@ -143,6 +146,7 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	lootCommand,
 	smeltingCommand,
 	slayerCommand,
+	shipCommand,
 	redeemCommand,
 	patreonCommand,
 	smithCommand,
