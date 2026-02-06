@@ -62,6 +62,7 @@ const ShipwreckSalvageTable = new LootTable()
 	.add('Uncut sapphire', 1, 2)
 	.add('Uncut emerald', 1, 1)
 	.add('Iron nails', [10, 30], 2)
+	.add('Ironwood logs', [1, 2], 1)
 	.add('Sealed message', 1, 1)
 	.oneIn(120, 'Sea fishing map')
 	.oneIn(180, 'Sea shell');
@@ -86,6 +87,7 @@ const MineralDredgingTable = new LootTable()
 	.add('Coal', [5, 12], 5)
 	.add('Mithril ore', [1, 3], 3)
 	.add('Adamantite ore', [1, 2], 2)
+	.add('Nickel ore', [1, 2], 2)
 	.add('Sea salt', [2, 6], 2)
 	.oneIn(140, 'Clue bottle (medium)');
 

@@ -202954,5 +202954,70 @@
 			"requirements": null
 		},
 		"cost": 50
+	},
+	"32935": {
+		"name": "Heart of Ithell",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32936": {
+		"name": "Ironwood plank",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32937": {
+		"name": "Cupronickel bar",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32938": {
+		"name": "Wind mote",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"cost": 0
+	},
+	"32939": {
+		"name": "Gale mote",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"stackable": true,
+		"cost": 0
+	},
+	"32940": {
+		"name": "Wind catcher",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32941": {
+		"name": "Gale catcher",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32942": {
+		"name": "Ironwood logs",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
+	},
+	"32943": {
+		"name": "Nickel ore",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"cost": 0
 	}
 }

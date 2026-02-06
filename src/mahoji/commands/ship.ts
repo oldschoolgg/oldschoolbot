@@ -106,10 +106,17 @@ export const shipCommand = defineCommand({
 			if (user.skillsAsLevels.sailing < facility.level) {
 				return `${user.minionName} needs ${facility.level} Sailing to install ${facility.name}.`;
 			}
+			if (facility.constructionLevel && user.skillsAsLevels.construction < facility.constructionLevel) {
+				return `${user.minionName} needs ${facility.constructionLevel} Construction to install ${facility.name}.`;
+			}
 
 			const installed = getInstalledFacilities(ship);
 			if (installed.includes(facility.id)) {
 				return `${facility.name} is already installed.`;
+			}
+
+			if (facility.requiredItems && !user.owns(facility.requiredItems)) {
+				return `You need to own ${facility.requiredItems} to install ${facility.name}.`;
 			}
 
 			if (!user.owns(facility.cost)) {

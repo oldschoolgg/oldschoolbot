@@ -10,6 +10,7 @@ import {
 	getShipBonusesFromSnapshot,
 	getShipCharts,
 	getShipReputation,
+	hasFacility,
 	updateUpgradesBank
 } from '@/lib/skilling/skills/sailing/ship.js';
 import { calcSailingTripResult } from '@/lib/skilling/skills/sailing/util.js';
@@ -26,10 +27,7 @@ export const sailingTask: MinionTask = {
 
 		const difficulty = SailingDifficultyById.get(data.difficulty) ?? SailingDifficultyById.get('standard')!;
 		const region = SailingRegionById.get(data.region) ?? SailingRegionById.get('starter_sea')!;
-		const variant =
-			activity.id === 'port_tasks' && data.variant
-				? activity.variants?.find(v => v.id === data.variant)
-				: undefined;
+		const variant = data.variant ? activity.variants?.find(v => v.id === data.variant) : undefined;
 
 		const xpMultiplier = difficulty.xpMultiplier * region.xpMultiplier * (variant?.xpMultiplier ?? 1);
 		const lootMultiplier = difficulty.lootMultiplier * region.lootMultiplier * (variant?.lootMultiplier ?? 1);
@@ -44,6 +42,10 @@ export const sailingTask: MinionTask = {
 			lootMultiplier,
 			baseRiskOverride
 		});
+
+		const shipState = await getOrCreateUserShip(user.id);
+		const extractorTicks = hasFacility(shipState, 'crystal_extractor') ? Math.floor(duration / 63_000) : 0;
+		const extractorXP = extractorTicks * 250;
 
 		const baseFailedActions = result.failedActions;
 		let hazardFailures = 0;
@@ -84,7 +86,7 @@ export const sailingTask: MinionTask = {
 
 		const xpRes = await user.addXP({
 			skillName: 'sailing',
-			amount: result.xpReceived,
+			amount: result.xpReceived + extractorXP,
 			duration
 		});
 
@@ -119,6 +121,17 @@ export const sailingTask: MinionTask = {
 			result.loot.add(variant.lootTable.roll(bonusLootRolls));
 		}
 
+		const avgActionMs = Math.floor(duration / Math.max(1, quantity));
+		const heartBank = new Bank().add('Heart of Ithell', 1);
+		const shouldAwardHeart =
+			activity.id === 'gwenith_glide' && variant?.id === 'shark' && avgActionMs <= 222_000;
+		if (shouldAwardHeart && !user.owns(heartBank)) {
+			result.loot.add(heartBank);
+			str += `\nYou earned a Heart of Ithell for a Gwenith Glide (Shark) clear in ${Math.floor(
+				avgActionMs / 60000
+			)}:${String(Math.floor((avgActionMs % 60000) / 1000)).padStart(2, '0')}.`;
+		}
+
 		const successRate = Math.round(result.successChance * 10000) / 100;
 		str += `\nSuccess rate: ${successRate}%.`;
 
@@ -126,7 +139,6 @@ export const sailingTask: MinionTask = {
 			str += `\nCargo bonus rolls: ${result.bonusRolls}.`;
 		}
 
-		const shipState = await getOrCreateUserShip(user.id);
 		const currentRep = getShipReputation(shipState);
 		const currentCharts = getShipCharts(shipState);
 		const repGained = Math.floor((activity.reputation * result.successfulActions) / 10);
@@ -146,6 +158,10 @@ export const sailingTask: MinionTask = {
 				collectionLog: true
 			});
 			str += `\nYou received: ${result.loot}.`;
+		}
+
+		if (extractorXP > 0) {
+			str += `\nCrystal extractor XP: ${extractorXP}.`;
 		}
 
 		return handleTripFinish({
