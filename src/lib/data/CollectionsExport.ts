@@ -1399,6 +1399,7 @@ export const allPetsCL = resolveItems([
 	'Tangleroot',
 	'Rocky',
 	'Rift guardian',
+	'Sea snake',
 	'Herbi',
 	'Chompy chick',
 	'Sraracha',
@@ -1618,7 +1619,8 @@ export const skillingPetsCL = resolveItems([
 	'Giant squirrel',
 	'Tangleroot',
 	'Rocky',
-	'Rift guardian'
+	'Rift guardian',
+	'Sea snake'
 ]);
 export const slayerCL = resolveItems([
 	// Crawling hand

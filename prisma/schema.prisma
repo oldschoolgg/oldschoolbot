@@ -255,6 +255,24 @@ model PlayerOwnedHouse {
   @@map("poh")
 }
 
+model UserShip {
+  user_id String @id @db.VarChar(19)
+
+  ship_name String? @db.VarChar(32)
+
+  hull_tier       Int @default(1)
+  sails_tier      Int @default(1)
+  crew_tier       Int @default(1)
+  navigation_tier Int @default(1)
+  cargo_tier      Int @default(1)
+
+  upgrades_bank Json @default("{}") @db.Json
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_ship")
+}
+
 model SlayerTask {
   id                 Int      @id @default(autoincrement())
   created_at         DateTime @default(now()) @db.Timestamp(6)
@@ -314,6 +332,7 @@ model User {
   botItemSell    BotItemSell[]
   pinnedTrip     PinnedTrip[]
   historicalData HistoricalData[]
+  ship           UserShip?
 
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
@@ -340,6 +359,7 @@ model User {
   skills_agility      BigInt @default(0) @map("skills.agility")
   skills_cooking      BigInt @default(0) @map("skills.cooking")
   skills_fishing      BigInt @default(0) @map("skills.fishing")
+  skills_sailing      BigInt @default(0) @map("skills.sailing")
   skills_mining       BigInt @default(0) @map("skills.mining")
   skills_smithing     BigInt @default(0) @map("skills.smithing")
   skills_woodcutting  BigInt @default(0) @map("skills.woodcutting")
@@ -911,6 +931,7 @@ enum activity_type_enum {
   CutLeapingFish
   MotherlodeMining
   BlastFurnace
+  Sailing
   MageArena2
   BigChompyBirdHunting
   DarkAltar
@@ -954,6 +975,7 @@ enum xp_gains_skill_enum {
   agility
   cooking
   fishing
+  sailing
   mining
   smithing
   woodcutting
@@ -1381,6 +1403,8 @@ enum command_name_enum {
   roll
   rp
   runecraft
+  sail
+  ship
   runelite
   s
   sacrifice

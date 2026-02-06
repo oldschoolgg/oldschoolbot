@@ -34,7 +34,7 @@ type RatelimitConfig = {
 type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
-	global_buttons: { windowSeconds: 2, max: 1 },
+	global_buttons: { windowSeconds: 2, max: 10000 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 }
 } as const;
