@@ -202,7 +202,7 @@ export const activitiesCommand = defineCommand({
 				{
 					type: 'Integer',
 					name: 'dose',
-					description: 'The dosage to decant them too. (default 4)',
+					description: 'The dosage to decant them to. (default 4)',
 					required: false,
 					min_value: 1,
 					max_value: 4

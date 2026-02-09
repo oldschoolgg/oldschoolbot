@@ -22,7 +22,7 @@ export const bossrecordCommand = defineCommand({
 		{
 			type: 'String',
 			name: 'rsn',
-			description: 'The runescape username you want to check.',
+			description: 'The RuneScape username you want to check.',
 			required: true
 		}
 	],
