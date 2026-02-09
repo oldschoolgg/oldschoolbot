@@ -33,4 +33,18 @@ describe('Open Command', async () => {
 		await user.bankAmountMatch('Reward casket (beginner)', 90);
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 10));
 	});
+
+	test('Open until respects quantity cap', async () => {
+		mockMathRandom(0.1);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			quantity: 2,
+			open_until: 'Fire rune',
+			result_quantity: 100
+		});
+		await user.bankAmountMatch('Reward casket (beginner)', 8);
+		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 2));
+	});
 });
