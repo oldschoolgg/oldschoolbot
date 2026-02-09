@@ -161,6 +161,7 @@ const ores = resolveItems([
 	'Mithril ore',
 	'Lovakite ore',
 	'Adamantite ore',
+	'Nickel ore',
 	'Runite ore'
 ]);
 
@@ -174,6 +175,7 @@ const bars = resolveItems([
 	'Primed mind bar',
 	'Lovakite bar',
 	'Mithril bar',
+	'Cupronickel bar',
 	'Adamantite bar',
 	'Runite bar'
 ]);
@@ -399,6 +401,7 @@ const skilling = resolveItems([
 	'Oak plank',
 	'Teak plank',
 	'Mahogany plank',
+	'Ironwood plank',
 	'Raw shark',
 	'Grapes',
 	'Feather',

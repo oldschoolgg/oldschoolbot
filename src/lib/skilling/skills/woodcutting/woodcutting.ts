@@ -183,6 +183,20 @@ const logs: Log[] = [
 		clueNestsOnly: true
 	},
 	{
+		level: 70,
+		xp: 210,
+		id: itemID('Ironwood logs'),
+		name: 'Ironwood Logs',
+		findNewTreeTime: 6.5,
+		bankingTime: 20,
+		slope: 0.035,
+		intercept: 0.6,
+		depletionChance: 100 * (1 / 10),
+		petChance: 120_000,
+		qpRequired: 0,
+		clueScrollChance: 120_000
+	},
+	{
 		level: 75,
 		xp: 250,
 		id: itemID('Magic logs'),

@@ -24,6 +24,7 @@ import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import { SailingActivityById } from '@/lib/skilling/skills/sailing/activities.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
@@ -68,6 +69,7 @@ import type {
 	PlunderActivityTaskOptions,
 	RaidsOptions,
 	RunecraftActivityTaskOptions,
+	SailingActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
@@ -155,6 +157,11 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently fishing ${data.quantity}x ${fish?.name}. ${formattedDuration} Your ${
 				Emoji.Fishing
 			} Fishing level is ${user.skillsAsLevels.fishing}`;
+		}
+		case 'Sailing': {
+			const data = currentTask as SailingActivityTaskOptions;
+			const activity = SailingActivityById.get(data.activity);
+			return `${name} is currently doing ${activity?.name ?? 'Sailing'} (${data.quantity} actions). ${formattedDuration}`;
 		}
 
 		case 'Mining': {
