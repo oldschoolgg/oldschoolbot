@@ -32,5 +32,11 @@ export const MathRNG: RNGProvider = {
 
 	percentChance(percent: number): boolean {
 		return Math.random() < percent / 100;
+	},
+
+	randomVariation(value: number, percentage: number): number {
+		const lowerLimit = value * (1 - percentage / 100);
+		const upperLimit = value * (1 + percentage / 100);
+		return this.randFloat(lowerLimit, upperLimit);
 	}
 };

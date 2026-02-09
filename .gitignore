@@ -46,7 +46,6 @@ wiki.xml
 test-bot-store-*.json
 
 .db
-diffs
 
 src/prisma/clients
 
@@ -55,3 +54,5 @@ src/prisma/clients
 itx
 
 .claude
+
+diffs

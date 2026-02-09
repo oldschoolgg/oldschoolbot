@@ -215,7 +215,14 @@ async function globalButtonInteractionHandler({
 	id: string;
 	interaction: MInteraction;
 }): Promise<CommandResponse | null> {
-	Logging.logDebug(`${interaction.userId} clicked button: ${id}`);
+	globalClient.emitUserLog({
+		type: 'CLICK_BUTTON',
+		user_id: interaction.userId,
+		button_id: id,
+		channel_id: interaction.channelId,
+		guild_id: interaction.guildId,
+		message_id: interaction.messageId
+	});
 
 	if (globalClient.isShuttingDown) {
 		return {

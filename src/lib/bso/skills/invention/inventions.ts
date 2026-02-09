@@ -7,8 +7,8 @@ import { Bank, type Item, type ItemBank, Items, resolveItems, toKMB } from 'olds
 import { clamp } from 'remeda';
 
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
-import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 
 const InventionFlags = ['equipped', 'bank'] as const;
 type InventionFlag = (typeof InventionFlags)[number];

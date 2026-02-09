@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import type { DOAStoredRaid } from '@/lib/bso/bsoTypes.js';
 
 import { bold } from '@oldschoolgg/discord';
@@ -72,7 +73,7 @@ export const maxRange = new Gear({
 	ring: 'Ring of piercing (i)',
 	ammo: 'Obsidian javelin'
 });
-maxRange.ammo!.quantity = 100_000;
+maxRange.set('ammo', { item: BSOItem.OBSIDIAN_JAVELIN, quantity: 100_000 });
 
 export const maxMelee = new Gear({
 	cape: 'Tzkal cape',
@@ -125,7 +126,7 @@ const requirements: {
 				).join(', ')}`;
 			}
 
-			const rangeAmmo = user.gear.range.ammo;
+			const rangeAmmo = user.gear.range.get('ammo');
 			const arrowsNeeded = JAVELLINS_PER_RAID(user.skillsAsLevels.ranged) * quantity;
 
 			if (!rangeAmmo || !rangeAmmo.item || !JAVELLINS.includes(rangeAmmo.item)) {
@@ -498,7 +499,7 @@ export async function calcDOAInput({
 		throw new Error(`${user.logName} had no range weapon for DOA`);
 	}
 
-	const rangeAmmo = user.gear.range.ammo;
+	const rangeAmmo = user.gear.range.get('ammo');
 	if (!rangeAmmo || !JAVELLINS.includes(rangeAmmo.item)) {
 		throw new Error(`${user.logName} had no javellins for DOA`);
 	}

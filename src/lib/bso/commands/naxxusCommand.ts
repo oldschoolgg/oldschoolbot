@@ -1,6 +1,7 @@
 import { NAXXUS_HP, Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
 
 import { EmbedBuilder } from '@oldschoolgg/discord';
+import type { GearStats } from '@oldschoolgg/gear';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -10,7 +11,6 @@ import {
 	reduceNumByPercent
 } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
 
 import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';

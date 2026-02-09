@@ -1,3 +1,35 @@
+export enum EquipmentSlot {
+	TwoHanded = '2h',
+	Ammo = 'ammo',
+	Body = 'body',
+	Cape = 'cape',
+	Feet = 'feet',
+	Hands = 'hands',
+	Head = 'head',
+	Legs = 'legs',
+	Neck = 'neck',
+	Ring = 'ring',
+	Shield = 'shield',
+	Weapon = 'weapon'
+}
+
+export type EquipmentSlotKey = `${EquipmentSlot}`;
+
+export const allEquipmentSlots: EquipmentSlot[] = [
+	EquipmentSlot.TwoHanded,
+	EquipmentSlot.Ammo,
+	EquipmentSlot.Body,
+	EquipmentSlot.Cape,
+	EquipmentSlot.Feet,
+	EquipmentSlot.Hands,
+	EquipmentSlot.Head,
+	EquipmentSlot.Legs,
+	EquipmentSlot.Neck,
+	EquipmentSlot.Ring,
+	EquipmentSlot.Shield,
+	EquipmentSlot.Weapon
+];
+
 export enum GearStat {
 	AttackStab = 'attack_stab',
 	AttackSlash = 'attack_slash',

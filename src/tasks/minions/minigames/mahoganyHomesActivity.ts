@@ -11,7 +11,7 @@ export const mahoganyHomesTask: MinionTask = {
 		await user.incrementMinigameScore('mahogany_homes', quantity);
 
 		let bonusXP = 0;
-		const outfitMultiplier = calcConBonusXP(user.gear.skilling);
+		const outfitMultiplier = calcConBonusXP(user.gear.skilling.raw());
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}

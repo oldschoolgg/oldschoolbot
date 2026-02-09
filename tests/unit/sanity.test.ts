@@ -1,5 +1,6 @@
+import { EquipmentSlot } from '@oldschoolgg/gear';
 import { exponentialPercentScale, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, EquipmentSlot, Items, itemID } from 'oldschooljs';
+import { Bank, EMonster, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 import { describe, expect, test } from 'vitest';
 

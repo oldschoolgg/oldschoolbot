@@ -11,7 +11,8 @@ import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
 import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tames/tameUtil.js';
 
-import { EquipmentSlot, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
+import { EquipmentSlot } from '@oldschoolgg/gear';
+import { Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { type Tame, tame_growth } from '@/prisma/main.js';

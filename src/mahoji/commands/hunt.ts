@@ -139,7 +139,7 @@ export function calculateHunterInput({
 	}
 
 	if (creature.wildy) {
-		const [bol, reason, score] = hasWildyHuntGearEquipped(allGear.wildy);
+		const [bol, reason, score] = hasWildyHuntGearEquipped(allGear.wildy.raw());
 		wildyScore = score;
 		if (!bol) {
 			return `To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason}, check your wildy gear.`;

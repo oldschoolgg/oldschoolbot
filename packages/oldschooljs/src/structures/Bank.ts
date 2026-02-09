@@ -1,7 +1,7 @@
 import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
+import { toKMB } from '@oldschoolgg/util';
 
 import type { Item } from '@/meta/item.js';
-import { toKMB } from '../util/smallUtils.js';
 import { Items } from './Items.js';
 
 const frozenErrorStr = 'Tried to mutate a frozen Bank.';

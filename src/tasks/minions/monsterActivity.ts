@@ -270,7 +270,7 @@ export function doMonsterTrip(data: newOptions) {
 			let reEquipedItems = false;
 			const itemsToReplace = new Bank().add(calc.lostItems).add(calc.gearThatBroke);
 			if (!gearBank.bank.has(itemsToReplace)) {
-				updateBank.gearChanges.wildy = calc.newGear;
+				updateBank.gearChanges.push({ setup: 'wildy', gear: calc.newGear });
 			} else {
 				updateBank.itemCostBank.add(itemsToReplace);
 				reEquipedItems = true;

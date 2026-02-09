@@ -1,12 +1,17 @@
+import {
+	allEquipmentSlots,
+	EquipmentSlot,
+	type GearSetupType,
+	GearSetupTypes,
+	type GearStats
+} from '@oldschoolgg/gear';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { EquipmentSlot, type GearStats } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { type BaseCanvasArgs, calcAspectRatioFit } from '@/lib/canvas/canvasUtil.js';
 import { gearImages, transmogItems } from '@/lib/canvas/gearImageData.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { type Gear, maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear.js';
 
 /**
@@ -324,8 +329,8 @@ export async function generateGearImage({
 	}
 
 	// Draw equipped items
-	for (const enumName of Object.values(EquipmentSlot)) {
-		const item = gearSetup[enumName];
+	for (const enumName of allEquipmentSlots) {
+		const item = gearSetup.get(enumName);
 		if (!item) continue;
 		const [x, y] = slotCoordinates[enumName];
 		await canvas.drawItemIDSprite({
@@ -352,7 +357,7 @@ export async function generateAllGearImage({
 }: BaseCanvasArgs & {
 	user?: MUser;
 	gearTemplate?: number;
-	gear: { [key in GearSetupType]: GearSetup };
+	gear: UserFullGearSetup;
 	equippedPet?: number | null;
 }) {
 	if (!bankImageTask.ready) {
@@ -418,7 +423,7 @@ export async function generateAllGearImage({
 		});
 		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 		for (const enumName of Object.values(EquipmentSlot)) {
-			const item = gearSetup[enumName];
+			const item = gearSetup.get(enumName);
 			if (!item) continue;
 			const [x, y] = slotCoordinatesCompact[enumName];
 

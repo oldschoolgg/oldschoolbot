@@ -5,9 +5,9 @@ import { decideLoot } from '@/lib/bso/structures/LootDecider.js';
 import { SeedTable } from '@/lib/bso/tables/seedTable.js';
 import { GrimyHerbTable } from '@/lib/bso/tables/sharedTables.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { LootTable, Monsters, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
 

@@ -1,12 +1,10 @@
+import { EquipmentSlot, type GearSetup, type GearSetupType, GearSetupTypes, isValidGearSetup } from '@oldschoolgg/gear';
 import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
-import { EquipmentSlot, Items } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 
-import { choicesOf, defineOption } from '@/discord/index.js';
-import { allEquippableItems, gearPresetOption, gearSetupOption } from '@/discord/presetCommandOptions.js';
-import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
-import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
-import { Gear, globalPresets } from '@/lib/structures/Gear.js';
+import { allEquippableItems, choicesOf, defineOption, gearPresetOption, gearSetupOption } from '@/discord/index.js';
+import { globalPresets } from '@/lib/gear/gearPresets.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { gearEquipCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 
@@ -72,23 +70,23 @@ export async function createOrEditGearSetup(
 
 	// This is required to enable removal of items while editing
 	for (const slot of forceRemove) {
-		if (gearSetup !== null) gearSetup[slot] = null;
+		if (gearSetup !== null) gearSetup.set(slot, null);
 	}
 
 	const gearData = {
-		head: parsedInputGear.head ?? gearSetup?.head?.item ?? null,
-		neck: parsedInputGear.neck ?? gearSetup?.neck?.item ?? null,
-		body: parsedInputGear.body ?? gearSetup?.body?.item ?? null,
-		legs: parsedInputGear.legs ?? gearSetup?.legs?.item ?? null,
-		cape: parsedInputGear.cape ?? gearSetup?.cape?.item ?? null,
-		two_handed: parsedInputGear['2h'] ?? gearSetup?.['2h']?.item ?? null,
-		hands: parsedInputGear.hands ?? gearSetup?.hands?.item ?? null,
-		feet: parsedInputGear.feet ?? gearSetup?.feet?.item ?? null,
-		shield: parsedInputGear.shield ?? gearSetup?.shield?.item ?? null,
-		weapon: parsedInputGear.weapon ?? gearSetup?.weapon?.item ?? null,
-		ring: parsedInputGear.ring ?? gearSetup?.ring?.item ?? null,
-		ammo: parsedInputGear.ammo ?? gearSetup?.ammo?.item ?? null,
-		ammo_qty: gearSetup?.ammo?.quantity ?? null,
+		head: parsedInputGear.head ?? gearSetup?.get('head')?.item ?? null,
+		neck: parsedInputGear.neck ?? gearSetup?.get('neck')?.item ?? null,
+		body: parsedInputGear.body ?? gearSetup?.get('body')?.item ?? null,
+		legs: parsedInputGear.legs ?? gearSetup?.get('legs')?.item ?? null,
+		cape: parsedInputGear.cape ?? gearSetup?.get('cape')?.item ?? null,
+		two_handed: parsedInputGear['2h'] ?? gearSetup?.get('2h')?.item ?? null,
+		hands: parsedInputGear.hands ?? gearSetup?.get('hands')?.item ?? null,
+		feet: parsedInputGear.feet ?? gearSetup?.get('feet')?.item ?? null,
+		shield: parsedInputGear.shield ?? gearSetup?.get('shield')?.item ?? null,
+		weapon: parsedInputGear.weapon ?? gearSetup?.get('weapon')?.item ?? null,
+		ring: parsedInputGear.ring ?? gearSetup?.get('ring')?.item ?? null,
+		ammo: parsedInputGear.ammo ?? gearSetup?.get('ammo')?.item ?? null,
+		ammo_qty: gearSetup?.get('ammo')?.quantity ?? null,
 		pinned_setup: !pinned_setup || pinned_setup === 'reset' ? undefined : pinned_setup
 	};
 

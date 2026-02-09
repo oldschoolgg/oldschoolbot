@@ -25,7 +25,9 @@
 		"build": "tsdown"
 	},
 	"dependencies": {
-		"deepmerge": "4.3.1"
+		"deepmerge": "4.3.1",
+		"@oldschoolgg/gear": "workspace:*",
+		"@oldschoolgg/util": "workspace:*"
 	},
 	"devDependencies": {
 		"deep-object-diff": "^1.1.9",

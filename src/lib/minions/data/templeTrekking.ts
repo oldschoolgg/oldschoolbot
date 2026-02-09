@@ -1,6 +1,6 @@
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 
 import type { GearRequirements } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
