@@ -130,6 +130,11 @@
 		"column": "soul_wars"
 	},
 	{
+		"name": "Stealing artefacts",
+		"aliases": ["artefacts", "artifacts", "stealing artefacts", "stealing artifacts"],
+		"column": "stealing_artefacts"
+	},
+	{
 		"name": "Tears Of Guthix",
 		"aliases": ["tog"],
 		"column": "tears_of_guthix"
