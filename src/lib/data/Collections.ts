@@ -264,6 +264,9 @@ export const allCollectionLogs: ICollection = {
 				items: derangedArchaeologistCL,
 				fmtProg: kcProg(Monsters.DerangedArchaeologist)
 			},
+			///	'Doom of Mokhaiotl': {
+			///		items: CollectionLog.DoomofMokhaiotl.items
+			///	},
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
 				kcActivity: {
@@ -579,6 +582,9 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
+			///	Yama: {
+			///		items: CollectionLog.Yami.items
+			///	},
 			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
@@ -780,6 +786,9 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
 			}
+			///	'Scroll Cases': {
+			///		items: CollectionLog.ScrollCases.items
+			///	}
 		}
 	},
 	Minigames: {
@@ -880,6 +889,9 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('mahogany_homes')
 			},
+			///	'Mastering Mixology': {
+			///		items: CollectionLog.MasteringMixology.items
+			///	},
 			'Pest Control': {
 				items: pestControlCL,
 				isActivity: true,
@@ -930,6 +942,9 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('trouble_brewing')
 			},
+			///	'Vale Totems': {
+			///		items: CollectionLog.ValeTotems.items
+			///	},
 			'Volcanic Mine': {
 				items: volcanicMineCL,
 				alias: ['vm', 'vmine', 'volcanic'],
@@ -996,6 +1011,9 @@ export const allCollectionLogs: ICollection = {
 				items: demonicGorillaCL,
 				fmtProg: kcProg(Monsters.DemonicGorilla)
 			},
+			///	'Hunter Guild': {
+			///		items: CollectionLog.HunterGuild.items
+			///	},
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
 				kcActivity: {
@@ -1440,8 +1458,7 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false,
-			unobtainable: false
+			counts: false
 		};
 	}
 	if (stringMatches(search, 'overall')) {
@@ -1452,8 +1469,7 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false,
-			unobtainable: false
+			counts: false
 		};
 	}
 
@@ -1469,8 +1485,7 @@ export async function getCollection(options: {
 				collectionTotal: totalCl,
 				leftList: getLeftList(userCheckBank, category, allItems, logType === 'sacrifice'),
 				userItems: userCheckBank,
-				counts: false,
-				unobtainable: false
+				counts: false
 			};
 		}
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
@@ -1515,8 +1530,7 @@ export async function getCollection(options: {
 						logType === 'sacrifice'
 					),
 					userItems: userCheckBank,
-					counts: attributes.counts ?? true,
-					unobtainable: attributes.unobtainable ?? false
+					counts: attributes.counts ?? true
 				};
 			}
 		}
@@ -1534,8 +1548,7 @@ export async function getCollection(options: {
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
-			counts: false,
-			unobtainable: false
+			counts: false
 		};
 	}
 
