@@ -26,10 +26,10 @@
 		"@prisma/client": "^6.19.0",
 		"@sapphire/discord-utilities": "^2.12.0",
 		"dotenv": "^16.5.0",
-		"hono": "^4.11.4",
+		"hono": "^4.11.7",
 		"ioredis": "^5.8.2",
 		"oldschooljs": "workspace:*",
-		"remeda": "^2.23.0",
+		"remeda": "^2.33.4",
 		"zod": "^4.1.12"
 	},
 	"devDependencies": {

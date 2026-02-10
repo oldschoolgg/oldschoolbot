@@ -1,6 +1,5 @@
 import { dateFm } from '@oldschoolgg/discord';
 import type { GearSetup } from '@oldschoolgg/gear';
-import { randArrItem } from '@oldschoolgg/rng';
 import {
 	calcPerHour,
 	calcWhatPercent,
@@ -604,14 +603,14 @@ export const adminCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, userId, interaction, guildId }) => {
+	run: async ({ options, userId, interaction, guildId, rng }) => {
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userId);
 		const isAdmin = adminUser.isAdmin();
 		const isMod = isAdmin || adminUser.isMod();
 		if (!guildId || !isMod || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
-			return randArrItem(gifs);
+			return rng.pick(gifs);
 		}
 
 		/**
@@ -784,7 +783,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		 *
 		 */
 		if (!isAdmin) {
-			return randArrItem(gifs);
+			return rng.pick(gifs);
 		}
 
 		if (options.sync_commands) {

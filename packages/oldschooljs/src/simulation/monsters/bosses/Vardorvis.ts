@@ -1,5 +1,5 @@
-import { randInt, roll } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/util';
+import { randInt, roll } from 'node-rng';
 
 import { EItem } from '@/EItem.js';
 import { VirtusTable } from '@/simulation/subtables/VirtusTable.js';

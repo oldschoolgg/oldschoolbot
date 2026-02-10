@@ -1,4 +1,3 @@
-import { percentChance, randomVariation } from '@oldschoolgg/rng';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -13,7 +12,7 @@ const RawNightmare = Misc.Nightmare;
 
 export const nightmareTask: MinionTask = {
 	type: 'Nightmare',
-	async run(data: NightmareActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: NightmareActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelId, quantity, duration, isPhosani = false, method } = data;
 
 		const monsterID = isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id;
@@ -30,12 +29,12 @@ export const nightmareTask: MinionTask = {
 			const _loot = RawNightmare.kill({
 				team: parsedUsers.map(user => ({
 					id: user.id,
-					damageDone: team.length === 1 ? 2400 : randomVariation(user.damageDone, 5)
+					damageDone: team.length === 1 ? 2400 : rng.randomVariation(user.damageDone, 5)
 				})),
 				isPhosani
 			});
 
-			const died = percentChance(userStats.chanceOfDeath);
+			const died = rng.percentChance(userStats.chanceOfDeath);
 			if (died) {
 				deaths++;
 			} else {

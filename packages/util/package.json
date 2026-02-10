@@ -12,6 +12,6 @@
 		"test": "concurrently \"tsc -p src\" \"vitest run\" \"tsc -p tests\""
 	},
 	"dependencies": {
-		"@oldschoolgg/rng": "workspace:*"
+		"node-rng": "^0.0.3"
 	}
 }

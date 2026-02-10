@@ -136,7 +136,7 @@ export const aerialFishingTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = 636_833;
-		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(rng, user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
