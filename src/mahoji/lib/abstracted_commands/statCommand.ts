@@ -903,9 +903,9 @@ GROUP BY "bankBackground";`);
 	{
 		name: 'Gambling PNL',
 		run: async (_, stats) => {
-			const gpDice = toKMB(Number(stats.gp_dice) ?? 0);
-			const gpLuckyPick = toKMB(Number(stats.gp_luckypick) ?? 0);
-			const gpSlots = toKMB(Number(stats.gp_slots) ?? 0);
+			const gpDice = toKMB(Number(stats.gp_dice) || 0);
+			const gpLuckyPick = toKMB(Number(stats.gp_luckypick) || 0);
+			const gpSlots = toKMB(Number(stats.gp_slots) || 0);
 
 			return {
 				content: `**Dicing:** ${gpDice}\n**Lucky Pick:** ${gpLuckyPick}\n**Slots:** ${gpSlots}`
