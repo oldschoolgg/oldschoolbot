@@ -35,6 +35,13 @@ export const GE_SLOTS_CACHE = new LRUCache<
 	max: 300
 });
 export const RARE_ROLES_CACHE = new LRUCache<string, number>({ max: 1000 });
+export const WIKI_AUTOCOMPLETE_CACHE = new LRUCache<string, string[]>({
+	max: 500,
+	ttl: Time.Second * 60,
+	ttlAutopurge: true,
+	ttlResolution: Time.Second
+});
+export const WIKI_AUTOCOMPLETE_INFLIGHT = new Map<string, Promise<string[]>>();
 
 export const userQueues: Map<string, PromiseQueue> = new Map();
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
