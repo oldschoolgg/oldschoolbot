@@ -54,7 +54,7 @@ type OSBMahojiCommand<T extends readonly CommandOption[] = CommandOption[]> = Re
 }>;
 
 export type CommandRunOptions<TOpts = {}> = {
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	options: TOpts;
 	user: MUser;
 	member: IMember | null;

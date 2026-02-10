@@ -1,6 +1,5 @@
 import { bold, dateFm, userMention } from '@oldschoolgg/discord';
 import { Emoji, formatOrdinal, notEmpty, stringMatches, Time, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
-import { md5sum } from '@oldschoolgg/toolkit/node';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
@@ -10,7 +9,7 @@ import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import { doMenuWrapper } from '@/lib/menuWrapper.js';
 import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { isValidNickname, md5sum } from '@/lib/util/smallUtils.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
 import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';

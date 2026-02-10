@@ -62,7 +62,7 @@ export const openCommand = defineCommand({
 			max_value: 1000
 		}
 	],
-	run: async ({ user, options, interaction }) => {
+	run: async ({ user, options, interaction, rng }) => {
 		if (interaction) await interaction.defer();
 
 		if (!options.name) {
@@ -73,6 +73,7 @@ export const openCommand = defineCommand({
 		}
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(
+				rng,
 				interaction,
 				user,
 				options.name,
@@ -81,8 +82,8 @@ export const openCommand = defineCommand({
 			);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user, ['all'], 'auto');
+			return abstractedOpenCommand(rng, interaction, user, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(interaction, user, [options.name], options.quantity);
+		return abstractedOpenCommand(rng, interaction, user, [options.name], options.quantity);
 	}
 });

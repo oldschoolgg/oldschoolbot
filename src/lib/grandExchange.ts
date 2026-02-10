@@ -593,7 +593,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					quantity_remaining: newBuyerListingQuantityRemaining,
 					fulfilled_at: newBuyerListingQuantityRemaining === 0 ? new Date() : null,
 					gp_refunded: buyerRefund
-				}
+				},
+				select: { id: true }
 			}),
 			prisma.gEListing.update({
 				where: {
@@ -602,7 +603,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				data: {
 					quantity_remaining: newSellerListingQuantityRemaining,
 					fulfilled_at: newSellerListingQuantityRemaining === 0 ? new Date() : null
-				}
+				},
+				select: { id: true }
 			}),
 			prisma.clientStorage.update({
 				where: {
