@@ -1,5 +1,7 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
 
+import { WIKI_AUTOCOMPLETE_CACHE, WIKI_AUTOCOMPLETE_INFLIGHT } from '@/lib/cache.js';
+
 type WikiPage = {
 	pageid: number;
 	ns: number;
@@ -16,12 +18,7 @@ type WikiResponse = {
 
 type WikiOpenSearchResponse = [string, string[], string[], string[]];
 
-const wikiAutoCache = new Map<string, { ts: number; titles: string[] }>();
-const wikiAutoInflight = new Map<string, Promise<string[]>>();
-
-const WIKI_AUTOCACHE_TTL = 60_000; // 60s
 const AUTOCOMPLETE_TIMEOUT_MS = 900; // keep under ~1s
-const MAX_WIKI_AUTOCACHE = 500;
 
 function toWikiUrl(title: string) {
 	return `https://oldschool.runescape.wiki/w/${encodeURIComponent(title.replace(/ /g, '_'))}`;
@@ -40,18 +37,6 @@ function buildEmbed(page: { title: string; url: string; extract?: string; thumbn
 	return embed;
 }
 
-function pruneWikiAutoCache() {
-	if (wikiAutoCache.size <= MAX_WIKI_AUTOCACHE) return;
-
-	const entries = [...wikiAutoCache.entries()].sort((a, b) => a[1].ts - b[1].ts);
-	const dropCount = Math.ceil(MAX_WIKI_AUTOCACHE * 0.2);
-
-	for (let i = 0; i < dropCount; i++) {
-		const k = entries[i]?.[0];
-		if (k) wikiAutoCache.delete(k);
-	}
-}
-
 export const wikiCommand = defineCommand({
 	name: 'wiki',
 	description: 'Search the official OSRS wiki.',
@@ -66,14 +51,12 @@ export const wikiCommand = defineCommand({
 				if (!q || q.length < 2) return [];
 
 				const key = q.toLowerCase();
-				const now = Date.now();
-
-				const cached = wikiAutoCache.get(key);
-				if (cached && now - cached.ts < WIKI_AUTOCACHE_TTL) {
-					return cached.titles.slice(0, 25).map((t: string) => ({ name: t, value: t }));
+				const cached = WIKI_AUTOCOMPLETE_CACHE.get(key);
+				if (cached) {
+					return cached.slice(0, 25).map((t: string) => ({ name: t, value: t }));
 				}
 
-				let p = wikiAutoInflight.get(key);
+				let p = WIKI_AUTOCOMPLETE_INFLIGHT.get(key);
 				if (!p) {
 					p = (async () => {
 						try {
@@ -100,18 +83,17 @@ export const wikiCommand = defineCommand({
 							const data = (await res.json()) as WikiOpenSearchResponse;
 							const titles: string[] = data?.[1] ?? [];
 
-							wikiAutoCache.set(key, { ts: Date.now(), titles });
-							pruneWikiAutoCache();
+							WIKI_AUTOCOMPLETE_CACHE.set(key, titles);
 
 							return titles;
 						} catch {
 							return [];
 						} finally {
-							wikiAutoInflight.delete(key);
+							WIKI_AUTOCOMPLETE_INFLIGHT.delete(key);
 						}
 					})();
 
-					wikiAutoInflight.set(key, p);
+					WIKI_AUTOCOMPLETE_INFLIGHT.set(key, p);
 				}
 
 				let titles: string[] = [];
@@ -121,7 +103,7 @@ export const wikiCommand = defineCommand({
 					titles = [];
 				}
 
-				const fallback = titles.length ? titles : (wikiAutoCache.get(key)?.titles ?? []);
+				const fallback = titles.length ? titles : (WIKI_AUTOCOMPLETE_CACHE.get(key) ?? []);
 				return fallback.slice(0, 25).map((t: string) => ({ name: t, value: t }));
 			}
 		}
