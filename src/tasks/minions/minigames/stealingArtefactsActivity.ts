@@ -1,4 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +6,7 @@ import type { StealingArtefactsActivityTaskOptions } from '@/lib/types/minions.j
 
 export const stealingArtefactsTask: MinionTask = {
 	type: 'StealingArtefacts',
-	async run(data: StealingArtefactsActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: StealingArtefactsActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelId, duration, stamina, teleportEligible, glassblow } = data;
 		const thievingLevel = user.skillsAsLevels.thieving;
 		const hasGraceful = user.hasGracefulEquipped();
@@ -25,7 +24,7 @@ export const stealingArtefactsTask: MinionTask = {
 
 		let coinsGained = 0;
 		for (let i = 0; i < deliveries; i++) {
-			coinsGained += randInt(500, 1000);
+			coinsGained += rng.randInt(500, 1000);
 		}
 
 		if (deliveries > 0) {

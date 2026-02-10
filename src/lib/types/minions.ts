@@ -3,6 +3,7 @@ import type { ItemBank } from 'oldschooljs';
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import type { NMZStrategy } from '@/lib/constants.js';
 import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import type { StealingArtefactsGlassblowData } from '@/lib/minions/data/stealingArtefacts.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
@@ -413,11 +414,7 @@ export interface StealingArtefactsActivityTaskOptions extends MinigameActivityTa
 	stamina: boolean;
 	teleportOptionEnabled: boolean;
 	teleportEligible: boolean;
-	glassblow?: {
-		product: import('@/lib/minions/data/stealingArtefacts.js').StealingArtefactsGlassblowingProductKey;
-		itemsMade: number;
-		moltenGlassUsed: number;
-	};
+	glassblow?: StealingArtefactsGlassblowData;
 }
 
 export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {

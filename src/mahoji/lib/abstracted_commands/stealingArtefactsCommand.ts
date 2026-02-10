@@ -4,8 +4,11 @@ import { Bank } from 'oldschooljs';
 import {
 	calculateGlassblowingPlan,
 	canUseStealingArtefactsTeleport,
+	getGlassblowingProduct,
 	getStealingArtefactsDeliveriesPerHour,
-	type StealingArtefactsGlassblowingProductKey
+	type StealingArtefactsGlassblowData,
+	type StealingArtefactsGlassblowingProductKey,
+	stealingArtefactsGlassblowingProducts
 } from '@/lib/minions/data/stealingArtefacts.js';
 import type { StealingArtefactsActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -37,6 +40,7 @@ export async function stealingArtefactsCommand(
 	const maxTripLength = await user.calcMaxTripLength('StealingArtefacts');
 	const hasGraceful = user.hasGracefulEquipped();
 	const stamina = options.stamina ?? false;
+
 	const deliveriesPerHour = getStealingArtefactsDeliveriesPerHour({
 		teleportEligible,
 		hasGraceful,
@@ -47,24 +51,28 @@ export async function stealingArtefactsCommand(
 	if (options.quantity) {
 		const requestedDeliveries = Math.max(1, options.quantity);
 		duration = (requestedDeliveries / deliveriesPerHour) * Time.Hour;
+		if (duration > maxTripLength) duration = maxTripLength;
 	}
 
-	if (duration > maxTripLength) {
-		duration = maxTripLength;
+	// Glassblowing
+	const glassblowProductInput = options.glassblow_product ?? 'none';
+	const glassblowProduct =
+		glassblowProductInput === 'none'
+			? null
+			: stealingArtefactsGlassblowingProducts.some(p => p.key === glassblowProductInput)
+				? (glassblowProductInput as StealingArtefactsGlassblowingProductKey)
+				: null;
+
+	if (glassblowProductInput !== 'none' && !glassblowProduct) {
+		return 'That is not a valid glassblowing product.';
 	}
 
-	const glassblowProduct = (options.glassblow_product ?? 'none') as 'none' | StealingArtefactsGlassblowingProductKey;
-	let glassblow:
-		| {
-				product: StealingArtefactsGlassblowingProductKey;
-				itemsMade: number;
-				moltenGlassUsed: number;
-		  }
-		| undefined;
+	let glassblow: StealingArtefactsGlassblowData | undefined;
 	let glassblowNote = '';
 
-	if (glassblowProduct !== 'none') {
+	if (glassblowProduct) {
 		const hours = duration / Time.Hour;
+
 		const plan = calculateGlassblowingPlan({
 			productKey: glassblowProduct,
 			hours,
@@ -76,15 +84,22 @@ export async function stealingArtefactsCommand(
 			return plan.error;
 		}
 
+		// Ensure trip matches the glassblowing-limited time window
 		duration = plan.hours * Time.Hour;
+
 		glassblow = {
 			product: glassblowProduct,
 			itemsMade: plan.itemsMade,
 			moltenGlassUsed: plan.moltenGlassUsed
 		};
 
+		// Consume glass up-front (consistent with most OSB “uses supplies” commands)
 		await user.removeItemsFromBank(new Bank().add('Molten glass', plan.moltenGlassUsed));
-		glassblowNote = ` You're also glassblowing ${plan.itemsMade}x ${glassblowProduct.replaceAll('_', ' ')}.`;
+
+		const product = getGlassblowingProduct(glassblowProduct);
+		const productName = product?.item.name ?? glassblowProduct.replaceAll('_', ' ');
+
+		glassblowNote = ` You're also glassblowing ${plan.itemsMade}x ${productName}.`;
 	}
 
 	const deliveries = Math.floor(deliveriesPerHour * (duration / Time.Hour));
@@ -108,7 +123,7 @@ export async function stealingArtefactsCommand(
 		teleportEligible ? 'Teleport efficiency active' : null
 	].filter(Boolean);
 
-	return `${user.minionName} is now stealing artefacts for ${formatDuration(duration)} (${deliveries} deliveries expected).${
-		glassblowNote ? glassblowNote : ''
-	}${boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}.` : ''}`;
+	return `${user.minionName} is now stealing artefacts for ${formatDuration(duration)} (${deliveries} deliveries expected).${glassblowNote}${
+		boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}.` : ''
+	}`;
 }

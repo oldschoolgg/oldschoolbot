@@ -130,8 +130,14 @@ export const stealingArtefactsGlassblowingProducts = [
 export type StealingArtefactsGlassblowingProductKey = (typeof stealingArtefactsGlassblowingProducts)[number]['key'];
 
 export function getGlassblowingProduct(productKey: StealingArtefactsGlassblowingProductKey) {
-	return stealingArtefactsGlassblowingProducts.find(product => product.key === productKey);
+	return stealingArtefactsGlassblowingProducts.find(product => product.key === productKey) ?? null;
 }
+
+export type StealingArtefactsGlassblowData = {
+	product: StealingArtefactsGlassblowingProductKey;
+	itemsMade: number;
+	moltenGlassUsed: number;
+};
 
 export function calculateGlassblowingPlan({
 	productKey,
