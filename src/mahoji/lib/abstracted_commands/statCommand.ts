@@ -901,6 +901,19 @@ GROUP BY "bankBackground";`);
 		}
 	},
 	{
+		name: 'Gambling PNL',
+		run: async (_, stats) => {
+			const gpDice = toKMB(Number(stats.gp_dice));
+			const gpLuckyPick = toKMB(Number(stats.gp_luckypick));
+			const gpSlots = toKMB(Number(stats.gp_slots));
+
+			return {
+				content: `**Dicing:** ${gpDice}\n**Lucky Pick:** ${gpLuckyPick}\n**Slots:** ${gpSlots}`
+			};
+		},
+		perkTierNeeded: PerkTier.Four
+	},
+	{
 		name: 'Prayer XP from Ash Sanctifier',
 		perkTierNeeded: PerkTier.Four,
 		run: async (_, stats) => {
