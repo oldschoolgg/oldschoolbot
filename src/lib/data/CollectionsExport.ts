@@ -26,7 +26,6 @@ export interface IToReturnCollection {
 	leftList?: ILeftListStatus;
 	userItems: Bank;
 	counts: boolean;
-	unobtainable: boolean;
 }
 
 export type CollectionStatus = 'not_started' | 'started' | 'completed';
@@ -60,7 +59,6 @@ interface ICollectionActivity {
 		counts?: false;
 		alias?: string[];
 		items: number[];
-		unobtainable?: true;
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
