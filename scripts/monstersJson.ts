@@ -8,9 +8,8 @@ import { Bank, Items } from 'oldschooljs';
 import { BOT_TYPE } from '@/lib/constants.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { md5sum } from '@/lib/util/smallUtils.js';
-import { tearDownScript } from './scriptUtil.js';
 
-function createMonstersJson() {
+export function createMonstersJson() {
 	const stopwatch = new Stopwatch();
 	const monstersJsonFile = [];
 
@@ -47,7 +46,6 @@ function createMonstersJson() {
 
 	const hash = md5sum(JSON.stringify(monstersJsonFile));
 	if (hash === previousHash) {
-		console.log('Monsters JSON file is up to date');
 		return;
 	}
 	writeFileSync(
@@ -64,6 +62,3 @@ function createMonstersJson() {
 	);
 	stopwatch.check('Finished monsters file.');
 }
-
-createMonstersJson();
-tearDownScript();

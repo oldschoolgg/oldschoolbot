@@ -9,7 +9,8 @@
 	},
 	"scripts": {
 		"build": "rimraf ./dist && tsc -p src --noEmit false",
-		"test": "concurrently \"tsc -p src\" \"vitest run\" \"tsc -p tests\""
+		"test:types": "concurrently \"tsc -p src\" \"tsc -p tests\"",
+		"test:unit": "vitest run"
 	},
 	"dependencies": {
 		"node-rng": "^0.0.3"

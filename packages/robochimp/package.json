@@ -8,7 +8,7 @@
 		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm tsx esbuild.mts && node --enable-source-maps ./dist/index.js\"",
 		"start": "pnpm build && node --enable-source-maps ./dist/index.js",
 		"dev": "tsx esbuild.mts && node --enable-source-maps ./dist/index.js",
-		"test": "tsc -p src && pnpm test:unit",
+		"test:types": "tsc -p src --noEmit",
 		"test:unit": "vitest run --config vitest.unit.config.mts",
 		"devsss": "pnpm fetch-schema && pnpm build && pnpm test",
 		"gen": "concurrently \"npx prisma generate --schema prisma/bso_schema.prisma\" \"npx prisma generate --schema prisma/osb_schema.prisma\" \"npx prisma generate --schema prisma/robochimp_schema.prisma\"",

@@ -9,10 +9,11 @@
 						"groups": [
 							["@bso/**", "@/lib/bso/**"],
 							":BLANK_LINE:",
-							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:", "!@scripts/**"],
 							":BLANK_LINE:",
 							["@/prisma/**"],
 							["@/discord/**"],
+							["@scripts/**"],
 							[":ALIAS:", ":PATH:"]
 						]
 					}
