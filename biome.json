@@ -92,7 +92,8 @@
 				"noBannedTypes": "off",
 				"noForEach": "warn",
 				"noStaticOnlyClass": "off",
-				"noUselessContinue": "warn"
+				"noUselessContinue": "warn",
+				"noImportantStyles": "off"
 			},
 			"performance": {
 				"noAccumulatingSpread": "warn"
