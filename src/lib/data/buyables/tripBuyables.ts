@@ -15,6 +15,30 @@ export const tripBuyables: TripBuyable[] = [
 	{ item: EItem.BUCKET_OF_SAND, gpCost: 5, quantityPerHour: 3_250, shopQuantity: 10, changePer: 2 },
 	{ item: EItem.SODA_ASH, gpCost: 5, quantityPerHour: 3_250, shopQuantity: 10, changePer: 2 },
 	{ item: EItem.ARROW_SHAFT, gpCost: 1, quantityPerHour: 400_000, shopQuantity: 1000, changePer: 1 },
+	{
+		item: EItem.MITHRIL_AXE,
+		gpCost: 1_664,
+		quantityPerHour: 200,
+		shopQuantity: 1,
+		changePer: 1,
+		skillsNeeded: { woodcutting: 60 }
+	},
+	{
+		item: EItem.ADAMANT_AXE,
+		gpCost: 4_096,
+		quantityPerHour: 200,
+		shopQuantity: 1,
+		changePer: 1,
+		skillsNeeded: { woodcutting: 60 }
+	},
+	{
+		item: EItem.RUNE_AXE,
+		gpCost: 40_960,
+		quantityPerHour: 200,
+		shopQuantity: 1,
+		changePer: 1,
+		skillsNeeded: { woodcutting: 60 }
+	},
 	{ item: EItem.COPPER_ORE, gpCost: 4, quantityPerHour: 11_000 },
 	{ item: EItem.TIN_ORE, gpCost: 4, quantityPerHour: 11_000 },
 	{ item: EItem.IRON_ORE, gpCost: 25, quantityPerHour: 11_000 },
