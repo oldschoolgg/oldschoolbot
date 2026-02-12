@@ -1,8 +1,9 @@
+import { calcPercentOfNum } from '@oldschoolgg/util';
+
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { calcPercentOfNum } from '@/util/smallUtils.js';
 
 interface TeamMember {
 	id: string;

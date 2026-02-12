@@ -1,5 +1,4 @@
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
@@ -11,7 +10,6 @@ import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
-import type { SafeUserUpdateInput } from '@/lib/MUser.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
 import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
@@ -30,6 +28,7 @@ import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { isValidBitField } from '@/lib/util/smallUtils.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
@@ -627,7 +626,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					]
 				}
 			],
-			run: async ({ options, user, interaction }) => {
+			run: async ({ options, user, interaction, rng }) => {
 				if (globalConfig.isProduction) {
 					Logging.logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
@@ -671,28 +670,28 @@ export const testPotatoCommand = globalConfig.isProduction
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 1`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 2`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 3`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 4`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							})
 						]
@@ -931,29 +930,35 @@ export const testPotatoCommand = globalConfig.isProduction
 							.add(potionsPreset)
 							.add(usables)
 					});
-					await user.update({
-						GP: 5_000_000_000,
-						slayer_points: 100_000,
-						tentacle_charges: 10_000,
-						sang_charges: 10_000,
-						trident_charges: 10_000,
-						serp_helm_charges: 10_000,
-						blood_fury_charges: 10_000,
-						tum_shadow_charges: 10_000,
-						blood_essence_charges: 10_000,
-						ash_sanctifier_charges: 10_000,
-						celestial_ring_charges: 10_000,
-						scythe_of_vitur_charges: 10_000,
-						venator_bow_charges: 10_000,
-						gear_mage: TOBMaxMageGear.raw(),
-						gear_melee: TOBMaxMeleeGear.raw(),
-						gear_range: TOBMaxRangeGear.raw(),
-						blowpipe: {
-							scales: 100_000,
-							dartQuantity: 100_000,
-							dartID: itemID('Dragon dart')
-						},
-						finished_quest_ids: quests.map(q => q.id)
+
+					await user.updateGear([
+						{ setup: 'melee', gear: TOBMaxMeleeGear.raw() },
+						{ setup: 'range', gear: TOBMaxRangeGear.raw() },
+						{ setup: 'mage', gear: TOBMaxMageGear.raw() }
+					]);
+
+					await user.rawUpdate({
+						data: {
+							GP: 5000000000,
+							slayer_points: 100000,
+							tentacle_charges: 10000,
+							sang_charges: 10000,
+							trident_charges: 10000,
+							serp_helm_charges: 10000,
+							blood_fury_charges: 10000,
+							tum_shadow_charges: 10000,
+							blood_essence_charges: 10000,
+							ash_sanctifier_charges: 10000,
+							celestial_ring_charges: 10000,
+							scythe_of_vitur_charges: 10000,
+							venator_bow_charges: 10000,
+							blowpipe: {
+								scales: 100000,
+								dartQuantity: 100000,
+								dartID: itemID('Dragon dart')
+							},
+							finished_quest_ids: quests.map(q => q.id)
+						}
 					});
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
@@ -963,16 +968,17 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					for (const type of ['melee', 'range', 'mage'] as const) {
 						const currentGear = gear[type];
-						if (currentGear.ammo && Items.getItem(currentGear.ammo.item)?.stackable) {
-							currentGear.ammo.quantity = 10000;
+						const ammo = currentGear.get('ammo');
+						if (ammo && Items.getItem(ammo.item)?.stackable) {
+							currentGear.set('ammo', { ...ammo, quantity: 10_000 });
 						}
 					}
 
-					await user.update({
-						gear_melee: gear.melee.raw(),
-						gear_range: gear.range.raw(),
-						gear_mage: gear.mage.raw()
-					});
+					await user.updateGear([
+						{ setup: 'melee', gear: gear.melee.raw() },
+						{ setup: 'range', gear: gear.range.raw() },
+						{ setup: 'mage', gear: gear.mage.raw() }
+					]);
 
 					return gearViewCommand(user, 'all', false);
 				}

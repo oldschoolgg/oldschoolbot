@@ -24,9 +24,8 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/oldschooljs/package.json ./packages/oldschooljs/package.json
 COPY packages/toolkit/package.json ./packages/toolkit/package.json
 COPY packages/util/package.json ./packages/util/package.json
-COPY packages/spritesheet/package.json ./packages/spritesheet/package.json
 COPY packages/cli/package.json ./packages/cli/package.json
-COPY packages/rng/package.json ./packages/rng/package.json
+COPY packages/gear/package.json ./packages/gear/package.json
 COPY packages/schemas/package.json ./packages/schemas/package.json
 COPY packages/robochimp/package.json ./packages/robochimp/package.json
 COPY docs/package.json ./docs/package.json

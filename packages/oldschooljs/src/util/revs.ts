@@ -1,4 +1,4 @@
-import { randInt, roll } from '@oldschoolgg/rng';
+import { randInt, roll } from 'node-rng';
 
 import type { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';

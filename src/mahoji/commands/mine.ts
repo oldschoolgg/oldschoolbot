@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID } from 'oldschooljs';
 
@@ -20,7 +19,8 @@ export function determineMiningTrip({
 	isPowermining,
 	quantityInput,
 	hasKaramjaMedium,
-	randomVariationEnabled = true
+	randomVariationEnabled = true,
+	rng
 }: {
 	gearBank: GearBank;
 	ore: Ore;
@@ -29,6 +29,7 @@ export function determineMiningTrip({
 	quantityInput: number | undefined;
 	hasKaramjaMedium: boolean;
 	randomVariationEnabled?: boolean;
+	rng: RNGProvider;
 }) {
 	const boosts = [];
 	// Invisible mining level, dosen't help equip pickaxe etc
@@ -116,15 +117,18 @@ export function determineMiningTrip({
 		goldSilverBoost,
 		miningLvl: miningLevel,
 		maxTripLength,
-		hasKaramjaMedium
+		hasKaramjaMedium,
+		rng
 	});
 
 	const duration = timeToMine;
 
 	const fakeDurationMin =
-		quantityInput && randomVariationEnabled ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+		quantityInput && randomVariationEnabled ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 	const fakeDurationMax =
-		quantityInput && randomVariationEnabled ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+		quantityInput && randomVariationEnabled
+			? rng.randomVariation(increaseNumByPercent(duration, 25), 20)
+			: duration;
 
 	if (ore.name === 'Gem rock' && gearBank.hasEquipped('Amulet of glory')) {
 		boosts.push('3x success rate for having an Amulet of glory equipped');
@@ -182,7 +186,7 @@ export const mineCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		const { quantity, powermine } = options;
 
 		const motherlodeMine =
@@ -190,7 +194,7 @@ export const mineCommand = defineCommand({
 			Mining.MotherlodeMine.aliases?.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
-			return motherlodeMineCommand({ user, channelId, quantity });
+			return motherlodeMineCommand({ user, channelId, quantity, rng });
 		}
 		const ore = Mining.Ores.find(
 			ore =>
@@ -233,7 +237,8 @@ export const mineCommand = defineCommand({
 			maxTripLength: await user.calcMaxTripLength('Mining'),
 			isPowermining: !!powermine,
 			quantityInput: quantity,
-			hasKaramjaMedium
+			hasKaramjaMedium,
+			rng
 		});
 
 		await ActivityManager.startTrip<MiningActivityTaskOptions>({

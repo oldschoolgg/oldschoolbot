@@ -1,4 +1,4 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
+import { cryptoRng } from 'node-rng/crypto';
 
 import type { NewUser } from '@/prisma/main.js';
 
@@ -31,7 +31,7 @@ export interface RunCommandArgs {
 	args: CommandOptions;
 	user: MUser;
 	isContinue?: boolean;
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	continueDeltaMillis: number | null;
 	ignoreUserIsBusy?: true;
 }

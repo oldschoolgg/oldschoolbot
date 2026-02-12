@@ -1,5 +1,6 @@
-import { MathRNG, randArrItem, randInt, shuffleArr } from '@oldschoolgg/rng';
+import { defaultGearSetup, GearSetupTypes } from '@oldschoolgg/gear';
 import { sumArr, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, randArrItem, randInt } from 'node-rng';
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 import { beforeAll, expect, test } from 'vitest';
@@ -32,10 +33,10 @@ import {
 	type XPGain
 } from '@/prisma/main.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import { defaultGear, Gear } from '@/lib/structures/Gear.js';
+import { Gear } from '@/lib/structures/Gear.js';
 import { isGroupActivity } from '@/lib/util/activityTypeCheck.js';
 import { BitField } from '../../src/lib/constants.js';
-import { type GearSetupType, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
+import type { UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { trackLoot } from '../../src/lib/lootTrack.js';
 import type { MinigameName } from '../../src/lib/settings/minigames.js';
 import { SkillsArray } from '../../src/lib/skilling/types.js';
@@ -55,6 +56,7 @@ import {
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity.js';
+import { mockInteraction } from '../test-utils/mockInteraction.js';
 import type { TestUser } from './util.js';
 import { createTestUser, mockClient, mockedId } from './util.js';
 
@@ -123,7 +125,7 @@ class UserData {
 
 		this.gear = {} as UserFullGearSetup;
 		for (const setupType of GearSetupTypes) {
-			this.gear[setupType] = new Gear(this.mUser.gear[setupType].raw() ?? { ...defaultGear }).clone();
+			this.gear[setupType] = new Gear(this.mUser.gear[setupType].raw() ?? { ...defaultGearSetup }).clone();
 		}
 		this.skillsAsLevels = clone(this.mUser.skillsAsLevels);
 
@@ -282,7 +284,7 @@ class UserData {
 		if (!this.clbank!.equals(target.clbank!)) {
 			errors.push(`CL's don't match. Difference: ${this.clbank!.remove(target.clbank!)}`);
 		}
-		for (const gearSetup of Object.keys(this.gear!) as GearSetupType[]) {
+		for (const gearSetup of GearSetupTypes) {
 			if (!this.gear![gearSetup].equals(target.gear![gearSetup])) {
 				errors.push(`${gearSetup} gear doesn't match`);
 			}
@@ -625,7 +627,7 @@ const allTableCommands: TestCommand[] = [
 				'Firemaking'
 			];
 			for (let x = 0; x < 3; x++) {
-				const activity = randArrItem(randomActivities);
+				const activity = randArrItem(randomActivities)!;
 				const baseDate = new Date();
 				const start_date = new Date(baseDate.getTime() - randInt(30, 100) * Time.Hour);
 				const duration = Time.Hour - randInt(10, 30) * Time.Minute;
@@ -648,7 +650,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Group Activity',
 		cmd: async user => {
-			const users = shuffleArr([user.id, mockedId(), mockedId()]);
+			const users = MathRNG.shuffle([user.id, mockedId(), mockedId()]);
 			const data = {
 				leader: user.id,
 				users,
@@ -684,7 +686,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Set POH Wallkit',
 		cmd: async user => {
-			await pohWallkitCommand(user, 'Hosidius');
+			await pohWallkitCommand(mockInteraction({ user }), 'Hosidius');
 		}
 	},
 	{
@@ -735,7 +737,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			await user.updateGear([{ setup, gear: equippedGear as any }]);
 		}
 	},
 	{
@@ -746,7 +748,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 			if (!equippedGear) throw new Error('Equipped gear is undefined');
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			await user.updateGear([{ setup, gear: equippedGear }]);
 		}
 	},
 	{
@@ -790,7 +792,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Slayer task',
 		cmd: async user => {
-			await assignNewSlayerTask(user, slayerMasters.find(sm => sm.name === 'Turael')!);
+			await assignNewSlayerTask(mockInteraction({ user }), slayerMasters.find(sm => sm.name === 'Turael')!);
 		}
 	},
 	{
@@ -821,7 +823,7 @@ const allTableCommands: TestCommand[] = [
 				'gauntlet'
 			];
 			const quantity = randInt(10, 20);
-			await user.incrementMinigameScore(randArrItem(minigames), quantity);
+			await user.incrementMinigameScore(randArrItem(minigames)!, quantity);
 		}
 	},
 	{
@@ -944,7 +946,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'GE Listings',
 		cmd: async user => {
-			const item = randArrItem(resolveItems(['Cannonball', 'Feather', 'Fire rune', 'Guam leaf'])).toString();
+			const item = randArrItem(resolveItems(['Cannonball', 'Feather', 'Fire rune', 'Guam leaf']))!.toString();
 			const price = randInt(1, 100);
 			const quantity = randInt(1, 100);
 			await user.runCommand(geCommand, { buy: { item, quantity, price } });
@@ -980,7 +982,7 @@ const allTableCommands: TestCommand[] = [
 		cmd: async user => {
 			const activeBingos = await global.prisma!.bingo.findMany({ select: { id: true } });
 			if (activeBingos.length === 0) return;
-			const myBingo = randArrItem(activeBingos).id;
+			const myBingo = randArrItem(activeBingos)!.id;
 			// Check if we're in this bingo already:
 			const existingTeam = await global.prisma!.bingoParticipant.findFirst({
 				where: { user_id: user.id, bingo_id: myBingo }
@@ -1050,7 +1052,7 @@ const allTableCommands: TestCommand[] = [
 					user_id: BigInt(user.id),
 					channel_id: 1_111_111_111n,
 					args: {},
-					command_name: randArrItem(randCommands),
+					command_name: randArrItem(randCommands)!,
 					guild_id: null,
 					inhibited: false
 				}
@@ -1110,7 +1112,7 @@ async function runRandomTestCommandsOnUser(user: TestUser, numCommands = 6, forc
 		await runTestCommand(user, command);
 	}
 	for (let i = 0; i < numCommands; i++) {
-		const command = randArrItem(otherCommands);
+		const command = randArrItem(otherCommands)!;
 		commandHistory.push(`${new Date().toISOString()}:${command.name}`);
 		await runTestCommand(user, command);
 	}
@@ -1313,7 +1315,7 @@ test('test migrating full user on top of full profile', async () => {
 	newData.skillsAsLevels!.cooking = 1_000_000;
 	newData.bingos = [];
 	newData.botItemSell = [];
-	if (newData.gear?.melee) newData.gear.melee.weapon = null;
+	if (newData.gear?.melee) newData.gear.melee.set('weapon', null);
 
 	const badResult = sourceData.equals(newData);
 	expect(badResult.result).toBe(false);

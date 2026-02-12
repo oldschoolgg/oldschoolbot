@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -10,8 +9,10 @@ import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js
 export async function motherlodeMineCommand({
 	user,
 	channelId,
-	quantity
+	quantity,
+	rng
 }: {
+	rng: RNGProvider;
 	user: MUser;
 	channelId: string;
 	quantity?: number;
@@ -73,11 +74,12 @@ export async function motherlodeMineCommand({
 		goldSilverBoost,
 		miningLvl: miningLevel,
 		maxTripLength: await user.calcMaxTripLength('MotherlodeMining'),
-		hasKaramjaMedium: false
+		hasKaramjaMedium: false,
+		rng
 	});
 
-	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMin = quantity ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMax = quantity ? rng.randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 	await ActivityManager.startTrip<MotherlodeMiningActivityTaskOptions>({
 		userID: user.id,

@@ -1,5 +1,5 @@
 import { bold } from '@oldschoolgg/discord';
-import { percentChance, randArrItem, randInt, randomVariation, roll } from '@oldschoolgg/rng';
+import type { GearStats } from '@oldschoolgg/gear';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -17,7 +17,6 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
-import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
 
 import { type Minigame, XpGainSource } from '@/prisma/main.js';
@@ -27,7 +26,7 @@ import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getToaKCs, mileStoneBaseDeathChances, type RaidLevel } from '@/lib/simulation/toaUtils.js';
-import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import { constructGearSetup } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
@@ -107,7 +106,6 @@ const maxMageGear = constructGearSetup({
 	'2h': "Tumeken's shadow",
 	ring: 'Lightbearer'
 });
-const maxMage = new Gear(maxMageGear);
 
 const maxRangeGear = constructGearSetup({
 	head: 'Masori mask (f)',
@@ -121,9 +119,6 @@ const maxRangeGear = constructGearSetup({
 	ring: 'Lightbearer',
 	ammo: 'Dragon arrow'
 });
-
-const maxRange = new Gear(maxRangeGear);
-maxRange.ammo!.quantity = 100_000;
 
 const maxMeleeLessThan300Gear = constructGearSetup({
 	head: 'Torva full helm',
@@ -249,7 +244,7 @@ const toaRequirements: {
 				)}`;
 			}
 
-			const rangeAmmo = user.gear.range.ammo;
+			const rangeAmmo = user.gear.range.get('ammo');
 			const rangeWeapon = user.gear.range.equippedWeapon();
 			const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
 			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
@@ -485,7 +480,7 @@ const untradeables = [
 	}
 ];
 
-function untradeableRoll(kc: number, cl: Bank) {
+function untradeableRoll(rng: RNGProvider, kc: number, cl: Bank) {
 	const loot = new Bank();
 	for (const { item, dropRate } of untradeables) {
 		let rolls = 1;
@@ -493,7 +488,7 @@ function untradeableRoll(kc: number, cl: Bank) {
 			rolls = Math.min(3, Math.floor(kc / 5));
 		}
 		for (let i = 0; i < rolls; i++) {
-			if (roll(dropRate)) {
+			if (rng.roll(dropRate)) {
 				loot.add(item.id);
 				break;
 			}
@@ -511,11 +506,11 @@ const TOAUniqueTable = new LootTable()
 	.add('Masori chaps', 1, 2)
 	.add("Tumeken's shadow (uncharged)", 1, 1);
 
-function uniqueLootRoll(kc: number, cl: Bank, raidLevel: RaidLevel) {
+function uniqueLootRoll(rng: RNGProvider, kc: number, cl: Bank, raidLevel: RaidLevel) {
 	const [item] = TOAUniqueTable.roll().items()[0];
 
-	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !roll(50)) {
-		return untradeableRoll(kc, cl);
+	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !rng.roll(50)) {
+		return untradeableRoll(rng, kc, cl);
 	}
 
 	if (
@@ -527,15 +522,15 @@ function uniqueLootRoll(kc: number, cl: Bank, raidLevel: RaidLevel) {
 			"Tumeken's shadow (uncharged)"
 		]).includes(item.id) &&
 		raidLevel < 150 &&
-		!roll(50)
+		!rng.roll(50)
 	) {
-		return untradeableRoll(kc, cl);
+		return untradeableRoll(rng, kc, cl);
 	}
 
 	return new Bank().add(item.id);
 }
 
-export const nonUniqueTable = [
+export const nonUniqueTable: [string, number | null][] = [
 	['Coins', 1],
 	['Death rune', 20],
 	['Soul rune', 40],
@@ -563,15 +558,15 @@ export const nonUniqueTable = [
 	['Magic seed', 6500],
 	['Blood essence', 7500],
 	['Cache of runes', null]
-] as const;
+];
 
-function nonUniqueLoot({ points }: { points: number }) {
+function nonUniqueLoot({ points, rng }: { points: number; rng: RNGProvider }) {
 	assert(typeof points === 'number', `Points must be a number, received ${typeof points} ${points}.`);
 	assert(points >= 1 && points <= 64_000, `Points (${points.toLocaleString()}) must be between 1-64,000`);
 	const loot = new Bank();
 
 	for (let i = 0; i < 3; i++) {
-		const [item, divisor] = randArrItem(nonUniqueTable);
+		const [item, divisor] = rng.pick(nonUniqueTable);
 		loot.add(Items.getOrThrow(item).id, divisor === null ? 1 : Math.ceil(points / divisor));
 	}
 
@@ -600,7 +595,15 @@ export const toaPetTransmogItems = resolveItems([
 	'Remnant of akkha'
 ]);
 
-export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLevel: RaidLevel }) {
+export function calcTOALoot({
+	users,
+	raidLevel,
+	rng
+}: {
+	users: TOALootUser[];
+	raidLevel: RaidLevel;
+	rng: RNGProvider;
+}) {
 	const uniqueDeciderTable = new SimpleTable();
 	for (const user of users) uniqueDeciderTable.add(user.id, user.points);
 	const loot = new TeamLoot();
@@ -613,7 +616,7 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 
 	const pointsForOnePercentUniqueChance = 10_500 - 20 * (x + y / 3);
 	const chanceOfUnique = Math.min(totalTeamPoints / pointsForOnePercentUniqueChance, 55);
-	const didGetUnique = percentChance(chanceOfUnique);
+	const didGetUnique = rng.percentChance(chanceOfUnique);
 	const uniqueRecipient = didGetUnique ? uniqueDeciderTable.roll() : null;
 
 	const messages: string[] = [
@@ -628,21 +631,21 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 			continue;
 		}
 		if (uniqueRecipient && user.id === uniqueRecipient) {
-			loot.add(user.id, uniqueLootRoll(user.kc, user.cl, raidLevel));
+			loot.add(user.id, uniqueLootRoll(rng, user.kc, user.cl, raidLevel));
 		} else {
-			loot.add(user.id, nonUniqueLoot({ points: user.points }));
+			loot.add(user.id, nonUniqueLoot({ rng, points: user.points }));
 		}
-		loot.add(user.id, untradeableRoll(user.kc, user.cl));
+		loot.add(user.id, untradeableRoll(rng, user.kc, user.cl));
 
 		const pointsForOnePercentPetChance = 350_000 - 700 * (x + y / 3);
 		const chanceOfPet = Math.min(user.points / pointsForOnePercentPetChance, 55);
-		const didGetPet = percentChance(chanceOfPet);
+		const didGetPet = rng.percentChance(chanceOfPet);
 		if (didGetPet) {
 			loot.add(user.id, "Tumeken's guardian");
 		}
 
 		const eliteClueChance = (user.points / 200_000 / users.length) * 100;
-		if (percentChance(eliteClueChance)) {
+		if (rng.percentChance(eliteClueChance)) {
 			loot.add(user.id, 'Clue scroll (elite)');
 		}
 	}
@@ -654,8 +657,8 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 			specialItemsReceived.push(kit[0].id);
 			break;
 		}
-		if (raidLevel >= 450 && roll(3)) {
-			specialItemsReceived.push(randArrItem(toaPetTransmogItems));
+		if (raidLevel >= 450 && rng.roll(3)) {
+			specialItemsReceived.push(rng.pick(toaPetTransmogItems));
 		}
 		if (specialItemsReceived.length > 0) {
 			for (const user of users) {
@@ -710,7 +713,7 @@ const TOARooms = [
 	}
 ] as const;
 
-function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxKC: number) {
+function calcDeathChance(rng: RNGProvider, totalAttempts: number, raidLevel: RaidLevel, tobAndCoxKC: number) {
 	const obj = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!;
 
 	let deathChance: number = obj.chance;
@@ -772,7 +775,7 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 	}
 	deathChance = clamp(deathChance, { min: 5, max: 99 });
 
-	deathChance = Math.round(randomVariation(deathChance, 0.5));
+	deathChance = Math.round(rng.randomVariation(deathChance, 0.5));
 
 	return deathChance;
 }
@@ -782,13 +785,15 @@ function calculateTotalEffectiveness({
 	totalKC,
 	gearStats,
 	skillsAsLevels,
-	randomNess
+	randomNess,
+	rng
 }: {
 	totalKC: number;
 	totalAttempts: number;
 	gearStats: GearSetupPercents;
 	skillsAsLevels: Skills;
 	randomNess: boolean;
+	rng: RNGProvider;
 }) {
 	const percents = [];
 
@@ -802,7 +807,7 @@ function calculateTotalEffectiveness({
 	percents.push(gearStats.total);
 
 	if (randomNess) {
-		percents.push(randInt(50, 100));
+		percents.push(rng.randInt(50, 100));
 	}
 
 	return exponentialPercentScale(sumArr(percents) / percents.length);
@@ -826,10 +831,11 @@ function calculatePointsAndDeaths(
 	totalAttempts: number,
 	raidLevel: RaidLevel,
 	coxAndTobKC: number,
-	teamSize: number
+	teamSize: number,
+	rng: RNGProvider
 ) {
 	const deaths: number[] = [];
-	const deathChance = calcDeathChance(totalAttempts, raidLevel, coxAndTobKC);
+	const deathChance = calcDeathChance(rng, totalAttempts, raidLevel, coxAndTobKC);
 	const harshEffectivenessScale = exponentialPercentScale(effectiveness, 0.05);
 
 	let points = estimatePoints(raidLevel, teamSize) / teamSize;
@@ -837,7 +843,7 @@ function calculatePointsAndDeaths(
 	for (const room of TOARooms) {
 		let roomDeathChance = deathChance / TOARooms.length;
 		roomDeathChance += calculateAdditionalDeathChance(raidLevel, totalAttempts);
-		if (percentChance(roomDeathChance) || (totalAttempts < 30 && raidLevel >= 500)) {
+		if (rng.percentChance(roomDeathChance) || (totalAttempts < 30 && raidLevel >= 500)) {
 			deaths.push(room.id);
 			points = reduceNumByPercent(points, 20);
 		}
@@ -902,14 +908,14 @@ function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): 
 		true
 	);
 	const range = calcSetupPercent(
-		maxRange.stats,
+		maxRangeGear.stats,
 		gear.range.stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
-		maxMage.stats,
+		maxMageGear.stats,
 		gear.mage.stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
@@ -970,7 +976,7 @@ async function calcTOAInput({
 		throw new Error(`${user.logName} had no range weapon for TOA`);
 	}
 	if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
-		cost.add(user.gear.range.ammo?.item, BOW_ARROWS_NEEDED * quantity);
+		cost.add(user.gear.range.get('ammo')?.item, BOW_ARROWS_NEEDED * quantity);
 	}
 	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {
 		cost.remove('Saradomin brew(4)', quantity);
@@ -1075,14 +1081,14 @@ async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number)
 }
 
 export async function toaStartCommand(
-	interaction: MInteraction,
-	user: MUser,
+	interaction: OSInteraction,
 	solo: boolean,
 	channelId: string,
 	_raidLevel: number,
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
+	const { user, rng } = interaction;
 	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
@@ -1151,7 +1157,8 @@ export async function toaStartCommand(
 	const baseDuration = createTOATeam({
 		team: toaSimUsers,
 		raidLevel,
-		quantity: 1
+		quantity: 1,
+		rng
 	})[0].duration;
 	const maxTripLength = Math.max(...(await Promise.all(users.map(i => i.calcMaxTripLength('TombsOfAmascut')))));
 	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
@@ -1160,7 +1167,8 @@ export async function toaStartCommand(
 	const toaSimResults = createTOATeam({
 		team: toaSimUsers,
 		raidLevel,
-		quantity
+		quantity,
+		rng
 	});
 	const { reductions, totalReduction, messages } = toaSimResults[0];
 
@@ -1320,12 +1328,14 @@ function createTOATeam({
 	team,
 	disableVariation,
 	raidLevel,
-	quantity
+	quantity,
+	rng
 }: {
 	raidLevel: RaidLevel;
 	team: { user: MUser; toaAttempts: number; minigameScores: Minigame }[];
 	disableVariation?: true;
 	quantity: number;
+	rng: RNGProvider;
 }) {
 	const arr = [];
 	const messages: string[] = [];
@@ -1339,7 +1349,8 @@ function createTOATeam({
 			totalKC,
 			skillsAsLevels: user.skillsAsLevels,
 			gearStats,
-			randomNess: true
+			randomNess: true,
+			rng
 		});
 
 		arr.push({
@@ -1357,7 +1368,8 @@ function createTOATeam({
 					totalAttempts,
 					raidLevel,
 					minigameScores.raids + minigameScores.tob,
-					team.length
+					team.length,
+					rng
 				)
 		});
 	}
@@ -1466,7 +1478,7 @@ function createTOATeam({
 		duration += (5 - team.length) * (Time.Minute * 1.3);
 	}
 
-	duration = Math.floor(randomVariation(duration, 1));
+	duration = Math.floor(rng.randomVariation(duration, 1));
 
 	for (let i = 0; i < quantity; i++) {
 		const usersWithPointsAndDeaths = parsedTeam.map(i => ({ ...i, ...i.calcPointsAndDeaths() }));
@@ -1486,7 +1498,7 @@ function createTOATeam({
 				wipedRoom = room.id;
 				deathDuration += Math.floor(
 					calcPercentOfNum(
-						disableVariation ? room.timeWeighting / 2 : randInt(1, room.timeWeighting),
+						disableVariation ? room.timeWeighting / 2 : rng.randInt(1, room.timeWeighting),
 						duration
 					)
 				);

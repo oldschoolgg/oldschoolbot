@@ -1,4 +1,4 @@
-import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
+import { MathRNG, type RNGProvider } from 'node-rng';
 
 import { type MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
 import {
