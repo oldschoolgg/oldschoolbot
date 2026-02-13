@@ -1,4 +1,3 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -11,7 +10,7 @@ import * as addSubTaskModule from '../../src/lib/util/addSubTaskToActivityTask.j
 import * as handleTripFinishModule from '../../src/lib/util/handleTripFinish.js';
 import { farmingTask } from '../../src/tasks/minions/farmingActivity.js';
 import * as farmingStepModule from '../../src/tasks/minions/farmingStep.js';
-import { createTestUser, mockClient, TEST_CHANNEL_ID } from './util.js';
+import { createTestUser, mockClient } from './util.js';
 
 describe('farming task auto farm sequencing', () => {
 	beforeEach(async () => {
@@ -125,7 +124,6 @@ describe('farming task auto farm sequencing', () => {
 		const taskData: FarmingActivityTaskOptions = {
 			type: 'Farming',
 			userID: user.id,
-			channelId: TEST_CHANNEL_ID,
 			id: 123,
 			finishDate: Date.now(),
 			plantsName: plan[0].plantsName,

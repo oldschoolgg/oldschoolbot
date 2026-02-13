@@ -3,8 +3,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import './setup.js';
 
-import * as rng from '@oldschoolgg/rng';
-
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { calcNumOfPatches, calcVariableYield } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
 import type { Plant } from '@/lib/skilling/types.js';

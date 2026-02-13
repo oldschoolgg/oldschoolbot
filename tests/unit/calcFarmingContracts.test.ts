@@ -3,8 +3,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import './setup.js';
 
-import * as rng from '@oldschoolgg/rng';
-
 import { getPlantToGrow, openSeedPack } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import { mockMUser } from './userutil.js';
 
