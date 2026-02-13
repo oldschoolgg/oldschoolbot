@@ -124,6 +124,7 @@ describe('farming task auto farm sequencing', () => {
 		const taskData: FarmingActivityTaskOptions = {
 			type: 'Farming',
 			userID: user.id,
+			channelId: 'test-channel-id',
 			id: 123,
 			finishDate: Date.now(),
 			plantsName: plan[0].plantsName,
@@ -155,7 +156,8 @@ describe('farming task auto farm sequencing', () => {
 				rand: () => 0,
 				shuffle: <T>(array: T[]) => array,
 				pick: <T>(array: T[]) => array[0],
-				percentChance: () => false
+				percentChance: () => false,
+				randomVariation: (value: number) => value
 			}
 		};
 
@@ -171,6 +173,7 @@ describe('farming task auto farm sequencing', () => {
 			id: 456,
 			finishDate: Date.now(),
 			userID: user.id,
+			channelId: 'test-channel-id',
 			type: 'Farming'
 		};
 		await farmingTask.run(followUpTask, runOptions);

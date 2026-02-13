@@ -244,6 +244,11 @@ describe('auto farm helpers', () => {
 
 		expect(fetchRepeatTrips).toHaveBeenCalledTimes(1);
 		expect(repeatTrip).toHaveBeenCalledTimes(1);
+		expect(repeatTrip).toHaveBeenCalledWith(
+			user,
+			baseInteraction,
+			expect.objectContaining({ type: activity_type_enum.ClueCompletion })
+		);
 		expect(response).toBe(
 			"There's no Farming crops that you have planted that are ready to be replanted or no seeds remaining.\n\nResuming previous trip"
 		);
@@ -297,7 +302,7 @@ describe('auto farm helpers', () => {
 		mutableUser.minion_defaultCompostToUse = CropUpgradeType.compost;
 
 		const transactResult = {
-			newUser: user.user,
+			newUser: user,
 			itemsAdded: new Bank(),
 			itemsRemoved: new Bank(),
 			newBank: user.bank.clone(),
@@ -354,7 +359,7 @@ describe('auto farm helpers', () => {
 		mutableUser.minion_defaultCompostToUse = CropUpgradeType.supercompost;
 
 		const transactResult = {
-			newUser: user.user,
+			newUser: user,
 			itemsAdded: new Bank(),
 			itemsRemoved: new Bank(),
 			newBank: user.bank.clone(),
@@ -438,7 +443,7 @@ describe('auto farm helpers', () => {
 		};
 
 		const transactResult = {
-			newUser: user.user,
+			newUser: user,
 			itemsAdded: new Bank(),
 			itemsRemoved: new Bank(),
 			newBank: user.bank.clone(),
@@ -478,7 +483,7 @@ describe('auto farm helpers', () => {
 		};
 
 		const transactResult = {
-			newUser: user.user,
+			newUser: user,
 			itemsAdded: new Bank(),
 			itemsRemoved: new Bank(),
 			newBank: user.bank.clone(),
@@ -528,7 +533,7 @@ describe('auto farm helpers', () => {
 		};
 
 		const transactResult = {
-			newUser: user.user,
+			newUser: user,
 			itemsAdded: new Bank(),
 			itemsRemoved: new Bank(),
 			newBank: user.bank.clone(),
@@ -578,7 +583,7 @@ describe('auto farm helpers', () => {
 		};
 
 		const transactResult = {
-			newUser: user.user,
+			newUser: user,
 			itemsAdded: new Bank(),
 			itemsRemoved: new Bank(),
 			newBank: user.bank.clone(),

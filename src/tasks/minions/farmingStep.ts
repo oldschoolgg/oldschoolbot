@@ -1,5 +1,6 @@
 import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
+import { MathRNG, type RNGProvider, randInt, roll } from 'node-rng';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
@@ -11,7 +12,6 @@ import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmi
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { randInt, roll } from 'node-rng';
 
 export type FarmingStepAttachment = Awaited<ReturnType<typeof chatHeadImage>>;
 
@@ -51,6 +51,7 @@ interface ExecuteFarmingStepOptions {
 	user: MUser;
 	channelID: string;
 	data: FarmingActivityTaskOptions;
+	rng?: RNGProvider;
 }
 
 type FarmingPlant = (typeof Farming.Plants)[number];
@@ -188,8 +189,9 @@ async function handlePlantingOnlyStep(options: PlantingOnlyOptions): Promise<Far
 
 	loot.add('Weeds', quantity * 3);
 
-	let message = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${plant.name
-		}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
+	let message = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${
+		plant.name
+	}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
 
 	const bonusXP = Math.floor(farmingXpReceived * bonusXpMultiplier);
 	if (bonusXP > 0) {
@@ -277,6 +279,7 @@ function calculateAlivePlants(
 }
 
 async function calculateHarvestLoot(options: {
+	rng: RNGProvider;
 	user: MUser;
 	plantToHarvest: FarmingPlant;
 	patchType: PatchTypes.IPatchData;
@@ -287,6 +290,7 @@ async function calculateHarvestLoot(options: {
 	survivalModifiers: PatchSurvivalModifiers;
 }): Promise<HarvestLootResult | null> {
 	const {
+		rng,
 		user,
 		plantToHarvest,
 		patchType,
@@ -332,7 +336,7 @@ async function calculateHarvestLoot(options: {
 			Math.floor(
 				Math.floor(
 					plantToHarvest.chance1 +
-					(plantToHarvest.chance99 - plantToHarvest.chance1) * ((user.skillsAsLevels.farming - 1) / 98)
+						(plantToHarvest.chance99 - plantToHarvest.chance1) * ((user.skillsAsLevels.farming - 1) / 98)
 				) * baseBonus
 			) + 1;
 		const chanceToSaveLife = (plantChanceFactor + 1) / 256;
@@ -505,7 +509,8 @@ function calculateWoodcuttingOutcome(options: {
 export async function executeFarmingStep({
 	user,
 	channelID,
-	data
+	data,
+	rng = MathRNG
 }: ExecuteFarmingStepOptions): Promise<FarmingStepResult | null> {
 	const { plantsName, patchType, quantity, upgradeType, payment, planting, currentDate } = data;
 
@@ -568,6 +573,7 @@ export async function executeFarmingStep({
 	const checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
 	const harvestLootResult = await calculateHarvestLoot({
+		rng,
 		user,
 		plantToHarvest,
 		patchType,
@@ -644,7 +650,8 @@ export async function executeFarmingStep({
 			? xpBreakdownParts.join(', ').replace(/, ([^,]*)$/, ', and $1')
 			: xpBreakdownParts[0];
 	infoStr.push(
-		`${plantingStr}harvesting ${patchType.lastQuantity}x ${plantToHarvest.name}.${payStr}\n\nYou received ${xpBreakdown}. In total: ${xpRes}. ${woodcuttingOutcome.woodcuttingOccurred ? wcXP : ''
+		`${plantingStr}harvesting ${patchType.lastQuantity}x ${plantToHarvest.name}.${payStr}\n\nYou received ${xpBreakdown}. In total: ${xpRes}. ${
+			woodcuttingOutcome.woodcuttingOccurred ? wcXP : ''
 		}`
 	);
 
@@ -765,8 +772,9 @@ export async function executeFarmingStep({
 			contractsCompleted: contractsCompleted + 1
 		};
 
-		await user.update({
-			minion_farmingContract: farmingContractUpdate as any
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { minion_farmingContract: farmingContractUpdate }
 		});
 
 		loot.add('Seed pack');
@@ -828,10 +836,11 @@ export async function executeFarmingStep({
 
 	const attachment = janeMessage
 		? await chatHeadImage({
-			content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${contractsCompleted + 1
+				content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+					contractsCompleted + 1
 				} farming contracts.`,
-			head: 'jane'
-		})
+				head: 'jane'
+			})
 		: undefined;
 
 	return {

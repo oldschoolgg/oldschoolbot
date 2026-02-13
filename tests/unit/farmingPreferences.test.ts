@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest';
 import './setup.js';
 
 import {
+	getPrimarySeedForPlant,
 	getPlantsForPatch,
 	parsePreferredSeeds,
+	serializePreferredSeeds,
 	resolveSeedForPatch
 } from '@/lib/skilling/skills/farming/autoFarm/preferences.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
@@ -82,6 +84,26 @@ describe('farming seed preferences', () => {
 		const result = parsePreferredSeeds(raw);
 
 		expect(result.size).toBe(0);
+	});
+
+	it('serializePreferredSeeds keeps valid entries and drops invalid ones', () => {
+		const preferences = new Map<FarmingPatchName, FarmingSeedPreference>([
+			[herbPlant.seedType as FarmingPatchName, { type: 'seed', seedID: herbSeedID }],
+			[treePlant.seedType as FarmingPatchName, { type: 'highest_available' }],
+			[cactusPlant.seedType as FarmingPatchName, { type: 'seed', seedID: 999999 }],
+			['unknown_patch' as FarmingPatchName, { type: 'empty' }]
+		]);
+
+		const result = serializePreferredSeeds(preferences);
+		expect(result[herbPlant.seedType as FarmingPatchName]).toEqual({ type: 'seed', seedID: herbSeedID });
+		expect(result[treePlant.seedType as FarmingPatchName]).toEqual({ type: 'highest_available' });
+		expect(result[cactusPlant.seedType as FarmingPatchName]).toBeUndefined();
+		expect((result as Record<string, unknown>).unknown_patch).toBeUndefined();
+	});
+
+	it('getPrimarySeedForPlant returns first seed and null for plants with no inputs', () => {
+		expect(getPrimarySeedForPlant(herbPlant)).toBe(herbSeedID);
+		expect(getPrimarySeedForPlant({ ...herbPlant, inputItems: herbPlant.inputItems.clone().remove(herbSeedID) })).toBeNull();
 	});
 
 	it('getPlantsForPatch returns sorted plant list and handles empty patches', () => {

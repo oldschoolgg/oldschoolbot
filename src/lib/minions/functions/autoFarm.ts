@@ -115,7 +115,7 @@ async function tryRepeatPreviousTrip({
 		if (!fallbackTrip) {
 			return null;
 		}
-		const response = await repeatTrip(user, interaction, fallbackTrip);
+		const response = await repeatTrip(user, interaction as OSInteraction, fallbackTrip);
 		if (response === SpecialResponse.SilentErrorResponse || response === SpecialResponse.PaginatedMessageResponse) {
 			return response;
 		}
@@ -368,7 +368,7 @@ export async function autoFarm(
 
 	const [, ...remainingSteps] = autoFarmPlan;
 
-	const channelId = interaction.channelId ?? user.id;
+	const channelId = interaction.channelId;
 	const firstTask = {
 		userID: user.id,
 		type: 'Farming',

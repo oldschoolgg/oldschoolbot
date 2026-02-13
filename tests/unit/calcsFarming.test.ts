@@ -58,6 +58,21 @@ function createPlant(overrides: PlantOverrides): Plant {
 	} as Plant;
 }
 
+function createMockRng() {
+	return {
+		// only randInt is used by these calcs, but we provide the full-ish surface area
+		// so it cleanly satisfies RNGProvider shape.
+		rand: vi.fn(),
+		randInt: vi.fn(),
+		randFloat: vi.fn(),
+		roll: vi.fn(),
+		shuffle: vi.fn(),
+		pick: vi.fn(),
+		percentChance: vi.fn(),
+		randomVariation: vi.fn()
+	};
+}
+
 describe('calcsFarming', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
@@ -144,9 +159,10 @@ describe('calcsFarming', () => {
 			]
 		});
 
-		vi.spyOn(rng, 'randInt').mockReturnValue(3);
+		const mockRng = createMockRng();
+		mockRng.randInt.mockReturnValue(3);
 
-		const result = calcVariableYield(plant, 'attuned', 90, 2);
+		const result = calcVariableYield(mockRng as any, plant, 'attuned', 90, 2);
 		expect(result).toBe(6);
 	});
 
@@ -157,9 +173,10 @@ describe('calcsFarming', () => {
 			variableYield: true
 		});
 
-		vi.spyOn(rng, 'randInt').mockReturnValue(2);
+		const mockRng = createMockRng();
+		mockRng.randInt.mockReturnValue(2);
 
-		const result = calcVariableYield(plant, null, 50, 2);
+		const result = calcVariableYield(mockRng as any, plant, null, 50, 2);
 		expect(result).toBe(10);
 	});
 
@@ -170,7 +187,9 @@ describe('calcsFarming', () => {
 			variableYield: false
 		});
 
-		const result = calcVariableYield(plant, null, 50, 2);
+		const mockRng = createMockRng();
+
+		const result = calcVariableYield(mockRng as any, plant, null, 50, 2);
 		expect(result).toBe(0);
 	});
 });
