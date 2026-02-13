@@ -1,6 +1,6 @@
 import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
-import { MathRNG, type RNGProvider, randInt, roll } from 'node-rng';
+import { MathRNG, type RNGProvider } from 'node-rng';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
@@ -38,6 +38,7 @@ export interface FarmingStepSummary {
 	xpMessages: Partial<Record<FarmingStepXPMessageSkill, string>>;
 	boosts?: string[];
 	contractCompleted?: boolean;
+	attachmentMessage?: string;
 }
 
 export interface FarmingStepResult {
@@ -258,6 +259,7 @@ async function handlePlantingOnlyStep(options: PlantingOnlyOptions): Promise<Far
 }
 
 function calculateAlivePlants(
+	rng: RNGProvider,
 	plantToHarvest: FarmingPlant,
 	patchType: PatchTypes.IPatchData,
 	survivalModifiers: PatchSurvivalModifiers
@@ -265,7 +267,7 @@ function calculateAlivePlants(
 	let quantityDead = 0;
 	for (let i = 0; i < patchType.lastQuantity; i++) {
 		for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
-			const deathRoll = Math.random();
+			const deathRoll = rng.randFloat(0, 1);
 			const scaled = Math.floor(plantToHarvest.chanceOfDeath * survivalModifiers.chanceOfDeathReduction);
 			const rollThreshold = scaled / 128;
 			if (deathRoll < rollThreshold) {
@@ -346,7 +348,7 @@ async function calculateHarvestLoot(options: {
 		for (let k = 0; k < alivePlants; k++) {
 			lives = livesHolder;
 			for (let _n = 0; lives > 0; _n++) {
-				if (Math.random() > chanceToSaveLife) {
+				if (rng.randFloat(0, 1) > chanceToSaveLife) {
 					lives -= 1;
 					cropYield += 1;
 				} else {
@@ -452,11 +454,12 @@ async function handleTreeRemoval(options: {
 }
 
 function calculateWoodcuttingOutcome(options: {
+	rng: RNGProvider;
 	plantToHarvest: FarmingPlant;
 	alivePlants: number;
 	chopped: boolean;
 }): { woodcuttingXp: number; woodcuttingLoot: Bank; woodcuttingOccurred: boolean } {
-	const { plantToHarvest, alivePlants, chopped } = options;
+	const { rng, plantToHarvest, alivePlants, chopped } = options;
 
 	if (!chopped || !plantToHarvest.givesLogs) {
 		return { woodcuttingXp: 0, woodcuttingLoot: new Bank(), woodcuttingOccurred: false };
@@ -480,7 +483,7 @@ function calculateWoodcuttingOutcome(options: {
 		let logsFromTree = 0;
 		while (logsFromTree < cappedLogsPerTree) {
 			logsFromTree += 1;
-			if (Math.random() < depletionChance) {
+			if (rng.randFloat(0, 1) < depletionChance) {
 				break;
 			}
 		}
@@ -495,7 +498,7 @@ function calculateWoodcuttingOutcome(options: {
 	if (plantToHarvest.outputRoots) {
 		let totalRoots = 0;
 		for (let treeIndex = 0; treeIndex < alivePlants; treeIndex++) {
-			totalRoots += randInt(1, 4);
+			totalRoots += rng.randInt(1, 4);
 		}
 		if (totalRoots > 0) {
 			woodcuttingLoot.add(plantToHarvest.outputRoots, totalRoots);
@@ -567,7 +570,7 @@ export async function executeFarmingStep({
 	const plantToHarvest = Farming.Plants.find(plantItem => plantItem.name === patchType.lastPlanted)!;
 	assert(Boolean(plantToHarvest));
 
-	const alivePlants = calculateAlivePlants(plantToHarvest, patchType, survivalModifiers);
+	const alivePlants = calculateAlivePlants(rng, plantToHarvest, patchType, survivalModifiers);
 	const plantingStr = planting ? `Your minion planted ${quantity}x ${plant.name}. ` : '';
 	const plantXp = planting ? quantity * (plant.plantXp + compostXp) : 0;
 	const checkHealthXp = alivePlants * plantToHarvest.checkXp;
@@ -604,7 +607,7 @@ export async function executeFarmingStep({
 		harvestXp = 0;
 	}
 
-	const woodcuttingOutcome = calculateWoodcuttingOutcome({ plantToHarvest, alivePlants, chopped });
+	const woodcuttingOutcome = calculateWoodcuttingOutcome({ rng, plantToHarvest, alivePlants, chopped });
 	if (woodcuttingOutcome.woodcuttingOccurred) {
 		loot.add(woodcuttingOutcome.woodcuttingLoot);
 	}
@@ -704,20 +707,20 @@ export async function executeFarmingStep({
 		patchType.patchPlanted &&
 		plantToHarvest.petChance &&
 		alivePlants > 0 &&
-		roll(petDropRate / alivePlants)
+		rng.roll(petDropRate / alivePlants)
 	) {
 		loot.add('Tangleroot');
 	}
 
-	if (plantToHarvest.seedType === 'seaweed' && roll(3)) {
-		loot.add('Seaweed spore', randInt(1, 3));
+	if (plantToHarvest.seedType === 'seaweed' && rng.roll(3)) {
+		loot.add('Seaweed spore', rng.randInt(1, 3));
 	}
 
 	// only non-hespori runs can roll hespori seeds
 	if (plantToHarvest.seedType !== 'hespori') {
 		let hesporiSeeds = 0;
 		for (let i = 0; i < alivePlants; i++) {
-			if (roll(plantToHarvest.petChance / 500)) {
+			if (rng.roll(plantToHarvest.petChance / 500)) {
 				hesporiSeeds++;
 			}
 		}
@@ -763,6 +766,9 @@ export async function executeFarmingStep({
 	const { contractsCompleted } = currentContract;
 
 	let janeMessage = false;
+	const contractCompletionMessage = `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+		contractsCompleted + 1
+	} farming contracts.`;
 	if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
 		const farmingContractUpdate: IFarmingContract = {
 			hasContract: false,
@@ -811,7 +817,8 @@ export async function executeFarmingStep({
 		},
 		xpMessages,
 		boosts: boosts.length > 0 ? [...boosts] : undefined,
-		contractCompleted: janeMessage
+		contractCompleted: janeMessage,
+		attachmentMessage: janeMessage ? `Jane: ${contractCompletionMessage}` : undefined
 	};
 
 	await ClientSettings.updateBankSetting('farming_loot_bank', loot);
@@ -833,9 +840,7 @@ export async function executeFarmingStep({
 
 	const attachment = janeMessage
 		? await chatHeadImage({
-				content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-					contractsCompleted + 1
-				} farming contracts.`,
+				content: contractCompletionMessage,
 				head: 'jane'
 			})
 		: undefined;

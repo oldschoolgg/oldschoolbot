@@ -361,6 +361,7 @@ export interface AutoFarmSummary {
 	totalLoot?: ItemBank;
 	contractsCompleted: number;
 	boosts: string[];
+	attachmentMessages: string[];
 	steps: AutoFarmSummaryStep[];
 }
 

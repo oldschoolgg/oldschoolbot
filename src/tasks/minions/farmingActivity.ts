@@ -33,6 +33,7 @@ function updateAutoFarmSummary({
 		totalLoot: {},
 		contractsCompleted: 0,
 		boosts: [],
+		attachmentMessages: [],
 		steps: []
 	};
 
@@ -69,6 +70,10 @@ function updateAutoFarmSummary({
 		totalLoot: lootBank.toJSON(),
 		contractsCompleted: baseSummary.contractsCompleted + (stepSummary?.contractCompleted ? 1 : 0),
 		boosts: [...boosts],
+		attachmentMessages: [
+			...(baseSummary.attachmentMessages ?? []),
+			...(stepSummary?.attachmentMessage ? [stepSummary.attachmentMessage] : [])
+		],
 		steps: [
 			...baseSummary.steps,
 			{
@@ -223,13 +228,21 @@ export const farmingTask: MinionTask = {
 		const totalLoot = combinedMode && updatedSummary ? new Bank(updatedSummary.totalLoot ?? {}) : result.loot;
 		const content =
 			combinedMode && updatedSummary ? buildCombinedAutoFarmMessage(user, updatedSummary) : result.message;
-		const message = result.attachment ? { content, files: [result.attachment] } : content;
+		const finalContent =
+			combinedMode && updatedSummary && updatedSummary.attachmentMessages.length > 0
+				? `${content}\n\n${updatedSummary.attachmentMessages.join('\n\n')}`
+				: content;
+		const message = result.attachment ? { content: finalContent, files: [result.attachment] } : finalContent;
+		const tripFinishData =
+			combinedMode && updatedSummary
+				? ({ ...data, duration: updatedSummary.totalDuration } satisfies FarmingActivityTaskOptions)
+				: data;
 
 		await handleTripFinish({
 			user,
 			channelId,
 			message,
-			data,
+			data: tripFinishData,
 			loot: totalLoot && totalLoot.length > 0 ? totalLoot : null
 		});
 
