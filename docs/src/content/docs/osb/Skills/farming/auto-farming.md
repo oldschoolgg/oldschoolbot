@@ -15,6 +15,11 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 - **AllFarm** (default) - Plants the best seed you can use in each ready patch, prioritising higher-level crops.
 - **Replant** - Only replants patches that already contained that crop and that you still have seeds for. Empty patches stay empty.
 - Configure the behaviour with [[/farming auto_farm_filter auto_farm_filter_data:AllFarm]] or [[/farming auto_farm_filter auto_farm_filter_data:Replant]].
+- Use [[/farming set_preferred]] for per-patch overrides:
+  - `seed` to force a specific seed for that patch type
+  - `highest_available` to always choose best available for that patch
+  - `empty` to skip that patch type entirely
+  - `prefer_contract` to prioritize your active farming contract crop when possible
 
 ## Trip Planning
 
@@ -24,14 +29,15 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 
 ## Resource Handling
 
-- Seeds, compost, farmer payments, and tree removal fees are checked up-front. If you cannot afford a requirement the affected patch is skipped, and the first failure reason is shown.
+- Seeds, compost, farmer payments, and tree removal fees are checked up-front.
 - Your [[/farming default_compost]] choice and [[/farming always_pay]] toggle are applied automatically.
 - Coins for chopping trees without the required Woodcutting level are reserved (200 gp for most trees, 2,000 gp for redwoods).
-- All item costs are removed immediately; the activity will not start unless every chosen step can be paid for.
+- All selected step costs are removed immediately before the trip starts.
+- If no step can be planned, auto farm returns the first failure reason (for example missing seeds/items or an unmet requirement).
 
 ## Boosts
 
-- Equip full graceful and a charged [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) to stack the 10% + 10% trip speed bonuses.
+- Equip full graceful and keep a charged [Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance) (equipped or in bank) to stack the 10% + 10% trip speed bonuses.
 - Completing the Ardougne elite diary grants an additional 4% time reduction on auto farm trips.
 - Farming outfit, magic secateurs, and the Farming cape apply the same XP and yield bonuses as manual planting.
 

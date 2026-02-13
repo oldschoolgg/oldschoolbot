@@ -3,11 +3,11 @@ import { describe, expect, it } from 'vitest';
 import './setup.js';
 
 import {
-	getPrimarySeedForPlant,
 	getPlantsForPatch,
+	getPrimarySeedForPlant,
 	parsePreferredSeeds,
-	serializePreferredSeeds,
-	resolveSeedForPatch
+	resolveSeedForPatch,
+	serializePreferredSeeds
 } from '@/lib/skilling/skills/farming/autoFarm/preferences.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import type {
@@ -103,7 +103,9 @@ describe('farming seed preferences', () => {
 
 	it('getPrimarySeedForPlant returns first seed and null for plants with no inputs', () => {
 		expect(getPrimarySeedForPlant(herbPlant)).toBe(herbSeedID);
-		expect(getPrimarySeedForPlant({ ...herbPlant, inputItems: herbPlant.inputItems.clone().remove(herbSeedID) })).toBeNull();
+		expect(
+			getPrimarySeedForPlant({ ...herbPlant, inputItems: herbPlant.inputItems.clone().remove(herbSeedID) })
+		).toBeNull();
 	});
 
 	it('getPlantsForPatch returns sorted plant list and handles empty patches', () => {

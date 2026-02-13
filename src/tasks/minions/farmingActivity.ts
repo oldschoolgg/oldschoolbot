@@ -1,5 +1,5 @@
 import { formatDuration } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { AutoFarmSummary, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -86,6 +86,13 @@ function updateAutoFarmSummary({
 }
 
 function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): string {
+	const calcXPPerHour = (xp: number, duration: number): number => {
+		if (duration <= 0) return 0;
+		let rawXPHr = (xp / (duration / 60_000)) * 60;
+		rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+		return Math.floor(rawXPHr);
+	};
+
 	const lines: string[] = [`${user}, ${user.minionName} finished auto farming your patches.`];
 	if (summary.totalDuration > 0) {
 		lines.push(`Total time spent: ${formatDuration(summary.totalDuration)}.`);
@@ -94,7 +101,7 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 	const xpParts: string[] = [];
 	if (summary.totalXP > 0) {
 		xpParts.push(
-			`${summary.totalXP.toLocaleString()} Farming XP (including ${summary.totalBonusXP.toLocaleString()} bonus XP)`
+			`${summary.totalXP.toLocaleString()} Farming XP (including ${summary.totalBonusXP.toLocaleString()} bonus XP) ${toKMB(calcXPPerHour(summary.totalXP, summary.totalDuration))}/Hr`
 		);
 	}
 	if (summary.totalWoodcuttingXP > 0) {

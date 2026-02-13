@@ -30,7 +30,7 @@ XP, speed, and harvest quantity can be boosted by the following:
 - **[Magic secateurs](../../Buyables/buyables.md#quest-items)** - 10% harvest quantity boost **(works from bank)**
 - **Farming cape** - 5% harvest quantity boost **(works from bank)**
 - **Full graceful outfit** - 10% trip speed **(must be equipped and charged)**
-- **[Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance)** - 10% trip speed **(must be equipped in any setup and charged)**
+- **[Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance)** - 10% trip speed **(must be charged and either equipped or in bank)**
 - **Ardougne elite diary** - 4% trip speed when completed
 
 ---
@@ -42,8 +42,12 @@ XP, speed, and harvest quantity can be boosted by the following:
 - [[/farming check_patches]] - View patch status (includes an Auto Farm shortcut button when anything is ready)
 - [[/farming auto_farm]] - Execute an auto farming trip
 - [[/farming auto_farm_filter]] - Choose your auto farm filter
+- [[/farming set_preferred]] - View or set per-patch seed preferences and contract priority
 - [[/farming default_compost]] - Set the compost tier to auto apply
 - [[/farming always_pay]] - Toggle automatic farmer payments
+- [[/farming compost_bin]] - Convert crops into supercompost
+- [[/farming contract]] - View, request, or downgrade farming contracts
+- [[/farming tithe_farm]] - Start Tithe Farm or buy rewards
 
 ---
 
@@ -53,8 +57,9 @@ Use [[/farming auto_farm]] to harvest and replant every ready patch your current
 
 - Builds a combined plan that spends the entire Farming trip length, chaining each patch back-to-back.
 - Respects [[/farming auto_farm_filter]] choices (`AllFarm` to use your best seeds everywhere, `Replant` to stick to what was already growing).
+- Supports [[/farming set_preferred]] for per-patch behavior (`seed`, `highest_available`, or `empty`) plus optional contract prioritization.
 - Applies your [[/farming default_compost]] choice and [[/farming always_pay]] setting automatically.
-- Skips patches that would push the trip beyond the max duration or when you lack the required seeds, compost, or protection items.
+- Skips patches that would push the trip beyond the max duration or when required resources are missing.
 
 See [Auto Farming](auto-farming.md) for a full breakdown, including resource handling and troubleshooting tips.
 
