@@ -5,7 +5,7 @@ description: Refer to House Paran for additional knowledge
 
 An easy way to get additional seeds while farming is to take on a [farming contract](https://oldschool.runescape.wiki/w/Guildmaster_Jane#Farming_contracts) from Farming Guildmaster Jane using the [[/farming contract]] command. Seed packs are tiered from 1-5 and work the exact same as the main game.
 
-If you are tier 1 patron or higher (and your plant is fully grown), you will see an **'Auto Farming Contract'** button at the end of your trips. This can be enabled/disabled using: [[/config user toggle name\:Disable Auto Farm Contract Button]]
+If you are tier 1 patron or higher, you can receive an **'Auto Farming Contract'** button after trip completions when your account is eligible to run it (for example, 45+ Farming and contract state allows an action). This can be enabled/disabled using: [[/config user toggle name\:Disable Auto Farm Contract Button]]
 
 ## Requirements
 
