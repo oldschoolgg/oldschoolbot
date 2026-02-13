@@ -231,13 +231,14 @@ export async function autoFarm(
 		const patch = request.patch;
 		const candidates =
 			request.type === 'highest' ? getPlantsForPatch(patch.patchName) : request.plant ? [request.plant] : [];
-		if (candidates.length === 0) {
+		const levelEligibleCandidates = candidates.filter(candidate => candidate.level <= farmingLevel);
+		if (levelEligibleCandidates.length === 0) {
 			continue;
 		}
 
 		let planned = false;
 		const errorsForPatch: string[] = [];
-		for (const candidate of candidates) {
+		for (const candidate of levelEligibleCandidates) {
 			const prepared = await prepareFarmingStep({
 				user,
 				plant: candidate,
