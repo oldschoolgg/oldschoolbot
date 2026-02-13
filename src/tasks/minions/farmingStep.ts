@@ -772,10 +772,7 @@ export async function executeFarmingStep({
 			contractsCompleted: contractsCompleted + 1
 		};
 
-		await prisma.user.update({
-			where: { id: user.id },
-			data: { minion_farmingContract: farmingContractUpdate }
-		});
+		await user.updateFarmingContract(farmingContractUpdate);
 
 		loot.add('Seed pack');
 
