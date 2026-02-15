@@ -182,7 +182,16 @@ export const minigamesCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a trip.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'The amount of games to do.',
+							required: false,
+							min_value: 1
+						}
+					]
 				}
 			]
 		},
@@ -1105,7 +1114,7 @@ export const minigamesCommand = defineCommand({
 			return castleWarsStatsCommand(user);
 		}
 		if (options.castle_wars?.start) {
-			return castleWarsStartCommand(user, channelId);
+			return castleWarsStartCommand(user, channelId, options.castle_wars.start.quantity);
 		}
 
 		/**
