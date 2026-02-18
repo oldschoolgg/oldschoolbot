@@ -3,8 +3,6 @@ import { MathRNG } from 'node-rng';
 import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
-import '../base.js';
-
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import Mining from '../../src/lib/skilling/skills/mining.js';
 import type { Ore } from '../../src/lib/skilling/types.js';

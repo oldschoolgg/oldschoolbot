@@ -5,19 +5,6 @@ import Spinner from 'ink-spinner';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 
-import { renderCreatablesFile } from '@scripts/creatables.js';
-import { renderDataFiles } from '@scripts/dataFiles.js';
-import { createMonstersJson } from '@scripts/monstersJson.js';
-import { renderCommandsFile } from '@scripts/renderCommandsFile.js';
-import { clueBoosts } from '@scripts/wiki/clueBoosts.js';
-import { renderFishingXpHrTable } from '@scripts/wiki/fishingSnapshots.js';
-import { renderMiningXpHrTable } from '@scripts/wiki/miningSnapshots.js';
-import { renderCoxMarkdown } from '@scripts/wiki/renderCox.js';
-import { renderMonstersMarkdown } from '@scripts/wiki/renderMonsters.js';
-import { renderQuestsMarkdown } from '@scripts/wiki/renderQuests.js';
-import { renderTripBuyables } from '@scripts/wiki/tripBuyables.js';
-import { updateAuthors } from '@scripts/wiki/updateAuthors.js';
-
 type Command = { cmd?: string | string[]; fn?: () => Promise<unknown> | unknown; desc: string; condition?: boolean };
 type CommandGroup = Command | Command[];
 
@@ -34,34 +21,6 @@ const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
 );
 
 const isUsingRealPostgres = process.env.USE_REAL_PG === '1';
-
-const isWikiBuild = process.argv.includes('--wiki');
-
-type Script = { desc: string; fn: () => Promise<unknown> | unknown };
-const scripts: Script[] = [
-	{ desc: 'Rendering commands file', fn: renderCommandsFile },
-	{ desc: 'Rendering monsters file', fn: createMonstersJson },
-	{ desc: 'Rendering creatables file', fn: renderCreatablesFile },
-	{ desc: 'Rendering skilling data files', fn: renderDataFiles },
-	{ desc: 'Wiki: Rendering clue boosts', fn: clueBoosts },
-	{ desc: 'Wiki: Rendering monsters markdown', fn: renderMonstersMarkdown },
-	{ desc: 'Wiki: Rendering cox markdown', fn: renderCoxMarkdown },
-	{ desc: 'Wiki: Rendering trip buyables', fn: renderTripBuyables },
-	{ desc: 'Wiki: Rendering quests markdown', fn: renderQuestsMarkdown },
-	...(isWikiBuild
-		? [
-				{
-					desc: 'Wiki: Rendering fishing snapshots',
-					fn: renderFishingXpHrTable
-				},
-				{
-					desc: 'Wiki: Rendering mining snapshots',
-					fn: renderMiningXpHrTable
-				},
-				{ desc: 'Wiki: Rendering authors', fn: updateAuthors }
-			]
-		: [])
-];
 
 const stages: Stage[] = [
 	{
@@ -80,24 +39,29 @@ const stages: Stage[] = [
 		name: 'Stage 2',
 		commands: [
 			[
-				...scripts.map(s => ({
-					fn: async () => {
-						await s.fn();
-					},
-					desc: s.desc
-				})),
 				{ cmd: 'tsx esbuild.mts', desc: 'Building bot...' },
 				{
-					cmd: ['biome check --write --diagnostic-level=error'],
-					desc: 'Formatting code with biome...'
-				},
+					fn: async () => {
+						const { scripts } = await import('./scripts.js');
+						for (const script of scripts) {
+							await script.fn();
+						}
+					},
+					desc: 'Running scripts...'
+				}
+			],
+			[
 				{
 					cmd: [
 						'concurrently "prettier --use-tabs --write \'**/*.{yaml,yml,css,html}\'" "prisma format --schema ./prisma/robochimp.prisma" "prisma format --schema ./prisma/schema.prisma"'
 					],
 					desc: 'Formatting code...'
 				}
-			]
+			],
+			{
+				cmd: ['biome check --write --diagnostic-level=error --log-kind compact'],
+				desc: 'Formatting code with biome...'
+			}
 		]
 	},
 	{

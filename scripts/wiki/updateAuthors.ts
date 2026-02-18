@@ -1,5 +1,3 @@
-import '../base.js';
-
 import { exec as execNonPromise } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { promisify } from 'node:util';
