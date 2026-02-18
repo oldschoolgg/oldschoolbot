@@ -87,7 +87,7 @@ const ROOT = process.cwd();
 const COMMANDS_DIR = path.join(ROOT, 'src', 'mahoji', 'commands');
 const OUTPUT_DIR = path.join(ROOT, 'docs', 'src', 'content', 'generated');
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'commands.json');
-const IGNORED_COMMANDS = new Set(['admin', 'testpotato']);
+const HIDDEN_COMMANDS = new Set(['admin', 'testpotato', 'rp']);
 
 const moduleCache = new Map<string, ModuleInfo>();
 
@@ -932,7 +932,7 @@ export function buildCommandsDocDataFromDir(commandsDir = COMMANDS_DIR): Command
 	const commands = commandFiles
 		.flatMap(filePath => parseCommandFile(filePath))
 		.filter(command => command.name)
-		.filter(command => !IGNORED_COMMANDS.has(command.name ?? ''))
+		.filter(command => !HIDDEN_COMMANDS.has(command.name ?? ''))
 		.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
 
 	return {
