@@ -34,7 +34,7 @@
 		"concurrent": "concurrently --raw --kill-others-on-fail",
 		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!cli\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" --filter \"!robochimp\" build",
 		"============monorepo": "============",
-		"monorepo:build": "pnpm concurrent \"pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" build\" \"pnpm gen\" && tsx esbuild.mts",
+		"monorepo:build": "pnpm concurrent \"pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" --filter \"!cli\" build\" \"pnpm gen\" && tsx esbuild.mts",
 		"monorepo:test": "pnpm --stream --workspace-concurrency=2 -r test && pnpm test"
 	},
 	"dependencies": {
