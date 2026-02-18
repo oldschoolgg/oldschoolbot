@@ -5,19 +5,6 @@ import Spinner from 'ink-spinner';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 
-import { renderCreatablesFile } from '@scripts/creatables.js';
-import { renderDataFiles } from '@scripts/dataFiles.js';
-import { createMonstersJson } from '@scripts/monstersJson.js';
-import { renderCommandsFile } from '@scripts/renderCommandsFile.js';
-import { clueBoosts } from '@scripts/wiki/clueBoosts.js';
-import { renderFishingXpHrTable } from '@scripts/wiki/fishingSnapshots.js';
-import { renderMiningXpHrTable } from '@scripts/wiki/miningSnapshots.js';
-import { renderCoxMarkdown } from '@scripts/wiki/renderCox.js';
-import { renderMonstersMarkdown } from '@scripts/wiki/renderMonsters.js';
-import { renderQuestsMarkdown } from '@scripts/wiki/renderQuests.js';
-import { renderTripBuyables } from '@scripts/wiki/tripBuyables.js';
-import { updateAuthors } from '@scripts/wiki/updateAuthors.js';
-
 type Command = { cmd?: string | string[]; fn?: () => Promise<unknown> | unknown; desc: string; condition?: boolean };
 type CommandGroup = Command | Command[];
 
@@ -37,28 +24,30 @@ const isUsingRealPostgres = process.env.USE_REAL_PG === '1';
 
 const isWikiBuild = process.argv.includes('--wiki');
 
-type Script = { desc: string; fn: () => Promise<unknown> | unknown };
+const runScriptFn = (fnName: string) => `pnpm cli:script ${fnName}`;
+
+type Script = { desc: string; cmd: string };
 const scripts: Script[] = [
-	{ desc: 'Rendering commands file', fn: renderCommandsFile },
-	{ desc: 'Rendering monsters file', fn: createMonstersJson },
-	{ desc: 'Rendering creatables file', fn: renderCreatablesFile },
-	{ desc: 'Rendering skilling data files', fn: renderDataFiles },
-	{ desc: 'Wiki: Rendering clue boosts', fn: clueBoosts },
-	{ desc: 'Wiki: Rendering monsters markdown', fn: renderMonstersMarkdown },
-	{ desc: 'Wiki: Rendering cox markdown', fn: renderCoxMarkdown },
-	{ desc: 'Wiki: Rendering trip buyables', fn: renderTripBuyables },
-	{ desc: 'Wiki: Rendering quests markdown', fn: renderQuestsMarkdown },
+	{ desc: 'Rendering commands file', cmd: runScriptFn('renderCommandsFile') },
+	{ desc: 'Rendering monsters file', cmd: runScriptFn('createMonstersJson') },
+	{ desc: 'Rendering creatables file', cmd: runScriptFn('renderCreatablesFile') },
+	{ desc: 'Rendering skilling data files', cmd: runScriptFn('renderDataFiles') },
+	{ desc: 'Wiki: Rendering clue boosts', cmd: runScriptFn('clueBoosts') },
+	{ desc: 'Wiki: Rendering monsters markdown', cmd: runScriptFn('renderMonstersMarkdown') },
+	{ desc: 'Wiki: Rendering cox markdown', cmd: runScriptFn('renderCoxMarkdown') },
+	{ desc: 'Wiki: Rendering trip buyables', cmd: runScriptFn('renderTripBuyables') },
+	{ desc: 'Wiki: Rendering quests markdown', cmd: runScriptFn('renderQuestsMarkdown') },
 	...(isWikiBuild
 		? [
 				{
 					desc: 'Wiki: Rendering fishing snapshots',
-					fn: renderFishingXpHrTable
+					cmd: runScriptFn('renderFishingXpHrTable')
 				},
 				{
 					desc: 'Wiki: Rendering mining snapshots',
-					fn: renderMiningXpHrTable
+					cmd: runScriptFn('renderMiningXpHrTable')
 				},
-				{ desc: 'Wiki: Rendering authors', fn: updateAuthors }
+				{ desc: 'Wiki: Rendering authors', cmd: runScriptFn('updateAuthors') }
 			]
 		: [])
 ];
@@ -81,9 +70,7 @@ const stages: Stage[] = [
 		commands: [
 			[
 				...scripts.map(s => ({
-					fn: async () => {
-						await s.fn();
-					},
+					cmd: s.cmd,
 					desc: s.desc
 				})),
 				{ cmd: 'tsx esbuild.mts', desc: 'Building bot...' },
