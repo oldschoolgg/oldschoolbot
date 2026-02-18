@@ -54,5 +54,5 @@ CMD (/wait > /dev/null 2>&1) && \
     (pnpm prisma db push --schema='./prisma/robochimp.prisma' > /dev/null 2>&1 & \
      pnpm prisma db push --schema='./prisma/schema.prisma' > /dev/null 2>&1 & \
      wait) && \
-    NODE_NO_WARNINGS=1 pnpm vitest run --config vitest.integration.config.mts && \
+    NODE_NO_WARNINGS=1 pnpm vitest run --config "${TEST_CONFIG:-vitest.integration.config.mts}" && \
     exit 0
