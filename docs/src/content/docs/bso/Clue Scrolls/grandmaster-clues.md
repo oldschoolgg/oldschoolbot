@@ -47,7 +47,7 @@ Grandmaster Caskets contain:
 
 ## Unique Loot Table
 
-Each casket gives 5–11 loot rolls, so actual drop rates vary. Denoted as `x`:
+Each casket gives 5–11 loot rolls, so actual drop rates vary. Denoted as `x` (per-casket values below are averages based on roll count):
 
 - Malygos and Ignecarus Masks – x/50
 - [[Deathtouched Dart]] – x/4000
@@ -64,5 +64,5 @@ Each casket gives 5–11 loot rolls, so actual drop rates vary. Denoted as `x`:
 Grandmaster caskets roll the clue-hunter table at **1/2500 per roll**. Each successful roll gives one random piece from 6 pieces.
 
 - Per-piece rate per roll: **1/15,000**
-- Each casket has **5-11 rolls**
+- Each casket has **5–11 rolls**
 - So per casket, each specific piece is roughly between **5/15,000 (1/3000)** and **11/15,000 (~1/1364)** depending on roll count.

@@ -79,3 +79,4 @@ Each casket rolls 4–7 times with additional tertiary chances:
 
 - Eagle tames can complete elder clues only if fed [[Elder knowledge]].
 - Eagle clue trips require all STASH units built/full for Grandmaster and Elder tiers.
+- See [STASH units](/osb/skills/construction/stash-units/) for setup requirements.

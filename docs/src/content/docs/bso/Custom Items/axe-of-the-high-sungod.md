@@ -8,8 +8,8 @@ Create in this order with [[/create]]:
 
 1. [[Axe handle base]] = 1 [[Dwarven bar]] + 1 [[Volcanic shards]]
 2. [[Axe handle]] = Axe handle base + [[Perfect chitin]] + 10 [[Ent hide]] + 30 [[Athelas paste]]
-3. [[Axe of the high sungod (u)]] = Axe handle + [[Sun-god axe head]]
-4. [[Axe of the high sungod]] = Axe of the high sungod (u) + 2,000,000 [[Atomic energy]]
+3. [[Axe of the High Sungod (u)]] = Axe handle + [[Sun-god axe head]]
+4. [[Axe of the High Sungod]] = Axe of the High Sungod (u) + 2,000,000 [[Atomic energy]]
 
 [[Sun-god axe head]] is smithed at level 110 Smithing from 2 [[Sun-metal bar]] (requires 400 QP).
 
