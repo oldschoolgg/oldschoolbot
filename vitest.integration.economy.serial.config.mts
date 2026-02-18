@@ -4,9 +4,9 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
 	clearScreen: false,
 	test: {
-		name: 'Old School Bot - Integration',
-		include: ['tests/integration/**/*.test.ts'],
-		exclude: [
+		// These tests touch shared/global economy state and must run serially.
+		name: 'Old School Bot - Integration (Economy Serial)',
+		include: [
 			'tests/integration/grandExchange.test.ts',
 			'tests/integration/migrateUser.test.ts',
 			'tests/integration/paymentConflict.test.ts',
@@ -17,23 +17,13 @@ export default defineConfig({
 		],
 		setupFiles: 'tests/integration/setup.ts',
 		globalSetup: 'tests/integration/globalSetup.ts',
-		coverage: {
-			provider: 'v8',
-			reporter: 'text',
-			include: [
-				'src/mahoji/lib/abstracted_commands/minionKill/*.ts',
-				'src/lib/structures/*.ts',
-				'src/lib/skilling/skills/farming/**/*.ts'
-			]
-		},
 		testTimeout: 60_000,
-		maxConcurrency: 4,
-		isolate: false,
+		maxConcurrency: 1,
+		isolate: true,
 		pool: 'forks',
-		maxWorkers: 10,
+		maxWorkers: 1,
 		sequence: {
-			shuffle: true,
-			seed: 1
+			shuffle: false
 		}
 	},
 

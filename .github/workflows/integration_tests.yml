@@ -31,8 +31,8 @@ jobs:
       - name: Run Integration Tests (Parallel Suite)
         run: docker compose run --rm -e TEST_CONFIG=vitest.integration.config.mts app
 
-      - name: Run Integration Tests (GE Serial Suite)
-        run: docker compose run --rm -e TEST_CONFIG=vitest.integration.ge.config.mts app
+      - name: Run Integration Tests (Economy Serial Suite)
+        run: docker compose run --rm -e TEST_CONFIG=vitest.integration.economy.serial.config.mts app
 
       - name: Cleanup
         if: always()

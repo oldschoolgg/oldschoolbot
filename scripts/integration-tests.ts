@@ -49,7 +49,7 @@ await Promise.all([
 log(`Database schemas pushed.`);
 
 const mainCommand = ['pnpm', 'vitest', 'run', '--config', 'vitest.integration.config.mts'];
-const geCommand = ['pnpm', 'vitest', 'run', '--config', 'vitest.integration.ge.config.mts'];
+const economySerialCommand = ['pnpm', 'vitest', 'run', '--config', 'vitest.integration.economy.serial.config.mts'];
 
 const otherArgs: string = process.argv.slice(2).join(' ').trim();
 if (otherArgs) {
@@ -59,5 +59,5 @@ if (otherArgs) {
 const runEnv = { ...process.env, NODE_NO_WARNINGS: '1' };
 await run(mainCommand, { env: runEnv });
 if (!otherArgs) {
-	await run(geCommand, { env: runEnv });
+	await run(economySerialCommand, { env: runEnv });
 }
