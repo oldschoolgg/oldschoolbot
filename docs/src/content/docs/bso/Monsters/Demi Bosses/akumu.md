@@ -38,3 +38,9 @@ These supplies are consumed every kill.
 | Demon statuette       | 1/122         |
 | Elder scroll piece    | 1/85          |
 | Mini akumu            | 1/1000        |
+
+## Mechanics notes
+
+- Kill time: 25 minutes each.
+- Requires 1 KC of [[Solis]] plus [[Combatant's cape]].
+- Elder scroll piece drop is **1/85**.

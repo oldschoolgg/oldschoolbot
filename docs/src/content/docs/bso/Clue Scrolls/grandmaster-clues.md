@@ -57,3 +57,12 @@ Each casket gives 5–11 loot rolls, so actual drop rates vary. Denoted as `x`:
 - [Clue Hunter](/bso/custom-items/#clue-hunter-outfit) – x/2500
 - [[Blabberbeak]] – x/20000
 - Ring of Luck – x/8000
+
+
+## Clue hunter outfit exact rate
+
+Grandmaster caskets roll the clue-hunter table at **1/2500 per roll**. Each successful roll gives one random piece from 6 pieces.
+
+- Per-piece rate per roll: **1/15,000**
+- Each casket has **5-11 rolls**
+- So per casket, each specific piece is roughly between **5/15,000 (1/3000)** and **11/15,000 (~1/1364)** depending on roll count.
