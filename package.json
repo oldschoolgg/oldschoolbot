@@ -29,6 +29,7 @@
 		"test:unit": "vitest run --config vitest.unit.config.mts",
 		"test:docker": "docker compose build && docker compose run --rm app",
 		"test:integration": "pnpm tsx --no-deprecation --env-file=.env.test ./scripts/integration-tests.ts",
+		"test:integration:slow": "pnpm tsx --no-deprecation ./scripts/integration-tests-slow.ts",
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"test:ci:unit": "pnpm concurrent \"pnpm test:unit\" \"pnpm test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"============MISC": "============",

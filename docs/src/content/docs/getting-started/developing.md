@@ -26,6 +26,26 @@ lastUpdated: 2024-10-01T03:41:00.552Z
 
 `pnpm monorepo:test`: Run this if you want to test either monorepo (oldschooljs or toolkit).
 
+### Integration tests (local)
+
+If local integration tests hit DB connection limits (`P2037`/`P1017`), run with lower Vitest concurrency:
+
+Unix/macOS:
+
+`VITEST_INTEGRATION_MAX_WORKERS=1 VITEST_INTEGRATION_MAX_CONCURRENCY=1 pnpm test:integration`
+
+PowerShell:
+
+`$env:VITEST_INTEGRATION_MAX_WORKERS=1; $env:VITEST_INTEGRATION_MAX_CONCURRENCY=1; pnpm test:integration`
+
+cmd.exe:
+
+`set VITEST_INTEGRATION_MAX_WORKERS=1&& set VITEST_INTEGRATION_MAX_CONCURRENCY=1&& pnpm test:integration`
+
+You can also lower command-fuzz parallelism in `allCommandsBase` if needed:
+
+`ALL_COMMANDS_BASE_CONCURRENCY=1 pnpm test:integration`
+
 ### Spritesheet
 
 The spritesheet is a big image file containing most icons the bot uses for items, not all items are in it, if the bot need any that aren't in it, it will download them on demand.

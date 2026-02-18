@@ -12,10 +12,10 @@ export async function exitCleanup() {
 		sonicBoom.flushSync();
 		sonicBoom.destroy();
 		if (prisma) {
-			prisma.$disconnect();
+			await prisma.$disconnect();
 		}
 		if (roboChimpClient) {
-			roboChimpClient.$disconnect();
+			await roboChimpClient.$disconnect();
 		}
 	} catch (err) {
 		Logging.logError(err as Error);

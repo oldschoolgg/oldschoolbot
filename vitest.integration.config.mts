@@ -1,6 +1,10 @@
 import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
+const isCI = process.env.CI === '1' || process.env.CI === 'true';
+const maxWorkers = Number(process.env.VITEST_INTEGRATION_MAX_WORKERS ?? (isCI ? 10 : 2));
+const maxConcurrency = Number(process.env.VITEST_INTEGRATION_MAX_CONCURRENCY ?? (isCI ? 4 : 2));
+
 export default defineConfig({
 	clearScreen: false,
 	test: {
@@ -27,10 +31,10 @@ export default defineConfig({
 			]
 		},
 		testTimeout: 60_000,
-		maxConcurrency: 4,
+		maxConcurrency,
 		isolate: false,
 		pool: 'forks',
-		maxWorkers: 10,
+		maxWorkers,
 		sequence: {
 			shuffle: true,
 			seed: 1

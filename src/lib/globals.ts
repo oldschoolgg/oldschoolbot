@@ -15,14 +15,17 @@ async function getAdapter(
 	const shouldUseRealPostgres = globalConfig.isProduction || process.env.USE_REAL_PG === '1';
 	if (shouldUseRealPostgres) {
 		const connectionString = type === 'robochimp' ? process.env.ROBOCHIMP_DATABASE_URL : process.env.DATABASE_URL;
+		const isTest = process.env.TEST === 'true' || process.env.TEST === '1';
+		const maxPoolConnections = Number(process.env.PRISMA_POOL_MAX ?? (isTest ? 5 : 100));
+		const minPoolConnections = Number(process.env.PRISMA_POOL_MIN ?? (isTest ? 0 : 20));
 		Logging.logDebug(`Using Real Postgres for ${type} database`);
 		return {
 			adapter: new PrismaPg(
 				{
 					connectionString,
 					idleTimeoutMillis: 60_000,
-					max: 100,
-					min: 20
+					max: maxPoolConnections,
+					min: minPoolConnections
 				},
 				{ onPoolError: Logging.logError, onConnectionError: Logging.logError }
 			),

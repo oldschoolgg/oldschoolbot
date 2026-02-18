@@ -21,6 +21,8 @@ type TestCommandOptionsValue = number | string | MahojiUserOption | IChannel | I
 
 const LIMIT_PER_COMMAND = 1;
 const BASE_LEVEL_ACCOUNTS_TO_TEST = [85];
+const isCI = process.env.CI === '1' || process.env.CI === 'true';
+const allCommandsBaseConcurrency = Number(process.env.ALL_COMMANDS_BASE_CONCURRENCY ?? (isCI ? 10 : 1));
 
 export async function generateCommandInputs(
 	commandName: string,
@@ -284,7 +286,11 @@ test(
 		}
 
 		let commandsRan = 0;
-		const queue = new PromiseQueue({ concurrency: 10, timeout: Time.Second * 30, throwOnTimeout: true });
+		const queue = new PromiseQueue({
+			concurrency: allCommandsBaseConcurrency,
+			timeout: Time.Second * 30,
+			throwOnTimeout: true
+		});
 		const results: { time: number; command: string; options: CommandOptions; rawResults: any[] }[] = [];
 
 		for (const { command, options: allOptions } of processedCommands) {
