@@ -1,0 +1,36 @@
+﻿---
+import CommandNodeTree from './CommandNodeTree.astro';
+
+type ChoiceNode = {
+  name: string;
+  value: string | number;
+};
+
+type OptionNode = {
+  name: string;
+  description: string;
+  type: string;
+  required: boolean;
+  choices?: ChoiceNode[];
+  min?: number;
+  max?: number;
+};
+
+type CommandNode = {
+  name: string;
+  path: string;
+  description: string;
+  examples?: string[];
+  options: OptionNode[];
+  subcommands: CommandNode[];
+};
+
+interface Props {
+  nodes: CommandNode[];
+  level: number;
+}
+
+const { nodes, level } = Astro.props;
+---
+
+{nodes.map(node => <CommandNodeTree node={node} level={level} />)}

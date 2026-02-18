@@ -1,0 +1,184 @@
+---
+import { getEntry } from 'astro:content';
+import CommandNodeTree from './CommandNodeTree.astro';
+
+const commandsEntry = await getEntry('generated', 'commands');
+if (!commandsEntry) {
+	throw new Error('Missing generated commands data at docs/src/content/generated/commands.json');
+}
+
+const commandsDoc = commandsEntry.data;
+const totalCommands = commandsDoc.commands.length;
+---
+
+<section data-commands-root>
+<label for="command-filter"><strong>Search commands</strong></label>
+<div>
+	<input id="command-filter" type="search" data-commands-filter placeholder="Search by command, path, description, or option..." />
+	<button type="button" data-commands-clear hidden>✕</button>
+</div>
+<p data-commands-results aria-live="polite" hidden></p>
+<p>This page is generated from slash command definitions.</p>
+<p><strong>Total top-level commands:</strong> {totalCommands}</p>
+<p><strong>Generated:</strong> {new Date(commandsDoc.generatedAt).toUTCString()}</p>
+
+{commandsDoc.commands.map(command => <CommandNodeTree node={command} level={2} />)}
+</section>
+
+<script is:inline>
+	(() => {
+		const root = document.querySelector('[data-commands-root]');
+		if (!root) return;
+
+		const filterInput = root.querySelector('[data-commands-filter]');
+		const clearButton = root.querySelector('[data-commands-clear]');
+		const resultsLabel = root.querySelector('[data-commands-results]');
+		const nodeElements = Array.from(root.querySelectorAll('[data-command-node]'));
+
+		if (!filterInput || !clearButton || !resultsLabel || nodeElements.length === 0) return;
+
+		const manualExpandedPaths = new Set();
+		const parentByNode = new Map();
+		const childrenByNode = new Map();
+
+		for (const node of nodeElements) {
+			childrenByNode.set(node, []);
+		}
+
+		for (const node of nodeElements) {
+			const parentNode = node.parentElement ? node.parentElement.closest('[data-command-node]') : null;
+			parentByNode.set(node, parentNode);
+			if (parentNode) {
+				childrenByNode.get(parentNode).push(node);
+			}
+		}
+
+		const normalize = value => value.trim().toLowerCase();
+		const getPath = node => (node.getAttribute('data-path') ?? '').toLowerCase();
+		const getAnchorId = node => (node.getAttribute('data-anchor-id') ?? '').toLowerCase();
+
+		const setExpandedState = (node, expanded, visible) => {
+			const toggleButton = node.querySelector(':scope > [data-command-toggle]');
+			const childrenContainer = node.querySelector(':scope > [data-command-children]');
+			if (!toggleButton || !childrenContainer) return;
+
+			toggleButton.hidden = !visible;
+			toggleButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+			toggleButton.textContent = expanded ? 'Hide subcommands' : 'Show subcommands';
+			childrenContainer.hidden = !expanded;
+		};
+
+		const applyFilter = () => {
+			const filterText = normalize(filterInput.value);
+			const hasFilter = filterText.length > 0;
+			const visibleNodes = new Set();
+			const autoExpandedNodes = new Set();
+			let resultsCount = 0;
+
+			if (hasFilter) {
+				for (const node of nodeElements) {
+					const searchText = (node.getAttribute('data-search-text') ?? '').toLowerCase();
+					if (!searchText.includes(filterText)) continue;
+
+					resultsCount += 1;
+					visibleNodes.add(node);
+
+					let currentNode = node;
+					while (parentByNode.get(currentNode)) {
+						const parentNode = parentByNode.get(currentNode);
+						visibleNodes.add(parentNode);
+						autoExpandedNodes.add(parentNode);
+						currentNode = parentNode;
+					}
+				}
+			}
+
+			for (const node of nodeElements) {
+				const visible = hasFilter ? visibleNodes.has(node) : true;
+				node.hidden = !visible;
+
+				const hasChildren = (childrenByNode.get(node) ?? []).length > 0;
+				if (!hasChildren) continue;
+
+				const nodePath = getPath(node);
+				const manualExpanded = nodePath.length > 0 && manualExpandedPaths.has(nodePath);
+				const autoExpanded = hasFilter && autoExpandedNodes.has(node);
+				setExpandedState(node, manualExpanded || autoExpanded, visible);
+			}
+
+			if (!hasFilter) {
+				resultsLabel.hidden = true;
+				resultsLabel.textContent = '';
+				clearButton.hidden = true;
+				return;
+			}
+
+			resultsLabel.hidden = false;
+			resultsLabel.textContent = `${resultsCount} result${resultsCount === 1 ? '' : 's'}`;
+			clearButton.hidden = false;
+		};
+
+		const expandParentsForHash = () => {
+			const hashValue = decodeURIComponent(window.location.hash.replace(/^#/, '')).trim().toLowerCase();
+			if (!hashValue) return;
+
+			let targetNode = null;
+			for (const node of nodeElements) {
+				if (getAnchorId(node) === hashValue) {
+					targetNode = node;
+					break;
+				}
+			}
+			if (!targetNode) return;
+
+			let currentNode = targetNode;
+			while (parentByNode.get(currentNode)) {
+				const parentNode = parentByNode.get(currentNode);
+				const parentPath = getPath(parentNode);
+				if (parentPath) {
+					manualExpandedPaths.add(parentPath);
+				}
+				currentNode = parentNode;
+			}
+
+			applyFilter();
+			const heading = document.getElementById(hashValue);
+			if (heading) {
+				heading.scrollIntoView({ block: 'start' });
+			}
+		};
+
+		root.addEventListener('click', event => {
+			const target = event.target;
+			if (!(target instanceof Element)) return;
+
+			const toggle = target.closest('[data-command-toggle]');
+			if (!toggle) return;
+
+			const parentNode = toggle.closest('[data-command-node]');
+			if (!parentNode) return;
+
+			const path = getPath(parentNode);
+			if (!path) return;
+
+			if (manualExpandedPaths.has(path)) {
+				manualExpandedPaths.delete(path);
+			} else {
+				manualExpandedPaths.add(path);
+			}
+
+			applyFilter();
+		});
+
+		filterInput.addEventListener('input', applyFilter);
+		clearButton.addEventListener('click', () => {
+			filterInput.value = '';
+			applyFilter();
+			filterInput.focus();
+		});
+
+		applyFilter();
+		expandParentsForHash();
+		window.addEventListener('hashchange', expandParentsForHash);
+	})();
+</script>
