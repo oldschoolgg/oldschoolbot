@@ -1,7 +1,7 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { IChannel, IRole } from '@oldschoolgg/schemas';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
+import type { RNGProvider } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { convertLVLtoXP } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { omit } from 'remeda';

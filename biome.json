@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
 	"assist": {
 		"actions": {
 			"source": {
@@ -9,10 +9,11 @@
 						"groups": [
 							["@bso/**", "@/lib/bso/**"],
 							":BLANK_LINE:",
-							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:", "!@scripts/**"],
 							":BLANK_LINE:",
 							["@/prisma/**"],
 							["@/discord/**"],
+							["@scripts/**"],
 							[":ALIAS:", ":PATH:"]
 						]
 					}
@@ -92,7 +93,8 @@
 				"noBannedTypes": "off",
 				"noForEach": "warn",
 				"noStaticOnlyClass": "off",
-				"noUselessContinue": "warn"
+				"noUselessContinue": "warn",
+				"noImportantStyles": "off"
 			},
 			"performance": {
 				"noAccumulatingSpread": "warn"

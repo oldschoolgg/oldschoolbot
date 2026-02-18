@@ -1,5 +1,5 @@
-import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
@@ -40,7 +40,7 @@ function makeFishingGearBank({ fishingLevel }: { fishingLevel: number }) {
 	return gearBank;
 }
 
-function renderFishingXpHrTable() {
+export function renderFishingXpHrTable() {
 	const results: {
 		xpHr: number;
 		hasPearlRod: boolean;
@@ -144,5 +144,3 @@ function renderFishingXpHrTable() {
 
 	handleMarkdownEmbed('fishingxphr', 'osb/Skills/fishing.mdx', table.toString());
 }
-
-renderFishingXpHrTable();

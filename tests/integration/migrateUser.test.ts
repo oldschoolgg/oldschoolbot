@@ -1,6 +1,6 @@
 import { defaultGearSetup, GearSetupTypes } from '@oldschoolgg/gear';
-import { MathRNG, randArrItem, randInt, shuffleArr } from '@oldschoolgg/rng';
 import { sumArr, Time } from '@oldschoolgg/toolkit';
+import { MathRNG, randArrItem, randInt } from 'node-rng';
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 import { beforeAll, expect, test } from 'vitest';
@@ -56,6 +56,7 @@ import {
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity.js';
+import { mockInteraction } from '../test-utils/mockInteraction.js';
 import type { TestUser } from './util.js';
 import { createTestUser, mockClient, mockedId } from './util.js';
 
@@ -626,7 +627,7 @@ const allTableCommands: TestCommand[] = [
 				'Firemaking'
 			];
 			for (let x = 0; x < 3; x++) {
-				const activity = randArrItem(randomActivities);
+				const activity = randArrItem(randomActivities)!;
 				const baseDate = new Date();
 				const start_date = new Date(baseDate.getTime() - randInt(30, 100) * Time.Hour);
 				const duration = Time.Hour - randInt(10, 30) * Time.Minute;
@@ -649,7 +650,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Group Activity',
 		cmd: async user => {
-			const users = shuffleArr([user.id, mockedId(), mockedId()]);
+			const users = MathRNG.shuffle([user.id, mockedId(), mockedId()]);
 			const data = {
 				leader: user.id,
 				users,
@@ -685,7 +686,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Set POH Wallkit',
 		cmd: async user => {
-			await pohWallkitCommand(user, 'Hosidius');
+			await pohWallkitCommand(mockInteraction({ user }), 'Hosidius');
 		}
 	},
 	{
@@ -791,7 +792,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Slayer task',
 		cmd: async user => {
-			await assignNewSlayerTask(user, slayerMasters.find(sm => sm.name === 'Turael')!);
+			await assignNewSlayerTask(mockInteraction({ user }), slayerMasters.find(sm => sm.name === 'Turael')!);
 		}
 	},
 	{
@@ -822,7 +823,7 @@ const allTableCommands: TestCommand[] = [
 				'gauntlet'
 			];
 			const quantity = randInt(10, 20);
-			await user.incrementMinigameScore(randArrItem(minigames), quantity);
+			await user.incrementMinigameScore(randArrItem(minigames)!, quantity);
 		}
 	},
 	{
@@ -945,7 +946,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'GE Listings',
 		cmd: async user => {
-			const item = randArrItem(resolveItems(['Cannonball', 'Feather', 'Fire rune', 'Guam leaf'])).toString();
+			const item = randArrItem(resolveItems(['Cannonball', 'Feather', 'Fire rune', 'Guam leaf']))!.toString();
 			const price = randInt(1, 100);
 			const quantity = randInt(1, 100);
 			await user.runCommand(geCommand, { buy: { item, quantity, price } });
@@ -981,7 +982,7 @@ const allTableCommands: TestCommand[] = [
 		cmd: async user => {
 			const activeBingos = await global.prisma!.bingo.findMany({ select: { id: true } });
 			if (activeBingos.length === 0) return;
-			const myBingo = randArrItem(activeBingos).id;
+			const myBingo = randArrItem(activeBingos)!.id;
 			// Check if we're in this bingo already:
 			const existingTeam = await global.prisma!.bingoParticipant.findFirst({
 				where: { user_id: user.id, bingo_id: myBingo }
@@ -1051,7 +1052,7 @@ const allTableCommands: TestCommand[] = [
 					user_id: BigInt(user.id),
 					channel_id: 1_111_111_111n,
 					args: {},
-					command_name: randArrItem(randCommands),
+					command_name: randArrItem(randCommands)!,
 					guild_id: null,
 					inhibited: false
 				}
@@ -1111,7 +1112,7 @@ async function runRandomTestCommandsOnUser(user: TestUser, numCommands = 6, forc
 		await runTestCommand(user, command);
 	}
 	for (let i = 0; i < numCommands; i++) {
-		const command = randArrItem(otherCommands);
+		const command = randArrItem(otherCommands)!;
 		commandHistory.push(`${new Date().toISOString()}:${command.name}`);
 		await runTestCommand(user, command);
 	}

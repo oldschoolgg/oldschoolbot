@@ -1,5 +1,5 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import type { Prisma, User } from '@prisma/robochimp';
+import { cryptoRng } from 'node-rng/crypto';
 
 import { RUser } from '../src/structures/RUser.js';
 

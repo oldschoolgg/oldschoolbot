@@ -1,5 +1,4 @@
 import { GearStat } from '@oldschoolgg/gear';
-import { roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
@@ -16,11 +15,11 @@ const awakenedDeathProps = {
 
 function makeTabletEffect(itemName: string): KillableMonster['effect'] {
 	const item = Items.getOrThrow(itemName);
-	return ({ quantity, gearBank }: Parameters<KillableMonsterEffect>['0']): ReturnType<KillableMonsterEffect> => {
+	return ({ quantity, gearBank, rng }: Parameters<KillableMonsterEffect>['0']): ReturnType<KillableMonsterEffect> => {
 		if (gearBank.bank.has(item)) return;
 		let gotTab = false;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(25)) {
+			if (rng.roll(25)) {
 				gotTab = true;
 				break;
 			}

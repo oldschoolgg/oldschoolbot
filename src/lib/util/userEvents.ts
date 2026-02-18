@@ -46,7 +46,7 @@ export async function insertUserEvent({
 		throw new Error(`Invalid user event: ${JSON.stringify(data)}`);
 	}
 
-	await prisma.userEvent.create({ data });
+	await prisma.userEvent.create({ data, select: { id: true } });
 }
 
 export function userEventToStr(event: UserEvent) {

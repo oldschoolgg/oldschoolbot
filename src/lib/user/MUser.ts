@@ -1,5 +1,4 @@
 import { defaultGearSetup, type EquipmentSlot, type GearSetup } from '@oldschoolgg/gear';
-import { percentChance } from '@oldschoolgg/rng';
 import {
 	type IBirdhouseData,
 	type IBlowpipeData,
@@ -11,6 +10,7 @@ import {
 import { calcWhatPercent, isObject, type PerkTier, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { Mutex } from 'async-mutex';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, EMonster, type Item, type ItemBank, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
@@ -462,7 +462,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			if (avasDevice && projectileCategory?.savedByAvas) {
 				const ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
-					if (percentChance(avasDevice.reduction)) {
+					if (cryptoRng.percentChance(avasDevice.reduction)) {
 						ammoRemove[1]--;
 						realCost.remove(ammoRemove[0].id, 1);
 					}
@@ -487,7 +487,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 			if (avasDevice) {
 				const copyDarts = dart?.[1];
 				for (let i = 0; i < copyDarts; i++) {
-					if (percentChance(avasDevice.reduction)) {
+					if (cryptoRng.percentChance(avasDevice.reduction)) {
 						realCost.remove(dart[0].id, 1);
 						dart![1]--;
 					}
@@ -822,7 +822,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async addMonsterXP(params: AddMonsterXpParams) {
-		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles() });
+		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles(), rng: cryptoRng });
 		const result = await this.addXPBank(res);
 		return `**XP Gains:** ${result}`;
 	}

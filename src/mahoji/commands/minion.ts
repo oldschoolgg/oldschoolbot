@@ -421,7 +421,7 @@ export const minionCommand = defineCommand({
 		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
-			return { embeds: [await minionStatsEmbed(user)] };
+			return { embeds: [await minionStatsEmbed({ user, rng })] };
 		}
 
 		if (options.achievementdiary) {
@@ -538,7 +538,7 @@ export const minionCommand = defineCommand({
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
 		}
 		if (options.daily) {
-			return dailyCommand(interaction, user);
+			return dailyCommand(rng, interaction, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
 		if (options.pat) return rng.pick(patMessages).replace('{name}', user.minionName);
