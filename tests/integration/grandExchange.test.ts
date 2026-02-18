@@ -150,8 +150,9 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 		await GrandExchange.totalReset();
 		await GrandExchange.init();
 
-		const currentOwnedBank = await GrandExchange.fetchOwnedBank();
-		expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
+		const startingOwnedBank = await GrandExchange.fetchOwnedBank();
+		expect(startingOwnedBank.toString()).toEqual(new Bank().toString());
+		const startingData = await GrandExchange.fetchData();
 
 		const wes = await createTestUser();
 		const magnaboy = await createTestUser();
@@ -219,12 +220,11 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 			sampleBank.clone().multiply(2).remove('Coins', totalTax).toString()
 		);
 
-		const bank = await GrandExchange.fetchOwnedBank();
-		expect(bank.toString()).toEqual('No items');
-		expect(bank.length).toEqual(0);
+		const endingOwnedBank = await GrandExchange.fetchOwnedBank();
+		expect(endingOwnedBank.toJSON()).toEqual(startingOwnedBank.toJSON());
 
 		const data = await GrandExchange.fetchData();
-		expect(data.taxBank, 'LZ9').toEqual(totalTax);
-		expect(data.totalTax, 'M39').toEqual(totalTax);
+		expect(data.taxBank - startingData.taxBank, 'LZ9').toEqual(totalTax);
+		expect(data.totalTax - startingData.totalTax, 'M39').toEqual(totalTax);
 	});
 });

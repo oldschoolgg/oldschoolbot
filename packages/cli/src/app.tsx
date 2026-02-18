@@ -68,11 +68,11 @@ const stages: Stage[] = [
 	{
 		name: 'Stage 2',
 		commands: [
+			...scripts.map(s => ({
+				cmd: s.cmd,
+				desc: s.desc
+			})),
 			[
-				...scripts.map(s => ({
-					cmd: s.cmd,
-					desc: s.desc
-				})),
 				{ cmd: 'tsx esbuild.mts', desc: 'Building bot...' },
 				{
 					cmd: ['biome check --write --diagnostic-level=error'],

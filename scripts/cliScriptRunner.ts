@@ -39,7 +39,7 @@ async function main() {
 		printHelp();
 		return;
 	}
-	if (!(scriptName in availableScripts)) {
+	if (!Object.hasOwn(availableScripts, scriptName)) {
 		throw new Error(`Unknown script "${scriptName}". Valid: ${scriptNames.join(', ')}`);
 	}
 

@@ -6,6 +6,7 @@ export default defineConfig({
 	test: {
 		name: 'Old School Bot - Integration',
 		include: ['tests/integration/**/*.test.ts'],
+		exclude: ['tests/integration/grandExchange.test.ts'],
 		setupFiles: 'tests/integration/setup.ts',
 		globalSetup: 'tests/integration/globalSetup.ts',
 		coverage: {
