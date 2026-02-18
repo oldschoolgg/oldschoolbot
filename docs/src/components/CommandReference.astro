@@ -9,21 +9,121 @@ if (!commandsEntry) {
 
 const commandsDoc = commandsEntry.data;
 const totalCommands = commandsDoc.commands.length;
+const toAnchorId = (commandPath: string) =>
+	commandPath
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/(^-|-$)/g, '');
 ---
 
 <section data-commands-root>
-<label for="command-filter"><strong>Search commands</strong></label>
-<div>
-	<input id="command-filter" type="search" data-commands-filter placeholder="Search by command, path, description, or option..." />
-	<button type="button" data-commands-clear hidden>✕</button>
-</div>
-<p data-commands-results aria-live="polite" hidden></p>
-<p>This page is generated from slash command definitions.</p>
-<p><strong>Total top-level commands:</strong> {totalCommands}</p>
-<p><strong>Generated:</strong> {new Date(commandsDoc.generatedAt).toUTCString()}</p>
+	<label for="command-filter"><strong>Search commands</strong></label>
+	<div>
+		<input
+			id="command-filter"
+			type="search"
+			data-commands-filter
+			placeholder="Search by command, path, description, or option..."
+		/>
+		<button type="button" data-commands-clear hidden>Clear</button>
+	</div>
+	<p data-commands-results aria-live="polite" hidden></p>
+	<label for="command-jump"><strong>Jump to command</strong></label>
+	<select id="command-jump" data-commands-jump>
+		<option value="">Select a command...</option>
+		{
+			commandsDoc.commands.map(command => (
+				<option value={toAnchorId(command.path)}>{`/${command.path}`}</option>
+			))
+		}
+	</select>
+	<p>This page is generated from slash command definitions.</p>
+	<p><strong>Total top-level commands:</strong> {totalCommands}</p>
+	<p><strong>Generated:</strong> {new Date(commandsDoc.generatedAt).toUTCString()}</p>
 
-{commandsDoc.commands.map(command => <CommandNodeTree node={command} level={2} />)}
+	{commandsDoc.commands.map(command => <CommandNodeTree node={command} level={2} />)}
 </section>
+
+<style is:global>
+	[data-commands-root] [data-command-node] {
+		margin: 1rem 0;
+	}
+
+	[data-commands-root] .command-card {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.75rem;
+		padding: 1rem;
+		background: color-mix(in srgb, var(--sl-color-bg) 88%, var(--sl-color-gray-6));
+	}
+
+	[data-commands-root] .command-card-top {
+		border-left: 4px solid var(--sl-color-accent);
+	}
+
+	[data-commands-root] .command-card-sub {
+		margin-left: 0.75rem;
+		border-color: var(--sl-color-gray-6);
+		background: color-mix(in srgb, var(--sl-color-bg) 92%, var(--sl-color-gray-7));
+	}
+
+	[data-commands-root] .command-header {
+		display: flex;
+		gap: 0.75rem;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+
+	[data-commands-root] .command-header-text {
+		min-width: 0;
+		flex: 1;
+	}
+
+	[data-commands-root] .command-header-text h2,
+	[data-commands-root] .command-header-text h3,
+	[data-commands-root] .command-header-text h4,
+	[data-commands-root] .command-header-text h5,
+	[data-commands-root] .command-header-text h6 {
+		margin: 0;
+	}
+
+	[data-commands-root] .command-description {
+		margin: 0.3rem 0 0;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	[data-commands-root] .command-header-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		justify-content: flex-end;
+		align-items: center;
+	}
+
+	[data-commands-root] .command-chip {
+		font-size: 0.75rem;
+		padding: 0.2rem 0.45rem;
+		border-radius: 999px;
+		border: 1px solid var(--sl-color-gray-5);
+		background: color-mix(in srgb, var(--sl-color-bg) 82%, var(--sl-color-gray-6));
+	}
+
+	[data-commands-root] .command-toggle {
+		font-size: 0.75rem;
+		padding: 0.25rem 0.5rem;
+	}
+
+	[data-commands-root] [data-command-details] {
+		margin-top: 0.9rem;
+		padding-top: 0.8rem;
+		border-top: 1px solid var(--sl-color-gray-6);
+	}
+
+	[data-commands-root] .command-options-table tbody tr:nth-child(even) {
+		background: color-mix(in srgb, var(--sl-color-bg) 86%, var(--sl-color-gray-6));
+	}
+</style>
 
 <script is:inline>
 	(() => {
@@ -33,39 +133,33 @@ const totalCommands = commandsDoc.commands.length;
 		const filterInput = root.querySelector('[data-commands-filter]');
 		const clearButton = root.querySelector('[data-commands-clear]');
 		const resultsLabel = root.querySelector('[data-commands-results]');
+		const jumpSelect = root.querySelector('[data-commands-jump]');
 		const nodeElements = Array.from(root.querySelectorAll('[data-command-node]'));
 
-		if (!filterInput || !clearButton || !resultsLabel || nodeElements.length === 0) return;
+		if (!filterInput || !clearButton || !resultsLabel || !jumpSelect || nodeElements.length === 0) return;
 
 		const manualExpandedPaths = new Set();
 		const parentByNode = new Map();
-		const childrenByNode = new Map();
-
-		for (const node of nodeElements) {
-			childrenByNode.set(node, []);
-		}
 
 		for (const node of nodeElements) {
 			const parentNode = node.parentElement ? node.parentElement.closest('[data-command-node]') : null;
 			parentByNode.set(node, parentNode);
-			if (parentNode) {
-				childrenByNode.get(parentNode).push(node);
-			}
 		}
 
 		const normalize = value => value.trim().toLowerCase();
 		const getPath = node => (node.getAttribute('data-path') ?? '').toLowerCase();
 		const getAnchorId = node => (node.getAttribute('data-anchor-id') ?? '').toLowerCase();
+		const hasDetails = node => node.getAttribute('data-has-details') === 'true';
 
 		const setExpandedState = (node, expanded, visible) => {
-			const toggleButton = node.querySelector(':scope > [data-command-toggle]');
-			const childrenContainer = node.querySelector(':scope > [data-command-children]');
-			if (!toggleButton || !childrenContainer) return;
+			const toggleButton = node.querySelector(':scope > .command-card > .command-header [data-command-toggle]');
+			const detailsContainer = node.querySelector(':scope > .command-card > [data-command-details]');
+			if (!toggleButton || !detailsContainer) return;
 
 			toggleButton.hidden = !visible;
 			toggleButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-			toggleButton.textContent = expanded ? 'Hide subcommands' : 'Show subcommands';
-			childrenContainer.hidden = !expanded;
+			toggleButton.textContent = expanded ? 'Collapse' : 'Expand';
+			detailsContainer.hidden = !expanded || !visible;
 		};
 
 		const applyFilter = () => {
@@ -82,6 +176,7 @@ const totalCommands = commandsDoc.commands.length;
 
 					resultsCount += 1;
 					visibleNodes.add(node);
+					autoExpandedNodes.add(node);
 
 					let currentNode = node;
 					while (parentByNode.get(currentNode)) {
@@ -97,9 +192,7 @@ const totalCommands = commandsDoc.commands.length;
 				const visible = hasFilter ? visibleNodes.has(node) : true;
 				node.hidden = !visible;
 
-				const hasChildren = (childrenByNode.get(node) ?? []).length > 0;
-				if (!hasChildren) continue;
-
+				if (!hasDetails(node)) continue;
 				const nodePath = getPath(node);
 				const manualExpanded = nodePath.length > 0 && manualExpandedPaths.has(nodePath);
 				const autoExpanded = hasFilter && autoExpandedNodes.has(node);
@@ -118,19 +211,11 @@ const totalCommands = commandsDoc.commands.length;
 			clearButton.hidden = false;
 		};
 
-		const expandParentsForHash = () => {
-			const hashValue = decodeURIComponent(window.location.hash.replace(/^#/, '')).trim().toLowerCase();
-			if (!hashValue) return;
-
-			let targetNode = null;
-			for (const node of nodeElements) {
-				if (getAnchorId(node) === hashValue) {
-					targetNode = node;
-					break;
-				}
+		const expandParentsForNode = targetNode => {
+			const targetPath = getPath(targetNode);
+			if (targetPath) {
+				manualExpandedPaths.add(targetPath);
 			}
-			if (!targetNode) return;
-
 			let currentNode = targetNode;
 			while (parentByNode.get(currentNode)) {
 				const parentNode = parentByNode.get(currentNode);
@@ -140,7 +225,15 @@ const totalCommands = commandsDoc.commands.length;
 				}
 				currentNode = parentNode;
 			}
+		};
 
+		const expandParentsForHash = () => {
+			const hashValue = decodeURIComponent(window.location.hash.replace(/^#/, '')).trim().toLowerCase();
+			if (!hashValue) return;
+			const targetNode = nodeElements.find(node => getAnchorId(node) === hashValue);
+			if (!targetNode) return;
+
+			expandParentsForNode(targetNode);
 			applyFilter();
 			const heading = document.getElementById(hashValue);
 			if (heading) {
@@ -151,13 +244,11 @@ const totalCommands = commandsDoc.commands.length;
 		root.addEventListener('click', event => {
 			const target = event.target;
 			if (!(target instanceof Element)) return;
-
 			const toggle = target.closest('[data-command-toggle]');
 			if (!toggle) return;
 
 			const parentNode = toggle.closest('[data-command-node]');
 			if (!parentNode) return;
-
 			const path = getPath(parentNode);
 			if (!path) return;
 
@@ -166,11 +257,20 @@ const totalCommands = commandsDoc.commands.length;
 			} else {
 				manualExpandedPaths.add(path);
 			}
-
 			applyFilter();
 		});
 
 		filterInput.addEventListener('input', applyFilter);
+		jumpSelect.addEventListener('change', () => {
+			const selectedAnchor = String(jumpSelect.value ?? '').trim().toLowerCase();
+			if (!selectedAnchor) return;
+			const targetNode = nodeElements.find(node => getAnchorId(node) === selectedAnchor);
+			if (!targetNode) return;
+
+			expandParentsForNode(targetNode);
+			applyFilter();
+			window.location.hash = selectedAnchor;
+		});
 		clearButton.addEventListener('click', () => {
 			filterInput.value = '';
 			applyFilter();
