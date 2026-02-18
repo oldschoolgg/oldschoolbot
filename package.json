@@ -8,7 +8,7 @@
 		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm exec-and-start\"",
 		"exec-and-start": "concurrently \"pnpm exec-sql\" \"pnpm build-and-run\"",
 		"build-and-run": "tsx esbuild.mts && node --trace-warnings --enable-source-maps dist",
-		"dev": "tsx --tsconfig=packages/cli/tsconfig.json --env-file=.env packages/cli/src/cli.tsx",
+		"dev": "pnpm -r --filter \"oldschooljs\" --filter \"toolkit\" build && tsx --tsconfig=packages/cli/tsconfig.json --env-file=.env packages/cli/src/cli.tsx",
 		"watch:tsc": "tsc -w -p src",
 		"start": "pnpm watch",
 		"lint": "tsx --tsconfig scripts/tsconfig.json scripts/lint.ts",

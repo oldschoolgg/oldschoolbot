@@ -1,3 +1,5 @@
+import '../../../src/lib/safeglobals.js';
+
 import { renderCreatablesFile } from '@scripts/creatables.js';
 import { renderDataFiles } from '@scripts/dataFiles.js';
 import { createMonstersJson } from '@scripts/monstersJson.js';

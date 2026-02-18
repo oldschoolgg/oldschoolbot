@@ -1,5 +1,3 @@
-import './base.js';
-
 import { readFileSync, writeFileSync } from 'node:fs';
 import { Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
 import { DateTime } from 'luxon';
