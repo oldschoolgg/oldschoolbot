@@ -1,4 +1,5 @@
-﻿import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+﻿import { execSync } from 'node:child_process';
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
 
@@ -9,6 +10,8 @@ type CommandOption = {
 	name?: string;
 	description?: string;
 	required?: boolean;
+	min?: number;
+	max?: number;
 	choices?: ChoiceValue[];
 	choicesSummary?: string;
 	options?: CommandOption[];
@@ -27,6 +30,37 @@ type SubcommandEntry = {
 	path: string[];
 	options: CommandOption[];
 	description?: string;
+};
+
+type ChoiceNode = {
+	name: string;
+	value: string | number;
+};
+
+type OptionNode = {
+	name: string;
+	description: string;
+	type: string;
+	required: boolean;
+	choices?: ChoiceNode[];
+	min?: number;
+	max?: number;
+};
+
+type CommandNode = {
+	name: string;
+	path: string;
+	description: string;
+	category?: string;
+	examples?: string[];
+	options: OptionNode[];
+	subcommands: CommandNode[];
+};
+
+type CommandsDoc = {
+	generatedAt: string;
+	version?: string;
+	commands: CommandNode[];
 };
 
 type ImportTarget = {
@@ -51,7 +85,8 @@ type ModuleInfo = {
 
 const ROOT = process.cwd();
 const COMMANDS_DIR = path.join(ROOT, 'src', 'mahoji', 'commands');
-const OUTPUT_DIR = path.join(ROOT, 'docs', 'src', 'content', 'docs', 'osb', 'commands');
+const OUTPUT_DIR = path.join(ROOT, 'docs', 'src', 'content', 'generated');
+const OUTPUT_FILE = path.join(OUTPUT_DIR, 'commands.json');
 const IGNORED_COMMANDS = new Set(['admin', 'testpotato']);
 
 const moduleCache = new Map<string, ModuleInfo>();
@@ -360,7 +395,7 @@ function parseChoiceArray(filePath: string, node: ts.Expression, seen = new Set<
 
 		// "...something"
 		if (ts.isSpreadElement(unwrapped)) {
-			const spread = parseChoiceArray(filePath, unwrapped.expression, seen);
+			const spread = parseChoices(filePath, unwrapped.expression, new Set(seen))?.choices;
 			if (spread) out.push(...spread);
 			return;
 		}
@@ -376,7 +411,7 @@ function parseChoiceArray(filePath: string, node: ts.Expression, seen = new Set<
 			const resolvedExpr = unwrapExpression(resolved.expression);
 
 			// identifier points to an array
-			const asArray = parseChoiceArray(resolved.sourcePath, resolvedExpr, seen);
+			const asArray = parseChoiceArray(resolved.sourcePath, resolvedExpr, new Set(seen));
 			if (asArray) {
 				out.push(...asArray);
 				return;
@@ -468,15 +503,16 @@ function parseArrayLength(filePath: string, node: ts.Expression, seen = new Set<
 	const expression = unwrapExpression(node);
 	if (ts.isIdentifier(expression)) {
 		if (seen.has(expression.text)) return undefined;
-		seen.add(expression.text);
+		const nextSeen = new Set(seen);
+		nextSeen.add(expression.text);
 		const resolved = resolveIdentifierExpression(filePath, expression.text);
-		return resolved ? parseArrayLength(resolved.sourcePath, resolved.expression, seen) : undefined;
+		return resolved ? parseArrayLength(resolved.sourcePath, resolved.expression, nextSeen) : undefined;
 	}
 	if (ts.isArrayLiteralExpression(expression)) {
 		let count = 0;
 		for (const element of expression.elements) {
 			if (ts.isSpreadElement(element)) {
-				const spreadLength = parseArrayLength(filePath, element.expression, seen);
+				const spreadLength = parseArrayLength(filePath, element.expression, new Set(seen));
 				if (spreadLength === undefined) return undefined;
 				count += spreadLength;
 				continue;
@@ -598,27 +634,28 @@ function parseChoices(filePath: string, node: ts.Expression, seen = new Set<stri
 	}
 	if (ts.isIdentifier(expression)) {
 		if (seen.has(expression.text)) return undefined;
-		seen.add(expression.text);
+		const nextSeen = new Set(seen);
+		nextSeen.add(expression.text);
 		const resolved = resolveIdentifierExpression(filePath, expression.text);
-		return resolved ? parseChoices(resolved.sourcePath, resolved.expression, seen) : undefined;
+		return resolved ? parseChoices(resolved.sourcePath, resolved.expression, nextSeen) : undefined;
 	}
 	if (ts.isCallExpression(expression)) {
 		const callee = unwrapExpression(expression.expression);
 		if (ts.isIdentifier(callee) && callee.text === 'choicesOf' && expression.arguments[0]) {
-			const parsed = parseChoices(filePath, expression.arguments[0], seen);
+			const parsed = parseChoices(filePath, expression.arguments[0], new Set(seen));
 			if (parsed) {
 				return parsed;
 			}
-			const count = parseArrayLength(filePath, expression.arguments[0], seen);
+			const count = parseArrayLength(filePath, expression.arguments[0], new Set(seen));
 			return count !== undefined ? { summary: `${count} options` } : undefined;
 		}
 		if (ts.isPropertyAccessExpression(callee) && callee.name.text === 'map') {
-			return parseChoicesFromMap(filePath, expression, seen);
+			return parseChoicesFromMap(filePath, expression, new Set(seen));
 		}
 		if (ts.isIdentifier(callee)) {
 			const functionInfo = resolveIdentifierFunction(filePath, callee.text);
 			if (functionInfo?.returnExpression) {
-				return parseChoices(functionInfo.sourcePath, functionInfo.returnExpression, seen);
+				return parseChoices(functionInfo.sourcePath, functionInfo.returnExpression, new Set(seen));
 			}
 		}
 	}
@@ -702,6 +739,12 @@ function parseCommandOption(filePath: string, node: ts.Expression): CommandOptio
 		) {
 			option.required = value.kind === ts.SyntaxKind.TrueKeyword;
 		}
+		if ((key === 'min' || key === 'minValue') && ts.isNumericLiteral(value)) {
+			option.min = Number(value.text);
+		}
+		if ((key === 'max' || key === 'maxValue') && ts.isNumericLiteral(value)) {
+			option.max = Number(value.text);
+		}
 		if (key === 'choices') {
 			const parsedChoices = parseChoices(filePath, value);
 			if (parsedChoices) {
@@ -769,43 +812,42 @@ function parseCommandFile(filePath: string): CommandDefinition[] {
 	return commands;
 }
 
+function isSubcommandType(type?: string): boolean {
+	return type === 'Subcommand' || type === 'SubcommandGroup';
+}
+
+function normalizeDescription(description?: string): string {
+	return description?.trim() ? description : 'No description available yet.';
+}
+
 function formatOptionType(option: CommandOption): string {
 	return option.type ? option.type.toLowerCase() : 'unknown';
 }
 
-function formatOptionToken(option: CommandOption): string {
-	const name = option.name ?? 'param';
-	const token = `${name}:<${formatOptionType(option)}>`;
-	return option.required ? token : `${token}?`;
+function toChoiceNode(choice: ChoiceValue): ChoiceNode {
+	if (typeof choice === 'string' || typeof choice === 'number') {
+		return { name: String(choice), value: choice };
+	}
+	return choice;
 }
 
-function formatChoices(option: CommandOption): string {
-	if (!option.choices || option.choices.length === 0) {
-		return option.choicesSummary ? `${option.choicesSummary} (see autocomplete)` : '';
+function toOptionNode(option: CommandOption): OptionNode {
+	const out: OptionNode = {
+		name: option.name ?? 'param',
+		description: normalizeDescription(option.description),
+		type: formatOptionType(option),
+		required: Boolean(option.required)
+	};
+	if (option.choices?.length) {
+		out.choices = option.choices.map(toChoiceNode);
 	}
-
-	const names = option.choices.map(choice => {
-		if (typeof choice === 'string' || typeof choice === 'number') {
-			return String(choice);
-		}
-		return choice.name;
-	});
-
-	const hasNamedChoices = option.choices.some(c => typeof c === 'object');
-	const MAX_INLINE = hasNamedChoices ? 12 : 8;
-
-	if (names.length <= MAX_INLINE) {
-		return names.join(', ');
+	if (typeof option.min === 'number') {
+		out.min = option.min;
 	}
-
-	return `${names.length} options (see autocomplete)`;
-}
-
-function formatUsage(commandName: string, pathSegments: string[], options: CommandOption[]): string {
-	const tokens = options.map(formatOptionToken).join(' ');
-	const suffix = tokens ? ` ${tokens}` : '';
-	const usagePath = pathSegments.length ? ` ${pathSegments.join(' ')}` : '';
-	return `/${commandName}${usagePath}${suffix}`;
+	if (typeof option.max === 'number') {
+		out.max = option.max;
+	}
+	return out;
 }
 
 function collectSubcommands(options: CommandOption[] = []): SubcommandEntry[] {
@@ -813,7 +855,7 @@ function collectSubcommands(options: CommandOption[] = []): SubcommandEntry[] {
 	for (const option of options) {
 		if (option.type === 'Subcommand') {
 			entries.push({
-				path: option.name ? [option.name] : ['subcommand'],
+				path: [option.name ?? 'subcommand'],
 				options: option.options ?? [],
 				description: option.description
 			});
@@ -833,185 +875,80 @@ function collectSubcommands(options: CommandOption[] = []): SubcommandEntry[] {
 	return entries;
 }
 
-function renderParametersTable(options: CommandOption[]): string[] {
-	if (options.length === 0) {
-		return ['_No parameters._'];
-	}
+function buildSubcommandNode(commandName: string, entry: SubcommandEntry): CommandNode {
+	const directOptions = entry.options.filter(option => !isSubcommandType(option.type)).map(toOptionNode);
+	const children = collectSubcommands(entry.options).map(subEntry =>
+		buildSubcommandNode(commandName, {
+			path: [...entry.path, ...subEntry.path],
+			options: subEntry.options,
+			description: subEntry.description
+		})
+	);
 
-	const rows = options.map(option => {
-		const required = option.required ? 'Yes' : 'No';
-		const choices = formatChoices(option);
-		return `| \`${option.name ?? 'param'}\` | \`${formatOptionType(option)}\` | ${required} | ${
-			option.description ?? ''
-		} | ${choices || '-'} |`;
-	});
-
-	return ['| Name | Type | Required | Description | Choices |', '| --- | --- | --- | --- | --- |', ...rows];
+	return {
+		name: entry.path[entry.path.length - 1] ?? 'subcommand',
+		path: [commandName, ...entry.path].join(' '),
+		description: normalizeDescription(entry.description),
+		options: directOptions,
+		subcommands: children
+	};
 }
 
-function renderCommandDetails(command: CommandDefinition, subheadingLevel: number): string[] {
-	const sections: string[] = [];
-	const commandName = command.name ?? 'command';
-
+function buildCommandNode(command: CommandDefinition): CommandNode {
+	const name = command.name ?? 'command';
 	const options = command.options ?? [];
-	const hasSubcommands = options.some(option => option.type === 'Subcommand' || option.type === 'SubcommandGroup');
+	const directOptions = options.filter(option => !isSubcommandType(option.type)).map(toOptionNode);
+	const subcommands = collectSubcommands(options).map(entry => buildSubcommandNode(name, entry));
 
-	if (hasSubcommands) {
-		const headingPrefix = '#'.repeat(subheadingLevel);
-		const subcommands = collectSubcommands(options);
-		sections.push('', '**Subcommands**', '');
-		for (const entry of subcommands) {
-			sections.push(`- \`/${commandName} ${entry.path.join(' ')}\``);
-		}
-		for (const entry of subcommands) {
-			sections.push('', `${headingPrefix} /${commandName} ${entry.path.join(' ')}`, '');
-			if (entry.description) {
-				sections.push(entry.description, '');
-			}
-			sections.push('**Usage**', '', `- \`${formatUsage(commandName, entry.path, entry.options)}\``);
-			sections.push('', '**Parameters**', '', ...renderParametersTable(entry.options));
-		}
-	} else {
-		sections.push('', '**Usage**', '', `- \`${formatUsage(commandName, [], options)}\``);
-		sections.push('', '**Parameters**', '', ...renderParametersTable(options));
+	return {
+		name,
+		path: name,
+		description: normalizeDescription(command.description),
+		examples: command.attributes?.examples?.length
+			? [...command.attributes.examples].sort((a, b) => a.localeCompare(b))
+			: undefined,
+		options: directOptions,
+		subcommands
+	};
+}
+
+function getVersion(): string | undefined {
+	try {
+		return execSync('git rev-parse --short HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] })
+			.toString()
+			.trim();
+	} catch {
+		return undefined;
 	}
-
-	const examples = command.attributes?.examples ?? [];
-	if (examples.length > 0) {
-		const exampleLines = examples.sort((a, b) => a.localeCompare(b)).map(example => `- \`${example}\``);
-		sections.push('', '**Examples**', '', ...exampleLines);
-	}
-
-	return sections;
 }
 
-function renderCommand(command: CommandDefinition, headingLevel = 2): string[] {
-	const sections: string[] = [];
-	const commandName = command.name ?? 'command';
-	const headingPrefix = '#'.repeat(headingLevel);
-	sections.push(`${headingPrefix} /${commandName}`, '', command.description ?? '');
-	sections.push(...renderCommandDetails(command, headingLevel + 1));
-	return sections;
+export function buildCommandsDocDataFromDir(commandsDir = COMMANDS_DIR): CommandsDoc {
+	moduleCache.clear();
+
+	const commandFiles = readdirSync(commandsDir)
+		.filter(file => file.endsWith('.ts'))
+		.map(file => path.join(commandsDir, file));
+
+	const commands = commandFiles
+		.flatMap(filePath => parseCommandFile(filePath))
+		.filter(command => command.name)
+		.filter(command => !IGNORED_COMMANDS.has(command.name ?? ''))
+		.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+
+	return {
+		generatedAt: new Date().toISOString(),
+		version: getVersion(),
+		commands: commands.map(buildCommandNode)
+	};
 }
 
-function toSlug(value: string): string {
-	return value
-		.toLowerCase()
-		.replace(/[^a-z0-9-_]/gu, '-')
-		.replace(/-{2,}/gu, '-')
-		.replace(/(^-|-$)/gu, '');
+export function generateCommandsDoc(outputFile = OUTPUT_FILE, commandsDir = COMMANDS_DIR): CommandsDoc {
+	const doc = buildCommandsDocDataFromDir(commandsDir);
+	mkdirSync(path.dirname(outputFile), { recursive: true });
+	writeFileSync(outputFile, `${JSON.stringify(doc, null, 2)}\n`);
+	return doc;
 }
 
-type CommandEntry = {
-	name: string;
-	description: string;
-	slug: string;
-};
-
-function buildIndexDocument(commandList: CommandEntry[]): string {
-	const lines: string[] = [
-		'---',
-		'title: "Commands"',
-		'---',
-		'',
-		'{/* This file is generated by scripts/wiki/renderCommandsDoc.ts. */}',
-		'',
-		'Browse command docs by top-level command.',
-		'',
-		'[Full reference (all commands)](./all).',
-		'',
-		'## All Commands'
-	];
-
-	for (const command of commandList) {
-		lines.push(`- [/${command.name}](./${command.slug}) - ${command.description}`);
-	}
-
-	lines.push('', '## Categories');
-
-	const grouped = new Map<string, CommandEntry[]>();
-	for (const command of commandList) {
-		const letter = command.name[0]?.toUpperCase() ?? '#';
-		const bucket = grouped.get(letter) ?? [];
-		bucket.push(command);
-		grouped.set(letter, bucket);
-	}
-
-	for (const letter of Array.from(grouped.keys()).sort()) {
-		lines.push('', `### ${letter}`);
-		for (const command of grouped.get(letter) ?? []) {
-			lines.push(`- [/${command.name}](./${command.slug}) - ${command.description}`);
-		}
-	}
-
-	return `${lines.join('\n')}\n`;
+if (!process.env.VITEST) {
+	generateCommandsDoc();
 }
-
-function buildCommandDocument(command: CommandDefinition): string {
-	const commandName = command.name ?? 'command';
-	const lines: string[] = [
-		'---',
-		`title: "/${commandName}"`,
-		'---',
-		'',
-		'{/* This file is generated by scripts/wiki/renderCommandsDoc.ts. */}',
-		'',
-		'[Back to commands index](./)',
-		'',
-		command.description ?? ''
-	];
-
-	lines.push(...renderCommandDetails(command, 2));
-
-	return `${lines.join('\n')}\n`;
-}
-
-function buildFullDocument(commandList: CommandDefinition[]): string {
-	const lines: string[] = [
-		'---',
-		'title: "All Commands"',
-		'sidebar:',
-		'  hidden: true',
-		'---',
-		'',
-		'{/* This file is generated by scripts/wiki/renderCommandsDoc.ts. */}',
-		'',
-		'This is the full command reference generated from `src/mahoji/commands`.',
-		'',
-		'For the index of top-level commands, see the [Commands index](./).',
-		'',
-		'Each command shows usage, available parameters, and curated examples to keep documentation in sync with the bot.'
-	];
-
-	for (const command of commandList) {
-		lines.push('', ...renderCommand(command));
-	}
-
-	return `${lines.join('\n')}\n`;
-}
-
-const commandFiles = readdirSync(COMMANDS_DIR)
-	.filter(file => file.endsWith('.ts'))
-	.map(file => path.join(COMMANDS_DIR, file));
-
-const commands = commandFiles
-	.flatMap(filePath => parseCommandFile(filePath))
-	.filter(command => command.name && command.description)
-	.filter(command => !IGNORED_COMMANDS.has(command.name ?? ''))
-	.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
-
-const commandEntries: CommandEntry[] = commands.map(command => ({
-	name: command.name ?? 'command',
-	description: command.description ?? '',
-	slug: toSlug(command.name ?? 'command')
-}));
-
-mkdirSync(OUTPUT_DIR, { recursive: true });
-writeFileSync(path.join(OUTPUT_DIR, 'index.mdx'), buildIndexDocument(commandEntries));
-writeFileSync(path.join(OUTPUT_DIR, 'all.mdx'), buildFullDocument(commands));
-
-for (const command of commands) {
-	const slug = toSlug(command.name ?? 'command');
-	writeFileSync(path.join(OUTPUT_DIR, `${slug}.mdx`), buildCommandDocument(command));
-}
-

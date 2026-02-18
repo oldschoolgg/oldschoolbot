@@ -1,6 +1,6 @@
 {
-	"hash": "9c5b6cac83159df15a45f103c573825e",
-	"date": "2026-02-11T07:07:23.961Z",
+	"hash": "b853bd7aa8d3e14d3064839ad37fcdd1",
+	"date": "2026-02-18T15:30:44.457Z",
 	"data": [
 		{
 			"name": "activities",
@@ -194,7 +194,7 @@
 		{
 			"name": "fletch",
 			"desc": "Fletch items with the Fletching skill.",
-			"examples": ["/craft name:Onyx necklace"],
+			"examples": ["/fletch name:Yew longbow"],
 			"subOptions": []
 		},
 		{
@@ -224,7 +224,7 @@
 		},
 		{
 			"name": "giveaway",
-			"desc": "Giveaway items from your ban to other players.",
+			"desc": "Giveaway items from your bank to other players.",
 			"examples": ["/giveaway items:10 trout, 5 coal time:1h"],
 			"subOptions": ["list", "start"]
 		},

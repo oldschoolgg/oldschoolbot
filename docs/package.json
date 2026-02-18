@@ -3,6 +3,9 @@
 	"type": "module",
 	"version": "0.0.1",
 	"scripts": {
+		"predev": "pnpm -C .. docs:generate:commands",
+		"prestart": "pnpm -C .. docs:generate:commands",
+		"prebuild": "pnpm -C .. docs:generate:commands",
 		"dev": "astro dev",
 		"start": "astro dev",
 		"build": "astro build",
