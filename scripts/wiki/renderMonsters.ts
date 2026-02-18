@@ -1,5 +1,3 @@
-import '../base.js';
-
 import { Markdown, Tab, Tabs, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 

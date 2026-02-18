@@ -1,5 +1,3 @@
-import '../base.js';
-
 import { Markdown } from '@oldschoolgg/toolkit';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
