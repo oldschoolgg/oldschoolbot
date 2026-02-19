@@ -1,7 +1,12 @@
 import { Bank } from 'oldschooljs';
 
 import type { ArchonOptions } from '@/lib/bso/bsoTypes.js';
-import { rollArchonLoot, getUniquesForTier, archonPresentations } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
+import {
+    rollArchonLoot,
+    getUniquesForTier,
+    archonPresentations,
+    tierGearPenalty
+} from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import {
     getMegabossLootBonus,
     defaultIslandUpgrades,
@@ -11,20 +16,21 @@ import {
 export const archonTask: MinionTask = {
     type: 'Archon',
     async run(data: ArchonOptions, { handleTripFinish, user }) {
-        const { tier, users, isSolo, contribution } = data;
+        const { tier, users, isSolo, gearScore } = data;
         const presentation = archonPresentations[tier];
+        const penalty = tierGearPenalty[tier];
 
-        // Island megaboss upgrade boosts loot
         const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
         const lootBonus = getMegabossLootBonus(islandUpgrades);
 
-        // Gear contribution: 50% loot floor at 0%, 100% at full contribution
-        const contributionMultiplier = 0.5 + ((contribution ?? 100) / 100) * 0.5;
-        const effectiveMultiplier = contributionMultiplier * (1 + lootBonus);
+        const gearMultiplier = penalty.floor + ((gearScore ?? 0) / 100) * (penalty.ceiling - penalty.floor);
 
-        // Roll loot for every user in the list, real or dummy
-        const lootResults: Bank[] = users.map(() => rollArchonLoot(tier, effectiveMultiplier));
-        const realUserLoot = lootResults[0];
+        const effectiveRegularMultiplier = gearMultiplier * (1 + lootBonus);
+
+        const lootResults = users.map(() => rollArchonLoot(tier, effectiveRegularMultiplier));
+
+        const { regularLoot: realRegularLoot, uniqueLoot: realUniqueLoot } = lootResults[0];
+        const realUserLoot = new Bank().add(realRegularLoot).add(realUniqueLoot);
 
         const uniquesForTier = getUniquesForTier(tier);
         const messages: string[] = [];
@@ -32,11 +38,10 @@ export const archonTask: MinionTask = {
         if (isSolo) {
             await user.transactItems({ itemsToAdd: realUserLoot, collectionLog: true });
 
-            // Check if any dummy got a unique — flavour messaging
             for (let i = 1; i < lootResults.length; i++) {
-                const dummyLoot = lootResults[i];
+                const { uniqueLoot: dummyUnique } = lootResults[i];
                 for (const unique of uniquesForTier) {
-                    if (dummyLoot.has(unique)) {
+                    if (dummyUnique.has(unique)) {
                         messages.push(`✨ Another adventurer in your group received a unique: **${unique}**!`);
                         break;
                     }
@@ -44,15 +49,18 @@ export const archonTask: MinionTask = {
             }
 
             if (lootBonus > 0) {
-                messages.push(`🏝️ Island Megaboss bonus applied: **+${(lootBonus * 100).toFixed(0)}%** loot.`);
+                messages.push(`🏝️ Island Megaboss bonus: **+${(lootBonus * 100).toFixed(0)}%** to regular loot.`);
             }
+
+            const effectiveGearPct = (gearMultiplier * 100).toFixed(1);
+            messages.push(`⚔️ Gear effectiveness: **${effectiveGearPct}%** (floor: ${(penalty.floor * 100).toFixed(0)}%)`);
         } else {
-            // Future world event path — give loot to every real user
             for (let i = 0; i < users.length; i++) {
                 const userId = users[i];
-                const loot = lootResults[i];
+                const { regularLoot, uniqueLoot } = lootResults[i];
+                const combinedLoot = new Bank().add(regularLoot).add(uniqueLoot);
                 const recipient = await mUserFetch(userId);
-                await recipient.transactItems({ itemsToAdd: loot, collectionLog: true });
+                await recipient.transactItems({ itemsToAdd: combinedLoot, collectionLog: true });
             }
         }
 

@@ -30,7 +30,7 @@ export const islandUpgradeCommand = defineCommand({
 					required: true,
 					choices: [
 						{ name: 'Boss Efficiency', value: 'boss' },
-						{ name: 'Megaboss Access', value: 'megaboss' },
+						{ name: 'Megaboss', value: 'megaboss' },
 						{ name: 'Minigame Boost', value: 'minigame' },
 						{ name: 'Gathering Speed', value: 'gathering' },
 						{ name: 'Prismare Enhancement', value: 'prismare' }

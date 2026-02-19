@@ -166,7 +166,8 @@ export interface ArchonOptions extends NewBossOptions {
     quantity: number;
     bossUsers: StoredBossUser[];
     bossID: number;
-	contribution: number;
+    contribution: number;
+    gearScore: number;
 }
 
 export interface NewBossOptions extends ActivityTaskOptions {
