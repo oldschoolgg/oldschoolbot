@@ -8,6 +8,8 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeArchonButton } from '@/lib/util/interactions.js';
 import {
     getBossSpeedBonus,
+    getMegabossLootBonus,
+    getTier,
     defaultIslandUpgrades,
     type IslandUpgradeTiers
 } from '@/lib/bso/commands/islandUpgrades.js';
@@ -25,7 +27,7 @@ export const archonPresentations = {
     },
     3: {
         name: 'Apotheotic Archon',
-        flavourStart: `The world itself seems to recoil and tremble. Something vast and terrible turns its full attention toward your minon from a greater plane. The **Apotheotic Archon** has arrived.`,
+        flavourStart: `The world itself seems to recoil and tremble. Something vast and terrible turns its full attention toward your minion from a greater plane. The **Apotheotic Archon** has arrived.`,
         flavourEnd: `Silence. For a moment, the world seems uncertain if it will begin turning again. Then, it breathes. The Apotheotic Archon is no more.`
     }
 } as const;
@@ -33,11 +35,10 @@ export const archonPresentations = {
 //const TIER_1_XP = 80_618_654;
 //const TIER_2_XP = 200_000_000;
 //const TIER_3_XP = 5_000_000_000;
-
 //const combatSkills = ['attack', 'strength', 'defence', 'ranged', 'magic', 'hitpoints'] as const;
 
 export function getArchonTier(_user: MUser): 1 | 2 | 3 | null {
-    return 3; // temporary — uncomment below when ready
+    return 3; // temporary 
 }
 
 // export function getArchonTier(user: MUser): 1 | 2 | 3 | null {
@@ -48,46 +49,146 @@ export function getArchonTier(_user: MUser): 1 | 2 | 3 | null {
 //     return null;
 // }
 
-export function calcArchonContribution(user: MUser): {
+const meleeSlots: [string, number][] = [
+    ['Axe of the high sungod', 30], 
+    ['Gorajan warrior helmet', 10],
+    ['Gorajan warrior top', 12],
+    ['Gorajan warrior legs', 12],
+    ['Gorajan warrior gloves', 8],
+    ['Gorajan warrior boots', 8],
+    ['Brawler\'s hook necklace', 10],
+    ['Searcrown band', 5],
+    ['TzKal cape', 3],
+    ['Vitriolic curse', 2], 
+];
+
+const rangedSlots: [string, number][] = [
+    ['Elderflame bow', 35], 
+    ['Elderflame arrow', 20],    
+    ['Tidal collector (i)', 8],
+    ['Farsight snapshot necklace', 8],
+    ['Ring of piercing (i)', 5],
+    ['Gorajan archer helmet', 5],
+    ['Gorajan archer top', 6],
+    ['Gorajan archer legs', 6],
+    ['Gorajan archer gloves', 3],
+    ['Gorajan archer boots', 4],
+];
+
+const mageSlots: [string, number][] = [
+    ['Void staff', 30],                   // weapon — highest weight
+    ['Abyssal tome', 15],                 // offhand
+    ['Arcane blast necklace', 10],
+    ['Spellbound ring (i)', 5],
+    ['Vasa cloak', 8],
+    ['Gorajan occult helmet', 7],
+    ['Gorajan occult top', 8],
+    ['Gorajan occult legs', 8],
+    ['Gorajan occult gloves', 5],
+    ['Gorajan occult boots', 4],
+];
+
+const tierGearPenalty: Record<1 | 2 | 3, { floor: number; ceiling: number }> = {
+    1: { floor: 0.40, ceiling: 1.0 },
+    2: { floor: 0.25, ceiling: 1.0 },
+    3: { floor: 0.10, ceiling: 1.0 },
+};
+
+function scoreGearSlots(user: MUser, slots: [string, number][]): number {
+    let score = 0;
+    let total = 0;
+    for (const [item, points] of slots) {
+        total += points;
+        try {
+            if (user.hasEquippedOrInBank(item)) score += points;
+        } catch {
+        }
+    }
+    return total > 0 ? (score / total) * 100 : 0;
+}
+
+export function calcArchonContribution(user: MUser, totalUsers: number): {
     percent: number;
     boostMessages: string[];
+    gearScore: number;
 } {
     const boostMessages: string[] = [];
 
-    const hasElderflameBow = user.hasEquippedOrInBank('Elderflame bow');
-    const hasElderflameArrows = user.hasEquippedOrInBank('Elderflame arrow');
-    const hasElderflameCombo = hasElderflameBow && hasElderflameArrows;
+    let bowScore = 0;
+    let bowMessage = '';
 
-    const rangedBase = hasElderflameCombo ? 100 : 40;
-    const meleeBase = 100;
-    const mageBase = 100; 
+    try {
+        const hasElderflameBow = user.hasEquippedOrInBank('Elderflame bow');
+        const hasElderflameArrow = user.hasEquippedOrInBank('Elderflame arrow');
+        const hasStarfireBow = user.hasEquippedOrInBank('Starfire bow');
+        const hasHellfireArrow = user.hasEquippedOrInBank('Hellfire arrow');
+        const hasHellfireBow = user.hasEquippedOrInBank('Hellfire bow');
 
-    if (!hasElderflameCombo) {
-        if (!hasElderflameBow) boostMessages.push('Missing Elderflame bow — ranged contribution heavily reduced.');
-        else boostMessages.push('Missing Elderflame arrows — ranged contribution heavily reduced.');
-    } else {
-        boostMessages.push('Elderflame bow & arrows equipped.');
+        if (hasElderflameBow && hasElderflameArrow) {
+            bowScore = 100;
+            bowMessage = 'Elderflame bow & arrows equipped.';
+        } else if (hasElderflameBow && !hasElderflameArrow) {
+            bowScore = 50;
+            bowMessage = 'Elderflame bow equipped but missing Elderflame arrows, using weaker ammo.';
+        } else if (hasStarfireBow && hasHellfireArrow) {
+            bowScore = 60;
+            bowMessage = 'Using Starfire bow & Hellfire arrows, significantly weaker than Elderflame.';
+        } else if (hasHellfireBow) {
+            bowScore = 30;
+            bowMessage = 'Using Hellfire bow, heavily penalised. Obtain an Elderflame bow for full effectiveness.';
+        } else {
+            bowScore = 0;
+            bowMessage = 'No viable ranged weapon found, contribution is severely reduced.';
+        }
+    } catch {
+        bowScore = 0;
+        bowMessage = 'Ranged weapon check failed, items may not exist yet.';
     }
 
-    // Weighted: ranged 50%, melee 25%, mage 25%
-    const totalContribution = (rangedBase * 0.50) + (meleeBase * 0.25) + (mageBase * 0.25);
+    boostMessages.push(bowMessage);
+
+    const rangedSlotsWithoutBow = rangedSlots.filter(
+        ([item]) => item !== 'Elderflame bow' && item !== 'Elderflame arrow'
+    );
+    const rangedGearScore = scoreGearSlots(user, rangedSlotsWithoutBow);
+    const meleeGearScore = scoreGearSlots(user, meleeSlots);
+    const mageGearScore = scoreGearSlots(user, mageSlots);
+
+
+    const effectiveRangedScore = (bowScore * 0.55) + (rangedGearScore * 0.45);
+
+    const rawGearScore = (effectiveRangedScore * 0.50) + (meleeGearScore * 0.25) + (mageGearScore * 0.25);
+
+    const groupScaling = 1 / Math.sqrt(totalUsers);
+    const totalContribution = rawGearScore * groupScaling;
 
     boostMessages.push(
-        `📊 Contribution: **${totalContribution.toFixed(1)}%** (Ranged: ${rangedBase}%, Melee: ${meleeBase}%, Mage: ${mageBase}%)`
+        `📊 Gear score: **${rawGearScore.toFixed(1)}%** (Ranged: ${effectiveRangedScore.toFixed(1)}%, Melee: ${meleeGearScore.toFixed(1)}%, Mage: ${mageGearScore.toFixed(1)}%)`
+    );
+    boostMessages.push(
+        `👥 Group contribution: **${totalContribution.toFixed(1)}%** (${totalUsers} adventurers)`
     );
 
-    return { percent: totalContribution, boostMessages };
+    return { percent: totalContribution, boostMessages, gearScore: rawGearScore };
 }
 
-const activitiesCantSpawnArchon = [
-    'Archon',
-    'ShootingStars',
-    'FightCaves',
-    'Inferno',
-    'Nex',
-    'TheatreOfBlood',
-    'TombsOfAmascut',
-    'Raids'
+const archonEligibleMonsterIDs = [
+    142_001, // Orym
+    142_002, // Orrodil
+    142_003, // Crystalline Sentinel
+    142_004, // Fungal Behemoth
+    142_005, // Elder Mimic
+    142_006, // Burning Dominion
+];
+
+const activitiesCanSpawnArchon = [
+    'MonsterKilling',
+    'GroupMonsterKilling',
+    'BrimstoneDistillery',
+    'ConstructionContracts',
+    'AncientMycology',
+    'ArchaicMining',
+    'GemstoneFishing'
 ];
 
 export async function handleTriggerArchon(
@@ -95,11 +196,14 @@ export async function handleTriggerArchon(
     data: ActivityTaskData,
     components: ButtonBuilder[]
 ) {
-    if (activitiesCantSpawnArchon.includes(data.type)) return;
+    if (!activitiesCanSpawnArchon.includes(data.type)) return;
+
+    if (data.type === 'MonsterKilling' || data.type === 'GroupMonsterKilling') {
+        if (!('mi' in data) || !archonEligibleMonsterIDs.includes(data.mi as number)) return;
+    }
 
     const tier = getArchonTier(user);
     if (tier === null) return;
-
     const minutes = Math.floor(data.duration / Time.Minute);
     if (minutes < 1) return;
 
@@ -126,30 +230,37 @@ export async function archonCommand(
     const tier = archonEvent.tier as 1 | 2 | 3;
     const presentation = archonPresentations[tier];
 
-    // Build user list — real user at index 0, dummies after
+    const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
+    const megabossTier = getTier(islandUpgrades, 'megaboss');
+    if (megabossTier < 1) {
+        return `Your minion doesn't yet know how to find the Archon. Purchase **Megaboss I** from \`/islandupgrade buy\` to unlock access.`;
+    }
+
     const userList: string[] = [user.id];
     const numDummies = randInt(10, 50);
     for (let i = 0; i < numDummies; i++) {
         userList.push(String(randInt(100_000_000_000_000, 999_999_999_999_999)));
     }
 
-    // Base duration per presentation
+    const { percent: contribution, boostMessages, gearScore } = calcArchonContribution(user, userList.length);
+
+    const speedReduction = (contribution / 100) * 0.30;
+
+    const islandSpeedBonus = getBossSpeedBonus(islandUpgrades);
+    if (islandSpeedBonus > 0) {
+        boostMessages.push(`Island Boss Efficiency: **${(islandSpeedBonus * 100).toFixed(0)}%** faster`);
+    }
+
+    const lootBonus = getMegabossLootBonus(islandUpgrades);
+    if (lootBonus > 0) {
+        boostMessages.push(`Island Megaboss: **+${(lootBonus * 100).toFixed(0)}%** loot (uniques unaffected)`);
+    }
+
     const baseDuration = {
         1: Time.Minute * 5,
         2: Time.Minute * 10,
         3: Time.Minute * 20
     }[tier];
-
-    // Gear contribution reduces duration by up to 30%
-    const { percent: contribution, boostMessages } = calcArchonContribution(user);
-    const speedReduction = (contribution / 100) * 0.30;
-
-    // Island upgrade speed bonus
-    const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
-    const islandSpeedBonus = getBossSpeedBonus(islandUpgrades);
-    if (islandSpeedBonus > 0) {
-        boostMessages.push(`🏝️ Island Boss Efficiency: **${(islandSpeedBonus * 100).toFixed(0)}%** faster`);
-    }
 
     const duration = Math.floor(baseDuration * (1 - speedReduction) * (1 - islandSpeedBonus));
 
@@ -161,6 +272,7 @@ export async function archonCommand(
         tier,
         isSolo: true,
         contribution,
+        gearScore,
         quantity: 1,
         users: userList,
         bossUsers: [{
@@ -168,7 +280,7 @@ export async function archonCommand(
             userPercentChange: contribution,
             deathChance: 0,
             itemsToRemove: {},
-            debugStr: `solo archon contribution:${contribution.toFixed(1)}%`
+            debugStr: `solo archon tier:${tier} contribution:${contribution.toFixed(1)}% gear:${gearScore.toFixed(1)}% group:${userList.length}`
         }],
         bossID: 0
     } as unknown as ArchonOptions);
@@ -183,25 +295,36 @@ export async function archonCommand(
     ].join('\n');
 }
 
-const tier1Uniques = ['Dragon bones'];
-const tier2Uniques = ['Abyssal whip'];
-const tier3Uniques = ['Twisted bow'];
+const tier1Uniques = ['Prismare ring (u)'];
+const tier2Uniques = ['Prismare ring (u)'];
+const tier3Uniques = ['Prismare ring (u)'];
 
 export function getUniquesForTier(tier: 1 | 2 | 3): string[] {
     return { 1: tier1Uniques, 2: tier2Uniques, 3: tier3Uniques }[tier];
 }
 
-export function rollArchonLoot(tier: 1 | 2 | 3, multiplier = 1.0): Bank {
-    const loot = new Bank();
+export { tierGearPenalty };
+
+export function rollArchonLoot(tier: 1 | 2 | 3, multiplier = 1.0): {
+    regularLoot: Bank;
+    uniqueLoot: Bank;
+} {
+    const regularLoot = new Bank();
+    const uniqueLoot = new Bank();
+
     if (tier === 1) {
-        loot.add('Coins', Math.floor(randInt(50_000, 200_000) * multiplier));
-        if (roll(Math.max(1, Math.ceil(50 / multiplier)))) loot.add('Dragon bones', randInt(1, 5));
+        regularLoot.add('Coins', Math.floor(randInt(50_000, 200_000) * multiplier));
+        if (roll(Math.max(1, Math.ceil(50 / multiplier)))) regularLoot.add('Dragon bones', randInt(1, 5));
+        if (roll(150)) uniqueLoot.add('Prismare ring (u)');
     } else if (tier === 2) {
-        loot.add('Coins', Math.floor(randInt(500_000, 2_000_000) * multiplier));
-        if (roll(Math.max(1, Math.ceil(30 / multiplier)))) loot.add('Dragon bones', randInt(5, 20));
+        regularLoot.add('Coins', Math.floor(randInt(500_000, 2_000_000) * multiplier));
+        if (roll(Math.max(1, Math.ceil(30 / multiplier)))) regularLoot.add('Dragon bones', randInt(5, 20));
+        if (roll(300)) uniqueLoot.add('Prismare ring (u)');
     } else {
-        loot.add('Coins', Math.floor(randInt(5_000_000, 20_000_000) * multiplier));
-        if (roll(Math.max(1, Math.ceil(10 / multiplier)))) loot.add('Dragon bones', randInt(20, 100));
+        regularLoot.add('Coins', Math.floor(randInt(5_000_000, 20_000_000) * multiplier));
+        if (roll(Math.max(1, Math.ceil(10 / multiplier)))) regularLoot.add('Dragon bones', randInt(20, 100));
+        if (roll(512)) uniqueLoot.add('Prismare ring (u)');
     }
-    return loot;
+
+    return { regularLoot, uniqueLoot };
 }

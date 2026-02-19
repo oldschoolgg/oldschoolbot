@@ -1509,7 +1509,19 @@ export const bsoCreatables: Createable[] = [
 			'Elderflame bow': 1
 		}),
 		requiredSkills: {}
+	},
+	{
+		name: 'Prismare ring',
+		inputItems: new Bank({
+			'Prismare ring (u)': 1,
+			'Elderflame catalyst': 1
+		}),
+		outputItems: new Bank({
+			'Prismare ring': 1
+		}),
+		requiredSkills: {}
 	}
+	
 ];
 
 const potionOfLightLogs = [
