@@ -159,8 +159,18 @@ export interface ConstructionContractsTaskOptions extends MinigameActivityTaskOp
 	rarityUpgradeTier?: 0 | 1 | 2 | 3;
 }
 
+export interface ArchonOptions extends NewBossOptions {
+    type: 'Archon';
+    tier: 1 | 2 | 3;
+    isSolo: boolean;
+    quantity: number;
+    bossUsers: StoredBossUser[];
+    bossID: number;
+	contribution: number;
+}
+
 export interface NewBossOptions extends ActivityTaskOptions {
-	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent' | 'BurningDominion';
+	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent' | 'BurningDominion' | 'Archon';
 	users: string[];
 	quantity: number;
 	bossUsers: StoredBossUser[];
@@ -185,4 +195,5 @@ export type BSOActivityTaskData =
 	| NewBossOptions
 	| BrimstoneDistilleryTaskOptions
 	| ConstructionContractsTaskOptions
-	| NexTaskOptions;
+	| NexTaskOptions
+	| ArchonOptions;

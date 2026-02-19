@@ -98,6 +98,7 @@ export const taskCanBeRepeated = (activity: Activity) => {
 		[
 			activity_type_enum.TearsOfGuthix,
 			activity_type_enum.ShootingStars,
+			activity_type_enum.Archon,
 			activity_type_enum.BirthdayEvent,
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
@@ -572,6 +573,12 @@ const tripHandlers: {
 		commandName: 'k',
 		args: () => ({
 			name: 'tempoross'
+		})
+	},
+	[activity_type_enum.Archon]: {
+		commandName: 'k',
+		args: () => ({
+			name: 'archon'
 		})
 	},
 	[activity_type_enum.Wintertodt]: {

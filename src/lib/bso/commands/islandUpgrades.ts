@@ -175,3 +175,7 @@ export function getPrismareXPBonus(userUpgrades: Partial<IslandUpgradeTiers>): n
   const tier = getTier(userUpgrades, 'prismare');
   return [0, 0.01, 0.02, 0.03][tier] ?? 0;
 }
+export function getMegabossLootBonus(userUpgrades: Partial<IslandUpgradeTiers>): number {
+    const tier = getTier(userUpgrades, 'megaboss');
+    return [0, 0.10, 0.20, 0.30][tier] ?? 0;
+}

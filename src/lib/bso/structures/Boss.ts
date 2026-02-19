@@ -129,7 +129,7 @@ export interface BossOptions {
 	food: Bank | ((user: MUser) => Bank);
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channelId: string;
-	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent' | 'BurningDominion';
+	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent' | 'BurningDominion' | 'Archon';
 	massText: string;
 	leader: MUser;
 	minSize: number;
@@ -186,7 +186,7 @@ export class BossInstance {
 	totalPercent = -1;
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channelId: string;
-	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent' | 'BurningDominion';
+	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent' | 'BurningDominion' | 'Archon';
 	massText: string;
 	users: MUser[] | null = null;
 	leader: MUser;
