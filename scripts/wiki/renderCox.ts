@@ -1,5 +1,3 @@
-import '../base.js';
-
 import { Markdown, toTitleCase } from '@oldschoolgg/toolkit';
 
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '@/lib/data/cox.js';
