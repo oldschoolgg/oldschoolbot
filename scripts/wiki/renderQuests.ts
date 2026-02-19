@@ -1,5 +1,3 @@
-import '../base.js';
-
 import { Markdown } from '@oldschoolgg/toolkit';
 
 import { quests } from '@/lib/minions/data/quests.js';

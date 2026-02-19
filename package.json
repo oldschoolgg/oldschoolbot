@@ -8,7 +8,7 @@
 		"watch": "nodemon --delay 1ms -e ts -w src --exec \"pnpm exec-and-start\"",
 		"exec-and-start": "concurrently \"pnpm exec-sql\" \"pnpm build-and-run\"",
 		"build-and-run": "tsx esbuild.mts && node --trace-warnings --enable-source-maps dist",
-		"dev": "tsx --tsconfig=packages/cli/tsconfig.json --env-file=.env packages/cli/src/cli.tsx",
+		"dev": "pnpm -r --filter \"oldschooljs\" --filter \"toolkit\" build && tsx --tsconfig=packages/cli/tsconfig.json --env-file=.env packages/cli/src/cli.tsx",
 		"watch:tsc": "tsc -w -p src",
 		"start": "pnpm watch",
 		"lint": "tsx --tsconfig scripts/tsconfig.json scripts/lint.ts",
@@ -34,7 +34,7 @@
 		"concurrent": "concurrently --raw --kill-others-on-fail",
 		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!cli\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" --filter \"!robochimp\" build",
 		"============monorepo": "============",
-		"monorepo:build": "pnpm concurrent \"pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" build\" \"pnpm gen\" && tsx esbuild.mts",
+		"monorepo:build": "pnpm concurrent \"pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" --filter \"!cli\" build\" \"pnpm gen\" && tsx esbuild.mts",
 		"monorepo:test": "pnpm --stream --workspace-concurrency=2 -r test && pnpm test"
 	},
 	"dependencies": {

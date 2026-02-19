@@ -3,8 +3,6 @@ import { MathRNG } from 'node-rng';
 import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
-import '../base.js';
-
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import type { Fish } from '../../src/lib/skilling/types.js';

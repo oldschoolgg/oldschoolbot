@@ -23,7 +23,7 @@ function del(pattern: string) {
 }
 
 const root = process.cwd();
-const fileGlobsToDelete = ['**/dist', '**/node_modules', '**/*.tsbuildinfo', '**/.db'];
+const fileGlobsToDelete = ['**/dist', 'src/prisma/clients/**', '**/node_modules', '**/*.tsbuildinfo', '**/.db'];
 
 for (const pattern of fileGlobsToDelete) {
 	console.log(styleText(['italic'], `Deleting all files matching: ${pattern}...`));
