@@ -112,6 +112,7 @@ import { questingTask } from '@/tasks/minions/questingActivity.js';
 import { runecraftTask } from '@/tasks/minions/runecraftActivity.js';
 import { sawmillTask } from '@/tasks/minions/sawmillActivity.js';
 import { shootingStarTask } from '@/tasks/minions/shootingStarsActivity.js';
+import { archonTask } from '@/tasks/minions/archonActivity.js';
 import { smeltingTask } from '@/tasks/minions/smeltingActivity.js';
 import { smithingTask } from '@/tasks/minions/smithingActivity.js';
 import { specificQuestTask } from '@/tasks/minions/specificQuestActivity.js';
@@ -226,6 +227,7 @@ export const allTasks: MinionTask[] = [
 	temporossTask,
 	smithingTask,
 	shootingStarTask,
+	archonTask,
 	giantsFoundryTask,
 	guardiansOfTheRiftTask,
 	butlerTask,

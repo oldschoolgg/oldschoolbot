@@ -1241,6 +1241,7 @@ enum activity_type_enum {
   Research
   Moktang
   ShootingStars
+  ArchonEvent
   FistOfGuthix
   StealingCreation
   HalloweenMiniMinigame
@@ -1272,6 +1273,7 @@ enum activity_type_enum {
   CreateForestersRations
   SnoozeSpellActive
   BurningDominion
+  Archon
   Buy
   BeachCombing
 }

@@ -174,6 +174,8 @@ export const combatAchievementTripEffect = async ({
 	messages: string[];
 	rng: RNGProvider;
 }) => {
+	if (data.type === 'Archon') return;
+
 	const dataCopy = clone(data);
 
 	let quantity = 1;

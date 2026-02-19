@@ -43,6 +43,7 @@ import { alching } from '@/mahoji/commands/laps.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import { handleTriggerArchon } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 
 const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'GroupMonsterKilling',
@@ -494,6 +495,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ user, data, components, rng }) => {
 			await handleTriggerShootingStar({ user, data, components, rng });
 		}
+	},
+	{
+    	name: 'Archon',
+    	fn: async ({ user, data, components }) => {
+       	 await handleTriggerArchon(user, data, components);
+   		}
 	},
 	{
 		name: 'Open Casket Button',
