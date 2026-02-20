@@ -50,7 +50,6 @@ export const islandUpgradeCommand = defineCommand({
 		}
 	],
 	run: async ({ options, user, interaction }) => {
-		// Read current upgrades or fallback to default
 		const currentUpgrades: IslandUpgradeTiers = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
 
 		if (options.view) {
@@ -109,7 +108,6 @@ export const islandUpgradeCommand = defineCommand({
 				user
 			});
 
-			// Use the confirmation pattern from the sacrifice command
 			await interaction.confirmation(
 				`**Purchase ${nextUpgrade.name}?**\n\n` +
 				`${nextUpgrade.description}\n` +
@@ -117,7 +115,6 @@ export const islandUpgradeCommand = defineCommand({
 				`This will cost you: ${truncateString(cost.toString(), 500)}`,
 			);
 
-			// Re-check ownership in case they spent items while confirming
 			if (!user.owns(cost)) {
 				return `You no longer have the required items to purchase **${nextUpgrade.name}**.`;
 			}
@@ -129,7 +126,6 @@ export const islandUpgradeCommand = defineCommand({
 				[category]: nextUpgrade.tier
 			};
 
-			// Save to DB as JSON
 			await user.update({
 				island_upgrades: newUpgrades as Prisma.JsonObject
 			});

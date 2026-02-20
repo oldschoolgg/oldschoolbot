@@ -11,6 +11,11 @@ import { Bank, type Item, Items } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import {
+	getTier,
+	defaultIslandUpgrades,
+	type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
 
 const CONSTRUCTION_REQUIREMENT = 110;
 const BASE_DURATION_PER_CONTRACT = Time.Second * 3.2;
@@ -60,7 +65,7 @@ const FLAVOR_MESSAGES = {
 	good: [
 		'*Your minion discovered perfect wood grain alignments!*',
 		'*The materials bonded exceptionally well throughout!*',
-		'*Your minion\'s techniques improved dramatically!*',
+		"*Your minion's techniques improved dramatically!*",
 		'*The crystalline ore reacted better than expected!*',
 		'*Your minion hummed tunes that improved precision!*',
 		'*Favorable conditions led to exceptional results!*',
@@ -173,7 +178,7 @@ export const ContractRecipes: ContractRecipe[] = [
 			{ item: Items.getOrThrow('Ancient verdant plank'), quantity: 3 },
 			{ item: Items.getOrThrow('Crystalline plank'), quantity: 3 },
 			{ item: Items.getOrThrow('Elder plank'), quantity: 2 },
-			{ item: Items.getOrThrow('Gem infused ore'), quantity: 5 },
+			{ item: Items.getOrThrow('Gem infused ore'), quantity: 5 }
 		],
 		constructionLevel: 120,
 		xpMultiplier: 2.2,
@@ -182,12 +187,11 @@ export const ContractRecipes: ContractRecipe[] = [
 ];
 
 function getTripQualityMultiplier(): number {
-	const roll = Math.random();
-
-	if (roll < 0.05) return 0.3;
-	if (roll < 0.15) return 0.6;
-	if (roll < 0.30) return 1.4;
-	if (roll < 0.35) return 1.8;
+	const r = Math.random();
+	if (r < 0.05) return 0.3;
+	if (r < 0.15) return 0.6;
+	if (r < 0.30) return 1.4;
+	if (r < 0.35) return 1.8;
 	return 0.85 + Math.random() * 0.3;
 }
 
@@ -197,22 +201,22 @@ function rollContractQuality(tripMultiplier: number): number {
 	return Math.min(100, Math.max(0, adjustedQuality));
 }
 
-function generateRewardsFromPool(totalQualityPoints: number, recipeWeight: number): Bank {
+function generateRewardsFromPool(totalQualityPoints: number, recipeWeight: number, rarityBonus = 0): Bank {
 	const loot = new Bank();
-	
+
+	// Rare drops — unaffected by rarityBonus intentionally
 	if (recipeWeight >= 2.5) {
 		const elderScrollChance = totalQualityPoints / 1000000;
 		if (Math.random() < elderScrollChance) {
 			loot.add('Elder scroll piece', 1);
 		}
-
 		const sigilChance = totalQualityPoints / 500000;
 		if (Math.random() < sigilChance && !loot.has('Elder scroll piece')) {
 			const fragmentType = randInt(1, 3);
 			loot.add(`Elder sigil fragment (${fragmentType})`, 1);
 		}
 	}
-	
+
 	if (recipeWeight >= 1.5) {
 		const gmClueChance = totalQualityPoints / 500000;
 		if (Math.random() < gmClueChance && loot.length === 0) {
@@ -224,13 +228,13 @@ function generateRewardsFromPool(totalQualityPoints: number, recipeWeight: numbe
 		loot.add('Bamyr', 1);
 	}
 
-	const rewardBudget = Math.floor(totalQualityPoints / 100);
-
+	// rarityBonus increases the reward budget
+	const rewardBudget = Math.floor((totalQualityPoints / 100) * (1 + rarityBonus));
 	let remainingBudget = rewardBudget;
-	
+
 	while (remainingBudget > 0) {
 		const rollValue = Math.random() * 100;
-		
+
 		if (rollValue < 1 && remainingBudget >= 80 && recipeWeight >= 2.0) {
 			const qty = Math.min(Math.floor(remainingBudget / 80), randInt(1, 3));
 			loot.add('Gemstone core', qty);
@@ -260,7 +264,7 @@ function generateRewardsFromPool(totalQualityPoints: number, recipeWeight: numbe
 			break;
 		}
 	}
-	
+
 	return loot;
 }
 
@@ -315,18 +319,24 @@ export async function constructionContractsStartCommand({
 		durationPerContract = Math.floor(reduceNumByPercent(durationPerContract, 25));
 	}
 
+	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
+	const rarityUpgradeTier = getTier(islandUpgrades, 'minigame') as 0 | 1 | 2 | 3;
+	if (rarityUpgradeTier > 0) {
+		boosts.push(`${rarityUpgradeTier * 5}% better rewards (Island Minigame Boost Tier ${rarityUpgradeTier})`);
+	}
+
 	const maxTripLength = await user.calcMaxTripLength('ConstructionContracts');
 	const quantity = Math.floor(maxTripLength / durationPerContract);
 	const duration = quantity * durationPerContract;
 
 	if (!user.hasEquippedOrInBank(['Saw', 'Drygore saw', 'Crystal saw'])) {
-		return "You need a Saw, Drygore saw, or Crystal saw to take on Construction Contracts.";
+		return 'You need a Saw, Drygore saw, or Crystal saw to take on Construction Contracts.';
 	}
-	
+
 	if (!user.hasEquippedOrInBank(['Hammer', 'Dwarven greathammer'])) {
-		return "You need a Hammer or Dwarven greathammer to take on Construction Contracts.";
+		return 'You need a Hammer or Dwarven greathammer to take on Construction Contracts.';
 	}
-	
+
 	const cost = new Bank();
 
 	if (selectedRecipe.requiredTool) {
@@ -354,7 +364,8 @@ export async function constructionContractsStartCommand({
 		duration,
 		type: 'ConstructionContracts',
 		minigameID: 'construction_contracts',
-		recipe: selectedRecipe.name
+		recipe: selectedRecipe.name,
+		rarityUpgradeTier
 	});
 
 	return `${user.minionName} is working on ${quantity}x ${selectedRecipe.name}s for ${formatDuration(duration)}.
@@ -365,9 +376,10 @@ Boosts: ${boosts.length ? boosts.join(', ') : 'None'}`;
 
 export function calculateContractsResult(data: ConstructionContractsTaskOptions) {
 	const recipe = ContractRecipes.find(r => r.name === data.recipe)!;
+	const rarityBonus = [0, 0.05, 0.10, 0.15][data.rarityUpgradeTier ?? 0] ?? 0;
 
 	const tripMultiplier = getTripQualityMultiplier();
-	
+
 	const contractQualities: number[] = [];
 	let totalQualityPoints = 0;
 	let successfulContracts = 0;
@@ -376,7 +388,7 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 	for (let i = 0; i < data.quantity; i++) {
 		const quality = rollContractQuality(tripMultiplier);
 		contractQualities.push(quality);
-		
+
 		if (quality >= 30) {
 			successfulContracts++;
 			totalQualityPoints += quality;
@@ -385,7 +397,7 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 		}
 	}
 
-	const totalLoot = generateRewardsFromPool(totalQualityPoints, recipe.rewardWeight);
+	const totalLoot = generateRewardsFromPool(totalQualityPoints, recipe.rewardWeight, rarityBonus);
 	const petDropped = totalLoot.has('Bamyr');
 
 	const avgQuality = contractQualities.reduce((sum, q) => sum + q, 0) / data.quantity;
@@ -399,7 +411,7 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 	else if (avgQuality >= 40) tripQuality = 'average';
 	else if (avgQuality >= 25) tripQuality = 'poor';
 	else tripQuality = 'disastrous';
-	
+
 	let flavorMessage = '';
 	const client = randArrItem(CONTRACT_CLIENTS);
 
@@ -426,14 +438,14 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 	if (!petDropped) {
 		const avgQualityStr = avgQuality.toFixed(1);
 		const qualityPointsStr = totalQualityPoints.toFixed(0);
-		
+
 		flavorMessage += `\nAvg Quality: ${avgQualityStr} | Quality Points: ${qualityPointsStr} | Successful: ${successfulContracts} | Failed: ${failedContracts}`;
-		
+
 		const notableResults: string[] = [];
 		if (legendaryCount > 0) notableResults.push(`Legendary: ${legendaryCount}`);
 		if (exceptionalCount > 0) notableResults.push(`Exceptional: ${exceptionalCount}`);
 		if (greatCount > 0) notableResults.push(`Great: ${greatCount}`);
-		
+
 		if (notableResults.length > 0) {
 			flavorMessage += `\n${notableResults.join(' | ')}`;
 		}
@@ -445,7 +457,7 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 		recipe,
 		flavorMessage,
 		completedContracts: successfulContracts,
-		failedContracts: failedContracts,
+		failedContracts,
 		petDropped
 	};
 }
