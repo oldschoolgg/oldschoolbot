@@ -5,6 +5,7 @@ import type { IBirdhouseData, IBlowpipeData, IFarmingContract } from '@oldschool
 import type { ItemBank } from 'oldschooljs';
 
 import type { AutoFarmFilterEnum, bank_sort_method_enum, CropUpgradeType } from '@/prisma/main.js';
+import { Prisma } from '@/prisma/main.js';
 import type { PatchTypes } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchSettingsKey } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
@@ -72,6 +73,7 @@ type BSOUserUpdateInput = {
 	nursery: Nursery;
 	selected_tame: number | null;
 	current_item_contract: number | null;
+	island_upgrades: Prisma.JsonObject;
 } & Record<'unlocked_blueprints' | 'unlocked_gear_templates' | 'disabled_inventions', PrismaArrayUpdateInput<number>> &
 	Record<
 		| 'item_contract_streak'
