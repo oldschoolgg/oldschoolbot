@@ -1,12 +1,14 @@
 import type { ButtonBuilder, EmbedBuilder } from '@oldschoolgg/discord';
 
 import chatHeadImage, { type HeadKey } from '@/lib/canvas/chatHeadImage.js';
+import { type DrawChestLootImageOptions, drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { type MakeBankImageOptions, makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export class MessageBuilderClass {
 	private _message: BaseSendableMessage;
-	public chatHeadImagePromise?: Promise<SendableFile>;
-	public bankImagePromise?: Promise<SendableFile>;
+	private chatHeadImagePromise?: Promise<SendableFile>;
+	private bankImagePromise?: Promise<SendableFile>;
+	private chestLootImagePromise?: Promise<SendableFile>;
 
 	constructor(startingMessage: BaseSendableMessage = {}) {
 		this._message = startingMessage;
@@ -50,6 +52,11 @@ export class MessageBuilderClass {
 		return this;
 	}
 
+	addChestLootImage(opts: DrawChestLootImageOptions): this {
+		this.chestLootImagePromise = drawChestLootImage(opts);
+		return this;
+	}
+
 	addComponents(components?: ButtonBuilder[]): this {
 		if (!components) return this;
 		if (!this._message.components) this._message.components = [];
@@ -84,6 +91,9 @@ export class MessageBuilderClass {
 		if (message.chatHeadImagePromise) {
 			this.addFile(await message.chatHeadImagePromise);
 		}
+		if (message.chestLootImagePromise) {
+			this.addFile(await message.chestLootImagePromise);
+		}
 		if (message.bankImagePromise) {
 			this.addFile(await message.bankImagePromise);
 		}
@@ -101,6 +111,9 @@ export class MessageBuilderClass {
 		if (this.bankImagePromise) {
 			const bankImage = await this.bankImagePromise;
 			this.addFile(bankImage);
+		}
+		if (this.chestLootImagePromise) {
+			this.addFile(await this.chestLootImagePromise);
 		}
 		return this._message;
 	}

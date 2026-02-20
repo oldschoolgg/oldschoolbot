@@ -4,7 +4,7 @@ import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const WildySlayerCaveTable = new LootTable()
+const WildySlayerCaveTable: LootTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 16700)
 	.add('Blighted anglerfish', [1, 2], 12500)
 	.add('Blighted manta ray', [1, 2], 12500)
@@ -29,7 +29,7 @@ const WildySlayerCaveTable = new LootTable()
 	.add('Trouver parchment', 2, 83)
 	.add('Looting bag note', 1, 83);
 
-const GreaterNechryaelTable = new LootTable()
+const GreaterNechryaelTable: LootTable = new LootTable()
 	.every('Malicious ashes')
 
 	/* Weapons and armor */
@@ -69,12 +69,12 @@ const GreaterNechryaelTable = new LootTable()
 	/* Tertiary */
 	.tertiary(128, 'Clue scroll (hard)');
 
-const GreaterNechryaelWildyCaveTable = new LootTable()
+const GreaterNechryaelWildyCaveTable: LootTable = new LootTable()
 	.every(GreaterNechryaelTable)
 	.add(WildySlayerCaveTable, 1, 92)
 	.add(new LootTable(), 1, 8);
 
-export default new SimpleMonster({
+export const GreaterNechryael: SimpleMonster = new SimpleMonster({
 	id: 7278,
 	name: 'Greater Nechryael',
 	table: GreaterNechryaelTable,

@@ -186,18 +186,27 @@ function bestFarmingContractUserCanDo(user: MUser) {
 		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
 }
 
-export async function autoContract(interaction: MInteraction, user: MUser): Promise<string | MessageBuilderClass> {
+export async function autoContract(interaction: OSInteraction): Promise<string | MessageBuilderClass> {
+	const { user, rng } = interaction;
 	const contract = user.farmingContract();
 	const plant = contract.contract ? Farming.findPlant(contract.contract.plantToGrow) : null;
 	const patch = contract.farmingInfo.patchesDetailed.find(p => p.plant === plant);
 	const bestContractTierCanDo = bestFarmingContractUserCanDo(user);
 
 	if (user.owns('Seed pack')) {
-		const openResponse = await abstractedOpenCommand(null, user, ['seed pack'], 'auto');
+		const openResponse = await abstractedOpenCommand(rng, null, user, ['seed pack'], 'auto');
 		await user.sync();
 		const contractResponse = await farmingContractCommand(user, bestContractTierCanDo);
 		const msg =
 			openResponse instanceof MessageBuilder ? openResponse : new MessageBuilder().setContent(openResponse);
+		const newContract = user.fetchFarmingContract();
+
+		if (newContract.hasContract && newContract.plantToGrow) {
+			msg.setContent(
+				`${msg.message.content}, your new farming contract is: ${toTitleCase(newContract.plantToGrow)}`
+			);
+		}
+
 		return msg.merge(contractResponse);
 	}
 

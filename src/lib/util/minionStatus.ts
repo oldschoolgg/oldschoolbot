@@ -1,5 +1,5 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, increaseNumByPercent, reduceNumByPercent, toTitleCase } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -86,7 +86,7 @@ import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMor
 import { ValeTotemsDecorations } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
-export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) {
+export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, rng = MathRNG) {
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;
@@ -168,9 +168,9 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) 
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
-							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
 						)} **to** ${formatDuration(
-							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
 			} Your ${Emoji.Mining} Mining level is ${user.skillsAsLevels.mining}`;
 		}
@@ -182,9 +182,9 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) 
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
-							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
 						)} **to** ${formatDuration(
-							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
 			} Your ${Emoji.Mining} Mining level is ${user.skillsAsLevels.mining}`;
 		}
@@ -262,9 +262,9 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) 
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
-							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
 						)} **to** ${formatDuration(
-							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
 			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillsAsLevels.woodcutting}`;
 		}

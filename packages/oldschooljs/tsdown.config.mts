@@ -8,5 +8,6 @@ export default createTsdownConfig({
 	skipNodeModulesBundle: true,
 	external: [],
 	noExternal: [],
-	copy: ['src/assets']
+	copy: ['src/assets'],
+	minify: false
 });

@@ -28,7 +28,7 @@ const ShadowWarriorTable = new LootTable({ limit: 128 })
 	/* Gem drop table */
 	.add(GemTable, 1, 8);
 
-export default new SimpleMonster({
+export const ShadowWarrior: SimpleMonster = new SimpleMonster({
 	id: 2853,
 	name: 'Shadow warrior',
 	table: ShadowWarriorTable,

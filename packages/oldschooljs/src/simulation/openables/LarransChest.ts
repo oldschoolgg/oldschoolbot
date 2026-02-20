@@ -1,4 +1,4 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { percentChance, randInt, roll } from 'node-rng';
 
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
@@ -6,7 +6,7 @@ import type { OpenableOpenOptions } from '@/structures/Openable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 import { chanceOfFish, LarransBigChestFish, LarransSmallChestFish } from './BonusOpenables.js';
 
-const LarransSmallChestTable = new LootTable()
+const LarransSmallChestTable: LootTable = new LootTable()
 	.add('Uncut diamond', 21, 5)
 	.add('Uncut ruby', [24, 29], 5)
 	.add('Coal', [352, 443], 5)
@@ -31,7 +31,7 @@ const LarransSmallChestTable = new LootTable()
 	.add('Ranarr seed', [2, 4], 1)
 	.add('Pure essence', [3359, 5815], 1);
 
-const LarransBigChestTable = new LootTable()
+const LarransBigChestTable: LootTable = new LootTable()
 	.oneIn(256, "Dagon'hai hat")
 	.oneIn(256, "Dagon'hai robe top")
 	.oneIn(256, "Dagon'hai robe bottom")
@@ -59,10 +59,10 @@ const LarransBigChestTable = new LootTable()
 	.add('Snapdragon seed', [4, 6], 1)
 	.add('Ranarr seed', [4, 6], 1);
 
-const LarransChestTable = new LootTable().add(LarransSmallChestTable).add(LarransBigChestTable);
+const LarransChestTable: LootTable = new LootTable().add(LarransSmallChestTable).add(LarransBigChestTable);
 
 export class LarransChestOpenable extends SimpleOpenable {
-	public override open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99, chestSize: 'big' }) {
+	public override open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99, chestSize: 'big' }): Bank {
 		const loot = new Bank();
 		const tier = options.chestSize ?? 'big';
 		const fishLvl = options.fishLvl ?? 99;
@@ -114,7 +114,7 @@ export class LarransChestOpenable extends SimpleOpenable {
 	}
 }
 
-export default new LarransChestOpenable({
+export const LarransChest: LarransChestOpenable = new LarransChestOpenable({
 	id: 23_490,
 	name: "Larran's chest",
 	aliases: [

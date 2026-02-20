@@ -1,6 +1,6 @@
 {
-	"hash": "5097aa6f1f823f6e80b86d656c3e01e5",
-	"date": "2025-10-04T20:26:09.889Z",
+	"hash": "4e6b5f19ee746f8ca06542ac4d142529",
+	"date": "2026-02-20T07:19:34.772Z",
 	"data": [
 		{
 			"name": "activities",
@@ -448,7 +448,7 @@
 		{
 			"name": "rp",
 			"desc": "Admin tools second set",
-			"subOptions": ["action", "player", "user_event"]
+			"subOptions": ["player", "user_event"]
 		},
 		{
 			"name": "runecraft",

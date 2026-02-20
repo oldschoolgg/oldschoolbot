@@ -1,14 +1,10 @@
-import './base.js';
-
 import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit';
-import { TimerManager } from '@sapphire/timer-manager';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType, toSnakeCase } from 'remeda';
 
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
-import { sonicBoom } from '@/lib/util/logger.js';
 
 const rawExecAsync = promisify(execNonPromise);
 
@@ -38,22 +34,16 @@ export async function runTimedLoggedFn(name: string, fn: () => unknown) {
 	console.log(`${name} completed in ${stopwatch.toString()}`);
 }
 
-export async function tearDownScript() {
-	TimerManager.destroy();
-	sonicBoom.destroy();
-	process.exit(0);
-}
-
 export function serializeSnapshotItem(item: any): any {
 	if (!isObjectType(item)) return item;
 	if (Array.isArray(item)) return item.map(serializeSnapshotItem);
 
 	// Items
-	if (
-		'id' in item &&
-		'name' in item &&
-		('tradeable' in item || 'customItemData' in item || 'wiki_name' in item || 'equipable_by_player' in item)
-	) {
+	const mustHaveKeys = ['id', 'name'];
+	const optionalKeys = ['tradeable', 'equipment', 'equipable', 'cost', 'lowalch', 'members'];
+	const isItem =
+		mustHaveKeys.every(k => k in item) && (optionalKeys.some(k => k in item) || Object.keys(item).length === 2);
+	if (isItem && 'name' in item) {
 		return item.name;
 	}
 
@@ -111,10 +101,7 @@ export function serializeSnapshotItem(item: any): any {
 			isObj &&
 			'id' in value &&
 			'name' in value &&
-			('tradeable' in value ||
-				'customItemData' in value ||
-				'wiki_name' in value ||
-				'equipable_by_player' in value)
+			('tradeable' in value || 'customItemData' in value || 'wiki_name' in value || 'equipable' in value)
 		) {
 			result[key] = value.name;
 			continue;
@@ -130,7 +117,7 @@ export function serializeSnapshotItem(item: any): any {
 		}
 
 		if (isObjectType(value) && 'toJSON' in value && isFunction(value.toJSON)) {
-			result[key] = value.toJSON();
+			result[key] = (value as any).toJSON();
 			continue;
 		}
 

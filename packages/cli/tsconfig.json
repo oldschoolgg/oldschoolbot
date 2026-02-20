@@ -3,7 +3,12 @@
 	"compilerOptions": {
 		"outDir": "dist",
 		"jsx": "react-jsx",
-		"noEmit": false
+		"noEmit": false,
+		"paths": {
+			"@/*": ["../../src/*"],
+			"@scripts/*": ["../../scripts/*"]
+		},
+		"isolatedModules": true
 	},
-	"include": ["src"]
+	"include": ["src", "../../src/**/*"]
 }

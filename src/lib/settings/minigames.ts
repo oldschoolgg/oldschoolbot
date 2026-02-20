@@ -132,7 +132,7 @@ export const Minigames: readonly BotMinigame[] = [
 	},
 	{
 		name: 'Vale Totems',
-		aliases: ['vt'],
+		aliases: ['vt', 'vale totems'],
 		column: 'vale_totems'
 	},
 	{

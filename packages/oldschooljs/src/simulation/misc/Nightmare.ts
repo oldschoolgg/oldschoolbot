@@ -1,10 +1,10 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/util';
+import { percentChance, randInt, roll } from 'node-rng';
 
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { calcPercentOfNum, calcWhatPercent } from '@/util/smallUtils.js';
 
 export interface TeamMember {
 	id: string;
@@ -241,6 +241,4 @@ class NightmareClass {
 	}
 }
 
-const Nightmare = new NightmareClass();
-
-export default Nightmare;
+export const Nightmare: NightmareClass = new NightmareClass();

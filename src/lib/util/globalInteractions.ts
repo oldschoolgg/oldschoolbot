@@ -1,5 +1,6 @@
 import { type APIMessageComponentInteraction, SpecialResponse } from '@oldschoolgg/discord';
 import { formatDuration, removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import type { Giveaway } from '@/prisma/main.js';
@@ -16,7 +17,7 @@ import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelG
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 
-async function giveawayButtonHandler(user: MUser, customID: string, interaction: MInteraction): CommandResponse {
+async function giveawayButtonHandler(user: MUser, customID: string, interaction: OSInteraction): CommandResponse {
 	const split = customID.split('_');
 	if (split[0] !== 'GIVEAWAY') return { content: 'Invalid giveaway.', ephemeral: true };
 	const giveawayID = Number(split[2]);
@@ -112,7 +113,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return { content: 'You left the giveaway.', ephemeral: true };
 }
 
-async function repeatTripHandler(user: MUser, id: string, interaction: MInteraction): CommandResponse {
+async function repeatTripHandler(user: MUser, id: string, interaction: OSInteraction): CommandResponse {
 	if (await user.minionIsBusy()) {
 		return { content: 'Your minion is busy.', ephemeral: true };
 	}
@@ -128,7 +129,7 @@ async function repeatTripHandler(user: MUser, id: string, interaction: MInteract
 	return repeatTrip(user, interaction, matchingActivity);
 }
 
-async function handleGearPresetEquip(user: MUser, id: string, interaction: MInteraction): CommandResponse {
+async function handleGearPresetEquip(user: MUser, id: string, interaction: OSInteraction): CommandResponse {
 	const [, setupName, presetName] = id.split('_');
 	if (!setupName || !presetName) return { content: 'Invalid gear preset.', ephemeral: true };
 	const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
@@ -145,7 +146,7 @@ async function handleGearPresetEquip(user: MUser, id: string, interaction: MInte
 	});
 }
 
-async function handlePinnedTripRepeat(user: MUser, id: string, interaction: MInteraction): CommandResponse {
+async function handlePinnedTripRepeat(user: MUser, id: string, interaction: OSInteraction): CommandResponse {
 	const [, pinnedTripID] = id.split('_');
 	if (!pinnedTripID) return { content: 'Invalid pinned trip.', ephemeral: true };
 	const trip = await prisma.pinnedTrip.findFirst({
@@ -207,12 +208,21 @@ async function handleGEButton(user: MUser, id: string): CommandResponse {
 
 async function globalButtonInteractionHandler({
 	interaction,
-	id
+	id,
+	rng
 }: {
 	id: string;
-	interaction: MInteraction;
+	interaction: OSInteraction;
+	rng: RNGProvider;
 }): Promise<CommandResponse | null> {
-	Logging.logDebug(`${interaction.userId} clicked button: ${id}`);
+	globalClient.emitUserLog({
+		type: 'CLICK_BUTTON',
+		user_id: interaction.userId,
+		button_id: id,
+		channel_id: interaction.channelId,
+		guild_id: interaction.guildId,
+		message_id: interaction.messageId
+	});
 
 	if (globalClient.isShuttingDown) {
 		return {
@@ -231,7 +241,7 @@ async function globalButtonInteractionHandler({
 		};
 	}
 
-	const user = await mUserFetch(userID);
+	const user = interaction.user;
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, id, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
@@ -381,7 +391,7 @@ async function globalButtonInteractionHandler({
 		case InteractionID.Slayer.AutoSlayEHP:
 		case InteractionID.Slayer.AutoSlayBoss: {
 			const modeOverride = id.split('_')[3];
-			return autoSlayCommand({ user, interaction, modeOverride });
+			return autoSlayCommand({ user, interaction, modeOverride, rng });
 		}
 
 		case InteractionID.Slayer.SkipTask: {
@@ -400,7 +410,7 @@ async function globalButtonInteractionHandler({
 			});
 		}
 		case InteractionID.Commands.AutoFarmingContract: {
-			return autoContract(interaction, user);
+			return autoContract(interaction);
 		}
 		case InteractionID.Commands.FarmingContractEasier: {
 			return runCommand({
@@ -433,7 +443,14 @@ async function globalButtonInteractionHandler({
 		case InteractionID.Commands.DoShootingStar: {
 			const validStar = await prisma.shootingStars.findFirst({
 				where: {
-					user_id: user.id
+					user_id: user.id,
+					has_been_mined: false,
+					expires_at: {
+						gt: new Date()
+					}
+				},
+				orderBy: {
+					expires_at: 'desc'
 				}
 			});
 			let errorMessage: string | null = null;
@@ -458,7 +475,7 @@ async function globalButtonInteractionHandler({
 					has_been_mined: true
 				}
 			});
-			return shootingStarsCommand(interaction.channelId, user, validStar);
+			return shootingStarsCommand({ rng, channelId: interaction.channelId, user, star: validStar });
 		}
 		case InteractionID.Commands.StartTearsOfGuthix: {
 			return runCommand({
@@ -479,13 +496,13 @@ const ignoredInteractionIDs = [
 
 export async function globalButtonInteractionHandlerWrapper(
 	rawInteraction: APIMessageComponentInteraction,
-	interaction: MInteraction
+	interaction: OSInteraction
 ) {
 	const id = rawInteraction.data.custom_id;
 	if (!id) return;
 	if ((ignoredInteractionIDs as string[]).includes(id)) return;
 	if (['DYN_', 'LP_'].some(s => id.startsWith(s))) return;
-	const response = await globalButtonInteractionHandler({ interaction, id });
+	const response = await globalButtonInteractionHandler({ interaction, id, rng: cryptoRng });
 	if (
 		response === null ||
 		response === SpecialResponse.PaginatedMessageResponse ||

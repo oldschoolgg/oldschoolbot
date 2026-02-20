@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Bank, EItem } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -12,11 +11,11 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const valeTotemsTask: MinionTask = {
 	type: 'ValeTotems',
-	async run(data: ValeTotemsActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: ValeTotemsActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelId, quantity, duration, offerings, fletchXp } = data;
 		const TOTEMS_PER_LAP = 8;
 
-		await user.incrementMinigameScore('vale_totems', quantity * TOTEMS_PER_LAP);
+		const { newScore } = await user.incrementMinigameScore('vale_totems', quantity * TOTEMS_PER_LAP);
 
 		const userStats = await user.fetchStats();
 		const totalOfferings = offerings + userStats.vale_offerings;
@@ -37,7 +36,7 @@ export const valeTotemsTask: MinionTask = {
 		const lootTable = createRummageOfferingsTable(fletchingLvl, hasForestryKit);
 
 		for (let i = 0; i < rewards; i++) {
-			if (roll(100)) {
+			if (rng.roll(100)) {
 				loot.add(preRollTable.roll());
 				continue;
 			}
@@ -70,12 +69,14 @@ export const valeTotemsTask: MinionTask = {
 			user.addXP({
 				skillName: 'fletching',
 				amount: fletchXp,
-				duration
+				duration,
+				source: 'ValeTotems'
 			}),
 			user.addXP({
 				skillName: 'construction',
 				amount: constructionXp,
-				duration
+				duration,
+				source: 'ValeTotems'
 			})
 		]);
 
@@ -89,15 +90,15 @@ export const valeTotemsTask: MinionTask = {
 			users: [
 				{
 					id: user.id,
-					duration,
-					loot: itemsAdded
+					loot: itemsAdded,
+					duration
 				}
 			]
 		});
 
 		const str = `${user}, ${user.minionName} finished doing the Vale Totems ${quantity}x laps, and constructed ${
 			quantity * TOTEMS_PER_LAP
-		} totems. ${user.minionName} gained ${rewards} Vale Research points (total ${userStats.vale_research_points + rewards}). ${
+		} totems (total constructed ${newScore} Totems). ${user.minionName} gained ${rewards} Vale Research points (total ${userStats.vale_research_points + rewards}). ${
 			hasDirtyArrowtips
 				? `While rummaging through the offerings,${user.minionName} discovered and cleaned ${dirtyArrowTipCount}x Dirty arrowtips.`
 				: ''

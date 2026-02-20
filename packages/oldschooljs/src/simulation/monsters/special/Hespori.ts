@@ -1,16 +1,16 @@
-import { roll } from '@oldschoolgg/rng';
+import { roll } from 'node-rng';
 
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const HesporiTable = new LootTable()
+const HesporiTable: LootTable = new LootTable()
 	.add('Attas seed', [1, 2], 1)
 	.add('Iasor seed', [1, 2], 1)
 	.add('Kronos seed', [1, 2], 1);
 
-const MainTable = new LootTable()
+const MainTable: LootTable = new LootTable()
 	.every(HesporiTable)
 
 	// Pre-roll for bucket
@@ -64,7 +64,7 @@ const MainTable = new LootTable()
 	.add('Spirit seed', 1, 1)
 	.add('Redwood tree seed', 1, 1);
 
-export class Hespori extends SimpleMonster {
+class HesporiClass extends SimpleMonster {
 	public override kill(quantity = 1, options: MonsterKillOptions = { farmingLevel: 99 }): Bank {
 		const loot = new Bank();
 		const farmingLvl = options.farmingLevel ?? 99;
@@ -77,4 +77,4 @@ export class Hespori extends SimpleMonster {
 	}
 }
 
-export default new Hespori({ id: 8583, name: 'Hespori', aliases: ['hespori'] });
+export const Hespori: HesporiClass = new HesporiClass({ id: 8583, name: 'Hespori', aliases: ['hespori'] });

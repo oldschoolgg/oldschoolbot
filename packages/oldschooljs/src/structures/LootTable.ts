@@ -1,11 +1,11 @@
-import { randArrItem, randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { reduceNumByPercent } from '@oldschoolgg/util';
+import { randArrItem, randFloat, randInt, roll } from 'node-rng';
 
-import { reduceNumByPercent } from '@/util/smallUtils.js';
 import { Bank } from './Bank.js';
 import { Items } from './Items.js';
 
 export function itemTupleToTable(items: [string, number | [number, number]][]): LootTable {
-	const table = new LootTable();
+	const table: LootTable = new LootTable();
 	for (const [item, quantity] of items) {
 		table.every(item, quantity ?? 1);
 	}
@@ -67,7 +67,7 @@ export default class LootTable {
 	}
 
 	public clone(): LootTable {
-		const newTable = new LootTable();
+		const newTable: LootTable = new LootTable();
 		newTable.table = [...this.table];
 		newTable.oneInItems = [...this.oneInItems];
 		newTable.tertiaryItems = [...this.tertiaryItems];
@@ -101,6 +101,10 @@ export default class LootTable {
 			if (this.allItems.includes(items)) return;
 			this.allItems.push(items);
 		} else {
+			if (!items.item) {
+				console.trace(`Invalid LootTableItem: missing item property: ${JSON.stringify(items)}`);
+				throw new Error(`Invalid LootTableItem: missing item property: ${JSON.stringify(items)}`);
+			}
 			this.addToAllItems(items.item);
 		}
 	}
@@ -244,7 +248,7 @@ export default class LootTable {
 
 			if (this.cachedOptimizedTable) {
 				this.addResultToLoot(
-					this.table[randArrItem(this.cachedOptimizedTable)],
+					this.table[randArrItem(this.cachedOptimizedTable)!],
 					loot,
 					options.tertiaryItemPercentageChanges
 				);
@@ -293,3 +297,5 @@ export default class LootTable {
 		return quantity;
 	}
 }
+
+export { LootTable };

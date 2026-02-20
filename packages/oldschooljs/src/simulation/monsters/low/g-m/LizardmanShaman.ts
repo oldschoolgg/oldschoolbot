@@ -49,7 +49,7 @@ const LizardmanShamanTable = new LootTable({ limit: 500 })
 	.tertiary(1200, 'Clue scroll (elite)')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const LizardmanShaman: SimpleMonster = new SimpleMonster({
 	id: 6766,
 	name: 'Lizardman Shaman',
 	table: LizardmanShamanTable,

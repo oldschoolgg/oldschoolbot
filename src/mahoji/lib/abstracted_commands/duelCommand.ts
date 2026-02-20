@@ -1,7 +1,8 @@
-import { cryptoRng } from '@oldschoolgg/rng';
 import { Emoji, Events, sleep } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
+import { BOT_TYPE } from '@/lib/constants.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
@@ -19,7 +20,7 @@ async function handleFinishUpdates({
 	winner: MUser;
 	loser: MUser;
 }) {
-	const taxRate = 0.95;
+	const taxRate = BOT_TYPE === 'OSB' ? 0.95 : 1;
 	const winningAmount = amount * 2;
 	const tax = winningAmount - Math.floor(winningAmount * taxRate);
 	const dividedAmount = tax / 1_000_000;
@@ -61,6 +62,7 @@ async function handleFinishUpdates({
 }
 
 export async function duelCommand(
+	rng: RNGProvider,
 	user: MUser,
 	interaction: MInteraction,
 	duelUser: MUser,
@@ -83,6 +85,7 @@ export async function duelCommand(
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
+	if (!(duelTargetUser instanceof MUserClass)) return "You didn't mention a user to duel.";
 	if (await duelTargetUser.isBlacklisted()) return 'Target user is blacklisted.';
 	if (targetAPIUser.user.bot) return 'You cant duel a bot.';
 
@@ -128,7 +131,7 @@ export async function duelCommand(
 		});
 	}
 
-	const [winner, loser] = cryptoRng.shuffle([duelSourceUser, duelTargetUser]);
+	const [winner, loser] = rng.shuffle([duelSourceUser, duelTargetUser]);
 	const { amountGPWinnerReceives, taxPaid } = await handleFinishUpdates({
 		winner,
 		loser,

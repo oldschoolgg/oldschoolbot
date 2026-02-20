@@ -1,4 +1,4 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
+import type { RNGProvider } from 'node-rng';
 
 const discordEpoch = 1_420_070_400_000;
 
@@ -19,5 +19,5 @@ export function randomSnowflake(rng: RNGProvider): string {
 }
 
 export function isValidDiscordSnowflake(snowflake: string): boolean {
-	return /^\d{17,19}$/.test(snowflake);
+	return /^\d{17,20}$/.test(snowflake);
 }

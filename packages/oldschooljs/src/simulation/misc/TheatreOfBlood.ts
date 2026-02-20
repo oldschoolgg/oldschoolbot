@@ -1,9 +1,10 @@
-import { percentChance, roll } from '@oldschoolgg/rng';
+import { sumArr } from '@oldschoolgg/util';
+import { percentChance, roll } from 'node-rng';
 
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import SimpleTable from '@/structures/SimpleTable.js';
-import { JSONClone, sumArr } from '@/util/util.js';
+import { JSONClone } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;
@@ -67,7 +68,7 @@ export const TOBRooms: TOBRoom[] = [
 	}
 ];
 
-export const ToBUniqueTable = new LootTable()
+export const ToBUniqueTable: LootTable = new LootTable()
 	.add('Scythe of vitur (uncharged)')
 	.add('Ghrazi rapier', 1, 2)
 	.add('Sanguinesti staff (uncharged)', 1, 2)
@@ -76,7 +77,7 @@ export const ToBUniqueTable = new LootTable()
 	.add('Justiciar legguards', 1, 2)
 	.add('Avernic defender hilt', 1, 8);
 
-const HardModeUniqueTable = new LootTable()
+const HardModeUniqueTable: LootTable = new LootTable()
 	.add('Scythe of vitur (uncharged)')
 	.add('Ghrazi rapier', 1, 2)
 	.add('Sanguinesti staff (uncharged)', 1, 2)
@@ -85,7 +86,7 @@ const HardModeUniqueTable = new LootTable()
 	.add('Justiciar legguards', 1, 2)
 	.add('Avernic defender hilt', 1, 7);
 
-const NonUniqueTable = new LootTable()
+const NonUniqueTable: LootTable = new LootTable()
 	.tertiary(25, 'Clue scroll (elite)')
 	.add('Vial of blood', [50, 60], 2)
 	.add('Death rune', [500, 600])
@@ -117,7 +118,7 @@ const NonUniqueTable = new LootTable()
 	.add('Yew seed', 3)
 	.add('Magic seed', 3);
 
-const HardModeExtraTable = new LootTable()
+const HardModeExtraTable: LootTable = new LootTable()
 	.tertiary(275, 'Sanguine dust')
 	.tertiary(150, 'Sanguine ornament kit')
 	.tertiary(100, 'Holy ornament kit');
@@ -160,7 +161,12 @@ export class TheatreOfBloodClass {
 		return table.roll();
 	}
 
-	public complete(_options: TheatreOfBloodOptions) {
+	public complete(_options: TheatreOfBloodOptions): {
+		loot: LootBank;
+		percentChanceOfUnique: number;
+		totalDeaths: number;
+		teamPoints: number;
+	} {
 		const options = JSONClone(_options);
 		if (options.team.length < 2 || options.team.length > 4) {
 			throw new Error('Only team sizes of 2-4 are supported in ToB');
@@ -207,4 +213,4 @@ export class TheatreOfBloodClass {
 	}
 }
 
-export const TheatreOfBlood = new TheatreOfBloodClass();
+export const TheatreOfBlood: TheatreOfBloodClass = new TheatreOfBloodClass();

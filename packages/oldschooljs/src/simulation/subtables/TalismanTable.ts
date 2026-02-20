@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 
-const TalismanTable = new LootTable()
+const TalismanTable: LootTable = new LootTable()
 	.add('Air talisman', 1, 10)
 	.add('Body talisman', 1, 10)
 	.add('Earth talisman', 1, 10)

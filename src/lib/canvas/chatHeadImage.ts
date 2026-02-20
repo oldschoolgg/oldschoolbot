@@ -1,7 +1,6 @@
 import path from 'node:path';
-import type { Image } from 'skia-canvas';
 
-import { createCanvas, loadAndCacheLocalImage, printWrappedText } from '@/lib/canvas/canvasUtil.js';
+import { type CanvasImage, createCanvas, loadImage, printWrappedText } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 
 export type HeadKey =
@@ -73,12 +72,12 @@ const names: Record<HeadKey, string> = {
 	wurMuTheMonkey: 'Wur Mu the Monkey'
 };
 
-const imagePromiseCache = new Map<string, Promise<Image>>();
+const imagePromiseCache = new Map<string, Promise<CanvasImage>>();
 
-const loadOnce = (absPath: string): Promise<Image> => {
+const loadOnce = (absPath: string): Promise<CanvasImage> => {
 	let p = imagePromiseCache.get(absPath);
 	if (!p) {
-		p = loadAndCacheLocalImage(absPath);
+		p = loadImage(absPath);
 		imagePromiseCache.set(absPath, p);
 	}
 	return p;

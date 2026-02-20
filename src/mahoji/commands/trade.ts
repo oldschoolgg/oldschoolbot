@@ -19,6 +19,7 @@ function formatBankForDisplay(bank: Bank): string {
 
 export const tradeCommand = defineCommand({
 	name: 'trade',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Allows you to trade items with other players.',
 	options: [
 		{
@@ -58,14 +59,13 @@ export const tradeCommand = defineCommand({
 
 		if (!guildId) return 'You can only run this in a server.';
 		const recipientUser = await mUserFetch(options.user.user.id);
-		const recipientAPIUser = options.user.user;
 
 		if (await recipientUser.isBlacklisted()) return "Blacklisted players can't buy items.";
 		if (senderUser.user.minion_ironman || recipientUser.user.minion_ironman) {
 			return "Iron players can't trade items.";
 		}
 		if (recipientUser.id === senderUser.id) return "You can't trade yourself.";
-		if (recipientAPIUser.bot) return "You can't trade a bot.";
+		if (options.user.user.bot) return "You can't trade a bot.";
 		if (await recipientUser.getIsLocked()) return 'That user is busy right now.';
 
 		const itemsSent =
@@ -152,10 +152,12 @@ Both parties must click confirm to make the trade.`,
 			files.push({ buffer: Buffer.from(receivedFull), name: 'items_received.txt' });
 		}
 
-		const content = `${senderUser.username} sold ${formatBankForDisplay(itemsSent)} to ${recipientAPIUser.username} in return for ${formatBankForDisplay(itemsReceived)}.
+		const content = `${senderUser.mention} sold ${formatBankForDisplay(itemsSent)} to ${recipientUser.mention} in return for ${formatBankForDisplay(itemsReceived)}.
 
-  You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
+You can now buy/sell items in the Grand Exchange: ${globalClient.mentionCommand('ge')}`;
 
-		return files.length > 0 ? { content, files } : content;
+		const response = { content, allowedMentions: { users: [senderUser.id, recipientUser.id] } };
+
+		return files.length > 0 ? { ...response, files } : response;
 	}
 });

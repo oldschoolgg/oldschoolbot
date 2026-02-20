@@ -1,8 +1,6 @@
-import type { Image } from 'skia-canvas';
+import { type CanvasImage, canvasToBuffer, createCanvas, loadImage } from '@/lib/canvas/canvasUtil.js';
 
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
-
-let bg: Image | null = null;
+let bg: CanvasImage | null = null;
 
 export const fakepmCommand = defineCommand({
 	name: 'fakepm',
@@ -27,7 +25,7 @@ export const fakepmCommand = defineCommand({
 		ctx.font = '16px OSRSFont';
 
 		if (!bg) {
-			bg = await loadAndCacheLocalImage('./src/lib/resources/images/pm-bg.png');
+			bg = await loadImage('./src/lib/resources/images/pm-bg.png');
 		}
 		ctx.drawImage(bg, 0, 0, bg.width, bg.height);
 

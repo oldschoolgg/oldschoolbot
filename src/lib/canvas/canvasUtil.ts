@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises';
 import { type CanvasRenderingContext2D as CanvasContext, Image, loadImage, Canvas as RawCanvas } from 'skia-canvas';
 
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
@@ -15,6 +14,7 @@ export type Canvas = ReturnType<typeof createCanvas>;
 
 export const CanvasImage = Image;
 export type CanvasImage = Image;
+export { loadImage };
 
 export type { CanvasContext };
 
@@ -155,16 +155,6 @@ export function measureTextWidth(ctx: CanvasContext, text: string) {
 	const num = ctx.measureText(text).width as number;
 	assert(typeof num === 'number');
 	return num;
-}
-
-const localImageCache = new Map<string, Image>();
-
-export async function loadAndCacheLocalImage(path: string) {
-	const cached = localImageCache.get(path);
-	if (cached) return cached;
-	const buff = await readFile(path);
-	const image = await loadImage(buff);
-	return image;
 }
 
 export type BaseCanvasArgs = {

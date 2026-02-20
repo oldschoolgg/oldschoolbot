@@ -1,5 +1,3 @@
-import './base.js';
-
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { Bank } from 'oldschooljs';
@@ -39,235 +37,244 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import { genericUsables, usableUnlocks } from '@/mahoji/lib/abstracted_commands/useCommand.js';
-import { serializeSnapshotItem, tearDownScript, Util } from './scriptUtil.js';
+import { serializeSnapshotItem, Util } from './scriptUtil.js';
 
-const rootDir = path.join('data', BOT_TYPE.toLowerCase());
+export function renderDataFiles() {
+	const rootDir = path.join('data', BOT_TYPE.toLowerCase());
 
-function writeSkillingJson(file: string, value: unknown) {
-	const out = path.join(rootDir, 'skills', file);
-	writeFileSync(out, `${JSON.stringify(value, null, 4)}\n`, 'utf-8');
-}
+	function writeSkillingJson(file: string, value: unknown) {
+		const out = path.join(rootDir, 'skills', file);
+		writeFileSync(out, `${JSON.stringify(value, null, 4)}\n`, 'utf-8');
+	}
 
-function writeRootJson(file: string, value: unknown) {
-	const out = path.join(rootDir, file);
-	writeFileSync(out, `${JSON.stringify(value, null, 4)}\n`, 'utf-8');
-}
+	function writeRootJson(file: string, value: unknown) {
+		const out = path.join(rootDir, file);
+		writeFileSync(out, `${JSON.stringify(value, null, 4)}\n`, 'utf-8');
+	}
 
-writeSkillingJson(
-	'woodcutting-logs.json',
-	Woodcutting.Logs.slice()
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'woodcutting-logs.json',
+		Woodcutting.Logs.slice()
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'hunter-creatures.json',
-	Hunter.Creatures.slice()
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'hunter-creatures.json',
+		Hunter.Creatures.slice()
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'crafting-craftables.json',
-	Crafting.Craftables.slice()
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'crafting-craftables.json',
+		Crafting.Craftables.slice()
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'agility-courses.json',
-	Agility.Courses.slice()
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'agility-courses.json',
+		Agility.Courses.slice()
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'cooking-cookables.json',
-	Cooking.Cookables.slice()
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(i => ({ ...i, burntCookable: i.burntCookable ? Util.ItemName(i.burntCookable) : null }))
-		.map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'cooking-cookables.json',
+		Cooking.Cookables.slice()
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(i => ({ ...i, burntCookable: i.burntCookable ? Util.ItemName(i.burntCookable) : null }))
+			.map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'fishing-fishables.json',
-	Fishing.Fishes.slice()
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'fishing-fishables.json',
+		Fishing.Fishes.slice()
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'mining-ores.json',
-	Mining.Ores.slice()
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'mining-ores.json',
+		Mining.Ores.slice()
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'smithing-smithables-bars.json',
-	[...Smithing.SmithableItems, ...Smithing.Bars]
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'smithing-smithables-bars.json',
+		[...Smithing.SmithableItems, ...Smithing.Bars]
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'prayer-ashes-bones.json',
-	[...Prayer.Ashes, ...Prayer.Bones].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'prayer-ashes-bones.json',
+		[...Prayer.Ashes, ...Prayer.Bones].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'runecraft-runes-tiaras.json',
-	[...Runecraft.Runes, ...Runecraft.Tiaras].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'runecraft-runes-tiaras.json',
+		[...Runecraft.Runes, ...Runecraft.Tiaras]
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'fletching-fletchables.json',
-	[...Fletching.Fletchables].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'fletching-fletchables.json',
+		[...Fletching.Fletchables].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'thieving-stealabes.json',
-	[...Thieving.stealables].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'thieving-stealabes.json',
+		[...Thieving.stealables].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'farming-plants.json',
-	[...Farming.Plants].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'farming-plants.json',
+		[...Farming.Plants].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'herblore-mixables.json',
-	[...Herblore.Mixables].sort((a, b) => a.item.name.localeCompare(b.item.name)).map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'herblore-mixables.json',
+		[...Herblore.Mixables].sort((a, b) => a.item.name.localeCompare(b.item.name)).map(serializeSnapshotItem)
+	);
 
-writeSkillingJson(
-	'magic-castables.json',
-	[...Magic.Castables, ...Magic.Enchantables].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
-);
+	writeSkillingJson(
+		'magic-castables.json',
+		[...Magic.Castables, ...Magic.Enchantables]
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	);
 
-writeRootJson(
-	'clue-tiers.json',
-	[...ClueTiers]
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(tier => {
-			return {
-				...omit(tier, ['reqs', 'allItems', 'stashUnits', 'implings']),
-				allItems: Util.ItemArr(tier.allItems),
-				implings: tier.implings ? Util.ItemArr(tier.implings) : []
-			};
-		})
-		.map(serializeSnapshotItem)
-);
+	writeRootJson(
+		'clue-tiers.json',
+		[...ClueTiers]
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(tier => {
+				return {
+					...omit(tier, ['reqs', 'allItems', 'stashUnits', 'implings']),
+					allItems: Util.ItemArr(tier.allItems),
+					implings: tier.implings ? Util.ItemArr(tier.implings) : []
+				};
+			})
+			.map(serializeSnapshotItem)
+	);
 
-writeRootJson(
-	'stash-units.json',
-	serializeSnapshotItem(
-		allStashUnitTiers.reduce<Record<string, unknown>>((acc, cur) => {
-			acc[cur.tier] = { ...cur, units: cur.units.map(u => ({ ...u, items: Util.ItemArr(u.items) })) };
-			return acc;
-		}, {})
-	)
-);
+	writeRootJson(
+		'stash-units.json',
+		serializeSnapshotItem(
+			allStashUnitTiers.reduce<Record<string, unknown>>((acc, cur) => {
+				acc[cur.tier] = { ...cur, units: cur.units.map(u => ({ ...u, items: Util.ItemArr(u.items) })) };
+				return acc;
+			}, {})
+		)
+	);
 
-writeRootJson(
-	'similar-items.json',
-	[...similarItems.entries()]
-		.map(i => ({
-			main_item: Util.ItemName(i[0]),
-			similar_items: Util.ItemArr([i[0], ...i[1]].filter(i => ![25869].includes(i)))
-		}))
-		.sort((a, b) => a.main_item.localeCompare(b.main_item))
-);
+	writeRootJson(
+		'similar-items.json',
+		[...similarItems.entries()]
+			.map(i => ({
+				main_item: Util.ItemName(i[0]),
+				similar_items: Util.ItemArr([i[0], ...i[1]].filter(i => ![25869].includes(i)))
+			}))
+			.sort((a, b) => a.main_item.localeCompare(b.main_item))
+	);
 
-writeRootJson('eatables.json', [...Eatables].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem));
+	writeRootJson(
+		'eatables.json',
+		[...Eatables].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem)
+	);
 
-writeRootJson('potions.json', [...Potions].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem));
+	writeRootJson('potions.json', [...Potions].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem));
 
-writeRootJson(
-	'minigames.json',
-	[...Minigames].sort((a, b) => a.name.localeCompare(b.name))
-);
+	writeRootJson(
+		'minigames.json',
+		[...Minigames].sort((a, b) => a.name.localeCompare(b.name))
+	);
 
-writeRootJson(
-	'killable-monsters.json',
-	[...killableMonsters]
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(serializeSnapshotItem)
-		.map((m: KillableMonster) => {
-			const obj: any = {
-				...omit(m, ['equippedItemBoosts', 'itemInBankBoosts', 'aliases'])
-			};
+	writeRootJson(
+		'killable-monsters.json',
+		[...killableMonsters]
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+			.map((m: KillableMonster) => {
+				const obj: any = {
+					...omit(m, ['equippedItemBoosts', 'itemInBankBoosts', 'aliases'])
+				};
 
-			if (m.itemInBankBoosts) {
-				obj.itemInBankBoosts = m.itemInBankBoosts?.map(ib => Object.entries(ib));
-			}
-			if (m.equippedItemBoosts) {
-				obj.equippedItemBoosts = m.equippedItemBoosts?.map(eb => [
-					eb.gearSetup,
-					eb.required ?? false,
-					eb.items.map(item => Object.values(item))
-				]);
-			}
+				if (m.itemInBankBoosts) {
+					obj.itemInBankBoosts = m.itemInBankBoosts?.map(ib => Object.entries(ib));
+				}
+				if (m.equippedItemBoosts) {
+					obj.equippedItemBoosts = m.equippedItemBoosts?.map(eb => [
+						eb.gearSetup,
+						eb.required ?? false,
+						eb.items.map(item => Object.values(item))
+					]);
+				}
 
-			return obj;
-		})
-);
+				return obj;
+			})
+	);
 
-writeRootJson('collection-log.json', serializeSnapshotItem(allCollectionLogs));
+	writeRootJson('collection-log.json', serializeSnapshotItem(allCollectionLogs));
 
-writeRootJson('openables.json', serializeSnapshotItem(allOpenables.sort((a, b) => a.name.localeCompare(b.name))));
+	writeRootJson('openables.json', serializeSnapshotItem(allOpenables.sort((a, b) => a.name.localeCompare(b.name))));
 
-writeRootJson('usables.json', {
-	unlocks: usableUnlocks.sort((a, b) => a.item.name.localeCompare(b.item.name)).map(serializeSnapshotItem),
-	generic: genericUsables.sort((a, b) => a.items[0].name.localeCompare(b.items[0].name)).map(serializeSnapshotItem)
-});
+	writeRootJson('usables.json', {
+		unlocks: usableUnlocks.sort((a, b) => a.item.name.localeCompare(b.item.name)).map(serializeSnapshotItem),
+		generic: genericUsables
+			.sort((a, b) => a.items[0].name.localeCompare(b.items[0].name))
+			.map(serializeSnapshotItem)
+	});
 
-writeRootJson(
-	'tokkul-shop-buyables.json',
-	serializeSnapshotItem(TokkulShopItems.sort((a, b) => a.name.localeCompare(b.name)))
-);
+	writeRootJson(
+		'tokkul-shop-buyables.json',
+		serializeSnapshotItem(TokkulShopItems.sort((a, b) => a.name.localeCompare(b.name)))
+	);
 
-writeRootJson(
-	'lms-buyables.json',
-	serializeSnapshotItem(LMSBuyables.sort((a, b) => a.item.name.localeCompare(b.item.name)))
-);
+	writeRootJson(
+		'lms-buyables.json',
+		serializeSnapshotItem(LMSBuyables.sort((a, b) => a.item.name.localeCompare(b.item.name)))
+	);
 
-writeRootJson(
-	'buyables.json',
-	serializeSnapshotItem(
-		Buyables.sort((a, b) => a.name.localeCompare(b.name)).map(i => ({
-			...i,
-			...(i.itemCost ? { itemCost: new Bank(i.itemCost) } : {}),
-			outputItems: !i.outputItems
-				? new Bank().add(i.name)
-				: i.outputItems instanceof Bank
-					? i.outputItems
-					: '[Function]'
-		}))
-	)
-);
+	writeRootJson(
+		'buyables.json',
+		serializeSnapshotItem(
+			Buyables.sort((a, b) => a.name.localeCompare(b.name)).map(i => ({
+				...i,
+				...(i.itemCost ? { itemCost: new Bank(i.itemCost) } : {}),
+				outputItems: !i.outputItems
+					? new Bank().add(i.name)
+					: i.outputItems instanceof Bank
+						? i.outputItems
+						: '[Function]'
+			}))
+		)
+	);
 
-writeRootJson(
-	'achievement-diaries.json',
-	serializeSnapshotItem(diaries.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
-);
+	writeRootJson(
+		'achievement-diaries.json',
+		serializeSnapshotItem(diaries.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
+	);
 
-writeRootJson(
-	'quests.json',
-	serializeSnapshotItem(quests.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
-);
+	writeRootJson(
+		'quests.json',
+		serializeSnapshotItem(quests.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
+	);
 
-writeRootJson(
-	'quests.json',
-	serializeSnapshotItem(quests.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
-);
+	writeRootJson(
+		'quests.json',
+		serializeSnapshotItem(quests.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
+	);
 
-writeRootJson(
-	'all-obtainable-items.json',
-	serializeSnapshotItem(Util.ItemArr(Array.from(ALL_OBTAINABLE_ITEMS)).map(serializeSnapshotItem))
-);
+	writeRootJson(
+		'all-obtainable-items.json',
+		serializeSnapshotItem(Util.ItemArr(Array.from(ALL_OBTAINABLE_ITEMS)).map(serializeSnapshotItem))
+	);
 
-function renderCombatAchievementsFile() {
 	const finalJSON: any = {};
 	for (const [tier, data] of Object.entries(CombatAchievements)) {
 		finalJSON[tier] = {
@@ -277,6 +284,3 @@ function renderCombatAchievementsFile() {
 	}
 	writeRootJson('combat-achievements.json', finalJSON);
 }
-renderCombatAchievementsFile();
-
-tearDownScript();

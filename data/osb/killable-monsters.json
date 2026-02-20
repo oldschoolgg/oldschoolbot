@@ -3016,7 +3016,7 @@
 		"level_requirements": {
 			"slayer": 76
 		},
-		"required_quests": [15],
+		"required_quests": [17],
 		"heal_amount_needed": 38,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_slash", "attack_magic"],
@@ -3952,7 +3952,7 @@
 		"level_requirements": {
 			"slayer": 54
 		},
-		"required_quests": [15],
+		"required_quests": [17],
 		"heal_amount_needed": 18,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_slash", "attack_magic"],
@@ -4502,7 +4502,7 @@
 		"level_requirements": {
 			"slayer": 67
 		},
-		"required_quests": [15],
+		"required_quests": [17],
 		"heal_amount_needed": 28,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_slash", "attack_magic"],

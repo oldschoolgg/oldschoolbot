@@ -1,4 +1,4 @@
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng } from 'node-rng/crypto';
 
 import type { Activity, activity_type_enum } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';

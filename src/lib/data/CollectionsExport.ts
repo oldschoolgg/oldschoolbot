@@ -26,7 +26,6 @@ export interface IToReturnCollection {
 	leftList?: ILeftListStatus;
 	userItems: Bank;
 	counts: boolean;
-	unobtainable: boolean;
 }
 
 export type CollectionStatus = 'not_started' | 'started' | 'completed';
@@ -60,7 +59,6 @@ interface ICollectionActivity {
 		counts?: false;
 		alias?: string[];
 		items: number[];
-		unobtainable?: true;
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
@@ -1344,6 +1342,7 @@ export const troubleBrewingCL = resolveItems([
 	'Red rum (trouble brewing)',
 	'Blue rum (trouble brewing)'
 ]);
+export const valeTotemsCL = resolveItems(['Bow string spool', 'Ent branch', 'Fletching knife', 'Greenman mask']);
 export const volcanicMineCL = resolveItems([
 	'Ash covered tome',
 	'Large water container',

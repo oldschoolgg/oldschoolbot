@@ -1,4 +1,5 @@
-import { randFloat, roll, shuffleArr } from '@oldschoolgg/rng';
+import { sumArr } from '@oldschoolgg/util';
+import { MathRNG, randFloat, roll } from 'node-rng';
 
 import { EItem } from '@/EItem.js';
 import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
@@ -6,7 +7,8 @@ import LootTable from '@/structures/LootTable.js';
 import Minigame from '@/structures/Minigame.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { JSONClone, sumArr, Time } from '@/util/util.js';
+import { Time } from '@/util/smallUtils.js';
+import { JSONClone } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;
@@ -80,7 +82,7 @@ const itemScales = resolveNameBank({
 const NonUniqueTable = new SimpleTable<number>();
 for (const itemID of Object.keys(itemScales)) NonUniqueTable.add(Number.parseInt(itemID));
 
-export const CoXUniqueTable = new LootTable()
+export const CoXUniqueTable: LootTable = new LootTable()
 	.add('Dexterous prayer scroll', 1, 20)
 	.add('Arcane prayer scroll', 1, 20)
 
@@ -109,10 +111,10 @@ const cmTeamTimes = [
 
 export class ChambersOfXericClass extends Minigame {
 	id = 1;
-	aliases = ['raids', 'cox'];
+	aliases: string[] = ['raids', 'cox'];
 	name = 'Chambers of Xeric';
 	allItems: number[] = [...CoXUniqueTable.allItems, ...NonUniqueTable.table.map(i => i.item)];
-	maxRoll = 570_000 * (1 / 8675);
+	maxRoll: number = 570_000 * (1 / 8675);
 
 	/**
 	 * For every 8,675 total points obtained, a 1% chance to obtain a unique loot is given.
@@ -140,7 +142,7 @@ export class ChambersOfXericClass extends Minigame {
 	}
 
 	/**
-	 * Returns true if the team is elligible to receive dust based on their
+	 * Returns true if the team is eligible to receive dust based on their
 	 * completion time.
 	 *
 	 * https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Challenge_Mode#Rewards
@@ -148,7 +150,7 @@ export class ChambersOfXericClass extends Minigame {
 	 * @param teamSize How many members in the raid team.
 	 * @param completionTime The completion time of the raid, in *milliseconds*.
 	 */
-	public elligibleForDust(teamSize: number, completionTime: number): boolean {
+	public eligibleForDust(teamSize: number, completionTime: number): boolean {
 		// For every required time there is, if their team size is in that range,
 		// return true if their time is <= the required time.
 		for (const [teamSizeRange, timeRequired] of cmTeamTimes) {
@@ -200,13 +202,13 @@ export class ChambersOfXericClass extends Minigame {
 		const options = JSONClone(_options);
 
 		// Will only check for elligibility for dust if timeToComplete given, and challengeMode = true.
-		const elligibleForDust =
+		const eligibleForDust =
 			typeof options.timeToComplete === 'number' &&
 			options.challengeMode &&
-			this.elligibleForDust(options.team.length, options.timeToComplete);
+			this.eligibleForDust(options.team.length, options.timeToComplete);
 
-		if (elligibleForDust) {
-			// If in challenge mode, and elligible for dust, 5000pts is added to
+		if (eligibleForDust) {
+			// If in challenge mode, and eligible for dust, 5000pts is added to
 			// each team member.
 			// https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Challenge_Mode#Rewards
 			for (const member of options.team) {
@@ -229,12 +231,12 @@ export class ChambersOfXericClass extends Minigame {
 			// Give every team member a Loot.
 			lootResult[teamMember.id] = new Bank();
 
-			// If the team and team member is elligible for dust, roll for this user.
-			if (elligibleForDust && teamMember.canReceiveDust && roll(400)) {
+			// If the team and team member is eligible for dust, roll for this user.
+			if (eligibleForDust && teamMember.canReceiveDust && roll(400)) {
 				lootResult[teamMember.id].add('Metamorphic dust');
 			}
 
-			if (elligibleForDust && roll(75)) {
+			if (eligibleForDust && roll(75)) {
 				lootResult[teamMember.id].add('Twisted ancestral colour kit');
 			}
 
@@ -275,7 +277,7 @@ export class ChambersOfXericClass extends Minigame {
 		}
 
 		const onyxChance = options.team.length * 70;
-		for (const bank of shuffleArr(Object.values(lootResult))) {
+		for (const bank of MathRNG.shuffle(Object.values(lootResult))) {
 			if (roll(onyxChance)) {
 				bank.add('Onyx');
 				break;
@@ -286,4 +288,4 @@ export class ChambersOfXericClass extends Minigame {
 	}
 }
 
-export const ChambersOfXeric = new ChambersOfXericClass();
+export const ChambersOfXeric: ChambersOfXericClass = new ChambersOfXericClass();

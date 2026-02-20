@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { AbyssalDemonPreTable } from '../low/a-f/AbyssalDemon.js';
 
-const GreaterAbyssalDemonTable = new LootTable()
+const GreaterAbyssalDemonTable: LootTable = new LootTable()
 	.every('Abyssal ashes')
 	.every('Ensouled abyssal head')
 	.every(AbyssalDemonPreTable, 3)
@@ -16,7 +16,7 @@ const GreaterAbyssalDemonTable = new LootTable()
 	.tertiary(346, 'Eternal gem')
 	.tertiary(345, 'Imbued heart');
 
-export default new SimpleMonster({
+export const GreaterAbyssalDemon: SimpleMonster = new SimpleMonster({
 	id: 7410,
 	name: 'Greater abyssal demon',
 	table: GreaterAbyssalDemonTable,

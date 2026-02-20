@@ -1,4 +1,5 @@
-import { randInt, roll } from '@oldschoolgg/rng';
+import { uniqueArr } from '@oldschoolgg/util';
+import { randInt, roll } from 'node-rng';
 
 import { EItem } from '@/EItem.js';
 import { VirtusTable } from '@/simulation/subtables/VirtusTable.js';
@@ -6,7 +7,6 @@ import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import { Monster } from '@/structures/Monster.js';
-import { uniqueArr } from '@/util/smallUtils.js';
 
 const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add(VirtusTable, 1, 1)
@@ -14,18 +14,18 @@ const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add('Venator vestige', 1, 1)
 	.add("Leviathan's lure", 1, 1);
 
-const ClueTable = new LootTable()
+const ClueTable: LootTable = new LootTable()
 	.add('Clue scroll (easy)')
 	.add('Clue scroll (medium)')
 	.add('Clue scroll (hard)')
 	.add('Clue scroll (elite)');
 
-const SupplyTable = new LootTable()
+const SupplyTable: LootTable = new LootTable()
 	.every('Prayer potion(3)', 1)
 	.every('Ranging potion(2)', 1)
 	.every('Sea turtle', [3, 4]);
 
-const ResourceTable = new LootTable()
+const ResourceTable: LootTable = new LootTable()
 	.add('Coal', [195, 292], 8)
 	.add('Gold ore', [67, 101], 8)
 	.add('Dragon javelin heads', [54, 81], 8)
@@ -92,7 +92,7 @@ class TheLeviathanSingleton extends Monster {
 	}
 }
 
-export const TheLeviathan = new TheLeviathanSingleton({
+export const TheLeviathan: TheLeviathanSingleton = new TheLeviathanSingleton({
 	id: 12_214,
 	name: 'The Leviathan',
 	aliases: ['the leviathan']

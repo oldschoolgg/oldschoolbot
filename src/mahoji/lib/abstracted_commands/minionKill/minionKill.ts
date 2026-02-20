@@ -20,15 +20,17 @@ const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:
 
 export async function minionKillCommand(
 	user: MUser,
-	interaction: MInteraction,
+	interaction: OSInteraction,
 	channelId: string,
 	name: string,
+	rng: RNGProvider,
 	inputQuantity: number | undefined,
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
 	solo: boolean | undefined,
 	onTask: boolean | undefined
 ): CommandResponse {
+	if (inputQuantity !== undefined && inputQuantity < 1) return 'Quantity must be greater than 0.';
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
@@ -36,9 +38,9 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
-	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelId);
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(interaction);
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelId, solo);
-	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelId, inputQuantity);
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(rng, user, channelId, inputQuantity);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelId, inputQuantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelId, name, inputQuantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelId, inputQuantity);
@@ -90,7 +92,8 @@ export async function minionKillCommand(
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
-		currentPeak: generateDailyPeakIntervals().currentPeak
+		currentPeak: generateDailyPeakIntervals().currentPeak,
+		rng
 	});
 
 	if (typeof result === 'string') {

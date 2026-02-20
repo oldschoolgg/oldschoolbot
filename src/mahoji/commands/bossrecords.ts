@@ -1,6 +1,7 @@
 import { EmbedBuilder, type PaginatedMessagePage } from '@oldschoolgg/discord';
-import { chunk, toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
+import { chunk } from 'remeda';
 
 import { miscEmojis } from '@/lib/data/emojis.js';
 import pets from '@/lib/data/pets.js';

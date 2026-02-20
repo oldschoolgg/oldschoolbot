@@ -1,14 +1,12 @@
-import './base.js';
-
 import { readFileSync, writeFileSync } from 'node:fs';
-import { md5sum, Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
+import { Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
 import { DateTime } from 'luxon';
 
+import { md5sum } from '@/lib/util/smallUtils.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { BOT_TYPE } from '../src/lib/constants.js';
-import { tearDownScript } from './scriptUtil.js';
 
-async function renderCommands() {
+function renderCommands() {
 	return allCommandsDONTIMPORT
 		.filter(c => {
 			const has = typeof c.description === 'string' && c.description.length > 1;
@@ -41,15 +39,14 @@ async function renderCommands() {
 		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export async function renderCommandsFile() {
+export function renderCommandsFile() {
 	const stopwatch = new Stopwatch();
-	const commands = await renderCommands();
+	const commands = renderCommands();
 	const filePath = `data/${BOT_TYPE.toLowerCase()}/commands.json`;
 
 	const hash = md5sum(JSON.stringify(commands));
 	const previousHash = JSON.parse(readFileSync(filePath, 'utf-8')).hash || '';
 	if (hash === previousHash) {
-		console.log('Commands JSON file is up to date');
 		return;
 	}
 
@@ -67,6 +64,3 @@ export async function renderCommandsFile() {
 	);
 	stopwatch.check('Finished commands file.');
 }
-
-renderCommandsFile();
-tearDownScript();

@@ -1,7 +1,6 @@
-import './base.js';
-
 import { writeFileSync } from 'node:fs';
-import { calcPerHour, Time, TSVWriter } from '@oldschoolgg/toolkit';
+import { calcPerHour, Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, convertBankToPerHourStats, EItem, Items } from 'oldschooljs';
 import { omit } from 'remeda';
 
@@ -147,6 +146,7 @@ async function main() {
 					slayerUnlocks: [],
 					favoriteFood: [EItem.SHARK],
 					bitfield: [],
+					rng: MathRNG,
 					currentPeak: { peakTier: PeakTier.Medium, startTime: Date.now(), finishTime: Date.now() + 1000 }
 				});
 				if (typeof commandResult === 'string') return null;
@@ -186,7 +186,8 @@ async function main() {
 					attackStyles,
 					duration: commandResult.duration,
 					bitfield,
-					chinning
+					chinning,
+					rng: MathRNG
 				});
 				const end = performance.now();
 
@@ -207,22 +208,6 @@ async function main() {
 			4
 		)
 	);
-
-	const headers = [
-		'Monster',
-		'AttackStyle',
-		'XP/hr',
-		...skills.map(s => `${s} XP/hr`),
-		'Options',
-		'Food',
-		'GP/hr',
-		'Cost/hr'
-		// 'Raw Command',
-		// 'Raw Trip'
-	];
-	const tsvWriter = new TSVWriter('data/monster_data.tsv');
-
-	tsvWriter.writeRow(headers);
 
 	const parsedResults = [];
 

@@ -32,7 +32,10 @@ export enum QuestID {
 	EthicallyAcquiredAntiquities = 12,
 	WhileGuthixSleeps = 13,
 	TheCurseOfArrav = 14,
-	ShadowsOfCustodia = 15
+	TheFinalDawn = 15,
+	'Scrambled!' = 16,
+	ShadowsOfCustodia = 17,
+	TutorialIsland = 18
 }
 
 export const quests: Quest[] = [
@@ -356,11 +359,54 @@ export const quests: Quest[] = [
 		}
 	},
 	{
+		id: QuestID.TheFinalDawn,
+		qp: 3,
+		name: 'The Final Dawn',
+		prerequisitesQuests: [QuestID.PerilousMoons, QuestID.TheHeartOfDarkness],
+		skillReqs: {
+			thieving: 66,
+			runecraft: 52,
+			fletching: 52
+		},
+		skillsRewards: {
+			thieving: 55_000,
+			runecraft: 25_000,
+			fletching: 25_000
+		},
+		rewards: new Bank().add(30960).add('Arkan blade'),
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 40;
+			if (user.combatLevel < 85) {
+				duration += Time.Minute * 10;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID['Scrambled!'],
+		qp: 1,
+		name: 'Scrambled!',
+		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
+		skillReqs: {
+			construction: 38,
+			cooking: 36,
+			smithing: 35
+		},
+		skillsRewards: {
+			construction: 5000,
+			cooking: 5000,
+			smithing: 5000
+		},
+		rewards: new Bank().add('Humphrey dumphrey'),
+		calcTime: () => {
+			return Time.Minute * 10;
+		}
+	},
+	{
 		id: QuestID.ShadowsOfCustodia,
 		qp: 2,
 		name: 'Shadows of Custodia',
 		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
-		combatLevelReq: 50,
 		skillReqs: {
 			slayer: 54,
 			fishing: 45,
@@ -368,17 +414,45 @@ export const quests: Quest[] = [
 			hunter: 36
 		},
 		skillsRewards: {
-			slayer: 10000,
+			slayer: 10_000,
 			hunter: 4000,
 			fishing: 3000,
 			construction: 3000
 		},
 		calcTime: (user: MUser) => {
-			let duration = Time.Minute * 18;
-			if (user.combatLevel < 65) {
-				duration += Time.Minute * 3;
+			let duration = Time.Minute * 8;
+			if (user.combatLevel < 50) {
+				duration += Time.Minute * 2;
 			}
 			return duration;
+		}
+	},
+	{
+		id: QuestID.TutorialIsland,
+		qp: 1,
+		name: 'Tutorial Island',
+		rewards: new Bank()
+			.add('Bronze Axe')
+			.add('Bronze pickaxe')
+			.add('Tinderbox')
+			.add('Small fishing net')
+			.add('Shrimps', 2)
+			.add('Bronze dagger')
+			.add('Bronze sword')
+			.add('Wooden Shield')
+			.add('Shortbow')
+			.add('Bronze arrow', 25)
+			.add('Air rune', 25)
+			.add('Mind rune', 15)
+			.add('Bucket')
+			.add('Pot')
+			.add('Bread')
+			.add('Water rune', 6)
+			.add('Earth rune', 4)
+			.add('Body rune', 2)
+			.add(995, 25),
+		calcTime: () => {
+			return Time.Minute * 7;
 		}
 	}
 ];

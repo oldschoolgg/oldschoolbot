@@ -1,5 +1,6 @@
+import { EquipmentSlot } from '@oldschoolgg/gear';
 import { Events, Time } from '@oldschoolgg/toolkit';
-import { Bank, ECreature, EItem, EquipmentSlot } from 'oldschooljs';
+import { Bank, ECreature, EItem } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
@@ -51,14 +52,15 @@ export const hunterTask: MinionTask = {
 
 		const experienceScore = await user.getCreatureScore(creature.id);
 
-		let [successfulQuantity, xpReceived] = calcLootXPHunting(
-			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
+		let [successfulQuantity, xpReceived] = calcLootXPHunting({
+			currentLevel: Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 			creature,
 			quantity,
 			usingStaminaPotion,
 			graceful,
-			experienceScore
-		);
+			experienceScore,
+			rng
+		});
 
 		if (crystalImpling) {
 			// Limit it to a max of 22 crystal implings per hour
@@ -74,7 +76,7 @@ export const hunterTask: MinionTask = {
 			riskDeathChance += Math.min(Math.floor(((await user.getCreatureScore(creature.id)) ?? 1) / 100), 200);
 
 			// Gives lower death chance depending on what the user got equipped in wildy.
-			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy);
+			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			riskDeathChance += score;
 			for (let i = 0; i < duration / Time.Minute; i++) {
 				if (rng.roll(riskPkChance)) {
@@ -91,9 +93,7 @@ export const hunterTask: MinionTask = {
 				const newGear = user.gear.wildy.raw();
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
-				await user.update({
-					gear_wildy: newGear
-				});
+				await user.updateGear([{ setup: 'wildy', gear: newGear }]);
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
 				diedStr =
@@ -156,7 +156,7 @@ export const hunterTask: MinionTask = {
 
 		const scoreToAdd = Math.floor(successfulQuantity);
 		if (scoreToAdd > 0) {
-			await user.incrementCreatureScore(creature.id);
+			await user.incrementCreatureScore(creature.id, scoreToAdd);
 		}
 
 		await user.transactItems({

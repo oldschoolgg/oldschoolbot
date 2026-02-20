@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export default new SimpleMonster({
+export const WealthyCitizen: SimpleMonster = new SimpleMonster({
 	id: 13302,
 	name: 'Wealthy Citizen',
 	pickpocketTable: new LootTable({ limit: 85 })

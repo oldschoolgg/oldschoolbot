@@ -10,16 +10,7 @@ export default defineConfig({
 			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
 		isolate: false,
 		pool: 'threads',
-		poolOptions: {
-			threads: {
-				singleThread: true
-			}
-		},
-		coverage: {
-			provider: 'v8',
-			reporter: ['text', 'json', 'html'],
-			include: ['src/lib/skilling/skills/farming/**/*.ts']
-		}
+		maxWorkers: 4
 	},
 	resolve: {
 		alias: {

@@ -1,6 +1,7 @@
-import { cryptoRng, type RNGProvider } from '@oldschoolgg/rng';
 import type { IChannel, IMember } from '@oldschoolgg/schemas';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import type { RNGProvider } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 
 import type { ClientStorage } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';

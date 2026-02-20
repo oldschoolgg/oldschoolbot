@@ -1,12 +1,12 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
-import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import type { Activity } from '@/prisma/main.js';
 import { choicesOf, itemOption, monsterOption, skillOption } from '@/discord/index.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
-import { BitField, PerkTier } from '@/lib/constants.js';
+import { PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
@@ -17,7 +17,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
+import { asyncGzip, parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
@@ -613,7 +613,7 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 				? 'AND "minion.ironman" = false'
 				: '';
 	if (!item) return "That's not a valid item.";
-	if (!allDroppedItems.includes(item.id) && !user.bitfield.includes(BitField.isModerator)) {
+	if (!allDroppedItems.includes(item.id) && !user.isMod()) {
 		return "You can't check this item, because it's not on any collection log.";
 	}
 

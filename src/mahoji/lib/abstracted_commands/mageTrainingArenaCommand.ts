@@ -93,7 +93,7 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 		}
 	});
 
-	await user.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
+	await user.addItemsToBank({ items: new Bank().add(item.id, 1), collectionLog: true });
 
 	return `Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`;
 }

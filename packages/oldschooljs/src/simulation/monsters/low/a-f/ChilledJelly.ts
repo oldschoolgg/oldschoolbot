@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const ChilledJellyPreTable = new LootTable()
+export const ChilledJellyPreTable: LootTable = new LootTable()
 	/* Weapons and armour */
 	.add('Adamant battleaxe', 1, 11)
 	.add('Black 2h sword', 1, 5)
@@ -31,14 +31,14 @@ export const ChilledJellyPreTable = new LootTable()
 	/* Gem drop table */
 	.add(GemTable, 1, 4);
 
-const ChilledJellyTable = new LootTable()
+const ChilledJellyTable: LootTable = new LootTable()
 	.every(ChilledJellyPreTable)
 
 	/* Tertiary */
 	.tertiary(64, 'Clue scroll (hard)')
 	.tertiary(100, 'Frozen tear', [8, 12]);
 
-export default new SimpleMonster({
+export const ChilledJelly: SimpleMonster = new SimpleMonster({
 	id: 13799,
 	name: 'Chilled Jelly',
 	table: ChilledJellyTable,

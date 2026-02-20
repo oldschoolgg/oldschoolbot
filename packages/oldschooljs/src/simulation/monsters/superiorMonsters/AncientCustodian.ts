@@ -15,7 +15,7 @@ const AncientCustodianTable = new LootTable()
 	.tertiary(504, 'Eternal gem')
 	.tertiary(504, 'Imbued heart');
 
-export default new SimpleMonster({
+export const AncientCustodian: SimpleMonster = new SimpleMonster({
 	id: 14520,
 	name: 'Ancient Custodian',
 	table: AncientCustodianTable,

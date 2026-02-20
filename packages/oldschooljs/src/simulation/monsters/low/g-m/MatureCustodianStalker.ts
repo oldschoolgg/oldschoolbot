@@ -2,7 +2,7 @@ import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const MatureCustodianStalkerPreTable = new LootTable()
+export const MatureCustodianStalkerPreTable: LootTable = new LootTable()
 	/* Runes and ammunition*/
 	.add('Cannonball', [15, 30], 15)
 	.add('Air rune', 150, 12)
@@ -34,7 +34,7 @@ const MatureCustodianStalkerTable = new LootTable()
 	.tertiary(800, 'Antler guard')
 	.tertiary(5013, 'Curved bone');
 
-export default new SimpleMonster({
+export const MatureCustodianStalker: SimpleMonster = new SimpleMonster({
 	id: 14703,
 	name: 'Mature custodian stalker',
 	table: MatureCustodianStalkerTable,

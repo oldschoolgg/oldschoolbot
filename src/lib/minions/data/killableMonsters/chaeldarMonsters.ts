@@ -1,6 +1,6 @@
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
+import { Bank, deepResolveItems, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -494,7 +494,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
 	{
-		id: Monsters.TzHaarKet.id,
+		id: EMonster.TZHAARKET,
 		name: Monsters.TzHaarKet.name,
 		aliases: Monsters.TzHaarKet.aliases,
 		timeToFinish: Time.Second * 35,

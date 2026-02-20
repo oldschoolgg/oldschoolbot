@@ -183,11 +183,7 @@ After becoming an ironman:
 	await prisma.userEvent.deleteMany({ where: { user_id: user.id } });
 	await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(user.id) } });
-	const allTableBanks = await prisma.tableBank.findMany({ where: { user_id: user.id } });
-	for (const tableBank of allTableBanks) {
-		await prisma.tableBankItem.deleteMany({ where: { bank_id: tableBank.id } });
-		await prisma.tableBank.delete({ where: { id: tableBank.id } });
-	}
+	await prisma.jsonBank.deleteMany({ where: { user_id: user.id } });
 
 	// Refund the leagues points they spent
 	const roboChimpUser = await roboChimpUserFetch(user.id);

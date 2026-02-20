@@ -1,4 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
@@ -267,7 +266,7 @@ export const clueCommand = defineCommand({
 			}
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		let { quantity } = options;
 
 		const clueTier = ClueTiers.find(
@@ -304,7 +303,7 @@ export const clueCommand = defineCommand({
 			boosts.push(`${learningReductionPercent}% for Clue score`);
 		}
 
-		const randomAddedDuration = randInt(1, 20);
+		const randomAddedDuration = rng.randInt(1, 20);
 		timePerClue += (randomAddedDuration * timePerClue) / 100;
 		const poh = await getPOH(user.id);
 
@@ -371,7 +370,7 @@ export const clueCommand = defineCommand({
 			let openedImplings = 0;
 			const implingLoot = new Bank();
 			while (implingClues + bankedClues < quantity && openedImplings < bankedImplings) {
-				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1 });
+				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1, rng });
 				implingLoot.add(impLoot.bank);
 				implingClues = implingLoot.amount(clueTier.scrollID);
 				openedImplings++;

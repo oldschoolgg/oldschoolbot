@@ -1,4 +1,4 @@
-import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit';
+import { miniID, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { GiftBoxStatus } from '@/prisma/main.js';
@@ -6,10 +6,11 @@ import { BOT_TYPE } from '@/lib/constants.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { containsBlacklistedWord, isValidNickname } from '@/lib/util/smallUtils.js';
 
 export const giftCommand = defineCommand({
 	name: 'gift',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Create gifts for other users, or open one you received.',
 	options: [
 		{
@@ -256,7 +257,8 @@ ${items}`
 					items_sent: giftBox.items as string,
 					items_received: undefined,
 					type: 'gift'
-				}
+				},
+				select: { id: true }
 			});
 			return `You sent the gift box to ${recipient.badgedUsername}!`;
 		}

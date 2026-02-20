@@ -809,53 +809,75 @@ export const leaderboardCommand = defineCommand({
 	run: async ({ options, interaction }) => {
 		await interaction.defer();
 
-		type LBDef = {
-			key:
-				| 'kc'
-				| 'farming_contracts'
-				| 'inferno'
-				| 'sacrifice'
-				| 'minigames'
-				| 'hunter_catches'
-				| 'agility_laps'
-				| 'gp'
-				| 'skills'
-				| 'opens'
-				| 'cl'
-				| 'clues'
-				| 'movers'
-				| 'global'
-				| 'combat_achievements'
-				| 'mastery';
-			run: (sub: any) => CommandResponse;
-		};
-
-		const LEADERBOARDS: LBDef[] = [
-			{ key: 'kc', run: sub => kcLb(interaction, sub.monster, Boolean(sub.ironmen_only)) },
-			{ key: 'farming_contracts', run: sub => farmingContractLb(interaction, Boolean(sub.ironmen_only)) },
-			{ key: 'inferno', run: () => infernoLb(interaction) },
-			{ key: 'sacrifice', run: sub => sacrificeLb(interaction, sub.type, Boolean(sub.ironmen_only)) },
-			{ key: 'minigames', run: sub => minigamesLb(interaction, sub.minigame) },
-			{ key: 'hunter_catches', run: sub => creaturesLb(interaction, sub.creature) },
-			{ key: 'agility_laps', run: sub => lapsLb(interaction, sub.course) },
-			{ key: 'gp', run: sub => gpLb(interaction, Boolean(sub.ironmen_only)) },
-			{
-				key: 'skills',
-				run: sub => skillsLb(interaction, sub.skill, sub.xp ? 'xp' : 'level', Boolean(sub.ironmen_only))
-			},
-			{ key: 'opens', run: sub => openLb(interaction, sub.openable, Boolean(sub.ironmen_only)) },
-			{ key: 'cl', run: sub => clLb(interaction, sub.cl, Boolean(sub.ironmen_only)) },
-			{ key: 'clues', run: sub => cluesLb(interaction, sub.clue, Boolean(sub.ironmen_only)) },
-			{ key: 'movers', run: sub => gainersLB(interaction, sub.type) },
-			{ key: 'global', run: sub => globalLb(interaction, sub.type) },
-			{ key: 'combat_achievements', run: () => caLb(interaction) },
-			{ key: 'mastery', run: () => masteryLb(interaction) }
-		];
-
-		for (const lb of LEADERBOARDS) {
-			const sub = options[lb.key];
-			if (sub !== undefined) return lb.run(sub);
+		if (options.kc) {
+			return kcLb(interaction, options.kc.monster, Boolean(options.kc.ironmen_only));
 		}
+
+		if (options.farming_contracts) {
+			return farmingContractLb(interaction, Boolean(options.farming_contracts.ironmen_only));
+		}
+
+		if (options.inferno) {
+			return infernoLb(interaction);
+		}
+
+		if (options.sacrifice) {
+			return sacrificeLb(interaction, options.sacrifice.type, Boolean(options.sacrifice.ironmen_only));
+		}
+
+		if (options.minigames) {
+			return minigamesLb(interaction, options.minigames.minigame);
+		}
+
+		if (options.hunter_catches) {
+			return creaturesLb(interaction, options.hunter_catches.creature);
+		}
+
+		if (options.agility_laps) {
+			return lapsLb(interaction, options.agility_laps.course);
+		}
+
+		if (options.gp) {
+			return gpLb(interaction, Boolean(options.gp.ironmen_only));
+		}
+
+		if (options.skills) {
+			return skillsLb(
+				interaction,
+				options.skills.skill,
+				options.skills.xp ? 'xp' : 'level',
+				Boolean(options.skills.ironmen_only)
+			);
+		}
+
+		if (options.opens) {
+			return openLb(interaction, options.opens.openable, Boolean(options.opens.ironmen_only));
+		}
+
+		if (options.cl) {
+			return clLb(interaction, options.cl.cl, Boolean(options.cl.ironmen_only));
+		}
+
+		if (options.clues) {
+			return cluesLb(interaction, options.clues.clue, Boolean(options.clues.ironmen_only));
+		}
+
+		if (options.movers) {
+			return gainersLB(interaction, options.movers.type);
+		}
+
+		if (options.global) {
+			return globalLb(interaction, options.global.type);
+		}
+
+		if (options.combat_achievements) {
+			return caLb(interaction);
+		}
+
+		if (options.mastery) {
+			return masteryLb(interaction);
+		}
+
 		return 'Invalid input.';
 	}
 });

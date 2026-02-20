@@ -1,16 +1,15 @@
+import { GearSetupTypes, GearStat } from '@oldschoolgg/gear';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
-import { loadImage } from 'skia-canvas';
 
 import { choicesOf, equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '@/discord/index.js';
-import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { canvasToBuffer, createCanvas, loadImage } from '@/lib/canvas/canvasUtil.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
 import { equipPet } from '@/lib/minions/functions/equipPet.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
+import { validateEquippedGear } from '@/lib/user/userUtils.js';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
@@ -23,6 +22,7 @@ const gearValidationChecks = new Set();
 
 export const gearCommand = defineCommand({
 	name: 'gear',
+	flags: ['REQUIRES_LOCK'],
 	description: 'Manage, equip, unequip your gear.',
 	options: [
 		{
@@ -40,7 +40,7 @@ export const gearCommand = defineCommand({
 					description: 'A list of equippable items to equip.'
 				},
 				{
-					...ownedItemOption(item => Boolean(item.equipable_by_player) && Boolean(item.equipment)),
+					...ownedItemOption(item => Boolean(item.equipable) && Boolean(item.equipment)),
 					name: 'item',
 					description: 'The item you want to equip.'
 				},
@@ -213,7 +213,7 @@ ${res
 			};
 		}
 		if ((options.equip || options.unequip) && !gearValidationChecks.has(user.id)) {
-			const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
+			const { itemsUnequippedAndRefunded } = await validateEquippedGear(user);
 			if (itemsUnequippedAndRefunded.length > 0) {
 				return `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`;
 			}

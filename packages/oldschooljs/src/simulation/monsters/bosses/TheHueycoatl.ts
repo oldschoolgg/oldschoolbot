@@ -1,7 +1,7 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-const TheHueycoatlTable = new LootTable()
+const TheHueycoatlTable: LootTable = new LootTable()
 	.every('Big bones')
 	.tertiary(50, 'Clue scroll (hard)')
 	.tertiary(75, 'Tooth half of key (moon key)')
@@ -44,7 +44,7 @@ const TheHueycoatlTable = new LootTable()
 	.add('Rune dart tip', [6, 120], 2)
 	.add('Limpwurt root', [10, 200], 2);
 
-export const TheHueycoatl = new SimpleMonster({
+export const TheHueycoatl: SimpleMonster = new SimpleMonster({
 	id: 14009,
 	name: 'The Hueycoatl',
 	table: TheHueycoatlTable,
