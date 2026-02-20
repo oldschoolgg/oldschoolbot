@@ -1,5 +1,5 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-
+import { getGatheringSpeedBonus, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import { archaicOres, type ArchaicOre, type MiningType } from '@/tasks/minions/archaicMiningActivity.js';
 import type { ArchaicMiningActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -22,7 +22,9 @@ export async function archaicMiningCommand(
 	const bestOre = availableOres[availableOres.length - 1];
 
 	const maxTripLength = await user.calcMaxTripLength('ArchaicMining');
-	const timePerOre = bestOre.timeToMine * Time.Second;
+
+	const gatheringBonus = getGatheringSpeedBonus((user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>);
+	const timePerOre = bestOre.timeToMine * Time.Second * (1 - gatheringBonus);
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerOre);
@@ -49,8 +51,9 @@ export async function archaicMiningCommand(
 
 	const oresPerHour = Math.floor(Time.Hour / timePerOre);
 	const xpPerHour = oresPerHour * bestOre.xp;
+	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% gathering speed boost applied)` : '';
 
 	return `${user.minionName} is now mining Archaic minerals, it will take around ${formatDuration(
 		duration
-	)} to finish. (${xpPerHour.toLocaleString()} XP/hr)`;
+	)} to finish. (${xpPerHour.toLocaleString()} XP/hr)${boostStr}`;
 }

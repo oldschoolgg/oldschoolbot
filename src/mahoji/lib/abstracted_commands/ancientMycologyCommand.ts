@@ -1,6 +1,6 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { getGatheringSpeedBonus, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 
 interface AncientWood {
 	id: number;
@@ -20,24 +20,23 @@ const ancientMycologyWoods: AncientWood[] = [
 
 export async function ancientMycologyCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const woodcuttingLevel = user.skillsAsLevels.woodcutting;
-
 	if (woodcuttingLevel < 95) {
 		return 'You need at least level 95 Woodcutting to harvest Ancient Myconid growths.';
 	}
 
 	const inputQuantity = quantity;
-
 	const availableWoods = ancientMycologyWoods.filter((wood: AncientWood) => woodcuttingLevel >= wood.level);
 	const bestWood = availableWoods[availableWoods.length - 1];
-
 	const maxTripLength = await user.calcMaxTripLength('AncientMycology');
-	const timePerWood = bestWood.timeToChop * Time.Second;
+
+	const gatheringBonus = getGatheringSpeedBonus((user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>);
+	const timePerWood = bestWood.timeToChop * Time.Second * (1 - gatheringBonus);
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerWood);
 	}
-	const duration = timePerWood * quantity;
 
+	const duration = timePerWood * quantity;
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
@@ -57,8 +56,9 @@ export async function ancientMycologyCommand(user: MUser, channelId: string, qua
 
 	const harvestsPerHour = Math.floor(Time.Hour / timePerWood);
 	const xpPerHour = harvestsPerHour * bestWood.xp;
+	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% gathering speed boost applied)` : '';
 
 	return `${user.minionName} is now harvesting Ancient Myconid growths, it will take around ${formatDuration(
 		duration
-	)} to finish. (${xpPerHour.toLocaleString()} XP/hr)`;
+	)} to finish. (${xpPerHour.toLocaleString()} XP/hr)${boostStr}`;
 }

@@ -1,5 +1,6 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
+import { getGatheringSpeedBonus, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
@@ -16,7 +17,9 @@ export async function gemstoneFishingCommand(user: MUser, channelId: string, qua
 	const bestFish = availableFish[availableFish.length - 1];
 
 	const maxTripLength = await user.calcMaxTripLength('GemstoneFishing');
-	const timePerFish = bestFish.timeToFish * Time.Second;
+
+	const gatheringBonus = getGatheringSpeedBonus((user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>);
+	const timePerFish = bestFish.timeToFish * Time.Second * (1 - gatheringBonus);
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerFish);
@@ -42,8 +45,9 @@ export async function gemstoneFishingCommand(user: MUser, channelId: string, qua
 
 	const catchesPerHour = Math.floor(Time.Hour / timePerFish);
 	const xpPerHour = catchesPerHour * bestFish.xp;
+	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% gathering speed boost applied)` : '';
 
 	return `${user.minionName} is now fishing for Gemscales, it will take around ${formatDuration(
 		duration
-	)} to finish. (${xpPerHour.toLocaleString()} XP/hr)`;
+	)} to finish. (${xpPerHour.toLocaleString()} XP/hr)${boostStr}`;
 }
