@@ -501,6 +501,11 @@ export const allCollectionLogs: ICollection = {
 					'Fire element staff crown',
 					'Desiccated page'
 				]),
+				allItems: uniqueArr([
+					...Monsters.Branda.allItems,
+					...Monsters.Eldric.allItems,
+					...Monsters.RoyalTitans.allItems
+				]),
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[Monsters.Branda.id] ?? 0} Branda KC`,
 					`${stats.kcBank[Monsters.Eldric.id] ?? 0} Eldric KC`,

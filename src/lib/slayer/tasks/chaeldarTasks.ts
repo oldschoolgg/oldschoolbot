@@ -176,7 +176,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [70, 130],
 		weight: 12,
-		monsters: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id, Monsters.Branda.id, Monsters.RoyalTitans.id],
 		combatLevel: 65,
 		unlocked: true
 	},
