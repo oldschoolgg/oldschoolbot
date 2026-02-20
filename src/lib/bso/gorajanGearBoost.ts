@@ -1,10 +1,9 @@
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
-
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, empyreanOutfit } from '@/lib/bso/collection-log/main.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const gorajanBoosts = [
-	[gorajanArcherOutfit, 'range'],
 	[gorajanWarriorOutfit, 'melee'],
+	[gorajanArcherOutfit, 'range'],
 	[gorajanOccultOutfit, 'mage']
 ] as const;
 
@@ -18,7 +17,6 @@ export const gearstatToSetup = new Map()
 export function gorajanGearBoost(user: MUser, monster: KillableMonster | string) {
 	let attackStyle = null;
 	let goraBoost = false;
-
 	if (typeof monster !== 'string' && monster.attackStyleToUse) {
 		attackStyle = gearstatToSetup.get(monster.attackStyleToUse);
 	} else if (monster === 'Colosseum') {
@@ -27,9 +25,20 @@ export function gorajanGearBoost(user: MUser, monster: KillableMonster | string)
 		return goraBoost;
 	}
 
-	const allGorajan = gorajanBoosts.every(e => user.gear[e[1]].hasEquipped(e[0], true));
+	const empyreanEquipped = user.gear.melee.hasEquipped(empyreanOutfit, true);
+
+	const allGorajan = gorajanBoosts.every(e => {
+		if (e[1] === 'melee') return user.gear.melee.hasEquipped(e[0], true) || empyreanEquipped;
+		return user.gear[e[1]].hasEquipped(e[0], true);
+	});
+
 	for (const [outfit, setup] of gorajanBoosts) {
-		if (allGorajan || (attackStyle === setup && user.gear[setup].hasEquipped(outfit, true))) {
+		const effectiveEquipped =
+			setup === 'melee'
+				? user.gear.melee.hasEquipped(outfit, true) || empyreanEquipped
+				: user.gear[setup].hasEquipped(outfit, true);
+
+		if (allGorajan || (attackStyle === setup && effectiveEquipped)) {
 			goraBoost = true;
 			break;
 		}
