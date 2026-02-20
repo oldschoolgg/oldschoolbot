@@ -539,6 +539,12 @@ export async function tobStartCommand(
 	return str;
 }
 
+/**
+ * Resolves the effective ToB team list for start modes:
+ * - `solo`: one real user entry.
+ * - `trio`: three entries of the same user to simulate trio scaling.
+ * - default: uses users returned from party creation.
+ */
 export function resolveToBUsersForStart(user: MUser, solo: 'solo' | 'trio' | undefined, partyUsers?: MUser[]): MUser[] {
 	if (solo === 'solo') return [user];
 	if (solo === 'trio') return [user, user, user];

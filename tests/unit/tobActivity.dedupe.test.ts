@@ -27,7 +27,7 @@ describe('tobTask duplicate user hardening', () => {
 		vi.clearAllMocks();
 	});
 
-	it('does not double/triple apply persistence updates when users contains duplicate IDs', async () => {
+	it('does not double/triple apply persistence updates when users contain duplicate IDs', async () => {
 		const mockUser = {
 			id: '123',
 			mention: '<@123>',
@@ -48,9 +48,9 @@ describe('tobTask duplicate user hardening', () => {
 		};
 		const prismaMock = {
 			lootTrack: {
-				findFirst: vi.fn(async () => null),
-				create: vi.fn(async () => ({})),
-				update: vi.fn(async () => ({}))
+				findFirst: vi.fn(async (_args: any) => null),
+				create: vi.fn(async (_args: any) => ({})),
+				update: vi.fn(async (_args: any) => ({}))
 			}
 		};
 		(globalThis as any).prisma = prismaMock;
@@ -94,11 +94,10 @@ describe('tobTask duplicate user hardening', () => {
 		expect(mockUser.statsUpdate).toHaveBeenCalledTimes(1);
 		expect(mockUser.incrementMinigameScore).toHaveBeenCalledTimes(1);
 
-		const userScopedTrackCalls = prismaMock.lootTrack.findFirst.mock.calls.filter(
-			call => call[0].where.user_id !== null
-		);
+		const findFirstCalls = prismaMock.lootTrack.findFirst.mock.calls as Array<[any]>;
+		const userScopedTrackCalls = findFirstCalls.filter(([args]) => args?.where?.user_id !== null);
 		expect(userScopedTrackCalls).toHaveLength(1);
-		expect(userScopedTrackCalls[0][0].where.user_id).toBe(BigInt('123'));
+		expect(userScopedTrackCalls[0]?.[0]?.where?.user_id).toBe(BigInt('123'));
 
 		expect(handleTripFinish).toHaveBeenCalledTimes(1);
 	});
