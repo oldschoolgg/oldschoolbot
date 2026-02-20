@@ -358,7 +358,7 @@ export async function tobStartCommand(
 		}
 	};
 
-	const users = solo ? [user, user, user] : await globalClient.makeParty(partyOptions);
+	const users = resolveToBUsersForStart(user, solo, solo ? undefined : await globalClient.makeParty(partyOptions));
 	if (await ActivityManager.anyMinionIsBusy(users)) {
 		return `All team members must have their minions free.`;
 	}
@@ -537,6 +537,12 @@ export async function tobStartCommand(
 	str += ` \n\n${debugStr}`;
 
 	return str;
+}
+
+export function resolveToBUsersForStart(user: MUser, solo: 'solo' | 'trio' | undefined, partyUsers?: MUser[]): MUser[] {
+	if (solo === 'solo') return [user];
+	if (solo === 'trio') return [user, user, user];
+	return partyUsers ?? [user];
 }
 
 export async function tobCheckCommand(user: MUser, hardMode: boolean) {
