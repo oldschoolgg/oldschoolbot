@@ -1,4 +1,5 @@
 import { BSOItemGroups } from '@/lib/bso/bsoItemGroups.js';
+import { discontinuedCustomPetsCL } from '@/lib/bso/collection-log/main.js';
 import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { PartyhatTable } from '@/lib/bso/holidayItems.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
@@ -184,6 +185,8 @@ export const ores = resolveItems([
 	'Dwarven ore',
 	'Dark animica'
 ]);
+
+const dcPetsExtras = resolveItems(['Black swan']);
 
 const bars = resolveItems([
 	'Bronze bar',
@@ -961,6 +964,11 @@ export const baseFilters: Filterable[] = [
 		name: 'tmb',
 		aliases: ['tmb'],
 		items: () => tmbTable
+	},
+	{
+		name: 'Custom Pets (Discontinued)',
+		aliases: ['dc pets', 'dcpets', 'dcpet', 'dcp', 'discontinued custom pet', 'disc custom pet'],
+		items: () => [...discontinuedCustomPetsCL, ...dcPetsExtras]
 	},
 	{
 		name: 'Pets',

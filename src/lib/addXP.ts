@@ -126,6 +126,8 @@ const skillingOutfitBoosts = [
 	}
 ] as const;
 
+const formatBonusPercent = (value: number) => (Number.isInteger(value) ? value.toString() : value.toFixed(1));
+
 // Build list of all Master capes including combined capes.
 const allMasterCapes = Skillcapes.map(i => i.masterCape)
 	.map(msc => getSimilarItems(msc.id))
@@ -195,6 +197,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	let originalFirstAgeEquipped = 0;
 	let hasPrismareRing = user.hasEquipped(75050); // Prismare ring
 
+	let totalStaticBoost = 0;
+	const staticBoostsApplied: string[] = [];
+	let outfitBoostPercent = 0;
 	for (const item of resolveItems([
 		'First age tiara',
 		'First age amulet',
@@ -259,6 +264,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		for (const booster of boosts) {
 			if (user.hasEquippedOrInBank(booster.item.id)) {
 				params.amount = increaseNumByPercent(params.amount, booster.boostPercent);
+				totalStaticBoost += booster.boostPercent;
+				staticBoostsApplied.push(`${booster.item.name} (+${formatBonusPercent(booster.boostPercent)}%)`);
 			}
 		}
 	}
@@ -268,6 +275,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		const amountBoost = user.hasEquippedOrInBank(skillOutfit.outfit, 'every')
 			? skillOutfit.totalBoost
 			: skillOutfit.outfit.filter(i => user.hasEquippedOrInBank(i)).length * skillOutfit.individualBoost;
+		outfitBoostPercent = amountBoost;
 		params.amount = increaseNumByPercent(params.amount, amountBoost);
 	}
 
@@ -456,6 +464,12 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		}
 		if (prismareBoostApplied && !params.minimal) {
 			str += ` You received ${prismareBoostPercent.toFixed(1)}% bonus XP from your Prismare ring. (${prismareChargesUsed} charges used).`;
+		}
+		if (outfitBoostPercent > 0 && !params.minimal) {
+			str += ` You received ${formatBonusPercent(outfitBoostPercent)}% bonus XP for ${name} outfit pieces.`;
+		}
+		if (totalStaticBoost > 0 && !params.minimal) {
+			str += ` You received bonus XP from ${staticBoostsApplied.join(', ')}.`;
 		}
 
 		if (params.duration) {
