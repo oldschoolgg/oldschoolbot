@@ -55,11 +55,11 @@ const meleeSlots: [string, number][] = [
     ['Empyrean greatplate', 12],
     ['Empyrean greatgreaves', 12],
     ['Empyrean greatgauntlets', 8],
-    ['Gorajan greatsabaton', 8],
+    ['Empyrean greatsabaton', 8],
     ['Brawler\'s hook necklace', 10],
     ['Searcrown band', 5],
     ['TzKal cape', 3],
-    ['Vitriolic curse', 2], 
+    ['Vitrolic curse', 2], 
 ];
 
 const rangedSlots: [string, number][] = [
@@ -313,10 +313,10 @@ export function rollArchonLoot(tier: 1 | 2 | 3, multiplier = 1.0): {
     const uniqueLoot = new Bank();
 
     const baseShards = { 1: randInt(2, 5), 2: randInt(4, 10), 3: randInt(6, 15) }[tier];
-    regularLoot.add('Empyrean shard', Math.floor(baseShards * multiplier));
+    regularLoot.add('Empyrean shards', Math.floor(baseShards * multiplier));
 
     if (roll({ 1: 20, 2: 15, 3: 10 }[tier])) {
-        regularLoot.add('Empyrean shard', randInt(5, 25));
+        regularLoot.add('Empyrean shards', randInt(5, 25));
     }
 
     const elderLogAmounts = { 1: randInt(1, 5), 2: randInt(3, 12), 3: randInt(8, 25) }[tier];
