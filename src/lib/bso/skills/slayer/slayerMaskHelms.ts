@@ -1,11 +1,10 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
-import { type Item, Items, type Monster, Monsters } from 'oldschooljs';
+import { type Item, Items, Monsters } from 'oldschooljs';
 
 import { slayerMaskLeaderboardCache } from '@/lib/cache.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
-import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';
 
 interface SlayerMaskHelm {
 	mask: Item;
@@ -16,14 +15,17 @@ interface SlayerMaskHelm {
 	killsRequiredForUpgrade: number;
 }
 
-function calculateDroprates(monster: Monster) {
-	const task = allSlayerTasks.find(i => i.monsters.includes(monster.id));
-	if (!task) throw new Error(`No slayer task found for ${monster.name}.`);
-	const droprate = task.extendedAmount?.[1] ?? task.amount[1];
-	return {
-		killsRequiredForUpgrade: droprate * 5 * 2 * 2,
-		maskDropRate: droprate * 2
-	};
+const defaultMaskDropRate = 340;
+const defaultKillsRequiredForUpgrade = 3400;
+
+function maskRates({
+	maskDropRate = defaultMaskDropRate,
+	killsRequiredForUpgrade = defaultKillsRequiredForUpgrade
+}: {
+	maskDropRate?: number;
+	killsRequiredForUpgrade?: number;
+} = {}) {
+	return { maskDropRate, killsRequiredForUpgrade };
 }
 
 export const slayerMaskHelms: SlayerMaskHelm[] = [
@@ -37,77 +39,77 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 			Monsters.DagannothSupreme.id
 		],
 		slayerLevel: 1,
-		...calculateDroprates(Monsters.Dagannoth)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Jelly mask'),
 		helm: Items.getOrThrow('Jelly slayer helm'),
 		monsters: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		slayerLevel: 52,
-		...calculateDroprates(Monsters.Jelly)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Abyssal mask'),
 		helm: Items.getOrThrow('Abyssal slayer helm'),
 		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		slayerLevel: 85,
-		...calculateDroprates(Monsters.AbyssalDemon)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Black demonical mask'),
 		helm: Items.getOrThrow('Black demonical slayer helm'),
 		monsters: [Monsters.BlackDemon.id, Monsters.Skotizo.id],
 		slayerLevel: 1,
-		...calculateDroprates(Monsters.BlackDemon)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Troll mask'),
 		helm: Items.getOrThrow('Troll slayer helm'),
 		monsters: [Monsters.MountainTroll.id, Monsters.IceTroll.id, Monsters.ReanimatedTroll.id],
 		slayerLevel: 1,
-		...calculateDroprates(Monsters.MountainTroll)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Ganodermic mask'),
 		helm: Items.getOrThrow('Ganodermic slayer helm'),
 		monsters: [EBSOMonster.GANODERMIC_BEAST, EBSOMonster.GANODERMIC_RUNT],
 		slayerLevel: 95,
-		...calculateDroprates(Monsters.BlackDemon)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Gargoyle mask'),
 		helm: Items.getOrThrow('Gargoyle slayer helm'),
 		monsters: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id, Monsters.MarbleGargoyle.id],
 		slayerLevel: 75,
-		...calculateDroprates(Monsters.Gargoyle)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Dark beast mask'),
 		helm: Items.getOrThrow('Dark beast slayer helm'),
 		monsters: [Monsters.DarkBeast.id],
 		slayerLevel: 90,
-		...calculateDroprates(Monsters.DarkBeast)
+		...maskRates({ maskDropRate: 300, killsRequiredForUpgrade: 3000 })
 	},
 	{
 		mask: Items.getOrThrow('Dust devil mask'),
 		helm: Items.getOrThrow('Dust devil slayer helm'),
 		monsters: [Monsters.DustDevil.id],
 		slayerLevel: 65,
-		...calculateDroprates(Monsters.DustDevil)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Crawling hand mask'),
 		helm: Items.getOrThrow('Crawling hand slayer helm'),
 		monsters: [Monsters.CrawlingHand.id],
 		slayerLevel: 5,
-		...calculateDroprates(Monsters.CrawlingHand)
+		...maskRates({ maskDropRate: 140, killsRequiredForUpgrade: 1400 })
 	},
 	{
 		mask: Items.getOrThrow('Basilisk mask'),
 		helm: Items.getOrThrow('Basilisk slayer helm'),
 		monsters: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id, Monsters.BasiliskSentinel.id],
 		slayerLevel: 40,
-		...calculateDroprates(Monsters.Basilisk)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Bloodveld mask'),
@@ -120,7 +122,7 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 			Monsters.InsatiableMutatedBloodveld.id
 		],
 		slayerLevel: 50,
-		...calculateDroprates(Monsters.Bloodveld)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow("Banshee's mask"),
@@ -132,28 +134,28 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 			Monsters.ScreamingTwistedBanshee.id
 		],
 		slayerLevel: 15,
-		...calculateDroprates(Monsters.Banshee)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Cockatrice mask'),
 		helm: Items.getOrThrow('Cockatrice slayer helm'),
 		monsters: [Monsters.Cockatrice.id, Monsters.Cockathrice.id],
 		slayerLevel: 25,
-		...calculateDroprates(Monsters.Cockatrice)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Aberrant mask'),
 		helm: Items.getOrThrow('Aberrant slayer helm'),
 		monsters: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		slayerLevel: 60,
-		...calculateDroprates(Monsters.AberrantSpectre)
+		...maskRates()
 	},
 	{
 		mask: Items.getOrThrow('Kurask mask'),
 		helm: Items.getOrThrow('Kurask slayer helm'),
 		monsters: [Monsters.Kurask.id],
 		slayerLevel: 70,
-		...calculateDroprates(Monsters.Kurask)
+		...maskRates()
 	}
 ];
 

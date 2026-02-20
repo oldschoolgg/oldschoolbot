@@ -15,12 +15,12 @@ WHERE on_task_with_mask_monster_scores IS NOT NULL AND on_task_with_mask_monster
 
 	const parsedUsers = [];
 	for (const user of result) {
-		const kcBank = new Bank(user.on_task_with_mask_monster_scores);
+		const kcScores = user.on_task_with_mask_monster_scores ?? {};
 		const maskKCBank = new Bank();
 		const parsedUser = { userID: user.user_id, maskKCBank };
 		for (const { mask, monsters } of slayerMaskHelms) {
 			for (const mon of monsters) {
-				maskKCBank.add(mask.id, kcBank.amount(mon));
+				maskKCBank.add(mask.id, kcScores[mon] ?? 0);
 			}
 		}
 		parsedUsers.push(parsedUser);
