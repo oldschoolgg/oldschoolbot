@@ -35,7 +35,7 @@ export enum QuestID {
 	TheFinalDawn = 15,
 	'Scrambled!' = 16,
 	ShadowsOfCustodia = 17,
-	TutorialIsland = 18
+	LearningTheRopes = 18
 }
 
 export const quests: Quest[] = [
@@ -428,9 +428,9 @@ export const quests: Quest[] = [
 		}
 	},
 	{
-		id: QuestID.TutorialIsland,
+		id: QuestID.LearningTheRopes,
 		qp: 1,
-		name: 'Tutorial Island',
+		name: 'Learning the Ropes',
 		rewards: new Bank()
 			.add('Bronze Axe')
 			.add('Bronze pickaxe')

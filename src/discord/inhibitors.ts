@@ -2,12 +2,14 @@ import { PerkTier } from '@oldschoolgg/toolkit';
 
 import type { InhibitorResult } from '@/discord/preCommand.js';
 import { BadgesEnum, Channel, globalConfig } from '@/lib/constants.js';
-import { minionBuyButton } from '@/lib/sharedComponents.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { learningTheRopesButton, minionBuyButton } from '@/lib/sharedComponents.js';
 
 type InhibitorRunOptions = {
 	user: MUser;
 	command: AnyCommand;
 	interaction: MInteraction;
+	options: CommandOptions;
 };
 interface Inhibitor {
 	name: string;
@@ -39,6 +41,44 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return false;
+		}
+	},
+	{
+		name: 'tutorialIsland',
+		run: ({ user, command, options }) => {
+			const isMinionCommand =
+				Boolean(command.attributes?.requiresMinion) ||
+				command.name === 'minion' ||
+				command.name === 'activities';
+			if (!isMinionCommand) return false;
+
+			if (!user.hasMinion || user.user.finished_quest_ids.includes(QuestID.LearningTheRopes)) {
+				return false;
+			}
+
+			const isTutorialQuestCommand =
+				command.name === 'activities' &&
+				'quest' in options &&
+				options.quest &&
+				typeof options.quest === 'object' &&
+				'name' in options.quest &&
+				typeof options.quest.name === 'string' &&
+				options.quest.name.toLowerCase() === 'learning the ropes';
+			const isMinionIronmanCommand =
+				command.name === 'minion' &&
+				'ironman' in options &&
+				options.ironman &&
+				typeof options.ironman === 'object';
+
+			if (isTutorialQuestCommand || isMinionIronmanCommand) return false;
+
+			const questMention = globalClient.mentionCommand('activities', 'quest');
+			return {
+				content: `Before you can use minion commands, you must complete **Learning the Ropes**.
+Start it with ${questMention} and set the quest name to \`Learning the Ropes\`, or press the button below.`,
+				components: [learningTheRopesButton],
+				flags: undefined
+			};
 		}
 	},
 	{
