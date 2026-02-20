@@ -51,11 +51,11 @@ export function getArchonTier(_user: MUser): 1 | 2 | 3 | null {
 
 const meleeSlots: [string, number][] = [
     ['Axe of the high sungod', 30], 
-    ['Gorajan warrior helmet', 10],
-    ['Gorajan warrior top', 12],
-    ['Gorajan warrior legs', 12],
-    ['Gorajan warrior gloves', 8],
-    ['Gorajan warrior boots', 8],
+    ['Empyrean greathelm', 10],
+    ['Empyrean greatplate', 12],
+    ['Empyrean greatgreaves', 12],
+    ['Empyrean greatgauntlets', 8],
+    ['Gorajan greatsabaton', 8],
     ['Brawler\'s hook necklace', 10],
     ['Searcrown band', 5],
     ['TzKal cape', 3],
@@ -76,8 +76,8 @@ const rangedSlots: [string, number][] = [
 ];
 
 const mageSlots: [string, number][] = [
-    ['Void staff', 30],                   // weapon — highest weight
-    ['Abyssal tome', 15],                 // offhand
+    ['Void staff', 30],
+    ['Abyssal tome', 15],
     ['Arcane blast necklace', 10],
     ['Spellbound ring (i)', 5],
     ['Vasa cloak', 8],
@@ -163,10 +163,10 @@ export function calcArchonContribution(user: MUser, totalUsers: number): {
     const totalContribution = rawGearScore * groupScaling;
 
     boostMessages.push(
-        `📊 Gear score: **${rawGearScore.toFixed(1)}%** (Ranged: ${effectiveRangedScore.toFixed(1)}%, Melee: ${meleeGearScore.toFixed(1)}%, Mage: ${mageGearScore.toFixed(1)}%)`
+        `Gear score: **${rawGearScore.toFixed(1)}%** (Ranged: ${effectiveRangedScore.toFixed(1)}%, Melee: ${meleeGearScore.toFixed(1)}%, Mage: ${mageGearScore.toFixed(1)}%)`
     );
     boostMessages.push(
-        `👥 Group contribution: **${totalContribution.toFixed(1)}%** (${totalUsers} adventurers)`
+        `Group contribution: **${totalContribution.toFixed(1)}%** (${totalUsers} adventurers)`
     );
 
     return { percent: totalContribution, boostMessages, gearScore: rawGearScore };
@@ -312,18 +312,44 @@ export function rollArchonLoot(tier: 1 | 2 | 3, multiplier = 1.0): {
     const regularLoot = new Bank();
     const uniqueLoot = new Bank();
 
+    const baseShards = { 1: randInt(2, 5), 2: randInt(4, 10), 3: randInt(6, 15) }[tier];
+    regularLoot.add('Empyrean shard', Math.floor(baseShards * multiplier));
+
+    if (roll({ 1: 20, 2: 15, 3: 10 }[tier])) {
+        regularLoot.add('Empyrean shard', randInt(5, 25));
+    }
+
+    const elderLogAmounts = { 1: randInt(1, 5), 2: randInt(3, 12), 3: randInt(8, 25) }[tier];
+    if (roll(3)) regularLoot.add('Elder logs', Math.floor(elderLogAmounts * multiplier));
+
+    const elderRuneAmounts = { 1: randInt(5, 15), 2: randInt(10, 30), 3: randInt(20, 60) }[tier];
+    if (roll(3)) regularLoot.add('Elder rune', Math.floor(elderRuneAmounts * multiplier));
+
+    const elderPlankAmounts = { 1: randInt(1, 3), 2: randInt(2, 8), 3: randInt(5, 15) }[tier];
+    if (roll(4)) regularLoot.add('Elder plank', Math.floor(elderPlankAmounts * multiplier));
+
+    if (roll({ 1: 100, 2: 75, 3: 50 }[tier])) {
+        regularLoot.add('Elder scroll piece');
+    }
+
+    if (roll({ 1: 50, 2: 35, 3: 20 }[tier])) {
+        const piece = randInt(1, 3) as 1 | 2 | 3;
+        regularLoot.add(`Elder sigil fragment (${piece})`);
+    }
+
+    const coinAmounts = {
+        1: randInt(50_000, 200_000),
+        2: randInt(500_000, 2_000_000),
+        3: randInt(5_000_000, 20_000_000)
+    }[tier];
+    regularLoot.add('Coins', Math.floor(coinAmounts * multiplier));
+
     if (tier === 1) {
-        regularLoot.add('Coins', Math.floor(randInt(50_000, 200_000) * multiplier));
-        if (roll(Math.max(1, Math.ceil(50 / multiplier)))) regularLoot.add('Dragon bones', randInt(1, 5));
-        if (roll(150)) uniqueLoot.add('Prismare ring (u)');
-    } else if (tier === 2) {
-        regularLoot.add('Coins', Math.floor(randInt(500_000, 2_000_000) * multiplier));
-        if (roll(Math.max(1, Math.ceil(30 / multiplier)))) regularLoot.add('Dragon bones', randInt(5, 20));
         if (roll(300)) uniqueLoot.add('Prismare ring (u)');
+    } else if (tier === 2) {
+        if (roll(200)) uniqueLoot.add('Prismare ring (u)');
     } else {
-        regularLoot.add('Coins', Math.floor(randInt(5_000_000, 20_000_000) * multiplier));
-        if (roll(Math.max(1, Math.ceil(10 / multiplier)))) regularLoot.add('Dragon bones', randInt(20, 100));
-        if (roll(512)) uniqueLoot.add('Prismare ring (u)');
+        if (roll(100)) uniqueLoot.add('Prismare ring (u)');
     }
 
     return { regularLoot, uniqueLoot };

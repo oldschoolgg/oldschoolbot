@@ -31,58 +31,63 @@ const bisMageGear = new Gear({
 });
 
 const bisMeleeGear = new Gear({
-	head: 'Gorajan warrior helmet',
-	body: 'Gorajan warrior top',
-	legs: 'Gorajan warrior legs',
-	hands: 'Gorajan warrior gloves',
-	feet: 'Gorajan warrior boots',
-	neck: "Brawler's hook necklace",
-	cape: 'TzKal cape',
-	weapon: 'Drygore rapier',
-	shield: 'Offhand spidergore rapier',
-	ring: 'Ignis ring(i)'
+    head: 'Empyrean helmet',
+    body: 'Empyrean top',
+    legs: 'Empyrean legs',
+    hands: 'Empyrean gloves',
+    feet: 'Empyrean boots',
+    neck: "Brawler's hook necklace",
+    cape: 'TzKal cape',
+    weapon: 'Drygore rapier',
+    shield: 'Offhand spidergore rapier',
+    ring: 'Searcrown band'
 });
 
 const itemBoosts: {
-	item: Item;
-	boost: number;
-	setup: 'mage' | 'melee';
+    item: Item;
+    boost: number;
+    setup: 'mage' | 'melee';
 }[] = [
-	{
-		item: Items.getOrThrow('Void staff'),
-		boost: 10,
-		setup: 'mage'
-	},
-	{
-		item: Items.getOrThrow('Abyssal tome'),
-		boost: 7.5,
-		setup: 'mage'
-	},
-	{
-		item: Items.getOrThrow('Tzkal cape'),
-		boost: 5,
-		setup: 'melee'
-	},
-	{
-		item: Items.getOrThrow('Vasa cloak'),
-		boost: 5,
-		setup: 'mage'
-	},
-	{
-		item: Items.getOrThrow('Ignis ring(i)'),
-		boost: 2.5,
-		setup: 'melee'
-	},
-	{
-		item: Items.getOrThrow('Spellbound ring(i)'),
-		boost: 2.5,
-		setup: 'mage'
-	},
-	{
-		item: Items.getOrThrow('Spellbound ring'),
-		boost: 2,
-		setup: 'mage'
-	}
+    {
+        item: Items.getOrThrow('Void staff'),
+        boost: 10,
+        setup: 'mage'
+    },
+    {
+        item: Items.getOrThrow('Abyssal tome'),
+        boost: 7.5,
+        setup: 'mage'
+    },
+    {
+        item: Items.getOrThrow('Tzkal cape'),
+        boost: 5,
+        setup: 'melee'
+    },
+    {
+        item: Items.getOrThrow('Vasa cloak'),
+        boost: 5,
+        setup: 'mage'
+    },
+    {
+        item: Items.getOrThrow('Searcrown band'),
+        boost: 4,
+        setup: 'melee'
+    },
+    {
+        item: Items.getOrThrow('Ignis ring(i)'),
+        boost: 2.5,
+        setup: 'melee'
+    },
+    {
+        item: Items.getOrThrow('Spellbound ring(i)'),
+        boost: 2.5,
+        setup: 'mage'
+    },
+    {
+        item: Items.getOrThrow('Spellbound ring'),
+        boost: 2,
+        setup: 'mage'
+    }
 ];
 
 const naxxusKcBoosts: [number, number, string | null][] = [
