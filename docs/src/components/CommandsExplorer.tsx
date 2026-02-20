@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 
 import {
-	type ChoiceNode,
 	type CommandNode,
 	formatChoiceDisplay,
 	getNodeSearchText,
