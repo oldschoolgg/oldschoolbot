@@ -61,13 +61,13 @@ const ElderHoardBase: LootTable = new LootTable()
 	.add(75_054, 1, 10)
 	.add(75_055, 1, 10)
 	.add(75_056, 1, 1)
-	.add('Elder rune', randInt(1, 250), 4)
-	.add('Elder plank', randInt(1, 25), 4)
-	.add('Elderflame arrowtip', randInt(1, 50), 2)
-	.add('Elderflame catalyst', 1, 1)
-	.add('Elder scroll piece', 1, 1)
-	.add('Clue scroll (grandmaster)', 1, 1);
-	// .add('Archon relic', 1, 1)
+	.add(50_021, randInt(1, 250), 4)
+	.add(50_018, randInt(1, 25), 4)
+	.add(75_021, randInt(1, 50), 2)
+	.add(75_048, 1, 1)
+	.add(73_128, 1, 1)
+	.add(19_837, 1, 1);
+	// .add(75_047, 1, 1)
 
 const ElderHoardTable: LootTable = new LootTable().every(ElderHoardBase, randInt(3, 6));
 

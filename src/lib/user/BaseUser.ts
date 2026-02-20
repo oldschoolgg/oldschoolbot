@@ -24,6 +24,7 @@ import { GearBank } from '@/lib/structures/GearBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
+import { type IslandUpgradeTiers, defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 
 const USER_DEFAULTS = {
 	slayer_unlocks: [],
@@ -88,7 +89,8 @@ export class BaseUser {
 			minionName: this.minionName,
 
 			materials: this.ownedMaterials(),
-			pet: this.user.minion_equippedPet
+			pet: this.user.minion_equippedPet,
+			island_upgrades: (this.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
 		});
 	}
 
