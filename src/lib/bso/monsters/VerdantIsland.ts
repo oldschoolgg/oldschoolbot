@@ -207,8 +207,17 @@ export const CrystallineSentinel: CustomMonster = {
 				}
 			]
 		},
+				{
+			gearSetup: 'range',
+			items: [
+				{
+					boostPercent: 20,
+					itemID: itemID('Elderflame bow')
+				}
+			]
+		},
 		{
-			gearSetup: 'melee',
+			gearSetup: 'range',
 			items: [
 				{
 					boostPercent: 15,
@@ -342,8 +351,17 @@ export const FungalBehemoth: CustomMonster = {
 				}
 			]
 		},
+	    {
+			gearSetup: 'range',
+			items: [
+				{
+					boostPercent: 20,
+					itemID: itemID('Elderflame bow')
+				}
+			]
+		},
 		{
-			gearSetup: 'melee',
+			gearSetup: 'range',
 			items: [
 				{
 					boostPercent: 15,

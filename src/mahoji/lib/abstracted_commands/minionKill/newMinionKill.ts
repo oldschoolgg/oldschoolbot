@@ -33,6 +33,12 @@ import {
 	speedCalculations
 } from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
 
+import {
+    getBossSpeedBonus,
+    defaultIslandUpgrades,
+    type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
+
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),
 	quantity: z.number().int().positive(),
@@ -46,6 +52,7 @@ const newMinionKillReturnSchema = z.object({
 
 export type MinionKillReturn = z.infer<typeof newMinionKillReturnSchema>;
 export interface MinionKillOptions {
+	islandUpgrades?: IslandUpgradeTiers;
 	attackStyles: AttackStyles[];
 	gearBank: GearBank;
 	currentSlayerTask: CurrentSlayerInfo;
@@ -276,6 +283,23 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			if (boostResult.message) speedDurationResult.messages.push(boostResult.message);
 		}
 	}
+
+	const islandBossIDs = [
+    142_001, // Orym
+    142_002, // Orrodil
+    142_003, // Crystalline Sentinel
+    142_004, // Fungal Behemoth
+    142_005, // Elder Mimic
+    142_006, // Burning Dominion
+	];
+
+	const islandUpgrades = args.islandUpgrades ?? defaultIslandUpgrades;
+	const islandBossBonus = islandBossIDs.includes(monster.id) ? getBossSpeedBonus(islandUpgrades) : 0;
+	if (islandBossBonus > 0) {
+		duration = reduceNumByPercent(duration, islandBossBonus * 100);
+		speedDurationResult.messages.push(`${(islandBossBonus * 100).toFixed(0)}% faster kills (Island Boss Efficiency)`);
+	}
+
 	duration = Math.ceil(duration);
 
 	speedDurationResult.updateBank.itemCostBank.freeze();

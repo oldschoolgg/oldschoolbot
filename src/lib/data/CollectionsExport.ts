@@ -1504,6 +1504,12 @@ export const aerialFishingCL = resolveItems([
 	'Fish sack',
 	...ItemGroups.anglerOutfit
 ]);
+export const distilleryCL = resolveItems([
+	'Sedryn',
+]);
+export const concontractsCL = resolveItems([
+	'Bamyr',
+]);
 export const allPetsCL = resolveItems([
 	'Abyssal orphan',
 	'Ikkle hydra',

@@ -120,6 +120,7 @@ import {
 	cluesSharedCL,
 	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
+	concontractsCL,
 	corporealBeastCL,
 	crackerCL,
 	crazyArchaeologistCL,
@@ -130,6 +131,7 @@ import {
 	demonicGorillaCL,
 	derangedArchaeologistCL,
 	diariesCL,
+	distilleryCL,
 	dukeSucellusCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
@@ -204,7 +206,7 @@ import {
 	vorkathCL,
 	wintertodtCL,
 	zalcanoCL,
-	zulrahCL
+	zulrahCL,
 } from '@/lib/data/CollectionsExport.js';
 import { growablePetsCL } from '@/lib/growablePets.js';
 import { implingsCL } from '@/lib/implings.js';
@@ -1398,6 +1400,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['af', 'aerial fishing'],
 				items: aerialFishingCL
 			},
+			'Brimstone Distillery': {
+				alias: ['distillery', 'brimstone distillery'],
+				items: distilleryCL
+			},
 			Camdozaal: {
 				items: camdozaalCL
 			},
@@ -1409,6 +1415,10 @@ export const allCollectionLogs: ICollection = {
 			'Colossal Wyrm Agility': {
 				alias: ['colossal wyrm agility', 'colo agility', 'wyrm agility'],
 				items: colossalWyrmAgilityCL
+			},
+			'Construction Contracts': {
+				alias: ['cc', 'construction contracts'],
+				items: concontractsCL
 			},
 			'Creature Creation': {
 				items: creatureCreationCL

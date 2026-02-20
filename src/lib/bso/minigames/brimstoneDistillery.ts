@@ -12,6 +12,12 @@ import { Bank, type Item, Items } from 'oldschooljs';
 import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
+import {
+    getTier,
+    defaultIslandUpgrades,
+    type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
+
 const HERBLORE_REQUIREMENT = 110;
 const BASE_DURATION_PER_DISTILLATION = Time.Second * 2.77;
 const COAL_PER_DISTILLATION = 1;
@@ -293,6 +299,12 @@ export async function brimstoneDistilleryStartCommand({
 		durationPerDistillation = Math.floor(reduceNumByPercent(durationPerDistillation, 10));
 	}
 
+	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
+	const rarityUpgradeTier = getTier(islandUpgrades, 'minigame') as 0 | 1 | 2 | 3;
+	if (rarityUpgradeTier > 0) {
+		boosts.push(`${rarityUpgradeTier * 5}% better potion output (Island Minigame Boost Tier ${rarityUpgradeTier})`);
+	}
+
 	const maxTripLength = await user.calcMaxTripLength('BrimstoneDistillery');
 	const quantity = Math.floor(maxTripLength / durationPerDistillation);
 	const duration = quantity * durationPerDistillation;
@@ -338,7 +350,8 @@ export async function brimstoneDistilleryStartCommand({
 		duration,
 		type: 'BrimstoneDistillery',
 		minigameID: 'brimstone_distillery',
-		recipe: selectedRecipe.name
+		recipe: selectedRecipe.name,
+		rarityUpgradeTier
 	});
 
 	return `${user.minionName} is distilling ${quantity}x ${selectedRecipe.name} for ${formatDuration(duration)}.
@@ -350,6 +363,7 @@ Boosts: ${boosts.length ? boosts.join(', ') : 'None'}`;
 export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) {
 	const recipe = DistilleryRecipes.find(r => r.name === data.recipe)!;
 	const loot = new Bank();
+	const rarityBonus = [0, 0.05, 0.10, 0.15][data.rarityUpgradeTier ?? 0] ?? 0;
 
 	const tripMultiplier = getTripQualityMultiplier();
 	
@@ -366,9 +380,9 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) 
 		const potionOutput = qualityToPotionOutput(quality);
 		
 		if (potionOutput > 0) {
-			loot.add(recipe.output.id, potionOutput);
-			totalPotions += potionOutput;
-			totalQualityPoints += quality;
+		const boostedOutput = Math.floor(potionOutput * (1 + rarityBonus));
+		loot.add(recipe.output.id, boostedOutput);
+		totalPotions += boostedOutput;
 		} else {
 			failedDistillations++;
 		}

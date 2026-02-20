@@ -23,6 +23,10 @@ import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { temporossCommand } from '@/mahoji/lib/abstracted_commands/temporossCommand.js';
 import { wintertodtCommand } from '@/mahoji/lib/abstracted_commands/wintertodtCommand.js';
 import { zalcanoCommand } from '@/mahoji/lib/abstracted_commands/zalcanoCommand.js';
+import {
+    defaultIslandUpgrades,
+    type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -120,7 +124,8 @@ export async function minionKillCommand(
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
 		disabledInventions: user.user.disabled_inventions,
-		currentPeak: generateDailyPeakIntervals().currentPeak
+		currentPeak: generateDailyPeakIntervals().currentPeak,
+		islandUpgrades: (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
 	});
 
 	if (typeof result === 'string') {
