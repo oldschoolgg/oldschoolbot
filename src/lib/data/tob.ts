@@ -2,7 +2,8 @@ import {
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
-	pernixOutfit
+	pernixOutfit,
+	empyreanOutfit
 } from '@/lib/bso/collection-log/main.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
@@ -220,7 +221,7 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	feet: 'Torva boots',
 	weapon: 'Drygore longsword',
 	shield: 'Offhand drygore longsword',
-	ring: 'Ignis ring (i)'
+	ring: 'Searcrown band'
 });
 
 export function calculateTOBUserGearPercents(user: MUser) {
@@ -402,6 +403,9 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 		}
 		if (u.gear.melee.hasEquipped(gorajanWarriorOutfit, true)) {
 			userPercentChange += 2;
+		}
+		if (u.gear.melee.hasEquipped(empyreanOutfit, true)) {
+			userPercentChange += 3;
 		}
 		if (u.gear.mage.hasEquipped(gorajanOccultOutfit, true)) {
 			userPercentChange += 2;

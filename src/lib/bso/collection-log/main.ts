@@ -205,6 +205,13 @@ export const gorajanArcherOutfit = resolveItems([
 	'Gorajan archer gloves',
 	'Gorajan archer boots'
 ]);
+export const empyreanOutfit = resolveItems([
+	'Empyrean greathelm',
+	'Empyrean greatplate',
+	'Empyrean greatgreaves',
+	'Empyrean greatgauntlets',
+	'Empyrean greatsabaton'
+]);
 
 export const brokenTorvaOutfit = resolveItems([
 	'Torva full helm (broken)',

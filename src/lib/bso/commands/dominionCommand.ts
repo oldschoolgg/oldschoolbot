@@ -46,13 +46,13 @@ export async function burningDominionCommand(
 			return [false];
 		},
 		bisGear: new Gear({
-			head: 'Searcrown band',
-			body: 'Gorajan warrior top',
-			legs: 'Gorajan warrior legs',
-			hands: 'Gorajan warrior gloves',
-			feet: 'Gorajan warrior boots',
+			head: 'Empyrean greathelm',
+			body: 'Empyrean greatplate',
+			legs: 'Empyrean greatgreaves',
+			hands: 'Empyrean greatgauntlets',
+			feet: 'Empyrean greatsabaton',
 			cape: 'TzKal cape',
-			ring: 'Ignis ring(i)',
+			ring: 'Searcrown band',
 			weapon: 'Dragonbane glaive',
 			shield: 'Dragonbane aegis',
 			neck: "Brawler's hook necklace"

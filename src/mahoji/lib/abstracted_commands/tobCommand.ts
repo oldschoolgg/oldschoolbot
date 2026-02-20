@@ -1,4 +1,4 @@
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, empyreanOutfit } from '@/lib/bso/collection-log/main.js';
 import {
 	canAffordInventionBoost,
 	InventionID,
@@ -243,9 +243,10 @@ async function checkTOBUser(
 		if (
 			!meleeGear.hasEquipped(gorajanWarriorOutfit, true) &&
 			!rangeGear.hasEquipped(gorajanArcherOutfit, true) &&
-			!mageGear.hasEquipped(gorajanOccultOutfit, true)
+			!mageGear.hasEquipped(gorajanOccultOutfit, true) &&
+			!meleeGear.hasEquipped(empyreanOutfit, true)
 		) {
-			return [true, 'You must either have at least one complete set of Gorajan armour to solo ToB'];
+			return [true, 'You must either have at least one complete set of Gorajan armour or the Empyrean outfit to solo ToB'];
 		}
 	}
 

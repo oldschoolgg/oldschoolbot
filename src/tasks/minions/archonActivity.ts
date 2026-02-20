@@ -42,18 +42,18 @@ export const archonTask: MinionTask = {
                 const { uniqueLoot: dummyUnique } = lootResults[i];
                 for (const unique of uniquesForTier) {
                     if (dummyUnique.has(unique)) {
-                        messages.push(`✨ Another adventurer in your group received a unique: **${unique}**!`);
+                        messages.push(`Another adventurer in your group received a unique: **${unique}**!`);
                         break;
                     }
                 }
             }
 
             if (lootBonus > 0) {
-                messages.push(`🏝️ Island Megaboss bonus: **+${(lootBonus * 100).toFixed(0)}%** to regular loot.`);
+                messages.push(`Island Megaboss bonus: **+${(lootBonus * 100).toFixed(0)}%** to regular loot.`);
             }
 
             const effectiveGearPct = (gearMultiplier * 100).toFixed(1);
-            messages.push(`⚔️ Gear effectiveness: **${effectiveGearPct}%** (floor: ${(penalty.floor * 100).toFixed(0)}%)`);
+            messages.push(`Gear effectiveness: **${effectiveGearPct}%** (floor: ${(penalty.floor * 100).toFixed(0)}%)`);
         } else {
             for (let i = 0; i < users.length; i++) {
                 const userId = users[i];

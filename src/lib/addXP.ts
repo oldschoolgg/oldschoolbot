@@ -3,7 +3,8 @@ import {
 	divinersOutfit,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
-	gorajanWarriorOutfit
+	gorajanWarriorOutfit,
+	empyreanOutfit
 } from '@/lib/bso/collection-log/main.js';
 import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
 
@@ -162,32 +163,34 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			params.amount = increaseNumByPercent(params.amount, matchingCapeID ? 8 : 3);
 		}
 	}
-	// Check if each gorajan set is equipped:
 	const wildyOutfit = user.gear.wildy;
-	const gorajanMeleeEquipped =
-		user.gear.melee.hasEquipped(gorajanWarriorOutfit, true) || wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
-	const gorajanRangeEquipped =
-		user.gear.range.hasEquipped(gorajanArcherOutfit, true) || wildyOutfit.hasEquipped(gorajanArcherOutfit, true);
-	const gorajanMageEquipped =
-		user.gear.mage.hasEquipped(gorajanOccultOutfit, true) || wildyOutfit.hasEquipped(gorajanOccultOutfit, true);
-	// Determine if boost should apply based on skill + equipped sets:
-	let gorajanBoost = false;
-	const gorajanMeleeBoost =
-		multiplier && ['attack', 'strength', 'defence'].includes(params.skillName) && gorajanMeleeEquipped;
-	const gorajanRangeBoost = multiplier && params.skillName === 'ranged' && gorajanRangeEquipped;
-	const gorajanMageBoost = multiplier && params.skillName === 'magic' && gorajanMageEquipped;
-	// 2x HP if all 3 gorajan sets are equipped:
-	const gorajanHpBoost =
-		multiplier &&
-		params.skillName === 'hitpoints' &&
-		gorajanMeleeEquipped &&
-		gorajanRangeEquipped &&
-		gorajanMageEquipped;
-	if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost || gorajanHpBoost) {
-		params.amount *= 2;
-		gorajanBoost = true;
-	}
+    const gorajanMeleeEquipped =
+        user.gear.melee.hasEquipped(gorajanWarriorOutfit, true) || wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
+    const gorajanRangeEquipped =
+        user.gear.range.hasEquipped(gorajanArcherOutfit, true) || wildyOutfit.hasEquipped(gorajanArcherOutfit, true);
+    const gorajanMageEquipped =
+        user.gear.mage.hasEquipped(gorajanOccultOutfit, true) || wildyOutfit.hasEquipped(gorajanOccultOutfit, true);
 
+    // Empyrean counts as melee for boost purposes
+    const empyreanMeleeEquipped = user.gear.melee.hasEquipped(empyreanOutfit, true);
+    const effectiveMeleeEquipped = gorajanMeleeEquipped || empyreanMeleeEquipped;
+
+    let gorajanBoost = false;
+    const gorajanMeleeBoost =
+        multiplier && ['attack', 'strength', 'defence'].includes(params.skillName) && effectiveMeleeEquipped;
+    const gorajanRangeBoost = multiplier && params.skillName === 'ranged' && gorajanRangeEquipped;
+    const gorajanMageBoost = multiplier && params.skillName === 'magic' && gorajanMageEquipped;
+    // 2x HP still requires all three styles - Empyrean counts for the melee slot
+    const gorajanHpBoost =
+        multiplier &&
+        params.skillName === 'hitpoints' &&
+        effectiveMeleeEquipped &&
+        gorajanRangeEquipped &&
+        gorajanMageEquipped;
+    if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost || gorajanHpBoost) {
+        params.amount *= 2;
+        gorajanBoost = true;
+    }
 	let totalFirstAgeBonus = 0;
 	let originalFirstAgeEquipped = 0;
 	let hasPrismareRing = user.hasEquipped(75050); // Prismare ring
