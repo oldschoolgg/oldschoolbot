@@ -31,11 +31,11 @@ const bisMageGear = new Gear({
 });
 
 const bisMeleeGear = new Gear({
-    head: 'Empyrean helmet',
-    body: 'Empyrean top',
-    legs: 'Empyrean legs',
-    hands: 'Empyrean gloves',
-    feet: 'Empyrean boots',
+    head: 'Empyrean greathelm',
+    body: 'Empyrean greatplate',
+    legs: 'Empyrean greatgreaves',
+    hands: 'Empyrean greatgauntlets',
+    feet: 'Empyrean greatsabaton',
     neck: "Brawler's hook necklace",
     cape: 'TzKal cape',
     weapon: 'Drygore rapier',
