@@ -1,187 +1,137 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit';
-import { Bank, itemID, LootTable } from 'oldschooljs';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { IslandGemTable, IslandGemTable3x, IslandGemTable5x } from '@/lib/bso/monsters/VerdantIsland.js';
+import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
+import { LootTable } from 'oldschooljs';
+
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
-import type { ArchaicMiningActivityTaskOptions } from '@/lib/types/minions.js';
+import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
-export type MiningType = 'dragonbone' | 'crystalline';
-
-export interface ArchaicOre {
+interface AncientWood {
 	id: number;
 	name: string;
 	level: number;
 	xp: number;
-	timeToMine: number;
-	type: MiningType;
 	petChance: number;
 	clueScrollChance?: number;
 }
 
-export const archaicOres: ArchaicOre[] = [
-	{ id: itemID('Dragon bones'), name: 'Dragon bones', level: 90, xp: 80, timeToMine: 4, type: 'dragonbone', petChance: 100000, clueScrollChance: 500000 },
-	{ id: itemID('Superior dragon bones'), name: 'Superior dragon bones', level: 95, xp: 100, timeToMine: 4.5, type: 'dragonbone', petChance: 100000 },
-	{ id: itemID('Abyssal dragon bones'), name: 'Abyssal dragon bones', level: 100, xp: 120, timeToMine: 5, type: 'dragonbone', petChance: 100000 },
-	{ id: itemID('Frost dragon bones'), name: 'Frost dragon bones', level: 105, xp: 140, timeToMine: 5.5, type: 'dragonbone', petChance: 100000 },
-	{ id: itemID('Royal dragon bones'), name: 'Royal dragon bones', level: 108, xp: 150, timeToMine: 5.75, type: 'dragonbone', petChance: 100000 },
-	{ id: itemID('Primordial bones'), name: 'Primordial bones', level: 110, xp: 160, timeToMine: 6, type: 'dragonbone', petChance: 100000 },
-
-	{ id: itemID('Crystalline ore'), name: 'Crystalline ore', level: 90, xp: 180, timeToMine: 4, type: 'crystalline', petChance: 100000, clueScrollChance: 500000 },
-	{ id: itemID('Gem Infused ore'), name: 'Gem Infused ore', level: 100, xp: 240, timeToMine: 5, type: 'crystalline', petChance: 100000 },
-	{ id: itemID('Dense Crystal shard'), name: 'Dense Crystal shard', level: 110, xp: 300, timeToMine: 6, type: 'crystalline', petChance: 100000 }
+const ancientMycologyWoods: AncientWood[] = [
+	{ id: 75026, name: 'Verdant logs', level: 95, xp: 300, petChance: 100000, clueScrollChance: 500000 },
+	{ id: 75028, name: 'Ancient cap', level: 100, xp: 350, petChance: 100000 },
+	{ id: 75029, name: 'Colossal stem', level: 105, xp: 400, petChance: 100000 },
+	{ id: 75027, name: 'Living bark', level: 110, xp: 600, petChance: 100000 },
+	{ id: 75026, name: 'Ancient verdant logs', level: 950, xp: 180, petChance: 100000 }
 ];
 
-function generateArchaicMiningTable(currentMiningLevel: number, miningType: MiningType): LootTable {
-	const relevantOres = archaicOres.filter((ore: ArchaicOre) => ore.type === miningType);
-	const miningTable = new LootTable();
+const verdantLogs = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Verdant logs')!;
+const ancientCap = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Ancient cap')!;
+const colossalStem = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Colossal stem')!;
+const livingBark = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Living bark')!;
+const ancientVerdantLogs = ancientMycologyWoods.find((w: AncientWood) => w.name === 'Ancient verdant logs')!;
 
-	if (miningType === 'dragonbone') {
-		const baseOre = relevantOres[0];
-		miningTable.add(baseOre.id, 1, 6);
+function generateAncientMycologyTable(currentWcLevel: number): LootTable {
+	const mycologyTable = new LootTable().add(verdantLogs.id, 1, 5);
 
-		for (let i = 1; i < relevantOres.length; i++) {
-			const ore = relevantOres[i];
-			if (currentMiningLevel >= ore.level) {
-				miningTable.add(ore.id, 1, 7 - i);
-			}
-		}
-	} else {
-		miningTable.add(relevantOres[0].id, 1, 3);
-
-		if (currentMiningLevel >= relevantOres[1].level) {
-			miningTable.add(relevantOres[1].id, 1, 2);
-		}
-
-		if (currentMiningLevel >= relevantOres[2].level) {
-			miningTable.add(relevantOres[2].id, 1, 1);
-		}
+	if (currentWcLevel >= ancientCap.level) {
+		mycologyTable.add(ancientCap.id, 1, 4);
+	}
+	if (currentWcLevel >= colossalStem.level) {
+		mycologyTable.add(colossalStem.id, 1, 3);
+	}
+	if (currentWcLevel >= livingBark.level) {
+		mycologyTable.add(livingBark.id, 1, 2);
+	}
+	if (currentWcLevel >= ancientVerdantLogs.level) {
+		mycologyTable.add(ancientVerdantLogs.id, 1, 1);
 	}
 
-	return miningTable;
+	return mycologyTable;
 }
 
-export const archaicMiningTask: MinionTask = {
-	type: 'ArchaicMining',
-	async run(data: ArchaicMiningActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { channelId, quantity, duration, miningType } = data;
-		const currentMiningLevel = user.skillsAsLevels.mining;
+export const ancientMycologyTask: MinionTask = {
+	type: 'AncientMycology',
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration } = data;
+		const currentWcLevel = user.skillsAsLevels.woodcutting;
 
-		const miningTable = generateArchaicMiningTable(currentMiningLevel, miningType);
-		const relevantOres = archaicOres.filter((ore: ArchaicOre) => ore.type === miningType);
-		const baseOre = relevantOres[0];
+		const mycologyTable = generateAncientMycologyTable(currentWcLevel);
 
-		let miningXP = 0;
-		let prayerXP = 0;
-		const loot = new Bank();
+		let woodcuttingXP = 0;
+		const loot = mycologyTable.roll(quantity);
 
-		if (miningType === 'dragonbone') {
-			const bonesLoot = miningTable.roll(quantity);
-			loot.add(bonesLoot);
-
-			for (const ore of relevantOres) {
-				const oreAmount = loot.amount(ore.id);
-				miningXP += oreAmount * ore.xp;
-				prayerXP += oreAmount * (ore.xp * 0.5);
-			}
-		} else {
-			const oreLoot = miningTable.roll(quantity);
-			loot.add(oreLoot);
-
-			for (const ore of relevantOres) {
-				const oreAmount = loot.amount(ore.id);
-				miningXP += oreAmount * ore.xp;
-			}
+		for (const wood of ancientMycologyWoods) {
+			woodcuttingXP += loot.amount(wood.id) * wood.xp;
 		}
 
 		let bonusXP = 0;
 
-		const prospectorPieces = [
-			'Prospector helmet',
-			'Prospector jacket',
-			'Prospector legs',
-			'Prospector boots'
-		];
-
-		const prospectorCount = prospectorPieces.filter(piece =>
-			user.hasEquippedOrInBank(piece)
-		).length;
-
-		if (prospectorCount === 4) {
-			const amountToAdd = Math.floor(miningXP * (2.5 / 100));
-			miningXP += amountToAdd;
+		if (
+			user.hasEquippedOrInBank(
+				Object.keys(Woodcutting.lumberjackItems).map(i => Number.parseInt(i)),
+				'every'
+			)
+		) {
+			const amountToAdd = Math.floor(woodcuttingXP * (2.5 / 100));
+			woodcuttingXP += amountToAdd;
 			bonusXP += amountToAdd;
-		} else if (prospectorCount > 0) {
-			const amountToAdd = Math.floor(miningXP * (prospectorCount * 0.5 / 100));
-			miningXP += amountToAdd;
-			bonusXP += amountToAdd;
-		}
-
-		// Apply Mining master cape multiply before adding rares so they aren't doubled
-		if (user.hasEquippedOrInBank('Mining master cape')) {
-			loot.multiply(2);
-		}
-
-		// Add rare drops after cape multiply so they are not affected
-		if (miningType === 'dragonbone') {
-			for (let i = 0; i < quantity; i++) {
-				if (rng.roll(5000)) loot.add('Primordial heartstring');
-				if (rng.roll(5000)) loot.add('Primordial spine');
-			}
 		} else {
-			for (let i = 0; i < quantity; i++) {
-				if (rng.roll(1000)) {
-					loot.add(IslandGemTable5x.roll());
-				} else if (rng.roll(500)) {
-					loot.add(IslandGemTable3x.roll());
-				} else if (rng.roll(100)) {
-					loot.add(IslandGemTable.roll());
+			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
+				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
+					const amountToAdd = Math.floor(woodcuttingXP * (Number(bonus) / 100));
+					woodcuttingXP += amountToAdd;
+					bonusXP += amountToAdd;
 				}
 			}
 		}
 
-		let xpRes = await user.addXP({
-			skillName: 'mining',
-			amount: Math.ceil(miningXP),
+		if (user.hasEquippedOrInBank('Woodcutting master cape')) {
+			loot.multiply(2);
+		}
+
+		const xpRes = await user.addXP({
+			skillName: 'woodcutting',
+			amount: Math.ceil(woodcuttingXP),
 			duration,
-			source: 'ArchaicMining'
+			source: 'AncientMycology'
 		});
 
-		if (prayerXP > 0) {
-			xpRes += '\n';
-			xpRes += await user.addXP({
-				skillName: 'prayer',
-				amount: Math.ceil(prayerXP),
-				duration,
-				source: 'ArchaicMining'
-			});
-		}
-
-		let str = `${user}, ${user.minionName} finished ${miningType === 'dragonbone' ? 'dragonbone' : 'crystalline'} mining! ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished harvesting Ancient Myconid growths! ${xpRes}`;
 
 		if (bonusXP > 0) {
-			str += `\n\n**Bonus Mining XP:** ${bonusXP.toLocaleString()}`;
+			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		if (loot.has('Primordial heartstring')) {
-			str += '\n**You found a Primordial heartstring!**';
-		}
-		if (loot.has('Primordial spine')) {
-			str += '\n**You found a Primordial spine!**';
-		}
-
-		const clueScrollChance = baseOre.clueScrollChance;
+		const clueScrollChance = verdantLogs.clueScrollChance;
 		if (clueScrollChance) {
-			addSkillingClueToLoot(user, 'mining', quantity, clueScrollChance, loot);
+			const strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
+			addSkillingClueToLoot(user, 'woodcutting', quantity, clueScrollChance, loot, false, strungRabbitFoot);
+
+			if (strungRabbitFoot) {
+				str +=
+					'\nYour Strung rabbit foot necklace increases the chance of receiving bird egg nests and ring nests.';
+			}
 		}
 
-		const { petDropRate } = skillingPetDropRate(user, 'mining', baseOre.petChance);
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			const droprate = clAdjustedDroprate(user, 'Peky', Math.floor(4000 / minutes), 1.5);
+			if (rng.roll(droprate)) {
+				loot.add('Peky');
+				str +=
+					'\n<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
+			}
+		}
+
+		const { petDropRate } = skillingPetDropRate(user, 'woodcutting', verdantLogs.petChance);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {
-			loot.add('Rock golem');
+			loot.add('Beaver');
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while doing ${miningType} mining at level ${currentMiningLevel} Mining!`
+				`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Beaver while harvesting Ancient Myconid growths at level ${currentWcLevel} Woodcutting!`
 			);
 		}
 
@@ -192,7 +142,7 @@ export const archaicMiningTask: MinionTask = {
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
-			title: `Loot From ${quantity}x ${miningType === 'dragonbone' ? 'Dragonbone' : 'Crystalline'} Mining`,
+			title: `Loot From ${quantity}x Ancient Myconid growths`,
 			user,
 			previousCL
 		});
