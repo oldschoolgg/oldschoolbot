@@ -49,21 +49,7 @@ export function resolveAvailableItemBoosts(gearBank: GearBank, monster: Killable
 			}
 		}
 	}
-	
-	// Handle equippedItemBoosts (items must be equipped in specific gear setup)
-	if (monster.equippedItemBoosts) {
-		for (const boostSet of monster.equippedItemBoosts) {
-			const { gearSetup, items } = boostSet;
-			
-			for (const { itemID, boostPercent } of items) {
-				// Check if the item is equipped in the specified gear setup
-				if (gearBank.gear[gearSetup].hasEquipped(itemID)) {
-					boosts.add(itemID, boostPercent);
-				}
-			}
-		}
-	}
-	
+
 	return boosts;
 }
 

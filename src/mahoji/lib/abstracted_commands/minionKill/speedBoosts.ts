@@ -37,6 +37,7 @@ import { staticEquippedItemBoosts } from '@/mahoji/lib/abstracted_commands/minio
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
 import { getBossSpeedBonus, defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { empyreanOutfit } from '@/lib/bso/collection-log/main.js';
 
 const revSpecialWeapons = {
 	melee: Items.getOrThrow("Viggora's chainmace"),
@@ -529,19 +530,35 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				});
 			}
 
+			const empyreanMeleeEquipped = gearBank.gear.melee.hasEquipped(empyreanOutfit, true);
+
 			// Gorajan
-			const allGorajan = gorajanBoosts.every(e => gearBank.gear[e[1]].hasEquipped(e[0], true));
+			const allGorajan = gorajanBoosts.every(e => {
+				if (e[1] === 'melee') return gearBank.gear.melee.hasEquipped(e[0], true) || empyreanMeleeEquipped;
+				return gearBank.gear[e[1]].hasEquipped(e[0], true);
+			});
+
 			for (const [outfit, setup] of gorajanBoosts) {
 				const expectedSetup = monster.attackStyleToUse ? gearstatToSetup.get(monster.attackStyleToUse) : null;
-				if (allGorajan || (expectedSetup === setup && gearBank.gear[setup].hasEquipped(outfit, true))) {
+				const effectiveEquipped =
+					setup === 'melee'
+						? gearBank.gear.melee.hasEquipped(outfit, true) || empyreanMeleeEquipped
+						: gearBank.gear[setup].hasEquipped(outfit, true);
+
+				if (allGorajan || (expectedSetup === setup && effectiveEquipped)) {
+					const isEmpyrean = setup === 'melee' && empyreanMeleeEquipped && !gearBank.gear.melee.hasEquipped(outfit, true);
+					const reduction = isEmpyrean ? 15 : 10;
+					const label = isEmpyrean
+						? 'Empyrean'
+						: Items.itemNameFromId(outfit[0])!.split(' ').slice(0, 2).join(' ');
 					results.push({
-						percentageReduction: 10,
-						message: `10% for ${Items.itemNameFromId(outfit[0])!.split(' ').slice(0, 2).join(' ')} gear`
+						percentageReduction: reduction,
+						message: `${reduction}% for ${label} gear`
 					});
 					break;
 				}
 			}
-
+			
 			// Master capes
 			if (attackStyles.includes('ranged') && gearBank.hasEquipped('Ranged master cape')) {
 				results.push({
