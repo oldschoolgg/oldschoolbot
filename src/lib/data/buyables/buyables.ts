@@ -231,6 +231,11 @@ const constructionBuyables: Buyable[] = [
 		name: 'Bucket of water',
 		gpCost: 500,
 		ironmanPrice: 12
+	},
+	{
+		name: 'Saw',
+		gpCost: 13,
+		ironmanPrice: 13
 	}
 ];
 
