@@ -8,6 +8,7 @@ describe('Learning the Ropes gate', async () => {
 
 	it('blocks other minion commands before Learning the Ropes is completed', async () => {
 		const user = await createTestUser();
+		await user.update({ minion_bought_date: new Date() });
 		const response = (await user.runCommand('fish', { name: 'shrimps' })) as any;
 
 		expect(response.content).toContain('Before you can use minion commands');
@@ -16,6 +17,7 @@ describe('Learning the Ropes gate', async () => {
 
 	it('allows starting Learning the Ropes and unlocks commands after completion', async () => {
 		const user = await createTestUser();
+		await user.update({ minion_bought_date: new Date() });
 
 		const { commandResult } = await user.runCmdAndTrip('activities', {
 			quest: { name: 'Learning the Ropes' }
@@ -29,6 +31,7 @@ describe('Learning the Ropes gate', async () => {
 
 	it('allows minion ironman before Learning the Ropes but still blocks other minion commands', async () => {
 		const user = await createTestUser();
+		await user.update({ minion_bought_date: new Date() });
 
 		const ironmanResponse = (await user.runCommand('minion', { ironman: {} })) as any;
 		expect(ironmanResponse.content).toContain('You are now an ironman.');

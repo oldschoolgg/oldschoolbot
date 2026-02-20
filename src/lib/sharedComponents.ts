@@ -54,5 +54,5 @@ export const becomeIronmanButton = new ButtonBuilder()
 export const learningTheRopesButton = new ButtonBuilder()
 	.setCustomId(InteractionID.Commands.StartLearningTheRopes)
 	.setLabel('Start Learning the Ropes')
-	.setEmoji({ id: EmojiId.Leagues })
+	.setEmoji({ id: EmojiId.Leagues }) /// Temporary emoji until we get a quest emoji added, then we can change this to that emoji.
 	.setStyle(ButtonStyle.Primary);

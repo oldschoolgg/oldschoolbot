@@ -44,7 +44,7 @@ const inhibitors: Inhibitor[] = [
 		}
 	},
 	{
-		name: 'tutorialIsland',
+		name: 'requireLearningTheRopes',
 		run: ({ user, command, options }) => {
 			const isMinionCommand =
 				Boolean(command.attributes?.requiresMinion) ||
@@ -53,6 +53,9 @@ const inhibitors: Inhibitor[] = [
 			if (!isMinionCommand) return false;
 
 			if (!user.hasMinion || user.user.finished_quest_ids.includes(QuestID.LearningTheRopes)) {
+				return false;
+			}
+			if (!user.user.minion_bought_date) {
 				return false;
 			}
 
