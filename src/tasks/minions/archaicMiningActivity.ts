@@ -27,7 +27,7 @@ export const archaicOres: ArchaicOre[] = [
 	{ id: itemID('Frost dragon bones'), name: 'Frost dragon bones', level: 105, xp: 140, timeToMine: 5.5, type: 'dragonbone', petChance: 100000 },
 	{ id: itemID('Royal dragon bones'), name: 'Royal dragon bones', level: 108, xp: 150, timeToMine: 5.75, type: 'dragonbone', petChance: 100000 },
 	{ id: itemID('Primordial bones'), name: 'Primordial bones', level: 110, xp: 160, timeToMine: 6, type: 'dragonbone', petChance: 100000 },
-	
+
 	{ id: itemID('Crystalline ore'), name: 'Crystalline ore', level: 90, xp: 180, timeToMine: 4, type: 'crystalline', petChance: 100000, clueScrollChance: 500000 },
 	{ id: itemID('Gem Infused ore'), name: 'Gem Infused ore', level: 100, xp: 240, timeToMine: 5, type: 'crystalline', petChance: 100000 },
 	{ id: itemID('Dense Crystal shard'), name: 'Dense Crystal shard', level: 110, xp: 300, timeToMine: 6, type: 'crystalline', petChance: 100000 }
@@ -49,11 +49,11 @@ function generateArchaicMiningTable(currentMiningLevel: number, miningType: Mini
 		}
 	} else {
 		miningTable.add(relevantOres[0].id, 1, 3);
-		
+
 		if (currentMiningLevel >= relevantOres[1].level) {
 			miningTable.add(relevantOres[1].id, 1, 2);
 		}
-		
+
 		if (currentMiningLevel >= relevantOres[2].level) {
 			miningTable.add(relevantOres[2].id, 1, 1);
 		}
@@ -85,11 +85,6 @@ export const archaicMiningTask: MinionTask = {
 				miningXP += oreAmount * ore.xp;
 				prayerXP += oreAmount * (ore.xp * 0.5);
 			}
-
-			for (let i = 0; i < quantity; i++) {
-				if (rng.roll(5000)) loot.add('Primordial heartstring');
-				if (rng.roll(5000)) loot.add('Primordial spine');
-			}
 		} else {
 			const oreLoot = miningTable.roll(quantity);
 			loot.add(oreLoot);
@@ -97,16 +92,6 @@ export const archaicMiningTask: MinionTask = {
 			for (const ore of relevantOres) {
 				const oreAmount = loot.amount(ore.id);
 				miningXP += oreAmount * ore.xp;
-			}
-
-			for (let i = 0; i < quantity; i++) {
-				if (rng.roll(1000)) {
-					loot.add(IslandGemTable5x.roll());
-				} else if (rng.roll(500)) {
-					loot.add(IslandGemTable3x.roll());
-				} else if (rng.roll(100)) {
-					loot.add(IslandGemTable.roll());
-				}
 			}
 		}
 
@@ -118,8 +103,8 @@ export const archaicMiningTask: MinionTask = {
 			'Prospector legs',
 			'Prospector boots'
 		];
-		
-		const prospectorCount = prospectorPieces.filter(piece => 
+
+		const prospectorCount = prospectorPieces.filter(piece =>
 			user.hasEquippedOrInBank(piece)
 		).length;
 
@@ -133,8 +118,27 @@ export const archaicMiningTask: MinionTask = {
 			bonusXP += amountToAdd;
 		}
 
+		// Apply Mining master cape multiply before adding rares so they aren't doubled
 		if (user.hasEquippedOrInBank('Mining master cape')) {
 			loot.multiply(2);
+		}
+
+		// Add rare drops after cape multiply so they are not affected
+		if (miningType === 'dragonbone') {
+			for (let i = 0; i < quantity; i++) {
+				if (rng.roll(5000)) loot.add('Primordial heartstring');
+				if (rng.roll(5000)) loot.add('Primordial spine');
+			}
+		} else {
+			for (let i = 0; i < quantity; i++) {
+				if (rng.roll(1000)) {
+					loot.add(IslandGemTable5x.roll());
+				} else if (rng.roll(500)) {
+					loot.add(IslandGemTable3x.roll());
+				} else if (rng.roll(100)) {
+					loot.add(IslandGemTable.roll());
+				}
+			}
 		}
 
 		let xpRes = await user.addXP({
