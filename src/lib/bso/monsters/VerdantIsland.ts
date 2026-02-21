@@ -154,7 +154,8 @@ export const CrystallineSentinel: CustomMonster = {
 		.add('Nature rune', [40, 120])
 		.add('Uncut emerald', [5, 15])
 		.add('Uncut ruby', [3, 10])
-		.add('Uncut diamond', [2, 6]),
+		.add('Uncut diamond', [2, 6])
+		.add('Elderflame arrowtips', [1, 5]),
 
 	difficultyRating: 2,
 	qpRequired: 500,
@@ -207,7 +208,7 @@ export const CrystallineSentinel: CustomMonster = {
 				}
 			]
 		},
-				{
+		{
 			gearSetup: 'range',
 			items: [
 				{
@@ -221,6 +222,32 @@ export const CrystallineSentinel: CustomMonster = {
 			items: [
 				{
 					boostPercent: 15,
+					itemID: itemID('Starfire bow')
+				}
+			]
+		},
+		{
+			gearSetup: 'range',
+			items: [
+				{
+					boostPercent: 10,
+					itemID: itemID('Elderflame arrow')
+				},
+				{
+					boostPercent: 10,
+					itemID: itemID('Elderflame bow')
+				}
+			]
+		},
+		{
+			gearSetup: 'range',
+			items: [
+				{
+					boostPercent: 7,
+					itemID: itemID('Elderflame arrow')
+				},
+				{
+					boostPercent: 7,
 					itemID: itemID('Starfire bow')
 				}
 			]
@@ -299,7 +326,8 @@ export const FungalBehemoth: CustomMonster = {
 		.add('Ranarr seed', [3, 8])
 		.add('Snapdragon seed', [2, 6])
 		.add('Torstol seed', [1, 4])
-		.add('Ignilace seed', [1, 2]),
+		.add('Ignilace seed', [1, 2])
+		.add('Elderflame arrowtips', [1, 5]),
 	difficultyRating: 3,
 	qpRequired: 750,
 	healAmountNeeded: 120 * 50,
@@ -351,7 +379,7 @@ export const FungalBehemoth: CustomMonster = {
 				}
 			]
 		},
-	    {
+		{
 			gearSetup: 'range',
 			items: [
 				{
@@ -365,6 +393,32 @@ export const FungalBehemoth: CustomMonster = {
 			items: [
 				{
 					boostPercent: 15,
+					itemID: itemID('Starfire bow')
+				}
+			]
+		},
+		{
+			gearSetup: 'range',
+			items: [
+				{
+					boostPercent: 10,
+					itemID: itemID('Elderflame arrow')
+				},
+				{
+					boostPercent: 10,
+					itemID: itemID('Elderflame bow')
+				}
+			]
+		},
+		{
+			gearSetup: 'range',
+			items: [
+				{
+					boostPercent: 7,
+					itemID: itemID('Elderflame arrow')
+				},
+				{
+					boostPercent: 7,
 					itemID: itemID('Starfire bow')
 				}
 			]
@@ -522,7 +576,8 @@ export const Orym: CustomMonster = {
 		.add('Grimy dwarf weed', [30, 75])
 		.add('Grimy lantadyme', [35, 90])
 		.add('Ignilace', [5, 30])
-		.add('Ignilace seed', [1, 10]),
+		.add('Ignilace seed', [1, 10])
+		.add('Elderflame arrowtips', [3, 10]),
 
 	difficultyRating: 5,
 	qpRequired: 2500,
@@ -628,6 +683,9 @@ export const Orrodil: CustomMonster = {
 		.every('Primordial Scales', [12, 50])
 
 		.tertiary(75, 'Elder scroll piece')
+		.tertiary(95, 'Elder sigil fragment (1)')
+		.tertiary(95, 'Elder sigil fragment (2)')
+		.tertiary(95, 'Elder sigil fragment (3)')
 		.tertiary(1000, 'Primordial heartstring')
 		.tertiary(1000, 'Primordial spine')
 		.tertiary(2000, 'Shattered pendant')
@@ -679,7 +737,8 @@ export const Orrodil: CustomMonster = {
 		.add('Uncut zenyte', 1)
 		.add('Uncut onyx', [3, 5])
 
-		.add('Mahogany plank', [250, 350]),
+		.add('Mahogany plank', [250, 350])
+		.add('Elderflame arrowtips', [3, 10]),
 
 	qpRequired: 2500,
 	healAmountNeeded: 250 * 200,
@@ -780,7 +839,7 @@ export const BurningDominionTemplate: CustomMonster = {
 	timeToFinish: Time.Minute * 20,
 	hp: 5000,
 	respawnTime: 0,
-	difficultyRating: 9	,
+	difficultyRating: 9,
 
 	table: new LootTable()
 		.every('Primordial Bones', [4, 10])
@@ -788,6 +847,9 @@ export const BurningDominionTemplate: CustomMonster = {
 
 		.tertiary(50, 'Clue scroll (grandmaster)')
 		.tertiary(75, 'Elder scroll piece')
+		.tertiary(125, 'Elder sigil fragment (1)')
+		.tertiary(125, 'Elder sigil fragment (2)')
+		.tertiary(125, 'Elder sigil fragment (3)')
 
 		.tertiary(500, 'Primordial heartstring')
 		.tertiary(500, 'Primordial spine')
@@ -848,7 +910,8 @@ export const BurningDominionTemplate: CustomMonster = {
 		.add('Ignilace seed', [1, 10])
 		.add('Uncut zenyte', 1)
 		.add('Uncut onyx', [3, 5])
-		.add('Mahogany plank', [250, 350]),
+		.add('Mahogany plank', [250, 350])
+		.add('Elderflame arrowtips', [5, 15]),
 
 	qpRequired: 2500,
 	healAmountNeeded: 600 * 200,

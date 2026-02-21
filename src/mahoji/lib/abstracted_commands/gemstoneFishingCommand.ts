@@ -1,8 +1,8 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import { getGatheringSpeedBonus, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { getBestAvailableFish } from '@/tasks/minions/gemstoneFishingActivity.js';
 
 export async function gemstoneFishingCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const fishingLevel = user.skillsAsLevels.fishing;
@@ -13,8 +13,7 @@ export async function gemstoneFishingCommand(user: MUser, channelId: string, qua
 
 	const inputQuantity = quantity;
 
-	const availableFish = Fishing.gemstoneFishes.filter(fish => fishingLevel >= fish.level);
-	const bestFish = availableFish[availableFish.length - 1];
+	const bestFish = getBestAvailableFish(fishingLevel);
 
 	const maxTripLength = await user.calcMaxTripLength('GemstoneFishing');
 
