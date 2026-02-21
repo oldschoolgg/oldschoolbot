@@ -1730,6 +1730,7 @@ enum command_name_enum {
   ic
   igne
   invention
+  islandupgrade
   itemcontract
   kibble
   kinggoldemar

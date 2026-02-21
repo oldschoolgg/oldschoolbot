@@ -24,7 +24,7 @@ const GENERAL_CHANNEL_ID =
 		: isProduction
 			? '792691343284764693'
 			: '1154056119019393035';
-const OLDSCHOOLGG_TESTING_SERVER_ID = '1220595484599779328';
+const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
 export const DELETED_USER_ID = '111111111111111111';
 
@@ -626,33 +626,27 @@ export const CONSTANTS = {
 };
 
 export enum IslandUpgrade {
-	// Boss killing efficiency (Orym/Orrodil/Fungal Behemoth/Crystalline Sentinel)
-	BossEfficiency1 = 1 << 0,    // 1
-	BossEfficiency2 = 1 << 1,    // 2
-	BossEfficiency3 = 1 << 2,    // 4
+	BossEfficiency1 = 1 << 0,
+	BossEfficiency2 = 1 << 1,
+	BossEfficiency3 = 1 << 2,
+
+	MegabossAccess1 = 1 << 3,
+	MegabossAccess2 = 1 << 4,
+	MegabossAccess3 = 1 << 5,
+
+	MinigameBoost1 = 1 << 6,
+	MinigameBoost2 = 1 << 7,
+	MinigameBoost3 = 1 << 8,
+
+	GatheringSpeed1 = 1 << 9,
+	GatheringSpeed2 = 1 << 10,
+	GatheringSpeed3 = 1 << 11,
 	
-	// Megaboss access/bonuses
-	MegabossAccess1 = 1 << 3,    // 8
-	MegabossAccess2 = 1 << 4,    // 16
-	MegabossAccess3 = 1 << 5,    // 32
-	
-	// Minigame bonuses (Construction Contracts/Brimstone Distillery)
-	MinigameBoost1 = 1 << 6,     // 64
-	MinigameBoost2 = 1 << 7,     // 128
-	MinigameBoost3 = 1 << 8,     // 256
-	
-	// Gathering speed (Gemstone Fishing/Ancient Mycology/Archaic Mining)
-	GatheringSpeed1 = 1 << 9,    // 512
-	GatheringSpeed2 = 1 << 10,   // 1024
-	GatheringSpeed3 = 1 << 11,   // 2048
-	
-	// Prismare Ring global XP boost
-	PrismareRing1 = 1 << 12,     // 4096
-	PrismareRing2 = 1 << 13,     // 8192
-	PrismareRing3 = 1 << 14,     // 16384
+	PrismareRing1 = 1 << 12,
+	PrismareRing2 = 1 << 13,
+	PrismareRing3 = 1 << 14,
 }
 
-// Helper function to get upgrade tier for a specific category
 export function getIslandUpgradeTier(
 	userBitfield: number, 
 	upgradeType: 'boss' | 'megaboss' | 'minigame' | 'gathering' | 'prismare'

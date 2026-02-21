@@ -33,6 +33,12 @@ function generateGemstoneFishTable(currentFishLevel: number): LootTable {
 	return gemstoneFishTable;
 }
 
+export function getBestAvailableFish(currentFishLevel: number): GemstoneFish {
+	const unlocked = Fishing.gemstoneFishes
+		.filter((fish: GemstoneFish) => currentFishLevel >= fish.level)
+		.sort((a: GemstoneFish, b: GemstoneFish) => b.xp - a.xp);
+	return unlocked[0] ?? juvenileGemscale;
+}
 export const gemstoneFishingTask: MinionTask = {
 	type: 'GemstoneFishing',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
@@ -40,13 +46,11 @@ export const gemstoneFishingTask: MinionTask = {
 		const currentFishLevel = user.skillsAsLevels.fishing;
 
 		const gemstoneFishTable = generateGemstoneFishTable(currentFishLevel);
+		const bestFish = getBestAvailableFish(currentFishLevel);
 
-		let fishingXP = 0;
 		const loot = gemstoneFishTable.roll(quantity);
 
-		for (const fish of Fishing.gemstoneFishes) {
-			fishingXP += loot.amount(fish.id) * fish.xp;
-		}
+		let fishingXP = quantity * bestFish.xp;
 
 		let bonusXP = 0;
 

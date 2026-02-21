@@ -35,6 +35,7 @@ import { collectables } from '@/mahoji/lib/collectables.js';
 import { ancientMycologyCommand } from '../lib/abstracted_commands/ancientMycologyCommand.js';
 import { archaicMiningCommand } from '../lib/abstracted_commands/archaicMiningCommand.js';
 import { gemstoneFishingCommand } from '../lib/abstracted_commands/gemstoneFishingCommand.js';
+import { gemscaleBreakdownCommand } from '../lib/abstracted_commands/gemscaleBreakdownCommand.js';
 
 export const activitiesCommand = defineCommand({
 	name: 'activities',
@@ -143,12 +144,28 @@ export const activitiesCommand = defineCommand({
 		{
 			type: 'Subcommand',
 			name: 'gemstone_fishing',
-			description: 'Fish for gemstone fish',
+			description: 'Fish for gemstone fish, or break down gemscales into gemstones',
 			options: [
+				{
+					type: 'String',
+					name: 'action',
+					description: 'The action to perform.',
+					required: false,
+					choices: [
+						{ name: 'Fish', value: 'fish' },
+						{ name: 'Breakdown', value: 'breakdown' }
+					]
+				},
+				{
+					type: 'String',
+					name: 'fish_type',
+					description: 'The type of gemscale to break down (only required for breakdown).',
+					required: false
+				},
 				{
 					type: 'Integer',
 					name: 'quantity',
-					description: 'The quantity of fish to catch (optional).',
+					description: 'The quantity of fish to catch or break down (optional).',
 					required: false,
 					min_value: 1
 				}
@@ -635,6 +652,9 @@ export const activitiesCommand = defineCommand({
 			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.gemstone_fishing) {
+			if (options.gemstone_fishing.action === 'breakdown') {
+				return gemscaleBreakdownCommand(user, options.gemstone_fishing.fish_type, options.gemstone_fishing.quantity);
+			}
 			return gemstoneFishingCommand(user, channelId, options.gemstone_fishing.quantity);
 		}
 		if (options.ancient_mycology) {
