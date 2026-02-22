@@ -512,6 +512,9 @@
 				"thieving": 49,
 				"woodcutting": 60
 			},
+			"minigame_reqs": {
+				"stealing_artefacts": 1
+			},
 			"collection_log_reqs": ["Adamantite bar"],
 			"monster_scores": {
 				"6766": 1,
