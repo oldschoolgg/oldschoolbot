@@ -1523,184 +1523,70 @@ export const bsoCreatables: Createable[] = [
 		}),
 		requiredSkills: {}
 	},
-	{
-		name: 'Empyrean Greathelm',
+{
+		name: 'Empyrean Armour Set',
 		inputItems: new Bank({
 			'Gorajan warrior helmet': 1,
-			'Dwarven bar': 10,
-			'Gorajan shards': 5,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 150
-		}),
-		outputItems: new Bank({ 'Empyrean Greathelm': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatplate',
-		inputItems: new Bank({
 			'Gorajan warrior top': 1,
-			'Dwarven bar': 12,
-			'Gorajan shards': 6,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 200
-		}),
-		outputItems: new Bank({ 'Empyrean Greatplate': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatgreaves',
-		inputItems: new Bank({
 			'Gorajan warrior legs': 1,
-			'Dwarven bar': 8,
-			'Gorajan shards': 5,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 120
-		}),
-		outputItems: new Bank({ 'Empyrean Greatgreaves': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatgauntlets',
-		inputItems: new Bank({
 			'Gorajan warrior gloves': 1,
-			'Dwarven bar': 5,
-			'Gorajan shards': 4,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 100
-		}),
-		outputItems: new Bank({ 'Empyrean Greatgauntlets': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatsabaton',
-		inputItems: new Bank({
 			'Gorajan warrior boots': 1,
-			'Dwarven bar': 5,
-			'Gorajan shards': 4,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 100
+			'Dwarven bar': 40,
+			'Gorajan shards': 24,
+			'Elderflame catalyst': 5,
+			'Empyrean shards': 670
 		}),
-		outputItems: new Bank({ 'Empyrean Greatsabaton': 1 }),
+		outputItems: new Bank({
+			'Empyrean greathelm': 1,
+			'Empyrean greatplate': 1,
+			'Empyrean greatgreaves': 1,
+			'Empyrean greatgauntlets': 1,
+			'Empyrean greatsabaton': 1
+		}),
 		requiredSkills: { smithing: 120, crafting: 120 }
 	},
 	{
-		name: 'Empyrean Greathelm (Primal base)',
+		name: 'Empyrean Armour Set (Primal base)',
 		inputItems: new Bank({
 			'Gorajan warrior helmet (primal)': 1,
-			'Dwarven bar': 10,
-			'Gorajan shards': 5,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 150
-		}),
-		outputItems: new Bank({ 'Empyrean Greathelm': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatplate (Primal base)',
-		inputItems: new Bank({
 			'Gorajan warrior top (primal)': 1,
-			'Dwarven bar': 12,
-			'Gorajan shards': 6,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 200
-		}),
-		outputItems: new Bank({ 'Empyrean Greatplate': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatgreaves (Primal base)',
-		inputItems: new Bank({
 			'Gorajan warrior legs (primal)': 1,
-			'Dwarven bar': 8,
-			'Gorajan shards': 5,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 120
-		}),
-		outputItems: new Bank({ 'Empyrean Greatgreaves': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatgauntlets (Primal base)',
-		inputItems: new Bank({
 			'Gorajan warrior gloves (primal)': 1,
-			'Dwarven bar': 5,
-			'Gorajan shards': 4,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 100
-		}),
-		outputItems: new Bank({ 'Empyrean Greatgauntlets': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatsabaton (Primal base)',
-		inputItems: new Bank({
 			'Gorajan warrior boots (primal)': 1,
-			'Dwarven bar': 5,
-			'Gorajan shards': 4,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 100
+			'Dwarven bar': 40,
+			'Gorajan shards': 24,
+			'Elderflame catalyst': 5,
+			'Empyrean shards': 670
 		}),
-		outputItems: new Bank({ 'Empyrean Greatsabaton': 1 }),
+		outputItems: new Bank({
+			'Empyrean greathelm': 1,
+			'Empyrean greatplate': 1,
+			'Empyrean greatgreaves': 1,
+			'Empyrean greatgauntlets': 1,
+			'Empyrean greatsabaton': 1
+		}),
 		requiredSkills: { smithing: 120, crafting: 120 }
 	},
 	{
-		name: 'Empyrean Greathelm (Oceanic base)',
+		name: 'Empyrean Armour Set (Oceanic base)',
 		inputItems: new Bank({
 			'Gorajan warrior helmet (oceanic)': 1,
-			'Dwarven bar': 10,
-			'Gorajan shards': 5,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 150
-		}),
-		outputItems: new Bank({ 'Empyrean Greathelm': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatplate (Oceanic base)',
-		inputItems: new Bank({
 			'Gorajan warrior top (oceanic)': 1,
-			'Dwarven bar': 12,
-			'Gorajan shards': 6,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 200
-		}),
-		outputItems: new Bank({ 'Empyrean Greatplate': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatgreaves (Oceanic base)',
-		inputItems: new Bank({
 			'Gorajan warrior legs (oceanic)': 1,
-			'Dwarven bar': 8,
-			'Gorajan shards': 5,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 120
-		}),
-		outputItems: new Bank({ 'Empyrean Greatgreaves': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatgauntlets (Oceanic base)',
-		inputItems: new Bank({
 			'Gorajan warrior gloves (oceanic)': 1,
-			'Dwarven bar': 5,
-			'Gorajan shards': 4,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 100
-		}),
-		outputItems: new Bank({ 'Empyrean Greatgauntlets': 1 }),
-		requiredSkills: { smithing: 120, crafting: 120 }
-	},
-	{
-		name: 'Empyrean Greatsabaton (Oceanic base)',
-		inputItems: new Bank({
 			'Gorajan warrior boots (oceanic)': 1,
-			'Dwarven bar': 5,
-			'Gorajan shards': 4,
-			'Elderflame catalyst': 1,
-			'Empyrean shards': 100
+			'Dwarven bar': 40,
+			'Gorajan shards': 24,
+			'Elderflame catalyst': 5,
+			'Empyrean shards': 670
 		}),
-		outputItems: new Bank({ 'Empyrean Greatsabaton': 1 }),
+		outputItems: new Bank({
+			'Empyrean greathelm': 1,
+			'Empyrean greatplate': 1,
+			'Empyrean greatgreaves': 1,
+			'Empyrean greatgauntlets': 1,
+			'Empyrean greatsabaton': 1
+		}),
 		requiredSkills: { smithing: 120, crafting: 120 }
 	}
 ];

@@ -50,7 +50,7 @@ export async function kgCommand(
 			hands: 'Empyrean greatgauntlets',
 			feet: 'Empyrean greatsabaton',
 			cape: 'TzKal cape',
-			ring: 'Searcrwon band',
+			ring: 'Searcrown band',
 			'2h': 'Axe of the high sungod',
 			neck: "Brawler's hook necklace"
 		}),

@@ -1,7 +1,7 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import type { ArchonOptions } from '@/lib/bso/bsoTypes.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
@@ -32,22 +32,9 @@ export const archonPresentations = {
     }
 } as const;
 
-//const TIER_1_XP = 80_618_654;
-//const TIER_2_XP = 200_000_000;
-//const TIER_3_XP = 5_000_000_000;
-//const combatSkills = ['attack', 'strength', 'defence', 'ranged', 'magic', 'hitpoints'] as const;
-
 export function getArchonTier(_user: MUser): 1 | 2 | 3 | null {
     return 3; // temporary 
 }
-
-// export function getArchonTier(user: MUser): 1 | 2 | 3 | null {
-//     const highestXp = Math.max(...combatSkills.map(s => user.skillsAsXP[s] ?? 0));
-//     if (highestXp >= TIER_3_XP) return 3;
-//     if (highestXp >= TIER_2_XP) return 2;
-//     if (highestXp >= TIER_1_XP) return 1;
-//     return null;
-// }
 
 const meleeSlots: [string, number][] = [
     ['Axe of the high sungod', 30], 
@@ -114,56 +101,17 @@ export function calcArchonContribution(user: MUser, totalUsers: number): {
 } {
     const boostMessages: string[] = [];
 
-    let bowScore = 0;
-    let bowMessage = '';
-
-    try {
-        const hasElderflameBow = user.hasEquippedOrInBank('Elderflame bow');
-        const hasElderflameArrow = user.hasEquippedOrInBank('Elderflame arrow');
-        const hasStarfireBow = user.hasEquippedOrInBank('Starfire bow');
-        const hasHellfireArrow = user.hasEquippedOrInBank('Hellfire arrow');
-        const hasHellfireBow = user.hasEquippedOrInBank('Hellfire bow');
-
-        if (hasElderflameBow && hasElderflameArrow) {
-            bowScore = 100;
-            bowMessage = 'Elderflame bow & arrows equipped.';
-        } else if (hasElderflameBow && !hasElderflameArrow) {
-            bowScore = 50;
-            bowMessage = 'Elderflame bow equipped but missing Elderflame arrows, using weaker ammo.';
-        } else if (hasStarfireBow && hasHellfireArrow) {
-            bowScore = 60;
-            bowMessage = 'Using Starfire bow & Hellfire arrows, significantly weaker than Elderflame.';
-        } else if (hasHellfireBow) {
-            bowScore = 30;
-            bowMessage = 'Using Hellfire bow, heavily penalised. Obtain an Elderflame bow for full effectiveness.';
-        } else {
-            bowScore = 0;
-            bowMessage = 'No viable ranged weapon found, contribution is severely reduced.';
-        }
-    } catch {
-        bowScore = 0;
-        bowMessage = 'Ranged weapon check failed, items may not exist yet.';
-    }
-
-    boostMessages.push(bowMessage);
-
-    const rangedSlotsWithoutBow = rangedSlots.filter(
-        ([item]) => item !== 'Elderflame bow' && item !== 'Elderflame arrow'
-    );
-    const rangedGearScore = scoreGearSlots(user, rangedSlotsWithoutBow);
+    const rangedGearScore = scoreGearSlots(user, rangedSlots);
     const meleeGearScore = scoreGearSlots(user, meleeSlots);
     const mageGearScore = scoreGearSlots(user, mageSlots);
 
-
-    const effectiveRangedScore = (bowScore * 0.55) + (rangedGearScore * 0.45);
-
-    const rawGearScore = (effectiveRangedScore * 0.50) + (meleeGearScore * 0.25) + (mageGearScore * 0.25);
+    const rawGearScore = (rangedGearScore * 0.50) + (meleeGearScore * 0.25) + (mageGearScore * 0.25);
 
     const groupScaling = 1 / Math.sqrt(totalUsers);
     const totalContribution = rawGearScore * groupScaling;
 
     boostMessages.push(
-        `Gear score: **${rawGearScore.toFixed(1)}%** (Ranged: ${effectiveRangedScore.toFixed(1)}%, Melee: ${meleeGearScore.toFixed(1)}%, Mage: ${mageGearScore.toFixed(1)}%)`
+        `Gear score: **${rawGearScore.toFixed(1)}%** (Ranged: ${rangedGearScore.toFixed(1)}%, Melee: ${meleeGearScore.toFixed(1)}%, Mage: ${mageGearScore.toFixed(1)}%)`
     );
     boostMessages.push(
         `Group contribution: **${totalContribution.toFixed(1)}%** (${totalUsers} adventurers)`
@@ -207,9 +155,6 @@ export async function handleTriggerArchon(
     const minutes = Math.floor(data.duration / Time.Minute);
     if (minutes < 1) return;
 
-    // const baseChance = Math.floor(540 / minutes);
-    // if (!roll(baseChance)) return;
-
     await prisma.archonEvent.create({
         data: {
             user_id: user.id,
@@ -227,13 +172,14 @@ export async function archonCommand(
     user: MUser,
     archonEvent: { tier: number }
 ): Promise<string> {
+    if (await user.minionIsBusy()) return 'Your minion is busy.';
     const tier = archonEvent.tier as 1 | 2 | 3;
     const presentation = archonPresentations[tier];
 
     const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
     const megabossTier = getTier(islandUpgrades, 'megaboss');
     if (megabossTier < 1) {
-        return `Your minion doesn't yet know how to find the Archon. Purchase **Megaboss I** from \`/islandupgrade buy\` to unlock access.`;
+        return `Your minion doesn't yet know how to find the Archon. Contribute to **Archon Sanctum I** from \`/islandupgrade contribute\` to unlock access.`;
     }
 
     const userList: string[] = [user.id];
@@ -248,12 +194,12 @@ export async function archonCommand(
 
     const islandSpeedBonus = getBossSpeedBonus(islandUpgrades);
     if (islandSpeedBonus > 0) {
-        boostMessages.push(`Island Boss Efficiency: **${(islandSpeedBonus * 100).toFixed(0)}%** faster`);
+        boostMessages.push(`Warcamp Fortifications: **${(islandSpeedBonus * 100).toFixed(0)}%** faster`);
     }
 
     const lootBonus = getMegabossLootBonus(islandUpgrades);
     if (lootBonus > 0) {
-        boostMessages.push(`Island Megaboss: **+${(lootBonus * 100).toFixed(0)}%** loot (uniques unaffected)`);
+        boostMessages.push(`Archon Sanctum: **+${(lootBonus * 100).toFixed(0)}%** loot (uniques unaffected)`);
     }
 
     const baseDuration = {
@@ -263,6 +209,17 @@ export async function archonCommand(
     }[tier];
 
     const duration = Math.floor(baseDuration * (1 - speedReduction) * (1 - islandSpeedBonus));
+
+    const ELDERFLAME_ARROW_ID = itemID('Elderflame arrow');
+    const arrowsPerKill: Record<1 | 2 | 3, number> = { 1: 50, 2: 100, 3: 200 };
+    const arrowsNeeded = arrowsPerKill[tier];
+    const hasArrows = user.bank.amount(ELDERFLAME_ARROW_ID) >= arrowsNeeded;
+
+    if (!hasArrows) {
+        return `Your minion needs at least **${arrowsNeeded}x Elderflame arrows** to fight the ${presentation.name}.`;
+    }
+
+    await user.removeItemsFromBank(new Bank().add(ELDERFLAME_ARROW_ID, arrowsNeeded));
 
     await ActivityManager.startTrip({
         userID: user.id,

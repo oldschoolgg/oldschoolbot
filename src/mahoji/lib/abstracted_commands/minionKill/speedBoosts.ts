@@ -601,10 +601,8 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			const bossSpeedBonus = getBossSpeedBonus(userUpgrades);
 
 			if (bossSpeedBonus > 0) {
-				const percentDisplay = (bossSpeedBonus * 100).toFixed(0);
 				return {
 					percentageReduction: bossSpeedBonus * 100,
-					message: `${percentDisplay}% for Island Boss Efficiency upgrade`
 				};
 			}
 
