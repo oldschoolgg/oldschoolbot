@@ -181,7 +181,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	return true;
 }
 
-export async function assignNewSlayerTask({ user, rng }: OSInteraction, master: SlayerMaster) {
+export async function assignNewSlayerTask({ user, rng }: { user: MUser; rng: RNGProvider }, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(user, t, master, false));
 	let bossTask = false;
@@ -487,6 +487,34 @@ export function filterLootReplace({ currentBank, itemsToAdd }: { currentBank: Ba
 		bankLoot: itemsToAdd,
 		clLoot: myClLoot
 	};
+}
+
+export function getAssignableSlayerTaskIDs(user: MUser, master: SlayerMaster): number[] {
+	const eligibleTaskIDs = new Set<number>();
+	const baseTasks = master.tasks.filter(task => userCanUseTask(user, task, master, false));
+	for (const task of baseTasks) {
+		eligibleTaskIDs.add(task.monster.id);
+	}
+	const masterName = master.name.toLowerCase();
+	const canAssignBossTasks =
+		user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss) &&
+		(masterName === 'konar quo maten' ||
+			masterName === 'duradel' ||
+			masterName === 'nieve' ||
+			masterName === 'chaeldar');
+	if (canAssignBossTasks) {
+		for (const task of bossTasks.filter(task => userCanUseTask(user, task, master, true))) {
+			eligibleTaskIDs.add(task.monster.id);
+		}
+	}
+	const canAssignWildyBossTasks = user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8;
+	if (canAssignWildyBossTasks) {
+		for (const task of wildernessBossTasks.filter(task => userCanUseTask(user, task, master, true))) {
+			eligibleTaskIDs.add(task.monster.id);
+		}
+	}
+
+	return Array.from(eligibleTaskIDs);
 }
 
 export async function getSlayerTaskStats(userID: string) {

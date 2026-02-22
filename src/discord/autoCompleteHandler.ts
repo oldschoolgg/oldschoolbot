@@ -15,24 +15,29 @@ async function handleAutocomplete(
 	if (data.type === ApplicationCommandOptionType.SubcommandGroup) {
 		const group = command.options.find(c => c.name === data.name);
 		if (group?.type !== 'SubcommandGroup') return [];
-		const subCommand = group.options?.find(c => c.name === data.options?.[0].name && c.type === 'Subcommand');
-		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
+		const subCommandOption =
+			data.options?.find(opt => 'focused' in opt && opt.focused === true) ?? data.options?.[0];
+		if (!subCommandOption) return [];
+		const subCommand = group.options?.find(c => c.name === subCommandOption.name && c.type === 'Subcommand');
+		if (!subCommand || !subCommandOption.options || subCommand.type !== 'Subcommand') {
 			return [];
 		}
-		const option = data.options[0].options?.find(t => t.focused);
-		if (!option) return [];
-		const subSubCommand = subCommand.options?.find(o => o.name === option.name);
-		return handleAutocomplete(user, guildId, command, [option], subSubCommand);
+		const subSubCommandOption =
+			subCommandOption.options.find(opt => 'focused' in opt && opt.focused === true) ??
+			subCommandOption.options[0];
+		if (!subSubCommandOption) return [];
+		const subSubCommand = subCommand.options?.find(o => o.name === subSubCommandOption.name);
+		return handleAutocomplete(user, guildId, command, subCommandOption.options, subSubCommand);
 	}
 	if (data.type === ApplicationCommandOptionType.Subcommand) {
 		if (!data.options || !data.options[0]) return [];
 		const subCommand = command.options.find(c => c.name === data.name);
 		if (subCommand?.type !== 'Subcommand') return [];
-		const option = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
-		const subOption = subCommand.options?.find(c => c.name === option.name);
+		const optionFocused = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
+		const subOption = subCommand.options?.find(c => c.name === optionFocused.name);
 		if (!subOption) return [];
 
-		return handleAutocomplete(user, guildId, command, [option], subOption);
+		return handleAutocomplete(user, guildId, command, data.options, subOption);
 	}
 
 	const optionBeingAutocompleted = option ?? command.options.find(o => o.name === data.name);
@@ -46,7 +51,9 @@ async function handleAutocomplete(
 			value: data.value as never,
 			user,
 			userId: user.id,
-			guildId
+			guildId,
+			options: autocompleteData,
+			focused: data
 		});
 		return autocompleteResult.slice(0, 25).map(i => ({
 			name: i.name,

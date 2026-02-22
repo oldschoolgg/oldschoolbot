@@ -4,9 +4,7 @@ import { EItem, type Monster, Monsters } from 'oldschooljs';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { slayerActionButtons } from '@/lib/slayer/slayerButtons.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
-import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import {
-	assignNewSlayerTask,
 	calcMaxBlockedTasks,
 	getCommonTaskName,
 	getUsersCurrentSlayerInfo,
@@ -14,6 +12,10 @@ import {
 } from '@/lib/slayer/slayerUtil.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 import type { SafeUserUpdateInput } from '@/lib/user/update.js';
+import {
+	assignExtendedSlayerTask,
+	autoSkipFromSkipList
+} from '@/mahoji/lib/abstracted_commands/slayerSkipListCommand.js';
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {
@@ -33,6 +35,44 @@ function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 		return alternateMonsters.length > 0 ? ` (**Alternate Monsters**: ${alternateMonsters.join(', ')})` : '';
 	}
 	return '';
+}
+
+type AutoSkipResult = Awaited<ReturnType<typeof autoSkipFromSkipList>>;
+
+function formatAutoSkipMessage({
+	result,
+	masterName,
+	finalTaskName,
+	buffer
+}: {
+	result: AutoSkipResult;
+	masterName: string;
+	finalTaskName: string;
+	buffer: number;
+}) {
+	const stopReasonText =
+		result.stopReason === 'limit'
+			? ' (stopped after reaching the automatic skip limit of 20)'
+			: result.stopReason === 'points'
+				? ' (stopped because you ran out of Slayer points)'
+				: result.stopReason === 'buffer'
+					? ` (stopped to keep at least ${buffer.toLocaleString()} Slayer points)`
+					: '';
+
+	let autoSkipMessage = '';
+	if (result.skippedTasks > 0) {
+		autoSkipMessage = `Automatically skipped ${result.skippedTasks.toLocaleString()} task${
+			result.skippedTasks === 1 ? '' : 's'
+		} from your ${masterName} skip list${stopReasonText}.`;
+	} else if (result.stopReason) {
+		autoSkipMessage = `Unable to auto-skip your current task${stopReasonText}.`;
+	}
+
+	if (autoSkipMessage && result.finalTaskWasSkipped) {
+		autoSkipMessage += ` ${finalTaskName} is on your skip list but couldn't be skipped automatically.`;
+	}
+
+	return autoSkipMessage;
 }
 
 export async function slayerListBlocksCommand(mahojiUser: MUser) {
@@ -69,13 +109,13 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 }
 
 export async function slayerNewTaskCommand({
-	rng,
 	user,
 	interaction,
 	extraContent,
 	slayerMasterOverride,
 	saveDefaultSlayerMaster,
-	showButtons
+	showButtons,
+	rng
 }: {
 	rng: RNGProvider;
 	user: MUser;
@@ -149,22 +189,36 @@ export async function slayerNewTaskCommand({
 		});
 		await user.statsUpdate({ [taskStreakKey]: 0 });
 
-		const newSlayerTask = await assignNewSlayerTask(interaction, slayerMaster);
-		const commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
+		const newSlayerTask = await assignExtendedSlayerTask(user, slayerMaster, rng);
+		const autoSkipResult = await autoSkipFromSkipList({
+			user,
+			master: slayerMaster,
+			initialTask: newSlayerTask,
+			rng
+		});
+		const finalTask = autoSkipResult.finalTask;
+		const commonName = getCommonTaskName(finalTask.assignedTask.monster);
+		const autoSkipMessage = formatAutoSkipMessage({
+			result: autoSkipResult,
+			masterName: slayerMaster.name,
+			finalTaskName: commonName,
+			buffer: user.user.slayer_auto_skip_buffer ?? 0
+		});
 		const returnMessage =
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
-			` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}${getAlternateMonsterList(
-				newSlayerTask.assignedTask
+			` has assigned you to kill ${finalTask.currentTask.quantity}x ${commonName}${getAlternateMonsterList(
+				finalTask.assignedTask
 			)}.`;
+		const messageWithAutoSkip = autoSkipMessage ? `${returnMessage}\n${autoSkipMessage}` : returnMessage;
 
 		if (showButtons) {
 			return {
-				content: `${extraContent ?? ''}\n\n${returnMessage}`,
+				content: `${extraContent ?? ''}\n\n${messageWithAutoSkip}`,
 				ephemeral: true,
 				components: slayerActionButtons
 			};
 		}
-		return `${extraContent ?? ''}\n\n${returnMessage}`;
+		return `${extraContent ?? ''}\n\n${messageWithAutoSkip}`;
 	}
 
 	let resultMessage = '';
@@ -202,26 +256,23 @@ export async function slayerNewTaskCommand({
 		return resultMessage;
 	}
 
-	const newSlayerTask = await assignNewSlayerTask(interaction, slayerMaster);
-	const myUnlocks = user.user.slayer_unlocks ?? [];
-	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(newSlayerTask.currentTask.monster_id));
-	if (extendReward && myUnlocks.includes(extendReward.id)) {
-		const quantity = newSlayerTask.assignedTask.extendedAmount
-			? rng.randInt(newSlayerTask.assignedTask.extendedAmount[0], newSlayerTask.assignedTask.extendedAmount[1])
-			: Math.ceil(newSlayerTask.currentTask.quantity * extendReward.extendMult!);
-		newSlayerTask.currentTask.quantity = quantity;
-		await prisma.slayerTask.update({
-			where: {
-				id: newSlayerTask.currentTask.id
-			},
-			data: {
-				quantity: newSlayerTask.currentTask.quantity,
-				quantity_remaining: newSlayerTask.currentTask.quantity
-			}
-		});
-	}
+	const newSlayerTask = await assignExtendedSlayerTask(user, slayerMaster, rng);
+	const autoSkipResult = await autoSkipFromSkipList({
+		user,
+		master: slayerMaster,
+		initialTask: newSlayerTask,
+		rng
+	});
+	const finalTask = autoSkipResult.finalTask;
+	const autoSkipMessage = formatAutoSkipMessage({
+		result: autoSkipResult,
+		masterName: slayerMaster.name,
+		finalTaskName: getCommonTaskName(finalTask.assignedTask.monster),
+		buffer: user.user.slayer_auto_skip_buffer ?? 0
+	});
 
-	let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
+	const finalTaskName = getCommonTaskName(finalTask.assignedTask.monster);
+	let commonName = finalTaskName;
 	if (commonName === 'TzHaar') {
 		resultMessage += 'Ah... Tzhaar... ';
 		commonName +=
@@ -230,8 +281,12 @@ export async function slayerNewTaskCommand({
 	}
 
 	resultMessage += `${slayerMaster.name} has assigned you to kill ${
-		newSlayerTask.currentTask.quantity
-	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
+		finalTask.currentTask.quantity
+	}x ${commonName}${getAlternateMonsterList(finalTask.assignedTask)}.`;
+
+	if (autoSkipMessage) {
+		resultMessage += `\n${autoSkipMessage}`;
+	}
 	if (showButtons) {
 		return {
 			content: resultMessage,
