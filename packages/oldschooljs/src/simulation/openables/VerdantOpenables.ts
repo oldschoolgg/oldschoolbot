@@ -73,7 +73,7 @@ const ElderHoardTable: LootTable = new LootTable().every(ElderHoardBase, randInt
 
 export const ElderHoard: SimpleOpenable = new SimpleOpenable({
 	id: 75_024,
-	name: 'Elder hoard',
-	aliases: ['elder hoard', 'elder sigil'],
+	name: 'Elder Cache',
+	aliases: ['elder cache', 'elder sigil'],
 	table: ElderHoardTable
 });

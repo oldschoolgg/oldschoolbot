@@ -51,7 +51,7 @@ export async function archaicMiningCommand(
 
 	const oresPerHour = Math.floor(Time.Hour / timePerOre);
 	const xpPerHour = oresPerHour * bestOre.xp;
-	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% gathering speed boost applied)` : '';
+	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% Expedition Outfitters boost applied)` : '';
 
 	return `${user.minionName} is now mining Archaic minerals, it will take around ${formatDuration(
 		duration

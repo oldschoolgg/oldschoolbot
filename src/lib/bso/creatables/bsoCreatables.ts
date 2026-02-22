@@ -1499,6 +1499,19 @@ export const bsoCreatables: Createable[] = [
 		}),
 		requiredSkills: {}
 	},
+		{
+		name: 'Starfire bow',
+		inputItems: new Bank({
+			'Starfire bow (u)': 1,
+			'Prolific twine': 1
+		}),
+		outputItems: new Bank({
+			'Starfire bow': 1
+		}),
+		requiredSkills: {
+			fletching: 95
+		}
+	},
 	{
 		name: 'Elderflame bow',
 		inputItems: new Bank({
@@ -1508,7 +1521,9 @@ export const bsoCreatables: Createable[] = [
 		outputItems: new Bank({
 			'Elderflame bow': 1
 		}),
-		requiredSkills: {}
+		requiredSkills: {
+			fletching: 110
+		}
 	},
 	{
 		name: 'Prismare ring',

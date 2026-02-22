@@ -121,6 +121,7 @@ export const CrystallineSentinelLootTable = new LootTable()
 	.tertiary(150, 'Clue scroll (medium)')
 	.tertiary(250, 'Clue scroll (hard)')
 	.tertiary(1500, 'Sentinel core')
+	.tertiary(3000, 'Starfire bow (u)')
 	.tertiary(25, RareDropTable)
 	.tertiary(15, IslandTable)
 	.tertiary(8, IslandGemTable)
@@ -153,6 +154,7 @@ export const FungalBehemothLootTable = new LootTable()
 	.tertiary(150, 'Clue scroll (medium)')
 	.tertiary(250, 'Clue scroll (hard)')
 	.tertiary(1500, 'Verdant heart')
+	.tertiary(5000, 'Prolific twine')
 	.tertiary(25, RareDropTable)
 	.tertiary(15, IslandTable)
 	.tertiary(8, IslandGemTable)
@@ -398,10 +400,10 @@ export const CrystallineSentinel: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Crystalline Sentinel',
 	aliases: ['crystalline sentinel', 'sentinel', 'crystal sentinel'],
-	timeToFinish: Time.Minute * 3.5,
-	hp: 800,
+	timeToFinish: Time.Minute * 7,
+	hp: 2400,
 	table: CrystallineSentinelLootTable,
-	difficultyRating: 2,
+	difficultyRating: 3,
 	qpRequired: 500,
 	healAmountNeeded: 80 * 40,
 	attackStyleToUse: GearStat.AttackSlash,
@@ -426,7 +428,7 @@ export const CrystallineSentinel: CustomMonster = {
 		highestDeathChance: 15
 	},
 	minimumHealAmount: 12,
-	allItems: resolveItems(['Sentinel core']),
+	allItems: resolveItems(['Sentinel core', 'Starfire bow(u)']),
 	minimumGearRequirements: {
 		melee: {
 			...sentinelMinGear.stats,
@@ -482,10 +484,10 @@ export const FungalBehemoth: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Fungal Behemoth',
 	aliases: ['fungal behemoth', 'fungal', 'behemoth'],
-	timeToFinish: Time.Minute * 4.5,
-	hp: 1200,
+	timeToFinish: Time.Minute * 9,
+	hp: 3600,
 	table: FungalBehemothLootTable,
-	difficultyRating: 3,
+	difficultyRating: 4,
 	qpRequired: 750,
 	healAmountNeeded: 120 * 50,
 	attackStyleToUse: GearStat.AttackSlash,
@@ -510,7 +512,7 @@ export const FungalBehemoth: CustomMonster = {
 		highestDeathChance: 1
 	},
 	minimumHealAmount: 14,
-	allItems: resolveItems(['Verdant heart']),
+	allItems: resolveItems(['Verdant heart', 'Prolific twine']),
 	minimumGearRequirements: {
 		melee: {
 			...fungalMinGear.stats,
@@ -648,10 +650,10 @@ export const Orym: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Orym',
 	aliases: ['orym'],
-	timeToFinish: Time.Minute * 18,
-	hp: 1800,
+	timeToFinish: Time.Minute * 40,
+	hp: 5000,
 	table: OrymLootTable,
-	difficultyRating: 5,
+	difficultyRating: 6,
 	qpRequired: 2500,
 	healAmountNeeded: 350 * 200,
 	attackStyleToUse: GearStat.AttackStab,
@@ -731,9 +733,10 @@ export const Orrodil: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Orrodil',
 	aliases: ['orrodil'],
-	timeToFinish: Time.Minute * 18,
-	hp: 1800,
+	timeToFinish: Time.Minute * 40,
+	hp: 5000,
 	table: OrrodilLootTable,
+	difficultyRating: 6,
 	qpRequired: 2500,
 	healAmountNeeded: 250 * 200,
 	attackStyleToUse: GearStat.AttackStab,

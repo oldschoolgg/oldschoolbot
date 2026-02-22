@@ -44,7 +44,7 @@ export async function gemstoneFishingCommand(user: MUser, channelId: string, qua
 
 	const catchesPerHour = Math.floor(Time.Hour / timePerFish);
 	const xpPerHour = catchesPerHour * bestFish.xp;
-	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% gathering speed boost applied)` : '';
+	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% Expedition Outfitters boost applied)` : '';
 
 	return `${user.minionName} is now fishing for Gemscales, it will take around ${formatDuration(
 		duration

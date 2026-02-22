@@ -213,10 +213,9 @@ export async function archonCommand(
     const ELDERFLAME_ARROW_ID = itemID('Elderflame arrow');
     const arrowsPerKill: Record<1 | 2 | 3, number> = { 1: 50, 2: 100, 3: 200 };
     const arrowsNeeded = arrowsPerKill[tier];
-    const hasArrows = user.bank.amount(ELDERFLAME_ARROW_ID) >= arrowsNeeded;
 
-    if (!hasArrows) {
-        return `Your minion needs at least **${arrowsNeeded}x Elderflame arrows** to fight the ${presentation.name}.`;
+    if (user.gear.range.get('ammo')?.item !== ELDERFLAME_ARROW_ID) {
+        return `Your minion needs **Elderflame arrows** equipped in their ranged ammo slot to fight the ${presentation.name}.`;
     }
 
     await user.removeItemsFromBank(new Bank().add(ELDERFLAME_ARROW_ID, arrowsNeeded));
