@@ -82,6 +82,12 @@ export type FullMinionData = {
 		attack_style: string[];
 		combat_options: number[];
 	};
+
+	current_activity: {
+		name: string;
+		started_at: string;
+		finishes_at: string;
+	} | null;
 };
 
 export type SUserIdentity = {
