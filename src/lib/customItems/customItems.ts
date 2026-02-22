@@ -15061,6 +15061,32 @@ setCustomItem(
 	95_000_000
 );
 setCustomItem(75_070, 'Empyrean shards', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(
+	75_071,
+	'Prolific twine',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	75_072,
+	'Starfire bow (u)',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
 
 export const discontinuedItems = resolveItems([
 	'Turkey',

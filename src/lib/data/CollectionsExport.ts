@@ -1505,7 +1505,7 @@ export const aerialFishingCL = resolveItems([
 	...ItemGroups.anglerOutfit
 ]);
 export const distilleryCL = resolveItems([
-	'Sedryn',
+	 'Diluted brimstone', 'Sedryn'
 ]);
 export const concontractsCL = resolveItems([
 	'Bamyr',

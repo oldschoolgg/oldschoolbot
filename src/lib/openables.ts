@@ -509,10 +509,10 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: GemstoneCore.table.allItems
 	},
 		{
-		name: 'Elder Hoard',
+		name: 'Elder Cache',
 		id: 75_043,
 		openedItem: Items.getOrThrow('Elder sigil'),
-		aliases: ['elder hoard', 'elder sigil'],
+		aliases: ['elder cache', 'elder sigil'],
 		output: ElderHoard.table,
 		allItems: ElderHoard.table.allItems
 	}

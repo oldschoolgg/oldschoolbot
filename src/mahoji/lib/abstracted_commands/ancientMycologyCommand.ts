@@ -56,7 +56,7 @@ export async function ancientMycologyCommand(user: MUser, channelId: string, qua
 
 	const harvestsPerHour = Math.floor(Time.Hour / timePerWood);
 	const xpPerHour = harvestsPerHour * bestWood.xp;
-	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% gathering speed boost applied)` : '';
+	const boostStr = gatheringBonus > 0 ? ` (${gatheringBonus * 100}% Expedition Outfitters boost applied)` : '';
 
 	return `${user.minionName} is now harvesting Ancient Myconid growths, it will take around ${formatDuration(
 		duration

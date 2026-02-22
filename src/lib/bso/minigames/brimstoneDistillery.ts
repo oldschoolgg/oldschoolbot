@@ -120,7 +120,8 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		output: Items.getOrThrow('Enhanced super restore'),
 		ingredients: [
 			{ item: Items.getOrThrow('Super restore(4)'), quantity: 1 },
-			{ item: Items.getOrThrow('Crystal dust'), quantity: 3 }
+			{ item: Items.getOrThrow('Crystal dust'), quantity: 10 },
+			{ item: Items.getOrThrow('Korulsi'), quantity: 1 }
 		],
 		herbloreLevel: 115,
 		xpMultiplier: 1.5,
@@ -131,7 +132,8 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		output: Items.getOrThrow('Enhanced saradomin brew'),
 		ingredients: [
 			{ item: Items.getOrThrow('Saradomin brew(4)'), quantity: 1 },
-			{ item: Items.getOrThrow('Crystal dust'), quantity: 3 }
+			{ item: Items.getOrThrow('Crystal dust'), quantity: 10 },
+			{ item: Items.getOrThrow('Korulsi'), quantity: 1 }
 		],
 		herbloreLevel: 115,
 		xpMultiplier: 1.5,
@@ -142,7 +144,8 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		output: Items.getOrThrow('Enhanced stamina potion'),
 		ingredients: [
 			{ item: Items.getOrThrow('Stamina potion(4)'), quantity: 1 },
-			{ item: Items.getOrThrow('Crystal dust'), quantity: 4 }
+			{ item: Items.getOrThrow('Crystal dust'), quantity: 10 },
+			{ item: Items.getOrThrow('Korulsi'), quantity: 1 }
 		],
 		herbloreLevel: 115,
 		xpMultiplier: 1.6,
@@ -153,7 +156,7 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		output: Items.getOrThrow('Heat res. restore'),
 		ingredients: [
 			{ item: Items.getOrThrow('Super restore(4)'), quantity: 1 },
-			{ item: Items.getOrThrow('Lava scale'), quantity: 3 }
+			{ item: Items.getOrThrow('Super antifire potion(4)'), quantity: 1 }
 		],
 		requiredCatalyst: Items.getOrThrow('Heat res. vial'),
 		catalystQuantity: 1,
@@ -166,7 +169,7 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		output: Items.getOrThrow('Heat res. brew'),
 		ingredients: [
 			{ item: Items.getOrThrow('Saradomin brew(4)'), quantity: 1 },
-			{ item: Items.getOrThrow('Lava scale'), quantity: 3 }
+			{ item: Items.getOrThrow('Super antifire potion(4)'), quantity: 1 }
 		],
 		requiredCatalyst: Items.getOrThrow('Heat res. vial'),
 		catalystQuantity: 1,
@@ -190,7 +193,8 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 		output: Items.getOrThrow('Enhanced divine water'),
 		ingredients: [
 			{ item: Items.getOrThrow('Divine water'), quantity: 1 },
-			{ item: Items.getOrThrow('Crystal dust'), quantity: 2 }
+			{ item: Items.getOrThrow('Crystal dust'), quantity: 10 },
+			{ item: Items.getOrThrow('Korulsi'), quantity: 1 }
 		],
 		herbloreLevel: 113,
 		xpMultiplier: 1.35,

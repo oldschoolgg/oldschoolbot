@@ -159,7 +159,7 @@ export const activitiesCommand = defineCommand({
 				{
 					type: 'String',
 					name: 'fish_type',
-					description: 'The type of gemscale to break down (only required for breakdown).',
+					description: 'The type of gemscale (Juvenile, Adolescent, Mature, Ancient, Elder) to break down.',
 					required: false
 				},
 				{
