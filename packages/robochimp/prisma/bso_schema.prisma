@@ -493,6 +493,7 @@ model User {
   store_bitfield Int[]
 
   island_upgrades           Json @default("{}") @db.Json
+  island_contributions      Json @default("{}")
 
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json

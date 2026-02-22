@@ -54,6 +54,7 @@ import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
 import { Naxxus, NaxxusLootTableFinishable } from '@/lib/bso/monsters/bosses/Naxxus.js';
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
+import { OrymLootTable,OrrodilLootTable, FungalBehemothLootTable, CrystallineSentinelLootTable, BurningDominionLootTable } from '@/lib/bso/monsters/VerdantIsland.js'
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
@@ -180,6 +181,7 @@ import {
 	shadesOfMorttonCL,
 	shayzienArmourCL,
 	shootingStarsCL,
+	archonCL,
 	skillingMiscCL,
 	skillingPetsCL,
 	skotizoCL,
@@ -953,31 +955,31 @@ export const allCollectionLogs: ICollection = {
 			},
 			Orym: {
 				alias: ['orym'],
-				allItems: BSOMonsters.Orym.allItems,
+				allItems: OrymLootTable.allItems,
 				items: BSOMonsters.Orym.allItems!,
 				fmtProg: kcProg(BSOMonsters.Orym.id)
 			},
 			Orrodil: {
 				alias: ['orrodil'],
-				allItems: BSOMonsters.Orrodil.allItems,
+				allItems: OrrodilLootTable.allItems,
 				items: BSOMonsters.Orrodil.allItems!,
 				fmtProg: kcProg(BSOMonsters.Orrodil.id)
 			},
 			'Burning Dominion': {
 				alias: ['burning dominion', 'burning'],
-				allItems: BSOMonsters.BurningDominion.allItems,
+				allItems: BurningDominionLootTable.allItems,
 				items: BSOMonsters.BurningDominion.allItems!,
 				fmtProg: kcProg(BSOMonsters.BurningDominion.id)
 			},
 			'Fungal Behemoth': {
 				alias: ['fungal behemoth', 'fungal', 'behemoth'],
-				allItems: BSOMonsters.FungalBehemoth.allItems,
+				allItems: FungalBehemothLootTable.allItems,
 				items: BSOMonsters.FungalBehemoth.allItems!,
 				fmtProg: kcProg(BSOMonsters.FungalBehemoth.id)
 			},
 			'Crystalline Sentinel': {
 				alias: ['crystalline sentinel', 'sentinel', 'crystal sentinel'],
-				allItems: BSOMonsters.CrystallineSentinel.allItems,
+				allItems: CrystallineSentinelLootTable.allItems,
 				items: BSOMonsters.CrystallineSentinel.allItems!,
 				fmtProg: kcProg(BSOMonsters.CrystallineSentinel.id)
 			},
@@ -986,7 +988,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: BSOMonsters.ElderMimic.allItems,
 				items: BSOMonsters.ElderMimic.allItems!,
 				fmtProg: kcProg(BSOMonsters.ElderMimic.id)
-			}
+			},
+			"Archon": {
+				alias: ['archon', 'arch'],
+				items: archonCL,
+				isActivity: true
+			},
 		}
 	},
 	Clues: {

@@ -49,7 +49,7 @@ export const archonTask: MinionTask = {
             }
 
             if (lootBonus > 0) {
-                messages.push(`Island Megaboss bonus: **+${(lootBonus * 100).toFixed(0)}%** to regular loot.`);
+                messages.push(`Archon Sanctum upgrade bonus: **+${(lootBonus * 100).toFixed(0)}%** to regular loot.`);
             }
 
             const effectiveGearPct = (gearMultiplier * 100).toFixed(1);

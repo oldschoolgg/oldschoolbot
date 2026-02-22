@@ -297,7 +297,7 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 	const islandBossBonus = islandBossIDs.includes(monster.id) ? getBossSpeedBonus(islandUpgrades) : 0;
 	if (islandBossBonus > 0) {
 		duration = reduceNumByPercent(duration, islandBossBonus * 100);
-		speedDurationResult.messages.push(`${(islandBossBonus * 100).toFixed(0)}% faster kills (Island Boss Efficiency)`);
+		speedDurationResult.messages.push(`${(islandBossBonus * 100).toFixed(0)}% faster kills (Warcamp Fortifications)`);
 	}
 
 	duration = Math.ceil(duration);

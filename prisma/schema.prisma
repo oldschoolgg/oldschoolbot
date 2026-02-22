@@ -420,6 +420,7 @@ model User {
   void_staff_charges                Int                @default(0)
   prismare_ring_charges             Int?               @default(0)
   island_upgrades                   Json?              @default("{}")
+  island_contributions              Json               @default("{}")
   last_patron_double_time_trigger   DateTime?          @db.Timestamp(6)
   lottery_input                     Json               @default("{}") @db.Json
   gear_template                     Int                @default(0) @db.SmallInt
