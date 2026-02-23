@@ -1,7 +1,6 @@
 import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function temporossCommand(user: MUser, channelId: string, quantity: number | undefined) {
 	const fLevel = user.skillLevel('fishing');
@@ -69,5 +68,5 @@ export async function temporossCommand(user: MUser, channelId: string, quantity:
 
 	return `${user.minionName} is now off to kill Tempoross ${quantity}x times, their trip will take ${formatDuration(
 		duration
-	)}. (${await formatTripDuration(user, durationPerRoss)} per ross)\n\n${messages.join(', ')}.`;
+	)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.`;
 }

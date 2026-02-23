@@ -12,7 +12,6 @@ import TippedBolts from '@/lib/skilling/skills/fletching/fletchables/tippedBolts
 import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippedDragonBolts.js';
 import type { Fletchable } from '@/lib/skilling/types.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function sepulchreCommand(user: MUser, channelId: string, fletching?: number) {
 	const skills = user.skillsAsLevels;
@@ -120,7 +119,7 @@ export async function sepulchreCommand(user: MUser, channelId: string, fletching
 		completableFloors[0].number
 	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
 		tripLength
-	)}, with each lap taking ${await formatTripDuration(user, lapLength)}.`;
+	)}, with each lap taking ${formatDuration(lapLength)}.`;
 
 	if (fletchable && itemsNeeded) {
 		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;

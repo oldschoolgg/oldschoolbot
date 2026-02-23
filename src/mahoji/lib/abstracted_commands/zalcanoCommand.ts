@@ -3,7 +3,6 @@ import { EMonster } from 'oldschooljs';
 
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 function calcPerformance(kcLearned: number, skillPercentage: number) {
@@ -83,5 +82,5 @@ export async function zalcanoCommand(rng: RNGProvider, user: MUser, channelId: s
 
 	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(
 		duration
-	)}. (${await formatTripDuration(user, baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
+	)}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
 }

@@ -2,7 +2,6 @@ import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import { plunderBoosts, plunderRooms } from '@/lib/minions/data/plunder.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function pyramidPlunderCommand(user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
@@ -59,7 +58,7 @@ export async function pyramidPlunderCommand(user: MUser, channelId: string) {
 		completableRooms.length < 2 ? 1 : completableRooms[completableRooms.length - 2].number
 	} and ${completableRooms[completableRooms.length - 1].number}, the trip will take ${formatDuration(
 		tripLength
-	)}, with each cycle taking ${await formatTripDuration(user, plunderTime)}.`;
+	)}, with each cycle taking ${formatDuration(plunderTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

@@ -1,9 +1,8 @@
-import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, itemID } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const fightCavesCost = new Bank({
 	'Prayer potion(4)': 10,
@@ -166,7 +165,7 @@ export async function fightCavesCommand({
 	const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
 	return {
-		content: `**Duration:** ${await formatTripDuration(user, fakeDuration)} (${(fakeDuration / 1000 / 60).toFixed(2)} minutes)
+		content: `**Duration:** ${formatDuration(fakeDuration)} (${(fakeDuration / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}

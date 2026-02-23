@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
@@ -257,7 +257,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 			const bonusTime = i * Time.Minute;
 			if (bonusTime) {
 				totalTime += bonusTime;
-				messages.push(`${await formatTripDuration(user, bonusTime)} bonus max trip length for ${coffin}.`);
+				messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${coffin}.`);
 				break;
 			}
 		}

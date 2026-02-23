@@ -1,4 +1,4 @@
-import { calcPercentOfNum, Emoji, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, Emoji, formatDuration, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
@@ -9,7 +9,6 @@ import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const minimumRangeItems = Items.resolveFullItems([
 	'Amulet of fury',
@@ -492,7 +491,7 @@ export async function infernoStartCommand({
 **KC:** ${zukKC}
 **Attempts:** ${attempts}
 
-**Duration:** ${await formatTripDuration(user, duration.value)}
+**Duration:** ${formatDuration(duration.value)}
 **Boosts:** ${duration.messages.join(', ')} ${
 			duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
 		}

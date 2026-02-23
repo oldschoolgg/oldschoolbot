@@ -7,7 +7,6 @@ import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableM
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
 import findMonster from '@/lib/util/findMonster.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
 const wikiPrefix = 'https://wiki.oldschool.gg/osb';
@@ -192,7 +191,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string> {
 			await user.calcMaxTripLength('MonsterKilling')
 		)}.\nNormal kill time: ${formatDuration(
 			monster.timeToFinish
-		)}. You can kill up to ${maxCanKill} per trip (${await formatTripDuration(user, timeToFinish)} per kill).`
+		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`
 	);
 
 	str.push(
@@ -212,7 +211,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string> {
 	str.push(
 		`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills can take between (${formatDuration(
 			min
-		)}) and (${await formatTripDuration(user, max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
+		)}) and (${formatDuration(max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
 			min * 0.9
 		)}) to (${formatDuration(max * 0.9)}) to finish.\n`
 	);

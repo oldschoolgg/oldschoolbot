@@ -254,7 +254,7 @@ export async function barbAssaultStartCommand({ user, channelId, rng }: OSIntera
 
 	const duration = quantity * waveTime;
 
-	boosts.push(`Each wave takes ${await formatTripDuration(user, waveTime)}`);
+	boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
 
 	let str = `${
 		user.minionName

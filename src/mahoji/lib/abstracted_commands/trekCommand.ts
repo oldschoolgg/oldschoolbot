@@ -8,7 +8,6 @@ import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/t
 import type { AddXpParams } from '@/lib/minions/types.js';
 import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
-import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
 
 export async function trekCommand(user: MUser, channelId: string, difficulty: string, quantity: number | undefined) {
@@ -119,7 +118,7 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 
 	let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will take ${formatDuration(
 		duration
-	)}, with each trek taking ${await formatTripDuration(user, tripTime)}.`;
+	)}, with each trek taking ${formatDuration(tripTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

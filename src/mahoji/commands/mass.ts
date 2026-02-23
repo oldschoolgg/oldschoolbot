@@ -139,7 +139,8 @@ export const massCommand = defineCommand({
 			.map(u => u.usernameOrMention)
 			.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
 			perKillTime
-		)} instead of ${await formatTripDuration(user, monster.timeToFinish)}- the total trip will take ${formatDuration(
+		)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${await formatTripDuration(
+			user,
 			duration
 		)}. ${killsPerHr}`;
 
