@@ -1,5 +1,5 @@
-import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
+import { MathRNG, type RNGProvider } from 'node-rng';
 import { Bank, EItem, Items } from 'oldschooljs';
 
 import type { Fish } from '@/lib/skilling/types.js';

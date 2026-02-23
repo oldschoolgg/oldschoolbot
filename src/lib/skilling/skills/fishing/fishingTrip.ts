@@ -1,9 +1,6 @@
-import { MathRNG, type RNGProvider } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
+import { MathRNG, type RNGProvider } from 'node-rng';
 import { EItem, toKMB } from 'oldschooljs';
-import { calcPercentOfNum } from '@oldschoolgg/toolkit';
-import { EItem } from 'oldschooljs';
-import { match } from 'ts-pattern';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import type { Fish, SkillNameType } from '@/lib/skilling/types.js';
@@ -188,7 +185,14 @@ export function calcFishingTripResult({
 	// since they are duplicates of the same catch tick. Those rolls should only be based on the number of
 	// actual catches performed.
 	if (fish.clueScrollChance) {
-		addSkillingClueToLoot(rng, gearBank, 'fishing', quantity, fish.clueScrollChance, updateBank.itemLootBank);
+		addSkillingClueToLoot(
+			rngProvider,
+			gearBank,
+			'fishing',
+			totalCatches,
+			fish.clueScrollChance,
+			updateBank.itemLootBank
+		);
 	}
 
 	if (fish.petChance) {

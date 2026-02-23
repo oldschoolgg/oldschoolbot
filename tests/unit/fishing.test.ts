@@ -1,5 +1,5 @@
-import { type RNGProvider, SeedableRNG } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
+import { type RNGProvider, SeedableRNG } from 'node-rng';
 import { Bank, EItem, toKMB } from 'oldschooljs';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
