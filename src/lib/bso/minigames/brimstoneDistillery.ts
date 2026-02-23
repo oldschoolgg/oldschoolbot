@@ -232,15 +232,12 @@ export const DistilleryRecipes: DistilleryRecipe[] = [
 function getTripQualityMultiplier(): number {
 	const roll = Math.random();
 
-	if (roll < 0.05) return 0.3;
-
-	if (roll < 0.15) return 0.6;
-
-	if (roll < 0.30) return 1.5;
-
-	if (roll < 0.35) return 2.0;
-
-	return 0.85 + Math.random() * 0.3;
+	if (roll < 0.05) return 0.2;
+	if (roll < 0.15) return 0.5;
+	if (roll < 0.65) return 0.75 + Math.random() * 0.35;
+	if (roll < 0.90) return 1.10 + Math.random() * 0.25;
+	if (roll < 0.98) return 1.35 + Math.random() * 0.20;
+	return 1.55 + Math.random() * 0.15;
 }
 
 function rollDistillationQuality(tripMultiplier: number): number {
@@ -250,12 +247,11 @@ function rollDistillationQuality(tripMultiplier: number): number {
 }
 
 function qualityToPotionOutput(quality: number): number {
-	if (quality >= 99) return 10;
-	if (quality >= 90) return 4;
-	if (quality >= 75) return 3;
-	if (quality >= 55) return 2;
-	if (quality >= 30) return 1;
-	return 0;
+    if (quality >= 95) return 4;
+    if (quality >= 75) return 3;
+    if (quality >= 50) return 2; 
+    if (quality >= 25) return 1;
+    return 0;
 }
 
 export async function brimstoneDistilleryStartCommand({
@@ -304,9 +300,21 @@ export async function brimstoneDistilleryStartCommand({
 	}
 
 	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
-	const rarityUpgradeTier = getTier(islandUpgrades, 'minigame') as 0 | 1 | 2 | 3;
+	const rarityUpgradeTier = getTier(islandUpgrades, 'minigame') as 0 | 1 | 2 | 3 | 4 | 5;
 	if (rarityUpgradeTier > 0) {
 		boosts.push(`${rarityUpgradeTier * 5}% better potion output (Island Minigame Boost Tier ${rarityUpgradeTier})`);
+	}
+
+	const hasFullGraceful = user.hasEquippedOrInBank([
+    'Graceful hood',
+    'Graceful top',
+    'Graceful legs',
+    'Graceful gloves',
+    'Graceful boots',
+    'Graceful cape'
+	]);
+	if (hasFullGraceful) {
+		boosts.push('Full Graceful: bad distillation rolls are reduced');
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('BrimstoneDistillery');
@@ -355,7 +363,8 @@ export async function brimstoneDistilleryStartCommand({
 		type: 'BrimstoneDistillery',
 		minigameID: 'brimstone_distillery',
 		recipe: selectedRecipe.name,
-		rarityUpgradeTier
+		rarityUpgradeTier,
+		hasFullGraceful
 	});
 
 	return `${user.minionName} is distilling ${quantity}x ${selectedRecipe.name} for ${formatDuration(duration)}.
@@ -367,7 +376,7 @@ Boosts: ${boosts.length ? boosts.join(', ') : 'None'}`;
 export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) {
 	const recipe = DistilleryRecipes.find(r => r.name === data.recipe)!;
 	const loot = new Bank();
-	const rarityBonus = [0, 0.05, 0.10, 0.15][data.rarityUpgradeTier ?? 0] ?? 0;
+	const rarityBonus = [0, 0.05, 0.10, 0.15, 0.20, 0.25][data.rarityUpgradeTier ?? 0] ?? 0;
 
 	const tripMultiplier = getTripQualityMultiplier();
 	
@@ -379,14 +388,16 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) 
 
 	for (let i = 0; i < data.quantity; i++) {
 		const quality = rollDistillationQuality(tripMultiplier);
-		distillationQualities.push(quality);
-		
-		const potionOutput = qualityToPotionOutput(quality);
+		const adjustedQuality = data.hasFullGraceful ? Math.max(quality, 20) : quality;
+		distillationQualities.push(adjustedQuality);
+
+		const potionOutput = qualityToPotionOutput(adjustedQuality);
 		
 		if (potionOutput > 0) {
 		const boostedOutput = Math.floor(potionOutput * (1 + rarityBonus));
 		loot.add(recipe.output.id, boostedOutput);
 		totalPotions += boostedOutput;
+		totalQualityPoints += quality;
 		} else {
 			failedDistillations++;
 		}
@@ -417,7 +428,7 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) 
 	if (petDropped) {
 		flavorMessage = `\n\n**As your minion completes the final distillation, a shimmering spirit fox materializes from the brimstone vapors. It circles the distillery gracefully before approaching your minion with knowing eyes.**
 
-*In memory of Sedrukaius, the first to achieve 5b Herblore xp.`;
+	*In memory of Sedrukaius, the first to achieve 5b Herblore xp.*`;
 	} else {
 		flavorMessage = `\n\n${randArrItem(FLAVOR_MESSAGES[tripQuality])}`;
 		
@@ -434,21 +445,19 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) 
 		}
 	}
 
-	if (!petDropped) {
-		const avgQualityStr = avgQuality.toFixed(1);
-		const avgPerDistillation = (totalPotions / data.quantity).toFixed(2);
-		const qualityPointsStr = totalQualityPoints.toFixed(0);
-		
-		flavorMessage += `\n📊 Avg Quality: ${avgQualityStr} | Quality Points: ${qualityPointsStr} | Avg Output: ${avgPerDistillation} | Failed: ${failedDistillations}`;
-		
-		const notableResults: string[] = [];
-		if (jackpotCount > 0) notableResults.push(`Jackpots: ${jackpotCount}`);
-		if (exceptionalCount > 0) notableResults.push(`Exceptional: ${exceptionalCount}`);
-		if (greatCount > 0) notableResults.push(`Great: ${greatCount}`);
-		
-		if (notableResults.length > 0) {
-			flavorMessage += `\n${notableResults.join(' | ')}`;
-		}
+	const avgQualityStr = avgQuality.toFixed(1);
+	const avgPerDistillation = (totalPotions / data.quantity).toFixed(2);
+	const qualityPointsStr = totalQualityPoints.toFixed(0);
+
+	flavorMessage += `\nAvg Quality: ${avgQualityStr} | Quality Points: ${qualityPointsStr} | Avg Output: ${avgPerDistillation} | Failed: ${failedDistillations}`;
+
+	const notableResults: string[] = [];
+	if (jackpotCount > 0) notableResults.push(`Jackpots: ${jackpotCount}`);
+	if (exceptionalCount > 0) notableResults.push(`Exceptional: ${exceptionalCount}`);
+	if (greatCount > 0) notableResults.push(`Great: ${greatCount}`);
+
+	if (notableResults.length > 0) {
+		flavorMessage += `\n${notableResults.join(' | ')}`;
 	}
 
 	return {
@@ -456,6 +465,8 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) 
 		herbloreXP: data.quantity * BASE_HERBLORE_XP * recipe.xpMultiplier,
 		recipe,
 		flavorMessage,
-		petDropped
+		petDropped,
+		totalQualityPoints,
+    	failedDistillations
 	};
 }

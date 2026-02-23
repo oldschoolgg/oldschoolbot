@@ -405,8 +405,27 @@ export const bsoMinigamesCommand = defineCommand({
 		}
 
 		if (options.brimstone_distillery?.stats) {
-			const Score = await user.fetchMinigameScore('brimstone_distillery');
-			return `You have completed ${Score} Brimstone Distillery trips.`;
+			const score = await user.fetchMinigameScore('brimstone_distillery');
+			const stats = (user.user.distillery_stats ?? {}) as Record<string, number>;
+			const total = stats.totalDistillations ?? 0;
+			const failed = stats.totalFailed ?? 0;
+			const potions = stats.totalPotions ?? 0;
+			const successful = total - failed;
+
+			if (total === 0) return `You have completed ${score} Brimstone Distillery trips but no stats have been recorded yet. Complete a trip to start tracking.`;
+
+			const avgPerAttempt = (potions / total).toFixed(2);
+			const avgPerSuccess = successful > 0 ? (potions / successful).toFixed(2) : 'N/A';
+			const failRate = ((failed / total) * 100).toFixed(1);
+
+			return [
+				`## Brimstone Distillery — ${score} trips completed`,
+				`**Total distillations:** ${total.toLocaleString()}`,
+				`**Potions produced:** ${potions.toLocaleString()}`,
+				`**Failed distillations:** ${failed.toLocaleString()} (${failRate}%)`,
+				`**Avg potions per attempt:** ${avgPerAttempt}`,
+				`**Avg potions per success:** ${avgPerSuccess}`
+			].join('\n');
 		}
 
 		if (options.construction_contracts?.start) {
@@ -418,9 +437,25 @@ export const bsoMinigamesCommand = defineCommand({
 		}
 
 		if (options.construction_contracts?.stats) {
-			const Score = await user.fetchMinigameScore('construction_contracts');
-			return `You have completed ${Score} Construction Contracts trips.`;
+			const score = await user.fetchMinigameScore('construction_contracts');
+			const stats = (user.user.construction_stats ?? {}) as Record<string, number>;
+			const total = stats.totalContracts ?? 0;
+			const failed = stats.totalFailed ?? 0;
+			const successful = stats.totalSuccessful ?? 0;
+
+			if (total === 0) return `You have completed ${score} Construction Contracts trips but no stats have been recorded yet. Complete a trip to start tracking.`;
+
+			const failRate = ((failed / total) * 100).toFixed(1);
+			const successRate = ((successful / total) * 100).toFixed(1);
+
+			return [
+				`## Construction Contracts — ${score} trips completed`,
+				`**Total contracts attempted:** ${total.toLocaleString()}`,
+				`**Successful:** ${successful.toLocaleString()} (${successRate}%)`,
+				`**Failed:** ${failed.toLocaleString()} (${failRate}%)`
+			].join('\n');
 		}
+		
 		if (divine_dominion?.check) {
 			return divineDominionCheck(user);
 		}

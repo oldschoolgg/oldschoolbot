@@ -119,14 +119,16 @@ export interface BrimstoneDistilleryTaskOptions extends MinigameActivityTaskOpti
     type: 'BrimstoneDistillery';
     quantity: number;
     recipe: string;
-    rarityUpgradeTier?: 0 | 1 | 2 | 3;
+    rarityUpgradeTier?: 0 | 1 | 2 | 3 | 4 | 5;
+	hasFullGraceful?: boolean;
 }
 
 export interface ConstructionContractsTaskOptions extends MinigameActivityTaskOptions {
     type: 'ConstructionContracts';
     quantity: number;
     recipe: string;
-    rarityUpgradeTier?: 0 | 1 | 2 | 3;
+    rarityUpgradeTier?: 0 | 1 | 2 | 3 | 4 | 5;
+	hasFullGraceful?: boolean;
 }
 
 export interface ArchonOptions extends NewBossOptions {

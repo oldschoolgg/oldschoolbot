@@ -188,11 +188,12 @@ export const ContractRecipes: ContractRecipe[] = [
 
 function getTripQualityMultiplier(): number {
 	const r = Math.random();
-	if (r < 0.05) return 0.3;
-	if (r < 0.15) return 0.6;
-	if (r < 0.30) return 1.4;
-	if (r < 0.35) return 1.8;
-	return 0.85 + Math.random() * 0.3;
+	if (r < 0.05) return 0.2;                             // disastrous: slightly worse floor
+	if (r < 0.15) return 0.5;                             // poor
+	if (r < 0.65) return 0.75 + Math.random() * 0.35;    // average: 0.75–1.10 (dominant band)
+	if (r < 0.90) return 1.10 + Math.random() * 0.25;    // good: 1.10–1.35
+	if (r < 0.98) return 1.35 + Math.random() * 0.20;    // great: 1.35–1.55
+	return 1.55 + Math.random() * 0.15;                   // exceptional: 1.55–1.70 (was 1.8 hard cap)
 }
 
 function rollContractQuality(tripMultiplier: number): number {
@@ -204,7 +205,6 @@ function rollContractQuality(tripMultiplier: number): number {
 function generateRewardsFromPool(totalQualityPoints: number, recipeWeight: number, rarityBonus = 0): Bank {
 	const loot = new Bank();
 
-	// Rare drops — unaffected by rarityBonus intentionally
 	if (recipeWeight >= 2.5) {
 		const elderScrollChance = totalQualityPoints / 1000000;
 		if (Math.random() < elderScrollChance) {
@@ -228,7 +228,6 @@ function generateRewardsFromPool(totalQualityPoints: number, recipeWeight: numbe
 		loot.add('Bamyr', 1);
 	}
 
-	// rarityBonus increases the reward budget
 	const rewardBudget = Math.floor((totalQualityPoints / 100) * (1 + rarityBonus));
 	let remainingBudget = rewardBudget;
 
@@ -320,7 +319,7 @@ export async function constructionContractsStartCommand({
 	}
 
 	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
-	const rarityUpgradeTier = getTier(islandUpgrades, 'minigame') as 0 | 1 | 2 | 3;
+	const rarityUpgradeTier = getTier(islandUpgrades, 'minigame') as 0 | 1 | 2 | 3 | 4 | 5;
 	if (rarityUpgradeTier > 0) {
 		boosts.push(`${rarityUpgradeTier * 5}% better rewards (Island Minigame Boost Tier ${rarityUpgradeTier})`);
 	}
@@ -376,7 +375,7 @@ Boosts: ${boosts.length ? boosts.join(', ') : 'None'}`;
 
 export function calculateContractsResult(data: ConstructionContractsTaskOptions) {
 	const recipe = ContractRecipes.find(r => r.name === data.recipe)!;
-	const rarityBonus = [0, 0.05, 0.10, 0.15][data.rarityUpgradeTier ?? 0] ?? 0;
+	const rarityBonus = [0, 0.05, 0.10, 0.15, 0.20, 0.25][data.rarityUpgradeTier ?? 0] ?? 0;
 
 	const tripMultiplier = getTripQualityMultiplier();
 
@@ -415,7 +414,7 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 	let flavorMessage = '';
 	const client = randArrItem(CONTRACT_CLIENTS);
 
-	if (petDropped) {
+if (petDropped) {
 		flavorMessage = `\n\n**While fulfilling the contracts set before you, your minion notices a small deer following them around. As they complete the final touches, the deer approaches and nuzzles your minion.**
 
 *In memory of Bami, whose spirit lives on through exceptional craftsmanship.*`;
@@ -435,20 +434,19 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 		}
 	}
 
-	if (!petDropped) {
-		const avgQualityStr = avgQuality.toFixed(1);
-		const qualityPointsStr = totalQualityPoints.toFixed(0);
+	// Always append stats regardless of pet drop
+	const avgQualityStr = avgQuality.toFixed(1);
+	const qualityPointsStr = totalQualityPoints.toFixed(0);
 
-		flavorMessage += `\nAvg Quality: ${avgQualityStr} | Quality Points: ${qualityPointsStr} | Successful: ${successfulContracts} | Failed: ${failedContracts}`;
+	flavorMessage += `\nAvg Quality: ${avgQualityStr} | Quality Points: ${qualityPointsStr} | Successful: ${successfulContracts} | Failed: ${failedContracts}`;
 
-		const notableResults: string[] = [];
-		if (legendaryCount > 0) notableResults.push(`Legendary: ${legendaryCount}`);
-		if (exceptionalCount > 0) notableResults.push(`Exceptional: ${exceptionalCount}`);
-		if (greatCount > 0) notableResults.push(`Great: ${greatCount}`);
+	const notableResults: string[] = [];
+	if (legendaryCount > 0) notableResults.push(`Legendary: ${legendaryCount}`);
+	if (exceptionalCount > 0) notableResults.push(`Exceptional: ${exceptionalCount}`);
+	if (greatCount > 0) notableResults.push(`Great: ${greatCount}`);
 
-		if (notableResults.length > 0) {
-			flavorMessage += `\n${notableResults.join(' | ')}`;
-		}
+	if (notableResults.length > 0) {
+		flavorMessage += `\n${notableResults.join(' | ')}`;
 	}
 
 	return {
