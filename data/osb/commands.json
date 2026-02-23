@@ -1,6 +1,6 @@
 {
-	"hash": "9c5b6cac83159df15a45f103c573825e",
-	"date": "2026-02-11T07:07:23.961Z",
+	"hash": "2d266de4b327e4fd9300925727786bd2",
+	"date": "2026-02-23T17:43:03.277Z",
 	"data": [
 		{
 			"name": "activities",
@@ -113,6 +113,11 @@
 			"name": "clues",
 			"desc": "See your OSRS clue scores.",
 			"examples": ["/clues rsn:Magnaboy"],
+			"subOptions": []
+		},
+		{
+			"name": "commit",
+			"desc": "Shows the currently running bot commit.",
 			"subOptions": []
 		},
 		{

@@ -17,6 +17,7 @@ import { collectionLogCommand } from '@/mahoji/commands/cl.js';
 import { claimCommand } from '@/mahoji/commands/claim.js';
 import { clueCommand } from '@/mahoji/commands/clue.js';
 import { cluesCommand } from '@/mahoji/commands/clues.js';
+import { commitCommand } from '@/mahoji/commands/commit.js';
 import { configCommand } from '@/mahoji/commands/config.js';
 import { cookCommand } from '@/mahoji/commands/cook.js';
 import { craftCommand } from '@/mahoji/commands/craft.js';
@@ -96,6 +97,7 @@ export const allCommandsDONTIMPORT: AnyCommand[] = [
 	cookCommand,
 	clueCommand,
 	configCommand,
+	commitCommand,
 	claimCommand,
 	cluesCommand,
 	mCommand,

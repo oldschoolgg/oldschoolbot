@@ -386,13 +386,47 @@ if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 }
 
 export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
+const gitCommitDate = process.env.TEST
+	? new Date('1970-01-01T00:00:00.000Z')
+	: new Date(execSync('git show -s --format=%cI HEAD').toString().trim());
 const gitRemote = 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
+const GIT_REMOTE_BRANCH = `origin/${GIT_BRANCH}`;
+
+function execGitOrNull(command: string): string | null {
+	try {
+		return execSync(command, { stdio: ['ignore', 'pipe', 'ignore'] })
+			.toString()
+			.trim();
+	} catch {
+		return null;
+	}
+}
+
+export function formatGitSyncStatus(behind: number, ahead: number, remoteBranch: string): string {
+	if (behind === 0 && ahead === 0) return `Up to date with \`${remoteBranch}\``;
+	if (behind > 0 && ahead === 0) return `Behind \`${remoteBranch}\` by ${behind} commit${behind === 1 ? '' : 's'}`;
+	if (behind === 0 && ahead > 0) return `Ahead of \`${remoteBranch}\` by ${ahead} commit${ahead === 1 ? '' : 's'}`;
+	return `Diverged from \`${remoteBranch}\` (ahead ${ahead}, behind ${behind})`;
+}
+
+export function getGitSyncStatus() {
+	if (process.env.TEST) return 'Testing build';
+	const behindRaw = execGitOrNull(`git rev-list --count HEAD..${GIT_REMOTE_BRANCH}`);
+	const aheadRaw = execGitOrNull(`git rev-list --count ${GIT_REMOTE_BRANCH}..HEAD`);
+	if (behindRaw === null || aheadRaw === null) return `Sync status unavailable for \`${GIT_REMOTE_BRANCH}\``;
+	const behind = Number.parseInt(behindRaw, 10);
+	const ahead = Number.parseInt(aheadRaw, 10);
+	if (Number.isNaN(behind) || Number.isNaN(ahead)) return `Sync status unavailable for \`${GIT_REMOTE_BRANCH}\``;
+	return formatGitSyncStatus(behind, ahead, GIT_REMOTE_BRANCH);
+}
 
 export const META_CONSTANTS = {
 	GIT_HASH: gitHash,
+	GIT_COMMIT_DATE: gitCommitDate,
 	GITHUB_URL: `https://github.com/${gitRemote}/commit/${gitHash}`,
+	GITHUB_COMMITS_URL: `https://github.com/${gitRemote}/commits/${GIT_BRANCH}`,
 	STARTUP_DATE: new Date(),
 	GIT_DIFF_URL: `https://github.com/${gitRemote}/compare/${gitHash}...${GIT_BRANCH}`,
 	RENDERED_STR: ''

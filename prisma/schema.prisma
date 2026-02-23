@@ -1232,6 +1232,7 @@ enum command_name_enum {
   combatoptions
   compostbin
   config
+  commit
   cook
   cox
   cracker
