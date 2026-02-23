@@ -12,7 +12,7 @@ export const payCommand = defineCommand({
 		{
 			type: 'User',
 			name: 'user',
-			description: 'The user you want to send the GP too.',
+			description: 'The user you want to send the GP to.',
 			required: true
 		},
 		{

@@ -660,7 +660,7 @@ export const leaderboardCommand = defineCommand({
 				{
 					type: 'String',
 					name: 'course',
-					description: 'The particular creature you want to check.',
+					description: 'The particular course you want to check.',
 					required: true,
 					autocomplete: async ({ value }: StringAutoComplete) => {
 						return Agility.Courses.filter(i =>

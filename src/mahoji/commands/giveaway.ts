@@ -39,7 +39,7 @@ function makeGiveawayRepeatButton(giveawayID: number) {
 export const giveawayCommand = defineCommand({
 	name: 'giveaway',
 	flags: ['REQUIRES_LOCK'],
-	description: 'Giveaway items from your ban to other players.',
+	description: 'Giveaway items from your bank to other players.',
 	attributes: {
 		requiresMinion: true,
 		examples: ['/giveaway items:10 trout, 5 coal time:1h']

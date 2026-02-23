@@ -10,7 +10,7 @@ export const fletchCommand = defineCommand({
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		examples: ['/craft name:Onyx necklace']
+		examples: ['/fletch name:Yew longbow']
 	},
 	options: [
 		{

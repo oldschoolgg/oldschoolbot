@@ -49,7 +49,7 @@ export const huntCommand = defineCommand({
 		{
 			type: 'Boolean',
 			name: 'stamina_potions',
-			description: 'Use stam potions for Herbiboar?',
+			description: 'Use stamina potions for Herbiboar?',
 			required: false
 		}
 	],

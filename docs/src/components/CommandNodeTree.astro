@@ -1,0 +1,136 @@
+﻿---
+import CommandNodeChildren from './CommandNodeChildren.astro';
+
+type ChoiceNode = {
+  name: string;
+  value: string | number;
+};
+
+type OptionNode = {
+  name: string;
+  description: string;
+  type: string;
+  required: boolean;
+  choices?: ChoiceNode[];
+  min?: number;
+  max?: number;
+};
+
+type CommandNode = {
+  name: string;
+  path: string;
+  description: string;
+  examples?: string[];
+  options: OptionNode[];
+  subcommands: CommandNode[];
+};
+
+interface Props {
+  node: CommandNode;
+  level?: number;
+}
+
+const { node, level = 2 } = Astro.props;
+const headingLevel = Math.max(2, Math.min(level, 6));
+const headingText = `/${node.path}`;
+const headingId = node.path.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const optionSearchText = node.options.map(option => option.name).join(' ');
+const searchText = `${headingText} ${node.name} ${node.description} ${optionSearchText}`.trim().toLowerCase();
+const isTopLevel = level === 2;
+const optionsCount = node.options.length;
+const subcommandsCount = node.subcommands.length;
+const examplesCount = node.examples?.length ?? 0;
+const hasDetails = optionsCount > 0 || examplesCount > 0 || subcommandsCount > 0;
+const sortedOptions = [...node.options].sort((a, b) => Number(b.required) - Number(a.required));
+const showChoicesColumn = node.options.some(option => (option.choices?.length ?? 0) > 0);
+const showMinColumn = node.options.some(option => option.min != null);
+const showMaxColumn = node.options.some(option => option.max != null);
+---
+
+<section
+  data-command-node
+  data-path={node.path}
+  data-anchor-id={headingId}
+  data-search-text={searchText}
+  data-top-level={isTopLevel ? 'true' : 'false'}
+  data-has-details={hasDetails ? 'true' : 'false'}
+>
+  <div class={`command-card ${isTopLevel ? 'command-card-top' : 'command-card-sub'}`}>
+    <div class="command-header">
+      <div class="command-header-text">
+        {headingLevel === 2 && <h2 id={headingId}>{headingText}</h2>}
+        {headingLevel === 3 && <h3 id={headingId}>{headingText}</h3>}
+        {headingLevel === 4 && <h4 id={headingId}>{headingText}</h4>}
+        {headingLevel === 5 && <h5 id={headingId}>{headingText}</h5>}
+        {headingLevel === 6 && <h6 id={headingId}>{headingText}</h6>}
+        <p class="command-description">{node.description}</p>
+      </div>
+      <div class="command-header-meta">
+        <span class="command-chip">Options: {optionsCount}</span>
+        <span class="command-chip">Subcommands: {subcommandsCount}</span>
+        <span class="command-chip">Examples: {examplesCount}</span>
+        {hasDetails && (
+          <button type="button" class="command-toggle" data-command-toggle aria-expanded="false">
+            Expand
+          </button>
+        )}
+      </div>
+    </div>
+
+    {hasDetails && (
+      <div data-command-details hidden>
+        {node.options.length > 0 && (
+          <>
+            <h3>Options</h3>
+            <table class="command-options-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Required</th>
+                  <th>Description</th>
+                  {showChoicesColumn && <th>Choices</th>}
+                  {showMinColumn && <th>Min</th>}
+                  {showMaxColumn && <th>Max</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {sortedOptions.map(option => (
+                  <tr>
+                    <td><code>{option.name}</code></td>
+                    <td><code>{option.type}</code></td>
+                    <td>{option.required ? 'Yes' : 'No'}</td>
+                    <td>{option.description}</td>
+                    {showChoicesColumn && (
+                      <td>{option.choices?.length ? option.choices.map(choice => `${choice.name} (${choice.value})`).join(', ') : ''}</td>
+                    )}
+                    {showMinColumn && <td>{option.min != null ? option.min : ''}</td>}
+                    {showMaxColumn && <td>{option.max != null ? option.max : ''}</td>}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+
+        {node.examples && node.examples.length > 0 && (
+          <>
+            <h3>Examples</h3>
+            <ul>
+              {node.examples.map(example => (
+                <li><code>{example}</code></li>
+              ))}
+            </ul>
+          </>
+        )}
+
+        {node.subcommands.length > 0 && (
+          <div data-command-children>
+            <h3>Subcommands</h3>
+            <CommandNodeChildren nodes={node.subcommands} level={Math.min(level + 1, 6)} />
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+</section>

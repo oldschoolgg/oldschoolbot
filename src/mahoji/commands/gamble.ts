@@ -35,7 +35,7 @@ export const gambleCommand = defineCommand({
 				{
 					type: 'Boolean',
 					name: 'autoconfirm',
-					description: "Don't ask confirmation message",
+					description: "Don't ask for confirmation",
 					required: false
 				}
 			]
@@ -156,7 +156,7 @@ export const gambleCommand = defineCommand({
 				{
 					type: 'User',
 					name: 'user',
-					description: 'The user to give a random item too.',
+					description: 'The user to give a random item to.',
 					required: true
 				}
 			]

@@ -1,0 +1,31 @@
+---
+import commandsDoc from '../../../content/generated/commands.json';
+
+export function getStaticPaths() {
+	const slugs = new Set<string>(['all']);
+	for (const command of commandsDoc.commands) {
+		const slug = command.name
+			.toLowerCase()
+			.replace(/[^a-z0-9-_]/gu, '-')
+			.replace(/-{2,}/gu, '-')
+			.replace(/(^-|-$)/gu, '');
+		slugs.add(slug);
+	}
+	return Array.from(slugs).map(slug => ({ params: { slug } }));
+}
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Commands Moved</title>
+		<meta http-equiv="refresh" content="0; url=/osb/commands/" />
+		<meta name="robots" content="noindex" />
+		<link rel="canonical" href="/osb/commands/" />
+	</head>
+	<body>
+		<p>This command page has moved.</p>
+		<p><a href="/osb/commands/">Open the unified commands reference.</a></p>
+	</body>
+</html>
