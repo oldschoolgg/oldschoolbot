@@ -299,14 +299,6 @@ model SlayerTask {
   @@map("slayer_tasks")
 }
 
-enum bank_sort_method_enum {
-  value
-  alch
-  name
-  quantity
-  market
-}
-
 model User {
   id                                String             @id @db.VarChar(19)
   last_command_date                 DateTime?          @db.Timestamp(6)
@@ -418,9 +410,6 @@ model User {
   item_contract_streak              Int                @default(0)
   item_contract_bank                Json               @default("{}") @db.Json
   void_staff_charges                Int                @default(0)
-  prismare_ring_charges             Int?               @default(0)
-  island_upgrades                   Json?              @default("{}")
-  island_contributions              Json               @default("{}")
   last_patron_double_time_trigger   DateTime?          @db.Timestamp(6)
   lottery_input                     Json               @default("{}") @db.Json
   gear_template                     Int                @default(0) @db.SmallInt
@@ -464,6 +453,11 @@ model User {
   last_giveaway_ticket_given_date   DateTime?          @db.Timestamp(6)
   cl_array                          Int[]              @default([])
   completed_achievement_diaries     String[]           @default([])
+  island_upgrades                   Json?              @default("{}")
+  prismare_ring_charges             Int?               @default(0)
+  island_contributions              Json               @default("{}")
+  distillery_stats                  Json               @default("{}")
+  construction_stats                Json               @default("{}")
   bingo                             Bingo[]
   bingo_participant                 BingoParticipant[]
   botItemSell                       BotItemSell[]
@@ -594,9 +588,9 @@ model Minigame {
   depths_of_atlantis_cm    Int      @default(0)
   guthixian_cache          Int      @default(0)
   turaels_trials           Int      @default(0)
-  new_user                 NewUser?
   brimstone_distillery     Int      @default(0)
   construction_contracts   Int      @default(0)
+  new_user                 NewUser?
 
   @@index([user_id])
   @@map("minigames")
@@ -1170,12 +1164,43 @@ model ShootingStars {
 }
 
 model ArchonEvent {
-  id           Int      @id @default(autoincrement())
-  user_id      String
-  tier         Int
-  expires_at   DateTime
-  has_been_done Boolean @default(false)
-  created_at   DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  user_id       String
+  tier          Int
+  expires_at    DateTime
+  has_been_done Boolean  @default(false)
+  created_at    DateTime @default(now())
+}
+
+model SystemLogs {
+  id   Int            @id @default(autoincrement())
+  date DateTime       @default(now())
+  type SystemLogsType
+  data Json
+
+  @@map("system_logs")
+}
+
+model UserLog {
+  id         Int         @id @default(autoincrement())
+  user_id    BigInt
+  channel_id BigInt?
+  guild_id   BigInt?
+  message_id BigInt?
+  date       DateTime    @default(now())
+  type       UserLogType
+  data       Json
+
+  @@index([user_id, date])
+  @@map("user_logs")
+}
+
+enum bank_sort_method_enum {
+  value
+  alch
+  name
+  quantity
+  market
 }
 
 enum GearSetupType {
@@ -1216,6 +1241,7 @@ enum XpGainSource {
   PuroPuro
   MahoganyHomes
   AerialFishing
+  GemstoneFishing
   CleaningHerbsWhileFarming
   CamdozaalMining
   CamdozaalSmithing
@@ -1229,7 +1255,6 @@ enum XpGainSource {
   ArchaicMining
   BrimstoneDistillery
   ConstructionContracts
-  GemstoneFishing
 }
 
 enum loot_track_type {
@@ -1731,7 +1756,6 @@ enum command_name_enum {
   ic
   igne
   invention
-  islandupgrade
   itemcontract
   kibble
   kinggoldemar
@@ -1754,6 +1778,7 @@ enum command_name_enum {
   spawnlamp
   testershop
   vasa
+  islandupgrade
 }
 
 enum TableBankType {
@@ -1799,36 +1824,7 @@ enum SystemLogsType {
   ERROR
 }
 
-model SystemLogs {
-  id Int @id @default(autoincrement())
-
-  date DateTime @default(now())
-
-  type SystemLogsType
-  data Json           @db.JsonB
-
-  @@map("system_logs")
-}
-
 enum UserLogType {
   CLICK_BUTTON
   CANCEL_TRIP
-}
-
-model UserLog {
-  id Int @id @default(autoincrement())
-
-  user_id    BigInt
-  channel_id BigInt?
-  guild_id   BigInt?
-  message_id BigInt?
-
-  date DateTime @default(now())
-
-  type UserLogType
-
-  data Json @db.JsonB
-
-  @@index([user_id, date])
-  @@map("user_logs")
 }

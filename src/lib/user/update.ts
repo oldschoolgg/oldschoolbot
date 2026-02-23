@@ -74,6 +74,8 @@ type BSOUserUpdateInput = {
 	selected_tame: number | null;
 	current_item_contract: number | null;
 	island_upgrades: Prisma.JsonObject;
+	distillery_stats: Prisma.JsonObject;
+	construction_stats: Prisma.JsonObject;
 } & Record<'unlocked_blueprints' | 'unlocked_gear_templates' | 'disabled_inventions', PrismaArrayUpdateInput<number>> &
 	Record<
 		| 'item_contract_streak'
