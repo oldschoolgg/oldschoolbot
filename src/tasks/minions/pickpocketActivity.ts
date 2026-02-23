@@ -59,7 +59,9 @@ export const pickpocketTask: MinionTask = {
 		const loot = new Bank();
 
 		const petDropRate =
-			obj.type === 'chest' || !obj.petChance ? null : skillingPetDropRate(user, 'thieving', obj.petChance).petDropRate;
+			obj.type === 'chest' || !obj.petChance
+				? null
+				: skillingPetDropRate(user, 'thieving', obj.petChance).petDropRate;
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
