@@ -23,6 +23,7 @@ import { implings } from '@/lib/implings.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';
 import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
 import type { Task } from './leaguesUtils.js';
+import { type UpgradeCategory } from '@/lib/bso/commands/islandUpgrades.js';
 
 export const masterTasks: Task[] = [
 	{
@@ -1153,5 +1154,35 @@ export const masterTasks: Task[] = [
 		has: async ({ actualClues }) => {
 			return actualClues.amount('Clue scroll (elder)') >= 200;
 		}
-	}
+	},
+	{
+		id: 4159,
+		name: 'Create an Empyrean great armor set',
+		has: async ({ cl }) => {
+			return cl.has('Empyrean greathelm');
+		}
+	},
+	{
+		id: 4160,
+		name: 'Complete the Brimstone Distillery 20 times',
+		has: async ({ activityCounts }) => {
+			return (activityCounts.BrimstoneDistillery ?? 0) >= 20;
+		}
+	},
+	{
+		id: 4161,
+		name: 'Complete Construction Contracts 20 times',
+		has: async ({ activityCounts }) => {
+			return (activityCounts.ConstructionContracts ?? 0) >= 20;
+		}
+	},
+	{
+    id: 4162,
+    name: 'Max out all Verdant Island Camp upgrades',
+    has: async ({ user }) => {
+        const raw = (user.user.island_upgrades ?? {}) as Record<string, unknown>;
+        const categories: UpgradeCategory[] = ['boss', 'megaboss', 'minigame', 'gathering', 'prismare'];
+        return categories.every(cat => (raw[cat] ?? 0) === 5);
+    }
+}
 ];

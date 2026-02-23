@@ -72,7 +72,9 @@ export const fistOfGuthixCL = resolveItems([
 
 export const baxtorianBathhousesCL = resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling']);
 
-export const brimstonedistilleryCL = resolveItems(['Diluted brimstone']);
+export const brimstonedistilleryCL = resolveItems(['Diluted brimstone', 'Sedryn']);
+
+export const concontractsCL = resolveItems(['Bamyr']);
 
 export const monkeyRumbleCL = resolveItems([
 	'Monkey egg',
