@@ -8,7 +8,8 @@ const RogueTable: LootTable = new LootTable()
 	// Other
 	.add('Coins', [25, 40], 1 / 1.185)
 	.add('Air rune', 8, 1 / 16)
-	.add('Jug of wine', 1, 1 / 21.33);
+	.add('Jug of wine', 1, 1 / 21.33)
+	.add('Lockpick', 1, 1 / 25.6);
 
 export const Rogue: SimpleMonster = new SimpleMonster({
 	id: 526,

@@ -24,6 +24,20 @@ describe('Steal Command', async () => {
 		expect(res).toContain('is now going to steal from a 10 coin chest 5x times');
 	});
 
+	it('should require prayer level for Rogues Castle chest', async () => {
+		const user = await createTestUser();
+		await user.update({ skills_thieving: convertLVLtoXP(99), skills_prayer: convertLVLtoXP(1) });
+		const res = await user.runCommand('steal', { name: "Rogues' Castle chest", quantity: 1 });
+		expect(res).toContain('needs 43 Prayer to steal from a Rogues\' Castle chest.');
+	});
+
+	it('should require potions for Rogues Castle chest', async () => {
+		const user = await createTestUser();
+		await user.update({ skills_thieving: convertLVLtoXP(99), skills_prayer: convertLVLtoXP(99) });
+		const res = await user.runCommand('steal', { name: "Rogues' Castle chest", quantity: 1 });
+		expect(res).toContain('to keep Protect from Melee active while stealing from Rogues\' Castle chest.');
+	});
+
 	it('should allow pickpocketing NPCs', async () => {
 		const user = await createTestUser(new Bank({ Trout: 50 }));
 		await user.update({ skills_thieving: convertLVLtoXP(99) });

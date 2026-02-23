@@ -1,6 +1,5 @@
 import { bold } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { randInt } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import { quests } from '@/lib/minions/data/quests.js';
@@ -176,7 +175,7 @@ export const stealCommand = defineCommand({
 			if (isRoguesCastleChest) {
 				const hasMediumDiary = user.hasDiary('wilderness.medium');
 				const hasHardDiary = user.hasDiary('wilderness.hard');
-				const hourlyPotionRate = randInt(5, 10);
+				const hourlyPotionRate = rng.randInt(5, 10);
 				const potionsRequired = Math.max(1, Math.ceil((duration / Time.Hour) * hourlyPotionRate));
 				const blightedRestoreName = 'Blighted super restore(4)';
 				const prayerPotionName = 'Prayer potion(4)';

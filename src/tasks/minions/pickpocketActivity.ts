@@ -1,5 +1,4 @@
 import { Events } from '@oldschoolgg/toolkit';
-import { percentChance, randInt, roll } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -59,7 +58,8 @@ export const pickpocketTask: MinionTask = {
 
 		const loot = new Bank();
 
-		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance ?? 0);
+		const petDropRate =
+			obj.type === 'chest' || !obj.petChance ? null : skillingPetDropRate(user, 'thieving', obj.petChance).petDropRate;
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
@@ -73,7 +73,7 @@ export const pickpocketTask: MinionTask = {
 					lootItems.remove(id);
 				}
 
-				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
+				if (rng.randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
 					loot.add(doubledLoot);
@@ -81,7 +81,7 @@ export const pickpocketTask: MinionTask = {
 					loot.add(lootItems);
 				}
 
-				if (rng.roll(petDropRate)) {
+				if (petDropRate && rng.roll(petDropRate)) {
 					loot.add('Rocky');
 				}
 			}
@@ -91,7 +91,7 @@ export const pickpocketTask: MinionTask = {
 					obj.table.roll(1, { targetBank: loot });
 				}
 
-				if (rng.roll(petDropRate)) {
+				if (petDropRate && rng.roll(petDropRate)) {
 					loot.add('Rocky');
 				}
 			}
@@ -104,23 +104,20 @@ export const pickpocketTask: MinionTask = {
 			const clueRolls = isRoguesCastleChest && user.owns('Ring of wealth (i)') ? 2 : 1;
 
 			for (let i = 0; i < successfulQuantity; i++) {
-				if (percentChance(baseLootChance)) {
+				if (rng.percentChance(baseLootChance)) {
 					obj.table.roll(1, { targetBank: loot });
 				}
 
-				if (extraLootChance > 0 && percentChance(extraLootChance)) {
+				if (extraLootChance > 0 && rng.percentChance(extraLootChance)) {
 					obj.table.roll(1, { targetBank: loot });
 				}
 
 				if (isRoguesCastleChest) {
 					for (let rollIndex = 0; rollIndex < clueRolls; rollIndex++) {
-						if (roll(99)) {
+						if (rng.roll(99)) {
 							loot.add('Clue scroll (hard)');
 						}
 					}
-				}
-				if (roll(petDropRate)) {
-					loot.add('Rocky');
 				}
 			}
 		}
@@ -130,7 +127,7 @@ export const pickpocketTask: MinionTask = {
 		let pkedLootPercent = 0;
 
 		if (isRoguesCastleChest && loot.length > 0) {
-			pkedLootPercent = randInt(5, 15);
+			pkedLootPercent = rng.randInt(5, 15);
 			for (const [item, quantity] of loot.items()) {
 				if (item.id === hardClueScrollId) {
 					continue;
