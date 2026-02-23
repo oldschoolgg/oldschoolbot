@@ -1,7 +1,6 @@
-import './base.js';
-
 import { writeFileSync } from 'node:fs';
 import { calcPerHour, Time } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, convertBankToPerHourStats, EItem, Items } from 'oldschooljs';
 import { omit } from 'remeda';
 
@@ -147,6 +146,7 @@ async function main() {
 					slayerUnlocks: [],
 					favoriteFood: [EItem.SHARK],
 					bitfield: [],
+					rng: MathRNG,
 					currentPeak: { peakTier: PeakTier.Medium, startTime: Date.now(), finishTime: Date.now() + 1000 }
 				});
 				if (typeof commandResult === 'string') return null;
@@ -186,7 +186,8 @@ async function main() {
 					attackStyles,
 					duration: commandResult.duration,
 					bitfield,
-					chinning
+					chinning,
+					rng: MathRNG
 				});
 				const end = performance.now();
 

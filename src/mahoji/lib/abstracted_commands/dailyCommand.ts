@@ -1,4 +1,3 @@
-import { MathRNG, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, isWeekend, uniqueArr } from '@oldschoolgg/toolkit';
 
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
@@ -23,7 +22,7 @@ export async function isUsersDailyReady(
 	return { isReady: true };
 }
 
-async function reward(user: MUser, triviaCorrect: boolean): Promise<MessageBuilderClass> {
+async function reward(rng: RNGProvider, user: MUser, triviaCorrect: boolean): Promise<MessageBuilderClass> {
 	const member = await globalClient.fetchMainServerMember(user.id);
 
 	const loot = dailyRoll(1, triviaCorrect);
@@ -46,13 +45,13 @@ async function reward(user: MUser, triviaCorrect: boolean): Promise<MessageBuild
 		coinsToGive /= 1.5;
 	}
 
-	if (roll(73)) {
+	if (rng.roll(73)) {
 		coinsToGive = Math.floor(coinsToGive * 1.73);
 		bonuses.push(Emoji.Joy);
 	}
 
-	if (roll(5000)) {
-		if (roll(2)) {
+	if (rng.roll(5000)) {
+		if (rng.roll(2)) {
 			bonuses.push(Emoji.Bpaptu);
 		} else {
 			coinsToGive += 1_000_000_000;
@@ -77,8 +76,8 @@ async function reward(user: MUser, triviaCorrect: boolean): Promise<MessageBuild
 
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
-	if (triviaCorrect && roll(13)) {
-		const pet = MathRNG.pick(pets);
+	if (triviaCorrect && rng.roll(13)) {
+		const pet = rng.pick(pets);
 		await user.giveBotMessagePet(pet);
 		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 	}
@@ -100,7 +99,7 @@ async function reward(user: MUser, triviaCorrect: boolean): Promise<MessageBuild
 	});
 }
 
-export async function dailyCommand(interaction: MInteraction, user: MUser): CommandResponse {
+export async function dailyCommand(rng: RNGProvider, interaction: MInteraction, user: MUser): CommandResponse {
 	const check = await isUsersDailyReady(user);
 	if (!check.isReady) {
 		return `**${Emoji.Diango} Diango says...** You can claim your next daily in ${formatDuration(
@@ -113,13 +112,13 @@ export async function dailyCommand(interaction: MInteraction, user: MUser): Comm
 	});
 
 	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
-	const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
+	const allAnswers = uniqueArr(rng.shuffle([question, ...fakeQuestions].map(q => q.answers[0])));
 
 	const choice = await globalClient.pickStringWithButtons({
 		interaction,
 		options: allAnswers.map(answer => ({ label: answer, id: answer })),
 		content: `**${Emoji.Diango} Diango asks ${user.badgedUsername}...** ${question.question}`
 	});
-	if (!choice) return reward(user, false);
-	return reward(user, question.answers.includes(choice.choice.label!));
+	if (!choice) return reward(rng, user, false);
+	return reward(rng, user, question.answers.includes(choice.choice.label!));
 }

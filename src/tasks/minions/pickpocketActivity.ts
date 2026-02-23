@@ -1,4 +1,3 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -8,13 +7,15 @@ import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
 import { rogueOutfitPercentBonus } from '@/lib/skilling/skills/thieving/thievingUtils.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
+import { percentChance, randInt, roll } from 'node-rng';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
 	npc: Stealable,
 	quantity: number,
 	hasThievingCape: boolean,
-	hasDiary: boolean
+	hasDiary: boolean,
+	rng: { percentChance: (percent: number) => boolean }
 ): [number, number, number, number] {
 	let xpReceived = 0;
 
@@ -29,7 +30,7 @@ export function calcLootXPPickpocketing(
 	const chanceOfSuccess = (npc.slope! * currentLevel + npc.intercept!) * diary * thievCape;
 
 	for (let i = 0; i < quantity; i++) {
-		if (!percentChance(chanceOfSuccess)) {
+		if (!rng.percentChance(chanceOfSuccess)) {
 			// The minion has just been stunned, and cant pickpocket for a few ticks, therefore
 			// they also miss out on the next few pickpockets depending on stun time. And take damage
 			damageTaken += npc.stunDamage!;
@@ -46,7 +47,7 @@ export function calcLootXPPickpocketing(
 
 export const pickpocketTask: MinionTask = {
 	type: 'Pickpocket',
-	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { monsterID, quantity, successfulQuantity, channelId, xpReceived, duration } = data;
 
 		const obj = Thieving.stealables.find(_obj => _obj.id === monsterID)!;
@@ -80,17 +81,17 @@ export const pickpocketTask: MinionTask = {
 					loot.add(lootItems);
 				}
 
-				if (roll(petDropRate)) {
+				if (rng.roll(petDropRate)) {
 					loot.add('Rocky');
 				}
 			}
 		} else if (obj.type === 'stall') {
 			for (let i = 0; i < successfulQuantity; i++) {
-				if (percentChance(obj.lootPercent!)) {
+				if (rng.percentChance(obj.lootPercent!)) {
 					obj.table.roll(1, { targetBank: loot });
 				}
 
-				if (roll(petDropRate)) {
+				if (rng.roll(petDropRate)) {
 					loot.add('Rocky');
 				}
 			}
@@ -152,16 +153,13 @@ export const pickpocketTask: MinionTask = {
 		});
 		const xpRes = await user.addXP({ skillName: 'thieving', amount: xpReceived, duration });
 
-		let str = `${user}, ${user.minionName} finished ${
-			obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
-		} from ${obj.name} ${successfulQuantity}x times, due to failures you missed out on ${
-			quantity - successfulQuantity
-		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
+			} from ${obj.name} ${successfulQuantity}x times, due to failures you missed out on ${quantity - successfulQuantity
+			}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
 
 		if (obj.type === 'stall') {
-			str += `\n${
-				100 - obj.lootPercent!
-			}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`;
+			str += `\n${100 - obj.lootPercent!
+				}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`;
 		}
 
 		if (rogueOutfitBoostActivated) {
@@ -175,10 +173,8 @@ export const pickpocketTask: MinionTask = {
 		if (loot.amount('Rocky') > 0) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
-					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
+				`**${user.badgedUsername}'s** minion, ${user.minionName
+				}, just received a **Rocky** <:Rocky:324127378647285771> while ${obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
 				} from ${obj.name}, their Thieving level is ${currentLevel}!`
 			);
 		}

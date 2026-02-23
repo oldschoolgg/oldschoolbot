@@ -1,5 +1,4 @@
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
-import { randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
@@ -627,7 +626,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					]
 				}
 			],
-			run: async ({ options, user, interaction }) => {
+			run: async ({ options, user, interaction, rng }) => {
 				if (globalConfig.isProduction) {
 					Logging.logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
@@ -671,28 +670,28 @@ export const testPotatoCommand = globalConfig.isProduction
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 1`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 2`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 3`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 4`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							})
 						]

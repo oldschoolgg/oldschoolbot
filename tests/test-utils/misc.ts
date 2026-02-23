@@ -1,6 +1,6 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { randomSnowflake } from '@oldschoolgg/util';
+import type { RNGProvider } from 'node-rng';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 const idsUsed = new Set<string>();

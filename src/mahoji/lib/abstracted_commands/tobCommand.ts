@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { calcWhatPercent, Emoji, formatDuration } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, TOBRooms } from 'oldschooljs';
 
@@ -242,7 +241,7 @@ async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, 
 	return null;
 }
 
-export async function tobStatsCommand(user: MUser) {
+export async function tobStatsCommand({ user, rng }: OSInteraction) {
 	const [minigameScores, { tob_attempts: attempts, tob_hard_attempts: hardAttempts }] = await Promise.all([
 		user.fetchMinigames(),
 		user.fetchStats()
@@ -250,8 +249,8 @@ export async function tobStatsCommand(user: MUser) {
 	const hardKC = minigameScores.tob_hard;
 	const kc = minigameScores.tob;
 	const gear = calculateTOBUserGearPercents(user);
-	const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false, gear);
-	const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true, gear);
+	const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false, gear, rng);
+	const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true, gear, rng);
 	let totalUniques = 0;
 	const { cl } = user;
 	for (const item of baseTOBUniques) {
@@ -276,6 +275,7 @@ export async function tobStatsCommand(user: MUser) {
 }
 
 export async function tobStartCommand(
+	rng: RNGProvider,
 	interaction: MInteraction,
 	user: MUser,
 	channelId: string,
@@ -375,7 +375,8 @@ export async function tobStartCommand(
 		} = createTOBRaid({
 			team,
 			hardMode: isHardMode,
-			baseDuration
+			baseDuration,
+			rng
 		});
 		const wipedRoom = _wipedRoom ? TOBRooms.indexOf(TOBRooms.find(room => _wipedRoom.name === room.name)!) : null;
 		wipedRooms.push(wipedRoom);
@@ -417,7 +418,7 @@ export async function tobStartCommand(
 			} else if (u.gear.melee.hasEquipped('Scythe of Vitur')) {
 				let usedCharges = 0;
 				for (let x = 0; x < qty; x++) {
-					usedCharges += randomVariation(0.8 * SCYTHE_CHARGES_PER_RAID, 20);
+					usedCharges += rng.randomVariation(0.8 * SCYTHE_CHARGES_PER_RAID, 20);
 				}
 				await degradeItem({
 					item: Items.getOrThrow('Scythe of Vitur'),

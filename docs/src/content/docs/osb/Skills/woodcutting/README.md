@@ -26,7 +26,7 @@ To use the 1.5 tick method you must chop the trees planted in Farming patches. T
 
 ## Lumberjack Outfit
 
-The Lumberjack outfit can be obtained from the [Temple Trekking](https://wiki.oldschool.gg/minigames/temple-trekking) minigame. When equipped in the skilling setup, it provides the following boosts to woodcutting XP:
+The Lumberjack outfit can be obtained from the [Temple Trekking](https://wiki.oldschool.gg/osb/minigames/temple-trekking/#_top) minigame. When equipped in the skilling setup, it provides the following boosts to woodcutting XP:
 
 - 0.4% - Lumberjack hat
 - 0.8% - Lumberjack top
