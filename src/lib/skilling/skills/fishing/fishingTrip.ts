@@ -1,4 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit';
+import { MathRNG, type RNGProvider } from 'node-rng';
 import { EItem, toKMB } from 'oldschooljs';
 import {MathRNG} from "node-rng";
 
@@ -42,7 +43,6 @@ export function calcFishingTripResult({
 	sharkLureQuantity?: SharkLureQuantity;
 	extraCatchRolls?: number[];
 }) {
-	const rngProvider = rng;
 
 	const updateBank = new UpdateBank();
 	const messages: string[] = [];
@@ -116,7 +116,7 @@ export function calcFishingTripResult({
 						quantity,
 						cookingLevel: gearBank.skillsAsLevels.cooking,
 						xpPerSuccess: xpPerCatch,
-						rng: rngProvider
+						rng
 					});
 				}
 
@@ -126,7 +126,7 @@ export function calcFishingTripResult({
 
 		if (subfish.tertiary) {
 			for (let j = 0; j < totalRollsForSubfish; j++) {
-				if (rngProvider.roll(subfish.tertiary.chance)) {
+				if (rng.roll(subfish.tertiary.chance)) {
 					updateBank.itemLootBank.add(subfish.tertiary.id);
 				}
 			}
@@ -168,7 +168,7 @@ export function calcFishingTripResult({
 		const catchCount = updateBank.itemLootBank.amount(EItem.MINNOW);
 		let totalMinnows = 0;
 		for (let i = 0; i < catchCount; i++) {
-			totalMinnows += rngProvider.randInt(min, max);
+			totalMinnows += rng.randInt(min, max);
 		}
 		updateBank.itemLootBank.set(EItem.MINNOW, totalMinnows);
 	} else if (fish.name === 'Karambwanji') {
@@ -185,7 +185,14 @@ export function calcFishingTripResult({
 	// since they are duplicates of the same catch tick. Those rolls should only be based on the number of
 	// actual catches performed.
 	if (fish.clueScrollChance) {
-		addSkillingClueToLoot(rng, gearBank, 'fishing', totalCatches, fish.clueScrollChance, updateBank.itemLootBank);
+		addSkillingClueToLoot(
+			rng,
+			gearBank,
+			'fishing',
+			totalCatches,
+			fish.clueScrollChance,
+			updateBank.itemLootBank
+		);
 	}
 
 	if (fish.petChance) {
@@ -195,7 +202,7 @@ export function calcFishingTripResult({
 		if (petChanceToUse) {
 			const { petDropRate } = skillingPetDropRate(gearBank, 'fishing', petChanceToUse);
 			for (let i = 0; i < totalCatches; i++) {
-				if (rngProvider.roll(petDropRate)) {
+				if (rng.roll(petDropRate)) {
 					updateBank.itemLootBank.add('Heron');
 				}
 			}

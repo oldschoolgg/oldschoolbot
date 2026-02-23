@@ -1,5 +1,5 @@
 import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
-import { MathRNG } from 'node-rng';
+import { SeedableRNG } from 'node-rng';
 import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 

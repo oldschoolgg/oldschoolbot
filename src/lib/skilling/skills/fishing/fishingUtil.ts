@@ -1,5 +1,5 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
 import { round } from '@oldschoolgg/toolkit';
+import type { RNGProvider } from 'node-rng';
 import { EItem } from 'oldschooljs';
 
 import type { GearBank } from '@/lib/structures/GearBank.js';
