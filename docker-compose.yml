@@ -1,8 +1,12 @@
 services:
   db:
     image: postgres:16-alpine
-    command: -c 'max_connections=1000'
-    restart: always
+    command: >
+      -c max_connections=1000
+      -c fsync=off
+      -c synchronous_commit=off
+      -c full_page_writes=off
+      -c random_page_cost=1.1
     container_name: osb_database
     ports:
       - "5435:5435"
@@ -10,26 +14,42 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGPORT: 5435
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -p 5435"]
+      interval: 2s
+      timeout: 3s
+      retries: 5
 
   redis:
     image: redis:7-alpine
     container_name: osb_redis
-    restart: always
     ports:
       - "6379:6379"
-    command: ["redis-server", "--appendonly", "no"]
+    command: ["redis-server", "--appendonly", "no", "--save", ""]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 5
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
       target: build-run
+      cache_from:
+        - type=gha
+      cache_to:
+        - type=gha,mode=max
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       ROBOCHIMP_DATABASE_URL: postgresql://postgres:postgres@db:5435/robochimp_integration_test?connection_limit=10&pool_timeout=0&schema=public
       DATABASE_URL: postgresql://postgres:postgres@db:5435/osb_integration_test?connection_limit=10&pool_timeout=0&schema=public
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      WAIT_HOSTS: db:5435,redis:6379

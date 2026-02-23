@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4
-      - run: corepack enable && corepack install && corepack prepare pnpm@10.17.0 --activate
+      - run: corepack enable && corepack install && corepack prepare pnpm@10.30.1 --activate
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v4
         with:
