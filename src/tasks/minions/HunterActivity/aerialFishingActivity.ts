@@ -30,8 +30,10 @@ export const aerialFishingTask: MinionTask = {
 		const maxRoll = Math.ceil((currentFishLevel * 2 + currentHuntLevel) / 3);
 		const loot = new Bank();
 
+		const molchPearlsChance = Math.ceil(100 - ((maxRoll - 40) * 25) / 59);
+
 		for (let i = 0; i < quantity; i++) {
-			if (rng.roll(100 - ((maxRoll - 40) * 25) / 59)) {
+			if (rng.roll(molchPearlsChance)) {
 				molchPearls++;
 			}
 			const currentRoll = rng.randInt(0, maxRoll);
@@ -108,10 +110,18 @@ export const aerialFishingTask: MinionTask = {
 			duration: data.duration,
 			source: 'AerialFishing'
 		});
-		await user.incrementCreatureScore(bluegill.id, bluegillCaught);
-		await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
-		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
-		await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
+		if (bluegillCaught > 0) {
+			await user.incrementCreatureScore(bluegill.id, bluegillCaught);
+		}
+		if (commonTenchCaught > 0) {
+			await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
+		}
+		if (mottledEelCaught > 0) {
+			await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
+		}
+		if (greaterSirenCaught > 0) {
+			await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
+		}
 
 		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
 		if (xpBonusPercent > 0) {
@@ -126,7 +136,7 @@ export const aerialFishingTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = 636_833;
-		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(rng, user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;

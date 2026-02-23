@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
@@ -11,8 +10,10 @@ import { formatTripDuration } from '@/lib/util/minionUtils.js';
 export async function motherlodeMineCommand({
 	user,
 	channelId,
-	quantity
+	quantity,
+	rng
 }: {
+	rng: RNGProvider;
 	user: MUser;
 	channelId: string;
 	quantity?: number;
@@ -74,11 +75,12 @@ export async function motherlodeMineCommand({
 		goldSilverBoost,
 		miningLvl: miningLevel,
 		maxTripLength: await user.calcMaxTripLength('MotherlodeMining'),
-		hasKaramjaMedium: false
+		hasKaramjaMedium: false,
+		rng
 	});
 
-	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMin = quantity ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMax = quantity ? rng.randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 	await ActivityManager.startTrip<MotherlodeMiningActivityTaskOptions>({
 		userID: user.id,
@@ -90,13 +92,11 @@ export async function motherlodeMineCommand({
 		fakeDurationMin: Math.floor(fakeDurationMin),
 		type: 'MotherlodeMining'
 	});
-	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${
-		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
-	}, it'll take ${
-		quantity
+	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
+		}, it'll take ${quantity
 			? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
 			: await formatTripDuration(user, duration)
-	} to finish.`;
+		} to finish.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

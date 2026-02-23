@@ -16,8 +16,8 @@ export function isAtleastThisOld(date: Date | number, expectedAgeInMS: number): 
 }
 
 export function isWeekend(): boolean {
-	const currentDate = new Date(Date.now() - Time.Hour * 6);
-	return [6, 0].includes(currentDate.getDay());
+	const currentDate = new Date();
+	return [6, 0].includes(currentDate.getUTCDay());
 }
 
 export function calcPerHour(value: number, duration: number): number {

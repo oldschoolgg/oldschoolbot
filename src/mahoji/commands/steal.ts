@@ -1,5 +1,4 @@
 import { bold } from '@oldschoolgg/discord';
-import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 
 import { quests } from '@/lib/minions/data/quests.js';
@@ -43,7 +42,7 @@ export const stealCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
 				stringMatches(obj.name, options.name) ||
@@ -135,7 +134,8 @@ export const stealCommand = defineCommand({
 				stealable,
 				quantity,
 				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
-				hasArdyHard
+				hasArdyHard,
+				rng
 			);
 
 			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)'])) {
@@ -160,7 +160,7 @@ export const stealCommand = defineCommand({
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random
-			successfulQuantity = Math.floor((quantity * randInt(95, 100)) / 100);
+			successfulQuantity = Math.floor((quantity * rng.randInt(95, 100)) / 100);
 			xpReceived = successfulQuantity * stealable.xp;
 		}
 

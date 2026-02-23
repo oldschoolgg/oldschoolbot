@@ -1,4 +1,5 @@
 import { SimpleTable } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank } from 'oldschooljs';
 
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
@@ -52,7 +53,8 @@ export const simulatedKillables: SimulatedKillable[] = [
 							mining: 99,
 							farming: 99
 						},
-						firemakingXP: 1
+						firemakingXP: 1,
+						rng: MathRNG
 					})
 				);
 			}

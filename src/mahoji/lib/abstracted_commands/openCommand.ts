@@ -23,7 +23,8 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 	});
 
 export async function abstractedOpenUntilCommand(
-	interaction: MInteraction,
+	rng: RNGProvider,
+	interaction: OSInteraction,
 	user: MUser,
 	name: string,
 	openUntilItem: string,
@@ -73,7 +74,7 @@ export async function abstractedOpenUntilCommand(
 	const max = Math.min(10000, amountOfThisOpenableOwned);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
-		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
+		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user, rng });
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		targetCount = loot.amount(openUntil.id);
@@ -158,7 +159,8 @@ ${messages.join(', ')}`.trim()
 }
 
 export async function abstractedOpenCommand(
-	interaction: MInteraction | null,
+	rng: RNGProvider,
+	interaction: OSInteraction | null,
 	user: MUser,
 	_names: string[],
 	_quantity: number | 'auto' = 1
@@ -196,7 +198,7 @@ export async function abstractedOpenCommand(
 		const quantity = typeof _quantity === 'string' ? user.bank.amount(openedItem.id) : _quantity;
 		cost.add(openedItem.id, quantity);
 		kcBank.add(openedItem.id, quantity);
-		const thisLoot = await getOpenableLoot({ openable, quantity, user });
+		const thisLoot = await getOpenableLoot({ openable, quantity, user, rng });
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);
 	}

@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
@@ -111,7 +110,7 @@ export const chopCommand = defineCommand({
 			choices: Woodcutting.twitchersGloves.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
-	run: async ({ options, user, channelId }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -181,14 +180,12 @@ export const chopCommand = defineCommand({
 			if (user.hasEquippedOrInBank('Forestry basket') || user.hasEquippedOrInBank('Log basket')) {
 				if (log.name === 'Redwood Logs') {
 					boosts.push(
-						`+10 trip minutes for having a ${
-							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						`+10 trip minutes for having a ${user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
 						}`
 					);
 				} else {
 					boosts.push(
-						`+5 trip minutes for having a ${
-							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						`+5 trip minutes for having a ${user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
 						}`
 					);
 				}
@@ -208,13 +205,14 @@ export const chopCommand = defineCommand({
 			powerchopping: powerchop,
 			forestry: forestry_events,
 			woodcuttingLvl: wcLvl,
-			maxTripLength
+			maxTripLength,
+			rng
 		});
 
 		const duration = timeToChop;
 
-		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+		const fakeDurationMin = quantity ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+		const fakeDurationMax = quantity ? rng.randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 		await ActivityManager.startTrip<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
@@ -231,13 +229,11 @@ export const chopCommand = defineCommand({
 			type: 'Woodcutting'
 		});
 
-		let response = `${user.minionName} is now chopping ${log.name} until your minion ${
-			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
-		}, it'll take ${
-			quantity
+		let response = `${user.minionName} is now chopping ${log.name} until your minion ${quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
+			}, it'll take ${quantity
 				? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
 				: await formatTripDuration(user, duration)
-		} to finish.`;
+			} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

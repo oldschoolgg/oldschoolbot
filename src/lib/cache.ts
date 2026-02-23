@@ -80,3 +80,5 @@ export function userIsBusy(userID: string): boolean {
 }
 
 export const MUTEX_CACHE = new Map<string, Mutex>();
+
+export const DISCORD_USER_IDS_INSERTED_CACHE = new Set<string>();

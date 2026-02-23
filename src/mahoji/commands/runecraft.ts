@@ -94,7 +94,8 @@ export const runecraftCommand = defineCommand({
 			return tiaraRunecraftCommand({ user, channelId, name: rune, quantity });
 		}
 
-		if (rune.includes('ourania')) {
+		const isZMI = rune.includes('ourania') || rune.includes('zmi');
+		if (isZMI) {
 			return ouraniaAltarStartCommand({ user, channelId, quantity, usestams, daeyalt_essence });
 		}
 

@@ -1,4 +1,3 @@
-import { randFloat } from '@oldschoolgg/rng';
 import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -6,8 +5,7 @@ import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function driftNetCommand(
-	channelId: string,
-	user: MUser,
+	{ user, rng, channelId }: OSInteraction,
 	minutes: number | undefined,
 	noStams: boolean | undefined
 ) {
@@ -46,7 +44,7 @@ export async function driftNetCommand(
 	const boosts = [];
 	const itemsToRemove = new Bank();
 	// Adjust numbers to end up with average 119 drift nets
-	let oneDriftNetTime = randFloat(78, 106) * Time.Second;
+	let oneDriftNetTime = rng.randFloat(78, 106) * Time.Second;
 
 	if (!user.hasEquipped('Flippers')) {
 		boosts.push('-50% boost for not wearing Flippers');

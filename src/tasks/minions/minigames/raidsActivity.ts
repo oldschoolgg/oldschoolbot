@@ -1,4 +1,3 @@
-import { randomVariation, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, ChambersOfXeric, resolveItems } from 'oldschooljs';
 
@@ -66,7 +65,7 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 
 export const raidsTask: MinionTask = {
 	type: 'Raids',
-	async run(data: RaidsOptions, { handleTripFinish }) {
+	async run(data: RaidsOptions, { handleTripFinish, rng }) {
 		const {
 			channelId,
 			users,
@@ -102,7 +101,7 @@ export const raidsTask: MinionTask = {
 			}
 
 			// Vary completion times for multiple raids in 1 trip
-			const timeToComplete = quantity === 1 ? duration : randomVariation(duration / quantity, 2);
+			const timeToComplete = quantity === 1 ? duration : rng.randomVariation(duration / quantity, 2);
 			const raidLoot = ChambersOfXeric.complete({
 				challengeMode,
 				timeToComplete,
@@ -141,9 +140,9 @@ export const raidsTask: MinionTask = {
 				// logic for cox metamorph pets
 				const addMetamorphPet = (userData: RaidResultUser, userLoot: Bank, challengeMode: boolean) => {
 					const hasDust = userData.loot.has('Metamorphic dust') || userData.mUser.cl.has('Metamorphic dust');
-					if (challengeMode && roll(50) && hasDust) {
+					if (challengeMode && rng.roll(50) && hasDust) {
 						const result = userData.loot.clone().add(userData.mUser.allItemsOwned);
-						const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !result.has(pet));
+						const unownedPet = rng.shuffle(chambersOfXericMetamorphPets).find(pet => !result.has(pet));
 						if (unownedPet) {
 							userLoot.add(unownedPet);
 						}

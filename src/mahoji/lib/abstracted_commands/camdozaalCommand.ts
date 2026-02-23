@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -9,7 +8,7 @@ import Mining from '@/lib/skilling/skills/mining.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
-async function miningCommand(user: MUser, channelId: string, quantity: number | undefined) {
+async function miningCommand(rng: RNGProvider, user: MUser, channelId: string, quantity: number | undefined) {
 	let miningLevel = user.skillsAsLevels.mining;
 	if (miningLevel < 14) {
 		return 'You need at least level 14 Mining to mine in the Ruins of Camdozaal.';
@@ -56,11 +55,12 @@ async function miningCommand(user: MUser, channelId: string, quantity: number | 
 		goldSilverBoost,
 		miningLvl: miningLevel,
 		maxTripLength: await user.calcMaxTripLength('CamdozaalMining'),
-		hasKaramjaMedium: false
+		hasKaramjaMedium: false,
+		rng
 	});
 
-	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
-	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMin = quantity ? rng.randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMax = quantity ? rng.randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
@@ -166,13 +166,19 @@ async function fishingCommand(user: MUser, channelId: string, quantity: number |
 		duration
 	)} to finish.`;
 }
-export async function camdozaalCommand(user: MUser, channelId: string, choice: string, quantity: number | undefined) {
+export async function camdozaalCommand(
+	rng: RNGProvider,
+	user: MUser,
+	channelId: string,
+	choice: string,
+	quantity: number | undefined
+) {
 	const qp = user.QP;
 	if (qp <= 16) {
 		return "You haven't completed enough quests to enter the Ruins of Camdozaal, return when you have at least 17 quest points.";
 	}
 	if (choice === 'mining') {
-		return miningCommand(user, channelId, quantity);
+		return miningCommand(rng, user, channelId, quantity);
 	}
 	if (choice === 'smithing') {
 		return smithingCommand(user, channelId, quantity);

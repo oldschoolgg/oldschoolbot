@@ -1,5 +1,5 @@
 import { codeBlock, dateFm } from '@oldschoolgg/discord';
-import { randArrItem } from '@oldschoolgg/rng';
+import type { GearSetupType } from '@oldschoolgg/gear';
 import { sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
@@ -11,7 +11,6 @@ import { choicesOf, gearSetupOption } from '@/discord/index.js';
 import { marketPricemap } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
@@ -377,14 +376,14 @@ export const rpCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user: adminUser, interaction, guildId }) => {
+	run: async ({ options, user: adminUser, interaction, guildId, rng }) => {
 		await interaction.defer();
 		const isAdmin = adminUser.isAdmin();
 		const isMod = isAdmin || adminUser.isMod();
 		if (!guildId || (globalConfig.isProduction && guildId.toString() !== globalConfig.supportServerID)) {
-			return randArrItem(gifs);
+			return rng.pick(gifs);
 		}
-		if (!isAdmin && !isMod) return randArrItem(gifs);
+		if (!isAdmin && !isMod) return rng.pick(gifs);
 
 		if (options.user_event) {
 			const messageId =
@@ -438,12 +437,12 @@ Date: ${dateFm(date)}`;
 			return `Done: ${confirmationStr.replace('Please confirm:', '')}`;
 		}
 
-		if (!isMod) return randArrItem(gifs);
+		if (!isMod) return rng.pick(gifs);
 
 		// if (options.action) {
 		// 	for (const action of actions) {
 		// 		if (options.action[action.name]) {
-		// 			if (!action.allowed(adminUser)) return randArrItem(gifs);
+		// 			if (!action.allowed(adminUser)) return rng.pick(gifs);
 		// 			try {
 		// 				const result = await action.run();
 		// 				return result;
@@ -496,7 +495,7 @@ Date: ${dateFm(date)}`;
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
 			if (!isAdmin) {
-				return randArrItem(gifs);
+				return rng.pick(gifs);
 			}
 			const allGearSlots = ['melee', 'range', 'mage', 'misc', 'skilling', 'other', 'wildy', 'fashion'];
 			const opts = options.player.unequip_all_items;
@@ -532,7 +531,7 @@ Date: ${dateFm(date)}`;
 		// Steal Items
 		if (options.player?.steal_items) {
 			if (!isAdmin) {
-				return randArrItem(gifs);
+				return rng.pick(gifs);
 			}
 			const toDelete = options.player.steal_items.delete ?? false;
 			const actionMsg = toDelete ? 'delete' : 'steal';
@@ -590,7 +589,7 @@ Date: ${dateFm(date)}`;
 
 		if (options.player?.migrate_user) {
 			if (!isAdmin) {
-				return randArrItem(gifs);
+				return rng.pick(gifs);
 			}
 
 			const { source, dest, reason } = options.player.migrate_user;

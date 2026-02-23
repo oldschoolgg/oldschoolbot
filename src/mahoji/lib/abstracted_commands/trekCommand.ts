@@ -1,7 +1,6 @@
-import { percentChance, randInt } from '@oldschoolgg/rng';
+import { GearStat } from '@oldschoolgg/gear';
 import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
 import { pick } from 'remeda';
 
 import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.js';
@@ -130,6 +129,7 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 }
 
 export async function trekShop(
+	rng: RNGProvider,
 	user: MUser,
 	reward: string,
 	difficulty: string,
@@ -211,20 +211,20 @@ export async function trekShop(
 		switch (difficulty) {
 			case 'Easy':
 				inItems.addItem(rewardTokens.easy, 1);
-				outputTotal = randInt(specifiedItem.easyRange[0], specifiedItem.easyRange[1]);
+				outputTotal = rng.randInt(specifiedItem.easyRange[0], specifiedItem.easyRange[1]);
 				break;
 			case 'Medium':
 				inItems.addItem(rewardTokens.medium, 1);
-				outputTotal = randInt(specifiedItem.medRange[0], specifiedItem.medRange[1]);
+				outputTotal = rng.randInt(specifiedItem.medRange[0], specifiedItem.medRange[1]);
 				break;
 			case 'Hard':
 				inItems.addItem(rewardTokens.hard, 1);
-				outputTotal = randInt(specifiedItem.hardRange[0], specifiedItem.hardRange[1]);
+				outputTotal = rng.randInt(specifiedItem.hardRange[0], specifiedItem.hardRange[1]);
 				break;
 		}
 		if (specifiedItem.name === 'Herbs') {
 			outItems.add(
-				percentChance(50) ? 'Tarromin' : 'Harralander',
+				rng.percentChance(50) ? 'Tarromin' : 'Harralander',
 				Math.floor(reduceNumByPercent(outputTotal, 34))
 			);
 			outItems.add('Toadflax', Math.floor(reduceNumByPercent(outputTotal, 66)));

@@ -1,4 +1,3 @@
-import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, Emoji, sumArr, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Items, itemID } from 'oldschooljs';
 
@@ -121,15 +120,18 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 	return timesMadeToZuk;
 }
 
-async function infernoRun({
-	user,
-	attempts,
-	timesMadeToZuk
-}: {
-	user: MUser;
-	attempts: number;
-	timesMadeToZuk: number;
-}) {
+async function infernoRun(
+	rng: RNGProvider,
+	{
+		user,
+		attempts,
+		timesMadeToZuk
+	}: {
+		user: MUser;
+		attempts: number;
+		timesMadeToZuk: number;
+	}
+) {
 	const userBank = user.bank;
 
 	const duration = new PercentCounter(baseDuration(attempts), 'time');
@@ -181,7 +183,7 @@ async function infernoRun({
 			[rangeGear, 'range'],
 			[mageGear, 'mage']
 		] as const) {
-			if (!gear[key]) {
+			if (!gear.get(key)?.item) {
 				return `You have nothing in your ${key} slot in your ${name} setup.. are you crazy?`;
 			}
 		}
@@ -312,21 +314,23 @@ async function infernoRun({
 	 *
 	 *
 	 */
-	const projectile = rangeGear.ammo;
+	const projectile = rangeGear.get('ammo');
 	if (!projectile) {
 		return 'You have no projectiles equipped in your range setup.';
 	}
 	const projectileType: ProjectileType = rangeGear.equippedWeapon()?.name === 'Twisted bow' ? 'arrow' : 'bolt';
 	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
-		return `You're using incorrect projectiles, you're using a ${
-			rangeGear.equippedWeapon()?.name
-		}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
-			.map(i => Items.itemNameFromId(i))
-			.join(', ')}.`;
+		return `You're using incorrect projectiles, you're using a ${rangeGear.equippedWeapon()?.name
+			}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
+				.map(i => Items.itemNameFromId(i))
+				.join(', ')}.`;
 	}
 
-	duration.value = randomVariation(duration.value, (randInt(1, 10) + randInt(1, 10) + randInt(1, 10)) / 3);
+	duration.value = rng.randomVariation(
+		duration.value,
+		(rng.randInt(1, 10) + rng.randInt(1, 10) + rng.randInt(1, 10)) / 3
+	);
 
 	const fakeDuration = Math.floor(duration.value);
 
@@ -342,13 +346,13 @@ async function infernoRun({
 	preZukDeathChance.value = Math.min(preZukDeathChance.value, 100);
 	zukDeathChance.value = Math.min(zukDeathChance.value, 100);
 
-	const diedPreZuk = percentChance(preZukDeathChance.value);
-	const diedZuk = percentChance(zukDeathChance.value);
+	const diedPreZuk = rng.percentChance(preZukDeathChance.value);
+	const diedZuk = rng.percentChance(zukDeathChance.value);
 	let deathTime: number | null = null;
 	if (diedPreZuk) {
-		deathTime = randInt(Time.Minute, calcPercentOfNum(90, duration.value));
+		deathTime = rng.randInt(Time.Minute, Math.floor(calcPercentOfNum(90, duration.value)));
 	} else if (diedZuk) {
-		deathTime = randInt(calcPercentOfNum(90, duration.value), duration.value);
+		deathTime = rng.randInt(Math.floor(calcPercentOfNum(90, duration.value)), duration.value);
 	}
 
 	const realDuration = deathTime ?? duration.value;
@@ -373,7 +377,7 @@ async function infernoRun({
 	};
 }
 
-export async function infernoStatsCommand(user: MUser): CommandResponse {
+export async function infernoStatsCommand({ rng, user }: { rng: RNGProvider; user: MUser }): CommandResponse {
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
 		user.fetchMinigameScore('inferno'),
 		user.fetchStats()
@@ -390,7 +394,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	if (!zukKC) {
 		if (attempts && !numTimesMadeToZuk) {
 			str += ' You have never even made it to the final wave yet.';
-		} else if (roll(1000)) {
+		} else if (rng.roll(1000)) {
 			str += ` You made it to TzKal-Zuk ${numTimesMadeToZuk} times, but never killed him, maybe just buy the cape JalYt?`;
 		} else {
 			str += ` You made it to TzKal-Zuk ${numTimesMadeToZuk} times, but never killed him, sad. `;
@@ -410,14 +414,22 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	};
 }
 
-export async function infernoStartCommand(user: MUser, channelId: string): CommandResponse {
+export async function infernoStartCommand({
+	rng,
+	user,
+	channelId
+}: {
+	rng: RNGProvider;
+	user: MUser;
+	channelId: string;
+}): CommandResponse {
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
 		await user.fetchMinigameScore('inferno'),
 		user.fetchStats()
 	]);
 
-	const res = await infernoRun({
+	const res = await infernoRun(rng, {
 		user,
 		attempts,
 		timesMadeToZuk: await timesMadeToZuk(user.id)
@@ -480,20 +492,17 @@ export async function infernoStartCommand(user: MUser, channelId: string): Comma
 **Attempts:** ${attempts}
 
 **Duration:** ${await formatTripDuration(user, duration.value)}
-**Boosts:** ${duration.messages.join(', ')} ${
-			duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
-		}
+**Boosts:** ${duration.messages.join(', ')} ${duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
+			}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${
-			preZukDeathChance.missed.length === 0
+**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${preZukDeathChance.missed.length === 0
 				? ''
 				: `*(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*`
-		}
-**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${
-			zukDeathChance.missed.length === 0
+			}
+**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${zukDeathChance.missed.length === 0
 				? ''
 				: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
-		}
+			}
 
 **Items To Be Used:** ${realCost}`,
 		files: [

@@ -1,4 +1,4 @@
-import { roll } from '@oldschoolgg/rng';
+import { roll } from 'node-rng';
 
 import { Bank } from '@/structures/Bank.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
