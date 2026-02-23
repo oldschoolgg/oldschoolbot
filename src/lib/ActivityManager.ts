@@ -34,11 +34,13 @@ class SActivityManager {
 	}
 
 	async completeActivity(_activity: Activity): Promise<void> {
-		Logging.logDebug(`Completing activity ${_activity.id} of type ${_activity.type}`, {
+		const user = await mUserFetch(_activity.user_id.toString());
+		Logging.logDebug(`Completing activity ${_activity.id} (${_activity.type}) for ${user.username}[${user.id}]`, {
 			type: 'ACTIVITY',
 			activity_type: _activity.type,
 			data: _activity.data,
-			user_id: _activity.user_id
+			user_id: _activity.user_id,
+			username: user.username
 		});
 		const activity = this.convertStoredActivityToFlatActivity(_activity);
 
@@ -52,8 +54,6 @@ class SActivityManager {
 			Logging.logError(new Error('Missing task'));
 			return;
 		}
-
-		const user = await mUserFetch(activity.userID);
 
 		try {
 			await task.run(
