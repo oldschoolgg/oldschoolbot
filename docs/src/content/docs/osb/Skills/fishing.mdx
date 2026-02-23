@@ -11,6 +11,7 @@ Dark fishing bait and Raw Karambwanji are **not** sold by the bot. You must obta
 ## Fishing System Updates
 
 The fishing pipeline now uses a **tick-based simulation** (0.6s ticks) with per-catch rolls. Multi-fish spots track each subfish separately, and those catch arrays are persisted so trips resolve correctly after the rework.
+Runtime fish data is sourced from `Fishing.Fishes` in code; `fishing-fishables.json` is generated snapshot data for docs/export tooling.
 
 - Per-catch extra fish rolls: Rada’s blessing and Spirit flakes add extra fish without additional XP or extra clue/pet rolls.
 - Powerfishing uses faster tick rates (where supported) and disables Spirit flakes.
