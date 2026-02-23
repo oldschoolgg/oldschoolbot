@@ -10,13 +10,7 @@ export default defineConfig({
 			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
 		isolate: false,
 		pool: 'threads',
-		maxWorkers: 4,
-		coverage: {
-			provider: 'v8',
-			reporter: ['text', 'json', 'html'],
-			include: ['src/lib/skilling/skills/**/*.{ts,tsx}'],
-			skipFull: true
-		}
+		maxWorkers: 4
 	},
 	resolve: {
 		alias: {

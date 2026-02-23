@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -130,9 +129,9 @@ export const soulWarsImbueables = [
 	}
 ];
 
-export async function soulWarsStartCommand(user: MUser, channelId: string) {
+export async function soulWarsStartCommand(rng: RNGProvider, user: MUser, channelId: string) {
 	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
-	const perDuration = randomVariation(Time.Minute * 7, 5);
+	const perDuration = rng.randomVariation(Time.Minute * 7, 5);
 	const quantity = Math.floor((await user.calcMaxTripLength('SoulWars')) / perDuration);
 	const duration = quantity * perDuration;
 

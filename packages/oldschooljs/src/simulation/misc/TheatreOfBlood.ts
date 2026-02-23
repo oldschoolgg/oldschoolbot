@@ -1,5 +1,5 @@
-import { percentChance, roll } from '@oldschoolgg/rng';
 import { sumArr } from '@oldschoolgg/util';
+import { percentChance, roll } from 'node-rng';
 
 import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';

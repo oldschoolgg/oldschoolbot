@@ -70,7 +70,7 @@ export const camdozaalFishingTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = guppy.clueScrollChance!;
-		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(rng, user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Heron Pet roll
 		const { petDropRate } = skillingPetDropRate(user, 'fishing', guppy.petChance!);

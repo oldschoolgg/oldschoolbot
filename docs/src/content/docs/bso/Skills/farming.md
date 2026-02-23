@@ -32,3 +32,21 @@ title: "Farming"
 | ---------- | ------------- | ---------------- |
 | Athelas    | 1,235,501     | 15,270,786       |
 | Korulsi    | 386,179       | 4,773,172        |
+
+
+## Mushroom & toxic spores (BSO)
+
+### Mushroom spore
+
+- Main source: harvest loot from planted zygomites (Herbal/Barky/Fruity zygomite tables).
+- Used for farming mushroom content and related farming recipes.
+
+### Toxic zygomite spores
+
+- Created by using [[Deathly toxic potion]] on any zygomite spore.
+- Planting/harvesting [[Toxic zygomite]] unlocks Venatrix access bitfield.
+
+### Morchella mushroom spore
+
+- Dropped from BSO resource-dungeon monster tables (varies by dungeon, including 1/264 and 1/64 sources).
+- Used to plant Morchella mushrooms in Farming.

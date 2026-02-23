@@ -14,5 +14,5 @@ overrides:
   "discord-api-types": "0.38.32"
   "undici-types": "7.14.0"
   "@types/node": "24.5.2"
-  "esbuild": "0.27.1"
+  "esbuild": "0.27.3"
   "emoji-regex": "10.6.0"
