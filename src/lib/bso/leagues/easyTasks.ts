@@ -810,7 +810,7 @@ export const easyTasks: Task[] = [
 		id: 111,
 		name: 'Open an Elder cache',
 		has: async ({ opens }) => {
-			return opens.has('Elder cache');
+			return opens.has('Elder sigil');
 		}
 	},
 ];
