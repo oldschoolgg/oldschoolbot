@@ -7,5 +7,6 @@ export default createTsdownConfig({
 	unbundle: true,
 	external: [],
 	copy: ['src/assets'],
-	minify: false
+	minify: false,
+	inlineOnly: false
 });
