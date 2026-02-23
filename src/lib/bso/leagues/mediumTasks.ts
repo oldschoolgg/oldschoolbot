@@ -9,7 +9,7 @@ import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
-import { barrowsChestCL, chambersOfXericCL, cyclopsCL, theatreOfBLoodCL } from '@/lib/data/CollectionsExport.js';
+import { archonCL, barrowsChestCL, chambersOfXericCL, cyclopsCL, theatreOfBLoodCL } from '@/lib/data/CollectionsExport.js';
 import { implings } from '@/lib/implings.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
@@ -17,6 +17,7 @@ import { ashes } from '@/lib/skilling/skills/prayer.js';
 import { eggs } from '@/mahoji/commands/offer.js';
 import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, type Task } from './leaguesUtils.js';
 import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats.js';
+import { CrystallineSentinel, FungalBehemoth, Orym, Orrodil } from '@/lib/bso/monsters/VerdantIsland.js';
 
 export const mediumTasks: Task[] = [
 	{
@@ -1107,5 +1108,40 @@ export const mediumTasks: Task[] = [
 			const divLoot = new Bank(userStats.divination_loot as ItemBank);
 			return divLoot.has('Clue scroll (grandmaster)');
 		}
-	}
+	},
+	{
+		id: 1157,
+		name: 'Kill a Crystalline Sentinel',
+		has: async args => {
+			return leaguesHasKC(args, CrystallineSentinel, 1);
+		}
+	},
+	{
+		id: 1158,
+		name: 'Kill a Fungal Behemoth',
+		has: async args => {
+			return leaguesHasKC(args, FungalBehemoth, 1);
+		}
+	},
+	{
+		id: 1159,
+		name: 'Kill Orym',
+		has: async args => {
+			return leaguesHasKC(args, Orym, 1);
+		}
+	},
+	{
+		id: 1160,
+		name: 'Kill Orrodil',
+		has: async args => {
+			return leaguesHasKC(args, Orrodil, 1);
+		}
+	},
+	{
+		id: 1161,
+		name: 'Finish the Archon CL',
+		has: async ({ cl }) => {
+			return archonCL.every(c => cl.has(c));
+		}
+	},
 ];
