@@ -48,13 +48,15 @@ await Promise.all([
 ]);
 log(`Database schemas pushed.`);
 
-const mainCommand = ['pnpm', 'vitest', 'run', '--config', 'vitest.integration.config.mts'];
+const otherArgs: string[] = process.argv.slice(2);
+const sharedEnv = { ...process.env, NODE_NO_WARNINGS: '1' };
 
-const otherArgs: string = process.argv.slice(2).join(' ').trim();
-if (otherArgs) {
-	mainCommand.push(otherArgs);
-}
+log('Running integration section.');
+await run(['pnpm', 'vitest', 'run', '--config', 'vitest.integration.config.mts', ...otherArgs], {
+	env: sharedEnv
+});
 
-await run(mainCommand, {
-	env: { ...process.env, NODE_NO_WARNINGS: '1' }
+log('Running economy integration section (serial).');
+await run(['pnpm', 'vitest', 'run', '--config', 'vitest.integration.economy.config.mts', ...otherArgs], {
+	env: sharedEnv
 });
