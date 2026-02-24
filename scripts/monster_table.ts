@@ -1,5 +1,3 @@
-import './base.js';
-
 import { writeFileSync } from 'node:fs';
 import { calcPerHour, Time } from '@oldschoolgg/toolkit';
 import { MathRNG } from 'node-rng';

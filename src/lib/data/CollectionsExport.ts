@@ -26,7 +26,6 @@ export interface IToReturnCollection {
 	leftList?: ILeftListStatus;
 	userItems: Bank;
 	counts: boolean;
-	unobtainable: boolean;
 }
 
 export type CollectionStatus = 'not_started' | 'started' | 'completed';
@@ -60,7 +59,6 @@ interface ICollectionActivity {
 		counts?: false;
 		alias?: string[];
 		items: number[];
-		unobtainable?: true;
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
@@ -1420,9 +1418,9 @@ export const allPetsCL = resolveItems([
 	'Nid',
 	'Huberte',
 	'Moxi',
-	'Bran',
-	'Yami',
-	'Dom'
+	'Bran'
+	// 'Yami', // Currently unobtainable.
+	// 'Dom' // Currently unobtainable.
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1701,11 +1699,11 @@ export const slayerCL = resolveItems([
 	'Aranea boots',
 	'Glacial temotli',
 	'Pendant of ates (inert)',
-	'Frozen tear',
-	EItem.EARTHBOUND_TECPATL,
-	EItem.ANTLER_GUARD,
-	EItem.ALCHEMISTS_SIGNET,
-	EItem.BROKEN_ANTLER
+	'Frozen tear'
+	// EItem.EARTHBOUND_TECPATL, // Currently unobtainable.
+	// EItem.ANTLER_GUARD, // Currently unobtainable.
+	// EItem.ALCHEMISTS_SIGNET, // Currently unobtainable.
+	// EItem.BROKEN_ANTLER // Currently unobtainable.
 ]);
 
 export const tormentedDemonCL = resolveItems(['Tormented synapse', 'Burning claw', 'Guthixian temple teleport']);

@@ -1,14 +1,10 @@
-import './base.js';
-
 import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit';
-import { TimerManager } from '@sapphire/timer-manager';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType, toSnakeCase } from 'remeda';
 
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
-import { sonicBoom } from '@/lib/util/logger.js';
 
 const rawExecAsync = promisify(execNonPromise);
 
@@ -36,12 +32,6 @@ export async function runTimedLoggedFn(name: string, fn: () => unknown) {
 	await fn();
 	stopwatch.stop();
 	console.log(`${name} completed in ${stopwatch.toString()}`);
-}
-
-export async function tearDownScript() {
-	TimerManager.destroy();
-	sonicBoom.destroy();
-	process.exit(0);
 }
 
 export function serializeSnapshotItem(item: any): any {

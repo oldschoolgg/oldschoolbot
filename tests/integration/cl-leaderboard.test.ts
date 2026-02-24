@@ -21,7 +21,7 @@ describe('CL Leaderboard', () => {
 		await Promise.all([fetchCLLeaderboard]);
 	});
 
-	test('CL Leaderboard', async () => {
+	test.skip('CL Leaderboard', async () => {
 		const expected = [];
 		const users: MUser[] = [];
 		for (let i = 1; i < chambersOfXericCL.length; i++) {

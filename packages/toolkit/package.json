@@ -10,7 +10,8 @@
 		}
 	},
 	"scripts": {
-		"test": "concurrently \"tsc -p src\" \"pnpm vitest run\" \"tsc -p tests\"",
+		"test:types": "concurrently \"tsc -p src\" \"tsc -p tests\"",
+		"test:unit": "vitest run",
 		"build": "rimraf ./dist && tsc -p src --noEmit false"
 	},
 	"dependencies": {
