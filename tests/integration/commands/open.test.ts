@@ -47,4 +47,58 @@ describe('Open Command', async () => {
 		await user.bankAmountMatch('Reward casket (beginner)', 8);
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 2));
 	});
+
+	test('Open until rejects invalid item', async () => {
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		const res = await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			quantity: 2,
+			open_until: 'Twisted bow',
+			result_quantity: 100
+		});
+		expect(res).toEqual("Reward casket (beginner) doesn't drop Twisted bow.");
+		const res2 = await user.runCommand(openCommand, {
+			name: 'reward casket (beginner)',
+			quantity: 2,
+			open_until: 'Twisted bowffdsafsdfasdf',
+			result_quantity: 100
+		});
+		expect(res2).toContain("That's not a valid item to open until");
+	});
+
+	test('Rejects invalid result_quantity', async () => {
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		for (const num of ['not a number', -1, 0]) {
+			const res = await user.runCommand(openCommand, {
+				name: 'reward casket (beginner)',
+				open_until: 'Fire rune',
+				result_quantity: num
+			});
+			expect(res).toEqual(`The result quantity must be a positive integer.`);
+		}
+	});
+
+	test('Rejects invalid maxOpenQuantity', async () => {
+		const user = await createTestUser();
+		await user.givePatronTier(2);
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
+		for (const num of ['not a number', -1]) {
+			const res = await user.runCommand(openCommand, {
+				name: 'reward casket (beginner)',
+				open_until: 'Fire rune',
+				quantity: num
+			});
+			expect(res).toEqual(`The quantity must be a positive integer.`);
+		}
+	});
+
+	test('Rejects trying to open all with no openables', async () => {
+		const user = await createTestUser();
+		const res = await user.runCommand(openCommand, {
+			name: 'all'
+		});
+		expect(res).toEqual('You have no openable items.');
+	});
 });
