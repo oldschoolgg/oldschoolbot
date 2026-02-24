@@ -9,7 +9,10 @@ type WikiAutocompleteChoice = {
 	value: string;
 };
 
-export async function getWikiAutocompleteResults(query: string, ownerID = 'unknown'): Promise<WikiAutocompleteChoice[]> {
+export async function getWikiAutocompleteResults(
+	query: string,
+	ownerID = 'unknown'
+): Promise<WikiAutocompleteChoice[]> {
 	const q = query.trim();
 	if (q.length < 2) return [];
 
