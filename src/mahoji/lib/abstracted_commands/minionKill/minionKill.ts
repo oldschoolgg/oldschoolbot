@@ -1,4 +1,4 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';
@@ -7,6 +7,7 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import findMonster from '@/lib/util/findMonster.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
 import { newMinionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
 import { nexCommand } from '@/mahoji/lib/abstracted_commands/nexCommand.js';
@@ -151,7 +152,8 @@ export async function minionKillCommand(
 		attackStyles: result.attackStyles,
 		onTask: slayerInfo.assignedTask !== null
 	});
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatDuration(
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${await formatTripDuration(
+		user,
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;
 

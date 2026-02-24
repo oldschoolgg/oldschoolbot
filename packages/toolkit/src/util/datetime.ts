@@ -1,3 +1,5 @@
+import { PerkTier } from './misc.js';
+
 export enum Time {
 	Millisecond = 1,
 	Second = 1000,
@@ -22,6 +24,11 @@ export function calcPerHour(value: number, duration: number): number {
 	return (value / (duration / Time.Minute)) * 60;
 }
 
+export function timeOnly(date: Date): string {
+	const unixSeconds = Math.floor(date.getTime() / 1000);
+	return `<t:${unixSeconds}:t>`;
+}
+
 export function formatDuration(ms: number, short = false, precise = false): string {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -43,4 +50,13 @@ export function formatDuration(ms: number, short = false, precise = false): stri
 	return nums
 		.map(([key, val]) => `${val}${short ? '' : ' '}${key}${val === 1 || short ? '' : 's'}`)
 		.join(short ? '' : ', ');
+}
+
+export function formatDurationWithTimestamp(durationMs: number, perkTier: number, showTimestamp: boolean): string {
+	const duration = formatDuration(durationMs);
+	if (perkTier >= PerkTier.Four && showTimestamp) {
+		const finishDate = new Date(Date.now() + durationMs);
+		return `${duration} (${timeOnly(finishDate)})`;
+	}
+	return duration;
 }

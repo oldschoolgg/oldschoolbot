@@ -155,7 +155,8 @@ export enum BitField {
 
 	HasDeadeyeScroll = 45,
 	HasMysticVigourScroll = 46,
-	AllowPublicAPIDataRetrieval = 47
+	AllowPublicAPIDataRetrieval = 47,
+	ShowMinionReturnTime = 48
 }
 
 interface BitFieldData {
@@ -271,6 +272,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.AllowPublicAPIDataRetrieval]: {
 		name: 'Allow Public API Data Retrieval',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.ShowMinionReturnTime]: {
+		name: 'Show Minion Return Time',
 		protected: false,
 		userConfigurable: true
 	},

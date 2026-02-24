@@ -1,4 +1,4 @@
-import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Items, itemID } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -9,6 +9,7 @@ import Mining from '@/lib/skilling/skills/mining.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
 
@@ -258,8 +259,8 @@ export const mineCommand = defineCommand({
 			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
-				? `between ${formatDuration(res.fakeDurationMin)} **and** ${formatDuration(res.fakeDurationMax)}`
-				: formatDuration(res.duration)
+				? `between ${await formatTripDuration(user, res.fakeDurationMin)} **and** ${await formatTripDuration(user, res.fakeDurationMax)}`
+				: await formatTripDuration(user, res.duration)
 		} to finish.`;
 
 		if (res.boosts.length > 0) {

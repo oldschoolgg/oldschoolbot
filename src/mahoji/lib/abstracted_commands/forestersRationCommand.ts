@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function forestersRationCommand({
 	user,
@@ -70,5 +71,5 @@ export async function forestersRationCommand({
 
 	return `${user.minionName} is now creating ${quantity}x ${
 		forestryFood.name
-	}, it'll take around ${formatDuration(duration)} to finish.`;
+	}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 }

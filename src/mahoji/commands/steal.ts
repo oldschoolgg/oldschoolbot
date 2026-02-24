@@ -6,6 +6,7 @@ import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
 
 export const stealCommand = defineCommand({
@@ -120,7 +121,7 @@ export const stealCommand = defineCommand({
 
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
+		} a ${stealable.name} ${quantity}x times, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 
 		if (stealable.type === 'pickpockable') {
 			const hasArdyHard = user.hasDiary('ardougne.hard');

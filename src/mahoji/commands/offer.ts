@@ -6,6 +6,7 @@ import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const specialBones = [
 	{
@@ -259,6 +260,6 @@ export const offerCommand = defineCommand({
 		});
 		return `${user.minionName} is now offering ${quantity}x ${
 			bone.name
-		} at the Chaos altar, it'll take around ${formatDuration(duration)} to finish.`;
+		} at the Chaos altar, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 	}
 });

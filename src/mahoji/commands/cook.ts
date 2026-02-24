@@ -5,6 +5,7 @@ import Cooking, { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { cutLeapingFishCommand } from '@/mahoji/lib/abstracted_commands/cutLeapingFishCommand.js';
 import { forestersRationCommand } from '@/mahoji/lib/abstracted_commands/forestersRationCommand.js';
 
@@ -142,7 +143,8 @@ export const cookCommand = defineCommand({
 			type: 'Cooking'
 		});
 
-		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(
+		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${await formatTripDuration(
+			user,
 			duration
 		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}

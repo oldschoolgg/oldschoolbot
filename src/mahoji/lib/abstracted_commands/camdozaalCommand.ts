@@ -6,6 +6,7 @@ import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 async function miningCommand(rng: RNGProvider, user: MUser, channelId: string, quantity: number | undefined) {
 	let miningLevel = user.skillsAsLevels.mining;
@@ -74,8 +75,8 @@ async function miningCommand(rng: RNGProvider, user: MUser, channelId: string, q
 		quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity
-			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-			: formatDuration(duration)
+			? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
+			: await formatTripDuration(user, duration)
 	} to finish.`;
 
 	if (boosts.length > 0) {

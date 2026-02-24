@@ -4,6 +4,7 @@ import { clamp } from 'remeda';
 
 import { Planks } from '@/lib/minions/data/planks.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function sawmillCommand(
 	user: MUser,
@@ -84,7 +85,7 @@ export async function sawmillCommand(
 
 	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${
 		quantity > 1 ? 's' : ''
-	}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatDuration(duration)}.`;
+	}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${await formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

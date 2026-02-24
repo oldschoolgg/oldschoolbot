@@ -1,7 +1,8 @@
-import { formatDuration, objectEntries, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { objectEntries, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 const skillReqs = {
@@ -157,7 +158,7 @@ export async function volcanicMineCommand(user: MUser, channelId: string, gameQu
 
 	const str = `${
 		user.minionName
-	} is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${formatDuration(duration)}.${
+	} is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${await formatTripDuration(user, duration)}.${
 		boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
 	}\n**Supply Usage:** ${suppliesUsage}`;
 

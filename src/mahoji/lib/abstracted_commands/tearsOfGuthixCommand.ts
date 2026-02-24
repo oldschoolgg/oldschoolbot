@@ -1,9 +1,10 @@
 import { dateFm } from '@oldschoolgg/discord';
-import { Emoji, formatDuration, getNextUTCReset, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
+import { Emoji, getNextUTCReset, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 
 import { CONSTANTS } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const tearsOfGuthixSkillReqs = {
@@ -86,5 +87,5 @@ export async function tearsOfGuthixCommand(user: MUser, channelId: string) {
 
 	return `${
 		user.minionName
-	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatDuration(duration)}.`;
+	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${await formatTripDuration(user, duration)}.`;
 }

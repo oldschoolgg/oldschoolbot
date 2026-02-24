@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const lightCommand = defineCommand({
 	name: 'light',
@@ -83,7 +84,8 @@ export const lightCommand = defineCommand({
 			type: 'Firemaking'
 		});
 
-		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDuration(
+		return `${user.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${await formatTripDuration(
+			user,
 			duration
 		)} to finish.`;
 	}

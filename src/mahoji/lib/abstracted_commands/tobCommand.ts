@@ -17,6 +17,7 @@ import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
@@ -468,7 +469,7 @@ export async function tobStartCommand(
 		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to do ${qty}x Theatre of Blood raid${
 		qty > 1 ? 's' : ''
-	} - the total trip will take ${formatDuration(totalFakeDuration)}.${solo ? " You're in a team of 3." : ''}`;
+	} - the total trip will take ${await formatTripDuration(user, totalFakeDuration)}.${solo ? " You're in a team of 3." : ''}`;
 
 	str += ` \n\n${debugStr}`;
 

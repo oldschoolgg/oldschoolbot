@@ -2,6 +2,7 @@ import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const craftCommand = defineCommand({
 	name: 'craft',
@@ -114,6 +115,6 @@ export const craftCommand = defineCommand({
 
 		return `${user.minionName} is now crafting ${quantity}${sets} ${
 			craftable.name
-		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		}, it'll take around ${await formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.`;
 	}
 });

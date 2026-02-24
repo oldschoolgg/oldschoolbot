@@ -12,6 +12,7 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
@@ -27,7 +28,7 @@ async function soloMessage(user: MUser, duration: number, quantity: number, isPh
 		str += ` They are not scared of ${name} anymore, and ready to fight!`;
 	}
 
-	return `${str} The trip will take approximately ${formatDuration(duration)}.`;
+	return `${str} The trip will take approximately ${await formatTripDuration(user, duration)}.`;
 }
 
 const inquisitorItems = resolveItems(["Inquisitor's great helm", "Inquisitor's hauberk", "Inquisitor's plateskirt"]);
@@ -325,7 +326,7 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 					perKillTime
 				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
-				)} - the total trip will take ${formatDuration(duration)}.`;
+				)} - the total trip will take ${await formatTripDuration(user, duration)}.`;
 
 	str += `\nRemoved ${soloFoodUsage} from your bank.${
 		isPhosani
