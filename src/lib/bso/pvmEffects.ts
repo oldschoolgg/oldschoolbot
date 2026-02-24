@@ -6,7 +6,7 @@ import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { roll } from '@oldschoolgg/rng';
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
+import { type Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
 import type { BitField } from '@/lib/constants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -125,15 +125,17 @@ export function slayerMasksHelms({
 	) {
 		return;
 	}
-	const bankToAdd = new Bank().add(monster.id, slayerContext.effectiveSlayed);
 	const maskHelmForThisMonster = slayerMaskHelms.find(i => i.monsters.includes(monster.id));
 	const matchingMaskOrHelm =
 		maskHelmForThisMonster &&
 		gearBank.hasEquippedOrInBank([maskHelmForThisMonster.mask.id, maskHelmForThisMonster.helm.id])
 			? maskHelmForThisMonster
 			: null;
-	const oldMaskScores = new Bank(userStats.onTaskWithMaskMonsterScores as ItemBank);
-	const newMaskScores = oldMaskScores.clone().add(bankToAdd);
+	const addToMonsterScores = (scores: ItemBank) => ({
+		...scores,
+		[monster.id]: (scores[monster.id] ?? 0) + slayerContext.effectiveSlayed
+	});
+	const newMaskScores = addToMonsterScores((userStats.onTaskWithMaskMonsterScores as ItemBank) ?? {});
 	if (maskHelmForThisMonster && !gearBank.hasEquippedOrInBank(maskHelmForThisMonster.mask.id)) {
 		for (let i = 0; i < slayerContext.effectiveSlayed; i++) {
 			if (roll(maskHelmForThisMonster.maskDropRate)) {
@@ -143,8 +145,6 @@ export function slayerMasksHelms({
 			}
 		}
 	}
-	updateBank.userStats.on_task_monster_scores = new Bank(userStats.onTaskMonsterScores as ItemBank)
-		.add(bankToAdd)
-		.toJSON();
-	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores.toJSON() : undefined;
+	updateBank.userStats.on_task_monster_scores = addToMonsterScores((userStats.onTaskMonsterScores as ItemBank) ?? {});
+	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores : undefined;
 }
