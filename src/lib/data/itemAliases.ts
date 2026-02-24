@@ -202,6 +202,9 @@ setItemAlias(25_842, 'Orange sraracha');
 setItemAlias(25_843, 'Blue sraracha');
 setItemAlias(12_654, 'Airborne kalphite princess');
 
+// Green egg nest used for /collect
+setItemAlias(5071, 'Bird nest (egg)');
+
 // Kittens
 setItemAlias(1555, 'Grey and black kitten');
 setItemAlias(1556, 'White kitten');
