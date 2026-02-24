@@ -1,6 +1,6 @@
 {
-	"hash": "2d266de4b327e4fd9300925727786bd2",
-	"date": "2026-02-23T17:43:03.277Z",
+	"hash": "35080830a7ed12d8dc97feb8a43fade6",
+	"date": "2026-02-24T09:21:04.440Z",
 	"data": [
 		{
 			"name": "activities",
@@ -113,11 +113,6 @@
 			"name": "clues",
 			"desc": "See your OSRS clue scores.",
 			"examples": ["/clues rsn:Magnaboy"],
-			"subOptions": []
-		},
-		{
-			"name": "commit",
-			"desc": "Shows the currently running bot commit.",
 			"subOptions": []
 		},
 		{
@@ -247,6 +242,11 @@
 			"name": "hunt",
 			"desc": "Hunt creatures with the Hunter skill.",
 			"examples": ["/hunt name:Ferret"],
+			"subOptions": []
+		},
+		{
+			"name": "info",
+			"desc": "Shows bot information, including uptime and commit details.",
 			"subOptions": []
 		},
 		{

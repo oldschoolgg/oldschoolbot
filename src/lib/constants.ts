@@ -389,6 +389,10 @@ export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-pars
 const gitCommitDate = process.env.TEST
 	? new Date('1970-01-01T00:00:00.000Z')
 	: new Date(execSync('git show -s --format=%cI HEAD').toString().trim());
+const gitCommitMessage = process.env.TEST ? 'Test build' : execSync('git show -s --format=%s HEAD').toString().trim();
+const gitRecentCommits = process.env.TEST
+	? ['TESTGIT Test build']
+	: execSync('git log --pretty=format:%h%x09%s -n 3').toString().trim().split('\n').filter(Boolean);
 const gitRemote = 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
@@ -425,6 +429,8 @@ export function getGitSyncStatus() {
 export const META_CONSTANTS = {
 	GIT_HASH: gitHash,
 	GIT_COMMIT_DATE: gitCommitDate,
+	GIT_COMMIT_MESSAGE: gitCommitMessage,
+	GIT_RECENT_COMMITS: gitRecentCommits,
 	GITHUB_URL: `https://github.com/${gitRemote}/commit/${gitHash}`,
 	GITHUB_COMMITS_URL: `https://github.com/${gitRemote}/commits/${GIT_BRANCH}`,
 	STARTUP_DATE: new Date(),
