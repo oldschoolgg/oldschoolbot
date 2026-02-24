@@ -419,7 +419,7 @@ export const bsoMinigamesCommand = defineCommand({
 			const failRate = ((failed / total) * 100).toFixed(1);
 
 			return [
-				`## Brimstone Distillery — ${score} trips completed`,
+				`## Brimstone Distillery - ${score} trips completed`,
 				`**Total distillations:** ${total.toLocaleString()}`,
 				`**Potions produced:** ${potions.toLocaleString()}`,
 				`**Failed distillations:** ${failed.toLocaleString()} (${failRate}%)`,
@@ -449,7 +449,7 @@ export const bsoMinigamesCommand = defineCommand({
 			const successRate = ((successful / total) * 100).toFixed(1);
 
 			return [
-				`## Construction Contracts — ${score} trips completed`,
+				`## Construction Contracts - ${score} trips completed`,
 				`**Total contracts attempted:** ${total.toLocaleString()}`,
 				`**Successful:** ${successful.toLocaleString()} (${successRate}%)`,
 				`**Failed:** ${failed.toLocaleString()} (${failRate}%)`

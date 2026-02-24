@@ -1546,10 +1546,12 @@ export const bsoCreatables: Createable[] = [
 			'Gorajan warrior legs': 1,
 			'Gorajan warrior gloves': 1,
 			'Gorajan warrior boots': 1,
-			'Dwarven bar': 40,
-			'Gorajan shards': 24,
+			'Dwarven bar': 20,
+			'Gorajan shards': 10,
 			'Elderflame catalyst': 5,
-			'Empyrean shards': 670
+			'Sun-metal bar': 2,
+			'Empyrean shards': 750,
+			'Dark animica': 5000
 		}),
 		outputItems: new Bank({
 			'Empyrean greathelm': 1,
@@ -1568,10 +1570,12 @@ export const bsoCreatables: Createable[] = [
 			'Gorajan warrior legs (primal)': 1,
 			'Gorajan warrior gloves (primal)': 1,
 			'Gorajan warrior boots (primal)': 1,
-			'Dwarven bar': 40,
-			'Gorajan shards': 24,
+			'Dwarven bar': 20,
+			'Gorajan shards': 10,
 			'Elderflame catalyst': 5,
-			'Empyrean shards': 670
+			'Sun-metal bar': 2,
+			'Empyrean shards': 750,
+			'Dark animica': 5000
 		}),
 		outputItems: new Bank({
 			'Empyrean greathelm': 1,
@@ -1590,10 +1594,12 @@ export const bsoCreatables: Createable[] = [
 			'Gorajan warrior legs (oceanic)': 1,
 			'Gorajan warrior gloves (oceanic)': 1,
 			'Gorajan warrior boots (oceanic)': 1,
-			'Dwarven bar': 40,
-			'Gorajan shards': 24,
+			'Dwarven bar': 20,
+			'Gorajan shards': 10,
 			'Elderflame catalyst': 5,
-			'Empyrean shards': 670
+			'Sun-metal bar': 2,
+			'Empyrean shards': 750,
+			'Dark animica': 5000
 		}),
 		outputItems: new Bank({
 			'Empyrean greathelm': 1,

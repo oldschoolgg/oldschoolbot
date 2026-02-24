@@ -321,7 +321,7 @@ export async function constructionContractsStartCommand({
 	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
 	const rarityUpgradeTier = getTier(islandUpgrades, 'minigame') as 0 | 1 | 2 | 3 | 4 | 5;
 	if (rarityUpgradeTier > 0) {
-		boosts.push(`${rarityUpgradeTier * 5}% better rewards (Island Minigame Boost Tier ${rarityUpgradeTier})`);
+		boosts.push(`${rarityUpgradeTier * 5}% better rewards (Settlement Infrastructure Tier ${rarityUpgradeTier})`);
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('ConstructionContracts');
