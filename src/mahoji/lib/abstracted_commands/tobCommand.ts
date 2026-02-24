@@ -39,6 +39,7 @@ const minStats = {
 };
 
 const SCYTHE_CHARGES_PER_RAID = 200;
+export type ToBTeamSize = 'solo' | 'trio';
 
 async function calcTOBInput(u: MUser) {
 	const items = new Bank();
@@ -255,20 +256,20 @@ async function checkTOBUser(
 export async function checkTOBTeam(
 	users: MUser[],
 	isHardMode: boolean,
-	solo: 'solo' | 'trio' | undefined,
+	teamSize: ToBTeamSize | undefined,
 	quantity = 1
 ): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
 	}
-	if ((solo === undefined && users.length < 2) || users.length > 5) {
+	if ((teamSize === undefined && users.length < 2) || users.length > 5) {
 		return 'TOB team must be 2-5 users';
 	}
 
 	for (const user of users) {
 		if (await user.minionIsBusy()) return `${user.usernameOrMention}'s minion is busy.`;
-		const checkResult = await checkTOBUser(user, isHardMode, solo === 'trio' ? 3 : users.length, quantity);
+		const checkResult = await checkTOBUser(user, isHardMode, teamSize === 'trio' ? 3 : users.length, quantity);
 		if (!checkResult[0]) {
 		} else {
 			return checkResult[1];
@@ -317,7 +318,7 @@ export async function tobStartCommand(
 	channelId: string,
 	isHardMode: boolean,
 	maxSizeInput: number | undefined,
-	solo: 'solo' | 'trio' | undefined,
+	teamSize: ToBTeamSize | undefined,
 	quantity: number | undefined
 ) {
 	if (await user.minionIsBusy()) {
@@ -358,7 +359,11 @@ export async function tobStartCommand(
 		}
 	};
 
-	const users = resolveToBUsersForStart(user, solo, solo ? undefined : await globalClient.makeParty(partyOptions));
+	const users = resolveToBUsersForStart(
+		user,
+		teamSize,
+		teamSize ? undefined : await globalClient.makeParty(partyOptions)
+	);
 	if (await ActivityManager.anyMinionIsBusy(users)) {
 		return `All team members must have their minions free.`;
 	}
@@ -392,7 +397,7 @@ export async function tobStartCommand(
 		)}. The most you can do with your teams setup is ${maxTripsCanFit}.`;
 	}
 
-	const teamCheckFailure = await checkTOBTeam(users, isHardMode, solo, qty);
+	const teamCheckFailure = await checkTOBTeam(users, isHardMode, teamSize, qty);
 	if (teamCheckFailure) {
 		return `Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`;
 	}
@@ -422,11 +427,11 @@ export async function tobStartCommand(
 		wipedRooms.push(wipedRoom);
 		totalFakeDuration += duration;
 		totalDuration += deathDuration === null ? duration : deathDuration;
-		if (solo === 'trio') parsedTeam.length = 1;
+		if (teamSize === 'trio') parsedTeam.length = 1;
 		deaths.push(parsedTeam.map(i => i.deaths));
 	}
 
-	if (solo === 'trio') {
+	if (teamSize === 'trio') {
 		users.length = 1;
 		team.length = 1;
 	}
@@ -522,7 +527,7 @@ export async function tobStartCommand(
 		fakeDuration: totalFakeDuration,
 		quantity: qty,
 		deaths,
-		solo,
+		solo: teamSize,
 		cc: chinCannonUser?.id
 	});
 
@@ -531,7 +536,7 @@ export async function tobStartCommand(
 		.join(', ')}) is now off to do ${qty}x Theatre of Blood raid${
 		qty > 1 ? 's' : ''
 	} - the total trip will take ${formatDuration(totalFakeDuration)}.${
-		solo === 'trio' ? " You're in a team of 3." : ''
+		teamSize === 'trio' ? " You're in a team of 3." : ''
 	}`;
 
 	str += ` \n\n${debugStr}`;
@@ -545,9 +550,9 @@ export async function tobStartCommand(
  * - `trio`: three entries of the same user to simulate trio scaling.
  * - default: uses users returned from party creation.
  */
-export function resolveToBUsersForStart(user: MUser, solo: 'solo' | 'trio' | undefined, partyUsers?: MUser[]): MUser[] {
-	if (solo === 'solo') return [user];
-	if (solo === 'trio') return [user, user, user];
+export function resolveToBUsersForStart(user: MUser, teamSize: ToBTeamSize | undefined, partyUsers?: MUser[]): MUser[] {
+	if (teamSize === 'solo') return [user];
+	if (teamSize === 'trio') return [user, user, user];
 	return partyUsers ?? [user];
 }
 
