@@ -10,4 +10,20 @@ describe('Thieving', () => {
 			}
 		}
 	});
+
+	test('All non-pickpocketables should have respawn times', () => {
+		for (const entity of stealables) {
+			if (entity.type !== 'pickpockable' && !entity.respawnTime) {
+				throw new Error(`Missing respawn time for ${entity.name}.`);
+			}
+		}
+	});
+
+	test('Chests should not have pet chances', () => {
+		for (const entity of stealables) {
+			if (entity.type === 'chest' && entity.petChance !== undefined) {
+				throw new Error(`Chest ${entity.name} should not have a pet chance.`);
+			}
+		}
+	});
 });
