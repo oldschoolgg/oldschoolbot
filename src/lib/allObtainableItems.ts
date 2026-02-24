@@ -75,7 +75,13 @@ for (const a of Enchantables) {
 	totalBankToAdd.add(a.output);
 }
 for (const fish of Fishing.Fishes) {
-	ALL_OBTAINABLE_ITEMS.add(fish.id);
+	if (fish.subfishes) {
+		for (const subfish of fish.subfishes) {
+			ALL_OBTAINABLE_ITEMS.add(subfish.id);
+		}
+	} else if (fish.id) {
+		ALL_OBTAINABLE_ITEMS.add(fish.id);
+	}
 }
 for (const clue of ClueTiers) {
 	ALL_OBTAINABLE_ITEMS.add(clue.id);
