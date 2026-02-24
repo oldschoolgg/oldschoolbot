@@ -77,7 +77,7 @@ const table = new LootTable()
 	.tertiary(8000, 'Ring of luck')
 	.tertiary(4000, 'Deathtouched dart')
 	.tertiary(47, LampTable)
-	.tertiary(500, 'Elder mimic casket (Locked)')
+	.tertiary(1250, 'Elder mimic casket (Locked)')
 	.tertiary(50, new LootTable().add('Ignecarus mask').add('Malygos mask'))
 	.tertiary(
 		130_000,

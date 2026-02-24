@@ -14639,7 +14639,7 @@ setCustomItem(
 			ranged_strength: 45,
 			magic_damage: 0,
 			prayer: 8,
-			slot: EquipmentSlot.Weapon,
+			slot: EquipmentSlot.TwoHanded,
 			requirements: {
 				ranged: 120
 			}
@@ -14928,9 +14928,15 @@ setCustomItem(
 				strength: 120,
 				defence: 120
 			}
+		},
+		highalch: 200_000_000,
+		customItemData: {
+			tradeable: false,
+			tradeable_on_ge: false,
+			cantDropFromMysteryBoxes: true,
 		}
 	},
-	125_000_000
+	300_000_000
 );
 
 setCustomItem(
@@ -14960,9 +14966,15 @@ setCustomItem(
 				strength: 120,
 				defence: 120
 			}
+		},
+		highalch: 200_000_000,
+		customItemData: {
+			tradeable: false,
+			tradeable_on_ge: false,
+			cantDropFromMysteryBoxes: true,
 		}
 	},
-	220_000_000
+	300_000_000
 );
 
 setCustomItem(
@@ -14992,9 +15004,15 @@ setCustomItem(
 				strength: 120,
 				defence: 120
 			}
+		},
+		highalch: 200_000_000,
+		customItemData: {
+			tradeable: false,
+			tradeable_on_ge: false,
+			cantDropFromMysteryBoxes: true,
 		}
 	},
-	175_000_000
+	300_000_000
 );
 
 setCustomItem(
@@ -15024,9 +15042,15 @@ setCustomItem(
 				strength: 120,
 				defence: 120
 			}
+		},
+		highalch: 200_000_000,
+		customItemData: {
+			tradeable: false,
+			tradeable_on_ge: false,
+			cantDropFromMysteryBoxes: true,
 		}
 	},
-	95_000_000
+	300_000_000
 );
 
 setCustomItem(
@@ -15056,10 +15080,17 @@ setCustomItem(
 				strength: 120,
 				defence: 120
 			}
+		},
+		highalch: 200_000_000,
+		customItemData: {
+			tradeable: false,
+			tradeable_on_ge: false,
+			cantDropFromMysteryBoxes: true,
 		}
 	},
-	95_000_000
+	300_000_000
 );
+
 setCustomItem(75_070, 'Empyrean shards', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
 setCustomItem(
 	75_071,

@@ -1135,6 +1135,10 @@ const Buyables: Buyable[] = [
 		qpRequired: 30
 	},
 	{
+		name: 'Rake',
+		gpCost: 10
+	},
+	{
 		name: 'Fishbowl helmet',
 		gpCost: 1000,
 		qpRequired: 30
