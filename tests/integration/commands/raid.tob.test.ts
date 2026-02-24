@@ -1,7 +1,8 @@
+import { gorajanOccultOutfit } from '@/lib/bso/collection-log/main.js';
+
 import { Bank, itemID } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { gorajanOccultOutfit } from '@/lib/bso/collection-log/main.js';
 import { TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
