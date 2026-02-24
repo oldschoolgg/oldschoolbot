@@ -21,6 +21,8 @@ describe('info command', () => {
 		const message = assertMessageObject(result);
 		expect(String(message.content ?? '')).toContain('**Uptime:**');
 		expect(String(message.content ?? '')).toContain('**Commit Message:**');
+		expect(String(message.content ?? '')).toContain('**Recent Commits:**');
+		expect(String(message.content ?? '')).not.toContain('**Commit:**');
 		expect(String(message.content ?? '')).not.toContain('**Status:**');
 		expect(Array.isArray(message.components) ? message.components : []).toHaveLength(2);
 	});
@@ -29,6 +31,7 @@ describe('info command', () => {
 		const result = await infoCommand.run({ options: { details: true } } as InfoRunArg);
 		const message = assertMessageObject(result);
 		expect(String(message.content ?? '')).toContain('**Commit Date:**');
+		expect(String(message.content ?? '')).toContain('**Commit:**');
 		expect(String(message.content ?? '')).toContain('**Code Difference:**');
 		expect(String(message.content ?? '')).toContain('**Status:**');
 		expect(String(message.content ?? '')).toContain('**Recent Commits:**');
