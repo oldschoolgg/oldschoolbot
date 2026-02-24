@@ -3,6 +3,7 @@ import type { ItemBank } from 'oldschooljs';
 import { Prisma } from '@/prisma/main.js';
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { learningTheRopesButton } from '@/lib/sharedComponents.js';
 import { assert } from '@/lib/util/logError.js';
 
 async function ensureDeletedUserExists() {
@@ -209,5 +210,14 @@ After becoming an ironman:
 		!user.user.GP && !user.user.QP && !user.user.skills_woodcutting,
 		`Ironman sanity check - ID: ${user.user.id}`
 	);
+	if (interaction) {
+		const questMention = globalClient.mentionCommand('activities', 'quest');
+		return {
+			content: `You are now an ironman.
+
+Before you can use most minion commands, complete **Learning the Ropes** with ${questMention} and set the quest name to \`Learning the Ropes\`, or press the button below.`,
+			components: [learningTheRopesButton]
+		};
+	}
 	return 'You are now an ironman.';
 }

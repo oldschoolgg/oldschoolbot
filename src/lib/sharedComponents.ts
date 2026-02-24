@@ -1,5 +1,8 @@
 import { ButtonBuilder, ButtonStyle, ComponentType } from '@oldschoolgg/discord';
 
+import { EmojiId } from '@/lib/data/emojis.js';
+import { InteractionID } from '@/lib/InteractionID.js';
+
 const buttonSource = [
 	{
 		label: 'Wiki',
@@ -38,6 +41,18 @@ export const mahojiInformationalButtons = buttonSource.map(
 );
 
 export const minionBuyButton = new ButtonBuilder()
-	.setCustomId('BUY_MINION')
+	.setCustomId(InteractionID.Commands.BuyMinion)
 	.setLabel('Buy Minion')
 	.setStyle(ButtonStyle.Success);
+
+export const becomeIronmanButton = new ButtonBuilder()
+	.setCustomId(InteractionID.Commands.BecomeIronman)
+	.setLabel('Become Ironman')
+	.setEmoji({ id: '626647335900020746' })
+	.setStyle(ButtonStyle.Secondary);
+
+export const learningTheRopesButton = new ButtonBuilder()
+	.setCustomId(InteractionID.Commands.StartLearningTheRopes)
+	.setLabel('Start Learning the Ropes')
+	.setEmoji({ id: EmojiId.Leagues }) /// Temporary emoji until we get a quest emoji added, then we can change this to that emoji.
+	.setStyle(ButtonStyle.Primary);

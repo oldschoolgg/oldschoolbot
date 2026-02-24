@@ -36,6 +36,8 @@ export const InteractionID = {
 	},
 	Commands: {
 		BuyMinion: 'BUY_MINION',
+		BecomeIronman: 'BECOME_IRONMAN',
+		StartLearningTheRopes: 'START_LEARNING_THE_ROPES',
 		CancelTrip: 'CANCEL_TRIP',
 		RepeatTrip: 'REPEAT_TRIP',
 		CheckPatches: 'CHECK_PATCHES',
