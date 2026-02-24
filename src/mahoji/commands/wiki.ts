@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
 
-import { WIKI_AUTOCOMPLETE_CACHE, WIKI_AUTOCOMPLETE_INFLIGHT } from '@/lib/cache.js';
+import { WIKI_AUTOCOMPLETE_CACHE } from '@/lib/cache.js';
 
 type WikiPage = {
 	pageid: number;
@@ -56,49 +56,31 @@ export const wikiCommand = defineCommand({
 					return cached.slice(0, 25).map((t: string) => ({ name: t, value: t }));
 				}
 
-				let p = WIKI_AUTOCOMPLETE_INFLIGHT.get(key);
-				if (!p) {
-					p = (async () => {
-						try {
-							const params = new URLSearchParams({
-								action: 'opensearch',
-								search: q,
-								limit: '25',
-								namespace: '0',
-								format: 'json'
-							});
-
-							const url = `https://oldschool.runescape.wiki/api.php?${params.toString()}`;
-
-							const res = await fetch(url, {
-								headers: {
-									'User-Agent': `OldSchoolBot (discord; owner=${globalClient.application?.owner?.id || 'unknown'})`,
-									Accept: 'application/json'
-								},
-								signal: AbortSignal.timeout(AUTOCOMPLETE_TIMEOUT_MS)
-							});
-
-							if (!res.ok) return [];
-
-							const data = (await res.json()) as WikiOpenSearchResponse;
-							const titles: string[] = data?.[1] ?? [];
-
-							WIKI_AUTOCOMPLETE_CACHE.set(key, titles);
-
-							return titles;
-						} catch {
-							return [];
-						} finally {
-							WIKI_AUTOCOMPLETE_INFLIGHT.delete(key);
-						}
-					})();
-
-					WIKI_AUTOCOMPLETE_INFLIGHT.set(key, p);
-				}
-
 				let titles: string[] = [];
 				try {
-					titles = await p;
+					const params = new URLSearchParams({
+						action: 'opensearch',
+						search: q,
+						limit: '25',
+						namespace: '0',
+						format: 'json'
+					});
+
+					const url = `https://oldschool.runescape.wiki/api.php?${params.toString()}`;
+
+					const res = await fetch(url, {
+						headers: {
+							'User-Agent': `OldSchoolBot (discord; owner=${globalClient.application?.owner?.id || 'unknown'})`,
+							Accept: 'application/json'
+						},
+						signal: AbortSignal.timeout(AUTOCOMPLETE_TIMEOUT_MS)
+					});
+
+					if (res.ok) {
+						const data = (await res.json()) as WikiOpenSearchResponse;
+						titles = data?.[1] ?? [];
+						WIKI_AUTOCOMPLETE_CACHE.set(key, titles);
+					}
 				} catch {
 					titles = [];
 				}

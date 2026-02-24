@@ -41,7 +41,6 @@ export const WIKI_AUTOCOMPLETE_CACHE = new LRUCache<string, string[]>({
 	ttlAutopurge: true,
 	ttlResolution: Time.Second
 });
-export const WIKI_AUTOCOMPLETE_INFLIGHT = new Map<string, Promise<string[]>>();
 
 export const userQueues: Map<string, PromiseQueue> = new Map();
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
