@@ -347,7 +347,9 @@ function calculateGlory(rng: RNGProvider, kcBank: ColosseumWaveBank, wave: Wave)
 	const maxPossibleGlory = 60_000;
 	const ourMaxGlory = calcPercentOfNum(expSkill, maxPossibleGlory);
 	const wavePerformance = exponentialPercentScale((totalKCSkillPercent + kcSkill) / 2);
-	const glory = rng.randInt(calcPercentOfNum(wavePerformance, ourMaxGlory), ourMaxGlory);
+	const minGlory = Math.floor(calcPercentOfNum(wavePerformance, ourMaxGlory));
+	const maxGlory = Math.floor(ourMaxGlory);
+	const glory = rng.randInt(Math.max(0, minGlory), Math.max(0, maxGlory));
 	return glory;
 }
 
