@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@oldschoolgg/discord';
 
-import { WIKI_AUTOCOMPLETE_CACHE } from '@/lib/cache.js';
+import { getWikiAutocompleteResults } from '@/mahoji/lib/wikiAutocomplete.js';
 
 type WikiPage = {
 	pageid: number;
@@ -15,10 +15,6 @@ type WikiResponse = {
 	query?: { pages?: Record<string, WikiPage> };
 	error?: { code: string; info: string };
 };
-
-type WikiOpenSearchResponse = [string, string[], string[], string[]];
-
-const AUTOCOMPLETE_TIMEOUT_MS = 900; // keep under ~1s
 
 function toWikiUrl(title: string) {
 	return `https://oldschool.runescape.wiki/w/${encodeURIComponent(title.replace(/ /g, '_'))}`;
@@ -47,46 +43,7 @@ export const wikiCommand = defineCommand({
 			description: 'Your search query.',
 			required: true,
 			autocomplete: async ({ value }: StringAutoComplete) => {
-				const q = value?.trim();
-				if (!q || q.length < 2) return [];
-
-				const key = q.toLowerCase();
-				const cached = WIKI_AUTOCOMPLETE_CACHE.get(key);
-				if (cached) {
-					return cached.slice(0, 25).map((t: string) => ({ name: t, value: t }));
-				}
-
-				let titles: string[] = [];
-				try {
-					const params = new URLSearchParams({
-						action: 'opensearch',
-						search: q,
-						limit: '25',
-						namespace: '0',
-						format: 'json'
-					});
-
-					const url = `https://oldschool.runescape.wiki/api.php?${params.toString()}`;
-
-					const res = await fetch(url, {
-						headers: {
-							'User-Agent': `OldSchoolBot (discord; owner=${globalClient.application?.owner?.id || 'unknown'})`,
-							Accept: 'application/json'
-						},
-						signal: AbortSignal.timeout(AUTOCOMPLETE_TIMEOUT_MS)
-					});
-
-					if (res.ok) {
-						const data = (await res.json()) as WikiOpenSearchResponse;
-						titles = data?.[1] ?? [];
-						WIKI_AUTOCOMPLETE_CACHE.set(key, titles);
-					}
-				} catch {
-					titles = [];
-				}
-
-				const fallback = titles.length ? titles : (WIKI_AUTOCOMPLETE_CACHE.get(key) ?? []);
-				return fallback.slice(0, 25).map((t: string) => ({ name: t, value: t }));
+				return getWikiAutocompleteResults(value ?? '', globalClient.application?.owner?.id || 'unknown');
 			}
 		}
 	],
