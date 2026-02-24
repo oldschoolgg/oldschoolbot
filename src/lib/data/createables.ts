@@ -2695,6 +2695,19 @@ const Createables: Createable[] = [
 			'Soiled page': 1
 		})
 	},
+	{
+		name: 'Granite cannonball',
+		inputItems: new Bank({
+			Cannonball: 1,
+			'Granite dust': 1
+		}),
+		outputItems: new Bank({
+			'Granite cannonball': 1
+		}),
+		requiredSkills: {
+			smithing: 50
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

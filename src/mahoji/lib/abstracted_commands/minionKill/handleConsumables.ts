@@ -6,15 +6,66 @@ import type { Consumable } from '@/lib/minions/types.js';
 import { FloatBank } from '@/lib/structures/Bank.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 
-// TODO: should use a FloatBank instead of a Bank
-const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
-	const consumableCost = c.itemCost.clone();
-	if (c.qtyPerKill) {
-		consumableCost.multiply(Math.ceil(c.qtyPerKill * quantity));
-	} else if (c.qtyPerMinute) {
-		consumableCost.multiply(Math.ceil((c.qtyPerMinute * duration) / Time.Minute));
+const buildPerKillCost = (consumable: Consumable, timeToFinish: number, gearBank: GearBank) => {
+	const floatCostsPerKill = new FloatBank();
+	let itemMultiple = consumable.qtyPerKill ?? consumable.qtyPerMinute ?? null;
+
+	if (!itemMultiple) return floatCostsPerKill;
+
+	if (consumable.isRuneCost) {
+		// Free casts for kodai + sotd
+		if (gearBank.hasEquipped('Kodai wand')) {
+			itemMultiple = Math.ceil(0.85 * itemMultiple);
+		} else if (gearBank.hasEquipped('Staff of the dead')) {
+			itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+		}
 	}
-	return consumableCost;
+
+	const multiply = consumable.qtyPerMinute ? (timeToFinish / Time.Minute) * itemMultiple : itemMultiple;
+
+	for (const [item, qty] of consumable.itemCost.items()) {
+		floatCostsPerKill.add(item.id, qty * multiply);
+	}
+
+	return floatCostsPerKill;
+};
+
+const canCoverConsumable = (consumable: Consumable, quantity: number, timeToFinish: number, gearBank: GearBank) => {
+	const perKillCost = buildPerKillCost(consumable, timeToFinish, gearBank);
+	if (perKillCost.length() === 0) return true;
+	return perKillCost
+		.entries()
+		.every(([item, qty]) => gearBank.bank.amount(Number(item)) >= Math.ceil(qty * quantity));
+};
+
+const selectConsumable = ({
+	consumables,
+	gearBank,
+	timeToFinish,
+	desiredQuantity
+}: {
+	consumables: Consumable[];
+	gearBank: GearBank;
+	timeToFinish: number;
+	desiredQuantity: number;
+}) => {
+	const quantityToCheck = Math.max(1, desiredQuantity);
+	for (const consumable of consumables) {
+		if (canCoverConsumable(consumable, quantityToCheck, timeToFinish, gearBank)) return consumable;
+	}
+
+	let bestConsumable = consumables[0];
+	let bestFits = -1;
+	for (const consumable of consumables) {
+		const perKillCost = buildPerKillCost(consumable, timeToFinish, gearBank);
+		const fits = perKillCost.length() === 0 ? Number.POSITIVE_INFINITY : perKillCost.fits(gearBank.bank);
+		if (fits > bestFits) {
+			bestFits = fits;
+			bestConsumable = consumable;
+		}
+	}
+
+	return bestConsumable;
 };
 
 export function getItemCostFromConsumables({
@@ -33,44 +84,36 @@ export function getItemCostFromConsumables({
 	slayerKillsRemaining: number | null;
 }) {
 	const quantity = inputQuantity ?? Math.floor(maxTripLength / timeToFinish);
-	const duration = timeToFinish * quantity;
 	const floatCostsPerKill = new FloatBank();
 	const boosts: { message: string; boostPercent: number }[] = [];
 
 	for (const cc of consumableCosts) {
 		const flatConsumables = [cc, ...(cc.alternativeConsumables ?? [])];
-		const consumable =
-			flatConsumables.find(c => gearBank.bank.has(calculateTripConsumableCost(c, quantity, duration))) ?? cc;
-		if (consumable.optional && !gearBank.bank.has(calculateTripConsumableCost(cc, quantity, duration))) {
+		const consumable = selectConsumable({
+			consumables: flatConsumables,
+			gearBank,
+			timeToFinish,
+			desiredQuantity: quantity
+		});
+		if (consumable.optional && !canCoverConsumable(consumable, quantity, timeToFinish, gearBank)) {
 			continue;
 		}
 
-		let itemMultiple = consumable.qtyPerKill ?? consumable.qtyPerMinute ?? null;
-		if (itemMultiple) {
-			if (consumable.isRuneCost) {
-				// Free casts for kodai + sotd
-				if (gearBank.hasEquipped('Kodai wand')) {
-					itemMultiple = Math.ceil(0.85 * itemMultiple);
-				} else if (gearBank.hasEquipped('Staff of the dead')) {
-					itemMultiple = Math.ceil((6 / 7) * itemMultiple);
-				}
+		const perKillCost = buildPerKillCost(consumable, timeToFinish, gearBank);
+		if (perKillCost.length() > 0) {
+			for (const [item, qty] of perKillCost.entries()) {
+				floatCostsPerKill.add(Number(item), qty);
 			}
-
-			const multiply = consumable.qtyPerMinute ? (timeToFinish / Time.Minute) * itemMultiple : itemMultiple;
-
-			for (const [item, qty] of consumable.itemCost.items()) {
-				floatCostsPerKill.add(item.id, qty * multiply);
-			}
-			if (consumable.boostPercent) {
-				timeToFinish = reduceNumByPercent(timeToFinish, consumable.boostPercent);
-				boosts.push({
-					message: `${consumable.boostPercent}% for ${consumable.itemCost
-						.items()
-						.map(i => i[0].name)
-						.join(', ')}`,
-					boostPercent: consumable.boostPercent
-				});
-			}
+		}
+		if (consumable.boostPercent) {
+			timeToFinish = reduceNumByPercent(timeToFinish, consumable.boostPercent);
+			boosts.push({
+				message: `${consumable.boostPercent}% for ${consumable.itemCost
+					.items()
+					.map(i => i[0].name)
+					.join(', ')}`,
+				boostPercent: consumable.boostPercent
+			});
 		}
 	}
 

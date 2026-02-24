@@ -1,6 +1,6 @@
 {
-	"hash": "0d4bb4667231028921cf8a5e337b0fa2",
-	"date": "2025-12-09T10:45:20.898Z",
+	"hash": "af593899668a2e9343154537556b678c",
+	"date": "2026-01-09T12:22:36.383Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -2757,6 +2757,19 @@
 			},
 			"items_required": {
 				"Mark of grace": 55
+			}
+		},
+		{
+			"name": "Granite cannonball",
+			"items_created": {
+				"Granite cannonball": 1
+			},
+			"items_required": {
+				"Cannonball": 1,
+				"Granite dust": 1
+			},
+			"required_stats": {
+				"smithing": 50
 			}
 		},
 		{
