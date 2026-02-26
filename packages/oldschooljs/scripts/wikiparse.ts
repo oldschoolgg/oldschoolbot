@@ -1,4 +1,6 @@
-import { EquipmentSlot, type Item, type ItemEquipment } from '@/index.js';
+import { EquipmentSlot } from '@oldschoolgg/gear';
+
+import type { Item, ItemEquipment } from '@/index.js';
 
 interface WikiItemJSON {
 	title: string;

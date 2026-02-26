@@ -46,7 +46,7 @@ async function fetchItemWikiPage(itemId: number): Promise<Item | null> {
 	).then(res => res.json());
 	const rawData = res.bucket[0] as any;
 	if (!rawData) return null;
-	const dataFromBucket = ZWikiBucketItem.parse({ ...rawData, is_members_only: 'is_members_only' in rawData });
+	const dataFromBucket = ZWikiBucketItem.parse({ ...rawData, is_members_only: rawData.is_members_only === true });
 
 	const rawPageContents = await fetchRes(
 		`https://oldschool.runescape.wiki/api.php?action=query&titles=${encodeURIComponent(dataFromBucket.page_name)}&prop=revisions&rvprop=content&formatversion=2&format=json`
@@ -58,7 +58,7 @@ async function fetchItemWikiPage(itemId: number): Promise<Item | null> {
 	if (itemFromInfoBox === null) return null;
 
 	const finalItem: Item = {
-		id: itemFromInfoBox.id,
+		id: itemId,
 		name: itemFromInfoBox.name,
 		members: dataFromBucket.is_members_only ? true : undefined,
 		tradeable: itemFromInfoBox.tradeable,

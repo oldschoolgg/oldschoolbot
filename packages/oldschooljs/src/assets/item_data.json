@@ -180394,6 +180394,30 @@
 		"name": "Quest lamp",
 		"members": true
 	},
+	"28552": {
+		"id": 28552,
+		"name": "Elf quest lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"28553": {
+		"id": 28553,
+		"name": "Gnome quest lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"28554": {
+		"id": 28554,
+		"name": "Mahjarrat 1 quest lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
 	"28561": {
 		"name": "Trinket of vengeance",
 		"members": true,
@@ -202954,5 +202978,431 @@
 			"requirements": null
 		},
 		"cost": 50
+	},
+	"33002": {
+		"id": 33002,
+		"name": "Holy moleys",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"highalch": 1200,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "feet",
+			"requirements": null
+		},
+		"cost": 2000
+	},
+	"33004": {
+		"id": 33004,
+		"name": "Kharidian quest lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"33005": {
+		"id": 33005,
+		"name": "Myreque quest lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"33006": {
+		"id": 33006,
+		"name": "Dragonkin quest lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"33007": {
+		"id": 33007,
+		"name": "Mahjarrat 2 quest lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"33008": {
+		"id": 33008,
+		"name": "Camelot quest lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"33009": {
+		"id": 33009,
+		"name": "Recipe for disaster quest lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"33012": {
+		"id": 33012,
+		"name": "Annihilation weapon scroll",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false,
+		"cost": 25000,
+		"buy_limit": 5
+	},
+	"33015": {
+		"id": 33015,
+		"name": "Annihilation blueprints",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false,
+		"cost": 25000,
+		"buy_limit": 5
+	},
+	"33018": {
+		"id": 33018,
+		"name": "Annihilation teleport scroll",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": true,
+		"cost": 25000,
+		"buy_limit": 5
+	},
+	"33044": {
+		"id": 33044,
+		"name": "Trinket of avarice",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false,
+		"highalch": 60000,
+		"cost": 100000
+	},
+	"33063": {
+		"id": 33063,
+		"name": "Starter cape",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"highalch": 0,
+		"equipment": {
+			"attack_stab": 5,
+			"attack_slash": 5,
+			"attack_crush": 5,
+			"attack_magic": 5,
+			"attack_ranged": 5,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "cape",
+			"requirements": null
+		},
+		"cost": 1
+	},
+	"33065": {
+		"id": 33065,
+		"name": "Deadman's skull",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"33066": {
+		"id": 33066,
+		"name": "Hooded slayer helmet",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"highalch": 24000,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -6,
+			"attack_ranged": -2,
+			"defence_stab": 30,
+			"defence_slash": 32,
+			"defence_crush": 27,
+			"defence_magic": -1,
+			"defence_ranged": 30,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": null
+		},
+		"cost": 40000
+	},
+	"33080": {
+		"id": 33080,
+		"name": "25th anniversary helmet",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": null
+		},
+		"cost": 0
+	},
+	"33082": {
+		"id": 33082,
+		"name": "25th anniversary warrior tabard",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "body",
+			"requirements": null
+		},
+		"cost": 0
+	},
+	"33084": {
+		"id": 33084,
+		"name": "25th anniversary skeleton tabard",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "body",
+			"requirements": null
+		},
+		"cost": 0
+	},
+	"33086": {
+		"id": 33086,
+		"name": "25th anniversary 5x5 hat",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "head",
+			"requirements": null
+		},
+		"cost": 0
+	},
+	"33088": {
+		"id": 33088,
+		"name": "Gary",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"cost": 1
+	},
+	"33099": {
+		"id": 33099,
+		"name": "Brutus slippers",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"highalch": 600,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 0,
+			"defence_slash": 0,
+			"defence_crush": 0,
+			"defence_magic": 0,
+			"defence_ranged": 0,
+			"melee_strength": 0,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "feet",
+			"requirements": null
+		},
+		"cost": 1000
+	},
+	"33101": {
+		"id": 33101,
+		"name": "Mooleta",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": true,
+		"highalch": 0,
+		"equipment": {
+			"attack_stab": 5,
+			"attack_slash": 7,
+			"attack_crush": 7,
+			"attack_magic": -1,
+			"attack_ranged": -1,
+			"defence_stab": 4,
+			"defence_slash": 8,
+			"defence_crush": 8,
+			"defence_magic": -2,
+			"defence_ranged": -1,
+			"melee_strength": 1,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 0,
+			"slot": "shield",
+			"requirements": null
+		},
+		"cost": 1
+	},
+	"33106": {
+		"id": 33106,
+		"name": "Raw t-bone steak",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false,
+		"highalch": 6,
+		"cost": 10,
+		"buy_limit": 13000
+	},
+	"33109": {
+		"id": 33109,
+		"name": "Cooked t-bone steak",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"equipable": false,
+		"highalch": 6,
+		"cost": 10
+	},
+	"33112": {
+		"id": 33112,
+		"name": "Burnt t-bone steak",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"highalch": 6,
+		"cost": 10
+	},
+	"33115": {
+		"id": 33115,
+		"name": "Bull bones",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"highalch": 0,
+		"cost": 1
+	},
+	"33117": {
+		"id": 33117,
+		"name": "Magic lamp",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"highalch": 0,
+		"cost": 1
+	},
+	"33118": {
+		"id": 33118,
+		"name": "Abyssal potato",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"highalch": 0,
+		"cost": 1
+	},
+	"33120": {
+		"id": 33120,
+		"name": "Perfected quetzal whistle(i)",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"highalch": 6,
+		"cost": 10
+	},
+	"33124": {
+		"id": 33124,
+		"name": "Beef",
+		"cost": 1
+	},
+	"33126": {
+		"id": 33126,
+		"name": "The groats principles",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"highalch": 1,
+		"cost": 3
+	},
+	"33133": {
+		"id": 33133,
+		"name": "Pristine spider silk",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"equipable": false,
+		"highalch": 600,
+		"cost": 1000
 	}
 }

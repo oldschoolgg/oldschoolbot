@@ -18,6 +18,7 @@
 	"scripts": {
 		"test:types": "concurrently \"tsc --noEmit -p test\" \"tsc --noEmit -p src\"",
 		"test:unit": "vitest run",
+		"item:scrape": "tsx --tsconfig scripts/tsconfig.json scripts/item-scraper.ts",
 		"generate": "tsx --tsconfig scripts/tsconfig.json scripts/prepare && tsx --tsconfig scripts/tsconfig.json scripts/itemsPostProcess.ts",
 		"enum": "tsx --tsconfig scripts/tsconfig.json scripts/enum.ts",
 		"build": "tsdown"
