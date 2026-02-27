@@ -1,6 +1,6 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { getGatheringSpeedBonus, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
+import { getGatheringSpeedBonus, type IslandUpgradeTiers, defaultMaintenanceTimestamps } from '@/lib/bso/commands/islandUpgrades.js';
 
 interface AncientWood {
 	id: number;
@@ -29,7 +29,9 @@ export async function ancientMycologyCommand(user: MUser, channelId: string, qua
 	const bestWood = availableWoods[availableWoods.length - 1];
 	const maxTripLength = await user.calcMaxTripLength('AncientMycology');
 
-	const gatheringBonus = getGatheringSpeedBonus((user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>);
+	const islandMaint    = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign   = (user.user.island_upgrades as any)?.assignment  ?? null;
+	const gatheringBonus = getGatheringSpeedBonus((user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>, islandMaint, islandAssign);
 	const timePerWood = bestWood.timeToChop * Time.Second * (1 - gatheringBonus);
 
 	if (!quantity) {

@@ -1,6 +1,6 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
-import { getGatheringSpeedBonus, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
+import { getGatheringSpeedBonus, type IslandUpgradeTiers, defaultMaintenanceTimestamps } from '@/lib/bso/commands/islandUpgrades.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { getBestAvailableFish } from '@/tasks/minions/gemstoneFishingActivity.js';
 
@@ -17,7 +17,9 @@ export async function gemstoneFishingCommand(user: MUser, channelId: string, qua
 
 	const maxTripLength = await user.calcMaxTripLength('GemstoneFishing');
 
-	const gatheringBonus = getGatheringSpeedBonus((user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>);
+	const islandMaint    = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign   = (user.user.island_upgrades as any)?.assignment  ?? null;
+	const gatheringBonus = getGatheringSpeedBonus((user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>, islandMaint, islandAssign);
 	const timePerFish = bestFish.timeToFish * Time.Second * (1 - gatheringBonus);
 
 	if (!quantity) {

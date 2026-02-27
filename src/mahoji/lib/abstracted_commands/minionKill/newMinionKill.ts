@@ -35,6 +35,7 @@ import {
 
 import {
     getBossSpeedBonus,
+	defaultMaintenanceTimestamps,
     defaultIslandUpgrades,
     type IslandUpgradeTiers
 } from '@/lib/bso/commands/islandUpgrades.js';
@@ -293,8 +294,12 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
     142_006, // Burning Dominion
 	];
 
-	const islandUpgrades = args.islandUpgrades ?? defaultIslandUpgrades;
-	const islandBossBonus = islandBossIDs.includes(monster.id) ? getBossSpeedBonus(islandUpgrades) : 0;
+	const islandUpgrades   = args.islandUpgrades ?? defaultIslandUpgrades;
+	const islandMaint      = (args.islandUpgrades as any)?.maintenance  ?? defaultMaintenanceTimestamps;
+	const islandAssignment = (args.islandUpgrades as any)?.assignment   ?? null;
+	const islandBossBonus  = islandBossIDs.includes(monster.id)
+		? getBossSpeedBonus(islandUpgrades, islandMaint, islandAssignment)
+		: 0;
 	if (islandBossBonus > 0) {
 		duration = reduceNumByPercent(duration, islandBossBonus * 100);
 		speedDurationResult.messages.push(`${(islandBossBonus * 100).toFixed(0)}% faster kills (Warcamp Fortifications)`);
