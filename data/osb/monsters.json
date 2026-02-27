@@ -1,6 +1,6 @@
 {
-	"hash": "5c30cde39a793c978853119e8724e527",
-	"date": "2025-09-19T05:35:44.280Z",
+	"hash": "d78427f83aff687d1002e44a75270ff3",
+	"date": "2026-02-27T16:50:50.744Z",
 	"data": [
 		{
 			"id": 2,
@@ -2260,6 +2260,26 @@
 			"can_chin": false,
 			"can_cannon": true,
 			"cannon_multi": true
+		},
+		{
+			"id": 1834,
+			"name": "Gorak",
+			"base_kill_time_ms": 39200,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 30,
+			"item_in_bank_boosts": [
+				{
+					"Gem bag": 20
+				}
+			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
 		},
 		{
 			"id": 2025,

@@ -3369,6 +3369,24 @@
 		"can_barrage": false
 	},
 	{
+		"id": 1834,
+		"name": "Gorak",
+		"time_to_finish": 39200,
+		"wildy": false,
+		"difficulty_rating": 2,
+		"qp_required": 30,
+		"level_requirements": {
+			"prayer": 43,
+			"crafting": 31,
+			"woodcutting": 36
+		},
+		"item_in_bank_boosts": [
+			{
+				"766": 20
+			}
+		]
+	},
+	{
 		"id": 2025,
 		"name": "Greater Demon",
 		"time_to_finish": 25000,

@@ -99,6 +99,22 @@ export const lowKillableMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
+		id: Monsters.Gorak.id,
+		name: Monsters.Gorak.name,
+		aliases: Monsters.Gorak.aliases,
+		timeToFinish: Time.Second * 39.2,
+		table: Monsters.Gorak,
+		wildy: false,
+		difficultyRating: 2,
+		qpRequired: 30,
+		levelRequirements: {
+			prayer: 43,
+			crafting: 31,
+			woodcutting: 36
+		},
+		itemInBankBoosts: [{ [itemID('Gem bag')]: 20 }]
+	},
+	{
 		id: Monsters.JubblyBird.id,
 		name: Monsters.JubblyBird.name,
 		aliases: Monsters.JubblyBird.aliases,
