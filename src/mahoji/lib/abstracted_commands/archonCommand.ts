@@ -33,10 +33,27 @@ export const archonPresentations = {
     }
 } as const;
 
-export function getArchonTier(_user: MUser): 1 | 2 | 3 | null {
-    return 3; // temporary 
+const COMBAT_SKILLS = ['attack', 'strength', 'defence', 'ranged', 'magic', 'hitpoints'] as const;
+
+function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
+    const xpValues = COMBAT_SKILLS.map(skill => user.skillsAsXP[skill] ?? 0);
+    
+    const has120InAny = xpValues.some(xp => xp >= 104_300_000);
+    const has1bInAny  = xpValues.filter(xp => xp >= 1_000_000_000).length >= 2;
+    const has5bIn3    = xpValues.filter(xp => xp >= 5_000_000_000).length >= 3;
+
+    if (has5bIn3)   return 3;
+    if (has1bInAny) return 2;
+    if (has120InAny) return 1;
+    return null;
 }
 
+const ARCHON_SPAWN_CHANCE = 30; // number in N trips
+
+export function getArchonTier(user: MUser): 1 | 2 | 3 | null {
+    if (!roll(ARCHON_SPAWN_CHANCE)) return null;
+    return getEligibleTier(user);
+}
 const meleeSlots: [string, number][] = [
     ['Axe of the high sungod', 30], 
     ['Empyrean greathelm', 10],
