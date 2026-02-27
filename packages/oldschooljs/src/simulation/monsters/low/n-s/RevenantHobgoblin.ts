@@ -2,7 +2,7 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 import { makeRevTable } from '@/util/revs.js';
 
-export const RevenantHobgoblinTable = new LootTable()
+export const RevenantHobgoblinTable: LootTable = new LootTable()
 	.tertiary(5000, 'Hobgoblin champion scroll')
 	.every('Revenant ether', [1, 8])
 
@@ -43,7 +43,7 @@ export const RevenantHobgoblinTable = new LootTable()
 	.add('Death rune', [60, 100], 3)
 	.add('Blood rune', [60, 100], 3);
 
-export default new SimpleMonster({
+export const RevenantHobgoblin: SimpleMonster = new SimpleMonster({
 	id: 7933,
 	name: 'Revenant hobgoblin',
 	table: RevenantHobgoblinTable,

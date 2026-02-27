@@ -10,7 +10,7 @@ Venatrix is a spider-like demi-boss fought with your **Melee** setup. Kill it us
 
 - [[qp:500]]
 - [[hitpoints:120]] [[attack:120]] [[strength:120]] [[defence:120]] [[slayer:120]]
-- 1 kill of [Celestara](celestara.md)
+- 1 kill of [Celestara](celestara)
 - Must have unlocked Venatrix (requires the **HasUnlockedVenatrix** bitfield)
 - Need a weapon with at least **134 Slash attack** (equivalent to a [[Soulreaper axe]])
 
@@ -27,7 +27,7 @@ These supplies are consumed every kill.
 
 - Axe of the high sungod – 20%
 - Ancient Rejuvenation Pool – 5%
-- [Additional global boosts apply](../../skills/combat-skills.md#boosts)
+- [Additional global boosts apply](/bso/skills/combat-skills#boosts)
 
 ## Loot
 
@@ -40,3 +40,11 @@ These supplies are consumed every kill.
 | Spiders leg bottom    | 1/300         |
 | Red spiders' eggs     | 1/2 (200-600) |
 | Elder scroll piece    | 1/85          |
+
+## Mechanics notes
+
+- Kill time: 20 minutes each.
+- Requires [[qp:500]] and 1 KC of [[Celestara]].
+- Venatrix unlock is from harvesting a [[Toxic zygomite]] (which sets the Venatrix unlock bitfield).
+- Hard requirement: melee weapon with at least the slash stat equivalent to [[Soulreaper axe]].
+- Elder scroll piece drop is **1/85**.

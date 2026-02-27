@@ -10,23 +10,11 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 }
 
 /* Make Getting-Started section look like its at top level */
-#starlight__sidebar
-	> div
-	> sl-sidebar-state-persist
-	> ul
-	> li:nth-child(1)
-	> details
-	> summary {
+#starlight__sidebar > div > sl-sidebar-state-persist > ul > li:nth-child(1) > details > summary {
 	display: none;
 }
 
-#starlight__sidebar
-	> div
-	> sl-sidebar-state-persist
-	> ul
-	> li:nth-child(1)
-	> details
-	> ul {
+#starlight__sidebar > div > sl-sidebar-state-persist > ul > li:nth-child(1) > details > ul {
 	padding: 0;
 }
 
@@ -90,7 +78,6 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 	padding-inline-end: 0;
 	padding-inline-start: 0;
 	position: relative;
-	position: relative;
 }
 
 .sidebar-content .top-level li details ul li a {
@@ -112,13 +99,7 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 	padding-inline-start: var(--sl-nav-pad-x);
 }
 
-.sidebar-content
-	> .top-level
-	> li
-	> details
-	> summary
-	> div.group-label
-	> span {
+.sidebar-content > .top-level > li > details > summary > div.group-label > span {
 	font-size: 1rem;
 }
 

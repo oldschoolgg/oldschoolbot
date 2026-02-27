@@ -1,6 +1,5 @@
-import { randInt } from '@oldschoolgg/rng';
+import { bold } from '@oldschoolgg/discord';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
@@ -23,7 +22,7 @@ export const stealCommand = defineCommand({
 			name: 'name',
 			description: 'The object you try to steal from.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				const conLevel = user.skillLevel('thieving');
 				return Thieving.stealables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -42,7 +41,7 @@ export const stealCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
 				stringMatches(obj.name, options.name) ||
@@ -98,7 +97,8 @@ export const stealCommand = defineCommand({
 			return 'This NPC/Stall is missing variable respawnTime.';
 		}
 
-		const maxTripLength = (stealable.name === 'Wealthy Citizen' ? 2 : 1) * user.calcMaxTripLength('Pickpocket');
+		const maxTripLength =
+			(stealable.name === 'Wealthy Citizen' ? 2 : 1) * (await user.calcMaxTripLength('Pickpocket'));
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToTheft);
@@ -133,7 +133,8 @@ export const stealCommand = defineCommand({
 				stealable,
 				quantity,
 				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
-				hasArdyHard
+				hasArdyHard,
+				rng
 			);
 
 			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)'])) {
@@ -158,14 +159,14 @@ export const stealCommand = defineCommand({
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random
-			successfulQuantity = Math.floor((quantity * randInt(95, 100)) / 100);
+			successfulQuantity = Math.floor((quantity * rng.randInt(95, 100)) / 100);
 			xpReceived = successfulQuantity * stealable.xp;
 		}
 
 		await ActivityManager.startTrip<PickpocketActivityTaskOptions>({
 			monsterID: stealable.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Pickpocket',

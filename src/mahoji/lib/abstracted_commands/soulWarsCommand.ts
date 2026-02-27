@@ -1,8 +1,6 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import type { User } from '@/prisma/main.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const soulWarsBuyables = [
@@ -131,19 +129,15 @@ export const soulWarsImbueables = [
 	}
 ];
 
-export async function soulWarsTokensCommand(user: User) {
-	return `You have ${user.zeal_tokens} Zeal Tokens.`;
-}
-
-export async function soulWarsStartCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	const perDuration = randomVariation(Time.Minute * 7, 5);
-	const quantity = Math.floor(user.calcMaxTripLength('SoulWars') / perDuration);
+export async function soulWarsStartCommand(rng: RNGProvider, user: MUser, channelId: string) {
+	if (await user.minionIsBusy()) return `${user.minionName} is busy.`;
+	const perDuration = rng.randomVariation(Time.Minute * 7, 5);
+	const quantity = Math.floor((await user.calcMaxTripLength('SoulWars')) / perDuration);
 	const duration = quantity * perDuration;
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		quantity,
 		duration,
 		type: 'SoulWars',
@@ -184,7 +178,7 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 			decrement: item.tokens * quantity
 		}
 	});
-	await user.addItemsToBank({ items: { [item.item.id]: quantity }, collectionLog: true });
+	await user.addItemsToBank({ items: new Bank().add(item.item.id, quantity), collectionLog: true });
 	return `Added ${quantity}x ${item.item.name} to your bank, removed ${item.tokens * quantity}x Zeal Tokens.`;
 }
 

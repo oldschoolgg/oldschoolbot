@@ -1,3 +1,5 @@
+import type { IFarmingContract } from '@oldschoolgg/schemas';
+
 import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
@@ -24,22 +26,11 @@ export interface IPatchDataDetailed extends IPatchData {
 
 export type PatchData = IPatchData | null;
 
-export type PlantTier = 0 | 1 | 2 | 3 | 4 | 5;
-export type FarmingContractDifficultyLevel = 'easy' | 'medium' | 'hard';
-
-export interface FarmingContract {
-	hasContract: boolean;
-	difficultyLevel: FarmingContractDifficultyLevel | null;
-	plantToGrow: string | null;
-	plantTier: PlantTier;
-	contractsCompleted: number;
-}
-
 export const ContractOptions = ['easy', 'medium', 'hard', 'easier'] as const;
 export type ContractOption = (typeof ContractOptions)[number];
 
 export type DetailedFarmingContract = {
-	contract: FarmingContract;
+	contract: IFarmingContract;
 	plant: Plant | undefined;
 	matchingPlantedCrop: IPatchDataDetailed | undefined;
 	farmingInfo: ReturnType<typeof getFarmingInfoFromUser>;

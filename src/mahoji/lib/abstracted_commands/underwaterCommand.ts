@@ -1,19 +1,26 @@
-import { randFloat } from '@oldschoolgg/rng';
 import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
 
-export async function underwaterAgilityThievingCommand(
-	channelID: string,
-	user: MUser,
-	trainingSkill: UnderwaterAgilityThievingTrainingSkill,
-	minutes: number | undefined,
-	noStams: boolean | undefined
-) {
+export async function underwaterAgilityThievingCommand({
+	rng,
+	channelId,
+	user,
+	trainingSkill,
+	minutes,
+	noStams
+}: {
+	rng: RNGProvider;
+	channelId: string;
+	user: MUser;
+	trainingSkill: UnderwaterAgilityThievingTrainingSkill;
+	minutes: number | undefined;
+	noStams: boolean | undefined;
+}) {
 	const userBank = user.bank;
-	const maxTripLength = user.calcMaxTripLength('UnderwaterAgilityThieving');
+	const maxTripLength = await user.calcMaxTripLength('UnderwaterAgilityThieving');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);
@@ -40,7 +47,7 @@ export async function underwaterAgilityThievingCommand(
 	const boosts: string[] = [];
 	const itemsToRemove = new Bank();
 	// Adjust numbers to end up with average 1351 loot actions per hour
-	let oneLootActionTime = randFloat(10, 10.2) * Time.Second;
+	let oneLootActionTime = rng.randFloat(10, 10.2) * Time.Second;
 
 	if (user.hasEquipped('Merfolk trident')) {
 		oneLootActionTime = reduceNumByPercent(oneLootActionTime, 10);
@@ -77,9 +84,10 @@ export async function underwaterAgilityThievingCommand(
 
 	await ActivityManager.startTrip<UnderwaterAgilityThievingTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		trainingSkill,
 		quantity,
+		minutes,
 		duration,
 		noStams,
 		type: 'UnderwaterAgilityThieving'

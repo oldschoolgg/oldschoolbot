@@ -174,7 +174,6 @@ const logs: Log[] = [
 		aliases: ['sul', 'sulli', 'mush', 'mushroom'],
 		findNewTreeTime: 38,
 		bankingTime: 100,
-		// TODO: Get real slope and intercept from wiki
 		slope: 0.13,
 		intercept: 9.47,
 		depletionChance: 100 * (1 / 16),

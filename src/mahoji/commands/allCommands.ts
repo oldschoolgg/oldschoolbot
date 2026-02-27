@@ -1,5 +1,4 @@
 import { globalConfig } from '@/lib/constants.js';
-import type { AnyCommand } from '@/lib/discord/index.js';
 import { activitiesCommand } from '@/mahoji/commands/activities.js';
 import { adminCommand } from '@/mahoji/commands/admin.js';
 import { askCommand } from '@/mahoji/commands/ask.js';

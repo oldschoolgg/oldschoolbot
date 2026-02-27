@@ -954,17 +954,6 @@
 				],
 				"items": ["Steel ring"]
 			},
-			"doom_of_mokhaiotl": {
-				"unobtainable": true,
-				"items": [
-					"Avernic treads",
-					"Demon tear",
-					"Dom",
-					"Eye of ayak (uncharged)",
-					"Mokhaiotl cloth",
-					"Mokhaiotl waystone"
-				]
-			},
 			"dagannoth_kings": {
 				"kc_activity": {
 					"default": ["Dagannoth Supreme", "Dagannoth Rex", "Dagannoth Prime"],
@@ -2643,22 +2632,6 @@
 					"Warm gloves"
 				]
 			},
-			"yami": {
-				"unobtainable": true,
-				"items": [
-					"Barrel of demonic tallow (full)",
-					"Chasm teleport scroll",
-					"Dossier",
-					"Forgotten lockbox",
-					"Oathplate chest",
-					"Oathplate helm",
-					"Oathplate legs",
-					"Oathplate shards",
-					"Rite of vile transference",
-					"Soulflame horn",
-					"Yami"
-				]
-			},
 			"zalcano": {
 				"items": ["Crystal tool seed", "Smolcano", "Uncut onyx", "Zalcano shard"]
 			},
@@ -3833,7 +3806,7 @@
 					"Zamorak platelegs",
 					"Zamorak plateskirt",
 					"Zamorak stole",
-					"Zombie head"
+					"Zombie head (treasure trails)"
 				],
 				"kc_activity": {},
 				"items": [
@@ -3970,7 +3943,7 @@
 					"Zamorak platelegs",
 					"Zamorak plateskirt",
 					"Zamorak stole",
-					"Zombie head"
+					"Zombie head (treasure trails)"
 				],
 				"is_activity": true
 			},
@@ -4683,24 +4656,6 @@
 					"Ring of nature"
 				],
 				"is_activity": true
-			},
-			"scroll_cases": {
-				"unobtainable": true,
-				"items": [
-					"Major beginner scroll case",
-					"Major easy scroll case",
-					"Major elite scroll case",
-					"Major hard scroll case",
-					"Major master scroll case",
-					"Major medium scroll case",
-					"Mimic scroll case",
-					"Minor beginner scroll case",
-					"Minor easy scroll case",
-					"Minor elite scroll case",
-					"Minor hard scroll case",
-					"Minor master scroll case",
-					"Minor medium scroll case"
-				]
 			}
 		}
 	},
@@ -4966,18 +4921,6 @@
 				],
 				"is_activity": true
 			},
-			"mastering_mixology": {
-				"unobtainable": true,
-				"items": [
-					"Alchemist gloves",
-					"Alchemist labcoat",
-					"Alchemist pants",
-					"Alchemist's amulet",
-					"Chugging barrel (disassembled)",
-					"Prescription goggles",
-					"Reagent pouch"
-				]
-			},
 			"pest_control": {
 				"items": [
 					"Elite void robe",
@@ -5074,10 +5017,6 @@
 				],
 				"is_activity": true
 			},
-			"vale_totems": {
-				"unobtainable": true,
-				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask"]
-			},
 			"volcanic_mine": {
 				"items": [
 					"Ash covered tome",
@@ -5117,7 +5056,6 @@
 					"Butch",
 					"Callisto cub",
 					"Chompy chick",
-					"Dom",
 					"Giant squirrel",
 					"Hellpuppy",
 					"Herbi",
@@ -5168,7 +5106,6 @@
 					"Vet'ion jr.",
 					"Vorki",
 					"Wisp",
-					"Yami",
 					"Youngllef"
 				]
 			},
@@ -5545,17 +5482,6 @@
 					"Zenyte shard"
 				]
 			},
-			"hunter_guild": {
-				"unobtainable": true,
-				"items": [
-					"Guild hunter boots",
-					"Guild hunter headwear",
-					"Guild hunter legs",
-					"Guild hunter top",
-					"Huntsman's kit",
-					"Quetzin"
-				]
-			},
 			"monkey_backpacks": {
 				"kc_activity": {},
 				"items": [
@@ -5726,13 +5652,11 @@
 					"Abyssal head",
 					"Abyssal whip",
 					"Adamant boots",
-					"Alchemist's signet",
 					"Ancient ceremonial boots",
 					"Ancient ceremonial gloves",
 					"Ancient ceremonial legs",
 					"Ancient ceremonial mask",
 					"Ancient ceremonial top",
-					"Antler guard",
 					"Aranea boots",
 					"Basilisk head",
 					"Basilisk jaw",
@@ -5740,7 +5664,6 @@
 					"Black mask (10)",
 					"Blood shard",
 					"Brine sabre",
-					"Broken antler",
 					"Broken dragon hasta",
 					"Bronze boots",
 					"Cockatrice head",
@@ -5759,7 +5682,6 @@
 					"Drake's claw",
 					"Drake's tooth",
 					"Dust battlestaff",
-					"Earthbound tecpatl",
 					"Eternal gem",
 					"Flippers",
 					"Frozen tear",
@@ -7136,6 +7058,7 @@
 					"Mithril set (sk)",
 					"Mithril trimmed set (lg)",
 					"Mithril trimmed set (sk)",
+					"Moon key",
 					"Mystic air staff",
 					"Mystic boots (or)",
 					"Mystic dust staff",

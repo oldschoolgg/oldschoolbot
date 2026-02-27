@@ -24,7 +24,7 @@ export const huntCommand = defineCommand({
 			name: 'name',
 			description: 'The creature you want to hunt.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return Hunter.Creatures.filter(i =>
 					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 				).map(i => ({
@@ -53,7 +53,7 @@ export const huntCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId }) => {
 		const userBank = user.bank;
 		const userQP = user.QP;
 		const boosts = [];
@@ -140,7 +140,7 @@ export const huntCommand = defineCommand({
 		}
 
 		if (creature.wildy) {
-			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy);
+			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			wildyScore = score;
 			if (!bol) {
 				return `To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason}, check your wildy gear.`;
@@ -154,7 +154,7 @@ export const huntCommand = defineCommand({
 			if (usingStaminaPotion) catchTime *= 0.8;
 		}
 
-		const maxTripLength = user.calcMaxTripLength('Hunter');
+		const maxTripLength = await user.calcMaxTripLength('Hunter');
 
 		let { quantity } = options;
 		if (!quantity) {
@@ -260,7 +260,7 @@ export const huntCommand = defineCommand({
 		await ActivityManager.startTrip<HunterActivityTaskOptions>({
 			creatureID: creature.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			usingHuntPotion: usingHuntPotion ? true : undefined,

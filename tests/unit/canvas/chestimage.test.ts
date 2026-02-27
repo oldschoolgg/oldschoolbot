@@ -13,7 +13,7 @@ describe('Chest Images', async () => {
 		const previousCL = new Bank().add('Coins', 1000000);
 
 		const mockUser = {
-			rawUsername: 'TestUser',
+			username: 'TestUser',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;
@@ -30,7 +30,7 @@ describe('Chest Images', async () => {
 			type: 'Tombs of Amascut'
 		});
 
-		await writeFile(path.join(baseSnapshotPath, 'chest-toa.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-toa.png'), result.buffer);
 	});
 
 	test('TOB Chest Loot Image', async () => {
@@ -39,7 +39,7 @@ describe('Chest Images', async () => {
 		const previousCL = new Bank();
 
 		const mockUser = {
-			rawUsername: 'TestUser',
+			username: 'TestUser',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;
@@ -56,7 +56,7 @@ describe('Chest Images', async () => {
 			type: 'Theatre of Blood'
 		});
 
-		await writeFile(path.join(baseSnapshotPath, 'chest-tob.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-tob.png'), result.buffer);
 	});
 
 	test('COX Chest Loot Image', async () => {
@@ -65,7 +65,7 @@ describe('Chest Images', async () => {
 		const previousCL = new Bank();
 
 		const mockUser = {
-			rawUsername: 'TestUser',
+			username: 'TestUser',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;
@@ -82,7 +82,7 @@ describe('Chest Images', async () => {
 			type: 'Chambers of Xerician'
 		});
 
-		await writeFile(path.join(baseSnapshotPath, 'chest-cox.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-cox.png'), result.buffer);
 	});
 
 	test('Multiple Users Chest Loot', async () => {
@@ -92,13 +92,13 @@ describe('Chest Images', async () => {
 		const previousCL = new Bank();
 
 		const mockUser1 = {
-			rawUsername: 'User1',
+			username: 'User1',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;
 
 		const mockUser2 = {
-			rawUsername: 'User2',
+			username: 'User2',
 			user: { bankBackground: 1 },
 			iconPackId: undefined
 		} as any;
@@ -110,6 +110,6 @@ describe('Chest Images', async () => {
 			],
 			type: 'Tombs of Amascut'
 		});
-		await writeFile(path.join(baseSnapshotPath, 'chest-multiple-users.png'), result.attachment);
+		await writeFile(path.join(baseSnapshotPath, 'chest-multiple-users.png'), result.buffer);
 	});
 });

@@ -10,11 +10,7 @@ export default defineConfig({
 			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
 		isolate: false,
 		pool: 'threads',
-		poolOptions: {
-			threads: {
-				singleThread: true
-			}
-		}
+		maxWorkers: 4
 	},
 	resolve: {
 		alias: {

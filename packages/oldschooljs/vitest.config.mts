@@ -23,13 +23,7 @@ export default defineConfig({
 		},
 		isolate: false,
 		pool: 'threads',
-		poolOptions: {
-			threads: {
-				minThreads: 5,
-				maxThreads: 5,
-				execArgv: ['--disable-warning=ExperimentalWarning']
-			}
-		}
+		maxWorkers: 4
 	},
 	resolve: {
 		alias: {

@@ -1,12 +1,17 @@
+import {
+	allEquipmentSlots,
+	EquipmentSlot,
+	type GearSetupType,
+	GearSetupTypes,
+	type GearStats
+} from '@oldschoolgg/gear';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { EquipmentSlot } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { type BaseCanvasArgs, calcAspectRatioFit } from '@/lib/canvas/canvasUtil.js';
 import { gearImages, transmogItems } from '@/lib/canvas/gearImageData.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
-import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
-import { GearSetupTypes } from '@/lib/gear/types.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { type Gear, maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear.js';
 
 /**
@@ -100,7 +105,7 @@ function isMaxStat(statKey: string, value: number): boolean {
 	return maxStats[statKey as keyof typeof maxStats] === value;
 }
 
-function drawGearStats(canvas: OSRSCanvas, gearStats: any) {
+function drawGearStats(canvas: OSRSCanvas, gearStats: GearStats) {
 	// Define stat groups with their data
 	const attackStats: StatGroup = {
 		title: 'Attack bonus',
@@ -321,8 +326,8 @@ export async function generateGearImage({
 	}
 
 	// Draw equipped items
-	for (const enumName of Object.values(EquipmentSlot)) {
-		const item = gearSetup[enumName];
+	for (const enumName of allEquipmentSlots) {
+		const item = gearSetup.get(enumName);
 		if (!item) continue;
 		const [x, y] = slotCoordinates[enumName];
 		await canvas.drawItemIDSprite({
@@ -346,9 +351,13 @@ export async function generateAllGearImage({
 	farmingContract
 }: BaseCanvasArgs & {
 	gearTemplate?: number;
-	gear: { [key in GearSetupType]: GearSetup };
+	gear: UserFullGearSetup;
 	equippedPet?: number | null;
 }) {
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
 	const {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
@@ -408,7 +417,7 @@ export async function generateAllGearImage({
 		});
 		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 		for (const enumName of Object.values(EquipmentSlot)) {
-			const item = gearSetup[enumName];
+			const item = gearSetup.get(enumName);
 			if (!item) continue;
 			const [x, y] = slotCoordinatesCompact[enumName];
 

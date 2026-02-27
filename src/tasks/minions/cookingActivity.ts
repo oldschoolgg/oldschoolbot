@@ -1,13 +1,13 @@
 import { Bank } from 'oldschooljs';
 
-import calcBurntCookables from '@/lib/skilling/functions/calcBurntCookables.js';
+import { calcBurntCookables } from '@/lib/skilling/functions/calcBurntCookables.js';
 import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const cookingTask: MinionTask = {
 	type: 'Cooking',
-	async run(data: CookingActivityTaskOptions, { user, handleTripFinish }) {
-		const { cookableID, quantity, channelID, duration } = data;
+	async run(data: CookingActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { cookableID, quantity, channelId, duration } = data;
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
 
@@ -26,7 +26,12 @@ export const cookingTask: MinionTask = {
 			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillsAsLevels.cooking);
+		burnedAmount = calcBurntCookables({
+			rng,
+			qtyCooking: quantity,
+			stopBurningLvl,
+			cookingLvl: user.skillsAsLevels.cooking
+		});
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 
@@ -53,6 +58,6 @@ export const cookingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

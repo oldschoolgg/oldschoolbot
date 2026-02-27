@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import { choicesOf } from '@/lib/discord/index.js';
+import { choicesOf } from '@/discord/index.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
@@ -97,7 +97,7 @@ export const slayerCommand = defineCommand({
 							name: 'unlockable',
 							description: 'Unlockable to purchase',
 							required: true,
-							autocomplete: async (value: string, user: MUser) => {
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								const slayerUnlocks = SlayerRewardsShop.filter(
 									r => !r.item && !user.user.slayer_unlocks.includes(r.id)
 								);
@@ -128,7 +128,7 @@ export const slayerCommand = defineCommand({
 							name: 'assignment',
 							description: 'Assignment to unblock',
 							required: true,
-							autocomplete: async (value: string, user: MUser) => {
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								if (user.user.slayer_blocked_ids.length === 0) {
 									return [{ name: "You don't have any monsters blocked", value: '' }];
 								}
@@ -155,7 +155,7 @@ export const slayerCommand = defineCommand({
 							name: 'item',
 							description: 'Item to purchase',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return SlayerRewardsShop.filter(
 									r =>
 										r.item &&
@@ -211,7 +211,7 @@ export const slayerCommand = defineCommand({
 							name: 'unlockable',
 							description: 'Slayer unlock to disable',
 							required: true,
-							autocomplete: async (value: string, user: MUser) => {
+							autocomplete: async ({ value, user }: StringAutoComplete) => {
 								return SlayerRewardsShop.filter(
 									r =>
 										!r.item &&
@@ -238,14 +238,15 @@ export const slayerCommand = defineCommand({
 			description: 'Shows status of current slayer task'
 		}
 	],
-	run: async ({ options, user, interaction }) => {
+	run: async ({ options, user, interaction, rng }) => {
 		await interaction.defer();
 		if (options.autoslay) {
 			return autoSlayCommand({
 				user,
 				modeOverride: options.autoslay.mode,
 				saveMode: Boolean(options.autoslay.save),
-				interaction
+				interaction,
+				rng
 			});
 		}
 		if (options.new_task) {
@@ -254,7 +255,8 @@ export const slayerCommand = defineCommand({
 				interaction,
 				slayerMasterOverride: options.new_task.master,
 				saveDefaultSlayerMaster: Boolean(options.new_task.save),
-				showButtons: true
+				showButtons: true,
+				rng
 			});
 		}
 		if (options.manage) {
@@ -266,7 +268,8 @@ export const slayerCommand = defineCommand({
 					user,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
-					interaction
+					interaction,
+					rng
 				});
 			}
 		}

@@ -1,9 +1,9 @@
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const MagicAxeTable = new LootTable().every('Iron battleaxe').tertiary(256, 'Clue scroll (medium)');
+export const MagicAxeTable: LootTable = new LootTable().every('Iron battleaxe').tertiary(256, 'Clue scroll (medium)');
 
-export default new SimpleMonster({
+export const MagicAxe: SimpleMonster = new SimpleMonster({
 	id: 2844,
 	name: 'Magic axe',
 	table: MagicAxeTable,

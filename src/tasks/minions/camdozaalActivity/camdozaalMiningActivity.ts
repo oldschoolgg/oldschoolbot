@@ -10,7 +10,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
-		const { quantity, channelID, duration } = data;
+		const { quantity, channelId, duration } = data;
 
 		const currentLevel = user.skillsAsLevels.mining;
 
@@ -93,7 +93,7 @@ export const camdozaalMiningTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = Mining.CamdozaalMine.clueScrollChance!;
-		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(rng, user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Rock golem roll
 		const { petDropRate } = skillingPetDropRate(user, 'mining', Mining.CamdozaalMine.petChance!);
@@ -119,6 +119,6 @@ export const camdozaalMiningTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		handleTripFinish({ user, channelId, message: { content: str, files: [image] }, data, loot });
 	}
 };

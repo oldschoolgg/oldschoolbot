@@ -78,13 +78,13 @@ describe('PVM', async () => {
 			slayerLevel: 70,
 			bank: new Bank().add('Shark', 10000)
 		});
-		expect(await user.runCommand(minionKCommand, { name: 'hydra' }, true)).to.contain('You need Boots of stone');
+		expect(await user.runCommand(minionKCommand, { name: 'hydra' })).to.contain('You need Boots of stone');
 		await user.equip('melee', resolveItems(['Boots of stone']));
-		expect(await user.runCommand(minionKCommand, { name: 'hydra' }, true)).to.contain(
+		expect(await user.runCommand(minionKCommand, { name: 'hydra' })).to.contain(
 			"You don't meet the skill requirement"
 		);
 		await user.setLevel('slayer', 95);
-		const x = await user.runCommand(minionKCommand, { name: 'hydra' }, true);
+		const x = await user.runCommand(minionKCommand, { name: 'hydra' });
 		expect(x).to.contain("You don't have the items");
 		await user.addItemsToBank({ items: new Bank().add('Anti-venom+(4)', 1) });
 		const result = await user.kill(EMonster.HYDRA);
@@ -148,7 +148,7 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Kodai wand'])
 		});
-		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
+		expect(user.gear.mage.get('weapon')?.item).toEqual(itemID('Kodai wand'));
 		await user.setAttackStyle(['magic']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
@@ -164,7 +164,7 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Kodai wand'])
 		});
-		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
+		expect(user.gear.mage.get('weapon')?.item).toEqual(itemID('Kodai wand'));
 		await user.setAttackStyle(['attack']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
@@ -224,8 +224,15 @@ describe('PVM', async () => {
 			maxed: true,
 			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
 		});
-		await prisma.playerOwnedHouse.create({
-			data: {
+		await prisma.playerOwnedHouse.upsert({
+			where: {
+				user_id: user.id
+			},
+			create: {
+				user_id: user.id,
+				pool: getPOHObject('Rejuvenation pool').id
+			},
+			update: {
 				user_id: user.id,
 				pool: getPOHObject('Rejuvenation pool').id
 			}

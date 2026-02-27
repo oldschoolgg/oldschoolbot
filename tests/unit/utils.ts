@@ -1,19 +1,29 @@
+import { GearSetupTypes } from '@oldschoolgg/gear';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 
 import { MAX_XP } from '@/lib/constants.js';
 import type { Skills, SkillsRequired } from '@/lib/types/index.js';
-import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
+import type { UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { SkillsArray } from '../../src/lib/skilling/types.js';
 import { ChargeBank } from '../../src/lib/structures/Bank.js';
 import { Gear } from '../../src/lib/structures/Gear.js';
 import { GearBank } from '../../src/lib/structures/GearBank.js';
 
 function makeFullGear() {
-	const obj: any = {};
+	const obj: UserFullGearSetup = {
+		melee: new Gear(),
+		mage: new Gear(),
+		range: new Gear(),
+		fashion: new Gear(),
+		wildy: new Gear(),
+		skilling: new Gear(),
+		misc: new Gear(),
+		other: new Gear()
+	};
 	for (const type of GearSetupTypes) {
 		obj[type] = new Gear();
 	}
-	return obj as UserFullGearSetup;
+	return obj;
 }
 
 export function makeGearBank({ bank, skillsAsLevels }: { bank?: Bank; skillsAsLevels?: Skills } = {}) {

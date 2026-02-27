@@ -9,7 +9,6 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
-import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
@@ -18,7 +17,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
-		if (user.minionIsBusy) {
+		if (await user.minionIsBusy()) {
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
@@ -26,7 +25,7 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			return `${user.usernameOrMention} is an ironman, so they can't join!`;
 		}
 
-		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+		const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -55,7 +54,7 @@ export const massCommand = defineCommand({
 			name: 'monster',
 			description: 'The boss you want to mass.',
 			required: true,
-			autocomplete: async (value: string) => {
+			autocomplete: async ({ value }: StringAutoComplete) => {
 				return killableMonsters
 					.filter(i => i.groupKillable)
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -63,7 +62,7 @@ export const massCommand = defineCommand({
 			}
 		}
 	],
-	run: async ({ interaction, options, user, channelID }) => {
+	run: async ({ interaction, options, user, channelId }) => {
 		await interaction.defer();
 
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
@@ -74,56 +73,29 @@ export const massCommand = defineCommand({
 		const check = await checkReqs([user], monster, 2);
 		if (check) return check;
 
-		let users: MUser[] = [];
-		try {
-			users = await interaction.makeParty({
-				leader: user,
-				minSize: 2,
-				maxSize: 10,
-				ironmanAllowed: false,
-				message: `${user.badgedUsername} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
-				customDenier: async user => {
-					if (!user.hasMinion) {
-						return [true, "you don't have a minion."];
-					}
-					if (user.minionIsBusy) {
-						return [true, 'your minion is busy.'];
-					}
-					const [hasReqs, reason] = hasMonsterRequirements(user, monster);
-					if (!hasReqs) {
-						return [true, `you don't have the requirements for this monster; ${reason}`];
-					}
-
-					if (1 > 2 && monster.healAmountNeeded) {
-						try {
-							calculateMonsterFood(monster, user);
-						} catch (err: any) {
-							return [true, err];
-						}
-
-						// Ensure people have enough food for at least 2 full KC
-						// This makes it so the users will always have enough food for any amount of KC
-						if (1 > 2 && !hasEnoughFoodForMonster(monster, user, 2)) {
-							return [
-								true,
-								`You don't have enough food. You need at least ${
-									monster.healAmountNeeded * 2
-								} HP in food to enter the mass.`
-							];
-						}
-					}
-
-					return [false];
+		const users: MUser[] = await globalClient.makeParty({
+			interaction,
+			leader: user,
+			minSize: 2,
+			maxSize: 10,
+			ironmanAllowed: false,
+			message: `${user.badgedUsername} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
+			customDenier: async user => {
+				if (!user.hasMinion) {
+					return [true, "you don't have a minion."];
 				}
-			});
-		} catch (err: any) {
-			return {
-				content: typeof err === 'string' ? err : 'Your mass failed to start.',
-				ephemeral: true
-			};
-		}
+				if (await user.minionIsBusy()) {
+					return [true, 'your minion is busy.'];
+				}
+				const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+				if (!hasReqs) {
+					return [true, `you don't have the requirements for this monster; ${reason}`];
+				}
+				return [false];
+			}
+		});
+
 		const unchangedUsers = [...users];
-		users = users.filter(i => !i.minionIsBusy);
 		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 
 		const durQtyRes = await calcDurQty(users, monster, undefined);
@@ -149,7 +121,7 @@ export const massCommand = defineCommand({
 		await ActivityManager.startTrip<GroupMonsterActivityTaskOptions>({
 			mi: monster.id,
 			userID: user.id,
-			channelID,
+			channelId,
 			q: quantity,
 			duration,
 			type: 'GroupMonsterKilling',

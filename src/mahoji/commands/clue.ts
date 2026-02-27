@@ -1,4 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
@@ -9,7 +8,6 @@ import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
@@ -235,7 +233,7 @@ export const clueCommand = defineCommand({
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return ClueTiers.map(i => ({
 					name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
 					value: i.name
@@ -254,7 +252,7 @@ export const clueCommand = defineCommand({
 			name: 'implings',
 			description: 'Implings to use for multiple clues per trip.',
 			required: false,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				const allClueImps = ClueTiers.filter(t => t.name !== 'Beginner')
 					.map(i => i.implings)
 					.filter(notEmpty)
@@ -268,7 +266,7 @@ export const clueCommand = defineCommand({
 			}
 		}
 	],
-	run: async ({ options, user, channelID }) => {
+	run: async ({ options, user, channelId, rng }) => {
 		let { quantity } = options;
 
 		const clueTier = ClueTiers.find(
@@ -276,7 +274,7 @@ export const clueCommand = defineCommand({
 		);
 		if (!clueTier) return 'Invalid clue tier.';
 
-		const maxTripLength = user.calcMaxTripLength('ClueCompletion');
+		const maxTripLength = await user.calcMaxTripLength('ClueCompletion');
 
 		const clueImpling = options.implings
 			? Items.getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
@@ -305,7 +303,7 @@ export const clueCommand = defineCommand({
 			boosts.push(`${learningReductionPercent}% for Clue score`);
 		}
 
-		const randomAddedDuration = randInt(1, 20);
+		const randomAddedDuration = rng.randInt(1, 20);
 		timePerClue += (randomAddedDuration * timePerClue) / 100;
 		const poh = await getPOH(user.id);
 
@@ -349,7 +347,7 @@ export const clueCommand = defineCommand({
 
 		quantity = quantity ? Math.min(quantity, maxCanDo) : maxCanDo;
 
-		const response: Awaited<CommandResponse> = {};
+		const response = new MessageBuilder();
 
 		let implingLootString = '';
 		let implingClues = 0;
@@ -372,7 +370,7 @@ export const clueCommand = defineCommand({
 			let openedImplings = 0;
 			const implingLoot = new Bank();
 			while (implingClues + bankedClues < quantity && openedImplings < bankedImplings) {
-				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1 });
+				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1, rng });
 				implingLoot.add(impLoot.bank);
 				implingClues = implingLoot.amount(clueTier.scrollID);
 				openedImplings++;
@@ -389,7 +387,7 @@ export const clueCommand = defineCommand({
 				collectionLog: true
 			});
 
-			const image = await makeBankImage({
+			response.addBankImage({
 				bank: implingLoot,
 				title: `Loot from ${openedImplings}x ${implingJarOpenable.name}`,
 				user,
@@ -397,10 +395,10 @@ export const clueCommand = defineCommand({
 				mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
 			});
 
-			response.files = [image.file];
-
 			if (bankedClues + implingClues === 0) {
-				response.content = `You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s.`;
+				response.setContent(
+					`You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s.`
+				);
 				return response;
 			}
 			quantity = bankedClues + implingClues;
@@ -427,18 +425,20 @@ export const clueCommand = defineCommand({
 			implingID: clueImpling ? clueImpling.id : undefined,
 			implingClues: clueImpling ? implingClues : undefined,
 			userID: user.id,
-			channelID,
+			channelId,
 			q: quantity,
 			iQty: options.quantity,
 			duration,
 			type: 'ClueCompletion'
 		});
 
-		response.content = `${user.minionName} is now completing ${cluesDone}x ${
-			clueTier.name
-		} clues, it'll take around ${formatDuration(duration)} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${
-			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
-		}${implingLootString}`;
+		response.setContent(
+			`${user.minionName} is now completing ${cluesDone}x ${
+				clueTier.name
+			} clues, it'll take around ${formatDuration(duration)} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${
+				boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
+			}${implingLootString}`
+		);
 		return response;
 	}
 });

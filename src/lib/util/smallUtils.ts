@@ -1,7 +1,10 @@
+import { createHash } from 'node:crypto';
+import { gzip } from 'node:zlib';
 import { objectEntries, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit';
 import { type ArrayItemsResolved, type Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { type BitField, BitFieldData } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
@@ -18,10 +21,10 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 	return str.join(', ');
 }
 
-export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
+export function formatSkillRequirements(reqs: SkillRequirements, emojis = true) {
 	const arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
-		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
@@ -120,4 +123,46 @@ export function formatList(_itemList: (string | undefined | null)[], end?: strin
 
 export function isValidSkill(skill: string): skill is SkillNameType {
 	return SkillsArray.includes(skill as SkillNameType);
+}
+
+export function patronMsg(tierNeeded: number) {
+	return `You need to be a Tier ${
+		tierNeeded - 1
+	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
+}
+
+export function isValidBitField(bit: number): bit is BitField {
+	return Boolean(BitFieldData[bit as keyof typeof BitFieldData]);
+}
+
+export async function asyncGzip(buffer: Buffer): Promise<Buffer> {
+	return new Promise<Buffer>((resolve, reject) => {
+		gzip(buffer, {}, (error, gzipped) => {
+			if (error) {
+				reject(error);
+			}
+			resolve(gzipped);
+		});
+	});
+}
+
+export function md5sum(str: string): string {
+	return createHash('md5').update(str).digest('hex');
+}
+
+const wordBlacklistBase64 =
+	'YXNzDQpzaGl0DQpiaXRjaA0KYm9vYnMNCnRpdHMNCmJhbGxzYWNrDQpiYncNCmJkc20NCmJhc3RhcmQNCmJpbWJvDQpjb2NrDQpkaWNrDQpjbGl0DQpibG93am9iDQpib2xsb2NrDQpib25kYWdlDQpib25lcg0KYm9vYg0KYnVra2FrZQ0KZHlrZQ0KYnVsbHNoaXQNCmJ1bQ0KYnV0dGhvbGUNCmNhbXNsdXQNCmNhbXdob3JlDQpjaGluaw0KY2hvYWQNCmdhbmdiYW5nDQpjdW0NCmN1bnQNCmRlZXB0aHJvYXQNCmRpbGRvDQpjb2NrDQpmdWNrDQpwZW5pcw0KdmFnaW5hDQp2dWx2YQ0Kc2x1dA0KbWFzdHVyYmF0ZQ0Kc2hpdA0KbmlnZ2VyDQpjcmFja2VyDQpqZXcNCmlzcmFlbA0KcGFsZXN0aW5lDQp0cnVtcA0KYmlkZW4NCnJlcHVibGljYW4NCmRlbW9jcmF0DQpuYXppDQphbnRpZmE=';
+const wordBlacklist = Buffer.from(wordBlacklistBase64.trim(), 'base64')
+	.toString('utf8')
+	.split('\n')
+	.map(word => word.trim().toLowerCase());
+
+export function containsBlacklistedWord(str: string): boolean {
+	const lowerCaseStr = str.toLowerCase();
+	for (const word of wordBlacklist) {
+		if (lowerCaseStr.includes(word)) {
+			return true;
+		}
+	}
+	return false;
 }

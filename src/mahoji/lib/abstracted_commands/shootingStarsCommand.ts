@@ -1,24 +1,16 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import type { activity_type_enum } from '@/prisma/main/enums.js';
-import type { MUserClass } from '@/lib/MUser.js';
+import type { ShootingStars } from '@/prisma/main.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import type { Star } from '@/lib/minions/types.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
-import type { Ore } from '@/lib/skilling/types.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
-import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
+import { makeShootingStarButton } from '@/lib/util/interactions.js';
 
-interface Star extends Ore {
-	size: number;
-	level: number;
-	chance: number;
-	dustAvailable: number;
-	additionalDustPercent: number;
-}
 export const starSizes: Star[] = [
 	{
 		size: 9,
@@ -166,9 +158,20 @@ export const starSizes: Star[] = [
 	}
 ];
 
-export async function shootingStarsCommand(channelID: string, user: MUserClass, star: Star): Promise<string> {
+export async function shootingStarsCommand({
+	rng,
+	channelId,
+	user,
+	star: _star
+}: {
+	rng: RNGProvider;
+	channelId: string;
+	user: MUser;
+	star: ShootingStars | Star;
+}): Promise<string> {
 	const skills = user.skillsAsLevels;
 	const boosts = [];
+	const star: Star = ('dustAvailable' in _star ? _star : starSizes.find(s => s.size === _star.size))!;
 
 	let miningLevel = skills.mining;
 
@@ -197,13 +200,13 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 	}
 	const stars = starSizes.filter(i => i.size <= star.size);
 	const loot = new Bank();
-	const usersWith = randInt(1, 4);
+	const usersWith = rng.randInt(1, 4);
 	let duration = 0;
 	let dustReceived = 0;
 	let totalXp = 0;
-	for (const star of stars) {
+	for (const s of stars) {
 		const [timeToMine, newQuantity] = determineMiningTime({
-			quantity: Math.round(star.dustAvailable / usersWith),
+			quantity: Math.round(s.dustAvailable / usersWith),
 			gearBank: user.gearBank,
 			ore: star,
 			ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
@@ -214,27 +217,27 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 			goldSilverBoost: false,
 			miningLvl: miningLevel,
 			passedDuration: duration,
-			maxTripLength: user.calcMaxTripLength('ShootingStars'),
-			hasKaramjaMedium: false
+			maxTripLength: await user.calcMaxTripLength('ShootingStars'),
+			hasKaramjaMedium: false,
+			rng
 		});
 		duration += timeToMine;
 		dustReceived += newQuantity;
-		totalXp += newQuantity * star.xp;
+		totalXp += newQuantity * s.xp;
 		for (let i = 0; i < newQuantity; i++) {
-			if (percentChance(star.additionalDustPercent)) {
+			if (rng.percentChance(s.additionalDustPercent)) {
 				dustReceived++;
 			}
 		}
-		// Add clue scrolls , TODO: convert klasaUsers to user
-		if (star.clueScrollChance) {
-			addSkillingClueToLoot(user, 'mining', newQuantity, star.clueScrollChance, loot);
+		if (s.clueScrollChance) {
+			addSkillingClueToLoot(rng, user, 'mining', newQuantity, s.clueScrollChance, loot);
 		}
 
 		// Roll for pet
-		if (star.petChance && roll((star.petChance - skills.mining * 25) / newQuantity)) {
+		if (s.petChance && rng.roll((s.petChance - skills.mining * 25) / newQuantity)) {
 			loot.add('Rock golem');
 		}
-		if (duration >= user.calcMaxTripLength('Mining')) {
+		if (duration >= (await user.calcMaxTripLength('Mining'))) {
 			break;
 		}
 	}
@@ -244,7 +247,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 
 	await ActivityManager.startTrip<ShootingStarsOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		lootItems: loot.toJSON(),
 		usersWith,
@@ -284,26 +287,37 @@ const activitiesCantGetStars: activity_type_enum[] = [
 	'CamdozaalFishing'
 ];
 
-export const starCache = new Map<string, Star & { expiry: number }>();
-
-export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskData, components: ButtonBuilder[]) {
+export async function handleTriggerShootingStar({
+	rng,
+	user,
+	data,
+	components
+}: {
+	rng: RNGProvider;
+	user: MUser;
+	data: ActivityTaskData;
+	components: ButtonBuilder[];
+}) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillsAsLevels.mining;
-	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
+	const eligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
 	const minutes = Math.floor(data.duration / Time.Minute);
 	if (minutes < 1) return;
 	const baseChance = Math.floor(540 / minutes);
-	if (!roll(baseChance)) return;
+	if (!rng.roll(baseChance)) return;
 	const shootingStarTable = new SimpleTable<Star>();
-	for (const star of elligibleStars) shootingStarTable.add(star, star.chance);
-	const starRoll = shootingStarTable.roll();
-	if (!starRoll) return;
-	const star = starRoll;
-	const button = new ButtonBuilder()
-		.setCustomId('DO_SHOOTING_STAR')
-		.setLabel(`Mine Size ${star.size} Crashed Star`)
-		.setEmoji('⭐')
-		.setStyle(ButtonStyle.Secondary);
-	components.push(button);
-	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 5 + patronMaxTripBonus(user) / 2 });
+	for (const star of eligibleStars) shootingStarTable.add(star, star.chance);
+	const star = shootingStarTable.roll();
+	if (!star) return;
+
+	// Got a star
+	await prisma.shootingStars.create({
+		data: {
+			user_id: user.id,
+			size: star.size,
+			expires_at: new Date(Date.now() + Time.Minute * 5),
+			has_been_mined: false
+		}
+	});
+	components.push(makeShootingStarButton(star.size));
 }

@@ -6,12 +6,12 @@ import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',
 	async run(data: MahoganyHomesActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, xp, duration, points } = data;
+		const { channelId, quantity, xp, duration, points } = data;
 
 		await user.incrementMinigameScore('mahogany_homes', quantity);
 
 		let bonusXP = 0;
-		const outfitMultiplier = calcConBonusXP(user.gear.skilling);
+		const outfitMultiplier = calcConBonusXP(user.gear.skilling.raw());
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}
@@ -34,6 +34,6 @@ export const mahoganyHomesTask: MinionTask = {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish({ user, channelId, message: str, data });
 	}
 };

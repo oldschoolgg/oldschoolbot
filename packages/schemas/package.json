@@ -3,16 +3,17 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"types": "./dist/esm/index.d.mts",
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.mjs"
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
 		}
 	},
 	"scripts": {
-		"build": "tsdown",
-		"test": "pnpm tsc -p src --noEmit"
+		"build": "rimraf ./dist && tsc -p src --noEmit false",
+		"test:types": "tsc -p src --noEmit",
+		"test:unit": "vitest run"
 	},
 	"dependencies": {
-		"zod": "^4.1.12"
+		"zod": "^4.1.12",
+		"discord-api-types": "0.38.32"
 	}
 }

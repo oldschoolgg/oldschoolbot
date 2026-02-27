@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID } from 'oldschooljs';
 
@@ -9,8 +8,9 @@ import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.
 import { determineRunes } from '@/lib/util/determineRunes.js';
 
 export async function guardiansOfTheRiftStartCommand(
+	rng: RNGProvider,
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	combinationRunes: boolean | undefined
 ) {
 	const rcLevel = user.skillLevel('runecraft');
@@ -19,7 +19,7 @@ export async function guardiansOfTheRiftStartCommand(
 	}
 
 	const timePerGame = Time.Minute * 10;
-	const maxTripLength = user.calcMaxTripLength('GuardiansOfTheRift');
+	const maxTripLength = await user.calcMaxTripLength('GuardiansOfTheRift');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	// Being reduced with ticks
@@ -166,8 +166,8 @@ export async function guardiansOfTheRiftStartCommand(
 	}
 
 	// 5.5 rolls, 120 is average mined essences, 14 is averge created guardians/barriers per game at max efficiency
-	minedFragments = Math.round(randomVariation(minedFragments, 10));
-	barrierAndGuardian = Math.round(randomVariation(barrierAndGuardian, 10));
+	minedFragments = Math.round(rng.randomVariation(minedFragments, 10));
+	barrierAndGuardian = Math.round(rng.randomVariation(barrierAndGuardian, 10));
 	rolls = Math.max(rolls, 1);
 
 	await ActivityManager.startTrip<GuardiansOfTheRiftActivityTaskOptions>({
@@ -175,7 +175,7 @@ export async function guardiansOfTheRiftStartCommand(
 		userID: user.id,
 		duration,
 		type: 'GuardiansOfTheRift',
-		channelID,
+		channelId,
 		minigameID: 'guardians_of_the_rift',
 		minedFragments,
 		barrierAndGuardian,

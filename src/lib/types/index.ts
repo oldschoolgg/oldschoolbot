@@ -1,13 +1,10 @@
 import type { SkillNameType } from '@/lib/skilling/types.js';
 
-export interface ItemBank {
-	[key: string]: number;
-}
-
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
 	leader: MUser;
+	interaction: MInteraction;
 	message: string;
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];

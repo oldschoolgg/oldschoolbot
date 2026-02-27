@@ -48,7 +48,7 @@ const HillGiantTable = new LootTable({ limit: 128 })
 	/* Gem drop table */
 	.add(GemTable, 1, 3);
 
-export default new SimpleMonster({
+export const HillGiant: SimpleMonster = new SimpleMonster({
 	id: 2098,
 	name: 'Hill Giant',
 	table: HillGiantTable,

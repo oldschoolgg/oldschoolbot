@@ -1,3 +1,4 @@
+import type { ECombatOption } from '@oldschoolgg/schemas';
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
@@ -7,7 +8,6 @@ import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import type { BitField, PvMMethod } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
-import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import { type AttackStyles, getAttackStylesContext, resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -45,7 +45,7 @@ export interface MinionKillOptions {
 	currentSlayerTask: CurrentSlayerInfo;
 	monster: KillableMonster;
 	isTryingToUseWildy: boolean;
-	combatOptions: readonly CombatOptionsEnum[];
+	combatOptions: readonly ECombatOption[];
 	inputPVMMethod: PvMMethod | undefined;
 	monsterKC: number;
 	poh: PlayerOwnedHouse;
@@ -56,6 +56,7 @@ export interface MinionKillOptions {
 	bitfield: readonly BitField[];
 	pkEvasionExperience: number;
 	currentPeak: Peak;
+	rng: RNGProvider;
 }
 
 export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
@@ -194,7 +195,7 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			return `Your range gear isn't right: ${rangeCheck}`;
 		}
 		const usingBowfa = getSimilarItems(EItem.BOW_OF_FAERDHINEN_C).includes(rangeCheck.weapon.id);
-		if (!gearBank.gear.range.ammo?.item && !usingBowfa) {
+		if (!gearBank.gear.range.get('ammo')?.item && !usingBowfa) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
 
@@ -223,7 +224,8 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			combatMethods,
 			relevantGearStat,
 			currentTaskOptions: speedDurationResult.currentTaskOptions,
-			killsRemaining
+			killsRemaining,
+			rng: args.rng
 		});
 		if (!result) continue;
 		for (const boostResult of Array.isArray(result) ? result : [result]) {

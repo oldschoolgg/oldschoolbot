@@ -31,7 +31,6 @@ interface Monster {
 	slayer_masters: MonsterSlayerMaster[];
 	duplicate: boolean;
 	examine: string;
-	icon: any;
 	wiki_name: string;
 	wiki_url: string;
 	attack_level: number;
@@ -66,8 +65,6 @@ const transformData = (data: any): MonsterData => {
 		immunepoison,
 		immunevenom,
 		cat,
-		examine,
-		name,
 		slaylvl,
 		slayxp,
 		assignedby,
@@ -107,9 +104,6 @@ const transformData = (data: any): MonsterData => {
 		immuneToVenom: immunevenom?.toLowerCase() === 'yes',
 		attributes: attributes,
 		category: cat?.toLowerCase().split(', '),
-		examineText: examine,
-		wikiName: name,
-		wikiURL: `https://oldschool.runescape.wiki/w/${name.replace(/ /g, '_')}`,
 		attackLevel: Number(att ?? 0),
 		strengthLevel: Number(str ?? 0),
 		defenceLevel: Number(def ?? 0),
@@ -145,7 +139,7 @@ export default async function prepareMonsters(): Promise<void> {
 			if (!response.ok) {
 				throw new Error(`Failed to fetch data: ${response.statusText}`);
 			}
-			return await response.json();
+			return (await response.json()) as { [key: string]: Monster };
 		} catch (error) {
 			console.error('Error fetching monsters data:', error);
 			throw error;
@@ -170,9 +164,6 @@ export default async function prepareMonsters(): Promise<void> {
 			immuneToVenom: mon.immune_venom,
 			attributes: mon.attributes ?? [],
 			category: mon.category,
-			examineText: mon.examine,
-			wikiName: mon.wiki_name,
-			wikiURL: mon.wiki_url,
 
 			attackLevel: mon.attack_level,
 			strengthLevel: mon.strength_level,
@@ -233,7 +224,7 @@ export default async function prepareMonsters(): Promise<void> {
 			);
 		for (let i = 0; i < sections.length; i++) {
 			const section = sections[i];
-			const allIDs: any[] = [];
+			const allIDs: string[] = [];
 			for (const [key, val] of Object.entries(section) as any[]) {
 				if (key.startsWith('id') && key.length !== 2) {
 					allIDs.push(val.text);

@@ -1,3 +1,4 @@
+import type { OffenceGearStat } from '@oldschoolgg/gear';
 import type {
 	ArrayItemsResolved,
 	Bank,
@@ -7,7 +8,6 @@ import type {
 	MonsterKillOptions,
 	SimpleMonster
 } from 'oldschooljs';
-import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
@@ -15,7 +15,7 @@ import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { POHBoosts } from '@/lib/poh/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
-import type { LevelRequirements, SkillNameType } from '@/lib/skilling/types.js';
+import type { LevelRequirements, Ore, SkillNameType } from '@/lib/skilling/types.js';
 import type { GearRequirements } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
@@ -30,6 +30,7 @@ export type KillableMonsterEffect = (opts: {
 	monster: KillableMonster;
 	loot: Bank;
 	updateBank: UpdateBank;
+	rng: RNGProvider;
 }) => void | { xpBank?: XPBank; loot?: Bank; messages: string[] };
 
 export interface KillableMonster {
@@ -157,11 +158,6 @@ export interface AddMonsterXpParams {
 	superiorCount?: number;
 }
 
-export interface BlowpipeData {
-	scales: number;
-	dartQuantity: number;
-	dartID: number | null;
-}
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
@@ -194,4 +190,12 @@ export enum DiaryID {
 	Morytania = 9,
 	Varrock = 10,
 	Wilderness = 11
+}
+
+export interface Star extends Ore {
+	size: number;
+	level: number;
+	chance: number;
+	dustAvailable: number;
+	additionalDustPercent: number;
 }

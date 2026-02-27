@@ -1,11 +1,11 @@
-import { spawn } from 'node:child_process';
+import { exec } from 'node:child_process';
 import { readdirSync } from 'node:fs';
 import { Box, Text } from 'ink';
 import Spinner from 'ink-spinner';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 
-type Command = { cmd: string | string[]; desc: string; condition?: boolean };
+type Command = { cmd?: string | string[]; fn?: () => Promise<unknown> | unknown; desc: string; condition?: boolean };
 type CommandGroup = Command | Command[];
 
 type Stage = {
@@ -17,7 +17,7 @@ type Timings = Record<string, number>;
 type Skips = Record<string, true>;
 
 const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
-	name => !['test-dashboard', 'robochimp', 'cli'].includes(name)
+	name => !['test-dashboard', 'robochimp', 'cli', 'oldschoolgg'].includes(name)
 );
 
 const isUsingRealPostgres = process.env.USE_REAL_PG === '1';
@@ -27,44 +27,59 @@ const stages: Stage[] = [
 		name: 'Stage 1',
 		commands: [
 			{ cmd: 'pnpm install', desc: 'Installing dependencies...' },
-			{ cmd: 'prisma db push', desc: 'Pushing Prisma schema...', condition: isUsingRealPostgres },
-			{ cmd: 'pnpm generate:robochimp', desc: 'Generating RoboChimp...' },
-			{ cmd: 'pnpm build:packages', desc: 'Building packages...' }
+			[
+				{ cmd: 'prisma db push', desc: 'Pushing Prisma schema...', condition: isUsingRealPostgres },
+				{ cmd: 'pnpm generate:robochimp', desc: 'Generating RoboChimp...' },
+				{ cmd: 'prisma generate', desc: 'Generating Prisma Client...', condition: isUsingRealPostgres },
+				{ cmd: 'pnpm build:packages', desc: 'Building packages...' }
+			]
 		]
 	},
 	{
 		name: 'Stage 2',
 		commands: [
 			[
-				['Rendering commands file', 'renderCommandsFile.ts'],
-				['Rendering monsters file', 'monstersJson.ts'],
-				['Rendering creatables file', 'creatables.ts'],
-				['Rendering skilling data files', 'dataFiles.ts']
-			].map(script => ({
-				cmd: `pnpm tsx --tsconfig scripts/tsconfig.json scripts/${script[1]}`,
-				desc: script[0]
-			})),
-			ALL_PACKAGE_NAMES.map(pkg => ({ cmd: `pnpm --filter ${pkg} build`, desc: `Building ${pkg}...` })),
-			{ cmd: 'tsx esbuild.mts', desc: 'Building bot...' }
+				{ cmd: 'tsx esbuild.mts', desc: 'Building bot...' },
+				{
+					fn: async () => {
+						const { scripts } = await import('./scripts.js');
+						for (const script of scripts) {
+							await script.fn();
+						}
+					},
+					desc: 'Running scripts...'
+				}
+			],
+			[
+				{
+					cmd: [
+						'concurrently "prettier --use-tabs --write \'**/*.{yaml,yml,css,html}\'" "prisma format --schema ./prisma/robochimp.prisma" "prisma format --schema ./prisma/schema.prisma"'
+					],
+					desc: 'Formatting code...'
+				}
+			],
+			{
+				cmd: ['biome check --write --diagnostic-level=error --log-kind compact'],
+				desc: 'Formatting code with biome...'
+			}
 		]
 	},
 	{
 		name: 'Stage 3',
 		commands: [
-			{
-				cmd: [
-					'prettier --use-tabs --write "**/*.json" && biome check --write --unsafe --diagnostic-level=error',
-					'prettier --use-tabs --write "**/*.{yaml,yml,css,html}"',
-					'prisma format --schema ./prisma/robochimp.prisma && prisma format --schema ./prisma/schema.prisma'
-				],
-				desc: 'Formatting code...'
-			},
 			[
-				...ALL_PACKAGE_NAMES.map(pkg => ({
-					cmd: `pnpm --filter ${pkg} test`,
-					desc: `Running tests in ${pkg}...`
-				})),
-				{ cmd: 'pnpm test', desc: 'Running bot tests...' }
+				{
+					cmd: `pnpm -r ${ALL_PACKAGE_NAMES.map(pkg => `--filter ${pkg}`).join(' ')} test:unit`,
+					desc: `Running packages tests in ${ALL_PACKAGE_NAMES.join(', ')}...`
+				}
+			],
+			[
+				{
+					cmd: ['pnpm test:lint'],
+					desc: 'Running formatting tests...'
+				},
+				{ cmd: 'pnpm test:types', desc: 'Running types bot test...' },
+				{ cmd: 'pnpm test:unit', desc: 'Running bot unit tests...' }
 			]
 		]
 	}
@@ -72,21 +87,26 @@ const stages: Stage[] = [
 
 function runSingleCommand(cmd: string): Promise<void> {
 	return new Promise((resolve, reject) => {
-		const p = spawn(cmd, { shell: true, stdio: ['ignore', 'pipe', 'pipe'] });
+		const p = exec(cmd);
 
 		let stderr = '';
 		let stdout = '';
 
-		p.stdout.on('data', d => {
-			stdout += d.toString();
+		p.stdout?.on('data', (d: string) => {
+			stdout += d;
 		});
-		p.stderr.on('data', d => {
-			stderr += d.toString();
+		p.stderr?.on('data', (d: string) => {
+			stderr += d;
 		});
 
-		p.on('close', code => {
-			if (code === 0) resolve();
-			else reject(new Error(`Command failed: ${cmd}\n\nSTDOUT:\n${stdout}\n\nSTDERR:\n${stderr}`));
+		p.on('error', (err: Error) => {
+			reject(new Error(`Failed to start command: ${cmd}\n\n${err.message}`));
+		});
+
+		p.on('close', (code: number | null) => {
+			if (code === 0) {
+				resolve();
+			} else reject(new Error(`Command failed: ${cmd}\n\nSTDOUT:\n${stdout}\n\nSTDERR:\n${stderr}`));
 		});
 	});
 }
@@ -98,12 +118,17 @@ function run(c: Command, timings: Timings, skipped: Skips) {
 		return Promise.resolve();
 	}
 	const start = performance.now();
+	if (c.fn) {
+		return Promise.resolve(c.fn()).then(() => {
+			timings[c.desc] = performance.now() - start;
+		});
+	}
 	if (Array.isArray(c.cmd)) {
 		return Promise.all(c.cmd.map(cmd => runSingleCommand(cmd))).then(() => {
 			timings[c.desc] = performance.now() - start;
 		});
 	}
-	return runSingleCommand(c.cmd).then(() => {
+	return runSingleCommand(c.cmd!).then(() => {
 		timings[c.desc] = performance.now() - start;
 	});
 }
@@ -174,7 +199,7 @@ export const Root: React.FC = () => {
 								const t = secs(elapsed);
 
 								return (
-									<Box key={inner.cmd.toString()}>
+									<Box key={inner.desc}>
 										{isSkipped && <Text color="gray">{inner.desc} (skipped)</Text>}
 										{!isSkipped && active && !finished && (
 											<Text color="yellow">
@@ -184,7 +209,7 @@ export const Root: React.FC = () => {
 										{!isSkipped && finished && (
 											<Text color="green">
 												✔ {inner.desc}
-												{t ? ` (${t}s)` : ''}
+												{t ? (elapsed < 200 ? ` (${Math.floor(elapsed)}ms)` : ` (${t}s)`) : ''}
 											</Text>
 										)}
 										{!isSkipped && !active && !finished && <Text>{inner.desc}</Text>}

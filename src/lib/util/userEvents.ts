@@ -1,4 +1,4 @@
-import { dateFm } from '@oldschoolgg/toolkit';
+import { dateFm } from '@oldschoolgg/discord';
 
 import { UserEventType, type xp_gains_skill_enum } from '@/prisma/main/enums.js';
 import type { Prisma, UserEvent } from '@/prisma/main.js';
@@ -46,7 +46,7 @@ export async function insertUserEvent({
 		throw new Error(`Invalid user event: ${JSON.stringify(data)}`);
 	}
 
-	await prisma.userEvent.create({ data });
+	await prisma.userEvent.create({ data, select: { id: true } });
 }
 
 export function userEventToStr(event: UserEvent) {

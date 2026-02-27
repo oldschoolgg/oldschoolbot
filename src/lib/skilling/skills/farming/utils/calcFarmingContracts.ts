@@ -1,11 +1,11 @@
-import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import type { IPlantTier } from '@oldschoolgg/schemas';
 import { stringMatches } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
-import type { PlantTier } from '@/lib/skilling/skills/farming/utils/types.js';
 
-export function openSeedPack(seedTier: number): Bank {
+export function openSeedPack(seedTier: number, rng = MathRNG): Bank {
 	const loot = new Bank();
 
 	const tempTable = new LootTable();
@@ -19,33 +19,33 @@ export function openSeedPack(seedTier: number): Bank {
 		case 0:
 		case 1: {
 			high = 0;
-			medium = randInt(1, 3);
+			medium = rng.randInt(1, 3);
 			low = 6 - medium;
 			break;
 		}
 		case 2: {
-			if (roll(11)) {
+			if (rng.roll(11)) {
 				high = 1;
 			}
-			medium = randInt(2, 3);
+			medium = rng.randInt(2, 3);
 			low = 7 - medium - high;
 			break;
 		}
 		case 3: {
-			high = randInt(0, 1);
-			medium = randInt(2, 4);
+			high = rng.randInt(0, 1);
+			medium = rng.randInt(2, 4);
 			low = 8 - medium - high;
 			break;
 		}
 		case 4: {
-			high = randInt(1, 2);
-			medium = randInt(3, 5);
+			high = rng.randInt(1, 2);
+			medium = rng.randInt(3, 5);
 			low = 9 - medium - high;
 			break;
 		}
 		case 5: {
-			high = randInt(1, 3);
-			medium = randInt(4, 6);
+			high = rng.randInt(1, 3);
+			medium = rng.randInt(4, 6);
 			low = 10 - medium - high;
 			break;
 		}
@@ -147,10 +147,19 @@ const hardPlants: PlantsList = [
 	[90, 'Redwood tree', 5]
 ];
 
-export function getPlantToGrow(
-	user: MUser,
-	{ contractLevel, ignorePlant }: { contractLevel: 'easy' | 'medium' | 'hard'; ignorePlant: string | null }
-): [string, PlantTier] {
+interface GetPlantArgs {
+	user: MUser;
+	contractLevel: 'easy' | 'medium' | 'hard';
+	ignorePlant: string | null;
+	rng?: RNGProvider;
+}
+
+export function getPlantToGrow({
+	user,
+	contractLevel,
+	ignorePlant,
+	rng = MathRNG
+}: GetPlantArgs): [string, IPlantTier] {
 	const farmingLevel = user.skillsAsLevels.farming;
 
 	let contractType: PlantsList = [];
@@ -166,9 +175,9 @@ export function getPlantToGrow(
 		}
 	}
 
-	const plantFromContract = randArrItem(contractType);
+	const plantFromContract = rng.pick(contractType);
 	const plantToGrow = plantFromContract[1];
 	const tier = plantFromContract[2];
 
-	return [plantToGrow, tier as PlantTier];
+	return [plantToGrow, tier as IPlantTier];
 }

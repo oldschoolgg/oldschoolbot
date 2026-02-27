@@ -1,9 +1,8 @@
-import { randInt } from '@oldschoolgg/rng';
+import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { EmbedBuilder } from 'discord.js';
-import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
+import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
-import { type Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
+import { xp_gains_skill_enum } from '@/prisma/main.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitFieldData, globalConfig } from '@/lib/constants.js';
@@ -11,8 +10,6 @@ import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
-import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
 import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
@@ -28,21 +25,25 @@ import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getF
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
+import { isValidBitField } from '@/lib/util/smallUtils.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 
-export function getMaxUserValues() {
-	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
+export function getMaxUserValues(): SafeUserUpdateInput {
+	const updates: SafeUserUpdateInput = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
 	return {
+		minion_hasBought: true,
 		QP: MAX_QP,
 		slayer_points: 50_000,
 		nmz_points: 50_000,
@@ -50,6 +51,7 @@ export function getMaxUserValues() {
 		carpenter_points: 5_000_000,
 		zeal_tokens: 500_000,
 		lms_points: 500_000,
+		slayer_unlocks: SlayerRewardsShop.map(i => i.id),
 		...updates
 	};
 }
@@ -170,6 +172,7 @@ for (const i of allOpenables.values()) {
 
 const equippablesBank = new Bank();
 for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).values()) {
+	if (ItemGroups.allUnobtainableItems.includes(i.id)) continue;
 	equippablesBank.add(i.id);
 }
 
@@ -244,7 +247,17 @@ const spawnPresets = [
 	['runes', runePreset]
 ] as const;
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
+const thingsToWipe = [
+	'bank',
+	'combat_achievements',
+	'cl',
+	'quests',
+	'buypayout',
+	'kc',
+	'cooldowns',
+	'birdhouses',
+	'giveaways'
+] as const;
 
 export const testPotatoCommand = globalConfig.isProduction
 	? null
@@ -256,6 +269,19 @@ export const testPotatoCommand = globalConfig.isProduction
 					type: 'Subcommand',
 					name: 'party',
 					description: 'Test party'
+				},
+				{
+					type: 'Subcommand',
+					name: 'ping',
+					description: 'Test pinging',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'should_ping',
+							description: 'should it ping or not',
+							required: true
+						}
+					]
 				},
 				{
 					type: 'Subcommand',
@@ -292,7 +318,9 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'thing',
 							description: 'The thing you want to wipe.',
 							required: true,
-							choices: thingsToWipe.map(i => ({ name: i, value: i }))
+							autocomplete: async () => {
+								return thingsToWipe.map(i => ({ name: i, value: i }));
+							}
 						}
 					]
 				},
@@ -316,7 +344,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							type: 'String',
 							name: 'item',
 							description: 'Spawn a specific item',
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								if (!value)
 									return [{ name: 'Type something!', value: itemID('Twisted bow').toString() }];
 								return Items.filter(item => item.name.toLowerCase().includes(value.toLowerCase())).map(
@@ -366,7 +394,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'minigame',
 							description: 'The minigame you want to set your KC for.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return Minigames.filter(i => {
 									if (!value) return true;
 									return [i.name.toLowerCase(), i.aliases].some(i => i.includes(value.toLowerCase()));
@@ -429,7 +457,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'add',
 							description: 'The bitfield to add',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return Object.entries(BitFieldData)
 									.filter(bf =>
 										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
@@ -442,7 +470,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'remove',
 							description: 'The bitfield to remove',
 							required: false,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return Object.entries(BitFieldData)
 									.filter(bf =>
 										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
@@ -462,7 +490,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'monster',
 							description: 'The monster you want to set your KC for.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								return effectiveMonsters
 									.filter(i => {
 										if (!value) return true;
@@ -502,6 +530,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							description: 'The patches you want to harvest.',
 							required: true,
 							choices: [
+								{ name: 'Birdhouses', value: 'birdhouses' },
 								{ name: 'All patches', value: 'all' },
 								...farmingPatchNames.map(i => ({ name: i, value: i }))
 							]
@@ -545,11 +574,11 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'start_bingo',
 							description: 'Make your bingo start now.',
 							required: true,
-							autocomplete: async (value: string, user: MUser) => {
-								const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+							autocomplete: async ({ value, userId }: StringAutoComplete) => {
+								const bingos = await fetchBingosThatUserIsInvolvedIn(userId);
 								return bingos
 									.map(i => new BingoManager(i))
-									.filter(b => b.creatorID === user.id || b.organizers.includes(user.id))
+									.filter(b => b.creatorID === userId || b.organizers.includes(userId))
 									.filter(bingo => (!value ? true : bingo.id.toString() === value))
 									.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
 							}
@@ -573,7 +602,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							name: 'monster',
 							description: 'The monster you want to set your task as.',
 							required: true,
-							autocomplete: async (value: string) => {
+							autocomplete: async ({ value }: StringAutoComplete) => {
 								const filteredMonsters = [...new Set(allSlayerMonsters)].filter(monster => {
 									if (!value) return true;
 									return [monster.name.toLowerCase(), ...monster.aliases].some(aliases =>
@@ -597,14 +626,15 @@ export const testPotatoCommand = globalConfig.isProduction
 					]
 				}
 			],
-			run: async ({ options, user, interaction }) => {
+			run: async ({ options, user, interaction, rng }) => {
 				if (globalConfig.isProduction) {
 					Logging.logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
 				}
 
 				if (options.party) {
-					const party = await interaction.makeParty({
+					const party = await globalClient.makeParty({
+						interaction,
 						maxSize: 5,
 						minSize: 2,
 						message: `Join the party!`,
@@ -612,6 +642,12 @@ export const testPotatoCommand = globalConfig.isProduction
 						ironmanAllowed: true
 					});
 					return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
+				}
+				if (options.ping) {
+					return {
+						content: `${userMention(user.id)} hi`,
+						allowedMentions: { users: options.ping.should_ping ? [user.id] : [] }
+					};
 				}
 				if (options.confirmation) {
 					const ephemeral = options.confirmation.ephemeral ?? false;
@@ -624,7 +660,7 @@ export const testPotatoCommand = globalConfig.isProduction
 					await interaction.confirmation({
 						content: `This is a normal confirmation. Users who must confirm: ${users.map(i => `<@${i}>`).join(', ')}`,
 						users,
-						// @ts-expect-error ddd
+						// @ts-expect-error
 						ephemeral
 					});
 					return interaction.makePaginatedMessage({
@@ -634,28 +670,28 @@ export const testPotatoCommand = globalConfig.isProduction
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 1`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 2`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 3`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							}),
 							() => ({
 								embeds: [
 									new EmbedBuilder()
 										.setTitle(`Page 4`)
-										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${rng.randInt(1, 39)}.webp`)
 								]
 							})
 						]
@@ -675,7 +711,7 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					if (
 						!bit ||
-						!(BitFieldData as any)[bit] ||
+						!isValidBitField(bit) ||
 						[7, 8].includes(bit) ||
 						(action !== 'add' && action !== 'remove')
 					) {
@@ -700,7 +736,7 @@ export const testPotatoCommand = globalConfig.isProduction
 						bitfield: uniqueArr(newBits)
 					});
 
-					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData as any)[bit].name}' bit.`;
+					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData)[bit].name}' bit.`;
 				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
@@ -749,6 +785,40 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 				if (options.wipe) {
 					const { thing } = options.wipe;
+					if (thing === 'birdhouses') {
+						await user.updateBirdhouseData({
+							lastPlaced: null,
+							birdhousePlaced: false,
+							birdhouseTime: 0
+						});
+						return 'Reset your birdhouses.';
+					}
+					if (thing === 'giveaways') {
+						await prisma.giveaway.deleteMany({
+							where: {
+								user_id: user.id
+							}
+						});
+						return 'Wiped all your giveaways (no refunds given).';
+					}
+					if (thing === 'cooldowns') {
+						await user.update({
+							gambling_lockout_expiry: null
+						});
+						await prisma.userStats.upsert({
+							where: {
+								user_id: BigInt(user.id)
+							},
+							update: {
+								last_daily_timestamp: Date.now() - Time.Day,
+								last_tears_of_guthix_timestamp: Date.now() - Time.Day * 2
+							},
+							create: {
+								user_id: BigInt(user.id)
+							}
+						});
+						return 'Reset all your daily/TOG cooldowns, gambling lockout.';
+					}
 					if (thing === 'kc') {
 						await user.statsUpdate({
 							monster_scores: {}
@@ -764,13 +834,15 @@ export const testPotatoCommand = globalConfig.isProduction
 						return 'Deleted all your buy payout records, so you have no tax rate accumulated.';
 					}
 					if (thing === 'bank') {
-						await mahojiUserSettingsUpdate(user.id, {
+						await user.update({
+							// @ts-expect-error
 							bank: {}
 						});
 						return 'Reset your bank.';
 					}
 					if (thing === 'cl') {
-						await mahojiUserSettingsUpdate(user.id, {
+						await user.update({
+							// @ts-expect-error
 							collectionLogBank: {},
 							temp_cl: {}
 						});
@@ -801,7 +873,7 @@ export const testPotatoCommand = globalConfig.isProduction
 								collectionLogBank: {}
 							}
 						});
-						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${mentionCommand(
+						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${globalClient.mentionCommand(
 							'testpotato',
 							'set'
 						)}.`;
@@ -858,29 +930,35 @@ export const testPotatoCommand = globalConfig.isProduction
 							.add(potionsPreset)
 							.add(usables)
 					});
-					await user.update({
-						GP: 5_000_000_000,
-						slayer_points: 100_000,
-						tentacle_charges: 10_000,
-						sang_charges: 10_000,
-						trident_charges: 10_000,
-						serp_helm_charges: 10_000,
-						blood_fury_charges: 10_000,
-						tum_shadow_charges: 10_000,
-						blood_essence_charges: 10_000,
-						ash_sanctifier_charges: 10_000,
-						celestial_ring_charges: 10_000,
-						scythe_of_vitur_charges: 10_000,
-						venator_bow_charges: 10_000,
-						gear_mage: TOBMaxMageGear.raw() as any,
-						gear_melee: TOBMaxMeleeGear.raw() as any,
-						gear_range: TOBMaxRangeGear.raw() as any,
-						blowpipe: {
-							scales: 100_000,
-							dartQuantity: 100_000,
-							dartID: itemID('Dragon dart')
-						},
-						finished_quest_ids: quests.map(q => q.id)
+
+					await user.updateGear([
+						{ setup: 'melee', gear: TOBMaxMeleeGear.raw() },
+						{ setup: 'range', gear: TOBMaxRangeGear.raw() },
+						{ setup: 'mage', gear: TOBMaxMageGear.raw() }
+					]);
+
+					await user.rawUpdate({
+						data: {
+							GP: 5000000000,
+							slayer_points: 100000,
+							tentacle_charges: 10000,
+							sang_charges: 10000,
+							trident_charges: 10000,
+							serp_helm_charges: 10000,
+							blood_fury_charges: 10000,
+							tum_shadow_charges: 10000,
+							blood_essence_charges: 10000,
+							ash_sanctifier_charges: 10000,
+							celestial_ring_charges: 10000,
+							scythe_of_vitur_charges: 10000,
+							venator_bow_charges: 10000,
+							blowpipe: {
+								scales: 100000,
+								dartQuantity: 100000,
+								dartID: itemID('Dragon dart')
+							},
+							finished_quest_ids: quests.map(q => q.id)
+						}
 					});
 					await giveMaxStats(user);
 					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
@@ -890,16 +968,17 @@ export const testPotatoCommand = globalConfig.isProduction
 
 					for (const type of ['melee', 'range', 'mage'] as const) {
 						const currentGear = gear[type];
-						if (currentGear.ammo && Items.getItem(currentGear.ammo.item)?.stackable) {
-							currentGear.ammo.quantity = 10000;
+						const ammo = currentGear.get('ammo');
+						if (ammo && Items.getItem(ammo.item)?.stackable) {
+							currentGear.set('ammo', { ...ammo, quantity: 10_000 });
 						}
 					}
 
-					await user.update({
-						gear_melee: gear.melee.raw() as any,
-						gear_range: gear.range.raw() as any,
-						gear_mage: gear.mage.raw() as any
-					});
+					await user.updateGear([
+						{ setup: 'melee', gear: gear.melee.raw() },
+						{ setup: 'range', gear: gear.range.raw() },
+						{ setup: 'mage', gear: gear.mage.raw() }
+					]);
 
 					return gearViewCommand(user, 'all', false);
 				}
@@ -962,6 +1041,14 @@ export const testPotatoCommand = globalConfig.isProduction
 				}
 
 				if (options.forcegrow) {
+					if (options.forcegrow.patch_name === 'birdhouses') {
+						const birdhouseData = user.fetchBirdhouseData();
+						await user.updateBirdhouseData({
+							...birdhouseData,
+							birdhouseTime: Date.now() - Time.Month
+						});
+						return 'Your birdhouses have been forced to be fully grown.';
+					}
 					const farmingDetails = await getFarmingInfoFromUser(user);
 					const { patch_name } = options.forcegrow;
 					const patchesToGrow =
@@ -976,7 +1063,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							: 'You have nothing planted there.';
 					}
 					const now = Date.now();
-					const updates = Object.fromEntries(
+					const updates: SafeUserUpdateInput = Object.fromEntries(
 						patchesToGrow.map(patch => [
 							getFarmingKeyFromName(patch.patchName),
 							{
@@ -984,7 +1071,7 @@ export const testPotatoCommand = globalConfig.isProduction
 								plantTime: now - Time.Month
 							}
 						])
-					) as Prisma.UserUncheckedUpdateInput;
+					);
 
 					await user.update(updates);
 					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed);
@@ -999,14 +1086,13 @@ export const testPotatoCommand = globalConfig.isProduction
 					const selectedMaster = slayerMasters.find(
 						sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
 					);
+					if (!selectedMaster || !selectedMonster) return 'Invalid slayer master or monster.';
 
 					// Set quantity to 50 if user doesn't assign a quantity
 					const quantity = options.setslayertask?.quantity ?? 50;
 
-					const assignedTask = selectedMaster?.tasks.find(m => m.monster.id === selectedMonster?.id)!;
+					const assignedTask = selectedMaster.tasks.find(m => m.monster.id === selectedMonster.id)!;
 
-					if (!selectedMaster) return 'Invalid slayer master.';
-					if (!selectedMonster) return 'Invalid monster.';
 					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
 
 					// Update an existing slayer task for the user

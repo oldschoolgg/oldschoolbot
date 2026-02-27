@@ -1,5 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
-
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { Plant } from '@/lib/skilling/types.js';
 
@@ -29,22 +27,37 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 		}
 	}
 
-	if (user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		switch (plant.seedType) {
-			case 'allotment':
-				numOfPatches += 2;
-				break;
-			case 'herb':
-			case 'flower':
-				numOfPatches += 1;
-				break;
+	const hasChildrenOfTheSun = user.user.finished_quest_ids?.includes(QuestID.ChildrenOfTheSun) ?? false;
+
+	switch (plant.seedType) {
+		case 'allotment': {
+			const varlamoreAllotmentPatches = 2;
+			numOfPatches = Math.max(0, numOfPatches - varlamoreAllotmentPatches);
+			if (hasChildrenOfTheSun) {
+				numOfPatches += varlamoreAllotmentPatches;
+			}
+			break;
 		}
+		case 'flower':
+		case 'herb':
+		case 'tree':
+		case 'fruit_tree':
+		case 'hardwood':
+		case 'belladonna':
+		case 'calquat':
+			if (hasChildrenOfTheSun) {
+				numOfPatches += 1;
+			}
+			break;
+		default:
+			break;
 	}
 
 	return [numOfPatches];
 }
 
 export function calcVariableYield(
+	rng: RNGProvider,
 	plant: Plant,
 	upgradeType: string | null,
 	farmingLevel: number,
@@ -57,14 +70,14 @@ export function calcVariableYield(
 		for (let i = plant.variableOutputAmount.length; i > 0; i--) {
 			const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
 			if (upgradeType === upgradeTypeNeeded) {
-				cropYield += randInt(min, max);
+				cropYield += rng.randInt(min, max);
 				cropYield *= quantityAlive;
 				break;
 			}
 		}
 	} else if (plant.name === 'Limpwurt' || plant.name === 'Belladonna') {
 		for (let i = 0; i < quantityAlive; i++) {
-			cropYield += 3 + randInt(1, Math.floor(farmingLevel / 10));
+			cropYield += 3 + rng.randInt(1, Math.floor(farmingLevel / 10));
 		}
 	}
 

@@ -1,5 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import deepEqual from 'fast-deep-equal';
+import { isDeepEqual } from 'remeda';
 import { describe, test } from 'vitest';
 
 import { type ChartOptions, createApexChartConfig, createChart } from '../../../src/lib/util/chart.js';
@@ -38,7 +38,7 @@ describe('Images', async () => {
 				const existingConfigRaw = await readFile(configFilePath, 'utf-8').catch(() => null);
 				if (existingConfigRaw) {
 					const existingConfig = JSON.parse(existingConfigRaw);
-					if (deepEqual(existingConfig, config)) {
+					if (isDeepEqual(existingConfig, config)) {
 						continue;
 					}
 				}

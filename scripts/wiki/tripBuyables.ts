@@ -1,8 +1,5 @@
-// Trip buyables markdown generation script
 import { Table } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
-
-import '../../src/lib/safeglobals.js';
 
 import { tripBuyables } from '../../src/lib/data/buyables/tripBuyables.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';

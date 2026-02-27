@@ -1,4 +1,3 @@
-import { randInt, randomVariation } from '@oldschoolgg/rng';
 import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -6,7 +5,7 @@ import { getPOHObject } from '@/lib/poh/index.js';
 import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 
-export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
+export async function gnomeRestaurantCommand(rng: RNGProvider, user: MUser, channelId: string) {
 	let deliveryLength = Time.Minute * 7;
 
 	const itemsToRemove = new Bank();
@@ -39,7 +38,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 	const hasJewelleryBox = poh.jewellery_box !== null;
 	const { bank } = user;
-	switch (randInt(1, 3)) {
+	switch (rng.randInt(1, 3)) {
 		case 1: {
 			if (user.hasEquippedOrInBank('Amulet of eternal glory')) {
 				deliveryLength = reduceNumByPercent(deliveryLength, 20);
@@ -78,11 +77,12 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 		}
 	}
 
-	const quantity = Math.floor(user.calcMaxTripLength('GnomeRestaurant') / deliveryLength);
-	const duration = randomVariation(deliveryLength * quantity, 5);
+	const quantity = Math.floor((await user.calcMaxTripLength('GnomeRestaurant')) / deliveryLength);
+	const duration = rng.randomVariation(deliveryLength * quantity, 5);
 
 	if (user.skillsAsLevels.magic >= 66) {
-		itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));
+		const maxLawRunes = Math.max(1, Math.floor(quantity * 1.5));
+		itemsToRemove.add('Law rune', Math.max(1, Math.floor(rng.randInt(1, maxLawRunes) / 2)));
 	}
 
 	if (!user.owns(itemsToRemove)) {
@@ -94,7 +94,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	await ClientSettings.updateBankSetting('gnome_res_cost', itemsToRemove);
 	await ActivityManager.startTrip<GnomeRestaurantActivityTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration,
 		type: 'GnomeRestaurant',
 		quantity,

@@ -58,7 +58,7 @@ export function determineMiningResult({
 
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
-		addSkillingClueToLoot(gearBank, 'mining', quantity, ore.clueScrollChance, updateBank.itemLootBank);
+		addSkillingClueToLoot(rng, gearBank, 'mining', quantity, ore.clueScrollChance, updateBank.itemLootBank);
 	}
 
 	// Roll for pet
@@ -141,7 +141,7 @@ export function determineMiningResult({
 export const miningTask: MinionTask = {
 	type: 'Mining',
 	async run(data: MiningActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { oreID, channelID, duration, powermine } = data;
+		const { oreID, channelId, duration, powermine } = data;
 		const { quantity } = data;
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
@@ -171,6 +171,12 @@ export const miningTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, updateResult.itemTransactionResult?.itemsAdded ?? null);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: str },
+			data,
+			loot: updateResult.itemTransactionResult?.itemsAdded
+		});
 	}
 };

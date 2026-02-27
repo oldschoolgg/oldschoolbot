@@ -1,9 +1,7 @@
-import { shuffleArr } from '@oldschoolgg/rng';
-import { uniqueArr } from '@oldschoolgg/toolkit';
-import { userMention } from 'discord.js';
+import { userMention } from '@oldschoolgg/discord';
+import { Emoji, uniqueArr } from '@oldschoolgg/toolkit';
 
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
-import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
 
 export const triviaCommand = defineCommand({
 	name: 'trivia',
@@ -19,42 +17,29 @@ export const triviaCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ interaction, userID, options }) => {
+	run: async ({ interaction, userId, options, rng }) => {
 		await interaction.defer();
-		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
-		const users = [userID.toString()];
+		const users: string[] = [userId];
 		if (options.duel) users.push(options.duel.user.id);
 
-		let correctUser: string | null = null;
-		const buttons = new DynamicButtons({
+		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
+		const allAnswers = uniqueArr(rng.shuffle([question, ...fakeQuestions].map(q => q.answers[0])));
+
+		const choice = await globalClient.pickStringWithButtons({
 			interaction,
-			usersWhoCanInteract: users
+			options: allAnswers.map(answer => ({ label: answer, id: answer })),
+			content: `**${Emoji.Diango} Diango asks...** ${question.question}`
 		});
-		for (const q of uniqueArr(shuffleArr([question, ...fakeQuestions].map(i => i.answers[0])))) {
-			buttons.add({
-				name: q,
-				fn: ({ interaction }) => {
-					if (question.answers.includes(q)) {
-						correctUser = interaction.user.id;
-					}
-				},
-				cantBeBusy: false
-			});
-		}
-
-		const allMention = users.map(userMention).join(' ');
-
-		await buttons.render({
-			messageOptions: { content: `${allMention} ${question.question}` },
-			isBusy: false
-		});
+		if (!choice) return `You didn't answer in time!`;
+		const isCorrect = question.answers.includes(choice.choice.label!);
 
 		if (users.length > 1) {
-			if (!correctUser) return `${allMention}, neither of you got it - sad!`;
-			return `${userMention(correctUser)} won the trivia duel!`;
+			return isCorrect
+				? `${userMention(choice.userId)} won the trivia duel!`
+				: `${userMention(choice.userId)} picked the wrong answer...`;
 		}
 		return {
-			content: `You answered ${correctUser !== null ? 'correctly' : 'incorrectly'}!`
+			content: `You answered ${isCorrect ? 'correctly' : 'incorrectly'}!`
 		};
 	}
 });

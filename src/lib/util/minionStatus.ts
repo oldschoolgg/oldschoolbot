@@ -1,5 +1,5 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, increaseNumByPercent, reduceNumByPercent, toTitleCase } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -28,6 +28,7 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type {
+	ActivityTaskData,
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
@@ -83,8 +84,7 @@ import type {
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
-export function minionStatus(user: MUser) {
-	const currentTask = ActivityManager.getActivityOfUser(user.id);
+export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, rng = MathRNG) {
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;
@@ -166,9 +166,9 @@ export function minionStatus(user: MUser) {
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
-							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
 						)} **to** ${formatDuration(
-							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
 			} Your ${Emoji.Mining} Mining level is ${user.skillsAsLevels.mining}`;
 		}
@@ -180,9 +180,9 @@ export function minionStatus(user: MUser) {
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
-							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
 						)} **to** ${formatDuration(
-							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
 			} Your ${Emoji.Mining} Mining level is ${user.skillsAsLevels.mining}`;
 		}
@@ -260,9 +260,9 @@ export function minionStatus(user: MUser) {
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
-							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
 						)} **to** ${formatDuration(
-							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+							rng.randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
 			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillsAsLevels.woodcutting}`;
 		}
@@ -654,9 +654,8 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 		case 'GiantsFoundry': {
-			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently creating ${
-				data.quantity
+				currentTask.quantity
 			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
@@ -718,8 +717,9 @@ export function minionStatus(user: MUser) {
 			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Easter':
-		case 'BlastFurnace': {
-			throw new Error('Removed');
+		case 'BlastFurnace':
+		case 'Revenants': {
+			throw new Error(`Removed`);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { percentChance, randInt } from '@oldschoolgg/rng';
+import type { EquipmentSlot, GearSetupType } from '@oldschoolgg/gear';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -13,12 +13,10 @@ import {
 	Time,
 	UserError
 } from '@oldschoolgg/toolkit';
-import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
-import { mentionCommand } from '@/lib/discord/utils.js';
-import type { GearSetupType } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
@@ -338,7 +336,7 @@ function calculateTimeInMs(waveTwelveKC: number): number {
 	return 0;
 }
 
-function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
+function calculateGlory(rng: RNGProvider, kcBank: ColosseumWaveBank, wave: Wave) {
 	const waveKCSkillBank = new ColosseumWaveBank();
 	for (const [waveNumber, kc] of kcBank.entries()) {
 		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), { min: 1, max: 100 }));
@@ -349,7 +347,9 @@ function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
 	const maxPossibleGlory = 60_000;
 	const ourMaxGlory = calcPercentOfNum(expSkill, maxPossibleGlory);
 	const wavePerformance = exponentialPercentScale((totalKCSkillPercent + kcSkill) / 2);
-	const glory = randInt(calcPercentOfNum(wavePerformance, ourMaxGlory), ourMaxGlory);
+	const minGlory = Math.floor(calcPercentOfNum(wavePerformance, ourMaxGlory));
+	const maxGlory = Math.floor(ourMaxGlory);
+	const glory = rng.randInt(Math.max(0, minGlory), Math.max(0, maxGlory));
 	return glory;
 }
 
@@ -379,6 +379,7 @@ export const startColosseumRun = (options: {
 	scytheCharges: number;
 	venatorBowCharges: number;
 	bloodFuryCharges: number;
+	rng: RNGProvider;
 }): ColosseumResult => {
 	const waveTwelveKC = options.kcBank.amount(12);
 
@@ -415,11 +416,11 @@ export const startColosseumRun = (options: {
 	for (const wave of colosseumWaves) {
 		realDuration += waveDuration;
 		const kcForThisWave = options.kcBank.amount(wave.waveNumber);
-		maxGlory = Math.max(calculateGlory(options.kcBank, wave), maxGlory);
+		maxGlory = Math.max(calculateGlory(options.rng, options.kcBank, wave), maxGlory);
 		const deathChance = calculateDeathChance(kcForThisWave, options.hasBF, options.hasSGS);
 		deathChances.push(deathChance);
 
-		if (percentChance(deathChance)) {
+		if (options.rng.percentChance(deathChance)) {
 			return {
 				diedAt: wave.waveNumber,
 				loot: null,
@@ -457,13 +458,14 @@ export const startColosseumRun = (options: {
 	throw new Error('Colosseum run did not end correctly.');
 };
 
-export async function colosseumCommand(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
+export async function colosseumCommand(itx: OSInteraction) {
+	const { user, rng } = itx;
+	if (await user.minionIsBusy()) {
 		return `${user.usernameOrMention} is busy`;
 	}
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${mentionCommand(
+		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${globalClient.mentionCommand(
 			'activities',
 			'quest'
 		)}.`;
@@ -561,7 +563,8 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		hasTorture,
 		scytheCharges,
 		venatorBowCharges,
-		bloodFuryCharges
+		bloodFuryCharges,
+		rng
 	});
 	const minutes = res.realDuration / Time.Minute;
 
@@ -630,7 +633,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	try {
 		const result = await user.specialRemoveItems(cost);
 		realCost.add(result.realCost);
-	} catch (err: any) {
+	} catch (err: unknown) {
 		if (err instanceof UserError) {
 			return err.message;
 		}
@@ -665,7 +668,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	await ActivityManager.startTrip<ColoTaskOptions>({
 		userID: user.id,
-		channelID,
+		channelId: itx.channelId,
 		duration: res.realDuration,
 		type: 'Colosseum',
 		fakeDuration: res.fakeDuration,

@@ -123,6 +123,43 @@
 		}
 	},
 	{
+		"id": 16,
+		"qp": 1,
+		"name": "Scrambled!",
+		"prerequisites_quests": [3],
+		"skill_reqs": {
+			"construction": 38,
+			"cooking": 36,
+			"smithing": 35
+		},
+		"skills_rewards": {
+			"construction": 5000,
+			"cooking": 5000,
+			"smithing": 5000
+		},
+		"rewards": {
+			"30970": 1
+		}
+	},
+	{
+		"id": 17,
+		"qp": 2,
+		"name": "Shadows of Custodia",
+		"prerequisites_quests": [3],
+		"skill_reqs": {
+			"slayer": 54,
+			"fishing": 45,
+			"construction": 41,
+			"hunter": 36
+		},
+		"skills_rewards": {
+			"slayer": 10000,
+			"hunter": 4000,
+			"fishing": 3000,
+			"construction": 3000
+		}
+	},
+	{
 		"id": 14,
 		"qp": 2,
 		"name": "The Curse of Arrav",
@@ -140,6 +177,26 @@
 			"mining": 40000,
 			"thieving": 40000,
 			"agility": 40000
+		}
+	},
+	{
+		"id": 15,
+		"qp": 3,
+		"name": "The Final Dawn",
+		"prerequisites_quests": [6, 9],
+		"skill_reqs": {
+			"thieving": 66,
+			"runecraft": 52,
+			"fletching": 52
+		},
+		"skills_rewards": {
+			"thieving": 55000,
+			"runecraft": 25000,
+			"fletching": 25000
+		},
+		"rewards": {
+			"30955": 1,
+			"30960": 1
 		}
 	},
 	{
@@ -195,6 +252,32 @@
 		"prerequisites_quests": [3],
 		"skills_rewards": {
 			"woodcutting": 2000
+		}
+	},
+	{
+		"id": 18,
+		"qp": 1,
+		"name": "Tutorial Island",
+		"rewards": {
+			"303": 1,
+			"315": 2,
+			"555": 6,
+			"556": 25,
+			"557": 4,
+			"558": 15,
+			"559": 2,
+			"590": 1,
+			"841": 1,
+			"882": 25,
+			"995": 25,
+			"1171": 1,
+			"1205": 1,
+			"1265": 1,
+			"1277": 1,
+			"1351": 1,
+			"1925": 1,
+			"1931": 1,
+			"2309": 1
 		}
 	},
 	{

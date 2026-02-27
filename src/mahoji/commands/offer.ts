@@ -1,4 +1,3 @@
-import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
@@ -55,7 +54,7 @@ export const offerCommand = defineCommand({
 			name: 'name',
 			description: 'The thing you want to offer.',
 			required: true,
-			autocomplete: async (value: string, user: MUser) => {
+			autocomplete: async ({ value, user }: StringAutoComplete) => {
 				return user.bank
 					.items()
 					.filter(i => offerables.has(i[0].id))
@@ -74,7 +73,7 @@ export const offerCommand = defineCommand({
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID, interaction }) => {
+	run: async ({ options, user, channelId, interaction, rng }) => {
 		const userBank = user.bank;
 
 		await interaction.defer();
@@ -116,12 +115,12 @@ export const offerCommand = defineCommand({
 						whichOfferable.uniques,
 						itemsAdded,
 						quantity,
-						currentCounter + randInt(1, quantity)
+						currentCounter + rng.randInt(1, quantity)
 					);
 				}
 			}
 
-			const { file } = await makeBankImage({
+			const file = await makeBankImage({
 				bank: itemsAdded,
 				title: `Loot from offering ${quantity} ${whichOfferable.name}`,
 				flags: { showNewCL: 1 },
@@ -145,8 +144,8 @@ export const offerCommand = defineCommand({
 
 			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
-				if (roll(300)) {
-					loot.add(randArrItem(ItemGroups.evilChickenOutfit));
+				if (rng.roll(300)) {
+					loot.add(rng.pick(ItemGroups.evilChickenOutfit));
 				} else {
 					loot.add(birdsNestID);
 					loot.add(treeSeedsNest.roll());
@@ -167,7 +166,7 @@ export const offerCommand = defineCommand({
 
 			notifyUniques(user, egg.name, ItemGroups.evilChickenOutfit, loot, quantity);
 
-			const { file } = await makeBankImage({
+			const file = await makeBankImage({
 				bank: itemsAdded,
 				title: `${quantity}x ${egg.name}`,
 				user,
@@ -226,7 +225,7 @@ export const offerCommand = defineCommand({
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return `You have no ${bone.name}.`;
 
-		const maxTripLength = user.calcMaxTripLength('Offering');
+		const maxTripLength = await user.calcMaxTripLength('Offering');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
@@ -253,7 +252,7 @@ export const offerCommand = defineCommand({
 		await ActivityManager.startTrip<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,
 			userID: user.id,
-			channelID,
+			channelId,
 			quantity,
 			duration,
 			type: 'Offering'

@@ -2,7 +2,7 @@ import { createHmac } from 'node:crypto';
 import { notEmpty, PerkTier, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
 import { globalConfig } from '../constants.js';
-import { allPatronBits, Bits, type PatronTier, patronLogWebhook, tiers } from '../util.js';
+import { allPatronBits, Bits, type PatronTier, tiers } from '../util.js';
 import type { OSBPrismaClient } from './prisma.js';
 
 function updateBitfield({ bits, patronBit }: { bits: number[]; patronBit: number }) {
@@ -196,7 +196,7 @@ class PatreonTask {
 	public enabled = globalConfig.isProduction;
 
 	async validatePerks(userID: bigint, shouldHave: PatronTier): Promise<string | null> {
-		const user = await globalClient.fetchUser(userID);
+		const user = await globalClient.fetchRUser(userID);
 		if (!user) return null;
 		if (user.perkTierRaw !== shouldHave.perkTier) {
 			await this.changeTier(user, shouldHave);
@@ -400,7 +400,6 @@ class PatreonTask {
 			console.log('Skipping patreon task run because not production');
 			return;
 		}
-		patronLogWebhook.send('Doing a patreon sync');
 		// Reset all users' perk tier to 0 if their group has inconsistent perk tiers.
 		await roboChimpClient.$queryRawUnsafe(`UPDATE "user"
 SET perk_tier = 0
@@ -452,7 +451,7 @@ AND u1.id <> u2.id
 			}
 
 			// Only find the user if they don't already have the relevant perk tier.
-			const user = await globalClient.fetchUser(patron.discordID);
+			const user = await globalClient.fetchRUser(patron.discordID);
 			if (!user) continue;
 
 			const userIdentifier = `R[${user.id}]D[${patron.discordID}]P[${patron.patreonID}]`;

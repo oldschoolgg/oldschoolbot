@@ -2,7 +2,7 @@ import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
-export const MinotaurTable = new LootTable({ limit: 101 })
+export const MinotaurTable: LootTable = new LootTable({ limit: 101 })
 	.every('Bones')
 
 	.oneIn(33, 'Right skull half')
@@ -33,7 +33,7 @@ export const MinotaurTable = new LootTable({ limit: 101 })
 	/* Subtables */
 	.add(GemTable, 1, 1);
 
-export default new SimpleMonster({
+export const Minotaur: SimpleMonster = new SimpleMonster({
 	id: 2481,
 	name: 'Minotaur',
 	table: MinotaurTable,

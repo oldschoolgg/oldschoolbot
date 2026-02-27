@@ -1,4 +1,3 @@
-import { percentChance, randomVariation } from '@oldschoolgg/rng';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -13,8 +12,8 @@ const RawNightmare = Misc.Nightmare;
 
 export const nightmareTask: MinionTask = {
 	type: 'Nightmare',
-	async run(data: NightmareActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, duration, isPhosani = false, method } = data;
+	async run(data: NightmareActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration, isPhosani = false, method } = data;
 
 		const monsterID = isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
@@ -30,12 +29,12 @@ export const nightmareTask: MinionTask = {
 			const _loot = RawNightmare.kill({
 				team: parsedUsers.map(user => ({
 					id: user.id,
-					damageDone: team.length === 1 ? 2400 : randomVariation(user.damageDone, 5)
+					damageDone: team.length === 1 ? 2400 : rng.randomVariation(user.damageDone, 5)
 				})),
 				isPhosani
 			});
 
-			const died = percentChance(userStats.chanceOfDeath);
+			const died = rng.percentChance(userStats.chanceOfDeath);
 			if (died) {
 				deaths++;
 			} else {
@@ -95,14 +94,12 @@ export const nightmareTask: MinionTask = {
 		});
 
 		if (!kc) {
-			handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
-				undefined,
-				data,
-				null
-			);
+				channelId,
+				message: `${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
+				data
+			});
 		} else {
 			const image = await makeBankImage({
 				bank: itemsAdded,
@@ -113,14 +110,16 @@ export const nightmareTask: MinionTask = {
 
 			const kc = await user.getKC(monsterID);
 			const kcPerHour = (quantity / (duration / (1000 * 60 * 60))).toFixed(2);
-			handleTripFinish(
+			return handleTripFinish({
 				user,
-				channelID,
-				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName} (${kcPerHour}/hr), you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
-				image.file.attachment,
+				channelId: channelId,
+				message: {
+					content: `${user}, ${user.minionName} finished killing ${quantity} ${monsterName} (${kcPerHour}/hr), you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
+					files: [image]
+				},
 				data,
-				itemsAdded
-			);
+				loot: itemsAdded
+			});
 		}
 	}
 };

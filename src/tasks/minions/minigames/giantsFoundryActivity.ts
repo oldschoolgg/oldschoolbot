@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { clone } from 'remeda';
 
@@ -9,8 +8,8 @@ import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
-	async run(data: GiantsFoundryActivityTaskOptions, { user, handleTripFinish }) {
-		const { quantity, channelID, duration, metalScore } = data;
+	async run(data: GiantsFoundryActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { quantity, channelId, duration, metalScore } = data;
 
 		const userSmithingLevel = user.skillsAsLevels.smithing;
 		const boosts = [];
@@ -28,11 +27,11 @@ export const giantsFoundryTask: MinionTask = {
 		const newWeapons = clone(currentStats.gf_weapons_made) as GiantsFoundryBank;
 
 		for (let i = 0; i < quantity; i++) {
-			const quality = Math.min(Math.floor(randomVariation(metalScore - 5 + avgMouldBonus, 10)), 199);
+			const quality = Math.min(Math.floor(rng.randomVariation(metalScore - 5 + avgMouldBonus, 10)), 199);
 			xpReceived += (Math.pow(quality, 2) / 73 + 1.5 * quality + 1) * 30;
 			reputationReceived += quality;
 
-			const weapon = generateRandomGiantWeapon();
+			const weapon = generateRandomGiantWeapon(rng);
 			const weaponID = encodeGiantWeapons(weapon);
 			weaponName = giantWeaponName(weapon);
 			newWeapons[weaponID] = newWeapons[weaponID] ? newWeapons[weaponID]++ : 1;
@@ -92,6 +91,6 @@ export const giantsFoundryTask: MinionTask = {
 		});
 		await user.statsBankUpdate('gf_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
 	}
 };

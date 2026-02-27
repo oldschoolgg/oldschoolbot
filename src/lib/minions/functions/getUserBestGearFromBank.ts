@@ -1,7 +1,6 @@
-import { Bank, type EquipmentSlot, type Item, Items } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
+import { type EquipmentSlot, type GearSetupType, GearStat } from '@oldschoolgg/gear';
+import { Bank, type Item, Items } from 'oldschooljs';
 
-import type { GearSetupType } from '@/lib/gear/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 
 function getItemScore(item: Item) {
@@ -91,7 +90,7 @@ export default function getUserBestGearFromBank({
 	// Get all items by slot from user bank
 	for (const [item, quantity] of new Bank().add(gearBank.bank).add(toRemoveFromGear).items()) {
 		const hasStats = item.equipment?.requirements ? gearBank.hasSkillReqs(item.equipment.requirements) : true;
-		if (item.equipable_by_player && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
+		if (item.equipable && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
 			equipables[item.equipment.slot].push(item.id);
 		}
 	}

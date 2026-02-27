@@ -1,17 +1,17 @@
-import { Bank, convertLVLtoXP, Items, LootTable } from 'oldschooljs';
+import type { GearSetup, PartialGearSetup } from '@oldschoolgg/gear';
+import { Bank, convertLVLtoXP, Items, LootTable, type SimpleMonster } from 'oldschooljs';
 import { isFunction, isObjectType } from 'remeda';
 
 import type { Prisma, User } from '@/prisma/main.js';
+import { MUserClass } from '@/lib/user/MUser.js';
 import type { BitField } from '../../src/lib/constants.js';
-import type { GearSetup } from '../../src/lib/gear/types.js';
-import { MUserClass } from '../../src/lib/MUser.js';
-import { constructGearSetup, Gear, type PartialGearSetup } from '../../src/lib/structures/Gear.js';
+import { constructGearSetup, Gear } from '../../src/lib/structures/Gear.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear
 		? undefined
 		: typeof gear.ammo === 'undefined' || typeof gear.ammo === 'string'
-			? constructGearSetup(gear as PartialGearSetup)
+			? constructGearSetup(gear as PartialGearSetup).raw()
 			: (gear as GearSetup);
 	return filteredGear;
 }
@@ -92,11 +92,11 @@ export const mockMUser = (overrides?: MockUserArgs) => {
 };
 
 export function serializeSnapshotItem(item: any) {
-	const result: any = item;
+	const result = item;
 	for (const [key, value] of Object.entries(result) as [string, any][]) {
 		// LootTable
 		if (value instanceof LootTable || (isObjectType(value) && 'cachedOptimizedTable' in value)) {
-			result[key] = ((value as any).allItems as any as number[])
+			result[key] = (value as LootTable).allItems
 				.map(id => Items.itemNameFromId(id) ?? '???UNKNOWN???')
 				.sort((a, b) => a[0].localeCompare(b[0]));
 			result[key] = Array.from(new Set(result[key]));
@@ -120,7 +120,7 @@ export function serializeSnapshotItem(item: any) {
 			'kill' in value &&
 			isFunction(value.kill)
 		) {
-			result[key] = (value.allItems as any as number[])
+			result[key] = (value as SimpleMonster).allItems
 				.map(id => Items.itemNameFromId(id) ?? '???UNKNOWN???')
 				.sort((a, b) => a.localeCompare(b));
 			continue;

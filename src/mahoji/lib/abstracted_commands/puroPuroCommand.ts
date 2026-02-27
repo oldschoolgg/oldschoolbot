@@ -47,12 +47,12 @@ export default puroOptions;
 
 export async function puroPuroStartCommand(
 	user: MUser,
-	channelID: string,
+	channelId: string,
 	impling: string | undefined,
 	darkLure: boolean | undefined
 ) {
 	const timePerGame = Time.Minute * 10;
-	const maxTripLength = user.calcMaxTripLength('PuroPuro');
+	const maxTripLength = await user.calcMaxTripLength('PuroPuro');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	const skills = user.skillsAsLevels;
@@ -98,7 +98,7 @@ export async function puroPuroStartCommand(
 		duration,
 		darkLure,
 		type: 'PuroPuro',
-		channelID,
+		channelId,
 		minigameID: 'puro_puro'
 	});
 

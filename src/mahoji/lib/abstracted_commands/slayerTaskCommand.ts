@@ -1,8 +1,6 @@
-import { randInt } from '@oldschoolgg/rng';
 import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
-import { EItem, Monsters } from 'oldschooljs';
+import { EItem, type Monster, Monsters } from 'oldschooljs';
 
-import type { Prisma } from '@/prisma/main.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { slayerActionButtons } from '@/lib/slayer/slayerButtons.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -15,6 +13,7 @@ import {
 	userCanUseMaster
 } from '@/lib/slayer/slayerUtil.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
+import type { SafeUserUpdateInput } from '@/lib/user/update.js';
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {
@@ -43,7 +42,7 @@ export async function slayerListBlocksCommand(mahojiUser: MUser) {
 	let outstr =
 		`You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
 		` and have ${maxBlocks - myBlockList.length} remaining\n\n**Blocked Tasks:**\n`;
-	const myBlockedMonsters = Monsters.filter(m => myBlockList.includes(m.id));
+	const myBlockedMonsters: Monster[] = myBlockList.map(_id => Monsters.get(_id)).filter(notEmpty);
 	outstr += `${myBlockedMonsters.map(getCommonTaskName).join('\n')}`;
 	return `${outstr}\n\nTry: \`/slayer manage block\` to block a task.`;
 }
@@ -70,6 +69,7 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 }
 
 export async function slayerNewTaskCommand({
+	rng,
 	user,
 	interaction,
 	extraContent,
@@ -77,8 +77,9 @@ export async function slayerNewTaskCommand({
 	saveDefaultSlayerMaster,
 	showButtons
 }: {
+	rng: RNGProvider;
 	user: MUser;
-	interaction: MInteraction;
+	interaction: OSInteraction;
 	extraContent?: string;
 	slayerMasterOverride?: string | undefined;
 	saveDefaultSlayerMaster?: boolean;
@@ -87,7 +88,7 @@ export async function slayerNewTaskCommand({
 	const { currentTask } = await user.fetchSlayerInfo();
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return `Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${await slayerStatusCommand(
 			user
 		)}`;
@@ -148,7 +149,7 @@ export async function slayerNewTaskCommand({
 		});
 		await user.statsUpdate({ [taskStreakKey]: 0 });
 
-		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
+		const newSlayerTask = await assignNewSlayerTask(interaction, slayerMaster);
 		const commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 		const returnMessage =
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
@@ -201,12 +202,12 @@ export async function slayerNewTaskCommand({
 		return resultMessage;
 	}
 
-	const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
+	const newSlayerTask = await assignNewSlayerTask(interaction, slayerMaster);
 	const myUnlocks = user.user.slayer_unlocks ?? [];
 	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(newSlayerTask.currentTask.monster_id));
 	if (extendReward && myUnlocks.includes(extendReward.id)) {
 		const quantity = newSlayerTask.assignedTask.extendedAmount
-			? randInt(newSlayerTask.assignedTask.extendedAmount[0], newSlayerTask.assignedTask.extendedAmount[1])
+			? rng.randInt(newSlayerTask.assignedTask.extendedAmount[0], newSlayerTask.assignedTask.extendedAmount[1])
 			: Math.ceil(newSlayerTask.currentTask.quantity * extendReward.extendMult!);
 		newSlayerTask.currentTask.quantity = quantity;
 		await prisma.slayerTask.update({
@@ -246,17 +247,19 @@ export async function slayerSkipTaskCommand({
 	user,
 	block,
 	newTask,
-	interaction
+	interaction,
+	rng
 }: {
 	user: MUser;
 	block: boolean;
 	newTask: boolean;
-	interaction: MInteraction;
+	interaction: OSInteraction;
+	rng: RNGProvider;
 }): CommandResponse {
 	const { currentTask } = await user.fetchSlayerInfo();
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = await calcMaxBlockedTasks(user);
-	if (user.minionIsBusy) {
+	if (await user.minionIsBusy()) {
 		return 'You cannot change your task while your minion is busy.';
 	}
 	if (!currentTask) {
@@ -264,7 +267,8 @@ export async function slayerSkipTaskCommand({
 			return slayerNewTaskCommand({
 				user,
 				interaction,
-				showButtons: true
+				showButtons: true,
+				rng
 			});
 		}
 		return "You don't have an active task!";
@@ -278,7 +282,7 @@ export async function slayerSkipTaskCommand({
 	if (slayerPoints < cost) {
 		return `You need ${cost} points to ${block ? 'block' : 'cancel'}, you only have: ${slayerPoints.toLocaleString()}.`;
 	}
-	const updateData: Prisma.UserUncheckedUpdateInput = {
+	const updateData: SafeUserUpdateInput = {
 		slayer_points: {
 			decrement: cost
 		}
@@ -304,7 +308,8 @@ export async function slayerSkipTaskCommand({
 				user,
 				interaction,
 				extraContent: resultMessage,
-				showButtons: true
+				showButtons: true,
+				rng
 			});
 		}
 		return resultMessage;
@@ -326,9 +331,7 @@ export async function slayerUnblockCommand(mahojiUser: MUser, monsterName: strin
 	if (!osjsMonster) {
 		return `Cannot find Monster with name **${monsterName}**`;
 	}
-	const blockedMonsters = mahojiUser.user.slayer_blocked_ids
-		.map(mId => Monsters.find(m => m.id === mId))
-		.filter(notEmpty);
+	const blockedMonsters = mahojiUser.user.slayer_blocked_ids.map(mId => Monsters.get(mId)).filter(notEmpty);
 	if (blockedMonsters.length === 0) {
 		return "You don't currently have any monsters blocked.";
 	}

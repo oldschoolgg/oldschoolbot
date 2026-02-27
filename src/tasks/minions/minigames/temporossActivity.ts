@@ -1,4 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
 import { calcPerHour, Emoji, Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolkit';
 
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
@@ -8,13 +7,13 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const temporossTask: MinionTask = {
 	type: 'Tempoross',
-	async run(data: TemporossActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, rewardBoost, duration } = data;
+	async run(data: TemporossActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, rewardBoost, duration } = data;
 
 		const currentLevel = user.skillsAsLevels.fishing;
 		const previousScore = await user.fetchMinigameScore('tempoross');
 		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);
-		const kcForPet = randInt(previousScore, newScore);
+		const kcForPet = rng.randInt(previousScore, newScore);
 
 		let rewardTokens = quantity * 6;
 		if (rewardBoost > 0) {
@@ -84,6 +83,12 @@ export const temporossTask: MinionTask = {
 			output += `\n\n**Fishing Bonus XP:** ${fBonusXP.toLocaleString()}`;
 		}
 
-		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: output, files: [image] },
+			data,
+			loot: itemsAdded
+		});
 	}
 };

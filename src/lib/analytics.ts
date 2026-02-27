@@ -75,8 +75,8 @@ FROM users;
 	});
 	await prisma.analytic.create({
 		data: {
-			guildsCount: globalClient.guilds.cache.size,
-			membersCount: globalClient.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount || 0), 0),
+			guildsCount: 0,
+			membersCount: 0,
 			timestamp: Math.floor(Date.now() / 1000),
 			clueTasksCount: taskCounts.Clue,
 			minigameTasksCount: taskCounts.Minigame,
@@ -99,6 +99,9 @@ FROM users;
 			gpLuckypick: currentClientSettings.gp_luckypick,
 			gpSlots: currentClientSettings.gp_slots,
 			gpHotCold: currentClientSettings.gp_hotcold
+		},
+		select: {
+			timestamp: true
 		}
 	});
 }

@@ -1,5 +1,4 @@
-import { percentChance } from '@oldschoolgg/rng';
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';
@@ -28,7 +27,7 @@ export async function chompyHuntClaimCommand(user: MUser) {
 	return `Added the following hats to your bank: ${missingHatsBank}`;
 }
 
-export async function chompyHuntCommand(user: MUser, channelID: string) {
+export async function chompyHuntCommand({ user, channelId, rng }: OSInteraction & { rng: RNGProvider }) {
 	if (user.QP < 10) {
 		return 'You need at least 10 QP to hunt Chompy birds.';
 	}
@@ -38,7 +37,7 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 		return 'You need an Ogre bow equipped in your range outfit, and Ogre arrows to hunt Chompy birds!';
 	}
 
-	const tripLength = user.calcMaxTripLength('BigChompyBirdHunting');
+	const tripLength = await user.calcMaxTripLength('BigChompyBirdHunting');
 
 	const boosts: string[] = [];
 	let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
@@ -47,7 +46,7 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 		if (hasDiary) {
 			let bonus = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(boost)) {
+				if (rng.percentChance(boost)) {
 					bonus++;
 				}
 			}
@@ -67,13 +66,16 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 	const realCost = new Bank();
 	try {
 		realCost.add((await user.specialRemoveItems(cost)).realCost);
-	} catch (err: any) {
-		return `You cannot hunt chompy birds. ${err.message}`;
+	} catch (err: unknown) {
+		if (err instanceof UserError) {
+			return err.message;
+		}
+		throw err;
 	}
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID,
+		channelId,
 		duration: tripLength,
 		type: 'BigChompyBirdHunting',
 		quantity,

@@ -1,12 +1,12 @@
+import { EquipmentSlot } from '@oldschoolgg/gear';
 import { Events, Time } from '@oldschoolgg/toolkit';
-import { Bank, ECreature, EItem, EquipmentSlot } from 'oldschooljs';
+import { Bank, ECreature, EItem } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
-import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -29,7 +29,7 @@ const riskDeathNumbers = [
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions, { user, handleTripFinish, rng }) {
-		const { creatureID, quantity, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } = data;
+		const { creatureID, quantity, channelId, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } = data;
 		const userBank = user.bank;
 		const currentLevel = user.skillsAsLevels.hunter;
 		const currentHerbLevel = user.skillsAsLevels.herblore;
@@ -52,14 +52,15 @@ export const hunterTask: MinionTask = {
 
 		const experienceScore = await user.getCreatureScore(creature.id);
 
-		let [successfulQuantity, xpReceived] = calcLootXPHunting(
-			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
+		let [successfulQuantity, xpReceived] = calcLootXPHunting({
+			currentLevel: Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 			creature,
 			quantity,
 			usingStaminaPotion,
 			graceful,
-			experienceScore
-		);
+			experienceScore,
+			rng
+		});
 
 		if (crystalImpling) {
 			// Limit it to a max of 22 crystal implings per hour
@@ -75,7 +76,7 @@ export const hunterTask: MinionTask = {
 			riskDeathChance += Math.min(Math.floor(((await user.getCreatureScore(creature.id)) ?? 1) / 100), 200);
 
 			// Gives lower death chance depending on what the user got equipped in wildy.
-			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy);
+			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy.raw());
 			riskDeathChance += score;
 			for (let i = 0; i < duration / Time.Minute; i++) {
 				if (rng.roll(riskPkChance)) {
@@ -89,12 +90,10 @@ export const hunterTask: MinionTask = {
 				if (userBank.has(cost)) {
 					await user.transactItems({ itemsToRemove: cost });
 				}
-				const newGear = { ...user.gear.wildy.raw() };
+				const newGear = user.gear.wildy.raw();
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
-				await user.update({
-					gear_wildy: newGear as PrismaCompatibleJsonObject
-				});
+				await user.updateGear([{ setup: 'wildy', gear: newGear }]);
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
 				diedStr =
@@ -157,7 +156,7 @@ export const hunterTask: MinionTask = {
 
 		const scoreToAdd = Math.floor(successfulQuantity);
 		if (scoreToAdd > 0) {
-			await user.incrementCreatureScore(creature.id);
+			await user.incrementCreatureScore(creature.id, scoreToAdd);
 		}
 
 		await user.transactItems({
@@ -214,6 +213,6 @@ export const hunterTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish({ user, channelId, message: str, data, loot });
 	}
 };

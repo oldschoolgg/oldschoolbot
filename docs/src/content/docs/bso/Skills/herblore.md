@@ -22,9 +22,9 @@ title: "Herblore"
 
 - Neem Oil - made with Neem Drupe and Jug of Water.
 - Dragon's Fury - (a potion made at 120 herblore using 3 Ignecarus Scales and 1 Abyssal Dragon Bones)
-- [Herblore Master Cape](../custom-items/equippables/#master-capes) - 10% chance per potion made to get an extra potion
-- [Mecha Mortar](invention/#inventions) - 45% Speed boost to Herblore
-- [Herbert ](../custom-items/pets.md#meme-pets-and-no-perk-pets)- Perkless pet found while Mixing
+- [Herblore Master Cape](/bso/custom-items/capes/#master-capes) - 10% chance per potion made to get an extra potion
+- [Mecha Mortar](/bso/skills/invention/#inventions) - 45% Speed boost to Herblore
+- [Herbert ](/bso/custom-items/pets#meme-pets-and-no-perk-pets)- Perkless pet found while Mixing
 
 ## Optimal Gear Setup
 

@@ -1,11 +1,12 @@
+import { percentChance, randInt, roll } from 'node-rng';
+
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import type { OpenableOpenOptions } from '@/structures/Openable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
-import { percentChance, randInt, roll } from '@/util/smallUtils.js';
 import { BrimstoneChestFish, chanceOfFish } from './BonusOpenables.js';
 
-const BrimstoneChestTable = new LootTable()
+const BrimstoneChestTable: LootTable = new LootTable()
 	.add('Uncut diamond', [25, 35], 5)
 	.add('Uncut ruby', [25, 35], 5)
 	.add('Coal', [300, 500], 5)
@@ -37,7 +38,7 @@ const BrimstoneChestTable = new LootTable()
 	.oneIn(1000, 'Mystic boots (dusk)');
 
 export class BrimstoneChestOpenable extends SimpleOpenable {
-	public override open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99 }) {
+	public override open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99 }): Bank {
 		const loot = new Bank();
 		const fishLvl = options.fishLvl ?? 99;
 
@@ -65,7 +66,7 @@ export class BrimstoneChestOpenable extends SimpleOpenable {
 	}
 }
 
-export default new BrimstoneChestOpenable({
+export const BrimstoneChest: BrimstoneChestOpenable = new BrimstoneChestOpenable({
 	id: 23_083,
 	name: 'Brimstone chest',
 	aliases: ['brimstone chest', 'brimstone'],
