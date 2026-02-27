@@ -32,6 +32,8 @@ export const gifs = [
 	'https://gfycat.com/serenegleamingfruitbat',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
+const DESYNC_COMMANDS_TO_KEEP = ['admin', 'rp'] as const;
+const COMMAND_PROPAGATION_NOTE = 'Discord command changes can take up to 1 minute to appear.';
 
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
@@ -395,7 +397,7 @@ export const adminCommand = defineCommand({
 		{
 			type: 'Subcommand',
 			name: 'desync_commands',
-			description: 'Desync commands except /admin',
+			description: 'Desync commands except /admin and /rp',
 			options: []
 		},
 		{
@@ -625,8 +627,8 @@ export const adminCommand = defineCommand({
 				return null;
 			}
 
-			const adminCommands = globalClient.allCommands.filter(
-				command => command.name === 'admin' || command.name === 'rp'
+			const adminCommands = globalClient.allCommands.filter(command =>
+				DESYNC_COMMANDS_TO_KEEP.includes(command.name as (typeof DESYNC_COMMANDS_TO_KEEP)[number])
 			);
 
 			await bulkUpdateCommands({
@@ -793,6 +795,9 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.shut_down) {
+			await interaction.confirmation(
+				`Are you sure you want to shut down this bot? This will attempt command desync first and then shut down in 30 seconds.`
+			);
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({
@@ -832,12 +837,19 @@ ${META_CONSTANTS.RENDERED_STR}`
 		}
 
 		if (options.desync_commands) {
+			await interaction.confirmation(
+				`Are you sure you want to desync commands in this guild? This keeps only ${DESYNC_COMMANDS_TO_KEEP.map(i => `/${i}`).join(', ')}.${
+					!globalConfig.isProduction
+						? ' In non-production, this also clears global app commands for this bot.'
+						: ''
+				}`
+			);
 			const keptCommands = await attemptDesyncCommands();
 			if (!keptCommands) {
 				return 'This subcommand can only be used in the support server.';
 			}
 
-			return `Desynced commands in this guild; kept ${keptCommands}.`;
+			return `Desynced commands in this guild; kept ${keptCommands}. ${COMMAND_PROPAGATION_NOTE}`;
 		}
 
 		if (options.view) {
