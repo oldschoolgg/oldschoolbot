@@ -405,7 +405,7 @@ ${zygomiteFarmingSource
 					input.cost.add('Scythe of vitur', input.chargeBank.amount('scythe_of_vitur_charges'));
 				}
 				if (input.chargeBank.amount('blood_fury_charges') !== 0) {
-					input.cost.add('Scythe of vitur', input.chargeBank.amount('blood_fury_charges'));
+					input.cost.add('Amulet of blood fury', input.chargeBank.amount('blood_fury_charges'));
 				}
 				if (input.hpHealingNeeded !== 0) {
 					input.cost.add('Rocktail', Math.ceil(input.hpHealingNeeded / 26));
