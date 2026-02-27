@@ -36,7 +36,22 @@ function convertCommandToAPICommand(
 	};
 }
 
-export async function bulkUpdateCommands() {
+type BulkUpdateCommandsOptions = {
+	commands: readonly AnyCommand[];
+	guildId: string | null;
+};
+
+export async function bulkUpdateCommands(options?: BulkUpdateCommandsOptions) {
+	if (options) {
+		const body = options.commands.map(convertCommandToAPICommand);
+		if (options.guildId) {
+			return globalClient.rest.put(Routes.applicationGuildCommands(globalClient.applicationId, options.guildId), {
+				body
+			});
+		}
+		return globalClient.rest.put(Routes.applicationCommands(globalClient.applicationId), { body });
+	}
+
 	if (!globalConfig.isProduction) {
 		const body = globalClient.allCommands.map(convertCommandToAPICommand);
 		return globalClient.rest.put(globalClient.apiCommandsRoute(), {
