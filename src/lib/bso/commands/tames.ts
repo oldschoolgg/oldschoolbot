@@ -1541,7 +1541,7 @@ export function determineTameClueResult({
 
 	if (equippedPrimary === itemID('Divine ring')) {
 		boosts.push(`20% faster (${formatDuration(calcPercentOfNum(20, timePerClue))} per clue) for Divine ring`);
-		timePerClue = reduceNumByPercent(timePerClue, 15);
+		timePerClue = reduceNumByPercent(timePerClue, 20);
 	}
 
 	const quantity = Math.floor(maxTripLength.maxTripLength / timePerClue);
