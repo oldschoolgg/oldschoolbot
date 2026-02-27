@@ -7,6 +7,10 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { SailingActivityId } from '@/lib/skilling/skills/sailing/activities.js';
+import type { SailingDifficultyId } from '@/lib/skilling/skills/sailing/difficulties.js';
+import type { SailingRegionId } from '@/lib/skilling/skills/sailing/regions.js';
+import type { SailingShipSnapshot } from '@/lib/skilling/skills/sailing/ship.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
 
@@ -162,6 +166,18 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	fishID: number;
 	quantity: number;
 	flakesQuantity?: number;
+	iQty?: number;
+}
+
+export interface SailingActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Sailing';
+	activity: SailingActivityId;
+	quantity: number;
+	ship: SailingShipSnapshot;
+	region?: SailingRegionId;
+	difficulty?: SailingDifficultyId;
+	variant?: string;
+	sailingLevel?: number;
 	iQty?: number;
 }
 
@@ -617,6 +633,7 @@ export type ActivityTaskData =
 	| CraftingActivityTaskOptions
 	| FiremakingActivityTaskOptions
 	| FishingActivityTaskOptions
+	| SailingActivityTaskOptions
 	| MiningActivityTaskOptions
 	| MotherlodeMiningActivityTaskOptions
 	| PlunderActivityTaskOptions

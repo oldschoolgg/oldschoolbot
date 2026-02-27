@@ -242,6 +242,19 @@ const ores: Ore[] = [
 		aliases: ['addy', 'adamant', 'adamant ore', 'adamantite']
 	},
 	{
+		level: 74,
+		xp: 105,
+		id: itemID('Nickel ore'),
+		name: 'Nickel ore',
+		respawnTime: 12,
+		bankingTime: 33,
+		slope: 0.15,
+		intercept: -0.2,
+		petChance: 80_000,
+		clueScrollChance: 80_000,
+		aliases: ['nickel']
+	},
+	{
 		level: 85,
 		xp: 125,
 		id: 451,

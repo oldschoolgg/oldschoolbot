@@ -13,6 +13,7 @@ export const skillEmoji = {
 	strength: '<:strength:630911040481263617>',
 	defence: '<:defence:630911040393052180>',
 	fishing: '<:fishing:630911040091193356>',
+	sailing: '⛵',
 	hitpoints: '<:hitpoints:630911040460292108>',
 	total: '<:xp:630911040510623745>',
 	overall: '<:xp:630911040510623745>',
