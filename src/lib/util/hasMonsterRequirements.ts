@@ -68,10 +68,6 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 		}
 	}
 
-	if (monster.id === 1834 && !user.hasEquipped(['Ring of wealth', 'Ring of wealth (i)'])) {
-		return [false, `You need to have a Ring of wealth equipped to kill ${monster.name}.`];
-	}
-
 	if (monster.degradeableItemUsage) {
 		for (const set of monster.degradeableItemUsage) {
 			const equippedInThisSet = set.items.find(item => user.gear[set.gearSetup].hasEquipped(item.itemID));

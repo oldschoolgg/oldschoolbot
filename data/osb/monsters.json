@@ -1,6 +1,6 @@
 {
-	"hash": "d78427f83aff687d1002e44a75270ff3",
-	"date": "2026-02-27T16:50:50.744Z",
+	"hash": "5e25d7b74928e1de271e1b26a18fce9c",
+	"date": "2026-02-27T17:11:10.770Z",
 	"data": [
 		{
 			"id": 2,
@@ -2269,7 +2269,7 @@
 			"is_slayer_only": false,
 			"can_be_pked": false,
 			"is_wildy_multi": false,
-			"items_required": [],
+			"items_required": [["Ring of wealth", "Ring of wealth (i)"]],
 			"qp_required": 30,
 			"item_in_bank_boosts": [
 				{

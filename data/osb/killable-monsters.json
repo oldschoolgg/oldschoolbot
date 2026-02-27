@@ -3374,6 +3374,7 @@
 		"time_to_finish": 39200,
 		"wildy": false,
 		"difficulty_rating": 2,
+		"items_required": [[2572, 12785]],
 		"qp_required": 30,
 		"level_requirements": {
 			"prayer": 43,
