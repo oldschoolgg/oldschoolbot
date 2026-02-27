@@ -45,11 +45,19 @@ export const ASSIGNMENT_TRIP_ITEM: Record<AssignableCategory, string> = {
 export const PASSIVE_ACCUM_CAP_MS = 24 * 60 * 60 * 1000;
 
 export const TIER_LEVEL_CEILING: Record<number, number> = {
-	1: 40,
-	2: 60,
-	3: 75,
-	4: 90,
+	1:  40,
+	2:  60,
+	3:  75,
+	4:  90,
 	5: 120,
+};
+
+export const TIER_LEVEL_FLOOR: Record<number, number> = {
+	1:  1,
+	2: 10,
+	3: 25,
+	4: 45,
+	5: 55,
 };
 
 export interface PassiveYieldEntry {
@@ -92,7 +100,7 @@ export const PASSIVE_YIELD_TABLES: Record<SkillCategory, PassiveYieldEntry[]> = 
 		{ item: 'Mithril ore',          minLevel: 55, tierCeiling: 2, ratePerHour:  70 },
 		{ item: 'Lovakite ore',         minLevel: 65, tierCeiling: 3, ratePerHour:  60 },
 		{ item: 'Adamantite ore',       minLevel: 70, tierCeiling: 2, ratePerHour:  55 },
-		{ item: 'Obsidian',             minLevel: 80, tierCeiling: 3, ratePerHour:  30 },
+		{ item: 'Obsidian shards',      minLevel: 80, tierCeiling: 3, ratePerHour:  30 },
 		{ item: 'Runite ore',           minLevel: 85, tierCeiling: 3, ratePerHour:  30 },
 		{ item: 'Amethyst',             minLevel: 92, tierCeiling: 4, ratePerHour:  25 },
 		{ item: 'Dark animica',         minLevel: 105, tierCeiling: 5, ratePerHour: 25 },
@@ -173,25 +181,60 @@ export const PASSIVE_YIELD_TABLES: Record<SkillCategory, PassiveYieldEntry[]> = 
 	],
 };
 
-export function getPassiveYieldEntries(
+export const PASSIVE_TICK_MS = 20 * 60 * 1000;
+
+function hashString(str: string): number {
+	let hash = 0x811c9dc5;
+	for (let i = 0; i < str.length; i++) {
+		hash ^= str.charCodeAt(i);
+		hash = Math.imul(hash, 0x01000193);
+	}
+	return hash >>> 0;
+}
+
+function mulberry32(seed: number): () => number {
+	let s = seed >>> 0;
+	return () => {
+		s += 0x6D2B79F5;
+		let t = Math.imul(s ^ (s >>> 15), 1 | s);
+		t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+		return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+	};
+}
+
+function tierRelevanceFactor(itemMinLevel: number, tier: number): number {
+	const floor    = TIER_LEVEL_FLOOR[tier]   ?? 1;
+	const ceiling  = TIER_LEVEL_CEILING[tier] ?? 40;
+	const midpoint = Math.floor((floor + ceiling) / 2);
+
+	if (itemMinLevel >= midpoint) return 1.00;
+	if (itemMinLevel >= floor)    return 0.35;
+	return                               0.08;
+}
+
+function getAccumulationEntries(
 	category: SkillCategory,
 	tier: number,
 	skillLevel: number
-): PassiveYieldEntry[] {
-	if (tier === 0) return [];
-	const levelCeiling = TIER_LEVEL_CEILING[tier] ?? 40;
-	const eligible     = PASSIVE_YIELD_TABLES[category].filter(
-		e => e.tierCeiling <= tier && e.minLevel <= skillLevel && e.minLevel <= levelCeiling
-	);
-	if (eligible.length === 0) return [];
+): { item: string; weight: number }[] {
+	const ceiling = TIER_LEVEL_CEILING[tier] ?? 40;
+	return PASSIVE_YIELD_TABLES[category]
+		.filter(e => e.tierCeiling <= tier && e.minLevel <= skillLevel && e.minLevel <= ceiling)
+		.map(e => ({
+			item:   e.item,
+			weight: e.ratePerHour * tierRelevanceFactor(e.minLevel, tier),
+		}))
+		.filter(e => e.weight > 0);
+}
 
-	eligible.sort((a, b) => b.minLevel - a.minLevel);
-
-	const MULTIPLIERS = [1.0, 0.5, 0.25];
-	return eligible.slice(0, 3).map((entry, i) => ({
-		...entry,
-		ratePerHour: entry.ratePerHour * MULTIPLIERS[i],
-	}));
+function weightedPick(entries: { item: string; weight: number }[], rand: () => number): string {
+	const total = entries.reduce((s, e) => s + e.weight, 0);
+	let roll    = rand() * total;
+	for (const e of entries) {
+		roll -= e.weight;
+		if (roll <= 0) return e.item;
+	}
+	return entries[entries.length - 1].item;
 }
 
 export function calculateAccumulatedYields(
@@ -200,22 +243,42 @@ export function calculateAccumulatedYields(
 	skillLevel: number,
 	lastCollectedAt: number,
 	now: number = Date.now(),
-	rateMultiplier: number = 1.0
+	rateMultiplier: number = 1.0,
+	userId: string = ''
 ): { item: string; quantity: number }[] {
-	const entries = getPassiveYieldEntries(category, tier, skillLevel);
+	if (tier === 0) return [];
+	const entries = getAccumulationEntries(category, tier, skillLevel);
 	if (entries.length === 0) return [];
-	const elapsedMs  = Math.min(now - lastCollectedAt, PASSIVE_ACCUM_CAP_MS);
-	const elapsedHrs = elapsedMs / (1_000 * 60 * 60);
-	return entries
-		.map(e => ({
-			item:     e.item,
-			quantity: Math.floor(elapsedHrs * e.ratePerHour * rateMultiplier),
-		}))
-		.filter(r => r.quantity > 0);
+
+	const elapsedMs = Math.min(now - lastCollectedAt, PASSIVE_ACCUM_CAP_MS);
+	const startTick = Math.floor(lastCollectedAt / PASSIVE_TICK_MS);
+	const endTick   = Math.floor((lastCollectedAt + elapsedMs) / PASSIVE_TICK_MS);
+
+	const userSeed = (hashString(userId) * 2654435761 + hashString(category)) >>> 0;
+
+	const rollsPerTick = tier;
+
+	const totals = new Map<string, number>();
+
+	for (let tick = startTick; tick < endTick; tick++) {
+		const tickSeed = (userSeed + Math.imul(tick, 1_234_567_891)) >>> 0;
+		const rand     = mulberry32(tickSeed);
+
+		for (let roll = 0; roll < rollsPerTick; roll++) {
+			const item = weightedPick(entries, rand);
+			const baseQty = 1 + Math.floor(rand() * 3);
+			const qty     = Math.max(1, Math.floor(baseQty * rateMultiplier));
+			totals.set(item, (totals.get(item) ?? 0) + qty);
+		}
+	}
+
+	return Array.from(totals.entries())
+		.map(([item, quantity]) => ({ item, quantity }))
+		.filter(r => r.quantity > 0)
+		.sort((a, b) => b.quantity - a.quantity);
 }
 
 const MAINTENANCE_BASE_QTY: Record<string, number> = {
-
 	'Cannonball':            1_500,
 	'Colossal stem':           300,
 	'Crystalline ore':         400,
@@ -230,7 +293,6 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Blue dragon scale':     1_000,
 	'Blue dragonhide':         400,
 	'Sentinel core':             1,
-
 	'Brimstone spore':       1_500,
 	'Ignilace':                 80,
 	'Pure essence':         30_000,
@@ -241,7 +303,6 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Death rune':           12_000,
 	'Blood rune':            5_000,
 	'Soul rune':             5_000,
-
 	'Myconid plank':           500,
 	'Diluted brimstone':       100,
 	'Yew logs':              4_000,
@@ -256,20 +317,17 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Feather':              25_000,
 	'Battlestaff':           2_500,
 	'Dragonstone':           1_500,
-
 	'Verdant logs':            800,
 	'Living bark':             300,
 	'Ancient verdant logs':    600,
 	'Verdant plank':           400,
 	'Elder logs':            3_500,
-
 	'Prismare':                  8,
 	'Celestyte':                40,
 	'Firaxyte':                 25,
 	'Starfire agate':           80,
 	'Oneiryte':                 60,
 	'Verdantyte':               60,
-
 	'Rope':                  3_000,
 	'Raw trout':             2_000,
 	'Raw salmon':            1_800,
@@ -278,7 +336,7 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Raw shark':               500,
 	'Steel bar':             1_000,
 	'Dragon harpoon':            1,
-
+	'Raw manta ray':           300,
 	'Copper ore':            5_000,
 	'Tin ore':               5_000,
 	'Mithril ore':           3_000,
@@ -288,7 +346,6 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Soft clay':             4_000,
 	'Bronze pickaxe':           10,
 	'Dragon pickaxe':            1,
-
 	'Logs':                 10_000,
 	'Oak logs':              7_000,
 	'Willow logs':           5_000,
@@ -299,7 +356,6 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Blisterwood logs':      1_500,
 	'Bronze axe':               20,
 	'Dragon axe':                1,
-
 	'Pale energy':          20_000,
 	'Flickering energy':    16_000,
 	'Bright energy':        12_000,
@@ -310,7 +366,6 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Lustrous energy':       3_000,
 	'Brilliant energy':      2_000,
 	'Incandescent energy':   1_200,
-
 	'Potato':                6_000,
 	'Sweetcorn':             4_000,
 	'Watermelon':            2_500,
@@ -327,25 +382,6 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 
 function tierMultiplier(tier: number): number {
 	return Math.min(1 + (tier - 1) * 0.35, 2.1);
-}
-
-function mulberry32(seed: number): () => number {
-	let s = seed >>> 0;
-	return () => {
-		s += 0x6D2B79F5;
-		let t = Math.imul(s ^ (s >>> 15), 1 | s);
-		t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-		return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-	};
-}
-
-function hashString(str: string): number {
-	let hash = 0x811c9dc5;
-	for (let i = 0; i < str.length; i++) {
-		hash ^= str.charCodeAt(i);
-		hash = Math.imul(hash, 0x01000193);
-	}
-	return hash >>> 0;
 }
 
 export function getCategoryItemPool(category: UpgradeCategory, tier: number): string[] {
@@ -967,7 +1003,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 			cost: new Bank()
 				.add('Coins',          350_000_000)
 				.add('Runite bar',           2_500)
-				.add('Raw manta ray',         2_000)
+				.add('Raw manta ray',        2_000)
 				.add('Dragon harpoon',           1)
 				.add('Feather',            100_000)
 				.add('Magic logs',           4_000),
@@ -1128,9 +1164,9 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 			tier: 1,
 			cost: new Bank()
 				.add('Coins',           50_000_000)
-				.add('Pale energy',         50_000)
-				.add('Pure essence',        20_000)
-				.add('Mind rune',           10_000),
+				.add('Pale energy',         13_000)
+				.add('Pure essence',        25_000)
+				.add('Mind rune',           100_000),
 			name: 'Divination Spire I',
 			description: 'A crude focus draws pale and flickering energies from the ley lines.',
 			bonus: 'Passively accumulates energy up to level 40', flavorText: 'A faint shimmer. The spire is waking.'
@@ -1139,10 +1175,10 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 			tier: 2,
 			cost: new Bank()
 				.add('Coins',          100_000_000)
-				.add('Sparkling energy',    30_000)
+				.add('Sparkling energy',    8500)
 				.add('Pure essence',        50_000)
-				.add('Nature rune',         10_000)
-				.add('Law rune',             5_000),
+				.add('Nature rune',         100_000)
+				.add('Law rune',            100_000),
 			name: 'Divination Spire II',
 			description: 'Refined conduits draw golden and vibrant energies.',
 			bonus: 'Passively accumulates energy up to level 60', flavorText: 'Golden light at the apex. The scholars are excited.'
@@ -1151,11 +1187,12 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 			tier: 3,
 			cost: new Bank()
 				.add('Coins',          200_000_000)
-				.add('Vibrant energy',      20_000)
-				.add('Lustrous energy',     10_000)
-				.add('Death rune',          15_000)
-				.add('Blood rune',          10_000)
-				.add('Pure essence',       100_000),
+				.add('Vibrant energy',      6500)
+				.add('Brilliant energy',    4500)
+				.add('Lustrous energy',     5500)
+				.add('Death rune',          150_000)
+				.add('Blood rune',          200_000)
+				.add('Pure essence',        100_000),
 			name: 'Divination Spire III',
 			description: 'Lustrous and brilliant energies flood the island with ambient resonance.',
 			bonus: 'Passively accumulates energy up to level 75', flavorText: 'The air tastes different near the spire now.'
@@ -1164,11 +1201,10 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 			tier: 4,
 			cost: new Bank()
 				.add('Coins',          350_000_000)
-				.add('Brilliant energy',    15_000)
-				.add('Luminous energy',      8_000)
-				.add('Soul rune',           10_000)
-				.add('Blood rune',          20_000)
-				.add('Pure essence',       200_000),
+				.add('Luminous energy',     3300)
+				.add('Soul rune',           100_000)
+				.add('Blood rune',          300_000)
+				.add('Pure essence',        200_000),
 			name: 'Divination Spire IV',
 			description: 'Luminous and radiant energies attune the entire island to the spire.',
 			bonus: 'Passively accumulates energy up to level 90', flavorText: 'The hum carries through the ground now.'
@@ -1177,13 +1213,14 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 			tier: 5,
 			cost: new Bank()
 				.add('Coins',          500_000_000)
-				.add('Incandescent energy',  5_000)
-				.add('Luminous energy',     15_000)
-				.add('Soul rune',           25_000)
-				.add('Blood rune',          40_000)
-				.add('Pure essence',       400_000)
-				.add('Prismare',                 5)
-				.add('Sentinel core',             1),
+				.add('Incandescent energy', 2800)
+				.add('Luminous energy',     3500)
+				.add('Ancient energy',      250)
+				.add('Soul rune',           250_000)
+				.add('Elder rune',          10_000)
+				.add('Pure essence',        400_000)
+				.add('Prismare',            5)
+				.add('Sentinel core',       1),
 			name: 'Divination Spire V',
 			description: 'Prismare-tuned incandescent conduits draw the rarest energies from the void.',
 			bonus: 'Passively accumulates energy up to level 120 including prismare', flavorText: 'The spire no longer needs tending. It tends itself.'

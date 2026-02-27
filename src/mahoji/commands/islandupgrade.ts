@@ -128,11 +128,12 @@ function accumulationStatusLine(
 	lastCollected: IslandLastCollected,
 	maintained: boolean,
 	activeAssignment: AssignableCategory | null,
-	now: number
+	now: number,
+	userId: string
 ): string {
 	if (!maintained || tier === 0) return '';
 	const mult   = accumulationMultiplier(category, activeAssignment);
-	const yields = calculateAccumulatedYields(category, tier, skillLevel, lastCollected[category], now, mult);
+	const yields = calculateAccumulatedYields(category, tier, skillLevel, lastCollected[category], now, mult, userId);
 	const capHours = PASSIVE_ACCUM_CAP_MS / (1000 * 60 * 60);
 
 	if (yields.length === 0) {
@@ -141,7 +142,7 @@ function accumulationStatusLine(
 
 	const timeSince = now - lastCollected[category];
 	const atCap     = timeSince >= PASSIVE_ACCUM_CAP_MS;
-	const capNote   = atCap ? ` *(cap reached - ${capHours}h max)*` : '';
+	const capNote   = atCap ? ` *(cap reached — ${capHours}h max)*` : '';
 
 	return `**Ready to collect:** ${formatYields(yields)}${capNote}\n> Use \`/islandupgrade gather collect type:${category}\``;
 }
@@ -304,13 +305,13 @@ export const islandUpgradeCommand = defineCommand({
 				}
 
 				const tierDef = upgradeDefinitions[category][tier - 1];
-				if (tierDef) str += ` - ${tierDef.bonus}`;
+				if (tierDef) str += ` — ${tierDef.bonus}`;
 
 				if (maintained) {
-					str += `\n**Active** - ${formatDuration(timeLeft)} remaining`;
+					str += `\n**Active** — ${formatDuration(timeLeft)} remaining`;
 					const assignLine = assignmentStatusLine(activeAssignment, category, maintained);
 					if (assignLine) str += `\n${assignLine}`;
-					const accumLine = accumulationStatusLine(category, tier, skillLevel, currentLastCollected, maintained, activeAssignment, now);
+					const accumLine = accumulationStatusLine(category, tier, skillLevel, currentLastCollected, maintained, activeAssignment, now, user.id);
 					if (accumLine) str += `\n${accumLine}`;
 				} else {
 					const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now);
@@ -329,13 +330,13 @@ export const islandUpgradeCommand = defineCommand({
 				const tier     = getTier(currentUpgrades, category);
 
 				if (tier === 0) {
-					return `**${meta.label}** hasn't been unlocked yet - build Tier 1 first.`;
+					return `**${meta.label}** hasn't been unlocked yet — build Tier 1 first.`;
 				}
 
 				if (!isCategoryMaintained(currentMaintenance, category, now)) {
 					const demand = getWeeklyMaintenanceDemand(category, tier, user.id, now);
 					return (
-						`**${meta.label}** is inactive - passive accumulation is paused.\n\n` +
+						`**${meta.label}** is inactive — passive accumulation is paused.\n\n` +
 						`> ${demand.flavorText}\n` +
 						`> Bring: **${truncateString(demand.bank.toString(), 200)}**\n` +
 						`> \`/islandupgrade maintain type:${category}\``
@@ -346,7 +347,7 @@ export const islandUpgradeCommand = defineCommand({
 				const ceiling    = TIER_LEVEL_CEILING[tier] ?? 40;
 				const lastAt     = currentLastCollected[category];
 				const mult       = accumulationMultiplier(category, activeAssignment);
-				const yields     = calculateAccumulatedYields(category, tier, skillLevel, lastAt, now, mult);
+				const yields     = calculateAccumulatedYields(category, tier, skillLevel, lastAt, now, mult, user.id);
 
 				if (yields.length === 0) {
 					if (skillLevel < 1) {
@@ -354,7 +355,7 @@ export const islandUpgradeCommand = defineCommand({
 					}
 					const timeSince = now - lastAt;
 					if (timeSince < 60_000) {
-						return `Nothing has accumulated yet - come back in a minute.`;
+						return `Nothing has accumulated yet — come back in a minute.`;
 					}
 					return (
 						`Nothing to collect from **${meta.label}** yet.\n\n` +
@@ -372,7 +373,7 @@ export const islandUpgradeCommand = defineCommand({
 						return (
 							`Your workers are focused here but you're out of supplies.\n\n` +
 							`Collecting with workers assigned costs **${ASSIGNMENT_TRIP_COSTS[category as AssignableCategory]}x ${ASSIGNMENT_TRIP_ITEM[category as AssignableCategory]}** per trip.\n` +
-							`You don't have enough - restock or use \`/islandupgrade unassign\` to collect without the boost.`
+							`You don't have enough — restock or use \`/islandupgrade unassign\` to collect without the boost.`
 						);
 					}
 				}
@@ -394,7 +395,7 @@ export const islandUpgradeCommand = defineCommand({
 				await saveState(currentUpgrades, currentContributions, currentMaintenance, activeAssignment, updatedLastCollected);
 
 				const workerNote = isAssigned
-					? `\nWorkers assigned - +${Math.round((ASSIGNMENT_BOOST - 1) * 100)}% yield applied. Used ${ASSIGNMENT_TRIP_COSTS[category as AssignableCategory]}x ${ASSIGNMENT_TRIP_ITEM[category as AssignableCategory]}.`
+					? `\nWorkers assigned — +${Math.round((ASSIGNMENT_BOOST - 1) * 100)}% yield applied. Used ${ASSIGNMENT_TRIP_COSTS[category as AssignableCategory]}x ${ASSIGNMENT_TRIP_ITEM[category as AssignableCategory]}.`
 					: '';
 
 				return {
@@ -403,7 +404,7 @@ export const islandUpgradeCommand = defineCommand({
 						`**${formatYields(yields)}** added to your bank.\n` +
 						`**Your ${category} level:** ${skillLevel} → materials up to level **${ceiling}**` +
 						workerNote +
-						(atCap ? `\n\n> Accumulation was capped at 24h - collect more regularly to avoid waste.` : ''),
+						(atCap ? `\n\n> Accumulation was capped at 24h — collect more regularly to avoid waste.` : ''),
 					files: [image],
 				};
 			}
@@ -421,19 +422,19 @@ export const islandUpgradeCommand = defineCommand({
 				const skillLevel  = skillLevels[category];
 				const ceiling     = TIER_LEVEL_CEILING[tier] ?? 40;
 				const mult        = accumulationMultiplier(category, activeAssignment);
-				const yields      = calculateAccumulatedYields(category, tier, skillLevel, currentLastCollected[category], now, mult);
+				const yields      = calculateAccumulatedYields(category, tier, skillLevel, currentLastCollected[category], now, mult, user.id);
 
-				let str = `### ${meta.label} - This Week's Demand\n\n`;
+				let str = `### ${meta.label} — This Week's Demand\n\n`;
 				str += `> ${demand.flavorText}\n\n`;
 				str += `**Required:** ${truncateString(demand.bank.toString(), 400)}\n\n`;
 				str += canAfford ? 'You have everything needed.' : 'You are missing some items.';
 				str += `\nDemand resets in **${formatDuration(timeToReset)}**.`;
-				str += `\n\n**Your ${category} level:** ${skillLevel} - collecting up to level **${ceiling}** materials`;
+				str += `\n\n**Your ${category} level:** ${skillLevel} — collecting up to level **${ceiling}** materials`;
 
 				if (yields.length > 0) {
 					const assignedNote = (activeAssignment as string) === category
 						? ` *(+${Math.round((ASSIGNMENT_BOOST - 1) * 100)}% worker boost applied)*`
-						: activeAssignment ? ` *(−${Math.round((1 - ASSIGNMENT_PENALTY) * 100)}% - workers at ${upgradeCategoryMeta[activeAssignment].label})*` : '';
+						: activeAssignment ? ` *(−${Math.round((1 - ASSIGNMENT_PENALTY) * 100)}% — workers at ${upgradeCategoryMeta[activeAssignment].label})*` : '';
 					str += `\n**Currently accumulated:** ${formatYields(yields)}${assignedNote}`;
 				} else {
 					str += `\nNothing accumulated yet.`;
@@ -460,26 +461,27 @@ export const islandUpgradeCommand = defineCommand({
 
 				const skillLevel = skillLevels[category];
 				const mult       = accumulationMultiplier(category, activeAssignment);
-				const yields     = calculateAccumulatedYields(category, tier, skillLevel, updatedLastCollected[category], now, mult);
+				const yields     = calculateAccumulatedYields(category, tier, skillLevel, updatedLastCollected[category], now, mult, user.id);
 				const yieldNote  = yields.length > 0 ? `\nCurrent yield at cap: **${formatYields(yields)}**` : '';
 				const assignNote = activeAssignment
 					? `\nAssignment: workers ${(activeAssignment as string) === category ? `focused here (+${Math.round((ASSIGNMENT_BOOST - 1) * 100)}%)` : `elsewhere (−${Math.round((1 - ASSIGNMENT_PENALTY) * 100)}%)`}`
 					: '';
 
 				return (
-					`**[DEBUG]** ${meta.label} accumulation clock rewound by 24h - full cap now available.` +
+					`**[DEBUG]** ${meta.label} accumulation clock rewound by 24h — full cap now available.` +
 					yieldNote + assignNote +
 					`\nUse \`/islandupgrade gather collect type:${category}\` to collect.`
 				);
 			}
 		}
 
+
 		if (options.summary) {
 			let str = '## Island Camp Upgrades\n\n';
 
 			if (activeAssignment) {
 				const m = upgradeCategoryMeta[activeAssignment];
-				str += `> ⚡ Workers focused on **${m.label}** - +${Math.round((ASSIGNMENT_BOOST - 1) * 100)}% boost, −${Math.round((1 - ASSIGNMENT_PENALTY) * 100)}% on others.\n\n`;
+				str += `> Workers focused on **${m.label}** — +${Math.round((ASSIGNMENT_BOOST - 1) * 100)}% boost, −${Math.round((1 - ASSIGNMENT_PENALTY) * 100)}% on others.\n\n`;
 			}
 
 			for (const category of Object.keys(upgradeDefinitions) as UpgradeCategory[]) {
@@ -489,9 +491,9 @@ export const islandUpgradeCommand = defineCommand({
 				const tierDef    = tier > 0 ? upgradeDefinitions[category][tier - 1] : null;
 				const statusIcon = tier === 0 ? '○' : maintained ? '✓' : '✗';
 
-				str += `${statusIcon} **${meta.label}** - Tier ${tier}/${MAX_TIER}`;
+				str += `${statusIcon} **${meta.label}** — Tier ${tier}/${MAX_TIER}`;
 				if (tierDef) str += ` *(${tierDef.bonus})*`;
-				if (tier > 0 && !maintained) str += ' - **inactive**';
+				if (tier > 0 && !maintained) str += ' — **inactive**';
 				str += '\n';
 			}
 
@@ -515,10 +517,10 @@ export const islandUpgradeCommand = defineCommand({
 
 			if (tier > 0) {
 				const tierDef = upgradeDefinitions[category][tier - 1];
-				if (tierDef) str += ` - ${tierDef.bonus}`;
+				if (tierDef) str += ` — ${tierDef.bonus}`;
 
 				if (maintained) {
-					str += `\n**Active** - ${formatDuration(timeLeft)} remaining`;
+					str += `\n**Active** — ${formatDuration(timeLeft)} remaining`;
 					const assignLine = assignmentStatusLine(activeAssignment, category, maintained);
 					if (assignLine) str += `\n${assignLine}`;
 
@@ -526,7 +528,7 @@ export const islandUpgradeCommand = defineCommand({
 						const skillLevel = skillLevels[category as SkillCategory];
 						const accumLine  = accumulationStatusLine(
 							category as SkillCategory, tier, skillLevel,
-							currentLastCollected, maintained, activeAssignment, now
+							currentLastCollected, maintained, activeAssignment, now, user.id
 						);
 						if (accumLine) str += `\n${accumLine}`;
 					}
@@ -566,7 +568,7 @@ export const islandUpgradeCommand = defineCommand({
 			const canAfford   = userOwnsBank(user, demand.bank);
 			const timeToReset = MAINTENANCE_WINDOW_MS - (now % MAINTENANCE_WINDOW_MS);
 
-			let str = `### ${meta.label} - This Week's Demand\n\n`;
+			let str = `### ${meta.label} — This Week's Demand\n\n`;
 			str += `> ${demand.flavorText}\n\n`;
 			str += `**Required:** ${truncateString(demand.bank.toString(), 400)}\n\n`;
 			str += canAfford ? 'You have everything needed.' : 'You are missing some items.';
@@ -581,7 +583,7 @@ export const islandUpgradeCommand = defineCommand({
 			const tier     = getTier(currentUpgrades, category);
 
 			if (tier === 0) {
-				return `**${meta.label}** hasn't been built yet - unlock Tier 1 first.`;
+				return `**${meta.label}** hasn't been built yet — unlock Tier 1 first.`;
 			}
 
 			if (isCategoryMaintained(currentMaintenance, category, now)) {
@@ -618,7 +620,7 @@ export const islandUpgradeCommand = defineCommand({
 				`Supply the following to keep **${meta.locationName}** running for 7 days:\n` +
 				`${truncateString(demand.bank.toString(), 400)}\n\n` +
 				`**Bonus while active:** ${tierDef?.bonus ?? 'active'}` +
-				(assignmentLapsed ? '\n\nYour worker assignment lapsed - use `/islandupgrade assign` after this to re-focus.' : '')
+				(assignmentLapsed ? '\n\nYour worker assignment lapsed — use `/islandupgrade assign` after this to re-focus.' : '')
 			);
 
 			if (!userOwnsBank(user, demand.bank)) {
@@ -641,7 +643,7 @@ export const islandUpgradeCommand = defineCommand({
 
 			return {
 				content:
-					`**${meta.label} - Maintained!**\n\n` +
+					`**${meta.label} — Maintained!**\n\n` +
 					`Active for the next **7 days**.\n` +
 					`**Bonus:** ${tierDef?.bonus ?? 'active'}` +
 					(assignmentLapsed
@@ -665,7 +667,7 @@ export const islandUpgradeCommand = defineCommand({
 
 			if (!isCategoryMaintained(currentMaintenance, category, now)) {
 				return (
-					`**${upgradeCategoryMeta[category].label}** is inactive - maintain it first.\n` +
+					`**${upgradeCategoryMeta[category].label}** is inactive — maintain it first.\n` +
 					`\`/islandupgrade maintain type:${category}\``
 				);
 			}
@@ -717,7 +719,7 @@ export const islandUpgradeCommand = defineCommand({
 
 		if (options.unassign) {
 			if (!activeAssignment) {
-				return 'No workers are currently assigned - everyone is at their normal posts.';
+				return 'No workers are currently assigned — everyone is at their normal posts.';
 			}
 
 			await interaction.confirmation(

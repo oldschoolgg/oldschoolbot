@@ -35,7 +35,7 @@ import type { MinionKillOptions } from '@/mahoji/lib/abstracted_commands/minionK
 import type { PostBoostEffect } from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
 import { staticEquippedItemBoosts } from '@/mahoji/lib/abstracted_commands/minionKill/staticEquippedItemBoosts.js';
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
-import { getBossSpeedBonus, defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
+import { getBossSpeedBonus, defaultIslandUpgrades, defaultMaintenanceTimestamps } from '@/lib/bso/commands/islandUpgrades.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { empyreanOutfit } from '@/lib/bso/collection-log/main.js';
 
@@ -597,8 +597,10 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 
 			if (!verdantIslandBosses.includes(monster.id)) return null;
 
-			const userUpgrades = gearBank.island_upgrades ?? defaultIslandUpgrades;
-			const bossSpeedBonus = getBossSpeedBonus(userUpgrades);
+			const userUpgrades   = gearBank.island_upgrades ?? defaultIslandUpgrades;
+			const islandMaint    = (gearBank.island_upgrades as any)?.maintenance  ?? defaultMaintenanceTimestamps;
+			const islandAssign   = (gearBank.island_upgrades as any)?.assignment   ?? null;
+			const bossSpeedBonus = getBossSpeedBonus(userUpgrades, islandMaint, islandAssign);
 
 			if (bossSpeedBonus > 0) {
 				return {

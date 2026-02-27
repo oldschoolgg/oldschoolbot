@@ -8,6 +8,7 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeArchonButton } from '@/lib/util/interactions.js';
 import {
     getBossSpeedBonus,
+    defaultMaintenanceTimestamps,
     getMegabossLootBonus,
     getTier,
     defaultIslandUpgrades,
@@ -192,7 +193,9 @@ export async function archonCommand(
 
     const speedReduction = (contribution / 100) * 0.30;
 
-    const islandSpeedBonus = getBossSpeedBonus(islandUpgrades);
+    const islandMaint      = (islandUpgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+    const islandAssignment = (islandUpgrades as any)?.assignment  ?? null;
+    const islandSpeedBonus = getBossSpeedBonus(islandUpgrades, islandMaint, islandAssignment);
     if (islandSpeedBonus > 0) {
         boostMessages.push(`Warcamp Fortifications: **${(islandSpeedBonus * 100).toFixed(0)}%** faster`);
     }

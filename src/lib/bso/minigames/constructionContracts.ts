@@ -12,8 +12,9 @@ import { Bank, type Item, Items } from 'oldschooljs';
 import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import {
-	getTier,
+	getMinigameRewardBonus,
 	defaultIslandUpgrades,
+	defaultMaintenanceTimestamps,
 	type IslandUpgradeTiers
 } from '@/lib/bso/commands/islandUpgrades.js';
 
@@ -318,10 +319,12 @@ export async function constructionContractsStartCommand({
 		durationPerContract = Math.floor(reduceNumByPercent(durationPerContract, 25));
 	}
 
-	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
-	const rarityUpgradeTier = getTier(islandUpgrades, 'minigame') as 0 | 1 | 2 | 3 | 4 | 5;
-	if (rarityUpgradeTier > 0) {
-		boosts.push(`${rarityUpgradeTier * 5}% better rewards (Settlement Infrastructure Tier ${rarityUpgradeTier})`);
+	const islandUpgrades  = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
+	const islandMaint     = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign    = (user.user.island_upgrades as any)?.assignment  ?? null;
+	const minigameBonus   = getMinigameRewardBonus(islandUpgrades, islandMaint, islandAssign);
+	if (minigameBonus > 0) {
+		boosts.push(`${(minigameBonus * 100).toFixed(0)}% better rewards (Settlement Infrastructure)`);
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('ConstructionContracts');
@@ -364,7 +367,6 @@ export async function constructionContractsStartCommand({
 		type: 'ConstructionContracts',
 		minigameID: 'construction_contracts',
 		recipe: selectedRecipe.name,
-		rarityUpgradeTier
 	});
 
 	return `${user.minionName} is working on ${quantity}x ${selectedRecipe.name}s for ${formatDuration(duration)}.

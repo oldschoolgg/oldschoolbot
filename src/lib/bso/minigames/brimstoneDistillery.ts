@@ -13,8 +13,9 @@ import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 import {
-    getTier,
+    getMinigameRewardBonus,
     defaultIslandUpgrades,
+	defaultMaintenanceTimestamps,
     type IslandUpgradeTiers
 } from '@/lib/bso/commands/islandUpgrades.js';
 
@@ -299,10 +300,12 @@ export async function brimstoneDistilleryStartCommand({
 		durationPerDistillation = Math.floor(reduceNumByPercent(durationPerDistillation, 10));
 	}
 
-	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
-	const rarityUpgradeTier = getTier(islandUpgrades, 'minigame') as 0 | 1 | 2 | 3 | 4 | 5;
-	if (rarityUpgradeTier > 0) {
-		boosts.push(`${rarityUpgradeTier * 5}% better potion output (Settlement Infrastructure Tier ${rarityUpgradeTier})`);
+	const islandUpgrades  = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
+	const islandMaint     = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign    = (user.user.island_upgrades as any)?.assignment  ?? null;
+	const minigameBonus   = getMinigameRewardBonus(islandUpgrades, islandMaint, islandAssign);
+	if (minigameBonus > 0) {
+		boosts.push(`${(minigameBonus * 100).toFixed(0)}% better rewards (Settlement Infrastructure)`);
 	}
 
 	const hasFullGraceful = user.hasEquippedOrInBank([
@@ -363,7 +366,6 @@ export async function brimstoneDistilleryStartCommand({
 		type: 'BrimstoneDistillery',
 		minigameID: 'brimstone_distillery',
 		recipe: selectedRecipe.name,
-		rarityUpgradeTier,
 		hasFullGraceful
 	});
 
