@@ -81,7 +81,8 @@ export async function gnomeRestaurantCommand(rng: RNGProvider, user: MUser, chan
 	const duration = rng.randomVariation(deliveryLength * quantity, 5);
 
 	if (user.skillsAsLevels.magic >= 66) {
-		itemsToRemove.add('Law rune', Math.max(1, Math.floor(rng.randInt(1, quantity * 1.5) / 2)));
+		const maxLawRunes = Math.max(1, Math.floor(quantity * 1.5));
+		itemsToRemove.add('Law rune', Math.max(1, Math.floor(rng.randInt(1, maxLawRunes) / 2)));
 	}
 
 	if (!user.owns(itemsToRemove)) {
