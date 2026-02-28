@@ -3007,6 +3007,24 @@
 		"wildy_multi": true
 	},
 	{
+		"id": 14704,
+		"name": "Elder custodian stalker",
+		"time_to_finish": 65000,
+		"wildy": false,
+		"exists_in_catacombs": false,
+		"difficulty_rating": 3,
+		"level_requirements": {
+			"slayer": 76
+		},
+		"required_quests": [17],
+		"heal_amount_needed": 38,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash", "attack_magic"],
+		"can_cannon": true,
+		"cannon_multi": true,
+		"can_barrage": true
+	},
+	{
 		"id": 5295,
 		"name": "Elf Archer",
 		"time_to_finish": 27000,
@@ -3925,6 +3943,24 @@
 		"attack_styles_used": ["attack_crush"]
 	},
 	{
+		"id": 14702,
+		"name": "Juvenile custodian stalker",
+		"time_to_finish": 32000,
+		"wildy": false,
+		"exists_in_catacombs": false,
+		"difficulty_rating": 2,
+		"level_requirements": {
+			"slayer": 54
+		},
+		"required_quests": [17],
+		"heal_amount_needed": 18,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash", "attack_magic"],
+		"can_cannon": true,
+		"cannon_multi": true,
+		"can_barrage": true
+	},
+	{
 		"id": 3129,
 		"name": "K'ril Tsutsaroth",
 		"time_to_finish": 306000,
@@ -4455,6 +4491,24 @@
 		"attack_style_to_use": "attack_ranged",
 		"default_attack_styles": ["ranged", "magic"],
 		"disallowed_attack_styles": ["attack", "strength"]
+	},
+	{
+		"id": 14703,
+		"name": "Mature custodian stalker",
+		"time_to_finish": 48000,
+		"wildy": false,
+		"exists_in_catacombs": false,
+		"difficulty_rating": 2,
+		"level_requirements": {
+			"slayer": 67
+		},
+		"required_quests": [17],
+		"heal_amount_needed": 28,
+		"attack_style_to_use": "attack_slash",
+		"attack_styles_used": ["attack_slash", "attack_magic"],
+		"can_cannon": true,
+		"cannon_multi": true,
+		"can_barrage": true
 	},
 	{
 		"id": 10693,

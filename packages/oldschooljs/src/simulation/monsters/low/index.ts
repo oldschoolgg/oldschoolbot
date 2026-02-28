@@ -81,6 +81,7 @@ import { Dwarf } from './a-f/Dwarf.js';
 import { DwarfGangMember } from './a-f/DwarfGangMember.js';
 import { EarthWarrior } from './a-f/EarthWarrior.js';
 import { ElderChaosDruid } from './a-f/ElderChaosDruid.js';
+import { ElderCustodianStalker } from './a-f/ElderCustodianStalker.js';
 import { Elf } from './a-f/Elf.js';
 import { ElfArcher } from './a-f/ElfArcher.js';
 import { ElfWarrior } from './a-f/ElfWarrior.js';
@@ -139,6 +140,7 @@ import { Jogre } from './g-m/Jogre.js';
 import { JubblyBird } from './g-m/JubblyBird.js';
 import { JungleHorror } from './g-m/JungleHorror.js';
 import { JungleWolf } from './g-m/JungleWolf.js';
+import { JuvenileCustodianStalker } from './g-m/JuvenileCustodianStalker.js';
 import { KalphiteGuardian } from './g-m/KalphiteGuardian.js';
 import { KalphiteSoldier } from './g-m/KalphiteSoldier.js';
 import { KalphiteWorker } from './g-m/KalphiteWorker.js';
@@ -161,6 +163,7 @@ import { Mammoth } from './g-m/Mammoth.js';
 import { Man } from './g-m/Man.js';
 import { ManiacalMonkey } from './g-m/ManiacalMonkey.js';
 import { MasterFarmer } from './g-m/MasterFarmer.js';
+import { MatureCustodianStalker } from './g-m/MatureCustodianStalker.js';
 import { MenaphiteThug } from './g-m/MenaphiteThug.js';
 import { Minotaur } from './g-m/Minotaur.js';
 import { MithrilDragon } from './g-m/MithrilDragon.js';
@@ -283,6 +286,9 @@ export const allLowMonsters: Record<string, SimpleMonster> = {
 	Bandit,
 	ArmadylianGuard,
 	BlackKnight,
+	ElderCustodianStalker,
+	JuvenileCustodianStalker,
+	MatureCustodianStalker,
 	DarkWarrior,
 	DeadlyRedSpider,
 	ElderChaosDruid,

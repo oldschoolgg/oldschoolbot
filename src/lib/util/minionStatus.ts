@@ -78,10 +78,12 @@ import type {
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
+	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
+import { ValeTotemsDecorations } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
 export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, rng = MathRNG) {
@@ -677,6 +679,14 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
 				shade.shadeName
 			} remains with ${log.oiledLog.name}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'ValeTotems': {
+			const data = currentTask as ValeTotemsActivityTaskOptions;
+			const logs = ValeTotemsDecorations.find(i => i.log.id === data.logId)!;
+			const item = ValeTotemsDecorations.find(i => i.item.id === data.itemId)!;
+			return `${name} is currently building ${logs.log.name} totems, carving them, and decorating them with ${item.item.name} around the valley for ${data.quantity} laps. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
 		}
 		case 'TombsOfAmascut': {
 			const data = currentTask as TOAOptions;
