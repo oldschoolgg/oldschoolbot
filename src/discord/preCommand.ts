@@ -16,7 +16,7 @@ export type InhibitorResult = {
 
 type PrecommandReturn = Promise<undefined | InhibitorResult>;
 
-export async function preCommand({ command, interaction, user }: PreCommandOptions): PrecommandReturn {
+export async function preCommand({ command, interaction, user, options }: PreCommandOptions): PrecommandReturn {
 	Logging.logDebug(`${user.logName} ran command: ${command.name}`);
 	const commandName: command_name_enum = command.name as command_name_enum;
 	if (!interaction.channelId) {
@@ -40,7 +40,8 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 	const inhibitResult = runInhibitors({
 		user,
 		command,
-		interaction
+		interaction,
+		options
 	});
 	const end = performance.now();
 	Logging.logPerf({

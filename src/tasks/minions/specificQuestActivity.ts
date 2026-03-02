@@ -1,6 +1,6 @@
 import { bold } from '@oldschoolgg/discord';
 
-import { quests } from '@/lib/minions/data/quests.js';
+import { QuestID, quests } from '@/lib/minions/data/quests.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { SpecificQuestOptions } from '@/lib/types/minions.js';
 
@@ -25,6 +25,11 @@ export const specificQuestTask: MinionTask = {
 			completionMessage += ` You gained the following skills rewards: ${Object.entries(quest.skillsRewards)
 				.map(([skill, xp]) => `${xp} XP in ${skill}`)
 				.join(', ')}.`;
+		}
+
+		if (quest.id === QuestID.LearningTheRopes) {
+			completionMessage +=
+				"\nCongratulations on finishing your first quest! If you're unsure where to start next, check out the beginner guide: <https://wiki.oldschool.gg/osb/getting-started/beginner-guide/>.";
 		}
 
 		await user.update({

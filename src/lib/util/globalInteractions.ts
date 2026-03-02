@@ -325,6 +325,22 @@ async function globalButtonInteractionHandler({
 		});
 	}
 
+	if (id === InteractionID.Commands.BecomeIronman) {
+		return runCommand({
+			commandName: 'minion',
+			args: { ironman: {} },
+			...options
+		});
+	}
+
+	if (id === InteractionID.Commands.StartLearningTheRopes) {
+		return runCommand({
+			commandName: 'activities',
+			args: { quest: { name: 'Learning the Ropes' } },
+			...options
+		});
+	}
+
 	if (id === InteractionID.Open.BeginnerCasket) return openCasket('Beginner');
 	if (id === InteractionID.Open.EasyCasket) return openCasket('Easy');
 	if (id === InteractionID.Open.MediumCasket) return openCasket('Medium');
