@@ -651,6 +651,18 @@
 		"output_multiple": 4
 	},
 	{
+		"name": "Cupronickel bar",
+		"level": 74,
+		"xp": 32,
+		"id": 32892,
+		"input_ores": {
+			"436": 2,
+			"31719": 1
+		},
+		"chance_of_fail": 0,
+		"time_to_use": 2400
+	},
+	{
 		"name": "Gold bar",
 		"level": 40,
 		"xp": 22.5,

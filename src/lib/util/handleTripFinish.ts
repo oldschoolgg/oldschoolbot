@@ -81,6 +81,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Implings',
 		fn: async ({ data, messages, user }) => {
+			if (data.type === 'Sailing') return {};
 			const imp = handlePassiveImplings(user, data);
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;

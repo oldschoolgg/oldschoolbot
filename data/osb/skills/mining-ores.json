@@ -133,6 +133,18 @@
 		"clue_scroll_chance": 148320
 	},
 	{
+		"level": 74,
+		"xp": 105,
+		"id": 31719,
+		"name": "Nickel ore",
+		"respawn_time": 12,
+		"banking_time": 33,
+		"slope": 0.15,
+		"intercept": -0.2,
+		"pet_chance": 80000,
+		"clue_scroll_chance": 80000
+	},
+	{
 		"level": 30,
 		"xp": 5,
 		"id": 7936,

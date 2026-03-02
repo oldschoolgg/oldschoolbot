@@ -271,6 +271,7 @@ export class BaseUser {
 			agility: Number(this.user.skills_agility),
 			cooking: Number(this.user.skills_cooking),
 			fishing: Number(this.user.skills_fishing),
+			sailing: Number(this.user.skills_sailing),
 			mining: Number(this.user.skills_mining),
 			smithing: Number(this.user.skills_smithing),
 			woodcutting: Number(this.user.skills_woodcutting),

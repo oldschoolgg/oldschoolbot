@@ -56,6 +56,7 @@ import type {
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
 	RunecraftActivityTaskOptions,
+	SailingActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
@@ -732,6 +733,14 @@ const tripHandlers: {
 		commandName: 'k',
 		args: () => ({
 			name: 'colosseum'
+		})
+	},
+	[activity_type_enum.Sailing]: {
+		commandName: 'sail',
+		args: (data: SailingActivityTaskOptions) => ({
+			activity: data.activity,
+			quantity: data.iQty,
+			variant: data.variant
 		})
 	}
 } as const;
