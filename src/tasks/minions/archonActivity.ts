@@ -66,13 +66,28 @@ export const archonTask: MinionTask = {
 
         const numOthers = users.length - 1;
 
+        const lootStr = realUserLoot.length > 0
+            ? `You received: ${realUserLoot}.`
+            : `You received no loot this time.`;
+
         const str = [
             presentation.flavourEnd,
             ``,
             `${user}, **${user.minionName}** and ${numOthers} adventurers defeated the **${presentation.name}**!`,
-            `You received: ${realUserLoot}.`,
+            lootStr,
             ...(messages.length > 0 ? ['', ...messages] : [])
         ].join('\n');
+
+        if (!str || str.trim().length === 0) {
+        console.error('Archon task produced empty message string', { tier, users, realUserLoot });
+        return handleTripFinish({
+            user,
+            channelId: data.channelId,
+            message: `${user.minionName} defeated the **${presentation.name}**, but something went wrong generating the result message.`,
+            data,
+            loot: realUserLoot
+        });
+    }
 
         return handleTripFinish({
             user,

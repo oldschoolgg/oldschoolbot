@@ -4,14 +4,14 @@ export type UpgradeCategory =
 	| 'boss' | 'megaboss' | 'minigame' | 'gathering' | 'prismare'
 	| 'fishing' | 'mining' | 'woodcutting' | 'divination' | 'farming';
 
-export type AssignableCategory = Exclude<UpgradeCategory, 'megaboss'>;
+export type AssignableCategory = Exclude<UpgradeCategory, 'megaboss' | 'prismare'>;
 
 export type SkillCategory = 'fishing' | 'mining' | 'woodcutting' | 'divination' | 'farming';
 
 export const SKILL_CATEGORIES: SkillCategory[] = ['fishing', 'mining', 'woodcutting', 'divination', 'farming'];
 
 export const ASSIGNABLE_CATEGORIES: AssignableCategory[] = [
-	'boss', 'minigame', 'gathering', 'prismare',
+	'boss', 'minigame', 'gathering',
 	'fishing', 'mining', 'woodcutting', 'divination', 'farming',
 ];
 
@@ -22,7 +22,6 @@ export const ASSIGNMENT_TRIP_COSTS: Record<AssignableCategory, number> = {
 	boss:        50,
 	minigame:    10,
 	gathering:   75,
-	prismare:    250,
 	fishing:     30,
 	mining:      40,
 	woodcutting: 40,
@@ -34,7 +33,6 @@ export const ASSIGNMENT_TRIP_ITEM: Record<AssignableCategory, string> = {
 	boss:        'Cannonball',
 	minigame:    'Raw rocktail',
 	gathering:   'Elder logs',
-	prismare:    'Pure essence',
 	fishing:     'Raw trout',
 	mining:      'Coal',
 	woodcutting: 'Willow logs',
@@ -425,10 +423,11 @@ export function getWeeklyMaintenanceDemand(
 	}
 	const chosen = shuffled.slice(0, itemCount);
 
+	const catMult = CATEGORY_MAINTENANCE_MULTIPLIER[category];
 	const bank = new Bank();
 	for (const itemName of chosen) {
 		const baseQty = MAINTENANCE_BASE_QTY[itemName] ?? 500;
-		const qty     = Math.max(1, Math.round(baseQty * mult / 50) * 50);
+		const qty     = Math.max(1, Math.round(baseQty * mult * catMult / 50) * 50);
 		bank.add(itemName, qty);
 	}
 
@@ -570,6 +569,19 @@ export const upgradeCategoryMeta: Record<UpgradeCategory, UpgradeCategoryMeta> =
 };
 
 export const MAINTENANCE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
+const CATEGORY_MAINTENANCE_MULTIPLIER: Record<UpgradeCategory, number> = {
+	boss:        3,
+	megaboss:    4,
+	minigame:    3,
+	gathering:   3,
+	prismare:    5,
+	fishing:     2,
+	mining:      2,
+	woodcutting: 2,
+	divination:  2,
+	farming:     2,
+};
 
 export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 
@@ -880,82 +892,87 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
-				.add('Prismare',                 3)
-				.add('Celestyte',               17)
-				.add('Firaxyte',                10)
-				.add('Air rune',            35_000)
-				.add('Mind rune',           35_000)
-				.add('Pure essence',        87_500),
+				.add('Coins',             2_000_000_000)
+				.add('Prismare',                    100)
+				.add('Celestyte',                   500)
+				.add('Firaxyte',                    500)
+				.add('Air rune',              1_000_000)
+				.add('Mind rune',             1_000_000)
+				.add('Pure essence',          1_000_000)
+				.add('Empyrean shards',               50),
 			name: 'Astral Observatory I',
 			description: 'Observatory dome raised, the first instruments calibrated.',
-			bonus: '+1% global XP', flavorText: 'The prismare shard levitates and spins.'
+			bonus: '+0.5% global XP', flavorText: 'The prismare shard levitates and spins.'
 		},
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          700_000_000)
-				.add('Prismare',                17)
-				.add('Starfire agate',         175)
-				.add('Oneiryte',               105)
-				.add('Verdantyte',             105)
-				.add('Nature rune',         21_000)
-				.add('Law rune',            14_000)
-				.add('Death rune',          35_000),
+				.add('Coins',            1_400_000_000)
+				.add('Prismare',                   200)
+				.add('Starfire agate',            1000)
+				.add('Oneiryte',                  1000)
+				.add('Verdantyte',                1000)
+				.add('Nature rune',            600_000)
+				.add('Law rune',               450_000)
+				.add('Death rune',           1_000_000)
+				.add('Empyrean shards',             100),
 			name: 'Astral Observatory II',
 			description: 'Starfire agate lenses and oneiryte channels focus the observatory.',
-			bonus: '+2% global XP', flavorText: 'Oneiryte dust in the air.'
+			bonus: '+1% global XP', flavorText: 'Oneiryte dust in the air.'
 		},
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',        1_050_000_000)
-				.add('Prismare',                35)
-				.add('Celestyte',                3)
-				.add('Firaxyte',               175)
-				.add('Blood rune',          10_500)
-				.add('Soul rune',           10_500)
-				.add('Death rune',          70_000),
+				.add('Coins',            4_000_000_000)
+				.add('Prismare',                   400)
+				.add('Celestyte',                 1500)
+				.add('Firaxyte',                  1500)
+				.add('Blood rune',           4_000_000)
+				.add('Soul rune',            4_000_000)
+				.add('Death rune',           2_000_000)
+				.add('Empyrean shards',             150),
 			name: 'Astral Observatory III',
 			description: 'Firaxyte cores ignite, flooding the island with ambient glow.',
-			bonus: '+3% global XP', flavorText: 'Everything on the island feels sharper.'
+			bonus: '+1.5% global XP', flavorText: 'Everything on the island feels sharper.'
 		},
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',        1_400_000_000)
-				.add('Prismare',                70)
-				.add('Celestyte',              175)
-				.add('Firaxyte',               525)
-				.add('Starfire agate',         700)
-				.add('Oneiryte',               350)
-				.add('Blood rune',          28_000)
-				.add('Soul rune',           14_000)
-				.add('Pure essence',        87_500)
-				.add('Sentinel core',             1),
+				.add('Coins',            5_000_000_000)
+				.add('Prismare',                   750)
+				.add('Celestyte',                3_000)
+				.add('Firaxyte',                 3_000)
+				.add('Starfire agate',           3_000)
+				.add('Oneiryte',                 3_000)
+				.add('Blood rune',           1_000_000)
+				.add('Soul rune',              600_000)
+				.add('Pure essence',         2_500_000)
+				.add('Sentinel core',                2)
+				.add('Empyrean shards',             300),
 			name: 'Astral Observatory IV',
 			description: 'Sentinel cores synchronise all instruments into a unified array.',
-			bonus: '+4% global XP', flavorText: 'The hum is constant now.'
+			bonus: '+2% global XP', flavorText: 'The hum is constant now.'
 		},
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',        1_750_000_000)
-				.add('Prismare',               175)
-				.add('Celestyte',              700)
-				.add('Firaxyte',             1_750)
-				.add('Starfire agate',       1_750)
-				.add('Oneiryte',             1_050)
-				.add('Verdantyte',           1_050)
-				.add('Blood rune',          52_500)
-				.add('Soul rune',           26_250)
-				.add('Pure essence',       175_000)
-				.add('Sentinel core',             2)
-				.add('Verdant heart',             1)
-				.add('Dragonstone',          8_750),
+				.add('Coins',           10_000_000_000)
+				.add('Prismare',                 1_500)
+				.add('Celestyte',                7_500)
+				.add('Firaxyte',                 7_500)
+				.add('Starfire agate',           7_500)
+				.add('Oneiryte',                 7_500)
+				.add('Verdantyte',               7_500)
+				.add('Blood rune',           1_750_000)
+				.add('Soul rune',            1_000_000)
+				.add('Pure essence',         5_000_000)
+				.add('Sentinel core',                3)
+				.add('Verdant heart',                2)
+				.add('Dragonstone',             25_000)
+				.add('Empyrean shards',             500),
 			name: 'Astral Observatory V',
 			description: 'Prismare Resonance achieved.',
-			bonus: '+5% global XP', flavorText: 'The orrery spins alone.'
+			bonus: '+2.5% global XP', flavorText: 'The orrery spins alone.'
 		},
 	],
 
@@ -1472,7 +1489,7 @@ export function getGatheringSpeedBonus(u: Partial<IslandUpgradeTiers>, t?: Islan
 export function getPrismareXPBonus(u: Partial<IslandUpgradeTiers>, t?: IslandMaintenanceTimestamps, a?: AssignableCategory | null): number {
 	const tier = getTier(u, 'prismare');
 	if (tier === 0 || (t && !isCategoryMaintained(t, 'prismare'))) return 0;
-	return applyAssignmentMultiplier(([0,.01,.02,.03,.04,.05][tier] ?? 0), 'prismare', resolveAssignment(t, a));
+	return applyAssignmentMultiplier(([0,.005,.010,.015,.020,.025][tier] ?? 0), 'prismare', resolveAssignment(t, a));
 }
 
 export function getMegabossLootBonus(u: Partial<IslandUpgradeTiers>, t?: IslandMaintenanceTimestamps, a?: AssignableCategory | null): number {

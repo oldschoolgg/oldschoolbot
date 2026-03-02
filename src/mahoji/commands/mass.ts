@@ -10,6 +10,8 @@ import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { BurningDominionTemplate } from '@/lib/bso/monsters/VerdantIsland.js';
+import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 import { Bank } from 'oldschooljs';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
@@ -120,21 +122,22 @@ export const massCommand = defineCommand({
 			}
 		}
 
-		// Check if this is Burning Dominion - needs special handling
 		if (monster.id === EBSOMonster.BURNING_DOMINION) {
-			// Build bossUsers array with death chances and item costs
 			const bossUsers = await Promise.all(
 				users.map(async u => {
-					// Calculate death chance based on gear stats vs monster requirements
-					// For now, use a placeholder - you'll need to implement proper death chance calculation
-					const deathChance = 10; // TODO: Implement proper death chance calculation
-					
-					// Get the items to remove (supplies for the trip)
+					const currentKC = await u.getKC(BurningDominionTemplate.id);
+					const deathChance = BurningDominionTemplate.deathProps
+						? calculateSimpleMonsterDeathChance({
+								...BurningDominionTemplate.deathProps,
+								currentKC
+							})
+						: 0;
+
 					const itemsToRemove = new Bank();
 					if (monster.itemCost && typeof monster.itemCost === 'object' && 'itemCost' in monster.itemCost) {
 						itemsToRemove.add(monster.itemCost.itemCost.clone().multiply(quantity));
 					}
-					
+
 					return {
 						user: u.id,
 						deathChance,
