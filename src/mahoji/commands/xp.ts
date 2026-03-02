@@ -12,7 +12,7 @@ export const xpCommand = defineCommand({
 		{
 			type: 'String',
 			name: 'rsn',
-			description: 'The runescape username to check',
+			description: 'The RuneScape username to check',
 			required: true
 		},
 		{

@@ -222,7 +222,7 @@ export const minionCommand = defineCommand({
 				{
 					type: 'Integer',
 					name: 'quantity',
-					description: 'You quantity you want to use.',
+					description: 'The quantity you want to use.',
 					required: false,
 					min_value: 1,
 					max_value: 100_000
