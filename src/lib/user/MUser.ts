@@ -51,6 +51,7 @@ import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/util
 import birdhouses, { type Birdhouse } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
+import type { SlayerSkipSettings } from '@/lib/slayer/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
@@ -830,6 +831,28 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	async fetchSlayerInfo() {
 		const res = await getUsersCurrentSlayerInfo(this.id);
 		return res;
+	}
+
+	getSlayerSkipSettings(): SlayerSkipSettings {
+		const rawSettings = this.user.slayer_skip_settings ?? {};
+		if (!isObject(rawSettings)) return {};
+		const parsedEntries = Object.entries(rawSettings).map(([masterKey, monsterIDs]) => {
+			if (!Array.isArray(monsterIDs)) return [masterKey, []];
+			const filtered = monsterIDs.filter(id => typeof id === 'number');
+			return [masterKey, filtered];
+		});
+		return Object.fromEntries(parsedEntries);
+	}
+
+	async updateSlayerSkipSettings(masterKey: string, monsterIDs: number[]) {
+		const currentSettings = this.getSlayerSkipSettings();
+		const newSettings = { ...currentSettings, [masterKey]: monsterIDs };
+		await this.update({ slayer_skip_settings: newSettings });
+		return newSettings;
+	}
+
+	async setSlayerAutoSkipBuffer(amount: number) {
+		await this.update({ slayer_auto_skip_buffer: amount });
 	}
 
 	hasSlayerUnlock(unlock: SlayerTaskUnlocksEnum): boolean {
