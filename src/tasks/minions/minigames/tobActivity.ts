@@ -57,20 +57,25 @@ export const tobTask: MinionTask = {
 			cc: chincannonUser
 		} = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
+		const uniqueUsersMap = new Map<string, MUser>();
+		for (const user of allUsers) {
+			uniqueUsersMap.set(user.id, user);
+		}
+		const uniqueUsers = [...uniqueUsersMap.values()];
 		const minigameID = hardMode ? 'tob_hard' : 'tob';
-		const allTag = allUsers.map(u => u.toString()).join('');
+		const allTag = uniqueUsers.map(u => u.toString()).join('');
 		const teamsLoot = new TeamLoot([]);
 		const globalTobCost = new Bank();
 		const totalLoot = new Bank();
-		const previousCLs = allUsers.map(i => i.cl.clone());
-		const isSolo = users.length === 1;
+		const previousCLs = uniqueUsers.map(i => i.cl.clone());
+		const isSolo = uniqueUsers.length === 1;
 		let raidId = 0;
 		let wipeCount = 0;
 		let earnedAttempts = 0;
 		let resultMessage = `**${allTag} Your ${hardMode ? 'Hard Mode ' : ''}Theatre of Blood has finished**\n`;
 
 		const totalXPCounts: Record<string, XPCounter> = {};
-		for (const user of allUsers) {
+		for (const user of uniqueUsers) {
 			totalXPCounts[user.id] = new XPCounter();
 		}
 
@@ -111,7 +116,7 @@ export const tobTask: MinionTask = {
 			// Track loot for T3+ patrons
 			if (!chincannonUser) {
 				await Promise.all(
-					allUsers.map(user => {
+					uniqueUsers.map(user => {
 						return user.statsBankUpdate('tob_loot', new Bank(result.loot[user.id]));
 					})
 				);
@@ -173,7 +178,7 @@ export const tobTask: MinionTask = {
 		// Give everyone their XP:
 		const xpString = (
 			await Promise.all(
-				allUsers.map(async u => {
+				uniqueUsers.map(async u => {
 					const theirXP = totalXPCounts[u.id];
 					if (theirXP.length === 0) return null;
 					await u.addXPCounter({ xpCounter: theirXP, source: 'TheatreOfBlood', minimal: true });
@@ -188,16 +193,18 @@ export const tobTask: MinionTask = {
 		// Give everyone their loot:
 		if (chincannonUser) {
 			await Promise.all(
-				allUsers.map(u => u.statsBankUpdate('chincannon_destroyed_loot_bank', teamsLoot.get(u.id)))
+				uniqueUsers.map(u => u.statsBankUpdate('chincannon_destroyed_loot_bank', teamsLoot.get(u.id)))
 			);
 		} else {
-			await Promise.all(allUsers.map(u => u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true })));
+			await Promise.all(
+				uniqueUsers.map(u => u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true }))
+			);
 		}
 
 		// Give them their earned attempts:
 		if (earnedAttempts > 0) {
 			await Promise.all(
-				allUsers.map(u => {
+				uniqueUsers.map(u => {
 					const key = hardMode ? 'tob_hard_attempts' : 'tob_attempts';
 					return u.statsUpdate({
 						[key]: {
@@ -209,7 +216,7 @@ export const tobTask: MinionTask = {
 		}
 		const successfulRaidCount = quantity - wipeCount;
 		if (successfulRaidCount > 0) {
-			await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, successfulRaidCount)));
+			await Promise.all(uniqueUsers.map(u => u.incrementMinigameScore(minigameID, successfulRaidCount)));
 		}
 		if (wipeCount > 0) {
 			await ClientSettings.updateBankSetting('tob_cost', globalTobCost);
@@ -224,7 +231,7 @@ export const tobTask: MinionTask = {
 			changeType: 'loot',
 			duration,
 			kc: successfulRaidCount,
-			users: allUsers.map(i => ({
+			users: uniqueUsers.map(i => ({
 				id: i.id,
 				loot: teamsLoot.get(i.id),
 				duration
@@ -236,7 +243,7 @@ export const tobTask: MinionTask = {
 			resultMessage += `\n\n**${msg}**`;
 		}
 		const shouldShowImage =
-			allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6 && i[1].length > 0);
+			uniqueUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6 && i[1].length > 0);
 
 		if (isSolo) {
 			const image = shouldShowImage
@@ -244,7 +251,7 @@ export const tobTask: MinionTask = {
 						entries: [
 							{
 								loot: totalLoot.remove('Coins', raidId * 100_000),
-								user: allUsers[0],
+								user: uniqueUsers[0],
 								previousCL: previousCLs[0],
 								customTexts: []
 							}
@@ -253,7 +260,7 @@ export const tobTask: MinionTask = {
 					})
 				: undefined;
 			return handleTripFinish({
-				user: allUsers[0],
+				user: uniqueUsers[0],
 				channelId,
 				message: { content: resultMessage, files: [image] },
 				data,
@@ -263,7 +270,7 @@ export const tobTask: MinionTask = {
 
 		const image = shouldShowImage
 			? await drawChestLootImage({
-					entries: allUsers.map((u, index) => ({
+					entries: uniqueUsers.map((u, index) => ({
 						loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
 						user: u,
 						previousCL: previousCLs[index],
@@ -274,7 +281,7 @@ export const tobTask: MinionTask = {
 			: undefined;
 
 		return handleTripFinish({
-			user: allUsers[0],
+			user: uniqueUsers[0],
 			channelId,
 			message: { content: resultMessage, files: [image] },
 			data,
