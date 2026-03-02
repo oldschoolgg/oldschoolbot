@@ -48,7 +48,7 @@ function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
     return null;
 }
 
-const ARCHON_SPAWN_CHANCE = 30; // number in N trips
+const ARCHON_SPAWN_CHANCE = 1; // number in N trips
 
 export function getArchonTier(user: MUser): 1 | 2 | 3 | null {
     if (!roll(ARCHON_SPAWN_CHANCE)) return null;
@@ -231,14 +231,41 @@ export async function archonCommand(
     const duration = Math.floor(baseDuration * (1 - speedReduction) * (1 - islandSpeedBonus));
 
     const ELDERFLAME_ARROW_ID = itemID('Elderflame arrow');
-    const arrowsPerKill: Record<1 | 2 | 3, number> = { 1: 50, 2: 100, 3: 200 };
-    const arrowsNeeded = arrowsPerKill[tier];
+    const TIDAL_COLLECTOR_I_ID = itemID('Tidal collector (i)');
+    const COMBATANT_CAPE_ID = itemID('Combatant\'s cape');
 
-    if (user.gear.range.get('ammo')?.item !== ELDERFLAME_ARROW_ID) {
-        return `Your minion needs **Elderflame arrows** equipped in their ranged ammo slot to fight the ${presentation.name}.`;
+    const hasArrowSaver =
+        user.gear.range.get('cape')?.item === TIDAL_COLLECTOR_I_ID ||
+        user.gear.range.get('cape')?.item === COMBATANT_CAPE_ID;
+
+    const baseArrowsPerKill: Record<1 | 2 | 3, number> = { 1: 50, 2: 100, 3: 200 };
+    const arrowsNeeded = hasArrowSaver
+        ? baseArrowsPerKill[tier]
+        : Math.floor(baseArrowsPerKill[tier] * 3);
+
+    const equippedAmmo = user.gear.range.get('ammo');
+    const equippedQty = equippedAmmo?.item === ELDERFLAME_ARROW_ID ? (equippedAmmo.quantity ?? 0) : 0;
+    const bankQty = user.bank.amount(ELDERFLAME_ARROW_ID);
+    const totalQty = equippedQty + bankQty;
+
+    if (equippedAmmo?.item !== ELDERFLAME_ARROW_ID || totalQty < arrowsNeeded) {
+        return `Your minion needs at least **${arrowsNeeded}x Elderflame arrows** equipped to fight the ${presentation.name}.${!hasArrowSaver ? ' Equip a **Tidal collector (i)** or range cape to reduce arrow consumption by 3x.' : ''}`;
     }
 
-    await user.removeItemsFromBank(new Bank().add(ELDERFLAME_ARROW_ID, arrowsNeeded));
+    const toRemoveFromEquipped = Math.min(equippedQty, arrowsNeeded);
+    const toRemoveFromBank = arrowsNeeded - toRemoveFromEquipped;
+
+    if (toRemoveFromEquipped > 0) {
+        const remainingEquipped = equippedQty - toRemoveFromEquipped;
+        const rangeGear = user.gear.range.raw();
+        rangeGear.ammo = remainingEquipped === 0
+            ? null
+            : { item: ELDERFLAME_ARROW_ID, quantity: remainingEquipped };
+        await user.updateGear([{ setup: 'range', gear: rangeGear }]);
+    }
+    if (toRemoveFromBank > 0) {
+        await user.removeItemsFromBank(new Bank().add(ELDERFLAME_ARROW_ID, toRemoveFromBank));
+    }
 
     await ActivityManager.startTrip({
         userID: user.id,

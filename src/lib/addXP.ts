@@ -22,7 +22,11 @@ import { Skills } from '@/lib/skilling/skills/index.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { degradeItem } from './degradeableItems.js';
-import { type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
+import {
+    type IslandUpgradeTiers,
+    type IslandMaintenanceTimestamps,
+    getPrismareXPBonus,
+} from '@/lib/bso/commands/islandUpgrades.js';
 
 const maxFilter = SkillsArray.map(s => `"skills.${s}" >= ${MAX_LEVEL_XP}`).join(' AND ');
 const makeQuery = (ironman: boolean) => `SELECT count(id)::int
@@ -173,7 +177,6 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
     const gorajanMageEquipped =
         user.gear.mage.hasEquipped(gorajanOccultOutfit, true) || wildyOutfit.hasEquipped(gorajanOccultOutfit, true);
 
-    // Empyrean counts as melee for boost purposes
     const empyreanMeleeEquipped = user.gear.melee.hasEquipped(empyreanOutfit, true);
     const effectiveMeleeEquipped = gorajanMeleeEquipped || empyreanMeleeEquipped;
 
@@ -182,7 +185,6 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
         multiplier && ['attack', 'strength', 'defence'].includes(params.skillName) && effectiveMeleeEquipped;
     const gorajanRangeBoost = multiplier && params.skillName === 'ranged' && gorajanRangeEquipped;
     const gorajanMageBoost = multiplier && params.skillName === 'magic' && gorajanMageEquipped;
-    // 2x HP still requires all three styles - Empyrean counts for the melee slot
     const gorajanHpBoost =
         multiplier &&
         params.skillName === 'hitpoints' &&
@@ -193,12 +195,28 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
         params.amount *= 2;
         gorajanBoost = true;
     }
+
+	let islandXPBoostPercent = 0;
+	if (multiplier && !params.artificial) {
+		const rawUpgrades = user.user.island_upgrades as (IslandUpgradeTiers & { maintenance?: IslandMaintenanceTimestamps }) | null;
+		if (rawUpgrades) {
+			const timestamps = (rawUpgrades.maintenance ?? {}) as IslandMaintenanceTimestamps;
+			const bonus = getPrismareXPBonus(rawUpgrades, timestamps);
+			if (bonus > 0) {
+				islandXPBoostPercent = bonus * 100;
+				params.amount = increaseNumByPercent(params.amount, islandXPBoostPercent);
+			}
+		}
+	}
+
 	let totalFirstAgeBonus = 0;
 	let originalFirstAgeEquipped = 0;
+	let hasPrismareRing = user.hasEquipped(75050); // Prismare ring
+	let hasPrismareRing = user.hasEquipped(75050);
+
 	let totalStaticBoost = 0;
 	const staticBoostsApplied: string[] = [];
 	let outfitBoostPercent = 0;
-	const hasPrismareRing = user.hasEquipped(75050); // Prismare ring
 	for (const item of resolveItems([
 		'First age tiara',
 		'First age amulet',
@@ -295,11 +313,10 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			data: {
 				user_id: BigInt(user.id),
 				skill: params.skillName,
-				xp: Math.floor(totalXPAdded),
+				xp: Math.min(Math.floor(totalXPAdded), 2_147_483_647),
 				artificial: params.artificial ? true : null,
 				source: params.source
-			},
-			select: { id: true }
+			}
 		});
 	}
 
@@ -309,12 +326,11 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			data: {
 				user_id: BigInt(user.id),
 				skill: params.skillName,
-				xp: Math.floor(params.amount - totalXPAdded),
+				xp: Math.min(Math.floor(params.amount - totalXPAdded), 2_147_483_647),
 				artificial: params.artificial ? true : null,
 				post_max: true,
 				source: params.source
-			},
-			select: { id: true }
+			}
 		});
 	}
 
@@ -463,14 +479,17 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		if (totalFirstAgeBonus > 0 && !params.minimal) {
 			str += ` You received ${totalFirstAgeBonus}% bonus XP for First age outfit items.`;
 		}
+		if (prismareBoostApplied && !params.minimal) {
+			str += ` You received ${prismareBoostPercent.toFixed(1)}% bonus XP from your Prismare ring. (${prismareChargesUsed} charges used).`;
+		}
+		if (islandXPBoostPercent > 0 && !params.minimal) {
+			str += ` You received ${formatBonusPercent(islandXPBoostPercent)}% bonus XP from the Astral Observatory.`;
+		}
 		if (outfitBoostPercent > 0 && !params.minimal) {
 			str += ` You received ${formatBonusPercent(outfitBoostPercent)}% bonus XP for ${name} outfit pieces.`;
 		}
 		if (totalStaticBoost > 0 && !params.minimal) {
 			str += ` You received bonus XP from ${staticBoostsApplied.join(', ')}.`;
-		}
-		if (prismareBoostApplied && !params.minimal) {
-			str += ` You received ${prismareBoostPercent.toFixed(1)}% bonus XP from your Prismare ring. (${prismareChargesUsed} charges used).`;
 		}
 
 		if (params.duration) {

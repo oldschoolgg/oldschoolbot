@@ -30,28 +30,20 @@ const methodsOfDeath = [
 	'Forgot to drink heat resistance',
 	'Underestimated the heat',
 	'Became a crispy snack',
-	'Failed the DPS check',
 	'Stood in the fire',
 	'Tanked a tail swipe',
 	'Ate a fireball to the face',
-	'Got combo\'d to death',
 	'Forgot to eat',
-	'Panic-ate too late',
+	'Panic ate too late',
 	'Tried to tank it',
-	'Got greedy with DPS',
-	'Missed the dodge',
-	'Lagged at the worst moment',
 	'Got absolutely cooked',
 	'Literally got smoked',
-	'Became well-done steak',
+	'Became well done steak',
 	'Thought they were invincible',
 	'Tried to solo tank',
 	'Forgot about the other dragon',
 	'Got sandwiched',
-	'Stood in stupid',
 	'Zigged when they should have zagged',
-	'Became a floor tank',
-	'Needed a better gaming chair'
 ];
 
 const BurningDominionNotifyDrops = BurningDominionTemplate.allItems ?? [];
@@ -144,11 +136,12 @@ export const dominionTask: MinionTask = {
 
 			const userDeaths = deaths[user.id]?.qty ?? 0;
 			const userSuccessfulKills = quantity - userDeaths;
+			const newKC = await user.getKC(BurningDominionTemplate.id);
 
 			if (userSuccessfulKills === 0) {
 				embeds.push(
 					new EmbedBuilder().setDescription(
-						`${user}: Died on all ${quantity} kill${quantity > 1 ? 's' : ''} (${
+						`${user}: **0 KC** - Died on all ${quantity} kill${quantity > 1 ? 's' : ''} (${
 							wrongFoodDeaths.includes(user)
 								? 'Had no proper supplies'
 								: rng
@@ -183,17 +176,17 @@ export const dominionTask: MinionTask = {
 			const notifyDropIDs = BurningDominionNotifyDrops.map((item: any) => item.id ?? item);
 			const purple = loot.itemIDs.some(itemID => notifyDropIDs.includes(itemID));
 
-			let embedDescription = `${purple ? Emoji.Purple : ''}${user}: ${userSuccessfulKills}/${quantity} kills`;
-			
+			let embedDescription = `${purple ? Emoji.Purple : ''}${user}: **+${userSuccessfulKills} KC** (${userSuccessfulKills}/${quantity} kills, KC: ${newKC})`;
+
 			if (userDeaths > 0) {
-				embedDescription += ` (died ${userDeaths}x: ${
+				embedDescription += ` - died ${userDeaths}x: ${
 					wrongFoodDeaths.includes(user)
 						? 'Had no proper supplies'
 						: rng
 								.shuffle([...methodsOfDeath])
 								.slice(0, Math.min(userDeaths, 3))
 								.join(', ')
-				})`;
+				}`;
 			}
 
 			if (purple) {

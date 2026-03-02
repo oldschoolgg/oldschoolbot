@@ -120,11 +120,11 @@ export const ContractRecipes: ContractRecipe[] = [
 		name: 'Elder Shrine Contract',
 		description: 'Build an elder wood shrine for worship',
 		ingredients: [
-			{ item: Items.getOrThrow('Elder plank'), quantity: 2 },
+			{ item: Items.getOrThrow('Elder plank'), quantity: 3 },
 			{ item: Items.getOrThrow('Gem infused ore'), quantity: 1 }
 		],
 		constructionLevel: 114,
-		xpMultiplier: 1.4,
+		xpMultiplier: 1.5,
 		rewardWeight: 1.4
 	},
 	{
@@ -132,10 +132,11 @@ export const ContractRecipes: ContractRecipe[] = [
 		description: 'Construct a crystalline architectural masterpiece',
 		ingredients: [
 			{ item: Items.getOrThrow('Crystalline plank'), quantity: 2 },
+			{ item: Items.getOrThrow('Elder plank'), quantity: 1 },
 			{ item: Items.getOrThrow('Gem infused ore'), quantity: 2 }
 		],
 		constructionLevel: 115,
-		xpMultiplier: 1.5,
+		xpMultiplier: 1.6,
 		rewardWeight: 1.5
 	},
 	{
@@ -143,10 +144,11 @@ export const ContractRecipes: ContractRecipe[] = [
 		description: 'Build a specialized myconid living space',
 		ingredients: [
 			{ item: Items.getOrThrow('Myconid plank'), quantity: 2 },
+			{ item: Items.getOrThrow('Elder plank'), quantity: 1 },
 			{ item: Items.getOrThrow('Crystalline ore'), quantity: 3 }
 		],
 		constructionLevel: 116,
-		xpMultiplier: 1.6,
+		xpMultiplier: 1.7,
 		rewardWeight: 1.6
 	},
 	{
@@ -154,10 +156,11 @@ export const ContractRecipes: ContractRecipe[] = [
 		description: 'Construct an ancient verdant manor estate',
 		ingredients: [
 			{ item: Items.getOrThrow('Ancient verdant plank'), quantity: 2 },
+			{ item: Items.getOrThrow('Elder plank'), quantity: 2 },
 			{ item: Items.getOrThrow('Gem infused ore'), quantity: 3 }
 		],
 		constructionLevel: 118,
-		xpMultiplier: 1.7,
+		xpMultiplier: 1.9,
 		rewardWeight: 1.7
 	},
 	{
@@ -166,10 +169,11 @@ export const ContractRecipes: ContractRecipe[] = [
 		ingredients: [
 			{ item: Items.getOrThrow('Myconid plank'), quantity: 3 },
 			{ item: Items.getOrThrow('Crystalline plank'), quantity: 2 },
+			{ item: Items.getOrThrow('Elder plank'), quantity: 2 },
 			{ item: Items.getOrThrow('Gem infused ore'), quantity: 4 }
 		],
 		constructionLevel: 119,
-		xpMultiplier: 1.8,
+		xpMultiplier: 2.1,
 		rewardWeight: 1.8
 	},
 	{
@@ -178,29 +182,77 @@ export const ContractRecipes: ContractRecipe[] = [
 		ingredients: [
 			{ item: Items.getOrThrow('Ancient verdant plank'), quantity: 3 },
 			{ item: Items.getOrThrow('Crystalline plank'), quantity: 3 },
-			{ item: Items.getOrThrow('Elder plank'), quantity: 2 },
+			{ item: Items.getOrThrow('Elder plank'), quantity: 3 },
+			{ item: Items.getOrThrow('Myconid plank'), quantity: 2 },
 			{ item: Items.getOrThrow('Gem infused ore'), quantity: 5 }
 		],
 		constructionLevel: 120,
-		xpMultiplier: 2.2,
+		xpMultiplier: 2.5,
 		rewardWeight: 2.5
 	}
 ];
 
 function getTripQualityMultiplier(): number {
 	const r = Math.random();
-	if (r < 0.05) return 0.2;                             // disastrous: slightly worse floor
-	if (r < 0.15) return 0.5;                             // poor
-	if (r < 0.65) return 0.75 + Math.random() * 0.35;    // average: 0.75–1.10 (dominant band)
-	if (r < 0.90) return 1.10 + Math.random() * 0.25;    // good: 1.10–1.35
-	if (r < 0.98) return 1.35 + Math.random() * 0.20;    // great: 1.35–1.55
-	return 1.55 + Math.random() * 0.15;                   // exceptional: 1.55–1.70 (was 1.8 hard cap)
+	if (r < 0.05) return 0.2;
+	if (r < 0.15) return 0.5;
+	if (r < 0.65) return 0.75 + Math.random() * 0.35;
+	if (r < 0.90) return 1.10 + Math.random() * 0.25;
+	if (r < 0.98) return 1.35 + Math.random() * 0.20;
+	return 1.55 + Math.random() * 0.15;
 }
 
 function rollContractQuality(tripMultiplier: number): number {
 	const baseQuality = Math.random() * 100;
 	const adjustedQuality = baseQuality * tripMultiplier;
 	return Math.min(100, Math.max(0, adjustedQuality));
+}
+
+function generateMiddlingLoot(recipe: ContractRecipe, successfulContracts: number): Bank {
+	const loot = new Bank();
+
+	const plankReturnChance = 0.15;
+	for (let i = 0; i < successfulContracts; i++) {
+		if (Math.random() < plankReturnChance) {
+			const plankIngredients = recipe.ingredients.filter(ing =>
+				ing.item.name.toLowerCase().includes('plank')
+			);
+			if (plankIngredients.length > 0) {
+				const returned = randArrItem(plankIngredients);
+				loot.add(returned.item.id, 1);
+			}
+		}
+	}
+
+	const supplyRoll = Math.random();
+	const supplyQty = Math.floor(successfulContracts * 0.3);
+	if (supplyQty > 0) {
+		if (supplyRoll < 0.35) {
+			loot.add('Steel nail', supplyQty * randInt(5, 15));
+		} else if (supplyRoll < 0.60) {
+			loot.add('Ball of wool', supplyQty * randInt(2, 6));
+		} else if (supplyRoll < 0.80) {
+			loot.add('Bolt of cloth', supplyQty * randInt(1, 4));
+		} else {
+			loot.add('Limestone brick', supplyQty * randInt(1, 3));
+		}
+	}
+
+	const resourceRoll = Math.random();
+	const resourceQty = Math.max(1, Math.floor(successfulContracts * recipe.rewardWeight * 0.2));
+	if (resourceRoll < 0.25) {
+		loot.add('Oak logs', resourceQty * randInt(3, 8));
+	} else if (resourceRoll < 0.50) {
+		loot.add('Teak logs', resourceQty * randInt(2, 6));
+	} else if (resourceRoll < 0.70) {
+		loot.add('Mahogany logs', resourceQty * randInt(1, 4));
+	} else if (resourceRoll < 0.85 && recipe.rewardWeight >= 1.4) {
+		loot.add('Runite ore', resourceQty * randInt(1, 3));
+	} else if (resourceRoll < 0.95 && recipe.rewardWeight >= 1.8) {
+		loot.add('Onyx bolt tips', resourceQty * randInt(1, 5));
+	}
+
+	return loot;
 }
 
 function generateRewardsFromPool(totalQualityPoints: number, recipeWeight: number, rarityBonus = 0): Bank {
@@ -319,6 +371,18 @@ export async function constructionContractsStartCommand({
 		durationPerContract = Math.floor(reduceNumByPercent(durationPerContract, 25));
 	}
 
+	const hasDrygoreSaw = user.hasEquippedOrInBank(['Drygore saw']);
+	if (hasDrygoreSaw) {
+		boosts.push('40% faster construction (Drygore saw)');
+		durationPerContract = Math.floor(reduceNumByPercent(durationPerContract, 40));
+	}
+
+	const hasDwarvenGreathammer = user.hasEquippedOrInBank(['Dwarven greathammer']);
+	if (hasDwarvenGreathammer) {
+		boosts.push('10% faster construction (Dwarven greathammer)');
+		durationPerContract = Math.floor(reduceNumByPercent(durationPerContract, 10));
+	}
+
 	const islandUpgrades  = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
 	const islandMaint     = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
 	const islandAssign    = (user.user.island_upgrades as any)?.assignment  ?? null;
@@ -398,7 +462,10 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 		}
 	}
 
-	const totalLoot = generateRewardsFromPool(totalQualityPoints, recipe.rewardWeight, rarityBonus);
+	const primaryLoot = generateRewardsFromPool(totalQualityPoints, recipe.rewardWeight, rarityBonus);
+	const middlingLoot = generateMiddlingLoot(recipe, successfulContracts);
+	const totalLoot = new Bank().add(primaryLoot).add(middlingLoot);
+
 	const petDropped = totalLoot.has('Bamyr');
 
 	const avgQuality = contractQualities.reduce((sum, q) => sum + q, 0) / data.quantity;
@@ -416,7 +483,7 @@ export function calculateContractsResult(data: ConstructionContractsTaskOptions)
 	let flavorMessage = '';
 	const client = randArrItem(CONTRACT_CLIENTS);
 
-if (petDropped) {
+	if (petDropped) {
 		flavorMessage = `\n\n**While fulfilling the contracts set before you, your minion notices a small deer following them around. As they complete the final touches, the deer approaches and nuzzles your minion.**
 
 *In memory of Bami, whose spirit lives on through exceptional craftsmanship.*`;
@@ -436,7 +503,6 @@ if (petDropped) {
 		}
 	}
 
-	// Always append stats regardless of pet drop
 	const avgQualityStr = avgQuality.toFixed(1);
 	const qualityPointsStr = totalQualityPoints.toFixed(0);
 

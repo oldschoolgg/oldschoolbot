@@ -213,11 +213,11 @@ export const OrymLootTable = new LootTable()
 	.every('Primordial Scales', [12, 50])
 
 	.tertiary(50, 'Clue scroll (grandmaster)')
-	.tertiary(1000, 'Primordial heartstring')
-	.tertiary(1000, 'Primordial spine')
-	.tertiary(2000, 'Sacrilegious flask')
-	.tertiary(2000, 'Forsaken tear')
-	.tertiary(2500, 'Orylin')
+	.tertiary(1500, 'Primordial heartstring')
+	.tertiary(1500, 'Primordial spine')
+	.tertiary(2500, 'Sacrilegious flask')
+	.tertiary(2500, 'Forsaken tear')
+	.tertiary(5000, 'Orylin')
 	.tertiary(25, RareDropTable)
 	.tertiary(5, IslandTable)
 	.tertiary(5, IslandGemTable)
@@ -268,11 +268,11 @@ export const OrrodilLootTable = new LootTable()
 	.tertiary(95, 'Elder sigil fragment (1)')
 	.tertiary(95, 'Elder sigil fragment (2)')
 	.tertiary(95, 'Elder sigil fragment (3)')
-	.tertiary(1000, 'Primordial heartstring')
-	.tertiary(1000, 'Primordial spine')
-	.tertiary(2000, 'Shattered pendant')
-	.tertiary(2000, 'Celestial flame')
-	.tertiary(2500, 'Orrodin')
+	.tertiary(1500, 'Primordial heartstring')
+	.tertiary(1500, 'Primordial spine')
+	.tertiary(2500, 'Shattered pendant')
+	.tertiary(2500, 'Celestial flame')
+	.tertiary(5000, 'Orrodin')
 	.tertiary(25, RareDropTable)
 	.tertiary(5, IslandTable)
 	.tertiary(5, IslandGemTable)
@@ -335,12 +335,12 @@ export const BurningDominionLootTable = new LootTable()
 	.tertiary(500, 'Primordial heartstring')
 	.tertiary(500, 'Primordial spine')
 
-	.tertiary(1500, 'Sacrilegious flask')
-	.tertiary(1500, 'Forsaken tear')
+	.tertiary(1000, 'Sacrilegious flask')
+	.tertiary(1000, 'Forsaken tear')
 	.tertiary(2000, 'Orylin')
 
-	.tertiary(1500, 'Shattered pendant')
-	.tertiary(1500, 'Celestial flame')
+	.tertiary(1000, 'Shattered pendant')
+	.tertiary(1000, 'Celestial flame')
 	.tertiary(2000, 'Orrodin')
 
 	.tertiary(20, RareDropTable)
@@ -451,14 +451,6 @@ export const CrystallineSentinel: CustomMonster = {
 		},
 		{
 			gearSetup: 'range',
-			items: [{ boostPercent: 20, itemID: itemID('Elderflame bow') }]
-		},
-		{
-			gearSetup: 'range',
-			items: [{ boostPercent: 15, itemID: itemID('Starfire bow') }]
-		},
-		{
-			gearSetup: 'range',
 			items: [
 				{ boostPercent: 10, itemID: itemID('Elderflame arrow') },
 				{ boostPercent: 10, itemID: itemID('Elderflame bow') }
@@ -532,14 +524,6 @@ export const FungalBehemoth: CustomMonster = {
 		{
 			gearSetup: 'range',
 			items: [{ boostPercent: 25, itemID: itemID('Vitrolic curse') }]
-		},
-		{
-			gearSetup: 'range',
-			items: [{ boostPercent: 20, itemID: itemID('Elderflame bow') }]
-		},
-		{
-			gearSetup: 'range',
-			items: [{ boostPercent: 15, itemID: itemID('Starfire bow') }]
 		},
 		{
 			gearSetup: 'range',
@@ -816,7 +800,7 @@ export const BurningDominionTemplate: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Burning Dominion',
 	aliases: ['burning dominion', 'dominion', 'burning', 'orym and orrodil'],
-	timeToFinish: Time.Minute * 20,
+	timeToFinish: Time.Minute * 15,
 	hp: 5000,
 	respawnTime: 0,
 	difficultyRating: 9,
