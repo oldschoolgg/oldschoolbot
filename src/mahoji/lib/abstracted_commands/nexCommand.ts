@@ -1,10 +1,11 @@
 import { userMention } from '@oldschoolgg/discord';
-import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
+import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calculateNexDetails, checkNexUser } from '@/lib/simulation/nex.js';
 import type { NexTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function nexCommand(
 	interaction: OSInteraction,
@@ -106,7 +107,7 @@ export async function nexCommand(
 		.join(', ')}${solo ? ' and 3 others' : ''}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
 		details.quantity,
 		details.fakeDuration
-	).toFixed(1)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
+	).toFixed(1)}/hr) - the total trip will take ${await formatTripDuration(user, details.fakeDuration)}.
 
 ${effectiveTeam
 	.map(i => {

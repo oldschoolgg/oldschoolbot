@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function buryCommand(user: MUser, channelId: string, boneName: string, quantity?: number) {
 	const speedMod = 1;
@@ -56,5 +57,5 @@ export async function buryCommand(user: MUser, channelId: string, boneName: stri
 		type: 'Burying'
 	});
 
-	return `${user.minionName} is now burying ${cost}, it'll take around ${formatDuration(duration)} to finish.`;
+	return `${user.minionName} is now burying ${cost}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 }

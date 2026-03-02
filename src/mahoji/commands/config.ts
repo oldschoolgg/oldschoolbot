@@ -146,6 +146,19 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Allow Public API Data Retrieval',
 		bit: BitField.AllowPublicAPIDataRetrieval
+	},
+	{
+		name: 'Show minion return time in your local time',
+		bit: BitField.ShowMinionReturnTime,
+		canToggle: async user => {
+			if ((await user.fetchPerkTier()) < PerkTier.Four) {
+				return {
+					result: false,
+					message: patronMsg(4)
+				};
+			}
+			return { result: true };
+		}
 	}
 ];
 

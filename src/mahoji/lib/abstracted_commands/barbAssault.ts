@@ -19,6 +19,7 @@ import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simula
 import { maxOtherStats } from '@/lib/structures/Gear.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const BarbBuyables = [
 	{
@@ -259,7 +260,7 @@ export async function barbAssaultStartCommand({ user, channelId, rng }: OSIntera
 		user.minionName
 	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
 		waveTime
-	)} - the total trip will take ${formatDuration(duration)}.`;
+	)} - the total trip will take ${await formatTripDuration(user, duration)}.`;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({

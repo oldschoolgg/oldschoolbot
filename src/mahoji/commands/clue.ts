@@ -8,6 +8,7 @@ import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
@@ -435,7 +436,7 @@ export const clueCommand = defineCommand({
 		response.setContent(
 			`${user.minionName} is now completing ${cluesDone}x ${
 				clueTier.name
-			} clues, it'll take around ${formatDuration(duration)} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${
+			} clues, it'll take around ${await formatTripDuration(user, duration)} to finish (${((cluesDone / duration) * 3600000).toFixed(1)}/hr).${
 				boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
 			}${implingLootString}`
 		);

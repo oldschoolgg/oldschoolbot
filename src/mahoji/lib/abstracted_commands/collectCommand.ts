@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
@@ -90,7 +91,7 @@ export async function collectCommand(
 
 	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
 		collectable.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.${
+	}, it'll take around ${await formatTripDuration(user, duration)} to finish.${
 		cost.toString().length > 0
 			? `
 Removed ${cost} from your bank.`

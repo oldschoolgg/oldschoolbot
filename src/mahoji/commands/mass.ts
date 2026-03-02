@@ -9,6 +9,7 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
@@ -138,7 +139,8 @@ export const massCommand = defineCommand({
 			.map(u => u.usernameOrMention)
 			.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
 			perKillTime
-		)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDuration(
+		)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${await formatTripDuration(
+			user,
 			duration
 		)}. ${killsPerHr}`;
 

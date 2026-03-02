@@ -6,6 +6,7 @@ import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/quest
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { ouraniaAltarStartCommand } from '@/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
 import { tiaraRunecraftCommand } from '@/mahoji/lib/abstracted_commands/tiaraRunecraftCommand.js';
@@ -336,7 +337,8 @@ export const runecraftCommand = defineCommand({
 			response += ' Pure ';
 		}
 
-		response += `Essence into ${runeObj.name}, it'll take around ${formatDuration(
+		response += `Essence into ${runeObj.name}, it'll take around ${await formatTripDuration(
+			user,
 			duration
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
 			quantityPerEssence * quantity

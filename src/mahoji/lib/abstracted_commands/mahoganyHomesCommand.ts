@@ -1,8 +1,9 @@
-import { calcPercentOfNum, calcWhatPercent, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, calcWhatPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { Plank } from '@/lib/skilling/skills/construction/constructables.js';
 import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 interface IContract {
 	name: string;
@@ -192,7 +193,7 @@ export async function mahoganyHomesBuildCommand(
 
 	let str = `${user.minionName} is now doing ${quantity}x ${
 		tierData.name
-	} Mahogany homes contracts, the trip will take ${formatDuration(duration)}. Removed ${itemsNeeded} from your bank.`;
+	} Mahogany homes contracts, the trip will take ${await formatTripDuration(user, duration)}. Removed ${itemsNeeded} from your bank.`;
 
 	if (hasSack) {
 		str += "\nYou're getting more XP/Hr because of your Plank sack!";

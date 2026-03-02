@@ -1,7 +1,14 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { formatDurationWithTimestamp, Time } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
+
+export async function formatTripDuration(user: MUser, durationMs: number): Promise<string> {
+	const perkTier = await user.fetchPerkTier();
+	const showTimestamp = user.bitfield.includes(BitField.ShowMinionReturnTime);
+	return formatDurationWithTimestamp(durationMs, perkTier, showTimestamp);
+}
 
 const MOON_KEY_ONE_IN_PER_MINUTE = 60;
 

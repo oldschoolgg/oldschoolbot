@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export const mixCommand = defineCommand({
 	name: 'mix',
@@ -133,6 +134,6 @@ export const mixCommand = defineCommand({
 
 		return `${user.minionName} ${cost} making ${quantity}x ${
 			mixableItem.outputMultiple ? 'batches of' : ''
-		}${itemName}, it'll take around ${formatDuration(duration)} to finish.`;
+		}${itemName}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 	}
 });
