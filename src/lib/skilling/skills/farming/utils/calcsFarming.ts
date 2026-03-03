@@ -31,10 +31,8 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 
 	switch (plant.seedType) {
 		case 'allotment': {
-			const varlamoreAllotmentPatches = 2;
-			numOfPatches = Math.max(0, numOfPatches - varlamoreAllotmentPatches);
 			if (hasChildrenOfTheSun) {
-				numOfPatches += varlamoreAllotmentPatches;
+				numOfPatches += 2;
 			}
 			break;
 		}
