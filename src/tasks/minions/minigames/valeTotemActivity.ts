@@ -1,0 +1,126 @@
+import { Bank, EItem } from 'oldschooljs';
+
+import { trackLoot } from '@/lib/lootTrack.js';
+import {
+	createCleanDirtyArrowsTable,
+	createRummageOfferingsTable,
+	preRollTable
+} from '@/lib/minions/data/valeTotems.js';
+import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+
+export const valeTotemsTask: MinionTask = {
+	type: 'ValeTotems',
+	async run(data: ValeTotemsActivityTaskOptions, { user, handleTripFinish, rng }) {
+		const { channelId, quantity, duration, offerings, fletchXp } = data;
+		const TOTEMS_PER_LAP = 8;
+
+		const { newScore } = await user.incrementMinigameScore('vale_totems', quantity * TOTEMS_PER_LAP);
+
+		const userStats = await user.fetchStats();
+		const totalOfferings = offerings + userStats.vale_offerings;
+		const rewards = Math.floor(totalOfferings / 100);
+		const remainder = totalOfferings % 100;
+
+		await user.statsUpdate({
+			vale_research_points: {
+				increment: rewards
+			},
+			vale_offerings: remainder
+		});
+
+		const fletchingLvl = user.skillLevel('fletching');
+		const hasForestryKit = user.hasEquippedOrInBank(EItem.FORESTRY_KIT);
+
+		const loot = new Bank();
+		const lootTable = createRummageOfferingsTable(fletchingLvl, hasForestryKit);
+
+		for (let i = 0; i < rewards; i++) {
+			if (rng.roll(100)) {
+				loot.add(preRollTable.roll());
+				continue;
+			}
+			loot.add(lootTable.roll());
+		}
+
+		// Dirty arrowtips and it's logic
+		const hasDirtyArrowtips = loot.has('Dirty arrowtips');
+		let dirtyArrowTipCount: number | undefined;
+
+		if (hasDirtyArrowtips) {
+			const dirtyArrowTipTable = createCleanDirtyArrowsTable(fletchingLvl);
+			dirtyArrowTipCount = loot.amount('Dirty arrowtips');
+			loot.remove('Dirty arrowtips', dirtyArrowTipCount);
+			for (let i = 0; i < dirtyArrowTipCount; i++) {
+				loot.add(dirtyArrowTipTable.roll());
+			}
+		}
+
+		await ClientSettings.updateBankSetting('vt_loot', loot);
+
+		const { previousCL, itemsAdded } = await user.transactItems({
+			collectionLog: true,
+			itemsToAdd: loot
+		});
+
+		const constructionXp = user.skillLevel('construction') * TOTEMS_PER_LAP * quantity;
+
+		const [fletchingXpRes, constructionXpRes] = await Promise.all([
+			user.addXP({
+				skillName: 'fletching',
+				amount: fletchXp,
+				duration,
+				source: 'ValeTotems'
+			}),
+			user.addXP({
+				skillName: 'construction',
+				amount: constructionXp,
+				duration,
+				source: 'ValeTotems'
+			})
+		]);
+
+		await trackLoot({
+			totalLoot: itemsAdded,
+			id: 'vale_totems',
+			type: 'Minigame',
+			changeType: 'loot',
+			duration: data.duration,
+			kc: quantity,
+			users: [
+				{
+					id: user.id,
+					loot: itemsAdded,
+					duration
+				}
+			]
+		});
+
+		const str = `${user}, ${user.minionName} finished doing the Vale Totems ${quantity}x laps, and constructed ${
+			quantity * TOTEMS_PER_LAP
+		} totems (total constructed ${newScore} Totems). ${user.minionName} gained ${rewards} Vale Research points (total ${userStats.vale_research_points + rewards}). ${
+			hasDirtyArrowtips
+				? `While rummaging through the offerings,${user.minionName} discovered and cleaned ${dirtyArrowTipCount}x Dirty arrowtips.`
+				: ''
+		} ${
+			remainder > 0
+				? `${remainder}x vale offerings remain to be rummaged through, and they will count toward the next trip.`
+				: ''
+		} \n\n${fletchingXpRes}\n${constructionXpRes}`;
+
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x laps of Vale Totems`,
+			user,
+			previousCL
+		});
+
+		return handleTripFinish({
+			user,
+			channelId,
+			message: { content: str, files: [image] },
+			data,
+			loot: itemsAdded
+		});
+	}
+};

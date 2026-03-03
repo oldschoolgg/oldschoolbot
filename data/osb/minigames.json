@@ -170,6 +170,11 @@
 		"column": "trouble_brewing"
 	},
 	{
+		"name": "Vale Totems",
+		"aliases": ["vt", "vale totems"],
+		"column": "vale_totems"
+	},
+	{
 		"name": "Volcanic Mine",
 		"aliases": ["vm"],
 		"column": "volcanic_mine"
