@@ -37,8 +37,8 @@ import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsG
 import { collectables } from '@/mahoji/lib/collectables.js';
 import { ancientMycologyCommand } from '../lib/abstracted_commands/ancientMycologyCommand.js';
 import { archaicMiningCommand } from '../lib/abstracted_commands/archaicMiningCommand.js';
-import { gemstoneFishingCommand } from '../lib/abstracted_commands/gemstoneFishingCommand.js';
 import { gemscaleBreakdownCommand } from '../lib/abstracted_commands/gemscaleBreakdownCommand.js';
+import { gemstoneFishingCommand } from '../lib/abstracted_commands/gemstoneFishingCommand.js';
 
 export const activitiesCommand = defineCommand({
 	name: 'activities',
@@ -698,7 +698,11 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.gemstone_fishing) {
 			if (options.gemstone_fishing.action === 'breakdown') {
-				return gemscaleBreakdownCommand(user, options.gemstone_fishing.fish_type, options.gemstone_fishing.quantity);
+				return gemscaleBreakdownCommand(
+					user,
+					options.gemstone_fishing.fish_type,
+					options.gemstone_fishing.quantity
+				);
 			}
 			return gemstoneFishingCommand(user, channelId, options.gemstone_fishing.quantity);
 		}

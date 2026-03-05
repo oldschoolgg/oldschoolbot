@@ -51,6 +51,7 @@ import { gpCommand } from '@/mahoji/commands/gp.js';
 import { helpCommand } from '@/mahoji/commands/help.js';
 import { huntCommand } from '@/mahoji/commands/hunt.js';
 import { inviteCommand } from '@/mahoji/commands/invite.js';
+import { islandUpgradeCommand } from '@/mahoji/commands/islandupgrade.js';
 import { minionKCommand } from '@/mahoji/commands/k.js';
 import { killCommand } from '@/mahoji/commands/kill.js';
 import { lapsCommand } from '@/mahoji/commands/laps.js';
@@ -88,7 +89,6 @@ import { toolsCommand } from '@/mahoji/commands/tools.js';
 import { tradeCommand } from '@/mahoji/commands/trade.js';
 import { triviaCommand } from '@/mahoji/commands/trivia.js';
 import { mahojiUseCommand } from '@/mahoji/commands/use.js';
-import { islandUpgradeCommand } from '@/mahoji/commands/islandupgrade.js';
 
 export const allCommandsDONTIMPORT: AnyCommand[] = [
 	adminCommand,

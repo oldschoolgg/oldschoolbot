@@ -1,3 +1,4 @@
+import { defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { Bank, EGear } from 'oldschooljs';
@@ -5,7 +6,6 @@ import { describe, expect, it, test } from 'vitest';
 
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { defaultSkillsAsXPObj, makeGearBank } from './utils.js';
-import { defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 
 describe('GearBank', () => {
 	it('should calculate combat level', () => {

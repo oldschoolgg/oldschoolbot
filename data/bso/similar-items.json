@@ -596,6 +596,10 @@
 		"similar_items": ["Dragon hunter crossbow", "Dragon hunter crossbow (b)", "Dragon hunter crossbow (t)"]
 	},
 	{
+		"main_item": "Dragon hunter lance",
+		"similar_items": ["Dragon hunter lance", "Dragonbane glaive"]
+	},
+	{
 		"main_item": "Dragon kiteshield",
 		"similar_items": ["Dragon kiteshield", "Dragon kiteshield (g)"]
 	},
@@ -632,11 +636,11 @@
 	},
 	{
 		"main_item": "Dragonfire shield",
-		"similar_items": ["Dragonfire shield", "Uncharged dragonfire shield"]
+		"similar_items": ["Dragonbane aegis", "Dragonfire shield", "Uncharged dragonfire shield"]
 	},
 	{
 		"main_item": "Dragonfire ward",
-		"similar_items": ["Dragonfire ward", "Uncharged dragonfire ward"]
+		"similar_items": ["Dragonbane aegis", "Dragonfire ward", "Uncharged dragonfire ward"]
 	},
 	{
 		"main_item": "Drygore longsword",
@@ -1951,6 +1955,7 @@
 	{
 		"main_item": "Torva boots",
 		"similar_items": [
+			"Empyrean greatsabaton",
 			"Gorajan warrior boots",
 			"Gorajan warrior boots (Oceanic)",
 			"Gorajan warrior boots (Primal)",
@@ -1960,6 +1965,7 @@
 	{
 		"main_item": "Torva full helm",
 		"similar_items": [
+			"Empyrean greathelm",
 			"Gorajan warrior helmet",
 			"Gorajan warrior helmet (Oceanic)",
 			"Gorajan warrior helmet (Primal)",
@@ -1972,6 +1978,7 @@
 	{
 		"main_item": "Torva gloves",
 		"similar_items": [
+			"Empyrean greatgauntlets",
 			"Gorajan warrior gloves",
 			"Gorajan warrior gloves (Oceanic)",
 			"Gorajan warrior gloves (Primal)",
@@ -1981,6 +1988,7 @@
 	{
 		"main_item": "Torva platebody",
 		"similar_items": [
+			"Empyrean greatplate",
 			"Gorajan warrior top",
 			"Gorajan warrior top (Oceanic)",
 			"Gorajan warrior top (Primal)",
@@ -1990,6 +1998,7 @@
 	{
 		"main_item": "Torva platelegs",
 		"similar_items": [
+			"Empyrean greatgreaves",
 			"Gorajan warrior legs",
 			"Gorajan warrior legs (Oceanic)",
 			"Gorajan warrior legs (Primal)",

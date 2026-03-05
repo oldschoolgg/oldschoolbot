@@ -1,17 +1,17 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
 import {
 	abyssalDragonCL,
+	crystallineSentinelCL,
 	customPetsCL,
+	fungalBehemothCL,
 	ignecarusCL,
 	kalphiteKingCL,
 	kingGoldemarCL,
 	nexCL,
+	orrodilCL,
+	orymCL,
 	queenBlackDragonCL,
 	seaKrakenCL,
-	orymCL,
-	orrodilCL,
-	fungalBehemothCL,
-	crystallineSentinelCL,
 	spectatorClothes,
 	vasaMagusCL
 } from '@/lib/bso/collection-log/main.js';
@@ -25,7 +25,13 @@ import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
 import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, LuckyImpling, Monsters, resolveItems } from 'oldschooljs';
 
-import { all3rdAgeItems, gracefulCL, troubleBrewingCL, concontractsCL, distilleryCL } from '@/lib/data/CollectionsExport.js';
+import {
+	all3rdAgeItems,
+	concontractsCL,
+	distilleryCL,
+	gracefulCL,
+	troubleBrewingCL
+} from '@/lib/data/CollectionsExport.js';
 import { implings } from '@/lib/implings.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
@@ -861,32 +867,32 @@ export const eliteTasks: Task[] = [
 			return orrodilCL.every(c => cl.has(c));
 		}
 	},
-		{
+	{
 		id: 3115,
 		name: 'Finish the Crystalline Sentinel CL',
 		has: async ({ cl }) => {
 			return crystallineSentinelCL.every(c => cl.has(c));
 		}
 	},
-		{
+	{
 		id: 3116,
 		name: 'Finish the Fungal Behemoth CL',
 		has: async ({ cl }) => {
 			return fungalBehemothCL.every(c => cl.has(c));
 		}
 	},
-		{
+	{
 		id: 3117,
 		name: 'Finish the Brimstone Distillery CL',
 		has: async ({ cl }) => {
 			return distilleryCL.every(c => cl.has(c));
 		}
 	},
-		{
+	{
 		id: 3118,
 		name: 'Finish the Construction Contracts CL',
 		has: async ({ cl }) => {
 			return concontractsCL.every(c => cl.has(c));
 		}
-	},
+	}
 ];

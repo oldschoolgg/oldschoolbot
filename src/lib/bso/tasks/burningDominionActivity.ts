@@ -3,9 +3,9 @@ import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { BurningDominionTemplate } from '@/lib/bso/monsters/VerdantIsland.js';
 import type { BossUser } from '@/lib/bso/structures/Boss.js';
 
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { Emoji, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-import { EmbedBuilder } from '@oldschoolgg/discord';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
@@ -78,13 +78,10 @@ function formatLootSection(loot: Bank, hasUnique: boolean): string {
 	const combined = parts.join(', ');
 	const cap = 3700;
 	const truncated =
-		combined.length > cap
-			? `${combined.substring(0, combined.lastIndexOf(',', cap))}, *(truncated)*`
-			: combined;
+		combined.length > cap ? `${combined.substring(0, combined.lastIndexOf(',', cap))}, *(truncated)*` : combined;
 
 	return `||${truncated}||`;
 }
-
 
 export const dominionTask: MinionTask = {
 	type: 'BurningDominion',
@@ -168,10 +165,12 @@ export const dominionTask: MinionTask = {
 			const newKC = await user.getKC(BurningDominionTemplate.id);
 
 			if (userSuccessfulKills === 0) {
-				const deathMsg =
-					wrongFoodDeaths.includes(user)
-						? 'Had no proper supplies'
-						: rng.shuffle([...methodsOfDeath]).slice(0, userDeaths).join(', ');
+				const deathMsg = wrongFoodDeaths.includes(user)
+					? 'Had no proper supplies'
+					: rng
+							.shuffle([...methodsOfDeath])
+							.slice(0, userDeaths)
+							.join(', ');
 				embeds.push(
 					new EmbedBuilder().setDescription(
 						`${user}: **0 KC** - Died on all ${quantity} kill${quantity > 1 ? 's' : ''} *(${deathMsg})*`
@@ -199,13 +198,12 @@ export const dominionTask: MinionTask = {
 
 			let header = `${hasUnique ? `${Emoji.Purple} ` : ''}${user}: **+${userSuccessfulKills} KC** (${userSuccessfulKills}/${quantity} kills, KC: ${newKC})`;
 			if (userDeaths > 0) {
-				const deathMsg =
-					wrongFoodDeaths.includes(user)
-						? 'Had no proper supplies'
-						: rng
-								.shuffle([...methodsOfDeath])
-								.slice(0, Math.min(userDeaths, 3))
-								.join(', ');
+				const deathMsg = wrongFoodDeaths.includes(user)
+					? 'Had no proper supplies'
+					: rng
+							.shuffle([...methodsOfDeath])
+							.slice(0, Math.min(userDeaths, 3))
+							.join(', ');
 				header += ` - died ${userDeaths}x: *${deathMsg}*`;
 			}
 

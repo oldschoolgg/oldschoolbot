@@ -1,12 +1,12 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
+import { GearStat } from '@oldschoolgg/gear';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, RareDropTable, resolveItems } from 'oldschooljs';
-import { GearStat } from '@oldschoolgg/gear';
 
-import { MUserClass } from '@/lib/user/MUser.js';
 import { addStatsOfItemsTogether, Gear } from '@/lib/structures/Gear.js';
+import type { MUserClass } from '@/lib/user/MUser.js';
 
 export const IslandTable = new LootTable()
 	.add('Ancient cap', [5, 15])

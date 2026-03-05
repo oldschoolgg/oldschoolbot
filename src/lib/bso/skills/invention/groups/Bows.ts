@@ -79,12 +79,12 @@ export const Bows: DisassemblySourceGroup = {
 			item: i("Craw's bow (u)"),
 			lvl: 99
 		},
-				{
-			item: i("Starfire bow"),
+		{
+			item: i('Starfire bow'),
 			lvl: 99
 		},
 		{
-			item: i("Elderflame bow"),
+			item: i('Elderflame bow'),
 			lvl: 99
 		}
 	],

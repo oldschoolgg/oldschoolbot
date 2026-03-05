@@ -1,4 +1,10 @@
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, empyreanOutfit } from '@/lib/bso/collection-log/main.js';
+import {
+	empyreanOutfit,
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit
+} from '@/lib/bso/collection-log/main.js';
+
 import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const gorajanBoosts = [

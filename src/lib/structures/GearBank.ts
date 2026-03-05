@@ -1,4 +1,5 @@
 import { type UsingPetFunction, usingPet } from '@/lib/bso/bsoUtil.js';
+import type { IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { type Bank, convertXPtoLVL, resolveItems } from 'oldschooljs';
@@ -10,7 +11,6 @@ import { SkillsArray } from '@/lib/skilling/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
 import type { SkillRequirements, SkillsRequired } from '@/lib/types/index.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
-import type { IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 
 export class GearBank {
 	gear: UserFullGearSetup;

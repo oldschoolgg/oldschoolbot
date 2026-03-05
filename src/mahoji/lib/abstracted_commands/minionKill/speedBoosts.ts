@@ -1,4 +1,11 @@
+import { empyreanOutfit } from '@/lib/bso/collection-log/main.js';
+import {
+	defaultIslandUpgrades,
+	defaultMaintenanceTimestamps,
+	getBossSpeedBonus
+} from '@/lib/bso/commands/islandUpgrades.js';
 import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
 import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
@@ -35,9 +42,6 @@ import type { MinionKillOptions } from '@/mahoji/lib/abstracted_commands/minionK
 import type { PostBoostEffect } from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
 import { staticEquippedItemBoosts } from '@/mahoji/lib/abstracted_commands/minionKill/staticEquippedItemBoosts.js';
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
-import { getBossSpeedBonus, defaultIslandUpgrades, defaultMaintenanceTimestamps } from '@/lib/bso/commands/islandUpgrades.js';
-import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
-import { empyreanOutfit } from '@/lib/bso/collection-log/main.js';
 
 const revSpecialWeapons = {
 	melee: Items.getOrThrow("Viggora's chainmace"),
@@ -546,7 +550,8 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 						: gearBank.gear[setup].hasEquipped(outfit, true);
 
 				if (allGorajan || (expectedSetup === setup && effectiveEquipped)) {
-					const isEmpyrean = setup === 'melee' && empyreanMeleeEquipped && !gearBank.gear.melee.hasEquipped(outfit, true);
+					const isEmpyrean =
+						setup === 'melee' && empyreanMeleeEquipped && !gearBank.gear.melee.hasEquipped(outfit, true);
 					const reduction = isEmpyrean ? 15 : 10;
 					const label = isEmpyrean
 						? 'Empyrean'
@@ -558,7 +563,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 					break;
 				}
 			}
-			
+
 			// Master capes
 			if (attackStyles.includes('ranged') && gearBank.hasEquipped('Ranged master cape')) {
 				results.push({
@@ -597,14 +602,14 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 
 			if (!verdantIslandBosses.includes(monster.id)) return null;
 
-			const userUpgrades   = gearBank.island_upgrades ?? defaultIslandUpgrades;
-			const islandMaint    = (gearBank.island_upgrades as any)?.maintenance  ?? defaultMaintenanceTimestamps;
-			const islandAssign   = (gearBank.island_upgrades as any)?.assignment   ?? null;
+			const userUpgrades = gearBank.island_upgrades ?? defaultIslandUpgrades;
+			const islandMaint = (gearBank.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+			const islandAssign = (gearBank.island_upgrades as any)?.assignment ?? null;
 			const bossSpeedBonus = getBossSpeedBonus(userUpgrades, islandMaint, islandAssign);
 
 			if (bossSpeedBonus > 0) {
 				return {
-					percentageReduction: bossSpeedBonus * 100,
+					percentageReduction: bossSpeedBonus * 100
 				};
 			}
 

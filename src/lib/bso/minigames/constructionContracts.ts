@@ -1,22 +1,17 @@
 import type { ConstructionContractsTaskOptions } from '@/lib/bso/bsoTypes.js';
-
 import {
-	formatDuration,
-	reduceNumByPercent,
-	stringMatches,
-	Time,
-} from '@oldschoolgg/toolkit';
+	defaultIslandUpgrades,
+	defaultMaintenanceTimestamps,
+	getMinigameRewardBonus,
+	type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
+
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import {
-	getMinigameRewardBonus,
-	defaultIslandUpgrades,
-	defaultMaintenanceTimestamps,
-	type IslandUpgradeTiers
-} from '@/lib/bso/commands/islandUpgrades.js';
 
 const CONSTRUCTION_REQUIREMENT = 110;
 const BASE_DURATION_PER_CONTRACT = Time.Second * 3.2;
@@ -197,8 +192,8 @@ function getTripQualityMultiplier(): number {
 	if (r < 0.05) return 0.2;
 	if (r < 0.15) return 0.5;
 	if (r < 0.65) return 0.75 + Math.random() * 0.35;
-	if (r < 0.90) return 1.10 + Math.random() * 0.25;
-	if (r < 0.98) return 1.35 + Math.random() * 0.20;
+	if (r < 0.9) return 1.1 + Math.random() * 0.25;
+	if (r < 0.98) return 1.35 + Math.random() * 0.2;
 	return 1.55 + Math.random() * 0.15;
 }
 
@@ -214,9 +209,7 @@ function generateMiddlingLoot(recipe: ContractRecipe, successfulContracts: numbe
 	const plankReturnChance = 0.15;
 	for (let i = 0; i < successfulContracts; i++) {
 		if (Math.random() < plankReturnChance) {
-			const plankIngredients = recipe.ingredients.filter(ing =>
-				ing.item.name.toLowerCase().includes('plank')
-			);
+			const plankIngredients = recipe.ingredients.filter(ing => ing.item.name.toLowerCase().includes('plank'));
 			if (plankIngredients.length > 0) {
 				const returned = randArrItem(plankIngredients);
 				loot.add(returned.item.id, 1);
@@ -229,9 +222,9 @@ function generateMiddlingLoot(recipe: ContractRecipe, successfulContracts: numbe
 	if (supplyQty > 0) {
 		if (supplyRoll < 0.35) {
 			loot.add('Steel nail', supplyQty * randInt(5, 15));
-		} else if (supplyRoll < 0.60) {
+		} else if (supplyRoll < 0.6) {
 			loot.add('Ball of wool', supplyQty * randInt(2, 6));
-		} else if (supplyRoll < 0.80) {
+		} else if (supplyRoll < 0.8) {
 			loot.add('Bolt of cloth', supplyQty * randInt(1, 4));
 		} else {
 			loot.add('Limestone brick', supplyQty * randInt(1, 3));
@@ -242,9 +235,9 @@ function generateMiddlingLoot(recipe: ContractRecipe, successfulContracts: numbe
 	const resourceQty = Math.max(1, Math.floor(successfulContracts * recipe.rewardWeight * 0.2));
 	if (resourceRoll < 0.25) {
 		loot.add('Oak logs', resourceQty * randInt(3, 8));
-	} else if (resourceRoll < 0.50) {
+	} else if (resourceRoll < 0.5) {
 		loot.add('Teak logs', resourceQty * randInt(2, 6));
-	} else if (resourceRoll < 0.70) {
+	} else if (resourceRoll < 0.7) {
 		loot.add('Mahogany logs', resourceQty * randInt(1, 4));
 	} else if (resourceRoll < 0.85 && recipe.rewardWeight >= 1.4) {
 		loot.add('Runite ore', resourceQty * randInt(1, 3));
@@ -348,7 +341,14 @@ export async function constructionContractsStartCommand({
 	let durationPerContract = BASE_DURATION_PER_CONTRACT;
 	const boosts: string[] = [];
 
-	if (user.hasEquippedOrInBank(["Carpenter's helmet", "Carpenter's shirt", "Carpenter's trousers", "Carpenter's boots"])) {
+	if (
+		user.hasEquippedOrInBank([
+			"Carpenter's helmet",
+			"Carpenter's shirt",
+			"Carpenter's trousers",
+			"Carpenter's boots"
+		])
+	) {
 		boosts.push("10% faster construction (Carpenter's Outfit)");
 		durationPerContract = Math.floor(reduceNumByPercent(durationPerContract, 10));
 	}
@@ -383,10 +383,10 @@ export async function constructionContractsStartCommand({
 		durationPerContract = Math.floor(reduceNumByPercent(durationPerContract, 10));
 	}
 
-	const islandUpgrades  = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
-	const islandMaint     = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
-	const islandAssign    = (user.user.island_upgrades as any)?.assignment  ?? null;
-	const minigameBonus   = getMinigameRewardBonus(islandUpgrades, islandMaint, islandAssign);
+	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
+	const islandMaint = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = (user.user.island_upgrades as any)?.assignment ?? null;
+	const minigameBonus = getMinigameRewardBonus(islandUpgrades, islandMaint, islandAssign);
 	if (minigameBonus > 0) {
 		boosts.push(`${(minigameBonus * 100).toFixed(0)}% better rewards (Settlement Infrastructure)`);
 	}
@@ -430,7 +430,7 @@ export async function constructionContractsStartCommand({
 		duration,
 		type: 'ConstructionContracts',
 		minigameID: 'construction_contracts',
-		recipe: selectedRecipe.name,
+		recipe: selectedRecipe.name
 	});
 
 	return `${user.minionName} is working on ${quantity}x ${selectedRecipe.name}s for ${formatDuration(duration)}.
@@ -441,7 +441,7 @@ Boosts: ${boosts.length ? boosts.join(', ') : 'None'}`;
 
 export function calculateContractsResult(data: ConstructionContractsTaskOptions) {
 	const recipe = ContractRecipes.find(r => r.name === data.recipe)!;
-	const rarityBonus = [0, 0.05, 0.10, 0.15, 0.20, 0.25][data.rarityUpgradeTier ?? 0] ?? 0;
+	const rarityBonus = [0, 0.05, 0.1, 0.15, 0.2, 0.25][data.rarityUpgradeTier ?? 0] ?? 0;
 
 	const tripMultiplier = getTripQualityMultiplier();
 

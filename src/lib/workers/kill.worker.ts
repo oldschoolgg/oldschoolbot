@@ -59,16 +59,16 @@ export default async ({
 
 		// Test the array check
 		const matchTest = ORI_DISABLED_MONSTERS.some(m => {
-		const result = stringMatches(m, osjsMonster.name);
-		console.log(`  stringMatches("${m}", "${osjsMonster.name}") = ${result}`);
-		return result;
+			const result = stringMatches(m, osjsMonster.name);
+			console.log(`  stringMatches("${m}", "${osjsMonster.name}") = ${result}`);
+			return result;
 		});
 		console.log('any matches found:', matchTest);
 		console.log('condition result (ori && matches):', ori && matchTest);
 		console.log('=== END DEBUG ===');
 
 		if (ori && ORI_DISABLED_MONSTERS.some(m => stringMatches(m, osjsMonster.name))) {
-		return { error: "Ori doesn't work here." };
+			return { error: "Ori doesn't work here." };
 		}
 
 		let qtyToKill = quantity;

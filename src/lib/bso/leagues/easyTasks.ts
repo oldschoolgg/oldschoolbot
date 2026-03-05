@@ -818,5 +818,5 @@ export const easyTasks: Task[] = [
 		has: async ({ opens }) => {
 			return opens.has('Elder sigil');
 		}
-	},
+	}
 ];

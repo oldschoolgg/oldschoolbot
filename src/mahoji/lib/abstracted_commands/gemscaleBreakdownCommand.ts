@@ -11,17 +11,21 @@ const elderGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.n
 const ancientGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Ancient gemscale')!;
 
 const gemscaleBreakdown: Record<number, { quantity: [number, number] }> = {
-	[juvenileGemscale.id]:   { quantity: [1, 2] },
+	[juvenileGemscale.id]: { quantity: [1, 2] },
 	[adolescentGemscale.id]: { quantity: [1, 3] },
-	[matureGemscale.id]:     { quantity: [2, 4] },
-	[ancientGemscale.id]:    { quantity: [2, 5] },
-	[elderGemscale.id]:      { quantity: [3, 6] },
+	[matureGemscale.id]: { quantity: [2, 4] },
+	[ancientGemscale.id]: { quantity: [2, 5] },
+	[elderGemscale.id]: { quantity: [3, 6] }
 };
 
 const allGems = ['Celestyte', 'Verdantyte', 'Starfire agate', 'Oneiryte', 'Firaxyte'];
 const PRISMARE_CHANCE = 100;
 
-export async function gemscaleBreakdownCommand(user: MUser, fishName: string | undefined, quantity: number | undefined) {
+export async function gemscaleBreakdownCommand(
+	user: MUser,
+	fishName: string | undefined,
+	quantity: number | undefined
+) {
 	if (!fishName) return 'Please specify a gemscale type to break down (e.g. "Elder gemscale").';
 	const targetFish = Fishing.gemstoneFishes.find((f: GemstoneFish) =>
 		f.name.toLowerCase().includes(fishName.toLowerCase())

@@ -1499,7 +1499,7 @@ export const bsoCreatables: Createable[] = [
 		}),
 		requiredSkills: {}
 	},
-		{
+	{
 		name: 'Starfire bow',
 		inputItems: new Bank({
 			'Starfire bow (u)': 1,
@@ -1553,7 +1553,7 @@ export const bsoCreatables: Createable[] = [
 			'Prismare ring (u)': 1
 		}),
 		outputItems: new Bank({
-			'Prismare': 250,
+			Prismare: 250,
 			'Empyrean shards': 250
 		})
 	},
