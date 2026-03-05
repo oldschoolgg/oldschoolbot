@@ -41,7 +41,7 @@ type RatelimitType =
 	| 'delay_robochimp_fetch';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
-	global_buttons: { windowSeconds: 2, max: 10000 },
+	global_buttons: { windowSeconds: 2, max: 1 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
 	stats_command: { windowSeconds: 5, max: 1 },
 	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
