@@ -117,7 +117,7 @@ export function serializeSnapshotItem(item: any): any {
 		}
 
 		if (isObjectType(value) && 'toJSON' in value && isFunction(value.toJSON)) {
-			result[key] = (value as any).toJSON();
+			result[key] = (value.toJSON as () => unknown)();
 			continue;
 		}
 

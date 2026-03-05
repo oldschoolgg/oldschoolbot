@@ -31,4 +31,12 @@ declare global {
 	export type SendableFile = import('@oldschoolgg/discord').SendableFile;
 }
 
+declare module 'oldschooljs' {
+	interface ItemRequirements {
+		dungeoneering?: number;
+		invention?: number;
+		divination?: number;
+	}
+}
+
 export {};
