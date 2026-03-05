@@ -1,17 +1,7 @@
 import { cryptoRng } from 'node-rng/crypto';
 
 import type { NewUser } from '@/prisma/main.js';
-
-type RawCommandHandlerInner = typeof import('@/discord/commandHandler.js')['rawCommandHandlerInner'];
-
-let cachedRawCommandHandlerInner: RawCommandHandlerInner | null = null;
-
-async function getRawCommandHandlerInner(): Promise<RawCommandHandlerInner> {
-	if (!cachedRawCommandHandlerInner) {
-		({ rawCommandHandlerInner: cachedRawCommandHandlerInner } = await import('@/discord/commandHandler.js'));
-	}
-	return cachedRawCommandHandlerInner;
-}
+import { rawCommandHandlerInner } from '@/discord/commandHandler.js';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });
@@ -40,18 +30,15 @@ export async function runCommand({
 	commandName,
 	args,
 	interaction,
-	ignoreUserIsBusy,
-	isContinue
+	ignoreUserIsBusy
 }: RunCommandArgs): CommandResponse {
 	const command = globalClient.allCommands.find(c => c.name === commandName)!;
 
-	const rawCommandHandlerInner = await getRawCommandHandlerInner();
-	const shouldIgnoreBusy = ignoreUserIsBusy ?? (isContinue ? true : undefined);
 	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({
 		interaction,
 		command,
 		options: args,
-		ignoreUserIsBusy: shouldIgnoreBusy,
+		ignoreUserIsBusy,
 		rng: cryptoRng
 	});
 	return response;

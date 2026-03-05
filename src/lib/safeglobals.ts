@@ -3,4 +3,3 @@ import './util/logger.js';
 import '../lib/util/clientSettings.js';
 import '../lib/ActivityManager.js';
 import '../discord/MessageBuilder.js';
-import '../discord/defineCommandGlobal.js';
