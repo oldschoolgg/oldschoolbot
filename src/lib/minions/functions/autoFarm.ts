@@ -138,6 +138,10 @@ export async function autoFarm(
 	patches: Record<FarmingPatchName, IPatchData>,
 	interaction: MInteraction
 ) {
+	if (await user.minionIsBusy()) {
+		return 'Your minion must not be busy to use this command.';
+	}
+
 	const farmingLevel = user.skillsAsLevels.farming;
 
 	const autoFarmFilter = user.autoFarmFilter ?? AutoFarmFilterEnum.AllFarm;
@@ -329,10 +333,6 @@ export async function autoFarm(
 		}
 
 		return noCropsResponse;
-	}
-
-	if (await user.minionIsBusy()) {
-		return 'Your minion must not be busy to use this command.';
 	}
 
 	if (!user.owns(totalCost)) {
