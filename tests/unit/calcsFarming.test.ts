@@ -93,10 +93,10 @@ describe('calcsFarming', () => {
 		});
 
 		const [patches] = calcNumOfPatches(plant, user, 60);
-		expect(patches).toBe(3);
+		expect(patches).toBe(5);
 	});
 
-	it('restores allotment patches when Children of the Sun is complete', () => {
+	it('adds two allotment patches when Children of the Sun is complete', () => {
 		const plant = createPlant({
 			name: 'Allotment plant',
 			seedType: 'allotment',
@@ -113,7 +113,7 @@ describe('calcsFarming', () => {
 		mutableUser.finished_quest_ids = [QuestID.ChildrenOfTheSun];
 
 		const [patches] = calcNumOfPatches(plant, user, 60);
-		expect(patches).toBe(5);
+		expect(patches).toBe(7);
 	});
 
 	it('adds an extra herb patch with Children of the Sun', () => {
