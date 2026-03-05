@@ -52,7 +52,6 @@ src/prisma/clients
 .DS_Store
 
 itx
-src/mahoji/lib/abstracted_commands/minionKill/minionKill.ts
 
 .claude
 
