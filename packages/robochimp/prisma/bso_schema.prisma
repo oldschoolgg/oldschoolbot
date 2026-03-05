@@ -616,11 +616,8 @@ enum XpGainSource {
   ForestryEvents
   TuraelsTrials
   MonsterKilling
-  AncientMycology
-  ArchaicMining
   BrimstoneDistillery
   ConstructionContracts
-  GemstoneFishing
 }
 
 model XPGain {
@@ -1274,7 +1271,6 @@ enum activity_type_enum {
   Colosseum
   CreateForestersRations
   SnoozeSpellActive
-  BurningDominion
   Archon
 }
 
