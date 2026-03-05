@@ -14463,9 +14463,9 @@ setCustomItem(
 			}
 		},
 		highalch: 50_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
 		customItemData: {
-			tradeable: false,
-			tradeable_on_ge: false,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14645,9 +14645,9 @@ setCustomItem(
 			}
 		},
 		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
 		customItemData: {
-			tradeable: false,
-			tradeable_on_ge: false,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14853,7 +14853,9 @@ setCustomItem(
 	{
 		tradeable: false,
 		tradeable_on_ge: false,
-		cantDropFromMysteryBoxes: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
 		equipment: {
 			attack_stab: 0,
 			attack_slash: 0,
@@ -14930,9 +14932,9 @@ setCustomItem(
 			}
 		},
 		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
 		customItemData: {
-			tradeable: false,
-			tradeable_on_ge: false,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -14968,9 +14970,9 @@ setCustomItem(
 			}
 		},
 		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
 		customItemData: {
-			tradeable: false,
-			tradeable_on_ge: false,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -15006,9 +15008,9 @@ setCustomItem(
 			}
 		},
 		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
 		customItemData: {
-			tradeable: false,
-			tradeable_on_ge: false,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -15044,9 +15046,9 @@ setCustomItem(
 			}
 		},
 		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
 		customItemData: {
-			tradeable: false,
-			tradeable_on_ge: false,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -15082,9 +15084,9 @@ setCustomItem(
 			}
 		},
 		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
 		customItemData: {
-			tradeable: false,
-			tradeable_on_ge: false,
 			cantDropFromMysteryBoxes: true
 		}
 	},

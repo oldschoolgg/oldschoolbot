@@ -17196,8 +17196,8 @@
 		"id": 75016,
 		"name": "Elderflame bow",
 		"members": true,
-		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"noteable": true,
 		"equipable": true,
 		"cost": 4000000,
@@ -17230,8 +17230,6 @@
 		},
 		"price": 50000000,
 		"customItemData": {
-			"tradeable": false,
-			"tradeable_on_ge": false,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
@@ -17813,20 +17811,18 @@
 				"defence": 120
 			}
 		},
-		"tradeable_on_ge": true,
-		"tradeable": true,
+		"tradeable_on_ge": false,
+		"tradeable": false,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"tradeable": false,
-			"tradeable_on_ge": false
+			"cantDropFromMysteryBoxes": true
 		},
 		"price": 300000000
 	},
 	{
 		"id": 75067,
 		"name": "Empyrean greatgreaves",
-		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"noteable": true,
 		"equipable": true,
 		"cost": 64000,
@@ -17856,16 +17852,14 @@
 		},
 		"price": 300000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"tradeable": false,
-			"tradeable_on_ge": false
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
 		"id": 75065,
 		"name": "Empyrean greathelm",
-		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"noteable": true,
 		"equipable": true,
 		"cost": 35200,
@@ -17895,16 +17889,14 @@
 		},
 		"price": 300000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"tradeable": false,
-			"tradeable_on_ge": false
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
 		"id": 75066,
 		"name": "Empyrean greatplate",
-		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"noteable": true,
 		"equipable": true,
 		"cost": 65000,
@@ -17934,17 +17926,15 @@
 		},
 		"price": 300000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"tradeable": false,
-			"tradeable_on_ge": false
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
 		"id": 75069,
 		"name": "Empyrean greatsabaton",
 		"members": true,
-		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"noteable": true,
 		"equipable": true,
 		"cost": 12500,
@@ -17974,9 +17964,7 @@
 		},
 		"price": 300000000,
 		"customItemData": {
-			"cantDropFromMysteryBoxes": true,
-			"tradeable": false,
-			"tradeable_on_ge": false
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{
@@ -36821,7 +36809,9 @@
 			}
 		},
 		"price": 100000000,
-		"cantDropFromMysteryBoxes": true
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 75064,
@@ -49890,8 +49880,8 @@
 	{
 		"id": 75003,
 		"name": "Vitrolic curse",
-		"tradeable": true,
-		"tradeable_on_ge": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
 		"stackable": true,
 		"equipable": true,
 		"buy_limit": 7000,
@@ -49921,8 +49911,6 @@
 		"price": 50000000,
 		"highalch": 50000000,
 		"customItemData": {
-			"tradeable": false,
-			"tradeable_on_ge": false,
 			"cantDropFromMysteryBoxes": true
 		}
 	},
