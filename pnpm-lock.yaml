@@ -61,7 +61,9 @@ importers:
         version: 1.7.14
       '@sapphire/timer-manager':
         specifier: ^1.0.2
-        version: 1.0.4
+      '@sapphire/utilities':
+        specifier: ^3.18.1
+        version: 3.18.1
       async-mutex:
         specifier: ^0.5.0
         version: 0.5.0
