@@ -331,7 +331,7 @@ export async function baxtorianBathhousesStartCommand({
 		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 20));
 		logsNeeded = Math.floor(reduceNumByPercent(logsNeeded, 20));
 	}
-		if (user.hasEquippedOrInBank(['Celestial pendant'])) {
+	if (user.hasEquippedOrInBank(['Celestial pendant'])) {
 		boosts.push('10% Less heating for Celestial pendant');
 		oreNeeded = Math.floor(reduceNumByPercent(oreNeeded, 10));
 		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 10));

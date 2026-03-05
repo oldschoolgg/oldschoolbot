@@ -19,9 +19,9 @@ export const brimstoneDistilleryTask: MinionTask = {
 		await user.update({
 			distillery_stats: {
 				totalDistillations: (existing.totalDistillations ?? 0) + data.quantity,
-				totalPotions:       (existing.totalPotions ?? 0) + loot.amount(result.recipe.output.id),
-				totalFailed:        (existing.totalFailed ?? 0) + failedDistillations,
-				tripsCompleted:     (existing.tripsCompleted ?? 0) + 1
+				totalPotions: (existing.totalPotions ?? 0) + loot.amount(result.recipe.output.id),
+				totalFailed: (existing.totalFailed ?? 0) + failedDistillations,
+				tripsCompleted: (existing.tripsCompleted ?? 0) + 1
 			}
 		});
 

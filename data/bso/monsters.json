@@ -1,6 +1,6 @@
 {
-	"hash": "ec969f96c1bb2727264c60100a97fd2d",
-	"date": "2026-01-04T22:24:20.567Z",
+	"hash": "2685e79430c02919601b7ecdc3e93dd4",
+	"date": "2026-03-05T10:17:52.967Z",
 	"data": [
 		{
 			"id": 2,
@@ -823,7 +823,7 @@
 		{
 			"id": 142006,
 			"name": "Burning Dominion",
-			"base_kill_time_ms": 1080000,
+			"base_kill_time_ms": 600000,
 			"respawn_time_ms": 0,
 			"is_wildy": false,
 			"is_slayer_only": false,
@@ -1389,7 +1389,7 @@
 		{
 			"id": 142003,
 			"name": "Crystalline Sentinel",
-			"base_kill_time_ms": 210000,
+			"base_kill_time_ms": 420000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -1502,8 +1502,20 @@
 				"Guthan's chainskirt",
 				"Guthan's helm",
 				"Guthan's warspear",
-				["Gorajan warrior top", "Torva platebody", "Bandos chestplate", "Torag's platebody"],
-				["Gorajan warrior legs", "Torva platelegs", "Bandos tassets", "Torag's platelegs"]
+				[
+					"Empyrean greathelm",
+					"Gorajan warrior top",
+					"Torva platebody",
+					"Bandos chestplate",
+					"Torag's platebody"
+				],
+				[
+					"Empyrean greatgreaves",
+					"Gorajan warrior legs",
+					"Torva platelegs",
+					"Bandos tassets",
+					"Torag's platelegs"
+				]
 			],
 			"qp_required": 0,
 			"item_in_bank_boosts": [
@@ -2186,7 +2198,7 @@
 		{
 			"id": 142004,
 			"name": "Fungal Behemoth",
-			"base_kill_time_ms": 270000,
+			"base_kill_time_ms": 540000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4087,7 +4099,7 @@
 		{
 			"id": 142002,
 			"name": "Orrodil",
-			"base_kill_time_ms": 1080000,
+			"base_kill_time_ms": 2400000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4103,7 +4115,7 @@
 		{
 			"id": 142001,
 			"name": "Orym",
-			"base_kill_time_ms": 1080000,
+			"base_kill_time_ms": 2400000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,

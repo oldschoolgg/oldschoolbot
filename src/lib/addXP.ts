@@ -1,12 +1,18 @@
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import {
 	divinersOutfit,
+	empyreanOutfit,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
-	gorajanWarriorOutfit,
-	empyreanOutfit
+	gorajanWarriorOutfit
 } from '@/lib/bso/collection-log/main.js';
 import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
+import {
+	getPrismareXPBonus,
+	type IslandMaintenanceTimestamps,
+	type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
+import { _itemId } from '@/lib/bso/util/bfcrit.js';
 
 import { bold } from '@oldschoolgg/discord';
 import { Events, formatOrdinal, increaseNumByPercent, notEmpty, Time, toTitleCase } from '@oldschoolgg/toolkit';
@@ -22,12 +28,6 @@ import { Skills } from '@/lib/skilling/skills/index.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { degradeItem } from './degradeableItems.js';
-import {
-    type IslandUpgradeTiers,
-    type IslandMaintenanceTimestamps,
-    getPrismareXPBonus,
-} from '@/lib/bso/commands/islandUpgrades.js';
-import { _itemId } from '@/lib/bso/util/bfcrit.js';
 
 const maxFilter = SkillsArray.map(s => `"skills.${s}" >= ${MAX_LEVEL_XP}`).join(' AND ');
 const makeQuery = (ironman: boolean) => `SELECT count(id)::int
@@ -88,14 +88,14 @@ function calculatePrismareBoost(currentXP: number): number {
 	const baseBoost = 10;
 	const XP_50M = 50_000_000;
 	const XP_200M = 200_000_000;
-	
+
 	if (currentXP < XP_50M) return baseBoost;
-	
+
 	const xpAbove50M = currentXP - XP_50M;
 	const xpRange = XP_200M - XP_50M;
 	const decayPercent = Math.min(1, xpAbove50M / xpRange);
 	const boostReduction = (baseBoost - 1) * decayPercent;
-	
+
 	return Math.max(1, baseBoost - boostReduction);
 }
 
@@ -166,35 +166,37 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		}
 	}
 	const wildyOutfit = user.gear.wildy;
-    const gorajanMeleeEquipped =
-        user.gear.melee.hasEquipped(gorajanWarriorOutfit, true) || wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
-    const gorajanRangeEquipped =
-        user.gear.range.hasEquipped(gorajanArcherOutfit, true) || wildyOutfit.hasEquipped(gorajanArcherOutfit, true);
-    const gorajanMageEquipped =
-        user.gear.mage.hasEquipped(gorajanOccultOutfit, true) || wildyOutfit.hasEquipped(gorajanOccultOutfit, true);
+	const gorajanMeleeEquipped =
+		user.gear.melee.hasEquipped(gorajanWarriorOutfit, true) || wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
+	const gorajanRangeEquipped =
+		user.gear.range.hasEquipped(gorajanArcherOutfit, true) || wildyOutfit.hasEquipped(gorajanArcherOutfit, true);
+	const gorajanMageEquipped =
+		user.gear.mage.hasEquipped(gorajanOccultOutfit, true) || wildyOutfit.hasEquipped(gorajanOccultOutfit, true);
 
-    const empyreanMeleeEquipped = user.gear.melee.hasEquipped(empyreanOutfit, true);
-    const effectiveMeleeEquipped = gorajanMeleeEquipped || empyreanMeleeEquipped;
+	const empyreanMeleeEquipped = user.gear.melee.hasEquipped(empyreanOutfit, true);
+	const effectiveMeleeEquipped = gorajanMeleeEquipped || empyreanMeleeEquipped;
 
-    let gorajanBoost = false;
-    const gorajanMeleeBoost =
-        multiplier && ['attack', 'strength', 'defence'].includes(params.skillName) && effectiveMeleeEquipped;
-    const gorajanRangeBoost = multiplier && params.skillName === 'ranged' && gorajanRangeEquipped;
-    const gorajanMageBoost = multiplier && params.skillName === 'magic' && gorajanMageEquipped;
-    const gorajanHpBoost =
-        multiplier &&
-        params.skillName === 'hitpoints' &&
-        effectiveMeleeEquipped &&
-        gorajanRangeEquipped &&
-        gorajanMageEquipped;
-    if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost || gorajanHpBoost) {
-        params.amount *= 2;
-        gorajanBoost = true;
-    }
+	let gorajanBoost = false;
+	const gorajanMeleeBoost =
+		multiplier && ['attack', 'strength', 'defence'].includes(params.skillName) && effectiveMeleeEquipped;
+	const gorajanRangeBoost = multiplier && params.skillName === 'ranged' && gorajanRangeEquipped;
+	const gorajanMageBoost = multiplier && params.skillName === 'magic' && gorajanMageEquipped;
+	const gorajanHpBoost =
+		multiplier &&
+		params.skillName === 'hitpoints' &&
+		effectiveMeleeEquipped &&
+		gorajanRangeEquipped &&
+		gorajanMageEquipped;
+	if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost || gorajanHpBoost) {
+		params.amount *= 2;
+		gorajanBoost = true;
+	}
 
 	let islandXPBoostPercent = 0;
 	if (multiplier && !params.artificial) {
-		const rawUpgrades = user.user.island_upgrades as (IslandUpgradeTiers & { maintenance?: IslandMaintenanceTimestamps }) | null;
+		const rawUpgrades = user.user.island_upgrades as
+			| (IslandUpgradeTiers & { maintenance?: IslandMaintenanceTimestamps })
+			| null;
 		if (rawUpgrades) {
 			const timestamps = (rawUpgrades.maintenance ?? {}) as IslandMaintenanceTimestamps;
 			const bonus = getPrismareXPBonus(rawUpgrades, timestamps);
@@ -207,7 +209,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	let totalFirstAgeBonus = 0;
 	let originalFirstAgeEquipped = 0;
-	let hasPrismareRing = user.hasEquipped(75050);
+	const hasPrismareRing = user.hasEquipped(75050);
 
 	let totalStaticBoost = 0;
 	const staticBoostsApplied: string[] = [];
@@ -256,15 +258,15 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (!params.artificial && multiplier && hasPrismareRing) {
 		const currentCharges = Number(user.user.prismare_ring_charges || 0);
 		const chargesNeeded = Math.max(1, Math.ceil(params.amount / 1000));
-		
+
 		if (currentCharges >= chargesNeeded) {
 			const currentXP = Number(user.user[`skills_${params.skillName}`]);
 			prismareBoostPercent = calculatePrismareBoost(currentXP);
-			
+
 			params.amount = increaseNumByPercent(params.amount, prismareBoostPercent);
 			prismareBoostApplied = true;
 			prismareChargesUsed = chargesNeeded;
-			
+
 			await degradeItem({
 				item: Items.getOrThrow('Prismare ring'),
 				chargesToDegrade: chargesNeeded,

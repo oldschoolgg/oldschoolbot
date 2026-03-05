@@ -1,4 +1,9 @@
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, empyreanOutfit } from '@/lib/bso/collection-log/main.js';
+import {
+	empyreanOutfit,
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit
+} from '@/lib/bso/collection-log/main.js';
 import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
 
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
@@ -288,39 +293,39 @@ async function infernoRun({
 	);
 
 	preZukDeathChance.add(
-			!hasDivine && (rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield')),
-			-5,
-			'Ely'
-		);
-		duration.add(mageGear.hasEquipped('Virtus book', true, true), -7, 'Virtus book');
-		if (isEmergedZuk) {
-			duration.add(user.hasEquippedOrInBank('Dwarven warhammer'), -7, 'DWWH');
-		}
-		const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true, true);
-		const rangeGora = rangeGear.hasEquipped(gorajanArcherOutfit, true, true);
-		const mageGora = mageGear.hasEquipped(gorajanOccultOutfit, true, true);
-		const meleeEmpyrean = meleeGear.hasEquipped(empyreanOutfit, true, true);
+		!hasDivine && (rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield')),
+		-5,
+		'Ely'
+	);
+	duration.add(mageGear.hasEquipped('Virtus book', true, true), -7, 'Virtus book');
+	if (isEmergedZuk) {
+		duration.add(user.hasEquippedOrInBank('Dwarven warhammer'), -7, 'DWWH');
+	}
+	const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true, true);
+	const rangeGora = rangeGear.hasEquipped(gorajanArcherOutfit, true, true);
+	const mageGora = mageGear.hasEquipped(gorajanOccultOutfit, true, true);
+	const meleeEmpyrean = meleeGear.hasEquipped(empyreanOutfit, true, true);
 
-		for (const [name, has] of [
-			['melee', meleeGora],
-			['range', rangeGora],
-			['mage', mageGora]
-		] as const) {
-			if (name === 'melee' && !isEmergedZuk) continue;
-			if (name !== 'melee') {
-				preZukDeathChance.add(has, -3.5, `Gorajan ${name}`);
-				zukDeathChance.add(has, -3.5, `Gorajan ${name}`);
-			}
-			emergedZukDeathChance.add(has, -8, `Gorajan ${name}`);
-			duration.add(has, -5, `Gorajan ${name}`);
+	for (const [name, has] of [
+		['melee', meleeGora],
+		['range', rangeGora],
+		['mage', mageGora]
+	] as const) {
+		if (name === 'melee' && !isEmergedZuk) continue;
+		if (name !== 'melee') {
+			preZukDeathChance.add(has, -3.5, `Gorajan ${name}`);
+			zukDeathChance.add(has, -3.5, `Gorajan ${name}`);
 		}
+		emergedZukDeathChance.add(has, -8, `Gorajan ${name}`);
+		duration.add(has, -5, `Gorajan ${name}`);
+	}
 
-		if (isEmergedZuk) {
-			emergedZukDeathChance.add(meleeEmpyrean, -12, 'Empyrean');
-			duration.add(meleeEmpyrean, -8, 'Empyrean');
-		}
+	if (isEmergedZuk) {
+		emergedZukDeathChance.add(meleeEmpyrean, -12, 'Empyrean');
+		duration.add(meleeEmpyrean, -8, 'Empyrean');
+	}
 
-		preZukDeathChance.add(rangeGear.hasEquipped('Justiciar faceguard'), -5, 'Just. faceguard');
+	preZukDeathChance.add(rangeGear.hasEquipped('Justiciar faceguard'), -5, 'Just. faceguard');
 
 	const hasSuffering =
 		rangeGear.hasEquipped('Ring of suffering (i)') || mageGear.hasEquipped('Ring of suffering (i)');

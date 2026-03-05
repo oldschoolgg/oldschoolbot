@@ -1,5 +1,5 @@
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
-import { gorajanWarriorOutfit, torvaOutfit, empyreanOutfit } from '@/lib/bso/collection-log/main.js';
+import { empyreanOutfit, gorajanWarriorOutfit, torvaOutfit } from '@/lib/bso/collection-log/main.js';
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { getKalphiteKingGearStats } from '@/lib/bso/util/getKalphiteKingGearStats.js';
 
@@ -157,7 +157,6 @@ export async function kkCommand(
 			effectiveTime = reduceNumByPercent(effectiveTime, perUserPercent);
 			msgs.push(`${perUserPercent}% for Empyrean great armor`);
 		}
-
 
 		if (data.gearStats.attack_crush < 200) {
 			const percent = 10;

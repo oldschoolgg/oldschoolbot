@@ -165,17 +165,17 @@ assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATas
 const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
 export const combatAchievementTripEffect = async ({
-    data,
-    messages,
-    user
+	data,
+	messages,
+	user
 }: {
-    data: ActivityTaskData;
-    user: MUser;
-    messages: string[];
+	data: ActivityTaskData;
+	user: MUser;
+	messages: string[];
 }) => {
-    if (data.type === 'Archon') return;
+	if (data.type === 'Archon') return;
 
-    const dataCopy = clone(data);
+	const dataCopy = clone(data);
 	let quantity = 1;
 	if ('q' in dataCopy) {
 		quantity = dataCopy.q;

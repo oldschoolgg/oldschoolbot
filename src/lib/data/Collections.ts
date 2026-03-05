@@ -54,9 +54,15 @@ import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
 import { Naxxus, NaxxusLootTableFinishable } from '@/lib/bso/monsters/bosses/Naxxus.js';
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
-import { OrymLootTable,OrrodilLootTable, FungalBehemothLootTable, CrystallineSentinelLootTable, BurningDominionLootTable } from '@/lib/bso/monsters/VerdantIsland.js'
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
+import {
+	BurningDominionLootTable,
+	CrystallineSentinelLootTable,
+	FungalBehemothLootTable,
+	OrrodilLootTable,
+	OrymLootTable
+} from '@/lib/bso/monsters/VerdantIsland.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
@@ -91,6 +97,7 @@ import {
 	alchemicalHydraCL,
 	allPetsCL,
 	amoxliatlCL,
+	archonCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
 	brimhavenAgilityArenaCL,
@@ -181,7 +188,6 @@ import {
 	shadesOfMorttonCL,
 	shayzienArmourCL,
 	shootingStarsCL,
-	archonCL,
 	skillingMiscCL,
 	skillingPetsCL,
 	skotizoCL,
@@ -208,7 +214,7 @@ import {
 	vorkathCL,
 	wintertodtCL,
 	zalcanoCL,
-	zulrahCL,
+	zulrahCL
 } from '@/lib/data/CollectionsExport.js';
 import { growablePetsCL } from '@/lib/growablePets.js';
 import { implingsCL } from '@/lib/implings.js';
@@ -989,11 +995,11 @@ export const allCollectionLogs: ICollection = {
 				items: BSOMonsters.ElderMimic.allItems!,
 				fmtProg: kcProg(BSOMonsters.ElderMimic.id)
 			},
-			"Archon": {
+			Archon: {
 				alias: ['archon', 'arch'],
 				items: archonCL,
 				isActivity: true
-			},
+			}
 		}
 	},
 	Clues: {

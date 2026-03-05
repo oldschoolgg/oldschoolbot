@@ -97,10 +97,7 @@ export default async function reducedTimeForGroup(
 	const individualBoostMultiplier = 1 + totalIndividualBoostPercent / 100;
 	const finalMultiplier = teamSpeedMultiplier * individualBoostMultiplier;
 
-	const reducedTime = Math.max(
-		Math.floor(monster.timeToFinish / finalMultiplier),
-		monster.respawnTime!
-	);
+	const reducedTime = Math.max(Math.floor(monster.timeToFinish / finalMultiplier), monster.respawnTime!);
 
 	return [reducedTime, messages, playerBoostInfos];
 }

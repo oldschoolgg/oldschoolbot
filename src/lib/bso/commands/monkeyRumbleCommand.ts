@@ -59,7 +59,7 @@ export async function monkeyRumbleCommand(user: MUser, channelId: string): Comma
 		fightDuration = reduceNumByPercent(fightDuration, 17);
 		boosts.push('17% faster fights for gorilla rumble greegree');
 	}
-		if (user.hasEquippedOrInBank('Celestial pendant')) {
+	if (user.hasEquippedOrInBank('Celestial pendant')) {
 		fightDuration = reduceNumByPercent(fightDuration, 10);
 		boosts.push('10% faster fights from Celestial pendant');
 	}

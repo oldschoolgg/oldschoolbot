@@ -12,6 +12,8 @@ import {
 	baxBathSim,
 	baxtorianBathhousesStartCommand
 } from '@/lib/bso/minigames/baxtorianBathhouses.js';
+import { brimstoneDistilleryStartCommand, DistilleryRecipes } from '@/lib/bso/minigames/brimstoneDistillery.js';
+import { ContractRecipes, constructionContractsStartCommand } from '@/lib/bso/minigames/constructionContracts.js';
 import {
 	allGodlyItems,
 	divineDominionCheck,
@@ -32,8 +34,6 @@ import { Items } from 'oldschooljs';
 
 import { choicesOf } from '@/discord/index.js';
 import { ownedMaterialOption } from '@/discord/presetCommandOptions.js';
-import { brimstoneDistilleryStartCommand, DistilleryRecipes } from '@/lib/bso/minigames/brimstoneDistillery.js';
-import { constructionContractsStartCommand, ContractRecipes } from '@/lib/bso/minigames/constructionContracts.js';
 
 export const bsoMinigamesCommand = defineCommand({
 	name: 'bsominigames',
@@ -368,9 +368,12 @@ export const bsoMinigamesCommand = defineCommand({
 							autocomplete: async ({ value }: StringAutoComplete) => {
 								return ContractRecipes.filter(r =>
 									!value ? true : r.name.toLowerCase().includes(value.toLowerCase())
-								).map(r => ({ name: `${r.name} (${r.constructionLevel} Construction)`, value: r.name }));
+								).map(r => ({
+									name: `${r.name} (${r.constructionLevel} Construction)`,
+									value: r.name
+								}));
 							}
-						},
+						}
 					]
 				},
 				{
@@ -420,7 +423,8 @@ export const bsoMinigamesCommand = defineCommand({
 			const potions = stats.totalPotions ?? 0;
 			const successful = total - failed;
 
-			if (total === 0) return `You have completed ${score} Brimstone Distillery trips but no stats have been recorded yet. Complete a trip to start tracking.`;
+			if (total === 0)
+				return `You have completed ${score} Brimstone Distillery trips but no stats have been recorded yet. Complete a trip to start tracking.`;
 
 			const avgPerAttempt = (potions / total).toFixed(2);
 			const avgPerSuccess = successful > 0 ? (potions / successful).toFixed(2) : 'N/A';
@@ -451,7 +455,8 @@ export const bsoMinigamesCommand = defineCommand({
 			const failed = stats.totalFailed ?? 0;
 			const successful = stats.totalSuccessful ?? 0;
 
-			if (total === 0) return `You have completed ${score} Construction Contracts trips but no stats have been recorded yet. Complete a trip to start tracking.`;
+			if (total === 0)
+				return `You have completed ${score} Construction Contracts trips but no stats have been recorded yet. Complete a trip to start tracking.`;
 
 			const failRate = ((failed / total) * 100).toFixed(1);
 			const successRate = ((successful / total) * 100).toFixed(1);
@@ -463,7 +468,7 @@ export const bsoMinigamesCommand = defineCommand({
 				`**Failed:** ${failed.toLocaleString()} (${failRate}%)`
 			].join('\n');
 		}
-		
+
 		if (divine_dominion?.check) {
 			return divineDominionCheck(user);
 		}

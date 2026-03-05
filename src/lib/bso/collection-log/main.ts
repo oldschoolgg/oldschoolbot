@@ -197,15 +197,9 @@ export const orrodilCL = resolveItems([
 	'Primordial spine'
 ]);
 
-export const fungalBehemothCL = resolveItems([
-	'Verdant heart',
-	'Prolific twine',
-]);
+export const fungalBehemothCL = resolveItems(['Verdant heart', 'Prolific twine']);
 
-export const crystallineSentinelCL = resolveItems([
-	'Sentinel core',
-	'Starfire bow (u)',
-]);
+export const crystallineSentinelCL = resolveItems(['Sentinel core', 'Starfire bow (u)']);
 
 export const akumuCL = resolveItems(['Mini akumu', 'Nightmarish ashes', 'Cursed onyx', 'Demon statuette']);
 export const venatrixCL = resolveItems(['Baby venatrix', 'Venatrix eggs', 'Venatrix webbing', 'Spiders leg bottom']);

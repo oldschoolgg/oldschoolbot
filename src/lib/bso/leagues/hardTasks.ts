@@ -1285,35 +1285,35 @@ export const hardTasks: Task[] = [
 			return cl.has('Dragonbane glaive');
 		}
 	},
-		{
+	{
 		id: 2172,
 		name: 'Create a Dragonbane aegis',
 		has: async ({ cl }) => {
 			return cl.has('Dragonbane aegis');
 		}
 	},
-		{
+	{
 		id: 2173,
 		name: 'Create a Vitrolic curse',
 		has: async ({ cl }) => {
 			return cl.has('Vitrolic curse');
 		}
 	},
-		{
+	{
 		id: 2174,
 		name: 'Create a Celestial pendant',
 		has: async ({ cl }) => {
 			return cl.has('Celestial pendant');
 		}
 	},
-		{
+	{
 		id: 2175,
 		name: 'Create a Searcrown band',
 		has: async ({ cl }) => {
 			return cl.has('Searcrown band');
 		}
 	},
-		{
+	{
 		id: 2176,
 		name: 'Create an Elderflame bow',
 		has: async ({ cl }) => {
@@ -1326,5 +1326,5 @@ export const hardTasks: Task[] = [
 		has: async ({ cl }) => {
 			return ['Elderflame arrow', 'Headless arrow', 'Elderflame arrowtips'].every(i => cl.amount(i) >= 5000);
 		}
-	},
+	}
 ];

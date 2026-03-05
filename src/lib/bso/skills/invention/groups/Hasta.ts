@@ -14,7 +14,7 @@ export const Hasta: DisassemblySourceGroup = {
 		{ item: i('Rune hasta'), lvl: 50 },
 		{ item: i('Dragon hasta'), lvl: 60, flags: new Set(['orikalkum']) },
 		{ item: i('Zamorakian hasta'), lvl: 70 },
-		{ item: i('Dragonbane glaive'), lvl: 85 },
+		{ item: i('Dragonbane glaive'), lvl: 85 }
 	],
 	parts: { sharp: 30, heavy: 10 }
 };

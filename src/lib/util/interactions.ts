@@ -88,12 +88,12 @@ export function makeShootingStarButton(size: number) {
 }
 
 export function makeArchonButton(tier: 1 | 2 | 3) {
-    const name = archonPresentations[tier].name;
-    return new ButtonBuilder()
-        .setCustomId('DO_ARCHON')
-        .setLabel(`Fight the ${name}`)
-        .setEmoji({ name: '⚔️' })
-        .setStyle(ButtonStyle.Secondary);
+	const name = archonPresentations[tier].name;
+	return new ButtonBuilder()
+		.setCustomId('DO_ARCHON')
+		.setLabel(`Fight the ${name}`)
+		.setEmoji({ name: '⚔️' })
+		.setStyle(ButtonStyle.Secondary);
 }
 
 export function makeTameRepeatTripButton() {

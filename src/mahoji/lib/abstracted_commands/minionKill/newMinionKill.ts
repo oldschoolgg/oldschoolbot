@@ -1,4 +1,10 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
+import {
+	defaultIslandUpgrades,
+	defaultMaintenanceTimestamps,
+	getBossSpeedBonus,
+	type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
@@ -32,13 +38,6 @@ import {
 	CombatMethodOptionsSchema,
 	speedCalculations
 } from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
-
-import {
-    getBossSpeedBonus,
-	defaultMaintenanceTimestamps,
-    defaultIslandUpgrades,
-    type IslandUpgradeTiers
-} from '@/lib/bso/commands/islandUpgrades.js';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),
@@ -286,23 +285,25 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 	}
 
 	const islandBossIDs = [
-    142_001, // Orym
-    142_002, // Orrodil
-    142_003, // Crystalline Sentinel
-    142_004, // Fungal Behemoth
-    142_005, // Elder Mimic
-    142_006, // Burning Dominion
+		142_001, // Orym
+		142_002, // Orrodil
+		142_003, // Crystalline Sentinel
+		142_004, // Fungal Behemoth
+		142_005, // Elder Mimic
+		142_006 // Burning Dominion
 	];
 
-	const islandUpgrades   = args.islandUpgrades ?? defaultIslandUpgrades;
-	const islandMaint      = (args.islandUpgrades as any)?.maintenance  ?? defaultMaintenanceTimestamps;
-	const islandAssignment = (args.islandUpgrades as any)?.assignment   ?? null;
-	const islandBossBonus  = islandBossIDs.includes(monster.id)
+	const islandUpgrades = args.islandUpgrades ?? defaultIslandUpgrades;
+	const islandMaint = (args.islandUpgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssignment = (args.islandUpgrades as any)?.assignment ?? null;
+	const islandBossBonus = islandBossIDs.includes(monster.id)
 		? getBossSpeedBonus(islandUpgrades, islandMaint, islandAssignment)
 		: 0;
 	if (islandBossBonus > 0) {
 		duration = reduceNumByPercent(duration, islandBossBonus * 100);
-		speedDurationResult.messages.push(`${(islandBossBonus * 100).toFixed(0)}% faster kills (Warcamp Fortifications)`);
+		speedDurationResult.messages.push(
+			`${(islandBossBonus * 100).toFixed(0)}% faster kills (Warcamp Fortifications)`
+		);
 	}
 
 	duration = Math.ceil(duration);

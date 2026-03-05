@@ -1,4 +1,5 @@
 import { igneCommand } from '@/lib/bso/commands/igneCommand.js';
+import { defaultIslandUpgrades, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import { kgCommand } from '@/lib/bso/commands/kgCommand.js';
 import { kkCommand } from '@/lib/bso/commands/kkCommand.js';
 import { moktangCommand } from '@/lib/bso/commands/moktangCommand.js';
@@ -23,10 +24,6 @@ import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { temporossCommand } from '@/mahoji/lib/abstracted_commands/temporossCommand.js';
 import { wintertodtCommand } from '@/mahoji/lib/abstracted_commands/wintertodtCommand.js';
 import { zalcanoCommand } from '@/mahoji/lib/abstracted_commands/zalcanoCommand.js';
-import {
-    defaultIslandUpgrades,
-    type IslandUpgradeTiers
-} from '@/lib/bso/commands/islandUpgrades.js';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 

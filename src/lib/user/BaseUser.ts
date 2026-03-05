@@ -1,3 +1,4 @@
+import { defaultIslandUpgrades, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
@@ -24,7 +25,6 @@ import { GearBank } from '@/lib/structures/GearBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
-import { type IslandUpgradeTiers, defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 
 const USER_DEFAULTS = {
 	slayer_unlocks: [],

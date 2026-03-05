@@ -14,6 +14,21 @@
 		"clue_scroll_chance": 317647
 	},
 	{
+		"level": 115,
+		"xp": 650,
+		"id": 75027,
+		"name": "Ancient Verdant Logs",
+		"find_new_tree_time": 8.5,
+		"banking_time": 25,
+		"slope": 0.05705,
+		"intercept": -0.71,
+		"depletion_chance": 9.090909090909092,
+		"pet_chance": 42321,
+		"qp_required": 0,
+		"clue_scroll_chance": 42321,
+		"clue_nests_only": true
+	},
+	{
 		"level": 54,
 		"xp": 40,
 		"id": 10810,
@@ -192,6 +207,21 @@
 		"pet_chance": 264336,
 		"qp_required": 0,
 		"clue_scroll_chance": 264336
+	},
+	{
+		"level": 100,
+		"xp": 500,
+		"id": 75026,
+		"name": "Verdant Logs",
+		"find_new_tree_time": 8.5,
+		"banking_time": 25,
+		"slope": 0.05705,
+		"intercept": -0.71,
+		"depletion_chance": 9.090909090909092,
+		"pet_chance": 42321,
+		"qp_required": 0,
+		"clue_scroll_chance": 42321,
+		"clue_nests_only": true
 	},
 	{
 		"level": 30,

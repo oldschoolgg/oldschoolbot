@@ -1,20 +1,21 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { BurningDominionTemplate } from '@/lib/bso/monsters/VerdantIsland.js';
+
 import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import type { GearSetupType } from '@/prisma/main/enums.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import hasEnoughFoodForMonster from '@/lib/minions/functions/hasEnoughFoodForMonster.js';
+import type { PlayerBoostInfo } from '@/lib/minions/functions/reducedTimeForGroup.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
-import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
-import { BurningDominionTemplate } from '@/lib/bso/monsters/VerdantIsland.js';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
-import { Bank } from 'oldschooljs';
-import type { PlayerBoostInfo } from '@/lib/minions/functions/reducedTimeForGroup.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	for (const user of users) {

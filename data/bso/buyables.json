@@ -4003,6 +4003,13 @@
 		"gp_cost": 1000000
 	},
 	{
+		"name": "Rake",
+		"gp_cost": 10,
+		"output_items": {
+			"5341": 1
+		}
+	},
+	{
 		"name": "Ram skull helm",
 		"gp_cost": 1000000,
 		"qp_required": 82,
@@ -4467,6 +4474,14 @@
 		},
 		"item_cost": {
 			"4067": 75
+		}
+	},
+	{
+		"name": "Saw",
+		"gp_cost": 13,
+		"ironman_price": 13,
+		"output_items": {
+			"8794": 1
 		}
 	},
 	{

@@ -1,3 +1,4 @@
+import { defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { GearSetupTypes } from '@oldschoolgg/gear';
@@ -10,7 +11,6 @@ import { SkillsArray } from '../../src/lib/skilling/types.js';
 import { ChargeBank } from '../../src/lib/structures/Bank.js';
 import { Gear } from '../../src/lib/structures/Gear.js';
 import { GearBank } from '../../src/lib/structures/GearBank.js';
-import { defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 
 function makeFullGear() {
 	const obj: UserFullGearSetup = {
