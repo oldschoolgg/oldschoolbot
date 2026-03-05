@@ -295,17 +295,8 @@ export const islandUpgradeCommand = defineCommand({
 						required: true, choices: SKILL_CATEGORY_CHOICES
 					}]
 				},
-				{
-					type: 'Subcommand', name: 'skipgrow',
-					description: '[DEBUG] Rewind accumulation clock by 24h to force a full cap',
-					options: [{
-						type: 'String', name: 'type', description: 'Which skill to rewind',
-						required: true, choices: SKILL_CATEGORY_CHOICES
-					}]
-				},
 			],
 		},
-		{ type: 'Subcommand', name: 'reset', description: '[DEBUG] Reset all island upgrade state' },
 	],
 
 	run: async ({ options, user, interaction }) => {
@@ -509,36 +500,6 @@ export const islandUpgradeCommand = defineCommand({
 				return str;
 			}
 
-			if (options.gather.skipgrow) {
-				const category = resolveCategory(options.gather.skipgrow.type) as SkillCategory;
-				const meta     = upgradeCategoryMeta[category];
-				const tier     = getTier(currentUpgrades, category);
-
-				if (tier === 0) {
-					return `**${meta.label}** hasn't been unlocked yet.`;
-				}
-
-				const updatedLastCollected: IslandLastCollected = {
-					...currentLastCollected,
-					[category]: currentLastCollected[category] - PASSIVE_ACCUM_CAP_MS,
-				};
-
-				await saveState(currentUpgrades, currentContributions, currentMaintenance, activeAssignment, updatedLastCollected);
-
-				const skillLevel = skillLevels[category];
-				const mult       = accumulationMultiplier(category, activeAssignment);
-				const yields     = calculateAccumulatedYields(category, tier, skillLevel, updatedLastCollected[category], now, mult, user.id);
-				const yieldNote  = yields.length > 0 ? `\nCurrent yield at cap: **${formatYields(yields)}**` : '';
-				const assignNote = activeAssignment
-					? `\nAssignment: workers ${(activeAssignment as string) === category ? `focused here (+${Math.round((ASSIGNMENT_BOOST - 1) * 100)}%)` : `elsewhere (−${Math.round((1 - ASSIGNMENT_PENALTY) * 100)}%)`}`
-					: '';
-
-				return (
-					`**[DEBUG]** ${meta.label} accumulation clock rewound by 24h - full cap now available.` +
-					yieldNote + assignNote +
-					`\nUse \`/islandupgrade gather collect type:${CATEGORY_TO_CHOICE[category]}\` to collect.`
-				);
-			}
 		}
 
 
@@ -942,24 +903,6 @@ export const islandUpgradeCommand = defineCommand({
 				`**${meta.label}:** Tier ${nextUpgrade.tier}/${MAX_TIER}\n\n` +
 				maintainNote + collectNote + bonusLine
 			);
-		}
-
-		if (options.reset) {
-			await interaction.confirmation(
-				'**[DEBUG] Reset Island Upgrades?**\n\nResets ALL upgrades, contributions, maintenance, assignment, and collection timestamps. No refunds.'
-			);
-
-			await user.update({
-				island_upgrades: {
-					...defaultIslandUpgrades,
-					[CONTRIB_KEY]: defaultIslandContributions,
-					[MAINT_KEY]:   defaultMaintenanceTimestamps,
-					[ASSIGN_KEY]:  null,
-					[COLLECT_KEY]: defaultLastCollected,
-				} as Prisma.JsonObject,
-			});
-
-			return '**[DEBUG]** All island upgrade state has been reset.';
 		}
 
 		return 'Invalid command usage.';
