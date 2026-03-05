@@ -1,23 +1,17 @@
 import type { BrimstoneDistilleryTaskOptions } from '@/lib/bso/bsoTypes.js';
-
 import {
-	formatDuration,
-	reduceNumByPercent,
-	stringMatches,
-	Time,
-} from '@oldschoolgg/toolkit';
+	defaultIslandUpgrades,
+	defaultMaintenanceTimestamps,
+	getMinigameRewardBonus,
+	type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
+
 import { randArrItem, roll } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-
-import {
-    getMinigameRewardBonus,
-    defaultIslandUpgrades,
-	defaultMaintenanceTimestamps,
-    type IslandUpgradeTiers
-} from '@/lib/bso/commands/islandUpgrades.js';
 
 const HERBLORE_REQUIREMENT = 110;
 const BASE_DURATION_PER_DISTILLATION = Time.Second * 2.77;
@@ -236,8 +230,8 @@ function getTripQualityMultiplier(): number {
 	if (roll < 0.05) return 0.2;
 	if (roll < 0.15) return 0.5;
 	if (roll < 0.65) return 0.75 + Math.random() * 0.35;
-	if (roll < 0.90) return 1.10 + Math.random() * 0.25;
-	if (roll < 0.98) return 1.35 + Math.random() * 0.20;
+	if (roll < 0.9) return 1.1 + Math.random() * 0.25;
+	if (roll < 0.98) return 1.35 + Math.random() * 0.2;
 	return 1.55 + Math.random() * 0.15;
 }
 
@@ -248,11 +242,11 @@ function rollDistillationQuality(tripMultiplier: number): number {
 }
 
 function qualityToPotionOutput(quality: number): number {
-    if (quality >= 95) return 4;
-    if (quality >= 75) return 3;
-    if (quality >= 50) return 2; 
-    if (quality >= 25) return 1;
-    return 0;
+	if (quality >= 95) return 4;
+	if (quality >= 75) return 3;
+	if (quality >= 50) return 2;
+	if (quality >= 25) return 1;
+	return 0;
 }
 
 export async function brimstoneDistilleryStartCommand({
@@ -302,21 +296,21 @@ export async function brimstoneDistilleryStartCommand({
 		durationPerDistillation = Math.floor(reduceNumByPercent(durationPerDistillation, 10));
 	}
 
-	const islandUpgrades  = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
-	const islandMaint     = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
-	const islandAssign    = (user.user.island_upgrades as any)?.assignment  ?? null;
-	const minigameBonus   = getMinigameRewardBonus(islandUpgrades, islandMaint, islandAssign);
+	const islandUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades;
+	const islandMaint = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = (user.user.island_upgrades as any)?.assignment ?? null;
+	const minigameBonus = getMinigameRewardBonus(islandUpgrades, islandMaint, islandAssign);
 	if (minigameBonus > 0) {
 		boosts.push(`${(minigameBonus * 100).toFixed(0)}% better rewards (Settlement Infrastructure)`);
 	}
 
 	const hasFullGraceful = user.hasEquippedOrInBank([
-    'Graceful hood',
-    'Graceful top',
-    'Graceful legs',
-    'Graceful gloves',
-    'Graceful boots',
-    'Graceful cape'
+		'Graceful hood',
+		'Graceful top',
+		'Graceful legs',
+		'Graceful gloves',
+		'Graceful boots',
+		'Graceful cape'
 	]);
 	if (hasFullGraceful) {
 		boosts.push('Full Graceful: bad distillation rolls are reduced');
@@ -335,7 +329,7 @@ export async function brimstoneDistilleryStartCommand({
 		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 10));
 		vialsNeeded = Math.floor(reduceNumByPercent(vialsNeeded, 10));
 	}
-	
+
 	const cost = new Bank().add('Coal', coalNeeded);
 
 	if (selectedRecipe.requiredCatalyst) {
@@ -370,7 +364,7 @@ export async function brimstoneDistilleryStartCommand({
 		minigameID: 'brimstone_distillery',
 		recipe: selectedRecipe.name,
 		hasFullGraceful,
-		maxQuantity,
+		maxQuantity
 	});
 
 	return `${user.minionName} is distilling ${quantity}x ${selectedRecipe.name} for ${formatDuration(duration)}.
@@ -382,13 +376,13 @@ Boosts: ${boosts.length ? boosts.join(', ') : 'None'}`;
 export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) {
 	const recipe = DistilleryRecipes.find(r => r.name === data.recipe)!;
 	const loot = new Bank();
-	const rarityBonus = [0, 0.05, 0.10, 0.15, 0.20, 0.25][data.rarityUpgradeTier ?? 0] ?? 0;
+	const rarityBonus = [0, 0.05, 0.1, 0.15, 0.2, 0.25][data.rarityUpgradeTier ?? 0] ?? 0;
 
 	const tripFillRatio = Math.min(1, data.quantity / data.maxQuantity);
 	const partialTripPenalty = 0.85 + 0.15 * tripFillRatio;
-	
+
 	const tripMultiplier = getTripQualityMultiplier() * partialTripPenalty;
-	
+
 	const distillationQualities: number[] = [];
 	let totalPotions = 0;
 	let totalQualityPoints = 0;
@@ -401,18 +395,20 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) 
 		distillationQualities.push(adjustedQuality);
 
 		const potionOutput = qualityToPotionOutput(adjustedQuality);
-		
+
 		if (potionOutput > 0) {
-		const boostedOutput = Math.floor(potionOutput * (1 + rarityBonus));
-		loot.add(recipe.output.id, boostedOutput);
-		totalPotions += boostedOutput;
-		totalQualityPoints += quality;
+			const boostedOutput = Math.floor(potionOutput * (1 + rarityBonus));
+			loot.add(recipe.output.id, boostedOutput);
+			totalPotions += boostedOutput;
+			totalQualityPoints += quality;
 		} else {
 			failedDistillations++;
 		}
 	}
 
-	const brimstoneAmount = Math.floor((totalQualityPoints / 100) * BASE_DILUTED_BRIMSTONE_PER_DISTILLATION * recipe.brimstoneMultiplier);
+	const brimstoneAmount = Math.floor(
+		(totalQualityPoints / 100) * BASE_DILUTED_BRIMSTONE_PER_DISTILLATION * recipe.brimstoneMultiplier
+	);
 	loot.add('Diluted brimstone', brimstoneAmount);
 
 	if (roll(100000 / data.quantity)) {
@@ -440,7 +436,7 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) 
 	*In memory of Sedrukaius, the first to achieve 5b Herblore xp.*`;
 	} else {
 		flavorMessage = `\n\n${randArrItem(FLAVOR_MESSAGES[tripQuality])}`;
-		
+
 		if (tripQuality === 'exceptional') {
 			flavorMessage += `\n**The distillery produced extraordinary results!**`;
 		} else if (tripQuality === 'good') {
@@ -476,6 +472,6 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) 
 		flavorMessage,
 		petDropped,
 		totalQualityPoints,
-    	failedDistillations
+		failedDistillations
 	};
 }

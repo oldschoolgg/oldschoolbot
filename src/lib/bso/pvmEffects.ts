@@ -1,3 +1,4 @@
+import { ORI_DISABLED_MONSTERS } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { bonecrusherEffect } from '@/lib/bso/skills/invention/effects/bonecrusherEffect.js';
 import { clueUpgraderEffect } from '@/lib/bso/skills/invention/effects/clueUpgraderEffect.js';
@@ -5,7 +6,7 @@ import { portableTannerEffect } from '@/lib/bso/skills/invention/effects/portabl
 import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { roll } from '@oldschoolgg/rng';
-import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
 import type { BitField } from '@/lib/constants.js';
@@ -14,8 +15,6 @@ import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { SlayerContext } from '@/tasks/minions/monsterActivity.js';
-import { stringMatches } from '@oldschoolgg/toolkit';
-import { ORI_DISABLED_MONSTERS } from '@/lib/bso/bsoConstants.js';
 
 export type UserStatsNeededForMidPvmEffects = {
 	onTaskMonsterScores: ItemBank;
@@ -45,11 +44,11 @@ export function oriEffect({
 	monster
 }: Pick<MidPVMEffectArgs, 'gearBank' | 'quantity' | 'duration' | 'messages'> & { monster?: string }) {
 	if (!gearBank.usingPet('Ori')) return quantity;
-	
+
 	if (monster && ORI_DISABLED_MONSTERS.some(m => stringMatches(m, monster))) {
 		return quantity;
 	}
-	
+
 	let newQuantity = quantity;
 
 	if (duration > Time.Minute * 5) {

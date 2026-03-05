@@ -1,7 +1,13 @@
+import {
+	defaultMaintenanceTimestamps,
+	getGatheringSpeedBonus,
+	type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
+
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { getGatheringSpeedBonus, type IslandUpgradeTiers, defaultMaintenanceTimestamps } from '@/lib/bso/commands/islandUpgrades.js';
-import { archaicOres, type ArchaicOre, type MiningType } from '@/tasks/minions/archaicMiningActivity.js';
+
 import type { ArchaicMiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { type ArchaicOre, archaicOres, type MiningType } from '@/tasks/minions/archaicMiningActivity.js';
 
 export async function archaicMiningCommand(
 	user: MUser,
@@ -23,9 +29,13 @@ export async function archaicMiningCommand(
 
 	const maxTripLength = await user.calcMaxTripLength('ArchaicMining');
 
-	const islandMaint    = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
-	const islandAssign   = (user.user.island_upgrades as any)?.assignment  ?? null;
-	const gatheringBonus = getGatheringSpeedBonus((user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>, islandMaint, islandAssign);
+	const islandMaint = (user.user.island_upgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssign = (user.user.island_upgrades as any)?.assignment ?? null;
+	const gatheringBonus = getGatheringSpeedBonus(
+		(user.user.island_upgrades ?? {}) as Partial<IslandUpgradeTiers>,
+		islandMaint,
+		islandAssign
+	);
 	const timePerOre = bestOre.timeToMine * Time.Second * (1 - gatheringBonus);
 
 	if (!quantity) {

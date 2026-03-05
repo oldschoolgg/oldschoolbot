@@ -8,9 +8,13 @@ import {
 	BrimstoneChest,
 	BronzeHAMChest,
 	EItem,
+	ElderHoard,
 	EliteMimicTable,
 	ElvenCrystalChest,
 	EMonster,
+	GemstoneBundle,
+	GemstoneCore,
+	GemstoneSatchel,
 	GiantEggSacFull,
 	GiantsFoundryOrePack,
 	GrubbyChest,
@@ -38,11 +42,7 @@ import {
 	SinisterChest,
 	SteelHAMChest,
 	VolcanicMineOrePack,
-	ZombiePiratesLocker,
-	GemstoneBundle,
-	GemstoneSatchel,
-	GemstoneCore,
-	ElderHoard
+	ZombiePiratesLocker
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -508,7 +508,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		output: GemstoneCore.table,
 		allItems: GemstoneCore.table.allItems
 	},
-		{
+	{
 		name: 'Elder Cache',
 		id: 75_043,
 		openedItem: Items.getOrThrow('Elder sigil'),

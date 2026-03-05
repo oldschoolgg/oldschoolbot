@@ -13,15 +13,20 @@ export const constructionContractsTask: MinionTask = {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		const xpResults = await user.addXP({ skillName: 'construction', amount: constructionXP, duration, minimal: true });
+		const xpResults = await user.addXP({
+			skillName: 'construction',
+			amount: constructionXP,
+			duration,
+			minimal: true
+		});
 
 		const existing = (user.user.construction_stats ?? {}) as Record<string, number>;
 		await user.update({
 			construction_stats: {
-				totalContracts:  (existing.totalContracts ?? 0) + data.quantity,
+				totalContracts: (existing.totalContracts ?? 0) + data.quantity,
 				totalSuccessful: (existing.totalSuccessful ?? 0) + completedContracts,
-				totalFailed:     (existing.totalFailed ?? 0) + failedContracts,
-				tripsCompleted:  (existing.tripsCompleted ?? 0) + 1
+				totalFailed: (existing.totalFailed ?? 0) + failedContracts,
+				tripsCompleted: (existing.tripsCompleted ?? 0) + 1
 			}
 		});
 

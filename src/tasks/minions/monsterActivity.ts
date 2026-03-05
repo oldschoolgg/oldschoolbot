@@ -383,15 +383,18 @@ export function doMonsterTrip(data: newOptions) {
 	// Loot
 	const finalQuantity = quantity - newSuperiorCount;
 
-const loot = wiped
-	? new Bank()
-	: monster.table.kill(oriEffect({ 
-		gearBank, 
-		quantity: finalQuantity, 
-		duration, 
-		messages,
-		monster: monster.name // Add this
-	}), killOptions);
+	const loot = wiped
+		? new Bank()
+		: monster.table.kill(
+				oriEffect({
+					gearBank,
+					quantity: finalQuantity,
+					duration,
+					messages,
+					monster: monster.name // Add this
+				}),
+				killOptions
+			);
 	if (isDoubleLootActive(duration)) {
 		loot.multiply(2);
 		messages.push('**Double loot activated!**');

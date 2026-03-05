@@ -16,7 +16,6 @@ export const Planks: DisassemblySourceGroup = {
 		{ item: i('Crystalline plank'), lvl: 99 },
 		{ item: i('Verdant plank'), lvl: 99 },
 		{ item: i('Ancient verdant plank'), lvl: 99 }
-	
 	],
 	parts: { wooden: 100 }
 };

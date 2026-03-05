@@ -14,11 +14,11 @@ import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
+import { archonCommand } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import { archonCommand } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 
 async function giveawayButtonHandler(user: MUser, customID: string, interaction: MInteraction): CommandResponse {
 	const split = customID.split('_');
@@ -518,29 +518,29 @@ async function globalButtonInteractionHandler({
 			return shootingStarsCommand(interaction.channelId, user, validStar);
 		}
 		case 'DO_ARCHON': {
-  	  const pendingArchon = await prisma.archonEvent.findFirst({
-        where: {
-            user_id: user.id,
-            has_been_done: false,
-            expires_at: { gt: new Date() }
-        },
-        orderBy: { expires_at: 'desc' }
-    });
+			const pendingArchon = await prisma.archonEvent.findFirst({
+				where: {
+					user_id: user.id,
+					has_been_done: false,
+					expires_at: { gt: new Date() }
+				},
+				orderBy: { expires_at: 'desc' }
+			});
 
-    if (!pendingArchon) {
-        return {
-            content: 'You have no active Archon encounter, or it has expired.',
-            ephemeral: true
-        };
-    }
+			if (!pendingArchon) {
+				return {
+					content: 'You have no active Archon encounter, or it has expired.',
+					ephemeral: true
+				};
+			}
 
-    await prisma.archonEvent.update({
-        where: { id: pendingArchon.id },
-        data: { has_been_done: true }
-    });
+			await prisma.archonEvent.update({
+				where: { id: pendingArchon.id },
+				data: { has_been_done: true }
+			});
 
-    return archonCommand(interaction.channelId, user, pendingArchon);
-}
+			return archonCommand(interaction.channelId, user, pendingArchon);
+		}
 		case InteractionID.Commands.StartTearsOfGuthix: {
 			return runCommand({
 				commandName: 'minigames',

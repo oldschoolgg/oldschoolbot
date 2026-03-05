@@ -33,9 +33,9 @@ import { NestBoxRing } from './NestBoxRing.js';
 import { NestBoxSeeds } from './NestBoxSeeds.js';
 import { OgreCoffin } from './OgreCoffin.js';
 import { GiantsFoundryOrePack, VolcanicMineOrePack } from './OrePack.js';
-import { GemstoneBundle, GemstoneSatchel, GemstoneCore, ElderHoard } from './VerdantOpenables.js';
 import { SeedPackOpenable as SeedPack } from './SeedPack.js';
 import { SinisterChest } from './SinisterChest.js';
+import { ElderHoard, GemstoneBundle, GemstoneCore, GemstoneSatchel } from './VerdantOpenables.js';
 import { ZombiePiratesLocker } from './ZombiePiratesLocker.js';
 
 export {

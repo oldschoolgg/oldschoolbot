@@ -1,6 +1,5 @@
-import { Bank, itemID } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs';
-
+import { Bank, itemID } from 'oldschooljs';
 
 const _F = 75_073;
 
@@ -13,30 +12,38 @@ const _CL_IDS = [
 	itemID('Dragonbane glaive'),
 	itemID('Celestial pendant'),
 	itemID('Prismare ring'),
-	itemID('Searcrown band'),
+	itemID('Searcrown band')
 ] as const;
 
 const _BOSS_IDS_100 = [142_001, 142_002, 142_003, 142_004, 142_006] as const;
 
-const _MIMIC_ID  = 142_005;
+const _MIMIC_ID = 142_005;
 const _MIMIC_MIN = 10;
-const _BOSS_MIN  = 100;
+const _BOSS_MIN = 100;
 
 const _OPENS: [number, number][] = [
 	[75_022, 50],
 	[75_023, 50],
 	[75_024, 50],
-	[75_043,  1],
+	[75_043, 1]
 ];
 
 const _MINIGAMES: [string, number][] = [
-    ['construction_contracts', 100],
-    ['brimstone_distillery',   100],
+	['construction_contracts', 100],
+	['brimstone_distillery', 100]
 ];
 
 const _TIER_KEYS = [
-	'boss', 'megaboss', 'minigame', 'gathering', 'prismare',
-	'fishing', 'mining', 'woodcutting', 'divination', 'farming',
+	'boss',
+	'megaboss',
+	'minigame',
+	'gathering',
+	'prismare',
+	'fishing',
+	'mining',
+	'woodcutting',
+	'divination',
+	'farming'
 ] as const;
 
 export function _itemId(): number {
@@ -62,11 +69,11 @@ export function _everEarned(user: MUser): boolean {
 }
 
 export function _checkCriteria(args: {
-	cl:             Bank;
-	monsterScores:  ItemBank;
+	cl: Bank;
+	monsterScores: ItemBank;
 	activityCounts: Record<string, number>;
-	opens:          Bank;
-	upgrades:       Record<typeof _TIER_KEYS[number], number>;
+	opens: Bank;
+	upgrades: Record<(typeof _TIER_KEYS)[number], number>;
 	minigameScores: Record<string, number>;
 }): boolean {
 	const { cl, monsterScores, minigameScores, opens, upgrades } = args;

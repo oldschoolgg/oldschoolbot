@@ -679,7 +679,7 @@ export type ActivityTaskData =
 	| FiremakingActivityTaskOptions
 	| FishingActivityTaskOptions
 	| MiningActivityTaskOptions
-	| ArchaicMiningActivityTaskOptions	
+	| ArchaicMiningActivityTaskOptions
 	| MotherlodeMiningActivityTaskOptions
 	| PlunderActivityTaskOptions
 	| SmithingActivityTaskOptions

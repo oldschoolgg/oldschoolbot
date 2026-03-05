@@ -1,7 +1,8 @@
+import { IslandGemTable, IslandGemTable3x, IslandGemTable5x } from '@/lib/bso/monsters/VerdantIsland.js';
+
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable } from 'oldschooljs';
 
-import { IslandGemTable, IslandGemTable3x, IslandGemTable5x } from '@/lib/bso/monsters/VerdantIsland.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import type { ArchaicMiningActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -21,16 +22,90 @@ export interface ArchaicOre {
 }
 
 export const archaicOres: ArchaicOre[] = [
-	{ id: itemID('Dragon bones'), name: 'Dragon bones', level: 90, xp: 80, timeToMine: 4, type: 'dragonbone', petChance: 100000, clueScrollChance: 500000 },
-	{ id: itemID('Superior dragon bones'), name: 'Superior dragon bones', level: 95, xp: 100, timeToMine: 4.5, type: 'dragonbone', petChance: 100000 },
-	{ id: itemID('Abyssal dragon bones'), name: 'Abyssal dragon bones', level: 100, xp: 120, timeToMine: 5, type: 'dragonbone', petChance: 100000 },
-	{ id: itemID('Frost dragon bones'), name: 'Frost dragon bones', level: 105, xp: 140, timeToMine: 5.5, type: 'dragonbone', petChance: 100000 },
-	{ id: itemID('Royal dragon bones'), name: 'Royal dragon bones', level: 108, xp: 150, timeToMine: 5.75, type: 'dragonbone', petChance: 100000 },
-	{ id: itemID('Primordial bones'), name: 'Primordial bones', level: 110, xp: 160, timeToMine: 6, type: 'dragonbone', petChance: 100000 },
+	{
+		id: itemID('Dragon bones'),
+		name: 'Dragon bones',
+		level: 90,
+		xp: 80,
+		timeToMine: 4,
+		type: 'dragonbone',
+		petChance: 100000,
+		clueScrollChance: 500000
+	},
+	{
+		id: itemID('Superior dragon bones'),
+		name: 'Superior dragon bones',
+		level: 95,
+		xp: 100,
+		timeToMine: 4.5,
+		type: 'dragonbone',
+		petChance: 100000
+	},
+	{
+		id: itemID('Abyssal dragon bones'),
+		name: 'Abyssal dragon bones',
+		level: 100,
+		xp: 120,
+		timeToMine: 5,
+		type: 'dragonbone',
+		petChance: 100000
+	},
+	{
+		id: itemID('Frost dragon bones'),
+		name: 'Frost dragon bones',
+		level: 105,
+		xp: 140,
+		timeToMine: 5.5,
+		type: 'dragonbone',
+		petChance: 100000
+	},
+	{
+		id: itemID('Royal dragon bones'),
+		name: 'Royal dragon bones',
+		level: 108,
+		xp: 150,
+		timeToMine: 5.75,
+		type: 'dragonbone',
+		petChance: 100000
+	},
+	{
+		id: itemID('Primordial bones'),
+		name: 'Primordial bones',
+		level: 110,
+		xp: 160,
+		timeToMine: 6,
+		type: 'dragonbone',
+		petChance: 100000
+	},
 
-	{ id: itemID('Crystalline ore'), name: 'Crystalline ore', level: 90, xp: 180, timeToMine: 1, type: 'crystalline', petChance: 100000, clueScrollChance: 500000 },
-	{ id: itemID('Gem Infused ore'), name: 'Gem Infused ore', level: 100, xp: 240, timeToMine: 2, type: 'crystalline', petChance: 100000 },
-	{ id: itemID('Dense Crystal shard'), name: 'Dense Crystal shard', level: 110, xp: 300, timeToMine: 2, type: 'crystalline', petChance: 100000 }
+	{
+		id: itemID('Crystalline ore'),
+		name: 'Crystalline ore',
+		level: 90,
+		xp: 180,
+		timeToMine: 1,
+		type: 'crystalline',
+		petChance: 100000,
+		clueScrollChance: 500000
+	},
+	{
+		id: itemID('Gem Infused ore'),
+		name: 'Gem Infused ore',
+		level: 100,
+		xp: 240,
+		timeToMine: 2,
+		type: 'crystalline',
+		petChance: 100000
+	},
+	{
+		id: itemID('Dense Crystal shard'),
+		name: 'Dense Crystal shard',
+		level: 110,
+		xp: 300,
+		timeToMine: 2,
+		type: 'crystalline',
+		petChance: 100000
+	}
 ];
 
 function generateArchaicMiningTable(currentMiningLevel: number, miningType: MiningType): LootTable {
@@ -97,23 +172,16 @@ export const archaicMiningTask: MinionTask = {
 
 		let bonusXP = 0;
 
-		const prospectorPieces = [
-			'Prospector helmet',
-			'Prospector jacket',
-			'Prospector legs',
-			'Prospector boots'
-		];
+		const prospectorPieces = ['Prospector helmet', 'Prospector jacket', 'Prospector legs', 'Prospector boots'];
 
-		const prospectorCount = prospectorPieces.filter(piece =>
-			user.hasEquippedOrInBank(piece)
-		).length;
+		const prospectorCount = prospectorPieces.filter(piece => user.hasEquippedOrInBank(piece)).length;
 
 		if (prospectorCount === 4) {
 			const amountToAdd = Math.floor(miningXP * (2.5 / 100));
 			miningXP += amountToAdd;
 			bonusXP += amountToAdd;
 		} else if (prospectorCount > 0) {
-			const amountToAdd = Math.floor(miningXP * (prospectorCount * 0.5 / 100));
+			const amountToAdd = Math.floor(miningXP * ((prospectorCount * 0.5) / 100));
 			miningXP += amountToAdd;
 			bonusXP += amountToAdd;
 		}

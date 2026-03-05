@@ -1,5 +1,7 @@
 import type {
 	BathhouseTaskOptions,
+	BrimstoneDistilleryTaskOptions,
+	ConstructionContractsTaskOptions,
 	DisassembleTaskOptions,
 	DOAOptions,
 	DungeoneeringOptions,
@@ -27,8 +29,6 @@ import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.
 import { runCommand } from '@/lib/settings/settings.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
-import type { BrimstoneDistilleryTaskOptions } from '@/lib/bso/bsoTypes.js';
-import type { ConstructionContractsTaskOptions } from '@/lib/bso/bsoTypes.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
 	ActivityTaskData,
@@ -286,9 +286,9 @@ const tripHandlers: {
 	[activity_type_enum.ArchaicMining]: {
 		commandName: 'activities',
 		args: (data: ArchaicMiningActivityTaskOptions | ActivityTaskOptionsWithQuantity) => ({
-			archaic_mining: { 
-				type: (data as ArchaicMiningActivityTaskOptions).miningType, 
-				quantity: data.iQty 
+			archaic_mining: {
+				type: (data as ArchaicMiningActivityTaskOptions).miningType,
+				quantity: data.iQty
 			}
 		})
 	},

@@ -1,9 +1,9 @@
 import {
+	empyreanOutfit,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
-	pernixOutfit,
-	empyreanOutfit
+	pernixOutfit
 } from '@/lib/bso/collection-log/main.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 

@@ -1,5 +1,5 @@
-import reducedTimeForGroup from '@/lib/minions/functions/reducedTimeForGroup.js';
 import type { PlayerBoostInfo } from '@/lib/minions/functions/reducedTimeForGroup.js';
+import reducedTimeForGroup from '@/lib/minions/functions/reducedTimeForGroup.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 
 export default async function calcDurQty(

@@ -1,4 +1,5 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
+import { _itemId } from '@/lib/bso/util/bfcrit.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
@@ -10,7 +11,6 @@ import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
-import { _itemId } from '@/lib/bso/util/bfcrit.js';
 
 export async function calcClueScores(user: MUser) {
 	const { actualCluesBank } = await user.calcActualClues();
