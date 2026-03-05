@@ -607,6 +607,76 @@ describe('auto farm helpers', () => {
 		// As above – detailed choice logic is tested in resolveSeedForPatch.
 		expect(addSubTaskToActivityTask).toHaveBeenCalledTimes(1);
 	});
+
+	it('autoFarm returns error when patch data is missing', async () => {
+		const bank = new Bank().add('Guam seed', 4).add('Compost', 4);
+		const user = mockMUser({
+			bank,
+			skills_farming: convertLVLtoXP(50)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		mutableUser.minion_defaultCompostToUse = CropUpgradeType.compost;
+
+		const transactSpy = vi.spyOn(user, 'transactItems');
+		calcMaxTripLengthSpy.mockReturnValue(300 * 1000);
+
+		const response = await autoFarm(
+			user,
+			[herbPatchDetailed],
+			{} as Record<FarmingPatchName, IPatchData>,
+			baseInteraction as MInteraction
+		);
+
+		expect(response).toBe('Unable to resolve patch data for Herb patch.');
+		expect(transactSpy).not.toHaveBeenCalled();
+		expect(addSubTaskToActivityTask).not.toHaveBeenCalled();
+	});
+
+	it('autoFarm refunds charged costs if scheduling fails', async () => {
+		const bank = new Bank().add('Guam seed', 4).add('Compost', 4);
+		const user = mockMUser({
+			bank,
+			skills_farming: convertLVLtoXP(50)
+		});
+		const mutableUser = user.user as MutableUser;
+		mutableUser.auto_farm_filter = AutoFarmFilterEnum.AllFarm;
+		mutableUser.minion_defaultCompostToUse = CropUpgradeType.compost;
+
+		const transactResult = {
+			newUser: user,
+			itemsAdded: new Bank(),
+			itemsRemoved: new Bank(),
+			newBank: user.bank.clone(),
+			newCL: user.cl.clone(),
+			previousCL: new Bank(),
+			clLootBank: null
+		} satisfies Awaited<ReturnType<typeof user.transactItems>>;
+		const transactSpy = vi.spyOn(user, 'transactItems').mockResolvedValue(transactResult);
+		const statsSpy = vi.spyOn(user, 'statsBankUpdate').mockResolvedValue(undefined);
+		const updateBankSettingSpy = vi.spyOn(global.ClientSettings, 'updateBankSetting').mockResolvedValue();
+
+		(addSubTaskToActivityTask as unknown as MockInstance).mockRejectedValueOnce(
+			new Error('Failed to queue activity.')
+		);
+		calcMaxTripLengthSpy.mockReturnValue(300 * 1000);
+
+		const response = await autoFarm(
+			user,
+			[herbPatchDetailed],
+			herbPatches as Record<FarmingPatchName, IPatchData>,
+			baseInteraction as MInteraction
+		);
+
+		expect(response).toBe('Failed to queue activity.');
+		expect(transactSpy).toHaveBeenCalledTimes(2);
+		expect(transactSpy.mock.calls[0]?.[0].itemsToRemove?.amount('Guam seed')).toBe(4);
+		expect(transactSpy.mock.calls[0]?.[0].itemsToRemove?.amount('Compost')).toBe(4);
+		expect(transactSpy.mock.calls[1]?.[0].itemsToAdd?.amount('Guam seed')).toBe(4);
+		expect(transactSpy.mock.calls[1]?.[0].itemsToAdd?.amount('Compost')).toBe(4);
+		expect(statsSpy).not.toHaveBeenCalled();
+		expect(updateBankSettingSpy).not.toHaveBeenCalled();
+	});
 });
 
 describe('resolveSeedForPatch', () => {

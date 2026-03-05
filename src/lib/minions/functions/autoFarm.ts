@@ -387,6 +387,12 @@ export async function autoFarm(
 		}
 		await addSubTaskToActivityTask(firstTask);
 	} catch (err) {
+		const startFailContext = { type: 'AUTO_FARM_START_FAIL', user_id: user.id, charged_cost: chargedCost };
+		if ((globalThis as { prisma?: unknown }).prisma) {
+			Logging.logError(err as Error, startFailContext);
+		} else {
+			Logging.logDebug(`AutoFarm failed to start for ${user.id}: ${(err as Error).message}`, startFailContext);
+		}
 		if (chargedCost && totalCost.length > 0) {
 			try {
 				await user.transactItems({ itemsToAdd: totalCost });
