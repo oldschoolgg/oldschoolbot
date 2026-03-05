@@ -13,11 +13,7 @@ import {
 } from '@/lib/skilling/skills/farming/autoFarm/preferences.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
-import type {
-	FarmingPreferredSeeds,
-	IPatchData,
-	IPatchDataDetailed
-} from '@/lib/skilling/skills/farming/utils/types.js';
+import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
@@ -41,7 +37,6 @@ interface PlannedAutoFarmStep {
 
 interface PlanRequest {
 	type: 'highest' | 'plant';
-	reason: string;
 	patch: IPatchDataDetailed;
 	plant?: Plant;
 }
@@ -145,13 +140,8 @@ export async function autoFarm(
 	const farmingLevel = user.skillsAsLevels.farming;
 
 	const autoFarmFilter = user.autoFarmFilter ?? AutoFarmFilterEnum.AllFarm;
-	const preferContract = Boolean(
-		(user.user as unknown as { minion_farmingPreferredContract?: boolean }).minion_farmingPreferredContract
-	);
-
-	const preferredSeeds = parsePreferredSeeds(
-		(user.user as unknown as { minion_farmingPreferredSeeds?: FarmingPreferredSeeds }).minion_farmingPreferredSeeds
-	);
+	const preferContract = Boolean(user.user.minion_farmingPreferredContract);
+	const preferredSeeds = parsePreferredSeeds(user.user.minion_farmingPreferredSeeds);
 
 	const baseBank = user.bank.clone().add('Coins', user.GP);
 
@@ -224,11 +214,11 @@ export async function autoFarm(
 		}
 
 		if (resolved.type === 'plant') {
-			planRequests.push({ type: 'plant', reason: resolved.reason, patch, plant: resolved.plant });
+			planRequests.push({ type: 'plant', patch, plant: resolved.plant });
 			continue;
 		}
 
-		planRequests.push({ type: 'highest', reason: resolved.reason, patch });
+		planRequests.push({ type: 'highest', patch });
 	}
 
 	for (const request of planRequests) {
@@ -281,6 +271,11 @@ export async function autoFarm(
 				skippedDueToTripLength = true;
 				continue;
 			}
+			const patchData = patches[patch.patchName];
+			if (!patchData) {
+				errorsForPatch.push(`Unable to resolve patch data for ${patch.friendlyName}.`);
+				break;
+			}
 
 			remainingBank.remove(cost);
 			if (treeChopFee > 0) {
@@ -288,8 +283,6 @@ export async function autoFarm(
 			}
 			totalCost.add(cost);
 			totalDuration += duration;
-
-			const patchData = patches[patch.patchName];
 			plannedSteps.push({
 				plant: candidate,
 				quantity,
@@ -334,13 +327,6 @@ export async function autoFarm(
 
 		return noCropsResponse;
 	}
-
-	if (!user.owns(totalCost)) {
-		return `You don't own ${totalCost}.`;
-	}
-	await user.transactItems({ itemsToRemove: totalCost });
-	await ClientSettings.updateBankSetting('farming_cost_bank', totalCost);
-	await user.statsBankUpdate('farming_plant_cost_bank', totalCost);
 
 	const autoFarmPlan: AutoFarmStepData[] = [];
 	const planningStartTime = Date.now();
@@ -389,7 +375,32 @@ export async function autoFarm(
 		currentDate: firstStep.currentDate,
 		patchName: firstStep.patchName
 	} satisfies Omit<FarmingActivityTaskOptions, 'finishDate' | 'id'>;
-	await addSubTaskToActivityTask(firstTask);
+
+	let chargedCost = false;
+	try {
+		if (!user.owns(totalCost)) {
+			return `You don't own ${totalCost}.`;
+		}
+		if (totalCost.length > 0) {
+			await user.transactItems({ itemsToRemove: totalCost });
+			chargedCost = true;
+		}
+		await addSubTaskToActivityTask(firstTask);
+	} catch (err) {
+		if (chargedCost && totalCost.length > 0) {
+			try {
+				await user.transactItems({ itemsToAdd: totalCost });
+			} catch (refundErr) {
+				Logging.logError(refundErr as Error);
+			}
+		}
+		if (err instanceof Error) {
+			return err.message;
+		}
+		return 'There was an error starting your activity.';
+	}
+	await ClientSettings.updateBankSetting('farming_cost_bank', totalCost);
+	await user.statsBankUpdate('farming_plant_cost_bank', totalCost);
 
 	const uniqueBoosts = [...new Set(plannedSteps.flatMap(step => step.boosts))];
 	const summaryLines: string[] = [];
