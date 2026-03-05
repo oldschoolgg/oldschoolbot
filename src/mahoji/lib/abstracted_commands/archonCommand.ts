@@ -49,7 +49,7 @@ function getEligibleTier(user: MUser): 1 | 2 | 3 | null {
 	return null;
 }
 
-const ARCHON_SPAWN_CHANCE = 1; // number in N trips
+const ARCHON_SPAWN_CHANCE = 50; // number in N trips
 
 export function getArchonTier(user: MUser): 1 | 2 | 3 | null {
 	if (!roll(ARCHON_SPAWN_CHANCE)) return null;
