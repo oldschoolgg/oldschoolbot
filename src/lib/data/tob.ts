@@ -489,7 +489,7 @@ export function createTOBRaid({
 	let chinCannonUser: MUser | null = null;
 
 	for (const u of team) {
-		if (u.gear.range.hasEquipped('Chincannon')) {
+		if (u.user.hasEquipped('Chincannon')) {
 			chinCannonUser = u.user;
 			break;
 		}
