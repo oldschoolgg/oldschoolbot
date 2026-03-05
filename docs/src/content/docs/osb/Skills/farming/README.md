@@ -7,7 +7,7 @@ Farming in the bot works like in-game: your minion is sent on planting or harves
 When harvesting trees, either:
 
 - Meet the Woodcutting level (and receive logs), or
-- Pay 200gp for a farmer to remove the tree (no logs)
+- Pay a farmer to remove the tree (200gp per tree, or 2000gp per redwood tree; no logs)
 
 Other farming activities:
 
@@ -30,7 +30,7 @@ XP, speed, and harvest quantity can be boosted by the following:
 
 - **[Magic secateurs](../../Buyables/buyables)** - 10% harvest quantity boost **(works from bank)**
 - **Farming cape** - 5% harvest quantity boost **(works from bank)**
-- **Full graceful outfit** - 10% trip speed **(must be equipped and charged)**
+- **Full graceful outfit** - 10% trip speed **(must be equipped)**
 - **[Ring of endurance](../../Activities/hallowed-sepulchre#ring-of-endurance)** - 10% trip speed **(must be charged and either equipped or in bank)**
 - **Ardougne elite diary** - 4% trip speed when completed
 
@@ -54,7 +54,7 @@ XP, speed, and harvest quantity can be boosted by the following:
 
 ## Auto Farming
 
-Use [[/farming auto_farm]] to harvest and replant every ready patch your current filter allows in a single trip. The command now:
+Use [[/farming auto_farm]] to process every patch your current filter/preferences allow in a single trip (ready planted patches are harvested/replanted, eligible empty patches are planted). The command now:
 
 - Builds a combined plan that spends the entire Farming trip length, chaining each patch back-to-back.
 - Respects [[/farming auto_farm_filter]] choices (`AllFarm` to use your best seeds everywhere, `Replant` to stick to what was already growing).

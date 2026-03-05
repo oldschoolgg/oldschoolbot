@@ -6,7 +6,7 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 
 ## Overview
 
-- [[/farming auto_farm]] checks every patch you have unlocked, harvests anything ready, and replants according to your filter.
+- [[/farming auto_farm]] checks every patch you have unlocked, harvests ready planted patches, and plants/replants according to your filter and preferences.
 - The trip is planned as one continuous Farming activity whose duration equals the sum of each patch step (travel, harvest, replant). Your minion stays out for the full Farming trip length instead of returning after every patch.
 - You can also trigger auto farming from the button that appears on [[/farming check_patches]] when something is ready.
 
@@ -32,7 +32,8 @@ Auto farming collects ready patches into a single Farming activity so you can ha
 - Seeds, compost, farmer payments, and tree removal fees are checked up-front.
 - Your [[/farming default_compost]] choice and [[/farming always_pay]] toggle are applied automatically.
 - Coins for chopping trees without the required Woodcutting level are reserved (200 gp for most trees, 2,000 gp for redwoods).
-- All selected step costs are removed immediately before the trip starts.
+- Seed/compost/protection costs are removed immediately before the trip starts.
+- Tree-removal coin costs are reserved during planning, then charged (or partially refunded if over-estimated) during execution.
 - If no step can be planned, auto farm returns the first failure reason (for example missing seeds/items or an unmet requirement).
 
 ## Boosts
