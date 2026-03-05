@@ -58,7 +58,7 @@ export function addMonsterXPRaw(params: {
 		attackStyles: params.attackStyles
 	});
 	let hp = miscHpMap[params.monsterID] ?? 1;
-	let xpMultiplier = 1;
+	let xpMultiplier: number;
 	const cannonQty = params.cannonMulti
 		? randomVariation(Math.floor((xpPercentToCannonM / 100) * params.quantity), xpCannonVaryPercent)
 		: params.usingCannon
