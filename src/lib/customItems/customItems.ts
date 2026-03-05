@@ -15118,6 +15118,8 @@ setCustomItem(
 	10_000_000
 );
 
+setCustomItem(75_073, 'Buried firmament', 'Abyssal cape', {}, 10_000);
+
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',

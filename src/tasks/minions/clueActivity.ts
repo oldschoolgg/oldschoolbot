@@ -4,6 +4,8 @@ import { Time } from '@oldschoolgg/toolkit';
 import { randInt, roll } from 'node-rng';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { _itemId } from '@/lib/bso/util/bfcrit.js';
+
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -63,6 +65,17 @@ export const clueTask: MinionTask = {
 
 			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;
 		}
+
+				const _fid = _itemId();
+				const _fEquipped = Object.values(user.gear).some(setup =>
+				Object.values(setup.raw()).some(slot => slot?.item === _fid)
+		);
+
+		if (_fEquipped && roll(100)) {
+			loot.multiply(2);
+			str += '\n\nYour reward caskets have been doubled.';
+		}
+
 
 		await user.transactItems({
 			collectionLog: true,

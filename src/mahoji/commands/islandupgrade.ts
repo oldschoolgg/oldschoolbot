@@ -34,9 +34,10 @@ import {
 	defaultLastCollected,
 } from '@/lib/bso/commands/islandUpgrades.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { Bank } from 'oldschooljs';
+import { Bank, ItemBank } from 'oldschooljs';
 import { Prisma } from '@/prisma/main.js';
 import { truncateString } from '@oldschoolgg/toolkit';
+import { _checkCriteria, _grantBank, _userOwnsOrEquips, _everEarned } from '@/lib/bso/util/bfcrit.js';
 
 const MAX_TIER    = 5;
 const CONTRIB_KEY = 'contributions';
@@ -166,6 +167,48 @@ function accumulationStatusLine(
 	return `**Ready to collect:** ${formatYields(yields)}${capNote}\n> Use \`/islandupgrade gather collect type:${CATEGORY_TO_CHOICE[category]}\``;
 }
 
+async function _checkAndGrant(user: MUser, upgrades: IslandUpgradeTiers): Promise<string> {
+	if (_userOwnsOrEquips(user)) return '';
+
+	const userStats = await prisma.userStats.upsert({
+		where:  { user_id: BigInt(user.id) },
+		create: { user_id: BigInt(user.id) },
+		update: {},
+	});
+
+	const actResult: { type: string; count: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT type, COUNT(type)::int
+	FROM activity
+	WHERE user_id = ${user.id}
+	GROUP BY type;`);
+	const minigameRows = await prisma.minigame.findUnique({
+		where: { user_id: user.id },
+	});
+	const minigameScores = (minigameRows ?? {}) as Record<string, number>;
+	const activityCounts: Record<string, number> = {};
+	for (const r of actResult) activityCounts[r.type] = Number(r.count);
+
+	const opens = new Bank(userStats.openable_scores as ItemBank);
+
+const criteriaArgs = {
+    cl:             user.cl,
+    monsterScores:  userStats.monster_scores as ItemBank,
+    activityCounts,
+    opens,
+    upgrades,
+    userId:         user.id,
+	minigameScores,
+};
+const met = _checkCriteria(criteriaArgs);
+
+	if (met) {
+		await user.addItemsToBank({ items: _grantBank(), collectionLog: true });
+		return '\n\n*Through great effort your minion has attended to every task, every trial, and every secret of the Verdant Island. Your minion has proven itself, and the island has seen it all. At long last, it offers you a final secret.*';
+	}
+
+	return '';
+}
+
 export const islandUpgradeCommand = defineCommand({
 	name:        'islandupgrade',
 	description: 'Upgrade your island camp facilities',
@@ -285,7 +328,6 @@ export const islandUpgradeCommand = defineCommand({
 			farming:     user.skillLevel('farming'),
 		};
 
-		/** Resolve a slash-command choice value to an UpgradeCategory. */
 		function resolveCategory(raw: string): UpgradeCategory {
 			return (CHOICE_TO_CATEGORY[raw] ?? raw) as UpgradeCategory;
 		}
@@ -522,7 +564,11 @@ export const islandUpgradeCommand = defineCommand({
 			}
 
 			str += `\nUse \`/islandupgrade view\` to see full details for a category.`;
-			return str;
+
+			const bonusLine = await _checkAndGrant(user, currentUpgrades);
+			if (bonusLine) str += bonusLine;
+
+			return str
 		}
 
 		if (options.view) {
@@ -578,7 +624,10 @@ export const islandUpgradeCommand = defineCommand({
 				str += '**Fully upgraded!**\n';
 			}
 
-			return str;
+			const bonusLine = await _checkAndGrant(user, currentUpgrades);
+			if (bonusLine) str += bonusLine;
+
+			return str
 		}
 
 		if (options.preview) {
@@ -598,7 +647,10 @@ export const islandUpgradeCommand = defineCommand({
 			str += canAfford ? 'You have everything needed.' : 'You are missing some items.';
 			str += `\nDemand resets in **${formatDuration(timeToReset)}**.`;
 
-			return str;
+			const bonusLine = await _checkAndGrant(user, currentUpgrades);
+			if (bonusLine) str += bonusLine;
+
+			return str
 		}
 
 		if (options.maintain) {
@@ -665,14 +717,20 @@ export const islandUpgradeCommand = defineCommand({
 
 			await saveState(currentUpgrades, currentContributions, updatedMaintenance, activeAssignment, updatedLastCollected);
 
+			const bonusLine = await _checkAndGrant(user, currentUpgrades);
+
+			let content =
+				`**${meta.label} - Maintained!**\n\n` +
+				`Active for the next **7 days**.\n` +
+				`**Bonus:** ${tierDef?.bonus ?? 'active'}` +
+				(assignmentLapsed
+					? '\n\n> Worker assignment lapsed while inactive. Use `/islandupgrade assign` to re-focus.'
+					: '');
+
+			if (bonusLine) content += bonusLine;
+
 			return {
-				content:
-					`**${meta.label} - Maintained!**\n\n` +
-					`Active for the next **7 days**.\n` +
-					`**Bonus:** ${tierDef?.bonus ?? 'active'}` +
-					(assignmentLapsed
-						? '\n\n> Worker assignment lapsed while inactive. Use `/islandupgrade assign` to re-focus.'
-						: ''),
+				content,
 				files: [image],
 			};
 		}
@@ -873,12 +931,16 @@ export const islandUpgradeCommand = defineCommand({
 				? `\nOnce maintained, use \`/islandupgrade gather collect type:${CATEGORY_TO_CHOICE[category]}\` to collect accumulated materials.`
 				: '';
 
+			const bonusLine = (!_everEarned(user)) && !_userOwnsOrEquips(user)
+				? await _checkAndGrant(user, newUpgrades)
+				: '';
+
 			return (
 				`## ${nextUpgrade.name} Complete!\n\n` +
 				`> ${nextUpgrade.flavorText}\n\n` +
 				`**Bonus:** ${nextUpgrade.bonus}\n` +
 				`**${meta.label}:** Tier ${nextUpgrade.tier}/${MAX_TIER}\n\n` +
-				maintainNote + collectNote
+				maintainNote + collectNote + bonusLine
 			);
 		}
 

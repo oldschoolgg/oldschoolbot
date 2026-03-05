@@ -1538,7 +1538,26 @@ export const bsoCreatables: Createable[] = [
 		}),
 		requiredSkills: {}
 	},
-{
+	{
+		name: 'Revert prismare ring',
+		inputItems: new Bank({
+			'Prismare ring': 1
+		}),
+		outputItems: new Bank({
+			'Prismare ring (u)': 1
+		})
+	},
+	{
+		name: 'Dismantle prismare ring',
+		inputItems: new Bank({
+			'Prismare ring (u)': 1
+		}),
+		outputItems: new Bank({
+			'Prismare': 250,
+			'Empyrean shards': 250
+		})
+	},
+	{
 		name: 'Empyrean Armour Set',
 		inputItems: new Bank({
 			'Gorajan warrior helmet': 1,

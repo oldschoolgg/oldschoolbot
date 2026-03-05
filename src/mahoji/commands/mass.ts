@@ -1,3 +1,4 @@
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import type { GearSetupType } from '@/prisma/main/enums.js';
@@ -13,27 +14,23 @@ import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BurningDominionTemplate } from '@/lib/bso/monsters/VerdantIsland.js';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 import { Bank } from 'oldschooljs';
+import type { PlayerBoostInfo } from '@/lib/minions/functions/reducedTimeForGroup.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
-	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.hasMinion) {
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
-
 		if (await user.minionIsBusy()) {
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
-
 		if (user.user.minion_ironman) {
 			return `${user.usernameOrMention} is an ironman, so they can't join!`;
 		}
-
 		const [hasReqs, reason] = await user.hasMonsterRequirements(monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
-
 		if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
@@ -42,6 +39,22 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 			}.`;
 		}
 	}
+}
+
+function buildBoostEmbedFields(playerBoostInfos: PlayerBoostInfo[]) {
+	return playerBoostInfos.map(player => {
+		const header = `${player.teamMultiplier.toFixed(2)}x team | +${player.totalPersonalPercent.toFixed(1)}% personal`;
+		const boostLines =
+			player.personalBoosts.length === 0
+				? 'No personal boosts'
+				: player.personalBoosts.map(b => `${b.name}: +${b.percent.toFixed(1)}%`).join('\n');
+
+		return {
+			name: player.username,
+			value: `${header}\n${boostLines}`,
+			inline: true
+		};
+	});
 }
 
 export const massCommand = defineCommand({
@@ -104,7 +117,7 @@ export const massCommand = defineCommand({
 
 		const durQtyRes = await calcDurQty(users, monster, undefined);
 		if (typeof durQtyRes === 'string') return durQtyRes;
-		const [quantity, duration, perKillTime, boostMsgs] = durQtyRes;
+		const [quantity, duration, perKillTime, , playerBoostInfos] = durQtyRes;
 
 		const checkRes = await checkReqs(users, monster, quantity);
 		if (checkRes) return checkRes;
@@ -157,7 +170,6 @@ export const massCommand = defineCommand({
 				bossUsers
 			} as any);
 		} else {
-			// Standard group monster killing
 			await ActivityManager.startTrip<GroupMonsterActivityTaskOptions>({
 				mi: monster.id,
 				userID: user.id,
@@ -170,25 +182,31 @@ export const massCommand = defineCommand({
 			});
 		}
 
-		let killsPerHr = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()} Kills/hr`;
+		const killsPerHr = Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString();
 
-		if (boostMsgs.length > 0) {
-			killsPerHr += `\n\n${boostMsgs.join(', ')}.`;
-		}
-		let str = `${user.usernameOrMention}'s party (${users
-			.map(u => u.usernameOrMention)
-			.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
-			perKillTime
-		)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDuration(
-			duration
-		)}. ${killsPerHr}`;
+		const tripSummary =
+			`${user.usernameOrMention}'s party (${users.map(u => u.usernameOrMention).join(', ')}) ` +
+			`is now off to kill **${quantity}x ${monster.name}**. ` +
+			`Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(monster.timeToFinish)} - ` +
+			`total trip: **${formatDuration(duration)}** | **${killsPerHr} kills/hr**`;
 
+		let kickedMsg = '';
 		if (usersKickedForBusy.length > 0) {
-			str += `\nThe following users were removed, because their minion became busy before the mass started: ${usersKickedForBusy
-				.map(i => i.usernameOrMention)
-				.join(', ')}.`;
+			kickedMsg = `\nRemoved (busy): ${usersKickedForBusy.map(i => i.usernameOrMention).join(', ')}`;
 		}
 
-		return str;
+		if (playerBoostInfos && playerBoostInfos.length > 0) {
+			const embed = new EmbedBuilder()
+				.setTitle(`${monster.name} Mass - Boost Breakdown`)
+				.setColor(0xf5a623)
+				.addFields(buildBoostEmbedFields(playerBoostInfos));
+
+			return {
+				content: tripSummary + kickedMsg,
+				embeds: [embed]
+			};
+		}
+
+		return tripSummary + kickedMsg;
 	}
 });

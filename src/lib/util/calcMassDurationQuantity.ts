@@ -1,4 +1,5 @@
 import reducedTimeForGroup from '@/lib/minions/functions/reducedTimeForGroup.js';
+import type { PlayerBoostInfo } from '@/lib/minions/functions/reducedTimeForGroup.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 
 export default async function calcDurQty(
@@ -7,8 +8,8 @@ export default async function calcDurQty(
 	quantity: number | undefined,
 	min?: number,
 	max?: number
-): Promise<string | [number, number, number, string[]]> {
-	let [perKillTime, messages] = await reducedTimeForGroup(users, monster);
+): Promise<string | [number, number, number, string[], PlayerBoostInfo[]]> {
+	let [perKillTime, messages, playerBoostInfos] = await reducedTimeForGroup(users, monster);
 
 	if (min) {
 		perKillTime = Math.max(min, perKillTime);
@@ -23,5 +24,5 @@ export default async function calcDurQty(
 		return `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;
 	}
 	const duration = quantity * perKillTime - monster.respawnTime!;
-	return [quantity, duration, perKillTime, messages];
+	return [quantity, duration, perKillTime, messages, playerBoostInfos];
 }

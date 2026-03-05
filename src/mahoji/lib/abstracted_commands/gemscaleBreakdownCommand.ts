@@ -10,13 +10,16 @@ const matureGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.
 const elderGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Elder gemscale')!;
 const ancientGemscale = Fishing.gemstoneFishes.find((fish: GemstoneFish) => fish.name === 'Ancient gemscale')!;
 
-const gemscaleBreakdown: Record<number, { item: string; quantity: [number, number] }> = {
-	[juvenileGemscale.id]:   { item: 'Celestyte',      quantity: [1, 2] },
-	[adolescentGemscale.id]: { item: 'Verdantyte',     quantity: [1, 3] },
-	[matureGemscale.id]:     { item: 'Starfire agate', quantity: [2, 4] },
-	[ancientGemscale.id]:    { item: 'Oneiryte',       quantity: [2, 5] },
-	[elderGemscale.id]:      { item: 'Firaxyte',       quantity: [3, 6] },
+const gemscaleBreakdown: Record<number, { quantity: [number, number] }> = {
+	[juvenileGemscale.id]:   { quantity: [1, 2] },
+	[adolescentGemscale.id]: { quantity: [1, 3] },
+	[matureGemscale.id]:     { quantity: [2, 4] },
+	[ancientGemscale.id]:    { quantity: [2, 5] },
+	[elderGemscale.id]:      { quantity: [3, 6] },
 };
+
+const allGems = ['Celestyte', 'Verdantyte', 'Starfire agate', 'Oneiryte', 'Firaxyte'];
+const PRISMARE_CHANCE = 100;
 
 export async function gemscaleBreakdownCommand(user: MUser, fishName: string | undefined, quantity: number | undefined) {
 	if (!fishName) return 'Please specify a gemscale type to break down (e.g. "Elder gemscale").';
@@ -37,15 +40,30 @@ export async function gemscaleBreakdownCommand(user: MUser, fishName: string | u
 
 	const toBreak = quantity ? Math.min(quantity, hasQuantity) : hasQuantity;
 
-	let totalGems = 0;
+	const loot = new Bank();
 	for (let i = 0; i < toBreak; i++) {
-		totalGems += randInt(breakdown.quantity[0], breakdown.quantity[1]);
+		const gemCount = randInt(breakdown.quantity[0], breakdown.quantity[1]);
+		const gem = allGems[randInt(0, allGems.length - 1)];
+		loot.add(gem, gemCount);
+
+		if (randInt(1, PRISMARE_CHANCE) === 1) {
+			loot.add('Prismare', 1);
+		}
 	}
 
 	await user.transactItems({
 		itemsToRemove: new Bank().add(targetFish.id, toBreak),
-		itemsToAdd: new Bank().add(breakdown.item, totalGems)
+		itemsToAdd: loot
 	});
 
-	return `You broke down ${toBreak.toLocaleString()}x ${targetFish.name} into ${totalGems.toLocaleString()}x ${breakdown.item}.`;
+	const gemSummary = allGems
+		.map(gem => ({ gem, qty: loot.amount(gem) }))
+		.filter(({ qty }) => qty > 0)
+		.map(({ gem, qty }) => `${qty.toLocaleString()}x ${gem}`)
+		.join(', ');
+
+	const prismare = loot.amount('Prismare');
+	const prismareLine = prismare > 0 ? `, ${prismare.toLocaleString()}x Prismare` : '';
+
+	return `You broke down ${toBreak.toLocaleString()}x ${targetFish.name} and received: ${gemSummary}${prismareLine}.`;
 }

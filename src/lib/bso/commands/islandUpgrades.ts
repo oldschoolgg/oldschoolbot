@@ -319,7 +319,7 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Living bark':             300,
 	'Ancient verdant logs':    600,
 	'Verdant plank':           400,
-	'Elder logs':            3_500,
+	'Elder logs':              350,
 	'Prismare':                  8,
 	'Celestyte':                40,
 	'Firaxyte':                 25,
@@ -378,6 +378,12 @@ const MAINTENANCE_BASE_QTY: Record<string, number> = {
 	'Ultracompost':          1_500,
 };
 
+const MAINTENANCE_ITEM_CAPS: Partial<Record<string, number>> = {
+	'Sentinel core':    50,
+	'Verdant heart':    50,
+	'Empyrean shards':  25,
+};
+
 function tierMultiplier(tier: number): number {
 	return Math.min(1 + (tier - 1) * 0.35, 2.1);
 }
@@ -427,7 +433,9 @@ export function getWeeklyMaintenanceDemand(
 	const bank = new Bank();
 	for (const itemName of chosen) {
 		const baseQty = MAINTENANCE_BASE_QTY[itemName] ?? 500;
-		const qty     = Math.max(1, Math.round(baseQty * mult * catMult / 50) * 50);
+		const rawQty = Math.max(1, Math.round(baseQty * mult * catMult / 50) * 50);
+		const cap    = MAINTENANCE_ITEM_CAPS[itemName];
+		const qty    = cap !== undefined ? Math.min(rawQty, cap) : rawQty;
 		bank.add(itemName, qty);
 	}
 
@@ -575,7 +583,7 @@ const CATEGORY_MAINTENANCE_MULTIPLIER: Record<UpgradeCategory, number> = {
 	megaboss:    4,
 	minigame:    3,
 	gathering:   3,
-	prismare:    5,
+	prismare:    0.2,
 	fishing:     2,
 	mining:      2,
 	woodcutting: 2,
@@ -589,7 +597,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
+				.add('Coins',        1_000_000_000)
 				.add('Colossal stem',        1_800)
 				.add('Crystalline ore',        700)
 				.add('Iron ore',             7_000)
@@ -602,7 +610,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          700_000_000)
+				.add('Coins',        2_000_000_000)
 				.add('Colossal stem',        5_250)
 				.add('Crystalline ore',      1_750)
 				.add('Dense crystal shard',  1_750)
@@ -616,7 +624,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',        1_050_000_000)
+				.add('Coins',        3_000_000_000)
 				.add('Ancient cap',            700)
 				.add('Crystalline ore',      3_500)
 				.add('Dense crystal shard',  5_250)
@@ -630,7 +638,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',        1_400_000_000)
+				.add('Coins',        4_000_000_000)
 				.add('Ancient cap',          1_400)
 				.add('Crystalline ore',      7_000)
 				.add('Dense crystal shard', 10_500)
@@ -646,7 +654,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',        1_750_000_000)
+				.add('Coins',        5_000_000_000)
 				.add('Ancient cap',          2_800)
 				.add('Crystalline ore',     14_000)
 				.add('Dense crystal shard', 21_000)
@@ -665,7 +673,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
+				.add('Coins',        1_000_000_000)
 				.add('Brimstone spore',      1_750)
 				.add('Ignilace',               175)
 				.add('Pure essence',        87_500)
@@ -678,7 +686,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          700_000_000)
+				.add('Coins',        2_000_000_000)
 				.add('Brimstone spore',      1_750)
 				.add('Ignilace',                52)
 				.add('Crystalline ore',        700)
@@ -692,7 +700,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',        1_050_000_000)
+				.add('Coins',        3_000_000_000)
 				.add('Ancient cap',             17)
 				.add('Ignilace',             3_500)
 				.add('Dense crystal shard',  1_750)
@@ -706,7 +714,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',        1_400_000_000)
+				.add('Coins',        4_000_000_000)
 				.add('Ancient cap',             87)
 				.add('Ignilace',            10_500)
 				.add('Dense crystal shard',  4_200)
@@ -721,15 +729,15 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',        1_750_000_000)
+				.add('Coins',        5_000_000_000)
 				.add('Ancient cap',            262)
 				.add('Ignilace',            21_000)
 				.add('Dense crystal shard',  8_750)
 				.add('Blood rune',          52_500)
 				.add('Soul rune',           26_250)
 				.add('Pure essence',       175_000)
-				.add('Sentinel core',             2)
-				.add('Verdant heart',             1),
+				.add('Sentinel core',            2)
+				.add('Verdant heart',            1),
 			name: 'Archon Sanctum V',
 			description: 'Verdant hearts power the sanctum. The Archon yields everything.',
 			bonus: '50% better regular loot from the Archon', flavorText: 'The sanctum is complete.'
@@ -740,11 +748,11 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
+				.add('Coins',        1_000_000_000)
 				.add('Myconid plank',        1_050)
 				.add('Diluted brimstone',       87)
 				.add('Yew logs',            10_500)
-				.add('Flax',               14_000)
+				.add('Flax',                14_000)
 				.add('Swamp paste',          7_000),
 			name: 'Settlement Infrastructure I',
 			description: 'First permanent structures built. Workers now have shelter and morale.',
@@ -753,7 +761,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          700_000_000)
+				.add('Coins',        2_000_000_000)
 				.add('Myconid plank',        2_450)
 				.add('Diluted brimstone',      525)
 				.add('Brimstone spore',        700)
@@ -767,7 +775,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',        1_050_000_000)
+				.add('Coins',        3_000_000_000)
 				.add('Crystalline plank',    3_500)
 				.add('Diluted brimstone',    1_750)
 				.add('Dense crystal shard',  1_750)
@@ -781,7 +789,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',        1_400_000_000)
+				.add('Coins',        4_000_000_000)
 				.add('Crystalline plank',    8_750)
 				.add('Diluted brimstone',    4_200)
 				.add('Dense crystal shard',  4_200)
@@ -796,7 +804,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',        1_750_000_000)
+				.add('Coins',        5_000_000_000)
 				.add('Crystalline plank',   17_500)
 				.add('Diluted brimstone',    8_750)
 				.add('Dense crystal shard',  8_750)
@@ -815,12 +823,12 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
+				.add('Coins',        1_000_000_000)
 				.add('Verdant logs',         1_750)
 				.add('Living bark',            350)
 				.add('Elder logs',          21_000)
 				.add('Iron ore',             7_000)
-				.add('Coal',               14_000),
+				.add('Coal',                14_000),
 			name: 'Expedition Outfitters I',
 			description: 'First crews outfitted with iron tools and elder log sleds.',
 			bonus: '5% faster gathering', flavorText: 'Slow but steady, the carts are filling up.'
@@ -828,7 +836,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          700_000_000)
+				.add('Coins',        2_000_000_000)
 				.add('Verdant logs',         3_500)
 				.add('Living bark',            875)
 				.add('Ancient verdant logs', 1_750)
@@ -842,7 +850,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',        1_050_000_000)
+				.add('Coins',        3_000_000_000)
 				.add('Ancient verdant logs',   525)
 				.add('Living bark',          1_400)
 				.add('Verdant plank',          700)
@@ -856,7 +864,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',        1_400_000_000)
+				.add('Coins',        4_000_000_000)
 				.add('Ancient verdant logs', 1_400)
 				.add('Living bark',          2_800)
 				.add('Verdant plank',        1_750)
@@ -864,7 +872,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 				.add('Runite bar',          42_000)
 				.add('Dragonstone',         10_500)
 				.add('Amethyst',             8_750)
-				.add('Sentinel core',             1),
+				.add('Sentinel core',            1),
 			name: 'Expedition Outfitters IV',
 			description: 'Sentinel cores take crews to the richest resources.',
 			bonus: '20% faster gathering', flavorText: 'Nobody idles anymore.'
@@ -872,7 +880,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',        1_750_000_000)
+				.add('Coins',        5_000_000_000)
 				.add('Ancient verdant logs', 2_800)
 				.add('Living bark',          5_250)
 				.add('Verdant plank',        3_500)
@@ -880,8 +888,8 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 				.add('Runite bar',          52_500)
 				.add('Dragonstone',         17_500)
 				.add('Amethyst',            17_500)
-				.add('Sentinel core',             2)
-				.add('Verdant heart',             1),
+				.add('Sentinel core',            2)
+				.add('Verdant heart',            1),
 			name: 'Expedition Outfitters V',
 			description: 'Verdant hearts bond the rigs to the island itself, maximising yields.',
 			bonus: '25% faster gathering', flavorText: 'The island gives freely now.'
@@ -899,7 +907,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 				.add('Air rune',              1_000_000)
 				.add('Mind rune',             1_000_000)
 				.add('Pure essence',          1_000_000)
-				.add('Empyrean shards',               50),
+				.add('Empyrean shards',              50),
 			name: 'Astral Observatory I',
 			description: 'Observatory dome raised, the first instruments calibrated.',
 			bonus: '+0.5% global XP', flavorText: 'The prismare shard levitates and spins.'
@@ -907,7 +915,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',            1_400_000_000)
+				.add('Coins',            4_000_000_000)
 				.add('Prismare',                   200)
 				.add('Starfire agate',            1000)
 				.add('Oneiryte',                  1000)
@@ -915,7 +923,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 				.add('Nature rune',            600_000)
 				.add('Law rune',               450_000)
 				.add('Death rune',           1_000_000)
-				.add('Empyrean shards',             100),
+				.add('Empyrean shards',            100),
 			name: 'Astral Observatory II',
 			description: 'Starfire agate lenses and oneiryte channels focus the observatory.',
 			bonus: '+1% global XP', flavorText: 'Oneiryte dust in the air.'
@@ -923,14 +931,14 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',            4_000_000_000)
+				.add('Coins',            6_000_000_000)
 				.add('Prismare',                   400)
 				.add('Celestyte',                 1500)
 				.add('Firaxyte',                  1500)
 				.add('Blood rune',           4_000_000)
 				.add('Soul rune',            4_000_000)
 				.add('Death rune',           2_000_000)
-				.add('Empyrean shards',             150),
+				.add('Empyrean shards',            150),
 			name: 'Astral Observatory III',
 			description: 'Firaxyte cores ignite, flooding the island with ambient glow.',
 			bonus: '+1.5% global XP', flavorText: 'Everything on the island feels sharper.'
@@ -938,7 +946,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',            5_000_000_000)
+				.add('Coins',            8_000_000_000)
 				.add('Prismare',                   750)
 				.add('Celestyte',                3_000)
 				.add('Firaxyte',                 3_000)
@@ -969,7 +977,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 				.add('Sentinel core',                3)
 				.add('Verdant heart',                2)
 				.add('Dragonstone',             25_000)
-				.add('Empyrean shards',             500),
+				.add('Empyrean shards',            500),
 			name: 'Astral Observatory V',
 			description: 'Prismare Resonance achieved.',
 			bonus: '+2.5% global XP', flavorText: 'The orrery spins alone.'
@@ -980,7 +988,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',           50_000_000)
+				.add('Coins',        1_000_000_000)
 				.add('Rope',                 2_000)
 				.add('Feather',             10_000)
 				.add('Raw trout',            5_000)
@@ -992,7 +1000,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          100_000_000)
+				.add('Coins',        2_000_000_000)
 				.add('Rope',                 5_000)
 				.add('Feather',             25_000)
 				.add('Raw lobster',          3_000)
@@ -1005,7 +1013,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',          200_000_000)
+				.add('Coins',        3_000_000_000)
 				.add('Rope',                10_000)
 				.add('Raw shark',            2_000)
 				.add('Magic logs',           2_000)
@@ -1018,7 +1026,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
+				.add('Coins',        4_000_000_000)
 				.add('Runite bar',           2_500)
 				.add('Raw manta ray',        2_000)
 				.add('Dragon harpoon',           1)
@@ -1031,7 +1039,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',          500_000_000)
+				.add('Coins',        5_000_000_000)
 				.add('Runite bar',           5_000)
 				.add('Raw rocktail',         5_000)
 				.add('Feather',            200_000)
@@ -1048,10 +1056,10 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',           50_000_000)
+				.add('Coins',        1_000_000_000)
 				.add('Iron ore',            10_000)
-				.add('Coal',               15_000)
-				.add('Logs',                5_000)
+				.add('Coal',                15_000)
+				.add('Logs',                 5_000)
 				.add('Bronze pickaxe',          10),
 			name: 'Excavation Tunnels I',
 			description: 'Initial shafts dug, copper and tin flowing from the rock.',
@@ -1060,9 +1068,9 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          100_000_000)
+				.add('Coins',        2_000_000_000)
 				.add('Iron ore',            20_000)
-				.add('Coal',               30_000)
+				.add('Coal',                30_000)
 				.add('Steel bar',            3_000)
 				.add('Mithril ore',          5_000)
 				.add('Oak logs',            10_000),
@@ -1073,11 +1081,11 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',          200_000_000)
+				.add('Coins',        3_000_000_000)
 				.add('Adamantite ore',      10_000)
 				.add('Runite ore',           5_000)
 				.add('Runite bar',           2_000)
-				.add('Coal',               50_000)
+				.add('Coal',                50_000)
 				.add('Magic logs',           2_000),
 			name: 'Excavation Tunnels III',
 			description: "Runite-supported tunnels reach the island's richest ore veins.",
@@ -1086,10 +1094,10 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
+				.add('Coins',        4_000_000_000)
 				.add('Runite bar',           5_000)
 				.add('Amethyst',             5_000)
-				.add('Coal',              100_000)
+				.add('Coal',               100_000)
 				.add('Dragon pickaxe',           1)
 				.add('Dense crystal shard',  1_000),
 			name: 'Excavation Tunnels IV',
@@ -1099,7 +1107,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',          500_000_000)
+				.add('Coins',        5_000_000_000)
 				.add('Runite bar',          10_000)
 				.add('Amethyst',            15_000)
 				.add('Dense crystal shard',  3_000)
@@ -1115,11 +1123,11 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',           50_000_000)
-				.add('Logs',            20_000)
-				.add('Bronze axe',          20)
-				.add('Rope',             3_000)
-				.add('Coal',             5_000),
+				.add('Coins',        1_000_000_000)
+				.add('Logs',                20_000)
+				.add('Bronze axe',              20)
+				.add('Rope',                 3_000)
+				.add('Coal',                 5_000),
 			name: 'Lumberyard I',
 			description: 'Basic axes and camp shelters. Low-tier timber only.',
 			bonus: 'Passively accumulates logs up to level 40', flavorText: 'Crude but effective. The timber flows slowly.'
@@ -1127,7 +1135,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          100_000_000)
+				.add('Coins',        2_000_000_000)
 				.add('Oak logs',            20_000)
 				.add('Steel bar',            2_000)
 				.add('Rope',                 8_000)
@@ -1139,7 +1147,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',          200_000_000)
+				.add('Coins',        3_000_000_000)
 				.add('Yew logs',            10_000)
 				.add('Magic logs',           3_000)
 				.add('Runite bar',           1_500)
@@ -1151,7 +1159,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
+				.add('Coins',        4_000_000_000)
 				.add('Magic logs',          10_000)
 				.add('Runite bar',           3_000)
 				.add('Elder logs',           2_000)
@@ -1164,12 +1172,12 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',          500_000_000)
+				.add('Coins',        5_000_000_000)
 				.add('Elder logs',          10_000)
 				.add('Verdant logs',         3_000)
 				.add('Living bark',          1_000)
 				.add('Ancient verdant logs',   500)
-				.add('Sentinel core',             1),
+				.add('Sentinel core',            1),
 			name: 'Lumberyard V',
 			description: 'Ancient verdant timber and sentinel-guided crews work the deepest groves.',
 			bonus: 'Passively accumulates logs up to level 120', flavorText: 'The island itself seems to offer up its wood now.'
@@ -1180,10 +1188,10 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',           50_000_000)
+				.add('Coins',        1_000_000_000)
 				.add('Pale energy',         13_000)
 				.add('Pure essence',        25_000)
-				.add('Mind rune',           100_000),
+				.add('Mind rune',          100_000),
 			name: 'Divination Spire I',
 			description: 'A crude focus draws pale and flickering energies from the ley lines.',
 			bonus: 'Passively accumulates energy up to level 40', flavorText: 'A faint shimmer. The spire is waking.'
@@ -1191,11 +1199,11 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          100_000_000)
-				.add('Sparkling energy',    8500)
+				.add('Coins',        2_000_000_000)
+				.add('Sparkling energy',      8500)
 				.add('Pure essence',        50_000)
-				.add('Nature rune',         100_000)
-				.add('Law rune',            100_000),
+				.add('Nature rune',        100_000)
+				.add('Law rune',           100_000),
 			name: 'Divination Spire II',
 			description: 'Refined conduits draw golden and vibrant energies.',
 			bonus: 'Passively accumulates energy up to level 60', flavorText: 'Golden light at the apex. The scholars are excited.'
@@ -1203,13 +1211,13 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',          200_000_000)
-				.add('Vibrant energy',      6500)
-				.add('Brilliant energy',    4500)
-				.add('Lustrous energy',     5500)
-				.add('Death rune',          150_000)
-				.add('Blood rune',          200_000)
-				.add('Pure essence',        100_000),
+				.add('Coins',        3_000_000_000)
+				.add('Vibrant energy',        6500)
+				.add('Brilliant energy',      4500)
+				.add('Lustrous energy',       5500)
+				.add('Death rune',         150_000)
+				.add('Blood rune',         200_000)
+				.add('Pure essence',       100_000),
 			name: 'Divination Spire III',
 			description: 'Lustrous and brilliant energies flood the island with ambient resonance.',
 			bonus: 'Passively accumulates energy up to level 75', flavorText: 'The air tastes different near the spire now.'
@@ -1217,11 +1225,11 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
-				.add('Luminous energy',     3300)
-				.add('Soul rune',           100_000)
-				.add('Blood rune',          300_000)
-				.add('Pure essence',        200_000),
+				.add('Coins',        4_000_000_000)
+				.add('Luminous energy',       3300)
+				.add('Soul rune',          100_000)
+				.add('Blood rune',         300_000)
+				.add('Pure essence',       200_000),
 			name: 'Divination Spire IV',
 			description: 'Luminous and radiant energies attune the entire island to the spire.',
 			bonus: 'Passively accumulates energy up to level 90', flavorText: 'The hum carries through the ground now.'
@@ -1229,15 +1237,15 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',          500_000_000)
-				.add('Incandescent energy', 2800)
-				.add('Luminous energy',     3500)
-				.add('Ancient energy',      250)
-				.add('Soul rune',           250_000)
+				.add('Coins',        5_000_000_000)
+				.add('Incandescent energy',   2800)
+				.add('Luminous energy',       3500)
+				.add('Ancient energy',         250)
+				.add('Soul rune',          250_000)
 				.add('Elder rune',          10_000)
-				.add('Pure essence',        400_000)
-				.add('Prismare',            5)
-				.add('Sentinel core',       1),
+				.add('Pure essence',       400_000)
+				.add('Prismare',                 5)
+				.add('Sentinel core',            1),
 			name: 'Divination Spire V',
 			description: 'Prismare-tuned incandescent conduits draw the rarest energies from the void.',
 			bonus: 'Passively accumulates energy up to level 120 including prismare', flavorText: 'The spire no longer needs tending. It tends itself.'
@@ -1248,7 +1256,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 1,
 			cost: new Bank()
-				.add('Coins',           50_000_000)
+				.add('Coins',        1_000_000_000)
 				.add('Potato seed',         10_000)
 				.add('Compost',              5_000)
 				.add('Bucket of water',      3_000)
@@ -1260,7 +1268,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 2,
 			cost: new Bank()
-				.add('Coins',          100_000_000)
+				.add('Coins',        2_000_000_000)
 				.add('Snape grass seed',     5_000)
 				.add('Supercompost',         5_000)
 				.add('Watermelon seed',      3_000)
@@ -1273,7 +1281,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 3,
 			cost: new Bank()
-				.add('Coins',          200_000_000)
+				.add('Coins',        3_000_000_000)
 				.add('Snapdragon seed',      2_000)
 				.add('Supercompost',        15_000)
 				.add('Mort myre fungus',     5_000)
@@ -1285,7 +1293,7 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 4,
 			cost: new Bank()
-				.add('Coins',          350_000_000)
+				.add('Coins',        4_000_000_000)
 				.add('Torstol seed',         1_000)
 				.add('Ultracompost',        10_000)
 				.add('Dragonfruit tree seed',   50)
@@ -1297,13 +1305,13 @@ export const upgradeDefinitions: Record<UpgradeCategory, UpgradeTier[]> = {
 		{
 			tier: 5,
 			cost: new Bank()
-				.add('Coins',          500_000_000)
+				.add('Coins',        5_000_000_000)
 				.add('Torstol seed',         3_000)
 				.add('Ultracompost',        25_000)
 				.add('Living bark',          3_000)
 				.add('Brimstone spore',      1_000)
 				.add('Verdant logs',         1_500)
-				.add('Sentinel core',             1),
+				.add('Sentinel core',            1),
 			name: 'Fertile Fields V',
 			description: 'Sentinel tended crops grow in island-enriched soil.',
 			bonus: 'Passively accumulates crops up to level 120', flavorText: 'The island grows things here that grow nowhere else.'
