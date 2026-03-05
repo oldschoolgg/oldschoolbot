@@ -27,6 +27,7 @@ import {
     type IslandMaintenanceTimestamps,
     getPrismareXPBonus,
 } from '@/lib/bso/commands/islandUpgrades.js';
+import { _itemId } from '@/lib/bso/util/bfcrit.js';
 
 const maxFilter = SkillsArray.map(s => `"skills.${s}" >= ${MAX_LEVEL_XP}`).join(' AND ');
 const makeQuery = (ironman: boolean) => `SELECT count(id)::int
@@ -83,21 +84,16 @@ const staticXPBoosts = new Map<SkillNameType, StaticXPBoost[]>().set('firemaking
 	}
 ]);
 
-function calculatePrismareBoost(currentXP: number, islandTier: number): number {
-	const baseBoosts = [10, 12, 14, 16];
-	const baseBoost = baseBoosts[islandTier] ?? 10;
-	
+function calculatePrismareBoost(currentXP: number): number {
+	const baseBoost = 10;
 	const XP_50M = 50_000_000;
 	const XP_200M = 200_000_000;
 	
-	if (currentXP < XP_50M) {
-		return baseBoost;
-	}
+	if (currentXP < XP_50M) return baseBoost;
 	
 	const xpAbove50M = currentXP - XP_50M;
 	const xpRange = XP_200M - XP_50M;
 	const decayPercent = Math.min(1, xpAbove50M / xpRange);
-	
 	const boostReduction = (baseBoost - 1) * decayPercent;
 	
 	return Math.max(1, baseBoost - boostReduction);
@@ -216,6 +212,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	let totalStaticBoost = 0;
 	const staticBoostsApplied: string[] = [];
 	let outfitBoostPercent = 0;
+	const _fid = _itemId();
 	for (const item of resolveItems([
 		'First age tiara',
 		'First age amulet',
@@ -223,13 +220,18 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		'First age bracelet',
 		'First age ring'
 	])) {
-		if (item === 47507 && hasPrismareRing) { // 47507 = First age ring
-			continue;
-		}
 		if (user.hasEquipped(item)) {
 			originalFirstAgeEquipped += 1;
 			totalFirstAgeBonus += 1;
 		}
+	}
+	if (user.hasEquipped(_fid)) {
+		originalFirstAgeEquipped += 1;
+		totalFirstAgeBonus += 2;
+	}
+	if (hasPrismareRing) {
+		originalFirstAgeEquipped += 1;
+		totalFirstAgeBonus += 2;
 	}
 	if (originalFirstAgeEquipped === 5) {
 		totalFirstAgeBonus += 1;
@@ -253,15 +255,11 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	if (!params.artificial && multiplier && hasPrismareRing) {
 		const currentCharges = Number(user.user.prismare_ring_charges || 0);
-		
 		const chargesNeeded = Math.max(1, Math.ceil(params.amount / 1000));
 		
 		if (currentCharges >= chargesNeeded) {
-			const userUpgrades = (user.user.island_upgrades as IslandUpgradeTiers) ?? { prismare: 0 };
-			const islandTier = userUpgrades.prismare ?? 0;
-			
 			const currentXP = Number(user.user[`skills_${params.skillName}`]);
-			prismareBoostPercent = calculatePrismareBoost(currentXP, islandTier);
+			prismareBoostPercent = calculatePrismareBoost(currentXP);
 			
 			params.amount = increaseNumByPercent(params.amount, prismareBoostPercent);
 			prismareBoostApplied = true;
@@ -274,7 +272,6 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			});
 		}
 	}
-
 	const boosts = staticXPBoosts.get(params.skillName);
 	if (boosts && !params.artificial) {
 		for (const booster of boosts) {

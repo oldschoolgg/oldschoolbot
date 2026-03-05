@@ -258,11 +258,13 @@ function qualityToPotionOutput(quality: number): number {
 export async function brimstoneDistilleryStartCommand({
 	user,
 	recipe,
-	channelId
+	channelId,
+	quantity: requestedQuantity
 }: {
 	user: MUser;
 	channelId: string;
 	recipe: string;
+	quantity?: number;
 }) {
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
 
@@ -321,7 +323,8 @@ export async function brimstoneDistilleryStartCommand({
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('BrimstoneDistillery');
-	const quantity = Math.floor(maxTripLength / durationPerDistillation);
+	const maxQuantity = Math.floor(maxTripLength / durationPerDistillation);
+	const quantity = requestedQuantity ? Math.min(requestedQuantity, maxQuantity) : maxQuantity;
 	const duration = quantity * durationPerDistillation;
 
 	let coalNeeded = Math.ceil(COAL_PER_DISTILLATION * quantity);
@@ -366,7 +369,8 @@ export async function brimstoneDistilleryStartCommand({
 		type: 'BrimstoneDistillery',
 		minigameID: 'brimstone_distillery',
 		recipe: selectedRecipe.name,
-		hasFullGraceful
+		hasFullGraceful,
+		maxQuantity,
 	});
 
 	return `${user.minionName} is distilling ${quantity}x ${selectedRecipe.name} for ${formatDuration(duration)}.
@@ -380,7 +384,10 @@ export function calculateDistilleryResult(data: BrimstoneDistilleryTaskOptions) 
 	const loot = new Bank();
 	const rarityBonus = [0, 0.05, 0.10, 0.15, 0.20, 0.25][data.rarityUpgradeTier ?? 0] ?? 0;
 
-	const tripMultiplier = getTripQualityMultiplier();
+	const tripFillRatio = Math.min(1, data.quantity / data.maxQuantity);
+	const partialTripPenalty = 0.85 + 0.15 * tripFillRatio;
+	
+	const tripMultiplier = getTripQualityMultiplier() * partialTripPenalty;
 	
 	const distillationQualities: number[] = [];
 	let totalPotions = 0;

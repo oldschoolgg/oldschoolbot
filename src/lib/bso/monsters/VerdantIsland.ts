@@ -122,13 +122,13 @@ export const CrystallineSentinelLootTable = new LootTable()
 	.tertiary(250, 'Clue scroll (hard)')
 	.tertiary(1000, 'Sentinel core')
 	.tertiary(3000, 'Starfire bow (u)')
-	.tertiary(25, RareDropTable)
-	.tertiary(15, IslandTable)
-	.tertiary(8, IslandGemTable)
-	.tertiary(50, IslandTable3x)
-	.tertiary(25, IslandGemTable3x)
-	.tertiary(100, IslandTable5x)
-	.tertiary(50, IslandGemTable5x)
+	.tertiary(250, RareDropTable)
+	.tertiary(150, IslandTable)
+	.tertiary(80, IslandGemTable)
+	.tertiary(500, IslandTable3x)
+	.tertiary(250, IslandGemTable3x)
+	.tertiary(1000, IslandTable5x)
+	.tertiary(500, IslandGemTable5x)
 
 	.add('Celestyte', [3, 8])
 	.add('Oneiryte', [3, 8])
@@ -156,12 +156,12 @@ export const FungalBehemothLootTable = new LootTable()
 	.tertiary(3000, 'Verdant heart')
 	.tertiary(5000, 'Prolific twine')
 	.tertiary(25, RareDropTable)
-	.tertiary(15, IslandTable)
-	.tertiary(8, IslandGemTable)
-	.tertiary(50, IslandTable3x)
-	.tertiary(25, IslandGemTable3x)
-	.tertiary(100, IslandTable5x)
-	.tertiary(50, IslandGemTable5x)
+	.tertiary(150, IslandTable)
+	.tertiary(80, IslandGemTable)
+	.tertiary(500, IslandTable3x)
+	.tertiary(250, IslandGemTable3x)
+	.tertiary(1000, IslandTable5x)
+	.tertiary(500, IslandGemTable5x)
 
 	.add('Verdantyte', [4, 10])
 	.add('Starfire agate', [2, 6])
@@ -281,8 +281,8 @@ export const OrrodilLootTable = new LootTable()
 	.tertiary(50, IslandTable5x)
 	.tertiary(50, IslandGemTable5x)
 
-	.add('Enhanced super restore', [20, 50])
-	.add('Enhanced saradomin brew', [20, 50])
+	.add('Enhanced super restore', [1, 30])
+	.add('Enhanced saradomin brew', [1, 30])
 
 	.add('Black dragonhide', [100, 400])
 	.add('Blue dragonhide', [200, 500])
@@ -326,22 +326,22 @@ export const BurningDominionLootTable = new LootTable()
 	.every('Primordial Bones', [4, 10])
 	.every('Primordial Scales', [24, 100])
 
-	.tertiary(50, 'Clue scroll (grandmaster)')
-	.tertiary(75, 'Elder scroll piece')
+	.tertiary(75, 'Clue scroll (grandmaster)')
+	.tertiary(100, 'Elder scroll piece')
 	.tertiary(125, 'Elder sigil fragment (1)')
 	.tertiary(125, 'Elder sigil fragment (2)')
 	.tertiary(125, 'Elder sigil fragment (3)')
 
-	.tertiary(500, 'Primordial heartstring')
-	.tertiary(500, 'Primordial spine')
+	.tertiary(750, 'Primordial heartstring')
+	.tertiary(750, 'Primordial spine')
 
-	.tertiary(1000, 'Sacrilegious flask')
-	.tertiary(1000, 'Forsaken tear')
-	.tertiary(2000, 'Orylin')
+	.tertiary(1500, 'Sacrilegious flask')
+	.tertiary(1500, 'Forsaken tear')
+	.tertiary(3000, 'Orylin')
 
-	.tertiary(1000, 'Shattered pendant')
-	.tertiary(1000, 'Celestial flame')
-	.tertiary(2000, 'Orrodin')
+	.tertiary(1500, 'Shattered pendant')
+	.tertiary(1500, 'Celestial flame')
+	.tertiary(3000, 'Orrodin')
 
 	.tertiary(20, RareDropTable)
 	.tertiary(4, IslandTable)
@@ -352,8 +352,8 @@ export const BurningDominionLootTable = new LootTable()
 	.tertiary(40, IslandGemTable5x)
 
 	.add('Anti-venom (4)', [30, 75])
-	.add('Enhanced super restore', [25, 60])
-	.add('Enhanced saradomin brew', [25, 60])
+	.add('Enhanced super restore', [1, 30])
+	.add('Enhanced saradomin brew', [1, 30])
 
 	.add('Black dragonhide', [300, 800])
 	.add('Blue dragonhide', [500, 1000])
@@ -639,7 +639,7 @@ export const Orym: CustomMonster = {
 	table: OrymLootTable,
 	difficultyRating: 6,
 	qpRequired: 2500,
-	healAmountNeeded: 350 * 200,
+	healAmountNeeded: 240 * 90,
 	attackStyleToUse: GearStat.AttackStab,
 	attackStylesUsed: [GearStat.AttackStab],
 	levelRequirements: {
@@ -722,7 +722,7 @@ export const Orrodil: CustomMonster = {
 	table: OrrodilLootTable,
 	difficultyRating: 6,
 	qpRequired: 2500,
-	healAmountNeeded: 250 * 200,
+	healAmountNeeded: 240 * 90,
 	attackStyleToUse: GearStat.AttackStab,
 	attackStylesUsed: [GearStat.AttackStab],
 	levelRequirements: {
@@ -800,7 +800,7 @@ export const BurningDominionTemplate: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Burning Dominion',
 	aliases: ['burning dominion', 'dominion', 'burning', 'orym and orrodil'],
-	timeToFinish: Time.Minute * 15,
+	timeToFinish: Time.Minute * 10,
 	hp: 5000,
 	respawnTime: 0,
 	difficultyRating: 9,

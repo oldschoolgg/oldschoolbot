@@ -760,6 +760,46 @@ const herbPlants: Plant[] = [
 		timePerPatchTravel: 20,
 		timePerHarvest: 10,
 		additionalPatchesByFarmGuildAndLvl: []
+	},
+	{
+		id: itemID('Ignilace seed'),
+		level: 115,
+		plantXp: 1000,
+		checkXp: 12_443,
+		harvestXp: 5996,
+		name: 'Ignilace',
+		aliases: ['ignilace seed'],
+		inputItems: new Bank({ 'Ignilace seed': 1 }),
+		outputCrop: itemID('Ignilace'),
+		cleanHerbCrop: itemID('Ignilace'),
+		herbXp: 35,
+		herbLvl: 115,
+		petChance: 97_364,
+		seedType: 'herb',
+		growthTime: 85,
+		numOfStages: 4,
+		chance1: 71,
+		chance99: 80,
+		chanceOfDeath: 28,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[900, 1], // Canifs Patches (1)
+			[1500, 2], // Troll Stronghold (1)
+			[3000, 3] // Harmony Island Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
 	}
 ];
 

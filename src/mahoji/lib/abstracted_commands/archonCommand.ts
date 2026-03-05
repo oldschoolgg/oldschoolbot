@@ -348,11 +348,11 @@ export function rollArchonLoot(tier: 1 | 2 | 3, multiplier = 1.0): {
     regularLoot.add('Coins', Math.floor(coinAmounts * multiplier));
 
     if (tier === 1) {
-        if (roll(300)) uniqueLoot.add('Prismare ring (u)');
+        if (roll(600)) uniqueLoot.add('Prismare ring (u)');
     } else if (tier === 2) {
-        if (roll(200)) uniqueLoot.add('Prismare ring (u)');
+        if (roll(400)) uniqueLoot.add('Prismare ring (u)');
     } else {
-        if (roll(100)) uniqueLoot.add('Prismare ring (u)');
+        if (roll(200)) uniqueLoot.add('Prismare ring (u)');
     }
 
     return { regularLoot, uniqueLoot };

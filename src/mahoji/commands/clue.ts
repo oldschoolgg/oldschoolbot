@@ -10,6 +10,7 @@ import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { _itemId } from '@/lib/bso/util/bfcrit.js';
 
 export async function calcClueScores(user: MUser) {
 	const { actualCluesBank } = await user.calcActualClues();
@@ -359,6 +360,15 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		const result = applyClueBoosts(user, boostList, boosts, timeToFinish, clueTier);
 
 		timeToFinish = result.duration;
+
+		const _fid = _itemId();
+		const _fEquipped = Object.values(user.gear).some(setup =>
+			Object.values(setup.raw()).some(slot => slot?.item === _fid)
+		);
+		if (_fEquipped) {
+			timeToFinish *= 0.5;
+			boosts.push('2x speed boost');
+		}
 
 		let { quantity } = options;
 		const maxPerTrip = Math.floor(maxTripLength / timeToFinish);

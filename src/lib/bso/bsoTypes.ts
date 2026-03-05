@@ -121,6 +121,7 @@ export interface BrimstoneDistilleryTaskOptions extends MinigameActivityTaskOpti
     recipe: string;
     rarityUpgradeTier?: 0 | 1 | 2 | 3 | 4 | 5;
 	hasFullGraceful?: boolean;
+	maxQuantity: number;
 }
 
 export interface ConstructionContractsTaskOptions extends MinigameActivityTaskOptions {

@@ -67,12 +67,12 @@ const ElderHoardBase: LootTable = new LootTable()
 	.add(75_048, 1, 1)
 	.add(73_128, 1, 1)
 	.add(19_837, 1, 1);
-	// .add(75_047, 1, 1)
+	// .add(75_047, 1, 1) | Archon Relic
 
 const ElderHoardTable: LootTable = new LootTable().every(ElderHoardBase, randInt(3, 6));
 
 export const ElderHoard: SimpleOpenable = new SimpleOpenable({
-	id: 75_024,
+	id: 75_555,
 	name: 'Elder Cache',
 	aliases: ['elder cache', 'elder sigil'],
 	table: ElderHoardTable

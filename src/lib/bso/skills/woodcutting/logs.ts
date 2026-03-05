@@ -35,5 +35,35 @@ export const bsoLogs: Log[] = [
 		qpRequired: 0,
 		clueScrollChance: 42_321,
 		clueNestsOnly: true
+	},
+	{
+		level: 115,
+		xp: 650,
+		id: 75_027,
+		name: 'Ancient Verdant Logs',
+		findNewTreeTime: 8.5,
+		bankingTime: 25,
+		slope: 0.057_05,
+		intercept: -0.71,
+		depletionChance: 100 * (1 / 11),
+		petChance: 42_321,
+		qpRequired: 0,
+		clueScrollChance: 42_321,
+		clueNestsOnly: true
+	},
+	{
+		level: 100,
+		xp: 500,
+		id: 75_026,
+		name: 'Verdant Logs',
+		findNewTreeTime: 8.5,
+		bankingTime: 25,
+		slope: 0.057_05,
+		intercept: -0.71,
+		depletionChance: 100 * (1 / 11),
+		petChance: 42_321,
+		qpRequired: 0,
+		clueScrollChance: 42_321,
+		clueNestsOnly: true
 	}
 ];

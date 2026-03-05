@@ -43,17 +43,48 @@ const methodsOfDeath = [
 	'Tried to solo tank',
 	'Forgot about the other dragon',
 	'Got sandwiched',
-	'Zigged when they should have zagged',
+	'Zigged when they should have zagged'
 ];
 
 const BurningDominionNotifyDrops = BurningDominionTemplate.allItems ?? [];
+const notifyDropIDs = BurningDominionNotifyDrops.map((item: any) => item.id ?? item);
 
-function truncateString(str: string, maxLength: number): string {
-	if (str.length <= maxLength) return str;
-	const truncated = str.substring(0, maxLength - 20);
-	const lastComma = truncated.lastIndexOf(',');
-	return truncated.substring(0, lastComma) + '... (truncated)';
+function splitLoot(loot: Bank): { uniques: Bank; regular: Bank } {
+	const uniques = new Bank();
+	const regular = new Bank();
+	for (const [item, qty] of loot.items()) {
+		if (notifyDropIDs.includes(item.id)) {
+			uniques.add(item.id, qty);
+		} else {
+			regular.add(item.id, qty);
+		}
+	}
+	return { uniques, regular };
 }
+
+function formatLootSection(loot: Bank, hasUnique: boolean): string {
+	const { uniques, regular } = splitLoot(loot);
+	const parts: string[] = [];
+
+	if (hasUnique) {
+		for (const [item, qty] of uniques.items()) {
+			parts.push(`**${item.name}${qty > 1 ? ` x${qty}` : ''}**`);
+		}
+	}
+
+	const regularStr = regular.toString();
+	if (regularStr) parts.push(regularStr);
+
+	const combined = parts.join(', ');
+	const cap = 3700;
+	const truncated =
+		combined.length > cap
+			? `${combined.substring(0, combined.lastIndexOf(',', cap))}, *(truncated)*`
+			: combined;
+
+	return `||${truncated}||`;
+}
+
 
 export const dominionTask: MinionTask = {
 	type: 'BurningDominion',
@@ -125,9 +156,7 @@ export const dominionTask: MinionTask = {
 
 			if (isOnTask) {
 				await prisma.slayerTask.update({
-					where: {
-						id: usersTask.currentTask!.id
-					},
+					where: { id: usersTask.currentTask!.id },
 					data: {
 						quantity_remaining: Math.max(0, usersTask.currentTask!.quantity_remaining - quantity)
 					}
@@ -139,26 +168,20 @@ export const dominionTask: MinionTask = {
 			const newKC = await user.getKC(BurningDominionTemplate.id);
 
 			if (userSuccessfulKills === 0) {
+				const deathMsg =
+					wrongFoodDeaths.includes(user)
+						? 'Had no proper supplies'
+						: rng.shuffle([...methodsOfDeath]).slice(0, userDeaths).join(', ');
 				embeds.push(
 					new EmbedBuilder().setDescription(
-						`${user}: **0 KC** - Died on all ${quantity} kill${quantity > 1 ? 's' : ''} (${
-							wrongFoodDeaths.includes(user)
-								? 'Had no proper supplies'
-								: rng
-										.shuffle([...methodsOfDeath])
-										.slice(0, userDeaths)
-										.join(', ')
-						})`
+						`${user}: **0 KC** - Died on all ${quantity} kill${quantity > 1 ? 's' : ''} *(${deathMsg})*`
 					)
 				);
 				continue;
 			}
 
 			const loot = new Bank().add(BurningDominionTemplate.table.roll(userSuccessfulKills));
-
-			if (isDoubleLootActive(duration)) {
-				loot.multiply(2);
-			}
+			if (isDoubleLootActive(duration)) loot.multiply(2);
 
 			teamLoot.add(user.id, loot);
 			totalLoot.add(loot);
@@ -170,44 +193,24 @@ export const dominionTask: MinionTask = {
 				isOnTask,
 				taskQuantity: userSuccessfulKills
 			});
-
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 
-			const notifyDropIDs = BurningDominionNotifyDrops.map((item: any) => item.id ?? item);
-			const purple = loot.itemIDs.some(itemID => notifyDropIDs.includes(itemID));
+			const hasUnique = loot.itemIDs.some(id => notifyDropIDs.includes(id));
 
-			let embedDescription = `${purple ? Emoji.Purple : ''}${user}: **+${userSuccessfulKills} KC** (${userSuccessfulKills}/${quantity} kills, KC: ${newKC})`;
-
+			let header = `${hasUnique ? `${Emoji.Purple} ` : ''}${user}: **+${userSuccessfulKills} KC** (${userSuccessfulKills}/${quantity} kills, KC: ${newKC})`;
 			if (userDeaths > 0) {
-				embedDescription += ` - died ${userDeaths}x: ${
+				const deathMsg =
 					wrongFoodDeaths.includes(user)
 						? 'Had no proper supplies'
 						: rng
 								.shuffle([...methodsOfDeath])
 								.slice(0, Math.min(userDeaths, 3))
-								.join(', ')
-				}`;
+								.join(', ');
+				header += ` - died ${userDeaths}x: *${deathMsg}*`;
 			}
 
-			if (purple) {
-				const uniqueLoot = new Bank();
-				const regularLoot = new Bank();
-				
-				for (const [itemID, qty] of loot.items()) {
-					if (notifyDropIDs.includes(itemID)) {
-						uniqueLoot.add(itemID, qty);
-					} else {
-						regularLoot.add(itemID, qty);
-					}
-				}
-
-				const sortedLoot = uniqueLoot.clone().add(regularLoot);
-				embedDescription += `\n||${truncateString(sortedLoot.toString(), 3800)}||`;
-			} else {
-				embedDescription += `\n${truncateString(loot.toString(), 3800)}`;
-			}
-			
-			embeds.push(new EmbedBuilder().setDescription(embedDescription));
+			const lootSection = formatLootSection(loot, hasUnique);
+			embeds.push(new EmbedBuilder().setDescription(`${header}\n${lootSection}`));
 
 			announceLoot({
 				user,
@@ -236,14 +239,14 @@ export const dominionTask: MinionTask = {
 			}))
 		});
 
-		return handleTripFinish({ 
-			user: bossUsers[0].user, 
-			channelId, 
+		return handleTripFinish({
+			user: bossUsers[0].user,
+			channelId,
 			message: {
-				content: `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`,
+				content: `${tagAll}\n\n${killStr} ${Emoji.Casket} **Loot:**`,
 				embeds
 			},
-			data 
+			data
 		});
 	}
 };

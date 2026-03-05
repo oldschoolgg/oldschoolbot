@@ -31,6 +31,7 @@ export function dwarvenBlessing({
 	const hasCurse = gearBank.hasEquipped('Vitrolic curse');
 	const hasBlessing = gearBank.hasEquipped('Dwarven blessing');
 	const hasZealotsAmulet = gearBank.hasEquipped('Amulet of zealots');
+	const hasPrayerMasterCape = gearBank.hasEquipped('Prayer master cape');
 
 	if (!hasCurse && !hasBlessing) return null;
 
@@ -39,15 +40,20 @@ export function dwarvenBlessing({
 	let itemName = '';
 
 	if (hasCurse) {
-		const brimstoneElixirsNeeded = calculateVitriolicCurseElixirsNeeded(duration);
+		let brimstoneElixirsNeeded = calculateVitriolicCurseElixirsNeeded(duration);
+		if (hasPrayerMasterCape) {
+			brimstoneElixirsNeeded = Math.max(1, Math.floor(0.25 * brimstoneElixirsNeeded));
+		}
 		cost.add('Brimstone elixir', brimstoneElixirsNeeded);
 		percentageReduction = 25;
 		itemName = 'Vitrolic curse';
+		if (hasPrayerMasterCape) {
+			itemName += ' (75% less cost for prayer cape)';
+		}
 	} else if (hasBlessing) {
 		const dwarvenBlessingItem = Items.getOrThrow(
 			bitfield.includes(BitField.UseSuperRestoresForDwarvenBlessing) ? 'Super restore(4)' : 'Prayer potion(4)'
 		);
-		const hasPrayerMasterCape = gearBank.hasEquipped('Prayer master cape');
 
 		let dwarvenBlessingPotsNeeded = calculateDwarvenBlessingPotsNeeded(duration);
 		if (hasPrayerMasterCape) {

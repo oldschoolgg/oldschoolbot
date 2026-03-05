@@ -331,8 +331,15 @@ export const bsoMinigamesCommand = defineCommand({
 								return DistilleryRecipes.filter(r =>
 									!value ? true : r.name.toLowerCase().includes(value.toLowerCase())
 								).map(r => ({ name: `${r.name} (${r.herbloreLevel} Herblore)`, value: r.name }));
-	}
+							}
 						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'How many distillations to do (leave blank for max).',
+							required: false,
+							min_value: 1
+						}
 					]
 				},
 				{
@@ -395,12 +402,13 @@ export const bsoMinigamesCommand = defineCommand({
 		if (options.guthixian_cache?.stats) {
 			const boost = user.user.guthixian_cache_boosts_available;
 			return `You have ${boost} Guthixian cache boost${boost === 1 ? '' : 's'} available.`;
-}
+		}
 		if (options.brimstone_distillery?.start) {
 			return brimstoneDistilleryStartCommand({
 				user,
 				channelId,
-				recipe: options.brimstone_distillery.start.recipe
+				recipe: options.brimstone_distillery.start.recipe,
+				quantity: options.brimstone_distillery.start.quantity ?? undefined
 			});
 		}
 

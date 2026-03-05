@@ -28,9 +28,9 @@ export const archaicOres: ArchaicOre[] = [
 	{ id: itemID('Royal dragon bones'), name: 'Royal dragon bones', level: 108, xp: 150, timeToMine: 5.75, type: 'dragonbone', petChance: 100000 },
 	{ id: itemID('Primordial bones'), name: 'Primordial bones', level: 110, xp: 160, timeToMine: 6, type: 'dragonbone', petChance: 100000 },
 
-	{ id: itemID('Crystalline ore'), name: 'Crystalline ore', level: 90, xp: 180, timeToMine: 4, type: 'crystalline', petChance: 100000, clueScrollChance: 500000 },
-	{ id: itemID('Gem Infused ore'), name: 'Gem Infused ore', level: 100, xp: 240, timeToMine: 5, type: 'crystalline', petChance: 100000 },
-	{ id: itemID('Dense Crystal shard'), name: 'Dense Crystal shard', level: 110, xp: 300, timeToMine: 6, type: 'crystalline', petChance: 100000 }
+	{ id: itemID('Crystalline ore'), name: 'Crystalline ore', level: 90, xp: 180, timeToMine: 1, type: 'crystalline', petChance: 100000, clueScrollChance: 500000 },
+	{ id: itemID('Gem Infused ore'), name: 'Gem Infused ore', level: 100, xp: 240, timeToMine: 2, type: 'crystalline', petChance: 100000 },
+	{ id: itemID('Dense Crystal shard'), name: 'Dense Crystal shard', level: 110, xp: 300, timeToMine: 2, type: 'crystalline', petChance: 100000 }
 ];
 
 function generateArchaicMiningTable(currentMiningLevel: number, miningType: MiningType): LootTable {
@@ -118,12 +118,10 @@ export const archaicMiningTask: MinionTask = {
 			bonusXP += amountToAdd;
 		}
 
-		// Apply Mining master cape multiply before adding rares so they aren't doubled
 		if (user.hasEquippedOrInBank('Mining master cape')) {
 			loot.multiply(2);
 		}
 
-		// Add rare drops after cape multiply so they are not affected
 		if (miningType === 'dragonbone') {
 			for (let i = 0; i < quantity; i++) {
 				if (rng.roll(5000)) loot.add('Primordial heartstring');
@@ -131,11 +129,11 @@ export const archaicMiningTask: MinionTask = {
 			}
 		} else {
 			for (let i = 0; i < quantity; i++) {
-				if (rng.roll(1000)) {
+				if (rng.roll(500)) {
 					loot.add(IslandGemTable5x.roll());
-				} else if (rng.roll(500)) {
+				} else if (rng.roll(250)) {
 					loot.add(IslandGemTable3x.roll());
-				} else if (rng.roll(100)) {
+				} else if (rng.roll(50)) {
 					loot.add(IslandGemTable.roll());
 				}
 			}
