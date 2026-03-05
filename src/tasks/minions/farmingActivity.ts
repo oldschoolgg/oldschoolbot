@@ -105,8 +105,10 @@ function buildCombinedAutoFarmMessage(user: MUser, summary: AutoFarmSummary): st
 
 	const xpParts: string[] = [];
 	if (summary.totalXP > 0) {
+		const bonusSegment =
+			summary.totalBonusXP > 0 ? ` (including ${summary.totalBonusXP.toLocaleString()} bonus XP)` : '';
 		xpParts.push(
-			`${summary.totalXP.toLocaleString()} Farming XP (including ${summary.totalBonusXP.toLocaleString()} bonus XP) ${toKMB(calcXPPerHour(summary.totalXP, summary.totalDuration))}/Hr`
+			`${summary.totalXP.toLocaleString()} Farming XP${bonusSegment} ${toKMB(calcXPPerHour(summary.totalXP, summary.totalDuration))}/Hr`
 		);
 	}
 	if (summary.totalWoodcuttingXP > 0) {
