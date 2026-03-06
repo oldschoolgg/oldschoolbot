@@ -15,6 +15,7 @@ import { GrandExchange } from '@/lib/grandExchange.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
+import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -374,6 +375,26 @@ export const rpCommand = defineCommand({
 					]
 				}
 			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'roles',
+			description: 'Manage support server roles.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'sync',
+					description: 'Run the support server roles sync task.',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'dry_run',
+							description: 'Run without making any changes.',
+							required: false
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({ options, user: adminUser, interaction, guildId, rng }) => {
@@ -714,6 +735,21 @@ Date: ${dateFm(date)}`;
 			const targetUser = await mUserFetch(options.player.ge_cancel.user.user.id);
 			await cancelUsersListings(targetUser);
 			return `Cancelled listings for ${targetUser}`;
+		}
+
+		if (options.roles?.sync) {
+			if (!isAdmin) {
+				return randArrItem(gifs);
+			}
+			const dryRun = options.roles.sync.dry_run ?? false;
+			if (!dryRun) {
+				await interaction.confirmation('Are you sure you want to sync support server roles?');
+			}
+			const result = await runRolesTask(dryRun);
+			await sendToChannelID(Channel.BotLogs, {
+				content: `${adminUser.logName} ran the support server roles sync${dryRun ? ' (dry run)' : ''}.`
+			});
+			return result;
 		}
 
 		return 'Invalid command.';
