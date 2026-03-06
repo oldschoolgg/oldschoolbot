@@ -64,6 +64,8 @@ export async function unchargeGloriesCommand(
 		return `You don't have enough ${quantity}x Amulet of glory(6).`;
 	}
 
+	await user.removeItemsFromBank(new Bank().add('Amulet of glory(6)', quantity));
+
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelId,
@@ -71,8 +73,6 @@ export async function unchargeGloriesCommand(
 		duration,
 		type: 'GloryUncharging'
 	});
-
-	await user.removeItemsFromBank(new Bank().add('Amulet of glory(6)', quantity));
 
 	return `${user.minionName} is now uncharging ${quantity}x Amulet of glory(6), it'll take around ${formatDuration(
 		duration

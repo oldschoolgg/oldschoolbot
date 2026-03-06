@@ -10,7 +10,7 @@ export const gloryUnchargingTask: MinionTask = {
 		const str = `${user}, ${user.minionName} finished uncharging ${quantity}x Amulet of glory(6).`;
 
 		await user.transactItems({
-			collectionLog: true,
+			collectionLog: false,
 			itemsToAdd: loot
 		});
 		handleTripFinish({ user, channelId, message: str, data, loot });
