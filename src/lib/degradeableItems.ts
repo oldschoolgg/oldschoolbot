@@ -9,23 +9,7 @@ import { assert } from '@/lib/util/logError.js';
 
 export interface DegradeableItem {
 	item: Item;
-<<<<<<< Chemistry
-	settingsKey:
-		| 'tentacle_charges'
-		| 'sang_charges'
-		| 'celestial_ring_charges'
-		| 'ash_sanctifier_charges'
-		| 'serp_helm_charges'
-		| 'blood_fury_charges'
-		| 'chemistry_amulet_charges'
-		| 'tum_shadow_charges'
-		| 'blood_essence_charges'
-		| 'trident_charges'
-		| 'scythe_of_vitur_charges'
-		| 'venator_bow_charges';
-=======
 	settingsKey: DegradeableItemColumns;
->>>>>>> master
 	itemsToRefundOnBreak: Bank;
 	refundVariants: {
 		variant: Item;
