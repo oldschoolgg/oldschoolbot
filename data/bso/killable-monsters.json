@@ -1399,10 +1399,10 @@
 		"is_custom": true,
 		"id": 142006,
 		"name": "Burning Dominion",
-		"time_to_finish": 1080000,
-		"hp": 3600,
+		"time_to_finish": 600000,
+		"hp": 5000,
 		"respawn_time": 0,
-		"difficulty_rating": 5,
+		"difficulty_rating": 9,
 		"table": {},
 		"qp_required": 2500,
 		"heal_amount_needed": 120000,
@@ -2654,10 +2654,10 @@
 		"is_custom": true,
 		"id": 142003,
 		"name": "Crystalline Sentinel",
-		"time_to_finish": 210000,
-		"hp": 800,
+		"time_to_finish": 420000,
+		"hp": 2400,
 		"table": {},
-		"difficulty_rating": 2,
+		"difficulty_rating": 3,
 		"qp_required": 500,
 		"heal_amount_needed": 3200,
 		"attack_style_to_use": "attack_slash",
@@ -2682,7 +2682,7 @@
 			"highest_death_chance": 15
 		},
 		"minimum_heal_amount": 12,
-		"all_items": ["Sentinel core"],
+		"all_items": ["Sentinel core", "Starfire bow (u)"],
 		"minimum_gear_requirements": {
 			"melee": {
 				"attack_stab": 0,
@@ -2726,32 +2726,49 @@
 			},
 			"qty_per_kill": 1
 		},
-		"setups_used": ["melee"],
+		"setups_used": ["melee", "range"],
 		"equipped_item_boosts": [
+			{
+				"gear_setup": "range",
+				"items": [
+					{
+						"boost_percent": 25,
+						"item_id": 75003
+					}
+				]
+			},
+			{
+				"gear_setup": "range",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 75020
+					},
+					{
+						"boost_percent": 10,
+						"item_id": 75016
+					}
+				]
+			},
+			{
+				"gear_setup": "range",
+				"items": [
+					{
+						"boost_percent": 7,
+						"item_id": 75020
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 75049
+					}
+				]
+			},
 			{
 				"gear_setup": "melee",
 				"items": [
 					{
 						"boost_percent": 10,
-						"item_id": 4151
-					}
-				]
-			},
-			{
-				"gear_setup": "melee",
-				"items": [
-					{
-						"boost_percent": 8,
-						"item_id": 11838
-					}
-				]
-			},
-			{
-				"gear_setup": "melee",
-				"items": [
-					{
-						"boost_percent": 6,
-						"item_id": 12954
+						"item_id": 48011
 					}
 				]
 			}
@@ -2849,7 +2866,7 @@
 		"emoji": "<:Pet_dagannoth_rex:324127377091330049>",
 		"wildy": false,
 		"difficulty_rating": 5,
-		"items_required": [4728, 4730, 4724, 4726, [40034, 709, 11832, 4749], [40035, 2404, 11834, 4751]],
+		"items_required": [4728, 4730, 4724, 4726, [75065, 40034, 709, 11832, 4749], [75067, 40035, 2404, 11834, 4751]],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
@@ -3713,10 +3730,10 @@
 		"is_custom": true,
 		"id": 142004,
 		"name": "Fungal Behemoth",
-		"time_to_finish": 270000,
-		"hp": 1200,
+		"time_to_finish": 540000,
+		"hp": 3600,
 		"table": {},
-		"difficulty_rating": 3,
+		"difficulty_rating": 4,
 		"qp_required": 750,
 		"heal_amount_needed": 6000,
 		"attack_style_to_use": "attack_slash",
@@ -3741,7 +3758,7 @@
 			"highest_death_chance": 1
 		},
 		"minimum_heal_amount": 14,
-		"all_items": ["Verdant heart"],
+		"all_items": ["Prolific twine", "Verdant heart"],
 		"minimum_gear_requirements": {
 			"melee": {
 				"attack_stab": 0,
@@ -3786,32 +3803,49 @@
 			},
 			"qty_per_kill": 1
 		},
-		"setups_used": ["melee"],
+		"setups_used": ["melee", "range"],
 		"equipped_item_boosts": [
+			{
+				"gear_setup": "range",
+				"items": [
+					{
+						"boost_percent": 25,
+						"item_id": 75003
+					}
+				]
+			},
+			{
+				"gear_setup": "range",
+				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 75020
+					},
+					{
+						"boost_percent": 10,
+						"item_id": 75016
+					}
+				]
+			},
+			{
+				"gear_setup": "range",
+				"items": [
+					{
+						"boost_percent": 7,
+						"item_id": 75020
+					},
+					{
+						"boost_percent": 7,
+						"item_id": 75049
+					}
+				]
+			},
 			{
 				"gear_setup": "melee",
 				"items": [
 					{
 						"boost_percent": 10,
-						"item_id": 13263
-					}
-				]
-			},
-			{
-				"gear_setup": "melee",
-				"items": [
-					{
-						"boost_percent": 8,
-						"item_id": 11889
-					}
-				]
-			},
-			{
-				"gear_setup": "melee",
-				"items": [
-					{
-						"boost_percent": 6,
-						"item_id": 12954
+						"item_id": 48011
 					}
 				]
 			}
@@ -5696,11 +5730,12 @@
 		"is_custom": true,
 		"id": 142002,
 		"name": "Orrodil",
-		"time_to_finish": 1080000,
-		"hp": 1800,
+		"time_to_finish": 2400000,
+		"hp": 5000,
 		"table": {},
+		"difficulty_rating": 6,
 		"qp_required": 2500,
-		"heal_amount_needed": 50000,
+		"heal_amount_needed": 21600,
 		"attack_style_to_use": "attack_stab",
 		"attack_styles_used": ["attack_stab"],
 		"level_requirements": {
@@ -5724,7 +5759,7 @@
 			"highest_death_chance": 40
 		},
 		"minimum_heal_amount": 22,
-		"all_items": ["Celestial flame", "Orylin", "Primordial heartstring", "Primordial spine", "Shattered pendant"],
+		"all_items": ["Celestial flame", "Orrodin", "Primordial heartstring", "Primordial spine", "Shattered pendant"],
 		"minimum_gear_requirements": {
 			"melee": {
 				"attack_stab": 0,
@@ -5807,12 +5842,12 @@
 		"is_custom": true,
 		"id": 142001,
 		"name": "Orym",
-		"time_to_finish": 1080000,
-		"hp": 1800,
+		"time_to_finish": 2400000,
+		"hp": 5000,
 		"table": {},
-		"difficulty_rating": 5,
+		"difficulty_rating": 6,
 		"qp_required": 2500,
-		"heal_amount_needed": 70000,
+		"heal_amount_needed": 21600,
 		"attack_style_to_use": "attack_stab",
 		"attack_styles_used": ["attack_stab"],
 		"level_requirements": {

@@ -715,6 +715,9 @@
 			"Banana enchantment scroll",
 			"Clue scroll (grandmaster)",
 			"Elder scroll piece",
+			"Elder sigil fragment (1)",
+			"Elder sigil fragment (2)",
+			"Elder sigil fragment (3)",
 			"Gorilla rumble greegree",
 			"Lychee seed",
 			"Mango seed",
@@ -1169,6 +1172,25 @@
 		]
 	},
 	{
+		"name": "Elder Cache",
+		"id": 75043,
+		"opened_item": "Elder sigil",
+		"all_items": [
+			"Celestyte",
+			"Clue scroll (grandmaster)",
+			"Elder plank",
+			"Elder rune",
+			"Elder scroll piece",
+			"Elderflame arrowtips",
+			"Elderflame catalyst",
+			"Firaxyte",
+			"Oneiryte",
+			"Prismare",
+			"Starfire agate",
+			"Verdantyte"
+		]
+	},
+	{
 		"name": "Elder mimic casket",
 		"id": 75042,
 		"opened_item": "Elder mimic casket",
@@ -1406,6 +1428,9 @@
 			"Earth rune",
 			"Elder rune",
 			"Elder scroll piece",
+			"Elder sigil fragment (1)",
+			"Elder sigil fragment (2)",
+			"Elder sigil fragment (3)",
 			"Eternal crystal",
 			"Fire battlestaff",
 			"Fire orb",
@@ -1552,6 +1577,24 @@
 		],
 		"smokey_applies": true,
 		"exclude_from_open_all": true
+	},
+	{
+		"name": "Gemstone Bundle",
+		"id": 75022,
+		"opened_item": "Gemstone bundle",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
+	},
+	{
+		"name": "Gemstone Core",
+		"id": 75024,
+		"opened_item": "Gemstone core",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
+	},
+	{
+		"name": "Gemstone Satchel",
+		"id": 75023,
+		"opened_item": "Gemstone satchel",
+		"all_items": ["Celestyte", "Firaxyte", "Oneiryte", "Prismare", "Starfire agate", "Verdantyte"]
 	},
 	{
 		"name": "Giant egg sac(full)",
@@ -2975,6 +3018,9 @@
 			"Clue scroll (grandmaster)",
 			"Clue scroll (hard)",
 			"Elder scroll piece",
+			"Elder sigil fragment (1)",
+			"Elder sigil fragment (2)",
+			"Elder sigil fragment (3)",
 			"Equippable mystery box",
 			"Mystery impling jar",
 			"Pet Mystery Box",
@@ -5040,6 +5086,9 @@
 		"all_items": [
 			"Clue scroll (grandmaster)",
 			"Elder scroll piece",
+			"Elder sigil fragment (1)",
+			"Elder sigil fragment (2)",
+			"Elder sigil fragment (3)",
 			"Raw anglerfish",
 			"Raw dark crab",
 			"Raw rocktail",
