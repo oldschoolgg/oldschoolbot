@@ -497,6 +497,11 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 		}
 
+		case 'GloryUncharging': {
+			const data = currentTask as ActivityTaskOptionsWithQuantity;
+			return `${name} is currently uncharging ${data.quantity}x Amulet of glory(6). ${formattedDuration}`;
+		}
+
 		case 'WealthCharging': {
 			const data = currentTask as ActivityTaskOptionsWithQuantity;
 			return `${name} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
