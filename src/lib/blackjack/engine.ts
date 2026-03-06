@@ -99,10 +99,6 @@ function isTenValueRank(rank: BlackjackRank): boolean {
 	return rank === '10' || rank === 'J' || rank === 'Q' || rank === 'K';
 }
 
-function isFaceRank(rank: BlackjackRank): boolean {
-	return rank === 'J' || rank === 'Q' || rank === 'K';
-}
-
 function canDealerPeek(game: BlackjackGame): boolean {
 	const upcard = game.dealerCards[0];
 	return upcard.rank === 'A' || isTenValueRank(upcard.rank);

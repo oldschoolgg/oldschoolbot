@@ -106,7 +106,7 @@ describe('blackjack engine', () => {
 		expect(settlement.net).toBe(0);
 	});
 
-	test('dealer face upcard offers insurance', () => {
+	test('dealer 10-value upcard is peek-only, not insurance', () => {
 		const rng: RNGProvider = {
 			roll: () => true,
 			randInt: (_min, max) => max,
@@ -119,6 +119,8 @@ describe('blackjack engine', () => {
 		};
 		const game = createBlackjackGame({ bet: 100, rng, decks: 1 });
 		expect(game.dealerCards[0].rank).toBe('Q');
-		expect(game.phase).toBe('insurance');
+		expect(game.phase).toBe('player');
+		expect(game.dealerPeeked).toBe(true);
+		expect(game.dealerHasBlackjack).toBe(false);
 	});
 });
