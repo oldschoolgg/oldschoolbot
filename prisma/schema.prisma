@@ -749,6 +749,7 @@ model UserStats {
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
   gp_slots     BigInt @default(0)
+  gp_blackjack BigInt @default(0)
   gp_hotcold   BigInt @default(0)
 
   total_gp_traded BigInt @default(0)

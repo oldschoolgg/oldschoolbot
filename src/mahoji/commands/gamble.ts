@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { choicesOf } from '@/discord/index.js';
 import { BitField } from '@/lib/constants.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { blackjackCommand } from '@/mahoji/lib/abstracted_commands/blackjackCommand.js';
 import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
 import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';
 import { duelCommand } from '@/mahoji/lib/abstracted_commands/duelCommand.js';
@@ -78,6 +79,24 @@ export const gambleCommand = defineCommand({
 					type: 'String',
 					name: 'amount',
 					description: 'The GP you want to duel for.',
+					required: false
+				}
+			]
+		},
+		/**
+		 *
+		 * Blackjack
+		 *
+		 */
+		{
+			type: 'Subcommand',
+			name: 'blackjack',
+			description: 'Play blackjack against the dealer using bot GP.',
+			options: [
+				{
+					type: 'String',
+					name: 'amount',
+					description: 'Amount you wish to gamble.',
 					required: false
 				}
 			]
@@ -193,6 +212,15 @@ export const gambleCommand = defineCommand({
 
 		if (options.lucky_pick) {
 			return luckyPickCommand(rng, user, options.lucky_pick.amount, interaction);
+		}
+
+		if (options.blackjack) {
+			return blackjackCommand({
+				user,
+				interaction,
+				channelID: interaction.channelId,
+				amountInput: options.blackjack.amount
+			});
 		}
 
 		if (options.slots) {
