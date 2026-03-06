@@ -1,3 +1,5 @@
+import { dungeoneeringCL } from '@/lib/bso/collection-log/main.ts';
+
 type MUserInstance = MUser;
 
 declare global {
