@@ -13,7 +13,9 @@ export async function tinkeringWorkshopCommand(user: MUser, material: string, ch
 	}
 	if (await user.minionIsBusy()) return 'Your minion is busy.';
 
-	const gameTime = Time.Minute * 12.5;
+	const hasCelestialPendant = user.hasEquippedOrInBank('Celestial pendant');
+
+	const gameTime = Time.Minute * 12.5 * (hasCelestialPendant ? 0.9 : 1);
 	const quantity = Math.floor((await user.calcMaxTripLength('TinkeringWorkshop')) / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
@@ -31,11 +33,8 @@ export async function tinkeringWorkshopCommand(user: MUser, material: string, ch
 			.bank
 	});
 
-	const str = `${
-		user.minionName
-	} is now off to do ${quantity}x Tinkering Workshop projects! The total trip will take ${formatDuration(
-		duration
-	)}. Removed ${materialCost}.`;
+	const boostStr = hasCelestialPendant ? '\n\n**Boosts:** 10% faster from Celestial pendant.' : '';
+	const str = `${user.minionName} is now off to do ${quantity}x Tinkering Workshop projects! The total trip will take ${formatDuration(duration)}. Removed ${materialCost}.${boostStr}`;
 
 	await ActivityManager.startTrip<TinkeringWorkshopOptions>({
 		userID: user.id,

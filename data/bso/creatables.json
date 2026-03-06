@@ -1,6 +1,6 @@
 {
-	"hash": "6e99679cadc7e5f3571790ea266eac4c",
-	"date": "2025-12-24T04:50:42.790Z",
+	"hash": "01c914f8d55b8899b379185dbafd23a7",
+	"date": "2026-03-06T11:40:06.873Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -2059,6 +2059,23 @@
 			}
 		},
 		{
+			"name": "Celestial pendant",
+			"items_created": {
+				"Celestial pendant": 1
+			},
+			"items_required": {
+				"Dark animica": 7500,
+				"Dwarven bar": 1,
+				"Primordial heartstring": 1,
+				"Primordial spine": 1,
+				"Shattered pendant": 1
+			},
+			"required_stats": {
+				"smithing": 120,
+				"crafting": 120
+			}
+		},
+		{
 			"name": "Celestial signet",
 			"items_created": {
 				"Celestial signet": 1
@@ -2727,6 +2744,16 @@
 			}
 		},
 		{
+			"name": "Dismantle prismare ring",
+			"items_created": {
+				"Empyrean shards": 250,
+				"Prismare": 250
+			},
+			"items_required": {
+				"Prismare ring (u)": 1
+			}
+		},
+		{
 			"name": "Divination master cape (inverted)",
 			"items_created": {
 				"Divination master cape (inverted)": 1
@@ -2882,6 +2909,13 @@
 		},
 		{
 			"name": "Divine water (Ourg bones)",
+			"items_created": {
+				"Divine water": 1
+			},
+			"items_required": ["Dynamic"]
+		},
+		{
+			"name": "Divine water (Primordial bones)",
 			"items_created": {
 				"Divine water": 1
 			},
@@ -3242,6 +3276,41 @@
 			"items_required": {
 				"Dragon sq shield": 1,
 				"Dragon sq shield ornament kit": 1
+			}
+		},
+		{
+			"name": "Dragonbane aegis",
+			"items_created": {
+				"Dragonbane aegis": 1
+			},
+			"items_required": {
+				"Dark animica": 7500,
+				"Dragonfire shield": 1,
+				"Dragonfire ward": 1,
+				"Dwarven bar": 3,
+				"Primordial heartstring": 1,
+				"Primordial scales": 2500
+			},
+			"required_stats": {
+				"smithing": 120,
+				"crafting": 120
+			}
+		},
+		{
+			"name": "Dragonbane glaive",
+			"items_created": {
+				"Dragonbane glaive": 1
+			},
+			"items_required": {
+				"Dark animica": 7500,
+				"Dwarven bar": 3,
+				"Primordial heartstring": 1,
+				"Primordial scales": 2500,
+				"Primordial spine": 1
+			},
+			"required_stats": {
+				"smithing": 120,
+				"crafting": 120
 			}
 		},
 		{
@@ -3881,6 +3950,31 @@
 			}
 		},
 		{
+			"name": "Elder sigil",
+			"items_created": {
+				"Elder sigil": 1
+			},
+			"items_required": {
+				"Elder sigil fragment (1)": 1,
+				"Elder sigil fragment (2)": 1,
+				"Elder sigil fragment (3)": 1
+			},
+			"required_stats": {}
+		},
+		{
+			"name": "Elderflame bow",
+			"items_created": {
+				"Elderflame bow": 1
+			},
+			"items_required": {
+				"Elderflame catalyst": 1,
+				"Starfire bow": 1
+			},
+			"required_stats": {
+				"fletching": 110
+			}
+		},
+		{
 			"name": "Eldritch nightmare staff",
 			"items_created": {
 				"Eldritch nightmare staff": 1
@@ -3971,6 +4065,87 @@
 			},
 			"required_stats": {
 				"smithing": 74
+			}
+		},
+		{
+			"name": "Empyrean Armour Set",
+			"items_created": {
+				"Empyrean greatgauntlets": 1,
+				"Empyrean greatgreaves": 1,
+				"Empyrean greathelm": 1,
+				"Empyrean greatplate": 1,
+				"Empyrean greatsabaton": 1
+			},
+			"items_required": {
+				"Dark animica": 5000,
+				"Dwarven bar": 20,
+				"Elderflame catalyst": 5,
+				"Empyrean shards": 750,
+				"Gorajan shards": 10,
+				"Gorajan warrior boots": 1,
+				"Gorajan warrior gloves": 1,
+				"Gorajan warrior helmet": 1,
+				"Gorajan warrior legs": 1,
+				"Gorajan warrior top": 1,
+				"Sun-metal bar": 2
+			},
+			"required_stats": {
+				"smithing": 120,
+				"crafting": 120
+			}
+		},
+		{
+			"name": "Empyrean Armour Set (Oceanic base)",
+			"items_created": {
+				"Empyrean greatgauntlets": 1,
+				"Empyrean greatgreaves": 1,
+				"Empyrean greathelm": 1,
+				"Empyrean greatplate": 1,
+				"Empyrean greatsabaton": 1
+			},
+			"items_required": {
+				"Dark animica": 5000,
+				"Dwarven bar": 20,
+				"Elderflame catalyst": 5,
+				"Empyrean shards": 750,
+				"Gorajan shards": 10,
+				"Gorajan warrior boots (Oceanic)": 1,
+				"Gorajan warrior gloves (Oceanic)": 1,
+				"Gorajan warrior helmet (Oceanic)": 1,
+				"Gorajan warrior legs (Oceanic)": 1,
+				"Gorajan warrior top (Oceanic)": 1,
+				"Sun-metal bar": 2
+			},
+			"required_stats": {
+				"smithing": 120,
+				"crafting": 120
+			}
+		},
+		{
+			"name": "Empyrean Armour Set (Primal base)",
+			"items_created": {
+				"Empyrean greatgauntlets": 1,
+				"Empyrean greatgreaves": 1,
+				"Empyrean greathelm": 1,
+				"Empyrean greatplate": 1,
+				"Empyrean greatsabaton": 1
+			},
+			"items_required": {
+				"Dark animica": 5000,
+				"Dwarven bar": 20,
+				"Elderflame catalyst": 5,
+				"Empyrean shards": 750,
+				"Gorajan shards": 10,
+				"Gorajan warrior boots (Primal)": 1,
+				"Gorajan warrior gloves (Primal)": 1,
+				"Gorajan warrior helmet (Primal)": 1,
+				"Gorajan warrior legs (Primal)": 1,
+				"Gorajan warrior top (Primal)": 1,
+				"Sun-metal bar": 2
+			},
+			"required_stats": {
+				"smithing": 120,
+				"crafting": 120
 			}
 		},
 		{
@@ -7943,6 +8118,19 @@
 			}
 		},
 		{
+			"name": "Prismare ring",
+			"items_created": {
+				"Prismare ring": 1
+			},
+			"items_required": {
+				"Elderflame catalyst": 1,
+				"Empyrean shards": 50,
+				"First age ring": 1,
+				"Prismare ring (u)": 1
+			},
+			"required_stats": {}
+		},
+		{
 			"name": "Proselyte harness f",
 			"items_created": {
 				"Proselyte harness f": 1
@@ -11171,6 +11359,15 @@
 			"noCl": true
 		},
 		{
+			"name": "Revert prismare ring",
+			"items_created": {
+				"Prismare ring (u)": 1
+			},
+			"items_required": {
+				"Prismare ring": 1
+			}
+		},
+		{
 			"name": "Revert purple slayer helmet",
 			"items_created": {
 				"Dark claw": 1,
@@ -13281,6 +13478,18 @@
 			}
 		},
 		{
+			"name": "Searcrown band",
+			"items_created": {
+				"Searcrown band": 1
+			},
+			"items_required": {
+				"Dwarven bar": 1,
+				"Forsaken tear": 1,
+				"Ignis ring(i)": 1
+			},
+			"required_stats": {}
+		},
+		{
 			"name": "Secateurs attachment",
 			"items_created": {
 				"Secateurs attachment": 50
@@ -13718,6 +13927,19 @@
 			"items_required": {
 				"Guthixian icon": 1,
 				"Staff of the dead": 1
+			}
+		},
+		{
+			"name": "Starfire bow",
+			"items_created": {
+				"Starfire bow": 1
+			},
+			"items_required": {
+				"Prolific twine": 1,
+				"Starfire bow (u)": 1
+			},
+			"required_stats": {
+				"fletching": 95
 			}
 		},
 		{
@@ -16793,6 +17015,20 @@
 			"required_stats": {
 				"smithing": 80,
 				"crafting": 80
+			}
+		},
+		{
+			"name": "Vitrolic curse",
+			"items_created": {
+				"Vitrolic curse": 1
+			},
+			"items_required": {
+				"Dwarven blessing": 1,
+				"Infernal core": 1,
+				"Sacrilegious flask": 1
+			},
+			"required_stats": {
+				"prayer": 120
 			}
 		},
 		{

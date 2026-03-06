@@ -1406,6 +1406,228 @@ export const bsoCreatables: Createable[] = [
 			.add('Pernix components', 3),
 		outputItems: new Bank().add('Deathly collector (i)'),
 		noCreatablesCl: true
+	},
+	{
+		name: 'Dragonbane aegis',
+		inputItems: new Bank({
+			'Dark animica': 7500,
+			'Dwarven bar': 3,
+			'Dragonfire shield': 1,
+			'Dragonfire ward': 1,
+			'Wyvern shield': 1,
+			'Primordial heartstring': 1,
+			'Primordial scales': 2500
+		}),
+		outputItems: new Bank({
+			'Dragonbane aegis': 1
+		}),
+		requiredSkills: {
+			smithing: 120,
+			crafting: 120
+		}
+	},
+	{
+		name: 'Celestial pendant',
+		inputItems: new Bank({
+			'Dark animica': 7500,
+			'Dwarven bar': 1,
+			'Primordial spine': 1,
+			'Primordial heartstring': 1,
+			'Shattered pendant': 1
+		}),
+		outputItems: new Bank({
+			'Celestial pendant': 1
+		}),
+		requiredSkills: {
+			smithing: 120,
+			crafting: 120
+		}
+	},
+	{
+		name: 'Dragonbane glaive',
+		inputItems: new Bank({
+			'Dark animica': 7500,
+			'Dwarven bar': 3,
+			'Primordial spine': 1,
+			'Primordial heartstring': 1,
+			DHL: 1,
+			'Primordial scales': 2500
+		}),
+		outputItems: new Bank({
+			'Dragonbane glaive': 1
+		}),
+		requiredSkills: {
+			smithing: 120,
+			crafting: 120
+		}
+	},
+	{
+		name: 'Vitrolic curse',
+		inputItems: new Bank({
+			'Dwarven blessing': 1,
+			'Infernal core': 1,
+			'Sacrilegious flask': 1
+		}),
+		outputItems: new Bank({
+			'Vitrolic curse': 1
+		}),
+		requiredSkills: {
+			prayer: 120
+		}
+	},
+	{
+		name: 'Elder sigil',
+		inputItems: new Bank({
+			'Elder sigil fragment (1)': 1,
+			'Elder sigil fragment (2)': 1,
+			'Elder sigil fragment (3)': 1
+		}),
+		outputItems: new Bank({
+			'Elder sigil': 1
+		}),
+		requiredSkills: {}
+	},
+	{
+		name: 'Searcrown band',
+		inputItems: new Bank({
+			'Ignis ring (i)': 1,
+			'Forsaken tear': 1,
+			'Dwarven bar': 1
+		}),
+		outputItems: new Bank({
+			'Searcrown band': 1
+		}),
+		requiredSkills: {}
+	},
+	{
+		name: 'Starfire bow',
+		inputItems: new Bank({
+			'Starfire bow (u)': 1,
+			'Prolific twine': 1
+		}),
+		outputItems: new Bank({
+			'Starfire bow': 1
+		}),
+		requiredSkills: {
+			fletching: 95
+		}
+	},
+	{
+		name: 'Elderflame bow',
+		inputItems: new Bank({
+			'Starfire bow': 1,
+			'Elderflame catalyst': 1
+		}),
+		outputItems: new Bank({
+			'Elderflame bow': 1
+		}),
+		requiredSkills: {
+			fletching: 110
+		}
+	},
+	{
+		name: 'Prismare ring',
+		inputItems: new Bank({
+			'Prismare ring (u)': 1,
+			'First age ring': 1,
+			'Elderflame catalyst': 1,
+			'Empyrean shards': 50
+		}),
+		outputItems: new Bank({
+			'Prismare ring': 1
+		}),
+		requiredSkills: {}
+	},
+	{
+		name: 'Revert prismare ring',
+		inputItems: new Bank({
+			'Prismare ring': 1
+		}),
+		outputItems: new Bank({
+			'Prismare ring (u)': 1
+		})
+	},
+	{
+		name: 'Dismantle prismare ring',
+		inputItems: new Bank({
+			'Prismare ring (u)': 1
+		}),
+		outputItems: new Bank({
+			Prismare: 250,
+			'Empyrean shards': 250
+		})
+	},
+	{
+		name: 'Empyrean Armour Set',
+		inputItems: new Bank({
+			'Gorajan warrior helmet': 1,
+			'Gorajan warrior top': 1,
+			'Gorajan warrior legs': 1,
+			'Gorajan warrior gloves': 1,
+			'Gorajan warrior boots': 1,
+			'Dwarven bar': 20,
+			'Gorajan shards': 10,
+			'Elderflame catalyst': 5,
+			'Sun-metal bar': 2,
+			'Empyrean shards': 750,
+			'Dark animica': 5000
+		}),
+		outputItems: new Bank({
+			'Empyrean greathelm': 1,
+			'Empyrean greatplate': 1,
+			'Empyrean greatgreaves': 1,
+			'Empyrean greatgauntlets': 1,
+			'Empyrean greatsabaton': 1
+		}),
+		requiredSkills: { smithing: 120, crafting: 120 }
+	},
+	{
+		name: 'Empyrean Armour Set (Primal base)',
+		inputItems: new Bank({
+			'Gorajan warrior helmet (primal)': 1,
+			'Gorajan warrior top (primal)': 1,
+			'Gorajan warrior legs (primal)': 1,
+			'Gorajan warrior gloves (primal)': 1,
+			'Gorajan warrior boots (primal)': 1,
+			'Dwarven bar': 20,
+			'Gorajan shards': 10,
+			'Elderflame catalyst': 5,
+			'Sun-metal bar': 2,
+			'Empyrean shards': 750,
+			'Dark animica': 5000
+		}),
+		outputItems: new Bank({
+			'Empyrean greathelm': 1,
+			'Empyrean greatplate': 1,
+			'Empyrean greatgreaves': 1,
+			'Empyrean greatgauntlets': 1,
+			'Empyrean greatsabaton': 1
+		}),
+		requiredSkills: { smithing: 120, crafting: 120 }
+	},
+	{
+		name: 'Empyrean Armour Set (Oceanic base)',
+		inputItems: new Bank({
+			'Gorajan warrior helmet (oceanic)': 1,
+			'Gorajan warrior top (oceanic)': 1,
+			'Gorajan warrior legs (oceanic)': 1,
+			'Gorajan warrior gloves (oceanic)': 1,
+			'Gorajan warrior boots (oceanic)': 1,
+			'Dwarven bar': 20,
+			'Gorajan shards': 10,
+			'Elderflame catalyst': 5,
+			'Sun-metal bar': 2,
+			'Empyrean shards': 750,
+			'Dark animica': 5000
+		}),
+		outputItems: new Bank({
+			'Empyrean greathelm': 1,
+			'Empyrean greatplate': 1,
+			'Empyrean greatgreaves': 1,
+			'Empyrean greatgauntlets': 1,
+			'Empyrean greatsabaton': 1
+		}),
+		requiredSkills: { smithing: 120, crafting: 120 }
 	}
 ];
 

@@ -408,6 +408,19 @@
 		"tick_rate": 3
 	},
 	{
+		"name": "Elderflame arrow",
+		"id": 75020,
+		"level": 115,
+		"xp": 950,
+		"output_multiple": 5,
+		"input_items": {
+			"53": 1,
+			"75008": 1,
+			"75021": 1
+		},
+		"tick_rate": 0.13
+	},
+	{
 		"name": "Emerald bolt tips",
 		"id": 9190,
 		"level": 58,

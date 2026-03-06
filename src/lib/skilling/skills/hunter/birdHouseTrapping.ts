@@ -191,7 +191,10 @@ const birdhouses: Birdhouse[] = [
 			.tertiary(2, nestTable, [5, 18])
 			.tertiary(3, 'Feather', [10, 100])
 			.tertiary(80, 'Clue scroll (grandmaster)')
-			.tertiary(140, 'Elder scroll piece'),
+			.tertiary(140, 'Elder scroll piece')
+			.tertiary(200, 'Elder sigil fragment (1)')
+			.tertiary(200, 'Elder sigil fragment (2)')
+			.tertiary(200, 'Elder sigil fragment (3)'),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,

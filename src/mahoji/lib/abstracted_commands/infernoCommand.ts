@@ -1,4 +1,9 @@
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
+import {
+	empyreanOutfit,
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit
+} from '@/lib/bso/collection-log/main.js';
 import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
 
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
@@ -299,6 +304,8 @@ async function infernoRun({
 	const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true, true);
 	const rangeGora = rangeGear.hasEquipped(gorajanArcherOutfit, true, true);
 	const mageGora = mageGear.hasEquipped(gorajanOccultOutfit, true, true);
+	const meleeEmpyrean = meleeGear.hasEquipped(empyreanOutfit, true, true);
+
 	for (const [name, has] of [
 		['melee', meleeGora],
 		['range', rangeGora],
@@ -312,6 +319,12 @@ async function infernoRun({
 		emergedZukDeathChance.add(has, -8, `Gorajan ${name}`);
 		duration.add(has, -5, `Gorajan ${name}`);
 	}
+
+	if (isEmergedZuk) {
+		emergedZukDeathChance.add(meleeEmpyrean, -12, 'Empyrean');
+		duration.add(meleeEmpyrean, -8, 'Empyrean');
+	}
+
 	preZukDeathChance.add(rangeGear.hasEquipped('Justiciar faceguard'), -5, 'Just. faceguard');
 
 	const hasSuffering =
@@ -394,6 +407,7 @@ async function infernoRun({
 		zukDeathChance.add(hasTzkalCape, -5, 'TzKal cape');
 		emergedZukDeathChance.add(hasTzkalCape, -10, 'TzKal cape');
 		duration.add(allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
+		duration.add(allItems.includes(itemID('Searcrown band')), -7, 'Searcrown band');
 		emergedZukDeathChance.add(user.skillLevel('defence') === 120, -10, '120 Defence');
 		const emergedKC = await user.fetchMinigameScore('emerged_inferno');
 		if (emergedKC > 0) {

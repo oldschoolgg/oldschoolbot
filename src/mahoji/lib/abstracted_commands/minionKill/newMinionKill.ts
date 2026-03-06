@@ -1,4 +1,10 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
+import {
+	defaultIslandUpgrades,
+	defaultMaintenanceTimestamps,
+	getBossSpeedBonus,
+	type IslandUpgradeTiers
+} from '@/lib/bso/commands/islandUpgrades.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
@@ -46,6 +52,7 @@ const newMinionKillReturnSchema = z.object({
 
 export type MinionKillReturn = z.infer<typeof newMinionKillReturnSchema>;
 export interface MinionKillOptions {
+	islandUpgrades?: IslandUpgradeTiers;
 	attackStyles: AttackStyles[];
 	gearBank: GearBank;
 	currentSlayerTask: CurrentSlayerInfo;
@@ -276,6 +283,29 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			if (boostResult.message) speedDurationResult.messages.push(boostResult.message);
 		}
 	}
+
+	const islandBossIDs = [
+		142_001, // Orym
+		142_002, // Orrodil
+		142_003, // Crystalline Sentinel
+		142_004, // Fungal Behemoth
+		142_005, // Elder Mimic
+		142_006 // Burning Dominion
+	];
+
+	const islandUpgrades = args.islandUpgrades ?? defaultIslandUpgrades;
+	const islandMaint = (args.islandUpgrades as any)?.maintenance ?? defaultMaintenanceTimestamps;
+	const islandAssignment = (args.islandUpgrades as any)?.assignment ?? null;
+	const islandBossBonus = islandBossIDs.includes(monster.id)
+		? getBossSpeedBonus(islandUpgrades, islandMaint, islandAssignment)
+		: 0;
+	if (islandBossBonus > 0) {
+		duration = reduceNumByPercent(duration, islandBossBonus * 100);
+		speedDurationResult.messages.push(
+			`${(islandBossBonus * 100).toFixed(0)}% faster kills (Warcamp Fortifications)`
+		);
+	}
+
 	duration = Math.ceil(duration);
 
 	speedDurationResult.updateBank.itemCostBank.freeze();

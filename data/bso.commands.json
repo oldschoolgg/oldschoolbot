@@ -16,6 +16,7 @@
 			"inferno",
 			"birdhouses",
 			"aerial_fishing",
+			"gemstone_fishing",
 			"enchant",
 			"bury",
 			"scatter",
@@ -65,7 +66,8 @@
 			"balthazars_big_bonanza",
 			"divine_dominion",
 			"guthixian_cache",
-			"turaels_trials"
+			"turaels_trials",
+			"brimstone_distillery"
 		]
 	},
 	{

@@ -1,3 +1,4 @@
+import { defaultIslandUpgrades, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
@@ -88,7 +89,8 @@ export class BaseUser {
 			minionName: this.minionName,
 
 			materials: this.ownedMaterials(),
-			pet: this.user.minion_equippedPet
+			pet: this.user.minion_equippedPet,
+			island_upgrades: (this.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
 		});
 	}
 

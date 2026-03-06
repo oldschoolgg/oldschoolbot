@@ -58,6 +58,11 @@ export async function chompyHuntCommand(user: MUser, channelId: string) {
 		}
 	}
 
+	if (user.hasEquippedOrInBank('Celestial pendant')) {
+		quantity = Math.floor(quantity * 1.1);
+		boosts.push('10% more chompies from Celestial pendant');
+	}
+
 	const avasDevice = avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
 	if (avasDevice) {
 		boosts.push(`${avasDevice.reduction}% less arrows for ${avasDevice.item.name}`);

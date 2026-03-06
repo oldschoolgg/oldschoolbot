@@ -92,7 +92,7 @@ export interface KillableMonster {
 	defaultAttackStyles?: AttackStyles[];
 	disallowedAttackStyles?: AttackStyles[];
 	customMonsterHP?: number;
-	combatXpMultiplier?: number;
+	combatXpMultiplier?: number | ((user: MUser, attackStyles?: string[]) => number);
 	itemCost?: Consumable | Consumable[];
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;
