@@ -217,7 +217,7 @@ async function checkTOBUser(
 	}
 
 	const arrowsRequired = 150 * quantity;
-	if (!user.hasEquipped('Chincannon') && rangeGear.get('ammo')!.quantity < arrowsRequired) {
+	if (!user.gear.range.hasEquipped('Chincannon') && rangeGear.get('ammo')!.quantity < arrowsRequired) {
 		return [
 			true,
 			`${user.usernameOrMention}, you need at least ${arrowsRequired} arrows equipped in your range setup.`
