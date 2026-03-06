@@ -25,6 +25,7 @@ import { fishingTask } from '@/tasks/minions/fishingActivity.js';
 import { fletchingTask } from '@/tasks/minions/fletchingActivity.js';
 import { CreateForestersRationsTask } from '@/tasks/minions/forestersRationActivity.js';
 import { gloryChargingTask } from '@/tasks/minions/gloryChargingActivity.js';
+import { gloryUnchargingTask } from '@/tasks/minions/gloryUnchargingActivity.js';
 import { groupoMonsterTask } from '@/tasks/minions/groupMonsterActivity.js';
 import { aerialFishingTask } from '@/tasks/minions/HunterActivity/aerialFishingActivity.js';
 import { birdHouseTask } from '@/tasks/minions/HunterActivity/birdhouseActivity.js';
@@ -146,6 +147,7 @@ export const allTasks: MinionTask[] = [
 	fishingTask,
 	fletchingTask,
 	gloryChargingTask,
+	gloryUnchargingTask,
 	groupoMonsterTask,
 	herbloreTask,
 	fletchingTask,
