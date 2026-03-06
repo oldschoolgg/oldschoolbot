@@ -1,4 +1,4 @@
-import { MathRNG } from '@oldschoolgg/rng';
+import { MathRNG } from 'node-rng';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { startServer } from '@/http/server.js';

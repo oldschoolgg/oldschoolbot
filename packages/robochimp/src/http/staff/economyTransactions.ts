@@ -1,6 +1,5 @@
-import { isValidDiscordSnowflake } from '@oldschoolgg/util';
+import { ZEconomyTransactionsQuery } from '@oldschoolgg/schemas';
 import { Hono } from 'hono';
-import { z } from 'zod';
 
 import { ensureAuthenticated, ensureModeratorUser } from '@/http/middlewares.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
@@ -9,78 +8,10 @@ export const economyTransactionServer = new Hono<HonoServerGeneric>();
 economyTransactionServer.use(ensureAuthenticated);
 economyTransactionServer.use(ensureModeratorUser);
 
-const economyTransactionTypeEnum = z.enum(['trade', 'giveaway', 'duel', 'gri', 'gift']);
+economyTransactionServer.post('/', async c => {
+	const body = await c.req.json();
 
-const sortFieldEnum = z.enum(['date', 'sender', 'recipient', 'type', 'guild_id']);
-const sortOrderEnum = z.enum(['asc', 'desc']);
-
-const querySchema = z.object({
-	bot: z.enum(['osb', 'bso']),
-	sender: z
-		.string()
-		.optional()
-		.refine(val => !val || val.split(',').every(id => isValidDiscordSnowflake(id.trim())), {
-			message: 'Invalid sender ID(s). Must be valid Discord snowflake(s)'
-		}),
-	recipient: z
-		.string()
-		.optional()
-		.refine(val => !val || isValidDiscordSnowflake(val), {
-			message: 'Invalid recipient ID. Must be a valid Discord snowflake'
-		}),
-	guild_id: z
-		.string()
-		.optional()
-		.refine(val => !val || isValidDiscordSnowflake(val), {
-			message: 'Invalid guild ID. Must be a valid Discord snowflake'
-		}),
-	type: economyTransactionTypeEnum.optional(),
-	date_from: z
-		.string()
-		.optional()
-		.refine(
-			val => {
-				if (!val) return true;
-				const date = new Date(val);
-				return !isNaN(date.getTime());
-			},
-			{ message: 'Invalid date_from format. Must be a valid ISO 8601 date string' }
-		),
-	date_to: z
-		.string()
-		.optional()
-		.refine(
-			val => {
-				if (!val) return true;
-				const date = new Date(val);
-				return !isNaN(date.getTime());
-			},
-			{ message: 'Invalid date_to format. Must be a valid ISO 8601 date string' }
-		),
-
-	sort_by: sortFieldEnum.optional().default('date'),
-	sort_order: sortOrderEnum.optional().default('desc'),
-
-	limit: z
-		.string()
-		.optional()
-		.default('50')
-		.refine(val => !isNaN(Number(val)) && Number(val) > 0 && Number(val) <= 1000, {
-			message: 'Limit must be a number between 1 and 1000'
-		}),
-	offset: z
-		.string()
-		.optional()
-		.default('0')
-		.refine(val => !isNaN(Number(val)) && Number(val) >= 0, {
-			message: 'Offset must be a non-negative number'
-		})
-});
-
-economyTransactionServer.get('/', async c => {
-	const rawQuery = c.req.query();
-
-	const parseResult = querySchema.safeParse(rawQuery);
+	const parseResult = ZEconomyTransactionsQuery.safeParse(body);
 	if (!parseResult.success) {
 		return httpErr.BAD_REQUEST({ message: JSON.parse(parseResult.error.message) });
 	}
@@ -120,7 +51,6 @@ economyTransactionServer.get('/', async c => {
 	const offset = Number(query.offset);
 
 	const orderBy = { [query.sort_by]: query.sort_order };
-
 	try {
 		const [transactions, total] =
 			query.bot === 'osb'

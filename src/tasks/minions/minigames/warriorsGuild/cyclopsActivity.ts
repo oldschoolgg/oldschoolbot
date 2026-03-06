@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Bank, itemID } from 'oldschooljs';
 
 import { CyclopsTable } from '@/lib/simulation/cyclops.js';
@@ -44,7 +43,7 @@ const defenders = [
 
 export const cyclopsTask: MinionTask = {
 	type: 'Cyclops',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { channelId, quantity } = data;
 
 		const userBank = user.bank;
@@ -62,7 +61,7 @@ export const cyclopsTask: MinionTask = {
 						highestDefenderOwned ? defenders.indexOf(highestDefenderOwned) - 1 : defenders.length - 1
 					)
 				];
-			if (roll(possibleDefenderToDrop.rollChance)) {
+			if (rng.roll(possibleDefenderToDrop.rollChance)) {
 				loot.add(possibleDefenderToDrop.itemID);
 			}
 			loot.add(CyclopsTable.roll());

@@ -1,11 +1,9 @@
-import { randInt } from '@oldschoolgg/rng';
-
 import {
 	type CanvasContext,
 	type CanvasImage,
 	canvasToBuffer,
 	createCanvas,
-	loadAndCacheLocalImage,
+	loadImage,
 	measureTextWidth
 } from '@/lib/canvas/canvasUtil.js';
 
@@ -13,10 +11,10 @@ let bg: CanvasImage | null = null;
 
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
-function arma(ctx: CanvasContext, username: string) {
+function arma(ctx: CanvasContext, username: string, rng: { randInt: (min: number, max: number) => number }) {
 	ctx.fillText("Your Kree'arra kill count is: ", 11, 10);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText(randInt(1, 20).toString(), 12 + measureTextWidth(ctx, "Your Kree'arra kill count is: "), 10);
+	ctx.fillText(rng.randInt(1, 20).toString(), 12 + measureTextWidth(ctx, "Your Kree'arra kill count is: "), 10);
 
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
@@ -35,10 +33,14 @@ function arma(ctx: CanvasContext, username: string) {
 	ctx.fillText(`${randMessage}*`, 12 + measureTextWidth(ctx, `${username}: `), 69);
 }
 
-function bandos(ctx: CanvasContext, username: string) {
+function bandos(ctx: CanvasContext, username: string, rng: { randInt: (min: number, max: number) => number }) {
 	ctx.fillText('Your General Graardor kill count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText(randInt(1, 20).toString(), 12 + measureTextWidth(ctx, 'Your General Graardor kill count is: '), 10);
+	ctx.fillText(
+		rng.randInt(1, 20).toString(),
+		12 + measureTextWidth(ctx, 'Your General Graardor kill count is: '),
+		10
+	);
 
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
@@ -57,11 +59,11 @@ function bandos(ctx: CanvasContext, username: string) {
 	ctx.fillText(`${randMessage}*`, 12 + measureTextWidth(ctx, `${username}: `), 69);
 }
 
-function ely(ctx: CanvasContext, username: string) {
+function ely(ctx: CanvasContext, username: string, rng: { randInt: (min: number, max: number) => number }) {
 	ctx.fillText('Your Corporeal Beast kill count is: ', 11, 40);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(
-		randInt(1, 20).toLocaleString(),
+		rng.randInt(1, 20).toLocaleString(),
 		12 + measureTextWidth(ctx, 'Your Corporeal Beast kill count is: '),
 		40
 	);
@@ -75,10 +77,14 @@ function ely(ctx: CanvasContext, username: string) {
 	ctx.fillText('*', 12 + measureTextWidth(ctx, `${username}: `), 70);
 }
 
-function sara(ctx: CanvasContext, username: string) {
+function sara(ctx: CanvasContext, username: string, rng: { randInt: (min: number, max: number) => number }) {
 	ctx.fillText('Your Commander Zilyana kill count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText(randInt(1, 20).toString(), 12 + measureTextWidth(ctx, 'Your Commander Zilyana kill count is: '), 10);
+	ctx.fillText(
+		rng.randInt(1, 20).toString(),
+		12 + measureTextWidth(ctx, 'Your Commander Zilyana kill count is: '),
+		10
+	);
 
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
@@ -95,8 +101,8 @@ function sara(ctx: CanvasContext, username: string) {
 	ctx.fillText(`${randMessage}*`, 12 + measureTextWidth(ctx, `${username}: `), 69);
 }
 
-function scythe(ctx: CanvasContext, username: string) {
-	const kc = randInt(1, 20);
+function scythe(ctx: CanvasContext, username: string, rng: { randInt: (min: number, max: number) => number }) {
+	const kc = rng.randInt(1, 20);
 	/* Your completed Theatre of Blood count is: X. */
 	ctx.fillText('Your completed Theatre of Blood count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
@@ -134,10 +140,14 @@ function scythe(ctx: CanvasContext, username: string) {
 	ctx.fillText('*', 12 + measureTextWidth(ctx, `${username}: `), 70);
 }
 
-function zammy(ctx: CanvasContext, username: string) {
+function zammy(ctx: CanvasContext, username: string, rng: { randInt: (min: number, max: number) => number }) {
 	ctx.fillText("Your K'ril Tsutsaroth kill count is: ", 11, 10);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText(randInt(1, 20).toString(), 12 + measureTextWidth(ctx, "Your K'ril Tsutsaroth kill count is: "), 10);
+	ctx.fillText(
+		rng.randInt(1, 20).toString(),
+		12 + measureTextWidth(ctx, "Your K'ril Tsutsaroth kill count is: "),
+		10
+	);
 
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
@@ -183,7 +193,7 @@ export const fakeCommand = defineCommand({
 			required: true
 		}
 	],
-	run: async ({ options }) => {
+	run: async ({ options, rng }) => {
 		const canvas = createCanvas(399, 100);
 		const ctx = canvas.getContext('2d');
 
@@ -191,12 +201,12 @@ export const fakeCommand = defineCommand({
 		ctx.fillStyle = '#000000';
 
 		if (!bg) {
-			bg = await loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
+			bg = await loadImage('./src/lib/resources/images/tob-bg.png');
 		}
 		ctx.drawImage(bg, 0, 0, bg.width, bg.height);
 		for (const [names, fn] of thingMap) {
 			if (names.has(options.type.toLowerCase())) {
-				fn(ctx, options.username);
+				fn(ctx, options.username, rng);
 				return {
 					files: [
 						{

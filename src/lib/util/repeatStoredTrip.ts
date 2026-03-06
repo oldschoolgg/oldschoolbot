@@ -787,7 +787,7 @@ export async function makeRepeatTripButtons(user: MUser) {
 	return buttons;
 }
 
-export async function repeatTrip(user: MUser, interaction: MInteraction, activity: Activity): CommandResponse {
+export async function repeatTrip(user: MUser, interaction: OSInteraction, activity: Activity): CommandResponse {
 	if (!activity || !activity.data || !activity.type) {
 		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}

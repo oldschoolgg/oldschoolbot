@@ -1,4 +1,5 @@
-import { randFloat, roll, shuffleArr } from '@oldschoolgg/rng';
+import { sumArr } from '@oldschoolgg/util';
+import { MathRNG, randFloat, roll } from 'node-rng';
 
 import { EItem } from '@/EItem.js';
 import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
@@ -6,7 +7,8 @@ import LootTable from '@/structures/LootTable.js';
 import Minigame from '@/structures/Minigame.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { resolveNameBank } from '@/util/bank.js';
-import { JSONClone, sumArr, Time } from '@/util/util.js';
+import { Time } from '@/util/smallUtils.js';
+import { JSONClone } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;
@@ -275,7 +277,7 @@ export class ChambersOfXericClass extends Minigame {
 		}
 
 		const onyxChance = options.team.length * 70;
-		for (const bank of shuffleArr(Object.values(lootResult))) {
+		for (const bank of MathRNG.shuffle(Object.values(lootResult))) {
 			if (roll(onyxChance)) {
 				bank.add('Onyx');
 				break;

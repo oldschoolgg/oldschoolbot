@@ -110,10 +110,18 @@ export const aerialFishingTask: MinionTask = {
 			duration: data.duration,
 			source: 'AerialFishing'
 		});
-		await user.incrementCreatureScore(bluegill.id, bluegillCaught);
-		await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
-		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
-		await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
+		if (bluegillCaught > 0) {
+			await user.incrementCreatureScore(bluegill.id, bluegillCaught);
+		}
+		if (commonTenchCaught > 0) {
+			await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
+		}
+		if (mottledEelCaught > 0) {
+			await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
+		}
+		if (greaterSirenCaught > 0) {
+			await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
+		}
 
 		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
 		if (xpBonusPercent > 0) {
@@ -128,7 +136,7 @@ export const aerialFishingTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = 636_833;
-		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(rng, user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;

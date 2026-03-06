@@ -40,3 +40,11 @@ These supplies are consumed every kill.
 | Spiders leg bottom    | 1/300         |
 | Red spiders' eggs     | 1/2 (200-600) |
 | Elder scroll piece    | 1/85          |
+
+## Mechanics notes
+
+- Kill time: 20 minutes each.
+- Requires [[qp:500]] and 1 KC of [[Celestara]].
+- Venatrix unlock is from harvesting a [[Toxic zygomite]] (which sets the Venatrix unlock bitfield).
+- Hard requirement: melee weapon with at least the slash stat equivalent to [[Soulreaper axe]].
+- Elder scroll piece drop is **1/85**.

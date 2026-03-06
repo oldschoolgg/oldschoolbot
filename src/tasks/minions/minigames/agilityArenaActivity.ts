@@ -1,4 +1,3 @@
-import { randomVariation, roll } from '@oldschoolgg/rng';
 import { calcWhatPercent, Emoji, Events, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
@@ -7,7 +6,7 @@ import { skillingPetDropRate } from '@/lib/util.js';
 
 export const agilityArenaTask: MinionTask = {
 	type: 'AgilityArena',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { channelId, duration } = data;
 
 		const currentLevel = user.skillsAsLevels.agility;
@@ -19,7 +18,7 @@ export const agilityArenaTask: MinionTask = {
 		let ticketsReceived = Math.floor(duration / timePerTicket);
 
 		// Approximately 25k xp/hr (416xp per min) from the obstacles
-		let agilityXP = randomVariation((duration / Time.Minute) * 416, 1);
+		let agilityXP = rng.randomVariation((duration / Time.Minute) * 416, 1);
 		agilityXP = reduceNumByPercent(agilityXP, 100 - calcWhatPercent(currentLevel, 99));
 
 		// 10% bonus tickets for karamja elite
@@ -27,7 +26,7 @@ export const agilityArenaTask: MinionTask = {
 		const hasKaramjaElite = user.hasDiary('karamja.elite');
 		if (hasKaramjaElite) {
 			for (let i = 0; i < ticketsReceived; i++) {
-				if (roll(10)) bonusTickets++;
+				if (rng.roll(10)) bonusTickets++;
 			}
 		}
 		ticketsReceived += bonusTickets;
@@ -55,7 +54,7 @@ export const agilityArenaTask: MinionTask = {
 		// Roll for pet
 		const { petDropRate } = skillingPetDropRate(user, 'agility', 26_404);
 		for (let i = 0; i < ticketsReceived; i++) {
-			if (roll(petDropRate)) {
+			if (rng.roll(petDropRate)) {
 				itemsToAdd.add('Giant Squirrel');
 				globalClient.emit(
 					Events.ServerNotification,

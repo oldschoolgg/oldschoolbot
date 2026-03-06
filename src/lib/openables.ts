@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import type { IFarmingContract } from '@oldschoolgg/schemas';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
@@ -91,6 +90,7 @@ interface OpenArgs {
 	quantity: number;
 	user: MUser;
 	self: UnifiedOpenable;
+	rng: RNGProvider;
 }
 
 export interface UnifiedOpenable {
@@ -120,14 +120,14 @@ for (const clueTier of ClueTiers) {
 		id: casketItem.id,
 		openedItem: casketItem,
 		aliases: [clueTier.name.toLowerCase()],
-		output: async ({ quantity, user, self }) => {
+		output: async ({ quantity, user, self, rng }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
 			const loot = clueTier.table.roll(quantity);
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				const table = clueTier.name === 'Master' ? MasterMimicTable : EliteMimicTable;
 				for (let i = 0; i < quantity; i++) {
-					if (roll(clueTier.mimicChance)) {
+					if (rng.roll(clueTier.mimicChance)) {
 						loot.add(table.roll());
 						mimicNumber++;
 					}
@@ -549,13 +549,15 @@ export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
 export function getOpenableLoot({
 	openable,
 	quantity,
-	user
+	user,
+	rng
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
+	rng: RNGProvider;
 }) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity });
+		: openable.output({ user, self: openable, quantity, rng });
 }

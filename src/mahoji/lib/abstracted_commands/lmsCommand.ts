@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -15,7 +14,8 @@ export async function lmsCommand(
 	},
 	user: MUser,
 	channelId: string,
-	interaction: MInteraction
+	interaction: MInteraction,
+	rng: RNGProvider
 ) {
 	const stats = await getUsersLMSStats(user);
 
@@ -85,7 +85,7 @@ export async function lmsCommand(
 	}
 	const durationPerGame = Time.Minute * 5.5;
 	const quantity = Math.floor((await user.calcMaxTripLength('LastManStanding')) / durationPerGame);
-	const duration = randomVariation(quantity * durationPerGame, 5);
+	const duration = rng.randomVariation(quantity * durationPerGame, 5);
 
 	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'lms',

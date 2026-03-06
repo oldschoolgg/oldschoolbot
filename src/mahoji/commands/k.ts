@@ -94,7 +94,7 @@ export const minionKCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user, channelId, interaction }) => {
+	run: async ({ options, user, channelId, interaction, rng }) => {
 		if (options.show_info) {
 			return interaction.returnStringOrFile(await monsterInfo(user, options.name));
 		}
@@ -103,6 +103,7 @@ export const minionKCommand = defineCommand({
 			interaction,
 			channelId,
 			options.name,
+			rng,
 			options.quantity,
 			options.method,
 			options.wilderness,

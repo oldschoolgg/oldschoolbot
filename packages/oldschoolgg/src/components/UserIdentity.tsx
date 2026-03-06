@@ -13,7 +13,7 @@ function fetchUserIdentityCached(userId: string): Promise<SUserIdentity> {
 	const pending = inFlight.get(userId);
 	if (pending) return pending;
 
-	const p = api.staff
+	const p = api.users
 		.fetchUserIdentity(userId)
 		.then(v => {
 			resolved.set(userId, v);
@@ -43,7 +43,7 @@ export function UserIndentity({ userId }: { userId: string }) {
 	return (
 		<div
 			title="Copy User ID"
-			className="flex flex-row gap-2 items-center bg-black/80 w-max pr-2 py-0 rounded-full cursor-pointer select-none hover:bg-black/40"
+			className={`flex flex-row gap-2 items-center bg-black/80 w-max pr-2 py-0 rounded-full cursor-pointer select-none hover:bg-black/40 ${identity?.blacklisted ? 'border-2 border-red-600 bg-red-500/20 hover:bg-red-900/80' : ''}`}
 			onClick={() => {
 				navigator.clipboard.writeText(userId);
 			}}

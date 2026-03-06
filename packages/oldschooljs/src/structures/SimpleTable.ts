@@ -1,4 +1,4 @@
-import { randInt } from '@oldschoolgg/rng';
+import { randInt } from 'node-rng';
 
 export interface SimpleTableItem<T> {
 	item: T;

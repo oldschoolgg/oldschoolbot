@@ -62,3 +62,21 @@ Each casket rolls 4–7 times with additional tertiary chances:
 - Lord Marshal armour, Commander outfit, various parasols, Akumu mask and detective clothing – 1/125
 - [[Clue bag]], [[Inventors tools]], [[Elder knowledge]] – 1/100 if not owned
 - [[Octo]] pet – 1/700
+
+
+## Exact creation and key rates
+
+- Elder clues are created with [[/create item\:Clue scroll (elder)]] using **3x [[Elder scroll piece]]**.
+- Confirmed elder-piece sources in BSO docs above include:
+  - [[Akumu]]: 1/85
+  - [[Venatrix]]: 1/85
+  - [[Shrimpling]]: 1/80
+  - [[Chimpling jar]]: 1/100
+  - [[Eternal impling jar]]: 1/100
+  - [[Mystery impling jar]]: 1/100
+
+## Eagle tame interaction
+
+- Eagle tames can complete elder clues only if fed [[Elder knowledge]].
+- Eagle clue trips require all STASH units built/full for Grandmaster and Elder tiers.
+- See [STASH units](/osb/skills/construction/stash-units/) for setup requirements.

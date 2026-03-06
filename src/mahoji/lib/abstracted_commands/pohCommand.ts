@@ -48,13 +48,18 @@ export async function getPOH(userId: string): Promise<PlayerOwnedHouse> {
 
 	return result;
 }
-export async function makePOHImage(user: MUser, showSpaces = false): Promise<SendableFile> {
+export async function makePOHImage(
+	itx: OSInteraction,
+	{ showSpaces }: { showSpaces?: boolean } = {}
+): Promise<SendableFile> {
+	const { user, rng } = itx;
 	const poh = await getPOH(user.id);
-	const buffer = await pohImageGenerator.run(poh, showSpaces);
+	const buffer = await pohImageGenerator.run({ poh, rng, showSpaces });
 	return { buffer: buffer, name: 'image.jpg' };
 }
 
-export async function pohWallkitCommand(user: MUser, input: string): Promise<SendableMessage> {
+export async function pohWallkitCommand(itx: OSInteraction, input: string): Promise<SendableMessage> {
+	const { user } = itx;
 	const poh = await getPOH(user.id);
 	const currentWallkit = pohWallkits.find(i => i.imageID === poh.background_id)!;
 	const selectedKit = pohWallkits.find(i => stringMatches(i.name, input));
@@ -93,14 +98,15 @@ export async function pohWallkitCommand(user: MUser, input: string): Promise<Sen
 			background_id: selectedKit.imageID
 		}
 	});
-	return { files: [await makePOHImage(user)] };
+	return { files: [await makePOHImage(itx)] };
 }
 
-export async function pohBuildCommand(interaction: MInteraction, user: MUser, name: string) {
+export async function pohBuildCommand(itx: OSInteraction, name: string) {
+	const { user } = itx;
 	const poh = await getPOH(user.id);
 
 	if (!name) {
-		return { files: [await makePOHImage(user)] };
+		return { files: [await makePOHImage(itx)] };
 	}
 
 	const obj = PoHObjects.find(i => stringMatches(i.name, name));
@@ -136,7 +142,7 @@ export async function pohBuildCommand(interaction: MInteraction, user: MUser, na
 		if (inPlace !== null) {
 			str += ` You will lose the ${getPOHObject(inPlace).name} that you currently have there.`;
 		}
-		await interaction.confirmation(str);
+		await itx.confirmation(str);
 		await user.removeItemsFromBank(obj.itemCost);
 		await ClientSettings.updateBankSetting('construction_cost_bank', obj.itemCost);
 	}
@@ -168,15 +174,16 @@ export async function pohBuildCommand(interaction: MInteraction, user: MUser, na
 	}
 
 	return {
-		files: [await makePOHImage(user)],
+		files: [await makePOHImage(itx)],
 		content: str
 	};
 }
 
-export async function pohMountItemCommand(user: MUser, name: string) {
+export async function pohMountItemCommand(itx: OSInteraction, name: string) {
+	const { user } = itx;
 	const poh = await getPOH(user.id);
 	if (!name) {
-		return { files: [await makePOHImage(user)] };
+		return { files: [await makePOHImage(itx)] };
 	}
 
 	if (poh.mounted_item === null) {
@@ -211,14 +218,15 @@ export async function pohMountItemCommand(user: MUser, name: string) {
 	});
 
 	return {
-		files: [await makePOHImage(user)],
+		files: [await makePOHImage(itx)],
 		content: `You mounted a ${item.name} in your house, using 2x Magic stone and 1x ${
 			item.name
 		} (given back when another item is mounted).${currItem ? ` Refunded 1x ${Items.itemNameFromId(currItem)}.` : ''}`
 	};
 }
 
-export async function pohDestroyCommand(user: MUser, name: string) {
+export async function pohDestroyCommand(itx: OSInteraction, name: string) {
+	const { user } = itx;
 	const obj = PoHObjects.find(i => stringMatches(i.name, name));
 	if (!obj) {
 		return "That's not a valid thing to build in your PoH.";
@@ -238,7 +246,7 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 		});
 		await user.addItemsToBank({ items: new Bank().add(inPlace!, 1), collectionLog: false });
 		return {
-			files: [await makePOHImage(user)],
+			files: [await makePOHImage(itx)],
 			content: `You removed a ${obj.name} from your house, and were refunded 1x ${Items.itemNameFromId(inPlace!)}.`
 		};
 	}
@@ -264,7 +272,7 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 		}
 	});
 
-	return { files: [await makePOHImage(user)], content: str };
+	return { files: [await makePOHImage(itx)], content: str };
 }
 
 export async function pohListItemsCommand(): Promise<SendableMessage> {

@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { calcWhatPercent, Emoji, formatDuration, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -122,6 +121,7 @@ Check \`/raid cox itemboosts\` for more information on Item boosts.`;
 }
 
 export async function coxCommand(
+	rng: RNGProvider,
 	interaction: MInteraction,
 	channelId: string,
 	user: MUser,
@@ -231,7 +231,7 @@ export async function coxCommand(
 	const duration = sumArr(
 		Array(quantity)
 			.fill(raidDuration)
-			.map(d => randomVariation(d, 5))
+			.map(d => rng.randomVariation(d, 5))
 	);
 
 	let debugStr = '';

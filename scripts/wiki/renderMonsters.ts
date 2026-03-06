@@ -1,5 +1,3 @@
-import '../base.js';
-
 import { Markdown, Tab, Tabs, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
@@ -14,7 +12,7 @@ function escapeItemName(str: string) {
 
 const name = (id: number) => escapeItemName(Items.itemNameFromId(id)!);
 
-function renderMonstersMarkdown() {
+export function renderMonstersMarkdown() {
 	const markdown = new Markdown();
 
 	for (const monster of wikiMonsters) {
@@ -223,5 +221,3 @@ function renderMonstersMarkdown() {
 
 	handleMarkdownEmbed('monsters', 'osb/monsters.mdx', markdown.toString());
 }
-
-renderMonstersMarkdown();

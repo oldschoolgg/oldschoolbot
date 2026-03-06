@@ -1,4 +1,4 @@
-import { randomVariation, roll } from '@oldschoolgg/rng';
+import { randomVariation, roll } from 'node-rng';
 
 import { EItem } from '@/EItem.js';
 import { anglerOutfit } from '@/itemGroups.js';

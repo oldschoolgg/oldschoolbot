@@ -43,6 +43,12 @@ They'll **drop** all their current **loot and supplies** to get back as fast as 
 		);
 	}
 
+	globalClient.emitUserLog({
+		type: 'CANCEL_TRIP',
+		user_id: user.id,
+		activity_id: currentTask.id
+	});
+
 	await ActivityManager.cancelActivity(user.id);
 
 	return `${mName}'s trip was cancelled, and they're now available.`;

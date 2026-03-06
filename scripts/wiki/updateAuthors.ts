@@ -1,5 +1,3 @@
-import '../base.js';
-
 import { exec as execNonPromise } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { promisify } from 'node:util';
@@ -9,7 +7,7 @@ import { authorsMap } from './authors.js';
 
 const rawExecAsync = promisify(execNonPromise);
 
-async function updateAuthors() {
+export async function updateAuthors() {
 	const { stdout } = await rawExecAsync(`git log --pretty=format:"%an%x09" --name-only -- docs/src/content`);
 
 	const finalMap: Record<string, string[]> = {};
@@ -43,5 +41,3 @@ async function updateAuthors() {
 
 	writeFileSync('data/authors.json', JSON.stringify(finalMap, null, 4));
 }
-
-await updateAuthors();

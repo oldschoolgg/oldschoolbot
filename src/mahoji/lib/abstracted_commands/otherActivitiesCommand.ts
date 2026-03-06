@@ -6,30 +6,27 @@ import { strongHoldOfSecurityCommand } from '@/mahoji/lib/abstracted_commands/st
 export const otherActivities = [
 	{
 		name: 'Champions Challenge',
-		command: championsChallengeCommand,
 		type: activity_type_enum.ChampionsChallenge
 	},
 	{
 		name: 'Stronghold of Security',
-		command: championsChallengeCommand,
 		type: activity_type_enum.StrongholdOfSecurity
 	},
 	{
 		name: 'Combat Ring (Shayzien)',
-		command: combatRingCommand,
 		type: activity_type_enum.CombatRing
 	}
 ];
 
-export function otherActivitiesCommand(type: string, user: MUser, channelId: string) {
+export function otherActivitiesCommand(itx: OSInteraction, type: string) {
 	if (type === 'ChampionsChallenge') {
-		return championsChallengeCommand(user, channelId);
+		return championsChallengeCommand(itx);
 	}
 	if (type === 'StrongholdOfSecurity') {
-		return strongHoldOfSecurityCommand(user, channelId);
+		return strongHoldOfSecurityCommand(itx);
 	}
 	if (type === 'CombatRing') {
-		return combatRingCommand(user, channelId);
+		return combatRingCommand(itx);
 	}
 	return 'Invalid activity type.';
 }

@@ -1,0 +1,16 @@
+{
+	"name": "@oldschoolgg/gear",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/esm/index.d.mts",
+			"import": "./dist/esm/index.mjs"
+		}
+	},
+	"scripts": {
+		"build": "tsdown",
+		"test:types": "concurrently \"tsc -p src\" \"tsc -p tests\"",
+		"test:unit": "vitest run --coverage"
+	},
+	"dependencies": {}
+}

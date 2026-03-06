@@ -1,4 +1,3 @@
-import { randInt } from '@oldschoolgg/rng';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
@@ -217,7 +216,7 @@ export async function drawChestLootImage(options: DrawChestLootImageOptions): Pr
 	}
 
 	const anyoneGotPurple = canvasResults.some(result => result.isPurple);
-	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}${type.title.toLowerCase().replace(/\s+/g, '')}-${randInt(1, 1000)}.png`;
+	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}${type.title.toLowerCase().replace(/\s+/g, '')}-${Date.now()}.png`;
 
 	if (canvasResults.length === 1) {
 		const imageBuffer = await canvasResults[0].canvas.toBuffer();

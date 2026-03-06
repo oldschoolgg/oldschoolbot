@@ -1,4 +1,3 @@
-import { percentChance, randInt } from '@oldschoolgg/rng';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
@@ -35,7 +34,7 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 export const templeTrekkingTask: MinionTask = {
 	type: 'Trekking',
 
-	async run(data: TempleTrekkingActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: TempleTrekkingActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { channelId, quantity, difficulty } = data;
 
 		await user.incrementMinigameScore('temple_trekking', quantity);
@@ -51,14 +50,14 @@ export const templeTrekkingTask: MinionTask = {
 		let totalEncounters = 0;
 		for (let trip = 0; trip < quantity; trip++) {
 			const encounters = stringMatches(difficulty, 'hard')
-				? randInt(0, 7)
+				? rng.randInt(0, 7)
 				: stringMatches(difficulty, 'medium')
-					? randInt(0, 4)
-					: randInt(0, 5);
+					? rng.randInt(0, 4)
+					: rng.randInt(0, 5);
 
 			for (let i = 0; i < encounters; i++) {
 				// 2 out of 12 encounters drop loot, 16%
-				if (percentChance(16)) {
+				if (rng.percentChance(16)) {
 					if (stringMatches(difficulty, 'hard')) {
 						loot.add(HardEncounterLoot.roll());
 					} else if (stringMatches(difficulty, 'medium')) {
@@ -66,7 +65,7 @@ export const templeTrekkingTask: MinionTask = {
 					} else {
 						loot.add(EasyEncounterLoot.roll());
 					}
-				} else if (percentChance(3)) {
+				} else if (rng.percentChance(3)) {
 					const piece = getLowestCountOutfitPiece(userBank, user);
 					userBank.add(piece);
 					loot.add(piece);

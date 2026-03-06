@@ -8,7 +8,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',
-	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish, rng }) {
 		const { channelId, quantity } = data;
 		await user.incrementMinigameScore('fishing_trawler', quantity);
 
@@ -17,11 +17,12 @@ export const trawlerTask: MinionTask = {
 		let totalXP = 0;
 		const hasEliteArdy = user.hasDiary('ardougne.elite');
 		for (let i = 0; i < quantity; i++) {
-			const { loot: _loot, xp } = fishingTrawlerLoot(
-				user.skillsAsLevels.fishing,
-				hasEliteArdy,
-				loot.clone().add(user.allItemsOwned)
-			);
+			const { loot: _loot, xp } = fishingTrawlerLoot({
+				fishingLevel: user.skillsAsLevels.fishing,
+				hasEliteArd: hasEliteArdy,
+				bank: loot.clone().add(user.allItemsOwned),
+				rng
+			});
 			totalXP += xp;
 			loot.add(_loot);
 		}

@@ -1,5 +1,5 @@
-import { cryptoRng } from '@oldschoolgg/rng/crypto';
 import { Time } from '@oldschoolgg/toolkit';
+import { cryptoRng } from 'node-rng/crypto';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 

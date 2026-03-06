@@ -497,12 +497,12 @@ export const activitiesCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, channelId, user, interaction }) => {
+	run: async ({ options, channelId, user, interaction, rng }) => {
 		// Minion can be busy
 		if (options.decant) {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
 		}
-		if (options.inferno?.action === 'stats') return infernoStatsCommand(user);
+		if (options.inferno?.action === 'stats') return infernoStatsCommand({ rng, user });
 		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
 
 		// Minion must be free
@@ -511,12 +511,12 @@ export const activitiesCommand = defineCommand({
 		if (isBusy) return busyStr;
 
 		if (options.other) {
-			return otherActivitiesCommand(options.other.activity, user, channelId);
+			return otherActivitiesCommand(interaction, options.other.activity);
 		}
 		if (options.birdhouses?.action === 'harvest') {
 			return birdhouseHarvestCommand(user, channelId, options.birdhouses.birdhouse);
 		}
-		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelId);
+		if (options.inferno?.action === 'start') return infernoStartCommand({ rng, user, channelId });
 		if (options.plank_make?.action === 'sawmill') {
 			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelId);
 		}
@@ -524,7 +524,7 @@ export const activitiesCommand = defineCommand({
 			return butlerCommand(user, options.plank_make.type, options.plank_make.quantity, channelId);
 		}
 		if (options.chompy_hunt?.action === 'start') {
-			return chompyHuntCommand(user, channelId);
+			return chompyHuntCommand(interaction);
 		}
 		if (options.chompy_hunt?.action === 'claim') {
 			return chompyHuntClaimCommand(user);
@@ -541,7 +541,7 @@ export const activitiesCommand = defineCommand({
 			);
 		}
 		if (options.camdozaal) {
-			return camdozaalCommand(user, channelId, options.camdozaal.action, options.camdozaal.quantity);
+			return camdozaalCommand(rng, user, channelId, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.collect) {
 			return collectCommand(
@@ -562,10 +562,10 @@ export const activitiesCommand = defineCommand({
 			return chargeWealthCommand(user, channelId, options.charge.quantity);
 		}
 		if (options.fight_caves) {
-			return fightCavesCommand(user, channelId);
+			return fightCavesCommand({ rng, user, channelId });
 		}
 		if (options.aerial_fishing) {
-			return aerialFishingCommand(user, channelId);
+			return aerialFishingCommand({ rng, user, channelId });
 		}
 		if (options.enchant) {
 			return enchantCommand(user, channelId, options.enchant.name, options.enchant.quantity);
@@ -587,18 +587,18 @@ export const activitiesCommand = defineCommand({
 		}
 		if (options.underwater) {
 			if (options.underwater.agility_thieving) {
-				return underwaterAgilityThievingCommand(
+				return underwaterAgilityThievingCommand({
+					rng,
 					channelId,
 					user,
-					options.underwater.agility_thieving.training_skill,
-					options.underwater.agility_thieving.minutes,
-					options.underwater.agility_thieving.no_stams
-				);
+					trainingSkill: options.underwater.agility_thieving.training_skill,
+					minutes: options.underwater.agility_thieving.minutes,
+					noStams: options.underwater.agility_thieving.no_stams
+				});
 			}
 			if (options.underwater.drift_net_fishing) {
 				return driftNetCommand(
-					channelId,
-					user,
+					interaction,
 					options.underwater.drift_net_fishing.minutes,
 					options.underwater.drift_net_fishing.no_stams
 				);

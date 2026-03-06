@@ -4,8 +4,11 @@
 		"outDir": "dist",
 		"jsx": "react-jsx",
 		"noEmit": false,
-		"isolatedDeclarations": true,
+		"paths": {
+			"@/*": ["../../src/*"],
+			"@scripts/*": ["../../scripts/*"]
+		},
 		"isolatedModules": true
 	},
-	"include": ["src"]
+	"include": ["src", "../../src/**/*"]
 }

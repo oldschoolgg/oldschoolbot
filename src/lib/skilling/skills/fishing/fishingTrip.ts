@@ -1,4 +1,3 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 import { match } from 'ts-pattern';
@@ -122,7 +121,7 @@ export function calcFishingTripResult({
 
 	// Add clue scrolls
 	if (fish.clueScrollChance) {
-		addSkillingClueToLoot(gearBank, 'fishing', quantity, fish.clueScrollChance, updateBank.itemLootBank);
+		addSkillingClueToLoot(rng, gearBank, 'fishing', quantity, fish.clueScrollChance, updateBank.itemLootBank);
 	}
 
 	// Add barbarian fish to loot

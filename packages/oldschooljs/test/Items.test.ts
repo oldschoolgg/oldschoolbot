@@ -1,7 +1,7 @@
+import { EquipmentSlot } from '@oldschoolgg/gear';
 import { beforeAll, describe, expect, test } from 'vitest';
 
 import { EItem } from '@/EItem.js';
-import { EquipmentSlot } from '@/meta/item.js';
 import Openables from '@/simulation/openables/index.js';
 import { Items } from '@/structures/Items.js';
 

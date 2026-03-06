@@ -1,4 +1,4 @@
-import type { RNGProvider } from '@oldschoolgg/rng';
+import type { RNGProvider } from 'node-rng';
 
 const discordEpoch = 1_420_070_400_000;
 

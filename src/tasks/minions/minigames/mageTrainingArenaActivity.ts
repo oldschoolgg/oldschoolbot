@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -8,7 +7,7 @@ export const pizazzPointsPerHour = 100;
 
 export const mageTrainingTask: MinionTask = {
 	type: 'MageTrainingArena',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
 		const { channelId, quantity, duration } = data;
 
 		await user.incrementMinigameScore('magic_training_arena', quantity);
@@ -16,7 +15,7 @@ export const mageTrainingTask: MinionTask = {
 		const loot = new Bank();
 
 		const baseXP = (25_000 / (Time.Minute * 60)) * duration;
-		const xp = randomVariation(baseXP, 5);
+		const xp = rng.randomVariation(baseXP, 5);
 		const xpRes = await user.addXP({
 			skillName: 'magic',
 			amount: xp,

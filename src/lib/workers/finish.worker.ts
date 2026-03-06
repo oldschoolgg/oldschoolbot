@@ -2,6 +2,7 @@ import type { FinishWorkerArgs, FinishWorkerReturn } from '@/lib/workers/index.j
 import '../data/itemAliases.js';
 
 import { removeFromArr } from '@oldschoolgg/toolkit';
+import { MathRNG } from 'node-rng';
 import { Bank, Items } from 'oldschooljs';
 
 if (global.prisma) {
@@ -25,7 +26,7 @@ export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerRetur
 	for (let i = 0; i < maxAttempts; i++) {
 		if (finishCL.every(id => loot.has(id))) break;
 		kc++;
-		const res = val.kill({ accumulatedLoot: loot, totalRuns: i });
+		const res = val.kill({ accumulatedLoot: loot, totalRuns: i, rng: MathRNG });
 		const thisLoot = 'cost' in res ? res.loot : res;
 		if ('cost' in res) cost.add(res.cost);
 

@@ -1,10 +1,9 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { Items } from 'oldschooljs';
 
 import { checkDegradeableItemCharges, degradeItem } from '@/lib/degradeableItems.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 
-export async function bloodEssence(user: MUser, quantity: number): Promise<number> {
+export async function bloodEssence(rng: RNGProvider, user: MUser, quantity: number): Promise<number> {
 	let bonusQuantity = 0;
 	const bloodEssenceCharges = await checkDegradeableItemCharges({
 		item: Items.getOrThrow('Blood essence (active)'),
@@ -14,7 +13,7 @@ export async function bloodEssence(user: MUser, quantity: number): Promise<numbe
 		for (let i = 0; i < quantity; i++) {
 			if (bonusQuantity === bloodEssenceCharges - 1) {
 				break;
-			} else if (percentChance(50)) {
+			} else if (rng.percentChance(50)) {
 				bonusQuantity++;
 			}
 		}

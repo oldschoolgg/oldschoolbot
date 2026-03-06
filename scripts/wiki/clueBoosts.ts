@@ -1,12 +1,10 @@
-import '../base.js';
-
 import { Markdown } from '@oldschoolgg/toolkit';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { clueGlobalBoosts, clueTierBoosts } from '@/mahoji/commands/clue.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
-function clueBoosts() {
+export function clueBoosts() {
 	const markdown = new Markdown();
 
 	markdown.addLine('### Global Boosts');
@@ -28,5 +26,3 @@ function clueBoosts() {
 
 	handleMarkdownEmbed('clueboosts', 'osb/clues.mdx', markdown.toString());
 }
-
-clueBoosts();

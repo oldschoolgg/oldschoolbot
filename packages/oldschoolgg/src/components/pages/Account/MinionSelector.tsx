@@ -28,7 +28,7 @@ export function MinionSelector({ onSelect }: { onSelect?: (bot: 'osb' | 'bso', u
 				for (const account of response.users) {
 					let identity: SUserIdentity | null = null;
 					try {
-						identity = await api.staff.fetchUserIdentity(account.user_id);
+						identity = await api.users.fetchUserIdentity(account.user_id);
 					} catch (e) {
 						console.error('Failed to fetch identity for', account.user_id, e);
 					}
@@ -86,7 +86,7 @@ export function MinionSelector({ onSelect }: { onSelect?: (bot: 'osb' | 'bso', u
 
 							<div className="flex flex-row items-center">
 								<img
-									src={`https://cdn.oldschool.gg/website/${minion.bot}-avatar-200.webp`}
+									src={`https://cdn.oldschool.gg/website/${minion.bot}-avatar-100.webp`}
 									alt=""
 									className="w-5 h-5 rounded-full mr-1"
 								/>

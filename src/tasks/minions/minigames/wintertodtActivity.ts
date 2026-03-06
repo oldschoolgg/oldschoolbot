@@ -27,7 +27,8 @@ export const wintertodtTask: MinionTask = {
 					points,
 					itemsOwned: user.allItemsOwned.clone().add(loot),
 					skills: user.skillsAsXP,
-					firemakingXP: user.skillsAsXP.firemaking
+					firemakingXP: user.skillsAsXP.firemaking,
+					rng
 				})
 			);
 		}

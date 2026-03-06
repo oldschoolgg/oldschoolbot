@@ -10,12 +10,15 @@ describe('POH Image', async () => {
 	await bankImageTask.ready;
 	test('Basic POH Image', async () => {
 		const result = await pohImageGenerator.run({
-			prayer_altar: 13_197,
-			throne: 13_667,
-			torch: 13_342,
-			mounted_cape: 29_210,
-			background_id: 1
-		} as any);
+			// @ts-expect-error
+			poh: {
+				prayer_altar: 13_197,
+				throne: 13_667,
+				torch: 13_342,
+				mounted_cape: 29_210,
+				background_id: 1
+			}
+		});
 
 		await writeFile(path.join(baseSnapshotPath, 'poh-basic.png'), result);
 	});

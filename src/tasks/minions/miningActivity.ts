@@ -58,7 +58,7 @@ export function determineMiningResult({
 
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
-		addSkillingClueToLoot(gearBank, 'mining', quantity, ore.clueScrollChance, updateBank.itemLootBank);
+		addSkillingClueToLoot(rng, gearBank, 'mining', quantity, ore.clueScrollChance, updateBank.itemLootBank);
 	}
 
 	// Roll for pet

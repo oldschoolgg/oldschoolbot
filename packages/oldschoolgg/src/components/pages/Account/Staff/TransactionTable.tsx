@@ -2,7 +2,9 @@ import { toTitleCase } from '@oldschoolgg/util';
 import { type ColumnDef, flexRender, getCoreRowModel, type SortingState, useReactTable } from '@tanstack/react-table';
 import { useMemo } from 'react';
 
+import { BankImage } from '@/components/BankImage/BankImage.js';
 import { UserIndentity } from '@/components/UserIdentity.js';
+import { Modal } from '@/components/ui/Modal/Modal.js';
 import { timeAgo } from '@/lib/utils.js';
 import type { EconomyTransaction } from './types.js';
 
@@ -100,6 +102,41 @@ export function TransactionTable({
 				cell: ({ row }) => {
 					const userId = row.original.recipient;
 					return <UserIndentity userId={userId} />;
+				},
+				enableSorting: true
+			},
+			{
+				accessorKey: 'items_sent',
+				header: 'Items Traded',
+				cell: ({ row }) => {
+					const itemsSent = row.original.items_sent;
+					const itemsReceived = row.original.items_received;
+					return (
+						<div>
+							<Modal buttonText="View Items Traded" title="Items">
+								<div className="flex flex-col w-full min-w-[600px] gap-8 text-center">
+									{Object.keys(itemsSent).length > 0 && (
+										<div className="w-full flex items-center flex-col justify-center">
+											<h2 className="mb-2 text-gray-300 flex items-center gap-2">
+												<UserIndentity userId={row.original.sender} /> sent these items to{' '}
+												<UserIndentity userId={row.original.recipient} />
+											</h2>
+											<BankImage sort="name" title="" bank={itemsSent} />
+										</div>
+									)}
+									{Object.keys(itemsReceived).length > 0 && (
+										<div className="w-full flex items-center flex-col">
+											<h2 className="mb-2 text-gray-300 flex items-center gap-2">
+												<UserIndentity userId={row.original.recipient} /> sent these items to{' '}
+												<UserIndentity userId={row.original.sender} />
+											</h2>
+											<BankImage sort="name" title="" bank={itemsReceived} />
+										</div>
+									)}
+								</div>
+							</Modal>
+						</div>
+					);
 				},
 				enableSorting: true
 			}

@@ -1,5 +1,4 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
-import { randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	Events,
@@ -208,13 +207,13 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 	return response;
 }
 
-export async function barbAssaultStartCommand(channelId: string, user: MUser) {
+export async function barbAssaultStartCommand({ user, channelId, rng }: OSInteraction) {
 	const boosts = [];
 
-	let waveTime = randomVariation(Time.Minute * 4, 10);
+	let waveTime = rng.randomVariation(Time.Minute * 4, 10);
 
 	// Up to 12.5% speed boost for max strength
-	if (roll(4)) {
+	if (rng.roll(4)) {
 		const gearStats = user.gear.melee.stats;
 		const strengthPercent = round(calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength) / 8, 2);
 		waveTime = reduceNumByPercent(waveTime, strengthPercent);

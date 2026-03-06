@@ -1,5 +1,4 @@
 import { userMention } from '@oldschoolgg/discord';
-import { percentChance, randFloat, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	exponentialPercentScale,
@@ -9,7 +8,7 @@ import {
 	sumArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, Items, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EItem, EMonster, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { BitField } from '@/lib/constants.js';
@@ -71,7 +70,7 @@ export function checkNexUser(user: MUser): [false] | [true, string] {
 	}
 	if (defence < 50) return [true, `${tag}'s range gear is terrible! You need higher mage defence.`];
 	for (const slot of ['ammo', 'body', 'feet', 'head', 'body', 'legs'] as const) {
-		if (!rangeGear[slot]) {
+		if (!rangeGear.get(slot)) {
 			return [true, `${tag} has no item equipped in their ${slot} slot, in their range gear.`];
 		}
 	}
@@ -80,7 +79,7 @@ export function checkNexUser(user: MUser): [false] | [true, string] {
 	if (!allowedWeapons.includes(weapon.id)) {
 		return [true, `${tag} needs to be using one of these weapons: ${weaponsStr}.`];
 	}
-	const { ammo } = rangeGear;
+	const ammo = rangeGear.get('ammo');
 	if (!ammo) return [true, `${tag} has no ammo for their weapon equipped.`];
 	if (!allowedAmmo.includes(ammo.item)) {
 		return [true, `${tag} needs to be using one of these types of ammo: ${ammoStr}`];
@@ -128,6 +127,7 @@ interface TeamMember {
 
 export interface NexContext {
 	quantity: number;
+	rng: RNGProvider;
 	team: { id: string; teamID: number; contribution: number; deaths: number[]; fake?: boolean }[];
 }
 
@@ -141,7 +141,7 @@ export const purpleNexItems = resolveItems([
 	'Torva platelegs (damaged)'
 ]);
 
-export function handleNexKills({ quantity, team }: NexContext) {
+export function handleNexKills({ quantity, team, rng }: NexContext) {
 	const teamLoot = new TeamLoot(purpleNexItems);
 
 	for (let i = 0; i < quantity; i++) {
@@ -150,13 +150,13 @@ export function handleNexKills({ quantity, team }: NexContext) {
 
 		const survivors = team
 			.filter(u => !u.deaths.includes(i))
-			.map(u => ({ ...u, contribution: randomVariation(u.contribution, 10) }));
+			.map(u => ({ ...u, contribution: rng.randomVariation(u.contribution, 10) }));
 		if (survivors.length === 0) {
 			continue;
 		}
 
 		const totalContribution = sumArr(survivors.map(u => u.contribution));
-		const VIPContribution = randFloat(0, totalContribution); // random VIP, weighted by contribution
+		const VIPContribution = rng.randFloat(0, totalContribution); // random VIP, weighted by contribution
 		let cumulativeSum = 0;
 		let VIP = 0;
 		for (const user of survivors) {
@@ -176,15 +176,15 @@ export function handleNexKills({ quantity, team }: NexContext) {
 
 			if (teamMember.teamID === VIP) teamLoot.add(teamMember.id, 'Big bones');
 
-			if (roll(43) && percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
+			if (rng.roll(43) && rng.percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
 
-			if (roll(500) && percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
+			if (rng.roll(500) && rng.percentChance((VIPBonus * 100 * teamMember.contribution) / totalContribution)) {
 				teamLoot.add(teamMember.id, 'Nexling');
 			}
 
-			if (roll(48)) {
+			if (rng.roll(48)) {
 				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
 			}
 		}
@@ -193,7 +193,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	return teamLoot;
 }
 
-export async function calculateNexDetails({ team }: { team: MUser[] }) {
+export async function calculateNexDetails({ team, rng }: { team: MUser[]; rng: RNGProvider }) {
 	let maxTripLength = Math.max(...(await Promise.all(team.map(u => u.calcMaxTripLength('Nex')))));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
@@ -206,15 +206,15 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		const kcPercent = clamp(calcWhatPercent(nexKC, kcLearningCap), { min: 0, max: 100 });
 		const messages: string[] = [];
 
-		if ([rangeGear.ammo?.item].includes(itemID('Rune arrow'))) {
+		if ([rangeGear.get('ammo')?.item].includes(itemID('Rune arrow'))) {
 			offence -= 5;
 		}
 		offence -= 5;
-		const isUsingZCB = rangeGear.weapon?.item === itemID('Zaryte crossbow');
+		const isUsingZCB = rangeGear.get('weapon')?.item === itemID('Zaryte crossbow');
 		if (isUsingZCB) offence += 5;
 
 		offence -= 2;
-		const isUsingVambs = rangeGear.hands?.item === itemID('Zaryte vambraces');
+		const isUsingVambs = rangeGear.get('hands')?.item === itemID('Zaryte vambraces');
 		if (isUsingVambs) offence += 2;
 
 		offence -= 5;
@@ -241,14 +241,14 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 			[itemID('Elysian spirit shield'), increaseNumByPercent(lengthPerKill, 3), 'ely'],
 			[itemID('Spectral spirit shield'), increaseNumByPercent(lengthPerKill, 3), 'spectral']
 		] as const) {
-			if (rangeGear.shield?.item === shield) {
+			if (rangeGear.get('shield')?.item === shield) {
 				const timeToAdd = Math.ceil(time / team.length);
 				maxTripLength += timeToAdd;
 				messages.push(`+${formatDuration(timeToAdd, true)} for ${shortName}`);
 			}
 		}
 
-		if (rangeGear.shield?.item === itemID('Elysian spirit shield')) {
+		if (rangeGear.get('shield')?.item === EItem.ELYSIAN_SPIRIT_SHIELD) {
 			deathChance = reduceNumByPercent(deathChance, 30);
 			messages.push('-30% death% for ely');
 		}
@@ -263,7 +263,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 			id: member.id,
 			contribution,
 			deathChance,
-			died: percentChance(deathChance),
+			died: rng.percentChance(deathChance),
 			cost,
 			deaths: [],
 			messages,
@@ -283,7 +283,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	for (let i = 0; i < quantity; i++) {
 		let deathsThisKill = 0;
 		for (const user of resultTeam) {
-			if (percentChance(user.deathChance)) {
+			if (rng.percentChance(user.deathChance)) {
 				user.deaths.push(i);
 				deathsThisKill++;
 			}
@@ -297,9 +297,9 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	for (const teamUser of resultTeam.filter(m => !m.fake)) {
 		const user = team.find(u => u.id === teamUser.id)!;
 		const { rangeGear } = nexGearStats(user);
-		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
+		const ammo = rangeGear.get('ammo')?.item ?? EItem.DRAGON_ARROW;
 		// Between 50-60 ammo per kill (before reductions)
-		teamUser.cost.add(ammo, randInt(50, 60) * quantity);
+		teamUser.cost.add(ammo, rng.randInt(50, 60) * quantity);
 	}
 
 	const duration = quantity * lengthPerKill;
@@ -307,7 +307,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	return {
 		team: resultTeam,
 		quantity,
-		duration: wipedKill ? wipedKill * lengthPerKill - randomVariation(lengthPerKill / 2, 90) : duration,
+		duration: wipedKill ? wipedKill * lengthPerKill - rng.randomVariation(lengthPerKill / 2, 90) : duration,
 		fakeDuration: duration,
 		wipedKill
 	};

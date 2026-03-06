@@ -1,4 +1,3 @@
-import { randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, resolveItems } from 'oldschooljs';
 
@@ -130,18 +129,18 @@ const pages = resolveItems([
 	'Mysterious page 5'
 ]);
 
-export function openCoffin(floor: number, user: MUser): Bank {
+export function openCoffin(rng: RNGProvider, floor: number, user: MUser): Bank {
 	const loot = new Bank();
 	const floorObj = sepulchreFloors[floor - 1];
-	if (roll(floorObj.lockpickCoffinChance)) {
+	if (rng.roll(floorObj.lockpickCoffinChance)) {
 		loot.add('Strange old lockpick');
 	}
 	loot.add(floorObj.coffinTable.roll());
-	loot.add('Hallowed mark', randInt(floorObj.marksRange[0], floorObj.marksRange[1]));
+	loot.add('Hallowed mark', rng.randInt(floorObj.marksRange[0], floorObj.marksRange[1]));
 
 	const page = pages[floor - 1];
 
-	if (roll(10)) {
+	if (rng.roll(10)) {
 		const bank = user.allItemsOwned;
 		if (!bank.has(page)) {
 			loot.add(page);

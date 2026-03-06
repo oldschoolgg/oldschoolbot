@@ -1,10 +1,9 @@
-import { randomVariation } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-export async function strongHoldOfSecurityCommand(user: MUser, channelId: string) {
+export async function strongHoldOfSecurityCommand({ rng, user, channelId }: OSInteraction) {
 	if (await user.minionIsBusy()) {
 		return 'Your minion is busy.';
 	}
@@ -35,7 +34,7 @@ export async function strongHoldOfSecurityCommand(user: MUser, channelId: string
 	await ActivityManager.startTrip<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelId,
-		duration: randomVariation(Time.Minute * 10, 5),
+		duration: rng.randomVariation(Time.Minute * 10, 5),
 		type: 'StrongholdOfSecurity'
 	});
 

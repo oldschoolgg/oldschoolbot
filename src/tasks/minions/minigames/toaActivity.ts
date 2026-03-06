@@ -28,7 +28,7 @@ interface RaidResultUser {
 
 export const toaTask: MinionTask = {
 	type: 'TombsOfAmascut',
-	async run(data: TOAOptions, { handleTripFinish }) {
+	async run(data: TOAOptions, { handleTripFinish, rng }) {
 		const { channelId, raidLevel, duration, leader, quantity, wipedRoom: _wipedRoom } = data;
 		const detailedUsers = normalizeTOAUsers(data);
 		const wipedRooms = Array.isArray(_wipedRoom) ? _wipedRoom : [_wipedRoom];
@@ -87,7 +87,8 @@ export const toaTask: MinionTask = {
 						deaths: i.deaths
 					};
 				}),
-				raidLevel: raidLevel as RaidLevel
+				raidLevel: raidLevel as RaidLevel,
+				rng
 			});
 			for (const { id, points, deaths } of detailedUsers[x]) {
 				const currentUser = raidResults.get(id)!;

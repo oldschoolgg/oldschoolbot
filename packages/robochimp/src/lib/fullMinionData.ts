@@ -37,6 +37,8 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 	}
 
 	const response: FullMinionData = {
+		user_id: botUser.id,
+		bot: bot,
 		name: botUser.minion_name,
 		icon: botUser.minion_icon,
 
@@ -44,6 +46,7 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 		gp: Number(botUser.GP),
 		qp: botUser.QP,
 
+		bank: botUser.bank as ItemBank,
 		collection_log_bank: botUser.collectionLogBank as ItemBank,
 		bitfield: botUser.bitfield,
 		bought_date: botUser.minion_bought_date ? botUser.minion_bought_date.toISOString() : null,

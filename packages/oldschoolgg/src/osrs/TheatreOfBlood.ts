@@ -1,4 +1,4 @@
-import { percentChance, roll } from '@oldschoolgg/rng';
+import { percentChance, roll } from 'node-rng';
 
 import { Bank, LootTable } from '@/osrs/index.js';
 import { SimpleTable } from '@/osrs/SimpleTable.js';

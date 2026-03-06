@@ -5,7 +5,6 @@ import { BankImage } from '@/components/BankImage/BankImage.js';
 import { Button } from '@/components/ui/button.js';
 import { useBank } from '@/hooks/useBank.js';
 import {
-	Bank,
 	BeginnerCasket,
 	EasyCasket,
 	EliteCasket,
@@ -107,8 +106,8 @@ export function CluePage() {
 					<div className="w-2/4" style={{ zoom: 1.1 }}>
 						<BankImage
 							showPrice={false}
-							title={`Loot from ${quantity}x ${lastOpenedName} (Value: ${toKMB(new Bank(currentLoot).value())})`}
-							bank={currentLoot}
+							title={`Loot from ${quantity}x ${lastOpenedName} (Value: ${toKMB(currentLoot.value())})`}
+							bank={currentLoot.toJSON()}
 						/>
 					</div>
 				)}

@@ -18,6 +18,6 @@ export async function exitCleanup() {
 			roboChimpClient.$disconnect();
 		}
 	} catch (err) {
-		console.error(err);
+		Logging.logError(err as Error);
 	}
 }

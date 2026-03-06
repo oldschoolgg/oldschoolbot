@@ -20,3 +20,12 @@ export function chunkArr<T>(array: readonly T[], chunkSize: number): T[][] {
 	while (clone.length) chunks.push(clone.splice(0, chunkSize));
 	return chunks;
 }
+
+/**
+ * Returns the sum of an array of numbers.
+ *
+ * @param arr The array of numbers to sum.
+ */
+export function sumArr(arr: readonly number[]): number {
+	return arr.reduce((a, b) => a + b, 0);
+}

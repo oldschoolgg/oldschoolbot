@@ -1,3 +1,4 @@
+import type { IBotType } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
 
 export type AuthenticatedUser = {
@@ -9,12 +10,17 @@ export type AuthenticatedUser = {
 };
 
 export type FullMinionData = {
+	bot: IBotType;
+	user_id: string;
 	name: string | null;
 	icon: string | null;
 	gp: number;
 	is_ironman: boolean;
 	qp: number;
+
+	bank: ItemBank;
 	collection_log_bank: ItemBank;
+
 	bitfield: number[];
 	bought_date: string | null;
 	total_sacrificed_value: number;
@@ -82,4 +88,5 @@ export type SUserIdentity = {
 	user_id: string;
 	username: string;
 	avatar: string | null;
+	blacklisted: boolean;
 };

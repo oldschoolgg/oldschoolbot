@@ -1,11 +1,9 @@
-import '../base.js';
-
 import { Markdown, toTitleCase } from '@oldschoolgg/toolkit';
 
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '@/lib/data/cox.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
-function renderCoxMarkdown() {
+export function renderCoxMarkdown() {
 	const markdown = new Markdown();
 
 	markdown.addLine('## Gear');
@@ -54,5 +52,3 @@ function renderCoxMarkdown() {
 
 	handleMarkdownEmbed('cox', 'osb/Raids/cox.mdx', markdown.toString());
 }
-
-renderCoxMarkdown();

@@ -5,8 +5,11 @@ import {
 	ZUserMinionGetRequest,
 	ZUserMinionsGetRequest
 } from '@oldschoolgg/schemas';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
+import type { DiscordUser } from '@prisma/robochimp';
 import { Hono } from 'hono';
 
+import type { SUserIdentity } from '@/http/api-types.js';
 import { type HonoServerGeneric, httpErr, httpRes } from '@/http/serverUtil.js';
 import { fetchFullMinionData } from '@/lib/fullMinionData.js';
 
@@ -202,4 +205,41 @@ userServer.patch('/:userId/:bot/minion', async c => {
 			combat_options: updatedUser.combat_options
 		}
 	});
+});
+
+userServer.get('/identity/:userId', async c => {
+	const { userId } = c.req.param();
+	if (!isValidDiscordSnowflake(userId)) {
+		return httpErr.BAD_REQUEST({ message: 'Invalid user ID. Must be a valid Discord snowflake' });
+	}
+
+	let user: DiscordUser | null = await c.get('prisma').discordUser.findUnique({
+		where: { id: userId }
+	});
+
+	if (!user) {
+		const fetched = await globalClient.fetchUser(userId).catch(() => null);
+		if (!fetched) return httpErr.NOT_FOUND({ message: 'User not found' });
+		user = await globalClient.upsertDiscordUser(fetched);
+	}
+
+	const blacklisted =
+		(await c
+			.get('prisma')
+			.blacklistedEntity.count({
+				where: {
+					type: 'user',
+					id: BigInt(userId)
+				}
+			})
+			.catch(() => 0)) > 0;
+	const data: SUserIdentity = {
+		user_id: user.id,
+		username: user.username!,
+		avatar: user.avatar,
+		blacklisted
+	};
+
+	c.header('Cache-Control', 'public, max-age=604800, s-maxage=604800');
+	return c.json(data);
 });

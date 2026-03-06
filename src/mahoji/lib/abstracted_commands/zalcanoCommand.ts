@@ -1,4 +1,3 @@
-import { percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { EMonster } from 'oldschooljs';
 
@@ -18,7 +17,7 @@ function calcPerformance(kcLearned: number, skillPercentage: number) {
 	return Math.min(100, basePerformance);
 }
 
-export async function zalcanoCommand(user: MUser, channelId: string, quantity?: number) {
+export async function zalcanoCommand(rng: RNGProvider, user: MUser, channelId: string, quantity?: number) {
 	const hasReqs = user.hasSkillReqs(soteSkillRequirements);
 	if (!hasReqs) {
 		return `To fight Zalcano, you need: ${formatSkillRequirements(soteSkillRequirements)}.`;
@@ -78,7 +77,7 @@ export async function zalcanoCommand(user: MUser, channelId: string, quantity?: 
 		duration,
 		type: 'Zalcano',
 		performance: calcPerformance(kcLearned, skillPercentage),
-		isMVP: percentChance(80)
+		isMVP: rng.percentChance(80)
 	});
 
 	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(

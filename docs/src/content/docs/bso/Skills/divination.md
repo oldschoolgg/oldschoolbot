@@ -67,3 +67,15 @@ Portents are utility items created with divination energy that provide perks in 
 - **Spiritual Mining Portent:** Enhances mining XP with stone spirits (see [[/rates]])
 - **Pacifist Hunting Portent:** Releases hunting catches for extra XP (see [[/rates]])
 - **Graceful Portent:** Increases agility XP (see [[/rates]])
+
+
+## Mechanics and rates (code-accurate)
+
+- Harvest round is fixed at 60s harvest + conversion time for 120 memories.
+- Memories per harvest cycle: **120**.
+- Energy per memory formula: `(120 - energy_level) / 150`.
+- Doopy pet chance: **1 / ((200 - energy_level) * 3714)** per memory converted.
+- Divine egg rates:
+  - Convert to XP: 1/175 per round
+  - Convert to Energy: 1/50 per round
+- Divine Hand invention gives 30% more energy, and rolls clues at 1/1200 per memory where clue tables exist.
