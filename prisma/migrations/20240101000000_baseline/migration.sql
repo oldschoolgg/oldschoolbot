@@ -1367,4 +1367,3 @@ ALTER TABLE "category_items" ADD CONSTRAINT "category_items_category_name_fkey" 
 
 -- AddForeignKey
 ALTER TABLE "table_bank_item" ADD CONSTRAINT "table_bank_item_bank_id_fkey" FOREIGN KEY ("bank_id") REFERENCES "table_bank"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
