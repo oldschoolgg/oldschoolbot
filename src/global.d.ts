@@ -1,10 +1,6 @@
-declare module 'oldschooljs' {
-	interface ItemRequirements {
-		dungeoneering: number;
-		invention: number;
-		divination: number;
-	}
-}
+import { dungeoneeringCL } from '@/lib/bso/collection-log/main.ts';
+
+type MUserInstance = MUser;
 
 declare global {
 	export type MUserClass = import('./lib/user/MUser.js').MUserClass;

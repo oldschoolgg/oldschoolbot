@@ -26,9 +26,9 @@ async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> 
 		mkdirSync('./.db');
 	}
 	const isTest = Boolean(process.env.TEST);
-	const dataDir = `./.db/${type.toLowerCase()}${isTest ? `-test-${process.pid}` : ''}`;
+	const dataDir = `./.db/${type.toLowerCase()}${isTest ? `-test-$` : ''}`;
 	if (isTest && existsSync(dataDir)) {
-		rmSync(dataDir, { recursive: true, force: true });
+		rmSync(dataDir, {recursive: true, force: true});
 	}
 	const pgLiteClient = new PGlite({ dataDir });
 	const createDbSQL = execSync(
