@@ -234,7 +234,7 @@ export const activitiesCommand = defineCommand({
 							value: 'glory_uncharge'
 						},
 						{
-							name: 'Amulet of glory (6) (Instant GP Exchange)',
+							name: 'Amulet of glory (6) (Instant, Costs 2,000 GP each)',
 							value: 'glory_exchange'
 						}
 					]

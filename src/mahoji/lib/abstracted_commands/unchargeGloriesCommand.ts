@@ -21,19 +21,23 @@ export async function unchargeGloriesCommand(
 
 	if (exchange) {
 		if (user.isIronman) {
-			return "You're an ironman, you can't instantly exchange Amulet of glory(6)s for GP.";
+			return "You're an ironman, you can't use instant glory uncharging.";
 		}
 
-		const quantityToExchange = quantity ?? amountHas;
-		if (quantityToExchange === 0) {
-			return "You don't have any Amulet of glory(6) to exchange.";
+		const quantityToConvert = quantity ?? amountHas;
+		if (quantityToConvert === 0) {
+			return "You don't have any Amulet of glory(6) to instantly uncharge.";
 		}
-		const gpReceived = quantityToExchange * gloryInstantExchangePrice;
+		const gpCost = quantityToConvert * gloryInstantExchangePrice;
+		if (user.GP < gpCost) {
+			return `You need ${gpCost.toLocaleString()} GP to instantly uncharge ${quantityToConvert}x Amulet of glory(6).`;
+		}
+
 		await user.transactItems({
-			itemsToRemove: new Bank().add('Amulet of glory(6)', quantityToExchange),
-			itemsToAdd: new Bank().add('Coins', gpReceived)
+			itemsToRemove: new Bank().add('Amulet of glory(6)', quantityToConvert).add('Coins', gpCost),
+			itemsToAdd: new Bank().add('Amulet of glory', quantityToConvert)
 		});
-		return `You instantly exchanged ${quantityToExchange}x Amulet of glory(6) for ${gpReceived.toLocaleString()} GP.`;
+		return `You instantly uncharged ${quantityToConvert}x Amulet of glory(6), paying ${gpCost.toLocaleString()} GP and receiving ${quantityToConvert}x Amulet of glory.`;
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('GloryUncharging');
@@ -70,7 +74,7 @@ export async function unchargeGloriesCommand(
 
 	await user.removeItemsFromBank(new Bank().add('Amulet of glory(6)', quantity));
 
-	return `${user.minionName} is now uncharging ${quantity}x Amulet of glory(6) at the Fountain of Rune, it'll take around ${formatDuration(
+	return `${user.minionName} is now uncharging ${quantity}x Amulet of glory(6), it'll take around ${formatDuration(
 		duration
 	)} to finish. Removed ${quantity}x Amulet of glory(6) from your bank.`;
 }
