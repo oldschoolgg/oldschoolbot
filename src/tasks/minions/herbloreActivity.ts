@@ -1,4 +1,3 @@
-import { percentChance, randInt } from '@oldschoolgg/rng';
 import { Bank, EItem, type Item, Items } from 'oldschooljs';
 
 import { checkDegradeableItemCharges, degradeItem } from '@/lib/degradeableItems.js';
@@ -11,6 +10,7 @@ interface ApplyChemistryArgs {
 	quantity: number;
 	zahur: boolean;
 	wesley: boolean;
+	rng: RNGProvider;
 }
 
 async function applyAmuletOfChemistry({
@@ -18,7 +18,8 @@ async function applyAmuletOfChemistry({
 	mixableItem,
 	quantity,
 	zahur,
-	wesley
+	wesley,
+	rng
 }: ApplyChemistryArgs): Promise<null | {
 	fourDoseItem: Item;
 	fourDoseCount: number;
@@ -41,7 +42,7 @@ async function applyAmuletOfChemistry({
 	let fourDoseCount = 0;
 
 	for (let i = 0; i < quantity && available > 0; i++) {
-		if (percentChance(5)) {
+		if (rng.percentChance(5)) {
 			fourDoseCount++;
 			available--;
 		}
@@ -82,7 +83,7 @@ async function applyAmuletOfChemistry({
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
 
-	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { mixableID, quantity, zahur, wesley, channelId, duration } = data;
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
@@ -105,14 +106,14 @@ export const herbloreTask: MinionTask = {
 			} else {
 				// Math for if the user is using their minion to make lava scale shards
 				for (let i = 0; i < quantity; i++) {
-					scales += Math.floor((percentChance(maxShardChance) ? 6 : randInt(3, 6)) * diaryMultiplier);
+					scales += Math.floor((rng.percentChance(maxShardChance) ? 6 : rng.randInt(3, 6)) * diaryMultiplier);
 				}
 			}
 			outputQuantity = scales;
 		}
 
 		// Amulet of chemistry logic: only for hand-mixed (no Zahur/Wesley) 3-dose outputs
-		const aocResult = await applyAmuletOfChemistry({ user, mixableItem, quantity, zahur, wesley });
+		const aocResult = await applyAmuletOfChemistry({ user, mixableItem, quantity, zahur, wesley, rng });
 		const fourDoseItem = aocResult?.fourDoseItem ?? null;
 		const fourDoseCount = aocResult?.fourDoseCount ?? 0;
 		const chemistryMessages = aocResult?.messages ?? [];

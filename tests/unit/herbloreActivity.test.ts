@@ -1,4 +1,3 @@
-import * as rngModule from '@oldschoolgg/rng';
 import { Bank, Items } from 'oldschooljs';
 import type { Mock } from 'vitest';
 import { afterEach, describe, expect, test, vi } from 'vitest';
@@ -52,15 +51,17 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 			itemsRemoved: undefined,
 			newBank: new Bank(),
 			newCL: new Bank(),
-			newUser: user.user,
+			newUser: user,
 			clLootBank: null
 		});
 
 		// RNG: first two procs succeed, third fails -> 2x (4), 1x (3)
 		const percentResults = [true, true, false];
-		const percentSpy = vi
-			.spyOn(rngModule, 'percentChance')
-			.mockImplementation(() => percentResults.shift() ?? false);
+		const percentSpy = vi.fn(() => percentResults.shift() ?? false);
+		const rng = {
+			percentChance: percentSpy,
+			randInt: vi.fn()
+		} as unknown as RNGProvider;
 
 		const checkSpy = vi.spyOn(degradeableItemsModule, 'checkDegradeableItemCharges').mockResolvedValue(5);
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem').mockResolvedValue({
@@ -76,7 +77,8 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 
 		await herbloreTask.run(defaultTaskData(), {
 			user,
-			handleTripFinish: handleTripFinishModule.handleTripFinish
+			handleTripFinish: handleTripFinishModule.handleTripFinish,
+			rng
 		} as never);
 
 		// RNG/charge plumbing
@@ -102,11 +104,15 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 			itemsRemoved: undefined,
 			newBank: new Bank(),
 			newCL: new Bank(),
-			newUser: user.user,
+			newUser: user,
 			clLootBank: null
 		});
 
-		const percentSpy = vi.spyOn(rngModule, 'percentChance').mockReturnValue(true);
+		const percentSpy = vi.fn(() => true);
+		const rng = {
+			percentChance: percentSpy,
+			randInt: vi.fn()
+		} as unknown as RNGProvider;
 		const checkSpy = vi.spyOn(degradeableItemsModule, 'checkDegradeableItemCharges').mockResolvedValue(5);
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
 
@@ -117,7 +123,8 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 
 		await herbloreTask.run(defaultTaskData({ userID: '789' }), {
 			user,
-			handleTripFinish: handleTripFinishModule.handleTripFinish
+			handleTripFinish: handleTripFinishModule.handleTripFinish,
+			rng
 		} as never);
 
 		// No amulet => no RNG or charge checks
@@ -142,12 +149,16 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 			itemsRemoved: undefined,
 			newBank: new Bank(),
 			newCL: new Bank(),
-			newUser: user.user,
+			newUser: user,
 			clLootBank: null
 		});
 
-		// RNG never procs → 0x (4), 3x (3)
-		const percentSpy = vi.spyOn(rngModule, 'percentChance').mockReturnValue(false);
+		// RNG never procs -> 0x (4), 3x (3)
+		const percentSpy = vi.fn(() => false);
+		const rng = {
+			percentChance: percentSpy,
+			randInt: vi.fn()
+		} as unknown as RNGProvider;
 		const checkSpy = vi.spyOn(degradeableItemsModule, 'checkDegradeableItemCharges').mockResolvedValue(5);
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
 
@@ -158,7 +169,8 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 
 		await herbloreTask.run(defaultTaskData(), {
 			user,
-			handleTripFinish: handleTripFinishModule.handleTripFinish
+			handleTripFinish: handleTripFinishModule.handleTripFinish,
+			rng
 		} as never);
 
 		// RNG called, but no degrade call since no successes
