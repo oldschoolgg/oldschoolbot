@@ -39,7 +39,7 @@ import { type CanvasImage, canvasToBuffer, createCanvas, loadImage } from '@/lib
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const BLACKJACK_MIN_BET = 1_000_000;
-const BLACKJACK_MAX_BET = 500_000_000;
+const BLACKJACK_MAX_BET = 5_000_000_000;
 const BLACKJACK_CONFIRM_TIMEOUT = Time.Second * 15;
 const BLACKJACK_DECISION_TIMEOUT = Time.Second * 45;
 const BLACKJACK_IMAGE_NAME = 'blackjack_table.png';
@@ -152,7 +152,8 @@ async function renderBlackjackTableImage({
 		const isCurrentHand = rowIndex > 0 && game.phase === 'player' && game.currentHandIndex === rowIndex - 1;
 		ctx.fillStyle = isCurrentHand ? '#ffe066' : '#ffffff';
 		ctx.font = 'bold 18px sans-serif';
-		ctx.fillText(row.label, paddingX, y + 16);
+		const rowLabel = isCurrentHand ? `> ACTIVE: ${row.label}` : row.label;
+		ctx.fillText(rowLabel, paddingX, y + 16);
 		const cardsY = y + rowLabelHeight;
 
 		for (let cardIndex = 0; cardIndex < row.cards.length; cardIndex++) {
@@ -169,44 +170,61 @@ async function renderBlackjackTableImage({
 
 async function maybeAddBlackjackImage({
 	game,
-	embed
+	embed,
+	descriptionBelowImage
 }: {
 	game: BlackjackGame;
 	embed: EmbedBuilder;
-}): Promise<{ embed: EmbedBuilder; file?: { name: string; buffer: Buffer } }> {
+	descriptionBelowImage?: string;
+}): Promise<{ embeds: EmbedBuilder[]; file?: { name: string; buffer: Buffer } }> {
 	try {
 		const hideDealerHole = game.phase === 'insurance' || game.phase === 'player';
 		const imageBuffer = await renderBlackjackTableImage({ game, hideDealerHole });
 		embed.setImage(`attachment://${BLACKJACK_IMAGE_NAME}`);
+		if (descriptionBelowImage) {
+			embed.setDescription(null);
+			const belowEmbed = new EmbedBuilder().setColor(0x2b2d31).setDescription(descriptionBelowImage);
+			return {
+				embeds: [embed, belowEmbed],
+				file: { name: BLACKJACK_IMAGE_NAME, buffer: imageBuffer }
+			};
+		}
 		return {
-			embed,
+			embeds: [embed],
 			file: { name: BLACKJACK_IMAGE_NAME, buffer: imageBuffer }
 		};
 	} catch (err) {
 		Logging.logError(err as Error);
-		return { embed };
+		return { embeds: [embed] };
 	}
+}
+
+function gameDescription({ game, timedOut = false }: { game: BlackjackGame; timedOut?: boolean }): string | null {
+	if (game.phase === 'insurance') {
+		return `Dealer shows an Ace. Insurance is available.\nMain bet: ${toKMB(game.baseBet)}.`;
+	}
+	if (game.phase === 'player') {
+		const activeHandText =
+			game.hands.length > 1 ? `\nActive hand: ${game.currentHandIndex + 1}/${game.hands.length}.` : '';
+		return `Choose an action. Auto-stand in ${Math.floor(BLACKJACK_DECISION_TIMEOUT / 1000)}s.${activeHandText}`;
+	}
+	if (game.phase === 'dealer') {
+		return 'Dealer is playing out the hand.';
+	}
+	if (timedOut) {
+		return 'Timed out. The hand was auto-stood and settled safely.';
+	}
+	return null;
 }
 
 function gameEmbed({ game, timedOut = false }: { game: BlackjackGame; timedOut?: boolean }): EmbedBuilder {
 	const embed = new EmbedBuilder().setTitle('Blackjack').setColor(0x1f8b4c);
-
-	if (game.phase === 'insurance') {
-		embed.setDescription(
-			`Dealer shows an Ace or face card. Insurance is available.\nMain bet: ${toKMB(game.baseBet)}.`
-		);
-	} else if (game.phase === 'player') {
-		embed.setDescription(`Choose an action. Auto-stand in ${Math.floor(BLACKJACK_DECISION_TIMEOUT / 1000)}s.`);
-	} else if (game.phase === 'dealer') {
-		embed.setDescription('Dealer is playing out the hand.');
-	} else if (timedOut) {
-		embed.setDescription('Timed out. The hand was auto-stood and settled safely.');
-	}
-
+	const description = gameDescription({ game, timedOut });
+	if (description) embed.setDescription(description);
 	return embed;
 }
 
-function finishedEmbed({ game, timedOut = false }: { game: BlackjackGame; timedOut?: boolean }): EmbedBuilder {
+function finishedDescription({ game, timedOut = false }: { game: BlackjackGame; timedOut?: boolean }): string {
 	const settlement = settleBlackjackGame(game);
 	const lines: string[] = [];
 	for (const hand of settlement.hands) {
@@ -220,11 +238,15 @@ function finishedEmbed({ game, timedOut = false }: { game: BlackjackGame; timedO
 		);
 	}
 	lines.push(`Net: ${settlement.net >= 0 ? '+' : ''}${toKMB(settlement.net)}`);
+	return `${timedOut ? 'Timed out, auto-stand applied.\n' : ''}${lines.join('\n')}`;
+}
 
+function finishedEmbed({ game, timedOut = false }: { game: BlackjackGame; timedOut?: boolean }): EmbedBuilder {
+	const settlement = settleBlackjackGame(game);
 	return new EmbedBuilder()
 		.setTitle('Blackjack Result')
 		.setColor(settlement.net >= 0 ? 0x57f287 : 0xed4245)
-		.setDescription(`${timedOut ? 'Timed out, auto-stand applied.\n' : ''}${lines.join('\n')}`);
+		.setDescription(finishedDescription({ game, timedOut }));
 }
 
 function activeComponents(game: BlackjackGame, nonce: string): ButtonBuilder[][] {
@@ -301,9 +323,7 @@ function startConfirmationComponents(nonce: string): ButtonBuilder[][] {
 
 async function applySettlementToUser(user: MUser, game: BlackjackGame): Promise<void> {
 	const settlement = settleBlackjackGame(game);
-	const tasks: Promise<unknown>[] = [
-		user.updateGPTrackSetting('gp_blackjack', settlement.net)
-	];
+	const tasks: Promise<unknown>[] = [user.updateGPTrackSetting('gp_blackjack', settlement.net)];
 	if (settlement.totalPayout > 0) {
 		tasks.push(
 			user.transactItems({
@@ -337,21 +357,23 @@ async function onBlackjackTimeout(userID: string, nonce: string): Promise<void> 
 			}
 			const finalVisual = await maybeAddBlackjackImage({
 				game: current.game,
-				embed: finalEmbed
+				embed: finalEmbed,
+				descriptionBelowImage: finishedDescription({ game: current.game, timedOut: true })
 			});
 			await globalClient.sendMessage(current.channelID, {
 				content: `<@${userID}>`,
-				embeds: [finalVisual.embed],
+				embeds: finalVisual.embeds,
 				files: finalVisual.file ? [finalVisual.file] : undefined
 			});
 		} catch {
 			const finalVisual = await maybeAddBlackjackImage({
 				game: current.game,
-				embed: finalEmbed
+				embed: finalEmbed,
+				descriptionBelowImage: finishedDescription({ game: current.game, timedOut: true })
 			});
 			await globalClient.sendMessage(current.channelID, {
 				content: `<@${userID}>`,
-				embeds: [finalVisual.embed],
+				embeds: finalVisual.embeds,
 				files: finalVisual.file ? [finalVisual.file] : undefined
 			});
 		}
@@ -503,11 +525,12 @@ export async function blackjackButtonHandler({
 				await applySettlementToUser(lockedUser, game);
 				const finalVisual = await maybeAddBlackjackImage({
 					game,
-					embed: finishedEmbed({ game })
+					embed: finishedEmbed({ game }),
+					descriptionBelowImage: finishedDescription({ game })
 				});
 				await interaction.update({
 					content: '',
-					embeds: [finalVisual.embed],
+					embeds: finalVisual.embeds,
 					components: [],
 					files: finalVisual.file ? [finalVisual.file] : undefined
 				});
@@ -523,11 +546,12 @@ export async function blackjackButtonHandler({
 			scheduleBlackjackTimeout(lockedUser.id);
 			const gameVisual = await maybeAddBlackjackImage({
 				game,
-				embed: gameEmbed({ game })
+				embed: gameEmbed({ game }),
+				descriptionBelowImage: gameDescription({ game }) ?? undefined
 			});
 			await interaction.update({
 				content: '',
-				embeds: [gameVisual.embed],
+				embeds: gameVisual.embeds,
 				components: activeComponents(game, active.nonce),
 				files: gameVisual.file ? [gameVisual.file] : undefined
 			});
@@ -616,11 +640,12 @@ export async function blackjackButtonHandler({
 			await applySettlementToUser(lockedUser, current.game);
 			const finalVisual = await maybeAddBlackjackImage({
 				game: current.game,
-				embed: finishedEmbed({ game: current.game })
+				embed: finishedEmbed({ game: current.game }),
+				descriptionBelowImage: finishedDescription({ game: current.game })
 			});
 			destroyActiveBlackjackGame(current.userID);
 			await interaction.update({
-				embeds: [finalVisual.embed],
+				embeds: finalVisual.embeds,
 				components: [],
 				files: finalVisual.file ? [finalVisual.file] : undefined
 			});
@@ -630,10 +655,11 @@ export async function blackjackButtonHandler({
 		scheduleBlackjackTimeout(current.userID);
 		const gameVisual = await maybeAddBlackjackImage({
 			game: current.game,
-			embed: gameEmbed({ game: current.game })
+			embed: gameEmbed({ game: current.game }),
+			descriptionBelowImage: gameDescription({ game: current.game }) ?? undefined
 		});
 		await interaction.update({
-			embeds: [gameVisual.embed],
+			embeds: gameVisual.embeds,
 			components: activeComponents(current.game, current.nonce),
 			files: gameVisual.file ? [gameVisual.file] : undefined
 		});

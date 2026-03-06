@@ -241,7 +241,7 @@ export function createBlackjackGame({
 		return game;
 	}
 
-	if (upcard.rank === 'A' || isFaceRank(upcard.rank)) {
+	if (upcard.rank === 'A') {
 		game.phase = 'insurance';
 		return game;
 	}

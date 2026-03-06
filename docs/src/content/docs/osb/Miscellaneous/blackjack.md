@@ -12,20 +12,21 @@ Start a game with:
 ## Bet Limits
 
 - Minimum bet: 1m GP
-- Maximum bet: 500m GP
+- Maximum bet: 5b GP
 
 ## Table Rules
 
 - 4-deck shoe, shuffled every game
 - Dealer stands on soft 17 (S17)
-- Dealer peeks for blackjack when eligible
+- Dealer peeks for blackjack when upcard is Ace or any 10-value card
 - Blackjack pays 3:2
-- Insurance is offered when dealer upcard is Ace or a face card (J/Q/K)
+- Insurance is offered only when dealer upcard is Ace
 - Insurance bet is 50% of main bet and pays 2:1
 - Splitting is supported (up to 4 hands total)
 - Double is supported, including after split (except split aces)
 - Split aces receive one card each and auto-stand
 - Split hands do not receive natural blackjack payout
+- During split play, the active hand is marked as `ACTIVE` in the table view and shown in the embed
 
 ## Flow And Safety
 
