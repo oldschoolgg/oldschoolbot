@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process';
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { PGlite } from '@electric-sql/pglite';
 import { rewriteSqlToIdempotent } from '@oldschoolgg/toolkit';
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -25,7 +25,11 @@ async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> 
 	if (!existsSync('./.db')) {
 		mkdirSync('./.db');
 	}
-	const dataDir = `./.db/${type.toLowerCase()}${process.env.TEST ? '-test' : ''}`;
+	const isTest = Boolean(process.env.TEST);
+	const dataDir = `./.db/${type.toLowerCase()}${isTest ? `-test-$` : ''}`;
+	if (isTest && existsSync(dataDir)) {
+		rmSync(dataDir, {recursive: true, force: true});
+	}
 	const pgLiteClient = new PGlite({ dataDir });
 	const createDbSQL = execSync(
 		`prisma migrate diff --from-empty --to-schema-datamodel ./prisma/${type}_schema.prisma --script`,
@@ -33,7 +37,7 @@ async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> 
 			encoding: 'utf-8'
 		}
 	);
-	await pgLiteClient.exec(rewriteSqlToIdempotent(createDbSQL));
+	await pgLiteClient.exec(isTest ? createDbSQL : rewriteSqlToIdempotent(createDbSQL));
 	return new PrismaPGlite(pgLiteClient) as any as PrismaPg;
 }
 

@@ -470,8 +470,8 @@ model User {
   portent                           Portent[]
 
   @@index([id, last_command_date])
-  @@index([bitfield(ops: raw("gin__int_ops"))], map: "users_bitfield_gin", type: Gin)
-  @@index([cl_array(ops: raw("gin__int_ops"))], map: "users_clarray_gin", type: Gin)
+  @@index([bitfield], map: "users_bitfield_gin", type: Gin)
+  @@index([cl_array], map: "users_clarray_gin", type: Gin)
   @@map("users")
 }
 
