@@ -31,5 +31,3 @@ declare module 'oldschooljs' {
 		divination?: number;
 	}
 }
-
-export {};
