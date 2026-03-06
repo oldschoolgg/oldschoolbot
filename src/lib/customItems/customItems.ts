@@ -14444,13 +14444,11 @@ setCustomItem(
 			attack_crush: 10,
 			attack_magic: 10,
 			attack_ranged: 10,
-
 			defence_stab: 10,
 			defence_slash: 10,
 			defence_crush: 10,
 			defence_magic: 10,
 			defence_ranged: 10,
-
 			melee_strength: 5,
 			ranged_strength: 5,
 			magic_damage: 5,
@@ -14628,13 +14626,11 @@ setCustomItem(
 			attack_crush: 0,
 			attack_magic: 0,
 			attack_ranged: 250,
-
 			defence_stab: 0,
 			defence_slash: 0,
 			defence_crush: 0,
 			defence_magic: 0,
 			defence_ranged: 0,
-
 			melee_strength: 0,
 			ranged_strength: 45,
 			magic_damage: 0,
@@ -14862,13 +14858,11 @@ setCustomItem(
 			attack_crush: 0,
 			attack_magic: 0,
 			attack_ranged: 0,
-
 			defence_stab: 0,
 			defence_slash: 0,
 			defence_crush: 0,
 			defence_magic: 0,
 			defence_ranged: 0,
-
 			melee_strength: 0,
 			ranged_strength: 0,
 			magic_damage: 0,
@@ -14914,13 +14908,11 @@ setCustomItem(
 			attack_crush: 25,
 			attack_magic: -20,
 			attack_ranged: -20,
-
 			defence_stab: 85,
 			defence_slash: 90,
 			defence_crush: 90,
 			defence_magic: 5,
 			defence_ranged: 70,
-
 			melee_strength: 8,
 			ranged_strength: 0,
 			magic_damage: 0,
@@ -14952,13 +14944,11 @@ setCustomItem(
 			attack_crush: 30,
 			attack_magic: -20,
 			attack_ranged: -20,
-
 			defence_stab: 190,
 			defence_slash: 180,
 			defence_crush: 180,
 			defence_magic: 10,
 			defence_ranged: 195,
-
 			melee_strength: 10,
 			ranged_strength: 0,
 			magic_damage: 0,
@@ -14990,13 +14980,11 @@ setCustomItem(
 			attack_crush: 25,
 			attack_magic: -20,
 			attack_ranged: -20,
-
 			defence_stab: 155,
 			defence_slash: 155,
 			defence_crush: 155,
 			defence_magic: 10,
 			defence_ranged: 155,
-
 			melee_strength: 8,
 			ranged_strength: 0,
 			magic_damage: 0,
@@ -15028,13 +15016,11 @@ setCustomItem(
 			attack_crush: 15,
 			attack_magic: -20,
 			attack_ranged: -20,
-
 			defence_stab: 30,
 			defence_slash: 30,
 			defence_crush: 30,
 			defence_magic: 5,
 			defence_ranged: 45,
-
 			melee_strength: 6,
 			ranged_strength: 0,
 			magic_damage: 0,
@@ -15066,13 +15052,11 @@ setCustomItem(
 			attack_crush: 15,
 			attack_magic: -20,
 			attack_ranged: -20,
-
 			defence_stab: 35,
 			defence_slash: 35,
 			defence_crush: 35,
 			defence_magic: 5,
 			defence_ranged: 45,
-
 			melee_strength: 6,
 			ranged_strength: 0,
 			magic_damage: 0,
