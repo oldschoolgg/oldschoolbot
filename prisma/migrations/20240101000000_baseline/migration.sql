@@ -1225,10 +1225,10 @@ CREATE INDEX "slayer_task_quantity_remaining" ON "slayer_tasks"("user_id", "quan
 CREATE INDEX "users_id_last_command_date_idx" ON "users"("id", "last_command_date");
 
 -- CreateIndex
-CREATE INDEX "users_bitfield_gin" ON "users" USING GIN ("bitfield" gin__int_ops);
+CREATE INDEX "users_bitfield_gin" ON "users" USING GIN ("bitfield");
 
 -- CreateIndex
-CREATE INDEX "users_clarray_gin" ON "users" USING GIN ("cl_array" gin__int_ops);
+CREATE INDEX "users_clarray_gin" ON "users" USING GIN ("cl_array");
 
 -- CreateIndex
 CREATE INDEX "xp_gains_date_skill_idx" ON "xp_gains"("date", "skill");
@@ -1367,4 +1367,3 @@ ALTER TABLE "category_items" ADD CONSTRAINT "category_items_category_name_fkey" 
 
 -- AddForeignKey
 ALTER TABLE "table_bank_item" ADD CONSTRAINT "table_bank_item_bank_id_fkey" FOREIGN KEY ("bank_id") REFERENCES "table_bank"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-

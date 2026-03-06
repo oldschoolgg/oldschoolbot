@@ -554,6 +554,8 @@ model User {
   completed_achievement_diaries String[] @default([])
 
   @@index([id, last_command_date])
+  @@index([bitfield], map: "users_bitfield_gin", type: Gin)
+  @@index([cl_array], map: "users_clarray_gin", type: Gin)
   @@map("users")
 }
 
