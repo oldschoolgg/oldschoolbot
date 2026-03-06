@@ -104,8 +104,8 @@ const maxMageGear = constructGearSetup({
 	hands: 'Gorajan occult gloves',
 	legs: 'Gorajan occult legs',
 	feet: 'Gorajan occult boots',
-	weapon: "Void staff",
-	shield: "Abyssal tome",
+	weapon: 'Void staff',
+	shield: 'Abyssal tome',
 	ring: 'Spellbound ring (i)'
 });
 
@@ -113,7 +113,7 @@ const maxRangeGear = constructGearSetup({
 	head: 'Gorajan archer helmet',
 	neck: 'Farsight snapshot necklace',
 	body: 'Gorajan archer top',
-	cape: "Tidal collector (i)",
+	cape: 'Tidal collector (i)',
 	hands: 'Gorajan archer gloves',
 	legs: 'Gorajan archer legs',
 	feet: 'Gorajan archer boots',
@@ -124,7 +124,7 @@ const maxRangeGear = constructGearSetup({
 
 const maxMeleeLessThan300Gear = constructGearSetup({
 	head: 'Gorajan warrior helmet',
-	neck: 'Brawler\'s hook necklace',
+	neck: "Brawler's hook necklace",
 	body: 'Gorajan warrior top',
 	cape: 'TzKal cape',
 	hands: 'Gorajan warrior gloves',
@@ -136,13 +136,13 @@ const maxMeleeLessThan300Gear = constructGearSetup({
 });
 const maxMeleeOver300Gear = constructGearSetup({
 	head: 'Gorajan warrior helmet',
-	neck: 'Brawler\'s hook necklace',
+	neck: "Brawler's hook necklace",
 	body: 'Gorajan warrior top',
 	cape: 'TzKal cape',
 	hands: 'Gorajan warrior gloves',
 	legs: 'Gorajan warrior legs',
 	feet: 'Gorajan warrior boots',
-	weapon: 'Osmumten\'s fang',
+	weapon: "Osmumten's fang",
 	shield: 'Offhand spidergore rapier',
 	ring: 'Ignis ring (i)'
 });
@@ -151,7 +151,13 @@ const SERP_HELM_CHARGES_PER_HOUR = 600;
 function calcSerpHelmCharges(quantity: number, time: number) {
 	return quantity * Math.floor(time / (Time.Hour / SERP_HELM_CHARGES_PER_HOUR));
 }
-const REQUIRED_ARROWS = resolveItems(['Hellfire arrow', 'Dragon arrow', 'Amethyst arrow', 'Rune arrow', 'Adamant arrow']);
+const REQUIRED_ARROWS = resolveItems([
+	'Hellfire arrow',
+	'Dragon arrow',
+	'Amethyst arrow',
+	'Rune arrow',
+	'Adamant arrow'
+]);
 
 const minTOAStats: Skills = {
 	attack: 90,
