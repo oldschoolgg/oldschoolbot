@@ -247,6 +247,17 @@ export const shadesLogs: ShadesLog[] = [
 
 const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin'];
 
+const CREMATIONS_PER_HOUR = 171;
+const TIME_PER_CREMATION = Time.Hour / CREMATIONS_PER_HOUR;
+const TIME_PER_KEY = Time.Hour / 1350;
+
+function avgKeysPerCremation(shade: Shade): number {
+	let chance = 0;
+	if (shade.lowMetalKeys) chance += shade.lowMetalKeys.fraction;
+	if (shade.highMetalKeys) chance += shade.highMetalKeys.fraction;
+	return chance;
+}
+
 export async function shadesOfMortonStartCommand(user: MUser, channelId: string, logStr: string, shadeStr: string) {
 	const messages: string[] = [];
 	let totalTime = await user.calcMaxTripLength('ShadesOfMorton');
@@ -276,14 +287,14 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 	const shadesOwned = userBank.amount(shade.item.id);
 	if (!shadesOwned) return `You don't own any ${shade.item.name}! Go kill some shades.`;
 
-	const timePerLog = Time.Minute;
-	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / timePerLog));
-	const duration = quantity * timePerLog;
-
 	const prayerXP = log.prayerXP[shade.shadeName];
 	if (!prayerXP) {
 		return `You can't use ${log.normalLog.name} with ${shade.item.name}.`;
 	}
+
+	const effectiveTimePerCremation = TIME_PER_CREMATION + avgKeysPerCremation(shade) * TIME_PER_KEY;
+	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / effectiveTimePerCremation));
+	const duration = quantity * effectiveTimePerCremation;
 
 	const cost = new Bank();
 	cost.add(log.normalLog.id, quantity);
