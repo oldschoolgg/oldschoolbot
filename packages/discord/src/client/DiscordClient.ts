@@ -347,7 +347,8 @@ export class DiscordClient extends AsyncEventEmitter<DiscordClientEventsMap> imp
 			user_id: rawApiMember.user.id,
 			guild_id: guildId,
 			roles: rawApiMember.roles,
-			permissions
+			permissions,
+			joined_at: rawApiMember.joined_at ?? null
 		};
 	}
 

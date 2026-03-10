@@ -178,6 +178,7 @@ export const giveawayCommand = defineCommand({
 					data: {
 						id: giveawayID,
 						channel_id: channelId.toString(),
+						guild_id: guildId.toString(),
 						start_date: new Date(),
 						finish_date: duration.fromNow,
 						completed: false,
