@@ -1,7 +1,7 @@
 import { Bank, type Item, ItemGroups, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import type { UnifiedOpenable } from '@/lib/openables.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
+import type { UnifiedOpenable } from '@/lib/openables.js';
 
 const BronzeChest = new LootTable({ limit: 99 })
 	.every('Swamp paste', [10, 20])
