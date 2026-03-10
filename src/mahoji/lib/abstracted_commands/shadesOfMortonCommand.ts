@@ -1,7 +1,11 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
+import { formatDuration, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
+import type {
+	ShadesOfMortonOptions,
+	ShadesOfMortonPyreLogsOptions,
+	ShadesOfMortonSacredOilOptions
+} from '@/lib/types/minions.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
 
@@ -111,7 +115,7 @@ export const shades: Shade[] = [
 export const shadesLogs: ShadesLog[] = [
 	{
 		oiledLog: Items.getOrThrow('Pyre logs'),
-		normalLog: Items.getOrThrow('Logs'),
+		normalLog: Items.getOrThrow('Pyre logs'),
 		fmLevel: 5,
 		fmXP: 50,
 		sacOilDoses: 2,
@@ -123,7 +127,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Oak pyre logs'),
-		normalLog: Items.getOrThrow('Oak logs'),
+		normalLog: Items.getOrThrow('Oak pyre logs'),
 		fmLevel: 20,
 		fmXP: 70,
 		sacOilDoses: 2,
@@ -135,7 +139,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Willow pyre logs'),
-		normalLog: Items.getOrThrow('Willow logs'),
+		normalLog: Items.getOrThrow('Willow pyre logs'),
 		fmLevel: 35,
 		fmXP: 100,
 		sacOilDoses: 3,
@@ -148,7 +152,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Teak pyre logs'),
-		normalLog: Items.getOrThrow('Teak logs'),
+		normalLog: Items.getOrThrow('Teak pyre logs'),
 		fmLevel: 40,
 		fmXP: 120,
 		sacOilDoses: 3,
@@ -161,7 +165,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Arctic pyre logs'),
-		normalLog: Items.getOrThrow('Arctic pine logs'),
+		normalLog: Items.getOrThrow('Arctic pyre logs'),
 		fmLevel: 47,
 		fmXP: 158,
 		sacOilDoses: 2,
@@ -174,7 +178,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Maple pyre logs'),
-		normalLog: Items.getOrThrow('Maple logs'),
+		normalLog: Items.getOrThrow('Maple pyre logs'),
 		fmLevel: 50,
 		fmXP: 175,
 		sacOilDoses: 3,
@@ -187,7 +191,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Mahogany pyre logs'),
-		normalLog: Items.getOrThrow('Mahogany logs'),
+		normalLog: Items.getOrThrow('Mahogany pyre logs'),
 		fmLevel: 55,
 		fmXP: 210,
 		sacOilDoses: 4,
@@ -200,7 +204,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Yew pyre logs'),
-		normalLog: Items.getOrThrow('Yew logs'),
+		normalLog: Items.getOrThrow('Yew pyre logs'),
 		fmLevel: 65,
 		fmXP: 255,
 		sacOilDoses: 4,
@@ -214,7 +218,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Magic pyre logs'),
-		normalLog: Items.getOrThrow('Magic logs'),
+		normalLog: Items.getOrThrow('Magic pyre logs'),
 		fmLevel: 80,
 		fmXP: 404.5,
 		sacOilDoses: 4,
@@ -229,7 +233,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Redwood pyre logs'),
-		normalLog: Items.getOrThrow('Redwood logs'),
+		normalLog: Items.getOrThrow('Redwood pyre logs'),
 		fmLevel: 95,
 		fmXP: 500,
 		sacOilDoses: 4,
@@ -247,15 +251,73 @@ export const shadesLogs: ShadesLog[] = [
 
 const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin'];
 
-const CREMATIONS_PER_HOUR = 171;
+const CREMATIONS_PER_HOUR = 450;
 const TIME_PER_CREMATION = Time.Hour / CREMATIONS_PER_HOUR;
-const TIME_PER_KEY = Time.Hour / 1350;
 
-function avgKeysPerCremation(shade: Shade): number {
-	let chance = 0;
-	if (shade.lowMetalKeys) chance += shade.lowMetalKeys.fraction;
-	if (shade.highMetalKeys) chance += shade.highMetalKeys.fraction;
-	return chance;
+export const pyreLogRecipes = [
+	{ log: Items.getOrThrow('Logs'),             pyreLogs: Items.getOrThrow('Pyre logs') },
+	{ log: Items.getOrThrow('Oak logs'),         pyreLogs: Items.getOrThrow('Oak pyre logs') },
+	{ log: Items.getOrThrow('Willow logs'),      pyreLogs: Items.getOrThrow('Willow pyre logs') },
+	{ log: Items.getOrThrow('Teak logs'),        pyreLogs: Items.getOrThrow('Teak pyre logs') },
+	{ log: Items.getOrThrow('Arctic pine logs'), pyreLogs: Items.getOrThrow('Arctic pyre logs') },
+	{ log: Items.getOrThrow('Maple logs'),       pyreLogs: Items.getOrThrow('Maple pyre logs') },
+	{ log: Items.getOrThrow('Mahogany logs'),    pyreLogs: Items.getOrThrow('Mahogany pyre logs') },
+	{ log: Items.getOrThrow('Yew logs'),         pyreLogs: Items.getOrThrow('Yew pyre logs') },
+	{ log: Items.getOrThrow('Magic logs'),       pyreLogs: Items.getOrThrow('Magic pyre logs') },
+	{ log: Items.getOrThrow('Redwood logs'),     pyreLogs: Items.getOrThrow('Redwood pyre logs') }
+] as const;
+
+const SACRED_OIL_PER_HOUR = 400;
+const TIME_PER_SACRED_OIL = Time.Hour / SACRED_OIL_PER_HOUR;
+
+const PYRE_LOGS_PER_HOUR = 1400;
+const TIME_PER_PYRE_LOG = Time.Hour / PYRE_LOGS_PER_HOUR;
+
+export function buildShadeTable(shade: Shade): LootTable {
+	const table = new LootTable();
+
+	if (shade.lowMetalKeys) {
+		const subTable = new LootTable();
+		for (const key of shade.lowMetalKeys.items) subTable.add(key);
+		table.add(subTable, 1, Math.round(shade.lowMetalKeys.fraction * 1000));
+	}
+
+	if (shade.highMetalKeys) {
+		const subTable = new LootTable();
+		for (const key of shade.highMetalKeys.items) subTable.add(key);
+		table.add(subTable, 1, Math.round(shade.highMetalKeys.fraction * 1000));
+	}
+
+	const keyWeight = Math.round(
+		((shade.lowMetalKeys?.fraction ?? 0) + (shade.highMetalKeys?.fraction ?? 0)) * 1000
+	);
+	table.add('Coins', 1, 1000 - keyWeight);
+
+	return table;
+}
+
+function checkCremationRequirements(user: MUser, log: ShadesLog, shade: Shade): string | null {
+	const userStats = user.skillsAsLevels;
+
+	if (userStats.firemaking < log.fmLevel) {
+		return `You need ${log.fmLevel} Firemaking to use ${log.normalLog.name}.`;
+	}
+
+	const prayerLevels: Record<Remains, number> = {
+		Loar: 1,
+		Phrin: 1,
+		Riyl: 20,
+		Asyn: 40,
+		Fiyr: 60,
+		Urium: 70
+	};
+
+	const requiredPrayer = prayerLevels[shade.shadeName];
+	if (userStats.prayer < requiredPrayer) {
+		return `You need ${requiredPrayer} Prayer to cremate ${shade.shadeName} remains.`;
+	}
+
+	return null;
 }
 
 export async function shadesOfMortonStartCommand(user: MUser, channelId: string, logStr: string, shadeStr: string) {
@@ -284,6 +346,9 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 	const shade = shades.find(i => i.shadeName === shadeStr);
 	if (!log || !shade) return 'Invalid item';
 
+	const reqError = checkCremationRequirements(user, log, shade);
+	if (reqError) return reqError;
+
 	const shadesOwned = userBank.amount(shade.item.id);
 	if (!shadesOwned) return `You don't own any ${shade.item.name}! Go kill some shades.`;
 
@@ -292,9 +357,10 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 		return `You can't use ${log.normalLog.name} with ${shade.item.name}.`;
 	}
 
-	const effectiveTimePerCremation = TIME_PER_CREMATION + avgKeysPerCremation(shade) * TIME_PER_KEY;
-	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / effectiveTimePerCremation));
-	const duration = quantity * effectiveTimePerCremation;
+	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / TIME_PER_CREMATION));
+	const duration = quantity * TIME_PER_CREMATION;
+
+	if (quantity < 1) return 'You cannot do any cremations in that time.';
 
 	const cost = new Bank();
 	cost.add(log.normalLog.id, quantity);
@@ -315,11 +381,217 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 		shadeID: shade.shadeName
 	});
 
-	let str = `${
-		user.minionName
-	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
+	let str = `${user.minionName} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
 	if (messages.length > 0) {
 		str += `\n**Messages:** ${messages.join(', ')}`;
 	}
 	return str;
 }
+
+export async function shadesOfMortonSacredOilCommand(user: MUser, channelId: string) {
+	const oliveOilItem = Items.getOrThrow('Olive oil(4)');
+	const sacredOilItem = Items.getOrThrow('Sacred oil(4)');
+
+	const userStats = user.skillsAsLevels;
+	if (userStats.firemaking < 5) {
+		return "You need at least 5 Firemaking to create sacred oil at the Mort'ton temple.";
+	}
+
+	const oliveOilOwned = user.bank.amount(oliveOilItem.id);
+	if (oliveOilOwned === 0) return `You don't have any ${oliveOilItem.name} to upgrade!`;
+
+	const totalTime = await user.calcMaxTripLength('ShadesOfMorton');
+	const quantity = Math.min(oliveOilOwned, Math.floor(totalTime / TIME_PER_SACRED_OIL));
+	if (quantity < 1) return 'You do not have enough time to create any sacred oil.';
+
+	const duration = quantity * TIME_PER_SACRED_OIL;
+	const cost = new Bank().add(oliveOilItem.id, quantity);
+
+	if (!user.owns(cost)) return `You don't own: ${cost}.`;
+	await user.removeItemsFromBank(cost);
+	await user.statsBankUpdate('shades_of_morton_cost_bank', cost);
+
+	await ActivityManager.startTrip<ShadesOfMortonSacredOilOptions>({
+		userID: user.id,
+		channelId,
+		quantity,
+		duration,
+		type: 'ShadesOfMortonSacredOil'
+	});
+
+	return `${user.minionName} is now off to the Mort'ton temple to upgrade ${quantity}x ${oliveOilItem.name} into ${sacredOilItem.name} - trip will take ${formatDuration(duration)}.`;
+}
+
+export async function shadesOfMortonCreatePyreLogsCommand(user: MUser, channelId: string, logStr: string, quantity?: number) {
+	const sacredOilItem = Items.getOrThrow('Sacred oil(4)');
+
+	const recipe = pyreLogRecipes.find(r => r.log.name.toLowerCase() === logStr.toLowerCase());
+	if (!recipe) {
+		const validLogs = pyreLogRecipes.map(r => r.log.name).join(', ');
+		return `Invalid log type. Valid options: ${validLogs}.`;
+	}
+
+	const pyreLog = shadesLogs.find(l => l.normalLog.id === recipe.pyreLogs.id);
+	if (!pyreLog) return 'Could not find pyre log data.';
+
+	const userStats = user.skillsAsLevels;
+	if (userStats.firemaking < pyreLog.fmLevel) {
+		return `You need ${pyreLog.fmLevel} Firemaking to create ${recipe.pyreLogs.name}.`;
+	}
+
+	const logsOwned = user.bank.amount(recipe.log.id);
+	const sacredOilOwned = user.bank.amount(sacredOilItem.id);
+
+	if (logsOwned === 0) return `You don't have any ${recipe.log.name}!`;
+	if (sacredOilOwned === 0) return `You don't have any ${sacredOilItem.name}!`;
+
+	const totalTime = await user.calcMaxTripLength('ShadesOfMorton');
+	const maxQuantity = Math.min(logsOwned, sacredOilOwned, Math.floor(totalTime / TIME_PER_PYRE_LOG));
+	const finalQuantity = quantity ? Math.min(quantity, maxQuantity) : maxQuantity;
+	if (finalQuantity < 1) return 'You do not have enough time or supplies to make any pyre logs.';
+
+	const duration = finalQuantity * TIME_PER_PYRE_LOG;
+	const cost = new Bank().add(recipe.log.id, finalQuantity).add(sacredOilItem.id, finalQuantity);
+
+	if (!user.owns(cost)) return `You don't own: ${cost}.`;
+	await user.removeItemsFromBank(cost);
+	await user.statsBankUpdate('shades_of_morton_cost_bank', cost);
+
+	await ActivityManager.startTrip<ShadesOfMortonPyreLogsOptions>({
+		userID: user.id,
+		channelId,
+		quantity: finalQuantity,
+		duration,
+		type: 'ShadesOfMortonPyreLogs',
+		logID: recipe.log.id
+	});
+
+	return `${user.minionName} is now off to apply sacred oil to ${finalQuantity}x ${recipe.log.name} - trip will take ${formatDuration(duration)}.`;
+}
+
+export const shadesOfMortonTask: MinionTask = {
+	type: 'ShadesOfMorton',
+	async run(data: ShadesOfMortonOptions | ShadesOfMortonSacredOilOptions | ShadesOfMortonPyreLogsOptions, { user, handleTripFinish }) {
+		const { channelId, quantity, duration } = data;
+
+		if (data.type === 'ShadesOfMortonSacredOil') {
+			const sacredOilItem = Items.getOrThrow('Sacred oil(4)');
+			const loot = new Bank().add(sacredOilItem.id, quantity);
+			const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
+			const str = `${user}, Your minion finished sanctifying ${quantity}x Olive oil, producing ${quantity}x ${sacredOilItem.name}.`;
+			return handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
+		}
+
+		if (data.type === 'ShadesOfMortonPyreLogs') {
+			const { logID } = data as ShadesOfMortonPyreLogsOptions;
+			const recipe = pyreLogRecipes.find(r => r.log.id === logID);
+			if (!recipe) throw new Error(`No pyre log recipe found for log ID ${logID}`);
+
+			const pyreLog = shadesLogs.find(l => l.normalLog.id === recipe.pyreLogs.id);
+			if (pyreLog) {
+				const userStats = user.skillsAsLevels;
+				if (userStats.firemaking < pyreLog.fmLevel) {
+					return handleTripFinish({
+						user,
+						channelId,
+						message: `${user.minionName} failed to complete creating pyre logs because they no longer have the required Firemaking level (need ${pyreLog.fmLevel}).`,
+						data,
+						loot: new Bank()
+					});
+				}
+			}
+
+			const loot = new Bank().add(recipe.pyreLogs.id, quantity);
+			const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
+
+			const xpStr = await user.addXP({
+				skillName: 'firemaking',
+				amount: quantity * 20,
+				duration,
+				source: 'ShadesOfMorton'
+			});
+
+			const str = `${user}, Your minion finished oiling ${quantity}x ${recipe.pyreLogs.name} and received ${xpStr}.`;
+			return handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
+		}
+
+		const { logID, shadeID } = data as ShadesOfMortonOptions;
+
+		const log = shadesLogs.find(i => i.normalLog.id === logID)!;
+		const shade = shades.find(i => i.shadeName === shadeID)!;
+
+		const userStats = user.skillsAsLevels;
+		if (userStats.firemaking < log.fmLevel) {
+			return handleTripFinish({
+				user,
+				channelId,
+				message: `${user.minionName} failed to complete the Shades of Mort'ton trip because they no longer have the required Firemaking level (need ${log.fmLevel}).`,
+				data,
+				loot: new Bank()
+			});
+		}
+
+		await user.incrementMinigameScore('shades_of_morton', quantity);
+
+		const table = buildShadeTable(shade);
+		const loot = new Bank();
+		let totalKeysProduced = 0;
+
+		for (let i = 0; i < quantity; i++) {
+			const roll_result = table.roll();
+			loot.add(roll_result);
+
+			for (const [item, qty] of roll_result.items()) {
+				if (item.name.toLowerCase().includes('key')) {
+					totalKeysProduced += qty;
+				}
+			}
+		}
+
+		const messages: string[] = [];
+
+		if (totalKeysProduced > 0) {
+			messages.push(`Received ${totalKeysProduced} key${totalKeysProduced !== 1 ? 's' : ''}.`);
+		}
+
+		// Remove coins from loot - they're just a placeholder for "no key"
+		loot.remove('Coins', loot.amount('Coins'));
+
+		const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
+
+		let firemakingXP = quantity * log.fmXP;
+		if (user.hasDiary('morytania.elite')) {
+			firemakingXP = increaseNumByPercent(firemakingXP, 50);
+			messages.push('50% bonus firemaking xp for morytania elite diary.');
+		}
+
+		let xpStr = await user.addXP({
+			skillName: 'firemaking',
+			amount: firemakingXP,
+			duration,
+			source: 'ShadesOfMorton'
+		});
+
+		let prayerXP = log.prayerXP[shade.shadeName];
+		if (!prayerXP) throw new Error(`No prayer XP for ${shade.shadeName} in ${log.oiledLog.name}!`);
+
+		if (user.hasDiary('morytania.hard')) {
+			prayerXP = increaseNumByPercent(prayerXP, 50);
+			messages.push('50% bonus prayer xp for morytania hard diary.');
+		}
+
+		xpStr += ', ';
+		xpStr += await user.addXP({
+			skillName: 'prayer',
+			amount: quantity * prayerXP,
+			duration,
+			source: 'ShadesOfMorton'
+		});
+
+		let str = `${user}, your minion cremated ${quantity}x ${shade.item.name} remains. ${xpStr}.`;
+		if (loot.length > 0) str += ` You received: ${itemsAdded}.`;
+		if (messages.length > 0) str += `\n${messages.join(' ')}`;
+
+		handleTripFinish({ user, channelId, message: str, data, loot: itemsAdded });
+	}
+};
