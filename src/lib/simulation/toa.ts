@@ -641,7 +641,7 @@ export function calcTOALoot({
 			continue;
 		}
 		if (uniqueRecipient && user.id === uniqueRecipient) {
-			loot.add(user.id, uniqueLootRoll(rng, user.kc, user.cl, raidLevel));
+			loot.add(user.id, uniqueLootRoll(rng, raidLevel));
 		} else {
 			loot.add(user.id, nonUniqueLoot({ rng, points: user.points }));
 		}
