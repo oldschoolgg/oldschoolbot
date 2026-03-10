@@ -36,6 +36,31 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 		}
 	}
 
+	const currentActivity =
+		bot === 'osb'
+			? await osbClient.activity.findFirst({
+					where: {
+						user_id: BigInt(targetUserId),
+						completed: false
+					},
+					orderBy: { finish_date: 'desc' }
+				})
+			: await bsoClient.activity.findFirst({
+					where: {
+						user_id: BigInt(targetUserId),
+						completed: false
+					},
+					orderBy: { finish_date: 'desc' }
+				});
+	const currentActivityName =
+		currentActivity &&
+		typeof currentActivity.data === 'object' &&
+		currentActivity.data !== null &&
+		'name' in currentActivity.data &&
+		typeof (currentActivity.data as { name?: unknown }).name === 'string'
+			? (currentActivity.data as { name: string }).name
+			: (currentActivity?.type ?? 'Unknown activity');
+
 	const response: FullMinionData = {
 		user_id: botUser.id,
 		bot: bot,
@@ -106,7 +131,15 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 			default_compost: botUser.minion_defaultCompostToUse,
 			attack_style: botUser.attack_style,
 			combat_options: botUser.combat_options
-		}
+		},
+
+		current_activity: currentActivity
+			? {
+					name: currentActivityName,
+					started_at: currentActivity.start_date.toISOString(),
+					finishes_at: currentActivity.finish_date.toISOString()
+				}
+			: null
 	};
 	return response;
 }
