@@ -66,15 +66,24 @@ export function getItemCostFromConsumables({
 		}
 		if (itemMultiple !== null) {
 			let runeReductionMultiplier: number | null = null;
+			const isPerMinute = typeof consumable.qtyPerMinute === 'number' && !range;
 
 			if (consumable.isRuneCost) {
 				// Free casts for kodai + sotd
 				if (hasKodaiEquipped) {
-					itemMultiple = Math.ceil(0.85 * itemMultiple);
-					runeReductionMultiplier = range ? 0.85 : null;
+					if (range || isPerMinute) {
+						runeReductionMultiplier = 0.85;
+						itemMultiple *= runeReductionMultiplier;
+					} else {
+						itemMultiple = Math.ceil(0.85 * itemMultiple);
+					}
 				} else if (hasSOTDEquipped) {
-					itemMultiple = Math.ceil((6 / 7) * itemMultiple);
-					runeReductionMultiplier = range ? 6 / 7 : null;
+					if (range || isPerMinute) {
+						runeReductionMultiplier = 6 / 7;
+						itemMultiple *= runeReductionMultiplier;
+					} else {
+						itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+					}
 				}
 			}
 
