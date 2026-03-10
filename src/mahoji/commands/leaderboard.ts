@@ -553,6 +553,58 @@ async function masteryLb(interaction: MInteraction) {
 	});
 }
 
+async function giantsFoundryLb(interaction: MInteraction, ironmanOnly: boolean, sortByTotal: boolean) {
+	const stats = await prisma.userStats.findMany({
+		select: { user_id: true, gf_weapons_made: true }
+	});
+
+	const minigames = await prisma.minigame.findMany({
+		select: { user_id: true, giants_foundry: true }
+	});
+
+	const minigameMap = new Map(minigames.map(m => [m.user_id.toString(), m.giants_foundry ?? 0]));
+
+	let rows = stats
+		.map(s => {
+			const json = (s.gf_weapons_made ?? {}) as Record<string, number>;
+			const uniques = Object.keys(json).length;
+			const totalJson = Object.values(json).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
+			const total = Math.max(totalJson, minigameMap.get(s.user_id.toString()) ?? 0);
+			return { id: s.user_id.toString(), uniques, total };
+		})
+		.filter(r => r.uniques > 0 || r.total > 0);
+
+	if (rows.length === 0) return 'There are no users on this leaderboard.';
+
+	if (ironmanOnly) {
+		const irons = await prisma.user.findMany({ where: { minion_ironman: true }, select: { id: true } });
+		const ironSet = new Set(irons.map(i => i.id.toString()));
+		rows = rows.filter(r => ironSet.has(r.id));
+	}
+
+	rows.sort((a, b) => (sortByTotal ? b.total - a.total : b.uniques - a.uniques));
+
+	const top = rows.slice(0, 10);
+
+	return doMenuWrapper({
+		ironmanOnly,
+		interaction,
+		users: top.map(t => ({ id: t.id, score: sortByTotal ? t.total : t.uniques })),
+		title: sortByTotal
+			? `Giant’s Foundry – Total Weapons${ironmanOnly ? ' (Ironmen Only)' : ''}`
+			: `Giant’s Foundry – Unique Weapons${ironmanOnly ? ' (Ironmen Only)' : ''}`,
+		render: (u, name) => {
+			const row = top.find(r => r.id === u.id);
+
+			if (sortByTotal) {
+				return `**${name}:** ${row?.total.toLocaleString()} total (${row?.uniques.toLocaleString()} uniques)`;
+			}
+
+			return `**${name}:** ${row?.uniques.toLocaleString()} uniques (${row?.total.toLocaleString()} total)`;
+		}
+	});
+}
+
 const ironmanOnlyOption = defineOption({
 	type: 'Boolean',
 	name: 'ironmen_only',
@@ -804,6 +856,20 @@ export const leaderboardCommand = defineCommand({
 			name: 'mastery',
 			description: 'Check the mastery leaderboard.',
 			options: []
+		},
+		{
+			type: 'Subcommand',
+			name: 'giants_foundry',
+			description: "Check the Giant's Foundry unique weapons leaderboard.",
+			options: [
+				{
+					type: 'Boolean',
+					name: 'total_weapons',
+					description: 'Sort by total weapons made instead.',
+					required: false
+				},
+				ironmanOnlyOption
+			]
 		}
 	],
 	run: async ({ options, interaction }) => {
@@ -876,6 +942,14 @@ export const leaderboardCommand = defineCommand({
 
 		if (options.mastery) {
 			return masteryLb(interaction);
+		}
+
+		if (options.giants_foundry) {
+			return giantsFoundryLb(
+				interaction,
+				Boolean(options.giants_foundry.ironmen_only),
+				Boolean(options.giants_foundry.total_weapons)
+			);
 		}
 
 		return 'Invalid input.';
