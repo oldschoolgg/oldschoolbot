@@ -134,9 +134,9 @@ describe('PVM', async () => {
 		});
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.commandResult).toContain('is now killing ');
-		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Blood rune')).toBeLessThan(10000);
 		expect(user.bank.amount('Water rune')).toBeLessThan(10000000);
-		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Death rune')).toBeLessThan(10000);
 		expect(result.newKC).toBeGreaterThan(0);
 		expect(result.xpGained.magic).toBeGreaterThan(0);
 	});
@@ -152,8 +152,8 @@ describe('PVM', async () => {
 		await user.setAttackStyle(['magic']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
-		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
-		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Blood rune')).toBeLessThan(10000);
+		expect(user.bank.amount('Death rune')).toBeLessThan(10000);
 		expect(result.newKC).toBeGreaterThan(0);
 	});
 

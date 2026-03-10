@@ -84,13 +84,13 @@ export function getItemCostFromConsumables({
 
 			for (const [item, qty] of consumable.itemCost.items()) {
 				floatCostsPerKill.add(item.id, qty * multiply);
-				consumablesUsed.push({
-					consumable,
-					perKillValue: multiply,
-					range,
-					runeReductionMultiplier
-				});
 			}
+			consumablesUsed.push({
+				consumable,
+				perKillValue: multiply,
+				range,
+				runeReductionMultiplier
+			});
 			if (consumable.boostPercent) {
 				timeToFinish = reduceNumByPercent(timeToFinish, consumable.boostPercent);
 				boosts.push({

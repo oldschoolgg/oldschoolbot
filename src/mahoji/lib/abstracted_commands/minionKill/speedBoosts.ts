@@ -355,7 +355,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			}
 
 			const { virtusBoost } = calculateVirtusBoost({ isInWilderness, gearBank, isOnTask });
-			if (isBarraging && attackStyles.includes('magic')) {
+			if (isBarraging && newAttackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBarrage + virtusBoost,
 					consumables: [iceBarrageConsumables],
@@ -367,7 +367,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes('magic')) {
+			if (isBursting && newAttackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBurst + virtusBoost,
 					consumables: [iceBurstConsumables],
