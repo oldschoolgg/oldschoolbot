@@ -1,6 +1,6 @@
 import type { ButtonBuilder } from '@oldschoolgg/discord';
 import { notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, EItem, Items, Monsters } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import type { MessageBuilderClass } from '@/discord/MessageBuilder.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -74,7 +74,6 @@ export async function abstractedOpenUntilCommand(
 	let targetCount = 0;
 	const maxOpenLimit = maxOpenQuantity ?? amountOfThisOpenableOwned;
 	const max = Math.min(10000, amountOfThisOpenableOwned, maxOpenLimit);
-	const cachedYamaKC = openable.id === EItem.DOSSIER ? await user.getKC(Monsters.Yama.id) : undefined;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({
@@ -83,8 +82,7 @@ export async function abstractedOpenUntilCommand(
 			user,
 			rng,
 			openedCountOffset: amountOpened,
-			previousLoot: loot,
-			cachedYamaKC
+			previousLoot: loot
 		});
 		loot.add(thisLoot.bank);
 		amountOpened++;

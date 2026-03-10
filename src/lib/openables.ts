@@ -97,7 +97,6 @@ interface OpenArgs {
 	rng: RNGProvider;
 	openedCountOffset?: number;
 	previousLoot?: Bank;
-	cachedYamaKC?: number;
 }
 
 export interface UnifiedOpenable {
@@ -444,13 +443,13 @@ const osjsOpenables: UnifiedOpenable[] = [
 		id: EItem.DOSSIER,
 		openedItem: Items.getOrThrow(EItem.DOSSIER),
 		aliases: ['dossier'],
-		output: async ({ quantity, user, rng, openedCountOffset = 0, previousLoot, cachedYamaKC }) => {
+		output: async ({ quantity, user, rng, openedCountOffset = 0, previousLoot }) => {
 			const loot = new Bank();
 			if (quantity <= 0) {
 				return { bank: loot };
 			}
 
-			const yamaKC = cachedYamaKC ?? (await user.getKC(Monsters.Yama.id));
+			const yamaKC = openedCountOffset === 0 ? await user.getKC(Monsters.Yama.id) : 0;
 
 			const hadRiteAlready =
 				user.bitfield.includes(BitField.HasRiteOfVileTransference) ||
@@ -632,8 +631,7 @@ export function getOpenableLoot({
 	user,
 	rng,
 	openedCountOffset,
-	previousLoot,
-	cachedYamaKC
+	previousLoot
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
@@ -641,9 +639,8 @@ export function getOpenableLoot({
 	rng: RNGProvider;
 	openedCountOffset?: number;
 	previousLoot?: Bank;
-	cachedYamaKC?: number;
 }) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity, rng, openedCountOffset, previousLoot, cachedYamaKC });
+		: openable.output({ user, self: openable, quantity, rng, openedCountOffset, previousLoot });
 }
