@@ -573,14 +573,14 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 }
 
 export interface ShadesOfMortonSacredOilOptions extends ActivityTaskOptions {
-	type: 'ShadesOfMortonSacredOil';
-	quantity: number;
+    type: 'ShadesOfMortonSacredOil';
+    quantity: number;
 }
 
 export interface ShadesOfMortonPyreLogsOptions extends ActivityTaskOptions {
-	type: 'ShadesOfMortonPyreLogs';
-	quantity: number;
-	logID: number;
+    type: 'ShadesOfMortonPyreLogs';
+    quantity: number;
+    logID: number;
 }
 
 export interface SpecificQuestOptions extends ActivityTaskOptions {

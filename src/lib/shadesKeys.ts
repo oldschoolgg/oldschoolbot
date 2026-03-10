@@ -1,7 +1,7 @@
 import { Bank, type Item, ItemGroups, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
+import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 
 const BronzeChest = new LootTable({ limit: 99 })
 	.every('Swamp paste', [10, 20])
@@ -260,18 +260,16 @@ export function openShadeChest({
 	item: Item;
 	qty: number;
 	rng: RNGProvider;
-	user?: MUser;
+	user: MUser;
 }) {
 	const chest = chests.find(i => i.items.includes(item.id));
 	if (!chest) throw new Error(`No chest found for item ${item.name}.`);
 	const loot = new Bank();
 	const effectiveOwnedItems = allItemsOwned.clone();
 
-	const eliteClueRate = user
-		? (CombatAchievements.elite.tasks.every(t => new Set(user.user.completed_ca_task_ids).has(t.id))
-			? ELITE_CLUE_RATE_WITH_CA
-			: ELITE_CLUE_RATE)
-		: ELITE_CLUE_RATE;
+	const completedCAIds = new Set(user.user.completed_ca_task_ids);
+	const hasEliteCAs = CombatAchievements.elite.tasks.every(t => completedCAIds.has(t.id));
+	const eliteClueRate = hasEliteCAs ? ELITE_CLUE_RATE_WITH_CA : ELITE_CLUE_RATE;
 
 	for (let i = 0; i < qty; i++) {
 		const thisLoot = chest.table.roll();

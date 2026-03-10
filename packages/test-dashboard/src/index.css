@@ -4,8 +4,7 @@
 	font-family: "osrs-font-compact";
 	font-style: normal;
 	font-display: swap;
-	src: url("https://cdn.oldschool.gg/fonts/osrs-font-compact.otf?X=1")
-		format("opentype");
+	src: url("https://cdn.oldschool.gg/fonts/osrs-font-compact.otf?X=1") format("opentype");
 }
 
 .font-osrs-compact {
