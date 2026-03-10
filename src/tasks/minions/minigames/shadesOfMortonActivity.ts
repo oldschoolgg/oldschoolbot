@@ -6,11 +6,19 @@ import type {
 	ShadesOfMortonPyreLogsOptions,
 	ShadesOfMortonSacredOilOptions
 } from '@/lib/types/minions.js';
-import { buildShadeTable, pyreLogRecipes, shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
+import {
+	buildShadeTable,
+	pyreLogRecipes,
+	shades,
+	shadesLogs
+} from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',
-	async run(data: ShadesOfMortonOptions | ShadesOfMortonSacredOilOptions | ShadesOfMortonPyreLogsOptions, { user, handleTripFinish }) {
+	async run(
+		data: ShadesOfMortonOptions | ShadesOfMortonSacredOilOptions | ShadesOfMortonPyreLogsOptions,
+		{ user, handleTripFinish }
+	) {
 		const { channelId, quantity, duration } = data;
 
 		if (data.type === 'ShadesOfMortonSacredOil') {
