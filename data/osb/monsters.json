@@ -1,6 +1,6 @@
 {
-	"hash": "5ea9189e1b5866dc6ec45afb2c1d0618",
-	"date": "2025-10-23T19:43:02.446Z",
+	"hash": "2c3311c98ef883ff85c4ca55e3583a82",
+	"date": "2026-03-10T09:21:35.536Z",
 	"data": [
 		{
 			"id": 2,
@@ -2260,6 +2260,26 @@
 			"can_chin": false,
 			"can_cannon": true,
 			"cannon_multi": true
+		},
+		{
+			"id": 1834,
+			"name": "Gorak",
+			"base_kill_time_ms": 39200,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [["Ring of wealth", "Ring of wealth (i)"]],
+			"qp_required": 30,
+			"item_in_bank_boosts": [
+				{
+					"Gem bag": 20
+				}
+			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
 		},
 		{
 			"id": 2025,
