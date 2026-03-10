@@ -43,6 +43,7 @@ export interface Ore {
 	slope: number;
 	intercept: number;
 	petChance?: number;
+	moonKeyHalfChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
 	aliases?: string[];

@@ -252,7 +252,8 @@ const ores: Ore[] = [
 		intercept: -0.85,
 		petChance: 42_377,
 		clueScrollChance: 42_377,
-		aliases: ['rune', 'rune ore', 'runite']
+		aliases: ['rune', 'rune ore', 'runite'],
+		moonKeyHalfChance: 250
 	},
 	{
 		level: 92,
@@ -305,8 +306,8 @@ const prospectorItems: ItemBank = {
 	[itemID('Prospector boots')]: 0.2
 };
 
-export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemID, bonus]) => ({
-	id: Number.parseInt(itemID),
+export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemKey, bonus]) => ({
+	id: Number.parseInt(itemKey),
 	boostPercent: bonus
 }));
 
