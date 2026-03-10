@@ -1,5 +1,4 @@
 import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { randInt } from 'node-rng';
 import { EItem, itemID } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
@@ -125,10 +124,9 @@ export function getItemCostFromConsumables({
 	const tripCost = new FloatBank();
 	for (const used of consumablesUsed) {
 		if (used.range) {
-			let total = 0;
-			for (let i = 0; i < finalQuantity; i++) {
-				total += randInt(used.range[0], used.range[1]);
-			}
+			// Use a deterministic upper bound for ranged per-kill consumables so
+			// requirement checks and trip finalization can't disagree.
+			let total = Math.ceil(used.range[1] * finalQuantity);
 			if (used.runeReductionMultiplier) {
 				total = Math.ceil(total * used.runeReductionMultiplier);
 			}

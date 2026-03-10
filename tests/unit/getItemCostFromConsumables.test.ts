@@ -90,7 +90,7 @@ describe('getItemCostFromConsumables', () => {
 		expect(consumablesCost!.itemCost!.amount('Anti-venom+(4)')).toBeGreaterThan(0);
 	});
 
-	test('qtyPerKillRange rolls random values per kill', () => {
+	test('qtyPerKillRange uses deterministic upper bound', () => {
 		const gearBank = makeGearBank();
 		gearBank.bank.add('Blood rune', 1000);
 
@@ -110,8 +110,7 @@ describe('getItemCostFromConsumables', () => {
 		});
 
 		expect(consumablesCost?.finalQuantity).toEqual(3);
-		expect(consumablesCost?.itemCost?.amount('Blood rune')).toBeGreaterThanOrEqual(72);
-		expect(consumablesCost?.itemCost?.amount('Blood rune')).toBeLessThanOrEqual(108);
+		expect(consumablesCost?.itemCost?.amount('Blood rune')).toEqual(108);
 	});
 
 	test('qtyPerKillRange respects rune reductions', () => {
@@ -135,7 +134,6 @@ describe('getItemCostFromConsumables', () => {
 		});
 
 		expect(consumablesCost?.finalQuantity).toEqual(2);
-		expect(consumablesCost?.itemCost?.amount('Blood rune')).toBeGreaterThanOrEqual(42);
-		expect(consumablesCost?.itemCost?.amount('Blood rune')).toBeLessThanOrEqual(63);
+		expect(consumablesCost?.itemCost?.amount('Blood rune')).toEqual(63);
 	});
 });
