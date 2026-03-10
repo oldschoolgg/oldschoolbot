@@ -4,6 +4,7 @@ import {
 	Bank,
 	BrimstoneChest,
 	BronzeHAMChest,
+	CastleWarsSupplyCrate,
 	EItem,
 	EliteMimicTable,
 	ElvenCrystalChest,
@@ -416,6 +417,25 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['zombie pirate key', 'zombie pirate locker', 'pirate locker'],
 		output: ZombiePiratesLocker.table,
 		allItems: ZombiePiratesLocker.table.allItems
+	},
+	{
+		name: 'Castle wars supply crate',
+		id: 30_690,
+		openedItem: Items.getOrThrow(30_690),
+		aliases: ['castle wars supply crate'],
+		output: async (
+			args: OpenArgs
+		): Promise<{
+			bank: Bank;
+		}> => {
+			const openLoot = new Bank();
+			for (let i = 0; i < args.quantity; i++) {
+				// Each crate rolls the table 3 times
+				openLoot.add(CastleWarsSupplyCrate.table.roll(3));
+			}
+			return { bank: openLoot };
+		},
+		allItems: CastleWarsSupplyCrate.table.allItems
 	}
 ];
 

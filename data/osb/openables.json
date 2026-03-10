@@ -612,6 +612,24 @@
 		]
 	},
 	{
+		"name": "Castle wars supply crate",
+		"id": 30690,
+		"opened_item": "Castle wars supply crate",
+		"all_items": [
+			"Blighted ancient ice sack",
+			"Blighted anglerfish",
+			"Blighted karambwan",
+			"Blighted manta ray",
+			"Blighted super restore(4)",
+			"Blighted vengeance sack",
+			"Castle wars arrow",
+			"Castle wars bolts",
+			"Castle wars ticket",
+			"Rune arrow",
+			"Rune javelin"
+		]
+	},
+	{
 		"name": "Chest (moon key)",
 		"id": 30109,
 		"opened_item": "Moon key",
