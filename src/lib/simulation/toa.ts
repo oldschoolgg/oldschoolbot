@@ -183,10 +183,13 @@ const minSuppliesWithAtkStr = new Bank({
 	'Super strength(4)': 1
 });
 const miscBoosts = [
+	["Osmumten's fang", 15, 'melee'],
 	['Lightbearer', 5, null],
-	['Void staff', 50, 'mage'],
+	["Tumeken's shadow", 25, 'mage'],
+	['Void staff', 40, 'mage'],
 	['Bandos godsword', 2, null],
-	['Hellfire bow', 4, 'range']
+	['Twisted bow', 4, 'range'],
+	['Hellfire bow', 5, 'range']
 ] as const;
 const primarySpecWeaponBoosts = [
 	['Zaryte crossbow', 9],
@@ -338,7 +341,7 @@ const toaRequirements: {
 				minimumSuppliesNeeded = minSuppliesWithAtkStr;
 			}
 			if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
-				return `You need at least this much supplies: ${minimumSuppliesNeeded}.`;
+				return `You need at least the following supplies: ${minimumSuppliesNeeded}.`;
 			}
 			const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
 			if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
@@ -357,7 +360,7 @@ const toaRequirements: {
 			}
 
 			const voidCharges = VOID_STAFF_PER_RAID * quantity;
-			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.void_staff_charges < voidCharges) {
+			if (user.gear.mage.hasEquipped('Void staff') && user.user.void_staff_charges < voidCharges) {
 				return `You need at least ${voidCharges} Void staff charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 					'minion',
 					'charge'
@@ -525,9 +528,10 @@ const TOAUniqueTable = new LootTable()
 
 function uniqueLootRoll(kc: number, cl: Bank, raidLevel: RaidLevel) {
 	const [item] = TOAUniqueTable.roll().items()[0];
+	const loot = new Bank().add(item.id);
 
 	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !roll(50)) {
-		return untradeableRoll(kc, cl);
+		loot.add(untradeableRoll(kc, cl));
 	}
 
 	if (
@@ -541,10 +545,10 @@ function uniqueLootRoll(kc: number, cl: Bank, raidLevel: RaidLevel) {
 		raidLevel < 150 &&
 		!roll(50)
 	) {
-		return untradeableRoll(kc, cl);
+		loot.add(untradeableRoll(kc, cl));
 	}
 
-	return new Bank().add(item.id);
+	return loot;
 }
 
 export const nonUniqueTable = [
