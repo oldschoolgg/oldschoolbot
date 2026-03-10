@@ -462,11 +462,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 			let rollsFromTable = quantity;
 			if (shouldGuaranteeRite) {
 				rollsFromTable--;
-				if (hadRiteAlready) {
-					loot.add(DOSSIER_SCROLL_NAME, rng.randInt(15, 18));
-				} else {
-					loot.add(DOSSIER_RITE_NAME, 1);
-				}
+				loot.add(DOSSIER_RITE_NAME, 1);
 			}
 
 			if (rollsFromTable > 0) {
