@@ -538,10 +538,9 @@ export const shadesOfMortonTask: MinionTask = {
 		let totalKeysProduced = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const roll_result = table.roll();
-			loot.add(roll_result);
+			const rollResult = table.roll();
 
-			for (const [item, qty] of roll_result.items()) {
+			for (const [item, qty] of rollResult.items()) {
 				if (item.name.toLowerCase().includes('key')) {
 					totalKeysProduced += qty;
 				}
@@ -549,12 +548,10 @@ export const shadesOfMortonTask: MinionTask = {
 		}
 
 		const messages: string[] = [];
-
 		if (totalKeysProduced > 0) {
 			messages.push(`Received ${totalKeysProduced} key${totalKeysProduced !== 1 ? 's' : ''}.`);
 		}
 
-		// Remove coins from loot - they're just a placeholder for "no key"
 		loot.remove('Coins', loot.amount('Coins'));
 
 		const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
