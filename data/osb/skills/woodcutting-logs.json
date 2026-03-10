@@ -54,6 +54,7 @@
 		"depletion_chance": 100,
 		"wc_guild": true,
 		"pet_chance": 317647,
+		"moon_key_half_chance": 2650,
 		"qp_required": 0,
 		"clue_scroll_chance": 317647
 	},
@@ -70,6 +71,7 @@
 		"depletion_chance": 12.5,
 		"wc_guild": true,
 		"pet_chance": 72321,
+		"moon_key_half_chance": 700,
 		"qp_required": 0,
 		"clue_scroll_chance": 72321
 	},
@@ -84,6 +86,7 @@
 		"intercept": 3.05,
 		"depletion_chance": 12.5,
 		"pet_chance": 220623,
+		"moon_key_half_chance": 2000,
 		"qp_required": 0,
 		"clue_scroll_chance": 220623
 	},
@@ -100,6 +103,7 @@
 		"depletion_chance": 12.5,
 		"wc_guild": true,
 		"pet_chance": 221918,
+		"moon_key_half_chance": 1250,
 		"qp_required": 0,
 		"clue_scroll_chance": 221918
 	},
@@ -116,6 +120,7 @@
 		"depletion_chance": 12.5,
 		"wc_guild": true,
 		"pet_chance": 361146,
+		"moon_key_half_chance": 1950,
 		"qp_required": 0,
 		"clue_scroll_chance": 361146
 	},
@@ -161,6 +166,7 @@
 		"intercept": 5.07,
 		"depletion_chance": 12.5,
 		"pet_chance": 264336,
+		"moon_key_half_chance": 1667,
 		"qp_required": 0,
 		"clue_scroll_chance": 264336
 	},
@@ -177,6 +183,7 @@
 		"depletion_chance": 12.5,
 		"wc_guild": true,
 		"pet_chance": 289286,
+		"moon_key_half_chance": 3500,
 		"qp_required": 0,
 		"clue_scroll_chance": 289286
 	},
@@ -193,6 +200,7 @@
 		"depletion_chance": 12.5,
 		"wc_guild": true,
 		"pet_chance": 145013,
+		"moon_key_half_chance": 900,
 		"qp_required": 0,
 		"clue_scroll_chance": 145013
 	}

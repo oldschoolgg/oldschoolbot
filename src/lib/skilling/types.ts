@@ -63,6 +63,7 @@ export interface Log {
 	depletionChance: number;
 	wcGuild?: boolean;
 	petChance?: number;
+	moonKeyHalfChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
 	clueNestsOnly?: boolean;
