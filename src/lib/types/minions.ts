@@ -587,6 +587,18 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 	shadeID: string;
 	logID: number;
 }
+
+export interface ShadesOfMortonSacredOilOptions extends ActivityTaskOptions {
+    type: 'ShadesOfMortonSacredOil';
+    quantity: number;
+}
+
+export interface ShadesOfMortonPyreLogsOptions extends ActivityTaskOptions {
+    type: 'ShadesOfMortonPyreLogs';
+    quantity: number;
+    logID: number;
+}
+
 export interface SpecificQuestOptions extends ActivityTaskOptions {
 	type: 'SpecificQuest';
 	questID: number;
@@ -623,6 +635,8 @@ export type ActivityTaskData =
 	| GiantsFoundryActivityTaskOptions
 	| NightmareZoneActivityTaskOptions
 	| ShadesOfMortonOptions
+	| ShadesOfMortonSacredOilOptions
+	| ShadesOfMortonPyreLogsOptions
 	| UnderwaterAgilityThievingTaskOptions
 	| PickpocketActivityTaskOptions
 	| BuryingActivityTaskOptions

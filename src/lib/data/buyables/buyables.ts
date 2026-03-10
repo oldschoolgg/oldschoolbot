@@ -1090,6 +1090,14 @@ const Buyables: Buyable[] = [
 		gpCost: 2000
 	},
 	{
+		name: 'Olive oil(4)',
+		gpCost: 22
+	},
+	{
+		name: 'Olive oil pack',
+		gpCost: 2670
+	},
+	{
 		name: 'Keris partisan',
 		gpCost: 100_000,
 		ironmanPrice: 60_000,
