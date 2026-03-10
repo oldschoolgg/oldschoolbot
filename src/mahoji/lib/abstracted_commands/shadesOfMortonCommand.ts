@@ -255,16 +255,16 @@ const CREMATIONS_PER_HOUR = 450;
 const TIME_PER_CREMATION = Time.Hour / CREMATIONS_PER_HOUR;
 
 export const pyreLogRecipes = [
-	{ log: Items.getOrThrow('Logs'), pyreLogs: Items.getOrThrow('Pyre logs') },
-	{ log: Items.getOrThrow('Oak logs'), pyreLogs: Items.getOrThrow('Oak pyre logs') },
-	{ log: Items.getOrThrow('Willow logs'), pyreLogs: Items.getOrThrow('Willow pyre logs') },
-	{ log: Items.getOrThrow('Teak logs'), pyreLogs: Items.getOrThrow('Teak pyre logs') },
+	{ log: Items.getOrThrow('Logs'),             pyreLogs: Items.getOrThrow('Pyre logs') },
+	{ log: Items.getOrThrow('Oak logs'),         pyreLogs: Items.getOrThrow('Oak pyre logs') },
+	{ log: Items.getOrThrow('Willow logs'),      pyreLogs: Items.getOrThrow('Willow pyre logs') },
+	{ log: Items.getOrThrow('Teak logs'),        pyreLogs: Items.getOrThrow('Teak pyre logs') },
 	{ log: Items.getOrThrow('Arctic pine logs'), pyreLogs: Items.getOrThrow('Arctic pyre logs') },
-	{ log: Items.getOrThrow('Maple logs'), pyreLogs: Items.getOrThrow('Maple pyre logs') },
-	{ log: Items.getOrThrow('Mahogany logs'), pyreLogs: Items.getOrThrow('Mahogany pyre logs') },
-	{ log: Items.getOrThrow('Yew logs'), pyreLogs: Items.getOrThrow('Yew pyre logs') },
-	{ log: Items.getOrThrow('Magic logs'), pyreLogs: Items.getOrThrow('Magic pyre logs') },
-	{ log: Items.getOrThrow('Redwood logs'), pyreLogs: Items.getOrThrow('Redwood pyre logs') }
+	{ log: Items.getOrThrow('Maple logs'),       pyreLogs: Items.getOrThrow('Maple pyre logs') },
+	{ log: Items.getOrThrow('Mahogany logs'),    pyreLogs: Items.getOrThrow('Mahogany pyre logs') },
+	{ log: Items.getOrThrow('Yew logs'),         pyreLogs: Items.getOrThrow('Yew pyre logs') },
+	{ log: Items.getOrThrow('Magic logs'),       pyreLogs: Items.getOrThrow('Magic pyre logs') },
+	{ log: Items.getOrThrow('Redwood logs'),     pyreLogs: Items.getOrThrow('Redwood pyre logs') }
 ] as const;
 
 const SACRED_OIL_PER_HOUR = 400;
@@ -288,7 +288,9 @@ export function buildShadeTable(shade: Shade): LootTable {
 		table.add(subTable, 1, Math.round(shade.highMetalKeys.fraction * 1000));
 	}
 
-	const keyWeight = Math.round(((shade.lowMetalKeys?.fraction ?? 0) + (shade.highMetalKeys?.fraction ?? 0)) * 1000);
+	const keyWeight = Math.round(
+		((shade.lowMetalKeys?.fraction ?? 0) + (shade.highMetalKeys?.fraction ?? 0)) * 1000
+	);
 	table.add('Coins', 1, 1000 - keyWeight);
 
 	return table;
@@ -420,12 +422,7 @@ export async function shadesOfMortonSacredOilCommand(user: MUser, channelId: str
 	return `${user.minionName} is now off to the Mort'ton temple to upgrade ${quantity}x ${oliveOilItem.name} into ${sacredOilItem.name} - trip will take ${formatDuration(duration)}.`;
 }
 
-export async function shadesOfMortonCreatePyreLogsCommand(
-	user: MUser,
-	channelId: string,
-	logStr: string,
-	quantity?: number
-) {
+export async function shadesOfMortonCreatePyreLogsCommand(user: MUser, channelId: string, logStr: string, quantity?: number) {
 	const sacredOilItem = Items.getOrThrow('Sacred oil(4)');
 
 	const recipe = pyreLogRecipes.find(r => r.log.name.toLowerCase() === logStr.toLowerCase());
@@ -474,10 +471,7 @@ export async function shadesOfMortonCreatePyreLogsCommand(
 
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',
-	async run(
-		data: ShadesOfMortonOptions | ShadesOfMortonSacredOilOptions | ShadesOfMortonPyreLogsOptions,
-		{ user, handleTripFinish }
-	) {
+	async run(data: ShadesOfMortonOptions | ShadesOfMortonSacredOilOptions | ShadesOfMortonPyreLogsOptions, { user, handleTripFinish }) {
 		const { channelId, quantity, duration } = data;
 
 		if (data.type === 'ShadesOfMortonSacredOil') {

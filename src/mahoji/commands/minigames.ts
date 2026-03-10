@@ -65,12 +65,12 @@ import { pyramidPlunderCommand } from '@/mahoji/lib/abstracted_commands/pyramidP
 import { roguesDenCommand } from '@/mahoji/lib/abstracted_commands/roguesDenCommand.js';
 import { sepulchreCommand } from '@/mahoji/lib/abstracted_commands/sepulchreCommand.js';
 import {
-	pyreLogRecipes,
 	shades,
 	shadesLogs,
-	shadesOfMortonCreatePyreLogsCommand,
-	shadesOfMortonSacredOilCommand,
-	shadesOfMortonStartCommand
+	pyreLogRecipes,
+    shadesOfMortonStartCommand,
+    shadesOfMortonSacredOilCommand,
+    shadesOfMortonCreatePyreLogsCommand
 } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import {
 	soulWarsBuyables,
