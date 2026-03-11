@@ -231,6 +231,11 @@ const constructionBuyables: Buyable[] = [
 		name: 'Bucket of water',
 		gpCost: 500,
 		ironmanPrice: 12
+	},
+	{
+		name: 'Saw',
+		gpCost: 13,
+		ironmanPrice: 13
 	}
 ];
 
@@ -1128,6 +1133,10 @@ const Buyables: Buyable[] = [
 		name: 'Diving apparatus',
 		gpCost: 1000,
 		qpRequired: 30
+	},
+	{
+		name: 'Rake',
+		gpCost: 10
 	},
 	{
 		name: 'Fishbowl helmet',

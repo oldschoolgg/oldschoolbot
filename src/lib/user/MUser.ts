@@ -385,7 +385,7 @@ RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
 				throw new Error(`Invalid degradeable item key: ${keyName}`);
 			}
 			const currentCharges = this.user[degradeableItem.settingsKey];
-			const newCharges = currentCharges - chargesToDegrade;
+			const newCharges = (currentCharges ?? 0) - chargesToDegrade;
 			if (newCharges < 0) {
 				failureReasons.push(
 					`You don't have enough ${degradeableItem.item.name} charges, you need ${chargesToDegrade}, but you have only ${currentCharges}.`
@@ -853,7 +853,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async addMonsterXP(params: AddMonsterXpParams) {
-		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles() });
+		const res = addMonsterXPRaw({ ...params, user: this, attackStyles: this.getAttackStyles() });
 		const result = await this.addXPBank(res);
 		return `**XP Gains:** ${result}`;
 	}

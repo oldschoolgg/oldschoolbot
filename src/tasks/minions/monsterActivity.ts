@@ -35,6 +35,7 @@ import type { GearBank } from '@/lib/structures/GearBank.js';
 import { type KCBank, safelyMakeKCBank } from '@/lib/structures/KCBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import type { MUserClass } from '@/lib/user/MUser.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
 import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
@@ -151,6 +152,7 @@ function getSlayerContext({
 
 interface newOptions {
 	type: 'MonsterKilling';
+	user: MUserClass;
 	monster: KillableMonster;
 	q: number;
 	iQty?: number;
@@ -180,6 +182,7 @@ interface newOptions {
 
 export function doMonsterTrip(data: newOptions) {
 	let {
+		user,
 		monster,
 		q: quantity,
 		usingCannon,
@@ -382,7 +385,16 @@ export function doMonsterTrip(data: newOptions) {
 
 	const loot = wiped
 		? new Bank()
-		: monster.table.kill(oriEffect({ gearBank, quantity: finalQuantity, duration, messages }), killOptions);
+		: monster.table.kill(
+				oriEffect({
+					gearBank,
+					quantity: finalQuantity,
+					duration,
+					messages,
+					monster: monster.name // Add this
+				}),
+				killOptions
+			);
 	if (isDoubleLootActive(duration)) {
 		loot.multiply(2);
 		messages.push('**Double loot activated!**');
@@ -431,6 +443,7 @@ export function doMonsterTrip(data: newOptions) {
 		updateBank.itemLootBank.add(loot);
 		updateBank.xpBank.add(
 			addMonsterXPRaw({
+				user,
 				monsterID: monster.id,
 				quantity,
 				duration,
@@ -560,6 +573,7 @@ export const monsterTask: MinionTask = {
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
 		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({
 			...data,
+			user,
 			monster,
 			tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
 				user.hasEquipped('Ring of wealth (i)'),

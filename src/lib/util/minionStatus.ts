@@ -402,6 +402,18 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null) 
 			return `${name} is currently Fishing in the Ruins of Camdozaal. ${formattedDuration}`;
 		}
 
+		case 'GemstoneFishing': {
+			return `${name} is currently Fishing in the Crystal River. ${formattedDuration}`;
+		}
+
+		case 'AncientMycology': {
+			return `${name} is currently Woodcutting in the Ancient Myconid forest. ${formattedDuration}`;
+		}
+
+		case 'ArchaicMining': {
+			return `${name} is currently mining Archaic minerals. ${formattedDuration}`;
+		}
+
 		case 'CamdozaalMining': {
 			return `${name} is currently Mining in the Ruins of Camdozaal. ${formattedDuration}`;
 		}

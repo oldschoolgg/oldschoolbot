@@ -1,3 +1,4 @@
+import { defaultIslandUpgrades } from '@/lib/bso/commands/islandUpgrades.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { GearSetupTypes } from '@oldschoolgg/gear';
@@ -48,7 +49,8 @@ export function makeGearBank({ bank, skillsAsLevels }: { bank?: Bank; skillsAsLe
 		materials: new MaterialBank(),
 		pet: null,
 		skillsAsXP,
-		minionName: 'Minion'
+		minionName: 'Minion',
+		island_upgrades: defaultIslandUpgrades
 	});
 	return gb;
 }

@@ -227,6 +227,11 @@ export async function barbAssaultStartCommand(channelId: string, user: MUser) {
 		waveTime = reduceNumByPercent(waveTime, 10);
 	}
 
+	if (user.hasEquippedOrInBank('Celestial pendant')) {
+		waveTime = reduceNumByPercent(waveTime, 10);
+		boosts.push('10% faster from Celestial pendant');
+	}
+
 	quantity = Math.floor((await user.calcMaxTripLength('BarbarianAssault')) / waveTime);
 
 	const duration = quantity * waveTime;

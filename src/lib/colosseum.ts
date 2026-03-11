@@ -541,7 +541,7 @@ export async function colosseumCommand(user: MUser, channelId: string, quantity:
 			legs: resolveItems(['Torva platelegs', 'Bandos tassets']),
 			feet: resolveItems(['Torva boots', 'Primordial boots']),
 			hands: resolveItems(['Torva gloves', 'Ferocious gloves', 'Barrows gloves']),
-			ring: resolveItems(['Ignis ring', 'Ultor ring', 'Berserker ring'])
+			ring: resolveItems(['Searcrown band', 'Ignis ring', 'Ultor ring', 'Berserker ring'])
 		},
 		range: {
 			cape: resolveItems(["Ava's assembler"]),

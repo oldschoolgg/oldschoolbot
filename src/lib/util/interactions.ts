@@ -3,6 +3,7 @@ import { ButtonBuilder, ButtonStyle } from '@oldschoolgg/discord';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { EmojiId } from '@/lib/data/emojis.js';
 import { InteractionID } from '@/lib/InteractionID.js';
+import { archonPresentations } from '@/mahoji/lib/abstracted_commands/archonCommand.js';
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
@@ -83,6 +84,15 @@ export function makeShootingStarButton(size: number) {
 		.setCustomId(InteractionID.Commands.DoShootingStar)
 		.setLabel(`Mine Size ${size} Crashed Star`)
 		.setEmoji({ name: '⭐' })
+		.setStyle(ButtonStyle.Secondary);
+}
+
+export function makeArchonButton(tier: 1 | 2 | 3) {
+	const name = archonPresentations[tier].name;
+	return new ButtonBuilder()
+		.setCustomId('DO_ARCHON')
+		.setLabel(`Fight the ${name}`)
+		.setEmoji({ name: '⚔️' })
 		.setStyle(ButtonStyle.Secondary);
 }
 
