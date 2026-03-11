@@ -1,4 +1,5 @@
 import { Akumu } from '@/lib/bso/monsters/bosses/Akumu.js';
+import { Enigmar } from '@/lib/bso/monsters/bosses/Enigmar.js';
 import { Venatrix } from '@/lib/bso/monsters/bosses/Venatrix.js';
 import { Malygos } from '@/lib/bso/monsters/demi-bosses/Malygos.js';
 import { Nihiliz } from '@/lib/bso/monsters/demi-bosses/Nihiliz.js';
