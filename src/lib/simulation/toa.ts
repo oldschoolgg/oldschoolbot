@@ -75,9 +75,9 @@ function estimatePoints(raidLevel: number, teamSize: number) {
 			approx: true
 		},
 		{ name: 'Kephri', hp: scaleHP(130, raidLevel, teamSize, averageWTPLevel[1]), mult: 1.0 },
-		{ name: 'P1 Obelisk', hp: scaleHP(260, raidLevel, teamSize, 0), mult: 1.5 },
-		{ name: 'P2 Warden', hp: scaleHP(140, raidLevel, teamSize, 0), mult: 2.0, count: 2 },
-		{ name: 'P3 Warden', hp: scaleHP(880, raidLevel, teamSize, 0), mult: 2.5 },
+		{ name: 'P1 Obelisk', hp: scaleHP(260, raidLevel, teamSize, 0), mult: 3 },
+		{ name: 'P2 Warden', hp: scaleHP(140, raidLevel, teamSize, 0), mult: 3, count: 2 },
+		{ name: 'P3 Warden', hp: scaleHP(880, raidLevel, teamSize, 0), mult: 3.5 },
 		{ name: 'Misc. damage', hp: 80 * teamSize, mult: 1.0, approx: true },
 		{ name: 'Het - seal mining', hp: 130 + Math.floor(95.81 * (teamSize - 1)), mult: 2.5 },
 		{ name: 'Scabaras - puzzles', points: 300 * teamSize, approx: true },
@@ -97,60 +97,67 @@ function estimatePoints(raidLevel: number, teamSize: number) {
 }
 
 const maxMageGear = constructGearSetup({
-	head: 'Ancestral hat',
-	neck: 'Occult necklace',
-	body: 'Ancestral robe top',
-	cape: 'Imbued saradomin cape',
-	hands: 'Tormented bracelet',
-	legs: 'Ancestral robe bottom',
-	feet: 'Eternal boots',
-	'2h': "Tumeken's shadow",
-	ring: 'Lightbearer'
+	head: 'Gorajan occult helmet',
+	neck: 'Arcane blast necklace',
+	body: 'Gorajan occult top',
+	cape: 'Vasa cloak',
+	hands: 'Gorajan occult gloves',
+	legs: 'Gorajan occult legs',
+	feet: 'Gorajan occult boots',
+	weapon: 'Void staff',
+	shield: 'Abyssal tome',
+	ring: 'Spellbound ring (i)'
 });
 
 const maxRangeGear = constructGearSetup({
-	head: 'Masori mask (f)',
-	neck: 'Necklace of anguish',
-	body: 'Masori body (f)',
-	cape: "Ava's assembler",
-	hands: 'Zaryte vambraces',
-	legs: 'Masori chaps (f)',
-	feet: 'Pegasian boots',
-	'2h': 'Twisted bow',
-	ring: 'Lightbearer',
-	ammo: 'Dragon arrow'
+	head: 'Gorajan archer helmet',
+	neck: 'Farsight snapshot necklace',
+	body: 'Gorajan archer top',
+	cape: 'Tidal collector (i)',
+	hands: 'Gorajan archer gloves',
+	legs: 'Gorajan archer legs',
+	feet: 'Gorajan archer boots',
+	'2h': 'Hellfire bow',
+	ring: 'Ring of piercing (i)',
+	ammo: 'Hellfire arrow'
 });
 
 const maxMeleeLessThan300Gear = constructGearSetup({
-	head: 'Torva full helm',
-	neck: 'Amulet of torture',
-	body: 'Torva platebody',
-	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
-	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
+	head: 'Gorajan warrior helmet',
+	neck: "Brawler's hook necklace",
+	body: 'Gorajan warrior top',
+	cape: 'TzKal cape',
+	hands: 'Gorajan warrior gloves',
+	legs: 'Gorajan warrior legs',
+	feet: 'Gorajan warrior boots',
 	weapon: 'Ghrazi rapier',
 	shield: 'Avernic defender',
 	ring: 'Lightbearer'
 });
 const maxMeleeOver300Gear = constructGearSetup({
-	head: 'Torva full helm',
-	neck: 'Amulet of torture',
-	body: 'Torva platebody',
-	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
-	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
+	head: 'Gorajan warrior helmet',
+	neck: "Brawler's hook necklace",
+	body: 'Gorajan warrior top',
+	cape: 'TzKal cape',
+	hands: 'Gorajan warrior gloves',
+	legs: 'Gorajan warrior legs',
+	feet: 'Gorajan warrior boots',
 	weapon: "Osmumten's fang",
-	shield: 'Avernic defender',
-	ring: 'Ultor ring'
+	shield: 'Offhand spidergore rapier',
+	ring: 'Ignis ring (i)'
 });
 
 const SERP_HELM_CHARGES_PER_HOUR = 600;
 function calcSerpHelmCharges(quantity: number, time: number) {
 	return quantity * Math.floor(time / (Time.Hour / SERP_HELM_CHARGES_PER_HOUR));
 }
-const REQUIRED_ARROWS = resolveItems(['Dragon arrow', 'Amethyst arrow', 'Rune arrow', 'Adamant arrow']);
+const REQUIRED_ARROWS = resolveItems([
+	'Hellfire arrow',
+	'Dragon arrow',
+	'Amethyst arrow',
+	'Rune arrow',
+	'Adamant arrow'
+]);
 
 const minTOAStats: Skills = {
 	attack: 90,
@@ -176,10 +183,12 @@ const minSuppliesWithAtkStr = new Bank({
 	'Super strength(4)': 1
 });
 const miscBoosts = [
-	['Lightbearer', 5, null],
-	["Tumeken's shadow", 25, 'mage'],
-	['Bandos godsword', 2, null],
-	['Twisted bow', 4, 'range']
+	['Lightbearer', 5, null, true],
+	["Tumeken's shadow", 20, 'mage', false],
+	['Void staff', 25, 'mage', true],
+	['Bandos godsword', 2, null, true],
+	['Twisted bow', 4, 'range', false],
+	['Hellfire bow', 5, 'range', true]
 ] as const;
 const primarySpecWeaponBoosts = [
 	['Zaryte crossbow', 9],
@@ -194,6 +203,7 @@ const BOW_ARROWS_NEEDED = 150;
 const ALLOWED_DARTS = ['Adamant dart', 'Rune dart', 'Amethyst dart', 'Dragon dart'].map(n => Items.getOrThrow(n));
 const BLOOD_FURY_CHARGES_PER_RAID = 150;
 const TUMEKEN_SHADOW_PER_RAID = 150;
+const VOID_STAFF_PER_RAID = 150;
 const toaRequirements: {
 	name: string;
 	doesMeet: (options: {
@@ -330,7 +340,7 @@ const toaRequirements: {
 				minimumSuppliesNeeded = minSuppliesWithAtkStr;
 			}
 			if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
-				return `You need at least this much supplies: ${minimumSuppliesNeeded}.`;
+				return `You need at least the following supplies: ${minimumSuppliesNeeded}.`;
 			}
 			const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
 			if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
@@ -343,6 +353,14 @@ const toaRequirements: {
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
 				return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
+					'minion',
+					'charge'
+				)}`;
+			}
+
+			const voidCharges = VOID_STAFF_PER_RAID * quantity;
+			if (user.gear.mage.hasEquipped('Void staff') && user.user.void_staff_charges < voidCharges) {
+				return `You need at least ${voidCharges} Void staff charges to use it, otherwise it has to be unequipped: ${globalClient.mentionCommand(
 					'minion',
 					'charge'
 				)}`;
@@ -507,11 +525,21 @@ const TOAUniqueTable = new LootTable()
 	.add('Masori chaps', 1, 2)
 	.add("Tumeken's shadow (uncharged)", 1, 1);
 
-function uniqueLootRoll(kc: number, cl: Bank, raidLevel: RaidLevel) {
-	const [item] = TOAUniqueTable.roll().items()[0];
+const HigherTOAUniqueTable = new LootTable()
+	.add('Lightbearer', 1, 6)
+	.add("Osmumten's fang", 1, 6)
+	.add("Elidinis' ward", 1, 4)
+	.add('Masori mask', 1, 3)
+	.add('Masori body', 1, 3)
+	.add('Masori chaps', 1, 3)
+	.add("Tumeken's shadow (uncharged)", 1, 2);
+
+function uniqueLootRoll(raidLevel: RaidLevel) {
+	const uniqueTable = raidLevel >= 305 ? HigherTOAUniqueTable : TOAUniqueTable
+	const [item] = uniqueTable.roll().items()[0];
 
 	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !roll(50)) {
-		return untradeableRoll(kc, cl);
+		return new Bank();
 	}
 
 	if (
@@ -525,7 +553,7 @@ function uniqueLootRoll(kc: number, cl: Bank, raidLevel: RaidLevel) {
 		raidLevel < 150 &&
 		!roll(50)
 	) {
-		return untradeableRoll(kc, cl);
+		return new Bank();
 	}
 
 	return new Bank().add(item.id);
@@ -624,7 +652,7 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 			continue;
 		}
 		if (uniqueRecipient && user.id === uniqueRecipient) {
-			loot.add(user.id, uniqueLootRoll(user.kc, user.cl, raidLevel));
+			loot.add(user.id, uniqueLootRoll(raidLevel));
 		} else {
 			loot.add(user.id, nonUniqueLoot({ points: user.points }));
 		}
@@ -1206,6 +1234,13 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
+			if (u.gear.mage.hasEquipped('Void staff')) {
+				await degradeItem({
+					item: Items.getOrThrow('Void staff'),
+					chargesToDegrade: VOID_STAFF_PER_RAID * quantity,
+					user: u
+				});
+			}
 			await u.statsBankUpdate('toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
@@ -1283,8 +1318,7 @@ const totalSpeedReductions =
 	speedReductionForGear +
 	speedReductionForKC +
 	primarySpecWeaponBoosts[0][1] +
-	sumArr(miscBoosts.map(i => i[1])) +
-	15; // Os fang;
+	sumArr(miscBoosts.map(i => i[3] ? i[1] : 0));
 
 const baseTOADurations: Record<RaidLevel, number> = {
 	1: Time.Minute * 50,
@@ -1454,8 +1488,19 @@ function createTOATeam({
 
 	duration = reduceNumByPercent(duration, exponentialPercentScale(totalReduction));
 
-	if (duration < Time.Minute * 20) {
-		duration = Math.max(Time.Minute * 20, duration);
+	// Hard boost for Void staff
+	const usersWithVoidStaff = arr.filter(i => i.user.gear.mage.hasEquipped('Void staff'));
+	const percentOfUsersWithVoidStaff = calcWhatPercent(usersWithVoidStaff.length, teamSize);
+
+	// Hard boost for Hellfire bow
+	const usersWithHellfire = arr.filter(i => i.user.gear.range.hasEquipped('Hellfire bow'));
+	const percentOfUsersWithHF = calcWhatPercent(usersWithHellfire.length, teamSize);
+
+	duration = reduceNumByPercent(duration, percentOfUsersWithVoidStaff / 2);
+	duration = reduceNumByPercent(duration, percentOfUsersWithHF / 3);
+
+	if (duration < Time.Minute * 15) {
+		duration = Math.max(Time.Minute * 15, duration);
 	}
 
 	if (team.length < 5) {
