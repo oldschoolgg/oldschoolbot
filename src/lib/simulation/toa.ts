@@ -183,13 +183,12 @@ const minSuppliesWithAtkStr = new Bank({
 	'Super strength(4)': 1
 });
 const miscBoosts = [
-	["Osmumten's fang", 15, 'melee'],
-	['Lightbearer', 5, null],
-	["Tumeken's shadow", 25, 'mage'],
-	['Void staff', 40, 'mage'],
-	['Bandos godsword', 2, null],
-	['Twisted bow', 4, 'range'],
-	['Hellfire bow', 5, 'range']
+	['Lightbearer', 5, null, true],
+	["Tumeken's shadow", 20, 'mage', false],
+	['Void staff', 25, 'mage', true],
+	['Bandos godsword', 2, null, true],
+	['Twisted bow', 4, 'range', false],
+	['Hellfire bow', 5, 'range', true]
 ] as const;
 const primarySpecWeaponBoosts = [
 	['Zaryte crossbow', 9],
@@ -1319,8 +1318,7 @@ const totalSpeedReductions =
 	speedReductionForGear +
 	speedReductionForKC +
 	primarySpecWeaponBoosts[0][1] +
-	sumArr(miscBoosts.map(i => i[1])) +
-	15; // Os fang;
+	sumArr(miscBoosts.map(i => i[3] ? i[1] : 0));
 
 const baseTOADurations: Record<RaidLevel, number> = {
 	1: Time.Minute * 50,
