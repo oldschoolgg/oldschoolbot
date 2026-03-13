@@ -31,6 +31,7 @@ import {
 	castleWarsCL,
 	cerberusCL,
 	chambersOfXericCL,
+	chambersOfXericMetamorphPets,
 	championsChallengeCL,
 	chaosDruisCL,
 	chaosElementalCL,
@@ -117,6 +118,8 @@ import {
 	thermonuclearSmokeDevilCL,
 	theWhispererCL,
 	titheFarmCL,
+	toaMetamorphPets,
+	tobMetamorphPets,
 	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
@@ -605,6 +608,7 @@ export const allCollectionLogs: ICollection = {
 						minigameScores.find(i => i.minigame.column === 'raids_challenge_mode')!.score
 				},
 				items: chambersOfXericCL,
+				allItems: chambersOfXericMetamorphPets,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.raids} KC, ${minigames.raids_challenge_mode} CM KC`];
@@ -617,6 +621,7 @@ export const allCollectionLogs: ICollection = {
 					Hard: async (_, minigameScores) => minigameScores.find(i => i.minigame.column === 'tob_hard')!.score
 				},
 				items: theatreOfBLoodCL,
+				allItems: tobMetamorphPets,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tob} KC, ${minigames.tob_hard} Hard KC`];
@@ -632,6 +637,7 @@ export const allCollectionLogs: ICollection = {
 					Expert: async (_, __, stats) => stats.getToaKCs().expertKC
 				},
 				items: ItemGroups.toaCL,
+				allItems: toaMetamorphPets,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tombs_of_amascut} KC`];

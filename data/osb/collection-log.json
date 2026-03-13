@@ -2751,6 +2751,7 @@
 					"Xeric's sentinel",
 					"Xeric's warrior"
 				],
+				"all_items": ["Puppadile", "Tektiny", "Vanguard", "Vasa minirio", "Vespina"],
 				"is_activity": true
 			},
 			"theatre_of_blood": {
@@ -2774,6 +2775,7 @@
 					"Sinhaza shroud tier 5",
 					"Vial of blood"
 				],
+				"all_items": ["Lil' bloat", "Lil' maiden", "Lil' nylo", "Lil' sot", "Lil' xarp"],
 				"is_activity": true
 			},
 			"tombs_of_amascut": {
@@ -2806,6 +2808,7 @@
 					"Tumeken's guardian",
 					"Tumeken's shadow (uncharged)"
 				],
+				"all_items": ["Akkhito", "Babi", "Kephriti", "Tumeken's guardian", "Zebo"],
 				"is_activity": true
 			}
 		}
