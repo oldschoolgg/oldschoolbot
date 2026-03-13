@@ -1,6 +1,10 @@
 import { EMonster, Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { BitField } from '@/lib/constants.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { getAssignableSlayerTaskIDs } from '@/lib/slayer/slayerUtil.js';
 import { slayerCommand } from '@/mahoji/commands/slayer.js';
 import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
@@ -55,5 +59,30 @@ describe('Slayer Tasks', async () => {
 		expect(await user.runCommand(slayerCommand, { status: {} })).toContain(
 			'Your current task from Turael is to kill **Birds** (**Alternate Monsters**: Chicken, Duck, Duckling, Mounted terrorbird gnome, Penguin, Rooster, Seagull, Terrorbird). You have 16 kills remaining.'
 		);
+	});
+
+	test('Assignable task checks and skip list validation', async () => {
+		const user = await createTestUser(undefined, { bitfield: [BitField.IsPatronTier1] });
+		await user.max();
+		await user.update({ slayer_unlocks: [] });
+		const duradel = slayerMasters.find(m => m.name === 'Duradel')!;
+
+		const assignableWithoutUnlock = getAssignableSlayerTaskIDs(user, duradel);
+		expect(assignableWithoutUnlock).not.toContain(Monsters.AbyssalSire.id);
+
+		const addSkipWithoutUnlock = await user.runCommand(slayerCommand, {
+			skip_list: { action: 'add', master: 'Duradel', monster: 'Abyssal Sire' }
+		});
+		expect(addSkipWithoutUnlock).toContain("can't currently be assigned");
+
+		await user.update({ slayer_unlocks: [SlayerTaskUnlocksEnum.LikeABoss] });
+		const assignableWithUnlock = getAssignableSlayerTaskIDs(user, duradel);
+		expect(assignableWithUnlock).toContain(Monsters.AbyssalSire.id);
+
+		const addSkipWithUnlock = await user.runCommand(slayerCommand, {
+			skip_list: { action: 'add', master: 'Duradel', monster: 'Abyssal Sire' }
+		});
+		expect(addSkipWithUnlock).toContain('Added');
+		expect(addSkipWithUnlock).toContain("Duradel's skip list");
 	});
 });
