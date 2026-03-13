@@ -49,6 +49,7 @@ export const Enigmar: CustomMonster = {
 	id: 93_184,
 	baseMonster: Monsters.KrilTsutsaroth,
 	name: 'Enigmar',
+	isCustom: true,
 	aliases: ['enigmar', 'enigma'],
 	timeToFinish: Time.Minute * 25,
 	hp: 4200,
@@ -77,7 +78,7 @@ export const Enigmar: CustomMonster = {
 		lowestDeathChance: 5,
 		highestDeathChance: 65
 	},
-	minimumFoodHealAmount: 22,
+	minimumHealAmount: 22,
 	allItems: [],
 	minimumGearRequirements: {
 		melee: {}
@@ -118,7 +119,7 @@ export const Enigmar: CustomMonster = {
 			gearSetup: 'mage',
 			items: [
 				{ boostPercent: 6, itemID: itemID('Spellbound ring(i)') },
-				{ boostPercent: 3, itemID: itemID('Spellbound ring(i)') }
+				{ boostPercent: 3, itemID: itemID('Spellbound ring') }
 			]
 		}
 	]

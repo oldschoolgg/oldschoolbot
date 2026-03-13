@@ -28,6 +28,7 @@ export const BSOMonsters = {
 	VladimirDrakan,
 	Akumu,
 	Venatrix,
+	Enigmar,
 	...resourceDungeonMonsters,
 	...SunMoonMonsters
 };

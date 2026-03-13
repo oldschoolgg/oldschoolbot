@@ -75,7 +75,8 @@ export const customPetsCL = resolveItems([
 	'Noom',
 	'Baby venatrix',
 	'Mini akumu',
-	'Octo'
+	'Octo',
+	"Mini 'mar"
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -183,6 +184,7 @@ export const queenBlackDragonCL = resolveItems([
 
 export const akumuCL = resolveItems(['Mini akumu', 'Nightmarish ashes', 'Cursed onyx', 'Demon statuette']);
 export const venatrixCL = resolveItems(['Baby venatrix', 'Venatrix eggs', 'Venatrix webbing', 'Spiders leg bottom']);
+export const enigmarCL = resolveItems(['Enigmatic orb', "Mini 'mar"]);
 
 export const gorajanWarriorOutfit = resolveItems([
 	'Gorajan warrior helmet',
