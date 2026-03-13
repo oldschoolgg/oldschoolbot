@@ -10,6 +10,7 @@ interface WoodcuttingTimeOptions {
 	axeMultiplier: number;
 	powerchopping: boolean;
 	forestry: boolean;
+	disable_1_5t?: boolean;
 	woodcuttingLvl: number;
 	maxTripLength: number;
 	rng: RNGProvider;
@@ -22,6 +23,7 @@ export function determineWoodcuttingTime({
 	axeMultiplier,
 	powerchopping,
 	forestry,
+	disable_1_5t = false,
 	woodcuttingLvl,
 	maxTripLength,
 	rng
@@ -35,7 +37,7 @@ export function determineWoodcuttingTime({
 	const isHardwood = [EItem.TEAK_LOGS, EItem.MAHOGANY_LOGS].includes(log.id);
 
 	let teakTick = false;
-	if (!forestry && woodcuttingLvl >= 92) {
+	if (!forestry && !disable_1_5t && isHardwood) {
 		if (log.id === EItem.TEAK_LOGS && farmingLvl >= 35) {
 			teakTick = true;
 		}

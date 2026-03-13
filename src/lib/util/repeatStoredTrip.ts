@@ -658,6 +658,7 @@ const tripHandlers: {
 			quantity: data.iQty,
 			powerchop: data.powerchopping,
 			forestry_events: data.forestry,
+			disable_1_5t: data.disable_1_5t,
 			twitchers_gloves: data.twitchers
 		})
 	},

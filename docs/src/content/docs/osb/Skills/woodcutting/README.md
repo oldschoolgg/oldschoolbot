@@ -21,8 +21,15 @@ If you have at least 60 Woodcutting, and the tree you are attempting to chop is 
 
 Using this filter when chopping logs allows your minion to reach much higher xp rates, at the expense of not receiving any logs from your trip. For ironmen, it may be beneficial to chop normally so they can use the logs for early firemaking or construction levels. You will still receive bird nests and their contents when powerchopping.
 
-After level 92, your minion magically learns how to tick manipulate, allowing rates of up to 200k xp/h powerchopping Teak logs.
-To use the 1.5 tick method you must chop the trees planted in Farming patches. Teak trees require [[woodcutting:92]] and [[farming:35]], while Mahogany trees require [[woodcutting:92]] and [[farming:55]]. Forestry events must be disabled for this method.
+Hardwood trees (Teak and Mahogany) use faster timing than regular trees:
+- Base hardwood chopping is 2-tick.
+- Hardwood tree respawn delay is also 2-tick.
+- 1.5-tick chopping/respawn is available when chopping hardwood trees grown in Farming patches with Forestry disabled.
+
+For 1.5-tick hardwood:
+- Teak requires [[farming:35]].
+- Mahogany requires [[farming:55]].
+- Use `disable_1_5t:true` on [[/chop]] if you want to force 2-tick hardwood timing without enabling Forestry events.
 
 ## Lumberjack Outfit
 
