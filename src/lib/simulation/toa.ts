@@ -516,7 +516,7 @@ const HigherTOAUniqueTable = new LootTable()
 	.add("Tumeken's shadow (uncharged)", 1, 2);
 
 function uniqueLootRoll(rng: RNGProvider, raidLevel: RaidLevel) {
-	const uniqueTable = raidLevel >= 305 ? HigherTOAUniqueTable : TOAUniqueTable
+	const uniqueTable = raidLevel >= 305 ? HigherTOAUniqueTable : TOAUniqueTable;
 	const [item] = uniqueTable.roll().items()[0];
 
 	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !rng.roll(50)) {
