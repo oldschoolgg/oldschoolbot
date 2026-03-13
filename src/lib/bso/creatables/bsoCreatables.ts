@@ -1433,12 +1433,6 @@ export const bsoCreatables: Createable[] = [
 		outputItems: new Bank().add('Enigma tokens', 150).freeze()
 	},
 	{
-		name: 'Quantum transmuter',
-		inputItems: new Bank().add('Enigmatic orb').freeze(),
-		outputItems: new Bank().add('Quantum transmuter').freeze(),
-		materialCost: new MaterialBank().add('magic', 500).add('third-age', 10).add('organic', 1000)
-	},
-	{
 		name: 'Tidal collector (i)',
 		inputItems: new Bank()
 			.add('Masori components', 4)
