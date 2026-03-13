@@ -14326,6 +14326,50 @@ setCustomItem(73_606, 'Witch card', 'Coal', {
 	}
 });
 
+setCustomItem(73_700, 'Quantum transmuter', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(
+	73_701,
+	'Enigmatic orb',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		highalch: 25_000_000
+	},
+	30_000_000
+);
+
+setCustomItem(
+	73_702,
+	"Mini 'mar",
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_703,
+	'Enigma tokens',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
 setCustomItem(74_001, 'Titan ballista (xmas)', 'Titan ballista', {
 	customItemData: {
 		cantDropFromMysteryBoxes: true,
