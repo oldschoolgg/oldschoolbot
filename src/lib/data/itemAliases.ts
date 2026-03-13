@@ -471,3 +471,5 @@ setItemAlias(73_300, ['s8 key'], false);
 /**
  * END BSO Supply Crates
  */
+
+setItemAlias(73_703, 'Enigma token');

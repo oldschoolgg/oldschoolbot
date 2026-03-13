@@ -34,7 +34,8 @@ export enum InventionID {
 	DivineHand = 18,
 	DrygoreAxe = 19,
 	MoonlightMutator = 20,
-	Webshooter = 21
+	Webshooter = 21,
+	QuantumTransmuter = 22
 }
 
 export type Invention = Readonly<{
@@ -91,6 +92,10 @@ export const inventionBoosts = {
 	arcaneHarvester: {
 		harvestBoostPercent: 100,
 		herbiboarExtraYieldPercent: 50
+	},
+	quantumTransmuter: {
+		harvestBoostPercent: 180,
+		herbiboarExtraYieldPercent: 75
 	},
 	drygoreSaw: {
 		buildBoostPercent: 40
@@ -248,7 +253,7 @@ export const Inventions: readonly Invention[] = [
 	{
 		id: InventionID.ArcaneHarvester,
 		name: 'Arcane harvester',
-		description: `Increases farming and herbiboar yield by ${inventionBoosts.arcaneHarvester.harvestBoostPercent}%.`,
+		description: `Increases farming yield by ${inventionBoosts.arcaneHarvester.harvestBoostPercent}%, and herbiboar yield by ${inventionBoosts.arcaneHarvester.herbiboarExtraYieldPercent}%.`,
 		item: Items.getOrThrow('Arcane harvester'),
 		materialTypeBank: new MaterialBank({
 			organic: 5,
@@ -256,6 +261,21 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
+		inventionLevelNeeded: 110,
+		usageCostMultiplier: 0.75
+	},
+	{
+		id: InventionID.QuantumTransmuter,
+		name: 'Quantum Transmuter',
+		description: `An Quantum enhanced version of the Arcane harvester that increases farming yield by ${inventionBoosts.arcaneHarvester.harvestBoostPercent}%, and herbiboar yield by ${inventionBoosts.arcaneHarvester.herbiboarExtraYieldPercent}%. Does not stack with Arcane Harvester.`,
+		item: Items.getOrThrow('Quantum transmuter'),
+		materialTypeBank: new MaterialBank({
+			organic: 3,
+			magic: 4,
+			mysterious: 3
+		}),
+		flags: ['bank'],
+		itemCost: new Bank().add('Enigma tokens', 100).add('Enigmatic orb', 5).add('Arcane harvester', 1).freeze(),
 		inventionLevelNeeded: 110,
 		usageCostMultiplier: 0.75
 	},
