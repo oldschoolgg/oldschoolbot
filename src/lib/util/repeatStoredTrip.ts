@@ -60,6 +60,7 @@ import type {
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
+	ShadesOfMortonPyreLogsOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
@@ -691,6 +692,18 @@ const tripHandlers: {
 			shades_of_morton: {
 				start: { shade: data.shadeID, logs: Items.itemNameFromId(data.logID) }
 			}
+		})
+	},
+	[activity_type_enum.ShadesOfMortonSacredOil]: {
+		commandName: 'minigames',
+		args: () => ({
+			shades_of_morton: { sacred_oil: {} }
+		})
+	},
+	[activity_type_enum.ShadesOfMortonPyreLogs]: {
+		commandName: 'minigames',
+		args: (data: ShadesOfMortonPyreLogsOptions) => ({
+			shades_of_morton: { create_pyre_logs: { logs: Items.itemNameFromId(data.logID) } }
 		})
 	},
 	[activity_type_enum.TombsOfAmascut]: {
