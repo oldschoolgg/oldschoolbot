@@ -809,7 +809,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		});
 	}
 
-	async updateGPTrackSetting(setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots', amount: number) {
+	async updateGPTrackSetting(setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots' | 'gp_blackjack', amount: number) {
 		await this.statsUpdate({
 			[setting]: {
 				increment: amount

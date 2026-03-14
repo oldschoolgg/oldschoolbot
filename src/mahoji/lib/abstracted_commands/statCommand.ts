@@ -906,9 +906,10 @@ GROUP BY "bankBackground";`);
 			const gpDice = toKMB(Number(stats.gp_dice) || 0);
 			const gpLuckyPick = toKMB(Number(stats.gp_luckypick) || 0);
 			const gpSlots = toKMB(Number(stats.gp_slots) || 0);
+			const gpBlackjack = toKMB(Number(stats.gp_blackjack) || 0);
 
 			return {
-				content: `**Dicing:** ${gpDice}\n**Lucky Pick:** ${gpLuckyPick}\n**Slots:** ${gpSlots}`
+				content: `**Dicing:** ${gpDice}\n**Lucky Pick:** ${gpLuckyPick}\n**Slots:** ${gpSlots}\n**Blackjack:** ${gpBlackjack}`
 			};
 		},
 		perkTierNeeded: PerkTier.Four
@@ -1270,10 +1271,6 @@ ${(
 ] as const;
 
 export async function statsCommand(user: MUser, type: string): Promise<SendableMessage> {
-	const ratelimit = await Cache.tryRatelimit(user.id, 'stats_command');
-	if (!ratelimit.success) {
-		return `This command is on cooldown, you can use it again in ${formatDuration(ratelimit.timeRemainingMs)}.`;
-	}
 	const dataPoint = dataPoints.find(dp => stringMatches(dp.name, type));
 	if (!dataPoint) return 'Invalid stat name.';
 	const { perkTierNeeded } = dataPoint;
