@@ -696,6 +696,26 @@
 		]
 	},
 	{
+		"name": "Dossier",
+		"id": 30803,
+		"opened_item": "Dossier",
+		"all_items": [
+			"Chasm teleport scroll",
+			"Contract of bloodied blows",
+			"Contract of catalyst acquisition",
+			"Contract of divine severance",
+			"Contract of familiar acquisition",
+			"Contract of forfeit breath",
+			"Contract of glyphic attenuation",
+			"Contract of harmony acquisition",
+			"Contract of oathplate acquisition",
+			"Contract of sensory clouding",
+			"Contract of shard acquisition",
+			"Contract of worm acquisition",
+			"Rite of vile transference"
+		]
+	},
+	{
 		"name": "Dragon impling",
 		"id": 11256,
 		"opened_item": "Dragon impling jar",
@@ -834,6 +854,22 @@
 			"Soul rune",
 			"Steam rune",
 			"Water rune"
+		]
+	},
+	{
+		"name": "Forgotten lockbox",
+		"id": 30763,
+		"opened_item": "Forgotten lockbox",
+		"all_items": [
+			"Coins",
+			"Dragon bolts (unf)",
+			"Dragon dart",
+			"Dragon platelegs",
+			"Dragon plateskirt",
+			"Oathplate chest",
+			"Oathplate helm",
+			"Oathplate legs",
+			"Oathplate shards"
 		]
 	},
 	{

@@ -4,10 +4,12 @@ import {
 	Bank,
 	BrimstoneChest,
 	BronzeHAMChest,
+	Dossier,
 	EItem,
 	EliteMimicTable,
 	ElvenCrystalChest,
 	EMonster,
+	ForgottenLockbox,
 	GiantEggSacFull,
 	GiantsFoundryOrePack,
 	GrubbyChest,
@@ -22,6 +24,7 @@ import {
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
+	Monsters,
 	MoonKeyChest,
 	MuddyChest,
 	MysteryBox,
@@ -40,6 +43,7 @@ import {
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
 import { shadeChestOpenables } from '@/lib/shadesKeys.js';
 import { nestTable } from '@/lib/simulation/birdsNest.js';
@@ -91,6 +95,8 @@ interface OpenArgs {
 	user: MUser;
 	self: UnifiedOpenable;
 	rng: RNGProvider;
+	openedCountOffset?: number;
+	previousLoot?: Bank;
 }
 
 export interface UnifiedOpenable {
@@ -111,6 +117,29 @@ export interface UnifiedOpenable {
 const clueItemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
+
+const DOSSIER_RITE_NAME = 'Rite of vile transference';
+const DOSSIER_SCROLL_NAME = 'Chasm teleport scroll';
+const DOSSIER_RITE_GUARANTEE_KC = 100;
+
+function replaceDossierRiteWithScrolls({
+	loot,
+	rng,
+	ritesToReplace
+}: {
+	loot: Bank;
+	rng: RNGProvider;
+	ritesToReplace: number;
+}) {
+	if (ritesToReplace <= 0) {
+		return;
+	}
+
+	loot.remove(DOSSIER_RITE_NAME, ritesToReplace);
+	for (let i = 0; i < ritesToReplace; i++) {
+		loot.add(DOSSIER_SCROLL_NAME, rng.randInt(15, 18));
+	}
+}
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
@@ -410,6 +439,56 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: IntricatePouch.table.allItems
 	},
 	{
+		name: 'Dossier',
+		id: EItem.DOSSIER,
+		openedItem: Items.getOrThrow(EItem.DOSSIER),
+		aliases: ['dossier'],
+		output: async ({ quantity, user, rng, openedCountOffset = 0, previousLoot }) => {
+			const loot = new Bank();
+			if (quantity <= 0) {
+				return { bank: loot };
+			}
+
+			const yamaKC = openedCountOffset === 0 ? await user.getKC(Monsters.Yama.id) : 0;
+
+			const hadRiteAlready =
+				user.bitfield.includes(BitField.HasRiteOfVileTransference) ||
+				user.cl.has(DOSSIER_RITE_NAME) ||
+				user.allItemsOwned.has(DOSSIER_RITE_NAME) ||
+				Boolean(previousLoot?.has(DOSSIER_RITE_NAME));
+			const shouldGuaranteeRite =
+				yamaKC >= DOSSIER_RITE_GUARANTEE_KC && !hadRiteAlready && openedCountOffset === 0;
+
+			let rollsFromTable = quantity;
+			if (shouldGuaranteeRite) {
+				rollsFromTable--;
+				loot.add(DOSSIER_RITE_NAME, 1);
+			}
+
+			if (rollsFromTable > 0) {
+				loot.add(Dossier.table.roll(rollsFromTable));
+			}
+
+			const ritesRolled = loot.amount(DOSSIER_RITE_NAME);
+			if (ritesRolled > 0) {
+				const maxRitesAllowed = hadRiteAlready ? 0 : 1;
+				const ritesToReplace = Math.max(0, ritesRolled - maxRitesAllowed);
+				replaceDossierRiteWithScrolls({ loot, rng, ritesToReplace });
+			}
+
+			return { bank: loot };
+		},
+		allItems: Dossier.table.allItems
+	},
+	{
+		name: 'Forgotten lockbox',
+		id: 30_763,
+		openedItem: Items.getOrThrow(30_763),
+		aliases: ['forgotten lockbox', 'lockbox'],
+		output: ForgottenLockbox.table,
+		allItems: ForgottenLockbox.table.allItems
+	},
+	{
 		name: "Zombie Pirate's Locker",
 		id: EItem.ZOMBIE_PIRATE_KEY,
 		openedItem: Items.getOrThrow('Zombie pirate key'),
@@ -550,14 +629,18 @@ export function getOpenableLoot({
 	openable,
 	quantity,
 	user,
-	rng
+	rng,
+	openedCountOffset,
+	previousLoot
 }: {
 	openable: UnifiedOpenable;
 	quantity: number;
 	user: MUser;
 	rng: RNGProvider;
+	openedCountOffset?: number;
+	previousLoot?: Bank;
 }) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity, rng });
+		: openable.output({ user, self: openable, quantity, rng, openedCountOffset, previousLoot });
 }

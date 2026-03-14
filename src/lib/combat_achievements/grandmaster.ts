@@ -1320,5 +1320,36 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.TheHueycoatl.id)
 		}
+	},
+	{
+		id: 3111,
+		name: 'Contract Choreographer',
+		type: 'perfection',
+		monster: 'Yama',
+		desc: "Defeat Yama whilst completing 'Shadow Dancer', 'Fire Fighter', 'Back so soon?' and without taking any other avoidable damage.",
+		rng: {
+			chancePerKill: 75,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
+	},
+	{
+		id: 3112,
+		name: 'Yama Speed-Runner',
+		type: 'speed',
+		monster: 'Yama',
+		desc: 'Defeat Yama in an average time of under 2:34 over your last four kills.',
+		rng: {
+			chancePerKill: 250,
+			hasChance: isCertainMonsterTrip(Monsters.Yama.id)
+		}
 	}
+	/*
+	TODO: Add "Contractually Unbound" achievement once non-standard contracts are implemented.
+	{ 
+		name: 'Contractually Unbound', 
+		type: 'kill_count',
+		monster: 'Yama',
+		desc: 'Defeat Yama under the elevated conditions of one of his non-standard contracts.',
+	}, 
+	*/
 ];

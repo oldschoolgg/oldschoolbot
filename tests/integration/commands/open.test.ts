@@ -1,6 +1,7 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { BitField } from '@/lib/constants.js';
 import { openCommand } from '../../../src/mahoji/commands/open.js';
 import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
@@ -100,5 +101,75 @@ describe('Open Command', async () => {
 			name: 'all'
 		});
 		expect(res).toEqual('You have no openable items.');
+	});
+
+	test('Dossier guarantees rite on first open after 100 Yama KC', async () => {
+		mockMathRandom(0);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+	});
+
+	test('Dossier guarantees rite after 100 Yama KC even with prior dossier opens', async () => {
+		mockMathRandom(0);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 2) });
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+	});
+
+	test('Dossier converts rite rolls to scrolls if rite is already owned/used', async () => {
+		mockMathRandom(0.82);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Rite of vile transference', 1), collectionLog: true });
+		await user.removeItemsFromBank(new Bank().add('Rite of vile transference', 1));
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 0);
+		await user.sync();
+		const scrolls = user.bank.amount('Chasm teleport scroll');
+		expect(scrolls).toBeGreaterThanOrEqual(15);
+		expect(scrolls).toBeLessThanOrEqual(18);
+	});
+
+	test('Dossier converts rite rolls to scrolls if rite was already used via bitfield', async () => {
+		mockMathRandom(0.82);
+		const user = await createTestUser();
+		await user.update({
+			bitfield: {
+				push: BitField.HasRiteOfVileTransference
+			}
+		});
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 1) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier' });
+		await user.bankAmountMatch('Rite of vile transference', 0);
+		await user.sync();
+		const scrolls = user.bank.amount('Chasm teleport scroll');
+		expect(scrolls).toBeGreaterThanOrEqual(15);
+		expect(scrolls).toBeLessThanOrEqual(18);
+	});
+
+	test('Dossier converts extra rite rolls in the same opening batch to scrolls', async () => {
+		mockMathRandom(0.82);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Dossier', 2) });
+		await user.incrementKC(Monsters.Yama.id, 100);
+
+		await user.runCommand(openCommand, { name: 'dossier', quantity: 2 });
+		await user.bankAmountMatch('Rite of vile transference', 1);
+		await user.sync();
+		const scrolls = user.bank.amount('Chasm teleport scroll');
+		expect(scrolls).toBeGreaterThanOrEqual(15);
+		expect(scrolls).toBeLessThanOrEqual(18);
 	});
 });

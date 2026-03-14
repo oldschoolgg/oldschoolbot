@@ -1,8 +1,8 @@
 import type { OffenceGearStat, PrimaryGearSetupType } from '@oldschoolgg/gear';
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
+import { Bank, EMonster, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
 
-import type { PvMMethod } from '@/lib/constants.js';
+import { BitField, type PvMMethod } from '@/lib/constants.js';
 import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
 import {
 	boostCannon,
@@ -251,6 +251,22 @@ const blackMaskBoost: Boost = {
 	}
 };
 
+const riteOfVileTransferenceBoostByMonsterID: Record<number, number> = {
+	[Monsters.Yama.id]: 7,
+	[Monsters.Scurrius.id]: 5,
+	[Monsters.Amoxliatl.id]: 3,
+	[Monsters.Branda.id]: 5,
+	[Monsters.Eldric.id]: 5,
+	[Monsters.RoyalTitans.id]: 5,
+	[EMonster.NIGHTMARE]: 5,
+	[EMonster.PHOSANI_NIGHTMARE]: 5,
+	[Monsters.GrotesqueGuardians.id]: 5,
+	[Monsters.Cerberus.id]: 5,
+	[Monsters.Araxxor.id]: 7,
+	[Monsters.Hydra.id]: 3,
+	[Monsters.AlchemicalHydra.id]: 3
+};
+
 // if an array, only the highest applies
 export const mainBoostEffects: (Boost | Boost[])[] = [
 	{
@@ -264,6 +280,18 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				});
 			}
 			return results;
+		}
+	},
+	{
+		description: 'Rite of vile transference boost',
+		run: ({ monster, bitfield }) => {
+			if (!bitfield.includes(BitField.HasRiteOfVileTransference)) return null;
+			const riteBoost = riteOfVileTransferenceBoostByMonsterID[monster.id];
+			if (riteBoost === undefined) return null;
+			return {
+				percentageReduction: riteBoost,
+				message: `${riteBoost}% for Rite of vile transference`
+			};
 		}
 	},
 	{
@@ -327,7 +355,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			}
 
 			const { virtusBoost } = calculateVirtusBoost({ isInWilderness, gearBank, isOnTask });
-			if (isBarraging && attackStyles.includes('magic')) {
+			if (isBarraging && newAttackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBarrage + virtusBoost,
 					consumables: [iceBarrageConsumables],
@@ -339,7 +367,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes('magic')) {
+			if (isBursting && newAttackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBurst + virtusBoost,
 					consumables: [iceBurstConsumables],

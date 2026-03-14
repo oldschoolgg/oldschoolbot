@@ -117,7 +117,7 @@ describe('PVM', async () => {
 	it('cant barrage nechs', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			bank: new Bank().add('Blood rune', 10_000).add('Death rune', 10_000).add('Water rune', 10000000),
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
@@ -128,15 +128,15 @@ describe('PVM', async () => {
 	it('barrages abby demons', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			bank: new Bank().add('Blood rune', 10_000).add('Death rune', 10_000).add('Water rune', 10000000),
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.commandResult).toContain('is now killing ');
-		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Blood rune')).toBeLessThan(10000);
 		expect(user.bank.amount('Water rune')).toBeLessThan(10000000);
-		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Death rune')).toBeLessThan(10000);
 		expect(result.newKC).toBeGreaterThan(0);
 		expect(result.xpGained.magic).toBeGreaterThan(0);
 	});
@@ -144,7 +144,7 @@ describe('PVM', async () => {
 	it('should get kodai buff', async () => {
 		const user = await client.mockUser({
 			slayerLevel: 99,
-			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			bank: new Bank().add('Blood rune', 10_000).add('Death rune', 10_000).add('Water rune', 10000000),
 			mageLevel: 99,
 			mageGear: resolveItems(['Kodai wand'])
 		});
@@ -152,8 +152,8 @@ describe('PVM', async () => {
 		await user.setAttackStyle(['magic']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
-		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
-		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Blood rune')).toBeLessThan(10000);
+		expect(user.bank.amount('Death rune')).toBeLessThan(10000);
 		expect(result.newKC).toBeGreaterThan(0);
 	});
 
