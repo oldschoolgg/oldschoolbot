@@ -45,7 +45,8 @@ export function bankToStrShortNames(bank: Bank) {
 	const str = [];
 	for (const [item, qty] of bank.items()) {
 		const shortName = shortItemNames.get(item);
-		str.push(`${qty}x ${shortName ?? item.name}${qty > 1 ? 's' : ''}`);
+		const name = shortName ?? item.name;
+		str.push(`${qty}x ${qty > 1 ? pluraliseItemName(name) : name}`);
 	}
 	return str.join(', ');
 }
