@@ -7,7 +7,7 @@ Farming in the bot works like in-game: your minion is sent on planting or harves
 When harvesting trees, either:
 
 - Meet the Woodcutting level (and receive logs), or
-- Pay 200gp for a farmer to remove the tree (no logs)
+- Pay a farmer to remove the tree (200gp per tree, or 2000gp per redwood tree; no logs)
 
 Other farming activities:
 
@@ -28,45 +28,49 @@ XP, speed, and harvest quantity can be boosted by the following:
   - Boots: +0.2% XP
   - Full set: +2.5% XP **(works from bank)**
 
-- **[Magic secateurs](../../Buyables/buyables#quest-items)** - 10% harvest quantity boost **(works from bank)**
+- **[Magic secateurs](../../Buyables/buyables)** - 10% harvest quantity boost **(works from bank)**
 - **Farming cape** - 5% harvest quantity boost **(works from bank)**
-- **Full graceful outfit** - 10% trip speed **(must be equipped and charged)**
-- **[Ring of endurance](../agility/hallowed-sepulchre#ring-of-endurance)** - 10% trip speed **(must be charged and either equipped or in bank)**
+- **Full graceful outfit** - 10% trip speed **(must be equipped)**
+- **[Ring of endurance](../../Activities/hallowed-sepulchre#ring-of-endurance)** - 10% trip speed **(must be charged and either equipped or in bank)**
 - **Ardougne elite diary** - 4% trip speed when completed
 
 ---
 
 ## Commands
 
-- [[/farming plant]] – Plant or harvest & replant
-- [[/farming harvest]] – Harvest only
-- [[/farming check_patches]] – View patch status
-- [[/farming auto_farm]] – Auto-plant highest seed
-- [[/farming auto_farm_filter]] – Set auto-farm filter
-- [[/farming default_compost]] – Auto apply compost
-- [[/farming always_pay]] – Auto apply protection
+- [[/farming plant]] - Plant or harvest and replant
+- [[/farming harvest]] - Harvest without replanting
+- [[/farming check_patches]] - View patch status (includes an Auto Farm shortcut button when anything is ready)
+- [[/farming auto_farm]] - Execute an auto farming trip
+- [[/farming auto_farm_filter]] - Choose your auto farm filter
+- [[/farming set_preferred]] - View or set per-patch seed preferences and contract priority
+- [[/farming default_compost]] - Set the compost tier to auto apply
+- [[/farming always_pay]] - Toggle automatic farmer payments
+- [[/farming compost_bin]] - Convert crops into supercompost
+- [[/farming contract]] - View, request, or downgrade farming contracts
+- [[/farming tithe_farm]] - Start Tithe Farm or buy rewards
 
 ---
 
-## Auto Farm
+## Auto Farming
 
-Auto farming automatically plants seeds based on your filter.
+Use [[/farming auto_farm]] to process every patch your current filter/preferences allow in a single trip (ready planted patches are harvested/replanted, eligible empty patches are planted). The command now:
 
-- **All Farm** – [[/farming auto_farm_filter auto_farm_filter_data\:AllFarm]]
-  Plants the highest seed in every patch
+- Builds a combined plan that spends the entire Farming trip length, chaining each patch back-to-back.
+- Respects [[/farming auto_farm_filter]] choices (`AllFarm` to use your best seeds everywhere, `Replant` to stick to what was already growing).
+- Supports [[/farming set_preferred]] for per-patch behavior (`seed`, `highest_available`, or `empty`) plus optional contract prioritization.
+- Applies your [[/farming default_compost]] choice and [[/farming always_pay]] setting automatically.
+- Skips patches that would push the trip beyond the max duration or when required resources are missing.
 
-- **Replant** – [[/farming auto_farm_filter auto_farm_filter_data\:Replant]]
-  Replants the same seed in only the patches that had it
-  _(Empty other patches using [[/farming harvest]] for better control)_
+See [Auto Farming](auto-farming.md) for a full breakdown, including resource handling and troubleshooting tips.
 
 ---
 
 ## Compost
 
-- **Compost** – Buy for 400gp: [[/buy name\:Compost]]
-- **Supercompost** – Made via [[/farming compost_bin]] or dropped/bought
-- **Ultracompost** – Use 2× Volcanic ash + 1× Supercompost:
-  [[/create item\:Ultracompost]]
+- **Compost** - Buy for 400gp: [[/buy name:Compost]]
+- **Supercompost** - Made via [[/farming compost_bin]] or dropped/bought
+- **Ultracompost** - Use 2x Volcanic ash + 1x Supercompost: [[/create item:Ultracompost]]
 
 ---
 
