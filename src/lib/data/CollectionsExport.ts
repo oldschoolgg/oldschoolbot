@@ -360,7 +360,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vespina'
 ]);
 export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
-const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
+export const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
 export const chambersOfXericNormalCL = resolveItems([
 	'Olmlet',
 	'Twisted bow',
