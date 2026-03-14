@@ -10,6 +10,7 @@ interface WoodcuttingTimeOptions {
 	axeMultiplier: number;
 	powerchopping: boolean;
 	forestry: boolean;
+	disable_1_5t?: boolean;
 	woodcuttingLvl: number;
 	maxTripLength: number;
 	rng: RNGProvider;
@@ -22,6 +23,7 @@ export function determineWoodcuttingTime({
 	axeMultiplier,
 	powerchopping,
 	forestry,
+	disable_1_5t = false,
 	woodcuttingLvl,
 	maxTripLength,
 	rng
@@ -32,9 +34,10 @@ export function determineWoodcuttingTime({
 	const farmingLvl = user.skillsAsLevels.farming;
 	const chanceOfSuccess = (log.slope * woodcuttingLvl + log.intercept) * axeMultiplier;
 	const { findNewTreeTime } = log;
+	const isHardwood = [EItem.TEAK_LOGS, EItem.MAHOGANY_LOGS].includes(log.id);
 
 	let teakTick = false;
-	if (!forestry && woodcuttingLvl >= 92) {
+	if (!forestry && !disable_1_5t && isHardwood) {
 		if (log.id === EItem.TEAK_LOGS && farmingLvl >= 35) {
 			teakTick = true;
 		}
@@ -42,6 +45,8 @@ export function determineWoodcuttingTime({
 			teakTick = true;
 		}
 	}
+	const chopTickTime = isHardwood ? (teakTick ? 1.5 : 2) : 4;
+	const newTreeTickTime = teakTick ? 1.5 : findNewTreeTime;
 
 	let newQuantity = 0;
 
@@ -57,13 +62,13 @@ export function determineWoodcuttingTime({
 	while (timeElapsed < userMaxTripTicks) {
 		// Keep rolling until log chopped
 		while (!rng.percentChance(chanceOfSuccess)) {
-			timeElapsed += teakTick ? 1.5 : 4;
+			timeElapsed += chopTickTime;
 		}
 		// Delay for depleting a tree
 		if (rng.percentChance(log.depletionChance)) {
-			timeElapsed += findNewTreeTime;
+			timeElapsed += newTreeTickTime;
 		} else {
-			timeElapsed += teakTick ? 1.5 : 4;
+			timeElapsed += chopTickTime;
 		}
 		newQuantity++;
 

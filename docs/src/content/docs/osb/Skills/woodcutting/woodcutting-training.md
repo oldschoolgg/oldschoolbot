@@ -13,4 +13,6 @@ title: "Woodcutting Training"
 
 **If going for pet, powerchop Teak logs for best odds.**
 
+Hardwood note: Teak and Mahogany now use 2-tick hardwood timing by default, and can be 1.5-ticked in Farming patches with Forestry disabled ([[farming:35]] for Teak, [[farming:55]] for Mahogany).
+
 The following table represents XP rates per hour **without** powerchopping.

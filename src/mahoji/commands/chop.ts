@@ -102,6 +102,12 @@ export const chopCommand = defineCommand({
 			required: false
 		},
 		{
+			type: 'Boolean',
+			name: 'disable_1_5t',
+			description: 'Set this to true to disable 1.5-tick hardwood and use 2-tick hardwood timing.',
+			required: false
+		},
+		{
 			type: 'String',
 			name: 'twitchers_gloves',
 			description: "Change the settings of your Twitcher's gloves. (default egg, optional)",
@@ -119,7 +125,7 @@ export const chopCommand = defineCommand({
 
 		if (!log) return "That's not a valid log to chop.";
 
-		let { quantity, powerchop, forestry_events, twitchers_gloves } = options;
+		let { quantity, powerchop, forestry_events, disable_1_5t, twitchers_gloves } = options;
 
 		const skills = user.skillsAsLevels;
 
@@ -140,6 +146,9 @@ export const chopCommand = defineCommand({
 
 		let wcLvl = skills.woodcutting;
 		const farmingLvl = user.skillsAsLevels.farming;
+		const isTeak = resolveItems('Teak logs').includes(log.id);
+		const isMahogany = resolveItems('Mahogany logs').includes(log.id);
+		const canOnePointFiveTick = (isTeak && farmingLvl >= 35) || (isMahogany && farmingLvl >= 55);
 
 		// Redwood logs, logs, sulliuscep, farming patches, woodcutting guild don't spawn forestry events
 		if (!forestry_events || resolveItems(['Redwood logs', 'Logs']).includes(log.id) || log.lootTable) {
@@ -149,13 +158,15 @@ export const chopCommand = defineCommand({
 				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 				wcLvl += 7;
 			}
-			// 1.5 tick hardwood at 92 wc, 1.5t is only possible at farming patches
-			if (skills.woodcutting >= 92) {
-				if (resolveItems('Teak logs').includes(log.id) && farmingLvl >= 35) {
-					boosts.push('1.5t woodcutting teak trees with 92+ wc & 35+ farming');
+			if (canOnePointFiveTick && disable_1_5t) {
+				boosts.push('1.5t hardwood disabled (using 2-tick hardwood timing)');
+			}
+			if (canOnePointFiveTick && !disable_1_5t) {
+				if (isTeak) {
+					boosts.push('1.5t woodcutting teak trees with 35+ farming');
 				}
-				if (resolveItems('Mahogany logs').includes(log.id) && farmingLvl >= 55) {
-					boosts.push('1.5t woodcutting mahogany trees with 92+ wc & 55+ farming');
+				if (isMahogany) {
+					boosts.push('1.5t woodcutting mahogany trees with 55+ farming');
 				}
 			}
 		} else {
@@ -205,6 +216,7 @@ export const chopCommand = defineCommand({
 			axeMultiplier,
 			powerchopping: powerchop,
 			forestry: forestry_events,
+			disable_1_5t,
 			woodcuttingLvl: wcLvl,
 			maxTripLength,
 			rng
@@ -223,6 +235,7 @@ export const chopCommand = defineCommand({
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop === true ? true : undefined,
 			forestry: forestry_events,
+			disable_1_5t,
 			twitchers: twitchers_gloves,
 			duration,
 			fakeDurationMin: Math.floor(fakeDurationMin),
