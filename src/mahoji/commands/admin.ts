@@ -32,6 +32,8 @@ export const gifs = [
 	'https://gfycat.com/serenegleamingfruitbat',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
+const DESYNC_COMMANDS_TO_KEEP = ['admin', 'rp'] as const;
+const COMMAND_PROPAGATION_NOTE = 'Discord command changes can take up to 1 minute to appear.';
 
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
@@ -394,6 +396,12 @@ export const adminCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'desync_commands',
+			description: 'Desync commands except /admin and /rp',
+			options: []
+		},
+		{
+			type: 'Subcommand',
 			name: 'item_stats',
 			description: 'item stats',
 			options: [{ ...itemOption(), required: true }]
@@ -613,6 +621,33 @@ export const adminCommand = defineCommand({
 			return rng.pick(gifs);
 		}
 
+		const attemptDesyncCommands = async () => {
+			const guildIdString = guildId?.toString();
+			if (!guildIdString || guildIdString !== globalConfig.supportServerID) {
+				return null;
+			}
+
+			const adminCommands = globalClient.allCommands.filter(command =>
+				DESYNC_COMMANDS_TO_KEEP.includes(command.name as (typeof DESYNC_COMMANDS_TO_KEEP)[number])
+			);
+
+			await bulkUpdateCommands({
+				commands: adminCommands,
+				guildId: guildIdString
+			});
+
+			if (!globalConfig.isProduction) {
+				await bulkUpdateCommands({
+					commands: [],
+					guildId: null
+				});
+			}
+
+			const keptCommands = adminCommands.map(command => `/${command.name}`).join(', ') || '/admin';
+
+			return keptCommands;
+		};
+
 		/**
 		 *
 		 * Mod Only Commands
@@ -760,11 +795,21 @@ export const adminCommand = defineCommand({
 		}
 
 		if (options.shut_down) {
+			await interaction.confirmation(
+				`Are you sure you want to shut down this bot? This will attempt command desync first and then shut down in 30 seconds.`
+			);
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interaction.reply({
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
+			try {
+				await attemptDesyncCommands();
+			} catch (err) {
+				Logging.logError(err instanceof Error ? err : new Error(String(err)), {
+					type: 'desync_commands_during_shutdown'
+				});
+			}
 			await Promise.all([sleep(timer), GrandExchange.queue.onIdle()]);
 			await globalClient
 				.sendMessage(Channel.GeneralChannel, {
@@ -789,6 +834,22 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.sync_commands) {
 			await bulkUpdateCommands();
 			return 'Done.';
+		}
+
+		if (options.desync_commands) {
+			await interaction.confirmation(
+				`Are you sure you want to desync commands in this guild? This keeps only ${DESYNC_COMMANDS_TO_KEEP.map(i => `/${i}`).join(', ')}.${
+					!globalConfig.isProduction
+						? ' In non-production, this also clears global app commands for this bot.'
+						: ''
+				}`
+			);
+			const keptCommands = await attemptDesyncCommands();
+			if (!keptCommands) {
+				return 'This subcommand can only be used in the support server.';
+			}
+
+			return `Desynced commands in this guild; kept ${keptCommands}. ${COMMAND_PROPAGATION_NOTE}`;
 		}
 
 		if (options.view) {
