@@ -8,7 +8,6 @@ import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
-import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export function determineMiningResult({
@@ -66,6 +65,14 @@ export function determineMiningResult({
 		const { petDropRate } = skillingPetDropRate(gearBank, 'mining', ore.petChance);
 		if (rng.roll(Math.ceil(petDropRate / quantity))) {
 			updateBank.itemLootBank.add('Rock golem');
+		}
+	}
+
+	if (ore.moonKeyHalfChance && hasFinishedCOTS) {
+		for (let i = 0; i < quantity; i++) {
+			if (rng.roll(ore.moonKeyHalfChance)) {
+				updateBank.itemLootBank.add('Loop half of key (moon key)');
+			}
 		}
 	}
 
@@ -127,10 +134,6 @@ export function determineMiningResult({
 		}
 	}
 
-	if (ore.name === 'Runite ore') {
-		rollForMoonKeyHalf({ user: hasFinishedCOTS, duration, loot: updateBank.itemLootBank, rng });
-	}
-
 	return {
 		updateBank,
 		bonusXP,
@@ -144,7 +147,7 @@ export const miningTask: MinionTask = {
 		const { oreID, channelId, duration, powermine } = data;
 		const { quantity } = data;
 
-		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
+		const ore = Mining.Ores.find(oreToCheck => oreToCheck.id === oreID)!;
 		const { updateBank, bonusXP } = determineMiningResult({
 			ore,
 			quantity,

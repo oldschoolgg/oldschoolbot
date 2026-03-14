@@ -28,6 +28,7 @@ const logs: Log[] = [
 		depletionChance: 100,
 		wcGuild: true,
 		petChance: 317_647,
+		moonKeyHalfChance: 2650,
 		qpRequired: 0,
 		clueScrollChance: 317_647
 	},
@@ -58,6 +59,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 361_146,
+		moonKeyHalfChance: 1950,
 		qpRequired: 0,
 		clueScrollChance: 361_146
 	},
@@ -74,6 +76,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 289_286,
+		moonKeyHalfChance: 3500,
 		qpRequired: 0,
 		clueScrollChance: 289_286
 	},
@@ -88,6 +91,7 @@ const logs: Log[] = [
 		intercept: 5.07,
 		depletionChance: 100 * (1 / 8),
 		petChance: 264_336,
+		moonKeyHalfChance: 1667,
 		qpRequired: 0,
 		clueScrollChance: 264_336
 	},
@@ -104,6 +108,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 221_918,
+		moonKeyHalfChance: 1250,
 		qpRequired: 0,
 		clueScrollChance: 221_918
 	},
@@ -132,6 +137,7 @@ const logs: Log[] = [
 		intercept: 3.05,
 		depletionChance: 100 * (1 / 8),
 		petChance: 220_623,
+		moonKeyHalfChance: 2000,
 		qpRequired: 0,
 		clueScrollChance: 220_623
 	},
@@ -162,6 +168,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 145_013,
+		moonKeyHalfChance: 900,
 		qpRequired: 0,
 		clueScrollChance: 145_013
 	},
@@ -195,6 +202,7 @@ const logs: Log[] = [
 		depletionChance: 100 * (1 / 8),
 		wcGuild: true,
 		petChance: 72_321,
+		moonKeyHalfChance: 700,
 		qpRequired: 0,
 		clueScrollChance: 72_321
 	},

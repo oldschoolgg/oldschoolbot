@@ -24,6 +24,21 @@ Using this filter when chopping logs allows your minion to reach much higher xp 
 After level 92, your minion magically learns how to tick manipulate, allowing rates of up to 200k xp/h powerchopping Teak logs.
 To use the 1.5 tick method you must chop the trees planted in Farming patches. Teak trees require [[woodcutting:92]] and [[farming:35]], while Mahogany trees require [[woodcutting:92]] and [[farming:55]]. Forestry events must be disabled for this method.
 
+## Moon Key Halves
+
+If you have completed **Children of the Sun**, woodcutting can roll a **Loop half of key (moon key)** on each log roll at the following rates:
+
+- Magic logs: 1/700
+- Yew logs: 1/900
+- Maple logs: 1/1,250
+- Teak logs: 1/1,667
+- Oak logs: 1/1,950
+- Mahogany logs: 1/2,000
+- Logs (normal trees): 1/2,650
+- Willow logs: 1/3,500
+
+When using **1.5t teak/mahogany**, moon key halves are not rolled.
+
 ## Lumberjack Outfit
 
 The Lumberjack outfit can be obtained from the [Temple Trekking](https://wiki.oldschool.gg/osb/minigames/temple-trekking/#_top) minigame. When equipped in the skilling setup, it provides the following boosts to woodcutting XP:

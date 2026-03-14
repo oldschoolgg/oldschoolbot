@@ -1,6 +1,6 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { EItem } from 'oldschooljs/EItem';
 
+import { isHardwoodOnePointFiveTick } from '@/lib/skilling/functions/isHardwoodOnePointFiveTick.js';
 import type { Log } from '@/lib/skilling/types.js';
 
 interface WoodcuttingTimeOptions {
@@ -32,16 +32,12 @@ export function determineWoodcuttingTime({
 	const farmingLvl = user.skillsAsLevels.farming;
 	const chanceOfSuccess = (log.slope * woodcuttingLvl + log.intercept) * axeMultiplier;
 	const { findNewTreeTime } = log;
-
-	let teakTick = false;
-	if (!forestry && woodcuttingLvl >= 92) {
-		if (log.id === EItem.TEAK_LOGS && farmingLvl >= 35) {
-			teakTick = true;
-		}
-		if (log.id === EItem.MAHOGANY_LOGS && farmingLvl >= 55) {
-			teakTick = true;
-		}
-	}
+	const hardwoodOnePointFiveTick = isHardwoodOnePointFiveTick({
+		logID: log.id,
+		woodcuttingLevel: woodcuttingLvl,
+		farmingLevel: farmingLvl,
+		forestry
+	});
 
 	let newQuantity = 0;
 
@@ -57,13 +53,13 @@ export function determineWoodcuttingTime({
 	while (timeElapsed < userMaxTripTicks) {
 		// Keep rolling until log chopped
 		while (!rng.percentChance(chanceOfSuccess)) {
-			timeElapsed += teakTick ? 1.5 : 4;
+			timeElapsed += hardwoodOnePointFiveTick ? 1.5 : 4;
 		}
 		// Delay for depleting a tree
 		if (rng.percentChance(log.depletionChance)) {
 			timeElapsed += findNewTreeTime;
 		} else {
-			timeElapsed += teakTick ? 1.5 : 4;
+			timeElapsed += hardwoodOnePointFiveTick ? 1.5 : 4;
 		}
 		newQuantity++;
 

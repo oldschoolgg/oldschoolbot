@@ -2,6 +2,7 @@ import { Emoji, Events, objectEntries, perTimeUnitChance, Time } from '@oldschoo
 import { Bank, EItem } from 'oldschooljs';
 
 import { MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { eggNest } from '@/lib/simulation/birdsNest.js';
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
@@ -9,7 +10,6 @@ import { ForestryEvents, LeafTable } from '@/lib/skilling/skills/woodcutting/for
 import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
-import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 async function handleForestry({
@@ -336,8 +336,17 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
-		if ([EItem.MAGIC_LOGS, EItem.YEW_LOGS, EItem.TEAK_LOGS, EItem.MAPLE_LOGS].includes(log.id)) {
-			rollForMoonKeyHalf({ rng, user, duration, loot });
+		const moonKeyHalfChance =
+			user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun) && !data.isHardwoodOnePointFiveTick
+				? log.moonKeyHalfChance
+				: undefined;
+
+		if (moonKeyHalfChance) {
+			for (let i = 0; i < quantity; i++) {
+				if (rng.roll(moonKeyHalfChance)) {
+					loot.add('Loop half of key (moon key)');
+				}
+			}
 		}
 
 		// Loot received, items used, and logs/loot rolls lost message

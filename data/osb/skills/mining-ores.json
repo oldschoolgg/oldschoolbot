@@ -162,7 +162,8 @@
 		"slope": 0.08,
 		"intercept": -0.85,
 		"pet_chance": 42377,
-		"clue_scroll_chance": 42377
+		"clue_scroll_chance": 42377,
+		"moon_key_half_chance": 250
 	},
 	{
 		"level": 1,

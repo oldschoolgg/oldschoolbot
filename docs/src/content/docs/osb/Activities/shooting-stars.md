@@ -23,6 +23,7 @@ Start this trip by clicking the `Mine Crashed Star` button when you see it on a 
 ## Rewards
 
 - Each star you mine will give you [[star dust]].
+- If you have completed **Children of the Sun**, Shooting Stars also roll a **1/3,400** chance per successful mining roll for a **Loop half of key (moon key)**.
 - You can buy the following items using the [[/buy]] command.
 
 | Item Name                       | Cost of Dust |

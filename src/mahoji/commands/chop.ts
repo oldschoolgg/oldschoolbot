@@ -2,6 +2,7 @@ import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
+import { isHardwoodOnePointFiveTick } from '@/lib/skilling/functions/isHardwoodOnePointFiveTick.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -111,10 +112,10 @@ export const chopCommand = defineCommand({
 	],
 	run: async ({ options, user, channelId, rng }) => {
 		const log = Woodcutting.Logs.find(
-			log =>
-				stringMatches(log.name, options.name) ||
-				stringMatches(log.name.split(' ')[0], options.name) ||
-				log.aliases?.some(a => stringMatches(a, options.name))
+			logToCheck =>
+				stringMatches(logToCheck.name, options.name) ||
+				stringMatches(logToCheck.name.split(' ')[0], options.name) ||
+				logToCheck.aliases?.some(a => stringMatches(a, options.name))
 		);
 
 		if (!log) return "That's not a valid log to chop.";
@@ -140,6 +141,12 @@ export const chopCommand = defineCommand({
 
 		let wcLvl = skills.woodcutting;
 		const farmingLvl = user.skillsAsLevels.farming;
+		const isHardwoodOnePointFiveTickTrip = isHardwoodOnePointFiveTick({
+			logID: log.id,
+			woodcuttingLevel: skills.woodcutting,
+			farmingLevel: farmingLvl,
+			forestry: forestry_events ?? false
+		});
 
 		// Redwood logs, logs, sulliuscep, farming patches, woodcutting guild don't spawn forestry events
 		if (!forestry_events || resolveItems(['Redwood logs', 'Logs']).includes(log.id) || log.lootTable) {
@@ -149,14 +156,13 @@ export const chopCommand = defineCommand({
 				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 				wcLvl += 7;
 			}
-			// 1.5 tick hardwood at 92 wc, 1.5t is only possible at farming patches
-			if (skills.woodcutting >= 92) {
-				if (resolveItems('Teak logs').includes(log.id) && farmingLvl >= 35) {
-					boosts.push('1.5t woodcutting teak trees with 92+ wc & 35+ farming');
-				}
-				if (resolveItems('Mahogany logs').includes(log.id) && farmingLvl >= 55) {
-					boosts.push('1.5t woodcutting mahogany trees with 92+ wc & 55+ farming');
-				}
+			// 1.5 tick hardwood at 92 wc, only possible at farming patches
+			if (isHardwoodOnePointFiveTickTrip) {
+				boosts.push(
+					resolveItems('Teak logs').includes(log.id)
+						? '1.5t woodcutting teak trees with 92+ wc & 35+ farming'
+						: '1.5t woodcutting mahogany trees with 92+ wc & 55+ farming'
+				);
 			}
 		} else {
 			boosts.push('Participating in Forestry events');
@@ -223,6 +229,7 @@ export const chopCommand = defineCommand({
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop === true ? true : undefined,
 			forestry: forestry_events,
+			isHardwoodOnePointFiveTick: isHardwoodOnePointFiveTickTrip || undefined,
 			twitchers: twitchers_gloves,
 			duration,
 			fakeDurationMin: Math.floor(fakeDurationMin),

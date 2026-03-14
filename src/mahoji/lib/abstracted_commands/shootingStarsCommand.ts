@@ -233,6 +233,10 @@ export async function shootingStarsCommand({
 			addSkillingClueToLoot(rng, user, 'mining', newQuantity, s.clueScrollChance, loot);
 		}
 
+		for (let i = 0; i < newQuantity; i++) {
+			if (rng.roll(3400)) loot.add('Loop half of key (moon key)');
+		}
+
 		// Roll for pet
 		if (s.petChance && rng.roll(Math.min(s.petChance - skills.mining * 25) / newQuantity)) {
 			loot.add('Rock golem');

@@ -43,6 +43,7 @@ export interface Ore {
 	slope: number;
 	intercept: number;
 	petChance?: number;
+	moonKeyHalfChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
 	aliases?: string[];
@@ -63,6 +64,7 @@ export interface Log {
 	depletionChance: number;
 	wcGuild?: boolean;
 	petChance?: number;
+	moonKeyHalfChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
 	clueNestsOnly?: boolean;
