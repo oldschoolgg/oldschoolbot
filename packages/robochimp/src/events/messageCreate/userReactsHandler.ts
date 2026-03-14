@@ -1,9 +1,21 @@
 import type { GatewayMessageCreateDispatchData } from '@oldschoolgg/discord';
 
 import { globalConfig } from '@/constants.js';
+import { CHANNELS } from "@/util.js";
+
+const ignoredChannels = [
+	CHANNELS.DEVELOPERS,
+	CHANNELS.ALL_SUPPORT_STAFF,
+	CHANNELS.MODERATORS_COMMANDS,
+	CHANNELS.MODERATORS,
+	CHANNELS.MODERATORS_OTHER,
+	CHANNELS.ALL_SUPPORT_STAFF
+];
 
 export async function userReactsHandler(msg: GatewayMessageCreateDispatchData) {
 	if (msg.guild_id !== globalConfig.supportServerID) return;
+	if (ignoredChannels.includes(msg.channel_id)) return;
+
 	const mentioned = msg.mentions[0];
 	if (mentioned) {
 		const userID = BigInt(mentioned.id);

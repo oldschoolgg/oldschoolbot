@@ -74,9 +74,9 @@ function estimatePoints(raidLevel: number, teamSize: number) {
 			approx: true
 		},
 		{ name: 'Kephri', hp: scaleHP(130, raidLevel, teamSize, averageWTPLevel[1]), mult: 1.0 },
-		{ name: 'P1 Obelisk', hp: scaleHP(260, raidLevel, teamSize, 0), mult: 1.5 },
-		{ name: 'P2 Warden', hp: scaleHP(140, raidLevel, teamSize, 0), mult: 2.0, count: 2 },
-		{ name: 'P3 Warden', hp: scaleHP(880, raidLevel, teamSize, 0), mult: 2.5 },
+		{ name: 'P1 Obelisk', hp: scaleHP(260, raidLevel, teamSize, 0), mult: 3 },
+		{ name: 'P2 Warden', hp: scaleHP(140, raidLevel, teamSize, 0), mult: 3, count: 2 },
+		{ name: 'P3 Warden', hp: scaleHP(880, raidLevel, teamSize, 0), mult: 3.5 },
 		{ name: 'Misc. damage', hp: 80 * teamSize, mult: 1.0, approx: true },
 		{ name: 'Het - seal mining', hp: 130 + Math.floor(95.81 * (teamSize - 1)), mult: 2.5 },
 		{ name: 'Scabaras - puzzles', points: 300 * teamSize, approx: true },
@@ -516,7 +516,7 @@ const HigherTOAUniqueTable = new LootTable()
 	.add("Tumeken's shadow (uncharged)", 1, 2);
 
 function uniqueLootRoll(rng: RNGProvider, raidLevel: RaidLevel) {
-	const uniqueTable = raidLevel >= 305 ? HigherTOAUniqueTable : TOAUniqueTable
+	const uniqueTable = raidLevel >= 305 ? HigherTOAUniqueTable : TOAUniqueTable;
 	const [item] = uniqueTable.roll().items()[0];
 
 	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !rng.roll(50)) {
