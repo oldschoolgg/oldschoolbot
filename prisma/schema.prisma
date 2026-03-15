@@ -533,6 +533,8 @@ model User {
   cl_array                      Int[]    @default([])
   completed_achievement_diaries String[] @default([])
 
+  // Holiday / event data should be stored here so we don't have to change the database structure for each event.
+  event_data                    Json      @default("{}") @db.JsonB
   @@index([id, last_command_date])
   @@map("users")
 }
@@ -1639,6 +1641,7 @@ enum command_name_enum {
   fish
   fishingtrawler
   fletch
+  fool
   gamble
   gauntlet
   ge

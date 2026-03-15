@@ -877,6 +877,9 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		}
 		case 'HalloweenEvent':
 			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
+		case 'FoolEvent': {
+			return `${name} is currently out fooling. You expected something more?';`;
+		}
 		case 'GuthixianCache':
 			return `${name} is currently participating in a Guthixian cache. The trip should take ${formatDuration(
 				durationRemaining

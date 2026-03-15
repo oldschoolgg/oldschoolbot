@@ -39,7 +39,8 @@ type RatelimitType =
 	| 'stats_command'
 	| 'delay_member_fetch'
 	| 'delay_guild_fetch'
-	| 'delay_robochimp_fetch';
+	| 'delay_robochimp_fetch'
+	| 'megaduck_command';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
@@ -47,7 +48,8 @@ const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	stats_command: { windowSeconds: 5, max: 1 },
 	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
 	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 },
-	delay_robochimp_fetch: { windowSeconds: 5 * 60, max: 1 }
+	delay_robochimp_fetch: { windowSeconds: 5 * 60, max: 1 },
+	megaduck_command: { windowSeconds: 3, max: 1 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];

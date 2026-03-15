@@ -14364,6 +14364,19 @@ setCustomItem(74_006, 'Ember', 'Herbi', {
 	}
 });
 
+setCustomItem(
+	74_006,
+	'The whale card',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',
