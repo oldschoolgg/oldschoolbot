@@ -781,6 +781,9 @@ const KourendKebosDiary: Diary = {
 			thieving: 49,
 			woodcutting: 60
 		},
+		minigameReqs: {
+			stealing_artefacts: 1
+		},
 		collectionLogReqs: resolveItems(['Adamantite bar']),
 		monsterScores: {
 			[EMonster.WYRM]: 1,

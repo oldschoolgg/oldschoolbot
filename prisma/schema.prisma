@@ -560,6 +560,7 @@ model Minigame {
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
   colosseum               Int    @default(0)
+  stealing_artefacts      Int    @default(0)
 
   new_user NewUser?
 
@@ -902,6 +903,7 @@ enum activity_type_enum {
   GnomeRestaurant
   SoulWars
   RoguesDenMaze
+  StealingArtefacts
   Gauntlet
   CastleWars
   MageArena
