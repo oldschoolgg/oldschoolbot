@@ -22,6 +22,7 @@ import { ChargeBank } from '@/lib/structures/Bank.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
@@ -47,7 +48,8 @@ const USER_DEFAULTS = {
 	unlocked_gear_templates: [],
 	unlocked_blueprints: [],
 	disabled_inventions: [],
-	disabled_portent_ids: []
+	disabled_portent_ids: [],
+	fool_event_data: {}
 } satisfies Partial<User>;
 
 function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean) {
