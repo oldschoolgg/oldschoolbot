@@ -69,7 +69,7 @@ Portents are utility items created with divination energy that provide perks in 
 - **Graceful Portent:** Increases agility XP (see [[/rates]])
 
 
-## Mechanics and rates (code-accurate)
+## Mechanics and rates
 
 - Harvest round is fixed at 60s harvest + conversion time for 120 memories.
 - Memories per harvest cycle: **120**.

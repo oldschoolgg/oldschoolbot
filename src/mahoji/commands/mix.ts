@@ -133,6 +133,6 @@ export const mixCommand = defineCommand({
 
 		return `${user.minionName} ${cost} making ${quantity}x ${
 			mixableItem.outputMultiple ? 'batches of' : ''
-		}${itemName}, it'll take around ${formatDuration(duration)} to finish.`;
+		} ${itemName}, it'll take around ${formatDuration(duration)} to finish.`;
 	}
 });

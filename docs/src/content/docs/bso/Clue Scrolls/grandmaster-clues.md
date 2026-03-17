@@ -28,6 +28,8 @@ Grandmaster Clues can be received from a wide range of content. Drop rates vary 
 
 [[Kalphite King]], [[Vasa Magus]], [[Sea Kraken]], [[Ignecarus]], [[Nex]], [[Malygos]], [[Queen Black Dragon]], [Elder Birdhouses](/bso/skills/hunter), Fishing, Woodcutting, Master Clue Caskets, and [Item Contracts](/bso/item-contracts/).
 
+Grandmaster clues can also be obtained from opening Master clue caskets
+
 ## General Loot Table
 
 Grandmaster Caskets contain:
