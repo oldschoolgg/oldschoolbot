@@ -1,7 +1,7 @@
 import type { GatewayMessageCreateDispatchData } from '@oldschoolgg/discord';
 
 import { globalConfig } from '@/constants.js';
-import { CHANNELS } from "@/util.js";
+import { CHANNELS } from '@/util.js';
 
 const ignoredChannels = [
 	CHANNELS.DEVELOPERS,
