@@ -1,4 +1,4 @@
-import { Bank, type Item, ItemGroups, Items, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type Item, ItemGroups, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
@@ -311,7 +311,10 @@ for (const chest of chests) {
 					rng: args.rng,
 					user: args.user
 				}),
-			allItems: chest.table.allItems
+			allItems:
+				chest.name === 'Gold chest'
+					? [...chest.table.allItems, itemID('Clue scroll (elite)')]
+					: chest.table.allItems
 		});
 	}
 }

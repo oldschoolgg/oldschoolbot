@@ -67,6 +67,21 @@ describe('Open Command', async () => {
 		expect(res2).toContain("That's not a valid item to open until");
 	});
 
+	test('Open until allows Gold key crimson -> Clue scroll (elite)', async () => {
+		mockMathRandom(0.1);
+		const user = await createTestUser();
+		await user.addItemsToBank({ items: new Bank().add('Gold key crimson', 10) });
+		const res = await user.runCommand(openCommand, {
+			name: 'gold key crimson',
+			quantity: 2,
+			open_until: 'Clue scroll (elite)',
+			result_quantity: 1
+		});
+		expect(res).not.toEqual("Gold key crimson doesn't drop Clue scroll (elite).");
+		await user.bankAmountMatch('Gold key crimson', 8);
+		await user.openedBankMatch(new Bank().add('Gold key crimson', 2));
+	});
+
 	test('Rejects invalid result_quantity', async () => {
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 10) });
