@@ -75,7 +75,7 @@ describe('Open Command', async () => {
 			name: 'gold key crimson',
 			quantity: 2,
 			open_until: 'Clue scroll (elite)',
-			result_quantity: 1
+			result_quantity: 25
 		});
 		expect(res).not.toEqual("Gold key crimson doesn't drop Clue scroll (elite).");
 		await user.bankAmountMatch('Gold key crimson', 8);
