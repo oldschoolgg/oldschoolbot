@@ -52,8 +52,8 @@ export const nightmareTask: MinionTask = {
 		});
 
 		let newKC = 0;
-		if (kc > 0 ) {
-			const { newKC: resKc  } = await user.incrementKC(monsterID, kc);
+		if (kc > 0) {
+			const { newKC: resKc } = await user.incrementKC(monsterID, kc);
 			newKC = resKc;
 		} else {
 			newKC = (await user.getKC(monsterID)) + kc;
