@@ -51,7 +51,13 @@ export const nightmareTask: MinionTask = {
 			taskQuantity: null
 		});
 
-		const { newKC } = await user.incrementKC(monsterID, kc);
+		let newKC = 0;
+		if (kc > 0 ) {
+			const { newKC: resKc  } = await user.incrementKC(monsterID, kc);
+			newKC = resKc;
+		} else {
+			newKC = (await user.getKC(monsterID)) + kc;
+		}
 		const ownsOrUsedTablet =
 			user.bank.has('Slepey tablet') ||
 			(user.bitfield.includes(BitField.HasSlepeyTablet) && user.cl.has('Slepey Tablet'));
@@ -60,7 +66,6 @@ export const nightmareTask: MinionTask = {
 				userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
 			}
 			if (!ownsOrUsedTablet && !userLoot.has('Slepey tablet')) {
-				// const { newKC } = await user.incrementKC(monsterID, kc);
 				if (newKC >= 25) {
 					userLoot.add('Slepey tablet');
 				}
