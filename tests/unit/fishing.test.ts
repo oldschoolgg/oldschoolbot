@@ -1,11 +1,10 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { type RNGProvider, SeedableRNG } from 'node-rng';
+import { SeedableRNG } from 'node-rng';
 import { Bank, EItem, toKMB } from 'oldschooljs';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-import * as addSkillingClueToLootModule from '../../src/lib/minions/functions/addSkillingClueToLoot.js';
-import { Fishing } from '../../src/lib/skilling/skills/fishing/fishing.js';
-import { calcFishingTripStart } from '../../src/lib/skilling/skills/fishing/fishingTripStart.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import { calcFishingTripStart } from '@/lib/skilling/skills/fishing/fishingTripStart.js';
 import {
 	calcAnglerBonusXP,
 	calcAnglerBoostPercent,
@@ -13,7 +12,8 @@ import {
 	calcLeapingExpectedCookingXP,
 	calcMinnowQuantityRange,
 	calcRadasBlessingBoost
-} from '../../src/lib/skilling/skills/fishing/fishingUtil.js';
+} from '@/lib/skilling/skills/fishing/fishingUtil.js';
+import * as addSkillingClueToLootModule from '../../src/lib/minions/functions/addSkillingClueToLoot.js';
 import * as utilModule from '../../src/lib/util.js';
 import { makeGearBank } from './utils.js';
 
@@ -710,6 +710,7 @@ describe('calcFishingTripResult', () => {
 	});
 
 	test('shark lure quantity reduces XP per catch', () => {
+		const rng = new SeedableRNG(1);
 		const fish = Fishing.Fishes.find(f => f.name === 'Shark')!;
 		const gearBank = makeGearBank();
 		const catches = [10];
@@ -719,12 +720,14 @@ describe('calcFishingTripResult', () => {
 			catches,
 			loot: catches,
 			gearBank,
-			sharkLureQuantity: 1
+			sharkLureQuantity: 1,
+			rng
 		});
 		expect(result.updateBank.xpBank.amount('fishing')).toBeCloseTo(275, 5);
 	});
 
 	test('shark lure quantity scales pet chance', () => {
+		const rng = new SeedableRNG(1);
 		const fish = Fishing.Fishes.find(f => f.name === 'Shark')!;
 		const gearBank = makeGearBank();
 		const spy = vi.spyOn(utilModule, 'skillingPetDropRate');
@@ -734,7 +737,8 @@ describe('calcFishingTripResult', () => {
 			catches: [1],
 			loot: [1],
 			gearBank,
-			sharkLureQuantity: 0
+			sharkLureQuantity: 0,
+			rng
 		});
 		expect(spy).toHaveBeenLastCalledWith(gearBank, 'fishing', 82_243);
 		Fishing.util.calcFishingTripResult({
@@ -743,7 +747,8 @@ describe('calcFishingTripResult', () => {
 			catches: [1],
 			loot: [1],
 			gearBank,
-			sharkLureQuantity: 5
+			sharkLureQuantity: 5,
+			rng
 		});
 		expect(spy).toHaveBeenLastCalledWith(gearBank, 'fishing', 493_458);
 	});
@@ -979,7 +984,8 @@ describe('calcFishingTripResult', () => {
 			loot: [3, 2],
 			gearBank,
 			usedBarbarianCutEat: false,
-			isPowerfishing: true
+			isPowerfishing: true,
+			rng: new SeedableRNG(1)
 		});
 
 		expect(result.updateBank.itemLootBank.amount(EItem.RAW_SARDINE)).toBe(0);

@@ -3,9 +3,9 @@ import { SeedableRNG } from 'node-rng';
 import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { Fish } from '@/lib/skilling/types.js';
-import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { FloatBank } from '@/lib/structures/Bank.js';
 import { makeGearBank } from '../../tests/unit/utils.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
@@ -86,6 +86,8 @@ export function renderFishingXpHrTable() {
 
 				const tripLengthHours = 3000;
 
+				const rng = new SeedableRNG(1);
+
 				const trip = Fishing.util.calcFishingTripStart({
 					gearBank,
 					fish,
@@ -94,7 +96,7 @@ export function renderFishingXpHrTable() {
 					wantsToUseFlakes: false,
 					powerfish: false,
 					hasWildyEliteDiary: false,
-					rng: MathRNG
+					rng
 				});
 				if (typeof trip === 'string') throw new Error(`Error calculating trip: ${trip}`);
 				const result = Fishing.util.calcFishingTripResult({
@@ -103,7 +105,7 @@ export function renderFishingXpHrTable() {
 					loot: trip.loot,
 					gearBank,
 					duration: trip.duration,
-					rng: MathRNG,
+					rng,
 					blessingExtra: trip.blessingExtra,
 					flakeExtra: trip.flakeExtra,
 					usedBarbarianCutEat: trip.usedBarbarianCutEat,
