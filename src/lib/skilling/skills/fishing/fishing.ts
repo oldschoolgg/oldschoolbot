@@ -14,7 +14,8 @@ import {
 
 const fishes: Fish[] = [
 	{
-		name: 'Shrimps/Anchovies',
+		name: 'Shrimp/Anchovies',
+		alias: ['shrimp', 'shrimps', 'anchovies'],
 		subfishes: [
 			{
 				id: itemID('Raw shrimps'),
@@ -39,6 +40,7 @@ const fishes: Fish[] = [
 	},
 	{
 		name: 'Sardine/Herring',
+		alias: ['sardine', 'herring'],
 		subfishes: [
 			{
 				id: itemID('Raw sardine'),
@@ -84,6 +86,7 @@ const fishes: Fish[] = [
 	},
 	{
 		name: 'Mackerel/Cod/Bass',
+		alias: ['mackerel', 'cod', 'bass'],
 		subfishes: [
 			{
 				id: itemID('Raw mackerel'),
@@ -117,6 +120,7 @@ const fishes: Fish[] = [
 	},
 	{
 		name: 'Trout/Salmon',
+		alias: ['trout', 'salmon'],
 		subfishes: [
 			{
 				id: itemID('Raw trout'),
@@ -162,7 +166,7 @@ const fishes: Fish[] = [
 	},
 	{
 		name: 'Tuna/Swordfish',
-		alias: ['sword', 'sf'],
+		alias: ['sword', 'sf', 'tuna', 'swordfish'],
 		subfishes: [
 			{
 				id: itemID('Raw tuna'),
@@ -366,7 +370,7 @@ const fishes: Fish[] = [
 	},
 	{
 		name: 'Barbarian fishing',
-		alias: ['barb', 'barbarian'],
+		alias: ['barb', 'barbarian', 'leaping', 'leaping trout', 'leaping salmon'],
 		subfishes: [
 			{
 				id: itemID('Leaping trout'),
