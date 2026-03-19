@@ -42,8 +42,8 @@ describe('Fish Command', async () => {
 
 	it('should fish', async () => {
 		const user = await createTestUser();
-		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies' });
-		expect(res).toContain('is now fishing Shrimps/Anchovies');
+		const res = await user.runCommand(fishCommand, { name: 'shrimp' });
+		expect(res).toContain('is now fishing Shrimp/Anchovies');
 	});
 
 	it('should fail to do barb fish when has no feathers', async () => {
@@ -79,13 +79,13 @@ describe('Fish Command', async () => {
 		const user = await client.mockUser({ maxed: true });
 		await user.equip('skilling', [EItem.FISH_SACK_BARREL]);
 		expect(user.skillsAsLevels.fishing).toBe(MAX_LEVEL);
-		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies' });
+		const res = await user.runCommand(fishCommand, { name: 'Shrimp/Anchovies' });
 		expect(res).toContain('+9 minutes for Fish barrel');
 	});
 
 	it('should handle using flakes without flakes in bank', async () => {
 		const user = await createTestUser();
-		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', spirit_flakes: true });
+		const res = await user.runCommand(fishCommand, { name: 'Shrimp/Anchovies', spirit_flakes: true });
 		expect(res).toEqual('You need to have at least one Spirit flake!');
 	});
 
@@ -96,7 +96,7 @@ describe('Fish Command', async () => {
 		const startingFlakes = user.bank.amount('Spirit flakes');
 		const startingXP = user.skillsAsXP.fishing;
 
-		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', spirit_flakes: true });
+		const res = await user.runCommand(fishCommand, { name: 'Shrimp/Anchovies', spirit_flakes: true });
 		expect(res).toContain('50% more fish from using spirit flakes');
 		expect(user.bank.amount('Spirit flakes')).toBeLessThan(startingFlakes);
 
@@ -111,7 +111,7 @@ describe('Fish Command', async () => {
 		const user = await createTestUser();
 		await (user as any).update({ bank: new Bank({ 'Spirit flakes': 100 }) });
 		const startingFlakes = user.bank.amount('Spirit flakes');
-		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', spirit_flakes: true });
+		const res = await user.runCommand(fishCommand, { name: 'Shrimp/Anchovies', spirit_flakes: true });
 		expect(res).toContain('50% more fish from using spirit flakes');
 		expect(user.bank.amount('Spirit flakes')).toBeLessThanOrEqual(startingFlakes);
 	});
@@ -187,7 +187,7 @@ describe('Fish Command', async () => {
 
 	it('should reject shark lures on non-shark spots', async () => {
 		const user = await createTestUser();
-		const res = await user.runCommand(fishCommand, { name: 'Shrimps/Anchovies', shark_lure: 1 });
+		const res = await user.runCommand(fishCommand, { name: 'shrimp', shark_lure: 1 });
 		expect(res).toEqual('Shark lures can only be used while fishing Sharks.');
 	});
 
