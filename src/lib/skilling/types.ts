@@ -113,6 +113,9 @@ export interface Fish {
 	xp?: number;
 	id?: number;
 	skillReqs?: Omit<LevelRequirements, 'fishing'>;
+	canPowerfish?: boolean;
+	powerfishTicks?: number;
+	powerfishLostTicks?: number;
 }
 
 export interface Course {

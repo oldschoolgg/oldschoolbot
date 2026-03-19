@@ -143,7 +143,10 @@ const fishes: Fish[] = [
 		lostTicks: 0.1,
 		bankingTime: 30,
 		ticksPerRoll: 5,
-		moonKeyHalfCatchRate: { numerator: 1, denominator: 4100 }
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 4100 },
+		canPowerfish: true,
+		powerfishTicks: 3,
+		powerfishLostTicks: 0.05
 	},
 	{
 		name: 'Pike',
@@ -189,7 +192,10 @@ const fishes: Fish[] = [
 		lostTicks: 0.1,
 		bankingTime: 25,
 		ticksPerRoll: 6,
-		moonKeyHalfCatchRate: { numerator: 3, denominator: 5000 }
+		moonKeyHalfCatchRate: { numerator: 3, denominator: 5000 },
+		canPowerfish: true,
+		powerfishTicks: 2,
+		powerfishLostTicks: 0.05
 	},
 	{
 		name: 'Cave eel',
@@ -226,7 +232,10 @@ const fishes: Fish[] = [
 		lostTicks: 0.1,
 		bankingTime: 25,
 		ticksPerRoll: 6,
-		moonKeyHalfCatchRate: { numerator: 3, denominator: 5000 }
+		moonKeyHalfCatchRate: { numerator: 3, denominator: 5000 },
+		canPowerfish: true,
+		powerfishTicks: 3,
+		powerfishLostTicks: 0.05
 	},
 	{
 		name: 'Monkfish',
@@ -404,7 +413,10 @@ const fishes: Fish[] = [
 		bankingTime: 40,
 		ticksPerRoll: 5,
 		skillReqs: { agility: 15, strength: 15 },
-		moonKeyHalfEligible: false
+		moonKeyHalfEligible: false,
+		canPowerfish: true,
+		powerfishTicks: 3,
+		powerfishLostTicks: 0.05
 	}
 ];
 

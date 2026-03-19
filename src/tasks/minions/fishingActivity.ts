@@ -111,6 +111,9 @@ export const fishingTask: MinionTask = {
 		const { itemTransactionResult, message: xpMessage } = updateResult;
 
 		let message = `${user}, ${user.minionName} finished fishing ${result.totalCatches} ${fish.name}. `;
+		if (powerfish) {
+			message += '\n**Since you were powerfishing, you dropped all of those fish on the ground!**\n';
+		}
 
 		const bonusXpEntries = Object.entries(result.bonusXpPerHour ?? {}).filter(([, value]) => value);
 		const perHourSegments = [`${result.xpPerHour}/Hr`];

@@ -115,6 +115,7 @@ function determineFishingTime({
 	let currentInv = 0;
 	let blessingExtra = 0;
 	let flakeExtra = 0;
+	const boosts: string[] = [];
 
 	const fishCount = fish.subfishes!.length;
 	const catches = new Array<number>(fishCount).fill(0);
@@ -165,20 +166,20 @@ function determineFishingTime({
 	let lostTicks = fish.lostTicks!;
 	let bankingTime = fish.bankingTime ?? 0;
 
-	if (fish.name === 'Barbarian fishing') {
-		if (isPowerfishing) {
-			ticksPerRoll = 3;
-			lostTicks = 0.06;
+	if (isPowerfishing) {
+		if (fish.canPowerfish) {
+			ticksPerRoll = fish.powerfishTicks!;
+			lostTicks = fish.powerfishLostTicks!;
+		} else {
+			boosts.push('\n\n**This fish is not optimized for powerfishing. You will only save banking time.**');
 		}
+		bankingTime = 0;
+	}
+
+	if (fish.name === 'Barbarian fishing' && !isPowerfishing) {
 		if (gearBank.hasEquippedOrInBank(['Fishing cape', 'Fishing cape (t)', 'Max cape'])) {
 			bankingTime = 20;
 		}
-	} else if (fish.name === 'Trout/Salmon' && isPowerfishing) {
-		ticksPerRoll = 3;
-		lostTicks = 0.06;
-	} else if (fish.name === 'Tuna/Swordfish' && isPowerfishing) {
-		ticksPerRoll = 2;
-		lostTicks = 0.05;
 	}
 
 	const totalRequired = quantity;
@@ -281,7 +282,8 @@ function determineFishingTime({
 		baitUsed,
 		blessingExtra,
 		flakeExtra,
-		extraCatchRolls
+		extraCatchRolls,
+		boosts
 	};
 }
 
@@ -396,9 +398,13 @@ export function calcFishingTripStart({
 	}
 
 	let maxTrip = maxTripLength;
-	if (!isPowerfishing && hasFishBarrel && fish.name !== 'Minnow') {
-		maxTrip += Time.Minute * 9;
-		boosts.push('+9 minutes for Fish barrel');
+	if (hasFishBarrel && fish.name !== 'Minnow') {
+		if (!isPowerfishing) {
+			maxTrip += Time.Minute * 9;
+			boosts.push('+9 minutes for Fish barrel');
+		} else {
+			boosts.push("Fish barrel won't help you while powerfishing!");
+		}
 	}
 
 	const tripTicks = maxTrip / (Time.Second * 0.6);
@@ -433,24 +439,35 @@ export function calcFishingTripStart({
 	}
 
 	let sharkLuresToConsume = 0;
-	const { catches, loot, ticksElapsed, flakesUsed, baitUsed, blessingExtra, flakeExtra, extraCatchRolls } =
-		determineFishingTime({
-			quantity,
-			tripTicks,
-			isPowerfishing,
-			isUsingSpiritFlakes,
-			fish,
-			gearBank,
-			invSlots,
-			blessingChance,
-			flakesAvailable,
-			harpoonBoost,
-			hasWildyEliteDiary,
-			initialBait,
-			useBarbarianCutEat,
-			rng: rngProvider,
-			sharkLureMultiplier
-		});
+	const {
+		catches,
+		loot,
+		ticksElapsed,
+		flakesUsed,
+		baitUsed,
+		blessingExtra,
+		flakeExtra,
+		extraCatchRolls,
+		boosts: extraBoosts
+	} = determineFishingTime({
+		quantity,
+		tripTicks,
+		isPowerfishing,
+		isUsingSpiritFlakes,
+		fish,
+		gearBank,
+		invSlots,
+		blessingChance,
+		flakesAvailable,
+		harpoonBoost,
+		hasWildyEliteDiary,
+		initialBait,
+		useBarbarianCutEat,
+		rng: rngProvider,
+		sharkLureMultiplier
+	});
+
+	boosts.push(...extraBoosts);
 
 	const totalCaught = catches.reduce((total, val) => total + val, 0);
 	if (appliedSharkLureQuantity > 0) {
