@@ -1,4 +1,3 @@
-import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
@@ -27,11 +26,12 @@ export const trawlerTask: MinionTask = {
 			loot.add(_loot);
 		}
 
-		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
-		if (xpBonusPercent > 0) {
-			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
-			totalXP += bonusXP;
-		}
+		const { percent: xpBonusPercent, totalXP: totalXPWithAngler } = Fishing.util.calcAnglerBonusXP({
+			gearBank: user.gearBank,
+			xp: totalXP,
+			roundingMethod: 'ceil'
+		});
+		totalXP = totalXPWithAngler;
 
 		let str = `${user}, ${
 			user.minionName

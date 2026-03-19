@@ -6,6 +6,7 @@ import { xp_gains_skill_enum } from '@/prisma/main.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitFieldData, globalConfig } from '@/lib/constants.js';
+import { spiritAnglerOutfit } from '@/lib/data/CollectionsExport.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
@@ -212,6 +213,30 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const fishingPreset = new Bank()
+	.add('Fish sack barrel')
+	.add('Fish barrel')
+	.add("Rada's blessing 4")
+	.add('Shark lure', MAX_INT_JAVA)
+	.add('Feather', MAX_INT_JAVA)
+	.add('Fishing bait', MAX_INT_JAVA)
+	.add('Raw karambwanji', MAX_INT_JAVA)
+	.add('Fishing bait', MAX_INT_JAVA)
+	.add('Sandworms', MAX_INT_JAVA)
+	.add('Spirit flakes', MAX_INT_JAVA)
+	.add('Crystal shard', MAX_INT_JAVA)
+	.add('Pearl fly fishing rod')
+	.add('Pearl fishing rod')
+	.add('Fly fishing rod')
+	.add('Fishing rod')
+	.add('Oily fishing rod')
+	.add('Crystal harpoon')
+	.add('Infernal harpoon')
+	.add('Dark fishing bait', MAX_INT_JAVA);
+for (const anglerPiece of spiritAnglerOutfit) {
+	fishingPreset.add(anglerPiece);
+}
+
 const runePreset = new Bank()
 	.add('Air rune', MAX_INT_JAVA)
 	.add('Mind rune', MAX_INT_JAVA)
@@ -235,6 +260,7 @@ const runePreset = new Bank()
 	.add('Steam rune', MAX_INT_JAVA);
 
 const spawnPresets = [
+	['fishing', fishingPreset],
 	['openables', openablesBank],
 	['random', new Bank()],
 	['equippables', equippablesBank],
