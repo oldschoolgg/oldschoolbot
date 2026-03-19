@@ -63,7 +63,9 @@ export const fishCommand = defineCommand({
 		}
 	],
 	run: async ({ options, user, channelId }) => {
-		const spot = Fishing.Fishes.find(fish => stringSearch(fish.name, options.name));
+		const spot = Fishing.Fishes.find(
+			fish => stringSearch(fish.name, options.name) || fish.alias?.includes(options.name.toLowerCase())
+		);
 		if (!spot) {
 			return 'Thats not a valid spot you can fish at.';
 		}
