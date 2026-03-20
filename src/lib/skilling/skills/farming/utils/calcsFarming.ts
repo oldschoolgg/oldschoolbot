@@ -27,16 +27,28 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 		}
 	}
 
-	if (user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		switch (plant.seedType) {
-			case 'allotment':
+	const hasChildrenOfTheSun = user.user.finished_quest_ids?.includes(QuestID.ChildrenOfTheSun) ?? false;
+
+	switch (plant.seedType) {
+		case 'allotment': {
+			if (hasChildrenOfTheSun) {
 				numOfPatches += 2;
-				break;
-			case 'herb':
-			case 'flower':
-				numOfPatches += 1;
-				break;
+			}
+			break;
 		}
+		case 'flower':
+		case 'herb':
+		case 'tree':
+		case 'fruit_tree':
+		case 'hardwood':
+		case 'belladonna':
+		case 'calquat':
+			if (hasChildrenOfTheSun) {
+				numOfPatches += 1;
+			}
+			break;
+		default:
+			break;
 	}
 
 	return [numOfPatches];

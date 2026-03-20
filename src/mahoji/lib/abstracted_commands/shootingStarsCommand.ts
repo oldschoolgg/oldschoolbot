@@ -235,7 +235,7 @@ export async function shootingStarsCommand({
 		}
 
 		// Roll for pet
-		if (s.petChance && rng.roll((s.petChance - skills.mining * 25) / newQuantity)) {
+		if (s.petChance && rng.roll(Math.round(Math.min(s.petChance - skills.mining * 25) / newQuantity))) {
 			loot.add('Rock golem');
 		}
 		if (duration >= (await user.calcMaxTripLength('Mining'))) {

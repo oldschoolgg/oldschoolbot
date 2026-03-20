@@ -254,6 +254,7 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	7774, // Reward token
 	7775, // Reward token
 	7776, // Reward token,
+	30970, // Humphrey Dumphrey
 	31181,
 	31184,
 	31187,

@@ -88,6 +88,11 @@ export const Eatables: readonly Eatable[] = [
 		healAmount: 11
 	},
 	{
+		name: 'Rainbow fish',
+		id: itemID('Rainbow fish'),
+		healAmount: 11
+	},
+	{
 		name: 'Cake',
 		id: itemID('Cake'),
 		healAmount: 12

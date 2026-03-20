@@ -109,6 +109,7 @@ import { GiantSpider } from './g-m/GiantSpider.js';
 import { Gnome } from './g-m/Gnome.js';
 import { Goat } from './g-m/Goat.js';
 import { Goblin } from './g-m/Goblin.js';
+import { Gorak } from './g-m/Gorak.js';
 import { GreaterDemon } from './g-m/GreaterDemon.js';
 import { GreaterNechryael } from './g-m/GreaterNechryael.js';
 import { GreenDragon } from './g-m/GreenDragon.js';
@@ -514,6 +515,7 @@ export const allLowMonsters: Record<string, SimpleMonster> = {
 	FremennikCitizen,
 	Gnome,
 	Goat,
+	Gorak,
 	MaleHamMember,
 	FemaleHamMember,
 	Hero,
