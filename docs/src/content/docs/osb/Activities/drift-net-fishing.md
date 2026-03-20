@@ -5,7 +5,7 @@ title: "Drift Net Fishing"
 Drift net fishing is a hybrid [[fishing]] + [[hunter]] activity.
 
 Start with:
-[[/activities driftnet_fishing minutes\:X]]
+[[/activities drift_net_fishing minutes\:X]]
 
 Optional:
 - `no_stams:true` to skip stamina use (and lose that boost)

@@ -67,6 +67,7 @@ These wiki components call the minion API (for example Combat Achievements and F
 1. Run the wiki + local API together:
    - `pnpm wiki:testbot`
    - This starts `docs` + `@oldschoolgg/robochimp` and auto-sets `PUBLIC_MINION_API_URL=http://localhost:3002`.
+   - Note: if your env already has `ROBOCHIMP_DATABASE_URL` + `DATABASE_URL`/`OSB_DATABASE_URL`, this script will auto-switch to real Postgres mode.
 2. If you want your real local testbot data (recommended for ID lookups), use Postgres mode:
    - Ensure `.env` has `DATABASE_URL` and `ROBOCHIMP_DATABASE_URL`.
    - Ensure both schemas are pushed:

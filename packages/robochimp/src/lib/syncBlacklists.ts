@@ -16,6 +16,10 @@ export async function syncBlacklists(): Promise<void> {
 			await redis.sadd(RedisKeys.BlacklistedGuilds, ...a.guild.map(b => b.id.toString()));
 		}
 	} catch (err) {
-		console.warn('Skipping blacklist Redis sync (likely no local Redis):', err);
+		if (process.env.NODE_ENV !== 'production') {
+			console.warn('Skipping blacklist Redis sync (likely no local Redis):', err);
+			return;
+		}
+		throw err;
 	}
 }
