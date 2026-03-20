@@ -13,10 +13,12 @@ export async function unchargeGloriesCommand(
 	exchange: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const amountHas = userBank.amount('Amulet of glory(6)');
+	const amountHas6 = userBank.amount('Amulet of glory(6)');
+	const amountHas4 = userBank.amount('Amulet of glory(4)');
+	const amountHas = amountHas4 + amountHas6;
 
 	if (quantity !== undefined && quantity > amountHas) {
-		return `You don't have enough ${quantity}x Amulet of glory(6).`;
+		return `You don't have enough ${quantity}x Amulet of glory's.`;
 	}
 
 	if (exchange) {
@@ -26,15 +28,24 @@ export async function unchargeGloriesCommand(
 
 		const quantityToConvert = quantity ?? amountHas;
 		if (quantityToConvert === 0) {
-			return "You don't have any Amulet of glory(6) to instantly uncharge.";
+			return "You don't have any Amulet of glory's to instantly uncharge.";
 		}
 		const gpCost = quantityToConvert * gloryInstantExchangePrice;
 		if (user.GP < gpCost) {
-			return `You need ${gpCost.toLocaleString()} GP to instantly uncharge ${quantityToConvert}x Amulet of glory(6).`;
+			return `You need ${gpCost.toLocaleString()} GP to instantly uncharge ${quantityToConvert}x Amulet of glory's.`;
 		}
 
+		const itemsToRemove = new Bank();
+		if (quantityToConvert <= amountHas6) {
+			itemsToRemove.add('Amulet of glory(6)', quantityToConvert);
+		} else {
+			itemsToRemove.add('Amulet of glory(6)', amountHas6);
+			itemsToRemove.add('Amulet of glory(4)', quantityToConvert - amountHas6);
+		}
+		itemsToRemove.add('Coins', gpCost);
+
 		await user.transactItems({
-			itemsToRemove: new Bank().add('Amulet of glory(6)', quantityToConvert).add('Coins', gpCost),
+			itemsToRemove,
 			itemsToAdd: new Bank().add('Amulet of glory', quantityToConvert)
 		});
 		return `You instantly uncharged ${quantityToConvert}x Amulet of glory(6), via GE, at a cost of ${gpCost.toLocaleString()} GP, and received ${quantityToConvert}x Amulet of glory.`;
@@ -60,11 +71,18 @@ export async function unchargeGloriesCommand(
 		)}.`;
 	}
 
-	if (userBank.amount('Amulet of glory(6)') < quantity) {
-		return `You don't have enough ${quantity}x Amulet of glory(6).`;
+	if (amountHas < quantity) {
+		return `You don't have enough ${quantity}x Amulet of glory's.`;
+	}
+	const itemsToRemove = new Bank();
+	if (quantity <= amountHas6) {
+		itemsToRemove.add('Amulet of glory(6)', quantity);
+	} else {
+		itemsToRemove.add('Amulet of glory(6)', amountHas6);
+		itemsToRemove.add('Amulet of glory(4)', quantity - amountHas6);
 	}
 
-	await user.removeItemsFromBank(new Bank().add('Amulet of glory(6)', quantity));
+	await user.removeItemsFromBank(itemsToRemove);
 
 	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
@@ -74,7 +92,7 @@ export async function unchargeGloriesCommand(
 		type: 'GloryUncharging'
 	});
 
-	return `${user.minionName} is now uncharging ${quantity}x Amulet of glory(6), it'll take around ${formatDuration(
+	return `${user.minionName} is now uncharging ${itemsToRemove}, it'll take around ${formatDuration(
 		duration
 	)} to finish. Removed ${quantity}x Amulet of glory(6) from your bank.`;
 }
