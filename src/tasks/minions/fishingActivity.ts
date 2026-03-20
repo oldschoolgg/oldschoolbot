@@ -91,14 +91,14 @@ export const fishingTask: MinionTask = {
 			extraCatchRolls: extraCatchRollsArray
 		});
 
-		if (fish.moonKeyHalfEligible !== false) {
+		if (fish.moonKeyHalfCatchRate) {
 			const perCatchRate = fish.moonKeyHalfCatchRate;
 			rollForMoonKeyHalf({
 				rng,
 				user: user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun),
 				duration: data.duration,
 				loot: result.updateBank.itemLootBank,
-				quantity: perCatchRate ? result.totalCatchRolls : undefined,
+				quantity: result.totalCatchRolls,
 				perCatchRate
 			});
 		}

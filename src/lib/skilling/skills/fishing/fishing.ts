@@ -62,8 +62,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 528_000,
 		lostTicks: 0.1,
 		bankingTime: 30,
-		ticksPerRoll: 5,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 5
 	},
 	{
 		name: 'Karambwanji',
@@ -81,8 +80,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 443_697,
 		lostTicks: 0.01,
 		bankingTime: 0,
-		ticksPerRoll: 6,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 6
 	},
 	{
 		name: 'Mackerel/Cod/Bass',
@@ -115,8 +113,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 382_609,
 		lostTicks: 0.1,
 		bankingTime: 25,
-		ticksPerRoll: 6,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 6
 	},
 	{
 		name: 'Trout/Salmon',
@@ -165,7 +162,29 @@ const fishes: Fish[] = [
 		lostTicks: 0.1,
 		bankingTime: 30,
 		ticksPerRoll: 5,
-		moonKeyHalfEligible: false
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 4100 } // Unknown / estimated
+	},
+	{
+		name: 'Rainbow fish',
+		subfishes: [
+			{
+				id: itemID('Raw rainbow fish'),
+				level: 38,
+				xp: 80,
+				intercept: 0.002241,
+				slope: 0.003204
+			}
+		],
+		bait: itemID('Stripy feather'),
+		petChance: 137_739,
+		clueScrollChance: 137_739,
+		lostTicks: 0.1,
+		bankingTime: 30,
+		ticksPerRoll: 5,
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 750 }, // Unknown / estimated
+		powerfishTicks: 3,
+		powerfishLostTicks: 0.05,
+		canPowerfish: true
 	},
 	{
 		name: 'Tuna/Swordfish',
@@ -212,8 +231,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 257_770,
 		lostTicks: 0.1,
 		bankingTime: 40,
-		ticksPerRoll: 5,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 5
 	},
 	{
 		name: 'Lobster',
@@ -254,8 +272,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 138_583,
 		lostTicks: 0.13,
 		bankingTime: 20,
-		ticksPerRoll: 6,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 6
 	},
 	{
 		name: 'Karambwan',
@@ -274,8 +291,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 170_874,
 		lostTicks: 0.01,
 		bankingTime: 25,
-		ticksPerRoll: 4,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 4
 	},
 	{
 		name: 'Shark',
@@ -295,7 +311,10 @@ const fishes: Fish[] = [
 		lostTicks: 0.1,
 		bankingTime: 25,
 		ticksPerRoll: 5,
-		moonKeyHalfCatchRate: { numerator: 1, denominator: 580 }
+		moonKeyHalfCatchRate: { numerator: 1, denominator: 580 },
+		canPowerfish: true,
+		powerfishTicks: 2,
+		powerfishLostTicks: 0.05
 	},
 	{
 		name: 'Infernal eel',
@@ -313,8 +332,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 165_000,
 		lostTicks: 0.13,
 		bankingTime: 0,
-		ticksPerRoll: 5,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 5
 	},
 	{
 		name: 'Anglerfish',
@@ -334,8 +352,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 78_649,
 		lostTicks: 0.1,
 		bankingTime: 30,
-		ticksPerRoll: 5,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 5
 	},
 	{
 		name: 'Minnow',
@@ -354,8 +371,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 977_778,
 		lostTicks: 0.33,
 		bankingTime: 0,
-		ticksPerRoll: 2,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 2
 	},
 	{
 		name: 'Dark crab',
@@ -374,8 +390,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 149_434,
 		lostTicks: 0.1,
 		bankingTime: 0,
-		ticksPerRoll: 6,
-		moonKeyHalfEligible: false
+		ticksPerRoll: 6
 	},
 	{
 		name: 'Barbarian fishing',
@@ -413,7 +428,6 @@ const fishes: Fish[] = [
 		bankingTime: 40,
 		ticksPerRoll: 5,
 		skillReqs: { agility: 15, strength: 15 },
-		moonKeyHalfEligible: false,
 		canPowerfish: true,
 		powerfishTicks: 3,
 		powerfishLostTicks: 0.05
@@ -429,8 +443,7 @@ const camdozaalFishes: Fish[] = [
 		name: 'Raw guppy',
 		petChance: 257_770,
 		timePerFish: 5.5,
-		clueScrollChance: 257_770,
-		moonKeyHalfEligible: false
+		clueScrollChance: 257_770
 	},
 	{
 		level: 20,
@@ -439,8 +452,7 @@ const camdozaalFishes: Fish[] = [
 		name: 'Raw cavefish',
 		petChance: 257_770,
 		timePerFish: 5.5,
-		clueScrollChance: 257_770,
-		moonKeyHalfEligible: false
+		clueScrollChance: 257_770
 	},
 	{
 		level: 33,
@@ -449,8 +461,7 @@ const camdozaalFishes: Fish[] = [
 		name: 'Raw tetra',
 		petChance: 257_770,
 		timePerFish: 5.5,
-		clueScrollChance: 257_770,
-		moonKeyHalfEligible: false
+		clueScrollChance: 257_770
 	},
 	{
 		level: 46,
@@ -459,8 +470,7 @@ const camdozaalFishes: Fish[] = [
 		name: 'Raw catfish',
 		petChance: 257_770,
 		timePerFish: 5.5,
-		clueScrollChance: 257_770,
-		moonKeyHalfEligible: false
+		clueScrollChance: 257_770
 	}
 ];
 

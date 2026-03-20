@@ -1,6 +1,6 @@
 import { EmbedBuilder, userMention } from '@oldschoolgg/discord';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
+import { Bank, convertLVLtoXP, ItemGroups, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
 
 import { xp_gains_skill_enum } from '@/prisma/main.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
@@ -213,6 +213,7 @@ for (const food of Eatables.map(food => food.id)) {
 	foodPreset.addItem(food, 100_000);
 }
 
+const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 const fishingPreset = new Bank()
 	.add('Fish sack barrel')
 	.add('Fish barrel')
@@ -225,6 +226,7 @@ const fishingPreset = new Bank()
 	.add('Sandworms', MAX_INT_JAVA)
 	.add('Spirit flakes', MAX_INT_JAVA)
 	.add('Crystal shard', MAX_INT_JAVA)
+	.add('Stripy feather', MAX_INT_JAVA)
 	.add('Pearl fly fishing rod')
 	.add('Pearl fishing rod')
 	.add('Fly fishing rod')
@@ -233,7 +235,7 @@ const fishingPreset = new Bank()
 	.add('Crystal harpoon')
 	.add('Infernal harpoon')
 	.add('Dark fishing bait', MAX_INT_JAVA);
-for (const anglerPiece of spiritAnglerOutfit) {
+for (const anglerPiece of [...spiritAnglerOutfit, ...anglerOutfit]) {
 	fishingPreset.add(anglerPiece);
 }
 
