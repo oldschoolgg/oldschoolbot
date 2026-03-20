@@ -55,6 +55,7 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'DriftNet'
 		| 'WealthCharging'
 		| 'GloryCharging'
+		| 'GloryUncharging'
 		| 'AerialFishing'
 		| 'FishingTrawler'
 		| 'CamdozaalFishing'
