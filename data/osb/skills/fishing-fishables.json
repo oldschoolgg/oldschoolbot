@@ -16,8 +16,7 @@
 		"clue_scroll_chance": 78649,
 		"lost_ticks": 0.1,
 		"banking_time": 30,
-		"ticks_per_roll": 5,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 5
 	},
 	{
 		"name": "Barbarian fishing",
@@ -69,7 +68,9 @@
 			"agility": 15,
 			"strength": 15
 		},
-		"moon_key_half_eligible": false
+		"can_powerfish": true,
+		"powerfish_ticks": 3,
+		"powerfish_lost_ticks": 0.05
 	},
 	{
 		"name": "Cave eel",
@@ -86,8 +87,7 @@
 		"clue_scroll_chance": 257770,
 		"lost_ticks": 0.1,
 		"banking_time": 40,
-		"ticks_per_roll": 5,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 5
 	},
 	{
 		"name": "Dark crab",
@@ -105,8 +105,7 @@
 		"clue_scroll_chance": 149434,
 		"lost_ticks": 0.1,
 		"banking_time": 0,
-		"ticks_per_roll": 6,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 6
 	},
 	{
 		"name": "Infernal eel",
@@ -124,8 +123,7 @@
 		"clue_scroll_chance": 165000,
 		"lost_ticks": 0.13,
 		"banking_time": 0,
-		"ticks_per_roll": 5,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 5
 	},
 	{
 		"name": "Karambwan",
@@ -143,8 +141,7 @@
 		"clue_scroll_chance": 170874,
 		"lost_ticks": 0.01,
 		"banking_time": 25,
-		"ticks_per_roll": 4,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 4
 	},
 	{
 		"name": "Karambwanji",
@@ -162,8 +159,7 @@
 		"clue_scroll_chance": 443697,
 		"lost_ticks": 0.01,
 		"banking_time": 0,
-		"ticks_per_roll": 6,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 6
 	},
 	{
 		"name": "Lobster",
@@ -184,7 +180,10 @@
 		"moon_key_half_catch_rate": {
 			"numerator": 3,
 			"denominator": 5000
-		}
+		},
+		"can_powerfish": true,
+		"powerfish_ticks": 3,
+		"powerfish_lost_ticks": 0.05
 	},
 	{
 		"name": "Mackerel/Cod/Bass",
@@ -219,8 +218,7 @@
 		"clue_scroll_chance": 382609,
 		"lost_ticks": 0.1,
 		"banking_time": 25,
-		"ticks_per_roll": 6,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 6
 	},
 	{
 		"name": "Minnow",
@@ -238,8 +236,7 @@
 		"clue_scroll_chance": 977778,
 		"lost_ticks": 0.33,
 		"banking_time": 0,
-		"ticks_per_roll": 2,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 2
 	},
 	{
 		"name": "Monkfish",
@@ -257,8 +254,7 @@
 		"clue_scroll_chance": 138583,
 		"lost_ticks": 0.13,
 		"banking_time": 20,
-		"ticks_per_roll": 6,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 6
 	},
 	{
 		"name": "Pike",
@@ -277,7 +273,35 @@
 		"lost_ticks": 0.1,
 		"banking_time": 30,
 		"ticks_per_roll": 5,
-		"moon_key_half_eligible": false
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 4100
+		}
+	},
+	{
+		"name": "Rainbow fish",
+		"subfishes": [
+			{
+				"id": 10138,
+				"level": 38,
+				"xp": 80,
+				"intercept": 0.002241,
+				"slope": 0.003204
+			}
+		],
+		"bait": 10087,
+		"pet_chance": 137739,
+		"clue_scroll_chance": 137739,
+		"lost_ticks": 0.1,
+		"banking_time": 30,
+		"ticks_per_roll": 5,
+		"moon_key_half_catch_rate": {
+			"numerator": 1,
+			"denominator": 750
+		},
+		"powerfish_ticks": 3,
+		"powerfish_lost_ticks": 0.05,
+		"can_powerfish": true
 	},
 	{
 		"name": "Sardine/Herring",
@@ -302,8 +326,7 @@
 		"clue_scroll_chance": 528000,
 		"lost_ticks": 0.1,
 		"banking_time": 30,
-		"ticks_per_roll": 5,
-		"moon_key_half_eligible": false
+		"ticks_per_roll": 5
 	},
 	{
 		"name": "Shark",
@@ -328,10 +351,13 @@
 		"moon_key_half_catch_rate": {
 			"numerator": 1,
 			"denominator": 580
-		}
+		},
+		"can_powerfish": true,
+		"powerfish_ticks": 2,
+		"powerfish_lost_ticks": 0.05
 	},
 	{
-		"name": "Shrimps/Anchovies",
+		"name": "Shrimp/Anchovies",
 		"subfishes": [
 			{
 				"id": 317,
@@ -381,7 +407,10 @@
 		"moon_key_half_catch_rate": {
 			"numerator": 1,
 			"denominator": 4100
-		}
+		},
+		"can_powerfish": true,
+		"powerfish_ticks": 3,
+		"powerfish_lost_ticks": 0.05
 	},
 	{
 		"name": "Tuna/Swordfish",
@@ -413,6 +442,9 @@
 		"moon_key_half_catch_rate": {
 			"numerator": 3,
 			"denominator": 5000
-		}
+		},
+		"can_powerfish": true,
+		"powerfish_ticks": 2,
+		"powerfish_lost_ticks": 0.05
 	}
 ]
