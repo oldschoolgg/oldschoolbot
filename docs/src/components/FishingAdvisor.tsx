@@ -73,9 +73,9 @@ const ITEM_NAMES: Record<number, string> = {
 	21028: 'Dragon harpoon',
 	21031: 'Infernal harpoon'
 };
-const MAX_VIRTUAL_LEVEL = levelFromXP(200_000_000);
+const MAX_OSB_LEVEL = 99;
 
-function levelFromXP(xp: number): number {
+function levelFromXP(xp: number, maxLevel = MAX_OSB_LEVEL): number {
 	if (xp <= 0) return 1;
 	let points = 0;
 	let output = 1;
@@ -87,7 +87,7 @@ function levelFromXP(xp: number): number {
 		}
 		output = lvl + 1;
 	}
-	return Math.min(126, Math.max(1, output - 1));
+	return Math.min(maxLevel, Math.max(1, output));
 }
 
 function clamp01(num: number) {
@@ -389,10 +389,10 @@ function getFishingEstimates(data: MinionData | null): MethodEstimate[] {
 }
 
 function getTheoreticalBestFishingEstimate(): MethodEstimate | null {
-	const fishingLevel = MAX_VIRTUAL_LEVEL;
-	const agilityLevel = MAX_VIRTUAL_LEVEL;
-	const strengthLevel = MAX_VIRTUAL_LEVEL;
-	const hunterLevel = MAX_VIRTUAL_LEVEL;
+	const fishingLevel = MAX_OSB_LEVEL;
+	const agilityLevel = MAX_OSB_LEVEL;
+	const strengthLevel = MAX_OSB_LEVEL;
+	const hunterLevel = MAX_OSB_LEVEL;
 	const qp = 999;
 	const temporossKC = 100;
 	const hasAnglerOutfitEquippedOrInBank = true;
@@ -482,17 +482,17 @@ function getTheoreticalRequirementsForMethodName(methodName: string): number[] {
 function getTheoreticalSkillRequirementsForMethodName(methodName: string): Array<{ skill: string; target: number }> {
 	if (methodName === 'Aerial fishing') {
 		return [
-			{ skill: 'Fishing', target: MAX_VIRTUAL_LEVEL },
-			{ skill: 'Hunter', target: MAX_VIRTUAL_LEVEL }
+			{ skill: 'Fishing', target: MAX_OSB_LEVEL },
+			{ skill: 'Hunter', target: MAX_OSB_LEVEL }
 		];
 	}
 	if (methodName === 'Tempoross') {
-		return [{ skill: 'Fishing', target: MAX_VIRTUAL_LEVEL }];
+		return [{ skill: 'Fishing', target: MAX_OSB_LEVEL }];
 	}
 	const baseName = methodName.replace(' (Powerfish)', '');
 	const matchedFish = fishables.find(fish => fish.name === baseName);
-	if (!matchedFish) return [{ skill: 'Fishing', target: MAX_VIRTUAL_LEVEL }];
-	const reqs: Array<{ skill: string; target: number }> = [{ skill: 'Fishing', target: MAX_VIRTUAL_LEVEL }];
+	if (!matchedFish) return [{ skill: 'Fishing', target: MAX_OSB_LEVEL }];
+	const reqs: Array<{ skill: string; target: number }> = [{ skill: 'Fishing', target: MAX_OSB_LEVEL }];
 	if (matchedFish.skill_reqs?.agility) reqs.push({ skill: 'Agility', target: matchedFish.skill_reqs.agility });
 	if (matchedFish.skill_reqs?.strength) reqs.push({ skill: 'Strength', target: matchedFish.skill_reqs.strength });
 	return reqs;
@@ -618,6 +618,11 @@ export function FishingAdvisor() {
 
 			{data ? (
 				<>
+					{currentFishingLevel !== null ? (
+						<p>
+							Current Fishing level: <strong>{currentFishingLevel}</strong>
+						</p>
+					) : null}
 					{topMethod ? (
 						<p>
 							Best estimated Fishing XP/hr: <strong>{topMethod.name}</strong> (~
@@ -628,7 +633,7 @@ export function FishingAdvisor() {
 					)}
 					{theoreticalBestMethod ? (
 						<p>
-							Theoretical best possible in bot (max virtual stats + best setup):{' '}
+							Theoretical best possible in bot (99 stats + best setup):{' '}
 							<strong>{theoreticalBestMethod.name}</strong> (~
 							{Math.round(theoreticalBestMethod.xpPerHour).toLocaleString()}/hr)
 							{gapToTheoreticalBest !== null && currentVsTheoreticalPct !== null ? (
