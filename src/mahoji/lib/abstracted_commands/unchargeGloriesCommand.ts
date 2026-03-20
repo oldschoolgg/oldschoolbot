@@ -48,7 +48,8 @@ export async function unchargeGloriesCommand(
 			itemsToRemove,
 			itemsToAdd: new Bank().add('Amulet of glory', quantityToConvert)
 		});
-		return `You instantly uncharged ${quantityToConvert}x Amulet of glory(6), via GE, at a cost of ${gpCost.toLocaleString()} GP, and received ${quantityToConvert}x Amulet of glory.`;
+		itemsToRemove.set('Coins', 0);
+		return `You instantly uncharged ${itemsToRemove}, via GE, at a cost of ${gpCost.toLocaleString()} GP, and received ${quantityToConvert}x Amulet of glory.`;
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('GloryUncharging');
@@ -58,7 +59,7 @@ export async function unchargeGloriesCommand(
 		quantity = max;
 	}
 	if (quantity === 0) {
-		return "You don't have any Amulet of glory(6)'s to uncharge.";
+		return "You don't have any charged Amulet of glory's to uncharge.";
 	}
 
 	const duration = quantity * unchargeGloriesTime;
@@ -94,5 +95,5 @@ export async function unchargeGloriesCommand(
 
 	return `${user.minionName} is now uncharging ${itemsToRemove}, it'll take around ${formatDuration(
 		duration
-	)} to finish. Removed ${quantity}x Amulet of glory(6) from your bank.`;
+	)} to finish.`;
 }

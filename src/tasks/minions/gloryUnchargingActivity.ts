@@ -7,7 +7,7 @@ export const gloryUnchargingTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
 		const { quantity, channelId } = data;
 		const loot = new Bank().add('Amulet of glory', quantity);
-		const str = `${user}, ${user.minionName} finished uncharging ${quantity}x Amulet of glory(6).`;
+		const str = `${user}, ${user.minionName} finished uncharging ${quantity}x Amulet of glory's!.`;
 
 		await user.transactItems({
 			collectionLog: false,

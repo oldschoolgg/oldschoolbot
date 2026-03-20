@@ -30,7 +30,7 @@ export const gloryChargingTask: MinionTask = {
 		let str =
 			loot.length === 0
 				? `${user}, ${user.minionName} finished their glory charging trip, but died and lost all glories.`
-				: `${user}, ${user.minionName} finished charging ${amnt} Amulets of glory.`;
+				: `${user}, ${user.minionName} finished charging ${amnt} Amulets of glory(6).`;
 
 		if (loot.length !== 0 && deaths > 0) {
 			str += ` They died ${deaths}x times, causing the loss of ${gloriesInventorySize * deaths} glories.`;
