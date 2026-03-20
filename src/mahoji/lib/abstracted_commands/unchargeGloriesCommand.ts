@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 const unchargeGloriesTime = Time.Second * 2;
-const gloryInstantExchangePrice = 2000;
+const gloryInstantExchangePrice = 5000;
 
 export async function unchargeGloriesCommand(
 	user: MUser,
@@ -21,7 +21,7 @@ export async function unchargeGloriesCommand(
 
 	if (exchange) {
 		if (user.isIronman) {
-			return "You're an ironman, you can't use instant glory uncharging.";
+			return "You're an ironman, you can't use GE for instant glory uncharging.";
 		}
 
 		const quantityToConvert = quantity ?? amountHas;
@@ -37,7 +37,7 @@ export async function unchargeGloriesCommand(
 			itemsToRemove: new Bank().add('Amulet of glory(6)', quantityToConvert).add('Coins', gpCost),
 			itemsToAdd: new Bank().add('Amulet of glory', quantityToConvert)
 		});
-		return `You instantly uncharged ${quantityToConvert}x Amulet of glory(6), paying ${gpCost.toLocaleString()} GP and receiving ${quantityToConvert}x Amulet of glory.`;
+		return `You instantly uncharged ${quantityToConvert}x Amulet of glory(6), via GE, at a cost of ${gpCost.toLocaleString()} GP, and received ${quantityToConvert}x Amulet of glory.`;
 	}
 
 	const maxTripLength = await user.calcMaxTripLength('GloryUncharging');
@@ -47,7 +47,7 @@ export async function unchargeGloriesCommand(
 		quantity = max;
 	}
 	if (quantity === 0) {
-		return "You don't have any Amulet of glory(6) to uncharge.";
+		return "You don't have any Amulet of glory(6)'s to uncharge.";
 	}
 
 	const duration = quantity * unchargeGloriesTime;

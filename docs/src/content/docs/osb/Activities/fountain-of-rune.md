@@ -9,7 +9,7 @@ You can start this activity using [[/activities charge]].
 - Charging trips (glory/wealth): [[/activities charge item\:[item] quantity\:1]]
   - `quantity:1` means 1 inventory, or 26 items.
 - Glory uncharge trip (for eternal glory hunters/irons): [[/activities charge item\:Amulet of glory (6) (Uncharge Trip) quantity\:[amount]]]
-- Instant glory uncharge (mains only): [[/activities charge item\:Amulet of glory (6) (Instant, Costs 2,000 GP each) quantity\:[amount]]]
+- Instant glory uncharge (mains only): [[/activities charge item\:Amulet of glory (6) (Instant, Costs 5,000 GP each, basically simulating GE swapping) quantity\:[amount]]]
   - Costs 2,000 GP per glory and converts [[Amulet of glory(6)]] into [[Amulet of glory]].
 
 ## Charging Wealths

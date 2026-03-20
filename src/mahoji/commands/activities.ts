@@ -218,23 +218,23 @@ export const activitiesCommand = defineCommand({
 				{
 					type: 'String',
 					name: 'item',
-					description: 'The item/action you want to do',
+					description: 'The jewellery you want to charge or uncharage',
 					required: true,
 					choices: [
 						{
-							name: 'Amulet of glory',
+							name: 'Charge Amulet of glory',
 							value: 'glory'
 						},
 						{
-							name: 'Ring of wealth',
+							name: 'Charge Ring of wealth',
 							value: 'wealth'
 						},
 						{
-							name: 'Amulet of glory (6) (Uncharge Trip)',
+							name: "Uncharge Glory's manually in a trip",
 							value: 'glory_uncharge'
 						},
 						{
-							name: 'Amulet of glory (6) (Instant, Costs 2,000 GP each)',
+							name: "Uncharge Glory's (Instant via GE for 5000 gp/ea)",
 							value: 'glory_exchange'
 						}
 					]
