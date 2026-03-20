@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 
 import combatAchievements from '../../../data/osb/combat-achievements.json' with { type: 'json' };
+import { MINION_API_BASE } from '../config/api.js';
 import { toTitleCase } from '../docs-util.js';
 
 function TextTooltip({ text, tooltip }: { text: string; tooltip: string }) {
@@ -110,13 +111,26 @@ export function CombatAchievements() {
 						onClick={() => {
 							setIsLoading(true);
 							localStorage.setItem('userID', userID!);
-							fetch(`https://api.oldschool.gg/minion/${userID}`)
-								.then(response => response.json())
+							fetch(`${MINION_API_BASE}/minion/${userID}`)
+								.then(async response => {
+									const payload = await response.json().catch(() => null);
+									if (!response.ok || !payload || typeof payload !== 'object') {
+										const apiMessage =
+											payload && typeof payload === 'object' && 'message' in payload
+												? String((payload as { message?: string }).message)
+												: null;
+										throw new Error(apiMessage ?? `Lookup failed (${response.status}).`);
+									}
+									return payload;
+								})
 								.then(data => {
 									setData(data);
 									if (localStorage) {
 										localStorage.setItem(`minion.${userID}`, JSON.stringify(data));
 									}
+								})
+								.catch(() => {
+									setData(null);
 								})
 								.finally(() => setIsLoading(false));
 						}}

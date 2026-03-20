@@ -19,7 +19,17 @@ declare global {
 async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> {
 	const shouldUseRealPostgres = globalConfig.isProduction || process.env.USE_REAL_PG === '1';
 	if (shouldUseRealPostgres) {
-		return new PrismaPg({ connectionString: process.env[`${type.toUpperCase()}_DATABASE_URL`] });
+		const connectionString =
+			process.env[`${type.toUpperCase()}_DATABASE_URL`] ??
+			(type === 'robochimp' ? process.env.ROBOCHIMP_DATABASE_URL : process.env.DATABASE_URL);
+		if (!connectionString) {
+			throw new Error(
+				`Missing database URL for ${type}. Set ${type.toUpperCase()}_DATABASE_URL or ${
+					type === 'robochimp' ? 'ROBOCHIMP_DATABASE_URL' : 'DATABASE_URL'
+				}.`
+			);
+		}
+		return new PrismaPg({ connectionString });
 	}
 
 	if (!existsSync('./.db')) {

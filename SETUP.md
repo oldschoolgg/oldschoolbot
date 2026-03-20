@@ -60,6 +60,38 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 
 `pnpm spritesheet`: Run this to update the spritesheets.
 
+### Wiki testing (CA/Fishing lookups)
+
+These wiki components call the minion API (for example Combat Achievements and Fishing Advisor).
+
+1. Run the wiki + local API together:
+   - `pnpm wiki:testbot`
+   - This starts `docs` + `@oldschoolgg/robochimp` and auto-sets `PUBLIC_MINION_API_URL=http://localhost:3002`.
+2. If you want your real local testbot data (recommended for ID lookups), use Postgres mode:
+   - Ensure `.env` has `DATABASE_URL` and `ROBOCHIMP_DATABASE_URL`.
+   - Ensure both schemas are pushed:
+     - `npx prisma db push`
+     - `npx prisma db push --schema ./prisma/robochimp.prisma`
+   - Run: `pnpm wiki:testbot:pg`
+3. Open local wiki pages:
+   - `http://localhost:4321/osb/combat-achievements`
+   - `http://localhost:4321/osb/skills/fishing`
+4. Check the local minion API directly if needed:
+   - `curl "http://localhost:3002/minion/<DISCORD_ID>"`
+   - Expected:
+     - `200` + JSON = lookup should work in wiki
+     - `404` = that user has no public minion data in your current DB
+5. Important: `pnpm wiki:testbot` does **not** start the main bot process.
+   - If your user is missing in local DB, run `pnpm start` separately, use your testbot once (for example `/minion`), then retry the wiki lookup.
+
+Common issues:
+- `Failed to fetch` on the wiki page:
+  - Usually means API is down or wrong URL. Confirm `http://localhost:3002/minion/<DISCORD_ID>` works first.
+- `No public OSB minion data... (404)`:
+  - Your testbot user record is not in the DB currently used by robochimp.
+- Cloudflare / remote API errors:
+  - Use local API for development (`pnpm wiki:testbot` or `pnpm wiki:testbot:pg`) instead of relying on remote test API uptime.
+
 #### VSCode settings (Optional)
 
 1. In VSCode, press CTRL+SHIFT+P, search "Open User Settings JSON"

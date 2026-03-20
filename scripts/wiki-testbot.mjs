@@ -1,0 +1,89 @@
+import { spawn, spawnSync } from 'node:child_process';
+import path from 'node:path';
+import process from 'node:process';
+import { config as loadDotEnv } from 'dotenv';
+
+loadDotEnv({ path: path.resolve(process.cwd(), '.env') });
+
+const args = new Set(process.argv.slice(2));
+const port = process.env.HTTP_PORT ?? '3002';
+
+const env = {
+	...process.env,
+	HTTP_PORT: port,
+	API_URL: process.env.API_URL ?? `http://localhost:${port}`,
+	FRONTEND_URL: process.env.FRONTEND_URL ?? 'http://localhost:4321',
+	COOKIE_ORIGIN: process.env.COOKIE_ORIGIN ?? 'http://localhost:4321',
+	PATREON_TOKEN: process.env.PATREON_TOKEN ?? 'dev_patreon_token_12345',
+	GITHUB_TOKEN: process.env.GITHUB_TOKEN ?? 'dev_github_token_12345',
+	PATREON_CAMPAIGN_ID: process.env.PATREON_CAMPAIGN_ID ?? 'dev_campaign_12345',
+	BOT_TOKEN: process.env.BOT_TOKEN ?? 'dev_bot_token_12345',
+	APP_ID: process.env.APP_ID ?? process.env.CLIENT_ID ?? '123456789012345678',
+	PATREON_WEBHOOK_SECRET: process.env.PATREON_WEBHOOK_SECRET ?? 'dev_patreon_webhook_12345',
+	GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET ?? 'dev_github_webhook_12345',
+	PATRON_LOGS_WEBHOOK: process.env.PATRON_LOGS_WEBHOOK ?? 'https://example.com/webhook/test',
+	OAUTH_SECRET: process.env.OAUTH_SECRET ?? 'dev_oauth_secret_12345'
+};
+
+if (!env.OSB_DATABASE_URL && env.DATABASE_URL) env.OSB_DATABASE_URL = env.DATABASE_URL;
+if (!env.BSO_DATABASE_URL && env.DATABASE_URL) env.BSO_DATABASE_URL = env.DATABASE_URL;
+
+const hasRealPgURLs = Boolean(env.ROBOCHIMP_DATABASE_URL && env.OSB_DATABASE_URL);
+if (args.has('--real-pg') || hasRealPgURLs) {
+	env.USE_REAL_PG = '1';
+}
+
+if (process.platform === 'win32') {
+	spawnSync(
+		'powershell',
+		[
+			'-NoProfile',
+			'-Command',
+			`$p=(Get-NetTCPConnection -LocalPort ${port} -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -First 1); if ($p) { Stop-Process -Id $p -Force -ErrorAction SilentlyContinue }`
+		],
+		{ stdio: 'inherit' }
+	);
+}
+
+console.log(`[wiki:testbot] API port: ${port}`);
+console.log(`[wiki:testbot] Docs API: http://localhost:${port}`);
+console.log(`[wiki:testbot] Mode: ${env.USE_REAL_PG === '1' ? 'real-postgres' : 'pglite'}`);
+
+const robochimp = spawn('pnpm', ['--filter', '@oldschoolgg/robochimp', 'dev'], {
+	stdio: 'inherit',
+	shell: true,
+	env
+});
+
+const docs = spawn('pnpm', ['--filter', 'docs', 'dev'], {
+	stdio: 'inherit',
+	shell: true,
+	env: { ...env, PUBLIC_MINION_API_URL: `http://localhost:${port}` }
+});
+
+let shuttingDown = false;
+function shutdown() {
+	if (shuttingDown) return;
+	shuttingDown = true;
+	robochimp.kill();
+	docs.kill();
+}
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+
+robochimp.on('exit', code => {
+	if (!shuttingDown) {
+		console.error(`[wiki:testbot] robochimp exited (${code ?? 'null'})`);
+		shutdown();
+		process.exit(code ?? 1);
+	}
+});
+
+docs.on('exit', code => {
+	if (!shuttingDown) {
+		console.error(`[wiki:testbot] docs exited (${code ?? 'null'})`);
+		shutdown();
+		process.exit(code ?? 1);
+	}
+});

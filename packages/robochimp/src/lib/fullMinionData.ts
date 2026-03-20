@@ -24,6 +24,16 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 	}
 
 	const minigameData: Record<string, number> = {};
+	const equippedItemIDs = new Set<number>();
+
+	for (const setup of Object.values(gear)) {
+		if (!setup || typeof setup !== 'object') continue;
+		for (const slot of Object.values(setup as Record<string, unknown>)) {
+			if (!slot || typeof slot !== 'object') continue;
+			const item = (slot as { item?: unknown }).item;
+			if (typeof item === 'number') equippedItemIDs.add(item);
+		}
+	}
 
 	const rawMinigameScores = await (bot === 'osb'
 		? osbClient.minigame.findFirst({ where: { user_id: targetUserId } })
@@ -90,8 +100,17 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 		slayer_points: botUser.slayer_points,
 
 		gear: {
-			pet: botUser.minion_equippedPet
+			pet: botUser.minion_equippedPet,
+			melee: (gear.melee ?? null) as any,
+			mage: (gear.mage ?? null) as any,
+			range: (gear.range ?? null) as any,
+			misc: (gear.misc ?? null) as any,
+			skilling: (gear.skilling ?? null) as any,
+			wildy: (gear.wildy ?? null) as any,
+			fashion: (gear.fashion ?? null) as any,
+			other: (gear.other ?? null) as any
 		},
+		equipped_item_ids: [...equippedItemIDs],
 
 		config: {
 			bank_sort_method: botUser.bank_sort_method,
