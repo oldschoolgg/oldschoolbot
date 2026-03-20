@@ -163,6 +163,11 @@
 		"heal_amount": 16
 	},
 	{
+		"name": "Rainbow fish",
+		"id": 10136,
+		"heal_amount": 11
+	},
+	{
 		"name": "Salmon",
 		"id": 329,
 		"heal_amount": 9
