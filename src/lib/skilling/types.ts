@@ -96,7 +96,6 @@ export interface Fish {
 	name: string;
 	alias?: string[];
 	subfishes?: FishInSpot[];
-	moonKeyHalfEligible?: boolean;
 	moonKeyHalfCatchRate?: MoonKeyHalfCatchRate;
 	petChance?: number;
 	clueScrollChance?: number;
