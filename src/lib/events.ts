@@ -6,6 +6,7 @@ import { cryptoRng } from 'node-rng/crypto';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
+import { getOrFetchMember } from '@/lib/cache/fetchables.js';
 import { CHAT_PET_COOLDOWN_CACHE, lastRoboChimpSyncCache, RARE_ROLES_CACHE } from '@/lib/cache.js';
 import { CONSTANTS, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';

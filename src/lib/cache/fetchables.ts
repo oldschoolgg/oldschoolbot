@@ -2,13 +2,7 @@ import type { IMember } from '@oldschoolgg/schemas';
 
 import { globalConfig } from '@/lib/constants.js';
 
-export async function getOrFetchMemberDirect({
-	guildId,
-	userId
-}: {
-	guildId: string;
-	userId: string;
-}): Promise<IMember> {
+export async function getOrFetchMember({ guildId, userId }: { guildId: string; userId: string }): Promise<IMember> {
 	// If we cache this guild, lets check it
 	if (globalConfig.guildIdsToCache.includes(guildId)) {
 		const key = `${guildId}:${userId}`;
@@ -27,5 +21,3 @@ export async function getOrFetchMemberDirect({
 	await Cache.setMember(member);
 	return member;
 }
-
-global.getOrFetchMember = getOrFetchMemberDirect;

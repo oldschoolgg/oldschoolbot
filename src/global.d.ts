@@ -4,7 +4,6 @@ declare global {
 	export type MUserClass = import('./lib/user/MUser.js').MUserClass;
 	export type MUser = import('./lib/user/MUser.js').MUserClass;
 	export var mUserFetch: typeof import('./lib/user/MUser.js').srcMUserFetch;
-	export var getOrFetchMember: typeof import('./lib/cache/fetchables.js').getOrFetchMemberDirect;
 
 	export type RNGProvider = import('node-rng').RNGProvider;
 	export type MInteraction = import('@oldschoolgg/discord').MInteraction;
