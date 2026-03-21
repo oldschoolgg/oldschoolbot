@@ -278,8 +278,6 @@ const mentionCommands: MentionCommand[] = [
 ];
 
 export async function onMessage(msg: IMessage) {
-	console.log('in onMessage');
-	console.log(msg);
 	// biome-ignore lint/nursery/noFloatingPromises:-
 	rareRoles(msg);
 	// biome-ignore lint/nursery/noFloatingPromises:-
