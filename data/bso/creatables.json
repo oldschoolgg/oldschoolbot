@@ -1,6 +1,6 @@
 {
-	"hash": "01c914f8d55b8899b379185dbafd23a7",
-	"date": "2026-03-06T11:40:06.873Z",
+	"hash": "b4177dc531aaad5827479424e8cdf5c1",
+	"date": "2026-03-21T09:01:26.171Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -3297,6 +3297,16 @@
 			}
 		},
 		{
+			"name": "Dragonbane aegis (archaic)",
+			"items_created": {
+				"Dragonbane aegis (archaic)": 1
+			},
+			"items_required": {
+				"Archon's Ichor": 1,
+				"Dragonbane aegis": 1
+			}
+		},
+		{
 			"name": "Dragonbane glaive",
 			"items_created": {
 				"Dragonbane glaive": 1
@@ -4146,6 +4156,56 @@
 			"required_stats": {
 				"smithing": 120,
 				"crafting": 120
+			}
+		},
+		{
+			"name": "Empyrean greatgauntlets (archaic)",
+			"items_created": {
+				"Empyrean greatgauntlets (archaic)": 1
+			},
+			"items_required": {
+				"Archon's Ichor": 1,
+				"Empyrean greatgauntlets": 1
+			}
+		},
+		{
+			"name": "Empyrean greatgreaves (archaic)",
+			"items_created": {
+				"Empyrean greatgreaves (archaic)": 1
+			},
+			"items_required": {
+				"Archon's Ichor": 1,
+				"Empyrean greatgreaves": 1
+			}
+		},
+		{
+			"name": "Empyrean greathelm (archaic)",
+			"items_created": {
+				"Empyrean greathelm (archaic)": 1
+			},
+			"items_required": {
+				"Archon's Ichor": 1,
+				"Empyrean greathelm": 1
+			}
+		},
+		{
+			"name": "Empyrean greatplate (archaic)",
+			"items_created": {
+				"Empyrean greatplate (archaic)": 1
+			},
+			"items_required": {
+				"Archon's Ichor": 1,
+				"Empyrean greatplate": 1
+			}
+		},
+		{
+			"name": "Empyrean greatsabaton (archaic)",
+			"items_created": {
+				"Empyrean greatsabaton (archaic)": 1
+			},
+			"items_required": {
+				"Archon's Ichor": 1,
+				"Empyrean greatsabaton": 1
 			}
 		},
 		{
@@ -13488,6 +13548,16 @@
 				"Ignis ring(i)": 1
 			},
 			"required_stats": {}
+		},
+		{
+			"name": "Searcrown band (archaic)",
+			"items_created": {
+				"Searcrown band (archaic)": 1
+			},
+			"items_required": {
+				"Archon's Ichor": 1,
+				"Searcrown band": 1
+			}
 		},
 		{
 			"name": "Secateurs attachment",

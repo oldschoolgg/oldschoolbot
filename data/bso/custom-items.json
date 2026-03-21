@@ -2326,6 +2326,21 @@
 		}
 	},
 	{
+		"id": 75074,
+		"name": "Archon's Ichor",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73636,
 		"name": "Arctic bear pouch",
 		"tradeable": true,
@@ -12556,6 +12571,43 @@
 		"price": 50000000
 	},
 	{
+		"id": 75076,
+		"name": "Dragonbane aegis (archaic)",
+		"members": true,
+		"equipable": true,
+		"cost": 2000000,
+		"lowalch": 800000,
+		"highalch": 50000000,
+		"equipment": {
+			"attack_stab": 0,
+			"attack_slash": 0,
+			"attack_crush": 0,
+			"attack_magic": -65,
+			"attack_ranged": -45,
+			"defence_stab": 105,
+			"defence_slash": 105,
+			"defence_crush": 105,
+			"defence_magic": -25,
+			"defence_ranged": -15,
+			"melee_strength": 20,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "shield",
+			"requirements": {
+				"defence": 120,
+				"strength": 120
+			}
+		},
+		"tradeable": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		},
+		"price": 10000
+	},
+	{
 		"id": 75001,
 		"name": "Dragonbane glaive",
 		"members": true,
@@ -17819,6 +17871,44 @@
 		"price": 300000000
 	},
 	{
+		"id": 75081,
+		"name": "Empyrean greatgauntlets (archaic)",
+		"members": true,
+		"equipable": true,
+		"cost": 5000,
+		"lowalch": 2000,
+		"highalch": 200000000,
+		"equipment": {
+			"attack_stab": 25,
+			"attack_slash": 20,
+			"attack_crush": 15,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 30,
+			"defence_slash": 30,
+			"defence_crush": 30,
+			"defence_magic": 5,
+			"defence_ranged": 45,
+			"melee_strength": 6,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 1,
+			"slot": "hands",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"tradeable_on_ge": false,
+		"tradeable": false,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		},
+		"price": 10000
+	},
+	{
 		"id": 75067,
 		"name": "Empyrean greatgreaves",
 		"tradeable": false,
@@ -17853,6 +17943,45 @@
 		"price": 300000000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75079,
+		"name": "Empyrean greatgreaves (archaic)",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 64000,
+		"lowalch": 25600,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 45,
+			"attack_slash": 25,
+			"attack_crush": 25,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 155,
+			"defence_slash": 155,
+			"defence_crush": 155,
+			"defence_magic": 10,
+			"defence_ranged": 155,
+			"melee_strength": 8,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 2,
+			"slot": "legs",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
 		}
 	},
 	{
@@ -17893,6 +18022,45 @@
 		}
 	},
 	{
+		"id": 75077,
+		"name": "Empyrean greathelm (archaic)",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 35200,
+		"lowalch": 14080,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 40,
+			"attack_slash": 25,
+			"attack_crush": 25,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 85,
+			"defence_slash": 90,
+			"defence_crush": 90,
+			"defence_magic": 5,
+			"defence_ranged": 70,
+			"melee_strength": 8,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 2,
+			"slot": "head",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
+		}
+	},
+	{
 		"id": 75066,
 		"name": "Empyrean greatplate",
 		"tradeable": false,
@@ -17927,6 +18095,45 @@
 		"price": 300000000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75078,
+		"name": "Empyrean greatplate (archaic)",
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 65000,
+		"lowalch": 26000,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 55,
+			"attack_slash": 30,
+			"attack_crush": 30,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 190,
+			"defence_slash": 180,
+			"defence_crush": 180,
+			"defence_magic": 10,
+			"defence_ranged": 195,
+			"melee_strength": 10,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "body",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
 		}
 	},
 	{
@@ -17965,6 +18172,46 @@
 		"price": 300000000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75080,
+		"name": "Empyrean greatsabaton (archaic)",
+		"members": true,
+		"tradeable": false,
+		"tradeable_on_ge": false,
+		"noteable": true,
+		"equipable": true,
+		"cost": 12500,
+		"lowalch": 5000,
+		"highalch": 200000000,
+		"buy_limit": 70,
+		"equipment": {
+			"attack_stab": 25,
+			"attack_slash": 12,
+			"attack_crush": 15,
+			"attack_magic": -20,
+			"attack_ranged": -20,
+			"defence_stab": 35,
+			"defence_slash": 35,
+			"defence_crush": 35,
+			"defence_magic": 5,
+			"defence_ranged": 45,
+			"melee_strength": 6,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 1,
+			"slot": "feet",
+			"requirements": {
+				"strength": 120,
+				"defence": 120
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
 		}
 	},
 	{
@@ -40750,6 +40997,45 @@
 		"price": 25000000,
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
+		"id": 75075,
+		"name": "Searcrown band (archaic)",
+		"members": true,
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"equipable": true,
+		"cost": 10000,
+		"lowalch": 4000,
+		"highalch": 100000000,
+		"buy_limit": 8,
+		"equipment": {
+			"attack_stab": 15,
+			"attack_slash": 15,
+			"attack_crush": 15,
+			"attack_magic": 0,
+			"attack_ranged": 0,
+			"defence_stab": 45,
+			"defence_slash": 45,
+			"defence_crush": 45,
+			"defence_magic": 45,
+			"defence_ranged": 45,
+			"melee_strength": 25,
+			"ranged_strength": 0,
+			"magic_damage": 0,
+			"prayer": 3,
+			"slot": "ring",
+			"requirements": {
+				"defence": 115
+			}
+		},
+		"price": 10000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isSuperUntradeable": true,
+			"cantBeSacrificed": true
 		}
 	},
 	{

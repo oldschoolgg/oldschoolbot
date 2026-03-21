@@ -289,9 +289,9 @@ export async function archonCommand(channelId: string, user: MUser, archonEvent:
 	].join('\n');
 }
 
-const tier1Uniques = ['Prismare ring (u)'];
-const tier2Uniques = ['Prismare ring (u)'];
-const tier3Uniques = ['Prismare ring (u)'];
+const tier1Uniques = ['Prismare ring (u)', "Archon's ichor"];
+const tier2Uniques = ['Prismare ring (u)', "Archon's ichor"];
+const tier3Uniques = ['Prismare ring (u)', "Archon's ichor"];
 
 export function getUniquesForTier(tier: 1 | 2 | 3): string[] {
 	return { 1: tier1Uniques, 2: tier2Uniques, 3: tier3Uniques }[tier];
@@ -347,6 +347,14 @@ export function rollArchonLoot(
 		if (roll(400)) uniqueLoot.add('Prismare ring (u)');
 	} else {
 		if (roll(200)) uniqueLoot.add('Prismare ring (u)');
+	}
+
+	if (tier === 1) {
+		if (roll(2000)) uniqueLoot.add("Archon's ichor");
+	} else if (tier === 2) {
+		if (roll(1500)) uniqueLoot.add("Archon's ichor");
+	} else {
+		if (roll(1000)) uniqueLoot.add("Archon's ichor");
 	}
 
 	return { regularLoot, uniqueLoot };

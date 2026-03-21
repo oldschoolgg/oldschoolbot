@@ -15106,6 +15106,58 @@ setCustomItem(
 );
 
 setCustomItem(75_073, 'Buried firmament', 'Abyssal cape', {}, 10_000);
+setCustomItem(75_074, "Archon's Ichor", 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+
+//archaic dyes
+setCustomItem(
+	75_075,
+	'Searcrown band (archaic)',
+	'Searcrown band',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_076,
+	'Dragonbane aegis (archaic)',
+	'Dragonbane aegis',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_077,
+	'Empyrean greathelm (archaic)',
+	'Empyrean greathelm',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_078,
+	'Empyrean greatplate (archaic)',
+	'Empyrean greatplate',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_079,
+	'Empyrean greatgreaves (archaic)',
+	'Empyrean greatgreaves',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_080,
+	'Empyrean greatsabaton (archaic)',
+	'Empyrean greatsabaton',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_081,
+	'Empyrean greatgauntlets (archaic)',
+	'Empyrean greatgauntlets',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
 
 export const discontinuedItems = resolveItems([
 	'Turkey',
