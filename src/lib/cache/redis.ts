@@ -31,12 +31,14 @@ type RatelimitConfig = {
 	max: number;
 };
 
-type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command';
+type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command' | 'delay_member_fetch' | 'delay_guild_fetch';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
-	stats_command: { windowSeconds: 5, max: 1 }
+	stats_command: { windowSeconds: 5, max: 1 },
+	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
+	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
@@ -101,9 +103,14 @@ class CacheManager {
 	}
 
 	async getGuild(guildId: string): Promise<IGuild> {
-		const key = BotKeys.GuildSettings(guildId);
-		const cached = await this.getJson<IGuild>(key);
-		if (cached) return cached;
+		const delayCheck = await this.tryRatelimit(guildId, 'delay_guild_fetch');
+		if (!delayCheck.success) {
+			// If we're under time out, it could be assumed to be cached, but...
+			const cacheGuild = await this.getJson<IGuild>(BotKeys.GuildSettings(guildId));
+			if (cacheGuild) {
+				return cacheGuild;
+			}
+		}
 
 		const guildSettings = await this.getGuildSettings(guildId);
 		const guild: IGuild = guildSettings
@@ -239,18 +246,15 @@ class CacheManager {
 		await this.client.set(BotKeys.User.BadgedUsername(userId), badgedUsername);
 	}
 
-	private async doRatelimitCheck({
-		userId,
-		key: inputKey,
+	public async fullKeyRatelimitCheck({
+		key: fullKey,
 		windowSeconds,
 		max
 	}: {
-		userId: string;
 		key: string;
 		windowSeconds: number;
 		max: number;
 	}): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
-		const fullKey = BotKeys.User.Ratelimit(inputKey, userId);
 		const count = await this.client.incr(fullKey);
 
 		if (count === 1) await this.client.expire(fullKey, windowSeconds);
@@ -272,9 +276,9 @@ class CacheManager {
 		type: RatelimitType
 	): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
 		const cfg = RATELIMITS[type];
-		return this.doRatelimitCheck({
-			userId,
-			key: type,
+		const key = BotKeys.User.Ratelimit(type, userId);
+		return this.fullKeyRatelimitCheck({
+			key,
 			windowSeconds: cfg.windowSeconds,
 			max: cfg.max
 		});

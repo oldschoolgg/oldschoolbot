@@ -378,7 +378,7 @@ export const globalConfig = globalConfigSchema.parse({
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
 	supportServerID: isProduction ? '342983479501389826' : TEST_SERVER_ID,
-	guildIdsToCache: [guildId.OldschoolGG, guildId.TestServer, ...emojiServers]
+	guildIdsToCache: [guildId.OldschoolGG, guildId.TestServer, TEST_SERVER_ID, ...emojiServers]
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {

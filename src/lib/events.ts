@@ -41,7 +41,7 @@ const rareRolesSrc: [string, number, string][] = [
 async function rareRoles(msg: IMessage) {
 	if (!globalConfig.isProduction) return;
 
-	if (msg.guild_id !== globalConfig.supportServerID) {
+	if (msg.guild_id !== globalConfig.supportServerID || !msg.guild_id) {
 		return;
 	}
 
@@ -49,12 +49,14 @@ async function rareRoles(msg: IMessage) {
 	if (Date.now() - lastMessage < Time.Second * 13) return;
 	RARE_ROLES_CACHE.set(msg.author_id, Date.now());
 
-	if (!roll(10) || !msg.guild_id) return;
+	if (!roll(10)) return;
 
 	for (const [roleID, chance, name] of rareRolesSrc) {
-		if (roll(chance / 10)) {
-			const member = await Cache.getMainServerMember(msg.author_id);
+		if (roll(chance)) {
+			const member = await getOrFetchMember({ guildId: msg.guild_id, userId: msg.author_id });
 			if (!member || member.roles.includes(roleID)) continue;
+			member.roles.push(roleID);
+			await Cache.setMember(member);
 			await globalClient.giveRole(msg.guild_id, msg.author_id, roleID);
 			await globalClient.reactToMsg({
 				channelId: msg.channel_id,
@@ -275,6 +277,8 @@ const mentionCommands: MentionCommand[] = [
 ];
 
 export async function onMessage(msg: IMessage) {
+	console.log('in onMessage');
+	console.log(msg);
 	// biome-ignore lint/nursery/noFloatingPromises:-
 	rareRoles(msg);
 	// biome-ignore lint/nursery/noFloatingPromises:-

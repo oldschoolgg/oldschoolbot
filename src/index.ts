@@ -1,5 +1,6 @@
 import './lib/safeglobals.js';
 import './lib/user/MUser.js';
+import './lib/cache/fetchables.js';
 import './discord/client.js';
 import './lib/cache/redis.js';
 
