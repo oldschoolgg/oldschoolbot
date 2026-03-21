@@ -426,7 +426,7 @@ export async function shadesOfMortonCreatePyreLogsCommand(
 		return `Invalid log type. Valid options: ${validLogs}.`;
 	}
 
-	const pyreLog = shadesLogs.find(l => l.normalLog.id === recipe.pyreLogs.id);
+	const pyreLog = shadesLogs.find(l => l.normalLog.id === recipe.log.id);
 	if (!pyreLog) return 'Could not find pyre log data.';
 
 	const userStats = user.skillsAsLevels;
