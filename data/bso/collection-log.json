@@ -4659,7 +4659,7 @@
 				"items": ["Elder mimic casket"]
 			},
 			"archon": {
-				"items": ["Empyrean shards", "Prismare ring (u)"],
+				"items": ["Archon's Ichor", "Empyrean shards", "Prismare ring (u)"],
 				"is_activity": true
 			}
 		}
@@ -9905,6 +9905,7 @@
 			"dyed_items": {
 				"counts": false,
 				"items": [
+					"Dragonbane aegis (archaic)",
 					"Drygore longsword (3a)",
 					"Drygore longsword (blood)",
 					"Drygore longsword (ice)",
@@ -9928,6 +9929,11 @@
 					"Dwarven warhammer (shadow)",
 					"Dwarven warhammer (volcanic)",
 					"Dwarven warnana",
+					"Empyrean greatgauntlets (archaic)",
+					"Empyrean greatgreaves (archaic)",
+					"Empyrean greathelm (archaic)",
+					"Empyrean greatplate (archaic)",
+					"Empyrean greatsabaton (archaic)",
 					"Gorajan archer boots (Oceanic)",
 					"Gorajan archer boots (Sagittarian)",
 					"Gorajan archer gloves (Oceanic)",
@@ -9974,6 +9980,7 @@
 					"Offhand drygore rapier (blood)",
 					"Offhand drygore rapier (ice)",
 					"Offhand drygore rapier (shadow)",
+					"Searcrown band (archaic)",
 					"Twisted bow (3a)",
 					"Twisted bow (blood)",
 					"Twisted bow (ice)",
