@@ -115,7 +115,7 @@ export const shades: Shade[] = [
 export const shadesLogs: ShadesLog[] = [
 	{
 		oiledLog: Items.getOrThrow('Pyre logs'),
-		normalLog: Items.getOrThrow('Pyre logs'),
+		normalLog: Items.getOrThrow('Logs'),
 		fmLevel: 5,
 		fmXP: 50,
 		sacOilDoses: 2,
@@ -127,7 +127,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Oak pyre logs'),
-		normalLog: Items.getOrThrow('Oak pyre logs'),
+		normalLog: Items.getOrThrow('Oak logs'),
 		fmLevel: 20,
 		fmXP: 70,
 		sacOilDoses: 2,
@@ -139,7 +139,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Willow pyre logs'),
-		normalLog: Items.getOrThrow('Willow pyre logs'),
+		normalLog: Items.getOrThrow('Willow logs'),
 		fmLevel: 35,
 		fmXP: 100,
 		sacOilDoses: 3,
@@ -152,7 +152,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Teak pyre logs'),
-		normalLog: Items.getOrThrow('Teak pyre logs'),
+		normalLog: Items.getOrThrow('Teak logs'),
 		fmLevel: 40,
 		fmXP: 120,
 		sacOilDoses: 3,
@@ -165,7 +165,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Arctic pyre logs'),
-		normalLog: Items.getOrThrow('Arctic pyre logs'),
+		normalLog: Items.getOrThrow('Arctic logs'),
 		fmLevel: 47,
 		fmXP: 158,
 		sacOilDoses: 2,
@@ -178,7 +178,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Maple pyre logs'),
-		normalLog: Items.getOrThrow('Maple pyre logs'),
+		normalLog: Items.getOrThrow('Maple logs'),
 		fmLevel: 50,
 		fmXP: 175,
 		sacOilDoses: 3,
@@ -191,7 +191,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Mahogany pyre logs'),
-		normalLog: Items.getOrThrow('Mahogany pyre logs'),
+		normalLog: Items.getOrThrow('Mahogany logs'),
 		fmLevel: 55,
 		fmXP: 210,
 		sacOilDoses: 4,
@@ -204,7 +204,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Yew pyre logs'),
-		normalLog: Items.getOrThrow('Yew pyre logs'),
+		normalLog: Items.getOrThrow('Yew logs'),
 		fmLevel: 65,
 		fmXP: 255,
 		sacOilDoses: 4,
@@ -218,7 +218,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Magic pyre logs'),
-		normalLog: Items.getOrThrow('Magic pyre logs'),
+		normalLog: Items.getOrThrow('Magic logs'),
 		fmLevel: 80,
 		fmXP: 404.5,
 		sacOilDoses: 4,
@@ -233,7 +233,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Redwood pyre logs'),
-		normalLog: Items.getOrThrow('Redwood pyre logs'),
+		normalLog: Items.getOrThrow('Redwood logs'),
 		fmLevel: 95,
 		fmXP: 500,
 		sacOilDoses: 4,
@@ -254,18 +254,10 @@ const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin
 const CREMATIONS_PER_HOUR = 450;
 const TIME_PER_CREMATION = Time.Hour / CREMATIONS_PER_HOUR;
 
-export const pyreLogRecipes = [
-	{ log: Items.getOrThrow('Logs'), pyreLogs: Items.getOrThrow('Pyre logs') },
-	{ log: Items.getOrThrow('Oak logs'), pyreLogs: Items.getOrThrow('Oak pyre logs') },
-	{ log: Items.getOrThrow('Willow logs'), pyreLogs: Items.getOrThrow('Willow pyre logs') },
-	{ log: Items.getOrThrow('Teak logs'), pyreLogs: Items.getOrThrow('Teak pyre logs') },
-	{ log: Items.getOrThrow('Arctic pine logs'), pyreLogs: Items.getOrThrow('Arctic pyre logs') },
-	{ log: Items.getOrThrow('Maple logs'), pyreLogs: Items.getOrThrow('Maple pyre logs') },
-	{ log: Items.getOrThrow('Mahogany logs'), pyreLogs: Items.getOrThrow('Mahogany pyre logs') },
-	{ log: Items.getOrThrow('Yew logs'), pyreLogs: Items.getOrThrow('Yew pyre logs') },
-	{ log: Items.getOrThrow('Magic logs'), pyreLogs: Items.getOrThrow('Magic pyre logs') },
-	{ log: Items.getOrThrow('Redwood logs'), pyreLogs: Items.getOrThrow('Redwood pyre logs') }
-] as const;
+export const pyreLogRecipes = shadesLogs.map(entry => ({
+    log: entry.normalLog,
+    pyreLogs: entry.oiledLog
+}));
 
 const SACRED_OIL_PER_HOUR = 400;
 const TIME_PER_SACRED_OIL = Time.Hour / SACRED_OIL_PER_HOUR;

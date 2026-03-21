@@ -726,5 +726,8 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 		case 'Revenants': {
 			throw new Error(`Removed`);
 		}
+		default: {
+			throw new Error(`Unknown activity type: ${(currentTask as ActivityTaskData).type}`);
+		}
 	}
 }
