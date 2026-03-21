@@ -53,7 +53,7 @@ async function rareRoles(msg: IMessage) {
 	if (!roll(10)) return;
 
 	for (const [roleID, chance, name] of rareRolesSrc) {
-		if (roll(chance)) {
+		if (roll(Math.floor(chance / 10))) {
 			const member = await getOrFetchMember({ guildId: msg.guild_id, userId: msg.author_id });
 			if (!member || member.roles.includes(roleID)) continue;
 			member.roles.push(roleID);
