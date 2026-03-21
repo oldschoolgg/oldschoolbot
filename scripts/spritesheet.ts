@@ -5,6 +5,8 @@ import { Bank, EItem, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 import { type GenerateResult, SpriteSheetGenerator } from 'spritesheets';
 
+import JsonItemData from '../packages/oldschooljs/src/assets/item_data.json' with { type: 'json' };
+
 import '../src/lib/safeglobals.js';
 
 import { GearStat } from '@oldschoolgg/gear';
@@ -772,6 +774,15 @@ const generateJsonData = (result: GenerateResult) => {
 	return jsonData;
 };
 
+async function downloadFile(url: string, dest: string): Promise<{ status: false; msg: string } | { status: true }> {
+	const res = await fetch(url);
+	if (!res.ok) return { status: false, msg: `HTTP ${res.status}` };
+
+	const buffer = Buffer.from(await res.arrayBuffer());
+	await fs.writeFile(dest, buffer);
+	return { status: true };
+}
+
 async function makeSpritesheet(iconsDir: string, name: string, allItems?: number[]) {
 	const pngFiles = await getPngFiles(iconsDir);
 	stopwatch.check(`Found ${pngFiles.length} PNG files in ${iconsDir}`);
@@ -828,9 +839,47 @@ async function generateGenericSpritesheet(inputDir: string, outputName: string) 
 		throw new Error(`Failed to generate generic spritesheet: ${error}`);
 	}
 }
+async function exists(path: string) {
+	try {
+		await fs.access(path);
+		return true;
+	} catch {
+		return false;
+	}
+}
+const iconBaseUrl = 'https://cdn.oldschool.gg/icons/items/';
+// const iconBaseUrl = 'https://chisel.weirdgloop.org/static/img/osrs-sprite/'; // Fallback in case some are missing from magna's server.
+const allOsbIconDir = './tmp/icons';
 
 async function main() {
+	const allOsbItems: number[] = [];
+
+	for (const _id of Object.keys(JsonItemData)) {
+		allOsbItems.push(Number(_id));
+	}
+
+	let isMissing = false;
+	const missingItems: number[] = [];
 	if (BOT_TYPE !== 'OSB') throw new Error('This script is only for OSB.');
+	// TODO: Get the icons for OSRS images that are unobtainable in OSB but are in BSO
+	stopwatch.check('Downloading missing files');
+	for (const item of itemsMustBeInSpritesheet) {
+		const imgName = `${allOsbIconDir}/${item}.png`;
+		if (!(await exists(imgName))) {
+			console.log(`Missing ${imgName}. Downloading...`);
+			const dlResult = await downloadFile(`${iconBaseUrl}${item}.png`, imgName);
+			if (!dlResult.status) {
+				isMissing = true;
+				missingItems.push(item);
+				console.log(`Error downloading ${iconBaseUrl}${item}.png ${dlResult.msg}`);
+			}
+		}
+	}
+
+	if (isMissing) {
+		console.log(JSON.stringify(missingItems));
+		throw `${missingItems.length} files did not exist on magna's server`;
+	}
 	stopwatch.check('Making OSB spritesheet');
 	await makeSpritesheet('./tmp/icons', 'items-spritesheet', itemsMustBeInSpritesheet).catch(err =>
 		console.error(`Failed to make OSB spritesheet: ${err.message}`)
