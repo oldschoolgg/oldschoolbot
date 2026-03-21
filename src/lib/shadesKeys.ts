@@ -1,6 +1,5 @@
 import { Bank, type Item, ItemGroups, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
-import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 
 const BronzeChest = new LootTable({ limit: 99 })
@@ -254,22 +253,20 @@ export function openShadeChest({
 	qty,
 	allItemsOwned,
 	rng,
-	user
+	hasEliteCA
 }: {
 	allItemsOwned: Bank;
 	item: Item;
 	qty: number;
 	rng: RNGProvider;
-	user: MUser;
+	hasEliteCA: boolean;
 }) {
 	const chest = chests.find(i => i.items.includes(item.id));
 	if (!chest) throw new Error(`No chest found for item ${item.name}.`);
 	const loot = new Bank();
 	const effectiveOwnedItems = allItemsOwned.clone();
 
-	const completedCAIds = new Set(user.user.completed_ca_task_ids);
-	const hasEliteCAs = CombatAchievements.elite.tasks.every(t => completedCAIds.has(t.id));
-	const eliteClueRate = hasEliteCAs ? ELITE_CLUE_RATE_WITH_CA : ELITE_CLUE_RATE;
+	const eliteClueRate = hasEliteCA ? ELITE_CLUE_RATE_WITH_CA : ELITE_CLUE_RATE;
 
 	for (let i = 0; i < qty; i++) {
 		const thisLoot = chest.table.roll();
@@ -309,7 +306,7 @@ for (const chest of chests) {
 					allItemsOwned: args.user.allItemsOwned,
 					qty: args.quantity,
 					rng: args.rng,
-					user: args.user
+					hasEliteCA: args.user.hasCompletedCATier('elite')
 				}),
 			allItems:
 				chest.name === 'Gold chest'

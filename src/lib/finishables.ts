@@ -51,7 +51,6 @@ interface KillArgs {
 	accumulatedLoot: Bank;
 	totalRuns: number;
 	rng: RNGProvider;
-	user?: MUser;
 }
 
 interface Finishable {
@@ -264,13 +263,18 @@ export const finishables: Finishable[] = [
 			'Bloody notes'
 		]),
 		aliases: ['shades of morton'],
-		kill: ({ accumulatedLoot, totalRuns, rng, user }) => {
+		kill: ({ accumulatedLoot, totalRuns, rng }) => {
 			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
 				const key = Items.getOrThrow(`${tier} key red`);
 				const lock = Items.getOrThrow(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
-				if (!user) throw new Error('User required for Shades of Morton');
-				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns, rng, user }).bank;
+				return openShadeChest({
+					item: key,
+					allItemsOwned: accumulatedLoot,
+					qty: totalRuns,
+					rng,
+					hasEliteCA: true
+				}).bank;
 			}
 			throw new Error('Not possible!');
 		}
