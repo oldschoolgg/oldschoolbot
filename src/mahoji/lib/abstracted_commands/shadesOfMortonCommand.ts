@@ -165,7 +165,7 @@ export const shadesLogs: ShadesLog[] = [
 	},
 	{
 		oiledLog: Items.getOrThrow('Arctic pyre logs'),
-		normalLog: Items.getOrThrow('Arctic logs'),
+		normalLog: Items.getOrThrow('Arctic pine logs'),
 		fmLevel: 47,
 		fmXP: 158,
 		sacOilDoses: 2,
@@ -255,8 +255,8 @@ const CREMATIONS_PER_HOUR = 450;
 const TIME_PER_CREMATION = Time.Hour / CREMATIONS_PER_HOUR;
 
 export const pyreLogRecipes = shadesLogs.map(entry => ({
-    log: entry.normalLog,
-    pyreLogs: entry.oiledLog
+	log: entry.normalLog,
+	pyreLogs: entry.oiledLog
 }));
 
 const SACRED_OIL_PER_HOUR = 400;
