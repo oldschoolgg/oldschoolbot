@@ -1,7 +1,11 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
+import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
+import type {
+	ShadesOfMortonOptions,
+	ShadesOfMortonPyreLogsOptions,
+	ShadesOfMortonSacredOilOptions
+} from '@/lib/types/minions.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
 
@@ -247,6 +251,65 @@ export const shadesLogs: ShadesLog[] = [
 
 const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin'];
 
+const CREMATIONS_PER_HOUR = 450;
+const TIME_PER_CREMATION = Time.Hour / CREMATIONS_PER_HOUR;
+
+export const pyreLogRecipes = shadesLogs.map(entry => ({
+	log: entry.normalLog,
+	pyreLogs: entry.oiledLog
+}));
+
+const SACRED_OIL_PER_HOUR = 400;
+const TIME_PER_SACRED_OIL = Time.Hour / SACRED_OIL_PER_HOUR;
+
+const PYRE_LOGS_PER_HOUR = 1400;
+const TIME_PER_PYRE_LOG = Time.Hour / PYRE_LOGS_PER_HOUR;
+
+export function buildShadeTable(shade: Shade): LootTable {
+	const table = new LootTable();
+
+	if (shade.lowMetalKeys) {
+		const subTable = new LootTable();
+		for (const key of shade.lowMetalKeys.items) subTable.add(key);
+		table.add(subTable, 1, Math.round(shade.lowMetalKeys.fraction * 1000));
+	}
+
+	if (shade.highMetalKeys) {
+		const subTable = new LootTable();
+		for (const key of shade.highMetalKeys.items) subTable.add(key);
+		table.add(subTable, 1, Math.round(shade.highMetalKeys.fraction * 1000));
+	}
+
+	const keyWeight = Math.round(((shade.lowMetalKeys?.fraction ?? 0) + (shade.highMetalKeys?.fraction ?? 0)) * 1000);
+	table.add('Coins', 1, 1000 - keyWeight);
+
+	return table;
+}
+
+function checkCremationRequirements(user: MUser, log: ShadesLog, shade: Shade): string | null {
+	const userStats = user.skillsAsLevels;
+
+	if (userStats.firemaking < log.fmLevel) {
+		return `You need ${log.fmLevel} Firemaking to use ${log.normalLog.name}.`;
+	}
+
+	const prayerLevels: Record<Remains, number> = {
+		Loar: 1,
+		Phrin: 1,
+		Riyl: 20,
+		Asyn: 40,
+		Fiyr: 60,
+		Urium: 70
+	};
+
+	const requiredPrayer = prayerLevels[shade.shadeName];
+	if (userStats.prayer < requiredPrayer) {
+		return `You need ${requiredPrayer} Prayer to cremate ${shade.shadeName} remains.`;
+	}
+
+	return null;
+}
+
 export async function shadesOfMortonStartCommand(user: MUser, channelId: string, logStr: string, shadeStr: string) {
 	const messages: string[] = [];
 	let totalTime = await user.calcMaxTripLength('ShadesOfMorton');
@@ -273,17 +336,21 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 	const shade = shades.find(i => i.shadeName === shadeStr);
 	if (!log || !shade) return 'Invalid item';
 
+	const reqError = checkCremationRequirements(user, log, shade);
+	if (reqError) return reqError;
+
 	const shadesOwned = userBank.amount(shade.item.id);
 	if (!shadesOwned) return `You don't own any ${shade.item.name}! Go kill some shades.`;
-
-	const timePerLog = Time.Minute;
-	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / timePerLog));
-	const duration = quantity * timePerLog;
 
 	const prayerXP = log.prayerXP[shade.shadeName];
 	if (!prayerXP) {
 		return `You can't use ${log.normalLog.name} with ${shade.item.name}.`;
 	}
+
+	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / TIME_PER_CREMATION));
+	const duration = quantity * TIME_PER_CREMATION;
+
+	if (quantity < 1) return 'You cannot do any cremations in that time.';
 
 	const cost = new Bank();
 	cost.add(log.normalLog.id, quantity);
@@ -304,11 +371,95 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 		shadeID: shade.shadeName
 	});
 
-	let str = `${
-		user.minionName
-	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
+	let str = `${user.minionName} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
 	if (messages.length > 0) {
 		str += `\n**Messages:** ${messages.join(', ')}`;
 	}
 	return str;
+}
+
+export async function shadesOfMortonSacredOilCommand(user: MUser, channelId: string) {
+	const oliveOilItem = Items.getOrThrow('Olive oil(4)');
+	const sacredOilItem = Items.getOrThrow('Sacred oil(4)');
+
+	const userStats = user.skillsAsLevels;
+	if (userStats.firemaking < 5) {
+		return "You need at least 5 Firemaking to create sacred oil at the Mort'ton temple.";
+	}
+
+	const oliveOilOwned = user.bank.amount(oliveOilItem.id);
+	if (oliveOilOwned === 0) return `You don't have any ${oliveOilItem.name} to upgrade!`;
+
+	const totalTime = await user.calcMaxTripLength('ShadesOfMortonSacredOil');
+	const quantity = Math.min(oliveOilOwned, Math.floor(totalTime / TIME_PER_SACRED_OIL));
+	if (quantity < 1) return 'You do not have enough time to create any sacred oil.';
+
+	const duration = quantity * TIME_PER_SACRED_OIL;
+	const cost = new Bank().add(oliveOilItem.id, quantity);
+
+	if (!user.owns(cost)) return `You don't own: ${cost}.`;
+	await user.removeItemsFromBank(cost);
+	await user.statsBankUpdate('shades_of_morton_cost_bank', cost);
+
+	await ActivityManager.startTrip<ShadesOfMortonSacredOilOptions>({
+		userID: user.id,
+		channelId,
+		quantity,
+		duration,
+		type: 'ShadesOfMortonSacredOil'
+	});
+
+	return `${user.minionName} is now off to the Mort'ton temple to upgrade ${quantity}x ${oliveOilItem.name} into ${sacredOilItem.name} - trip will take ${formatDuration(duration)}.`;
+}
+
+export async function shadesOfMortonCreatePyreLogsCommand(
+	user: MUser,
+	channelId: string,
+	logStr: string,
+	quantity?: number
+) {
+	const sacredOilItem = Items.getOrThrow('Sacred oil(4)');
+
+	const recipe = pyreLogRecipes.find(r => r.log.name.toLowerCase() === logStr.toLowerCase());
+	if (!recipe) {
+		const validLogs = pyreLogRecipes.map(r => r.log.name).join(', ');
+		return `Invalid log type. Valid options: ${validLogs}.`;
+	}
+
+	const pyreLog = shadesLogs.find(l => l.normalLog.id === recipe.pyreLogs.id);
+	if (!pyreLog) return 'Could not find pyre log data.';
+
+	const userStats = user.skillsAsLevels;
+	if (userStats.firemaking < pyreLog.fmLevel) {
+		return `You need ${pyreLog.fmLevel} Firemaking to create ${recipe.pyreLogs.name}.`;
+	}
+
+	const logsOwned = user.bank.amount(recipe.log.id);
+	const sacredOilOwned = user.bank.amount(sacredOilItem.id);
+
+	if (logsOwned === 0) return `You don't have any ${recipe.log.name}!`;
+	if (sacredOilOwned === 0) return `You don't have any ${sacredOilItem.name}!`;
+
+	const totalTime = await user.calcMaxTripLength('ShadesOfMortonPyreLogs');
+	const maxQuantity = Math.min(logsOwned, sacredOilOwned, Math.floor(totalTime / TIME_PER_PYRE_LOG));
+	const finalQuantity = quantity ? Math.min(quantity, maxQuantity) : maxQuantity;
+	if (finalQuantity < 1) return 'You do not have enough time or supplies to make any pyre logs.';
+
+	const duration = finalQuantity * TIME_PER_PYRE_LOG;
+	const cost = new Bank().add(recipe.log.id, finalQuantity).add(sacredOilItem.id, finalQuantity);
+
+	if (!user.owns(cost)) return `You don't own: ${cost}.`;
+	await user.removeItemsFromBank(cost);
+	await user.statsBankUpdate('shades_of_morton_cost_bank', cost);
+
+	await ActivityManager.startTrip<ShadesOfMortonPyreLogsOptions>({
+		userID: user.id,
+		channelId,
+		quantity: finalQuantity,
+		duration,
+		type: 'ShadesOfMortonPyreLogs',
+		logID: recipe.log.id
+	});
+
+	return `${user.minionName} is now off to apply sacred oil to ${finalQuantity}x ${recipe.log.name} - trip will take ${formatDuration(duration)}.`;
 }
