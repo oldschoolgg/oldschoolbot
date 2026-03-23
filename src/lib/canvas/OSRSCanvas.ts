@@ -17,7 +17,7 @@ import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
 import type { CanvasSpritesheet, SpriteData } from '@/lib/canvas/CanvasSpritesheet.js';
 import { type CanvasImage, drawImageWithOutline, getClippedRegion, type IBgSprite } from '@/lib/canvas/canvasUtil.js';
 import { type IconPackID, ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { BOT_TYPE } from '@/lib/constants.js';
+import { BitField, BOT_TYPE } from '@/lib/constants.js';
 
 const Fonts = {
 	Compact: '16px OSRSFontCompact',
@@ -365,7 +365,8 @@ export class OSRSCanvas {
 		quantity,
 		textColor,
 		glow,
-		user
+		user,
+		override_show_paints: show_paints
 	}: {
 		itemID: number;
 		x: number;
@@ -379,12 +380,19 @@ export class OSRSCanvas {
 			radius: number;
 			blur: number;
 		};
-		user: MUser | null | undefined;
+		user?: MUser | null | undefined;
+		override_show_paints?: boolean | undefined;
 	}) {
 		const itemIcon: Image | Canvas = await OSRSCanvas.getItemImage({ itemID, iconPackId });
 		const destX = Math.floor(x + (this.itemSize.width - itemIcon.width) / 2);
 		const destY = Math.floor(y + (this.itemSize.height - itemIcon.height) / 2);
-		const customImage = user ? await applyCustomItemEffects(user, itemID) : null;
+		let customImage: Image | null = null;
+
+		if (user && show_paints !== false) {
+			if (show_paints === true || !user.bitfield.includes(BitField.DisablePaints)) {
+				customImage = await applyCustomItemEffects(user, itemID);
+			}
+		}
 
 		const args = [
 			customImage ?? itemIcon,

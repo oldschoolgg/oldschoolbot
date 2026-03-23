@@ -194,7 +194,8 @@ export enum BitField {
 	DisableSizeMatters = 232,
 	DisabledTameImplingOpening = 233,
 	HasHalloweenWallkit = 234,
-	HasEarnedRiftGuardianFromStar = 235
+	HasEarnedRiftGuardianFromStar = 235,
+	DisablePaints = 236
 }
 
 interface BitFieldData {
@@ -460,6 +461,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Has Earned Rift Guardian From Star',
 		protected: false,
 		userConfigurable: false
+	},
+	[BitField.DisablePaints]: {
+		name: 'Disable item Paints',
+		protected: false,
+		userConfigurable: true
 	}
 } as const;
 

@@ -21,7 +21,7 @@ import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
-import type { FlagMap, Flags } from '@/lib/minions/types.js';
+import { type FlagMap, type Flags, OverrideStatus } from '@/lib/minions/types.js';
 import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
 import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 
@@ -352,6 +352,11 @@ class BankImageTask {
 				flags.has('forceAllPurple') ||
 				(flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.has(item.id));
 
+			let paintOverride: OverrideStatus = OverrideStatus.NoOverride;
+			if (flags.has('override_show_paints')) {
+				const flagVal = flags.get('override_show_paints');
+				paintOverride = flagVal ? OverrideStatus.ForceEnabled : OverrideStatus.ForceDisabled;
+			}
 			await c.drawItemIDSprite({
 				itemID: item.id,
 				x: xLoc,
@@ -359,7 +364,13 @@ class BankImageTask {
 				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined,
 				quantity,
 				textColor: isNewCLItem ? OSRSCanvas.COLORS.PURPLE : undefined,
-				user
+				user,
+				override_show_paints:
+					paintOverride === OverrideStatus.ForceEnabled
+						? true
+						: paintOverride === OverrideStatus.ForceDisabled
+							? false
+							: undefined
 			});
 
 			let bottomItemText: string | number | null = null;
