@@ -157,7 +157,24 @@ class CacheManager {
 	}
 
 	async getMember(guildId: string, userId: string) {
-		return this.getJson<IMember>(RedisKeys.Discord.Member(guildId, userId));
+		// If we cache this guild, lets check it
+		if (globalConfig.guildIdsToCache.includes(guildId)) {
+			const key = `${guildId}:${userId}`;
+			const delayCheck = await Cache.tryRatelimit(key, 'delay_member_fetch');
+			if (!delayCheck.success) {
+				// If we're under time out, it could be assumed to be cached, but...
+				const cacheMember = await this.getJson<IMember>(RedisKeys.Discord.Member(guildId, userId));
+				if (cacheMember) {
+					return cacheMember;
+				} else {
+					const member = await globalClient.fetchMember({ guildId, userId });
+					await Cache.setMember(member);
+					return member;
+				}
+			}
+		}
+		// We can fetch now
+		return await globalClient.fetchMember({ guildId, userId });
 	}
 
 	async getChannel(channelId: string): Promise<IChannel> {
