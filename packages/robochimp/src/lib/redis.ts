@@ -1,7 +1,7 @@
+import { MockedRedis } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
 
 import { globalConfig } from '@/constants.js';
-import { MockedRedis } from '@/lib/redis-mock.js';
 
 function makeRedis() {
 	if (globalConfig.isProduction) {
