@@ -535,7 +535,7 @@ const HigherTOAUniqueTable = new LootTable()
 	.add("Tumeken's shadow (uncharged)", 1, 2);
 
 function uniqueLootRoll(raidLevel: RaidLevel) {
-	const uniqueTable = raidLevel >= 305 ? HigherTOAUniqueTable : TOAUniqueTable
+	const uniqueTable = raidLevel >= 305 ? HigherTOAUniqueTable : TOAUniqueTable;
 	const [item] = uniqueTable.roll().items()[0];
 
 	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !roll(50)) {
@@ -1318,7 +1318,7 @@ const totalSpeedReductions =
 	speedReductionForGear +
 	speedReductionForKC +
 	primarySpecWeaponBoosts[0][1] +
-	sumArr(miscBoosts.map(i => i[3] ? i[1] : 0));
+	sumArr(miscBoosts.map(i => (i[3] ? i[1] : 0)));
 
 const baseTOADurations: Record<RaidLevel, number> = {
 	1: Time.Minute * 50,
