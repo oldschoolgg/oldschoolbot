@@ -175,6 +175,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Allow Public API Data Retrieval',
 		bit: BitField.AllowPublicAPIDataRetrieval
+	},
+	{
+		name: 'Disable Item Paints',
+		bit: BitField.DisablePaints
 	}
 ];
 

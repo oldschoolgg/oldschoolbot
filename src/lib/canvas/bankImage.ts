@@ -352,11 +352,22 @@ class BankImageTask {
 				flags.has('forceAllPurple') ||
 				(flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.has(item.id));
 
-			let paintOverride: OverrideStatus = OverrideStatus.NoOverride;
+			let paintOverride: boolean | undefined;
 			if (flags.has('override_show_paints')) {
 				const flagVal = flags.get('override_show_paints');
-				paintOverride = flagVal ? OverrideStatus.ForceEnabled : OverrideStatus.ForceDisabled;
+				switch (flagVal) {
+					case OverrideStatus.ForceDisabled:
+						paintOverride = false;
+						break;
+					case OverrideStatus.ForceEnabled:
+						paintOverride = true;
+						break;
+					case OverrideStatus.NoOverride:
+					default:
+						paintOverride = undefined;
+				}
 			}
+
 			await c.drawItemIDSprite({
 				itemID: item.id,
 				x: xLoc,
@@ -365,12 +376,7 @@ class BankImageTask {
 				quantity,
 				textColor: isNewCLItem ? OSRSCanvas.COLORS.PURPLE : undefined,
 				user,
-				override_show_paints:
-					paintOverride === OverrideStatus.ForceEnabled
-						? true
-						: paintOverride === OverrideStatus.ForceDisabled
-							? false
-							: undefined
+				override_show_paints: paintOverride
 			});
 
 			let bottomItemText: string | number | null = null;
