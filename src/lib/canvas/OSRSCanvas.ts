@@ -326,6 +326,8 @@ export class OSRSCanvas {
 			return ItemIconPacks[iconPackId].icons.get(itemID) as Image;
 		}
 
+		// Ensure Spritesheets are fully loaded first.
+		await CanvasModule.waitTillReady();
 		// Spritesheet icons
 		const itemSpriteData = OSRSCanvas.getItemSpriteData(itemID);
 		if (itemSpriteData) {

@@ -236,7 +236,7 @@ class BankImageTask {
 	public ready: boolean = false;
 
 	async init() {
-		await CanvasModule.ensureInit();
+		await CanvasModule.waitTillReady();
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
