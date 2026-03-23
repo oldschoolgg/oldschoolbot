@@ -137,7 +137,7 @@ export class MockedRedis {
 		this.purgeIfExpired(key);
 
 		const cur = this.store.get(key);
-		if (!cur || cur === '') return [];
+		if (!cur) return [];
 		return cur.split(',');
 	}
 
