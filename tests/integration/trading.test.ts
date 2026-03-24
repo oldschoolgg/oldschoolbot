@@ -4,11 +4,13 @@ import { Bank } from 'oldschooljs';
 import { chunk } from 'remeda';
 import { expect, test } from 'vitest';
 
+import itemIsTradeable from '../../src/lib/util/itemIsTradeable.js';
+import { parseBank } from '../../src/lib/util/parseStringBank.js';
 import { tradeCommand } from '../../src/mahoji/commands/trade.js';
 import { mockSnowflake } from '../test-utils/misc.js';
 import { mockInteraction } from '../test-utils/mockInteraction.js';
 import type { TestUser } from './util.js';
-import { createTestUser, mockClient } from './util.js';
+import { createTestUser, mockClient, mockUserOption } from './util.js';
 
 test('Trade consistency', async () => {
 	await mockClient();
@@ -101,4 +103,35 @@ test('Trade consistency', async () => {
 	).toBeGreaterThan(1);
 
 	await checkMatch();
+});
+
+test('Trade filter tt should include valid clue/casket items even if item.tradeable is false', async () => {
+	await mockClient();
+
+	const senderStartingBank = new Bank()
+		.add('Coins', 1_000_000)
+		.add('Clue scroll (easy)', 2)
+		.add('Reward casket (easy)', 3)
+		.add('Clue scroll (grandmaster)', 4);
+
+	const ttItems = parseBank({
+		inputBank: senderStartingBank,
+		filters: ['tt']
+	});
+
+	const nonDefaultTradeableTTItem = ttItems
+		.items()
+		.find(([item]) => !item.tradeable && itemIsTradeable(item.id, true));
+	expect(nonDefaultTradeableTTItem).toBeTruthy();
+
+	const sender = await createTestUser(senderStartingBank);
+	const recipient = await createTestUser(new Bank().add('Coins', 1_000_000));
+
+	await sender.runCommand(tradeCommand, { user: mockUserOption(recipient.id), filter: 'tt' });
+
+	await Promise.all([sender.sync(), recipient.sync()]);
+	const [targetItem, targetQty] = nonDefaultTradeableTTItem!;
+
+	expect(sender.bank.amount(targetItem.id)).toBe(0);
+	expect(recipient.bank.amount(targetItem.id)).toBe(targetQty);
 });
