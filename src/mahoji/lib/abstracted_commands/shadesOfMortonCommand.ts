@@ -6,6 +6,7 @@ import type {
 	ShadesOfMortonPyreLogsOptions,
 	ShadesOfMortonSacredOilOptions
 } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
 
