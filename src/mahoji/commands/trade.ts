@@ -75,7 +75,6 @@ export const tradeCommand = defineCommand({
 						inputBank: senderUser.bankWithGP,
 						inputStr: options.send,
 						maxSize: 70,
-						flags: { tradeables: 'tradeables' },
 						filters: [options.filter],
 						search: options.search,
 						noDuplicateItems: true
@@ -83,7 +82,6 @@ export const tradeCommand = defineCommand({
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
-			flags: { tradeables: 'tradeables' },
 			noDuplicateItems: true
 		}).filter(i => itemIsTradeable(i.id, true));
 
