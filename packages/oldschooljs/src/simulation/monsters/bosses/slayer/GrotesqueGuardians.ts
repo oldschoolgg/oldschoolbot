@@ -1,6 +1,11 @@
 import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
+const GrotesqueGuardiansSharkTable = new LootTable()
+	.add('Raw shark', 20, 1.5)
+	.add('Shark lure', 40, 1.5)
+	.add('Raw sea turtle', 20, 1);
+
 const NormalUniqueTable: LootTable = new LootTable()
 	/* Unique */
 	.oneIn(250, 'Granite maul')
@@ -34,25 +39,27 @@ const NormalUniqueTable: LootTable = new LootTable()
 	.add('Prayer potion(4)', [1, 2], 4)
 
 	/* Resources */
-	.add('Gold ore', [40, 75], 7)
+	.add('Gold ore', [40, 50], 7)
 	.add('Adamantite bar', [25, 40], 6)
-	.add('Coal', [180, 250], 6)
-	.add('Gold bar', [37, 50], 6)
+	.add('Gold bar', [35, 50], 6)
 	.add('Mithril bar', [35, 45], 6)
+	.add('Coal', [180, 250], 5)
 	.add('Runite ore', [3, 6], 4)
 	.add('Runite bar', [3, 5], 3)
+	.add(GrotesqueGuardiansSharkTable, 1, 4)
 
 	/* Other */
 	.add('Coins', [10_000, 20_000], 10)
 	.add('Chaos rune', [100, 150], 8)
 	.add('Coins', 25_000, 5)
 	.add('Crystal key', 1, 5)
-	.add('Chaos rune', [60, 100], 5)
-	.add('Dragon dart tip', [15, 25], 4)
+	.add('Death rune', [90, 130], 5)
+	.add('Dragon dart tip', [15, 25], 5)
 	.add('Diamond bolt tips', [100, 150], 3)
 	.add('Dragonstone bolt tips', [20, 40], 2)
-	.add('Onyx bolt tips', [5, 10], 2)
-	.add('Dragon arrowtips', [50, 150], 1);
+	.add('Onyx bolt tips', [10, 15], 2)
+	.add('Dragon arrowtips', [50, 150], 1)
+	.add('Soul rune', [20, 40], 1);
 
 const GrotesqueGuardiansTable: LootTable = new LootTable()
 	.every('Granite dust', [50, 100])
