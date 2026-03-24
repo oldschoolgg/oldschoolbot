@@ -26,6 +26,11 @@
 			"result_message": "You used your Mystic vigour prayer scroll, and unlocked the Mystic vigour prayer."
 		},
 		{
+			"item": "Rite of vile transference",
+			"bitfield": 48,
+			"result_message": "You used your Rite of vile transference."
+		},
+		{
 			"item": "Runescroll of bloodbark",
 			"bitfield": 25,
 			"result_message": "You used your Runescroll of bloodbark, and unlocked the ability to create Bloodbark armour."

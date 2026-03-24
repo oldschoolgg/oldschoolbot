@@ -157,7 +157,8 @@ export enum BitField {
 
 	HasDeadeyeScroll = 45,
 	HasMysticVigourScroll = 46,
-	AllowPublicAPIDataRetrieval = 47
+	AllowPublicAPIDataRetrieval = 47,
+	HasRiteOfVileTransference = 48
 }
 
 interface BitFieldData {
@@ -278,7 +279,12 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
-	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
+	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasRiteOfVileTransference]: {
+		name: 'Rite of vile transference Used',
+		protected: false,
+		userConfigurable: false
+	}
 } as const;
 
 export const BadgesEnum = {

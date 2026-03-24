@@ -2632,6 +2632,57 @@
 					"Warm gloves"
 				]
 			},
+			"yama": {
+				"items": [
+					"Barrel of demonic tallow (full)",
+					"Chasm teleport scroll",
+					"Dossier",
+					"Forgotten lockbox",
+					"Oathplate chest",
+					"Oathplate helm",
+					"Oathplate legs",
+					"Oathplate shards",
+					"Rite of vile transference",
+					"Soulflame horn",
+					"Yami"
+				],
+				"all_items": [
+					"Aether catalyst",
+					"Barrel of demonic tallow (full)",
+					"Battlestaff",
+					"Blood rune",
+					"Chasm teleport scroll",
+					"Clue scroll (elite)",
+					"Diabolic worms",
+					"Diamond",
+					"Dossier",
+					"Dragon platelegs",
+					"Dragon plateskirt",
+					"Emerald",
+					"Fire rune",
+					"Forgotten lockbox",
+					"Law rune",
+					"Oathplate chest",
+					"Oathplate helm",
+					"Oathplate legs",
+					"Oathplate shards",
+					"Onyx bolt tips",
+					"Pineapple pizza",
+					"Prayer potion(3)",
+					"Ruby",
+					"Rune chainbody",
+					"Rune platebody",
+					"Smoke rune",
+					"Soul rune",
+					"Soulflame horn",
+					"Super combat potion(1)",
+					"Super restore mix(2)",
+					"Wild pie",
+					"Wrath rune",
+					"Yami",
+					"Zamorak mix(2)"
+				]
+			},
 			"zalcano": {
 				"items": ["Crystal tool seed", "Smolcano", "Uncut onyx", "Zalcano shard"]
 			},
@@ -5106,6 +5157,7 @@
 					"Vet'ion jr.",
 					"Vorki",
 					"Wisp",
+					"Yami",
 					"Youngllef"
 				]
 			},
