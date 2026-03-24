@@ -36,7 +36,23 @@ async function farmingLootBoosts(
 		bonusPercentage += 100;
 		messages.push('100% for Farming master cape');
 	}
-	if (method === 'harvest' && user.hasEquippedOrInBank(['Arcane harvester']) && !plant.noArcaneHarvester) {
+	// Only apply Quantum transmuter, or Arcane harvester
+	let usingQuantumTransmuter = false;
+	if (method === 'harvest' && user.hasEquippedOrInBank(['Quantum transmuter']) && !plant.noArcaneHarvester) {
+		const boostRes = await inventionItemBoost({
+			user,
+			inventionID: InventionID.QuantumTransmuter,
+			duration: plant.level * Time.Second * quantity
+		});
+		if (boostRes.success) {
+			usingQuantumTransmuter = true;
+			bonusPercentage += inventionBoosts.quantumTransmuter.harvestBoostPercent;
+			messages.push(
+				`*Your plants leave this dimension via your Quantum transmuter, and should eventually come back to you ${inventionBoosts.quantumTransmuter.harvestBoostPercent}% heavier.* (${boostRes.messages})`
+			);
+		}
+	}
+	if (!usingQuantumTransmuter && method === 'harvest' && user.hasEquippedOrInBank(['Arcane harvester']) && !plant.noArcaneHarvester) {
 		const boostRes = await inventionItemBoost({
 			user,
 			inventionID: InventionID.ArcaneHarvester,

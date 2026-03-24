@@ -27,7 +27,8 @@ import {
 	treeBeardCL,
 	vasaMagusCL,
 	venatrixCL,
-	vladDrakanCL
+	vladDrakanCL,
+	enigmarCL
 } from '@/lib/bso/collection-log/main.js';
 import {
 	balthazarsBigBonanzaCL,
@@ -54,6 +55,7 @@ import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
 import { Naxxus, NaxxusLootTableFinishable } from '@/lib/bso/monsters/bosses/Naxxus.js';
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
+import { EnigmarLootTable } from '@/lib/bso/monsters/bosses/Enigmar.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
@@ -791,6 +793,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: VenatrixLootTable.allItems,
 				items: venatrixCL,
 				fmtProg: kcProg(BSOMonsters.Venatrix.id)
+			},
+			Enigmar: {
+				alias: ['enigmar', 'enigma'],
+				allItems: EnigmarLootTable.allItems,
+				items: enigmarCL,
+				fmtProg: kcProg(BSOMonsters.Enigmar.id)
 			},
 			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,
