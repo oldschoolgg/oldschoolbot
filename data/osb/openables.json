@@ -2198,6 +2198,12 @@
 		]
 	},
 	{
+		"name": "Olive oil pack",
+		"id": 12857,
+		"opened_item": "Olive oil pack",
+		"all_items": ["Olive oil(4)"]
+	},
+	{
 		"name": "Ore pack (Giant's Foundry)",
 		"id": 27019,
 		"opened_item": "Ore pack (Giant's Foundry)",

@@ -534,6 +534,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		output: FrozenCacheTable,
 		allItems: FrozenCacheTable.allItems
 	},
+	{
+		name: 'Olive oil pack',
+		id: itemID('Olive oil pack'),
+		openedItem: Items.getOrThrow('Olive oil pack'),
+		aliases: ['olive oil pack', 'olive oil'],
+		output: new LootTable().every('Olive oil(4)', 100),
+		allItems: resolveItems(['Olive oil(4)'])
+	},
 	...clueOpenables,
 	...osjsOpenables,
 	...shadeChestOpenables
