@@ -25,7 +25,12 @@ import { degradeItem } from '@/lib/degradeableItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { getToaKCs, mileStoneBaseDeathChances, type RaidLevel } from '@/lib/simulation/toaUtils.js';
+import {
+	didAllTOAMembersDieInRoom,
+	getToaKCs,
+	mileStoneBaseDeathChances,
+	type RaidLevel
+} from '@/lib/simulation/toaUtils.js';
 import { constructGearSetup } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
@@ -1496,7 +1501,7 @@ function createTOATeam({
 		let deathDuration: number | null = 0;
 		let wipedRoom: number | null = null;
 		for (const room of TOARooms) {
-			if (usersWithPointsAndDeaths.every(u => u.deaths.includes(room.id))) {
+			if (didAllTOAMembersDieInRoom(usersWithPointsAndDeaths, room.id)) {
 				wipedRoom = room.id;
 			}
 		}
@@ -1504,7 +1509,7 @@ function createTOATeam({
 		for (let i = 0; i < TOARooms.length; i++) {
 			const room = TOARooms[i];
 
-			if (usersWithPointsAndDeaths.every(member => member.deaths.includes(i))) {
+			if (didAllTOAMembersDieInRoom(usersWithPointsAndDeaths, room.id)) {
 				wipedRoom = room.id;
 				deathDuration += Math.floor(
 					calcPercentOfNum(

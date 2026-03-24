@@ -65,8 +65,11 @@ import { pyramidPlunderCommand } from '@/mahoji/lib/abstracted_commands/pyramidP
 import { roguesDenCommand } from '@/mahoji/lib/abstracted_commands/roguesDenCommand.js';
 import { sepulchreCommand } from '@/mahoji/lib/abstracted_commands/sepulchreCommand.js';
 import {
+	pyreLogRecipes,
 	shades,
 	shadesLogs,
+	shadesOfMortonCreatePyreLogsCommand,
+	shadesOfMortonSacredOilCommand,
 	shadesOfMortonStartCommand
 } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import {
@@ -1043,7 +1046,7 @@ export const minigamesCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'start',
-					description: 'Start a trip.',
+					description: 'Start a cremation trip.',
 					options: [
 						{
 							type: 'String',
@@ -1054,10 +1057,36 @@ export const minigamesCommand = defineCommand({
 						},
 						{
 							name: 'logs',
-							description: 'The logs you want to use.',
+							description: 'The pyre logs you want to use.',
 							type: 'String',
 							required: true,
 							choices: shadesLogs.map(i => ({ name: i.normalLog.name, value: i.normalLog.name }))
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'sacred_oil',
+					description: "Sanctify Olive oil(4) into Sacred oil(4) at the Mort'ton temple (400/hr)."
+				},
+				{
+					type: 'Subcommand',
+					name: 'create_pyre_logs',
+					description: 'Apply Sacred oil(4) to logs to make pyre logs (1400/hr, 20 FM xp each).',
+					options: [
+						{
+							type: 'String',
+							name: 'logs',
+							description: 'The logs you want to apply sacred oil to.',
+							required: true,
+							choices: pyreLogRecipes.map(r => ({ name: r.log.name, value: r.log.name }))
+						},
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'How many logs to oil.',
+							required: false,
+							min_value: 1
 						}
 					]
 				}
@@ -1387,6 +1416,17 @@ export const minigamesCommand = defineCommand({
 				channelId,
 				options.shades_of_morton.start.logs,
 				options.shades_of_morton.start.shade
+			);
+		}
+		if (options.shades_of_morton && 'sacred_oil' in options.shades_of_morton) {
+			return shadesOfMortonSacredOilCommand(user, channelId);
+		}
+		if (options.shades_of_morton?.create_pyre_logs) {
+			return shadesOfMortonCreatePyreLogsCommand(
+				user,
+				channelId,
+				options.shades_of_morton.create_pyre_logs.logs,
+				options.shades_of_morton.create_pyre_logs.quantity
 			);
 		}
 

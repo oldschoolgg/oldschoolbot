@@ -1,3 +1,13 @@
+type PipelineResult = [Error | null, unknown];
+
+type MockPipeline = {
+	set(key: string, value: string, exFlag?: 'EX', ttl?: number): MockPipeline;
+	del(key: string): MockPipeline;
+	sadd(key: string, ...members: string[]): MockPipeline;
+	srem(key: string, ...members: string[]): MockPipeline;
+	exec(): Promise<PipelineResult[]>;
+};
+
 export class MockedRedis {
 	private store = new Map<string, string>();
 	private counters = new Map<string, number>();
@@ -56,7 +66,7 @@ export class MockedRedis {
 		return 1;
 	}
 
-	async ttl(key: string): Promise<number> {
+	async ttlHelper(key: string): Promise<number> {
 		this.purgeIfExpired(key);
 
 		if (!this.store.has(key) && !this.counters.has(key)) return -2;
@@ -64,30 +74,21 @@ export class MockedRedis {
 		const expiresAt = this.expirations.get(key);
 		if (expiresAt === undefined) return -1;
 
+		// If things work right, then this shouldn't be needed:
 		const remainingMs = expiresAt - Date.now();
 		if (remainingMs <= 0) {
 			this.purgeIfExpired(key);
 			return -2;
 		}
-
+		return remainingMs - 1;
+	}
+	async ttl(key: string): Promise<number> {
+		const remainingMs = await this.ttlHelper(key);
 		return Math.ceil(remainingMs / 1000);
 	}
 
 	async pttl(key: string): Promise<number> {
-		this.purgeIfExpired(key);
-
-		if (!this.store.has(key) && !this.counters.has(key)) return -2;
-
-		const expiresAt = this.expirations.get(key);
-		if (expiresAt === undefined) return -1;
-
-		const remainingMs = expiresAt - Date.now();
-		if (remainingMs <= 0) {
-			this.purgeIfExpired(key);
-			return -2;
-		}
-
-		return remainingMs;
+		return await this.ttlHelper(key);
 	}
 
 	private purgeIfExpired(key: string): void {
@@ -136,51 +137,39 @@ export class MockedRedis {
 		this.purgeIfExpired(key);
 
 		const cur = this.store.get(key);
-		if (!cur || cur === '') return [];
+		if (!cur) return [];
 		return cur.split(',');
 	}
 
-	pipeline() {
-		const ops: Array<() => void> = [];
+	pipeline(): MockPipeline {
+		const ops: Array<() => Promise<unknown>> = [];
 		const self = this;
 
 		return {
-			set(key: string, value: string) {
-				ops.push(() => self.store.set(key, value));
+			set(key: string, value: string, exFlag?: 'EX', ttl?: number) {
+				ops.push(() => self.set(key, value, exFlag, ttl));
 				return this;
 			},
 			del(key: string) {
-				ops.push(() => {
-					self.store.delete(key);
-					self.counters.delete(key);
-					self.expirations.delete(key);
-				});
+				ops.push(() => self.del(key));
 				return this;
 			},
 			sadd(key: string, ...members: string[]) {
-				ops.push(() => {
-					self.purgeIfExpired(key);
-					const cur = self.store.get(key);
-					const s = new Set(cur ? cur.split(',') : []);
-					for (const m of members) s.add(m);
-					self.store.set(key, [...s].join(','));
-				});
+				ops.push(() => self.sadd(key, ...members));
 				return this;
 			},
 			srem(key: string, ...members: string[]) {
-				ops.push(() => {
-					self.purgeIfExpired(key);
-					const cur = self.store.get(key);
-					if (!cur) return;
-					const s = new Set(cur.split(','));
-					for (const m of members) s.delete(m);
-					self.store.set(key, [...s].join(','));
-				});
+				ops.push(() => self.srem(key, ...members));
 				return this;
 			},
-			exec() {
-				for (const op of ops) op();
-				return Promise.resolve([]);
+			async exec(): Promise<PipelineResult[]> {
+				const wrapped = ops.map(op =>
+					op()
+						.then(val => [null, val] as PipelineResult)
+						.catch(err => [err as Error, null] as PipelineResult)
+				);
+
+				return Promise.all(wrapped);
 			}
 		};
 	}

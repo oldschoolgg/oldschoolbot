@@ -72,6 +72,8 @@ import type {
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
+	ShadesOfMortonPyreLogsOptions,
+	ShadesOfMortonSacredOilOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SpecificQuestOptions,
@@ -682,6 +684,15 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
 				shade.shadeName
 			} remains with ${log.oiledLog.name}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'ShadesOfMortonSacredOil': {
+			const data = currentTask as ShadesOfMortonSacredOilOptions;
+			return `${name} is currently sanctifying ${data.quantity} vials of Sacred oil. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'ShadesOfMortonPyreLogs': {
+			const data = currentTask as ShadesOfMortonPyreLogsOptions;
+			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
+			return `${name} is currently creating ${data.quantity} ${log.oiledLog.name}${data.quantity > 1 ? 's' : ''} The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'TombsOfAmascut': {
 			const data = currentTask as TOAOptions;
