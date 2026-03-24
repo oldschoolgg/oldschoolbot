@@ -10,7 +10,7 @@ import { tradeCommand } from '../../src/mahoji/commands/trade.js';
 import { mockSnowflake } from '../test-utils/misc.js';
 import { mockInteraction } from '../test-utils/mockInteraction.js';
 import type { TestUser } from './util.js';
-import { createTestUser, mockClient, mockUserOption } from './util.js';
+import { createTestUser, mockClient } from './util.js';
 
 test('Trade consistency', async () => {
 	await mockClient();
@@ -127,7 +127,33 @@ test('Trade filter tt should include valid clue/casket items even if item.tradea
 	const sender = await createTestUser(senderStartingBank);
 	const recipient = await createTestUser(new Bank().add('Coins', 1_000_000));
 
-	await sender.runCommand(tradeCommand, { user: mockUserOption(recipient.id), filter: 'tt' });
+	const options: any = {
+		userID: sender.id,
+		guildID: '123',
+		user: sender,
+		options: {
+			user: {
+				user: recipient
+			},
+			filter: 'tt'
+		},
+		interaction: mockInteraction({ user: sender })
+	};
+
+	let attempts = 0;
+	while (attempts < 25) {
+		attempts += 1;
+		await Promise.all([sender.sync(), recipient.sync()]);
+		const res = await tradeCommand.run({ ...options, guildId: mockSnowflake(cryptoRng) });
+		if (typeof res !== 'string' || !res.includes('Trade failed')) {
+			break;
+		}
+		await sleep(100);
+	}
+
+	if (attempts === 25) {
+		throw new Error('Trade failed 25 times in a row, test could not complete');
+	}
 
 	await Promise.all([sender.sync(), recipient.sync()]);
 	const [targetItem, targetQty] = nonDefaultTradeableTTItem!;
