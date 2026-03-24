@@ -13,7 +13,11 @@ import {
 	harvestCommand
 } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { farmingContractCommand } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { titheFarmCommand, titheFarmShopCommand } from '@/mahoji/lib/abstracted_commands/titheFarmCommand.js';
+import {
+	titheFarmCommand,
+	titheFarmShopCommand,
+	titheFarmShopInfoCommand
+} from '@/mahoji/lib/abstracted_commands/titheFarmCommand.js';
 
 const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	AllFarm: 'All crops will be farmed with the highest available seed',
@@ -135,6 +139,19 @@ export const farmingCommand = defineCommand({
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
 					}
+				},
+				{
+					type: 'Integer',
+					name: 'quantity',
+					description: 'The quantity of this reward you want to buy.',
+					required: false,
+					min_value: 1
+				},
+				{
+					type: 'Boolean',
+					name: 'show_info',
+					description: 'Shows your Tithe Farm points and all reward costs.',
+					required: false
 				}
 			]
 		},
@@ -233,8 +250,16 @@ export const farmingCommand = defineCommand({
 			});
 		}
 		if (options.tithe_farm) {
+			if (options.tithe_farm.show_info) {
+				return titheFarmShopInfoCommand(user);
+			}
 			if (options.tithe_farm.buy_reward) {
-				return titheFarmShopCommand(interaction, user, options.tithe_farm.buy_reward);
+				return titheFarmShopCommand(
+					interaction,
+					user,
+					options.tithe_farm.buy_reward,
+					options.tithe_farm.quantity
+				);
 			}
 			return titheFarmCommand(user, channelId);
 		}
