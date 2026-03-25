@@ -332,7 +332,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 	const logsOwned = userBank.amount(logItem.id);
 	if (logsOwned === 0) return `You don't own any ${logItem.name}!`;
 
-	const log = shadesLogs.find(i => i.normalLog.id === logItem.id);
+	const log = shadesLogs.find(i => i.oiledLog.id === logItem.id);
 	const shade = shades.find(i => i.shadeName === shadeStr);
 	if (!log || !shade) return 'Invalid item';
 
@@ -344,7 +344,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 
 	const prayerXP = log.prayerXP[shade.shadeName];
 	if (!prayerXP) {
-		return `You can't use ${log.normalLog.name} with ${shade.item.name}.`;
+		return `You can't use ${log.oiledLog.name} with ${shade.item.name}.`;
 	}
 
 	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / TIME_PER_CREMATION));
@@ -353,7 +353,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 	if (quantity < 1) return 'You cannot do any cremations in that time.';
 
 	const cost = new Bank();
-	cost.add(log.normalLog.id, quantity);
+	cost.add(log.oiledLog.id, quantity);
 	cost.add(shade.item.id, quantity);
 	if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
