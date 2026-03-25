@@ -1060,7 +1060,7 @@ export const minigamesCommand = defineCommand({
 							description: 'The pyre logs you want to use.',
 							type: 'String',
 							required: true,
-							choices: shadesLogs.map(i => ({ name: i.normalLog.name, value: i.normalLog.name }))
+							choices: shadesLogs.map(i => ({ name: i.oiledLog.name, value: i.oiledLog.name }))
 						}
 					]
 				},
