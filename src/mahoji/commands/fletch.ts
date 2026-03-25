@@ -1,5 +1,4 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { itemID } from 'oldschooljs';
 
 import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
@@ -57,7 +56,7 @@ export const fletchCommand = defineCommand({
 		}
 
 		const userBank = user.bank;
-		const hasFletchingKnife = user.hasEquippedOrInBank(itemID('Fletching knife'));
+		const hasFletchingKnife = user.hasEquippedOrInBank('Fletching knife');
 
 		const boostableSourceItems = ['celastrus bark', 'logs', 'ent branch'];
 		const fletchableCanBeBoosted = fletchable.inputItems
