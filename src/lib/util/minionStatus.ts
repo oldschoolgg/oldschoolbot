@@ -15,7 +15,7 @@ import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import Crafting from '@/lib/skilling/skills/crafting/index.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import { findFishingSpotForStoredTrip } from '@/lib/skilling/skills/fishing/fishingRework.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
@@ -72,6 +72,8 @@ import type {
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
+	ShadesOfMortonPyreLogsOptions,
+	ShadesOfMortonSacredOilOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SpecificQuestOptions,
@@ -151,10 +153,10 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 
 		case 'Fishing': {
 			const data = currentTask as FishingActivityTaskOptions;
+			const fish = findFishingSpotForStoredTrip(data.fishID);
+			const fishName = fish?.name ?? data.fishID;
 
-			const fish = Fishing.Fishes.find(fish => fish.id === data.fishID);
-
-			return `${name} is currently fishing ${data.quantity}x ${fish?.name}. ${formattedDuration} Your ${
+			return `${name} is currently fishing ${data.quantity}x ${fishName}. ${formattedDuration} Your ${
 				Emoji.Fishing
 			} Fishing level is ${user.skillsAsLevels.fishing}`;
 		}
@@ -499,6 +501,11 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 		}
 
+		case 'GloryUncharging': {
+			const data = currentTask as ActivityTaskOptionsWithQuantity;
+			return `${name} is currently uncharging ${data.quantity}x Amulet of glory(6). ${formattedDuration}`;
+		}
+
 		case 'WealthCharging': {
 			const data = currentTask as ActivityTaskOptionsWithQuantity;
 			return `${name} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
@@ -679,6 +686,15 @@ export function minionStatus(user: MUser, currentTask: ActivityTaskData | null, 
 			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
 				shade.shadeName
 			} remains with ${log.oiledLog.name}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'ShadesOfMortonSacredOil': {
+			const data = currentTask as ShadesOfMortonSacredOilOptions;
+			return `${name} is currently sanctifying ${data.quantity} vials of Sacred oil. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'ShadesOfMortonPyreLogs': {
+			const data = currentTask as ShadesOfMortonPyreLogsOptions;
+			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
+			return `${name} is currently creating ${data.quantity} ${log.oiledLog.name}${data.quantity > 1 ? 's' : ''} The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'ValeTotems': {
 			const data = currentTask as ValeTotemsActivityTaskOptions;

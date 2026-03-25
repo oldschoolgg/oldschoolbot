@@ -9,11 +9,10 @@ import {
 	ZRole
 } from '@oldschoolgg/schemas';
 import { Time } from '@oldschoolgg/toolkit';
-import { isValidDiscordSnowflake, RedisKeys } from '@oldschoolgg/util';
+import { isValidDiscordSnowflake, MockedRedis, RedisKeys } from '@oldschoolgg/util';
 import { Redis } from 'ioredis';
 
 import type { Guild } from '@/prisma/main.js';
-import { MockedRedis } from '@/lib/cache/redis-mock.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { fetchUsernameAndCache } from '@/lib/util.js';
@@ -31,12 +30,14 @@ type RatelimitConfig = {
 	max: number;
 };
 
-type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command';
+type RatelimitType = 'random_events' | 'global_buttons' | 'stats_command' | 'delay_member_fetch' | 'delay_guild_fetch';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
 	random_events: { windowSeconds: TTL.Hour * 3, max: 5 },
-	stats_command: { windowSeconds: 5, max: 1 }
+	stats_command: { windowSeconds: 5, max: 1 },
+	delay_member_fetch: { windowSeconds: 5 * 60, max: 1 },
+	delay_guild_fetch: { windowSeconds: 5 * 60, max: 1 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
@@ -101,9 +102,14 @@ class CacheManager {
 	}
 
 	async getGuild(guildId: string): Promise<IGuild> {
-		const key = BotKeys.GuildSettings(guildId);
-		const cached = await this.getJson<IGuild>(key);
-		if (cached) return cached;
+		const delayCheck = await this.tryRatelimit(guildId, 'delay_guild_fetch');
+		if (!delayCheck.success) {
+			// If we're under time out, it could be assumed to be cached, but...
+			const cacheGuild = await this.getJson<IGuild>(BotKeys.GuildSettings(guildId));
+			if (cacheGuild) {
+				return cacheGuild;
+			}
+		}
 
 		const guildSettings = await this.getGuildSettings(guildId);
 		const guild: IGuild = guildSettings
@@ -150,7 +156,24 @@ class CacheManager {
 	}
 
 	async getMember(guildId: string, userId: string) {
-		return this.getJson<IMember>(RedisKeys.Discord.Member(guildId, userId));
+		// If we cache this guild, lets check it
+		if (globalConfig.guildIdsToCache.includes(guildId)) {
+			const key = `${guildId}:${userId}`;
+			const delayCheck = await Cache.tryRatelimit(key, 'delay_member_fetch');
+			if (!delayCheck.success) {
+				// If we're under time out, it could be assumed to be cached, but...
+				const cacheMember = await this.getJson<IMember>(RedisKeys.Discord.Member(guildId, userId));
+				if (cacheMember) {
+					return cacheMember;
+				} else {
+					const member = await globalClient.fetchMember({ guildId, userId });
+					await Cache.setMember(member);
+					return member;
+				}
+			}
+		}
+		// We can fetch now
+		return await globalClient.fetchMember({ guildId, userId });
 	}
 
 	async getChannel(channelId: string): Promise<IChannel> {
@@ -239,18 +262,15 @@ class CacheManager {
 		await this.client.set(BotKeys.User.BadgedUsername(userId), badgedUsername);
 	}
 
-	private async doRatelimitCheck({
-		userId,
-		key: inputKey,
+	public async fullKeyRatelimitCheck({
+		key: fullKey,
 		windowSeconds,
 		max
 	}: {
-		userId: string;
 		key: string;
 		windowSeconds: number;
 		max: number;
 	}): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
-		const fullKey = BotKeys.User.Ratelimit(inputKey, userId);
 		const count = await this.client.incr(fullKey);
 
 		if (count === 1) await this.client.expire(fullKey, windowSeconds);
@@ -272,9 +292,9 @@ class CacheManager {
 		type: RatelimitType
 	): Promise<{ success: true } | { success: false; timeRemainingMs: number }> {
 		const cfg = RATELIMITS[type];
-		return this.doRatelimitCheck({
-			userId,
-			key: type,
+		const key = BotKeys.User.Ratelimit(type, userId);
+		return this.fullKeyRatelimitCheck({
+			key,
 			windowSeconds: cfg.windowSeconds,
 			max: cfg.max
 		});

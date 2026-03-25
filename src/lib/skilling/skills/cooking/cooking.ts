@@ -221,6 +221,18 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Burnt monkfish')
 	},
 	{
+		level: 35,
+		xp: 110,
+		id: itemID('Rainbow fish'),
+		name: 'Rainbow fish',
+		alias: ['rainbow'],
+		inputCookables: { [itemID('Raw rainbow fish')]: 1 },
+		stopBurnAt: 64,
+		stopBurnAtCG: 64,
+		burnKourendBonus: [63, 60, 60, 60],
+		burntCookable: itemID('Burnt rainbow fish')
+	},
+	{
 		level: 65,
 		xp: 200,
 		id: itemID('Wine of zamorak'),
