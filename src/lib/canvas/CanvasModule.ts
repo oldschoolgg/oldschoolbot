@@ -7,8 +7,6 @@ import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 
 class CanvasModuleSingleton {
-	private readonly initPromise: Promise<void>;
-
 	private didInit = false;
 	public allItemIdsWithSprite = new Set<number>();
 
@@ -17,12 +15,9 @@ class CanvasModuleSingleton {
 		BSOItems: CanvasSpritesheet;
 	};
 
-	constructor() {
-		this.initPromise = this.init();
-	}
-
-	public async waitTillReady(): Promise<void> {
-		await this.initPromise;
+	public async ensureInit() {
+		if (this.didInit) return;
+		await this.init();
 	}
 
 	private async init() {

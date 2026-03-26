@@ -16,8 +16,8 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 	}
 	if (user.isIronman) return "You're an ironman and you cant play dice.";
 
-	if (amount > 50_000_000_000) {
-		return 'You can only dice up to 50b at a time!';
+	if (amount > 10_000_000_000) {
+		return 'You can only dice up to 10b at a time!';
 	}
 
 	if (amount < 1_000_000) {

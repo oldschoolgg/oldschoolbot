@@ -11,7 +11,6 @@ import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
 
-dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 type BotType = 'OSB' | 'BSO';
 export const BOT_TYPE: BotType = 'BSO' as 'BSO' | 'OSB';
 export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
@@ -25,8 +24,7 @@ const GENERAL_CHANNEL_ID =
 			? '792691343284764693'
 			: '1154056119019393035';
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
-const TEST_SERVER_ID = process.env.TESTING_SERVER ?? OLDSCHOOLGG_TESTING_SERVER_ID;
-const TEST_SERVER_LOG_CHANNEL = process.env.TESTING_LOG_CHANNEL ?? '1042760447830536212';
+const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
 export const DELETED_USER_ID = '111111111111111111';
 
 interface ChannelConfig {
@@ -207,9 +205,7 @@ export enum BitField {
 	DisableSizeMatters = 232,
 	DisabledTameImplingOpening = 233,
 	HasHalloweenWallkit = 234,
-	HasEarnedRiftGuardianFromStar = 235,
-	DisablePaints = 236,
-	DisableGlowEffects = 238
+	HasEarnedRiftGuardianFromStar = 235
 }
 
 export interface IBitFieldData {
@@ -501,16 +497,6 @@ export const BitFieldData: Record<BitField, IBitFieldData> = {
 		name: 'Has Earned Rift Guardian From Star',
 		protected: false,
 		userConfigurable: false
-	},
-	[BitField.DisablePaints]: {
-		name: 'Disable item Paints',
-		protected: false,
-		userConfigurable: true
-	},
-	[BitField.DisableGlowEffects]: {
-		name: 'Disable Glow Effects',
-		protected: false,
-		userConfigurable: true
 	}
 } as const;
 
@@ -584,6 +570,8 @@ const globalConfigSchema = z.object({
 	guildIdsToCache: z.array(z.string())
 });
 
+dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
+
 if (!process.env.BOT_TOKEN && !process.env.CI) {
 	throw new Error(
 		`You need to specify the BOT_TOKEN environment variable, copy your bot token from your config.ts and put it in the ".env" file like so:\n\nBOT_TOKEN=your_token_here`
@@ -592,7 +580,7 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 
 const guildId = {
 	OldschoolGG: '342983479501389826',
-	TestServer: TEST_SERVER_ID
+	TestServer: '940758552425955348'
 };
 
 const emojiServers = new Set([
@@ -612,8 +600,8 @@ export const globalConfig = globalConfigSchema.parse({
 	timeZone: process.env.TZ,
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
-	supportServerID: isProduction ? '342983479501389826' : TEST_SERVER_ID,
-	guildIdsToCache: [guildId.OldschoolGG, guildId.TestServer, TEST_SERVER_ID, ...emojiServers]
+	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID,
+	guildIdsToCache: [guildId.OldschoolGG, guildId.TestServer, ...emojiServers]
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
