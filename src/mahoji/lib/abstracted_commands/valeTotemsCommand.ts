@@ -333,6 +333,12 @@ export async function valeTotemsRummageCommand(
 	const userStats = await user.fetchStats();
 	const { loot: lootBank, msg } = claimValeOfferings(user, userStats, rewardCount);
 
+	await user.statsUpdate({
+		vale_research_points: {
+			increment: rewardCount
+		}
+	});
+
 	const { previousCL, itemsAdded } = await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: lootBank,
