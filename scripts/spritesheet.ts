@@ -847,8 +847,8 @@ async function exists(path: string) {
 		return false;
 	}
 }
-const iconBaseUrl = 'https://cdn.oldschool.gg/icons/items/';
-// const iconBaseUrl = 'https://chisel.weirdgloop.org/static/img/osrs-sprite/'; // Fallback in case some are missing from magna's server.
+//const iconBaseUrl = 'https://cdn.oldschool.gg/icons/items/';
+const iconBaseUrl = 'https://chisel.weirdgloop.org/static/img/osrs-sprite/'; // Fallback in case some are missing from magna's server.
 const allOsbIconDir = './tmp/icons';
 
 async function main() {
