@@ -1,10 +1,10 @@
-import {Bank, EItem, LootTable} from 'oldschooljs';
+import { MathRNG } from 'node-rng';
+import { Bank, EItem, LootTable } from 'oldschooljs';
 
-import {birdsNestID, eggNest, ringNests, treeSeedsNest} from '@/lib/simulation/birdsNest.js';
-import {MathRNG} from "node-rng";
-import {UserStats} from "@/prisma/clients/main/client.js";
-import {toggleBitfield} from "@/lib/util.js";
-import {BitField} from "@/lib/constants.js";
+import type { UserStats } from '@/prisma/clients/main/client.js';
+import { BitField } from '@/lib/constants.js';
+import { birdsNestID, eggNest, ringNests, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import { toggleBitfield } from '@/lib/util.js';
 
 const clueTiers: [string, number][] = [
 	['beginner', 256],
@@ -191,7 +191,12 @@ export function createCleanDirtyArrowsTable(fletchLvl: number): LootTable {
 	return selectedTable;
 }
 
-export function claimValeOfferings(user: MUser, userStats: UserStats, rewards: number, rng: RNGProvider = MathRNG): { loot: Bank, msg: string } {
+export function claimValeOfferings(
+	user: MUser,
+	userStats: UserStats,
+	rewards: number,
+	rng: RNGProvider = MathRNG
+): { loot: Bank; msg: string } {
 	const fletchingLvl = user.skillLevel('fletching');
 	const hasForestryKit = user.hasEquippedOrInBank(EItem.FORESTRY_KIT);
 
@@ -222,7 +227,7 @@ export function claimValeOfferings(user: MUser, userStats: UserStats, rewards: n
 		hasDirtyArrowtips
 			? `While rummaging through the offerings, ${user.minionName} discovered and cleaned ${dirtyArrowTipCount}x Dirty arrowtips.`
 			: ''
-	}`
+	}`;
 	return { loot, msg };
 }
 

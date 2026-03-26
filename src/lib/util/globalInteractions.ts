@@ -8,6 +8,7 @@ import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import { InteractionID } from '@/lib/InteractionID.js';
+import { toggleAutoRummage } from '@/lib/minions/data/valeTotems.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
@@ -16,7 +17,6 @@ import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayComman
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import {toggleAutoRummage} from "@/lib/minions/data/valeTotems.js";
 
 async function giveawayButtonHandler(user: MUser, customID: string, interaction: OSInteraction): CommandResponse {
 	const split = customID.split('_');

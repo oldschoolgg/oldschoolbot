@@ -3,9 +3,9 @@ import { Bank, EItem, type Item, Items, itemID } from 'oldschooljs';
 
 import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
+import { claimValeOfferings } from '@/lib/minions/data/valeTotems.js';
 import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
-import {claimValeOfferings} from "@/lib/minions/data/valeTotems.js";
-import {makeBankImage} from "@/lib/util/makeBankImage.js";
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 interface TotemDecoration {
 	log: Item;
@@ -304,31 +304,34 @@ export const ValeTotemsDecorations: TotemDecoration[] = groups.flatMap(({ log, i
 	}))
 );
 
-export async function valeTotemsRummageCommand(_interaction: MInteraction, user: MUser, quantity?: number, all?: boolean) {
+export async function valeTotemsRummageCommand(
+	_interaction: MInteraction,
+	user: MUser,
+	quantity?: number,
+	all?: boolean
+) {
 	if (!quantity && !all) {
 		return 'You must specify a quantity or use the "all" flag. Note: Quantity is number of offerings, must be an interval of 100';
 	}
-	let useQuantity = quantity;
 	let rewardCount: number = 0;
-	if (quantity && (quantity / 100 !== Math.floor(quantity / 100))) {
+	if (quantity && quantity / 100 !== Math.floor(quantity / 100)) {
 		return 'Please specify a quantity of Vale offerings to rummage in intervals of 100.';
 	} else if (quantity) {
-		useQuantity = quantity;
 		rewardCount = Math.floor(quantity / 100);
 	}
 
 	if (all) {
-		useQuantity = user.bank.amount('Vale offerings');
-		if (useQuantity < 100) {
+		quantity = user.bank.amount('Vale offerings');
+		if (quantity < 100) {
 			return 'You do not have enough Vale offerings to rummage with.';
 		}
-		useQuantity = Math.floor(useQuantity / 100) * 100;
-		rewardCount = Math.floor(useQuantity / 100);
+		quantity = Math.floor(quantity / 100) * 100;
+		rewardCount = Math.floor(quantity / 100);
 	}
 
-	const costBank = new Bank().add('Vale offerings', useQuantity);
+	const costBank = new Bank().add('Vale offerings', quantity);
 	const userStats = await user.fetchStats();
-	const {loot: lootBank, msg} = claimValeOfferings(user, userStats, rewardCount);
+	const { loot: lootBank, msg } = claimValeOfferings(user, userStats, rewardCount);
 
 	const { previousCL, itemsAdded } = await user.transactItems({
 		collectionLog: true,
@@ -346,9 +349,7 @@ export async function valeTotemsRummageCommand(_interaction: MInteraction, user:
 	return {
 		content: msg,
 		files: [image]
-	}
-
-
+	};
 }
 
 export async function valeTotemsBuyCommand(

@@ -86,8 +86,9 @@ import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/tro
 import {
 	ValeTotemsDecorations,
 	valeTotemsBuyCommand,
+	valeTotemsRummageCommand,
 	valeTotemsSellCommand,
-	valeTotemsStartCommand, valeTotemsRummageCommand
+	valeTotemsStartCommand
 } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import {
 	VolcanicMineShop,
@@ -1569,7 +1570,7 @@ export const minigamesCommand = defineCommand({
 				interaction,
 				user,
 				options.vale_totems.rummage.quantity,
-				options.vale_totems.rummage.all,
+				options.vale_totems.rummage.all
 			);
 		}
 

@@ -17,6 +17,7 @@ import { MUserClass } from '@/lib/user/MUser.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
+	makeAutoRummageToggleButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeClaimDailyButton,
@@ -24,8 +25,7 @@ import {
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
-	makeTearsOfGuthixButton,
-	makeAutoRummageToggleButton
+	makeTearsOfGuthixButton
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
@@ -206,7 +206,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Vale Offerings - Toggle Auto Rummage',
-		fn: async ({components, data}) => {
+		fn: async ({ components, data }) => {
 			if (data.type === 'ValeTotems') {
 				components.push(makeAutoRummageToggleButton());
 			}

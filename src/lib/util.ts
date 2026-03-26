@@ -1,9 +1,9 @@
-import {cleanUsername, removeFromArr} from '@oldschoolgg/toolkit';
+import { cleanUsername, removeFromArr } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import type { Prisma, User } from '@/prisma/main.js';
-import {BitField, BitFieldData, MAX_LEVEL, MAX_XP} from '@/lib/constants.js';
+import { type BitField, BitFieldData, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';

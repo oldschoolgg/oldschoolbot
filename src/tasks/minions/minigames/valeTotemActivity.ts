@@ -1,10 +1,10 @@
-import { Bank, } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
+import { claimValeOfferings } from '@/lib/minions/data/valeTotems.js';
 import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import {BitField} from "@/lib/constants.js";
-import {claimValeOfferings} from "@/lib/minions/data/valeTotems.js";
 
 export const valeTotemsTask: MinionTask = {
 	type: 'ValeTotems',
@@ -17,19 +17,23 @@ export const valeTotemsTask: MinionTask = {
 		const totalLoot = new Bank();
 		let itemsAdded = new Bank();
 
-
-		const autoClaim = user.bitfield.includes(BitField.ToggleAutoRummage)
+		const autoClaim = user.bitfield.includes(BitField.ToggleAutoRummage);
 		const offeringsInBank = user.bank.amount('Vale offerings');
 		let extraMsg = '';
 		let previousCL = new Bank().add('Vale offerings', 1);
 
 		if (autoClaim) {
-
-			const offeringMsg = (rewards: number, offerings: number, bankOfferings: number, total:number, remaining: number) => {
+			const offeringMsg = (
+				rewards: number,
+				offerings: number,
+				bankOfferings: number,
+				total: number,
+				remaining: number
+			) => {
 				return `You earned ${offerings} on your trip, had ${bankOfferings} in your bank, for a total of ${total}. You auto-rummaged to earn ${rewards} research points, leaving you with ${remaining}x Vale offerings left.`;
-			}
+			};
 			const totalOfferings = offerings + offeringsInBank;
-			await user.addItemsToCollectionLog({ itemsToAdd: new Bank().add('Vale offerings', totalOfferings)});
+			await user.addItemsToCollectionLog({ itemsToAdd: new Bank().add('Vale offerings', totalOfferings) });
 
 			const rewards = Math.floor(totalOfferings / 100);
 			const remainder = totalOfferings % 100;
@@ -40,12 +44,24 @@ export const valeTotemsTask: MinionTask = {
 			const offeringsRemoved = new Bank();
 			if (diff > 0) {
 				offeringsRemoved.add('Vale offerings', diff);
-				await user.removeItemsFromBank(offeringsRemoved)
-				extraMsg = offeringMsg(rewards, offerings, offeringsInBank, totalOfferings, user.bank.amount('Vale offerings'));
+				await user.removeItemsFromBank(offeringsRemoved);
+				extraMsg = offeringMsg(
+					rewards,
+					offerings,
+					offeringsInBank,
+					totalOfferings,
+					user.bank.amount('Vale offerings')
+				);
 			} else if (diff < 0) {
 				offeringsAdded.add('Vale offerings', -diff);
-				await user.addItemsToBank({ items: offeringsAdded.add('Vale offerings', -diff), collectionLog: false})
-				extraMsg = offeringMsg(rewards, offerings, offeringsInBank, totalOfferings, user.bank.amount('Vale offerings'));
+				await user.addItemsToBank({ items: offeringsAdded.add('Vale offerings', -diff), collectionLog: false });
+				extraMsg = offeringMsg(
+					rewards,
+					offerings,
+					offeringsInBank,
+					totalOfferings,
+					user.bank.amount('Vale offerings')
+				);
 			} else {
 				if (offeringsInBank > 0) {
 					offeringsRemoved.add('Vale offerings', offeringsInBank);
@@ -73,7 +89,6 @@ export const valeTotemsTask: MinionTask = {
 
 			// Total loot includes the offerings.
 			totalLoot.add(itemsAdded).add('Vale offerings', offerings);
-
 		} else {
 			loot.add('Vale offerings', offerings);
 			totalLoot.add(loot);
