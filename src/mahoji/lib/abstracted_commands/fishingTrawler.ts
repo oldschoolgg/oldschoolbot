@@ -1,6 +1,7 @@
-import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function fishingTrawlerCommand(user: MUser, channelId: string) {
 	if (user.skillLevel('fishing') < 15) {
@@ -26,7 +27,5 @@ export async function fishingTrawlerCommand(user: MUser, channelId: string) {
 		duration
 	});
 
-	return `${user.minionName} is now doing ${quantity}x Fishing Trawler trips, it will take around ${formatDuration(
-		duration
-	)} to finish.\n\n**Boosts:** ${boost}% boost for experience`;
+	return `${user.minionName} is now doing ${quantity}x Fishing Trawler trips, it will take around ${await formatTripDuration(user, duration)} to finish.\n\n**Boosts:** ${boost}% boost for experience`;
 }

@@ -1,8 +1,9 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
 export async function lmsCommand(
@@ -98,7 +99,5 @@ export async function lmsCommand(
 
 	return `${
 		user.minionName
-	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatDuration(
-		duration
-	)}.`;
+	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${await formatTripDuration(user, duration)}.`;
 }

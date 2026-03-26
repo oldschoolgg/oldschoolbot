@@ -1,8 +1,9 @@
-import { formatDuration, Time, UserError } from '@oldschoolgg/toolkit';
+import { Time, UserError } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const diaryBoosts = [
 	['westernprovinces.elite', 100],
@@ -82,9 +83,7 @@ export async function chompyHuntCommand({ user, channelId, rng }: OSInteraction 
 		minigameID: 'big_chompy_bird_hunting'
 	});
 
-	let str = `${user.minionName} is now hunting chompy birds! The trip will take ${formatDuration(
-		tripLength
-	)}. Removing items: ${realCost}.`;
+	let str = `${user.minionName} is now hunting chompy birds! The trip will take ${await formatTripDuration(user, tripLength)}. Removing items: ${realCost}.`;
 
 	if (boosts.length > 0) {
 		str += `\n**Boosts:** ${boosts.join(', ')}.`;

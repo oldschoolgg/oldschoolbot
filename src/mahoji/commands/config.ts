@@ -158,9 +158,10 @@ const toggles: UserConfigToggle[] = [
 					message: patronMsg(4)
 				};
 			}
-		return { result: true };
-   },
-    {
+			return { result: true };
+		}
+	},
+	{
 		name: 'Auto Rummage Vale Offerings',
 		bit: BitField.ToggleAutoRummage
 	}

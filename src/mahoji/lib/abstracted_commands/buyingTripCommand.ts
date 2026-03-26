@@ -49,7 +49,7 @@ export async function buyingTripCommand(
 	}
 
 	await interaction.confirmation(
-		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${averageCost.toLocaleString()} ea) and take ${await formatTripDuration(user, duration)}. Please confirm.`
+		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${averageCost.toLocaleString()} ea) and take ${formatDuration(duration)}. Please confirm.`
 	);
 
 	await user.transactItems({ itemsToRemove: cost });

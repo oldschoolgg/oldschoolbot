@@ -112,8 +112,6 @@ export const fletchCommand = defineCommand({
 
 		return `${user.minionName} is now Fletching ${quantity}${sets} ${
 			fletchable.name
-		}, it'll take around ${await formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.${
-
-			fletchKnifeBoost ? '\n\n**Fletching knife bonus:** -1 tick per item' : ''`;
+		}, it'll take around ${await formatTripDuration(user, duration)} to finish. Removed ${itemsNeeded} from your bank.${fletchKnifeBoost ? '\n\n**Fletching knife bonus:** -1 tick per item' : ''}`;
 	}
 });

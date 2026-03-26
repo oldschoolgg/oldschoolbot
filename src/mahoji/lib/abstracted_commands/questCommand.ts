@@ -1,7 +1,8 @@
-import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 export async function questCommand(user: MUser, channelId: string, name?: string) {
@@ -62,9 +63,7 @@ export async function questCommand(user: MUser, channelId: string, name?: string
 			questID: quest.id
 		});
 
-		return `${user.minionName} is now completing ${quest.name}, they'll finish in around ${formatDuration(
-			duration
-		)}.`;
+		return `${user.minionName} is now completing ${quest.name}, they'll finish in around ${await formatTripDuration(user, duration)}.`;
 	}
 
 	const currentQP = user.QP;
@@ -95,9 +94,7 @@ export async function questCommand(user: MUser, channelId: string, name?: string
 		userID: user.id,
 		channelId: channelId.toString()
 	});
-	let response = `${user.minionName} is now completing quests, they'll come back in around ${formatDuration(
-		duration
-	)}.`;
+	let response = `${user.minionName} is now completing quests, they'll come back in around ${await formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

@@ -125,9 +125,7 @@ async function smithingCommand(user: MUser, channelId: string, quantity: number 
 		type: 'CamdozaalSmithing'
 	});
 
-	return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatDuration(
-		duration
-	)} to finish.`;
+	return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${await formatTripDuration(user, duration)} to finish.`;
 }
 
 async function fishingCommand(user: MUser, channelId: string, quantity: number | undefined) {
@@ -162,9 +160,7 @@ async function fishingCommand(user: MUser, channelId: string, quantity: number |
 		type: 'CamdozaalFishing'
 	});
 
-	return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatDuration(
-		duration
-	)} to finish.`;
+	return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${await formatTripDuration(user, duration)} to finish.`;
 }
 export async function camdozaalCommand(
 	rng: RNGProvider,

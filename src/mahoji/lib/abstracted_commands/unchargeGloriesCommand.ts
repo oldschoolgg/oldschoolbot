@@ -2,6 +2,7 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const unchargeGloriesTime = Time.Second * 2;
 const gloryInstantExchangePrice = 5000;
@@ -93,7 +94,5 @@ export async function unchargeGloriesCommand(
 		type: 'GloryUncharging'
 	});
 
-	return `${user.minionName} is now uncharging ${itemsToRemove}, it'll take around ${formatDuration(
-		duration
-	)} to finish.`;
+	return `${user.minionName} is now uncharging ${itemsToRemove}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
 }

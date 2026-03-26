@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 export async function underwaterAgilityThievingCommand({
 	rng,
@@ -95,9 +96,7 @@ export async function underwaterAgilityThievingCommand({
 
 	await user.transactItems({ itemsToRemove });
 
-	let str = `${user.minionName} is now doing Underwater Agility and Thieving, it will take around ${formatDuration(
-		duration
-	)}.`;
+	let str = `${user.minionName} is now doing Underwater Agility and Thieving, it will take around ${await formatTripDuration(user, duration)}.`;
 
 	if (itemsToRemove.length > 0) {
 		str += ` Removed ${itemsToRemove} from your bank.`;

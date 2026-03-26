@@ -159,7 +159,7 @@ export enum BitField {
 	HasMysticVigourScroll = 46,
 	AllowPublicAPIDataRetrieval = 47,
 	ToggleAutoRummage = 48,
-  ShowMinionReturnTime = 49
+	ShowMinionReturnTime = 49
 }
 
 interface BitFieldData {
