@@ -199,7 +199,7 @@ export async function valeTotemsStartCommand(
 		staminaPot: staminaPot
 	});
 
-	let str = `${user.minionName} is off to do ${laps} laps of Vale Totems using ${cost} - the total trip will take ${formatTripDuration(
+	let str = `${user.minionName} is off to do ${laps} laps of Vale Totems using ${cost} - the total trip will return in about ${formatTripDuration(
 		user,
 		duration
 	)}, with each lap taking ${formatDuration(timePerLap)}.`;

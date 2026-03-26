@@ -57,7 +57,7 @@ export async function pyramidPlunderCommand(user: MUser, channelId: string) {
 		user.minionName
 	} is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${
 		completableRooms.length < 2 ? 1 : completableRooms[completableRooms.length - 2].number
-	} and ${completableRooms[completableRooms.length - 1].number}, the trip will take ${formatTripDuration(user, tripLength)}, with each cycle taking ${formatDuration(plunderTime)}.`;
+	} and ${completableRooms[completableRooms.length - 1].number}, the trip will return in about ${formatTripDuration(user, tripLength)}, with each cycle taking ${formatDuration(plunderTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

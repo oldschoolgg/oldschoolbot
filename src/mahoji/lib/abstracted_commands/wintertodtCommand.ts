@@ -114,7 +114,7 @@ export async function wintertodtCommand(user: MUser, channelId: string, quantity
 		type: 'Wintertodt'
 	});
 
-	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatTripDuration(
+	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will return in about ${formatTripDuration(
 		user,
 		durationPerTodt * quantity
 	)}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;

@@ -118,7 +118,7 @@ export async function sepulchreCommand(user: MUser, channelId: string, fletching
 
 	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
 		completableFloors[0].number
-	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatTripDuration(user, tripLength)}, with each lap taking ${formatDuration(lapLength)}.`;
+	}-${completableFloors[completableFloors.length - 1].number}, the trip will return in about ${formatTripDuration(user, tripLength)}, with each lap taking ${formatDuration(lapLength)}.`;
 
 	if (fletchable && itemsNeeded) {
 		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;

@@ -67,5 +67,5 @@ export async function temporossCommand(user: MUser, channelId: string, quantity:
 		rewardBoost
 	});
 
-	return `${user.minionName} is now off to kill Tempoross ${quantity}x times, their trip will take ${formatTripDuration(user, duration)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.`;
+	return `${user.minionName} is now off to kill Tempoross ${quantity}x times, their trip will return in about ${formatTripDuration(user, duration)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.`;
 }

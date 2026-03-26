@@ -107,7 +107,7 @@ export async function nexCommand(
 		.join(', ')}${solo ? ' and 3 others' : ''}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
 		details.quantity,
 		details.fakeDuration
-	).toFixed(1)}/hr) - the total trip will take ${formatTripDuration(user, details.fakeDuration)}.
+	).toFixed(1)}/hr) - the total trip will return in about ${formatTripDuration(user, details.fakeDuration)}.
 
 ${effectiveTeam
 	.map(i => {

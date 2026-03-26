@@ -139,5 +139,5 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelId: stri
 
 	return `${
 		user.minionName
-	} is now doing ${quantity} Magic Training Arena rooms. The trip will take around ${formatTripDuration(user, duration)}. Removed ${cost} from your bank.`;
+	} is now doing ${quantity} Magic Training Arena rooms. The trip will return in about around ${formatTripDuration(user, duration)}. Removed ${cost} from your bank.`;
 }
