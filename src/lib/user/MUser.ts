@@ -691,7 +691,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
 			return;
 		}
-		if (background.perkTierNeeded && this.perkTier >= background.perkTierNeeded) {
+		if (background.perkTierNeeded && (await this.fetchPerkTier()) >= background.perkTierNeeded) {
 			return;
 		}
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
