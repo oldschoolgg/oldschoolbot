@@ -333,6 +333,12 @@ export async function valeTotemsRummageCommand(
 	const userStats = await user.fetchStats();
 	const { loot: lootBank, msg } = claimValeOfferings(user, userStats, rewardCount);
 
+	await user.statsUpdate({
+		vale_research_points: {
+			increment: rewardCount
+		}
+	});
+
 	const { previousCL, itemsAdded } = await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: lootBank,
@@ -355,7 +361,7 @@ export async function valeTotemsRummageCommand(
 export async function valeTotemsBuyCommand(
 	interaction: MInteraction,
 	user: MUser,
-	item: string | undefined,
+	item?: string,
 	quantity = 1
 ) {
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {

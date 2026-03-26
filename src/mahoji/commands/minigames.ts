@@ -1143,7 +1143,7 @@ export const minigamesCommand = defineCommand({
 							type: 'String',
 							name: 'item',
 							description: 'Item to buy using research points.',
-							required: true,
+							required: false,
 							choices: choicesOf(ValeTotemsBuyables.map(i => i.name))
 						},
 						{
