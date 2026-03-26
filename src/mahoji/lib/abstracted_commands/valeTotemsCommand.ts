@@ -361,7 +361,7 @@ export async function valeTotemsRummageCommand(
 export async function valeTotemsBuyCommand(
 	interaction: MInteraction,
 	user: MUser,
-	item: string | undefined,
+	item?: string,
 	quantity = 1
 ) {
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
