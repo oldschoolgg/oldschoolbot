@@ -7,6 +7,7 @@ import type { MoonKeyHalfCatchRate } from '@/lib/skilling/types.js';
 
 export function formatTripDuration(user: MUser, durationMs: number): string {
 	const showTimestamp = user.bitfield.includes(BitField.DisableDynamicTimestamp);
+
 	return formatDurationWithTimestamp(durationMs, user.perkTier, showTimestamp);
 }
 
