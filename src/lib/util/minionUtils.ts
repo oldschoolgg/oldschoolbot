@@ -1,8 +1,14 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { formatDurationWithTimestamp, Time } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { MoonKeyHalfCatchRate } from '@/lib/skilling/types.js';
+
+export function formatTripDuration(user: MUser, durationMs: number): string {
+	const showTimestamp = user.bitfield.includes(BitField.DisableDynamicTimestamp);
+	return formatDurationWithTimestamp(durationMs, user.perkTier, showTimestamp);
+}
 
 const MOON_KEY_ONE_IN_PER_MINUTE = 60;
 

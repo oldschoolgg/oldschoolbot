@@ -1,4 +1,4 @@
-import { formatDuration, stringSearch } from '@oldschoolgg/toolkit';
+import { stringSearch } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
@@ -8,6 +8,7 @@ import {
 	sharkLureQuantities
 } from '@/lib/skilling/skills/fishing/fishingUtil.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { bankToStrShortNames, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const FEATHER_PACK_SIZE = 100;
@@ -169,8 +170,7 @@ export const fishCommand = defineCommand({
 			type: 'Fishing'
 		});
 
-		let response = `${user.minionName} is now fishing ${spot.name}, it'll take around ${formatDuration(result.duration)} to finish.`;
-
+		let response = `${user.minionName} is now fishing ${spot.name}, it'll take around ${formatTripDuration(user, result.duration)} to finish.`;
 		if (result.suppliesToRemove.length > 0) {
 			response += `\n\n**Used Supplies:** ${bankToStrShortNames(result.suppliesToRemove)}.`;
 		}

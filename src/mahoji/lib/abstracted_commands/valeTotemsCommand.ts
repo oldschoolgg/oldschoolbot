@@ -6,6 +6,7 @@ import { QuestID } from '@/lib/minions/data/quests.js';
 import { claimValeOfferings } from '@/lib/minions/data/valeTotems.js';
 import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 interface TotemDecoration {
 	log: Item;
@@ -198,7 +199,8 @@ export async function valeTotemsStartCommand(
 		staminaPot: staminaPot
 	});
 
-	let str = `${user.minionName} is off to do ${laps} laps of Vale Totems using ${cost} - the total trip will take ${formatDuration(
+	let str = `${user.minionName} is off to do ${laps} laps of Vale Totems using ${cost} - the total trip will return in about ${formatTripDuration(
+		user,
 		duration
 	)}, with each lap taking ${formatDuration(timePerLap)}.`;
 
@@ -358,12 +360,7 @@ export async function valeTotemsRummageCommand(
 	};
 }
 
-export async function valeTotemsBuyCommand(
-	interaction: MInteraction,
-	user: MUser,
-	item?: string,
-	quantity = 1
-) {
+export async function valeTotemsBuyCommand(interaction: MInteraction, user: MUser, item?: string, quantity = 1) {
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
 		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange.`;
 	}

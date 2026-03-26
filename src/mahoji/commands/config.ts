@@ -149,6 +149,10 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.AllowPublicAPIDataRetrieval
 	},
 	{
+		name: 'Disaable dynamic return times',
+		bit: BitField.DisableDynamicTimestamp
+	},
+	{
 		name: 'Auto Rummage Vale Offerings',
 		bit: BitField.ToggleAutoRummage
 	}

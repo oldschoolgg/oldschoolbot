@@ -72,10 +72,18 @@ import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export class MUserClass extends BaseUser {
+	private initPromise: Promise<void> | null = null;
+	private hasInit: boolean = false;
 	constructor(user: User) {
 		super(user);
+		void this.init();
 	}
 
+	async init() {
+		if (this.hasInit) return;
+		this.perkTier = await this.fetchPerkTier();
+		this.hasInit = true;
+	}
 	getGearUpdateData(gearUpdates: GearWithSetupType[]) {
 		const newGearData: Partial<Record<GearColumns, GearSetup | null>> = {};
 		for (const { setup, gear } of gearUpdates) {
@@ -159,11 +167,14 @@ export class MUserClass extends BaseUser {
 	}
 
 	async calcMaxGearPresets() {
-		return (await this.fetchPerkTier()) * 2 + 4;
+		await this.initPromise;
+		return this.perkTier * 2 + 4;
 	}
 
 	async fetchPerkTier(): Promise<0 | PerkTier> {
-		return getUsersPerkTier(this);
+		if (this.initPromise !== null) await this.initPromise;
+		this.perkTier = await getUsersPerkTier(this);
+		return this.perkTier;
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {
@@ -676,6 +687,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async checkBankBackground() {
+		await this.initPromise;
 		if (this.isModOrAdmin()) {
 			return;
 		}
@@ -690,7 +702,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
 			return;
 		}
-		if (background.perkTierNeeded && (await this.fetchPerkTier()) >= background.perkTierNeeded) {
+		if (background.perkTierNeeded && this.perkTier >= background.perkTierNeeded) {
 			return;
 		}
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
