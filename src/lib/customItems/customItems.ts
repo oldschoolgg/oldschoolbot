@@ -1230,7 +1230,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99,
 				magic: 99
 			}
@@ -1261,7 +1260,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99,
 				ranged: 99
 			}
@@ -1292,7 +1290,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99
 			}
 		}
@@ -14363,6 +14360,804 @@ setCustomItem(74_006, 'Ember', 'Herbi', {
 		cantDropFromMysteryBoxes: true
 	}
 });
+
+setCustomItem(
+	75_001,
+	'Dragonbane glaive',
+	'Dragonhunter lance',
+	{
+		equipment: {
+			attack_stab: 125,
+			attack_slash: 85,
+			attack_crush: 85,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 105,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Weapon,
+			requirements: {
+				attack: 120,
+				strength: 120
+			}
+		},
+		highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	75_002,
+	'Dragonbane aegis',
+	'Dragonfire shield',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: -65,
+			attack_ranged: -45,
+
+			defence_stab: 105,
+			defence_slash: 105,
+			defence_crush: 105,
+			defence_magic: -25,
+			defence_ranged: -15,
+
+			melee_strength: 20,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			slot: EquipmentSlot.Shield,
+			requirements: {
+				defence: 120,
+				strength: 120
+			}
+		},
+		highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	75_003,
+	'Vitrolic curse',
+	'Bronze arrow',
+	{
+		equipment: {
+			attack_stab: 10,
+			attack_slash: 10,
+			attack_crush: 10,
+			attack_magic: 10,
+			attack_ranged: 10,
+			defence_stab: 10,
+			defence_slash: 10,
+			defence_crush: 10,
+			defence_magic: 10,
+			defence_ranged: 10,
+			melee_strength: 5,
+			ranged_strength: 5,
+			magic_damage: 5,
+			prayer: 7,
+			slot: EquipmentSlot.Ammo,
+			requirements: {
+				prayer: 120,
+				defence: 120,
+				hitpoints: 120
+			}
+		},
+		highalch: 50_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	75_004,
+	'Shattered pendant',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	75_005,
+	'Celestial pendant',
+	'Amulet of fury',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000_000
+);
+setCustomItem(
+	75_006,
+	'Brimstone elixir',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	75_007,
+	'Primordial bones',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	75_008,
+	'Primordial scales',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	75_009,
+	'Primordial spine',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	75_010,
+	'Primordial heartstring',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	75_011,
+	'Sacrilegious flask',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	75_012,
+	'Forsaken tear',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	75_013,
+	'Celestial flame',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	75_014,
+	'Ignilace',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	75_015,
+	'Ignilace seed',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	75_016,
+	'Elderflame bow',
+	'Twisted bow',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 250,
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+			melee_strength: 0,
+			ranged_strength: 45,
+			magic_damage: 0,
+			prayer: 8,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: {
+				ranged: 120
+			}
+		},
+		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+
+setCustomItem(
+	75_017,
+	'Searcrown band',
+	'Berserker ring',
+	{
+		equipment: {
+			attack_stab: 15,
+			attack_slash: 15,
+			attack_crush: 15,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 45,
+			defence_slash: 45,
+			defence_crush: 45,
+			defence_magic: 45,
+			defence_ranged: 45,
+
+			melee_strength: 25,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			slot: EquipmentSlot.Ring,
+			requirements: {
+				defence: 115
+			}
+		},
+		highalch: 100_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	25_000_000
+);
+
+setCustomItem(
+	75_020,
+	'Elderflame arrow',
+	'Barbed arrow',
+	{
+		tradeable: true,
+		tradeable_on_ge: true,
+		buy_limit: 100_000,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 55,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 130,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Ammo,
+			requirements: {
+				ranged: 120
+			}
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	75_021,
+	'Elderflame arrowtips',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000
+);
+
+setCustomItem(75_022, 'Gemstone bundle', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 1_000_000);
+setCustomItem(75_023, 'Gemstone satchel', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 5_000_000);
+setCustomItem(75_024, 'Gemstone core', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000_000);
+setCustomItem(75_025, 'Verdant logs', 'Logs', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_026, 'Ancient verdant logs', 'Logs', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_027, 'Living bark', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_028, 'Ancient cap', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_029, 'Colossal stem', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_030, 'Brimstone spore', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_031, 'Crystalline ore', 'Iron ore', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_032, 'Gem Infused ore', 'Iron ore', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_033, 'Dense Crystal shard', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_034, 'Diluted brimstone', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_035, 'Myconid plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_036, 'Crystalline plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_037, 'Verdant plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_038, 'Ancient verdant plank', 'Plank', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_039, 'Sentinel core', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000_000);
+setCustomItem(75_040, 'Verdant heart', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000_000);
+setCustomItem(
+	75_041,
+	'Elder mimic casket (locked)',
+	'Casket',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	10_000_000
+);
+setCustomItem(
+	75_042,
+	'Elder mimic casket',
+	'Casket',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	10_000_000
+);
+setCustomItem(
+	75_043,
+	'Elder sigil',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	10_000_000
+);
+setCustomItem(
+	75_044,
+	'Elder sigil fragment (1)',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	10_000_000
+);
+setCustomItem(
+	75_045,
+	'Elder sigil fragment (2)',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	10_000_000
+);
+setCustomItem(
+	75_046,
+	'Elder sigil fragment (3)',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	10_000_000
+);
+setCustomItem(
+	75_047,
+	'Archon relic',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true, isSuperUntradeable: true } },
+	1
+);
+setCustomItem(
+	75_048,
+	'Elderflame catalyst',
+	'Coal',
+	{ tradeable: false, customItemData: { cantDropFromMysteryBoxes: true } },
+	10_000_000
+);
+
+setCustomItem(
+	75_049,
+	'Starfire bow',
+	'Twisted bow',
+	{
+		tradeable: true,
+		tradeable_on_ge: true,
+		buy_limit: 10,
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: {
+				ranged: 0
+			}
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	75_050,
+	'Prismare ring',
+	'Ring of suffering',
+	{
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Ring,
+			requirements: {}
+		}
+	},
+	100_000_000
+);
+
+setCustomItem(75_051, 'Celestyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_052, 'Starfire agate', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_053, 'Verdantyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_054, 'Oneiryte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_055, 'Firaxyte', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_056, 'Prismare', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_057, 'Juvenile gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_058, 'Adolescent gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_059, 'Mature gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_060, 'Ancient gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(75_061, 'Elder gemscale', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(
+	75_064,
+	'Prismare ring (u)',
+	'Coal',
+	{
+		tradeable: true,
+		tradeable_on_ge: true,
+		buy_limit: 10
+	},
+	10_000_000
+);
+
+setCustomItem(
+	75_065,
+	'Empyrean greathelm',
+	'Torva full helm',
+	{
+		equipment: {
+			attack_stab: 40,
+			attack_slash: 25,
+			attack_crush: 25,
+			attack_magic: -20,
+			attack_ranged: -20,
+			defence_stab: 85,
+			defence_slash: 90,
+			defence_crush: 90,
+			defence_magic: 5,
+			defence_ranged: 70,
+			melee_strength: 8,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 2,
+			slot: EquipmentSlot.Head,
+			requirements: {
+				strength: 120,
+				defence: 120
+			}
+		},
+		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	300_000_000
+);
+
+setCustomItem(
+	75_066,
+	'Empyrean greatplate',
+	'Torva platebody',
+	{
+		equipment: {
+			attack_stab: 55,
+			attack_slash: 30,
+			attack_crush: 30,
+			attack_magic: -20,
+			attack_ranged: -20,
+			defence_stab: 190,
+			defence_slash: 180,
+			defence_crush: 180,
+			defence_magic: 10,
+			defence_ranged: 195,
+			melee_strength: 10,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			slot: EquipmentSlot.Body,
+			requirements: {
+				strength: 120,
+				defence: 120
+			}
+		},
+		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	300_000_000
+);
+
+setCustomItem(
+	75_067,
+	'Empyrean greatgreaves',
+	'Torva platelegs',
+	{
+		equipment: {
+			attack_stab: 45,
+			attack_slash: 25,
+			attack_crush: 25,
+			attack_magic: -20,
+			attack_ranged: -20,
+			defence_stab: 155,
+			defence_slash: 155,
+			defence_crush: 155,
+			defence_magic: 10,
+			defence_ranged: 155,
+			melee_strength: 8,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 2,
+			slot: EquipmentSlot.Legs,
+			requirements: {
+				strength: 120,
+				defence: 120
+			}
+		},
+		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	300_000_000
+);
+
+setCustomItem(
+	75_068,
+	'Empyrean greatgauntlets',
+	'Torva gloves',
+	{
+		equipment: {
+			attack_stab: 25,
+			attack_slash: 20,
+			attack_crush: 15,
+			attack_magic: -20,
+			attack_ranged: -20,
+			defence_stab: 30,
+			defence_slash: 30,
+			defence_crush: 30,
+			defence_magic: 5,
+			defence_ranged: 45,
+			melee_strength: 6,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: {
+				strength: 120,
+				defence: 120
+			}
+		},
+		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	300_000_000
+);
+
+setCustomItem(
+	75_069,
+	'Empyrean greatsabaton',
+	'Torva boots',
+	{
+		equipment: {
+			attack_stab: 25,
+			attack_slash: 12,
+			attack_crush: 15,
+			attack_magic: -20,
+			attack_ranged: -20,
+			defence_stab: 35,
+			defence_slash: 35,
+			defence_crush: 35,
+			defence_magic: 5,
+			defence_ranged: 45,
+			melee_strength: 6,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: {
+				strength: 120,
+				defence: 120
+			}
+		},
+		highalch: 200_000_000,
+		tradeable: false,
+		tradeable_on_ge: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	300_000_000
+);
+
+setCustomItem(75_070, 'Empyrean shards', 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+setCustomItem(
+	75_071,
+	'Prolific twine',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	75_072,
+	'Starfire bow (u)',
+	'Coal',
+	{
+		tradeable: false,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+
+setCustomItem(75_073, 'Buried firmament', 'Abyssal cape', {}, 10_000);
+setCustomItem(75_074, "Archon's Ichor", 'Coal', { customItemData: { cantDropFromMysteryBoxes: true } }, 10_000);
+
+//archaic dyes
+setCustomItem(
+	75_075,
+	'Searcrown band (archaic)',
+	'Searcrown band',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_076,
+	'Dragonbane aegis (archaic)',
+	'Dragonbane aegis',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_077,
+	'Empyrean greathelm (archaic)',
+	'Empyrean greathelm',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_078,
+	'Empyrean greatplate (archaic)',
+	'Empyrean greatplate',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_079,
+	'Empyrean greatgreaves (archaic)',
+	'Empyrean greatgreaves',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_080,
+	'Empyrean greatsabaton (archaic)',
+	'Empyrean greatsabaton',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	75_081,
+	'Empyrean greatgauntlets (archaic)',
+	'Empyrean greatgauntlets',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
 
 export const discontinuedItems = resolveItems([
 	'Turkey',

@@ -18,7 +18,7 @@ export async function degradeableItemsCommand(
 ${degradeableItems
 	.map(i => {
 		const charges = user.user[i.settingsKey];
-		return `${i.item.name}: ${charges.toLocaleString()} charges`;
+		return `${i.item.name}: ${(charges ?? 0).toLocaleString()} charges`;
 	})
 	.join('\n')}`;
 	}
@@ -55,7 +55,7 @@ ${degradeableItems
 		await user.transactItems({ itemsToRemove: cost });
 	}
 	const currentCharges = user.user[item.settingsKey];
-	const newCharges = currentCharges + amountOfCharges;
+	const newCharges = (currentCharges ?? 0) + amountOfCharges;
 	await user.update({
 		[item.settingsKey]: newCharges
 	});

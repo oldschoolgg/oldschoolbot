@@ -1,5 +1,8 @@
 import { bathhouseTask } from '@/lib/bso/tasks/bathhousesActivity.js';
 import { bonanzaTask } from '@/lib/bso/tasks/bonanzaActivity.js';
+import { brimstoneDistilleryTask } from '@/lib/bso/tasks/brimstoneDistilleryActivity.js';
+import { dominionTask } from '@/lib/bso/tasks/burningDominionActivity.js';
+import { constructionContractsTask } from '@/lib/bso/tasks/constructionContractsActivity.js';
 import { disassemblingTask } from '@/lib/bso/tasks/disassemblingActivity.js';
 import { doaTask } from '@/lib/bso/tasks/doaActivity.js';
 import { dungeoneeringTask } from '@/lib/bso/tasks/dungeoneeringActivity.js';
@@ -27,6 +30,7 @@ import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { agilityTask } from '@/tasks/minions/agilityActivity.js';
 import { alchingTask } from '@/tasks/minions/alchingActivity.js';
+import { archonTask } from '@/tasks/minions/archonActivity.js';
 import { butlerTask } from '@/tasks/minions/butlerActivity.js';
 import { buyTask } from '@/tasks/minions/buyActivity.js';
 import { camdozaalFishingTask } from '@/tasks/minions/camdozaalActivity/camdozaalFishingActivity.js';
@@ -116,6 +120,9 @@ import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivit
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
+import { ancientMycologyTask } from '../tasks/minions/ancientMycologyActivity.js';
+import { archaicMiningTask } from '../tasks/minions/archaicMiningActivity.js';
+import { gemstoneFishingTask } from '../tasks/minions/gemstoneFishingActivity.js';
 
 export const allTasks: MinionTask[] = [
 	aerialFishingTask,
@@ -191,6 +198,7 @@ export const allTasks: MinionTask[] = [
 	temporossTask,
 	smithingTask,
 	shootingStarTask,
+	archonTask,
 	giantsFoundryTask,
 	guardiansOfTheRiftTask,
 	butlerTask,
@@ -206,6 +214,9 @@ export const allTasks: MinionTask[] = [
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
+	gemstoneFishingTask,
+	ancientMycologyTask,
+	archaicMiningTask,
 	myNotesTask,
 	colosseumTask,
 	CreateForestersRationsTask,
@@ -231,7 +242,10 @@ export const allTasks: MinionTask[] = [
 	doaTask,
 	memoryHarvestTask,
 	guthixianCacheTask,
-	turaelsTrialsTask
+	turaelsTrialsTask,
+	dominionTask,
+	brimstoneDistilleryTask,
+	constructionContractsTask
 ];
 
 type MinionTaskRunOptions = {

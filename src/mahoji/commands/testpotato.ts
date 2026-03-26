@@ -651,7 +651,7 @@ export const testPotatoCommand = globalConfig.isProduction
 						// @ts-expect-error
 						ephemeral
 					});
-					return interaction.makePaginatedMessage({
+					await interaction.makePaginatedMessage({
 						ephemeral: true,
 						pages: [
 							() => ({
@@ -684,6 +684,7 @@ export const testPotatoCommand = globalConfig.isProduction
 							})
 						]
 					});
+					return 'Done.';
 				}
 
 				if (options.bitfield) {

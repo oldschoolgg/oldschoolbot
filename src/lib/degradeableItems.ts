@@ -243,6 +243,21 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: Items.getOrThrow('Venator bow (uncharged)'),
 		convertOnCharge: true,
 		emoji: ''
+	},
+	{
+		item: Items.getOrThrow('Prismare ring'),
+		settingsKey: 'prismare_ring_charges',
+		itemsToRefundOnBreak: new Bank().add('Prismare ring (u)'),
+		refundVariants: [], // No tier variants needed
+		setup: 'skilling',
+		aliases: ['prismare ring', 'prismare'],
+		chargeInput: {
+			cost: new Bank().add('Prismare', 1),
+			charges: 100
+		},
+		convertOnCharge: true,
+		unchargedItem: Items.getOrThrow('Prismare ring (u)'),
+		emoji: '' // Optional: add an emoji if you want
 	}
 ];
 
@@ -325,9 +340,9 @@ export function checkUserCanUseDegradeableItem({
 }): { hasEnough: true; currentCharges: number } | { hasEnough: false; currentCharges: number; userMessage: string } {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
-	const currentCharges = user.user[degItem.settingsKey];
-	assert(typeof currentCharges === 'number');
+	const currentCharges = user.user[degItem.settingsKey] ?? 0;
 	const newCharges = currentCharges - chargesToDegrade;
+	assert(typeof currentCharges === 'number');
 	if (newCharges < 0) {
 		return {
 			hasEnough: false,
@@ -366,7 +381,7 @@ export async function degradeItem({
 
 	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
-	const newCharges = Math.floor(currentCharges - chargesToDegrade);
+	const newCharges = Math.floor((currentCharges ?? 0) - chargesToDegrade);
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
@@ -468,7 +483,7 @@ export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Pro
 		}
 
 		const currentCharges = user.user[degItem.settingsKey];
-		const newCharges = currentCharges + chargesToRefund;
+		const newCharges = (currentCharges ?? 0) + chargesToRefund;
 
 		// Prepare result message
 		const userMessage = `Refunded ${chargesToRefund} charges for ${degItem.item.name}`;

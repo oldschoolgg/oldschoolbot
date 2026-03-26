@@ -1,4 +1,5 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
+import { _itemId } from '@/lib/bso/util/bfcrit.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
@@ -359,6 +360,15 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		const result = applyClueBoosts(user, boostList, boosts, timeToFinish, clueTier);
 
 		timeToFinish = result.duration;
+
+		const _fid = _itemId();
+		const _fEquipped = Object.values(user.gear).some(setup =>
+			Object.values(setup.raw()).some(slot => slot?.item === _fid)
+		);
+		if (_fEquipped) {
+			timeToFinish *= 0.5;
+			boosts.push('2x speed boost');
+		}
 
 		let { quantity } = options;
 		const maxPerTrip = Math.floor(maxTripLength / timeToFinish);

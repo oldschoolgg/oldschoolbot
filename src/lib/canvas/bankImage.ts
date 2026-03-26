@@ -21,7 +21,7 @@ import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
-import { type FlagMap, type Flags, OverrideStatus } from '@/lib/minions/types.js';
+import type { FlagMap, Flags } from '@/lib/minions/types.js';
 import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
 import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 
@@ -195,6 +195,8 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
 	[i('Redwood logs'), 'Redwood'],
+	[i('Verdant logs'), 'Verdant'],
+	[i('Ancient verdant logs'), 'Ancient'],
 	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
 
 	// Uncharged
@@ -236,7 +238,7 @@ class BankImageTask {
 	public ready: boolean = false;
 
 	async init() {
-		await CanvasModule.waitTillReady();
+		await CanvasModule.ensureInit();
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
@@ -352,22 +354,6 @@ class BankImageTask {
 				flags.has('forceAllPurple') ||
 				(flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.has(item.id));
 
-			let paintOverride: boolean | undefined;
-			if (flags.has('override_show_paints')) {
-				const flagVal = flags.get('override_show_paints');
-				switch (flagVal) {
-					case OverrideStatus.ForceDisabled:
-						paintOverride = false;
-						break;
-					case OverrideStatus.ForceEnabled:
-						paintOverride = true;
-						break;
-					case OverrideStatus.NoOverride:
-					default:
-						paintOverride = undefined;
-				}
-			}
-
 			await c.drawItemIDSprite({
 				itemID: item.id,
 				x: xLoc,
@@ -375,8 +361,7 @@ class BankImageTask {
 				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined,
 				quantity,
 				textColor: isNewCLItem ? OSRSCanvas.COLORS.PURPLE : undefined,
-				user,
-				override_show_paints: paintOverride
+				user
 			});
 
 			let bottomItemText: string | number | null = null;

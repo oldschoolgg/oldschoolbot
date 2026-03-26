@@ -235,6 +235,23 @@
 		"bank_time_per_potion": 0.3
 	},
 	{
+		"item": "Brimstone elixir",
+		"level": 115,
+		"xp": 330,
+		"output_multiple": 3,
+		"input_items": {
+			"29824": 1,
+			"50026": 1,
+			"50027": 1,
+			"70002": 1,
+			"75008": 5,
+			"75014": 1,
+			"75034": 1
+		},
+		"tick_rate": 2,
+		"bank_time_per_potion": 0.5
+	},
+	{
 		"item": "Cadantine",
 		"level": 65,
 		"xp": 12.5,

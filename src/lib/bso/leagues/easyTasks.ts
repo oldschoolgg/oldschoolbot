@@ -784,5 +784,33 @@ export const easyTasks: Task[] = [
 		has: async ({ activityCounts }) => {
 			return activityCounts.GuthixianCache >= 1;
 		}
+	},
+	{
+		id: 108,
+		name: 'Open a gemstone satchel',
+		has: async ({ opens }) => {
+			return opens.has('Gemstone satchel');
+		}
+	},
+	{
+		id: 109,
+		name: 'Open a gemstone bundle',
+		has: async ({ opens }) => {
+			return opens.has('Gemstone bundle');
+		}
+	},
+	{
+		id: 110,
+		name: 'Open a gemstone core',
+		has: async ({ opens }) => {
+			return opens.has('Gemstone core');
+		}
+	},
+	{
+		id: 111,
+		name: 'Open an Elder cache',
+		has: async ({ opens }) => {
+			return opens.has('Elder sigil');
+		}
 	}
 ];

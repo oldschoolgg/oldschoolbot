@@ -26,8 +26,12 @@ export const Logs: DisassemblySourceGroup = {
 		{ item: i('Yew logs'), lvl: 60 },
 		{ item: i('Magic logs'), lvl: 75 },
 		{ item: i('Blisterwood logs'), lvl: 76 },
+		{ item: i('Verdant logs'), lvl: 79 },
+		{ item: i('Colossal stem'), lvl: 81 },
+		{ item: i('Ancient cap'), lvl: 84 },
 		{ item: i('Redwood logs'), lvl: 90 },
-		{ item: i('Elder logs'), lvl: 90 }
+		{ item: i('Elder logs'), lvl: 90 },
+		{ item: i('Ancient verdant logs'), lvl: 90 }
 	],
 	parts: { organic: 5, wooden: 95 }
 };

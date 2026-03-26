@@ -596,6 +596,10 @@
 		"similar_items": ["Dragon hunter crossbow", "Dragon hunter crossbow (b)", "Dragon hunter crossbow (t)"]
 	},
 	{
+		"main_item": "Dragon hunter lance",
+		"similar_items": ["Dragon hunter lance", "Dragonbane glaive"]
+	},
+	{
 		"main_item": "Dragon kiteshield",
 		"similar_items": ["Dragon kiteshield", "Dragon kiteshield (g)"]
 	},
@@ -631,12 +635,26 @@
 		"similar_items": ["Dragon sq shield", "Dragon sq shield (g)"]
 	},
 	{
+		"main_item": "Dragonbane aegis",
+		"similar_items": ["Dragonbane aegis", "Dragonbane aegis (archaic)"]
+	},
+	{
 		"main_item": "Dragonfire shield",
-		"similar_items": ["Dragonfire shield", "Uncharged dragonfire shield"]
+		"similar_items": [
+			"Dragonbane aegis",
+			"Dragonbane aegis (archaic)",
+			"Dragonfire shield",
+			"Uncharged dragonfire shield"
+		]
 	},
 	{
 		"main_item": "Dragonfire ward",
-		"similar_items": ["Dragonfire ward", "Uncharged dragonfire ward"]
+		"similar_items": [
+			"Dragonbane aegis",
+			"Dragonbane aegis (archaic)",
+			"Dragonfire ward",
+			"Uncharged dragonfire ward"
+		]
 	},
 	{
 		"main_item": "Drygore longsword",
@@ -766,6 +784,26 @@
 	{
 		"main_item": "Elite void top",
 		"similar_items": ["Elite void top", "Elite void top (l)", "Elite void top (or)"]
+	},
+	{
+		"main_item": "Empyrean greatgauntlets",
+		"similar_items": ["Empyrean greatgauntlets", "Empyrean greatgauntlets (archaic)"]
+	},
+	{
+		"main_item": "Empyrean greatgreaves",
+		"similar_items": ["Empyrean greatgreaves", "Empyrean greatgreaves (archaic)"]
+	},
+	{
+		"main_item": "Empyrean greathelm",
+		"similar_items": ["Empyrean greathelm", "Empyrean greathelm (archaic)"]
+	},
+	{
+		"main_item": "Empyrean greatplate",
+		"similar_items": ["Empyrean greatplate", "Empyrean greatplate (archaic)"]
+	},
+	{
+		"main_item": "Empyrean greatsabaton",
+		"similar_items": ["Empyrean greatsabaton", "Empyrean greatsabaton (archaic)"]
 	},
 	{
 		"main_item": "Facemask",
@@ -1750,6 +1788,10 @@
 		]
 	},
 	{
+		"main_item": "Searcrown band",
+		"similar_items": ["Searcrown band", "Searcrown band (archaic)"]
+	},
+	{
 		"main_item": "Skull sceptre",
 		"similar_items": ["Skull sceptre", "Skull sceptre (i)"]
 	},
@@ -1951,6 +1993,8 @@
 	{
 		"main_item": "Torva boots",
 		"similar_items": [
+			"Empyrean greatsabaton",
+			"Empyrean greatsabaton (archaic)",
 			"Gorajan warrior boots",
 			"Gorajan warrior boots (Oceanic)",
 			"Gorajan warrior boots (Primal)",
@@ -1960,6 +2004,8 @@
 	{
 		"main_item": "Torva full helm",
 		"similar_items": [
+			"Empyrean greathelm",
+			"Empyrean greathelm (archaic)",
 			"Gorajan warrior helmet",
 			"Gorajan warrior helmet (Oceanic)",
 			"Gorajan warrior helmet (Primal)",
@@ -1972,6 +2018,8 @@
 	{
 		"main_item": "Torva gloves",
 		"similar_items": [
+			"Empyrean greatgauntlets",
+			"Empyrean greatgauntlets (archaic)",
 			"Gorajan warrior gloves",
 			"Gorajan warrior gloves (Oceanic)",
 			"Gorajan warrior gloves (Primal)",
@@ -1981,6 +2029,8 @@
 	{
 		"main_item": "Torva platebody",
 		"similar_items": [
+			"Empyrean greatplate",
+			"Empyrean greatplate (archaic)",
 			"Gorajan warrior top",
 			"Gorajan warrior top (Oceanic)",
 			"Gorajan warrior top (Primal)",
@@ -1990,6 +2040,8 @@
 	{
 		"main_item": "Torva platelegs",
 		"similar_items": [
+			"Empyrean greatgreaves",
+			"Empyrean greatgreaves (archaic)",
 			"Gorajan warrior legs",
 			"Gorajan warrior legs (Oceanic)",
 			"Gorajan warrior legs (Primal)",

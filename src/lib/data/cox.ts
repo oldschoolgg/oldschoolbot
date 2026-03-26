@@ -189,7 +189,7 @@ export const maxMeleeGear = constructGearSetup({
 	feet: 'Torva boots',
 	weapon: 'Drygore rapier',
 	shield: 'Offhand drygore rapier',
-	ring: 'Ignis ring(i)'
+	ring: 'Searcrown band'
 });
 
 export function calculateUserGearPercents(user: MUser) {

@@ -56,6 +56,13 @@ import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
+import {
+	BurningDominionLootTable,
+	CrystallineSentinelLootTable,
+	FungalBehemothLootTable,
+	OrrodilLootTable,
+	OrymLootTable
+} from '@/lib/bso/monsters/VerdantIsland.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
@@ -90,6 +97,7 @@ import {
 	alchemicalHydraCL,
 	allPetsCL,
 	amoxliatlCL,
+	archonCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
 	brimhavenAgilityArenaCL,
@@ -120,6 +128,7 @@ import {
 	cluesSharedCL,
 	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
+	concontractsCL,
 	corporealBeastCL,
 	crackerCL,
 	crazyArchaeologistCL,
@@ -130,6 +139,7 @@ import {
 	demonicGorillaCL,
 	derangedArchaeologistCL,
 	diariesCL,
+	distilleryCL,
 	dukeSucellusCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
@@ -948,6 +958,47 @@ export const allCollectionLogs: ICollection = {
 				allItems: BSOMonsters.Celestara.allItems,
 				items: BSOMonsters.Celestara.allItems!,
 				fmtProg: kcProg(BSOMonsters.Celestara.id)
+			},
+			Orym: {
+				alias: ['orym'],
+				allItems: OrymLootTable.allItems,
+				items: BSOMonsters.Orym.allItems!,
+				fmtProg: kcProg(BSOMonsters.Orym.id)
+			},
+			Orrodil: {
+				alias: ['orrodil'],
+				allItems: OrrodilLootTable.allItems,
+				items: BSOMonsters.Orrodil.allItems!,
+				fmtProg: kcProg(BSOMonsters.Orrodil.id)
+			},
+			'Burning Dominion': {
+				alias: ['burning dominion', 'burning'],
+				allItems: BurningDominionLootTable.allItems,
+				items: BSOMonsters.BurningDominion.allItems!,
+				fmtProg: kcProg(BSOMonsters.BurningDominion.id)
+			},
+			'Fungal Behemoth': {
+				alias: ['fungal behemoth', 'fungal', 'behemoth'],
+				allItems: FungalBehemothLootTable.allItems,
+				items: BSOMonsters.FungalBehemoth.allItems!,
+				fmtProg: kcProg(BSOMonsters.FungalBehemoth.id)
+			},
+			'Crystalline Sentinel': {
+				alias: ['crystalline sentinel', 'sentinel', 'crystal sentinel'],
+				allItems: CrystallineSentinelLootTable.allItems,
+				items: BSOMonsters.CrystallineSentinel.allItems!,
+				fmtProg: kcProg(BSOMonsters.CrystallineSentinel.id)
+			},
+			'Elder Mimic': {
+				alias: ['elder mimic', 'elder'],
+				allItems: BSOMonsters.ElderMimic.allItems,
+				items: BSOMonsters.ElderMimic.allItems!,
+				fmtProg: kcProg(BSOMonsters.ElderMimic.id)
+			},
+			Archon: {
+				alias: ['archon', 'arch'],
+				items: archonCL,
+				isActivity: true
 			}
 		}
 	},
@@ -1362,6 +1413,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['af', 'aerial fishing'],
 				items: aerialFishingCL
 			},
+			'Brimstone Distillery': {
+				alias: ['distillery', 'brimstone distillery'],
+				items: distilleryCL
+			},
 			Camdozaal: {
 				items: camdozaalCL
 			},
@@ -1373,6 +1428,10 @@ export const allCollectionLogs: ICollection = {
 			'Colossal Wyrm Agility': {
 				alias: ['colossal wyrm agility', 'colo agility', 'wyrm agility'],
 				items: colossalWyrmAgilityCL
+			},
+			'Construction Contracts': {
+				alias: ['cc', 'construction contracts'],
+				items: concontractsCL
 			},
 			'Creature Creation': {
 				items: creatureCreationCL

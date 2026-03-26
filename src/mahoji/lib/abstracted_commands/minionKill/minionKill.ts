@@ -1,4 +1,5 @@
 import { igneCommand } from '@/lib/bso/commands/igneCommand.js';
+import { defaultIslandUpgrades, type IslandUpgradeTiers } from '@/lib/bso/commands/islandUpgrades.js';
 import { kgCommand } from '@/lib/bso/commands/kgCommand.js';
 import { kkCommand } from '@/lib/bso/commands/kkCommand.js';
 import { moktangCommand } from '@/lib/bso/commands/moktangCommand.js';
@@ -68,6 +69,10 @@ export async function minionKillCommand(
 		return vasaCommand(interaction, user, channelId, inputQuantity);
 	}
 
+	if (['burning dominion', 'dominion', 'burning'].some(i => name.toLowerCase().includes(i))) {
+		return 'Orym and Orrodil cannot be fought alone! You need a team to challenge the Burning Dominion. Use `/mass monster: Burning Dominion` instead.';
+	}
+
 	let monster = findMonster(name);
 
 	const matchedRevenantMonster = revenantMonsters.find(monster =>
@@ -116,7 +121,8 @@ export async function minionKillCommand(
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
 		disabledInventions: user.user.disabled_inventions,
-		currentPeak: generateDailyPeakIntervals().currentPeak
+		currentPeak: generateDailyPeakIntervals().currentPeak,
+		islandUpgrades: (user.user.island_upgrades as IslandUpgradeTiers) ?? defaultIslandUpgrades
 	});
 
 	if (typeof result === 'string') {
@@ -138,10 +144,6 @@ export async function minionKillCommand(
 	}
 
 	if (updateResult.message.length > 0) result.messages.push(updateResult.message);
-
-	if (updateResult.totalCost.length > 0) {
-		result.messages.push(`Removing items: ${updateResult.totalCost}`);
-	}
 
 	if (result.updateBank.itemCostBank.length > 0) {
 		await ClientSettings.updateBankSetting('economyStats_PVMCost', result.updateBank.itemCostBank);

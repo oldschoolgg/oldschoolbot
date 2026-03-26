@@ -262,6 +262,11 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 		}
 	}
 
+	if (user.hasEquippedOrInBank('Celestial pendant')) {
+		totalTime = Math.floor(totalTime / 0.9);
+		messages.push('10% faster from Celestial pendant.');
+	}
+
 	const logItem = Items.getItem(logStr);
 	if (!logItem) return 'Invalid logs item';
 

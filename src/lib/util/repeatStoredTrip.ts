@@ -1,5 +1,7 @@
 import type {
 	BathhouseTaskOptions,
+	BrimstoneDistilleryTaskOptions,
+	ConstructionContractsTaskOptions,
 	DisassembleTaskOptions,
 	DOAOptions,
 	DungeoneeringOptions,
@@ -34,6 +36,7 @@ import type {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
+	ArchaicMiningActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
@@ -95,6 +98,7 @@ export const taskCanBeRepeated = (activity: Activity) => {
 		[
 			activity_type_enum.TearsOfGuthix,
 			activity_type_enum.ShootingStars,
+			activity_type_enum.Archon,
 			activity_type_enum.BirthdayEvent,
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
@@ -265,6 +269,27 @@ const tripHandlers: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
 			camdozaal: { action: 'fishing', quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.GemstoneFishing]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			gemstone_fishing: { quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.AncientMycology]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			ancient_mycology: { quantity: data.iQty }
+		})
+	},
+	[activity_type_enum.ArchaicMining]: {
+		commandName: 'activities',
+		args: (data: ArchaicMiningActivityTaskOptions | ActivityTaskOptionsWithQuantity) => ({
+			archaic_mining: {
+				type: (data as ArchaicMiningActivityTaskOptions).miningType,
+				quantity: data.iQty
+			}
 		})
 	},
 	[activity_type_enum.BarbarianAssault]: {
@@ -550,6 +575,12 @@ const tripHandlers: {
 			name: 'tempoross'
 		})
 	},
+	[activity_type_enum.Archon]: {
+		commandName: 'k',
+		args: () => ({
+			name: 'archon'
+		})
+	},
 	[activity_type_enum.Wintertodt]: {
 		commandName: 'k',
 		args: (data: MinigameActivityTaskOptionsWithNoChanges) => ({
@@ -760,6 +791,12 @@ const tripHandlers: {
 			name: `Ignecarus ${data.users.length === 1 ? 'solo' : 'mass'}`
 		})
 	},
+	[activity_type_enum.BurningDominion]: {
+		commandName: 'mass',
+		args: () => ({
+			monster: 'burning dominion'
+		})
+	},
 	[activity_type_enum.KibbleMaking]: {
 		commandName: 'kibble',
 		args: (data: KibbleOptions) => ({
@@ -926,6 +963,26 @@ const tripHandlers: {
 			turaels_trials: {
 				start: {
 					method: _data.m
+				}
+			}
+		})
+	},
+	[activity_type_enum.BrimstoneDistillery]: {
+		commandName: 'bsominigames',
+		args: (data: BrimstoneDistilleryTaskOptions) => ({
+			brimstone_distillery: {
+				start: {
+					recipe: data.recipe
+				}
+			}
+		})
+	},
+	[activity_type_enum.ConstructionContracts]: {
+		commandName: 'bsominigames',
+		args: (data: ConstructionContractsTaskOptions) => ({
+			construction_contracts: {
+				start: {
+					recipe: data.recipe
 				}
 			}
 		})
