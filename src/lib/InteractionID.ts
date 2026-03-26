@@ -44,6 +44,7 @@ export const InteractionID = {
 		StartTearsOfGuthix: 'START_TOG',
 		NewSlayerTask: 'NEW_SLAYER_TASK',
 		DoBirdHouseRun: 'DO_BIRDHOUSE_RUN',
+		ToggleAutoRummage: 'TOGGLE_AUTO_RUMMAGE',
 		// Farming
 		FarmingContractEasier: 'FARMING_CONTRACT_EASIER',
 		AutoFarmingContract: 'AUTO_FARMING_CONTRACT',

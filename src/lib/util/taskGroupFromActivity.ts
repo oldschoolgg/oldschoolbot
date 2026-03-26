@@ -45,6 +45,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'AnimatedArmour':
 		case 'Cyclops':
 		case 'Sepulchre':
+		case 'ValeTotems':
 		case 'Plunder':
 		case 'Zalcano':
 		case 'FishingTrawler':
