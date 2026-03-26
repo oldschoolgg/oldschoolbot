@@ -1342,7 +1342,7 @@ export const troubleBrewingCL = resolveItems([
 	'Red rum (trouble brewing)',
 	'Blue rum (trouble brewing)'
 ]);
-export const valeTotemsCL = resolveItems(['Bow string spool', 'Ent branch', 'Fletching knife', 'Greenman mask']);
+export const valeTotemsCL = resolveItems(['Bow string spool', 'Ent branch', 'Fletching knife', 'Greenman mask', 'Vale offerings']);
 export const volcanicMineCL = resolveItems([
 	'Ash covered tome',
 	'Large water container',

@@ -24,7 +24,8 @@ import {
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
-	makeTearsOfGuthixButton
+	makeTearsOfGuthixButton,
+	makeAutoRummageToggleButton
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
@@ -200,6 +201,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ components, loot }) => {
 			if (loot?.has('Seed pack')) {
 				components.push(makeOpenSeedPackButton());
+			}
+		}
+	},
+	{
+		name: 'Vale Offerings - Toggle Auto Rummage',
+		fn: async ({components, data}) => {
+			if (data.type === 'ValeTotems') {
+				components.push(makeAutoRummageToggleButton());
 			}
 		}
 	}

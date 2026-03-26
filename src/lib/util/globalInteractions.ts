@@ -16,6 +16,7 @@ import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayComman
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { shootingStarsCommand } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import {toggleAutoRummage} from "@/lib/minions/data/valeTotems.js";
 
 async function giveawayButtonHandler(user: MUser, customID: string, interaction: OSInteraction): CommandResponse {
 	const split = customID.split('_');
@@ -249,6 +250,8 @@ async function globalButtonInteractionHandler({
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 
 	if (id.startsWith('ge_')) return handleGEButton(user, id);
+
+	if (id === InteractionID.Commands.ToggleAutoRummage) return toggleAutoRummage(user);
 
 	if (await user.getIsLocked()) {
 		return { content: 'You cannot use a command right now.', ephemeral: true };

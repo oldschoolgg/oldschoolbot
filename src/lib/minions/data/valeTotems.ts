@@ -1,6 +1,10 @@
-import { LootTable } from 'oldschooljs';
+import {Bank, EItem, LootTable} from 'oldschooljs';
 
-import { birdsNestID, eggNest, ringNests, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import {birdsNestID, eggNest, ringNests, treeSeedsNest} from '@/lib/simulation/birdsNest.js';
+import {MathRNG} from "node-rng";
+import {UserStats} from "@/prisma/clients/main/client.js";
+import {toggleBitfield} from "@/lib/util.js";
+import {BitField} from "@/lib/constants.js";
 
 const clueTiers: [string, number][] = [
 	['beginner', 256],
@@ -185,4 +189,43 @@ export function createCleanDirtyArrowsTable(fletchLvl: number): LootTable {
 	const selectedTable = tableByLevel.find(([maxLvl]) => fletchLvl < maxLvl)![1];
 
 	return selectedTable;
+}
+
+export function claimValeOfferings(user: MUser, userStats: UserStats, rewards: number, rng: RNGProvider = MathRNG): { loot: Bank, msg: string } {
+	const fletchingLvl = user.skillLevel('fletching');
+	const hasForestryKit = user.hasEquippedOrInBank(EItem.FORESTRY_KIT);
+
+	const loot = new Bank();
+	const lootTable = createRummageOfferingsTable(fletchingLvl, hasForestryKit);
+	for (let i = 0; i < rewards; i++) {
+		if (rng.roll(100)) {
+			loot.add(preRollTable.roll());
+			continue;
+		}
+		loot.add(lootTable.roll());
+	}
+
+	// Dirty arrowtips and it's logic
+	const hasDirtyArrowtips = loot.has('Dirty arrowtips');
+	let dirtyArrowTipCount: number | undefined;
+
+	if (hasDirtyArrowtips) {
+		const dirtyArrowTipTable = createCleanDirtyArrowsTable(fletchingLvl);
+		dirtyArrowTipCount = loot.amount('Dirty arrowtips');
+		loot.remove('Dirty arrowtips', dirtyArrowTipCount);
+		for (let i = 0; i < dirtyArrowTipCount; i++) {
+			loot.add(dirtyArrowTipTable.roll());
+		}
+	}
+
+	const msg = `${user.minionName} gained ${rewards} Vale Research points (total ${userStats.vale_research_points + rewards}). ${
+		hasDirtyArrowtips
+			? `While rummaging through the offerings, ${user.minionName} discovered and cleaned ${dirtyArrowTipCount}x Dirty arrowtips.`
+			: ''
+	}`
+	return { loot, msg };
+}
+
+export function toggleAutoRummage(user: MUser) {
+	return toggleBitfield(user, BitField.ToggleAutoRummage);
 }

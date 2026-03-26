@@ -87,7 +87,7 @@ import {
 	ValeTotemsDecorations,
 	valeTotemsBuyCommand,
 	valeTotemsSellCommand,
-	valeTotemsStartCommand
+	valeTotemsStartCommand, valeTotemsRummageCommand
 } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import {
 	VolcanicMineShop,
@@ -1174,6 +1174,26 @@ export const minigamesCommand = defineCommand({
 							min_value: 1
 						}
 					]
+				},
+				{
+					type: 'Subcommand',
+					name: 'rummage',
+					description: 'Rummage Vale offerings.',
+					options: [
+						{
+							type: 'Integer',
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
+						},
+						{
+							type: 'Boolean',
+							name: 'all',
+							description: 'Rummage all offerings.',
+							required: false
+						}
+					]
 				}
 			]
 		}
@@ -1542,6 +1562,14 @@ export const minigamesCommand = defineCommand({
 				user,
 				options.vale_totems.sell.item,
 				options.vale_totems.sell.quantity
+			);
+		}
+		if (options.vale_totems?.rummage) {
+			return valeTotemsRummageCommand(
+				interaction,
+				user,
+				options.vale_totems.rummage.quantity,
+				options.vale_totems.rummage.all,
 			);
 		}
 
