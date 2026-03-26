@@ -80,15 +80,17 @@ const toggles: UserConfigToggle[] = [
 		name: 'Lock Self From Gambling',
 		bit: BitField.SelfGamblingLocked,
 		canToggle: async (user, interaction) => {
-			if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
-				if (user.user.gambling_lockout_expiry && user.user.gambling_lockout_expiry.getTime() > Date.now()) {
-					const timeRemaining = user.user.gambling_lockout_expiry.getTime() - Date.now();
-					return {
-						result: false,
-						message: `You cannot toggle this off for another ${formatDuration(
-							timeRemaining
-						)}, you locked yourself from gambling!`
-					};
+			if (user.bitfield.includes(BitField.SelfGamblingLocked) && user.user.gambling_lockout_expiry) {
+				const timeRemaining = user.user.gambling_lockout_expiry.getTime() - Date.now();
+				if (timeRemaining < Time.Year) {
+					if (user.user.gambling_lockout_expiry.getTime() > Date.now()) {
+						return {
+							result: false,
+							message: `You cannot toggle this off for another ${formatDuration(
+								timeRemaining
+							)}, you locked yourself from gambling!`
+						};
+					}
 				}
 				return { result: true, message: 'Your Gambling lockout time has expired.' };
 			} else if (interaction) {
@@ -173,6 +175,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Allow Public API Data Retrieval',
 		bit: BitField.AllowPublicAPIDataRetrieval
+	},
+	{
+		name: 'Disable Item Paints',
+		bit: BitField.DisablePaints
 	}
 ];
 
