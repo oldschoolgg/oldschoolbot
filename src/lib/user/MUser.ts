@@ -72,18 +72,10 @@ import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export class MUserClass extends BaseUser {
-	private initPromise: Promise<void> | null = null;
-	private hasInit: boolean = false;
 	constructor(user: User) {
 		super(user);
-		void this.init();
 	}
 
-	async init() {
-		if (this.hasInit) return;
-		this.perkTier = await this.fetchPerkTier();
-		this.hasInit = true;
-	}
 	getGearUpdateData(gearUpdates: GearWithSetupType[]) {
 		const newGearData: Partial<Record<GearColumns, GearSetup | null>> = {};
 		for (const { setup, gear } of gearUpdates) {
@@ -167,12 +159,10 @@ export class MUserClass extends BaseUser {
 	}
 
 	async calcMaxGearPresets() {
-		await this.initPromise;
 		return this.perkTier * 2 + 4;
 	}
 
 	async fetchPerkTier(): Promise<0 | PerkTier> {
-		if (this.initPromise !== null) await this.initPromise;
 		this.perkTier = await getUsersPerkTier(this);
 		return this.perkTier;
 	}
@@ -687,7 +677,6 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async checkBankBackground() {
-		await this.initPromise;
 		if (this.isModOrAdmin()) {
 			return;
 		}
