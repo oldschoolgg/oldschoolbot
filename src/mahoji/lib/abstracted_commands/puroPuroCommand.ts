@@ -103,7 +103,7 @@ export async function puroPuroStartCommand(
 		minigameID: 'puro_puro'
 	});
 
-	let str = `${user.minionName} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${await formatTripDuration(user, duration)} to finish.`;
+	let str = `${user.minionName} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${formatTripDuration(user, duration)} to finish.`;
 
 	if (!user.hasGracefulEquipped() && impToHunt.name !== 'Dragon Implings')
 		str += '\n20% less implings due to having no Graceful equipped.';

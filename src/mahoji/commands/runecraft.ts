@@ -337,7 +337,7 @@ export const runecraftCommand = defineCommand({
 			response += ' Pure ';
 		}
 
-		response += `Essence into ${runeObj.name}, it'll take around ${await formatTripDuration(
+		response += `Essence into ${runeObj.name}, it'll take around ${formatTripDuration(
 			user,
 			duration
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${

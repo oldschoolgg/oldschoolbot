@@ -43,5 +43,5 @@ export async function mageArenaCommand(rng: RNGProvider, user: MUser, channelId:
 		type: 'MageArena'
 	});
 
-	return `${user.minionName} is now doing the Mage Arena, it will take approximately ${await formatTripDuration(user, duration)}. Removed ${totalCost} from your bank.`;
+	return `${user.minionName} is now doing the Mage Arena, it will take approximately ${formatTripDuration(user, duration)}. Removed ${totalCost} from your bank.`;
 }

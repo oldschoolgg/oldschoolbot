@@ -11,13 +11,13 @@ test('formatDurationWithTimestamp returns plain duration when timestamp setting 
 	expect(formatDurationWithTimestamp(30_000, PerkTier.Seven, false)).toBe('30 seconds');
 });
 
-test('formatDurationWithTimestamp returns plain duration for sub-tier-4 users', () => {
-	expect(formatDurationWithTimestamp(30_000, PerkTier.Three, true)).toBe('30 seconds');
+test('formatDurationWithTimestamp returns plain duration for sub-tier-1 users', () => {
+	expect(formatDurationWithTimestamp(30_000, 0, true)).toBe('30 seconds');
 });
 
 test('formatDurationWithTimestamp includes return timestamp for tier-4+ users when enabled', () => {
 	vi.useFakeTimers();
 	vi.setSystemTime(new Date('2025-01-01T00:00:00.000Z'));
 
-	expect(formatDurationWithTimestamp(90_000, PerkTier.Four, true)).toBe('1 minute, 30 seconds (<t:1735689690:t>)');
+	expect(formatDurationWithTimestamp(90_000, PerkTier.Four, true)).toBe('<t:1735689690:R> (<t:1735689690:t>)');
 });

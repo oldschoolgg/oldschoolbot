@@ -85,7 +85,7 @@ export async function sawmillCommand(
 
 	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${
 		quantity > 1 ? 's' : ''
-	}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${await formatTripDuration(user, duration)}.`;
+	}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

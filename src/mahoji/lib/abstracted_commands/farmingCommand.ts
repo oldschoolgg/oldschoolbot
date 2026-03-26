@@ -89,7 +89,7 @@ export async function harvestCommand({
 	}
 
 	returnMessageStr = `${user.minionName} is now harvesting ${patch.lastQuantity}x ${storeHarvestablePlant}.
-It'll take around ${await formatTripDuration(user, duration)} to finish.
+It'll take around ${formatTripDuration(user, duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
@@ -306,7 +306,7 @@ export async function farmingPlantCommand({
 	});
 
 	return `${infoStr.join(' ')}
-It'll take around ${await formatTripDuration(user, duration)} to finish.
+It'll take around ${formatTripDuration(user, duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }

@@ -1,7 +1,7 @@
 import { escapeMarkdown, userMention } from '@oldschoolgg/discord';
 import { defaultGearSetup, type GearSetup } from '@oldschoolgg/gear';
 import { type ECombatOption, type IBlowpipeData, ZBlowpipeData } from '@oldschoolgg/schemas';
-import { cleanUsername, Emoji, sumArr } from '@oldschoolgg/toolkit';
+import { cleanUsername, Emoji, type PerkTier, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, convertXPtoLVL, type Item, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 
@@ -59,6 +59,7 @@ export class BaseUser {
 	badgesString!: string;
 	bitfield!: readonly BitField[];
 	iconPackId!: IconPackID | null;
+	perkTier: PerkTier | 0;
 
 	private _bankLazy: Bank | null = null;
 	private _clLazy: Bank | null = null;
@@ -66,6 +67,7 @@ export class BaseUser {
 
 	constructor(user: User) {
 		this.id = user.id;
+		this.perkTier = 0;
 		this._updateRawUser(user);
 	}
 

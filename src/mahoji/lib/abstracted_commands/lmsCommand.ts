@@ -99,5 +99,5 @@ export async function lmsCommand(
 
 	return `${
 		user.minionName
-	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${await formatTripDuration(user, duration)}.`;
+	} is now off to do ${quantity} games of competitive Last Man Standing. The trip will take ${formatTripDuration(user, duration)}.`;
 }

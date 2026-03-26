@@ -259,8 +259,8 @@ export const mineCommand = defineCommand({
 			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
-				? `between ${await formatTripDuration(user, res.fakeDurationMin)} **and** ${await formatTripDuration(user, res.fakeDurationMax)}`
-				: await formatTripDuration(user, res.duration)
+				? `between ${formatTripDuration(user, res.fakeDurationMin)} **and** ${formatTripDuration(user, res.fakeDurationMax)}`
+				: formatTripDuration(user, res.duration)
 		} to finish.`;
 
 		if (res.boosts.length > 0) {

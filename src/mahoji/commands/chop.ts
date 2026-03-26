@@ -235,8 +235,8 @@ export const chopCommand = defineCommand({
 			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
-				? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
-				: await formatTripDuration(user, duration)
+				? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
+				: formatTripDuration(user, duration)
 		} to finish.`;
 
 		if (boosts.length > 0) {

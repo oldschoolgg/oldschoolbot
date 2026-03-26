@@ -184,7 +184,7 @@ export async function guardiansOfTheRiftStartCommand(
 		combinationRunes
 	});
 
-	return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${await formatTripDuration(user, duration)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}${
+	return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${formatTripDuration(user, duration)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}${
 		combinationRunes ? `\nYour minion also consumed ${removeRunesAndNecks}.` : ''
 	}`;
 }

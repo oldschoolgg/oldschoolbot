@@ -148,7 +148,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		response += `\nYou have used ${consumedItems} for teleports.`;
 	}
 
-	response += `\nThey'll come back in around ${await formatTripDuration(user, duration)}.`;
+	response += `\nThey'll come back in around ${formatTripDuration(user, duration)}.`;
 
 	return response;
 }

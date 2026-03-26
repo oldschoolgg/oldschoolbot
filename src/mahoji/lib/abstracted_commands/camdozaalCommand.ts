@@ -75,8 +75,8 @@ async function miningCommand(rng: RNGProvider, user: MUser, channelId: string, q
 		quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity
-			? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
-			: await formatTripDuration(user, duration)
+			? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
+			: formatTripDuration(user, duration)
 	} to finish.`;
 
 	if (boosts.length > 0) {
@@ -125,7 +125,7 @@ async function smithingCommand(user: MUser, channelId: string, quantity: number 
 		type: 'CamdozaalSmithing'
 	});
 
-	return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${await formatTripDuration(user, duration)} to finish.`;
+	return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatTripDuration(user, duration)} to finish.`;
 }
 
 async function fishingCommand(user: MUser, channelId: string, quantity: number | undefined) {
@@ -160,7 +160,7 @@ async function fishingCommand(user: MUser, channelId: string, quantity: number |
 		type: 'CamdozaalFishing'
 	});
 
-	return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${await formatTripDuration(user, duration)} to finish.`;
+	return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatTripDuration(user, duration)} to finish.`;
 }
 export async function camdozaalCommand(
 	rng: RNGProvider,

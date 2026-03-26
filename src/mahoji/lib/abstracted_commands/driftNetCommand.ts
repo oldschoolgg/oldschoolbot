@@ -83,7 +83,7 @@ export async function driftNetCommand(
 
 	await user.removeItemsFromBank(itemsToRemove);
 
-	let str = `${user.minionName} is now doing Drift net fishing, it will take around ${await formatTripDuration(user, duration)}.`;
+	let str = `${user.minionName} is now doing Drift net fishing, it will take around ${formatTripDuration(user, duration)}.`;
 
 	if (itemsToRemove.length > 0) {
 		str += ` Removed ${itemsToRemove} from your bank.`;

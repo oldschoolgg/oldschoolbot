@@ -57,7 +57,7 @@ export async function roguesDenCommand(user: MUser, channelId: string) {
 
 	let str = `${
 		user.minionName
-	} is now off to complete the Rogues' Den maze ${quantity}x times, their trip will take ${await formatTripDuration(user, duration)} (${formatDuration(baseTime)} per lap).`;
+	} is now off to complete the Rogues' Den maze ${quantity}x times, their trip will take ${formatTripDuration(user, duration)} (${formatDuration(baseTime)} per lap).`;
 
 	if (staminasToRemove.length > 0) {
 		str += ` Removed ${staminasToRemove} from your bank.`;

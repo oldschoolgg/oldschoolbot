@@ -117,7 +117,7 @@ export async function trekCommand(user: MUser, channelId: string, difficulty: st
 		minigameID: 'temple_trekking'
 	});
 
-	let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will take ${await formatTripDuration(user, duration)}, with each trek taking ${formatDuration(tripTime)}.`;
+	let str = `${user.minionName} is now doing Temple Trekking ${quantity} times. The trip will take ${formatTripDuration(user, duration)}, with each trek taking ${formatDuration(tripTime)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

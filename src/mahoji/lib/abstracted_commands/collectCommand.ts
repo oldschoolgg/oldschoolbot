@@ -91,7 +91,7 @@ export async function collectCommand(
 
 	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
 		collectable.item.name
-	}, it'll take around ${await formatTripDuration(user, duration)} to finish.${
+	}, it'll take around ${formatTripDuration(user, duration)} to finish.${
 		cost.toString().length > 0
 			? `
 Removed ${cost} from your bank.`

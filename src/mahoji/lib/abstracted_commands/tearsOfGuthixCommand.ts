@@ -87,5 +87,5 @@ export async function tearsOfGuthixCommand(user: MUser, channelId: string) {
 
 	return `${
 		user.minionName
-	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${await formatTripDuration(user, duration)}.`;
+	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatTripDuration(user, duration)}.`;
 }

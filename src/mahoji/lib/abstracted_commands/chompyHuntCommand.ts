@@ -83,7 +83,7 @@ export async function chompyHuntCommand({ user, channelId, rng }: OSInteraction 
 		minigameID: 'big_chompy_bird_hunting'
 	});
 
-	let str = `${user.minionName} is now hunting chompy birds! The trip will take ${await formatTripDuration(user, tripLength)}. Removing items: ${realCost}.`;
+	let str = `${user.minionName} is now hunting chompy birds! The trip will take ${formatTripDuration(user, tripLength)}. Removing items: ${realCost}.`;
 
 	if (boosts.length > 0) {
 		str += `\n**Boosts:** ${boosts.join(', ')}.`;

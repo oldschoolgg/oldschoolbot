@@ -158,7 +158,7 @@ export async function volcanicMineCommand(user: MUser, channelId: string, gameQu
 
 	const str = `${
 		user.minionName
-	} is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${await formatTripDuration(user, duration)}.${
+	} is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${formatTripDuration(user, duration)}.${
 		boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
 	}\n**Supply Usage:** ${suppliesUsage}`;
 

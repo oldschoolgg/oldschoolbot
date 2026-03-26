@@ -28,5 +28,5 @@ export async function aerialFishingCommand({
 		type: 'AerialFishing'
 	});
 
-	return `${user.minionName} is now doing Aerial fishing, it will take around ${await formatTripDuration(user, duration)} to finish.`;
+	return `${user.minionName} is now doing Aerial fishing, it will take around ${formatTripDuration(user, duration)} to finish.`;
 }

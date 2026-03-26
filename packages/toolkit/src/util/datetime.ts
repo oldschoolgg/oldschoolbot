@@ -29,6 +29,11 @@ export function timeOnly(date: Date): string {
 	return `<t:${unixSeconds}:t>`;
 }
 
+export function relativeTimestamp(date: Date): string {
+	const unixSeconds = Math.floor(date.getTime() / 1000);
+	return `<t:${unixSeconds}:R>`;
+}
+
 export function formatDuration(ms: number, short = false, precise = false): string {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -52,11 +57,15 @@ export function formatDuration(ms: number, short = false, precise = false): stri
 		.join(short ? '' : ', ');
 }
 
-export function formatDurationWithTimestamp(durationMs: number, perkTier: number, showTimestamp: boolean): string {
+export function formatDurationWithTimestamp(
+	durationMs: number,
+	perkTier: number,
+	disableShowTimestamp: boolean
+): string {
 	const duration = formatDuration(durationMs);
-	if (perkTier >= PerkTier.Four && showTimestamp) {
+	if (perkTier >= PerkTier.Two && !disableShowTimestamp) {
 		const finishDate = new Date(Date.now() + durationMs);
-		return `${duration} (${timeOnly(finishDate)})`;
+		return `${relativeTimestamp(finishDate)} (${timeOnly(finishDate)})`;
 	}
 	return duration;
 }

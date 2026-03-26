@@ -96,7 +96,7 @@ export async function underwaterAgilityThievingCommand({
 
 	await user.transactItems({ itemsToRemove });
 
-	let str = `${user.minionName} is now doing Underwater Agility and Thieving, it will take around ${await formatTripDuration(user, duration)}.`;
+	let str = `${user.minionName} is now doing Underwater Agility and Thieving, it will take around ${formatTripDuration(user, duration)}.`;
 
 	if (itemsToRemove.length > 0) {
 		str += ` Removed ${itemsToRemove} from your bank.`;

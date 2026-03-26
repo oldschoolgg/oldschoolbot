@@ -18,5 +18,5 @@ export async function troubleBrewingStartCommand(user: MUser, channelId: string)
 		minigameID: 'trouble_brewing'
 	});
 
-	return `${user.minionName} is now doing ${quantity}x games of Trouble Brewing! It will take ${await formatTripDuration(user, duration)} to finish.`;
+	return `${user.minionName} is now doing ${quantity}x games of Trouble Brewing! It will take ${formatTripDuration(user, duration)} to finish.`;
 }

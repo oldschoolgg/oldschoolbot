@@ -81,5 +81,5 @@ export async function zalcanoCommand(rng: RNGProvider, user: MUser, channelId: s
 		isMVP: rng.percentChance(80)
 	});
 
-	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${await formatTripDuration(user, duration)}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
+	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatTripDuration(user, duration)}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
 }

@@ -94,7 +94,7 @@ export async function agilityArenaCommand(
 		minigameID: 'agility_arena'
 	});
 
-	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${await formatTripDuration(user, duration)}.`;
+	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

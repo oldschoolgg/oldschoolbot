@@ -94,5 +94,5 @@ export async function unchargeGloriesCommand(
 		type: 'GloryUncharging'
 	});
 
-	return `${user.minionName} is now uncharging ${itemsToRemove}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
+	return `${user.minionName} is now uncharging ${itemsToRemove}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 }

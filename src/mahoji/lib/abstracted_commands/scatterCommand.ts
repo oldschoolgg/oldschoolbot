@@ -57,5 +57,5 @@ export async function scatterCommand(user: MUser, channelId: string, ashName: st
 		type: 'Scattering'
 	});
 
-	return `${user.minionName} is now scattering ${cost}, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
+	return `${user.minionName} is now scattering ${cost}, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 }

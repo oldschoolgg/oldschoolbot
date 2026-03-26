@@ -28,7 +28,7 @@ async function soloMessage(user: MUser, duration: number, quantity: number, isPh
 		str += ` They are not scared of ${name} anymore, and ready to fight!`;
 	}
 
-	return `${str} The trip will take approximately ${await formatTripDuration(user, duration)}.`;
+	return `${str} The trip will take approximately ${formatTripDuration(user, duration)}.`;
 }
 
 const inquisitorItems = resolveItems(["Inquisitor's great helm", "Inquisitor's hauberk", "Inquisitor's plateskirt"]);
@@ -326,7 +326,7 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 					perKillTime
 				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
-				)} - the total trip will take ${await formatTripDuration(user, duration)}.`;
+				)} - the total trip will take ${formatTripDuration(user, duration)}.`;
 
 	str += `\nRemoved ${soloFoodUsage} from your bank.${
 		isPhosani

@@ -176,6 +176,6 @@ export const tksCommand = defineCommand({
 		// Trip start message
 		return `${user.minionName} is now ${action}ing ${action === 'buy' ? loot : cost} ${
 			action === 'buy' ? 'from' : 'to'
-		} the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${await formatTripDuration(user, duration)}.`;
+		} the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${formatTripDuration(user, duration)}.`;
 	}
 });

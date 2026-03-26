@@ -149,17 +149,8 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.AllowPublicAPIDataRetrieval
 	},
 	{
-		name: 'Show minion return time in your local time',
-		bit: BitField.ShowMinionReturnTime,
-		canToggle: async user => {
-			if ((await user.fetchPerkTier()) < PerkTier.Four) {
-				return {
-					result: false,
-					message: patronMsg(4)
-				};
-			}
-			return { result: true };
-		}
+		name: 'Disaable dynamic return times',
+		bit: BitField.DisableDynamicTimestamp
 	},
 	{
 		name: 'Auto Rummage Vale Offerings',

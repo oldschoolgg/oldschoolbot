@@ -147,7 +147,7 @@ export async function gauntletCommand(
 
 	const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : '';
 
-	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${await formatTripDuration(user, duration)}.
+	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatTripDuration(user, duration)}.
 ${boostsStr}
 `;
 }

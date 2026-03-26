@@ -65,5 +65,5 @@ export async function buyingTripCommand(
 		totalCost
 	});
 
-	return `${user.minionName} is now buying ${quantity}x ${itemDisplayName} and will return in ${await formatTripDuration(user, duration)}.`;
+	return `${user.minionName} is now buying ${quantity}x ${itemDisplayName} and will return in ${formatTripDuration(user, duration)}.`;
 }

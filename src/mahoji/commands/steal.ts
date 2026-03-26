@@ -121,7 +121,7 @@ export const stealCommand = defineCommand({
 
 		let str = `${user.minionName} is now going to ${
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
-		} a ${stealable.name} ${quantity}x times, it'll take around ${await formatTripDuration(user, duration)} to finish.`;
+		} a ${stealable.name} ${quantity}x times, it'll take around ${formatTripDuration(user, duration)} to finish.`;
 
 		if (stealable.type === 'pickpockable') {
 			const hasArdyHard = user.hasDiary('ardougne.hard');

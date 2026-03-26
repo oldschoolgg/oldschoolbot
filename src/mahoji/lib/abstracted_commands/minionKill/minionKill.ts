@@ -152,7 +152,7 @@ export async function minionKillCommand(
 		attackStyles: result.attackStyles,
 		onTask: slayerInfo.assignedTask !== null
 	});
-	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${await formatTripDuration(
+	let response = `${minionName} is now killing ${result.quantity}x ${monster.name}, it'll take around ${formatTripDuration(
 		user,
 		result.duration
 	)} to finish. Attack styles used: ${result.attackStyles.join(', ')}.`;

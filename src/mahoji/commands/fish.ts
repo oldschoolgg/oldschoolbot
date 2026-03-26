@@ -170,7 +170,7 @@ export const fishCommand = defineCommand({
 			type: 'Fishing'
 		});
 
-		let response = `${user.minionName} is now fishing ${spot.name}, it'll take around ${await formatTripDuration(user, result.duration)} to finish.`;
+		let response = `${user.minionName} is now fishing ${spot.name}, it'll take around ${formatTripDuration(user, result.duration)} to finish.`;
 		if (result.suppliesToRemove.length > 0) {
 			response += `\n\n**Used Supplies:** ${bankToStrShortNames(result.suppliesToRemove)}.`;
 		}

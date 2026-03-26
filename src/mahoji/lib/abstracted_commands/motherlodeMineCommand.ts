@@ -96,8 +96,8 @@ export async function motherlodeMineCommand({
 		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity
-			? `between ${await formatTripDuration(user, fakeDurationMin)} **and** ${await formatTripDuration(user, fakeDurationMax)}`
-			: await formatTripDuration(user, duration)
+			? `between ${formatTripDuration(user, fakeDurationMin)} **and** ${formatTripDuration(user, fakeDurationMax)}`
+			: formatTripDuration(user, duration)
 	} to finish.`;
 
 	if (boosts.length > 0) {

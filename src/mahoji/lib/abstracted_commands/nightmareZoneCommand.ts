@@ -392,7 +392,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 
 	return `${
 		user.minionName
-	} is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${await formatTripDuration(user, duration)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
+	} is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${formatTripDuration(user, duration)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
 }
 
 export async function nightmareZoneShopCommand(

@@ -147,7 +147,7 @@ export async function soulWarsStartCommand(rng: RNGProvider, user: MUser, channe
 
 	return `${
 		user.minionName
-	} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${await formatTripDuration(user, duration)}.`;
+	} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatTripDuration(user, duration)}.`;
 }
 
 export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: number) {

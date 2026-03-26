@@ -63,7 +63,7 @@ export async function questCommand(user: MUser, channelId: string, name?: string
 			questID: quest.id
 		});
 
-		return `${user.minionName} is now completing ${quest.name}, they'll finish in around ${await formatTripDuration(user, duration)}.`;
+		return `${user.minionName} is now completing ${quest.name}, they'll finish in around ${formatTripDuration(user, duration)}.`;
 	}
 
 	const currentQP = user.QP;
@@ -94,7 +94,7 @@ export async function questCommand(user: MUser, channelId: string, name?: string
 		userID: user.id,
 		channelId: channelId.toString()
 	});
-	let response = `${user.minionName} is now completing quests, they'll come back in around ${await formatTripDuration(user, duration)}.`;
+	let response = `${user.minionName} is now completing quests, they'll come back in around ${formatTripDuration(user, duration)}.`;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
