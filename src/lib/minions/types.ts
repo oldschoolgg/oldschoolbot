@@ -158,11 +158,6 @@ export interface AddXpParams {
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
-export enum OverrideStatus {
-	NoOverride = 0,
-	ForceEnabled = 1,
-	ForceDisabled = 2
-}
 
 export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
 export type DiaryTierName = (typeof diaryTiers)[number];

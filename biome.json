@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
 	"assist": {
 		"actions": {
 			"source": {
@@ -9,11 +9,10 @@
 						"groups": [
 							["@bso/**", "@/lib/bso/**"],
 							":BLANK_LINE:",
-							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:", "!@scripts/**"],
+							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
 							":BLANK_LINE:",
 							["@/prisma/**"],
 							["@/discord/**"],
-							["@scripts/**"],
 							[":ALIAS:", ":PATH:"]
 						]
 					}
@@ -69,7 +68,6 @@
 				"noExplicitAny": "warn",
 				"noAssignInExpressions": "warn",
 				"noAsyncPromiseExecutor": "off",
-				"noImportCycles": "warn",
 				"noConfusingVoidType": "off",
 				"noFocusedTests": "off",
 				"noArrayIndexKey": "off",
@@ -94,14 +92,14 @@
 				"noBannedTypes": "off",
 				"noForEach": "warn",
 				"noStaticOnlyClass": "off",
-				"noUselessContinue": "warn",
-				"noImportantStyles": "off"
+				"noUselessContinue": "warn"
 			},
 			"performance": {
 				"noAccumulatingSpread": "warn"
 			},
 			"nursery": {
 				"noFloatingPromises": "warn",
+				"noImportCycles": "warn",
 				"noShadow": "warn",
 				"noMisusedPromises": "warn"
 			}
