@@ -1,4 +1,4 @@
-import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
+import { becomeIronmanButton, learningTheRopesButton, mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 import { fetchUserStats } from '@/lib/util/fetchUserStats.js';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
@@ -13,10 +13,16 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 	// Ensure user has a userStats row
 	await fetchUserStats(user.id);
 
+	const tutorialMention = globalClient.mentionCommand('activities', 'quest');
+	const ironmanMention = globalClient.mentionCommand('minion', 'ironman');
 	return {
-		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
+		content: `You have successfully got yourself a minion.
 
-<:ironman:626647335900020746> You can make your new minion an Ironman by using the command: \`/minion ironman\`.
+Before using other minion commands, complete **Learning the Ropes** with ${tutorialMention} and set the quest name to \`Learning the Ropes\`, or press the button below.
+
+Please check out the links below for information you should read.
+
+<:ironman:626647335900020746> You can make your new minion an Ironman by using the command: ${ironmanMention}, or press the button below.
 
 🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://wiki.oldschool.gg/getting-started/rules/>
 
@@ -25,6 +31,6 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 <:BSO:863823820435619890> **BSO:** I run a 2nd bot called BSO (Bot School Old), which you can also play, it has lots of fun and unique changes, like 5x XP and infinitely stacking clues. Type \`/help\` for more information.
 
 Please click the buttons below for important links.`,
-		components: mahojiInformationalButtons
+		components: [learningTheRopesButton, becomeIronmanButton, ...mahojiInformationalButtons]
 	};
 }
