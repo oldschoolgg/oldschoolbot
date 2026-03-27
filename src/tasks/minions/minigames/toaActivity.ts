@@ -6,7 +6,7 @@ import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '@/lib/simulation/toa.js';
-import { normalizeTOAUsers, type RaidLevel } from '@/lib/simulation/toaUtils.js';
+import { getSuccessfulTOARaidCount, normalizeTOAUsers, type RaidLevel } from '@/lib/simulation/toaUtils.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 
@@ -75,6 +75,15 @@ export const toaTask: MinionTask = {
 		const itemsAddedTeamLoot = new TeamLoot();
 
 		for (let x = 0; x < quantity; x++) {
+			for (const { id, points, deaths } of detailedUsers[x]) {
+				const currentUser = raidResults.get(id)!;
+				currentUser.deaths += deaths.length;
+				if (wipedRooms[x] === null) {
+					currentUser.points += points;
+					currentUser.kc += 1;
+				}
+				raidResults.set(id, currentUser);
+			}
 			if (wipedRooms[x] !== null) continue;
 			const raidLoot = calcTOALoot({
 				users: detailedUsers[x].map(i => {
@@ -90,21 +99,15 @@ export const toaTask: MinionTask = {
 				raidLevel: raidLevel as RaidLevel,
 				rng
 			});
-			for (const { id, points, deaths } of detailedUsers[x]) {
-				const currentUser = raidResults.get(id)!;
-				currentUser.points += points;
-				currentUser.deaths += deaths.length;
-				currentUser.kc += 1;
-				raidResults.set(id, currentUser);
-			}
 			for (const [userID, userLoot] of raidLoot.teamLoot.entries()) {
 				totalLoot.add(userID, userLoot);
 			}
 			messages.push(...raidLoot.messages);
 		}
 		messages = uniqueArr(messages);
+		const successfulRaidCount = getSuccessfulTOARaidCount({ quantity, wipedRooms });
 		const minigameIncrementResult = await Promise.all(
-			allUsers.map(u => u.incrementMinigameScore('tombs_of_amascut', quantity))
+			allUsers.map(u => u.incrementMinigameScore('tombs_of_amascut', successfulRaidCount))
 		);
 
 		let resultMessage = isSolo
@@ -143,7 +146,7 @@ export const toaTask: MinionTask = {
 			await user.statsUpdate({
 				toa_raid_levels_bank: new Bank()
 					.add(currentStats.toa_raid_levels_bank as ItemBank)
-					.add(raidLevel, quantity)
+					.add(raidLevel, successfulRaidCount)
 					.toJSON(),
 				total_toa_duration_minutes: {
 					increment: Math.floor(duration / Time.Minute)
@@ -201,7 +204,7 @@ export const toaTask: MinionTask = {
 			type: 'Minigame',
 			changeType: 'loot',
 			duration,
-			kc: quantity,
+			kc: successfulRaidCount,
 			users: allUsers.map(i => ({
 				id: i.id,
 				duration,

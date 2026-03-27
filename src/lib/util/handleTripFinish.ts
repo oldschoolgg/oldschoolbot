@@ -17,6 +17,7 @@ import { MUserClass } from '@/lib/user/MUser.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
+	makeAutoRummageToggleButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeClaimDailyButton,
@@ -200,6 +201,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ components, loot }) => {
 			if (loot?.has('Seed pack')) {
 				components.push(makeOpenSeedPackButton());
+			}
+		}
+	},
+	{
+		name: 'Vale Offerings - Toggle Auto Rummage',
+		fn: async ({ components, data }) => {
+			if (data.type === 'ValeTotems') {
+				components.push(makeAutoRummageToggleButton());
 			}
 		}
 	}

@@ -424,6 +424,15 @@ export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions 
 	rooms: number[];
 }
 
+export interface ValeTotemsActivityTaskOptions extends MinigameActivityTaskOptions {
+	type: 'ValeTotems';
+	offerings: number;
+	fletchXp: number;
+	logId: number;
+	itemId: number;
+	staminaPot: boolean | undefined;
+}
+
 export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Zalcano';
 	isMVP: boolean;
@@ -587,6 +596,18 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 	shadeID: string;
 	logID: number;
 }
+
+export interface ShadesOfMortonSacredOilOptions extends ActivityTaskOptions {
+	type: 'ShadesOfMortonSacredOil';
+	quantity: number;
+}
+
+export interface ShadesOfMortonPyreLogsOptions extends ActivityTaskOptions {
+	type: 'ShadesOfMortonPyreLogs';
+	quantity: number;
+	logID: number;
+}
+
 export interface SpecificQuestOptions extends ActivityTaskOptions {
 	type: 'SpecificQuest';
 	questID: number;
@@ -623,6 +644,8 @@ export type ActivityTaskData =
 	| GiantsFoundryActivityTaskOptions
 	| NightmareZoneActivityTaskOptions
 	| ShadesOfMortonOptions
+	| ShadesOfMortonSacredOilOptions
+	| ShadesOfMortonPyreLogsOptions
 	| UnderwaterAgilityThievingTaskOptions
 	| PickpocketActivityTaskOptions
 	| BuryingActivityTaskOptions
@@ -648,6 +671,7 @@ export type ActivityTaskData =
 	| NightmareActivityTaskOptions
 	| TitheFarmActivityTaskOptions
 	| SepulchreActivityTaskOptions
+	| ValeTotemsActivityTaskOptions
 	| GnomeRestaurantActivityTaskOptions
 	| SpecificQuestOptions
 	| ActivityTaskOptionsWithNoChanges

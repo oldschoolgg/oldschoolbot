@@ -159,11 +159,12 @@ export class MUserClass extends BaseUser {
 	}
 
 	async calcMaxGearPresets() {
-		return (await this.fetchPerkTier()) * 2 + 4;
+		return this.perkTier * 2 + 4;
 	}
 
 	async fetchPerkTier(): Promise<0 | PerkTier> {
-		return getUsersPerkTier(this);
+		this.perkTier = await getUsersPerkTier(this);
+		return this.perkTier;
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {

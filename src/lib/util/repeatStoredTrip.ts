@@ -64,6 +64,7 @@ import type {
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
+	ShadesOfMortonPyreLogsOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
@@ -71,6 +72,7 @@ import type {
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
 	UnderwaterAgilityThievingTaskOptions,
+	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
@@ -656,6 +658,12 @@ const tripHandlers: {
 		commandName: 'minigames',
 		args: () => ({ trouble_brewing: { start: {} } })
 	},
+	[activity_type_enum.ValeTotems]: {
+		commandName: 'minigames',
+		args: (data: ValeTotemsActivityTaskOptions) => {
+			return { vale_totems: { start: { item_to_fletch: data.itemId, stamina_pot: data.staminaPot } } };
+		}
+	},
 	[activity_type_enum.VolcanicMine]: {
 		commandName: 'minigames',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({ volcanic_mine: { start: { quantity: data.quantity } } })
@@ -704,6 +712,18 @@ const tripHandlers: {
 			shades_of_morton: {
 				start: { shade: data.shadeID, logs: Items.itemNameFromId(data.logID) }
 			}
+		})
+	},
+	[activity_type_enum.ShadesOfMortonSacredOil]: {
+		commandName: 'minigames',
+		args: () => ({
+			shades_of_morton: { sacred_oil: {} }
+		})
+	},
+	[activity_type_enum.ShadesOfMortonPyreLogs]: {
+		commandName: 'minigames',
+		args: (data: ShadesOfMortonPyreLogsOptions) => ({
+			shades_of_morton: { create_pyre_logs: { logs: Items.itemNameFromId(data.logID) } }
 		})
 	},
 	[activity_type_enum.TombsOfAmascut]: {

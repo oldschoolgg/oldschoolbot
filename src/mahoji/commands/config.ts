@@ -26,6 +26,7 @@ import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerU
 import { BankSortMethods, isValidBankSortMethod } from '@/lib/sorts.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname, patronMsg } from '@/lib/util/smallUtils.js';
+import { toggleBitfield } from '@/lib/util.js';
 
 interface UserConfigToggle {
 	name: string;
@@ -146,6 +147,14 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Allow Public API Data Retrieval',
 		bit: BitField.AllowPublicAPIDataRetrieval
+	},
+	{
+		name: 'Disaable dynamic return times',
+		bit: BitField.DisableDynamicTimestamp
+	},
+	{
+		name: 'Auto Rummage Vale Offerings',
+		bit: BitField.ToggleAutoRummage
 	}
 ];
 
@@ -161,12 +170,7 @@ async function handleToggle(user: MUser, name: string, interaction?: MInteractio
 			messageExtra = toggleResult.message;
 		}
 	}
-	const includedNow = user.bitfield.includes(toggle.bit);
-	const nextArr = includedNow ? removeFromArr(user.bitfield, toggle.bit) : [...user.bitfield, toggle.bit];
-	await user.update({
-		bitfield: nextArr
-	});
-	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.${messageExtra ? `\n\n${messageExtra}` : ''}`;
+	return (await toggleBitfield(user, toggle.bit, toggle.name)) + ' ' + messageExtra;
 }
 
 async function favFoodConfig(
