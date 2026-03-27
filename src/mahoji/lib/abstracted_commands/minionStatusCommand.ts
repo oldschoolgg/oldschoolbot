@@ -55,10 +55,6 @@ async function fetchPinnedTrips(userID: string) {
 export async function minionStatusCommand(
 	user: MUser
 ): Promise<Required<Pick<BaseSendableMessage, 'content' | 'components'>>> {
-	// Ensure perk tier is hydrated from authoritative sources (cache/robochimp/etc)
-	// before formatting status duration text.
-	await user.fetchPerkTier();
-
 	const currentActivity = await ActivityManager.getActivityOfUser(user.id);
 	const minionIsBusy = Boolean(currentActivity);
 	const birdhouseDetails = minionIsBusy ? { isReady: false } : user.fetchBirdhouseData();
