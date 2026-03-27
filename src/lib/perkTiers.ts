@@ -84,12 +84,12 @@ export async function getUsersPerkTier({
 	if (bitfield.includes(BitField.IsPatronTier2)) {
 		eligibleTiers.push(PerkTier.Three);
 	}
+
+	const roboChimpCached = await Cache.getRoboChimpUser(user.id);
+	if (roboChimpCached) {
+		eligibleTiers.push(roboChimpCached.perk_tier);
+	}
 	if (Math.max(...eligibleTiers) >= PerkTier.Two) {
-		const roboChimpCached = await Cache.getRoboChimpUser(user.id);
-		if (roboChimpCached) {
-			eligibleTiers.push(roboChimpCached.perk_tier);
-		}
-	} else {
 		// Why bother looking for the member if it doesn't help get a higher tier
 		if (
 			user.bitfield.includes(BitField.IsPatronTier1) ||
