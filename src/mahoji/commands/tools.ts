@@ -15,6 +15,7 @@ import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
+import { fixBrokenBankCommand } from '@/lib/user/fixbank.js';
 import { isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '@/lib/util/activityTypeCheck.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { asyncGzip, parseStaticTimeInterval, patronMsg, staticTimeIntervals } from '@/lib/util/smallUtils.js';
@@ -876,6 +877,12 @@ export const toolsCommand = defineCommand({
 					type: 'Subcommand',
 					name: 'checkmasses',
 					description: 'Check the masses going on in the server.'
+				},
+				{
+					type: 'Subcommand',
+					name: 'fixbank',
+					description:
+						'Fix known broken item IDs in your account by remapping them to the correct IDs, including active G.E. listings.'
 				}
 			]
 		},
@@ -1068,6 +1075,12 @@ You last reset your temporary CL: ${
 		}
 		if (options.user?.checkmasses) {
 			return checkMassesCommand(guildId);
+		}
+		if (options.user?.fixbank) {
+			await interaction.confirmation(
+				'This will remap known broken item IDs in your bank, collection log, temp CL, sacrificed bank, favourites, gear, and active G.E. listings. Continue?'
+			);
+			return user.withLock('tools-fixbank', async lockedUser => fixBrokenBankCommand(lockedUser));
 		}
 		return 'Invalid command!';
 	}
