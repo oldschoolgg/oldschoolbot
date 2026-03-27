@@ -21,9 +21,15 @@ describe('Camdozzal Fish Command', async () => {
 		expect(res.commandResult).toContain('is now fishing in');
 		expect(user.bank.amount('Raw guppy')).toBeGreaterThan(0);
 		const expectedXpGained = Fishing.camdozaalFishes.reduce((acc, fish) => {
-			return acc + fish.xp * user.bank.amount(fish.id);
+			if (fish.id === undefined || fish.xp === undefined) {
+				return acc;
+			}
+			const amount = user.bank.amount(fish.id);
+			return acc + fish.xp * amount;
 		}, 0);
-		expect(Fishing.camdozaalFishes.filter(fish => user.bank.amount(fish.id) > 0).length).toBeGreaterThanOrEqual(3);
+		expect(
+			Fishing.camdozaalFishes.filter(fish => fish.id !== undefined && user.bank.amount(fish.id) > 0).length
+		).toBeGreaterThanOrEqual(3);
 		expect(expectedXpGained).toBeGreaterThan(0);
 		const expectedXpGainedWithAnglerBoost = increaseNumByPercent(expectedXpGained, 2.5);
 		expect(expectedXpGainedWithAnglerBoost).toBeGreaterThan(expectedXpGained);

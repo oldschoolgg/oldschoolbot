@@ -71,18 +71,18 @@ export const collectionLogCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ options, user }) => {
+	run: async ({ options, user, interaction }) => {
 		const flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
 		if (options.flag_extra) flags[options.flag_extra] = options.flag_extra;
 		if (options.all) flags.all = 'all';
-		const result = await clImageGenerator.generateLogImage({
+		await interaction.defer();
+		return await clImageGenerator.generateLogImage({
 			user,
 			type: options.type ?? 'collection',
 			flags,
 			collection: options.name,
 			stats: await user.fetchMStats()
 		});
-		return result;
 	}
 });

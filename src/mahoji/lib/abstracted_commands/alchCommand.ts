@@ -3,6 +3,7 @@ import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -92,7 +93,8 @@ export async function alchCommand(
 		type: 'Alching'
 	});
 
-	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatDuration(
+	const response = `${user.minionName} is now alching ${quantity}x ${osItem.name}, it'll take around ${formatTripDuration(
+		user,
 		duration
 	)} to finish.`;
 

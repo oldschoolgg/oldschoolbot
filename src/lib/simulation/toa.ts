@@ -25,7 +25,12 @@ import { degradeItem } from '@/lib/degradeableItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { getToaKCs, mileStoneBaseDeathChances, type RaidLevel } from '@/lib/simulation/toaUtils.js';
+import {
+	didAllTOAMembersDieInRoom,
+	getToaKCs,
+	mileStoneBaseDeathChances,
+	type RaidLevel
+} from '@/lib/simulation/toaUtils.js';
 import { constructGearSetup } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
@@ -74,9 +79,9 @@ function estimatePoints(raidLevel: number, teamSize: number) {
 			approx: true
 		},
 		{ name: 'Kephri', hp: scaleHP(130, raidLevel, teamSize, averageWTPLevel[1]), mult: 1.0 },
-		{ name: 'P1 Obelisk', hp: scaleHP(260, raidLevel, teamSize, 0), mult: 1.5 },
-		{ name: 'P2 Warden', hp: scaleHP(140, raidLevel, teamSize, 0), mult: 2.0, count: 2 },
-		{ name: 'P3 Warden', hp: scaleHP(880, raidLevel, teamSize, 0), mult: 2.5 },
+		{ name: 'P1 Obelisk', hp: scaleHP(260, raidLevel, teamSize, 0), mult: 3 },
+		{ name: 'P2 Warden', hp: scaleHP(140, raidLevel, teamSize, 0), mult: 3, count: 2 },
+		{ name: 'P3 Warden', hp: scaleHP(880, raidLevel, teamSize, 0), mult: 3.5 },
 		{ name: 'Misc. damage', hp: 80 * teamSize, mult: 1.0, approx: true },
 		{ name: 'Het - seal mining', hp: 130 + Math.floor(95.81 * (teamSize - 1)), mult: 2.5 },
 		{ name: 'Scabaras - puzzles', points: 300 * teamSize, approx: true },
@@ -506,11 +511,21 @@ const TOAUniqueTable = new LootTable()
 	.add('Masori chaps', 1, 2)
 	.add("Tumeken's shadow (uncharged)", 1, 1);
 
-function uniqueLootRoll(rng: RNGProvider, kc: number, cl: Bank, raidLevel: RaidLevel) {
-	const [item] = TOAUniqueTable.roll().items()[0];
+const HigherTOAUniqueTable = new LootTable()
+	.add('Lightbearer', 1, 6)
+	.add("Osmumten's fang", 1, 6)
+	.add("Elidinis' ward", 1, 4)
+	.add('Masori mask', 1, 3)
+	.add('Masori body', 1, 3)
+	.add('Masori chaps', 1, 3)
+	.add("Tumeken's shadow (uncharged)", 1, 2);
+
+function uniqueLootRoll(rng: RNGProvider, raidLevel: RaidLevel) {
+	const uniqueTable = raidLevel >= 305 ? HigherTOAUniqueTable : TOAUniqueTable;
+	const [item] = uniqueTable.roll().items()[0];
 
 	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !rng.roll(50)) {
-		return untradeableRoll(rng, kc, cl);
+		return new Bank();
 	}
 
 	if (
@@ -524,7 +539,7 @@ function uniqueLootRoll(rng: RNGProvider, kc: number, cl: Bank, raidLevel: RaidL
 		raidLevel < 150 &&
 		!rng.roll(50)
 	) {
-		return untradeableRoll(rng, kc, cl);
+		return new Bank();
 	}
 
 	return new Bank().add(item.id);
@@ -631,7 +646,7 @@ export function calcTOALoot({
 			continue;
 		}
 		if (uniqueRecipient && user.id === uniqueRecipient) {
-			loot.add(user.id, uniqueLootRoll(rng, user.kc, user.cl, raidLevel));
+			loot.add(user.id, uniqueLootRoll(rng, raidLevel));
 		} else {
 			loot.add(user.id, nonUniqueLoot({ rng, points: user.points }));
 		}
@@ -1278,7 +1293,7 @@ export async function toaStartCommand(
 		users.map(u => u.usernameOrMention)
 	)}) are now off to do ${
 		quantity === 1 ? 'a' : `${quantity}x`
-	} level ${raidLevel} Tombs of Amascut raid - the total trip will take ${formatDuration(fakeDuration)}.`;
+	} level ${raidLevel} Tombs of Amascut raid - the total trip will return in about ${formatDuration(fakeDuration)}.`;
 
 	str += ` \n\n${debugStr}`;
 
@@ -1486,7 +1501,7 @@ function createTOATeam({
 		let deathDuration: number | null = 0;
 		let wipedRoom: number | null = null;
 		for (const room of TOARooms) {
-			if (usersWithPointsAndDeaths.every(u => u.deaths.includes(room.id))) {
+			if (didAllTOAMembersDieInRoom(usersWithPointsAndDeaths, room.id)) {
 				wipedRoom = room.id;
 			}
 		}
@@ -1494,7 +1509,7 @@ function createTOATeam({
 		for (let i = 0; i < TOARooms.length; i++) {
 			const room = TOARooms[i];
 
-			if (usersWithPointsAndDeaths.every(member => member.deaths.includes(i))) {
+			if (didAllTOAMembersDieInRoom(usersWithPointsAndDeaths, room.id)) {
 				wipedRoom = room.id;
 				deathDuration += Math.floor(
 					calcPercentOfNum(

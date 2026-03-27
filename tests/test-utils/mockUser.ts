@@ -39,6 +39,15 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
+	async givePatronTier(tier: number) {
+		await this.update({
+			bitfield: {
+				push: tier + 1
+			}
+		});
+		return this;
+	}
+
 	private async assertJsonBankCLMatch() {
 		if (this.cl.length === 0) return;
 		const jsonBank = await prisma.jsonBank.findFirstOrThrow({

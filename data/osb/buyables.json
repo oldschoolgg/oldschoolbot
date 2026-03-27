@@ -2950,6 +2950,20 @@
 		}
 	},
 	{
+		"name": "Olive oil pack",
+		"gp_cost": 2670,
+		"output_items": {
+			"12857": 1
+		}
+	},
+	{
+		"name": "Olive oil(4)",
+		"gp_cost": 220,
+		"output_items": {
+			"3422": 1
+		}
+	},
+	{
 		"name": "Pearl barbarian rod",
 		"item_cost": {
 			"22820": 150

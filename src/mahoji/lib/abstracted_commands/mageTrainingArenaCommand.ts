@@ -4,6 +4,7 @@ import { Bank, Items, LootTable } from 'oldschooljs';
 import { getNewUser } from '@/lib/settings/settings.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 import { pizazzPointsPerHour } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 
 const RuneTable = new LootTable()
@@ -138,7 +139,5 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelId: stri
 
 	return `${
 		user.minionName
-	} is now doing ${quantity} Magic Training Arena rooms. The trip will take around ${formatDuration(
-		duration
-	)}. Removed ${cost} from your bank.`;
+	} is now doing ${quantity} Magic Training Arena rooms. The trip will return in about around ${formatTripDuration(user, duration)}. Removed ${cost} from your bank.`;
 }
