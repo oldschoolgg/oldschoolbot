@@ -1,6 +1,7 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem, type Item, Items, itemID } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
 import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { claimValeOfferings } from '@/lib/minions/data/valeTotems.js';
@@ -338,6 +339,9 @@ export async function valeTotemsRummageCommand(
 	await user.statsUpdate({
 		vale_research_points: {
 			increment: rewardCount
+		},
+		vale_offerings_rummaged: {
+			increment: rewardCount * 100
 		}
 	});
 
@@ -358,6 +362,26 @@ export async function valeTotemsRummageCommand(
 		content: msg,
 		files: [image]
 	};
+}
+
+export async function valeTotemsStatsCommand(user: MUser) {
+	const [totemsBuilt, stats] = await Promise.all([user.fetchMinigameScore('vale_totems'), user.fetchStats()]);
+	const offeringsInBank = user.bank.amount('Vale offerings');
+	const possibleRummages = Math.floor(offeringsInBank / 100);
+	const remainingAfterRummage = offeringsInBank % 100;
+	const learningBoost = Math.min(totemsBuilt / 10000, 0.1);
+	const lapsCompleted = Math.floor(totemsBuilt / 8);
+	const autoRummageEnabled = user.bitfield.includes(BitField.ToggleAutoRummage);
+
+	return `**Vale Totems Stats**
+Totems built: ${totemsBuilt.toLocaleString()}
+Laps completed: ${lapsCompleted.toLocaleString()}
+Vale offerings in bank: ${offeringsInBank.toLocaleString()}
+Total offerings rummaged: ${stats.vale_offerings_rummaged.toLocaleString()}
+Vale research points: ${stats.vale_research_points.toLocaleString()}
+Current offerings boost: +${(learningBoost * 100).toFixed(2)}% (Minion learning boost for Vale Totems, based on total totems built))
+Auto-rummage: ${autoRummageEnabled ? 'Enabled' : 'Disabled'}
+Rummage ready now: ${possibleRummages.toLocaleString()} roll(s) (${(possibleRummages * 100).toLocaleString()} offerings), ${remainingAfterRummage.toLocaleString()} offerings leftover`;
 }
 
 export async function valeTotemsBuyCommand(interaction: MInteraction, user: MUser, item?: string, quantity = 1) {
