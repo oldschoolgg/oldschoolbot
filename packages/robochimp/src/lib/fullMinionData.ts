@@ -1,7 +1,7 @@
 import type { IBotType } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
 
-import type { FullMinionData } from '@/http/api-types.js';
+import type { FullMinionData, FullMinionGearSetup } from '@/http/api-types.js';
 
 export async function fetchFullMinionData(bot: IBotType, targetUserId: string): Promise<FullMinionData | null> {
 	const opt = { where: { id: targetUserId } } as const;
@@ -101,14 +101,14 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 
 		gear: {
 			pet: botUser.minion_equippedPet,
-			melee: (gear.melee ?? null) as any,
-			mage: (gear.mage ?? null) as any,
-			range: (gear.range ?? null) as any,
-			misc: (gear.misc ?? null) as any,
-			skilling: (gear.skilling ?? null) as any,
-			wildy: (gear.wildy ?? null) as any,
-			fashion: (gear.fashion ?? null) as any,
-			other: (gear.other ?? null) as any
+			melee: (gear.melee ?? null) as FullMinionGearSetup,
+			mage: (gear.mage ?? null) as FullMinionGearSetup,
+			range: (gear.range ?? null) as FullMinionGearSetup,
+			misc: (gear.misc ?? null) as FullMinionGearSetup,
+			skilling: (gear.skilling ?? null) as FullMinionGearSetup,
+			wildy: (gear.wildy ?? null) as FullMinionGearSetup,
+			fashion: (gear.fashion ?? null) as FullMinionGearSetup,
+			other: (gear.other ?? null) as FullMinionGearSetup
 		},
 		equipped_item_ids: [...equippedItemIDs],
 

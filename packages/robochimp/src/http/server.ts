@@ -49,12 +49,27 @@ export async function startServer(port: number) {
 			return c.json({ message: 'Invalid user ID. Must be a valid Discord snowflake' }, 400);
 		}
 
-		const data = await fetchFullMinionData('osb', userId);
-		if (!data) {
-			return c.json({ message: 'Minion data not found for this user' }, 404);
-		}
+		try {
+			const data = await fetchFullMinionData('osb', userId);
+			if (!data) {
+				return c.json({ message: 'Minion data not found for this user' }, 404);
+			}
 
-		return c.json(data);
+			return c.json(data);
+		} catch (error) {
+			console.error('Failed to fetch minion data:', error);
+			const errorCode = (error as { code?: string })?.code;
+			if (errorCode === 'ECONNREFUSED') {
+				return c.json(
+					{
+						message:
+							'Database connection refused. Start Postgres or set USE_REAL_PG=0 for local PGlite mode.'
+					},
+					503
+				);
+			}
+			return c.json({ message: 'Failed to fetch minion data' }, 500);
+		}
 	});
 
 	app.route('/staff', staffServer);

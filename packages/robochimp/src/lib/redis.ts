@@ -8,12 +8,46 @@ function makeRedis() {
 		return new Redis();
 	} else {
 		try {
-			const redis = new Redis({ reconnectOnError: () => false });
-			redis.on('error', () => {
-				redis.disconnect();
-				return new MockedRedis() as any as Redis;
+			const realRedis = new Redis({ reconnectOnError: () => false, maxRetriesPerRequest: 0 });
+			let activeRedis: Redis | MockedRedis = realRedis;
+
+			const swapToMock = () => {
+				if (activeRedis !== realRedis) return;
+				realRedis.disconnect();
+				activeRedis = new MockedRedis();
+			};
+
+			realRedis.on('error', swapToMock);
+
+			return new Proxy({} as Redis, {
+				get(_, property) {
+					const value = (activeRedis as any)[property];
+					if (typeof value !== 'function') {
+						return value;
+					}
+					return (...args: unknown[]) => {
+						try {
+							const result = value.apply(activeRedis, args);
+							if (result && typeof result.then === 'function') {
+								return result.catch((error: unknown) => {
+									if (activeRedis === realRedis) {
+										swapToMock();
+										return (activeRedis as any)[property](...args);
+									}
+									throw error;
+								});
+							}
+							return result;
+						} catch (error) {
+							if (activeRedis === realRedis) {
+								swapToMock();
+								return (activeRedis as any)[property](...args);
+							}
+							throw error;
+						}
+					};
+				}
 			});
-			return redis;
 		} catch {
 			return new MockedRedis() as any as Redis;
 		}

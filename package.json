@@ -31,7 +31,6 @@
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"test:ci:unit": "pnpm concurrent \"pnpm test:unit\" \"pnpm test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"wiki:testbot": "node scripts/wiki-testbot.mjs",
-		"wiki:testbot:pg": "node scripts/wiki-testbot.mjs --real-pg",
 		"============MISC": "============",
 		"concurrent": "concurrently --raw --kill-others-on-fail",
 		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!cli\" --filter \"!test-dashboard\" --filter \"!oldschoolgg\" --filter \"!robochimp\" build",
