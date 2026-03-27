@@ -207,7 +207,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 
 			return { bank: openLoot };
 		},
-		allItems: BrimstoneChest.table.allItems
+		allItems: BrimstoneChest.allItems
 	},
 	{
 		name: 'Elven crystal chest',
@@ -292,7 +292,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 
 			return { bank: openLoot };
 		},
-		allItems: LarransChest.table.allItems
+		allItems: LarransChest.allItems
 	},
 	{
 		name: 'Muddy chest',
