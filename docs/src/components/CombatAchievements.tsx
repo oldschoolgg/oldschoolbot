@@ -57,10 +57,7 @@ const allTasksFlat = Object.values(combatAchievements).flatMap(tier =>
 );
 
 export type APIUser = {
-	id: string;
-	completed_ca_task_ids: number[];
-	is_ironman: boolean;
-	leagues_completed_tasks_ids: number[];
+	completed_ca_task_ids?: number[];
 };
 
 export function CombatAchievements() {
@@ -70,15 +67,16 @@ export function CombatAchievements() {
 	const [userID, setUserID] = useState<string | null>(null);
 	const [data, setData] = useState<APIUser | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const completedTaskIDs = data?.completed_ca_task_ids ?? [];
 
 	useEffect(() => {
 		setTasksBeingShown(
 			allTasksFlat.filter(task => {
-				if (hideCompleted && data?.completed_ca_task_ids.includes(task.id)) return false;
+				if (hideCompleted && completedTaskIDs.includes(task.id)) return false;
 				return tiersBeingShown.includes(task.tier);
 			})
 		);
-	}, [tiersBeingShown, data, hideCompleted]);
+	}, [tiersBeingShown, completedTaskIDs, hideCompleted]);
 
 	useEffect(() => {
 		if (localStorage) {
@@ -177,7 +175,7 @@ export function CombatAchievements() {
 			{data ? (
 				<p>
 					Showing {tasksBeingShown.length}/{allTasksFlat.length} tasks{' / '}
-					Completed {data.completed_ca_task_ids.length}/{allTasksFlat.length} tasks
+					Completed {completedTaskIDs.length}/{allTasksFlat.length} tasks
 				</p>
 			) : null}
 			<table className="ca-table">
@@ -191,10 +189,7 @@ export function CombatAchievements() {
 				</thead>
 				<tbody>
 					{tasksBeingShown.map(task => (
-						<tr
-							key={task.id}
-							className={data?.completed_ca_task_ids.includes(task.id) ? 'ca-complete' : undefined}
-						>
+						<tr key={task.id} className={completedTaskIDs.includes(task.id) ? 'ca-complete' : undefined}>
 							<td>{task.name}</td>
 							<td>
 								{'details' in task && task.details ? (

@@ -4,7 +4,6 @@ import process from 'node:process';
 import { config as loadDotEnv } from 'dotenv';
 
 loadDotEnv({ path: path.resolve(process.cwd(), '.env') });
-loadDotEnv({ path: path.resolve(process.cwd(), '.env.test') });
 const port = process.env.HTTP_PORT ?? '3002';
 
 const env = {

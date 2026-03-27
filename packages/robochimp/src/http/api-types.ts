@@ -70,6 +70,7 @@ export type FullMinionData = {
 	};
 
 	minigames: Record<string, number>;
+	completed_ca_task_ids: number[];
 
 	gear: {
 		pet: number | null;

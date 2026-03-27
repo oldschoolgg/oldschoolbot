@@ -91,6 +91,7 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 		},
 
 		minigames: minigameData,
+		completed_ca_task_ids: botUser.completed_ca_task_ids as number[],
 
 		slayer_unlocks: botUser.slayer_unlocks,
 		slayer_blocked_ids: botUser.slayer_blocked_ids,
