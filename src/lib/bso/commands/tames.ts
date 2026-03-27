@@ -1370,7 +1370,8 @@ async function selectCommand(user: MUser, tameID: number) {
 	return `You selected your ${toSelect}.`;
 }
 
-async function viewCommand(user: MUser, tameID: number): CommandResponse {
+async function viewCommand(interaction: MInteraction, user: MUser, tameID: number): CommandResponse {
+	if (!interaction.deferred) await interaction.defer();
 	const perkTier = await user.fetchPerkTier();
 	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
 	const rawTame = tames.find(t => t.id === tameID);
@@ -1939,7 +1940,7 @@ export const tamesCommand = defineCommand({
 		if (options.kill) return killCommand(user, channelId, options.kill.name);
 		if (options.collect) return collectCommand(user, channelId, options.collect.name);
 		if (options.select) return selectCommand(user, Number(options.select.tame));
-		if (options.view) return viewCommand(user, Number(options.view.tame));
+		if (options.view) return viewCommand(interaction, user, Number(options.view.tame));
 		if (options.status) return statusCommand(user);
 		if (options.equip) return tameEquipCommand(user, options.equip.item);
 		if (options.unequip) return tameUnequipCommand(user, options.unequip.item);

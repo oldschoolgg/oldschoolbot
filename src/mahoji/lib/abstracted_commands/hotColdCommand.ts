@@ -33,7 +33,7 @@ export async function hotColdCommand(
 	if (user.isIronman) return 'Ironmen cannot gamble.';
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (!amount || !choice || !['hot', 'cold'].includes(choice) || !Number.isInteger(amount)) return explanation;
-	if (amount < 10_000_000 || amount > 500_000_000) return 'You must gamble between 10m and 500m.';
+	if (amount < 10_000_000 || amount > 2_500_000_000) return 'You must gamble between 10m and 2.5b.';
 	if (user.GP < amount) return "You can't afford to gamble that much.";
 	const flowerLoot = flowerTable.roll();
 	const flower = flowerLoot.items()[0][0];

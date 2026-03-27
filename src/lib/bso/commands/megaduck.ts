@@ -109,8 +109,9 @@ export const megaDuckCommand = defineCommand({
 
 		const member = await globalClient.fetchMember({ guildId, userId });
 		if (
-			(globalConfig.adminUserIDs.includes(userId) && guildId === '342983479501389826') ||
-			(options.reset && member && member.permissions.includes('ADMINISTRATOR'))
+			options.reset &&
+			((globalConfig.adminUserIDs.includes(userId) && guildId === '342983479501389826') ||
+				(member && member.permissions.includes('ADMINISTRATOR')))
 		) {
 			await interaction.confirmation(
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'

@@ -438,7 +438,7 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 		duration = Math.max(Time.Minute * 15, duration);
 	}
 
-	if (team.some(u => u.user.gear.range.hasEquipped('Chincannon'))) {
+	if (team.some(u => u.user.hasEquipped('Chincannon'))) {
 		duration = reduceNumByPercent(duration, inventionBoosts.chincannon.tobPercentReduction);
 	}
 
@@ -485,7 +485,7 @@ export function createTOBRaid({
 	let chinCannonUser: MUser | null = null;
 
 	for (const u of team) {
-		if (u.gear.range.hasEquipped('Chincannon')) {
+		if (u.user.hasEquipped('Chincannon')) {
 			chinCannonUser = u.user;
 			break;
 		}
