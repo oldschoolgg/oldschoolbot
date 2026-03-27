@@ -379,7 +379,7 @@ Laps completed: ${lapsCompleted.toLocaleString()}
 Vale offerings in bank: ${offeringsInBank.toLocaleString()}
 Total offerings rummaged: ${stats.vale_offerings_rummaged.toLocaleString()}
 Vale research points: ${stats.vale_research_points.toLocaleString()}
-Current offerings boost: +${(learningBoost * 100).toFixed(2)}% (Minion learning boost for Vale Totems, based on total totems built))
+Current offerings boost: +${(learningBoost * 100).toFixed(2)}% (Minion learning boost for Vale Totems, based on total totems built)
 Auto-rummage: ${autoRummageEnabled ? 'Enabled' : 'Disabled'}
 Rummage ready now: ${possibleRummages.toLocaleString()} roll(s) (${(possibleRummages * 100).toLocaleString()} offerings), ${remainingAfterRummage.toLocaleString()} offerings leftover`;
 }
