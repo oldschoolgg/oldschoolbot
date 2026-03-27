@@ -1,5 +1,5 @@
 import { bold } from '@oldschoolgg/discord';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches, UserError } from '@oldschoolgg/toolkit';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
@@ -148,13 +148,22 @@ export const stealCommand = defineCommand({
 				);
 			}
 
-			const { foodRemoved } = await removeFoodFromUser({
-				user,
-				totalHealingNeeded: damageTaken,
-				healPerAction: Math.ceil(damageTaken / quantity),
-				activityName: 'Pickpocketing',
-				attackStylesUsed: []
-			});
+			let removeFoodResult: Awaited<ReturnType<typeof removeFoodFromUser>>;
+			try {
+				removeFoodResult = await removeFoodFromUser({
+					user,
+					totalHealingNeeded: damageTaken,
+					healPerAction: Math.ceil(damageTaken / quantity),
+					activityName: 'Pickpocketing',
+					attackStylesUsed: []
+				});
+			} catch (err: unknown) {
+				if (err instanceof UserError) {
+					return err.message;
+				}
+				throw err;
+			}
+			const foodRemoved = removeFoodResult.foodRemoved;
 
 			await ClientSettings.updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.`;
