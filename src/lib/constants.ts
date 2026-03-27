@@ -400,7 +400,7 @@ const gitCommitDate = process.env.TEST
 const gitCommitMessage = process.env.TEST ? 'Test build' : execSync('git show -s --format=%s HEAD').toString().trim();
 const gitRecentCommits = process.env.TEST
 	? ['TESTGIT Test build']
-	: execSync('git log --pretty=format:%h%x09%s -n 3').toString().trim().split('\n').filter(Boolean);
+	: execSync('git log --pretty=format:%h%x09%s -n 10').toString().trim().split('\n').filter(Boolean);
 const gitRemote = 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';

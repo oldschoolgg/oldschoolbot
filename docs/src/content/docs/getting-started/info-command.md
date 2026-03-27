@@ -4,25 +4,28 @@ sidebar:
   order: 5
 ---
 
-Use [[/info]] to view the bot’s current status and version information in one place.
+Use `/info` subcommands to view bot status and version information.
 
-It shows:
+## Available subcommands
 
-- How long the bot has been running (`Uptime`)
-- When it last restarted (`Bot Started`)
-- A short summary of the latest update (`Commit Message`)
-- `Recent Commits` (latest update notes)
+- [[/info commit]]
+  - Shows current full commit hash and commit message.
+- [[/info recent_updates]]
+  - Shows the latest 10 commits with short hashes and names.
+- [[/info uptime]]
+  - Shows current uptime and bot start time.
+- [[/info overview]]
+  - Shows uptime, current commit, and the latest 3 commits.
 
-For more detail, use:
+For extra commit diagnostics, use:
 
-[[/info details\:true]]
+[[/info commit details\:true]]
 
-That version also shows:
+That also shows:
 
-- `Commit Date` (when that update was created)
-- The current live update identifier (`Commit`)
-- `Code Difference` (a link comparing live code to latest branch)
-- `Status` (whether live bot code is current)
+- `Commit Date`
+- `Code Difference`
+- `Status`
 
 ## How players should read this
 
@@ -30,11 +33,11 @@ You do **not** need coding knowledge. Treat it like a "version and health" page 
 
 If `Status` says:
 
-- **Up to date** – Live bot is running the latest planned code.
-- **Behind** – There are newer updates not live yet.
-- **Ahead** – Live bot is running test or unreleased changes.
-- **Diverged** – Live code and branch both have different changes.
-- **Sync status unavailable** – Git sync check failed temporarily.
+- **Up to date** - Live bot is running the latest planned code.
+- **Behind** - There are newer updates not live yet.
+- **Ahead** - Live bot is running test or unreleased changes.
+- **Diverged** - Live code and branch both have different changes.
+- **Sync status unavailable** - Git sync check failed temporarily.
 
 Most players only need to check whether the bot is **Up to date**.
 
