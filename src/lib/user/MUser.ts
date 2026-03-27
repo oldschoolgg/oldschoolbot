@@ -1,3 +1,4 @@
+import type { MInteraction } from '@oldschoolgg/discord';
 import { defaultGearSetup, type EquipmentSlot, type GearSetup } from '@oldschoolgg/gear';
 import {
 	type IBirdhouseData,
@@ -43,8 +44,8 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { RemoveFoodFromUserParams } from '@/lib/minions/functions/removeFoodFromUser.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { AddXpParams, ClueBank, KillableMonster } from '@/lib/minions/types.js';
-import { getUsersPerkTier } from '@/lib/perkTiers.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { getPerkTierCached, getUsersPerkTier } from '@/lib/perkTiers.js';
+import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -162,9 +163,23 @@ export class MUserClass extends BaseUser {
 		return this.perkTier * 2 + 4;
 	}
 
-	async fetchPerkTier(): Promise<0 | PerkTier> {
-		this.perkTier = await getUsersPerkTier(this);
-		return this.perkTier;
+	get perkTier() {
+		return getPerkTierCached(this.id) ?? 0;
+	}
+	get perkTierIsCached(): boolean {
+		return getPerkTierCached(this.id) !== null;
+	}
+
+	async fetchPerkTier({
+		guildId,
+		interaction,
+		forceNoCache
+	}: {
+		guildId?: string | null;
+		interaction?: MInteraction;
+		forceNoCache?: boolean;
+	} = {}): Promise<0 | PerkTier> {
+		return await getUsersPerkTier({ user: this, interaction, forceNoCache, guildId });
 	}
 
 	hasMonsterRequirements(monster: KillableMonster) {
@@ -337,8 +352,7 @@ RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
 	}
 
 	async minionIsBusy(): Promise<boolean> {
-		const isBusy = await ActivityManager.minionIsBusy(this.id);
-		return isBusy;
+		return await ActivityManager.minionIsBusy(this.id);
 	}
 
 	async getCreatureScore(creatureID: number): Promise<number> {
@@ -704,7 +718,7 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 	}
 
 	async fetchRobochimpUser() {
-		return roboChimpUserFetch(this.id);
+		return roboChimpUserFetchCached(this.id);
 	}
 
 	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {

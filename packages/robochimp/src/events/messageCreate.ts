@@ -1,5 +1,7 @@
 import type { IMessage } from '@oldschoolgg/schemas';
+import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 
+import { getInfoStrOfUser } from '@/lib/messageCommands.js';
 import { botReactHandler } from './messageCreate/botReactHandler.js';
 import { grandExchangeHandler } from './messageCreate/grandExchangeHandler.js';
 import { voteReactionHandler } from './messageCreate/voteReactionHandler.js';
@@ -21,7 +23,23 @@ async function tagHandler(msg: IMessage): Promise<void> {
 	}
 }
 
+async function userInfo(msg: IMessage) {
+	const possibleID = msg.content.replace('.', '');
+
+	if (msg.guild_id && possibleID && isValidDiscordSnowflake(possibleID)) {
+		const commandRunner = await globalClient.fetchRUser('userinfo').catch(() => null);
+		if (!commandRunner) return;
+		if (commandRunner.id.toString() !== possibleID) return;
+		const info = await getInfoStrOfUser(possibleID);
+		await globalClient.replyToMessage(msg, {
+			content: info,
+			allowedMentions: { parse: [], users: [], roles: [] }
+		});
+	}
+}
+
 const messageHandlers: ((msg: IMessage) => Promise<unknown>)[] = [
+	userInfo,
 	botReactHandler,
 	grandExchangeHandler,
 	voteReactionHandler,

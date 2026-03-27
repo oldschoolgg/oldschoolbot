@@ -96,6 +96,12 @@ export async function toggleBitfield(user: MUser, bit: BitField, toggleName?: st
 	return `Toggled '${name}' ${includedNow ? 'Off' : 'On'}`;
 }
 
+export function getIdFromMention(mention: string) {
+	const id = mention.replace(/[<@#&/!>]/g, '');
+	const parts = id.split(':');
+	return parts[0];
+}
+
 export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>): Promise<T> {
 	const start = performance.now();
 	const result = await fn();

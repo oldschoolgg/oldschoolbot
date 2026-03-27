@@ -634,7 +634,7 @@ export const bingoCommand = defineCommand({
 			if (!isValidNickname(options.create_bingo.title)) {
 				return 'Invalid title.';
 			}
-			const member = await Cache.getMember(channel.guild_id, userId);
+			const member = await Cache.getMember({ guildId: channel.guild_id, userId });
 			if (globalConfig.isProduction && (!member || !member.permissions.includes('ADMINISTRATOR'))) {
 				return 'You can only use a notifications channel if you are an Administrator of that server.';
 			}

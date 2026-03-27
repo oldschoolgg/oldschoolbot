@@ -4,7 +4,7 @@ import { stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import { EmojiId } from '@/lib/data/emojis.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { roboChimpUserFetchCached } from '@/lib/roboChimp.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import {
 	makeAutoContractButton,
@@ -59,7 +59,7 @@ export async function minionStatusCommand(
 	const minionIsBusy = Boolean(currentActivity);
 	const birdhouseDetails = minionIsBusy ? { isReady: false } : user.fetchBirdhouseData();
 	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
-		roboChimpUserFetch(user.id),
+		roboChimpUserFetchCached(user.id),
 		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
 		minionIsBusy ? [] : fetchPinnedTrips(user.id),
 		isUsersDailyReady(user)
