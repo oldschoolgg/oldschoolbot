@@ -31,7 +31,7 @@ import { cancelTaskCommand } from '@/mahoji/lib/abstracted_commands/cancelTaskCo
 import { crackerCommand } from '@/mahoji/lib/abstracted_commands/crackerCommand.js';
 import { dailyCommand } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.js';
-import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
+import { Lampables, lampCommand, XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
@@ -43,6 +43,8 @@ const patMessages = [
 	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
+
+const xpLampNameMap = new Map(XPLamps.map(lamp => [lamp.itemID, lamp.name]));
 
 export async function getUserInfo(user: MUser) {
 	await refreshUserCache({ user });
@@ -202,16 +204,20 @@ export const minionCommand = defineCommand({
 							.flat(2)
 							.map(id => Items.get(id))
 							.filter(notEmpty)
-							.map(i => ({ id: i.id, name: i.name }));
+							.map(i => ({ id: i.id, name: xpLampNameMap.get(i.id) ?? i.name }));
 
 						return user.bank
 							.items()
 							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
 							.filter(i => {
 								if (!value) return true;
-								return i[0].name.toLowerCase().includes(value.toLowerCase());
+								const lampName = xpLampNameMap.get(i[0].id) ?? i[0].name;
+								return lampName.toLowerCase().includes(value.toLowerCase());
 							})
-							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
+							.map(i => {
+								const lampName = xpLampNameMap.get(i[0].id) ?? i[0].name;
+								return { name: `${lampName} (${i[1]}x Owned)`, value: lampName.toLowerCase() };
+							});
 					},
 					required: true
 				},
