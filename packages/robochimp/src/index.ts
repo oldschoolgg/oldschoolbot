@@ -13,15 +13,9 @@ process.on('unhandledRejection', err => {
 	console.error(err);
 });
 
-async function main() {
-	await initPrismaClients();
-	if (globalConfig.isProduction) {
-		await globalClient.login();
-	}
-
-	setInterval(async () => {
-		try {
-			const usersToFetch: any = await roboChimpClient.$queryRaw`SELECT
+async function syncTop20(reTrigger: number = 0) {
+	try {
+		const usersToFetch: any = await roboChimpClient.$queryRaw`SELECT
   u.id
 FROM "user" u
 LEFT JOIN "discord_user" du
@@ -32,14 +26,29 @@ ORDER BY
   (COALESCE(u.osb_total_xp, 0) + COALESCE(u.bso_total_xp, 0)) DESC
 LIMIT 20;
 `;
-			const userId = usersToFetch[0]?.id;
-			if (userId) {
-				const u = await globalClient.fetchUser(String(userId));
-				await globalClient.upsertDiscordUser(u);
-			}
-		} catch (err) {
-			console.error('Error fetching discord user for robochimp:', err);
+		const userId = usersToFetch[0]?.id;
+		if (userId) {
+			const u = await globalClient.fetchUser(String(userId));
+			await globalClient.upsertDiscordUser(u);
 		}
+	} catch (err) {
+		console.error('Error fetching discord user for robochimp:', err);
+	}
+	if (reTrigger > 0) {
+		setTimeout(async () => {
+			await syncTop20(reTrigger);
+		}, reTrigger);
+	}
+}
+
+async function main() {
+	await initPrismaClients();
+	if (globalConfig.isProduction) {
+		await globalClient.login();
+	}
+
+	setTimeout(async () => {
+		await syncTop20(15 * 1000);
 	}, 1000 * 15);
 
 	await startServer(globalConfig.httpPort);

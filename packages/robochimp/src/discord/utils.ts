@@ -37,7 +37,12 @@ function convertCommandToAPICommand(
 	};
 }
 
+export async function clearGlobalCommands() {
+	await globalClient.rest.put(Routes.applicationCommands(globalConfig.appID), {});
+}
+
 export async function bulkUpdateCommands() {
+	await clearGlobalCommands();
 	const chatInputCommands = globalClient.allCommands
 		.map(convertCommandToAPICommand)
 		.map(_cmd => ({ ..._cmd, type: ApplicationCommandType.ChatInput }));
