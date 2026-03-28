@@ -426,8 +426,6 @@ AND u1.id <> u2.id
 		const fetchedPatrons = await this.fetchPatrons();
 		const result = [];
 
-		const changedUsers: string[] = [];
-
 		for (const patron of fetchedPatrons) {
 			if (!patron.discordID) {
 				const backupUser = await roboChimpClient.user.findFirst({
