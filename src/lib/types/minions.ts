@@ -28,7 +28,6 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'AerialFishing'
 		| 'SoulWars'
 		| 'RoguesDenMaze'
-		| 'CastleWars'
 		| 'MageArena'
 		| 'MageTrainingArena'
 		| 'BlastFurnace'
