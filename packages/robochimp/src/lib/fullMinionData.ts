@@ -1,7 +1,7 @@
 import type { IBotType } from '@oldschoolgg/schemas';
 import type { ItemBank } from 'oldschooljs';
 
-import type { FullMinionData } from '@/http/api-types.js';
+import type { FullMinionData, FullMinionGearSetup } from '@/http/api-types.js';
 
 export async function fetchFullMinionData(bot: IBotType, targetUserId: string): Promise<FullMinionData | null> {
 	const opt = { where: { id: targetUserId } } as const;
@@ -24,6 +24,16 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 	}
 
 	const minigameData: Record<string, number> = {};
+	const equippedItemIDs = new Set<number>();
+
+	for (const setup of Object.values(gear)) {
+		if (!setup || typeof setup !== 'object') continue;
+		for (const slot of Object.values(setup as Record<string, unknown>)) {
+			if (!slot || typeof slot !== 'object') continue;
+			const item = (slot as { item?: unknown }).item;
+			if (typeof item === 'number') equippedItemIDs.add(item);
+		}
+	}
 
 	const rawMinigameScores = await (bot === 'osb'
 		? osbClient.minigame.findFirst({ where: { user_id: targetUserId } })
@@ -81,6 +91,7 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 		},
 
 		minigames: minigameData,
+		completed_ca_task_ids: botUser.completed_ca_task_ids as number[],
 
 		slayer_unlocks: botUser.slayer_unlocks,
 		slayer_blocked_ids: botUser.slayer_blocked_ids,
@@ -90,8 +101,17 @@ export async function fetchFullMinionData(bot: IBotType, targetUserId: string): 
 		slayer_points: botUser.slayer_points,
 
 		gear: {
-			pet: botUser.minion_equippedPet
+			pet: botUser.minion_equippedPet,
+			melee: (gear.melee ?? null) as FullMinionGearSetup,
+			mage: (gear.mage ?? null) as FullMinionGearSetup,
+			range: (gear.range ?? null) as FullMinionGearSetup,
+			misc: (gear.misc ?? null) as FullMinionGearSetup,
+			skilling: (gear.skilling ?? null) as FullMinionGearSetup,
+			wildy: (gear.wildy ?? null) as FullMinionGearSetup,
+			fashion: (gear.fashion ?? null) as FullMinionGearSetup,
+			other: (gear.other ?? null) as FullMinionGearSetup
 		},
+		equipped_item_ids: [...equippedItemIDs],
 
 		config: {
 			bank_sort_method: botUser.bank_sort_method,

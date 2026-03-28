@@ -2,198 +2,138 @@
 title: "Fishing"
 ---
 
-You can train Fishing using [[/fish name\:Shrimps/Anchovies quantity\:5]], [[/fish name\:Lobster quantity\:100]]
+import { FishingAdvisor } from "../../../../components/FishingAdvisor";
 
-Fishing bait is buyable with: [[/buy name\:Fishing bait]]
+You can train Fishing using [[/fish name\:Shrimp/Anchovies quantity\:5]] or [[/fish name\:Lobster quantity\:100]].
 
-Dark fishing bait and Raw Karambwanji are **not** sold by the bot. You must obtain them yourself or buy from other players.
+Fishing bait is buyable with [[/buy name\:Fishing bait]].
 
-## Fishing System Updates
+Dark fishing bait and raw karambwanji are not sold by the bot. You must obtain them yourself or buy from other players.
 
-The fishing pipeline now uses a **tick-based simulation** (0.6s ticks) with per-catch rolls. Multi-fish spots track each subfish separately, and those catch arrays are persisted so trips resolve correctly after the rework.
-Runtime fish data is sourced from `Fishing.Fishes` in code; `fishing-fishables.json` is generated snapshot data for docs/export tooling.
+## Fishing System
 
-- Per-catch extra fish rolls: Rada’s blessing and Spirit flakes add extra fish without additional XP or extra clue/pet rolls.
-- Powerfishing uses faster tick rates (where supported) and disables Spirit flakes.
-- Barbarian cut-eat is supported when **Barbarian fishing** is powerfished at **99 Fishing** and **80 Cooking**, granting Cooking XP while reducing bait usage.
-- Moon key halves can be rolled **per catch** after *Children of the Sun* on eligible fish (see Boosts).
+Fishing now uses tick-based simulation (0.6s ticks) with per-catch rolls.
+
+- Multi-fish spots (for example Trout/Salmon) track each subfish separately.
+- Rada's blessing and Spirit flakes can add extra fish per catch roll.
+- Extra fish from blessing/flakes do not give extra XP and do not add extra clue/pet rolls.
+- Powerfishing uses faster timing (where supported), drops fish, and disables Spirit flakes.
+- Barbarian cut-eat is supported while powerfishing Barbarian fishing at 99 Fishing and 80 Cooking.
+- Moon key halves roll per catch on eligible fish after Children of the Sun.
+
+## Fishing Method Finder (By Discord ID)
+
+Use this to see the best estimated Fishing XP/hr methods your account can do right now.
+
+<FishingAdvisor client:load />
 
 ## Boosts
 
 ### Angler Outfit
 
-Obtainable from [Fishing Trawler](fishing-trawler) and [Aerial Fishing](https://wiki.oldschool.gg/skills/fishing/aerial-fishing). When equipped in the skilling setup, it gives:
+Obtainable from Fishing Trawler and [Aerial Fishing](/osb/activities/aerial-fishing/). When equipped in skilling setup:
 
-- 0.4% — Angler hat
-- 0.8% — Angler top
-- 0.6% — Angler waders
-- 0.2% — Angler boots
-- 2.5% — Full outfit equipped in skilling setup
+- Angler hat: +0.4% Fishing XP
+- Angler top: +0.8% Fishing XP
+- Angler waders: +0.6% Fishing XP
+- Angler boots: +0.2% Fishing XP
+- Full outfit: +2.5% Fishing XP total
 
 ### Spirit Flakes
 
-- 50% chance to catch double fish per action when using Spirit flakes
+- 50% chance at extra fish per catch roll
 - Extra fish gives no additional XP
+- Disabled while powerfishing
 
-### Rada’s Blessing
+### Rada's Blessing
 
-When equipped (and not powerfishing), Rada’s blessing grants a chance at extra fish per catch:
+When equipped (and not powerfishing), grants extra fish chance per catch:
 
-- 2% — Rada’s blessing 1
-- 4% — Rada’s blessing 2
-- 6% — Rada’s blessing 3
-- 8% — Rada’s blessing 4
+- Rada's blessing 1: 2%
+- Rada's blessing 2: 4%
+- Rada's blessing 3: 6%
+- Rada's blessing 4: 8%
 
 ### Tools
 
-Equipping the following tools in **any** setup reduces catch time:
+The following tools give a generic 5% speed boost in their method:
 
-- 5% — Pearl fishing rod (bait fishing)
-- 5% — Pearl fly fishing rod (fly fishing)
-- 5% — Pearl barbarian rod (barbarian fishing)
-- 5% — Crystal harpoon (harpooning, caging, netting)
+- Pearl fishing rod (bait fishing)
+- Pearl fly fishing rod (fly fishing)
+- Pearl barbarian rod (barbarian fishing)
+- Crystal harpoon (harpooning/caging/netting)
 
-Harpoon boosts for **Tuna/Swordfish** and **Shark** spots:
+Extra harpoon boosts for Tuna/Swordfish and Shark spots:
 
-- 35% — Crystal harpoon
-- 20% — Dragon harpoon
-- 20% — Infernal harpoon
+- Crystal harpoon: +35%
+- Dragon harpoon: +20%
+- Infernal harpoon: +20%
 
 ### Storage
 
-- **Fish barrel** or **Fish sack barrel** adds 28 inventory slots and extends trips by 9 minutes (non-minnow).
+- Fish barrel or fish sack barrel adds 28 inventory slots and extends trips by 9 minutes (non-minnow, non-powerfishing).
 
 ### Moon Key
 
-After *Children of the Sun*, the following fish have per-catch rolls for moon key halves:
+After Children of the Sun, eligible fish have per-catch moon key half rolls:
 
-- **Trout/Salmon** — 1/4100
-- **Tuna/Swordfish** — 3/5000
-- **Lobster** — 3/5000
-- **Shark** — 1/580
+- Trout/Salmon: 1/4100
+- Tuna/Swordfish: 3/5000
+- Lobster: 3/5000
+- Shark: 1/580
 
-### Fish
+## Notable Requirements
 
-- [[/fish name\:Barbarian fishing]] — for Barbarian Fishing
-- [[/fish name\:Mackerel/Cod/Bass]] — for net fishing (mackerel/cod/bass)
-- [[/fish name\:Sardine/Herring]] — for bait fishing (sardine/herring)
-- [[/fish name\:Shrimps/Anchovies]] — for net fishing (shrimps/anchovies)
-- [[/fish name\:Trout/Salmon]] — for fly fishing (trout/salmon)
-- **Karambwanji** (bait for Karambwan) requires **15 QP**
-- **Monkfish** requires **100 QP**
-- **Anglerfish** requires **40 QP**
-- **Minnows** require **full Angler outfit**
-  - To trade minnows, use: [[/buy name\:raw shark]]
-
-## Fishing Trawler
-
-Start with: [[/minigames fishing_trawler start]]
-Base time per game: 13 minutes
-
-- 1/8 chance per trip to receive a unique Angler piece you don’t already have
-- 1/5000 chance per trip to receive the Heron pet
-
-### Trawler Boosts
-
-- +0.2% trip time reduction per KC (up to +10% at 50 KC)
-- +50% fish received with [Elite Ardougne Diary](../../miscellaneous/achievement-diaries#ardougne-diary-elite)
+- Karambwanji (bait for Karambwan): 15 QP
+- Monkfish: 100 QP
+- Anglerfish: 40 QP
+- Minnows: full Angler outfit owned
+  - Trade minnows with [[/buy name\:Raw shark]]
 
 ## Training
 
-### Fastest Route to 99
+### Fastest XP Route To 99 (Active)
 
-- [[/fish name\:Shrimps/Anchovies]] from [[fishing:1]]–[[fishing:5]]
-- [[/fish name\:Sardine/Herring]] from [[fishing:5]]–[[fishing:20]] (requires fishing bait)
-- **OPTIONAL:** Fishing Trawler for Angler outfit
-- [[/fish name\:Trout/Salmon]] from [[fishing:20]]–[[fishing:58]] (requires feathers)
-- **OPTIONAL:** Aerial Fishing (requires minimum [[hunter:35]]) for Pearl barbarian rod
-- [[/fish name\:Barbarian fishing]] from [[fishing:58]]–[[fishing:71]] (requires feathers)
-- [[/k name\:tempoross]] from [[fishing:71]]–[[fishing:99]] using a crystal harpoon
+This route is based on current `/fish` simulation behavior and assumes you are powerfishing once it becomes efficient.
 
-[Tempoross](/osb/activities/tempoross/) is a faster option than Barbarian Fishing once you have a crystal tool seed (from Zalcano) and a Dragon harpoon (from Wyrms or Tempoross) to create a crystal harpoon. Requires [[fishing:35]]. Tempoross also provides large amounts of raw food for ironmen.
+- [[/fish name\:Shrimp/Anchovies]] from [[fishing:1]] to [[fishing:5]]
+- [[/fish name\:Sardine/Herring]] from [[fishing:5]] to [[fishing:20]] (requires fishing bait)
+- [[/fish name\:Trout/Salmon powerfish\:true]] from [[fishing:20]] to [[fishing:50]] (requires feathers)
+- [[/fish name\:Tuna/Swordfish powerfish\:true]] from [[fishing:50]] to [[fishing:58]]
+- [[/fish name\:Barbarian fishing powerfish\:true]] from [[fishing:58]] to [[fishing:99]] (requires feathers, plus [[agility:15]] and [[strength:15]])
 
-Alternatively, continuing Barbarian Fishing is the cheaper and next-best method to reach 99.
+Notes:
+
+- At [[agility:30]] and [[strength:30]] you start catching leaping salmon while barbarian fishing.
+- At [[agility:45]] and [[strength:45]] you start catching leaping sturgeon.
+- For lower-effort training with good rewards, [Tempoross](/osb/activities/tempoross/) is still excellent, but it is slower XP than high-efficiency powerfishing at high levels.
 
 ### Best Pet Chance
 
-Currently, the fastest pet method is fishing Karambwans.
+Currently, Karambwans are one of the fastest practical Heron methods.
 
 ### Additional Information
 
-[Aerial Fishing](/osb/activities/aerial-fishing/) at [[fishing:43]]/[[hunter:35]] is more efficient than training Hunting or Fishing separately if your goal is 99 in both.
+[Aerial Fishing](/osb/activities/aerial-fishing/) at [[fishing:43]] and [[hunter:35]] is efficient if your goal is to train both skills.
 
-### **Collection Log Slots Obtainable by Fishing**
+### Collection Log Slots Obtainable By Fishing
 
-- Bass (Big Bass)
-- Swordfish (Big Swordfish)
-- Shark (Big Shark)
+- Big bass
+- Big swordfish
+- Big shark
 - Angler outfit
-- [Aerial Fishing](/osb/activities/aerial-fishing/): 3 Rods, Golden Tench, Fish Sack
+- [Aerial Fishing](/osb/activities/aerial-fishing/): pearl rods, fish sack, golden tench
 
-## XP/hr
+## XP/hr Snapshot
 
-Assuming you use full Angler Outfit, Crystal harpoon, and a Pearl rod (when and where possible).
+These are code-calculated Fishing XP/hr examples at [[fishing:99]], using long-trip simulation, full Angler outfit, Crystal harpoon where relevant, and no Spirit flakes:
 
-[[embed.fishingxphr.start]]
-{/* DO NOT EDIT - This section is auto-generated by the build script */}
-| Fish | Fishing Lvl | XP/hr | Items/hr |
-| --- | --- | --- | --- |
-| [[Minnow?raw]] Minnow | 99 | 56,000 | 25.3k Minnow |
-| Barbarian fishing | 99 | 52,000 |  |
-| Barbarian fishing | 90 | 49,000 |  |
-| [[Minnow?raw]] Minnow | 90 | 48,000 | 20.8k Minnow |
-| Barbarian fishing | 80 | 47,000 |  |
-| [[Raw trout?raw]] Trout/Salmon | 99 | 47,000 | 361x Raw salmon, 432x Raw trout |
-| [[Raw trout?raw]] Trout/Salmon | 90 | 45,000 | 330x Raw salmon, 429x Raw trout |
-| Barbarian fishing | 70 | 44,000 |  |
-| [[Raw tuna?raw]] Tuna/Swordfish | 99 | 43,000 | 243x Raw swordfish, 230x Raw tuna |
-| [[Raw karambwan?raw]] Karambwan | 99 | 42,000 | 823x Raw karambwan |
-| [[Raw trout?raw]] Trout/Salmon | 80 | 42,000 | 304x Raw salmon, 404x Raw trout |
-| [[Raw tuna?raw]] Tuna/Swordfish | 90 | 40,000 | 225x Raw swordfish, 219x Raw tuna |
-| [[Infernal eel?raw]] Infernal eel | 99 | 39,000 | 404x Infernal eel |
-| [[Raw trout?raw]] Trout/Salmon | 70 | 39,000 | 285x Raw salmon, 372x Raw trout |
-| [[Raw karambwan?raw]] Karambwan | 90 | 38,000 | 758x Raw karambwan |
-| [[Raw monkfish?raw]] Monkfish | 99 | 37,000 | 309x Raw monkfish |
-| [[Raw tuna?raw]] Tuna/Swordfish | 80 | 37,000 | 1x Big swordfish, 206x Raw swordfish, 204x Raw tuna |
-| [[Infernal eel?raw]] Infernal eel | 90 | 36,000 | 375x Infernal eel |
-| [[Raw monkfish?raw]] Monkfish | 90 | 36,000 | 296x Raw monkfish |
-| [[Raw karambwan?raw]] Karambwan | 80 | 35,000 | 691x Raw karambwan |
-| [[Raw monkfish?raw]] Monkfish | 80 | 34,000 | 281x Raw monkfish |
-| [[Infernal eel?raw]] Infernal eel | 80 | 33,000 | 348x Infernal eel |
-| [[Raw lobster?raw]] Lobster | 99 | 32,000 | 354x Raw lobster |
-| [[Raw monkfish?raw]] Monkfish | 70 | 32,000 | 266x Raw monkfish |
-| [[Raw karambwan?raw]] Karambwan | 70 | 31,000 | 616x Raw karambwan |
-| [[Raw lobster?raw]] Lobster | 90 | 30,000 | 327x Raw lobster |
-| [[Raw cave eel?raw]] Cave eel | 99 | 26,000 | 321x Raw cave eel |
-| [[Raw lobster?raw]] Lobster | 80 | 26,000 | 292x Raw lobster |
-| [[Raw trout?raw]] Trout/Salmon | 40 | 26,000 | 194x Raw salmon, 253x Raw trout |
-| [[Raw tuna?raw]] Tuna/Swordfish | 70 | 26,000 | 139x Raw swordfish, 156x Raw tuna |
-| [[Raw cave eel?raw]] Cave eel | 90 | 25,000 | 310x Raw cave eel |
-| [[Raw cave eel?raw]] Cave eel | 80 | 24,000 | 298x Raw cave eel |
-| [[Raw lobster?raw]] Lobster | 70 | 24,000 | 263x Raw lobster |
-| [[Raw pike?raw]] Pike | 99 | 24,000 | 394x Raw pike |
-| [[Raw cave eel?raw]] Cave eel | 70 | 23,000 | 288x Raw cave eel |
-| [[Raw shark?raw]] Shark | 99 | 23,000 | 206x Raw shark |
-| [[Raw pike?raw]] Pike | 90 | 22,000 | 365x Raw pike |
-| [[Raw shark?raw]] Shark | 90 | 21,000 | 189x Raw shark |
-| [[Raw cave eel?raw]] Cave eel | 40 | 20,000 | 254x Raw cave eel |
-| [[Raw pike?raw]] Pike | 80 | 20,000 | 333x Raw pike |
-| [[Raw anglerfish?raw]] Anglerfish | 99 | 19,000 | 161x Raw anglerfish |
-| [[Raw dark crab?raw]] Dark crab | 99 | 19,000 | 150x Raw dark crab |
-| [[Raw shark?raw]] Shark | 80 | 19,000 | 1x Big shark, 171x Raw shark |
-| [[Raw dark crab?raw]] Dark crab | 90 | 18,000 | 139x Raw dark crab |
-| [[Raw pike?raw]] Pike | 70 | 18,000 | 301x Raw pike |
-| [[Raw anglerfish?raw]] Anglerfish | 90 | 17,000 | 145x Raw anglerfish |
-| [[Raw sardine?raw]] Sardine/Herring | 40 | 14,000 | 277x Raw herring, 275x Raw sardine |
-| [[Raw lobster?raw]] Lobster | 40 | 13,000 | 151x Raw lobster |
-| [[Raw pike?raw]] Pike | 40 | 12,000 | 209x Raw pike |
-| [[Raw tuna?raw]] Tuna/Swordfish | 40 | 9,000 | 112x Raw tuna |
-| [[Raw sardine?raw]] Sardine/Herring | 10 | 8,000 | 168x Raw herring, 162x Raw sardine |
-| [[Raw mackerel?raw]] Mackerel/Cod/Bass | 40 | 6,000 | 90x Raw cod, 123x Raw mackerel |
-| [[Raw karambwanji?raw]] Karambwanji | 70 | 4,000 | 12.1k Raw karambwanji |
-| [[Raw karambwanji?raw]] Karambwanji | 40 | 3,000 | 5.7k Raw karambwanji |
-| [[Raw karambwanji?raw]] Karambwanji | 10 | 2,000 | 1.4k Raw karambwanji |
-| [[Raw shrimps?raw]] Shrimps/Anchovies | 1 | 1,000 | 124x Raw shrimps |
+| Method | Normal | Powerfish |
+| --- | --- | --- |
+| Tuna/Swordfish | ~34.9k/hr | ~107.6k/hr |
+| Barbarian fishing | ~57.8k/hr | ~113.1k/hr |
+| Trout/Salmon | ~51.7k/hr | ~98.7k/hr |
+| Minnows | ~56.4k/hr | ~56.4k/hr |
+| Shark | ~20.9k/hr | ~55.6k/hr |
 
-{/* DO NOT EDIT - This section is auto-generated by the build script */}
-[[embed.fishingxphr.end]]
+If you are viewing an older cached version of this page, refresh before using any XP route.

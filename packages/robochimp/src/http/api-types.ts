@@ -9,6 +9,13 @@ export type AuthenticatedUser = {
 	bits: number[];
 };
 
+export type FullMinionGearSlot = {
+	item: number;
+	quantity: number;
+};
+
+export type FullMinionGearSetup = Record<string, FullMinionGearSlot | null> | null;
+
 export type FullMinionData = {
 	bot: IBotType;
 	user_id: string;
@@ -63,10 +70,20 @@ export type FullMinionData = {
 	};
 
 	minigames: Record<string, number>;
+	completed_ca_task_ids: number[];
 
 	gear: {
 		pet: number | null;
+		melee?: FullMinionGearSetup;
+		mage?: FullMinionGearSetup;
+		range?: FullMinionGearSetup;
+		misc?: FullMinionGearSetup;
+		skilling?: FullMinionGearSetup;
+		wildy?: FullMinionGearSetup;
+		fashion?: FullMinionGearSetup;
+		other?: FullMinionGearSetup;
 	};
+	equipped_item_ids: number[];
 
 	config: {
 		bank_sort_method: string | null;
