@@ -946,8 +946,16 @@ export const allCollectionLogs: ICollection = {
 			'Vale Totems': {
 				alias: ['vt', 'vale', 'totems', 'vale totems'],
 				items: valeTotemsCL,
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'vale_totems')!.score,
+					Offerings: async (_, __, stats) => stats.userStats.vale_offerings_rummaged
+				},
 				isActivity: true,
-				fmtProg: mgProg('vale_totems')
+				fmtProg: ({ minigames, stats }) => [
+					`${minigames.vale_totems} Completions`,
+					`${stats.userStats.vale_offerings_rummaged.toLocaleString()} Offerings Rummaged`
+				]
 			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,

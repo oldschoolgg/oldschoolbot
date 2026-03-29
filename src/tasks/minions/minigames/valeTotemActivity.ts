@@ -84,6 +84,9 @@ export const valeTotemsTask: MinionTask = {
 			await user.statsUpdate({
 				vale_research_points: {
 					increment: rewards
+				},
+				vale_offerings_rummaged: {
+					increment: rewards * 100
 				}
 			});
 

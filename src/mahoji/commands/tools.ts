@@ -8,7 +8,12 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
-import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
+import {
+	gnomeRestaurantCL,
+	guardiansOfTheRiftCL,
+	shadesOfMorttonCL,
+	valeTotemsCL
+} from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
@@ -309,6 +314,11 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Shades of Morton',
 		key: 'shades_of_morton',
 		items: shadesOfMorttonCL
+	},
+	{
+		name: 'Vale Totems',
+		key: 'vale_totems',
+		items: valeTotemsCL
 	}
 ];
 

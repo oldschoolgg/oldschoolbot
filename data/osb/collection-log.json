@@ -5019,6 +5019,7 @@
 			},
 			"vale_totems": {
 				"items": ["Bow string spool", "Ent branch", "Fletching knife", "Greenman mask", "Vale offerings"],
+				"kc_activity": {},
 				"is_activity": true
 			},
 			"volcanic_mine": {

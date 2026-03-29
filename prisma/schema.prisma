@@ -726,6 +726,7 @@ model UserStats {
   tithe_farms_completed    Int @default(0)
   tithe_farm_points        Int @default(0)
   vale_research_points     Int @default(0)
+  vale_offerings_rummaged  Int @default(0)
   pest_control_points      Int @default(0)
   inferno_attempts         Int @default(0)
   infernal_cape_sacrifices Int @default(0)
