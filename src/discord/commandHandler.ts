@@ -1,4 +1,5 @@
 import { type APIChatInputApplicationCommandInteraction, SpecialResponse } from '@oldschoolgg/discord';
+import { UserError } from '@oldschoolgg/toolkit';
 import { cryptoRng } from 'node-rng/crypto';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/index.js';
@@ -87,6 +88,7 @@ export async function rawCommandHandlerInner({
 		return response;
 	} catch (err) {
 		if ((err as Error).message === SILENT_ERROR) return SpecialResponse.SilentErrorResponse;
+		if (err instanceof UserError) return SpecialResponse.RespondedManually;
 		Logging.logError({
 			err: err as Error,
 			interaction,
