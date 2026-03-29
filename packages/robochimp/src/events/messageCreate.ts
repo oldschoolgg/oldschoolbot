@@ -27,7 +27,7 @@ async function userInfo(msg: IMessage) {
 	const possibleID = msg.content.replace('.', '');
 
 	if (msg.guild_id && possibleID && isValidDiscordSnowflake(possibleID)) {
-		const commandRunner = await globalClient.fetchRUser('userinfo').catch(() => null);
+		const commandRunner = await globalClient.fetchRUser(possibleID).catch(() => null);
 		if (!commandRunner) return;
 		if (commandRunner.id.toString() !== possibleID) return;
 		const info = await getInfoStrOfUser(possibleID);
