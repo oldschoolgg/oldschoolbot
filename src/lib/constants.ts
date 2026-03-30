@@ -463,11 +463,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Has Earned Rift Guardian From Star',
 		protected: false,
 		userConfigurable: false
-	},
-	[BitField.DisablePaints]: {
-		name: 'Disable item Paints',
-		protected: false,
-		userConfigurable: true
 	}
 } as const;
 
