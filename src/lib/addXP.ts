@@ -209,7 +209,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	let totalFirstAgeBonus = 0;
 	let originalFirstAgeEquipped = 0;
-	const hasPrismareRing = user.hasEquipped(75050);
+	const hasPrismareRing = user.hasEquipped('Prismare ring');
 
 	let totalStaticBoost = 0;
 	const staticBoostsApplied: string[] = [];

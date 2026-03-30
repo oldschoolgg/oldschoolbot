@@ -18,6 +18,7 @@ import findMonster from '@/lib/util/findMonster.js';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
+	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.hasMinion) {
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;

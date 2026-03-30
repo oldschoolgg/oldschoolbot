@@ -146,6 +146,10 @@ export async function minionKillCommand(
 
 	if (updateResult.message.length > 0) result.messages.push(updateResult.message);
 
+	if (updateResult.totalCost.length > 0) {
+		result.messages.push(`Removing items: ${updateResult.totalCost}`);
+	}
+
 	if (result.updateBank.itemCostBank.length > 0) {
 		await ClientSettings.updateBankSetting('economyStats_PVMCost', result.updateBank.itemCostBank);
 		await trackLoot({

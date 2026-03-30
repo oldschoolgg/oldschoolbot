@@ -340,9 +340,9 @@ export function checkUserCanUseDegradeableItem({
 }): { hasEnough: true; currentCharges: number } | { hasEnough: false; currentCharges: number; userMessage: string } {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
-	const currentCharges = user.user[degItem.settingsKey] ?? 0;
-	const newCharges = currentCharges - chargesToDegrade;
+	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
+	const newCharges = currentCharges - chargesToDegrade;
 	if (newCharges < 0) {
 		return {
 			hasEnough: false,
@@ -381,7 +381,7 @@ export async function degradeItem({
 
 	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
-	const newCharges = Math.floor((currentCharges ?? 0) - chargesToDegrade);
+	const newCharges = Math.floor(currentCharges - chargesToDegrade);
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
@@ -483,7 +483,7 @@ export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Pro
 		}
 
 		const currentCharges = user.user[degItem.settingsKey];
-		const newCharges = (currentCharges ?? 0) + chargesToRefund;
+		const newCharges = currentCharges + chargesToRefund;
 
 		// Prepare result message
 		const userMessage = `Refunded ${chargesToRefund} charges for ${degItem.item.name}`;

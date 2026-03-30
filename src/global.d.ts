@@ -1,5 +1,3 @@
-import { dungeoneeringCL } from '@/lib/bso/collection-log/main.ts';
-
 type MUserInstance = MUser;
 
 declare global {
@@ -27,10 +25,4 @@ declare global {
 	export type SendableFile = import('@oldschoolgg/discord').SendableFile;
 }
 
-declare module 'oldschooljs' {
-	interface ItemRequirements {
-		dungeoneering?: number;
-		invention?: number;
-		divination?: number;
-	}
-}
+export {};

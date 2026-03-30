@@ -47,7 +47,7 @@ export const customItemEffect = new Map<number, CustomItemEffectCallBack>([
 	]
 ]);
 
-export async function applyCustomItemEffects(user: MUser | null, item: number, disablePaints: boolean = false) {
+export async function applyCustomItemEffects(user: MUser | null, item: number) {
 	if (!user) return null;
 	const key = `${user.id}-${item}`;
 	const cached = itemEffectImageCache.get(key);

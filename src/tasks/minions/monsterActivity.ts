@@ -152,7 +152,7 @@ function getSlayerContext({
 
 interface newOptions {
 	type: 'MonsterKilling';
-	user: MUserClass;
+	user: MUser;
 	monster: KillableMonster;
 	q: number;
 	iQty?: number;
@@ -390,8 +390,7 @@ export function doMonsterTrip(data: newOptions) {
 					gearBank,
 					quantity: finalQuantity,
 					duration,
-					messages,
-					monster: monster.name // Add this
+					messages
 				}),
 				killOptions
 			);
