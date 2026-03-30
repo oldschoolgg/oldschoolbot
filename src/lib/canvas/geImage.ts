@@ -133,7 +133,7 @@ class GeImageGeneratorSingleton {
 			sellTransactions: GETransaction[];
 		})[];
 	}): Promise<Buffer> {
-		await CanvasModule.ensureInit();
+		await CanvasModule.waitTillReady();
 		if (!this.ready) {
 			await this.init();
 		}

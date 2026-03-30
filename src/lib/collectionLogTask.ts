@@ -351,7 +351,7 @@ class CollectionLogTask {
 			color
 		});
 
-		if (collectionLog.completions && ['collection', 'bank', 'tames'].includes(type)) {
+		if (collectionLog.completions && ['collection', 'bank', 'tame'].includes(type)) {
 			const baseText = collectionLog.isActivity ? 'Completions: ' : 'Kills: ';
 			let drawnSoFar = baseText;
 			// Times done/killed
