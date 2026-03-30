@@ -47,26 +47,28 @@ export const customItemEffect = new Map<number, CustomItemEffectCallBack>([
 	]
 ]);
 
-export async function applyCustomItemEffects(user: MUser | null, item: number) {
+export async function applyCustomItemEffects(user: MUser | null, item: number, disablePaints: boolean = false) {
 	if (!user) return null;
 	const key = `${user.id}-${item}`;
 	const cached = itemEffectImageCache.get(key);
 	if (cached) return cached;
 
-	const paintedColor = user.paintedItems.get(item);
-	if (paintedColor) {
-		const paint = paintColorsMap.get(paintedColor)!;
-		const canvas = await getPaintedItemImage(paint, item);
-		const paintedImg = await canvasToBuffer(canvas);
-		const image = await loadImage(paintedImg);
-		itemEffectImageCache.set(key, image);
-		return image;
+	if (!disablePaints) {
+		const paintedColor = user.paintedItems.get(item);
+		if (paintedColor) {
+			const paint = paintColorsMap.get(paintedColor)!;
+			const canvas = await getPaintedItemImage(paint, item);
+			const paintedImg = await canvasToBuffer(canvas);
+			const image = await loadImage(paintedImg);
+			itemEffectImageCache.set(key, image);
+			return image;
+		}
 	}
 
 	const effect = customItemEffect.get(item);
 	if (!effect) return null;
 	const resultingImage = await OSRSCanvas.getItemImage({ itemID: item });
-	const effectedImageCanvas = await effect(resultingImage, user);
+	const effectedImageCanvas = effect(resultingImage, user);
 	const effectedImage = await canvasToBuffer(effectedImageCanvas ?? resultingImage);
 	const image = await loadImage(effectedImage);
 	itemEffectImageCache.set(key, image);

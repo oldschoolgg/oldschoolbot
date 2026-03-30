@@ -96,8 +96,8 @@ export async function slotsCommand(
 ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	}
 
-	if (amount < 20_000_000 || amount > 1_000_000_000) {
-		return 'You can only gamble between 20m and 1b.';
+	if (amount < 20_000_000 || amount > 5_000_000_000) {
+		return 'You can only gamble between 20m and 5b.';
 	}
 
 	await interaction.confirmation(

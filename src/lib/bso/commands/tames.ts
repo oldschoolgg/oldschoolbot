@@ -1371,7 +1371,7 @@ async function selectCommand(user: MUser, tameID: number) {
 }
 
 async function viewCommand(interaction: MInteraction, user: MUser, tameID: number): CommandResponse {
-	if (!interaction.deferred) interaction.defer();
+	if (!interaction.deferred) await interaction.defer();
 	const perkTier = await user.fetchPerkTier();
 	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
 	const rawTame = tames.find(t => t.id === tameID);

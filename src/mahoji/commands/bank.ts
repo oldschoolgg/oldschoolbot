@@ -7,7 +7,7 @@ import { choicesOf, filterOption, itemOption } from '@/discord/index.js';
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
 import { bankFlags } from '@/lib/canvas/bankImage.js';
 import { PerkTier } from '@/lib/constants.js';
-import type { Flags } from '@/lib/minions/types.js';
+import { type Flags, OverrideStatus } from '@/lib/minions/types.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -94,6 +94,12 @@ export const bankCommand = defineCommand({
 			description: 'An additional flag to apply to your bank.',
 			required: false,
 			choices: choicesOf(bankFlags)
+		},
+		{
+			type: 'Boolean',
+			name: 'show_paints',
+			description: 'Whether or not to show paints.',
+			required: false
 		}
 	],
 	run: async ({ user, options, interaction }) => {
@@ -156,15 +162,22 @@ export const bankCommand = defineCommand({
 			return interaction.makePaginatedMessage({ pages });
 		}
 		if (options.format === 'json') {
-			const json = JSON.stringify(baseBank.toJSON());
+			const json = JSON.stringify(bank.toJSON());
 			if (json.length > 1900) {
-				return { files: [{ buffer: Buffer.from(json), name: 'bank.json' }] };
+				return { files: [{ buffer: Buffer.from(json), name: 'bank.json.txt' }] };
 			}
 			return `${codeBlock('json', json)}`;
 		}
 
+		// Overrides the user setting on whether to disable paints.
+		let paintOverride: OverrideStatus = OverrideStatus.NoOverride;
+		if (options.show_paints !== undefined) {
+			paintOverride = options.show_paints ? OverrideStatus.ForceEnabled : OverrideStatus.ForceDisabled;
+		}
+
 		const flags: Flags = {
-			page: options.page - 1
+			page: options.page - 1,
+			override_show_paints: paintOverride
 		};
 		if (options.sort) flags.sort = options.sort;
 
