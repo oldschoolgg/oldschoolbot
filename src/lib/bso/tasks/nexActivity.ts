@@ -85,8 +85,8 @@ export const nexTask: MinionTask = {
 		let soloPrevCl = new Bank();
 		let soloItemsAdded: Bank = new Bank();
 
-		for (const [userID, loot] of teamsLoot.entries()) {
-			const { user } = parsedUsers.find(p => p.id === userID)!;
+		for (const [recipientID, loot] of teamsLoot.entries()) {
+			const { user } = parsedUsers.find(p => p.id === recipientID)!;
 			if (!user) continue;
 			let xpStr = '';
 			if (kcAmounts[user.id]) {
@@ -168,7 +168,7 @@ export const nexTask: MinionTask = {
 					)}.\n\n${soloXP}`
 		);
 
-		if (!kcAmounts[userID]) {
+		if (kcAmounts[userID]) {
 			message.addBankImage({
 				bank: soloItemsAdded,
 				title: `Loot From ${quantity} ${NexMonster.name}:`,
