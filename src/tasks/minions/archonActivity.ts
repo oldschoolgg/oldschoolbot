@@ -1,4 +1,4 @@
-import type { ArchonOptions } from '@/lib/bso/bsoTypes.js';
+import type { ArchonEventOptions, ArchonOptions } from '@/lib/bso/bsoTypes.js';
 import {
 	defaultIslandUpgrades,
 	getMegabossLootBonus,
@@ -94,6 +94,19 @@ export const archonTask: MinionTask = {
 			message: str,
 			data,
 			loot: realUserLoot
+		});
+	}
+};
+
+export const archonEventTask: MinionTask = {
+	type: 'ArchonEvent',
+	async run(data: ArchonEventOptions, { handleTripFinish, user }) {
+		return handleTripFinish({
+			user,
+			channelId: data.channelId,
+			message: `${user.minionName} participated in the Archon Event!`,
+			data,
+			loot: null
 		});
 	}
 };

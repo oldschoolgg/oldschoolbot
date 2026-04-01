@@ -53,7 +53,7 @@ export async function applyCustomItemEffects(user: MUser | null, item: number) {
 	const cached = itemEffectImageCache.get(key);
 	if (cached) return cached;
 
-	if (!disablePaints) {
+	if (!user.bitfield.includes(BitField.DisablePaints)) {
 		const paintedColor = user.paintedItems.get(item);
 		if (paintedColor) {
 			const paint = paintColorsMap.get(paintedColor)!;

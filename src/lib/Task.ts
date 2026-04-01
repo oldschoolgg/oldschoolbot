@@ -30,8 +30,7 @@ import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { agilityTask } from '@/tasks/minions/agilityActivity.js';
 import { alchingTask } from '@/tasks/minions/alchingActivity.js';
-import { archonTask } from '@/tasks/minions/archonActivity.js';
-import { beachCombingTask } from '@/tasks/minions/beachCombingActivity.js';
+import { archonEventTask, archonTask } from '@/tasks/minions/archonActivity.js';
 import { butlerTask } from '@/tasks/minions/butlerActivity.js';
 import { buyTask } from '@/tasks/minions/buyActivity.js';
 import { camdozaalFishingTask } from '@/tasks/minions/camdozaalActivity/camdozaalFishingActivity.js';
@@ -54,7 +53,6 @@ import { fishingTask } from '@/tasks/minions/fishingActivity.js';
 import { fletchingTask } from '@/tasks/minions/fletchingActivity.js';
 import { CreateForestersRationsTask } from '@/tasks/minions/forestersRationActivity.js';
 import { gloryChargingTask } from '@/tasks/minions/gloryChargingActivity.js';
-import { gloryUnchargingTask } from '@/tasks/minions/gloryUnchargingActivity.js';
 import { groupoMonsterTask } from '@/tasks/minions/groupMonsterActivity.js';
 import { aerialFishingTask } from '@/tasks/minions/HunterActivity/aerialFishingActivity.js';
 import { birdHouseTask } from '@/tasks/minions/HunterActivity/birdhouseActivity.js';
@@ -95,7 +93,6 @@ import { toaTask } from '@/tasks/minions/minigames/toaActivity.js';
 import { tobTask } from '@/tasks/minions/minigames/tobActivity.js';
 import { trawlerTask } from '@/tasks/minions/minigames/trawlerActivity.js';
 import { brewingTask } from '@/tasks/minions/minigames/troubleBrewingActivity.js';
-import { valeTotemsTask } from '@/tasks/minions/minigames/valeTotemActivity.js';
 import { animatedArmorTask } from '@/tasks/minions/minigames/warriorsGuild/animatedArmourActivity.js';
 import { cyclopsTask } from '@/tasks/minions/minigames/warriorsGuild/cyclopsActivity.js';
 import { wintertodtTask } from '@/tasks/minions/minigames/wintertodtActivity.js';
@@ -126,29 +123,6 @@ import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
 import { ancientMycologyTask } from '../tasks/minions/ancientMycologyActivity.js';
 import { archaicMiningTask } from '../tasks/minions/archaicMiningActivity.js';
 import { gemstoneFishingTask } from '../tasks/minions/gemstoneFishingActivity.js';
-
-type MinionTaskRunOptions = {
-	user: MUser;
-	handleTripFinish: typeof handleTripFinish;
-	rng: RNGProvider;
-};
-
-type IMinionTask = {
-	type: activity_type_enum;
-	run: (data: any, options: MinionTaskRunOptions) => Promise<void>;
-};
-declare global {
-	export type MinionTask = IMinionTask;
-}
-
-const shadesOfMortonSacredOilTask: MinionTask = {
-	type: activity_type_enum.ShadesOfMortonSacredOil,
-	run: shadesOfMortonTask.run
-};
-const shadesOfMortonPyreLogsTask: MinionTask = {
-	type: activity_type_enum.ShadesOfMortonPyreLogs,
-	run: shadesOfMortonTask.run
-};
 
 export const allTasks: MinionTask[] = [
 	aerialFishingTask,
@@ -188,7 +162,6 @@ export const allTasks: MinionTask[] = [
 	offeringTask,
 	agilityTask,
 	alchingTask,
-	beachCombingTask,
 	castingTask,
 	clueTask,
 	collectingTask,
@@ -203,7 +176,6 @@ export const allTasks: MinionTask[] = [
 	fishingTask,
 	fletchingTask,
 	gloryChargingTask,
-	gloryUnchargingTask,
 	groupoMonsterTask,
 	herbloreTask,
 	miningTask,
@@ -222,20 +194,18 @@ export const allTasks: MinionTask[] = [
 	templeTrekkingTask,
 	mageTrainingTask,
 	sepulchreTask,
-	valeTotemsTask,
 	titheFarmTask,
 	temporossTask,
 	smithingTask,
 	shootingStarTask,
 	archonTask,
+	archonEventTask,
 	giantsFoundryTask,
 	guardiansOfTheRiftTask,
 	butlerTask,
 	tiaraRunecraftTask,
 	nightmareZoneTask,
 	shadesOfMortonTask,
-	shadesOfMortonSacredOilTask,
-	shadesOfMortonPyreLogsTask,
 	cutLeapingFishTask,
 	toaTask,
 	underwaterAgilityThievingTask,
@@ -278,6 +248,20 @@ export const allTasks: MinionTask[] = [
 	brimstoneDistilleryTask,
 	constructionContractsTask
 ];
+
+type MinionTaskRunOptions = {
+	user: MUser;
+	handleTripFinish: typeof handleTripFinish;
+	rng: RNGProvider;
+};
+
+type IMinionTask = {
+	type: activity_type_enum;
+	run: (data: any, options: MinionTaskRunOptions) => Promise<void>;
+};
+declare global {
+	export type MinionTask = IMinionTask;
+}
 
 for (const a of Object.values(activity_type_enum)) {
 	if (DEPRECATED_ACTIVITY_TYPES.includes(a)) {

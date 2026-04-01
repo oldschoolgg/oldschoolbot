@@ -1891,6 +1891,18 @@ model HalloweenEvent {
   @@map("halloween_event")
 }
 
+model ArchonEvent {
+  id            Int      @id @default(autoincrement())
+  created_at    DateTime @default(now()) @db.Timestamp(6)
+  user_id       String   @db.VarChar(19)
+  tier          Int
+  expires_at    DateTime @db.Timestamp(6)
+  has_been_done Boolean  @default(false)
+
+  @@index([user_id, has_been_done, expires_at])
+  @@map("archon_event")
+}
+
 enum JsonBankType {
   Bank
   CollectionLog
