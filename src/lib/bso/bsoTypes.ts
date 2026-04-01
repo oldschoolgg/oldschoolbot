@@ -143,6 +143,10 @@ export interface ArchonOptions extends NewBossOptions {
 	gearScore: number;
 }
 
+export interface ArchonEventOptions extends ActivityTaskOptions {
+	type: 'ArchonEvent';
+}
+
 export interface NewBossOptions extends ActivityTaskOptions {
 	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent' | 'BurningDominion' | 'Archon';
 	users: string[];
@@ -170,4 +174,5 @@ export type BSOActivityTaskData =
 	| BrimstoneDistilleryTaskOptions
 	| ConstructionContractsTaskOptions
 	| NexTaskOptions
-	| ArchonOptions;
+	| ArchonOptions
+	| ArchonEventOptions;

@@ -111,7 +111,8 @@ export const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.GuthixianCache,
 			activity_type_enum.Birdhouse,
 			activity_type_enum.StrongholdOfSecurity,
-			activity_type_enum.CombatRing
+			activity_type_enum.CombatRing,
+			activity_type_enum.ArchonEvent
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -196,6 +197,14 @@ const tripHandlers: {
 		}
 	},
 	[activity_type_enum.ShootingStars]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.Archon]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.ArchonEvent]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -573,12 +582,6 @@ const tripHandlers: {
 		commandName: 'k',
 		args: () => ({
 			name: 'tempoross'
-		})
-	},
-	[activity_type_enum.Archon]: {
-		commandName: 'k',
-		args: () => ({
-			name: 'archon'
 		})
 	},
 	[activity_type_enum.Wintertodt]: {

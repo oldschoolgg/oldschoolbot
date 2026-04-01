@@ -40,7 +40,8 @@ export function oriEffect({
 	gearBank,
 	quantity,
 	duration,
-	messages
+	messages,
+	monster
 }: Pick<MidPVMEffectArgs, 'gearBank' | 'quantity' | 'duration' | 'messages'> & { monster?: string }) {
 	if (!gearBank.usingPet('Ori')) return quantity;
 
