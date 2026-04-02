@@ -230,18 +230,23 @@ export const foolCommand = defineCommand({
 			await user.update({ magic_words_guessed: magicWordsGuessed });
 
 			const newCount = countMagicWordsGuessed(user);
+			const foundNew = newCount > oldCount;
 			// Tell them the first time
-			if (newCount === 1 && newCount > oldCount) {
+			if (newCount === 1 && foundNew) {
 				return `Congratulations! You fooled us for the first time! Good luck figuring out if you do it again XD
 
 Guess was: ${options.us.guess}`;
 			} else if (newCount > 0) {
-				if (newCount > oldCount && roll(3)) {
-					return `I won't usually tell you, but this time I'll say it... YOU FOOLED US!
+				if (foundNew) {
+					return `YOU FOOLED US!
 
 Guess was: ${options.us.guess}`;
 				}
-				return { content: 'You have definitely fooled us once, but fool us twice?', ephemeral: true };
+				return {
+					content:
+						'No. You failed. I was going to put you on blast and troll you in front of everyone, but I think this is ok.',
+					ephemeral: true
+				};
 			}
 
 			return { content: 'You have yet to fool us. Good try tho!', ephemeral: true };
