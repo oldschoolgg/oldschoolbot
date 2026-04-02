@@ -7,11 +7,11 @@ import { Time } from '@sapphire/time-utilities';
 import { LRUCache } from 'lru-cache';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { globalConfig, Roles } from '@/lib/constants.js';
+import { BitField, globalConfig, Roles } from '@/lib/constants.js';
 
 const BSO_GENERAL = globalConfig.isProduction ? '792691343284764693' : '851273567416483861';
 const WHALE_FOOL_US_RATE = globalConfig.isProduction ? 500 : 15;
-const FOOL_RATE = globalConfig.isProduction ? 1 : 3;
+const FOOL_RATE = 1;
 const WHALE_STARTING_ODDS = globalConfig.isProduction ? 40 : 10;
 
 const NonMemberCache = new LRUCache<string, number>({ max: 1000, ttl: Time.Minute * 60 });
@@ -48,30 +48,39 @@ async function fool(user: MUser, target: MUser) {
 	const members: (IMember | null)[] = [null, null];
 
 	let guildPenalty = false;
-	if (NonMemberCache.has(user.id)) {
-		guildPenalty = true;
+	if (user.bitfield.includes(BitField.LegitNewPlayer)) {
+		if (NonMemberCache.has(user.id)) NonMemberCache.delete(user.id);
 	} else {
-		try {
-			members[0] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: user.id });
-		} catch (_e) {
-			NonMemberCache.set(user.id, 1);
+		if (NonMemberCache.has(user.id)) {
 			guildPenalty = true;
+		} else {
+			try {
+				members[0] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: user.id });
+			} catch (_e) {
+				NonMemberCache.set(user.id, 1);
+				guildPenalty = true;
+			}
 		}
 	}
-	if (NonMemberCache.has(target.id)) {
-		guildPenalty = true;
+	if (target.bitfield.includes(BitField.LegitNewPlayer)) {
+		if (NonMemberCache.has(target.id)) NonMemberCache.delete(target.id);
 	} else {
-		try {
-			members[1] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: target.id });
-		} catch (_e) {
-			NonMemberCache.set(target.id, 1);
+		if (NonMemberCache.has(target.id)) {
 			guildPenalty = true;
+		} else {
+			try {
+				members[1] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: target.id });
+			} catch (_e) {
+				NonMemberCache.set(target.id, 1);
+				guildPenalty = true;
+			}
 		}
 	}
 
 	let newUserPenalty = false;
 	let count = 0;
 	for (const testUser of [user, target]) {
+		if (testUser.bitfield.includes(BitField.LegitNewPlayer)) continue;
 		const accountAge = testUser.accountAgeInDays();
 		if (!accountAge || accountAge < 90) {
 			const member = members[count++];
