@@ -1,3 +1,4 @@
+import type { IFoolEventData } from '@/lib/bso/foolEvent.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
@@ -73,6 +74,7 @@ export class BaseUser {
 	private _bankLazy: Bank | null = null;
 	private _clLazy: Bank | null = null;
 	private _gearLazy: UserFullGearSetup | null = null;
+	private _fool_event_data: string | null = null;
 
 	paintedItems!: Map<number, number>;
 
@@ -81,6 +83,14 @@ export class BaseUser {
 		this._updateRawUser(user);
 	}
 
+	public getFoolEventData(): IFoolEventData {
+		if (this._fool_event_data) return JSON.parse<IFoolEventData>(this._fool_event_data);
+
+		const default: IFoolEventData = { magicWordsGuessed: [] };
+
+		return;
+		default
+	}
 	public get gearBank() {
 		return new GearBank({
 			gear: this.gear,

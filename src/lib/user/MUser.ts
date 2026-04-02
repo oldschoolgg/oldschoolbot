@@ -1,3 +1,4 @@
+import type { FoolEventData, IFoolEventData } from '@/lib/bso/foolEvent.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
@@ -83,7 +84,6 @@ import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import {FoolEventData} from "@/lib/bso/foolEvent.js";
 
 export class MUserClass extends BaseUser {
 	constructor(user: User) {
@@ -1157,9 +1157,6 @@ Charge your items using ${globalClient.mentionCommand('minion', 'charge')}.`
 		await this.sync();
 	}
 
-	getFoolData(): FoolEventData {
-
-	}
 	getMysteriousTrailData() {
 		const currentStepID = this.user.bso_mystery_trail_current_step_id as 1 | 2 | 3 | 4 | 5 | 6 | 7 | null;
 		if (currentStepID === null) {
