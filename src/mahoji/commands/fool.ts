@@ -155,12 +155,28 @@ export const foolCommand = defineCommand({
 		{
 			type: 'Subcommand',
 			name: 'help',
-			description: 'Probably not a lot of (useful) help today.'
+			description: 'Probably not a lot of (useful) help today.',
+			options: [
+				{
+					type: 'Boolean',
+					name: 'public',
+					required: false,
+					description: 'Whether to the help/info publicly in  chat - Default is no.'
+				}
+			]
 		},
 		{
 			type: 'Subcommand',
 			name: 'info',
-			description: 'Probably not a lot of (useful) info today.'
+			description: 'Probably not a lot of (useful) info today.',
+			options: [
+				{
+					type: 'Boolean',
+					name: 'public',
+					required: false,
+					description: 'Whether to the help/info publicly in  chat - Default is no.'
+				}
+			]
 		},
 		{
 			type: 'Subcommand',
@@ -207,10 +223,44 @@ export const foolCommand = defineCommand({
 		const alwaysSuccess = { success: true, timeRemainingMs: 0 };
 
 		if (options.help || options.info) {
+			const ephemeral = (Boolean(options.help?.public) || Boolean(options.info?.public)) ? true : undefined;
 			const count = countMagicWordsGuessed(user);
-			return noLimits
-				? "Don't waste this time asking for help..."
-				: `You have guessed ${count} magic words so far. Also don't worry, this doesn't count against you. Anymore.\n\n Most magic words are already known, but they revolve around the shows __**Fool Us**__, and __**Extraordinary Attorney Woo**__`;
+			const bigString = `You have guessed ${count} magic words so far.
+# Instructions:
+
+Use </fool us:1489151141265670195> To guess the "magic words" (hint: \`/fool us guess:magic\`).
+
+Everytime you guess one of the hard-coded magic words, it boosts your drop rate for the (first) The whale card.
+Also, every guess has a roll for the card. Even if you don't put anything in.
+
+
+Use </fool trick_someone:1489151141265670195> to play a trick on or fool another player. You will see the results in #bso-general.
+Use </fool fool_someone:1489151141265670195> to play a trick on or fool another player. You will see the results in #bso-general.
+*Yes that's intentional ^*
+
+This command, \`/fool info\` or \`/fool help\` no longer count against your cooldowns.
+
+What are the cooldowns?
+
+You can guess a word 5 times every 5 minutes, the 5 minute timer stats as soon as your first guess, not last. So if you only make 3 guesses, it still resets in 5 minutes.
+
+You can play a trick or fool someone 2x every 10 minutes. This has a much more common drop rate for the rare item, and also becomes a basic guarantee if you have at least 12 correctly guessed words/phrases.
+
+Only the first card is a basic guarantee, the others are only slightly improved, and ***no they don't get rarer the more you get!***
+
+# **Public hints:**
+*guess hints:*
+1. Whale theme - (ie. \`whale\`)
+2. Fool Us - TV Show - (ie. \`penn & teller\`)
+3. Extroardinary attorney woo.  (ie. \`woo\`)
+
+If you see a New Player message, it means 1 of 2 things:
+- Minion < 90 days old
+- Minion older than we started tracking start date
+
+New players can ask a mod for the 'New Player' role, which will disable that nerf. This is to stop alts.
+Old players can do the same, or just find your oldest bso command in this server and show it to a mod (you need message id, or a link, not a screenshot... We have to put the ID in the command)`;
+			return { content: noLimits ? "Don't waste this time asking for help..." : bigString, ephemeral };
 		}
 
 		if (options.us) {
