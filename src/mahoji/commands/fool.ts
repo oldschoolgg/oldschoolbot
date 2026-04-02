@@ -1,4 +1,4 @@
-import { MagicPhrases } from '@/lib/bso/foolEvent.js';
+import { countMagicWordsGuessed, MagicPhrases } from '@/lib/bso/foolEvent.js';
 
 import { type } from 'node:os';
 import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/util/src/index.js';
@@ -48,12 +48,6 @@ import { formatDuration, stringMatches } from '../../../packages/toolkit/src/ind
 const BSO_GENERAL = '792691343284764693';
 
 async function fool(user: MUser, target: MUser) {
-	function countMagicWordsGuessed(user: MUser) {
-		const eventData = user.getFoolEventData();
-		if (!eventData) return 0;
-
-		return eventData.magicWordsGuessed.filter(w => MagicPhrases.includes(w)).length;
-	}
 	if (!roll(10)) return { content: 'You failed try again next time.', ephemeral: true };
 
 	const action = roll(2) ? 'fool' : 'trick';
@@ -160,16 +154,25 @@ export const foolCommand = defineCommand({
 				loot.add('The whale card');
 				return `🐋 Wow you actually did it! You got: ${loot}`;
 			}
-			const guess = options.us.guess;
-			if (!guess) {
+			if (!options.us.guess) {
 				return "Wow you didn't even try to fool us, you fool! Wasted a guess.";
 			}
+			const oldCount = countMagicWordsGuessed(user);
+			const magicWordsGuessed = [...user.magicWordsGuessed, options.us.guess];
+			await user.update({ magic_words_guessed: magicWordsGuessed });
 
-			const eventData = user.getFoolEventData();
-			if (!eventData) {
+			const newCount = countMagicWordsGuessed(user);
+			// Tell them the first time
+			if (newCount === 1 && newCount > oldCount) {
+				return 'Congratulations! You fooled us for the first time! Good luck figuring out if you do it again XD';
+			} else if (newCount > 0) {
+				if (newCount > oldCount && roll(3)) {
+					return "I won't usually tell you, but this time I'll say it... YOU FOOLED US!";
+				}
+				return 'You have definitely fooled us once, but fool us twice?';
 			}
 
-			return "You didn't fool us. Worth a try tho!";
+			return 'You have yet to fool us. Good try tho!';
 		}
 		const ratelimit = await Cache.tryRatelimit(user.id, 'event_command_limit');
 		if (!ratelimit.success) {

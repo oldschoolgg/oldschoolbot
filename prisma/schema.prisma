@@ -489,7 +489,7 @@ model User {
 
   bso_mystery_trail_current_step_id Int?
 
-  fool_event_data           Json   @default("{}") @db.JsonB
+  magic_words_guessed String[] @default([])
 
   store_bitfield Int[] @default([])
 

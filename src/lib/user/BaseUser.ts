@@ -1,4 +1,3 @@
-import type { IFoolEventData } from '@/lib/bso/foolEvent.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
@@ -23,7 +22,6 @@ import { ChargeBank } from '@/lib/structures/Bank.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
-import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
@@ -50,7 +48,7 @@ const USER_DEFAULTS = {
 	unlocked_blueprints: [],
 	disabled_inventions: [],
 	disabled_portent_ids: [],
-	fool_event_data: {}
+	magic_words_guessed: []
 } satisfies Partial<User>;
 
 function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean) {
@@ -74,7 +72,6 @@ export class BaseUser {
 	private _bankLazy: Bank | null = null;
 	private _clLazy: Bank | null = null;
 	private _gearLazy: UserFullGearSetup | null = null;
-	private _fool_event_data: string | null = null;
 
 	paintedItems!: Map<number, number>;
 
@@ -83,14 +80,6 @@ export class BaseUser {
 		this._updateRawUser(user);
 	}
 
-	public getFoolEventData(): IFoolEventData {
-		if (this._fool_event_data) return JSON.parse<IFoolEventData>(this._fool_event_data);
-
-		const default: IFoolEventData = { magicWordsGuessed: [] };
-
-		return;
-		default
-	}
 	public get gearBank() {
 		return new GearBank({
 			gear: this.gear,
@@ -102,6 +91,10 @@ export class BaseUser {
 			materials: this.ownedMaterials(),
 			pet: this.user.minion_equippedPet
 		});
+	}
+
+	public get magicWordsGuessed(): string[] {
+		return this.user.magic_words_guessed ?? [];
 	}
 
 	public get bank(): Bank {

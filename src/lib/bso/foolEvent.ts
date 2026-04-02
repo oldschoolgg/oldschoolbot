@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { stringMatches } from '@oldschoolgg/toolkit';
 
 export const MagicPhrases = [
 	'You fooled us.',
@@ -29,11 +29,11 @@ export const MagicPhrases = [
 	'🐋'
 ] as const;
 
-export const ZMagicPhrase = z.enum(MagicPhrases);
-export type IMagicPhrase = z.infer<typeof ZMagicPhrase>;
-
-export const ZFoolEventData = z.strictObject({
-	magicWordsGuessed: z.array(ZMagicPhrase)
-});
-
-export type IFoolEventData = z.infer<typeof ZFoolEventData>;
+export function countMagicWordsGuessed(user: MUser) {
+	const magicWords = user.magicWordsGuessed;
+	let count = 0;
+	for (const word of MagicPhrases) {
+		if (magicWords.some(i => stringMatches(i, word))) count++;
+	}
+	return count;
+}
