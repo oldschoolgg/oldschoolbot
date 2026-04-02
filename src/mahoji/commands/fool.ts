@@ -222,7 +222,7 @@ export const foolCommand = defineCommand({
 				return `🐋 Wow you actually did it! You got: ${loot}`;
 			}
 			if (!options.us.guess) {
-				return "Wow you didn't even try to fool us, you fool! Wasted a guess.";
+				return `Wow you didn't even try to fool us, you fool! Wasted a guess.`;
 			}
 			const oldCount = countMagicWordsGuessed(user);
 			const magicWordsGuessed = [...user.magicWordsGuessed, options.us.guess];
@@ -280,7 +280,7 @@ Guess was: ${options.us.guess}`;
 			return fool(user, await mUserFetch(targetUser.user.id));
 		}
 		if (options.help) {
-			return 'April fools! You just wasted a chance...';
+			return noLimits ? "You don't need help right now..." : 'April fools! You just wasted a chance...';
 		}
 
 		return 'Invalid command.';
