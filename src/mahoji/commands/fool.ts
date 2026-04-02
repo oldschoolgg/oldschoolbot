@@ -223,7 +223,7 @@ export const foolCommand = defineCommand({
 		const alwaysSuccess = { success: true, timeRemainingMs: 0 };
 
 		if (options.help || options.info) {
-			const ephemeral = Boolean(options.help?.public) || Boolean(options.info?.public) ? true : undefined;
+			const ephemeral = Boolean(options.help?.public) || Boolean(options.info?.public) ? undefined : true;
 			const count = countMagicWordsGuessed(user);
 			const bigString = `You have guessed ${count} magic words so far.
 # Instructions:
