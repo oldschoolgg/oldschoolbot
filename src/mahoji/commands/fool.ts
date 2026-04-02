@@ -35,9 +35,11 @@ async function fool(user: MUser, target: MUser) {
 
 	if (!winner.cl.has('The whale card')) {
 		const wordsGuessed = countMagicWordsGuessed(winner);
-		if (wordsGuessed > 3) whaleOdds -= Math.min(wordsGuessed, 8);
-		boosted = true;
-		whaleOdds = Math.max(whaleOdds, 2);
+		if (wordsGuessed > 3) {
+			whaleOdds -= Math.min(wordsGuessed, 8);
+			boosted = true;
+			whaleOdds = Math.max(whaleOdds, 2);
+		}
 	}
 
 	// Total chance is 1 in 200, 10% chance to ping, 10% chance to hit 50% chance for it to be yours.  Only 192 rolls possible at 24/7 gameplay
