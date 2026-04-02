@@ -33,8 +33,18 @@ export const MagicPhrases = [
 export function countMagicWordsGuessed(user: MUser) {
 	const magicWords = user.magicWordsGuessed;
 	let count = 0;
+
 	for (const word of MagicPhrases) {
-		if (magicWords.some(i => stringMatches(i, word))) count++;
+		if (
+			magicWords.some(i => {
+				if (stringMatches('???', word)) {
+					return i === word;
+				} else {
+					return stringMatches(word, i);
+				}
+			})
+		)
+			count++;
 	}
 	return count;
 }

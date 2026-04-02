@@ -1,16 +1,17 @@
 import { countMagicWordsGuessed } from '@/lib/bso/foolEvent.js';
 
 import { randInt, roll } from '@oldschoolgg/rng';
+import type { IMember } from '@oldschoolgg/schemas';
 import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/util';
 import { Time } from '@sapphire/time-utilities';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { globalConfig } from '@/lib/constants.js';
+import { globalConfig, Roles } from '@/lib/constants.js';
 
 const BSO_GENERAL = globalConfig.isProduction ? '792691343284764693' : '851273567416483861';
-const WHALE_FOOL_US_RATE = globalConfig.isProduction ? 500 : 3;
+const WHALE_FOOL_US_RATE = globalConfig.isProduction ? 500 : 15;
 const FOOL_RATE = globalConfig.isProduction ? 8 : 3;
-const WHALE_STARTING_ODDS = globalConfig.isProduction ? 15 : 2;
+const WHALE_STARTING_ODDS = globalConfig.isProduction ? 15 : 10;
 
 const junkTable = new LootTable()
 	.add('Cannonball', [1, 9], 10)
@@ -41,13 +42,33 @@ async function fool(user: MUser, target: MUser) {
 	const action = roll(2) ? 'fool' : 'trick';
 	const prize = new Bank();
 
-	const winner = roll(2) ? user : target;
+	const members: (IMember | null)[] = [null, null];
 
+	let guildPenalty = false;
+	try {
+		members[0] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: user.id });
+		members[1] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: target.id });
+	} catch (e) {
+		guildPenalty = true;
+	}
+
+	let newUserPenalty = false;
+	let count = 0;
+	for (const testUser of [user, target]) {
+		const accountAge = testUser.accountAgeInDays();
+		if (!accountAge || accountAge < 90) {
+			const member = members[count++];
+			if (!member || !member.roles.includes(Roles.ValidNewUser)) newUserPenalty = true;
+		}
+	}
+
+	const winner = roll(2) ? user : target;
 	let whaleOdds = WHALE_STARTING_ODDS;
+	if (newUserPenalty) whaleOdds *= 5;
 
 	let boosted = false;
 
-	if (!winner.cl.has('The whale card')) {
+	if (!newUserPenalty && !winner.cl.has('The whale card')) {
 		const wordsGuessed = countMagicWordsGuessed(winner);
 		if (wordsGuessed > 3) {
 			whaleOdds -= Math.min(wordsGuessed, 8);
@@ -84,6 +105,16 @@ async function fool(user: MUser, target: MUser) {
 		msg += ` There was increased luck from ${winner}'s correct guesses!`;
 	}
 
+	const penalty: string[] = [];
+	if (newUserPenalty && !gotWhaled) {
+		penalty.push(` You have a new user penalty!`);
+	}
+	if (guildPenalty && !gotWhaled) {
+		penalty.push(` You have a non-member penalty!`);
+	}
+	if (penalty.length > 0) {
+		msg += `**${penalty.join(' ')} which hurt your chances!**`;
+	}
 	await winner.addItemsToBank({ items: prize, collectionLog: true });
 
 	let ping = true;
@@ -157,6 +188,7 @@ export const foolCommand = defineCommand({
 			if (roll(WHALE_FOOL_US_RATE)) {
 				const loot = new Bank();
 				loot.add('The whale card');
+				await user.addItemsToBank({ items: loot, collectionLog: true });
 				return `🐋 Wow you actually did it! You got: ${loot}`;
 			}
 			if (!options.us.guess) {

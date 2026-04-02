@@ -1,4 +1,3 @@
-import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { dateFm } from '@oldschoolgg/discord';
@@ -78,6 +77,7 @@ export const Roles = {
 	Moderator: '622806157563527178',
 	Patron: '679620175838183424',
 	EventOrganizer: '1149907536749801542',
+	ValidNewUser: '1438847802888294450',
 
 	// Top Roles
 	OSBTopSkiller: '795266465329709076',
@@ -591,7 +591,8 @@ if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 	throw new Error('The NODE_ENV and isProduction variables must match');
 }
 
-export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
+//export const gitHash = process.env.TEST ? 'TESTGITHASH' : execSync('git rev-parse HEAD').toString().trim();
+export const gitHash = '9f3c2b7a4d8e1c6f5a2b9d0e7c1f4a8b6d3e2c1a';
 const gitRemote = 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
