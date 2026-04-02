@@ -159,6 +159,11 @@ export const foolCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'info',
+			description: 'Probably not a lot of (useful) info today.'
+		},
+		{
+			type: 'Subcommand',
 			name: 'fool_someone',
 			description: 'Fool someone else.',
 			options: [
@@ -200,6 +205,14 @@ export const foolCommand = defineCommand({
 	run: async ({ options, user }) => {
 		const noLimits = (await Cache.getString('adminkeys:fool_us_event:timeout')) === 'on';
 		const alwaysSuccess = { success: true, timeRemainingMs: 0 };
+
+		if (options.help || options.info) {
+			const count = countMagicWordsGuessed(user);
+			return noLimits
+				? "Don't waste this time asking for help..."
+				: `You have guessed ${count} magic words so far. Also don't worry, this doesn't count against you. Anymore.\n\n Most magic words are already known, but they revolve around the shows __**Fool Us**__, and __**Extraordinary Attorney Woo**__`;
+		}
+
 		if (options.us) {
 			if (user.isAdmin() && options.us.guess && options.us.guess.includes('timeout:')) {
 				const timeoutDuration = Number(options.us.guess.split(':')[1]);
@@ -285,10 +298,6 @@ Guess was: ${options.us.guess}`;
 			}
 			return fool(user, await mUserFetch(targetUser.user.id));
 		}
-		if (options.help) {
-			return noLimits ? "You don't need help right now..." : 'April fools! You just wasted a chance...';
-		}
-
 		return 'Invalid command.';
 	}
 });
