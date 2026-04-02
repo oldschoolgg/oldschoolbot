@@ -4,6 +4,7 @@ import { randInt, roll } from '@oldschoolgg/rng';
 import type { IMember } from '@oldschoolgg/schemas';
 import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/util';
 import { Time } from '@sapphire/time-utilities';
+import { LRUCache } from 'lru-cache';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { globalConfig, Roles } from '@/lib/constants.js';
@@ -12,6 +13,8 @@ const BSO_GENERAL = globalConfig.isProduction ? '792691343284764693' : '85127356
 const WHALE_FOOL_US_RATE = globalConfig.isProduction ? 500 : 15;
 const FOOL_RATE = globalConfig.isProduction ? 8 : 3;
 const WHALE_STARTING_ODDS = globalConfig.isProduction ? 15 : 10;
+
+const NonMemberCache = new LRUCache<string, number>({ max: 1000, ttl: Time.Minute * 60 });
 
 const junkTable = new LootTable()
 	.add('Cannonball', [1, 9], 10)
@@ -45,11 +48,25 @@ async function fool(user: MUser, target: MUser) {
 	const members: (IMember | null)[] = [null, null];
 
 	let guildPenalty = false;
-	try {
-		members[0] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: user.id });
-		members[1] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: target.id });
-	} catch (e) {
+	if (NonMemberCache.has(user.id)) {
 		guildPenalty = true;
+	} else {
+		try {
+			members[0] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: user.id });
+		} catch (_e) {
+			NonMemberCache.set(user.id, 1);
+			guildPenalty = true;
+		}
+	}
+	if (NonMemberCache.has(target.id)) {
+		guildPenalty = true;
+	} else {
+		try {
+			members[1] = await Cache.getMember({ guildId: globalConfig.supportServerID, userId: target.id });
+		} catch (_e) {
+			NonMemberCache.set(target.id, 1);
+			guildPenalty = true;
+		}
 	}
 
 	let newUserPenalty = false;
