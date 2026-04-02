@@ -196,7 +196,7 @@ export const foolCommand = defineCommand({
 
 			let hint = '';
 			if (roll(10)) hint = '\n\nOh yea.... there might be a different cooldown for trying to fool us';
-			return `Cyr says you can only be an idiot twice per half hour. You still to have have to wait ${foolTimeRemaining.toFixed(6)} more minutes... Assuming a minute is ${secondsPerMinute} seconds, of course. Only 50% chance I'm lying :D${hint}`;
+			return `Cyr says you can only be an idiot **thrice** per half hour. You still to have have to wait ${foolTimeRemaining.toFixed(6)} more minutes... Assuming a minute is ${secondsPerMinute} seconds, of course. Only 50% chance I'm lying :D${hint}`;
 		}
 
 		if (options.fool_someone || options.trick_someone) {
