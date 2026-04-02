@@ -11,8 +11,8 @@ import { globalConfig, Roles } from '@/lib/constants.js';
 
 const BSO_GENERAL = globalConfig.isProduction ? '792691343284764693' : '851273567416483861';
 const WHALE_FOOL_US_RATE = globalConfig.isProduction ? 500 : 15;
-const FOOL_RATE = globalConfig.isProduction ? 5 : 3;
-const WHALE_STARTING_ODDS = globalConfig.isProduction ? 20 : 10;
+const FOOL_RATE = globalConfig.isProduction ? 1 : 3;
+const WHALE_STARTING_ODDS = globalConfig.isProduction ? 40 : 10;
 
 const NonMemberCache = new LRUCache<string, number>({ max: 1000, ttl: Time.Minute * 60 });
 
@@ -88,7 +88,7 @@ async function fool(user: MUser, target: MUser) {
 	if (!newUserPenalty && !winner.cl.has('The whale card')) {
 		const wordsGuessed = countMagicWordsGuessed(winner);
 		if (wordsGuessed > 3) {
-			whaleOdds -= Math.min(wordsGuessed, 8);
+			whaleOdds -= wordsGuessed * 4;
 			boosted = true;
 			whaleOdds = Math.max(whaleOdds, 3);
 		}
