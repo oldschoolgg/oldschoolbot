@@ -263,7 +263,7 @@ Guess was: ${options.us.guess}`;
 
 			let hint = '';
 			if (roll(10)) hint = '\n\nOh yea.... there might be a different cooldown for trying to fool us';
-			const content = `Cyr says you can only be an idiot **TWICE** per **10 minutes**. You still to have have to wait ${foolTimeRemaining.toFixed(6)} more minutes... Assuming a minute is ${secondsPerMinute} seconds, of course. Only 50% chance I'm lying :D${hint}`;
+			const content = `Cyr says you can only be an idiot **TWICE** per **20 minutes**. You still to have have to wait ${foolTimeRemaining.toFixed(6)} more minutes... Assuming a minute is ${secondsPerMinute} seconds, of course. Only 50% chance I'm lying :D${hint}`;
 			if (roll(10)) {
 				return content;
 			}
