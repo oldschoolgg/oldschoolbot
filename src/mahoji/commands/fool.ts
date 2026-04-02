@@ -123,11 +123,10 @@ async function fool(user: MUser, target: MUser) {
 		}
 	} else {
 		if (target.isIronman) {
-			msg = `🚨🐋🌟  <@${user.id}> is going to cry..., <@${target.id}> won the roll... but they're an ironman 😭! I guess Cyr will just keep it...`;
+			msg = `🚨🌟  <@${user.id}> is going to cry..., <@${target.id}> won the roll... but they're an ironman 😭! I guess Cyr will just keep it...`;
 		} else {
 			prize.add(junkTable.roll());
 			if (winner.id === target.id) {
-				if (target.isIronman) {}
 				msg = `😞 <@${user.id}> successfully ${action}ed you, <@${target.id}>, but jokes on them, because you won... ${prize}!`;
 			} else {
 				msg = `😞 <@${user.id}> successfully ${action}ed you, <@${target.id}> and they won ${prize}!`;
