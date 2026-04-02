@@ -9,8 +9,8 @@ import { globalConfig } from '@/lib/constants.js';
 
 const BSO_GENERAL = globalConfig.isProduction ? '792691343284764693' : '851273567416483861';
 const WHALE_FOOL_US_RATE = globalConfig.isProduction ? 500 : 3;
-const FOOL_RATE = globalConfig.isProduction ? 10 : 1;
-const WHALE_STARTING_ODDS = globalConfig.isProduction ? 10 : 2;
+const FOOL_RATE = globalConfig.isProduction ? 8 : 3;
+const WHALE_STARTING_ODDS = globalConfig.isProduction ? 15 : 2;
 
 const junkTable = new LootTable()
 	.add('Cannonball', [1, 9], 10)
@@ -33,6 +33,11 @@ async function fool(user: MUser, target: MUser) {
 		return { content, ephemeral: true };
 	}
 
+	if (target.id === user.id) {
+		const content = "You can't fool yourself, you fool!";
+		return { content };
+	}
+
 	const action = roll(2) ? 'fool' : 'trick';
 	const prize = new Bank();
 
@@ -47,7 +52,7 @@ async function fool(user: MUser, target: MUser) {
 		if (wordsGuessed > 3) {
 			whaleOdds -= Math.min(wordsGuessed, 8);
 			boosted = true;
-			whaleOdds = Math.max(whaleOdds, 2);
+			whaleOdds = Math.max(whaleOdds, 3);
 		}
 	}
 
