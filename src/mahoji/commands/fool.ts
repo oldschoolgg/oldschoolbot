@@ -12,7 +12,7 @@ import { globalConfig, Roles } from '@/lib/constants.js';
 const BSO_GENERAL = globalConfig.isProduction ? '792691343284764693' : '851273567416483861';
 const WHALE_FOOL_US_RATE = globalConfig.isProduction ? 500 : 15;
 const FOOL_RATE = globalConfig.isProduction ? 8 : 3;
-const WHALE_STARTING_ODDS = globalConfig.isProduction ? 15 : 10;
+const WHALE_STARTING_ODDS = globalConfig.isProduction ? 20 : 10;
 
 const NonMemberCache = new LRUCache<string, number>({ max: 1000, ttl: Time.Minute * 60 });
 
@@ -197,10 +197,23 @@ export const foolCommand = defineCommand({
 		}
 	],
 	run: async ({ options, user }) => {
+		const noLimits = (await Cache.getString('adminkeys:fool_us_event:timeout')) === 'on';
+		const alwaysSuccess = { success: true, timeRemainingMs: 0 };
 		if (options.us) {
-			const foolUsRatelimit = await Cache.tryRatelimit(user.id, 'foolus_limit');
+			if (user.isAdmin() && options.us.guess && options.us.guess.includes('timeout:')) {
+				const timeoutDuration = Number(options.us.guess.split(':')[1]);
+				await Cache.setString('adminkeys:fool_us_event:timeout', 'on', timeoutDuration);
+				return {
+					content: `No limits for ${timeoutDuration} seconds.`,
+					ephemeral: true
+				};
+			}
+			const foolUsRatelimit = noLimits ? alwaysSuccess : await Cache.tryRatelimit(user.id, 'foolus_limit');
 			if (!foolUsRatelimit.success) {
-				return `I didn't have time to troll you on this timer, too, so you have ${(foolUsRatelimit.timeRemainingMs / Time.Minute).toFixed(5)} minutes left before you can try to fool me again`;
+				return {
+					content: `I didn't have time to troll you on this timer, too, so you have ${(foolUsRatelimit.timeRemainingMs / Time.Minute).toFixed(5)} minutes left before you can try to fool me again`,
+					ephemeral: true
+				};
 			}
 			if (roll(WHALE_FOOL_US_RATE)) {
 				const loot = new Bank();
@@ -218,17 +231,21 @@ export const foolCommand = defineCommand({
 			const newCount = countMagicWordsGuessed(user);
 			// Tell them the first time
 			if (newCount === 1 && newCount > oldCount) {
-				return 'Congratulations! You fooled us for the first time! Good luck figuring out if you do it again XD';
+				return `Congratulations! You fooled us for the first time! Good luck figuring out if you do it again XD
+
+Guess was: ${options.us.guess}`;
 			} else if (newCount > 0) {
 				if (newCount > oldCount && roll(3)) {
-					return "I won't usually tell you, but this time I'll say it... YOU FOOLED US!";
+					return `I won't usually tell you, but this time I'll say it... YOU FOOLED US!
+
+Guess was: ${options.us.guess}`;
 				}
-				return 'You have definitely fooled us once, but fool us twice?';
+				return { content: 'You have definitely fooled us once, but fool us twice?', ephemeral: true };
 			}
 
-			return 'You have yet to fool us. Good try tho!';
+			return { content: 'You have yet to fool us. Good try tho!', ephemeral: true };
 		}
-		const ratelimit = await Cache.tryRatelimit(user.id, 'event_command_limit');
+		const ratelimit = noLimits ? alwaysSuccess : await Cache.tryRatelimit(user.id, 'event_command_limit');
 		if (!ratelimit.success) {
 			let foolTimeRemaining = ratelimit.timeRemainingMs;
 			const upOrDown = roll(2);
@@ -245,7 +262,14 @@ export const foolCommand = defineCommand({
 
 			let hint = '';
 			if (roll(10)) hint = '\n\nOh yea.... there might be a different cooldown for trying to fool us';
-			return `Cyr says you can only be an idiot **thrice** per half hour. You still to have have to wait ${foolTimeRemaining.toFixed(6)} more minutes... Assuming a minute is ${secondsPerMinute} seconds, of course. Only 50% chance I'm lying :D${hint}`;
+			const content = `Cyr says you can only be an idiot **TWICE** per **10 minutes**. You still to have have to wait ${foolTimeRemaining.toFixed(6)} more minutes... Assuming a minute is ${secondsPerMinute} seconds, of course. Only 50% chance I'm lying :D${hint}`;
+			if (roll(10)) {
+				return content;
+			}
+			return {
+				content,
+				ephemeral: true
+			};
 		}
 
 		if (options.fool_someone || options.trick_someone) {

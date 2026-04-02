@@ -1981,7 +1981,8 @@ export const allCollectionLogs: ICollection = {
 					'Golden cape',
 					'Golden shard',
 					'Golden partyhat',
-					'Black swan'
+					'Black swan',
+					'The whale card'
 				]),
 				counts: false
 			}
