@@ -96,10 +96,12 @@ async function fool(user: MUser, target: MUser) {
 
 	// Total chance is 1 in 200, 10% chance to ping, 10% chance to hit 50% chance for it to be yours.  Only 192 rolls possible at 24/7 gameplay
 	const gotWhaled = roll(whaleOdds);
+	let ping = false;
 	let msg = '';
 
 	if (gotWhaled) {
 		if (winner.id === target.id) {
+			ping = true;
 			if (target.isIronman) {
 				msg = `🐋 <@${user.id}> tried to ${action} you, <@${target.id}> but you won the roll... too bad you're an ironman 😭!`;
 			} else {
@@ -134,7 +136,6 @@ async function fool(user: MUser, target: MUser) {
 	}
 	await winner.addItemsToBank({ items: prize, collectionLog: true });
 
-	let ping = true;
 	if (target.isAdmin()) {
 		msg += ` Not sure ${target.username} is going to be very happy about that.`;
 		ping = false;
@@ -142,7 +143,7 @@ async function fool(user: MUser, target: MUser) {
 	await globalClient.sendMessageOrWebhook(BSO_GENERAL, {
 		content: msg,
 		ephemeral: true,
-		allowedMentions: ping ? undefined : { users: [user.id] }
+		allowedMentions: ping ? { users: [user.id, target.id] } : { users: [user.id] }
 	});
 	return { content: `See what happens?`, ephemeral: true };
 }
