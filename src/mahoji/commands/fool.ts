@@ -22,7 +22,16 @@ const junkTable = new LootTable()
 	.tertiary(10, 'Elder scroll piece');
 
 async function fool(user: MUser, target: MUser) {
-	if (!roll(FOOL_RATE)) return { content: 'You failed try again next time.', ephemeral: true };
+	if (!roll(FOOL_RATE)) {
+		const failMsgs = [
+			'Skill issue',
+			'Working as intended',
+			'You failed, try again next time',
+			'Oooh so close, but nope'
+		];
+		const content = failMsgs[randInt(0, failMsgs.length - 1)];
+		return { content, ephemeral: true };
+	}
 
 	const action = roll(2) ? 'fool' : 'trick';
 	const prize = new Bank();
@@ -71,7 +80,17 @@ async function fool(user: MUser, target: MUser) {
 	}
 
 	await winner.addItemsToBank({ items: prize, collectionLog: true });
-	await globalClient.sendMessageOrWebhook(BSO_GENERAL, { content: msg, ephemeral: true });
+
+	let ping = true;
+	if (target.isAdmin()) {
+		msg += ` Not sure ${target.username} is going to be very happy about that.`;
+		ping = false;
+	}
+	await globalClient.sendMessageOrWebhook(BSO_GENERAL, {
+		content: msg,
+		ephemeral: true,
+		allowedMentions: ping ? undefined : { users: [user.id] }
+	});
 	return { content: `See what happens?`, ephemeral: true };
 }
 
@@ -128,7 +147,7 @@ export const foolCommand = defineCommand({
 		if (options.us) {
 			const foolUsRatelimit = await Cache.tryRatelimit(user.id, 'foolus_limit');
 			if (!foolUsRatelimit.success) {
-				return `I didn't have time to troll you on this timer, too, so you have ${foolUsRatelimit.timeRemainingMs / Time.Minute} minutes left before you can try to fool me again`;
+				return `I didn't have time to troll you on this timer, too, so you have ${(foolUsRatelimit.timeRemainingMs / Time.Minute).toFixed(5)} minutes left before you can try to fool me again`;
 			}
 			if (roll(WHALE_FOOL_US_RATE)) {
 				const loot = new Bank();
@@ -171,8 +190,8 @@ export const foolCommand = defineCommand({
 			foolTimeRemaining /= Math.round(Time.Second * secondsPerMinute);
 
 			let hint = '';
-			if (roll(3)) hint = '\n\nOh yea.... there might be a different cooldown for trying to fool us';
-			return `Cyr says you can only be an idiot twice per half hour. You still to have have to wait ${foolTimeRemaining} more minutes... Assuming a minute is ${secondsPerMinute} seconds, of course. Only 50% chance I'm lying :D${hint}`;
+			if (roll(10)) hint = '\n\nOh yea.... there might be a different cooldown for trying to fool us';
+			return `Cyr says you can only be an idiot twice per half hour. You still to have have to wait ${foolTimeRemaining.toFixed(6)} more minutes... Assuming a minute is ${secondsPerMinute} seconds, of course. Only 50% chance I'm lying :D${hint}`;
 		}
 
 		if (options.fool_someone || options.trick_someone) {
