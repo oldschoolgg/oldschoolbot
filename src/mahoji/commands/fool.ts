@@ -1,12 +1,21 @@
-import { countMagicWordsGuessed } from '@/lib/bso/foolEvent.js';
+import {
+	countMagicWordsGuessed,
+	countMagicWordsSimple,
+	foolListMatchingWords,
+	foolMakeHelpMessage,
+	MagicPhrases
+} from '@/lib/bso/foolEvent.js';
 
+import { EmbedBuilder } from '@oldschoolgg/discord';
 import { randInt, roll } from '@oldschoolgg/rng';
 import type { IMember } from '@oldschoolgg/schemas';
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/util';
 import { Time } from '@sapphire/time-utilities';
 import { LRUCache } from 'lru-cache';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { choicesOf } from '@/discord/index.js';
 import { BitField, globalConfig, Roles } from '@/lib/constants.js';
 
 const BSO_GENERAL = globalConfig.isProduction ? '792691343284764693' : '851273567416483861';
@@ -160,6 +169,7 @@ async function fool(user: MUser, target: MUser) {
 	return { content: `See what happens?`, ephemeral: true };
 }
 
+export const foolInfoArgs: string[] = ['help', 'count', 'all_guesses', 'correct_guesses', 'leaderboard'];
 export const foolCommand = defineCommand({
 	name: 'fool',
 	description: 'Are you a fool?',
@@ -169,6 +179,13 @@ export const foolCommand = defineCommand({
 			name: 'help',
 			description: 'Probably not a lot of (useful) help today.',
 			options: [
+				{
+					type: 'String',
+					name: 'info_type',
+					required: false,
+					description: 'The type of info you want to see.',
+					choices: choicesOf(foolInfoArgs)
+				},
 				{
 					type: 'Boolean',
 					name: 'public',
@@ -182,6 +199,13 @@ export const foolCommand = defineCommand({
 			name: 'info',
 			description: 'Probably not a lot of (useful) info today.',
 			options: [
+				{
+					type: 'String',
+					name: 'info_type',
+					required: false,
+					description: 'The type of info you want to see.',
+					choices: choicesOf(foolInfoArgs)
+				},
 				{
 					type: 'Boolean',
 					name: 'public',
@@ -236,43 +260,73 @@ export const foolCommand = defineCommand({
 
 		if (options.help || options.info) {
 			const ephemeral = Boolean(options.help?.public) || Boolean(options.info?.public) ? undefined : true;
+			if (ephemeral !== true) {
+				const spamLimit = await Cache.tryRatelimit(user.id, 'help_spam_limit');
+				if (!spamLimit.success) {
+					return {
+						content: `You can only use public visibility once per 30 minutes. Time remaining: ${formatDuration(spamLimit.timeRemainingMs / Time.Second)}. Try again without public:true`,
+						ephemeral: true
+					};
+				}
+			}
+			const action = options.help?.info_type ?? options.info?.info_type ?? 'help';
 			const count = countMagicWordsGuessed(user);
-			const bigString = `You have guessed ${count} magic words so far.
-# Instructions:
+			switch (action) {
+				case 'help': {
+					const bigString = foolMakeHelpMessage(count);
+					return { content: noLimits ? "Don't waste this time asking for help..." : bigString, ephemeral };
+				}
+				case 'count': {
+					return {
+						content: `You have guessed ${count} of the ${MagicPhrases.length} words/phrases.`,
+						ephemeral
+					};
+				}
+				case 'all_guesses': {
+					const guesses = user.magicWordsGuessed;
+					if (guesses.length === 0) {
+						return { content: 'You have not guessed any words yet.', ephemeral };
+					}
+					const guessString = guesses.join('\n');
+					return {
+						content: `You have ${count} correct guesses, and your full guess list is: \`\`\`${guessString}\`\`\``,
+						ephemeral
+					};
+				}
+				case 'correct_guesses': {
+					const correctGuesses = foolListMatchingWords(user.magicWordsGuessed);
+					return {
+						content: `You have ${count} correct guesses, and your correct guesses are: \`\`\`${correctGuesses.join('\n')}\`\`\``,
+						ephemeral
+					};
+				}
+				case 'leaderboard': {
+					const users = await prisma.$queryRawUnsafe<
+						{ id: string; username: string; magic_words_guessed: string[]; word_count: number }[]
+					>(
+						`select id, COALESCE(username, 'Unknown') as username , magic_words_guessed,  cardinality (magic_words_guessed) as word_count from users where cardinality (magic_words_guessed) > 30 order by 4 desc limit 100`
+					);
+					const leaders = users
+						.map(u => {
+							return {
+								id: u.id,
+								username: u.username,
+								correct_guesses: countMagicWordsSimple(u.magic_words_guessed),
+								word_count: u.word_count
+							};
+						})
+						.sort((a, b) => b.correct_guesses - a.correct_guesses)
+						.slice(0, 10);
 
-Use </fool us:1489151141265670195> To guess the "magic words" (hint: \`/fool us guess:magic\`).
-
-Everytime you guess one of the hard-coded magic words, it boosts your drop rate for the (first) The whale card.
-Also, every guess has a roll for the card. Even if you don't put anything in.
-
-
-Use </fool trick_someone:1489151141265670195> to play a trick on or fool another player. You will see the results in #bso-general.
-Use </fool fool_someone:1489151141265670195> to play a trick on or fool another player. You will see the results in #bso-general.
-*Yes that's intentional ^*
-
-This command, \`/fool info\` or \`/fool help\` no longer count against your cooldowns.
-
-What are the cooldowns?
-
-You can guess a word 5 times every 5 minutes, the 5 minute timer stats as soon as your first guess, not last. So if you only make 3 guesses, it still resets in 5 minutes.
-
-You can play a trick or fool someone 2x every 10 minutes. This has a much more common drop rate for the rare item, and also becomes a basic guarantee if you have at least 12 correctly guessed words/phrases.
-
-Only the first card is a basic guarantee, the others are only slightly improved, and ***no they don't get rarer the more you get!***
-
-# **Public hints:**
-*guess hints:*
-1. Whale theme - (ie. \`whale\`)
-2. Fool Us - TV Show - (ie. \`penn & teller\`)
-3. Extroardinary attorney woo.  (ie. \`woo\`)
-
-If you see a New Player message, it means 1 of 2 things:
-- Minion < 90 days old
-- Minion older than we started tracking start date
-
-New players can ask a mod for the 'New Player' role, which will disable that nerf. This is to stop alts.
-Old players can do the same, or just find your oldest bso command in this server and show it to a mod (you need message id, or a link, not a screenshot... We have to put the ID in the command)`;
-			return { content: noLimits ? "Don't waste this time asking for help..." : bigString, ephemeral };
+					const leaderString =
+						'User - Correct - Total\n' +
+						leaders.map(u => `${u.username} - ${u.correct_guesses} - ${u.word_count}`).join('\n');
+					return {
+						embeds: [new EmbedBuilder().setTitle(`**Fool Guesses:**`).setDescription(leaderString)],
+						ephemeral
+					};
+				}
+			}
 		}
 
 		if (options.us) {
