@@ -112,21 +112,26 @@ async function fool(user: MUser, target: MUser) {
 		if (winner.id === target.id) {
 			ping = true;
 			if (target.isIronman) {
-				msg = `🐋 <@${user.id}> tried to ${action} you, <@${target.id}> but you won the roll... too bad you're an ironman 😭!`;
+				msg = `🚨🐋🌟 <@${user.id}> is going to cry..., <@${target.id}> won the roll... but they're an ironman 😭! I guess Cyr will just keep it...`;
 			} else {
 				prize.add('The whale card');
-				msg = `🐋 <@${user.id}> tried to ${action} you, <@${target.id}> but jokes on them! You got ${prize}!`;
+				msg = `🐋😞 <@${user.id}> tried to ${action} you, <@${target.id}> but jokes on them! YOU (not the ${action}er) got ${prize}! 😂`;
 			}
 		} else {
 			prize.add('The whale card');
 			msg = `🐋 <@${user.id}> successfully ${action}ed you, <@${target.id}> and they won ${prize}!`;
 		}
 	} else {
-		prize.add(junkTable.roll());
-		if (winner.id === target.id) {
-			msg = `😞 <@${user.id}> successfully ${action}ed you, <@${target.id}>, but jokes on them, because you won... ${prize}!`;
+		if (target.isIronman) {
+			msg = `🚨🐋🌟  <@${user.id}> is going to cry..., <@${target.id}> won the roll... but they're an ironman 😭! I guess Cyr will just keep it...`;
 		} else {
-			msg = `😞 <@${user.id}> successfully ${action}ed you, <@${target.id}> and they won ${prize}!`;
+			prize.add(junkTable.roll());
+			if (winner.id === target.id) {
+				if (target.isIronman) {}
+				msg = `😞 <@${user.id}> successfully ${action}ed you, <@${target.id}>, but jokes on them, because you won... ${prize}!`;
+			} else {
+				msg = `😞 <@${user.id}> successfully ${action}ed you, <@${target.id}> and they won ${prize}!`;
+			}
 		}
 	}
 	if (boosted) {
@@ -151,7 +156,6 @@ async function fool(user: MUser, target: MUser) {
 	}
 	await globalClient.sendMessageOrWebhook(BSO_GENERAL, {
 		content: msg,
-		ephemeral: true,
 		allowedMentions: ping ? { users: [user.id, target.id] } : { users: [user.id] }
 	});
 	return { content: `See what happens?`, ephemeral: true };
