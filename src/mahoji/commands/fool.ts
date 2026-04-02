@@ -1,62 +1,35 @@
-import { countMagicWordsGuessed, MagicPhrases } from '@/lib/bso/foolEvent.js';
+import { countMagicWordsGuessed } from '@/lib/bso/foolEvent.js';
 
-import { type } from 'node:os';
-import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/util/src/index.js';
-import type { Snowflake } from '@sapphire/snowflake';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/util';
 import { Time } from '@sapphire/time-utilities';
-import { Bank } from 'oldschooljs';
-import { t } from 'tsdown/options-DRXBLnH3';
-import { required } from 'zod/mini';
+import { Bank, LootTable } from 'oldschooljs';
 
-import { ownedItemOption } from '@/discord/index.js';
-import { Planks } from '@/lib/minions/data/planks.js';
-import Potions from '@/lib/minions/data/potions.js';
-import { quests } from '@/lib/minions/data/quests.js';
-import Agility from '@/lib/skilling/skills/agility.js';
-import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
-import { Castables } from '@/lib/skilling/skills/magic/castables.js';
-import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
-import Prayer from '@/lib/skilling/skills/prayer.js';
-import { aerialFishingCommand } from '@/mahoji/lib/abstracted_commands/aerialFishingCommand.js';
-import { alchCommand } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
-import { birdhouseCheckCommand, birdhouseHarvestCommand } from '@/mahoji/lib/abstracted_commands/birdhousesCommand.js';
-import { buryCommand } from '@/mahoji/lib/abstracted_commands/buryCommand.js';
-import { butlerCommand } from '@/mahoji/lib/abstracted_commands/butlerCommand.js';
-import { camdozaalCommand } from '@/mahoji/lib/abstracted_commands/camdozaalCommand.js';
-import { castCommand } from '@/mahoji/lib/abstracted_commands/castCommand.js';
-import { chargeGloriesCommand } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
-import { chargeWealthCommand } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';
-import { chompyHuntClaimCommand, chompyHuntCommand } from '@/mahoji/lib/abstracted_commands/chompyHuntCommand.js';
-import { collectCommand } from '@/mahoji/lib/abstracted_commands/collectCommand.js';
-import { decantCommand } from '@/mahoji/lib/abstracted_commands/decantCommand.js';
-import { driftNetCommand } from '@/mahoji/lib/abstracted_commands/driftNetCommand.js';
-import { enchantCommand } from '@/mahoji/lib/abstracted_commands/enchantCommand.js';
-import { fightCavesCommand } from '@/mahoji/lib/abstracted_commands/fightCavesCommand.js';
-import { infernoStartCommand, infernoStatsCommand } from '@/mahoji/lib/abstracted_commands/infernoCommand.js';
-import { myNotesCommand } from '@/mahoji/lib/abstracted_commands/myNotesCommand.js';
-import { otherActivities, otherActivitiesCommand } from '@/mahoji/lib/abstracted_commands/otherActivitiesCommand.js';
-import puroOptions, { puroPuroStartCommand } from '@/mahoji/lib/abstracted_commands/puroPuroCommand.js';
-import { questCommand } from '@/mahoji/lib/abstracted_commands/questCommand.js';
-import { sawmillCommand } from '@/mahoji/lib/abstracted_commands/sawmillCommand.js';
-import { scatterCommand } from '@/mahoji/lib/abstracted_commands/scatterCommand.js';
-import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
-import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
-import { collectables } from '@/mahoji/lib/collectables.js';
-import { randInt, roll } from '../../../packages/rng/src/index.js';
-import { formatDuration, stringMatches } from '../../../packages/toolkit/src/index.js';
+import { globalConfig } from '@/lib/constants.js';
 
-const BSO_GENERAL = '792691343284764693';
+const BSO_GENERAL = globalConfig.isProduction ? '792691343284764693' : '851273567416483861';
+const WHALE_FOOL_US_RATE = globalConfig.isProduction ? 500 : 3;
+const FOOL_RATE = globalConfig.isProduction ? 10 : 1;
+const WHALE_STARTING_ODDS = globalConfig.isProduction ? 10 : 2;
+
+const junkTable = new LootTable()
+	.add('Cannonball', [1, 9], 10)
+	.add('Coins', [1, 1000], 10)
+	.add('Bucket', 1, 10)
+	.add('Clue scroll (elite)', 1, 3)
+	.add('Clue scroll (master)', 1, 1)
+	.tertiary(5, 'Clue scroll (grandmaster)')
+	.tertiary(10, 'Elder scroll piece');
 
 async function fool(user: MUser, target: MUser) {
-	if (!roll(10)) return { content: 'You failed try again next time.', ephemeral: true };
+	if (!roll(FOOL_RATE)) return { content: 'You failed try again next time.', ephemeral: true };
 
 	const action = roll(2) ? 'fool' : 'trick';
-	const userPrize = new Bank();
-	const targetPrize = new Bank();
+	const prize = new Bank();
 
 	const winner = roll(2) ? user : target;
 
-	let whaleOdds = 10;
+	let whaleOdds = WHALE_STARTING_ODDS;
 
 	let boosted = false;
 
@@ -64,7 +37,7 @@ async function fool(user: MUser, target: MUser) {
 		const wordsGuessed = countMagicWordsGuessed(winner);
 		if (wordsGuessed > 3) whaleOdds -= Math.min(wordsGuessed, 8);
 		boosted = true;
-		whaleOdds = Math.min(whaleOdds, 2);
+		whaleOdds = Math.max(whaleOdds, 2);
 	}
 
 	// Total chance is 1 in 200, 10% chance to ping, 10% chance to hit 50% chance for it to be yours.  Only 192 rolls possible at 24/7 gameplay
@@ -72,26 +45,32 @@ async function fool(user: MUser, target: MUser) {
 	let msg = '';
 
 	if (gotWhaled) {
-		if (roll(2)) {
+		if (winner.id === target.id) {
 			if (target.isIronman) {
 				msg = `🐋 <@${user.id}> tried to ${action} you, <@${target.id}> but you won the roll... too bad you're an ironman 😭!`;
 			} else {
-				msg = `🐋 <@${user.id}> tried to ${action} you, <@${target.id}> but jokes on them! You got The whale card!`;
-				targetPrize.add('The whale card');
+				prize.add('The whale card');
+				msg = `🐋 <@${user.id}> tried to ${action} you, <@${target.id}> but jokes on them! You got ${prize}!`;
 			}
 		} else {
-			msg = `🐋 <@${user.id}> successfully ${action}ed you, <@${target.id}> and they won The whale card!`;
-			userPrize.add('The whale card');
+			prize.add('The whale card');
+			msg = `🐋 <@${user.id}> successfully ${action}ed you, <@${target.id}> and they won ${prize}!`;
 		}
 	} else {
-		msg = `😞 <@${user.id}> successfully ${action}ed you, <@${target.id}> and they won The whale card!`;
+		prize.add(junkTable.roll());
+		if (winner.id === target.id) {
+			msg = `😞 <@${user.id}> successfully ${action}ed you, <@${target.id}>, but jokes on them, because you won... ${prize}!`;
+		} else {
+			msg = `😞 <@${user.id}> successfully ${action}ed you, <@${target.id}> and they won ${prize}!`;
+		}
 	}
 	if (boosted) {
-		msg += ' There was increased luck from guessing correctly!';
+		msg += ` There was increased luck from ${winner}'s correct guesses!`;
 	}
 
+	await winner.addItemsToBank({ items: prize, collectionLog: true });
 	await globalClient.sendMessageOrWebhook(BSO_GENERAL, { content: msg, ephemeral: true });
-	return { content: `Success! We're trying to trick ${target.usernameOrMention}`, ephemeral: true };
+	return { content: `See what happens?`, ephemeral: true };
 }
 
 export const foolCommand = defineCommand({
@@ -110,7 +89,7 @@ export const foolCommand = defineCommand({
 			options: [
 				{
 					type: 'User',
-					name: 'Target',
+					name: 'target_user',
 					description: 'Well did you?',
 					required: false
 				}
@@ -123,7 +102,7 @@ export const foolCommand = defineCommand({
 			options: [
 				{
 					type: 'User',
-					name: 'Target',
+					name: 'target_user',
 					description: 'Person to try and trick',
 					required: false
 				}
@@ -149,7 +128,7 @@ export const foolCommand = defineCommand({
 			if (!foolUsRatelimit.success) {
 				return `I didn't have time to troll you on this timer, too, so you have ${foolUsRatelimit.timeRemainingMs / Time.Minute} minutes left before you can try to fool me again`;
 			}
-			if (roll(500)) {
+			if (roll(WHALE_FOOL_US_RATE)) {
 				const loot = new Bank();
 				loot.add('The whale card');
 				return `🐋 Wow you actually did it! You got: ${loot}`;
@@ -195,7 +174,7 @@ export const foolCommand = defineCommand({
 		}
 
 		if (options.fool_someone || options.trick_someone) {
-			const targetUser = options.fool_someone?.Target ?? options.trick_someone?.Target;
+			const targetUser = options.fool_someone?.target_user ?? options.trick_someone?.target_user;
 			if (!targetUser) {
 				return `That's not a valid target, but probably should be? Blame discord.`;
 			}

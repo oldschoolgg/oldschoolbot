@@ -654,5 +654,4 @@ export const CONSTANTS = {
 		SLOTS: [1_000_000, 10_000_000_000],
 		LUCKYPICK: [1_000_000, 25_000_000_000]
 	}
-
 };

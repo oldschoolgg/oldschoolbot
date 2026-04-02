@@ -14365,7 +14365,7 @@ setCustomItem(74_006, 'Ember', 'Herbi', {
 });
 
 setCustomItem(
-	74_006,
+	74_007,
 	'The whale card',
 	'Coal',
 	{

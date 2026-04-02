@@ -26,6 +26,7 @@ export const MagicPhrases = [
 	'Kayak',
 	'Rotator',
 	'noon',
+	'whale',
 	'🐋'
 ] as const;
 
