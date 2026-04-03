@@ -24,7 +24,7 @@ async function tagHandler(msg: IMessage): Promise<void> {
 }
 
 async function userInfo(msg: IMessage) {
-	const regex = /^\.\d+%/;
+	const regex = /^\.\d+$/;
 	if (!regex.test(msg.content)) return;
 	const user = await globalClient.fetchRUser(msg.author_id);
 	if (!user) return;
