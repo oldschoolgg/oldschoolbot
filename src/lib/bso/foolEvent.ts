@@ -9,12 +9,12 @@ export const MagicPhrases = [
 	'Las Vegas',
 	'Palm Springs',
 	'Magic',
-	'Palming',
-	'Marked cards',
-	'Cheating',
-	'Stripper deck',
-	'Svengali deck',
-	'Fake thumb',
+	'Palming', // DSL
+	'Marked cards', // DSL
+	'Cheating', //NOONE
+	'Stripper deck',  //DSL
+	'Svengali deck', // None but i've got kids now is close, ,half the name
+	'Fake thumb', // DSL
 	// Extraordinary attorney woo.
 	'Extraordinary Attorney Woo',
 	'Sperm whale',
