@@ -81,21 +81,7 @@ export const MagicPhrases = [
 ] as const;
 
 export function countMagicWordsSimple(magicWordsGuessed: string[]) {
-	let count = 0;
-
-	for (const word of MagicPhrases) {
-		if (
-			magicWordsGuessed.some(i => {
-				if (stringMatches('???', word)) {
-					return i === word;
-				} else {
-					return stringMatches(word, i);
-				}
-			})
-		)
-			count++;
-	}
-	return count;
+	return foolListMatchingWords(magicWordsGuessed).length;
 }
 export function countMagicWordsGuessed(user: MUser) {
 	const magicWords = user.magicWordsGuessed;

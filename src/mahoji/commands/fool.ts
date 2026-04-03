@@ -289,14 +289,14 @@ export const foolCommand = defineCommand({
 					}
 					const guessString = guesses.join('\n');
 					return {
-						content: `You have ${count} correct guesses, and your full guess list is: \`\`\`${guessString}\`\`\``,
+						content: `You have ${count} correct guesses, and your full guess list is: \`\`\`\n${guessString}\n\`\`\``,
 						ephemeral
 					};
 				}
 				case 'correct_guesses': {
 					const correctGuesses = foolListMatchingWords(user.magicWordsGuessed);
 					return {
-						content: `You have ${count} correct guesses, and your correct guesses are: \`\`\`${correctGuesses.join('\n')}\`\`\``,
+						content: `You have ${count} correct guesses, and your correct guesses are: \`\`\`\n${correctGuesses.join('\n')}\n\`\`\``,
 						ephemeral
 					};
 				}
