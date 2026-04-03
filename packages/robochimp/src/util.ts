@@ -14,7 +14,8 @@ export enum Bits {
 	IsPatronTier4 = 11,
 	IsPatronTier5 = 12,
 	IsPatronTier6 = 13,
-	HasEverBeenPatron = 14
+	HasEverBeenPatron = 14,
+	SupportStaff = 15
 }
 type BitDescriptions = {
 	[K in Bits]: { description: string };
@@ -23,6 +24,7 @@ type BitDescriptions = {
 export const bitsDescriptions: BitDescriptions = {
 	[Bits.Admin]: { description: 'Admin' },
 	[Bits.Mod]: { description: 'Moderator' },
+	[Bits.SupportStaff]: { description: 'Support Staff' },
 	[Bits.Trusted]: { description: 'Trusted' },
 	[Bits.WikiContributor]: { description: 'Wiki Contributor' },
 	[Bits.IsContributor]: { description: 'Contributor' },

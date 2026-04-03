@@ -157,7 +157,9 @@ export enum BitField {
 
 	HasDeadeyeScroll = 45,
 	HasMysticVigourScroll = 46,
-	AllowPublicAPIDataRetrieval = 47
+	AllowPublicAPIDataRetrieval = 47,
+	ToggleAutoRummage = 48,
+	DisableDynamicTimestamp = 49
 }
 
 interface BitFieldData {
@@ -276,9 +278,15 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisableDynamicTimestamp]: {
+		name: 'Disable Dynamic Minion Return Time',
+		protected: false,
+		userConfigurable: true
+	},
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
-	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
+	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false },
+	[BitField.ToggleAutoRummage]: { name: 'Auto Rummage Vale Offerings', protected: false, userConfigurable: true }
 } as const;
 
 export const BadgesEnum = {

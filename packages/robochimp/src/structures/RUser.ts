@@ -34,6 +34,14 @@ export class RUser {
 		return tier ?? null;
 	}
 
+	public isSupport(): boolean {
+		return [Bits.Admin, Bits.Mod, Bits.SupportStaff].some(_bit => this.bits.includes(_bit));
+	}
+
+	public isAdmin(): boolean {
+		return this.bits.includes(Bits.Admin);
+	}
+
 	public isMod(): boolean {
 		return [Bits.Admin, Bits.Mod].some(_bit => this.bits.includes(_bit));
 	}

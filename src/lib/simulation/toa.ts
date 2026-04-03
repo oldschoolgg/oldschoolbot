@@ -1293,7 +1293,7 @@ export async function toaStartCommand(
 		users.map(u => u.usernameOrMention)
 	)}) are now off to do ${
 		quantity === 1 ? 'a' : `${quantity}x`
-	} level ${raidLevel} Tombs of Amascut raid - the total trip will take ${formatDuration(fakeDuration)}.`;
+	} level ${raidLevel} Tombs of Amascut raid - the total trip will return in about ${formatDuration(fakeDuration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

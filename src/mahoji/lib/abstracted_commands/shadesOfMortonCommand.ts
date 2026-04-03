@@ -6,6 +6,7 @@ import type {
 	ShadesOfMortonPyreLogsOptions,
 	ShadesOfMortonSacredOilOptions
 } from '@/lib/types/minions.js';
+import { formatTripDuration } from '@/lib/util/minionUtils.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
 
@@ -332,7 +333,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 	const logsOwned = userBank.amount(logItem.id);
 	if (logsOwned === 0) return `You don't own any ${logItem.name}!`;
 
-	const log = shadesLogs.find(i => i.normalLog.id === logItem.id);
+	const log = shadesLogs.find(i => i.oiledLog.id === logItem.id);
 	const shade = shades.find(i => i.shadeName === shadeStr);
 	if (!log || !shade) return 'Invalid item';
 
@@ -344,7 +345,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 
 	const prayerXP = log.prayerXP[shade.shadeName];
 	if (!prayerXP) {
-		return `You can't use ${log.normalLog.name} with ${shade.item.name}.`;
+		return `You can't use ${log.oiledLog.name} with ${shade.item.name}.`;
 	}
 
 	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / TIME_PER_CREMATION));
@@ -353,7 +354,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 	if (quantity < 1) return 'You cannot do any cremations in that time.';
 
 	const cost = new Bank();
-	cost.add(log.normalLog.id, quantity);
+	cost.add(log.oiledLog.id, quantity);
 	cost.add(shade.item.id, quantity);
 	if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
@@ -371,7 +372,9 @@ export async function shadesOfMortonStartCommand(user: MUser, channelId: string,
 		shadeID: shade.shadeName
 	});
 
-	let str = `${user.minionName} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
+	let str = `${
+		user.minionName
+	} is now off to do Shades of Mort'ton using ${cost} - the total trip will return in about ${formatTripDuration(user, duration)}.`;
 	if (messages.length > 0) {
 		str += `\n**Messages:** ${messages.join(', ')}`;
 	}
@@ -409,7 +412,7 @@ export async function shadesOfMortonSacredOilCommand(user: MUser, channelId: str
 		type: 'ShadesOfMortonSacredOil'
 	});
 
-	return `${user.minionName} is now off to the Mort'ton temple to upgrade ${quantity}x ${oliveOilItem.name} into ${sacredOilItem.name} - trip will take ${formatDuration(duration)}.`;
+	return `${user.minionName} is now off to the Mort'ton temple to upgrade ${quantity}x ${oliveOilItem.name} into ${sacredOilItem.name} - trip will return in about ${formatTripDuration(user, duration)}.`;
 }
 
 export async function shadesOfMortonCreatePyreLogsCommand(
@@ -461,5 +464,5 @@ export async function shadesOfMortonCreatePyreLogsCommand(
 		logID: recipe.log.id
 	});
 
-	return `${user.minionName} is now off to apply sacred oil to ${finalQuantity}x ${recipe.log.name} - trip will take ${formatDuration(duration)}.`;
+	return `${user.minionName} is now off to apply sacred oil to ${finalQuantity}x ${recipe.log.name} - trip will return in about ${formatTripDuration(user, duration)}.`;
 }

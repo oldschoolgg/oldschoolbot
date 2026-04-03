@@ -1,6 +1,7 @@
 import { createHmac } from 'node:crypto';
 import { notEmpty, PerkTier, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
+import { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
 import { allPatronBits, Bits, type PatronTier, tiers } from '../util.js';
 import type { OSBPrismaClient } from './prisma.js';
@@ -161,6 +162,8 @@ async function onTierChange({
 			});
 		}
 	}
+	const cacheUsersUpdate = discordIDs.map(u => globalClient.fetchRUser(u));
+	await Promise.all(cacheUsersUpdate);
 }
 
 interface Patron {
@@ -195,24 +198,28 @@ patreonApiURL.search = new URLSearchParams([
 class PatreonTask {
 	public enabled = globalConfig.isProduction;
 
-	async validatePerks(userID: bigint, shouldHave: PatronTier): Promise<string | null> {
+	async validatePerks(userID: bigint, shouldHave: PatronTier, allowHigher: boolean = false): Promise<string | null> {
 		const user = await globalClient.fetchRUser(userID);
 		if (!user) return null;
-		if (user.perkTierRaw !== shouldHave.perkTier) {
+
+		const shouldChangeTier = allowHigher
+			? user.perkTierRaw < shouldHave.perkTier
+			: user.perkTierRaw !== shouldHave.perkTier;
+		if (shouldChangeTier) {
 			await this.changeTier(user, shouldHave);
 			return `Failed validation, wrong tier, changing to ${shouldHave} for ${userID}`;
 		}
 		return null;
 	}
 
-	async changeTier(user: RUser, shouldHave: PatronTier | PerkTier) {
+	async changeTier(user: RUser, shouldHave: PatronTier | PerkTier | number) {
 		const tier = typeof shouldHave === 'number' ? tiers.find(t => t.perkTier === shouldHave) : shouldHave;
 		if (!tier) {
 			throw new Error(`Invalid tier: ${shouldHave}`);
 		}
 		const userGroup = await user.findGroup();
 
-		const allUsers = await roboChimpClient.user.findMany({
+		const groupedUsers = await roboChimpClient.user.findMany({
 			where: {
 				id: {
 					in: userGroup.map(id => BigInt(id))
@@ -221,7 +228,7 @@ class PatreonTask {
 		});
 
 		await roboChimpClient.$transaction(
-			allUsers.map(u =>
+			groupedUsers.map(u =>
 				roboChimpClient.user.update({
 					where: {
 						id: u.id
@@ -241,7 +248,7 @@ class PatreonTask {
 			newTier: tier.perkTier,
 			oldTier: user.perkTierRaw,
 			discordIDs: userGroup,
-			isFirstTimePatron: allUsers.every(u => !u.bits.includes(Bits.HasEverBeenPatron))
+			isFirstTimePatron: groupedUsers.every(u => !u.bits.includes(Bits.HasEverBeenPatron))
 		});
 	}
 
@@ -249,7 +256,7 @@ class PatreonTask {
 		console.log(`Removing perks from ${user.id} because ${_reason}`);
 		const userGroup = await user.findGroup();
 
-		const allUsers = await roboChimpClient.user.findMany({
+		const groupedUsers = await roboChimpClient.user.findMany({
 			where: {
 				id: {
 					in: userGroup.map(id => BigInt(id))
@@ -257,9 +264,9 @@ class PatreonTask {
 			}
 		});
 
-		// Remove patron bits from all of the users
+		// Remove patron bits from all grouped users
 		await roboChimpClient.$transaction(
-			allUsers.map(u =>
+			groupedUsers.map(u =>
 				roboChimpClient.user.update({
 					where: {
 						id: BigInt(u.id)
@@ -294,12 +301,16 @@ class PatreonTask {
 		const messages = [];
 		const sponsors = await fetchSponsors();
 		for (const sponsor of sponsors) {
+			// TODO: Again this might be responsible for perks not being removed:
 			if (!sponsor.tier) continue;
 			const userWithThisGithubID = await roboChimpClient.user.findFirst({
-				select: { id: true },
 				where: { github_id: Number(sponsor.githubID) }
 			});
 			if (!userWithThisGithubID) continue;
+			const rUser = new RUser(userWithThisGithubID);
+			if (rUser.perkTierRaw < PerkTier.Two) continue;
+			const freeT3 = [Bits.Mod, Bits.Admin, Bits.WikiContributor].some(bit => rUser.bits.includes(bit));
+			if (freeT3 && rUser.perkTierRaw <= PerkTier.Four) continue;
 			const res = await this.validatePerks(
 				userWithThisGithubID.id,
 				tiers.find(t => t.perkTier === sponsor.tier)!
@@ -392,7 +403,7 @@ class PatreonTask {
 			}
 		});
 
-		return Promise.all(allUsers.map(u => this.validatePerks(u.id, tiers.find(t => t.number === 3)!)));
+		return Promise.all(allUsers.map(u => this.validatePerks(u.id, tiers.find(t => t.number === 3)!, true)));
 	}
 
 	async run() {
@@ -437,6 +448,7 @@ AND u1.id <> u2.id
 				p => p.discordID === patron.discordID && p.patreonID !== patron.patreonID
 			);
 			// We do this in 2 steps to avoid creating new Date objects for every patron entry; only when needed.
+			// We're not trying to sort/find the newest. Only skipping older ones as we're processing all anyway.
 			const newerAccount = duplicateAccounts.find(
 				p => new Date(p.lastChargeDate).getTime() > new Date(patron.lastChargeDate).getTime()
 			);
@@ -447,6 +459,7 @@ AND u1.id <> u2.id
 
 			const tierTheyShouldHave = patron.entitledTier;
 			if (!tierTheyShouldHave) {
+				// TODO: I feel like if they aren't entitled to a tier, we should remove it o_O
 				continue;
 			}
 
@@ -466,10 +479,7 @@ AND u1.id <> u2.id
 					}
 				});
 			}
-
-			if ([Bits.Mod, Bits.Admin, Bits.WikiContributor].some(bit => user.bits.includes(bit))) {
-				continue;
-			}
+			const getFreeT3 = [Bits.Mod, Bits.Admin, Bits.WikiContributor].some(bit => user.bits.includes(bit));
 
 			// If their last payment was more than a month ago, remove their status and continue.
 			if (
@@ -477,6 +487,7 @@ AND u1.id <> u2.id
 				patron.patronStatus !== 'active_patron'
 			) {
 				if (user.perkTierRaw < PerkTier.Two) continue;
+				if (getFreeT3 && user.perkTierRaw <= PerkTier.Four) continue;
 				const str = `${userIdentifier} hasn't paid in over 1 month, so removing perks (T${user.perkTierRaw + 1}).`;
 				await this.removePerks(user, str);
 				continue;

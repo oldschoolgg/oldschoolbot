@@ -732,7 +732,14 @@ export const adminCommand = defineCommand({
 			}
 			const bit = Number.parseInt(bitEntry[0]);
 
-			if (!bit || !isValidBitField(bit) || [7, 8].includes(bit) || (action !== 'add' && action !== 'remove')) {
+			const restrictedBits = user.isAdmin() ? [] : [7, 8];
+
+			if (
+				!bit ||
+				!isValidBitField(bit) ||
+				restrictedBits.includes(bit) ||
+				(action !== 'add' && action !== 'remove')
+			) {
 				return 'Invalid bitfield.';
 			}
 
