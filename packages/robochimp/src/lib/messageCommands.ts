@@ -1,14 +1,12 @@
 import { userMention } from '@oldschoolgg/discord';
-import { isValidDiscordSnowflake } from '@oldschoolgg/util';
 
 import { type Bits, bitsDescriptions } from '../util.js';
+import {RUser} from "@/structures/RUser.js";
 
-export async function getInfoStrOfUser(target: string) {
-	if (!isValidDiscordSnowflake(target)) {
-		return 'Invalid user ID.';
-	}
-	const djsUser = await globalClient.fetchUser(target).catch(() => null);
-	const roboChimpUser = await globalClient.fetchRUser(target);
+export async function getInfoStrOfUser(roboChimpUser: RUser) {
+
+	const djsUser = await globalClient.fetchUser(roboChimpUser.id.toString()).catch(() => null);
+
 	const linkedAccounts = await roboChimpUser.findGroup();
 	let tier = `Tier ${roboChimpUser.perkTier?.number ?? 'None'}`;
 
@@ -22,7 +20,7 @@ export async function getInfoStrOfUser(target: string) {
 	const isBlacklisted =
 		(await roboChimpClient.blacklistedEntity.count({
 			where: {
-				id: BigInt(target),
+				id: roboChimpUser.id,
 				type: 'user'
 			}
 		})) > 0;
