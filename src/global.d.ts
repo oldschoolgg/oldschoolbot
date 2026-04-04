@@ -1,5 +1,13 @@
 type MUserInstance = MUser;
 
+declare module 'oldschooljs' {
+	interface ItemRequirements {
+		dungeoneering: number;
+		invention: number;
+		divination: number;
+	}
+}
+
 declare global {
 	export type MUserClass = import('./lib/user/MUser.js').MUserClass;
 	export type MUser = import('./lib/user/MUser.js').MUserClass;

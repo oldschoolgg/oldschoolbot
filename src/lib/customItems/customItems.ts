@@ -228,7 +228,7 @@ setCustomItem(516, 'Nuts of monkey', 'Rune platelegs');
 /**
  * Exclusive Items
  *
- * Items from 40_000 to 45_000 will not be dropped by any mystery box, and are untradeable
+ * Items from 40_000 to 45_000 will not be dropped by any mystery box and are untradeable
  */
 // Master capes
 setCustomItem(40_000, 'Construction master cape', 'Abyssal cape', {}, 200_000_000);
@@ -1230,7 +1230,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99,
 				magic: 99
 			}
@@ -1261,7 +1260,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99,
 				ranged: 99
 			}
@@ -1292,7 +1290,6 @@ setCustomItem(
 			slot: EquipmentSlot.Neck,
 			requirements: {
 				defence: 99,
-				// @ts-expect-error dgg
 				dungeoneering: 99
 			}
 		}
@@ -14368,6 +14365,19 @@ setCustomItem(
 	74_007,
 	'The whale card',
 	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	74_008,
+	'Wubbles',
+	'Herbi',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
