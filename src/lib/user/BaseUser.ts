@@ -351,9 +351,19 @@ export class BaseUser {
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
+	isSupport(): boolean {
+		return this.bitfield.includes(BitField.ServerSupport);
+	}
 
+	isTrusted(): boolean {
+		return this.isWikiContrib() || this.isModOrAdmin() || this.isSupport();
+	}
+
+	isWikiContrib(): boolean {
+		return this.bitfield.includes(BitField.WikiContributor);
+	}
 	isMod(): boolean {
-		return this.bitfield.includes(BitField.isModerator);
+		return this.bitfield.includes(BitField.Moderator);
 	}
 
 	isAdmin(): boolean {

@@ -201,6 +201,7 @@ model Giveaway {
   finish_date DateTime @db.Timestamp(6)
   duration    Int
   completed   Boolean
+  guild_id    String?  @db.VarChar(20)
   channel_id  String   @db.VarChar(19)
   loot        Json     @db.Json
   message_id  String   @db.VarChar(19)

@@ -146,11 +146,11 @@ export const tickers: {
 FROM users u
 WHERE
   bitfield && ARRAY[
-    4,  -- IsPatronTier3
-    5,  -- IsPatronTier4
-    6,  -- IsPatronTier5
-    21, -- IsPatronTier6
-    7   -- isModerator
+    4,  -- PatronTier3
+    5,  -- PatronTier4
+    6,  -- PatronTier5
+    21, -- PatronTier6
+    7   -- Moderator
   ]::int[]
 AND last_command_date > now() - INTERVAL '5 days'
 AND EXISTS (
