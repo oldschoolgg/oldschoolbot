@@ -54,8 +54,10 @@ export async function getUsersPerkTier({
 	}
 
 	const eligibleTiers = [];
-	if (user.isMod()) {
+	if (user.isContributor() || user.isModOrAdmin()) {
 		eligibleTiers.push(PerkTier.Four);
+	} else if (user.isTrusted()) {
+		eligibleTiers.push(PerkTier.Three);
 	}
 
 	const bitfield = user.bitfield;
