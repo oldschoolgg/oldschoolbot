@@ -63,7 +63,7 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway, winner
 	const message = await globalClient.fetchMessage(giveaway.channel_id, giveaway.message_id);
 	if (!message) return;
 	let newContent: string = '';
-	if (winner) {
+	if (winner === null || winner) {
 		newContent = generateGiveawayFinishedMsg(
 			giveaway.user_id,
 			giveaway.finish_date,
@@ -81,7 +81,7 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway, winner
 	if (Object.keys(edits).length > 0) {
 		await globalClient.editMessage(giveaway.channel_id, giveaway.message_id, edits);
 	}
-}, Time.Second * 5);
+}, Time.Second * 2);
 
 export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 	Logging.logDebug('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
