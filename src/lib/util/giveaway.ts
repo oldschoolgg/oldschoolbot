@@ -16,13 +16,13 @@ export function generateGiveawayFinishedMsg(
 	host: string,
 	finishDate: Date,
 	usersEntered: string[],
-	winner: MUser | null,
+	winner: MUser | null
 ) {
 	let result = `${userMention(host)} hosted a giveaway that finished  at ${time(finishDate, 'F')} (${time(finishDate, 'R')}).`;
 	if (winner !== null) {
-		result += `${usersEntered.length} people entered, but....the winner was...... *drumroll*..... ${winner}! Congratulations!`;
+		result += ` ${usersEntered.length} ${usersEntered.length === 1 ? 'person' : 'people'} entered, but....the winner was...... *drumroll*..... ${winner}! Congratulations!`;
 	} else {
-		result += `${usersEntered.length} people entered, but no one won. Hmmm seems suss.`;
+		result += ` ${usersEntered.length} ${usersEntered.length === 1 ? 'person' : 'people'} entered, but no one won. Hmmm seems suss.`;
 	}
 	return result;
 }
