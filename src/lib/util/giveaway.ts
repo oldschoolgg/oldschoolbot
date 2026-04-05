@@ -16,7 +16,7 @@ export function generateGiveawayFinishedMsg(
 	host: string,
 	finishDate: Date,
 	usersEntered: string[],
-	winner: MUser | null
+	winner: MUser | null,
 ) {
 	let result = `${userMention(host)} hosted a giveaway that finished  at ${time(finishDate, 'F')} (${time(finishDate, 'R')}).`;
 	if (winner !== null) {

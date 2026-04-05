@@ -656,10 +656,10 @@ export const adminCommand = defineCommand({
 			let newBadges = [...userToUpdateBadges.user.badges];
 
 			if (action === 'add') {
-				if (newBadges.includes(badgeID)) return "Already has this badge, so can't add.";
+				if (newBadges.includes(badgeID)) return "Already has this badge, so you can't add it O_o";
 				newBadges.push(badgeID);
 			} else {
-				if (!newBadges.includes(badgeID)) return "Doesn't have this badge, so can't remove.";
+				if (!newBadges.includes(badgeID)) return "Doesn't have this badge, so you can't remove it o_O";
 				newBadges = newBadges.filter(i => i !== badgeID);
 			}
 
