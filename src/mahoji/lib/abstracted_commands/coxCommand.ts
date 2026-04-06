@@ -41,6 +41,7 @@ export async function coxBoostsCommand(user: MUser) {
 				if (item.setup && user.gear[item.setup].hasEquipped(item.item.id, false, true)) {
 					return true;
 				}
+				return false;
 			} else {
 				return user.hasEquippedOrInBank(getSimilarItems(item.item.id));
 			}
