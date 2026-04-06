@@ -238,6 +238,7 @@ class BankImageTask {
 
 	public redEffect: Image | null = null;
 	public bananaEffect: Image | null = null;
+	public whiteEffect: Image | null = null;
 	public effects: Map<number, Image> = new Map();
 
 	async init() {
@@ -251,9 +252,11 @@ class BankImageTask {
 		//Prepare to glow once more!
 		this.redEffect = await loadImage(await fs.readFile('./src/lib/resources/images/red-glow.png'));
 		this.bananaEffect = await loadImage(await fs.readFile('./src/lib/resources/images/banana-glow.png'));
+		this.whiteEffect = await loadImage(await fs.readFile('./src/lib/resources/images/white-glow.png'));
 		const coolItemEffects: [number, Image][] = [
 			[itemID('Dragon egg'), this.redEffect!],
-			[itemID('Monkey egg'), this.bananaEffect!]
+			[itemID('Monkey egg'), this.bananaEffect!],
+			[itemID('Wubbles'), this.whiteEffect!]
 		];
 		for (const [itemId, itemEffect] of coolItemEffects) {
 			this.effects.set(itemId, itemEffect);

@@ -20,7 +20,7 @@
 		"exec-sql": "tsx --tsconfig=scripts/tsconfig.json --env-file=.env scripts/execute-sql.ts",
 		"============BUILDING": "============",
 		"build": "pnpm build:packages && pnpm gen && concurrently --raw \"tsx esbuild.mts\" \"pnpm test:types\"",
-        "build:quick": "tsx esbuild.mts",
+		"build:quick": "tsx esbuild.mts",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"pnpm generate:robochimp\" && echo \"Generated Prisma Client\"",
 		"============TESTING": "============",
 		"test": "pnpm concurrent \"pnpm test:lint\" \"pnpm test:types\" && pnpm test:unit",
