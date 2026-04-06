@@ -106,12 +106,11 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 			if (nextPet === itemID('Magnabbit')) {
 				messages.push(getMagneggHatchMessage());
 			} else {
-				messages.push(`You might want to pinch yourself because YOU JUST GOT A SHINY MAGNA!!`);
-			}
+				messages.push(`\n\n🐇.... You might want to pinch yourself because **YOU JUST GOT A SHINY MAGNA!!**`);			}
 		}
 	}
 }
 
 export const growablePetsCL = growablePets
 	.flatMap(i => i.stages)
-	.filter(i => !resolveItems(['Skip', 'Penguin egg']).includes(i));
+	.filter(i => !resolveItems(['Magnabbit', 'Magnegg', 'Skip', 'Penguin egg']).includes(i));

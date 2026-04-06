@@ -95,7 +95,9 @@ for (const a of stealables) {
 	for (const item of a.table.allItems) ALL_OBTAINABLE_ITEMS.add(item);
 }
 for (const pet of growablePets) {
-	if (pet.shinyVersion === 73_969) continue;
+	if (pet.shinyVersion) {
+		if (pet.shinyVersion === 73_969) continue;
+	}
 	for (const i of pet.stages) ALL_OBTAINABLE_ITEMS.add(i);
 }
 for (const i of Herblore.Mixables) {
