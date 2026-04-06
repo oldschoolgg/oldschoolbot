@@ -21,7 +21,7 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, CONSTANTS, PerkTier } from '@/lib/constants.js';
-import { EITEMS, rollPassiveEasterLoot } from '@/lib/easter.js';
+import { getPassiveEasterTripMessage, rollPassiveEasterLoot } from '@/lib/easter.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
@@ -457,15 +457,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const easterLoot = rollPassiveEasterLoot(data.duration);
 			if (!easterLoot) return;
 
-			const finds = [
-				easterLoot.genericLoot.toString(),
-				new Bank().add(EITEMS.WabbitEggs, easterLoot.wabbitEggs).toString()
-			];
-			if (easterLoot.magneggs > 0) {
-				finds.push(new Bank().add(EITEMS.Magnegg, easterLoot.magneggs).toString());
-			}
-
-			messages.push(`You found ${finds.join(', ')}.`);
+			messages.push(getPassiveEasterTripMessage(easterLoot));
 			return {
 				itemsToAddWithCL: easterLoot.loot
 			};

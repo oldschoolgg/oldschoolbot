@@ -14425,7 +14425,7 @@ setCustomItem(
 );
 setCustomItem(
 	73_969,
-	'Shiny Magnabbit',
+	'Radiant Magnabbit',
 	'Herbi',
 	{
 		customItemData: {

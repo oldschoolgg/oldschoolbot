@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { EITEMS, rollEasterTurnInLoot } from '@/lib/easter.js';
+import { getEasterTurnInMessage, rollEasterTurnInLoot } from '@/lib/easter.js';
 
 export const easterCommand = defineCommand({
 	name: 'easter',
@@ -27,10 +27,10 @@ export const easterCommand = defineCommand({
 	run: async ({ options, user }) => {
 		const quantity = options.turn_in?.quantity;
 		if (!quantity) {
-			return `You must choose how many ${new Bank().add(EITEMS.WabbitEggs, 1)} to turn in.`;
+			return `You must choose how many Wabbit eggs to turn in.`;
 		}
 
-		const cost = new Bank().add(EITEMS.WabbitEggs, quantity);
+		const cost = new Bank().add('Wabbit eggs', quantity);
 		if (!user.owns(cost)) {
 			return `You don't own ${cost}.`;
 		}
@@ -42,11 +42,18 @@ export const easterCommand = defineCommand({
 			collectionLog: true
 		});
 
-		const extraText = magneggs > 0 ? ` You also found ${new Bank().add(EITEMS.Magnegg, magneggs)}.` : '';
-		return new MessageBuilder().setContent(`You turned in ${cost} and received ${loot}.${extraText}`).addBankImage({
-			bank: loot,
-			title: 'Easter Turn In',
-			user
-		});
+		return new MessageBuilder()
+			.setContent(
+				getEasterTurnInMessage({
+					cost,
+					loot,
+					magneggs
+				})
+			)
+			.addBankImage({
+				bank: loot,
+				title: 'Easter Turn In',
+				user
+			});
 	}
 });

@@ -1,6 +1,9 @@
+import { randFloat, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import { roll } from 'node-rng';
-import { Bank, Items, resolveItems } from 'oldschooljs';
+import {Bank, itemID, Items, resolveItems} from 'oldschooljs';
+
+import { getMagneggHatchMessage } from '@/lib/easter.js';
+import type { ActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const kittens = resolveItems([
 	'Grey and black kitten',
@@ -37,10 +40,6 @@ export const growablePets: GrowablePet[] = [
 		stages: resolveItems(['Magic kitten', 'Magic cat'])
 	},
 	{
-		growthRate: (Time.Hour * 6) / Time.Minute,
-		stages: [EITEMS.Magnegg, EITEMS.Magnabbit]
-	},
-	{
 		growthRate: (Time.Hour * 2) / Time.Minute,
 		stages: resolveItems(['Zamorak egg', 'Baby zamorak hawk', 'Juvenile zamorak hawk', 'Zamorak hawk'])
 	},
@@ -55,6 +54,12 @@ export const growablePets: GrowablePet[] = [
 	{
 		growthRate: (Time.Hour * 2) / Time.Minute,
 		stages: resolveItems(['Penguin egg', 'Skip'])
+	},
+	{
+		growthRate: (Time.Hour * 6) / Time.Minute,
+		stages: resolveItems(['Magnegg', 'Magnabbit']),
+		shinyChance: 50,
+		shinyVersion: Items.getOrThrow('Radiant Magnabbit').id
 	}
 ];
 
@@ -67,14 +72,14 @@ for (let i = 0; i < kittens.length; i++) {
 	});
 }
 
-export const handleGrowablePetGrowth: TripFinishEffect['fn'] = async ({ user, data, messages, rng }) => {
+export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOptions, messages: string[]) {
 	const equippedPet = user.user.minion_equippedPet;
 	if (!equippedPet) return;
 	const equippedGrowablePet = growablePets.find(pet => pet.stages.includes(equippedPet));
 	if (!equippedGrowablePet) return;
 	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return;
 	const minutesInThisTrip = data.duration / Time.Minute;
-	if (rng.randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
+	if (randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
 		let nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
 		const isLastPet = nextPet === equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1];
 		if (nextPet === -1) {
@@ -97,9 +102,13 @@ export const handleGrowablePetGrowth: TripFinishEffect['fn'] = async ({ user, da
 				minion_equippedPet: nextPet
 			}
 		});
-		messages.push(`Your ${Items.getOrThrow(equippedPet).name} grew into a ${Items.getOrThrow(nextPet).name}!`);
+		if (equippedPet === itemID('Magnegg') && nextPet === itemID('Magnabbit')) {
+			messages.push(getMagneggHatchMessage());
+		} else {
+			messages.push(`Your Magnegg grew into a Magnabbi!!`);
+		}
 	}
-};
+}
 
 export const growablePetsCL = growablePets
 	.flatMap(i => i.stages)
