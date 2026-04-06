@@ -35,7 +35,7 @@ export const easterCommand = defineCommand({
 			return `You don't own ${cost}.`;
 		}
 
-		const { loot, magneggs } = rollEasterTurnInLoot(quantity);
+		const { loot, magneggs } = rollEasterTurnInLoot(user, quantity);
 		await user.transactItems({
 			itemsToRemove: cost,
 			itemsToAdd: loot,

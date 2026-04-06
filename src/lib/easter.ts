@@ -1,8 +1,12 @@
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import type { MTame } from '@/lib/bso/structures/MTame.js';
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, resolveItems } from 'oldschooljs';
+
+export const MAGNEGG_STARTING_RATE = 50;
+export const MAGNEGG_SCALING_RATE = 1.2;
 
 const easterClues = new LootTable()
 	.tertiary(20, 'Clue scroll (medium)')
@@ -11,7 +15,16 @@ const easterClues = new LootTable()
 	.tertiary(75, 'Clue scroll (master)')
 	.tertiary(100, 'Clue scroll (grandmaster)');
 
-const easterPets = resolveItems(['Hoppy', 'Eggy', 'Tasty', 'Waddles', 'Leia']);
+const easterPets = resolveItems([
+	'Hoppy',
+	'Eggy',
+	'Tasty',
+	'Waddles',
+	'Leia',
+	'Magnegg',
+	'Magnabbit',
+	'Radiant Magnabbit'
+]);
 const passiveEasterLootTable = new LootTable()
 	.add('Carrot')
 	.add('Egg')
@@ -180,7 +193,7 @@ export function rollPassiveEasterLoot(
 	if (minutes < 1) return null;
 
 	let wabbitEggChance = 40;
-	let magneggChance = 50;
+	let magneggChance = clAdjustedDroprate(user, 'Magnegg', MAGNEGG_STARTING_RATE, MAGNEGG_SCALING_RATE);
 	const isTameTrip = tame === true;
 
 	if (isTameTrip) {
@@ -219,7 +232,7 @@ export function rollPassiveEasterLoot(
 	};
 }
 
-export function rollEasterTurnInLoot(quantity: number) {
+export function rollEasterTurnInLoot(user: MUser, quantity: number) {
 	const loot = new Bank();
 
 	for (let i = 0; i < quantity; i++) {
@@ -227,7 +240,8 @@ export function rollEasterTurnInLoot(quantity: number) {
 		if (roll(35)) {
 			loot.add(easterTurnInCosmeticTable.roll());
 		}
-		if (roll(50)) {
+		const magneggRate = clAdjustedDroprate(user, 'Magnegg', MAGNEGG_STARTING_RATE, MAGNEGG_SCALING_RATE);
+		if (roll(magneggRate)) {
 			loot.add('Magnegg');
 		}
 	}

@@ -254,8 +254,9 @@ class BankImageTask {
 		this.bananaEffect = await loadImage(await fs.readFile('./src/lib/resources/images/banana-glow.png'));
 		this.whiteEffect = await loadImage(await fs.readFile('./src/lib/resources/images/white-glow.png'));
 		const coolItemEffects: [number, Image][] = [
-			[itemID('Dragon egg'), this.redEffect!],
+			[itemID('Radiant Magnabbit'), this.redEffect!],
 			[itemID('Monkey egg'), this.bananaEffect!],
+			[itemID('Dragon egg'), this.redEffect!],
 			[itemID('Wubbles'), this.whiteEffect!]
 		];
 		for (const [itemId, itemEffect] of coolItemEffects) {

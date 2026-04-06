@@ -53,7 +53,11 @@ export async function handleFinish({
 	if (easterLoot) {
 		lootToAdd.add(easterLoot.loot);
 		results.push(getPassiveEasterTripMessage(easterLoot));
-		if (easterLoot.petBoost) results.push('\n\n🥚 Yummy! I guess it was worth it after all!');
+		if (easterLoot.petBoost) {
+			results.push('\n\n🥚 Yummy! I guess it was worth it after all!');
+		} else {
+			results.push('\n\n🍫🥚 Hmm... Im hungry');
+		}
 	}
 
 	await prisma.tame.update({
