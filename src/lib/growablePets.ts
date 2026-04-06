@@ -1,6 +1,6 @@
 import { randFloat, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import {Bank, itemID, Items, resolveItems} from 'oldschooljs';
+import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { getMagneggHatchMessage } from '@/lib/easter.js';
 import type { ActivityTaskOptions } from '@/lib/types/minions.js';
@@ -106,7 +106,8 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 			if (nextPet === itemID('Magnabbit')) {
 				messages.push(getMagneggHatchMessage());
 			} else {
-				messages.push(`\n\n🐇.... You might want to pinch yourself because **YOU JUST GOT A SHINY MAGNA!!**`);			}
+				messages.push(`\n\n🐇.... You might want to pinch yourself because **YOU JUST GOT A SHINY MAGNA!!**`);
+			}
 		}
 	}
 }

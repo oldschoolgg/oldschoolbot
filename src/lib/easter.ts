@@ -1,12 +1,23 @@
-import { randArrItem, roll } from '@oldschoolgg/rng';
-import { Time } from '@oldschoolgg/toolkit';
-import {Bank, LootTable, resolveItems} from 'oldschooljs';
-
 import type { MTame } from '@/lib/bso/structures/MTame.js';
 
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, LootTable, resolveItems } from 'oldschooljs';
+
+const easterClues = new LootTable()
+	.tertiary(20, 'Clue scroll (medium)')
+	.tertiary(30, 'Clue scroll (hard)')
+	.tertiary(50, 'Clue scroll (elite)')
+	.tertiary(75, 'Clue scroll (master)')
+	.tertiary(100, 'Clue scroll (grandmaster)');
 
 const easterPets = resolveItems(['Hoppy', 'Eggy', 'Tasty', 'Waddles', 'Leia']);
-const passiveEasterLootTable = new LootTable().add('Carrot').add('Egg').add('Easter egg').add('Chocolate bar');
+const passiveEasterLootTable = new LootTable()
+	.add('Carrot')
+	.add('Egg')
+	.add('Easter egg')
+	.add('Chocolate bar')
+	.tertiary(3, easterClues);
 
 const easterTurnInLootTable = new LootTable()
 	.add('Carrot')
@@ -15,31 +26,27 @@ const easterTurnInLootTable = new LootTable()
 	.add('Chocolate bar')
 	.add('Easter basket')
 	.add('Bunny ears')
-	.add('Giant easter egg');
+	.add('Giant easter egg')
+	.tertiary(5, easterClues);
 
-const easterTurnInCosmeticTable = new LootTable();
-for (const item of [
-	...Array.from({ length: 14 }, (_, i) => `Easter egg (${i + 1})`),
-	'Easter cape (1)',
-	'Easter cape (2)',
-	'Monkey egg (Edible)',
-	'Easter Bunny hat',
-	'Easter Bunny top',
-	'Easter Bunny legs',
-	'Easter Bunny gloves',
-	'Easter Bunny boots',
-	'Easter Bunny tail',
-	'Elven bunny ears',
-	'Dragon bunny ears',
-	'Tzhaar bunny ears',
-	'Rune bunny ears',
-	'Vyrewatch bunny ears',
-	'Arceuus bunny ears',
-	'Waddles',
-	'Tasty'
-]) {
-	easterTurnInCosmeticTable.add(item);
-}
+const easterTurnInCosmeticTable = new LootTable()
+	.add('Easter egg')
+	.add('Rubber chicken')
+	.add('Bunny ears')
+	.add('Easter basket')
+	.add('Easter ring')
+	.add('Chicken head')
+	.add('Chicken wings')
+	.add('Chicken legs')
+	.add('Chicken feet')
+	.add('Eggshell platebody')
+	.add('Eggshell platelegs')
+	.add('Crate ring')
+	.add('Bunny top')
+	.add('Bunny legs')
+	.add('Bunny paws')
+	.add('Flower crown')
+	.every(easterClues);
 
 export interface PassiveEasterLootResult {
 	loot: Bank;
@@ -116,9 +123,7 @@ function getMeaninglessRareFlavorText(chance: number) {
 }
 
 export function getPassiveEasterTripMessage(result: PassiveEasterLootResult) {
-	const finds = [
-		result.loot.toString()
-	];
+	const finds = [result.loot.toString()];
 	if (result.magneggs > 0) {
 		finds.push('😱⁉️😱 Wait.... Is that.... a MAGNEGG?!?!?!');
 	}
@@ -140,15 +145,7 @@ export function getPassiveEasterTripMessage(result: PassiveEasterLootResult) {
 	return parts.join(' ');
 }
 
-export function getEasterTurnInMessage({
-	cost,
-	loot,
-	magneggs
-}: {
-	cost: Bank;
-	loot: Bank;
-	magneggs: number;
-}) {
+export function getEasterTurnInMessage({ cost, loot, magneggs }: { cost: Bank; loot: Bank; magneggs: number }) {
 	const parts = [randArrItem(easterTurnInFlavorText), `You turned in ${cost} and received ${loot}.`];
 	parts.push(magneggs > 0 ? getMagneggFlavorText(magneggs) : randArrItem(easterTurnInMissFlavorText));
 	const rareLine = getMeaninglessRareFlavorText(magneggs > 0 ? 15 : 1500);
@@ -191,8 +188,8 @@ export function rollPassiveEasterLoot(
 
 	if (hasDiscountSource) {
 		petBoost = true;
-		wabbitEggChance = Math.ceil(wabbitEggChance * .75);
-		magneggChance = Math.ceil(magneggChance * .75);
+		wabbitEggChance = Math.ceil(wabbitEggChance * 0.75);
+		magneggChance = Math.ceil(magneggChance * 0.75);
 	}
 
 	const loot = new Bank();
