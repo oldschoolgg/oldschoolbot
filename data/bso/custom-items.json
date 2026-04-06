@@ -44778,6 +44778,22 @@
 		}
 	},
 	{
+		"id": 74007,
+		"name": "The whale card",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1000000,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true
+		}
+	},
+	{
 		"id": 50475,
 		"name": "Theatrical earrings (blue)",
 		"tradeable": true,
@@ -50665,6 +50681,28 @@
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
 		}
+	},
+	{
+		"id": 74008,
+		"name": "Wubbles",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true,
+			"isSuperUntradeable": true
+		},
+		"price": 1000000
+	},
+	{
+		"id": 74009,
+		"name": "Wubufu",
+		"members": true,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true,
+			"isDiscontinued": true,
+			"isSuperUntradeable": true
+		},
+		"price": 1000000
 	},
 	{
 		"id": 50491,

@@ -10996,7 +10996,9 @@
 					"Smokey",
 					"Snappy the Turtle",
 					"Tasty",
-					"Waddles"
+					"Waddles",
+					"Wubbles",
+					"Wubufu"
 				],
 				"counts": false
 			},
@@ -11311,7 +11313,14 @@
 				]
 			},
 			"miscelleanous_(discontinued)": {
-				"items": ["Black swan", "Golden cape", "Golden cape shard", "Golden partyhat", "Golden shard"],
+				"items": [
+					"Black swan",
+					"Golden cape",
+					"Golden cape shard",
+					"Golden partyhat",
+					"Golden shard",
+					"The whale card"
+				],
 				"counts": false
 			},
 			"supply_crate_(s_1_)": {

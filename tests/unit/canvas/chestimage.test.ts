@@ -11,6 +11,7 @@ function mockChestImageUser(name: string) {
 		rawUsername: name,
 		user: { bankBackground: 1 },
 		iconPackId: undefined,
+		bitfield: [],
 		paintedItems: new Map()
 	} as any as MUserClass;
 }
