@@ -1,8 +1,10 @@
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, LootTable } from 'oldschooljs';
+import {Bank, LootTable, resolveItems} from 'oldschooljs';
 
 
+
+const easterPets = resolveItems(['Hoppy', 'Eggy', 'Tasty', 'Waddles', 'Leia']);
 const passiveEasterLootTable = new LootTable().add('Carrot').add('Egg').add('Easter egg').add('Chocolate bar');
 
 const easterTurnInLootTable = new LootTable()
@@ -158,18 +160,28 @@ export function getMagneggHatchMessage() {
 	return randArrItem(magneggHatchFlavorText);
 }
 
-export function rollPassiveEasterLoot(duration: number): PassiveEasterLootResult | null {
+export function rollPassiveEasterLoot(user: MUser, duration: number): PassiveEasterLootResult | null {
 	const minutes = Math.floor(duration / Time.Minute);
 	if (minutes < 1) return null;
+
+	let wabbitEggChance = 40;
+	let magneggChance = 50;
+
+	const usingEasterPet = user.equippedPet && easterPets.includes(user.equippedPet.id);
+
+	if (usingEasterPet) {
+		wabbitEggChance = Math.ceil(wabbitEggChance * .75);
+		magneggChance = Math.ceil(magneggChance * .75);
+	}
 
 	const loot = new Bank();
 
 	for (let i = 0; i < minutes; i++) {
-		if (!roll(40)) continue;
+		if (!roll(wabbitEggChance)) continue;
 		loot.add('Wabbit egg');
 
 		loot.add(passiveEasterLootTable.roll());
-		if (roll(50)) {
+		if (roll(magneggChance)) {
 			loot.add('Magnegg');
 		}
 	}

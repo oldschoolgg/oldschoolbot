@@ -453,8 +453,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Passive Easter',
-		fn: async ({ data, messages }) => {
-			const easterLoot = rollPassiveEasterLoot(data.duration);
+		fn: async ({ data, user, messages }) => {
+			const easterLoot = rollPassiveEasterLoot(user, data.duration);
 			if (!easterLoot) return;
 
 			messages.push(getPassiveEasterTripMessage(easterLoot));
