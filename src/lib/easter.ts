@@ -2,6 +2,7 @@ import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import {Bank, LootTable, resolveItems} from 'oldschooljs';
 
+import type { MTame } from '@/lib/bso/structures/MTame.js';
 
 
 const easterPets = resolveItems(['Hoppy', 'Eggy', 'Tasty', 'Waddles', 'Leia']);
@@ -44,6 +45,7 @@ export interface PassiveEasterLootResult {
 	loot: Bank;
 	magneggs: number;
 	wabbitEggs: number;
+	petBoost?: boolean;
 }
 
 const passiveEasterFlavorText = [
@@ -160,16 +162,35 @@ export function getMagneggHatchMessage() {
 	return randArrItem(magneggHatchFlavorText);
 }
 
-export function rollPassiveEasterLoot(user: MUser, duration: number): PassiveEasterLootResult | null {
+function tameHasFedEasterPet(activeTame?: MTame | null) {
+	if (!activeTame) return false;
+	return easterPets.some(petID => activeTame.hasBeenFed(petID));
+}
+
+export function rollPassiveEasterLoot(
+	user: MUser,
+	duration: number,
+	tame?: boolean | undefined | null,
+	activeTame?: MTame | null
+): PassiveEasterLootResult | null {
+	let petBoost = false;
 	const minutes = Math.floor(duration / Time.Minute);
 	if (minutes < 1) return null;
 
 	let wabbitEggChance = 40;
 	let magneggChance = 50;
+	const isTameTrip = tame === true;
+
+	if (isTameTrip) {
+		wabbitEggChance = Math.ceil(wabbitEggChance * 2);
+		magneggChance = Math.ceil(magneggChance * 1.5);
+	}
 
 	const usingEasterPet = user.equippedPet && easterPets.includes(user.equippedPet.id);
+	const hasDiscountSource = isTameTrip ? tameHasFedEasterPet(activeTame) : usingEasterPet;
 
-	if (usingEasterPet) {
+	if (hasDiscountSource) {
+		petBoost = true;
 		wabbitEggChance = Math.ceil(wabbitEggChance * .75);
 		magneggChance = Math.ceil(magneggChance * .75);
 	}
@@ -191,7 +212,8 @@ export function rollPassiveEasterLoot(user: MUser, duration: number): PassiveEas
 	return {
 		loot,
 		magneggs: loot.amount('Magnegg'),
-		wabbitEggs: loot.amount('Wabbit eggs')
+		wabbitEggs: loot.amount('Wabbit eggs'),
+		petBoost
 	};
 }
 

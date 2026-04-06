@@ -209,7 +209,7 @@ export class MTame {
 	}
 
 	async update(data: Prisma.TameUncheckedUpdateInput) {
-		Logging.logDebug(`Updating Tame[${this.id}] with data: ${JSON.stringify(data)}`);
+		// Logging.logDebug(`Updating Tame[${this.id}] with data: ${JSON.stringify(data)}`);
 		const newTame = await prisma.tame.update({
 			where: { id: this.id },
 			data
