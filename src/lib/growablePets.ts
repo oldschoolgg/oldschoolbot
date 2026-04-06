@@ -102,10 +102,12 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 				minion_equippedPet: nextPet
 			}
 		});
-		if (equippedPet === itemID('Magnegg') && nextPet === itemID('Magnabbit')) {
-			messages.push(getMagneggHatchMessage());
-		} else {
-			messages.push(`Your Magnegg grew into a Magnabbi!!`);
+		if (equippedPet === itemID('Magnegg')) {
+			if (nextPet === itemID('Magnabbit')) {
+				messages.push(getMagneggHatchMessage());
+			} else {
+				messages.push(`You might want to pinch yourself because YOU JUST GOT A SHINY MAGNA!!`);
+			}
 		}
 	}
 }
