@@ -14400,7 +14400,53 @@ setCustomItem(
 	},
 	1_000_000
 );
+setCustomItem(
+	74_010,
+	'Wabbit eggs',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	74_011,
+	'Magnegg',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	73_969,
+	'Shiny Magnabbit',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
 
+setCustomItem(
+	74_012,
+	'Magnabbit',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',

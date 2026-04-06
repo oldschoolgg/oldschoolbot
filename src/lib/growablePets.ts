@@ -2,8 +2,6 @@ import { Time } from '@oldschoolgg/toolkit';
 import { roll } from 'node-rng';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
-import type { TripFinishEffect } from '@/lib/util/handleTripFinish.js';
-
 export const kittens = resolveItems([
 	'Grey and black kitten',
 	'White kitten',
@@ -37,6 +35,10 @@ export const growablePets: GrowablePet[] = [
 	{
 		growthRate: (Time.Hour * 5) / Time.Minute,
 		stages: resolveItems(['Magic kitten', 'Magic cat'])
+	},
+	{
+		growthRate: (Time.Hour * 6) / Time.Minute,
+		stages: [EITEMS.Magnegg, EITEMS.Magnabbit]
 	},
 	{
 		growthRate: (Time.Hour * 2) / Time.Minute,
