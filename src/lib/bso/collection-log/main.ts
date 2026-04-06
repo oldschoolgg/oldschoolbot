@@ -107,7 +107,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Tasty',
 	'Night-mare',
 	'Ember',
-	'Wubbles'
+	'Wubbles',
+	'Wubufu'
 ]);
 
 export const kingGoldemarCL = resolveItems([

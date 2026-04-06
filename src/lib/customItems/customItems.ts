@@ -14381,7 +14381,21 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isDiscontinued: true
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	74_009,
+	'Wubufu',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
 		}
 	},
 	1_000_000
