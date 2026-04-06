@@ -147,7 +147,12 @@ export function getPassiveEasterTripMessage(result: PassiveEasterLootResult) {
 
 export function getEasterTurnInMessage({ cost, loot, magneggs }: { cost: Bank; loot: Bank; magneggs: number }) {
 	const parts = [randArrItem(easterTurnInFlavorText), `You turned in ${cost} and received ${loot}.`];
-	parts.push(magneggs > 0 ? getMagneggFlavorText(magneggs) : randArrItem(easterTurnInMissFlavorText));
+	if (magneggs > 0) {
+		parts.push(`\n\n😱⁉️😱 Wait.... Is that.... a MAGNEGG?!?!?!`);
+		parts.push(getMagneggFlavorText(magneggs));
+	} else {
+		parts.push(randArrItem(easterTurnInMissFlavorText));
+	}
 	const rareLine = getMeaninglessRareFlavorText(magneggs > 0 ? 15 : 1500);
 	if (rareLine) {
 		parts.push(rareLine);

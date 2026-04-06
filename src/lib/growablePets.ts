@@ -56,7 +56,7 @@ export const growablePets: GrowablePet[] = [
 		stages: resolveItems(['Penguin egg', 'Skip'])
 	},
 	{
-		growthRate: (Time.Hour * 6) / Time.Minute,
+		growthRate: (Time.Hour * 12) / Time.Minute,
 		stages: resolveItems(['Magnegg', 'Magnabbit']),
 		shinyChance: 50,
 		shinyVersion: Items.getOrThrow('Radiant Magnabbit').id
