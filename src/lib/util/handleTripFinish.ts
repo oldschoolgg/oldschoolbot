@@ -457,6 +457,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const easterLoot = rollPassiveEasterLoot(user, data.duration);
 			if (!easterLoot) return;
 
+			messages.push('\n\n**🐰!!...** ');
 			messages.push(getPassiveEasterTripMessage(easterLoot));
 			return {
 				itemsToAddWithCL: easterLoot.loot

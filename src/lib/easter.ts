@@ -178,7 +178,7 @@ export function rollPassiveEasterLoot(user: MUser, duration: number): PassiveEas
 
 	for (let i = 0; i < minutes; i++) {
 		if (!roll(wabbitEggChance)) continue;
-		loot.add('Wabbit egg');
+		loot.add('Wabbit eggs');
 
 		loot.add(passiveEasterLootTable.roll());
 		if (roll(magneggChance)) {
@@ -186,12 +186,12 @@ export function rollPassiveEasterLoot(user: MUser, duration: number): PassiveEas
 		}
 	}
 
-	if (loot.amount('Wabbit egg') === 0) return null;
+	if (loot.amount('Wabbit eggs') === 0) return null;
 
 	return {
 		loot,
 		magneggs: loot.amount('Magnegg'),
-		wabbitEggs: loot.amount('Wabbit egg')
+		wabbitEggs: loot.amount('Wabbit eggs')
 	};
 }
 
