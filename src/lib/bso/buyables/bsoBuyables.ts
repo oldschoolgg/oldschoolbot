@@ -160,6 +160,7 @@ export const bsoBuyables: Buyable[] = [
 	},
 	{
 		name: 'The whale card (fake)',
+		ironmanPrice: 100_000_000,
 		gpCost: 1_000_000_000
 	},
 	{
