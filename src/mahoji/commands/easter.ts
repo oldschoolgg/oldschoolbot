@@ -33,8 +33,8 @@ function getDrynessRemark({
 	const spoon = '\u{1F944}';
 	const eggAhead = actualWabbitEggs > boostedExpectedWabbitEggs;
 	const magneggAhead = actualMagneggs > boostedExpectedMagneggs;
-	const eggFarBehind = boostedExpectedWabbitEggs > 0 && actualWabbitEggs < boostedExpectedWabbitEggs * 0.65;
-	const magneggFarBehind = boostedExpectedMagneggs > 0 && actualMagneggs < boostedExpectedMagneggs * 0.65;
+	const eggFarBehind = boostedExpectedWabbitEggs >= 1 && actualWabbitEggs < boostedExpectedWabbitEggs * 0.65;
+	const magneggFarBehind = boostedExpectedMagneggs >= 1 && actualMagneggs < boostedExpectedMagneggs * 0.65;
 
 	if (eggAhead && magneggAhead) {
 		return `${spoon} Your ${label.toLowerCase()} is disgustingly spooned. Save some Easter luck for everyone else.`;
