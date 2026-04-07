@@ -13,7 +13,6 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
-import { addItemBanks } from '@/lib/util.js';
 import type { SlayerContext } from '@/tasks/minions/monsterActivity.js';
 
 export type UserStatsNeededForMidPvmEffects = {
@@ -116,7 +115,6 @@ export function slayerMasksHelms({
 	slayerUnlocks,
 	updateBank,
 	gearBank,
-	userStats,
 	messages
 }: MidPVMEffectArgs) {
 	if (
@@ -135,8 +133,6 @@ export function slayerMasksHelms({
 		gearBank.hasEquippedOrInBank([maskHelmForThisMonster.mask.id, maskHelmForThisMonster.helm.id])
 			? maskHelmForThisMonster
 			: null;
-	const oldMaskScores = userStats.onTaskWithMaskMonsterScores as ItemBank;
-	const newMaskScores = addItemBanks([bankToAdd, oldMaskScores]);
 	if (maskHelmForThisMonster && !gearBank.hasEquippedOrInBank(maskHelmForThisMonster.mask.id)) {
 		for (let i = 0; i < slayerContext.effectiveSlayed; i++) {
 			if (roll(maskHelmForThisMonster.maskDropRate)) {
@@ -147,6 +143,6 @@ export function slayerMasksHelms({
 		}
 	}
 
-	updateBank.userStats.on_task_monster_scores = addItemBanks([userStats.onTaskMonsterScores as ItemBank, bankToAdd]);
-	updateBank.userStats.on_task_with_mask_monster_scores = matchingMaskOrHelm ? newMaskScores : undefined;
+	updateBank.userStatsSafeBankUpdates.on_task_monster_scores = bankToAdd;
+	updateBank.userStatsSafeBankUpdates.on_task_with_mask_monster_scores = matchingMaskOrHelm ? bankToAdd : undefined;
 }

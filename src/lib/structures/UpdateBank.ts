@@ -30,7 +30,9 @@ export class UpdateBank {
 	// Things changed
 	public gearChanges: GearWithSetupType[] = [];
 	public userStats: Omit<Prisma.UserStatsUpdateInput, 'user_id'> = {};
+	// Here you can put a Bank that will add to your existing bank of said name, as already used
 	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
+	// Here you can put an ItemBank that will add to the existing stats, instead of replacing it with userStats
 	public userStatsSafeBankUpdates: Partial<Record<JsonKeys<UserStats>, ItemBank>> = {};
 	public userUpdates: SafeUserUpdateInput = {};
 
