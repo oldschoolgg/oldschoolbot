@@ -183,17 +183,20 @@ function tameHasFedEasterPet(activeTame?: MTame | null) {
 }
 
 export function rollPassiveEasterLoot(
-	user: MUser,
+	user: boolean | MUser,
 	duration: number,
 	tame?: boolean | undefined | null,
-	activeTame?: MTame | null
+	activeTame?: MTame | boolean | null
 ): PassiveEasterLootResult | null {
 	let petBoost = false;
 	const minutes = Math.floor(duration / Time.Minute);
 	if (minutes < 1) return null;
 
 	let wabbitEggChance = 40;
-	let magneggChance = clAdjustedDroprate(user, 'Magnegg', MAGNEGG_STARTING_RATE, MAGNEGG_SCALING_RATE);
+	let magneggChance =
+		typeof user === 'boolean'
+			? MAGNEGG_STARTING_RATE
+			: clAdjustedDroprate(user, 'Magnegg', MAGNEGG_STARTING_RATE, MAGNEGG_SCALING_RATE);
 	const isTameTrip = tame === true;
 
 	if (isTameTrip) {
@@ -201,8 +204,10 @@ export function rollPassiveEasterLoot(
 		magneggChance = Math.ceil(magneggChance * 1.5);
 	}
 
-	const usingEasterPet = user.equippedPet && easterPets.includes(user.equippedPet.id);
-	const hasDiscountSource = isTameTrip ? tameHasFedEasterPet(activeTame) : usingEasterPet;
+	const usingEasterPet =
+		typeof user === 'boolean' ? user : user.equippedPet && easterPets.includes(user.equippedPet.id);
+	const hasDiscountSource =
+		typeof activeTame === 'boolean' ? activeTame : isTameTrip ? tameHasFedEasterPet(activeTame) : usingEasterPet;
 
 	if (hasDiscountSource) {
 		petBoost = true;
