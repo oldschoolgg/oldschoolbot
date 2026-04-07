@@ -4,7 +4,8 @@ import { Bank } from 'oldschooljs';
 
 import { InteractionID } from '@/lib/InteractionID.js';
 
-export const whaleTradeOfferDuration = Time.Minute * 5;
+export const DEGEN_TIMEOUT = Time.Minute * 5;
+export const DEGEN_ROLL_CHANCE = 10;
 
 const initialOfferLines = [
 	`🐋 A degenerate gambler skids to a halt. "Ooh, I see you have a whale card. Care to trade for my amazing, wonderful, does-everything whale pet?"`,
@@ -93,8 +94,8 @@ export function getWhaleTradeInitialOffer() {
 }
 
 export function getWhaleTradePitch() {
-	let msg = randArrItem(convincingLines);
-	return `${msg}\n\nAre you sure you want to give this guy your Whale card?`
+	const msg = randArrItem(convincingLines);
+	return `${msg}\n\nAre you sure you want to give this guy your Whale card?`;
 }
 
 export function getWhaleTradeDeclineLine() {
@@ -110,8 +111,7 @@ export function rollWhaleTradeResult(user: MUser) {
 	if (!user.cl.has('Wubbles')) {
 		if (user.cl.amount('The whale card') === 1) {
 			roll = 100;
-		} else if (
-			user.bank.amount('The whale card') <= 1){
+		} else if (user.bank.amount('The whale card') <= 1) {
 			roll = 100;
 		} else {
 			roll *= 2;

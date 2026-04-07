@@ -41,7 +41,7 @@ import {
 	makeWhaleTradeOfferButton
 } from '@/lib/util/interactions.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
-import { getWhaleTradeInitialOffer, whaleTradeOfferDuration } from '@/lib/whaleCardTrade.js';
+import { DEGEN_ROLL_CHANCE, DEGEN_TIMEOUT, getWhaleTradeInitialOffer } from '@/lib/whaleCardTrade.js';
 import { alching } from '@/mahoji/commands/laps.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
@@ -459,11 +459,13 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ user, components }) => {
 			const whaleCards = user.bank.amount('The whale card');
 			if (whaleCards < 1) return;
-			const expiresAt = Date.now() + whaleTradeOfferDuration;
-			components.push(makeWhaleTradeOfferButton(user.id, expiresAt));
-			return {
-				contentAppendix: `\n\n${getWhaleTradeInitialOffer()}`
-			};
+			if (roll(DEGEN_ROLL_CHANCE)) {
+				const expiresAt = Date.now() + DEGEN_TIMEOUT;
+				components.push(makeWhaleTradeOfferButton(user.id, expiresAt));
+				return {
+					contentAppendix: `\n\n${getWhaleTradeInitialOffer()}`
+				};
+			}
 		}
 	},
 	{
