@@ -93,9 +93,9 @@ export function getWhaleTradeInitialOffer() {
 	return randArrItem(initialOfferLines);
 }
 
-export function getWhaleTradePitch() {
+export function getWhaleTradePitch(fake?: boolean) {
 	const msg = randArrItem(convincingLines);
-	return `${msg}\n\nAre you sure you want to give this guy your Whale card?`;
+	return `${msg}\n\nAre you sure you want to give this guy your Whale card${fake ? ` *(He doesn't seem to know it's fake...)*` : ''}`;
 }
 
 export function getWhaleTradeDeclineLine() {
@@ -106,15 +106,17 @@ export function getWhaleTradeMissingCardLine() {
 	return randArrItem(missingCardLines);
 }
 
-export function rollWhaleTradeResult(user: MUser) {
+export function rollWhaleTradeResult(user: MUser, fake?: boolean) {
 	let roll = randInt(1, 100);
-	if (!user.cl.has('Wubbles')) {
-		if (user.cl.amount('The whale card') === 1) {
-			roll = 100;
-		} else if (user.bank.amount('The whale card') <= 1) {
-			roll = 100;
-		} else {
-			roll *= 2;
+	if (!fake) {
+		if (!user.cl.has('Wubbles')) {
+			if (user.cl.amount('The whale card') === 1) {
+				roll = 100;
+			} else if (user.bank.amount('The whale card') <= 1) {
+				roll = 100;
+			} else {
+				roll *= 2;
+			}
 		}
 	}
 

@@ -159,6 +159,10 @@ export const bsoBuyables: Buyable[] = [
 		itemCost: new Bank().add('Festive wrapping paper', 10)
 	},
 	{
+		name: 'The whale card (fake)',
+		gpCost: 1_000_000_000
+	},
+	{
 		name: 'Master quest cape',
 		outputItems: new Bank({
 			'Master quest cape': 1

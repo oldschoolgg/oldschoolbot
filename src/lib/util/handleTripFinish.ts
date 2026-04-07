@@ -458,7 +458,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Whale Card Trade',
 		fn: async ({ user, components }) => {
 			const whaleCards = user.bank.amount('The whale card');
-			if (whaleCards < 1) return;
+			const fakeCards = user.bank.amount('The whale card (fake)');
+			if (fakeCards < 1 && whaleCards < 1) return;
 			if (roll(DEGEN_ROLL_CHANCE)) {
 				const expiresAt = Date.now() + DEGEN_TIMEOUT;
 				components.push(makeWhaleTradeOfferButton(user.id, expiresAt));

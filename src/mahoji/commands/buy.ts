@@ -129,6 +129,13 @@ export const buyCommand = defineCommand({
 			}
 		}
 
+		if (stringMatches(buyable.name,Items.getOrThrow('The whale card (fake)').name)) {
+			quantity = 1;
+			if (user.cl.amount('The whale card (fake)') >= 3) {
+				return 'You can only buy 3 imitation Whale cards!';
+			}
+		}
+
 		let gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		if (buyable.name === Items.getOrThrow('Festive present').name) {

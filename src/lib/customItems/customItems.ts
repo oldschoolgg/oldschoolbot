@@ -14452,6 +14452,20 @@ setCustomItem(
 	},
 	1_000_000
 );
+setCustomItem(
+	74_013,
+	'The whale card (fake)',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			isSecret: true
+		}
+	},
+	1_000_000
+);
+
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',
