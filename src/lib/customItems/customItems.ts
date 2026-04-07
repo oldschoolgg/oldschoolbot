@@ -14419,8 +14419,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSecret: true,
-			isSuperUntradeable: true
+			isSecret: true
 		}
 	},
 	1_000_000
@@ -14432,8 +14431,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSecret: true,
-			isSuperUntradeable: true
+			isSecret: true
 		}
 	},
 	1_000_000
@@ -14446,8 +14444,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			isSecret: true
+			isSuperUntradeable: true
 		}
 	},
 	1_000_000
@@ -14459,8 +14456,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			isSecret: true
+			isSuperUntradeable: true
 		}
 	},
 	1_000_000
