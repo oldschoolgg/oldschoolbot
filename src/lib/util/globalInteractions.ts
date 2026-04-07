@@ -258,14 +258,12 @@ async function handleWhaleTradeButton(user: MUser, id: string, interaction: MInt
 	}
 	const fake = user.bank.has('The whale card (fake)');
 	const hasReal = user.bank.has('The whale card');
-	const options = [
-		{ label: 'No Thanks', id: 'decline' }
-	];
+	const options = [{ label: 'No Thanks', id: 'decline' }];
 	if (fake) {
 		options.unshift({ label: 'Trade (fake)', id: 'trade_fake' });
 	}
 	if (hasReal) {
-		options.unshift({label: 'Trade', id: 'trade'});
+		options.unshift({ label: 'Trade', id: 'trade' });
 	}
 
 	const choice = await globalClient.pickStringWithButtons({
@@ -285,7 +283,7 @@ async function handleWhaleTradeButton(user: MUser, id: string, interaction: MInt
 	const card = choice.choice.id === 'trade_fake' ? 'The whale card (fake)' : 'The whale card';
 
 	await user.sync();
-	if (!user.bank.has(card) ) {
+	if (!user.bank.has(card)) {
 		await interaction.reply({
 			content: getWhaleTradeMissingCardLine(),
 			components: []
@@ -293,10 +291,9 @@ async function handleWhaleTradeButton(user: MUser, id: string, interaction: MInt
 		return SpecialResponse.RespondedManually;
 	}
 
-	const costBank = new Bank()
+	const costBank = new Bank();
 	costBank.add(card);
 	const result = rollWhaleTradeResult(user, costBank.has('The whale card (fake)'));
-
 
 	const lootBank = result.loot.clone();
 	if (result.loot.length > 0) {
