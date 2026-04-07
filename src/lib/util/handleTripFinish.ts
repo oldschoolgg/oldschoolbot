@@ -456,16 +456,23 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Whale Card Trade',
-		fn: async ({ user, components }) => {
+		fn: async ({ user, data, components }) => {
+			if (data.duration < Time.Minute) return;
+
 			const whaleCards = user.bank.amount('The whale card');
 			const fakeCards = user.bank.amount('The whale card (fake)');
 			if (fakeCards < 1 && whaleCards < 1) return;
-			if (roll(DEGEN_ROLL_CHANCE)) {
-				const expiresAt = Date.now() + DEGEN_TIMEOUT;
-				components.push(makeWhaleTradeOfferButton(user.id, expiresAt));
-				return {
-					contentAppendix: `\n\n${getWhaleTradeInitialOffer()}`
-				};
+
+			// Ceil is intentional
+			const minutes = Math.ceil(data.duration / Time.Minute);
+			for (let i = 0; i < minutes; i++) {
+				if (roll(DEGEN_ROLL_CHANCE)) {
+					const expiresAt = Date.now() + DEGEN_TIMEOUT;
+					components.push(makeWhaleTradeOfferButton(user.id, expiresAt));
+					return {
+						contentAppendix: `\n\n${getWhaleTradeInitialOffer()}`
+					};
+				}
 			}
 		}
 	},

@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { InteractionID } from '@/lib/InteractionID.js';
 
 export const DEGEN_TIMEOUT = Time.Minute * 30;
-export const DEGEN_ROLL_CHANCE = 5;
+export const DEGEN_ROLL_CHANCE = 4 * 30;
 
 const initialOfferLines = [
 	`🐋 A degenerate gambler skids to a halt. "Ooh, I see you have a whale card. Care to trade for my amazing, wonderful, does-everything whale pet?"`,
