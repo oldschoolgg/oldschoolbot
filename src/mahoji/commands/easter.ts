@@ -3,8 +3,8 @@ import { Bank } from 'oldschooljs';
 
 import {
 	EASTER_EVENT_START,
-	getExpectedPassiveEasterLoot,
 	getEasterTurnInMessage,
+	getExpectedPassiveEasterLoot,
 	type PassiveEasterLootResult,
 	rollEasterTurnInLoot,
 	rollPassiveEasterLoot
@@ -74,22 +74,23 @@ function buildDrynessSection({
 	const withBoost = getExpectedPassiveEasterLoot({ duration, tame, petBoost: true });
 	const boostText = tame ? 'with fed Easter pet boost' : 'with Easter pet boost';
 
-	return [
-		`**${label} Trips**`,
-		`Time in event: ${formatDuration(duration)}`,
-		`Full roll minutes: ${withoutBoost.minutes.toLocaleString()}`,
-		`Wabbit eggs expected: ${formatExpectedAmount(withoutBoost.expectedWabbitEggs)} without boost, ${formatExpectedAmount(withBoost.expectedWabbitEggs)} ${boostText}.`,
-		`Magneggs expected: ${formatExpectedAmount(withoutBoost.expectedMagneggs)} without boost, ${formatExpectedAmount(withBoost.expectedMagneggs)} ${boostText}.`,
-		`Actually obtained: ${actualWabbitEggs.toLocaleString()} Wabbit eggs, ${actualMagneggs.toLocaleString()} Magneggs.`,
-		`Rates used: Wabbit 1/${withoutBoost.wabbitEggChance} -> 1/${withBoost.wabbitEggChance}, Magnegg 1/${withoutBoost.magneggChance} -> 1/${withBoost.magneggChance}.`,
-		getDrynessRemark({
-			label,
-			actualWabbitEggs,
-			actualMagneggs,
-			boostedExpectedWabbitEggs: withBoost.expectedWabbitEggs,
-			boostedExpectedMagneggs: withBoost.expectedMagneggs
-		})
-	].join('\n');
+	return (
+		[
+			`**${label} Trips**`,
+			`**Time in event**: ${formatDuration(duration)}`,
+			`**Wabbit eggs expected**: ${formatExpectedAmount(withoutBoost.expectedWabbitEggs)} without boost, ${formatExpectedAmount(withBoost.expectedWabbitEggs)} ${boostText}.`,
+			`**Magneggs expected**: ${formatExpectedAmount(withoutBoost.expectedMagneggs)} without boost, ${formatExpectedAmount(withBoost.expectedMagneggs)} ${boostText}.`,
+			`**Actually obtained**: ${actualWabbitEggs.toLocaleString()} Wabbit eggs, ${actualMagneggs.toLocaleString()} Magneggs.`,
+			'\n\n*' +
+				getDrynessRemark({
+					label,
+					actualWabbitEggs,
+					actualMagneggs,
+					boostedExpectedWabbitEggs: withBoost.expectedWabbitEggs,
+					boostedExpectedMagneggs: withBoost.expectedMagneggs
+				})
+		].join('\n') + '*'
+	);
 }
 
 function getEasterTurnInQuantityChoices(
