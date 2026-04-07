@@ -20,6 +20,7 @@ import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
+import { easterPets } from '@/lib/easter.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
 import { type FlagMap, type Flags, OverrideStatus } from '@/lib/minions/types.js';
@@ -239,6 +240,9 @@ class BankImageTask {
 	public redEffect: Image | null = null;
 	public bananaEffect: Image | null = null;
 	public whiteEffect: Image | null = null;
+	public wubblesEffect: Image | null = null;
+	public easterEffect: Image | null = null;
+
 	public effects: Map<number, Image> = new Map();
 
 	async init() {
@@ -253,12 +257,18 @@ class BankImageTask {
 		this.redEffect = await loadImage(await fs.readFile('./src/lib/resources/images/red-glow.png'));
 		this.bananaEffect = await loadImage(await fs.readFile('./src/lib/resources/images/banana-glow.png'));
 		this.whiteEffect = await loadImage(await fs.readFile('./src/lib/resources/images/white-glow.png'));
+		this.easterEffect = await loadImage(await fs.readFile('./src/lib/resources/images/easter-glow.png'));
+		this.wubblesEffect = await loadImage(await fs.readFile('./src/lib/resources/images/wubbles-glow.png'));
 		const coolItemEffects: [number, Image][] = [
 			[itemID('Radiant Magnabbit'), this.redEffect!],
 			[itemID('Monkey egg'), this.bananaEffect!],
 			[itemID('Dragon egg'), this.redEffect!],
-			[itemID('Wubbles'), this.whiteEffect!]
+			[itemID('Wubbles'), this.wubblesEffect!]
 		];
+
+		for (const pet of easterPets) {
+			coolItemEffects.push([pet, this.easterEffect!]);
+		}
 		for (const [itemId, itemEffect] of coolItemEffects) {
 			this.effects.set(itemId, itemEffect);
 		}

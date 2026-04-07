@@ -15,7 +15,7 @@ const easterClues = new LootTable()
 	.tertiary(75, 'Clue scroll (master)')
 	.tertiary(100, 'Clue scroll (grandmaster)');
 
-const easterPets = resolveItems([
+export const easterPets = resolveItems([
 	'Hoppy',
 	'Eggy',
 	'Tasty',
