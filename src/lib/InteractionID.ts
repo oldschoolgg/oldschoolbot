@@ -66,8 +66,6 @@ export const InteractionID = {
 		SpawnLamp: 'SPAWN_LAMP',
 		SendItemContract: 'ITEM_CONTRACT_SEND',
 		DoFishingContest: 'DO_FISHING_CONTEST',
-		WhaleTradeApproach: 'WHALE_TRADE_APPROACH',
-		WhaleTradeAgree: 'WHALE_TRADE_AGREE',
-		WhaleTradeDecline: 'WHALE_TRADE_DECLINE'
+		WhaleTrade: 'WHALE_TRADE'
 	}
 } as const;

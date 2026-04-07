@@ -144,23 +144,8 @@ export function makeFishingContestButton() {
 
 export function makeWhaleTradeOfferButton(userID: string, expiresAt: number) {
 	return new ButtonBuilder()
-		.setCustomId(buildWhaleTradeInteractionID('approach', userID, expiresAt))
+		.setCustomId(buildWhaleTradeInteractionID(userID, expiresAt))
 		.setLabel('Approach Degenerate')
 		.setEmoji({ name: '🐋' })
 		.setStyle(ButtonStyle.Secondary);
-}
-
-export function makeWhaleTradeDecisionButtons(userID: string, expiresAt: number) {
-	return [
-		new ButtonBuilder()
-			.setCustomId(buildWhaleTradeInteractionID('agree', userID, expiresAt))
-			.setLabel('Trade')
-			.setEmoji({ name: '🤝' })
-			.setStyle(ButtonStyle.Success),
-		new ButtonBuilder()
-			.setCustomId(buildWhaleTradeInteractionID('decline', userID, expiresAt))
-			.setLabel('No Thanks')
-			.setEmoji({ name: '❌' })
-			.setStyle(ButtonStyle.Secondary)
-	];
 }
