@@ -753,7 +753,6 @@ export async function handleTripFinish(
 		message.addContent(contentAppendices.join(''));
 	}
 
-	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message.addContent(`\n**Messages:** ${messages.join(', ')}`);
 	}

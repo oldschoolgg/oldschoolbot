@@ -14455,7 +14455,7 @@ setCustomItem(
 setCustomItem(
 	74_013,
 	'The whale card (fake)',
-	'Herbi',
+	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,

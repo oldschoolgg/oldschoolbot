@@ -95,7 +95,7 @@ export function getWhaleTradeInitialOffer() {
 
 export function getWhaleTradePitch(fake?: boolean) {
 	const msg = randArrItem(convincingLines);
-	return `${msg}\n\nAre you sure you want to give this guy your Whale card${fake ? ` *(He doesn't seem to know it's fake...)*` : ''}`;
+	return `${msg}\n\nAre you sure you want to give this guy your Whale card${fake ? ` *(He might not know if it's fake...)*` : ''}`;
 }
 
 export function getWhaleTradeDeclineLine() {
