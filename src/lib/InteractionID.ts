@@ -65,6 +65,9 @@ export const InteractionID = {
 		RepeatTameTrip: 'REPEAT_TAME_TRIP',
 		SpawnLamp: 'SPAWN_LAMP',
 		SendItemContract: 'ITEM_CONTRACT_SEND',
-		DoFishingContest: 'DO_FISHING_CONTEST'
+		DoFishingContest: 'DO_FISHING_CONTEST',
+		WhaleTradeApproach: 'WHALE_TRADE_APPROACH',
+		WhaleTradeAgree: 'WHALE_TRADE_AGREE',
+		WhaleTradeDecline: 'WHALE_TRADE_DECLINE'
 	}
 } as const;

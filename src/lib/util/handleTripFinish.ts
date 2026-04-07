@@ -37,8 +37,14 @@ import {
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
-	makeTearsOfGuthixButton
+	makeTearsOfGuthixButton,
+	makeWhaleTradeOfferButton
 } from '@/lib/util/interactions.js';
+import {
+	getWhaleTradeInitialOffer,
+	whaleCardItemName,
+	whaleTradeOfferDuration
+} from '@/lib/whaleCardTrade.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
 import { alching } from '@/mahoji/commands/laps.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
@@ -70,6 +76,7 @@ interface TripFinishEffectOptions {
 type TripEffectReturn = {
 	itemsToAddWithCL?: Bank;
 	itemsToRemove?: Bank;
+	contentAppendix?: string;
 };
 
 export interface TripFinishEffect {
@@ -452,6 +459,18 @@ const tripFinishEffects: TripFinishEffect[] = [
 		}
 	},
 	{
+		name: 'Whale Card Trade',
+		fn: async ({ user, components }) => {
+			const whaleCards = user.bank.amount(whaleCardItemName);
+			if (whaleCards < 1) return;
+			const expiresAt = Date.now() + whaleTradeOfferDuration;
+			components.push(makeWhaleTradeOfferButton(user.id, expiresAt));
+			return {
+				contentAppendix: `\n\n${getWhaleTradeInitialOffer()}`
+			};
+		}
+	},
+	{
 		name: 'Passive Easter',
 		fn: async ({ data, user, messages }) => {
 			const easterLoot = rollPassiveEasterLoot(user, data.duration);
@@ -700,6 +719,7 @@ export async function handleTripFinish(
 	const portents = await getAllPortentCharges(user);
 	const itemsToAddWithCL = new Bank();
 	const itemsToRemove = new Bank();
+	const contentAppendices: string[] = [];
 	for (const effect of tripFinishEffects) {
 		if (effect.requiredPerkTier && perkTier < effect.requiredPerkTier) continue;
 		const start = performance.now();
@@ -717,6 +737,7 @@ export async function handleTripFinish(
 		});
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
+		if (res?.contentAppendix) contentAppendices.push(res.contentAppendix);
 		const end = performance.now();
 		const duration = end - start;
 		Logging.logPerf({
@@ -727,6 +748,10 @@ export async function handleTripFinish(
 
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
+	}
+
+	if (contentAppendices.length > 0) {
+		message.addContent(contentAppendices.join(''));
 	}
 
 	if (_messages) messages.push(..._messages);

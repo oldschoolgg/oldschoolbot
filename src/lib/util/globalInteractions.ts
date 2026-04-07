@@ -15,7 +15,16 @@ import { toggleAutoRummage } from '@/lib/minions/data/valeTotems.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
+import { makeWhaleTradeDecisionButtons } from '@/lib/util/interactions.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
+import {
+	getWhaleTradeDeclineLine,
+	getWhaleTradeMissingCardLine,
+	getWhaleTradePitch,
+	parseWhaleTradeInteractionID,
+	rollWhaleTradeResult,
+	whaleCardItemName
+} from '@/lib/whaleCardTrade.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
@@ -210,6 +219,75 @@ async function handleGEButton(user: MUser, id: string): CommandResponse {
 	return { content: 'Unknown GE button interaction.', ephemeral: true };
 }
 
+async function handleWhaleTradeButton(user: MUser, id: string, interaction: MInteraction): Promise<CommandResponse> {
+	const parsed = parseWhaleTradeInteractionID(id);
+	if (!parsed) {
+		return {
+			content: 'This degenerate seems to have forgotten what he was doing.',
+			ephemeral: true
+		};
+	}
+	if (parsed.userID !== user.id) {
+		return {
+			content: 'This degenerate gambler is only interested in the owner of the whale card.',
+			ephemeral: true
+		};
+	}
+	if (Date.now() > parsed.expiresAt) {
+		const expiredMessage = 'The degenerate gambler has already wandered off.';
+		if (parsed.action === 'approach') {
+			return { content: expiredMessage, ephemeral: true };
+		}
+		await interaction.update({
+			content: expiredMessage,
+			components: []
+		});
+		return SpecialResponse.RespondedManually;
+	}
+	if (parsed.action === 'approach') {
+		if (!user.owns(whaleCardItemName)) {
+			return {
+				content: getWhaleTradeMissingCardLine(),
+				ephemeral: true
+			};
+		}
+		return {
+			content: getWhaleTradePitch(),
+			components: [makeWhaleTradeDecisionButtons(user.id, parsed.expiresAt)],
+			ephemeral: true
+		};
+	}
+	if (parsed.action === 'decline') {
+		await interaction.update({
+			content: getWhaleTradeDeclineLine(),
+			components: []
+		});
+		return SpecialResponse.RespondedManually;
+	}
+	if (!user.owns(whaleCardItemName)) {
+		await interaction.update({
+			content: getWhaleTradeMissingCardLine(),
+			components: []
+		});
+		return SpecialResponse.RespondedManually;
+	}
+	const result = rollWhaleTradeResult();
+	if (result.loot.length > 0) {
+		await user.transactItems({
+			itemsToRemove: new Bank().add(whaleCardItemName),
+			itemsToAdd: result.loot,
+			collectionLog: true
+		});
+	} else {
+		await user.removeItemsFromBank(new Bank().add(whaleCardItemName));
+	}
+	await interaction.update({
+		content: result.message,
+		components: []
+	});
+	return SpecialResponse.RespondedManually;
+}
+
 async function globalButtonInteractionHandler({
 	interaction,
 	id,
@@ -271,6 +349,10 @@ async function globalButtonInteractionHandler({
 	const timeSinceMessage = Date.now() - interaction.createdTimestamp;
 	if (timeSinceMessage > Time.Day) {
 		Logging.logDebug(`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}]`);
+	}
+
+	if (parseWhaleTradeInteractionID(id)) {
+		return handleWhaleTradeButton(user, id, interaction);
 	}
 
 	async function doClue(tier: ClueTier['name']) {
