@@ -210,25 +210,28 @@ export const easterCommand = defineCommand({
 				tameCL.add(tame.totalLoot);
 			}
 
-			return [
-				`Easter dryness since ${EASTER_EVENT_START.toISOString()}:`,
-				'',
-				buildDrynessSection({
-					label: 'Minion',
-					tame: false,
-					duration: minionDuration,
-					actualWabbitEggs: user.cl.amount('Wabbit eggs'),
-					actualMagneggs: user.cl.amount('Magnegg')
-				}),
-				'',
-				buildDrynessSection({
-					label: 'Tame',
-					tame: true,
-					duration: tameDuration,
-					actualWabbitEggs: tameCL.amount('Wabbit eggs'),
-					actualMagneggs: tameCL.amount('Magnegg')
-				})
-			].join('\n');
+			return {
+				content: [
+					`Easter dryness since ${EASTER_EVENT_START.toISOString()}:`,
+					'',
+					buildDrynessSection({
+						label: 'Minion',
+						tame: false,
+						duration: minionDuration,
+						actualWabbitEggs: user.cl.amount('Wabbit eggs'),
+						actualMagneggs: user.cl.amount('Magnegg')
+					}),
+					'',
+					buildDrynessSection({
+						label: 'Tame',
+						tame: true,
+						duration: tameDuration,
+						actualWabbitEggs: tameCL.amount('Wabbit eggs'),
+						actualMagneggs: tameCL.amount('Magnegg')
+					})
+				].join('\n'),
+				ephemeral: true
+			};
 		}
 
 		let quantity: string | undefined | number = options.turn_in?.quantity;
