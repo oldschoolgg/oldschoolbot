@@ -39,9 +39,7 @@ type RatelimitType =
 	| 'global_buttons'
 	| 'stats_command'
 	| 'delay_member_fetch'
-	| 'megaduck_command'
-	| 'event_command_limit'
-	| 'foolus_limit';
+	| 'megaduck_command';
 
 const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	global_buttons: { windowSeconds: 2, max: 1 },
@@ -49,8 +47,6 @@ const RATELIMITS: Record<RatelimitType, RatelimitConfig> = {
 	stats_command: { windowSeconds: 5, max: 1 },
 	delay_member_fetch: { windowSeconds: TTL.Hour, max: 1 },
 	megaduck_command: { windowSeconds: 3, max: 1 },
-	event_command_limit: { windowSeconds: TTL.Hour / 2, max: 3 },
-	foolus_limit: { windowSeconds: TTL.Hour / 4, max: 3 }
 } as const;
 
 const BotKeys = RedisKeys[BOT_TYPE];
@@ -75,7 +71,7 @@ class CacheManager {
 		}
 	}
 
-	private async setString(key: string, value: string, ttlSeconds: number) {
+	public async setString(key: string, value: string, ttlSeconds: number) {
 		await this.client.set(key, value, 'EX', ttlSeconds);
 	}
 
@@ -88,7 +84,7 @@ class CacheManager {
 		return raw ? JSON.parse(raw) : null;
 	}
 
-	private async getString(key: string): Promise<string | null> {
+	public async getString(key: string): Promise<string | null> {
 		return this.client.get(key);
 	}
 
